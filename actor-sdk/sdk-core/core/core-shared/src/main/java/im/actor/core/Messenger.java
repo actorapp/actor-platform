@@ -1303,7 +1303,7 @@ public class Messenger {
      * @param theme new group theme
      * @return Command for execution
      */
-    @Nullable
+    @NotNull
     @ObjectiveCName("editGroupThemeCommandWithGid:withTheme:")
     public Command<Boolean> editGroupTheme(final int gid, final String theme) {
         return modules.getGroupsModule().editTheme(gid, theme);
@@ -1316,7 +1316,7 @@ public class Messenger {
      * @param about new group about
      * @return Command for execution
      */
-    @Nullable
+    @NotNull
     @ObjectiveCName("editGroupAboutCommandWithGid:withAbout:")
     public Command<Boolean> editGroupAbout(final int gid, final String about) {
         return modules.getGroupsModule().editAbout(gid, about);
@@ -2053,7 +2053,7 @@ public class Messenger {
      *
      * @return Command for execution
      */
-    @Nullable
+    @NotNull
     @ObjectiveCName("loadSessionsCommand")
     public Command<List<ApiAuthSession>> loadSessions() {
         return modules.getSecurityModule().loadSessions();
@@ -2064,7 +2064,7 @@ public class Messenger {
      *
      * @return Command for execution
      */
-    @Nullable
+    @NotNull
     @ObjectiveCName("terminateAllSessionsCommand")
     public Command<Boolean> terminateAllSessions() {
         return modules.getSecurityModule().terminateAllSessions();
@@ -2076,7 +2076,7 @@ public class Messenger {
      * @param id session id
      * @return Command for execution
      */
-    @Nullable
+    @NotNull
     @ObjectiveCName("terminateSessionCommandWithId:")
     public Command<Boolean> terminateSession(int id) {
         return modules.getSecurityModule().terminateSession(id);

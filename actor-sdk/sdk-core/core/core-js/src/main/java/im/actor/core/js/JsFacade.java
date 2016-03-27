@@ -21,6 +21,7 @@ import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerSearchEntity;
 import im.actor.core.entity.PeerSearchType;
 import im.actor.core.entity.PeerType;
+import im.actor.core.js.annotations.UsedByApp;
 import im.actor.core.js.entity.*;
 import im.actor.core.js.modules.JsBindedValueCallback;
 import im.actor.core.js.providers.JsNotificationsProvider;
@@ -29,7 +30,7 @@ import im.actor.core.js.providers.JsCallsProvider;
 import im.actor.core.js.providers.electron.JsElectronApp;
 import im.actor.core.js.utils.HtmlMarkdownUtils;
 import im.actor.core.js.utils.IdentityUtils;
-import im.actor.core.modules.internal.messages.entity.EntityConverter;
+import im.actor.core.modules.messaging.actors.entity.EntityConverter;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.viewmodel.CommandCallback;
@@ -54,6 +55,7 @@ import java.util.List;
 
 @ExportPackage("actor")
 @Export("ActorApp")
+@UsedByApp
 public class JsFacade implements Exportable {
 
     private static final String TAG = "JsMessenger";
@@ -67,10 +69,12 @@ public class JsFacade implements Exportable {
     private Peer lastVisiblePeer;
 
     @Export
+    @UsedByApp
     public JsFacade() {
 
     }
 
+    @UsedByApp
     public void init(JsConfig config) {
 
         provider = (JsFileSystemProvider) Storage.getFileSystemRuntime();
@@ -129,28 +133,34 @@ public class JsFacade implements Exportable {
         Log.d(TAG, "JsMessenger created");
     }
 
+    @UsedByApp
     public boolean isLoggedIn() {
         return messenger.isLoggedIn();
     }
 
+    @UsedByApp
     public int getUid() {
         return messenger.myUid();
     }
 
+    @UsedByApp
     public boolean isElectron() {
         return messenger.isElectron();
     }
 
     // Auth
 
+    @UsedByApp
     public String getAuthState() {
         return Enums.convert(messenger.getAuthState());
     }
 
+    @UsedByApp
     public String getAuthPhone() {
         return "" + messenger.getAuthPhone();
     }
 
+    @UsedByApp
     public void requestSms(String phone, final JsAuthSuccessClosure success,
                            final JsAuthErrorClosure error) {
         try {
@@ -186,6 +196,7 @@ public class JsFacade implements Exportable {
         }
     }
 
+    @UsedByApp
     public void requestCodeEmail(String email, final JsAuthSuccessClosure success,
                                  final JsAuthErrorClosure error) {
         messenger.requestStartEmailAuth(email).start(new CommandCallback<AuthState>() {
@@ -209,6 +220,7 @@ public class JsFacade implements Exportable {
         });
     }
 
+    @UsedByApp
     public void sendCode(String code, final JsAuthSuccessClosure success,
                          final JsAuthErrorClosure error) {
         try {
@@ -243,6 +255,7 @@ public class JsFacade implements Exportable {
         }
     }
 
+    @UsedByApp
     public void signUp(String name, final JsAuthSuccessClosure success,
                        final JsAuthErrorClosure error) {
         messenger.signUp(name, null, null).start(new CommandCallback<AuthState>() {
@@ -266,6 +279,7 @@ public class JsFacade implements Exportable {
         });
     }
 
+    @UsedByApp
     public JsPromise loadSessions() {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -292,6 +306,7 @@ public class JsFacade implements Exportable {
         });
     }
 
+    @UsedByApp
     public JsPromise terminateSession(final int id) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -312,6 +327,7 @@ public class JsFacade implements Exportable {
         });
     }
 
+    @UsedByApp
     public JsPromise terminateAllSessions() {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -334,6 +350,7 @@ public class JsFacade implements Exportable {
 
     // Dialogs
 
+    @UsedByApp
     public void bindDialogs(JsDisplayListCallback<JsDialog> callback) {
         if (callback == null) {
             return;
@@ -341,6 +358,7 @@ public class JsFacade implements Exportable {
         messenger.getSharedDialogList().subscribe(callback, false);
     }
 
+    @UsedByApp
     public void unbindDialogs(JsDisplayListCallback<JsDialog> callback) {
         if (callback == null) {
             return;
@@ -348,6 +366,7 @@ public class JsFacade implements Exportable {
         messenger.getSharedDialogList().unsubscribe(callback);
     }
 
+    @UsedByApp
     public void bindGroupDialogs(JsBindedValueCallback callback) {
         if (callback == null) {
             return;
@@ -356,6 +375,7 @@ public class JsFacade implements Exportable {
         messenger.getDialogsGroupedList().subscribe(callback);
     }
 
+    @UsedByApp
     public void unbindGroupDialogs(JsBindedValueCallback callback) {
         if (callback == null) {
             return;
@@ -366,6 +386,7 @@ public class JsFacade implements Exportable {
 
     // Contacts
 
+    @UsedByApp
     public void bindContacts(JsDisplayListCallback<JsContact> callback) {
         if (callback == null) {
             return;
@@ -373,6 +394,7 @@ public class JsFacade implements Exportable {
         messenger.getSharedContactList().subscribe(callback, true);
     }
 
+    @UsedByApp
     public void unbindContacts(JsDisplayListCallback<JsContact> callback) {
         if (callback == null) {
             return;
@@ -382,6 +404,7 @@ public class JsFacade implements Exportable {
 
     // Search
 
+    @UsedByApp
     public void bindSearch(JsDisplayListCallback<JsSearchEntity> callback) {
         if (callback == null) {
             return;
@@ -389,6 +412,7 @@ public class JsFacade implements Exportable {
         messenger.getSharedSearchList().subscribe(callback, false);
     }
 
+    @UsedByApp
     public void unbindSearch(JsDisplayListCallback<JsSearchEntity> callback) {
         if (callback == null) {
             return;
@@ -398,10 +422,12 @@ public class JsFacade implements Exportable {
 
     // Chats
 
+    @UsedByApp
     public void preInitChat(JsPeer peer) {
         messenger.onConversationPreLoad(peer.convert());
     }
 
+    @UsedByApp
     public void bindChat(JsPeer peer, JsDisplayListCallback<JsMessage> callback) {
         if (callback == null) {
             return;
@@ -409,6 +435,7 @@ public class JsFacade implements Exportable {
         messenger.getSharedChatList(peer.convert()).subscribe(callback, true);
     }
 
+    @UsedByApp
     public void unbindChat(JsPeer peer, JsDisplayListCallback<JsMessage> callback) {
         if (callback == null) {
             return;
@@ -416,6 +443,7 @@ public class JsFacade implements Exportable {
         messenger.getSharedChatList(peer.convert()).unsubscribe(callback);
     }
 
+    @UsedByApp
     public JsMessagesBind bindMessages(JsPeer peer, JsMessagesBindClosure callback) {
         if (callback == null) {
             return null;
@@ -425,10 +453,12 @@ public class JsFacade implements Exportable {
         return new JsMessagesBind(callback, messenger.getSharedChatList(peerC), messenger.getConversationVM(peerC));
     }
 
+    @UsedByApp
     public void deleteMessage(JsPeer peer, String id) {
         messenger.deleteMessages(peer.convert(), new long[]{Long.parseLong(id)});
     }
 
+    @UsedByApp
     public JsPromise deleteChat(final JsPeer peer) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -450,6 +480,7 @@ public class JsFacade implements Exportable {
         });
     }
 
+    @UsedByApp
     public JsPromise clearChat(final JsPeer peer) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -471,6 +502,7 @@ public class JsFacade implements Exportable {
         });
     }
 
+    @UsedByApp
     public JsPromise archiveChat(final JsPeer peer) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -492,6 +524,7 @@ public class JsFacade implements Exportable {
         });
     }
 
+    @UsedByApp
     public JsPromise favoriteChat(final JsPeer peer) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -513,6 +546,7 @@ public class JsFacade implements Exportable {
         });
     }
 
+    @UsedByApp
     public JsPromise unfavoriteChat(final JsPeer peer) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -536,34 +570,41 @@ public class JsFacade implements Exportable {
 
     // Peers
 
+    @UsedByApp
     public JsPeer getUserPeer(int uid) {
         return JsPeer.create(Peer.user(uid));
     }
 
+    @UsedByApp
     public JsPeer getGroupPeer(int gid) {
         return JsPeer.create(Peer.group(gid));
     }
 
     // Stickers
 
+    @UsedByApp
     public JsArray<JsSticker> getStickers() {
         return messenger.getStickers().get();
     }
 
+    @UsedByApp
     public void bindStickers(JsBindedValueCallback callback) {
         messenger.getStickers().subscribe(callback);
     }
 
+    @UsedByApp
     public void unbindStickers(JsBindedValueCallback callback) {
         messenger.getStickers().unsubscribe(callback);
     }
 
     // Users
 
+    @UsedByApp
     public JsUser getUser(int uid) {
         return messenger.getJsUser(uid).get();
     }
 
+    @UsedByApp
     public void bindUser(int uid, JsBindedValueCallback callback) {
         if (callback == null) {
             return;
@@ -571,6 +612,7 @@ public class JsFacade implements Exportable {
         messenger.getJsUser(uid).subscribe(callback);
     }
 
+    @UsedByApp
     public void unbindUser(int uid, JsBindedValueCallback callback) {
         if (callback == null) {
             return;
@@ -578,6 +620,7 @@ public class JsFacade implements Exportable {
         messenger.getJsUser(uid).unsubscribe(callback);
     }
 
+    @UsedByApp
     public void bindUserOnline(int uid, JsBindedValueCallback callback) {
         if (callback == null) {
             return;
@@ -585,6 +628,7 @@ public class JsFacade implements Exportable {
         messenger.getJsUserOnline(uid).subscribe(callback);
     }
 
+    @UsedByApp
     public void unbindUserOnline(int uid, JsBindedValueCallback callback) {
         if (callback == null) {
             return;
@@ -594,10 +638,12 @@ public class JsFacade implements Exportable {
 
     // Groups
 
+    @UsedByApp
     public JsGroup getGroup(int gid) {
         return messenger.getJsGroup(gid).get();
     }
 
+    @UsedByApp
     public void bindGroup(int gid, JsBindedValueCallback callback) {
         if (callback == null) {
             return;
@@ -605,6 +651,7 @@ public class JsFacade implements Exportable {
         messenger.getJsGroup(gid).subscribe(callback);
     }
 
+    @UsedByApp
     public void unbindGroup(int gid, JsBindedValueCallback callback) {
         if (callback == null) {
             return;
@@ -612,6 +659,7 @@ public class JsFacade implements Exportable {
         messenger.getJsGroup(gid).unsubscribe(callback);
     }
 
+    @UsedByApp
     public void bindGroupOnline(int gid, JsBindedValueCallback callback) {
         if (callback == null) {
             return;
@@ -619,6 +667,7 @@ public class JsFacade implements Exportable {
         messenger.getJsGroupOnline(gid).subscribe(callback);
     }
 
+    @UsedByApp
     public void unbindGroupOnline(int gid, JsBindedValueCallback callback) {
         if (callback == null) {
             return;
@@ -628,6 +677,7 @@ public class JsFacade implements Exportable {
 
     // Calls
 
+    @UsedByApp
     public JsPromise doCall(final int uid) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -649,6 +699,7 @@ public class JsFacade implements Exportable {
         });
     }
 
+    @UsedByApp
     public JsPromise doGroupCall(final int gid) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -670,18 +721,22 @@ public class JsFacade implements Exportable {
         });
     }
 
+    @UsedByApp
     public void answerCall(String callId) {
         messenger.answerCall(Long.parseLong(callId));
     }
 
+    @UsedByApp
     public void endCall(String callId) {
         messenger.endCall(Long.parseLong(callId));
     }
 
+    @UsedByApp
     public void toggleCallMute(String callId) {
         messenger.toggleCallMute(Long.parseLong(callId));
     }
 
+    @UsedByApp
     public void bindCall(String id, JsBindedValueCallback callback) {
         if (callback == null) {
             return;
@@ -689,6 +744,7 @@ public class JsFacade implements Exportable {
         messenger.getJsCall(id).subscribe(callback);
     }
 
+    @UsedByApp
     public void unbindCall(String id, JsBindedValueCallback callback) {
         if (callback == null) {
             return;
@@ -698,6 +754,7 @@ public class JsFacade implements Exportable {
 
     // Event Bus
 
+    @UsedByApp
     public void bindEventBus(JsEventBusCallback callback) {
         if (callback == null) {
             return;
@@ -706,6 +763,7 @@ public class JsFacade implements Exportable {
         messenger.subscribeEventBus(callback);
     }
 
+    @UsedByApp
     public void unbindEventBus(JsEventBusCallback callback) {
         if (callback == null) {
             return;
@@ -716,43 +774,52 @@ public class JsFacade implements Exportable {
 
     // Actions
 
+    @UsedByApp
     public void sendMessage(JsPeer peer, String text) {
         messenger.sendMessageWithMentionsDetect(peer.convert(), text);
     }
 
+    @UsedByApp
     public void sendFile(JsPeer peer, JsFile file) {
         String descriptor = provider.registerUploadFile(file);
         messenger.sendDocument(peer.convert(),
                 file.getName(), file.getMimeType(), descriptor);
     }
 
+    @UsedByApp
     public void sendPhoto(final JsPeer peer, final JsFile file) {
         messenger.sendPhoto(peer.convert(), file);
     }
 
+    @UsedByApp
     public void sendClipboardPhoto(final JsPeer peer, final JsBlob blob) {
         messenger.sendClipboardPhoto(peer.convert(), blob);
     }
 
+    @UsedByApp
     public void sendVoiceMessage(final JsPeer peer, int duration, final JsBlob blob) {
         String descriptor = provider.registerUploadFile(blob);
         messenger.sendAudio(peer.convert(), "voice.opus", duration, descriptor);
     }
 
+    @UsedByApp
     public void sendSticker(JsPeer peer, JsSticker sticker) {
         messenger.sendSticker(peer.convert(), sticker.getSticker());
     }
 
     // Drafts
 
+    @UsedByApp
     public void saveDraft(JsPeer peer, String text) {
         messenger.saveDraft(peer.convert(), text);
     }
 
+    @UsedByApp
     public String loadDraft(JsPeer peer) {
         return messenger.loadDraft(peer.convert());
     }
 
+    @UsedByApp
     public JsArray<JsMentionFilterResult> findMentions(int gid, String query) {
         List<MentionFilterResult> res = messenger.findMentions(gid, query);
         JsArray<JsMentionFilterResult> mentions = JsArray.createArray().cast();
@@ -764,50 +831,61 @@ public class JsFacade implements Exportable {
 
     // Typing
 
+    @UsedByApp
     public void onTyping(JsPeer peer) {
         messenger.onTyping(peer.convert());
     }
 
+    @UsedByApp
     public JsTyping getTyping(JsPeer peer) {
         return messenger.getTyping(peer.convert()).get();
     }
 
+    @UsedByApp
     public void bindTyping(JsPeer peer, JsBindedValueCallback callback) {
         messenger.getTyping(peer.convert()).subscribe(callback);
     }
 
+    @UsedByApp
     public void unbindTyping(JsPeer peer, JsBindedValueCallback callback) {
         messenger.getTyping(peer.convert()).unsubscribe(callback);
     }
 
     // Updating state
 
+    @UsedByApp
     public void bindConnectState(JsBindedValueCallback callback) {
         messenger.getOnlineStatus().subscribe(callback);
     }
 
+    @UsedByApp
     public void unbindConnectState(JsBindedValueCallback callback) {
         messenger.getOnlineStatus().unsubscribe(callback);
     }
 
+    @UsedByApp
     public void bindGlobalCounter(JsBindedValueCallback callback) {
         messenger.getGlobalCounter().subscribe(callback);
     }
 
+    @UsedByApp
     public void unbindGlobalCounter(JsBindedValueCallback callback) {
         messenger.getGlobalCounter().unsubscribe(callback);
     }
 
+    @UsedByApp
     public void bindTempGlobalCounter(JsBindedValueCallback callback) {
         messenger.getTempGlobalCounter().subscribe(callback);
     }
 
+    @UsedByApp
     public void unbindTempGlobalCounter(JsBindedValueCallback callback) {
         messenger.getTempGlobalCounter().unsubscribe(callback);
     }
 
     // Events
 
+    @UsedByApp
     public void onAppVisible() {
         // Ignore for electron runtime
         if (isElectron()) {
@@ -817,6 +895,7 @@ public class JsFacade implements Exportable {
         messenger.getJsIdleModule().onVisible();
     }
 
+    @UsedByApp
     public void onAppHidden() {
         // Ignore for electron runtime
         if (isElectron()) {
@@ -826,12 +905,14 @@ public class JsFacade implements Exportable {
         messenger.getJsIdleModule().onHidden();
     }
 
+    @UsedByApp
     public void onConversationOpen(JsPeer peer) {
         Log.d(TAG, "onConversationOpen | " + peer);
         lastVisiblePeer = peer.convert();
         messenger.onConversationOpen(lastVisiblePeer);
     }
 
+    @UsedByApp
     public void onConversationClosed(JsPeer peer) {
         Log.d(TAG, "onConversationClosed | " + peer);
         if (lastVisiblePeer != null && lastVisiblePeer.equals(peer.convert())) {
@@ -841,34 +922,42 @@ public class JsFacade implements Exportable {
         messenger.onConversationClosed(peer.convert());
     }
 
+    @UsedByApp
     public void onDialogsOpen() {
         messenger.onDialogsOpen();
     }
 
+    @UsedByApp
     public void onDialogsClosed() {
         messenger.onDialogsClosed();
     }
 
+    @UsedByApp
     public void onProfileOpen(int uid) {
         messenger.onProfileOpen(uid);
     }
 
+    @UsedByApp
     public void onProfileClosed(int uid) {
         messenger.onProfileClosed(uid);
     }
 
+    @UsedByApp
     public void onDialogsEnd() {
         messenger.loadMoreDialogs();
     }
 
+    @UsedByApp
     public JsPromise loadArchivedDialogs() {
         return loadArchivedDialogs(true);
     }
 
+    @UsedByApp
     public JsPromise loadMoreArchivedDialogs() {
         return loadArchivedDialogs(false);
     }
 
+    @UsedByApp
     private JsPromise loadArchivedDialogs(final boolean init) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -892,15 +981,16 @@ public class JsFacade implements Exportable {
                 });
             }
         });
-
     }
 
+    @UsedByApp
     public void onChatEnd(JsPeer peer) {
         messenger.loadMoreHistory(peer.convert());
     }
 
     // Profile
 
+    @UsedByApp
     public JsPromise editMyName(final String newName) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -923,6 +1013,7 @@ public class JsFacade implements Exportable {
         });
     }
 
+    @UsedByApp
     public JsPromise editMyNick(final String newNick) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -945,6 +1036,7 @@ public class JsFacade implements Exportable {
         });
     }
 
+    @UsedByApp
     public JsPromise editMyAbout(final String newAbout) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -967,6 +1059,7 @@ public class JsFacade implements Exportable {
         });
     }
 
+    @UsedByApp
     public JsPromise findAllText(final JsPeer peer, final String query) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -987,6 +1080,7 @@ public class JsFacade implements Exportable {
         });
     }
 
+    @UsedByApp
     public JsPromise findAllPhotos(final JsPeer peer) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -1007,6 +1101,7 @@ public class JsFacade implements Exportable {
         });
     }
 
+    @UsedByApp
     public JsPromise findAllDocs(final JsPeer peer) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -1027,6 +1122,7 @@ public class JsFacade implements Exportable {
         });
     }
 
+    @UsedByApp
     public JsPromise findAllLinks(final JsPeer peer) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -1059,6 +1155,7 @@ public class JsFacade implements Exportable {
         return jsRes;
     }
 
+    @UsedByApp
     public JsPromise findGroups() {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -1092,15 +1189,18 @@ public class JsFacade implements Exportable {
         });
     }
 
+    @UsedByApp
     public void changeMyAvatar(final JsFile file) {
         String descriptor = provider.registerUploadFile(file);
         messenger.changeMyAvatar(descriptor);
     }
 
+    @UsedByApp
     public void removeMyAvatar() {
         messenger.removeMyAvatar();
     }
 
+    @UsedByApp
     public JsPromise editName(final int uid, final String newName) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -1123,6 +1223,7 @@ public class JsFacade implements Exportable {
         });
     }
 
+    @UsedByApp
     public JsPromise joinGroupViaLink(final String url) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -1145,6 +1246,7 @@ public class JsFacade implements Exportable {
         });
     }
 
+    @UsedByApp
     public JsPromise editGroupTitle(final int gid, final String newTitle) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -1167,6 +1269,7 @@ public class JsFacade implements Exportable {
         });
     }
 
+    @UsedByApp
     public JsPromise editGroupAbout(final int gid, final String newAbout) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -1187,15 +1290,18 @@ public class JsFacade implements Exportable {
         });
     }
 
+    @UsedByApp
     public void changeGroupAvatar(final int gid, final JsFile file) {
         String descriptor = provider.registerUploadFile(file);
         messenger.changeGroupAvatar(gid, descriptor);
     }
 
+    @UsedByApp
     public void removeGroupAvatar(final int gid) {
         messenger.removeGroupAvatar(gid);
     }
 
+    @UsedByApp
     public JsPromise createGroup(final String title, final JsFile file, final int[] uids) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -1219,6 +1325,7 @@ public class JsFacade implements Exportable {
         });
     }
 
+    @UsedByApp
     public JsPromise inviteMember(final int gid, final int uid) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -1241,6 +1348,7 @@ public class JsFacade implements Exportable {
         });
     }
 
+    @UsedByApp
     public JsPromise kickMember(final int gid, final int uid) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -1263,6 +1371,7 @@ public class JsFacade implements Exportable {
         });
     }
 
+    @UsedByApp
     public JsPromise leaveGroup(final int gid) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -1285,6 +1394,7 @@ public class JsFacade implements Exportable {
         });
     }
 
+    @UsedByApp
     public JsPromise getIntegrationToken(final int gid) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -1307,6 +1417,7 @@ public class JsFacade implements Exportable {
         });
     }
 
+    @UsedByApp
     public JsPromise revokeIntegrationToken(final int gid) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -1329,6 +1440,7 @@ public class JsFacade implements Exportable {
         });
     }
 
+    @UsedByApp
     public JsPromise getInviteLink(final int gid) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -1351,6 +1463,7 @@ public class JsFacade implements Exportable {
         });
     }
 
+    @UsedByApp
     public JsPromise revokeInviteLink(final int gid) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -1373,6 +1486,7 @@ public class JsFacade implements Exportable {
         });
     }
 
+    @UsedByApp
     public JsPromise addContact(final int uid) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -1395,6 +1509,7 @@ public class JsFacade implements Exportable {
         });
     }
 
+    @UsedByApp
     public JsPromise addLike(final JsPeer peer, final String rid) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -1416,6 +1531,7 @@ public class JsFacade implements Exportable {
         });
     }
 
+    @UsedByApp
     public JsPromise removeLike(final JsPeer peer, final String rid) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -1437,6 +1553,7 @@ public class JsFacade implements Exportable {
         });
     }
 
+    @UsedByApp
     public JsPromise findUsers(final String query) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -1464,6 +1581,7 @@ public class JsFacade implements Exportable {
         });
     }
 
+    @UsedByApp
     public JsPromise removeContact(final int uid) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -1488,54 +1606,67 @@ public class JsFacade implements Exportable {
 
     // Settings
 
+    @UsedByApp
     public void changeNotificationsEnabled(JsPeer peer, boolean isEnabled) {
         messenger.changeNotificationsEnabled(peer.convert(), isEnabled);
     }
 
+    @UsedByApp
     public boolean isNotificationsEnabled(JsPeer peer) {
         return messenger.isNotificationsEnabled(peer.convert());
     }
 
+    @UsedByApp
     public boolean isSendByEnterEnabled() {
         return messenger.isSendByEnterEnabled();
     }
 
+    @UsedByApp
     public void changeSendByEnter(boolean sendByEnter) {
         messenger.changeSendByEnter(sendByEnter);
     }
 
+    @UsedByApp
     public boolean isGroupsNotificationsEnabled() {
         return messenger.isGroupNotificationsEnabled();
     }
 
+    @UsedByApp
     public void changeGroupNotificationsEnabled(boolean enabled) {
         messenger.changeGroupNotificationsEnabled(enabled);
     }
 
+    @UsedByApp
     public boolean isOnlyMentionNotifications() {
         return messenger.isGroupNotificationsOnlyMentionsEnabled();
     }
 
+    @UsedByApp
     public void changeIsOnlyMentionNotifications(boolean enabled) {
         messenger.changeGroupNotificationsOnlyMentionsEnabled(enabled);
     }
 
+    @UsedByApp
     public boolean isSoundEffectsEnabled() {
         return messenger.isConversationTonesEnabled();
     }
 
+    @UsedByApp
     public boolean isShowNotificationsTextEnabled() {
         return messenger.isShowNotificationsText();
     }
 
+    @UsedByApp
     public void changeIsShowNotificationTextEnabled(boolean value) {
         messenger.changeShowNotificationTextEnabled(value);
     }
 
+    @UsedByApp
     public void changeSoundEffectsEnabled(boolean enabled) {
         messenger.changeConversationTonesEnabled(enabled);
     }
 
+    @UsedByApp
     public String renderMarkdown(final String markdownText) {
         try {
             return HtmlMarkdownUtils.processText(markdownText, MarkdownParser.MODE_FULL);
@@ -1545,6 +1676,7 @@ public class JsFacade implements Exportable {
         }
     }
 
+    @UsedByApp
     public void handleLinkClick(Event event) {
         Element target = Element.as(event.getEventTarget());
         String href = target.getAttribute("href");
