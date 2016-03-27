@@ -5,7 +5,7 @@ import java.util.Base64
 import akka.actor.ActorSystem
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model.ws.{ BinaryMessage, Message, TextMessage }
-import akka.http.scaladsl.model.{ HttpMethod, StatusCode }
+import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.stream.{ ActorMaterializer, Materializer }
@@ -17,7 +17,7 @@ import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
 import im.actor.api.rpc.sequence.UpdateRawUpdate
 import im.actor.server.api.http.HttpHandler
 import im.actor.server.api.http.json.{ ContentUnmarshaller, JsValueUnmarshaller, JsonFormatters, Status }
-import im.actor.server.bot.{ BotServerBlueprint, BotExtension }
+import im.actor.server.bot.{ BotExtension, BotServerBlueprint }
 import im.actor.server.model.AuthSession
 import im.actor.server.user.UserExtension
 import play.api.libs.json.{ JsNull, JsObject, JsString }
@@ -59,23 +59,32 @@ private[bot] final class BotsHttpHandler(botExt: BotExtension)(implicit system: 
               result match {
                 case Left(statusCode) ⇒ complete(statusCode → Status("failure"))
                 case Right(_) ⇒
-                  val response =
+                  val responseText =
                     """
                       |<html>
                       |<head>
-                      |  <title>Please, return to the app</title>
-                      |  <style>
+                      |    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
+                      |    <title>Please, return to the app</title>
+                      |    <style>
                       |    .element {
                       |      position: relative;
                       |      top: 50%;
                       |      transform: translateY(-50%);
                       |    }
+                      |	h3 {
+                      |		font-family: 'Open Sans', sans-serif;
+                      |	}
                       |  </style>
                       |</head>
-                      |  <body><center id="message"><h3>Please, return to the app.</h1></center></body>
+                      |<body>
+                      |<center id="message">
+                      |    <img src="https://app.actor.im/assets/images/logo_splash.png"/>
+                      |    <h3>We are done here, greetings!</h1>
+                      |</center>
+                      |</body>
                       |</html>
                     """.stripMargin
-                  complete(response)
+                  complete(HttpResponse(status = StatusCodes.OK, entity = HttpEntity(ContentTypes.`text/html(UTF-8)`, responseText)))
               }
             case Failure(e) ⇒
               log.error(e, "Failed to handle bot hook")
