@@ -14,18 +14,15 @@ export default {
   cache: true,
   debug: true,
   devtool: '#inline-source-map',
-  hotComponents: true,
   entry: {
     app: [
-      'webpack-dev-server/client?http://localhost:3000',
-      'webpack/hot/dev-server',
       './devapp/index.js',
       './src/styles/index.scss'
     ]
   },
   output: {
     path: path.join(__dirname, 'dist'),
-    publicPath: './',
+    publicPath: '/',
     filename: '[name].js',
     chunkFilename: '[chunkhash].js',
     sourceMapFilename: '[file][hash].map'
@@ -76,7 +73,6 @@ export default {
     new webpack.ResolverPlugin([
       new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('package.json', ['main'])
     ], ['context']),
-    new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin()
   ],
   postcss: [
