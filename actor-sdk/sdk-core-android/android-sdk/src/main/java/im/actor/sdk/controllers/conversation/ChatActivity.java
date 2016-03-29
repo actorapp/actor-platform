@@ -246,7 +246,6 @@ public class ChatActivity extends ActorEditTextActivity {
         audioTimer = (TextView) findViewById(R.id.audioTimer);
         audioSlide = findViewById(R.id.audioSlide);
         recordPoint = findViewById(R.id.record_point);
-        ActorSystem.system().addDispatcher("voice_capture_dispatcher", 1);
 
         audioButton = (ImageView) findViewById(R.id.record_btn);
         audioButton.setVisibility(View.VISIBLE);
@@ -408,11 +407,11 @@ public class ChatActivity extends ActorEditTextActivity {
         findViewById(R.id.share_contact).setOnClickListener(shareMenuOCL);
         handleIntent();
 
-        RecyclerView fastShare = (RecyclerView) findViewById(R.id.fast_share);
-        fastShareAdapter = new FastShareAdapter(this);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        fastShare.setAdapter(fastShareAdapter);
-        fastShare.setLayoutManager(layoutManager);
+//        RecyclerView fastShare = (RecyclerView) findViewById(R.id.fast_share);
+//        fastShareAdapter = new FastShareAdapter(this);
+//        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+//        fastShare.setAdapter(fastShareAdapter);
+//        fastShare.setLayoutManager(layoutManager);
 
         final ImageButton shareMenuSend = (ImageButton) findViewById(R.id.share_send);
         shareMenuSend.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
@@ -427,20 +426,20 @@ public class ChatActivity extends ActorEditTextActivity {
                 hideShare();
             }
         });
-        fastShareAdapter.getSelectedVM().subscribe(new ValueChangedListener<Set<String>>() {
-            @Override
-            public void onChanged(Set<String> val, Value<Set<String>> valueModel) {
-                if (val.size() > 0) {
-                    shareLocation.setVisibility(View.INVISIBLE);
-                    shareMenuSend.setVisibility(View.VISIBLE);
-                    locationText.setText(getString(R.string.chat_doc_send) + "(" + val.size() + ")");
-                } else {
-                    shareLocation.setVisibility(View.VISIBLE);
-                    shareMenuSend.setVisibility(View.INVISIBLE);
-                    locationText.setText(getString(R.string.share_menu_location));
-                }
-            }
-        });
+//        fastShareAdapter.getSelectedVM().subscribe(new ValueChangedListener<Set<String>>() {
+//            @Override
+//            public void onChanged(Set<String> val, Value<Set<String>> valueModel) {
+//                if (val.size() > 0) {
+//                    shareLocation.setVisibility(View.INVISIBLE);
+//                    shareMenuSend.setVisibility(View.VISIBLE);
+//                    locationText.setText(getString(R.string.chat_doc_send) + "(" + val.size() + ")");
+//                } else {
+//                    shareLocation.setVisibility(View.VISIBLE);
+//                    shareMenuSend.setVisibility(View.INVISIBLE);
+//                    locationText.setText(getString(R.string.share_menu_location));
+//                }
+//            }
+//        });
     }
 
     private void startCamera() {
