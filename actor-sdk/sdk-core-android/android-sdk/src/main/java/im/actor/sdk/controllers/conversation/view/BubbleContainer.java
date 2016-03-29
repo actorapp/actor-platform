@@ -330,6 +330,6 @@ public class BubbleContainer extends ViewGroup {
     }
 
     public void setOnline(boolean online, boolean isBot) {
-        avatarView.setOnline(online, isBot);
+        // avatarView.setOnline(online, isBot);
     }
 }

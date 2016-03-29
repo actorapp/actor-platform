@@ -114,18 +114,24 @@ public class Actor {
         context.setSender(sender);
         context.setMessage(message);
 
-        if (receivers != null && receivers.size() > 0) {
-            receivers.get(receivers.size() - 1).onReceive(message);
-            return;
+        try {
+
+            if (receivers != null && receivers.size() > 0) {
+                receivers.get(receivers.size() - 1).onReceive(message);
+                return;
+            }
+
+            if (message instanceof Runnable) {
+                ((Runnable) message).run();
+                return;
+            }
+
+            onReceive(message);
+
+        } finally {
+            context.setSender(null);
+            context.setMessage(null);
         }
-
-        if (message instanceof Runnable) {
-            ((Runnable) message).run();
-            return;
-        }
-
-
-        onReceive(message);
     }
 
     /**

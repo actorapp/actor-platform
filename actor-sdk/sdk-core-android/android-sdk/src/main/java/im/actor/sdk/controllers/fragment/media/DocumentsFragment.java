@@ -38,9 +38,7 @@ public class DocumentsFragment extends MessagesFragment {
     protected BindedDisplayList<Message> onCreateDisplayList() {
         BindedDisplayList<Message> res = messenger().getDocsDisplayList(peer);
         if (res.getListProcessor() == null) {
-            res.setListProcessor(new ChatListProcessor(this));
-        }else{
-            ((ChatListProcessor)res.getListProcessor()).setFragment(this);
+            res.setListProcessor(new ChatListProcessor(peer, getContext()));
         }
         return res;
     }
