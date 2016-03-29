@@ -574,7 +574,7 @@ public class ActorSDK {
      * @param fastShareEnabled
      */
     public void setFastShareEnabled(boolean fastShareEnabled) {
-        this.fastShareEnabled = this.fastShareEnabled;
+        this.fastShareEnabled = fastShareEnabled;
     }
 
     /**
