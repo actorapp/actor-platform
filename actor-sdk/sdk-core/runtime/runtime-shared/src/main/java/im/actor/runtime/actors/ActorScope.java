@@ -96,5 +96,7 @@ public class ActorScope {
 
     public void onActorDie() {
         this.actor = null;
+        this.sender = null;
+        this.message = null;
     }
 }

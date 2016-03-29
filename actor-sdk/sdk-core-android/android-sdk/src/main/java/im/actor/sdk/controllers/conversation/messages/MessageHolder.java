@@ -30,7 +30,6 @@ public abstract class MessageHolder extends BindedViewHolder
     protected BubbleContainer container;
     protected boolean isFullSize;
     protected Message currentMessage;
-    protected ActorBinder.Binding onlineBinding;
     protected Spannable reactions;
     protected boolean hasMyReaction;
 
@@ -98,20 +97,6 @@ public abstract class MessageHolder extends BindedViewHolder
 
         // Updating selection state
         container.setBubbleSelected(adapter.isSelected(currentMessage));
-
-        //online
-        if (onlineBinding != null) {
-            getAdapter().getBinder().unbind(onlineBinding);
-        }
-        final UserVM user = users().get(message.getSenderId());
-        onlineBinding = getAdapter().getBinder().bind(new ActorBinder.OnChangedListener<Boolean>() {
-            @Override
-            public void onChanged(Boolean online) {
-                setOnline(online, user.isBot());
-            }
-
-        }, user.getPresence());
-        setOnline(user.getPresence().get().getState().equals(UserPresence.State.ONLINE), user.isBot());
 
         hasMyReaction = false;
         if (preprocessedData != null) {
