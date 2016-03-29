@@ -200,6 +200,7 @@ public class ChatActivity extends ActorEditTextActivity {
     private View shareContainer;
     private View shareMenu;
     private int shareMenuMaxHeight = 0;
+    private FastShareAdapter fastShareAdapter;
 
 
     //////////////////////////////////
@@ -352,11 +353,11 @@ public class ChatActivity extends ActorEditTextActivity {
                     File externalFile = Environment.getExternalStorageDirectory();
                     if (externalFile == null) {
                         Toast.makeText(ChatActivity.this, R.string.toast_no_sdcard, Toast.LENGTH_LONG).show();
-                    }else{
+                    } else {
                         String externalPath = externalFile.getAbsolutePath();
-                        new File(externalPath + "/"+ ActorSDK.sharedActor().getAppName() +"/capture/").mkdirs();
+                        new File(externalPath + "/" + ActorSDK.sharedActor().getAppName() + "/capture/").mkdirs();
 
-                        pending_fileName = externalPath + "/"+ ActorSDK.sharedActor().getAppName() +"/capture/capture_" + Randoms.randomId() + ".jpg";
+                        pending_fileName = externalPath + "/" + ActorSDK.sharedActor().getAppName() + "/capture/capture_" + Randoms.randomId() + ".jpg";
                     }
                     if (ContextCompat.checkSelfPermission(ChatActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                         Log.d("Permissions", "camera - no permission :c");
@@ -372,11 +373,11 @@ public class ChatActivity extends ActorEditTextActivity {
                     File externalFile = Environment.getExternalStorageDirectory();
                     if (externalFile == null) {
                         Toast.makeText(ChatActivity.this, R.string.toast_no_sdcard, Toast.LENGTH_LONG).show();
-                    }else{
+                    } else {
                         String externalPath = externalFile.getAbsolutePath();
-                        new File(externalPath + "/"+ ActorSDK.sharedActor().getAppName() +"/capture/").mkdirs();
+                        new File(externalPath + "/" + ActorSDK.sharedActor().getAppName() + "/capture/").mkdirs();
 
-                        pending_fileName = externalPath + "/"+ ActorSDK.sharedActor().getAppName() +"/capture/capture_" + Randoms.randomId() + ".mp4";
+                        pending_fileName = externalPath + "/" + ActorSDK.sharedActor().getAppName() + "/capture/capture_" + Randoms.randomId() + ".mp4";
 
                         Intent i = new Intent(MediaStore.ACTION_VIDEO_CAPTURE)
                                 .putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(pending_fileName)));
@@ -408,7 +409,7 @@ public class ChatActivity extends ActorEditTextActivity {
         handleIntent();
 
         RecyclerView fastShare = (RecyclerView) findViewById(R.id.fast_share);
-        final FastShareAdapter fastShareAdapter = new FastShareAdapter(this);
+        fastShareAdapter = new FastShareAdapter(this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         fastShare.setAdapter(fastShareAdapter);
         fastShare.setLayoutManager(layoutManager);
@@ -477,7 +478,6 @@ public class ChatActivity extends ActorEditTextActivity {
         this.intent = intent;
         handleIntent();
     }
-
 
 
     @Override
@@ -736,6 +736,10 @@ public class ChatActivity extends ActorEditTextActivity {
         AudioHolder.stopPlaying();
         // Saving draft
         messenger().saveDraft(peer, messageEditText.getText().toString());
+
+        if (barAvatar != null) {
+            barAvatar.unbind();
+        }
     }
 
     // Message send
@@ -764,7 +768,7 @@ public class ChatActivity extends ActorEditTextActivity {
             keyboardUtils.setImeVisibility(messageEditText, false);
         }
 
-        if(textEditing){
+        if (textEditing) {
             execute(messenger().updateMessage(peer, rawText, currentEditRid), new CommandCallback<ResponseSeqDate>() {
                 @Override
                 public void onResult(ResponseSeqDate res) {
@@ -778,9 +782,9 @@ public class ChatActivity extends ActorEditTextActivity {
                         public void run() {
                             RpcException re = (RpcException) e;
                             String error = "";
-                            if(re.getTag().equals("NOT_IN_TIME_WINDOW")){
+                            if (re.getTag().equals("NOT_IN_TIME_WINDOW")) {
                                 error = getString(R.string.edit_message_error_slowpoke);
-                            }else if(re.getTag().equals("NOT_LAST_MESSAGE")){
+                            } else if (re.getTag().equals("NOT_LAST_MESSAGE")) {
                                 error = getString(R.string.edit_message_error_not_last);
                             }
                             Toast.makeText(ChatActivity.this, error, Toast.LENGTH_LONG).show();
@@ -790,7 +794,7 @@ public class ChatActivity extends ActorEditTextActivity {
             });
             goneView(quoteContainer);
             textEditing = false;
-        }else{
+        } else {
             messenger().sendMessage(peer, rawText);
         }
     }
@@ -1177,7 +1181,7 @@ public class ChatActivity extends ActorEditTextActivity {
                     ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.VIBRATE, Manifest.permission.WAKE_LOCK},
                             PERMISSIONS_REQUEST_FOR_CALL);
 
-                }else{
+                } else {
                     startCall();
                 }
             }
@@ -1195,10 +1199,10 @@ public class ChatActivity extends ActorEditTextActivity {
 
     private void startCall() {
         Command<Long> cmd;
-        if(peer.getPeerType() == PeerType.PRIVATE){
+        if (peer.getPeerType() == PeerType.PRIVATE) {
             cmd = messenger().doCall(peer.getPeerId());
 
-        }else{
+        } else {
             cmd = messenger().doGroupCall(peer.getPeerId());
         }
         execute(cmd, R.string.progress_common);
@@ -1357,6 +1361,15 @@ public class ChatActivity extends ActorEditTextActivity {
         recordPoint.clearAnimation();
         recordPoint.setAnimation(alphaAnimation);
         recordPoint.animate();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (fastShareAdapter != null) {
+            fastShareAdapter.release();
+            fastShareAdapter = null;
+        }
     }
 
     private void hideAudio(boolean cancel) {

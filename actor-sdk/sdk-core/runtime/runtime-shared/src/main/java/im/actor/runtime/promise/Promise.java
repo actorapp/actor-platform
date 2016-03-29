@@ -551,6 +551,7 @@ public class Promise<T> {
                             }
                         }
                     }
+                    callbacks.clear();
                 }
             });
         }
