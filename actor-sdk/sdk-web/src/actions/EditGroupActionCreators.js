@@ -5,27 +5,36 @@
 import { dispatch, dispatchAsync } from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
 import ActorClient from '../utils/ActorClient';
+
 import EditGroupStore from '../stores/EditGroupStore'
-import ComposeActionCreators from '../actions/ComposeActionCreators';
 
-export default {
+import ActionCreators from './ActionCreators';
+import ComposeActionCreators from './ComposeActionCreators';
+
+
+class EditGroupActionCreators extends ActionCreators {
   show(gid) {
-    const group = ActorClient.getGroup(gid);
-    ActorClient.bindGroup(gid, this.onCurrentGroupChange);
-    dispatch(ActionTypes.GROUP_EDIT_MODAL_SHOW, { group });
-    ComposeActionCreators.toggleAutoFocus(false);
-  },
+    this.setBindings('group', [
+      ActorClient.bindGroup(gid, this.onCurrentGroupChange)
+    ]);
 
-  hide()  {
-    const group = EditGroupStore.getGroup();
-    ActorClient.unbindGroup(group.id, this.onCurrentGroupChange);
+    const group = ActorClient.getGroup(gid);
+    dispatch(ActionTypes.GROUP_EDIT_MODAL_SHOW, { group });
+
+    ComposeActionCreators.toggleAutoFocus(false);
+  }
+
+  hide() {
+    this.removeBindings('group');
+
     dispatch(ActionTypes.GROUP_EDIT_MODAL_HIDE);
+
     ComposeActionCreators.toggleAutoFocus(true);
-  },
+  }
 
   onCurrentGroupChange(group) {
     dispatch(ActionTypes.GROUP_INFO_CHANGED, { group })
-  },
+  }
 
   editGroupTitle(gid, title) {
     if (title !== EditGroupStore.getTitle()) {
@@ -35,11 +44,11 @@ export default {
         failure: ActionTypes.GROUP_EDIT_TITLE_ERROR
       }, { gid, title });
     }
-  },
+  }
 
   changeGroupAvatar(gid, avatar) {
     ActorClient.changeGroupAvatar(gid, avatar)
-  },
+  }
 
   editGroupAbout(gid, about) {
     about = about === '' ? null : about;
@@ -50,9 +59,11 @@ export default {
         failure: ActionTypes.GROUP_EDIT_ABOUT_ERROR
       }, { gid, about });
     }
-  },
+  }
 
   removeGroupAvatar(gid) {
     ActorClient.removeGroupAvatar(gid)
   }
-};
+}
+
+export default new EditGroupActionCreators();
