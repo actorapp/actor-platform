@@ -9,7 +9,12 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import im.actor.sdk.ActorSDK;
+import im.actor.sdk.ActorStyle;
+
 public abstract class BindedViewHolder extends android.support.v7.widget.RecyclerView.ViewHolder {
+
+    protected ActorStyle style = ActorSDK.sharedActor().style;
 
     protected final View contentView;
     protected final FrameLayout contentFrame;

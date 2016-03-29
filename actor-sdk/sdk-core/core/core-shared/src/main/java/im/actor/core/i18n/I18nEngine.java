@@ -362,7 +362,7 @@ public class I18nEngine {
             case LOCATION:
                 return locale.get("Location");
             case STICKER:
-                if (text != null) {
+                if (text != null && !"".equals(text)) {
                     return text + " " + locale.get("Sticker");
                 } else {
                     return locale.get("Sticker");
