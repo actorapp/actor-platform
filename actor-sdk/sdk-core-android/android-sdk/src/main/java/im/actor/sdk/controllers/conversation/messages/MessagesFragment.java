@@ -18,6 +18,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.ChatLinearLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -81,7 +82,7 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
 
     private Peer peer;
 
-    private ChatLinearLayoutManager linearLayoutManager;
+    // private ChatLinearLayoutManager linearLayoutManager;
     protected MessagesAdapter messagesAdapter;
     // private ConversationVM conversationVM;
     private ActionMode actionMode;
@@ -116,36 +117,36 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
         //
         // Loading background
         //
-        if (wallpaperPrefs == null) {
-            wallpaperPrefs = getContext().getSharedPreferences("wallpaper", Context.MODE_PRIVATE);
-        }
-        Drawable background;
-        if (messenger().getSelectedWallpaper() == null) {
-            background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[0]);
-        } else if (messenger().getSelectedWallpaper().equals("local:bg_1")) {
-            if (ActorSDK.sharedActor().style.getDefaultBackgrouds().length > 1) {
-                background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[1]);
-            } else {
-                background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[0]);
-            }
-        } else if (messenger().getSelectedWallpaper().equals("local:bg_2")) {
-            if (ActorSDK.sharedActor().style.getDefaultBackgrouds().length > 2) {
-                background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[1]);
-            } else {
-                background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[0]);
-            }
-        } else if (messenger().getSelectedWallpaper().equals("local:bg_3")) {
-            if (ActorSDK.sharedActor().style.getDefaultBackgrouds().length > 3) {
-                background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[1]);
-            } else {
-                background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[0]);
-            }
-        } else if (messenger().getSelectedWallpaper().startsWith("local:")) {
-            background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[0]);
-        } else {
-            background = Drawable.createFromPath(BaseActorSettingsFragment.getWallpaperFile());
-        }
-        ((ImageView) res.findViewById(R.id.chatBackgroundView)).setImageDrawable(background);
+//        if (wallpaperPrefs == null) {
+//            wallpaperPrefs = getContext().getSharedPreferences("wallpaper", Context.MODE_PRIVATE);
+//        }
+//        Drawable background;
+//        if (messenger().getSelectedWallpaper() == null) {
+//            background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[0]);
+//        } else if (messenger().getSelectedWallpaper().equals("local:bg_1")) {
+//            if (ActorSDK.sharedActor().style.getDefaultBackgrouds().length > 1) {
+//                background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[1]);
+//            } else {
+//                background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[0]);
+//            }
+//        } else if (messenger().getSelectedWallpaper().equals("local:bg_2")) {
+//            if (ActorSDK.sharedActor().style.getDefaultBackgrouds().length > 2) {
+//                background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[1]);
+//            } else {
+//                background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[0]);
+//            }
+//        } else if (messenger().getSelectedWallpaper().equals("local:bg_3")) {
+//            if (ActorSDK.sharedActor().style.getDefaultBackgrouds().length > 3) {
+//                background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[1]);
+//            } else {
+//                background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[0]);
+//            }
+//        } else if (messenger().getSelectedWallpaper().startsWith("local:")) {
+//            background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[0]);
+//        } else {
+//            background = Drawable.createFromPath(BaseActorSettingsFragment.getWallpaperFile());
+//        }
+//        ((ImageView) res.findViewById(R.id.chatBackgroundView)).setImageDrawable(background);
 
         View footer = new View(getActivity());
         footer.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(8)));
@@ -247,13 +248,14 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
         }
 
         if (index > 0) {
-            if (linearLayoutManager != null) {
-                linearLayoutManager.setStackFromEnd(false);
-                linearLayoutManager.scrollToPositionWithOffset(index + 1, Screen.dp(64));
-                // linearLayoutManager.scrollToPosition(getDisplayList().getSize() - index - 1);
-                // linearLayoutManager.scrollToPosition(index + 1);
-                // getCollection().scrollToPosition(index + 1);
-            }
+
+//            if (linearLayoutManager != null) {
+//                linearLayoutManager.setStackFromEnd(false);
+//                linearLayoutManager.scrollToPositionWithOffset(index + 1, Screen.dp(64));
+//                // linearLayoutManager.scrollToPosition(getDisplayList().getSize() - index - 1);
+//                // linearLayoutManager.scrollToPosition(index + 1);
+//                // getCollection().scrollToPosition(index + 1);
+//            }
 
         } else if (getCollection() != null) {
             // linearLayoutManager.scrollToPosition(0);
@@ -273,13 +275,13 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
     @Override
     protected void configureRecyclerView(RecyclerView recyclerView) {
         recyclerView.setHasFixedSize(true);
-        linearLayoutManager = new ChatLinearLayoutManager(getActivity(), ChatLinearLayoutManager.VERTICAL, true);
-        linearLayoutManager.setStackFromEnd(false);
-        recyclerView.setLayoutManager(linearLayoutManager);
+        final LinearLayoutManager manager = new LinearLayoutManager(getActivity(), ChatLinearLayoutManager.VERTICAL, true);
+        manager.setStackFromEnd(false);
+        recyclerView.setLayoutManager(manager);
         getDisplayList().setLinearLayoutCallback(new BindedDisplayList.LinearLayoutCallback() {
             @Override
             public void setStackFromEnd(boolean b) {
-                if (linearLayoutManager != null) linearLayoutManager.setStackFromEnd(b);
+                if (manager != null) manager.setStackFromEnd(b);
             }
         });
     }
@@ -625,7 +627,6 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
 //            conversationVM = null;
 //        }
         messagesAdapter = null;
-        linearLayoutManager = null;
-        linearLayoutManager = null;
+
     }
 }
