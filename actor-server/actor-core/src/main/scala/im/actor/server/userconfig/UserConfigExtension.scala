@@ -2,11 +2,12 @@ package im.actor.server.userconfig
 
 import akka.actor.{ ActorSystem, ExtendedActorSystem, Extension, ExtensionId, ExtensionIdProvider }
 import im.actor.api.rpc.configs.UpdateParameterChanged
+import im.actor.hook.{ Hook2, Hook3, HooksStorage2, HooksStorage3 }
 import im.actor.server.db.DbExtension
 import im.actor.server.model.configs.Parameter
 import im.actor.server.persist.configs.ParameterRepo
 import im.actor.server.sequence.{ SeqState, SeqUpdatesExtension }
-import im.actor.server.user.UserExtension
+import im.actor.types._
 
 import scala.concurrent.Future
 
@@ -17,11 +18,13 @@ object UserConfigExtension extends ExtensionId[UserConfigExtension] with Extensi
 }
 
 final class UserConfigExtension(system: ActorSystem) extends Extension {
+
   import system.dispatcher
 
   private lazy val db = DbExtension(system).db
-  private lazy val userExt = UserExtension(system)
   private lazy val seqUpdExt = SeqUpdatesExtension(system)
+
+  val hooks = new HooksStorage3[EditParameterHook, Any, UserId, String, Option[String]]()
 
   def fetchParameters(userId: Int): Future[Seq[(String, Option[String])]] = {
     for {
@@ -43,3 +46,5 @@ final class UserConfigExtension(system: ActorSystem) extends Extension {
     }
   }
 }
+
+trait EditParameterHook extends Hook3[Any, UserId, String, Option[String]]
