@@ -117,36 +117,36 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
         //
         // Loading background
         //
-//        if (wallpaperPrefs == null) {
-//            wallpaperPrefs = getContext().getSharedPreferences("wallpaper", Context.MODE_PRIVATE);
-//        }
-//        Drawable background;
-//        if (messenger().getSelectedWallpaper() == null) {
-//            background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[0]);
-//        } else if (messenger().getSelectedWallpaper().equals("local:bg_1")) {
-//            if (ActorSDK.sharedActor().style.getDefaultBackgrouds().length > 1) {
-//                background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[1]);
-//            } else {
-//                background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[0]);
-//            }
-//        } else if (messenger().getSelectedWallpaper().equals("local:bg_2")) {
-//            if (ActorSDK.sharedActor().style.getDefaultBackgrouds().length > 2) {
-//                background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[1]);
-//            } else {
-//                background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[0]);
-//            }
-//        } else if (messenger().getSelectedWallpaper().equals("local:bg_3")) {
-//            if (ActorSDK.sharedActor().style.getDefaultBackgrouds().length > 3) {
-//                background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[1]);
-//            } else {
-//                background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[0]);
-//            }
-//        } else if (messenger().getSelectedWallpaper().startsWith("local:")) {
-//            background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[0]);
-//        } else {
-//            background = Drawable.createFromPath(BaseActorSettingsFragment.getWallpaperFile());
-//        }
-//        ((ImageView) res.findViewById(R.id.chatBackgroundView)).setImageDrawable(background);
+        if (wallpaperPrefs == null) {
+            wallpaperPrefs = getContext().getSharedPreferences("wallpaper", Context.MODE_PRIVATE);
+        }
+        Drawable background;
+        if (messenger().getSelectedWallpaper() == null) {
+            background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[0]);
+        } else if (messenger().getSelectedWallpaper().equals("local:bg_1")) {
+            if (ActorSDK.sharedActor().style.getDefaultBackgrouds().length > 1) {
+                background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[1]);
+            } else {
+                background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[0]);
+            }
+        } else if (messenger().getSelectedWallpaper().equals("local:bg_2")) {
+            if (ActorSDK.sharedActor().style.getDefaultBackgrouds().length > 2) {
+                background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[1]);
+            } else {
+                background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[0]);
+            }
+        } else if (messenger().getSelectedWallpaper().equals("local:bg_3")) {
+            if (ActorSDK.sharedActor().style.getDefaultBackgrouds().length > 3) {
+                background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[1]);
+            } else {
+                background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[0]);
+            }
+        } else if (messenger().getSelectedWallpaper().startsWith("local:")) {
+            background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[0]);
+        } else {
+            background = Drawable.createFromPath(BaseActorSettingsFragment.getWallpaperFile());
+        }
+        ((ImageView) res.findViewById(R.id.chatBackgroundView)).setImageDrawable(background);
 
         View footer = new View(getActivity());
         footer.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(8)));
