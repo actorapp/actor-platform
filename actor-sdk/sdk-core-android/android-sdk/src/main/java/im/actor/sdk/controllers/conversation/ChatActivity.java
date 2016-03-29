@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -38,7 +37,6 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -302,6 +300,7 @@ public class ChatActivity extends ActorEditTextActivity {
 
         //share menu
         findViewById(R.id.share_menu).setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
+        findViewById(R.id.fast_share).setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         shareMenu = findViewById(R.id.share_container);
         shareMenu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1433,7 +1432,7 @@ public class ChatActivity extends ActorEditTextActivity {
         shareMenu.setVisibility(View.VISIBLE);
         isShareVisible = true;
         if (ActorSDK.sharedActor().isFastShareEnabled()) {
-            messenger().getGalleryScannerActor().send(new GalleryScannerActor.Visible(true));
+            messenger().getGalleryScannerActor().send(new GalleryScannerActor.Show());
         }
     }
 
@@ -1452,7 +1451,7 @@ public class ChatActivity extends ActorEditTextActivity {
         shareMenu.setVisibility(View.GONE);
         shareContainer.setVisibility(View.GONE);
         if (ActorSDK.sharedActor().isFastShareEnabled()) {
-            messenger().getGalleryScannerActor().send(new GalleryScannerActor.Visible(false));
+            messenger().getGalleryScannerActor().send(new GalleryScannerActor.Hide());
         }
 
     }
