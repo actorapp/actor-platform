@@ -35,6 +35,8 @@ import static im.actor.sdk.util.ActorSDKMessenger.myUid;
 
 public class DialogHolder extends BindedViewHolder {
 
+    protected ActorStyle style = ActorSDK.sharedActor().style;
+
     private final Context context;
     private AvatarView avatar;
     private TextView title;

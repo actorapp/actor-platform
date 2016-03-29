@@ -321,26 +321,26 @@ public class ChatActivity extends ActorEditTextActivity {
 
         final TextView locationText = (TextView) findViewById(R.id.location_text);
         final View shareLocation = findViewById(R.id.share_location);
-        try {
-            ApplicationInfo app = ChatActivity.this.getPackageManager().getApplicationInfo(ChatActivity.this.getPackageName(), PackageManager.GET_META_DATA);
-            Bundle bundle = app.metaData;
-
-            if (bundle.containsKey("com.google.android.geo.API_KEY")) {
-                shareLocation.setVisibility(View.VISIBLE);
-                findViewById(R.id.share_hide).setVisibility(View.GONE);
-                locationText.setVisibility(View.VISIBLE);
-
-            } else {
-                shareLocation.setVisibility(View.GONE);
-                findViewById(R.id.share_hide).setVisibility(View.VISIBLE);
-                locationText.setVisibility(View.INVISIBLE);
-                Log.w("Actor-GoogleMaps", "please, set up google map api key in AndroidManifest metadata to enable share locations");
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            ApplicationInfo app = ChatActivity.this.getPackageManager().getApplicationInfo(ChatActivity.this.getPackageName(), PackageManager.GET_META_DATA);
+//            Bundle bundle = app.metaData;
+//
+//            if (bundle.containsKey("com.google.android.geo.API_KEY")) {
+//                shareLocation.setVisibility(View.VISIBLE);
+//                findViewById(R.id.share_hide).setVisibility(View.GONE);
+//                locationText.setVisibility(View.VISIBLE);
+//
+//            } else {
+//                shareLocation.setVisibility(View.GONE);
+//                findViewById(R.id.share_hide).setVisibility(View.VISIBLE);
+//                locationText.setVisibility(View.INVISIBLE);
+//                Log.w("Actor-GoogleMaps", "please, set up google map api key in AndroidManifest metadata to enable share locations");
+//            }
+//        } catch (PackageManager.NameNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (NullPointerException e) {
+//            e.printStackTrace();
+//        }
 
         View.OnClickListener shareMenuOCL = new View.OnClickListener() {
             @Override
