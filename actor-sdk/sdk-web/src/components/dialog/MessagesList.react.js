@@ -71,7 +71,7 @@ class MessagesList extends Component {
     const { MessageItem } = this.components;
 
     const result = [];
-    for (let index = messages.length - count; index < messages.length; index++) {
+    for (let index = Math.max(messages.length - count, 0); index < messages.length; index++) {
       const overlayItem = overlay[index];
       if (overlayItem && overlayItem.dateDivider) {
         result.push(
