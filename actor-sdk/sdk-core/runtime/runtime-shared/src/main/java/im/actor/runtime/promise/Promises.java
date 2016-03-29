@@ -2,6 +2,8 @@ package im.actor.runtime.promise;
 
 import com.google.j2objc.annotations.ObjectiveCName;
 
+import java.util.List;
+
 import im.actor.runtime.Log;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.function.Function;
@@ -83,10 +85,10 @@ public class Promises {
 
         return PromisesArray.ofPromises(t1.cast(), t2.cast())
                 .zip()
-                .map(new Function<Object[], Tuple2<T1,T2>>() {
+                .map(new Function<List<Object>, Tuple2<T1, T2>>() {
                     @Override
-                    public Tuple2<T1, T2> apply(Object[] src) {
-                        return new Tuple2<>((T1) src[0], (T2) src[1]);
+                    public Tuple2<T1, T2> apply(List<Object> src) {
+                        return new Tuple2<>((T1) src.get(0), (T2) src.get(1));
                     }
                 });
     }
@@ -106,10 +108,10 @@ public class Promises {
     public static <T1, T2, T3> Promise<Tuple3<T1, T2, T3>> tuple(Promise<T1> t1, Promise<T2> t2, Promise<T3> t3) {
         return PromisesArray.ofPromises(t1.cast(), t2.cast(), t3.cast())
                 .zip()
-                .map(new Function<Object[], Tuple3<T1, T2, T3>>() {
+                .map(new Function<List<Object>, Tuple3<T1, T2, T3>>() {
                     @Override
-                    public Tuple3<T1, T2, T3> apply(Object[] src) {
-                        return new Tuple3<>((T1) src[0], (T2) src[1], (T3) src[2]);
+                    public Tuple3<T1, T2, T3> apply(List<Object> src) {
+                        return new Tuple3<>((T1) src.get(0), (T2) src.get(1), (T3) src.get(3));
                     }
                 });
     }
@@ -135,10 +137,10 @@ public class Promises {
 
         return PromisesArray.ofPromises(t1.cast(), t2.cast(), t3.cast(), t4.cast())
                 .zip()
-                .map(new Function<Object[], Tuple4<T1,T2,T3,T4>>() {
+                .map(new Function<List<Object>, Tuple4<T1, T2, T3, T4>>() {
                     @Override
-                    public Tuple4<T1, T2, T3, T4> apply(Object[] src) {
-                        return new Tuple4<>((T1) src[0], (T2) src[1], (T3) src[2], (T4) src[3]);
+                    public Tuple4<T1, T2, T3, T4> apply(List<Object> src) {
+                        return new Tuple4<>((T1) src.get(0), (T2) src.get(1), (T3) src.get(2), (T4) src.get(3));
                     }
                 });
     }

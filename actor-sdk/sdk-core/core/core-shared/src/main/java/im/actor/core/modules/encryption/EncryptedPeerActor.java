@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 import im.actor.core.api.ApiMessage;
 import im.actor.core.entity.encryption.PeerSession;
@@ -142,11 +143,11 @@ public class EncryptedPeerActor extends ModuleActor {
                 })
                 .mapOptional(encrypt(encKeyExtended))
                 .zip()
-                .map(new Function<EncryptedSessionActor.EncryptedPackageRes[], EncryptBoxResponse>() {
+                .map(new Function<List<EncryptedSessionActor.EncryptedPackageRes>, EncryptBoxResponse>() {
                     @Override
-                    public EncryptBoxResponse apply(EncryptedSessionActor.EncryptedPackageRes[] src) {
+                    public EncryptBoxResponse apply(List<EncryptedSessionActor.EncryptedPackageRes> src) {
 
-                        if (src.length == 0) {
+                        if (src.size() == 0) {
                             throw new RuntimeException("No sessions available");
                         }
 
