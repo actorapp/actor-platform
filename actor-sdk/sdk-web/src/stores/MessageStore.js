@@ -67,7 +67,7 @@ class MessageStore extends Store {
   __onDispatch(action) {
     switch(action.type) {
       case ActionTypes.BIND_DIALOG_PEER:
-        this._renderMessagesCount = initialRenderMessagesCount;
+        this._renderMessagesCount = 0;
         this._messages = [];
         this._overlay = [];
         this._selectedMessages = new Immutable.Set();
