@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import im.actor.runtime.Log;
 import im.actor.runtime.RandomRuntime;
@@ -12,6 +13,7 @@ import im.actor.runtime.RandomRuntimeProvider;
 import im.actor.runtime.function.ArrayFunction;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.function.Function;
+import im.actor.runtime.function.ListFunction;
 import im.actor.runtime.function.Predicate;
 import im.actor.runtime.function.Predicates;
 
@@ -23,6 +25,7 @@ import im.actor.runtime.function.Predicates;
  */
 public class PromisesArray<T> {
     private static final RandomRuntime rundom = new RandomRuntimeProvider();
+
     /**
      * Create PromisesArray from collection
      *
@@ -310,13 +313,13 @@ public class PromisesArray<T> {
     public Promise<T> first() {
         return first(1)
                 .zip()
-                .map(new Function<T[], T>() {
+                .map(new Function<List<T>, T>() {
                     @Override
-                    public T apply(T[] src) {
-                        if (src.length == 0) {
+                    public T apply(List<T> src) {
+                        if (src.size() == 0) {
                             throw new RuntimeException("Array is empty (first)");
                         }
-                        return src[0];
+                        return src.get(0);
                     }
                 });
     }
@@ -486,14 +489,17 @@ public class PromisesArray<T> {
      * @param <R> type of result
      * @return promise
      */
-    public <R> Promise<R> zipPromise(final ArrayFunction<T, Promise<R>> fuc) {
+    public <R> Promise<R> zipPromise(final ListFunction<T, Promise<R>> fuc) {
         return new Promise<R>() {
             @Override
-            void exec(final PromiseResolver resolver) {
+            void exec(final PromiseResolver<R> resolver) {
                 promises.then(new Consumer<Promise<T>[]>() {
                     @Override
                     public void apply(final Promise<T>[] promises1) {
-                        final Object[] res = new Object[promises1.length];
+                        final ArrayList<T> res = new ArrayList<T>();
+                        for (int i = 0; i < promises1.length; i++) {
+                            res.add(null);
+                        }
                         final Boolean[] ended = new Boolean[promises1.length];
 
                         for (int i = 0; i < promises1.length; i++) {
@@ -501,7 +507,7 @@ public class PromisesArray<T> {
                             promises1[i].then(new Consumer<T>() {
                                 @Override
                                 public void apply(T t) {
-                                    res[finalI] = t;
+                                    res.set(finalI, t);
                                     ended[finalI] = true;
 
                                     for (int i1 = 0; i1 < promises1.length; i1++) {
@@ -510,7 +516,7 @@ public class PromisesArray<T> {
                                         }
                                     }
 
-                                    Promise<R> promise = fuc.apply((T[]) res);
+                                    Promise<R> promise = fuc.apply(res);
                                     promise.then(new Consumer<R>() {
                                         @Override
                                         public void apply(R r) {
@@ -536,7 +542,7 @@ public class PromisesArray<T> {
                         }
 
                         if (promises1.length == 0) {
-                            Promise<R> promise = fuc.apply((T[]) new Object[0]);
+                            Promise<R> promise = fuc.apply(res);
                             promise.then(new Consumer<R>() {
                                 @Override
                                 public void apply(R r) {
@@ -570,10 +576,10 @@ public class PromisesArray<T> {
      *
      * @return promise
      */
-    public Promise<T[]> zip() {
-        return zipPromise(new ArrayFunction<T, Promise<T[]>>() {
+    public Promise<List<T>> zip() {
+        return zipPromise(new ListFunction<T, Promise<List<T>>>() {
             @Override
-            public Promise<T[]> apply(T[] t) {
+            public Promise<List<T>> apply(List<T> t) {
                 return Promises.success(t);
             }
         });
