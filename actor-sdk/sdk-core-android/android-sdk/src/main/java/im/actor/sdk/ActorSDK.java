@@ -26,6 +26,7 @@ import im.actor.core.PlatformType;
 import im.actor.core.entity.Peer;
 import im.actor.core.events.IncomingCall;
 import im.actor.runtime.Log;
+import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.runtime.eventbus.BusSubscriber;
 import im.actor.runtime.eventbus.Event;
@@ -200,6 +201,8 @@ public class ActorSDK {
         AndroidContext.setContext(application);
         // TODO: Replace
         new SmileProcessor(application).loadEmoji();
+
+        ActorSystem.system().addDispatcher("voice_capture_dispatcher", 1);
 
         //
         // SDK Configuration
