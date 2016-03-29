@@ -46,24 +46,18 @@ class MessagesList extends Component {
     this.shouldComponentUpdate = shouldComponentUpdate.bind(this);
   }
 
-  renderWelcome() {
-    const {peer, isMember, isAllMessagesLoaded} = this.props;
+  renderHeader() {
+    const {peer, isMember, messages, isAllMessagesLoaded} = this.props;
 
-    if (isMember && isAllMessagesLoaded) {
-      return <Welcome peer={peer} />;
+    if (!isMember) {
+      return null;
     }
-
-    return null;
-  }
-
-  renderLoading() {
-    const {isAllMessagesLoaded, messages} = this.props;
 
     if (!isAllMessagesLoaded && messages.length >= 30) {
-      return <Loading />;
+      return <Loading key="header" />;
     }
 
-    return null;
+    return <Welcome peer={peer} key="header" />;
   }
 
   renderMessages() {
@@ -104,8 +98,7 @@ class MessagesList extends Component {
     return (
       <MessagesScroller className="messages" peer={peer} onLoadMore={onLoadMore}>
         <div className="messages__list">
-          {this.renderWelcome()}
-          {this.renderLoading()}
+          {this.renderHeader()}
           {this.renderMessages()}
         </div>
       </MessagesScroller>
