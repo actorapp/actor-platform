@@ -1,5 +1,6 @@
 package im.actor.sdk.controllers.conversation.messages;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -21,6 +22,7 @@ import java.util.regex.Pattern;
 
 import im.actor.core.entity.GroupMember;
 import im.actor.core.entity.Message;
+import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.Reaction;
 import im.actor.core.entity.content.ContactContent;
@@ -49,7 +51,7 @@ public class ChatListProcessor implements ListProcessor<Message> {
     private HashMap<Long, PreprocessedTextData> preprocessedTexts = new HashMap<Long, PreprocessedTextData>();
     private HashSet<Integer> updatedTexts = new HashSet<Integer>();
 
-    private MessagesFragment fragment;
+    private Peer peer;
     private boolean isGroup;
     private int[] colors;
 
@@ -59,21 +61,21 @@ public class ChatListProcessor implements ListProcessor<Message> {
     private Pattern mentionPattern;
     private GroupVM group;
 
-    public ChatListProcessor(MessagesFragment fragment) {
-        this.fragment = fragment;
+    public ChatListProcessor(Peer peer, Context context) {
+        this.peer = peer;
 
-        isGroup = fragment.getPeer().getPeerType() == PeerType.GROUP;
+        isGroup = peer.getPeerType() == PeerType.GROUP;
         if (isGroup) {
-            group = groups().get(fragment.getPeer().getPeerId());
+            group = groups().get(peer.getPeerId());
         }
         colors = new int[]{
-                fragment.getResources().getColor(R.color.placeholder_0),
-                fragment.getResources().getColor(R.color.placeholder_1),
-                fragment.getResources().getColor(R.color.placeholder_2),
-                fragment.getResources().getColor(R.color.placeholder_3),
-                fragment.getResources().getColor(R.color.placeholder_4),
-                fragment.getResources().getColor(R.color.placeholder_5),
-                fragment.getResources().getColor(R.color.placeholder_6),
+                context.getResources().getColor(R.color.placeholder_0),
+                context.getResources().getColor(R.color.placeholder_1),
+                context.getResources().getColor(R.color.placeholder_2),
+                context.getResources().getColor(R.color.placeholder_3),
+                context.getResources().getColor(R.color.placeholder_4),
+                context.getResources().getColor(R.color.placeholder_5),
+                context.getResources().getColor(R.color.placeholder_6),
         };
     }
 
@@ -121,7 +123,7 @@ public class ChatListProcessor implements ListProcessor<Message> {
                             break;
                         }
                     }
-                    s.setSpan(new ReactionSpan(r.getCode(), hasMyReaction, fragment.getPeer(), msg.getRid(), isImage ? Color.WHITE : ActorSDK.sharedActor().style.getConvTimeColor()), 0, s.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    s.setSpan(new ReactionSpan(r.getCode(), hasMyReaction, peer, msg.getRid(), isImage ? Color.WHITE : ActorSDK.sharedActor().style.getConvTimeColor()), 0, s.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     reactions = builder.append(s);
 
                 }
@@ -169,9 +171,9 @@ public class ChatListProcessor implements ListProcessor<Message> {
                         UserVM userModel = users().get(msg.getSenderId());
                         if (userModel != null) {
                             String userName = userModel.getName().get();
-                            if(userName.equals("Bot")){
+                            if (userName.equals("Bot")) {
                                 name = group.getName().get();
-                            }else{
+                            } else {
                                 name = userName;
                             }
                         } else {
@@ -266,9 +268,5 @@ public class ChatListProcessor implements ListProcessor<Message> {
             res = true;
         }
         return res;
-    }
-
-    public void setFragment(MessagesFragment fragment) {
-        this.fragment = fragment;
     }
 }
