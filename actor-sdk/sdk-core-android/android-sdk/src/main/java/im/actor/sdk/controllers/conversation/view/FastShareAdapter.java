@@ -71,6 +71,7 @@ public class FastShareAdapter extends RecyclerView.Adapter<FastShareAdapter.Fast
 
     @Override
     public void onBindViewHolder(FastShareVH holder, int position) {
+
         holder.bind(imagesPath.get(position));
     }
 
