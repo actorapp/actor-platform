@@ -75,7 +75,7 @@ class MessagesList extends Component {
       const overlayItem = overlay[index];
       if (overlayItem && overlayItem.dateDivider) {
         result.push(
-          <div className="date-divider" key={`o${index}`}>
+          <div className="date-divider" key={overlayItem.dateDivider}>
             {overlayItem.dateDivider}
           </div>
         );
