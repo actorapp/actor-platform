@@ -139,6 +139,11 @@ public class ActorSDK {
     private String twitter = "actorapp";
 
     /**
+     * Fast share menu is experimental feature - disabled be default
+     */
+    private boolean fastShareEnabled = false;
+
+    /**
      * Delegate
      */
     @NotNull
@@ -552,6 +557,24 @@ public class ActorSDK {
      */
     public void setTwitter(String twitter) {
         this.twitter = twitter;
+    }
+
+    /**
+     * Is fast share menu enabled
+     *
+     * @return fastShareEnabled is fast share enabled
+     */
+    public boolean isFastShareEnabled() {
+        return fastShareEnabled;
+    }
+
+    /**
+     * Setting is is fast share enabled - experimental feature, disabled by default
+     *
+     * @param fastShareEnabled
+     */
+    public void setFastShareEnabled(boolean fastShareEnabled) {
+        this.fastShareEnabled = this.fastShareEnabled;
     }
 
     /**

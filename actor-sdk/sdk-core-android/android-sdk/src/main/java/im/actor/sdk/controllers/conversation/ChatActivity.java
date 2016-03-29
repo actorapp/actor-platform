@@ -320,6 +320,7 @@ public class ChatActivity extends ActorEditTextActivity {
 
         final TextView locationText = (TextView) findViewById(R.id.location_text);
         final View shareLocation = findViewById(R.id.share_location);
+        findViewById(R.id.share_hide).setVisibility(View.GONE);
 //        try {
 //            ApplicationInfo app = ChatActivity.this.getPackageManager().getApplicationInfo(ChatActivity.this.getPackageName(), PackageManager.GET_META_DATA);
 //            Bundle bundle = app.metaData;
@@ -407,12 +408,6 @@ public class ChatActivity extends ActorEditTextActivity {
         findViewById(R.id.share_contact).setOnClickListener(shareMenuOCL);
         handleIntent();
 
-//        RecyclerView fastShare = (RecyclerView) findViewById(R.id.fast_share);
-//        fastShareAdapter = new FastShareAdapter(this);
-//        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-//        fastShare.setAdapter(fastShareAdapter);
-//        fastShare.setLayoutManager(layoutManager);
-
         final ImageButton shareMenuSend = (ImageButton) findViewById(R.id.share_send);
         shareMenuSend.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
         shareMenuSend.setOnClickListener(new View.OnClickListener() {
@@ -426,20 +421,31 @@ public class ChatActivity extends ActorEditTextActivity {
                 hideShare();
             }
         });
-//        fastShareAdapter.getSelectedVM().subscribe(new ValueChangedListener<Set<String>>() {
-//            @Override
-//            public void onChanged(Set<String> val, Value<Set<String>> valueModel) {
-//                if (val.size() > 0) {
-//                    shareLocation.setVisibility(View.INVISIBLE);
-//                    shareMenuSend.setVisibility(View.VISIBLE);
-//                    locationText.setText(getString(R.string.chat_doc_send) + "(" + val.size() + ")");
-//                } else {
-//                    shareLocation.setVisibility(View.VISIBLE);
-//                    shareMenuSend.setVisibility(View.INVISIBLE);
-//                    locationText.setText(getString(R.string.share_menu_location));
-//                }
-//            }
-//        });
+
+        RecyclerView fastShare = (RecyclerView) findViewById(R.id.fast_share);
+        if (ActorSDK.sharedActor().isFastShareEnabled()) {
+            fastShareAdapter = new FastShareAdapter(this);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+            fastShare.setAdapter(fastShareAdapter);
+            fastShare.setLayoutManager(layoutManager);
+
+            fastShareAdapter.getSelectedVM().subscribe(new ValueChangedListener<Set<String>>() {
+                @Override
+                public void onChanged(Set<String> val, Value<Set<String>> valueModel) {
+                    if (val.size() > 0) {
+                        shareLocation.setVisibility(View.INVISIBLE);
+                        shareMenuSend.setVisibility(View.VISIBLE);
+                        locationText.setText(getString(R.string.chat_doc_send) + "(" + val.size() + ")");
+                    } else {
+                        shareLocation.setVisibility(View.VISIBLE);
+                        shareMenuSend.setVisibility(View.INVISIBLE);
+                        locationText.setText(getString(R.string.share_menu_location));
+                    }
+                }
+            });
+        } else {
+            fastShare.setVisibility(View.GONE);
+        }
     }
 
     private void startCamera() {
@@ -1426,7 +1432,9 @@ public class ChatActivity extends ActorEditTextActivity {
         shareMenu.animate();
         shareMenu.setVisibility(View.VISIBLE);
         isShareVisible = true;
-        messenger().getGalleryScannerActor().send(new GalleryScannerActor.Visible(true));
+        if (ActorSDK.sharedActor().isFastShareEnabled()) {
+            messenger().getGalleryScannerActor().send(new GalleryScannerActor.Visible(true));
+        }
     }
 
     private void hideShare() {
@@ -1443,7 +1451,9 @@ public class ChatActivity extends ActorEditTextActivity {
         shareMenu.animate();
         shareMenu.setVisibility(View.GONE);
         shareContainer.setVisibility(View.GONE);
-        messenger().getGalleryScannerActor().send(new GalleryScannerActor.Visible(false));
+        if (ActorSDK.sharedActor().isFastShareEnabled()) {
+            messenger().getGalleryScannerActor().send(new GalleryScannerActor.Visible(false));
+        }
 
     }
 
