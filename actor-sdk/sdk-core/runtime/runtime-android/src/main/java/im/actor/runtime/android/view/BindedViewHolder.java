@@ -14,8 +14,6 @@ import im.actor.sdk.ActorStyle;
 
 public abstract class BindedViewHolder extends android.support.v7.widget.RecyclerView.ViewHolder {
 
-    protected ActorStyle style = ActorSDK.sharedActor().style;
-
     protected final View contentView;
     protected final FrameLayout contentFrame;
 
