@@ -13,7 +13,7 @@ export default {
     ComposeActionCreators.toggleAutoFocus(false);
   },
 
-  close()  {
+  close() {
     dispatch(ActionTypes.EMOJI_CLOSE);
     ComposeActionCreators.toggleAutoFocus(true);
   },
