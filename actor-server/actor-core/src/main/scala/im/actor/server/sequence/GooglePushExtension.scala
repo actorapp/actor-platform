@@ -106,7 +106,7 @@ final class GooglePushExtension(system: ActorSystem) extends Extension {
           case Xor.Left(failure) ⇒ log.error(failure.underlying, "Failed to parse response")
         }
       case Xor.Left(e) ⇒
-        log.error(e, "Failure")
+        log.error(e, "Failed to make request")
     } onComplete {
       case Failure(e) ⇒ log.error(e, "Failure in stream")
       case Success(_) ⇒ log.debug("Stream completed")
