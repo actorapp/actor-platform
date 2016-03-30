@@ -9,7 +9,6 @@ import { findDOMNode } from 'react-dom';
 import { Link } from 'react-router';
 import { FormattedMessage } from 'react-intl';
 import  classnames from 'classnames';
-
 import PeerUtils from '../../utils/PeerUtils';
 
 import CreateGroupActionCreators from '../../actions/CreateGroupActionCreators';
@@ -17,6 +16,7 @@ import ContactActionCreators from '../../actions/ContactActionCreators';
 import GroupListActionCreators from '../../actions/GroupListActionCreators';
 import AddContactActionCreators from '../../actions/AddContactActionCreators';
 
+import Tooltip from 'rc-tooltip';
 import Scrollbar from '../common/Scrollbar.react';
 import RecentItem from './RecentItem.react';
 
@@ -122,8 +122,10 @@ class Recent extends Component {
           groupTitle = (
             <li className="sidebar__list__title">
               <a onClick={this.handleGroupListClick}>{intl.messages[`sidebar.recents.${dialogGroup.key}`]}</a>
-              <i className="material-icons sidebar__list__title__icon pull-right"
-                 onClick={this.handleCreateGroup}>add_circle_outline</i>
+              <Tooltip placement="top" mouseEnterDelay={0.5} overlay="Create group">
+                <i className="material-icons sidebar__list__title__icon pull-right"
+                   onClick={this.handleCreateGroup}>add_circle_outline</i>
+              </Tooltip>
             </li>
           );
           break;
@@ -131,8 +133,10 @@ class Recent extends Component {
           groupTitle = (
             <li className="sidebar__list__title">
               <a onClick={this.handlePrivateListClick}>{intl.messages[`sidebar.recents.${dialogGroup.key}`]}</a>
-              <i className="material-icons sidebar__list__title__icon pull-right"
-                 onClick={this.handleCreatePrivate}>add_circle_outline</i>
+              <Tooltip placement="top" mouseEnterDelay={0.5} overlay="Add contact">
+                <i className="material-icons sidebar__list__title__icon pull-right"
+                   onClick={this.handleCreatePrivate}>add_circle_outline</i>
+               </Tooltip>
             </li>
           );
           break;
