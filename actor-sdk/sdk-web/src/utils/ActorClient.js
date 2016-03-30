@@ -33,125 +33,107 @@ class ActorClient {
 
   // Bindings
 
-  bindGroupDialogs(callback) {
-    window.messenger.bindGroupDialogs(callback);
-    return {
-      unbind() {
-        window.messenger.unbindGroupDialogs(callback);
+  static createBindings(bindName, unbindName, ...bindArgs) {
+    let callback = bindArgs[bindArgs.length - 1];
+
+    if (process.env.NODE_ENV === 'development') {
+      if (typeof callback !== 'function') {
+        console.error('%s expected %d argument to be function', bindName, bindArgs.length);
+      }
+    }
+
+    let active = true;
+    const checkCallback = (...args) => {
+      if (active) {
+        callback(...args);
+      } else {
+        console.error('You\'re trying to emit new data to inactive callback!', {bindName, unbindName});
       }
     };
+
+    bindArgs[bindArgs.length - 1] = checkCallback;
+
+    window.messenger[bindName](...bindArgs);
+
+    return {
+      unbind() {
+        active = false;
+        window.messenger[unbindName](...bindArgs);
+        callback = null;
+        bindArgs = null;
+      }
+    };
+  }
+
+  bindGroupDialogs(callback) {
+    return ActorClient.createBindings('bindGroupDialogs', 'unbindGroupDialogs', callback);
   }
 
   bindChat(peer, callback) {
-    window.messenger.bindChat(peer, callback);
-    return {
-      unbind() {
-        window.messenger.unbindChat(peer, callback);
-      }
-    };
+    return ActorClient.createBindings('bindChat', 'unbindChat', peer, callback);
   }
 
   bindGroup(gid, callback) {
-    window.messenger.bindGroup(gid, callback);
-    return {
-      unbind() {
-        window.messenger.unbindGroup(gid, callback);
-      }
-    };
+    return ActorClient.createBindings('bindGroup', 'unbindGroup', gid, callback);
   }
 
   bindUser(uid, callback) {
-    window.messenger.bindUser(uid, callback);
-    return {
-      unbind() {
-        window.messenger.unbindUser(uid, callback);
-      }
-    };
+    return ActorClient.createBindings('bindUser', 'unbindUser', uid, callback);
   }
 
   bindTyping(peer, callback) {
-    window.messenger.bindTyping(peer, callback);
-    return {
-      unbind() {
-        window.messenger.unbindTyping(peer, callback);
-      }
-    };
+    return ActorClient.createBindings('bindTyping', 'unbindTyping', peer, callback);
   }
 
-  bindContacts(peer, callback) {
-    window.messenger.bindContacts(peer, callback);
-    return {
-      unbind() {
-        window.messenger.unbindContacts(peer, callback);
-      }
-    };
+  bindContacts(callback) {
+    return ActorClient.createBindings('bindContacts', 'unbindContacts', callback);
   }
 
   bindConnectState(callback) {
-    window.messenger.bindConnectState(callback);
-    return {
-      unbind() {
-        window.messenger.unbindConnectState(callback);
-      }
-    };
+    return ActorClient.createBindings('bindConnectState', 'unbindConnectState', callback);
   }
 
   bindGlobalCounter(callback) {
-    window.messenger.bindGlobalCounter(callback);
-    return {
-      unbind() {
-        window.messenger.unbindGlobalCounter(callback);
-      }
-    };
+    return ActorClient.createBindings('bindGlobalCounter', 'unbindGlobalCounter', callback);
   }
 
   bindTempGlobalCounter(callback) {
-    window.messenger.bindTempGlobalCounter(callback);
-    return {
-      unbind() {
-        window.messenger.unbindTempGlobalCounter(callback);
-      }
-    };
+    return ActorClient.createBindings('bindTempGlobalCounter', 'unbindTempGlobalCounter', callback);
   }
 
   bindUserOnline(uid, callback) {
-    window.messenger.bindUserOnline(uid, callback);
-    return {
-      unbind() {
-        window.messenger.unbindUserOnline(uid, callback);
-      }
-    };
+    return ActorClient.createBindings('bindUserOnline', 'unbindUserOnline', uid, callback);
   }
 
   bindGroupOnline(gid, callback) {
-    window.messenger.bindGroupOnline(gid, callback);
-    return {
-      unbind() {
-        window.messenger.unbindGroupOnline(gid, callback);
-      }
-    };
+    return ActorClient.createBindings('bindGroupOnline', 'unbindGroupOnline', gid, callback);
   }
 
   bindMessages(peer, callback) {
-    return window.messenger.bindMessages(peer, callback);
+    let active = true;
+    const binding = window.messenger.bindMessages(peer, (...args) => {
+      if (active) {
+        callback(...args);
+      } else {
+        console.error('You\'re trying to emit new data to inactive messages binding!')
+      }
+    });
+
+    return {
+      ...binding,
+      unbind() {
+        active = false;
+        binding.unbind();
+      }
+    };
   }
 
   bindEventBus(callback) {
-    window.messenger.bindEventBus(callback);
-    return {
-      unbind() {
-        window.messenger.unbindEventBus(callback);
-      }
-    };
+    return ActorClient.createBindings('bindEventBus', 'unbindEventBus', callback);
   }
 
   bindCall(callId, callback) {
-    window.messenger.bindCall(callId, callback);
-    return {
-      unbind() {
-        window.messenger.unbindCall(callId, callback);
-      }
-    };
+    return ActorClient.createBindings('bindCall', 'unbindCall', callId, callback);
   }
 
   makeCall(userId) {
@@ -443,12 +425,7 @@ class ActorClient {
   // Search
 
   bindSearch(callback) {
-    window.messenger.bindSearch(callback);
-    return {
-      unbind() {
-        window.messenger.unbindSearch(callback);
-      }
-    };
+    return ActorClient.createBindings('bindSearch', 'unbindSearch', callback);
   }
 
   findAllText(peer, query) {
