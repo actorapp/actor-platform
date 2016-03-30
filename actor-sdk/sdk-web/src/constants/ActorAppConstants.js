@@ -53,6 +53,8 @@ export const ActionTypes = keymirror({
   EMOJI_SHOW: null,
   EMOJI_CLOSE: null,
 
+  STICKERS_SET: null,
+
   MESSAGE_SEND_TEXT: null,
   MESSAGE_SEND_FILE: null,
   MESSAGE_SEND_PHOTO: null,
