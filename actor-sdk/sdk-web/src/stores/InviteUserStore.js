@@ -2,107 +2,102 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import { EventEmitter } from 'events';
-import { register } from '../dispatcher/ActorAppDispatcher';
+import { ReduceStore } from 'flux/utils';
+import { Map } from 'immutable';
+import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes, AsyncActionStates } from '../constants/ActorAppConstants';
 
 import ActorClient from '../utils/ActorClient';
 
-const CHANGE_EVENT = 'change';
-
-let _isInviteModalOpen = false,
-    _isInviteByLinkModalOpen = false,
-    _group = null,
-    _inviteUrl = null,
-    _inviteUserState = [];
-
-class InviteUserStore extends EventEmitter {
-  emitChange() {
-    this.emit(CHANGE_EVENT);
+class InviteUserStore extends ReduceStore {
+  getInitialState() {
+    return {
+      isOpen: false,
+      isInviteByLinkOpen: false,
+      group: null,
+      inviteUrl: null,
+      users: new Map()
+    };
   }
 
-  addChangeListener(callback) {
-    this.on(CHANGE_EVENT, callback);
-  }
+  reduce(state, action) {
+    switch(action.type) {
+      case ActionTypes.DIALOG_INFO_CHANGED:
+        return {
+          ...state,
+          group: action.info
+        };
+      case ActionTypes.INVITE_USER_MODAL_SHOW:
+        return {
+          ...state,
+          isOpen: true,
+          group: action.group
+        };
+      case ActionTypes.INVITE_USER_MODAL_HIDE:
+        return {
+          ...state,
+          isOpen: false,
+          users: state.users.clear()
+        };
+      case ActionTypes.INVITE_USER_BY_LINK_MODAL_SHOW:
+        return {
+          ...state,
+          isInviteByLinkOpen: true,
+          group: action.group,
+          inviteUrl: action.url
+        };
+      case ActionTypes.INVITE_USER_BY_LINK_MODAL_HIDE:
+        return {
+          ...state,
+          isInviteByLinkOpen: false
+        };
 
-  removeChangeListener(callback) {
-    this.removeListener(CHANGE_EVENT, callback);
+      // Invite user
+      case ActionTypes.INVITE_USER:
+        return {
+          ...state,
+          users: state.users.set(action.uid, AsyncActionStates.PROCESSING)
+        };
+      case ActionTypes.INVITE_USER_SUCCESS:
+        return {
+          ...state,
+          users: state.users.set(action.uid, AsyncActionStates.SUCCESS)
+        };
+      case ActionTypes.INVITE_USER_ERROR:
+        return {
+          ...state,
+          users: state.users.set(action.uid, AsyncActionStates.FAILURE)
+        };
+      case ActionTypes.INVITE_USER_RESET:
+        return {
+          ...state,
+          users: state.users.delete(action.uid)
+        };
+      default:
+        return state;
+    }
   }
 
   isModalOpen() {
-    return _isInviteModalOpen;
+    return this.getState().isOpen;
   }
 
   isInviteWithLinkModalOpen() {
-    return _isInviteByLinkModalOpen;
+    return this.getState().isInviteByLinkOpen;
   }
 
   getGroup() {
-    return _group;
+    return this.getState().group;
   }
 
   getInviteUrl() {
-    return _inviteUrl;
+    return this.getState().inviteUrl;
   }
 
   getInviteUserState(uid) {
-    return (_inviteUserState[uid] || AsyncActionStates.PENDING);
-  }
-
-  resetInviteUserState(uid) {
-    delete _inviteUserState[uid];
+    const { users } = this.getState();
+    return users.get(uid) || AsyncActionStates.PENDING;
   }
 }
 
-let InviteUserStoreInstance = new InviteUserStore();
-
-InviteUserStoreInstance.dispatchToken = register(action => {
-  switch(action.type) {
-    case ActionTypes.DIALOG_INFO_CHANGED:
-      _group = action.info;
-      InviteUserStoreInstance.emitChange();
-      break;
-
-    case ActionTypes.INVITE_USER_MODAL_SHOW:
-      _isInviteModalOpen = true;
-      _group = action.group;
-      InviteUserStoreInstance.emitChange();
-      break;
-    case ActionTypes.INVITE_USER_MODAL_HIDE:
-      _inviteUserState = [];
-      _isInviteModalOpen = false;
-      InviteUserStoreInstance.emitChange();
-      break;
-
-    case ActionTypes.INVITE_USER_BY_LINK_MODAL_SHOW:
-      _isInviteByLinkModalOpen = true;
-      _group = action.group;
-      ActorClient.getInviteUrl(_group.id)
-        .then((url) => {
-          _inviteUrl = url;
-          InviteUserStoreInstance.emitChange();
-        });
-      InviteUserStoreInstance.emitChange();
-      break;
-    case ActionTypes.INVITE_USER_BY_LINK_MODAL_HIDE:
-      _isInviteByLinkModalOpen = false;
-      InviteUserStoreInstance.emitChange();
-      break;
-
-    // Invite user
-    case ActionTypes.INVITE_USER:
-      _inviteUserState[action.uid] = AsyncActionStates.PROCESSING;
-      InviteUserStoreInstance.emitChange();
-      break;
-    case ActionTypes.INVITE_USER_SUCCESS:
-      _inviteUserState[action.uid] = AsyncActionStates.SUCCESS;
-      InviteUserStoreInstance.emitChange();
-      break;
-    case ActionTypes.INVITE_USER_ERROR:
-      _inviteUserState[action.uid] = AsyncActionStates.FAILURE;
-      InviteUserStoreInstance.emitChange();
-      break;
-  }
-});
-
-export default InviteUserStoreInstance;
+export default new InviteUserStore(Dispatcher);
