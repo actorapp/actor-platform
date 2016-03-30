@@ -76,7 +76,7 @@ final class GooglePushExtension(system: ActorSystem) extends Extension {
     .mapAsync(1) {
       case (Success(resp), delivery) ⇒
         if (resp.status == StatusCodes.OK) {
-          resp.entity.dataBytes.runFold(ByteString.empty)(_ ++ _) map (bs => Xor.Right(bs → delivery))
+          resp.entity.dataBytes.runFold(ByteString.empty)(_ ++ _) map (bs ⇒ Xor.Right(bs → delivery))
         } else FastFuture.successful(Xor.Left(new RuntimeException(s"Failed to deliver message, StatusCode was not OK: ${resp.status}")))
       case (Failure(e), delivery) ⇒
         FastFuture.successful(Xor.Left(e))
@@ -105,7 +105,7 @@ final class GooglePushExtension(system: ActorSystem) extends Extension {
             }
           case Xor.Left(failure) ⇒ log.error(failure.underlying, "Failed to parse response")
         }
-      case Xor.Left(e) =>
+      case Xor.Left(e) ⇒
         log.error(e, "Failure")
     } onComplete {
       case Failure(e) ⇒ log.error(e, "Failure in stream")
