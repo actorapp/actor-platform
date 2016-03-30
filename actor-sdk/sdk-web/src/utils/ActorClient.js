@@ -33,100 +33,103 @@ class ActorClient {
 
   // Bindings
 
-  bindDialogs(callback) {
-    window.messenger.bindDialogs(callback);
-  }
-
-  unbindDialogs(callback) {
-    window.messenger.unbindDialogs(callback);
-  }
-
   bindGroupDialogs(callback) {
     window.messenger.bindGroupDialogs(callback);
-  }
-
-  unbindGroupDialogs(callback) {
-    window.messenger.unbindGroupDialogs(callback);
+    return {
+      unbind() {
+        window.messenger.unbindGroupDialogs(callback);
+      }
+    };
   }
 
   bindChat(peer, callback) {
     window.messenger.bindChat(peer, callback);
-  }
-
-  unbindChat(peer, callback) {
-    window.messenger.unbindChat(peer, callback);
+    return {
+      unbind() {
+        window.messenger.unbindChat(peer, callback);
+      }
+    };
   }
 
   bindGroup(gid, callback) {
     window.messenger.bindGroup(gid, callback);
-  }
-
-  unbindGroup(gid, callback) {
-    window.messenger.unbindGroup(gid, callback);
+    return {
+      unbind() {
+        window.messenger.unbindGroup(gid, callback);
+      }
+    };
   }
 
   bindUser(uid, callback) {
     window.messenger.bindUser(uid, callback);
-  }
-
-  unbindUser(uid, callback) {
-    window.messenger.unbindUser(uid, callback);
+    return {
+      unbind() {
+        window.messenger.unbindUser(uid, callback);
+      }
+    };
   }
 
   bindTyping(peer, callback) {
     window.messenger.bindTyping(peer, callback);
-  }
-
-  unbindTyping(peer, callback) {
-    window.messenger.unbindTyping(peer, callback);
+    return {
+      unbind() {
+        window.messenger.unbindTyping(peer, callback);
+      }
+    };
   }
 
   bindContacts(peer, callback) {
     window.messenger.bindContacts(peer, callback);
-  }
-
-  unbindContacts(peer, callback) {
-    window.messenger.unbindContacts(peer, callback);
+    return {
+      unbind() {
+        window.messenger.unbindContacts(peer, callback);
+      }
+    };
   }
 
   bindConnectState(callback) {
     window.messenger.bindConnectState(callback);
-  }
-
-  unbindConnectState(callback) {
-    window.messenger.unbindConnectState(callback);
+    return {
+      unbind() {
+        window.messenger.unbindConnectState(callback);
+      }
+    };
   }
 
   bindGlobalCounter(callback) {
     window.messenger.bindGlobalCounter(callback);
-  }
-
-  unbindGlobalCounter(callback) {
-    window.messenger.unbindGlobalCounter(callback);
+    return {
+      unbind() {
+        window.messenger.unbindGlobalCounter(callback);
+      }
+    };
   }
 
   bindTempGlobalCounter(callback) {
     window.messenger.bindTempGlobalCounter(callback);
-  }
-
-  unbindTempGlobalCounter(callback) {
-    window.messenger.unbindTempGlobalCounter(callback);
+    return {
+      unbind() {
+        window.messenger.unbindTempGlobalCounter(callback);
+      }
+    };
   }
 
   bindUserOnline(uid, callback) {
     window.messenger.bindUserOnline(uid, callback);
-  }
-
-  unbindUserOnline(uid, callback) {
-    window.messenger.unbindUserOnline(uid, callback);
+    return {
+      unbind() {
+        window.messenger.unbindUserOnline(uid, callback);
+      }
+    };
   }
 
   bindGroupOnline(gid, callback) {
     window.messenger.bindGroupOnline(gid, callback);
-  }
-
-  unbindGroupOnline(gid, callback) {
-    window.messenger.unbindGroupOnline(gid, callback);
+    return {
+      unbind() {
+        window.messenger.unbindGroupOnline(gid, callback);
+      }
+    };
   }
 
   bindMessages(peer, callback) {
@@ -135,18 +138,20 @@ class ActorClient {
 
   bindEventBus(callback) {
     window.messenger.bindEventBus(callback);
-  }
-
-  unbindEventBus(callback) {
-    window.messenger.unbindEventBus(callback);
+    return {
+      unbind() {
+        window.messenger.unbindEventBus(callback);
+      }
+    };
   }
 
   bindCall(callId, callback) {
     window.messenger.bindCall(callId, callback);
-  }
-
-  unbindCall(callId, callback) {
-    window.messenger.unbindCall(callId, callback);
+    return {
+      unbind() {
+        window.messenger.unbindCall(callId, callback);
+      }
+    };
   }
 
   makeCall(userId) {
@@ -154,7 +159,7 @@ class ActorClient {
   }
 
   makeGroupCall(groupId) {
-      return window.messenger.doGroupCall(groupId);
+    return window.messenger.doGroupCall(groupId);
   }
 
   answerCall(callId) {
@@ -167,10 +172,6 @@ class ActorClient {
 
   toggleCallMute(callId) {
     window.messenger.toggleCallMute(callId);
-  }
-
-  toggleCallMute(id) {
-    window.messenger.toggleCallMute(id);
   }
 
   getUser(uid) {
@@ -443,10 +444,11 @@ class ActorClient {
 
   bindSearch(callback) {
     window.messenger.bindSearch(callback);
-  }
-
-  unbindSearch(callback) {
-    window.messenger.unbindSearch(callback);
+    return {
+      unbind() {
+        window.messenger.unbindSearch(callback);
+      }
+    };
   }
 
   findAllText(peer, query) {
