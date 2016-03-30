@@ -10,6 +10,7 @@ import history from '../utils/history';
 import DelegateContainer from '../utils/DelegateContainer';
 import LocationContainer from '../utils/LocationContainer';
 
+import ActionCreators from './ActionCreators';
 import MyProfileActionCreators from './MyProfileActionCreators';
 import DialogActionCreators from './DialogActionCreators';
 import ContactActionCreators from './ContactActionCreators';
@@ -17,21 +18,28 @@ import QuickSearchActionCreators from './QuickSearchActionCreators';
 import FaviconActionCreators from './FaviconActionCreators';
 import EventBusActionCreators from './EventBusActionCreators';
 
-const LoginActionCreators = {
+class LoginActionCreators extends ActionCreators {
   changeLogin(login) {
-    dispatch(ActionTypes.AUTH_CHANGE_LOGIN, { login })
-  },
+    dispatch(ActionTypes.AUTH_CHANGE_LOGIN, { login });
+  }
 
   changeCode(code) {
-    dispatch(ActionTypes.AUTH_CHANGE_CODE, { code })
-  },
+    dispatch(ActionTypes.AUTH_CHANGE_CODE, { code });
+  }
 
   changeName(name) {
-    dispatch(ActionTypes.AUTH_CHANGE_NAME, { name })
-  },
+    dispatch(ActionTypes.AUTH_CHANGE_NAME, { name });
+  }
+
+  startSignup() {
+    dispatch(ActionTypes.AUTH_SIGNUP_START);
+  }
+
+  restartAuth() {
+    dispatch(ActionTypes.AUTH_RESTART);
+  }
 
   requestCode(phone) {
-    const isEmail = /@/.test(phone);
     let promise;
     if (/@/.test(phone)) {
       promise = ActorClient.requestCodeEmail(phone);
@@ -44,7 +52,7 @@ const LoginActionCreators = {
       success: ActionTypes.AUTH_CODE_REQUEST_SUCCESS,
       failure: ActionTypes.AUTH_CODE_REQUEST_FAILURE
     }, { phone });
-  },
+  }
 
   requestSms(phone) {
     dispatchAsync(ActorClient.requestSms(phone), {
@@ -52,16 +60,16 @@ const LoginActionCreators = {
       success: ActionTypes.AUTH_CODE_REQUEST_SUCCESS,
       failure: ActionTypes.AUTH_CODE_REQUEST_FAILURE
     }, { phone });
-  },
+  }
 
   sendCode(code) {
-    const sendCodePromise = () => dispatchAsync(ActorClient.sendCode(code), {
+    dispatchAsync(ActorClient.sendCode(code), {
       request: ActionTypes.AUTH_CODE_SEND,
       success: ActionTypes.AUTH_CODE_SEND_SUCCESS,
       failure: ActionTypes.AUTH_CODE_SEND_FAILURE
-    }, { code });
-
-    const handleState = (state) => {
+    }, {
+      code
+    }).then((state) => {
       switch (state) {
         case 'signup':
           this.startSignup();
@@ -72,15 +80,8 @@ const LoginActionCreators = {
         default:
           console.error('Unsupported state', state);
       }
-    };
-
-    sendCodePromise()
-      .then(handleState);
-  },
-
-  startSignup() {
-    dispatch(ActionTypes.AUTH_SIGNUP_START);
-  },
+    });
+  }
 
   sendSignup(name) {
     const signUpPromise = () => dispatchAsync(ActorClient.signUp(name), {
@@ -93,56 +94,45 @@ const LoginActionCreators = {
 
     signUpPromise()
       .then(setLoggedIn)
-  },
+  }
 
   setLoggedIn(opts = {}) {
     const delegate = DelegateContainer.get();
 
     if (delegate.actions.setLoggedIn) {
-      delegate.actions.setLoggedIn(opts);
-    } else {
-      if (opts.redirect) {
-        const location = LocationContainer.get();
-        const nextPathname = location.state ? location.state.nextPathname : null;
-
-        if (nextPathname) {
-          history.replace(nextPathname);
-        } else {
-          history.replace('/');
-        }
-      }
-
-      ActorClient.bindUser(ActorClient.getUid(), MyProfileActionCreators.onProfileChanged);
-      // ActorClient.bindDialogs(DialogActionCreators.setDialogs);
-      ActorClient.bindGroupDialogs(DialogActionCreators.setDialogs);
-      ActorClient.bindContacts(ContactActionCreators.setContacts);
-      ActorClient.bindSearch(QuickSearchActionCreators.setQuickSearchList);
-      ActorClient.bindTempGlobalCounter(FaviconActionCreators.setFavicon);
-      ActorClient.bindEventBus(EventBusActionCreators.broadcastEvent);
-      dispatch(ActionTypes.AUTH_SET_LOGGED_IN);
+      return delegate.actions.setLoggedIn(opts);
     }
-  },
+
+    if (opts.redirect) {
+      const location = LocationContainer.get();
+      const nextPathname = location.state ? location.state.nextPathname : '/';
+
+      history.replace(nextPathname);
+    }
+
+    this.setBindings('main', [
+      ActorClient.bindUser(ActorClient.getUid(), MyProfileActionCreators.onProfileChanged),
+      ActorClient.bindGroupDialogs(DialogActionCreators.setDialogs),
+      ActorClient.bindContacts(ContactActionCreators.setContacts),
+      ActorClient.bindSearch(QuickSearchActionCreators.setQuickSearchList),
+      ActorClient.bindTempGlobalCounter(FaviconActionCreators.setFavicon),
+      ActorClient.bindEventBus(EventBusActionCreators.broadcastEvent)
+    ]);
+
+    dispatch(ActionTypes.AUTH_SET_LOGGED_IN);
+  }
 
   setLoggedOut() {
     const delegate = DelegateContainer.get();
 
     if (delegate.actions.setLoggedOut) {
-      delegate.actions.setLoggedOut();
-    } else {
-      ActorClient.unbindUser(ActorClient.getUid(), MyProfileActionCreators.onProfileChanged);
-      ActorClient.unbindDialogs(DialogActionCreators.setDialogs);
-      // ActorClient.unbindContacts(ContactActionCreators.setContacts);
-      ActorClient.unbindGroupDialogs(DialogActionCreators.setDialogs);
-      ActorClient.unbindSearch(QuickSearchActionCreators.setQuickSearchList);
-      ActorClient.unbindTempGlobalCounter(FaviconActionCreators.setFavicon);
-      ActorClient.unbindEventBus(EventBusActionCreators.broadcastEvent);
-      dispatch(ActionTypes.AUTH_SET_LOGGED_OUT);
+      return delegate.actions.setLoggedOut();
     }
-  },
 
-  restartAuth() {
-    dispatch(ActionTypes.AUTH_RESTART)
+    this.removeBindings('main');
+
+    dispatch(ActionTypes.AUTH_SET_LOGGED_OUT);
   }
-};
+}
 
-export default LoginActionCreators;
+export default new LoginActionCreators();
