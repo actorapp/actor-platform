@@ -418,9 +418,9 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
       _ ← GroupUserRepo.delete(groupId, userId)
       _ ← GroupInviteTokenRepo.revoke(groupId, userId)
       (SeqState(seq, state), _) ← DBIO.from(userExt.broadcastClientAndUsersUpdate(
-        clientUserId = userId,
+        clientUserId = initiatorId,
         clientAuthSid = clientAuthSid,
-        userIds = memberIds - userId,
+        userIds = memberIds,
         update = update,
         pushText = Some(PushTexts.Left),
         isFat = false,
