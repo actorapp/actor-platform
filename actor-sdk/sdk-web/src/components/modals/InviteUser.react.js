@@ -6,46 +6,38 @@ import { find, assign, forEach } from 'lodash';
 
 import React, { Component, PropTypes } from 'react';
 import Modal from 'react-modal';
+import { Container } from 'flux/utils';
+import fuzzaldrin from 'fuzzaldrin';
 
 import { KeyCodes } from '../../constants/ActorAppConstants';
 
 import InviteUserActions from '../../actions/InviteUserActions';
 import InviteUserByLinkActions from '../../actions/InviteUserByLinkActions';
 
-import ContactStore from '../../stores/PeopleStore';
+import PeopleStore from '../../stores/PeopleStore';
 import InviteUserStore from '../../stores/InviteUserStore';
 
-import ContactItem from './invite-user/ContactItem.react';
-
-const getStateFromStores = () => {
-  return ({
-    isOpen: InviteUserStore.isModalOpen(),
-    contacts: ContactStore.getList(),
-    group: InviteUserStore.getGroup()
-  });
-};
+import ContactItem from '../common/ContactItem.react';
+import Stateful from '../common/Stateful.react';
 
 const hasMember = (group, userId) =>
   undefined !== find(group.members, (c) => c.peerInfo.peer.id === userId);
 
 class InviteUser extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = assign({
-      search: ''
-    }, getStateFromStores());
-
-    InviteUserStore.addChangeListener(this.onChange);
-    ContactStore.addListener(this.onChange);
-  }
-
   static contextTypes = {
     intl: PropTypes.object
   };
 
-  componentWillUnmount() {
-    InviteUserStore.removeChangeListener(this.onChange);
+  static calculateState() {
+    return {
+      isOpen: InviteUserStore.isModalOpen(),
+      contacts: PeopleStore.getList(),
+      group: InviteUserStore.getGroup()
+    };
+  }
+
+  static getStores() {
+    return [InviteUserStore, PeopleStore];
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -56,9 +48,8 @@ class InviteUser extends Component {
     }
   }
 
-  onChange = () => this.setState(getStateFromStores());
   onClose = () => InviteUserActions.hide();
-  onContactSelect = (contact) => InviteUserActions.inviteUser(this.state.group.id, contact.uid);
+  onContactSelect = (uid) => InviteUserActions.inviteUser(this.state.group.id, uid);
   onSearchChange = (event) => this.setState({search: event.target.value});
 
   onInviteUrlByClick = () => {
@@ -75,96 +66,117 @@ class InviteUser extends Component {
     }
   };
 
-  render() {
-    const { contacts, group, search, isOpen } = this.state;
+  getContacts() {
+    const { contacts, search } = this.state;
+
+    return fuzzaldrin.filter(contacts, search, {
+      key: 'name'
+    });
+  }
+
+  renderContacts() {
     const { intl } = this.context;
+    const contacts = this.getContacts();
 
-    let contactList = [];
+    if (!contacts.length) {
+      return (
+        <li className="contacts__list__item contacts__list__item--empty text-center">
+          {intl.messages['inviteModalNotFound']}
+        </li>
+      );
+    }
 
-    if (isOpen) {
-
-      forEach(contacts, (contact, i) => {
-        const name = contact.name.toLowerCase();
-        if (name.includes(search.toLowerCase())) {
-          if (!hasMember(group, contact.uid)) {
-            contactList.push(
-              <ContactItem contact={contact} key={i} onSelect={this.onContactSelect}/>
-            );
-          } else {
-            contactList.push(
-              <ContactItem contact={contact} key={i} isMember/>
-            );
-          }
-        }
-      }, this);
-
-      if (contactList.length === 0) {
-        contactList.push(
-          <li className="contacts__list__item contacts__list__item--empty text-center">
-            {intl.messages['inviteModalNotFound']}
-          </li>
-        );
+    return contacts.map((contact, i) => {
+      let inviteUserState = InviteUserStore.getInviteUserState(contact.uid);
+      let controls;
+      console.debug(contact.uid);
+      if (hasMember(group, contact.uid)) {
+        controls = <i className="material-icons">check</i>;
+      } else {
+        controls = (
+          <Stateful
+            currentState={inviteUserState}
+            pending={<a className="material-icons" onClick={() => this.onContactSelect(contact.uid)}>person_add</a>}
+            processing={<i className="material-icons spin">autorenew</i>}
+            success={<i className="material-icons">check</i>}
+            failure={<i className="material-icons">warning</i>}
+          />
+        )
       }
-      const modalStyle = {
-        content : {
-          position: null,
-          top: null,
-          left: null,
-          right: null,
-          bottom: null,
-          border: null,
-          background: null,
-          overflow: null,
-          outline: null,
-          padding: null,
-          borderRadius: null,
-          width: 440
-        }
-      };
 
       return (
-        <Modal className="modal-new modal-new--invite contacts"
-               closeTimeoutMS={150}
-               isOpen={isOpen}
-               style={modalStyle}>
-
-          <header className="modal-new__header">
-            <a className="modal-new__header__icon material-icons">person_add</a>
-            <h3 className="modal-new__header__title">{intl.messages['inviteModalTitle']}</h3>
-
-            <div className="pull-right">
-              <button className="button button--lightblue" onClick={this.onClose}>{intl.messages['button.done']}</button>
-            </div>
-          </header>
-
-          <div className="modal-new__body">
-            <div className="modal-new__search">
-              <i className="material-icons">search</i>
-              <input className="input input--search"
-                     onChange={this.onSearchChange}
-                     placeholder={intl.messages['inviteModalSearch']}
-                     type="search"
-                     value={search}/>
-            </div>
-
-            <a className="link link--blue" onClick={this.onInviteUrlByClick}>
-              <i className="material-icons">link</i>
-              {intl.messages['inviteByLink']}
-            </a>
-          </div>
-
-          <div className="contacts__body">
-            <ul className="contacts__list">
-              {contactList}
-            </ul>
-          </div>
-
-        </Modal>
+        <ContactItem {...contact} key={i}>
+          {controls}
+        </ContactItem>
       );
-    } else {
+    });
+  }
+
+  render() {
+    const { isOpen, group } = this.state;
+    const { intl } = this.context;
+
+    if (!isOpen) {
       return null;
     }
+
+    const modalStyle = {
+      content : {
+        position: null,
+        top: null,
+        left: null,
+        right: null,
+        bottom: null,
+        border: null,
+        background: null,
+        overflow: null,
+        outline: null,
+        padding: null,
+        borderRadius: null,
+        width: 440
+      }
+    };
+
+    return (
+      <Modal className="modal-new modal-new--invite contacts"
+             closeTimeoutMS={150}
+             isOpen={isOpen}
+             style={modalStyle}>
+
+        <header className="modal-new__header">
+          <a className="modal-new__header__icon material-icons">person_add</a>
+          <h3 className="modal-new__header__title">{intl.messages['inviteModalTitle']}</h3>
+
+          <div className="pull-right">
+            <button className="button button--lightblue" onClick={this.onClose}>{intl.messages['button.done']}</button>
+          </div>
+        </header>
+
+        <div className="modal-new__body">
+          <div className="modal-new__search">
+            <i className="material-icons">search</i>
+            <input className="input input--search"
+                   onChange={this.onSearchChange}
+                   placeholder={intl.messages['inviteModalSearch']}
+                   type="search"
+                   value={search}/>
+          </div>
+
+          <a className="link link--blue" onClick={this.onInviteUrlByClick}>
+            <i className="material-icons">link</i>
+            {intl.messages['inviteByLink']}
+          </a>
+        </div>
+
+        <div className="contacts__body">
+          <ul className="contacts__list">
+            {this.renderContacts()}
+          </ul>
+        </div>
+
+      </Modal>
+    );
   }
 }
 
-export default InviteUser;
+export default Container.create(InviteUser);
