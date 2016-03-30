@@ -10,7 +10,7 @@ class KickUserStore extends Store {
   constructor(dispatcher) {
     super(dispatcher);
 
-    this.kickUserState = [];
+    this.kickUserState = {};
   }
 
   getKickUserState(uid) {
