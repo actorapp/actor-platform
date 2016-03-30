@@ -31,9 +31,7 @@ class EmojiDropdown extends Component {
   }
 
   static calculateState() {
-    return {
-      isOpen: EmojiStore.isOpen()
-    };
+    return EmojiStore.getState();
   }
 
   constructor(props) {
@@ -186,4 +184,4 @@ class EmojiDropdown extends Component {
   }
 }
 
-export default Container.create(EmojiDropdown, {pure: false, withProps: true});
+export default Container.create(EmojiDropdown);
