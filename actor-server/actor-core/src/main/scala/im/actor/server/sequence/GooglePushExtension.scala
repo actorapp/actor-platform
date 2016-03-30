@@ -88,7 +88,7 @@ final class GooglePushExtension(system: ActorSystem) extends Extension {
           case Xor.Right(json) ⇒
             json.asObject match {
               case Some(obj) ⇒
-                obj("error") map (_.asString) foreach {
+                obj("error") flatMap (_.asString) match {
                   case Some("InvalidRegistration") ⇒
                     log.warning("Invalid registration, deleting")
                     remove(delivery.m.to)
