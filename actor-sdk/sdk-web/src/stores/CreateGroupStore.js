@@ -3,7 +3,6 @@
  */
 
 import Immutable from 'immutable';
-import keymirror from 'keymirror';
 
 import { Store } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
@@ -83,7 +82,7 @@ class CreateGroupStore extends Store {
         this.__emitChange();
         break;
     }
-  };
+  }
 }
 
 export default new CreateGroupStore(Dispatcher);

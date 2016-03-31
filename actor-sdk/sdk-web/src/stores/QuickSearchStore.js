@@ -6,7 +6,7 @@ import { forEach } from 'lodash';
 
 import { Store } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
-import { ActionTypes, PeerTypes } from '../constants/ActorAppConstants';
+import { ActionTypes } from '../constants/ActorAppConstants';
 
 let _isOpen = false,
     _list = [],
@@ -65,7 +65,7 @@ class QuickSearchStore extends Store {
         this.handleSearchQuery(action.query);
         break;
     }
-  };
+  }
 }
 
 export default new QuickSearchStore(Dispatcher);

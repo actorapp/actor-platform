@@ -23,7 +23,7 @@ class SidebarSection extends Component {
       dialogs: DialogStore.getDialogs(),
       archive: ArchiveStore.getArchiveChatState()
     };
-  };
+  }
 
   static contextTypes = {
     delegate: PropTypes.object

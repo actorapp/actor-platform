@@ -140,20 +140,14 @@ class MentionDropdown extends Component {
     const { className, mentions } = this.props;
     const { isOpen, selectedIndex } = this.state;
 
-    const mentionClassName = classnames('mention', {
-      'mention--opened': isOpen
-    }, className);
+    if (!isOpen) {
+      return <div className="mention" />;
+    }
+
     const mentionsElements = map(mentions, (mention, index) => {
       const itemClassName = classnames('mention__list__item', {
         'mention__list__item--active': selectedIndex === index
       });
-
-      const title = mention.isNick ? [
-        <span className="nickname">{mention.mentionText}</span>,
-        <span className="name">{mention.secondText}</span>
-      ] : (
-        <span className="name">{mention.mentionText}</span>
-      );
 
       return (
         <li className={itemClassName}
@@ -164,29 +158,30 @@ class MentionDropdown extends Component {
                       placeholder={mention.peer.placeholder}
                       size="tiny"
                       title={mention.peer.title}/>
-          <div className="title">{title}</div>
+          <div className="title">
+            {mention.isNick && <span className="nickname">{mention.mentionText}</span>}
+            <span className="name">{mention.mentionText}</span>
+          </div>
         </li>
       );
     });
 
-    if (isOpen) {
-      return (
-        <div className={mentionClassName}>
-          <div className="mention__wrapper">
-            <header className="mention__header">
-              <div className="pull-left"><strong>tab</strong>&nbsp; or &nbsp;<strong>↑</strong><strong>↓</strong>&nbsp; to navigate</div>
-              <div className="pull-left"><strong>↵</strong>&nbsp; to select</div>
-              <div className="pull-right"><strong>esc</strong>&nbsp; to close</div>
-            </header>
-            <ul className="mention__list" ref="mentionList">
-              {mentionsElements}
-            </ul>
-          </div>
+    const mentionClassName = classnames('mention mention--opened', className);
+
+    return (
+      <div className={mentionClassName}>
+        <div className="mention__wrapper">
+          <header className="mention__header">
+            <div className="pull-left"><strong>tab</strong>&nbsp; or &nbsp;<strong>↑</strong><strong>↓</strong>&nbsp; to navigate</div>
+            <div className="pull-left"><strong>↵</strong>&nbsp; to select</div>
+            <div className="pull-right"><strong>esc</strong>&nbsp; to close</div>
+          </header>
+          <ul className="mention__list" ref="mentionList">
+            {mentionsElements}
+          </ul>
         </div>
-      );
-    } else {
-      return null;
-    }
+      </div>
+    );
   }
 }
 

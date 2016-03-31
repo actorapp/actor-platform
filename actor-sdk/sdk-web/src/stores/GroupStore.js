@@ -62,7 +62,7 @@ class GroupStore extends Store {
         this.__emitChange();
         break;
     }
-  };
+  }
 }
 
 export default new GroupStore(Dispatcher);

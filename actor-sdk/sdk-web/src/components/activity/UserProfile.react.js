@@ -2,7 +2,6 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import { assign } from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
 import { FormattedMessage } from 'react-intl';
@@ -57,8 +56,8 @@ class UserProfile extends Component {
     super(props);
 
     this.state = {
-      isMoreDropdownOpen: false,
-    }
+      isMoreDropdownOpen: false
+    };
   }
 
   addToContacts = () => ContactActionCreators.addContact(this.props.user.id);

@@ -4,7 +4,6 @@
 
 import React, { Component, PropTypes } from 'react';
 import { FormattedMessage } from 'react-intl';
-import classnames from 'classnames';
 
 class ToggleNotifications extends Component {
   static propTypes = {

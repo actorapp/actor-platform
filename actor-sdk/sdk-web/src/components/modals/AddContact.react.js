@@ -6,7 +6,6 @@ import { map, debounce } from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
 import Modal from 'react-modal';
-import { FormattedMessage } from 'react-intl';
 import { KeyCodes } from '../../constants/ActorAppConstants';
 
 import AddContactActionCreators from '../../actions/AddContactActionCreators';
@@ -79,7 +78,7 @@ class AddContact extends Component {
   };
 
   render() {
-    const { isOpen, isSearching, query, results } = this.state;
+    const { isOpen, query, results } = this.state;
     const { intl } = this.context;
     const isQueryEmpty = !query || query.length === '';
 

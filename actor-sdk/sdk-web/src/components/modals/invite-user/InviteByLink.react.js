@@ -2,7 +2,6 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import { assign } from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import Modal from 'react-modal';
 import { FormattedMessage } from 'react-intl';
@@ -12,7 +11,7 @@ import { escapeWithEmoji } from '../../../utils/EmojiUtils'
 
 import { KeyCodes } from '../../../constants/ActorAppConstants';
 
-import SvgIcon from '../../common/SvgIcon.react';;
+import SvgIcon from '../../common/SvgIcon.react';
 
 import InviteUserByLinkActions from '../../../actions/InviteUserByLinkActions';
 import InviteUserActions from '../../../actions/InviteUserActions';

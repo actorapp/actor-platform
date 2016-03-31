@@ -454,7 +454,7 @@ class ActorClient {
   }
 
   handleLinkClick(event) {
-    messenger.handleLinkClick(event)
+    window.messenger.handleLinkClick(event)
   }
 
   isElectron() {

@@ -50,7 +50,6 @@ class ArchiveStore extends Store {
         this.__emitChange();
         break;
       case ActionTypes.ARCHIVE_ADD_ERROR:
-        const key = PeerUtils.peerToString(action.peer);
         this.archiveChatState[peerKey] = AsyncActionStates.FAILURE;
         this.__emitChange();
         break;

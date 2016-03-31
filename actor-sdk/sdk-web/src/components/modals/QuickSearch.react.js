@@ -7,7 +7,7 @@ import { map } from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 import { Container } from 'flux/utils';
-import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
+import { FormattedHTMLMessage } from 'react-intl';
 import Modal from 'react-modal';
 import classnames from 'classnames';
 import isInside from '../../utils/isInside';
@@ -18,7 +18,6 @@ import Scrollbar from '../common/Scrollbar.react';
 import { KeyCodes } from '../../constants/ActorAppConstants';
 
 import QuickSearchActionCreators from '../../actions/QuickSearchActionCreators';
-import DialogActionCreators from '../../actions/DialogActionCreators';
 
 import QuickSearchStore from '../../stores/QuickSearchStore';
 

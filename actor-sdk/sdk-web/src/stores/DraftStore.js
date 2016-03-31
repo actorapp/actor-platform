@@ -6,8 +6,6 @@ import { Store } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
 
-import DialogStore from './DialogStore';
-
 class DraftStore extends Store {
   constructor(dispatcher) {
     super(dispatcher);

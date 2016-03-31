@@ -99,7 +99,7 @@ class DialogSection extends Component {
   }
 
   render() {
-    const { peer, isMember, messages, overlay, messagesCount } = this.state;
+    const { peer, isMember } = this.state;
     if (!peer) {
       return <section className="main" />;
     }

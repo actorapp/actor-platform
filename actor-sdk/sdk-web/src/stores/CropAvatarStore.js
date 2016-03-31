@@ -36,7 +36,7 @@ class CropAvatarStore extends Store {
         break;
       default:
     }
-  };
+  }
 }
 
 export default new CropAvatarStore(Dispatcher);

@@ -3,8 +3,6 @@
  */
 
 import React, { Component, PropTypes } from 'react';
-import { findDOMNode } from 'react-dom';
-// import hljs from 'highlight.js';
 import ActorClient from '../../../utils/ActorClient';
 
 import { processEmojiText } from '../../../utils/EmojiUtils';
@@ -22,19 +20,6 @@ class Text extends Component {
     text: PropTypes.string.isRequired,
     className: PropTypes.string
   };
-
-  componentDidMount() {
-    /*
-    requestAnimationFrame(() => {
-      const node = findDOMNode(this);
-      const codeBlocks = node.getElementsByTagName('pre');
-      for (let i = 0; i < codeBlocks.length; i++) {
-        const codeBlock = codeBlocks[i];
-        hljs.highlightBlock(codeBlock.firstChild);
-      }
-    });
-    */
-  }
 
   render() {
     const { text, className } = this.props;

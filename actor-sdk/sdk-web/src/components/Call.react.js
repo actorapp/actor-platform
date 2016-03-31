@@ -4,9 +4,7 @@
 
 import React, { Component } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
-import classNames from 'classnames';
 import { Container } from 'flux/utils';
-import { FormattedMessage } from 'react-intl';
 
 import { PeerTypes } from '../constants/ActorAppConstants';
 import PeerUtils from '../utils/PeerUtils';
@@ -19,7 +17,6 @@ import UserStore from '../stores/UserStore';
 import GroupStore from '../stores/GroupStore';
 
 import CallDraggable from './call/CallDraggable.react';
-import CallHeader from './call/CallHeader.react';
 import CallBody from './call/CallBody.react';
 import CallControls from './call/CallControls.react';
 import ContactDetails from './common/ContactDetails.react';
@@ -44,20 +41,13 @@ class Call extends Component {
   }
 
   static calculateState() {
+    const call = CallStore.getState();
     const dialogPeer = DialogStore.getCurrentPeer();
-    const callPeer = CallStore.getPeer();
 
     return {
-      isOpen: CallStore.isOpen(),
-      isOutgoing: CallStore.isOutgoing(),
-      isMuted: CallStore.isMuted(),
-      callId: CallStore.getId(),
-      callMembers: CallStore.getMembers(),
-      callPeer: CallStore.getPeer(),
-      callState: CallStore.getState(),
-      peerInfo: Call.calculatePeerInfo(callPeer),
-      isSameDialog: PeerUtils.equals(dialogPeer, callPeer),
-      isFloating: CallStore.isFloating()
+      call,
+      peerInfo: Call.calculatePeerInfo(call.peer),
+      isSameDialog: PeerUtils.equals(dialogPeer, call.peer)
     };
   }
 
@@ -74,24 +64,19 @@ class Call extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (!nextState.isOpen) {
-      return false;
-    }
-
     return shallowCompare(this, nextProps, nextState);
   }
 
   onAnswer() {
-    CallActionCreators.answerCall(this.state.callId);
+    CallActionCreators.answerCall(this.state.call.id);
   }
 
   onEnd() {
-    console.log(this.state.callId);
-    CallActionCreators.endCall(this.state.callId);
+    CallActionCreators.endCall(this.state.call.id);
   }
 
   onMuteToggle() {
-    CallActionCreators.toggleCallMute(this.state.callId);
+    CallActionCreators.toggleCallMute(this.state.call.id);
   }
 
   onClose() {
@@ -111,8 +96,8 @@ class Call extends Component {
   }
 
   renderContactInfo() {
-    const { callPeer, peerInfo } = this.state;
-    if (!peerInfo || callPeer.type === PeerTypes.GROUP) return null;
+    const { call, peerInfo } = this.state;
+    if (!peerInfo || call.peer.type === PeerTypes.GROUP) return null;
 
     return (
       <section className="call__info">
@@ -122,18 +107,18 @@ class Call extends Component {
   }
 
   render() {
-    const {isOpen, callState, peerInfo, isOutgoing, isMuted, isSameDialog, isFloating} = this.state;
-    if (!isOpen) {
+    const {call, peerInfo, isSameDialog} = this.state;
+    if (!call.isOpen) {
       return <section className="activity" />;
     }
 
-    if (!isSameDialog || isFloating) {
+    if (!isSameDialog || call.isFloating) {
       return (
         <CallDraggable
           peerInfo={peerInfo}
-          callState={callState}
-          isOutgoing={isOutgoing}
-          isMuted={isMuted}
+          callState={call.state}
+          isOutgoing={call.isOutgoing}
+          isMuted={call.isMuted}
           onEnd={this.onEnd}
           onAnswer={this.onAnswer}
           onMuteToggle={this.onMuteToggle}
@@ -149,11 +134,11 @@ class Call extends Component {
       <section className="activity activity--shown">
         <div className="activity__body call">
           <section className="call__container">
-            <CallBody peerInfo={peerInfo} callState={callState}/>
+            <CallBody peerInfo={peerInfo} callState={call.state}/>
             <CallControls
-              callState={callState}
-              isOutgoing={isOutgoing}
-              isMuted={isMuted}
+              callState={call.state}
+              isOutgoing={call.isOutgoing}
+              isMuted={call.isMuted}
               onEnd={this.onEnd}
               onAnswer={this.onAnswer}
               onMuteToggle={this.onMuteToggle}

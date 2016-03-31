@@ -3,7 +3,6 @@
  */
 
 import React, { Component, PropTypes } from 'react';
-import { shouldComponentUpdate } from 'react-addons-pure-render-mixin';
 
 class Sticker extends Component {
   static propTypes = {

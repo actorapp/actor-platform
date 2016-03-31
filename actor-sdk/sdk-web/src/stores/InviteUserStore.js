@@ -7,8 +7,6 @@ import { Map } from 'immutable';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes, AsyncActionStates } from '../constants/ActorAppConstants';
 
-import ActorClient from '../utils/ActorClient';
-
 class InviteUserStore extends ReduceStore {
   getInitialState() {
     return {

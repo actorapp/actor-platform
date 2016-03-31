@@ -64,25 +64,25 @@ class RecentContextMenu extends Component {
 
   handleClose = () => DropdownActionCreators.hideRecentContext();
 
-  handleAddToArchive = (event) => {
+  handleAddToArchive = () => {
     const { peer } = this.props;
     ArchiveActionCreators.archiveChat(peer);
     this.handleClose();
   };
 
-  handleFavorite = (event) => {
+  handleFavorite = () => {
     const { peer } = this.props;
     FavoriteActionCreators.favoriteChat(peer);
     this.handleClose();
   };
 
-  handleUnfavorite = (event) => {
+  handleUnfavorite = () => {
     const { peer } = this.props;
     FavoriteActionCreators.unfavoriteChat(peer);
     this.handleClose();
   };
 
-  handleDelete = (event) => {
+  handleDelete = () => {
     const { intl } = this.context;
     const { peer } = this.props;
     confirm(intl.messages['modal.confirm.delete']).then(

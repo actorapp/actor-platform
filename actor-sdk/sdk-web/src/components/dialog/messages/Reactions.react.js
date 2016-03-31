@@ -22,7 +22,7 @@ class MessageReactions extends Component {
     message: PropTypes.object.isRequired
   };
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps() {
     if (this.state.isThisMyReaction) {
       this.setState({
         canAnimateHeart: false,

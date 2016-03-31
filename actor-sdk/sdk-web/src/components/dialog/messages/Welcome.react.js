@@ -3,9 +3,8 @@
  */
 
 import React, { Component, PropTypes } from 'react';
-import ReactMixin from 'react-mixin';
 import { FormattedHTMLMessage } from 'react-intl'
-import PureRenderMixin from 'react-addons-pure-render-mixin';
+import { shouldComponentUpdate } from 'react-addons-pure-render-mixin';
 
 import SvgIcon from '../../common/SvgIcon.react';
 
@@ -25,34 +24,57 @@ class Welcome extends Component {
     intl: PropTypes.object
   };
 
-  render() {
-    const { peer } = this.props;
-    const { intl } = this.context;
+  constructor(props, context) {
+    super(props, context);
 
-    let welcomeText;
+    this.onInviteClick = this.onInviteClick.bind(this);
+    this.shouldComponentUpdate = shouldComponentUpdate.bind(this);
+  }
+
+  onInviteClick() {
+    const { peer } = this.props;
+    const group = GroupStore.getGroup(peer.id);
+    InviteUserActions.show(group);
+  }
+
+  renderUserText(id) {
+    const user = UserStore.getUser(id);
+    return (
+      <FormattedHTMLMessage id="message.welcome.private" values={{name: user.name}}/>
+    );
+  }
+
+  renderGroupText(id) {
+    const { intl } = this.context;
+    const group = GroupStore.getGroup(id);
+    const myID = UserStore.getMyId();
+    const admin = UserStore.getUser(group.adminId);
+    const creator = group.adminId === myID ? intl.messages['message.welcome.group.you'] : admin.name;
+
+    return (
+      <div>
+        <FormattedHTMLMessage id="message.welcome.group.main" values={{name: group.name, creator}}/>
+        <p key={2}>
+          {intl.messages['message.welcome.group.actions.start']}
+          <a onClick={this.onInviteClick}>{intl.messages['message.welcome.group.actions.invite']}</a>
+          {intl.messages['message.welcome.group.actions.end']}
+        </p>
+      </div>
+    );
+  }
+
+  renderText() {
+    const { peer } = this.props;
+
     switch (peer.type) {
       case PeerTypes.USER:
-        const user = UserStore.getUser(peer.id);
-        welcomeText = <FormattedHTMLMessage id="message.welcome.private" values={{name: user.name}}/>;
-        break;
+        return this.renderUserText(peer.id);
       case PeerTypes.GROUP:
-        const group = GroupStore.getGroup(peer.id);
-        const myID = UserStore.getMyId();
-        const admin = UserStore.getUser(group.adminId);
-        const creator = group.adminId === myID ? intl.messages['message.welcome.group.you'] : admin.name;
-        welcomeText = [
-          <FormattedHTMLMessage id="message.welcome.group.main" key={1}
-                                values={{name: group.name, creator}}/>
-        ,
-          <p key={2}>
-            {intl.messages['message.welcome.group.actions.start']}
-            <a onClick={() => InviteUserActions.show(group)}>{intl.messages['message.welcome.group.actions.invite']}</a>
-            {intl.messages['message.welcome.group.actions.end']}
-          </p>
-        ];
-        break;
+        return this.renderGroupText(peer.id);
     }
+  }
 
+  render() {
     return(
       <div className="message message--welcome row">
         <div className="message__info">
@@ -61,13 +83,11 @@ class Welcome extends Component {
           </div>
         </div>
         <div className="message__body col-xs">
-          {welcomeText}
+          {this.renderText()}
         </div>
       </div>
     )
   }
 }
-
-ReactMixin.onClass(Welcome, PureRenderMixin);
 
 export default Welcome;

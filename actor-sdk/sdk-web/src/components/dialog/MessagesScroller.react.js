@@ -3,7 +3,6 @@
  */
 
 import React, { Component, PropTypes } from 'react';
-import { findDOMNode } from 'react-dom';
 
 import PeerUtils from '../../utils/PeerUtils';
 
@@ -17,7 +16,7 @@ class MessagesScroller extends Component {
     peer: PropTypes.object.isRequired,
     className: PropTypes.string,
     children: PropTypes.node.isRequired,
-    onLoadMore: PropTypes.func.isRequired,
+    onLoadMore: PropTypes.func.isRequired
   };
 
   constructor(props) {

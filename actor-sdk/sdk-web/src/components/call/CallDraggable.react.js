@@ -3,7 +3,6 @@
 */
 
 import React, {Component, PropTypes} from 'react';
-import { FormattedMessage } from 'react-intl';
 import Draggable from 'react-draggable';
 
 import CallBody from './CallBody.react';

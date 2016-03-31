@@ -250,7 +250,7 @@ export default {
     'sidebar': {
       'recents': {
         'groups': 'Grupos',
-        'privates': 'Mensajes directos',
+        'privates': 'Mensajes directos'
       }
     },
 

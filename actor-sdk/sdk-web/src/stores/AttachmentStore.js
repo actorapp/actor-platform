@@ -2,7 +2,7 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import { map, remove } from 'lodash';
+import { map } from 'lodash';
 
 import { Store } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
@@ -99,7 +99,7 @@ class AttachmentStore extends Store {
         break;
       default:
     }
-  };
+  }
 }
 
 export default new AttachmentStore(Dispatcher);
