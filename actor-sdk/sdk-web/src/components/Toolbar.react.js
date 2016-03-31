@@ -15,6 +15,7 @@ import CallActionCreators from '../actions/CallActionCreators';
 
 import AvatarItem from './common/AvatarItem.react';
 import ToggleFavorite from './common/ToggleFavorite.react';
+import Tooltip from 'rc-tooltip';
 
 import DialogInfoStore from '../stores/DialogInfoStore';
 import OnlineStore from '../stores/OnlineStore';
@@ -102,16 +103,28 @@ class ToolbarSection extends Component {
 
     if (call.isCalling) {
       return (
-        <button className={activityButtonClassName} onClick={this.handleInCallClick}>
-          <i className="material-icons">info</i>
-        </button>
+        <Tooltip
+          placement="left"
+          mouseEnterDelay={0.5}
+          overlay={<FormattedMessage id="tooltip.toolbar.info"/>}
+        >
+          <button className={activityButtonClassName} onClick={this.handleInCallClick}>
+            <i className="material-icons">info</i>
+          </button>
+        </Tooltip>
       )
     }
 
     return (
-      <button className={activityButtonClassName} onClick={this.onClick}>
-        <i className="material-icons">info</i>
-      </button>
+      <Tooltip
+        placement="left"
+        mouseEnterDelay={0.5}
+        overlay={<FormattedMessage id="tooltip.toolbar.info"/>}
+      >
+        <button className={activityButtonClassName} onClick={this.onClick}>
+          <i className="material-icons">info</i>
+        </button>
+      </Tooltip>
     )
   }
 
@@ -143,9 +156,15 @@ class ToolbarSection extends Component {
         <div className="toolbar__peer col-xs">
           <header>
             <span className="toolbar__peer__title" dangerouslySetInnerHTML={{__html: escapeWithEmoji(dialogInfo.name)}}/>
-            <span className={favoriteClassName}>
-              <ToggleFavorite value={isFavorite} onToggle={this.onFavoriteToggle} />
-            </span>
+            <Tooltip
+              placement="bottom"
+              mouseEnterDelay={0.5}
+              overlay={<FormattedMessage id="tooltip.toolbar.favorite"/>}
+            >
+              <span className={favoriteClassName}>
+                <ToggleFavorite value={isFavorite} onToggle={this.onFavoriteToggle} />
+              </span>
+            </Tooltip>
           </header>
           <div className="toolbar__peer__message">{message}</div>
         </div>

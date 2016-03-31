@@ -12,6 +12,7 @@ $tooltip-fontsize: 13px;
   font-weight: 500;
   .rc-tooltip-inner {
     background-color: $tooltip-color;
+    box-shadow: none;
     border: none;
     min-height: 0;
     border-radius: $default-border-radius;
