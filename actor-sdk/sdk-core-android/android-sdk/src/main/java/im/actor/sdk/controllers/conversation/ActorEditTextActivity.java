@@ -218,4 +218,10 @@ public abstract class ActorEditTextActivity extends BaseActivity {
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        emojiKeyboard.release();
+    }
 }
