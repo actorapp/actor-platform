@@ -49,7 +49,7 @@ class RichMessageWorkerSpec
     object privat {
       val (user1, authId, authSid, _) = createUser()
       val sessionId = createSessionId()
-      implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user1.id, authSid)))
+      implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user1.id, authSid, 42)))
 
       val (user2, _, _, _) = createUser()
       val user2Model = getUserModel(user2.id)
@@ -116,7 +116,7 @@ class RichMessageWorkerSpec
       val (user3, authId3, _, _) = createUser()
 
       val sessionId = createSessionId()
-      implicit val clientData = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
+      implicit val clientData = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1, 42)))
 
       val groupOutPeer = createGroup("Test group", Set(user2.id, user3.id)).groupPeer
 

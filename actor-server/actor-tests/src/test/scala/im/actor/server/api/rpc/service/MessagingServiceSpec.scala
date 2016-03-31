@@ -68,9 +68,9 @@ class MessagingServiceSpec
         val user2Peer = peers.ApiOutPeer(ApiPeerType.Private, user2.id, user2AccessHash)
 
         val sessionId = createSessionId()
-        val clientData11 = ClientData(user1AuthId1, sessionId, Some(AuthData(user1.id, user1AuthSid1)))
-        val clientData12 = ClientData(user1AuthId2, sessionId, Some(AuthData(user1.id, user1AuthSid2)))
-        val clientData2 = ClientData(user2AuthId, sessionId, Some(AuthData(user2.id, user2AuthSid)))
+        val clientData11 = ClientData(user1AuthId1, sessionId, Some(AuthData(user1.id, user1AuthSid1, 42)))
+        val clientData12 = ClientData(user1AuthId2, sessionId, Some(AuthData(user1.id, user1AuthSid2, 42)))
+        val clientData2 = ClientData(user2AuthId, sessionId, Some(AuthData(user2.id, user2AuthSid, 42)))
 
         val randomId = Random.nextLong()
 
@@ -115,8 +115,8 @@ class MessagingServiceSpec
         val (user1, user1AuthId, user1AuthSid, _) = createUser()
         val (user2, user2AuthId, user2AuthSid, _) = createUser()
 
-        val clientData1 = ClientData(user1AuthId, createSessionId(), Some(AuthData(user1.id, user1AuthSid)))
-        val clientData2 = ClientData(user2AuthId, createSessionId(), Some(AuthData(user2.id, user2AuthSid)))
+        val clientData1 = ClientData(user1AuthId, createSessionId(), Some(AuthData(user1.id, user1AuthSid, 42)))
+        val clientData2 = ClientData(user2AuthId, createSessionId(), Some(AuthData(user2.id, user2AuthSid, 42)))
 
         val user2Model = getUserModel(user2.id)
         val user2AccessHash = ACLUtils.userAccessHash(user1AuthId, user2.id, user2Model.accessSalt)
@@ -159,9 +159,9 @@ class MessagingServiceSpec
       val (user2, user2AuthId, user2AuthSid, _) = createUser()
       val sessionId = createSessionId()
 
-      val clientData11 = ClientData(user1AuthId1, sessionId, Some(AuthData(user1.id, user1AuthSid1)))
-      val clientData12 = ClientData(user1AuthId2, sessionId, Some(AuthData(user1.id, user1AuthSid2)))
-      val clientData2 = ClientData(user2AuthId, sessionId, Some(AuthData(user2.id, user2AuthSid)))
+      val clientData11 = ClientData(user1AuthId1, sessionId, Some(AuthData(user1.id, user1AuthSid1, 42)))
+      val clientData12 = ClientData(user1AuthId2, sessionId, Some(AuthData(user1.id, user1AuthSid2, 42)))
+      val clientData2 = ClientData(user2AuthId, sessionId, Some(AuthData(user2.id, user2AuthSid, 42)))
 
       val groupResponse = {
         implicit val clientData = clientData11
@@ -214,7 +214,7 @@ class MessagingServiceSpec
       def restrictAlienUser() = {
         val (alien, authIdAlien, authSidAlien, _) = createUser()
 
-        val alienClientData = ClientData(user1AuthId1, sessionId, Some(AuthData(alien.id, authSidAlien)))
+        val alienClientData = ClientData(user1AuthId1, sessionId, Some(AuthData(alien.id, authSidAlien, 42)))
 
         whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage("Hi again", Vector.empty, None), None)(alienClientData)) { resp ⇒
           resp should matchForbidden
@@ -250,8 +250,8 @@ class MessagingServiceSpec
         val (user1, user1AuthId, user1AuthSid, _) = createUser()
         val (user2, user2AuthId, user2AuthSid, _) = createUser()
         val sessionId = createSessionId()
-        val clientData1 = ClientData(user1AuthId, sessionId, Some(AuthData(user1.id, user1AuthSid)))
-        val clientData2 = ClientData(user2AuthId, sessionId, Some(AuthData(user2.id, user2AuthSid)))
+        val clientData1 = ClientData(user1AuthId, sessionId, Some(AuthData(user1.id, user1AuthSid, 42)))
+        val clientData2 = ClientData(user2AuthId, sessionId, Some(AuthData(user2.id, user2AuthSid, 42)))
 
         val group2OutPeer = {
           implicit val clientData = clientData1
@@ -294,7 +294,7 @@ class MessagingServiceSpec
 
       val (user, authId, authSid, _) = createUser()
       val sessionId = createSessionId()
-      implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user.id, authSid)))
+      implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user.id, authSid, 42)))
 
       val (user2, _, _, _) = createUser()
       val user2Model = getUserModel(user2.id)
@@ -334,7 +334,7 @@ class MessagingServiceSpec
         val bobOutPeer = whenReady(ACLUtils.getOutPeer(bobPeer, aliceAuthId))(identity)
 
         def sendMessageToAlice(text: String): Future[ResponseSeqDate] = {
-          implicit val clientData = ClientData(bobAuthId, 1, Some(AuthData(bob.id, bobAuthSid)))
+          implicit val clientData = ClientData(bobAuthId, 1, Some(AuthData(bob.id, bobAuthSid, 42)))
           service.handleSendMessage(aliceOutPeer, ACLUtils.randomLong(), textMessage(text), None) map (_.toOption.get)
         }
 
@@ -343,7 +343,7 @@ class MessagingServiceSpec
         toAlice foreach { whenReady(_)(identity) }
 
         {
-          implicit val clientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid)))
+          implicit val clientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid, 42)))
 
           whenReady(service.handleLoadHistory(bobOutPeer, 0L, None, Int.MaxValue)) { resp ⇒
             inside(resp) {
@@ -397,8 +397,8 @@ class MessagingServiceSpec
         val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
         val (bob, bobAuthId, bobAuthSid, _) = createUser()
 
-        val aliceCD = ClientData(aliceAuthId, sessionId, Some(AuthData(alice.id, aliceAuthSid)))
-        val bobCD = ClientData(bobAuthId, sessionId, Some(AuthData(bob.id, bobAuthSid)))
+        val aliceCD = ClientData(aliceAuthId, sessionId, Some(AuthData(alice.id, aliceAuthSid, 42)))
+        val bobCD = ClientData(bobAuthId, sessionId, Some(AuthData(bob.id, bobAuthSid, 42)))
 
         val alicePeer = ApiPeer(ApiPeerType.Private, alice.id)
         val bobPeer = ApiPeer(ApiPeerType.Private, bob.id)
@@ -444,8 +444,8 @@ class MessagingServiceSpec
         val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
         val (bob, bobAuthId, bobAuthSid, _) = createUser()
 
-        val aliceCD = ClientData(aliceAuthId, sessionId, Some(AuthData(alice.id, aliceAuthSid)))
-        val bobCD = ClientData(bobAuthId, sessionId, Some(AuthData(bob.id, bobAuthSid)))
+        val aliceCD = ClientData(aliceAuthId, sessionId, Some(AuthData(alice.id, aliceAuthSid, 42)))
+        val bobCD = ClientData(bobAuthId, sessionId, Some(AuthData(bob.id, bobAuthSid, 42)))
 
         val alicePeer = ApiPeer(ApiPeerType.Private, alice.id)
         val bobPeer = ApiPeer(ApiPeerType.Private, bob.id)

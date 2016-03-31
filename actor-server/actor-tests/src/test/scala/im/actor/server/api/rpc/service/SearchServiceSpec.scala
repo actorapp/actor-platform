@@ -29,7 +29,7 @@ final class SearchServiceSpec
     val (user1, authId1, authSid1, _) = createUser()
     val (user2, _, _, _) = createUser()
 
-    implicit val clientData = ClientData(authId1, 1, Some(AuthData(user1.id, authSid1)))
+    implicit val clientData = ClientData(authId1, 1, Some(AuthData(user1.id, authSid1, 42)))
     addContact(user2.id)
 
     whenReady(searchService.handlePeerSearch(Vector(
@@ -50,7 +50,7 @@ final class SearchServiceSpec
   def groups() = {
     val (user1, authId1, authSid1, _) = createUser()
 
-    implicit val clientData = ClientData(authId1, 1, Some(AuthData(user1.id, authSid1)))
+    implicit val clientData = ClientData(authId1, 1, Some(AuthData(user1.id, authSid1, 42)))
     createGroup("Hell yeah", Set.empty)
 
     whenReady(searchService.handlePeerSearch(Vector(

@@ -19,8 +19,8 @@ final class EncryptionServiceSpec extends BaseAppSuite with ImplicitAuthService 
     val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
     val (bob, bobAuthId, bobAuthSid, _) = createUser()
 
-    val aliceClientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid)))
-    val bobClientData = ClientData(bobAuthId, 1, Some(AuthData(bob.id, bobAuthSid)))
+    val aliceClientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid, 42)))
+    val bobClientData = ClientData(bobAuthId, 1, Some(AuthData(bob.id, bobAuthSid, 42)))
 
     val supportedEncryptions = Vector("sup1", "sup2", "sup3")
     val identityKey = ApiEncryptionKey(1L, "idalg", Some(Array[Byte](1, 2, 3)), Some(Array[Byte](1)))
@@ -71,8 +71,8 @@ final class EncryptionServiceSpec extends BaseAppSuite with ImplicitAuthService 
     val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
     val (bob, bobAuthId, bobAuthSid, _) = createUser()
 
-    val aliceClientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid)))
-    val bobClientData = ClientData(bobAuthId, 1, Some(AuthData(bob.id, bobAuthSid)))
+    val aliceClientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid, 42)))
+    val bobClientData = ClientData(bobAuthId, 1, Some(AuthData(bob.id, bobAuthSid, 42)))
 
     val supportedEncryptions = Vector("sup1", "sup2", "sup3")
     val identityKey = ApiEncryptionKey(1L, "idalg", Some(Array[Byte](1, 2, 3)), Some(Array[Byte](1)))
@@ -144,8 +144,8 @@ final class EncryptionServiceSpec extends BaseAppSuite with ImplicitAuthService 
     val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
     val (bob, bobAuthId, bobAuthSid, _) = createUser()
 
-    val aliceClientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid)))
-    val bobClientData = ClientData(bobAuthId, 1, Some(AuthData(bob.id, bobAuthSid)))
+    val aliceClientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid, 42)))
+    val bobClientData = ClientData(bobAuthId, 1, Some(AuthData(bob.id, bobAuthSid, 42)))
 
     val (aliceKeyGroupId1, aliceKeys1) = createKeyGroup()(aliceClientData)
     val (aliceKeyGroupId2, _) = createKeyGroup()(aliceClientData)
