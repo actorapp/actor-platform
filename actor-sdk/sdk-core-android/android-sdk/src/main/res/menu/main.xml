@@ -17,6 +17,6 @@
     <item
         android:id="@+id/profile"
         android:title="Profile"
-        android:icon="@drawable/ic_more_vert_white_24dp"
+        android:icon="@drawable/ic_settings_white_24dp"
         app:showAsAction="always" />
 </menu>
