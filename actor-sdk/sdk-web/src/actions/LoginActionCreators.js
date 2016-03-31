@@ -17,6 +17,7 @@ import ContactActionCreators from './ContactActionCreators';
 import QuickSearchActionCreators from './QuickSearchActionCreators';
 import FaviconActionCreators from './FaviconActionCreators';
 import EventBusActionCreators from './EventBusActionCreators';
+import StickersActionCreators from './StickersActionCreators';
 
 class LoginActionCreators extends ActionCreators {
   changeLogin(login) {
@@ -116,7 +117,8 @@ class LoginActionCreators extends ActionCreators {
       ActorClient.bindContacts(ContactActionCreators.setContacts),
       ActorClient.bindSearch(QuickSearchActionCreators.setQuickSearchList),
       ActorClient.bindTempGlobalCounter(FaviconActionCreators.setFavicon),
-      ActorClient.bindEventBus(EventBusActionCreators.broadcastEvent)
+      ActorClient.bindEventBus(EventBusActionCreators.broadcastEvent),
+      ActorClient.bindStickers(StickersActionCreators.setStickers)
     ]);
 
     dispatch(ActionTypes.AUTH_SET_LOGGED_IN);
