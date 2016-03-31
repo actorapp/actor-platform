@@ -29,7 +29,7 @@ class VisibilityStore extends Store {
         break;
       default:
     }
-  };
+  }
 }
 
 export default new VisibilityStore(Dispatcher);

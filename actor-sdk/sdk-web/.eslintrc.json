@@ -1,9 +1,23 @@
 {
-  "env": {
-    "browser": true,
-    "es6": true
-  },
+  "extends": "eslint:recommended",
   "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaVersion": 7,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true,
+      "experimentalObjectRestSpread": true
+    }
+  },
+  "env": {
+    "es6": true,
+    "browser": true,
+    "node": true,
+    "worker": true
+  },
+  "plugins": [
+    "react"
+  ],
   "rules": {
     "quotes": [1, "single"],
     "no-alert": 0,
@@ -28,18 +42,5 @@
     "react/self-closing-comp": 1,
     "react/sort-comp": 0,
     "react/wrap-multilines": 1
-  },
-  "ecmaFeatures": {
-    "arrowFunctions": true,
-    "blockBindings": true,
-    "classes": true,
-    "jsx": true,
-    "module": true,
-    "modules": true,
-    "objectLiteralShorthandMethods": true,
-    "superInFunctions": true
-  },
-  "plugins": [
-    "react"
-  ]
+  }
 }

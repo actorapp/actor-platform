@@ -2,7 +2,7 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import React, { Component } from 'react';
+import { Component } from 'react';
 import { Container } from 'flux/utils';
 import FaviconStore from '../../stores/FaviconStore';
 

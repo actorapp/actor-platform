@@ -7,8 +7,6 @@ import { map, debounce } from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 import { Container } from 'flux/utils';
-import history from '../../../utils/history';
-import PeerUtils from '../../../utils/PeerUtils';
 import Scrollbar from '../../common/Scrollbar.react';
 
 import { KeyCodes } from '../../../constants/ActorAppConstants';

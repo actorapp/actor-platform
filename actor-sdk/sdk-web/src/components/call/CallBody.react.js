@@ -3,7 +3,6 @@
 */
 
 import React, {Component, PropTypes} from 'react';
-import { FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
 
 import CallAvatar from './CallAvatar.react';

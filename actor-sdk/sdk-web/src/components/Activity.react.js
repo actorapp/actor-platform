@@ -5,7 +5,6 @@
 import React, { Component } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import { Container } from 'flux/utils';
-import classnames from 'classnames';
 import { PeerTypes } from '../constants/ActorAppConstants';
 
 import ActivityStore from '../stores/ActivityStore';
@@ -60,7 +59,7 @@ class ActivitySection extends Component {
   }
 
   render() {
-    const { peer, info, isOpen } = this.state;
+    const { peer, isOpen } = this.state;
     if (!isOpen || !peer) {
       return <section className="activity" />;
     }

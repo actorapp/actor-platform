@@ -150,7 +150,7 @@ class ComposeStore extends Store {
 
       default:
     }
-  };
+  }
 }
 
 export default new ComposeStore(Dispatcher);

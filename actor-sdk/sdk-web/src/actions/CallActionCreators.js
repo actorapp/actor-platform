@@ -6,8 +6,6 @@ import { dispatch, dispatchAsync } from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes, CallTypes } from '../constants/ActorAppConstants';
 import ActorClient from '../utils/ActorClient';
 
-import CallStore from '../stores/CallStore';
-
 import ActionCreators from './ActionCreators';
 
 class CallActionCreators extends ActionCreators {

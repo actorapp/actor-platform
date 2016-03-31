@@ -24,7 +24,7 @@ class DialogFooter extends Component {
     if (dialog && !isFunction(dialog)) {
       this.components = {
         TypingSection: dialog.typing || DefaultTyping,
-        ComposeSection: dialog.compose || DefaultCompose,
+        ComposeSection: dialog.compose || DefaultCompose
       };
     } else {
       this.components = {

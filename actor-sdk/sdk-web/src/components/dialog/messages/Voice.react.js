@@ -36,7 +36,7 @@ class Voice extends Component {
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate() {
     const { content } = this.props;
 
     if (content.fileUrl && !this.isCached()) {
@@ -81,7 +81,7 @@ class Voice extends Component {
     return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
   };
 
-  handleTimeUpdate = (event) => {
+  handleTimeUpdate = () => {
     this.setState({
       currentTime: this.audio.currentTime,
       duration: this.audio.duration

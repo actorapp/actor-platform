@@ -43,7 +43,7 @@ class MyProfileStore extends Store {
     _name = profile.name;
     _nick = profile.nick;
     _about = profile.about;
-  };
+  }
 
   __onDispatch(action) {
     switch(action.type) {
@@ -81,7 +81,7 @@ class MyProfileStore extends Store {
         break;
       default:
     }
-  };
+  }
 }
 
 export default new MyProfileStore(Dispatcher);

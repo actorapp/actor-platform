@@ -49,7 +49,7 @@ class PreferencesModal extends Component {
       sessions: PreferencesStore.getSessions(),
       activeTab: PreferencesStore.getCurrentTab()
     }
-  };
+  }
 
   componentWillMount() {
     document.addEventListener('keydown', this.onKeyDown, false);

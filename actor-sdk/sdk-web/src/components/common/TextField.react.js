@@ -74,7 +74,6 @@ class TextField extends Component {
   }
 
   focus = () => {
-    const { ref } = this.props;
     const input = this.props.ref || this.refs.input
     if (!input) {
       return;

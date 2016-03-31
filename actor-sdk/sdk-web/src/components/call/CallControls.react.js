@@ -3,7 +3,6 @@
 */
 
 import React, {Component, PropTypes} from 'react';
-import { FormattedMessage } from 'react-intl';
 import { CallStates } from '../../constants/ActorAppConstants';
 
 import AnswerButton from './AnswerButton.react';
@@ -85,7 +84,7 @@ class CallControls extends Component {
           </div>
         </div>
       );
-    };
+    }
 
     return (
       <div className="call__controls">

@@ -3,22 +3,14 @@
  */
 
 import React, { Component, PropTypes } from 'react';
-import { findDOMNode } from 'react-dom';
-import { Container } from 'flux/utils';
 import classnames from 'classnames';
-import { FormattedMessage } from 'react-intl';
 import PeerUtils from '../../utils/PeerUtils';
 import { escapeWithEmoji } from '../../utils/EmojiUtils';
-import confirm from '../../utils/confirm';
 import { Link } from 'react-router';
 
 import { AsyncActionStates } from '../../constants/ActorAppConstants';
 
-import DialogActionCreators from '../../actions/DialogActionCreators';
 import DropdownActionCreators from '../../actions/DropdownActionCreators';
-
-import UserStore from '../../stores/UserStore';
-import ArchiveStore from '../../stores/ArchiveStore';
 
 import AvatarItem from '../common/AvatarItem.react';
 import Stateful from '../common/Stateful.react';
