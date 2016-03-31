@@ -18,7 +18,7 @@ final class HiddenGroupsSpec extends BaseAppSuite with ImplicitAuthService with 
 
   def loadHidden() = {
     val (user, authId, authSid, _) = createUser()
-    implicit val clientData = ClientData(authId, 1, Some(AuthData(user.id, authSid)))
+    implicit val clientData = ClientData(authId, 1, Some(AuthData(user.id, authSid, 42)))
 
     val groupId = 1
 

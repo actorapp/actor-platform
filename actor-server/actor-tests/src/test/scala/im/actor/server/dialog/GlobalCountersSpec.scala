@@ -20,10 +20,10 @@ final class GlobalCountersSpec
   def publicGroups(): Unit = {
 
     val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
-    val aliceClientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid)))
+    val aliceClientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid, 42)))
 
     val (bob, bobAuthId, bobAuthSid, _) = createUser()
-    val bobClientData = ClientData(bobAuthId, 1, Some(AuthData(bob.id, bobAuthSid)))
+    val bobClientData = ClientData(bobAuthId, 1, Some(AuthData(bob.id, bobAuthSid, 42)))
 
     val groupPeer = {
       implicit val clientData = bobClientData

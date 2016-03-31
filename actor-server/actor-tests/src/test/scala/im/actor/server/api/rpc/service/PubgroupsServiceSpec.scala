@@ -47,7 +47,7 @@ final class PubgroupsServiceSpec
     val (user8, authId8, authSid8, _) = createUser()
 
     val sessionId = createSessionId()
-    implicit val clientData = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
+    implicit val clientData = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1, 42)))
 
     val descriptions = List("Marvelous group for android developers group", "Group for iOS users", "You know it")
 
@@ -107,7 +107,7 @@ final class PubgroupsServiceSpec
     }
 
     def e4() = {
-      implicit val clientData = ClientData(authId8, sessionId, Some(AuthData(user8.id, authSid8)))
+      implicit val clientData = ClientData(authId8, sessionId, Some(AuthData(user8.id, authSid8, 42)))
       whenReady(contactService.handleAddContact(user2.id, userAccessHash(clientData.authId, user2.id, getUserModel(user2.id).accessSalt)))(_ ⇒ ())
       whenReady(contactService.handleAddContact(user3.id, userAccessHash(clientData.authId, user3.id, getUserModel(user3.id).accessSalt)))(_ ⇒ ())
       whenReady(contactService.handleAddContact(user4.id, userAccessHash(clientData.authId, user4.id, getUserModel(user4.id).accessSalt)))(_ ⇒ ())

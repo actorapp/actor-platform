@@ -30,8 +30,8 @@ class MessagingReadsSpec
     val (user2, authId2, authSid2, _) = createUser()
 
     val sessionId = createSessionId()
-    val client1 = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
-    val client2 = ClientData(authId2, sessionId, Some(AuthData(user2.id, authSid2)))
+    val client1 = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1, 42)))
+    val client2 = ClientData(authId2, sessionId, Some(AuthData(user2.id, authSid2, 42)))
 
     val user2AccessHash = ACLUtils.userAccessHash(client1.authId, user2.id, getUserModel(user2.id).accessSalt)
     val user2OutPeer = ApiOutPeer(ApiPeerType.Private, user2.id, user2AccessHash)
@@ -96,8 +96,8 @@ class MessagingReadsSpec
     val (user2, authId2, authSid2, _) = createUser()
 
     val sessionId = createSessionId()
-    val client1 = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
-    val client2 = ClientData(authId2, sessionId, Some(AuthData(user2.id, authSid2)))
+    val client1 = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1, 42)))
+    val client2 = ClientData(authId2, sessionId, Some(AuthData(user2.id, authSid2, 42)))
 
     val user2AccessHash = ACLUtils.userAccessHash(client1.authId, user2.id, getUserModel(user2.id).accessSalt)
     val user2OutPeer = ApiOutPeer(ApiPeerType.Private, user2.id, user2AccessHash)

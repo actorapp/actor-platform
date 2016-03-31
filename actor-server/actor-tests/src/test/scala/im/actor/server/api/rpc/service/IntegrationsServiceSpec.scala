@@ -46,8 +46,8 @@ final class IntegrationsServiceSpec
     val (user2, user2AuthId, user2AuthSid, _) = createUser()
 
     val sessionId = createSessionId()
-    val clientData1 = ClientData(user1AuthId1, sessionId, Some(AuthData(user1.id, user1AuthSid1)))
-    val clientData2 = ClientData(user1AuthId2, sessionId, Some(AuthData(user2.id, user1AuthSid2)))
+    val clientData1 = ClientData(user1AuthId1, sessionId, Some(AuthData(user1.id, user1AuthSid1, 42)))
+    val clientData2 = ClientData(user1AuthId2, sessionId, Some(AuthData(user2.id, user1AuthSid2, 42)))
 
     val user2Model = getUserModel(user2.id)
     val user2AccessHash = ACLUtils.userAccessHash(clientData1.authId, user2.id, user2Model.accessSalt)

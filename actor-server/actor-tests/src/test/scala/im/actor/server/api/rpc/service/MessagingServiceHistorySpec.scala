@@ -52,8 +52,8 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
     lazy val (user2, authId2, authSid2, _) = createUser()
     lazy val sessionId2 = createSessionId()
 
-    lazy val clientData1 = ClientData(authId1, sessionId1, Some(AuthData(user1.id, authSid1)))
-    lazy val clientData2 = ClientData(authId2, sessionId2, Some(AuthData(user2.id, authSid2)))
+    lazy val clientData1 = ClientData(authId1, sessionId1, Some(AuthData(user1.id, authSid1, 42)))
+    lazy val clientData2 = ClientData(authId2, sessionId2, Some(AuthData(user2.id, authSid2, 42)))
 
     lazy val user1Model = getUserModel(user1.id)
     lazy val user1AccessHash = ACLUtils.userAccessHash(authId2, user1.id, user1Model.accessSalt)
@@ -206,8 +206,8 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
         val (user2, authId2, authSid2, _) = createUser()
         val sessionId = createSessionId()
 
-        val clientData1 = ClientData(authId1, sessionId1, Some(AuthData(user1.id, authSid1)))
-        val clientData2 = ClientData(authId2, sessionId2, Some(AuthData(user2.id, authSid2)))
+        val clientData1 = ClientData(authId1, sessionId1, Some(AuthData(user1.id, authSid1, 42)))
+        val clientData2 = ClientData(authId2, sessionId2, Some(AuthData(user2.id, authSid2, 42)))
 
         val user1AccessHash = ACLUtils.userAccessHash(authId2, user1.id, getUserModel(user1.id).accessSalt)
         val user1Peer = peers.ApiOutPeer(ApiPeerType.Private, user1.id, user1AccessHash)
@@ -265,12 +265,12 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
         val (user2, authId21, authSid21, _) = createUser()
         val sessionId = createSessionId()
 
-        val clientData1 = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
-        val clientData21 = ClientData(authId21, sessionId, Some(AuthData(user2.id, authSid21)))
+        val clientData1 = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1, 42)))
+        val clientData21 = ClientData(authId21, sessionId, Some(AuthData(user2.id, authSid21, 42)))
 
         val (authId22, authSid22) = createAuthId(user2.id)
 
-        val clientData22 = ClientData(authId22, sessionId, Some(AuthData(user2.id, authSid22)))
+        val clientData22 = ClientData(authId22, sessionId, Some(AuthData(user2.id, authSid22, 42)))
 
         val user1AccessHash = ACLUtils.userAccessHash(authId21, user1.id, getUserModel(user1.id).accessSalt)
         val user1Peer = peers.ApiOutPeer(ApiPeerType.Private, user1.id, user1AccessHash)
@@ -366,8 +366,8 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
         val (user2, authId21, authSid21, _) = createUser()
         val sessionId = createSessionId()
 
-        val clientData1 = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
-        val clientData21 = ClientData(authId21, sessionId, Some(AuthData(user2.id, authSid21)))
+        val clientData1 = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1, 42)))
+        val clientData21 = ClientData(authId21, sessionId, Some(AuthData(user2.id, authSid21, 42)))
 
         val user1AccessHash = ACLUtils.userAccessHash(authId21, user1.id, getUserModel(user1.id).accessSalt)
         val user1Peer = peers.ApiOutPeer(ApiPeerType.Private, user1.id, user1AccessHash)
@@ -415,8 +415,8 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
         val (user2, authId2, authSid2, _) = createUser()
         val sessionId = createSessionId()
 
-        val clientData1 = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
-        val clientData2 = ClientData(authId2, sessionId, Some(AuthData(user2.id, authSid2)))
+        val clientData1 = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1, 42)))
+        val clientData2 = ClientData(authId2, sessionId, Some(AuthData(user2.id, authSid2, 42)))
 
         val groupOutPeer = {
           implicit val clientData = clientData1
@@ -471,8 +471,8 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
         val (user2, authId2, authSid2, _) = createUser()
         val sessionId = createSessionId()
 
-        val clientData1 = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
-        val clientData2 = ClientData(authId2, sessionId, Some(AuthData(user2.id, authSid2)))
+        val clientData1 = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1, 42)))
+        val clientData2 = ClientData(authId2, sessionId, Some(AuthData(user2.id, authSid2, 42)))
 
         val groupOutPeer = {
           implicit val clientData = clientData1
