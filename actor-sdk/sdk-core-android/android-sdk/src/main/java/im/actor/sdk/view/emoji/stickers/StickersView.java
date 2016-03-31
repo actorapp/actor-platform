@@ -61,7 +61,9 @@ public class StickersView extends RecyclerView {
     }
 
     public void relesase() {
-        stickersAdapter.release();
+        if (stickersAdapter != null) {
+            stickersAdapter.release();
+        }
     }
 
 }
