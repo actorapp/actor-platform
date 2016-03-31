@@ -89,7 +89,7 @@ public class ProfileFragment extends BaseFragment {
 
         final TextView lastSeen = (TextView) res.findViewById(R.id.lastSeen);
         lastSeen.setTextColor(style.getProfileSubtitleColor());
-        bind(lastSeen, lastSeen, user);
+        bind(lastSeen, user);
 
         boolean nickVisible = false;
         boolean aboutVivisbe = false;
