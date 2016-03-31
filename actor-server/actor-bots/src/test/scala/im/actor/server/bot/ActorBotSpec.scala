@@ -47,7 +47,7 @@ final class ActorBotSpec
 
     Thread.sleep(2000)
 
-    implicit val clientData = ClientData(authId, Random.nextLong(), Some(AuthData(user.id, authSid)))
+    implicit val clientData = ClientData(authId, Random.nextLong(), Some(AuthData(user.id, authSid, 42)))
 
     val botOutPeer = getOutPeer(ActorBot.UserId, authId)
 
@@ -78,7 +78,7 @@ final class ActorBotSpec
 
     Thread.sleep(1000)
 
-    implicit val clientData = ClientData(authId, Random.nextLong(), Some(AuthData(user.id, authSid)))
+    implicit val clientData = ClientData(authId, Random.nextLong(), Some(AuthData(user.id, authSid, 42)))
 
     val botOutPeer = getOutPeer(ActorBot.UserId, authId)
 
@@ -95,7 +95,7 @@ final class ActorBotSpec
   def username() = {
     val (user, authId, authSid, _) = createUser()
 
-    implicit val clientData = ClientData(authId, Random.nextLong(), Some(AuthData(user.id, authSid)))
+    implicit val clientData = ClientData(authId, Random.nextLong(), Some(AuthData(user.id, authSid, 42)))
 
     whenReady(contactsService.handleSearchContacts("actor")) { resp ⇒
       inside(resp) {

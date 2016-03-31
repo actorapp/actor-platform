@@ -70,7 +70,7 @@ final class EchoBotSpec
 
     Thread.sleep(2000)
 
-    implicit val clientData = ClientData(authId, Random.nextLong(), Some(AuthData(user.id, authSid)))
+    implicit val clientData = ClientData(authId, Random.nextLong(), Some(AuthData(user.id, authSid, 42)))
 
     val botOutPeer = getOutPeer(EchoBot.UserId, authId)
 
@@ -86,7 +86,7 @@ final class EchoBotSpec
 
   def replyGroup() = {
     val (user, authId, authSid, _) = createUser()
-    implicit val clientData = ClientData(authId, 1, Some(AuthData(user.id, authSid)))
+    implicit val clientData = ClientData(authId, 1, Some(AuthData(user.id, authSid, 42)))
     val groupPeer = createGroup("Echo group", Set(EchoBot.UserId)).groupPeer
     val outPeer = ApiOutPeer(ApiPeerType.Group, groupPeer.groupId, groupPeer.accessHash)
 
