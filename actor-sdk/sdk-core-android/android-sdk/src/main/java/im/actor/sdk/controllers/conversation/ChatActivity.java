@@ -744,9 +744,6 @@ public class ChatActivity extends ActorEditTextActivity {
         // Saving draft
         messenger().saveDraft(peer, messageEditText.getText().toString());
 
-        if (barAvatar != null) {
-            barAvatar.unbind();
-        }
     }
 
     // Message send
@@ -1387,6 +1384,10 @@ public class ChatActivity extends ActorEditTextActivity {
         if (fastShareAdapter != null) {
             fastShareAdapter.release();
             fastShareAdapter = null;
+        }
+
+        if (barAvatar != null) {
+            barAvatar.unbind();
         }
     }
 

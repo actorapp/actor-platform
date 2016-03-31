@@ -214,7 +214,9 @@ public class EmojiKeyboard extends BaseKeyboard implements OnSmileClickListener,
     }
 
     public void release() {
-        mEmojisAdapter.release();
+        if (mEmojisAdapter != null) {
+            mEmojisAdapter.release();
+        }
     }
 
 }
