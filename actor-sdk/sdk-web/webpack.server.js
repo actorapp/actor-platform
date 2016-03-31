@@ -15,6 +15,7 @@ function createServer(webpackConfig) {
   }));
 
   app.use('/assets', express.static('assets'));
+  app.use('/assets/images/emoji', express.static('node_modules/actor-emoji'));
 
   app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'devapp/index.html'));

@@ -136,6 +136,15 @@ class ActorClient {
     return ActorClient.createBindings('bindCall', 'unbindCall', callId, callback);
   }
 
+  bindStickers(callback) {
+    window.messenger.bindStickers(callback);
+    return {
+      unbind() {
+        window.messenger.unbindStickers(callback);
+      }
+    };
+  }
+
   makeCall(userId) {
     return window.messenger.doCall(userId);
   }
@@ -470,6 +479,10 @@ class ActorClient {
 
   loadMoreArchivedDialogs() {
     return window.messenger.loadMoreArchivedDialogs();
+  }
+
+  sendSticker(peer, sticker) {
+    window.messenger.sendSticker(peer, sticker);
   }
 }
 
