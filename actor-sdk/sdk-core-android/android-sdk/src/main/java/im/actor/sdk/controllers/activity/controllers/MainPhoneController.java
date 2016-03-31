@@ -434,10 +434,9 @@ public class MainPhoneController extends MainBaseController {
 
         // Icons
         // int width = Screen.dp(72 * 2);
-        int width = Screen.dp(120 * 2);
 
-        tabsContainer.addView(barTabs, new FrameLayout.LayoutParams(width, Screen.dp(56)));
-        Toolbar.LayoutParams lp = new Toolbar.LayoutParams(width, Screen.dp(56));
+        tabsContainer.addView(barTabs, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, Screen.dp(56)));
+        Toolbar.LayoutParams lp = new Toolbar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, Screen.dp(56));
         tabsContainer.setLayoutParams(lp);
         ab.setCustomView(tabsContainer);
     }
