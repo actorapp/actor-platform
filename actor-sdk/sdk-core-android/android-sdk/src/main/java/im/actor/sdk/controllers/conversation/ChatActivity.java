@@ -681,7 +681,7 @@ public class ChatActivity extends ActorEditTextActivity {
             bind(barTitle, user.getName());
 
             // Binding User presence to Toolbar
-            bind(barSubtitle, barSubtitleContainer, user);
+            bind(barSubtitle, user);
 
             // Binding User typing to Toolbar
             bindPrivateTyping(barTyping, barTypingContainer, barSubtitle, messenger().getTyping(user.getId()));
