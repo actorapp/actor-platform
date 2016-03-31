@@ -31,7 +31,7 @@ public class PacksAdapter extends RecyclerView.Adapter<PacksAdapter.StickerViewH
         packsSwitchContainer = stickerIndicatorContainer;
         this.context = context;
         this.stickersAdapter = stickersAdapter;
-        messenger().getAvailableStickersVM().getOwnStickerPacks().subscribe(new ValueChangedListener<ArrayList<StickerPack>>() {
+        stickersAdapter.getBinder().bind(messenger().getAvailableStickersVM().getOwnStickerPacks(), new ValueChangedListener<ArrayList<StickerPack>>() {
             @Override
             public void onChanged(ArrayList<StickerPack> val, Value<ArrayList<StickerPack>> valueModel) {
                 stickers.clear();
