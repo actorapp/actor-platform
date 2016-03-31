@@ -247,7 +247,7 @@ public class GroupInfoFragment extends BaseFragment {
         });
         listView.addFooterView(add, null, false);
 
-        groupUserAdapter = new MembersAdapter(groupInfo.getMembers().get(), getActivity());
+        groupUserAdapter = new MembersAdapter(groupInfo.getMembers().get(), getActivity(), this);
         bind(groupInfo.getMembers(), new ValueChangedListener<HashSet<GroupMember>>() {
             @Override
             public void onChanged(HashSet<GroupMember> val, Value<HashSet<GroupMember>> Value) {
