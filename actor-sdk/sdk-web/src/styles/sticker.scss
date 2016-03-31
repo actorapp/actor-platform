@@ -1,0 +1,14 @@
+$sticker-size: 64px;
+
+.sticker {
+  width: $sticker-size;
+  height: $sticker-size;
+  display: inline-flex;
+  flex-direction: column;
+  align-content: center;
+  img {
+    width: 100%;
+    height: auto;
+    flex: 0 0 auto;
+  }
+}

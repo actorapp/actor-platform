@@ -480,6 +480,10 @@ class ActorClient {
   loadMoreArchivedDialogs() {
     return window.messenger.loadMoreArchivedDialogs();
   }
+
+  sendSticker(peer, sticker) {
+    window.messenger.sendSticker(peer, sticker);
+  }
 }
 
 export default new ActorClient();
