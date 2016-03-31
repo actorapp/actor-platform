@@ -144,12 +144,7 @@ class ActorSDK {
 
             <Route path="im" component={Main} onEnter={RouterHooks.requireAuth}>
               <Route path="archive" component={Archive}/>
-              <Route
-                path=":id"
-                component={Dialog}
-                onEnter={RouterHooks.onDialogEnter}
-                onLeave={RouterHooks.onDialogLeave}
-              />
+              <Route path=":id" component={Dialog}/>
               <IndexRoute component={Empty}/>
             </Route>
 
