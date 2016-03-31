@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.ContactsContract;
@@ -113,6 +114,7 @@ public class ChatActivity extends ActorEditTextActivity {
     private static final int PERMISSIONS_REQUEST_CAMERA = 6;
     private static final int PERMISSION_REQUEST_RECORD_AUDIO = 7;
     private static final int PERMISSIONS_REQUEST_FOR_CALL = 8;
+    private static final int PERMISSION_REQ_MEDIA = 11;
     // Peer of current chat
     private Peer peer;
 
@@ -294,6 +296,7 @@ public class ChatActivity extends ActorEditTextActivity {
                     messageEditText.setText("");
                 }
                 textEditing = false;
+                checkSendButton();
 
             }
         });
@@ -797,6 +800,7 @@ public class ChatActivity extends ActorEditTextActivity {
                 }
             });
             goneView(quoteContainer);
+            checkSendButton();
             textEditing = false;
         } else {
             messenger().sendMessage(peer, rawText);
@@ -1077,6 +1081,8 @@ public class ChatActivity extends ActorEditTextActivity {
         hideShare();
         quoteText.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_editor_format_quote_gray), null, null, null);
         showView(quoteContainer);
+        checkSendButton();
+
     }
 
     // Back button handling
@@ -1085,6 +1091,8 @@ public class ChatActivity extends ActorEditTextActivity {
     public void onBackPressed() {
         if (isMentionsVisible) {
             hideMentions();
+        } else if (isShareVisible) {
+            hideShare();
         } else if (emojiKeyboard.isShowing()) {
             emojiKeyboard.dismiss();
         } else {
@@ -1243,7 +1251,7 @@ public class ChatActivity extends ActorEditTextActivity {
         messageEditText.setText(text);
         hideShare();
         showView(quoteContainer);
-
+        //we don't force check send button here, because it forces from text watcher
     }
 
     private class TextWatcherImp implements TextWatcher {
@@ -1308,19 +1316,25 @@ public class ChatActivity extends ActorEditTextActivity {
 
         @Override
         public void afterTextChanged(Editable s) {
-            if (s.length() > 0) {
-                sendButton.setTint(ActorSDK.sharedActor().style.getConvSendEnabledColor());
-                sendButton.setEnabled(true);
-                zoomInView(sendButton);
-                zoomOutView(audioButton);
-            } else {
-                sendButton.setTint(ActorSDK.sharedActor().style.getConvSendDisabledColor());
-                sendButton.setEnabled(false);
-                zoomInView(audioButton);
-                zoomOutView(sendButton);
-            }
+            checkSendButton(s.length() > 0);
+        }
+    }
 
+    public void checkSendButton() {
+        checkSendButton(messageEditText.getText().length() > 0);
+    }
 
+    public void checkSendButton(boolean hasText) {
+        if (hasText || (currentQuote != null && !currentQuote.isEmpty())) {
+            sendButton.setTint(ActorSDK.sharedActor().style.getConvSendEnabledColor());
+            sendButton.setEnabled(true);
+            zoomInView(sendButton);
+            zoomOutView(audioButton);
+        } else {
+            sendButton.setTint(ActorSDK.sharedActor().style.getConvSendDisabledColor());
+            sendButton.setEnabled(false);
+            zoomInView(audioButton);
+            zoomOutView(sendButton);
         }
     }
 
@@ -1401,6 +1415,20 @@ public class ChatActivity extends ActorEditTextActivity {
     private boolean animationInProgress = false;
 
     private void showShare() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(ChatActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(ChatActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQ_MEDIA);
+
+            } else {
+                showShareChecked();
+            }
+        } else {
+            showShareChecked();
+        }
+    }
+
+    private void showShareChecked() {
         if (animationInProgress) {
             return;
         }
@@ -1472,6 +1500,11 @@ public class ChatActivity extends ActorEditTextActivity {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 startCamera();
+            }
+        } else if (requestCode == PERMISSION_REQ_MEDIA) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                showShareChecked();
             }
         }
     }

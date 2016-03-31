@@ -74,8 +74,12 @@ public class GalleryScannerActor extends Actor {
     }
 
     private Cursor getQuery() {
-        return context.getContentResolver().query(uri, projection, null,
-                null, MediaStore.MediaColumns.DATE_MODIFIED + " DESC");
+        try {
+            return context.getContentResolver().query(uri, projection, null,
+                    null, MediaStore.MediaColumns.DATE_MODIFIED + " DESC");
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private void scan() {

@@ -8,10 +8,6 @@
     <style name="AppToolbarTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:windowContentOverlay">@null</item>
 
-        <item name="colorControlNormal">#ffffffff</item>
-        <item name="android:textColorPrimary">#ffffffff</item>
-        <item name="android:colorControlNormal">#ffffffff</item>
-
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_hovered</item>
         <item name="colorAccent">@color/accent</item>
