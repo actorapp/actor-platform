@@ -186,6 +186,8 @@ public class StickersAdapter extends RecyclerView.Adapter<StickersAdapter.Sticke
     }
 
     public void release() {
-        binder.unbindAll();
+        if (binder != null) {
+            binder.unbindAll();
+        }
     }
 }
