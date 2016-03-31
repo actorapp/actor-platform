@@ -76,6 +76,7 @@ class InviteUser extends Component {
 
   renderContacts() {
     const { intl } = this.context;
+    const { group } = this.state;
     const contacts = this.getContacts();
 
     if (!contacts.length) {
@@ -89,7 +90,6 @@ class InviteUser extends Component {
     return contacts.map((contact, i) => {
       let inviteUserState = InviteUserStore.getInviteUserState(contact.uid);
       let controls;
-      console.debug(contact.uid);
       if (hasMember(group, contact.uid)) {
         controls = <i className="material-icons">check</i>;
       } else {
@@ -113,7 +113,7 @@ class InviteUser extends Component {
   }
 
   render() {
-    const { isOpen, group } = this.state;
+    const { isOpen, group, search } = this.state;
     const { intl } = this.context;
 
     if (!isOpen) {
