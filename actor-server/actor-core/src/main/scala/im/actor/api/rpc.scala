@@ -61,8 +61,8 @@ package object rpc extends PeersImplicits with HistoryImplicits {
 
   private def requireAuth(implicit clientData: ClientData): MaybeAuthorized[AuthorizedClientData] =
     clientData.authData match {
-      case Some(AuthData(userId, authSid)) ⇒ Authorized(AuthorizedClientData(clientData.authId, clientData.sessionId, userId, authSid))
-      case None                            ⇒ NotAuthorized
+      case Some(AuthData(userId, authSid, appId)) ⇒ Authorized(AuthorizedClientData(clientData.authId, clientData.sessionId, userId, authSid, appId))
+      case None                                   ⇒ NotAuthorized
     }
 
   private def toResult[R](authorizedFuture: MaybeAuthorized[Future[RpcError Xor R]])(implicit ec: ExecutionContext): Future[RpcError Xor R] =

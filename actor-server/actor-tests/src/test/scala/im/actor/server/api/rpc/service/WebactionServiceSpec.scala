@@ -30,7 +30,7 @@ class WebactionServiceSpec
   object t {
     val (user, userAuthId, userAuthSid, _) = createUser()
     val sessionId = createSessionId()
-    implicit val clientData = ClientData(userAuthId, sessionId, Some(AuthData(user.id, userAuthSid)))
+    implicit val clientData = ClientData(userAuthId, sessionId, Some(AuthData(user.id, userAuthSid, 42)))
     private val kv = WebactionsKeyValues.actionHashUserKV()
 
     def e1(): Unit = {
