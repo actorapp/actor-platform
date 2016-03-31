@@ -12,18 +12,6 @@ const RouterHooks = {
         }
       });
     }
-  },
-  onDialogEnter(nextState, replaceState) {
-    const peer = PeerUtils.stringToPeer(nextState.params.id);
-    if (!PeerUtils.hasPeer(peer)) {
-      console.error('Invalig peer', nextState);
-      replaceState('/im');
-    } else {
-      DialogActionCreators.selectDialogPeer(peer);
-    }
-  },
-  onDialogLeave() {
-    DialogActionCreators.selectDialogPeer(null);
   }
 };
 

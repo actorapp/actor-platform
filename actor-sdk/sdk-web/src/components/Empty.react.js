@@ -9,10 +9,6 @@ import SvgIcon from './common/SvgIcon.react';
 import ConnectionState from './common/ConnectionState.react';
 
 class EmptyScreen extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <section className="main">

@@ -7,6 +7,8 @@ import { map, isFunction } from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
 
+import PeerUtils from '../utils/PeerUtils';
+
 import DefaultMessages from './dialog/MessagesSection.react';
 import DialogFooter from './dialog/DialogFooter.react';
 import DefaultToolbar from './Toolbar.react';
@@ -18,9 +20,18 @@ import ConnectionState from './common/ConnectionState.react';
 import ActivityStore from '../stores/ActivityStore';
 import DialogStore from '../stores/DialogStore';
 
+import DialogActionCreators from '../actions/DialogActionCreators';
+
 class DialogSection extends Component {
   static contextTypes = {
-    delegate: PropTypes.object
+    router: PropTypes.object.isRequired,
+    delegate: PropTypes.object.isRequired
+  };
+
+  static propTypes = {
+    params: PropTypes.shape({
+      id: PropTypes.string.isRequired
+    }).isRequired
   };
 
   static getStores() {
@@ -33,6 +44,30 @@ class DialogSection extends Component {
       isMember: DialogStore.isMember(),
       isActivityOpen: ActivityStore.isOpen()
     };
+  }
+
+  constructor(props, context) {
+    super(props, context);
+    this.updatePeer(this.props.params.id);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.params.id !== this.props.params.id) {
+      this.updatePeer(nextProps.params.id);
+    }
+  }
+
+  componentWillUnmount() {
+    DialogActionCreators.selectDialogPeer(null);
+  }
+
+  updatePeer(id) {
+    const peer = PeerUtils.stringToPeer(id);
+    if (PeerUtils.hasPeer(peer)) {
+      DialogActionCreators.selectDialogPeer(peer);
+    } else {
+      this.context.router.replace('/im');
+    }
   }
 
   getComponents() {
@@ -65,6 +100,9 @@ class DialogSection extends Component {
 
   render() {
     const { peer, isMember, messages, overlay, messagesCount } = this.state;
+    if (!peer) {
+      return <section className="main" />;
+    }
 
     const {
       ToolbarSection,
@@ -88,4 +126,4 @@ class DialogSection extends Component {
   }
 }
 
-export default Container.create(DialogSection);
+export default Container.create(DialogSection, {withProps: true});
