@@ -79,6 +79,7 @@ public class SignInFragment extends BaseAuthFragment {
         }
 
         codeEnterEditText = (EditText) v.findViewById(R.id.et_sms_code_enter);
+        codeEnterEditText.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
         codeEnterEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
