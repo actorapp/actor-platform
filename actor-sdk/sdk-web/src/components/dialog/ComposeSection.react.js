@@ -17,6 +17,7 @@ import MessageActionCreators from '../../actions/MessageActionCreators';
 import ComposeActionCreators from '../../actions/ComposeActionCreators';
 import AttachmentsActionCreators from '../../actions/AttachmentsActionCreators';
 import EmojiActionCreators from '../../actions/EmojiActionCreators';
+import StickersActionCreators from '../../actions/StickersActionCreators';
 
 import GroupStore from '../../stores/GroupStore';
 import PreferencesStore from '../../stores/PreferencesStore';
@@ -27,6 +28,7 @@ import DialogStore from '../../stores/DialogStore';
 import AvatarItem from '../common/AvatarItem.react';
 import MentionDropdown from '../common/MentionDropdown.react';
 import EmojiDropdown from '../common/EmojiDropdown.react';
+// import EmojiDropdown from '../emoji_stickers/Dropdown.react';
 import VoiceRecorder from '../common/VoiceRecorder.react';
 import DropZone from '../common/DropZone.react';
 import SendAttachment from '../modals/SendAttachment';
@@ -193,6 +195,12 @@ class ComposeSection extends Component {
     this.setFocus();
   };
 
+  handleStickerSelect = (sticker) => {
+    const { peer } = this.state;
+    StickersActionCreators.sendSticker(peer, sticker);
+    this.setFocus();
+  };
+
   setFocus = () => {
     findDOMNode(this.refs.area).focus();
   };
@@ -245,7 +253,7 @@ class ComposeSection extends Component {
                          onSelect={this.onMentionSelect}
                          onClose={this.onMentionClose}/>
 
-        <EmojiDropdown onSelect={this.handleEmojiSelect}/>
+        <EmojiDropdown onSelect={this.handleEmojiSelect} onStickerSelect={this.handleStickerSelect} />
 
         <VoiceRecorder onFinish={this.sendVoiceRecord}/>
 
