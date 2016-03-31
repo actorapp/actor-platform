@@ -15,6 +15,7 @@ import EmojiActionCreators from '../../actions/EmojiActionCreators'
 import EmojiStore from '../../stores/EmojiStore'
 
 import { Element, Link } from 'react-scroll';
+import Sticker from '../emoji_stickers/Sticker.react';
 
 let emojiTabs = [];
 let emojis = [];
@@ -23,11 +24,12 @@ const CLOSE_TIMEOUT = 550;
 
 class EmojiDropdown extends Component {
   static propTypes = {
-    onSelect: PropTypes.func.isRequired
+    onSelect: PropTypes.func.isRequired,
+    onStickerSelect: PropTypes.func.isRequired
   };
 
   static getStores() {
-    return [EmojiStore]
+    return [EmojiStore];
   }
 
   static calculateState() {
@@ -54,8 +56,8 @@ class EmojiDropdown extends Component {
               onSetActive={() => this.changeDropdownTitle(category.title)}
               containerId="emojiContainer"
               onMouseEnter={this.handleEmojiTabMouseEnter}
-              className="emoji-dropdown__header__tabs__tab"
-              activeClass="emoji-dropdown__header__tabs__tab--active">
+              className="emojis__header__tabs__tab"
+              activeClass="emojis__header__tabs__tab--active">
           <span dangerouslySetInnerHTML={{__html: categoryIcon}}/>
         </Link>
       );
@@ -79,6 +81,9 @@ class EmojiDropdown extends Component {
         </Element>
       );
     });
+
+    this.handleEmojisTabMouseEnter = this.handleEmojisTabMouseEnter.bind(this);
+    this.handleStickerTabMouseEnter = this.handleStickerTabMouseEnter.bind(this);
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -112,7 +117,7 @@ class EmojiDropdown extends Component {
   onDocumentClick = (event) => {
     event.stopPropagation();
     event.preventDefault();
-    if (!event.target.className.includes('emoji-dropdown__header__tabs__tab')) {
+    if (!event.target.className.includes('emojis__header__tabs__tab')) {
       const emojiDropdown = findDOMNode(this.refs.emojiDropdown);
       const emojiRect = emojiDropdown.getBoundingClientRect();
       const coords = {
@@ -148,8 +153,29 @@ class EmojiDropdown extends Component {
     clearTimeout(closeTimer);
   };
 
+  handleEmojisTabMouseEnter() {
+    this.setState({isStickersOpen: false});
+  }
+  handleStickerTabMouseEnter() {
+    this.setState({isStickersOpen: true});
+  }
+
+  renderStickers() {
+    const { stickers } = this.state;
+    const { onStickerSelect } = this.props;
+    if (stickers.length === 0) return null;
+
+    return stickers.map((sticker, index) => (
+      <Sticker
+        sticker={sticker}
+        onClick={onStickerSelect}
+        key={index}
+      />
+    ));
+  }
+
   render() {
-    const { isOpen, dropdownTitle } = this.state;
+    const { isOpen, dropdownTitle, isStickersOpen } = this.state;
     const isEmojiOpenedBefore = (localStorage.getItem('isEmojiOpenedBefore') === 'true') || false;
 
     const emojiDropdownClassName = classnames('emoji-dropdown', {
@@ -160,24 +186,59 @@ class EmojiDropdown extends Component {
       'emoji-opener--with-dot': !isEmojiOpenedBefore
     });
 
+    const emojiTabClassName = classnames('emoji-dropdown__footer__tab', {
+      'emoji-dropdown__footer__tab--active': !isStickersOpen
+    });
+    const stickerTabClassName = classnames('emoji-dropdown__footer__tab', {
+      'emoji-dropdown__footer__tab--active': isStickersOpen
+    });
+
+    const emojisClassName = classnames('emojis', {
+      'hide': isStickersOpen
+    });
+    const stickersClassName = classnames('stickers', {
+      'hide': !isStickersOpen
+    });
+
     return (
       <div className={emojiDropdownClassName}>
+
         <i className={emojiOpenerClassName}
            onMouseEnter={this.handleEmojiOpenerMouseEnter}
            onMouseLeave={this.handleEmojiMouseLeave}>insert_emoticon</i>
 
 
         <div className="emoji-dropdown__wrapper" ref="emojiDropdown">
-          <header className="emoji-dropdown__header">
-            <p className="emoji-dropdown__header__title">{dropdownTitle || 'Emoji'}</p>
+          <div className="emoji-dropdown__body">
 
-            <div className="emoji-dropdown__header__tabs pull-right">
-              {emojiTabs}
+            <div className={emojisClassName}>
+              <header className="emojis__header">
+                <p className="emojis__header__title">{dropdownTitle || 'Emoji'}</p>
+
+                <div className="emojis__header__tabs pull-right">
+                  {emojiTabs}
+                </div>
+              </header>
+              <div className="emojis__body" id="emojiContainer">
+                {emojis}
+              </div>
             </div>
-          </header>
-          <div className="emoji-dropdown__body" id="emojiContainer">
-            {emojis}
+
+            <div className={stickersClassName}>
+              {this.renderStickers()}
+            </div>
           </div>
+
+          <footer className="emoji-dropdown__footer">
+            <div className={emojiTabClassName}
+                 onClick={this.handleEmojisTabMouseEnter}>
+              Emojis
+            </div>
+            <div className={stickerTabClassName}
+                 onClick={this.handleStickerTabMouseEnter}>
+              Stickers
+            </div>
+          </footer>
         </div>
       </div>
     );
