@@ -121,8 +121,20 @@ class Recent extends Component {
         case 'groups':
           groupTitle = (
             <li className="sidebar__list__title">
-              <a onClick={this.handleGroupListClick}>{intl.messages[`sidebar.recents.${dialogGroup.key}`]}</a>
-              <Tooltip placement="top" mouseEnterDelay={0.5} overlay="Create group">
+              <Tooltip
+                placement="right"
+                mouseEnterDelay={0.5}
+                overlay={<FormattedMessage id="tooltip.recent.groupList"/>}
+              >
+                <a onClick={this.handleGroupListClick}>
+                  <FormattedMessage id={`sidebar.recents.${dialogGroup.key}`}/>
+                </a>
+              </Tooltip>
+              <Tooltip
+                placement="top"
+                mouseEnterDelay={0.5}
+                overlay={<FormattedMessage id="tooltip.recent.createGroup"/>}
+              >
                 <i className="material-icons sidebar__list__title__icon pull-right"
                    onClick={this.handleCreateGroup}>add_circle_outline</i>
               </Tooltip>
@@ -132,8 +144,20 @@ class Recent extends Component {
         case 'privates':
           groupTitle = (
             <li className="sidebar__list__title">
-              <a onClick={this.handlePrivateListClick}>{intl.messages[`sidebar.recents.${dialogGroup.key}`]}</a>
-              <Tooltip placement="top" mouseEnterDelay={0.5} overlay="Add contact">
+              <Tooltip
+                placement="right"
+                mouseEnterDelay={0.5}
+                overlay={<FormattedMessage id="tooltip.recent.privateList"/>}
+              >
+                <a onClick={this.handlePrivateListClick}>
+                  <FormattedMessage id={`sidebar.recents.${dialogGroup.key}`}/>
+                </a>
+              </Tooltip>
+              <Tooltip
+                placement="top"
+                mouseEnterDelay={0.5}
+                overlay={<FormattedMessage id="tooltip.recent.addContact"/>}
+              >
                 <i className="material-icons sidebar__list__title__icon pull-right"
                    onClick={this.handleCreatePrivate}>add_circle_outline</i>
                </Tooltip>
