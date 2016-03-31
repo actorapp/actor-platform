@@ -202,6 +202,8 @@ public class SmilePagerAdapter extends PagerAdapter implements PagerSlidingTabSt
     }
 
     public void release() {
-        stickersView.relesase();
+        if (stickersView != null) {
+            stickersView.relesase();
+        }
     }
 }
