@@ -113,7 +113,7 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
                 recordView.findViewById(R.id.divider).setBackgroundColor(style.getDividerColor());
                 TintImageView nickIcon = (TintImageView) recordView.findViewById(R.id.recordIcon);
                 nickIcon.setTint(style.getSettingsCategoryTextColor());
-                nickIcon.setResource(R.drawable.ic_star_white_36dp);
+                nickIcon.setResource(R.drawable.ic_star_white_24dp);
 
                 String value = (val != null && !val.isEmpty()) ? val : getString(R.string.nickname_empty);
                 String title = getString(R.string.nickname);
@@ -140,7 +140,7 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
         final TextView aboutTitle = (TextView) about.findViewById(R.id.value);
         TintImageView aboutIcon = (TintImageView) about.findViewById(R.id.recordIcon);
         aboutIcon.setTint(style.getSettingsCategoryTextColor());
-        aboutIcon.setResource(R.drawable.ic_editor_format_quote_36dp);
+        aboutIcon.setResource(R.drawable.ic_format_quote_white_24dp);
         TextView aboutValue = (TextView) about.findViewById(R.id.title);
         aboutTitle.setTextColor(style.getTextPrimaryColor());
         aboutValue.setTextColor(style.getTextSecondaryColor());
@@ -180,7 +180,7 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
                         TintImageView tintImageView = (TintImageView) recordView.findViewById(R.id.recordIcon);
                         tintImageView.setTint(style.getSettingsCategoryTextColor());
                         if (i == 0) {
-                            tintImageView.setResource(R.drawable.ic_call_white_36dp);
+                            tintImageView.setResource(R.drawable.ic_phone_white_24dp);
                             tintImageView.setVisibility(View.VISIBLE);
                         } else {
                             tintImageView.setVisibility(View.INVISIBLE);
@@ -279,7 +279,7 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
                         TintImageView tintImageView = (TintImageView) recordView.findViewById(R.id.recordIcon);
                         tintImageView.setTint(style.getSettingsCategoryTextColor());
                         if (i == 0) {
-                            tintImageView.setResource(R.drawable.ic_email_white_36dp);
+                            tintImageView.setResource(R.drawable.ic_email_white_24dp);
                             tintImageView.setVisibility(View.VISIBLE);
                         } else {
                             tintImageView.setVisibility(View.INVISIBLE);
