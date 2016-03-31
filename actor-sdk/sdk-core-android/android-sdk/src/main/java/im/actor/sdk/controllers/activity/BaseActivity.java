@@ -64,8 +64,8 @@ public class BaseActivity extends AppCompatActivity {
         BINDER.bind(avatarView, id, avatar, name);
     }
 
-    public void bind(final TextView textView, final View container, final UserVM user) {
-        BINDER.bind(textView, container, user);
+    public void bind(final TextView textView, final UserVM user) {
+        BINDER.bind(textView, user);
     }
 
     public void bind(final TextView textView, View titleContainer, GroupVM value) {
@@ -233,5 +233,9 @@ public class BaseActivity extends AppCompatActivity {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    public ActorBinder getBINDER() {
+        return BINDER;
     }
 }
