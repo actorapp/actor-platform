@@ -235,7 +235,4 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-    public ActorBinder getBINDER() {
-        return BINDER;
-    }
 }
