@@ -2,7 +2,6 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import { escape } from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
 import classnames from 'classnames';
@@ -56,7 +55,7 @@ class MessageItem extends Component {
     isExperimental: PropTypes.bool
   };
 
-  shouldComponentUpdate(nextProps, nextState) {
+  shouldComponentUpdate(nextProps) {
     return (this.props.message !== nextProps.message || this.props.isShort !== nextProps.isShort);
   }
 

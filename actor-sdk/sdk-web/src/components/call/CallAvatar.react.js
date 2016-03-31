@@ -3,7 +3,6 @@
 */
 
 import React, {Component, PropTypes} from 'react';
-import { FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
 
 import { CallStates } from '../../constants/ActorAppConstants';
@@ -27,22 +26,21 @@ class CallAvatar extends Component {
   };
 
   renderAnimation() {
-    switch (this.props.callState) {
-      case CallStates.CALLING:
-      case CallStates.CONNECTING:
-        const className = classNames('call__avatar__rings', {
-          'call__avatar__rings--small': this.props.small
-        });
+    const { callState, small } = this.props;
 
-        return (
-          <div className={className}>
-            <div/><div/><div/>
-          </div>
-        );
-        break;
-      default:
-        return null;
+    if (callState !== CallStates.CALLING && callState !== CallStates.CONNECTING) {
+      return null;
     }
+
+    const className = classNames('call__avatar__rings', {
+      'call__avatar__rings--small': small
+    });
+
+    return (
+      <div className={className}>
+        <div/><div/><div/>
+      </div>
+    );
   }
 
   render() {

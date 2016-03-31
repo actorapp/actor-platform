@@ -5,8 +5,6 @@
 import { Store } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
-import ActorClient from '../utils/ActorClient';
-import PeerUtils from '../utils/PeerUtils';
 
 class DropdownStore extends Store {
   constructor(dispatcher) {

@@ -2,8 +2,6 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import { map } from 'lodash';
-
 import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
 import { FormattedMessage } from 'react-intl';

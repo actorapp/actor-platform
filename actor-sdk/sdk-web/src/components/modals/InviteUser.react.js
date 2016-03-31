@@ -2,7 +2,7 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import { find, assign, forEach } from 'lodash';
+import { find } from 'lodash';
 
 import React, { Component, PropTypes } from 'react';
 import Modal from 'react-modal';
@@ -113,7 +113,7 @@ class InviteUser extends Component {
   }
 
   render() {
-    const { isOpen, group, search } = this.state;
+    const { isOpen, search } = this.state;
     const { intl } = this.context;
 
     if (!isOpen) {

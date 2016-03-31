@@ -6,9 +6,11 @@ import React, { Component, PropTypes } from 'react';
 
 import JoinGroupActions from '../actions/JoinGroupActions';
 
-export default class Join extends Component {
+class Join extends Component {
   static propTypes = {
-    params: PropTypes.object
+    params: PropTypes.shape({
+      token: PropTypes.string.isRequired
+    }).isRequired
   };
 
   constructor(props) {
@@ -18,6 +20,8 @@ export default class Join extends Component {
   }
 
   render() {
-    return null;
+    return <div />;
   }
 }
+
+export default Join;

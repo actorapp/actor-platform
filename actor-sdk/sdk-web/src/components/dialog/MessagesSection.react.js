@@ -11,7 +11,6 @@ import MessageActionCreators from '../../actions/MessageActionCreators';
 import DialogActionCreators from '../../actions/DialogActionCreators';
 
 import VisibilityStore from '../../stores/VisibilityStore';
-import DialogStore from '../../stores/DialogStore';
 import MessageStore from '../../stores/MessageStore';
 
 import MessagesList from './MessagesList.react';
@@ -59,7 +58,7 @@ class MessagesSection extends Component {
     if (isAppVisible) {
       flushDelayed();
     }
-  };
+  }
 
   onSelect(rid) {
     const { selectedMessages } = this.state;

@@ -33,7 +33,7 @@ class Archive extends Component {
       isAllLoaded: ArchiveStore.isAllLoaded(),
       dialogs: ArchiveStore.getDialogs()
     }
-  };
+  }
 
   static contextTypes = {
     intl: PropTypes.object
@@ -70,7 +70,7 @@ class Archive extends Component {
   }, 5, {maxWait: 30});
 
   render() {
-    const { isLoading, dialogs, isAllLoaded } = this.state;
+    const { isLoading, dialogs } = this.state;
     const archiveClassname = classnames('archive-section', {
       'archive-section--loading': isLoading
     });

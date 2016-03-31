@@ -38,7 +38,7 @@ class Login extends Component {
       isCodeSended: LoginStore.isCodeSended(),
       isSignupStarted: LoginStore.isSignupStarted()
     }
-  };
+  }
 
   static contextTypes = {
     intl: PropTypes.object

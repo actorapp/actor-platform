@@ -4,7 +4,6 @@
 
 import React, { Component } from 'react';
 import { Container } from 'flux/utils';
-import classNames from 'classnames';
 
 import LoggerStore from '../../stores/LoggerStore';
 import { loggerToggle } from '../../actions/LoggerActionCreators';

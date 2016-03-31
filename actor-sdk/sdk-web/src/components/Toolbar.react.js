@@ -24,6 +24,10 @@ import DialogStore from '../stores/DialogStore';
 import CallStore from '../stores/CallStore';
 
 class ToolbarSection extends Component {
+  static contextTypes = {
+    isExperimental: PropTypes.bool
+  };
+
   static getStores() {
     return [DialogInfoStore, ActivityStore, OnlineStore, DialogStore, CallStore];
   }
@@ -41,28 +45,20 @@ class ToolbarSection extends Component {
   }
 
   static calculateCallState(thisPeer) {
-    const isCalling = CallStore.isOpen();
-    if (!isCalling) {
-      return {isCalling};
-    }
-
-    const callPeer = CallStore.getPeer();
-    const isSamePeer = PeerUtils.equals(thisPeer, callPeer);
-    if (!isSamePeer) {
-      return {isCalling: false};
+    const call = CallStore.getState();
+    if (!call.isOpen || !PeerUtils.equals(thisPeer, call.peer)) {
+      return {
+        isCalling: false
+      };
     }
 
     return {
-      isCalling,
-      state: CallStore.getState(),
-      isFloating: CallStore.isFloating(),
-      time: '00:00'
+      time: '00:00',
+      isCalling: true,
+      state: call.state,
+      isFloating: call.isFloating
     };
   }
-
-  static contextTypes = {
-    isExperimental: PropTypes.bool
-  };
 
   onFavoriteToggle = () => {
     const { thisPeer, isFavorite } = this.state;
@@ -129,7 +125,7 @@ class ToolbarSection extends Component {
   }
 
   render() {
-    const { dialogInfo, isActivityOpen, isFavorite, call } = this.state;
+    const { dialogInfo, isFavorite, call } = this.state;
 
     if (!dialogInfo) {
       return <header className="toolbar" />;

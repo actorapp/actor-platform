@@ -15,7 +15,6 @@ import Scrollbar from '../../common/Scrollbar.react';
 import { KeyCodes } from '../../../constants/ActorAppConstants';
 
 import GroupListActionCreators from '../../../actions/GroupListActionCreators'
-import DialogActionCreators from '../../../actions/DialogActionCreators'
 
 import GroupListStore from '../../../stores/GroupListStore';
 

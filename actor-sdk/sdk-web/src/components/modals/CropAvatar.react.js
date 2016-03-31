@@ -236,7 +236,7 @@ class CropAvatarModal extends Component {
     this.onClose();
   };
 
-  storeScaledSizes = (event) => {
+  storeScaledSizes = () => {
     const { cropSize } = this.state;
     const originalImage = findDOMNode(this.refs.originalImage);
     const scaledWidth = originalImage.width;

@@ -168,7 +168,7 @@ class Recent extends Component {
           groupTitle = <li className="sidebar__list__title">{intl.messages[`sidebar.recents.${dialogGroup.key}`]}</li>;
       }
 
-      const groupList = map(dialogGroup.shorts, (dialog, index) => {
+      const groupList = map(dialogGroup.shorts, (dialog) => {
         const peer = dialog.peer.peer;
         const peerKey = PeerUtils.peerToString(peer);
 
