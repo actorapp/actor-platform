@@ -216,17 +216,15 @@
   &--create-group {
     .count {
       font-size: 12px;
-      line-height: 14px;
-      //margin-top: 12px;
+      line-height: 16px;
 
-      display: block;
+      display: inline-block;
 
-      padding: 8px 16px;
+      padding: 10px 0;
 
       text-transform: uppercase;
 
       color: rgba($dorado, .5);
-      background-color: white;
     }
     .group-members {
       .modal-new__body {
@@ -1505,5 +1503,11 @@
         right: -8px;
       }
     }
+  }
+}
+
+.group-members {
+  .modal-new__search {
+    margin: 12px 18px;
   }
 }

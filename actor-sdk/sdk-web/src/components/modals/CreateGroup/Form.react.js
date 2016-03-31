@@ -147,10 +147,6 @@ class CreateGroupForm extends Component {
       case CreateGroupSteps.CREATION_STARTED:
         stepForm = (
           <form className="group-members">
-            <div className="count">
-              <FormattedMessage id="members" values={{numMembers: selectedUserIds.size}}/>
-            </div>
-
             <div className="modal-new__body">
               {/*TODO: refactor this!!! */}
               <div className="modal-new__search">
@@ -167,14 +163,26 @@ class CreateGroupForm extends Component {
               </ul>
             </div>
 
-            <footer className="modal-new__footer text-right">
-              {
-                step === CreateGroupSteps.CREATION_STARTED
-                  ? <button className="button button--lightblue"
-                            disabled>{intl.messages['button.createGroup']}</button>
-                  : <button className="button button--lightblue"
-                            onClick={this.handleCreateGroup}>{intl.messages['button.createGroup']}</button>
-              }
+            <footer className="modal-new__footer ">
+              <span className="pull-left">
+                {
+                  step === CreateGroupSteps.CONTACTS_SELECTION ||
+                  step === CreateGroupSteps.CREATION_STARTED
+                    ? <div className="count">
+                        <FormattedMessage id="members" values={{numMembers: selectedUserIds.size}}/>
+                      </div>
+                    : null
+                }
+              </span>
+              <span className="text-right">
+                {
+                  step === CreateGroupSteps.CREATION_STARTED
+                    ? <button className="button button--lightblue"
+                              disabled>{intl.messages['button.createGroup']}</button>
+                    : <button className="button button--lightblue"
+                              onClick={this.handleCreateGroup}>{intl.messages['button.createGroup']}</button>
+                }
+              </span>
 
             </footer>
           </form>
