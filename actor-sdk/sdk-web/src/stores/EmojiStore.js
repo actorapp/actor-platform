@@ -9,7 +9,7 @@ import { ActionTypes } from '../constants/ActorAppConstants';
 class EmojiStore extends ReduceStore {
   getInitialState() {
     return {
-      isOpen: true,
+      isOpen: false,
       stickers: []
     };
   }
