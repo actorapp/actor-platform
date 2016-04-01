@@ -251,6 +251,12 @@ export default {
       'recents': {
         'groups': 'Grupos',
         'privates': 'Mensajes directos'
+      },
+      'group': {
+        'empty': 'Crea tu primer grupo de conversación'
+      },
+      'private': {
+        'empty': 'No hay nadie en su red'
       }
     },
 
