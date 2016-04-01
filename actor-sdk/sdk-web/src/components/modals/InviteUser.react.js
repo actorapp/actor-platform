@@ -14,7 +14,7 @@ import InviteUserActions from '../../actions/InviteUserActions';
 import InviteUserByLinkActions from '../../actions/InviteUserByLinkActions';
 
 import PeopleStore from '../../stores/PeopleStore';
-import InviteUserStore from '../../stores/InviteUserReduceStore';
+import InviteUserStore from '../../stores/InviteUserStore';
 
 import ContactItem from '../common/ContactItem.react';
 import Stateful from '../common/Stateful.react';
