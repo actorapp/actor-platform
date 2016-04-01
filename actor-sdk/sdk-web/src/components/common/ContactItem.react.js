@@ -4,6 +4,7 @@
 
 import React, { Component, PropTypes } from 'react';
 import { shouldComponentUpdate } from 'react-addons-pure-render-mixin';
+import classnames from 'classnames';
 
 import AvatarItem from './AvatarItem.react';
 
@@ -16,6 +17,8 @@ class ContactItem extends Component {
     placeholder: PropTypes.string.isRequired,
     avatar: PropTypes.string,
 
+    className: PropTypes.string,
+
     children: PropTypes.node
   };
 
@@ -26,10 +29,11 @@ class ContactItem extends Component {
   }
 
   render() {
-    const { name, placeholder, avatar, children } = this.props;
+    const { name, placeholder, avatar, children, className } = this.props;
+    const contactClassName = classnames('contact row middle-xs', className);
 
     return (
-      <div className="contact row middle-xs">
+      <div className={contactClassName}>
         <div className="contact__avatar">
           <AvatarItem
             image={avatar}
