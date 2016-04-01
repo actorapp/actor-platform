@@ -32,6 +32,10 @@ public class BinderCompatFragment extends android.support.v4.app.Fragment {
         return BINDER.bind(textView, user);
     }
 
+    public ActorBinder.Binding bindOnline(final TextView textView, final UserVM user) {
+        return BINDER.bindOnline(textView, user);
+    }
+
     public void bind(final TextView textView, final View container, ValueModel<String> value) {
         BINDER.bind(textView, container, value);
     }
