@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2016 Actor LLC. <https://actor.im>
+ */
+
 .contact {
   padding: 7px 18px;
   &__avatar {
@@ -34,5 +38,12 @@
         color: $body-base-color;
       }
     }
+  }
+  &--disabled {
+    cursor: default;
+
+    opacity: .5;
+
+    @include no-select();
   }
 }

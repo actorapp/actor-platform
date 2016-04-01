@@ -9,7 +9,7 @@ function getMethod(type) {
     case LoggerTypes.WARNING:
       return 'warn';
     case LoggerTypes.DEBUG:
-      return 'debug';
+      // return 'debug';
     default:
       return 'log';
   }
