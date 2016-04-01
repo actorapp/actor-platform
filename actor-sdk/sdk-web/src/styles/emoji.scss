@@ -275,10 +275,11 @@ $stem-size: $default-stem-size;
 
   box-sizing: border-box;
   width: $emoji-dropdown-width;
-  height: 200px;
+  height: 232px;
+  padding: 4px;
   .sticker {
     box-sizing: border-box;
-    padding: 6px;
+    padding: 3px;
 
     cursor: pointer !important;
 
