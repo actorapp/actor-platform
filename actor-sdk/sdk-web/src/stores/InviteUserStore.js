@@ -3,7 +3,6 @@
  */
 
 import { ReduceStore } from 'flux/utils';
-import { Map } from 'immutable';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes, AsyncActionStates } from '../constants/ActorAppConstants';
 
@@ -14,7 +13,7 @@ class InviteUserStore extends ReduceStore {
       isInviteByLinkOpen: false,
       group: null,
       inviteUrl: null,
-      users: new Map()
+      users: {}
     };
   }
 
@@ -35,7 +34,7 @@ class InviteUserStore extends ReduceStore {
         return {
           ...state,
           isOpen: false,
-          users: state.users.clear()
+          users: {}
         };
       case ActionTypes.INVITE_USER_BY_LINK_MODAL_SHOW:
         return {
@@ -52,24 +51,24 @@ class InviteUserStore extends ReduceStore {
 
       // Invite user
       case ActionTypes.INVITE_USER:
+        state.users[action.uid] = AsyncActionStates.PROCESSING;
         return {
-          ...state,
-          users: state.users.set(action.uid, AsyncActionStates.PROCESSING)
+          ...state
         };
       case ActionTypes.INVITE_USER_SUCCESS:
+        state.users[action.uid] = AsyncActionStates.SUCCESS;
         return {
-          ...state,
-          users: state.users.set(action.uid, AsyncActionStates.SUCCESS)
+          ...state
         };
       case ActionTypes.INVITE_USER_ERROR:
+        state.users[action.uid] = AsyncActionStates.FAILURE;
         return {
-          ...state,
-          users: state.users.set(action.uid, AsyncActionStates.FAILURE)
+          ...state
         };
       case ActionTypes.INVITE_USER_RESET:
+        delete state.users[action.uid];
         return {
-          ...state,
-          users: state.users.delete(action.uid)
+          ...state
         };
       default:
         return state;
@@ -92,9 +91,8 @@ class InviteUserStore extends ReduceStore {
     return this.getState().inviteUrl;
   }
 
-  getInviteUserState(uid) {
-    const { users } = this.getState();
-    return users.get(uid) || AsyncActionStates.PENDING;
+  getInviteUserState() {
+    return this.getState().users;
   }
 }
 

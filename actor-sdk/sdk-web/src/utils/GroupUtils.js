@@ -1,13 +1,13 @@
-import _ from 'lodash';
+/*
+ * Copyright (C) 2016 Actor LLC. <https://actor.im>
+ */
+
+import { find } from 'lodash';
+
 import ActorClient from './ActorClient';
 
 export const hasMember = (gid, uid) => {
   const group = ActorClient.getGroup(gid);
-  let isMember = false;
 
-  _.forEach(group.members, member => {
-    if (member.peerInfo.peer.id === uid) isMember = true;
-  });
-
-  return isMember;
+  return undefined !== find(group.members, (c) => c.peerInfo.peer.id === uid);
 };

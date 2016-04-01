@@ -2,42 +2,39 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import { find } from 'lodash';
-
 import React, { Component, PropTypes } from 'react';
 import Modal from 'react-modal';
 import { Container } from 'flux/utils';
 import fuzzaldrin from 'fuzzaldrin';
 
-import { KeyCodes } from '../../constants/ActorAppConstants';
+import { KeyCodes, AsyncActionStates } from '../../constants/ActorAppConstants';
+import { hasMember } from '../../utils/GroupUtils';
 
 import InviteUserActions from '../../actions/InviteUserActions';
 import InviteUserByLinkActions from '../../actions/InviteUserByLinkActions';
 
 import PeopleStore from '../../stores/PeopleStore';
-import InviteUserStore from '../../stores/InviteUserStore';
+import InviteUserStore from '../../stores/InviteUserReduceStore';
 
 import ContactItem from '../common/ContactItem.react';
 import Stateful from '../common/Stateful.react';
-
-const hasMember = (group, userId) =>
-  undefined !== find(group.members, (c) => c.peerInfo.peer.id === userId);
 
 class InviteUser extends Component {
   static contextTypes = {
     intl: PropTypes.object
   };
 
+  static getStores() {
+    return [InviteUserStore, PeopleStore];
+  }
+
   static calculateState() {
     return {
       isOpen: InviteUserStore.isModalOpen(),
       contacts: PeopleStore.getList(),
-      group: InviteUserStore.getGroup()
+      group: InviteUserStore.getGroup(),
+      inviteUserState: InviteUserStore.getInviteUserState()
     };
-  }
-
-  static getStores() {
-    return [InviteUserStore, PeopleStore];
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -76,7 +73,7 @@ class InviteUser extends Component {
 
   renderContacts() {
     const { intl } = this.context;
-    const { group } = this.state;
+    const { group, inviteUserState } = this.state;
     const contacts = this.getContacts();
 
     if (!contacts.length) {
@@ -88,24 +85,26 @@ class InviteUser extends Component {
     }
 
     return contacts.map((contact, i) => {
-      let inviteUserState = InviteUserStore.getInviteUserState(contact.uid);
-      let controls;
-      if (hasMember(group, contact.uid)) {
+      let controls, contactClassName;
+      if (hasMember(group.id, contact.uid)) {
         controls = <i className="material-icons">check</i>;
+        contactClassName = 'contact--disabled'
       } else {
+        const currentState = inviteUserState[contact.uid] || AsyncActionStates.PENDING;
         controls = (
           <Stateful
-            currentState={inviteUserState}
+            currentState={currentState}
             pending={<a className="material-icons" onClick={() => this.onContactSelect(contact.uid)}>person_add</a>}
             processing={<i className="material-icons spin">autorenew</i>}
             success={<i className="material-icons">check</i>}
             failure={<i className="material-icons">warning</i>}
           />
-        )
+        );
+        contactClassName = currentState === AsyncActionStates.SUCCESS ? 'contact--disabled' : '';
       }
 
       return (
-        <ContactItem {...contact} key={i}>
+        <ContactItem {...contact} className={contactClassName} key={i}>
           {controls}
         </ContactItem>
       );
@@ -179,4 +178,4 @@ class InviteUser extends Component {
   }
 }
 
-export default Container.create(InviteUser);
+export default Container.create(InviteUser, {pure: false});
