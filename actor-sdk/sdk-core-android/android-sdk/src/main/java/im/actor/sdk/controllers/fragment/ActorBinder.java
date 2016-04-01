@@ -119,6 +119,23 @@ public class ActorBinder {
                     s = "";
                 }
 
+                if (user.isBot()) {
+                    s = textView.getContext().getString(R.string.members_adapter_bot_online_status);
+                }
+                textView.setText(s);
+            }
+        });
+    }
+
+    public Binding bindOnline(final TextView textView, final UserVM user) {
+        return bind(user.getPresence(), new ValueChangedListener<UserPresence>() {
+            @Override
+            public void onChanged(UserPresence val, Value<UserPresence> Value) {
+                String s = messenger().getFormatter().formatPresence(val, user.getSex());
+                if (s == null) {
+                    s = "";
+                }
+
                 if (val.getState().equals(UserPresence.State.ONLINE)) {
                     textView.setTextColor(ActorSDK.sharedActor().style.getGroupOnlineColor());
                     s = "\u25CF".concat(s);
