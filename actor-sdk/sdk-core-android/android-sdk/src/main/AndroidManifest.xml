@@ -302,6 +302,10 @@
             android:process=":actor_push" />
 
         <receiver
+            android:name=".receivers.ChromeCustomTabReceiver"
+            android:enabled="true" />
+
+        <receiver
             android:name="im.actor.sdk.receivers.SDKPushReceiver"
             android:enabled="true"
             android:exported="true">
