@@ -139,6 +139,15 @@
         color: rgba(0, 0, 0, .54) !important;
       }
     }
+
+    .input__material {
+      &--disabled {
+        border-bottom: 1px dotted rgba(black, .5);
+      }
+      input {
+        color: rgb(77, 77, 77) !important;
+      }
+    }
   }
 
   &__search {
