@@ -155,7 +155,7 @@ import DZNWebViewController
     private var reachability: Reachability!
     
     
-    public init() {
+    public override init() {
         
         // Auto Loading Application name
         if let name = NSBundle.mainBundle().objectForInfoDictionaryKey(String(kCFBundleNameKey)) as? String {
