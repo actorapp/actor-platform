@@ -15018,7 +15018,7 @@
               "name": "Void"
             },
             "doc": [
-              "Registering apple push on server",
+              "[OBSOLETE] Registering apple push on server",
               {
                 "type": "reference",
                 "argument": "apnsKey",
@@ -15056,7 +15056,7 @@
               "name": "Void"
             },
             "doc": [
-              "Registration of a new Apple's PushKit tokens",
+              "[OBSOLETE] Registration of a new Apple's PushKit tokens",
               {
                 "type": "reference",
                 "argument": "apnsKey",
@@ -15075,6 +15075,44 @@
                 "type": "int32",
                 "id": 1,
                 "name": "apnsKey"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "token"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "RegisterApplePushToken",
+            "header": 2593,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Registering Apple Push Token",
+              {
+                "type": "reference",
+                "argument": "bundleId",
+                "category": "full",
+                "description": "Bundle Id of app"
+              },
+              {
+                "type": "reference",
+                "argument": "token",
+                "category": "full",
+                "description": "Push token"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "bundleId"
               },
               {
                 "type": "string",
