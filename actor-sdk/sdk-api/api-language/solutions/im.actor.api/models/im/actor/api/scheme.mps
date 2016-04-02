@@ -12832,7 +12832,7 @@
           <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
         </node>
         <node concept="NXeRC" id="2EAJ7H6fo_z" role="1GBnQ6">
-          <property role="NXePf" value="Registering apple push on server" />
+          <property role="NXePf" value="[OBSOLETE] Registering apple push on server" />
         </node>
         <node concept="NX1gA" id="2EAJ7H6fo_$" role="1GBnQ6">
           <property role="NX6R2" value="apns key id" />
@@ -12863,7 +12863,7 @@
           <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
         </node>
         <node concept="NXeRC" id="3xEfKBqLdpO" role="1GBnQ6">
-          <property role="NXePf" value="Registration of a new Apple's PushKit tokens" />
+          <property role="NXePf" value="[OBSOLETE] Registration of a new Apple's PushKit tokens" />
         </node>
         <node concept="NX1gA" id="3xEfKBqLdpT" role="1GBnQ6">
           <property role="1GSvIU" value="hidden" />
@@ -12874,6 +12874,38 @@
           <property role="1GSvIU" value="danger" />
           <property role="NX6R2" value="token value" />
           <ref role="NX6Kv" node="3xEfKBqLdpF" resolve="token" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="2EGQyJM7n6$" role="2m5mJr">
+        <property role="TrG5h" value="RegisterApplePushToken" />
+        <node concept="2m7Kf5" id="2EGQyJM7n7s" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="bundleId" />
+          <node concept="2m5ndX" id="2EGQyJM7n7w" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="2EGQyJM7n7z" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="token" />
+          <node concept="2m5ndX" id="2EGQyJM7n7D" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="2EGQyJM7n6_" role="NuuwV">
+          <property role="Nu42W" value="A21" />
+        </node>
+        <node concept="2m1Rp1" id="2EGQyJM7n7p" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
+        </node>
+        <node concept="NXeRC" id="2EGQyJM7n7G" role="1GBnQ6">
+          <property role="NXePf" value="Registering Apple Push Token" />
+        </node>
+        <node concept="NX1gA" id="2EGQyJM7n7L" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Bundle Id of app" />
+          <ref role="NX6Kv" node="2EGQyJM7n7s" resolve="bundleId" />
+        </node>
+        <node concept="NX1gA" id="2EGQyJM7n7T" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Push token" />
+          <ref role="NX6Kv" node="2EGQyJM7n7z" resolve="token" />
         </node>
       </node>
       <node concept="2m6fVq" id="7ZzLuuoIUGN" role="2m5mJr">
