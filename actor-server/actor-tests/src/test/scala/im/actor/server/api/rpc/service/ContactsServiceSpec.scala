@@ -53,7 +53,7 @@ final class ContactsServiceSpec
     object getcontacts {
       val (user, authId, authSid, _) = createUser()
       val sessionId = createSessionId()
-      implicit val clientData = api.ClientData(authId, sessionId, Some(AuthData(user.id, authSid)))
+      implicit val clientData = api.ClientData(authId, sessionId, Some(AuthData(user.id, authSid, 42)))
 
       val userModels = for (i ← 1 to 10) yield {
         val user = createUser()._1.asModel()
@@ -105,7 +105,7 @@ final class ContactsServiceSpec
       val user2Model = getUserModel(user2.id)
       val user2AccessHash = ACLUtils.userAccessHash(authId, user2.id, user2Model.accessSalt)
 
-      implicit val clientData = api.ClientData(authId, sessionId, Some(AuthData(user.id, authSid)))
+      implicit val clientData = api.ClientData(authId, sessionId, Some(AuthData(user.id, authSid, 42)))
 
       def add(firstRun: Boolean = true, expectedUpdSeq: Int = 1) = {
         whenReady(service.handleAddContact(user2.id, user2AccessHash)) { resp ⇒
@@ -164,7 +164,7 @@ final class ContactsServiceSpec
 
       val (user3, _) = createUser(79031171717L)
 
-      implicit val clientData = api.ClientData(authId, sessionId, Some(AuthData(user.id, authSid)))
+      implicit val clientData = api.ClientData(authId, sessionId, Some(AuthData(user.id, authSid, 42)))
 
       def ru() = {
         whenReady(service.handleImportContacts(Vector(ApiPhoneToImport(79031161616L, Some("Kaizer 7"))), Vector.empty)) { resp ⇒

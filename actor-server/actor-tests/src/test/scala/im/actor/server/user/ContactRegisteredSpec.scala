@@ -85,12 +85,12 @@ final class ContactRegisteredSpec extends BaseAppSuite with ImplicitAuthService 
 
   private def createUserRegisterContact(): (ClientData, ClientData) = {
     val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
-    val aliceClientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid)))
+    val aliceClientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid, 42)))
 
     whenReady(db.run(UnregisteredEmailContactRepo.create("test@acme.com", alice.id, None)))(identity)
 
     val (bob, bobAuthId, bobAuthSid, _) = createUser()
-    val bobClientData = ClientData(bobAuthId, 1, Some(AuthData(bob.id, bobAuthSid)))
+    val bobClientData = ClientData(bobAuthId, 1, Some(AuthData(bob.id, bobAuthSid, 42)))
 
     whenReady(UserExtension(system).addEmail(bob.id, "test@acme.com"))(identity)
 

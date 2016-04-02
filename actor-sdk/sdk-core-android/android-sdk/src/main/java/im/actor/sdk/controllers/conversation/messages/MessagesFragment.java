@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -17,6 +18,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.ChatLinearLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -27,6 +29,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -52,11 +55,13 @@ import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.controllers.activity.ShortcutActivity;
 import im.actor.sdk.controllers.fragment.DisplayListFragment;
 import im.actor.sdk.controllers.conversation.ChatActivity;
+import im.actor.sdk.controllers.fragment.settings.BaseActorSettingsFragment;
 import im.actor.sdk.util.Screen;
 import im.actor.runtime.android.view.BindedListAdapter;
 import im.actor.runtime.generic.mvvm.AndroidListUpdate;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.runtime.generic.mvvm.DisplayList;
+import im.actor.sdk.view.BackgroundPreviewView;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 import static im.actor.sdk.util.ActorSDKMessenger.myUid;
@@ -65,9 +70,11 @@ import static im.actor.sdk.util.ActorSDKMessenger.users;
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class MessagesFragment extends DisplayListFragment<Message, MessageHolder> {
 
+    private static SharedPreferences wallpaperPrefs;
+
     private static final int REQUEST_GALLERY = 198;
     private String shortcutText;
-    private long firstUnread =-1;
+    private long firstUnread = -1;
 
     public static MessagesFragment create(Peer peer) {
         return new MessagesFragment(peer);
@@ -75,11 +82,12 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
 
     private Peer peer;
 
-    private ChatLinearLayoutManager linearLayoutManager;
+    // private ChatLinearLayoutManager linearLayoutManager;
     protected MessagesAdapter messagesAdapter;
     // private ConversationVM conversationVM;
     private ActionMode actionMode;
     private int onPauseSize = 0;
+    private ImageView chatBackgroundView;
 
     public MessagesFragment(Peer peer) {
         this.peer = peer;
@@ -106,13 +114,49 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
 
         View res = inflate(inflater, container, R.layout.fragment_messages, onCreateDisplayList());
 
+        //
+        // Loading background
+        //
+        if (wallpaperPrefs == null) {
+            wallpaperPrefs = getContext().getSharedPreferences("wallpaper", Context.MODE_PRIVATE);
+        }
+        Drawable background;
+        if (messenger().getSelectedWallpaper() == null) {
+            background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[0]);
+        } else if (messenger().getSelectedWallpaper().equals("local:bg_1")) {
+            if (ActorSDK.sharedActor().style.getDefaultBackgrouds().length > 1) {
+                background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[1]);
+            } else {
+                background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[0]);
+            }
+        } else if (messenger().getSelectedWallpaper().equals("local:bg_2")) {
+            if (ActorSDK.sharedActor().style.getDefaultBackgrouds().length > 2) {
+                background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[1]);
+            } else {
+                background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[0]);
+            }
+        } else if (messenger().getSelectedWallpaper().equals("local:bg_3")) {
+            if (ActorSDK.sharedActor().style.getDefaultBackgrouds().length > 3) {
+                background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[1]);
+            } else {
+                background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[0]);
+            }
+        } else if (messenger().getSelectedWallpaper().startsWith("local:")) {
+            background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[0]);
+        } else {
+            background = Drawable.createFromPath(BaseActorSettingsFragment.getWallpaperFile());
+        }
+        ((ImageView) res.findViewById(R.id.chatBackgroundView)).setImageDrawable(background);
+
         View footer = new View(getActivity());
         footer.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(8)));
+
         // Add Footer as Header because of reverse layout
         addHeaderView(footer);
 
         View header = new View(getActivity());
         header.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(64)));
+
         // Add Header as Footer because of reverse layout
         addFooterView(header);
 
@@ -124,9 +168,7 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
     protected BindedDisplayList<Message> onCreateDisplayList() {
         BindedDisplayList<Message> res = messenger().getMessageDisplayList(peer);
         if (res.getListProcessor() == null) {
-            res.setListProcessor(new ChatListProcessor(this));
-        }else{
-            ((ChatListProcessor)res.getListProcessor()).setFragment(this);
+            res.setListProcessor(new ChatListProcessor(peer, this.getContext()));
         }
         return res;
     }
@@ -206,13 +248,14 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
         }
 
         if (index > 0) {
-            if (linearLayoutManager != null) {
-                linearLayoutManager.setStackFromEnd(false);
-                linearLayoutManager.scrollToPositionWithOffset(index + 1, Screen.dp(64));
-                // linearLayoutManager.scrollToPosition(getDisplayList().getSize() - index - 1);
-                // linearLayoutManager.scrollToPosition(index + 1);
-                // getCollection().scrollToPosition(index + 1);
-            }
+
+//            if (linearLayoutManager != null) {
+//                linearLayoutManager.setStackFromEnd(false);
+//                linearLayoutManager.scrollToPositionWithOffset(index + 1, Screen.dp(64));
+//                // linearLayoutManager.scrollToPosition(getDisplayList().getSize() - index - 1);
+//                // linearLayoutManager.scrollToPosition(index + 1);
+//                // getCollection().scrollToPosition(index + 1);
+//            }
 
         } else if (getCollection() != null) {
             // linearLayoutManager.scrollToPosition(0);
@@ -223,7 +266,7 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
     @Override
     protected BindedListAdapter<Message, MessageHolder> onCreateAdapter(BindedDisplayList<Message> displayList, Activity activity) {
         messagesAdapter = new MessagesAdapter(displayList, this, activity);
-        if(firstUnread!=-1 && messagesAdapter.getFirstUnread()==-1){
+        if (firstUnread != -1 && messagesAdapter.getFirstUnread() == -1) {
             messagesAdapter.setFirstUnread(firstUnread);
         }
         return messagesAdapter;
@@ -232,13 +275,13 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
     @Override
     protected void configureRecyclerView(RecyclerView recyclerView) {
         recyclerView.setHasFixedSize(true);
-        linearLayoutManager = new ChatLinearLayoutManager(getActivity(), ChatLinearLayoutManager.VERTICAL, true);
-        linearLayoutManager.setStackFromEnd(false);
-        recyclerView.setLayoutManager(linearLayoutManager);
+        final LinearLayoutManager manager = new LinearLayoutManager(getActivity(), ChatLinearLayoutManager.VERTICAL, true);
+        manager.setStackFromEnd(false);
+        recyclerView.setLayoutManager(manager);
         getDisplayList().setLinearLayoutCallback(new BindedDisplayList.LinearLayoutCallback() {
             @Override
             public void setStackFromEnd(boolean b) {
-                if (linearLayoutManager != null) linearLayoutManager.setStackFromEnd(b);
+                if (manager != null) manager.setStackFromEnd(b);
             }
         });
     }
@@ -273,9 +316,9 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
                 actionMode.invalidate();
             }
             return true;
-        }else{
-            if(message.getContent() instanceof TextContent && message.getSenderId() == myUid() && message.getSortDate() >= messenger().loadFirstUnread(peer)){
-                ((ChatActivity)getActivity()).onEditTextMessage(message.getRid(), ((TextContent) message.getContent()).getText());
+        } else {
+            if (message.getContent() instanceof TextContent && message.getSenderId() == myUid() && message.getSortDate() >= messenger().loadFirstUnread(peer)) {
+                ((ChatActivity) getActivity()).onEditTextMessage(message.getRid(), ((TextContent) message.getContent()).getText());
                 return true;
             }
         }
@@ -584,7 +627,6 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
 //            conversationVM = null;
 //        }
         messagesAdapter = null;
-        linearLayoutManager = null;
-        linearLayoutManager = null;
+
     }
 }

@@ -76,35 +76,35 @@ final class GooglePushExtension(system: ActorSystem) extends Extension {
     .mapAsync(1) {
       case (Success(resp), delivery) ⇒
         if (resp.status == StatusCodes.OK) {
-          resp.entity.dataBytes.runFold(ByteString.empty)(_ ++ _) map (_ → delivery)
-        } else FastFuture.failed(new RuntimeException(s"Failed to deliver message, StatusCode was not OK: ${resp.status}"))
+          resp.entity.dataBytes.runFold(ByteString.empty)(_ ++ _) map (bs ⇒ Xor.Right(bs → delivery))
+        } else FastFuture.successful(Xor.Left(new RuntimeException(s"Failed to deliver message, StatusCode was not OK: ${resp.status}")))
       case (Failure(e), delivery) ⇒
-        FastFuture.failed(e)
+        FastFuture.successful(Xor.Left(e))
     }
     .runForeach {
       // TODO: flatten
-      case (bs, delivery) ⇒
+      case Xor.Right((bs, delivery)) ⇒
         parse(new String(bs.toArray, "UTF-8")) match {
           case Xor.Right(json) ⇒
             json.asObject match {
               case Some(obj) ⇒
-                obj("error") map (_.asString) foreach {
-                  case Some("InvalidRegistration") ⇒
+                obj("error") flatMap (_.asString) foreach {
+                  case "InvalidRegistration" ⇒
                     log.warning("Invalid registration, deleting")
                     remove(delivery.m.to)
-                  case Some("NotRegistered") ⇒
+                  case "NotRegistered" ⇒
                     log.warning("Token is not registered, deleting")
                     remove(delivery.m.to)
-                  case Some(other) ⇒
+                  case other ⇒
                     log.warning("Error in GCM response: {}", other)
-                  case None ⇒
-                    log.debug("Delivered successfully")
                 }
               case None ⇒
                 log.error("Expected JSON Object but got: {}", json)
             }
           case Xor.Left(failure) ⇒ log.error(failure.underlying, "Failed to parse response")
         }
+      case Xor.Left(e) ⇒
+        log.error(e, "Failed to make request")
     } onComplete {
       case Failure(e) ⇒ log.error(e, "Failure in stream")
       case Success(_) ⇒ log.debug("Stream completed")

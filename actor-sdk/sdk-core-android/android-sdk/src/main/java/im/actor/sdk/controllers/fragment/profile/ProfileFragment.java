@@ -89,7 +89,7 @@ public class ProfileFragment extends BaseFragment {
 
         final TextView lastSeen = (TextView) res.findViewById(R.id.lastSeen);
         lastSeen.setTextColor(style.getProfileSubtitleColor());
-        bind(lastSeen, lastSeen, user);
+        bind(lastSeen, user);
 
         boolean nickVisible = false;
         boolean aboutVivisbe = false;
@@ -104,7 +104,7 @@ public class ProfileFragment extends BaseFragment {
         aboutValue.setTextColor(style.getTextPrimaryColor());
         TintImageView tintImageView = (TintImageView) about.findViewById(R.id.recordIcon);
         tintImageView.setTint(style.getRecordIconTintColor());
-        tintImageView.setResource(R.drawable.ic_editor_format_quote_36dp);
+        tintImageView.setResource(R.drawable.ic_format_quote_white_24dp);
         if (aboutText != null && !aboutText.isEmpty()) {
             aboutVivisbe = true;
             ((TextView) about.findViewById(R.id.value)).setText(getString(R.string.about_user));
@@ -134,7 +134,7 @@ public class ProfileFragment extends BaseFragment {
             nickTitle.setTextColor(style.getTextSecondaryColor());
             TintImageView nickIcon = (TintImageView) recordView.findViewById(R.id.recordIcon);
             nickIcon.setTint(style.getRecordIconTintColor());
-            nickIcon.setResource(R.drawable.ic_star_white_36dp);
+            nickIcon.setResource(R.drawable.ic_star_white_24dp);
             String value = "@".concat(nick);
             String title = getString(R.string.nickname);
             recordView.findViewById(R.id.divider).setBackgroundColor(style.getDividerColor());
@@ -165,7 +165,7 @@ public class ProfileFragment extends BaseFragment {
                 TintImageView phoneIcon = (TintImageView) recordView.findViewById(R.id.recordIcon);
                 phoneIcon.setTint(style.getRecordIconTintColor());
                 if (i == 0) {
-                    phoneIcon.setResource(R.drawable.ic_call_white_36dp);
+                    phoneIcon.setResource(R.drawable.ic_phone_white_24dp);
                     phoneIcon.setVisibility(View.VISIBLE);
                 } else {
                     phoneIcon.setVisibility(View.INVISIBLE);
@@ -262,7 +262,7 @@ public class ProfileFragment extends BaseFragment {
                 TintImageView emailIcon = (TintImageView) recordView.findViewById(R.id.recordIcon);
                 emailIcon.setTint(style.getSettingsCategoryTextColor());
                 if (i == 0) {
-                    emailIcon.setResource(R.drawable.ic_email_white_36dp);
+                    emailIcon.setResource(R.drawable.ic_email_white_24dp);
                     emailIcon.setVisibility(View.VISIBLE);
                 } else {
                     emailIcon.setVisibility(View.INVISIBLE);

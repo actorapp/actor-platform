@@ -48,7 +48,7 @@ final class DialogProcessorSpec extends BaseAppSuite
     toBob foreach { whenReady(_)(identity) }
 
     {
-      implicit val clientData = ClientData(bobAuthId, 2, Some(AuthData(bob.id, bobAuthSid)))
+      implicit val clientData = ClientData(bobAuthId, 2, Some(AuthData(bob.id, bobAuthSid, 42)))
       val aliceOutPeer = whenReady(ACLUtils.getOutPeer(alicePeer, bobAuthId))(identity)
       whenReady(messService.handleLoadHistory(aliceOutPeer, 0L, None, Int.MaxValue)) { resp ⇒
         inside(resp) {
@@ -90,7 +90,7 @@ final class DialogProcessorSpec extends BaseAppSuite
     toBob foreach { whenReady(_)(identity) }
 
     {
-      implicit val clientData = ClientData(bobAuthId, 2, Some(AuthData(bob.id, bobAuthSid)))
+      implicit val clientData = ClientData(bobAuthId, 2, Some(AuthData(bob.id, bobAuthSid, 42)))
       val aliceOutPeer = whenReady(ACLUtils.getOutPeer(alicePeer, bobAuthId))(identity)
       whenReady(messService.handleLoadHistory(aliceOutPeer, 0L, None, Int.MaxValue)) { resp ⇒
         inside(resp) {

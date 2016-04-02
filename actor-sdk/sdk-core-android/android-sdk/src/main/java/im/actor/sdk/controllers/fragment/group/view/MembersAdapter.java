@@ -8,10 +8,10 @@ import android.widget.TextView;
 
 import java.util.Collection;
 
-import im.actor.core.viewmodel.UserPresence;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.fragment.ActorBinder;
+import im.actor.sdk.controllers.fragment.group.GroupInfoFragment;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.avatar.AvatarView;
 import im.actor.sdk.view.adapters.HolderAdapter;
@@ -23,9 +23,11 @@ import static im.actor.sdk.util.ActorSDKMessenger.users;
 
 public class MembersAdapter extends HolderAdapter<GroupMember> {
     private GroupMember[] members;
-    private final ActorBinder BINDER = new ActorBinder();
-    public MembersAdapter(Collection<GroupMember> members, Context context) {
+    private GroupInfoFragment fragment;
+
+    public MembersAdapter(Collection<GroupMember> members, Context context, GroupInfoFragment fragment) {
         super(context);
+        this.fragment = fragment;
         this.members = members.toArray(new GroupMember[0]);
     }
 
@@ -60,9 +62,8 @@ public class MembersAdapter extends HolderAdapter<GroupMember> {
         private View admin;
         private AvatarView avatarView;
         private TextView online;
-        private TextView lastSeen;
         private ActorBinder.Binding onlineBinding;
-        private Context context;
+        private UserVM user;
 
         @Override
         public View init(GroupMember data, ViewGroup viewGroup, Context context) {
@@ -72,43 +73,22 @@ public class MembersAdapter extends HolderAdapter<GroupMember> {
             avatarView.init(Screen.dp(42), 24);
             admin = res.findViewById(R.id.adminFlag);
             online = (TextView) res.findViewById(R.id.online);
-            lastSeen = (TextView) res.findViewById(R.id.lastSeen);
             ((TextView) admin).setTextColor(ActorSDK.sharedActor().style.getGroupAdminColor());
             ((TextView) res.findViewById(R.id.name)).setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
             res.findViewById(R.id.divider).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
-            this.context = context;
             return res;
         }
 
         @Override
         public void bind(GroupMember data, int position, Context context) {
-            if (onlineBinding != null) {
-                onlineBinding.unbind();
-            }
-
-            UserVM user = users().get(data.getUid());
-            onlineBinding = BINDER.bind(online, user);
+            user = users().get(data.getUid());
             ActorSDK.sharedActor().getMessenger().onUserVisible(data.getUid());
+            onlineBinding = fragment.bindOnline(online, user);
 
             avatarView.bind(user);
 
             userName.setText(user.getName().get());
 
-            UserPresence presence = user.getPresence().get();
-            String s = ActorSDK.sharedActor().getMessenger().getFormatter().formatPresence(presence, user.getSex());
-            if (s == null) {
-                s = "";
-            }
-            if (presence.getState().equals(UserPresence.State.ONLINE)) {
-                online.setTextColor(ActorSDK.sharedActor().style.getGroupOnlineColor());
-                s = "\u25CF ".concat(s);
-            } else {
-                online.setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
-            }
-            if (user.isBot()) {
-                s = "";
-            }
-            online.setText(s);
 
             if (data.isAdministrator()) {
                 admin.setVisibility(View.VISIBLE);

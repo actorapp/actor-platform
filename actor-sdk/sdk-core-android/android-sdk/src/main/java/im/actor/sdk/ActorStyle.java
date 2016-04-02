@@ -7,7 +7,7 @@ import android.graphics.Color;
  */
 public class ActorStyle {
 
-    private int[] defaultBackgrouds = new int[]{R.drawable.img_chat_background_default, R.drawable.bg_8, R.drawable.bg_2, R.drawable.bg_1};
+    private int[] defaultBackgrouds = new int[]{R.drawable.img_chat_background_default, R.drawable.bg_3, R.drawable.bg_2, R.drawable.bg_1};
 
     private int toolBarColor = 0;
     private int fabColor = 0;
@@ -41,8 +41,8 @@ public class ActorStyle {
     private int dialogsDividerColor = 0;
     private int dialogsTitleColor = 0;
     private int dialogsTextColor = 0;
-
     private int dialogsTypingColor = 0;
+    private int dialogsActionColor = 0;
 
     private int primaryAltColor = Color.parseColor("#4ca665");
     private int primaryAltHoveredColor = Color.parseColor("#ff3d8652");
@@ -264,6 +264,22 @@ public class ActorStyle {
 
     public void setContactFastTitleColor(int contactFastTitleColor) {
         this.contactFastTitleColor = contactFastTitleColor;
+    }
+
+    /*
+     * Dialogs
+     */
+
+    public int getDialogsActiveTextColor() {
+        if (dialogsActionColor != 0) {
+            return dialogsActionColor;
+        } else {
+            return getDialogsTextColor();
+        }
+    }
+
+    public void setDialogsActiveTextColor(int dialogsActionColor) {
+        this.dialogsActionColor = dialogsActionColor;
     }
 
     public int getDialogsCounterTextColor() {

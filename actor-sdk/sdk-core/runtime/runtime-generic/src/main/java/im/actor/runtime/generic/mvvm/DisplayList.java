@@ -37,11 +37,9 @@ public class DisplayList<T> {
     private final OperationMode operationMode;
     private volatile Object processedList;
 
-    private CopyOnWriteArrayList<Listener> listeners = new CopyOnWriteArrayList<Listener>();
-    private CopyOnWriteArrayList<AndroidChangeListener<T>> androidListeners =
-            new CopyOnWriteArrayList<AndroidChangeListener<T>>();
-    private CopyOnWriteArrayList<AppleChangeListener<T>> appleListeners =
-            new CopyOnWriteArrayList<AppleChangeListener<T>>();
+    private CopyOnWriteArrayList<Listener> listeners = new CopyOnWriteArrayList<>();
+    private CopyOnWriteArrayList<AndroidChangeListener<T>> androidListeners = new CopyOnWriteArrayList<>();
+    private CopyOnWriteArrayList<AppleChangeListener<T>> appleListeners = new CopyOnWriteArrayList<>();
 
     private ListProcessor<T> listProcessor = null;
 

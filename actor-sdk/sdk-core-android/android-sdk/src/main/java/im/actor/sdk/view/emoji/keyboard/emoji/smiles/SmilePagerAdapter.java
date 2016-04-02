@@ -33,6 +33,7 @@ public class SmilePagerAdapter extends PagerAdapter implements PagerSlidingTabSt
     private EmojiKeyboard emojiKeyboard;
     private int count;
     private PagerSlidingTabStrip tabs;
+    private StickersView stickersView;
 
     public SmilePagerAdapter(EmojiKeyboard emojiKeyboard) {
         this.emojiKeyboard = emojiKeyboard;
@@ -135,7 +136,10 @@ public class SmilePagerAdapter extends PagerAdapter implements PagerSlidingTabSt
             });
 
         } else {
-            itemView = new StickersView(container.getContext(), emojiKeyboard);
+            if (stickersView == null) {
+                stickersView = new StickersView(container.getContext(), emojiKeyboard);
+            }
+            itemView = stickersView;
         }
         container.addView(itemView, 0);
         return itemView;
@@ -195,5 +199,11 @@ public class SmilePagerAdapter extends PagerAdapter implements PagerSlidingTabSt
 
     public void setTabs(PagerSlidingTabStrip tabs) {
         this.tabs = tabs;
+    }
+
+    public void release() {
+        if (stickersView != null) {
+            stickersView.relesase();
+        }
     }
 }

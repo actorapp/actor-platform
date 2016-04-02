@@ -93,7 +93,7 @@ import DZNWebViewController
     /// Terms of Service Text
     public var termsOfServiceText: String? = nil
     
-    /// App name in loc. strings
+    /// App name
     public var appName: String = "Actor"
     
     /// Use background on welcome screen
@@ -153,6 +153,15 @@ import DZNWebViewController
     
     // Reachability
     private var reachability: Reachability!
+    
+    
+    public override init() {
+        
+        // Auto Loading Application name
+        if let name = NSBundle.mainBundle().objectForInfoDictionaryKey(String(kCFBundleNameKey)) as? String {
+            self.appName = name
+        }
+    }
     
     public func createActor() {
         

@@ -16,6 +16,7 @@ import im.actor.core.entity.StickerPack;
 import im.actor.core.viewmodel.StickersVM;
 import im.actor.runtime.mvvm.Value;
 import im.actor.runtime.mvvm.ValueChangedListener;
+import im.actor.sdk.controllers.fragment.ActorBinder;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.emoji.keyboard.emoji.EmojiKeyboard;
 
@@ -23,19 +24,20 @@ import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
 public class StickersAdapter extends RecyclerView.Adapter<StickersAdapter.StickerViewHolder> {
 
-    ArrayList<Sticker> stickers = new ArrayList<>();
-    StickersVM vm;
-    EmojiKeyboard keyboard;
-    PacksAdapter packsAdapter;
-    RecyclerView recyclerView;
+    private ArrayList<Sticker> stickers = new ArrayList<>();
+    private EmojiKeyboard keyboard;
+    private PacksAdapter packsAdapter;
+    private RecyclerView recyclerView;
+    private ActorBinder binder;
 
     int topPack = -1;
 
     public StickersAdapter(EmojiKeyboard keyboard, RecyclerView recyclerView) {
         this.keyboard = keyboard;
         this.recyclerView = recyclerView;
-        vm = messenger().getAvailableStickersVM();
-        vm.getOwnStickerPacks().subscribe(new ValueChangedListener<ArrayList<StickerPack>>() {
+        binder = new ActorBinder();
+
+        binder.bind(messenger().getAvailableStickersVM().getOwnStickerPacks(), new ValueChangedListener<ArrayList<StickerPack>>() {
             @Override
             public void onChanged(ArrayList<StickerPack> val, Value<ArrayList<StickerPack>> valueModel) {
                 stickers.clear();
@@ -50,6 +52,7 @@ public class StickersAdapter extends RecyclerView.Adapter<StickersAdapter.Sticke
                 notifyDataSetChanged();
             }
         });
+
 
         final GridLayoutManager layoutManager = (GridLayoutManager) recyclerView.getLayoutManager();
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
@@ -176,5 +179,15 @@ public class StickersAdapter extends RecyclerView.Adapter<StickersAdapter.Sticke
         }
 
         ((GridLayoutManager) recyclerView.getLayoutManager()).scrollToPositionWithOffset(position, 0);
+    }
+
+    public ActorBinder getBinder() {
+        return binder;
+    }
+
+    public void release() {
+        if (binder != null) {
+            binder.unbindAll();
+        }
     }
 }

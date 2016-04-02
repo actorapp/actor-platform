@@ -23,7 +23,7 @@ final class ReactionsSpec
     val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
     val (bob, bobAuthId, bobAuthSid, _) = createUser()
 
-    val aliceClient = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid)))
+    val aliceClient = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid, 42)))
 
     val randomId = {
       implicit val clientData = aliceClient
@@ -31,7 +31,7 @@ final class ReactionsSpec
     }
 
     {
-      implicit val clientData = ClientData(bobAuthId, 1, Some(AuthData(bob.id, bobAuthSid)))
+      implicit val clientData = ClientData(bobAuthId, 1, Some(AuthData(bob.id, bobAuthSid, 42)))
       val peer = getOutPeer(alice.id, bobAuthId)
       whenReady(service.handleMessageSetReaction(peer, randomId, "like")) { resp ⇒
         inside(resp) {
@@ -59,8 +59,8 @@ final class ReactionsSpec
     val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
     val (bob, bobAuthId, bobAuthSid, _) = createUser()
 
-    val aliceClient = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid)))
-    val bobClient = ClientData(bobAuthId, 2, Some(AuthData(bob.id, bobAuthSid)))
+    val aliceClient = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid, 42)))
+    val bobClient = ClientData(bobAuthId, 2, Some(AuthData(bob.id, bobAuthSid, 42)))
 
     val (peer, randomId) = {
       implicit val clientData = aliceClient

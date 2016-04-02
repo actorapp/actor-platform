@@ -30,6 +30,11 @@ public class Application extends ActorSDKApplication {
     public void onConfigureActorSDK() {
 //        ActorSDK.sharedActor().setDelegate(new ActorSDKDelegate());
         ActorSDK.sharedActor().setPushId(209133700967L);
+
+        ActorStyle style = ActorSDK.sharedActor().style;
+        style.setDialogsActiveTextColor(0xff5882ac);
+
+        ActorSDK.sharedActor().setFastShareEnabled(true);
 //        ActorSDK.sharedActor().setTwitter("");
 //        ActorSDK.sharedActor().setHomePage("http://www.foo.com");
 //        ActorSDK.sharedActor().setInviteUrl("http://www.foo.com");

@@ -50,7 +50,7 @@ class WebhookHandlerSpec
     val (user1, authId1, authSid1, _) = createUser()
     val (user2, authId2, authSid2, _) = createUser()
     val sessionId = createSessionId()
-    implicit val clientData = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
+    implicit val clientData = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1, 42)))
 
     def createGroupAndBot() = {
       val groupOutPeer = createGroup("Bot test group", Set(user2.id)).groupPeer

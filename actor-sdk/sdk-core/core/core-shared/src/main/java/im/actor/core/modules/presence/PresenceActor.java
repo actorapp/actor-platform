@@ -7,6 +7,7 @@ package im.actor.core.modules.presence;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 import im.actor.core.api.ApiGroupOutPeer;
 import im.actor.core.api.ApiUserOutPeer;
@@ -284,9 +285,9 @@ public class PresenceActor extends ModuleActor implements BusSubscriber {
 
         if (requests.size() > 0) {
             isRequesting = true;
-            PromisesArray.ofPromises(requests).zip().then(new Consumer<ResponseVoid[]>() {
+            PromisesArray.ofPromises(requests).zip().then(new Consumer<List<ResponseVoid>>() {
                 @Override
-                public void apply(ResponseVoid[] responseVoids) {
+                public void apply(List<ResponseVoid> responseVoids) {
                     isRequesting = false;
                     onCheckQueue();
                 }

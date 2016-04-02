@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
   -->
 
@@ -7,11 +6,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/share"
-        android:icon="@drawable/abc_ic_menu_share_mtrl_alpha"
+        android:icon="@drawable/ic_share_white_24dp"
         android:title="@string/menu_share"
-        app:showAsAction="always"
-        />
-    <item android:id="@+id/save"
-        android:title="@string/menu_save"/>
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/save"
+        android:title="@string/menu_save" />
 
 </menu>

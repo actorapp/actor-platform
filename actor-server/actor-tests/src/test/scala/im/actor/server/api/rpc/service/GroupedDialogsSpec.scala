@@ -40,7 +40,7 @@ final class GroupedDialogsSpec
     val (user2, _, _, _) = createUser()
     val (user3, _, _, _) = createUser()
 
-    implicit val clientData = ClientData(authId1, 1, Some(AuthData(user1.id, authSid1)))
+    implicit val clientData = ClientData(authId1, 1, Some(AuthData(user1.id, authSid1, 42)))
 
     val group = createGroup("Some group", Set(user3.id))
 
@@ -86,9 +86,9 @@ final class GroupedDialogsSpec
     val (bob, bobAuthId, bobAuthSid, _) = createUser()
     val (eve, eveAuthId, eveAuthSid, _) = createUser()
 
-    val aliceClient = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid)))
-    val bobClient = ClientData(bobAuthId, 1, Some(AuthData(bob.id, bobAuthSid)))
-    val eveClient = ClientData(eveAuthId, 1, Some(AuthData(eve.id, eveAuthSid)))
+    val aliceClient = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid, 42)))
+    val bobClient = ClientData(bobAuthId, 1, Some(AuthData(bob.id, bobAuthSid, 42)))
+    val eveClient = ClientData(eveAuthId, 1, Some(AuthData(eve.id, eveAuthSid, 42)))
 
     {
       implicit val clientData = eveClient
@@ -128,7 +128,7 @@ final class GroupedDialogsSpec
     val (bob, _, _, _) = createUser()
     val (eve, _, _, _) = createUser()
 
-    implicit val clientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid)))
+    implicit val clientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid, 42)))
 
     prepareDialogs(bob, eve)
 
@@ -150,7 +150,7 @@ final class GroupedDialogsSpec
     val (bob, _, _, _) = createUser()
     val (eve, _, _, _) = createUser()
 
-    implicit val clientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid)))
+    implicit val clientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid, 42)))
     val bobPeer = getOutPeer(bob.id, aliceAuthId)
     //    sendMessageToUser(bob.id, textMessage("Hi Bob!"))
 
@@ -173,8 +173,8 @@ final class GroupedDialogsSpec
     val (bob, bobAuthId, bobAuthSid, _) = createUser()
     val (eve, _, _, _) = createUser()
 
-    val aliceCD = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid)))
-    val bobCD = ClientData(bobAuthId, 1, Some(AuthData(bob.id, bobAuthSid)))
+    val aliceCD = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid, 42)))
+    val bobCD = ClientData(bobAuthId, 1, Some(AuthData(bob.id, bobAuthSid, 42)))
 
     val bobPeer = getOutPeer(bob.id, aliceAuthId)
 
@@ -208,7 +208,7 @@ final class GroupedDialogsSpec
     val (bob, _, _, _) = createUser()
     val (eve, _, _, _) = createUser()
 
-    implicit val clientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid)))
+    implicit val clientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid, 42)))
     val bobPeer = getOutPeer(bob.id, aliceAuthId)
 
     prepareDialogs(bob, eve)
@@ -230,7 +230,7 @@ final class GroupedDialogsSpec
     val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
     val (bob, _, _, _) = createUser()
 
-    implicit val clientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid)))
+    implicit val clientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid, 42)))
     val bobPeer = getOutPeer(bob.id, aliceAuthId)
     sendMessageToUser(bob.id, textMessage("Hi Bob!"))
 

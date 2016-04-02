@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import im.actor.core.entity.ContentType;
 import im.actor.core.entity.Dialog;
 import im.actor.core.entity.PeerType;
 import im.actor.sdk.ActorSDK;
@@ -33,6 +34,8 @@ import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 import static im.actor.sdk.util.ActorSDKMessenger.myUid;
 
 public class DialogHolder extends BindedViewHolder {
+
+    protected ActorStyle style = ActorSDK.sharedActor().style;
 
     private final Context context;
     private AvatarView avatar;
@@ -62,8 +65,6 @@ public class DialogHolder extends BindedViewHolder {
 
         final int paddingH = Screen.dp(11);
         final int paddingV = Screen.dp(9);
-
-        ActorStyle style = ActorSDK.sharedActor().style;
 
         pendingColor = style.getDialogsStatePendingColor();
         sentColor = style.getDialogsStateSentColor();
@@ -109,7 +110,7 @@ public class DialogHolder extends BindedViewHolder {
         title.setTextColor(ActorSDK.sharedActor().style.getDialogsTitleColor());
         title.setTypeface(Fonts.medium());
         title.setTextSize(17);
-        title.setPadding(0, Screen.dp(1), 0, 0);
+        title.setPadding(0, Screen.dp(2), 0, 0);
         title.setSingleLine();
         title.setCompoundDrawablePadding(Screen.dp(4));
         title.setEllipsize(TextUtils.TruncateAt.END);
@@ -227,15 +228,10 @@ public class DialogHolder extends BindedViewHolder {
             time.setVisibility(View.GONE);
         }
 
-//        Bypass bypass = new Bypass(context);
-
-//        bindedText = bypass.markdownToSpannable(messenger().getFormatter().formatDialogText(data), true);
         bindedText = messenger().getFormatter().formatDialogText(data);
-
         if (SmileProcessor.containsEmoji(bindedText)) {
             if (emoji().isLoaded()) {
                 bindedText = emoji().processEmojiCompatMutable(bindedText, SmileProcessor.CONFIGURATION_BUBBLES);
-                ;
             } else {
                 emoji().registerListener(new SmilesListener() {
                     @Override
@@ -260,6 +256,12 @@ public class DialogHolder extends BindedViewHolder {
             groupTypingListener = null;
         }
 
+        final int textColor;
+        if (data.getMessageType() != ContentType.TEXT) {
+            textColor = style.getDialogsActiveTextColor();
+        } else {
+            textColor = style.getDialogsTextColor();
+        }
         if (data.getPeer().getPeerType() == PeerType.PRIVATE) {
             bindedUid = data.getPeer().getPeerId();
             privateTypingListener = new ValueChangedListener<Boolean>() {
@@ -270,7 +272,7 @@ public class DialogHolder extends BindedViewHolder {
                         text.setTextColor(ActorSDK.sharedActor().style.getDialogsTypingColor());
                     } else {
                         text.setText(bindedText);
-                        text.setTextColor(ActorSDK.sharedActor().style.getDialogsTextColor());
+                        text.setTextColor(textColor);
                     }
                 }
             };
@@ -289,14 +291,14 @@ public class DialogHolder extends BindedViewHolder {
                         text.setTextColor(ActorSDK.sharedActor().style.getDialogsTypingColor());
                     } else {
                         text.setText(bindedText);
-                        text.setTextColor(ActorSDK.sharedActor().style.getDialogsTextColor());
+                        text.setTextColor(textColor);
                     }
                 }
             };
             messenger().getGroupTyping(bindedGid).subscribe(groupTypingListener);
         } else {
             text.setText(bindedText);
-            text.setTextColor(ActorSDK.sharedActor().style.getDialogsTextColor());
+            text.setTextColor(textColor);
         }
 
         if (data.getSenderId() != myUid()) {
