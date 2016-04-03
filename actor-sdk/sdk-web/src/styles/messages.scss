@@ -40,18 +40,6 @@ $sticker-max-size: 180px;
 
 .dialog {
   position: relative;
-  &__footer {
-    position: absolute;
-    bottom: 0;
-
-    width: 100%;
-    height: 182px;
-    h3 {
-      font-weight: 500;
-
-      color: rgba(0, 0, 0, .2);
-    }
-  }
   &--empty {
     .advice {
       max-width: 480px;
@@ -86,73 +74,6 @@ $sticker-max-size: 180px;
       }
       .hint {
         color: rgba(black, .3);
-      }
-    }
-  }
-}
-
-.messages {
-  position: absolute;
-  top: 0;
-  bottom: 182px;
-
-  width: 100%;
-  overflow-x: hidden;
-
-  // &::-webkit-scrollbar {
-  //   width: 4px;
-  // }
-  //
-  // &::-webkit-scrollbar-thumb {
-  //   background-color: fade-out($dusk, 0.2);
-  //   background-clip: padding-box;
-  // }
-  //
-  // &:hover {
-  //   &::-webkit-scrollbar {
-  //     width: 8px;
-  //   }
-  //
-  //   &::-webkit-scrollbar {
-  //     background-color: fade-out($dusk, 0.6);
-  //   }
-  // }
-
-  &__list {
-    width: 100%;
-    max-height: 100%;
-    margin: 0;
-    padding: 0;
-
-    list-style: none;
-  }
-
-  .scroll-wrapper {
-    .ss-wrapper {
-      .ss-scrollarea {
-        overflow-x: hidden;
-        position: absolute;
-        bottom: 0;
-
-        height: auto;
-        max-height: 100%;
-      }
-    }
-    .ss-scroll {
-      right: 6px;
-      width: 4px;
-      opacity: .2;
-      background-color: $dusk;
-      &:hover,
-      &:active {
-        width: 8px;
-        right: 4px;
-        opacity: 1 !important;
-      }
-    }
-    &:hover {
-      .ss-scroll {
-        opacity: .4;
       }
     }
   }

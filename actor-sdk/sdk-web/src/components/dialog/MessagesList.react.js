@@ -106,11 +106,9 @@ class MessagesList extends Component {
     const { peer, onLoadMore } = this.props;
 
     return (
-      <MessagesScroller className="messages" peer={peer} onLoadMore={onLoadMore}>
-        <div className="messages__list">
-          {this.renderHeader()}
-          {this.renderMessages()}
-        </div>
+      <MessagesScroller className="chat__messages" peer={peer} onLoadMore={onLoadMore}>
+        {this.renderHeader()}
+        {this.renderMessages()}
       </MessagesScroller>
     )
   }

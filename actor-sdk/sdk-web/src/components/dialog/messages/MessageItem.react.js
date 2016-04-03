@@ -115,7 +115,7 @@ class MessageItem extends Component {
 
     const messageSender = escapeWithEmoji(message.sender.title);
 
-    const messageClassName = classnames('message row', {
+    const messageClassName = classnames('message', {
       'message--same-sender': isShort,
       'message--active': isHighlighted,
       'message--selected': isSelected
@@ -197,26 +197,27 @@ class MessageItem extends Component {
 
     return (
       <div className={messageClassName}>
-        {leftBlock}
-        <div className="message__body col-xs">
-          {header}
-          {messageContent}
-        </div>
-        <div className="message__actions">
-          <Reactions peer={peer} message={message}/>
-
-          <div className={messageActionsMenuClassName} onClick={this.showActions}>
-            <SvgIcon className="icon icon--dropdown" glyph="cog" />
+        <div className="row">
+          {leftBlock}
+          <div className="message__body col-xs">
+            {header}
+            {messageContent}
           </div>
+          <div className="message__actions">
+            <Reactions peer={peer} message={message}/>
 
-          {
-            isExperimental
-              ? <div className="message__actions__selector" onClick={this.toggleMessageSelection}>
-                  <i className="icon material-icons icon-check"></i>
-                </div>
-              : null
-          }
+            <div className={messageActionsMenuClassName} onClick={this.showActions}>
+              <SvgIcon className="icon icon--dropdown" glyph="cog" />
+            </div>
 
+            {
+              isExperimental
+                ? <div className="message__actions__selector" onClick={this.toggleMessageSelection}>
+                    <i className="icon material-icons icon-check"></i>
+                  </div>
+                : null
+            }
+          </div>
         </div>
       </div>
     );

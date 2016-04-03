@@ -1,0 +1,26 @@
+$chat-min-width: 300px;
+$chat-footer-height: 100px;
+
+.chat {
+  display: flex;
+  flex-direction: column;
+
+  min-width: $chat-min-width;
+
+  flex: 1 1 auto;
+  justify-content: flex-end;
+
+  &__messages {
+    display: flex;
+    overflow: auto;
+    flex-direction: column;
+
+    flex: 0 1 auto;
+    .message {
+      min-height: min-content;
+    }
+  }
+  &__footer {
+    flex: 0 0 auto;
+  }
+}
