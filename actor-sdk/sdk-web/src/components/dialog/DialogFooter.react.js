@@ -46,7 +46,7 @@ class DialogFooter extends Component {
     const { TypingSection, ComposeSection } = this.components;
 
     return (
-      <footer className="dialog__footer">
+      <footer className="chat__footer">
         <TypingSection />
         <ComposeSection />
       </footer>
