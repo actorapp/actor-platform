@@ -5,22 +5,19 @@
 package im.actor.core.js.modules;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashSet;
 
 import im.actor.core.api.ApiFileLocation;
 import im.actor.core.api.ApiFileUrlDescription;
-import im.actor.core.api.rpc.RequestGetFileUrl;
 import im.actor.core.api.rpc.RequestGetFileUrls;
-import im.actor.core.api.rpc.ResponseGetFileUrl;
 import im.actor.core.api.rpc.ResponseGetFileUrls;
 import im.actor.core.js.modules.entity.CachedFileUrl;
 import im.actor.core.modules.AbsModule;
+import im.actor.core.modules.ModuleActor;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.Modules;
 import im.actor.core.util.BaseKeyValueEngine;
-import im.actor.core.util.ModuleActor;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.runtime.Log;
