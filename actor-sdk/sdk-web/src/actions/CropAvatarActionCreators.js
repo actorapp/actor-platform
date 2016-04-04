@@ -14,6 +14,5 @@ export default {
 
   hide() {
     dispatch(ActionTypes.CROP_AVATAR_MODAL_HIDE);
-    ComposeActionCreators.toggleAutoFocus(true);
   }
 }
