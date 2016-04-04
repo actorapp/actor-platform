@@ -100,7 +100,7 @@
 
     <!-- Sign Up Fragment -->
     <string name="auth_profile_title">مشخصات نمایه</string>
-    <string name="auth_profile_hint">لطفن یک نام برای خودتان انتخاب کنید \nو یک تصویر نمایه اختیاری</string>
+    <string name="auth_profile_hint">لطفن یک نام برای خودتان انتخاب کنید </string>
     <string name="auth_profile_name_hint">نام شما</string>
     <string name="auth_profile_done">{appName} را شروع کنید</string>
 
