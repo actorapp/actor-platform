@@ -15,7 +15,10 @@ const options = {
     'wss://front2-ws-mtproto-api-rev2.actor.im'
   ],
   delegate: new ActorSDKDelegate(components, actions, l18n),
-  isExperimental: true
+  isExperimental: true,
+  facebook: 'actorapp',
+  twitter: 'actorapp',
+  homePage: 'https://actor.im'
 };
 
 const app = new ActorSDK(options);

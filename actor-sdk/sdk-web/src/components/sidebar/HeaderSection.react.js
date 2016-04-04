@@ -9,7 +9,7 @@ import ActorClient from '../../utils/ActorClient';
 import { escapeWithEmoji } from '../../utils/EmojiUtils'
 import confirm from '../../utils/confirm'
 import SharedContainer from '../../utils/SharedContainer';
-import { twitter, homePage } from '../../constants/ActorAppConstants';
+import { FormattedMessage } from 'react-intl';
 
 import MyProfileActions from '../../actions/MyProfileActionCreators';
 import CreateGroupActionCreators from '../../actions/CreateGroupActionCreators';
@@ -34,9 +34,9 @@ class HeaderSection extends Component {
   constructor(props) {
     super(props);
 
-    const SharedActor = SharedContainer.get();
-    this.twitter = SharedActor.twitter ? SharedActor.twitter : twitter;
-    this.homePage = SharedActor.homePage ? SharedActor.homePage : homePage;
+    this.openTwitter = this.openTwitter.bind(this);
+    this.openFacebook = this.openFacebook.bind(this);
+    this.openHomePage = this.openHomePage.bind(this);
   }
 
   static getStores() {
@@ -82,22 +82,40 @@ class HeaderSection extends Component {
   openHelpDialog = () => HelpActionCreators.open();
   openAddContactModal = () => AddContactActionCreators.open();
   onSettingsOpen = () => PreferencesActionCreators.show();
-  openTwitter = (event) => {
+
+  openTwitter(event) {
+    const { twitter } = SharedContainer.get();
+
     event.preventDefault();
     if (ActorClient.isElectron()) {
       ActorClient.handleLinkClick(event);
     } else {
-      window.open(`https://twitter.com/${this.twitter}`, '_blank');
+      window.open(`https://twitter.com/${twitter}`, '_blank');
     }
-  };
-  openHomePage = (event) => {
+  }
+
+  openFacebook(event) {
+    const { facebook } = SharedContainer.get();
+
     event.preventDefault();
     if (ActorClient.isElectron()) {
       ActorClient.handleLinkClick(event);
     } else {
-      window.open(this.homePage, '_blank');
+      window.open(`https://facebook.com/${facebook}`, '_blank');
     }
-  };
+  }
+
+  openHomePage(event) {
+    const { homePage } = SharedContainer.get();
+
+    event.preventDefault();
+    if (ActorClient.isElectron()) {
+      ActorClient.handleLinkClick(event);
+    } else {
+      window.open(homePage, '_blank');
+    }
+  }
+
   setLogout = () => {
     const { intl } = this.context;
     confirm(intl.messages['modal.confirm.logout']).then(
@@ -106,9 +124,51 @@ class HeaderSection extends Component {
     );
   };
 
+
+  renderTwitterLink() {
+    const { twitter } = SharedContainer.get();
+    if (!twitter) return null;
+
+    return (
+      <li className="dropdown__menu__item">
+        <a href={`https://twitter.com/${twitter}`} onClick={this.openTwitter}>
+          <SvgIcon className="icon icon--dropdown sidebar__header__twitter" glyph="twitter" />
+          <FormattedMessage id="menu.twitter"/>
+        </a>
+      </li>
+    );
+  }
+
+  renderFacebookLink() {
+    const { facebook } = SharedContainer.get();
+    if (!facebook) return null;
+
+    return (
+      <li className="dropdown__menu__item">
+        <a href={`https://facebook.com/${facebook}`} onClick={this.openFacebook}>
+          <SvgIcon className="icon icon--dropdown sidebar__header__facebook" glyph="facebook" />
+          <FormattedMessage id="menu.facebook"/>
+        </a>
+      </li>
+    );
+  }
+
+  renderHomeLink() {
+    const { homePage } = SharedContainer.get();
+    if (!homePage) return null;
+
+    return (
+      <li className="dropdown__menu__item">
+        <a href={homePage} onClick={this.openHomePage}>
+          <i className="material-icons">public</i>
+          <FormattedMessage id="menu.homePage"/>
+        </a>
+      </li>
+    );
+  }
+
   render() {
     const { profile, isOpened, isMyProfileOpen, isCreateGroupOpen, isAddContactsOpen, isPreferencesOpen } = this.state;
-    const { intl } = this.context;
 
     if (profile) {
       const headerClass = classnames('sidebar__header', 'sidebar__header--clickable', {
@@ -134,40 +194,33 @@ class HeaderSection extends Component {
               <ul className="dropdown__menu dropdown__menu--right">
                 <li className="dropdown__menu__item" onClick={this.openMyProfile}>
                   <i className="material-icons">edit</i>
-                  {intl.messages['menu.editProfile']}
+                  <FormattedMessage id="menu.editProfile"/>
                 </li>
                 <li className="dropdown__menu__item" onClick={this.openAddContactModal}>
                   <i className="material-icons">person_add</i>
-                  {intl.messages['menu.addToContacts']}
+                  <FormattedMessage id="menu.addToContacts"/>
                 </li>
                 <li className="dropdown__menu__item" onClick={this.openCreateGroup}>
                   <i className="material-icons">group_add</i>
-                  {intl.messages['menu.createGroup']}
+                  <FormattedMessage id="menu.createGroup"/>
                 </li>
                 <li className="dropdown__menu__separator"/>
                 <li className="dropdown__menu__item" onClick={this.onSettingsOpen}>
                   <i className="material-icons">settings</i>
-                  {intl.messages['menu.preferences']}
+                  <FormattedMessage id="menu.preferences"/>
                 </li>
                 <li className="dropdown__menu__item" onClick={this.openHelpDialog}>
                   <i className="material-icons">help</i>
-                  {intl.messages['menu.helpAndFeedback']}
+                  <FormattedMessage id="menu.helpAndFeedback"/>
                 </li>
-                <li className="dropdown__menu__item">
-                  <a href={`https://twitter.com/${this.twitter}`} onClick={this.openTwitter}>
-                    <SvgIcon className="icon icon--dropdown sidebar__header__twitter" glyph="twitter" />
-                    {intl.messages['menu.twitter']}
-                  </a>
-                </li>
-                <li className="dropdown__menu__item">
-                  <a href={this.homePage} onClick={this.openHomePage}>
-                    <i className="material-icons">public</i>
-                    {intl.messages['menu.homePage']}
-                  </a>
-                </li>
+
+                {this.renderTwitterLink()}
+                {this.renderFacebookLink()}
+                {this.renderHomeLink()}
+
                 <li className="dropdown__menu__separator"/>
                 <li className="dropdown__menu__item" onClick={this.setLogout}>
-                  {intl.messages['menu.signOut']}
+                  <FormattedMessage id="menu.signOut"/>
                 </li>
               </ul>
             </div>
@@ -175,6 +228,7 @@ class HeaderSection extends Component {
 
 
           {/* Modals */}
+          {/* TODO: Move all modals to other place */}
           {isMyProfileOpen ? <MyProfileModal/> : null}
           {isCreateGroupOpen ? <CreateGroupModal/> : null}
           {isAddContactsOpen ? <AddContactModal/> : null}
