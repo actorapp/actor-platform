@@ -108,13 +108,13 @@ public class GroupInfoFragment extends BaseFragment {
 
         // Avatar
         avatarView = (CoverAvatarView) header.findViewById(R.id.avatar);
-        ImageView avatarBkgrnd = (ImageView) header.findViewById(R.id.avatar_bgrnd);
-        if (style.getAvatarBackgroundResourse() != 0) {
-            avatarBkgrnd.setImageResource(style.getAvatarBackgroundResourse());
-        } else {
-            avatarBkgrnd.setBackgroundColor(style.getAvatarBackgroundColor());
-        }
-        avatarView.setBkgrnd(avatarBkgrnd);
+//        ImageView avatarBkgrnd = (ImageView) header.findViewById(R.id.avatar_bgrnd);
+//        if (style.getAvatarBackgroundResourse() != 0) {
+//            avatarBkgrnd.setImageResource(style.getAvatarBackgroundResourse());
+//        } else {
+//            avatarBkgrnd.setBackgroundColor(style.getAvatarBackgroundColor());
+//        }
+//        avatarView.setBkgrnd(avatarBkgrnd);
         bind(avatarView, groupInfo.getAvatar());
         avatarView.setOnClickListener(new View.OnClickListener() {
             @Override
