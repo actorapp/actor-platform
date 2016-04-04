@@ -55,7 +55,7 @@ import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.file.UploadManager;
 import im.actor.core.modules.messaging.actors.entity.PendingMessage;
 import im.actor.core.modules.messaging.actors.entity.PendingMessagesStorage;
-import im.actor.core.util.ModuleActor;
+import im.actor.core.modules.ModuleActor;
 import im.actor.core.util.RandomUtils;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;

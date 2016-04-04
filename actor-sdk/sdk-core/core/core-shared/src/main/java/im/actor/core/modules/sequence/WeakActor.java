@@ -1,7 +1,7 @@
 package im.actor.core.modules.sequence;
 
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.util.ModuleActor;
+import im.actor.core.modules.ModuleActor;
 
 public class WeakActor extends ModuleActor {
 

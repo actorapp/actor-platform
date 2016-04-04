@@ -8,7 +8,7 @@ import im.actor.core.api.rpc.RequestLoadDialogs;
 import im.actor.core.api.rpc.ResponseLoadDialogs;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.sequence.internal.DialogHistoryLoaded;
-import im.actor.core.util.ModuleActor;
+import im.actor.core.modules.ModuleActor;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.runtime.Log;
@@ -19,9 +19,11 @@ public class DialogsHistoryActor extends ModuleActor {
 
     private static final int LIMIT = 20;
 
-    private static final String KEY_LOADED_DATE = "dialogs_history_date";
-    private static final String KEY_LOADED = "dialogs_history_loaded";
-    private static final String KEY_LOADED_INIT = "dialogs_history_inited";
+    private static final String KEY_VERSION = "_1";
+    private static final String KEY_LOADED_DATE = "dialogs_history_date" + KEY_VERSION;
+    private static final String KEY_LOADED = "dialogs_history_loaded" + KEY_VERSION;
+    private static final String KEY_LOADED_INIT = "dialogs_history_inited" + KEY_VERSION;
+
 
     private long historyMaxDate;
     private boolean historyLoaded;

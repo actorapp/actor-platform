@@ -9,7 +9,7 @@ import im.actor.core.api.rpc.ResponseLoadHistory;
 import im.actor.core.entity.Peer;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.sequence.internal.MessagesHistoryLoaded;
-import im.actor.core.util.ModuleActor;
+import im.actor.core.modules.ModuleActor;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 
