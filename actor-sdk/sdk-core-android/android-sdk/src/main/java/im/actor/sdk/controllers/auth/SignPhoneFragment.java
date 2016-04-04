@@ -235,6 +235,21 @@ public class SignPhoneFragment extends BaseAuthFragment {
             }
         });
 
+        TextView switchToEmail = (TextView) v.findViewById(R.id.button_switch_to_email);
+        switchToEmail.setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
+        onClick(switchToEmail, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switchToEmail();
+            }
+        });
+        if ((ActorSDK.sharedActor().getAuthType() & AuthActivity.AUTH_TYPE_EMAIL) == AuthActivity.AUTH_TYPE_EMAIL) {
+            switchToEmail.setVisibility(View.VISIBLE);
+        } else {
+            switchToEmail.setVisibility(View.GONE);
+        }
+
+
         onClick(v, R.id.button_continue, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -249,7 +264,6 @@ public class SignPhoneFragment extends BaseAuthFragment {
 
         if (countryCodeEditText.getText().toString().trim().length() == 0 ||
                 phoneNumberEditText.getText().toString().trim().length() == 0) {
-            String message = getString(R.string.auth_error_empty_phone);
             new AlertDialog.Builder(getActivity())
                     .setMessage(R.string.auth_error_empty_phone)
                     .setPositiveButton(R.string.dialog_ok, null)
@@ -261,7 +275,6 @@ public class SignPhoneFragment extends BaseAuthFragment {
                 phoneNumberEditText.getText().toString().replaceAll("[^0-9]", "");
 
         if (rawPhoneN.length() == 0) {
-            String message = getString(R.string.auth_error_empty_phone);
             new AlertDialog.Builder(getActivity())
                     .setMessage(R.string.auth_error_empty_phone)
                     .setPositiveButton(R.string.dialog_ok, null)
@@ -269,7 +282,7 @@ public class SignPhoneFragment extends BaseAuthFragment {
             return;
         }
 
-        executeAuth(messenger().requestStartPhoneAuth(Long.parseLong(rawPhoneN)), ACTION);
+        startPhoneAuth(Long.parseLong(rawPhoneN));
     }
 
     private void focusCode() {

@@ -69,6 +69,9 @@
     <string name="auth_phone_country_title">Выберите страну</string>
     <string name="auth_phone_error_invalid_country">Неправильный код страны</string>
 
+    <string name="auth_switch_to_email">использовать email для авторизации</string>
+    <string name="auth_switch_to_phone">использовать телефон для авторизации</string>
+
     <!-- Choose auth type-->
     <string name="choose_auth_type_title">Выбор способа авторизации</string>
     <string name="choose_auth_type_hint">Пожалуйста, выберите способ авторизации.</string>
@@ -97,7 +100,7 @@
 
     <!-- Sign Up Fragment -->
     <string name="auth_profile_title">Анкета</string>
-    <string name="auth_profile_hint">Пожалуйста укажите имя\nи, по желанию, свое фото.</string>
+    <string name="auth_profile_hint">Пожалуйста укажите имя</string>
     <string name="auth_profile_done">НАЧАТЬ ОБЩЕНИЕ</string>
     <string name="auth_profile_name_hint">Ваше имя</string>
 

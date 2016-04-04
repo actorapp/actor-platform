@@ -23,30 +23,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <FrameLayout
-                android:layout_width="96dp"
-                android:layout_height="96dp"
-                android:layout_marginRight="16dp">
-
-                <im.actor.sdk.view.avatar.AvatarView
-                    android:id="@+id/avatar"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-                <ImageButton
-                    android:id="@+id/pickAvatar"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/selector_circle"
-                    android:src="@android:color/transparent" />
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_camera_alt_white_36dp" />
-            </FrameLayout>
-
             <TextView
                 android:id="@+id/sign_up_hint"
                 android:layout_width="match_parent"
