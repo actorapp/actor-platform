@@ -9,8 +9,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -22,6 +24,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -107,9 +110,10 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
             public void onChanged(final String val, Value<String> Value) {
                 final View recordView = inflater.inflate(R.layout.contact_record, nickContainer, false);
                 recordView.findViewById(R.id.divider).setBackgroundColor(style.getDividerColor());
-                TintImageView nickIcon = (TintImageView) recordView.findViewById(R.id.recordIcon);
-                nickIcon.setTint(style.getSettingsCategoryTextColor());
-                nickIcon.setResource(R.drawable.ic_star_white_24dp);
+                ImageView nickIcon = (ImageView) recordView.findViewById(R.id.recordIcon);
+                Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_star_white_24dp));
+                DrawableCompat.setTint(drawable, style.getSettingsCategoryTextColor());
+                nickIcon.setImageDrawable(drawable);
 
                 String value = (val != null && !val.isEmpty()) ? val : getString(R.string.nickname_empty);
                 String title = getString(R.string.nickname);
@@ -173,11 +177,11 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
                     for (int i = 0; i < val.size(); i++) {
                         final UserPhone record = val.get(i);
                         View recordView = inflater.inflate(R.layout.contact_record, contactsContainer, false);
-                        TintImageView tintImageView = (TintImageView) recordView.findViewById(R.id.recordIcon);
-                        tintImageView.setTint(style.getSettingsCategoryTextColor());
+                        ImageView tintImageView = (ImageView) recordView.findViewById(R.id.recordIcon);
                         if (i == 0) {
-                            tintImageView.setResource(R.drawable.ic_phone_white_24dp);
-                            tintImageView.setVisibility(View.VISIBLE);
+                            Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_phone_white_24dp));
+                            DrawableCompat.setTint(drawable, style.getSettingsCategoryTextColor());
+                            tintImageView.setImageDrawable(drawable);
                         } else {
                             tintImageView.setVisibility(View.INVISIBLE);
                         }
@@ -272,11 +276,11 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
                     for (int i = 0; i < val.size(); i++) {
                         final UserEmail record = val.get(i);
                         View recordView = inflater.inflate(R.layout.contact_record, contactsContainer, false);
-                        TintImageView tintImageView = (TintImageView) recordView.findViewById(R.id.recordIcon);
-                        tintImageView.setTint(style.getSettingsCategoryTextColor());
+                        ImageView tintImageView = (ImageView) recordView.findViewById(R.id.recordIcon);
                         if (i == 0) {
-                            tintImageView.setResource(R.drawable.ic_email_white_24dp);
-                            tintImageView.setVisibility(View.VISIBLE);
+                            Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_email_white_24dp));
+                            DrawableCompat.setTint(drawable, style.getSettingsCategoryTextColor());
+                            tintImageView.setImageDrawable(drawable);
                         } else {
                             tintImageView.setVisibility(View.INVISIBLE);
                         }
