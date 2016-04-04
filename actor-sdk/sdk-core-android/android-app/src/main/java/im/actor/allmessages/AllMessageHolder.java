@@ -175,7 +175,7 @@ public class AllMessageHolder extends BindedViewHolder {
 
         ContentDescription contentDescription = ContentDescription.fromContent(data.getContent());
 
-        title.setText(messenger().getFormatter().formatDialogText(new Dialog(peer, 1, "", null, 1, 1, contentDescription.getContentType(), contentDescription.getText(), MessageState.SENT, peer.getPeerId(), 1,1)));
+        // title.setText(messenger().getFormatter().formatDialogText(new Dialog(peer, 1, "", null, 1, 1, contentDescription.getContentType(), contentDescription.getText(), MessageState.SENT, peer.getPeerId(), 1,1)));
 
         text.setText(data.getPeer().getPeerType()==PeerType.PRIVATE?"in private":"at "+groups().get(data.getPeer().getPeerId()).getName().get());
 
