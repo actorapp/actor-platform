@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.fragment.auth;
+package im.actor.sdk.controllers.auth;
 
 import android.content.Context;
 import android.util.AttributeSet;

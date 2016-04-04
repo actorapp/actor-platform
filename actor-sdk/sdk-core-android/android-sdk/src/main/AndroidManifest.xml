@@ -48,13 +48,13 @@
         <!-- Auth -->
 
         <activity
-            android:name="im.actor.sdk.controllers.fragment.auth.AuthActivity"
+            android:name=".controllers.auth.AuthActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize" />
 
         <activity
-            android:name="im.actor.sdk.controllers.fragment.auth.PickCountryActivity"
+            android:name=".controllers.auth.PickCountryActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize" />
