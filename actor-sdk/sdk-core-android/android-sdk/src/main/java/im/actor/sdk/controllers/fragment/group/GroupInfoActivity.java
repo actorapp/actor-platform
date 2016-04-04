@@ -7,8 +7,6 @@ import android.os.Bundle;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.activity.BaseFragmentActivity;
-import im.actor.sdk.controllers.fragment.profile.ProfileFragment;
-import im.actor.sdk.controllers.fragment.settings.BaseActorProfileActivity;
 import im.actor.sdk.controllers.fragment.settings.BaseGroupInfoActivity;
 
 public class GroupInfoActivity extends BaseFragmentActivity {

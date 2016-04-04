@@ -7,10 +7,14 @@ import android.view.View;
 
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
+import im.actor.sdk.ActorSDK;
+import im.actor.sdk.ActorStyle;
 import im.actor.sdk.R;
 import im.actor.sdk.util.ViewUtils;
 
 public class BaseFragment extends BinderCompatFragment {
+
+    protected final ActorStyle style = ActorSDK.sharedActor().style;
 
     @Override
     public void onCreate(Bundle saveInstance) {
@@ -54,7 +58,7 @@ public class BaseFragment extends BinderCompatFragment {
         ViewUtils.showView(view, isAnimated, isSlow);
     }
 
-    public void wave(View[] layers, float scale, int duration, float offset){
+    public void wave(View[] layers, float scale, int duration, float offset) {
         ViewUtils.wave(layers, scale, duration, offset);
     }
 
