@@ -44,7 +44,6 @@ import im.actor.sdk.controllers.fragment.contacts.ContactsFragment;
 import im.actor.sdk.controllers.fragment.dialogs.DialogsFragment;
 import im.actor.sdk.controllers.fragment.help.HelpActivity;
 import im.actor.sdk.controllers.fragment.main.SearchAdapter;
-import im.actor.sdk.controllers.fragment.settings.MyProfileActivity;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.util.Fonts;
 import im.actor.sdk.view.adapters.FragmentNoMenuStatePagerAdapter;

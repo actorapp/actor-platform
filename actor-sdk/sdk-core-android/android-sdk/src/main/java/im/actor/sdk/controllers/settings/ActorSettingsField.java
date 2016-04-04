@@ -1,9 +1,7 @@
-package im.actor.sdk.controllers.fragment.settings;
+package im.actor.sdk.controllers.settings;
 
-import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 public class ActorSettingsField implements IActorSettingsField {

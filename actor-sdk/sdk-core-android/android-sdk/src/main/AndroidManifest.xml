@@ -133,7 +133,7 @@
             android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
 
         <activity
-            android:name="im.actor.sdk.controllers.fragment.settings.MyProfileActivity"
+            android:name=".controllers.settings.MyProfileActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/ProfileActivityTheme"
             android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
@@ -173,13 +173,13 @@
         <!-- Settings -->
 
         <activity
-            android:name="im.actor.sdk.controllers.fragment.settings.NotificationsActivity"
+            android:name=".controllers.settings.NotificationsActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
 
         <activity
-            android:name="im.actor.sdk.controllers.fragment.settings.ChatSettingsActivity"
+            android:name=".controllers.settings.ChatSettingsActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
@@ -191,7 +191,7 @@
             android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
 
         <activity
-            android:name="im.actor.sdk.controllers.fragment.settings.SecuritySettingsActivity"
+            android:name=".controllers.settings.SecuritySettingsActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
@@ -225,19 +225,19 @@
 
         <!-- Actions -->
         <activity
-            android:name="im.actor.sdk.controllers.fragment.settings.EditNameActivity"
+            android:name=".controllers.settings.EditNameActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
 
         <activity
-            android:name=".controllers.fragment.settings.PickWallpaperActivity"
+            android:name=".controllers.settings.PickWallpaperActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize" />
 
         <activity
-            android:name="im.actor.sdk.controllers.fragment.settings.EditAboutActivity"
+            android:name=".controllers.settings.EditAboutActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
