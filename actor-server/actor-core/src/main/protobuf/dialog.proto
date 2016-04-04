@@ -11,6 +11,15 @@ import "scalapb/scalapb.proto";
 import "model.proto";
 import "sequence.proto";
 
+message DialogRootEvents {
+    message Created {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogRootEvent";
+
+        required int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];
+        required Peer peer = 2;
+    }
+}
+
 message DialogCommands {
 
     message Envelope {
