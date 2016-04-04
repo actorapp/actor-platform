@@ -39,7 +39,7 @@ class Group extends Component {
     });
 
     return (
-      <li className={resultClassName}
+      <div className={resultClassName}
           onClick={this.handleClick}
           onMouseOver={this.handleMouseOver}>
         <div>
@@ -72,11 +72,11 @@ class Group extends Component {
 
         <div className="additional">
           <div className="members">
-            <SvgIcon glyph="members" />
+            <SvgIcon glyph="members" className="icon"/>
             {group.membersCount}
           </div>
         </div>
-      </li>
+      </div>
     )
   }
 }

@@ -2,12 +2,12 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import { map, debounce } from 'lodash';
+import { debounce } from 'lodash';
 
 import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 import { Container } from 'flux/utils';
-import { FormattedHTMLMessage } from 'react-intl';
+import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
 import history from '../../../utils/history';
 import PeerUtils from '../../../utils/PeerUtils';
 import Scrollbar from '../../common/Scrollbar.react';
@@ -144,44 +144,71 @@ class GroupList extends Component {
 
   handleScroll = (top) => this.refs.results.scrollTo(top);
 
-  render() {
-    const { query, results, selectedIndex, list } = this.state;
+  renderSearchInput() {
+    const { query } = this.state;
     const { intl } = this.context;
 
-    let groupList = map(results, (result, index) => <Group group={result} key={index}
-                                                           isSelected={selectedIndex === index}
-                                                           ref={selectedIndex === index ? 'selected' : null}
-                                                           onClick={this.handleGroupSelect}
-                                                           onMouseOver={() => this.setState({selectedIndex: index})}/>);
+    return (
+      <input className="newmodal__search__input"
+             onChange={this.handleSearchChange}
+             placeholder={intl.messages['modal.groups.search']}
+             type="search"
+             ref="search"
+             value={query}/>
+    );
+  }
 
+  renderLoading() {
+    const { list } = this.state;
+
+    if (list.length !== 0) return null;
+
+    return (
+      <div><FormattedMessage id="modal.groups.loading"/></div>
+    );
+  }
+
+  renderList() {
+    const { query, results, selectedIndex } = this.state;
+
+    if (results.length === 0) {
+      return (
+        <li className="group__list__item group__list__item--empty text-center">
+          <FormattedHTMLMessage id="modal.groups.notFound" values={{query}} />
+        </li>
+      );
+    }
+
+    return results.map((result, index) => {
+      return (
+        <Group
+          group={result}
+          key={index}
+          isSelected={selectedIndex === index}
+          ref={selectedIndex === index ? 'selected' : null}
+          onClick={this.handleGroupSelect}
+          onMouseOver={() => this.setState({selectedIndex: index})}
+        />
+      )
+    });
+  }
+
+  render() {
     return (
       <div className="newmodal newmodal__groups">
         <header className="newmodal__header">
-          <h2>{intl.messages['modal.groups.title']}</h2>
+          <h2><FormattedMessage id="modal.groups.title"/></h2>
         </header>
 
         <section className="newmodal__search">
-          <input className="newmodal__search__input"
-                 onChange={this.handleSearchChange}
-                 placeholder={intl.messages['modal.groups.search']}
-                 type="search"
-                 ref="search"
-                 value={query}/>
+          {this.renderSearchInput()}
         </section>
 
         <Scrollbar ref="results">
-          <ul className="newmodal__result group__list">
-            {
-              list.length === 0
-                ? <div>{intl.messages['modal.groups.loading']}</div>
-                : results.length === 0
-                    ? <li className="group__list__item group__list__item--empty text-center">
-                        <FormattedHTMLMessage id="modal.groups.notFound"
-                                              values={{query}} />
-                      </li>
-                    : groupList
-            }
-          </ul>
+          <div className="newmodal__result group__list">
+            {this.renderLoading()}
+            {this.renderList()}
+          </div>
         </Scrollbar>
       </div>
     )
