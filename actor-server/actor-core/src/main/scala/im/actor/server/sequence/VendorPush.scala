@@ -109,7 +109,7 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
 
   private val settingsControl = context.actorOf(SettingsControl.props(userId), "settings")
   private val googlePushProvider = new GooglePushProvider(userId, context.system)
-  private val applePushProvider = new ApplePushProvider(userId, context.system)
+  private val applePushProvider = new ApplePushProvider(userId)(context.system)
 
   private var mapping: Map[PushCredentials, PushCredentialsInfo] = Map.empty
   private var notificationSettings = AllNotificationSettings()
