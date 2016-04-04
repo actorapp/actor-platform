@@ -28,6 +28,14 @@
             android:text="@string/auth_email_hint"
             android:textSize="16sp" />
 
+        <ImageView
+            android:layout_marginTop="14dp"
+            android:id="@+id/corp_logo"
+            android:gravity="center"
+            android:scaleType="centerInside"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" />
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -76,6 +84,33 @@
                 android:textSize="15sp" />
         </FrameLayout>
 
+        <Button
+            android:id="@+id/button_why"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@null"
+            android:paddingLeft="26dp"
+            android:paddingRight="26dp"
+            android:text="@string/auth_email_why"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/button_switch_to_phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:background="@null"
+            android:paddingLeft="26dp"
+            android:paddingRight="26dp"
+            android:text="@string/auth_switch_to_phone"
+            android:textSize="14sp" />
 
     </LinearLayout>
 </ScrollView>

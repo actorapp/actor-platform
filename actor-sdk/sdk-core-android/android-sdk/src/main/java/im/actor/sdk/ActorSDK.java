@@ -143,6 +143,12 @@ public class ActorSDK {
      */
     private boolean fastShareEnabled = false;
 
+
+    /**
+     * Auth type - binary mask for auth type
+     */
+    private int authType = AuthActivity.AUTH_TYPE_PHONE + AuthActivity.AUTH_TYPE_EMAIL;
+
     /**
      * Delegate
      */
@@ -621,6 +627,25 @@ public class ActorSDK {
      */
     public void setInviteUrl(String inviteUrl) {
         this.inviteUrl = inviteUrl;
+    }
+
+    /**
+     * Getting binary mask for auth type
+     *
+     * @return binary mask for auth type
+     */
+    public int getAuthType() {
+        return authType;
+    }
+
+    /**
+     * Setting binary mask for auth type
+     * available auth types are: {@link AuthActivity#AUTH_TYPE_EMAIL}, {@link AuthActivity#AUTH_TYPE_PHONE}
+     *
+     * @param authType - binary mask for auth type
+     */
+    public void setAuthType(int authType) {
+        this.authType = authType;
     }
 
     /**
