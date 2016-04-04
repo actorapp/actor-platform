@@ -16,7 +16,7 @@ import im.actor.core.entity.content.AbsContent;
 import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.events.AppVisibleChanged;
-import im.actor.core.util.ModuleActor;
+import im.actor.core.modules.ModuleActor;
 import im.actor.runtime.Storage;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.annotations.Verified;
@@ -201,7 +201,7 @@ public class ConversationActor extends ModuleActor {
             if (!isHiddenPeer) {
                 dialogsActor.send(new DialogsActor.InMessage(peer, topMessage, inPendingIndex.getCount()));
             }
-            if (dialogsGroupedActor!=null) {
+            if (dialogsGroupedActor != null) {
                 dialogsGroupedActor.send(new GroupedDialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
             }
         }
@@ -263,7 +263,7 @@ public class ConversationActor extends ModuleActor {
             if (!isHiddenPeer) {
                 dialogsActor.send(new DialogsActor.InMessage(peer, message, inPendingIndex.getCount()));
             }
-            if (dialogsGroupedActor!=null) {
+            if (dialogsGroupedActor != null) {
                 dialogsGroupedActor.send(new GroupedDialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
             }
         }
@@ -341,7 +341,7 @@ public class ConversationActor extends ModuleActor {
             if (!isHiddenPeer) {
                 // Updating dialog
                 dialogsActor.send(new DialogsActor.InMessage(peer, updatedMsg, inPendingIndex.getCount()));
-                if (dialogsGroupedActor!=null) {
+                if (dialogsGroupedActor != null) {
                     dialogsGroupedActor.send(new GroupedDialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
                 }
             }
@@ -368,12 +368,7 @@ public class ConversationActor extends ModuleActor {
                 docs.addOrUpdateItem(updatedMsg);
             }
 
-            if (!isHiddenPeer) {
-                // Updating dialog
-                dialogsActor.send(new DialogsActor.MessageStateChanged(peer, rid,
-                        MessageState.ERROR));
-            }
-            if (dialogsGroupedActor!=null) {
+            if (dialogsGroupedActor != null) {
                 dialogsGroupedActor.send(new GroupedDialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
             }
         }
@@ -391,17 +386,10 @@ public class ConversationActor extends ModuleActor {
 
         List<Long> res = outPendingIndex.removeBeforeValue(date);
         if (res.size() > 0) {
-            long minRid = -1;
-            long minDate = Long.MAX_VALUE;
-            ArrayList<Message> updated = new ArrayList<Message>();
+            ArrayList<Message> updated = new ArrayList<>();
             for (Long ref : res) {
                 Message msg = messages.getValue(ref);
                 if (msg != null && msg.isReceivedOrSent()) {
-                    if (msg.getDate() < minDate) {
-                        minDate = msg.getDate();
-                        minRid = ref;
-                    }
-
                     updated.add(msg.changeState(MessageState.READ));
                 }
             }
@@ -409,12 +397,10 @@ public class ConversationActor extends ModuleActor {
             if (updated.size() > 0) {
                 messages.addOrUpdateItems(updated);
             }
+        }
 
-            if (minRid != -1) {
-                if (!isHiddenPeer) {
-                    dialogsActor.send(new DialogsActor.MessageStateChanged(peer, minRid, MessageState.READ));
-                }
-            }
+        if (!isHiddenPeer) {
+            dialogsActor.send(new DialogsActor.PeerReadChanged(peer, date));
         }
     }
 
@@ -427,20 +413,12 @@ public class ConversationActor extends ModuleActor {
         preferences().putLong(OUT_RECEIVE_STATE_PREF, date);
 
         List<Long> res = outPendingIndex.findBeforeValue(date);
-
         if (res.size() > 0) {
-            long maxRid = -1;
-            long maxDate = Long.MIN_VALUE;
-            ArrayList<Message> updated = new ArrayList<Message>();
+            ArrayList<Message> updated = new ArrayList<>();
 
             for (Long ref : res) {
                 Message msg = messages.getValue(ref);
                 if (msg != null && msg.isSent()) {
-                    if (msg.getDate() > maxDate) {
-                        maxDate = msg.getDate();
-                        maxRid = ref;
-                    }
-
                     updated.add(msg.changeState(MessageState.RECEIVED));
                 }
             }
@@ -448,12 +426,10 @@ public class ConversationActor extends ModuleActor {
             if (updated.size() > 0) {
                 messages.addOrUpdateItems(updated);
             }
+        }
 
-            if (maxRid != -1) {
-                if (!isHiddenPeer) {
-                    dialogsActor.send(new DialogsActor.MessageStateChanged(peer, maxRid, MessageState.RECEIVED));
-                }
-            }
+        if (!isHiddenPeer) {
+            dialogsActor.send(new DialogsActor.PeerReceiveChanged(peer, date));
         }
     }
 
@@ -472,7 +448,7 @@ public class ConversationActor extends ModuleActor {
         if (!isHiddenPeer) {
             dialogsActor.send(new DialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
         }
-        if (dialogsGroupedActor!=null) {
+        if (dialogsGroupedActor != null) {
             dialogsGroupedActor.send(new GroupedDialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
         }
     }
@@ -490,7 +466,7 @@ public class ConversationActor extends ModuleActor {
                 if (!isHiddenPeer) {
                     dialogsActor.send(new DialogsActor.CounterChanged(peer, 0));
                 }
-                if (dialogsGroupedActor!=null) {
+                if (dialogsGroupedActor != null) {
                     dialogsGroupedActor.send(new GroupedDialogsActor.CounterChanged(peer, 0));
                 }
             }

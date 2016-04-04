@@ -89,6 +89,8 @@ import static im.actor.runtime.actors.ActorSystem.system;
 
 public class MessagesModule extends AbsModule implements BusSubscriber {
 
+    private static final String DIALOGS_KEY_VERSION = "_1";
+
     private ListEngine<Dialog> dialogs;
 
     private ActorRef dialogsActor;
@@ -118,7 +120,7 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
 
         this.dialogDescKeyValue = Storage.createKeyValue(STORAGE_DIALOGS_DESC, DialogSpecVM.CREATOR, DialogSpec.CREATOR);
         this.cursorStorage = new SyncKeyValue(Storage.createKeyValue(STORAGE_CURSOR));
-        this.dialogs = Storage.createList(STORAGE_DIALOGS, Dialog.CREATOR);
+        this.dialogs = Storage.createList(STORAGE_DIALOGS + DIALOGS_KEY_VERSION, Dialog.CREATOR);
     }
 
     public void run() {

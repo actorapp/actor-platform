@@ -8,12 +8,11 @@ import java.util.List;
 
 import im.actor.core.api.ApiICEServer;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.util.ModuleActor;
+import im.actor.core.modules.ModuleActor;
 import im.actor.runtime.Log;
 import im.actor.runtime.WebRTC;
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
-import im.actor.runtime.actors.messages.PoisonPill;
 import im.actor.runtime.collections.ManagedList;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.function.Function;

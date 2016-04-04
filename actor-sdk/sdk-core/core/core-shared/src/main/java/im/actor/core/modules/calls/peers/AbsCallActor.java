@@ -2,7 +2,7 @@ package im.actor.core.modules.calls.peers;
 
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.calls.CallViewModels;
-import im.actor.core.util.ModuleActor;
+import im.actor.core.modules.ModuleActor;
 import im.actor.runtime.WebRTC;
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;

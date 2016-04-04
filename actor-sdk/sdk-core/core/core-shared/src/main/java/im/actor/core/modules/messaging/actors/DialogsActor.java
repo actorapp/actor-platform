@@ -20,7 +20,7 @@ import im.actor.core.entity.User;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.messaging.actors.entity.DialogHistory;
-import im.actor.core.util.ModuleActor;
+import im.actor.core.modules.ModuleActor;
 import im.actor.runtime.Log;
 import im.actor.runtime.Runtime;
 import im.actor.runtime.annotations.Verified;
@@ -74,8 +74,15 @@ public class DialogsActor extends ModuleActor {
                     .setMessageType(contentDescription.getContentType())
                     .setText(contentDescription.getText())
                     .setRelatedUid(contentDescription.getRelatedUser())
-                    .setStatus(message.getMessageState())
                     .setSenderId(message.getSenderId());
+
+            if (message.getMessageState() == MessageState.READ) {
+                builder.updateKnownReadDate(message.getSortDate());
+                builder.updateKnownReceiveDate(message.getSortDate());
+            } else if (message.getMessageState() == MessageState.RECEIVED) {
+                builder.updateKnownReceiveDate(message.getSortDate());
+            }
+
 
             if (counter >= 0) {
                 builder.setUnreadCount(counter);
@@ -93,7 +100,9 @@ public class DialogsActor extends ModuleActor {
                 builder.setPeer(dialog.getPeer())
                         .setDialogTitle(dialog.getDialogTitle())
                         .setDialogAvatar(dialog.getDialogAvatar())
-                        .setSortKey(dialog.getSortDate());
+                        .setSortKey(dialog.getSortDate())
+                        .updateKnownReceiveDate(dialog.getKnownReceiveDate())
+                        .updateKnownReadDate(dialog.getKnownReadDate());
 
                 // Do not push up dialogs for silent messages
                 if (!contentDescription.isSilent()) {
@@ -179,21 +188,26 @@ public class DialogsActor extends ModuleActor {
                     .setUnreadCount(0)
                     .setRid(0)
                     .setSenderId(0)
-                    .setStatus(MessageState.UNKNOWN)
                     .createDialog());
         }
     }
 
     @Verified
-    private void onMessageStatusChanged(Peer peer, long rid, MessageState state) {
+    private void onPeerRead(Peer peer, long date) {
         Dialog dialog = dialogs.getValue(peer.getUnuqueId());
-
-        // If message is on top
-        if (dialog != null && dialog.getRid() == rid) {
-
-            // Update dialog
+        if (dialog != null) {
             addOrUpdateItem(new DialogBuilder(dialog)
-                    .setStatus(state)
+                    .updateKnownReadDate(date)
+                    .createDialog());
+        }
+    }
+
+    @Verified
+    private void onPeerReceive(Peer peer, long date) {
+        Dialog dialog = dialogs.getValue(peer.getUnuqueId());
+        if (dialog != null) {
+            addOrUpdateItem(new DialogBuilder(dialog)
+                    .updateKnownReceiveDate(date)
                     .createDialog());
         }
     }
@@ -250,11 +264,29 @@ public class DialogsActor extends ModuleActor {
 
             ContentDescription description = ContentDescription.fromContent(dialogHistory.getContent());
 
-            updated.add(new Dialog(dialogHistory.getPeer(),
-                    dialogHistory.getSortDate(), peerDesc.getTitle(), peerDesc.getAvatar(),
-                    dialogHistory.getUnreadCount(),
-                    dialogHistory.getRid(), description.getContentType(), description.getText(), dialogHistory.getStatus(),
-                    dialogHistory.getSenderId(), dialogHistory.getDate(), description.getRelatedUser()));
+            DialogBuilder builder = new DialogBuilder()
+                    .setPeer(dialogHistory.getPeer())
+                    .setDialogTitle(peerDesc.getTitle())
+                    .setDialogAvatar(peerDesc.getAvatar())
+                    .setSortKey(dialogHistory.getSortDate())
+
+                    .setRid(dialogHistory.getRid())
+                    .setTime(dialogHistory.getDate())
+                    .setMessageType(description.getContentType())
+                    .setText(description.getText())
+                    .setSenderId(dialogHistory.getSenderId())
+                    .setRelatedUid(description.getRelatedUser())
+
+                    .setUnreadCount(dialogHistory.getUnreadCount());
+
+            if (dialogHistory.getStatus() == MessageState.READ) {
+                builder.updateKnownReadDate(dialogHistory.getDate());
+                builder.updateKnownReceiveDate(dialogHistory.getDate());
+            } else if (dialogHistory.getStatus() == MessageState.RECEIVED) {
+                builder.updateKnownReceiveDate(dialogHistory.getDate());
+            }
+
+            updated.add(builder.createDialog());
         }
         addOrUpdateItems(updated);
         updateSearch(updated);
@@ -340,10 +372,12 @@ public class DialogsActor extends ModuleActor {
             onChatClear(((ChatClear) message).getPeer());
         } else if (message instanceof ChatDelete) {
             onChatDeleted(((ChatDelete) message).getPeer());
-        } else if (message instanceof MessageStateChanged) {
-            MessageStateChanged messageStateChanged = (MessageStateChanged) message;
-            onMessageStatusChanged(messageStateChanged.getPeer(), messageStateChanged.getRid(),
-                    messageStateChanged.getState());
+        } else if (message instanceof PeerReadChanged) {
+            PeerReadChanged peerReadChanged = (PeerReadChanged) message;
+            onPeerRead(peerReadChanged.getPeer(), peerReadChanged.getDate());
+        } else if (message instanceof PeerReceiveChanged) {
+            PeerReceiveChanged peerReceiveChanged = (PeerReceiveChanged) message;
+            onPeerReceive(peerReceiveChanged.getPeer(), peerReceiveChanged.getDate());
         } else if (message instanceof MessageDeleted) {
             MessageDeleted deleted = (MessageDeleted) message;
             onMessage(deleted.getPeer(), deleted.getTopMessage(), true, -1);
@@ -455,27 +489,41 @@ public class DialogsActor extends ModuleActor {
         }
     }
 
-    public static class MessageStateChanged {
-        private Peer peer;
-        private long rid;
-        private MessageState state;
+    public static class PeerReadChanged {
 
-        public MessageStateChanged(Peer peer, long rid, MessageState state) {
+        private Peer peer;
+        private long date;
+
+        public PeerReadChanged(Peer peer, long date) {
             this.peer = peer;
-            this.rid = rid;
-            this.state = state;
+            this.date = date;
         }
 
         public Peer getPeer() {
             return peer;
         }
 
-        public long getRid() {
-            return rid;
+        public long getDate() {
+            return date;
+        }
+    }
+
+    public static class PeerReceiveChanged {
+
+        private Peer peer;
+        private long date;
+
+        public PeerReceiveChanged(Peer peer, long date) {
+            this.peer = peer;
+            this.date = date;
         }
 
-        public MessageState getState() {
-            return state;
+        public Peer getPeer() {
+            return peer;
+        }
+
+        public long getDate() {
+            return date;
         }
     }
 
