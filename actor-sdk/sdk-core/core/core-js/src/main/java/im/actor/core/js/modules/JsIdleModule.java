@@ -2,9 +2,8 @@ package im.actor.core.js.modules;
 
 import im.actor.core.js.JsMessenger;
 import im.actor.core.modules.AbsModule;
+import im.actor.core.modules.ModuleActor;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.util.ModuleActor;
-import im.actor.runtime.Log;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Cancellable;
