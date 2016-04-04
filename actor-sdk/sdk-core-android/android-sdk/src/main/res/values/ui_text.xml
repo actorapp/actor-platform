@@ -71,6 +71,12 @@
     <string name="auth_phone_country_title">Select a country</string>
     <string name="auth_phone_error_invalid_country">Invalid country code</string>
 
+    <string name="auth_email_why_description">We use work email for authentication so we can add your colleagues to your contacts list and add you instantly to work groups</string>
+    <string name="auth_email_why">WHY WE NEED YOUR WORK EMAIL?</string>
+
+    <string name="auth_switch_to_email">use email for authorization</string>
+    <string name="auth_switch_to_phone">use phone for authorization</string>
+
     <!-- Choose auth type-->
     <string name="choose_auth_type_title">Choose auth type</string>
     <string name="choose_auth_type_hint">Please choose auth type.</string>
@@ -100,7 +106,7 @@
 
     <!-- Sign Up Fragment -->
     <string name="auth_profile_title">Profile info</string>
-    <string name="auth_profile_hint">Please provide your name\nand an optional profile photo.</string>
+    <string name="auth_profile_hint">Please provide your name</string>
     <string name="auth_profile_name_hint">Your name</string>
     <string name="auth_profile_done">START MESSAGING</string>
 

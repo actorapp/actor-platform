@@ -54,8 +54,9 @@ public class SignInFragment extends BaseAuthFragment {
 
         TextView sendHint = (TextView) v.findViewById(R.id.sendHint);
         sendHint.setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
+        String authId = getArguments().getString("authId", "");
         if(authType.equals(AUTH_TYPE_PHONE)){
-            String phoneNumber = "+" + messenger().getAuthPhone();
+            String phoneNumber = "+" + authId;
             try {
                 Phonenumber.PhoneNumber number = PhoneNumberUtil.getInstance().parse(phoneNumber, null);
                 phoneNumber = PhoneNumberUtil.getInstance().format(number, PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL);
@@ -67,14 +68,8 @@ public class SignInFragment extends BaseAuthFragment {
                     Html.fromHtml(getString(R.string.auth_code_phone_hint).replace("{0}", "<b>" + phoneNumber + "</b>"))
             );
         } else if (authType.equals(AUTH_TYPE_EMAIL)) {
-            String email = messenger().getAuthEmail();
             sendHint.setText(
-                    Html.fromHtml(getString(R.string.auth_code_email_hint).replace("{0}", "<b>" + email + "</b>"))
-            );
-        } else {
-            String authId = getArguments().getString("authId");
-            sendHint.setText(
-                    Html.fromHtml(getArguments().getString("authHint"))
+                    Html.fromHtml(getString(R.string.auth_code_email_hint).replace("{0}", "<b>" + authId + "</b>"))
             );
         }
 
@@ -128,8 +123,11 @@ public class SignInFragment extends BaseAuthFragment {
                         .setPositiveButton(R.string.auth_code_change_yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                messenger().resetAuth();
-                                updateState();
+                                if (authType.equals(AUTH_TYPE_EMAIL)) {
+                                    switchToEmail();
+                                } else if (authType.equals(AUTH_TYPE_PHONE)) {
+                                    switchToPhone();
+                                }
                             }
                         })
                         .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
@@ -148,7 +146,7 @@ public class SignInFragment extends BaseAuthFragment {
     private void sendCode() {
         String text = codeEnterEditText.getText().toString().trim();
         if (text.length() > 0) {
-            executeAuth(messenger().validateCode(text), "Send Code");
+            validateCode(text);
         }
     }
 
