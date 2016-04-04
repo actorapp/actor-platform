@@ -10,7 +10,7 @@ import im.actor.core.api.ApiFileUrlDescription;
 import im.actor.core.api.rpc.RequestGetFileUrls;
 import im.actor.core.api.rpc.ResponseGetFileUrls;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.util.ModuleActor;
+import im.actor.core.modules.ModuleActor;
 import im.actor.runtime.Log;
 import im.actor.runtime.actors.Cancellable;
 import im.actor.runtime.actors.ask.AskMessage;

@@ -11,6 +11,7 @@ import im.actor.runtime.Log;
  * Calculation of execution duration
  */
 public class Timing {
+
     private String sectionName;
     private long sectionStart;
     private final String TAG;

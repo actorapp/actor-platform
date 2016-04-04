@@ -471,12 +471,9 @@ public class Messenger {
      * @param uid chat's User Id
      * @return ValueModel of Boolean for typing state
      */
-    @Nullable
+    @NotNull
     @ObjectiveCName("getTypingWithUid:")
     public ValueModel<Boolean> getTyping(int uid) {
-        if (modules.getTypingModule() == null) {
-            return null;
-        }
         return modules.getTypingModule().getTyping(uid).getTyping();
     }
 
@@ -486,12 +483,9 @@ public class Messenger {
      * @param gid chat's Group Id
      * @return ValueModel of int[] for typing state
      */
-    @Nullable
+    @NotNull
     @ObjectiveCName("getGroupTypingWithGid:")
     public ValueModel<int[]> getGroupTyping(int gid) {
-        if (modules.getTypingModule() == null) {
-            return null;
-        }
         return modules.getTypingModule().getGroupTyping(gid).getActive();
     }
 

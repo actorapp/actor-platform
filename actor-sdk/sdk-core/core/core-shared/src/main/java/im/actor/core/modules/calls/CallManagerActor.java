@@ -6,7 +6,7 @@ import java.util.HashSet;
 import im.actor.core.entity.Peer;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.calls.peers.AbsCallActor;
-import im.actor.core.util.ModuleActor;
+import im.actor.core.modules.ModuleActor;
 import im.actor.core.providers.CallsProvider;
 import im.actor.core.util.RandomUtils;
 import im.actor.core.viewmodel.CommandCallback;

@@ -304,28 +304,15 @@ public class DialogHolder extends BindedViewHolder {
         if (data.getSenderId() != myUid()) {
             state.setVisibility(View.GONE);
         } else {
-            switch (data.getStatus()) {
-                default:
-                case PENDING:
-                    state.setResource(R.drawable.msg_clock);
-                    state.setTint(pendingColor);
-                    break;
-                case SENT:
-                    state.setResource(R.drawable.msg_check_1);
-                    state.setTint(sentColor);
-                    break;
-                case RECEIVED:
-                    state.setResource(R.drawable.msg_check_2);
-                    state.setTint(receivedColor);
-                    break;
-                case READ:
-                    state.setResource(R.drawable.msg_check_2);
-                    state.setTint(readColor);
-                    break;
-                case ERROR:
-                    state.setResource(R.drawable.msg_error);
-                    state.setTint(errorColor);
-                    break;
+            if (data.isRead()) {
+                state.setResource(R.drawable.msg_check_2);
+                state.setTint(readColor);
+            } else if (data.isReceived()) {
+                state.setResource(R.drawable.msg_check_2);
+                state.setTint(receivedColor);
+            } else {
+                state.setResource(R.drawable.msg_check_1);
+                state.setTint(sentColor);
             }
             state.setVisibility(View.VISIBLE);
         }

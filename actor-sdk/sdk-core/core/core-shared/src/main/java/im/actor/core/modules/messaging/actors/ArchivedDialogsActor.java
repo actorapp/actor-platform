@@ -10,7 +10,7 @@ import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.sequence.internal.ArchivedDialogLoaded;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
-import im.actor.core.util.ModuleActor;
+import im.actor.core.modules.ModuleActor;
 import im.actor.runtime.Log;
 
 public class ArchivedDialogsActor extends ModuleActor {

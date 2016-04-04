@@ -1,8 +1,7 @@
 package im.actor.core.modules.users;
 
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.util.ModuleActor;
-import im.actor.runtime.promise.PromiseResolver;
+import im.actor.core.modules.ModuleActor;
 
 class UsersUpdatesActor extends ModuleActor {
 

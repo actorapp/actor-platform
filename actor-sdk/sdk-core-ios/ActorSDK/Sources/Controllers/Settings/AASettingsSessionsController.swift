@@ -30,7 +30,7 @@ public class AASettingsSessionsController: AAContentTableController {
                 r.selectAction = { () -> Bool in
                     self.confirmDangerSheetUser("PrivacyTerminateAlert", tapYes: { [unowned self] () -> () in
                         // Terminating all sessions and reload list
-                        self.executeSafe(Actor.terminateAllSessionsCommand()!, successBlock: { (val) -> Void in
+                        self.executeSafe(Actor.terminateAllSessionsCommand(), successBlock: { (val) -> Void in
                             self.loadSessions()
                         })
                         }, tapNo: nil)
@@ -55,7 +55,7 @@ public class AASettingsSessionsController: AAContentTableController {
                     if d.getAuthHolder().ordinal() != ARApiAuthHolder.THISDEVICE().ordinal() {
                         self.confirmDangerSheetUser("PrivacyTerminateAlertSingle", tapYes: { [unowned self] () -> () in
                             // Terminating session and reload list
-                            self.executeSafe(Actor.terminateSessionCommandWithId(d.getId())!, successBlock: { [unowned self] (val) -> Void in
+                            self.executeSafe(Actor.terminateSessionCommandWithId(d.getId()), successBlock: { [unowned self] (val) -> Void in
                                 self.loadSessions()
                                 })
                             }, tapNo: nil)
@@ -71,7 +71,7 @@ public class AASettingsSessionsController: AAContentTableController {
     }
     
     private func loadSessions() {
-        execute(Actor.loadSessionsCommand()!, successBlock: { [unowned self] (val) -> Void in
+        execute(Actor.loadSessionsCommand(), successBlock: { [unowned self] (val) -> Void in
             self.sessionsCell!.data = (val as! JavaUtilList).toArray().toSwiftArray()
             self.managedTable.tableView.reloadData()
             }, failureBlock: nil)
