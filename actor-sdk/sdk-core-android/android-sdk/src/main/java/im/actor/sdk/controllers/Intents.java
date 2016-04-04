@@ -23,7 +23,6 @@ import im.actor.sdk.controllers.fragment.group.GroupInfoActivity;
 import im.actor.sdk.controllers.fragment.group.IntegrationTokenActivity;
 import im.actor.sdk.controllers.fragment.group.InviteLinkActivity;
 import im.actor.sdk.controllers.fragment.preview.PictureActivity;
-import im.actor.sdk.controllers.fragment.profile.ProfileActivity;
 import im.actor.sdk.controllers.fragment.settings.EditAboutActivity;
 import im.actor.sdk.controllers.fragment.settings.EditNameActivity;
 

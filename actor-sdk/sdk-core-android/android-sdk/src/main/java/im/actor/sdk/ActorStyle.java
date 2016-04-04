@@ -59,8 +59,8 @@ public class ActorStyle {
     private int sectionIconLargeColor = 0;
 
     //Dividers
-    private int dividerColor = Color.parseColor("#1e000000");
-    private int dividerInvColor = Color.parseColor("#1effffff");
+    private int dividerColor = Color.parseColor("#1E000000");
+    private int dividerInvColor = Color.parseColor("#1Effffff");
 
     //Text colors
     private int textPrimaryInvColor = Color.parseColor("#DEffffff");
