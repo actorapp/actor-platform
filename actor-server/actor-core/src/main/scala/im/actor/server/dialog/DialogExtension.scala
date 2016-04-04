@@ -21,6 +21,7 @@ import im.actor.server.persist.HistoryMessageRepo
 import im.actor.server.pubsub.{ PeerMessage, PubSubExtension }
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.user.UserExtension
+import im.actor.types._
 import org.joda.time.DateTime
 import slick.dbio.DBIO
 
@@ -79,18 +80,30 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
 
   def sendMessage(
     peer:          ApiPeer,
-    senderUserId:  Int,
+    senderUserId:  UserId,
     senderAuthSid: Int,
-    senderAuthId:  Option[Long], //required only in case of access hash check for private peer
-    randomId:      Long,
+    senderAuthId:  Option[Long], // required only in case of access hash check for private peer
+    randomId:      RandomId,
     message:       ApiMessage,
-    accessHash:    Option[Long] = None,
-    isFat:         Boolean      = false
+    accessHash:    Option[Long]   = None,
+    isFat:         Boolean        = false,
+    forUserId:     Option[UserId] = None
   ): Future[SeqStateDate] =
     withValidPeer(peer.asModel, senderUserId, Future.successful(SeqStateDate())) {
       val sender = Peer.privat(senderUserId)
       // we don't set date here, cause actual date set inside dialog processor
-      val sendMessage = SendMessage(sender, peer.asModel, senderAuthSid, senderAuthId, date = None, randomId, message, accessHash, isFat)
+      val sendMessage = SendMessage(
+        origin = sender,
+        dest = peer.asModel,
+        senderAuthSid = senderAuthSid,
+        senderAuthId = senderAuthId,
+        date = None,
+        randomId = randomId,
+        message = message,
+        accessHash = accessHash,
+        isFat = isFat,
+        forUserId = forUserId
+      )
       (userExt.processorRegion.ref ? Envelope(sender).withSendMessage(sendMessage)).mapTo[SeqStateDate]
     }
 
