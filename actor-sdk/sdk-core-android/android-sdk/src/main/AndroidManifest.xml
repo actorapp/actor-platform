@@ -119,7 +119,7 @@
         <!-- Profiles -->
 
         <activity
-            android:name="im.actor.sdk.controllers.fragment.profile.ProfileActivity"
+            android:name=".controllers.profile.ProfileActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/ProfileActivityTheme"
             android:windowSoftInputMode="adjustNothing|stateAlwaysHidden">

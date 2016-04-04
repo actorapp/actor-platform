@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.fragment.profile;
+package im.actor.sdk.controllers.profile;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -16,9 +16,7 @@ import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.controllers.activity.BaseFragmentActivity;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.Value;
-import im.actor.sdk.controllers.fragment.settings.ActorSettingsFragment;
 import im.actor.sdk.controllers.fragment.settings.BaseActorProfileActivity;
-import im.actor.sdk.controllers.fragment.settings.BaseActorSettingsFragment;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 import static im.actor.sdk.util.ActorSDKMessenger.users;

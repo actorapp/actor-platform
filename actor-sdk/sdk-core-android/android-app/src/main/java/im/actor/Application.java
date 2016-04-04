@@ -1,21 +1,17 @@
 package im.actor;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 
-import im.actor.allmessages.MainPhoneControllerEx;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorSDKApplication;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.BaseActorSDKDelegate;
-import im.actor.sdk.controllers.activity.ActorMainActivity;
-import im.actor.sdk.controllers.activity.controllers.MainPhoneController;
 import im.actor.sdk.controllers.fragment.group.GroupInfoFragment;
-import im.actor.sdk.controllers.fragment.profile.ProfileFragment;
+import im.actor.sdk.controllers.profile.ProfileFragment;
 import im.actor.sdk.controllers.fragment.settings.ActorSettingsCategory;
 import im.actor.sdk.controllers.fragment.settings.ActorSettingsField;
 import im.actor.sdk.controllers.fragment.settings.BaseActorProfileActivity;

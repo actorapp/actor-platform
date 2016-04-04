@@ -554,13 +554,13 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
         }
 
         avatarView = (CoverAvatarView) view.findViewById(R.id.avatar);
-        ImageView avatarBkgrnd = (ImageView) view.findViewById(R.id.avatar_bgrnd);
-        if (style.getAvatarBackgroundResourse() != 0) {
-            avatarBkgrnd.setImageResource(style.getAvatarBackgroundResourse());
-        } else {
-            avatarBkgrnd.setBackgroundColor(style.getAvatarBackgroundColor());
-        }
-        avatarView.setBkgrnd(avatarBkgrnd);
+//        ImageView avatarBkgrnd = (ImageView) view.findViewById(R.id.avatar_bgrnd);
+//        if (style.getAvatarBackgroundResourse() != 0) {
+//            avatarBkgrnd.setImageResource(style.getAvatarBackgroundResourse());
+//        } else {
+//            avatarBkgrnd.setBackgroundColor(style.getAvatarBackgroundColor());
+//        }
+//        avatarView.setBkgrnd(avatarBkgrnd);
 
         bind(avatarView, users().get(myUid()).getAvatar());
 
