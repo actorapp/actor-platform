@@ -18,8 +18,13 @@ trait GroupPeerCommandHandlers extends PeersImplicits {
     val senderUserId = sm.origin.id
     (withMemberIds(groupId) { (memberIds, _, optBot) ⇒
       if (canSend(memberIds, optBot, senderUserId)) {
+        val receiverIds = sm.forUserId match {
+          case Some(id) if memberIds.contains(id) ⇒ Seq(id)
+          case _                                  ⇒ memberIds - senderUserId
+        }
+
         for {
-          _ ← Future.traverse(memberIds - senderUserId) { userId ⇒
+          _ ← Future.traverse(receiverIds) { userId ⇒
             dialogExt.ackSendMessage(Peer.privat(userId), sm)
           }
         } yield {

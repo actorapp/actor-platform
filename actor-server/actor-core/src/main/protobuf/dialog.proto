@@ -21,7 +21,7 @@ message DialogCommands {
             MessageReceived message_received = 4;
             MessageRead message_read = 5;
             Show show = 6;
-        Archive archive = 15;
+            Archive archive = 15;
             Delete delete = 8;
             SetReaction set_reaction = 9;
             RemoveReaction remove_reaction = 10;
@@ -68,6 +68,7 @@ message DialogCommands {
         required bytes message = 5 [(scalapb.field).type = "im.actor.api.rpc.messaging.ApiMessage"];
         optional int64 access_hash = 10;
         required bool is_fat = 6;
+        optional int32 for_user_id = 12;
     }
 
     message SendMessageAck {}
