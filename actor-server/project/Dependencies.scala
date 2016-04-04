@@ -95,7 +95,7 @@ object Dependencies {
 
     val tyrex                   = "tyrex"                         %  "tyrex"                         % "1.0.1"
 
-    val pushy                   = "com.relayrides"                %  "pushy"                         % "0.4.3"
+    val pushy                   = "com.relayrides"                %  "pushy"                         % "0.6"
 
     val logbackClassic          = "ch.qos.logback"                % "logback-classic"                % "1.1.2"
     val scalaLogging            = "com.typesafe.scala-logging"    %% "scala-logging"                 % "3.1.0"
