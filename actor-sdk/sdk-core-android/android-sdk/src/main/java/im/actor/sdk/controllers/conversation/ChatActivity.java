@@ -72,7 +72,7 @@ import im.actor.sdk.controllers.conversation.mentions.MentionsAdapter;
 import im.actor.sdk.controllers.conversation.messages.AudioHolder;
 import im.actor.sdk.controllers.conversation.messages.MessagesFragment;
 import im.actor.sdk.controllers.conversation.view.FastShareAdapter;
-import im.actor.sdk.controllers.fragment.settings.BaseActorChatActivity;
+import im.actor.sdk.controllers.settings.BaseActorChatActivity;
 import im.actor.sdk.core.audio.VoiceCaptureActor;
 import im.actor.sdk.intents.ActorIntent;
 import im.actor.sdk.util.Randoms;

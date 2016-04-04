@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.fragment.settings;
+package im.actor.sdk.controllers.settings;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;

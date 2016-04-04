@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.fragment.settings;
+package im.actor.sdk.controllers.settings;
 
 import android.content.Context;
 import android.view.View;
