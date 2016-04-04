@@ -2,7 +2,6 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-
 .menu-overlay {
   position: fixed;
   top: 0;
@@ -57,7 +56,7 @@
     //transition: opacity $default-transition-duration $default-transition-timing, visibility 0s $default-transition-duration;
 
     opacity: 0;
-    border-radius: 2px;
+    border-radius: $default-border-radius;
     background-color: rgba(white, .975);
     box-shadow: 0 1px 2px 1px rgba(black, .15);
 

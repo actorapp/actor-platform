@@ -6,6 +6,7 @@ import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 import ReactMixin from 'react-mixin';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
+import { FormattedMessage } from 'react-intl';
 import isInside from '../../../utils/isInside';
 import confirm from '../../../utils/confirm';
 
@@ -112,17 +113,17 @@ class RecentContextMenu extends Component {
           {
             isFavorite
               ? <li className="dropdown__menu__item" onClick={this.handleUnfavorite}>
-                  <i className="icon material-icons">star_border</i> Unfavorite
+                  <i className="icon material-icons">star_border</i> <FormattedMessage id="context.favorite.remove"/>
                 </li>
               : <li className="dropdown__menu__item" onClick={this.handleFavorite}>
-                  <i className="icon material-icons">star</i> Favorite
+                  <i className="icon material-icons">star</i> <FormattedMessage id="context.favorite.add"/>
                 </li>
           }
           <li className="dropdown__menu__item" onClick={this.handleAddToArchive}>
-            <i className="icon material-icons">archive</i> Send to archive
+            <i className="icon material-icons">archive</i> <FormattedMessage id="context.archive"/>
           </li>
           <li className="dropdown__menu__item" onClick={this.handleDelete}>
-            <i className="icon material-icons">delete</i> Delete
+            <i className="icon material-icons">delete</i> <FormattedMessage id="context.delete"/>
           </li>
         </ul>
       </div>
