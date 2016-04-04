@@ -331,8 +331,6 @@ export const endpoints = [
 
 export const appName = 'Actor';
 export const rootElement = 'actor-web-app';
-export const homePage = 'https://actor.im';
-export const twitter = 'actorapp';
 export const helpPhone = '75551234567';
 
 export default {
@@ -352,7 +350,5 @@ export default {
   endpoints,
   appName,
   rootElement,
-  homePage,
-  twitter,
   helpPhone
 };

@@ -35,7 +35,8 @@ export default {
       'twitter': 'Our twitter',
       'preferences': 'Preferences',
       'signOut': 'Sign Out',
-      'homePage': 'Home page'
+      'homePage': 'Home page',
+      'facebook': 'Find us on Facebook'
     },
 
     // Buttons

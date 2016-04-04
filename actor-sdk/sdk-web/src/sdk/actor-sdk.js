@@ -10,7 +10,7 @@ import Actor from 'actor-js';
 import DelegateContainer from '../utils/DelegateContainer';
 import SharedContainer from '../utils/SharedContainer';
 import SDKDelegate from './actor-sdk-delegate';
-import { endpoints, rootElement, homePage, twitter, helpPhone, appName } from '../constants/ActorAppConstants'
+import { endpoints, rootElement, helpPhone, appName } from '../constants/ActorAppConstants'
 import Pace from 'pace';
 import { isFunction } from 'lodash';
 
@@ -72,8 +72,9 @@ class ActorSDK {
     this.isExperimental = options.isExperimental ? options.isExperimental : false;
     this.forceLocale = options.forceLocale ? options.forceLocale : null;
     this.rootElement = options.rootElement ? options.rootElement : rootElement;
-    this.homePage = options.homePage ? options.homePage : homePage;
-    this.twitter = options.twitter ? options.twitter : twitter;
+    this.homePage = options.homePage ? options.homePage : null;
+    this.twitter = options.twitter ? options.twitter : null;
+    this.facebook = options.facebook ? options.facebook : null;
     this.helpPhone = options.helpPhone ? options.helpPhone : helpPhone;
     this.appName = options.appName ? options.appName : appName;
     this.delegate = options.delegate ? options.delegate : new SDKDelegate();
