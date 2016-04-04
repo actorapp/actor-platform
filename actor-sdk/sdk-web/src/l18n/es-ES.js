@@ -290,6 +290,15 @@ export default {
         in_progress: 'Llamada activa: {time}',
         ended: 'Llamada finalizada'
       }
+    },
+
+    context: {
+      favorite: {
+        add: 'Favorito',
+        remove: 'Eliminar de favoritos'
+      },
+      archive: 'Enviar a archivar',
+      delete: 'Eliminar'
     }
   }
 };
