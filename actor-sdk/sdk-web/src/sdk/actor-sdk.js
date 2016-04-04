@@ -23,6 +23,8 @@ import { IntlProvider } from 'react-intl';
 import crosstab from 'crosstab';
 import { lightbox } from '../utils/ImageUtils'
 
+import { registerMaxCapacityHandler } from '../utils/LocalStorageUtils';
+
 import LoginActionCreators from '../actions/LoginActionCreators';
 import {loggerAppend} from '../actions/LoggerActionCreators';
 import defaultLogHandler from '../utils/defaultLogHandler';
@@ -78,6 +80,7 @@ class ActorSDK {
     this.helpPhone = options.helpPhone ? options.helpPhone : helpPhone;
     this.appName = options.appName ? options.appName : appName;
     this.delegate = options.delegate ? options.delegate : new SDKDelegate();
+    this.onStorageFull = options.onStorageFull || this.onStorageFull.bind(this);
 
     DelegateContainer.set(this.delegate);
 
@@ -95,6 +98,8 @@ class ActorSDK {
   }
 
   _starter = () => {
+    registerMaxCapacityHandler(this.onStorageFull);
+
     if (crosstab.supported) {
       crosstab.on(ACTOR_INIT_EVENT, (msg) => {
         if (msg.origin !== crosstab.id && window.location.hash !== '#/deactivated') {
@@ -173,6 +178,11 @@ class ActorSDK {
     } else {
       window.jsAppLoaded = this._starter;
     }
+  }
+
+  onStorageFull(error) {
+    console.error(error)
+    LoginActionCreators.setLoggedOut();
   }
 }
 
