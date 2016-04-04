@@ -16,7 +16,7 @@ import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.controllers.activity.BaseFragmentActivity;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.Value;
-import im.actor.sdk.controllers.fragment.settings.BaseActorProfileActivity;
+import im.actor.sdk.controllers.settings.BaseActorProfileActivity;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 import static im.actor.sdk.util.ActorSDKMessenger.users;
