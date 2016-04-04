@@ -97,7 +97,7 @@ final class GooglePushExtension(system: ActorSystem) extends Extension {
                     remove(delivery.m.to)
                   case Some(other) ⇒
                     log.warning("Error in GCM response: {}", other)
-                  case None =>
+                  case None ⇒
                     log.debug("Successfully delivered: {}", delivery)
                 }
               case None ⇒
