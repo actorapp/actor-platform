@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.fragment.auth;
+package im.actor.sdk.controllers.auth;
 
 import im.actor.sdk.intents.ActorIntentFragmentActivity;
 
