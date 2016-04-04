@@ -317,6 +317,15 @@ export default {
         addContact: 'Add new contact',
         createGroup: 'Create group'
       }
+    },
+
+    context: {
+      favorite: {
+        add: 'Favorite',
+        remove: 'Unfavorite'
+      },
+      archive: 'Send to archive',
+      delete: 'Delete'
     }
   }
 };
