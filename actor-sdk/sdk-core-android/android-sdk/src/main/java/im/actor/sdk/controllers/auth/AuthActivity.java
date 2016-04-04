@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.fragment.auth;
+package im.actor.sdk.controllers.auth;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -18,10 +18,6 @@ import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.controllers.activity.BaseFragmentActivity;
-import im.actor.sdk.controllers.fragment.settings.ActorSettingsFragment;
-import im.actor.sdk.controllers.fragment.settings.BaseActorSettingsActivity;
-import im.actor.sdk.intents.ActorIntent;
-import im.actor.sdk.intents.ActorIntentFragmentActivity;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
