@@ -61,7 +61,7 @@
     "intl": "1.1.0",
     "jsonlylightbox": "github:actorapp/jsOnlyLightbox#develop",
     "keymirror": "0.1.1",
-    "lodash": "4.7.0",
+    "lodash": "4.8.1",
     "normalize.css": "4.0.0",
     "object-assign": "4.0.1",
     "opus-recorder": "github:actorapp/Recorderjs",
@@ -83,7 +83,7 @@
     "simple-scrollbar": "github:actorapp/simple-scrollbar"
   },
   "devDependencies": {
-    "autoprefixer": "^6.3.5",
+    "autoprefixer": "^6.3.6",
     "babel-cli": "^6.6.5",
     "babel-core": "^6.7.4",
     "babel-eslint": "^6.0.2",
@@ -97,7 +97,7 @@
     "babel-preset-react": "^6.5.0",
     "copyfiles": "^0.2.1",
     "css-loader": "^0.23.1",
-    "eslint": "~2.5.3",
+    "eslint": "~2.6.0",
     "eslint-loader": "^1.3.0",
     "eslint-plugin-react": "^4.2.3",
     "express": "^4.13.4",
