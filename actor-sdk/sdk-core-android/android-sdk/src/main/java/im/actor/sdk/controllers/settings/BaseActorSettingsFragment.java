@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.fragment.settings;
+package im.actor.sdk.controllers.settings;
 
 import android.app.AlertDialog;
 import android.content.ClipData;
@@ -12,7 +12,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.text.InputType;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,10 +20,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -67,7 +64,7 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
     private int baseColor;
     private CoverAvatarView avatarView;
     protected SharedPreferences shp;
-    protected SharedPreferences.Editor ed;
+
     private boolean noPhones = false;
     private boolean noEmails = false;
 
@@ -76,7 +73,6 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
         shp = getActivity().getSharedPreferences("wallpaper", Context.MODE_PRIVATE);
-        ed = shp.edit();
 
         baseColor = getResources().getColor(R.color.primary);
         final ActorStyle style = ActorSDK.sharedActor().style;
@@ -367,10 +363,10 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
         view.findViewById(R.id.encryption).setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if(AndroidLogProvider.isSendLogsEnabled()){
+                if (AndroidLogProvider.isSendLogsEnabled()) {
                     AndroidLogProvider.setSendLogs(null);
                     Toast.makeText(getActivity(), "send logs off", Toast.LENGTH_LONG).show();
-                }else{
+                } else {
 
                     android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
                     builder.setTitle("Send logs integration url");
@@ -409,7 +405,7 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
         view.findViewById(R.id.chatSettings).setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Toast.makeText(getActivity(), AndroidLogProvider.toggleWriteLogs()?"write logs on":"write logs off",  Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), AndroidLogProvider.toggleWriteLogs() ? "write logs on" : "write logs off", Toast.LENGTH_LONG).show();
                 return true;
             }
         });
@@ -480,7 +476,6 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
 
         TintImageView homePageIcon = (TintImageView) view.findViewById(R.id.settings_home_page_icon);
         homePageIcon.setTint(style.getSettingsIconColor());
-
 
 
         TextView settingsHeaderText = (TextView) view.findViewById(R.id.settings_header_text);
