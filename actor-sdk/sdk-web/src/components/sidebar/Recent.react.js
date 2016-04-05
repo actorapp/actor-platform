@@ -123,7 +123,7 @@ class Recent extends Component {
             <li className="sidebar__list__title">
               <Tooltip
                 placement="right"
-                mouseEnterDelay={0.5}
+                mouseEnterDelay={0.15} mouseLeaveDelay={0}
                 overlay={<FormattedMessage id="tooltip.recent.groupList"/>}
               >
                 <a onClick={this.handleGroupListClick}>
@@ -132,7 +132,7 @@ class Recent extends Component {
               </Tooltip>
               <Tooltip
                 placement="top"
-                mouseEnterDelay={0.5}
+                mouseEnterDelay={0.15} mouseLeaveDelay={0}
                 overlay={<FormattedMessage id="tooltip.recent.createGroup"/>}
               >
                 <i className="material-icons sidebar__list__title__icon pull-right"
@@ -146,7 +146,7 @@ class Recent extends Component {
             <li className="sidebar__list__title">
               <Tooltip
                 placement="right"
-                mouseEnterDelay={0.5}
+                mouseEnterDelay={0.15} mouseLeaveDelay={0}
                 overlay={<FormattedMessage id="tooltip.recent.privateList"/>}
               >
                 <a onClick={this.handlePrivateListClick}>
@@ -155,7 +155,7 @@ class Recent extends Component {
               </Tooltip>
               <Tooltip
                 placement="top"
-                mouseEnterDelay={0.5}
+                mouseEnterDelay={0.15} mouseLeaveDelay={0}
                 overlay={<FormattedMessage id="tooltip.recent.addContact"/>}
               >
                 <i className="material-icons sidebar__list__title__icon pull-right"
