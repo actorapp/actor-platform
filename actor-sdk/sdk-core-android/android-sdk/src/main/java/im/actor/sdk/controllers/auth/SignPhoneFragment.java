@@ -235,7 +235,7 @@ public class SignPhoneFragment extends BaseAuthFragment {
             }
         });
 
-        TextView switchToEmail = (TextView) v.findViewById(R.id.button_switch_to_email);
+        Button switchToEmail = (Button) v.findViewById(R.id.button_switch_to_email);
         switchToEmail.setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
         onClick(switchToEmail, new View.OnClickListener() {
             @Override

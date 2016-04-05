@@ -28,6 +28,14 @@ public abstract class BaseAuthFragment extends BaseFragment {
         ((BaseFragmentActivity) getActivity()).getSupportActionBar().setTitle(title);
     }
 
+    protected void startSignIn() {
+        ((AuthActivity) getActivity()).startSignIn();
+    }
+
+    protected void startSignUp() {
+        ((AuthActivity) getActivity()).startSignUp();
+    }
+
     protected void startPhoneAuth(long phone) {
         ((AuthActivity) getActivity()).startPhoneAuth(messenger().doStartPhoneAuth(phone), phone);
     }
