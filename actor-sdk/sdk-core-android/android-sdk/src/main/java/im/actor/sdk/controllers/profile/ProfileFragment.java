@@ -143,14 +143,16 @@ public class ProfileFragment extends BaseFragment {
         // Compose
         //
 
-        buildRecordAction("Free Message", R.drawable.ic_chat_bubble_white_24dp, true, false, inflater, contactsContainer).setOnClickListener(new View.OnClickListener() {
+        boolean showCalls = ActorSDK.sharedActor().isCallsEnabled() && !user.isBot();
+
+        buildRecordAction("Free Message", R.drawable.ic_chat_bubble_white_24dp, true, !showCalls, inflater, contactsContainer).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(Intents.openPrivateDialog(user.getId(), true, getActivity()));
             }
         });
 
-        if (ActorSDK.sharedActor().isCallsEnabled()) {
+        if (showCalls) {
             buildRecordAction("Free Call", R.drawable.ic_phone_white_24dp, true, true, inflater, contactsContainer).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -191,7 +193,7 @@ public class ProfileFragment extends BaseFragment {
                     phoneNumber,
                     R.drawable.ic_import_contacts_black_24dp,
                     isFirstContact,
-                    false, //userName == null && emails.size() == 0 && i == phones.size() - 1,
+                    emails.size() == 0 && i == phones.size() - 1,
                     inflater, contactsContainer);
 
 
@@ -261,7 +263,7 @@ public class ProfileFragment extends BaseFragment {
                     userEmail.getEmail(),
                     R.drawable.ic_import_contacts_black_24dp,
                     isFirstContact,
-                    false,
+                    userName == null && i == emails.size() - 1,
                     inflater, contactsContainer);
 
             view.setOnClickListener(new View.OnClickListener() {
