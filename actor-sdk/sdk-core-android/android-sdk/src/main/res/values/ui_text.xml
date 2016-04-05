@@ -92,7 +92,13 @@
     <string name="auth_email_edit_text_hint">Email</string>
     <string name="auth_email_get_code">CONFIRM EMAIL</string>
 
-    <!-- Sign In Fragment -->
+    <!-- Sign in Fragment-->
+    <string name="sign_in_title">Sign in</string>
+    <string name="sign_in_hint">Please enter your phone or email.</string>
+    <string name="sign_in_edit_text_hint">phone or email</string>
+    <string name="sign_in_get_code">SIGN IN</string>
+
+    <!-- Validate code Fragment -->
     <string name="auth_code_phone_hint">We\'ve sent an SMS with activation code to your phone {0}</string>
     <string name="auth_code_email_hint">We\'ve sent an email with activation code to {0}</string>
     <string name="auth_code_title">Enter SMS code</string>
@@ -111,6 +117,7 @@
     <string name="auth_profile_done">START MESSAGING</string>
 
     <!-- Auth errors -->
+    <string name="auth_error_wrong_auth_id">Please, enter valid phone or email</string>
     <string name="auth_error_empty_phone">Please, enter your phone number</string>
     <string name="auth_error_empty_email">Please, enter your email</string>
     <string name="auth_error_code_expired">Code is expired. Please perform validation from scratch.</string>

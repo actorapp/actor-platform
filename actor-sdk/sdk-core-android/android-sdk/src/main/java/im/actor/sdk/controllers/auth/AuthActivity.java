@@ -75,6 +75,7 @@ public class AuthActivity extends BaseFragmentActivity {
             currentCode = savedInstanceState.getString("currentCode");
             isRegistered = savedInstanceState.getBoolean("isRegistered", false);
             currentName = savedInstanceState.getString("currentName");
+            signType = savedInstanceState.getInt("signType", SIGN_TYPE_UP);
             state = Enum.valueOf(AuthState.class, savedInstanceState.getString("state", "AUTH_START"));
             updateState(state);
         }
@@ -90,37 +91,46 @@ public class AuthActivity extends BaseFragmentActivity {
 
 
     private void updateState(AuthState state) {
-        if (this.state != null && this.state == state) {
+        updateState(state, false);
+    }
+
+    private void updateState(AuthState state, boolean force) {
+        if (this.state != null && (this.state == state && !force)) {
             return;
         }
 
         // if we show the next fragment when app is in background and not visible , app crashes!
         // e.g when the GSM data is off and after trying to send code we go to settings to turn on, app is going invisible and ...
-        if (state != AuthState.LOGGED_IN && getIsResumed() == false)
+        if (state != AuthState.LOGGED_IN && getIsResumed() == false) {
             return;
+        }
 
         this.state = state;
 
         switch (state) {
             case AUTH_START:
 
-                availableAuthType = ActorSDK.sharedActor().getAuthType();
-                BaseAuthFragment baseAuthFragment;
-                AuthState authState;
-                if ((availableAuthType & AUTH_TYPE_PHONE) == AUTH_TYPE_PHONE) {
-                    baseAuthFragment = new SignPhoneFragment();
-                    authState = AuthState.AUTH_PHONE;
-                } else if ((availableAuthType & AUTH_TYPE_EMAIL) == AUTH_TYPE_EMAIL) {
-                    baseAuthFragment = new SignEmailFragment();
-                    authState = AuthState.AUTH_EMAIL;
-                } else {
-                    // none of valid auth types selected - force crash?
-                    return;
+                if (signType == SIGN_TYPE_UP) {
+                    availableAuthType = ActorSDK.sharedActor().getAuthType();
+                    BaseAuthFragment baseAuthFragment;
+                    AuthState authState;
+                    if ((availableAuthType & AUTH_TYPE_PHONE) == AUTH_TYPE_PHONE) {
+                        baseAuthFragment = new SignPhoneFragment();
+                        authState = AuthState.AUTH_PHONE;
+                    } else if ((availableAuthType & AUTH_TYPE_EMAIL) == AUTH_TYPE_EMAIL) {
+                        baseAuthFragment = new SignEmailFragment();
+                        authState = AuthState.AUTH_EMAIL;
+                    } else {
+                        // none of valid auth types selected - force crash?
+                        return;
+                    }
+
+                    signFragment = ActorSDK.sharedActor().getDelegatedFragment(ActorSDK.sharedActor().getDelegate().getAuthStartIntent(), baseAuthFragment, BaseAuthFragment.class);
+
+                    updateState(authState);
+                } else if (signType == SIGN_TYPE_IN) {
+                    showFragment(new SignInFragment(), false, false);
                 }
-
-                signFragment = ActorSDK.sharedActor().getDelegatedFragment(ActorSDK.sharedActor().getDelegate().getAuthStartIntent(), baseAuthFragment, BaseAuthFragment.class);
-
-                updateState(authState);
 
                 break;
             case AUTH_PHONE:
@@ -133,9 +143,11 @@ public class AuthActivity extends BaseFragmentActivity {
                 break;
             case CODE_VALIDATION_PHONE:
             case CODE_VALIDATION_EMAIL:
-                Fragment signInFragment = new SignInFragment();
+                Fragment signInFragment = new ValidateCodeFragment();
                 Bundle args = new Bundle();
-                args.putString("authType", state == AuthState.CODE_VALIDATION_EMAIL ? SignInFragment.AUTH_TYPE_EMAIL : SignInFragment.AUTH_TYPE_PHONE);
+
+                args.putString("authType", state == AuthState.CODE_VALIDATION_EMAIL ? ValidateCodeFragment.AUTH_TYPE_EMAIL : ValidateCodeFragment.AUTH_TYPE_PHONE);
+                args.putBoolean(ValidateCodeFragment.AUTH_TYPE_SIGN, signType == SIGN_TYPE_IN);
                 args.putString("authId", state == AuthState.CODE_VALIDATION_EMAIL ? currentEmail : Long.toString(currentPhone));
                 signInFragment.setArguments(args);
                 showFragment(signInFragment, false, false);
@@ -165,7 +177,7 @@ public class AuthActivity extends BaseFragmentActivity {
         res.then(new Consumer<AuthStartRes>() {
             @Override
             public void apply(AuthStartRes authStartRes) {
-                if(dismissProgress()){
+                if (dismissProgress()) {
                     transactionHash = authStartRes.getTransactionHash();
                     isRegistered = authStartRes.isRegistered();
                     switch (authStartRes.getAuthMode()) {
@@ -342,13 +354,20 @@ public class AuthActivity extends BaseFragmentActivity {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             dismissAlert();
-                                            if (currentAuthType == AUTH_TYPE_EMAIL) {
-                                                switchToEmailAuth();
-                                            } else if (currentAuthType == AUTH_TYPE_PHONE) {
-                                                switchToPhoneAuth();
+                                            if (signType == SIGN_TYPE_UP) {
+                                                if (currentAuthType == AUTH_TYPE_EMAIL) {
+                                                    switchToEmailAuth();
+                                                } else if (currentAuthType == AUTH_TYPE_PHONE) {
+                                                    switchToPhoneAuth();
+                                                } else {
+                                                    updateState(AuthState.AUTH_START);
+                                                }
+                                            } else if (signType == SIGN_TYPE_IN) {
+                                                startSignIn();
                                             } else {
                                                 updateState(AuthState.AUTH_START);
                                             }
+
                                         }
                                     })
                                     .setCancelable(false)
@@ -374,6 +393,18 @@ public class AuthActivity extends BaseFragmentActivity {
         updateState(AuthState.AUTH_PHONE);
     }
 
+
+    public void startSignIn() {
+        signType = SIGN_TYPE_IN;
+        updateState(AuthState.AUTH_START, true);
+    }
+
+
+    public void startSignUp() {
+        signType = SIGN_TYPE_UP;
+        updateState(AuthState.AUTH_START, true);
+    }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -383,6 +414,7 @@ public class AuthActivity extends BaseFragmentActivity {
         outState.putString("currentCode", currentCode);
         outState.putBoolean("isRegistered", isRegistered);
         outState.putString("currentName", currentName);
+        outState.putInt("signType", signType);
         outState.putString("state", state.toString());
     }
 
