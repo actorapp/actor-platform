@@ -328,6 +328,13 @@ export default {
       },
       archive: 'Send to archive',
       delete: 'Delete'
+    },
+
+    search: {
+      'placeholder': 'Search',
+      'emptyQuery': 'You must start typing to find anything',
+      'searching': 'Search for "{query}"',
+      'notFound': 'Nothing found for "{query}"<br/>Try your luck with another request'
     }
   }
 };
