@@ -1,11 +1,8 @@
 package im.actor.sdk.controllers.auth;
 
 import android.app.AlertDialog;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -15,26 +12,20 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import im.actor.core.AuthState;
-import im.actor.runtime.actors.ActorRef;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.util.Fonts;
 import im.actor.sdk.util.KeyboardHelper;
 import im.actor.sdk.view.SelectorFactory;
 
-import static im.actor.sdk.util.ActorSDKMessenger.messenger;
-
 public class SignEmailFragment extends BaseAuthFragment {
 
     private EditText emailEditText;
     private KeyboardHelper keyboardHelper;
     private String rawEmail;
-    private ImageView logo;
-    ActorRef logoActor;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -112,11 +103,8 @@ public class SignEmailFragment extends BaseAuthFragment {
         ((TextView) v.findViewById(R.id.email_login_hint)).setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
         emailEditText = (EditText) v.findViewById(R.id.tv_email);
         emailEditText.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
-        emailEditText.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
-        String email = messenger().getAuthEmail();
-        if (email != null && !email.isEmpty()) {
-            emailEditText.setText(email);
-        }
+        setSuggestedEmail(emailEditText);
+
         emailEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -160,6 +148,14 @@ public class SignEmailFragment extends BaseAuthFragment {
             switchToPhone.setVisibility(View.GONE);
         }
 
+        Button singIn = (Button) v.findViewById(R.id.button_sign_in);
+        singIn.setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
+        onClick(singIn, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startSignIn();
+            }
+        });
 
         onClick(v, R.id.button_continue, new View.OnClickListener() {
             @Override
