@@ -249,6 +249,14 @@ public class SignPhoneFragment extends BaseAuthFragment {
             switchToEmail.setVisibility(View.GONE);
         }
 
+        Button singIn = (Button) v.findViewById(R.id.button_sign_in);
+        singIn.setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
+        onClick(singIn, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startSignIn();
+            }
+        });
 
         onClick(v, R.id.button_continue, new View.OnClickListener() {
             @Override
