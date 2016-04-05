@@ -83,7 +83,7 @@ class HeaderSection extends Component {
   openAddContactModal = () => AddContactActionCreators.open();
   onSettingsOpen = () => PreferencesActionCreators.show();
 
-  openHelp(event) {
+  openHelp() {
     HelpActionCreators.open()
   }
 
