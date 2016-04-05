@@ -34,6 +34,7 @@ class HeaderSection extends Component {
   constructor(props) {
     super(props);
 
+    this.openHelp = this.openHelp.bind(this);
     this.openTwitter = this.openTwitter.bind(this);
     this.openFacebook = this.openFacebook.bind(this);
     this.openHomePage = this.openHomePage.bind(this);
@@ -79,9 +80,12 @@ class HeaderSection extends Component {
 
   openMyProfile = () => MyProfileActions.show();
   openCreateGroup = () => CreateGroupActionCreators.open();
-  openHelpDialog = () => HelpActionCreators.open();
   openAddContactModal = () => AddContactActionCreators.open();
   onSettingsOpen = () => PreferencesActionCreators.show();
+
+  openHelp(event) {
+    HelpActionCreators.open()
+  }
 
   openTwitter(event) {
     const { twitter } = SharedContainer.get();
@@ -123,7 +127,6 @@ class HeaderSection extends Component {
       () => {}
     );
   };
-
 
   renderTwitterLink() {
     const { twitter } = SharedContainer.get();
@@ -167,78 +170,97 @@ class HeaderSection extends Component {
     );
   }
 
+  renderHelpLink() {
+    const { helpPhone } = SharedContainer.get();
+    if (!helpPhone) return null;
+
+    if (/@/.test(helpPhone)) {
+      return (
+        <li className="dropdown__menu__item">
+          <a href={`mailto:${helpPhone}`}>
+            <i className="material-icons">help</i>
+            <FormattedMessage id="menu.helpAndFeedback"/>
+          </a>
+        </li>
+      );
+    } else {
+      return (
+        <li className="dropdown__menu__item" onClick={this.openHelp}>
+          <i className="material-icons">help</i>
+          <FormattedMessage id="menu.helpAndFeedback"/>
+        </li>
+      );
+    }
+  }
+
   render() {
     const { profile, isOpened, isMyProfileOpen, isCreateGroupOpen, isAddContactsOpen, isPreferencesOpen } = this.state;
 
-    if (profile) {
-      const headerClass = classnames('sidebar__header', 'sidebar__header--clickable', {
-        'sidebar__header--opened': isOpened
-      });
-      const menuClass = classnames('dropdown', {
-        'dropdown--opened': isOpened
-      });
+    if (!profile) return null;
 
-      return (
-        <header className={headerClass}>
-          <div className="sidebar__header__user row" onClick={this.toggleHeaderMenu}>
-            <AvatarItem image={profile.avatar}
-                        placeholder={profile.placeholder}
-                        size="tiny"
-                        title={profile.name} />
-            <span className="sidebar__header__user__name col-xs"
-                  dangerouslySetInnerHTML={{__html: escapeWithEmoji(profile.name)}}/>
-            <div className={menuClass}>
-              <span className="dropdown__button">
-                <i className="material-icons">arrow_drop_down</i>
-              </span>
-              <ul className="dropdown__menu dropdown__menu--right">
-                <li className="dropdown__menu__item" onClick={this.openMyProfile}>
-                  <i className="material-icons">edit</i>
-                  <FormattedMessage id="menu.editProfile"/>
-                </li>
-                <li className="dropdown__menu__item" onClick={this.openAddContactModal}>
-                  <i className="material-icons">person_add</i>
-                  <FormattedMessage id="menu.addToContacts"/>
-                </li>
-                <li className="dropdown__menu__item" onClick={this.openCreateGroup}>
-                  <i className="material-icons">group_add</i>
-                  <FormattedMessage id="menu.createGroup"/>
-                </li>
-                <li className="dropdown__menu__separator"/>
-                <li className="dropdown__menu__item" onClick={this.onSettingsOpen}>
-                  <i className="material-icons">settings</i>
-                  <FormattedMessage id="menu.preferences"/>
-                </li>
-                <li className="dropdown__menu__item" onClick={this.openHelpDialog}>
-                  <i className="material-icons">help</i>
-                  <FormattedMessage id="menu.helpAndFeedback"/>
-                </li>
+    const headerClass = classnames('sidebar__header', 'sidebar__header--clickable', {
+      'sidebar__header--opened': isOpened
+    });
+    const menuClass = classnames('dropdown', {
+      'dropdown--opened': isOpened
+    });
 
-                {this.renderTwitterLink()}
-                {this.renderFacebookLink()}
-                {this.renderHomeLink()}
+    return (
+      <header className={headerClass}>
+        <div className="sidebar__header__user row" onClick={this.toggleHeaderMenu}>
+          <AvatarItem image={profile.avatar}
+                      placeholder={profile.placeholder}
+                      size="tiny"
+                      title={profile.name} />
+          <span className="sidebar__header__user__name col-xs"
+                dangerouslySetInnerHTML={{__html: escapeWithEmoji(profile.name)}}/>
+          <div className={menuClass}>
+            <span className="dropdown__button">
+              <i className="material-icons">arrow_drop_down</i>
+            </span>
+            <ul className="dropdown__menu dropdown__menu--right">
+              <li className="dropdown__menu__item" onClick={this.openMyProfile}>
+                <i className="material-icons">edit</i>
+                <FormattedMessage id="menu.editProfile"/>
+              </li>
+              <li className="dropdown__menu__item" onClick={this.openAddContactModal}>
+                <i className="material-icons">person_add</i>
+                <FormattedMessage id="menu.addToContacts"/>
+              </li>
+              <li className="dropdown__menu__item" onClick={this.openCreateGroup}>
+                <i className="material-icons">group_add</i>
+                <FormattedMessage id="menu.createGroup"/>
+              </li>
+              <li className="dropdown__menu__separator"/>
+              <li className="dropdown__menu__item" onClick={this.onSettingsOpen}>
+                <i className="material-icons">settings</i>
+                <FormattedMessage id="menu.preferences"/>
+              </li>
 
-                <li className="dropdown__menu__separator"/>
-                <li className="dropdown__menu__item" onClick={this.setLogout}>
-                  <FormattedMessage id="menu.signOut"/>
-                </li>
-              </ul>
-            </div>
+              {this.renderHelpLink()}
+              {this.renderTwitterLink()}
+              {this.renderFacebookLink()}
+              {this.renderHomeLink()}
+
+              <li className="dropdown__menu__separator"/>
+              <li className="dropdown__menu__item" onClick={this.setLogout}>
+                <FormattedMessage id="menu.signOut"/>
+              </li>
+            </ul>
           </div>
+        </div>
 
 
-          {/* Modals */}
-          {/* TODO: Move all modals to other place */}
-          {isMyProfileOpen ? <MyProfileModal/> : null}
-          {isCreateGroupOpen ? <CreateGroupModal/> : null}
-          {isAddContactsOpen ? <AddContactModal/> : null}
-          {isPreferencesOpen ? <PreferencesModal/> : null}
+        {/* Modals */}
+        {/* TODO: Move all modals to other place */}
+        {isMyProfileOpen ? <MyProfileModal/> : null}
+        {isCreateGroupOpen ? <CreateGroupModal/> : null}
+        {isAddContactsOpen ? <AddContactModal/> : null}
+        {isPreferencesOpen ? <PreferencesModal/> : null}
 
-        </header>
-      );
-    } else {
-      return null;
-    }
+      </header>
+    );
+
   }
 }
 
