@@ -2,6 +2,7 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
+import { isFunction } from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
 import classnames from 'classnames';
@@ -85,7 +86,7 @@ class MessageItem extends Component {
     const { delegate, isExperimental } = this.context;
 
     let Service, Text, Modern, Photo, Document, Voice, Contact, Location, Sticker;
-    if (delegate.components.dialog && delegate.components.dialog.messages && delegate.components.dialog.messages.message !== null && typeof delegate.components.messages.message !== 'function') {
+    if (delegate.components.dialog && delegate.components.dialog.messages && !isFunction(delegate.components.dialog.messages.message)) {
       Service = delegate.components.dialog.messages.service || DefaultService;
       Text = delegate.components.dialog.messages.text || DefaultText;
       Modern = delegate.components.dialog.messages.modern || DefaultModern;
