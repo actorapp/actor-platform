@@ -163,11 +163,13 @@ public class AuthActivity extends BaseFragmentActivity {
     }
 
     public void startPhoneAuth(Promise<AuthStartRes> promise, long phone) {
+        currentAuthType = AUTH_TYPE_PHONE;
         currentPhone = phone;
         startAuth(promise);
     }
 
     public void startEmailAuth(Promise<AuthStartRes> promise, String email) {
+        currentAuthType = AUTH_TYPE_EMAIL;
         currentEmail = email;
         startAuth(promise);
     }
