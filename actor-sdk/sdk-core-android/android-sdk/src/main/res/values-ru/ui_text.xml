@@ -105,6 +105,7 @@
     <string name="auth_profile_name_hint">Ваше имя</string>
 
     <!-- Auth errors -->
+    <string name="auth_error_wrong_auth_id">Пожалуйста, введите действительный email или номер телефона.</string>
     <string name="auth_error_empty_phone">Пожалуйста, введите свой номер телефона.</string>
     <string name="auth_error_empty_email">Пожалуйста, введите свой адресс электронной почты.</string>
     <string name="auth_error_code_expired">Код устарел. Пожалуйста, начните все с начала.</string>
