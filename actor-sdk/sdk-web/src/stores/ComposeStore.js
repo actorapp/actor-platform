@@ -148,6 +148,11 @@ class ComposeStore extends Store {
         this.__emitChange();
         break;
 
+      case ActionTypes.SEARCH_TOGGLE_FOCUS:
+        _isAutoFocusEnabled = !action.isEnable;
+        this.__emitChange();
+        break;
+
       default:
     }
   }

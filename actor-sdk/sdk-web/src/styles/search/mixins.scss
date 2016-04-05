@@ -1,0 +1,8 @@
+@mixin focused() {
+  color: rgba(black, .6);
+  background-color: white;
+  box-shadow: 0 0 0 2px $dark-sky-blue;
+  & + .search-icon {
+    color: $dark-sky-blue;
+  }
+}

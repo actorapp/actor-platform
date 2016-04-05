@@ -2,7 +2,7 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import { map, isFunction } from 'lodash';
+import { isFunction } from 'lodash';
 
 import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
@@ -13,8 +13,8 @@ import DefaultMessages from './dialog/MessagesSection.react';
 import DialogFooter from './dialog/DialogFooter.react';
 import DefaultToolbar from './Toolbar.react';
 import DefaultActivity from './Activity.react';
+import DefaultSearch from './search/SearchSection.react';
 import DefaultCall from './Call.react';
-import DefaultLogger from './dev/LoggerSection.react';
 import ConnectionState from './common/ConnectionState.react';
 
 import ActivityStore from '../stores/ActivityStore';
@@ -70,31 +70,40 @@ class DialogSection extends Component {
     }
   }
 
-  getComponents() {
-    const { dialog, logger } = this.context.delegate.components;
-    const LoggerSection = logger || DefaultLogger;
-    if (dialog && !isFunction(dialog)) {
-      const activity = dialog.activity || [
-        DefaultActivity,
-        DefaultCall,
-        LoggerSection
-      ];
+  getActivityComponents() {
+    const { features, components: { dialog } } = this.context.delegate;
+    if (dialog && dialog.activity) {
+      return dialog.activity;
+    }
 
+    const activity = [DefaultActivity];
+    if (features.call) {
+      activity.push(DefaultCall);
+    }
+
+    if (features.search) {
+      activity.push(DefaultSearch);
+    }
+
+    return activity;
+  }
+
+  getComponents() {
+    const { dialog } = this.context.delegate.components;
+    const activity = this.getActivityComponents();
+
+    if (dialog && !isFunction(dialog)) {
       return {
+        activity,
         ToolbarSection: dialog.toolbar || DefaultToolbar,
-        MessagesSection: isFunction(dialog.messages) ? dialog.messages : DefaultMessages,
-        activity: map(activity, (Activity, index) => <Activity key={index} />)
+        MessagesSection: isFunction(dialog.messages) ? dialog.messages : DefaultMessages
       };
     }
 
     return {
+      activity,
       ToolbarSection: DefaultToolbar,
-      MessagesSection: DefaultMessages,
-      activity: [
-        <DefaultActivity key={1} />,
-        <DefaultCall key={2} />,
-        <LoggerSection key={3} />
-      ]
+      MessagesSection: DefaultMessages
     };
   }
 
@@ -119,7 +128,7 @@ class DialogSection extends Component {
             <MessagesSection peer={peer} isMember={isMember} />
             <DialogFooter isMember={isMember} />
           </section>
-          {activity}
+          {activity.map((Activity, index) => <Activity key={index} />)}
         </div>
       </section>
     );
