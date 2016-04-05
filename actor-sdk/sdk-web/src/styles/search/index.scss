@@ -1,4 +1,8 @@
-@import 'mixins';
-@import 'search';
-@import 'toolbar';
-@import 'sidebar';
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
+@import './mixins';
+@import './recent';
+@import './search';
+@import './toolbar';
