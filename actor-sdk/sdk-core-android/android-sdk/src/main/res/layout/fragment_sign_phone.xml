@@ -103,6 +103,7 @@
         </FrameLayout>
 
         <Button
+            android:visibility="gone"
             android:id="@+id/button_why"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -123,10 +124,24 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
             android:background="@null"
             android:paddingLeft="26dp"
             android:paddingRight="26dp"
             android:text="@string/auth_switch_to_email"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/button_sign_in"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:background="@null"
+            android:paddingLeft="26dp"
+            android:paddingRight="26dp"
+            android:text="@string/tour_sign_in"
             android:textSize="14sp" />
 
     </LinearLayout>

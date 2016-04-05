@@ -3,9 +3,6 @@ package im.actor.sdk.controllers.auth;
 import android.app.AlertDialog;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
-import android.telephony.PhoneNumberFormattingTextWatcher;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,17 +10,13 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import im.actor.runtime.actors.ActorRef;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.util.Fonts;
 import im.actor.sdk.util.KeyboardHelper;
 import im.actor.sdk.view.SelectorFactory;
-
-import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
 public class SignInFragment extends BaseAuthFragment {
 
@@ -93,7 +86,7 @@ public class SignInFragment extends BaseAuthFragment {
         ((TextView) v.findViewById(R.id.sign_in_login_hint)).setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
         signIdEditText = (EditText) v.findViewById(R.id.tv_sign_in);
         signIdEditText.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
-        signIdEditText.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
+        setSuggestedEmail(signIdEditText);
 
         signIdEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override

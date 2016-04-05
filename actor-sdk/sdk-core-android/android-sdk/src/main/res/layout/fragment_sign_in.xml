@@ -71,7 +71,7 @@
                 android:minWidth="88dp"
                 android:paddingLeft="24dp"
                 android:paddingRight="24dp"
-                android:text="@string/sign_in_get_code"
+                android:text="@string/tour_sign_in"
                 android:textSize="15sp" />
         </FrameLayout>
 

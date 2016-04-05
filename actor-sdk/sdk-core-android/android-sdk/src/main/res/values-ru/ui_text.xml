@@ -104,6 +104,13 @@
     <string name="auth_profile_done">НАЧАТЬ ОБЩЕНИЕ</string>
     <string name="auth_profile_name_hint">Ваше имя</string>
 
+    <!-- Sign in Fragment-->
+    <string name="sign_in_title">Вход</string>
+    <string name="sign_in_hint">Пожалуйста, введите свой номер телефона или email</string>
+    <string name="sign_in_edit_text_hint">телефона или email</string>
+    <string name="sign_in_get_code">Вход</string>
+
+
     <!-- Auth errors -->
     <string name="auth_error_wrong_auth_id">Пожалуйста, введите действительный email или номер телефона.</string>
     <string name="auth_error_empty_phone">Пожалуйста, введите свой номер телефона.</string>
