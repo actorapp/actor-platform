@@ -6,10 +6,12 @@ import { isFunction } from 'lodash';
 
 import React, { Component, PropTypes } from 'react';
 import {shouldComponentUpdate} from 'react-addons-pure-render-mixin';
-import Loading from './messages/Loading.react';
-import Welcome from './messages/Welcome.react';
+
 import MessagesScroller from './MessagesScroller.react';
+
 import DefaultMessageItem from './messages/MessageItem.react';
+import DefaultWelcome from './messages/Welcome.react';
+import Loading from './messages/Loading.react';
 
 class MessagesList extends Component {
   static contextTypes = {
@@ -32,14 +34,16 @@ class MessagesList extends Component {
   constructor(props, context) {
     super(props, context);
 
-    const {dialog} = context.delegate.components;
-    if (dialog && dialog.messages && isFunction(dialog.messages.message)) {
+    const { dialog } = context.delegate.components;
+    if (dialog && dialog.messages) {
       this.components = {
-        MessageItem: dialog.messages.message
+        MessageItem: isFunction(dialog.messages.message) ? dialog.messages.message : DefaultMessageItem,
+        Welcome: isFunction(dialog.messages.welcome) ? dialog.messages.welcome : DefaultWelcome
       };
     } else {
       this.components = {
-        MessageItem: DefaultMessageItem
+        MessageItem: DefaultMessageItem,
+        Welcome: DefaultWelcome
       };
     }
 
@@ -48,6 +52,7 @@ class MessagesList extends Component {
 
   renderHeader() {
     const {peer, isMember, messages, isAllMessagesLoaded} = this.props;
+    const { Welcome } = this.components;
 
     if (!isMember) {
       return null;
