@@ -101,7 +101,7 @@ class ToolbarSection extends Component {
       return (
         <Tooltip
           placement="left"
-          mouseEnterDelay={0.5}
+          mouseEnterDelay={0.15} mouseLeaveDelay={0}
           overlay={<FormattedMessage id="tooltip.toolbar.info"/>}
         >
           <button className={activityButtonClassName} onClick={this.handleInCallClick}>
@@ -114,7 +114,7 @@ class ToolbarSection extends Component {
     return (
       <Tooltip
         placement="left"
-        mouseEnterDelay={0.5}
+        mouseEnterDelay={0.15} mouseLeaveDelay={0}
         overlay={<FormattedMessage id="tooltip.toolbar.info"/>}
       >
         <button className={activityButtonClassName} onClick={this.onClick}>
@@ -154,7 +154,7 @@ class ToolbarSection extends Component {
             <span className="toolbar__peer__title" dangerouslySetInnerHTML={{__html: escapeWithEmoji(dialogInfo.name)}}/>
             <Tooltip
               placement="bottom"
-              mouseEnterDelay={0.5}
+              mouseEnterDelay={0.15} mouseLeaveDelay={0}
               overlay={<FormattedMessage id="tooltip.toolbar.favorite"/>}
             >
               <span className={favoriteClassName}>
