@@ -94,6 +94,10 @@ export default {
     'preferencesSessionsCurrentSession': '当前会话',
     'preferencesSessionsAuthTime': '登陆时间',
     'preferencesSessionsTerminate': '断开',
-    'preferencesSessionsTerminateAll': '断开所有会话'
+    'preferencesSessionsTerminateAll': '断开所有会话',
+
+    'search': {
+      'placeholder': '搜索'
+    }
   }
 };

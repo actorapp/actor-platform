@@ -225,7 +225,24 @@ export const ActionTypes = keymirror({
   RECENT_CONTEXT_MENU_HIDE: null,
 
   LOGGER_APPEND: null,
-  LOGGER_TOGGLE: null
+  LOGGER_TOGGLE: null,
+
+  SEARCH_SHOW: null,
+  SEARCH_HIDE: null,
+  SEARCH_TOGGLE_FOCUS: null,
+  SEARCH_TOGGLE_EXPAND: null,
+  SEARCH_TEXT: null,
+  SEARCH_TEXT_SUCCESS: null,
+  SEARCH_TEXT_ERROR: null,
+  SEARCH_DOCS: null,
+  SEARCH_DOCS_SUCCESS: null,
+  SEARCH_DOCS_ERROR: null,
+  SEARCH_LINKS: null,
+  SEARCH_LINKS_SUCCESS: null,
+  SEARCH_LINKS_ERROR: null,
+  SEARCH_PHOTO: null,
+  SEARCH_PHOTO_SUCCESS: null,
+  SEARCH_PHOTO_ERROR: null
 });
 
 export const EventTypes = {

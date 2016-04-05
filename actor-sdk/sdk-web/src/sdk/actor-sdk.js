@@ -7,24 +7,25 @@ import 'setimmediate';
 import 'intl';
 
 import Actor from 'actor-js';
+import React from 'react';
+import { render } from 'react-dom';
+import { Router, Route, IndexRoute, IndexRedirect } from 'react-router';
+import Modal from 'react-modal';
+import Pace from 'pace';
+import crosstab from 'crosstab';
+import { defaultsDeep } from 'lodash';
+
 import DelegateContainer from '../utils/DelegateContainer';
 import SharedContainer from '../utils/SharedContainer';
 import SDKDelegate from './actor-sdk-delegate';
 import { endpoints, rootElement, helpPhone, appName } from '../constants/ActorAppConstants'
-import Pace from 'pace';
-import { isFunction } from 'lodash';
 
-import React from 'react';
-import { render } from 'react-dom';
-import { Router, Route, IndexRoute, IndexRedirect } from 'react-router';
 import history from '../utils/history';
 import RouterHooks from '../utils/RouterHooks';
 import { IntlProvider } from 'react-intl';
-import crosstab from 'crosstab';
 import { lightbox } from '../utils/ImageUtils'
 
 import LoginActionCreators from '../actions/LoginActionCreators';
-import {loggerAppend} from '../actions/LoggerActionCreators';
 import defaultLogHandler from '../utils/defaultLogHandler';
 
 import LoginStore from '../stores/LoginStore';
@@ -38,7 +39,6 @@ import DefaultInstall from '../components/Install.react';
 import DefaultArchive from '../components/Archive.react';
 import DefaultDialog from '../components/Dialog.react';
 import DefaultEmpty from '../components/Empty.react';
-import Modal from 'react-modal';
 
 import { extendL18n, getIntlData } from '../l18n';
 
@@ -66,32 +66,36 @@ window.jsAppLoaded = () => window.isJsAppLoaded = true;
  * @param {object} options - Object contains custom components, actions and localisation strings.
  */
 class ActorSDK {
+  static defaultOptions = {
+    endpoints,
+    rootElement,
+    appName,
+    helpPhone,
+    homePage: null,
+    twitter: null,
+    facebook: null,
+    delegate: null,
+    forceLocale: null,
+    features: {
+      calls: true,
+      search: false
+    },
+    isExperimental: false,
+    logHandler: defaultLogHandler
+  };
+
   constructor(options = {}) {
-    this.endpoints = (options.endpoints && options.endpoints.length > 0) ? options.endpoints : endpoints;
-    this.logHandler = isFunction(options.logHandler) ? options.logHandler : this.createLogHandler();
-    this.isExperimental = options.isExperimental ? options.isExperimental : false;
-    this.forceLocale = options.forceLocale ? options.forceLocale : null;
-    this.rootElement = options.rootElement ? options.rootElement : rootElement;
-    this.homePage = options.homePage ? options.homePage : null;
-    this.twitter = options.twitter ? options.twitter : null;
-    this.facebook = options.facebook ? options.facebook : null;
-    this.helpPhone = options.helpPhone ? options.helpPhone : helpPhone;
-    this.appName = options.appName ? options.appName : appName;
-    this.delegate = options.delegate ? options.delegate : new SDKDelegate();
+    defaultsDeep(this, options, ActorSDK.defaultOptions);
+
+    if (!this.delegate) {
+      this.delegate = new SDKDelegate();
+    }
 
     DelegateContainer.set(this.delegate);
 
     if (this.delegate.l18n) extendL18n();
 
     SharedContainer.set(this);
-  }
-
-  createLogHandler() {
-    if (localStorage.debug) {
-      return loggerAppend;
-    }
-
-    return defaultLogHandler;
   }
 
   _starter = () => {
