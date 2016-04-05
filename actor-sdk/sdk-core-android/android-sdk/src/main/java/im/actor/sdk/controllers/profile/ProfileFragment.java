@@ -34,6 +34,8 @@ import com.google.i18n.phonenumbers.Phonenumber;
 import java.util.ArrayList;
 
 import im.actor.core.viewmodel.UserEmail;
+import im.actor.runtime.actors.Actor;
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.fragment.preview.ViewAvatarActivity;
@@ -98,17 +100,17 @@ public class ProfileFragment extends BaseFragment {
         // Floating Action Button
         //
 
-        FloatingActionButton fab = (FloatingActionButton) res.findViewById(R.id.profileAction);
-        fab.setColorNormal(style.getFabColor());
-        fab.setColorPressed(style.getFabPressedColor());
-
-        fab.setVisibility(View.VISIBLE);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(Intents.openPrivateDialog(user.getId(), true, getActivity()));
-            }
-        });
+//        FloatingActionButton fab = (FloatingActionButton) res.findViewById(R.id.profileAction);
+//        fab.setColorNormal(style.getFabColor());
+//        fab.setColorPressed(style.getFabPressedColor());
+//
+//        fab.setVisibility(View.VISIBLE);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                startActivity(Intents.openPrivateDialog(user.getId(), true, getActivity()));
+//            }
+//        });
 
 
         //
@@ -136,6 +138,26 @@ public class ProfileFragment extends BaseFragment {
         LinearLayout contactsContainer = (LinearLayout) res.findViewById(R.id.contactsContainer);
         boolean isFirstContact = true;
 
+
+        //
+        // Compose
+        //
+
+        buildRecordAction("Free Message", R.drawable.ic_chat_bubble_white_24dp, true, false, inflater, contactsContainer).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(Intents.openPrivateDialog(user.getId(), true, getActivity()));
+            }
+        });
+
+        if (ActorSDK.sharedActor().isCallsEnabled()) {
+            buildRecordAction("Free Call", R.drawable.ic_phone_white_24dp, true, true, inflater, contactsContainer).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    execute(ActorSDK.sharedActor().getMessenger().doCall(user.getId()));
+                }
+            });
+        }
 
         //
         // Phones
@@ -393,7 +415,7 @@ public class ProfileFragment extends BaseFragment {
         return buildRecord(titleText, valueText, 0, false, isLast, inflater, container);
     }
 
-    private View buildRecord(String titleText, String valueText, int resourceId, boolean isFirst, boolean isLast,
+    private View buildRecord(String titleText, String valueText, int resourceId, boolean showIcon, boolean isLast,
                              LayoutInflater inflater, ViewGroup container) {
         final View recordView = inflater.inflate(R.layout.contact_record, container, false);
         TextView value = (TextView) recordView.findViewById(R.id.value);
@@ -409,7 +431,7 @@ public class ProfileFragment extends BaseFragment {
             recordView.findViewById(R.id.divider).setVisibility(View.GONE);
         }
 
-        if (resourceId != 0 && isFirst) {
+        if (resourceId != 0 && showIcon) {
             ImageView iconView = (ImageView) recordView.findViewById(R.id.recordIcon);
             Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(resourceId));
             DrawableCompat.setTint(drawable, style.getSettingsIconColor());
@@ -421,7 +443,7 @@ public class ProfileFragment extends BaseFragment {
         return recordView;
     }
 
-    private View buildRecordBig(String valueText, int resourceId, boolean isFirst, boolean isLast,
+    private View buildRecordBig(String valueText, int resourceId, boolean showIcon, boolean isLast,
                                 LayoutInflater inflater, ViewGroup container) {
         final View recordView = inflater.inflate(R.layout.contact_record_big, container, false);
         TextView value = (TextView) recordView.findViewById(R.id.value);
@@ -433,10 +455,34 @@ public class ProfileFragment extends BaseFragment {
             recordView.findViewById(R.id.divider).setVisibility(View.GONE);
         }
 
-        if (resourceId != 0 && isFirst) {
+        if (resourceId != 0 && showIcon) {
             ImageView iconView = (ImageView) recordView.findViewById(R.id.recordIcon);
             Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(resourceId));
             DrawableCompat.setTint(drawable, style.getSettingsIconColor());
+            iconView.setImageDrawable(drawable);
+        }
+
+        container.addView(recordView);
+
+        return recordView;
+    }
+
+    private View buildRecordAction(String valueText, int resourceId, boolean showIcon, boolean isLast,
+                                   LayoutInflater inflater, ViewGroup container) {
+        final View recordView = inflater.inflate(R.layout.contact_record_big, container, false);
+        TextView value = (TextView) recordView.findViewById(R.id.value);
+
+        value.setTextColor(style.getGroupActionAddTextColor());
+        value.setText(valueText);
+
+        if (!isLast) {
+            recordView.findViewById(R.id.divider).setVisibility(View.GONE);
+        }
+
+        if (resourceId != 0 && showIcon) {
+            ImageView iconView = (ImageView) recordView.findViewById(R.id.recordIcon);
+            Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(resourceId));
+            DrawableCompat.setTint(drawable, style.getGroupActionAddIconColor());
             iconView.setImageDrawable(drawable);
         }
 

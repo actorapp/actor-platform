@@ -5,7 +5,6 @@
   -->
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -14,116 +13,99 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <FrameLayout
+        <LinearLayout
             android:id="@+id/container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+            <FrameLayout
+                android:layout_width="fill_parent"
+                android:layout_height="248dp"
+                android:layout_marginBottom="16dp"
+                android:orientation="horizontal">
 
-                <FrameLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="248dp"
-                    android:layout_marginBottom="36dp"
-                    android:orientation="horizontal">
-
-                    <im.actor.sdk.view.avatar.CoverAvatarView
-                        android:id="@+id/avatar"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="72dp"
-                        android:layout_gravity="bottom"
-                        android:gravity="center_vertical|left"
-                        android:orientation="vertical"
-                        android:paddingLeft="72dp"
-                        android:paddingRight="24dp">
-
-                        <TextView
-                            android:id="@+id/name"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="-2dp"
-                            android:ellipsize="end"
-                            android:includeFontPadding="false"
-                            android:lines="1"
-                            android:singleLine="true"
-                            android:textSize="28sp" />
-
-                        <TextView
-                            android:id="@+id/lastSeen"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="-2dp"
-                            android:textSize="14sp" />
-
-                    </LinearLayout>
-
-                </FrameLayout>
+                <im.actor.sdk.view.avatar.CoverAvatarView
+                    android:id="@+id/avatar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
 
                 <LinearLayout
-                    android:id="@+id/contactsContainer"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/notificationsCont"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_marginBottom="36dp"
-                    android:background="@drawable/selector"
-                    android:paddingRight="8dp">
-
-                    <ImageView
-                        android:id="@+id/settings_notification_icon"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginRight="32dp"
-                        android:layout_marginTop="12dp"
-                        android:scaleType="center" />
+                    android:layout_height="72dp"
+                    android:layout_gravity="bottom"
+                    android:gravity="center_vertical|left"
+                    android:orientation="vertical"
+                    android:paddingLeft="72dp"
+                    android:paddingRight="24dp">
 
                     <TextView
-                        android:id="@+id/settings_notifications_title"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical"
-                        android:text="@string/profile_settings_notifications"
-                        android:textSize="16sp" />
-
-                    <android.support.v7.widget.SwitchCompat
-                        android:id="@+id/enableNotifications"
+                        android:id="@+id/name"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="-2dp"
+                        android:ellipsize="end"
+                        android:includeFontPadding="false"
+                        android:lines="1"
+                        android:singleLine="true"
+                        android:textSize="28sp" />
+
+                    <TextView
+                        android:id="@+id/lastSeen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="-2dp"
+                        android:textSize="14sp" />
+
                 </LinearLayout>
 
+            </FrameLayout>
+
+            <LinearLayout
+                android:id="@+id/contactsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/notificationsCont"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="36dp"
+                android:background="@drawable/selector"
+                android:paddingRight="8dp">
+
+                <ImageView
+                    android:id="@+id/settings_notification_icon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="32dp"
+                    android:layout_marginTop="12dp"
+                    android:scaleType="center" />
+
+                <TextView
+                    android:id="@+id/settings_notifications_title"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="@string/profile_settings_notifications"
+                    android:textSize="16sp" />
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/enableNotifications"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
-            <com.getbase.floatingactionbutton.FloatingActionButton
-                android:id="@+id/profileAction"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right|top"
-                android:layout_marginRight="6dp"
-                android:layout_marginTop="212dp"
-                app:fab_icon="@drawable/ic_chat_bubble_white_24dp" />
-
-        </FrameLayout>
+        </LinearLayout>
 
     </ScrollView>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_gravity="top"
-        android:background="@drawable/profile_avatar_top_shadow" />
+    <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="56dp"-->
+        <!--android:layout_gravity="top"-->
+        <!--android:background="@drawable/profile_avatar_top_shadow" />-->
 </FrameLayout>
