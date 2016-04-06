@@ -8,10 +8,15 @@ import { KeyCodes } from '../../constants/ActorAppConstants';
 import classnames from 'classnames';
 import isInside from '../../utils/isInside';
 
-
-const CLOSE_TIMEOUT = 750;
-
 class Popup extends Component {
+  static propTypes = {
+    className: PropTypes.string,
+    onSelect: PropTypes.func.isRequired,
+    onStickerSelect: PropTypes.func.isRequired,
+    onMouseEnter: PropTypes.func.isRequired,
+    onMouseLeave: PropTypes.func.isRequired
+  }
+
   constructor(props) {
     super(props);
 
@@ -24,16 +29,9 @@ class Popup extends Component {
     this.handlePopupClose = this.handlePopupClose.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleDocumentClick = this.handleDocumentClick.bind(this);
-    this.handlePopupMouseEnter = this.handlePopupMouseEnter.bind(this);
-    this.handlePopupMouseLeave = this.handlePopupMouseLeave.bind(this);
   }
 
-  static propTypes = {
-    className: PropTypes.string,
-    onSelect: PropTypes.func.isRequired,
-    onStickerSelect: PropTypes.func.isRequired,
-    onClose: PropTypes.func.isRequired
-  }
+
 
   // handleEmojisTabClick(event) {
   //
@@ -87,17 +85,6 @@ class Popup extends Component {
     if (!isInside(coords, popupRect)) this.handlePopupClose();
   }
 
-  handlePopupMouseEnter(event) {
-    console.debug('handlePopupMouseEnter', event);
-    clearTimeout(this.closeTimer);
-  }
-
-  handlePopupMouseLeave(event) {
-    console.debug('handlePopupMouseLeave', event);
-    this.closeTimer = setTimeout(this.handlePopupClose, CLOSE_TIMEOUT)
-  }
-
-
   handleKeyDown(event) {
     console.debug('handleKeyDown', event);
     if (event.keyCode === KeyCodes.ESC) {
@@ -139,8 +126,15 @@ class Popup extends Component {
   }
 
   render() {
+    const { onMouseEnter, onMouseLeave } = this.props;
+
     return (
-      <div className="message-art__popup" ref="popup">
+      <div
+        className="message-art__popup"
+        ref="popup"
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+      >
         {this.renderBody()}
         {this.renderFooter()}
       </div>
