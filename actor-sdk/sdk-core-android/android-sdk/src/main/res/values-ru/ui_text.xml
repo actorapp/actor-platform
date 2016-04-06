@@ -91,6 +91,9 @@
     <string name="auth_tos">Регистрируясь, вы соглашаетесь с Terms of Service.</string>
     <string name="auth_privacy">Регистрируясь, вы соглашаетесь Privacy Policy.</string>
 
+    <string name="auth_find_by_diclamer"> Вас можно будет найти по номеру телефона или адресу электронной почты (если вы их укажете).</string>
+
+
     <!-- Sign Code Fragment -->
     <string name="auth_code_title">Введите код активации</string>
     <string name="auth_code_phone_hint">Мы отправили SMS с кодом активации на ваш телефон {0}</string>
@@ -104,9 +107,9 @@
     <string name="auth_code_change_yes">Изменить</string>
 
     <!-- Sign Up Fragment -->
-    <string name="auth_profile_title">Анкета</string>
+    <string name="auth_profile_title">Привет! Как Вас зовут?</string>
     <string name="auth_profile_hint">Пожалуйста укажите имя</string>
-    <string name="auth_profile_done">НАЧАТЬ ОБЩЕНИЕ</string>
+    <string name="auth_profile_done">ДАЛЕЕ</string>
     <string name="auth_profile_name_hint">Ваше имя</string>
 
     <!-- Sign in Fragment-->

@@ -111,27 +111,14 @@ public class AuthActivity extends BaseFragmentActivity {
             case AUTH_START:
 
                 if (signType == SIGN_TYPE_UP) {
-                    availableAuthType = ActorSDK.sharedActor().getAuthType();
-                    BaseAuthFragment baseAuthFragment;
-                    AuthState authState;
-                    if ((availableAuthType & AUTH_TYPE_PHONE) == AUTH_TYPE_PHONE) {
-                        baseAuthFragment = new SignPhoneFragment();
-                        authState = AuthState.AUTH_PHONE;
-                    } else if ((availableAuthType & AUTH_TYPE_EMAIL) == AUTH_TYPE_EMAIL) {
-                        baseAuthFragment = new SignEmailFragment();
-                        authState = AuthState.AUTH_EMAIL;
-                    } else {
-                        // none of valid auth types selected - force crash?
-                        return;
-                    }
-
-                    signFragment = ActorSDK.sharedActor().getDelegatedFragment(ActorSDK.sharedActor().getDelegate().getAuthStartIntent(), baseAuthFragment, BaseAuthFragment.class);
-
-                    updateState(authState);
+                    updateState(AuthState.SIGN_UP);
                 } else if (signType == SIGN_TYPE_IN) {
                     showFragment(new SignInFragment(), false, false);
                 }
 
+                break;
+            case SIGN_UP:
+                showFragment(new SignUpFragment(), false, false);
                 break;
             case AUTH_PHONE:
                 currentAuthType = AUTH_TYPE_PHONE;
@@ -152,14 +139,33 @@ public class AuthActivity extends BaseFragmentActivity {
                 signInFragment.setArguments(args);
                 showFragment(signInFragment, false, false);
                 break;
-            case SIGN_UP:
-                showFragment(new SignUpFragment(), false, false);
-                break;
             case LOGGED_IN:
                 finish();
                 startActivity(new Intent(this, ActorMainActivity.class));
                 break;
         }
+    }
+
+    public void startAuth(String name) {
+        currentName = name;
+        currentSex = Sex.UNKNOWN;
+        availableAuthType = ActorSDK.sharedActor().getAuthType();
+        BaseAuthFragment baseAuthFragment;
+        AuthState authState;
+        if ((availableAuthType & AUTH_TYPE_PHONE) == AUTH_TYPE_PHONE) {
+            baseAuthFragment = new SignPhoneFragment();
+            authState = AuthState.AUTH_PHONE;
+        } else if ((availableAuthType & AUTH_TYPE_EMAIL) == AUTH_TYPE_EMAIL) {
+            baseAuthFragment = new SignEmailFragment();
+            authState = AuthState.AUTH_EMAIL;
+        } else {
+            // none of valid auth types selected - force crash?
+            return;
+        }
+
+        signFragment = ActorSDK.sharedActor().getDelegatedFragment(ActorSDK.sharedActor().getDelegate().getAuthStartIntent(), baseAuthFragment, BaseAuthFragment.class);
+
+        updateState(authState);
     }
 
     public void startPhoneAuth(Promise<AuthStartRes> promise, long phone) {
@@ -230,7 +236,7 @@ public class AuthActivity extends BaseFragmentActivity {
                             }
                         }).done(authActor);
                     } else {
-                        updateState(AuthState.SIGN_UP);
+                        signUp(messenger().doSignup(currentName, currentSex, transactionHash), currentName, currentSex);
                     }
                 }
             }
