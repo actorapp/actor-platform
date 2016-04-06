@@ -4,12 +4,8 @@ import android.content.Context;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import im.actor.core.entity.Dialog;
-import im.actor.core.entity.Message;
 import im.actor.runtime.android.view.BindedListAdapter;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
-import im.actor.sdk.ActorSDK;
-import im.actor.sdk.controllers.fragment.dialogs.DialogHolder;
 import im.actor.sdk.view.adapters.OnItemClickedListener;
 
 public class AllMessagesAdapter extends BindedListAdapter<MessageEx, AllMessageHolder> {

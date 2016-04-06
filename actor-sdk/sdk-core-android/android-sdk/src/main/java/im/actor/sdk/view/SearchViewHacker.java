@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.pickers.view;
+package im.actor.sdk.view;
 
 import android.content.res.Resources;
 import android.support.v7.widget.SearchView;

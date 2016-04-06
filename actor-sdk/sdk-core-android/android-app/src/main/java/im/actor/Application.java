@@ -10,7 +10,7 @@ import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorSDKApplication;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.BaseActorSDKDelegate;
-import im.actor.sdk.controllers.fragment.group.GroupInfoFragment;
+import im.actor.sdk.controllers.group.GroupInfoFragment;
 import im.actor.sdk.controllers.profile.ProfileFragment;
 import im.actor.sdk.controllers.settings.ActorSettingsCategory;
 import im.actor.sdk.controllers.settings.ActorSettingsField;
