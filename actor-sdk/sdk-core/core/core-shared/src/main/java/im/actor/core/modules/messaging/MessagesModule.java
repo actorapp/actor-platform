@@ -108,6 +108,7 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
     private final HashMap<String, ListEngine> customConversationEngines = new HashMap<>();
     private final HashMap<Peer, ActorRef> conversationActors = new HashMap<>();
     private final HashMap<Peer, ActorRef> conversationHistoryActors = new HashMap<>();
+    private final HashMap<Peer, ConversationVM> conversationVMS = new HashMap<>();
 
     private final SyncKeyValue cursorStorage;
 
@@ -1022,7 +1023,12 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
     }
 
     public ConversationVM getConversationVM(Peer peer) {
-        return new ConversationVM(peer, context());
+        synchronized (conversationVMS) {
+            if (!conversationVMS.containsKey(peer)) {
+                conversationVMS.put(peer, new ConversationVM(peer, context()));
+            }
+            return conversationVMS.get(peer);
+        }
     }
 
     public void markAsLoaded(Peer peer) {
