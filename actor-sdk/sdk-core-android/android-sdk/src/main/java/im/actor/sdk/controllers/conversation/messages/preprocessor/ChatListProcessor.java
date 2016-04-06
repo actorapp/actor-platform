@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.conversation.messages;
+package im.actor.sdk.controllers.conversation.messages.preprocessor;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -34,7 +34,11 @@ import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
+import im.actor.sdk.controllers.conversation.messages.preprocessor.PreprocessedData;
+import im.actor.sdk.controllers.conversation.messages.preprocessor.PreprocessedList;
+import im.actor.sdk.controllers.conversation.messages.preprocessor.PreprocessedTextData;
 import im.actor.sdk.controllers.conversation.view.MentionSpan;
+import im.actor.sdk.controllers.conversation.view.ReactionSpan;
 import im.actor.sdk.view.BaseUrlSpan;
 import im.actor.sdk.view.emoji.SmileProcessor;
 import im.actor.sdk.view.markdown.AndroidMarkdown;

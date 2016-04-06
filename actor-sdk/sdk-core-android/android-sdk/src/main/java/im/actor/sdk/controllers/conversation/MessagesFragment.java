@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.conversation.messages;
+package im.actor.sdk.controllers.conversation;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -50,8 +50,9 @@ import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.controllers.activity.ShortcutActivity;
+import im.actor.sdk.controllers.conversation.messages.preprocessor.ChatListProcessor;
+import im.actor.sdk.controllers.conversation.messages.MessageHolder;
 import im.actor.sdk.controllers.fragment.DisplayListFragment;
-import im.actor.sdk.controllers.conversation.ChatActivity;
 import im.actor.sdk.controllers.settings.BaseActorSettingsFragment;
 import im.actor.sdk.util.Screen;
 import im.actor.runtime.android.view.BindedListAdapter;
