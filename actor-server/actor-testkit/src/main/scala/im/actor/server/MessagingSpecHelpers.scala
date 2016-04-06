@@ -9,7 +9,7 @@ import im.actor.api.rpc.users.ApiUser
 import im.actor.server.acl.ACLUtils
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog.DialogGroup
-import im.actor.server.model.Dialog
+import im.actor.server.model.DialogObsolete
 import im.actor.server.persist.dialog.DialogRepo
 import im.actor.server.sequence.SeqStateDate
 import org.scalatest.Matchers
@@ -49,7 +49,7 @@ trait MessagingSpecHelpers extends ScalaFutures with PeersImplicits with Matcher
     }
   }
 
-  def findPrivateDialog(withUserId: Int)(implicit clientData: ClientData, ec: ExecutionContext): Dialog = {
+  def findPrivateDialog(withUserId: Int)(implicit clientData: ClientData, ec: ExecutionContext): DialogObsolete = {
     clientData.authData shouldBe defined
     val clientUserId = clientData.authData.get.userId
     whenReady(ACLUtils.getOutPeer(ApiPeer(ApiPeerType.Private, withUserId), clientData.authId)) { peer ⇒

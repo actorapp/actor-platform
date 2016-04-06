@@ -8,15 +8,13 @@ import akka.persistence.RecoveryCompleted
 import akka.util.Timeout
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.serialization.ActorSerializer
-import im.actor.server.acl.ACLUtils
 import im.actor.server.bots.BotCommand
 import im.actor.server.cqrs.TaggedEvent
 import im.actor.server.db.DbExtension
-import im.actor.server.dialog.{ DialogCommand, DialogExtension }
+import im.actor.server.dialog.{ DialogCommand, DialogExtension, DialogRoot }
 import im.actor.server.office.{ PeerProcessor, StopOffice }
 import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
-import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.ExecutionContext
@@ -246,7 +244,7 @@ private[user] final class UserProcessor
     case query: GetLocalName                ⇒ contacts.ref forward query
     case StopOffice                         ⇒ context stop self
     case ReceiveTimeout                     ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
-    case dc: DialogCommand                  ⇒ userPeer(state.internalExtensions) forward dc
+    case dc: DialogCommand                  ⇒ dialogRoot(state.internalExtensions) forward dc
   }
 
   override protected def handleQuery(state: UserState): Receive = {
@@ -260,9 +258,9 @@ private[user] final class UserProcessor
     case GetName(_)                                   ⇒ getName(state)
   }
 
-  private def userPeer(extensions: Seq[ApiExtension]): ActorRef = {
-    val userPeer = "UserPeer"
-    context.child(userPeer).getOrElse(context.actorOf(UserPeer.props(userId, extensions), userPeer))
+  private def dialogRoot(extensions: Seq[ApiExtension]): ActorRef = {
+    val name = "DialogRoot"
+    context.child(name).getOrElse(context.actorOf(DialogRoot.props(userId, extensions), name))
   }
 
   protected[this] var userStateMaybe: Option[UserState] = None
