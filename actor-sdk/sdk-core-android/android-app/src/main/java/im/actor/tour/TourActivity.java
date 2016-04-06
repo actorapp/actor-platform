@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
-import im.actor.sdk.controllers.fragment.auth.AuthActivity;
+import im.actor.sdk.controllers.auth.AuthActivity;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.util.Fonts;
 import im.actor.sdk.view.SelectorFactory;

@@ -23,7 +23,7 @@ import im.actor.core.events.NewSessionCreated;
 import im.actor.core.events.PeerChatOpened;
 import im.actor.core.events.PeerInfoOpened;
 import im.actor.core.events.UserVisible;
-import im.actor.core.util.ModuleActor;
+import im.actor.core.modules.ModuleActor;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserPresence;
 import im.actor.core.viewmodel.UserVM;

@@ -72,7 +72,7 @@ import im.actor.sdk.controllers.conversation.mentions.MentionsAdapter;
 import im.actor.sdk.controllers.conversation.messages.AudioHolder;
 import im.actor.sdk.controllers.conversation.messages.MessagesFragment;
 import im.actor.sdk.controllers.conversation.view.FastShareAdapter;
-import im.actor.sdk.controllers.fragment.settings.BaseActorChatActivity;
+import im.actor.sdk.controllers.settings.BaseActorChatActivity;
 import im.actor.sdk.core.audio.VoiceCaptureActor;
 import im.actor.sdk.intents.ActorIntent;
 import im.actor.sdk.util.Randoms;
@@ -115,6 +115,7 @@ public class ChatActivity extends ActorEditTextActivity {
     private static final int PERMISSION_REQUEST_RECORD_AUDIO = 7;
     private static final int PERMISSIONS_REQUEST_FOR_CALL = 8;
     private static final int PERMISSION_REQ_MEDIA = 11;
+    public static final int MAX_USERS_FOR_CALLS = 5;
     // Peer of current chat
     private Peer peer;
 
@@ -1126,9 +1127,15 @@ public class ChatActivity extends ActorEditTextActivity {
             menu.findItem(R.id.leaveGroup).setVisible(false);
         }
 
-        if (!ActorSDK.sharedActor().isCallsEnabled()) {
-            menu.findItem(R.id.call).setVisible(false);
+        boolean callsEnabled = ActorSDK.sharedActor().isCallsEnabled();
+        if (callsEnabled) {
+            if (peer.getPeerType() == PeerType.PRIVATE) {
+                callsEnabled = !users().get(peer.getPeerId()).isBot();
+            } else if (peer.getPeerType() == PeerType.GROUP) {
+                callsEnabled = groups().get(peer.getPeerId()).getMembersCount() <= MAX_USERS_FOR_CALLS;
+            }
         }
+        menu.findItem(R.id.call).setVisible(callsEnabled);
 
 
         // Hide unsupported files menu

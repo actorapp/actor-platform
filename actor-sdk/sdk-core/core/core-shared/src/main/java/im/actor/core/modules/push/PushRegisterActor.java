@@ -13,7 +13,7 @@ import im.actor.core.api.rpc.RequestRegisterApplePushKit;
 import im.actor.core.api.rpc.RequestRegisterGooglePush;
 import im.actor.core.api.rpc.ResponseVoid;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.util.ModuleActor;
+import im.actor.core.modules.ModuleActor;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 

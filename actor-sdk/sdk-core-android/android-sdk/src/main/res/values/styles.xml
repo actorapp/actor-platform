@@ -31,6 +31,7 @@
     <style name="ProfileActivityTheme" parent="AppToolbarTheme">
         <item name="windowActionBarOverlay">true</item>
         <item name="android:windowActionBarOverlay">true</item>
+        <!--<item name="android:windowTranslucentStatus">true</item>-->
     </style>
 
     <style name="ChatActivityTheme" parent="AppToolbarTheme">

@@ -1,83 +1,157 @@
 <!--
   ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
   -->
-
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:descendantFocusability="beforeDescendants"
-    android:fillViewport="true"
-    android:gravity="center_horizontal"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/email_login_form"
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:paddingTop="8dp">
-
-        <TextView
-            android:id="@+id/email_login_hint"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:lineSpacingMultiplier="1.1"
-            android:text="@string/auth_email_hint"
-            android:textSize="16sp" />
-
+        android:layout_height="match_parent"
+        android:descendantFocusability="beforeDescendants"
+        android:fillViewport="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/email_login_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:orientation="horizontal"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp">
+            android:orientation="vertical"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="8dp">
 
-
-            <EditText
-                android:id="@+id/tv_email"
+            <LinearLayout
+                android:layout_weight="1"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="12dp"
-                android:hint="@string/auth_email_edit_text_hint"
-                android:imeOptions="actionGo"
-                android:inputType="textEmailAddress"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:textColorHint="#a6a6a6" />
+                android:layout_height="match_parent">
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/email_login_hint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:lineSpacingMultiplier="1.1"
+                    android:text="@string/auth_email_hint"
+                    android:textSize="16sp" />
 
-        <FrameLayout
-            android:id="@+id/button_continue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="24dp"
-            android:background="@drawable/shadow_square_1">
+                <ImageView
+                    android:layout_marginTop="14dp"
+                    android:id="@+id/corp_logo"
+                    android:gravity="center"
+                    android:scaleType="centerInside"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:orientation="horizontal"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp">
+
+
+                    <EditText
+                        android:id="@+id/tv_email"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="12dp"
+                        android:hint="@string/auth_email_edit_text_hint"
+                        android:imeOptions="actionGo"
+                        android:inputType="textEmailAddress"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:textColorHint="#a6a6a6" />
+
+                </LinearLayout>
+
+
+                <Button
+                    android:id="@+id/button_why"
+                    android:visibility="gone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@null"
+                    android:paddingLeft="26dp"
+                    android:paddingRight="26dp"
+                    android:text="@string/auth_email_why"
+                    android:textSize="14sp" />
+
+
+                <Button
+                    android:visibility="gone"
+                    android:id="@+id/button_sign_in"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:background="@null"
+                    android:paddingLeft="26dp"
+                    android:paddingRight="26dp"
+                    android:text="@string/tour_sign_in"
+                    android:textSize="14sp" />
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/button_continue_text"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:background="@drawable/btn_primary"
+                android:clickable="true"
+                android:id="@+id/disclaimer"
                 android:gravity="center"
-                android:minWidth="88dp"
-                android:paddingLeft="24dp"
-                android:paddingRight="24dp"
-                android:text="@string/auth_email_get_code"
-                android:textSize="15sp" />
-        </FrameLayout>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
+            <TextView
+                android:id="@+id/button_switch_to_phone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/auth_switch_to_phone" />
 
-    </LinearLayout>
-</ScrollView>
+        </LinearLayout>
+    </ScrollView>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/div_size" />
+
+    <FrameLayout
+        android:id="@+id/button_continue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/shadow_square_1">
+
+        <TextView
+            android:id="@+id/button_continue_text"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:background="@drawable/btn_primary"
+            android:gravity="center"
+            android:minWidth="88dp"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            android:text="@string/auth_email_get_code"
+            android:textSize="15sp" />
+    </FrameLayout>
+
+</LinearLayout>
 
 

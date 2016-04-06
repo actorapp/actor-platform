@@ -1,15 +1,24 @@
 package im.actor.sdk.view.avatar;
 
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
+import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.interfaces.SimpleDraweeControllerBuilder;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.common.ResizeOptions;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 
 import java.io.File;
 
@@ -17,6 +26,7 @@ import im.actor.core.entity.Avatar;
 import im.actor.core.viewmodel.FileVM;
 import im.actor.core.viewmodel.FileVMCallback;
 import im.actor.runtime.files.FileSystemReference;
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.view.avatar.CoverOverlayDrawable;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
@@ -25,10 +35,9 @@ public class CoverAvatarView extends SimpleDraweeView {
 
     private FileVM fileVM;
     private FileVM fullFileVM;
+    private String smallDescriptor;
     private boolean isLoaded;
     private long currentId;
-    private boolean isSmallLoaded;
-    private ImageView bkgrnd;
 
     public CoverAvatarView(Context context, GenericDraweeHierarchy hierarchy) {
         super(context, hierarchy);
@@ -56,16 +65,22 @@ public class CoverAvatarView extends SimpleDraweeView {
             return;
         }
 
-        GenericDraweeHierarchyBuilder builder =
-                new GenericDraweeHierarchyBuilder(getResources());
+        GenericDraweeHierarchyBuilder builder = new GenericDraweeHierarchyBuilder(getResources());
 
-        GenericDraweeHierarchy hierarchy = builder
-                .setFadeDuration(160)
-                .setActualImageScaleType(ScalingUtils.ScaleType.CENTER_CROP)
-//                .setBackground(getResources().getDrawable(R.drawable.img_profile_avatar_default))
-                .setOverlay(new CoverOverlayDrawable(getContext()))
-                .build();
-        setHierarchy(hierarchy);
+        builder.setActualImageScaleType(ScalingUtils.ScaleType.CENTER_CROP);
+        builder.setOverlay(new CoverOverlayDrawable(getContext()));
+
+        if (ActorSDK.sharedActor().style.getAvatarBackgroundResourse() != 0) {
+            builder.setPlaceholderImage(getResources()
+                    .getDrawable(ActorSDK.sharedActor().style.getAvatarBackgroundResourse()));
+        } else {
+            builder.setPlaceholderImage(new ColorDrawable(
+                    ActorSDK.sharedActor().style.getAvatarBackgroundColor()));
+        }
+
+        builder.setFadeDuration(0);
+
+        setHierarchy(builder.build());
     }
 
     public void bind(final Avatar avatar) {
@@ -84,9 +99,11 @@ public class CoverAvatarView extends SimpleDraweeView {
             fullFileVM = null;
         }
         isLoaded = false;
+        smallDescriptor = null;
 
-        if (setCommon(avatar)) return;
-
+        if (tryToSetFast(avatar)) {
+            return;
+        }
 
         if (avatar != null && avatar.getSmallImage() != null) {
             currentId = avatar.getSmallImage().getFileReference().getFileId();
@@ -102,9 +119,9 @@ public class CoverAvatarView extends SimpleDraweeView {
 
                 @Override
                 public void onDownloaded(FileSystemReference reference) {
-                    isSmallLoaded = true;
                     if (!isLoaded) {
-                        setImageURI(Uri.fromFile(new File(reference.getDescriptor())));
+                        smallDescriptor = reference.getDescriptor();
+                        setImageURI(Uri.fromFile(new File(smallDescriptor)));
                     }
                 }
             });
@@ -121,28 +138,26 @@ public class CoverAvatarView extends SimpleDraweeView {
                     @Override
                     public void onDownloaded(FileSystemReference reference) {
                         isLoaded = true;
-                        if (bkgrnd != null && avatar != null && (avatar.getSmallImage() != null)) {
-                            String downloadedDescriptor = messenger().findDownloadedDescriptor(avatar.getSmallImage().getFileReference().getFileId());
-                            if (downloadedDescriptor != null && !downloadedDescriptor.isEmpty()) {
-                                Drawable d = Drawable.createFromPath(downloadedDescriptor);
-                                bkgrnd.setImageDrawable(d);
-                            }
-                        }
-                        setImageURI(Uri.fromFile(new File(reference.getDescriptor())));
 
+                        PipelineDraweeControllerBuilder dController = Fresco.newDraweeControllerBuilder();
+                        if (smallDescriptor != null) {
+                            dController.setLowResImageRequest(ImageRequest.fromUri(Uri.fromFile(new File(smallDescriptor))));
+                        }
+                        dController.setOldController(getController());
+                        dController.setImageRequest(ImageRequest.fromUri(Uri.fromFile(new File(reference.getDescriptor()))));
+
+                        setController(dController.build());
                     }
                 });
             }
         }
     }
 
-    private boolean setCommon(Avatar avatar) {
-        if (avatar != null && (avatar.getFullImage() != null || avatar.getSmallImage() != null)) {
-            String downloadedDescriptor = messenger().findDownloadedDescriptor(avatar.getFullImage() != null ? avatar.getFullImage().getFileReference().getFileId() : avatar.getSmallImage().getFileReference().getFileId());
-            if (downloadedDescriptor != null && !downloadedDescriptor.isEmpty()) {
-                Drawable d = Drawable.createFromPath(downloadedDescriptor);
-                setScaleType(ScaleType.CENTER_CROP);
-                setImageDrawable(d);
+    private boolean tryToSetFast(Avatar avatar) {
+        if (avatar != null && avatar.getFullImage() != null) {
+            String downloadedDescriptor = messenger().findDownloadedDescriptor(avatar.getFullImage().getFileReference().getFileId());
+            if (downloadedDescriptor != null) {
+                setImageURI(Uri.fromFile(new File(downloadedDescriptor)));
                 return true;
             }
         }
@@ -163,9 +178,5 @@ public class CoverAvatarView extends SimpleDraweeView {
             fullFileVM = null;
         }
         currentId = 0;
-    }
-
-    public void setBkgrnd(ImageView bkgrnd) {
-        this.bkgrnd = bkgrnd;
     }
 }

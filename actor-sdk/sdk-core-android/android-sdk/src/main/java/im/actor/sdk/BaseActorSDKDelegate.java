@@ -11,11 +11,11 @@ import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.controllers.activity.controllers.MainPhoneController;
 import im.actor.sdk.controllers.conversation.messages.MessageHolder;
 import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
-import im.actor.sdk.controllers.fragment.auth.BaseAuthFragment;
-import im.actor.sdk.controllers.fragment.auth.SignPhoneFragment;
-import im.actor.sdk.controllers.fragment.settings.ActorSettingsCategory;
-import im.actor.sdk.controllers.fragment.settings.BaseActorProfileActivity;
-import im.actor.sdk.controllers.fragment.settings.BaseGroupInfoActivity;
+import im.actor.sdk.controllers.auth.BaseAuthFragment;
+import im.actor.sdk.controllers.auth.SignPhoneFragment;
+import im.actor.sdk.controllers.settings.ActorSettingsCategory;
+import im.actor.sdk.controllers.settings.BaseActorProfileActivity;
+import im.actor.sdk.controllers.settings.BaseGroupInfoActivity;
 import im.actor.sdk.intents.ActorIntent;
 import im.actor.sdk.intents.ActorIntentFragmentActivity;
 

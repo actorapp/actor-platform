@@ -29,7 +29,7 @@ public class BaseFragmentActivity extends BaseActivity {
 
         setContentView(R.layout.activity_base_fragment);
         findViewById(R.id.content_frame).setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
-        getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        getWindow().setBackgroundDrawable(new ColorDrawable(ActorSDK.sharedActor().style.getMainBackgroundColor()));
     }
 
     public void showFragment(final Fragment fragment, final boolean addToBackStack, final boolean isAnimated) {

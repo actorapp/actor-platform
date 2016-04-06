@@ -1,24 +1,27 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
   -->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/selector"
-    android:clickable="true">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/selector"
+        android:duplicateParentState="true"
         android:orientation="horizontal">
 
-        <im.actor.sdk.view.TintImageView
+        <ImageView
             android:id="@+id/recordIcon"
-            android:layout_width="72dp"
-            android:layout_height="72dp" />
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginBottom="24dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="32dp"
+            android:layout_marginTop="16dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -31,23 +34,30 @@
                 android:id="@+id/value"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:paddingRight="20dp" />
+                android:ellipsize="end"
+                android:lines="1"
+                android:paddingRight="20dp"
+                android:singleLine="true"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:paddingRight="20dp" />
+                android:ellipsize="end"
+                android:lines="1"
+                android:paddingRight="20dp"
+                android:singleLine="true"
+                android:textSize="14sp" />
         </LinearLayout>
     </LinearLayout>
 
-    <View
+    <im.actor.sdk.view.DividerView
         android:id="@+id/divider"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/div_size"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        android:layout_marginBottom="8dp"
         android:layout_marginLeft="72dp"
-        android:background="@android:color/holo_red_dark" />
-</FrameLayout>
+        android:layout_marginTop="8dp" />
+</LinearLayout>

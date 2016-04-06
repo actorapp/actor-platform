@@ -1,7 +1,6 @@
 package im.actor.allmessages;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -9,8 +8,6 @@ import android.support.v4.app.FragmentManager;
 import im.actor.R;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.controllers.activity.controllers.MainPhoneController;
-import im.actor.sdk.controllers.fragment.contacts.ContactsFragment;
-import im.actor.sdk.controllers.fragment.dialogs.DialogsFragment;
 
 public class MainPhoneControllerEx extends MainPhoneController{
     public MainPhoneControllerEx(ActorMainActivity mainActivity) {

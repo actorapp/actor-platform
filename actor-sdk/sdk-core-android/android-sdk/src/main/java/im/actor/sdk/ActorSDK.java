@@ -35,11 +35,11 @@ import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.controllers.conversation.ChatActivity;
 import im.actor.sdk.controllers.conversation.messages.MessageHolder;
 import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
-import im.actor.sdk.controllers.fragment.auth.AuthActivity;
-import im.actor.sdk.controllers.fragment.group.GroupInfoActivity;
-import im.actor.sdk.controllers.fragment.profile.ProfileActivity;
-import im.actor.sdk.controllers.fragment.settings.MyProfileActivity;
-import im.actor.sdk.controllers.fragment.settings.SecuritySettingsActivity;
+import im.actor.sdk.controllers.auth.AuthActivity;
+import im.actor.sdk.controllers.group.GroupInfoActivity;
+import im.actor.sdk.controllers.profile.ProfileActivity;
+import im.actor.sdk.controllers.settings.MyProfileActivity;
+import im.actor.sdk.controllers.settings.SecuritySettingsActivity;
 import im.actor.sdk.core.AndroidCallProvider;
 import im.actor.sdk.core.AndroidNotifications;
 import im.actor.sdk.core.AndroidPhoneBook;
@@ -139,9 +139,29 @@ public class ActorSDK {
     private String twitter = "actorapp";
 
     /**
+     * Terms of service
+     */
+    private String tosUrl = null;
+
+    private String tosText = null;
+
+    /**
+     * Privacy policy
+     */
+    private String privacyUrl = null;
+
+    private String privacyText = null;
+
+    /**
      * Fast share menu is experimental feature - disabled be default
      */
     private boolean fastShareEnabled = false;
+
+
+    /**
+     * Auth type - binary mask for auth type
+     */
+    private int authType = AuthActivity.AUTH_TYPE_PHONE + AuthActivity.AUTH_TYPE_EMAIL;
 
     /**
      * Delegate
@@ -621,6 +641,97 @@ public class ActorSDK {
      */
     public void setInviteUrl(String inviteUrl) {
         this.inviteUrl = inviteUrl;
+    }
+
+    /**
+     * Getting binary mask for auth type
+     *
+     * @return binary mask for auth type
+     */
+    public int getAuthType() {
+        return authType;
+    }
+
+    /**
+     * Setting binary mask for auth type
+     * available auth types are: {@link AuthActivity#AUTH_TYPE_EMAIL}, {@link AuthActivity#AUTH_TYPE_PHONE}
+     *
+     * @param authType - binary mask for auth type
+     */
+    public void setAuthType(int authType) {
+        this.authType = authType;
+    }
+
+    /**
+     * Getting terms of service url
+     *
+     * @return terms of service url
+     */
+    public String getTosUrl() {
+        return tosUrl;
+    }
+
+    /**
+     * Setting terms of service url
+     *
+     * @param tosUrl terms of service url
+     */
+    public void setTosUrl(String tosUrl) {
+        this.tosUrl = tosUrl;
+    }
+
+    /**
+     * Getting terms of service text
+     *
+     * @return terms of service text
+     */
+    public String getTosText() {
+        return tosText;
+    }
+
+    /**
+     * Setting terms of service text
+     *
+     * @param tosText terms of service text
+     */
+    public void setTosText(String tosText) {
+        this.tosText = tosText;
+    }
+
+    /**
+     * Getting privacy policy url
+     *
+     * @return privacy policy url
+     */
+    public String getPrivacyUrl() {
+        return privacyUrl;
+    }
+
+    /**
+     * Setting privacy policy url
+     *
+     * @param privacyUrl terms of service url
+     */
+    public void setPrivacyUrl(String privacyUrl) {
+        this.privacyUrl = privacyUrl;
+    }
+
+    /**
+     * Getting privacy policy text
+     *
+     * @return privacy policy text
+     */
+    public String getPrivacyText() {
+        return privacyText;
+    }
+
+    /**
+     * Setting privacy policy text
+     *
+     * @param privacyText privacy policy text
+     */
+    public void setPrivacyText(String privacyText) {
+        this.privacyText = privacyText;
     }
 
     /**

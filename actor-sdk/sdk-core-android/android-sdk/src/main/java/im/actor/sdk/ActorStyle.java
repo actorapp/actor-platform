@@ -19,8 +19,24 @@ public class ActorStyle {
     private int avatarBackgroundResource = 0;
     private int actionShareColor = 0;
 
-    //Root colors
+    //
+    // Main Color
+    //
     private int mainColor = Color.parseColor("#4d74a6");
+
+    public int getMainColor() {
+        return mainColor;
+    }
+
+    public void setMainColor(int mainColor) {
+        this.mainColor = mainColor;
+    }
+
+
+    //
+    // List Styles
+    //
+
     private int mainBackgroundColor = Color.parseColor("#ffffff");
     private int backyardBackgroundColor = 0;
 
@@ -59,8 +75,8 @@ public class ActorStyle {
     private int sectionIconLargeColor = 0;
 
     //Dividers
-    private int dividerColor = Color.parseColor("#1e000000");
-    private int dividerInvColor = Color.parseColor("#1effffff");
+    private int dividerColor = Color.parseColor("#1E000000");
+    private int dividerInvColor = Color.parseColor("#1Effffff");
 
     //Text colors
     private int textPrimaryInvColor = Color.parseColor("#DEffffff");
@@ -82,7 +98,8 @@ public class ActorStyle {
     //Profile
     private int profileTitleColor = 0;
     private int profileSubtitleColor = 0;
-    private int profilleIconColor = 0;
+    private int profileIconColor = 0;
+    private int profileContactIconColor = 0;
 
     //Group Profile
     private int groupAdminColor = 0;
@@ -117,16 +134,9 @@ public class ActorStyle {
     private int convMediaStateWarrningColor = Color.parseColor("#ffed534b");
     private int convLikeColor = Color.parseColor("#e2264d");
 
-    public int getMainColor() {
-        return mainColor;
-    }
 
     public int getMainPressedColor() {
         return getDarkenArgb(getMainColor(), 0.95);
-    }
-
-    public void setMainColor(int mainColor) {
-        this.mainColor = mainColor;
     }
 
     public int getToolBarColor() {
@@ -652,15 +662,27 @@ public class ActorStyle {
     }
 
     public int getProfilleIconColor() {
-        if (profilleIconColor != 0) {
-            return profilleIconColor;
+        if (profileIconColor != 0) {
+            return profileIconColor;
         } else {
             return getSectionIconLargeColor();
         }
     }
 
     public void setProfilleIconColor(int profilleIconColor) {
-        this.profilleIconColor = profilleIconColor;
+        this.profileIconColor = profilleIconColor;
+    }
+
+    public int getProfileContactIconColor() {
+        if (profileContactIconColor != 0) {
+            return profileContactIconColor;
+        } else {
+            return getListActionColor();
+        }
+    }
+
+    public void setProfileContactIconColor(int profileContactIconColor) {
+        this.profileContactIconColor = profileContactIconColor;
     }
 
     public int getGroupAdminColor() {

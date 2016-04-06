@@ -54,6 +54,8 @@ import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.ValueModel;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
+import im.actor.sdk.controllers.calls.view.CallAvatarLayerAnimator;
+import im.actor.sdk.controllers.calls.view.TimerActor;
 import im.actor.sdk.controllers.fragment.BaseFragment;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.TintImageView;

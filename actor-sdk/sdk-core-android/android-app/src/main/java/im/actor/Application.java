@@ -1,27 +1,23 @@
 package im.actor;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 
-import im.actor.allmessages.MainPhoneControllerEx;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorSDKApplication;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.BaseActorSDKDelegate;
-import im.actor.sdk.controllers.activity.ActorMainActivity;
-import im.actor.sdk.controllers.activity.controllers.MainPhoneController;
-import im.actor.sdk.controllers.fragment.group.GroupInfoFragment;
-import im.actor.sdk.controllers.fragment.profile.ProfileFragment;
-import im.actor.sdk.controllers.fragment.settings.ActorSettingsCategory;
-import im.actor.sdk.controllers.fragment.settings.ActorSettingsField;
-import im.actor.sdk.controllers.fragment.settings.BaseActorProfileActivity;
-import im.actor.sdk.controllers.fragment.settings.BaseActorSettingsActivity;
-import im.actor.sdk.controllers.fragment.settings.BaseActorSettingsFragment;
-import im.actor.sdk.controllers.fragment.settings.BaseGroupInfoActivity;
+import im.actor.sdk.controllers.group.GroupInfoFragment;
+import im.actor.sdk.controllers.profile.ProfileFragment;
+import im.actor.sdk.controllers.settings.ActorSettingsCategory;
+import im.actor.sdk.controllers.settings.ActorSettingsField;
+import im.actor.sdk.controllers.settings.BaseActorProfileActivity;
+import im.actor.sdk.controllers.settings.BaseActorSettingsActivity;
+import im.actor.sdk.controllers.settings.BaseActorSettingsFragment;
+import im.actor.sdk.controllers.settings.BaseGroupInfoActivity;
 import im.actor.sdk.intents.ActorIntentFragmentActivity;
 
 public class Application extends ActorSDKApplication {
@@ -33,8 +29,13 @@ public class Application extends ActorSDKApplication {
 
         ActorStyle style = ActorSDK.sharedActor().style;
         style.setDialogsActiveTextColor(0xff5882ac);
-
         ActorSDK.sharedActor().setFastShareEnabled(true);
+
+        ActorSDK.sharedActor().setCallsEnabled(true);
+
+        ActorSDK.sharedActor().setTosUrl("http://actor.im");
+        ActorSDK.sharedActor().setPrivacyText("bla bla bla");
+
 //        ActorSDK.sharedActor().setTwitter("");
 //        ActorSDK.sharedActor().setHomePage("http://www.foo.com");
 //        ActorSDK.sharedActor().setInviteUrl("http://www.foo.com");

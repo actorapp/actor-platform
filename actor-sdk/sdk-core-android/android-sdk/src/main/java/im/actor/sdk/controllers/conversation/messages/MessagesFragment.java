@@ -18,9 +18,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.ChatLinearLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -50,18 +48,16 @@ import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.Log;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
-import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.controllers.activity.ShortcutActivity;
 import im.actor.sdk.controllers.fragment.DisplayListFragment;
 import im.actor.sdk.controllers.conversation.ChatActivity;
-import im.actor.sdk.controllers.fragment.settings.BaseActorSettingsFragment;
+import im.actor.sdk.controllers.settings.BaseActorSettingsFragment;
 import im.actor.sdk.util.Screen;
 import im.actor.runtime.android.view.BindedListAdapter;
 import im.actor.runtime.generic.mvvm.AndroidListUpdate;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.runtime.generic.mvvm.DisplayList;
-import im.actor.sdk.view.BackgroundPreviewView;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 import static im.actor.sdk.util.ActorSDKMessenger.myUid;
@@ -82,7 +78,6 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
 
     private Peer peer;
 
-    // private ChatLinearLayoutManager linearLayoutManager;
     protected MessagesAdapter messagesAdapter;
     // private ConversationVM conversationVM;
     private ActionMode actionMode;
@@ -247,18 +242,18 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
             messagesAdapter.setFirstUnread(unreadId);
         }
 
-        if (index > 0) {
-
-//            if (linearLayoutManager != null) {
-//                linearLayoutManager.setStackFromEnd(false);
-//                linearLayoutManager.scrollToPositionWithOffset(index + 1, Screen.dp(64));
-//                // linearLayoutManager.scrollToPosition(getDisplayList().getSize() - index - 1);
-//                // linearLayoutManager.scrollToPosition(index + 1);
-//                // getCollection().scrollToPosition(index + 1);
-//            }
+        RecyclerView.LayoutManager layoutManager = getCollection().getLayoutManager();
+        if (index > 0 && layoutManager != null && layoutManager instanceof ChatLinearLayoutManager) {
+            if (layoutManager != null) {
+                ((ChatLinearLayoutManager) layoutManager).setStackFromEnd(false);
+                ((ChatLinearLayoutManager) layoutManager).scrollToPositionWithOffset(index + 1, Screen.dp(64));
+                // layoutManager.scrollToPosition(getDisplayList().getSize() - index - 1);
+                // layoutManager.scrollToPosition(index + 1);
+                // getCollection().scrollToPosition(index + 1);
+            }
 
         } else if (getCollection() != null) {
-            // linearLayoutManager.scrollToPosition(0);
+            // layoutManager.scrollToPosition(0);
             getCollection().scrollToPosition(0);
         }
     }
@@ -275,13 +270,13 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
     @Override
     protected void configureRecyclerView(RecyclerView recyclerView) {
         recyclerView.setHasFixedSize(true);
-        final LinearLayoutManager manager = new LinearLayoutManager(getActivity(), ChatLinearLayoutManager.VERTICAL, true);
-        manager.setStackFromEnd(false);
-        recyclerView.setLayoutManager(manager);
+        final ChatLinearLayoutManager layoutManager = new ChatLinearLayoutManager(getActivity(), ChatLinearLayoutManager.VERTICAL, true);
+        layoutManager.setStackFromEnd(false);
+        recyclerView.setLayoutManager(layoutManager);
         getDisplayList().setLinearLayoutCallback(new BindedDisplayList.LinearLayoutCallback() {
             @Override
             public void setStackFromEnd(boolean b) {
-                if (manager != null) manager.setStackFromEnd(b);
+                if (layoutManager != null) layoutManager.setStackFromEnd(b);
             }
         });
     }

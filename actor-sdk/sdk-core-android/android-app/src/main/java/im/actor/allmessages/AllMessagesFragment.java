@@ -1,21 +1,15 @@
 package im.actor.allmessages;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.ChatLinearLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.nineoldandroids.view.ViewHelper;
-
 import im.actor.R;
-import im.actor.core.entity.Dialog;
-import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.runtime.android.view.BindedListAdapter;
@@ -23,9 +17,7 @@ import im.actor.runtime.generic.mvvm.BindedDisplayList;
 
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.controllers.fragment.DisplayListFragment;
-import im.actor.sdk.controllers.fragment.dialogs.DialogsAdapter;
 import im.actor.sdk.view.adapters.OnItemClickedListener;
-import im.actor.sdk.view.adapters.ViewHolder;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 

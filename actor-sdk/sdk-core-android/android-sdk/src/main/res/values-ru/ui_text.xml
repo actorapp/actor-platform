@@ -23,6 +23,7 @@
     <string name="toast_no_sdcard">Нет SD-карты</string>
     <string name="toast_phone_copied">Телефон скопирован в буфер обмена</string>
     <string name="toast_email_copied">Email скопирован в буфер обмена</string>
+    <string name="toast_nickname_copied">Ник скопирован в буфер обмена</string>
     <string name="toast_messages_copied">Сообщения скопированы в буфер обмена</string>
     <string name="toast_unable_kick">Невозможно исключить участника из группы</string>
     <string name="toast_unable_add">Невозможно добавить пользователя в группу</string>
@@ -59,7 +60,7 @@
     <string name="tour_secure_text">Не переживайте, никто не сможет прочитать ваши сообщения. Делитесь документами и фотографиями без страха того, что они попадут в не те руки.</string>
 
     <!-- Phone Sign Fragment -->
-    <string name="auth_phone_title">Подтверждение телефона</string>
+    <string name="auth_phone_title">Регистрация</string>
     <string name="auth_phone_hint">Пожалуйста, подтвердите свою страну и введите свой номер телефона.</string>
     <string name="auth_phone_number_hint">Номер телефона</string>
     <string name="auth_phone_get_code">ПОДТВЕРДИТЬ НОМЕР</string>
@@ -68,6 +69,9 @@
     <string name="auth_phone_why_done">Понял!</string>
     <string name="auth_phone_country_title">Выберите страну</string>
     <string name="auth_phone_error_invalid_country">Неправильный код страны</string>
+
+    <string name="auth_switch_to_email">Использовать email для регистрации</string>
+    <string name="auth_switch_to_phone">Использовать телефон для регистрации</string>
 
     <!-- Choose auth type-->
     <string name="choose_auth_type_title">Выбор способа авторизации</string>
@@ -78,10 +82,17 @@
     <string name="choose_auth_type_using_email">используя почту</string>
 
     <!-- Email Sign Fragment -->
-    <string name="auth_email_title">Подтверждение почты</string>
+    <string name="auth_email_title">Регистрация</string>
     <string name="auth_email_hint">Пожалуйста, введите ваш адресс электронной почты</string>
     <string name="auth_email_edit_text_hint">Почта</string>
     <string name="auth_email_get_code">ПОДТВЕРДИТЬ ПОЧТУ</string>
+
+    <string name="auth_tos_privacy">Регистрируясь, вы соглашаетесь с Terms of Service и Privacy Policy.</string>
+    <string name="auth_tos">Регистрируясь, вы соглашаетесь с Terms of Service.</string>
+    <string name="auth_privacy">Регистрируясь, вы соглашаетесь Privacy Policy.</string>
+
+    <string name="auth_find_by_diclamer"> Вас можно будет найти по номеру телефона или адресу электронной почты (если вы их укажете).</string>
+
 
     <!-- Sign Code Fragment -->
     <string name="auth_code_title">Введите код активации</string>
@@ -96,12 +107,20 @@
     <string name="auth_code_change_yes">Изменить</string>
 
     <!-- Sign Up Fragment -->
-    <string name="auth_profile_title">Анкета</string>
-    <string name="auth_profile_hint">Пожалуйста укажите имя\nи, по желанию, свое фото.</string>
-    <string name="auth_profile_done">НАЧАТЬ ОБЩЕНИЕ</string>
+    <string name="auth_profile_title">Привет! Как Вас зовут?</string>
+    <string name="auth_profile_hint">Пожалуйста укажите имя</string>
+    <string name="auth_profile_done">ДАЛЕЕ</string>
     <string name="auth_profile_name_hint">Ваше имя</string>
 
+    <!-- Sign in Fragment-->
+    <string name="sign_in_title">Вход</string>
+    <string name="sign_in_hint">Пожалуйста, введите свой номер телефона или email</string>
+    <string name="sign_in_edit_text_hint">телефона или email</string>
+    <string name="sign_in_get_code">Войти</string>
+
+
     <!-- Auth errors -->
+    <string name="auth_error_wrong_auth_id">Пожалуйста, введите действительный email или номер телефона.</string>
     <string name="auth_error_empty_phone">Пожалуйста, введите свой номер телефона.</string>
     <string name="auth_error_empty_email">Пожалуйста, введите свой адресс электронной почты.</string>
     <string name="auth_error_code_expired">Код устарел. Пожалуйста, начните все с начала.</string>
@@ -255,6 +274,10 @@
     <string name="profile_shared_media">Медиа</string>
     <string name="profile_settings_header">Настройки</string>
     <string name="profile_settings_notifications">Оповещения</string>
+    <string name="profile_contacts_added">В Контактах</string>
+    <string name="profile_contacts_available">Доб. в контакты</string>
+    <string name="profile_call">Звонок</string>
+    <string name="profile_compose">Новое сообщение</string>
 
     <string name="profile_adding">Добавление в Контакты…</string>
     <string name="profile_removing">Удаление из Контактов…</string>

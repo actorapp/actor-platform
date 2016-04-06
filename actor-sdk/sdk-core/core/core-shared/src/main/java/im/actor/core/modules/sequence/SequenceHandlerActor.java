@@ -18,7 +18,7 @@ import im.actor.core.api.rpc.ResponseGetReferencedEntitites;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.sequence.internal.InternalUpdate;
 import im.actor.core.modules.sequence.internal.RelatedResponse;
-import im.actor.core.util.ModuleActor;
+import im.actor.core.modules.ModuleActor;
 import im.actor.core.network.parser.Update;
 import im.actor.runtime.Log;
 import im.actor.runtime.actors.ask.AskMessage;
