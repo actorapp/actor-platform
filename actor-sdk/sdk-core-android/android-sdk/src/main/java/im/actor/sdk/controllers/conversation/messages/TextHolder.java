@@ -101,19 +101,20 @@ public class TextHolder extends MessageHolder {
 
         if (message.getSenderId() == myUid()) {
             status.setVisibility(View.VISIBLE);
-
             switch (message.getMessageState()) {
                 case SENT:
-                    status.setResource(R.drawable.msg_check_1);
-                    status.setTint(sentColor);
-                    break;
                 case RECEIVED:
-                    status.setResource(R.drawable.msg_check_2);
-                    status.setTint(deliveredColor);
-                    break;
                 case READ:
-                    status.setResource(R.drawable.msg_check_2);
-                    status.setTint(readColor);
+                    if (message.getSortDate() <= readDate) {
+                        status.setResource(R.drawable.msg_check_2);
+                        status.setTint(readColor);
+                    } else if (message.getSortDate() <= receiveDate) {
+                        status.setResource(R.drawable.msg_check_2);
+                        status.setTint(deliveredColor);
+                    } else {
+                        status.setResource(R.drawable.msg_check_1);
+                        status.setTint(sentColor);
+                    }
                     break;
                 default:
                 case PENDING:
