@@ -27,12 +27,19 @@ public class MVVMCollection<T extends BserObject & KeyValueItem, V extends BaseV
     private final HashMap<Long, V> values = new HashMap<Long, V>();
     private final ValueModelCreator<T, V> creator;
     private final BserCreator<T> bserCreator;
+    private final ValueDefaultCreator<T> bserDefaultCreator;
 
     private ProxyKeyValueEngine proxyKeyValueEngine;
 
     public MVVMCollection(KeyValueStorage collectionStorage, ValueModelCreator<T, V> creator,
                           BserCreator<T> bserCreator) {
+        this(collectionStorage, creator, bserCreator, null);
+    }
+
+    public MVVMCollection(KeyValueStorage collectionStorage, ValueModelCreator<T, V> creator,
+                          BserCreator<T> bserCreator, ValueDefaultCreator<T> bserDefaultCreator) {
         this.creator = creator;
+        this.bserDefaultCreator = bserDefaultCreator;
         this.bserCreator = bserCreator;
         this.collectionStorage = collectionStorage;
         this.proxyKeyValueEngine = new ProxyKeyValueEngine();
@@ -170,7 +177,11 @@ public class MVVMCollection<T extends BserObject & KeyValueItem, V extends BaseV
                     e.printStackTrace();
                 }
             }
-            return null;
+            if (bserDefaultCreator != null) {
+                return bserDefaultCreator.createDefaultInstance(id);
+            } else {
+                return null;
+            }
         }
     }
 }
