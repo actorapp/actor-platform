@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import { shouldComponentUpdate } from 'react-addons-pure-render-mixin';
 import { Container } from 'flux/utils';
 import { PeerTypes } from '../constants/ActorAppConstants';
 
@@ -15,10 +15,6 @@ import UserProfile from './activity/UserProfile.react';
 import GroupProfile from './activity/GroupProfile.react';
 
 class ActivitySection extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   static getStores() {
     return [DialogStore, DialogInfoStore, ActivityStore];
   }
@@ -31,12 +27,10 @@ class ActivitySection extends Component {
     };
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if (!nextState.isOpen) {
-      return false;
-    }
+  constructor(props) {
+    super(props);
 
-    return shallowCompare(this, nextProps, nextState);
+    this.shouldComponentUpdate = shouldComponentUpdate.bind(this);
   }
 
   componentDidUpdate() {
