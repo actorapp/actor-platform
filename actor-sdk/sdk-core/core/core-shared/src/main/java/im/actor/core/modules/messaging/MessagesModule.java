@@ -60,7 +60,7 @@ import im.actor.core.modules.messaging.actors.CursorReaderActor;
 import im.actor.core.modules.messaging.actors.CursorReceiverActor;
 import im.actor.core.modules.messaging.actors.DialogsActor;
 import im.actor.core.modules.messaging.actors.DialogsHistoryActor;
-import im.actor.core.modules.messaging.actors.GroupedDialogsActor;
+import im.actor.core.modules.messaging.actors.ActiveDialogsActor;
 import im.actor.core.modules.messaging.actors.MessageDeleteActor;
 import im.actor.core.modules.messaging.actors.OwnReadActor;
 import im.actor.core.modules.messaging.actors.SenderActor;
@@ -147,8 +147,8 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
         if (context().getConfiguration().isEnabledGroupedChatList()) {
             this.dialogsGroupedActor = system().actorOf(Props.create(new ActorCreator() {
                 @Override
-                public GroupedDialogsActor create() {
-                    return new GroupedDialogsActor(context());
+                public ActiveDialogsActor create() {
+                    return new ActiveDialogsActor(context());
                 }
             }), "actor/dialogs/grouped");
         }
