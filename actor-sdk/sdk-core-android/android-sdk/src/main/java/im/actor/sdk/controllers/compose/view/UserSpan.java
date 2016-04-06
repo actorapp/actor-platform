@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.fragment.compose.view;
+package im.actor.sdk.controllers.compose.view;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
