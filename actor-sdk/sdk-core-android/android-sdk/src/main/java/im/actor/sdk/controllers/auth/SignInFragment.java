@@ -5,6 +5,8 @@ import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -13,6 +15,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import im.actor.sdk.ActorSDK;
+import im.actor.sdk.ActorStyle;
 import im.actor.sdk.R;
 import im.actor.sdk.util.Fonts;
 import im.actor.sdk.util.KeyboardHelper;
@@ -34,6 +37,8 @@ public class SignInFragment extends BaseAuthFragment {
         buttonCotinueText.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryInvColor());
 
         keyboardHelper = new KeyboardHelper(getActivity());
+
+        v.findViewById(R.id.divider).setBackgroundColor(style.getDividerColor());
 
         initView(v);
 
@@ -83,9 +88,11 @@ public class SignInFragment extends BaseAuthFragment {
 
     private void initView(View v) {
 
-        ((TextView) v.findViewById(R.id.sign_in_login_hint)).setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
+        ActorStyle style = ActorSDK.sharedActor().style;
+        ((TextView) v.findViewById(R.id.sign_in_login_hint)).setTextColor(style.getTextSecondaryColor());
         signIdEditText = (EditText) v.findViewById(R.id.tv_sign_in);
-        signIdEditText.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
+        signIdEditText.setTextColor(style.getTextPrimaryColor());
+        signIdEditText.setHighlightColor(style.getMainColor());
         setSuggestedEmail(signIdEditText);
 
         signIdEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -100,7 +107,7 @@ public class SignInFragment extends BaseAuthFragment {
         });
 
         Button singUp = (Button) v.findViewById(R.id.button_sign_up);
-        singUp.setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
+        singUp.setTextColor(style.getTextSecondaryColor());
         onClick(singUp, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -143,6 +150,14 @@ public class SignInFragment extends BaseAuthFragment {
             }
         }
     }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        menu.clear();
+        getActivity().getMenuInflater().inflate(R.menu.sign_in, menu);
+    }
+
 
     private void focussignId() {
         focus(signIdEditText);
