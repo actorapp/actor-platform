@@ -111,7 +111,6 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
     private final HashMap<String, ListEngine> customConversationEngines = new HashMap<>();
     private final HashMap<Peer, ActorRef> conversationActors = new HashMap<>();
     private final HashMap<Peer, ActorRef> conversationHistoryActors = new HashMap<>();
-    private final HashMap<Peer, ConversationVM> conversationVMS = new HashMap<>();
 
     private final SyncKeyValue cursorStorage;
 
