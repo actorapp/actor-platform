@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -68,7 +69,9 @@ public class SignUpFragment extends BaseAuthFragment {
         sendConfirmCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signUp(firstNameEditText.getText().toString().trim(), Sex.UNKNOWN);
+                if (!firstNameEditText.getText().toString().isEmpty()) {
+                    startAuth(firstNameEditText.getText().toString().trim());
+                }
             }
         });
         v.findViewById(R.id.divider).setBackgroundColor(style.getDividerColor());
@@ -88,5 +91,12 @@ public class SignUpFragment extends BaseAuthFragment {
     @Override
     public void onPause() {
         super.onPause();
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        menu.clear();
+        getActivity().getMenuInflater().inflate(R.menu.sign_up, menu);
     }
 }

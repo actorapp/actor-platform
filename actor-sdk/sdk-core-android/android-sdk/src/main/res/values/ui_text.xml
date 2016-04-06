@@ -97,6 +97,7 @@
     <string name="auth_tos_privacy">By signing up, you agree to the Terms of Service and Privacy Policy.</string>
     <string name="auth_tos">By signing up, you agree to the Terms of Service.</string>
     <string name="auth_privacy">By signing up, you agree to the Privacy Policy.</string>
+    <string name="auth_find_by_diclamer"> Others will be able to find you be email or phone number when provided.</string>
 
     <string name="auth_tos_index">Terms of Service</string>
     <string name="auth_privacy_index">Privacy Policy</string>
@@ -111,7 +112,7 @@
     <string name="auth_code_phone_hint">We\'ve sent an SMS with activation code to your phone {0}</string>
     <string name="auth_code_email_hint">We\'ve sent an email with activation code to {0}</string>
     <string name="auth_code_title">Enter SMS code</string>
-    <string name="auth_code_sms_hint">Sms code</string>
+    <string name="auth_code_sms_hint">Code</string>
     <string name="auth_code_done">DONE</string>
     <string name="auth_code_wrong_number">WRONG PHONE NUMBER?</string>
     <string name="auth_code_wrong_email">WRONG EMAIL?</string>
@@ -120,10 +121,10 @@
     <string name="auth_code_change_yes">Change</string>
 
     <!-- Sign Up Fragment -->
-    <string name="auth_profile_title">Profile info</string>
+    <string name="auth_profile_title">Hi! What\'s your name?</string>
     <string name="auth_profile_hint">Please provide your name</string>
     <string name="auth_profile_name_hint">Your name</string>
-    <string name="auth_profile_done">START MESSAGING</string>
+    <string name="auth_profile_done">NEXT</string>
 
     <!-- Auth errors -->
     <string name="auth_error_wrong_auth_id">Please, enter valid phone or email</string>
