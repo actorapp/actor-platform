@@ -88,15 +88,17 @@ final class GooglePushExtension(system: ActorSystem) extends Extension {
           case Xor.Right(json) ⇒
             json.asObject match {
               case Some(obj) ⇒
-                obj("error") flatMap (_.asString) foreach {
-                  case "InvalidRegistration" ⇒
+                obj("error") flatMap (_.asString) match {
+                  case Some("InvalidRegistration") ⇒
                     log.warning("Invalid registration, deleting")
                     remove(delivery.m.to)
-                  case "NotRegistered" ⇒
+                  case Some("NotRegistered") ⇒
                     log.warning("Token is not registered, deleting")
                     remove(delivery.m.to)
-                  case other ⇒
+                  case Some(other) ⇒
                     log.warning("Error in GCM response: {}", other)
+                  case None =>
+                    log.debug("Successfully delivered: {}", delivery)
                 }
               case None ⇒
                 log.error("Expected JSON Object but got: {}", json)
