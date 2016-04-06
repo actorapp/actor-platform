@@ -261,14 +261,14 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
 
   def isSharedUser(userId: Int): Boolean = userId == 0
 
-  def fetchGroupedDialogs(userId: Int): Future[Map[DialogGroup, Vector[Dialog]]] =
+  def fetchGroupedDialogs(userId: Int): Future[Map[DialogGroup, Vector[DialogObsolete]]] =
     db.run {
       DialogRepo
         .fetchSortByLastMessageData(userId, None, Int.MaxValue)
         .map(_ filterNot (dialogWithSelf(userId, _)))
         .map { dialogs ⇒
           val (groupModels, privateModels, favouriteModels) =
-            dialogs.foldLeft((Vector.empty[Dialog], Vector.empty[Dialog], Vector.empty[Dialog])) {
+            dialogs.foldLeft((Vector.empty[DialogObsolete], Vector.empty[DialogObsolete], Vector.empty[DialogObsolete])) {
               case ((groupModels, privateModels, favouriteModels), dialog) ⇒
                 if (dialog.isFavourite)
                   (groupModels, privateModels, favouriteModels :+ dialog)
@@ -312,7 +312,7 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
     }
   }
 
-  def dialogWithSelf(userId: Int, dialog: Dialog): Boolean =
+  def dialogWithSelf(userId: Int, dialog: DialogObsolete): Boolean =
     dialog.peer.typ == PeerType.Private && dialog.peer.id == userId
 
   def fetchReactions(peer: Peer, clientUserId: Int, randomId: Long): DBIO[Seq[MessageReaction]] =
@@ -329,7 +329,7 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
     }).toSeq
   }
 
-  def getDialogShortDBIO(dialog: Dialog)(implicit ec: ExecutionContext): DBIO[ApiDialogShort] =
+  def getDialogShortDBIO(dialog: DialogObsolete)(implicit ec: ExecutionContext): DBIO[ApiDialogShort] =
     for {
       historyOwner ← DBIO.from(HistoryUtils.getHistoryOwner(dialog.peer, dialog.userId))
       messageOpt ← HistoryMessageRepo.findNewest(historyOwner, dialog.peer) map (_.map(_.ofUser(dialog.userId)))
@@ -340,7 +340,7 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
       date = messageOpt.map(_.date.getMillis).getOrElse(0)
     )
 
-  def getDialogShort(dialog: Dialog)(implicit ec: ExecutionContext): Future[ApiDialogShort] =
+  def getDialogShort(dialog: DialogObsolete)(implicit ec: ExecutionContext): Future[ApiDialogShort] =
     db.run(getDialogShortDBIO(dialog))
 
   private def processorRegion(peer: Peer): ActorRef = peer.typ match {
