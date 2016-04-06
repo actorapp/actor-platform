@@ -26,7 +26,6 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
@@ -34,7 +33,8 @@ import com.google.i18n.phonenumbers.Phonenumber;
 import java.util.ArrayList;
 
 import im.actor.core.viewmodel.UserEmail;
-import im.actor.runtime.actors.Actor;
+import im.actor.runtime.mvvm.Value;
+import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
@@ -97,23 +97,6 @@ public class ProfileFragment extends BaseFragment {
 
 
         //
-        // Floating Action Button
-        //
-
-//        FloatingActionButton fab = (FloatingActionButton) res.findViewById(R.id.profileAction);
-//        fab.setColorNormal(style.getFabColor());
-//        fab.setColorPressed(style.getFabPressedColor());
-//
-//        fab.setVisibility(View.VISIBLE);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivity(Intents.openPrivateDialog(user.getId(), true, getActivity()));
-//            }
-//        });
-
-
-        //
         // User Name
         //
 
@@ -132,34 +115,99 @@ public class ProfileFragment extends BaseFragment {
 
 
         //
-        // Contact Information
+        // Add/Remove Contact
         //
 
-        LinearLayout contactsContainer = (LinearLayout) res.findViewById(R.id.contactsContainer);
-        boolean isFirstContact = true;
+        final View addContact = res.findViewById(R.id.addContact);
+        final ImageView addContactIcon = (ImageView) addContact.findViewById(R.id.addContactIcon);
+        final TextView addContactTitle = (TextView) addContact.findViewById(R.id.addContactTitle);
+        bind(user.isContact(), new ValueChangedListener<Boolean>() {
+            @Override
+            public void onChanged(Boolean isContact, Value<Boolean> valueModel) {
+                if (isContact) {
+                    addContactTitle.setText("In Contacts");
+                    addContactTitle.setTextColor(style.getProfileContactIconColor());
+                    Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_check_circle_black_24dp));
+                    DrawableCompat.setTint(drawable, style.getProfileContactIconColor());
+                    addContactIcon.setImageDrawable(drawable);
+                    addContact.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            execute(ActorSDK.sharedActor().getMessenger().removeContact(user.getId()));
+                        }
+                    });
+                } else {
+                    addContactTitle.setText("Add to Contacts");
+                    addContactTitle.setTextColor(style.getProfileContactIconColor());
+                    Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_person_add_white_24dp));
+                    DrawableCompat.setTint(drawable, style.getProfileContactIconColor());
+                    addContactIcon.setImageDrawable(drawable);
+                    addContact.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            execute(ActorSDK.sharedActor().getMessenger().addContact(user.getId()));
+                        }
+                    });
+                }
+            }
+        });
 
 
         //
-        // Compose
+        // New Message
         //
 
-        boolean showCalls = ActorSDK.sharedActor().isCallsEnabled() && !user.isBot();
-
-        buildRecordAction("Free Message", R.drawable.ic_chat_bubble_white_24dp, true, !showCalls, inflater, contactsContainer).setOnClickListener(new View.OnClickListener() {
+        View newMessageView = res.findViewById(R.id.newMessage);
+        ImageView newMessageIcon = (ImageView) newMessageView.findViewById(R.id.newMessageIcon);
+        TextView newMessageTitle = (TextView) newMessageView.findViewById(R.id.newMessageText);
+        {
+            Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_chat_black_24dp));
+            DrawableCompat.setTint(drawable, style.getListActionColor());
+            newMessageIcon.setImageDrawable(drawable);
+            newMessageTitle.setTextColor(style.getListActionColor());
+        }
+        newMessageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(Intents.openPrivateDialog(user.getId(), true, getActivity()));
             }
         });
 
-        if (showCalls) {
-            buildRecordAction("Free Call", R.drawable.ic_phone_white_24dp, true, true, inflater, contactsContainer).setOnClickListener(new View.OnClickListener() {
+
+        //
+        // Voice Call
+        //
+
+        boolean enableCalls = ActorSDK.sharedActor().isCallsEnabled() && !user.isBot();
+        View voiceCallView = res.findViewById(R.id.voiceCall);
+        ImageView voiceViewIcon = (ImageView) voiceCallView.findViewById(R.id.actionIcon);
+        TextView voiceViewTitle = (TextView) voiceCallView.findViewById(R.id.actionText);
+        if (enableCalls) {
+            Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_phone_white_24dp));
+            DrawableCompat.setTint(drawable, style.getListActionColor());
+            voiceViewIcon.setImageDrawable(drawable);
+            voiceViewTitle.setTextColor(style.getListActionColor());
+
+            voiceCallView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     execute(ActorSDK.sharedActor().getMessenger().doCall(user.getId()));
                 }
             });
+        } else {
+            Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_phone_white_24dp));
+            DrawableCompat.setTint(drawable, style.getTextHintColor());
+            voiceViewIcon.setImageDrawable(drawable);
+            voiceViewTitle.setTextColor(style.getTextHintColor());
         }
+
+
+        //
+        // Contact Information
+        //
+
+        LinearLayout contactsContainer = (LinearLayout) res.findViewById(R.id.contactsContainer);
+        boolean isFirstContact = true;
 
         //
         // Phones
@@ -252,7 +300,6 @@ public class ProfileFragment extends BaseFragment {
             isFirstContact = false;
         }
 
-
         //
         // Emails
         //
@@ -307,7 +354,6 @@ public class ProfileFragment extends BaseFragment {
             isFirstContact = false;
         }
 
-
         //
         // Username
         //
@@ -330,7 +376,6 @@ public class ProfileFragment extends BaseFragment {
                 }
             });
         }
-
 
         //
         // About
