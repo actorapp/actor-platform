@@ -42,7 +42,6 @@ import im.actor.sdk.controllers.fragment.preview.ViewAvatarActivity;
 import im.actor.sdk.controllers.fragment.BaseFragment;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.avatar.AvatarView;
-import im.actor.sdk.view.avatar.CoverAvatarView;
 import im.actor.core.entity.Peer;
 import im.actor.core.viewmodel.UserPhone;
 import im.actor.core.viewmodel.UserVM;
@@ -439,7 +438,6 @@ public class ProfileFragment extends BaseFragment {
     }
 
     private void updateBar(int offset) {
-
         ActionBar bar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         if (bar != null) {
             int fullColor = style.getToolBarColor();
@@ -455,92 +453,6 @@ public class ProfileFragment extends BaseFragment {
                 )));
             }
         }
-    }
-
-    private View buildRecord(String titleText, String valueText,
-                             LayoutInflater inflater, ViewGroup container) {
-        return buildRecord(titleText, valueText, 0, false, true, inflater, container);
-    }
-
-    private View buildRecord(String titleText, String valueText, boolean isLast,
-                             LayoutInflater inflater, ViewGroup container) {
-        return buildRecord(titleText, valueText, 0, false, isLast, inflater, container);
-    }
-
-    private View buildRecord(String titleText, String valueText, int resourceId, boolean showIcon, boolean isLast,
-                             LayoutInflater inflater, ViewGroup container) {
-        final View recordView = inflater.inflate(R.layout.contact_record, container, false);
-        TextView value = (TextView) recordView.findViewById(R.id.value);
-        TextView title = (TextView) recordView.findViewById(R.id.title);
-
-        title.setText(titleText);
-        title.setTextColor(style.getTextSecondaryColor());
-
-        value.setTextColor(style.getTextPrimaryColor());
-        value.setText(valueText);
-
-        if (!isLast) {
-            recordView.findViewById(R.id.divider).setVisibility(View.GONE);
-        }
-
-        if (resourceId != 0 && showIcon) {
-            ImageView iconView = (ImageView) recordView.findViewById(R.id.recordIcon);
-            Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(resourceId));
-            DrawableCompat.setTint(drawable, style.getSettingsIconColor());
-            iconView.setImageDrawable(drawable);
-        }
-
-        container.addView(recordView);
-
-        return recordView;
-    }
-
-    private View buildRecordBig(String valueText, int resourceId, boolean showIcon, boolean isLast,
-                                LayoutInflater inflater, ViewGroup container) {
-        final View recordView = inflater.inflate(R.layout.contact_record_big, container, false);
-        TextView value = (TextView) recordView.findViewById(R.id.value);
-
-        value.setTextColor(style.getTextPrimaryColor());
-        value.setText(valueText);
-
-        if (!isLast) {
-            recordView.findViewById(R.id.divider).setVisibility(View.GONE);
-        }
-
-        if (resourceId != 0 && showIcon) {
-            ImageView iconView = (ImageView) recordView.findViewById(R.id.recordIcon);
-            Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(resourceId));
-            DrawableCompat.setTint(drawable, style.getSettingsIconColor());
-            iconView.setImageDrawable(drawable);
-        }
-
-        container.addView(recordView);
-
-        return recordView;
-    }
-
-    private View buildRecordAction(String valueText, int resourceId, boolean showIcon, boolean isLast,
-                                   LayoutInflater inflater, ViewGroup container) {
-        final View recordView = inflater.inflate(R.layout.contact_record_big, container, false);
-        TextView value = (TextView) recordView.findViewById(R.id.value);
-
-        value.setTextColor(style.getGroupActionAddTextColor());
-        value.setText(valueText);
-
-        if (!isLast) {
-            recordView.findViewById(R.id.divider).setVisibility(View.GONE);
-        }
-
-        if (resourceId != 0 && showIcon) {
-            ImageView iconView = (ImageView) recordView.findViewById(R.id.recordIcon);
-            Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(resourceId));
-            DrawableCompat.setTint(drawable, style.getGroupActionAddIconColor());
-            iconView.setImageDrawable(drawable);
-        }
-
-        container.addView(recordView);
-
-        return recordView;
     }
 
     @Override
