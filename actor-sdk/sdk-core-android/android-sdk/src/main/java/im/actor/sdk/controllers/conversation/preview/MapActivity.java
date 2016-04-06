@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.conversation.messages;
+package im.actor.sdk.controllers.conversation.preview;
 
 import android.os.Bundle;
 
