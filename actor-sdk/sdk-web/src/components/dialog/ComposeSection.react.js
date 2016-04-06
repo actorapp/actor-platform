@@ -24,18 +24,18 @@ import PreferencesStore from '../../stores/PreferencesStore';
 import ComposeStore from '../../stores/ComposeStore';
 import AttachmentStore from '../../stores/AttachmentStore';
 import DialogStore from '../../stores/DialogStore';
+import MessageArtStore from '../../stores/MessageArtStore';
 
 import AvatarItem from '../common/AvatarItem.react';
 import MentionDropdown from '../common/MentionDropdown.react';
-import EmojiDropdown from '../common/EmojiDropdown.react';
-// import EmojiDropdown from '../emoji_stickers/Dropdown.react';
+import MessageArt from '../messageArt/MessageArt.react';
 import VoiceRecorder from '../common/VoiceRecorder.react';
 import DropZone from '../common/DropZone.react';
 import SendAttachment from '../modals/SendAttachment';
 
 class ComposeSection extends Component {
   static getStores() {
-    return [DialogStore, GroupStore, PreferencesStore, AttachmentStore, ComposeStore];
+    return [DialogStore, GroupStore, PreferencesStore, AttachmentStore, ComposeStore, MessageArtStore];
   }
 
   static calculateState(prevState) {
@@ -47,7 +47,8 @@ class ComposeSection extends Component {
       mentions: ComposeStore.getMentions(),
       isSendAttachmentOpen: AttachmentStore.isOpen(),
       isMarkdownHintShow: prevState ? prevState.isMarkdownHintShow || false : false,
-      isAutoFocusEnabled: ComposeStore.isAutoFocusEnabled()
+      isAutoFocusEnabled: ComposeStore.isAutoFocusEnabled(),
+      isMessageArtOpen: MessageArtStore.getState().isOpen
     };
   }
 
@@ -241,7 +242,7 @@ class ComposeSection extends Component {
   };
 
   render() {
-    const { text, profile, mentions, isMarkdownHintShow, isSendAttachmentOpen } = this.state;
+    const { text, profile, mentions, isMarkdownHintShow, isSendAttachmentOpen, isMessageArtOpen } = this.state;
     const { intl } = this.context;
     const markdownHintClassName = classnames('compose__markdown-hint', {
       'compose__markdown-hint--active': isMarkdownHintShow
@@ -249,11 +250,18 @@ class ComposeSection extends Component {
 
     return (
       <section className="compose">
-        <MentionDropdown mentions={mentions}
-                         onSelect={this.onMentionSelect}
-                         onClose={this.onMentionClose}/>
 
-        <EmojiDropdown onSelect={this.handleEmojiSelect} onStickerSelect={this.handleStickerSelect} />
+        <MentionDropdown
+          mentions={mentions}
+          onSelect={this.onMentionSelect}
+          onClose={this.onMentionClose}
+        />
+
+        <MessageArt
+          onSelect={this.handleEmojiSelect}
+          onStickerSelect={this.handleStickerSelect}
+          isActive={isMessageArtOpen}
+        />
 
         <VoiceRecorder onFinish={this.sendVoiceRecord}/>
 
@@ -277,7 +285,9 @@ class ComposeSection extends Component {
                   value={text}
                   ref="area"/>
 
-        <DropZone onDropComplete={this.handleDrop}>{intl.messages['compose.dropzone']}</DropZone>
+        <DropZone onDropComplete={this.handleDrop}>
+          {intl.messages['compose.dropzone']}
+        </DropZone>
 
         <footer className="compose__footer row">
           <button className="button attachment" onClick={this.handleAttachmentClick}>

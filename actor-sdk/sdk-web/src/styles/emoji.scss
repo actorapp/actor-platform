@@ -2,9 +2,6 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-$emoji-dropdown-width: 328px;
-$stem-size: $default-stem-size;
-
 .emoji-outer {
   line-height: $message-line-height;
 
@@ -50,30 +47,7 @@ $stem-size: $default-stem-size;
     border-radius: 3px;
     background-color: white;
     box-shadow: 0 1px 3px 1px rgba(0, 0, 0, .1);
-    @mixin stem() {
-      position: absolute;
-      right: $stem-size;
-      bottom: - $stem-size / 2;
 
-      width: $stem-size;
-      height: $stem-size;
-
-      content: '';
-      transform: rotate(45deg);
-
-      background-color: white;
-    }
-
-    &:before {
-      @include stem();
-    }
-    &:after {
-      z-index: -1;
-
-      box-shadow: 0 1px 3px 1px rgba(0, 0, 0, .1);
-
-      @include stem();
-    }
   }
   &--opened {
     .emoji-dropdown__wrapper {
@@ -81,68 +55,6 @@ $stem-size: $default-stem-size;
     }
   }
 
-  .emoji-opener {
-    position: absolute;
-    top: 6px;
-    right: 6px;
-
-    cursor: pointer;
-    transition: 150ms;
-    transform: scale(.9);
-
-    opacity: .8;
-    color: $greyish;
-
-    @include no-select();
-    &--active,
-    &:hover {
-      transform: scale(1);
-
-      opacity: 1;
-      color: $dark-sky-blue;
-    }
-
-    &--with-dot {
-      &:after {
-        position: absolute;
-        top: 0;
-        right: 1px;
-
-        width: 8px;
-        height: 8px;
-
-        content: '';
-
-        border-radius: 50%;
-        background-color: $coral;
-      }
-    }
-  }
-
-  &__footer {
-    display: flex;
-    flex-direction: row;
-
-    box-shadow: inset 0 1px 0 0 rgba(black, .1);
-
-    align-content: center;
-    justify-content: center;
-    &__tab {
-      font-size: 13px;
-      font-weight: 500;
-      line-height: 32px;
-
-      cursor: pointer;
-      text-align: center;
-      text-transform: uppercase;
-
-      flex: 1 1 auto;
-      &--active {
-        color: $dark-sky-blue;
-        box-shadow: inset 0 2px 0 0 $dark-sky-blue;
-      }
-    }
-  }
 }
 
 .emojis {

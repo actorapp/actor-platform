@@ -25,7 +25,7 @@
 @import 'activity';
 @import 'profile';
 @import 'typing';
-@import 'emoji';
+// @import 'emoji';
 @import 'preloader';
 @import 'modals';
 @import 'forms';
@@ -40,6 +40,7 @@
 @import 'tooltip';
 @import 'sticker';
 @import 'common/contact';
+@import 'components/message_art/index';
 
 @import 'responsive';
 

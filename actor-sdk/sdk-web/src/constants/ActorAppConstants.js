@@ -244,7 +244,10 @@ export const ActionTypes = keymirror({
   SEARCH_LINKS_ERROR: null,
   SEARCH_PHOTO: null,
   SEARCH_PHOTO_SUCCESS: null,
-  SEARCH_PHOTO_ERROR: null
+  SEARCH_PHOTO_ERROR: null,
+
+  MESSAGE_ART_SHOW: null,
+  MESSAGE_ART_CLOSE: null
 });
 
 export const EventTypes = {
