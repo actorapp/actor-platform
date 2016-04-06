@@ -240,6 +240,14 @@ public class ChatActivity extends ActorEditTextActivity {
         super.onCreate(saveInstance);
 
         messageEditText.addTextChangedListener(new TextWatcherImp());
+        messageEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    hideShare();
+                }
+            }
+        });
 
         //Voice record
         SLIDE_LIMIT = (int) (Screen.getDensity() * 180);
@@ -771,6 +779,7 @@ public class ChatActivity extends ActorEditTextActivity {
         if (getResources().getDisplayMetrics().heightPixels <=
                 getResources().getDisplayMetrics().widthPixels) {
             keyboardUtils.setImeVisibility(messageEditText, false);
+            messageEditText.clearFocus();
         }
 
         if (textEditing) {
@@ -888,6 +897,7 @@ public class ChatActivity extends ActorEditTextActivity {
             showShare();
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 keyboardUtils.setImeVisibility(messageEditText, false);
+                messageEditText.clearFocus();
             }
         }
     }
@@ -1147,6 +1157,7 @@ public class ChatActivity extends ActorEditTextActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         keyboardUtils.setImeVisibility(messageEditText, false);
+        messageEditText.clearFocus();
         int i = item.getItemId();
         if (i == android.R.id.home) {
             finish();
@@ -1424,6 +1435,8 @@ public class ChatActivity extends ActorEditTextActivity {
     private boolean animationInProgress = false;
 
     private void showShare() {
+        keyboardUtils.setImeVisibility(messageEditText, false);
+        messageEditText.clearFocus();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(ChatActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
