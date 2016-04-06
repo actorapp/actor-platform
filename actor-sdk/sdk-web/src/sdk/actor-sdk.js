@@ -13,7 +13,7 @@ import { Router, Route, IndexRoute, IndexRedirect } from 'react-router';
 import Modal from 'react-modal';
 import Pace from 'pace';
 import crosstab from 'crosstab';
-import { defaultsDeep } from 'lodash';
+import assignDeep from 'assign-deep';
 
 import DelegateContainer from '../utils/DelegateContainer';
 import SharedContainer from '../utils/SharedContainer';
@@ -85,7 +85,7 @@ class ActorSDK {
   };
 
   constructor(options = {}) {
-    defaultsDeep(this, options, ActorSDK.defaultOptions);
+    assignDeep(this, ActorSDK.defaultOptions, options);
 
     if (!this.delegate) {
       this.delegate = new SDKDelegate();
