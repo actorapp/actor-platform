@@ -86,10 +86,6 @@ public class MessagesProcessor extends AbsModule {
             plainReceiveActor().send(new CursorReceiverActor.MarkReceived(peer, intMessageSortDate));
         }
 
-        if (outMessageSortDate > 0) {
-            ownReadActor().send(new OwnReadActor.OutMessage(peer, outMessageSortDate));
-        }
-
         // OwnReadActor
         for (Message m : nMessages) {
             if (m.getSenderId() != myUid()) {
@@ -126,10 +122,6 @@ public class MessagesProcessor extends AbsModule {
 
             // Send to own read actor
             ownReadActor().send(new OwnReadActor.InMessage(peer, message));
-//            msgContent.onIncoming(peer, context());
-        } else {
-            // Send to own read actor
-            ownReadActor().send(new OwnReadActor.OutMessage(peer, message.getSortDate()));
         }
     }
 
@@ -194,9 +186,6 @@ public class MessagesProcessor extends AbsModule {
 
         // Notify Sender Actor
         sendActor().send(new SenderActor.MessageSent(peer, rid));
-
-        // Send to own read actor
-        ownReadActor().send(new OwnReadActor.OutMessage(peer, date));
     }
 
     @Verified
