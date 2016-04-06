@@ -20,6 +20,16 @@ message DialogRootEvents {
     }
 }
 
+message DialogRootQueries {
+    message GetCounter {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogRootQuery";
+    }
+
+    message GetCounterResponse {
+        required int32 counter = 1;
+    }
+}
+
 message DialogCommands {
 
     message Envelope {
@@ -173,4 +183,34 @@ message DialogCommands {
     }
 
     message UpdateCountersAck {}
+}
+
+message DialogQueries {
+    message GetApiStruct {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogQuery";
+    }
+
+    message GetCounter {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogQuery";
+    }
+
+    message GetCounterResponse {
+        required int32 counter = 1;
+    }
+}
+
+message DialogEvents {
+    message NewMessage {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogEvent";
+
+        required int64 random_id = 2;
+        required int64 date = 1 [(scalapb.field).type = "java.time.Instant"];
+        required bool is_incoming = 3;
+    }
+
+    message MessagesRead {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogEvent";
+
+        required int64 date = 1 [(scalapb.field).type = "java.time.Instant"];
+    }
 }

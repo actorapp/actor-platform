@@ -25,45 +25,50 @@ import scala.util.Failure
 trait DialogCommandHandlers extends PeersImplicits with UserACL {
   this: DialogProcessor ⇒
 
+  import DialogEvents._
+  import DialogEventsObsolete._
+
   import DialogCommands._
   import DialogEvents._
 
   protected def sendMessage(s: DialogState, sm: SendMessage): Unit = {
-    withCreated(s) { state ⇒
-      becomeStashing(replyTo ⇒ ({
-        case seq: SeqStateDate ⇒
+    becomeStashing(replyTo ⇒ ({
+      case seq: SeqStateDate ⇒
+        persist(NewMessage(sm.randomId, Instant.ofEpochMilli(seq.date), isIncoming = false)) { e ⇒
+          commit(e)
           replyTo ! seq
           if (state.isArchived) {
             self.tell(Show(peer), ActorRef.noSender)
           }
           updateMessageDate(state, seq.date)
           unstashAll()
-        case fail: Status.Failure ⇒
-          log.error(fail.cause, "Failed to send message")
-          replyTo forward fail
-          context unbecome ()
-          unstashAll()
-      }: Receive) orElse reactions(state), discardOld = false)
-
-      withValidAccessHash(sm.dest, sm.senderAuthId, sm.accessHash) {
-        withCachedFuture[AuthSidRandomId, SeqStateDate](sm.senderAuthSid → sm.randomId) {
-          val sendDate = calcSendDate(state)
-          val message = sm.message
-          PubSubExtension(system).publish(PeerMessage(sm.origin, sm.dest, sm.randomId, sendDate, message))
-
-          withNonBlockedPeer[SeqStateDate](userId, sm.dest)(
-            default = for {
-            _ ← dialogExt.ackSendMessage(peer, sm.copy(date = Some(sendDate)))
-            _ ← db.run(writeHistoryMessage(selfPeer, peer, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray))
-            _ = dialogExt.updateCounters(peer, userId)
-            SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sendDate, message, sm.isFat)
-          } yield SeqStateDate(seq, state, sendDate),
-            failed = for {
-            _ ← db.run(writeHistoryMessageSelf(userId, peer, userId, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray))
-            SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sendDate, message, sm.isFat)
-          } yield SeqStateDate(seq, state, sendDate)
-          )
+          context.become(receiveCommand)
         }
+      case fail: Status.Failure ⇒
+        log.error(fail.cause, "Failed to send message")
+        replyTo forward fail
+        context.become(receiveCommand)
+        unstashAll()
+    }: Receive) orElse reactions(state), discardOld = true)
+
+    withValidAccessHash(sm.dest, sm.senderAuthId, sm.accessHash) {
+      withCachedFuture[AuthSidRandomId, SeqStateDate](sm.senderAuthSid → sm.randomId) {
+        val sendDate = calcSendDate(state)
+        val message = sm.message
+        PubSubExtension(system).publish(PeerMessage(sm.origin, sm.dest, sm.randomId, sendDate, message))
+
+        withNonBlockedPeer[SeqStateDate](userId, sm.dest)(
+          default = for {
+          _ ← dialogExt.ackSendMessage(peer, sm.copy(date = Some(sendDate)))
+          _ ← db.run(writeHistoryMessage(selfPeer, peer, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray))
+          _ = dialogExt.updateCounters(peer, userId)
+          SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sendDate, message, sm.isFat)
+        } yield SeqStateDate(seq, state, sendDate),
+          failed = for {
+          _ ← db.run(writeHistoryMessageSelf(userId, peer, userId, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray))
+          SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sendDate, message, sm.isFat)
+        } yield SeqStateDate(seq, state, sendDate)
+        )
       }
     }
   }
@@ -74,9 +79,14 @@ trait DialogCommandHandlers extends PeersImplicits with UserACL {
       .pipeTo(sender())
   }
 
-  protected def ackSendMessage(s: DialogState, sm: SendMessage): Unit =
-    withCreated(s) { state ⇒
-      val messageDate = sm.date getOrElse { throw new RuntimeException("No message date found in SendMessage") }
+  protected def ackSendMessage(s: DialogState, sm: SendMessage): Unit = {
+    val messageDate = sm.date getOrElse {
+      throw new RuntimeException("No message date found in SendMessage")
+    }
+
+    persist(NewMessage(sm.randomId, Instant.ofEpochMilli(messageDate), isIncoming = true)) { e ⇒
+      commit(e)
+
       if (peer.typ == PeerType.Private) {
         SocialManager.recordRelation(sm.origin.id, userId)
         SocialManager.recordRelation(userId, sm.origin.id)
@@ -87,28 +97,30 @@ trait DialogCommandHandlers extends PeersImplicits with UserACL {
         .map(_ ⇒ SendMessageAck())
         .pipeTo(sender()) onSuccess {
           case _ ⇒
-            if (state.isArchived) { self.tell(Show(peer), ActorRef.noSender) }
+            if (state.isArchived) {
+              self.tell(Show(peer), ActorRef.noSender)
+            }
         }
     }
+  }
 
   protected def writeMessage(
     s:          DialogState,
     dateMillis: Long,
     randomId:   Long,
     message:    ApiMessage
-  ): Unit =
-    withCreated(s) { _ ⇒
-      val date = new DateTime(dateMillis)
+  ): Unit = {
+    val date = new DateTime(dateMillis)
 
-      db.run(writeHistoryMessage(
-        selfPeer,
-        peer,
-        date,
-        randomId,
-        message.header,
-        message.toByteArray
-      )) map (_ ⇒ WriteMessageAck()) pipeTo sender()
-    }
+    db.run(writeHistoryMessage(
+      selfPeer,
+      peer,
+      date,
+      randomId,
+      message.header,
+      message.toByteArray
+    )) map (_ ⇒ WriteMessageAck()) pipeTo sender()
+  }
 
   protected def writeMessageSelf(
     s:            DialogState,
@@ -116,17 +128,16 @@ trait DialogCommandHandlers extends PeersImplicits with UserACL {
     dateMillis:   Long,
     randomId:     Long,
     message:      ApiMessage
-  ): Unit =
-    withCreated(s) { _ ⇒
-      val result =
-        if (peer.`type` == PeerType.Private && peer.id != senderUserId && userId != senderUserId) {
-          Future.failed(new RuntimeException(s"writeMessageSelf with senderUserId $senderUserId in dialog of user $userId with user ${peer.id}"))
-        } else {
-          db.run(writeHistoryMessageSelf(userId, peer, senderUserId, new DateTime(dateMillis), randomId, message.header, message.toByteArray))
-        }
+  ): Unit = {
+    val result =
+      if (peer.`type` == PeerType.Private && peer.id != senderUserId && userId != senderUserId) {
+        Future.failed(new RuntimeException(s"writeMessageSelf with senderUserId $senderUserId in dialog of user $userId with user ${peer.id}"))
+      } else {
+        db.run(writeHistoryMessageSelf(userId, peer, senderUserId, new DateTime(dateMillis), randomId, message.header, message.toByteArray))
+      }
 
-      result map (_ ⇒ WriteMessageSelfAck()) pipeTo sender()
-    }
+    result map (_ ⇒ WriteMessageSelfAck()) pipeTo sender()
+  }
 
   protected def messageReceived(state: DialogState, mr: MessageReceived): Unit = {
     val mustReceive = mustMakeReceive(state, mr)
@@ -360,25 +371,25 @@ trait DialogCommandHandlers extends PeersImplicits with UserACL {
     (mr.date > state.lastReadDate) && (mr.date <= mr.now || mr.date <= state.lastMessageDate)
 
   protected def updateMessageDate(state: DialogState, date: Long): Unit =
-    context become initialized(state.updated(LastMessageDate(date)))
+    commit(LastMessageDate(date))
 
   private def updateReceiveDate(state: DialogState, date: Long): Unit =
-    context become initialized(state.updated(LastReceiveDate(date)))
+    commit(LastReceiveDate(date))
 
   private def updateReadDate(state: DialogState, date: Long): Unit =
-    context become initialized(state.updated(LastReadDate(date)))
+    commit(LastReadDate(date))
 
   private def updateArchived(state: DialogState): Unit =
-    context become initialized(state.updated(Archived))
+    commit(Archived)
 
   private def updateShown(state: DialogState): Unit =
-    context become initialized(state.updated(Shown))
+    commit(Shown)
 
   private def updateFavourited(state: DialogState): Unit =
-    context become initialized(state.updated(Favourited))
+    commit(Favourited)
 
   private def updateUnfavourited(state: DialogState): Unit =
-    context become initialized(state.updated(Unfavourited))
+    commit(Unfavourited)
 
   /**
    * check access hash and execute `f`, if access hash is valid

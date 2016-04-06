@@ -11,7 +11,7 @@ import im.actor.serialization.ActorSerializer
 import im.actor.server.bots.BotCommand
 import im.actor.server.cqrs.TaggedEvent
 import im.actor.server.db.DbExtension
-import im.actor.server.dialog.{ DialogCommand, DialogExtension, DialogRoot }
+import im.actor.server.dialog._
 import im.actor.server.office.{ PeerProcessor, StopOffice }
 import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
@@ -245,6 +245,8 @@ private[user] final class UserProcessor
     case StopOffice                         ⇒ context stop self
     case ReceiveTimeout                     ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
     case dc: DialogCommand                  ⇒ dialogRoot(state.internalExtensions) forward dc
+    case dq: DialogQuery                    ⇒ dialogRoot(state.internalExtensions) forward dq
+    case drq: DialogRootQuery               ⇒ dialogRoot(state.internalExtensions) forward drq
   }
 
   override protected def handleQuery(state: UserState): Receive = {
