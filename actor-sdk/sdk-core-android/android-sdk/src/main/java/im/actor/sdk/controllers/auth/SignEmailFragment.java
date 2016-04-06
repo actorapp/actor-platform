@@ -7,6 +7,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -67,6 +69,8 @@ public class SignEmailFragment extends BaseAuthFragment {
 //                });
 //            }
 //        }));
+        v.findViewById(R.id.divider).setBackgroundColor(style.getDividerColor());
+        setTosAndPrivacy((TextView) v.findViewById(R.id.disclaimer));
 
         return v;
     }
@@ -134,8 +138,8 @@ public class SignEmailFragment extends BaseAuthFragment {
             }
         });
 
-        Button switchToPhone = (Button) v.findViewById(R.id.button_switch_to_phone);
-        switchToPhone.setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
+        TextView switchToPhone = (TextView) v.findViewById(R.id.button_switch_to_phone);
+        switchToPhone.setTextColor(ActorSDK.sharedActor().style.getMainColor());
         onClick(switchToPhone, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -186,5 +190,13 @@ public class SignEmailFragment extends BaseAuthFragment {
     private void focusEmail() {
         focus(emailEditText);
     }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        menu.clear();
+        getActivity().getMenuInflater().inflate(R.menu.sign_up, menu);
+    }
+
 
 }

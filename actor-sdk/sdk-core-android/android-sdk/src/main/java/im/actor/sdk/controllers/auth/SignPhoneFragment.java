@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -81,6 +82,8 @@ public class SignPhoneFragment extends BaseAuthFragment {
             countryCodeEditText.setText("");
             focusCode();
         }
+        v.findViewById(R.id.divider).setBackgroundColor(style.getDividerColor());
+        setTosAndPrivacy((TextView) v.findViewById(R.id.disclaimer));
 
         return v;
     }
@@ -235,8 +238,8 @@ public class SignPhoneFragment extends BaseAuthFragment {
             }
         });
 
-        Button switchToEmail = (Button) v.findViewById(R.id.button_switch_to_email);
-        switchToEmail.setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
+        TextView switchToEmail = (TextView) v.findViewById(R.id.button_switch_to_email);
+        switchToEmail.setTextColor(ActorSDK.sharedActor().style.getMainColor());
         onClick(switchToEmail, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -328,6 +331,13 @@ public class SignPhoneFragment extends BaseAuthFragment {
                     data.getStringExtra("country_shortname"),
                     data.getIntExtra("country_id", 0)));
         }
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        menu.clear();
+        getActivity().getMenuInflater().inflate(R.menu.sign_up, menu);
     }
 
 }
