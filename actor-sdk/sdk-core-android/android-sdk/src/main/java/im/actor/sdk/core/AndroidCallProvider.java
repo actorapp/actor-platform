@@ -4,13 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 
 import im.actor.core.providers.CallsProvider;
-import im.actor.core.viewmodel.CallState;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.Props;
 import im.actor.sdk.ActorSDK;
-import im.actor.sdk.controllers.calls.AudioActorEx;
+import im.actor.sdk.controllers.calls.view.AudioActorEx;
 import im.actor.sdk.controllers.calls.CallActivity;
 import im.actor.sdk.core.audio.AndroidPlayerActor;
 import im.actor.sdk.core.audio.AudioPlayerActor;
