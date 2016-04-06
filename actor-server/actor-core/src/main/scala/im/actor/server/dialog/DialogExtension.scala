@@ -20,7 +20,7 @@ import im.actor.server.persist.messaging.ReactionEventRepo
 import im.actor.server.persist.HistoryMessageRepo
 import im.actor.server.pubsub.{ PeerMessage, PubSubExtension }
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
-import im.actor.server.user.UserExtension
+import im.actor.server.user.{ DialogRootEnvelope, UserExtension }
 import im.actor.types._
 import org.joda.time.DateTime
 import slick.dbio.DBIO
@@ -246,7 +246,10 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
     }
   }
 
-  def getUnreadTotal(userId: Int): DBIO[Int] = HistoryMessageRepo.getUnreadTotal(userId)
+  def getUnreadTotal(userId: Int): DBIO[Int] =
+    DBIO.from(
+      (processorRegion(Peer.privat(userId)) ? DialogRootEnvelope(userId).withGetCounter(DialogRootQueries.GetCounter())).mapTo[DialogRootQueries.GetCounterResponse] map (_.counter)
+    )
 
   def getUnreadCount(clientUserId: Int, historyOwner: Int, peer: Peer, ownerLastReadAt: DateTime): DBIO[Int] = {
     if (isSharedUser(historyOwner)) {
