@@ -74,6 +74,10 @@ public abstract class BaseAuthFragment extends BaseFragment {
         ((AuthActivity) getActivity()).signUp(promise, name, sex);
     }
 
+    protected void startAuth(String name) {
+        ((AuthActivity) getActivity()).startAuth(name);
+    }
+
     protected void switchToEmail() {
         ((AuthActivity) getActivity()).switchToEmailAuth();
     }
@@ -167,6 +171,7 @@ public abstract class BaseAuthFragment extends BaseFragment {
             tv.setText(getString(R.string.auth_privacy));
             findAndHilightPrivacy(builder, text, privacyUrlAvailable);
         }
+        builder.append(" ".concat(getString(R.string.auth_find_by_diclamer)));
         tv.setText(builder);
         tv.setMovementMethod(LinkMovementMethod.getInstance());
     }
