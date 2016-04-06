@@ -1,16 +1,14 @@
 package im.actor.sdk.controllers.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 
+import im.actor.core.entity.Contact;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.controllers.activity.base.ControllerActivity;
 import im.actor.sdk.controllers.activity.controllers.MainBaseController;
 import im.actor.sdk.controllers.activity.controllers.MainPhoneController;
 import im.actor.core.entity.Dialog;
-
-import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
 public class ActorMainActivity extends ControllerActivity<MainBaseController> {
 
@@ -40,8 +38,11 @@ public class ActorMainActivity extends ControllerActivity<MainBaseController> {
     }
 
     public void onDialogClicked(Dialog item) {
-        getController().onItemClicked(item);
+        getController().onDialogClicked(item);
     }
 
 
+    public void onContactClicked(Contact contact) {
+        getController().onContactClicked(contact);
+    }
 }

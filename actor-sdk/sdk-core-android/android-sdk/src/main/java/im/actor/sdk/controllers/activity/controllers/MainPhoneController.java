@@ -28,6 +28,7 @@ import com.getbase.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
+import im.actor.core.entity.Contact;
 import im.actor.core.entity.Dialog;
 import im.actor.core.entity.SearchEntity;
 import im.actor.sdk.ActorSDK;
@@ -105,8 +106,8 @@ public class MainPhoneController extends MainBaseController {
     }
 
     @Override
-    public void onItemClicked(final Dialog item) {
-        if((sendUriMultiple!= null && !sendUriMultiple.isEmpty()) || (sendUriString!= null && !sendUriString.isEmpty())){
+    public void onDialogClicked(final Dialog item) {
+        if ((sendUriMultiple != null && !sendUriMultiple.isEmpty()) || (forwardDocDescriptor != null && !forwardDocDescriptor.isEmpty()) || (sendUriString != null && !sendUriString.isEmpty())) {
             new AlertDialog.Builder(getActivity())
                     .setMessage(getActivity().getString(R.string.confirm_share) + " " + item.getDialogTitle() + "?")
                     .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
@@ -127,7 +128,30 @@ public class MainPhoneController extends MainBaseController {
         }
     }
 
-    public void openDialog(Dialog item) {
+    @Override
+    public void onContactClicked(final Contact contact) {
+        if ((sendUriMultiple != null && !sendUriMultiple.isEmpty()) || (forwardDocDescriptor != null && !forwardDocDescriptor.isEmpty()) || (sendUriString != null && !sendUriString.isEmpty())) {
+            new AlertDialog.Builder(getActivity())
+                    .setMessage(getActivity().getString(R.string.confirm_share) + " " + contact.getName() + "?")
+                    .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            openContactDialog(contact);
+                        }
+                    })
+                    .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .show();
+        } else {
+            openContactDialog(contact);
+        }
+    }
+
+    private void openDialog(Dialog item) {
         startActivity(Intents.openDialog(item.getPeer(), false, getActivity()).putExtra("send_uri", sendUriString)
                 .putExtra("send_uri_multiple", sendUriMultiple)
                 .putExtra("send_text", sendText)
@@ -136,6 +160,23 @@ public class MainPhoneController extends MainBaseController {
                 .putExtra("forward_doc_descriptor", forwardDocDescriptor)
                 .putExtra("forward_doc_is_doc", forwardDocIsDoc)
                 .putExtra("share_user", shareUser));
+        clearShare();
+    }
+
+    private void openContactDialog(Contact contact) {
+        getActivity().startActivity(Intents.openPrivateDialog(contact.getUid(), true, getActivity()).putExtra("send_uri", sendUriString)
+                .putExtra("send_uri_multiple", sendUriMultiple)
+                .putExtra("send_text", sendText)
+                .putExtra("forward_text", forwardText)
+                .putExtra("forward_text_raw", forwardTextRaw)
+                .putExtra("forward_doc_descriptor", forwardDocDescriptor)
+                .putExtra("forward_doc_is_doc", forwardDocIsDoc)
+                .putExtra("share_user", shareUser));
+
+        clearShare();
+    }
+
+    private void clearShare() {
         sendUriMultiple.clear();
         sendUriString = "";
         forwardDocDescriptor = "";
