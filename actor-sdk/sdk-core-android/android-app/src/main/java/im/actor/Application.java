@@ -33,6 +33,9 @@ public class Application extends ActorSDKApplication {
 
         ActorSDK.sharedActor().setCallsEnabled(true);
 
+        ActorSDK.sharedActor().setTosUrl("http://actor.im");
+        ActorSDK.sharedActor().setPrivacyText("bla bla bla");
+
 //        ActorSDK.sharedActor().setTwitter("");
 //        ActorSDK.sharedActor().setHomePage("http://www.foo.com");
 //        ActorSDK.sharedActor().setInviteUrl("http://www.foo.com");

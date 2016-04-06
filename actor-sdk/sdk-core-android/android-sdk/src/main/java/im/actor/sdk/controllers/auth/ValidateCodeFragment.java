@@ -145,6 +145,7 @@ public class ValidateCodeFragment extends BaseAuthFragment {
                         .setCanceledOnTouchOutside(true);
             }
         });
+        v.findViewById(R.id.divider).setBackgroundColor(style.getDividerColor());
 
         return v;
     }

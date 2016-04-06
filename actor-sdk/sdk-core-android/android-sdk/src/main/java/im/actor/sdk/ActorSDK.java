@@ -139,6 +139,20 @@ public class ActorSDK {
     private String twitter = "actorapp";
 
     /**
+     * Terms of service
+     */
+    private String tosUrl = null;
+
+    private String tosText = null;
+
+    /**
+     * Privacy policy
+     */
+    private String privacyUrl = null;
+
+    private String privacyText = null;
+
+    /**
      * Fast share menu is experimental feature - disabled be default
      */
     private boolean fastShareEnabled = false;
@@ -646,6 +660,78 @@ public class ActorSDK {
      */
     public void setAuthType(int authType) {
         this.authType = authType;
+    }
+
+    /**
+     * Getting terms of service url
+     *
+     * @return terms of service url
+     */
+    public String getTosUrl() {
+        return tosUrl;
+    }
+
+    /**
+     * Setting terms of service url
+     *
+     * @param tosUrl terms of service url
+     */
+    public void setTosUrl(String tosUrl) {
+        this.tosUrl = tosUrl;
+    }
+
+    /**
+     * Getting terms of service text
+     *
+     * @return terms of service text
+     */
+    public String getTosText() {
+        return tosText;
+    }
+
+    /**
+     * Setting terms of service text
+     *
+     * @param tosText terms of service text
+     */
+    public void setTosText(String tosText) {
+        this.tosText = tosText;
+    }
+
+    /**
+     * Getting privacy policy url
+     *
+     * @return privacy policy url
+     */
+    public String getPrivacyUrl() {
+        return privacyUrl;
+    }
+
+    /**
+     * Setting privacy policy url
+     *
+     * @param privacyUrl terms of service url
+     */
+    public void setPrivacyUrl(String privacyUrl) {
+        this.privacyUrl = privacyUrl;
+    }
+
+    /**
+     * Getting privacy policy text
+     *
+     * @return privacy policy text
+     */
+    public String getPrivacyText() {
+        return privacyText;
+    }
+
+    /**
+     * Setting privacy policy text
+     *
+     * @param privacyText privacy policy text
+     */
+    public void setPrivacyText(String privacyText) {
+        this.privacyText = privacyText;
     }
 
     /**
