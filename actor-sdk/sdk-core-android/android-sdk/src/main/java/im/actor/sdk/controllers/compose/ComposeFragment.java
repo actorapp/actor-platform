@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.fragment.compose;
+package im.actor.sdk.controllers.compose;
 
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.contacts.BaseContactFragment;
