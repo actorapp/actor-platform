@@ -46,30 +46,58 @@ import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
 
     private MessagesFragment messagesFragment;
+    private ActorBinder BINDER = new ActorBinder();
+
     private Context context;
     private long firstUnread = -1;
     private long readDate;
     private long receiveDate;
-    protected HashMap<Long, Message> selected = new HashMap<>();
-    private ActorBinder BINDER = new ActorBinder();
 
-    public MessagesAdapter(BindedDisplayList<Message> displayList,
+    private HashMap<Long, Message> selected = new HashMap<>();
+
+    public MessagesAdapter(final BindedDisplayList<Message> displayList,
                            MessagesFragment messagesFragment, Context context) {
         super(displayList);
 
         this.messagesFragment = messagesFragment;
         this.context = context;
         ConversationVM conversationVM = messenger().getConversationVM(messagesFragment.getPeer());
+
+        readDate = conversationVM.getReadDate().get();
+        receiveDate = conversationVM.getReceiveDate().get();
+
         BINDER.bind(conversationVM.getReadDate(), new ValueChangedListener<Long>() {
             @Override
             public void onChanged(Long val, Value<Long> valueModel) {
-                readDate = val;
+                if (val != readDate) {
+                    for (int i = 0; i < displayList.getSize(); i++) {
+                        long date = displayList.getItem(i).getSortDate();
+                        if (date > readDate && date <= val) {
+                            notifyItemChanged(i);
+                        }
+                        if (date <= readDate) {
+                            break;
+                        }
+                    }
+                    readDate = val;
+                }
             }
         });
         BINDER.bind(conversationVM.getReceiveDate(), new ValueChangedListener<Long>() {
             @Override
             public void onChanged(Long val, Value<Long> valueModel) {
-                receiveDate = val;
+                if (val != receiveDate) {
+                    for (int i = 0; i < displayList.getSize(); i++) {
+                        long date = displayList.getItem(i).getSortDate();
+                        if (date > receiveDate && date <= val) {
+                            notifyItemChanged(i);
+                        }
+                        if (date <= receiveDate) {
+                            break;
+                        }
+                    }
+                    receiveDate = val;
+                }
             }
         });
     }
