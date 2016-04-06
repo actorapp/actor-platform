@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.conversation.messages;
+package im.actor.sdk.controllers.conversation;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -25,6 +25,17 @@ import im.actor.runtime.json.JSONObject;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.runtime.android.view.BindedListAdapter;
+import im.actor.sdk.controllers.conversation.messages.AudioHolder;
+import im.actor.sdk.controllers.conversation.messages.ContactHolder;
+import im.actor.sdk.controllers.conversation.messages.DocHolder;
+import im.actor.sdk.controllers.conversation.messages.LocationHolder;
+import im.actor.sdk.controllers.conversation.messages.MessageHolder;
+import im.actor.sdk.controllers.conversation.messages.PhotoHolder;
+import im.actor.sdk.controllers.conversation.messages.preprocessor.PreprocessedList;
+import im.actor.sdk.controllers.conversation.messages.ServiceHolder;
+import im.actor.sdk.controllers.conversation.messages.StickerHolder;
+import im.actor.sdk.controllers.conversation.messages.TextHolder;
+import im.actor.sdk.controllers.conversation.messages.UnsupportedHolder;
 import im.actor.sdk.controllers.fragment.ActorBinder;
 
 public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
@@ -103,7 +114,7 @@ public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
             return 6;
         } else if (content instanceof StickerContent) {
             return 7;
-        }else if (content instanceof JsonContent) {
+        } else if (content instanceof JsonContent) {
             try {
                 String dataType = new JSONObject(((JsonContent) content).getRawJson()).getString("dataType");
                 return dataType.hashCode();
@@ -203,7 +214,7 @@ public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
             prev = getItem(index + 1);
         }
         PreprocessedList list = ((PreprocessedList) getPreprocessedList());
-        dialogHolder.bindData(item, prev, next, list.getPreprocessedData()[index]);
+        dialogHolder.bindData(item, prev, next, 0, 0, list.getPreprocessedData()[index]);
     }
 
     @Override

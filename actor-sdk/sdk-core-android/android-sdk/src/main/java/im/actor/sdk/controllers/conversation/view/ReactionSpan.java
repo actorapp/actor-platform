@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.conversation.messages;
+package im.actor.sdk.controllers.conversation.view;
 
 import android.graphics.Color;
 import android.graphics.Typeface;

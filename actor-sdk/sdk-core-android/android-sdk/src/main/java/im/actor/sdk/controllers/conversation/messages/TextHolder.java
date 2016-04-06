@@ -11,6 +11,9 @@ import android.widget.TextView;
 import im.actor.core.entity.Message;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
+import im.actor.sdk.controllers.conversation.MessagesAdapter;
+import im.actor.sdk.controllers.conversation.messages.preprocessor.PreprocessedData;
+import im.actor.sdk.controllers.conversation.messages.preprocessor.PreprocessedTextData;
 import im.actor.sdk.util.Fonts;
 import im.actor.sdk.view.TintImageView;
 
@@ -55,7 +58,7 @@ public class TextHolder extends MessageHolder {
     }
 
     @Override
-    protected void bindData(final Message message, boolean isUpdated, PreprocessedData preprocessedData) {
+    protected void bindData(final Message message, long readDate, long receiveDate, boolean isUpdated, PreprocessedData preprocessedData) {
         PreprocessedTextData textData = (PreprocessedTextData) preprocessedData;
         Spannable reactions = preprocessedData.getReactionsSpannable();
         CharSequence text;
@@ -64,10 +67,10 @@ public class TextHolder extends MessageHolder {
         } else {
             text = textData.getText();
         }
-        bindRawText(text, reactions, message, false);
+        bindRawText(text, readDate, receiveDate, reactions, message, false);
     }
 
-    public void bindRawText(CharSequence rawText, Spannable reactions, Message message, boolean isItalic) {
+    public void bindRawText(CharSequence rawText, long readDate, long receiveDate, Spannable reactions, Message message, boolean isItalic) {
         if (message.getSenderId() == myUid()) {
             messageBubble.setBackgroundResource(R.drawable.bubble_text_out);
         } else {

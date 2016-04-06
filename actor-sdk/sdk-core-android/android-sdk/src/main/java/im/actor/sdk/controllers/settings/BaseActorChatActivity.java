@@ -3,7 +3,7 @@ package im.actor.sdk.controllers.settings;
 import android.content.Intent;
 
 import im.actor.core.entity.Peer;
-import im.actor.sdk.controllers.conversation.messages.MessagesFragment;
+import im.actor.sdk.controllers.conversation.MessagesFragment;
 import im.actor.sdk.intents.ActorIntentFragmentActivity;
 
 public abstract class BaseActorChatActivity extends ActorIntentFragmentActivity {

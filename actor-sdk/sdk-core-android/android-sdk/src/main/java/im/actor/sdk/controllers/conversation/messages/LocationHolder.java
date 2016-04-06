@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
@@ -35,8 +34,9 @@ import im.actor.core.viewmodel.FileVM;
 import im.actor.core.viewmodel.UploadFileVM;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
-import im.actor.sdk.controllers.Intents;
-import im.actor.sdk.controllers.pickers.map.MapPickerActivity;
+import im.actor.sdk.controllers.conversation.MessagesAdapter;
+import im.actor.sdk.controllers.conversation.messages.preprocessor.PreprocessedData;
+import im.actor.sdk.controllers.conversation.preview.MapActivity;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.TintImageView;
 
@@ -98,7 +98,7 @@ public class LocationHolder extends MessageHolder {
     }
 
     @Override
-    protected void bindData(Message message, boolean isNewMessage, PreprocessedData preprocessedData) {
+    protected void bindData(Message message, long readDate, long receiveDate, boolean isNewMessage, PreprocessedData preprocessedData) {
         // Update model
         LocationContent locationContent = (LocationContent) message.getContent();
 
