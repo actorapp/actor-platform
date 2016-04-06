@@ -4,6 +4,8 @@
 
 package im.actor.core.modules.messaging.actors;
 
+import java.util.HashMap;
+
 import im.actor.core.entity.ContentDescription;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
@@ -14,6 +16,7 @@ import im.actor.core.modules.ModuleActor;
 public class OwnReadActor extends ModuleActor {
 
     private boolean isInDifference = false;
+    private HashMap<Peer, Long> cachedReadStates = new HashMap<>();
 
     public OwnReadActor(ModuleContext context) {
         super(context);
@@ -39,7 +42,7 @@ public class OwnReadActor extends ModuleActor {
 
     public void onInMessage(Peer peer, Message message) {
         // Detecting if message already read
-        long readState = context().getMessagesModule().loadReadState(peer);
+        long readState = loadReadState(peer);
         if (message.getSortDate() <= readState) {
             // Already read
             return;
@@ -58,7 +61,7 @@ public class OwnReadActor extends ModuleActor {
 
     public void onMessageRead(Peer peer, long sortingDate) {
         // Detecting if message already read
-        long readState = context().getMessagesModule().loadReadState(peer);
+        long readState = loadReadState(peer);
         if (sortingDate <= readState) {
             // Already read
             return;
@@ -72,14 +75,14 @@ public class OwnReadActor extends ModuleActor {
         context().getMessagesModule().getConversationActor(peer).send(new ConversationActor.MessageReadByMe(sortingDate));
 
         // Saving last read message
-        context().getMessagesModule().saveReadState(peer, sortingDate);
+        saveReadState(peer, sortingDate);
 
         // Clearing notifications
         context().getNotificationsModule().onOwnRead(peer, sortingDate);
     }
 
     public void onMessageReadByMe(Peer peer, long sortingDate) {
-        long readState = context().getMessagesModule().loadReadState(peer);
+        long readState = loadReadState(peer);
         if (sortingDate <= readState) {
             // Already read
             return;
@@ -89,10 +92,25 @@ public class OwnReadActor extends ModuleActor {
         context().getMessagesModule().getConversationActor(peer).send(new ConversationActor.MessageReadByMe(sortingDate));
 
         // Saving read state
-        context().getMessagesModule().saveReadState(peer, sortingDate);
+        saveReadState(peer, sortingDate);
 
         // Clearing notifications
         context().getNotificationsModule().onOwnRead(peer, sortingDate);
+    }
+
+    private long loadReadState(Peer peer) {
+        Long res = cachedReadStates.get(peer);
+        if (res != null) {
+            return res;
+        }
+        res = context().getMessagesModule().loadReadState(peer);
+        cachedReadStates.put(peer, res);
+        return res;
+    }
+
+    private void saveReadState(Peer peer, long date) {
+        cachedReadStates.put(peer, date);
+        context().getMessagesModule().saveReadState(peer, date);
     }
 
     // Messages
