@@ -41,6 +41,7 @@ import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.fragment.preview.ViewAvatarActivity;
 import im.actor.sdk.controllers.fragment.BaseFragment;
 import im.actor.sdk.util.Screen;
+import im.actor.sdk.view.avatar.AvatarView;
 import im.actor.sdk.view.avatar.CoverAvatarView;
 import im.actor.core.entity.Peer;
 import im.actor.core.viewmodel.UserPhone;
@@ -61,7 +62,7 @@ public class ProfileFragment extends BaseFragment {
         return res;
     }
 
-    private CoverAvatarView avatarView;
+    private AvatarView avatarView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -80,14 +81,16 @@ public class ProfileFragment extends BaseFragment {
         //
 
         res.findViewById(R.id.container).setBackgroundColor(style.getMainBackgroundColor());
+        res.findViewById(R.id.avatarContainer).setBackgroundColor(style.getToolBarColor());
 
 
         //
         // User Avatar
         //
 
-        avatarView = (CoverAvatarView) res.findViewById(R.id.avatar);
-        bind(avatarView, user.getAvatar());
+        avatarView = (AvatarView) res.findViewById(R.id.avatar);
+        avatarView.init(Screen.dp(96), 48);
+        avatarView.bind(user.getAvatar().get(), user.getName().get(), user.getId());
         avatarView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -436,7 +439,6 @@ public class ProfileFragment extends BaseFragment {
     }
 
     private void updateBar(int offset) {
-        avatarView.setOffset(offset);
 
         ActionBar bar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         if (bar != null) {
