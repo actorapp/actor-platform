@@ -31,6 +31,11 @@ class MessageArt extends Component {
   }
 
   onMouseLeave() {
+    if (this.openTimeout) {
+      clearTimeout(this.openTimeout);
+      this.openTimeout = false;
+    }
+
     this.closeTimeout = setTimeout(this.props.onClose, 300);
   }
 
@@ -41,17 +46,18 @@ class MessageArt extends Component {
     }
 
     if (!this.props.isActive) {
-      this.props.onOpen();
+      this.openTimeout = setTimeout(this.props.onOpen, 60);
     }
   }
 
   renderPopup() {
-    const { onSelect, onStickerSelect, isActive } = this.props;
+    const { isActive, onSelect, onStickerSelect, onClose } = this.props;
     if (!isActive) return null;
 
     return (
       <Popup
         onSelect={onSelect}
+        onClose={onClose}
         onStickerSelect={onStickerSelect}
         onMouseEnter={this.onMouseEnter}
         onMouseLeave={this.onMouseLeave}
