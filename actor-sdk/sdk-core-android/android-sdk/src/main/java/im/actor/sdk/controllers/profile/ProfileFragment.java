@@ -125,7 +125,7 @@ public class ProfileFragment extends BaseFragment {
             @Override
             public void onChanged(Boolean isContact, Value<Boolean> valueModel) {
                 if (isContact) {
-                    addContactTitle.setText("In Contacts");
+                    addContactTitle.setText(getString(R.string.profile_contacts_added));
                     addContactTitle.setTextColor(style.getProfileContactIconColor());
                     Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_check_circle_black_24dp));
                     DrawableCompat.setTint(drawable, style.getProfileContactIconColor());
@@ -137,7 +137,7 @@ public class ProfileFragment extends BaseFragment {
                         }
                     });
                 } else {
-                    addContactTitle.setText("Add to Contacts");
+                    addContactTitle.setText(getString(R.string.profile_contacts_available));
                     addContactTitle.setTextColor(style.getProfileContactIconColor());
                     Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_person_add_white_24dp));
                     DrawableCompat.setTint(drawable, style.getProfileContactIconColor());
@@ -177,7 +177,7 @@ public class ProfileFragment extends BaseFragment {
         //
         // Voice Call
         //
-        
+
         View voiceCallView = res.findViewById(R.id.voiceCall);
         if (ActorSDK.sharedActor().isCallsEnabled()) {
             ImageView voiceViewIcon = (ImageView) voiceCallView.findViewById(R.id.actionIcon);
@@ -373,7 +373,7 @@ public class ProfileFragment extends BaseFragment {
                     ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
                     ClipData clip = ClipData.newPlainText("Nickname", userName);
                     clipboard.setPrimaryClip(clip);
-                    Snackbar.make(res, "Copied", Snackbar.LENGTH_SHORT)
+                    Snackbar.make(res, R.string.toast_nickname_copied, Snackbar.LENGTH_SHORT)
                             .show();
                     return true;
                 }
