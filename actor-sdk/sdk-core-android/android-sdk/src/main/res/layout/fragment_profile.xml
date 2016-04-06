@@ -15,46 +15,45 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <FrameLayout
-            android:layout_width="fill_parent"
+        <LinearLayout
+            android:id="@+id/avatarContainer"
+            android:layout_width="match_parent"
             android:layout_height="248dp"
-            android:orientation="horizontal">
+            android:layout_gravity="bottom"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            android:paddingTop="44dp">
 
-            <im.actor.sdk.view.avatar.CoverAvatarView
+            <im.actor.sdk.view.avatar.AvatarView
                 android:id="@+id/avatar"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/name"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-2dp"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:lines="1"
+                android:singleLine="true"
+                android:textSize="28sp" />
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/lastSeen"
                 android:layout_width="match_parent"
-                android:layout_height="72dp"
-                android:layout_gravity="bottom"
-                android:gravity="center_vertical|left"
-                android:orientation="vertical"
-                android:paddingLeft="72dp"
-                android:paddingRight="24dp">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-2dp"
+                android:gravity="center"
+                android:textSize="14sp" />
 
-                <TextView
-                    android:id="@+id/name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="-2dp"
-                    android:ellipsize="end"
-                    android:includeFontPadding="false"
-                    android:lines="1"
-                    android:singleLine="true"
-                    android:textSize="28sp" />
-
-                <TextView
-                    android:id="@+id/lastSeen"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="-2dp"
-                    android:textSize="14sp" />
-
-            </LinearLayout>
-
-        </FrameLayout>
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -146,7 +145,7 @@
         <im.actor.sdk.view.DividerView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="32dp" />
 
         <LinearLayout
             android:id="@+id/contactsContainer"

@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.calls;
+package im.actor.sdk.controllers.calls.view;
 
 import java.util.Date;
 import java.util.HashMap;
