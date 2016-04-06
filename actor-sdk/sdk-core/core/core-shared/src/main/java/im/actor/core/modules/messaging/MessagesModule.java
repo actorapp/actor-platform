@@ -485,15 +485,7 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
                             @NotNull Sticker sticker) {
         sendMessageActor.send(new SenderActor.SendSticker(peer, sticker));
     }
-
-    public void saveReadState(Peer peer, long lastReadDate) {
-        preferences().putLong("read_state_" + peer.getUnuqueId(), lastReadDate);
-    }
-
-    public long loadReadState(Peer peer) {
-        return preferences().getLong("read_state_" + peer.getUnuqueId(), 0);
-    }
-
+    
     public void saveDraft(Peer peer, String draft) {
         context().getSettingsModule().setStringValue("drafts_" + peer.getUnuqueId(), draft);
     }

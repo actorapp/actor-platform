@@ -5,6 +5,7 @@ import im.actor.core.entity.Peer;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.viewmodel.generics.BooleanValueModel;
 import im.actor.runtime.mvvm.BaseValueModel;
+import im.actor.runtime.mvvm.ValueModel;
 import im.actor.runtime.mvvm.ValueModelCreator;
 
 public class ConversationVM extends BaseValueModel<ConversationState> {
@@ -17,19 +18,26 @@ public class ConversationVM extends BaseValueModel<ConversationState> {
     };
 
     private BooleanValueModel isLoaded;
+    private ValueModel<Long> ownReadDate;
 
     public ConversationVM(ConversationState rawObj) {
         super(rawObj);
 
-        isLoaded = new BooleanValueModel("chat.state." + rawObj.getPeer(), rawObj.isLoaded());
+        isLoaded = new BooleanValueModel("chat.is_loaded." + rawObj.getPeer(), rawObj.isLoaded());
+        ownReadDate = new ValueModel<>("chat.read_date" + rawObj.getPeer(), rawObj.getInReadDate());
     }
 
     public BooleanValueModel getIsLoaded() {
         return isLoaded;
     }
 
+    public ValueModel<Long> getOwnReadDate() {
+        return ownReadDate;
+    }
+
     @Override
     protected void updateValues(ConversationState rawObj) {
         isLoaded.change(rawObj.isLoaded());
+        ownReadDate.change(rawObj.getInReadDate());
     }
 }

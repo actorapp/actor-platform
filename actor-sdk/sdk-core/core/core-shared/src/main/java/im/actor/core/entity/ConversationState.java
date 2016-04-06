@@ -26,7 +26,7 @@ public class ConversationState extends BserObject implements KeyValueItem {
     public static ValueDefaultCreator<ConversationState> DEFAULT_CREATOR = new ValueDefaultCreator<ConversationState>() {
         @Override
         public ConversationState createDefaultInstance(long id) {
-            return new ConversationState(Peer.fromUniqueId(id), false);
+            return new ConversationState(Peer.fromUniqueId(id), false, 0, 0, 0, 0);
         }
     };
 
@@ -34,10 +34,22 @@ public class ConversationState extends BserObject implements KeyValueItem {
 
     private Peer peer;
     private boolean isLoaded;
+    private long inMaxMessageDate;
+    private long inReadDate;
+    private long outReadDate;
+    private long outReceiveState;
 
-    public ConversationState(Peer peer, boolean isLoaded) {
+    public ConversationState(Peer peer, boolean isLoaded,
+                             long inMaxMessageDate,
+                             long inReadDate,
+                             long outReadDate,
+                             long outReceiveState) {
         this.peer = peer;
         this.isLoaded = isLoaded;
+        this.inMaxMessageDate = inMaxMessageDate;
+        this.inReadDate = inReadDate;
+        this.outReadDate = outReadDate;
+        this.outReceiveState = outReceiveState;
     }
 
     private ConversationState() {
@@ -52,20 +64,58 @@ public class ConversationState extends BserObject implements KeyValueItem {
         return isLoaded;
     }
 
+    public long getInMaxMessageDate() {
+        return inMaxMessageDate;
+    }
+
+    public long getInReadDate() {
+        return inReadDate;
+    }
+
+    public long getOutReadDate() {
+        return outReadDate;
+    }
+
+    public long getOutReceiveState() {
+        return outReceiveState;
+    }
+
     public ConversationState changeIsLoaded(boolean isLoaded) {
-        return new ConversationState(peer, isLoaded);
+        return new ConversationState(peer, isLoaded, inMaxMessageDate, inReadDate, outReadDate, outReceiveState);
+    }
+
+    public ConversationState changeInReadDate(long inReadDate) {
+        return new ConversationState(peer, isLoaded, inMaxMessageDate, inReadDate, outReadDate, outReceiveState);
+    }
+
+    public ConversationState changeInMaxDate(long inMaxMessageDate) {
+        return new ConversationState(peer, isLoaded, inMaxMessageDate, inReadDate, outReadDate, outReceiveState);
+    }
+
+    public ConversationState changeOutReceiveDate(long outReceiveState) {
+        return new ConversationState(peer, isLoaded, inMaxMessageDate, inReadDate, outReadDate, outReceiveState);
+    }
+
+    public ConversationState changeOutReadDate(long outReadDate) {
+        return new ConversationState(peer, isLoaded, inMaxMessageDate, inReadDate, outReadDate, outReceiveState);
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         peer = Peer.fromBytes(values.getBytes(1));
         isLoaded = values.getBool(2, false);
+        inReadDate = values.getLong(3, 0);
+        outReceiveState = values.getLong(4, 0);
+        outReadDate = values.getLong(5, 0);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeBytes(1, peer.toByteArray());
         writer.writeBool(2, isLoaded);
+        writer.writeLong(3, inReadDate);
+        writer.writeLong(4, outReceiveState);
+        writer.writeLong(5, outReadDate);
     }
 
     @Override
