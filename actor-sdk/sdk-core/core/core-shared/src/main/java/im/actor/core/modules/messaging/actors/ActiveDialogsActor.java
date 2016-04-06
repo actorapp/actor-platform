@@ -29,7 +29,7 @@ import im.actor.runtime.mvvm.MVVMCollection;
 
 import static im.actor.core.modules.messaging.actors.entity.EntityConverter.convert;
 
-public class GroupedDialogsActor extends ModuleActor {
+public class ActiveDialogsActor extends ModuleActor {
 
     private static final String PREFERENCE_GROUPED = "dialogs.grouped";
     private static final String PREFERENCE_GROUPED_LOADED = "dialogs.grouped.loaded";
@@ -38,7 +38,7 @@ public class GroupedDialogsActor extends ModuleActor {
     private GroupedStorage storage;
     private MVVMCollection<DialogSpec, DialogSpecVM> specs;
 
-    public GroupedDialogsActor(ModuleContext context) {
+    public ActiveDialogsActor(ModuleContext context) {
         super(context);
     }
 
