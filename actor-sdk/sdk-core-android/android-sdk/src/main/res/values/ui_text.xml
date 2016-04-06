@@ -62,7 +62,7 @@
     <string name="tour_secure_text">Rest assured no one will read your messages. Share documents, files and photos without fear that they could fall into the wrong hands.</string>
 
     <!-- Phone Sign Fragment -->
-    <string name="auth_phone_title">Verify phone</string>
+    <string name="auth_phone_title">Sign up</string>
     <string name="auth_phone_hint">Please confirm your country code and enter your phone number.</string>
     <string name="auth_phone_number_hint">Phone number</string>
     <string name="auth_phone_get_code">CONFIRM NUMBER</string>
@@ -75,8 +75,8 @@
     <string name="auth_email_why_description">We use work email for authentication so we can add your colleagues to your contacts list and add you instantly to work groups</string>
     <string name="auth_email_why">WHY WE NEED YOUR WORK EMAIL?</string>
 
-    <string name="auth_switch_to_email">use email for authorization</string>
-    <string name="auth_switch_to_phone">use phone for authorization</string>
+    <string name="auth_switch_to_email">Use email for sign up</string>
+    <string name="auth_switch_to_phone">Use phone for sign up</string>
 
     <!-- Choose auth type-->
     <string name="choose_auth_type_title">Choose auth type</string>
@@ -88,10 +88,18 @@
 
 
     <!-- Email Sign Fragment -->
-    <string name="auth_email_title">Verify email</string>
+    <string name="auth_email_title">Sign up</string>
     <string name="auth_email_hint">Please enter your email.</string>
     <string name="auth_email_edit_text_hint">Email</string>
     <string name="auth_email_get_code">CONFIRM EMAIL</string>
+
+
+    <string name="auth_tos_privacy">By signing up, you agree to the Terms of Service and Privacy Policy.</string>
+    <string name="auth_tos">By signing up, you agree to the Terms of Service.</string>
+    <string name="auth_privacy">By signing up, you agree to the Privacy Policy.</string>
+
+    <string name="auth_tos_index">Terms of Service</string>
+    <string name="auth_privacy_index">Privacy Policy</string>
 
     <!-- Sign in Fragment-->
     <string name="sign_in_title">Sign in</string>

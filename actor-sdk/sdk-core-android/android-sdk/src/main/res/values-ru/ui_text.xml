@@ -60,7 +60,7 @@
     <string name="tour_secure_text">Не переживайте, никто не сможет прочитать ваши сообщения. Делитесь документами и фотографиями без страха того, что они попадут в не те руки.</string>
 
     <!-- Phone Sign Fragment -->
-    <string name="auth_phone_title">Подтверждение телефона</string>
+    <string name="auth_phone_title">Регистрация</string>
     <string name="auth_phone_hint">Пожалуйста, подтвердите свою страну и введите свой номер телефона.</string>
     <string name="auth_phone_number_hint">Номер телефона</string>
     <string name="auth_phone_get_code">ПОДТВЕРДИТЬ НОМЕР</string>
@@ -70,8 +70,8 @@
     <string name="auth_phone_country_title">Выберите страну</string>
     <string name="auth_phone_error_invalid_country">Неправильный код страны</string>
 
-    <string name="auth_switch_to_email">использовать email для авторизации</string>
-    <string name="auth_switch_to_phone">использовать телефон для авторизации</string>
+    <string name="auth_switch_to_email">Использовать email для регистрации</string>
+    <string name="auth_switch_to_phone">Использовать телефон для регистрации</string>
 
     <!-- Choose auth type-->
     <string name="choose_auth_type_title">Выбор способа авторизации</string>
@@ -82,10 +82,14 @@
     <string name="choose_auth_type_using_email">используя почту</string>
 
     <!-- Email Sign Fragment -->
-    <string name="auth_email_title">Подтверждение почты</string>
+    <string name="auth_email_title">Регистрация</string>
     <string name="auth_email_hint">Пожалуйста, введите ваш адресс электронной почты</string>
     <string name="auth_email_edit_text_hint">Почта</string>
     <string name="auth_email_get_code">ПОДТВЕРДИТЬ ПОЧТУ</string>
+
+    <string name="auth_tos_privacy">Регистрируясь, вы соглашаетесь с Terms of Service и Privacy Policy.</string>
+    <string name="auth_tos">Регистрируясь, вы соглашаетесь с Terms of Service.</string>
+    <string name="auth_privacy">Регистрируясь, вы соглашаетесь Privacy Policy.</string>
 
     <!-- Sign Code Fragment -->
     <string name="auth_code_title">Введите код активации</string>
@@ -109,7 +113,7 @@
     <string name="sign_in_title">Вход</string>
     <string name="sign_in_hint">Пожалуйста, введите свой номер телефона или email</string>
     <string name="sign_in_edit_text_hint">телефона или email</string>
-    <string name="sign_in_get_code">Вход</string>
+    <string name="sign_in_get_code">Войти</string>
 
 
     <!-- Auth errors -->

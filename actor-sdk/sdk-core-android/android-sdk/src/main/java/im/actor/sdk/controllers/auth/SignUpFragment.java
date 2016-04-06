@@ -71,6 +71,7 @@ public class SignUpFragment extends BaseAuthFragment {
                 signUp(firstNameEditText.getText().toString().trim(), Sex.UNKNOWN);
             }
         });
+        v.findViewById(R.id.divider).setBackgroundColor(style.getDividerColor());
 
         return v;
     }
