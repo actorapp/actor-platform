@@ -343,8 +343,6 @@ public class UpdateProcessor extends AbsModule {
             messagesProcessor.onCountersChanged(((UpdateCountersChanged) update).getCounters());
         } else if (update instanceof UpdateChatGroupsChanged) {
             messagesProcessor.onChatGroupsChanged(((UpdateChatGroupsChanged) update).getDialogs());
-        } else if (update instanceof UpdateChatArchive) {
-            messagesProcessor.onChatArchived(((UpdateChatArchive) update).getPeer());
         } else if (update instanceof UpdateReactionsUpdate) {
             messagesProcessor.onReactionsChanged(((UpdateReactionsUpdate) update).getPeer(),
                     ((UpdateReactionsUpdate) update).getRid(), ((UpdateReactionsUpdate) update).getReactions());
