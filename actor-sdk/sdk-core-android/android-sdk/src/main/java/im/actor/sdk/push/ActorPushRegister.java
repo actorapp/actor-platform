@@ -51,7 +51,7 @@ public final class ActorPushRegister {
 
             @Override
             public void onFailure(Request request, IOException e) {
-                // TODO: Handle?
+                Log.d("ACTOR_PUSH", "ACTOR_PUSH not registered: " + e.getMessage());
             }
 
             @Override
