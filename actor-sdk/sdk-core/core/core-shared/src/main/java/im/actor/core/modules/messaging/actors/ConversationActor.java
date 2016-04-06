@@ -7,6 +7,7 @@ package im.actor.core.modules.messaging.actors;
 import java.util.ArrayList;
 import java.util.List;
 
+import im.actor.core.entity.ConversationState;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.MessageState;
 import im.actor.core.entity.Peer;
@@ -17,12 +18,15 @@ import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.events.AppVisibleChanged;
 import im.actor.core.modules.ModuleActor;
+import im.actor.core.viewmodel.ConversationVM;
 import im.actor.runtime.Storage;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.annotations.Verified;
 import im.actor.runtime.eventbus.Event;
+import im.actor.runtime.mvvm.MVVMCollection;
 import im.actor.runtime.storage.IndexEngine;
 import im.actor.runtime.storage.IndexStorage;
+import im.actor.runtime.storage.KeyValueEngine;
 import im.actor.runtime.storage.ListEngine;
 
 /**
@@ -44,6 +48,7 @@ public class ConversationActor extends ModuleActor {
     private Peer peer;
     private boolean isHiddenPeer = false;
 
+    private KeyValueEngine<ConversationState> conversationState;
     private ListEngine<Message> messages;
     private ListEngine<Message> docs;
     private IndexStorage outPendingIndex;
@@ -70,6 +75,7 @@ public class ConversationActor extends ModuleActor {
 
     @Override
     public void preStart() {
+        conversationState = context().getMessagesModule().getConversationStates().getEngine();
         messages = context().getMessagesModule().getConversationEngine(peer);
         docs = context().getMessagesModule().getConversationDocsEngine(peer);
         readerActor = context().getMessagesModule().getOwnReadActor();
@@ -125,7 +131,6 @@ public class ConversationActor extends ModuleActor {
     private boolean isConversationAutoRead() {
         return isAppVisible && isConversationVisible;
     }
-
 
     // Messages receive/update
 
@@ -266,6 +271,14 @@ public class ConversationActor extends ModuleActor {
             if (dialogsGroupedActor != null) {
                 dialogsGroupedActor.send(new ActiveDialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
             }
+        }
+    }
+
+    private void onConversationLoaded() {
+        ConversationState state = conversationState.getValue(peer.getUnuqueId());
+        if (!state.isLoaded()) {
+            conversationState.addOrUpdateItem(state
+                    .changeIsLoaded(true));
         }
     }
 
@@ -602,6 +615,8 @@ public class ConversationActor extends ModuleActor {
             onConversationVisible();
         } else if (message instanceof ConversationHidden) {
             onConversationHidden();
+        } else if (message instanceof ConversationLoaded) {
+            onConversationLoaded();
         } else {
             drop(message);
         }
@@ -771,6 +786,10 @@ public class ConversationActor extends ModuleActor {
     }
 
     public static class ConversationHidden {
+
+    }
+
+    public static class ConversationLoaded {
 
     }
 }

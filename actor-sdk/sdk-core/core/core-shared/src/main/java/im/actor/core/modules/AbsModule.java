@@ -38,6 +38,7 @@ public abstract class AbsModule {
 
     public static final String STORAGE_BOOK_IMPORT = "book_import";
 
+    public static final String STORAGE_CHAT_STATES = "chat_states";
     public static final String STORAGE_CHAT_PREFIX = "chat_";
     public static final String STORAGE_CHAT_MEDIA_PREFIX = "chat_media_";
     public static final String STORAGE_CHAT_DOCS_PREFIX = "chat_docs_";
