@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.fragment.compose;
+package im.actor.sdk.controllers.compose;
 
 import android.os.Bundle;
 
