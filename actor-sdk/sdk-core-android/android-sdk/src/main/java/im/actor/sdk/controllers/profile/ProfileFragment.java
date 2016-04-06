@@ -177,28 +177,31 @@ public class ProfileFragment extends BaseFragment {
         //
         // Voice Call
         //
-
-        boolean enableCalls = ActorSDK.sharedActor().isCallsEnabled() && !user.isBot();
+        
         View voiceCallView = res.findViewById(R.id.voiceCall);
-        ImageView voiceViewIcon = (ImageView) voiceCallView.findViewById(R.id.actionIcon);
-        TextView voiceViewTitle = (TextView) voiceCallView.findViewById(R.id.actionText);
-        if (enableCalls) {
-            Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_phone_white_24dp));
-            DrawableCompat.setTint(drawable, style.getListActionColor());
-            voiceViewIcon.setImageDrawable(drawable);
-            voiceViewTitle.setTextColor(style.getListActionColor());
+        if (ActorSDK.sharedActor().isCallsEnabled()) {
+            ImageView voiceViewIcon = (ImageView) voiceCallView.findViewById(R.id.actionIcon);
+            TextView voiceViewTitle = (TextView) voiceCallView.findViewById(R.id.actionText);
+            if (!user.isBot()) {
+                Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_phone_white_24dp));
+                DrawableCompat.setTint(drawable, style.getListActionColor());
+                voiceViewIcon.setImageDrawable(drawable);
+                voiceViewTitle.setTextColor(style.getListActionColor());
 
-            voiceCallView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    execute(ActorSDK.sharedActor().getMessenger().doCall(user.getId()));
-                }
-            });
+                voiceCallView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        execute(ActorSDK.sharedActor().getMessenger().doCall(user.getId()));
+                    }
+                });
+            } else {
+                Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_phone_white_24dp));
+                DrawableCompat.setTint(drawable, style.getTextHintColor());
+                voiceViewIcon.setImageDrawable(drawable);
+                voiceViewTitle.setTextColor(style.getTextHintColor());
+            }
         } else {
-            Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_phone_white_24dp));
-            DrawableCompat.setTint(drawable, style.getTextHintColor());
-            voiceViewIcon.setImageDrawable(drawable);
-            voiceViewTitle.setTextColor(style.getTextHintColor());
+            voiceCallView.setVisibility(View.GONE);
         }
 
 
