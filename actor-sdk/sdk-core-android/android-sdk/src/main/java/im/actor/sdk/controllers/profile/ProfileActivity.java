@@ -1,6 +1,5 @@
 package im.actor.sdk.controllers.profile;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -8,14 +7,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import im.actor.core.viewmodel.UserVM;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
-import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.controllers.activity.BaseFragmentActivity;
-import im.actor.runtime.mvvm.ValueChangedListener;
-import im.actor.runtime.mvvm.Value;
 import im.actor.sdk.controllers.settings.BaseActorProfileActivity;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
@@ -63,38 +58,12 @@ public class ProfileActivity extends BaseFragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        bind(users().get(uid).isContact(), new ValueChangedListener<Boolean>() {
-            @Override
-            public void onChanged(Boolean val, Value<Boolean> Value) {
-                invalidateOptionsMenu();
-            }
-        });
         messenger().onProfileOpen(uid);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        try {
-            getMenuInflater().inflate(R.menu.profile_menu, menu);
-            UserVM userVM = users().get(uid);
-            if (userVM.isBot()) {
-                menu.findItem(R.id.remove).setVisible(false);
-                menu.findItem(R.id.add).setVisible(false);
-                menu.findItem(R.id.share).setVisible(false);
-            } else {
-                if (userVM.isContact().get()) {
-                    menu.findItem(R.id.remove).setVisible(true);
-                    menu.findItem(R.id.add).setVisible(false);
-                } else {
-                    menu.findItem(R.id.remove).setVisible(false);
-                    menu.findItem(R.id.add).setVisible(true);
-                }
-                menu.findItem(R.id.share).setVisible(false);
-            }
-        } catch (RuntimeException e) {
-            // Toast made OnCreate
-        }
-
+        getMenuInflater().inflate(R.menu.profile_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -103,18 +72,8 @@ public class ProfileActivity extends BaseFragmentActivity {
         if (item.getItemId() == android.R.id.home) {
             finish();
             return true;
-        } else if (item.getItemId() == R.id.add) {
-            execute(messenger().addContact(uid), R.string.profile_adding);
-            return true;
-        } else if (item.getItemId() == R.id.remove) {
-            execute(messenger().removeContact(uid), R.string.profile_removing);
-            return true;
         } else if (item.getItemId() == R.id.edit) {
             startActivity(Intents.editUserName(uid, this));
-        } else if (item.getItemId() == R.id.share) {
-            Intent i = new Intent(this, ActorMainActivity.class);
-            i.putExtra("share_user", uid);
-            startActivity(i);
         }
         return super.onOptionsItemSelected(item);
     }
