@@ -33,7 +33,7 @@ import im.actor.core.modules.messaging.actors.ConversationHistoryActor;
 import im.actor.core.modules.messaging.actors.CursorReceiverActor;
 import im.actor.core.modules.messaging.actors.DialogsActor;
 import im.actor.core.modules.messaging.actors.DialogsHistoryActor;
-import im.actor.core.modules.messaging.actors.GroupedDialogsActor;
+import im.actor.core.modules.messaging.actors.ActiveDialogsActor;
 import im.actor.core.modules.messaging.actors.OwnReadActor;
 import im.actor.core.modules.messaging.actors.SenderActor;
 import im.actor.core.modules.messaging.actors.entity.DialogHistory;
@@ -359,19 +359,10 @@ public class MessagesProcessor extends AbsModule {
         context().getAppStateModule().onCountersChanged(counters);
     }
 
-    public void onChatArchived(ApiPeer peer) {
-        //context().getMessagesModule().getDialogsActor()
-        //        .send(new DialogsActor.ChatDelete(convert(peer)));
-    }
-
-    public void onChatRestored(Peer peer) {
-
-    }
-
     public void onChatGroupsChanged(List<ApiDialogGroup> groups) {
         if (context().getConfiguration().isEnabledGroupedChatList()) {
             context().getMessagesModule().getDialogsGroupedActor()
-                    .send(new GroupedDialogsActor.GroupedDialogsChanged(groups));
+                    .send(new ActiveDialogsActor.GroupedDialogsChanged(groups));
         }
     }
 
