@@ -79,15 +79,15 @@ public class Application extends ActorSDKApplication {
             };
         }
 
-        @Override
-        public BaseGroupInfoActivity getGroupInfoIntent(int gid) {
-            return new BaseGroupInfoActivity() {
-                @Override
-                public GroupInfoFragment getGroupInfoFragment(int chatId) {
-                    return GroupInfoEx.create(chatId);
-                }
-            };
-        }
+//        @Override
+//        public BaseGroupInfoActivity getGroupInfoIntent(int gid) {
+//            return new BaseGroupInfoActivity() {
+//                @Override
+//                public GroupInfoFragment getGroupInfoFragment(int chatId) {
+//                    return GroupInfoEx.create(chatId);
+//                }
+//            };
+//        }
 
         @Override
         public ActorIntentFragmentActivity getSettingsIntent() {
@@ -204,23 +204,23 @@ public class Application extends ActorSDKApplication {
         }
     }
 
-    public static class GroupInfoEx extends GroupInfoFragment {
-
-        public static GroupInfoFragment create(int chatId) {
-            Bundle bundle = new Bundle();
-            bundle.putInt(EXTRA_CHAT_ID, chatId);
-            GroupInfoFragment res = new GroupInfoEx();
-            res.setArguments(bundle);
-            return res;
-        }
-
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View view = super.onCreateView(inflater, container, savedInstanceState);
-            header.findViewById(R.id.docsContainer).setVisibility(View.VISIBLE);
-            header.findViewById(R.id.sharedContainer).setVisibility(View.VISIBLE);
-            return view;
-        }
-    }
+//    public static class GroupInfoEx extends GroupInfoFragment {
+//
+//        public static GroupInfoFragment create(int chatId) {
+//            Bundle bundle = new Bundle();
+//            bundle.putInt(EXTRA_CHAT_ID, chatId);
+//            GroupInfoFragment res = new GroupInfoEx();
+//            res.setArguments(bundle);
+//            return res;
+//        }
+//
+//
+//        @Override
+//        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+//            View view = super.onCreateView(inflater, container, savedInstanceState);
+//            header.findViewById(R.id.docsContainer).setVisibility(View.VISIBLE);
+//            header.findViewById(R.id.sharedContainer).setVisibility(View.VISIBLE);
+//            return view;
+//        }
+//    }
 }
