@@ -35,6 +35,7 @@ import im.actor.core.api.updates.UpdateChatDelete;
 import im.actor.core.api.updates.UpdateChatGroupsChanged;
 import im.actor.core.api.updates.UpdateMessageContentChanged;
 import im.actor.core.api.updates.UpdateReactionsUpdate;
+import im.actor.core.entity.ConversationState;
 import im.actor.core.entity.Dialog;
 import im.actor.core.entity.DialogSpec;
 import im.actor.core.entity.Group;
@@ -103,6 +104,8 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
     private ActorRef sendMessageActor;
     private ActorRef deletionsActor;
 
+    private MVVMCollection<ConversationState, ConversationVM> conversationStates;
+
     private final HashMap<Peer, ListEngine<Message>> conversationEngines = new HashMap<>();
     private final HashMap<Peer, ListEngine<Message>> conversationDocsEngines = new HashMap<>();
     private final HashMap<String, ListEngine> customConversationEngines = new HashMap<>();
@@ -118,7 +121,10 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
 
     public MessagesModule(final ModuleContext context) {
         super(context);
-
+        this.conversationStates = Storage.createKeyValue(STORAGE_CHAT_STATES,
+                ConversationVM.CREATOR,
+                ConversationState.CREATOR,
+                ConversationState.DEFAULT_CREATOR);
         this.dialogDescKeyValue = Storage.createKeyValue(STORAGE_DIALOGS_DESC, DialogSpecVM.CREATOR, DialogSpec.CREATOR);
         this.cursorStorage = new SyncKeyValue(Storage.createKeyValue(STORAGE_CURSOR));
         this.dialogs = Storage.createList(STORAGE_DIALOGS + DIALOGS_KEY_VERSION, Dialog.CREATOR);
@@ -283,6 +289,14 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
             }
             return customConversationEngines.get(key);
         }
+    }
+
+    public MVVMCollection<ConversationState, ConversationVM> getConversationStates() {
+        return conversationStates;
+    }
+
+    public ConversationVM getConversationVM(Peer peer) {
+        return conversationStates.get(peer.getUnuqueId());
     }
 
     public ActorRef getDialogsActor() {
@@ -1022,23 +1036,6 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
         };
     }
 
-    public ConversationVM getConversationVM(Peer peer) {
-        synchronized (conversationVMS) {
-            if (!conversationVMS.containsKey(peer)) {
-                conversationVMS.put(peer, new ConversationVM(peer, context()));
-            }
-            return conversationVMS.get(peer);
-        }
-    }
-
-    public void markAsLoaded(Peer peer) {
-        preferences().putBool("chat.state_" + peer, true);
-        getConversationVM(peer).getIsLoaded().change(true);
-    }
-
-    public boolean isLoaded(Peer peer) {
-        return preferences().getBool("chat.state_" + peer, false);
-    }
 
     public void resetModule() {
         // TODO: Implement
