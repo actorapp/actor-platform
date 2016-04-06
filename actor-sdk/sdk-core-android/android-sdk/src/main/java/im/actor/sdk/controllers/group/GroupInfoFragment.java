@@ -58,7 +58,16 @@ import static im.actor.sdk.util.ActorSDKMessenger.users;
 
 public class GroupInfoFragment extends BaseFragment {
 
-    protected static final String EXTRA_CHAT_ID = "chat_id";
+    private static final String EXTRA_CHAT_ID = "chat_id";
+
+    public static GroupInfoFragment create(int chatId) {
+        Bundle args = new Bundle();
+        args.putInt(EXTRA_CHAT_ID, chatId);
+        GroupInfoFragment res = new GroupInfoFragment();
+        res.setArguments(args);
+        return res;
+    }
+
     private String[] theme;
     private String[] about;
     private int chatId;
@@ -69,14 +78,6 @@ public class GroupInfoFragment extends BaseFragment {
     private View notMemberView;
     protected View header;
     private boolean isAdmin;
-
-    public static GroupInfoFragment create(int chatId) {
-        Bundle args = new Bundle();
-        args.putInt(EXTRA_CHAT_ID, chatId);
-        GroupInfoFragment res = new GroupInfoFragment();
-        res.setArguments(args);
-        return res;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -107,13 +108,6 @@ public class GroupInfoFragment extends BaseFragment {
 
         // Avatar
         avatarView = (CoverAvatarView) header.findViewById(R.id.avatar);
-//        ImageView avatarBkgrnd = (ImageView) header.findViewById(R.id.avatar_bgrnd);
-//        if (style.getAvatarBackgroundResourse() != 0) {
-//            avatarBkgrnd.setImageResource(style.getAvatarBackgroundResourse());
-//        } else {
-//            avatarBkgrnd.setBackgroundColor(style.getAvatarBackgroundColor());
-//        }
-//        avatarView.setBkgrnd(avatarBkgrnd);
         bind(avatarView, groupInfo.getAvatar());
         avatarView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,9 +141,9 @@ public class GroupInfoFragment extends BaseFragment {
         //Description
         theme = new String[1];
         about = new String[1];
-        TextView themeTV = (TextView) header.findViewById(R.id.theme);
-        themeTV.setTextColor(style.getTextPrimaryColor());
-        ((TextView) header.findViewById(R.id.group_theme_hint)).setTextColor(style.getTextSecondaryColor());
+        // TextView themeTV = (TextView) header.findViewById(R.id.theme);
+        // themeTV.setTextColor(style.getTextPrimaryColor());
+        // ((TextView) header.findViewById(R.id.group_theme_hint)).setTextColor(style.getTextSecondaryColor());
         TextView aboutTV = (TextView) header.findViewById(R.id.about);
         aboutTV.setTextColor(style.getTextPrimaryColor());
         ((TextView) header.findViewById(R.id.about_hint)).setTextColor(style.getTextSecondaryColor());
@@ -158,13 +152,13 @@ public class GroupInfoFragment extends BaseFragment {
         themeHeader.setTextColor(style.getProfileSubtitleColor());
 
         final boolean finalIsAdmin = isAdmin;
-        bind(themeTV, header.findViewById(R.id.themeContainer), groupInfo.getTheme(), new ActorBinder.OnChangedListener<String>() {
-            @Override
-            public void onChanged(String s) {
-                theme[0] = s;
-                updateDescriptionVisibility(descriptionContainer, finalIsAdmin, header);
-            }
-        }, !isAdmin, getString(R.string.theme_group_empty));
+//        bind(themeTV, header.findViewById(R.id.themeContainer), groupInfo.getTheme(), new ActorBinder.OnChangedListener<String>() {
+//            @Override
+//            public void onChanged(String s) {
+//                theme[0] = s;
+//                updateDescriptionVisibility(descriptionContainer, finalIsAdmin, header);
+//            }
+//        }, !isAdmin, getString(R.string.theme_group_empty));
 
         //bind(themeHeader, themeHeader, groupInfo.getTheme());
 
@@ -177,12 +171,12 @@ public class GroupInfoFragment extends BaseFragment {
         }, !isAdmin, getString(R.string.about_group_empty));
 
         if (isAdmin) {
-            header.findViewById(R.id.themeContainer).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startActivity(Intents.editGroupTheme(groupInfo.getId(), getActivity()));
-                }
-            });
+//            header.findViewById(R.id.themeContainer).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    startActivity(Intents.editGroupTheme(groupInfo.getId(), getActivity()));
+//                }
+//            });
 
             header.findViewById(R.id.aboutContainer).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -393,14 +387,14 @@ public class GroupInfoFragment extends BaseFragment {
     }
 
     public void updateDescriptionVisibility(View descriptionContainer, boolean finalIsAdmin, View header) {
-        View themeDivider = header.findViewById(R.id.themeDivider);
-        themeDivider.setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
+        // View themeDivider = header.findViewById(R.id.themeDivider);
+        // themeDivider.setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
 
         boolean themeVis = theme[0] != null && !theme[0].isEmpty();
         boolean aboutVis = about[0] != null && !about[0].isEmpty();
 
         descriptionContainer.setVisibility((aboutVis || themeVis || finalIsAdmin) ? View.VISIBLE : View.GONE);
-        themeDivider.setVisibility(((themeVis && aboutVis) || isAdmin) ? View.VISIBLE : View.GONE);
+        // themeDivider.setVisibility(((themeVis && aboutVis) || isAdmin) ? View.VISIBLE : View.GONE);
 
     }
 
