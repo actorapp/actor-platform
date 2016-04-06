@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import { shouldComponentUpdate } from 'react-addons-pure-render-mixin';
 import { Container } from 'flux/utils';
 
 import { PeerTypes } from '../constants/ActorAppConstants';
@@ -61,10 +61,7 @@ class Call extends Component {
     this.onFullscreen = this.onFullscreen.bind(this);
     this.onUserAdd = this.onUserAdd.bind(this);
     this.onVideo = this.onVideo.bind(this);
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return shallowCompare(this, nextProps, nextState);
+    this.shouldComponentUpdate = shouldComponentUpdate.bind(this);
   }
 
   onAnswer() {
