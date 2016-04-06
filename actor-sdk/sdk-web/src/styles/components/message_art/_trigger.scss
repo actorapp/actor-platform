@@ -1,0 +1,42 @@
+/*
+ * Copyright (C) 2016 Actor LLC. <https://actor.im>
+ */
+
+.message-art {
+  &__trigger {
+    .material-icons {
+      cursor: pointer;
+      transform: scale(.9);
+      transform-origin: 50% 50%;
+
+      opacity: .8;
+      color: $greyish;
+
+      @include no-select();
+    }
+    &--active,
+    &:hover {
+      .material-icons {
+        transform: scale(1);
+
+        opacity: 1;
+        color: $dark-sky-blue;
+      }
+    }
+    &--with-dot {
+      &:after {
+        position: absolute;
+        top: 0;
+        right: 1px;
+
+        width: 8px;
+        height: 8px;
+
+        content: '';
+
+        border-radius: 50%;
+        background-color: $coral;
+      }
+    }
+  }
+}
