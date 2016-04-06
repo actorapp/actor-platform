@@ -19,9 +19,12 @@ import im.actor.core.entity.content.StickerContent;
 import im.actor.core.entity.content.TextContent;
 import im.actor.core.entity.content.VideoContent;
 import im.actor.core.entity.content.VoiceContent;
+import im.actor.core.viewmodel.ConversationVM;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.runtime.json.JSONException;
 import im.actor.runtime.json.JSONObject;
+import im.actor.runtime.mvvm.Value;
+import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.runtime.android.view.BindedListAdapter;
@@ -38,12 +41,16 @@ import im.actor.sdk.controllers.conversation.messages.TextHolder;
 import im.actor.sdk.controllers.conversation.messages.UnsupportedHolder;
 import im.actor.sdk.controllers.fragment.ActorBinder;
 
+import static im.actor.sdk.util.ActorSDKMessenger.messenger;
+
 public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
 
     private MessagesFragment messagesFragment;
     private Context context;
     private long firstUnread = -1;
-    protected HashMap<Long, Message> selected = new HashMap<Long, Message>();
+    private long readDate;
+    private long receiveDate;
+    protected HashMap<Long, Message> selected = new HashMap<>();
     private ActorBinder BINDER = new ActorBinder();
 
     public MessagesAdapter(BindedDisplayList<Message> displayList,
@@ -52,6 +59,19 @@ public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
 
         this.messagesFragment = messagesFragment;
         this.context = context;
+        ConversationVM conversationVM = messenger().getConversationVM(messagesFragment.getPeer());
+        BINDER.bind(conversationVM.getReadDate(), new ValueChangedListener<Long>() {
+            @Override
+            public void onChanged(Long val, Value<Long> valueModel) {
+                readDate = val;
+            }
+        });
+        BINDER.bind(conversationVM.getReceiveDate(), new ValueChangedListener<Long>() {
+            @Override
+            public void onChanged(Long val, Value<Long> valueModel) {
+                receiveDate = val;
+            }
+        });
     }
 
     public Message[] getSelected() {
@@ -86,6 +106,14 @@ public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
 
     public long getFirstUnread() {
         return firstUnread;
+    }
+
+    public long getReadDate() {
+        return readDate;
+    }
+
+    public long getReceiveDate() {
+        return receiveDate;
     }
 
     public void setFirstUnread(long firstUnread) {
@@ -214,7 +242,7 @@ public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
             prev = getItem(index + 1);
         }
         PreprocessedList list = ((PreprocessedList) getPreprocessedList());
-        dialogHolder.bindData(item, prev, next, 0, 0, list.getPreprocessedData()[index]);
+        dialogHolder.bindData(item, prev, next, readDate, receiveDate, list.getPreprocessedData()[index]);
     }
 
     @Override

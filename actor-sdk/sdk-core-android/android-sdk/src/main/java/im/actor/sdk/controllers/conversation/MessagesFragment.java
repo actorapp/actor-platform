@@ -44,6 +44,7 @@ import im.actor.core.entity.content.PhotoContent;
 import im.actor.core.entity.content.TextContent;
 import im.actor.core.entity.content.VideoContent;
 import im.actor.core.viewmodel.CommandCallback;
+import im.actor.core.viewmodel.ConversationVM;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.Log;
 import im.actor.sdk.ActorSDK;
@@ -80,7 +81,7 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
     private Peer peer;
 
     protected MessagesAdapter messagesAdapter;
-    // private ConversationVM conversationVM;
+    private ConversationVM conversationVM;
     private ActionMode actionMode;
     private int onPauseSize = 0;
     private ImageView chatBackgroundView;
@@ -104,6 +105,7 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         try {
             peer = Peer.fromBytes(getArguments().getByteArray("EXTRA_PEER"));
+            conversationVM = messenger().getConversationVM(peer);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -618,11 +620,9 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-//        if (conversationVM != null) {
-//            conversationVM.release();
-//            conversationVM = null;
-//        }
-        messagesAdapter = null;
-
+        if (messagesAdapter != null) {
+            messagesAdapter.getBinder().unbindAll();
+            messagesAdapter = null;
+        }
     }
 }
