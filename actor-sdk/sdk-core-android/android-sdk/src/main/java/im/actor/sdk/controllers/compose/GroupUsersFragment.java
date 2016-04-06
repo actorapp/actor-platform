@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.fragment.compose;
+package im.actor.sdk.controllers.compose;
 
 import android.os.Bundle;
 import android.text.Editable;
@@ -19,7 +19,7 @@ import im.actor.core.viewmodel.CommandCallback;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
-import im.actor.sdk.controllers.fragment.compose.view.UserSpan;
+import im.actor.sdk.controllers.compose.view.UserSpan;
 import im.actor.sdk.controllers.contacts.BaseContactFragment;
 import im.actor.sdk.util.BoxUtil;
 import im.actor.sdk.util.Screen;

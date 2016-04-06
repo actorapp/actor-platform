@@ -141,7 +141,7 @@
         <!-- Compose -->
 
         <activity
-            android:name="im.actor.sdk.controllers.fragment.compose.ComposeActivity"
+            android:name=".controllers.compose.ComposeActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize" />
@@ -159,7 +159,7 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity
-            android:name="im.actor.sdk.controllers.fragment.compose.CreateGroupActivity"
+            android:name=".controllers.compose.CreateGroupActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize|stateVisible" />
