@@ -25,7 +25,7 @@ import im.actor.sdk.controllers.pickers.file.items.ExplorerItem;
 import im.actor.sdk.controllers.pickers.file.search.IndexTask;
 import im.actor.sdk.controllers.pickers.file.search.SearchTask;
 import im.actor.sdk.controllers.pickers.file.view.MaterialInterpolator;
-import im.actor.sdk.controllers.pickers.view.SearchViewHacker;
+import im.actor.sdk.view.SearchViewHacker;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.fragment.contacts;
+package im.actor.sdk.controllers.contacts.view;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
