@@ -43,10 +43,8 @@ final class GlobalCountersSpec
     {
       implicit val clientData = aliceClientData
 
-      //make sure that own messages does not count
-      for (i ← 1 to 15) {
-        sendMessageToGroup(groupPeer.groupId, textMessage(s"Hello back $i"))
-      }
+      //make sure that own messages don't count
+      sendMessageToGroup(groupPeer.groupId, textMessage(s"Hello back"))
 
       expectUpdate(classOf[UpdateCountersChanged]) { upd ⇒
         //2 initializing messages and 10 messages from bob

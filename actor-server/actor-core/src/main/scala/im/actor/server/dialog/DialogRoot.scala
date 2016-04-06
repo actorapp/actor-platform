@@ -3,11 +3,15 @@ package im.actor.server.dialog
 import java.time.Instant
 
 import akka.actor.{ ActorRef, Props }
+import akka.pattern.ask
+import akka.util.Timeout
+import im.actor.concurrent._
 import im.actor.server.cqrs._
 import im.actor.server.dialog.DialogCommands.SendMessage
 import im.actor.server.model.{ Peer, PeerType }
 import im.actor.api.rpc._
 import im.actor.api.rpc.misc.ApiExtension
+import im.actor.config.ActorConfig
 
 import scala.concurrent.Future
 
@@ -53,6 +57,10 @@ object DialogRoot {
 
 private class DialogRoot(userId: Int, extensions: Seq[ApiExtension]) extends Processor[DialogRootState, DialogRootEvent] {
   import DialogRootEvents._
+  import DialogRootQueries._
+  import context.dispatcher
+
+  private implicit val timeout = Timeout(ActorConfig.defaultTimeout)
 
   private val selfPeer: Peer = Peer.privat(userId)
 
@@ -60,7 +68,16 @@ private class DialogRoot(userId: Int, extensions: Seq[ApiExtension]) extends Pro
 
   override protected def getInitialState: DialogRootState = DialogRootState(Map.empty, Set.empty, Set.empty)
 
-  override protected def handleQuery: PartialFunction[Any, Future[Any]] = PartialFunction.empty
+  override protected def handleQuery: PartialFunction[Any, Future[Any]] = {
+    case GetCounter() ⇒
+      val refs = state.activePeers.toSeq map dialogRef
+
+      for {
+        counters ← FutureExt.ftraverse(refs) { ref ⇒
+          (ref ? DialogQueries.GetCounter()).mapTo[DialogQueries.GetCounterResponse] map (_.counter)
+        }
+      } yield GetCounterResponse(counters.sum)
+  }
 
   override protected def handleCommand: Receive = {
     case sm: SendMessage ⇒
