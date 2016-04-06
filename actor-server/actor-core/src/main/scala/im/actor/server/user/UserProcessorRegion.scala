@@ -26,6 +26,8 @@ object UserProcessorRegion {
           }
         case Peer(peerType, _) ⇒ throw new RuntimeException(s"DialogCommand with peerType: $peerType passed in UserProcessor")
       }
+      case e @ DialogRootEnvelope(userId, query) ⇒
+        (userId.toString, e.getField(DialogRootEnvelope.descriptor.findFieldByNumber(query.number)))
     }
   }
 
@@ -36,6 +38,7 @@ object UserProcessorRegion {
       case Peer(PeerType.Private, userId) ⇒ (userId % 100).toString
       case Peer(peerType, _)              ⇒ throw new RuntimeException(s"DialogCommand with peerType: $peerType passed in UserProcessor")
     }
+    case DialogRootEnvelope(userId, query) ⇒ (userId % 100).toString
   }
 
   val typeName = "UserProcessor"

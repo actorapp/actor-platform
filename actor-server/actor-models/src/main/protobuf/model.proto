@@ -84,3 +84,4 @@ message DeviceFeature {
     string name = 2;
     bytes args = 3;
 }
+

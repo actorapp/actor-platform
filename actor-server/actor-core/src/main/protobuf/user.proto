@@ -12,6 +12,7 @@ import "scalapb/scalapb.proto";
 import "sequence.proto";
 import "file.proto";
 import "bots.proto";
+import "dialog.proto";
 
 message UserState {
     option (scalapb.message).extends = "im.actor.server.office.ProcessorState";
@@ -327,6 +328,13 @@ message UserQueries {
 
     message GetNameResponse {
         required string name = 1;
+    }
+}
+
+message DialogRootEnvelope {
+    required int32 user_id = 1;
+    oneof query {
+        DialogRootQueries.GetCounter get_counter = 2;
     }
 }
 

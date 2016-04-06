@@ -54,4 +54,6 @@ abstract class Processor[S <: ProcessorState[S, E], E: ClassTag] extends Persist
   protected def reply(msg: AnyRef): Unit = sender() ! msg
 
   protected def replyFuture(msgFuture: Future[Any]): Unit = msgFuture pipeTo sender()
+
+  protected def setState(state: S) = this._state = state
 }
