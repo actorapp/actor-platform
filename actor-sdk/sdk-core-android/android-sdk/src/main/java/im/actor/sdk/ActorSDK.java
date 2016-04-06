@@ -34,7 +34,7 @@ import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.controllers.conversation.ChatActivity;
 import im.actor.sdk.controllers.conversation.messages.MessageHolder;
-import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
+import im.actor.sdk.controllers.conversation.MessagesAdapter;
 import im.actor.sdk.controllers.auth.AuthActivity;
 import im.actor.sdk.controllers.group.GroupInfoActivity;
 import im.actor.sdk.controllers.profile.ProfileActivity;

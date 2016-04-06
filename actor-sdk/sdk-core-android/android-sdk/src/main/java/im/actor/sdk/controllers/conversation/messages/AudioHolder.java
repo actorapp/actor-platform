@@ -30,8 +30,9 @@ import im.actor.runtime.actors.Props;
 import im.actor.runtime.files.FileSystemReference;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
+import im.actor.sdk.controllers.conversation.MessagesAdapter;
+import im.actor.sdk.controllers.conversation.messages.preprocessor.PreprocessedData;
 import im.actor.sdk.core.audio.AudioPlayerActor;
-import im.actor.sdk.util.Strings;
 import im.actor.sdk.view.TintImageView;
 
 import static im.actor.sdk.util.ActorSDKMessenger.myUid;
@@ -218,7 +219,7 @@ public class AudioHolder extends MessageHolder {
     }
 
     @Override
-    protected void bindData(final Message message, boolean isUpdated, PreprocessedData preprocessedData) {
+    protected void bindData(final Message message, long readDate, long receiveDate, boolean isUpdated, PreprocessedData preprocessedData) {
 
         VoiceContent audioMsg = (VoiceContent) message.getContent();
         if (message.getSenderId() == myUid()) {

@@ -262,7 +262,7 @@
             android:theme="@style/PickerTheme.FilePicker" />
 
         <activity
-            android:name=".controllers.conversation.messages.MapActivity"
+            android:name=".controllers.conversation.preview.MapActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize" />

@@ -3,7 +3,6 @@ package im.actor.sdk.controllers.conversation.messages;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import im.actor.core.entity.FileReference;
@@ -12,6 +11,8 @@ import im.actor.core.entity.Message;
 import im.actor.core.entity.content.StickerContent;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
+import im.actor.sdk.controllers.conversation.MessagesAdapter;
+import im.actor.sdk.controllers.conversation.messages.preprocessor.PreprocessedData;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.util.Strings;
 import im.actor.sdk.view.TintImageView;
@@ -58,7 +59,7 @@ public class StickerHolder extends MessageHolder {
     }
 
     @Override
-    protected void bindData(Message message, boolean isNewMessage, PreprocessedData preprocessedData) {
+    protected void bindData(Message message, long readDate, long receiveDate, boolean isNewMessage, PreprocessedData preprocessedData) {
         StickerContent content = (StickerContent) message.getContent();
         ImageLocation image512 = content.getImage512();
         if (image512 == null) {

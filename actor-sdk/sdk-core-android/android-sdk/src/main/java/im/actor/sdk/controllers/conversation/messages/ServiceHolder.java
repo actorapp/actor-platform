@@ -7,6 +7,8 @@ import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.content.ServiceContent;
+import im.actor.sdk.controllers.conversation.MessagesAdapter;
+import im.actor.sdk.controllers.conversation.messages.preprocessor.PreprocessedData;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
@@ -23,7 +25,7 @@ public class ServiceHolder extends MessageHolder {
     }
 
     @Override
-    protected void bindData(Message message, boolean isUpdated, PreprocessedData preprocessedData) {
+    protected void bindData(Message message, long readDate, long receiveDate, boolean isUpdated, PreprocessedData preprocessedData) {
         messageText.setText(messenger().getFormatter().formatFullServiceMessage(message.getSenderId(),
                 (ServiceContent) message.getContent()));
     }
