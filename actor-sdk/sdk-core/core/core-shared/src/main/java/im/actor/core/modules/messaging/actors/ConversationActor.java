@@ -202,7 +202,7 @@ public class ConversationActor extends ModuleActor {
                 dialogsActor.send(new DialogsActor.InMessage(peer, topMessage, inPendingIndex.getCount()));
             }
             if (dialogsGroupedActor != null) {
-                dialogsGroupedActor.send(new GroupedDialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
+                dialogsGroupedActor.send(new ActiveDialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
             }
         }
     }
@@ -264,7 +264,7 @@ public class ConversationActor extends ModuleActor {
                 dialogsActor.send(new DialogsActor.InMessage(peer, message, inPendingIndex.getCount()));
             }
             if (dialogsGroupedActor != null) {
-                dialogsGroupedActor.send(new GroupedDialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
+                dialogsGroupedActor.send(new ActiveDialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
             }
         }
     }
@@ -342,7 +342,7 @@ public class ConversationActor extends ModuleActor {
                 // Updating dialog
                 dialogsActor.send(new DialogsActor.InMessage(peer, updatedMsg, inPendingIndex.getCount()));
                 if (dialogsGroupedActor != null) {
-                    dialogsGroupedActor.send(new GroupedDialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
+                    dialogsGroupedActor.send(new ActiveDialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
                 }
             }
 
@@ -369,7 +369,7 @@ public class ConversationActor extends ModuleActor {
             }
 
             if (dialogsGroupedActor != null) {
-                dialogsGroupedActor.send(new GroupedDialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
+                dialogsGroupedActor.send(new ActiveDialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
             }
         }
     }
@@ -449,7 +449,7 @@ public class ConversationActor extends ModuleActor {
             dialogsActor.send(new DialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
         }
         if (dialogsGroupedActor != null) {
-            dialogsGroupedActor.send(new GroupedDialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
+            dialogsGroupedActor.send(new ActiveDialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
         }
     }
 
@@ -467,7 +467,7 @@ public class ConversationActor extends ModuleActor {
                     dialogsActor.send(new DialogsActor.CounterChanged(peer, 0));
                 }
                 if (dialogsGroupedActor != null) {
-                    dialogsGroupedActor.send(new GroupedDialogsActor.CounterChanged(peer, 0));
+                    dialogsGroupedActor.send(new ActiveDialogsActor.CounterChanged(peer, 0));
                 }
             }
         }

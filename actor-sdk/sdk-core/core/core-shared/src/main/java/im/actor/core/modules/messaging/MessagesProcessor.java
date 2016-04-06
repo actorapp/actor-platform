@@ -33,7 +33,7 @@ import im.actor.core.modules.messaging.actors.ConversationHistoryActor;
 import im.actor.core.modules.messaging.actors.CursorReceiverActor;
 import im.actor.core.modules.messaging.actors.DialogsActor;
 import im.actor.core.modules.messaging.actors.DialogsHistoryActor;
-import im.actor.core.modules.messaging.actors.GroupedDialogsActor;
+import im.actor.core.modules.messaging.actors.ActiveDialogsActor;
 import im.actor.core.modules.messaging.actors.OwnReadActor;
 import im.actor.core.modules.messaging.actors.SenderActor;
 import im.actor.core.modules.messaging.actors.entity.DialogHistory;
@@ -86,10 +86,6 @@ public class MessagesProcessor extends AbsModule {
             plainReceiveActor().send(new CursorReceiverActor.MarkReceived(peer, intMessageSortDate));
         }
 
-        if (outMessageSortDate > 0) {
-            ownReadActor().send(new OwnReadActor.OutMessage(peer, outMessageSortDate));
-        }
-
         // OwnReadActor
         for (Message m : nMessages) {
             if (m.getSenderId() != myUid()) {
@@ -126,10 +122,6 @@ public class MessagesProcessor extends AbsModule {
 
             // Send to own read actor
             ownReadActor().send(new OwnReadActor.InMessage(peer, message));
-//            msgContent.onIncoming(peer, context());
-        } else {
-            // Send to own read actor
-            ownReadActor().send(new OwnReadActor.OutMessage(peer, message.getSortDate()));
         }
     }
 
@@ -194,9 +186,6 @@ public class MessagesProcessor extends AbsModule {
 
         // Notify Sender Actor
         sendActor().send(new SenderActor.MessageSent(peer, rid));
-
-        // Send to own read actor
-        ownReadActor().send(new OwnReadActor.OutMessage(peer, date));
     }
 
     @Verified
@@ -370,19 +359,10 @@ public class MessagesProcessor extends AbsModule {
         context().getAppStateModule().onCountersChanged(counters);
     }
 
-    public void onChatArchived(ApiPeer peer) {
-        //context().getMessagesModule().getDialogsActor()
-        //        .send(new DialogsActor.ChatDelete(convert(peer)));
-    }
-
-    public void onChatRestored(Peer peer) {
-
-    }
-
     public void onChatGroupsChanged(List<ApiDialogGroup> groups) {
         if (context().getConfiguration().isEnabledGroupedChatList()) {
             context().getMessagesModule().getDialogsGroupedActor()
-                    .send(new GroupedDialogsActor.GroupedDialogsChanged(groups));
+                    .send(new ActiveDialogsActor.GroupedDialogsChanged(groups));
         }
     }
 

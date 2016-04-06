@@ -10,10 +10,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import im.actor.core.entity.Contact;
+import im.actor.core.entity.Dialog;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
+import im.actor.sdk.controllers.activity.ActorMainActivity;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
@@ -47,7 +49,8 @@ public class ContactsFragment extends BaseContactFragment {
 
     @Override
     public void onItemClicked(Contact contact) {
-        getActivity().startActivity(Intents.openPrivateDialog(contact.getUid(), true, getActivity()));
+        ((ActorMainActivity) getActivity()).onContactClicked(contact);
+
     }
 
     @Override
