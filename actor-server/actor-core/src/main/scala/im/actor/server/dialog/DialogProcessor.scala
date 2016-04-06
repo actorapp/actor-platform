@@ -10,7 +10,7 @@ import im.actor.serialization.ActorSerializer
 import im.actor.server.cqrs.ProcessorState
 import im.actor.server.db.DbExtension
 import im.actor.server.group.GroupExtension
-import im.actor.server.model.{ Dialog ⇒ DialogModel, PeerType, Peer }
+import im.actor.server.model.{ DialogObsolete ⇒ DialogModel, PeerType, Peer }
 import im.actor.server.persist.dialog.DialogRepo
 import im.actor.server.persist.{ GroupRepo, UserRepo }
 import im.actor.server.sequence.{ SeqUpdatesExtension, SeqStateDate }

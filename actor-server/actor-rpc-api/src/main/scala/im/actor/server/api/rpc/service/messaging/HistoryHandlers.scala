@@ -8,7 +8,7 @@ import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeerType }
 import im.actor.server.dialog.HistoryUtils
 import im.actor.server.group.GroupUtils
-import im.actor.server.model.{ HistoryMessage, Dialog, PeerType, Peer }
+import im.actor.server.model.{ HistoryMessage, DialogObsolete, PeerType, Peer }
 import im.actor.server.persist.contact.UserContactRepo
 import im.actor.server.persist.{ GroupUserRepo, HistoryMessageRepo }
 import im.actor.server.persist.dialog.DialogRepo
@@ -263,7 +263,7 @@ trait HistoryHandlers {
     optDatesAction map { _ getOrElse (ZeroDate → ZeroDate) }
   }
 
-  private def getDialogStruct(dialogModel: Dialog)(implicit client: AuthorizedClientData): dbio.DBIO[Option[ApiDialog]] = {
+  private def getDialogStruct(dialogModel: DialogObsolete)(implicit client: AuthorizedClientData): dbio.DBIO[Option[ApiDialog]] = {
     withHistoryOwner(dialogModel.peer, client.userId) { historyOwner ⇒
       for {
         (lastReceivedAt, lastReadAt) ← getLastReceiveReadDates(dialogModel.peer)
