@@ -24,6 +24,7 @@
     <string name="toast_phone_copied">Phone number copied to pastebin</string>
     <string name="toast_email_copied">Email copied to pastebin</string>
     <string name="toast_messages_copied">Messages copied to pastebin</string>
+    <string name="toast_nickname_copied">Username copied to pastebin</string>
     <string name="toast_unable_kick">Unable to remove member from group</string>
     <string name="toast_unable_add">Unable to add user to group</string>
     <string name="toast_already_member">User is already member of group</string>
@@ -276,6 +277,12 @@
     <string name="profile_shared_media">Media</string>
     <string name="profile_settings_header">Settings</string>
     <string name="profile_settings_notifications">Notifications</string>
+
+    <string name="profile_contacts_added">In Contacts</string>
+    <string name="profile_contacts_available">Add to Contacts</string>
+    <string name="profile_call">Voice Call</string>
+    <string name="profile_compose">New Message</string>
+
     <string name="settings_mobile_phone">Mobile phone</string>
 
     <string name="profile_adding">Adding to Contacts…</string>
