@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.fragment.dialogs;
+package im.actor.sdk.controllers.dialogs;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -17,6 +17,8 @@ import im.actor.core.viewmodel.CommandCallback;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
+import im.actor.sdk.controllers.dialogs.view.DialogHolder;
+import im.actor.sdk.controllers.dialogs.view.DialogsAdapter;
 import im.actor.sdk.controllers.fragment.DisplayListFragment;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.util.Fonts;

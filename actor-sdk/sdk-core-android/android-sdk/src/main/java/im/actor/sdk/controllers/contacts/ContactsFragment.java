@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.fragment.contacts;
+package im.actor.sdk.controllers.contacts;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;

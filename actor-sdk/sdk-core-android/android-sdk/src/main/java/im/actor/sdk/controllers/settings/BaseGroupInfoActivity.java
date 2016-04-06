@@ -2,7 +2,7 @@ package im.actor.sdk.controllers.settings;
 
 import android.content.Intent;
 
-import im.actor.sdk.controllers.fragment.group.GroupInfoFragment;
+import im.actor.sdk.controllers.group.GroupInfoFragment;
 import im.actor.sdk.intents.ActorIntentFragmentActivity;
 
 public abstract class BaseGroupInfoActivity extends ActorIntentFragmentActivity {

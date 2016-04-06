@@ -20,7 +20,7 @@ import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.fragment.compose.view.UserSpan;
-import im.actor.sdk.controllers.fragment.contacts.BaseContactFragment;
+import im.actor.sdk.controllers.contacts.BaseContactFragment;
 import im.actor.sdk.util.BoxUtil;
 import im.actor.sdk.util.Screen;
 

@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.fragment.group;
+package im.actor.sdk.controllers.group;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,7 +41,7 @@ import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.activity.BaseActivity;
 import im.actor.sdk.controllers.fragment.ActorBinder;
 import im.actor.sdk.controllers.fragment.BaseFragment;
-import im.actor.sdk.controllers.fragment.group.view.MembersAdapter;
+import im.actor.sdk.controllers.group.view.MembersAdapter;
 import im.actor.sdk.controllers.fragment.media.DocumentsActivity;
 import im.actor.sdk.controllers.fragment.preview.ViewAvatarActivity;
 import im.actor.sdk.util.Screen;
@@ -463,8 +462,6 @@ public class GroupInfoFragment extends BaseFragment {
             startActivity(Intents.editGroupTitle(chatId, getActivity()));
         } else if (item.getItemId() == R.id.changePhoto) {
             startActivity(ViewAvatarActivity.viewGroupAvatar(chatId, getActivity()));
-        } else if (item.getItemId() == R.id.integrationToken) {
-            startActivity(Intents.integrationToken(chatId, getActivity()));
         }
         return super.onOptionsItemSelected(item);
     }
