@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.fragment.dialogs;
+package im.actor.sdk.controllers.dialogs;
 
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;

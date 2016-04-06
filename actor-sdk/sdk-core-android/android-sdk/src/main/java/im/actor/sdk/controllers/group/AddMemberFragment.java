@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.fragment.group;
+package im.actor.sdk.controllers.group;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -13,7 +13,7 @@ import im.actor.core.viewmodel.UserVM;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
-import im.actor.sdk.controllers.fragment.contacts.BaseContactFragment;
+import im.actor.sdk.controllers.contacts.BaseContactFragment;
 
 import static im.actor.sdk.util.ActorSDKMessenger.groups;
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;

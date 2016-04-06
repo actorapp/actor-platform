@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.fragment.group;
+package im.actor.sdk.controllers.group;
 
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;

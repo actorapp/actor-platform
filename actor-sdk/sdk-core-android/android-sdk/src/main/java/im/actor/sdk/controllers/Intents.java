@@ -19,9 +19,8 @@ import im.actor.core.utils.IOUtils;
 import im.actor.sdk.controllers.activity.AddContactActivity;
 import im.actor.sdk.controllers.activity.TakePhotoActivity;
 import im.actor.sdk.controllers.conversation.ChatActivity;
-import im.actor.sdk.controllers.fragment.group.GroupInfoActivity;
-import im.actor.sdk.controllers.fragment.group.IntegrationTokenActivity;
-import im.actor.sdk.controllers.fragment.group.InviteLinkActivity;
+import im.actor.sdk.controllers.group.GroupInfoActivity;
+import im.actor.sdk.controllers.group.InviteLinkActivity;
 import im.actor.sdk.controllers.fragment.preview.PictureActivity;
 import im.actor.sdk.controllers.settings.EditAboutActivity;
 import im.actor.sdk.controllers.settings.EditNameActivity;
@@ -99,12 +98,6 @@ public class Intents {
 
     public static Intent inviteLink(int chatId, Context context) {
         Intent res = new Intent(context, InviteLinkActivity.class);
-        res.putExtra(EXTRA_GROUP_ID, chatId);
-        return res;
-    }
-
-    public static Intent integrationToken(int chatId, Context context) {
-        Intent res = new Intent(context, IntegrationTokenActivity.class);
         res.putExtra(EXTRA_GROUP_ID, chatId);
         return res;
     }

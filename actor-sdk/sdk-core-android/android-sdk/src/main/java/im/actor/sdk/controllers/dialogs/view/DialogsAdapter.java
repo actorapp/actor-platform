@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.fragment.dialogs;
+package im.actor.sdk.controllers.dialogs.view;
 
 import android.content.Context;
 import android.view.ViewGroup;

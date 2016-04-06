@@ -127,7 +127,7 @@
         </activity>
 
         <activity
-            android:name="im.actor.sdk.controllers.fragment.group.GroupInfoActivity"
+            android:name=".controllers.group.GroupInfoActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/ProfileActivityTheme"
             android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
@@ -147,19 +147,13 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity
-            android:name="im.actor.sdk.controllers.fragment.group.AddMemberActivity"
+            android:name=".controllers.group.AddMemberActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize" />
 
         <activity
-            android:name="im.actor.sdk.controllers.fragment.group.InviteLinkActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:theme="@style/CommonActivityTheme"
-            android:windowSoftInputMode="adjustResize" />
-
-        <activity
-            android:name="im.actor.sdk.controllers.fragment.group.IntegrationTokenActivity"
+            android:name=".controllers.group.InviteLinkActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize" />

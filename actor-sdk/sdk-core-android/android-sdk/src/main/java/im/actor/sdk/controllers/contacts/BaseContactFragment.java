@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.fragment.contacts;
+package im.actor.sdk.controllers.contacts;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -23,6 +23,8 @@ import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.activity.AddContactActivity;
 import im.actor.sdk.controllers.fragment.DisplayListFragment;
+import im.actor.sdk.controllers.contacts.view.ContactHolder;
+import im.actor.sdk.controllers.contacts.view.ContactsAdapter;
 import im.actor.sdk.controllers.fragment.help.HelpActivity;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.util.Fonts;
