@@ -1146,6 +1146,7 @@ public class ChatActivity extends ActorEditTextActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        keyboardUtils.setImeVisibility(messageEditText, false);
         int i = item.getItemId();
         if (i == android.R.id.home) {
             finish();
