@@ -77,7 +77,7 @@ class DialogSection extends Component {
     }
 
     const activity = [DefaultActivity];
-    if (features.call) {
+    if (features.calls) {
       activity.push(DefaultCall);
     }
 
