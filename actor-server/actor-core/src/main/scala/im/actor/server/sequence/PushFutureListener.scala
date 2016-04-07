@@ -22,14 +22,14 @@ final class PushFutureListener(userId: Int, token: ByteString)(implicit system: 
         if (response.isAccepted) {
           log.debug("Successfully delivered apple notification to userId: {}", userId)
         } else {
-          log.warning("APNS rejected notification with reason: {}", response.getRejectionReason)
+          log.warning("APNS rejected notification for user: {} with reason: {}", userId, response.getRejectionReason)
           Option(response.getTokenInvalidationTimestamp) foreach { ts ⇒
             log.warning("APNS token for user: {} invalidated at {}. Deleting token now", userId, ts)
             seqUpdExt.deleteApplePushCredentials(token.toByteArray)
           }
         }
       case Failure(e) ⇒
-        log.error(e, "Failed to send APNS notification")
+        log.error(e, "Failed to send APNS notification for user: {}", userId)
     }
   }
 
