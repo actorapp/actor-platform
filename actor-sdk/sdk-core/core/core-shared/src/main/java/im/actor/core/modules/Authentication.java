@@ -668,7 +668,20 @@ public class Authentication {
 
                             @Override
                             public void onError(final RpcException e) {
-                                if ("PHONE_NUMBER_UNOCCUPIED".equals(e.getTag()) || "EMAIL_UNOCCUPIED".equals(e.getTag())) {
+//                                if ("PHONE_NUMBER_UNOCCUPIED".equals(e.getTag()) || "EMAIL_UNOCCUPIED".equals(e.getTag())) {
+//                                    state = AuthState.SIGN_UP;
+//                                    Runtime.postToMainThread(new Runnable() {
+//                                        @Override
+//                                        public void run() {
+//                                            callback.onResult(AuthState.SIGN_UP);
+//                                        }
+//                                    });
+//                                    return;
+//                                }
+
+                                if ("USERNAME_CODE_EXPIRED".equals(e.getTag()) ||"PHONE_CODE_EXPIRED".equals(e.getTag()) || "EMAIL_CODE_EXPIRED".equals(e.getTag())) {
+                                    resetAuth();
+                                } else if ("PHONE_NUMBER_UNOCCUPIED".equals(e.getTag()) || "EMAIL_UNOCCUPIED".equals(e.getTag())|| "USERNAME_UNOCCUPIED".equals(e.getTag())) {
                                     state = AuthState.SIGN_UP;
                                     Runtime.postToMainThread(new Runnable() {
                                         @Override
