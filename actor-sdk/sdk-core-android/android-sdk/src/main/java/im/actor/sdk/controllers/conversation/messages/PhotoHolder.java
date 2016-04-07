@@ -155,16 +155,18 @@ public class PhotoHolder extends MessageHolder {
                     stateIcon.setTint(COLOR_PENDING);
                     break;
                 case READ:
-                    stateIcon.setResource(R.drawable.msg_check_2);
-                    stateIcon.setTint(COLOR_READ);
-                    break;
                 case RECEIVED:
-                    stateIcon.setResource(R.drawable.msg_check_2);
-                    stateIcon.setTint(COLOR_RECEIVED);
-                    break;
                 case SENT:
-                    stateIcon.setResource(R.drawable.msg_check_1);
-                    stateIcon.setTint(COLOR_SENT);
+                    if (message.getSortDate() <= readDate) {
+                        stateIcon.setResource(R.drawable.msg_check_2);
+                        stateIcon.setTint(COLOR_READ);
+                    } else if (message.getSortDate() <= receiveDate) {
+                        stateIcon.setResource(R.drawable.msg_check_2);
+                        stateIcon.setTint(COLOR_RECEIVED);
+                    } else {
+                        stateIcon.setResource(R.drawable.msg_check_1);
+                        stateIcon.setTint(COLOR_SENT);
+                    }
                     break;
             }
         } else {
