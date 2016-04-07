@@ -89,8 +89,6 @@ public class StickerHolder extends MessageHolder {
         if (message.getSenderId() == myUid()) {
             stateIcon.setVisibility(View.VISIBLE);
             switch (message.getMessageState()) {
-                case READ:
-                case RECEIVED:
                 case SENT:
                     if (message.getSortDate() <= readDate) {
                         stateIcon.setResource(R.drawable.msg_check_2);

@@ -88,11 +88,7 @@ public class Message extends BserObject implements ListEngineItem {
     }
 
     public boolean isSent() {
-        return messageState == MessageState.SENT || messageState == MessageState.SENT;
-    }
-
-    public boolean isReceivedOrSent() {
-        return messageState == MessageState.SENT || messageState == MessageState.RECEIVED;
+        return messageState == MessageState.SENT;
     }
 
     public boolean isPendingOrSent() {
@@ -135,7 +131,7 @@ public class Message extends BserObject implements ListEngineItem {
         senderId = values.getInt(4);
         messageState = MessageState.fromValue(values.getInt(5));
         content = AbsContent.parse(values.getBytes(6));
-        reactions = new ArrayList<Reaction>();
+        reactions = new ArrayList<>();
         for (byte[] react : values.getRepeatedBytes(7)) {
             reactions.add(Reaction.fromBytes(react));
         }

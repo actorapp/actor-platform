@@ -23,22 +23,13 @@ public class EntityConverter {
         }
         switch (state) {
             case READ:
-                return MessageState.READ;
             case RECEIVED:
-                return MessageState.RECEIVED;
             case SENT:
                 return MessageState.SENT;
             default:
                 return MessageState.UNKNOWN;
         }
     }
-
-//    public static Avatar convert(im.actor.model.api.Avatar avatar) {
-//        if (avatar == null) {
-//            return null;
-//        }
-//        return new Avatar(avatar);
-//    }
 
     public static Group convert(ApiGroup group) {
         return new Group(group);

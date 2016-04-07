@@ -103,8 +103,6 @@ public class TextHolder extends MessageHolder {
             status.setVisibility(View.VISIBLE);
             switch (message.getMessageState()) {
                 case SENT:
-                case RECEIVED:
-                case READ:
                     if (message.getSortDate() <= readDate) {
                         status.setResource(R.drawable.msg_check_2);
                         status.setTint(readColor);
