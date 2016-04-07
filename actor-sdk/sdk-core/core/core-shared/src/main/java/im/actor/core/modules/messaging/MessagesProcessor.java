@@ -13,6 +13,7 @@ import im.actor.core.api.ApiDialogGroup;
 import im.actor.core.api.ApiMessage;
 import im.actor.core.api.ApiMessageContainer;
 import im.actor.core.api.ApiMessageReaction;
+import im.actor.core.api.ApiMessageState;
 import im.actor.core.api.ApiPeer;
 import im.actor.core.api.ApiAppCounters;
 import im.actor.core.api.rpc.ResponseLoadArchived;
@@ -54,7 +55,7 @@ public class MessagesProcessor extends AbsModule {
         long intMessageSortDate = 0;
         Peer peer = convert(_peer);
 
-        ArrayList<Message> nMessages = new ArrayList<Message>();
+        ArrayList<Message> nMessages = new ArrayList<>();
         for (UpdateMessage u : messages) {
 
             AbsContent msgContent;
@@ -319,6 +320,8 @@ public class MessagesProcessor extends AbsModule {
     public void onMessagesLoaded(Peer peer, ResponseLoadHistory historyResponse) {
         ArrayList<Message> messages = new ArrayList<Message>();
         long maxLoadedDate = Long.MAX_VALUE;
+        long maxReadDate = 0;
+        long maxReceiveDate = 0;
         for (ApiMessageContainer historyMessage : historyResponse.getHistory()) {
 
             maxLoadedDate = Math.min(historyMessage.getDate(), maxLoadedDate);
@@ -334,6 +337,13 @@ public class MessagesProcessor extends AbsModule {
             }
             MessageState state = EntityConverter.convert(historyMessage.getState());
 
+            if (historyMessage.getState() == ApiMessageState.RECEIVED) {
+                maxReceiveDate = Math.max(historyMessage.getDate(), maxReceiveDate);
+            } else if (historyMessage.getState() == ApiMessageState.READ) {
+                maxReceiveDate = Math.max(historyMessage.getDate(), maxReceiveDate);
+                maxReadDate = Math.max(historyMessage.getDate(), maxReadDate);
+            }
+
             ArrayList<Reaction> reactions = new ArrayList<Reaction>();
 
             for (ApiMessageReaction r : historyMessage.getReactions()) {
@@ -347,7 +357,7 @@ public class MessagesProcessor extends AbsModule {
 
         // Sending updates to conversation actor
         if (messages.size() > 0) {
-            conversationActor(peer).send(new ConversationActor.HistoryLoaded(messages));
+            conversationActor(peer).send(new ConversationActor.HistoryLoaded(messages, maxReadDate, maxReceiveDate));
         }
 
         // Sending notification to conversation history actor

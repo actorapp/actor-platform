@@ -123,8 +123,6 @@ public class LocationHolder extends MessageHolder {
                     stateIcon.setResource(R.drawable.msg_clock);
                     stateIcon.setTint(COLOR_PENDING);
                     break;
-                case READ:
-                case RECEIVED:
                 case SENT:
                     if (message.getSortDate() <= readDate) {
                         stateIcon.setResource(R.drawable.msg_check_2);

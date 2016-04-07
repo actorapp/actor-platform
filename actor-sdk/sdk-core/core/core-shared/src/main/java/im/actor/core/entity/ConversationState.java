@@ -76,7 +76,7 @@ public class ConversationState extends BserObject implements KeyValueItem {
         return outReadDate;
     }
 
-    public long getOutReceiveState() {
+    public long getOutReceiveDate() {
         return outReceiveState;
     }
 

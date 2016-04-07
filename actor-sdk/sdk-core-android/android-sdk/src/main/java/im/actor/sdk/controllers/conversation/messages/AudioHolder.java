@@ -243,8 +243,6 @@ public class AudioHolder extends MessageHolder {
                     stateIcon.setResource(R.drawable.msg_clock);
                     stateIcon.setTint(waitColor);
                     break;
-                case READ:
-                case RECEIVED:
                 case SENT:
                     if (message.getSortDate() <= readDate) {
                         stateIcon.setResource(R.drawable.msg_check_2);
