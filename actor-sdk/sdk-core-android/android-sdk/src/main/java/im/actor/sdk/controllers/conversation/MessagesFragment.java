@@ -37,11 +37,13 @@ import java.io.IOException;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
+import im.actor.core.entity.content.AbsContent;
 import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.entity.content.FileLocalSource;
 import im.actor.core.entity.content.FileRemoteSource;
 import im.actor.core.entity.content.PhotoContent;
 import im.actor.core.entity.content.TextContent;
+import im.actor.core.entity.content.UnsupportedContent;
 import im.actor.core.entity.content.VideoContent;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.ConversationVM;
@@ -467,10 +469,10 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
                                 String forward = name.concat(": ").concat(text).concat("\n");
                                 i.putExtra("forward_text", forward);
                                 i.putExtra("forward_text_raw", forward);
-                            } else if (m.getContent() instanceof DocumentContent) {
-                                DocumentContent fileMessage = (DocumentContent) m.getContent();
+                            } else if (!(m.getContent() instanceof UnsupportedContent)) {
+                                AbsContent fileMessage = m.getContent();
                                 try {
-                                    i.putExtra("forward_content", DocumentContent.serialize(fileMessage));
+                                    i.putExtra("forward_content", AbsContent.serialize(fileMessage));
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
