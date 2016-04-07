@@ -36,6 +36,7 @@ import im.actor.core.viewmodel.FileVMCallback;
 import im.actor.core.viewmodel.UploadFileCallback;
 import im.actor.core.viewmodel.UploadFileVM;
 import im.actor.core.viewmodel.UploadFileVMCallback;
+import im.actor.runtime.Log;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
@@ -54,6 +55,7 @@ import static im.actor.sdk.util.ActorSDKMessenger.myUid;
 
 public class PhotoHolder extends MessageHolder {
 
+    public static final String TAG = "PHOTO_HOLDER";
     private final int COLOR_PENDING;
     private final int COLOR_SENT;
     private final int COLOR_RECEIVED;
@@ -86,6 +88,7 @@ public class PhotoHolder extends MessageHolder {
     protected boolean isPhoto;
 
     int lastUpdatedIndex = 0;
+    long currenrRid = 0;
     private boolean updated = false;
 
     public PhotoHolder(MessagesAdapter fragment, View itemView) {
@@ -173,6 +176,7 @@ public class PhotoHolder extends MessageHolder {
 
         // Update time
         setTimeAndReactions(time);
+        Log.d(TAG, "isNewMessage: " + isNewMessage);
         // Update size
         if (isNewMessage) {
             int w, h;
@@ -223,14 +227,23 @@ public class PhotoHolder extends MessageHolder {
 
             needRebind = true;
         }
+        Log.d(TAG, "needRebind by new: " + needRebind);
 
         updated = false;
         int updatedCounter = fileMessage.getUpdatedCounter();
-        if (lastUpdatedIndex != updatedCounter) {
+        Log.d(TAG, "oldRid: " + currenrRid);
+        Log.d(TAG, "newRid: " + currentMessage.getRid());
+        Log.d(TAG, "oldCounter: " + lastUpdatedIndex);
+        Log.d(TAG, "newCounter: " + updatedCounter);
+
+        if (currenrRid == currentMessage.getRid() && lastUpdatedIndex != updatedCounter) {
             updated = true;
             needRebind = true;
             lastUpdatedIndex = updatedCounter;
         }
+        currenrRid = currentMessage.getRid();
+        Log.d(TAG, "updated: " + updated);
+
 
         if (needRebind) {
             // Resetting progress state
@@ -254,10 +267,14 @@ public class PhotoHolder extends MessageHolder {
                 } else {
                     if (!updated) {
                         previewView.setImageURI(null);
+                        Log.d(TAG, "rebind video - setImageURI(null)!");
+
                     }
                     //TODO: better approach?
-                    if (fileMessage.getFastThumb() != null) {
+                    if (fileMessage.getFastThumb() != null && !updated) {
                         fastThumbLoader.request(fileMessage.getFastThumb().getImage());
+                        Log.d(TAG, "rebind video- new thumb!");
+
                     }
                 }
             } else {
@@ -444,10 +461,11 @@ public class PhotoHolder extends MessageHolder {
                         .setImageRequest(request)
                         .build();
                 previewView.setController(controller);
-
                 // previewView.setImageURI(Uri.fromFile(new File(reference.getDescriptor())));
             } else {
-                checkFastThumb();
+                if (!updated) {
+                    checkFastThumb();
+                }
             }
 
             progressValue.setText(100 + "");
