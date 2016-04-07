@@ -3,6 +3,7 @@
  */
 
 import React, { Component, PropTypes } from 'react';
+import { shouldComponentUpdate } from 'react-addons-pure-render-mixin';
 
 import MessageArtActionCreators from '../../actions/MessageArtActionCreators';
 
@@ -29,6 +30,7 @@ class MessageArt extends Component {
 
     this.onMouseLeave = this.onMouseLeave.bind(this);
     this.onMouseEnter = this.onMouseEnter.bind(this);
+    this.shouldComponentUpdate = shouldComponentUpdate.bind(this);
   }
 
   onMouseLeave() {
