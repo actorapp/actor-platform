@@ -18,6 +18,10 @@ public class ExponentialBackoff {
     private final int maxDelay;
     private final int maxFailureCount;
 
+    public ExponentialBackoff() {
+        this(500, 15000, 50);
+    }
+
     public ExponentialBackoff(int minDelay,
                               int maxDelay,
                               int maxFailureCount) {
