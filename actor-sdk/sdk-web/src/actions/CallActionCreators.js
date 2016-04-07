@@ -3,12 +3,20 @@
  */
 
 import { dispatch, dispatchAsync } from '../dispatcher/ActorAppDispatcher';
-import { ActionTypes, CallTypes } from '../constants/ActorAppConstants';
+import { ActionTypes, CallTypes, CallStates } from '../constants/ActorAppConstants';
 import ActorClient from '../utils/ActorClient';
+import createTimer from '../utils/createTimer';
 
 import ActionCreators from './ActionCreators';
 
 class CallActionCreators extends ActionCreators {
+  constructor() {
+    super();
+
+    this.handleCall = this.handleCall.bind(this);
+    this.setCall = this.setCall.bind(this);
+  }
+
   hide() {
     dispatch(ActionTypes.CALL_MODAL_HIDE);
   }
@@ -23,6 +31,11 @@ class CallActionCreators extends ActionCreators {
         dispatch(ActionTypes.CALL_MODAL_OPEN, { id });
         break;
       case CallTypes.ENDED:
+        if (this.timer) {
+          this.timer.stop();
+          this.timer = null;
+        }
+
         this.removeBindings('call');
         dispatch(ActionTypes.CALL_MODAL_HIDE)
         break;
@@ -46,7 +59,15 @@ class CallActionCreators extends ActionCreators {
   }
 
   setCall(call) {
+    if (call.state === CallStates.IN_PROGRESS && !this.timer) {
+      this.timer = createTimer(this.setCallTime);
+    }
+
     dispatch(ActionTypes.CALL_CHANGED, { call });
+  }
+
+  setCallTime(time) {
+    dispatch(ActionTypes.CALL_TIME_CHANGED, { time });
   }
 
   answerCall(callId) {
