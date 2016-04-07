@@ -19,6 +19,7 @@ final class PushFutureListener(userId: Int, token: ByteString)(implicit system: 
   def operationComplete(future: Future[PushNotificationResponse[SimpleApnsPushNotification]]): Unit = {
     Try(future.get()) match {
       case Success(response) ⇒
+        log.debug("APNS send complete, token: {}", token.toStringUtf8)
         if (response.isAccepted) {
           log.debug("Successfully delivered apple notification to userId: {}", userId)
         } else {
