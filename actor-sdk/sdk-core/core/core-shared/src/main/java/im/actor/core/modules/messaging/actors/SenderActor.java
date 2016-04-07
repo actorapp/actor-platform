@@ -232,6 +232,21 @@ public class SenderActor extends ModuleActor {
         performUploadFile(rid, descriptor, fileName);
     }
 
+    public void doSendDocumentContent(Peer peer, DocumentContent remoteContent) {
+        long rid = RandomUtils.nextRid();
+        long date = createPendingDate();
+        long sortDate = date + 365 * 24 * 60 * 60 * 1000L;
+
+        Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, remoteContent,
+                new ArrayList<Reaction>());
+        context().getMessagesModule().getConversationActor(peer).send(message);
+
+        pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, remoteContent));
+        savePending();
+
+        performSendContent(peer, rid, remoteContent);
+    }
+
     public void doSendPhoto(Peer peer, FastThumb fastThumb, String descriptor, String fileName,
                             int fileSize, int w, int h) {
         long rid = RandomUtils.nextRid();
@@ -541,6 +556,9 @@ public class SenderActor extends ModuleActor {
         } else if (message instanceof SendJson) {
             SendJson sendJson = (SendJson) message;
             doSendJson(sendJson.getPeer(), sendJson.getJson());
+        } else if (message instanceof SendDocumentContent) {
+            SendDocumentContent sendDocumentContent = (SendDocumentContent) message;
+            doSendDocumentContent(sendDocumentContent.getPeer(), sendDocumentContent.getDocumentContent());
         } else {
             drop(message);
         }
@@ -586,6 +604,24 @@ public class SenderActor extends ModuleActor {
 
         public String getDescriptor() {
             return descriptor;
+        }
+    }
+
+    public static class SendDocumentContent {
+        private Peer peer;
+        private DocumentContent remoteContent;
+
+        public SendDocumentContent(Peer peer, DocumentContent remoteContent) {
+            this.peer = peer;
+            this.remoteContent = remoteContent;
+        }
+
+        public Peer getPeer() {
+            return peer;
+        }
+
+        public DocumentContent getDocumentContent() {
+            return remoteContent;
         }
     }
 

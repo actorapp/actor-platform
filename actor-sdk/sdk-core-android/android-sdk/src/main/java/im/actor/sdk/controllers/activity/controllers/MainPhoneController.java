@@ -98,8 +98,7 @@ public class MainPhoneController extends MainBaseController {
     private int shareUser;
     private String forwardText = "";
     private String forwardTextRaw = "";
-    private String forwardDocDescriptor = "";
-    private boolean forwardDocIsDoc = true;
+    private byte[] docContent = null;
 
     public MainPhoneController(ActorMainActivity mainActivity) {
         super(mainActivity);
@@ -107,7 +106,7 @@ public class MainPhoneController extends MainBaseController {
 
     @Override
     public void onDialogClicked(final Dialog item) {
-        if ((sendUriMultiple != null && !sendUriMultiple.isEmpty()) || (forwardDocDescriptor != null && !forwardDocDescriptor.isEmpty()) || (sendUriString != null && !sendUriString.isEmpty())) {
+        if ((sendUriMultiple != null && !sendUriMultiple.isEmpty()) || docContent != null || (sendUriString != null && !sendUriString.isEmpty())) {
             new AlertDialog.Builder(getActivity())
                     .setMessage(getActivity().getString(R.string.confirm_share) + " " + item.getDialogTitle() + "?")
                     .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
@@ -130,7 +129,7 @@ public class MainPhoneController extends MainBaseController {
 
     @Override
     public void onContactClicked(final Contact contact) {
-        if ((sendUriMultiple != null && !sendUriMultiple.isEmpty()) || (forwardDocDescriptor != null && !forwardDocDescriptor.isEmpty()) || (sendUriString != null && !sendUriString.isEmpty())) {
+        if ((sendUriMultiple != null && !sendUriMultiple.isEmpty()) || docContent != null || (sendUriString != null && !sendUriString.isEmpty())) {
             new AlertDialog.Builder(getActivity())
                     .setMessage(getActivity().getString(R.string.confirm_share) + " " + contact.getName() + "?")
                     .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
@@ -157,8 +156,7 @@ public class MainPhoneController extends MainBaseController {
                 .putExtra("send_text", sendText)
                 .putExtra("forward_text", forwardText)
                 .putExtra("forward_text_raw", forwardTextRaw)
-                .putExtra("forward_doc_descriptor", forwardDocDescriptor)
-                .putExtra("forward_doc_is_doc", forwardDocIsDoc)
+                .putExtra("forward_content", docContent)
                 .putExtra("share_user", shareUser));
         clearShare();
     }
@@ -169,8 +167,7 @@ public class MainPhoneController extends MainBaseController {
                 .putExtra("send_text", sendText)
                 .putExtra("forward_text", forwardText)
                 .putExtra("forward_text_raw", forwardTextRaw)
-                .putExtra("forward_doc_descriptor", forwardDocDescriptor)
-                .putExtra("forward_doc_is_doc", forwardDocIsDoc)
+                .putExtra("forward_content", docContent)
                 .putExtra("share_user", shareUser));
 
         clearShare();
@@ -179,7 +176,7 @@ public class MainPhoneController extends MainBaseController {
     private void clearShare() {
         sendUriMultiple.clear();
         sendUriString = "";
-        forwardDocDescriptor = "";
+        docContent = null;
         forwardText = "";
         forwardTextRaw = "";
         sendText = "";
@@ -396,9 +393,8 @@ public class MainPhoneController extends MainBaseController {
                 } else if (extras.containsKey("forward_text")) {
                     forwardText = extras.getString("forward_text");
                     forwardTextRaw = extras.getString("forward_text_raw");
-                } else if (extras.containsKey("forward_doc_descriptor")) {
-                    forwardDocDescriptor = extras.getString("forward_doc_descriptor");
-                    forwardDocIsDoc = extras.getBoolean("forward_doc_is_doc");
+                } else if (extras.containsKey("forward_content")) {
+                    docContent = extras.getByteArray("forward_content");
                 }
             }
         }

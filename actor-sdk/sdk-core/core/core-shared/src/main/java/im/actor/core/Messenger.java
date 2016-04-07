@@ -31,6 +31,7 @@ import im.actor.core.entity.PublicGroup;
 import im.actor.core.entity.Sex;
 import im.actor.core.entity.User;
 import im.actor.core.entity.WebActionDescriptor;
+import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.entity.content.FastThumb;
 import im.actor.core.entity.content.JsonContent;
 import im.actor.core.entity.Sticker;
@@ -899,6 +900,17 @@ public class Messenger {
     public void sendDocument(Peer peer, String fileName, String mimeType, FastThumb fastThumb,
                              String descriptor) {
         modules.getMessagesModule().sendDocument(peer, fileName, mimeType, fastThumb, descriptor);
+    }
+
+    /**
+     * Send DocumentContent - used for forwarding
+     *
+     * @param peer    destination peer
+     * @param content content to forward
+     */
+    @ObjectiveCName("sendDocumentContentWithPeer:withContent:")
+    public void sendDocumentContent(Peer peer, DocumentContent content) {
+        modules.getMessagesModule().sendDocumentContent(peer, content);
     }
 
     /**
