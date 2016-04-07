@@ -115,7 +115,7 @@ public class ConversationActor extends ModuleActor {
             state = state.changeOutReadDate(outReadState);
             isChanged = true;
         }
-        if (state.getOutReceiveState() < outReceiveState) {
+        if (state.getOutReceiveDate() < outReceiveState) {
             state = state.changeOutReceiveDate(outReceiveState);
             isChanged = true;
         }
@@ -164,18 +164,6 @@ public class ConversationActor extends ModuleActor {
         ArrayList<Message> updated = new ArrayList<>();
         ArrayList<Message> updatedDocs = new ArrayList<>();
         for (Message m : inMessages) {
-            if (m.getSenderId() == myUid()) {
-                // Force set message state if server out message
-                if (m.isOnServer()) {
-                    if (m.getSortDate() <= state.getOutReadDate()) {
-                        m = m.changeState(MessageState.READ);
-                    } else if (m.getSortDate() <= state.getOutReceiveState()) {
-                        m = m.changeState(MessageState.RECEIVED);
-                    } else {
-                        m = m.changeState(MessageState.SENT);
-                    }
-                }
-            }
 
             if (m.isOnServer()) {
                 if (topMessage == null) {
@@ -220,7 +208,6 @@ public class ConversationActor extends ModuleActor {
 
         // Update dialogs
         if (topMessage != null) {
-
             if (!isHiddenPeer) {
                 dialogsActor.send(new DialogsActor.InMessage(peer, topMessage, inPendingIndex.getCount()));
             }
@@ -238,19 +225,6 @@ public class ConversationActor extends ModuleActor {
         // if (messages.getValue(message.getEngineId()) != null) {
         //     return;
         // }
-
-        if (message.getSenderId() == myUid()) {
-            // Force set message state if server out message
-            if (message.isOnServer()) {
-                if (message.getSortDate() <= state.getOutReadDate()) {
-                    message = message.changeState(MessageState.READ);
-                } else if (message.getSortDate() <= state.getOutReceiveState()) {
-                    message = message.changeState(MessageState.RECEIVED);
-                } else {
-                    message = message.changeState(MessageState.SENT);
-                }
-            }
-        }
 
         // Adding message
         messages.addOrUpdateItem(message);
@@ -347,19 +321,10 @@ public class ConversationActor extends ModuleActor {
         // If we have pending message
         if (msg != null && (msg.getMessageState() == MessageState.PENDING)) {
 
-            MessageState messageState;
-            if (date <= state.getOutReadDate()) {
-                messageState = MessageState.READ;
-            } else if (date <= state.getOutReceiveState()) {
-                messageState = MessageState.RECEIVED;
-            } else {
-                messageState = MessageState.SENT;
-            }
-
             // Updating message
             Message updatedMsg = msg
                     .changeAllDate(date)
-                    .changeState(messageState);
+                    .changeState(MessageState.SENT);
             messages.addOrUpdateItem(updatedMsg);
             if (updatedMsg.getContent() instanceof DocumentContent) {
                 docs.addOrUpdateItem(updatedMsg);
@@ -413,7 +378,7 @@ public class ConversationActor extends ModuleActor {
 
     @Verified
     private void onMessageReceived(long date) {
-        if (date <= state.getOutReceiveState()) {
+        if (date <= state.getOutReceiveDate()) {
             return;
         }
         state = state.changeOutReceiveDate(date);
@@ -511,10 +476,23 @@ public class ConversationActor extends ModuleActor {
     // History
 
     @Verified
-    private void onHistoryLoaded(List<Message> history) {
+    private void onHistoryLoaded(List<Message> history, long maxReadDate, long maxReceiveDate) {
 
-        ArrayList<Message> updated = new ArrayList<Message>();
-        ArrayList<Message> updatedDocs = new ArrayList<Message>();
+        boolean isChanged = false;
+        if (state.getOutReceiveDate() < maxReceiveDate) {
+            state = state.changeOutReceiveDate(maxReceiveDate);
+            isChanged = true;
+        }
+        if (state.getOutReadDate() < maxReadDate) {
+            state = state.changeOutReadDate(maxReadDate);
+            isChanged = true;
+        }
+        if (isChanged) {
+            conversationState.addOrUpdateItem(state);
+        }
+
+        ArrayList<Message> updated = new ArrayList<>();
+        ArrayList<Message> updatedDocs = new ArrayList<>();
 
         long maxReadMessage = 0;
 
@@ -574,7 +552,9 @@ public class ConversationActor extends ModuleActor {
         } else if (message instanceof MessageReceived) {
             onMessageReceived(((MessageReceived) message).getDate());
         } else if (message instanceof HistoryLoaded) {
-            onHistoryLoaded(((HistoryLoaded) message).getMessages());
+            HistoryLoaded historyLoaded = ((HistoryLoaded) message);
+            onHistoryLoaded(historyLoaded.getMessages(), historyLoaded.getMaxReadDate(),
+                    historyLoaded.getMaxReceiveDate());
         } else if (message instanceof ClearConversation) {
             onClearConversation();
         } else if (message instanceof DeleteConversation) {
@@ -628,13 +608,25 @@ public class ConversationActor extends ModuleActor {
 
     public static class HistoryLoaded {
         private List<Message> messages;
+        private long maxReadDate;
+        private long maxReceiveDate;
 
-        public HistoryLoaded(List<Message> messages) {
+        public HistoryLoaded(List<Message> messages, long maxReadDate, long maxReceiveDate) {
             this.messages = messages;
+            this.maxReadDate = maxReadDate;
+            this.maxReceiveDate = maxReceiveDate;
         }
 
         public List<Message> getMessages() {
             return messages;
+        }
+
+        public long getMaxReadDate() {
+            return maxReadDate;
+        }
+
+        public long getMaxReceiveDate() {
+            return maxReceiveDate;
         }
     }
 
@@ -744,6 +736,7 @@ public class ConversationActor extends ModuleActor {
     }
 
     public static class Messages {
+
         private ArrayList<Message> messages;
 
         public Messages(ArrayList<Message> messages) {
