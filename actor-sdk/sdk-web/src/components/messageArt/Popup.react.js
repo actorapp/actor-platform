@@ -3,12 +3,16 @@
  */
 
 import React, { Component, PropTypes } from 'react';
-import { KeyCodes } from '../../constants/ActorAppConstants';
+import { KeyCodes, MessageArtPopupState } from '../../constants/ActorAppConstants';
 import classnames from 'classnames';
+
+import Emojis from './Emojis.react';
+import Stickers from './Stickers.react';
 
 class Popup extends Component {
   static propTypes = {
     className: PropTypes.string,
+    stickers: PropTypes.array.isRequired,
     onSelect: PropTypes.func.isRequired,
     onStickerSelect: PropTypes.func.isRequired,
     onClose: PropTypes.func.isRequired,
@@ -20,70 +24,69 @@ class Popup extends Component {
     super(props);
 
     this.state = {
-      isStickersOpen: true
+      currentState: MessageArtPopupState.EMOJI
     };
 
-    // this.handleEmojisTabClick = this.handleEmojisTabClick.bind(this);
-    // this.handleStickerTabClick = this.handleStickerTabClick.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
-  // handleEmojisTabClick(event) {
-  //
-  // }
-  //
-  // handleStickerTabClick(event) {
-  //
-  // }
-
-  // componentWillMount() {
-  //   console.debug('componentWillMount')
-  // }
-
   componentDidMount() {
-    console.debug('componentDidMount')
     document.addEventListener('keydown', this.handleKeyDown, false);
   }
 
   componentWillUnmount() {
-    console.debug('componentWillUnmount');
     document.removeEventListener('keydown', this.handleKeyDown, false);
   }
 
   handleKeyDown(event) {
-    console.debug('handleKeyDown', event);
     if (event.keyCode === KeyCodes.ESC) {
       event.preventDefault();
       this.props.onClose();
     }
   }
 
+  handleTabClick(state) {
+    this.setState({currentState: state})
+  }
+
   renderBody() {
-    return (
-      <div className="message-art__popup__body">
-        popup body
-      </div>
-    );
+    const { currentState } = this.state;
+
+    switch (currentState) {
+      case MessageArtPopupState.EMOJI:
+        return (
+          <Emojis onSelect={this.props.onSelect}/>
+        );
+      case MessageArtPopupState.STICKER:
+        return (
+          <Stickers
+            stickers={this.props.stickers}
+            onStickerSelect={this.props.onStickerSelect}
+          />
+        );
+      default:
+        return null;
+    }
   }
 
   renderFooter() {
-    const { isStickersOpen } = this.state;
+    const { currentState } = this.state;
 
     const emojiTabClassName = classnames('tab', {
-      'tab--active': !isStickersOpen
+      'tab--active': currentState === MessageArtPopupState.EMOJI
     });
     const stickerTabClassName = classnames('tab', {
-      'tab--active': isStickersOpen
+      'tab--active': currentState === MessageArtPopupState.STICKER
     });
 
     return (
       <footer className="message-art__popup__footer">
         <div className={emojiTabClassName}
-             onClick={this.handleEmojisTabClick}>
+             onClick={() => this.handleTabClick(MessageArtPopupState.EMOJI)}>
           Emojis
         </div>
         <div className={stickerTabClassName}
-             onClick={this.handleStickerTabClick}>
+             onClick={() => this.handleTabClick(MessageArtPopupState.STICKER)}>
           Stickers
         </div>
       </footer>
@@ -99,7 +102,10 @@ class Popup extends Component {
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
       >
-        {this.renderBody()}
+        <div className="message-art__popup__body">
+          {this.renderBody()}
+        </div>
+
         {this.renderFooter()}
       </div>
     )
