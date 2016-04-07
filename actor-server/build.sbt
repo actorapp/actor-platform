@@ -12,7 +12,11 @@ maintainer := "Actor LLC <oss@actor.im>"
 packageSummary := "Messaging platform server"
 packageDescription := "Open source messaging platform for team communications"
 version in Debian := version.value
-debianPackageDependencies in Debian ++= Seq("java8-runtime-headless")
+debianPackageDependencies in Debian ++= Seq(
+  "java8-runtime-headless",
+  "libapr1",
+  "openssl (>= 1.0.2)"
+)
 
 rpmVendor := "actor"
 
