@@ -3,8 +3,10 @@
  */
 
 import React, { Component, PropTypes } from 'react';
-import { KeyCodes, MessageArtPopupState } from '../../constants/ActorAppConstants';
+import { shouldComponentUpdate } from 'react-addons-pure-render-mixin';
 import classnames from 'classnames';
+
+import { KeyCodes, MessageArtPopupState } from '../../constants/ActorAppConstants';
 
 import Emojis from './Emojis.react';
 import Stickers from './Stickers.react';
@@ -28,6 +30,7 @@ class Popup extends Component {
     };
 
     this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.shouldComponentUpdate = shouldComponentUpdate.bind(this);
   }
 
   componentDidMount() {
