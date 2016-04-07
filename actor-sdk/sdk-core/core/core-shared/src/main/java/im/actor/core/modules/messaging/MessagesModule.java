@@ -44,6 +44,7 @@ import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.User;
+import im.actor.core.entity.content.AbsContent;
 import im.actor.core.entity.content.FastThumb;
 import im.actor.core.entity.content.JsonContent;
 import im.actor.core.entity.content.TextContent;
@@ -478,6 +479,10 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
         FileSystemReference reference = Storage.fileFromDescriptor(descriptor);
         sendMessageActor.send(new SenderActor.SendDocument(peer, fileName, mimeType,
                 reference.getSize(), reference.getDescriptor(), fastThumb));
+    }
+
+    public void forwardContent(Peer peer, AbsContent content) {
+        sendMessageActor.send(new SenderActor.ForwardContent(peer, content));
     }
 
     public void sendSticker(@NotNull Peer peer,
