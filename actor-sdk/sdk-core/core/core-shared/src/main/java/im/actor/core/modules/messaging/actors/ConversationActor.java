@@ -50,7 +50,6 @@ public class ConversationActor extends ModuleActor {
     private KeyValueEngine<ConversationState> conversationState;
     private ListEngine<Message> messages;
     private ListEngine<Message> docs;
-    private IndexStorage outPendingIndex;
     private IndexStorage inPendingIndex;
     private ActorRef dialogsActor;
     private ActorRef dialogsGroupedActor;
@@ -94,7 +93,6 @@ public class ConversationActor extends ModuleActor {
         // Read States
         //
 
-        outPendingIndex = new IndexEngine(Storage.createIndex("out_pending_" + peer.getPeerType() + "_" + peer.getPeerId()));
         inPendingIndex = new IndexEngine(Storage.createIndex("in_pending_" + peer.getPeerType() + "_" + peer.getPeerId()));
 
         long inReadState = context().getPreferences().getLong(IN_READ_STATE_PREF, 0);
@@ -200,12 +198,8 @@ public class ConversationActor extends ModuleActor {
         docs.addOrUpdateItems(updatedDocs);
 
         for (Message m : updated) {
-            if (m.getSenderId() == myUid()) {
-                // Adding to unread index if message is unread
-                if (m.isOnServer() && m.getMessageState() != MessageState.READ) {
-                    outPendingIndex.put(m.getRid(), m.getDate());
-                }
-            } else {
+            if (m.getSenderId() != myUid()) {
+
                 if (m.getSortDate() > state.getInMaxMessageDate()) {
                     state = state.changeInMaxDate(m.getSortDate());
                     conversationState.addOrUpdateItem(state);
@@ -267,12 +261,8 @@ public class ConversationActor extends ModuleActor {
         // Updating dialog if on server
         if (message.isOnServer()) {
 
-            if (message.getSenderId() == myUid()) {
-                // Adding to unread index if message is unread
-                if (message.isOnServer() && message.getMessageState() != MessageState.READ) {
-                    outPendingIndex.put(message.getRid(), message.getDate());
-                }
-            } else {
+            if (message.getSenderId() != myUid()) {
+
                 if (message.getSortDate() > state.getInMaxMessageDate()) {
                     state = state.changeInMaxDate(message.getSortDate());
                     conversationState.addOrUpdateItem(state);
@@ -382,11 +372,6 @@ public class ConversationActor extends ModuleActor {
                     dialogsGroupedActor.send(new ActiveDialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
                 }
             }
-
-            // Updating pending index
-            if (messageState != MessageState.READ) {
-                outPendingIndex.put(rid, date);
-            }
         }
     }
 
@@ -421,21 +406,6 @@ public class ConversationActor extends ModuleActor {
         state = state.changeOutReadDate(date);
         conversationState.addOrUpdateItem(state);
 
-        List<Long> res = outPendingIndex.removeBeforeValue(date);
-        if (res.size() > 0) {
-            ArrayList<Message> updated = new ArrayList<>();
-            for (Long ref : res) {
-                Message msg = messages.getValue(ref);
-                if (msg != null && msg.isReceivedOrSent()) {
-                    updated.add(msg.changeState(MessageState.READ));
-                }
-            }
-
-            if (updated.size() > 0) {
-                messages.addOrUpdateItems(updated);
-            }
-        }
-
         if (!isHiddenPeer) {
             dialogsActor.send(new DialogsActor.PeerReadChanged(peer, date));
         }
@@ -448,22 +418,6 @@ public class ConversationActor extends ModuleActor {
         }
         state = state.changeOutReceiveDate(date);
         conversationState.addOrUpdateItem(state);
-
-        List<Long> res = outPendingIndex.findBeforeValue(date);
-        if (res.size() > 0) {
-            ArrayList<Message> updated = new ArrayList<>();
-
-            for (Long ref : res) {
-                Message msg = messages.getValue(ref);
-                if (msg != null && msg.isSent()) {
-                    updated.add(msg.changeState(MessageState.RECEIVED));
-                }
-            }
-
-            if (updated.size() > 0) {
-                messages.addOrUpdateItems(updated);
-            }
-        }
 
         if (!isHiddenPeer) {
             dialogsActor.send(new DialogsActor.PeerReceiveChanged(peer, date));
@@ -523,7 +477,6 @@ public class ConversationActor extends ModuleActor {
         docs.removeItems(rids2);
 
         inPendingIndex.remove(rids);
-        outPendingIndex.remove(rids);
 
         // Updating dialog
         if (!isHiddenPeer) {
@@ -536,7 +489,6 @@ public class ConversationActor extends ModuleActor {
         messages.clear();
         docs.clear();
         inPendingIndex.clear();
-        outPendingIndex.clear();
         dialogsActor.send(new DialogsActor.ChatClear(peer));
         state = state
                 .changeInReadDate(0)
@@ -549,7 +501,6 @@ public class ConversationActor extends ModuleActor {
         messages.clear();
         docs.clear();
         inPendingIndex.clear();
-        outPendingIndex.clear();
         dialogsActor.send(new DialogsActor.ChatDelete(peer));
         state = state
                 .changeInReadDate(0)
