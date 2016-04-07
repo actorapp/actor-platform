@@ -59,6 +59,7 @@ public class Authentication {
     private static final String KEY_AUTH_UID = "auth_uid";
     private static final String KEY_PHONE = "auth_phone";
     private static final String KEY_EMAIL = "auth_email";
+    private static final String KEY_NICKNAME = "auth_nickname";
     private static final String KEY_SMS_HASH = "auth_sms_hash";
     private static final String KEY_SMS_CODE = "auth_sms_code";
     private static final String KEY_TRANSACTION_HASH = "auth_transaction_hash";
@@ -335,6 +336,11 @@ public class Authentication {
     }
 
     @Deprecated
+    public String getUserName() {
+        return modules.getPreferences().getString(KEY_NICKNAME);
+    }
+
+    @Deprecated
     public Command<AuthState> requestStartEmailAuth(final String email) {
         return new Command<AuthState>() {
             @Override
@@ -409,6 +415,7 @@ public class Authentication {
 
                     @Override
                     public void onResult(ResponseStartUsernameAuth response) {
+                        modules.getPreferences().putString(KEY_NICKNAME, userName);
                         modules.getPreferences().putString(KEY_TRANSACTION_HASH, response.getTransactionHash());
 
                         state = AuthState.PASSWORD_VALIDATION;
@@ -563,11 +570,16 @@ public class Authentication {
 
     @Deprecated
     public Command<AuthState> signUp(final String name, final ApiSex sex, final String avatarPath) {
+        return signUp(name, sex, avatarPath, null);
+    }
+
+    @Deprecated
+    public Command<AuthState> signUp(final String name, final ApiSex sex, final String avatarPath, final String password) {
         return new Command<AuthState>() {
             @Override
             public void start(final CommandCallback<AuthState> callback) {
                 request(new RequestSignUp(modules.getPreferences().getString(KEY_TRANSACTION_HASH), name, sex,
-                        null), new RpcCallback<ResponseAuth>() {
+                        password), new RpcCallback<ResponseAuth>() {
                     @Override
                     public void onResult(ResponseAuth response) {
                         onLoggedIn(callback, response);

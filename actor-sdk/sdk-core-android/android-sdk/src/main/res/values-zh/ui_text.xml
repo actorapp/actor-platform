@@ -84,6 +84,7 @@
 
     <!-- Sign In Fragment -->
     <string name="auth_code_phone_hint">已经发送验证码到您的手机： {0}</string>
+    <string name="auth_password">请输入您的密码： {0}</string>
     <string name="auth_code_email_hint">已经发送验证码到您的电子邮件： {0}</string>
     <string name="auth_code_title">输入短信中的验证码</string>
     <string name="auth_code_sms_hint">短信验证码</string>
@@ -93,6 +94,7 @@
     <string name="auth_code_phone_change">确定要变更手机号码吗?</string>
     <string name="auth_code_email_change">确定要变更电子邮件吗?</string>
     <string name="auth_code_change_yes">变更</string>
+    <string name="auth_password_hint">密码</string>
 
     <!-- Sign Up Fragment -->
     <string name="auth_profile_title">个人信息</string>
