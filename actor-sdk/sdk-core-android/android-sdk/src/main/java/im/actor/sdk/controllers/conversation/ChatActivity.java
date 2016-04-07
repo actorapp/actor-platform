@@ -46,7 +46,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -192,7 +191,7 @@ public class ChatActivity extends ActorEditTextActivity {
     private String forwardText;
     private String forwardTextRaw;
     private String sendText;
-    private DocumentContent forwardContent;
+    private AbsContent forwardContent;
     // Camera photo destination name
     private String pending_fileName;
 
@@ -478,7 +477,7 @@ public class ChatActivity extends ActorEditTextActivity {
         forwardTextRaw = intent.getStringExtra("forward_text_raw");
         sendText = intent.getStringExtra("send_text");
         try {
-            forwardContent = (DocumentContent) DocumentContent.parse(intent.getByteArrayExtra("forward_content"));
+            forwardContent = AbsContent.parse(intent.getByteArrayExtra("forward_content"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -663,7 +662,7 @@ public class ChatActivity extends ActorEditTextActivity {
         }
 
         if (forwardContent != null) {
-            messenger().sendDocumentContent(peer, forwardContent);
+            messenger().forwardContent(peer, forwardContent);
             forwardContent = null;
         }
     }

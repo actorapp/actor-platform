@@ -232,19 +232,19 @@ public class SenderActor extends ModuleActor {
         performUploadFile(rid, descriptor, fileName);
     }
 
-    public void doSendDocumentContent(Peer peer, DocumentContent remoteContent) {
+    public void doForwardContent(Peer peer, AbsContent content) {
         long rid = RandomUtils.nextRid();
         long date = createPendingDate();
         long sortDate = date + 365 * 24 * 60 * 60 * 1000L;
 
-        Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, remoteContent,
+        Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, content,
                 new ArrayList<Reaction>());
         context().getMessagesModule().getConversationActor(peer).send(message);
 
-        pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, remoteContent));
+        pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, content));
         savePending();
 
-        performSendContent(peer, rid, remoteContent);
+        performSendContent(peer, rid, content);
     }
 
     public void doSendPhoto(Peer peer, FastThumb fastThumb, String descriptor, String fileName,
@@ -556,9 +556,9 @@ public class SenderActor extends ModuleActor {
         } else if (message instanceof SendJson) {
             SendJson sendJson = (SendJson) message;
             doSendJson(sendJson.getPeer(), sendJson.getJson());
-        } else if (message instanceof SendDocumentContent) {
-            SendDocumentContent sendDocumentContent = (SendDocumentContent) message;
-            doSendDocumentContent(sendDocumentContent.getPeer(), sendDocumentContent.getDocumentContent());
+        } else if (message instanceof ForwardContent) {
+            ForwardContent forwardContent = (ForwardContent) message;
+            doForwardContent(forwardContent.getPeer(), forwardContent.getContent());
         } else {
             drop(message);
         }
@@ -607,21 +607,21 @@ public class SenderActor extends ModuleActor {
         }
     }
 
-    public static class SendDocumentContent {
+    public static class ForwardContent {
         private Peer peer;
-        private DocumentContent remoteContent;
+        private AbsContent content;
 
-        public SendDocumentContent(Peer peer, DocumentContent remoteContent) {
+        public ForwardContent(Peer peer, AbsContent remoteContent) {
             this.peer = peer;
-            this.remoteContent = remoteContent;
+            this.content = remoteContent;
         }
 
         public Peer getPeer() {
             return peer;
         }
 
-        public DocumentContent getDocumentContent() {
-            return remoteContent;
+        public AbsContent getContent() {
+            return content;
         }
     }
 
