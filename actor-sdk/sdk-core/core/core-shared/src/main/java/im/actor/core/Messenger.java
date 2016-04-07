@@ -31,7 +31,7 @@ import im.actor.core.entity.PublicGroup;
 import im.actor.core.entity.Sex;
 import im.actor.core.entity.User;
 import im.actor.core.entity.WebActionDescriptor;
-import im.actor.core.entity.content.DocumentContent;
+import im.actor.core.entity.content.AbsContent;
 import im.actor.core.entity.content.FastThumb;
 import im.actor.core.entity.content.JsonContent;
 import im.actor.core.entity.Sticker;
@@ -908,9 +908,9 @@ public class Messenger {
      * @param peer    destination peer
      * @param content content to forward
      */
-    @ObjectiveCName("sendDocumentContentWithPeer:withContent:")
-    public void sendDocumentContent(Peer peer, DocumentContent content) {
-        modules.getMessagesModule().sendDocumentContent(peer, content);
+    @ObjectiveCName("forwardContentContentWithPeer:withContent:")
+    public void forwardContent(Peer peer, AbsContent content) {
+        modules.getMessagesModule().forwardContent(peer, content);
     }
 
     /**
