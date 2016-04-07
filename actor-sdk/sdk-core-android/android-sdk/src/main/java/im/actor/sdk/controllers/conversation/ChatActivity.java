@@ -329,8 +329,8 @@ public class ChatActivity extends ActorEditTextActivity {
             }
         });
 
-        final TextView locationText = (TextView) findViewById(R.id.location_text);
-        final View shareLocation = findViewById(R.id.share_location);
+        final TextView contactText = (TextView) findViewById(R.id.contact_text);
+        final View shareContact = findViewById(R.id.share_contact);
         findViewById(R.id.share_hide).setVisibility(View.GONE);
 //        try {
 //            ApplicationInfo app = ChatActivity.this.getPackageManager().getApplicationInfo(ChatActivity.this.getPackageName(), PackageManager.GET_META_DATA);
@@ -339,12 +339,12 @@ public class ChatActivity extends ActorEditTextActivity {
 //            if (bundle.containsKey("com.google.android.geo.API_KEY")) {
 //                shareLocation.setVisibility(View.VISIBLE);
 //                findViewById(R.id.share_hide).setVisibility(View.GONE);
-//                locationText.setVisibility(View.VISIBLE);
+//                contactText.setVisibility(View.VISIBLE);
 //
 //            } else {
 //                shareLocation.setVisibility(View.GONE);
 //                findViewById(R.id.share_hide).setVisibility(View.VISIBLE);
-//                locationText.setVisibility(View.INVISIBLE);
+//                contactText.setVisibility(View.INVISIBLE);
 //                Log.w("Actor-GoogleMaps", "please, set up google map api key in AndroidManifest metadata to enable share locations");
 //            }
 //        } catch (PackageManager.NameNotFoundException e) {
@@ -413,10 +413,10 @@ public class ChatActivity extends ActorEditTextActivity {
         findViewById(R.id.share_gallery).setOnClickListener(shareMenuOCL);
         findViewById(R.id.share_video).setOnClickListener(shareMenuOCL);
         findViewById(R.id.share_camera).setOnClickListener(shareMenuOCL);
-        shareLocation.setOnClickListener(shareMenuOCL);
+        shareContact.setOnClickListener(shareMenuOCL);
         findViewById(R.id.share_file).setOnClickListener(shareMenuOCL);
         findViewById(R.id.share_hide).setOnClickListener(shareMenuOCL);
-        findViewById(R.id.share_contact).setOnClickListener(shareMenuOCL);
+        findViewById(R.id.share_location).setOnClickListener(shareMenuOCL);
         handleIntent();
 
         final ImageButton shareMenuSend = (ImageButton) findViewById(R.id.share_send);
@@ -444,13 +444,13 @@ public class ChatActivity extends ActorEditTextActivity {
                 @Override
                 public void onChanged(Set<String> val, Value<Set<String>> valueModel) {
                     if (val.size() > 0) {
-                        shareLocation.setVisibility(View.INVISIBLE);
+                        shareContact.setVisibility(View.INVISIBLE);
                         shareMenuSend.setVisibility(View.VISIBLE);
-                        locationText.setText(getString(R.string.chat_doc_send) + "(" + val.size() + ")");
+                        contactText.setText(getString(R.string.chat_doc_send) + "(" + val.size() + ")");
                     } else {
-                        shareLocation.setVisibility(View.VISIBLE);
+                        shareContact.setVisibility(View.VISIBLE);
                         shareMenuSend.setVisibility(View.INVISIBLE);
-                        locationText.setText(getString(R.string.share_menu_location));
+                        contactText.setText(getString(R.string.share_menu_contact));
                     }
                 }
             });
