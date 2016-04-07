@@ -718,6 +718,7 @@ $sticker-max-size: 180px;
     pre,
     samp {
       margin: 0 0 7px;
+      overflow: auto;
     }
 
     .emoji-outer {
