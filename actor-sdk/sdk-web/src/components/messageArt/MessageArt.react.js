@@ -12,6 +12,7 @@ import Popup from './Popup.react';
 class MessageArt extends Component {
   static propTypes = {
     isActive: PropTypes.bool.isRequired,
+    stickers: PropTypes.array.isRequired,
     onOpen: PropTypes.func.isRequired,
     onClose: PropTypes.func.isRequired,
     onSelect: PropTypes.func.isRequired,
@@ -51,13 +52,14 @@ class MessageArt extends Component {
   }
 
   renderPopup() {
-    const { isActive, onSelect, onStickerSelect, onClose } = this.props;
+    const { isActive, stickers, onSelect, onStickerSelect, onClose } = this.props;
     if (!isActive) return null;
 
     return (
       <Popup
         onSelect={onSelect}
         onClose={onClose}
+        stickers={stickers}
         onStickerSelect={onStickerSelect}
         onMouseEnter={this.onMouseEnter}
         onMouseLeave={this.onMouseLeave}

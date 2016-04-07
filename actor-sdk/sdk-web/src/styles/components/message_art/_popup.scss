@@ -23,6 +23,7 @@ $stem-size: $default-stem-size;
 
 .message-art {
   &__popup {
+    color: rgba($greyish-brown, .6);
     border-radius: $default-border-radius;
     background-color: white;
     box-shadow: 0 1px 3px 1px rgba(0, 0, 0, .1);
