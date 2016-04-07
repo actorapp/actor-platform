@@ -1,5 +1,6 @@
 package im.actor.sdk;
 
+import android.app.ActivityManager;
 import android.app.Application;
 
 /**
@@ -12,9 +13,20 @@ public class ActorSDKApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        onConfigureActorSDK();
+        int id = android.os.Process.myPid();
+        String myProcessName = getPackageName();
+        ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        for (ActivityManager.RunningAppProcessInfo procInfo : activityManager.getRunningAppProcesses()) {
+            if (id == procInfo.pid) {
+                myProcessName = procInfo.processName;
+            }
+        }
 
-        ActorSDK.sharedActor().createActor(this);
+        // Protection on double start
+        if (!myProcessName.endsWith(":actor_push")) {
+            onConfigureActorSDK();
+            ActorSDK.sharedActor().createActor(this);
+        }
     }
 
     /**

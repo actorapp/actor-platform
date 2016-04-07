@@ -35,6 +35,7 @@ public class PushManager implements ActorPushManager {
                                 return;
                             } else {
                                 Log.d(TAG, "Unable to load Token");
+                                exponentialBackoff.onFailure();
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
