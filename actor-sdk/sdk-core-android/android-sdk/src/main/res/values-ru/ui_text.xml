@@ -431,6 +431,10 @@
     <string name="not_vibration_subtitle">Включить вибрацию оповещенияй</string>
     <string name="not_show_text">Отображать имена и сообщения</string>
     <string name="not_show_text_subtitle">Отображать текст и имя отправителя в оповещениях</string>
+    <string name="not_group">Группы</string>
+    <string name="not_group_subtitle">Включить оповещения для групп</string>
+    <string name="not_group_mentions">Только для упоминаний</string>
+    <string name="not_group_mentions_subtitle">Включить оповещения в группах только для сообщений с упоминанием</string>
 
     <!-- Pick user -->
     <string name="pick_user_title">Выберите человека</string>
