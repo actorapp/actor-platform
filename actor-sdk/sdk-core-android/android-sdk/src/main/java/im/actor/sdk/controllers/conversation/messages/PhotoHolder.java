@@ -90,6 +90,7 @@ public class PhotoHolder extends MessageHolder {
     int lastUpdatedIndex = 0;
     long currenrRid = 0;
     private boolean updated = false;
+    private boolean playRequested = false;
 
     public PhotoHolder(MessagesAdapter fragment, View itemView) {
         super(fragment, itemView, false);
@@ -246,6 +247,9 @@ public class PhotoHolder extends MessageHolder {
 
 
         if (needRebind) {
+            if (!updated) {
+                playRequested = false;
+            }
             // Resetting progress state
             progressContainer.setVisibility(View.GONE);
             progressView.setVisibility(View.GONE);
@@ -293,6 +297,7 @@ public class PhotoHolder extends MessageHolder {
                 @Override
                 public void onNotDownloaded() {
                     messenger().startDownloading(location);
+                    playRequested = true;
                 }
 
                 @Override
@@ -308,8 +313,7 @@ public class PhotoHolder extends MessageHolder {
                             if (document instanceof PhotoContent) {
                                 Intents.openMedia(getAdapter().getMessagesFragment().getActivity(), previewView, reference.getDescriptor(), currentMessage.getSenderId());
                             } else {
-                                Activity activity = getAdapter().getMessagesFragment().getActivity();
-                                activity.startActivity(Intents.openDoc(document.getName(), reference.getDescriptor()));
+                                playVideo(document, reference);
                             }
                         }
                     });
@@ -335,6 +339,11 @@ public class PhotoHolder extends MessageHolder {
         }
     }
 
+    public void playVideo(DocumentContent document, FileSystemReference reference) {
+        Activity activity = getAdapter().getMessagesFragment().getActivity();
+        activity.startActivity(Intents.openDoc(document.getName(), reference.getDescriptor()));
+    }
+
     @Override
     public void unbind() {
         super.unbind();
@@ -354,6 +363,8 @@ public class PhotoHolder extends MessageHolder {
         fastThumbLoader.cancel();
         previewView.setImageURI(null);
         previewView.destroyDrawingCache();
+
+        playRequested = false;
     }
 
     private class UploadVMCallback implements UploadFileVMCallback {
@@ -465,6 +476,10 @@ public class PhotoHolder extends MessageHolder {
             } else {
                 if (!updated) {
                     checkFastThumb();
+                }
+                if (playRequested) {
+                    playRequested = false;
+                    playVideo((DocumentContent) currentMessage.getContent(), reference);
                 }
             }
 
