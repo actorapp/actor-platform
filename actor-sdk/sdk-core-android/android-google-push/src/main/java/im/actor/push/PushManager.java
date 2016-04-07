@@ -6,6 +6,7 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.io.IOException;
 
+import im.actor.core.util.ExponentialBackoff;
 import im.actor.runtime.Log;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.core.ActorPushManager;
@@ -16,15 +17,15 @@ public class PushManager implements ActorPushManager {
 
     @Override
     public void registerPush(final Context context) {
-//        isRegistered = ActorSDK.sharedActor().getMessenger().getPreferences().getBool("push_registered", false);
 
         if (!isRegistered) {
-            Log.d(TAG, "Requesting push token...");
 
-            // TODO: Add backoff
+            Log.d(TAG, "Requesting push token...");
+            
             new Thread() {
                 @Override
                 public void run() {
+                    ExponentialBackoff exponentialBackoff = new ExponentialBackoff();
                     while (true) {
                         try {
                             String regId = tryRegisterPush(context);
@@ -34,13 +35,16 @@ public class PushManager implements ActorPushManager {
                                 return;
                             } else {
                                 Log.d(TAG, "Unable to load Token");
+                                exponentialBackoff.onFailure();
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
+                            exponentialBackoff.onFailure();
                         }
-                        Log.d(TAG, "Waiting for next attempt");
+                        long waitTime = exponentialBackoff.exponentialWait();
+                        Log.d(TAG, "Next attempt in " + waitTime + " ms");
                         try {
-                            Thread.sleep(1000);
+                            Thread.sleep(waitTime);
                         } catch (InterruptedException e1) {
                             e1.printStackTrace();
                             return;

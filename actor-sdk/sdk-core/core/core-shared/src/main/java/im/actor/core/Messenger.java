@@ -1038,8 +1038,9 @@ public class Messenger {
      * @return rid of last read message
      */
     @ObjectiveCName("loadFirstUnread:")
+    @Deprecated
     public long loadFirstUnread(Peer peer) {
-        return modules.getMessagesModule().loadReadState(peer);
+        return getConversationVM(peer).getOwnReadDate().get();
     }
 
     /**

@@ -43,7 +43,7 @@ public class ConversationHistoryActor extends ModuleActor {
         if (!preferences().getBool(KEY_LOADED_INIT, false)) {
             self().send(new LoadMore());
         } else {
-            context().getMessagesModule().markAsLoaded(peer);
+            context().getMessagesModule().getConversationActor(peer).send(new ConversationActor.ConversationLoaded());
         }
     }
 
@@ -87,7 +87,7 @@ public class ConversationHistoryActor extends ModuleActor {
         preferences().putBool(KEY_LOADED_INIT, true);
 
         if (historyLoaded) {
-            context().getMessagesModule().markAsLoaded(peer);
+            context().getMessagesModule().getConversationActor(peer).send(new ConversationActor.ConversationLoaded());
         }
     }
 

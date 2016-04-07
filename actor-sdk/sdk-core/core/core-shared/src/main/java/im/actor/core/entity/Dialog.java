@@ -27,8 +27,8 @@ import im.actor.runtime.storage.ListEngineItem;
 
 public class Dialog extends BserObject implements ListEngineItem {
 
-    public static Dialog fromBytes(byte[] date) throws IOException {
-        return Bser.parse(new Dialog(), date);
+    public static Dialog fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new Dialog(), data);
     }
 
     public static BserCreator<Dialog> CREATOR = new BserCreator<Dialog>() {

@@ -73,7 +73,7 @@ public class DisplayLists extends AbsModule {
 
     public PlatformDisplayList getCustomSharedList(Peer peer, String dataType, BserCreator creator) {
         im.actor.runtime.Runtime.checkMainThread();
-        String key = peer.getUnuqueId()+dataType;
+        String key = peer.getUnuqueId() + dataType;
         if (!chatsCustomGlobalLists.containsKey(key)) {
             chatsCustomGlobalLists.put(key, buildChatCustomList(peer, dataType, true, creator));
         }
@@ -107,7 +107,7 @@ public class DisplayLists extends AbsModule {
         PlatformDisplayList<Message> res = Storage.createDisplayList(context().getMessagesModule().getConversationEngine(peer),
                 isShared, Message.ENTITY_NAME);
 
-        long lastRead = context().getMessagesModule().loadReadState(peer);
+        long lastRead = context().getMessagesModule().getConversationVM(peer).getOwnReadDate().get();
 
         if (lastRead != 0) {
             res.initCenter(lastRead);

@@ -4,6 +4,8 @@
 
 package im.actor.core.modules.messaging.actors;
 
+import java.util.HashMap;
+
 import im.actor.core.entity.ContentDescription;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
@@ -14,6 +16,7 @@ import im.actor.core.modules.ModuleActor;
 public class OwnReadActor extends ModuleActor {
 
     private boolean isInDifference = false;
+    private HashMap<Peer, Long> cachedReadStates = new HashMap<>();
 
     public OwnReadActor(ModuleContext context) {
         super(context);
@@ -39,7 +42,7 @@ public class OwnReadActor extends ModuleActor {
 
     public void onInMessage(Peer peer, Message message) {
         // Detecting if message already read
-        long readState = context().getMessagesModule().loadReadState(peer);
+        long readState = loadReadState(peer);
         if (message.getSortDate() <= readState) {
             // Already read
             return;
@@ -58,41 +61,47 @@ public class OwnReadActor extends ModuleActor {
 
     public void onMessageRead(Peer peer, long sortingDate) {
         // Detecting if message already read
-        long readState = context().getMessagesModule().loadReadState(peer);
-        if (sortingDate <= readState) {
-            // Already read
-            return;
+        long readState = loadReadState(peer);
+        if (sortingDate > readState) {
+            // Notify Server
+            context().getMessagesModule().getPlainReadActor()
+                    .send(new CursorReaderActor.MarkRead(peer, sortingDate));
+
+            markAsOwnRead(peer, sortingDate);
         }
+    }
 
-        // Mark as Read
-        context().getMessagesModule().getPlainReadActor()
-                .send(new CursorReaderActor.MarkRead(peer, sortingDate));
+    public void onMessageReadByMe(Peer peer, long sortingDate) {
+        // Detecting if message already read
+        long readState = loadReadState(peer);
+        if (sortingDate > readState) {
+            markAsOwnRead(peer, sortingDate);
+        }
+    }
 
+    private void markAsOwnRead(Peer peer, long sortingDate) {
         // Update Counters
         context().getMessagesModule().getConversationActor(peer).send(new ConversationActor.MessageReadByMe(sortingDate));
 
-        // Saving last read message
-        context().getMessagesModule().saveReadState(peer, sortingDate);
+        // Saving read state
+        saveReadState(peer, sortingDate);
 
         // Clearing notifications
         context().getNotificationsModule().onOwnRead(peer, sortingDate);
     }
 
-    public void onMessageReadByMe(Peer peer, long sortingDate) {
-        long readState = context().getMessagesModule().loadReadState(peer);
-        if (sortingDate <= readState) {
-            // Already read
-            return;
+    private long loadReadState(Peer peer) {
+        Long res = cachedReadStates.get(peer);
+        if (res != null) {
+            return res;
         }
+        res = context().getMessagesModule().getConversationVM(peer).getOwnReadDate().get();
+        cachedReadStates.put(peer, res);
+        return res;
+    }
 
-        // Update Counters
-        context().getMessagesModule().getConversationActor(peer).send(new ConversationActor.MessageReadByMe(sortingDate));
-
-        // Saving read state
-        context().getMessagesModule().saveReadState(peer, sortingDate);
-
-        // Clearing notifications
-        context().getNotificationsModule().onOwnRead(peer, sortingDate);
+    private void saveReadState(Peer peer, long date) {
+        cachedReadStates.put(peer, date);
     }
 
     // Messages
