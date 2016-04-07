@@ -91,6 +91,7 @@ final class ApplePushExtension(system: ActorSystem) extends Extension with AnyRe
       blocking {
         val client = new ApnsClient[SimpleApnsPushNotification](new File(cert.path), cert.password)
         client.connect(host).get(20, TimeUnit.SECONDS)
+        log.debug("Established client connection with push key: {}", cert.key)
         client
       }
     }

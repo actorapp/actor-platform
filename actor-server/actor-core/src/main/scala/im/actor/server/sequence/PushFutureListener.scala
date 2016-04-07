@@ -19,7 +19,9 @@ final class PushFutureListener(userId: Int, token: ByteString)(implicit system: 
   def operationComplete(future: Future[PushNotificationResponse[SimpleApnsPushNotification]]): Unit = {
     Try(future.get()) match {
       case Success(response) ⇒
-        if (!response.isAccepted) {
+        if (response.isAccepted) {
+          log.debug("Successfully delivered apple notification to userId: {}", userId)
+        } else {
           log.warning("APNS rejected notification with reason: {}", response.getRejectionReason)
           Option(response.getTokenInvalidationTimestamp) foreach { ts ⇒
             log.warning("APNS token for user: {} invalidated at {}. Deleting token now", userId, ts)
