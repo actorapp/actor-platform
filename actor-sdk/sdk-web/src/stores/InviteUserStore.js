@@ -11,6 +11,7 @@ class InviteUserStore extends ReduceStore {
     return {
       isOpen: false,
       isInviteByLinkOpen: false,
+      query: null,
       group: null,
       inviteUrl: null,
       users: {}
@@ -31,17 +32,18 @@ class InviteUserStore extends ReduceStore {
           group: action.group
         };
       case ActionTypes.INVITE_USER_MODAL_HIDE:
-        return {
-          ...state,
-          isOpen: false,
-          users: {}
-        };
+        return this.getInitialState();
       case ActionTypes.INVITE_USER_BY_LINK_MODAL_SHOW:
         return {
           ...state,
           isInviteByLinkOpen: true,
           group: action.group,
           inviteUrl: action.url
+        };
+      case ActionTypes.INVITE_USER_QUERY_CHANGE:
+        return {
+          ...state,
+          query: action.query
         };
       case ActionTypes.INVITE_USER_BY_LINK_MODAL_HIDE:
         return {

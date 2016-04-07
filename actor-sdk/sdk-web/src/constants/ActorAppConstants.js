@@ -141,6 +141,7 @@ export const ActionTypes = keymirror({
   INVITE_USER_MODAL_HIDE: null,
   INVITE_USER_BY_LINK_MODAL_SHOW: null,
   INVITE_USER_BY_LINK_MODAL_HIDE: null,
+  INVITE_USER_QUERY_CHANGE: null,
   INVITE_USER: null,
   INVITE_USER_SUCCESS: null,
   INVITE_USER_ERROR: null,
