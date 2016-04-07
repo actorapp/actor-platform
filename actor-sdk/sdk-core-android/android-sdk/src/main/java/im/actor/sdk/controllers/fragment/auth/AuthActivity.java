@@ -32,6 +32,7 @@ public class AuthActivity extends BaseFragmentActivity {
     public static final int AUTH_TYPE_PHONE = 1;
     public static final int AUTH_TYPE_EMAIL = 2;
     public static final int AUTH_TYPE_CUSTOM = 3;
+    public static final int AUTH_TYPE_USERNAME = 4;
     public static final int SIGN_TYPE_IN = 3;
     public static final int SIGN_TYPE_UP = 4;
     private static final int OAUTH_DIALOG = 1;
@@ -92,11 +93,13 @@ public class AuthActivity extends BaseFragmentActivity {
 
         switch (state) {
             case AUTH_START:
-
-                signFragment = ActorSDK.sharedActor().getDelegatedFragment(ActorSDK.sharedActor().getDelegate().getAuthStartIntent(), new SignPhoneFragment(), BaseAuthFragment.class);
+                signFragment = ActorSDK.sharedActor().getDelegatedFragment(ActorSDK.sharedActor().getDelegate().getAuthStartIntent(), new SignUserNameFragment(), BaseAuthFragment.class);
+//                signFragment = ActorSDK.sharedActor().getDelegatedFragment(ActorSDK.sharedActor().getDelegate().getAuthStartIntent(), new SignPhoneFragment(), BaseAuthFragment.class);
 
                 if (signFragment instanceof SignPhoneFragment) {
                     authType = AUTH_TYPE_PHONE;
+                } else if (signFragment instanceof SignUserNameFragment) {
+                    authType = AUTH_TYPE_USERNAME;
                 } else {
                     authType = AUTH_TYPE_CUSTOM;
                 }
@@ -113,6 +116,13 @@ public class AuthActivity extends BaseFragmentActivity {
                 args.putString("authType", SignInFragment.AUTH_TYPE_PHONE);
                 signInFragment.setArguments(args);
                 showFragment(signInFragment, false, false);
+                break;
+            case PASSWORD_VALIDATION:
+                Fragment signInPasswordFragment = new SignInPasswordFragment();
+                Bundle args2 = new Bundle();
+                args2.putString("authType", SignInPasswordFragment.AUTH_TYPE_USERNAME);
+                signInPasswordFragment.setArguments(args2);
+                showFragment(signInPasswordFragment, false, false);
                 break;
             case SIGN_UP:
                 showFragment(new SignUpFragment(), false, false);
@@ -134,7 +144,7 @@ public class AuthActivity extends BaseFragmentActivity {
         command.start(new CommandCallback<AuthState>() {
             @Override
             public void onResult(final AuthState res) {
-                if(dismissProgress()){
+                if (dismissProgress()) {
                     updateState(res);
                 }
             }
@@ -164,7 +174,10 @@ public class AuthActivity extends BaseFragmentActivity {
                         } else if ("FAILED_GET_OAUTH2_TOKEN".equals(re.getTag())) {
                             message = getString(R.string.auth_error_failed_get_oauth2_token);
                             canTryAgain = false;
-                        } else {
+                        } else if ("PASSWORD_INVALID".equals(re.getTag())) {
+                            message = getString(R.string.auth_error_password_invalid);
+                            canTryAgain = false;
+                        }else {
                             message = re.getMessage();
                             canTryAgain = re.isCanTryAgain();
                         }

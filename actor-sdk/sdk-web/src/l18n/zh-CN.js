@@ -1,6 +1,31 @@
 export default {
   'locale': 'zh',
   'messages': {
+      // Login
+      'login': {
+          'signIn': 'Sign in',
+          'wrong': 'Wrong?',
+          'phone': '手机号码',
+          'email': '邮箱地址',
+          'phone_or_email': 'Phone number or Email address',
+          'username':'Username',
+          'authCode': 'Auth code',
+          'password':'Password',
+          'yourName': 'Your name',
+          'errors': {
+              'numberInvalid': 'Invalid number',
+              'nameInvalid': 'Invalid name',
+              'codeInvalid': 'Invalid code',
+              'codeExpired': 'Phone code is expired',
+              'codeWait': 'Try to request code later'
+          },
+          'welcome': {
+              'header': 'Welcome to <strong>{appName}</strong>',
+              'text': '<p>{appName} Messenger brings all your business network connections into one place, makes it easily accessible wherever you go.</p>' +
+              '<p>Our aim is to make your work easier, reduce your email amount, make the business world closer by reducing time to find right contacts.</p>',
+              'copyright': '{appName} Messenger  2015'
+          }
+      },
     // Menus
     'menu': {
       // Sidebar menu

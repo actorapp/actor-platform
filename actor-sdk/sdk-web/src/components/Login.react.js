@@ -80,6 +80,23 @@ class Login extends Component {
     LoginActionCreators.sendSignup(this.state.name);
   };
 
+  onRequestUserName =  event => {
+          event.preventDefault();
+          // LoginActionCreators.sendSignup(this.state.login,'zs2860400qq');
+          LoginActionCreators.requestUserName(this.state.login);
+      };
+
+    onSendPassword = event => {
+          //alert(this.state.code);
+          event.preventDefault();
+          LoginActionCreators.sendPassword(this.state.code);
+      };
+
+      onSignupForPwdRequested = event => {
+          event.preventDefault();
+          LoginActionCreators.sendSignup(this.state.login,this.state.code);
+      };
+
   handleRestartAuthClick = event => {
     event.preventDefault();
     LoginActionCreators.restartAuth();
@@ -155,7 +172,7 @@ class Login extends Component {
           <div>
             <h1 className="login-new__heading"><FormattedMessage id="login.signIn"/></h1>
 
-            <form className={requestFormClassName} onSubmit={this.onRequestCode}>
+            <form className={requestFormClassName} onSubmit={this.onRequestUserName}>
               <a className="wrong" onClick={this.handleRestartAuthClick}><FormattedMessage id="login.wrong"/></a>
               <TextField className="login-new__forms__form__input input__material--wide"
                          disabled={isCodeRequested || step !== AuthSteps.LOGIN_WAIT}
@@ -174,7 +191,7 @@ class Login extends Component {
               </footer>
             </form>
 
-            <form className={checkFormClassName} onSubmit={this.onSendCode}>
+            <form className={checkFormClassName} onSubmit={this.onSendPassword}>
               <TextField className="login-new__forms__form__input input__material--wide"
                          disabled={isCodeSended || step !== AuthSteps.CODE_WAIT}
                          errorText={errors.code}
