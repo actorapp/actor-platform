@@ -46,6 +46,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -53,6 +54,8 @@ import im.actor.core.api.rpc.ResponseSeqDate;
 import im.actor.core.entity.MentionFilterResult;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
+import im.actor.core.entity.content.AbsContent;
+import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.network.RpcException;
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
@@ -186,11 +189,10 @@ public class ChatActivity extends ActorEditTextActivity {
     //////////////////////////////////
     private ArrayList<String> sendUriMultiple;
     private int shareUser;
-    private String forwardDocDescriptor;
-    private boolean forwardDocIsDoc = true;
     private String forwardText;
     private String forwardTextRaw;
     private String sendText;
+    private DocumentContent forwardContent;
     // Camera photo destination name
     private String pending_fileName;
 
@@ -475,8 +477,11 @@ public class ChatActivity extends ActorEditTextActivity {
         forwardText = intent.getStringExtra("forward_text");
         forwardTextRaw = intent.getStringExtra("forward_text_raw");
         sendText = intent.getStringExtra("send_text");
-        forwardDocDescriptor = intent.getStringExtra("forward_doc_descriptor");
-        forwardDocIsDoc = intent.getBooleanExtra("forward_doc_is_doc", true);
+        try {
+            forwardContent = (DocumentContent) DocumentContent.parse(intent.getByteArrayExtra("forward_content"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -657,13 +662,9 @@ public class ChatActivity extends ActorEditTextActivity {
             forwardTextRaw = "";
         }
 
-        if (forwardDocDescriptor != null && !forwardDocDescriptor.isEmpty()) {
-            if (forwardDocIsDoc) {
-                messenger().sendDocument(peer, forwardDocDescriptor);
-            } else {
-                execute(messenger().sendUri(peer, Uri.fromFile(new File(forwardDocDescriptor))));
-            }
-            forwardDocDescriptor = "";
+        if (forwardContent != null) {
+            messenger().sendDocumentContent(peer, forwardContent);
+            forwardContent = null;
         }
     }
 
