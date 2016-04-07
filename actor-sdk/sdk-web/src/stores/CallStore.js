@@ -33,11 +33,16 @@ class CallStore extends ReduceStore {
       case ActionTypes.CALL_CHANGED:
         return {
           ...state,
+          time: '00:00',
           peer: action.call.peer,
           state: action.call.state,
           members: action.call.members,
-          // isMuted: action.call.isMuted,
           isOutgoing: action.call.isOutgoing
+        };
+      case ActionTypes.CALL_TIME_CHANGED:
+        return {
+          ...state,
+          time: action.time
         };
       case ActionTypes.CALL_MUTE_TOGGLE:
         return {
