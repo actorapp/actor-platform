@@ -91,10 +91,14 @@ class InviteUser extends Component {
         contactClassName = 'contact--disabled'
       } else {
         const currentState = inviteUserState[contact.uid] || AsyncActionStates.PENDING;
+        const onClick = () => {
+          console.log(`%c Trying to invite "${contact.name}"(uid=${contact.uid}) to group ${group.id}`, 'color: #fd5c52');
+          this.onContactSelect(contact.uid)
+        };
         controls = (
           <Stateful
             currentState={currentState}
-            pending={<a className="material-icons" onClick={() => this.onContactSelect(contact.uid)}>person_add</a>}
+            pending={<a className="material-icons" onClick={onClick}>person_add</a>}
             processing={<i className="material-icons spin">autorenew</i>}
             success={<i className="material-icons">check</i>}
             failure={<i className="material-icons">warning</i>}

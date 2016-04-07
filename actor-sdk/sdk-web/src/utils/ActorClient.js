@@ -260,6 +260,7 @@ class ActorClient {
   }
 
   inviteMember(gid, uid) {
+    console.log(`%c Invite new member ${uid} to ${gid}`, 'color: #fd5c52');
     return window.messenger.inviteMember(gid, uid);
   }
 
