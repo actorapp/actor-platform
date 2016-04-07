@@ -164,16 +164,18 @@ public class DocHolder extends MessageHolder {
                     stateIcon.setTint(waitColor);
                     break;
                 case READ:
-                    stateIcon.setResource(R.drawable.msg_check_2);
-                    stateIcon.setTint(readColor);
-                    break;
                 case RECEIVED:
-                    stateIcon.setResource(R.drawable.msg_check_2);
-                    stateIcon.setTint(deliveredColor);
-                    break;
                 case SENT:
-                    stateIcon.setResource(R.drawable.msg_check_1);
-                    stateIcon.setTint(sentColor);
+                    if (message.getSortDate() <= readDate) {
+                        stateIcon.setResource(R.drawable.msg_check_2);
+                        stateIcon.setTint(readColor);
+                    } else if (message.getSortDate() <= receiveDate) {
+                        stateIcon.setResource(R.drawable.msg_check_2);
+                        stateIcon.setTint(deliveredColor);
+                    } else {
+                        stateIcon.setResource(R.drawable.msg_check_1);
+                        stateIcon.setTint(sentColor);
+                    }
                     break;
             }
         } else {
