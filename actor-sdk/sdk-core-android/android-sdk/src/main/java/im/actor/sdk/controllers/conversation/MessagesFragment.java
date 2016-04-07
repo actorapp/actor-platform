@@ -468,15 +468,12 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
                                 i.putExtra("forward_text", forward);
                                 i.putExtra("forward_text_raw", forward);
                             } else if (m.getContent() instanceof DocumentContent) {
-                                boolean isDoc = !(m.getContent() instanceof PhotoContent || m.getContent() instanceof VideoContent);
                                 DocumentContent fileMessage = (DocumentContent) m.getContent();
-                                if (fileMessage.getSource() instanceof FileRemoteSource) {
-                                    i.putExtra("forward_doc_descriptor", messenger().findDownloadedDescriptor(((FileRemoteSource) fileMessage.getSource()).getFileReference().getFileId()));
-                                } else if (fileMessage.getSource() instanceof FileLocalSource) {
-                                    String descriptor = ((FileLocalSource) fileMessage.getSource()).getFileDescriptor();
-                                    i.putExtra("forward_doc_descriptor", descriptor);
+                                try {
+                                    i.putExtra("forward_content", DocumentContent.serialize(fileMessage));
+                                } catch (IOException e) {
+                                    e.printStackTrace();
                                 }
-                                i.putExtra("forward_doc_is_doc", isDoc);
                             }
                         } else {
                             String quote = "";
