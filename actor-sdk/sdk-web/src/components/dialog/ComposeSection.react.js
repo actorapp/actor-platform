@@ -48,7 +48,8 @@ class ComposeSection extends Component {
       isSendAttachmentOpen: AttachmentStore.isOpen(),
       isMarkdownHintShow: prevState ? prevState.isMarkdownHintShow || false : false,
       isAutoFocusEnabled: ComposeStore.isAutoFocusEnabled(),
-      isMessageArtOpen: MessageArtStore.getState().isOpen
+      isMessageArtOpen: MessageArtStore.getState().isOpen,
+      stickers: MessageArtStore.getState().stickers
     };
   }
 
@@ -242,7 +243,7 @@ class ComposeSection extends Component {
   };
 
   render() {
-    const { text, profile, mentions, isMarkdownHintShow, isSendAttachmentOpen, isMessageArtOpen } = this.state;
+    const { text, profile, mentions, stickers, isMarkdownHintShow, isSendAttachmentOpen, isMessageArtOpen } = this.state;
     const { intl } = this.context;
     const markdownHintClassName = classnames('compose__markdown-hint', {
       'compose__markdown-hint--active': isMarkdownHintShow
@@ -261,6 +262,7 @@ class ComposeSection extends Component {
           onSelect={this.handleEmojiSelect}
           onStickerSelect={this.handleStickerSelect}
           isActive={isMessageArtOpen}
+          stickers={stickers}
         />
 
         <VoiceRecorder onFinish={this.sendVoiceRecord}/>

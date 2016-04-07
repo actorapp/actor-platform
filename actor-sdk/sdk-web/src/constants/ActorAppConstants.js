@@ -266,6 +266,11 @@ export const CallStates = {
   ENDED: 'ended'
 };
 
+export const MessageArtPopupState = {
+  EMOJI: 'emoji',
+  STICKER: 'sticker'
+};
+
 export const ConnectionStates = {
   ONLINE: 'online',
   CONNECTING: 'connecting',
@@ -361,6 +366,7 @@ export default {
   EventTypes,
   CallTypes,
   CallStates,
+  MessageArtPopupState,
   ConnectionStates,
   PeerTypes,
   ActivityTypes,
