@@ -3,6 +3,7 @@
  */
 
 import React, { Component, PropTypes } from 'react';
+import convertImage from '../../utils/convertImage';
 
 class Sticker extends Component {
   static propTypes = {
@@ -12,6 +13,17 @@ class Sticker extends Component {
 
   constructor(props) {
     super(props);
+
+    this.state = {
+      isLoading: true
+    };
+
+    convertImage(props.sticker.url).then((url) => {
+      this.setState({
+        url,
+        isLoading: false
+      });
+    });
 
     this.onClick = this.onClick.bind(this);
   }
@@ -25,7 +37,11 @@ class Sticker extends Component {
   }
 
   render() {
-    const { url } = this.props.sticker;
+    const { isLoading, url } = this.state;
+
+    if (isLoading) {
+      return null;
+    }
 
     return (
       <div className="sticker" onClick={this.onClick}>
