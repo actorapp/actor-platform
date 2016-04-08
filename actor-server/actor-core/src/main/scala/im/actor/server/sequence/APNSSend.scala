@@ -9,7 +9,7 @@ import scala.collection.concurrent.TrieMap
 
 trait APNSSend {
 
-  private val listeners = TrieMap.empty[Int, PushFutureListener]
+  private val listeners = TrieMap.empty[String, PushFutureListener]
 
   protected def sendNotification(payload: String, creds: ApplePushCredentials, userId: Int)(implicit client: ApplePushExtension#Client, system: ActorSystem) = {
     // when topic is null, it will be taken from APNs certificate
@@ -17,7 +17,7 @@ trait APNSSend {
     val token = BitVector(creds.token.toByteArray).toHex
     system.log.debug("Sending APNS, token: {}", token)
     val notification = new SimpleApnsPushNotification(TokenUtil.sanitizeTokenString(token), null, payload)
-    val listener = listeners.getOrElseUpdate(creds.apnsKey, new PushFutureListener(userId, creds.token)(system))
+    val listener = listeners.getOrElseUpdate(token, new PushFutureListener(userId, creds.token)(system))
     client.sendNotification(notification).addListener(listener)
   }
 
