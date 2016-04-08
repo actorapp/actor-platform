@@ -15,9 +15,9 @@ trait APNSSend {
     // when topic is null, it will be taken from APNs certificate
     // http://relayrides.github.io/pushy/apidocs/0.6/com/relayrides/pushy/apns/ApnsPushNotification.html#getTopic--
     val token = BitVector(creds.token.toByteArray).toHex
-    system.log.debug("Sending APNS, token: {}", token)
+    system.log.debug("Sending APNS, token: {}, key: {}, isVoip: {}", token, creds.apnsKey, creds.isVoip)
     val notification = new SimpleApnsPushNotification(TokenUtil.sanitizeTokenString(token), null, payload)
-    val listener = listeners.getOrElseUpdate(token, new PushFutureListener(userId, creds.token)(system))
+    val listener = listeners.getOrElseUpdate(token, new PushFutureListener(userId, creds)(system))
     client.sendNotification(notification).addListener(listener)
   }
 
