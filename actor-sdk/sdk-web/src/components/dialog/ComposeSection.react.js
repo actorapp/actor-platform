@@ -267,6 +267,7 @@ class ComposeSection extends Component {
 
         <VoiceRecorder onFinish={this.sendVoiceRecord}/>
 
+        {/* TODO: Move this hint to component */}
         <div className={markdownHintClassName}>
           <b>*{intl.messages['compose.markdown.bold']}*</b>
           &nbsp;&nbsp;

@@ -1,4 +1,5 @@
 /* global WebPDecoder */
+import { memoize } from 'lodash';
 
 function loadImage(src) {
   return new Promise(function (resolve, reject) {
@@ -64,6 +65,7 @@ function convertWebPText(data) {
 
 var canvas = document.createElement('canvas');
 var context = canvas.getContext('2d');
+
 function convertWebPToPNG(src) {
   return loadImage(src).then(function (data) {
     const webp = convertWebPText(data);
@@ -115,4 +117,4 @@ function convertImage(src) {
   });
 }
 
-module.exports = convertImage;
+export default memoize(convertImage);
