@@ -206,18 +206,17 @@ public class ConversationActor extends ModuleActor {
                     outPendingIndex.put(m.getRid(), m.getDate());
                 }
             } else {
+                if (m.getSortDate() > state.getInMaxMessageDate()) {
+                    state = state.changeInMaxDate(m.getSortDate());
+                    conversationState.addOrUpdateItem(state);
+                }
+
                 // Detecting if message already read
                 if (m.getSortDate() > state.getInReadDate()) {
                     // Writing to income unread storage
                     inPendingIndex.put(m.getRid(), m.getDate());
                 }
             }
-
-            if (m.getSortDate() > state.getInMaxMessageDate()) {
-                state = state.changeInMaxDate(m.getSortDate());
-                conversationState.addOrUpdateItem(state);
-            }
-
         }
 
         // Reading messages
@@ -274,18 +273,17 @@ public class ConversationActor extends ModuleActor {
                     outPendingIndex.put(message.getRid(), message.getDate());
                 }
             } else {
+                if (message.getSortDate() > state.getInMaxMessageDate()) {
+                    state = state.changeInMaxDate(message.getSortDate());
+                    conversationState.addOrUpdateItem(state);
+                }
+
                 // Detecting if message already read
                 if (message.getSortDate() > state.getInReadDate()) {
                     // Writing to income unread storage
                     inPendingIndex.put(message.getRid(), message.getDate());
                 }
             }
-
-            if (message.getSortDate() > state.getInMaxMessageDate()) {
-                state = state.changeInMaxDate(message.getSortDate());
-                conversationState.addOrUpdateItem(state);
-            }
-
 
             if (isConversationAutoRead()) {
                 checkReadState(false);
@@ -494,13 +492,14 @@ public class ConversationActor extends ModuleActor {
 
     private void checkReadState(boolean updateDialogs) {
         if (state.getInMaxMessageDate() > state.getInReadDate()) {
+            boolean inReadStateWasNull = state.getInReadDate() == 0;
             state = state.changeInReadDate(state.getInMaxMessageDate());
             conversationState.addOrUpdateItem(state);
 
             boolean wasNotNull = inPendingIndex.getCount() != 0;
             inPendingIndex.clear();
             readerActor.send(new OwnReadActor.MessageRead(peer, state.getInReadDate()));
-            if (wasNotNull && updateDialogs) {
+            if ((wasNotNull || inReadStateWasNull) && updateDialogs) {
                 if (!isHiddenPeer) {
                     dialogsActor.send(new DialogsActor.CounterChanged(peer, 0));
                 }
