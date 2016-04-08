@@ -49,14 +49,15 @@ final class PushServiceImpl(
   override def doHandleRegisterApplePush(apnsKey: Int, token: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     BitVector.fromHex(token) match {
       case Some(tokenBits) ⇒
-        val tokenBytes = tokenBits.toByteArray
-        val creds = ApplePushCredentials(clientData.authId, apnsKey, ByteString.copyFrom(tokenBytes), isVoip = false)
-        val action: DBIO[HandlerResult[ResponseVoid]] = for {
-          _ ← ApplePushCredentialsRepo.deleteByToken(tokenBytes)
-          _ ← ApplePushCredentialsRepo.createOrUpdate(creds)
-          _ = seqUpdExt.registerApplePushCredentials(creds)
-        } yield Ok(ResponseVoid)
-        db.run(action)
+//        val tokenBytes = tokenBits.toByteArray
+//        val creds = ApplePushCredentials(clientData.authId, apnsKey, ByteString.copyFrom(tokenBytes), isVoip = false)
+//        val action: DBIO[HandlerResult[ResponseVoid]] = for {
+//          _ ← ApplePushCredentialsRepo.deleteByToken(tokenBytes)
+//          _ ← ApplePushCredentialsRepo.createOrUpdate(creds)
+//          _ = seqUpdExt.registerApplePushCredentials(creds)
+//        } yield Ok(ResponseVoid)
+//        db.run(action)
+        Future.successful(Ok(ResponseVoid))
       case None ⇒
         Future.successful(Error(PushRpcErrors.WrongToken))
     }
@@ -89,13 +90,13 @@ final class PushServiceImpl(
   ): Future[HandlerResult[ResponseVoid]] =
     BitVector.fromHex(token) match {
       case Some(tokenBits) ⇒
-//        val tokenBytes = tokenBits.toByteArray
-//        val creds = ApplePushCredentials(clientData.authId, apnsKey, ByteString.copyFrom(tokenBytes), isVoip = true)
-//        val action: DBIO[HandlerResult[ResponseVoid]] = for {
-//          _ ← ApplePushCredentialsRepo.deleteByToken(tokenBytes)
-//          _ ← ApplePushCredentialsRepo.createOrUpdate(creds)
-//        } yield Ok(ResponseVoid)
-//        db.run(action)
+        val tokenBytes = tokenBits.toByteArray
+        val creds = ApplePushCredentials(clientData.authId, apnsKey, ByteString.copyFrom(tokenBytes), isVoip = true)
+        val action: DBIO[HandlerResult[ResponseVoid]] = for {
+          _ ← ApplePushCredentialsRepo.deleteByToken(tokenBytes)
+          _ ← ApplePushCredentialsRepo.createOrUpdate(creds)
+        } yield Ok(ResponseVoid)
+        db.run(action)
         Future.successful(Ok(ResponseVoid))
       case None ⇒ Future.successful(Error(PushRpcErrors.WrongToken))
     }
