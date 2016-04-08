@@ -16,11 +16,9 @@ import DialogStore from '../stores/DialogStore';
 import UserStore from '../stores/UserStore';
 import GroupStore from '../stores/GroupStore';
 
-import CallBody from './call/CallBody.react';
-import CallControls from './call/CallControls.react';
-import ContactDetails from './common/ContactDetails.react';
+import CallDraggable from './call/CallDraggable.react';
 
-class Call extends Component {
+class SmallCall extends Component {
   static getStores() {
     return [CallStore, DialogStore];
   }
@@ -41,20 +39,21 @@ class Call extends Component {
 
   static calculateState() {
     const call = CallStore.getState();
-    if (!call.isOpen || call.isFloating) {
+    if (!call.isOpen) {
       return { isOpen: false };
     }
 
     const dialogPeer = DialogStore.getCurrentPeer();
     const isSameDialog = PeerUtils.equals(dialogPeer, call.peer);
-    if (!isSameDialog) {
+
+    if (isSameDialog && !call.isFloating) {
       return { isOpen: false };
     }
 
     return {
       call,
       isOpen: true,
-      peerInfo: Call.calculatePeerInfo(call.peer)
+      peerInfo: SmallCall.calculatePeerInfo(call.peer)
     };
   }
 
@@ -99,46 +98,29 @@ class Call extends Component {
     console.debug('onVideo');
   }
 
-  renderContactInfo() {
-    const { call, peerInfo } = this.state;
-    if (!peerInfo || call.peer.type === PeerTypes.GROUP) return null;
-
-    return (
-      <section className="call__info">
-        <ContactDetails peerInfo={peerInfo}/>
-      </section>
-    )
-  }
-
   render() {
-    const {isOpen, call, peerInfo} = this.state;
+    const { isOpen, call, peerInfo } = this.state;
+
     if (!isOpen) {
-      return <section className="activity" />;
+      return null;
     }
 
     return (
-      <section className="activity activity--shown">
-        <div className="activity__body call">
-          <section className="call__container">
-            <CallBody peerInfo={peerInfo} callState={call.state}/>
-            <CallControls
-              callState={call.state}
-              isOutgoing={call.isOutgoing}
-              isMuted={call.isMuted}
-              onEnd={this.onEnd}
-              onAnswer={this.onAnswer}
-              onMuteToggle={this.onMuteToggle}
-              onFullscreen={this.onFullscreen}
-              onUserAdd={this.onUserAdd}
-              onVideo={this.onVideo}
-              onClose={this.onClose}
-            />
-          </section>
-          {this.renderContactInfo()}
-        </div>
-      </section>
+      <CallDraggable
+        peerInfo={peerInfo}
+        callState={call.state}
+        isOutgoing={call.isOutgoing}
+        isMuted={call.isMuted}
+        onEnd={this.onEnd}
+        onAnswer={this.onAnswer}
+        onMuteToggle={this.onMuteToggle}
+        onFullscreen={this.onFullscreen}
+        onUserAdd={this.onUserAdd}
+        onVideo={this.onVideo}
+        onClose={this.onClose}
+      />
     );
   }
 }
 
-export default Container.create(Call);
+export default Container.create(SmallCall);
