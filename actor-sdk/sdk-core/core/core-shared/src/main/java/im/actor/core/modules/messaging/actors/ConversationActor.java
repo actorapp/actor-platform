@@ -492,13 +492,14 @@ public class ConversationActor extends ModuleActor {
 
     private void checkReadState(boolean updateDialogs) {
         if (state.getInMaxMessageDate() > state.getInReadDate()) {
+            boolean inReadStateWasNull = state.getInReadDate() == 0;
             state = state.changeInReadDate(state.getInMaxMessageDate());
             conversationState.addOrUpdateItem(state);
 
             boolean wasNotNull = inPendingIndex.getCount() != 0;
             inPendingIndex.clear();
             readerActor.send(new OwnReadActor.MessageRead(peer, state.getInReadDate()));
-            if (wasNotNull && updateDialogs) {
+            if ((wasNotNull || inReadStateWasNull) && updateDialogs) {
                 if (!isHiddenPeer) {
                     dialogsActor.send(new DialogsActor.CounterChanged(peer, 0));
                 }
