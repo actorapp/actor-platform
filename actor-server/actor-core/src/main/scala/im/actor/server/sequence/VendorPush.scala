@@ -110,12 +110,10 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
   private val settingsControl = context.actorOf(SettingsControl.props(userId), "settings")
   private val googlePushProvider = new GooglePushProvider(userId, context.system)
   private val applePushProvider = new ApplePushProvider(userId)(context.system)
+  private lazy val actorPushProvider = ActorPush(context.system) // TODO: should it be lazy?
 
   private var mapping: Map[PushCredentials, PushCredentialsInfo] = Map.empty
   private var notificationSettings = AllNotificationSettings()
-
-  private def remove(creds: PushCredentials): Unit =
-    mapping -= creds
 
   init()
 
@@ -163,7 +161,7 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
       appleCreds ← ApplePushCredentialsRepo.findByUser(userId)
       actorCreds ← ActorPushCredentialsRepo.findByUser(userId)
       google ← DBIO.sequence(googleCreds map withInfo) map (_.flatten)
-      apple ← DBIO.sequence(appleCreds map withInfo) map (_.flatten)
+      apple ← DBIO.sequence(appleCreds.filterNot(_.isVoip) map withInfo) map (_.flatten)
       actor ← DBIO.sequence(actorCreds map withInfo) map (_.flatten)
     } yield Initialized(apple ++ google ++ actor)) pipeTo self
   }
@@ -255,7 +253,7 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
       case c: ApplePushCredentials ⇒
         applePushProvider.deliverInvisible(seq, c)
       case c: ActorPushCredentials ⇒
-        ActorPush(context.system).deliver(seq = seq, c)
+        actorPushProvider.deliver(seq, c)
     }
   }
 
@@ -291,27 +289,23 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
           isVibrationEnabled = isVibrationEnabled
         )
       case c: ActorPushCredentials ⇒
-        ActorPush(context.system).deliver(seq = seq, c)
+        actorPushProvider.deliver(seq, c)
     }
   }
 
-  private def register(creds: PushCredentials): Unit = {
-    db.run(for {
-      _ ← creds match {
-        case c: GooglePushCredentials ⇒ GooglePushCredentialsRepo.createOrUpdate(c)
-        case c: ApplePushCredentials  ⇒ ApplePushCredentialsRepo.createOrUpdate(c)
-        case c: ActorPushCredentials  ⇒ ActorPushCredentialsRepo.createOrUpdate(c)
-      }
-      appIdCredsOpt ← withInfo(creds)
-    } yield {
-      appIdCredsOpt.getOrElse(throw new RuntimeException(s"Cannot find appId for $creds"))
-    }) pipeTo self
-  }
+  // update done in PushServiceImpl already, no need to do it here, right?
+  private def register(creds: PushCredentials): Unit =
+    db.run {
+      withInfo(creds) map (_.getOrElse(throw new RuntimeException(s"Cannot find appId for $creds")))
+    } pipeTo self
 
   private def withInfo(c: PushCredentials): DBIO[Option[(PushCredentials, PushCredentialsInfo)]] =
     for {
       authSessionOpt ← AuthSessionRepo.findByAuthId(c.authId)
     } yield authSessionOpt map (s ⇒ c → PushCredentialsInfo(s.appId, s.id))
+
+  private def remove(creds: PushCredentials): Unit =
+    mapping -= creds
 
   private def unregister(authId: Long): Unit =
     mapping.keys filter (_.authId == authId) foreach unregister
