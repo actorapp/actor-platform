@@ -100,11 +100,6 @@ public class ActiveDialogsActor extends ModuleActor {
     }
 
 
-    private void onChatArchived(ApiPeer peer) {
-
-    }
-
-
     // Tools
 
     private void notifyVM(Peer peer) {
@@ -196,8 +191,6 @@ public class ActiveDialogsActor extends ModuleActor {
         } else if (message instanceof GroupedDialogsChanged) {
             GroupedDialogsChanged g = (GroupedDialogsChanged) message;
             onGroupedChanged(g.getItems());
-        } else if (message instanceof ChatArchived) {
-            onChatArchived(((ChatArchived) message).getPeer());
         } else {
             super.onReceive(message);
         }
@@ -245,17 +238,6 @@ public class ActiveDialogsActor extends ModuleActor {
 
         public int getCounter() {
             return counter;
-        }
-    }
-
-    public static class ChatArchived {
-        ApiPeer peer;
-        public ChatArchived(ApiPeer peer) {
-            this.peer = peer;
-        }
-
-        public ApiPeer getPeer() {
-            return peer;
         }
     }
 }

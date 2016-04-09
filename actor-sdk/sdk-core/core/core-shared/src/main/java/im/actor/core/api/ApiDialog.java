@@ -24,8 +24,10 @@ public class ApiDialog extends BserObject {
     private long date;
     private ApiMessage message;
     private ApiMessageState state;
+    private Long firstUnreadDate;
+    private ApiMessageAttributes attributes;
 
-    public ApiDialog(@NotNull ApiPeer peer, int unreadCount, long sortDate, int senderUid, long rid, long date, @NotNull ApiMessage message, @Nullable ApiMessageState state) {
+    public ApiDialog(@NotNull ApiPeer peer, int unreadCount, long sortDate, int senderUid, long rid, long date, @NotNull ApiMessage message, @Nullable ApiMessageState state, @Nullable Long firstUnreadDate, @Nullable ApiMessageAttributes attributes) {
         this.peer = peer;
         this.unreadCount = unreadCount;
         this.sortDate = sortDate;
@@ -34,6 +36,8 @@ public class ApiDialog extends BserObject {
         this.date = date;
         this.message = message;
         this.state = state;
+        this.firstUnreadDate = firstUnreadDate;
+        this.attributes = attributes;
     }
 
     public ApiDialog() {
@@ -75,6 +79,16 @@ public class ApiDialog extends BserObject {
         return this.state;
     }
 
+    @Nullable
+    public Long getFirstUnreadDate() {
+        return this.firstUnreadDate;
+    }
+
+    @Nullable
+    public ApiMessageAttributes getAttributes() {
+        return this.attributes;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.peer = values.getObj(1, new ApiPeer());
@@ -88,6 +102,8 @@ public class ApiDialog extends BserObject {
         if (val_state != 0) {
             this.state = ApiMessageState.parse(val_state);
         }
+        this.firstUnreadDate = values.optLong(10);
+        this.attributes = values.optObj(11, new ApiMessageAttributes());
     }
 
     @Override
@@ -109,6 +125,12 @@ public class ApiDialog extends BserObject {
         if (this.state != null) {
             writer.writeInt(9, this.state.getValue());
         }
+        if (this.firstUnreadDate != null) {
+            writer.writeLong(10, this.firstUnreadDate);
+        }
+        if (this.attributes != null) {
+            writer.writeObject(11, this.attributes);
+        }
     }
 
     @Override
@@ -121,6 +143,8 @@ public class ApiDialog extends BserObject {
         res += ", rid=" + this.rid;
         res += ", date=" + this.date;
         res += ", message=" + this.message;
+        res += ", firstUnreadDate=" + this.firstUnreadDate;
+        res += ", attributes=" + this.attributes;
         res += "}";
         return res;
     }

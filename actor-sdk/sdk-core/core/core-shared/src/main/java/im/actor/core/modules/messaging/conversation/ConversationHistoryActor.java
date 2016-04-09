@@ -56,7 +56,7 @@ public class ConversationHistoryActor extends ModuleActor {
         }
         isLoading = true;
 
-        request(new RequestLoadHistory(buidOutPeer(peer), historyMaxDate, LIMIT),
+        request(new RequestLoadHistory(buidOutPeer(peer), historyMaxDate, null, LIMIT),
                 new RpcCallback<ResponseLoadHistory>() {
                     @Override
                     public void onResult(ResponseLoadHistory response) {
