@@ -52,7 +52,17 @@ public class DialogsFragment extends BaseDialogFragment {
                                         .setPositiveButton(R.string.alert_delete_chat_yes, new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface d, int which) {
-                                                execute(messenger().deleteChat(dialog.getPeer()));
+                                                execute(messenger().deleteChat(dialog.getPeer()), R.string.progress_common,
+                                                        new CommandCallback<Boolean>() {
+                                                            @Override
+                                                            public void onResult(Boolean res) {
+
+                                                            }
+
+                                                            @Override
+                                                            public void onError(Exception e) {
+                                                                Toast.makeText(getActivity(), R.string.toast_unable_delete_chat, Toast.LENGTH_LONG).show();                                                                }
+                                                        });
                                             }
                                         })
                                         .show();
