@@ -16,7 +16,6 @@ import DialogStore from '../stores/DialogStore';
 import UserStore from '../stores/UserStore';
 import GroupStore from '../stores/GroupStore';
 
-import CallDraggable from './call/CallDraggable.react';
 import CallBody from './call/CallBody.react';
 import CallControls from './call/CallControls.react';
 import ContactDetails from './common/ContactDetails.react';
@@ -42,12 +41,20 @@ class Call extends Component {
 
   static calculateState() {
     const call = CallStore.getState();
+    if (!call.isOpen || call.isFloating) {
+      return { isOpen: false };
+    }
+
     const dialogPeer = DialogStore.getCurrentPeer();
+    const isSameDialog = PeerUtils.equals(dialogPeer, call.peer);
+    if (!isSameDialog) {
+      return { isOpen: false };
+    }
 
     return {
       call,
-      peerInfo: Call.calculatePeerInfo(call.peer),
-      isSameDialog: PeerUtils.equals(dialogPeer, call.peer)
+      isOpen: true,
+      peerInfo: Call.calculatePeerInfo(call.peer)
     };
   }
 
@@ -104,27 +111,9 @@ class Call extends Component {
   }
 
   render() {
-    const {call, peerInfo, isSameDialog} = this.state;
-    if (!call.isOpen) {
+    const {isOpen, call, peerInfo} = this.state;
+    if (!isOpen) {
       return <section className="activity" />;
-    }
-
-    if (!isSameDialog || call.isFloating) {
-      return (
-        <CallDraggable
-          peerInfo={peerInfo}
-          callState={call.state}
-          isOutgoing={call.isOutgoing}
-          isMuted={call.isMuted}
-          onEnd={this.onEnd}
-          onAnswer={this.onAnswer}
-          onMuteToggle={this.onMuteToggle}
-          onFullscreen={this.onFullscreen}
-          onUserAdd={this.onUserAdd}
-          onVideo={this.onVideo}
-          onClose={this.onClose}
-        />
-      );
     }
 
     return (

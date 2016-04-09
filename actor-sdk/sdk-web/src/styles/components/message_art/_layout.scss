@@ -1,0 +1,32 @@
+/*
+ * Copyright (C) 2016 Actor LLC. <https://actor.im>
+ */
+
+.message-art {
+  position: relative;
+  z-index: 15;
+
+  &__trigger {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+  }
+  &__popup {
+    position: absolute;
+    right: -3px;
+    bottom: 6px;
+
+    width: $message-art-width;
+
+    &__footer {
+      display: flex;
+      flex-direction: row;
+
+      align-content: center;
+      justify-content: center;
+      .tab {
+        flex: 1 1 auto;
+      }
+    }
+  }
+}

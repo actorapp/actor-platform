@@ -138,9 +138,10 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
         });
 
         final TextView aboutTitle = (TextView) about.findViewById(R.id.value);
-        TintImageView aboutIcon = (TintImageView) about.findViewById(R.id.recordIcon);
-        aboutIcon.setTint(style.getSettingsCategoryTextColor());
-        aboutIcon.setResource(R.drawable.ic_format_quote_white_24dp);
+        ImageView nickIcon = (ImageView) about.findViewById(R.id.recordIcon);
+        Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_format_quote_white_24dp));
+        DrawableCompat.setTint(drawable, style.getSettingsCategoryTextColor());
+        nickIcon.setImageDrawable(drawable);
         TextView aboutValue = (TextView) about.findViewById(R.id.title);
         aboutTitle.setTextColor(style.getTextPrimaryColor());
         aboutValue.setTextColor(style.getTextSecondaryColor());

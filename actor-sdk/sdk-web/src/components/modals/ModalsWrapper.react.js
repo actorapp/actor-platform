@@ -10,7 +10,7 @@ import { KeyCodes } from '../../constants/ActorAppConstants';
 import ContactActionCreators from '../../actions/ContactActionCreators';
 import GroupListActionCreators from '../../actions/GroupListActionCreators';
 
-import ContactStore from '../../stores/PeopleStore';
+import PeopleStore from '../../stores/PeopleStore';
 import GroupListStore from '../../stores/GroupListStore';
 
 import PeopleList from './PeopleList'
@@ -22,12 +22,12 @@ class ModalsWrapper extends Component {
   }
 
   static getStores() {
-    return [ContactStore, GroupListStore];
+    return [PeopleStore, GroupListStore];
   }
 
   static calculateState() {
     return {
-      isPeoplesOpen: ContactStore.isOpen(),
+      isPeoplesOpen: PeopleStore.isOpen(),
       isGroupsOpen: GroupListStore.isOpen()
     };
   }

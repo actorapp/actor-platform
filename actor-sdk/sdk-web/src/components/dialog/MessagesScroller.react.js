@@ -66,8 +66,14 @@ class MessagesScroller extends Component {
     }
   }
 
-  scrollToBottom() {
-    this.node.scrollTop = this.node.scrollHeight;
+  scrollToBottom(prevscrollHeight) {
+    const { scrollHeight } = this.node;
+    if (prevscrollHeight === scrollHeight) {
+      return;
+    }
+
+    this.node.scrollTop = scrollHeight;
+    setTimeout(() => this.scrollToBottom(scrollHeight), 60);
   }
 
   onRef(node) {

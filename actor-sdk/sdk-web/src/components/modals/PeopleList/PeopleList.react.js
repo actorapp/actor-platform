@@ -2,8 +2,7 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import { map, debounce } from 'lodash';
-
+import fuzzaldrin from 'fuzzaldrin';
 import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 import { Container } from 'flux/utils';
@@ -15,12 +14,18 @@ import ContactActionCreators from '../../../actions/ContactActionCreators';
 import DialogActionCreators from '../../../actions/DialogActionCreators';
 
 import PeopleStore from '../../../stores/PeopleStore';
+import ContactsStore from '../../../stores/ContactsStore';
 
 import People from './PeopleItem.react';
 
 class PeopleList extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      query: null,
+      selectedIndex: 0
+    };
   }
 
   static contextTypes = {
@@ -28,14 +33,17 @@ class PeopleList extends Component {
   };
 
   static getStores() {
-    return [PeopleStore];
+    return [PeopleStore, ContactsStore];
   }
 
-  static calculateState() {
+  static calculateState(prevState) {
+    const { isOpen } = PeopleStore.getState();
+    const contacts = ContactsStore.getState();
+
     return {
-      list: PeopleStore.getList(),
-      results: PeopleStore.getResults(),
-      selectedIndex: 0
+      ...prevState,
+      isOpen,
+      contacts
     };
   }
 
@@ -55,10 +63,7 @@ class PeopleList extends Component {
   handleSearchChange = (event) => {
     const query = event.target.value;
     this.setState({query});
-    this.searchPeople(query)
   };
-
-  searchPeople = debounce((query) => ContactActionCreators.search(query), 300, {trailing: true});
 
   handleContactSelect = (contact) => {
     DialogActionCreators.selectDialogPeerUser(contact.uid);
@@ -142,15 +147,42 @@ class PeopleList extends Component {
 
   handleScroll = (top) => this.refs.results.scrollTo(top);
 
-  render() {
-    const { query, results, selectedIndex, list } = this.state;
+  renderPeople() {
     const { intl } = this.context;
+    const { query, contacts, selectedIndex } = this.state;
 
-    const peopleList = map(results, (result, index) => <People contact={result} key={index}
-                                                               onClick={this.handleContactSelect}
-                                                               isSelected={selectedIndex === index}
-                                                               ref={selectedIndex === index ? 'selected' : null}
-                                                               onMouseOver={() => this.setState({selectedIndex: index})}/>);
+    if (!contacts.length) {
+      return <div>{intl.messages['modal.contacts.loading']}</div>;
+    }
+
+    const people = contacts.filter((contact) => {
+      const score = fuzzaldrin.score(contact.name, query);
+      return score > 0;
+    });
+
+    if (!people.length) {
+      return (
+        <li className="contacts__list__item contacts__list__item--empty text-center">
+          {intl.messages['modal.contacts.notFound']}
+        </li>
+      );
+    }
+
+    return people.map((contact, index) => (
+      <People
+        contact={contact}
+        key={contact.uid}
+        onClick={this.handleContactSelect}
+        isSelected={selectedIndex === index}
+        ref={selectedIndex === index ? 'selected' : null}
+        onMouseOver={() => this.setState({selectedIndex: index})}
+      />
+    ));
+  }
+
+  render() {
+    const { query } = this.state;
+    const { intl } = this.context;
 
     return (
       <div className="newmodal newmodal__contacts">
@@ -169,15 +201,7 @@ class PeopleList extends Component {
 
         <Scrollbar ref="results">
           <ul className="newmodal__result contacts__list">
-            {
-              list.length === 0
-                ? <div>{intl.messages['modal.contacts.loading']}</div>
-                : results.length === 0
-                ? <li className="contacts__list__item contacts__list__item--empty text-center">
-                    {intl.messages['modal.contacts.notFound']}
-                  </li>
-                : peopleList
-            }
+            {this.renderPeople()}
           </ul>
         </Scrollbar>
       </div>

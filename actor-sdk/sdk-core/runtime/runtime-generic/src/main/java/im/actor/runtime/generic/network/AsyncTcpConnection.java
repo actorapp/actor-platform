@@ -220,7 +220,7 @@ public class AsyncTcpConnection extends AsyncConnection {
                     outputStream.write(p);
                     outputStream.flush();
                 }
-            } catch (IOException e) {
+            } catch (IOException | NullPointerException e) {
                 e.printStackTrace();
                 crashConnection();
             }

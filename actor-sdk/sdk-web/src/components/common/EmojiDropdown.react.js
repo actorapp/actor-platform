@@ -201,11 +201,8 @@ class EmojiDropdown extends Component {
     });
 
     return (
-      <div className={emojiDropdownClassName}>
-
-        <i className={emojiOpenerClassName}
-           onMouseEnter={this.handleEmojiOpenerMouseEnter}
-           onMouseLeave={this.handleEmojiMouseLeave}>insert_emoticon</i>
+      <div className={emojiDropdownClassName} onMouseEnter={this.handleEmojiOpenerMouseEnter} onMouseLeave={this.handleEmojiMouseLeave}>
+        <i className={emojiOpenerClassName}>insert_emoticon</i>
 
 
         <div className="emoji-dropdown__wrapper" ref="emojiDropdown">
