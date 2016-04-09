@@ -17,11 +17,14 @@ import im.actor.core.network.RpcException;
 import im.actor.core.network.parser.Request;
 import im.actor.core.network.parser.Response;
 import im.actor.runtime.actors.ActorRef;
+import im.actor.runtime.mtproto.ManagedConnection;
 import im.actor.runtime.storage.KeyValueEngine;
 import im.actor.runtime.storage.KeyValueStorage;
 import im.actor.runtime.storage.PreferencesStorage;
 
 public abstract class AbsModule {
+
+    public static final int RPC_TIMEOUT = (int) (1.1 * ManagedConnection.CONNECTION_TIMEOUT);
 
     public static final String STORAGE_DIALOGS = "dialogs";
     public static final String STORAGE_DIALOGS_DESC = "dialogs_desc";
@@ -77,11 +80,15 @@ public abstract class AbsModule {
         return context.getAuthModule().myUid();
     }
 
-    public <T extends Response> void request(Request<T> request, RpcCallback<T> callback) {
-        context.getActorApi().request(request, callback);
+    public <T extends Response> void request(Request<T> request, RpcCallback<T> callback, long timeout) {
+        context.getActorApi().request(request, callback, timeout);
     }
 
-    public <T extends Response> void request(Request<T> request) {
+    public <T extends Response> void request(Request<T> request, RpcCallback<T> callback) {
+        request(request, callback, 0);
+    }
+
+    public <T extends Response> void request(Request<T> request, long timeout) {
         context.getActorApi().request(request, new RpcCallback<T>() {
             @Override
             public void onResult(T response) {
@@ -92,7 +99,11 @@ public abstract class AbsModule {
             public void onError(RpcException e) {
 
             }
-        });
+        }, timeout);
+    }
+
+    public <T extends Response> void request(Request<T> request) {
+        request(request, 0);
     }
 
     public KeyValueEngine<User> users() {
