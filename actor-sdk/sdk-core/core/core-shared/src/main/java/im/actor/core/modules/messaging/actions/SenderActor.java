@@ -34,7 +34,6 @@ import im.actor.core.entity.Message;
 import im.actor.core.entity.MessageState;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
-import im.actor.core.entity.Reaction;
 import im.actor.core.entity.User;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.entity.content.ContactContent;
@@ -56,7 +55,6 @@ import im.actor.core.modules.file.UploadManager;
 import im.actor.core.modules.messaging.entity.PendingMessage;
 import im.actor.core.modules.messaging.entity.PendingMessagesStorage;
 import im.actor.core.modules.ModuleActor;
-import im.actor.core.modules.messaging.conversation.ConversationActor;
 import im.actor.core.util.RandomUtils;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
@@ -449,7 +447,7 @@ public class SenderActor extends ModuleActor {
         if (outPeer == null || apiPeer == null) {
             return;
         }
-        request(new RequestSendMessage(outPeer, rid, message),
+        request(new RequestSendMessage(outPeer, rid, message, null),
                 new RpcCallback<ResponseSeqDate>() {
                     @Override
                     public void onResult(ResponseSeqDate response) {

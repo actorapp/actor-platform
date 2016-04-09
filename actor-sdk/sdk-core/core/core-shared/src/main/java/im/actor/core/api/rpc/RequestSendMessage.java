@@ -25,11 +25,13 @@ public class RequestSendMessage extends Request<ResponseSeqDate> {
     private ApiOutPeer peer;
     private long rid;
     private ApiMessage message;
+    private Integer isOnlyForUser;
 
-    public RequestSendMessage(@NotNull ApiOutPeer peer, long rid, @NotNull ApiMessage message) {
+    public RequestSendMessage(@NotNull ApiOutPeer peer, long rid, @NotNull ApiMessage message, @Nullable Integer isOnlyForUser) {
         this.peer = peer;
         this.rid = rid;
         this.message = message;
+        this.isOnlyForUser = isOnlyForUser;
     }
 
     public RequestSendMessage() {
@@ -50,11 +52,17 @@ public class RequestSendMessage extends Request<ResponseSeqDate> {
         return this.message;
     }
 
+    @Nullable
+    public Integer getIsOnlyForUser() {
+        return this.isOnlyForUser;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.peer = values.getObj(1, new ApiOutPeer());
         this.rid = values.getLong(3);
         this.message = ApiMessage.fromBytes(values.getBytes(4));
+        this.isOnlyForUser = values.optInt(5);
     }
 
     @Override
@@ -69,6 +77,9 @@ public class RequestSendMessage extends Request<ResponseSeqDate> {
         }
 
         writer.writeBytes(4, this.message.buildContainer());
+        if (this.isOnlyForUser != null) {
+            writer.writeInt(5, this.isOnlyForUser);
+        }
     }
 
     @Override
@@ -77,6 +88,7 @@ public class RequestSendMessage extends Request<ResponseSeqDate> {
         res += "peer=" + this.peer;
         res += ", rid=" + this.rid;
         res += ", message=" + this.message;
+        res += ", isOnlyForUser=" + this.isOnlyForUser;
         res += "}";
         return res;
     }

@@ -198,7 +198,7 @@ public class UpdateProcessor extends AbsModule {
 
         for (Peer peer : combinedDifference.getReadByMe().keySet()) {
             long time = combinedDifference.getReadByMe().get(peer);
-            messagesProcessor.onMessageReadByMe(buildApiPeer(peer), time);
+            messagesProcessor.onMessageReadByMe(buildApiPeer(peer), time, 0);
         }
 
         for (Peer peer : combinedDifference.getMessages().keySet()) {
@@ -267,7 +267,7 @@ public class UpdateProcessor extends AbsModule {
             messagesProcessor.onMessageRead(messageRead.getPeer(), messageRead.getStartDate());
         } else if (update instanceof UpdateMessageReadByMe) {
             UpdateMessageReadByMe messageReadByMe = (UpdateMessageReadByMe) update;
-            messagesProcessor.onMessageReadByMe(messageReadByMe.getPeer(), messageReadByMe.getStartDate());
+            messagesProcessor.onMessageReadByMe(messageReadByMe.getPeer(), messageReadByMe.getStartDate(), 0);
         } else if (update instanceof UpdateMessageReceived) {
             UpdateMessageReceived received = (UpdateMessageReceived) update;
             messagesProcessor.onMessageReceived(received.getPeer(), received.getStartDate());
