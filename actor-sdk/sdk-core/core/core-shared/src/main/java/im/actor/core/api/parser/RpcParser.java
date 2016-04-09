@@ -71,6 +71,7 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 232: return RequestShowDialog.fromBytes(payload);
             case 224: return RequestFavouriteDialog.fromBytes(payload);
             case 227: return RequestUnfavouriteDialog.fromBytes(payload);
+            case 2785: return RequestNotifyDialogOpened.fromBytes(payload);
             case 65: return RequestCreateGroupObsolete.fromBytes(payload);
             case 230: return RequestCreateGroup.fromBytes(payload);
             case 199: return RequestEnterGroup.fromBytes(payload);
@@ -108,6 +109,7 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 2642: return RequestRestoreNotifications.fromBytes(payload);
             case 77: return RequestGetFileUrl.fromBytes(payload);
             case 2573: return RequestGetFileUrls.fromBytes(payload);
+            case 2579: return RequestGetFileUrlBuilder.fromBytes(payload);
             case 97: return RequestGetFileUploadUrl.fromBytes(payload);
             case 122: return RequestCommitFileUpload.fromBytes(payload);
             case 142: return RequestGetFileUploadPartUrl.fromBytes(payload);
@@ -136,6 +138,7 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 51: return RequestRegisterGooglePush.fromBytes(payload);
             case 76: return RequestRegisterApplePush.fromBytes(payload);
             case 2576: return RequestRegisterApplePushKit.fromBytes(payload);
+            case 2593: return RequestRegisterApplePushToken.fromBytes(payload);
             case 2575: return RequestRegisterActorPush.fromBytes(payload);
             case 52: return RequestUnregisterPush.fromBytes(payload);
             case 2601: return RequestLoadPublicKeyGroups.fromBytes(payload);
@@ -195,6 +198,7 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 183: return ResponseIntegrationToken.fromBytes(payload);
             case 78: return ResponseGetFileUrl.fromBytes(payload);
             case 2574: return ResponseGetFileUrls.fromBytes(payload);
+            case 2580: return ResponseGetFileUrlBuilder.fromBytes(payload);
             case 121: return ResponseGetFileUploadUrl.fromBytes(payload);
             case 138: return ResponseCommitFileUpload.fromBytes(payload);
             case 141: return ResponseGetFileUploadPartUrl.fromBytes(payload);

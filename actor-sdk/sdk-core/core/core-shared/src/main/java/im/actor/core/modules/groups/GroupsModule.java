@@ -11,6 +11,7 @@ import java.util.List;
 import im.actor.core.api.ApiGroup;
 import im.actor.core.api.ApiGroupOutPeer;
 import im.actor.core.api.ApiMember;
+import im.actor.core.api.ApiMessageAttributes;
 import im.actor.core.api.ApiOutPeer;
 import im.actor.core.api.ApiPeer;
 import im.actor.core.api.ApiPeerType;
@@ -687,7 +688,8 @@ public class GroupsModule extends AbsModule {
                                                 response.getDate(),
                                                 response.getRid(),
                                                 new ApiServiceMessage("Joined chat",
-                                                        new ApiServiceExUserJoined())),
+                                                        new ApiServiceExUserJoined()),
+                                                new ApiMessageAttributes()),
                                         response.getUsers(),
                                         groups);
 
@@ -818,7 +820,8 @@ public class GroupsModule extends AbsModule {
                                         response.getDate(),
                                         response.getRid(),
                                         new ApiServiceMessage("Joined chat",
-                                                new ApiServiceExUserJoined())),
+                                                new ApiServiceExUserJoined()),
+                                        new ApiMessageAttributes()),
                                 response.getUsers(),
                                 groups);
 

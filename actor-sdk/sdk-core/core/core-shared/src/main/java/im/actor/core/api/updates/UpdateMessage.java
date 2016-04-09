@@ -27,13 +27,15 @@ public class UpdateMessage extends Update {
     private long date;
     private long rid;
     private ApiMessage message;
+    private ApiMessageAttributes attributes;
 
-    public UpdateMessage(@NotNull ApiPeer peer, int senderUid, long date, long rid, @NotNull ApiMessage message) {
+    public UpdateMessage(@NotNull ApiPeer peer, int senderUid, long date, long rid, @NotNull ApiMessage message, @Nullable ApiMessageAttributes attributes) {
         this.peer = peer;
         this.senderUid = senderUid;
         this.date = date;
         this.rid = rid;
         this.message = message;
+        this.attributes = attributes;
     }
 
     public UpdateMessage() {
@@ -62,6 +64,11 @@ public class UpdateMessage extends Update {
         return this.message;
     }
 
+    @Nullable
+    public ApiMessageAttributes getAttributes() {
+        return this.attributes;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.peer = values.getObj(1, new ApiPeer());
@@ -69,6 +76,7 @@ public class UpdateMessage extends Update {
         this.date = values.getLong(3);
         this.rid = values.getLong(4);
         this.message = ApiMessage.fromBytes(values.getBytes(5));
+        this.attributes = values.optObj(6, new ApiMessageAttributes());
     }
 
     @Override
@@ -85,6 +93,9 @@ public class UpdateMessage extends Update {
         }
 
         writer.writeBytes(5, this.message.buildContainer());
+        if (this.attributes != null) {
+            writer.writeObject(6, this.attributes);
+        }
     }
 
     @Override
@@ -95,6 +106,7 @@ public class UpdateMessage extends Update {
         res += ", date=" + this.date;
         res += ", rid=" + this.rid;
         res += ", message=" + this.message;
+        res += ", attributes=" + this.attributes;
         res += "}";
         return res;
     }

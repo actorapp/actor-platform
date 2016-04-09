@@ -12,7 +12,6 @@ import im.actor.core.entity.Peer;
 import im.actor.core.entity.content.TextContent;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.ModuleActor;
-import im.actor.core.modules.messaging.conversation.ConversationActor;
 
 public class OwnReadActor extends ModuleActor {
 
