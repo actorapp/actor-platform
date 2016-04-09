@@ -212,20 +212,18 @@ final class SeqUpdatesExtension(_system: ActorSystem) extends Extension {
       deliveryId = deliveryId
     )
 
-  def registerGooglePushCredentials(creds: GooglePushCredentialsModel) = registerPushCredentials(creds)
+  def registerGooglePushCredentials(creds: GooglePushCredentialsModel) =
+    registerPushCredentials(creds.authId, RegisterPushCredentials().withGoogle(creds))
 
-  def registerApplePushCredentials(creds: ApplePushCredentialsModel) = registerPushCredentials(creds)
+  def registerApplePushCredentials(creds: ApplePushCredentialsModel) =
+    registerPushCredentials(creds.authId, RegisterPushCredentials().withApple(creds))
 
-  def registerActorPushCredentials(creds: ActorPushCredentialsModel) = registerPushCredentials(creds)
+  def registerActorPushCredentials(creds: ActorPushCredentialsModel) =
+    registerPushCredentials(creds.authId, RegisterPushCredentials().withActor(creds))
 
   // TODO: real future
-  def registerPushCredentials(creds: PushCredentials) =
-    withAuthSession(creds.authId) { session ⇒
-      val register = creds match {
-        case c: GooglePushCredentialsModel ⇒ RegisterPushCredentials().withGoogle(c)
-        case c: ApplePushCredentialsModel  ⇒ RegisterPushCredentials().withApple(c)
-        case c: ActorPushCredentialsModel  ⇒ RegisterPushCredentials().withActor(c)
-      }
+  private def registerPushCredentials(authId: Long, register: RegisterPushCredentials) =
+    withAuthSession(authId) { session ⇒
       region.ref ! Envelope(session.userId).withRegisterPushCredentials(register)
       Future.successful(())
     }

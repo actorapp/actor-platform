@@ -15,7 +15,7 @@ final class ApplePushCredentialsTable(tag: Tag) extends Table[ApplePushCredentia
 
   def token = column[ByteString]("token")
 
-  def isVoip = column[Boolean]("is_voip")
+  def isVoip = column[Boolean]("is_voip", O.PrimaryKey)
 
   def * = (authId, apnsKey, token, isVoip) <> ((ApplePushCredentials.apply _).tupled, ApplePushCredentials.unapply)
 }
@@ -29,19 +29,12 @@ object ApplePushCredentialsRepo {
   def byToken(token: Array[Byte]): Query[ApplePushCredentialsTable, ApplePushCredentials, Seq] =
     byToken(ByteString.copyFrom(token))
 
-  def createOrUpdate(authId: Long, apnsKey: Int, token: ByteString)(implicit ec: ExecutionContext) = {
-    for {
-      _ ← creds.filterNot(_.authId === authId).filter(c ⇒ c.apnsKey === apnsKey && c.token === token).delete
-      r ← creds.insertOrUpdate(ApplePushCredentials(authId, apnsKey, token))
-    } yield r
-  }
-
   def createOrUpdate(c: ApplePushCredentials) =
     creds.insertOrUpdate(c)
 
-  def byAuthId(authId: Rep[Long]) = creds.filter(_.authId === authId)
+  private def byAuthId(authId: Rep[Long]) = creds.filter(_.authId === authId)
 
-  val byAuthIdC = Compiled(byAuthId _)
+  private val byAuthIdC = Compiled(byAuthId _)
 
   def find(authId: Long) =
     byAuthIdC(authId).result.headOption
