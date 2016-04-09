@@ -75,14 +75,7 @@ public class DialogsActor extends ModuleActor {
                     .setText(contentDescription.getText())
                     .setRelatedUid(contentDescription.getRelatedUser())
                     .setSenderId(message.getSenderId());
-
-//            if (message.getMessageState() == MessageState.READ) {
-//                builder.updateKnownReadDate(message.getSortDate());
-//                builder.updateKnownReceiveDate(message.getSortDate());
-//            } else if (message.getMessageState() == MessageState.RECEIVED) {
-//                builder.updateKnownReceiveDate(message.getSortDate());
-//            }
-
+            
             if (counter >= 0) {
                 builder.setUnreadCount(counter);
             }
@@ -278,12 +271,12 @@ public class DialogsActor extends ModuleActor {
 
                     .setUnreadCount(dialogHistory.getUnreadCount());
 
-//            if (dialogHistory.getStatus() == MessageState.READ) {
-//                builder.updateKnownReadDate(dialogHistory.getDate());
-//                builder.updateKnownReceiveDate(dialogHistory.getDate());
-//            } else if (dialogHistory.getStatus() == MessageState.RECEIVED) {
-//                builder.updateKnownReceiveDate(dialogHistory.getDate());
-//            }
+            if (dialogHistory.isRead()) {
+                builder.updateKnownReadDate(dialogHistory.getDate());
+                builder.updateKnownReceiveDate(dialogHistory.getDate());
+            } else if (dialogHistory.isReceived()) {
+                builder.updateKnownReceiveDate(dialogHistory.getDate());
+            }
 
             updated.add(builder.createDialog());
         }

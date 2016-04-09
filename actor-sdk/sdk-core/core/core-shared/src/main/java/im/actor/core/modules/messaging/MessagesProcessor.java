@@ -301,7 +301,9 @@ public class MessagesProcessor extends AbsModule {
             }
 
             dialogs.add(new DialogHistory(peer, dialog.getUnreadCount(), dialog.getSortDate(),
-                    dialog.getRid(), dialog.getDate(), dialog.getSenderUid(), msgContent, convert(dialog.getState())));
+                    dialog.getRid(), dialog.getDate(), dialog.getSenderUid(), msgContent,
+                    dialog.getState() == ApiMessageState.READ,
+                    dialog.getState() == ApiMessageState.RECEIVED));
         }
 
         // Sending updates to dialogs actor

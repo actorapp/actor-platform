@@ -17,10 +17,12 @@ public class DialogHistory {
     private final long date;
     private final int senderId;
     private final AbsContent content;
-    private final MessageState status;
+    private boolean isRead;
+    private boolean isReceived;
 
     public DialogHistory(Peer peer, int unreadCount, long sortDate,
-                         long rid, long date, int senderId, AbsContent content, MessageState status) {
+                         long rid, long date, int senderId, AbsContent content, boolean isRead,
+                         boolean isReceived) {
         this.peer = peer;
         this.unreadCount = unreadCount;
         this.sortDate = sortDate;
@@ -28,7 +30,8 @@ public class DialogHistory {
         this.date = date;
         this.senderId = senderId;
         this.content = content;
-        this.status = status;
+        this.isRead = isRead;
+        this.isReceived = isReceived;
     }
 
     public Peer getPeer() {
@@ -59,7 +62,11 @@ public class DialogHistory {
         return content;
     }
 
-    public MessageState getStatus() {
-        return status;
+    public boolean isRead() {
+        return isRead;
+    }
+
+    public boolean isReceived() {
+        return isReceived;
     }
 }
