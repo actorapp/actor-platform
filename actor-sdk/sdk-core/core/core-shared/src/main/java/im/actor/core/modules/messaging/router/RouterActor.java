@@ -1,5 +1,7 @@
 package im.actor.core.modules.messaging.router;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -17,6 +19,7 @@ import im.actor.core.modules.messaging.dialogs.DialogsActor;
 import im.actor.core.modules.messaging.history.entity.DialogHistory;
 import im.actor.core.modules.messaging.router.entity.RouterAppHidden;
 import im.actor.core.modules.messaging.router.entity.RouterAppVisible;
+import im.actor.core.modules.messaging.router.entity.RouterApplyChatHistory;
 import im.actor.core.modules.messaging.router.entity.RouterApplyDialogsHistory;
 import im.actor.core.modules.messaging.router.entity.RouterChangedContent;
 import im.actor.core.modules.messaging.router.entity.RouterChangedReactions;
@@ -198,8 +201,47 @@ public class RouterActor extends ModuleActor {
         dialogsActor(new DialogsActor.HistoryLoaded(dialogs));
     }
 
-    private void onChatHistoryLoaded(Peer peer, List<Message> messages, Long maxReadDate, Long maxReceiveDate) {
+    private void onChatHistoryLoaded(Peer peer, List<Message> messages, Long maxReadDate,
+                                     Long maxReceiveDate, boolean isEnded) {
 
+        long maxMessageDate = 0;
+
+        // Processing all new messages
+        ArrayList<Message> updated = new ArrayList<>();
+        for (Message historyMessage : messages) {
+            // Ignore already present messages
+            if (conversation(peer).getValue(historyMessage.getEngineId()) != null) {
+                continue;
+            }
+
+            updated.add(historyMessage);
+
+            if (historyMessage.getSenderId() != myUid()) {
+                maxMessageDate = Math.max(maxMessageDate, historyMessage.getSortDate());
+            }
+        }
+
+        // Writing messages
+        conversation(peer).addOrUpdateItems(updated);
+
+        // Updating conversation state
+        ConversationState state = conversationStates.getValue(peer.getUnuqueId());
+        boolean isChanged = false;
+        if (state.getInMaxMessageDate() < maxMessageDate) {
+            state = state.changeInMaxDate(maxMessageDate);
+            isChanged = true;
+        }
+        if (maxReadDate != null && maxReadDate != 0 && state.getOutReadDate() < maxMessageDate) {
+            state = state.changeOutReadDate(maxReadDate);
+            isChanged = true;
+        }
+        if (maxReceiveDate != null && maxReceiveDate != 0 && state.getOutReceiveDate() < maxReceiveDate) {
+            state = state.changeOutReceiveDate(maxReceiveDate);
+            isChanged = true;
+        }
+        if (isChanged) {
+            conversationStates.addOrUpdateItem(state);
+        }
     }
 
 
@@ -391,6 +433,11 @@ public class RouterActor extends ModuleActor {
             RouterApplyDialogsHistory dialogsHistory = (RouterApplyDialogsHistory) message;
             onDialogHistoryLoaded(dialogsHistory.getDialogs());
             dialogsHistory.getExecuteAfter().run();
+        } else if (message instanceof RouterApplyChatHistory) {
+            RouterApplyChatHistory chatHistory = (RouterApplyChatHistory) message;
+            onChatHistoryLoaded(chatHistory.getPeer(),
+                    chatHistory.getMessages(), chatHistory.getMaxReadDate(),
+                    chatHistory.getMaxReceiveDate(), chatHistory.isEnded());
         } else {
             super.onReceive(message);
         }

@@ -1,5 +1,6 @@
 package im.actor.core.modules.messaging.router;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.core.entity.Message;
@@ -12,6 +13,7 @@ import im.actor.core.events.PeerChatOpened;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.messaging.history.entity.DialogHistory;
 import im.actor.core.modules.messaging.router.entity.RouterAppVisible;
+import im.actor.core.modules.messaging.router.entity.RouterApplyChatHistory;
 import im.actor.core.modules.messaging.router.entity.RouterApplyDialogsHistory;
 import im.actor.core.modules.messaging.router.entity.RouterChangedContent;
 import im.actor.core.modules.messaging.router.entity.RouterChangedReactions;
@@ -49,6 +51,12 @@ public class RouterInt extends ActorInterface implements BusSubscriber {
         context.getEvents().subscribe(this, PeerChatOpened.EVENT);
         context.getEvents().subscribe(this, PeerChatClosed.EVENT);
         context.getEvents().subscribe(this, AppVisibleChanged.EVENT);
+    }
+
+    public void onNewMessage(Peer peer, Message message) {
+        ArrayList<Message> messages = new ArrayList<>();
+        messages.add(message);
+        onNewMessages(peer, messages);
     }
 
     public void onNewMessages(Peer peer, List<Message> messages) {
@@ -93,6 +101,10 @@ public class RouterInt extends ActorInterface implements BusSubscriber {
 
     public void onDialogsHistoryLoaded(List<DialogHistory> histories, Runnable runnable) {
         send(new RouterApplyDialogsHistory(histories, runnable));
+    }
+
+    public void onChatHistoryLoaded(Peer peer, List<Message> history, Long maxReceivedDate, Long maxReadDate, boolean isEnded) {
+        send(new RouterApplyChatHistory(peer, history, maxReceivedDate, maxReadDate, isEnded));
     }
 
     @Override

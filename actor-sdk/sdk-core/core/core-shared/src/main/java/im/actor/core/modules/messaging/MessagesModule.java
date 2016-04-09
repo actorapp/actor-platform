@@ -47,12 +47,15 @@ import im.actor.core.entity.content.FastThumb;
 import im.actor.core.entity.content.JsonContent;
 import im.actor.core.entity.content.TextContent;
 import im.actor.core.entity.Sticker;
+import im.actor.core.events.PeerChatOpened;
+import im.actor.core.events.PeerChatPreload;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.messaging.dialogs.ArchivedDialogsActor;
+import im.actor.core.modules.messaging.history.ArchivedDialogsActor;
 import im.actor.core.modules.messaging.actions.CursorReaderActor;
 import im.actor.core.modules.messaging.actions.CursorReceiverActor;
 import im.actor.core.modules.messaging.dialogs.DialogsActor;
+import im.actor.core.modules.messaging.history.ConversationHistoryActor;
 import im.actor.core.modules.messaging.history.DialogsHistoryActor;
 import im.actor.core.modules.messaging.dialogs.ActiveDialogsActor;
 import im.actor.core.modules.messaging.actions.MessageDeleteActor;
@@ -68,10 +71,13 @@ import im.actor.core.viewmodel.ConversationVM;
 import im.actor.core.viewmodel.DialogGroupsVM;
 import im.actor.core.viewmodel.DialogSpecVM;
 import im.actor.runtime.Storage;
+import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Props;
 import im.actor.runtime.bser.BserCreator;
+import im.actor.runtime.eventbus.BusSubscriber;
+import im.actor.runtime.eventbus.Event;
 import im.actor.runtime.files.FileSystemReference;
 import im.actor.runtime.mvvm.MVVMCollection;
 import im.actor.runtime.storage.ListEngine;
@@ -79,7 +85,8 @@ import im.actor.runtime.storage.SyncKeyValue;
 
 import static im.actor.runtime.actors.ActorSystem.system;
 
-public class MessagesModule extends AbsModule {
+
+public class MessagesModule extends AbsModule implements BusSubscriber {
 
     private static final String DIALOGS_KEY_VERSION = "_1";
 
@@ -95,14 +102,12 @@ public class MessagesModule extends AbsModule {
     private ActorRef sendMessageActor;
     private ActorRef deletionsActor;
     private RouterInt router;
+    private final HashMap<Peer, ActorRef> historyLoaderActors = new HashMap<>();
 
     private MVVMCollection<ConversationState, ConversationVM> conversationStates;
 
     private final HashMap<Peer, ListEngine<Message>> conversationEngines = new HashMap<>();
     private final HashMap<Peer, ListEngine<Message>> conversationDocsEngines = new HashMap<>();
-    private final HashMap<String, ListEngine> customConversationEngines = new HashMap<>();
-//    private final HashMap<Peer, ActorRef> conversationActors = new HashMap<>();
-//    private final HashMap<Peer, ActorRef> conversationHistoryActors = new HashMap<>();
 
     private final SyncKeyValue cursorStorage;
 
@@ -184,6 +189,9 @@ public class MessagesModule extends AbsModule {
                 return new MessageDeleteActor(context());
             }
         }), "actor/deletions");
+
+        context().getEvents().subscribe(this, PeerChatOpened.EVENT);
+        context().getEvents().subscribe(this, PeerChatPreload.EVENT);
     }
 
     public DialogGroupsVM getDialogGroupsVM() {
@@ -210,6 +218,20 @@ public class MessagesModule extends AbsModule {
         return ownReadActor;
     }
 
+    public ActorRef getHistoryActor(final Peer peer) {
+        synchronized (historyLoaderActors) {
+            if (!historyLoaderActors.containsKey(peer)) {
+                historyLoaderActors.put(peer, system().actorOf("history/" + peer, new ActorCreator() {
+                    @Override
+                    public Actor create() {
+                        return new ConversationHistoryActor(peer, context());
+                    }
+                }));
+            }
+            return historyLoaderActors.get(peer);
+        }
+    }
+
     public SyncKeyValue getCursorStorage() {
         return cursorStorage;
     }
@@ -217,42 +239,6 @@ public class MessagesModule extends AbsModule {
     public RouterInt getRouter() {
         return router;
     }
-
-    //    private void assumeConvActor(final Peer peer) {
-//        synchronized (conversationActors) {
-//            if (!conversationActors.containsKey(peer)) {
-//                conversationActors.put(peer, system().actorOf(Props.create(new ActorCreator() {
-//                    @Override
-//                    public ConversationActor create() {
-//                        return new ConversationActor(peer, context());
-//                    }
-//                }), "actor/conv_" + peer.getPeerType() + "_" + peer.getPeerId()));
-//                conversationHistoryActors.put(peer, system().actorOf(Props.create(new ActorCreator() {
-//                    @Override
-//                    public ConversationHistoryActor create() {
-//                        return new ConversationHistoryActor(peer, context());
-//                    }
-//                }), "actor/conv_" + peer.getPeerType() + "_" + peer.getPeerId() + "/history"));
-//            }
-//        }
-//        if (peer.getPeerType() == PeerType.PRIVATE) {
-//            context().getEncryption().getEncryptedChatManager(peer.getPeerId());
-//        }
-//    }
-//
-//    public ActorRef getConversationHistoryActor(final Peer peer) {
-//        assumeConvActor(peer);
-//        synchronized (conversationActors) {
-//            return conversationHistoryActors.get(peer);
-//        }
-//    }
-//
-//    public ActorRef getConversationActor(final Peer peer) {
-//        assumeConvActor(peer);
-//        synchronized (conversationActors) {
-//            return conversationActors.get(peer);
-//        }
-//    }
 
     public ListEngine<Message> getConversationEngine(Peer peer) {
         synchronized (conversationEngines) {
@@ -271,17 +257,6 @@ public class MessagesModule extends AbsModule {
                         Storage.createList(STORAGE_CHAT_DOCS_PREFIX + peer.getUnuqueId(), Message.CREATOR));
             }
             return conversationDocsEngines.get(peer);
-        }
-    }
-
-    public ListEngine getCustomConversationEngine(Peer peer, String dataType, BserCreator creator) {
-        String key = peer.getUnuqueId() + dataType;
-        synchronized (customConversationEngines) {
-            if (!customConversationEngines.containsKey(key)) {
-                customConversationEngines.put(key,
-                        Storage.createList(STORAGE_CHAT_CUSTOM_PREFIX + "_" + dataType + "_" + peer.getUnuqueId(), creator));
-            }
-            return customConversationEngines.get(key);
         }
     }
 
@@ -341,12 +316,12 @@ public class MessagesModule extends AbsModule {
     }
 
     public void loadMoreHistory(final Peer peer) {
-//        im.actor.runtime.Runtime.dispatch(new Runnable() {
-//            @Override
-//            public void run() {
-//                getConversationHistoryActor(peer).send(new ConversationHistoryActor.LoadMore());
-//            }
-//        });
+        im.actor.runtime.Runtime.dispatch(new Runnable() {
+            @Override
+            public void run() {
+                getHistoryActor(peer).send(new ConversationHistoryActor.LoadMore());
+            }
+        });
     }
 
 
@@ -1021,5 +996,14 @@ public class MessagesModule extends AbsModule {
 
     public void resetModule() {
         // TODO: Implement
+    }
+
+    @Override
+    public void onBusEvent(Event event) {
+        if (event instanceof PeerChatOpened) {
+            getHistoryActor(((PeerChatOpened) event).getPeer());
+        } else if (event instanceof PeerChatPreload) {
+            getHistoryActor(((PeerChatPreload) event).getPeer());
+        }
     }
 }

@@ -28,6 +28,7 @@ import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.messaging.dialogs.DialogsActor;
 import im.actor.core.modules.messaging.dialogs.ActiveDialogsActor;
 import im.actor.core.entity.EntityConverter;
+import im.actor.core.modules.messaging.router.RouterInt;
 import im.actor.runtime.annotations.Verified;
 
 import static im.actor.core.util.JavaUtil.equalsE;
@@ -76,12 +77,12 @@ public class GroupsProcessor extends AbsModule {
                     // If current user invite himself, add create group message
                     Message message = new Message(rid, date, date, inviterId,
                             MessageState.UNKNOWN, ServiceGroupCreated.create());
-                    // conversationActor(group.peer()).send(message);
+                    getRouter().onNewMessage(group.peer(), message);
                 } else {
                     // else add invite message
                     Message message = new Message(rid, date, date, inviterId,
                             MessageState.SENT, ServiceGroupUserInvited.create(myUid()));
-                    // conversationActor(group.peer()).send(message);
+                    getRouter().onNewMessage(group.peer(), message);
                 }
             }
         }
@@ -107,7 +108,7 @@ public class GroupsProcessor extends AbsModule {
                 Message message = new Message(rid, date, date, uid,
                         uid == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
                         ServiceGroupUserLeave.create());
-                // conversationActor(group.peer()).send(message);
+                getRouter().onNewMessage(group.peer(), message);
             }
         }
     }
@@ -132,7 +133,7 @@ public class GroupsProcessor extends AbsModule {
                 Message message = new Message(rid, date, date, kicker,
                         kicker == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
                         ServiceGroupUserKicked.create(uid));
-                // conversationActor(group.peer()).send(message);
+                getRouter().onNewMessage(group.peer(), message);
             }
         }
     }
@@ -150,7 +151,7 @@ public class GroupsProcessor extends AbsModule {
                 Message message = new Message(rid, date, date, adder,
                         adder == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
                         ServiceGroupUserInvited.create(uid));
-                // conversationActor(group.peer()).send(message);
+                getRouter().onNewMessage(group.peer(), message);
             }
         }
     }
@@ -181,7 +182,7 @@ public class GroupsProcessor extends AbsModule {
                 Message message = new Message(rid, date, date, uid,
                         uid == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
                         ServiceGroupTitleChanged.create(title));
-                // conversationActor(group.peer()).send(message);
+                getRouter().onNewMessage(group.peer(), message);
             }
         }
     }
@@ -205,8 +206,6 @@ public class GroupsProcessor extends AbsModule {
                 // Notify about group change
                 onGroupDescChanged(upd);
             }
-
-
         }
     }
 
@@ -264,7 +263,7 @@ public class GroupsProcessor extends AbsModule {
                 Message message = new Message(rid, date, date, uid,
                         uid == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
                         ServiceGroupAvatarChanged.create(avatar));
-                // conversationActor(group.peer()).send(message);
+                getRouter().onNewMessage(group.peer(), message);
             }
         }
     }
@@ -301,5 +300,9 @@ public class GroupsProcessor extends AbsModule {
             context().getMessagesModule().getDialogsGroupedActor().send(
                     new ActiveDialogsActor.PeerInformationChanged(Peer.group(group.getGroupId())));
         }
+    }
+
+    private RouterInt getRouter() {
+        return context().getMessagesModule().getRouter();
     }
 }
