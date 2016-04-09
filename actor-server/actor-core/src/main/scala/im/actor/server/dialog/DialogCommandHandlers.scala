@@ -154,14 +154,16 @@ trait DialogCommandHandlers extends PeersImplicits {
 
   protected def messageRead(state: DialogState, mr: MessageRead): Unit = {
     val mustRead = mustMakeRead(state, mr)
+    val readDate = new DateTime(mr.date)
 
     (if (mustRead) {
       for {
         _ ← dialogExt.ackMessageRead(peer, mr)
-        _ ← db.run(markMessagesRead(selfPeer, peer, new DateTime(mr.date)))
-        unreadCount ← db.run(dialogExt.getUnreadTotal(userId))
+        _ ← db.run(markMessagesRead(selfPeer, peer, readDate))
+        historyOwner <- HistoryUtils.getHistoryOwner(peer, userId)
+        unreadCount ← db.run(dialogExt.getUnreadCount(userId, historyOwner, peer, readDate))
         _ ← deliveryExt.read(userId, mr.readerAuthSid, peer, mr.date, Some(unreadCount))
-        _ ← deliveryExt.sendCountersUpdate(userId, unreadCount)
+        _ ← deliveryExt.sendCountersUpdate(userId)
       } yield MessageReadAck()
     } else {
       Future.successful(MessageReadAck())
