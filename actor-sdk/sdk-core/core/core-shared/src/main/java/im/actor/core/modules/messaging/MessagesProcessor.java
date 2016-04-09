@@ -4,7 +4,6 @@
 
 package im.actor.core.modules.messaging;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +14,6 @@ import im.actor.core.api.ApiMessageContainer;
 import im.actor.core.api.ApiMessageReaction;
 import im.actor.core.api.ApiMessageState;
 import im.actor.core.api.ApiPeer;
-import im.actor.core.api.ApiAppCounters;
 import im.actor.core.api.rpc.ResponseLoadArchived;
 import im.actor.core.api.rpc.ResponseLoadDialogs;
 import im.actor.core.api.rpc.ResponseLoadHistory;
@@ -25,18 +23,11 @@ import im.actor.core.entity.MessageState;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.Reaction;
 import im.actor.core.entity.content.AbsContent;
-import im.actor.core.entity.content.ServiceUserRegistered;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.messaging.dialogs.ArchivedDialogsActor;
-import im.actor.core.modules.messaging.conversation.ConversationActor;
-import im.actor.core.modules.messaging.conversation.ConversationHistoryActor;
-import im.actor.core.modules.messaging.actions.CursorReceiverActor;
+import im.actor.core.modules.messaging.actions.SenderActor;
 import im.actor.core.modules.messaging.dialogs.DialogsActor;
 import im.actor.core.modules.messaging.dialogs.DialogsHistoryActor;
-import im.actor.core.modules.messaging.dialogs.ActiveDialogsActor;
-import im.actor.core.modules.messaging.actions.OwnReadActor;
-import im.actor.core.modules.messaging.actions.SenderActor;
 import im.actor.core.modules.messaging.entity.DialogHistory;
 import im.actor.core.modules.messaging.entity.EntityConverter;
 import im.actor.runtime.annotations.Verified;
@@ -49,128 +40,47 @@ public class MessagesProcessor extends AbsModule {
         super(context);
     }
 
+    @Verified
     public void onMessages(ApiPeer _peer, List<UpdateMessage> messages) {
 
-        long outMessageSortDate = 0;
-        long intMessageSortDate = 0;
         Peer peer = convert(_peer);
 
         ArrayList<Message> nMessages = new ArrayList<>();
         for (UpdateMessage u : messages) {
 
-            AbsContent msgContent;
-            try {
-                msgContent = AbsContent.fromMessage(u.getMessage());
-            } catch (IOException e) {
-                e.printStackTrace();
-                continue;
-            }
+            AbsContent msgContent = AbsContent.fromMessage(u.getMessage());
 
-            boolean isOut = myUid() == u.getSenderUid();
-
-            // Sending message to conversation
-            nMessages.add(new Message(u.getRid(), u.getDate(), u.getDate(), u.getSenderUid(),
-                    isOut ? MessageState.SENT : MessageState.UNKNOWN, msgContent,
-                    new ArrayList<Reaction>()));
-
-            if (!isOut) {
-
-                intMessageSortDate = Math.max(intMessageSortDate, u.getDate());
-            } else {
-                outMessageSortDate = Math.max(outMessageSortDate, u.getDate());
-            }
+            nMessages.add(new Message(
+                    u.getRid(),
+                    u.getDate(),
+                    u.getDate(),
+                    u.getSenderUid(),
+                    myUid() == u.getSenderUid() ? MessageState.SENT : MessageState.UNKNOWN,
+                    msgContent));
         }
 
-        conversationActor(peer).send(new ConversationActor.Messages(nMessages));
 
-        if (intMessageSortDate > 0) {
-            plainReceiveActor().send(new CursorReceiverActor.MarkReceived(peer, intMessageSortDate));
-        }
-
-        // OwnReadActor
-        for (Message m : nMessages) {
-            if (m.getSenderId() != myUid()) {
-                ownReadActor().send(new OwnReadActor.InMessage(peer, m));
-            }
-        }
+        context().getMessagesModule().getRouter().onNewMessages(peer, nMessages);
     }
 
     @Verified
-    public void onMessage(ApiPeer _peer, int senderUid, long date, long rid,
-                          ApiMessage content) {
+    public void onMessage(ApiPeer _peer, int senderUid, long date, long rid, ApiMessage content) {
 
         Peer peer = convert(_peer);
 
-        AbsContent msgContent;
-        try {
-            msgContent = AbsContent.fromMessage(content);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
+        AbsContent msgContent = AbsContent.fromMessage(content);
 
-        boolean isOut = myUid() == senderUid;
+        Message message = new Message(
+                rid,
+                date,
+                date,
+                senderUid,
+                myUid() == senderUid ? MessageState.SENT : MessageState.UNKNOWN,
+                msgContent);
 
-        // Sending message to conversation
-        Message message = new Message(rid, date, date, senderUid,
-                isOut ? MessageState.SENT : MessageState.UNKNOWN, msgContent, new ArrayList<Reaction>());
-
-        conversationActor(peer).send(message);
-
-        if (!isOut) {
-            // mark message as received
-            plainReceiveActor().send(new CursorReceiverActor.MarkReceived(peer, date));
-
-            // Send to own read actor
-            ownReadActor().send(new OwnReadActor.InMessage(peer, message));
-        }
-    }
-
-    @Verified
-    public void onUserRegistered(long rid, int uid, long date) {
-        Message message = new Message(rid, date, date, uid,
-                MessageState.UNKNOWN, ServiceUserRegistered.create(), new ArrayList<Reaction>());
-
-        conversationActor(Peer.user(uid)).send(message);
-    }
-
-    @Verified
-    public void onMessageRead(ApiPeer _peer, long startDate) {
-        Peer peer = convert(_peer);
-
-        // We are not invalidating sequence because of this update
-        if (!isValidPeer(peer)) {
-            return;
-        }
-
-        // Sending event to conversation actor
-        conversationActor(peer).send(new ConversationActor.MessageRead(startDate));
-    }
-
-    @Verified
-    public void onMessageReceived(ApiPeer _peer, long startDate) {
-        Peer peer = convert(_peer);
-
-        // We are not invalidating sequence because of this update
-        if (!isValidPeer(peer)) {
-            return;
-        }
-
-        // Sending event to conversation actor
-        conversationActor(peer).send(new ConversationActor.MessageReceived(startDate));
-    }
-
-    @Verified
-    public void onMessageReadByMe(ApiPeer _peer, long startDate) {
-        Peer peer = convert(_peer);
-
-        // We are not invalidating sequence because of this update
-        if (!isValidPeer(peer)) {
-            return;
-        }
-
-        // Sending event to own read actor
-        ownReadActor().send(new OwnReadActor.MessageReadByMe(peer, startDate));
+        ArrayList<Message> messages = new ArrayList<>();
+        messages.add(message);
+        context().getMessagesModule().getRouter().onNewMessages(peer, messages);
     }
 
     @Verified
@@ -183,7 +93,7 @@ public class MessagesProcessor extends AbsModule {
         }
 
         // Change message state in conversation
-        conversationActor(peer).send(new ConversationActor.MessageSent(rid, date));
+        context().getMessagesModule().getRouter().onOutgoingSent(peer, rid, date);
 
         // Notify Sender Actor
         sendActor().send(new SenderActor.MessageSent(peer, rid));
@@ -198,36 +108,74 @@ public class MessagesProcessor extends AbsModule {
             return;
         }
 
-        ArrayList<Reaction> reactions = new ArrayList<Reaction>();
+        ArrayList<Reaction> reactions = new ArrayList<>();
         for (ApiMessageReaction r : apiReactions) {
             reactions.add(new Reaction(r.getCode(), r.getUsers()));
         }
 
         // Change message state in conversation
-        conversationActor(peer).send(new ConversationActor.MessageReactionsChanged(rid, reactions));
+        context().getMessagesModule().getRouter().onReactionsChanged(peer, rid, reactions);
     }
 
     @Verified
     public void onMessageContentChanged(ApiPeer _peer, long rid,
                                         ApiMessage message) {
         Peer peer = convert(_peer);
-
         // We are not invalidating sequence because of this update
         if (!isValidPeer(peer)) {
             return;
         }
-
-        AbsContent content;
-        try {
-            content = AbsContent.fromMessage(message);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
-
-        // Change message content in conversation
-        conversationActor(peer).send(new ConversationActor.MessageContentUpdated(rid, content));
+        AbsContent content = AbsContent.fromMessage(message);
+        context().getMessagesModule().getRouter().onContentChanged(peer, rid, content);
     }
+
+    @Verified
+    public void onUserRegistered(long rid, int uid, long date) {
+//        Message message = new Message(rid, date, date, uid,
+//                MessageState.UNKNOWN, ServiceUserRegistered.create(), new ArrayList<Reaction>());
+//
+//        conversationActor(Peer.user(uid)).send(message);
+    }
+
+    @Verified
+    public void onMessageRead(ApiPeer _peer, long startDate) {
+//        Peer peer = convert(_peer);
+//
+//        // We are not invalidating sequence because of this update
+//        if (!isValidPeer(peer)) {
+//            return;
+//        }
+//
+//        // Sending event to conversation actor
+//        conversationActor(peer).send(new ConversationActor.MessageRead(startDate));
+    }
+
+    @Verified
+    public void onMessageReceived(ApiPeer _peer, long startDate) {
+//        Peer peer = convert(_peer);
+//
+//        // We are not invalidating sequence because of this update
+//        if (!isValidPeer(peer)) {
+//            return;
+//        }
+//
+//        // Sending event to conversation actor
+//        conversationActor(peer).send(new ConversationActor.MessageReceived(startDate));
+    }
+
+    @Verified
+    public void onMessageReadByMe(ApiPeer _peer, long startDate) {
+//        Peer peer = convert(_peer);
+//
+//        // We are not invalidating sequence because of this update
+//        if (!isValidPeer(peer)) {
+//            return;
+//        }
+//
+//        // Sending event to own read actor
+//        ownReadActor().send(new OwnReadActor.MessageReadByMe(peer, startDate));
+    }
+
 
     @Verified
     public void onMessageDelete(ApiPeer _peer, List<Long> rids) {
@@ -239,39 +187,39 @@ public class MessagesProcessor extends AbsModule {
         }
 
         // Deleting messages from conversation
-        conversationActor(peer).send(new ConversationActor.MessagesDeleted(rids));
+        context().getMessagesModule().getRouter().onMessagesDeleted(peer, rids);
 
         // TODO: Notify send actor
     }
 
     @Verified
     public void onChatClear(ApiPeer _peer) {
-        Peer peer = convert(_peer);
-
-        // We are not invalidating sequence because of this update
-        if (!isValidPeer(peer)) {
-            return;
-        }
-
-        // Clearing conversation
-        conversationActor(peer).send(new ConversationActor.ClearConversation());
-
-        // TODO: Notify send actor
+//        Peer peer = convert(_peer);
+//
+//        // We are not invalidating sequence because of this update
+//        if (!isValidPeer(peer)) {
+//            return;
+//        }
+//
+//        // Clearing conversation
+//        conversationActor(peer).send(new ConversationActor.ClearConversation());
+//
+//        // TODO: Notify send actor
     }
 
     @Verified
     public void onChatDelete(ApiPeer _peer) {
-        Peer peer = convert(_peer);
-
-        // We are not invalidating sequence because of this update
-        if (!isValidPeer(peer)) {
-            return;
-        }
-
-        // Deleting conversation
-        conversationActor(peer).send(new ConversationActor.DeleteConversation());
-
-        // TODO: Notify send actor
+//        Peer peer = convert(_peer);
+//
+//        // We are not invalidating sequence because of this update
+//        if (!isValidPeer(peer)) {
+//            return;
+//        }
+//
+//        // Deleting conversation
+//        conversationActor(peer).send(new ConversationActor.DeleteConversation());
+//
+//        // TODO: Notify send actor
     }
 
     @Verified
@@ -289,12 +237,7 @@ public class MessagesProcessor extends AbsModule {
 
             Peer peer = convert(dialog.getPeer());
 
-            AbsContent msgContent = null;
-            try {
-                msgContent = AbsContent.fromMessage(dialog.getMessage());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            AbsContent msgContent = AbsContent.fromMessage(dialog.getMessage());
 
             if (msgContent == null) {
                 continue;
@@ -328,15 +271,8 @@ public class MessagesProcessor extends AbsModule {
 
             maxLoadedDate = Math.min(historyMessage.getDate(), maxLoadedDate);
 
-            AbsContent content = null;
-            try {
-                content = AbsContent.fromMessage(historyMessage.getMessage());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if (content == null) {
-                continue;
-            }
+            AbsContent content = AbsContent.fromMessage(historyMessage.getMessage());
+
             MessageState state = EntityConverter.convert(historyMessage.getState());
 
             if (historyMessage.getState() == ApiMessageState.RECEIVED) {
@@ -354,31 +290,27 @@ public class MessagesProcessor extends AbsModule {
 
             messages.add(new Message(historyMessage.getRid(), historyMessage.getDate(),
                     historyMessage.getDate(), historyMessage.getSenderUid(),
-                    state, content, reactions));
+                    state, content, reactions, 0));
         }
 
-        // Sending updates to conversation actor
-        if (messages.size() > 0) {
-            conversationActor(peer).send(new ConversationActor.HistoryLoaded(messages, maxReadDate, maxReceiveDate));
-        }
+//        // Sending updates to conversation actor
+//        if (messages.size() > 0) {
+//            conversationActor(peer).send(new ConversationActor.HistoryLoaded(messages));
+//        }
 
         // Sending notification to conversation history actor
-        conversationHistoryActor(peer).send(new ConversationHistoryActor.LoadedMore(historyResponse.getHistory().size(),
-                maxLoadedDate));
-    }
-
-    public void onCountersChanged(ApiAppCounters counters) {
-        context().getAppStateModule().onCountersChanged(counters);
+//        conversationHistoryActor(peer).send(new ConversationHistoryActor.LoadedMore(historyResponse.getHistory().size(),
+//                maxLoadedDate));
     }
 
     public void onChatGroupsChanged(List<ApiDialogGroup> groups) {
-        if (context().getConfiguration().isEnabledGroupedChatList()) {
-            context().getMessagesModule().getDialogsGroupedActor()
-                    .send(new ActiveDialogsActor.GroupedDialogsChanged(groups));
-        }
+//        if (context().getConfiguration().isEnabledGroupedChatList()) {
+//            context().getMessagesModule().getDialogsGroupedActor()
+//                    .send(new ActiveDialogsActor.GroupedDialogsChanged(groups));
+//        }
     }
 
     public void onArchivedDialogsLoaded(ResponseLoadArchived responseLoadArchived) {
-        archivedDialogsActor().send(new ArchivedDialogsActor.LoadedMore(responseLoadArchived));
+//        archivedDialogsActor().send(new ArchivedDialogsActor.LoadedMore(responseLoadArchived));
     }
 }
