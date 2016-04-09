@@ -259,7 +259,7 @@
         <activity
             android:name=".controllers.pickers.map.MapPickerActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:theme="@style/PickerTheme.FilePicker" />
+            android:theme="@style/CommonActivityTheme" />
 
         <activity
             android:name=".controllers.conversation.preview.MapActivity"
