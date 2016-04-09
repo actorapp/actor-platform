@@ -2,7 +2,7 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-package im.actor.core.modules.messaging.actors;
+package im.actor.core.modules.messaging.actions;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -53,9 +53,10 @@ import im.actor.core.entity.Sticker;
 import im.actor.core.entity.content.internal.ContentRemoteContainer;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.file.UploadManager;
-import im.actor.core.modules.messaging.actors.entity.PendingMessage;
-import im.actor.core.modules.messaging.actors.entity.PendingMessagesStorage;
+import im.actor.core.modules.messaging.entity.PendingMessage;
+import im.actor.core.modules.messaging.entity.PendingMessagesStorage;
 import im.actor.core.modules.ModuleActor;
+import im.actor.core.modules.messaging.conversation.ConversationActor;
 import im.actor.core.util.RandomUtils;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;

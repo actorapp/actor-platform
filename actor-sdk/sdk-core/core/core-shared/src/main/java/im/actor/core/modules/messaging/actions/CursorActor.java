@@ -2,15 +2,15 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-package im.actor.core.modules.messaging.actors;
+package im.actor.core.modules.messaging.actions;
 
 import java.io.IOException;
 import java.util.HashSet;
 
 import im.actor.core.entity.Peer;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.messaging.actors.entity.PlainCursor;
-import im.actor.core.modules.messaging.actors.entity.PlainCursorsStorage;
+import im.actor.core.modules.messaging.entity.PlainCursor;
+import im.actor.core.modules.messaging.entity.PlainCursorsStorage;
 import im.actor.core.modules.ModuleActor;
 import im.actor.runtime.storage.SyncKeyValue;
 

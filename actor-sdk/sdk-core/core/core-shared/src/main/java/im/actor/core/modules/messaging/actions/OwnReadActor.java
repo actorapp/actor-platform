@@ -2,7 +2,7 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-package im.actor.core.modules.messaging.actors;
+package im.actor.core.modules.messaging.actions;
 
 import java.util.HashMap;
 
@@ -12,6 +12,7 @@ import im.actor.core.entity.Peer;
 import im.actor.core.entity.content.TextContent;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.ModuleActor;
+import im.actor.core.modules.messaging.conversation.ConversationActor;
 
 public class OwnReadActor extends ModuleActor {
 
