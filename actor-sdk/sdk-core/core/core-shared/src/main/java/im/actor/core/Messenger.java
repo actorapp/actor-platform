@@ -946,10 +946,6 @@ public class Messenger {
         modules.getMessagesModule().sendSticker(peer, sticker);
     }
 
-    public void updateJsonMessageContentLocal(Peer peer, long rid, JsonContent json) {
-        modules.getMessagesModule().updateJson(peer, rid, json);
-    }
-
     /**
      * Clear chat
      *
