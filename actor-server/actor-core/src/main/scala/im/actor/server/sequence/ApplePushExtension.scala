@@ -39,20 +39,30 @@ final class ApplePushExtension(system: ActorSystem) extends Extension with AnyRe
       .getOrElse(system.settings.config.getConfig("push.apple"))
   )
 
-  private val (clients, voipClients): (TrieMap[Int, Future[Client]], TrieMap[Int, Future[Client]]) = {
+  private val (clients, voipClients): (TrieMap[Int, (String, Future[Client])], TrieMap[Int, (String, Future[Client])]) = {
     val (certs, voipCerts) = config.certs.partition(!_.isVoip)
     (TrieMap(certs map createClient: _*), TrieMap(voipCerts map createClient: _*))
   }
 
-  def clientFuture(key: Int): Option[Future[Client]] = clients.get(key)
+  def clientFuture(key: Int): Option[Future[Client]] =
+    clients.get(key) map {
+      case (debugInfo, client) ⇒
+        log.debug("Using client cert: {}", debugInfo)
+        client
+    }
 
-  def voipClientFuture(key: Int): Option[Future[Client]] = voipClients.get(key)
+  def voipClientFuture(key: Int): Option[Future[Client]] =
+    voipClients.get(key) map {
+      case (debugInfo, client) ⇒
+        log.debug("Using client client: {}", debugInfo)
+        client
+    }
 
   def fetchVoipCreds(authIds: Set[Long]): Future[Seq[ApplePushCredentials]] = fetchCreds(authIds) map (_ filter (_.isVoip))
 
   private def fetchCreds(authIds: Set[Long]): Future[Seq[ApplePushCredentials]] = db.run(ApplePushCredentialsRepo.find(authIds))
 
-  private def createClient(cert: ApnsCert): (Int, Future[Client]) = {
+  private def createClient(cert: ApnsCert): (Int, (String, Future[Client])) = {
     val host = cert.isSandbox match {
       case false ⇒ ApnsClient.PRODUCTION_APNS_HOST
       case true  ⇒ ApnsClient.DEVELOPMENT_APNS_HOST
@@ -80,7 +90,7 @@ final class ApplePushExtension(system: ActorSystem) extends Extension with AnyRe
         system.scheduler.scheduleOnce(5.seconds) { recreateClient(cert) }
     }
 
-    (cert.key, connectFuture)
+    (cert.key, (s"key: ${cert.key}, isVoip: ${cert.isVoip}, path: ${cert.path}", connectFuture))
   }
 
   // recreate and try to connect client, if client connection failed
