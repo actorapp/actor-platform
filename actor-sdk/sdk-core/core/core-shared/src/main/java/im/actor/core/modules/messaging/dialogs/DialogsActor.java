@@ -74,7 +74,7 @@ public class DialogsActor extends ModuleActor {
                     .setText(contentDescription.getText())
                     .setRelatedUid(contentDescription.getRelatedUser())
                     .setSenderId(message.getSenderId());
-            
+
             if (counter >= 0) {
                 builder.setUnreadCount(counter);
             }
@@ -189,6 +189,7 @@ public class DialogsActor extends ModuleActor {
         if (dialog != null) {
             addOrUpdateItem(new DialogBuilder(dialog)
                     .updateKnownReadDate(date)
+                    .updateKnownReceiveDate(date)
                     .createDialog());
         }
     }

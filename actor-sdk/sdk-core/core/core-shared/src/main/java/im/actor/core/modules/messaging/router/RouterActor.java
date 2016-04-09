@@ -294,6 +294,7 @@ public class RouterActor extends ModuleActor {
         boolean isChanged = false;
         if (date > state.getOutReadDate()) {
             state = state.changeOutReadDate(date);
+            dialogsActor(new DialogsActor.PeerReadChanged(peer, date));
             isChanged = true;
         }
         if (date > state.getOutReceiveDate()) {
@@ -308,6 +309,7 @@ public class RouterActor extends ModuleActor {
     private void onMessageReceived(Peer peer, long date) {
         ConversationState state = conversationStates.getValue(peer.getUnuqueId());
         if (date > state.getOutReceiveDate()) {
+            dialogsActor(new DialogsActor.PeerReceiveChanged(peer, date));
             state = state.changeOutReceiveDate(date);
             conversationStates.addOrUpdateItem(state);
         }
