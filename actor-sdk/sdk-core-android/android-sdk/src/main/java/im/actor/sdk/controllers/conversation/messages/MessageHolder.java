@@ -108,7 +108,6 @@ public abstract class MessageHolder extends BindedViewHolder
         }
         // Bind content
         bindData(message, readDate, receiveDate, isUpdated, preprocessedData);
-        ActorSDK.sharedActor().getMessenger().onUserVisible(message.getSenderId());
     }
 
     protected abstract void bindData(Message message, long readDate, long receiveDate, boolean isUpdated, PreprocessedData preprocessedData);

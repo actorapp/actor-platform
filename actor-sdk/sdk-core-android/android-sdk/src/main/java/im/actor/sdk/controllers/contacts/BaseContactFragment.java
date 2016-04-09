@@ -135,6 +135,11 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
             footer.setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackgroundColor());
             addFooterView(footer);
         }
+
+        View header = new View(getActivity());
+        header.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(8)));
+        header.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
+        addHeaderView(header);
     }
 
     protected void addFooterOrHeaderAction(int color, int icon, int text, boolean isLast, final Runnable action, boolean isHeader) {
@@ -199,9 +204,9 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
                 invitePanel.addView(div, layoutParams);
             }
         }
-        if(isHeader){
+        if (isHeader) {
             addHeaderView(container);
-        }else{
+        } else {
             addFooterView(container);
         }
     }
