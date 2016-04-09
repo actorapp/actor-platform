@@ -231,17 +231,17 @@ public class PhotoHolder extends MessageHolder {
         Log.d(TAG, "needRebind by new: " + needRebind);
 
         updated = false;
-        int updatedCounter = fileMessage.getUpdatedCounter();
-        Log.d(TAG, "oldRid: " + currenrRid);
-        Log.d(TAG, "newRid: " + currentMessage.getRid());
-        Log.d(TAG, "oldCounter: " + lastUpdatedIndex);
-        Log.d(TAG, "newCounter: " + updatedCounter);
+//        int updatedCounter = fileMessage.getUpdatedCounter();
+//        Log.d(TAG, "oldRid: " + currenrRid);
+//        Log.d(TAG, "newRid: " + currentMessage.getRid());
+//        Log.d(TAG, "oldCounter: " + lastUpdatedIndex);
+//        Log.d(TAG, "newCounter: " + updatedCounter);
 
-        if (currenrRid == currentMessage.getRid() && lastUpdatedIndex != updatedCounter) {
-            updated = true;
-            needRebind = true;
-            lastUpdatedIndex = updatedCounter;
-        }
+//        if (currenrRid == currentMessage.getRid() && lastUpdatedIndex != updatedCounter) {
+//            updated = true;
+//            needRebind = true;
+//            lastUpdatedIndex = updatedCounter;
+//        }
         currenrRid = currentMessage.getRid();
         Log.d(TAG, "updated: " + updated);
 

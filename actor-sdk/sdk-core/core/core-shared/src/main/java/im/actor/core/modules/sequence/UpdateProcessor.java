@@ -209,10 +209,6 @@ public class UpdateProcessor extends AbsModule {
             processUpdate(u);
         }
 
-        if (combinedDifference.getCounters() != null) {
-            messagesProcessor.onCountersChanged(combinedDifference.getCounters());
-        }
-
         context().getMessagesModule().getOwnReadActor().send(new OwnReadActor.StopGetDifference());
         applyRelated(users, groups, true);
     }
@@ -338,8 +334,6 @@ public class UpdateProcessor extends AbsModule {
             settingsProcessor.onSettingsChanged(
                     ((UpdateParameterChanged) update).getKey(),
                     ((UpdateParameterChanged) update).getValue());
-        } else if (update instanceof UpdateCountersChanged) {
-            messagesProcessor.onCountersChanged(((UpdateCountersChanged) update).getCounters());
         } else if (update instanceof UpdateChatGroupsChanged) {
             messagesProcessor.onChatGroupsChanged(((UpdateChatGroupsChanged) update).getDialogs());
         } else if (update instanceof UpdateReactionsUpdate) {

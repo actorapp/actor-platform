@@ -76,15 +76,13 @@ public class GroupsProcessor extends AbsModule {
                 if (inviterId == myUid()) {
                     // If current user invite himself, add create group message
                     Message message = new Message(rid, date, date, inviterId,
-                            MessageState.UNKNOWN, ServiceGroupCreated.create(),
-                            new ArrayList<Reaction>());
-                    conversationActor(group.peer()).send(message);
+                            MessageState.UNKNOWN, ServiceGroupCreated.create());
+                    // conversationActor(group.peer()).send(message);
                 } else {
                     // else add invite message
                     Message message = new Message(rid, date, date, inviterId,
-                            MessageState.SENT, ServiceGroupUserInvited.create(myUid()),
-                            new ArrayList<Reaction>());
-                    conversationActor(group.peer()).send(message);
+                            MessageState.SENT, ServiceGroupUserInvited.create(myUid()));
+                    // conversationActor(group.peer()).send(message);
                 }
             }
         }
@@ -109,9 +107,8 @@ public class GroupsProcessor extends AbsModule {
             if (!isSilent) {
                 Message message = new Message(rid, date, date, uid,
                         uid == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
-                        ServiceGroupUserLeave.create(),
-                        new ArrayList<Reaction>());
-                conversationActor(group.peer()).send(message);
+                        ServiceGroupUserLeave.create());
+                // conversationActor(group.peer()).send(message);
             }
         }
     }
@@ -135,9 +132,8 @@ public class GroupsProcessor extends AbsModule {
             if (!isSilent) {
                 Message message = new Message(rid, date, date, kicker,
                         kicker == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
-                        ServiceGroupUserKicked.create(uid),
-                        new ArrayList<Reaction>());
-                conversationActor(group.peer()).send(message);
+                        ServiceGroupUserKicked.create(uid));
+                // conversationActor(group.peer()).send(message);
             }
         }
     }
@@ -154,9 +150,8 @@ public class GroupsProcessor extends AbsModule {
             if (!isSilent) {
                 Message message = new Message(rid, date, date, adder,
                         adder == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
-                        ServiceGroupUserInvited.create(uid),
-                        new ArrayList<Reaction>());
-                conversationActor(group.peer()).send(message);
+                        ServiceGroupUserInvited.create(uid));
+                // conversationActor(group.peer()).send(message);
             }
         }
     }
@@ -186,9 +181,8 @@ public class GroupsProcessor extends AbsModule {
             if (!isSilent) {
                 Message message = new Message(rid, date, date, uid,
                         uid == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
-                        ServiceGroupTitleChanged.create(title),
-                        new ArrayList<Reaction>());
-                conversationActor(group.peer()).send(message);
+                        ServiceGroupTitleChanged.create(title));
+                // conversationActor(group.peer()).send(message);
             }
         }
     }
@@ -270,9 +264,8 @@ public class GroupsProcessor extends AbsModule {
             if (!isSilent) {
                 Message message = new Message(rid, date, date, uid,
                         uid == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
-                        ServiceGroupAvatarChanged.create(avatar),
-                        new ArrayList<Reaction>());
-                conversationActor(group.peer()).send(message);
+                        ServiceGroupAvatarChanged.create(avatar));
+                // conversationActor(group.peer()).send(message);
             }
         }
     }
