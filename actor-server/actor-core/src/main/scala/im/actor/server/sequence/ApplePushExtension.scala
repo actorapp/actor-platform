@@ -7,43 +7,16 @@ import akka.actor.{ ActorSystem, ExtendedActorSystem, Extension, ExtensionId, Ex
 import akka.event.Logging
 import com.relayrides.pushy.apns.ApnsClient
 import com.relayrides.pushy.apns.util.SimpleApnsPushNotification
-import com.typesafe.config.Config
 import im.actor.server.db.DbExtension
 import im.actor.server.model.push.ApplePushCredentials
 import im.actor.server.persist.push.ApplePushCredentialsRepo
 import im.actor.util.log.AnyRefLogSource
 
-import scala.collection.JavaConversions._
 import scala.collection.concurrent.TrieMap
 import scala.concurrent.Future
 import scala.concurrent.blocking
 import scala.concurrent.duration._
 import scala.util.Try
-
-final case class ApplePushClientConfig(certs: List[ApnsCert])
-
-object ApplePushClientConfig {
-  def load(config: Config): ApplePushClientConfig = {
-    ApplePushClientConfig(
-      certs = config.getConfigList("certs").toList map ApnsCert.fromConfig
-    )
-
-  }
-}
-
-final case class ApnsCert(key: Int, path: String, password: String, isSandbox: Boolean, isVoip: Boolean)
-
-object ApnsCert {
-  def fromConfig(config: Config): ApnsCert = {
-    ApnsCert(
-      config.getInt("key"),
-      config.getString("path"),
-      config.getString("password"),
-      Try(config.getBoolean("voip")).getOrElse(false),
-      Try(config.getBoolean("sandbox")).getOrElse(false)
-    )
-  }
-}
 
 object ApplePushExtension extends ExtensionId[ApplePushExtension] with ExtensionIdProvider {
   override def createExtension(system: ExtendedActorSystem): ApplePushExtension = new ApplePushExtension(system)
@@ -61,7 +34,7 @@ final class ApplePushExtension(system: ActorSystem) extends Extension with AnyRe
 
   private lazy val db = DbExtension(system).db
 
-  private val config = ApplePushClientConfig.load(
+  private val config = ApplePushConfig.load(
     Try(system.settings.config.getConfig("services.apple.push"))
       .getOrElse(system.settings.config.getConfig("push.apple"))
   )
@@ -75,11 +48,9 @@ final class ApplePushExtension(system: ActorSystem) extends Extension with AnyRe
 
   def voipClientFuture(key: Int): Option[Future[Client]] = voipClients.get(key)
 
-  def findCreds(authId: Long): Future[Option[ApplePushCredentials]] = db.run(ApplePushCredentialsRepo.find(authId))
-
-  def fetchCreds(authIds: Set[Long]): Future[Seq[ApplePushCredentials]] = db.run(ApplePushCredentialsRepo.find(authIds))
-
   def fetchVoipCreds(authIds: Set[Long]): Future[Seq[ApplePushCredentials]] = fetchCreds(authIds) map (_ filter (_.isVoip))
+
+  private def fetchCreds(authIds: Set[Long]): Future[Seq[ApplePushCredentials]] = db.run(ApplePushCredentialsRepo.find(authIds))
 
   private def createClient(cert: ApnsCert): (Int, Future[Client]) = {
     val host = cert.isSandbox match {
@@ -91,7 +62,7 @@ final class ApplePushExtension(system: ActorSystem) extends Extension with AnyRe
       blocking {
         val client = new ApnsClient[SimpleApnsPushNotification](new File(cert.path), cert.password)
         client.connect(host).get(20, TimeUnit.SECONDS)
-        log.debug("Established client connection with push key: {}", cert.key)
+        log.debug("Established client connection for cert: {}, is voip: {}", cert.key, cert.isVoip)
         client
       }
     }
@@ -115,7 +86,7 @@ final class ApplePushExtension(system: ActorSystem) extends Extension with AnyRe
   // recreate and try to connect client, if client connection failed
   // during previous creation
   private def recreateClient(cert: ApnsCert): Unit = {
-    log.debug("Retry to create client for cert: {}", cert.key)
+    log.debug("Retry to create client for cert : {}, is voip", cert.key, cert.isVoip)
     val targetMap = if (cert.isVoip) voipClients else clients
     targetMap -= cert.key
     targetMap += createClient(cert)
