@@ -13,7 +13,7 @@ import im.actor.core.api.updates.UpdateUserNameChanged;
 import im.actor.core.api.updates.UpdateUserNickChanged;
 import im.actor.core.network.parser.Update;
 
-import static im.actor.core.modules.messaging.entity.EntityConverter.convert;
+import static im.actor.core.entity.EntityConverter.convert;
 
 public class GetDiffCombiner {
 
