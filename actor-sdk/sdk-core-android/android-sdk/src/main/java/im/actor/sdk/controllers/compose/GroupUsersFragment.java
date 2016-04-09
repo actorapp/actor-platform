@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import android.widget.Toast;
 import im.actor.core.entity.Contact;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.sdk.ActorSDK;
@@ -110,6 +111,7 @@ public class GroupUsersFragment extends BaseContactFragment {
 
                             @Override
                             public void onError(Exception e) {
+                                Toast.makeText(getActivity(), getString(R.string.toast_unable_create_group), Toast.LENGTH_LONG).show();
 
                             }
                         });
