@@ -130,50 +130,39 @@ public class MessagesProcessor extends AbsModule {
     }
 
     @Verified
-    public void onUserRegistered(long rid, int uid, long date) {
-//        Message message = new Message(rid, date, date, uid,
-//                MessageState.UNKNOWN, ServiceUserRegistered.create(), new ArrayList<Reaction>());
-//
-//        conversationActor(Peer.user(uid)).send(message);
-    }
-
-    @Verified
     public void onMessageRead(ApiPeer _peer, long startDate) {
-//        Peer peer = convert(_peer);
-//
-//        // We are not invalidating sequence because of this update
-//        if (!isValidPeer(peer)) {
-//            return;
-//        }
-//
-//        // Sending event to conversation actor
-//        conversationActor(peer).send(new ConversationActor.MessageRead(startDate));
+        Peer peer = convert(_peer);
+
+        // We are not invalidating sequence because of this update
+        if (!isValidPeer(peer)) {
+            return;
+        }
+
+        context().getMessagesModule().getRouter().onMessageRead(peer, startDate);
     }
 
     @Verified
     public void onMessageReceived(ApiPeer _peer, long startDate) {
-//        Peer peer = convert(_peer);
-//
-//        // We are not invalidating sequence because of this update
-//        if (!isValidPeer(peer)) {
-//            return;
-//        }
-//
-//        // Sending event to conversation actor
-//        conversationActor(peer).send(new ConversationActor.MessageReceived(startDate));
+        Peer peer = convert(_peer);
+
+        // We are not invalidating sequence because of this update
+        if (!isValidPeer(peer)) {
+            return;
+        }
+
+        context().getMessagesModule().getRouter().onMessageReceived(peer, startDate);
     }
 
     @Verified
-    public void onMessageReadByMe(ApiPeer _peer, long startDate) {
-//        Peer peer = convert(_peer);
-//
-//        // We are not invalidating sequence because of this update
-//        if (!isValidPeer(peer)) {
-//            return;
-//        }
-//
-//        // Sending event to own read actor
-//        ownReadActor().send(new OwnReadActor.MessageReadByMe(peer, startDate));
+    public void onMessageReadByMe(ApiPeer _peer, long startDate, int counter) {
+        Peer peer = convert(_peer);
+
+        // We are not invalidating sequence because of this update
+        if (!isValidPeer(peer)) {
+            return;
+        }
+
+        context().getMessagesModule().getRouter().onMessageReadByMe(peer, startDate, counter);
     }
 
 
@@ -312,5 +301,15 @@ public class MessagesProcessor extends AbsModule {
 
     public void onArchivedDialogsLoaded(ResponseLoadArchived responseLoadArchived) {
 //        archivedDialogsActor().send(new ArchivedDialogsActor.LoadedMore(responseLoadArchived));
+    }
+
+
+
+    @Verified
+    public void onUserRegistered(long rid, int uid, long date) {
+//        Message message = new Message(rid, date, date, uid,
+//                MessageState.UNKNOWN, ServiceUserRegistered.create(), new ArrayList<Reaction>());
+//
+//        conversationActor(Peer.user(uid)).send(message);
     }
 }

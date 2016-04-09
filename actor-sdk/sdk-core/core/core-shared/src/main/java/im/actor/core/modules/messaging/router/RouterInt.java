@@ -13,8 +13,12 @@ import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.messaging.router.entity.RouterAppVisible;
 import im.actor.core.modules.messaging.router.entity.RouterChangedContent;
 import im.actor.core.modules.messaging.router.entity.RouterChangedReactions;
+import im.actor.core.modules.messaging.router.entity.RouterConversationHidden;
 import im.actor.core.modules.messaging.router.entity.RouterConversationVisible;
 import im.actor.core.modules.messaging.router.entity.RouterDeletedMessages;
+import im.actor.core.modules.messaging.router.entity.RouterMessageRead;
+import im.actor.core.modules.messaging.router.entity.RouterMessageReadByMe;
+import im.actor.core.modules.messaging.router.entity.RouterMessageReceived;
 import im.actor.core.modules.messaging.router.entity.RouterNewMessages;
 import im.actor.core.modules.messaging.router.entity.RouterOutgoingError;
 import im.actor.core.modules.messaging.router.entity.RouterOutgoingMessage;
@@ -73,6 +77,18 @@ public class RouterInt extends ActorInterface implements BusSubscriber {
         send(new RouterDeletedMessages(peer, rids));
     }
 
+    public void onMessageRead(Peer peer, long date) {
+        send(new RouterMessageRead(peer, date));
+    }
+
+    public void onMessageReadByMe(Peer peer, long date, int counter) {
+        send(new RouterMessageReadByMe(peer, date, counter));
+    }
+
+    public void onMessageReceived(Peer peer, long date) {
+        send(new RouterMessageReceived(peer, date));
+    }
+
     @Override
     public void onBusEvent(Event event) {
         if (event instanceof PeerChatOpened) {
@@ -80,7 +96,7 @@ public class RouterInt extends ActorInterface implements BusSubscriber {
             send(new RouterConversationVisible(peerChatOpened.getPeer()));
         } else if (event instanceof PeerChatClosed) {
             PeerChatClosed peerChatClosed = (PeerChatClosed) event;
-            send(new RouterConversationVisible(peerChatClosed.getPeer()));
+            send(new RouterConversationHidden(peerChatClosed.getPeer()));
         } else if (event instanceof AppVisibleChanged) {
             if (((AppVisibleChanged) event).isVisible()) {
                 send(new RouterAppVisible());

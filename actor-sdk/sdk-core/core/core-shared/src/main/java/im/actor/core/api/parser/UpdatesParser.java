@@ -27,6 +27,7 @@ public class UpdatesParser extends BaseParser<Update> {
             case 210: return UpdateUserAboutChanged.fromBytes(payload);
             case 212: return UpdateUserPreferredLanguagesChanged.fromBytes(payload);
             case 216: return UpdateUserTimeZoneChanged.fromBytes(payload);
+            case 217: return UpdateUserBotCommandsChanged.fromBytes(payload);
             case 5: return UpdateContactRegistered.fromBytes(payload);
             case 40: return UpdateContactsAdded.fromBytes(payload);
             case 41: return UpdateContactsRemoved.fromBytes(payload);
