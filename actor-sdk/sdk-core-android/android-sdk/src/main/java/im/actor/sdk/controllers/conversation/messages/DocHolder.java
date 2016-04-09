@@ -329,10 +329,15 @@ public class DocHolder extends MessageHolder {
                             if (document instanceof PhotoContent) {
                                 Intents.openMedia(getAdapter().getMessagesFragment().getActivity(), fileIcon, reference.getDescriptor(), currentMessage.getSenderId());
                             } else {
-                                Activity activity = getAdapter().getMessagesFragment().getActivity();
-                                activity.startActivity(Intents.openDoc(document.getName(), reference.getDescriptor()));
+                                try {
+                                    Activity activity = getAdapter().getMessagesFragment().getActivity();
+                                    activity.startActivity(Intents.openDoc(document.getName(), reference.getDescriptor()));
+                                }
+                                catch (Exception e)
+                                {
+                                    e.printStackTrace();
+                                }
                             }
-
                         }
                     });
                 }
