@@ -2,30 +2,31 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-package im.actor.core.modules.messaging.actors;
+package im.actor.core.modules.messaging.actions;
 
 import im.actor.core.api.ApiOutPeer;
-import im.actor.core.api.rpc.RequestMessageRead;
+import im.actor.core.api.rpc.RequestMessageReceived;
 import im.actor.core.api.rpc.ResponseVoid;
 import im.actor.core.entity.Peer;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 
-public class CursorReaderActor extends CursorActor {
+public class CursorReceiverActor extends CursorActor {
 
-    public CursorReaderActor(ModuleContext context) {
-        super(CURSOR_READ, context);
+    public CursorReceiverActor(ModuleContext context) {
+        super(CURSOR_RECEIVED, context);
     }
 
     @Override
     protected void perform(final Peer peer, final long date) {
         ApiOutPeer outPeer = buidOutPeer(peer);
+
         if (outPeer == null) {
             return;
         }
 
-        request(new RequestMessageRead(outPeer, date), new RpcCallback<ResponseVoid>() {
+        request(new RequestMessageReceived(outPeer, date), new RpcCallback<ResponseVoid>() {
             @Override
             public void onResult(ResponseVoid response) {
                 onCompleted(peer, date);
@@ -33,28 +34,26 @@ public class CursorReaderActor extends CursorActor {
 
             @Override
             public void onError(RpcException e) {
-                CursorReaderActor.this.onError(peer, date);
+                CursorReceiverActor.this.onError(peer, date);
             }
         });
     }
 
-    // Messages
-
     @Override
     public void onReceive(Object message) {
-        if (message instanceof MarkRead) {
-            MarkRead markRead = (MarkRead) message;
-            moveCursor(markRead.getPeer(), markRead.getDate());
+        if (message instanceof MarkReceived) {
+            MarkReceived received = (MarkReceived) message;
+            moveCursor(received.getPeer(), received.getDate());
         } else {
             super.onReceive(message);
         }
     }
 
-    public static class MarkRead {
+    public static class MarkReceived {
         private Peer peer;
         private long date;
 
-        public MarkRead(Peer peer, long date) {
+        public MarkReceived(Peer peer, long date) {
             this.peer = peer;
             this.date = date;
         }

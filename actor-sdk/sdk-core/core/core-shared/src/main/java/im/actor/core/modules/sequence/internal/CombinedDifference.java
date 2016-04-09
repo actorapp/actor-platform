@@ -7,7 +7,7 @@ import java.util.List;
 import im.actor.core.api.ApiAppCounters;
 import im.actor.core.api.updates.UpdateMessage;
 import im.actor.core.entity.Peer;
-import im.actor.core.modules.messaging.actors.entity.EntityConverter;
+import im.actor.core.modules.messaging.entity.EntityConverter;
 import im.actor.core.network.parser.Update;
 
 public class CombinedDifference {

@@ -1,4 +1,4 @@
-package im.actor.core.modules.messaging.actors.entity;
+package im.actor.core.modules.messaging.entity;
 
 import java.io.IOException;
 import java.util.ArrayList;

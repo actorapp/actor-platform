@@ -2,7 +2,7 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-package im.actor.core.modules.messaging.actors;
+package im.actor.core.modules.messaging.dialogs;
 
 import im.actor.core.api.rpc.RequestLoadDialogs;
 import im.actor.core.api.rpc.ResponseLoadDialogs;
