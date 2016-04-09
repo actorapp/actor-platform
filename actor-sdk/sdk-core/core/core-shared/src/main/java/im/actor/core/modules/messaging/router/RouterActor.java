@@ -14,8 +14,10 @@ import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.messaging.actions.CursorReaderActor;
 import im.actor.core.modules.messaging.actions.CursorReceiverActor;
 import im.actor.core.modules.messaging.dialogs.DialogsActor;
+import im.actor.core.modules.messaging.history.entity.DialogHistory;
 import im.actor.core.modules.messaging.router.entity.RouterAppHidden;
 import im.actor.core.modules.messaging.router.entity.RouterAppVisible;
+import im.actor.core.modules.messaging.router.entity.RouterApplyDialogsHistory;
 import im.actor.core.modules.messaging.router.entity.RouterChangedContent;
 import im.actor.core.modules.messaging.router.entity.RouterChangedReactions;
 import im.actor.core.modules.messaging.router.entity.RouterConversationHidden;
@@ -167,6 +169,37 @@ public class RouterActor extends ModuleActor {
                     .changeState(MessageState.ERROR);
             conversation(peer).addOrUpdateItem(updatedMsg);
         }
+    }
+
+
+    //
+    // History Messages
+    //
+
+    private void onDialogHistoryLoaded(List<DialogHistory> dialogs) {
+        for (DialogHistory d : dialogs) {
+            ConversationState state = conversationStates.getValue(d.getPeer().getUnuqueId());
+            if (d.getUnreadCount() > 0) {
+                state = state
+                        .changeCounter(d.getUnreadCount())
+                        .changeInMaxDate(d.getDate());
+            }
+            if (d.isRead()) {
+                state = state
+                        .changeOutReadDate(d.getDate())
+                        .changeOutReceiveDate(d.getDate());
+            } else if (d.isReceived()) {
+                state = state
+                        .changeOutReceiveDate(d.getDate());
+            }
+            conversationStates.addOrUpdateItem(state);
+        }
+
+        dialogsActor(new DialogsActor.HistoryLoaded(dialogs));
+    }
+
+    private void onChatHistoryLoaded(Peer peer, List<Message> messages, Long maxReadDate, Long maxReceiveDate) {
+
     }
 
 
@@ -354,6 +387,10 @@ public class RouterActor extends ModuleActor {
         } else if (message instanceof RouterMessageReceived) {
             RouterMessageReceived messageReceived = (RouterMessageReceived) message;
             onMessageReceived(messageReceived.getPeer(), messageReceived.getDate());
+        } else if (message instanceof RouterApplyDialogsHistory) {
+            RouterApplyDialogsHistory dialogsHistory = (RouterApplyDialogsHistory) message;
+            onDialogHistoryLoaded(dialogsHistory.getDialogs());
+            dialogsHistory.getExecuteAfter().run();
         } else {
             super.onReceive(message);
         }

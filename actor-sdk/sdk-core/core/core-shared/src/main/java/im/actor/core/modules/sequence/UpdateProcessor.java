@@ -14,14 +14,12 @@ import im.actor.core.api.ApiGroup;
 import im.actor.core.api.ApiPeerType;
 import im.actor.core.api.ApiUser;
 import im.actor.core.api.rpc.ResponseLoadArchived;
-import im.actor.core.api.rpc.ResponseLoadDialogs;
 import im.actor.core.api.updates.UpdateChatClear;
 import im.actor.core.api.updates.UpdateChatDelete;
 import im.actor.core.api.updates.UpdateChatGroupsChanged;
 import im.actor.core.api.updates.UpdateContactRegistered;
 import im.actor.core.api.updates.UpdateContactsAdded;
 import im.actor.core.api.updates.UpdateContactsRemoved;
-import im.actor.core.api.updates.UpdateCountersChanged;
 import im.actor.core.api.updates.UpdateGroupAboutChanged;
 import im.actor.core.api.updates.UpdateGroupAvatarChanged;
 import im.actor.core.api.updates.UpdateGroupInvite;
@@ -65,10 +63,8 @@ import im.actor.core.modules.stickers.StickersProcessor;
 import im.actor.core.modules.typing.TypingProcessor;
 import im.actor.core.modules.messaging.MessagesProcessor;
 import im.actor.core.modules.sequence.internal.ArchivedDialogLoaded;
-import im.actor.core.modules.sequence.internal.ChangeContent;
 import im.actor.core.modules.sequence.internal.CombinedDifference;
 import im.actor.core.modules.sequence.internal.ContactsLoaded;
-import im.actor.core.modules.sequence.internal.DialogHistoryLoaded;
 import im.actor.core.modules.sequence.internal.GetDiffCombiner;
 import im.actor.core.modules.sequence.internal.GroupCreated;
 import im.actor.core.modules.sequence.internal.InternalUpdate;
@@ -120,11 +116,7 @@ public class UpdateProcessor extends AbsModule {
     }
 
     public void processInternalUpdate(InternalUpdate update) {
-        if (update instanceof DialogHistoryLoaded) {
-            ResponseLoadDialogs dialogs = ((DialogHistoryLoaded) update).getDialogs();
-            applyRelated(dialogs.getUsers(), dialogs.getGroups(), false);
-            messagesProcessor.onDialogsLoaded(dialogs);
-        } else if (update instanceof ArchivedDialogLoaded) {
+        if (update instanceof ArchivedDialogLoaded) {
             ResponseLoadArchived dialogs = ((ArchivedDialogLoaded) update).getDialogs();
             applyRelated(dialogs.getUsers(), dialogs.getGroups(), false);
             messagesProcessor.onArchivedDialogsLoaded(((ArchivedDialogLoaded) update).getDialogs());
@@ -172,10 +164,6 @@ public class UpdateProcessor extends AbsModule {
             relatedResponse.getAfterApply().run();
         } else if (update instanceof StickersLoaded) {
             stickersProcessor.onOwnStickerCollectionsChanged(((StickersLoaded) update).getCollections());
-        } else if (update instanceof ChangeContent) {
-            UpdateMessageContentChanged contentChanged = ((ChangeContent) update).getUpdate();
-            messagesProcessor.onMessageContentChanged(contentChanged.getPeer(),
-                    contentChanged.getRid(), contentChanged.getMessage());
         }
     }
 

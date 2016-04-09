@@ -10,7 +10,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import im.actor.core.api.ApiJsonMessage;
 import im.actor.core.api.ApiMessage;
 import im.actor.core.api.ApiOutPeer;
 import im.actor.core.api.ApiPeer;
@@ -33,7 +32,6 @@ import im.actor.core.api.rpc.ResponseSeqDate;
 import im.actor.core.api.updates.UpdateChatClear;
 import im.actor.core.api.updates.UpdateChatDelete;
 import im.actor.core.api.updates.UpdateChatGroupsChanged;
-import im.actor.core.api.updates.UpdateMessageContentChanged;
 import im.actor.core.api.updates.UpdateReactionsUpdate;
 import im.actor.core.entity.ConversationState;
 import im.actor.core.entity.Dialog;
@@ -55,13 +53,12 @@ import im.actor.core.modules.messaging.dialogs.ArchivedDialogsActor;
 import im.actor.core.modules.messaging.actions.CursorReaderActor;
 import im.actor.core.modules.messaging.actions.CursorReceiverActor;
 import im.actor.core.modules.messaging.dialogs.DialogsActor;
-import im.actor.core.modules.messaging.dialogs.DialogsHistoryActor;
+import im.actor.core.modules.messaging.history.DialogsHistoryActor;
 import im.actor.core.modules.messaging.dialogs.ActiveDialogsActor;
 import im.actor.core.modules.messaging.actions.MessageDeleteActor;
 import im.actor.core.modules.messaging.actions.OwnReadActor;
 import im.actor.core.modules.messaging.actions.SenderActor;
 import im.actor.core.modules.messaging.router.RouterInt;
-import im.actor.core.modules.sequence.internal.ChangeContent;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.network.RpcInternalException;
@@ -461,13 +458,6 @@ public class MessagesModule extends AbsModule {
     public void sendJson(@NotNull Peer peer,
                          @NotNull JsonContent content) {
         sendMessageActor.send(new SenderActor.SendJson(peer, content));
-    }
-
-    public void updateJson(Peer peer, long rid, JsonContent json) {
-        ApiPeer apiPeer = new ApiPeer(peer.getPeerType() == PeerType.PRIVATE ? ApiPeerType.PRIVATE : ApiPeerType.GROUP, peer.getPeerId());
-        ApiJsonMessage jsonMessage = new ApiJsonMessage(json.getRawJson());
-        updates().onUpdateReceived(new ChangeContent(new UpdateMessageContentChanged(apiPeer, rid, jsonMessage)));
-
     }
 
     public void sendDocument(Peer peer, String fileName, String mimeType, FastThumb fastThumb,
