@@ -2,44 +2,48 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-package im.actor.core.modules.messaging.dialogs;
+package im.actor.core.modules.messaging.history;
 
-import im.actor.core.api.rpc.RequestLoadDialogs;
-import im.actor.core.api.rpc.ResponseLoadDialogs;
+import im.actor.core.api.rpc.RequestLoadHistory;
+import im.actor.core.api.rpc.ResponseLoadHistory;
+import im.actor.core.entity.Peer;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.sequence.internal.DialogHistoryLoaded;
+import im.actor.core.modules.sequence.internal.MessagesHistoryLoaded;
 import im.actor.core.modules.ModuleActor;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
-import im.actor.runtime.Log;
 
-public class DialogsHistoryActor extends ModuleActor {
-
-    private static final String TAG = "DialogsHistoryActor";
+public class ConversationHistoryActor extends ModuleActor {
 
     private static final int LIMIT = 20;
 
-    private static final String KEY_VERSION = "_1";
-    private static final String KEY_LOADED_DATE = "dialogs_history_date" + KEY_VERSION;
-    private static final String KEY_LOADED = "dialogs_history_loaded" + KEY_VERSION;
-    private static final String KEY_LOADED_INIT = "dialogs_history_inited" + KEY_VERSION;
-
+    private final String KEY_LOADED_DATE;
+    private final String KEY_LOADED;
+    private final String KEY_LOADED_INIT;
+    private final Peer peer;
 
     private long historyMaxDate;
     private boolean historyLoaded;
 
     private boolean isLoading = false;
 
-    public DialogsHistoryActor(ModuleContext context) {
+    public ConversationHistoryActor(Peer peer, ModuleContext context) {
         super(context);
+        this.peer = peer;
+        this.KEY_LOADED_DATE = "conv_" + peer + "_history_date";
+        this.KEY_LOADED = "conv_" + peer + "_history_loaded";
+        this.KEY_LOADED_INIT = "conv_" + peer + "_history_inited";
     }
 
     @Override
     public void preStart() {
+        super.preStart();
         historyMaxDate = preferences().getLong(KEY_LOADED_DATE, Long.MAX_VALUE);
         historyLoaded = preferences().getBool(KEY_LOADED, false);
         if (!preferences().getBool(KEY_LOADED_INIT, false)) {
             self().send(new LoadMore());
+        } else {
+            // context().getMessagesModule().getConversationActor(peer).send(new ConversationActor.ConversationLoaded());
         }
     }
 
@@ -52,29 +56,20 @@ public class DialogsHistoryActor extends ModuleActor {
         }
         isLoading = true;
 
-        Log.d(TAG, "Loading history... after " + historyMaxDate);
+        request(new RequestLoadHistory(buidOutPeer(peer), historyMaxDate, null, LIMIT),
+                new RpcCallback<ResponseLoadHistory>() {
+                    @Override
+                    public void onResult(ResponseLoadHistory response) {
+                        // Invoke on sequence actor
+                        updates().onUpdateReceived(new MessagesHistoryLoaded(peer, response));
+                    }
 
-        request(new RequestLoadDialogs(historyMaxDate, LIMIT), new RpcCallback<ResponseLoadDialogs>() {
-            @Override
-            public void onResult(ResponseLoadDialogs response) {
-
-//                        updates().executeRelatedResponse(response.getUsers(), response.getGroups(), new Runnable() {
-//                            @Override
-//                            public void run() {
-//
-//                            }
-//                        });
-
-                // Invoke on sequence actor
-                updates().onUpdateReceived(new DialogHistoryLoaded(response));
-            }
-
-            @Override
-            public void onError(RpcException e) {
-                e.printStackTrace();
-                // Never happens
-            }
-        });
+                    @Override
+                    public void onError(RpcException e) {
+                        e.printStackTrace();
+                        // Never happens
+                    }
+                });
     }
 
     private void onLoadedMore(int loaded, long maxLoadedDate) {
@@ -86,22 +81,23 @@ public class DialogsHistoryActor extends ModuleActor {
             historyLoaded = false;
             historyMaxDate = maxLoadedDate;
         }
+
         preferences().putLong(KEY_LOADED_DATE, maxLoadedDate);
         preferences().putBool(KEY_LOADED, historyLoaded);
         preferences().putBool(KEY_LOADED_INIT, true);
 
-        Log.d(TAG, "History loaded, time = " + maxLoadedDate);
+        if (historyLoaded) {
+            // context().getMessagesModule().getConversationActor(peer).send(new ConversationActor.ConversationLoaded());
+        }
     }
-
-    // Messages
 
     @Override
     public void onReceive(Object message) {
         if (message instanceof LoadMore) {
             onLoadMore();
         } else if (message instanceof LoadedMore) {
-            LoadedMore loaded = (LoadedMore) message;
-            onLoadedMore(loaded.loaded, loaded.maxLoadedDate);
+            LoadedMore loadedMore = (LoadedMore) message;
+            onLoadedMore(loadedMore.loaded, loadedMore.maxLoadedDate);
         } else {
             drop(message);
         }
