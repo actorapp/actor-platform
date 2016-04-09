@@ -2,7 +2,7 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-package im.actor.core.modules.messaging.entity;
+package im.actor.core.modules.messaging.actions.entity;
 
 import java.io.IOException;
 import java.util.ArrayList;
