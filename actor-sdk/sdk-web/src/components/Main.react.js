@@ -18,6 +18,7 @@ import MenuOverlay from './common/MenuOverlay.react';
 import InviteUser from './modals/InviteUser.react';
 import InviteByLink from './modals/invite-user/InviteByLink.react';
 import EditGroup from './modals/EditGroup.react';
+import SmallCall from './SmallCall.react';
 
 class Main extends Component {
   static propTypes = {
@@ -67,6 +68,15 @@ class Main extends Component {
     }
   };
 
+  renderCall() {
+    const { delegate } = this.context;
+    if (!delegate.features.calls) {
+      return null;
+    }
+
+    return <SmallCall />;
+  }
+
   render() {
     const { delegate } = this.context;
 
@@ -84,6 +94,8 @@ class Main extends Component {
         <InviteUser/>
         <InviteByLink/>
         <EditGroup/>
+
+        {this.renderCall()}
       </div>
     );
   }

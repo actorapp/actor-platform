@@ -10,7 +10,7 @@ import { CreateGroupSteps } from '../../../constants/ActorAppConstants';
 
 import CreateGroupActionCreators from '../../../actions/CreateGroupActionCreators';
 
-import ContactStore from '../../../stores/PeopleStore';
+import ContactsStore from '../../../stores/ContactsStore';
 import CreateGroupStore from '../../../stores/CreateGroupStore';
 
 import ContactItem from '../../common/ContactItem.react';
@@ -22,7 +22,7 @@ class CreateGroupForm extends Component {
   };
 
   static getStores() {
-    return [ContactStore, CreateGroupStore];
+    return [CreateGroupStore, ContactsStore];
   }
 
   static calculateState() {
@@ -30,8 +30,8 @@ class CreateGroupForm extends Component {
       step: CreateGroupStore.getCurrentStep(),
       name: CreateGroupStore.getGroupName(),
       selectedUserIds: CreateGroupStore.getSelectedUserIds(),
-      contacts: ContactStore.getList()
-    }
+      contacts: ContactsStore.getState()
+    };
   }
 
   componentDidMount() {

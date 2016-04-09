@@ -4,6 +4,8 @@
 
 import React, { Component, PropTypes } from 'react';
 
+import Image from '../common/Image.react';
+
 class Sticker extends Component {
   static propTypes = {
     sticker: PropTypes.object.isRequired,
@@ -29,7 +31,7 @@ class Sticker extends Component {
 
     return (
       <div className="sticker" onClick={this.onClick}>
-        <img src={url} />
+        <Image src={url} />
       </div>
     );
   }
