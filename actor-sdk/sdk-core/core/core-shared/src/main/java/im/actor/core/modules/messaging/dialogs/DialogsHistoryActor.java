@@ -54,21 +54,27 @@ public class DialogsHistoryActor extends ModuleActor {
 
         Log.d(TAG, "Loading history... after " + historyMaxDate);
 
-        request(new RequestLoadDialogs(historyMaxDate, LIMIT),
-                new RpcCallback<ResponseLoadDialogs>() {
-                    @Override
-                    public void onResult(ResponseLoadDialogs response) {
+        request(new RequestLoadDialogs(historyMaxDate, LIMIT), new RpcCallback<ResponseLoadDialogs>() {
+            @Override
+            public void onResult(ResponseLoadDialogs response) {
 
-                        // Invoke on sequence actor
-                        updates().onUpdateReceived(new DialogHistoryLoaded(response));
-                    }
+//                        updates().executeRelatedResponse(response.getUsers(), response.getGroups(), new Runnable() {
+//                            @Override
+//                            public void run() {
+//
+//                            }
+//                        });
 
-                    @Override
-                    public void onError(RpcException e) {
-                        e.printStackTrace();
-                        // Never happens
-                    }
-                });
+                // Invoke on sequence actor
+                updates().onUpdateReceived(new DialogHistoryLoaded(response));
+            }
+
+            @Override
+            public void onError(RpcException e) {
+                e.printStackTrace();
+                // Never happens
+            }
+        });
     }
 
     private void onLoadedMore(int loaded, long maxLoadedDate) {
