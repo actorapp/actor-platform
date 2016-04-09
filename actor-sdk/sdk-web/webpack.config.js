@@ -48,7 +48,7 @@ export default {
       loaders: [
         'babel?cacheDirectory'
       ],
-      exclude: /(node_modules)/
+      exclude: /(node_modules|vendor)/
     }, {
       test: /\.json$/,
       loaders: ['json']

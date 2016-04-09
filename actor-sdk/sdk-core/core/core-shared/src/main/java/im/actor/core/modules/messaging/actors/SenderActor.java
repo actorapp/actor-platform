@@ -232,6 +232,21 @@ public class SenderActor extends ModuleActor {
         performUploadFile(rid, descriptor, fileName);
     }
 
+    public void doForwardContent(Peer peer, AbsContent content) {
+        long rid = RandomUtils.nextRid();
+        long date = createPendingDate();
+        long sortDate = date + 365 * 24 * 60 * 60 * 1000L;
+
+        Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, content,
+                new ArrayList<Reaction>());
+        context().getMessagesModule().getConversationActor(peer).send(message);
+
+        pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, content));
+        savePending();
+
+        performSendContent(peer, rid, content);
+    }
+
     public void doSendPhoto(Peer peer, FastThumb fastThumb, String descriptor, String fileName,
                             int fileSize, int w, int h) {
         long rid = RandomUtils.nextRid();
@@ -541,6 +556,9 @@ public class SenderActor extends ModuleActor {
         } else if (message instanceof SendJson) {
             SendJson sendJson = (SendJson) message;
             doSendJson(sendJson.getPeer(), sendJson.getJson());
+        } else if (message instanceof ForwardContent) {
+            ForwardContent forwardContent = (ForwardContent) message;
+            doForwardContent(forwardContent.getPeer(), forwardContent.getContent());
         } else {
             drop(message);
         }
@@ -586,6 +604,24 @@ public class SenderActor extends ModuleActor {
 
         public String getDescriptor() {
             return descriptor;
+        }
+    }
+
+    public static class ForwardContent {
+        private Peer peer;
+        private AbsContent content;
+
+        public ForwardContent(Peer peer, AbsContent remoteContent) {
+            this.peer = peer;
+            this.content = remoteContent;
+        }
+
+        public Peer getPeer() {
+            return peer;
+        }
+
+        public AbsContent getContent() {
+            return content;
         }
     }
 

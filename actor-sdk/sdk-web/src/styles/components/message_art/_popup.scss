@@ -1,0 +1,41 @@
+/*
+ * Copyright (C) 2016 Actor LLC. <https://actor.im>
+ */
+
+@import 'header';
+@import 'footer';
+
+$stem-size: $default-stem-size;
+
+@mixin stem() {
+  position: absolute;
+  right: $stem-size;
+  bottom: - $stem-size / 2;
+
+  width: $stem-size;
+  height: $stem-size;
+
+  content: '';
+  transform: rotate(45deg);
+
+  background-color: white;
+}
+
+.message-art {
+  &__popup {
+    color: rgba($greyish-brown, .6);
+    border-radius: $default-border-radius;
+    background-color: white;
+    box-shadow: 0 1px 3px 1px rgba(0, 0, 0, .1);
+    &:before {
+      @include stem();
+    }
+    &:after {
+      z-index: -1;
+
+      box-shadow: 0 1px 3px 1px rgba(0, 0, 0, .1);
+
+      @include stem();
+    }
+  }
+}

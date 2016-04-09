@@ -18,6 +18,10 @@ export default {
     ComposeActionCreators.toggleAutoFocus(true);
   },
 
+  setQuery(query) {
+    dispatch(ActionTypes.INVITE_USER_QUERY_CHANGE, { query });
+  },
+
   inviteUser(gid, uid) {
     dispatchAsync(ActorClient.inviteMember(gid, uid), {
       request: ActionTypes.INVITE_USER,
