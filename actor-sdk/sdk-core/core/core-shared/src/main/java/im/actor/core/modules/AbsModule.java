@@ -94,13 +94,13 @@ public abstract class AbsModule {
         return context().getMessagesModule().getPlainReceiverActor();
     }
 
-    public ActorRef conversationActor(Peer peer) {
-        return context().getMessagesModule().getConversationActor(peer);
-    }
-
-    public ActorRef conversationHistoryActor(Peer peer) {
-        return context().getMessagesModule().getConversationHistoryActor(peer);
-    }
+//    public ActorRef conversationActor(Peer peer) {
+//        return context().getMessagesModule().getConversationActor(peer);
+//    }
+//
+//    public ActorRef conversationHistoryActor(Peer peer) {
+//        return context().getMessagesModule().getConversationHistoryActor(peer);
+//    }
 
     public PreferencesStorage preferences() {
         return context.getPreferences();

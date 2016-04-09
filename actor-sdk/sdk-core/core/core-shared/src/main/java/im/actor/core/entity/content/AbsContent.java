@@ -35,6 +35,7 @@ import im.actor.core.entity.content.internal.LocalPhoto;
 import im.actor.core.entity.content.internal.LocalVideo;
 import im.actor.core.entity.content.internal.LocalVoice;
 import im.actor.core.entity.Sticker;
+import im.actor.runtime.Runtime;
 import im.actor.runtime.bser.BserParser;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
@@ -50,8 +51,6 @@ import im.actor.runtime.json.JSONObject;
 
 public abstract class AbsContent {
 
-    private int updatedCounter = 0;
-
     public static byte[] serialize(AbsContent content) throws IOException {
         DataOutput dataOutput = new DataOutput();
         BserWriter writer = new BserWriter(dataOutput);
@@ -62,7 +61,7 @@ public abstract class AbsContent {
         return dataOutput.toByteArray();
     }
 
-    public static AbsContent fromMessage(ApiMessage message) throws IOException {
+    public static AbsContent fromMessage(ApiMessage message) {
         return convertData(new ContentRemoteContainer(message));
     }
 
@@ -73,12 +72,12 @@ public abstract class AbsContent {
         if (reader.getBool(32, false)) {
             container = AbsContentContainer.loadContainer(reader.getBytes(33));
         } else {
-            throw new IOException("Unsupported obsolete format");
+            throw new RuntimeException("Unsupported obsolete format");
         }
         return convertData(container);
     }
 
-    protected static AbsContent convertData(AbsContentContainer container) throws IOException {
+    protected static AbsContent convertData(AbsContentContainer container) {
 
         if (container instanceof ContentLocalContainer) {
             ContentLocalContainer localContainer = (ContentLocalContainer) container;
@@ -92,7 +91,7 @@ public abstract class AbsContent {
             } else if (content instanceof LocalDocument) {
                 return new DocumentContent(localContainer);
             } else {
-                throw new IOException("Unknown type");
+                throw new RuntimeException("Unknown type");
             }
         } else if (container instanceof ContentRemoteContainer) {
             ContentRemoteContainer remoteContainer = (ContentRemoteContainer) container;
@@ -156,7 +155,7 @@ public abstract class AbsContent {
             // Fallback
             return new UnsupportedContent(remoteContainer);
         } else {
-            throw new IOException("Unknown type");
+            throw new RuntimeException("Unknown type");
         }
     }
 
@@ -180,14 +179,5 @@ public abstract class AbsContent {
 
     protected void setContentContainer(AbsContentContainer contentContainer) {
         this.contentContainer = contentContainer;
-    }
-
-
-    public int getUpdatedCounter() {
-        return updatedCounter;
-    }
-
-    public void incrementUpdatedCounter(int oldCounter) {
-        updatedCounter = ++oldCounter;
     }
 }

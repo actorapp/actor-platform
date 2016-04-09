@@ -82,7 +82,7 @@ public class OwnReadActor extends ModuleActor {
 
     private void markAsOwnRead(Peer peer, long sortingDate) {
         // Update Counters
-        context().getMessagesModule().getConversationActor(peer).send(new ConversationActor.MessageReadByMe(sortingDate));
+        // context().getMessagesModule().getConversationActor(peer).send(new ConversationActor.MessageReadByMe(sortingDate));
 
         // Saving read state
         saveReadState(peer, sortingDate);

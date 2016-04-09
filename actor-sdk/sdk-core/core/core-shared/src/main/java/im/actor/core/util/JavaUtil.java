@@ -5,6 +5,7 @@
 package im.actor.core.util;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -66,4 +67,19 @@ public class JavaUtil {
         }
         return res;
     }
+
+    /**
+     * Unboxing long list
+     *
+     * @param list source list
+     * @return result
+     */
+    public static long[] unbox(List<Long> list) {
+        long[] res = new long[list.size()];
+        for (int i = 0; i < res.length; i++) {
+            res[i] = list.get(i);
+        }
+        return res;
+    }
+
 }
