@@ -11,12 +11,15 @@ public class RouterApplyChatHistory {
     private List<Message> messages;
     private Long maxReceiveDate;
     private Long maxReadDate;
+    private boolean isEnded;
 
-    public RouterApplyChatHistory(Peer peer, List<Message> messages, Long maxReceiveDate, Long maxReadDate) {
+    public RouterApplyChatHistory(Peer peer, List<Message> messages, Long maxReceiveDate,
+                                  Long maxReadDate, boolean isEnded) {
         this.peer = peer;
         this.messages = messages;
         this.maxReceiveDate = maxReceiveDate;
         this.maxReadDate = maxReadDate;
+        this.isEnded = isEnded;
     }
 
     public Peer getPeer() {
@@ -33,5 +36,9 @@ public class RouterApplyChatHistory {
 
     public Long getMaxReadDate() {
         return maxReadDate;
+    }
+
+    public boolean isEnded() {
+        return isEnded;
     }
 }

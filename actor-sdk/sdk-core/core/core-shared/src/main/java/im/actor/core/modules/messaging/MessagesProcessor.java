@@ -21,6 +21,7 @@ import im.actor.core.entity.MessageState;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.Reaction;
 import im.actor.core.entity.content.AbsContent;
+import im.actor.core.entity.content.ServiceUserRegistered;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.messaging.actions.SenderActor;
@@ -113,8 +114,7 @@ public class MessagesProcessor extends AbsModule {
     }
 
     @Verified
-    public void onMessageContentChanged(ApiPeer _peer, long rid,
-                                        ApiMessage message) {
+    public void onMessageContentChanged(ApiPeer _peer, long rid, ApiMessage message) {
         Peer peer = convert(_peer);
         // We are not invalidating sequence because of this update
         if (!isValidPeer(peer)) {
@@ -159,7 +159,6 @@ public class MessagesProcessor extends AbsModule {
 
         context().getMessagesModule().getRouter().onMessageReadByMe(peer, startDate, counter);
     }
-
 
     @Verified
     public void onMessageDelete(ApiPeer _peer, List<Long> rids) {
@@ -208,7 +207,7 @@ public class MessagesProcessor extends AbsModule {
 
     @Verified
     public void onMessagesLoaded(Peer peer, ResponseLoadHistory historyResponse) {
-        ArrayList<Message> messages = new ArrayList<Message>();
+        ArrayList<Message> messages = new ArrayList<>();
         long maxLoadedDate = Long.MAX_VALUE;
         long maxReadDate = 0;
         long maxReceiveDate = 0;
@@ -260,12 +259,10 @@ public class MessagesProcessor extends AbsModule {
     }
 
 
-
     @Verified
     public void onUserRegistered(long rid, int uid, long date) {
-//        Message message = new Message(rid, date, date, uid,
-//                MessageState.UNKNOWN, ServiceUserRegistered.create(), new ArrayList<Reaction>());
-//
-//        conversationActor(Peer.user(uid)).send(message);
+        ArrayList<Message> messages = new ArrayList<>();
+        messages.add(new Message(rid, date, date, uid, MessageState.UNKNOWN, ServiceUserRegistered.create()));
+        context().getMessagesModule().getRouter().onNewMessages(Peer.user(uid), messages);
     }
 }

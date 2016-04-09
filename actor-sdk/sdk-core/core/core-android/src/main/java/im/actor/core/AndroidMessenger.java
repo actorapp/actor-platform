@@ -477,15 +477,6 @@ public class AndroidMessenger extends im.actor.core.Messenger {
         return docsLists.get(peer);
     }
 
-    public <T extends BserObject & ListEngineItem> BindedDisplayList<T> getCustomDisplayList(final Peer peer, final String dataType, BserCreator<T> creator) {
-        String key = peer.getUnuqueId()+dataType;
-        if (!customLists.containsKey(key)) {
-            BindedDisplayList list = (BindedDisplayList) modules.getDisplayListsModule().getCustomSharedList(peer, dataType, creator);
-            customLists.put(key, list);
-        }
-        return customLists.get(key);
-    }
-
     public GalleryVM getGalleryVM() {
         if (galleryVM == null) {
             galleryVM = new GalleryVM();
