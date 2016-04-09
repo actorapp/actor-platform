@@ -16,8 +16,8 @@ import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.sequence.Processor;
 import im.actor.core.modules.contacts.ContactsSyncActor;
-import im.actor.core.modules.messaging.actors.DialogsActor;
-import im.actor.core.modules.messaging.actors.ActiveDialogsActor;
+import im.actor.core.modules.messaging.dialogs.DialogsActor;
+import im.actor.core.modules.messaging.dialogs.ActiveDialogsActor;
 import im.actor.runtime.Log;
 import im.actor.runtime.annotations.Verified;
 
