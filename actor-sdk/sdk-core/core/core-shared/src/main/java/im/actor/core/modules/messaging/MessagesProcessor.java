@@ -28,11 +28,11 @@ import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.messaging.actions.SenderActor;
 import im.actor.core.modules.messaging.dialogs.DialogsActor;
 import im.actor.core.modules.messaging.dialogs.DialogsHistoryActor;
-import im.actor.core.modules.messaging.entity.DialogHistory;
-import im.actor.core.modules.messaging.entity.EntityConverter;
+import im.actor.core.modules.messaging.dialogs.entity.DialogHistory;
+import im.actor.core.entity.EntityConverter;
 import im.actor.runtime.annotations.Verified;
 
-import static im.actor.core.modules.messaging.entity.EntityConverter.convert;
+import static im.actor.core.entity.EntityConverter.convert;
 
 public class MessagesProcessor extends AbsModule {
 
