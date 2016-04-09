@@ -120,14 +120,10 @@ public class SearchModule extends AbsModule {
                                 final ArrayList<MessageSearchEntity> res = new ArrayList<MessageSearchEntity>();
                                 for (ApiMessageSearchItem r : response.getSearchResults()) {
                                     ApiMessageSearchResult itm = r.getResult();
-                                    try {
-                                        res.add(new MessageSearchEntity(
-                                                convert(itm.getPeer()), itm.getRid(),
-                                                itm.getDate(), itm.getSenderId(),
-                                                AbsContent.fromMessage(itm.getContent())));
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
+                                    res.add(new MessageSearchEntity(
+                                            convert(itm.getPeer()), itm.getRid(),
+                                            itm.getDate(), itm.getSenderId(),
+                                            AbsContent.fromMessage(itm.getContent())));
                                 }
                                 runOnUiThread(new Runnable() {
                                     @Override
