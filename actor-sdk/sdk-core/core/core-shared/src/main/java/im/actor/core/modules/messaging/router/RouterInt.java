@@ -10,7 +10,9 @@ import im.actor.core.events.AppVisibleChanged;
 import im.actor.core.events.PeerChatClosed;
 import im.actor.core.events.PeerChatOpened;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.messaging.history.entity.DialogHistory;
 import im.actor.core.modules.messaging.router.entity.RouterAppVisible;
+import im.actor.core.modules.messaging.router.entity.RouterApplyDialogsHistory;
 import im.actor.core.modules.messaging.router.entity.RouterChangedContent;
 import im.actor.core.modules.messaging.router.entity.RouterChangedReactions;
 import im.actor.core.modules.messaging.router.entity.RouterConversationHidden;
@@ -87,6 +89,10 @@ public class RouterInt extends ActorInterface implements BusSubscriber {
 
     public void onMessageReceived(Peer peer, long date) {
         send(new RouterMessageReceived(peer, date));
+    }
+
+    public void onDialogsHistoryLoaded(List<DialogHistory> histories, Runnable runnable) {
+        send(new RouterApplyDialogsHistory(histories, runnable));
     }
 
     @Override

@@ -18,7 +18,7 @@ import im.actor.core.entity.Peer;
 import im.actor.core.entity.User;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.messaging.dialogs.entity.DialogHistory;
+import im.actor.core.modules.messaging.history.entity.DialogHistory;
 import im.actor.core.modules.ModuleActor;
 import im.actor.runtime.Log;
 import im.actor.runtime.Runtime;

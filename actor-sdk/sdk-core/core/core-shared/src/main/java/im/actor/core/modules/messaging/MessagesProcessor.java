@@ -7,7 +7,6 @@ package im.actor.core.modules.messaging;
 import java.util.ArrayList;
 import java.util.List;
 
-import im.actor.core.api.ApiDialog;
 import im.actor.core.api.ApiDialogGroup;
 import im.actor.core.api.ApiMessage;
 import im.actor.core.api.ApiMessageContainer;
@@ -15,7 +14,6 @@ import im.actor.core.api.ApiMessageReaction;
 import im.actor.core.api.ApiMessageState;
 import im.actor.core.api.ApiPeer;
 import im.actor.core.api.rpc.ResponseLoadArchived;
-import im.actor.core.api.rpc.ResponseLoadDialogs;
 import im.actor.core.api.rpc.ResponseLoadHistory;
 import im.actor.core.api.updates.UpdateMessage;
 import im.actor.core.entity.Message;
@@ -26,9 +24,6 @@ import im.actor.core.entity.content.AbsContent;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.messaging.actions.SenderActor;
-import im.actor.core.modules.messaging.dialogs.DialogsActor;
-import im.actor.core.modules.messaging.dialogs.DialogsHistoryActor;
-import im.actor.core.modules.messaging.dialogs.entity.DialogHistory;
 import im.actor.core.entity.EntityConverter;
 import im.actor.runtime.annotations.Verified;
 
@@ -209,45 +204,6 @@ public class MessagesProcessor extends AbsModule {
 //        conversationActor(peer).send(new ConversationActor.DeleteConversation());
 //
 //        // TODO: Notify send actor
-    }
-
-    @Verified
-    public void onDialogsLoaded(ResponseLoadDialogs dialogsResponse) {
-
-        // Should we eliminate DialogHistory?
-
-        ArrayList<DialogHistory> dialogs = new ArrayList<DialogHistory>();
-
-        long maxLoadedDate = Long.MAX_VALUE;
-
-        for (ApiDialog dialog : dialogsResponse.getDialogs()) {
-
-            maxLoadedDate = Math.min(dialog.getSortDate(), maxLoadedDate);
-
-            Peer peer = convert(dialog.getPeer());
-
-            AbsContent msgContent = AbsContent.fromMessage(dialog.getMessage());
-
-            if (msgContent == null) {
-                continue;
-            }
-
-            dialogs.add(new DialogHistory(peer, dialog.getUnreadCount(), dialog.getSortDate(),
-                    dialog.getRid(), dialog.getDate(), dialog.getSenderUid(), msgContent,
-                    dialog.getState() == ApiMessageState.READ,
-                    dialog.getState() == ApiMessageState.RECEIVED));
-        }
-
-        // Sending updates to dialogs actor
-        if (dialogs.size() > 0) {
-            dialogsActor().send(new DialogsActor.HistoryLoaded(dialogs));
-        } else {
-            context().getAppStateModule().onDialogsLoaded();
-        }
-
-        // Sending notification to history actor
-        dialogsHistoryActor().send(new DialogsHistoryActor.LoadedMore(dialogsResponse.getDialogs().size(),
-                maxLoadedDate));
     }
 
     @Verified
