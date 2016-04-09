@@ -30,9 +30,13 @@ public class GetDiffCombiner {
                 res.putReceived(convert(received.getPeer()), received.getStartDate());
             } else if (u instanceof UpdateMessageReadByMe) {
                 UpdateMessageReadByMe readByMe = (UpdateMessageReadByMe) u;
-                res.putReadByMe(convert(readByMe.getPeer()), readByMe.getStartDate());
+                int counter = 0;
+                if (readByMe.getUnreadCounter() != null) {
+                    counter = readByMe.getUnreadCounter();
+                }
+                res.putReadByMe(convert(readByMe.getPeer()), readByMe.getStartDate(), counter);
             } else if (u instanceof UpdateCountersChanged) {
-                res.setCounters(((UpdateCountersChanged) u).getCounters());
+                // Ignore
             } else if (u instanceof UpdateUserNameChanged) {
                 // Ignore
             } else if (u instanceof UpdateUserLocalNameChanged) {
