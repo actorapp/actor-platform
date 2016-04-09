@@ -42,7 +42,7 @@ import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Props;
 import im.actor.runtime.storage.ListEngine;
 
-import static im.actor.core.modules.messaging.actors.entity.EntityConverter.convert;
+import static im.actor.core.modules.messaging.entity.EntityConverter.convert;
 import static im.actor.runtime.actors.ActorSystem.system;
 
 public class SearchModule extends AbsModule {
