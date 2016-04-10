@@ -30,6 +30,8 @@ final class GlobalCountersSpec
       createPubGroup("Public", "", Set(alice.id)).groupPeer
     }
 
+    println("=== created group")
+
     {
       implicit val clientData = bobClientData
       for (i ← 1 to 10) {
@@ -42,6 +44,8 @@ final class GlobalCountersSpec
 
       //make sure that own messages don't count
       sendMessageToGroup(groupPeer.groupId, textMessage(s"Hello back"))
+
+      println(s"=== alice is ${aliceClientData.optUserId.get}")
 
       expectUpdate(classOf[UpdateCountersChanged]) { upd ⇒
         //2 initializing messages and 10 messages from bob
