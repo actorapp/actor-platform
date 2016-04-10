@@ -239,6 +239,10 @@ public class RouterActor extends ModuleActor {
             state = state.changeOutReceiveDate(maxReceiveDate);
             isChanged = true;
         }
+        if (state.isLoaded() != isEnded) {
+            state = state.changeIsLoaded(isEnded);
+            isChanged = true;
+        }
         if (isChanged) {
             conversationStates.addOrUpdateItem(state);
         }
