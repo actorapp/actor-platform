@@ -26,19 +26,24 @@ object UserProcessorRegion {
           }
         case Peer(peerType, _) ⇒ throw new RuntimeException(s"DialogCommand with peerType: $peerType passed in UserProcessor")
       }
-      case e @ DialogRootEnvelope(userId, query) ⇒
-        (userId.toString, e.getField(DialogRootEnvelope.descriptor.findFieldByNumber(query.number)))
+      case e @ DialogRootEnvelope(userId, query, command) ⇒
+        (
+          userId.toString,
+          if (query.isDefined) e.getField(DialogRootEnvelope.descriptor.findFieldByNumber(query.number))
+          else if (command.isDefined) e.getField(DialogRootEnvelope.descriptor.findFieldByNumber(command.number))
+          else throw new RuntimeException("No defined query nor command")
+        )
     }
   }
 
-  private def extractShardId(system: ActorSystem): ShardRegion.ExtractShardId = msg ⇒ msg match {
+  private def extractShardId(system: ActorSystem): ShardRegion.ExtractShardId = {
     case c: UserCommand ⇒ (c.userId % 100).toString // TODO: configurable
     case q: UserQuery   ⇒ (q.userId % 100).toString
     case Envelope(peer, payload) ⇒ peer match {
       case Peer(PeerType.Private, userId) ⇒ (userId % 100).toString
       case Peer(peerType, _)              ⇒ throw new RuntimeException(s"DialogCommand with peerType: $peerType passed in UserProcessor")
     }
-    case DialogRootEnvelope(userId, query) ⇒ (userId % 100).toString
+    case DialogRootEnvelope(userId, _, _) ⇒ (userId % 100).toString
   }
 
   val typeName = "UserProcessor"
@@ -64,4 +69,4 @@ object UserProcessorRegion {
     ))
 }
 
-case class UserProcessorRegion(val ref: ActorRef)
+final case class UserProcessorRegion(ref: ActorRef)

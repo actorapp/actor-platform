@@ -105,7 +105,7 @@ trait HistoryHandlers {
   override def doHandleLoadGroupedDialogs(clientData: ClientData): Future[HandlerResult[ResponseLoadGroupedDialogs]] =
     authorized(clientData) { implicit client ⇒
       for {
-        dialogGroups ← dialogExt.fetchGroupedDialogShorts(client.userId)
+        dialogGroups ← dialogExt.fetchApiGroupedDialogs(client.userId)
         (userIds, groupIds) = dialogGroups.view.flatMap(_.dialogs).foldLeft((Seq.empty[Int], Seq.empty[Int])) {
           case ((uids, gids), dialog) ⇒
             dialog.peer.`type` match {
@@ -128,16 +128,16 @@ trait HistoryHandlers {
   override def doHandleHideDialog(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseDialogsOrder]] =
     authorized(clientData) { implicit client ⇒
       for {
-        seqstate ← dialogExt.archive(client.userId, peer.asModel)
-        groups ← dialogExt.fetchGroupedDialogShorts(client.userId)
+        seqstate ← dialogExt.archive(client.userId, peer.asModel, Some(client.authSid))
+        groups ← dialogExt.fetchApiGroupedDialogs(client.userId)
       } yield Ok(ResponseDialogsOrder(seqstate.seq, seqstate.state.toByteArray, groups = groups))
     }
 
   override def doHandleShowDialog(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseDialogsOrder]] =
     authorized(clientData) { implicit client ⇒
       for {
-        seqstate ← dialogExt.show(client.userId, peer.asModel)
-        groups ← dialogExt.fetchGroupedDialogShorts(client.userId)
+        seqstate ← dialogExt.unarchive(client.userId, peer.asModel)
+        groups ← dialogExt.fetchApiGroupedDialogs(client.userId)
       } yield Ok(ResponseDialogsOrder(seqstate.seq, seqstate.toByteArray, groups = groups))
     }
 
@@ -147,7 +147,7 @@ trait HistoryHandlers {
   ): Future[HandlerResult[ResponseSeq]] =
     authorized(clientData) { implicit client ⇒
       withOutPeer(peer) {
-        for (seqstate ← dialogExt.archive(client.userId, peer.asModel))
+        for (seqstate ← dialogExt.archive(client.userId, peer.asModel, Some(client.authSid)))
           yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
       }
     }

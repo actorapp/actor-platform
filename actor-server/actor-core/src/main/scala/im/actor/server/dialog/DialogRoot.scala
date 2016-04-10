@@ -2,16 +2,19 @@ package im.actor.server.dialog
 
 import java.time.Instant
 
-import akka.actor.{ ActorRef, Props }
-import akka.pattern.ask
+import akka.actor.{ ActorRef, Props, Status }
+import akka.pattern.{ ask, pipe }
 import akka.util.Timeout
 import im.actor.concurrent._
 import im.actor.server.cqrs._
 import im.actor.server.dialog.DialogCommands.SendMessage
 import im.actor.server.model.{ Peer, PeerType }
 import im.actor.api.rpc._
+import im.actor.api.rpc.messaging.UpdateChatGroupsChanged
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.config.ActorConfig
+import im.actor.server.dialog.DialogQueries.GetInfoResponse
+import im.actor.server.sequence.{ PushRules, SeqState, SeqUpdatesExtension }
 
 import scala.concurrent.Future
 
@@ -21,33 +24,64 @@ trait DialogRootEvent extends TaggedEvent {
   override def tags: Set[String] = Set("dialogRoot")
 }
 
+trait DialogRootCommand
+
 trait DialogRootQuery
 
 final case class DialogRootState(
-  active:      Map[DialogGroup, Set[Peer]],
+  active:      Map[DialogGroupType, Set[Peer]],
   activePeers: Set[Peer],
   archived:    Set[Peer]
 ) extends ProcessorState[DialogRootState, DialogRootEvent] {
   import DialogRootEvents._
 
   override def updated(e: DialogRootEvent): DialogRootState = e match {
-    case Created(_, peer) ⇒ withNewPeer(peer)
+    case Created(_, peer)      ⇒ withShownPeer(peer)
+    case Archived(_, peer)     ⇒ withArchivedPeer(peer)
+    case Unarchived(_, peer)   ⇒ withShownPeer(peer)
+    case Favourited(_, peer)   ⇒ withFavouritedPeer(peer)
+    case Unfavourited(_, peer) ⇒ withUnfavouritedPeer(peer)
   }
 
-  private def withNewPeer(peer: Peer) =
+  private def withShownPeer(peer: Peer) =
     copy(
       activePeers = this.activePeers + peer,
-      active = this.active + dialogGroup(peer)
+      active = this.active + dialogGroup(peer),
+      archived = this.archived - peer
     )
 
-  private def dialogGroup(peer: Peer) = {
-    val group = peer.typ match {
-      case PeerType.Private ⇒ DialogGroups.Privates
-      case PeerType.Group   ⇒ DialogGroups.Groups
-      case _                ⇒ throw new RuntimeException("Unknown peer type")
+  private def withArchivedPeer(peer: Peer) =
+    copy(
+      activePeers = this.activePeers - peer,
+      active = this.active mapValues (_ - peer),
+      archived = this.archived + peer
+    )
+
+  private def withFavouritedPeer(peer: Peer) =
+    copy(
+      activePeers = this.activePeers + peer,
+      active = this.active.mapValues(_.filterNot(_ == peer)) + dialogGroup(peer, isFavourite = true),
+      archived = this.archived - peer
+    )
+
+  private def withUnfavouritedPeer(peer: Peer) =
+    copy(
+      active =
+        (this.active.mapValues(_.filterNot(_ == peer)) + dialogGroup(peer)).filter {
+          case (DialogGroupType.Favourites, peers) if peers.isEmpty ⇒ false
+          case _ ⇒ true
+        }
+    )
+
+  private def dialogGroup(peer: Peer, isFavourite: Boolean = false) = {
+    val group = (isFavourite, peer.typ) match {
+      case (true, _)                 ⇒ DialogGroupType.Favourites
+      case (false, PeerType.Private) ⇒ DialogGroupType.DirectMessages
+      case (false, PeerType.Group)   ⇒ DialogGroupType.Groups
+      case _                         ⇒ throw new RuntimeException("Unknown peer type")
     }
 
-    group → this.active.getOrElse(group, Set.empty)
+    group → (this.active.getOrElse(group, Set.empty) + peer)
   }
 }
 
@@ -58,6 +92,7 @@ object DialogRoot {
 private class DialogRoot(userId: Int, extensions: Seq[ApiExtension]) extends Processor[DialogRootState, DialogRootEvent] {
   import DialogRootEvents._
   import DialogRootQueries._
+  import DialogRootCommands._
   import context.dispatcher
 
   private implicit val timeout = Timeout(ActorConfig.defaultTimeout)
@@ -77,19 +112,29 @@ private class DialogRoot(userId: Int, extensions: Seq[ApiExtension]) extends Pro
           (ref ? DialogQueries.GetCounter()).mapTo[DialogQueries.GetCounterResponse] map (_.counter)
         }
       } yield GetCounterResponse(counters.sum)
+    case GetDialogGroups() ⇒
+      fetchDialogGroups() map (GetDialogGroupsResponse(_))
   }
 
   override protected def handleCommand: Receive = {
     case sm: SendMessage ⇒
-      needCreateDialog(sm) match {
+      needShowDialog(sm) match {
         case Some(peer) ⇒
-          persist(Created(Instant.now(), peer)) { e ⇒
+          val e = if (isArchived(peer)) Unarchived(Instant.now(), peer) else Created(Instant.now(), peer)
+
+          persist(e) { _ ⇒
             commit(e)
             handleDialogCommand(sm)
+            sendChatGroupsChanged()
           }
-        case None ⇒ handleDialogCommand(sm)
+        case None ⇒
+          handleDialogCommand(sm)
       }
-    case dc: DialogCommand ⇒ handleDialogCommand(dc)
+    case Archive(peer, clientAuthSid)     ⇒ archive(peer, clientAuthSid)
+    case Unarchive(peer, clientAuthSid)   ⇒ unarchive(peer, clientAuthSid)
+    case Favourite(peer, clientAuthSid)   ⇒ favourite(peer, clientAuthSid)
+    case Unfavourite(peer, clientAuthSid) ⇒ unfavourite(peer, clientAuthSid)
+    case dc: DialogCommand                ⇒ handleDialogCommand(dc)
   }
 
   def handleDialogCommand: PartialFunction[DialogCommand, Unit] = {
@@ -97,7 +142,39 @@ private class DialogRoot(userId: Int, extensions: Seq[ApiExtension]) extends Pro
     case dc: DialogCommand        ⇒ dialogRef(dc.dest) forward dc
   }
 
-  private def needCreateDialog(sm: SendMessage): Option[Peer] = {
+  private def archive(peer: Peer, clientAuthSid: Option[Int]) = {
+    if (isArchived(peer)) sender() ! Status.Failure(DialogErrors.DialogAlreadyArchived(peer))
+    else persist(Archived(Instant.now(), peer)) { e ⇒
+      commit(e)
+      sendChatGroupsChanged(clientAuthSid) pipeTo sender()
+    }
+  }
+
+  private def unarchive(peer: Peer, clientAuthSid: Option[Int]) = {
+    if (!isArchived(peer)) sender() ! Status.Failure(DialogErrors.DialogAlreadyShown(peer))
+    else persist(Unarchived(Instant.now(), peer)) { e ⇒
+      commit(e)
+      sendChatGroupsChanged(clientAuthSid) pipeTo sender()
+    }
+  }
+
+  private def favourite(peer: Peer, clientAuthSid: Option[Int]) = {
+    if (isFavourited(peer)) sender() ! Status.Failure(DialogErrors.DialogAlreadyFavourited(peer))
+    else persist(Favourited(Instant.now(), peer)) { e ⇒
+      commit(e)
+      sendChatGroupsChanged(clientAuthSid) pipeTo sender()
+    }
+  }
+
+  private def unfavourite(peer: Peer, clientAuthSid: Option[Int]) = {
+    if (!isFavourited(peer)) sender() ! Status.Failure(DialogErrors.DialogAlreadyUnfavourited(peer))
+    else persist(Unfavourited(Instant.now(), peer)) { e ⇒
+      commit(e)
+      sendChatGroupsChanged(clientAuthSid) pipeTo sender()
+    }
+  }
+
+  private def needShowDialog(sm: SendMessage): Option[Peer] = {
     val checkPeer =
       sm.origin.typ match {
         case PeerType.Group ⇒ sm.dest
@@ -107,11 +184,15 @@ private class DialogRoot(userId: Int, extensions: Seq[ApiExtension]) extends Pro
         case _ ⇒ throw new RuntimeException("Unknown peer type")
       }
 
-    if (dialogExists(checkPeer)) None
+    if (dialogShown(checkPeer)) None
     else Some(checkPeer)
   }
 
-  private def dialogExists(peer: Peer): Boolean = state.activePeers.contains(peer)
+  private def isArchived(peer: Peer): Boolean = state.archived.contains(peer)
+
+  private def isFavourited(peer: Peer): Boolean = state.active.get(DialogGroupType.Favourites).exists(_.contains(peer))
+
+  private def dialogShown(peer: Peer): Boolean = state.activePeers.contains(peer)
 
   private def dialogRef(dc: DirectDialogCommand): ActorRef = {
     val peer = dc.dest match {
@@ -128,5 +209,26 @@ private class DialogRoot(userId: Int, extensions: Seq[ApiExtension]) extends Pro
     case PeerType.Private ⇒ s"Private_${peer.id}"
     case PeerType.Group   ⇒ s"Group_${peer.id}"
     case other            ⇒ throw new Exception(s"Unknown peer type: $other")
+  }
+
+  private def fetchDialogGroups(): Future[Seq[DialogGroup]] = {
+    val infosFutures =
+      state.active map {
+        case (group, peers) ⇒
+          FutureExt.ftraverse(peers.toSeq)(dialogRef(_) ? DialogQueries.GetInfo())
+            .mapTo[Seq[GetInfoResponse]]
+            .map(infos ⇒ DialogGroup(group, infos.map(_.info)))
+      }
+
+    Future.sequence(infosFutures) map (_.toSeq)
+  }
+
+  private def sendChatGroupsChanged(ignoreAuthSid: Option[Int] = None): Future[SeqState] = {
+    for {
+      groups ← DialogExtension(context.system).fetchApiGroupedDialogs(userId)
+      update = UpdateChatGroupsChanged(groups)
+      seqstate ← SeqUpdatesExtension(context.system).
+        deliverSingleUpdate(userId, update, PushRules().withExcludeAuthSids(ignoreAuthSid.toSeq))
+    } yield seqstate
   }
 }

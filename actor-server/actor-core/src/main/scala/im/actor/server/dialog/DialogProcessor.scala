@@ -35,13 +35,6 @@ object DialogEventsObsolete {
   private[dialog] final case class LastReceiveDate(date: Long) extends DialogEvent
 
   private[dialog] final case class LastReadDate(date: Long) extends DialogEvent
-
-  private[dialog] case object Shown extends DialogEvent
-
-  private[dialog] case object Archived extends DialogEvent
-
-  private[dialog] case object Favourited extends DialogEvent
-  private[dialog] case object Unfavourited extends DialogEvent
 }
 
 private[dialog] object DialogState {
@@ -49,20 +42,14 @@ private[dialog] object DialogState {
     lastMessageDate: Long,
     lastReceiveDate: Long,
     lastReadDate:    Long,
-    isFavourite:     Boolean,
-    isCreated:       Boolean,
-    isArchived:      Boolean,
     counter:         Int
-  ) = DialogState(lastMessageDate, lastReceiveDate, lastReadDate, isFavourite, isCreated, isArchived, counter, immutable.SortedSet.empty(UnreadMessage.ordering))
+  ) = DialogState(lastMessageDate, lastReceiveDate, lastReadDate, counter, immutable.SortedSet.empty(UnreadMessage.ordering))
 
   def fromModel(model: DialogModel, isCreated: Boolean, counter: Int): DialogState =
     DialogState(
       model.lastMessageDate.getMillis,
       model.ownerLastReceivedAt.getMillis,
       model.ownerLastReadAt.getMillis,
-      model.isFavourite,
-      isCreated = isCreated,
-      isArchived = model.archivedAt.isDefined,
       counter,
       immutable.SortedSet.empty(UnreadMessage.ordering)
     )
@@ -90,9 +77,6 @@ private[dialog] final case class DialogState(
   lastMessageDate: Long, //we don't use it now anywhere. should we remove it?
   lastReceiveDate: Long,
   lastReadDate:    Long,
-  isFavourite:     Boolean,
-  isCreated:       Boolean,
-  isArchived:      Boolean,
   counter:         Int,
   unreadMessages:  immutable.SortedSet[UnreadMessage]
 ) extends ProcessorState[DialogState, DialogEvent] {
@@ -101,11 +85,7 @@ private[dialog] final case class DialogState(
   override def updated(e: DialogEvent): DialogState = e match {
     case LastMessageDate(date) if date > this.lastMessageDate ⇒ this.copy(lastMessageDate = date)
     case LastReceiveDate(date) if date > this.lastReceiveDate ⇒ this.copy(lastReceiveDate = date)
-    case LastReadDate(date) if date > this.lastReadDate ⇒ this.copy(lastReadDate = date)
-    case Shown ⇒ this.copy(isArchived = false)
-    case Archived ⇒ this.copy(isArchived = true)
-    case Favourited ⇒ this.copy(isFavourite = true)
-    case Unfavourited ⇒ this.copy(isFavourite = false)
+    case LastReadDate(date) if date > this.lastReadDate       ⇒ this.copy(lastReadDate = date)
     case NewMessage(randomId, date, isIncoming) ⇒
       if (isIncoming) {
         this.copy(counter = counter + 1, unreadMessages = unreadMessages + UnreadMessage(date, randomId))
@@ -170,10 +150,11 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
 
   override def persistenceId: String = DialogProcessor.persistenceId(peer)
 
-  override protected def getInitialState: DialogState = DialogState(0, 0, 0, false, false, false, 0, immutable.SortedSet.empty(UnreadMessage.ordering))
+  override protected def getInitialState: DialogState = DialogState(0, 0, 0, 0, immutable.SortedSet.empty(UnreadMessage.ordering))
 
   override protected def handleQuery: PartialFunction[Any, Future[Any]] = {
     case GetCounter() ⇒ Future.successful(GetCounterResponse(state.counter))
+    case GetInfo()    ⇒ Future.successful(GetInfoResponse(DialogInfo(peer, state.counter, Instant.ofEpochMilli(state.lastMessageDate))))
   }
 
   override protected def handleCommand: Receive = actions(state) orElse reactions(state)
@@ -190,17 +171,11 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
 
   // when receiving this messages, dialog is required to take an action
   def actions(state: DialogState): Receive = {
-    case sm: SendMessage if invokes(sm) ⇒ sendMessage(state, sm) //User sends message
-    case mrv: MessageReceived if invokes(mrv) ⇒ messageReceived(state, mrv) //User received messages
-    case mrd: MessageRead if invokes(mrd) ⇒ messageRead(state, mrd) //User reads messages
-    case sr: SetReaction if invokes(sr) ⇒ setReaction(state, sr)
-    case rr: RemoveReaction if invokes(rr) ⇒ removeReaction(state, rr)
-    case Show(_) ⇒ show(state)
-    case Archive(_) ⇒ archive(state)
-    case Favourite(_) ⇒ favourite(state)
-    case Unfavourite(_) ⇒ unfavourite(state)
-    case Delete(_) ⇒ delete(state)
-    case WriteMessage(_, _, date, randomId, message) ⇒ writeMessage(state, date, randomId, message)
+    case sm: SendMessage if invokes(sm)                             ⇒ sendMessage(state, sm) //User sends message
+    case mrv: MessageReceived if invokes(mrv)                       ⇒ messageReceived(state, mrv) //User received messages
+    case mrd: MessageRead if invokes(mrd)                           ⇒ messageRead(state, mrd) //User reads messages
+    case sr: SetReaction if invokes(sr)                             ⇒ setReaction(state, sr)
+    case rr: RemoveReaction if invokes(rr)                          ⇒ removeReaction(state, rr)
     case WriteMessageSelf(_, senderUserId, date, randomId, message) ⇒ writeMessageSelf(state, senderUserId, date, randomId, message)
   }
 
