@@ -6,26 +6,7 @@ package im.actor.core.entity.content;
 
 import java.io.IOException;
 
-import im.actor.core.api.ApiDocumentExPhoto;
-import im.actor.core.api.ApiDocumentExVideo;
-import im.actor.core.api.ApiDocumentExVoice;
-import im.actor.core.api.ApiDocumentMessage;
-import im.actor.core.api.ApiJsonMessage;
-import im.actor.core.api.ApiMessage;
-import im.actor.core.api.ApiServiceEx;
-import im.actor.core.api.ApiServiceExChangedAvatar;
-import im.actor.core.api.ApiServiceExChangedTitle;
-import im.actor.core.api.ApiServiceExContactRegistered;
-import im.actor.core.api.ApiServiceExGroupCreated;
-import im.actor.core.api.ApiServiceExPhoneCall;
-import im.actor.core.api.ApiServiceExPhoneMissed;
-import im.actor.core.api.ApiServiceExUserInvited;
-import im.actor.core.api.ApiServiceExUserJoined;
-import im.actor.core.api.ApiServiceExUserKicked;
-import im.actor.core.api.ApiServiceExUserLeft;
-import im.actor.core.api.ApiServiceMessage;
-import im.actor.core.api.ApiStickerMessage;
-import im.actor.core.api.ApiTextMessage;
+import im.actor.core.api.*;
 import im.actor.core.entity.content.internal.AbsContentContainer;
 import im.actor.core.entity.content.internal.AbsLocalContent;
 import im.actor.core.entity.content.internal.ContentLocalContainer;
@@ -117,6 +98,10 @@ public abstract class AbsContent {
                         return new ServiceUserRegistered(remoteContainer);
                     } else if (ext instanceof ApiServiceExChangedTitle) {
                         return new ServiceGroupTitleChanged(remoteContainer);
+                    } else if (ext instanceof ApiServiceExChangedTopic) {
+                        return new ServiceGroupTopicChanged(remoteContainer);
+                    } else if (ext instanceof ApiServiceExChangedAbout) {
+                        return new ServiceGroupAboutChanged(remoteContainer);
                     } else if (ext instanceof ApiServiceExChangedAvatar) {
                         return new ServiceGroupAvatarChanged(remoteContainer);
                     } else if (ext instanceof ApiServiceExGroupCreated) {
