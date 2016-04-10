@@ -23,6 +23,8 @@ import im.actor.core.modules.messaging.router.entity.RouterApplyChatHistory;
 import im.actor.core.modules.messaging.router.entity.RouterApplyDialogsHistory;
 import im.actor.core.modules.messaging.router.entity.RouterChangedContent;
 import im.actor.core.modules.messaging.router.entity.RouterChangedReactions;
+import im.actor.core.modules.messaging.router.entity.RouterChatClear;
+import im.actor.core.modules.messaging.router.entity.RouterChatDelete;
 import im.actor.core.modules.messaging.router.entity.RouterConversationHidden;
 import im.actor.core.modules.messaging.router.entity.RouterConversationVisible;
 import im.actor.core.modules.messaging.router.entity.RouterDeletedMessages;
@@ -285,9 +287,23 @@ public class RouterActor extends ModuleActor {
         // Delete Messages
         conversation(peer).removeItems(JavaUtil.unbox(rids));
 
-        // TODO: Update dialogs list
+        Message head = conversation(peer).getHeadValue();
+        dialogsActor(new DialogsActor.MessageDeleted(peer, head));
     }
 
+    private void onChatClear(Peer peer) {
+
+        conversation(peer).clear();
+
+        dialogsActor(new DialogsActor.ChatClear(peer));
+    }
+
+    private void onChatDelete(Peer peer) {
+
+        conversation(peer).clear();
+
+        dialogsActor(new DialogsActor.ChatDelete(peer));
+    }
 
     //
     // Read States
@@ -446,6 +462,12 @@ public class RouterActor extends ModuleActor {
             onChatHistoryLoaded(chatHistory.getPeer(),
                     chatHistory.getMessages(), chatHistory.getMaxReadDate(),
                     chatHistory.getMaxReceiveDate(), chatHistory.isEnded());
+        } else if (message instanceof RouterChatClear) {
+            RouterChatClear routerChatClear = (RouterChatClear) message;
+            onChatClear(routerChatClear.getPeer());
+        } else if (message instanceof RouterChatDelete) {
+            RouterChatDelete chatDelete = (RouterChatDelete) message;
+            onChatDelete(chatDelete.getPeer());
         } else {
             super.onReceive(message);
         }
