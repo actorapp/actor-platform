@@ -69,7 +69,6 @@ import im.actor.core.modules.sequence.internal.GetDiffCombiner;
 import im.actor.core.modules.sequence.internal.GroupCreated;
 import im.actor.core.modules.sequence.internal.InternalUpdate;
 import im.actor.core.modules.sequence.internal.LoggedIn;
-import im.actor.core.modules.sequence.internal.MessagesHistoryLoaded;
 import im.actor.core.modules.sequence.internal.RelatedResponse;
 import im.actor.core.modules.sequence.internal.StickersLoaded;
 import im.actor.core.modules.sequence.internal.UsersFounded;
@@ -120,10 +119,6 @@ public class UpdateProcessor extends AbsModule {
             ResponseLoadArchived dialogs = ((ArchivedDialogLoaded) update).getDialogs();
             applyRelated(dialogs.getUsers(), dialogs.getGroups(), false);
             messagesProcessor.onArchivedDialogsLoaded(((ArchivedDialogLoaded) update).getDialogs());
-        } else if (update instanceof MessagesHistoryLoaded) {
-            MessagesHistoryLoaded historyLoaded = (MessagesHistoryLoaded) update;
-            applyRelated(historyLoaded.getLoadHistory().getUsers(), new ArrayList<ApiGroup>(), false);
-            messagesProcessor.onMessagesLoaded(historyLoaded.getPeer(), historyLoaded.getLoadHistory());
         } else if (update instanceof LoggedIn) {
             ArrayList<ApiUser> users = new ArrayList<ApiUser>();
             users.add(((LoggedIn) update).getAuth().getUser());

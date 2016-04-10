@@ -177,74 +177,30 @@ public class MessagesProcessor extends AbsModule {
 
     @Verified
     public void onChatClear(ApiPeer _peer) {
-//        Peer peer = convert(_peer);
-//
-//        // We are not invalidating sequence because of this update
-//        if (!isValidPeer(peer)) {
-//            return;
-//        }
-//
-//        // Clearing conversation
-//        conversationActor(peer).send(new ConversationActor.ClearConversation());
-//
-//        // TODO: Notify send actor
+        Peer peer = convert(_peer);
+
+        // We are not invalidating sequence because of this update
+        if (!isValidPeer(peer)) {
+            return;
+        }
+
+        context().getMessagesModule().getRouter().onChatClear(peer);
+
+        // TODO: Notify send actor
     }
 
     @Verified
     public void onChatDelete(ApiPeer _peer) {
-//        Peer peer = convert(_peer);
-//
-//        // We are not invalidating sequence because of this update
-//        if (!isValidPeer(peer)) {
-//            return;
-//        }
-//
-//        // Deleting conversation
-//        conversationActor(peer).send(new ConversationActor.DeleteConversation());
-//
-//        // TODO: Notify send actor
-    }
+        Peer peer = convert(_peer);
 
-    @Verified
-    public void onMessagesLoaded(Peer peer, ResponseLoadHistory historyResponse) {
-        ArrayList<Message> messages = new ArrayList<>();
-        long maxLoadedDate = Long.MAX_VALUE;
-        long maxReadDate = 0;
-        long maxReceiveDate = 0;
-        for (ApiMessageContainer historyMessage : historyResponse.getHistory()) {
-
-            maxLoadedDate = Math.min(historyMessage.getDate(), maxLoadedDate);
-
-            AbsContent content = AbsContent.fromMessage(historyMessage.getMessage());
-
-            MessageState state = EntityConverter.convert(historyMessage.getState());
-
-            if (historyMessage.getState() == ApiMessageState.RECEIVED) {
-                maxReceiveDate = Math.max(historyMessage.getDate(), maxReceiveDate);
-            } else if (historyMessage.getState() == ApiMessageState.READ) {
-                maxReceiveDate = Math.max(historyMessage.getDate(), maxReceiveDate);
-                maxReadDate = Math.max(historyMessage.getDate(), maxReadDate);
-            }
-
-            ArrayList<Reaction> reactions = new ArrayList<Reaction>();
-
-            for (ApiMessageReaction r : historyMessage.getReactions()) {
-                reactions.add(new Reaction(r.getCode(), r.getUsers()));
-            }
-
-            messages.add(new Message(historyMessage.getRid(), historyMessage.getDate(),
-                    historyMessage.getDate(), historyMessage.getSenderUid(),
-                    state, content, reactions, 0));
+        // We are not invalidating sequence because of this update
+        if (!isValidPeer(peer)) {
+            return;
         }
 
-//        // Sending updates to conversation actor
-//        if (messages.size() > 0) {
-//            conversationActor(peer).send(new ConversationActor.HistoryLoaded(messages));
-//        }
+        context().getMessagesModule().getRouter().onChatDelete(peer);
 
-        // Sending notification to conversation history actor
-//        conversationHistoryActor(peer).send(new ConversationHistoryActor.LoadedMore(historyResponse.getHistory().size(),
-//                maxLoadedDate));
+        // TODO: Notify send actor
     }
 
     public void onChatGroupsChanged(List<ApiDialogGroup> groups) {
