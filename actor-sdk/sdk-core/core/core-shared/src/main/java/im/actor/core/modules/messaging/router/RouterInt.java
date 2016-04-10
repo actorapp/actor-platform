@@ -17,6 +17,8 @@ import im.actor.core.modules.messaging.router.entity.RouterApplyChatHistory;
 import im.actor.core.modules.messaging.router.entity.RouterApplyDialogsHistory;
 import im.actor.core.modules.messaging.router.entity.RouterChangedContent;
 import im.actor.core.modules.messaging.router.entity.RouterChangedReactions;
+import im.actor.core.modules.messaging.router.entity.RouterChatClear;
+import im.actor.core.modules.messaging.router.entity.RouterChatDelete;
 import im.actor.core.modules.messaging.router.entity.RouterConversationHidden;
 import im.actor.core.modules.messaging.router.entity.RouterConversationVisible;
 import im.actor.core.modules.messaging.router.entity.RouterDeletedMessages;
@@ -105,6 +107,14 @@ public class RouterInt extends ActorInterface implements BusSubscriber {
 
     public void onChatHistoryLoaded(Peer peer, List<Message> history, Long maxReceivedDate, Long maxReadDate, boolean isEnded) {
         send(new RouterApplyChatHistory(peer, history, maxReceivedDate, maxReadDate, isEnded));
+    }
+
+    public void onChatClear(Peer peer) {
+        send(new RouterChatClear(peer));
+    }
+
+    public void onChatDelete(Peer peer) {
+        send(new RouterChatDelete(peer));
     }
 
     @Override
