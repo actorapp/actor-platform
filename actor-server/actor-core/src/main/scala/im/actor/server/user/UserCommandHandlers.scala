@@ -158,8 +158,7 @@ private[user] trait UserCommandHandlers {
         val update = UpdateUserNameChanged(userId, name)
         for {
           relatedUserIds ← getRelations(userId)
-          _ ← seqUpdatesExt.broadcastSingleUpdate(relatedUserIds, update)
-          seqstate ← seqUpdatesExt.deliverSingleUpdate(user.id, update)
+          (seqstate, _) ← seqUpdatesExt.broadcastOwnSingleUpdate(userId, relatedUserIds, update)
           _ ← db.run(UserRepo.setName(userId, name))
         } yield seqstate
       }
