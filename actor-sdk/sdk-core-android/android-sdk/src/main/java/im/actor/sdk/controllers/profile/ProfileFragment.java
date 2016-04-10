@@ -369,6 +369,9 @@ public class ProfileFragment extends BaseFragment {
                     isFirstContact,
                     true,
                     inflater, contactsContainer);
+            TextView userNameTextView = (TextView) view.findViewById(R.id.value);
+            bind(userNameTextView, user.getNick());
+
             view.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
@@ -387,11 +390,14 @@ public class ProfileFragment extends BaseFragment {
         //
 
         if (about != null) {
-            buildRecordBig(about,
+            View view = buildRecordBig(about,
                     R.drawable.ic_info_outline_black_24dp,
                     true,
                     true,
                     inflater, contactsContainer);
+            TextView aboutTextView = (TextView) view.findViewById(R.id.value);
+            bind(aboutTextView, user.getAbout());
+
         }
 
 
