@@ -321,6 +321,8 @@ public class RouterActor extends ModuleActor {
                 .changeCounter(counter)
                 .changeInReadDate(date);
         conversationStates.addOrUpdateItem(state);
+
+        dialogsActor(new DialogsActor.CounterChanged(peer, counter));
     }
 
 
