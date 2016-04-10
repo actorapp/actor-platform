@@ -79,7 +79,7 @@ class MessagingServiceSpec
 
           whenReady(service.handleSendMessage(user2Peer, randomId, ApiTextMessage("Hi Shiva", Vector.empty, None), None)) { resp ⇒
             resp should matchPattern {
-              case Ok(ResponseSeqDate(2, _, _)) ⇒
+              case Ok(ResponseSeqDate(_, _, _)) ⇒
             }
           }
 

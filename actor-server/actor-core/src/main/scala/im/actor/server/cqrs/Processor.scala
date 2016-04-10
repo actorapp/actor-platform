@@ -30,7 +30,7 @@ abstract class Processor[S <: ProcessorState[S, E], E: ClassTag] extends Persist
   override def receiveCommand = handleCommand orElse (handleQuery andThen (_ pipeTo sender()))
 
   override def unhandled(message: Any): Unit = {
-    log.warning(s"Unhandled message: $message")
+    log.warning(s"Unhandled message of class ${message.getClass.getName}: $message")
     super.unhandled(message)
   }
 

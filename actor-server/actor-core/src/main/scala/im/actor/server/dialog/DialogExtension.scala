@@ -4,9 +4,10 @@ import java.time.Instant
 
 import akka.actor._
 import akka.event.Logging
+import akka.http.scaladsl.util.FastFuture
 import akka.pattern.ask
 import akka.util.Timeout
-import im.actor.api.rpc.PeersImplicits
+import im.actor.api.rpc._
 import im.actor.api.rpc.messaging.{ ApiDialogGroup, ApiDialogShort, ApiMessage }
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
@@ -15,10 +16,8 @@ import im.actor.server.db.DbExtension
 import im.actor.server.dialog.DialogCommands._
 import im.actor.server.group.GroupExtension
 import im.actor.server.model._
-import im.actor.server.persist.dialog.DialogRepo
-import im.actor.server.persist.messaging.ReactionEventRepo
 import im.actor.server.persist.HistoryMessageRepo
-import im.actor.server.pubsub.{ PeerMessage, PubSubExtension }
+import im.actor.server.persist.messaging.ReactionEventRepo
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.user.{ DialogRootEnvelope, UserExtension }
 import im.actor.types._
@@ -27,31 +26,6 @@ import slick.dbio.DBIO
 
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
-
-sealed trait DialogGroup {
-  def key: String
-  def title: String
-}
-
-object DialogGroups {
-  object Favourites extends DialogGroup {
-    override def key: String = "favourites"
-
-    override def title: String = "Favourites"
-  }
-
-  object Privates extends DialogGroup {
-    override def key: String = "privates"
-
-    override def title: String = "Private"
-  }
-
-  object Groups extends DialogGroup {
-    override def key: String = "groups"
-
-    override def title: String = "Groups"
-  }
-}
 
 sealed trait DialogExtension extends Extension
 
@@ -118,9 +92,10 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
     message:      ApiMessage
   ): Future[Unit] =
     withValidPeer(peer.asModel, senderUserId, Future.successful(())) {
-      val sender = Peer.privat(senderUserId)
-      val writeMessage = WriteMessage(sender, peer.asModel, date.toEpochMilli, randomId, message)
-      (userExt.processorRegion.ref ? Envelope(sender).withWriteMessage(writeMessage)).mapTo[WriteMessageAck] map (_ ⇒ ())
+      for {
+        memberIds ← fetchMemberIds(DialogId(peer.asModel, senderUserId))
+        _ ← Future.sequence(memberIds map (writeMessageSelf(_, peer, senderUserId, new DateTime(date.toEpochMilli), randomId, message)))
+      } yield ()
     }
 
   def writeMessageSelf(
@@ -164,29 +139,29 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
   def ackMessageRead(peer: Peer, mr: MessageRead): Future[Unit] =
     (processorRegion(peer) ? Envelope(peer).withMessageRead(mr)).mapTo[MessageReadAck] map (_ ⇒ ())
 
-  def show(userId: Int, peer: Peer): Future[SeqState] =
+  def unarchive(userId: Int, peer: Peer): Future[SeqState] =
     withValidPeer(peer, userId, Future.failed[SeqState](DialogErrors.MessageToSelf)) {
-      (userExt.processorRegion.ref ? Envelope(Peer.privat(userId)).withShow(Show(peer))).mapTo[SeqState]
+      (userExt.processorRegion.ref ? DialogRootEnvelope(userId).withUnarchive(DialogRootCommands.Unarchive(peer))).mapTo[SeqState]
     }
 
-  def archive(userId: Int, peer: Peer): Future[SeqState] =
+  def archive(userId: Int, peer: Peer, clientAuthSid: Option[Int] = None): Future[SeqState] =
     withValidPeer(peer, userId, Future.failed[SeqState](DialogErrors.MessageToSelf)) {
-      (userExt.processorRegion.ref ? Envelope(Peer.privat(userId)).withArchive(Archive(peer))).mapTo[SeqState]
+      (userExt.processorRegion.ref ? DialogRootEnvelope(userId).withArchive(DialogRootCommands.Archive(peer, clientAuthSid))).mapTo[SeqState]
     }
 
   def favourite(userId: Int, peer: Peer): Future[SeqState] =
     withValidPeer(peer, userId, Future.failed[SeqState](DialogErrors.MessageToSelf)) {
-      (userExt.processorRegion.ref ? Envelope(Peer.privat(userId)).withFavourite(Favourite(peer))).mapTo[SeqState]
+      (userExt.processorRegion.ref ? DialogRootEnvelope(userId).withFavourite(DialogRootCommands.Favourite(peer))).mapTo[SeqState]
     }
 
   def unfavourite(userId: Int, peer: Peer): Future[SeqState] =
     withValidPeer(peer, userId, Future.failed[SeqState](DialogErrors.MessageToSelf)) {
-      (userExt.processorRegion.ref ? Envelope(Peer.privat(userId)).withUnfavourite(Unfavourite(peer))).mapTo[SeqState]
+      (userExt.processorRegion.ref ? DialogRootEnvelope(userId).withUnfavourite(DialogRootCommands.Unfavourite(peer))).mapTo[SeqState]
     }
 
   def delete(userId: Int, peer: Peer): Future[SeqState] =
     withValidPeer(peer, userId) {
-      (userExt.processorRegion.ref ? Envelope(Peer.privat(userId)).withDelete(Delete(peer))).mapTo[SeqState]
+      (userExt.processorRegion.ref ? DialogRootEnvelope(userId).withDelete(DialogRootCommands.Delete(peer))).mapTo[SeqState]
     }
 
   def setReaction(userId: Int, authSid: Int, peer: Peer, randomId: Long, code: String): Future[SetReactionAck] =
@@ -264,54 +239,15 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
 
   def isSharedUser(userId: Int): Boolean = userId == 0
 
-  def fetchGroupedDialogs(userId: Int): Future[Map[DialogGroup, Vector[DialogObsolete]]] =
-    db.run {
-      DialogRepo
-        .fetchSortByLastMessageData(userId, None, Int.MaxValue)
-        .map(_ filterNot (dialogWithSelf(userId, _)))
-        .map { dialogs ⇒
-          val (groupModels, privateModels, favouriteModels) =
-            dialogs.foldLeft((Vector.empty[DialogObsolete], Vector.empty[DialogObsolete], Vector.empty[DialogObsolete])) {
-              case ((groupModels, privateModels, favouriteModels), dialog) ⇒
-                if (dialog.isFavourite)
-                  (groupModels, privateModels, favouriteModels :+ dialog)
-                else if (dialog.peer.typ == PeerType.Group)
-                  (groupModels :+ dialog, privateModels, favouriteModels)
-                else if (dialog.peer.typ == PeerType.Private)
-                  (groupModels, privateModels :+ dialog, favouriteModels)
-                else throw new RuntimeException("Unknown dialog type")
-            }
+  def fetchGroupedDialogs(userId: Int): Future[Seq[DialogGroup]] = {
+    (processorRegion(Peer.privat(userId)) ? DialogRootEnvelope(userId).withGetDialogGroups(DialogRootQueries.GetDialogGroups()))
+      .mapTo[DialogRootQueries.GetDialogGroupsResponse]
+      .map(_.groups)
+  }
 
-          Map(
-            DialogGroups.Favourites → favouriteModels,
-            DialogGroups.Privates → privateModels,
-            DialogGroups.Groups → groupModels
-          )
-        }
-    }
-
-  def fetchGroupedDialogShorts(userId: Int): Future[Vector[ApiDialogGroup]] = {
-    fetchGroupedDialogs(userId) flatMap { dialogsMap ⇒
-      db.run {
-        val groupModels = dialogsMap.getOrElse(DialogGroups.Groups, Vector.empty)
-        val privateModels = dialogsMap.getOrElse(DialogGroups.Privates, Vector.empty)
-        val favouriteModels = dialogsMap.getOrElse(DialogGroups.Favourites, Vector.empty)
-
-        for {
-          groupDialogs ← DBIO.sequence(groupModels map getDialogShortDBIO)
-          privateDialogs ← DBIO.sequence(privateModels map getDialogShortDBIO)
-          favouriteDialogs ← DBIO.sequence(favouriteModels map getDialogShortDBIO)
-        } yield {
-          val default = Vector(
-            ApiDialogGroup(DialogGroups.Groups.title, DialogGroups.Groups.key, groupDialogs),
-            ApiDialogGroup(DialogGroups.Privates.title, DialogGroups.Privates.key, privateDialogs)
-          )
-
-          if (favouriteDialogs.nonEmpty)
-            ApiDialogGroup(DialogGroups.Favourites.title, DialogGroups.Favourites.key, favouriteDialogs) +: default
-          else default
-        }
-      }
+  def fetchApiGroupedDialogs(userId: Int): Future[Vector[ApiDialogGroup]] = {
+    fetchGroupedDialogs(userId) map { groups ⇒
+      groups.toVector map (_.asStruct)
     }
   }
 
@@ -332,6 +268,13 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
     }).toSeq
   }
 
+  def fetchMemberIds(dialogId: DialogId): Future[Set[Int]] = {
+    dialogId match {
+      case p: PrivateDialogId ⇒ FastFuture.successful(Set(p.id1, p.id2))
+      case g: GroupDialogId   ⇒ groupExt.getMemberIds(g.groupId) map (_._1.toSet)
+    }
+  }
+
   def getDialogShortDBIO(dialog: DialogObsolete)(implicit ec: ExecutionContext): DBIO[ApiDialogShort] =
     for {
       historyOwner ← DBIO.from(HistoryUtils.getHistoryOwner(dialog.peer, dialog.userId))
@@ -348,9 +291,9 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
 
   private def processorRegion(peer: Peer): ActorRef = peer.typ match {
     case PeerType.Private ⇒
-      userExt.processorRegion.ref //to user peer
+      userExt.processorRegion.ref // to user peer
     case PeerType.Group ⇒
-      groupExt.processorRegion.ref //to group peer
+      groupExt.processorRegion.ref // to group peer
     case _ ⇒ throw new RuntimeException("Unknown peer type!")
   }
 }
@@ -359,4 +302,18 @@ object DialogExtension extends ExtensionId[DialogExtensionImpl] with ExtensionId
   override def lookup = DialogExtension
 
   override def createExtension(system: ExtendedActorSystem) = new DialogExtensionImpl(system)
+
+  def groupKey(group: DialogGroupType) = group match {
+    case DialogGroupType.Favourites     ⇒ "favourites"
+    case DialogGroupType.DirectMessages ⇒ "privates"
+    case DialogGroupType.Groups         ⇒ "groups"
+    case unknown                        ⇒ throw DialogErrors.UnknownDialogGroupType(unknown)
+  }
+
+  def groupTitle(group: DialogGroupType) = group match {
+    case DialogGroupType.Favourites     ⇒ "Favourites"
+    case DialogGroupType.DirectMessages ⇒ "Direct Messages"
+    case DialogGroupType.Groups         ⇒ "Groups"
+    case unknown                        ⇒ throw DialogErrors.UnknownDialogGroupType(unknown)
+  }
 }

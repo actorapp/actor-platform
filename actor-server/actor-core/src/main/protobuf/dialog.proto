@@ -11,12 +11,100 @@ import "scalapb/scalapb.proto";
 import "model.proto";
 import "sequence.proto";
 
+enum DialogGroupType {
+    Favourites = 1;
+    DirectMessages = 2;
+    Groups = 3;
+}
+
+message DialogInfo {
+    required Peer peer = 3;
+    required int32 counter = 1;
+    required int64 date = 2 [(scalapb.field).type = "java.time.Instant"];
+}
+
+message DialogGroup {
+    required DialogGroupType typ = 1;
+    repeated DialogInfo dialogs = 2;
+}
+
 message DialogRootEvents {
     message Created {
         option (scalapb.message).extends = "im.actor.server.dialog.DialogRootEvent";
 
         required int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];
         required Peer peer = 2;
+    }
+
+    message Archived {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogRootEvent";
+
+        required int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];
+        required Peer peer = 2;
+    }
+
+    message Unarchived {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogRootEvent";
+
+        required int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];
+        required Peer peer = 2;
+    }
+
+    message Shown {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogRootEvent";
+
+        required int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];
+        required Peer peer = 2;
+    }
+
+    message Favourited {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogRootEvent";
+
+        required int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];
+        required Peer peer = 2;
+    }
+
+    message Unfavourited {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogRootEvent";
+
+        required int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];
+        required Peer peer = 2;
+    }
+}
+
+message DialogRootCommands {
+    message Unarchive {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogRootCommand";
+
+        required Peer dest = 1;
+        optional int32 client_auth_sid = 2;
+    }
+
+    message Archive {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogRootCommand";
+
+        required Peer dest = 1;
+        optional int32 client_auth_sid = 2;
+    }
+
+    message Favourite {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogRootCommand";
+
+        required Peer dest = 1;
+        optional int32 client_auth_sid = 2;
+    }
+
+    message Unfavourite {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogRootCommand";
+
+        required Peer dest = 1;
+        optional int32 client_auth_sid = 2;
+    }
+
+    message Delete {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogRootCommand";
+
+        required Peer dest = 1;
     }
 }
 
@@ -27,6 +115,14 @@ message DialogRootQueries {
 
     message GetCounterResponse {
         required int32 counter = 1;
+    }
+
+    message GetDialogGroups {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogRootQuery";
+    }
+
+    message GetDialogGroupsResponse {
+        repeated DialogGroup groups = 1;
     }
 }
 
@@ -39,14 +135,9 @@ message DialogCommands {
             SendMessage send_message = 3;
             MessageReceived message_received = 4;
             MessageRead message_read = 5;
-            Show show = 6;
-            Archive archive = 15;
-            Delete delete = 8;
             SetReaction set_reaction = 9;
             RemoveReaction remove_reaction = 10;
             WriteMessageSelf write_message_self = 11;
-            Favourite favourite = 12;
-            Unfavourite unfavourite = 13;
             UpdateCounters update_counters = 14;
         }
     }
@@ -115,36 +206,6 @@ message DialogCommands {
 
     message MessageReadAck {}
 
-    message Show {
-        option (scalapb.message).extends = "im.actor.server.dialog.DialogCommand";
-
-        required Peer dest = 1;
-    }
-
-    message Archive {
-        option (scalapb.message).extends = "im.actor.server.dialog.DialogCommand";
-
-        required Peer dest = 1;
-    }
-
-    message Favourite {
-        option (scalapb.message).extends = "im.actor.server.dialog.DialogCommand";
-
-        required Peer dest = 1;
-    }
-
-    message Unfavourite {
-        option (scalapb.message).extends = "im.actor.server.dialog.DialogCommand";
-
-        required Peer dest = 1;
-    }
-
-    message Delete {
-        option (scalapb.message).extends = "im.actor.server.dialog.DialogCommand";
-
-        required Peer dest = 1;
-    }
-
     message SetReaction {
         option (scalapb.message).extends = "im.actor.server.dialog.DirectDialogCommand";
 
@@ -186,16 +247,20 @@ message DialogCommands {
 }
 
 message DialogQueries {
-    message GetApiStruct {
-        option (scalapb.message).extends = "im.actor.server.dialog.DialogQuery";
-    }
-
     message GetCounter {
         option (scalapb.message).extends = "im.actor.server.dialog.DialogQuery";
     }
 
     message GetCounterResponse {
         required int32 counter = 1;
+    }
+
+    message GetInfo {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogQuery";
+    }
+
+    message GetInfoResponse {
+        required DialogInfo info = 1;
     }
 }
 
