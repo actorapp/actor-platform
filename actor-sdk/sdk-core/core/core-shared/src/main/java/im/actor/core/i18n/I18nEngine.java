@@ -18,18 +18,7 @@ import im.actor.core.entity.Notification;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.Sex;
 import im.actor.core.entity.User;
-import im.actor.core.entity.content.ServiceCallEnded;
-import im.actor.core.entity.content.ServiceCallMissed;
-import im.actor.core.entity.content.ServiceContent;
-import im.actor.core.entity.content.ServiceGroupAvatarChanged;
-import im.actor.core.entity.content.ServiceGroupCreated;
-import im.actor.core.entity.content.ServiceGroupTitleChanged;
-import im.actor.core.entity.content.ServiceGroupUserInvited;
-import im.actor.core.entity.content.ServiceGroupUserJoined;
-import im.actor.core.entity.content.ServiceGroupUserKicked;
-import im.actor.core.entity.content.ServiceGroupUserLeave;
-import im.actor.core.entity.content.ServiceUserRegistered;
-import im.actor.core.entity.content.TextContent;
+import im.actor.core.entity.content.*;
 import im.actor.core.modules.Modules;
 import im.actor.core.network.RpcException;
 import im.actor.core.util.JavaUtil;
@@ -388,6 +377,10 @@ public class I18nEngine {
                 return getTemplateNamed(senderId, "ServiceGroupAvatarRemoved");
             case SERVICE_TITLE:
                 return getTemplateNamed(senderId, "ServiceGroupTitle");
+            case SERVICE_TOPIC:
+                return getTemplateNamed(senderId, "ServiceGroupTopic");
+            case SERVICE_ABOUT:
+                return getTemplateNamed(senderId, "ServiceGroupAbout");
             case SERVICE_JOINED:
                 return getTemplateNamed(senderId, "ServiceGroupJoined");
             case SERVICE_CALL_ENDED:
@@ -442,6 +435,14 @@ public class I18nEngine {
             return getTemplateNamed(senderId, "ServiceGroupTitleFull")
                     .replace("{title}",
                             ((ServiceGroupTitleChanged) content).getNewTitle());
+        } else if (content instanceof ServiceGroupTopicChanged) {
+            return getTemplateNamed(senderId, "ServiceGroupTopicFull")
+                    .replace("{topic}",
+                            ((ServiceGroupTopicChanged) content).getNewTopic());
+        } else if (content instanceof ServiceGroupAboutChanged) {
+            return getTemplateNamed(senderId, "ServiceGroupAboutFull")
+                    .replace("{about}",
+                            ((ServiceGroupAboutChanged) content).getNewAbout());
         } else if (content instanceof ServiceGroupAvatarChanged) {
             if (((ServiceGroupAvatarChanged) content).getNewAvatar() != null) {
                 return getTemplateNamed(senderId, "ServiceGroupAvatarChanged");
