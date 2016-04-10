@@ -119,9 +119,6 @@ private[user] sealed trait Commands extends AuthCommands {
   def editLocalName(userId: Int, contactUserId: Int, localName: Option[String], supressUpdate: Boolean = false): Future[SeqState] =
     (processorRegion.ref ? EditLocalName(userId, contactUserId, localName, supressUpdate)).mapTo[SeqState]
 
-  def notifyDialogsChanged(userId: Int): Future[SeqState] =
-    (processorRegion.ref ? NotifyDialogsChanged(userId)).mapTo[SeqState]
-
   def addBotCommand(userId: Int, command: BotCommand): Future[AddBotCommandAck] =
     (processorRegion.ref ? AddBotCommand(userId, command)).mapTo[AddBotCommandAck]
 

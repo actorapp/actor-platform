@@ -88,7 +88,6 @@ object UserProcessor {
       10030 → classOf[UserCommands.AddSocialContactAck],
       10031 → classOf[UserCommands.UpdateIsAdmin],
       10032 → classOf[UserCommands.UpdateIsAdminAck],
-      10033 → classOf[UserCommands.NotifyDialogsChanged],
       10035 → classOf[UserCommands.ChangePreferredLanguages],
       10036 → classOf[UserCommands.ChangeTimeZone],
       10037 → classOf[UserCommands.EditLocalName],
@@ -235,7 +234,6 @@ private[user] final class UserProcessor
     case AddContacts(_, contactsToAdd)      ⇒ addContacts(state, contactsToAdd)
     case RemoveContact(_, contactUserId)    ⇒ removeContact(state, contactUserId)
     case UpdateIsAdmin(_, isAdmin)          ⇒ updateIsAdmin(state, isAdmin)
-    case NotifyDialogsChanged(_)            ⇒ notifyDialogsChanged(state)
     case ChangeTimeZone(_, timeZone)        ⇒ changeTimeZone(state, timeZone)
     case ChangePreferredLanguages(_, langs) ⇒ changePreferredLanguages(state, langs)
     case AddBotCommand(_, command)          ⇒ addBotCommand(state, command)
@@ -246,6 +244,7 @@ private[user] final class UserProcessor
     case ReceiveTimeout                     ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
     case dc: DialogCommand                  ⇒ dialogRoot(state.internalExtensions) forward dc
     case dq: DialogQuery                    ⇒ dialogRoot(state.internalExtensions) forward dq
+    case drc: DialogRootCommand             ⇒ dialogRoot(state.internalExtensions) forward drc
     case drq: DialogRootQuery               ⇒ dialogRoot(state.internalExtensions) forward drq
   }
 

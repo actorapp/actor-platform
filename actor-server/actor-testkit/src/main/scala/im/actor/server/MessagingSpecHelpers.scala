@@ -2,13 +2,13 @@ package im.actor.server
 
 import akka.actor.ActorSystem
 import com.google.protobuf.ByteString
-import im.actor.api.rpc.{ PeersImplicits, ClientData }
+import im.actor.api.rpc.{ ClientData, PeersImplicits }
 import im.actor.api.rpc.messaging.{ ApiDialogGroup, ApiDialogShort, ApiMessage, ApiTextMessage, _ }
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.api.rpc.users.ApiUser
 import im.actor.server.acl.ACLUtils
 import im.actor.server.db.DbExtension
-import im.actor.server.dialog.DialogGroup
+import im.actor.server.dialog.{ DialogExtension, DialogGroup, DialogGroupType }
 import im.actor.server.model.DialogObsolete
 import im.actor.server.persist.dialog.DialogRepo
 import im.actor.server.sequence.SeqStateDate
@@ -82,9 +82,9 @@ trait MessagingSpecHelpers extends ScalaFutures with PeersImplicits with Matcher
     }
   }
 
-  def getDialogGroups(group: DialogGroup)(implicit clientData: ClientData, service: MessagingService): IndexedSeq[ApiDialogShort] = {
+  def getDialogGroups(group: DialogGroupType)(implicit clientData: ClientData, service: MessagingService): IndexedSeq[ApiDialogShort] = {
     val dgs = getDialogGroups()
-    dgs get group.key match {
+    dgs get DialogExtension.groupKey(group) match {
       case Some(ds) ⇒ ds
       case None     ⇒ throw new RuntimeException(s"Group $group not found in $dgs")
     }
