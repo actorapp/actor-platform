@@ -37,14 +37,6 @@ public class GetDiffCombiner {
                 res.putReadByMe(convert(readByMe.getPeer()), readByMe.getStartDate(), counter);
             } else if (u instanceof UpdateCountersChanged) {
                 // Ignore
-            } else if (u instanceof UpdateUserNameChanged) {
-                // Ignore
-            } else if (u instanceof UpdateUserLocalNameChanged) {
-                // Ignore
-            } else if (u instanceof UpdateUserNickChanged) {
-                // Ignore
-            } else if (u instanceof UpdateUserAboutChanged) {
-                // Ignore
             } else {
                 res.getOtherUpdates().add(u);
             }
