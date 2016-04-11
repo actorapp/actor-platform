@@ -147,19 +147,27 @@ class PeopleList extends Component {
 
   handleScroll = (top) => this.refs.results.scrollTo(top);
 
+  getPeople() {
+    const { query, contacts } = this.state;
+    if (!query) {
+      return contacts;
+    }
+
+    return contacts.filter((contact) => {
+      const score = fuzzaldrin.score(contact.name, query);
+      return score > 0;
+    });
+  }
+
   renderPeople() {
     const { intl } = this.context;
-    const { query, contacts, selectedIndex } = this.state;
+    const { contacts, selectedIndex } = this.state;
 
     if (!contacts.length) {
       return <div>{intl.messages['modal.contacts.loading']}</div>;
     }
 
-    const people = contacts.filter((contact) => {
-      const score = fuzzaldrin.score(contact.name, query);
-      return score > 0;
-    });
-
+    const people = this.getPeople();
     if (!people.length) {
       return (
         <li className="contacts__list__item contacts__list__item--empty text-center">
