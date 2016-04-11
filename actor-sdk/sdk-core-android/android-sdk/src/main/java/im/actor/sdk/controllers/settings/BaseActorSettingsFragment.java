@@ -677,19 +677,17 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
                 ll.addView(view, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             } else {
                 LinearLayout fieldLayout = (LinearLayout) inflater.inflate(R.layout.actor_settings_field, null);
-                ImageView icon = (ImageView) fieldLayout.findViewById(R.id.icon);
-
+                TintImageView icon = (TintImageView) fieldLayout.findViewById(R.id.icon);
+                icon.setTint(ActorSDK.sharedActor().style.getSettingsIconColor());
                 TextView name = (TextView) fieldLayout.findViewById(R.id.name);
                 name.setTextColor(ActorSDK.sharedActor().style.getSettingsTitleColor());
                 View rightView = field.getRightView();
 
                 //Icon
                 if (field.getIconResourceId() != 0) {
-                    icon.setImageResource(field.getIconResourceId());
+                    icon.setResource(field.getIconResourceId());
                     if (field.getIconColor() != -1) {
-                        Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(field.getIconResourceId()));
-                        DrawableCompat.setTint(drawable, style.getSettingsCategoryTextColor());
-                        icon.setImageDrawable(drawable);
+                        icon.setTint(field.getIconColor());
                     }
                 } else {
                     icon.setVisibility(View.INVISIBLE);
