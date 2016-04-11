@@ -65,37 +65,9 @@ public abstract class AbsModule {
         return context().getMessagesModule().getSendMessageActor();
     }
 
-    public ActorRef dialogsActor() {
-        return context().getMessagesModule().getDialogsActor();
-    }
-
     public ActorRef stickersActor() {
         return context().getStickersModule().getStickersActor();
     }
-
-    public ActorRef dialogsHistoryActor() {
-        return context().getMessagesModule().getDialogsHistoryActor();
-    }
-
-    public ActorRef archivedDialogsActor() {
-        return context().getMessagesModule().getArchivedDialogsActor();
-    }
-
-    public ActorRef ownReadActor() {
-        return context().getMessagesModule().getOwnReadActor();
-    }
-
-    public ActorRef plainReceiveActor() {
-        return context().getMessagesModule().getPlainReceiverActor();
-    }
-
-//    public ActorRef conversationActor(Peer peer) {
-//        return context().getMessagesModule().getConversationActor(peer);
-//    }
-//
-//    public ActorRef conversationHistoryActor(Peer peer) {
-//        return context().getMessagesModule().getConversationHistoryActor(peer);
-//    }
 
     public PreferencesStorage preferences() {
         return context.getPreferences();

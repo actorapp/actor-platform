@@ -57,7 +57,6 @@ import im.actor.core.modules.messaging.dialogs.DialogsActor;
 import im.actor.core.modules.messaging.history.ConversationHistoryActor;
 import im.actor.core.modules.messaging.history.DialogsHistoryActor;
 import im.actor.core.modules.messaging.actions.MessageDeleteActor;
-import im.actor.core.modules.messaging.actions.OwnReadActor;
 import im.actor.core.modules.messaging.actions.SenderActor;
 import im.actor.core.modules.messaging.router.RouterInt;
 import im.actor.core.network.RpcCallback;
@@ -91,7 +90,6 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
     private ActorRef dialogsActor;
     private ActorRef dialogsHistoryActor;
     private ActorRef archivedDialogsActor;
-    private ActorRef ownReadActor;
     private ActorRef plainReadActor;
     private ActorRef plainReceiverActor;
     private ActorRef sendMessageActor;
@@ -134,7 +132,6 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
                 return new DialogsHistoryActor(context());
             }
         }), "actor/dialogs/history");
-
         this.archivedDialogsActor = system().actorOf(Props.create(new ActorCreator() {
             @Override
             public ArchivedDialogsActor create() {
@@ -142,12 +139,6 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
             }
         }), "actor/dialogs/archived");
 
-        this.ownReadActor = system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public OwnReadActor create() {
-                return new OwnReadActor(context());
-            }
-        }), "actor/read/own");
         this.plainReadActor = system().actorOf(Props.create(new ActorCreator() {
             @Override
             public CursorReaderActor create() {
@@ -191,10 +182,6 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
 
     public ActorRef getPlainReceiverActor() {
         return plainReceiverActor;
-    }
-
-    public ActorRef getOwnReadActor() {
-        return ownReadActor;
     }
 
     public ActorRef getHistoryActor(final Peer peer) {
