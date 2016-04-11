@@ -56,7 +56,6 @@ import im.actor.core.modules.encryption.EncryptedProcessor;
 import im.actor.core.modules.eventbus.EventBusProcessor;
 import im.actor.core.modules.contacts.ContactsSyncActor;
 import im.actor.core.modules.groups.GroupsProcessor;
-import im.actor.core.modules.messaging.actions.OwnReadActor;
 import im.actor.core.modules.presence.PresenceProcessor;
 import im.actor.core.modules.settings.SettingsProcessor;
 import im.actor.core.modules.stickers.StickersProcessor;
@@ -165,7 +164,6 @@ public class UpdateProcessor extends AbsModule {
     public void applyDifferenceUpdate(List<ApiUser> users, List<ApiGroup> groups, List<Update> updates) {
 
         applyRelated(users, groups, false);
-        context().getMessagesModule().getOwnReadActor().send(new OwnReadActor.StartGetDifference());
 
         CombinedDifference combinedDifference = GetDiffCombiner.buildDiff(updates);
 
@@ -192,7 +190,6 @@ public class UpdateProcessor extends AbsModule {
             processUpdate(u);
         }
 
-        context().getMessagesModule().getOwnReadActor().send(new OwnReadActor.StopGetDifference());
         applyRelated(users, groups, true);
     }
 
