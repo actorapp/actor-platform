@@ -33,6 +33,7 @@
     <string name="toast_empty_nick">Nick can\'t be empty</string>
     <string name="toast_unable_change_nick">Unable to change nick</string>
     <string name="toast_empty_about">About can\'t be empty</string>
+    <string name="toast_unable_open">No app is available to open this</string>
 
     <string name="menu_share">Share</string>
     <string name="menu_save">Save to Phone</string>
