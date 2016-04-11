@@ -1,22 +1,34 @@
 package im.actor.core.modules.messaging.router;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import im.actor.core.api.ApiDialogGroup;
+import im.actor.core.api.ApiDialogShort;
+import im.actor.core.api.rpc.RequestLoadGroupedDialogs;
+import im.actor.core.api.rpc.ResponseLoadGroupedDialogs;
+import im.actor.core.entity.Avatar;
 import im.actor.core.entity.ConversationState;
+import im.actor.core.entity.Group;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.MessageState;
 import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerType;
 import im.actor.core.entity.Reaction;
+import im.actor.core.entity.User;
 import im.actor.core.entity.content.AbsContent;
+import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleActor;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.messaging.actions.CursorReaderActor;
 import im.actor.core.modules.messaging.actions.CursorReceiverActor;
 import im.actor.core.modules.messaging.dialogs.DialogsActor;
 import im.actor.core.modules.messaging.history.entity.DialogHistory;
+import im.actor.core.modules.messaging.router.entity.ActiveDialogGroup;
+import im.actor.core.modules.messaging.router.entity.ActiveDialogStorage;
 import im.actor.core.modules.messaging.router.entity.RouterAppHidden;
 import im.actor.core.modules.messaging.router.entity.RouterAppVisible;
 import im.actor.core.modules.messaging.router.entity.RouterApplyChatHistory;
@@ -28,6 +40,7 @@ import im.actor.core.modules.messaging.router.entity.RouterChatDelete;
 import im.actor.core.modules.messaging.router.entity.RouterConversationHidden;
 import im.actor.core.modules.messaging.router.entity.RouterConversationVisible;
 import im.actor.core.modules.messaging.router.entity.RouterDeletedMessages;
+import im.actor.core.modules.messaging.router.entity.RouterMessageOnlyActive;
 import im.actor.core.modules.messaging.router.entity.RouterMessageRead;
 import im.actor.core.modules.messaging.router.entity.RouterMessageReadByMe;
 import im.actor.core.modules.messaging.router.entity.RouterMessageReceived;
@@ -36,18 +49,31 @@ import im.actor.core.modules.messaging.router.entity.RouterOutgoingError;
 import im.actor.core.modules.messaging.router.entity.RouterOutgoingMessage;
 import im.actor.core.modules.messaging.router.entity.RouterOutgoingSent;
 import im.actor.core.util.JavaUtil;
+import im.actor.core.viewmodel.DialogGroup;
+import im.actor.core.viewmodel.DialogSmall;
+import im.actor.core.viewmodel.generics.ArrayListDialogSmall;
+import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.function.Consumer;
 import im.actor.runtime.storage.KeyValueEngine;
 import im.actor.runtime.storage.ListEngine;
 
+import static im.actor.core.entity.EntityConverter.convert;
 import static im.actor.core.util.AssertUtils.assertTrue;
 
 public class RouterActor extends ModuleActor {
 
     private static final String TAG = "RouterActor";
 
+    // Visibility
     private final HashSet<Peer> visiblePeers = new HashSet<>();
     private boolean isAppVisible = false;
+
+    // Storage
     private KeyValueEngine<ConversationState> conversationStates;
+
+    // Active Dialogs
+    private ActiveDialogStorage activeDialogStorage;
+
 
     public RouterActor(ModuleContext context) {
         super(context);
@@ -58,6 +84,102 @@ public class RouterActor extends ModuleActor {
         super.preStart();
 
         conversationStates = context().getMessagesModule().getConversationStates().getEngine();
+
+        //
+        // Loading Active Dialogs
+        //
+        activeDialogStorage = new ActiveDialogStorage();
+        byte[] data = context().getStorageModule().getBlobStorage().loadItem(AbsModule.BLOB_DIALOGS_ACTIVE);
+        if (data != null) {
+            try {
+                activeDialogStorage = new ActiveDialogStorage(data);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (!activeDialogStorage.isLoaded()) {
+            api(new RequestLoadGroupedDialogs()).then(new Consumer<ResponseLoadGroupedDialogs>() {
+                @Override
+                public void apply(final ResponseLoadGroupedDialogs responseLoadGroupedDialogs) {
+                    updates().applyRelatedData(responseLoadGroupedDialogs.getUsers(),
+                            responseLoadGroupedDialogs.getGroups()).then(new Consumer<Void>() {
+                        @Override
+                        public void apply(Void aVoid) {
+                            boolean showArchived = false;
+                            boolean showInvite = false;
+                            if (responseLoadGroupedDialogs.showArchived() != null) {
+                                showArchived = responseLoadGroupedDialogs.showArchived();
+                            }
+                            if (responseLoadGroupedDialogs.showInvite() != null) {
+                                showInvite = responseLoadGroupedDialogs.showInvite();
+                            }
+                            onActiveDialogsChanged(responseLoadGroupedDialogs.getDialogs(), showArchived, showInvite);
+                        }
+                    }).done(self());
+                }
+            }).done(self());
+        } else {
+            notifyActiveDialogsVM();
+        }
+    }
+
+    //
+    // Active Dialogs
+    //
+
+    private void onActiveDialogsChanged(List<ApiDialogGroup> dialogs, boolean showArchived, boolean showInvite) {
+
+        //
+        // Updating Counters
+        //
+        ArrayList<ConversationState> convStates = new ArrayList<>();
+        for (ApiDialogGroup g : dialogs) {
+            for (ApiDialogShort s : g.getDialogs()) {
+                Peer peer = convert(s.getPeer());
+                ConversationState state = conversationStates.getValue(peer.getUnuqueId());
+                boolean isChanged = false;
+                if (state.getUnreadCount() != s.getCounter() && !isConversationVisible(peer)) {
+                    state = state.changeCounter(s.getCounter());
+                    isChanged = true;
+                }
+                if (state.getInMaxMessageDate() < s.getDate()) {
+                    state = state.changeInMaxDate(s.getDate());
+                    isChanged = true;
+                }
+                if (isChanged) {
+                    convStates.add(state);
+                }
+            }
+        }
+        conversationStates.addOrUpdateItems(convStates);
+
+        //
+        // Updating storage
+        //
+        activeDialogStorage.setHaveArchived(showArchived);
+        activeDialogStorage.setShowInvite(showInvite);
+        activeDialogStorage.setLoaded(true);
+        activeDialogStorage.getGroups().clear();
+        for (ApiDialogGroup g : dialogs) {
+            ArrayList<Peer> peers = new ArrayList<>();
+            for (ApiDialogShort s : g.getDialogs()) {
+                Peer peer = convert(s.getPeer());
+                peers.add(peer);
+            }
+            activeDialogStorage.getGroups().add(new ActiveDialogGroup(g.getKey(), g.getTitle(), peers));
+        }
+        context().getStorageModule().getBlobStorage()
+                .addOrUpdateItem(AbsModule.BLOB_DIALOGS_ACTIVE, activeDialogStorage.toByteArray());
+
+        //
+        // Notify VM
+        //
+        notifyActiveDialogsVM();
+
+        //
+        // Unstash all messages after initial loading
+        //
+        unstashAll();
     }
 
     //
@@ -120,6 +242,8 @@ public class RouterActor extends ModuleActor {
                             .changeInMaxDate(maxInDate);
                 }
                 conversationStates.addOrUpdateItem(state);
+
+                notifyActiveDialogsVM();
             }
         }
 
@@ -389,6 +513,8 @@ public class RouterActor extends ModuleActor {
                         .send(new CursorReaderActor.MarkRead(peer, state.getInMaxMessageDate()));
 
                 dialogsActor(new DialogsActor.CounterChanged(peer, 0));
+
+                notifyActiveDialogsVM();
             }
         }
     }
@@ -406,6 +532,32 @@ public class RouterActor extends ModuleActor {
         return context().getMessagesModule().getConversationEngine(peer);
     }
 
+    private void notifyActiveDialogsVM() {
+        ArrayList<DialogGroup> groups = new ArrayList<>();
+        for (ActiveDialogGroup i : activeDialogStorage.getGroups()) {
+            ArrayListDialogSmall dialogSmalls = new ArrayListDialogSmall();
+            for (Peer p : i.getPeers()) {
+                String title;
+                Avatar avatar;
+                if (p.getPeerType() == PeerType.GROUP) {
+                    Group group = getGroup(p.getPeerId());
+                    title = group.getTitle();
+                    avatar = group.getAvatar();
+                } else if (p.getPeerType() == PeerType.PRIVATE) {
+                    User user = getUser(p.getPeerId());
+                    title = user.getName();
+                    avatar = user.getAvatar();
+                } else {
+                    continue;
+                }
+
+                int unreadCount = conversationStates.getValue(p.getUnuqueId()).getUnreadCount();
+                dialogSmalls.add(new DialogSmall(p, title, avatar, unreadCount));
+            }
+            groups.add(new DialogGroup(i.getTitle(), i.getKey(), dialogSmalls));
+        }
+        context().getMessagesModule().getDialogGroupsVM().getGroupsValueModel().change(groups);
+    }
 
     //
     // Messages
@@ -413,6 +565,10 @@ public class RouterActor extends ModuleActor {
 
     @Override
     public void onReceive(Object message) {
+        if (!activeDialogStorage.isLoaded() && message instanceof RouterMessageOnlyActive) {
+            stash();
+            return;
+        }
         if (message instanceof RouterConversationVisible) {
             RouterConversationVisible conversationVisible = (RouterConversationVisible) message;
             onConversationVisible(conversationVisible.getPeer());

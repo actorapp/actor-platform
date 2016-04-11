@@ -2,7 +2,7 @@ package im.actor.core.modules.messaging.router.entity;
 
 import im.actor.core.entity.Peer;
 
-public class RouterOutgoingError {
+public class RouterOutgoingError implements RouterMessageOnlyActive {
 
     private Peer peer;
     private long rid;

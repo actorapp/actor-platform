@@ -5,7 +5,7 @@ import java.util.List;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 
-public class RouterApplyChatHistory {
+public class RouterApplyChatHistory implements RouterMessageOnlyActive {
 
     private Peer peer;
     private List<Message> messages;

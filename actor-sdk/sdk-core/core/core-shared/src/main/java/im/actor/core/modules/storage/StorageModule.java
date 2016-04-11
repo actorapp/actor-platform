@@ -6,6 +6,7 @@ import im.actor.core.modules.auth.AuthenticationBackupData;
 import im.actor.core.network.AuthKeyStorage;
 import im.actor.runtime.Log;
 import im.actor.runtime.Storage;
+import im.actor.runtime.storage.KeyValueStorage;
 
 public class StorageModule extends AbsModule {
 
@@ -14,17 +15,25 @@ public class StorageModule extends AbsModule {
     private static final int STORAGE_SCHEME_VERSION = 12;
     private static final String STORAGE_SCHEME_VERSION_KEY = "storage_sheme_version";
 
+    private KeyValueStorage storage;
+
     public StorageModule(ModuleContext context) {
         super(context);
     }
 
-    public void applyStorage(boolean isFirst) {
+    public void run(boolean isFirst) {
         int version = preferences().getInt(STORAGE_SCHEME_VERSION_KEY, 0);
         if (version != STORAGE_SCHEME_VERSION) {
             Log.w(TAG, "Upgrading scheme from " + version + " to " + STORAGE_SCHEME_VERSION);
             performUpgrade(isFirst);
             preferences().putInt(STORAGE_SCHEME_VERSION_KEY, STORAGE_SCHEME_VERSION);
         }
+
+        storage = Storage.createKeyValue(STORAGE_BLOB);
+    }
+
+    public KeyValueStorage getBlobStorage() {
+        return storage;
     }
 
     private void performUpgrade(boolean isFirst) {

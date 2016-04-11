@@ -4,7 +4,7 @@ import java.util.List;
 
 import im.actor.core.entity.Peer;
 
-public class RouterDeletedMessages {
+public class RouterDeletedMessages implements RouterMessageOnlyActive {
 
     private Peer peer;
     private List<Long> rids;
