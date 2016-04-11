@@ -124,7 +124,7 @@ public class RouterActor extends ModuleActor {
         }
     }
 
-    
+
     //
     // Active Dialogs
     //
@@ -471,6 +471,8 @@ public class RouterActor extends ModuleActor {
         conversationStates.addOrUpdateItem(state);
 
         dialogsActor(new DialogsActor.CounterChanged(peer, counter));
+
+        notifyActiveDialogsVM();
     }
 
 
