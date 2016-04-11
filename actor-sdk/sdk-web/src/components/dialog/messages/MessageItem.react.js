@@ -46,6 +46,7 @@ class MessageItem extends Component {
   static propTypes = {
     peer: PropTypes.object.isRequired,
     message: PropTypes.object.isRequired,
+    state: PropTypes.string.isRequired,
     isShort: PropTypes.bool.isRequired,
     isSelected: PropTypes.bool,
     onSelect: PropTypes.func
@@ -81,7 +82,7 @@ class MessageItem extends Component {
   };
 
   render() {
-    const { message, peer, isShort, isSelected } = this.props;
+    const { peer, message, state, isShort, isSelected } = this.props;
     const { isHighlighted } = this.state;
     const { delegate, isExperimental } = this.context;
 
@@ -127,7 +128,7 @@ class MessageItem extends Component {
       leftBlock = (
         <div className="message__info text-right">
           <time className="message__timestamp">{message.date}</time>
-          <State message={message}/>
+          <State state={state} />
         </div>
       );
     } else {
@@ -157,7 +158,7 @@ class MessageItem extends Component {
             </a>
           </h3>
           <time className="message__timestamp">{message.date}</time>
-          <State message={message}/>
+          <State state={state} />
         </header>
       );
     }

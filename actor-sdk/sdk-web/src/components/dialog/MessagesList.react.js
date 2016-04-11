@@ -7,6 +7,8 @@ import { isFunction } from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import {shouldComponentUpdate} from 'react-addons-pure-render-mixin';
 
+import { getMessageState } from '../../utils/MessageUtils';
+
 import MessagesScroller from './MessagesScroller.react';
 
 import DefaultMessageItem from './messages/MessageItem.react';
@@ -19,15 +21,17 @@ class MessagesList extends Component {
   };
 
   static propTypes = {
+    uid: PropTypes.number.isRequired,
     peer: PropTypes.object.isRequired,
     messages: PropTypes.array.isRequired,
     overlay: PropTypes.array.isRequired,
     count: PropTypes.number.isRequired,
-    selectedMessages: PropTypes.object.isRequired,
+    selected: PropTypes.object.isRequired,
     isMember: PropTypes.bool.isRequired,
-    isAllMessagesLoaded: PropTypes.bool.isRequired,
+    isLoaded: PropTypes.bool.isRequired,
+    receiveDate: PropTypes.number.isRequired,
+    readDate: PropTypes.number.isRequired,
     onSelect: PropTypes.func.isRequired,
-    onVisibilityChange: PropTypes.func.isRequired,
     onLoadMore: PropTypes.func.isRequired
   };
 
@@ -51,14 +55,14 @@ class MessagesList extends Component {
   }
 
   renderHeader() {
-    const {peer, isMember, messages, isAllMessagesLoaded} = this.props;
+    const { peer, isMember, messages, isLoaded } = this.props;
     const { Welcome } = this.components;
 
     if (!isMember) {
       return null;
     }
 
-    if (!isAllMessagesLoaded && messages.length >= 30) {
+    if (!isLoaded && messages.length >= 30) {
       return <Loading key="header" />;
     }
 
@@ -66,7 +70,7 @@ class MessagesList extends Component {
   }
 
   renderMessages() {
-    const { peer, messages, overlay, count, selectedMessages } = this.props;
+    const { uid, peer, messages, overlay, count, selected, receiveDate, readDate } = this.props;
     const { MessageItem } = this.components;
 
     const result = [];
@@ -81,15 +85,16 @@ class MessagesList extends Component {
       }
 
       const message = messages[index];
+
       result.push(
         <MessageItem
-          key={message.sortKey}
-          message={message}
-          isShort={overlayItem.useShort}
-          isSelected={selectedMessages.has(message.rid)}
-          onSelect={this.props.onSelect}
-          onVisibilityChange={this.props.onVisibilityChange}
           peer={peer}
+          message={message}
+          state={getMessageState(message, uid, receiveDate, readDate)}
+          isShort={overlayItem.useShort}
+          isSelected={selected.has(message.rid)}
+          onSelect={this.props.onSelect}
+          key={message.sortKey}
         />
       );
     }
