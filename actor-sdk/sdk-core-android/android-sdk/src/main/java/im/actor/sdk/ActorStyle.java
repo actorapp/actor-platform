@@ -7,7 +7,7 @@ import android.graphics.Color;
  */
 public class ActorStyle {
 
-    private int[] defaultBackgrouds = new int[]{R.drawable.img_chat_background_default, R.drawable.bg_3, R.drawable.bg_2, R.drawable.bg_1};
+    private int[] defaultBackgrouds = new int[]{R.drawable.img_chat_background_default, R.drawable.bg_1, R.drawable.bg_2, R.drawable.bg_3};
 
     private int toolBarColor = 0;
     private int fabColor = 0;
