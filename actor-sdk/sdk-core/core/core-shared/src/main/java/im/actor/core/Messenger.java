@@ -106,6 +106,9 @@ public class Messenger {
         timing.section("Modules:Create");
         this.modules = new Modules(this, configuration);
 
+        timing.section("Modules:Run");
+        this.modules.run();
+
         timing.end();
     }
 
