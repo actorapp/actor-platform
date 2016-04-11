@@ -2,7 +2,7 @@ package im.actor.core.modules.messaging.router.entity;
 
 import im.actor.core.entity.Peer;
 
-public class RouterOutgoingSent {
+public class RouterOutgoingSent implements RouterMessageOnlyActive {
 
     private Peer peer;
     private long rid;

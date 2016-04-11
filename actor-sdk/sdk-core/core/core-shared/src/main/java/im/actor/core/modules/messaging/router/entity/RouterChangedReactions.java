@@ -5,7 +5,7 @@ import java.util.List;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.Reaction;
 
-public class RouterChangedReactions {
+public class RouterChangedReactions implements RouterMessageOnlyActive {
     private Peer peer;
     private long rid;
     private List<Reaction> reactions;

@@ -35,7 +35,6 @@ import im.actor.core.api.updates.UpdateChatGroupsChanged;
 import im.actor.core.api.updates.UpdateReactionsUpdate;
 import im.actor.core.entity.ConversationState;
 import im.actor.core.entity.Dialog;
-import im.actor.core.entity.DialogSpec;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.GroupMember;
 import im.actor.core.entity.Message;
@@ -57,7 +56,6 @@ import im.actor.core.modules.messaging.actions.CursorReceiverActor;
 import im.actor.core.modules.messaging.dialogs.DialogsActor;
 import im.actor.core.modules.messaging.history.ConversationHistoryActor;
 import im.actor.core.modules.messaging.history.DialogsHistoryActor;
-import im.actor.core.modules.messaging.dialogs.ActiveDialogsActor;
 import im.actor.core.modules.messaging.actions.MessageDeleteActor;
 import im.actor.core.modules.messaging.actions.OwnReadActor;
 import im.actor.core.modules.messaging.actions.SenderActor;
@@ -69,13 +67,11 @@ import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.ConversationVM;
 import im.actor.core.viewmodel.DialogGroupsVM;
-import im.actor.core.viewmodel.DialogSpecVM;
 import im.actor.runtime.Storage;
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Props;
-import im.actor.runtime.bser.BserCreator;
 import im.actor.runtime.eventbus.BusSubscriber;
 import im.actor.runtime.eventbus.Event;
 import im.actor.runtime.files.FileSystemReference;
@@ -95,7 +91,6 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
     private ActorRef dialogsActor;
     private ActorRef dialogsHistoryActor;
     private ActorRef archivedDialogsActor;
-    private ActorRef dialogsGroupedActor;
     private ActorRef ownReadActor;
     private ActorRef plainReadActor;
     private ActorRef plainReceiverActor;
@@ -111,8 +106,6 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
 
     private final SyncKeyValue cursorStorage;
 
-    private final MVVMCollection<DialogSpec, DialogSpecVM> dialogDescKeyValue;
-
     private final DialogGroupsVM dialogGroups = new DialogGroupsVM();
 
     public MessagesModule(final ModuleContext context) {
@@ -121,7 +114,6 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
                 ConversationVM.CREATOR,
                 ConversationState.CREATOR,
                 ConversationState.DEFAULT_CREATOR);
-        this.dialogDescKeyValue = Storage.createKeyValue(STORAGE_DIALOGS_DESC, DialogSpecVM.CREATOR, DialogSpec.CREATOR);
         this.cursorStorage = new SyncKeyValue(Storage.createKeyValue(STORAGE_CURSOR));
         this.dialogs = Storage.createList(STORAGE_DIALOGS + DIALOGS_KEY_VERSION, Dialog.CREATOR);
     }
@@ -149,15 +141,6 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
                 return new ArchivedDialogsActor(context());
             }
         }), "actor/dialogs/archived");
-
-        if (context().getConfiguration().isEnabledGroupedChatList()) {
-            this.dialogsGroupedActor = system().actorOf(Props.create(new ActorCreator() {
-                @Override
-                public ActiveDialogsActor create() {
-                    return new ActiveDialogsActor(context());
-                }
-            }), "actor/dialogs/grouped");
-        }
 
         this.ownReadActor = system().actorOf(Props.create(new ActorCreator() {
             @Override
@@ -196,10 +179,6 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
 
     public DialogGroupsVM getDialogGroupsVM() {
         return dialogGroups;
-    }
-
-    public MVVMCollection<DialogSpec, DialogSpecVM> getDialogDescKeyValue() {
-        return dialogDescKeyValue;
     }
 
     public ActorRef getSendMessageActor() {
@@ -278,10 +257,6 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
 
     public ActorRef getArchivedDialogsActor() {
         return archivedDialogsActor;
-    }
-
-    public ActorRef getDialogsGroupedActor() {
-        return dialogsGroupedActor;
     }
 
     public ListEngine<Dialog> getDialogsEngine() {
