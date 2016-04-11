@@ -2,7 +2,7 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-package im.actor.core.util;
+package im.actor.core.modules.api;
 
 import im.actor.core.network.AuthKeyStorage;
 import im.actor.runtime.storage.PreferencesStorage;
@@ -21,13 +21,13 @@ public class PreferenceApiStorage implements AuthKeyStorage {
     }
 
     @Override
-    public void saveAuthKey(long key) {
-        preferencesStorage.putLong("auth_id", key);
+    public byte[] getAuthMasterKey() {
+        return preferencesStorage.getBytes("auth_master_key");
     }
 
     @Override
-    public byte[] getAuthMasterKey() {
-        return preferencesStorage.getBytes("auth_master_key");
+    public void saveAuthKey(long key) {
+        preferencesStorage.putLong("auth_id", key);
     }
 
     @Override
