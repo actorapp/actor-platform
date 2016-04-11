@@ -45,6 +45,8 @@ public interface ModuleContext {
 
     StorageModule getStorageModule();
 
+    void afterStorageReset();
+
     // Preferences
     PreferencesStorage getPreferences();
 

@@ -39,6 +39,7 @@ import im.actor.core.utils.ImageHelper;
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.GalleryVM;
+import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
@@ -147,19 +148,16 @@ public class AndroidMessenger extends im.actor.core.Messenger {
         } else {
             appStateActor.send(new AppStateActor.OnScreenOff());
         }
+    }
 
+    @Override
+    public void onLoggedIn() {
         modules.getAppStateModule().getAppStateVM().getGlobalCounter().subscribe(new ValueChangedListener<Integer>() {
             @Override
             public void onChanged(Integer val, Value<Integer> valueModel) {
                 ShortcutBadger.with(AndroidContext.getContext()).count(val);
             }
         });
-//        modules.getAppStateModule().getAppStateVM().getGlobalCounter().subscribe(new ValueChangedListener<Integer>() {
-//            @Override
-//            public void onChanged(Integer val, ValueModel<Integer> valueModel) {
-//                ShortcutBadger.with(AndroidContext.getContext()).count(val);
-//            }
-//        });
     }
 
     public Context getContext() {

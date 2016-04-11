@@ -35,6 +35,7 @@ import im.actor.core.modules.typing.TypingModule;
 import im.actor.core.modules.users.UsersModule;
 import im.actor.core.network.ActorApi;
 import im.actor.core.util.Timing;
+import im.actor.runtime.Runtime;
 import im.actor.runtime.Storage;
 import im.actor.runtime.eventbus.EventBus;
 import im.actor.runtime.storage.PreferencesStorage;
@@ -55,7 +56,6 @@ public class Modules implements ModuleContext {
     private final ApiModule api;
 
     // Modules required before authentication
-    private final AppStateModule appStateModule;
     private final ExternalModule external;
     private final Authentication authentication;
 
@@ -63,6 +63,7 @@ public class Modules implements ModuleContext {
     private volatile Updates updates;
     private volatile UsersModule users;
     private volatile GroupsModule groups;
+    private volatile AppStateModule appStateModule;
     private volatile StickersModule stickers;
     private volatile CallsModule calls;
     private volatile MessagesModule messages;
@@ -103,9 +104,6 @@ public class Modules implements ModuleContext {
         timing.section("API");
         this.api = new ApiModule(this);
 
-        timing.section("App State");
-        this.appStateModule = new AppStateModule(this);
-
         timing.section("External");
         this.external = new ExternalModule(this);
 
@@ -114,16 +112,26 @@ public class Modules implements ModuleContext {
 
         timing.section("Auth");
         this.authentication = new Authentication(this);
+        timing.end();
+    }
+
+    public void run() {
+        Timing timing = new Timing("RUN");
+        timing.section("Auth");
         this.authentication.run();
         timing.end();
     }
 
-    public void onLoggedIn() {
+    public void onLoggedIn(boolean first) {
         Timing timing = new Timing("ACCOUNT_CREATE");
         timing.section("Users");
         users = new UsersModule(this);
+        timing.section("Storage");
+        storageModule.applyStorage(first);
         timing.section("Groups");
         groups = new GroupsModule(this);
+        timing.section("App State");
+        appStateModule = new AppStateModule(this);
         timing.section("Stickers");
         stickers = new StickersModule(this);
         timing.section("Calls");
@@ -160,8 +168,6 @@ public class Modules implements ModuleContext {
         deviceInfoModule = new DeviceInfoModule(this);
         timing.section("EventBus");
         eventBusModule = new EventBusModule(this);
-        timing.section("Storage");
-        storageModule.applyStorage();
         timing.end();
 
 
@@ -194,7 +200,22 @@ public class Modules implements ModuleContext {
         stickers.run();
         timing.end();
 
-        messenger.onLoggedIn();
+        if (Runtime.isMainThread()) {
+            messenger.onLoggedIn();
+        } else {
+            Runtime.postToMainThread(new Runnable() {
+                @Override
+                public void run() {
+                    messenger.onLoggedIn();
+                }
+            });
+        }
+    }
+
+    @Override
+    public void afterStorageReset() {
+        // Recreation of Users Module to pick fresh database
+        users = new UsersModule(this);
     }
 
     public void onLoggedOut() {
@@ -278,6 +299,7 @@ public class Modules implements ModuleContext {
     public StorageModule getStorageModule() {
         return storageModule;
     }
+
 
     @Override
     public I18nEngine getI18nModule() {
