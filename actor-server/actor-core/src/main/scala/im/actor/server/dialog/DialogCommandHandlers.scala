@@ -160,7 +160,7 @@ trait DialogCommandHandlers extends PeersImplicits {
       for {
         _ ← dialogExt.ackMessageRead(peer, mr)
         _ ← db.run(markMessagesRead(selfPeer, peer, readDate))
-        historyOwner <- HistoryUtils.getHistoryOwner(peer, userId)
+        historyOwner ← HistoryUtils.getHistoryOwner(peer, userId)
         unreadCount ← db.run(dialogExt.getUnreadCount(userId, historyOwner, peer, readDate))
         _ ← deliveryExt.read(userId, mr.readerAuthSid, peer, mr.date, Some(unreadCount))
         _ ← deliveryExt.sendCountersUpdate(userId)
