@@ -19,11 +19,11 @@ final case class ApnsCert(key: Int, path: String, password: String, isSandbox: B
 object ApnsCert {
   def fromConfig(config: Config): ApnsCert = {
     ApnsCert(
-      config.getInt("key"),
-      config.getString("path"),
-      config.getString("password"),
-      Try(config.getBoolean("voip")).getOrElse(false),
-      Try(config.getBoolean("sandbox")).getOrElse(false)
+      key = config.getInt("key"),
+      path = config.getString("path"),
+      password = config.getString("password"),
+      isSandbox = Try(config.getBoolean("sandbox")).getOrElse(false),
+      isVoip = Try(config.getBoolean("voip")).getOrElse(false)
     )
   }
 }
