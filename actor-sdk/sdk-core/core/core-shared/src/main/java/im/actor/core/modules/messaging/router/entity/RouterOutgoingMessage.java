@@ -3,7 +3,7 @@ package im.actor.core.modules.messaging.router.entity;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 
-public class RouterOutgoingMessage {
+public class RouterOutgoingMessage implements RouterMessageOnlyActive {
 
     private Peer peer;
     private Message message;

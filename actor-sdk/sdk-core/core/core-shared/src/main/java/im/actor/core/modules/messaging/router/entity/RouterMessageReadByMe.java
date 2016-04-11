@@ -2,8 +2,8 @@ package im.actor.core.modules.messaging.router.entity;
 
 import im.actor.core.entity.Peer;
 
-public class RouterMessageReadByMe {
-    
+public class RouterMessageReadByMe implements RouterMessageOnlyActive {
+
     private Peer peer;
     private long date;
     private int counter;

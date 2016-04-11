@@ -5,19 +5,22 @@ import java.util.Collection;
 
 import im.actor.core.api.ApiAvatar;
 import im.actor.core.api.ApiUser;
+import im.actor.core.api.updates.UpdateContactRegistered;
 import im.actor.core.api.updates.UpdateUserAboutChanged;
 import im.actor.core.api.updates.UpdateUserAvatarChanged;
 import im.actor.core.api.updates.UpdateUserLocalNameChanged;
 import im.actor.core.api.updates.UpdateUserNameChanged;
 import im.actor.core.api.updates.UpdateUserNickChanged;
+import im.actor.core.entity.Message;
+import im.actor.core.entity.MessageState;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.User;
+import im.actor.core.entity.content.ServiceUserRegistered;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.sequence.Processor;
 import im.actor.core.modules.contacts.ContactsSyncActor;
 import im.actor.core.modules.messaging.dialogs.DialogsActor;
-import im.actor.core.modules.messaging.dialogs.ActiveDialogsActor;
 import im.actor.runtime.Log;
 import im.actor.runtime.annotations.Verified;
 
@@ -173,6 +176,13 @@ public class UsersProcessor extends AbsModule implements Processor {
         }
     }
 
+    @Verified
+    public void onUserRegistered(long rid, int uid, long date) {
+        ArrayList<Message> messages = new ArrayList<>();
+        messages.add(new Message(rid, date, date, uid, MessageState.UNKNOWN, ServiceUserRegistered.create()));
+        context().getMessagesModule().getRouter().onNewMessages(Peer.user(uid), messages);
+    }
+
     @Override
     public boolean process(Object update) {
         if (update instanceof UpdateUserNameChanged) {
@@ -194,6 +204,12 @@ public class UsersProcessor extends AbsModule implements Processor {
         } else if (update instanceof UpdateUserAvatarChanged) {
             UpdateUserAvatarChanged avatarChanged = (UpdateUserAvatarChanged) update;
             onUserAvatarChanged(avatarChanged.getUid(), avatarChanged.getAvatar());
+            return true;
+        } else if (update instanceof UpdateContactRegistered) {
+            UpdateContactRegistered registered = (UpdateContactRegistered) update;
+            if (!registered.isSilent()) {
+                onUserRegistered(registered.getRid(), registered.getUid(), registered.getDate());
+            }
             return true;
         }
         return false;

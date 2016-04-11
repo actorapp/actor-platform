@@ -274,11 +274,6 @@ public class UpdateProcessor extends AbsModule {
         } else if (update instanceof UpdateChatDelete) {
             UpdateChatDelete chatDelete = (UpdateChatDelete) update;
             messagesProcessor.onChatDelete(chatDelete.getPeer());
-        } else if (update instanceof UpdateContactRegistered) {
-            UpdateContactRegistered registered = (UpdateContactRegistered) update;
-            if (!registered.isSilent()) {
-                messagesProcessor.onUserRegistered(registered.getRid(), registered.getUid(), registered.getDate());
-            }
         } else if (update instanceof UpdateGroupTitleChanged) {
             UpdateGroupTitleChanged titleChanged = (UpdateGroupTitleChanged) update;
             groupsProcessor.onTitleChanged(titleChanged.getGroupId(), titleChanged.getRid(),
