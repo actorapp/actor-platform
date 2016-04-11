@@ -96,7 +96,7 @@ final class ApplePushExtension(system: ActorSystem) extends Extension with AnyRe
   // recreate and try to connect client, if client connection failed
   // during previous creation
   private def recreateClient(cert: ApnsCert): Unit = {
-    log.debug("Retry to create client for cert : {}, is voip", cert.key, cert.isVoip)
+    log.debug("Retry to create client for cert : {}, is voip: {}", cert.key, cert.isVoip)
     val targetMap = if (cert.isVoip) voipClients else clients
     targetMap -= cert.key
     targetMap += createClient(cert)
