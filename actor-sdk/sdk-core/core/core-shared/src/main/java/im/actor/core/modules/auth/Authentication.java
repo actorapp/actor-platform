@@ -2,7 +2,7 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-package im.actor.core.modules;
+package im.actor.core.modules.auth;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -36,6 +36,7 @@ import im.actor.core.entity.AuthRes;
 import im.actor.core.entity.AuthStartRes;
 import im.actor.core.entity.Sex;
 import im.actor.core.entity.User;
+import im.actor.core.modules.Modules;
 import im.actor.core.modules.sequence.internal.LoggedIn;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
@@ -57,6 +58,7 @@ public class Authentication {
 
     private static final String KEY_AUTH = "auth_yes";
     private static final String KEY_AUTH_UID = "auth_uid";
+
     private static final String KEY_PHONE = "auth_phone";
     private static final String KEY_EMAIL = "auth_email";
     private static final String KEY_SMS_HASH = "auth_sms_hash";
@@ -116,6 +118,36 @@ public class Authentication {
         }
     }
 
+    public AuthenticationBackupData performBackup() {
+        if (!isLoggedIn()) {
+            throw new RuntimeException("Nothing to backup!");
+        }
+
+        byte[] userData = modules.getUsersModule().getUsersStorage().getValue(myUid).toByteArray();
+
+        return new AuthenticationBackupData(deviceHash, myUid, userData);
+    }
+
+    public void restoreBackup(AuthenticationBackupData authenticationBackupData) {
+
+        //
+        // Restore UID
+        //
+        myUid = authenticationBackupData.getAuthenticatedUid();
+        modules.getPreferences().putInt(KEY_AUTH_UID, myUid);
+        modules.getPreferences().putBool(KEY_AUTH, true);
+
+        //
+        // Restore User
+        //
+        try {
+            modules.getUsersModule().getUsersStorage()
+                    .addOrUpdateItem(new User(authenticationBackupData.getOwnUserData()));
+        } catch (IOException e) {
+            // Should not happen
+            throw new RuntimeException(e);
+        }
+    }
 
     //
     // Starting Authentication
