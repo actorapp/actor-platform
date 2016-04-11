@@ -426,23 +426,7 @@ public class JsFacade implements Exportable {
     public void preInitChat(JsPeer peer) {
         messenger.onConversationPreLoad(peer.convert());
     }
-
-    @UsedByApp
-    public void bindChat(JsPeer peer, JsDisplayListCallback<JsMessage> callback) {
-        if (callback == null) {
-            return;
-        }
-        messenger.getSharedChatList(peer.convert()).subscribe(callback, true);
-    }
-
-    @UsedByApp
-    public void unbindChat(JsPeer peer, JsDisplayListCallback<JsMessage> callback) {
-        if (callback == null) {
-            return;
-        }
-        messenger.getSharedChatList(peer.convert()).unsubscribe(callback);
-    }
-
+    
     @UsedByApp
     public JsMessagesBind bindMessages(JsPeer peer, JsMessagesBindClosure callback) {
         if (callback == null) {
