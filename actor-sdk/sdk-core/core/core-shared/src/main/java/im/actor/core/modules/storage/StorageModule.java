@@ -12,7 +12,7 @@ public class StorageModule extends AbsModule {
 
     private static String TAG = "StorageModule";
 
-    private static final int STORAGE_SCHEME_VERSION = 12;
+    private static final int STORAGE_SCHEME_VERSION = 13;
     private static final String STORAGE_SCHEME_VERSION_KEY = "storage_sheme_version";
 
     private KeyValueStorage storage;
