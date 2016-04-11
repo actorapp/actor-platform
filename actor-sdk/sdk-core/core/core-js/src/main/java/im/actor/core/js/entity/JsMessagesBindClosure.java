@@ -13,6 +13,6 @@ public interface JsMessagesBindClosure extends Exportable {
     void onBind(JsArray<JsMessage> array,
                 JsArray<JavaScriptObject> overlays,
                 boolean isLoaded,
-                Double receiveDate,
-                Double readDate);
+                double receiveDate,
+                double readDate);
 }
