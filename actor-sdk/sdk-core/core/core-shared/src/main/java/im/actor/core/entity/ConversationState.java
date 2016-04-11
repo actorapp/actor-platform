@@ -107,6 +107,7 @@ public class ConversationState extends BserObject implements KeyValueItem {
         inReadDate = values.getLong(3, 0);
         outReceiveState = values.getLong(4, 0);
         outReadDate = values.getLong(5, 0);
+        inMaxMessageDate = values.getLong(6, 0);
     }
 
     @Override
@@ -116,6 +117,7 @@ public class ConversationState extends BserObject implements KeyValueItem {
         writer.writeLong(3, inReadDate);
         writer.writeLong(4, outReceiveState);
         writer.writeLong(5, outReadDate);
+        writer.writeLong(6, inMaxMessageDate);
     }
 
     @Override
