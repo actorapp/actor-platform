@@ -295,10 +295,6 @@ public class GroupsProcessor extends AbsModule {
     private void onGroupDescChanged(Group group) {
         context().getMessagesModule().getDialogsActor()
                 .send(new DialogsActor.GroupChanged(group));
-        if (context().getConfiguration().isEnabledGroupedChatList()) {
-            context().getMessagesModule().getDialogsGroupedActor().send(
-                    new ActiveDialogsActor.PeerInformationChanged(Peer.group(group.getGroupId())));
-        }
     }
 
     private RouterInt getRouter() {
