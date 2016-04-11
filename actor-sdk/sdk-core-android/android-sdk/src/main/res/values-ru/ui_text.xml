@@ -335,7 +335,7 @@
 
     <!-- Add Contact -->
     <string name="add_contact_title">Добавить контакт</string>
-    <string name="add_contact_phone_hint">Введите номер телефона</string>
+    <string name="add_contact_phone_hint">Введите email, номер телефона или ник</string>
     <string name="add_contact_bar_cancel">ОТМЕНА</string>
     <string name="add_contact_bar_continue">ДАЛЕЕ</string>
 
