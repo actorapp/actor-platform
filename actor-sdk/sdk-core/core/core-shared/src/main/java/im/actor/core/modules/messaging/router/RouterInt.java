@@ -3,9 +3,11 @@ package im.actor.core.modules.messaging.router;
 import java.util.ArrayList;
 import java.util.List;
 
+import im.actor.core.entity.Group;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.Reaction;
+import im.actor.core.entity.User;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.events.AppVisibleChanged;
 import im.actor.core.events.PeerChatClosed;
@@ -29,6 +31,7 @@ import im.actor.core.modules.messaging.router.entity.RouterNewMessages;
 import im.actor.core.modules.messaging.router.entity.RouterOutgoingError;
 import im.actor.core.modules.messaging.router.entity.RouterOutgoingMessage;
 import im.actor.core.modules.messaging.router.entity.RouterOutgoingSent;
+import im.actor.core.modules.messaging.router.entity.RouterPeersChanged;
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorInterface;
@@ -115,6 +118,30 @@ public class RouterInt extends ActorInterface implements BusSubscriber {
 
     public void onChatDelete(Peer peer) {
         send(new RouterChatDelete(peer));
+    }
+
+    public void onUserChanged(User user) {
+        ArrayList<User> users = new ArrayList<>();
+        users.add(user);
+        onUsersChanged(users);
+    }
+
+    public void onGroupChanged(Group group) {
+        ArrayList<Group> groups = new ArrayList<>();
+        groups.add(group);
+        onGroupsChanged(groups);
+    }
+
+    public void onUsersChanged(List<User> users) {
+        onPeersChanged(users, new ArrayList<Group>());
+    }
+
+    public void onGroupsChanged(List<Group> groups) {
+        onPeersChanged(new ArrayList<User>(), groups);
+    }
+
+    public void onPeersChanged(List<User> users, List<Group> groups) {
+        send(new RouterPeersChanged(users, groups));
     }
 
     @Override
