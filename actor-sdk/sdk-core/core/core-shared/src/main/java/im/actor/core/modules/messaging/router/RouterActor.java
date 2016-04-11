@@ -48,6 +48,7 @@ import im.actor.core.modules.messaging.router.entity.RouterNewMessages;
 import im.actor.core.modules.messaging.router.entity.RouterOutgoingError;
 import im.actor.core.modules.messaging.router.entity.RouterOutgoingMessage;
 import im.actor.core.modules.messaging.router.entity.RouterOutgoingSent;
+import im.actor.core.modules.messaging.router.entity.RouterPeersChanged;
 import im.actor.core.util.JavaUtil;
 import im.actor.core.viewmodel.DialogGroup;
 import im.actor.core.viewmodel.DialogSmall;
@@ -471,6 +472,40 @@ public class RouterActor extends ModuleActor {
 
 
     //
+    // Peer Changed
+    //
+
+    private void onPeersChanged(List<User> users, List<Group> groups) {
+        boolean isActiveNeedUpdate = false;
+        for (User u : users) {
+            if (!isActiveNeedUpdate) {
+                for (ActiveDialogGroup g : activeDialogStorage.getGroups()) {
+                    if (g.getPeers().contains(u.peer())) {
+                        isActiveNeedUpdate = true;
+                        break;
+                    }
+                }
+            }
+            dialogsActor(new DialogsActor.UserChanged(u));
+        }
+        for (Group group : groups) {
+            if (!isActiveNeedUpdate) {
+                for (ActiveDialogGroup g : activeDialogStorage.getGroups()) {
+                    if (g.getPeers().contains(group.peer())) {
+                        isActiveNeedUpdate = true;
+                        break;
+                    }
+                }
+            }
+            dialogsActor(new DialogsActor.GroupChanged(group));
+        }
+
+        if (isActiveNeedUpdate) {
+            notifyActiveDialogsVM();
+        }
+    }
+
+    //
     // Auto Messages Read
     //
 
@@ -624,6 +659,9 @@ public class RouterActor extends ModuleActor {
         } else if (message instanceof RouterChatDelete) {
             RouterChatDelete chatDelete = (RouterChatDelete) message;
             onChatDelete(chatDelete.getPeer());
+        } else if (message instanceof RouterPeersChanged) {
+            RouterPeersChanged peersChanged = (RouterPeersChanged) message;
+            onPeersChanged(peersChanged.getUsers(), peersChanged.getGroups());
         } else {
             super.onReceive(message);
         }

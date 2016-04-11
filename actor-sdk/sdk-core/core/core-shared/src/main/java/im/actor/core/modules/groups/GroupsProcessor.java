@@ -293,8 +293,7 @@ public class GroupsProcessor extends AbsModule {
 
     @Verified
     private void onGroupDescChanged(Group group) {
-        context().getMessagesModule().getDialogsActor()
-                .send(new DialogsActor.GroupChanged(group));
+        getRouter().onGroupChanged(group);
     }
 
     private RouterInt getRouter() {
