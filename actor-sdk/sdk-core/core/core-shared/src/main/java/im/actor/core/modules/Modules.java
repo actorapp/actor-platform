@@ -127,7 +127,7 @@ public class Modules implements ModuleContext {
         timing.section("Users");
         users = new UsersModule(this);
         timing.section("Storage");
-        storageModule.applyStorage(first);
+        storageModule.run(first);
         timing.section("Groups");
         groups = new GroupsModule(this);
         timing.section("App State");
