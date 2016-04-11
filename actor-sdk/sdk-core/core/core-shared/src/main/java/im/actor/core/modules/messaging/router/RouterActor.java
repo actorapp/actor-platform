@@ -124,6 +124,7 @@ public class RouterActor extends ModuleActor {
         }
     }
 
+    
     //
     // Active Dialogs
     //
@@ -182,6 +183,7 @@ public class RouterActor extends ModuleActor {
         //
         unstashAll();
     }
+
 
     //
     // Incoming Messages
@@ -430,6 +432,7 @@ public class RouterActor extends ModuleActor {
         dialogsActor(new DialogsActor.ChatDelete(peer));
     }
 
+
     //
     // Read States
     //
@@ -504,6 +507,7 @@ public class RouterActor extends ModuleActor {
             notifyActiveDialogsVM();
         }
     }
+
 
     //
     // Auto Messages Read
