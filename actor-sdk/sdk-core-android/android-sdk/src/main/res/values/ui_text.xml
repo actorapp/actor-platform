@@ -352,7 +352,7 @@
 
     <!-- Add Contact -->
     <string name="add_contact_title">Add contact</string>
-    <string name="add_contact_phone_hint">Enter phone number</string>
+    <string name="add_contact_phone_hint">Enter email, nickname or phone</string>
     <string name="add_contact_bar_cancel">CANCEL</string>
     <string name="add_contact_bar_continue">CONTINUE</string>
 
