@@ -203,6 +203,8 @@ public class MessagesProcessor extends AbsModule {
         // TODO: Notify send actor
     }
 
+
+    @Deprecated
     public void onChatGroupsChanged(List<ApiDialogGroup> groups) {
 //        if (context().getConfiguration().isEnabledGroupedChatList()) {
 //            context().getMessagesModule().getDialogsGroupedActor()
@@ -210,15 +212,8 @@ public class MessagesProcessor extends AbsModule {
 //        }
     }
 
+    @Deprecated
     public void onArchivedDialogsLoaded(ResponseLoadArchived responseLoadArchived) {
 //        archivedDialogsActor().send(new ArchivedDialogsActor.LoadedMore(responseLoadArchived));
-    }
-
-
-    @Verified
-    public void onUserRegistered(long rid, int uid, long date) {
-        ArrayList<Message> messages = new ArrayList<>();
-        messages.add(new Message(rid, date, date, uid, MessageState.UNKNOWN, ServiceUserRegistered.create()));
-        context().getMessagesModule().getRouter().onNewMessages(Peer.user(uid), messages);
     }
 }

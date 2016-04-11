@@ -4,7 +4,7 @@ import java.util.List;
 
 import im.actor.core.modules.messaging.history.entity.DialogHistory;
 
-public class RouterApplyDialogsHistory {
+public class RouterApplyDialogsHistory implements RouterMessageOnlyActive {
 
     private List<DialogHistory> dialogs;
     private Runnable executeAfter;

@@ -26,7 +26,6 @@ import im.actor.core.entity.content.ServiceGroupUserLeave;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.messaging.dialogs.DialogsActor;
-import im.actor.core.modules.messaging.dialogs.ActiveDialogsActor;
 import im.actor.core.entity.EntityConverter;
 import im.actor.core.modules.messaging.router.RouterInt;
 import im.actor.runtime.annotations.Verified;

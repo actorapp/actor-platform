@@ -1,4 +1,4 @@
-package im.actor.core.modules.messaging.dialogs.entity;
+package im.actor.core.modules.messaging.router.entity;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -8,19 +8,19 @@ import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
 
-public class GroupedItem extends BserObject {
+public class ActiveDialogGroup extends BserObject {
 
     private String key;
     private String title;
     private ArrayList<Peer> peers = new ArrayList<Peer>();
 
-    public GroupedItem(String key, String title, ArrayList<Peer> peers) {
+    public ActiveDialogGroup(String key, String title, ArrayList<Peer> peers) {
         this.key = key;
         this.title = title;
         this.peers = peers;
     }
 
-    public GroupedItem(byte[] data) throws IOException {
+    public ActiveDialogGroup(byte[] data) throws IOException {
         load(data);
     }
 
