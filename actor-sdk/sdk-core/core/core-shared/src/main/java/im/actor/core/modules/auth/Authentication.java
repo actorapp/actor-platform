@@ -112,7 +112,7 @@ public class Authentication {
     public void run() {
         if (modules.getPreferences().getBool(KEY_AUTH, false)) {
             state = AuthState.LOGGED_IN;
-            modules.onLoggedIn();
+            modules.onLoggedIn(false);
         } else {
             state = AuthState.AUTH_START;
         }
@@ -120,7 +120,7 @@ public class Authentication {
 
     public AuthenticationBackupData performBackup() {
         if (!isLoggedIn()) {
-            throw new RuntimeException("Nothing to backup!");
+            return null;
         }
 
         byte[] userData = modules.getUsersModule().getUsersStorage().getValue(myUid).toByteArray();
@@ -298,12 +298,14 @@ public class Authentication {
                     resolver.error(e);
                     return;
                 }
+
                 state = AuthState.LOGGED_IN;
                 myUid = auth.getUser().getId();
+                modules.onLoggedIn(true);
+                modules.getUsersModule().getUsersStorage().addOrUpdateItem(new User(auth.getUser()));
                 modules.getPreferences().putBool(KEY_AUTH, true);
                 modules.getPreferences().putInt(KEY_AUTH_UID, myUid);
-                modules.onLoggedIn();
-                modules.getUsersModule().getUsersStorage().addOrUpdateItem(new User(auth.getUser()));
+
                 modules.getUpdatesModule().onUpdateReceived(new LoggedIn(auth, new Runnable() {
                     @Override
                     public void run() {
@@ -757,7 +759,7 @@ public class Authentication {
         myUid = response.getUser().getId();
         modules.getPreferences().putBool(KEY_AUTH, true);
         modules.getPreferences().putInt(KEY_AUTH_UID, myUid);
-        modules.onLoggedIn();
+        modules.onLoggedIn(true);
         modules.getUsersModule().getUsersStorage().addOrUpdateItem(new User(response.getUser()));
         modules.getUpdatesModule().onUpdateReceived(new LoggedIn(response, new Runnable() {
             @Override

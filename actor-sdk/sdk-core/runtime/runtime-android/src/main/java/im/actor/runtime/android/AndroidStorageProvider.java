@@ -4,8 +4,12 @@
 
 package im.actor.runtime.android;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.util.ArrayList;
+
+import im.actor.runtime.Log;
 import im.actor.runtime.StorageRuntime;
 import im.actor.runtime.android.storage.AndroidProperties;
 import im.actor.runtime.android.storage.NoOpOpenHelper;
@@ -51,7 +55,18 @@ public class AndroidStorageProvider implements StorageRuntime {
     @Override
     public void resetStorage() {
         properties.clear();
-        database.rawQuery("select 'drop table ' || name || ';' from sqlite_master where type = 'table';", null);
+        ArrayList<String> tables = new ArrayList<>();
+        Cursor cursor = database.rawQuery("SELECT name FROM sqlite_master WHERE type='table';", null);
+        try {
+            while (cursor.moveToNext()) {
+                tables.add(cursor.getString(0));
+            }
+        } finally {
+            cursor.close();
+        }
+        for (String s : tables) {
+            getDatabase().execSQL("drop table " + s + ";");
+        }
     }
 
     private synchronized SQLiteDatabase getDatabase() {
