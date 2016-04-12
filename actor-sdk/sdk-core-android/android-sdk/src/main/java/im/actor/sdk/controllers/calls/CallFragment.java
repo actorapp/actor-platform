@@ -328,7 +328,6 @@ public class CallFragment extends BaseFragment {
                                     toggleSpeaker(speaker, speakerTV, true);
                                     initIncoming();
                                 }
-                                enableWakeLock();
                                 break;
 
                             case CONNECTING:
@@ -510,11 +509,6 @@ public class CallFragment extends BaseFragment {
         if (v != null) {
             v.cancel();
         }
-        if (wakeLock != null) {
-            if (wakeLock.isHeld()) {
-                wakeLock.release();
-            }
-        }
 
         if(timer!=null){
             timer.send(PoisonPill.INSTANCE);
@@ -525,6 +519,14 @@ public class CallFragment extends BaseFragment {
             getActivity().finish();
         }
 
+    }
+
+    public void disableWakeLock() {
+        if (wakeLock != null) {
+            if (wakeLock.isHeld()) {
+                wakeLock.release();
+            }
+        }
     }
 
     @Override
@@ -556,6 +558,7 @@ public class CallFragment extends BaseFragment {
 
             n.flags += Notification.FLAG_ONGOING_EVENT;
 
+            disableWakeLock();
 
             manager.notify(NOTIFICATION_ID, n);
         }
@@ -565,6 +568,8 @@ public class CallFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
+        enableWakeLock();
+
         manager.cancel(NOTIFICATION_ID);
 //        animator.popAnimation(true);
 
