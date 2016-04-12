@@ -175,12 +175,12 @@ export const ActionTypes = keymirror({
   PROFILE_EDIT_ABOUT_SUCCESS: null,
   PROFILE_EDIT_ABOUT_ERROR: null,
 
+  CROP_MODAL_SHOW: null,
+  CROP_MODAL_HIDE: null,
+
   KICK_USER: null,
   KICK_USER_SUCCESS: null,
   KICK_USER_ERROR: null,
-
-  CROP_AVATAR_MODAL_SHOW: null,
-  CROP_AVATAR_MODAL_HIDE: null,
 
   QUICK_SEARCH_SHOW: null,
   QUICK_SEARCH_HIDE: null,
@@ -362,6 +362,7 @@ export const LoggerTypes = {
 
 export const ModalTypes = keymirror({
   PROFILE: null,
+  CROP: null,
   GROUP_LIST: null,
   PEOPLE_LIST: null
 });

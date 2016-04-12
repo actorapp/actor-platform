@@ -2,41 +2,30 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import { Store } from 'flux/utils';
+import { ReduceStore } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
 
-let _isOpen = false,
-    _pictureSource = null;
-
-class CropAvatarStore extends Store {
-  constructor(Dispatcher) {
-    super(Dispatcher);
+class CropStore extends ReduceStore {
+  getInitialState() {
+    return {
+      source: null
+    };
   }
 
-  isOpen() {
-    return _isOpen;
-  }
-
-  getPictureSource() {
-    return _pictureSource;
-  }
-
-  __onDispatch(action) {
-    switch(action.type) {
-      case ActionTypes.CROP_AVATAR_MODAL_SHOW:
-        _isOpen = true;
-        _pictureSource = action.source;
-        this.__emitChange();
-        break;
-      case ActionTypes.CROP_AVATAR_MODAL_HIDE:
-        _isOpen = false;
-        _pictureSource = null;
-        this.__emitChange();
-        break;
+  reduce(state, action) {
+    switch (action.type) {
+      case ActionTypes.CROP_MODAL_SHOW:
+        return {
+          ...state,
+          source: action.source
+        }
+      case ActionTypes.CROP_MODAL_HIDE:
+        return this.getInitialState();
       default:
+        return state;
     }
   }
 }
 
-export default new CropAvatarStore(Dispatcher);
+export default new CropStore(Dispatcher);

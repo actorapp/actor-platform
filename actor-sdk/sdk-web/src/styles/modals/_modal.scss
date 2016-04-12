@@ -5,8 +5,14 @@
     @include no-select();
   }
 
+  &__content {
+    margin: 0 auto;
+    padding: 100px 32px;
+    max-width: 600px;
+  }
+
   &__close-button {
-    position: absolute;
+    position: fixed;
     top: 32px;
     right: 32px;
 
@@ -60,7 +66,6 @@
   }
 
   &__body {
-    // padding: 16px;
   }
 
   &__footer {
