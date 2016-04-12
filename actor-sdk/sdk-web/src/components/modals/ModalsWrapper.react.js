@@ -9,6 +9,7 @@ import { ModalTypes } from '../../constants/ActorAppConstants';
 import ModalStore from '../../stores/ModalStore';
 
 import Profile from './Profile.react';
+import Crop from './Crop.react';
 
 class ModalsWrapper extends Component {
   static getStores() {
@@ -20,14 +21,17 @@ class ModalsWrapper extends Component {
   }
 
   render() {
-    const { current } = this.state;
-    if (!current) return null;
+    console.debug(this.state);
+    const { currentModal } = this.state;
+    if (!currentModal) return null;
 
-    switch (current) {
+    switch (currentModal) {
       case ModalTypes.PROFILE:
         return <Profile/>;
+      case ModalTypes.CROP:
+        return <Crop/>;
       default:
-        console.warn(`Unsupported modal type: ${current}`);
+        console.warn(`Unsupported modal type: ${currentModal}`);
         return null;
     }
   }

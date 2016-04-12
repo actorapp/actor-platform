@@ -730,80 +730,6 @@
     }
   }
 
-  .profile-picture {
-    padding: 16px;
-    &__controls {
-      a {
-        font-size: 13px;
-        font-weight: 500;
-
-        cursor: pointer;
-
-        color: $dark-sky-blue;
-      }
-    }
-    &__changer {
-      position: relative;
-
-      margin-bottom: 8px;
-
-      border-radius: 50%;
-      .avatar {
-        position: relative;
-        z-index: 0;
-        //transition: 200ms;
-      }
-      a {
-        font-size: 11px;
-        font-weight: 700;
-
-        position: absolute;
-        z-index: 1;
-        top: 0;
-        left: 0;
-
-        display: block;
-
-        box-sizing: border-box;
-        width: 100%;
-        height: 100%;
-        margin-bottom: 8px;
-        padding-top: 50px;
-
-        cursor: pointer;
-        //transition: 200ms;
-        text-transform: uppercase;
-
-        color: white;
-        border-radius: 50%;
-        text-shadow: 0 0 4px rgba(black, .7);
-        span {
-          display: block;
-
-          padding: 0 16px;
-
-          opacity: 0;
-          //transition: 200ms;
-          //transform: translateY(-5px);
-        }
-      }
-
-      &:hover {
-        .avatar {
-          opacity: .5;
-        }
-        a {
-          background-color: rgba(0, 0, 0, .1);
-          //box-shadow: inset 0 0 64px 8px rgba(0, 0, 0, .4);
-          span {
-            transform: translateY(0);
-
-            opacity: 1;
-          }
-        }
-      }
-    }
-  }
   .add-contact {
     &__results {
       @include no-mp();
@@ -1264,54 +1190,6 @@
 
   @include app-sizes();
   &__close {
-    position: absolute;
-    top: 32px;
-    right: 32px;
-
-    width: 48px;
-    height: 48px;
-
-    cursor: pointer;
-    transition: background 100ms;
-    text-align: center;
-
-    color: rgba(black, .3);
-    border-radius: 50%;
-    .close_icon {
-      font-size: 32px;
-      line-height: 48px;
-
-      z-index: 1010;
-
-      transition: transform 100ms;
-    }
-    .text {
-      line-height: 20px;
-
-      position: absolute;
-      z-index: 1050;
-      top: 14px;
-      right: 58px;
-
-      transition: 120ms;
-      transform: translateX(30px);
-      pointer-events: none;
-
-      opacity: 0;
-    }
-    &:hover {
-      background-color: rgba(black, .05);
-      .text {
-        transform: translateX(0);
-
-        opacity: 1;
-      }
-      .close_icon {
-        transform: rotate(90deg);
-
-        color: rgba(black, .5);
-      }
-    }
   }
   &--opened {
     display: flex;

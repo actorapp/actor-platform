@@ -6,6 +6,8 @@ import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 import { FormattedMessage } from 'react-intl';
 
+import CropActionCreators from '../../../actions/CropActionCreators';
+
 import AvatarItem from '../../common/AvatarItem.react';
 
 class PictureChanger extends Component {
@@ -32,13 +34,12 @@ class PictureChanger extends Component {
 
   handlePictureInputChange() {
     const reader = new FileReader();
+    const imageForm = findDOMNode(this.refs.imageForm);
     const file = findDOMNode(this.refs.imageInput).files[0];
 
     reader.onload = (event) => {
-      // TODO: Open crop avatar
-      console.debug('Need to open crop avatar', event.target.result);
-      // CropAvatarActionCreators.show(event.target.result);
-      findDOMNode(this.refs.imageForm).reset();
+      CropActionCreators.show(event.target.result);
+      imageForm.reset();
     }
     reader.readAsDataURL(file);
   }
