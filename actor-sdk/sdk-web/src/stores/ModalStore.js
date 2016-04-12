@@ -9,7 +9,8 @@ import { ActionTypes, ModalTypes } from '../constants/ActorAppConstants';
 class ModalStore extends ReduceStore {
   getInitialState() {
     return {
-      current: null
+      prevModal: null,
+      currentModal: null
     };
   }
 
@@ -18,10 +19,23 @@ class ModalStore extends ReduceStore {
       case ActionTypes.PROFILE_SHOW:
         return {
           ...state,
-          current: ModalTypes.PROFILE
+          currentModal: ModalTypes.PROFILE
         }
       case ActionTypes.PROFILE_HIDE:
         return this.getInitialState();
+
+      case ActionTypes.CROP_MODAL_SHOW:
+        return {
+          ...state,
+          prevModal: ModalTypes.PROFILE,
+          currentModal: ModalTypes.CROP
+        }
+      case ActionTypes.CROP_MODAL_HIDE:
+        return {
+          ...state,
+          prevModal: null,
+          currentModal: state.prevModal
+        }
       default:
         return state;
     }

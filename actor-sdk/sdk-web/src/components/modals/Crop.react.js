@@ -6,34 +6,24 @@ import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 import { Container } from 'flux/utils';
 import { dataURItoBlob } from '../../utils/ImageUtils';
-
+import { FormattedMessage } from 'react-intl';
 import Modal from 'react-modal';
 
-import { KeyCodes } from '../../constants/ActorAppConstants';
+import CropActionCreators from '../../actions/CropActionCreators';
+import ProfileActionCreators from '../../actions/ProfileActionCreators';
 
-import CropAvatarActionCreators from '../../actions/CropAvatarActionCreators';
+import CropStore from '../../stores/CropAvatarStore';
 
-import CropAvatarStore from '../../stores/CropAvatarStore'
-
-const minCropSize = 100;
+const MIN_CROP_SIZE = 100;
 
 class CropAvatarModal extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  static propTypes = {
-    onCropFinish: PropTypes.func.isRequired
-  };
-
   static getStores() {
-    return [CropAvatarStore];
+    return [CropStore];
   }
 
   static calculateState() {
     return {
-      isOpen: CropAvatarStore.isOpen(),
-      pictureSource: CropAvatarStore.getPictureSource(),
+      pictureSource: CropStore.getState().source,
       cropPosition: {
         x: 0,
         y: 0
@@ -47,30 +37,24 @@ class CropAvatarModal extends Component {
     };
   }
 
-  static contextTypes = {
-    intl: PropTypes.object
-  };
-
   componentDidMount() {
     const originalImage = findDOMNode(this.refs.originalImage);
-    document.addEventListener('keydown', this.onKeyDown, false);
     window.addEventListener('resize', this.storeScaledSizes, false);
     originalImage.addEventListener('load', this.storeScaledSizes, false);
   }
 
   componentWillUnmount() {
-    document.removeEventListener('keydown', this.onKeyDown, false);
     window.removeEventListener('resize', this.storeScaledSizes, false);
   }
 
-  onClose = () => CropAvatarActionCreators.hide();
+  handleClose = () => CropActionCreators.hide();
 
-  onKeyDown = (event) => {
-    if (event.keyCode === KeyCodes.ESC) {
-      event.preventDefault();
-      this.onClose();
-    }
-  };
+  // onKeyDown = (event) => {
+  //   if (event.keyCode === KeyCodes.ESC) {
+  //     event.preventDefault();
+  //     this.onClose();
+  //   }
+  // };
 
   onStartMoving = (event) => {
     const { cropPosition } = this.state;
@@ -193,7 +177,7 @@ class CropAvatarModal extends Component {
       default:
     }
 
-    if (resizedCropSize < minCropSize || resizedCropSize > scaledWidth || resizedCropSize > scaledHeight) {
+    if (resizedCropSize < MIN_CROP_SIZE || resizedCropSize > scaledWidth || resizedCropSize > scaledHeight) {
       resizedCropSize = cropSize;
       resizeCropPosition = cropPosition;
     }
@@ -221,7 +205,6 @@ class CropAvatarModal extends Component {
 
   onCrop = () => {
     const { cropPosition, cropSize, scaleRatio } = this.state;
-    const { onCropFinish } = this.props;
     const cropImage = findDOMNode(this.refs.cropImage);
     let canvas = document.createElement('canvas');
     let context = canvas.getContext('2d');
@@ -232,8 +215,9 @@ class CropAvatarModal extends Component {
 
     const croppedImage = dataURItoBlob(canvas.toDataURL());
 
-    onCropFinish(croppedImage);
-    this.onClose();
+    // TODO: is this right?
+    ProfileActionCreators.changeMyAvatar(croppedImage);
+    this.handleClose();
   };
 
   storeScaledSizes = () => {
@@ -253,81 +237,73 @@ class CropAvatarModal extends Component {
   };
 
   render() {
-    const { isOpen, pictureSource, cropPosition, cropSize, scaledWidth, scaledHeight, maxImageHeight } = this.state;
-    const { intl } = this.context;
-    const modalStyle = {
-      content : {
-        position: null,
-        top: null,
-        left: null,
-        right: null,
-        bottom: null,
-        border: null,
-        background: null,
-        overflow: null,
-        outline: null,
-        padding: null,
-        borderRadius: null
-      }
-    };
+    const { pictureSource, cropPosition, cropSize, scaledWidth, scaledHeight, maxImageHeight } = this.state;
 
-    if (isOpen) {
-      return (
-        <Modal className="modal-new modal-new--profile-picture"
-               closeTimeoutMS={150}
-               isOpen={isOpen}
-               style={modalStyle}>
+    return (
+      <Modal
+        overlayClassName="modal-overlay modal-overlay--fullscreen"
+        className="modal modal--crop"
+        onRequestClose={this.handleClose}
+        isOpen>
 
-          <div className="modal-new__header">
-            <i className="modal-new__header__icon material-icons">crop</i>
-            <h3 className="modal-new__header__title">{intl.messages['modal.crop.title']}</h3>
-            <div className="pull-right">
-              <button className="button button--lightblue" onClick={this.onCrop}>{intl.messages['button.done']}</button>
+        <div className="modal__close-button" onClick={this.handleClose}>
+          <i className="close_icon material-icons">close</i>
+          <div className="text"><FormattedMessage id="button.close"/></div>
+        </div>
+
+        <div className="modal__content">
+          <header className="modal__header">
+            <h1 className="modal__header__title">
+              <FormattedMessage id="modal.crop.title"/>
+            </h1>
+          </header>
+
+          <div className="crop-wrapper"
+               ref="wrapper"
+               onTouchEnd={this.removeListeners}
+               onMouseUp={this.removeListeners}>
+            <div className="crop-wrapper__scale"
+                 style={{width: cropSize, height: cropSize, left: cropPosition.x, top: cropPosition.y}}>
+              <div className="crop-wrapper__scale__handler crop-wrapper__scale__handler--top"
+                   onMouseDown={this.onStartResizeTop}
+                   onTouchStart={this.onStartResizeTop}/>
+              <div className="crop-wrapper__scale__handler crop-wrapper__scale__handler--right"
+                   onMouseDown={this.onStartResizeRight}
+                   onTouchStart={this.onStartResizeRight}/>
+              <div className="crop-wrapper__scale__handler crop-wrapper__scale__handler--bottom"
+                   onMouseDown={this.onStartResizeBottom}
+                   onTouchStart={this.onStartResizeBottom}/>
+              <div className="crop-wrapper__scale__handler crop-wrapper__scale__handler--left"
+                   onMouseDown={this.onStartResizeLeft}
+                   onTouchStart={this.onStartResizeLeft}/>
             </div>
-          </div>
-
-          <div className="modal-new__body">
-            <div className="crop-wrapper"
-                 ref="wrapper"
-                 onTouchEnd={this.removeListeners}
-                 onMouseUp={this.removeListeners}>
-              <div className="crop-wrapper__scale"
-                   style={{width: cropSize, height: cropSize, left: cropPosition.x, top: cropPosition.y}}>
-                <div className="crop-wrapper__scale__handler crop-wrapper__scale__handler--top"
-                     onMouseDown={this.onStartResizeTop}
-                     onTouchStart={this.onStartResizeTop}/>
-                <div className="crop-wrapper__scale__handler crop-wrapper__scale__handler--right"
-                     onMouseDown={this.onStartResizeRight}
-                     onTouchStart={this.onStartResizeRight}/>
-                <div className="crop-wrapper__scale__handler crop-wrapper__scale__handler--bottom"
-                     onMouseDown={this.onStartResizeBottom}
-                     onTouchStart={this.onStartResizeBottom}/>
-                <div className="crop-wrapper__scale__handler crop-wrapper__scale__handler--left"
-                     onMouseDown={this.onStartResizeLeft}
-                     onTouchStart={this.onStartResizeLeft}/>
-              </div>
-              <div className="crop-wrapper__overlay"
-                   onMouseDown={this.onStartMoving}
-                   onTouchStart={this.onStartMoving}
-                   style={{ width: cropSize, height: cropSize, left: cropPosition.x, top: cropPosition.y}}>
-                <img className="crop-wrapper__image-crop"
-                     draggable="false"
-                     ref="cropImage"
-                     src={pictureSource}
-                     style={{left: -cropPosition.x, top: -cropPosition.y, width: scaledWidth, height: scaledHeight}}/>
-              </div>
-              <img className="crop-wrapper__image-original"
+            <div className="crop-wrapper__overlay"
+                 onMouseDown={this.onStartMoving}
+                 onTouchStart={this.onStartMoving}
+                 style={{ width: cropSize, height: cropSize, left: cropPosition.x, top: cropPosition.y}}>
+              <img className="crop-wrapper__image-crop"
                    draggable="false"
-                   ref="originalImage"
+                   ref="cropImage"
                    src={pictureSource}
-                   style={{maxHeight: maxImageHeight}}/>
+                   style={{left: -cropPosition.x, top: -cropPosition.y, width: scaledWidth, height: scaledHeight}}/>
             </div>
+
+            <img
+              className="crop-wrapper__image-original"
+              draggable="false"
+              ref="originalImage"
+              src={pictureSource}
+              style={{maxHeight: maxImageHeight}}/>
           </div>
-        </Modal>
-      );
-    } else {
-      return null;
-    }
+
+          <footer className="modal__footer">
+            <button className="button button--lightblue" onClick={this.onCrop}>
+              <FormattedMessage id="button.done"/>
+            </button>
+          </footer>
+        </div>
+      </Modal>
+    );
   }
 }
 

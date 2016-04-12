@@ -8,11 +8,11 @@ import ComposeActionCreators from '../actions/ComposeActionCreators';
 
 export default {
   show(source) {
-    dispatch(ActionTypes.CROP_AVATAR_MODAL_SHOW, { source });
+    dispatch(ActionTypes.CROP_MODAL_SHOW, { source });
     ComposeActionCreators.toggleAutoFocus(false);
   },
 
   hide() {
-    dispatch(ActionTypes.CROP_AVATAR_MODAL_HIDE);
+    dispatch(ActionTypes.CROP_MODAL_HIDE);
   }
 }

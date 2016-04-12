@@ -1,8 +1,9 @@
 .profile-picture {
   &__controls {
+    margin-top: 16px;
     text-align: center;
     a {
-      font-size: 13px;
+      font-size: 16px;
       font-weight: 500;
 
       cursor: pointer;
@@ -12,8 +13,6 @@
   }
   &__changer {
     position: relative;
-
-    margin-bottom: 8px;
 
     border-radius: 50%;
     .avatar {
@@ -39,7 +38,7 @@
 
       color: white;
       border-radius: 50%;
-      text-shadow: 0 0 4px rgba(black, .7);
+      text-shadow: 0 0 6px rgba(black, .7);
 
       justify-content: center;
       align-items: center;

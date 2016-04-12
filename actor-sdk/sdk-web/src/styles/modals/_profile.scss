@@ -1,12 +1,6 @@
 @import "profile/picture_changer";
 
 .modal--profile {
-  .modal__content {
-    margin: 0 auto;
-    padding: 100px 32px;
-    max-width: 600px;
-  }
-
   .modal__header {
     &__title {
       font-size: 40px;
