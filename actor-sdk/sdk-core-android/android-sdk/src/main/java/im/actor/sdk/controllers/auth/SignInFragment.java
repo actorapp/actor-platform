@@ -95,7 +95,6 @@ public class SignInFragment extends BaseAuthFragment {
         signIdEditText = (EditText) v.findViewById(R.id.tv_sign_in);
         signIdEditText.setTextColor(style.getTextPrimaryColor());
         signIdEditText.setHighlightColor(style.getMainColor());
-        setSuggestedEmail(signIdEditText);
 
         signIdEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -111,6 +110,7 @@ public class SignInFragment extends BaseAuthFragment {
         int availableAuthType = ActorSDK.sharedActor().getAuthType();
         if (((availableAuthType & AuthActivity.AUTH_TYPE_PHONE) == AuthActivity.AUTH_TYPE_PHONE) && ((availableAuthType & AuthActivity.AUTH_TYPE_EMAIL) == AuthActivity.AUTH_TYPE_EMAIL)) {
             //both hints set phone + email by default
+            setSuggestedEmail(signIdEditText);
         } else if ((availableAuthType & AuthActivity.AUTH_TYPE_PHONE) == AuthActivity.AUTH_TYPE_PHONE) {
             hint.setText(getString(R.string.sign_in_hint_phone_only));
             signIdEditText.setHint(getString(R.string.sign_in_edit_text_hint_phone_only));
@@ -118,6 +118,7 @@ public class SignInFragment extends BaseAuthFragment {
         } else if ((availableAuthType & AuthActivity.AUTH_TYPE_EMAIL) == AuthActivity.AUTH_TYPE_EMAIL) {
             hint.setText(getString(R.string.sign_in_hint_email_only));
             signIdEditText.setHint(getString(R.string.sign_in_edit_text_hint_email_only));
+            setSuggestedEmail(signIdEditText);
         }
 
         Button singUp = (Button) v.findViewById(R.id.button_sign_up);
