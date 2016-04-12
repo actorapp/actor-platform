@@ -106,7 +106,11 @@
     <!-- Sign in Fragment-->
     <string name="sign_in_title">Sign in</string>
     <string name="sign_in_hint">Please enter your phone or email.</string>
+    <string name="sign_in_hint_phone_only">Please enter your phone.</string>
+    <string name="sign_in_hint_email_only">Please enter your email.</string>
     <string name="sign_in_edit_text_hint">phone or email</string>
+    <string name="sign_in_edit_text_hint_phone_only">phone</string>
+    <string name="sign_in_edit_text_hint_email_only">email</string>
     <string name="sign_in_get_code">SIGN IN</string>
 
     <!-- Validate code Fragment -->
