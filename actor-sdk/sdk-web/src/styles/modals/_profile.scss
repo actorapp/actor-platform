@@ -1,0 +1,52 @@
+@import "profile/picture_changer";
+
+.modal--profile {
+  .modal__content {
+    margin: 0 auto;
+    padding: 100px 32px;
+    max-width: 600px;
+  }
+
+  .modal__header {
+    &__title {
+      font-size: 40px;
+      line-height: 50px;
+      font-weight: 500;
+      margin: 0;
+      padding: 0;
+      color: #656565;
+    }
+  }
+
+  .modal__body {
+    .col-xs {
+      margin-right: 32px;
+      & > div {
+        margin-bottom: 16px;
+      }
+    }
+
+    .about {
+      label {
+        font-size: 13px;
+        color: $dark-sky-blue;
+      }
+      textarea {
+        margin-top: 4px;
+        padding: 8px 6px;
+        font-size: 16px;
+        line-height: 20px;
+        height: 80px;
+      }
+    }
+  }
+
+  .modal__footer {
+    .controls {
+      text-align: right;
+      .button {
+        margin-left: 8px;
+      }
+    }
+  }
+}

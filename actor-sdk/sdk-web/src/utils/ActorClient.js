@@ -229,16 +229,26 @@ class ActorClient {
     window.messenger.onAppVisible();
   }
 
-  editMyName(string) {
-    window.messenger.editMyName(string);
-  }
-
   addContact(uid) {
     window.messenger.addContact(uid);
   }
 
   removeContact(uid) {
     window.messenger.removeContact(uid);
+  }
+
+  // Profile
+
+  editMyName(newName) {
+    return window.messenger.editMyName(newName);
+  }
+
+  editMyNick(newNick) {
+    return window.messenger.editMyNick(newNick)
+  }
+
+  editMyAbout(newAbout) {
+    return window.messenger.editMyAbout(newAbout);
   }
 
   // Groups
@@ -296,22 +306,12 @@ class ActorClient {
     return window.messenger.findMentions(gid, query);
   }
 
-  // Nickname
-
-  editMyNick(string) {
-    window.messenger.editMyNick(string)
-  }
-
   deleteChat(peer) {
     return window.messenger.deleteChat(peer);
   }
 
   clearChat(peer) {
     return window.messenger.clearChat(peer);
-  }
-
-  editMyAbout(about) {
-    return window.messenger.editMyAbout(about);
   }
 
   editGroupTitle(gid, title) {

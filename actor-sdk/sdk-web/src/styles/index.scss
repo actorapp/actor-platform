@@ -28,7 +28,7 @@
 @import 'typing';
 @import 'emoji';
 @import 'preloader';
-@import 'modals';
+// @import 'modals';
 @import 'forms';
 @import 'lightbox';
 @import 'banner';
@@ -43,6 +43,7 @@
 @import 'components/common/index';
 @import 'components/message_art/index';
 @import 'chat/index';
+@import 'modals/index';
 
 @import 'responsive';
 
