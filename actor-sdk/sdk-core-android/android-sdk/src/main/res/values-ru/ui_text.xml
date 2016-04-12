@@ -119,6 +119,13 @@
     <string name="sign_in_get_code">Войти</string>
 
 
+    <string name="sign_in_edit_text_hint_phone_only">телефон</string>
+    <string name="sign_in_edit_text_hint_email_only">email</string>
+
+    <string name="sign_in_hint_phone_only">Пожалуйста, введите свой номер телефона.</string>
+    <string name="sign_in_hint_email_only">Пожалуйста, введите свой email.</string>
+
+
     <!-- Auth errors -->
     <string name="auth_error_wrong_auth_id">Пожалуйста, введите действительный email или номер телефона.</string>
     <string name="auth_error_empty_phone">Пожалуйста, введите свой номер телефона.</string>
