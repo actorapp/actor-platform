@@ -2,104 +2,35 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { Container } from 'flux/utils';
-import classnames from 'classnames';
-import { KeyCodes } from '../../constants/ActorAppConstants';
+import { ModalTypes } from '../../constants/ActorAppConstants';
 
-import ContactActionCreators from '../../actions/ContactActionCreators';
-import GroupListActionCreators from '../../actions/GroupListActionCreators';
+import ModalStore from '../../stores/ModalStore';
 
-import PeopleStore from '../../stores/PeopleStore';
-import GroupListStore from '../../stores/GroupListStore';
-
-import PeopleList from './PeopleList'
-import GroupList from './GroupList'
+import Profile from './Profile.react';
 
 class ModalsWrapper extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   static getStores() {
-    return [PeopleStore, GroupListStore];
+    return [ModalStore];
   }
 
   static calculateState() {
-    return {
-      isPeoplesOpen: PeopleStore.isOpen(),
-      isGroupsOpen: GroupListStore.isOpen()
-    };
+    return ModalStore.getState();
   }
-
-  static contextTypes = {
-    intl: PropTypes.object
-  };
-
-  componentWillMount() {
-    document.addEventListener('keydown', this.handleKeyDown, false);
-
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('keydown', this.handleKeyDown, false);
-  }
-
-  handleKeyDown = (event) => {
-    switch (event.keyCode) {
-      case KeyCodes.ESC:
-        event.preventDefault();
-        this.handleClose();
-        break;
-      case KeyCodes.G:
-        if (event.ctrlKey) {
-          event.preventDefault();
-          this.handleClose();
-          GroupListActionCreators.open();
-        }
-        break;
-      case KeyCodes.P:
-        if (event.ctrlKey) {
-          event.preventDefault();
-          this.handleClose();
-          ContactActionCreators.open();
-        }
-        break;
-      default:
-    }
-  };
-
-  handleClose = () => {
-    const { isPeoplesOpen, isGroupsOpen } = this.state;
-
-    if (isPeoplesOpen) {
-      ContactActionCreators.close();
-    }
-    if (isGroupsOpen) {
-      GroupListActionCreators.close();
-    }
-  };
 
   render() {
-    const { isPeoplesOpen, isGroupsOpen } = this.state;
-    const { intl } = this.context;
+    const { current } = this.state;
+    if (!current) return null;
 
-    const wrapperClassName = classnames('modal-wrapper', {
-      'modal-wrapper--opened': isPeoplesOpen || isGroupsOpen
-    });
-
-    return (
-      <div className={wrapperClassName}>
-        <div className="modal-wrapper__close" onClick={this.handleClose}>
-          <i className="close_icon material-icons">close</i>
-          <div className="text">{intl.messages['button.close']}</div>
-        </div>
-
-        {isPeoplesOpen ? <PeopleList/> : null}
-        {isGroupsOpen ? <GroupList/> : null}
-      </div>
-    );
+    switch (current) {
+      case ModalTypes.PROFILE:
+        return <Profile/>;
+      default:
+        console.warn(`Unsupported modal type: ${current}`);
+        return null;
+    }
   }
 }
 
-export default Container.create(ModalsWrapper, { pure: false });
+export default Container.create(ModalsWrapper);
