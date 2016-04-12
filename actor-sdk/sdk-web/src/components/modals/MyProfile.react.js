@@ -95,6 +95,7 @@ class MyProfile extends Component {
 
   handleSave = () => {
     const { nick, name, about } = this.state;
+    console.debug('NEED TO VALIDATE')
 
     if (name !== currentName) MyProfileActions.saveName(name);
     if (nick !== currentNick) MyProfileActions.saveNickname(nick);

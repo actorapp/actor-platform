@@ -11,7 +11,7 @@ import DelegateContainer from '../utils/DelegateContainer';
 import LocationContainer from '../utils/LocationContainer';
 
 import ActionCreators from './ActionCreators';
-import MyProfileActionCreators from './MyProfileActionCreators';
+import ProfileActionCreators from './ProfileActionCreators';
 import DialogActionCreators from './DialogActionCreators';
 import ContactActionCreators from './ContactActionCreators';
 import QuickSearchActionCreators from './QuickSearchActionCreators';
@@ -112,7 +112,7 @@ class LoginActionCreators extends ActionCreators {
     }
 
     this.setBindings('main', [
-      ActorClient.bindUser(ActorClient.getUid(), MyProfileActionCreators.onProfileChanged),
+      ActorClient.bindUser(ActorClient.getUid(), ProfileActionCreators.setProfile),
       ActorClient.bindGroupDialogs(DialogActionCreators.setDialogs),
       ActorClient.bindContacts(ContactActionCreators.setContacts),
       ActorClient.bindSearch(QuickSearchActionCreators.setQuickSearchList),

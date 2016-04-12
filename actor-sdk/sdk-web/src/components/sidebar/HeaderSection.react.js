@@ -11,14 +11,14 @@ import confirm from '../../utils/confirm'
 import SharedContainer from '../../utils/SharedContainer';
 import { FormattedMessage } from 'react-intl';
 
-import MyProfileActions from '../../actions/MyProfileActionCreators';
+import ProfileActionCreators from '../../actions/ProfileActionCreators';
 import CreateGroupActionCreators from '../../actions/CreateGroupActionCreators';
 import LoginActionCreators from '../../actions/LoginActionCreators';
 import HelpActionCreators from '../../actions/HelpActionCreators';
 import AddContactActionCreators from '../../actions/AddContactActionCreators';
 import PreferencesActionCreators from '../../actions/PreferencesActionCreators';
 
-import MyProfileStore from '../../stores/MyProfileStore';
+import ProfileStore from '../../stores/ProfileStore';
 import CreateGroupStore from '../../stores/CreateGroupStore';
 import AddContactStore from '../../stores/AddContactStore';
 import PreferencesStore from '../../stores/PreferencesStore';
@@ -26,7 +26,6 @@ import PreferencesStore from '../../stores/PreferencesStore';
 import SvgIcon from '../common/SvgIcon.react';
 import AvatarItem from '../common/AvatarItem.react';
 import CreateGroupModal from '../modals/CreateGroup';
-import MyProfileModal from '../modals/MyProfile.react';
 import AddContactModal from '../modals/AddContact.react';
 import PreferencesModal from '../modals/Preferences.react';
 
@@ -41,13 +40,12 @@ class HeaderSection extends Component {
   }
 
   static getStores() {
-    return [MyProfileStore, CreateGroupStore, AddContactStore, PreferencesStore];
+    return [ProfileStore, CreateGroupStore, AddContactStore, PreferencesStore];
   }
 
   static calculateState() {
     return {
-      profile: MyProfileStore.getProfile(),
-      isMyProfileOpen: MyProfileStore.isModalOpen(),
+      profile: ProfileStore.getProfile(),
       isAddContactsOpen: AddContactStore.isOpen(),
       isCreateGroupOpen: CreateGroupStore.isModalOpen(),
       isPreferencesOpen: PreferencesStore.isOpen()
@@ -78,7 +76,7 @@ class HeaderSection extends Component {
     document.removeEventListener('click', this.closeHeaderMenu, false);
   };
 
-  openMyProfile = () => MyProfileActions.show();
+  openMyProfile = () => ProfileActionCreators.show();
   openCreateGroup = () => CreateGroupActionCreators.open();
   openAddContactModal = () => AddContactActionCreators.open();
   onSettingsOpen = () => PreferencesActionCreators.show();
@@ -194,7 +192,7 @@ class HeaderSection extends Component {
   }
 
   render() {
-    const { profile, isOpened, isMyProfileOpen, isCreateGroupOpen, isAddContactsOpen, isPreferencesOpen } = this.state;
+    const { profile, isOpened, isProfileOpen, isCreateGroupOpen, isAddContactsOpen, isPreferencesOpen } = this.state;
 
     if (!profile) return null;
 
@@ -253,7 +251,6 @@ class HeaderSection extends Component {
 
         {/* Modals */}
         {/* TODO: Move all modals to other place */}
-        {isMyProfileOpen ? <MyProfileModal/> : null}
         {isCreateGroupOpen ? <CreateGroupModal/> : null}
         {isAddContactsOpen ? <AddContactModal/> : null}
         {isPreferencesOpen ? <PreferencesModal/> : null}
