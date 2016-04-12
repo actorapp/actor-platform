@@ -301,7 +301,7 @@ public class DialogHolder extends BindedViewHolder {
             text.setTextColor(textColor);
         }
 
-        if (data.getSenderId() != myUid()) {
+        if (data.getSenderId() != myUid() || data.getUnreadCount() > 0) {
             state.setVisibility(View.GONE);
         } else {
             if (data.isRead()) {
