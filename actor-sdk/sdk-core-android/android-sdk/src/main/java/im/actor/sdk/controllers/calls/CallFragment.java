@@ -558,10 +558,11 @@ public class CallFragment extends BaseFragment {
 
             n.flags += Notification.FLAG_ONGOING_EVENT;
 
-            disableWakeLock();
 
             manager.notify(NOTIFICATION_ID, n);
         }
+
+        disableWakeLock();
 
     }
 
