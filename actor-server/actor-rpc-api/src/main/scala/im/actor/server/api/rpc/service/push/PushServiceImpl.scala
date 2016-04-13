@@ -1,8 +1,8 @@
 package im.actor.server.api.rpc.service.push
 
 import akka.actor.ActorSystem
-import akka.http.scaladsl.util.FastFuture
 import com.google.protobuf.ByteString
+import com.google.protobuf.wrappers.{ Int32Value, StringValue }
 import im.actor.api.rpc._
 import im.actor.api.rpc.encryption.ApiEncryptionKey
 import im.actor.api.rpc.misc.ResponseVoid
@@ -50,7 +50,12 @@ final class PushServiceImpl(
     BitVector.fromHex(token) match {
       case Some(tokenBits) ⇒
         val tokenBytes = tokenBits.toByteArray
-        val creds = ApplePushCredentials(clientData.authId, apnsKey, ByteString.copyFrom(tokenBytes), isVoip = false)
+        val creds = ApplePushCredentials(
+          authId = clientData.authId,
+          apnsKey = Some(Int32Value(apnsKey)),
+          token = ByteString.copyFrom(tokenBytes),
+          isVoip = false
+        )
         val action: DBIO[HandlerResult[ResponseVoid]] = for {
           _ ← ApplePushCredentialsRepo.deleteByToken(tokenBytes)
           _ ← ApplePushCredentialsRepo.createOrUpdate(creds)
@@ -90,7 +95,12 @@ final class PushServiceImpl(
     BitVector.fromHex(token) match {
       case Some(tokenBits) ⇒
         val tokenBytes = tokenBits.toByteArray
-        val creds = ApplePushCredentials(clientData.authId, apnsKey, ByteString.copyFrom(tokenBytes), isVoip = true)
+        val creds = ApplePushCredentials(
+          authId = clientData.authId,
+          apnsKey = Some(Int32Value(apnsKey)),
+          token = ByteString.copyFrom(tokenBytes),
+          isVoip = true
+        )
         val action: DBIO[HandlerResult[ResponseVoid]] = for {
           _ ← ApplePushCredentialsRepo.deleteByToken(tokenBytes)
           _ ← ApplePushCredentialsRepo.createOrUpdate(creds)
@@ -98,4 +108,35 @@ final class PushServiceImpl(
         db.run(action)
       case None ⇒ Future.successful(Error(PushRpcErrors.WrongToken))
     }
+
+  /**
+   * Registering Apple Push Token
+   *
+   * @param bundleId Bundle Id of app
+   * @param token    Push token
+   */
+  override protected def doHandleRegisterApplePushToken(
+    bundleId:   String,
+    token:      String,
+    clientData: ClientData
+  ): Future[HandlerResult[ResponseVoid]] =
+    BitVector.fromHex(token) match {
+      case Some(tokenBits) ⇒
+        val tokenBytes = tokenBits.toByteArray
+        val creds = ApplePushCredentials(
+          authId = clientData.authId,
+          bundleId = Some(StringValue(bundleId)),
+          token = ByteString.copyFrom(tokenBytes),
+          isVoip = false
+        )
+        val action: DBIO[HandlerResult[ResponseVoid]] = for {
+          _ ← ApplePushCredentialsRepo.deleteByToken(tokenBytes)
+          _ ← ApplePushCredentialsRepo.createOrUpdate(creds)
+          _ = seqUpdExt.registerApplePushCredentials(creds)
+        } yield Ok(ResponseVoid)
+        db.run(action)
+      case None ⇒
+        Future.successful(Error(PushRpcErrors.WrongToken))
+    }
+
 }
