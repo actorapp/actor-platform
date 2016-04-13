@@ -96,6 +96,16 @@ public class AndroidMessenger extends im.actor.core.Messenger {
                             }
                         });
 
+        // Counters
+        modules.getAppStateModule().getGlobalStateVM().getGlobalCounter().subscribe(new ValueChangedListener<Integer>() {
+            @Override
+            public void onChanged(Integer val, Value<Integer> valueModel) {
+                if (val != null) {
+                    ShortcutBadger.with(AndroidContext.getContext()).count(val);
+                }
+            }
+        });
+
         // Catch network change
         context.registerReceiver(new BroadcastReceiver() {
             @Override
@@ -148,18 +158,6 @@ public class AndroidMessenger extends im.actor.core.Messenger {
         } else {
             appStateActor.send(new AppStateActor.OnScreenOff());
         }
-    }
-
-    @Override
-    public void onLoggedIn() {
-        modules.getAppStateModule().getAppStateVM().getGlobalCounter().subscribe(new ValueChangedListener<Integer>() {
-            @Override
-            public void onChanged(Integer val, Value<Integer> valueModel) {
-                if (val != null) {
-                    ShortcutBadger.with(AndroidContext.getContext()).count(val);
-                }
-            }
-        });
     }
 
     public Context getContext() {

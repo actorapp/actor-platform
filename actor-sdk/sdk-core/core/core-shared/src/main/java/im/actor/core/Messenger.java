@@ -59,6 +59,7 @@ import im.actor.core.viewmodel.FileCallback;
 import im.actor.core.viewmodel.FileEventCallback;
 import im.actor.core.viewmodel.FileVM;
 import im.actor.core.viewmodel.FileVMCallback;
+import im.actor.core.viewmodel.GlobalStateVM;
 import im.actor.core.viewmodel.GroupAvatarVM;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.OwnAvatarVM;
@@ -388,6 +389,17 @@ public class Messenger {
     @ObjectiveCName("getAppState")
     public AppStateVM getAppState() {
         return modules.getAppStateModule().getAppStateVM();
+    }
+
+    /**
+     * Get ViewModel of global application state
+     *
+     * @return view model of application state
+     */
+    @NotNull
+    @ObjectiveCName("getGlobalState")
+    public GlobalStateVM getGlobalState() {
+        return modules.getAppStateModule().getGlobalStateVM();
     }
 
     /**
