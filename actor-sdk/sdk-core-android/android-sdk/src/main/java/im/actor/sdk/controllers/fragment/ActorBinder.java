@@ -42,8 +42,8 @@ public class ActorBinder {
     }
 
     public void bindGlobalCounter(ValueChangedListener<Integer> callback) {
-        callback.onChanged(messenger().getAppState().getGlobalCounter().get(), messenger().getAppState().getGlobalCounter());
-        bind(messenger().getAppState().getGlobalCounter(), callback);
+        callback.onChanged(messenger().getGlobalState().getGlobalCounter().get(), messenger().getGlobalState().getGlobalCounter());
+        bind(messenger().getGlobalState().getGlobalCounter(), callback);
     }
 
     public void bindGroupTyping(final TextView textView, final View container, final View titleContainer, final Value<int[]> typing) {
