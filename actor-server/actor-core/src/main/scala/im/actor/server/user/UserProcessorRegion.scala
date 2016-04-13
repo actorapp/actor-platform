@@ -3,7 +3,7 @@ package im.actor.server.user
 import akka.actor.{ ActorRef, ActorSystem, Props }
 import akka.cluster.sharding.{ ClusterSharding, ClusterShardingSettings, ShardRegion }
 import akka.event.Logging
-import im.actor.server.dialog.DialogCommands.Envelope
+import im.actor.server.dialog.DialogEnvelope
 import im.actor.server.model.{ Peer, PeerType }
 
 import scala.util.{ Try, Success }
@@ -15,9 +15,9 @@ object UserProcessorRegion {
     {
       case c: UserCommand ⇒ (c.userId.toString, c)
       case q: UserQuery   ⇒ (q.userId.toString, q)
-      case e @ Envelope(peer, payload) ⇒ peer match {
+      case e @ DialogEnvelope(peer, command, query) ⇒ peer match {
         case Peer(PeerType.Private, userId) ⇒
-          Try(e.getField(Envelope.descriptor.findFieldByNumber(payload.number))) match {
+          Try(e.getField(DialogEnvelope.descriptor.findFieldByNumber(command.number))) match {
             case Success(any) ⇒ (userId.toString, any)
             case _ ⇒
               val error = new RuntimeException(s"Payload not found for $e")
@@ -39,7 +39,7 @@ object UserProcessorRegion {
   private def extractShardId(system: ActorSystem): ShardRegion.ExtractShardId = {
     case c: UserCommand ⇒ (c.userId % 100).toString // TODO: configurable
     case q: UserQuery   ⇒ (q.userId % 100).toString
-    case Envelope(peer, payload) ⇒ peer match {
+    case DialogEnvelope(peer, _, _) ⇒ peer match {
       case Peer(PeerType.Private, userId) ⇒ (userId % 100).toString
       case Peer(peerType, _)              ⇒ throw new RuntimeException(s"DialogCommand with peerType: $peerType passed in UserProcessor")
     }

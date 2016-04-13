@@ -126,22 +126,25 @@ message DialogRootQueries {
     }
 }
 
-message DialogCommands {
-
-    message Envelope {
-        required Peer peer = 1;
-        oneof payload {
-            WriteMessage write_message = 2;
-            SendMessage send_message = 3;
-            MessageReceived message_received = 4;
-            MessageRead message_read = 5;
-            SetReaction set_reaction = 9;
-            RemoveReaction remove_reaction = 10;
-            WriteMessageSelf write_message_self = 11;
-            UpdateCounters update_counters = 14;
-        }
+message DialogEnvelope {
+    required Peer peer = 1;
+    oneof command {
+        DialogCommands.WriteMessage write_message = 2;
+        DialogCommands.SendMessage send_message = 3;
+        DialogCommands.MessageReceived message_received = 4;
+        DialogCommands.MessageRead message_read = 5;
+        DialogCommands.SetReaction set_reaction = 9;
+        DialogCommands.RemoveReaction remove_reaction = 10;
+        DialogCommands.WriteMessageSelf write_message_self = 11;
+        DialogCommands.UpdateCounters update_counters = 14;
     }
+    oneof query {
+        DialogQueries.GetCounter get_counter = 15;
+        DialogQueries.GetInfo get_info = 16;
+    }
+}
 
+message DialogCommands {
     message WriteMessage {
         option (scalapb.message).extends = "im.actor.server.dialog.DirectDialogCommand";
 
