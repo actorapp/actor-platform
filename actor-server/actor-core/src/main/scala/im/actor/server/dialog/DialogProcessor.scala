@@ -108,7 +108,7 @@ object DialogProcessor {
       40004 → classOf[DialogCommands.MessageReadAck],
       40005 → classOf[DialogCommands.WriteMessage],
       40006 → classOf[DialogCommands.WriteMessageAck],
-      40009 → classOf[DialogCommands.Envelope]
+      40009 → classOf[DialogEnvelope]
     )
   }
 
