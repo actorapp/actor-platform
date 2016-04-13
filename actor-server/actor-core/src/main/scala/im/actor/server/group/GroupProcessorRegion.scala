@@ -3,10 +3,10 @@ package im.actor.server.group
 import akka.actor.{ ActorRef, ActorSystem, Props }
 import akka.cluster.sharding.{ ClusterSharding, ClusterShardingSettings, ShardRegion }
 import akka.event.Logging
-import im.actor.server.dialog.DialogCommands.Envelope
+import im.actor.server.dialog.DialogEnvelope
 import im.actor.server.model.{ Peer, PeerType }
 
-import scala.util.{ Try, Success }
+import scala.util.{ Success, Try }
 
 object GroupProcessorRegion {
   private def extractEntityId(system: ActorSystem): ShardRegion.ExtractEntityId = {
@@ -15,9 +15,9 @@ object GroupProcessorRegion {
     {
       case c: GroupCommand ⇒ (c.groupId.toString, c)
       case q: GroupQuery   ⇒ (q.groupId.toString, q)
-      case e @ Envelope(peer, payload) ⇒ peer match {
+      case e @ DialogEnvelope(peer, command, query) ⇒ peer match {
         case Peer(PeerType.Group, groupId) ⇒
-          Try(e.getField(Envelope.descriptor.findFieldByNumber(payload.number))) match {
+          Try(e.getField(DialogEnvelope.descriptor.findFieldByNumber(command.number))) match {
             case Success(any) ⇒ (groupId.toString, any)
             case _ ⇒
               val error = new RuntimeException(s"Payload not found for $e")
@@ -32,7 +32,7 @@ object GroupProcessorRegion {
   private def extractShardId(system: ActorSystem): ShardRegion.ExtractShardId = msg ⇒ msg match {
     case c: GroupCommand ⇒ (c.groupId % 100).toString // TODO: configurable
     case q: GroupQuery   ⇒ (q.groupId % 100).toString
-    case Envelope(peer, payload) ⇒ peer match {
+    case DialogEnvelope(peer, _, _) ⇒ peer match {
       case Peer(PeerType.Group, groupId) ⇒ (groupId % 100).toString
       case Peer(peerType, _)             ⇒ throw new RuntimeException(s"DialogCommand with peerType: $peerType passed in GroupProcessor")
     }
