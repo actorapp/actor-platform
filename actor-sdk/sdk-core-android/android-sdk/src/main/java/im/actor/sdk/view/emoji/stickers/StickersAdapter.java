@@ -29,6 +29,7 @@ public class StickersAdapter extends RecyclerView.Adapter<StickersAdapter.Sticke
     private PacksAdapter packsAdapter;
     private RecyclerView recyclerView;
     private ActorBinder binder;
+    private boolean updatePackSelector = true;
 
     int topPack = -1;
 
@@ -77,8 +78,10 @@ public class StickersAdapter extends RecyclerView.Adapter<StickersAdapter.Sticke
                 Integer newTopPack = s.getCollectionId();
                 if (newTopPack != null && newTopPack != topPack) {
                     topPack = newTopPack;
-                    if (packsAdapter != null) {
+                    if (packsAdapter != null && updatePackSelector) {
                         packsAdapter.selectPack(newTopPack);
+                    } else {
+                        updatePackSelector = true;
                     }
                 }
             }
@@ -170,6 +173,7 @@ public class StickersAdapter extends RecyclerView.Adapter<StickersAdapter.Sticke
     }
 
     public void scrollToSticker(Sticker s) {
+        updatePackSelector = false;
         int position = 0;
         for (Sticker st : stickers) {
             if (st.getId() == s.getId()) {
@@ -179,6 +183,7 @@ public class StickersAdapter extends RecyclerView.Adapter<StickersAdapter.Sticke
         }
 
         ((GridLayoutManager) recyclerView.getLayoutManager()).scrollToPositionWithOffset(position, 0);
+
     }
 
     public ActorBinder getBinder() {
