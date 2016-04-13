@@ -111,7 +111,7 @@ public class AABubbleContactCell: AABubbleCell, ABNewPersonViewControllerDelegat
         controller.dismissViewControllerAnimated(true, completion: nil)
     }
  
-    public override func bind(message: ACMessage, reuse: Bool, cellLayout: AACellLayout, setting: AACellSetting) {
+    public override func bind(message: ACMessage, receiveDate: jlong, readDate: jlong, reuse: Bool, cellLayout: AACellLayout, setting: AACellSetting) {
         
         let contactLayout = cellLayout as! AAContactCellLayout
         
