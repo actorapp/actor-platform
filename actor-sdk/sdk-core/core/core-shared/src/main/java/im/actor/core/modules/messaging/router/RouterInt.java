@@ -26,6 +26,8 @@ import im.actor.core.modules.messaging.router.entity.RouterChatDelete;
 import im.actor.core.modules.messaging.router.entity.RouterConversationHidden;
 import im.actor.core.modules.messaging.router.entity.RouterConversationVisible;
 import im.actor.core.modules.messaging.router.entity.RouterDeletedMessages;
+import im.actor.core.modules.messaging.router.entity.RouterDifferenceEnd;
+import im.actor.core.modules.messaging.router.entity.RouterDifferenceStart;
 import im.actor.core.modules.messaging.router.entity.RouterMessageRead;
 import im.actor.core.modules.messaging.router.entity.RouterMessageReadByMe;
 import im.actor.core.modules.messaging.router.entity.RouterMessageReceived;
@@ -148,6 +150,14 @@ public class RouterInt extends ActorInterface implements BusSubscriber {
 
     public void onPeersChanged(List<User> users, List<Group> groups) {
         send(new RouterPeersChanged(users, groups));
+    }
+
+    public void onDifferenceStart() {
+        send(new RouterDifferenceStart());
+    }
+
+    public void onDifferenceEnd() {
+        send(new RouterDifferenceEnd());
     }
 
     @Override
