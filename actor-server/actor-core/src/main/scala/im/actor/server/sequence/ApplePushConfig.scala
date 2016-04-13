@@ -1,9 +1,9 @@
 package im.actor.server.sequence
 
 import com.typesafe.config.Config
+import com.github.kxbmap.configs.syntax._
 
 import scala.collection.JavaConversions._
-import scala.util.Try
 
 final case class ApplePushConfig(certs: List[ApnsCert])
 
@@ -14,16 +14,24 @@ object ApplePushConfig {
     )
 }
 
-final case class ApnsCert(key: Int, path: String, password: String, isSandbox: Boolean, isVoip: Boolean)
+final case class ApnsCert(
+  key:       Option[Int],
+  bundleId:  Option[String],
+  path:      String,
+  password:  String,
+  isSandbox: Boolean,
+  isVoip:    Boolean
+)
 
 object ApnsCert {
   def fromConfig(config: Config): ApnsCert = {
     ApnsCert(
-      key = config.getInt("key"),
-      path = config.getString("path"),
-      password = config.getString("password"),
-      isSandbox = Try(config.getBoolean("sandbox")).getOrElse(false),
-      isVoip = Try(config.getBoolean("voip")).getOrElse(false)
+      key = config.getOpt[Int]("key"),
+      bundleId = config.getOpt[String]("bundleId"),
+      path = config.get[String]("path"),
+      password = config.get[String]("password"),
+      isSandbox = config.getOrElse[Boolean]("sandbox", false),
+      isVoip = config.getOrElse[Boolean]("voip", false)
     )
   }
 }
