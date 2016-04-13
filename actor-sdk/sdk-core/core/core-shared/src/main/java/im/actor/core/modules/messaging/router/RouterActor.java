@@ -601,7 +601,7 @@ public class RouterActor extends ModuleActor {
             groups.add(new DialogGroup(i.getTitle(), i.getKey(), dialogSmalls));
         }
         context().getMessagesModule().getDialogGroupsVM().getGroupsValueModel().change(groups);
-        context().getAppStateModule().getAppStateVM().getGlobalCounter().change(counter);
+        context().getAppStateModule().getAppStateVM().onGlobalCounterChanged(counter);
     }
 
     //
