@@ -114,11 +114,7 @@ public class UpdateProcessor extends AbsModule {
     }
 
     public void processInternalUpdate(InternalUpdate update) {
-        if (update instanceof ArchivedDialogLoaded) {
-            ResponseLoadArchived dialogs = ((ArchivedDialogLoaded) update).getDialogs();
-            applyRelated(dialogs.getUsers(), dialogs.getGroups(), false);
-            messagesProcessor.onArchivedDialogsLoaded(((ArchivedDialogLoaded) update).getDialogs());
-        } else if (update instanceof LoggedIn) {
+        if (update instanceof LoggedIn) {
             ArrayList<ApiUser> users = new ArrayList<ApiUser>();
             users.add(((LoggedIn) update).getAuth().getUser());
             applyRelated(users, new ArrayList<ApiGroup>(), true);

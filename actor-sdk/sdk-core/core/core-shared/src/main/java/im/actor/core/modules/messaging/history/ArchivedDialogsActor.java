@@ -12,6 +12,8 @@ import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.modules.ModuleActor;
 import im.actor.runtime.Log;
+import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.function.Consumer;
 
 public class ArchivedDialogsActor extends ModuleActor {
 
@@ -61,8 +63,13 @@ public class ArchivedDialogsActor extends ModuleActor {
         lastRequest = request(new RequestLoadArchived(nextOffset, LIMIT),
                 new RpcCallback<ResponseLoadArchived>() {
                     @Override
-                    public void onResult(ResponseLoadArchived response) {
-                        updates().onUpdateReceived(new ArchivedDialogLoaded(response));
+                    public void onResult(final ResponseLoadArchived response) {
+                        updates().applyRelatedData(response.getUsers(), response.getGroups()).then(new Consumer<Void>() {
+                            @Override
+                            public void apply(Void aVoid) {
+                                onLoadedMore(response);
+                            }
+                        }).done(self());
                     }
 
                     @Override
@@ -86,8 +93,6 @@ public class ArchivedDialogsActor extends ModuleActor {
     public void onReceive(Object message) {
         if (message instanceof LoadMore) {
             onLoadMore(((LoadMore) message).isInit(), ((LoadMore) message).getCallback());
-        } else if (message instanceof LoadedMore) {
-            onLoadedMore(((LoadedMore) message).getResponseLoadArchived());
         } else {
             drop(message);
         }
@@ -108,18 +113,6 @@ public class ArchivedDialogsActor extends ModuleActor {
 
         public RpcCallback<ResponseLoadArchived> getCallback() {
             return callback;
-        }
-    }
-
-    public static class LoadedMore {
-        ResponseLoadArchived responseLoadArchived;
-
-        public LoadedMore(ResponseLoadArchived responseLoadArchived) {
-            this.responseLoadArchived = responseLoadArchived;
-        }
-
-        public ResponseLoadArchived getResponseLoadArchived() {
-            return responseLoadArchived;
         }
     }
 }
