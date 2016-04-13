@@ -14,9 +14,10 @@ gwt {
 
     compiler {
         strict = true
-        style = "PRETTY" //"OBF"
-        enableClosureCompiler = false
-        disableClassMetadata = false
+        // style = "PRETTY" //"OBF"
+        style = "OBF"
+        enableClosureCompiler = true
+        disableClassMetadata = true
         disableCastChecking = true
     }
 
