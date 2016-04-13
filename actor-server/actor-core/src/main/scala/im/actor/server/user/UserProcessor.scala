@@ -19,6 +19,7 @@ import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
+import scala.util.Try
 
 trait UserEvent extends TaggedEvent {
   val ts: Instant
@@ -242,10 +243,12 @@ private[user] final class UserProcessor
     case query: GetLocalName                ⇒ contacts.ref forward query
     case StopOffice                         ⇒ context stop self
     case ReceiveTimeout                     ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
-    case dc: DialogCommand                  ⇒ dialogRoot(state.internalExtensions) forward dc
-    case dq: DialogQuery                    ⇒ dialogRoot(state.internalExtensions) forward dq
-    case drc: DialogRootCommand             ⇒ dialogRoot(state.internalExtensions) forward drc
-    case drq: DialogRootQuery               ⇒ dialogRoot(state.internalExtensions) forward drq
+    case e @ DialogRootEnvelope(query, command) ⇒
+      val msg = e.getAllFields.values.head
+      dialogRoot(state.internalExtensions) forward msg
+    case de: DialogEnvelope ⇒
+      val msg = de.getAllFields.values.head
+      dialogRoot(state.internalExtensions) forward msg
   }
 
   override protected def handleQuery(state: UserState): Receive = {

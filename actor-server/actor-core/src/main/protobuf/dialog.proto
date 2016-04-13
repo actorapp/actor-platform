@@ -21,6 +21,8 @@ message DialogInfo {
     required Peer peer = 3;
     required int32 counter = 1;
     required int64 date = 2 [(scalapb.field).type = "java.time.Instant"];
+    required int64 last_received_date = 5 [(scalapb.field).type = "java.time.Instant"];
+    required int64 last_read_date = 4 [(scalapb.field).type = "java.time.Instant"];
 }
 
 message DialogGroup {
@@ -126,8 +128,21 @@ message DialogRootQueries {
     }
 }
 
+message DialogRootEnvelope {
+    oneof query {
+        DialogRootQueries.GetCounter get_counter = 2;
+        DialogRootQueries.GetDialogGroups get_dialog_groups = 3;
+    }
+    oneof command {
+        DialogRootCommands.Archive archive = 6;
+        DialogRootCommands.Unarchive unarchive = 4;
+        DialogRootCommands.Favourite favourite = 7;
+        DialogRootCommands.Unfavourite unfavourite = 8;
+        DialogRootCommands.Delete delete = 9;
+    }
+}
+
 message DialogEnvelope {
-    required Peer peer = 1;
     oneof command {
         DialogCommands.WriteMessage write_message = 2;
         DialogCommands.SendMessage send_message = 3;
@@ -136,7 +151,6 @@ message DialogEnvelope {
         DialogCommands.SetReaction set_reaction = 9;
         DialogCommands.RemoveReaction remove_reaction = 10;
         DialogCommands.WriteMessageSelf write_message_self = 11;
-        DialogCommands.UpdateCounters update_counters = 14;
     }
     oneof query {
         DialogQueries.GetCounter get_counter = 15;

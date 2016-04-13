@@ -154,7 +154,15 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
 
   override protected def handleQuery: PartialFunction[Any, Future[Any]] = {
     case GetCounter() ⇒ Future.successful(GetCounterResponse(state.counter))
-    case GetInfo()    ⇒ Future.successful(GetInfoResponse(DialogInfo(peer, state.counter, Instant.ofEpochMilli(state.lastMessageDate))))
+    case GetInfo() ⇒ Future.successful(
+      GetInfoResponse(DialogInfo(
+        peer = peer,
+        counter = state.counter,
+        date = Instant.ofEpochMilli(state.lastMessageDate),
+        lastReceivedDate = Instant.ofEpochMilli(state.lastReceiveDate),
+        lastReadDate = Instant.ofEpochMilli(state.lastReadDate)
+      ))
+    )
   }
 
   override protected def handleCommand: Receive = actions(state) orElse reactions(state)
