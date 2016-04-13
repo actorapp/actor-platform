@@ -18,9 +18,10 @@ class ActionCreators {
   removeBindings(namespace) {
     const bindings = this.bindings.get(namespace);
     if (bindings) {
-      bindings.forEach((binding) => {
-        binding.unbind();
-      });
+      for (let i = 0; i < bindings.length; i++) {
+        bindings[i].unbind();
+        bindings[i] = null;
+      }
 
       this.bindings.delete(namespace);
     } else {
