@@ -518,7 +518,8 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
       for {
         (member, credsList) ← acredsMap
         creds ← credsList
-        clientFu ← apnsExt.voipClientFuture(creds.apnsKey)
+        credsId = extractCredsId(creds)
+        clientFu ← apnsExt.voipClient(credsId)
       } yield {
         val payload =
           (new ApnsPayloadBuilder)

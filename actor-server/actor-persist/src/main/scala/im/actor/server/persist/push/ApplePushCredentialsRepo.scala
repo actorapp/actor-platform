@@ -1,6 +1,7 @@
 package im.actor.server.persist.push
 
 import com.google.protobuf.ByteString
+import com.google.protobuf.wrappers.{ Int32Value, StringValue }
 import im.actor.server.model.push.ApplePushCredentials
 import im.actor.server.db.ActorPostgresDriver.api._
 import im.actor.server.persist.AuthIdRepo
@@ -10,14 +11,12 @@ import scala.language.postfixOps
 
 final class ApplePushCredentialsTable(tag: Tag) extends Table[ApplePushCredentials](tag, "apple_push_credentials") {
   def authId = column[Long]("auth_id", O.PrimaryKey)
-
-  def apnsKey = column[Int]("apns_key")
-
+  def apnsKey = column[Option[Int32Value]]("apns_key")
   def token = column[ByteString]("token")
-
   def isVoip = column[Boolean]("is_voip", O.PrimaryKey)
+  def bundleId = column[Option[StringValue]]("bundle_id")
 
-  def * = (authId, apnsKey, token, isVoip) <> ((ApplePushCredentials.apply _).tupled, ApplePushCredentials.unapply)
+  def * = (authId, apnsKey, token, isVoip, bundleId) <> ((ApplePushCredentials.apply _).tupled, ApplePushCredentials.unapply)
 }
 
 object ApplePushCredentialsRepo {
