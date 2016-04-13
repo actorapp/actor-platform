@@ -29,6 +29,7 @@ import im.actor.core.modules.messaging.dialogs.DialogsActor;
 import im.actor.core.modules.messaging.history.entity.DialogHistory;
 import im.actor.core.modules.messaging.router.entity.ActiveDialogGroup;
 import im.actor.core.modules.messaging.router.entity.ActiveDialogStorage;
+import im.actor.core.modules.messaging.router.entity.RouterActiveDialogsChanged;
 import im.actor.core.modules.messaging.router.entity.RouterAppHidden;
 import im.actor.core.modules.messaging.router.entity.RouterAppVisible;
 import im.actor.core.modules.messaging.router.entity.RouterApplyChatHistory;
@@ -574,6 +575,7 @@ public class RouterActor extends ModuleActor {
     }
 
     private void notifyActiveDialogsVM() {
+        int counter = 0;
         ArrayList<DialogGroup> groups = new ArrayList<>();
         for (ActiveDialogGroup i : activeDialogStorage.getGroups()) {
             ArrayListDialogSmall dialogSmalls = new ArrayListDialogSmall();
@@ -593,11 +595,13 @@ public class RouterActor extends ModuleActor {
                 }
 
                 int unreadCount = conversationStates.getValue(p.getUnuqueId()).getUnreadCount();
+                counter += unreadCount;
                 dialogSmalls.add(new DialogSmall(p, title, avatar, unreadCount));
             }
             groups.add(new DialogGroup(i.getTitle(), i.getKey(), dialogSmalls));
         }
         context().getMessagesModule().getDialogGroupsVM().getGroupsValueModel().change(groups);
+        context().getAppStateModule().getAppStateVM().getGlobalCounter().change(counter);
     }
 
     //
@@ -668,6 +672,10 @@ public class RouterActor extends ModuleActor {
         } else if (message instanceof RouterPeersChanged) {
             RouterPeersChanged peersChanged = (RouterPeersChanged) message;
             onPeersChanged(peersChanged.getUsers(), peersChanged.getGroups());
+        } else if (message instanceof RouterActiveDialogsChanged) {
+            RouterActiveDialogsChanged dialogsChanged = (RouterActiveDialogsChanged) message;
+            onActiveDialogsChanged(dialogsChanged.getGroups(), dialogsChanged.isHasArchived(),
+                    dialogsChanged.isShowInvite());
         } else {
             super.onReceive(message);
         }
