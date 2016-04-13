@@ -78,11 +78,11 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
         isFat = isFat,
         forUserId = forUserId
       )
-      (userExt.processorRegion.ref ? Envelope(sender).withSendMessage(sendMessage)).mapTo[SeqStateDate]
+      (userExt.processorRegion.ref ? DialogEnvelope(sender).withSendMessage(sendMessage)).mapTo[SeqStateDate]
     }
 
   def ackSendMessage(peer: Peer, sm: SendMessage): Future[Unit] =
-    (processorRegion(peer) ? Envelope(peer).withSendMessage(sm)).mapTo[SendMessageAck] map (_ ⇒ ())
+    (processorRegion(peer) ? DialogEnvelope(peer).withSendMessage(sm)).mapTo[SendMessageAck] map (_ ⇒ ())
 
   def writeMessage(
     peer:         ApiPeer,
@@ -108,7 +108,7 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
   ): Future[Unit] =
     withValidPeer(Peer.privat(userId), peer.id, Future.successful(())) {
       (userExt.processorRegion.ref ?
-        Envelope(Peer.privat(userId)).withWriteMessageSelf(WriteMessageSelf(
+        DialogEnvelope(Peer.privat(userId)).withWriteMessageSelf(WriteMessageSelf(
           dest = peer.asModel,
           senderUserId,
           date.getMillis,
@@ -122,22 +122,22 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
       val now = Instant.now().toEpochMilli
       val receiver = Peer.privat(receiverUserId)
       val messageReceived = MessageReceived(receiver, peer.asModel, date, now)
-      (userExt.processorRegion.ref ? Envelope(receiver).withMessageReceived(messageReceived)).mapTo[MessageReceivedAck] map (_ ⇒ ())
+      (userExt.processorRegion.ref ? DialogEnvelope(receiver).withMessageReceived(messageReceived)).mapTo[MessageReceivedAck] map (_ ⇒ ())
     }
 
   def ackMessageReceived(peer: Peer, mr: MessageReceived): Future[Unit] =
-    (processorRegion(peer) ? Envelope(peer).withMessageReceived(mr)).mapTo[MessageReceivedAck] map (_ ⇒ ())
+    (processorRegion(peer) ? DialogEnvelope(peer).withMessageReceived(mr)).mapTo[MessageReceivedAck] map (_ ⇒ ())
 
   def messageRead(peer: ApiPeer, readerUserId: Int, readerAuthSid: Int, date: Long): Future[Unit] =
     withValidPeer(peer.asModel, readerUserId, Future.successful(())) {
       val now = Instant.now().toEpochMilli
       val reader = Peer.privat(readerUserId)
       val messageRead = MessageRead(reader, peer.asModel, readerAuthSid, date, now)
-      (userExt.processorRegion.ref ? Envelope(reader).withMessageRead(messageRead)).mapTo[MessageReadAck] map (_ ⇒ ())
+      (userExt.processorRegion.ref ? DialogEnvelope(reader).withMessageRead(messageRead)).mapTo[MessageReadAck] map (_ ⇒ ())
     }
 
   def ackMessageRead(peer: Peer, mr: MessageRead): Future[Unit] =
-    (processorRegion(peer) ? Envelope(peer).withMessageRead(mr)).mapTo[MessageReadAck] map (_ ⇒ ())
+    (processorRegion(peer) ? DialogEnvelope(peer).withMessageRead(mr)).mapTo[MessageReadAck] map (_ ⇒ ())
 
   def unarchive(userId: Int, peer: Peer): Future[SeqState] =
     withValidPeer(peer, userId, Future.failed[SeqState](DialogErrors.MessageToSelf)) {
@@ -166,7 +166,7 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
 
   def setReaction(userId: Int, authSid: Int, peer: Peer, randomId: Long, code: String): Future[SetReactionAck] =
     withValidPeer(peer, userId) {
-      (userExt.processorRegion.ref ? Envelope(Peer.privat(userId)).withSetReaction(SetReaction(
+      (userExt.processorRegion.ref ? DialogEnvelope(Peer.privat(userId)).withSetReaction(SetReaction(
         origin = Peer.privat(userId),
         dest = peer,
         clientAuthSid = authSid,
@@ -177,7 +177,7 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
 
   def removeReaction(userId: Int, authSid: Int, peer: Peer, randomId: Long, code: String): Future[RemoveReactionAck] =
     withValidPeer(peer, userId) {
-      (userExt.processorRegion.ref ? Envelope(Peer.privat(userId)).withRemoveReaction(RemoveReaction(
+      (userExt.processorRegion.ref ? DialogEnvelope(Peer.privat(userId)).withRemoveReaction(RemoveReaction(
         origin = Peer.privat(userId),
         dest = peer,
         clientAuthSid = authSid,
@@ -187,19 +187,19 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
     }
 
   def ackSetReaction(peer: Peer, sr: SetReaction): Future[Unit] =
-    (processorRegion(peer) ? Envelope(peer).withSetReaction(sr)) map (_ ⇒ ())
+    (processorRegion(peer) ? DialogEnvelope(peer).withSetReaction(sr)) map (_ ⇒ ())
 
   def ackRemoveReaction(peer: Peer, rr: RemoveReaction): Future[Unit] =
-    (processorRegion(peer) ? Envelope(peer).withRemoveReaction(rr)) map (_ ⇒ ())
+    (processorRegion(peer) ? DialogEnvelope(peer).withRemoveReaction(rr)) map (_ ⇒ ())
 
   def updateCounters(peer: Peer, userId: Int): Future[Unit] =
-    (processorRegion(peer) ? Envelope(peer).withUpdateCounters(UpdateCounters(
+    (processorRegion(peer) ? DialogEnvelope(peer).withUpdateCounters(UpdateCounters(
       origin = Peer.privat(userId),
       dest = peer
     ))) map (_ ⇒ ())
 
   def ackUpdateCounters(peer: Peer, uc: UpdateCounters): Future[Unit] =
-    (processorRegion(peer) ? Envelope(peer).withUpdateCounters(uc)) map (_ ⇒ ())
+    (processorRegion(peer) ? DialogEnvelope(peer).withUpdateCounters(uc)) map (_ ⇒ ())
 
   def getDeliveryExtension(extensions: Seq[ApiExtension]): DeliveryExtension = {
     extensions match {
