@@ -10,7 +10,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import im.actor.core.api.ApiJsonMessage;
 import im.actor.core.api.ApiMessage;
 import im.actor.core.api.ApiOutPeer;
 import im.actor.core.api.ApiPeer;
@@ -33,11 +32,9 @@ import im.actor.core.api.rpc.ResponseSeqDate;
 import im.actor.core.api.updates.UpdateChatClear;
 import im.actor.core.api.updates.UpdateChatDelete;
 import im.actor.core.api.updates.UpdateChatGroupsChanged;
-import im.actor.core.api.updates.UpdateMessageContentChanged;
 import im.actor.core.api.updates.UpdateReactionsUpdate;
 import im.actor.core.entity.ConversationState;
 import im.actor.core.entity.Dialog;
-import im.actor.core.entity.DialogSpec;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.GroupMember;
 import im.actor.core.entity.Message;
@@ -49,24 +46,19 @@ import im.actor.core.entity.content.FastThumb;
 import im.actor.core.entity.content.JsonContent;
 import im.actor.core.entity.content.TextContent;
 import im.actor.core.entity.Sticker;
+import im.actor.core.events.PeerChatOpened;
 import im.actor.core.events.PeerChatPreload;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.events.AppVisibleChanged;
-import im.actor.core.events.PeerChatClosed;
-import im.actor.core.events.PeerChatOpened;
-import im.actor.core.modules.messaging.actors.ArchivedDialogsActor;
-import im.actor.core.modules.messaging.actors.ConversationActor;
-import im.actor.core.modules.messaging.actors.ConversationHistoryActor;
-import im.actor.core.modules.messaging.actors.CursorReaderActor;
-import im.actor.core.modules.messaging.actors.CursorReceiverActor;
-import im.actor.core.modules.messaging.actors.DialogsActor;
-import im.actor.core.modules.messaging.actors.DialogsHistoryActor;
-import im.actor.core.modules.messaging.actors.ActiveDialogsActor;
-import im.actor.core.modules.messaging.actors.MessageDeleteActor;
-import im.actor.core.modules.messaging.actors.OwnReadActor;
-import im.actor.core.modules.messaging.actors.SenderActor;
-import im.actor.core.modules.sequence.internal.ChangeContent;
+import im.actor.core.modules.messaging.history.ArchivedDialogsActor;
+import im.actor.core.modules.messaging.actions.CursorReaderActor;
+import im.actor.core.modules.messaging.actions.CursorReceiverActor;
+import im.actor.core.modules.messaging.dialogs.DialogsActor;
+import im.actor.core.modules.messaging.history.ConversationHistoryActor;
+import im.actor.core.modules.messaging.history.DialogsHistoryActor;
+import im.actor.core.modules.messaging.actions.MessageDeleteActor;
+import im.actor.core.modules.messaging.actions.SenderActor;
+import im.actor.core.modules.messaging.router.RouterInt;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.network.RpcInternalException;
@@ -74,12 +66,11 @@ import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.ConversationVM;
 import im.actor.core.viewmodel.DialogGroupsVM;
-import im.actor.core.viewmodel.DialogSpecVM;
 import im.actor.runtime.Storage;
+import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Props;
-import im.actor.runtime.bser.BserCreator;
 import im.actor.runtime.eventbus.BusSubscriber;
 import im.actor.runtime.eventbus.Event;
 import im.actor.runtime.files.FileSystemReference;
@@ -88,6 +79,7 @@ import im.actor.runtime.storage.ListEngine;
 import im.actor.runtime.storage.SyncKeyValue;
 
 import static im.actor.runtime.actors.ActorSystem.system;
+
 
 public class MessagesModule extends AbsModule implements BusSubscriber {
 
@@ -98,24 +90,19 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
     private ActorRef dialogsActor;
     private ActorRef dialogsHistoryActor;
     private ActorRef archivedDialogsActor;
-    private ActorRef dialogsGroupedActor;
-    private ActorRef ownReadActor;
     private ActorRef plainReadActor;
     private ActorRef plainReceiverActor;
     private ActorRef sendMessageActor;
     private ActorRef deletionsActor;
+    private RouterInt router;
+    private final HashMap<Peer, ActorRef> historyLoaderActors = new HashMap<>();
 
     private MVVMCollection<ConversationState, ConversationVM> conversationStates;
 
     private final HashMap<Peer, ListEngine<Message>> conversationEngines = new HashMap<>();
     private final HashMap<Peer, ListEngine<Message>> conversationDocsEngines = new HashMap<>();
-    private final HashMap<String, ListEngine> customConversationEngines = new HashMap<>();
-    private final HashMap<Peer, ActorRef> conversationActors = new HashMap<>();
-    private final HashMap<Peer, ActorRef> conversationHistoryActors = new HashMap<>();
 
     private final SyncKeyValue cursorStorage;
-
-    private final MVVMCollection<DialogSpec, DialogSpecVM> dialogDescKeyValue;
 
     private final DialogGroupsVM dialogGroups = new DialogGroupsVM();
 
@@ -125,12 +112,14 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
                 ConversationVM.CREATOR,
                 ConversationState.CREATOR,
                 ConversationState.DEFAULT_CREATOR);
-        this.dialogDescKeyValue = Storage.createKeyValue(STORAGE_DIALOGS_DESC, DialogSpecVM.CREATOR, DialogSpec.CREATOR);
         this.cursorStorage = new SyncKeyValue(Storage.createKeyValue(STORAGE_CURSOR));
         this.dialogs = Storage.createList(STORAGE_DIALOGS + DIALOGS_KEY_VERSION, Dialog.CREATOR);
     }
 
     public void run() {
+
+        this.router = new RouterInt(context());
+
         this.dialogsActor = system().actorOf(Props.create(new ActorCreator() {
             @Override
             public DialogsActor create() {
@@ -143,7 +132,6 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
                 return new DialogsHistoryActor(context());
             }
         }), "actor/dialogs/history");
-
         this.archivedDialogsActor = system().actorOf(Props.create(new ActorCreator() {
             @Override
             public ArchivedDialogsActor create() {
@@ -151,21 +139,6 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
             }
         }), "actor/dialogs/archived");
 
-        if (context().getConfiguration().isEnabledGroupedChatList()) {
-            this.dialogsGroupedActor = system().actorOf(Props.create(new ActorCreator() {
-                @Override
-                public ActiveDialogsActor create() {
-                    return new ActiveDialogsActor(context());
-                }
-            }), "actor/dialogs/grouped");
-        }
-
-        this.ownReadActor = system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public OwnReadActor create() {
-                return new OwnReadActor(context());
-            }
-        }), "actor/read/own");
         this.plainReadActor = system().actorOf(Props.create(new ActorCreator() {
             @Override
             public CursorReaderActor create() {
@@ -192,16 +165,11 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
         }), "actor/deletions");
 
         context().getEvents().subscribe(this, PeerChatOpened.EVENT);
-        context().getEvents().subscribe(this, PeerChatClosed.EVENT);
-        context().getEvents().subscribe(this, AppVisibleChanged.EVENT);
+        context().getEvents().subscribe(this, PeerChatPreload.EVENT);
     }
 
     public DialogGroupsVM getDialogGroupsVM() {
         return dialogGroups;
-    }
-
-    public MVVMCollection<DialogSpec, DialogSpecVM> getDialogDescKeyValue() {
-        return dialogDescKeyValue;
     }
 
     public ActorRef getSendMessageActor() {
@@ -216,48 +184,26 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
         return plainReceiverActor;
     }
 
-    public ActorRef getOwnReadActor() {
-        return ownReadActor;
+    public ActorRef getHistoryActor(final Peer peer) {
+        synchronized (historyLoaderActors) {
+            if (!historyLoaderActors.containsKey(peer)) {
+                historyLoaderActors.put(peer, system().actorOf("history/" + peer, new ActorCreator() {
+                    @Override
+                    public Actor create() {
+                        return new ConversationHistoryActor(peer, context());
+                    }
+                }));
+            }
+            return historyLoaderActors.get(peer);
+        }
     }
 
     public SyncKeyValue getCursorStorage() {
         return cursorStorage;
     }
 
-    private void assumeConvActor(final Peer peer) {
-        synchronized (conversationActors) {
-            if (!conversationActors.containsKey(peer)) {
-                conversationActors.put(peer, system().actorOf(Props.create(new ActorCreator() {
-                    @Override
-                    public ConversationActor create() {
-                        return new ConversationActor(peer, context());
-                    }
-                }), "actor/conv_" + peer.getPeerType() + "_" + peer.getPeerId()));
-                conversationHistoryActors.put(peer, system().actorOf(Props.create(new ActorCreator() {
-                    @Override
-                    public ConversationHistoryActor create() {
-                        return new ConversationHistoryActor(peer, context());
-                    }
-                }), "actor/conv_" + peer.getPeerType() + "_" + peer.getPeerId() + "/history"));
-            }
-        }
-        if (peer.getPeerType() == PeerType.PRIVATE) {
-            context().getEncryption().getEncryptedChatManager(peer.getPeerId());
-        }
-    }
-
-    public ActorRef getConversationHistoryActor(final Peer peer) {
-        assumeConvActor(peer);
-        synchronized (conversationActors) {
-            return conversationHistoryActors.get(peer);
-        }
-    }
-
-    public ActorRef getConversationActor(final Peer peer) {
-        assumeConvActor(peer);
-        synchronized (conversationActors) {
-            return conversationActors.get(peer);
-        }
+    public RouterInt getRouter() {
+        return router;
     }
 
     public ListEngine<Message> getConversationEngine(Peer peer) {
@@ -280,17 +226,6 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
         }
     }
 
-    public ListEngine getCustomConversationEngine(Peer peer, String dataType, BserCreator creator) {
-        String key = peer.getUnuqueId() + dataType;
-        synchronized (customConversationEngines) {
-            if (!customConversationEngines.containsKey(key)) {
-                customConversationEngines.put(key,
-                        Storage.createList(STORAGE_CHAT_CUSTOM_PREFIX + "_" + dataType + "_" + peer.getUnuqueId(), creator));
-            }
-            return customConversationEngines.get(key);
-        }
-    }
-
     public MVVMCollection<ConversationState, ConversationVM> getConversationStates() {
         return conversationStates;
     }
@@ -303,29 +238,16 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
         return dialogsActor;
     }
 
-    public ActorRef getDialogsHistoryActor() {
-        return dialogsHistoryActor;
-    }
-
-    public ActorRef getArchivedDialogsActor() {
-        return archivedDialogsActor;
-    }
-
-    public ActorRef getDialogsGroupedActor() {
-        return dialogsGroupedActor;
-    }
-
     public ListEngine<Dialog> getDialogsEngine() {
         return dialogs;
     }
 
     public void deleteMessages(Peer peer, long[] rids) {
-        ActorRef conversationActor = getConversationActor(peer);
-        ArrayList<Long> deleted = new ArrayList<Long>();
+        ArrayList<Long> deleted = new ArrayList<>();
         for (long rid : rids) {
             deleted.add(rid);
         }
-        conversationActor.send(new ConversationActor.MessagesDeleted(deleted));
+        router.onMessagesDeleted(peer, deleted);
         deletionsActor.send(new MessageDeleteActor.DeleteMessage(peer, rids));
     }
 
@@ -351,7 +273,7 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
         im.actor.runtime.Runtime.dispatch(new Runnable() {
             @Override
             public void run() {
-                getConversationHistoryActor(peer).send(new ConversationHistoryActor.LoadMore());
+                getHistoryActor(peer).send(new ConversationHistoryActor.LoadMore());
             }
         });
     }
@@ -467,13 +389,6 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
         sendMessageActor.send(new SenderActor.SendJson(peer, content));
     }
 
-    public void updateJson(Peer peer, long rid, JsonContent json) {
-        ApiPeer apiPeer = new ApiPeer(peer.getPeerType() == PeerType.PRIVATE ? ApiPeerType.PRIVATE : ApiPeerType.GROUP, peer.getPeerId());
-        ApiJsonMessage jsonMessage = new ApiJsonMessage(json.getRawJson());
-        updates().onUpdateReceived(new ChangeContent(new UpdateMessageContentChanged(apiPeer, rid, jsonMessage)));
-
-    }
-
     public void sendDocument(Peer peer, String fileName, String mimeType, FastThumb fastThumb,
                              String descriptor) {
         FileSystemReference reference = Storage.fileFromDescriptor(descriptor);
@@ -489,7 +404,7 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
                             @NotNull Sticker sticker) {
         sendMessageActor.send(new SenderActor.SendSticker(peer, sticker));
     }
-    
+
     public void saveDraft(Peer peer, String draft) {
         context().getSettingsModule().setStringValue("drafts_" + peer.getUnuqueId(), draft);
     }
@@ -1039,19 +954,10 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
 
     @Override
     public void onBusEvent(Event event) {
-
-        // Need to be here as events can be sent when no actor is created yet.
         if (event instanceof PeerChatOpened) {
-            Peer peer = ((PeerChatOpened) event).getPeer();
-            assumeConvActor(peer);
-            conversationActors.get(peer).send(new ConversationActor.ConversationVisible());
-        } else if (event instanceof PeerChatClosed) {
-            Peer peer = ((PeerChatClosed) event).getPeer();
-            assumeConvActor(peer);
-            conversationActors.get(peer).send(new ConversationActor.ConversationHidden());
+            getHistoryActor(((PeerChatOpened) event).getPeer());
         } else if (event instanceof PeerChatPreload) {
-            Peer peer = ((PeerChatPreload) event).getPeer();
-            assumeConvActor(peer);
+            getHistoryActor(((PeerChatPreload) event).getPeer());
         }
     }
 }

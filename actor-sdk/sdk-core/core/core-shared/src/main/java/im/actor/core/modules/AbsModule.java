@@ -24,12 +24,8 @@ import im.actor.runtime.storage.PreferencesStorage;
 public abstract class AbsModule {
 
     public static final String STORAGE_DIALOGS = "dialogs";
-    public static final String STORAGE_ARCHIVED_DIALOGS = "dialogs_archived";
     public static final String STORAGE_DIALOGS_DESC = "dialogs_desc";
     public static final String STORAGE_USERS = "users";
-    public static final String STORAGE_STICKER_PACKS = "sticker_packs";
-    public static final String STORAGE_STICKERS = "stickers";
-    public static final String STORAGE_STICKER_ALL_PACKS = "sticker_all_packs";
     public static final String STORAGE_GROUPS = "groups";
     public static final String STORAGE_DOWNLOADS = "downloads";
     public static final String STORAGE_CONTACTS = "contacts";
@@ -40,13 +36,12 @@ public abstract class AbsModule {
 
     public static final String STORAGE_CHAT_STATES = "chat_states";
     public static final String STORAGE_CHAT_PREFIX = "chat_";
-    public static final String STORAGE_CHAT_MEDIA_PREFIX = "chat_media_";
     public static final String STORAGE_CHAT_DOCS_PREFIX = "chat_docs_";
-    public static final String STORAGE_CHAT_CUSTOM_PREFIX = "chat_custom_";
-    public static final String STORAGE_CHAT_IN = "chat_pending";
-    public static final String STORAGE_CHAT_OUT = "chat_pending_out";
     public static final String STORAGE_CURSOR = "chat_cursor";
 
+    public static final String STORAGE_BLOB = "blob";
+
+    public static final long BLOB_DIALOGS_ACTIVE = 0;
 
     private ModuleContext context;
 
@@ -70,36 +65,8 @@ public abstract class AbsModule {
         return context().getMessagesModule().getSendMessageActor();
     }
 
-    public ActorRef dialogsActor() {
-        return context().getMessagesModule().getDialogsActor();
-    }
-
     public ActorRef stickersActor() {
         return context().getStickersModule().getStickersActor();
-    }
-
-    public ActorRef dialogsHistoryActor() {
-        return context().getMessagesModule().getDialogsHistoryActor();
-    }
-
-    public ActorRef archivedDialogsActor() {
-        return context().getMessagesModule().getArchivedDialogsActor();
-    }
-
-    public ActorRef ownReadActor() {
-        return context().getMessagesModule().getOwnReadActor();
-    }
-
-    public ActorRef plainReceiveActor() {
-        return context().getMessagesModule().getPlainReceiverActor();
-    }
-
-    public ActorRef conversationActor(Peer peer) {
-        return context().getMessagesModule().getConversationActor(peer);
-    }
-
-    public ActorRef conversationHistoryActor(Peer peer) {
-        return context().getMessagesModule().getConversationHistoryActor(peer);
     }
 
     public PreferencesStorage preferences() {

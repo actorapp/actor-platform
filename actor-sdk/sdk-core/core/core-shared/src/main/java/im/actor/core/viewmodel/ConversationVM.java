@@ -1,8 +1,6 @@
 package im.actor.core.viewmodel;
 
 import im.actor.core.entity.ConversationState;
-import im.actor.core.entity.Peer;
-import im.actor.core.modules.ModuleContext;
 import im.actor.core.viewmodel.generics.BooleanValueModel;
 import im.actor.runtime.mvvm.BaseValueModel;
 import im.actor.runtime.mvvm.ValueModel;
@@ -29,7 +27,7 @@ public class ConversationVM extends BaseValueModel<ConversationState> {
         isLoaded = new BooleanValueModel("chat.is_loaded." + rawObj.getPeer(), rawObj.isLoaded());
         ownReadDate = new ValueModel<>("chat.own_read_date" + rawObj.getPeer(), rawObj.getInReadDate());
         readDate = new ValueModel<>("chat.read_date" + rawObj.getPeer(), rawObj.getOutReadDate());
-        receiveDate = new ValueModel<>("chat.receive_date" + rawObj.getPeer(), rawObj.getOutReceiveState());
+        receiveDate = new ValueModel<>("chat.receive_date" + rawObj.getPeer(), rawObj.getOutReceiveDate());
     }
 
     public BooleanValueModel getIsLoaded() {
@@ -53,6 +51,6 @@ public class ConversationVM extends BaseValueModel<ConversationState> {
         isLoaded.change(rawObj.isLoaded());
         ownReadDate.change(rawObj.getInReadDate());
         readDate.change(rawObj.getOutReadDate());
-        receiveDate.change(rawObj.getOutReceiveState());
+        receiveDate.change(rawObj.getOutReceiveDate());
     }
 }

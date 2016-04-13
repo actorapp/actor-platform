@@ -14,15 +14,12 @@ import im.actor.core.api.ApiGroup;
 import im.actor.core.api.ApiPeerType;
 import im.actor.core.api.ApiUser;
 import im.actor.core.api.rpc.ResponseLoadArchived;
-import im.actor.core.api.rpc.ResponseLoadDialogs;
-import im.actor.core.api.updates.UpdateChatArchive;
 import im.actor.core.api.updates.UpdateChatClear;
 import im.actor.core.api.updates.UpdateChatDelete;
 import im.actor.core.api.updates.UpdateChatGroupsChanged;
 import im.actor.core.api.updates.UpdateContactRegistered;
 import im.actor.core.api.updates.UpdateContactsAdded;
 import im.actor.core.api.updates.UpdateContactsRemoved;
-import im.actor.core.api.updates.UpdateCountersChanged;
 import im.actor.core.api.updates.UpdateGroupAboutChanged;
 import im.actor.core.api.updates.UpdateGroupAvatarChanged;
 import im.actor.core.api.updates.UpdateGroupInvite;
@@ -59,22 +56,18 @@ import im.actor.core.modules.encryption.EncryptedProcessor;
 import im.actor.core.modules.eventbus.EventBusProcessor;
 import im.actor.core.modules.contacts.ContactsSyncActor;
 import im.actor.core.modules.groups.GroupsProcessor;
-import im.actor.core.modules.messaging.actors.OwnReadActor;
 import im.actor.core.modules.presence.PresenceProcessor;
 import im.actor.core.modules.settings.SettingsProcessor;
 import im.actor.core.modules.stickers.StickersProcessor;
 import im.actor.core.modules.typing.TypingProcessor;
 import im.actor.core.modules.messaging.MessagesProcessor;
 import im.actor.core.modules.sequence.internal.ArchivedDialogLoaded;
-import im.actor.core.modules.sequence.internal.ChangeContent;
 import im.actor.core.modules.sequence.internal.CombinedDifference;
 import im.actor.core.modules.sequence.internal.ContactsLoaded;
-import im.actor.core.modules.sequence.internal.DialogHistoryLoaded;
 import im.actor.core.modules.sequence.internal.GetDiffCombiner;
 import im.actor.core.modules.sequence.internal.GroupCreated;
 import im.actor.core.modules.sequence.internal.InternalUpdate;
 import im.actor.core.modules.sequence.internal.LoggedIn;
-import im.actor.core.modules.sequence.internal.MessagesHistoryLoaded;
 import im.actor.core.modules.sequence.internal.RelatedResponse;
 import im.actor.core.modules.sequence.internal.StickersLoaded;
 import im.actor.core.modules.sequence.internal.UsersFounded;
@@ -121,19 +114,7 @@ public class UpdateProcessor extends AbsModule {
     }
 
     public void processInternalUpdate(InternalUpdate update) {
-        if (update instanceof DialogHistoryLoaded) {
-            ResponseLoadDialogs dialogs = ((DialogHistoryLoaded) update).getDialogs();
-            applyRelated(dialogs.getUsers(), dialogs.getGroups(), false);
-            messagesProcessor.onDialogsLoaded(dialogs);
-        } else if (update instanceof ArchivedDialogLoaded) {
-            ResponseLoadArchived dialogs = ((ArchivedDialogLoaded) update).getDialogs();
-            applyRelated(dialogs.getUsers(), dialogs.getGroups(), false);
-            messagesProcessor.onArchivedDialogsLoaded(((ArchivedDialogLoaded) update).getDialogs());
-        } else if (update instanceof MessagesHistoryLoaded) {
-            MessagesHistoryLoaded historyLoaded = (MessagesHistoryLoaded) update;
-            applyRelated(historyLoaded.getLoadHistory().getUsers(), new ArrayList<ApiGroup>(), false);
-            messagesProcessor.onMessagesLoaded(historyLoaded.getPeer(), historyLoaded.getLoadHistory());
-        } else if (update instanceof LoggedIn) {
+        if (update instanceof LoggedIn) {
             ArrayList<ApiUser> users = new ArrayList<ApiUser>();
             users.add(((LoggedIn) update).getAuth().getUser());
             applyRelated(users, new ArrayList<ApiGroup>(), true);
@@ -173,19 +154,16 @@ public class UpdateProcessor extends AbsModule {
             relatedResponse.getAfterApply().run();
         } else if (update instanceof StickersLoaded) {
             stickersProcessor.onOwnStickerCollectionsChanged(((StickersLoaded) update).getCollections());
-        } else if (update instanceof ChangeContent) {
-            UpdateMessageContentChanged contentChanged = ((ChangeContent) update).getUpdate();
-            messagesProcessor.onMessageContentChanged(contentChanged.getPeer(),
-                    contentChanged.getRid(), contentChanged.getMessage());
         }
     }
 
     public void applyDifferenceUpdate(List<ApiUser> users, List<ApiGroup> groups, List<Update> updates) {
 
         applyRelated(users, groups, false);
-        context().getMessagesModule().getOwnReadActor().send(new OwnReadActor.StartGetDifference());
 
         CombinedDifference combinedDifference = GetDiffCombiner.buildDiff(updates);
+
+        messagesProcessor.onDifferenceStart();
 
         for (Peer peer : combinedDifference.getReceived().keySet()) {
             long time = combinedDifference.getReceived().get(peer);
@@ -198,8 +176,8 @@ public class UpdateProcessor extends AbsModule {
         }
 
         for (Peer peer : combinedDifference.getReadByMe().keySet()) {
-            long time = combinedDifference.getReadByMe().get(peer);
-            messagesProcessor.onMessageReadByMe(buildApiPeer(peer), time);
+            CombinedDifference.ReadByMeValue time = combinedDifference.getReadByMe().get(peer);
+            messagesProcessor.onMessageReadByMe(buildApiPeer(peer), time.getDate(), time.getCounter());
         }
 
         for (Peer peer : combinedDifference.getMessages().keySet()) {
@@ -210,11 +188,8 @@ public class UpdateProcessor extends AbsModule {
             processUpdate(u);
         }
 
-        if (combinedDifference.getCounters() != null) {
-            messagesProcessor.onCountersChanged(combinedDifference.getCounters());
-        }
+        messagesProcessor.onDifferenceEnd();
 
-        context().getMessagesModule().getOwnReadActor().send(new OwnReadActor.StopGetDifference());
         applyRelated(users, groups, true);
     }
 
@@ -272,7 +247,11 @@ public class UpdateProcessor extends AbsModule {
             messagesProcessor.onMessageRead(messageRead.getPeer(), messageRead.getStartDate());
         } else if (update instanceof UpdateMessageReadByMe) {
             UpdateMessageReadByMe messageReadByMe = (UpdateMessageReadByMe) update;
-            messagesProcessor.onMessageReadByMe(messageReadByMe.getPeer(), messageReadByMe.getStartDate());
+            if (messageReadByMe.getUnreadCounter() != null) {
+                messagesProcessor.onMessageReadByMe(messageReadByMe.getPeer(), messageReadByMe.getStartDate(), messageReadByMe.getUnreadCounter());
+            } else {
+                messagesProcessor.onMessageReadByMe(messageReadByMe.getPeer(), messageReadByMe.getStartDate(), 0);
+            }
         } else if (update instanceof UpdateMessageReceived) {
             UpdateMessageReceived received = (UpdateMessageReceived) update;
             messagesProcessor.onMessageReceived(received.getPeer(), received.getStartDate());
@@ -292,11 +271,6 @@ public class UpdateProcessor extends AbsModule {
         } else if (update instanceof UpdateChatDelete) {
             UpdateChatDelete chatDelete = (UpdateChatDelete) update;
             messagesProcessor.onChatDelete(chatDelete.getPeer());
-        } else if (update instanceof UpdateContactRegistered) {
-            UpdateContactRegistered registered = (UpdateContactRegistered) update;
-            if (!registered.isSilent()) {
-                messagesProcessor.onUserRegistered(registered.getRid(), registered.getUid(), registered.getDate());
-            }
         } else if (update instanceof UpdateGroupTitleChanged) {
             UpdateGroupTitleChanged titleChanged = (UpdateGroupTitleChanged) update;
             groupsProcessor.onTitleChanged(titleChanged.getGroupId(), titleChanged.getRid(),
@@ -339,10 +313,9 @@ public class UpdateProcessor extends AbsModule {
             settingsProcessor.onSettingsChanged(
                     ((UpdateParameterChanged) update).getKey(),
                     ((UpdateParameterChanged) update).getValue());
-        } else if (update instanceof UpdateCountersChanged) {
-            messagesProcessor.onCountersChanged(((UpdateCountersChanged) update).getCounters());
         } else if (update instanceof UpdateChatGroupsChanged) {
-            messagesProcessor.onChatGroupsChanged(((UpdateChatGroupsChanged) update).getDialogs());
+            UpdateChatGroupsChanged chatGroupsChanged = (UpdateChatGroupsChanged) update;
+            messagesProcessor.onChatGroupsChanged(chatGroupsChanged.getDialogs());
         } else if (update instanceof UpdateReactionsUpdate) {
             messagesProcessor.onReactionsChanged(((UpdateReactionsUpdate) update).getPeer(),
                     ((UpdateReactionsUpdate) update).getRid(), ((UpdateReactionsUpdate) update).getReactions());
@@ -355,8 +328,8 @@ public class UpdateProcessor extends AbsModule {
 
 
     public boolean isCausesInvalidation(Update update) {
-        HashSet<Integer> users = new HashSet<Integer>();
-        HashSet<Integer> groups = new HashSet<Integer>();
+        HashSet<Integer> users = new HashSet<>();
+        HashSet<Integer> groups = new HashSet<>();
 
         if (update instanceof UpdateMessage) {
             UpdateMessage updateMessage = (UpdateMessage) update;

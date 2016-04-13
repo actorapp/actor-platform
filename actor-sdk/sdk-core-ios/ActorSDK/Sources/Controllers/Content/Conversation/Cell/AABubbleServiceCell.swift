@@ -37,7 +37,7 @@ public class AABubbleServiceCell : AABubbleCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func bind(message: ACMessage, reuse: Bool, cellLayout: AACellLayout, setting: AACellSetting) {
+    public override func bind(message: ACMessage, receiveDate: jlong, readDate: jlong, reuse: Bool, cellLayout: AACellLayout, setting: AACellSetting) {
         self.bindedLayout = cellLayout as! ServiceCellLayout
         
         if (!reuse) {
