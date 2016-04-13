@@ -18,7 +18,6 @@ class Image extends Component {
 
   constructor(props) {
     super(props);
-    console.debug('Image constructor', props);
 
     this.state = {
       isLoading: true
