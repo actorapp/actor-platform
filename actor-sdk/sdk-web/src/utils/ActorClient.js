@@ -111,7 +111,7 @@ class ActorClient {
 
   bindMessages(peer, callback) {
     let active = true;
-    const binding = window.messenger.bindMessages(peer, (...args) => {
+    let binding = window.messenger.bindMessages(peer, (...args) => {
       if (active) {
         callback(...args);
       } else {
@@ -120,10 +120,10 @@ class ActorClient {
     });
 
     return {
-      ...binding,
       unbind() {
-        active = false;
         binding.unbind();
+        active = false;
+        binding = null;
       }
     };
   }
