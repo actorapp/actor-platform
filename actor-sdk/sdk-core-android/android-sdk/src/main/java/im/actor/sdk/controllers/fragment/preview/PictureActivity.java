@@ -479,9 +479,9 @@ public class PictureActivity extends BaseActivity {
                     Toast.makeText(getActivity(), R.string.toast_no_sdcard, Toast.LENGTH_LONG).show();
                 }else{
                     String externalPath = externalFile.getAbsolutePath();
-                    new File(externalPath + "/" + ActorSDK.sharedActor().getAppName() + "/exported/").mkdirs();
+                    new File(externalPath + "/" + ActorSDK.sharedActor().getAppName() + "/" + ActorSDK.sharedActor().getAppName() + "/").mkdirs();
                     try {
-                        String exportPath = externalPath + "/" + ActorSDK.sharedActor().getAppName() + "/exported/" + (fileName!=null?fileName:"exported") + "_" + Randoms.randomId() + ".jpg";
+                        String exportPath = externalPath + "/" + ActorSDK.sharedActor().getAppName() + "/" + ActorSDK.sharedActor().getAppName() + "/" + (fileName != null ? fileName : "exported") + "_" + Randoms.randomId() + ".jpg";
                         Files.copy(new File(this.path), new File(exportPath));
                         MediaScannerConnection.scanFile(getActivity(), new String[]{exportPath}, new String[]{"image/jpeg"}, null);
                         Toast.makeText(getActivity(), getString(R.string.file_saved)+ " " + exportPath, Toast.LENGTH_LONG).show();

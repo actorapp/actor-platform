@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.widget.CheckBox;
 
@@ -28,9 +29,9 @@ public class CircleAnimatedCheckBox extends CheckBox {
 
     private int pressedRingWidth = Screen.dp(2);
     private int baseRingColor = Color.WHITE;
-    private int baseBackColor = Color.parseColor("#66000000");
-    private int selectedRingColor = Color.parseColor("#33b5e5");
-    private int selectedBackColor = Color.parseColor("#CC33b5e5");
+    private int baseBackColor = 0x66000000;
+    private int selectedRingColor = 0x0033b5e5;
+    private int selectedBackColor = 0xcc33b5e5;
     private ObjectAnimator animator;
     private boolean isShow;
     private Drawable d;
@@ -152,7 +153,9 @@ public class CircleAnimatedCheckBox extends CheckBox {
     }
 
     private void init(Context context) {
-        setBackground(null);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            setBackground(null);
+        }
         d = context.getResources().getDrawable(R.drawable.ic_check_white_18dp);
         circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         circlePaint.setStyle(Paint.Style.STROKE);
