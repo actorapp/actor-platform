@@ -19,17 +19,21 @@ private[group] trait GroupQueryHandlers extends GroupCommandHelpers {
   }
 
   def getApiStruct(group: GroupState, clientUserId: Int): Unit = {
-    val apiMembers = group.members.toVector map {
-      case (_, m) ⇒
-        ApiMember(m.userId, m.inviterUserId, m.invitedAt.toEpochMilli, Some(m.isAdmin))
-    }
+    val isMember = hasMember(group, clientUserId)
+    val apiMembers =
+      if (isMember) {
+        group.members.toVector map {
+          case (_, m) ⇒
+            ApiMember(m.userId, m.inviterUserId, m.invitedAt.toEpochMilli, Some(m.isAdmin))
+        }
+      } else Vector.empty[ApiMember]
 
     val struct = ApiGroup(
       group.id,
       accessHash = group.accessHash,
       title = group.title,
       avatar = group.avatar,
-      isMember = hasMember(group, clientUserId),
+      isMember = isMember,
       creatorUserId = group.creatorUserId,
       members = apiMembers,
       createDate = group.createdAt.toEpochMilli,

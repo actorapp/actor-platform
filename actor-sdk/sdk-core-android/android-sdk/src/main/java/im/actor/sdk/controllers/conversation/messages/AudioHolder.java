@@ -192,7 +192,7 @@ public class AudioHolder extends MessageHolder {
     }
 
     private void play(String fileName) {
-        if (currentAudio.equals(fileName)) {
+        if (currentAudio != null && currentAudio.equals(fileName)) {
             playBtn.setImageResource(R.drawable.ic_pause_white_24dp);
         } else {
             stop();

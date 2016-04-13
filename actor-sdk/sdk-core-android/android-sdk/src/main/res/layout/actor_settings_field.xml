@@ -10,8 +10,8 @@
     android:orientation="horizontal"
     android:paddingRight="8dp">
 
-    <ImageView
-        android:id="@+id/recordIcon"
+    <im.actor.sdk.view.TintImageView
+        android:id="@+id/icon"
         android:layout_width="24dp"
         android:layout_height="match_parent"
         android:layout_marginLeft="16dp"
