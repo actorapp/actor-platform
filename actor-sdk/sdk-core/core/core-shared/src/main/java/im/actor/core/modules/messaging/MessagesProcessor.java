@@ -203,13 +203,12 @@ public class MessagesProcessor extends AbsModule {
         // TODO: Notify send actor
     }
 
-
-    @Deprecated
+    @Verified
     public void onChatGroupsChanged(List<ApiDialogGroup> groups) {
-//        if (context().getConfiguration().isEnabledGroupedChatList()) {
-//            context().getMessagesModule().getDialogsGroupedActor()
-//                    .send(new ActiveDialogsActor.GroupedDialogsChanged(groups));
-//        }
+
+        // TODO: Implement
+
+        context().getMessagesModule().getRouter().onActiveDialogsChanged(groups, true, true);
     }
 
     @Deprecated
