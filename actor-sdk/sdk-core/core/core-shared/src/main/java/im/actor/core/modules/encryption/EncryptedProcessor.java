@@ -18,21 +18,21 @@ public class EncryptedProcessor extends AbsModule implements Processor {
 
     @Override
     public boolean process(Object update) {
-        if (update instanceof UpdatePublicKeyGroupAdded) {
-            context().getEncryption().getKeyManager().send(new KeyManagerActor.PublicKeysGroupAdded(
-                    ((UpdatePublicKeyGroupAdded) update).getUid(),
-                    ((UpdatePublicKeyGroupAdded) update).getKeyGroup()
-            ));
-            return true;
-        } else if (update instanceof UpdatePublicKeyGroupRemoved) {
-            context().getEncryption().getKeyManager().send(new KeyManagerActor.PublicKeysGroupRemoved(
-                    ((UpdatePublicKeyGroupRemoved) update).getUid(),
-                    ((UpdatePublicKeyGroupRemoved) update).getKeyGroupId()
-            ));
-            return true;
-        } else if (update instanceof UpdateEncryptedPackage) {
-            
-        }
+//        if (update instanceof UpdatePublicKeyGroupAdded) {
+//            context().getEncryption().getKeyManager().send(new KeyManagerActor.PublicKeysGroupAdded(
+//                    ((UpdatePublicKeyGroupAdded) update).getUid(),
+//                    ((UpdatePublicKeyGroupAdded) update).getKeyGroup()
+//            ));
+//            return true;
+//        } else if (update instanceof UpdatePublicKeyGroupRemoved) {
+//            context().getEncryption().getKeyManager().send(new KeyManagerActor.PublicKeysGroupRemoved(
+//                    ((UpdatePublicKeyGroupRemoved) update).getUid(),
+//                    ((UpdatePublicKeyGroupRemoved) update).getKeyGroupId()
+//            ));
+//            return true;
+//        } else if (update instanceof UpdateEncryptedPackage) {
+//
+//        }
         return false;
     }
 }

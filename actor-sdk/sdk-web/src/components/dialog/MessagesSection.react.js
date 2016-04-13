@@ -2,27 +2,16 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import { forEach, debounce } from 'lodash';
-
 import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
 
 import MessageActionCreators from '../../actions/MessageActionCreators';
 import DialogActionCreators from '../../actions/DialogActionCreators';
 
-import VisibilityStore from '../../stores/VisibilityStore';
+import UserStore from '../../stores/UserStore';
 import MessageStore from '../../stores/MessageStore';
 
 import MessagesList from './MessagesList.react';
-
-
-let _delayed = [];
-let flushDelayed = () => {
-  forEach(_delayed, (p) => MessageActionCreators.setMessageShown(p.peer, p.message));
-  _delayed = [];
-};
-
-let flushDelayedDebounced = debounce(flushDelayed, 30, {maxWait: 100});
 
 class MessagesSection extends Component {
   static propTypes = {
@@ -31,17 +20,13 @@ class MessagesSection extends Component {
   };
 
   static getStores() {
-    return [MessageStore, VisibilityStore];
+    return [MessageStore];
   }
 
   static calculateState() {
     return {
-      messages: MessageStore.getMessages(),
-      overlay: MessageStore.getOverlay(),
-      messagesCount: MessageStore.getRenderMessagesCount(),
-      selectedMessages: MessageStore.getSelected(),
-      isAllMessagesLoaded: MessageStore.isLoaded(),
-      isAppVisible: VisibilityStore.isAppVisible()
+      uid: UserStore.getMyId(),
+      messages: MessageStore.getState()
     };
   }
 
@@ -50,22 +35,14 @@ class MessagesSection extends Component {
 
     this.onSelect = this.onSelect.bind(this);
     this.onLoadMore = this.onLoadMore.bind(this);
-    this.onVisibilityChange = this.onVisibilityChange.bind(this);
-  }
-
-  componentDidUpdate() {
-    const { isAppVisible } = this.state;
-    if (isAppVisible) {
-      flushDelayed();
-    }
   }
 
   onSelect(rid) {
-    const { selectedMessages } = this.state;
-    if (selectedMessages.has(rid)) {
-      MessageActionCreators.setSelected(selectedMessages.remove(rid));
+    const { selected } = this.state.messages;
+    if (selected.has(rid)) {
+      MessageActionCreators.setSelected(selected.remove(rid));
     } else {
-      MessageActionCreators.setSelected(selectedMessages.add(rid));
+      MessageActionCreators.setSelected(selected.add(rid));
     }
   }
 
@@ -74,36 +51,29 @@ class MessagesSection extends Component {
     DialogActionCreators.loadMoreMessages(peer);
   }
 
-  onVisibilityChange(message, isVisible) {
-    const { peer } = this.props;
-
-    if (isVisible) {
-      _delayed.push({peer, message});
-      if (VisibilityStore.isAppVisible()) {
-        flushDelayedDebounced();
-      }
-    }
-  }
-
   render() {
     const { peer, isMember } = this.props;
-    const { messages, overlay, messagesCount, selectedMessages, isAllMessagesLoaded } = this.state;
+    const { uid, messages: {
+      messages, overlay, isLoaded, receiveDate, readDate, count, selected
+    } } = this.state;
 
     return (
       <MessagesList
+        uid={uid}
         peer={peer}
-        overlay={overlay}
-        messages={messages}
-        count={messagesCount}
-        selectedMessages={selectedMessages}
         isMember={isMember}
-        isAllMessagesLoaded={isAllMessagesLoaded}
+        messages={messages}
+        overlay={overlay}
+        count={count}
+        selected={selected}
+        isLoaded={isLoaded}
+        receiveDate={receiveDate}
+        readDate={readDate}
         onSelect={this.onSelect}
         onLoadMore={this.onLoadMore}
-        onVisibilityChange={this.onVisibilityChange}
       />
     );
   }
 }
 
-export default Container.create(MessagesSection, {withProps: true});
+export default Container.create(MessagesSection, { withProps: true });

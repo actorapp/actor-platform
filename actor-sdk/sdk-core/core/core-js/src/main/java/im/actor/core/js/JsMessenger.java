@@ -100,7 +100,7 @@ public class JsMessenger extends Messenger {
         }
 
         if (isElectron) {
-            getAppState().getGlobalTempCounter().subscribe(new ValueChangedListener<Integer>() {
+            getGlobalState().getGlobalTempCounter().subscribe(new ValueChangedListener<Integer>() {
                 @Override
                 public void onChanged(Integer val, Value<Integer> valueModel) {
                     if (val == null || val == 0) {

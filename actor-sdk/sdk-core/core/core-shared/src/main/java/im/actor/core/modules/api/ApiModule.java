@@ -4,20 +4,18 @@ import im.actor.core.api.parser.RpcParser;
 import im.actor.core.api.parser.UpdatesParser;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.Modules;
-import im.actor.core.modules.api.PersistentRequestsActor;
 import im.actor.core.events.AppVisibleChanged;
 import im.actor.core.events.ConnectingStateChanged;
 import im.actor.core.events.NewSessionCreated;
-import im.actor.core.util.PreferenceApiStorage;
 import im.actor.core.network.ActorApi;
 import im.actor.core.network.ActorApiCallback;
+import im.actor.core.network.AuthKeyStorage;
 import im.actor.core.network.Endpoints;
 import im.actor.core.network.parser.ApiParserConfig;
 import im.actor.core.network.parser.ParsingExtension;
 import im.actor.core.network.parser.Request;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
-import im.actor.runtime.actors.Props;
 import im.actor.runtime.eventbus.BusSubscriber;
 import im.actor.runtime.eventbus.Event;
 
@@ -28,6 +26,7 @@ public class ApiModule extends AbsModule implements BusSubscriber {
     private final ActorApi actorApi;
     private final ActorRef persistentRequests;
     private final ApiParserConfig parserConfig = new ApiParserConfig();
+    private final AuthKeyStorage authKeyStorage;
 
     public ApiModule(Modules context) {
         super(context);
@@ -35,9 +34,11 @@ public class ApiModule extends AbsModule implements BusSubscriber {
         // Register initial scheme parsers
         this.parserConfig.addExtension(new ParsingExtension(new RpcParser(), new UpdatesParser()));
 
+        this.authKeyStorage = new PreferenceApiStorage(context().getPreferences());
+
         this.actorApi = new ActorApi(new Endpoints(context().getConfiguration().getEndpoints(),
                 context().getConfiguration().getTrustedKeys()),
-                new PreferenceApiStorage(context().getPreferences()),
+                authKeyStorage,
                 new ActorApiCallbackImpl(),
                 context().getConfiguration().isEnableNetworkLogging(),
                 context().getConfiguration().getMinDelay(),
@@ -70,6 +71,15 @@ public class ApiModule extends AbsModule implements BusSubscriber {
      */
     public ApiParserConfig getParserConfig() {
         return parserConfig;
+    }
+
+    /**
+     * DANGER. Get Auth Keys storage. Do not use it if you don't understand what it is.
+     *
+     * @return Auth Key Storage
+     */
+    public AuthKeyStorage getAuthKeyStorage() {
+        return authKeyStorage;
     }
 
     /**

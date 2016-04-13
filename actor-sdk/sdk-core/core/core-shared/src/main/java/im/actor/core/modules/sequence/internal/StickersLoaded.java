@@ -4,9 +4,6 @@ import java.util.List;
 
 import im.actor.core.api.ApiStickerCollection;
 
-/**
- * Created by root on 12/15/15.
- */
 public class StickersLoaded extends InternalUpdate {
     private List<ApiStickerCollection> collections;
 

@@ -23,12 +23,14 @@ public class RequestLoadHistory extends Request<ResponseLoadHistory> {
     }
 
     private ApiOutPeer peer;
-    private long minDate;
+    private long date;
+    private ApiListLoadMode loadMode;
     private int limit;
 
-    public RequestLoadHistory(@NotNull ApiOutPeer peer, long minDate, int limit) {
+    public RequestLoadHistory(@NotNull ApiOutPeer peer, long date, @Nullable ApiListLoadMode loadMode, int limit) {
         this.peer = peer;
-        this.minDate = minDate;
+        this.date = date;
+        this.loadMode = loadMode;
         this.limit = limit;
     }
 
@@ -41,8 +43,13 @@ public class RequestLoadHistory extends Request<ResponseLoadHistory> {
         return this.peer;
     }
 
-    public long getMinDate() {
-        return this.minDate;
+    public long getDate() {
+        return this.date;
+    }
+
+    @Nullable
+    public ApiListLoadMode getLoadMode() {
+        return this.loadMode;
     }
 
     public int getLimit() {
@@ -52,7 +59,11 @@ public class RequestLoadHistory extends Request<ResponseLoadHistory> {
     @Override
     public void parse(BserValues values) throws IOException {
         this.peer = values.getObj(1, new ApiOutPeer());
-        this.minDate = values.getLong(3);
+        this.date = values.getLong(3);
+        int val_loadMode = values.getInt(5, 0);
+        if (val_loadMode != 0) {
+            this.loadMode = ApiListLoadMode.parse(val_loadMode);
+        }
         this.limit = values.getInt(4);
     }
 
@@ -62,7 +73,10 @@ public class RequestLoadHistory extends Request<ResponseLoadHistory> {
             throw new IOException();
         }
         writer.writeObject(1, this.peer);
-        writer.writeLong(3, this.minDate);
+        writer.writeLong(3, this.date);
+        if (this.loadMode != null) {
+            writer.writeInt(5, this.loadMode.getValue());
+        }
         writer.writeInt(4, this.limit);
     }
 
@@ -70,7 +84,8 @@ public class RequestLoadHistory extends Request<ResponseLoadHistory> {
     public String toString() {
         String res = "rpc LoadHistory{";
         res += "peer=" + this.peer;
-        res += ", minDate=" + this.minDate;
+        res += ", date=" + this.date;
+        res += ", loadMode=" + this.loadMode;
         res += ", limit=" + this.limit;
         res += "}";
         return res;
