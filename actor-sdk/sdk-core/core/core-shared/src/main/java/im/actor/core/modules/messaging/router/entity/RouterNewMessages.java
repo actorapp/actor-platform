@@ -1,6 +1,5 @@
 package im.actor.core.modules.messaging.router.entity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.core.entity.Message;

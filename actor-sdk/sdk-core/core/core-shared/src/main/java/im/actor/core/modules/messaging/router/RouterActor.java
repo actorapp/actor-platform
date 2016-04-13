@@ -11,6 +11,7 @@ import im.actor.core.api.ApiDialogShort;
 import im.actor.core.api.rpc.RequestLoadGroupedDialogs;
 import im.actor.core.api.rpc.ResponseLoadGroupedDialogs;
 import im.actor.core.entity.Avatar;
+import im.actor.core.entity.ContentDescription;
 import im.actor.core.entity.ConversationState;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.Message;
@@ -41,6 +42,8 @@ import im.actor.core.modules.messaging.router.entity.RouterChatDelete;
 import im.actor.core.modules.messaging.router.entity.RouterConversationHidden;
 import im.actor.core.modules.messaging.router.entity.RouterConversationVisible;
 import im.actor.core.modules.messaging.router.entity.RouterDeletedMessages;
+import im.actor.core.modules.messaging.router.entity.RouterDifferenceEnd;
+import im.actor.core.modules.messaging.router.entity.RouterDifferenceStart;
 import im.actor.core.modules.messaging.router.entity.RouterMessageOnlyActive;
 import im.actor.core.modules.messaging.router.entity.RouterMessageRead;
 import im.actor.core.modules.messaging.router.entity.RouterMessageReadByMe;
@@ -194,6 +197,7 @@ public class RouterActor extends ModuleActor {
 
         assertTrue(messages.size() != 0);
 
+        boolean isConversationVisible = isConversationVisible(peer);
 
         //
         // Collecting Information
@@ -226,7 +230,7 @@ public class RouterActor extends ModuleActor {
         //
         boolean isRead = false;
         if (unreadCount != 0) {
-            if (isConversationVisible(peer)) {
+            if (isConversationVisible) {
                 // Auto Reading message
                 if (maxInDate > 0) {
                     state = state
@@ -235,6 +239,7 @@ public class RouterActor extends ModuleActor {
                             .changeCounter(0);
                     context().getMessagesModule().getPlainReadActor()
                             .send(new CursorReaderActor.MarkRead(peer, maxInDate));
+                    context().getNotificationsModule().onOwnRead(peer, maxInDate);
                     isRead = true;
                     conversationStates.addOrUpdateItem(state);
                 }
@@ -265,6 +270,21 @@ public class RouterActor extends ModuleActor {
         // Updating Dialog List
         //
         dialogsActor(new DialogsActor.InMessage(peer, topMessage, state.getUnreadCount()));
+
+
+        //
+        // Playing notifications
+        //
+        if (!isConversationVisible) {
+            for (Message m : messages) {
+                context().getNotificationsModule().onInMessage(
+                        peer,
+                        m.getSenderId(),
+                        m.getSortDate(),
+                        ContentDescription.fromContent(m.getContent()),
+                        false /*TODO: Implement*/);
+            }
+        }
     }
 
 
@@ -474,6 +494,8 @@ public class RouterActor extends ModuleActor {
         dialogsActor(new DialogsActor.CounterChanged(peer, counter));
 
         notifyActiveDialogsVM();
+
+        context().getNotificationsModule().onOwnRead(peer, date);
     }
 
 
@@ -559,6 +581,19 @@ public class RouterActor extends ModuleActor {
                 notifyActiveDialogsVM();
             }
         }
+    }
+
+
+    //
+    // Difference Handling
+    //
+
+    public void onDifferenceStart() {
+        context().getNotificationsModule().pauseNotifications();
+    }
+
+    public void onDifferenceEnd() {
+        context().getNotificationsModule().resumeNotifications();
     }
 
 
@@ -676,6 +711,10 @@ public class RouterActor extends ModuleActor {
             RouterActiveDialogsChanged dialogsChanged = (RouterActiveDialogsChanged) message;
             onActiveDialogsChanged(dialogsChanged.getGroups(), dialogsChanged.isHasArchived(),
                     dialogsChanged.isShowInvite());
+        } else if (message instanceof RouterDifferenceStart) {
+            onDifferenceStart();
+        } else if (message instanceof RouterDifferenceEnd) {
+            onDifferenceEnd();
         } else {
             super.onReceive(message);
         }

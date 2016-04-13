@@ -40,7 +40,7 @@ public class GroupsProcessor extends AbsModule {
 
     @Verified
     public void applyGroups(Collection<ApiGroup> updated, boolean forced) {
-        ArrayList<Group> batch = new ArrayList<Group>();
+        ArrayList<Group> batch = new ArrayList<>();
         for (ApiGroup group : updated) {
             Group saved = groups().getValue(group.getId());
             if (saved == null) {
