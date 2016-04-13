@@ -5,6 +5,7 @@ import java.util.concurrent.{ ExecutionException, TimeUnit, TimeoutException }
 
 import akka.actor.{ ActorSystem, ExtendedActorSystem, Extension, ExtensionId, ExtensionIdProvider }
 import akka.event.Logging
+import com.google.protobuf.wrappers.{ Int32Value, StringValue }
 import com.relayrides.pushy.apns.ApnsClient
 import com.relayrides.pushy.apns.util.SimpleApnsPushNotification
 import im.actor.server.db.DbExtension
@@ -39,30 +40,20 @@ final class ApplePushExtension(system: ActorSystem) extends Extension with AnyRe
       .getOrElse(system.settings.config.getConfig("push.apple"))
   )
 
-  private val (clients, voipClients): (TrieMap[Int, (String, Future[Client])], TrieMap[Int, (String, Future[Client])]) = {
+  private val (clients, voipClients): (TrieMap[String, Future[Client]], TrieMap[String, Future[Client]]) = {
     val (certs, voipCerts) = config.certs.partition(!_.isVoip)
-    (TrieMap(certs map createClient: _*), TrieMap(voipCerts map createClient: _*))
+    (createClients(certs), createClients(voipCerts))
   }
 
-  def clientFuture(key: Int): Option[Future[Client]] =
-    clients.get(key) map {
-      case (debugInfo, client) ⇒
-        log.debug("Using client cert: {}", debugInfo)
-        client
-    }
+  def client(id: String): Option[Future[Client]] = clients.get(id)
 
-  def voipClientFuture(key: Int): Option[Future[Client]] =
-    voipClients.get(key) map {
-      case (debugInfo, client) ⇒
-        log.debug("Using client client: {}", debugInfo)
-        client
-    }
+  def voipClient(id: String): Option[Future[Client]] = voipClients.get(id)
 
   def fetchVoipCreds(authIds: Set[Long]): Future[Seq[ApplePushCredentials]] = fetchCreds(authIds) map (_ filter (_.isVoip))
 
   private def fetchCreds(authIds: Set[Long]): Future[Seq[ApplePushCredentials]] = db.run(ApplePushCredentialsRepo.find(authIds))
 
-  private def createClient(cert: ApnsCert): (Int, (String, Future[Client])) = {
+  private def createClient(cert: ApnsCert): Future[Client] = {
     val host = cert.isSandbox match {
       case false ⇒ ApnsClient.PRODUCTION_APNS_HOST
       case true  ⇒ ApnsClient.DEVELOPMENT_APNS_HOST
@@ -90,7 +81,7 @@ final class ApplePushExtension(system: ActorSystem) extends Extension with AnyRe
         system.scheduler.scheduleOnce(5.seconds) { recreateClient(cert) }
     }
 
-    (cert.key, (s"key: ${cert.key}, isVoip: ${cert.isVoip}, path: ${cert.path}", connectFuture))
+    connectFuture
   }
 
   // recreate and try to connect client, if client connection failed
@@ -98,8 +89,18 @@ final class ApplePushExtension(system: ActorSystem) extends Extension with AnyRe
   private def recreateClient(cert: ApnsCert): Unit = {
     log.debug("Retry to create client for cert : {}, is voip: {}", cert.key, cert.isVoip)
     val targetMap = if (cert.isVoip) voipClients else clients
-    targetMap -= cert.key
-    targetMap += createClient(cert)
+    val certKey = extractCertKey(cert)
+    targetMap -= certKey
+    targetMap += certKey → createClient(cert)
+  }
+
+  private def createClients(certs: List[ApnsCert]): TrieMap[String, Future[Client]] =
+    TrieMap(certs map (c ⇒ extractCertKey(c) → createClient(c)): _*)
+
+  private def extractCertKey(cert: ApnsCert): String = (cert.key, cert.bundleId) match {
+    case (Some(key), _)      ⇒ key.toString
+    case (_, Some(bundleId)) ⇒ bundleId
+    case _                   ⇒ throw new RuntimeException("Wrong cert format, no apns key, no bundle id")
   }
 
 }

@@ -2,6 +2,7 @@ package im.actor.server.sequence
 
 import akka.actor.ActorSystem
 import akka.event.Logging
+import com.google.protobuf.wrappers.{ Int32Value, StringValue }
 import com.relayrides.pushy.apns.ApnsClient
 import com.relayrides.pushy.apns.util.{ ApnsPayloadBuilder, SimpleApnsPushNotification }
 import im.actor.server.db.DbExtension
@@ -16,7 +17,7 @@ private[sequence] final class ApplePushProvider(userId: Int)(implicit system: Ac
   private val applePushExt = ApplePushExtension(system)
 
   def deliverInvisible(seq: Int, creds: ApplePushCredentials): Unit = {
-    withClient(creds.apnsKey) { implicit client ⇒
+    withClient(creds) { implicit client ⇒
       log.debug("Delivering invisible(seq:{}) to apnsKey: {}", seq, creds.apnsKey)
       db.run(HistoryMessageRepo.getUnreadTotal(userId)) foreach { unreadTotal ⇒
         val payload =
@@ -40,7 +41,7 @@ private[sequence] final class ApplePushProvider(userId: Int)(implicit system: Ac
     isSoundEnabled:     Boolean,
     isVibrationEnabled: Boolean
   ): Unit = {
-    withClient(creds.apnsKey) { implicit client ⇒
+    withClient(creds) { implicit client ⇒
       val builder =
         new ApnsPayloadBuilder()
           .addCustomProperty("seq", seq)
@@ -60,11 +61,13 @@ private[sequence] final class ApplePushProvider(userId: Int)(implicit system: Ac
     }
   }
 
-  private def withClient[A](key: Int)(f: ApnsClient[SimpleApnsPushNotification] ⇒ A): Unit = {
-    applePushExt.clientFuture(key) match {
+  private def withClient[A](creds: ApplePushCredentials)(f: ApnsClient[SimpleApnsPushNotification] ⇒ A): Unit = {
+    val credsKey = extractCredsId(creds)
+    applePushExt.client(credsKey) match {
       case Some(futureClient) ⇒ futureClient foreach { f(_) }
       case None ⇒
-        log.warning("No apple push configured for apns-key: {}", key)
+        log.warning("No apple push configured for: {}", credsKey)
     }
   }
+
 }
