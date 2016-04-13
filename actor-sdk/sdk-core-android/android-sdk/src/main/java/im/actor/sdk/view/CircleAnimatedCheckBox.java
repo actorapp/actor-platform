@@ -30,7 +30,7 @@ public class CircleAnimatedCheckBox extends CheckBox {
     private int pressedRingWidth = Screen.dp(2);
     private int baseRingColor = Color.WHITE;
     private int baseBackColor = 0x66000000;
-    private int selectedRingColor = 0x0033b5e5;
+    private int selectedRingColor = 0xFF33b5e5;
     private int selectedBackColor = 0xcc33b5e5;
     private ObjectAnimator animator;
     private boolean isShow;
