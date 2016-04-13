@@ -254,13 +254,9 @@ trait HistoryHandlers {
    * in group dialog there are common dates of group
    */
   private def getLastReceiveReadDates(peer: Peer)(implicit client: AuthorizedClientData): DBIO[(DateTime, DateTime)] = {
-    val optDatesAction = peer match {
-      case Peer(PeerType.Private, peerUserId) ⇒
-        DialogRepo.findUsers(peerUserId, Peer.privat(client.userId)) map (_.map(d ⇒ d.ownerLastReceivedAt → d.ownerLastReadAt))
-      case Peer(PeerType.Group, _) ⇒
-        DialogRepo.findCommon(None, peer) map (_.map(d ⇒ d.lastReceivedAt → d.lastReadAt))
-    }
-    optDatesAction map { _ getOrElse (ZeroDate → ZeroDate) }
+    DBIO.from(for {
+      info ← dialogExt.getDialogInfo(client.userId, peer)
+    } yield (new DateTime(info.lastReceivedDate.toEpochMilli), new DateTime(info.lastReadDate.toEpochMilli)))
   }
 
   private def getDialogStruct(dialogModel: DialogObsolete)(implicit client: AuthorizedClientData): dbio.DBIO[Option[ApiDialog]] = {

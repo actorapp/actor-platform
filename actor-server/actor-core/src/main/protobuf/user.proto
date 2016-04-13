@@ -325,19 +325,12 @@ message UserQueries {
     }
 }
 
-message DialogRootEnvelope {
+// TODO: put UserCommands and UserQueries inside
+
+message UserEnvelope {
     required int32 user_id = 1;
-    oneof query {
-        DialogRootQueries.GetCounter get_counter = 2;
-        DialogRootQueries.GetDialogGroups get_dialog_groups = 3;
-    }
-    oneof command {
-        DialogRootCommands.Archive archive = 6;
-        DialogRootCommands.Unarchive unarchive = 4;
-        DialogRootCommands.Favourite favourite = 7;
-        DialogRootCommands.Unfavourite unfavourite = 8;
-        DialogRootCommands.Delete delete = 9;
-    }
+    optional DialogRootEnvelope dialog_root_envelope = 2;
+    optional DialogEnvelope dialog_envelope = 3;
 }
 
 message UserEvents {
