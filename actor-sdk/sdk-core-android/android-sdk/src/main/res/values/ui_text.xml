@@ -68,12 +68,12 @@
     <string name="auth_phone_number_hint">Phone number</string>
     <string name="auth_phone_get_code">CONFIRM NUMBER</string>
     <string name="auth_phone_why">WHY DO WE NEED YOUR NUMBER?</string>
-    <string name="auth_phone_why_description">We use your phone number for authentication since this is a secure way to log you in.\n\nPasswords are usually too weak and email can be hacked.</string>
+    <string name="auth_phone_why_description">We\'re using your phone number for authentication since this is a secure way to log you in.\n\nPasswords are usually too weak and email can be hacked.</string>
     <string name="auth_phone_why_done">Got it</string>
     <string name="auth_phone_country_title">Select a country</string>
     <string name="auth_phone_error_invalid_country">Invalid country code</string>
 
-    <string name="auth_email_why_description">We're using your work email for authentication so we can add your colleagues to your contact list and add you to work groups instantly.</string>
+    <string name="auth_email_why_description">We\'re using your work email for authentication so we can add your colleagues to your contact list and add you to work groups instantly.</string>
     <string name="auth_email_why">WHY DO WE NEED YOUR WORK EMAIL?</string>
 
     <string name="auth_switch_to_email">Use email to sign up</string>
@@ -156,7 +156,7 @@
     <string name="main_fab_add_contact">Add contact</string>
 
     <string name="main_sync_title">Sync in progress</string>
-    <string name="main_sync_message">Please, wait a couple minutes. We're configuring your app.</string>
+    <string name="main_sync_message">Please, wait a couple minutes. We\'re configuring your app.</string>
 
     <string name="main_empty_title">Invite your friends</string>
     <string name="main_empty_invite_hint">None of your contacts are using {appName}. Use the button below to invite them.</string>
@@ -533,8 +533,8 @@
     <string name="confirm_share">Share with</string>
 
     <!-- Errors -->
-    <string name="error_connection">Unable to connect. Please make sure that you're connected to the Internet and try
-        again.\n\nPlease reboot your phone if your connection problem persists.
+    <string name="error_connection">Unable to connect. Please make sure that you\'re connected to the Internet and try
+        again.\n\nPlease reboot your phone if the connection problem persists.
     </string>
     <string name="error_unknown">Unable to perform the operation.\n\nPlease, check your phone and reboot if the problem
         persists.
