@@ -36,7 +36,12 @@ class AANavigationBadge {
         
         // Bind badge counter
         binder.bind(Actor.getGlobalState().globalCounter, closure: { (value: JavaLangInteger?) -> () in
-            self.badgeCount = Int((value!).integerValue)
+            if let v = value {
+                self.badgeCount = Int(v.integerValue)
+            } else {
+                self.badgeCount = 0
+            }
+            
             badgeText.text = "\(self.badgeCount)"
             if (self.isBadgeVisible && self.badgeCount > 0) {
                 self.badgeView.showView()
