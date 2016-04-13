@@ -228,7 +228,7 @@ import DZNWebViewController
         
         // Bind Messenger LifeCycle
         
-        binder.bind(messenger.getAppState().isSyncing, closure: { (value: JavaLangBoolean?) -> () in
+        binder.bind(messenger.getGlobalState().isSyncing, closure: { (value: JavaLangBoolean?) -> () in
             if value!.booleanValue() {
                 if self.syncTask == nil {
                     self.syncTask = UIApplication.sharedApplication().beginBackgroundTaskWithName("Background Sync", expirationHandler: { () -> Void in
@@ -249,8 +249,12 @@ import DZNWebViewController
         
         // Bind badge counter
         
-        binder.bind(Actor.getAppState().globalCounter, closure: { (value: JavaLangInteger?) -> () in
-            UIApplication.sharedApplication().applicationIconBadgeNumber = Int((value!).integerValue)
+        binder.bind(Actor.getGlobalState().globalCounter, closure: { (value: JavaLangInteger?) -> () in
+            if let v = value {
+                UIApplication.sharedApplication().applicationIconBadgeNumber = Int(v.integerValue)
+            } else {
+                UIApplication.sharedApplication().applicationIconBadgeNumber = 0
+            }
         })
         
         // Push registration
@@ -471,7 +475,7 @@ import DZNWebViewController
             }
             
             dispatchOnUi { () -> Void in
-                self.binder.bind(self.messenger.getAppState().isSyncing, valueModel2: self.messenger.getAppState().isConnecting) {
+                self.binder.bind(self.messenger.getGlobalState().isSyncing, valueModel2: self.messenger.getGlobalState().isConnecting) {
                     (isSyncing: JavaLangBoolean?, isConnecting: JavaLangBoolean?) -> () in
                     
                     if isSyncing!.booleanValue() || isConnecting!.booleanValue() {

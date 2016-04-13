@@ -135,7 +135,7 @@ public class ChatListProcessor implements ListProcessor<Message> {
 
             // Process Content
             if (msg.getContent() instanceof TextContent) {
-                int updatedCounter = msg.getContent().getUpdatedCounter();
+                int updatedCounter = 0; //msg.getContent().getUpdatedCounter();
                 if (!preprocessedTexts.containsKey(msg.getRid()) || !updatedTexts.contains(updatedCounter)) {
                     TextContent text = (TextContent) msg.getContent();
                     Spannable spannableString = new SpannableString(text.getText());

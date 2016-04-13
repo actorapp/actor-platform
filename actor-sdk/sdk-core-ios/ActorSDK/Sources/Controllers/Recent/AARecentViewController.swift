@@ -77,7 +77,7 @@ public class AARecentViewController: AADialogsListContentController, AADialogsLi
     public override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        binder.bind(Actor.getAppState().globalCounter, closure: { (value: JavaLangInteger?) -> () in
+        binder.bind(Actor.getGlobalState().globalCounter, closure: { (value: JavaLangInteger?) -> () in
             if value != nil {
                 if value!.integerValue > 0 {
                     self.tabBarItem.badgeValue = "\(value!.integerValue)"

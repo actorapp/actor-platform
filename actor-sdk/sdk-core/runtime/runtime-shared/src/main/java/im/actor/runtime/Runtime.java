@@ -80,6 +80,10 @@ public class Runtime {
         }
     }
 
+    public static boolean isMainThread() {
+        return mainThreadRuntime.isSingleThread() || mainThreadRuntime.isMainThread();
+    }
+
     @AutoreleasePool
     public static void postToMainThread(Runnable runnable) {
         mainThreadRuntime.postToMainThread(runnable);

@@ -225,7 +225,7 @@ public class AABubbleCell: UICollectionViewCell {
         }
     }
     
-    public func performBind(message: ACMessage, setting: AACellSetting, isShowNewMessages: Bool, layout: AACellLayout) {
+    public func performBind(message: ACMessage, receiveDate: jlong, readDate: jlong, setting: AACellSetting, isShowNewMessages: Bool, layout: AACellLayout) {
         
         var reuse = false
         if (bindedMessage != nil && bindedMessage?.rid == message.rid) {
@@ -269,7 +269,7 @@ public class AABubbleCell: UICollectionViewCell {
         
         self.bindedSetting = setting
         
-        bind(message, reuse: reuse, cellLayout: layout, setting: setting)
+        bind(message, receiveDate: receiveDate, readDate: readDate, reuse: reuse, cellLayout: layout, setting: setting)
         
         if (!reuse) {
             needLayout = true
@@ -277,7 +277,7 @@ public class AABubbleCell: UICollectionViewCell {
         }
     }
     
-    public func bind(message: ACMessage, reuse: Bool, cellLayout: AACellLayout, setting: AACellSetting) {
+    public func bind(message: ACMessage, receiveDate: jlong, readDate: jlong, reuse: Bool, cellLayout: AACellLayout, setting: AACellSetting) {
         fatalError("bind(message:) has not been implemented")
     }
     

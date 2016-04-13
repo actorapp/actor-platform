@@ -22,14 +22,16 @@ public class ApiMessageContainer extends BserObject {
     private ApiMessage message;
     private ApiMessageState state;
     private List<ApiMessageReaction> reactions;
+    private ApiMessageAttributes attributes;
 
-    public ApiMessageContainer(int senderUid, long rid, long date, @NotNull ApiMessage message, @Nullable ApiMessageState state, @NotNull List<ApiMessageReaction> reactions) {
+    public ApiMessageContainer(int senderUid, long rid, long date, @NotNull ApiMessage message, @Nullable ApiMessageState state, @NotNull List<ApiMessageReaction> reactions, @Nullable ApiMessageAttributes attributes) {
         this.senderUid = senderUid;
         this.rid = rid;
         this.date = date;
         this.message = message;
         this.state = state;
         this.reactions = reactions;
+        this.attributes = attributes;
     }
 
     public ApiMessageContainer() {
@@ -63,6 +65,11 @@ public class ApiMessageContainer extends BserObject {
         return this.reactions;
     }
 
+    @Nullable
+    public ApiMessageAttributes getAttributes() {
+        return this.attributes;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.senderUid = values.getInt(1);
@@ -78,6 +85,7 @@ public class ApiMessageContainer extends BserObject {
             _reactions.add(new ApiMessageReaction());
         }
         this.reactions = values.getRepeatedObj(7, _reactions);
+        this.attributes = values.optObj(8, new ApiMessageAttributes());
     }
 
     @Override
@@ -94,6 +102,9 @@ public class ApiMessageContainer extends BserObject {
             writer.writeInt(6, this.state.getValue());
         }
         writer.writeRepeatedObj(7, this.reactions);
+        if (this.attributes != null) {
+            writer.writeObject(8, this.attributes);
+        }
     }
 
     @Override
@@ -104,6 +115,7 @@ public class ApiMessageContainer extends BserObject {
         res += ", date=" + this.date;
         res += ", message=" + this.message;
         res += ", reactions=" + this.reactions;
+        res += ", attributes=" + this.attributes;
         res += "}";
         return res;
     }

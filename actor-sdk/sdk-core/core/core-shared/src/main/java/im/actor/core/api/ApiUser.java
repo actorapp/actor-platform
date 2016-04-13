@@ -29,8 +29,9 @@ public class ApiUser extends BserObject {
     private String external;
     private List<String> preferredLanguages;
     private String timeZone;
+    private List<ApiBotCommand> botCommands;
 
-    public ApiUser(int id, long accessHash, @NotNull String name, @Nullable String localName, @Nullable ApiSex sex, @Nullable ApiAvatar avatar, @NotNull List<ApiContactRecord> contactInfo, @Nullable Boolean isBot, @Nullable String nick, @Nullable String about, @Nullable String external, @NotNull List<String> preferredLanguages, @Nullable String timeZone) {
+    public ApiUser(int id, long accessHash, @NotNull String name, @Nullable String localName, @Nullable ApiSex sex, @Nullable ApiAvatar avatar, @NotNull List<ApiContactRecord> contactInfo, @Nullable Boolean isBot, @Nullable String nick, @Nullable String about, @Nullable String external, @NotNull List<String> preferredLanguages, @Nullable String timeZone, @NotNull List<ApiBotCommand> botCommands) {
         this.id = id;
         this.accessHash = accessHash;
         this.name = name;
@@ -44,6 +45,7 @@ public class ApiUser extends BserObject {
         this.external = external;
         this.preferredLanguages = preferredLanguages;
         this.timeZone = timeZone;
+        this.botCommands = botCommands;
     }
 
     public ApiUser() {
@@ -113,6 +115,11 @@ public class ApiUser extends BserObject {
         return this.timeZone;
     }
 
+    @NotNull
+    public List<ApiBotCommand> getBotCommands() {
+        return this.botCommands;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.id = values.getInt(1);
@@ -135,6 +142,11 @@ public class ApiUser extends BserObject {
         this.external = values.optString(15);
         this.preferredLanguages = values.getRepeatedString(16);
         this.timeZone = values.optString(17);
+        List<ApiBotCommand> _botCommands = new ArrayList<ApiBotCommand>();
+        for (int i = 0; i < values.getRepeatedCount(19); i ++) {
+            _botCommands.add(new ApiBotCommand());
+        }
+        this.botCommands = values.getRepeatedObj(19, _botCommands);
         if (values.hasRemaining()) {
             setUnmappedObjects(values.buildRemaining());
         }
@@ -174,6 +186,7 @@ public class ApiUser extends BserObject {
         if (this.timeZone != null) {
             writer.writeString(17, this.timeZone);
         }
+        writer.writeRepeatedObj(19, this.botCommands);
         if (this.getUnmappedObjects() != null) {
             SparseArray<Object> unmapped = this.getUnmappedObjects();
             for (int i = 0; i < unmapped.size(); i++) {
@@ -198,6 +211,7 @@ public class ApiUser extends BserObject {
         res += ", external=" + this.external;
         res += ", preferredLanguages=" + this.preferredLanguages;
         res += ", timeZone=" + this.timeZone;
+        res += ", botCommands=" + this.botCommands;
         res += "}";
         return res;
     }

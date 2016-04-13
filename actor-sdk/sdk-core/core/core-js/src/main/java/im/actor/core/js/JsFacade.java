@@ -15,6 +15,7 @@ import im.actor.core.*;
 import im.actor.core.api.ApiAuthSession;
 import im.actor.core.api.ApiDialog;
 import im.actor.core.api.rpc.ResponseLoadArchived;
+import im.actor.core.entity.EntityConverter;
 import im.actor.core.entity.MentionFilterResult;
 import im.actor.core.entity.MessageSearchEntity;
 import im.actor.core.entity.Peer;
@@ -30,7 +31,6 @@ import im.actor.core.js.providers.JsCallsProvider;
 import im.actor.core.js.providers.electron.JsElectronApp;
 import im.actor.core.js.utils.HtmlMarkdownUtils;
 import im.actor.core.js.utils.IdentityUtils;
-import im.actor.core.modules.messaging.actors.entity.EntityConverter;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.viewmodel.CommandCallback;
@@ -426,23 +426,7 @@ public class JsFacade implements Exportable {
     public void preInitChat(JsPeer peer) {
         messenger.onConversationPreLoad(peer.convert());
     }
-
-    @UsedByApp
-    public void bindChat(JsPeer peer, JsDisplayListCallback<JsMessage> callback) {
-        if (callback == null) {
-            return;
-        }
-        messenger.getSharedChatList(peer.convert()).subscribe(callback, true);
-    }
-
-    @UsedByApp
-    public void unbindChat(JsPeer peer, JsDisplayListCallback<JsMessage> callback) {
-        if (callback == null) {
-            return;
-        }
-        messenger.getSharedChatList(peer.convert()).unsubscribe(callback);
-    }
-
+    
     @UsedByApp
     public JsMessagesBind bindMessages(JsPeer peer, JsMessagesBindClosure callback) {
         if (callback == null) {

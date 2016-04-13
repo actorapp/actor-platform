@@ -158,7 +158,8 @@ public class User extends WrapperEntity<ApiUser> implements KeyValueItem {
                 w.getAbout(),
                 w.getExternal(),
                 w.getPreferredLanguages(),
-                w.getTimeZone());
+                w.getTimeZone(),
+                w.getBotCommands());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new User(res);
     }
@@ -178,7 +179,8 @@ public class User extends WrapperEntity<ApiUser> implements KeyValueItem {
                 w.getAbout(),
                 w.getExternal(),
                 w.getPreferredLanguages(),
-                w.getTimeZone());
+                w.getTimeZone(),
+                w.getBotCommands());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new User(res);
     }
@@ -198,7 +200,8 @@ public class User extends WrapperEntity<ApiUser> implements KeyValueItem {
                 w.getAbout(),
                 w.getExternal(),
                 w.getPreferredLanguages(),
-                w.getTimeZone());
+                w.getTimeZone(),
+                w.getBotCommands());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new User(res);
     }
@@ -218,7 +221,8 @@ public class User extends WrapperEntity<ApiUser> implements KeyValueItem {
                 about,
                 w.getExternal(),
                 w.getPreferredLanguages(),
-                w.getTimeZone());
+                w.getTimeZone(),
+                w.getBotCommands());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new User(res);
     }
@@ -238,7 +242,8 @@ public class User extends WrapperEntity<ApiUser> implements KeyValueItem {
                 w.getAbout(),
                 w.getExternal(),
                 w.getPreferredLanguages(),
-                w.getTimeZone());
+                w.getTimeZone(),
+                w.getBotCommands());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new User(res);
     }
