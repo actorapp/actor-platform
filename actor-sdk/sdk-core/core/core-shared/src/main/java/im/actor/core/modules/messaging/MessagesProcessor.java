@@ -26,6 +26,7 @@ import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.messaging.actions.SenderActor;
 import im.actor.core.entity.EntityConverter;
+import im.actor.core.modules.messaging.history.ArchivedDialogsActor;
 import im.actor.runtime.annotations.Verified;
 
 import static im.actor.core.entity.EntityConverter.convert;
@@ -209,10 +210,5 @@ public class MessagesProcessor extends AbsModule {
         // TODO: Implement
 
         context().getMessagesModule().getRouter().onActiveDialogsChanged(groups, true, true);
-    }
-
-    @Deprecated
-    public void onArchivedDialogsLoaded(ResponseLoadArchived responseLoadArchived) {
-//        archivedDialogsActor().send(new ArchivedDialogsActor.LoadedMore(responseLoadArchived));
     }
 }
