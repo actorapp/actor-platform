@@ -59,6 +59,7 @@ import im.actor.core.viewmodel.FileCallback;
 import im.actor.core.viewmodel.FileEventCallback;
 import im.actor.core.viewmodel.FileVM;
 import im.actor.core.viewmodel.FileVMCallback;
+import im.actor.core.viewmodel.GlobalStateVM;
 import im.actor.core.viewmodel.GroupAvatarVM;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.OwnAvatarVM;
@@ -105,6 +106,9 @@ public class Messenger {
 
         timing.section("Modules:Create");
         this.modules = new Modules(this, configuration);
+
+        timing.section("Modules:Run");
+        this.modules.run();
 
         timing.end();
     }
@@ -385,6 +389,17 @@ public class Messenger {
     @ObjectiveCName("getAppState")
     public AppStateVM getAppState() {
         return modules.getAppStateModule().getAppStateVM();
+    }
+
+    /**
+     * Get ViewModel of global application state
+     *
+     * @return view model of application state
+     */
+    @NotNull
+    @ObjectiveCName("getGlobalState")
+    public GlobalStateVM getGlobalState() {
+        return modules.getAppStateModule().getGlobalStateVM();
     }
 
     /**
@@ -944,10 +959,6 @@ public class Messenger {
     @ObjectiveCName("sendStickerWithPeer:withSticker:")
     public void sendSticker(Peer peer, Sticker sticker) {
         modules.getMessagesModule().sendSticker(peer, sticker);
-    }
-
-    public void updateJsonMessageContentLocal(Peer peer, long rid, JsonContent json) {
-        modules.getMessagesModule().updateJson(peer, rid, json);
     }
 
     /**
