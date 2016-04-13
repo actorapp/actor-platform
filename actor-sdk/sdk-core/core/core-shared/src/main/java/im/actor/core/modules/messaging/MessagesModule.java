@@ -117,8 +117,8 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
     }
 
     public void run() {
-        this.router = new RouterInt(context());
 
+        this.router = new RouterInt(context());
 
         this.dialogsActor = system().actorOf(Props.create(new ActorCreator() {
             @Override
@@ -236,14 +236,6 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
 
     public ActorRef getDialogsActor() {
         return dialogsActor;
-    }
-
-    public ActorRef getDialogsHistoryActor() {
-        return dialogsHistoryActor;
-    }
-
-    public ActorRef getArchivedDialogsActor() {
-        return archivedDialogsActor;
     }
 
     public ListEngine<Dialog> getDialogsEngine() {

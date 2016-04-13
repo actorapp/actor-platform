@@ -163,6 +163,8 @@ public class UpdateProcessor extends AbsModule {
 
         CombinedDifference combinedDifference = GetDiffCombiner.buildDiff(updates);
 
+        messagesProcessor.onDifferenceStart();
+
         for (Peer peer : combinedDifference.getReceived().keySet()) {
             long time = combinedDifference.getReceived().get(peer);
             messagesProcessor.onMessageReceived(buildApiPeer(peer), time);
@@ -185,6 +187,8 @@ public class UpdateProcessor extends AbsModule {
         for (Update u : combinedDifference.getOtherUpdates()) {
             processUpdate(u);
         }
+
+        messagesProcessor.onDifferenceEnd();
 
         applyRelated(users, groups, true);
     }
@@ -324,8 +328,8 @@ public class UpdateProcessor extends AbsModule {
 
 
     public boolean isCausesInvalidation(Update update) {
-        HashSet<Integer> users = new HashSet<Integer>();
-        HashSet<Integer> groups = new HashSet<Integer>();
+        HashSet<Integer> users = new HashSet<>();
+        HashSet<Integer> groups = new HashSet<>();
 
         if (update instanceof UpdateMessage) {
             UpdateMessage updateMessage = (UpdateMessage) update;
