@@ -53,7 +53,7 @@ public class AppStateVM {
         this.isDialogsEmpty = new BooleanValueModel("app.dialogs.empty", context.getPreferences().getBool("app.dialogs.empty", true));
         this.isContactsEmpty = new BooleanValueModel("app.contacts.empty", context.getPreferences().getBool("app.contacts.empty", true));
         this.isAppEmpty = new BooleanValueModel("app.empty", context.getPreferences().getBool("app.empty", true));
-        this.globalCounter = new IntValueModel("app.counter", context.getPreferences().getInt("app.counter", 0));
+        this.globalCounter = new IntValueModel("app.counter", null);
         this.globalTempCounter = new IntValueModel("app.temp_counter", 0);
         this.isConnecting = new BooleanValueModel("app.connecting", false);
         this.isSyncing = new BooleanValueModel("app.syncing", false);
@@ -101,7 +101,6 @@ public class AppStateVM {
      */
     public synchronized void onGlobalCounterChanged(int value) {
         globalCounter.change(value);
-        context.getPreferences().putInt("app.counter", value);
         if (!isAppVisible.get()) {
             globalTempCounter.change(value);
         }
