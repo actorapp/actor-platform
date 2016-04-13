@@ -14849,6 +14849,10 @@
           <property role="TrG5h" value="FASTER_MESSAGES" />
           <property role="2m7y0m" value="4" />
         </node>
+        <node concept="2m7y0F" id="1k4H0$WNqpi" role="2m7ymf">
+          <property role="TrG5h" value="STRIP_COUNTERS" />
+          <property role="2m7y0m" value="5" />
+        </node>
       </node>
       <node concept="2m6fVq" id="GBscvBBAdf" role="2m5mJr">
         <property role="TrG5h" value="GetState" />
