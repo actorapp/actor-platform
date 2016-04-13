@@ -89,7 +89,7 @@ public class GroupsModule extends AbsModule {
         collection = Storage.createKeyValue(STORAGE_GROUPS, GroupVM.CREATOR(context.getAuthModule().myUid()), Group.CREATOR);
         groups = collection.getEngine();
 
-        avatarVMs = new HashMap<Integer, GroupAvatarVM>();
+        avatarVMs = new HashMap<>();
         avatarChangeActor = system().actorOf(Props.create(new ActorCreator() {
             @Override
             public GroupAvatarChangeActor create() {

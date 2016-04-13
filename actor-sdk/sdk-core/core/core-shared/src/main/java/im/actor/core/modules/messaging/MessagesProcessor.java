@@ -37,6 +37,14 @@ public class MessagesProcessor extends AbsModule {
         super(context);
     }
 
+    public void onDifferenceStart() {
+        context().getMessagesModule().getRouter().onDifferenceStart();
+    }
+
+    public void onDifferenceEnd() {
+        context().getMessagesModule().getRouter().onDifferenceEnd();
+    }
+
     @Verified
     public void onMessages(ApiPeer _peer, List<UpdateMessage> messages) {
 

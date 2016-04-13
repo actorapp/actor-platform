@@ -34,7 +34,7 @@ public class UsersProcessor extends AbsModule implements Processor {
 
     @Verified
     public void applyUsers(Collection<ApiUser> updated, boolean forced) {
-        ArrayList<User> batch = new ArrayList<User>();
+        ArrayList<User> batch = new ArrayList<>();
         for (ApiUser u : updated) {
 
             User saved = users().getValue(u.getId());
