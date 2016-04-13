@@ -20,19 +20,19 @@
 
     <string name="progress_common">Loading…</string>
 
-    <string name="toast_no_sdcard">No SD Card</string>
+    <string name="toast_no_sdcard">No SD Card inserted</string>
     <string name="toast_phone_copied">Phone number copied to pastebin</string>
     <string name="toast_email_copied">Email copied to pastebin</string>
     <string name="toast_messages_copied">Messages copied to pastebin</string>
     <string name="toast_nickname_copied">Username copied to pastebin</string>
-    <string name="toast_unable_kick">Unable to remove member from group</string>
-    <string name="toast_unable_add">Unable to add user to group</string>
-    <string name="toast_already_member">User is already member of group</string>
-    <string name="toast_empty_name">Name can\'t be empty</string>
-    <string name="toast_unable_change">Unable to change name</string>
-    <string name="toast_empty_nick">Nick can\'t be empty</string>
-    <string name="toast_unable_change_nick">Unable to change nick</string>
-    <string name="toast_empty_about">About can\'t be empty</string>
+    <string name="toast_unable_kick">Unable to remove the member from the group</string>
+    <string name="toast_unable_add">Unable to add the user to the group</string>
+    <string name="toast_already_member">User is already a member of the group</string>
+    <string name="toast_empty_name">"Name" section can\'t be empty</string>
+    <string name="toast_unable_change">Unable to change the name</string>
+    <string name="toast_empty_nick">"Nickname" section can\'t be empty</string>
+    <string name="toast_unable_change_nick">Unable to change the nickname</string>
+    <string name="toast_empty_about">"About" section can\'t be empty</string>
     <string name="toast_unable_open">No app is available to open this</string>
 
     <string name="menu_share">Share</string>
@@ -54,30 +54,30 @@
     <string name="tour_welcome_subtitle">Secure messaging for Teams and Friends</string>
 
     <string name="tour_groups_title">Huge Group Chats</string>
-    <string name="tour_groups_text">Incredibly large group chats. More than 300 users in one group. Communicate with your team and make decisions together.</string>
+    <string name="tour_groups_text">Group chats supporting more than 300 users in a single group. Communicate with your team and make decisions together.</string>
 
     <string name="tour_everywhere_title">Works everywhere</string>
-    <string name="tour_everywhere_text">No matter where you are in the subway or on the mountain hills. Your message will always reach the right people.</string>
+    <string name="tour_everywhere_text">Anywhere you are, in the subway or in the mountains, your message will always reach the right people.</string>
 
-    <string name="tour_secure_title">Secure &amp; Private</string>
-    <string name="tour_secure_text">Rest assured no one will read your messages. Share documents, files and photos without fear that they could fall into the wrong hands.</string>
+    <string name="tour_secure_title">Secure&amp;Private</string>
+    <string name="tour_secure_text">Rest assured that no one will ever read your messages. Share documents, files and photos without fear that they could fall into the wrong hands. All our chats are encrypted.</string>
 
     <!-- Phone Sign Fragment -->
     <string name="auth_phone_title">Sign up</string>
-    <string name="auth_phone_hint">Please confirm your country code and enter your phone number.</string>
+    <string name="auth_phone_hint">Please select your country code and enter your phone number.</string>
     <string name="auth_phone_number_hint">Phone number</string>
     <string name="auth_phone_get_code">CONFIRM NUMBER</string>
-    <string name="auth_phone_why">WHY WE NEED YOUR PHONE?</string>
-    <string name="auth_phone_why_description">We use phone for authentication because this is the most secure way in our days.\n\nPasswords usually weak and email can be hacked.</string>
+    <string name="auth_phone_why">WHY DO WE NEED YOUR NUMBER?</string>
+    <string name="auth_phone_why_description">We\'re using your phone number for authentication since this is a secure way to log you in.\n\nPasswords are usually too weak and email can be hacked.</string>
     <string name="auth_phone_why_done">Got it</string>
     <string name="auth_phone_country_title">Select a country</string>
     <string name="auth_phone_error_invalid_country">Invalid country code</string>
 
-    <string name="auth_email_why_description">We use work email for authentication so we can add your colleagues to your contacts list and add you instantly to work groups</string>
-    <string name="auth_email_why">WHY WE NEED YOUR WORK EMAIL?</string>
+    <string name="auth_email_why_description">We\'re using your work email for authentication so we can add your colleagues to your contact list and add you to work groups instantly.</string>
+    <string name="auth_email_why">WHY DO WE NEED YOUR WORK EMAIL?</string>
 
-    <string name="auth_switch_to_email">Use email for sign up</string>
-    <string name="auth_switch_to_phone">Use phone for sign up</string>
+    <string name="auth_switch_to_email">Use email to sign up</string>
+    <string name="auth_switch_to_phone">Use phone to sign up</string>
 
     <!-- Choose auth type-->
     <string name="choose_auth_type_title">Choose auth type</string>
@@ -98,7 +98,7 @@
     <string name="auth_tos_privacy">By signing up, you agree to the Terms of Service and Privacy Policy.</string>
     <string name="auth_tos">By signing up, you agree to the Terms of Service.</string>
     <string name="auth_privacy">By signing up, you agree to the Privacy Policy.</string>
-    <string name="auth_find_by_diclamer"> Others will be able to find you be email or phone number when provided.</string>
+    <string name="auth_find_by_diclamer"> Others users will be able to find you via email or phone number.</string>
 
     <string name="auth_tos_index">Terms of Service</string>
     <string name="auth_privacy_index">Privacy Policy</string>
@@ -114,30 +114,30 @@
     <string name="sign_in_get_code">SIGN IN</string>
 
     <!-- Validate code Fragment -->
-    <string name="auth_code_phone_hint">We\'ve sent an SMS with activation code to your phone {0}</string>
+    <string name="auth_code_phone_hint">We\'ve sent an SMS with the activation code to your phone {0}</string>
     <string name="auth_code_email_hint">We\'ve sent an email with activation code to {0}</string>
     <string name="auth_code_title">Enter SMS code</string>
     <string name="auth_code_sms_hint">Code</string>
     <string name="auth_code_done">DONE</string>
     <string name="auth_code_wrong_number">WRONG PHONE NUMBER?</string>
     <string name="auth_code_wrong_email">WRONG EMAIL?</string>
-    <string name="auth_code_phone_change">Are you sure want to change your number?</string>
-    <string name="auth_code_email_change">Are you sure want to change your email?</string>
+    <string name="auth_code_phone_change">Are you sure you want to change your number?</string>
+    <string name="auth_code_email_change">Are you sure you want to change your email?</string>
     <string name="auth_code_change_yes">Change</string>
 
     <!-- Sign Up Fragment -->
     <string name="auth_profile_title">Hi! What\'s your name?</string>
-    <string name="auth_profile_hint">Please provide your name</string>
+    <string name="auth_profile_hint">Tell us your name</string>
     <string name="auth_profile_name_hint">Your name</string>
     <string name="auth_profile_done">NEXT</string>
 
     <!-- Auth errors -->
-    <string name="auth_error_wrong_auth_id">Please, enter valid phone or email</string>
+    <string name="auth_error_wrong_auth_id">Please, enter a valid phone number or email</string>
     <string name="auth_error_empty_phone">Please, enter your phone number</string>
     <string name="auth_error_empty_email">Please, enter your email</string>
-    <string name="auth_error_code_expired">Code is expired. Please perform validation from scratch.</string>
+    <string name="auth_error_code_expired">The code has expired. Please perform validation again.</string>
     au
-    <string name="auth_error_code_invalid">Code is invalid. Please try again.</string>
+    <string name="auth_error_code_invalid">The code is invalid. Please try again.</string>
     <string name="auth_error_failed_get_oauth2_token">Authorization server error. Please, try again.</string>
 
     <!-- Typing -->
@@ -146,7 +146,7 @@
     <string name="typing_group_many">{0} people are typing…</string>
 
     <!-- Main -->
-    <string name="main_search_hint">Type something for search</string>
+    <string name="main_search_hint">Type something to search</string>
     <string name="main_search_empty">Nothing found</string>
     <string name="main_menu_help">Help</string>
     <string name="main_menu_search">Search</string>
@@ -160,12 +160,12 @@
     <string name="main_fab_add_contact">Add contact</string>
 
     <string name="main_sync_title">Sync in progress</string>
-    <string name="main_sync_message">Please, wait couple minutes while we enable your app.</string>
+    <string name="main_sync_message">Please, wait a couple minutes. We\'re configuring your app.</string>
 
     <string name="main_empty_title">Invite your friends</string>
-    <string name="main_empty_invite_hint">None of your contacts use {appName}. Use button below to invite them.</string>
+    <string name="main_empty_invite_hint">None of your contacts are using {appName}. Use the button below to invite them.</string>
     <string name="main_empty_invite_action">TELL A FRIEND</string>
-    <string name="main_empty_add_hint">or manually add contact</string>
+    <string name="main_empty_add_hint">or add a contact manually</string>
     <string name="main_empty_add_action">ADD CONTACT</string>
 
     <!-- Own profile/settings -->
@@ -175,7 +175,7 @@
     <string name="settings_menu_change_photo">Change photo</string>
     <string name="settings_header">Settings</string>
     <string name="settings_help">Help</string>
-    <string name="settings_ask">Ask Question</string>
+    <string name="settings_ask">Ask a Question</string>
     <string name="settings_twitter">Twitter</string>
     <string name="settings_home_page">Home page</string>
     <string name="settings_notifications">Notifications</string>
@@ -184,7 +184,7 @@
     <string name="nickname_empty">Set nickname</string>
     <string name="nickname_change">Change nickname</string>
     <string name="nickname">Nickname</string>
-    <string name="nickname_hint">You can choose a username in {appName}. If you do, other people will be able to find you by this username and contact you without sharing your phone number.\n\nYou can use a–z, 0–9 and underscores. Minimum length is 5 characters.</string>
+    <string name="nickname_hint">You can choose a username in {appName}. Other people will be able to find you by this username and contact you without using your phone number.\n\nYou can use a–z, 0–9 and underscores. Minimum length is 5 characters.</string>
     <string name="nickname_edittext_hint">Enter your Username</string>
     <string name="about_user_me">About me</string>
     <string name="about_user">About user</string>
@@ -201,7 +201,7 @@
     <string name="dialogs_title">Chats</string>
     <string name="dialogs_hint">Long press for additional options</string>
     <string name="dialogs_empty_title">Start messaging</string>
-    <string name="dialogs_empty">Pick a contact from your contacts list or press plus button to start the conversation right now.</string>
+    <string name="dialogs_empty">Pick a contact from your contact list or press the plus button to start a conversation right now.</string>
 
     <string name="dialogs_menu_contact_view">View contact</string>
     <string name="dialogs_menu_contact_rename">Rename contact</string>
@@ -214,14 +214,14 @@
 
     <!-- Contacts -->
     <string name="contacts_title">Contacts</string>
-    <string name="contacts_empty_short">No contacts yet</string>
-    <string name="contacts_share">Tell friends about {appName}</string>
+    <string name="contacts_empty_short">No contacts here yet</string>
+    <string name="contacts_share">Tell your friends about {appName}</string>
     <string name="contacts_add">Add friend...</string>
 
     <string name="contacts_empty_title">Invite your friends</string>
-    <string name="contacts_empty_invite_hint">None of your contacts use {appName}. Use button below to invite them.</string>
+    <string name="contacts_empty_invite_hint">None of your contacts are using {appName}. Use the button below to invite them.</string>
     <string name="contacts_empty_invite_action">Tell a friend</string>
-    <string name="contacts_empty_add_hint">or manually add contact by pressing plus button below.</string>
+    <string name="contacts_empty_add_hint">or manually add contacts by pressing the plus button below.</string>
 
     <string name="contacts_menu_remove">Remove {0} from contacts</string>
     <string name="contacts_menu_remove_progress">Removing…</string>
@@ -256,9 +256,9 @@
     <string name="chat_doc_download">Download</string>
     <string name="chat_voice_record_cancel">SLIDE TO CANCEL</string>
 
-    <string name="chat_not_member">You is not member of this group</string>
+    <string name="chat_not_member">You are not a member of this group</string>
 
-    <string name="chat_unsupported">Message is unsupported in this version. Please, wait for application update to see message.</string>
+    <string name="chat_unsupported">The message is not supported in this version. Please, wait for the application to update to see message.</string>
     <string name="online">\u25CF online</string>
 
     <string name="messages_action_forward">Forward</string>
@@ -267,8 +267,8 @@
     <string name="messages_action_copy">Copy</string>
     <string name="messages_action_like">Like</string>
     <string name="edit_message">Edit last message</string>
-    <string name="edit_message_error_not_last">You can edit only last message</string>
-    <string name="edit_message_error_slowpoke">Message is too old</string>
+    <string name="edit_message_error_not_last">Only your last message can be edited</string>
+    <string name="edit_message_error_slowpoke">The message is too old</string>
 
     <!-- Share menu-->
     <string name="share_menu_gallery">Gallery</string>
@@ -327,7 +327,7 @@
     <string name="group_context_view">View {0}</string>
     <string name="group_context_remove">Remove {0} from group</string>
 
-    <string name="group_menu_add">Add member</string>
+    <string name="group_menu_add">Add a member</string>
     <string name="group_menu_leave">Leave group</string>
     <string name="group_menu_change_theme">Change theme</string>
     <string name="group_menu_change_photo">Change photo</string>
@@ -338,9 +338,9 @@
 
     <string name="group_add_member">Add a member</string>
 
-    <string name="group_not_member">You is not member of this group</string>
+    <string name="group_not_member">You are not a member of this group</string>
 
-    <string name="about_group">About group</string>
+    <string name="about_group">About the group</string>
     <string name="about_group_empty">Set group description</string>
     <string name="theme_group">Group theme</string>
     <string name="theme_group_empty">Set group theme</string>
@@ -401,7 +401,7 @@
 
     <!-- Integration token-->
     <string name="integration_token_title">Integration Token</string>
-    <string name="integration_token_hint">This token can bu used for setting up integrations with this group</string>
+    <string name="integration_token_hint">This token can be used for setting up integrations with this group</string>
     <string name="integration_token_action_copy">Copy token</string>
     <string name="integration_token_action_revoke">Revoke token</string>
     <string name="integration_token_action_share">Share token</string>
@@ -426,16 +426,16 @@
     <string name="edit_name_cancel">CANCEL</string>
     <string name="edit_name_save">SAVE</string>
     <string name="edit_name_process">Changing name…</string>
-    <string name="edit_nick_process">Changing nick…</string>
+    <string name="edit_nick_process">Changing nickname…</string>
     <string name="edit_about_process">Changing description…</string>
     <string name="edit_theme_process">Changing theme…</string>
-    <string name="edit_about_edittext_hint">Tell people anything you want about yourself</string>
+    <string name="edit_about_edittext_hint">Tell people anything you want, briefly.</string>
 
 
     <!-- Help -->
     <string name="help_title">Help</string>
     <string name="help_about_title">About</string>
-    <string name="help_about_subtitle">About app and service</string>
+    <string name="help_about_subtitle">About the app and services</string>
     <string name="help_faq_title">FAQ</string>
     <string name="help_faq_subtitle">Frequently Asked Questions</string>
     <string name="help_feedback_title">Feedback</string>
@@ -476,28 +476,28 @@
     <!-- Security -->
     <string name="security_title">Security</string>
     <string name="security_terminate_title">Terminate all sessions</string>
-    <string name="security_terminate_subtitle">SignOut on all devices</string>
-    <string name="security_terminate_message">Are you sure want to logout on all other devices? All data will be lost on that devices.</string>
+    <string name="security_terminate_subtitle">Sign Out on all devices</string>
+    <string name="security_terminate_message">Are you sure you want to log out on all other devices? All app data will be lost on these devices.</string>
     <string name="security_authorized_header">Authorized devices and services</string>
     <string name="security_authorized_loading">Loading…</string>
 
     <!-- Alerts -->
-    <string name="alert_delete_messages_text">Are you sure want to delete {0} messages?</string>
+    <string name="alert_delete_messages_text">Are you sure you want to delete {0} messages?</string>
     <string name="alert_delete_messages_yes">Delete</string>
 
-    <string name="alert_delete_all_messages_text">Are you sure want to delete ALL messages from this chat?</string>
+    <string name="alert_delete_all_messages_text">Are you sure you want to delete ALL messages from this chat?</string>
     <string name="alert_delete_all_messages_yes">Delete</string>
 
-    <string name="alert_remove_contact_text">Are you sure want to remove {0} from contacts?</string>
+    <string name="alert_remove_contact_text">Are you sure you want to remove {0} from contacts?</string>
     <string name="alert_remove_contact_yes">Remove</string>
 
-    <string name="alert_group_add_text">Are you sure want to add {0} to group?</string>
+    <string name="alert_group_add_text">Are you sure you want to add {0} to group?</string>
     <string name="alert_group_add_yes">Add</string>
 
-    <string name="alert_group_remove_text">Are you sure want to remove {0} from group?</string>
+    <string name="alert_group_remove_text">Are you sure you want to remove {0} from group?</string>
     <string name="alert_group_remove_yes">Remove</string>
 
-    <string name="alert_invite_text">"{0}" is not registered in {appName}. Invite him to {appName}?</string>
+    <string name="alert_invite_text">"{0}" is not registered in {appName}. Invite him or her to {appName}?</string>
     <string name="alert_invite_yes">Invite</string>
 
     <!-- Media -->
@@ -519,7 +519,7 @@
     <string name="call_notification">return to call</string>
 
     <!-- Dialogs -->
-    <string name="alert_leave_group_message">Are you sure want to exit group "%1$s"?</string>
+    <string name="alert_leave_group_message">Are you sure you want to exit group "%1$s"?</string>
     <string name="alert_leave_group_yes">Exit</string>
 
     <string name="alert_delete_group_title">Delete "%1$s" group?</string>
@@ -537,10 +537,10 @@
     <string name="confirm_share">Share with</string>
 
     <!-- Errors -->
-    <string name="error_connection">Unable to connect. Please check that you are connected to the Internet and try
-        again.\n\nPlease reboot your phone if your connection problem persists.
+    <string name="error_connection">Unable to connect. Please make sure that you\'re connected to the Internet and try
+        again.\n\nPlease reboot your phone if the connection problem persists.
     </string>
-    <string name="error_unknown">Unable to perform operation.\n\nPlease, check your phone and reboot if problem
+    <string name="error_unknown">Unable to perform the operation.\n\nPlease, check your phone and reboot if the problem
         persists.
     </string>
     <string name="error_view_url">Unknown URL type</string>
