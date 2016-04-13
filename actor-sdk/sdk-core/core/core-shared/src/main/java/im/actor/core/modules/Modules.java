@@ -101,6 +101,9 @@ public class Modules implements ModuleContext {
         timing.section("Events");
         this.events = new EventBus();
 
+        timing.section("App State");
+        appStateModule = new AppStateModule(this);
+
         timing.section("API");
         this.api = new ApiModule(this);
 
@@ -131,7 +134,7 @@ public class Modules implements ModuleContext {
         timing.section("Groups");
         groups = new GroupsModule(this);
         timing.section("App State");
-        appStateModule = new AppStateModule(this);
+        appStateModule.run();
         timing.section("Stickers");
         stickers = new StickersModule(this);
         timing.section("Calls");
