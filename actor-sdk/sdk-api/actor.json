@@ -17447,6 +17447,10 @@
               {
                 "name": "FASTER_MESSAGES",
                 "id": 4
+              },
+              {
+                "name": "STRIP_COUNTERS",
+                "id": 5
               }
             ]
           }
