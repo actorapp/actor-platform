@@ -51,25 +51,31 @@ public class I18nEngine {
     private final String[] MONTHS_SHORT;
     private final String[] MONTHS;
 
+    private String currentLocale;
+
     @ObjectiveCName("initWithModules:")
     public I18nEngine(Modules modules) {
         this.modules = modules;
         this.runtime = Runtime.getLocaleRuntime();
 
         // Loading locale
-        this.locale = new HashMap<String, String>();
-        String currentLocale = runtime.getCurrentLocale();
+        this.locale = new HashMap<>();
+        this.currentLocale = runtime.getCurrentLocale();
+
         boolean isLoaded = false;
         if (currentLocale != null) {
             if (JavaUtil.contains(SUPPORTED_LOCALES, currentLocale)) {
                 this.locale.putAll(LocaleLoader.loadPropertiesFile("AppText_" + currentLocale + ".properties"));
                 this.locale.putAll(LocaleLoader.loadPropertiesFile("Months_" + currentLocale + ".properties"));
                 isLoaded = true;
+            } else {
+                this.currentLocale = "En";
             }
         }
         if (!isLoaded) {
             this.locale.putAll(LocaleLoader.loadPropertiesFile("AppText.properties"));
             this.locale.putAll(LocaleLoader.loadPropertiesFile("Months.properties"));
+            this.currentLocale = "En";
         }
 
         MONTHS_SHORT = new String[]{
@@ -559,7 +565,7 @@ public class I18nEngine {
                 formatPerformerName(senderId));
 
         // verb for 'you' in persian language continues with suffix
-        if (runtime.getCurrentLocale().equals("Fa")) {
+        if (currentLocale.equals("Fa")) {
             if (senderId == modules.getAuthModule().myUid())
                 newString = (newString + locale.get("YouSuffixVerb")).replace("\r", "");
         }
