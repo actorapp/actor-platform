@@ -19,7 +19,8 @@ import scala.reflect.runtime._
 import scala.util.{ Failure, Success, Try }
 
 trait SeqUpdateMatchers extends Matchers with ScalaFutures with AnyRefLogSource {
-  protected implicit val system: ActorSystem //just for logging
+  protected implicit val system: ActorSystem
+  import system.dispatcher
 
   private val DefaultRetryCount = 5
   private val DefaultRetryInterval: Long = 800
@@ -27,6 +28,9 @@ trait SeqUpdateMatchers extends Matchers with ScalaFutures with AnyRefLogSource 
   private val log = Logging(system, this)
 
   type UpdateClass = Class[_ <: Update]
+
+  def getCurrentSeq(implicit clientData: ClientData): Int =
+    whenReady(SeqUpdatesExtension(system).getSeqState(clientData.optUserId.get) map (_.seq))(identity)
 
   def expectUpdate[Upd <: Update: ClassTag](clazz: Class[Upd])(check: Upd ⇒ Any)(implicit client: ClientData): Int =
     expectUpdate(seq = 0, clazz)(check)
