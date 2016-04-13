@@ -53,6 +53,8 @@ public class StickersView extends RecyclerView {
         RecyclerView packSwitch = new RecyclerView(context);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, HORIZONTAL, false);
         packSwitch.setLayoutManager(linearLayoutManager);
+        packSwitch.setItemAnimator(null);
+        packSwitch.setHasFixedSize(true);
         PacksAdapter packsAdapter = new PacksAdapter(context, stickersAdapter, keyboard.getStickerIndicatorContainer());
         packSwitch.setAdapter(packsAdapter);
         stickersAdapter.setPacksAdapter(packsAdapter);
