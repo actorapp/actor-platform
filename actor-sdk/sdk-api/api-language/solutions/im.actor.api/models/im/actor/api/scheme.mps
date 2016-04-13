@@ -3008,6 +3008,128 @@
         </node>
       </node>
     </node>
+    <node concept="2m5mJO" id="1k4H0$WNw36" role="2m5lHt">
+      <property role="TrG5h" value="Privacy" />
+      <property role="3XOG$Z" value="privacy" />
+      <node concept="2m6fVq" id="1k4H0$WNxb6" role="2m5mJr">
+        <property role="TrG5h" value="BlockUser" />
+        <node concept="2m7Kf5" id="1k4H0$WNxbh" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="1k4H0$WNxbl" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6ia" resolve="UserOutPeer" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="1k4H0$WNxb7" role="NuuwV">
+          <property role="Nu42W" value="A4C" />
+        </node>
+        <node concept="2m1Rp1" id="1k4H0$WNxbe" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_W" resolve="Seq" />
+        </node>
+        <node concept="NXeRC" id="1k4H0$WNxbo" role="1GBnQ6">
+          <property role="NXePf" value="Block User" />
+        </node>
+        <node concept="NX1gA" id="1k4H0$WNxbt" role="1GBnQ6">
+          <property role="NX6R2" value="Peer for blocking" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="1k4H0$WNxbh" resolve="peer" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="1k4H0$WNyk8" role="2m5mJr">
+        <property role="TrG5h" value="UnblockUser" />
+        <node concept="2m7Kf5" id="1k4H0$WNykn" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="1k4H0$WNykr" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6ia" resolve="UserOutPeer" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="1k4H0$WNyk9" role="NuuwV">
+          <property role="Nu42W" value="A4D" />
+        </node>
+        <node concept="2m1Rp1" id="1k4H0$WNyku" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_W" resolve="Seq" />
+        </node>
+        <node concept="NXeRC" id="1k4H0$WNykx" role="1GBnQ6">
+          <property role="NXePf" value="Unblock User" />
+        </node>
+        <node concept="NX1gA" id="1k4H0$WNykA" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Peer for unblocking" />
+          <ref role="NX6Kv" node="1k4H0$WNykn" resolve="peer" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="1k4H0$WNztv" role="2m5mJr">
+        <property role="TrG5h" value="LoadBlockedUsers" />
+        <node concept="Nu42z" id="1k4H0$WNztw" role="NuuwV">
+          <property role="Nu42W" value="A4E" />
+        </node>
+        <node concept="2m1R6W" id="1k4H0$WNztX" role="2m6efq">
+          <node concept="NX1gA" id="1k4H0$WNzu_" role="1y2DgH">
+            <property role="NX6R2" value="Blocked user peers" />
+            <property role="1GSvIU" value="full" />
+            <ref role="NX6Kv" node="1k4H0$WNzuf" resolve="userPeers" />
+          </node>
+          <node concept="2m7Kf5" id="1k4H0$WNzuf" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="userPeers" />
+            <node concept="2m5nlk" id="1k4H0$WNzuj" role="2m7DVh">
+              <node concept="2m5mGg" id="1k4H0$WNzus" role="3GJlyp">
+                <ref role="2m5mJy" node="GBscvBB6ia" resolve="UserOutPeer" />
+              </node>
+            </node>
+          </node>
+          <node concept="Nu42z" id="1k4H0$WNztY" role="NuuwV">
+            <property role="Nu42W" value="A4F" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="1k4H0$WNzuv" role="1GBnQ6">
+          <property role="NXePf" value="Load Blocked Users" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="1k4H0$WNzv1" role="2m5mJr">
+        <property role="TrG5h" value="UserBlocked" />
+        <node concept="2m7Kf5" id="1k4H0$WNzvt" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="uid" />
+          <node concept="wb0Ql" id="1k4H0$WNzvx" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="1k4H0$WNzv2" role="NuuwV">
+          <property role="Nu42W" value="A45" />
+        </node>
+        <node concept="NXeRC" id="1k4H0$WNzv$" role="NXp_2">
+          <property role="NXePf" value="Update about User Blocked" />
+        </node>
+        <node concept="NX1gA" id="1k4H0$WNzvD" role="NXp_2">
+          <property role="NX6R2" value="User Id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="1k4H0$WNzvt" resolve="uid" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="1k4H0$WNzwc" role="2m5mJr">
+        <property role="TrG5h" value="UserUnblocked" />
+        <node concept="NXeRC" id="1k4H0$WNzwR" role="NXp_2">
+          <property role="NXePf" value="Update about User Unblocked" />
+        </node>
+        <node concept="NX1gA" id="1k4H0$WNzwX" role="NXp_2">
+          <property role="NX6R2" value="User Id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="1k4H0$WNzwI" resolve="uid" />
+        </node>
+        <node concept="2m7Kf5" id="1k4H0$WNzwI" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="uid" />
+          <node concept="wb0Ql" id="1k4H0$WNzwM" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="1k4H0$WNzwd" role="NuuwV">
+          <property role="Nu42W" value="A46" />
+        </node>
+      </node>
+    </node>
     <node concept="2m5mJO" id="GBscvBBjPC" role="2m5lHt">
       <property role="TrG5h" value="Messaging" />
       <property role="3XOG$Z" value="messaging" />
