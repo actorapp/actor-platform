@@ -21,6 +21,7 @@ import im.actor.core.entity.PeerType;
 import im.actor.core.entity.Reaction;
 import im.actor.core.entity.User;
 import im.actor.core.entity.content.AbsContent;
+import im.actor.core.entity.content.TextContent;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleActor;
 import im.actor.core.modules.ModuleContext;
@@ -277,12 +278,20 @@ public class RouterActor extends ModuleActor {
         //
         if (!isConversationVisible) {
             for (Message m : messages) {
-                context().getNotificationsModule().onInMessage(
-                        peer,
-                        m.getSenderId(),
-                        m.getSortDate(),
-                        ContentDescription.fromContent(m.getContent()),
-                        false /*TODO: Implement*/);
+                if (m.getSenderId() != myUid()) {
+                    boolean hasCurrentMention = false;
+                    if (m.getContent() instanceof TextContent) {
+                        if (((TextContent) m.getContent()).getMentions().contains(myUid())) {
+                            hasCurrentMention = true;
+                        }
+                    }
+                    context().getNotificationsModule().onInMessage(
+                            peer,
+                            m.getSenderId(),
+                            m.getSortDate(),
+                            ContentDescription.fromContent(m.getContent()),
+                            hasCurrentMention);
+                }
             }
         }
     }
