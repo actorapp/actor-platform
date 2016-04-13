@@ -82,7 +82,7 @@ public class FastShareAdapter extends RecyclerView.Adapter<FastShareAdapter.Fast
 
     public class FastShareVH extends RecyclerView.ViewHolder {
         SimpleDraweeView v;
-        CheckBox chb;
+        CompoundButton chb;
         String data;
 
         public FastShareVH(View itemView) {
