@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import android.widget.Toast;
 import com.droidkit.progress.CircularView;
 
 import im.actor.core.entity.FileReference;
@@ -329,10 +330,14 @@ public class DocHolder extends MessageHolder {
                             if (document instanceof PhotoContent) {
                                 Intents.openMedia(getAdapter().getMessagesFragment().getActivity(), fileIcon, reference.getDescriptor(), currentMessage.getSenderId());
                             } else {
-                                Activity activity = getAdapter().getMessagesFragment().getActivity();
-                                activity.startActivity(Intents.openDoc(document.getName(), reference.getDescriptor()));
+                                try {
+                                    Activity activity = getAdapter().getMessagesFragment().getActivity();
+                                    activity.startActivity(Intents.openDoc(document.getName(), reference.getDescriptor()));
+                                } catch (Exception e) {
+                                    Toast.makeText(getAdapter().getMessagesFragment().getActivity(), R.string.toast_unable_open, Toast.LENGTH_LONG).show();
+                                    e.printStackTrace();
+                                }
                             }
-
                         }
                     });
                 }
