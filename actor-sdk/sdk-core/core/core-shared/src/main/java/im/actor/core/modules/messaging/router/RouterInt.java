@@ -3,6 +3,7 @@ package im.actor.core.modules.messaging.router;
 import java.util.ArrayList;
 import java.util.List;
 
+import im.actor.core.api.ApiDialogGroup;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
@@ -14,6 +15,7 @@ import im.actor.core.events.PeerChatClosed;
 import im.actor.core.events.PeerChatOpened;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.messaging.history.entity.DialogHistory;
+import im.actor.core.modules.messaging.router.entity.RouterActiveDialogsChanged;
 import im.actor.core.modules.messaging.router.entity.RouterAppVisible;
 import im.actor.core.modules.messaging.router.entity.RouterApplyChatHistory;
 import im.actor.core.modules.messaging.router.entity.RouterApplyDialogsHistory;
@@ -118,6 +120,10 @@ public class RouterInt extends ActorInterface implements BusSubscriber {
 
     public void onChatDelete(Peer peer) {
         send(new RouterChatDelete(peer));
+    }
+
+    public void onActiveDialogsChanged(List<ApiDialogGroup> dialogs, boolean showInvite, boolean hasArchived) {
+        send(new RouterActiveDialogsChanged(dialogs, showInvite, hasArchived));
     }
 
     public void onUserChanged(User user) {
