@@ -5,7 +5,6 @@ import java.util.concurrent.{ ExecutionException, TimeUnit, TimeoutException }
 
 import akka.actor.{ ActorSystem, ExtendedActorSystem, Extension, ExtensionId, ExtensionIdProvider }
 import akka.event.Logging
-import com.google.protobuf.wrappers.{ Int32Value, StringValue }
 import com.relayrides.pushy.apns.ApnsClient
 import com.relayrides.pushy.apns.util.SimpleApnsPushNotification
 import im.actor.server.db.DbExtension
