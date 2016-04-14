@@ -18,7 +18,7 @@ import im.actor.server.acl.ACLUtils
 import im.actor.server.bots.BotCommand
 import im.actor.server.file.{ Avatar, ImageUtils }
 import im.actor.server.model.{ AvatarData, Sex, User }
-import im.actor.server.model.contact.{ UserContact, UserEmailContact, UserPhoneContact }
+import im.actor.server.model.contact.{ ContactStatus, UserContact, UserEmailContact, UserPhoneContact }
 import im.actor.server.office.EntityNotFound
 import im.actor.server.persist.contact._
 import im.actor.server.persist._
@@ -360,12 +360,12 @@ private[user] trait UserCommandHandlers {
   ): Unit = {
     val (idsLocalNames, plains, phones, emails) = contactsToAdd.view.map {
       case UserCommands.ContactToAdd(contactUserId, localNameOpt, phoneOpt, emailOpt) ⇒
-        val phone = phoneOpt map (UserPhoneContact(_, user.id, contactUserId, localNameOpt, isDeleted = false))
-        val email = emailOpt map (UserEmailContact(_, user.id, contactUserId, localNameOpt, isDeleted = false))
+        val phone = phoneOpt map (UserPhoneContact(_, user.id, contactUserId, localNameOpt, isDeleted = false, status = ContactStatus.Approved))
+        val email = emailOpt map (UserEmailContact(_, user.id, contactUserId, localNameOpt, isDeleted = false, status = ContactStatus.Approved))
         val plain =
           if (phone.isDefined || email.isDefined)
             None
-          else Some(UserContact(user.id, contactUserId, localNameOpt, isDeleted = false))
+          else Some(UserContact(user.id, contactUserId, localNameOpt, isDeleted = false, status = ContactStatus.Approved))
 
         ((contactUserId, localNameOpt), plain, phone, email)
     }.foldLeft(Map.empty[Int, Option[String]], Seq.empty[UserContact], Seq.empty[UserPhoneContact], Seq.empty[UserEmailContact]) {
