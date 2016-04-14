@@ -1,6 +1,7 @@
 package im.actor.sdk.controllers.conversation;
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -54,8 +55,7 @@ public abstract class ActorEditTextActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Setting transparent BG for keyboard open optimization
-        getWindow().setBackgroundDrawable(null);
+        getWindow().setBackgroundDrawable(new ColorDrawable(ActorSDK.sharedActor().style.getMainBackgroundColor()));
 
         // Setting main layout
         setContentView(R.layout.activity_dialog);
