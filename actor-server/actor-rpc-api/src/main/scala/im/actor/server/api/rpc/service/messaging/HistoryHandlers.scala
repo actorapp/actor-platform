@@ -165,6 +165,7 @@ trait HistoryHandlers {
         for {
           historyOwner ← DBIO.from(getHistoryOwner(modelPeer, client.userId))
           (lastReceivedAt, lastReadAt) ← getLastReceiveReadDates(modelPeer)
+          _ = println(s"=== ${client.userId} lastReceivedAt ${lastReceivedAt} lastReadAt ${lastReadAt}")
           messageModels ← mode match {
             case Some(ApiListLoadMode.Forward)  ⇒ HistoryMessageRepo.findAfter(historyOwner, modelPeer, dateTimeFrom(date), limit.toLong)
             case Some(ApiListLoadMode.Backward) ⇒ HistoryMessageRepo.findBefore(historyOwner, modelPeer, dateTimeFrom(date), limit.toLong)
@@ -228,7 +229,6 @@ trait HistoryHandlers {
       db.run(action)
     }
 
-  private val ZeroDate = new DateTime(0)
   private val MaxDateTime = new DateTime(294276, 1, 1, 0, 0)
   private val MaxDate = MaxDateTime.getMillis
 
