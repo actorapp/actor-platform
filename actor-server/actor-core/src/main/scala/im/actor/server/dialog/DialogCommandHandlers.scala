@@ -109,23 +109,23 @@ trait DialogCommandHandlers extends PeersImplicits {
 
   protected def messageReceived(state: DialogState, mr: MessageReceived): Unit = {
     val mustReceive = mustMakeReceive(state, mr)
-    if (mustReceive) {
-      persist(MessagesReceived(Instant.ofEpochMilli(mr.date))) { e ⇒
-        commit(e)
 
-        (for {
-          _ ← dialogExt.ackMessageReceived(peer, mr)
-          _ ← db.run(markMessagesReceived(selfPeer, peer, new DateTime(mr.date)))
-        } yield MessageReceivedAck()) pipeTo sender()
-      }
+    if (mustReceive) {
+      (for {
+        _ ← dialogExt.ackMessageReceived(peer, mr)
+      } yield MessageReceivedAck()) pipeTo sender()
     } else {
       sender() ! MessageReceivedAck()
     }
   }
 
   protected def ackMessageReceived(mr: MessageReceived): Unit = {
-    (deliveryExt.notifyReceive(userId, peer, mr.date, mr.now) map { _ ⇒ MessageReceivedAck() }) pipeTo sender() andThen {
-      case Failure(e) ⇒ log.error(e, "Failed to ack MessageReceived")
+    persist(MessagesReceived(Instant.ofEpochMilli(mr.date))) { e ⇒
+      commit(e)
+
+      (deliveryExt.notifyReceive(userId, peer, mr.date, mr.now) map { _ ⇒ MessageReceivedAck() }) pipeTo sender() andThen {
+        case Failure(e) ⇒ log.error(e, "Failed to ack MessageReceived")
+      }
     }
   }
 
@@ -133,26 +133,23 @@ trait DialogCommandHandlers extends PeersImplicits {
     val mustRead = mustMakeRead(state, mr)
 
     if (mustRead) {
-      persist(MessagesRead(Instant.ofEpochMilli(mr.date))) { e ⇒
-        commit(e)
-
-        (for {
-          _ ← dialogExt.ackMessageRead(peer, mr)
-          _ ← db.run(markMessagesRead(selfPeer, peer, new DateTime(mr.date)))
-          unreadCount ← db.run(dialogExt.getUnreadTotal(userId))
-          _ ← deliveryExt.read(userId, mr.readerAuthSid, peer, mr.date, Some(unreadCount))
-          _ ← deliveryExt.sendCountersUpdate(userId, unreadCount)
-        } yield MessageReadAck()) pipeTo sender()
-      }
-
+      (for {
+        _ ← dialogExt.ackMessageRead(peer, mr)
+        unreadCount ← db.run(dialogExt.getUnreadTotal(userId))
+        _ ← deliveryExt.read(userId, mr.readerAuthSid, peer, mr.date, Some(unreadCount))
+        _ ← deliveryExt.sendCountersUpdate(userId, unreadCount)
+      } yield MessageReadAck()) pipeTo sender()
     } else {
       sender() ! MessageReadAck()
     }
   }
 
   protected def ackMessageRead(mr: MessageRead): Unit =
-    (deliveryExt.notifyRead(userId, peer, mr.date, mr.now) map { _ ⇒ MessageReadAck() }) pipeTo sender() andThen {
-      case Failure(e) ⇒ log.error(e, "Failed to ack MessageRead")
+    persist(MessagesRead(Instant.ofEpochMilli(mr.date))) { e ⇒
+      commit(e)
+      (deliveryExt.notifyRead(userId, peer, mr.date, mr.now) map { _ ⇒ MessageReadAck() }) pipeTo sender() andThen {
+        case Failure(e) ⇒ log.error(e, "Failed to ack MessageRead")
+      }
     }
 
   protected def setReaction(state: DialogState, sr: SetReaction): Unit = {
