@@ -66,7 +66,7 @@ public class SecuritySettingsFragment extends BaseFragment {
                                             public void onError(Exception e) {
                                                 performLoad();
                                                 Toast.makeText(getActivity(),
-                                                        "Unable to remove auth", Toast.LENGTH_SHORT)
+                                                        R.string.security_toast_unable_remove_auth, Toast.LENGTH_SHORT)
                                                         .show();
                                             }
                                         });
@@ -85,7 +85,7 @@ public class SecuritySettingsFragment extends BaseFragment {
     }
 
     private void performLoad() {
-        loading.setText("Loading...");
+        loading.setText(R.string.security_authorized_loading);
         loading.setClickable(true);
         showView(loading, false);
 
@@ -105,8 +105,8 @@ public class SecuritySettingsFragment extends BaseFragment {
                     if (getActivity() == null) return;
                     View view = getActivity().getLayoutInflater().inflate(R.layout.adapter_auth, authItems, false);
 
-                    boolean isThisDevice = item.getAuthHolder() == ApiAuthHolder.OTHERDEVICE;
-                    String deviceTitle = (isThisDevice ? "(This) " : "") + item.getDeviceTitle();
+                    boolean isThisDevice = item.getAuthHolder() == ApiAuthHolder.THISDEVICE;
+                    String deviceTitle = (isThisDevice ? getString(R.string.security_this_title) : "") + item.getDeviceTitle();
                     ((TextView) view.findViewById(R.id.date)).setText(messenger().getFormatter().formatShortDate(item.getAuthTime() * 1000L));
                     ((TextView) view.findViewById(R.id.date)).setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
                     ((TextView) view.findViewById(R.id.appTitle)).setText(item.getAppTitle());
@@ -118,8 +118,8 @@ public class SecuritySettingsFragment extends BaseFragment {
                             @Override
                             public void onClick(View v) {
                                 new AlertDialog.Builder(getActivity())
-                                        .setMessage("Are you sure want to logout " + item.getDeviceTitle() + " device? All data will be lost on this device.")
-                                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                        .setMessage(getString(R.string.security_terminate_this_message).replace("{device}", item.getDeviceTitle() ))
+                                        .setPositiveButton(R.string.dialog_yes, new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
                                                 execute(messenger().terminateSession(item.getId()), R.string.progress_common,
@@ -131,13 +131,13 @@ public class SecuritySettingsFragment extends BaseFragment {
 
                                                             @Override
                                                             public void onError(Exception e) {
-                                                                Toast.makeText(getActivity(), "Unable to remove auth", Toast.LENGTH_SHORT).show();
+                                                                Toast.makeText(getActivity(), R.string.security_toast_unable_remove_auth , Toast.LENGTH_SHORT).show();
                                                                 performLoad();
                                                             }
                                                         });
                                             }
                                         })
-                                        .setNegativeButton("No", null)
+                                        .setNegativeButton(R.string.dialog_no, null)
                                         .show()
                                         .setCanceledOnTouchOutside(true);
                             }
@@ -149,7 +149,7 @@ public class SecuritySettingsFragment extends BaseFragment {
 
             @Override
             public void onError(Exception e) {
-                loading.setText("Unable to load. Press to try again.");
+                loading.setText(R.string.security_toast_unable_to_load);
                 loading.setClickable(true);
                 showView(loading, false);
             }
