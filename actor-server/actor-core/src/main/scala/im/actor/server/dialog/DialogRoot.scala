@@ -105,11 +105,12 @@ private class DialogRoot(userId: Int, extensions: Seq[ApiExtension]) extends Pro
 
   override protected def handleQuery: PartialFunction[Any, Future[Any]] = {
     case GetCounter() ⇒
-      val refs = state.activePeers.toSeq map dialogRef
+      val refs = state.activePeers.toSeq map (peer ⇒ peer → dialogRef(peer))
 
       for {
-        counters ← FutureExt.ftraverse(refs) { ref ⇒
-          (ref ? DialogQueries.GetCounter()).mapTo[DialogQueries.GetCounterResponse] map (_.counter)
+        counters ← FutureExt.ftraverse(refs) {
+          case (peer, ref) ⇒
+            (ref ? DialogQueries.GetCounter(peer)).mapTo[DialogQueries.GetCounterResponse] map (_.counter)
         }
       } yield GetCounterResponse(counters.sum)
     case GetDialogGroups() ⇒
@@ -135,11 +136,16 @@ private class DialogRoot(userId: Int, extensions: Seq[ApiExtension]) extends Pro
     case Favourite(peer, clientAuthSid)   ⇒ favourite(peer, clientAuthSid)
     case Unfavourite(peer, clientAuthSid) ⇒ unfavourite(peer, clientAuthSid)
     case dc: DialogCommand                ⇒ handleDialogCommand(dc)
+    case dq: DialogQuery                  ⇒ handleDialogQuery(dq)
   }
 
   def handleDialogCommand: PartialFunction[DialogCommand, Unit] = {
     case ddc: DirectDialogCommand ⇒ dialogRef(ddc) forward ddc
     case dc: DialogCommand        ⇒ dialogRef(dc.dest) forward dc
+  }
+
+  def handleDialogQuery: PartialFunction[DialogQuery, Unit] = {
+    case dq: DialogQuery ⇒ dialogRef(dq.dest) forward dq
   }
 
   private def archive(peer: Peer, clientAuthSid: Option[Int]) = {
@@ -215,7 +221,7 @@ private class DialogRoot(userId: Int, extensions: Seq[ApiExtension]) extends Pro
     val infosFutures =
       state.active map {
         case (group, peers) ⇒
-          FutureExt.ftraverse(peers.toSeq)(dialogRef(_) ? DialogQueries.GetInfo())
+          FutureExt.ftraverse(peers.toSeq)(peer ⇒ dialogRef(peer) ? DialogQueries.GetInfo(peer))
             .mapTo[Seq[GetInfoResponse]]
             .map(infos ⇒ DialogGroup(group, infos.map(_.info)))
       }
