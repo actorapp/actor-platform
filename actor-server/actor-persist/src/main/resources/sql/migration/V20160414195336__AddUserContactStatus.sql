@@ -1,1 +1,1 @@
-alter table user_contacts add column status int not null default 0;
+alter table user_contacts add column contact_status int not null default 0;
