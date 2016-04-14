@@ -215,6 +215,7 @@ public class ChatActivity extends ActorEditTextActivity {
     private boolean textEditing = false;
     private long currentEditRid;
     private Animation.AnimationListener animationListener;
+    private Menu menu;
 
     public static Intent build(Peer peer, boolean compose, Context context) {
         final Intent intent = new Intent(context, ChatActivity.class);
@@ -366,9 +367,10 @@ public class ChatActivity extends ActorEditTextActivity {
                         Toast.makeText(ChatActivity.this, R.string.toast_no_sdcard, Toast.LENGTH_LONG).show();
                     } else {
                         String externalPath = externalFile.getAbsolutePath();
-                        new File(externalPath + "/" + ActorSDK.sharedActor().getAppName() + "/capture/").mkdirs();
+                        String exportPathBase = externalPath + "/" + ActorSDK.sharedActor().getAppName() + "/" + ActorSDK.sharedActor().getAppName() + " images" + "/";
+                        new File(exportPathBase).mkdirs();
 
-                        pending_fileName = externalPath + "/" + ActorSDK.sharedActor().getAppName() + "/capture/capture_" + Randoms.randomId() + ".jpg";
+                        pending_fileName = exportPathBase + "capture_" + Randoms.randomId() + ".jpg";
                     }
                     if (ContextCompat.checkSelfPermission(ChatActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                         Log.d("Permissions", "camera - no permission :c");
@@ -386,9 +388,10 @@ public class ChatActivity extends ActorEditTextActivity {
                         Toast.makeText(ChatActivity.this, R.string.toast_no_sdcard, Toast.LENGTH_LONG).show();
                     } else {
                         String externalPath = externalFile.getAbsolutePath();
-                        new File(externalPath + "/" + ActorSDK.sharedActor().getAppName() + "/capture/").mkdirs();
+                        String exportPathBase = externalPath + "/" + ActorSDK.sharedActor().getAppName() + "/" + ActorSDK.sharedActor().getAppName() + " video" + "/";
+                        new File(exportPathBase).mkdirs();
 
-                        pending_fileName = externalPath + "/" + ActorSDK.sharedActor().getAppName() + "/capture/capture_" + Randoms.randomId() + ".mp4";
+                        pending_fileName = exportPathBase + "capture_" + Randoms.randomId() + ".mp4";
 
                         Intent i = new Intent(MediaStore.ACTION_VIDEO_CAPTURE)
                                 .putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(pending_fileName)));
@@ -563,6 +566,11 @@ public class ChatActivity extends ActorEditTextActivity {
     @Override
     public void onResume() {
         super.onResume();
+
+        if (peer.getPeerType() == PeerType.PRIVATE && menu != null) {
+            menu.findItem(R.id.add_to_contacts).setVisible(users().get(peer.getPeerId()).isContact().get());
+            invalidateOptionsMenu();
+        }
 
         emojiKeyboard.setPeer(peer);
 
@@ -1110,7 +1118,8 @@ public class ChatActivity extends ActorEditTextActivity {
     // Options Menu
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(final Menu menu) {
+        this.menu = menu;
 
         // Inflating menu
         getMenuInflater().inflate(R.menu.chat_menu, menu);
@@ -1146,6 +1155,15 @@ public class ChatActivity extends ActorEditTextActivity {
         }
         menu.findItem(R.id.call).setVisible(callsEnabled);
 
+        if (peer.getPeerType() == PeerType.PRIVATE) {
+            bind(users().get(peer.getPeerId()).isContact(), new ValueChangedListener<Boolean>() {
+                @Override
+                public void onChanged(Boolean val, Value<Boolean> valueModel) {
+                    menu.findItem(R.id.add_to_contacts).setVisible(!val);
+                    invalidateOptionsMenu();
+                }
+            });
+        }
 
         // Hide unsupported files menu
         menu.findItem(R.id.files).setVisible(false);
@@ -1197,6 +1215,8 @@ public class ChatActivity extends ActorEditTextActivity {
 
         } else if (i == R.id.files) {// startActivity(Intents.openDocs(chatType, chatId, ChatActivity.this));
 
+        } else if (i == R.id.add_to_contacts) {
+            execute(messenger().addContact(peer.getPeerId()));
         }
 
         if (ActorSDK.sharedActor().isCallsEnabled()) {

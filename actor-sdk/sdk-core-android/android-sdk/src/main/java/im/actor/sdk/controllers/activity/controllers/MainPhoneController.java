@@ -369,7 +369,7 @@ public class MainPhoneController extends MainBaseController {
         if (intent != null) {
             if (intent.getAction() != null) {
                 if (intent.getAction().equals(Intent.ACTION_VIEW) && intent.getData() != null) {
-                    joinGroupUrl = getIntent().getData().toString();
+                    joinGroupUrl = intent.getData().toString();
                 } else if (intent.getAction().equals(Intent.ACTION_SEND)) {
                     if ("text/plain".equals(getIntent().getType())) {
                         sendText = intent.getStringExtra(Intent.EXTRA_TEXT);
