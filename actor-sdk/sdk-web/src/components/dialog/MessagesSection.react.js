@@ -5,8 +5,8 @@
 import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
 
-import MessageActionCreators from '../../actions/MessageActionCreators';
 import DialogActionCreators from '../../actions/DialogActionCreators';
+import MessageActionCreators from '../../actions/MessageActionCreators';
 
 import UserStore from '../../stores/UserStore';
 import MessageStore from '../../stores/MessageStore';
@@ -38,24 +38,21 @@ class MessagesSection extends Component {
   }
 
   onSelect(rid) {
-    const { selected } = this.state.messages;
-    if (selected.has(rid)) {
-      MessageActionCreators.setSelected(selected.remove(rid));
-    } else {
-      MessageActionCreators.setSelected(selected.add(rid));
-    }
+    MessageActionCreators.toggleSelected(rid);
   }
 
   onLoadMore() {
-    const { peer } = this.props;
-    DialogActionCreators.loadMoreMessages(peer);
+    DialogActionCreators.loadMoreMessages(this.props.peer);
   }
 
   render() {
     const { peer, isMember } = this.props;
-    const { uid, messages: {
-      messages, overlay, isLoaded, receiveDate, readDate, count, selected
-    } } = this.state;
+    const {
+      uid,
+      messages: {
+        messages, overlay, receiveDate, readDate, isLoaded, isLoading, count, selected
+      }
+    } = this.state;
 
     return (
       <MessagesList
@@ -64,11 +61,12 @@ class MessagesSection extends Component {
         isMember={isMember}
         messages={messages}
         overlay={overlay}
+        readDate={readDate}
+        receiveDate={receiveDate}
         count={count}
         selected={selected}
         isLoaded={isLoaded}
-        receiveDate={receiveDate}
-        readDate={readDate}
+        isLoading={isLoading}
         onSelect={this.onSelect}
         onLoadMore={this.onLoadMore}
       />

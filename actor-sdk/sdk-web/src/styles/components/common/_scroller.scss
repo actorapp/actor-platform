@@ -1,0 +1,20 @@
+/*
+ * Copyright (C) 2016 Actor LLC. <https://actor.im>
+ */
+
+.scroller {
+  &__wrapper {
+    display: flex;
+    overflow: hidden;
+  }
+
+  &__container {
+    overflow-y: scroll;
+  }
+
+  &__wrapper,
+  &__container {
+    min-height: 1px;
+    flex: 1;
+  }
+}

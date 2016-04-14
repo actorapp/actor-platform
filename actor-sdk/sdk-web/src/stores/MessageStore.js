@@ -4,6 +4,7 @@
 
 import Immutable from 'immutable';
 import { ReduceStore } from 'flux/utils';
+import { last } from 'lodash';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
 
@@ -16,6 +17,7 @@ class MessageStore extends ReduceStore {
       messages: [],
       overlay: [],
       isLoaded: false,
+      isLoading: false,
       receiveDate: 0,
       readDate: 0,
       count: INITIAL_MESSAGES_COUNT,
@@ -62,20 +64,51 @@ class MessageStore extends ReduceStore {
         };
 
       case ActionTypes.MESSAGES_CHANGED:
+        if (action.messages[0] !== state.messages[0]) {
+          // unshifted new messages
+          return {
+            ...state,
+            messages: action.messages,
+            overlay: action.overlay,
+            receiveDate: action.receiveDate,
+            readDate: action.readDate,
+            isLoaded: action.isLoaded,
+            isLoading: false,
+            count: Math.min(action.messages.length, state.count + MESSAGE_COUNT_STEP)
+          };
+        }
+
+        if (last(action.messages) !== last(state.messages)) {
+          // pushed new messages
+          return {
+            ...state,
+            messages: action.messages,
+            overlay: action.overlay,
+            receiveDate: action.receiveDate,
+            readDate: action.readDate,
+            isLoaded: action.isLoaded,
+            count: state.count + 1
+          };
+        }
+
         return {
           ...state,
           messages: action.messages,
           overlay: action.overlay,
-          isLoaded: action.isLoaded,
           receiveDate: action.receiveDate,
           readDate: action.readDate,
-          count: Math.min(action.messages.length, state.count)
+          isLoaded: action.isLoaded
         };
 
-      case ActionTypes.MESSAGES_SET_SELECTED:
+      case ActionTypes.MESSAGES_TOGGLE_SELECTED:
         return {
           ...state,
-          selected: action.selectedMesages
+          selected: state.selected.has(action.id) ? state.selected.remove(action.id) : state.selected.add(action.id)
+        };
+
+      case ActionTypes.MESSAGES_LOADING_MORE:
+        return {
+          ...state
         };
 
       case ActionTypes.MESSAGES_LOAD_MORE:

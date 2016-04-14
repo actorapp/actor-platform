@@ -2,14 +2,15 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import { isFunction } from 'lodash';
+import { isFunction, last, debounce } from 'lodash';
 
 import React, { Component, PropTypes } from 'react';
 import {shouldComponentUpdate} from 'react-addons-pure-render-mixin';
 
 import { getMessageState } from '../../utils/MessageUtils';
+import PeerUtils from '../../utils/PeerUtils';
 
-import MessagesScroller from './MessagesScroller.react';
+import Scroller from '../common/Scroller.react';
 
 import DefaultMessageItem from './messages/MessageItem.react';
 import DefaultWelcome from './messages/Welcome.react';
@@ -29,6 +30,7 @@ class MessagesList extends Component {
     selected: PropTypes.object.isRequired,
     isMember: PropTypes.bool.isRequired,
     isLoaded: PropTypes.bool.isRequired,
+    isLoading: PropTypes.bool.isRequired,
     receiveDate: PropTypes.number.isRequired,
     readDate: PropTypes.number.isRequired,
     onSelect: PropTypes.func.isRequired,
@@ -51,22 +53,88 @@ class MessagesList extends Component {
       };
     }
 
+    this.dimensions = null;
+
+    this.onScroll = this.onScroll.bind(this);
+    this.onResize = this.onResize.bind(this);
+    this.onLoadMore = debounce(this.onLoadMore.bind(this), 60, {
+      maxWait: 180
+    });
     this.shouldComponentUpdate = shouldComponentUpdate.bind(this);
   }
 
+  componentDidMount() {
+    this.restoreScroll();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (!PeerUtils.equals(nextProps.peer, this.props.peer)) {
+      this.dimensions = null;
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const { dimensions, refs: { scroller }, props: { uid, messages, count } } = this;
+
+    const lastMessage = last(messages);
+    const isPush = lastMessage && lastMessage !== last(prevProps.messages);
+    if (isPush) {
+      const isMyMessage = uid === lastMessage.sender.peer.id;
+      if (isMyMessage || !dimensions) {
+        scroller.scrollToBottom();
+      }
+    } else {
+      const isFirstMessageChanged = prevProps.count !== count || (messages[0] !== prevProps.messages[0] && prevProps.isLoading);
+      if (isFirstMessageChanged && dimensions) {
+        const currDimensions = scroller.getDimensions();
+        scroller.scrollTo(currDimensions.scrollHeight - dimensions.scrollHeight);
+      }
+    }
+  }
+
+  onLoadMore() {
+    const dimensions = this.refs.scroller.getDimensions();
+    if (dimensions.scrollTop < dimensions.offsetHeight && !this.props.isLoading) {
+      this.props.onLoadMore();
+    }
+  }
+
+  onScroll() {
+    const dimensions = this.refs.scroller.getDimensions();
+    if (dimensions.scrollHeight === dimensions.scrollTop + dimensions.offsetHeight) {
+      this.dimensions = null;
+    } else {
+      this.dimensions = dimensions;
+    }
+
+    this.onLoadMore();
+  }
+
+  onResize() {
+    const { dimensions, refs: { scroller } } = this;
+    if (dimensions) {
+      const ratio = dimensions.scrollTop / dimensions.scrollHeight;
+      const nextDimensions = scroller.getDimensions();
+      scroller.scrollTo(ratio * nextDimensions.scrollHeight);
+      this.dimensions = nextDimensions;
+    } else {
+      scroller.scrollToBottom();
+    }
+  }
+
   renderHeader() {
-    const { peer, isMember, messages, isLoaded } = this.props;
-    const { Welcome } = this.components;
+    const { peer, isMember, isLoaded } = this.props;
 
     if (!isMember) {
       return null;
     }
 
-    if (!isLoaded && messages.length >= 30) {
-      return <Loading key="header" />;
+    if (isLoaded) {
+      const { Welcome } = this.components;
+      return <Welcome peer={peer} key="header" />;
     }
 
-    return <Welcome peer={peer} key="header" />;
+    return <Loading key="header" />;
   }
 
   renderMessages() {
@@ -103,14 +171,27 @@ class MessagesList extends Component {
   }
 
   render() {
-    const { peer, onLoadMore } = this.props;
-
     return (
-      <MessagesScroller className="chat__messages" peer={peer} onLoadMore={onLoadMore}>
+      <Scroller
+        className="chat__messages"
+        ref="scroller"
+        onScroll={this.onScroll}
+        onResize={this.onResize}
+      >
         {this.renderHeader()}
         {this.renderMessages()}
-      </MessagesScroller>
+      </Scroller>
     )
+  }
+
+  restoreScroll() {
+    const { dimensions, refs: { scroller } } = this;
+
+    if (dimensions) {
+      scroller.scrollTo(dimensions.scrollTop);
+    } else {
+      scroller.scrollToBottom();
+    }
   }
 }
 

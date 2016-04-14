@@ -68,7 +68,7 @@ export default {
     });
   },
 
-  setSelected(selectedMesages) {
-    dispatch(ActionTypes.MESSAGES_SET_SELECTED, { selectedMesages });
+  toggleSelected(id) {
+    dispatch(ActionTypes.MESSAGES_TOGGLE_SELECTED, { id });
   }
 };
