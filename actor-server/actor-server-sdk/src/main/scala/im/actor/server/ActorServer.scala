@@ -233,7 +233,7 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
       val eventbusService = new EventbusServiceImpl(system)
 
       system.log.debug("Starting PrivacyServiceImpl")
-      val privacyService = new PrivacyServiceImpl(system)
+      val privacyService = new PrivacyServiceImpl
 
       val services = Seq(
         authService,
