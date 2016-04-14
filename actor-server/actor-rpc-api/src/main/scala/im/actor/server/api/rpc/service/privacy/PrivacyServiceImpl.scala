@@ -20,7 +20,7 @@ private object PrivacyServiceErrors {
   val UserNotFound = RpcError(404, "NOT_FOUND", "User is not in contacts.", false, None)
 }
 
-final class PrivacyServiceImpl(implicit system: ActorSystem) extends PrivacyService {
+final class PrivacyServiceImpl(system: ActorSystem) extends PrivacyService {
   import FutureResultRpc._
   import PrivacyServiceErrors._
 

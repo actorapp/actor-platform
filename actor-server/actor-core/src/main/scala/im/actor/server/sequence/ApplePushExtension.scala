@@ -62,7 +62,7 @@ final class ApplePushExtension(system: ActorSystem) extends Extension with AnyRe
       blocking {
         val client = new ApnsClient[SimpleApnsPushNotification](new File(cert.path), cert.password)
         client.connect(host).get(20, TimeUnit.SECONDS)
-        log.debug("Established client connection for cert: {}, is voip: {}", cert.key, cert.isVoip)
+        log.debug("Established client connection for cert: {}, is voip: {}", extractCertKey(cert), cert.isVoip)
         client
       }
     }
@@ -86,9 +86,9 @@ final class ApplePushExtension(system: ActorSystem) extends Extension with AnyRe
   // recreate and try to connect client, if client connection failed
   // during previous creation
   private def recreateClient(cert: ApnsCert): Unit = {
-    log.debug("Retry to create client for cert : {}, is voip: {}", extractCertKey(cert), cert.isVoip)
-    val targetMap = if (cert.isVoip) voipClients else clients
     val certKey = extractCertKey(cert)
+    log.debug("Retry to create client for cert : {}, is voip: {}", certKey, cert.isVoip)
+    val targetMap = if (cert.isVoip) voipClients else clients
     targetMap -= certKey
     targetMap += certKey → createClient(cert)
   }
