@@ -26,33 +26,8 @@ private[dialog] trait DialogEvent extends TaggedEvent {
   override def tags: Set[String] = Set("dialog")
 }
 
-trait DialogQuery
-
-object DialogEventsObsolete {
-
-  private[dialog] final case class LastMessageDate(date: Long) extends DialogEvent
-
-  private[dialog] final case class LastReceiveDate(date: Long) extends DialogEvent
-
-  private[dialog] final case class LastReadDate(date: Long) extends DialogEvent
-}
-
-private[dialog] object DialogState {
-  def init(
-    lastMessageDate: Long,
-    lastReceiveDate: Long,
-    lastReadDate:    Long,
-    counter:         Int
-  ) = DialogState(lastMessageDate, lastReceiveDate, lastReadDate, counter, immutable.SortedSet.empty(UnreadMessage.ordering))
-
-  def fromModel(model: DialogModel, isCreated: Boolean, counter: Int): DialogState =
-    DialogState(
-      model.lastMessageDate.getMillis,
-      model.ownerLastReceivedAt.getMillis,
-      model.ownerLastReadAt.getMillis,
-      counter,
-      immutable.SortedSet.empty(UnreadMessage.ordering)
-    )
+trait DialogQuery {
+  val dest: Peer
 }
 
 private object UnreadMessage {
@@ -74,21 +49,24 @@ private case class UnreadMessage(date: Instant, randomId: Long) {
 }
 
 private[dialog] final case class DialogState(
-  lastMessageDate: Long, //we don't use it now anywhere. should we remove it?
-  lastReceiveDate: Long,
-  lastReadDate:    Long,
+  lastMessageDate: Instant, //we don't use it now anywhere. should we remove it?
+  lastReceiveDate: Instant,
+  lastReadDate:    Instant,
   counter:         Int,
   unreadMessages:  immutable.SortedSet[UnreadMessage]
 ) extends ProcessorState[DialogState, DialogEvent] {
   import DialogEvents._
-  import DialogEventsObsolete._
+
   override def updated(e: DialogEvent): DialogState = e match {
-    case LastMessageDate(date) if date > this.lastMessageDate ⇒ this.copy(lastMessageDate = date)
-    case LastReceiveDate(date) if date > this.lastReceiveDate ⇒ this.copy(lastReceiveDate = date)
-    case LastReadDate(date) if date > this.lastReadDate       ⇒ this.copy(lastReadDate = date)
+    case MessagesRead(date) if date.isAfter(lastReadDate)        ⇒ this.copy(lastReadDate = date)
+    case MessagesReceived(date) if date.isAfter(lastReceiveDate) ⇒ this.copy(lastReceiveDate = date)
     case NewMessage(randomId, date, isIncoming) ⇒
       if (isIncoming) {
-        this.copy(counter = counter + 1, unreadMessages = unreadMessages + UnreadMessage(date, randomId))
+        this.copy(
+          counter = counter + 1,
+          unreadMessages = unreadMessages + UnreadMessage(date, randomId),
+          lastMessageDate = date
+        )
       } else this
     case MessagesRead(date) ⇒
       val newUnreadMessages = unreadMessages.dropWhile(um ⇒ um.date.isBefore(date) || um.date == date)
@@ -150,17 +128,24 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
 
   override def persistenceId: String = DialogProcessor.persistenceId(peer)
 
-  override protected def getInitialState: DialogState = DialogState(0, 0, 0, 0, immutable.SortedSet.empty(UnreadMessage.ordering))
+  override protected def getInitialState: DialogState =
+    DialogState(
+      lastMessageDate = Instant.ofEpochMilli(0),
+      lastReceiveDate = Instant.ofEpochMilli(0),
+      lastReadDate = Instant.ofEpochMilli(0),
+      counter = 0,
+      unreadMessages = immutable.SortedSet.empty(UnreadMessage.ordering)
+    )
 
   override protected def handleQuery: PartialFunction[Any, Future[Any]] = {
-    case GetCounter() ⇒ Future.successful(GetCounterResponse(state.counter))
-    case GetInfo() ⇒ Future.successful(
+    case GetCounter(_) ⇒ Future.successful(GetCounterResponse(state.counter))
+    case GetInfo(_) ⇒ Future.successful(
       GetInfoResponse(DialogInfo(
         peer = peer,
         counter = state.counter,
-        date = Instant.ofEpochMilli(state.lastMessageDate),
-        lastReceivedDate = Instant.ofEpochMilli(state.lastReceiveDate),
-        lastReadDate = Instant.ofEpochMilli(state.lastReadDate)
+        date = state.lastMessageDate,
+        lastReceivedDate = state.lastReceiveDate,
+        lastReadDate = state.lastReadDate
       ))
     )
   }

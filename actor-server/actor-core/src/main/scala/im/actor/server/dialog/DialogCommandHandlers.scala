@@ -25,8 +25,6 @@ trait DialogCommandHandlers extends PeersImplicits {
   this: DialogProcessor ⇒
 
   import DialogEvents._
-  import DialogEventsObsolete._
-
   import DialogCommands._
   import DialogEvents._
 
@@ -36,7 +34,6 @@ trait DialogCommandHandlers extends PeersImplicits {
         persist(NewMessage(sm.randomId, Instant.ofEpochMilli(seq.date), isIncoming = false)) { e ⇒
           commit(e)
           replyTo ! seq
-          updateMessageDate(state, seq.date)
           unstashAll()
           context.become(receiveCommand)
         }
@@ -112,19 +109,17 @@ trait DialogCommandHandlers extends PeersImplicits {
 
   protected def messageReceived(state: DialogState, mr: MessageReceived): Unit = {
     val mustReceive = mustMakeReceive(state, mr)
-    (if (mustReceive) {
-      for {
-        _ ← dialogExt.ackMessageReceived(peer, mr)
-        _ ← db.run(markMessagesReceived(selfPeer, peer, new DateTime(mr.date)))
-      } yield MessageReceivedAck()
-    } else {
-      Future.successful(MessageReceivedAck())
-    }) pipeTo sender() andThen {
-      case Failure(e) ⇒ log.error(e, "Failed to process MessageReceived")
-    }
-
     if (mustReceive) {
-      updateReceiveDate(state, mr.date)
+      persist(MessagesReceived(Instant.ofEpochMilli(mr.date))) { e ⇒
+        commit(e)
+
+        (for {
+          _ ← dialogExt.ackMessageReceived(peer, mr)
+          _ ← db.run(markMessagesReceived(selfPeer, peer, new DateTime(mr.date)))
+        } yield MessageReceivedAck()) pipeTo sender()
+      }
+    } else {
+      sender() ! MessageReceivedAck()
     }
   }
 
@@ -137,22 +132,21 @@ trait DialogCommandHandlers extends PeersImplicits {
   protected def messageRead(state: DialogState, mr: MessageRead): Unit = {
     val mustRead = mustMakeRead(state, mr)
 
-    (if (mustRead) {
-      for {
-        _ ← dialogExt.ackMessageRead(peer, mr)
-        _ ← db.run(markMessagesRead(selfPeer, peer, new DateTime(mr.date)))
-        unreadCount ← db.run(dialogExt.getUnreadTotal(userId))
-        _ ← deliveryExt.read(userId, mr.readerAuthSid, peer, mr.date, Some(unreadCount))
-        _ ← deliveryExt.sendCountersUpdate(userId, unreadCount)
-      } yield MessageReadAck()
-    } else {
-      Future.successful(MessageReadAck())
-    }) pipeTo sender() andThen {
-      case Failure(e) ⇒ log.error(e, "Failed to process MessageRead")
-    }
-
     if (mustRead) {
-      updateReadDate(state, mr.date)
+      persist(MessagesRead(Instant.ofEpochMilli(mr.date))) { e ⇒
+        commit(e)
+
+        (for {
+          _ ← dialogExt.ackMessageRead(peer, mr)
+          _ ← db.run(markMessagesRead(selfPeer, peer, new DateTime(mr.date)))
+          unreadCount ← db.run(dialogExt.getUnreadTotal(userId))
+          _ ← deliveryExt.read(userId, mr.readerAuthSid, peer, mr.date, Some(unreadCount))
+          _ ← deliveryExt.sendCountersUpdate(userId, unreadCount)
+        } yield MessageReadAck()) pipeTo sender()
+      }
+
+    } else {
+      sender() ! MessageReadAck()
     }
   }
 
@@ -220,7 +214,7 @@ trait DialogCommandHandlers extends PeersImplicits {
    */
   private def calcSendDate(state: DialogState): Long = {
     val candidate = Instant.now.toEpochMilli
-    if (state.lastMessageDate == candidate) state.lastMessageDate + 1 else candidate
+    if (state.lastMessageDate.toEpochMilli == candidate) state.lastMessageDate.toEpochMilli + 1 else candidate
   }
 
   /**
@@ -238,7 +232,7 @@ trait DialogCommandHandlers extends PeersImplicits {
    * @return `true` if we must process message received request and `false` otherwise
    */
   private def mustMakeReceive(state: DialogState, mr: MessageReceived): Boolean =
-    (mr.date > state.lastReceiveDate) && (mr.date <= mr.now || mr.date <= state.lastMessageDate)
+    Instant.ofEpochMilli(mr.date).isAfter(state.lastReceiveDate) && (mr.date <= mr.now || state.lastMessageDate.isAfter(Instant.ofEpochMilli(mr.date)))
 
   /**
    *
@@ -255,16 +249,7 @@ trait DialogCommandHandlers extends PeersImplicits {
    * @return `true` if we must process message received request and `false` otherwise
    */
   private def mustMakeRead(state: DialogState, mr: MessageRead): Boolean =
-    (mr.date > state.lastReadDate) && (mr.date <= mr.now || mr.date <= state.lastMessageDate)
-
-  protected def updateMessageDate(state: DialogState, date: Long): Unit =
-    commit(LastMessageDate(date))
-
-  private def updateReceiveDate(state: DialogState, date: Long): Unit =
-    commit(LastReceiveDate(date))
-
-  private def updateReadDate(state: DialogState, date: Long): Unit =
-    commit(LastReadDate(date))
+    Instant.ofEpochMilli(mr.date).isAfter(state.lastReadDate) && (mr.date <= mr.now || state.lastMessageDate.isAfter(Instant.ofEpochMilli(mr.date)))
 
   /**
    * check access hash
