@@ -266,6 +266,7 @@ message DialogCommands {
 message DialogQueries {
     message GetCounter {
         option (scalapb.message).extends = "im.actor.server.dialog.DialogQuery";
+        required Peer dest = 1;
     }
 
     message GetCounterResponse {
@@ -274,6 +275,8 @@ message DialogQueries {
 
     message GetInfo {
         option (scalapb.message).extends = "im.actor.server.dialog.DialogQuery";
+
+        required Peer dest = 1;
     }
 
     message GetInfoResponse {
@@ -288,6 +291,12 @@ message DialogEvents {
         required int64 random_id = 2;
         required int64 date = 1 [(scalapb.field).type = "java.time.Instant"];
         required bool is_incoming = 3;
+    }
+
+    message MessagesReceived {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogEvent";
+
+        required int64 date = 1 [(scalapb.field).type = "java.time.Instant"];
     }
 
     message MessagesRead {
