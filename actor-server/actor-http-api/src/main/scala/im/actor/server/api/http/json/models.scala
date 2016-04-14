@@ -17,8 +17,4 @@ case class ReverseHook(url: String)
 case class Status(status: String)
 case class ReverseHookResponse(id: Int, url: Option[String])
 
-final case class ServerInfo(projectName: String, endpoints: Endpoints)
-final case class Endpoints(tcp: List[String], tls: List[String], ws: List[String], wss: List[String])
-object Endpoints {
-  def empty = Endpoints(List.empty, List.empty, List.empty, List.empty)
-}
+final case class ServerInfo(projectName: String, endpoints: List[String])
