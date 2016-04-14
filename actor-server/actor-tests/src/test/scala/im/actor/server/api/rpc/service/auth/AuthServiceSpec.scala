@@ -5,6 +5,7 @@ import java.time.{ LocalDateTime, ZoneOffset }
 
 import cats.data.Xor
 import com.google.protobuf.ByteString
+import com.google.protobuf.wrappers.Int32Value
 import im.actor.api.rpc._
 import im.actor.api.rpc.auth._
 import im.actor.api.rpc.contacts.{ ApiPhoneToImport, ResponseGetContacts, UpdateContactRegistered }
@@ -484,7 +485,7 @@ final class AuthServiceSpec
       whenReady(db.run(persist.contact.UserContactRepo.find(regUser.id, user.id))) { optContact ⇒
         optContact should not be empty
         optContact.get should matchPattern {
-          case UserContact(_, _, Some(_), false) ⇒
+          case UserContact(_, _, Some(_), false, _) ⇒
         }
       }
       whenReady(db.run(persist.contact.UserContactRepo.findNotDeletedIds(user.id)))(_ shouldBe empty)
@@ -956,7 +957,7 @@ final class AuthServiceSpec
       whenReady(db.run(persist.contact.UserContactRepo.find(regUser.id, user.id))) { optContact ⇒
         optContact should not be empty
         optContact.get should matchPattern {
-          case UserContact(_, _, _, false) ⇒
+          case UserContact(_, _, _, false, _) ⇒
         }
       }
     }
@@ -967,7 +968,7 @@ final class AuthServiceSpec
       implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user.id, authSid, 42)))
 
       seqUpdExt.registerGooglePushCredentials(model.push.GooglePushCredentials(authId, 22L, "hello"))
-      seqUpdExt.registerApplePushCredentials(model.push.ApplePushCredentials(authId, 22, ByteString.copyFrom("hello".getBytes)))
+      seqUpdExt.registerApplePushCredentials(model.push.ApplePushCredentials(authId, Some(Int32Value(22)), ByteString.copyFrom("hello".getBytes)))
 
       //let seqUpdateManager register credentials
       Thread.sleep(5000L)
