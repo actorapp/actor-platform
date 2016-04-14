@@ -120,14 +120,14 @@ public class ActorSystem {
                 .changeSupervisor(supervisor), path);
     }
 
-    public ActorRef actorOf(String path, final Constructor<? extends Actor> constructor) {
-        return actorOf(Props.create(new ActorCreator() {
-            @Override
-            public Actor create() {
-                return constructor.create();
-            }
-        }), path);
-    }
+//    public ActorRef actorOf(String path, final Constructor<? extends Actor> constructor) {
+//        return actorOf(Props.create(new ActorCreator() {
+//            @Override
+//            public Actor create() {
+//                return constructor.create();
+//            }
+//        }), path);
+//    }
 
     public ActorRef actorOf(String path, String dispatcher, ActorCreator creator) {
         return actorOf(Props.create(creator).changeDispatcher(dispatcher), path);
