@@ -215,6 +215,7 @@ public class ChatActivity extends ActorEditTextActivity {
     private boolean textEditing = false;
     private long currentEditRid;
     private Animation.AnimationListener animationListener;
+    private Menu menu;
 
     public static Intent build(Peer peer, boolean compose, Context context) {
         final Intent intent = new Intent(context, ChatActivity.class);
@@ -563,6 +564,11 @@ public class ChatActivity extends ActorEditTextActivity {
     @Override
     public void onResume() {
         super.onResume();
+
+        if (peer.getPeerType() == PeerType.PRIVATE && menu != null) {
+            menu.findItem(R.id.add_to_contacts).setVisible(users().get(peer.getPeerId()).isContact().get());
+            invalidateOptionsMenu();
+        }
 
         emojiKeyboard.setPeer(peer);
 
@@ -1110,7 +1116,8 @@ public class ChatActivity extends ActorEditTextActivity {
     // Options Menu
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(final Menu menu) {
+        this.menu = menu;
 
         // Inflating menu
         getMenuInflater().inflate(R.menu.chat_menu, menu);
@@ -1146,6 +1153,15 @@ public class ChatActivity extends ActorEditTextActivity {
         }
         menu.findItem(R.id.call).setVisible(callsEnabled);
 
+        if (peer.getPeerType() == PeerType.PRIVATE) {
+            bind(users().get(peer.getPeerId()).isContact(), new ValueChangedListener<Boolean>() {
+                @Override
+                public void onChanged(Boolean val, Value<Boolean> valueModel) {
+                    menu.findItem(R.id.add_to_contacts).setVisible(!val);
+                    invalidateOptionsMenu();
+                }
+            });
+        }
 
         // Hide unsupported files menu
         menu.findItem(R.id.files).setVisible(false);
@@ -1197,6 +1213,8 @@ public class ChatActivity extends ActorEditTextActivity {
 
         } else if (i == R.id.files) {// startActivity(Intents.openDocs(chatType, chatId, ChatActivity.this));
 
+        } else if (i == R.id.add_to_contacts) {
+            execute(messenger().addContact(peer.getPeerId()));
         }
 
         if (ActorSDK.sharedActor().isCallsEnabled()) {
