@@ -8,6 +8,7 @@ import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
 
 import PeerUtils from '../utils/PeerUtils';
+import history from '../utils/history';
 
 import DefaultMessages from './dialog/MessagesSection.react';
 import DialogFooter from './dialog/DialogFooter.react';
@@ -24,7 +25,6 @@ import DialogActionCreators from '../actions/DialogActionCreators';
 
 class DialogSection extends Component {
   static contextTypes = {
-    router: PropTypes.object.isRequired,
     delegate: PropTypes.object.isRequired
   };
 
@@ -66,7 +66,7 @@ class DialogSection extends Component {
     if (PeerUtils.hasPeer(peer)) {
       DialogActionCreators.selectDialogPeer(peer);
     } else {
-      this.context.router.replace('/im');
+      history.replace('/im');
     }
   }
 
