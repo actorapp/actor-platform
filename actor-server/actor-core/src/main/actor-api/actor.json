@@ -3188,6 +3188,160 @@
       ]
     },
     {
+      "title": "Privacy",
+      "package": "privacy",
+      "items": [
+        {
+          "type": "rpc",
+          "content": {
+            "name": "BlockUser",
+            "header": 2636,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "doc": [
+              "Block User",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "Peer for blocking"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "UserOutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "UnblockUser",
+            "header": 2637,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "doc": [
+              "Unblock User",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "Peer for unblocking"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "UserOutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "LoadBlockedUsers",
+            "header": 2638,
+            "response": {
+              "type": "anonymous",
+              "header": 2639,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "userPeers",
+                  "category": "full",
+                  "description": "  Blocked user peers"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "UserOutPeer"
+                    }
+                  },
+                  "id": 1,
+                  "name": "userPeers"
+                }
+              ]
+            },
+            "doc": [
+              "Load Blocked Users"
+            ],
+            "attributes": []
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "UserBlocked",
+            "header": 2629,
+            "doc": [
+              "Update about User Blocked",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  User Id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "uid"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "UserUnblocked",
+            "header": 2630,
+            "doc": [
+              "Update about User Unblocked",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  User Id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "uid"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
       "title": "Messaging",
       "package": "messaging",
       "doc": [
