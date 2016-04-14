@@ -375,6 +375,8 @@ import DZNWebViewController
                 } else {
                     Actor.checkCall(jlong(callId)!, withAttempt: 0)
                 }
+            } else if let seq = aps["seq"] as? String {
+                Actor.onPushReceivedWithSeq(jint(seq)!)
             }
         }
     }
