@@ -43,15 +43,14 @@ export function dispatch(type, action = {}) {
 
   flux.dispatch({type, ...action});
 
-  // Return response or error for chaining async actions
-  return new Promise((resolve, reject) => {
-    if (action.error) {
-      reject(action.error);
-    } else {
-      resolve(action.response ? action.response : action);
-    }
-  })
+  if (action.error) {
+    return Promise.reject(action.error);
+  }
+
+  return Promise.resolve(action.response ? action.response : action);
 }
+
+const logError = console.error.bind(console);
 
 /**
  * Dispatches three actions for an async operation represented by promise.
@@ -63,7 +62,7 @@ export function dispatchAsync(promise, types, action = {}) {
   return promise.then(
     response => dispatch(success, {...action, response}),
     error => dispatch(failure, {...action, error})
-  ).catch(console.error.bind(console));
+  ).catch(logError);
 }
 
 export default flux;
