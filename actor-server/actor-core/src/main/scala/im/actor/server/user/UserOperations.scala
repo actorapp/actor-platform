@@ -329,7 +329,7 @@ private[user] sealed trait AuthCommands {
     log.warning(s"Terminating AuthSession ${session.id} of user ${session.userId} and authId ${session.authId}")
     for {
       _ ← removeAuth(session.userId, session.authId)
-      _ ← SeqUpdatesExtension(system).deletePushCredentials(session.authId)
+      _ ← SeqUpdatesExtension(system).unregisterAllPushCredentials(session.authId)
       _ ← db.run(p.AuthSessionRepo.delete(session.userId, session.id))
     } yield publishAuthIdInvalidated(session.authId)
   }

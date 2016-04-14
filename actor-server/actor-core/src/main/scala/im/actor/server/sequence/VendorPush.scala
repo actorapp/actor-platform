@@ -14,6 +14,7 @@ import im.actor.server.userconfig.SettingsKeys
 import slick.dbio.DBIO
 
 import scala.concurrent.Future
+import scala.util.control.NoStackTrace
 
 private[sequence] trait VendorPushCommand
 
@@ -31,6 +32,8 @@ private final case class NotificationSettings(
   text:      Boolean            = true,
   peers:     Map[Peer, Boolean] = Map.empty
 )
+
+private case object FailedToUnregister extends RuntimeException("Failed to unregister push credentials")
 
 private[sequence] object VendorPush {
 
@@ -133,14 +136,18 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
   def initialized = commands orElse internal
 
   def commands: Receive = {
+    case r: RegisterPushCredentials if r.creds.isActor ⇒
+      register(r.getActor)
     case r: RegisterPushCredentials if r.creds.isApple ⇒
       register(r.getApple)
     case r: RegisterPushCredentials if r.creds.isGoogle ⇒
       register(r.getGoogle)
-    case r: RegisterPushCredentials if r.creds.isActor ⇒
-      register(r.getActor)
-    case UnregisterPushCredentials(authId) ⇒
-      unregister(authId)
+    case u: UnregisterPushCredentials if u.creds.isActor ⇒
+      unregister(u.getActor)
+    case u: UnregisterPushCredentials if u.creds.isApple ⇒
+      unregister(u.getApple)
+    case u: UnregisterPushCredentials if u.creds.isGoogle ⇒
+      unregister(u.getGoogle)
     case DeliverPush(seq, rules) ⇒
       deliver(seq, rules.getOrElse(PushRules()))
     case r: ReloadSettings ⇒
@@ -306,19 +313,23 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
   private def remove(creds: PushCredentials): Unit =
     mapping -= creds
 
-  private def unregister(authId: Long): Unit =
-    mapping.keys filter (_.authId == authId) foreach unregister
-
-  private def unregister(creds: PushCredentials): Unit =
+  private def unregister(creds: PushCredentials): Unit = {
+    val replyTo = sender()
     if (mapping.contains(creds)) {
       remove(creds)
+      val removeFu = db.run(creds match {
+        case c: GooglePushCredentials ⇒ GooglePushCredentialsRepo.deleteByToken(c.regId)
+        case c: ApplePushCredentials  ⇒ ApplePushCredentialsRepo.deleteByToken(c.token.toByteArray)
+        case c: ActorPushCredentials  ⇒ ActorPushCredentialsRepo.deleteByTopic(c.endpoint)
+      }) map (_ ⇒ UnregisterPushCredentialsAck()) pipeTo replyTo
 
-      db.run(creds match {
-        case c: GooglePushCredentials ⇒ GooglePushCredentialsRepo.delete(c.authId)
-        case c: ApplePushCredentials  ⇒ ApplePushCredentialsRepo.delete(c.authId)
-        case c: ActorPushCredentials  ⇒ ActorPushCredentialsRepo.delete(c.authId)
-      }) onFailure {
-        case e ⇒ log.error("Failed to unregister creds")
+      removeFu onFailure {
+        case e ⇒
+          log.error("Failed to unregister creds: {}", creds)
+          replyTo ! Status.Failure(FailedToUnregister)
       }
+    } else {
+      replyTo ! UnregisterPushCredentialsAck()
     }
+  }
 }
