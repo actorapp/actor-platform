@@ -4,6 +4,8 @@
 
 package im.actor.core.js.modules;
 
+import java.util.HashSet;
+
 public interface JsFileLoadedListener {
-    void onUrlBuilderReady();
+    void onFileLoaded(HashSet<Long> fileIds);
 }
