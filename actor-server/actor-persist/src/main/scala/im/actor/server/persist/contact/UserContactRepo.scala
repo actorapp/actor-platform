@@ -1,32 +1,32 @@
 package im.actor.server.persist.contact
 
-import im.actor.server.model.contact.UserContact
+import im.actor.server.model.contact.{ ContactStatus, UserContact }
 import slick.dbio.Effect.Write
 import im.actor.server.db.ActorPostgresDriver.api._
 import slick.profile.FixedSqlAction
+import ContactStatusColumnType._
 
 private[contact] abstract class UserContactBase[T](tag: Tag, tname: String) extends Table[T](tag, tname) {
   def ownerUserId = column[Int]("owner_user_id", O.PrimaryKey)
   def contactUserId = column[Int]("contact_user_id", O.PrimaryKey)
   def name = column[Option[String]]("name")
   def isDeleted = column[Boolean]("is_deleted", O.Default(false))
+  def status = column[ContactStatus]("contact_status")
 
   def idx = index("idx_user_contacts_owner_user_id_is_deleted", (ownerUserId, isDeleted))
 }
 
 final class UserContactTable(tag: Tag) extends UserContactBase[UserContact](tag, "user_contacts") {
-  def * = (ownerUserId, contactUserId, name, isDeleted) <> (UserContact.tupled, UserContact.unapply)
+  def * = (ownerUserId, contactUserId, name, isDeleted, status) <> (UserContact.tupled, UserContact.unapply)
 }
 
 object UserContactRepo {
   val contacts = TableQuery[UserContactTable]
   val active = contacts.filter(_.isDeleted === false)
-
-  def byPK(ownerUserId: Int, contactUserId: Int) =
-    contacts.filter(c ⇒ c.ownerUserId === ownerUserId && c.contactUserId === contactUserId)
+  val blocked = contacts.filter(_.status === ContactStatus.Blocked)
 
   private def byOwnerUserIdNotDeleted(ownerUserId: Rep[Int]) =
-    contacts.filter(c ⇒ c.ownerUserId === ownerUserId && c.isDeleted === false)
+    active.filter(_.ownerUserId === ownerUserId)
 
   private val byOwnerUserIdNotDeletedC = Compiled(byOwnerUserIdNotDeleted _)
 
@@ -36,6 +36,7 @@ object UserContactRepo {
 
   def byPKNotDeleted(ownerUserId: Rep[Int], contactUserId: Rep[Int]) =
     contacts.filter(c ⇒ c.ownerUserId === ownerUserId && c.contactUserId === contactUserId && c.isDeleted === false)
+
   val nameByPKNotDeletedC = Compiled(
     (ownerUserId: Rep[Int], contactUserId: Rep[Int]) ⇒
       byPKNotDeleted(ownerUserId, contactUserId) map (_.name)
@@ -55,8 +56,7 @@ object UserContactRepo {
 
   def exists(ownerUserId: Int, contactUserId: Int) = existsC((ownerUserId, contactUserId)).result
 
-  //TODO: check usages - make sure they dont need phone number
-  def find(ownerUserId: Int, contactUserId: Int) =
+  def find(ownerUserId: Int, contactUserId: Int): DBIO[Option[UserContact]] =
     byPKNotDeleted(ownerUserId, contactUserId).result.headOption
 
   def count(ownerUserId: Int) = countC(ownerUserId).result
@@ -82,8 +82,22 @@ object UserContactRepo {
     contacts.filter(c ⇒ c.ownerUserId === ownerUserId && c.contactUserId === contactUserId).map(_.name).update(name)
   }
 
+  private def byOwnerUserIdBlocked(ownerUserId: Rep[Int]) =
+    blocked.filter(c ⇒ c.ownerUserId === ownerUserId)
+
+  private val byOwnerUserIdBlockedC = Compiled(byOwnerUserIdBlocked _)
+
+  def findBlockedIds(ownerUserId: Int): DBIO[Seq[Int]] =
+    byOwnerUserIdBlockedC.applied(ownerUserId).map(_.contactUserId).result
+
   def delete(ownerUserId: Int, contactUserId: Int) =
     byPKNotDeleted(ownerUserId, contactUserId).map(_.isDeleted).update(true)
+
+  def block(ownerUserId: Int, contactUserId: Int) =
+    byPKNotDeleted(ownerUserId, contactUserId).map(_.status).update(ContactStatus.Blocked)
+
+  def unblock(ownerUserId: Int, contactUserId: Int) =
+    byPKNotDeleted(ownerUserId, contactUserId).map(_.status).update(ContactStatus.Approved)
 
   def insertOrUpdate(contact: UserContact) =
     contacts.insertOrUpdate(contact)
