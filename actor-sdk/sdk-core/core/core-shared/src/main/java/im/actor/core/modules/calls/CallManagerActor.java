@@ -21,10 +21,10 @@ import im.actor.runtime.power.WakeLock;
 
 public class CallManagerActor extends ModuleActor {
 
-    public static Constructor<CallManagerActor> CONSTRUCTOR(final ModuleContext context) {
-        return new Constructor<CallManagerActor>() {
+    public static ActorCreator CONSTRUCTOR(final ModuleContext context) {
+        return new ActorCreator() {
             @Override
-            public CallManagerActor create() {
+            public Actor create() {
                 return new CallManagerActor(context);
             }
         };
