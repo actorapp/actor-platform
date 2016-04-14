@@ -38,7 +38,7 @@ final class PushFutureListener(userId: Int, creds: ApplePushCredentials, credsId
           )
           Option(response.getTokenInvalidationTimestamp) foreach { ts ⇒
             log.warning("APNS token: {} for user: {} invalidated at {}. Deleting token now", tokenString, userId, ts)
-            seqUpdExt.deleteApplePushCredentials(tokenBytes)
+            seqUpdExt.unregisterApplePushCredentials(tokenBytes)
           }
         }
       case Failure(e) ⇒
