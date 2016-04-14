@@ -47,6 +47,7 @@ import im.actor.core.viewmodel.CallState;
 import im.actor.core.viewmodel.CallVM;
 import im.actor.core.viewmodel.DialogGroup;
 import im.actor.core.viewmodel.DialogSmall;
+import im.actor.core.viewmodel.GlobalStateVM;
 import im.actor.core.viewmodel.GroupTypingVM;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserPresence;
@@ -160,7 +161,7 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
     public JsBindedValue<String> getOnlineStatus() {
         if (onlineState == null) {
 
-            final AppStateVM vm = context().getAppStateModule().getAppStateVM();
+            final GlobalStateVM vm = context().getAppStateModule().getGlobalStateVM();
             onlineState = new JsBindedValue<>("online");
 
             vm.getIsConnecting().subscribe(new ValueChangedListener<Boolean>() {
@@ -392,7 +393,7 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
 
     public JsBindedValue<JsCounter> getGlobalCounter() {
         if (globalCounter == null) {
-            ValueModel<Integer> counter = context().getAppStateModule().getAppStateVM().getGlobalCounter();
+            ValueModel<Integer> counter = context().getAppStateModule().getGlobalStateVM().getGlobalCounter();
             globalCounter = new JsBindedValue<>(JsCounter.create(counter.get()));
             counter.subscribe(new ValueChangedListener<Integer>() {
                 @Override
@@ -406,7 +407,7 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
 
     public JsBindedValue<JsCounter> getTempGlobalCounter() {
         if (tempGlobalCounter == null) {
-            ValueModel<Integer> counter = context().getAppStateModule().getAppStateVM().getGlobalTempCounter();
+            ValueModel<Integer> counter = context().getAppStateModule().getGlobalStateVM().getGlobalTempCounter();
             tempGlobalCounter = new JsBindedValue<>(JsCounter.create(counter.get()));
             counter.subscribe(new ValueChangedListener<Integer>() {
                 @Override

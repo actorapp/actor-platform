@@ -11,7 +11,7 @@ import scodec.bits.BitVector
 
 import scala.util.{ Failure, Success, Try }
 
-final class PushFutureListener(userId: Int, creds: ApplePushCredentials)(implicit system: ActorSystem)
+final class PushFutureListener(userId: Int, creds: ApplePushCredentials, credsId: String)(implicit system: ActorSystem)
   extends GenericFutureListener[Future[PushNotificationResponse[SimpleApnsPushNotification]]] with AnyRefLogSource {
 
   private val log = Logging(system, this)
@@ -23,27 +23,27 @@ final class PushFutureListener(userId: Int, creds: ApplePushCredentials)(implici
     Try(future.get()) match {
       case Success(response) ⇒
         log.debug(
-          "APNS send complete, user: {}, token: {}, apnsKey: {}, isVoip: {}",
-          userId, tokenString, creds.apnsKey, creds.isVoip
+          "APNS send complete, user: {}, token: {}, cert id: {}",
+          userId, tokenString, credsId
         )
         if (response.isAccepted) {
           log.debug(
-            "Successfully delivered APNS notification to user: {}, token: {}, apnsKey: {}, isVoip: {}",
-            userId, tokenString, creds.apnsKey, creds.isVoip
+            "Successfully delivered APNS notification to user: {}, token: {}, cert id: {}",
+            userId, tokenString, credsId
           )
         } else {
           log.warning(
-            s"APNS rejected notification for user: {}, token: {}, apnsKey: {}, isVoip: {}, with reason: ${response.getRejectionReason}",
-            userId, tokenString, creds.apnsKey, creds.isVoip
+            s"APNS rejected notification for user: {}, token: {}, cert id: {}, with reason: {}",
+            userId, tokenString, credsId, response.getRejectionReason
           )
           Option(response.getTokenInvalidationTimestamp) foreach { ts ⇒
             log.warning("APNS token: {} for user: {} invalidated at {}. Deleting token now", tokenString, userId, ts)
-            seqUpdExt.deleteApplePushCredentials(tokenBytes)
+            seqUpdExt.unregisterApplePushCredentials(tokenBytes)
           }
         }
       case Failure(e) ⇒
-        log.error(e, "Failed to send APNS notification for user: {}, token: {}, apnsKey: {}, isVoip: {}",
-          userId, tokenString, creds.apnsKey, creds.isVoip)
+        log.error(e, "Failed to send APNS notification for user: {}, token: {}, cert id: {}",
+          userId, tokenString, credsId)
     }
   }
 

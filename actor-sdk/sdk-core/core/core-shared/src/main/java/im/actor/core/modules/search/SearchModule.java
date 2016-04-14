@@ -4,7 +4,6 @@
 
 package im.actor.core.modules.search;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +41,7 @@ import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Props;
 import im.actor.runtime.storage.ListEngine;
 
-import static im.actor.core.modules.messaging.actors.entity.EntityConverter.convert;
+import static im.actor.core.entity.EntityConverter.convert;
 import static im.actor.runtime.actors.ActorSystem.system;
 
 public class SearchModule extends AbsModule {
@@ -120,14 +119,10 @@ public class SearchModule extends AbsModule {
                                 final ArrayList<MessageSearchEntity> res = new ArrayList<MessageSearchEntity>();
                                 for (ApiMessageSearchItem r : response.getSearchResults()) {
                                     ApiMessageSearchResult itm = r.getResult();
-                                    try {
-                                        res.add(new MessageSearchEntity(
-                                                convert(itm.getPeer()), itm.getRid(),
-                                                itm.getDate(), itm.getSenderId(),
-                                                AbsContent.fromMessage(itm.getContent())));
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
+                                    res.add(new MessageSearchEntity(
+                                            convert(itm.getPeer()), itm.getRid(),
+                                            itm.getDate(), itm.getSenderId(),
+                                            AbsContent.fromMessage(itm.getContent())));
                                 }
                                 runOnUiThread(new Runnable() {
                                     @Override

@@ -46,38 +46,20 @@ public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, Dia
             joinGroupUrl = getArguments().getString("invite_url", null);
         }
 
-        View res = inflate(inflater, container, R.layout.fragment_dialogs,
-                messenger().getDialogsDisplayList());
-        res.setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackgroundColor());
-        // setAnimationsEnabled(true);
+        View res = inflate(inflater, container, R.layout.fragment_dialogs, messenger().getDialogsDisplayList());
+        res.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
 
         // Footer
 
         FrameLayout footer = new FrameLayout(getActivity());
         footer.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(160)));
-        footer.setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackgroundColor());
-        ImageView shadow = new ImageView(getActivity());
-        shadow.setImageResource(R.drawable.card_shadow_bottom);
-        shadow.setScaleType(ImageView.ScaleType.FIT_XY);
-        shadow.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
-        footer.addView(shadow);
-
-        TextView hint = new TextView(getActivity());
-        hint.setText(R.string.dialogs_hint);
-        hint.setTypeface(Fonts.regular());
-        hint.setPadding(Screen.dp(16), Screen.dp(8), Screen.dp(16), 0);
-        hint.setGravity(Gravity.CENTER);
-        hint.setTextSize(15);
-        hint.setTextColor(ActorSDK.sharedActor().style.getTextSubHeaderColor());
-        hint.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        footer.addView(hint);
-
+        footer.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         addFooterView(footer);
 
         // Header
 
         View header = new View(getActivity());
-        header.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(0)));
+        header.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(8)));
         header.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         addHeaderView(header);
 

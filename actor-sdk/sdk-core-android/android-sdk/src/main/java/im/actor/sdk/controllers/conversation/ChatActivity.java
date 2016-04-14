@@ -1025,7 +1025,7 @@ public class ChatActivity extends ActorEditTextActivity {
 
                     if (mentionStart != -1 && mentionStart + mentionSearchString.length() + 1 <= messageEditText.getText().length()) {
 
-                        String mentionString = origMention + (mentionStart == 0 ? "" : ": ");
+                        String mentionString = origMention + (mentionStart == 0 ? ": " : " ");
 
                         Editable text = messageEditText.getText();
 
@@ -1067,7 +1067,7 @@ public class ChatActivity extends ActorEditTextActivity {
         Editable text = messageEditText.getText();
         if (text.length() > 0 && text.charAt(text.length() - 1) != ' ') text.append(" ");
 
-        String mentionString = ((nick != null && !nick.isEmpty()) ? "@" + nick : name) + (messageEditText.getText().length() > 0 ? "" : ": ");
+        String mentionString = ((nick != null && !nick.isEmpty()) ? "@" + nick : name) + (messageEditText.getText().length() > 0 ? " " : ": ");
 
         text.append(mentionString);
         messageEditText.requestFocus();

@@ -3188,6 +3188,160 @@
       ]
     },
     {
+      "title": "Privacy",
+      "package": "privacy",
+      "items": [
+        {
+          "type": "rpc",
+          "content": {
+            "name": "BlockUser",
+            "header": 2636,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "doc": [
+              "Block User",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "Peer for blocking"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "UserOutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "UnblockUser",
+            "header": 2637,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "doc": [
+              "Unblock User",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "Peer for unblocking"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "UserOutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "LoadBlockedUsers",
+            "header": 2638,
+            "response": {
+              "type": "anonymous",
+              "header": 2639,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "userPeers",
+                  "category": "full",
+                  "description": "  Blocked user peers"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "UserOutPeer"
+                    }
+                  },
+                  "id": 1,
+                  "name": "userPeers"
+                }
+              ]
+            },
+            "doc": [
+              "Load Blocked Users"
+            ],
+            "attributes": []
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "UserBlocked",
+            "header": 2629,
+            "doc": [
+              "Update about User Blocked",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  User Id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "uid"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "UserUnblocked",
+            "header": 2630,
+            "doc": [
+              "Update about User Unblocked",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  User Id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "uid"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
       "title": "Messaging",
       "package": "messaging",
       "doc": [
@@ -15011,6 +15165,33 @@
         {
           "type": "rpc",
           "content": {
+            "name": "UnregisterGooglePush",
+            "header": 2631,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Unregistering Google Push",
+              {
+                "type": "reference",
+                "argument": "token",
+                "category": "danger",
+                "description": "Token value"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "token"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
             "name": "RegisterApplePush",
             "header": 76,
             "response": {
@@ -15018,7 +15199,7 @@
               "name": "Void"
             },
             "doc": [
-              "[OBSOLETE] Registering apple push on server",
+              "Registering apple push on server",
               {
                 "type": "reference",
                 "argument": "apnsKey",
@@ -15049,6 +15230,33 @@
         {
           "type": "rpc",
           "content": {
+            "name": "UnregisterApplePush",
+            "header": 2632,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Unregistering Apple Push",
+              {
+                "type": "reference",
+                "argument": "token",
+                "category": "full",
+                "description": "Token"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "token"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
             "name": "RegisterApplePushKit",
             "header": 2576,
             "response": {
@@ -15056,7 +15264,7 @@
               "name": "Void"
             },
             "doc": [
-              "[OBSOLETE] Registration of a new Apple's PushKit tokens",
+              "Registration of a new Apple's PushKit tokens",
               {
                 "type": "reference",
                 "argument": "apnsKey",
@@ -15079,6 +15287,33 @@
               {
                 "type": "string",
                 "id": 2,
+                "name": "token"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "UnregisterApplePushKit",
+            "header": 2633,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Unregistering Apple Push Kit token",
+              {
+                "type": "reference",
+                "argument": "token",
+                "category": "hidden",
+                "description": "Token Value"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
                 "name": "token"
               }
             ]
@@ -15125,6 +15360,33 @@
         {
           "type": "rpc",
           "content": {
+            "name": "UnregisterApplePushToken",
+            "header": 2634,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Unregister Apple Push token",
+              {
+                "type": "reference",
+                "argument": "token",
+                "category": "hidden",
+                "description": "Token value"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "token"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
             "name": "RegisterActorPush",
             "header": 2575,
             "response": {
@@ -15132,7 +15394,7 @@
               "name": "Void"
             },
             "doc": [
-              "Register Actor Push token",
+              "Register Actor Push endpoint",
               {
                 "type": "reference",
                 "argument": "endpoint",
@@ -15169,16 +15431,28 @@
         {
           "type": "rpc",
           "content": {
-            "name": "UnregisterPush",
-            "header": 52,
+            "name": "UnregisterActorPush",
+            "header": 2635,
             "response": {
               "type": "reference",
               "name": "Void"
             },
             "doc": [
-              "Unregister push"
+              "Unregister Actor Push endpoint",
+              {
+                "type": "reference",
+                "argument": "endpoint",
+                "category": "full",
+                "description": "Endpoint for unregistering"
+              }
             ],
-            "attributes": []
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "endpoint"
+              }
+            ]
           }
         }
       ]
@@ -17327,6 +17601,10 @@
               {
                 "name": "FASTER_MESSAGES",
                 "id": 4
+              },
+              {
+                "name": "STRIP_COUNTERS",
+                "id": 5
               }
             ]
           }

@@ -171,4 +171,8 @@ public class SQLiteIndexStorage implements IndexStorage {
             db.endTransaction();
         }
     }
+
+    public void onDrop() {
+        isSqliteChecked = false;
+    }
 }

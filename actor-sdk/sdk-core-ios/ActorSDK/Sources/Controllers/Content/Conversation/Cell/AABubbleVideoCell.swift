@@ -59,7 +59,7 @@ public class AABubbleVideoCell: AABubbleBaseFileCell {
     
     // Binding
     
-    public override func bind(message: ACMessage, reuse: Bool, cellLayout: AACellLayout, setting: AACellSetting) {
+    public override func bind(message: ACMessage, receiveDate: jlong, readDate: jlong, reuse: Bool, cellLayout: AACellLayout, setting: AACellSetting) {
         self.bindedLayout = cellLayout as! VideoCellLayout
         
         bubbleInsets = UIEdgeInsets(
@@ -99,31 +99,26 @@ public class AABubbleVideoCell: AABubbleBaseFileCell {
         // Update status
         if (isOut) {
             statusView.hidden = false
-            switch(message.messageState.ordinal()) {
-            case ACMessageState.PENDING().ordinal():
-                self.statusView.image = appStyle.chatIconClock;
-                self.statusView.tintColor = appStyle.chatStatusMediaSending
-                break;
-            case ACMessageState.SENT().ordinal():
-                self.statusView.image = appStyle.chatIconCheck1;
-                self.statusView.tintColor = appStyle.chatStatusMediaSent
-                break;
-            case ACMessageState.RECEIVED().ordinal():
-                self.statusView.image = appStyle.chatIconCheck2;
-                self.statusView.tintColor = appStyle.chatStatusMediaReceived
-                break;
-            case ACMessageState.READ().ordinal():
-                self.statusView.image = appStyle.chatIconCheck2;
-                self.statusView.tintColor = appStyle.chatStatusMediaRead
-                break;
-            case ACMessageState.ERROR().ordinal():
-                self.statusView.image = appStyle.chatIconError;
+            switch(message.messageState.toNSEnum()) {
+            case .SENT:
+                if message.sortDate <= readDate {
+                    self.statusView.image = appStyle.chatIconCheck2
+                    self.statusView.tintColor = appStyle.chatStatusMediaRead
+                } else if message.sortDate <= receiveDate {
+                    self.statusView.image = appStyle.chatIconCheck2
+                    self.statusView.tintColor = appStyle.chatStatusMediaReceived
+                } else {
+                    self.statusView.image = appStyle.chatIconCheck1
+                    self.statusView.tintColor = appStyle.chatStatusMediaSent
+                }
+            case .ERROR:
+                self.statusView.image = appStyle.chatIconError
                 self.statusView.tintColor = appStyle.chatStatusMediaError
                 break
             default:
-                self.statusView.image = appStyle.chatIconClock;
+                self.statusView.image = appStyle.chatIconClock
                 self.statusView.tintColor = appStyle.chatStatusMediaSending
-                break;
+                break
             }
         } else {
             statusView.hidden = true

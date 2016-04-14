@@ -56,7 +56,7 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
 
     protected View onCreateContactsView(int layoutId, LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View res = inflate(inflater, container, layoutId, messenger().buildContactsDisplayList());
-        res.findViewById(R.id.collection).setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackgroundColor());
+        res.findViewById(R.id.collection).setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         emptyView = res.findViewById(R.id.emptyCollection);
         if (emptyView != null) {
             emptyView.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
@@ -95,12 +95,18 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
                 }
             }
         });
-        res.setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackgroundColor());
+        res.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
 
         return res;
     }
 
     protected void addFootersAndHeaders() {
+
+        View header = new View(getActivity());
+        header.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(8)));
+        header.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
+        addHeaderView(header);
+
         if (useCompactVersion) {
             View footer = new View(getActivity());
             footer.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
@@ -116,23 +122,18 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
                     sendIntent.setType("text/plain");
                     startActivity(sendIntent);
                 }
-            }, false);
+            }, true);
 
-            addFooterOrHeaderAction(ActorSDK.sharedActor().style.getActionAddContactColor(), R.drawable.ic_person_add_white_24dp, R.string.contacts_add, true, new Runnable() {
+            addFooterOrHeaderAction(ActorSDK.sharedActor().style.getActionAddContactColor(), R.drawable.ic_person_add_white_24dp, R.string.contacts_add, false, new Runnable() {
                 @Override
                 public void run() {
                     startActivity(new Intent(getActivity(), AddContactActivity.class));
                 }
-            }, false);
+            }, true);
 
             FrameLayout footer = new FrameLayout(getActivity());
             footer.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(112)));
-            ImageView shadow = new ImageView(getActivity());
-            shadow.setImageResource(R.drawable.card_shadow_bottom);
-            shadow.setScaleType(ImageView.ScaleType.FIT_XY);
-            shadow.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
-            footer.addView(shadow);
-            footer.setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackgroundColor());
+            footer.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
             addFooterView(footer);
         }
     }
@@ -199,9 +200,9 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
                 invitePanel.addView(div, layoutParams);
             }
         }
-        if(isHeader){
+        if (isHeader) {
             addHeaderView(container);
-        }else{
+        } else {
             addFooterView(container);
         }
     }
