@@ -83,6 +83,9 @@ public class MembersAdapter extends HolderAdapter<GroupMember> {
         public void bind(GroupMember data, int position, Context context) {
             user = users().get(data.getUid());
             ActorSDK.sharedActor().getMessenger().onUserVisible(data.getUid());
+            if (onlineBinding != null) {
+                onlineBinding.unbind();
+            }
             onlineBinding = fragment.bindOnline(online, user);
 
             avatarView.bind(user);
