@@ -87,7 +87,7 @@ class MessageStore extends ReduceStore {
             receiveDate: action.receiveDate,
             readDate: action.readDate,
             isLoaded: action.isLoaded,
-            count: state.count + 1
+            count: Math.min(action.messages.length, state.count + action.messages.length - state.messages.length)
           };
         }
 
