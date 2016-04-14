@@ -18,6 +18,7 @@
 @import 'login';
 @import 'sidebar';
 @import 'toolbar';
+
 @import 'messages';
 @import 'search/index';
 @import 'status';
@@ -39,7 +40,7 @@
 @import 'call';
 @import 'tooltip';
 @import 'sticker';
-@import 'common/contact';
+@import 'components/common/index';
 @import 'components/message_art/index';
 @import 'chat/layout';
 

@@ -22,6 +22,7 @@
     "quotes": [1, "single"],
     "no-alert": 0,
     "no-underscore-dangle": 0,
+    "no-case-declarations": 0,
     "strict": 0,
     "no-console": 0,
     "no-trailing-spaces": 0,
