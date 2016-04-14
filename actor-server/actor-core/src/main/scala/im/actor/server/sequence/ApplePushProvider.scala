@@ -18,17 +18,22 @@ private[sequence] final class ApplePushProvider(userId: Int)(implicit system: Ac
 
   def deliverInvisible(seq: Int, creds: ApplePushCredentials): Unit = {
     withClient(creds) { implicit client ⇒
-      log.debug("Delivering invisible(seq:{}) to apnsKey: {}", seq, creds.apnsKey)
-      db.run(HistoryMessageRepo.getUnreadTotal(userId)) foreach { unreadTotal ⇒
-        val payload =
-          new ApnsPayloadBuilder()
-            .addCustomProperty("seq", seq)
-            .setContentAvailable(true)
-            .setSoundFileName("")
-            .setBadgeNumber(unreadTotal)
-            .buildWithDefaultMaximumLength()
+      if (isLegacyCreds(creds)) {
+        log.debug("Delivering invisible(seq:{}) to apnsKey: {}", seq, creds.apnsKey)
+        db.run(HistoryMessageRepo.getUnreadTotal(userId)) foreach { unreadTotal ⇒
+          val payload =
+            new ApnsPayloadBuilder()
+              .addCustomProperty("seq", seq)
+              .setContentAvailable(true)
+              .setSoundFileName("")
+              .setBadgeNumber(unreadTotal)
+              .buildWithDefaultMaximumLength()
 
-        sendNotification(payload, creds, userId)
+          sendNotification(payload, creds, userId)
+        }
+      } else {
+        log.debug("Delivering invisible(seq:{}) to bundleId: {}", seq, creds.bundleId)
+        sendNotification(payload = seqOnly(seq), creds, userId)
       }
     }
   }
@@ -42,24 +47,34 @@ private[sequence] final class ApplePushProvider(userId: Int)(implicit system: Ac
     isVibrationEnabled: Boolean
   ): Unit = {
     withClient(creds) { implicit client ⇒
-      val builder =
-        new ApnsPayloadBuilder()
-          .addCustomProperty("seq", seq)
-          .setContentAvailable(true)
+      if (isLegacyCreds(creds)) {
+        val builder =
+          new ApnsPayloadBuilder()
+            .addCustomProperty("seq", seq)
+            .setContentAvailable(true)
 
-      if (data.text.nonEmpty && isTextEnabled)
-        builder.setAlertBody(data.text)
-      else if (data.censoredText.nonEmpty)
-        builder.setAlertBody(data.censoredText)
+        if (data.text.nonEmpty && isTextEnabled)
+          builder.setAlertBody(data.text)
+        else if (data.censoredText.nonEmpty)
+          builder.setAlertBody(data.censoredText)
 
-      if (isSoundEnabled)
-        builder.setSoundFileName("iapetus.caf")
+        if (isSoundEnabled)
+          builder.setSoundFileName("iapetus.caf")
 
-      val payload = builder.buildWithDefaultMaximumLength()
-
-      sendNotification(payload, creds, userId)
+        val payload = builder.buildWithDefaultMaximumLength()
+        sendNotification(payload, creds, userId)
+      } else {
+        sendNotification(payload = seqOnly(seq), creds, userId)
+      }
     }
   }
+
+  private def seqOnly(seq: Int): String =
+    new ApnsPayloadBuilder()
+      .addCustomProperty("seq", seq)
+      .buildWithDefaultMaximumLength()
+
+  private def isLegacyCreds(creds: ApplePushCredentials) = creds.bundleId.isEmpty
 
   private def withClient[A](creds: ApplePushCredentials)(f: ApnsClient[SimpleApnsPushNotification] ⇒ A): Unit = {
     val credsKey = extractCredsId(creds)
