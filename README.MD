@@ -18,7 +18,7 @@ Actor is a platform for instant messaging. Actor provides features like:
 * large group chats; 
 * unlimited history storage;
 * file sharing;
-* authentication with one time passwords sent to your phone or email;
+* phone and email authentication via one time passwords;
 * easy integration with external services.
 
 Actor has one of the best IM apps for Android, iOS, and Web. Thay are designed to handle poor connectivity, support offline messaging experience and file storage in applications, and also build contact lists automatically!
