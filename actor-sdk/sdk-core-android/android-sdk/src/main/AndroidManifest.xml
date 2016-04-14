@@ -83,12 +83,16 @@
                     android:host="quit.email"
                     android:pathPrefix="/join/"
                     android:scheme="https" />
-                <data android:scheme="actor" />
+                <data
+                    android:host="app.actor.im"
+                    android:pathPrefix="/#/join/"
+                    android:scheme="https" />
             </intent-filter>
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="actor" />
             </intent-filter>
 
