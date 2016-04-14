@@ -265,7 +265,7 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
   }
 
   def getDialogInfo(userId: Int, peer: Peer): Future[DialogInfo] = {
-    (userExt.processorRegion.ref ? UserEnvelope(userId).withDialogEnvelope(DialogEnvelope().withGetInfo(DialogQueries.GetInfo())))
+    (userExt.processorRegion.ref ? UserEnvelope(userId).withDialogEnvelope(DialogEnvelope().withGetInfo(DialogQueries.GetInfo(peer))))
       .mapTo[DialogQueries.GetInfoResponse]
       .map(_.info)
   }
