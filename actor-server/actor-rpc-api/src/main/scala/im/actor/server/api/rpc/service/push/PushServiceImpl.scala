@@ -29,13 +29,8 @@ final class PushServiceImpl(
   private implicit val db: Database = DbExtension(actorSystem).db
   private implicit val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(actorSystem)
 
-  override def doHandleUnregisterPush(clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
-    authorized(clientData) { client ⇒
-      for {
-        _ ← seqUpdExt.deletePushCredentials(client.authId)
-      } yield Ok(ResponseVoid)
-    }
-  }
+  private val OkVoid = Ok(ResponseVoid)
+  private val ErrWrongToken = Error(PushRpcErrors.WrongToken)
 
   override def doHandleRegisterGooglePush(projectId: Long, token: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val creds = GooglePushCredentials(clientData.authId, projectId, token)
@@ -43,10 +38,10 @@ final class PushServiceImpl(
       _ ← db.run(GooglePushCredentialsRepo.deleteByToken(token))
       _ ← db.run(GooglePushCredentialsRepo.createOrUpdate(creds))
       _ = seqUpdExt.registerGooglePushCredentials(creds)
-    } yield Ok(ResponseVoid)
+    } yield OkVoid
   }
 
-  override def doHandleRegisterApplePush(apnsKey: Int, token: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+  override def doHandleRegisterApplePush(apnsKey: Int, token: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
     BitVector.fromHex(token) match {
       case Some(tokenBits) ⇒
         val tokenBytes = tokenBits.toByteArray
@@ -60,12 +55,11 @@ final class PushServiceImpl(
           _ ← ApplePushCredentialsRepo.deleteByToken(tokenBytes)
           _ ← ApplePushCredentialsRepo.createOrUpdate(creds)
           _ = seqUpdExt.registerApplePushCredentials(creds)
-        } yield Ok(ResponseVoid)
+        } yield OkVoid
         db.run(action)
       case None ⇒
-        Future.successful(Error(PushRpcErrors.WrongToken))
+        Future.successful(ErrWrongToken)
     }
-  }
 
   override def doHandleRegisterActorPush(
     topic:      String,
@@ -78,15 +72,9 @@ final class PushServiceImpl(
       _ ← ActorPushCredentialsRepo.deleteByTopic(topic)
       _ ← ActorPushCredentialsRepo.createOrUpdate(clientData.authId, topic)
       _ = seqUpdExt.registerActorPushCredentials(creds)
-    } yield Ok(ResponseVoid))
+    } yield OkVoid)
   }
 
-  /**
-   * Registration of a new Apple's PushKit tokens
-   *
-   * @param apnsKey APNS key id
-   * @param token   token value @note Contains sensitive data!!!
-   */
   override protected def doHandleRegisterApplePushKit(
     apnsKey:    Int,
     token:      String,
@@ -104,17 +92,11 @@ final class PushServiceImpl(
         val action: DBIO[HandlerResult[ResponseVoid]] = for {
           _ ← ApplePushCredentialsRepo.deleteByToken(tokenBytes)
           _ ← ApplePushCredentialsRepo.createOrUpdate(creds)
-        } yield Ok(ResponseVoid)
+        } yield OkVoid
         db.run(action)
-      case None ⇒ Future.successful(Error(PushRpcErrors.WrongToken))
+      case None ⇒ Future.successful(ErrWrongToken)
     }
 
-  /**
-   * Registering Apple Push Token
-   *
-   * @param bundleId Bundle Id of app
-   * @param token    Push token
-   */
   override protected def doHandleRegisterApplePushToken(
     bundleId:   String,
     token:      String,
@@ -133,10 +115,44 @@ final class PushServiceImpl(
           _ ← ApplePushCredentialsRepo.deleteByToken(tokenBytes)
           _ ← ApplePushCredentialsRepo.createOrUpdate(creds)
           _ = seqUpdExt.registerApplePushCredentials(creds)
-        } yield Ok(ResponseVoid)
+        } yield OkVoid
         db.run(action)
       case None ⇒
-        Future.successful(Error(PushRpcErrors.WrongToken))
+        Future.successful(ErrWrongToken)
+    }
+
+  // TODO: figure out, should user be authorized?
+  override protected def doHandleUnregisterGooglePush(token: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
+    seqUpdExt.unregisterGooglePushCredentials(token) map (_ ⇒ OkVoid)
+
+  // TODO: figure out, should user be authorized?
+  override protected def doHandleUnregisterActorPush(endpoint: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
+    seqUpdExt.unregisterActorPushCredentials(endpoint) map (_ ⇒ OkVoid)
+
+  // TODO: figure out, should user be authorized?
+  override protected def doHandleUnregisterApplePush(token: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
+    unregisterApple(token)
+
+  // TODO: figure out, should user be authorized?
+  override protected def doHandleUnregisterApplePushToken(token: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
+    unregisterApple(token)
+
+  // TODO: figure out, should user be authorized?
+  override protected def doHandleUnregisterApplePushKit(token: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
+    BitVector.fromHex(token) match {
+      case Some(tokenBits) ⇒
+        val tokenBytes = tokenBits.toByteArray
+        db.run(ApplePushCredentialsRepo.deleteByToken(tokenBytes)) map (_ ⇒ OkVoid)
+      case None ⇒ Future.successful(ErrWrongToken)
+    }
+
+  private def unregisterApple(token: String) =
+    BitVector.fromHex(token) match {
+      case Some(tokenBits) ⇒
+        val tokenBytes = tokenBits.toByteArray
+        seqUpdExt.unregisterApplePushCredentials(tokenBytes) map (_ ⇒ OkVoid)
+      case None ⇒
+        Future.successful(ErrWrongToken)
     }
 
 }
