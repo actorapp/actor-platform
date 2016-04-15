@@ -37,7 +37,7 @@ class DialogFooter extends Component {
   render() {
     if (!this.props.isMember) {
       return (
-        <footer className="dialog__footer dialog__footer--disabled row center-xs middle-xs">
+        <footer className="chat__footer chat__footer--disabled row center-xs middle-xs">
           <h3>You are not a member</h3>
         </footer>
       );
