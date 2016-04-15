@@ -132,6 +132,10 @@ class DialogActionCreators extends ActionCreators {
     }, { peer });
   }
 
+  blockUser(id) {
+    console.debug('Block user %s', id);
+  }
+
   loadMoreMessages(peer) {
     dispatch(ActionTypes.MESSAGES_LOADING_MORE);
     if (MessageStore.isAllRendered()) {
