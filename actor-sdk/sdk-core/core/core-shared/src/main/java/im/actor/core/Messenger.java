@@ -69,6 +69,7 @@ import im.actor.core.viewmodel.UploadFileVM;
 import im.actor.core.viewmodel.UploadFileVMCallback;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.actors.ActorSystem;
+import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.mvvm.MVVMCollection;
 import im.actor.runtime.mvvm.ValueModel;
 import im.actor.runtime.promise.Promise;
@@ -1511,10 +1512,49 @@ public class Messenger {
      * @param gid group's id
      * @return Command for execution
      */
-    @Nullable
+    @NotNull
     @ObjectiveCName("revokeIntegrationTokenCommandWithGid:")
     public Command<String> revokeIntegrationToken(int gid) {
         return modules.getGroupsModule().revokeIntegrationToken(gid);
+    }
+
+    //////////////////////////////////////
+    //         Blocked List
+    //////////////////////////////////////
+
+    /**
+     * Load Blocked users list
+     *
+     * @return promise
+     */
+    @NotNull
+    @ObjectiveCName("loadBlockedUsers")
+    public Promise<List<User>> loadBlockedUsers() {
+        return modules.getBlockList().loadBlockedUsers();
+    }
+
+    /**
+     * Block users
+     *
+     * @param uid user's id
+     * @return promise
+     */
+    @NotNull
+    @ObjectiveCName("blockUser:")
+    public Promise<Void> blockUser(int uid) {
+        return modules.getBlockList().blockUser(uid);
+    }
+
+    /**
+     * Unblock users
+     *
+     * @param uid user's id
+     * @return promise
+     */
+    @NotNull
+    @ObjectiveCName("unblockUser:")
+    public Promise<Void> unblockUser(int uid) {
+        return modules.getBlockList().unblockUser(uid);
     }
 
     //////////////////////////////////////

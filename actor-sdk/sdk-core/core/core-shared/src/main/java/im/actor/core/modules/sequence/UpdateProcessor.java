@@ -50,6 +50,7 @@ import im.actor.core.api.updates.UpdateUserOnline;
 import im.actor.core.entity.Peer;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.blocklist.BlockListProcessor;
 import im.actor.core.modules.calls.CallsProcessor;
 import im.actor.core.modules.contacts.ContactsProcessor;
 import im.actor.core.modules.encryption.EncryptedProcessor;
@@ -77,8 +78,6 @@ import im.actor.core.viewmodel.UserVM;
 
 public class UpdateProcessor extends AbsModule {
 
-    private static final String TAG = "Updates";
-
     private SettingsProcessor settingsProcessor;
     private UsersProcessor usersProcessor;
     private MessagesProcessor messagesProcessor;
@@ -90,6 +89,7 @@ public class UpdateProcessor extends AbsModule {
     private CallsProcessor callsProcessor;
     private EncryptedProcessor encryptedProcessor;
     private EventBusProcessor eventBusProcessor;
+    private BlockListProcessor blockListProcessor;
 
     public UpdateProcessor(ModuleContext context) {
         super(context);
@@ -104,6 +104,7 @@ public class UpdateProcessor extends AbsModule {
         this.callsProcessor = new CallsProcessor(context);
         this.encryptedProcessor = new EncryptedProcessor(context);
         this.eventBusProcessor = new EventBusProcessor(context);
+        this.blockListProcessor = new BlockListProcessor(context);
     }
 
     public void applyRelated(List<ApiUser> users,
@@ -235,6 +236,9 @@ public class UpdateProcessor extends AbsModule {
             return;
         }
         if (contactsProcessor.process(update)) {
+            return;
+        }
+        if (blockListProcessor.process(update)) {
             return;
         }
         if (update instanceof UpdateMessage) {

@@ -70,6 +70,8 @@ public class UserVM extends BaseValueModel<User> {
     @NotNull
     private BooleanValueModel isContact;
     @NotNull
+    private BooleanValueModel isBlocked;
+    @NotNull
     private ValueModelUserPresence presence;
     private CommonTimer presenceTimer;
 
@@ -83,7 +85,7 @@ public class UserVM extends BaseValueModel<User> {
     private ValueModelContactRecord contacts;
 
     @NotNull
-    private ArrayList<ModelChangedListener<UserVM>> listeners = new ArrayList<ModelChangedListener<UserVM>>();
+    private ArrayList<ModelChangedListener<UserVM>> listeners = new ArrayList<>();
 
     /**
      * <p>INTERNAL API</p>
@@ -105,6 +107,7 @@ public class UserVM extends BaseValueModel<User> {
         about = new StringValueModel("user." + id + ".about", user.getAbout());
         avatar = new AvatarValueModel("user." + id + ".avatar", user.getAvatar());
         isContact = new BooleanValueModel("user." + id + ".contact", modules.getContactsModule().isUserContact(id));
+        isBlocked = new BooleanValueModel("user." + id + ".blocked", modules.getBlockList().isUserBlocked(id));
         presence = new ValueModelUserPresence("user." + id + ".presence", new UserPresence(UserPresence.State.UNKNOWN));
         phones = new ValueModelUserPhone("user." + id + ".phones", buildPhones(user.getRecords()));
         emails = new ValueModelUserEmail("user." + id + ".emails", buildEmails(user.getRecords()));
@@ -248,6 +251,17 @@ public class UserVM extends BaseValueModel<User> {
     @ObjectiveCName("isContactModel")
     public BooleanValueModel isContact() {
         return isContact;
+    }
+
+    /**
+     * Get ValueModel of flag if user is blocked
+     *
+     * @return ValueModel of Boolean
+     */
+    @NotNull
+    @ObjectiveCName("isBlockedModel")
+    public BooleanValueModel getIsBlocked() {
+        return isBlocked;
     }
 
     /**
