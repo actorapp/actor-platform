@@ -6,7 +6,9 @@ import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 import ReactMixin from 'react-mixin';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
+
 import isInside from '../../../utils/isInside';
+import { quoteMessage } from '../../../utils/MessageUtils';
 
 import { MessageContentTypes } from '../../../constants/ActorAppConstants';
 
@@ -79,7 +81,7 @@ class MessageActions extends Component {
 
   handleQuote = () => {
     const { message } = this.props;
-    ComposeActionCreators.pasteText(`> ${message.content.text} \n`);
+    ComposeActionCreators.pasteText(quoteMessage(message.content.text) + '\n');
     this.handleDropdownClose();
   };
 
