@@ -1,5 +1,6 @@
 package im.actor.sdk.controllers.fragment;
 
+import android.support.v7.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -13,6 +14,14 @@ import android.widget.TextView;
 
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
+import im.actor.runtime.actors.Actor;
+import im.actor.runtime.actors.ActorCreator;
+import im.actor.runtime.actors.ActorRef;
+import im.actor.runtime.actors.ActorSystem;
+import im.actor.runtime.actors.Props;
+import im.actor.runtime.actors.messages.PoisonPill;
+import im.actor.runtime.function.Consumer;
+import im.actor.runtime.promise.Promise;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.R;
@@ -21,6 +30,12 @@ import im.actor.sdk.util.ViewUtils;
 public class BaseFragment extends BinderCompatFragment {
 
     protected final ActorStyle style = ActorSDK.sharedActor().style;
+    private ActorRef promiseActor = ActorSystem.system().actorOf(Props.create(new ActorCreator() {
+        @Override
+        public Actor create() {
+            return new Actor();
+        }
+    }), "actor/promise_actor_" + hashCode());
 
     @Override
     public void onCreate(Bundle saveInstance) {
@@ -111,21 +126,17 @@ public class BaseFragment extends BinderCompatFragment {
     }
 
     public <T> void execute(Command<T> cmd, int title, final CommandCallback<T> callback) {
-        final ProgressDialog progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage(getString(title));
-        progressDialog.setCancelable(false);
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.show();
+        final ProgressDialog dialog = ProgressDialog.show(getContext(), "", getString(title), true, false);
         cmd.start(new CommandCallback<T>() {
             @Override
             public void onResult(T res) {
-                progressDialog.dismiss();
+                dialog.dismiss();
                 callback.onResult(res);
             }
 
             @Override
             public void onError(Exception e) {
-                progressDialog.dismiss();
+                dialog.dismiss();
                 callback.onError(e);
             }
         });
@@ -137,10 +148,7 @@ public class BaseFragment extends BinderCompatFragment {
 
     public <T> void execute(Command<T> cmd, int title) {
 
-        final AppCompatDialog dialog = new AppCompatDialog(getActivity());
-        dialog.setTitle(title);
-        dialog.setCancelable(false);
-        dialog.show();
+        final ProgressDialog dialog = ProgressDialog.show(getContext(), "", getString(title), true, false);
 
         cmd.start(new CommandCallback<T>() {
             @Override
@@ -153,6 +161,28 @@ public class BaseFragment extends BinderCompatFragment {
                 dialog.dismiss();
             }
         });
+    }
+
+    public <T> void execute(Promise<T> promise) {
+        execute(promise, R.string.progress_common);
+    }
+
+    public <T> void execute(Promise<T> promise, int title) {
+        final ProgressDialog dialog = ProgressDialog.show(getContext(), "", getString(title), true, false);
+        promise
+                .then(new Consumer<T>() {
+                    @Override
+                    public void apply(T t) {
+                        dialog.dismiss();
+                    }
+                })
+                .failure(new Consumer<Exception>() {
+                    @Override
+                    public void apply(Exception e) {
+                        dialog.dismiss();
+                    }
+                })
+                .done(promiseActor);
     }
 
     public View buildRecord(String titleText, String valueText,
@@ -239,5 +269,11 @@ public class BaseFragment extends BinderCompatFragment {
         container.addView(recordView);
 
         return recordView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        promiseActor.send(PoisonPill.INSTANCE);
     }
 }

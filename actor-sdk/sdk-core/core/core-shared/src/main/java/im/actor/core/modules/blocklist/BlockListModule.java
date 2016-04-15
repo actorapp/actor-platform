@@ -172,10 +172,12 @@ public class BlockListModule extends AbsModule {
 
     public void markBlocked(int uid) {
         preferences().putBool("blocked_" + uid, true);
+        context().getUsersModule().getUsers().get(uid).getIsBlocked().change(true);
     }
 
     public void markNonBlocked(int uid) {
         preferences().putBool("blocked_" + uid, false);
+        context().getUsersModule().getUsers().get(uid).getIsBlocked().change(false);
     }
 
     public boolean isUserBlocked(int uid) {
