@@ -1418,7 +1418,9 @@ public class ChatActivity extends ActorEditTextActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mentionsAdapter.dispose();
+        if (mentionsAdapter != null) {
+            mentionsAdapter.dispose();
+        }
         if (fastShareAdapter != null) {
             fastShareAdapter.release();
             fastShareAdapter = null;
