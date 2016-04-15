@@ -26,16 +26,11 @@ import ContactDetails from '../common/ContactDetails.react';
 import ToggleNotifications from '../common/ToggleNotifications.react';
 import Fold from '../common/Fold.react';
 
-const getStateFromStores = (uid) => {
-  const thisPeer = uid ? UserStore.getUser(uid) : null;
-  return {
-    thisPeer,
-    isNotificationsEnabled: thisPeer ? NotificationsStore.isNotificationsEnabled(thisPeer) : true,
-    message: OnlineStore.getMessage()
-  };
-};
-
 class UserProfile extends Component {
+  static contextTypes = {
+    intl: PropTypes.object
+  };
+
   static propTypes = {
     user: PropTypes.object.isRequired
   };
@@ -45,12 +40,16 @@ class UserProfile extends Component {
   }
 
   static calculateState(prevState, nextProps) {
-    return getStateFromStores(nextProps.user.id);
-  }
+    const uid = nextProps.user.id;
+    const peer = uid ? UserStore.getUser(uid) : null;
 
-  static contextTypes = {
-    intl: PropTypes.object
-  };
+    return {
+      ...prevState,
+      peer,
+      isNotificationsEnabled: peer ? NotificationsStore.isNotificationsEnabled(peer) : true,
+      message: OnlineStore.getMessage()
+    };
+  }
 
   constructor(props) {
     super(props);
@@ -58,6 +57,10 @@ class UserProfile extends Component {
     this.state = {
       isMoreDropdownOpen: false
     };
+
+    this.onClearChat = this.onClearChat.bind(this);
+    this.onDeleteChat = this.onDeleteChat.bind(this);
+    this.onBlockUser = this.onBlockUser.bind(this);
   }
 
   addToContacts = () => ContactActionCreators.addContact(this.props.user.id);
@@ -71,8 +74,8 @@ class UserProfile extends Component {
   };
 
   onNotificationChange = (event) => {
-    const { thisPeer } = this.state;
-    NotificationsActionCreators.changeNotificationsEnabled(thisPeer, event.target.checked);
+    const { peer } = this.state;
+    NotificationsActionCreators.changeNotificationsEnabled(peer, event.target.checked);
   };
 
   toggleActionsDropdown = () => {
@@ -91,27 +94,43 @@ class UserProfile extends Component {
     document.removeEventListener('click', this.closeActionsDropdown, false);
   };
 
-  clearChat = (uid) => {
-    const { intl } = this.context;
-    confirm(intl.messages['modal.confirm.clear']).then(
+  onClearChat() {
+    const { user } = this.props;
+    confirm(
+      <FormattedMessage id="modal.confirm.clear" values={{name: user.name}} />
+    ).then(
       () => {
-        const peer = ActorClient.getUserPeer(uid);
+        const peer = ActorClient.getUserPeer(user.id);
         DialogActionCreators.clearChat(peer);
       },
       () => {}
     );
-  };
+  }
 
-  deleteChat = (uid) => {
-    const { intl } = this.context;
-    confirm(intl.messages['modal.confirm.delete']).then(
+  onDeleteChat() {
+    const { user } = this.props;
+
+    confirm(
+      <FormattedMessage id="modal.confirm.delete" values={{name: user.name}} />
+    ).then(
       () => {
-        const peer = ActorClient.getUserPeer(uid);
+        const peer = ActorClient.getUserPeer(user.id);
         DialogActionCreators.deleteChat(peer);
       },
       () => {}
     );
-  };
+  }
+
+  onBlockUser() {
+    const { user } = this.props;
+
+    confirm(
+      <FormattedMessage id="modal.confirm.block" values={{name: user.name}} />
+    ).then(
+      () => DialogActionCreators.blockUser(user.id),
+      () => {}
+    );
+  }
 
   handleAvatarClick = () => lightbox.open(this.props.user.bigAvatar);
 
@@ -176,10 +195,13 @@ class UserProfile extends Component {
                             {intl.messages['addToContacts']}
                           </li>
                     }
-                    <li className="dropdown__menu__item" onClick={() => this.clearChat(user.id)}>
+                    <li className="dropdown__menu__item" onClick={this.onBlockUser}>
+                      {intl.messages['blockUser']}
+                    </li>
+                    <li className="dropdown__menu__item" onClick={this.onClearChat}>
                       {intl.messages['clearConversation']}
                     </li>
-                    <li className="dropdown__menu__item" onClick={() => this.deleteChat(user.id)}>
+                    <li className="dropdown__menu__item" onClick={this.onDeleteChat}>
                       {intl.messages['deleteConversation']}
                     </li>
                   </ul>
