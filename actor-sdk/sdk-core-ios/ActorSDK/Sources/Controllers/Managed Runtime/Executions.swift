@@ -167,6 +167,10 @@ public extension UIViewController {
         AAExecutions.execute(command)
     }
     
+    public func executePromise(promise: ARPromise) {
+        AAExecutions.execute(promise)
+    }
+    
     public func execute(command: ACCommand, successBlock: ((val: Any?) -> Void)?, failureBlock: ((val: Any?) -> Void)?) {
         AAExecutions.execute(command, successBlock: successBlock, failureBlock: failureBlock)
     }
