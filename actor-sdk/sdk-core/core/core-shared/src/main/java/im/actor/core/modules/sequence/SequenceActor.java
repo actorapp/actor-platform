@@ -173,6 +173,7 @@ public class SequenceActor extends ModuleActor {
             Log.d(TAG, "Loading fresh state...");
             ArrayList<ApiUpdateOptimization> optimizations = new ArrayList<>();
             optimizations.add(ApiUpdateOptimization.STRIP_ENTITIES);
+            optimizations.add(ApiUpdateOptimization.STRIP_COUNTERS);
             request(new RequestGetState(optimizations), new RpcCallback<ResponseSeq>() {
                 @Override
                 public void onResult(ResponseSeq response) {
@@ -206,6 +207,7 @@ public class SequenceActor extends ModuleActor {
             final long loadStart = im.actor.runtime.Runtime.getCurrentTime();
             ArrayList<ApiUpdateOptimization> optimizations = new ArrayList<>();
             optimizations.add(ApiUpdateOptimization.STRIP_ENTITIES);
+            optimizations.add(ApiUpdateOptimization.STRIP_COUNTERS);
             request(new RequestGetDifference(seq, state, optimizations), new RpcCallback<ResponseGetDifference>() {
                 @Override
                 public void onResult(final ResponseGetDifference response) {
