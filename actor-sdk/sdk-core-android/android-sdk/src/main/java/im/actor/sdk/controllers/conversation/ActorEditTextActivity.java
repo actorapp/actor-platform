@@ -41,7 +41,7 @@ public abstract class ActorEditTextActivity extends BaseActivity {
     // Attach button
     protected ImageButton attachButton;
     // Removed from group panel
-    protected View removedFromGroup;
+    protected View inputBlockContainer;
 
     // Helper for hide/show keyboard
     protected KeyboardHelper keyboardUtils;
@@ -50,6 +50,7 @@ public abstract class ActorEditTextActivity extends BaseActivity {
     protected EmojiKeyboard emojiKeyboard;
     protected ImageView emojiButton;
     protected FrameLayout sendContainer;
+    protected TextView inputBlockedText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,9 +147,10 @@ public abstract class ActorEditTextActivity extends BaseActivity {
         });
 
         // Kick panel
-        removedFromGroup = findViewById(R.id.kickedFromChat);
-        removedFromGroup.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
-        ((TextView) removedFromGroup.findViewById(R.id.kicked_text)).setTextColor(style.getMainColor());
+        inputBlockContainer = findViewById(R.id.kickedFromChat);
+        inputBlockContainer.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
+        inputBlockedText = (TextView) inputBlockContainer.findViewById(R.id.kicked_text);
+        inputBlockedText.setTextColor(style.getMainColor());
 
         // Emoji keyboard
         emojiButton = (ImageView) findViewById(R.id.ib_emoji);
