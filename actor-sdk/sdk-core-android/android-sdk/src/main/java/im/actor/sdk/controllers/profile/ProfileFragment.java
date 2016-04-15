@@ -487,7 +487,7 @@ public class ProfileFragment extends BaseFragment {
                 }
             });
             ImageView blockIconView = (ImageView) res.findViewById(R.id.settings_block_icon);
-            Drawable blockDrawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_content_clear_gray));
+            Drawable blockDrawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_block_white_18dp));
             DrawableCompat.setTint(blockDrawable, style.getSettingsIconColor());
             blockIconView.setImageDrawable(blockDrawable);
         }

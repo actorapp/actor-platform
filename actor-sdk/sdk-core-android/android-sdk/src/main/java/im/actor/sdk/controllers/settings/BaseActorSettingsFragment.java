@@ -406,6 +406,12 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
             }
         });
 
+        view.findViewById(R.id.blockedList).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), BlockedListActivity.class));
+            }
+        });
 
         view.findViewById(R.id.chatSettings).setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -498,6 +504,12 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
         TintImageView securityIcon = (TintImageView) view.findViewById(R.id.settings_security_icon);
         securityIcon.setTint(style.getSettingsIconColor());
 
+        TextView blockedListTitle = (TextView) view.findViewById(R.id.settings_blocked_title);
+        blockedListTitle.setTextColor(style.getSettingsTitleColor());
+
+        TintImageView blockedListIcon = (TintImageView) view.findViewById(R.id.settings_blocked_icon);
+        blockedListIcon.setTint(style.getSettingsIconColor());
+
         TextView helpTitle = (TextView) view.findViewById(R.id.settings_help_title);
         helpTitle.setTextColor(style.getSettingsTitleColor());
 
@@ -525,6 +537,7 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
         view.findViewById(R.id.divider4).setBackgroundColor(style.getDividerColor());
         view.findViewById(R.id.divider5).setBackgroundColor(style.getDividerColor());
         view.findViewById(R.id.divider6).setBackgroundColor(style.getDividerColor());
+        view.findViewById(R.id.divider7).setBackgroundColor(style.getDividerColor());
 
         if (getBeforeNickSettingsView() != null) {
             FrameLayout beforeNick = (FrameLayout) view.findViewById(R.id.before_nick_container);
