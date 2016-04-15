@@ -363,7 +363,7 @@
 
 "ChatSlideUpToCancel" = "Slide up to cancel";
 
-"Chat.MicrophoneAccessDisabled"  = "We need access to your microphone for voice messages. Please go to Settings — Privacy — Microphone turn them "ON";
+"Chat.MicrophoneAccessDisabled" = "We need access to your microphone for voice messages. Please go to Settings — Privacy — Microphone turn them ОN";
 
 /*
  * Chat attachment menu
@@ -413,7 +413,7 @@
 
 "Placeholder_Dialogs_Title" = "Start messaging";
 
-"Placeholder_Dialogs_Message" = "Pick a contact from your contact list or press "Write" button in the upper right corner to start a conversation right now.";
+"Placeholder_Dialogs_Message" = "Pick a contact from your contact list or press Write button in the upper right corner to start a conversation right now.";
 
 "Placeholder_Group_Title" = "Not a member";
 
