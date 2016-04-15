@@ -701,8 +701,20 @@ public class ChatActivity extends ActorEditTextActivity {
             // Binding User typing to Toolbar
             bindPrivateTyping(barTyping, barTypingContainer, barSubtitle, messenger().getTyping(user.getId()));
 
-            // Hide removedFromGroup panel as we are not in group
-            removedFromGroup.setVisibility(View.GONE);
+            // Bind user blocked
+            inputBlockedText.setText(R.string.profile_settings_unblock);
+            bind(users().get(peer.getPeerId()).getIsBlocked(), new ValueChangedListener<Boolean>() {
+                @Override
+                public void onChanged(Boolean val, Value<Boolean> valueModel) {
+                    inputBlockContainer.setVisibility(val ? View.VISIBLE : View.GONE);
+                }
+            });
+            inputBlockedText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    execute(messenger().unblockUser(peer.getPeerId()));
+                }
+            });
 
         } else if (peer.getPeerType() == PeerType.GROUP) {
 
@@ -728,11 +740,11 @@ public class ChatActivity extends ActorEditTextActivity {
             // Binding group typing
             bindGroupTyping(barTyping, barTypingContainer, barSubtitle, messenger().getGroupTyping(group.getId()));
 
-            // Binding membership flag to removedFromGroup panel
+            // Binding membership flag to inputBlockContainer panel
             bind(messenger().getGroups().get(peer.getPeerId()).isMember(), new ValueChangedListener<Boolean>() {
                 @Override
                 public void onChanged(Boolean val, Value<Boolean> Value) {
-                    removedFromGroup.setVisibility(val ? View.GONE : View.VISIBLE);
+                    inputBlockContainer.setVisibility(val ? View.GONE : View.VISIBLE);
                 }
             });
         }
