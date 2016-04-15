@@ -27,9 +27,6 @@ public abstract class ViewHolder<T> {
 
     }
 
-    public void dispose() {
-
-    }
 
     @Deprecated
     public View getView(View recycleView, T data, int pos, ViewGroup viewGroup, Context context) {
