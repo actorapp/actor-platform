@@ -5,7 +5,7 @@ import java.time.Instant
 import java.util.Base64
 
 import akka.actor.ActorSystem
-import akka.persistence.jdbc.serialization.SerializationFacade
+import akka.persistence.jdbc.serialization.{ SerializationFacade, Serialized }
 import akka.persistence.journal.Tagged
 import akka.persistence.{ AtomicWrite, PersistentRepr }
 import akka.serialization.{ Serialization, SerializationExtension }
@@ -86,13 +86,13 @@ final class V20160128142000__AkkaPersistence extends JdbcMigration {
     val flowResult =
       Source(events)
         .map(p ⇒ AtomicWrite(p._1))
-        .via(SerializationFacade(system, ",").serialize)
+        .via(SerializationFacade(system, ",").serialize(serialize = true))
         .map(_.get)
         .map { iter ⇒
           val ps = connection.prepareStatement(sql)
           try {
             for {
-              ser ← iter
+              ser ← iter map (_.asInstanceOf[Serialized])
             } yield {
               ps.setString(1, ser.persistenceId)
               ps.setLong(2, ser.sequenceNr)
