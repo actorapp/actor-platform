@@ -1,11 +1,9 @@
 package im.actor.sdk.controllers.fragment;
 
-import android.support.v7.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v7.app.AppCompatDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -130,13 +128,15 @@ public class BaseFragment extends BinderCompatFragment {
         cmd.start(new CommandCallback<T>() {
             @Override
             public void onResult(T res) {
-                dialog.dismiss();
+                dismissDialog(dialog);
+                ;
                 callback.onResult(res);
             }
 
             @Override
             public void onError(Exception e) {
-                dialog.dismiss();
+                dismissDialog(dialog);
+                ;
                 callback.onError(e);
             }
         });
@@ -153,12 +153,14 @@ public class BaseFragment extends BinderCompatFragment {
         cmd.start(new CommandCallback<T>() {
             @Override
             public void onResult(T res) {
-                dialog.dismiss();
+                dismissDialog(dialog);
+                ;
             }
 
             @Override
             public void onError(Exception e) {
-                dialog.dismiss();
+                dismissDialog(dialog);
+                ;
             }
         });
     }
@@ -173,13 +175,13 @@ public class BaseFragment extends BinderCompatFragment {
                 .then(new Consumer<T>() {
                     @Override
                     public void apply(T t) {
-                        dialog.dismiss();
+                        dismissDialog(dialog);
                     }
                 })
                 .failure(new Consumer<Exception>() {
                     @Override
                     public void apply(Exception e) {
-                        dialog.dismiss();
+                        dismissDialog(dialog);
                     }
                 })
                 .done(promiseActor);
@@ -269,6 +271,14 @@ public class BaseFragment extends BinderCompatFragment {
         container.addView(recordView);
 
         return recordView;
+    }
+
+    public void dismissDialog(ProgressDialog progressDialog) {
+        try {
+            progressDialog.dismiss();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override
