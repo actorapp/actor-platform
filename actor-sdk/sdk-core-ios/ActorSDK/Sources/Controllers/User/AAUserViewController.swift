@@ -8,10 +8,10 @@ class AAUserViewController: AAContentTableController {
     
     var headerRow: AAAvatarRow!
     var isContactRow: AACommonRow!
-
+    
     init(uid: Int) {
         super.init(style: AAContentTableStyle.SettingsPlain)
-
+        
         self.uid = uid
         self.autoTrack = true
         
@@ -26,7 +26,7 @@ class AAUserViewController: AAContentTableController {
         
         // Profile
         section { (s) -> () in
-
+            
             // Profile: Avatar
             self.headerRow = s.avatar { (r) -> () in
                 
@@ -92,7 +92,7 @@ class AAUserViewController: AAContentTableController {
         let about = self.user.getAboutModel().get()
         
         if !self.isBot || nick != nil || about != nil {
-
+            
             // Contact
             section { (s) -> () in
                 
@@ -176,7 +176,7 @@ class AAUserViewController: AAContentTableController {
         
         // Edit contact
         section { (s) -> () in
-                
+            
             // Edit contact: Add/Remove
             self.isContactRow = s.common { (r) -> () in
                 r.bindAction = { (r) -> () in
@@ -188,6 +188,7 @@ class AAUserViewController: AAContentTableController {
                         r.style = .Action
                     }
                 }
+                
                 r.selectAction = { () -> Bool in
                     if (self.user.isContactModel().get().booleanValue()) {
                         self.execute(Actor.removeContactCommandWithUid(jint(self.uid))!)
@@ -234,10 +235,29 @@ class AAUserViewController: AAContentTableController {
                         return true
                     }
                 }
+                
             }
-
+            
         }
         
+        // Block Contact
+        section { (s) -> () in
+            
+            // Block Contact
+            self.isContactRow = s.common { (r) -> () in
+                r.bindAction = { (r) -> () in
+                    if self.user.isContactModel().get().booleanValue() {
+                        r.content = AALocalized("ProfileBlockContact")
+                        r.style = .Action
+                    }
+                }
+                r.selectAction = { () -> Bool in
+                    self.executePromise(Actor.blockUser(jint(self.uid)))
+                    
+                    return true
+                }
+            }
+        }
     }
     
     override func tableWillBind(binder: AABinder) {
