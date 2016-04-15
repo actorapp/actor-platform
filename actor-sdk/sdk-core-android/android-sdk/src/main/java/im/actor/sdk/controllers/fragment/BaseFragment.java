@@ -273,6 +273,10 @@ public class BaseFragment extends BinderCompatFragment {
         return recordView;
     }
 
+    public ActorRef getPromiseActor() {
+        return promiseActor;
+    }
+
     public void dismissDialog(ProgressDialog progressDialog) {
         try {
             progressDialog.dismiss();
