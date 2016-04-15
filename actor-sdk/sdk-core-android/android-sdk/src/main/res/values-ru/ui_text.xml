@@ -281,6 +281,9 @@
     <string name="profile_shared_media">Медиа</string>
     <string name="profile_settings_header">Настройки</string>
     <string name="profile_settings_notifications">Оповещения</string>
+    <string name="profile_settings_block">Заблокировать пользователя</string>
+    <string name="profile_settings_unblock">Разблокировать пользователя</string>
+    <string name="profile_settings_block_confirm">Заблокировать {user}?</string>
     <string name="profile_contacts_added">В Контактах</string>
     <string name="profile_contacts_available">Добавить в контакты</string>
     <string name="profile_call">Звонок</string>

@@ -291,6 +291,9 @@
     <string name="profile_shared_media">Media</string>
     <string name="profile_settings_header">Settings</string>
     <string name="profile_settings_notifications">Notifications</string>
+    <string name="profile_settings_block">Block user</string>
+    <string name="profile_settings_unblock">Unblock user</string>
+    <string name="profile_settings_block_confirm">Block {user}?</string>
 
     <string name="profile_contacts_added">In Contacts</string>
     <string name="profile_contacts_available">Add to Contacts</string>
