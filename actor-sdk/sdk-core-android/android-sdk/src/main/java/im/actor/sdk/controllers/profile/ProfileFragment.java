@@ -64,7 +64,7 @@ public class ProfileFragment extends BaseFragment {
     private AvatarView avatarView;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         final UserVM user = users().get(getArguments().getInt(EXTRA_UID));
         ArrayList<UserPhone> phones = user.getPhones().get();
@@ -211,7 +211,7 @@ public class ProfileFragment extends BaseFragment {
         // Contact Information
         //
 
-        LinearLayout contactsContainer = (LinearLayout) res.findViewById(R.id.contactsContainer);
+        final LinearLayout contactsContainer = (LinearLayout) res.findViewById(R.id.contactsContainer);
         boolean isFirstContact = true;
 
         //
@@ -362,43 +362,70 @@ public class ProfileFragment extends BaseFragment {
         //
         // Username
         //
+        final boolean finalIsFirstContact = isFirstContact;
+        bind(user.getNick(), new ValueChangedListener<String>() {
+            private View userNameRecord;
 
-        if (userName != null) {
-            View view = buildRecord(getString(R.string.nickname), "@" + userName,
-                    R.drawable.ic_import_contacts_black_24dp,
-                    isFirstContact,
-                    true,
-                    inflater, contactsContainer);
-            view.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-                    ClipData clip = ClipData.newPlainText("Nickname", userName);
-                    clipboard.setPrimaryClip(clip);
-                    Snackbar.make(res, R.string.toast_nickname_copied, Snackbar.LENGTH_SHORT)
-                            .show();
-                    return true;
+            @Override
+            public void onChanged(final String newUserName, Value<String> valueModel) {
+                if (newUserName != null && newUserName.length() > 0) {
+                    if (userNameRecord == null) {
+                        userNameRecord = buildRecord(getString(R.string.nickname), "@" + newUserName,
+                                R.drawable.ic_import_contacts_black_24dp,
+                                finalIsFirstContact,
+                                true,
+                                inflater, contactsContainer);
+                    } else {
+                        ((TextView)userNameRecord.findViewById(R.id.value)).setText(newUserName);
+                    }
+
+
+                    userNameRecord.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View v) {
+                            ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                            ClipData clip = ClipData.newPlainText("Nickname", newUserName);
+                            clipboard.setPrimaryClip(clip);
+                            Snackbar.make(res, R.string.toast_nickname_copied, Snackbar.LENGTH_SHORT)
+                                    .show();
+                            return true;
+                        }
+                    });
                 }
-            });
-        }
+            }
+        });
 
         //
         // About
         //
 
-        if (about != null) {
-            buildRecordBig(about,
-                    R.drawable.ic_info_outline_black_24dp,
-                    true,
-                    true,
-                    inflater, contactsContainer);
-        }
+        bind(user.getAbout(), new ValueChangedListener<String>() {
+            private View userAboutRecord;
+
+            @Override
+            public void onChanged(final String newUserAbout, Value<String> valueModel) {
+                if (newUserAbout != null && newUserAbout.length() > 0) {
+                    if (userAboutRecord == null) {
+                        userAboutRecord = buildRecordBig(newUserAbout,
+                                R.drawable.ic_info_outline_black_24dp,
+                                true,
+                                true,
+                                inflater, contactsContainer);
+                    } else {
+                        ((TextView)userAboutRecord.findViewById(R.id.value)).setText(newUserAbout);
+                    }
+                }
+            }
+        });
 
 
         //
         // Settings
         //
         {
+            //
+            // Notifications
+            //
             View notificationContainer = res.findViewById(R.id.notificationsCont);
             ((TextView) notificationContainer.findViewById(R.id.settings_notifications_title)).setTextColor(style.getTextPrimaryColor());
             final SwitchCompat notificationEnable = (SwitchCompat) res.findViewById(R.id.enableNotifications);
@@ -419,6 +446,50 @@ public class ProfileFragment extends BaseFragment {
             Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_list_black_24dp));
             DrawableCompat.setTint(drawable, style.getSettingsIconColor());
             iconView.setImageDrawable(drawable);
+
+            //
+            // Block
+            //
+            View blockContainer = res.findViewById(R.id.blockCont);
+            final TextView blockTitle = (TextView) blockContainer.findViewById(R.id.settings_block_title);
+            blockTitle.setTextColor(style.getTextPrimaryColor());
+            bind(user.getIsBlocked(), new ValueChangedListener<Boolean>() {
+                @Override
+                public void onChanged(Boolean val, Value<Boolean> valueModel) {
+                    blockTitle.setText(val ? R.string.profile_settings_unblock : R.string.profile_settings_block);
+                }
+            });
+            blockContainer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!user.getIsBlocked().get()) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder
+                                .setMessage(getString(R.string.profile_settings_block_confirm).replace("{user}", user.getName().get()))
+                                .setPositiveButton(R.string.dialog_yes, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        execute(messenger().blockUser(user.getId()));
+                                        dialog.dismiss();
+                                    }
+                                })
+                                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                })
+                                .show();
+                    } else {
+                        execute(messenger().unblockUser(user.getId()));
+                    }
+
+                }
+            });
+            ImageView blockIconView = (ImageView) res.findViewById(R.id.settings_block_icon);
+            Drawable blockDrawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_content_clear_gray));
+            DrawableCompat.setTint(blockDrawable, style.getSettingsIconColor());
+            blockIconView.setImageDrawable(blockDrawable);
         }
 
 

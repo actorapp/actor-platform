@@ -291,6 +291,9 @@
     <string name="profile_shared_media">Media</string>
     <string name="profile_settings_header">Settings</string>
     <string name="profile_settings_notifications">Notifications</string>
+    <string name="profile_settings_block">Block user</string>
+    <string name="profile_settings_unblock">Unblock user</string>
+    <string name="profile_settings_block_confirm">Block {user}?</string>
 
     <string name="profile_contacts_added">In Contacts</string>
     <string name="profile_contacts_available">Add to Contacts</string>
@@ -462,6 +465,7 @@
     <string name="notification_multiple_canversations_after_msg_count">" messages in "</string>
     <string name="notifications_multiple_canversations_after_coversations_count">" chats"</string>
     <string name="notifications_single_conversation_аfter_messages_count">" messages"</string>
+
     <!-- Pick user -->
     <string name="pick_user_title">Pick person</string>
 
@@ -478,8 +482,12 @@
     <string name="security_terminate_title">Terminate all sessions</string>
     <string name="security_terminate_subtitle">Sign Out on all devices</string>
     <string name="security_terminate_message">Are you sure you want to log out on all other devices? All app data will be lost on these devices.</string>
+    <string name="security_terminate_this_message">Are you sure want to logout on this device? All app data will be lost on {device} </string>
     <string name="security_authorized_header">Authorized devices and services</string>
     <string name="security_authorized_loading">Loading…</string>
+    <string name="security_toast_unable_remove_auth">Unable to remove auth</string>
+    <string name="security_this_title">(This) </string>
+    <string name="security_toast_unable_to_load">Unable to load. Please try again.</string>
 
     <!-- Alerts -->
     <string name="alert_delete_messages_text">Are you sure you want to delete {0} messages?</string>

@@ -75,6 +75,7 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
     private static final int REQUEST_GALLERY = 198;
     private String shortcutText;
     private long firstUnread = -1;
+    private DisplayList.AndroidChangeListener<Message> listener;
 
     public static MessagesFragment create(Peer peer) {
         return new MessagesFragment(peer);
@@ -184,7 +185,7 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
 
         Log.d("DIAPLAY_LIST", "bindDisplayListLoad: " + notify);
         final BindedDisplayList<Message> list = getDisplayList();
-        DisplayList.AndroidChangeListener<Message> listener = new DisplayList.AndroidChangeListener<Message>() {
+        listener = new DisplayList.AndroidChangeListener<Message>() {
 
 
             @Override
@@ -247,19 +248,20 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
             messagesAdapter.setFirstUnread(unreadId);
         }
 
-        RecyclerView.LayoutManager layoutManager = getCollection().getLayoutManager();
-        if (index > 0 && layoutManager != null && layoutManager instanceof ChatLinearLayoutManager) {
-            if (layoutManager != null) {
+        if (getCollection() != null) {
+            RecyclerView.LayoutManager layoutManager = getCollection().getLayoutManager();
+            if (index > 0 && layoutManager != null && layoutManager instanceof ChatLinearLayoutManager) {
                 ((ChatLinearLayoutManager) layoutManager).setStackFromEnd(false);
                 ((ChatLinearLayoutManager) layoutManager).scrollToPositionWithOffset(index + 1, Screen.dp(64));
                 // layoutManager.scrollToPosition(getDisplayList().getSize() - index - 1);
                 // layoutManager.scrollToPosition(index + 1);
                 // getCollection().scrollToPosition(index + 1);
+
+            } else {
+                // layoutManager.scrollToPosition(0);
+                getCollection().scrollToPosition(0);
             }
 
-        } else if (getCollection() != null) {
-            // layoutManager.scrollToPosition(0);
-            getCollection().scrollToPosition(0);
         }
     }
 
@@ -619,6 +621,8 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        getDisplayList().removeAndroidListener(listener);
+        listener = null;
         if (messagesAdapter != null) {
             messagesAdapter.getBinder().unbindAll();
             messagesAdapter = null;
