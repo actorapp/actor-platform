@@ -61,17 +61,10 @@ class UserProfile extends Component {
     this.onClearChat = this.onClearChat.bind(this);
     this.onDeleteChat = this.onDeleteChat.bind(this);
     this.onBlockUser = this.onBlockUser.bind(this);
+    this.onRemoveFromContacts = this.onRemoveFromContacts.bind(this);
   }
 
   addToContacts = () => ContactActionCreators.addContact(this.props.user.id);
-
-  removeFromContacts = () => {
-    const { user } = this.props;
-    confirm(<FormattedMessage id="modal.confirm.removeContact" values={{name: user.name}}/>).then(
-      () => ContactActionCreators.removeContact(user.id),
-      () => {}
-    );
-  };
 
   onNotificationChange = (event) => {
     const { peer } = this.state;
@@ -97,7 +90,7 @@ class UserProfile extends Component {
   onClearChat() {
     const { user } = this.props;
     confirm(
-      <FormattedMessage id="modal.confirm.clear" values={{name: user.name}} />
+      <FormattedMessage id="modal.confirm.user.clear" values={{name: user.name}} />
     ).then(
       () => {
         const peer = ActorClient.getUserPeer(user.id);
@@ -107,11 +100,21 @@ class UserProfile extends Component {
     );
   }
 
+  onRemoveFromContacts() {
+    const { user } = this.props;
+    confirm(
+      <FormattedMessage id="modal.confirm.user.removeContact" values={{name: user.name}}/>
+    ).then(
+      () => ContactActionCreators.removeContact(user.id),
+      () => {}
+    );
+  }
+
   onDeleteChat() {
     const { user } = this.props;
 
     confirm(
-      <FormattedMessage id="modal.confirm.delete" values={{name: user.name}} />
+      <FormattedMessage id="modal.confirm.user.delete" values={{name: user.name}} />
     ).then(
       () => {
         const peer = ActorClient.getUserPeer(user.id);
@@ -125,7 +128,7 @@ class UserProfile extends Component {
     const { user } = this.props;
 
     confirm(
-      <FormattedMessage id="modal.confirm.block" values={{name: user.name}} />
+      <FormattedMessage id="modal.confirm.user.block" values={{name: user.name}} />
     ).then(
       () => DialogActionCreators.blockUser(user.id),
       () => {}
@@ -188,7 +191,7 @@ class UserProfile extends Component {
                   <ul className="dropdown__menu dropdown__menu--right">
                     {
                       user.isContact
-                        ? <li className="dropdown__menu__item" onClick={this.removeFromContacts}>
+                        ? <li className="dropdown__menu__item" onClick={this.onRemoveFromContacts}>
                             {intl.messages['removeFromContacts']}
                           </li>
                         : <li className="dropdown__menu__item" onClick={this.addToContacts}>
