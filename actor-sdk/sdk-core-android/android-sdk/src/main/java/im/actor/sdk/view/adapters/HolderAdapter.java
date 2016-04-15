@@ -49,7 +49,7 @@ public abstract class HolderAdapter<V> extends BaseAdapter {
 
     public void dispose() {
         for (ViewHolder holder : holders) {
-            holder.dispose();
+            holder.unbind();
         }
     }
 
