@@ -53,6 +53,9 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 89: return RequestRemoveContact.fromBytes(payload);
             case 114: return RequestAddContact.fromBytes(payload);
             case 112: return RequestSearchContacts.fromBytes(payload);
+            case 2636: return RequestBlockUser.fromBytes(payload);
+            case 2637: return RequestUnblockUser.fromBytes(payload);
+            case 2638: return RequestLoadBlockedUsers.fromBytes(payload);
             case 92: return RequestSendMessage.fromBytes(payload);
             case 2658: return RequestUpdateMessage.fromBytes(payload);
             case 55: return RequestMessageReceived.fromBytes(payload);
@@ -136,11 +139,15 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 2569: return RequestRawRequest.fromBytes(payload);
             case 241: return RequestLoadWallpappers.fromBytes(payload);
             case 51: return RequestRegisterGooglePush.fromBytes(payload);
+            case 2631: return RequestUnregisterGooglePush.fromBytes(payload);
             case 76: return RequestRegisterApplePush.fromBytes(payload);
+            case 2632: return RequestUnregisterApplePush.fromBytes(payload);
             case 2576: return RequestRegisterApplePushKit.fromBytes(payload);
+            case 2633: return RequestUnregisterApplePushKit.fromBytes(payload);
             case 2593: return RequestRegisterApplePushToken.fromBytes(payload);
+            case 2634: return RequestUnregisterApplePushToken.fromBytes(payload);
             case 2575: return RequestRegisterActorPush.fromBytes(payload);
-            case 52: return RequestUnregisterPush.fromBytes(payload);
+            case 2635: return RequestUnregisterActorPush.fromBytes(payload);
             case 2601: return RequestLoadPublicKeyGroups.fromBytes(payload);
             case 2605: return RequestLoadPublicKey.fromBytes(payload);
             case 2603: return RequestLoadPrePublicKeys.fromBytes(payload);
@@ -173,6 +180,7 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 8: return ResponseImportContacts.fromBytes(payload);
             case 88: return ResponseGetContacts.fromBytes(payload);
             case 113: return ResponseSearchContacts.fromBytes(payload);
+            case 2639: return ResponseLoadBlockedUsers.fromBytes(payload);
             case 219: return ResponseReactionsResponse.fromBytes(payload);
             case 119: return ResponseLoadHistory.fromBytes(payload);
             case 105: return ResponseLoadDialogs.fromBytes(payload);

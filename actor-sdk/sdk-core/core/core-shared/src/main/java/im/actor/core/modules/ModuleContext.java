@@ -5,6 +5,7 @@ import im.actor.core.Messenger;
 import im.actor.core.i18n.I18nEngine;
 import im.actor.core.modules.api.ApiModule;
 import im.actor.core.modules.auth.Authentication;
+import im.actor.core.modules.blocklist.BlockListModule;
 import im.actor.core.modules.eventbus.EventBusModule;
 import im.actor.core.modules.sequence.Updates;
 import im.actor.core.modules.misc.AppStateModule;
@@ -105,4 +106,6 @@ public interface ModuleContext {
     EncryptionModule getEncryption();
 
     EventBusModule getEventBus();
+
+    BlockListModule getBlockList();
 }
