@@ -136,7 +136,7 @@ class MessagingServiceSpec
           ))
 
           whenReady(actions) { resps ⇒
-            resps foreach (_ should matchPattern { case Ok(ResponseSeqDate(2, _, _)) ⇒ })
+            resps foreach (_ should matchPattern { case Ok(ResponseSeqDate(_, _, _)) ⇒ })
           }
 
           expectUpdate(classOf[UpdateMessageSent])(identity)
@@ -180,7 +180,7 @@ class MessagingServiceSpec
 
           whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, randomId, ApiTextMessage("Hi again", Vector.empty, None), None)) { resp ⇒
             resp should matchPattern {
-              case Ok(ResponseSeqDate(4, _, _)) ⇒
+              case Ok(ResponseSeqDate(_, _, _)) ⇒
             }
           }
 
@@ -272,7 +272,7 @@ class MessagingServiceSpec
           ))
 
           whenReady(actions) { resps ⇒
-            resps foreach (_ should matchPattern { case Ok(ResponseSeqDate(4, _, _)) ⇒ })
+            resps foreach (_ should matchPattern { case Ok(ResponseSeqDate(_, _, _)) ⇒ })
           }
 
           expectUpdate(classOf[UpdateMessageSent])(identity)
