@@ -47,7 +47,6 @@ public class AuthActivity extends BaseFragmentActivity {
     private int availableAuthType = AUTH_TYPE_PHONE;
     private int currentAuthType = AUTH_TYPE_PHONE;
     private int signType;
-    private BaseAuthFragment signFragment;
     private long currentPhone;
     private String currentEmail;
     private String transactionHash;
@@ -66,20 +65,20 @@ public class AuthActivity extends BaseFragmentActivity {
                 return new Actor();
             }
         }), "actor/auth_promises_actor");
+
         signType = getIntent().getIntExtra(SIGN_TYPE_KEY, SIGN_TYPE_IN);
-        if (savedInstanceState == null) {
-            updateState(AuthState.AUTH_START);
-        } else {
-            currentPhone = savedInstanceState.getLong("currentPhone", 0);
-            currentEmail = savedInstanceState.getString("currentEmail");
-            transactionHash = savedInstanceState.getString("transactionHash");
-            currentCode = savedInstanceState.getString("currentCode");
-            isRegistered = savedInstanceState.getBoolean("isRegistered", false);
-            currentName = savedInstanceState.getString("currentName");
-            signType = savedInstanceState.getInt("signType", SIGN_TYPE_UP);
-            state = Enum.valueOf(AuthState.class, savedInstanceState.getString("state", "AUTH_START"));
-            updateState(state);
-        }
+
+        PreferencesStorage preferences = messenger().getPreferences();
+        currentPhone = preferences.getLong("currentPhone", 0);
+        currentEmail = preferences.getString("currentEmail");
+        transactionHash = preferences.getString("transactionHash");
+        currentCode = preferences.getString("currentCode");
+        isRegistered = preferences.getBool("isRegistered", false);
+        currentName = preferences.getString("currentName");
+        signType = preferences.getInt("signType", signType);
+        String savedState = preferences.getString("auth_state");
+        state = Enum.valueOf(AuthState.class, savedState != null ? savedState : "AUTH_START");
+        updateState(state, true);
     }
 
 
@@ -99,6 +98,15 @@ public class AuthActivity extends BaseFragmentActivity {
         if (this.state != null && (this.state == state && !force)) {
             return;
         }
+        PreferencesStorage preferences = messenger().getPreferences();
+        preferences.putLong("currentPhone", currentPhone);
+        preferences.putString("currentEmail", currentEmail);
+        preferences.putString("transactionHash", transactionHash);
+        preferences.putString("currentCode", currentCode);
+        preferences.putBool("isRegistered", isRegistered);
+        preferences.putString("currentName", currentName);
+        preferences.putInt("signType", signType);
+        preferences.putString("auth_state", state.toString());
 
         // if we show the next fragment when app is in background and not visible , app crashes!
         // e.g when the GSM data is off and after trying to send code we go to settings to turn on, app is going invisible and ...
@@ -127,11 +135,11 @@ public class AuthActivity extends BaseFragmentActivity {
                 break;
             case AUTH_PHONE:
                 currentAuthType = AUTH_TYPE_PHONE;
-                showFragment(signFragment, false, false);
+                showFragment(ActorSDK.sharedActor().getDelegatedFragment(ActorSDK.sharedActor().getDelegate().getAuthStartIntent(), new SignPhoneFragment(), BaseAuthFragment.class), false, false);
                 break;
             case AUTH_EMAIL:
                 currentAuthType = AUTH_TYPE_EMAIL;
-                showFragment(signFragment, false, false);
+                showFragment(ActorSDK.sharedActor().getDelegatedFragment(ActorSDK.sharedActor().getDelegate().getAuthStartIntent(), new SignEmailFragment(), BaseAuthFragment.class), false, false);
                 break;
             case CODE_VALIDATION_PHONE:
             case CODE_VALIDATION_EMAIL:
@@ -155,21 +163,15 @@ public class AuthActivity extends BaseFragmentActivity {
         currentName = name;
         currentSex = Sex.UNKNOWN;
         availableAuthType = ActorSDK.sharedActor().getAuthType();
-        BaseAuthFragment baseAuthFragment;
         AuthState authState;
         if ((availableAuthType & AUTH_TYPE_PHONE) == AUTH_TYPE_PHONE) {
-            baseAuthFragment = new SignPhoneFragment();
             authState = AuthState.AUTH_PHONE;
         } else if ((availableAuthType & AUTH_TYPE_EMAIL) == AUTH_TYPE_EMAIL) {
-            baseAuthFragment = new SignEmailFragment();
             authState = AuthState.AUTH_EMAIL;
         } else {
             // none of valid auth types selected - force crash?
             return;
         }
-
-        signFragment = ActorSDK.sharedActor().getDelegatedFragment(ActorSDK.sharedActor().getDelegate().getAuthStartIntent(), baseAuthFragment, BaseAuthFragment.class);
-
         updateState(authState);
     }
 
@@ -401,12 +403,10 @@ public class AuthActivity extends BaseFragmentActivity {
     }
 
     public void switchToEmailAuth() {
-        signFragment = ActorSDK.sharedActor().getDelegatedFragment(ActorSDK.sharedActor().getDelegate().getAuthStartIntent(), new SignEmailFragment(), BaseAuthFragment.class);
         updateState(AuthState.AUTH_EMAIL);
     }
 
     public void switchToPhoneAuth() {
-        signFragment = ActorSDK.sharedActor().getDelegatedFragment(ActorSDK.sharedActor().getDelegate().getAuthStartIntent(), new SignPhoneFragment(), BaseAuthFragment.class);
         updateState(AuthState.AUTH_PHONE);
     }
 
@@ -422,18 +422,6 @@ public class AuthActivity extends BaseFragmentActivity {
         updateState(AuthState.AUTH_START, true);
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putLong("currentPhone", currentPhone);
-        outState.putString("currentEmail", currentEmail);
-        outState.putString("transactionHash", transactionHash);
-        outState.putString("currentCode", currentCode);
-        outState.putBoolean("isRegistered", isRegistered);
-        outState.putString("currentName", currentName);
-        outState.putInt("signType", signType);
-        outState.putString("state", state.toString());
-    }
 
     public void showProgress() {
         dismissProgress();
