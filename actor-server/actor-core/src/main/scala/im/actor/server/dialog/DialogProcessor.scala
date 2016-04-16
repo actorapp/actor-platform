@@ -49,6 +49,7 @@ private case class UnreadMessage(date: Instant, randomId: Long) {
 }
 
 private[dialog] final case class DialogState(
+  userId:          Int,
   lastMessageDate: Instant, //we don't use it now anywhere. should we remove it?
   lastReceiveDate: Instant,
   lastReadDate:    Instant,
@@ -58,8 +59,6 @@ private[dialog] final case class DialogState(
   import DialogEvents._
 
   override def updated(e: DialogEvent): DialogState = e match {
-    case MessagesRead(date) if date.isAfter(lastReadDate)        ⇒ this.copy(lastReadDate = date)
-    case MessagesReceived(date) if date.isAfter(lastReceiveDate) ⇒ this.copy(lastReceiveDate = date)
     case NewMessage(randomId, date, isIncoming) ⇒
       if (isIncoming) {
         this.copy(
@@ -68,10 +67,12 @@ private[dialog] final case class DialogState(
           lastMessageDate = date
         )
       } else this
-    case MessagesRead(date) ⇒
+    case MessagesRead(date, readerUserId) if readerUserId == userId ⇒
       val newUnreadMessages = unreadMessages.dropWhile(um ⇒ um.date.isBefore(date) || um.date == date)
       this.copy(counter = newUnreadMessages.size, unreadMessages = newUnreadMessages)
-    case _ ⇒ this
+    case MessagesRead(date, readerUserId) if readerUserId != userId && date.isAfter(lastReadDate) ⇒
+      this.copy(lastReadDate = date)
+    case MessagesReceived(date) if date.isAfter(lastReceiveDate) ⇒ this.copy(lastReceiveDate = date)
   }
 }
 
@@ -135,6 +136,7 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
 
   override protected def getInitialState: DialogState =
     DialogState(
+      userId = userId,
       lastMessageDate = Instant.ofEpochMilli(0),
       lastReceiveDate = Instant.ofEpochMilli(0),
       lastReadDate = Instant.ofEpochMilli(0),
@@ -164,7 +166,6 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
     case mrd: MessageRead if accepts(mrd)     ⇒ ackMessageRead(mrd) //User's messages been read
     case sr: SetReaction if accepts(sr)       ⇒ ackSetReaction(sr)
     case rr: RemoveReaction if accepts(rr)    ⇒ ackRemoveReaction(rr)
-    case uc: UpdateCounters                   ⇒ updateCountersChanged()
   }
 
   // when receiving this messages, dialog is required to take an action

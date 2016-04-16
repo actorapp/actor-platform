@@ -252,15 +252,6 @@ message DialogCommands {
         required SeqState seqstate = 1;
         repeated MessageReaction reactions = 2;
     }
-
-    message UpdateCounters {
-        option (scalapb.message).extends = "im.actor.server.dialog.DirectDialogCommand";
-
-        required Peer origin = 1;
-        required Peer dest = 2;
-    }
-
-    message UpdateCountersAck {}
 }
 
 message DialogQueries {
@@ -303,5 +294,6 @@ message DialogEvents {
         option (scalapb.message).extends = "im.actor.server.dialog.DialogEvent";
 
         required int64 date = 1 [(scalapb.field).type = "java.time.Instant"];
+        required int32 reader_user_id = 8;
     }
 }

@@ -8,11 +8,10 @@ import akka.http.scaladsl.util.FastFuture
 import akka.pattern.ask
 import akka.util.Timeout
 import im.actor.api.rpc._
-import im.actor.api.rpc.messaging.{ ApiDialog, ApiDialogGroup, ApiDialogShort, ApiMessage }
+import im.actor.api.rpc.messaging.{ ApiDialogGroup, ApiMessage }
 import im.actor.api.rpc.misc.ApiExtension
-import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
+import im.actor.api.rpc.peers.ApiPeer
 import im.actor.extension.InternalExtensions
-import im.actor.server.db.DbExtension
 import im.actor.server.dialog.DialogCommands._
 import im.actor.server.group.{ GroupEnvelope, GroupExtension }
 import im.actor.server.model._
@@ -35,7 +34,6 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
 
   val InternalDialogExtensions = "modules.messaging.extensions"
 
-  private val db = DbExtension(system).db
   private lazy val userExt = UserExtension(system)
   private lazy val groupExt = GroupExtension(system)
 
