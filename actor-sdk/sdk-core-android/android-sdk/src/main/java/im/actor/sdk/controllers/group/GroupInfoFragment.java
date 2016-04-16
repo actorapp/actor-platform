@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +45,7 @@ import im.actor.sdk.controllers.fragment.media.DocumentsActivity;
 import im.actor.sdk.controllers.fragment.preview.ViewAvatarActivity;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.TintImageView;
+import im.actor.sdk.view.adapters.RecyclerListView;
 import im.actor.sdk.view.avatar.CoverAvatarView;
 import im.actor.sdk.util.Fonts;
 import im.actor.runtime.mvvm.ValueChangedListener;
@@ -72,7 +72,7 @@ public class GroupInfoFragment extends BaseFragment {
     private String[] about;
     private int chatId;
     private GroupVM groupInfo;
-    private ListView listView;
+    private RecyclerListView listView;
     private MembersAdapter groupUserAdapter;
     private CoverAvatarView avatarView;
     private View notMemberView;
@@ -100,7 +100,7 @@ public class GroupInfoFragment extends BaseFragment {
             }
         });
 
-        listView = (ListView) res.findViewById(R.id.groupList);
+        listView = (RecyclerListView) res.findViewById(R.id.groupList);
         listView.setBackgroundColor(style.getMainBackgroundColor());
 
         header = inflater.inflate(R.layout.fragment_group_header, listView, false);
@@ -240,7 +240,7 @@ public class GroupInfoFragment extends BaseFragment {
         });
         listView.addFooterView(add, null, false);
 
-        groupUserAdapter = new MembersAdapter(groupInfo.getMembers().get(), getActivity(), this);
+        groupUserAdapter = new MembersAdapter(groupInfo.getMembers().get(), getActivity());
         bind(groupInfo.getMembers(), new ValueChangedListener<HashSet<GroupMember>>() {
             @Override
             public void onChanged(HashSet<GroupMember> val, Value<HashSet<GroupMember>> Value) {
@@ -502,6 +502,7 @@ public class GroupInfoFragment extends BaseFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        groupUserAdapter.dispose();
         groupUserAdapter = null;
         if (avatarView != null) {
             avatarView.unbind();

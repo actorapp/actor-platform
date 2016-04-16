@@ -17,3 +17,11 @@ export function getMessageState(message, uid, receiveDate, readDate) {
 
   return message.state;
 }
+
+export function quoteMessage(text) {
+  return text
+    .trim()
+    .split('\n')
+    .map(((line) => `> ${line}`))
+    .join('\n');
+}

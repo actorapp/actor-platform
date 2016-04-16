@@ -60,6 +60,7 @@ import im.actor.sdk.controllers.fragment.BaseFragment;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.TintImageView;
 import im.actor.sdk.view.adapters.HolderAdapter;
+import im.actor.sdk.view.adapters.RecyclerListView;
 import im.actor.sdk.view.adapters.ViewHolder;
 import im.actor.sdk.view.avatar.AvatarView;
 import im.actor.sdk.view.avatar.CallBackgroundAvatarView;
@@ -90,7 +91,7 @@ public class CallFragment extends BaseFragment {
     private boolean speakerOn = false;
     private AudioManager audioManager;
     private AvatarView avatarView;
-    private ListView membersList;
+    private RecyclerListView membersList;
     private CallAvatarLayerAnimator animator;
     private View[] avatarLayers;
     private View layer1;
@@ -204,7 +205,7 @@ public class CallFragment extends BaseFragment {
         //
         // Members list
         //
-        membersList  = (ListView) cont.findViewById(R.id.members_list);
+        membersList = (RecyclerListView) cont.findViewById(R.id.members_list);
         if(call!=null){
             CallMembersAdapter membersAdapter = new CallMembersAdapter(getActivity(), call.getMembers());
             membersList.setAdapter(membersAdapter);

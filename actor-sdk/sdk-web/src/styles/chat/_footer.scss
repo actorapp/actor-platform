@@ -1,0 +1,10 @@
+.chat {
+  &__footer {
+    &--disabled {
+      height: 182px;
+      h3 {
+        color: rgba(black, .2);
+      }
+    }
+  }
+}
