@@ -1,5 +1,7 @@
 package im.actor.server.cqrs
 
+import java.sql.SQLException
+
 import akka.actor.ActorLogging
 import akka.pattern.pipe
 import akka.persistence.{ PersistentActor, RecoveryCompleted }
@@ -14,7 +16,17 @@ trait ProcessorState[S, E] {
 
 abstract class ProcessorError(msg: String) extends RuntimeException(msg) with NoStackTrace
 
-abstract class Processor[S <: ProcessorState[S, E], E: ClassTag] extends PersistentActor with ActorLogging {
+trait PersistenceDebug extends PersistentActor with ActorLogging {
+  override protected def onPersistFailure(cause: Throwable, event: Any, seqNr: Long): Unit = {
+    super.onPersistFailure(cause, event, seqNr)
+
+    cause match {
+      case e: SQLException ⇒ log.error(e.getNextException, "Next exception:")
+    }
+  }
+}
+
+abstract class Processor[S <: ProcessorState[S, E], E: ClassTag] extends PersistentActor with ActorLogging with PersistenceDebug {
 
   import context.dispatcher
 
