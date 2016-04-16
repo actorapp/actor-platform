@@ -23,6 +23,7 @@ import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.Props;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.promise.Promise;
+import im.actor.runtime.storage.PreferencesStorage;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
@@ -118,7 +119,11 @@ public class AuthActivity extends BaseFragmentActivity {
 
                 break;
             case SIGN_UP:
-                showFragment(new SignUpFragment(), false, false);
+                if (currentName != null && !currentName.isEmpty()) {
+                    startAuth(currentName);
+                } else {
+                    showFragment(new SignUpFragment(), false, false);
+                }
                 break;
             case AUTH_PHONE:
                 currentAuthType = AUTH_TYPE_PHONE;
@@ -283,11 +288,11 @@ public class AuthActivity extends BaseFragmentActivity {
             public void run() {
                 if (dismissProgress()) {
                     boolean canTryAgain = false;
+                    boolean keepState = false;
                     String message = getString(R.string.error_unknown);
                     String tag = "UNKNOWN";
                     if (e instanceof RpcException) {
                         RpcException re = (RpcException) e;
-                        tag = re.getTag();
                         if (re instanceof RpcInternalException) {
                             message = getString(R.string.error_unknown);
                             canTryAgain = true;
@@ -295,12 +300,13 @@ public class AuthActivity extends BaseFragmentActivity {
                             message = getString(R.string.error_connection);
                             canTryAgain = true;
                         } else {
-                            if ("PHONE_CODE_EXPIRED".equals(re.getTag())) {
+                            if ("PHONE_CODE_EXPIRED".equals(re.getTag()) || "EMAIL_CODE_EXPIRED".equals(re.getTag())) {
                                 message = getString(R.string.auth_error_code_expired);
                                 canTryAgain = false;
-                            } else if ("PHONE_CODE_INVALID".equals(re.getTag())) {
+                            } else if ("PHONE_CODE_INVALID".equals(re.getTag()) || "EMAIL_CODE_INVALID".equals(re.getTag())) {
                                 message = getString(R.string.auth_error_code_invalid);
                                 canTryAgain = false;
+                                keepState = true;
                             } else if ("FAILED_GET_OAUTH2_TOKEN".equals(re.getTag())) {
                                 message = getString(R.string.auth_error_failed_get_oauth2_token);
                                 canTryAgain = false;
@@ -356,13 +362,16 @@ public class AuthActivity extends BaseFragmentActivity {
                                     .show()
                                     .setCanceledOnTouchOutside(false);
                         } else {
+                            final boolean finalKeepState = keepState;
                             new AlertDialog.Builder(AuthActivity.this)
                                     .setMessage(message)
                                     .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             dismissAlert();
-                                            if (signType == SIGN_TYPE_UP) {
+                                            if (finalKeepState) {
+                                                updateState(state, true);
+                                            } else if (signType == SIGN_TYPE_UP) {
                                                 if (currentAuthType == AUTH_TYPE_EMAIL) {
                                                     switchToEmailAuth();
                                                 } else if (currentAuthType == AUTH_TYPE_PHONE) {
