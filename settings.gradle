@@ -30,3 +30,9 @@ include ":actor-sdk:sdk-core-android:android-google-push"
 //
 
 include ":actor-sdk:sdk-core-ios"
+
+//
+// SDK Command Line Client
+//
+
+include ":actor-sdk:sdk-core-clc:app-clc"
