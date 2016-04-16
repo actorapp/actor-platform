@@ -20,7 +20,7 @@ export default {
       'welcome': {
         'header': 'Welcome to <strong>{appName}</strong>',
         'text': '<p>{appName} Messenger brings all of your business network connections into one place, making it easier to access wherever you go.</p>' +
-                '<p>Our gsoal is to make your working process easier, reduce your email load and make the people in business world closer to each other by reducing time to find the right contacts.</p>',
+                '<p>Our goal is to make your working process easier, reduce your email load and make the people in business world closer to each other by reducing time spent on finding the right contacts.</p>',
         'copyright': '{appName} Messenger © 2016'
       }
     },
@@ -170,17 +170,17 @@ export default {
         'notFound': 'No matches found for <strong>{query}</strong>.<br/>Did you spell it correctly?'
       },
       'confirm': {
-        'logout': 'Do you really want to leave?',
+        'logout': 'Are you sure you want to leave?',
         'user': {
-          'clear': 'Are you sure you want to clear conversation with {name}?',
-          'delete': 'Are you sure you want to delete conversation with {name}?',
+          'clear': 'Are you sure you want to clear the conversation with {name}?',
+          'delete': 'Are you sure you want to delete the conversation with {name}?',
           'block': 'Are you sure you want to block {name}?',
           'removeContact': 'Are you sure you want to remove {name} from your contacts?'
         },
         'group': {
-          'clear': 'Are you sure you want to clear conversation {name}?',
-          'delete': 'Are you sure you want to delete conversation {name}?',
-          'leave': 'Are you sure you want to leave conversation {name}?',
+          'clear': 'Are you sure you want to clear the conversation {name}?',
+          'delete': 'Are you sure you want to delete the conversation {name}?',
+          'leave': 'Are you sure you want to leave the conversation {name}?',
           'kick': 'Are you sure you want to kick {name}?'
         },
         'nonContactHide': {
@@ -222,7 +222,7 @@ export default {
     '}',
     'kick': 'Kick',
     'integrationToken': 'Integration Token',
-    'integrationTokenHint': 'If you have programming chops, or know someone who does, this integration token allows the biggest amount of flexibility and communication with your own systems.',
+    'integrationTokenHint': 'If you have programming chops, or know someone who does — this integration token allows the biggest amount of flexibility and communication with your own systems.',
     'integrationTokenHelp': 'Learn how to integrate',
 
     // Modals
@@ -285,11 +285,11 @@ export default {
     'main': {
       'empty': 'Try to be better than yesterday!',
       'install': '<h1>The Web version of <b>{appName}</b> works only in desktop browsers at this time</h1>' +
-                 '<h3>Please install our apps for using <b>{appName}</b> on your phone.</h3>' +
+                 '<h3>Try installing our apps for using <b>{appName}</b> on your phone.</h3>' +
                  '<p><a href="//actor.im/ios">iPhone</a> | <a href="//actor.im/android">Android</a></p>',
       'deactivated': {
         'header': 'Tab deactivated',
-        'text': 'Oops, we have detected another tab with {appName}, so we had to deactivate this one to prevent some dangerous things happening.'
+        'text': 'Oops, we have detected another tab with {appName}, so we had to deactivate this one to prevent you from dangerous things happening.'
       }
     },
 
@@ -317,7 +317,7 @@ export default {
 
     tooltip: {
       toolbar: {
-        info: 'Information about current conversation',
+        info: 'Information about the current conversation',
         favorite: 'Toggle favorite'
       },
       recent: {
@@ -326,7 +326,7 @@ export default {
         addContact: 'Add new contact',
         createGroup: 'Create group'
       },
-      quicksearch: 'A fastest way to find something'
+      quicksearch: 'The fastest way to find something'
     },
 
     context: {
@@ -340,9 +340,9 @@ export default {
 
     search: {
       'placeholder': 'Search',
-      'emptyQuery': 'You must start typing to find anything',
+      'emptyQuery': 'Start typing to find anything',
       'searching': 'Search for "{query}"',
-      'notFound': 'Nothing found for "{query}"<br/>Try your luck with another request'
+      'notFound': 'Nothing found for "{query}"<br/>Maybe you\'ll get luckier with another request'
     }
   }
 };
