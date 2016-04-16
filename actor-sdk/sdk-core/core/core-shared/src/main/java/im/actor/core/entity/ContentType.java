@@ -26,6 +26,8 @@ public enum ContentType {
     CUSTOM_JSON_MESSAGE(21),
     SERVICE_CALL_ENDED(22),
     SERVICE_CALL_MISSED(23),
+    SERVICE_TOPIC(24),
+    SERVICE_ABOUT(25),
     UNKNOWN_CONTENT(15);
 
     int value;
@@ -85,6 +87,11 @@ public enum ContentType {
                 return SERVICE_CALL_ENDED;
             case 23:
                 return SERVICE_CALL_MISSED;
+            case 24:
+                return SERVICE_TOPIC;
+            case 25:
+                return SERVICE_ABOUT;
+
         }
     }
 }
