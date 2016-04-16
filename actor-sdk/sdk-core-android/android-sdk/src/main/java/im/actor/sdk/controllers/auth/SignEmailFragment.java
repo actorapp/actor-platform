@@ -110,7 +110,6 @@ public class SignEmailFragment extends BaseAuthFragment {
         emailEditText = (EditText) v.findViewById(R.id.tv_email);
         emailEditText.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
         String savedAuthId = messenger().getPreferences().getString("sign_in_auth_id");
-        emailEditText.setText(savedAuthId);
         boolean useSaved = savedAuthId != null && !savedAuthId.isEmpty() && savedAuthId.contains("@");
         if (useSaved) {
             emailEditText.setText(savedAuthId);
