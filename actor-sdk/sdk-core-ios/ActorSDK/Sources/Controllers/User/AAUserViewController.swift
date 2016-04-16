@@ -241,19 +241,26 @@ class AAUserViewController: AAContentTableController {
         }
         
         // Block Contact
+        
         section { (s) -> () in
             
             // Block Contact
             self.isContactRow = s.common { (r) -> () in
                 r.bindAction = { (r) -> () in
-                    if self.user.isContactModel().get().booleanValue() {
+                    if self.user.isBlockedModel().get().booleanValue() {
                         r.content = AALocalized("ProfileBlockContact")
-                        r.style = .Action
+                    } else {
+                        r.content = AALocalized("ProfileUnblockContact")
                     }
+                       r.style = .Action
                 }
                 r.selectAction = { () -> Bool in
+                    if self.user.isBlockedModel().get().booleanValue() {
                     self.executePromise(Actor.blockUser(jint(self.uid)))
-                    
+                    } else {
+                    self.executePromise(Actor.unblockUser(jint(self.uid)))
+                    }
+                    r.reload()
                     return true
                 }
             }
