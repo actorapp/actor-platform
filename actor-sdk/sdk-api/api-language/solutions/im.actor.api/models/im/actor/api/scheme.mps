@@ -15203,6 +15203,10 @@
           <property role="TrG5h" value="STRIP_COUNTERS" />
           <property role="2m7y0m" value="5" />
         </node>
+        <node concept="2m7y0F" id="2_$5TdnXmwt" role="2m7ymf">
+          <property role="TrG5h" value="COMPACT_USERS" />
+          <property role="2m7y0m" value="6" />
+        </node>
       </node>
       <node concept="2m6fVq" id="GBscvBBAdf" role="2m5mJr">
         <property role="TrG5h" value="GetState" />
