@@ -14,6 +14,14 @@ import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.runtime.actors.Actor;
+import im.actor.runtime.actors.ActorCreator;
+import im.actor.runtime.actors.ActorRef;
+import im.actor.runtime.actors.ActorSystem;
+import im.actor.runtime.actors.Props;
+import im.actor.runtime.actors.messages.PoisonPill;
+import im.actor.runtime.function.Consumer;
+import im.actor.runtime.promise.Promise;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.fragment.ActorBinder;
@@ -28,6 +36,13 @@ public class BaseActivity extends AppCompatActivity {
     private final ActorBinder BINDER = new ActorBinder();
 
     private boolean isResumed = false;
+
+    private ActorRef promiseActor = ActorSystem.system().actorOf(Props.create(new ActorCreator() {
+        @Override
+        public Actor create() {
+            return new Actor();
+        }
+    }), "actor/promise_actor_" + hashCode());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +129,7 @@ public class BaseActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         notifyOnPause();
+        promiseActor.send(PoisonPill.INSTANCE);
     }
 
     @Override
@@ -188,13 +204,13 @@ public class BaseActivity extends AppCompatActivity {
         cmd.start(new CommandCallback<T>() {
             @Override
             public void onResult(T res) {
-                dismissDiaog(progressDialog);
+                dismissDialog(progressDialog);
                 callback.onResult(res);
             }
 
             @Override
             public void onError(Exception e) {
-                dismissDiaog(progressDialog);
+                dismissDialog(progressDialog);
                 callback.onError(e);
             }
         });
@@ -217,17 +233,39 @@ public class BaseActivity extends AppCompatActivity {
         cmd.start(new CommandCallback<T>() {
             @Override
             public void onResult(T res) {
-                dismissDiaog(progressDialog);
+                dismissDialog(progressDialog);
             }
 
             @Override
             public void onError(Exception e) {
-                dismissDiaog(progressDialog);
+                dismissDialog(progressDialog);
             }
         });
     }
 
-    public void dismissDiaog(ProgressDialog progressDialog) {
+    public <T> void execute(Promise<T> promise) {
+        execute(promise, R.string.progress_common);
+    }
+
+    public <T> void execute(Promise<T> promise, int title) {
+        final ProgressDialog dialog = ProgressDialog.show(this, "", getString(title), true, false);
+        promise
+                .then(new Consumer<T>() {
+                    @Override
+                    public void apply(T t) {
+                        dismissDialog(dialog);
+                    }
+                })
+                .failure(new Consumer<Exception>() {
+                    @Override
+                    public void apply(Exception e) {
+                        dismissDialog(dialog);
+                    }
+                })
+                .done(promiseActor);
+    }
+
+    public void dismissDialog(ProgressDialog progressDialog) {
         try {
             progressDialog.dismiss();
         } catch (Exception ex) {

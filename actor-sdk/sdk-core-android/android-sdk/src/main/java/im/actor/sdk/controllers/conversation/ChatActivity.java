@@ -41,7 +41,6 @@ import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,7 +53,6 @@ import im.actor.core.entity.MentionFilterResult;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.content.AbsContent;
-import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.network.RpcException;
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
@@ -79,6 +77,7 @@ import im.actor.sdk.intents.ActorIntent;
 import im.actor.sdk.util.Randoms;
 import im.actor.sdk.util.Screen;
 import im.actor.core.utils.GalleryScannerActor;
+import im.actor.sdk.view.adapters.RecyclerListView;
 import im.actor.sdk.view.avatar.AvatarView;
 import im.actor.sdk.controllers.conversation.view.TypingDrawable;
 import im.actor.sdk.view.emoji.SmileProcessor;
@@ -171,7 +170,7 @@ public class ChatActivity extends ActorEditTextActivity {
     // Mentions
     //////////////////////////////////
     private MentionsAdapter mentionsAdapter;
-    private ListView mentionsList;
+    private RecyclerListView mentionsList;
     private String mentionSearchString = "";
     private int mentionStart;
     private FrameLayout quoteContainer;
@@ -289,7 +288,7 @@ public class ChatActivity extends ActorEditTextActivity {
         });
 
         // Mentions
-        mentionsList = (ListView) findViewById(R.id.mentionsList);
+        mentionsList = (RecyclerListView) findViewById(R.id.mentionsList);
         mentionsList.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
 
         //Quote
@@ -702,8 +701,20 @@ public class ChatActivity extends ActorEditTextActivity {
             // Binding User typing to Toolbar
             bindPrivateTyping(barTyping, barTypingContainer, barSubtitle, messenger().getTyping(user.getId()));
 
-            // Hide removedFromGroup panel as we are not in group
-            removedFromGroup.setVisibility(View.GONE);
+            // Bind user blocked
+            inputBlockedText.setText(R.string.profile_settings_unblock);
+            bind(users().get(peer.getPeerId()).getIsBlocked(), new ValueChangedListener<Boolean>() {
+                @Override
+                public void onChanged(Boolean val, Value<Boolean> valueModel) {
+                    inputBlockContainer.setVisibility(val ? View.VISIBLE : View.GONE);
+                }
+            });
+            inputBlockedText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    execute(messenger().unblockUser(peer.getPeerId()));
+                }
+            });
 
         } else if (peer.getPeerType() == PeerType.GROUP) {
 
@@ -729,11 +740,11 @@ public class ChatActivity extends ActorEditTextActivity {
             // Binding group typing
             bindGroupTyping(barTyping, barTypingContainer, barSubtitle, messenger().getGroupTyping(group.getId()));
 
-            // Binding membership flag to removedFromGroup panel
+            // Binding membership flag to inputBlockContainer panel
             bind(messenger().getGroups().get(peer.getPeerId()).isMember(), new ValueChangedListener<Boolean>() {
                 @Override
                 public void onChanged(Boolean val, Value<Boolean> Value) {
-                    removedFromGroup.setVisibility(val ? View.GONE : View.VISIBLE);
+                    inputBlockContainer.setVisibility(val ? View.GONE : View.VISIBLE);
                 }
             });
         }
@@ -1419,6 +1430,9 @@ public class ChatActivity extends ActorEditTextActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (mentionsAdapter != null) {
+            mentionsAdapter.dispose();
+        }
         if (fastShareAdapter != null) {
             fastShareAdapter.release();
             fastShareAdapter = null;

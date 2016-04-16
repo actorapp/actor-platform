@@ -23,6 +23,8 @@ import im.actor.runtime.threading.WeakReferenceCompat;
 
 public class JsThreadingProvider implements ThreadingRuntime {
 
+    public static boolean ALLOW_WEB_WORKER_SCHEDULER = true;
+
     @Override
     public long getActorTime() {
         // TODO: Better approach
@@ -71,6 +73,6 @@ public class JsThreadingProvider implements ThreadingRuntime {
 
     @Override
     public ImmediateDispatcher createImmediateDispatcher(String name, ThreadPriority priority) {
-        return new JsImmediateDispatcher(name);
+        return new JsImmediateDispatcher(ALLOW_WEB_WORKER_SCHEDULER, name);
     }
 }

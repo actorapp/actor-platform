@@ -4,6 +4,7 @@
 
 import React, { Component, PropTypes } from 'react';
 import classnames from 'classnames';
+import { FormattedMessage } from 'react-intl';
 import { lightbox } from '../../utils/ImageUtils';
 import { Container } from 'flux/utils';
 import Scrollbar from '../common/Scrollbar.react';
@@ -32,18 +33,11 @@ import ToggleNotifications from '../common/ToggleNotifications.react';
 
 const MAX_GROUP_CALL_SIZE = 25;
 
-const getStateFromStores = (gid) => {
-  const thisPeer = gid ? GroupStore.getGroup(gid) : null;
-  return {
-    thisPeer,
-    // should not require to pass a peer
-    isNotificationsEnabled: thisPeer ? NotificationsStore.isNotificationsEnabled(thisPeer) : true,
-    integrationToken: GroupStore.getToken(),
-    message: OnlineStore.getMessage()
-  };
-};
-
 class GroupProfile extends Component {
+  static contextTypes = {
+    intl: PropTypes.object
+  };
+
   static propTypes = {
     group: PropTypes.object.isRequired
   };
@@ -53,12 +47,16 @@ class GroupProfile extends Component {
   }
 
   static calculateState(prevState, nextProps) {
-    return getStateFromStores(nextProps.group.id || null);
+    const gid = nextProps.group.id;
+    const peer = gid ? GroupStore.getGroup(gid) : null;
+    return {
+      peer,
+      // should not require to pass a peer
+      isNotificationsEnabled: peer ? NotificationsStore.isNotificationsEnabled(peer) : true,
+      integrationToken: GroupStore.getToken(),
+      message: OnlineStore.getMessage()
+    };
   }
-
-  static contextTypes = {
-    intl: PropTypes.object
-  };
 
   constructor(props) {
     super(props);
@@ -70,17 +68,9 @@ class GroupProfile extends Component {
 
   onAddMemberClick = group => InviteUserActions.show(group);
 
-  onLeaveGroupClick = gid => {
-    const { intl } = this.context;
-    confirm(intl.messages['modal.confirm.leave']).then(
-      () => DialogActionCreators.leaveGroup(gid),
-      () => {}
-    );
-  };
-
   onNotificationChange = event => {
-    const { thisPeer } = this.state;
-    NotificationsActionCreators.changeNotificationsEnabled(thisPeer, event.target.checked);
+    const { peer } = this.state;
+    NotificationsActionCreators.changeNotificationsEnabled(peer, event.target.checked);
   };
 
   selectToken = (event) => event.target.select();
@@ -102,8 +92,11 @@ class GroupProfile extends Component {
   };
 
   onClearGroupClick = (gid) => {
-    const { intl } = this.context;
-    confirm(intl.messages['modal.confirm.clear']).then(
+    const { group } = this.props;
+
+    confirm(
+      <FormattedMessage id="modal.confirm.group.clear" values={{name: group.name}} />
+    ).then(
       () => {
         const peer = ActorClient.getGroupPeer(gid);
         DialogActionCreators.clearChat(peer)
@@ -112,9 +105,23 @@ class GroupProfile extends Component {
     );
   };
 
+  onLeaveGroupClick = gid => {
+    const { group } = this.props;
+
+    confirm(
+      <FormattedMessage id="modal.confirm.group.leave" values={{name: group.name}} />
+    ).then(
+      () => DialogActionCreators.leaveGroup(gid),
+      () => {}
+    );
+  };
+
   onDeleteGroupClick = (gid) => {
-    const { intl } = this.context;
-    confirm(intl.messages['modal.confirm.delete']).then(
+    const { group } = this.props;
+
+    confirm(
+      <FormattedMessage id="modal.confirm.group.delete" values={{name: group.name}} />
+    ).then(
       () => {
         const peer = ActorClient.getGroupPeer(gid);
         DialogActionCreators.deleteChat(peer);

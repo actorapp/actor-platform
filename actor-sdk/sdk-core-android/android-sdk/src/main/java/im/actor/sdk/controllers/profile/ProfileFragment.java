@@ -423,6 +423,9 @@ public class ProfileFragment extends BaseFragment {
         // Settings
         //
         {
+            //
+            // Notifications
+            //
             View notificationContainer = res.findViewById(R.id.notificationsCont);
             ((TextView) notificationContainer.findViewById(R.id.settings_notifications_title)).setTextColor(style.getTextPrimaryColor());
             final SwitchCompat notificationEnable = (SwitchCompat) res.findViewById(R.id.enableNotifications);
@@ -443,6 +446,50 @@ public class ProfileFragment extends BaseFragment {
             Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_list_black_24dp));
             DrawableCompat.setTint(drawable, style.getSettingsIconColor());
             iconView.setImageDrawable(drawable);
+
+            //
+            // Block
+            //
+            View blockContainer = res.findViewById(R.id.blockCont);
+            final TextView blockTitle = (TextView) blockContainer.findViewById(R.id.settings_block_title);
+            blockTitle.setTextColor(style.getTextPrimaryColor());
+            bind(user.getIsBlocked(), new ValueChangedListener<Boolean>() {
+                @Override
+                public void onChanged(Boolean val, Value<Boolean> valueModel) {
+                    blockTitle.setText(val ? R.string.profile_settings_unblock : R.string.profile_settings_block);
+                }
+            });
+            blockContainer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!user.getIsBlocked().get()) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder
+                                .setMessage(getString(R.string.profile_settings_block_confirm).replace("{user}", user.getName().get()))
+                                .setPositiveButton(R.string.dialog_yes, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        execute(messenger().blockUser(user.getId()));
+                                        dialog.dismiss();
+                                    }
+                                })
+                                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                })
+                                .show();
+                    } else {
+                        execute(messenger().unblockUser(user.getId()));
+                    }
+
+                }
+            });
+            ImageView blockIconView = (ImageView) res.findViewById(R.id.settings_block_icon);
+            Drawable blockDrawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_block_white_18dp));
+            DrawableCompat.setTint(blockDrawable, style.getSettingsIconColor());
+            blockIconView.setImageDrawable(blockDrawable);
         }
 
 
