@@ -102,7 +102,7 @@ class MessagingServiceSpec
         {
           implicit val clientData = clientData2
 
-          expectUpdates(classOf[UpdateChatGroupsChanged], classOf[UpdateMessage], classOf[UpdateCountersChanged]) {
+          expectUpdatesUnordered(classOf[UpdateChatGroupsChanged], classOf[UpdateMessage], classOf[UpdateCountersChanged]) {
             case Seq(upd: UpdateMessage) ⇒
               upd.peer shouldEqual ApiPeer(ApiPeerType.Private, user1.id)
               upd.randomId shouldEqual randomId
