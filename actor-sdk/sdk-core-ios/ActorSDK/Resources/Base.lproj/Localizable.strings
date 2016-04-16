@@ -151,6 +151,8 @@
 
 "ProfileBlockContact" = "Block Contact";
 
+"ProfileUnblockContact" = "Unblock Contact";
+
 "ProfileRename" = "Rename Contact";
 
 "ProfileRenameMessage" = "You can rename contacts to organize your contact list. Changes will only be visible to you.";
