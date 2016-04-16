@@ -10,8 +10,6 @@ import im.actor.api.rpc.messaging._
 import im.actor.server.ApiConversions._
 import im.actor.server.dialog.HistoryUtils._
 import im.actor.server.model._
-import im.actor.server.persist.HistoryMessageRepo
-import im.actor.server.persist.dialog.DialogRepo
 import im.actor.server.persist.messaging.ReactionEventRepo
 import im.actor.server.pubsub.{ PeerMessage, PubSubExtension }
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
@@ -25,7 +23,6 @@ import scala.util.Failure
 trait DialogCommandHandlers extends PeersImplicits with UserACL {
   this: DialogProcessor ⇒
 
-  import DialogEvents._
   import DialogCommands._
   import DialogEvents._
 
@@ -147,13 +144,14 @@ trait DialogCommandHandlers extends PeersImplicits with UserACL {
     }
   }
 
-  protected def ackMessageRead(mr: MessageRead): Unit =
+  protected def ackMessageRead(mr: MessageRead): Unit = {
     persist(MessagesRead(Instant.ofEpochMilli(mr.date))) { e ⇒
       commit(e)
       (deliveryExt.notifyRead(userId, peer, mr.date, mr.now) map { _ ⇒ MessageReadAck() }) pipeTo sender() andThen {
-        case Failure(e) ⇒ log.error(e, "Failed to ack MessageRead")
+        case Failure(err) ⇒ log.error(err, "Failed to ack MessageRead")
       }
     }
+  }
 
   protected def setReaction(state: DialogState, sr: SetReaction): Unit = {
     (for {
