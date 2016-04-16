@@ -7,7 +7,7 @@ import akka.actor.{ ActorRef, Status }
 import akka.cluster.sharding.ShardRegion.Passivate
 import akka.pattern.pipe
 import akka.persistence.PersistentActor
-import im.actor.concurrent.ActorFutures
+import im.actor.concurrent.{ ActorFutures, AlertingActor }
 
 import scala.collection.immutable
 import scala.concurrent.Future
@@ -22,7 +22,7 @@ case object StopOffice
 
 trait ProcessorState
 
-trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorFutures {
+trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorFutures with AlertingActor {
 
   case class UnstashAndWork(evt: Event, state: State)
 

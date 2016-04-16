@@ -5,6 +5,7 @@ import java.sql.SQLException
 import akka.actor.ActorLogging
 import akka.pattern.pipe
 import akka.persistence.{ PersistentActor, RecoveryCompleted }
+import im.actor.concurrent.AlertingActor
 
 import scala.concurrent.Future
 import scala.reflect.ClassTag
@@ -26,7 +27,7 @@ trait PersistenceDebug extends PersistentActor with ActorLogging {
   }
 }
 
-abstract class Processor[S <: ProcessorState[S, E], E: ClassTag] extends PersistentActor with ActorLogging with PersistenceDebug {
+abstract class Processor[S <: ProcessorState[S, E], E: ClassTag] extends PersistentActor with PersistenceDebug with AlertingActor {
 
   import context.dispatcher
 

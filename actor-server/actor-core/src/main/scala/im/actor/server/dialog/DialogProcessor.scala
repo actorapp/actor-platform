@@ -11,7 +11,7 @@ import im.actor.serialization.ActorSerializer
 import im.actor.server.cqrs._
 import im.actor.server.db.DbExtension
 import im.actor.server.group.GroupExtension
-import im.actor.server.model.{ Peer, DialogObsolete ⇒ DialogModel }
+import im.actor.server.model.Peer
 import im.actor.server.sequence.{ SeqStateDate, SeqUpdatesExtension }
 import im.actor.server.social.SocialExtension
 import im.actor.server.user.UserExtension
@@ -27,26 +27,22 @@ private[dialog] trait DialogEvent extends TaggedEvent {
 }
 
 trait DialogQuery {
-  val dest: Peer
+  val dest: Option[Peer]
+
+  def getDest: Peer
 }
 
 private object UnreadMessage {
   val ordering = new Ordering[UnreadMessage] {
     override def compare(x: UnreadMessage, y: UnreadMessage): Int =
-      if (x.date.isBefore(y.date)) -1
+      if (x.randomId == y.randomId) 0
+      else if (x.date.isBefore(y.date)) -1
       else if (x.date.isAfter(y.date)) 1
       else 0
   }
 }
 
-private case class UnreadMessage(date: Instant, randomId: Long) {
-  override def hashCode(): Int = randomId.hashCode()
-
-  override def equals(obj: scala.Any): Boolean = obj match {
-    case um: UnreadMessage ⇒ randomId == um.randomId
-    case _                 ⇒ false
-  }
-}
+private case class UnreadMessage(date: Instant, randomId: Long)
 
 private[dialog] final case class DialogState(
   userId:          Int,
@@ -147,13 +143,13 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
   override protected def handleQuery: PartialFunction[Any, Future[Any]] = {
     case GetCounter(_) ⇒ Future.successful(GetCounterResponse(state.counter))
     case GetInfo(_) ⇒ Future.successful(
-      GetInfoResponse(DialogInfo(
-        peer = peer,
+      GetInfoResponse(Some(DialogInfo(
+        peer = Some(peer),
         counter = state.counter,
         date = state.lastMessageDate,
         lastReceivedDate = state.lastReceiveDate,
         lastReadDate = state.lastReadDate
-      ))
+      )))
     )
   }
 
@@ -189,7 +185,7 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
    * @param dc command
    * @return does dialog owner invokes this command
    */
-  private def invokes(dc: DirectDialogCommand): Boolean = (dc.dest == peer) && (dc.origin == selfPeer)
+  private def invokes(dc: DirectDialogCommand): Boolean = (dc.getDest == peer) && (dc.getOrigin == selfPeer)
 
   /**
    * dialog owner accepts `dc`
@@ -202,5 +198,5 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
    * @param dc command
    * @return does dialog owner accepts this command
    */
-  private def accepts(dc: DirectDialogCommand) = (dc.dest == selfPeer) || ((dc.dest == peer) && (dc.origin != selfPeer))
+  private def accepts(dc: DirectDialogCommand) = (dc.getDest == selfPeer) || ((dc.getDest == peer) && (dc.getOrigin != selfPeer))
 }

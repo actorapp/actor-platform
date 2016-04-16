@@ -5,6 +5,7 @@ import java.time.Instant
 import akka.actor.{ ActorRef, PoisonPill, Status }
 import akka.http.scaladsl.util.FastFuture
 import akka.pattern.pipe
+import com.google.protobuf.wrappers.Int64Value
 import im.actor.api.rpc.PeersImplicits
 import im.actor.api.rpc.messaging._
 import im.actor.server.ApiConversions._
@@ -42,7 +43,7 @@ trait DialogCommandHandlers extends PeersImplicits with UserACL {
         unstashAll()
     }: Receive) orElse reactions(state), discardOld = true)
 
-    withValidAccessHash(sm.dest, sm.senderAuthId, sm.accessHash) {
+    withValidAccessHash(sm.getDest, sm.senderAuthId map (_.value), sm.accessHash map (_.value)) {
       withCachedFuture[AuthSidRandomId, SeqStateDate](sm.senderAuthSid → sm.randomId) {
         val sendDate = calcSendDate(state)
         val message = sm.message
@@ -69,16 +70,16 @@ trait DialogCommandHandlers extends PeersImplicits with UserACL {
       throw new RuntimeException("No message date found in SendMessage")
     }
 
-    persist(NewMessage(sm.randomId, Instant.ofEpochMilli(messageDate), isIncoming = true)) { e ⇒
+    persist(NewMessage(sm.randomId, Instant.ofEpochMilli(messageDate.value), isIncoming = true)) { e ⇒
       commit(e)
 
       if (peer.typ == PeerType.Private) {
-        SocialManager.recordRelation(sm.origin.id, userId)
-        SocialManager.recordRelation(userId, sm.origin.id)
+        SocialManager.recordRelation(sm.getOrigin.id, userId)
+        SocialManager.recordRelation(userId, sm.getOrigin.id)
       }
 
       deliveryExt
-        .receiverDelivery(userId, sm.origin.id, peer, sm.randomId, messageDate, sm.message, sm.isFat)
+        .receiverDelivery(userId, sm.getOrigin.id, peer, sm.randomId, messageDate.value, sm.message, sm.isFat)
         .map(_ ⇒ SendMessageAck())
         .pipeTo(sender())
 
@@ -121,7 +122,7 @@ trait DialogCommandHandlers extends PeersImplicits with UserACL {
       commit(e)
 
       (deliveryExt.notifyReceive(userId, peer, mr.date, mr.now) map { _ ⇒ MessageReceivedAck() }) pipeTo sender() andThen {
-        case Failure(e) ⇒ log.error(e, "Failed to ack MessageReceived")
+        case Failure(err) ⇒ log.error(err, "Failed to ack MessageReceived")
       }
     }
   }
@@ -130,7 +131,7 @@ trait DialogCommandHandlers extends PeersImplicits with UserACL {
     val mustRead = mustMakeRead(state, mr)
 
     if (mustRead) {
-      persist(MessagesRead(Instant.ofEpochMilli(mr.date), mr.origin.id)) { e ⇒
+      persist(MessagesRead(Instant.ofEpochMilli(mr.date), mr.getOrigin.id)) { e ⇒
         commit(e)
 
         (for {
@@ -145,8 +146,8 @@ trait DialogCommandHandlers extends PeersImplicits with UserACL {
   }
 
   protected def ackMessageRead(mr: MessageRead): Unit = {
-    require(mr.origin.typ.isPrivate)
-    persist(MessagesRead(Instant.ofEpochMilli(mr.date), mr.origin.id)) { e ⇒
+    require(mr.getOrigin.typ.isPrivate)
+    persist(MessagesRead(Instant.ofEpochMilli(mr.date), mr.getOrigin.id)) { e ⇒
       commit(e)
       (deliveryExt.notifyRead(userId, peer, mr.date, mr.now) map { _ ⇒ MessageReadAck() }) pipeTo sender() andThen {
         case Failure(err) ⇒ log.error(err, "Failed to ack MessageRead")
@@ -165,7 +166,7 @@ trait DialogCommandHandlers extends PeersImplicits with UserACL {
         UpdateReactionsUpdate(peer.asStruct, sr.randomId, reactions.toVector)
       )
       _ ← dialogExt.ackSetReaction(peer, sr)
-    } yield SetReactionAck(seqstate, reactions)) pipeTo sender()
+    } yield SetReactionAck(Some(seqstate), reactions)) pipeTo sender()
   }
 
   protected def ackSetReaction(sr: SetReaction): Unit = {
@@ -190,7 +191,7 @@ trait DialogCommandHandlers extends PeersImplicits with UserACL {
       )
       _ ← dialogExt.ackRemoveReaction(peer, rr)
       _ ← dialogExt.ackRemoveReaction(peer, rr)
-    } yield RemoveReactionAck(seqstate, reactions)) pipeTo sender()
+    } yield RemoveReactionAck(Some(seqstate), reactions)) pipeTo sender()
   }
 
   protected def ackRemoveReaction(rr: RemoveReaction): Unit = {
