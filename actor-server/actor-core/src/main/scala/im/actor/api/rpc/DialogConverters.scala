@@ -5,7 +5,7 @@ import im.actor.server.dialog.{ DialogExtension, DialogGroup, DialogInfo }
 
 trait DialogConverters {
   implicit class ExtDialogInfo(info: DialogInfo) {
-    lazy val asStruct = ApiDialogShort(info.peer.asStruct, info.counter, info.date.toEpochMilli)
+    lazy val asStruct = ApiDialogShort(info.getPeer.asStruct, info.counter, info.date.toEpochMilli)
   }
 
   implicit class ExtDialogGroup(group: DialogGroup) {

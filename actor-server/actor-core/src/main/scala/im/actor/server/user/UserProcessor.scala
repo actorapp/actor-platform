@@ -144,8 +144,7 @@ object UserProcessor {
 private[user] final class UserProcessor
   extends PeerProcessor[UserState, UserEvent]
   with UserCommandHandlers
-  with UserQueriesHandlers
-  with ActorLogging {
+  with UserQueriesHandlers {
 
   import UserCommands._
   import UserQueries._
