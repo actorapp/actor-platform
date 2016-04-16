@@ -1770,12 +1770,6 @@
               },
               {
                 "type": "reference",
-                "argument": "about",
-                "category": "full",
-                "description": "  User's about information"
-              },
-              {
-                "type": "reference",
                 "argument": "sex",
                 "category": "full",
                 "description": "  optional sex of user"
@@ -1788,39 +1782,45 @@
               },
               {
                 "type": "reference",
-                "argument": "contactInfo",
-                "category": "compact",
-                "description": "  phones of user"
-              },
-              {
-                "type": "reference",
                 "argument": "isBot",
                 "category": "full",
                 "description": "  Is user actually bot. By default is false."
               },
               {
                 "type": "reference",
-                "argument": "external",
+                "argument": "ext",
                 "category": "full",
-                "description": "  If not null, is user come from outer network"
+                "description": "  Extension values"
+              },
+              {
+                "type": "reference",
+                "argument": "about",
+                "category": "full",
+                "description": "  [DEPRECATED] User's about information"
+              },
+              {
+                "type": "reference",
+                "argument": "contactInfo",
+                "category": "compact",
+                "description": "  [DEPRECATED] Contact information of user"
               },
               {
                 "type": "reference",
                 "argument": "preferredLanguages",
                 "category": "full",
-                "description": "  Preferred user languages"
+                "description": "  [DEPRECATED] Preferred user languages"
               },
               {
                 "type": "reference",
                 "argument": "timeZone",
                 "category": "full",
-                "description": "  Time Zone of user in TZ format"
+                "description": "  [DEPRECATED] Time Zone of user in TZ format"
               },
               {
                 "type": "reference",
                 "argument": "botCommands",
                 "category": "full",
-                "description": "  Available Bot Commands"
+                "description": "  [DEPRECATED] Available Bot Commands"
               }
             ],
             "expandable": "true",
@@ -1854,6 +1854,14 @@
               {
                 "type": {
                   "type": "opt",
+                  "childType": "string"
+                },
+                "id": 13,
+                "name": "nick"
+              },
+              {
+                "type": {
+                  "type": "opt",
                   "childType": {
                     "type": "enum",
                     "childType": "Sex"
@@ -1875,17 +1883,6 @@
               },
               {
                 "type": {
-                  "type": "list",
-                  "childType": {
-                    "type": "struct",
-                    "childType": "ContactRecord"
-                  }
-                },
-                "id": 12,
-                "name": "contactInfo"
-              },
-              {
-                "type": {
                   "type": "opt",
                   "childType": "bool"
                 },
@@ -1895,10 +1892,25 @@
               {
                 "type": {
                   "type": "opt",
-                  "childType": "string"
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MapValue"
+                  }
                 },
-                "id": 13,
-                "name": "nick"
+                "id": 20,
+                "name": "ext"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "ContactRecord"
+                  }
+                },
+                "id": 12,
+                "name": "contactInfo",
+                "deprecated": "true"
               },
               {
                 "type": {
@@ -1906,15 +1918,8 @@
                   "childType": "string"
                 },
                 "id": 14,
-                "name": "about"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "string"
-                },
-                "id": 15,
-                "name": "external"
+                "name": "about",
+                "deprecated": "true"
               },
               {
                 "type": {
@@ -1922,7 +1927,8 @@
                   "childType": "string"
                 },
                 "id": 16,
-                "name": "preferredLanguages"
+                "name": "preferredLanguages",
+                "deprecated": "true"
               },
               {
                 "type": {
@@ -1930,7 +1936,8 @@
                   "childType": "string"
                 },
                 "id": 17,
-                "name": "timeZone"
+                "name": "timeZone",
+                "deprecated": "true"
               },
               {
                 "type": {
@@ -1941,7 +1948,141 @@
                   }
                 },
                 "id": 19,
+                "name": "botCommands",
+                "deprecated": "true"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "FullUser",
+            "doc": [
+              "Full User representation",
+              {
+                "type": "reference",
+                "argument": "id",
+                "category": "full",
+                "description": "  User's Id"
+              },
+              {
+                "type": "reference",
+                "argument": "contactInfo",
+                "category": "compact",
+                "description": "  User's contact information"
+              },
+              {
+                "type": "reference",
+                "argument": "about",
+                "category": "full",
+                "description": "  User's about information"
+              },
+              {
+                "type": "reference",
+                "argument": "preferredLanguages",
+                "category": "full",
+                "description": "  Preferred user languages"
+              },
+              {
+                "type": "reference",
+                "argument": "timeZone",
+                "category": "full",
+                "description": "  Time Zone of user in TZ format"
+              },
+              {
+                "type": "reference",
+                "argument": "botCommands",
+                "category": "full",
+                "description": "  Available Commands for Bot"
+              },
+              {
+                "type": "reference",
+                "argument": "ext",
+                "category": "full",
+                "description": "  Extension values. NOTE: This values are not related to ext field in User object."
+              },
+              {
+                "type": "reference",
+                "argument": "isBlocked",
+                "category": "full",
+                "description": "  Is user blocked. Default is false."
+              }
+            ],
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "id"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "ContactRecord"
+                  }
+                },
+                "id": 2,
+                "name": "contactInfo"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 3,
+                "name": "about"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "string"
+                },
+                "id": 4,
+                "name": "preferredLanguages"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 5,
+                "name": "timeZone"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "BotCommand"
+                  }
+                },
+                "id": 6,
                 "name": "botCommands"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MapValue"
+                  }
+                },
+                "id": 7,
+                "name": "ext"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 8,
+                "name": "isBlocked"
               }
             ]
           }
@@ -2407,6 +2548,146 @@
                 },
                 "id": 2,
                 "name": "commands"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "UserExtChanged",
+            "header": 218,
+            "doc": [
+              "Update about user ext changed",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  User's id"
+              },
+              {
+                "type": "reference",
+                "argument": "ext",
+                "category": "full",
+                "description": "  New Ext Value in User (NOT FullUser) object."
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MapValue"
+                  }
+                },
+                "id": 2,
+                "name": "ext"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "UserFullExtChanged",
+            "header": 219,
+            "doc": [
+              "Update about user ext changed",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  User's Id"
+              },
+              {
+                "type": "reference",
+                "argument": "ext",
+                "category": "full",
+                "description": "  New Ext Value in FullUser (NOT User) object."
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MapValue"
+                  }
+                },
+                "id": 3,
+                "name": "ext"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "LoadFullUsers",
+            "header": 2649,
+            "response": {
+              "type": "anonymous",
+              "header": 2650,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "fullUsers",
+                  "category": "compact",
+                  "description": "  Loaded users"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "FullUser"
+                    }
+                  },
+                  "id": 1,
+                  "name": "fullUsers"
+                }
+              ]
+            },
+            "doc": [
+              "Loading Full User information",
+              {
+                "type": "reference",
+                "argument": "userPeers",
+                "category": "compact",
+                "description": "User's peers to load. Should be non-empy"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "UserOutPeer"
+                  }
+                },
+                "id": 1,
+                "name": "userPeers"
               }
             ]
           }
