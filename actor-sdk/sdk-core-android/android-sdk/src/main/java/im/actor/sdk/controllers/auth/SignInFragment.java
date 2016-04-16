@@ -22,6 +22,8 @@ import im.actor.sdk.util.Fonts;
 import im.actor.sdk.util.KeyboardHelper;
 import im.actor.sdk.view.SelectorFactory;
 
+import static im.actor.sdk.util.ActorSDKMessenger.messenger;
+
 public class SignInFragment extends BaseAuthFragment {
 
     private EditText signIdEditText;
@@ -108,9 +110,14 @@ public class SignInFragment extends BaseAuthFragment {
         });
 
         int availableAuthType = ActorSDK.sharedActor().getAuthType();
+        String savedAuthId = messenger().getPreferences().getString("sign_in_auth_id");
+        signIdEditText.setText(savedAuthId);
+        boolean needSuggested = savedAuthId == null || savedAuthId.isEmpty();
         if (((availableAuthType & AuthActivity.AUTH_TYPE_PHONE) == AuthActivity.AUTH_TYPE_PHONE) && ((availableAuthType & AuthActivity.AUTH_TYPE_EMAIL) == AuthActivity.AUTH_TYPE_EMAIL)) {
             //both hints set phone + email by default
-            setSuggestedEmail(signIdEditText);
+            if (needSuggested) {
+                setSuggestedEmail(signIdEditText);
+            }
         } else if ((availableAuthType & AuthActivity.AUTH_TYPE_PHONE) == AuthActivity.AUTH_TYPE_PHONE) {
             hint.setText(getString(R.string.sign_in_hint_phone_only));
             signIdEditText.setHint(getString(R.string.sign_in_edit_text_hint_phone_only));
@@ -118,8 +125,11 @@ public class SignInFragment extends BaseAuthFragment {
         } else if ((availableAuthType & AuthActivity.AUTH_TYPE_EMAIL) == AuthActivity.AUTH_TYPE_EMAIL) {
             hint.setText(getString(R.string.sign_in_hint_email_only));
             signIdEditText.setHint(getString(R.string.sign_in_edit_text_hint_email_only));
-            setSuggestedEmail(signIdEditText);
+            if (needSuggested) {
+                setSuggestedEmail(signIdEditText);
+            }
         }
+
 
         Button singUp = (Button) v.findViewById(R.id.button_sign_up);
         singUp.setTextColor(style.getTextSecondaryColor());
