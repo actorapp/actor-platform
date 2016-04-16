@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -181,6 +183,7 @@ public class AudioHolder extends MessageHolder {
                     public void run() {
                         if (currentAudio != null && currentAudio.equals(fileName)) {
                             Toast.makeText(activity, "error playing this file", Toast.LENGTH_SHORT).show();
+                            keepScreenOn(false);
                         }
                     }
                 });
@@ -194,6 +197,7 @@ public class AudioHolder extends MessageHolder {
     private void play(String fileName) {
         if (currentAudio != null && currentAudio.equals(fileName)) {
             playBtn.setImageResource(R.drawable.ic_pause_white_24dp);
+            keepScreenOn(true);
         } else {
             stop();
         }
@@ -212,10 +216,12 @@ public class AudioHolder extends MessageHolder {
             duration.setText(ActorSDK.sharedActor().getMessenger().getFormatter().formatDuration((int) (currentDuration / 1000)));
         }
         treckingTouch = false;
+        keepScreenOn(false);
     }
 
     private void pause() {
         playBtn.setImageResource(R.drawable.ic_play_arrow_white_24dp);
+        keepScreenOn(false);
     }
 
     @Override
@@ -392,6 +398,17 @@ public class AudioHolder extends MessageHolder {
     public static void stopPlaying() {
         if (audioActor != null) {
             audioActor.send(new AudioPlayerActor.Stop());
+        }
+    }
+
+    private void keepScreenOn(boolean on) {
+        if (context != null) {
+            Window window =  ((FragmentActivity) context).getWindow();
+            if (on == true)
+                window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            else
+                window.clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
         }
     }
 }
