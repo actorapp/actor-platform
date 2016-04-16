@@ -53,7 +53,8 @@ final class PrivacyServiceImpl(implicit system: ActorSystem) extends PrivacyServ
     authorized(clientData) { client ⇒
       for {
         ids ← db.run(UserContactRepo.findBlockedIds(client.userId))
-        outPeers ← Future.sequence(ids map (id ⇒ ACLUtils.getUserOutPeer(id, client.authId)))
+        uniqueIds = ids.toSet
+        outPeers ← Future.sequence(uniqueIds map (id ⇒ ACLUtils.getUserOutPeer(id, client.authId)))
       } yield Ok(ResponseLoadBlockedUsers(outPeers.toVector))
     }
 

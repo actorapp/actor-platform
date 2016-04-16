@@ -171,11 +171,18 @@ export default {
       },
       'confirm': {
         'logout': 'Do you really want to leave?',
-        'leave': 'Do you really want to leave this conversation?',
-        'clear': 'Do you really want to clear this conversation?',
-        'delete': 'Do you really want to delete this conversation?',
-        'removeContact': 'Do you really want to remove {name} from your contacts?',
-        'kick': 'Are you sure you want kick {name}',
+        'user': {
+          'clear': 'Are you sure you want to clear conversation with {name}?',
+          'delete': 'Are you sure you want to delete conversation with {name}?',
+          'block': 'Are you sure you want to block {name}?',
+          'removeContact': 'Are you sure you want to remove {name} from your contacts?'
+        },
+        'group': {
+          'clear': 'Are you sure you want to clear conversation {name}?',
+          'delete': 'Are you sure you want to delete conversation {name}?',
+          'leave': 'Are you sure you want to leave conversation {name}?',
+          'kick': 'Are you sure you want to kick {name}?'
+        },
         'nonContactHide': {
           'title': 'Are you sure you want to hide this conversation?',
           'body': 'User {name} isn\'t in your contact list.'
@@ -203,6 +210,7 @@ export default {
     'deleteGroup': 'Delete group',
     'clearConversation': 'Clear conversation',
     'deleteConversation': 'Delete conversation',
+    'blockUser': 'Block user',
     'leaveGroup': 'Leave group',
     'sharedMedia': 'Shared media',
     'notifications': 'Notifications',
