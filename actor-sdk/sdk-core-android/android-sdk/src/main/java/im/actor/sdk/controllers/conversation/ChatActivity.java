@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -1373,6 +1374,9 @@ public class ChatActivity extends ActorEditTextActivity {
 
         audioFile = ActorSDK.sharedActor().getMessenger().getInternalTempFile("voice_msg", "opus");
 
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+
         long id = VoiceCaptureActor.LAST_ID.incrementAndGet();
         voiceRecordActor.send(new VoiceCaptureActor.Start(audioFile));
 
@@ -1419,6 +1423,9 @@ public class ChatActivity extends ActorEditTextActivity {
         showView(messageEditText);
         showView(emojiButton);
         showView(sendContainer);
+
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
 
         voiceRecordActor.send(new VoiceCaptureActor.Stop(cancel));
         TranslateAnimation animation = new TranslateAnimation(0, Screen.getWidth(), 0, 0);
