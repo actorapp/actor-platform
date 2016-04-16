@@ -23,11 +23,11 @@ import static im.actor.sdk.util.ActorSDKMessenger.users;
 
 public class MembersAdapter extends HolderAdapter<GroupMember> {
     private GroupMember[] members;
-    private GroupInfoFragment fragment;
+    private ActorBinder BINDER = new ActorBinder();
 
-    public MembersAdapter(Collection<GroupMember> members, Context context, GroupInfoFragment fragment) {
+
+    public MembersAdapter(Collection<GroupMember> members, Context context) {
         super(context);
-        this.fragment = fragment;
         this.members = members.toArray(new GroupMember[0]);
     }
 
@@ -83,10 +83,7 @@ public class MembersAdapter extends HolderAdapter<GroupMember> {
         public void bind(GroupMember data, int position, Context context) {
             user = users().get(data.getUid());
             ActorSDK.sharedActor().getMessenger().onUserVisible(data.getUid());
-            if (onlineBinding != null) {
-                onlineBinding.unbind();
-            }
-            onlineBinding = fragment.bindOnline(online, user);
+            onlineBinding = BINDER.bindOnline(online, user);
 
             avatarView.bind(user);
 
@@ -104,8 +101,14 @@ public class MembersAdapter extends HolderAdapter<GroupMember> {
         public void unbind() {
             avatarView.unbind();
             if (onlineBinding != null) {
-                onlineBinding.unbind();
+                BINDER.unbind(onlineBinding);
             }
         }
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        BINDER.unbindAll();
     }
 }
