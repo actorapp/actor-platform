@@ -13,6 +13,7 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.messaging.UpdateChatGroupsChanged
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.config.ActorConfig
+import im.actor.serialization.ActorSerializer
 import im.actor.server.dialog.DialogQueries.GetInfoResponse
 import im.actor.server.sequence.{ PushRules, SeqState, SeqUpdatesExtension }
 
@@ -86,6 +87,17 @@ final case class DialogRootState(
 }
 
 object DialogRoot {
+  private[dialog] def register() = {
+    ActorSerializer.register(
+      45010 → classOf[DialogRootEvents.Archived],
+      45011 → classOf[DialogRootEvents.Created],
+      45012 → classOf[DialogRootEvents.Favourited],
+      45013 → classOf[DialogRootEvents.Shown],
+      45014 → classOf[DialogRootEvents.Unarchived],
+      45015 → classOf[DialogRootEvents.Unfavourited]
+    )
+  }
+
   def props(userId: Int, extensions: Seq[ApiExtension]) = Props(classOf[DialogRoot], userId, extensions)
 }
 

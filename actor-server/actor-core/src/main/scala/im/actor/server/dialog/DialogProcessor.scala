@@ -86,7 +86,12 @@ object DialogProcessor {
       40004 → classOf[DialogCommands.MessageReadAck],
       40005 → classOf[DialogCommands.WriteMessage],
       40006 → classOf[DialogCommands.WriteMessageAck],
-      40009 → classOf[DialogEnvelope]
+
+      40009 → classOf[DialogEnvelope],
+
+      40010 → classOf[DialogEvents.MessagesRead],
+      40011 → classOf[DialogEvents.MessagesReceived],
+      40012 → classOf[DialogEvents.NewMessage]
     )
   }
 
@@ -95,7 +100,7 @@ object DialogProcessor {
   def props(userId: Int, peer: Peer, extensions: Seq[ApiExtension]): Props =
     Props(classOf[DialogProcessor], userId, peer, extensions)
 
-  private[dialog] def persistenceId(peer: Peer) = s"Dialog_${peer.typ.index}_${peer.id}"
+  private[dialog] def persistenceId(userId: Int, peer: Peer) = s"Dialog_${userId}_${peer.typ.index}_${peer.id}"
 }
 
 private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, extensions: Seq[ApiExtension])
@@ -126,7 +131,7 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
   protected implicit val sendResponseCache: Cache[AuthSidRandomId, Future[SeqStateDate]] =
     createCache[AuthSidRandomId, Future[SeqStateDate]](MaxCacheSize)
 
-  override def persistenceId: String = DialogProcessor.persistenceId(peer)
+  override def persistenceId: String = DialogProcessor.persistenceId(userId, peer)
 
   override protected def getInitialState: DialogState =
     DialogState(

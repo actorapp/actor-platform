@@ -30,6 +30,7 @@ import scala.concurrent.{ ExecutionContext, Future }
 sealed trait DialogExtension extends Extension
 
 final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension with PeersImplicits {
+  DialogRoot.register()
   DialogProcessor.register()
 
   val InternalDialogExtensions = "modules.messaging.extensions"
