@@ -1197,7 +1197,17 @@ public class ChatActivity extends ActorEditTextActivity {
                     .setPositiveButton(R.string.alert_delete_all_messages_yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            execute(messenger().clearChat(peer));
+                            execute(messenger().clearChat(peer), R.string.progress_common,
+                                    new CommandCallback<Boolean>() {
+                                        @Override
+                                        public void onResult(Boolean res) {
+
+                                        }
+
+                                        @Override
+                                        public void onError(Exception e) {
+                                            Toast.makeText(getApplicationContext(), R.string.toast_unable_clear_chat, Toast.LENGTH_LONG).show();                                                                }
+                                    });
                         }
                     })
                     .setNegativeButton(R.string.dialog_cancel, null)
@@ -1211,7 +1221,22 @@ public class ChatActivity extends ActorEditTextActivity {
                     .setPositiveButton(R.string.alert_leave_group_yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog2, int which) {
-                            execute(messenger().leaveGroup(peer.getPeerId()));
+                            execute(messenger().leaveGroup(peer.getPeerId()), R.string.progress_common, new CommandCallback<Boolean>() {
+                                @Override
+                                public void onResult(Boolean res) {
+
+                                }
+
+                                @Override
+                                public void onError(final Exception e) {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(getApplicationContext(), R.string.toast_unable_leave, Toast.LENGTH_LONG).show();
+                                        }
+                                    });
+                                }
+                            });
                             finish();
                         }
                     })

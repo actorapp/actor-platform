@@ -34,6 +34,10 @@
     <string name="toast_unable_change_nick">Unable to change the nickname</string>
     <string name="toast_empty_about">"About" section can\'t be empty</string>
     <string name="toast_unable_open">No app is available to open this</string>
+    <string name="toast_unable_leave">Unable to leave from group</string>
+    <string name="toast_unable_create_group">Unable to create the group</string>
+    <string name="toast_unable_delete_chat">Unable to delete the chat</string>
+    <string name="toast_unable_clear_chat">Unable to clear the chat</string>
 
     <string name="menu_share">Share</string>
     <string name="menu_save">Save to Phone</string>
