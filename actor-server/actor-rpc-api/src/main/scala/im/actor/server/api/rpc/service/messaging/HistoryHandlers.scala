@@ -1,5 +1,7 @@
 package im.actor.server.api.rpc.service.messaging
 
+import java.time.Instant
+
 import com.google.protobuf.wrappers.Int32Value
 import im.actor.api.rpc.PeerHelpers._
 import im.actor.api.rpc._
@@ -8,7 +10,7 @@ import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeerType }
 import im.actor.server.dialog.HistoryUtils
 import im.actor.server.group.GroupUtils
-import im.actor.server.model.{ HistoryMessage, DialogObsolete, PeerType, Peer }
+import im.actor.server.model.{ DialogObsolete, HistoryMessage, Peer, PeerType }
 import im.actor.server.persist.contact.UserContactRepo
 import im.actor.server.persist.{ GroupUserRepo, HistoryMessageRepo }
 import im.actor.server.persist.dialog.DialogRepo
@@ -84,22 +86,14 @@ trait HistoryHandlers {
 
   override def doHandleLoadDialogs(endDate: Long, limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadDialogs]] =
     authorized(clientData) { implicit client ⇒
-      val action = DialogRepo
-        .fetch(client.userId, endDateTimeFrom(endDate), limit, fetchArchived = true)
-        .map(_ filterNot (dialogExt.dialogWithSelf(client.userId, _)))
-        .flatMap { dialogModels ⇒
-          for {
-            dialogs ← DBIO.sequence(dialogModels map getDialogStruct) map (_.flatten)
-            (users, groups) ← getDialogsUsersGroups(dialogs)
-          } yield {
-            Ok(ResponseLoadDialogs(
-              groups = groups.toVector,
-              users = users.toVector,
-              dialogs = dialogs.toVector
-            ))
-          }
-        }
-      db.run(action)
+      for {
+        dialogs ← dialogExt.fetchApiDialogs(client.userId, Instant.ofEpochMilli(endDate), limit)
+        (users, groups) ← db.run(getDialogsUsersGroups(dialogs.toSeq))
+      } yield Ok(ResponseLoadDialogs(
+        groups = groups.toVector,
+        users = users.toVector,
+        dialogs = dialogs.toVector
+      ))
     }
 
   override def doHandleLoadGroupedDialogs(clientData: ClientData): Future[HandlerResult[ResponseLoadGroupedDialogs]] =
@@ -165,7 +159,6 @@ trait HistoryHandlers {
         for {
           historyOwner ← DBIO.from(getHistoryOwner(modelPeer, client.userId))
           (lastReceivedAt, lastReadAt) ← getLastReceiveReadDates(modelPeer)
-          _ = println(s"=== ${client.userId} lastReceivedAt ${lastReceivedAt} lastReadAt ${lastReadAt}")
           messageModels ← mode match {
             case Some(ApiListLoadMode.Forward)  ⇒ HistoryMessageRepo.findAfter(historyOwner, modelPeer, dateTimeFrom(date), limit.toLong)
             case Some(ApiListLoadMode.Backward) ⇒ HistoryMessageRepo.findBefore(historyOwner, modelPeer, dateTimeFrom(date), limit.toLong)

@@ -3,7 +3,6 @@ package im.actor.server.api.rpc.service.messaging
 import im.actor.api.rpc.messaging.{ ResponseReactionsResponse, RequestMessageSetReaction, RequestMessageRemoveReaction }
 import im.actor.api.rpc.peers.ApiOutPeer
 import im.actor.api.rpc._
-import im.actor.api.rpc.Implicits._
 import im.actor.server.ApiConversions._
 
 import scala.concurrent.Future
@@ -16,8 +15,8 @@ trait ReactionsHandlers {
       for {
         res ← dialogExt.setReaction(client.userId, client.authSid, peer.asModel, randomId, code)
       } yield Ok(ResponseReactionsResponse(
-        res.seqstate.seq,
-        res.seqstate.state.toByteArray,
+        res.getSeqstate.seq,
+        res.getSeqstate.state.toByteArray,
         res.reactions
       ))
     }
@@ -28,8 +27,8 @@ trait ReactionsHandlers {
       for {
         res ← dialogExt.removeReaction(client.userId, client.authSid, peer.asModel, randomId, code)
       } yield Ok(ResponseReactionsResponse(
-        res.seqstate.seq,
-        res.seqstate.state.toByteArray,
+        res.getSeqstate.seq,
+        res.getSeqstate.state.toByteArray,
         res.reactions
       ))
     }
