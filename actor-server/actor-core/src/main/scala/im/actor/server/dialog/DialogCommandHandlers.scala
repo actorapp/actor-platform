@@ -64,12 +64,6 @@ trait DialogCommandHandlers extends PeersImplicits with UserACL {
     }
   }
 
-  protected def updateCountersChanged(): Unit = {
-    deliveryExt.sendCountersUpdate(userId)
-      .map(_ ⇒ SendMessageAck())
-      .pipeTo(sender())
-  }
-
   protected def ackSendMessage(s: DialogState, sm: SendMessage): Unit = {
     val messageDate = sm.date getOrElse {
       throw new RuntimeException("No message date found in SendMessage")
@@ -87,6 +81,8 @@ trait DialogCommandHandlers extends PeersImplicits with UserACL {
         .receiverDelivery(userId, sm.origin.id, peer, sm.randomId, messageDate, sm.message, sm.isFat)
         .map(_ ⇒ SendMessageAck())
         .pipeTo(sender())
+
+      deliveryExt.sendCountersUpdate(userId)
     }
   }
 
@@ -134,18 +130,23 @@ trait DialogCommandHandlers extends PeersImplicits with UserACL {
     val mustRead = mustMakeRead(state, mr)
 
     if (mustRead) {
-      (for {
-        _ ← dialogExt.ackMessageRead(peer, mr)
-        _ ← deliveryExt.read(userId, mr.readerAuthSid, peer, mr.date, Some(state.counter))
-        _ ← deliveryExt.sendCountersUpdate(userId)
-      } yield MessageReadAck()) pipeTo sender()
+      persist(MessagesRead(Instant.ofEpochMilli(mr.date), mr.origin.id)) { e ⇒
+        commit(e)
+
+        (for {
+          _ ← dialogExt.ackMessageRead(peer, mr)
+          _ ← deliveryExt.read(userId, mr.readerAuthSid, peer, mr.date, Some(state.counter))
+          _ = deliveryExt.sendCountersUpdate(userId)
+        } yield MessageReadAck()) pipeTo sender()
+      }
     } else {
       sender() ! MessageReadAck()
     }
   }
 
   protected def ackMessageRead(mr: MessageRead): Unit = {
-    persist(MessagesRead(Instant.ofEpochMilli(mr.date))) { e ⇒
+    require(mr.origin.typ.isPrivate)
+    persist(MessagesRead(Instant.ofEpochMilli(mr.date), mr.origin.id)) { e ⇒
       commit(e)
       (deliveryExt.notifyRead(userId, peer, mr.date, mr.now) map { _ ⇒ MessageReadAck() }) pipeTo sender() andThen {
         case Failure(err) ⇒ log.error(err, "Failed to ack MessageRead")
