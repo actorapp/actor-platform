@@ -17886,6 +17886,10 @@
               {
                 "name": "STRIP_COUNTERS",
                 "id": 5
+              },
+              {
+                "name": "COMPACT_USERS",
+                "id": 6
               }
             ]
           }
