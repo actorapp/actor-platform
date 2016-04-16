@@ -1778,11 +1778,6 @@
           <property role="NX6R2" value="User's nickname" />
           <ref role="NX6Kv" node="6WYZhOUYzPj" resolve="nick" />
         </node>
-        <node concept="NX1gA" id="6WYZhOUYKFu" role="NXodf">
-          <property role="NX6R2" value="User's about information" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="6WYZhOUY$mg" resolve="about" />
-        </node>
         <node concept="NX1gA" id="EUEXKTmh_R" role="NXodf">
           <property role="NX6R2" value="optional sex of user" />
           <property role="1GSvIU" value="full" />
@@ -1793,34 +1788,39 @@
           <property role="1GSvIU" value="compact" />
           <ref role="NX6Kv" node="GBscvBB65K" resolve="avatar" />
         </node>
-        <node concept="NX1gA" id="1ydqyopRLrS" role="NXodf">
-          <property role="NX6R2" value="phones of user" />
-          <property role="1GSvIU" value="compact" />
-          <ref role="NX6Kv" node="1ydqyopRJ_W" resolve="contactInfo" />
-        </node>
         <node concept="NX1gA" id="2tyCW$TVvhb" role="NXodf">
           <property role="1GSvIU" value="full" />
           <property role="NX6R2" value="Is user actually bot. By default is false." />
           <ref role="NX6Kv" node="2tyCW$TVuOS" resolve="isBot" />
         </node>
-        <node concept="NX1gA" id="6u8Nlnzn5w5" role="NXodf">
+        <node concept="NX1gA" id="2_$5TdnXeAF" role="NXodf">
+          <property role="NX6R2" value="Extension values" />
           <property role="1GSvIU" value="full" />
-          <property role="NX6R2" value="If not null, is user come from outer network" />
-          <ref role="NX6Kv" node="6u8Nlnzn3Mp" resolve="external" />
+          <ref role="NX6Kv" node="2_$5TdnXeza" resolve="ext" />
+        </node>
+        <node concept="NX1gA" id="6WYZhOUYKFu" role="NXodf">
+          <property role="NX6R2" value="[DEPRECATED] User's about information" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6WYZhOUY$mg" resolve="about" />
+        </node>
+        <node concept="NX1gA" id="1ydqyopRLrS" role="NXodf">
+          <property role="NX6R2" value="[DEPRECATED] Contact information of user" />
+          <property role="1GSvIU" value="compact" />
+          <ref role="NX6Kv" node="1ydqyopRJ_W" resolve="contactInfo" />
         </node>
         <node concept="NX1gA" id="4NJj1GT1rz_" role="NXodf">
           <property role="1GSvIU" value="full" />
-          <property role="NX6R2" value="Preferred user languages" />
+          <property role="NX6R2" value="[DEPRECATED] Preferred user languages" />
           <ref role="NX6Kv" node="4NJj1GT1qmy" resolve="preferredLanguages" />
         </node>
         <node concept="NX1gA" id="4NJj1GT1_aU" role="NXodf">
           <property role="1GSvIU" value="full" />
-          <property role="NX6R2" value="Time Zone of user in TZ format" />
+          <property role="NX6R2" value="[DEPRECATED] Time Zone of user in TZ format" />
           <ref role="NX6Kv" node="4NJj1GT1_9F" resolve="timeZone" />
         </node>
         <node concept="NX1gA" id="4bVh48GpFD$" role="NXodf">
           <property role="1GSvIU" value="full" />
-          <property role="NX6R2" value="Available Bot Commands" />
+          <property role="NX6R2" value="[DEPRECATED] Available Bot Commands" />
           <ref role="NX6Kv" node="4bVh48GpFCz" resolve="botCommands" />
         </node>
         <node concept="2m7Kf5" id="GBscvBAzcC" role="2m0hLx">
@@ -1847,6 +1847,13 @@
             <node concept="2m5ndX" id="GBscvBAzdj" role="3GH5xg" />
           </node>
         </node>
+        <node concept="2m7Kf5" id="6WYZhOUYzPj" role="2m0hLx">
+          <property role="2m7DUN" value="13" />
+          <property role="TrG5h" value="nick" />
+          <node concept="2m5nlT" id="6WYZhOUYzPJ" role="2m7DVh">
+            <node concept="2m5ndX" id="6WYZhOUYzPP" role="3GH5xg" />
+          </node>
+        </node>
         <node concept="2m7Kf5" id="GBscvBAzdm" role="2m0hLx">
           <property role="2m7DUN" value="5" />
           <property role="TrG5h" value="sex" />
@@ -1865,15 +1872,6 @@
             </node>
           </node>
         </node>
-        <node concept="2m7Kf5" id="1ydqyopRJ_W" role="2m0hLx">
-          <property role="2m7DUN" value="12" />
-          <property role="TrG5h" value="contactInfo" />
-          <node concept="2m5nlk" id="1ydqyopRJAr" role="2m7DVh">
-            <node concept="2m5mGg" id="2tyCW$TV$nT" role="3GJlyp">
-              <ref role="2m5mJy" node="2tyCW$TVx2J" resolve="ContactRecord" />
-            </node>
-          </node>
-        </node>
         <node concept="2m7Kf5" id="2tyCW$TVuOS" role="2m0hLx">
           <property role="2m7DUN" value="11" />
           <property role="TrG5h" value="isBot" />
@@ -1881,30 +1879,37 @@
             <node concept="2m5ndN" id="2tyCW$U0Uz6" role="3GH5xg" />
           </node>
         </node>
-        <node concept="2m7Kf5" id="6WYZhOUYzPj" role="2m0hLx">
-          <property role="2m7DUN" value="13" />
-          <property role="TrG5h" value="nick" />
-          <node concept="2m5nlT" id="6WYZhOUYzPJ" role="2m7DVh">
-            <node concept="2m5ndX" id="6WYZhOUYzPP" role="3GH5xg" />
+        <node concept="2m7Kf5" id="2_$5TdnXeza" role="2m0hLx">
+          <property role="2m7DUN" value="20" />
+          <property role="TrG5h" value="ext" />
+          <node concept="2m5nlT" id="2_$5TdnXezW" role="2m7DVh">
+            <node concept="2m5mGg" id="2_$5TdnXfUd" role="3GH5xg">
+              <ref role="2m5mJy" node="2WAO9Y$lCqr" resolve="MapValue" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="1ydqyopRJ_W" role="2m0hLx">
+          <property role="2m7DUN" value="12" />
+          <property role="TrG5h" value="contactInfo" />
+          <property role="toYog" value="true" />
+          <node concept="2m5nlk" id="1ydqyopRJAr" role="2m7DVh">
+            <node concept="2m5mGg" id="2tyCW$TV$nT" role="3GJlyp">
+              <ref role="2m5mJy" node="2tyCW$TVx2J" resolve="ContactRecord" />
+            </node>
           </node>
         </node>
         <node concept="2m7Kf5" id="6WYZhOUY$mg" role="2m0hLx">
           <property role="2m7DUN" value="14" />
           <property role="TrG5h" value="about" />
+          <property role="toYog" value="true" />
           <node concept="2m5nlT" id="6WYZhOUY$mJ" role="2m7DVh">
             <node concept="2m5ndX" id="6WYZhOUY$mP" role="3GH5xg" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="6u8Nlnzn3Mp" role="2m0hLx">
-          <property role="2m7DUN" value="15" />
-          <property role="TrG5h" value="external" />
-          <node concept="2m5nlT" id="6u8Nlnzn4nX" role="2m7DVh">
-            <node concept="2m5ndX" id="6u8Nlnzn4o3" role="3GH5xg" />
           </node>
         </node>
         <node concept="2m7Kf5" id="4NJj1GT1qmy" role="2m0hLx">
           <property role="2m7DUN" value="16" />
           <property role="TrG5h" value="preferredLanguages" />
+          <property role="toYog" value="true" />
           <node concept="2m5nlk" id="4NJj1GT1qot" role="2m7DVh">
             <node concept="2m5ndX" id="4NJj1GT1qoz" role="3GJlyp" />
           </node>
@@ -1912,6 +1917,7 @@
         <node concept="2m7Kf5" id="4NJj1GT1_9F" role="2m0hLx">
           <property role="2m7DUN" value="17" />
           <property role="TrG5h" value="timeZone" />
+          <property role="toYog" value="true" />
           <node concept="2m5nlT" id="4NJj1GT1_aj" role="2m7DVh">
             <node concept="2m5ndX" id="4NJj1GT1_ap" role="3GH5xg" />
           </node>
@@ -1919,11 +1925,121 @@
         <node concept="2m7Kf5" id="4bVh48GpFCz" role="2m0hLx">
           <property role="2m7DUN" value="19" />
           <property role="TrG5h" value="botCommands" />
+          <property role="toYog" value="true" />
           <node concept="2m5nlk" id="4bVh48GpFDb" role="2m7DVh">
             <node concept="2m5mGg" id="4bVh48GpFDh" role="3GJlyp">
               <ref role="2m5mJy" node="4bVh48GpDm7" resolve="BotCommand" />
             </node>
           </node>
+        </node>
+      </node>
+      <node concept="2m5naR" id="2_$5TdnWZpV" role="2m5mJr">
+        <property role="TrG5h" value="FullUser" />
+        <property role="tsOgz" value="true" />
+        <node concept="2m7Kf5" id="2_$5TdnWZtd" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="id" />
+          <node concept="wb0Ql" id="2_$5TdnWZth" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="2_$5TdnWZu7" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="contactInfo" />
+          <node concept="2m5nlk" id="2_$5TdnWZud" role="2m7DVh">
+            <node concept="2m5mGg" id="2_$5TdnWZuj" role="3GJlyp">
+              <ref role="2m5mJy" node="2tyCW$TVx2J" resolve="ContactRecord" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="2_$5TdnWZum" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="about" />
+          <node concept="2m5nlT" id="2_$5TdnWZuv" role="2m7DVh">
+            <node concept="2m5ndX" id="2_$5TdnWZu_" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="2_$5TdnWZuC" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="preferredLanguages" />
+          <node concept="2m5nlk" id="2_$5TdnWZuO" role="2m7DVh">
+            <node concept="2m5ndX" id="2_$5TdnWZuU" role="3GJlyp" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="2_$5TdnWZuX" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="timeZone" />
+          <node concept="2m5nlT" id="2_$5TdnWZvc" role="2m7DVh">
+            <node concept="2m5ndX" id="2_$5TdnWZvi" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="2_$5TdnXcfM" role="2m0hLx">
+          <property role="2m7DUN" value="6" />
+          <property role="TrG5h" value="botCommands" />
+          <node concept="2m5nlk" id="2_$5TdnXcg4" role="2m7DVh">
+            <node concept="2m5mGg" id="2_$5TdnXcga" role="3GJlyp">
+              <ref role="2m5mJy" node="4bVh48GpDm7" resolve="BotCommand" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="2_$5TdnXeJS" role="2m0hLx">
+          <property role="2m7DUN" value="7" />
+          <property role="TrG5h" value="ext" />
+          <node concept="2m5nlT" id="2_$5TdnXeKd" role="2m7DVh">
+            <node concept="2m5mGg" id="2_$5TdnXfUh" role="3GH5xg">
+              <ref role="2m5mJy" node="2WAO9Y$lCqr" resolve="MapValue" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="2_$5TdnXgbh" role="2m0hLx">
+          <property role="2m7DUN" value="8" />
+          <property role="TrG5h" value="isBlocked" />
+          <node concept="2m5nlT" id="2_$5TdnXgbD" role="2m7DVh">
+            <node concept="2m5ndN" id="2_$5TdnXgbJ" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="2_$5TdnXceC" role="NXodf">
+          <property role="NXePf" value="Full User representation" />
+        </node>
+        <node concept="NX1gA" id="2_$5TdnXceH" role="NXodf">
+          <property role="NX6R2" value="User's Id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="2_$5TdnWZtd" resolve="id" />
+        </node>
+        <node concept="NX1gA" id="2_$5TdnXceP" role="NXodf">
+          <property role="NX6R2" value="User's contact information" />
+          <property role="1GSvIU" value="compact" />
+          <ref role="NX6Kv" node="2_$5TdnWZu7" resolve="contactInfo" />
+        </node>
+        <node concept="NX1gA" id="2_$5TdnXceZ" role="NXodf">
+          <property role="NX6R2" value="User's about information" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="2_$5TdnWZum" resolve="about" />
+        </node>
+        <node concept="NX1gA" id="2_$5TdnXcfb" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Preferred user languages" />
+          <ref role="NX6Kv" node="2_$5TdnWZuC" resolve="preferredLanguages" />
+        </node>
+        <node concept="NX1gA" id="2_$5TdnXcfp" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Time Zone of user in TZ format" />
+          <ref role="NX6Kv" node="2_$5TdnWZuX" resolve="timeZone" />
+        </node>
+        <node concept="NX1gA" id="2_$5TdnXdpI" role="NXodf">
+          <property role="NX6R2" value="Available Commands for Bot" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="2_$5TdnXcfM" resolve="botCommands" />
+        </node>
+        <node concept="NX1gA" id="2_$5TdnXeKv" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Extension values. NOTE: This values are not related to ext field in User object." />
+          <ref role="NX6Kv" node="2_$5TdnXeJS" resolve="ext" />
+        </node>
+        <node concept="NX1gA" id="2_$5TdnXgbW" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Is user blocked. Default is false." />
+          <ref role="NX6Kv" node="2_$5TdnXgbh" resolve="isBlocked" />
         </node>
       </node>
       <node concept="2m5naR" id="4bVh48GpDm7" role="2m5mJr">
@@ -2307,6 +2423,118 @@
           <property role="NX6R2" value="New List of commands" />
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="4bVh48GpFK5" resolve="commands" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="2_$5TdnXfYb" role="2m5mJr">
+        <property role="TrG5h" value="UserExtChanged" />
+        <node concept="2m7Kf5" id="2_$5TdnXg25" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="uid" />
+          <node concept="wb0Ql" id="2_$5TdnXg29" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="2_$5TdnXg2c" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="ext" />
+          <node concept="2m5nlT" id="2_$5TdnXg2i" role="2m7DVh">
+            <node concept="2m5mGg" id="2_$5TdnXg2o" role="3GH5xg">
+              <ref role="2m5mJy" node="2WAO9Y$lCqr" resolve="MapValue" />
+            </node>
+          </node>
+        </node>
+        <node concept="Nu42z" id="2_$5TdnXfYc" role="NuuwV">
+          <property role="Nu42W" value="DA" />
+        </node>
+        <node concept="NXeRC" id="2_$5TdnXg2r" role="NXp_2">
+          <property role="NXePf" value="Update about user ext changed" />
+        </node>
+        <node concept="NX1gA" id="2_$5TdnXg2w" role="NXp_2">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="User's id" />
+          <ref role="NX6Kv" node="2_$5TdnXg25" resolve="uid" />
+        </node>
+        <node concept="NX1gA" id="2_$5TdnXg2C" role="NXp_2">
+          <property role="NX6R2" value="New Ext Value in User (NOT FullUser) object." />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="2_$5TdnXg2c" resolve="ext" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="2_$5TdnXg6I" role="2m5mJr">
+        <property role="TrG5h" value="UserFullExtChanged" />
+        <node concept="2m7Kf5" id="2_$5TdnXgaM" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="uid" />
+          <node concept="wb0Ql" id="2_$5TdnXgaQ" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="2_$5TdnXgaT" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="ext" />
+          <node concept="2m5nlT" id="2_$5TdnXgaZ" role="2m7DVh">
+            <node concept="2m5mGg" id="2_$5TdnXgb5" role="3GH5xg">
+              <ref role="2m5mJy" node="2WAO9Y$lCqr" resolve="MapValue" />
+            </node>
+          </node>
+        </node>
+        <node concept="Nu42z" id="2_$5TdnXg6J" role="NuuwV">
+          <property role="Nu42W" value="DB" />
+        </node>
+        <node concept="NXeRC" id="2_$5TdnXgb8" role="NXp_2">
+          <property role="NXePf" value="Update about user ext changed" />
+        </node>
+        <node concept="NX1gA" id="2_$5TdnXgbd" role="NXp_2">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="User's Id" />
+          <ref role="NX6Kv" node="2_$5TdnXgaM" resolve="uid" />
+        </node>
+        <node concept="NX1gA" id="2_$5TdnXgcb" role="NXp_2">
+          <property role="NX6R2" value="New Ext Value in FullUser (NOT User) object." />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="2_$5TdnXgaT" resolve="ext" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="2_$5TdnXeFj" role="2m5mJr">
+        <property role="TrG5h" value="LoadFullUsers" />
+        <node concept="2m7Kf5" id="2_$5TdnXeJg" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="userPeers" />
+          <node concept="2m5nlk" id="2_$5TdnXeJt" role="2m7DVh">
+            <node concept="2m5mGg" id="2_$5TdnXeJz" role="3GJlyp">
+              <ref role="2m5mJy" node="GBscvBB6ia" resolve="UserOutPeer" />
+            </node>
+          </node>
+        </node>
+        <node concept="Nu42z" id="2_$5TdnXeFk" role="NuuwV">
+          <property role="Nu42W" value="A59" />
+        </node>
+        <node concept="2m1R6W" id="2_$5TdnXeIZ" role="2m6efq">
+          <node concept="2m7Kf5" id="2_$5TdnXeJp" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="fullUsers" />
+            <node concept="2m5nlk" id="2_$5TdnXeJA" role="2m7DVh">
+              <node concept="2m5mGg" id="2_$5TdnXeJG" role="3GJlyp">
+                <ref role="2m5mJy" node="2_$5TdnWZpV" resolve="FullUser" />
+              </node>
+            </node>
+          </node>
+          <node concept="Nu42z" id="2_$5TdnXeJ0" role="NuuwV">
+            <property role="Nu42W" value="A5A" />
+          </node>
+          <node concept="NX1gA" id="2_$5TdnXeJJ" role="1y2DgH">
+            <property role="NX6R2" value="Loaded users" />
+            <property role="1GSvIU" value="compact" />
+            <ref role="NX6Kv" node="2_$5TdnXeJp" resolve="fullUsers" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="2_$5TdnXeJ4" role="1GBnQ6">
+          <property role="NXePf" value="Loading Full User information" />
+        </node>
+        <node concept="NX1gA" id="2_$5TdnXeJO" role="1GBnQ6">
+          <property role="NX6R2" value="User's peers to load. Should be non-empy" />
+          <property role="1GSvIU" value="compact" />
+          <ref role="NX6Kv" node="2_$5TdnXeJg" resolve="userPeers" />
         </node>
       </node>
     </node>
