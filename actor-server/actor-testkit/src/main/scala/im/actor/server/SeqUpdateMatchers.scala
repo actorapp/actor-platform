@@ -59,6 +59,20 @@ trait SeqUpdateMatchers extends Matchers with ScalaFutures with AnyRefLogSource 
       }
     )
 
+  def expectUpdatesUnordered(updates: UpdateClass*)(check: PartialFunction[Seq[Update], Any])(implicit client: ClientData): Int =
+    expectUpdatesUnordered(seq = 0, updates: _*)(check)
+
+  def expectUpdatesUnordered(seq: Int, updates: UpdateClass*)(check: PartialFunction[Seq[Update], Any])(implicit client: ClientData): Int =
+    expectUpdatesAbstract(seq, updates)(check)(
+      { (dbUpdatesHeaders, updatesHeaders) ⇒ updatesHeaders.toSet subsetOf dbUpdatesHeaders.toSet },
+      { (dbUpdatesNames, updatesNames) ⇒
+        s"""Error: did not get expected updates.
+            |expected updates: $updatesNames
+            |actual updates: $dbUpdatesNames
+      """.stripMargin
+      }
+    )
+
   def expectUpdatesOnly(updates: UpdateClass*)(check: PartialFunction[Seq[Update], Any])(implicit client: ClientData): Int =
     expectUpdatesOnly(seq = 0, updates: _*)(check)
 
