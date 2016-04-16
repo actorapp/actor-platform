@@ -15,6 +15,8 @@ import im.actor.core.api.ApiMessage;
 import im.actor.core.api.ApiServiceEx;
 import im.actor.core.api.ApiServiceExChangedAvatar;
 import im.actor.core.api.ApiServiceExChangedTitle;
+import im.actor.core.api.ApiServiceExChangedTopic;
+import im.actor.core.api.ApiServiceExChangedAbout;
 import im.actor.core.api.ApiServiceExContactRegistered;
 import im.actor.core.api.ApiServiceExGroupCreated;
 import im.actor.core.api.ApiServiceExPhoneCall;
@@ -116,6 +118,10 @@ public abstract class AbsContent {
                         return new ServiceUserRegistered(remoteContainer);
                     } else if (ext instanceof ApiServiceExChangedTitle) {
                         return new ServiceGroupTitleChanged(remoteContainer);
+                    } else if (ext instanceof ApiServiceExChangedTopic) {
+                        return new ServiceGroupTopicChanged(remoteContainer);
+                    } else if (ext instanceof ApiServiceExChangedAbout) {
+                        return new ServiceGroupAboutChanged(remoteContainer);
                     } else if (ext instanceof ApiServiceExChangedAvatar) {
                         return new ServiceGroupAvatarChanged(remoteContainer);
                     } else if (ext instanceof ApiServiceExGroupCreated) {
