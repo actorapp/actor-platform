@@ -200,7 +200,6 @@ class AAUserViewController: AAContentTableController {
             }
             
             if !self.isBot {
-                
                 // Edit contact: Renaming
                 s.action("ProfileRename") { (r) -> () in
                     r.selectAction = { () -> Bool in
@@ -215,7 +214,6 @@ class AAUserViewController: AAContentTableController {
                                     if d.length == 0 {
                                         return
                                     }
-                                    
                                     c.executeSafeOnlySuccess(Actor.editNameCommandWithUid(jint(self.uid), withName: d)!, successBlock: { (val) -> Void in
                                         c.dismiss()
                                     })
@@ -235,34 +233,37 @@ class AAUserViewController: AAContentTableController {
                         return true
                     }
                 }
-                
             }
-            
         }
         
         // Block Contact
+        if !self.isBot {
+            section { (s) -> () in
+                s.common { (r) -> () in
+                    r.bindAction = { (r) -> () in
+                        if !self.user.isBlockedModel().get().booleanValue() {
+                            r.content = AALocalized("ProfileBlockContact")
+                        } else {
+                            r.content = AALocalized("ProfileUnblockContact")
+                        }
+                        r.style = .Action
+                    }
         
-        section { (s) -> () in
-            
-            // Block Contact
-            self.isContactRow = s.common { (r) -> () in
-                r.bindAction = { (r) -> () in
-                    if self.user.isBlockedModel().get().booleanValue() {
-                        r.content = AALocalized("ProfileBlockContact")
-                    } else {
-                        r.content = AALocalized("ProfileUnblockContact")
+                    r.selectAction = { () -> Bool in
+                        if !self.user.isBlockedModel().get().booleanValue() {
+                            self.executePromise(Actor.blockUser(jint(self.uid)),successBlock: { success in
+                                r.reload()
+                            } ,failureBlock:nil)
+                        } else {
+                            self.executePromise(Actor.unblockUser(jint(self.uid)),successBlock: { success in
+                                r.reload()
+                                } ,failureBlock:nil)
+                        }
+                        r.reload()
+                        return true
                     }
-                       r.style = .Action
                 }
-                r.selectAction = { () -> Bool in
-                    if self.user.isBlockedModel().get().booleanValue() {
-                    self.executePromise(Actor.blockUser(jint(self.uid)))
-                    } else {
-                    self.executePromise(Actor.unblockUser(jint(self.uid)))
-                    }
-                    r.reload()
-                    return true
-                }
+
             }
         }
     }
