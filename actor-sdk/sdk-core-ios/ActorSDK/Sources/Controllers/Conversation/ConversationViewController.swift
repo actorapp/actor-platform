@@ -261,7 +261,6 @@ public class ConversationViewController:
         self.stickersButton.frame = CGRectMake(self.view.frame.size.width-67, 12, 20, 20)
     }
     
-    
     ////////////////////////////////////////////////////////////
     // MARK: - Lifecycle
     ////////////////////////////////////////////////////////////
@@ -271,12 +270,14 @@ public class ConversationViewController:
         
         // Installing bindings
         if (peer.peerType.ordinal() == ACPeerType.PRIVATE().ordinal()) {
+
             let user = Actor.getUserWithUid(peer.peerId)
-            let nameModel = user.getNameModel();
+            let nameModel = user.getNameModel()
+            let blockStatus = user.isBlockedModel().get().booleanValue()
             
             binder.bind(nameModel, closure: { (value: NSString?) -> () in
-                self.titleView.text = String(value!);
-                self.navigationView.sizeToFit();
+                self.titleView.text = String(value!)
+                self.navigationView.sizeToFit()
             })
             binder.bind(user.getAvatarModel(), closure: { (value: ACAvatar?) -> () in
                 self.avatarView.bind(user.getNameModel().get(), id: Int(user.getId()), avatar: value)
@@ -303,6 +304,17 @@ public class ConversationViewController:
                     }
                 }
             })
+    //
+    //Unblock User
+    //
+            if(blockStatus){
+                
+                let unblockActionSheet = AAUnblockActionSheet()
+                unblockActionSheet.delegate = self
+                unblockActionSheet.presentInController(self)
+            
+            }
+        
         } else if (peer.peerType.ordinal() == ACPeerType.GROUP().ordinal()) {
             let group = Actor.getGroupWithGid(peer.peerId)
             let nameModel = group.getNameModel()
@@ -638,6 +650,10 @@ public class ConversationViewController:
         documentPicker.view.backgroundColor = UIColor.clearColor()
         documentPicker.delegate = self
         self.presentViewController(documentPicker, animated: true, completion: nil)
+    }
+    
+    public func actionSheetUnblockContact() {
+        self.executePromise(Actor.unblockUser(Actor.getUserWithUid(peer.peerId).getId()))
     }
     
     ////////////////////////////////////////////////////////////
