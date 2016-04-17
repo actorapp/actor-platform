@@ -3078,6 +3078,12 @@
                   "argument": "state",
                   "category": "compact",
                   "description": "  Sequence state if users are imported"
+                },
+                {
+                  "type": "reference",
+                  "argument": "userPeers",
+                  "category": "full",
+                  "description": "  Imported user peers"
                 }
               ],
               "attributes": [
@@ -3104,6 +3110,17 @@
                   },
                   "id": 3,
                   "name": "state"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "UserOutPeer"
+                    }
+                  },
+                  "id": 4,
+                  "name": "userPeers"
                 }
               ]
             },
@@ -3121,6 +3138,12 @@
                 "argument": "emails",
                 "category": "compact",
                 "description": "Emails for import"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled optimizations"
               }
             ],
             "attributes": [
@@ -3145,6 +3168,17 @@
                 },
                 "id": 2,
                 "name": "emails"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 3,
+                "name": "optimizations"
               }
             ]
           }
@@ -3204,6 +3238,12 @@
                 "argument": "contactsHash",
                 "category": "full",
                 "description": "Hash of saved list in application"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled optimizations"
               }
             ],
             "attributes": [
@@ -3211,6 +3251,17 @@
                 "type": "string",
                 "id": 1,
                 "name": "contactsHash"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 2,
+                "name": "optimizations"
               }
             ]
           }
@@ -3312,6 +3363,12 @@
                   "argument": "users",
                   "category": "compact",
                   "description": "  Founded users"
+                },
+                {
+                  "type": "reference",
+                  "argument": "userPeers",
+                  "category": "compact",
+                  "description": "  Founded users peers"
                 }
               ],
               "attributes": [
@@ -3325,6 +3382,17 @@
                   },
                   "id": 1,
                   "name": "users"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "UserOutPeer"
+                    }
+                  },
+                  "id": 2,
+                  "name": "userPeers"
                 }
               ]
             },
@@ -3342,6 +3410,17 @@
                 "type": "string",
                 "id": 1,
                 "name": "request"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 2,
+                "name": "optimizations"
               }
             ]
           }
