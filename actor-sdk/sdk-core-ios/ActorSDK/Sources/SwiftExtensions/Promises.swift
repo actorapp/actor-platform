@@ -57,10 +57,12 @@ class PromiseConsumer<T>: NSObject, ARConsumer {
     init(closure: (T!) -> ()) {
         self.closure = closure
     }
-    
-    
+
     func applyWithId(t: AnyObject!) {
-        closure(t as! T)
+        let nilResponce = "ok"
+        if(t == nil){
+        closure(nilResponce as! T)
+        }
     }
 }
 
