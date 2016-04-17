@@ -252,6 +252,7 @@ class AAUserViewController: AAContentTableController {
                     r.selectAction = { () -> Bool in
                         if !self.user.isBlockedModel().get().booleanValue() {
                             self.executePromise(Actor.blockUser(jint(self.uid)),successBlock: { success in
+                                self.execute(Actor.deleteChatCommandWithPeer(ACPeer.userWithInt(jint(self.uid))))
                                 r.reload()
                             } ,failureBlock:nil)
                         } else {
