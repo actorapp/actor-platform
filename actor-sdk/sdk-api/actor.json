@@ -6471,6 +6471,39 @@
                   },
                   "id": 2,
                   "name": "users"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "UserOutPeer"
+                    }
+                  },
+                  "id": 4,
+                  "name": "userPeers"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "Group"
+                    }
+                  },
+                  "id": 5,
+                  "name": "groups"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "GroupOutPeer"
+                    }
+                  },
+                  "id": 6,
+                  "name": "groupPeers"
                 }
               ]
             },
@@ -6499,6 +6532,12 @@
                 "argument": "limit",
                 "category": "full",
                 "description": "maximum amount of messages (max is 100)"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled optimizations"
               }
             ],
             "attributes": [
@@ -6533,6 +6572,17 @@
                 "type": "int32",
                 "id": 4,
                 "name": "limit"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 6,
+                "name": "optimizations"
               }
             ]
           }
@@ -6750,6 +6800,28 @@
                   },
                   "id": 3,
                   "name": "dialogs"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "UserOutPeer"
+                    }
+                  },
+                  "id": 4,
+                  "name": "userPeers"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "GroupOutPeer"
+                    }
+                  },
+                  "id": 5,
+                  "name": "groupPeers"
                 }
               ]
             },
@@ -6766,6 +6838,12 @@
                 "argument": "limit",
                 "category": "full",
                 "description": "limit maximum amount of messages (max is 100)"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled optimizations"
               }
             ],
             "attributes": [
@@ -6781,6 +6859,17 @@
                 "type": "int32",
                 "id": 2,
                 "name": "limit"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 3,
+                "name": "optimizations"
               }
             ]
           }
@@ -6856,6 +6945,28 @@
                 },
                 {
                   "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "UserOutPeer"
+                    }
+                  },
+                  "id": 5,
+                  "name": "userPeers"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "GroupOutPeer"
+                    }
+                  },
+                  "id": 6,
+                  "name": "groupPeers"
+                },
+                {
+                  "type": {
                     "type": "opt",
                     "childType": "bytes"
                   },
@@ -6877,6 +6988,12 @@
                 "argument": "limit",
                 "category": "full",
                 "description": "Maximum number of elements"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled optimizations"
               }
             ],
             "attributes": [
@@ -6892,6 +7009,17 @@
                 "type": "int32",
                 "id": 2,
                 "name": "limit"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 3,
+                "name": "optimizations"
               }
             ]
           }
@@ -7225,69 +7353,69 @@
               },
               {
                 "type": "reference",
-                "argument": "theme",
-                "category": "hidden",
-                "description": "  Theme of group"
-              },
-              {
-                "type": "reference",
-                "argument": "about",
-                "category": "hidden",
-                "description": "  About of group"
-              },
-              {
-                "type": "reference",
                 "argument": "avatar",
                 "category": "compact",
                 "description": "  Avatar of group"
               },
               {
                 "type": "reference",
-                "argument": "isMember",
+                "argument": "membersCount",
                 "category": "full",
-                "description": "  is member of group (deprecated)"
-              },
-              {
-                "type": "reference",
-                "argument": "creatorUid",
-                "category": "hidden",
-                "description": "  Group creator"
-              },
-              {
-                "type": "reference",
-                "argument": "members",
-                "category": "compact",
-                "description": "  Members of group"
-              },
-              {
-                "type": "reference",
-                "argument": "createDate",
-                "category": "full",
-                "description": "  Date of creation"
-              },
-              {
-                "type": "reference",
-                "argument": "ext",
-                "category": "hidden",
-                "description": "  Group extension Data"
-              },
-              {
-                "type": "reference",
-                "argument": "isAdmin",
-                "category": "hidden",
-                "description": "  Is current user admin (deprecated)"
+                "description": "  Number of members"
               },
               {
                 "type": "reference",
                 "argument": "isHidden",
                 "category": "full",
-                "description": "  Is group hidden"
+                "description": "  Is group hidden (not showing it in recent list). Default is false."
               },
               {
                 "type": "reference",
-                "argument": "groupType",
+                "argument": "ext",
                 "category": "full",
-                "description": "  Group type"
+                "description": "  Group extension Data"
+              },
+              {
+                "type": "reference",
+                "argument": "isMember",
+                "category": "full",
+                "description": "  [DEPRECATED] Is current user a member of a group"
+              },
+              {
+                "type": "reference",
+                "argument": "isAdmin",
+                "category": "full",
+                "description": "  [DEPRECATED] Is current user an admin of a group"
+              },
+              {
+                "type": "reference",
+                "argument": "theme",
+                "category": "hidden",
+                "description": "  [DEPRECATED] Theme of group"
+              },
+              {
+                "type": "reference",
+                "argument": "about",
+                "category": "hidden",
+                "description": "  [DEPRECATED] About of group"
+              },
+              {
+                "type": "reference",
+                "argument": "creatorUid",
+                "category": "hidden",
+                "description": "  [DEPRECATED] Group creator"
+              },
+              {
+                "type": "reference",
+                "argument": "members",
+                "category": "compact",
+                "description": "  [DEPRECATED] Members of group"
+              },
+              {
+                "type": "reference",
+                "argument": "createDate",
+                "category": "full",
+                "description": "  [DEPRECATED] Date of creation"
               }
             ],
             "expandable": "true",
@@ -7322,62 +7450,12 @@
                 "name": "avatar"
               },
               {
-                "type": "bool",
-                "id": 6,
-                "name": "isMember",
-                "deprecated": "true"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "userId"
-                },
-                "id": 8,
-                "name": "creatorUid"
-              },
-              {
-                "type": {
-                  "type": "list",
-                  "childType": {
-                    "type": "struct",
-                    "childType": "Member"
-                  }
-                },
-                "id": 9,
-                "name": "members"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "date"
-                },
-                "id": 10,
-                "name": "createDate"
-              },
-              {
                 "type": {
                   "type": "opt",
-                  "childType": "bool"
+                  "childType": "int32"
                 },
-                "id": 16,
-                "name": "isAdmin",
-                "deprecated": "true"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "string"
-                },
-                "id": 17,
-                "name": "theme"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "string"
-                },
-                "id": 18,
-                "name": "about"
+                "id": 24,
+                "name": "membersCount"
               },
               {
                 "type": {
@@ -7390,10 +7468,138 @@
               {
                 "type": {
                   "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MapValue"
+                  }
+                },
+                "id": 22,
+                "name": "ext"
+              },
+              {
+                "type": "bool",
+                "id": 6,
+                "name": "isMember",
+                "deprecated": "true"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 16,
+                "name": "isAdmin",
+                "deprecated": "true"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 8,
+                "name": "creatorUid",
+                "deprecated": "true"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Member"
+                  }
+                },
+                "id": 9,
+                "name": "members",
+                "deprecated": "true"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
+                "id": 10,
+                "name": "createDate",
+                "deprecated": "true"
+              },
+              {
+                "type": {
+                  "type": "opt",
                   "childType": "string"
                 },
-                "id": 23,
-                "name": "groupType"
+                "id": 17,
+                "name": "theme",
+                "deprecated": "true"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 18,
+                "name": "about",
+                "deprecated": "true"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "GroupFull",
+            "doc": [
+              "Goup Full information"
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "id"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "theme"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 3,
+                "name": "about"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Member"
+                  }
+                },
+                "id": 4,
+                "name": "members"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 5,
+                "name": "creatorUid"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
+                "id": 6,
+                "name": "createDate"
               },
               {
                 "type": {
@@ -7403,7 +7609,7 @@
                     "childType": "MapValue"
                   }
                 },
-                "id": 22,
+                "id": 7,
                 "name": "ext"
               }
             ]
@@ -10105,6 +10311,18 @@
                   "argument": "groups",
                   "category": "full",
                   "description": "  Related groups"
+                },
+                {
+                  "type": "reference",
+                  "argument": "userPeers",
+                  "category": "full",
+                  "description": "  Related user peers"
+                },
+                {
+                  "type": "reference",
+                  "argument": "groupPeers",
+                  "category": "full",
+                  "description": "  Related group peers"
                 }
               ],
               "attributes": [
@@ -10140,6 +10358,28 @@
                   },
                   "id": 3,
                   "name": "groups"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "UserOutPeer"
+                    }
+                  },
+                  "id": 4,
+                  "name": "userPeers"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "GroupOutPeer"
+                    }
+                  },
+                  "id": 5,
+                  "name": "groupPeers"
                 }
               ]
             },
@@ -10150,6 +10390,12 @@
                 "argument": "query",
                 "category": "full",
                 "description": "Search query. Warring not all combinations can be processed by server. (acts as OR)"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled Optimizations"
               }
             ],
             "attributes": [
@@ -10163,6 +10409,17 @@
                 },
                 "id": 1,
                 "name": "query"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 2,
+                "name": "optimizations"
               }
             ]
           }
@@ -10297,6 +10554,18 @@
                 "argument": "loadMoreState",
                 "category": "hidden",
                 "description": "  State for loading more results"
+              },
+              {
+                "type": "reference",
+                "argument": "userOutPeers",
+                "category": "full",
+                "description": "  Search user peers"
+              },
+              {
+                "type": "reference",
+                "argument": "groupOutPeers",
+                "category": "full",
+                "description": "  Search group peers"
               }
             ],
             "attributes": [
@@ -10340,6 +10609,28 @@
                 },
                 "id": 4,
                 "name": "loadMoreState"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "UserOutPeer"
+                  }
+                },
+                "id": 5,
+                "name": "userOutPeers"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "GroupOutPeer"
+                  }
+                },
+                "id": 6,
+                "name": "groupOutPeers"
               }
             ]
           }
@@ -10360,6 +10651,12 @@
                 "argument": "query",
                 "category": "full",
                 "description": "Search query"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled Optimizations"
               }
             ],
             "attributes": [
@@ -10370,6 +10667,17 @@
                 },
                 "id": 1,
                 "name": "query"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 2,
+                "name": "optimizations"
               }
             ]
           }
@@ -10390,6 +10698,12 @@
                 "argument": "loadMoreState",
                 "category": "hidden",
                 "description": "State for loading more results"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled Optimizations"
               }
             ],
             "attributes": [
@@ -10397,6 +10711,17 @@
                 "type": "bytes",
                 "id": 1,
                 "name": "loadMoreState"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 2,
+                "name": "optimizations"
               }
             ]
           }
