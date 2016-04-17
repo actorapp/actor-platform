@@ -264,7 +264,6 @@ class AAUserViewController: AAContentTableController {
                         return true
                     }
                 }
-
             }
         }
     }
