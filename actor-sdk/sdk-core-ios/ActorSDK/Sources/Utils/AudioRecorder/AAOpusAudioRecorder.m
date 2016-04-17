@@ -146,9 +146,10 @@ static dispatch_semaphore_t playSoundSemaphore = nil;
     {
         __autoreleasing NSError *error = nil;
         AVAudioSession *audioSession = [AVAudioSession sharedInstance];
+       // [audioSession setActive:NO error:&error];
         if (![audioSession setCategory:AVAudioSessionCategoryPlayback error:&error])
             NSLog(@"[AAAudioRecorder audio session set category failed: %@]", error);
-        if (![audioSession setActive:false error:&error])
+        if (![audioSession setActive:NO error:&error])
             NSLog(@"[AAAudioRecorder audio session deactivation failed: %@]", error);
     }];
 }
