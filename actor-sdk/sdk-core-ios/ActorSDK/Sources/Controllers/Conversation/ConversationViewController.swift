@@ -821,6 +821,7 @@ public class ConversationViewController:
             Actor.sendAudioWithPeer(self.peer, withName: NSString.localizedStringWithFormat("%@.ogg", NSUUID().UUIDString) as String,
                 withDuration: jint(duration*1000), withDescriptor: descriptor)
         }
+        audioRecorder.cancel()
     }
     
     public func audioRecorderDidStartRecording() {
