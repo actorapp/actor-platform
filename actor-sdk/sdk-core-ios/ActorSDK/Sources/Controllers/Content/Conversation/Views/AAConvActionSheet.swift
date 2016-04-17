@@ -12,6 +12,7 @@ public protocol AAConvActionSheetDelegate {
     func actionSheetPickDocument()
     func actionSheetPickLocation()
     func actionSheetPickContact()
+    func actionSheetUnblockContact()
 }
 
 public class AAConvActionSheet: UIView, AAThumbnailViewDelegate {
