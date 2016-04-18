@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.pickers.map;
+package im.actor.map;
 
 import com.google.android.gms.maps.model.LatLng;
 

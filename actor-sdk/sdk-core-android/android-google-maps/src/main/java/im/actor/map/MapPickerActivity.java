@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.pickers.map;
+package im.actor.map;
 
 import android.Manifest;
 import android.animation.Animator;
@@ -41,7 +41,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import im.actor.sdk.R;
+import im.actor.maps.google.R;
 
 public class MapPickerActivity extends AppCompatActivity
         implements
