@@ -23,7 +23,7 @@ final class ValuesServiceImpl(implicit system: ActorSystem, sessionRegion: Sessi
   ): Future[HandlerResult[ResponseLoadSyncedSet]] =
     authorized(clientData) { client ⇒
       sessionRegion.ref !
-        SessionEnvelope(clientData.authId, clientData.sessionId)
+        SessionEnvelope(clientData.authId, clientData.sessionId, clientData.remoteAddr)
         .withSubscribeToWeak(SubscribeToWeak(Some(valuesExt.syncedSet.weakGroup(setName))))
 
       for {

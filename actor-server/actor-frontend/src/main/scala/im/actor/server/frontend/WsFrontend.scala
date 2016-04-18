@@ -42,7 +42,7 @@ object WsFrontend extends Frontend("ws") {
     connections runForeach { conn ⇒
       log.debug("New HTTP Connection {}", conn.remoteAddress)
 
-      conn.handleWith(route(mtProtoBlueprint(serverKeys)))
+      conn.handleWith(route(mtProtoBlueprint(serverKeys, conn.remoteAddress.getAddress().getHostAddress())))
     }
   }
 

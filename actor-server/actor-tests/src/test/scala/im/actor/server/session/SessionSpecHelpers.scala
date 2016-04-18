@@ -155,7 +155,8 @@ trait SessionSpecHelpers extends AbstractPatienceConfiguration with Matchers {
     session.tell(
       SessionEnvelope(
         authId,
-        sessionId
+        sessionId,
+        None
       ).withPayload(payload),
       probe.ref
     )

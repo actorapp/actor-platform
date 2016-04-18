@@ -144,6 +144,8 @@ private[frontend] final class SessionClient(sessionRegion: SessionRegion)
   private[this] var seq = -1L
   private[this] var clientSeq = -1L
 
+  val remoteAddress = self.path.name.split("_")(2)
+
   def receive: Receive = waitForIds
 
   def waitForIds: Receive = publisher orElse {
@@ -211,7 +213,7 @@ private[frontend] final class SessionClient(sessionRegion: SessionRegion)
       } else {
         unpack(mbBits) match {
           case Success(rawBits) ⇒
-            sessionRegion.ref ! SessionEnvelope(authId, sessionId).withHandleMessageBox(HandleMessageBox(ByteString.copyFrom(rawBits.toByteBuffer)))
+            sessionRegion.ref ! SessionEnvelope(authId, sessionId, Option(remoteAddress)).withHandleMessageBox(HandleMessageBox(ByteString.copyFrom(rawBits.toByteBuffer)))
           case Failure(EncryptedPackageDecodeError) ⇒
             enqueuePackage(Drop(0, 0, "Cannot parse EncryptedPackage"))
             onCompleteThenStop()
