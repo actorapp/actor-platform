@@ -227,6 +227,12 @@ public class SignPhoneFragment extends BaseAuthFragment {
             }
         });
 
+        String savedCountryCode = messenger().getPreferences().getString("auth_county_code");
+        countryCodeEditText.setText(savedCountryCode);
+
+        String savedPhoneNumber = messenger().getPreferences().getString("auth_phone_number");
+        phoneNumberEditText.setText(savedPhoneNumber);
+
         v.findViewById(R.id.button_why).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -293,6 +299,8 @@ public class SignPhoneFragment extends BaseAuthFragment {
             return;
         }
 
+        messenger().getPreferences().putString("auth_county_code", countryCodeEditText.getText().toString());
+        messenger().getPreferences().putString("auth_phone_number", phoneNumberEditText.getText().toString());
         startPhoneAuth(Long.parseLong(rawPhoneN));
     }
 

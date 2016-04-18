@@ -483,7 +483,7 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
                             }
                         });
                     }
-                });
+                }, RPC_TIMEOUT);
             }
         };
     }
@@ -557,7 +557,7 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
                             }
                         });
                     }
-                });
+                }, RPC_TIMEOUT);
             }
         };
     }

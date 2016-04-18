@@ -191,9 +191,6 @@ public class GroupsProcessor extends AbsModule {
         Group group = groups().getValue(groupId);
         if (group != null) {
 
-            // We can't just ignore not changed avatar
-            // because we need to make message in conversation
-            // about avatar change
 
             if (group.getTheme() == null || !group.getTheme().equals(topic)) {
                 // Change group title
@@ -213,9 +210,6 @@ public class GroupsProcessor extends AbsModule {
         Group group = groups().getValue(groupId);
         if (group != null) {
 
-            // We can't just ignore not changed avatar
-            // because we need to make message in conversation
-            // about avatar change
 
             if (group.getAbout() == null || !group.getAbout().equals(about)) {
                 // Change group title

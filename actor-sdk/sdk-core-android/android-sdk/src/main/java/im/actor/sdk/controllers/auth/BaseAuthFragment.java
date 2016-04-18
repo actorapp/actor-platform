@@ -34,6 +34,7 @@ import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 public abstract class BaseAuthFragment extends BaseFragment {
 
     private static final int PERMISSIONS_REQUEST_ACCOUNT = 1;
+    public static final boolean USE_SUGGESTED_EMAIL = false;
     private EditText edittextToFill;
     public BaseAuthFragment() {
 
@@ -56,10 +57,12 @@ public abstract class BaseAuthFragment extends BaseFragment {
     }
 
     protected void startPhoneAuth(long phone) {
+        messenger().getPreferences().putString("sign_in_auth_id", Long.toString(phone));
         ((AuthActivity) getActivity()).startPhoneAuth(messenger().doStartPhoneAuth(phone), phone);
     }
 
     protected void startEmailAuth(String email) {
+        messenger().getPreferences().putString("sign_in_auth_id", email);
         ((AuthActivity) getActivity()).startEmailAuth(messenger().doStartEmailAuth(email), email);
     }
 
@@ -87,13 +90,15 @@ public abstract class BaseAuthFragment extends BaseFragment {
     }
 
     protected void setSuggestedEmail(EditText et) {
-        edittextToFill = et;
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.GET_ACCOUNTS},
-                    PERMISSIONS_REQUEST_ACCOUNT);
+        if (USE_SUGGESTED_EMAIL) {
+            edittextToFill = et;
+            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.GET_ACCOUNTS},
+                        PERMISSIONS_REQUEST_ACCOUNT);
 
-        } else {
-            et.setText(getSuggestedEmailChecked());
+            } else {
+                et.setText(getSuggestedEmailChecked());
+            }
         }
     }
 
