@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.conversation.preview;
+package im.actor.map;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -17,7 +17,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import im.actor.sdk.R;
+import im.actor.maps.google.R;
 import im.actor.sdk.controllers.fragment.BaseFragment;
 
 public class MapFragment extends BaseFragment {

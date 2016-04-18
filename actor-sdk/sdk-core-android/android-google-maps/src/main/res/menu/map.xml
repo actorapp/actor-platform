@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/share"
+        android:icon="@drawable/ic_share_white_24dp"
+        android:title="@string/menu_share"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/roadmap"
+        android:title="@string/map_type_normal" />
+    <item
+        android:id="@+id/satellite"
+        android:title="@string/map_type_satellite" />
+    <item
+        android:id="@+id/hybrid"
+        android:title="@string/map_type_hybrid" />
+
+</menu>
