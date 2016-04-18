@@ -15,32 +15,19 @@ group = 'im.actor'
 version = '0.0.1'
 
 android {
-
     compileSdkVersion 23
-    buildToolsVersion '23.0.2'
+    buildToolsVersion "23.0.2"
 
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
         multiDexEnabled true
     }
-
-    sourceSets {
-        main {
-
-            res.srcDirs = ['src/main/res',
-                           'src/main/res-material']
-
-            resources.srcDirs = [
-                    '../../sdk-core/core/core-shared/src/main/resources'
-            ]
-
-            java.srcDirs = ['src/main/java',
-                            '../../sdk-core/core/core-shared/src/main/java',
-                            '../../sdk-core/core/core-android/src/main/java',
-                            '../../sdk-core/runtime/runtime-shared/src/main/java',
-                            '../../sdk-core/runtime/runtime-generic/src/main/java',
-                            '../../sdk-core/runtime/runtime-android/src/main/java',]
+    buildTypes {
+        release {
+            minifyEnabled false
         }
     }
 
@@ -55,37 +42,13 @@ android {
 }
 
 dependencies {
-
-    // Calls
-    compile 'io.pristine:libjingle:11139@aar'
-
-    // UI
-    compile 'com.facebook.fresco:fresco:0.7.0'
-    compile 'com.facebook.rebound:rebound:0.3.8'
-
-    compile 'com.soundcloud.android:android-crop:1.0.0@aar'
-    compile('com.github.chrisbanes.photoview:library:1.2.4') {
-        exclude module: 'support-v13'
-    }
-
-    compile 'com.droidkit:progress:0.5'
-    compile 'com.getbase:floatingactionbutton:1.9.1'
-
-    // Phone parser
-    compile files('libs/libphonenumber-5.9.jar')
-
-    // Core
-    compile 'com.squareup.okhttp:okhttp:2.5.0'
-    compile 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.0.2'
-
-    // Android Support
-    compile 'com.android.support:support-v4:23.1.0'
-    compile 'com.android.support:support-v13:23.1.0'
     compile 'com.android.support:appcompat-v7:23.1.0'
-    compile 'com.android.support:palette-v7:23.1.0'
-    compile 'com.android.support:recyclerview-v7:23.1.0'
-    compile 'com.android.support:design:23.1.0'
-    compile 'com.android.support:customtabs:23.1.1'
+
+    //compile 'im.actor:android-sdk:0.1.30'
+    compile project(':actor-sdk:sdk-core-android:android-sdk')
+
+    compile 'com.google.android.gms:play-services-maps:8.4.0'
+
 }
 
 //
@@ -100,7 +63,7 @@ android.libraryVariants.all { variant ->
 
     task("javadoc${variant.name.capitalize()}", type: Javadoc, dependsOn: "assemble${variant.name.capitalize()}") {
 
-        title = "Actor SDK for Android"
+        title = "Actor SDK for Android: Google Extension"
 
         // Sources
         source = variant.javaCompile.source
@@ -177,9 +140,9 @@ project.afterEvaluate {
                     }
 
                     pom.project {
-                        name 'Actor SDK for Android'
+                        name 'Actor SDK for Android Google Extension'
                         packaging 'aar'
-                        description 'Actor SDK: Embedding mobile messaging to Android App'
+                        description 'Actor SDK for Android Google Extension'
                         url 'https://github.com/actorapp/actor-platform'
 
                         scm {

@@ -333,26 +333,6 @@ public class ChatActivity extends ActorEditTextActivity {
         final TextView contactText = (TextView) findViewById(R.id.contact_text);
         final View shareContact = findViewById(R.id.share_contact);
         findViewById(R.id.share_hide).setVisibility(View.GONE);
-//        try {
-//            ApplicationInfo app = ChatActivity.this.getPackageManager().getApplicationInfo(ChatActivity.this.getPackageName(), PackageManager.GET_META_DATA);
-//            Bundle bundle = app.metaData;
-//
-//            if (bundle.containsKey("com.google.android.geo.API_KEY")) {
-//                shareLocation.setVisibility(View.VISIBLE);
-//                findViewById(R.id.share_hide).setVisibility(View.GONE);
-//                contactText.setVisibility(View.VISIBLE);
-//
-//            } else {
-//                shareLocation.setVisibility(View.GONE);
-//                findViewById(R.id.share_hide).setVisibility(View.VISIBLE);
-//                contactText.setVisibility(View.INVISIBLE);
-//                Log.w("Actor-GoogleMaps", "please, set up google map api key in AndroidManifest metadata to enable share locations");
-//            }
-//        } catch (PackageManager.NameNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (NullPointerException e) {
-//            e.printStackTrace();
-//        }
 
         View.OnClickListener shareMenuOCL = new View.OnClickListener() {
             @Override
@@ -419,8 +399,19 @@ public class ChatActivity extends ActorEditTextActivity {
         shareContact.setOnClickListener(shareMenuOCL);
         findViewById(R.id.share_file).setOnClickListener(shareMenuOCL);
         findViewById(R.id.share_hide).setOnClickListener(shareMenuOCL);
-        findViewById(R.id.share_location).setOnClickListener(shareMenuOCL);
+        View shareLocation = findViewById(R.id.share_location);
+        shareLocation.setOnClickListener(shareMenuOCL);
         handleIntent();
+
+        try {
+            Class.forName("com.google.android.gms.maps.GoogleMap");
+        } catch (ClassNotFoundException e) {
+            shareLocation.setVisibility(View.GONE);
+            findViewById(R.id.share_hide).setVisibility(View.VISIBLE);
+            findViewById(R.id.location_text).setVisibility(View.INVISIBLE);
+        }
+
+
 
         final ImageButton shareMenuSend = (ImageButton) findViewById(R.id.share_send);
         shareMenuSend.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);

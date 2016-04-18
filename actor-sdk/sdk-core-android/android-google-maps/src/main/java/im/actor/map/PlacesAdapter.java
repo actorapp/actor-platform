@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.pickers.map;
+package im.actor.map;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import im.actor.sdk.R;
+import im.actor.maps.google.R;
 
 
 public class PlacesAdapter extends BaseAdapter {
