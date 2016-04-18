@@ -146,6 +146,11 @@ $sticker-max-size: 180px;
       height: 20px;
     }
   }
+
+  &__mention {
+    font-weight: 500;
+  }
+
   &__timestamp {
     font-size: 12px;
 

@@ -11,6 +11,7 @@ function processText(text) {
   let processedText = text;
   processedText = ActorClient.renderMarkdown(processedText);
   processedText = processEmojiText(processedText);
+  processedText = processedText.replace(/(@[a-z_]+)/ig, '<span class="messsage__mention">$1</span>');
 
   return processedText;
 }
