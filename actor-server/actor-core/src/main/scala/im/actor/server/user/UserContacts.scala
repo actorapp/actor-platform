@@ -4,6 +4,7 @@ import java.time.Instant
 
 import akka.actor.{ ActorRefFactory, Props }
 import akka.pattern.ask
+import akka.persistence.SnapshotMetadata
 import akka.util.Timeout
 import im.actor.api.rpc.users.UpdateUserLocalNameChanged
 import im.actor.server.cqrs.{ Processor, ProcessorState }
@@ -25,6 +26,8 @@ private final case class UserContactsState(localNames: Map[Int, String] = Map.em
           this.copy(localNames = localNames + (contactUserId → localName))
       }
   }
+
+  override def withSnapshot(metadata: SnapshotMetadata, snapshot: Any): UserContactsState = this
 }
 
 private[user] final class UserContacts(userId: Int)(implicit factory: ActorRefFactory) {

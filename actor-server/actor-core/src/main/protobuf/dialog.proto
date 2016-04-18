@@ -295,6 +295,7 @@ message DialogEvents {
         int64 random_id = 2;
         int64 date = 1 [(scalapb.field).type = "java.time.Instant"];
         int32 sender_user_id = 3;
+        int32 message_header = 4;
     }
 
     message MessagesReceived {
@@ -308,5 +309,9 @@ message DialogEvents {
 
         int64 date = 1 [(scalapb.field).type = "java.time.Instant"];
         int32 reader_user_id = 8;
+    }
+
+    message CounterReset {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogEvent";
     }
 }
