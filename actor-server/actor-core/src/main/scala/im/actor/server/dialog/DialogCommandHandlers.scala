@@ -29,7 +29,7 @@ trait DialogCommandHandlers extends PeersImplicits {
   protected def sendMessage(s: DialogState, sm: SendMessage): Unit = {
     becomeStashing(replyTo ⇒ ({
       case seq: SeqStateDate ⇒
-        persist(NewMessage(sm.randomId, Instant.ofEpochMilli(seq.date), isIncoming = false)) { e ⇒
+        persist(NewMessage(sm.randomId, Instant.ofEpochMilli(seq.date), sm.getOrigin.id)) { e ⇒
           commit(e)
           replyTo ! seq
           unstashAll()
@@ -65,7 +65,7 @@ trait DialogCommandHandlers extends PeersImplicits {
       throw new RuntimeException("No message date found in SendMessage")
     }
 
-    persist(NewMessage(sm.randomId, Instant.ofEpochMilli(messageDate.value), isIncoming = true)) { e ⇒
+    persist(NewMessage(sm.randomId, Instant.ofEpochMilli(messageDate.value), sm.getOrigin.id)) { e ⇒
       commit(e)
 
       if (peer.typ == PeerType.Private) {
@@ -92,7 +92,7 @@ trait DialogCommandHandlers extends PeersImplicits {
     if (peer.`type` == PeerType.Private && peer.id != senderUserId && userId != senderUserId) {
       sender() ! Status.Failure(new RuntimeException(s"writeMessageSelf with senderUserId $senderUserId in dialog of user $userId with user ${peer.id}"))
     } else {
-      persist(NewMessage(randomId, Instant.ofEpochMilli(dateMillis), isIncoming = userId != senderUserId)) { e ⇒
+      persist(NewMessage(randomId, Instant.ofEpochMilli(dateMillis), senderUserId)) { e ⇒
         commit(e)
         db.run(writeHistoryMessageSelf(userId, peer, senderUserId, new DateTime(dateMillis), randomId, message.header, message.toByteArray))
           .map(_ ⇒ WriteMessageSelfAck()) pipeTo sender()
