@@ -345,7 +345,7 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
         {
           //UpdateMessageReadByMe sent to user2 second device
           implicit val clientData = clientData22
-          expectUpdates(
+          expectUpdatesUnordered(
             classOf[UpdateChatGroupsChanged],
             classOf[UpdateMessage],
             //classOf[UpdateCountersChanged],
