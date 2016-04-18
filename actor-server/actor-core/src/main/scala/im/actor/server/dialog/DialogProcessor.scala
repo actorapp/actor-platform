@@ -55,8 +55,8 @@ private[dialog] final case class DialogState(
   import DialogEvents._
 
   override def updated(e: DialogEvent): DialogState = e match {
-    case NewMessage(randomId, date, isIncoming) ⇒
-      if (isIncoming) {
+    case NewMessage(randomId, date, senderUserId) ⇒
+      if (senderUserId != userId) {
         this.copy(
           counter = counter + 1,
           unreadMessages = unreadMessages + UnreadMessage(date, randomId),
