@@ -294,7 +294,7 @@ message DialogEvents {
 
         int64 random_id = 2;
         int64 date = 1 [(scalapb.field).type = "java.time.Instant"];
-        bool is_incoming = 3;
+        int32 sender_user_id = 3;
     }
 
     message MessagesReceived {
