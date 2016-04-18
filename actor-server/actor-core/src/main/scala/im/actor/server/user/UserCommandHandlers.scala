@@ -59,7 +59,7 @@ object UserErrors {
   final case class BotCommandAlreadyExists(slashCommand: String)
     extends UserError(s"Bot command already exists: $slashCommand")
 
-  final case object ContactNotFound extends UserError("Contact not found")
+  case object ContactNotFound extends UserError("Contact not found")
 
 }
 
