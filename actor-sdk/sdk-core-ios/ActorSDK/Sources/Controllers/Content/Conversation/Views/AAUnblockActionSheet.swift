@@ -104,6 +104,7 @@ class AAUnblockActionSheet: AAConvActionSheet {
         
         let spearator1 = UIView(frame: CGRectMake(0, 0, superWidth, 1))
         spearator1.backgroundColor = UIColor(red: 223.9/255.0, green: 223.9/255.0, blue: 223.9/255.0, alpha: 0.6)
+        
         // add separatos as subview
         
         self.sheetView.addSubview(spearator1)
