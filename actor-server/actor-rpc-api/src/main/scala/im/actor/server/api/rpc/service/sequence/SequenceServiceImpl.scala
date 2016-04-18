@@ -40,7 +40,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
   private val maxDifferenceSize: Long = config.maxDifferenceSize
 
   private def subscribeToSeq(opts: Seq[ApiUpdateOptimization.Value])(implicit client: AuthorizedClientData): Unit = {
-    sessionRegion.ref ! SessionEnvelope(client.authId, client.sessionId)
+    sessionRegion.ref ! SessionEnvelope(client.authId, client.sessionId, client.remoteAddr)
       .withSubscribeToSeq(SubscribeToSeq(opts map (_.id)))
   }
 
@@ -120,7 +120,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
         // FIXME: #security check access hashes
         val userIds = users.map(_.userId).toSet
 
-        sessionRegion.ref ! SessionEnvelope(clientData.authId, clientData.sessionId)
+        sessionRegion.ref ! SessionEnvelope(clientData.authId, clientData.sessionId, clientData.remoteAddr)
           .withSubscribeToOnline(SubscribeToOnline(userIds.toSeq))
     }
   }
@@ -133,7 +133,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
         // FIXME: #security check access hashes
         val userIds = users.map(_.userId).toSet
 
-        sessionRegion.ref ! SessionEnvelope(clientData.authId, clientData.sessionId)
+        sessionRegion.ref ! SessionEnvelope(clientData.authId, clientData.sessionId, clientData.remoteAddr)
           .withSubscribeFromOnline(SubscribeFromOnline(userIds.toSeq))
     }
   }
@@ -142,7 +142,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
     Future.successful(Ok(ResponseVoid)) andThen {
       case _ ⇒
         // FIXME: #security check access hashes
-        sessionRegion.ref ! SessionEnvelope(clientData.authId, clientData.sessionId)
+        sessionRegion.ref ! SessionEnvelope(clientData.authId, clientData.sessionId, clientData.remoteAddr)
           .withSubscribeToGroupOnline(SubscribeToGroupOnline(groups.map(_.groupId)))
     }
   }
@@ -151,7 +151,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
     Future.successful(Ok(ResponseVoid)) andThen {
       case _ ⇒
         // FIXME: #security check access hashes
-        sessionRegion.ref ! SessionEnvelope(clientData.authId, clientData.sessionId)
+        sessionRegion.ref ! SessionEnvelope(clientData.authId, clientData.sessionId, clientData.remoteAddr)
           .withSubscribeFromGroupOnline(SubscribeFromGroupOnline(groups.map(_.groupId)))
     }
   }
