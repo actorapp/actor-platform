@@ -801,8 +801,6 @@ public class ConversationViewController:
         
         audioRecorder.delegate = self
         audioRecorder.start()
-        
-        
     }
     
     func onAudioRecordingFinished() {
@@ -822,8 +820,8 @@ public class ConversationViewController:
 
             Actor.sendAudioWithPeer(self.peer, withName: NSString.localizedStringWithFormat("%@.ogg", NSUUID().UUIDString) as String,
                 withDuration: jint(duration*1000), withDescriptor: descriptor)
-            
         }
+        audioRecorder.cancel()
     }
     
     public func audioRecorderDidStartRecording() {
@@ -924,7 +922,6 @@ public class ConversationViewController:
         self.stickersButton.hidden = false
         self.onAudioRecordingFinished()
         self.voiceRecorderView.recordingStoped()
-        
     }
     
     ////////////////////////////////////////////////////////////
