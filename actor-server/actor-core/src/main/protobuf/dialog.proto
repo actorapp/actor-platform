@@ -22,6 +22,7 @@ message DialogInfo {
     Peer peer = 3;
     int32 counter = 1;
     int64 date = 2 [(scalapb.field).type = "java.time.Instant"];
+    int64 last_message_date = 6 [(scalapb.field).type = "java.time.Instant"];
     int64 last_received_date = 5 [(scalapb.field).type = "java.time.Instant"];
     int64 last_read_date = 4 [(scalapb.field).type = "java.time.Instant"];
 }
