@@ -3,6 +3,7 @@ package im.actor.server.dialog
 import java.time.Instant
 
 import akka.actor._
+import akka.http.scaladsl.util.FastFuture
 import akka.persistence.SnapshotMetadata
 import akka.util.Timeout
 import com.github.benmanes.caffeine.cache.Cache
@@ -197,9 +198,11 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
   private def accepts(dc: DirectDialogCommand) = (dc.getDest == selfPeer) || ((dc.getDest == peer) && (dc.getOrigin != selfPeer))
 
   private def getCounter(): Future[Int] = {
-    groupExt.isMember(peer.id, userId) map {
-      case true  ⇒ state.counter
-      case false ⇒ 0
-    }
+    if (peer.typ.isGroup)
+      groupExt.isMember(peer.id, userId) map {
+        case true  ⇒ state.counter
+        case false ⇒ 0
+      }
+    else FastFuture.successful(state.counter)
   }
 }
