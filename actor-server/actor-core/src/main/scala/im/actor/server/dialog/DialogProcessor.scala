@@ -18,7 +18,7 @@ import im.actor.server.user.UserExtension
 import im.actor.util.cache.CacheHelpers._
 import slick.driver.PostgresDriver.api.Database
 
-import scala.collection.immutable
+import scala.collection.SortedSet
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
 
@@ -50,7 +50,7 @@ private[dialog] final case class DialogState(
   lastReceiveDate: Instant,
   lastReadDate:    Instant,
   counter:         Int,
-  unreadMessages:  immutable.SortedSet[UnreadMessage]
+  unreadMessages:  SortedSet[UnreadMessage]
 ) extends ProcessorState[DialogState, DialogEvent] {
   import DialogEvents._
 
@@ -76,16 +76,6 @@ object DialogProcessor {
 
   def register(): Unit = {
     ActorSerializer.register(
-      40000 → classOf[DialogCommands.SendMessage],
-      40001 → classOf[DialogCommands.MessageReceived],
-      40002 → classOf[DialogCommands.MessageReceivedAck],
-      40003 → classOf[DialogCommands.MessageRead],
-      40004 → classOf[DialogCommands.MessageReadAck],
-      40005 → classOf[DialogCommands.WriteMessage],
-      40006 → classOf[DialogCommands.WriteMessageAck],
-
-      40009 → classOf[DialogEnvelope],
-
       40010 → classOf[DialogEvents.MessagesRead],
       40011 → classOf[DialogEvents.MessagesReceived],
       40012 → classOf[DialogEvents.NewMessage]
@@ -137,11 +127,12 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
       lastReceiveDate = Instant.ofEpochMilli(0),
       lastReadDate = Instant.ofEpochMilli(0),
       counter = 0,
-      unreadMessages = immutable.SortedSet.empty(UnreadMessage.ordering)
+      unreadMessages = SortedSet.empty(UnreadMessage.ordering)
     )
 
   override protected def handleQuery: PartialFunction[Any, Future[Any]] = {
-    case GetCounter(_) ⇒ Future.successful(GetCounterResponse(state.counter))
+    case GetCounter(_) ⇒
+      Future.successful(GetCounterResponse(state.counter))
     case GetInfo(_) ⇒ Future.successful(
       GetInfoResponse(Some(DialogInfo(
         peer = Some(peer),

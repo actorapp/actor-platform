@@ -8,7 +8,7 @@ import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.api.rpc.users.ApiUser
 import im.actor.server.acl.ACLUtils
 import im.actor.server.db.DbExtension
-import im.actor.server.dialog.{ DialogExtension, DialogGroup, DialogGroupType }
+import im.actor.server.dialog.{ DialogExtension, DialogGroupType }
 import im.actor.server.model.DialogObsolete
 import im.actor.server.persist.dialog.DialogRepo
 import im.actor.server.sequence.SeqStateDate
@@ -21,6 +21,8 @@ import scala.util.Random
 
 trait MessagingSpecHelpers extends ScalaFutures with PeersImplicits with Matchers {
   implicit val system: ActorSystem
+
+  lazy val dialogExt = DialogExtension(system)
 
   def sendMessageToUser(userId: Int, message: ApiMessage)(
     implicit
