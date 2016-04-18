@@ -23,6 +23,7 @@ import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.Props;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.promise.Promise;
+import im.actor.runtime.storage.PreferencesStorage;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
@@ -46,7 +47,6 @@ public class AuthActivity extends BaseFragmentActivity {
     private int availableAuthType = AUTH_TYPE_PHONE;
     private int currentAuthType = AUTH_TYPE_PHONE;
     private int signType;
-    private BaseAuthFragment signFragment;
     private long currentPhone;
     private String currentEmail;
     private String transactionHash;
@@ -65,20 +65,20 @@ public class AuthActivity extends BaseFragmentActivity {
                 return new Actor();
             }
         }), "actor/auth_promises_actor");
+
         signType = getIntent().getIntExtra(SIGN_TYPE_KEY, SIGN_TYPE_IN);
-        if (savedInstanceState == null) {
-            updateState(AuthState.AUTH_START);
-        } else {
-            currentPhone = savedInstanceState.getLong("currentPhone", 0);
-            currentEmail = savedInstanceState.getString("currentEmail");
-            transactionHash = savedInstanceState.getString("transactionHash");
-            currentCode = savedInstanceState.getString("currentCode");
-            isRegistered = savedInstanceState.getBoolean("isRegistered", false);
-            currentName = savedInstanceState.getString("currentName");
-            signType = savedInstanceState.getInt("signType", SIGN_TYPE_UP);
-            state = Enum.valueOf(AuthState.class, savedInstanceState.getString("state", "AUTH_START"));
-            updateState(state);
-        }
+
+        PreferencesStorage preferences = messenger().getPreferences();
+        currentPhone = preferences.getLong("currentPhone", 0);
+        currentEmail = preferences.getString("currentEmail");
+        transactionHash = preferences.getString("transactionHash");
+        currentCode = preferences.getString("currentCode");
+        isRegistered = preferences.getBool("isRegistered", false);
+        currentName = preferences.getString("currentName");
+        signType = preferences.getInt("signType", signType);
+        String savedState = preferences.getString("auth_state");
+        state = Enum.valueOf(AuthState.class, savedState != null ? savedState : "AUTH_START");
+        updateState(state, true);
     }
 
 
@@ -98,6 +98,15 @@ public class AuthActivity extends BaseFragmentActivity {
         if (this.state != null && (this.state == state && !force)) {
             return;
         }
+        PreferencesStorage preferences = messenger().getPreferences();
+        preferences.putLong("currentPhone", currentPhone);
+        preferences.putString("currentEmail", currentEmail);
+        preferences.putString("transactionHash", transactionHash);
+        preferences.putString("currentCode", currentCode);
+        preferences.putBool("isRegistered", isRegistered);
+        preferences.putString("currentName", currentName);
+        preferences.putInt("signType", signType);
+        preferences.putString("auth_state", state.toString());
 
         // if we show the next fragment when app is in background and not visible , app crashes!
         // e.g when the GSM data is off and after trying to send code we go to settings to turn on, app is going invisible and ...
@@ -118,15 +127,19 @@ public class AuthActivity extends BaseFragmentActivity {
 
                 break;
             case SIGN_UP:
-                showFragment(new SignUpFragment(), false, false);
+                if (currentName != null && !currentName.isEmpty()) {
+                    startAuth(currentName);
+                } else {
+                    showFragment(new SignUpFragment(), false, false);
+                }
                 break;
             case AUTH_PHONE:
                 currentAuthType = AUTH_TYPE_PHONE;
-                showFragment(signFragment, false, false);
+                showFragment(ActorSDK.sharedActor().getDelegatedFragment(ActorSDK.sharedActor().getDelegate().getAuthStartIntent(), new SignPhoneFragment(), BaseAuthFragment.class), false, false);
                 break;
             case AUTH_EMAIL:
                 currentAuthType = AUTH_TYPE_EMAIL;
-                showFragment(signFragment, false, false);
+                showFragment(ActorSDK.sharedActor().getDelegatedFragment(ActorSDK.sharedActor().getDelegate().getAuthStartIntent(), new SignEmailFragment(), BaseAuthFragment.class), false, false);
                 break;
             case CODE_VALIDATION_PHONE:
             case CODE_VALIDATION_EMAIL:
@@ -150,21 +163,15 @@ public class AuthActivity extends BaseFragmentActivity {
         currentName = name;
         currentSex = Sex.UNKNOWN;
         availableAuthType = ActorSDK.sharedActor().getAuthType();
-        BaseAuthFragment baseAuthFragment;
         AuthState authState;
         if ((availableAuthType & AUTH_TYPE_PHONE) == AUTH_TYPE_PHONE) {
-            baseAuthFragment = new SignPhoneFragment();
             authState = AuthState.AUTH_PHONE;
         } else if ((availableAuthType & AUTH_TYPE_EMAIL) == AUTH_TYPE_EMAIL) {
-            baseAuthFragment = new SignEmailFragment();
             authState = AuthState.AUTH_EMAIL;
         } else {
             // none of valid auth types selected - force crash?
             return;
         }
-
-        signFragment = ActorSDK.sharedActor().getDelegatedFragment(ActorSDK.sharedActor().getDelegate().getAuthStartIntent(), baseAuthFragment, BaseAuthFragment.class);
-
         updateState(authState);
     }
 
@@ -283,11 +290,11 @@ public class AuthActivity extends BaseFragmentActivity {
             public void run() {
                 if (dismissProgress()) {
                     boolean canTryAgain = false;
+                    boolean keepState = false;
                     String message = getString(R.string.error_unknown);
                     String tag = "UNKNOWN";
                     if (e instanceof RpcException) {
                         RpcException re = (RpcException) e;
-                        tag = re.getTag();
                         if (re instanceof RpcInternalException) {
                             message = getString(R.string.error_unknown);
                             canTryAgain = true;
@@ -295,12 +302,13 @@ public class AuthActivity extends BaseFragmentActivity {
                             message = getString(R.string.error_connection);
                             canTryAgain = true;
                         } else {
-                            if ("PHONE_CODE_EXPIRED".equals(re.getTag())) {
+                            if ("PHONE_CODE_EXPIRED".equals(re.getTag()) || "EMAIL_CODE_EXPIRED".equals(re.getTag())) {
                                 message = getString(R.string.auth_error_code_expired);
                                 canTryAgain = false;
-                            } else if ("PHONE_CODE_INVALID".equals(re.getTag())) {
+                            } else if ("PHONE_CODE_INVALID".equals(re.getTag()) || "EMAIL_CODE_INVALID".equals(re.getTag())) {
                                 message = getString(R.string.auth_error_code_invalid);
                                 canTryAgain = false;
+                                keepState = true;
                             } else if ("FAILED_GET_OAUTH2_TOKEN".equals(re.getTag())) {
                                 message = getString(R.string.auth_error_failed_get_oauth2_token);
                                 canTryAgain = false;
@@ -356,13 +364,16 @@ public class AuthActivity extends BaseFragmentActivity {
                                     .show()
                                     .setCanceledOnTouchOutside(false);
                         } else {
+                            final boolean finalKeepState = keepState;
                             new AlertDialog.Builder(AuthActivity.this)
                                     .setMessage(message)
                                     .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             dismissAlert();
-                                            if (signType == SIGN_TYPE_UP) {
+                                            if (finalKeepState) {
+                                                updateState(state, true);
+                                            } else if (signType == SIGN_TYPE_UP) {
                                                 if (currentAuthType == AUTH_TYPE_EMAIL) {
                                                     switchToEmailAuth();
                                                 } else if (currentAuthType == AUTH_TYPE_PHONE) {
@@ -392,12 +403,10 @@ public class AuthActivity extends BaseFragmentActivity {
     }
 
     public void switchToEmailAuth() {
-        signFragment = ActorSDK.sharedActor().getDelegatedFragment(ActorSDK.sharedActor().getDelegate().getAuthStartIntent(), new SignEmailFragment(), BaseAuthFragment.class);
         updateState(AuthState.AUTH_EMAIL);
     }
 
     public void switchToPhoneAuth() {
-        signFragment = ActorSDK.sharedActor().getDelegatedFragment(ActorSDK.sharedActor().getDelegate().getAuthStartIntent(), new SignPhoneFragment(), BaseAuthFragment.class);
         updateState(AuthState.AUTH_PHONE);
     }
 
@@ -413,18 +422,6 @@ public class AuthActivity extends BaseFragmentActivity {
         updateState(AuthState.AUTH_START, true);
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putLong("currentPhone", currentPhone);
-        outState.putString("currentEmail", currentEmail);
-        outState.putString("transactionHash", transactionHash);
-        outState.putString("currentCode", currentCode);
-        outState.putBoolean("isRegistered", isRegistered);
-        outState.putString("currentName", currentName);
-        outState.putInt("signType", signType);
-        outState.putString("state", state.toString());
-    }
 
     public void showProgress() {
         dismissProgress();

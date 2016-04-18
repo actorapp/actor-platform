@@ -109,7 +109,8 @@ class MessageStore extends ReduceStore {
 
       case ActionTypes.MESSAGES_LOADING_MORE:
         return {
-          ...state
+          ...state,
+          isLoading: true
         };
 
       case ActionTypes.MESSAGES_LOAD_MORE:

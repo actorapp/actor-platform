@@ -24,6 +24,8 @@ import im.actor.core.entity.content.ServiceContent;
 import im.actor.core.entity.content.ServiceGroupAvatarChanged;
 import im.actor.core.entity.content.ServiceGroupCreated;
 import im.actor.core.entity.content.ServiceGroupTitleChanged;
+import im.actor.core.entity.content.ServiceGroupTopicChanged;
+import im.actor.core.entity.content.ServiceGroupAboutChanged;
 import im.actor.core.entity.content.ServiceGroupUserInvited;
 import im.actor.core.entity.content.ServiceGroupUserJoined;
 import im.actor.core.entity.content.ServiceGroupUserKicked;
@@ -394,6 +396,10 @@ public class I18nEngine {
                 return getTemplateNamed(senderId, "ServiceGroupAvatarRemoved");
             case SERVICE_TITLE:
                 return getTemplateNamed(senderId, "ServiceGroupTitle");
+            case SERVICE_TOPIC:
+                return getTemplateNamed(senderId, "ServiceGroupTopic");
+            case SERVICE_ABOUT:
+                return getTemplateNamed(senderId, "ServiceGroupAbout");
             case SERVICE_JOINED:
                 return getTemplateNamed(senderId, "ServiceGroupJoined");
             case SERVICE_CALL_ENDED:
@@ -448,6 +454,14 @@ public class I18nEngine {
             return getTemplateNamed(senderId, "ServiceGroupTitleFull")
                     .replace("{title}",
                             ((ServiceGroupTitleChanged) content).getNewTitle());
+        } else if (content instanceof ServiceGroupTopicChanged) {
+            return getTemplateNamed(senderId, "ServiceGroupTopicFull")
+                    .replace("{topic}",
+                            ((ServiceGroupTopicChanged) content).getNewTopic());
+        } else if (content instanceof ServiceGroupAboutChanged) {
+            return getTemplateNamed(senderId, "ServiceGroupAboutFull")
+                    .replace("{about}",
+                            ((ServiceGroupAboutChanged) content).getNewAbout());
         } else if (content instanceof ServiceGroupAvatarChanged) {
             if (((ServiceGroupAvatarChanged) content).getNewAvatar() != null) {
                 return getTemplateNamed(senderId, "ServiceGroupAvatarChanged");

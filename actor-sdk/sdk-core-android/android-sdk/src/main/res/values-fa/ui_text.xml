@@ -33,6 +33,10 @@
     <string name="toast_unable_change_nick">تغییر نام کاربری با شکست مواجه شد(آیا شما از کاراکترهای مجاز استفاده کردید؟)</string>
     <string name="toast_empty_about">معرفی نمی‌تواند خالی باشد </string>
     <string name="toast_unable_open">برنامه ای برای باز کردن این فایل وجود ندارد</string>
+    <string name="toast_unable_leave">خروج از گروه با خطا مواجه شد</string>
+    <string name="toast_unable_create_group">ایجاد گروه با خطا مواجه شد</string>
+    <string name="toast_unable_delete_chat">حذف گپ با خطا مواجه شد</string>
+    <string name="toast_unable_clear_chat">پاک کردن گپ با خطا مواجه شد</string>
 
     <string name="menu_share">اشتراک</string>
     <string name="menu_save">ذخیره در تلفن</string>
@@ -346,7 +350,7 @@
 
     <!-- Add Contact -->
     <string name="add_contact_title">افزودن مخاطب</string>
-    <string name="add_contact_phone_hint">شماره همراه را وارد کنید</string>
+    <string name="add_contact_phone_hint">شماره همراه، ثابت یا ایمیل‌تان را وارد کنید</string>
     <string name="add_contact_bar_cancel">بی‌خیال</string>
     <string name="add_contact_bar_continue">ادامه بدهید</string>
 
