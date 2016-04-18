@@ -2,7 +2,7 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import { isFunction, debounce } from 'lodash';
+import { isFunction } from 'lodash';
 
 import React, { Component, PropTypes } from 'react';
 
@@ -37,7 +37,6 @@ class MessagesList extends Component {
       isLoaded: PropTypes.bool.isRequired,
       receiveDate: PropTypes.number.isRequired,
       readDate: PropTypes.number.isRequired,
-      isLoading: PropTypes.bool.isRequired,
       selected: PropTypes.object.isRequired,
       changeReason: PropTypes.oneOf([
         MessageChangeReason.UNKNOWN,
@@ -68,12 +67,10 @@ class MessagesList extends Component {
     }
 
     this.dimensions = null;
+    this.isLoading = false;
 
     this.onScroll = this.onScroll.bind(this);
     this.onResize = this.onResize.bind(this);
-    this.onLoadMore = debounce(this.onLoadMore.bind(this), 60, {
-      maxWait: 180
-    });
   }
 
   shouldComponentUpdate(prevProps) {
@@ -89,6 +86,7 @@ class MessagesList extends Component {
   componentWillReceiveProps(nextProps) {
     if (!PeerUtils.equals(nextProps.peer, this.props.peer)) {
       this.dimensions = null;
+      this.isLoading = false;
     }
   }
 
@@ -98,31 +96,28 @@ class MessagesList extends Component {
     if (messages.changeReason === MessageChangeReason.PUSH) {
       if (!dimensions || isLastMessageMine(uid, messages)) {
         scroller.scrollToBottom();
-        this.updateDimensions();
       }
     } else if (messages.changeReason === MessageChangeReason.UNSHIFT) {
+      this.isLoading = false;
       if (dimensions) {
         const currDimensions = scroller.getDimensions();
         scroller.scrollTo(currDimensions.scrollHeight - dimensions.scrollHeight);
-        this.updateDimensions();
       }
-    }
-  }
-
-  onLoadMore() {
-    if (this.props.messages.isLoading) {
-      return;
-    }
-
-    const dimensions = this.refs.scroller.getDimensions();
-    if (dimensions.scrollTop < 100) {
-      this.props.onLoadMore();
     }
   }
 
   onScroll() {
-    this.onLoadMore();
-    this.updateDimensions();
+    const dimensions = this.refs.scroller.getDimensions();
+    if (dimensions.scrollHeight === dimensions.scrollTop + dimensions.offsetHeight) {
+      this.dimensions = null;
+    } else {
+      this.dimensions = dimensions;
+    }
+
+    if (!this.isLoading && dimensions.scrollTop < 100) {
+      this.isLoading = true;
+      this.props.onLoadMore();
+    }
   }
 
   onResize() {
@@ -197,15 +192,6 @@ class MessagesList extends Component {
         {this.renderMessages()}
       </Scroller>
     )
-  }
-
-  updateDimensions() {
-    const dimensions = this.refs.scroller.getDimensions();
-    if (dimensions.scrollHeight === dimensions.scrollTop + dimensions.offsetHeight) {
-      this.dimensions = null;
-    } else {
-      this.dimensions = dimensions;
-    }
   }
 
   restoreScroll() {
