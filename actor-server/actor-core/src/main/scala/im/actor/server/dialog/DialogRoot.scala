@@ -4,6 +4,7 @@ import java.time.Instant
 
 import akka.actor.{ ActorRef, Props, Status }
 import akka.pattern.{ ask, pipe }
+import akka.persistence.SnapshotMetadata
 import akka.util.Timeout
 import im.actor.concurrent._
 import im.actor.server.cqrs._
@@ -56,6 +57,8 @@ private final case class DialogRootState(
     case Favourited(ts, Some(peer))  ⇒ withFavouritedPeer(ts, peer)
     case Unfavourited(_, Some(peer)) ⇒ withUnfavouritedPeer(peer)
   }
+
+  override def withSnapshot(metadata: SnapshotMetadata, snapshot: Any): DialogRootState = this
 
   private def withShownPeer(ts: Instant, peer: Peer): DialogRootState = {
     val sortableDialog = SortableDialog(ts, peer)
