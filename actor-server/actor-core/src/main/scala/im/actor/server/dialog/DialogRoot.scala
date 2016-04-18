@@ -7,7 +7,7 @@ import akka.pattern.{ ask, pipe }
 import akka.util.Timeout
 import im.actor.concurrent._
 import im.actor.server.cqrs._
-import im.actor.server.dialog.DialogCommands.SendMessage
+import im.actor.server.dialog.DialogCommands.{ SendMessage, WriteMessageSelf }
 import im.actor.server.model.{ Peer, PeerType }
 import im.actor.api.rpc._
 import im.actor.api.rpc.messaging.UpdateChatGroupsChanged
@@ -179,7 +179,14 @@ private class DialogRoot(userId: Int, extensions: Seq[ApiExtension]) extends Pro
 
   override def persistenceId: String = s"DialogRoot_$userId"
 
-  override protected def getInitialState: DialogRootState = DialogRootState(Map.empty, SortedSet.empty(SortableDialog.ordering), SortedSet.empty(SortableDialog.ordering))
+  override protected def getInitialState: DialogRootState = DialogRootState(
+    Map(
+      DialogGroupType.DirectMessages → Set.empty,
+      DialogGroupType.Groups → Set.empty
+    ),
+    SortedSet.empty(SortableDialog.ordering),
+    SortedSet.empty(SortableDialog.ordering)
+  )
 
   override protected def handleQuery: PartialFunction[Any, Future[Any]] = {
     case GetCounter()               ⇒ getCounter()
@@ -188,18 +195,18 @@ private class DialogRoot(userId: Int, extensions: Seq[ApiExtension]) extends Pro
   }
 
   override protected def handleCommand: Receive = {
-    case sm: SendMessage ⇒
-      needShowDialog(sm) match {
+    case dc: DialogCommand if dc.isInstanceOf[SendMessage] || dc.isInstanceOf[WriteMessageSelf] ⇒
+      needShowDialog(dc) match {
         case Some(peer) ⇒
           val e = if (isArchived(peer)) Unarchived(Instant.now(), Some(peer)) else Created(Instant.now(), Some(peer))
 
           persist(e) { _ ⇒
             commit(e)
-            handleDialogCommand(sm)
+            handleDialogCommand(dc)
             sendChatGroupsChanged()
           }
         case None ⇒
-          handleDialogCommand(sm)
+          handleDialogCommand(dc)
       }
     case Archive(Some(peer), clientAuthSid)     ⇒ archive(peer, clientAuthSid map (_.value))
     case Unarchive(Some(peer), clientAuthSid)   ⇒ unarchive(peer, clientAuthSid map (_.value))
@@ -219,25 +226,17 @@ private class DialogRoot(userId: Int, extensions: Seq[ApiExtension]) extends Pro
   }
 
   private def archive(peer: Peer, clientAuthSid: Option[Int]) = {
-    println(s"=== archive ${state.activePeers}")
-
     if (isArchived(peer)) sender() ! Status.Failure(DialogErrors.DialogAlreadyArchived(peer))
     else persist(Archived(Instant.now(), Some(peer))) { e ⇒
       commit(e)
-      println(s"=== archive result ${state.activePeers}")
-
       sendChatGroupsChanged(clientAuthSid) pipeTo sender()
     }
   }
 
   private def unarchive(peer: Peer, clientAuthSid: Option[Int]) = {
-    println(s"=== unarchive ${state.activePeers}")
-
     if (!isArchived(peer)) sender() ! Status.Failure(DialogErrors.DialogAlreadyShown(peer))
     else persist(Unarchived(Instant.now(), Some(peer))) { e ⇒
       commit(e)
-
-      println(s"=== unarchive result ${state.activePeers}")
       sendChatGroupsChanged(clientAuthSid) pipeTo sender()
     }
   }
@@ -258,18 +257,24 @@ private class DialogRoot(userId: Int, extensions: Seq[ApiExtension]) extends Pro
     }
   }
 
-  private def needShowDialog(sm: SendMessage): Option[Peer] = {
-    val checkPeer =
-      sm.getOrigin.typ match {
-        case PeerType.Group ⇒ sm.getDest
-        case PeerType.Private ⇒
-          if (selfPeer == sm.getDest) sm.getOrigin
-          else sm.getDest
-        case _ ⇒ throw new RuntimeException("Unknown peer type")
-      }
+  private def needShowDialog(cmd: DialogCommand): Option[Peer] = {
+    val checkPeerOpt = cmd match {
+      case sm: SendMessage ⇒
+        Some(sm.getOrigin.typ match {
+          case PeerType.Group ⇒ sm.getDest
+          case PeerType.Private ⇒
+            if (selfPeer == sm.getDest) sm.getOrigin
+            else sm.getDest
+          case _ ⇒ throw new RuntimeException("Unknown peer type")
+        })
+      case wm: WriteMessageSelf ⇒ Some(wm.getDest)
+      case _                    ⇒ None
+    }
 
-    if (dialogShown(checkPeer)) None
-    else Some(checkPeer)
+    checkPeerOpt flatMap { checkPeer ⇒
+      if (dialogShown(checkPeer)) None
+      else Some(checkPeer)
+    }
   }
 
   private def isArchived(peer: Peer): Boolean = state.archived.contains(SortableDialog(Instant.MIN, peer))
