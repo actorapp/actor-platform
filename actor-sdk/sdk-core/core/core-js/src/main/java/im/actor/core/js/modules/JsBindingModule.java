@@ -24,6 +24,7 @@ import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.entity.content.FileRemoteSource;
 import im.actor.core.entity.content.StickerContent;
 import im.actor.core.js.JsMessenger;
+import im.actor.core.js.entity.JsBlockedUser;
 import im.actor.core.js.entity.JsCall;
 import im.actor.core.js.entity.JsContact;
 import im.actor.core.js.entity.JsCounter;
@@ -67,6 +68,7 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
     private HashMap<Integer, JsBindedValue<JsUser>> users = new HashMap<>();
     private HashMap<Integer, JsBindedValue<JsGroup>> groups = new HashMap<>();
     private HashMap<Integer, JsBindedValue<JsOnlineUser>> usersOnlines = new HashMap<>();
+    private HashMap<Integer, JsBindedValue<JsBlockedUser>> usersBloked = new HashMap<>();
     private HashMap<Integer, JsBindedValue<JsOnlineGroup>> groupOnlines = new HashMap<>();
     private HashMap<Peer, JsBindedValue<JsTyping>> typing = new HashMap<>();
     private JsBindedValue<String> onlineState;
@@ -246,6 +248,23 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
             usersOnlines.put(uid, value);
         }
         return usersOnlines.get(uid);
+    }
+
+    public JsBindedValue<JsBlockedUser> getUserBlocked(int uid) {
+        if (!usersBloked.containsKey(uid)) {
+            final JsBindedValue<JsBlockedUser> value = new JsBindedValue<>();
+            final UserVM userVM = context().getUsersModule().getUsers().get(uid);
+
+            userVM.getIsBlocked().subscribe(new ValueChangedListener<Boolean>() {
+                @Override
+                public void onChanged(Boolean val, Value<Boolean> valueModel) {
+                    value.changeValue(JsBlockedUser.create(val));
+                }
+            });
+
+            usersBloked.put(uid, value);
+        }
+        return usersBloked.get(uid);
     }
 
     public JsBindedValue<JsGroup> getGroup(int gid) {
