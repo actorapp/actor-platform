@@ -93,6 +93,6 @@ abstract class Frontend(connIdPrefix: String) {
 
   private def nextConnId(): String = s"conn-$connIdPrefix-${connCounter.incrementAndGet()}"
 
-  protected def mtProtoBlueprint(serverKeys: Seq[ServerKey])(implicit sessionRegion: SessionRegion, system: ActorSystem): MTProtoBlueprint.MTProtoFlow =
-    MTProtoBlueprint(nextConnId(), connectionTime, connectionCount, serverKeys)
+  protected def mtProtoBlueprint(serverKeys: Seq[ServerKey], remoteAddress: String)(implicit sessionRegion: SessionRegion, system: ActorSystem): MTProtoBlueprint.MTProtoFlow =
+    MTProtoBlueprint(nextConnId(), connectionTime, connectionCount, serverKeys, Option(remoteAddress))
 }

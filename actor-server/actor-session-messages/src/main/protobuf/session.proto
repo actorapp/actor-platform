@@ -25,6 +25,7 @@ message SessionEnvelope {
         UnsubscribeFromWeak unsubscribe_from_weak = 11;
         GetUpdateOptimizations get_update_optimizations = 12;
     }
+    optional string remote_addr = 13;
 }
 
 message HandleMessageBox {

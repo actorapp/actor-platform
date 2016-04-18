@@ -23,8 +23,8 @@ object MTProtoBlueprint {
   val protoVersions: Set[Byte] = Set(1, 2, 3)
   val apiMajorVersions: Set[Byte] = Set(1)
 
-  def apply(connId: String, connTimeHist: Histogram, connCountMM: MinMaxCounter, serverKeys: Seq[ServerKey])(implicit sessionRegion: SessionRegion, system: ActorSystem): MTProtoFlow = {
-    val sessionClient = system.actorOf(SessionClient.props(sessionRegion), s"sessionClient-$connId")
+  def apply(connId: String, connTimeHist: Histogram, connCountMM: MinMaxCounter, serverKeys: Seq[ServerKey], remoteAdd: Option[String] = None)(implicit sessionRegion: SessionRegion, system: ActorSystem): MTProtoFlow = {
+    val sessionClient = system.actorOf(SessionClient.props(sessionRegion), s"sessionClient_${connId}_${remoteAdd.getOrElse("")}")
     val authManager = system.actorOf(AuthorizationManager.props(serverKeys, sessionClient), s"authManager-$connId")
     val authSource = Source.fromPublisher(ActorPublisher[MTProto](authManager))
 
