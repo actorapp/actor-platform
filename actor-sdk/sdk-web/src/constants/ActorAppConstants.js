@@ -288,6 +288,13 @@ export const MessageStates = {
   UNKNOWN: 'unknown'
 };
 
+export const MessageChangeReason = {
+  UNKNOWN: 'UNKNOWN',
+  PUSH: 'PUSH',
+  UNSHIFT: 'UNSHIFT',
+  UPDATE: 'UPDATE'
+};
+
 export const PeerTypes = {
   USER: 'user',
   GROUP: 'group'

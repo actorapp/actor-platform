@@ -2,19 +2,25 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import { isFunction, last, debounce } from 'lodash';
+import { isFunction, debounce } from 'lodash';
 
 import React, { Component, PropTypes } from 'react';
-import {shouldComponentUpdate} from 'react-addons-pure-render-mixin';
 
-import { getMessageState } from '../../utils/MessageUtils';
+import { MessageChangeReason } from '../../constants/ActorAppConstants';
+
 import PeerUtils from '../../utils/PeerUtils';
+import { getMessageState } from '../../utils/MessageUtils';
 
 import Scroller from '../common/Scroller.react';
 
 import DefaultMessageItem from './messages/MessageItem.react';
 import DefaultWelcome from './messages/Welcome.react';
 import Loading from './messages/Loading.react';
+
+function isLastMessageMine(uid, { messages }) {
+  const lastMessage = messages[messages.length - 1];
+  return lastMessage && uid === lastMessage.sender.peer.id;
+}
 
 class MessagesList extends Component {
   static contextTypes = {
@@ -24,15 +30,23 @@ class MessagesList extends Component {
   static propTypes = {
     uid: PropTypes.number.isRequired,
     peer: PropTypes.object.isRequired,
-    messages: PropTypes.array.isRequired,
-    overlay: PropTypes.array.isRequired,
-    count: PropTypes.number.isRequired,
-    selected: PropTypes.object.isRequired,
+    messages: PropTypes.shape({
+      messages: PropTypes.array.isRequired,
+      overlay: PropTypes.array.isRequired,
+      count: PropTypes.number.isRequired,
+      isLoaded: PropTypes.bool.isRequired,
+      receiveDate: PropTypes.number.isRequired,
+      readDate: PropTypes.number.isRequired,
+      isLoading: PropTypes.bool.isRequired,
+      selected: PropTypes.object.isRequired,
+      changeReason: PropTypes.oneOf([
+        MessageChangeReason.UNKNOWN,
+        MessageChangeReason.PUSH,
+        MessageChangeReason.UNSHIFT,
+        MessageChangeReason.UPDATE
+      ]).isRequired
+    }).isRequired,
     isMember: PropTypes.bool.isRequired,
-    isLoaded: PropTypes.bool.isRequired,
-    isLoading: PropTypes.bool.isRequired,
-    receiveDate: PropTypes.number.isRequired,
-    readDate: PropTypes.number.isRequired,
     onSelect: PropTypes.func.isRequired,
     onLoadMore: PropTypes.func.isRequired
   };
@@ -60,7 +74,12 @@ class MessagesList extends Component {
     this.onLoadMore = debounce(this.onLoadMore.bind(this), 60, {
       maxWait: 180
     });
-    this.shouldComponentUpdate = shouldComponentUpdate.bind(this);
+  }
+
+  shouldComponentUpdate(prevProps) {
+    return prevProps.peer !== this.props.peer ||
+           prevProps.messages !== this.props.messages ||
+           prevProps.isMember !== this.props.isMember;
   }
 
   componentDidMount() {
@@ -73,41 +92,37 @@ class MessagesList extends Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
-    const { dimensions, refs: { scroller }, props: { uid, messages, count } } = this;
+  componentDidUpdate() {
+    const { dimensions, refs: { scroller }, props: { uid, messages } } = this;
 
-    const lastMessage = last(messages);
-    const isPush = lastMessage && lastMessage !== last(prevProps.messages);
-    if (isPush) {
-      const isMyMessage = uid === lastMessage.sender.peer.id;
-      if (isMyMessage || !dimensions) {
+    if (messages.changeReason === MessageChangeReason.PUSH) {
+      if (!dimensions || isLastMessageMine(uid, messages)) {
         scroller.scrollToBottom();
+        this.updateDimensions();
       }
-    } else {
-      const isFirstMessageChanged = prevProps.count !== count || (messages[0] !== prevProps.messages[0] && prevProps.isLoading);
-      if (isFirstMessageChanged && dimensions) {
+    } else if (messages.changeReason === MessageChangeReason.UNSHIFT) {
+      if (dimensions) {
         const currDimensions = scroller.getDimensions();
         scroller.scrollTo(currDimensions.scrollHeight - dimensions.scrollHeight);
+        this.updateDimensions();
       }
     }
   }
 
   onLoadMore() {
+    if (this.props.messages.isLoading) {
+      return;
+    }
+
     const dimensions = this.refs.scroller.getDimensions();
-    if (dimensions.scrollTop < dimensions.offsetHeight && !this.props.isLoading) {
+    if (dimensions.scrollTop < 100) {
       this.props.onLoadMore();
     }
   }
 
   onScroll() {
-    const dimensions = this.refs.scroller.getDimensions();
-    if (dimensions.scrollHeight === dimensions.scrollTop + dimensions.offsetHeight) {
-      this.dimensions = null;
-    } else {
-      this.dimensions = dimensions;
-    }
-
     this.onLoadMore();
+    this.updateDimensions();
   }
 
   onResize() {
@@ -123,13 +138,13 @@ class MessagesList extends Component {
   }
 
   renderHeader() {
-    const { peer, isMember, isLoaded } = this.props;
+    const { peer, isMember, messages } = this.props;
 
     if (!isMember) {
       return null;
     }
 
-    if (isLoaded) {
+    if (messages.isLoaded) {
       const { Welcome } = this.components;
       return <Welcome peer={peer} key="header" />;
     }
@@ -138,7 +153,7 @@ class MessagesList extends Component {
   }
 
   renderMessages() {
-    const { uid, peer, messages, overlay, count, selected, receiveDate, readDate } = this.props;
+    const { uid, peer, messages: { messages, overlay, count, selected, receiveDate, readDate } } = this.props;
     const { MessageItem } = this.components;
 
     const result = [];
@@ -182,6 +197,15 @@ class MessagesList extends Component {
         {this.renderMessages()}
       </Scroller>
     )
+  }
+
+  updateDimensions() {
+    const dimensions = this.refs.scroller.getDimensions();
+    if (dimensions.scrollHeight === dimensions.scrollTop + dimensions.offsetHeight) {
+      this.dimensions = null;
+    } else {
+      this.dimensions = dimensions;
+    }
   }
 
   restoreScroll() {
