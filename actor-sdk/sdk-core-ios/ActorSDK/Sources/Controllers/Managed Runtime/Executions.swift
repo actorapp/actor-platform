@@ -35,15 +35,25 @@ public class AAMenuBuilder {
 public class AAExecutions {
     
     public class func execute(promise: ARPromise) {
-
+        executePromise(promise)
     }
     
     public class func execute(command: ACCommand) {
         execute(command, successBlock: nil, failureBlock: nil)
     }
     
+    public class func executePromise(promice: ARPromise){
+        promice.startUserAction()
+    }
+    
+    public class func executePromise(promice: ARPromise, successBlock: ((val: Any?) -> Void)?, failureBlock: ((val: Any?) -> Void)? ){
+        promice.startUserAction()
+        promice.then { result in
+            successBlock!(val: result)
+        }
+    }
+    
     public class func execute(command: ACCommand, type: AAExecutionType = .Normal, ignore: [String] = [], successBlock: ((val: Any?) -> Void)?, failureBlock: ((val: Any?) -> Void)?) {
-        
         var hud: MBProgressHUD?
         if type != .Hidden {
             hud = showProgress()
@@ -167,6 +177,14 @@ public extension UIViewController {
         AAExecutions.execute(command)
     }
     
+    public func executePromise(promise: ARPromise) {
+        AAExecutions.execute(promise)
+    }
+    
+    public func executePromise(promise: ARPromise, successBlock: ((val: Any?) -> Void)?, failureBlock: ((val: Any?) -> Void)?) {
+        AAExecutions.executePromise(promise, successBlock: successBlock, failureBlock: failureBlock)
+    }
+
     public func execute(command: ACCommand, successBlock: ((val: Any?) -> Void)?, failureBlock: ((val: Any?) -> Void)?) {
         AAExecutions.execute(command, successBlock: successBlock, failureBlock: failureBlock)
     }
@@ -184,7 +202,6 @@ public extension UIViewController {
     public func executeSafeOnlySuccess(command: ACCommand, successBlock: ((val: Any?) -> Void)?) {
         AAExecutions.execute(command, type: .Safe, ignore: [], successBlock: successBlock, failureBlock: nil)
     }
-
     
     public func executeHidden(command: ACCommand, successBlock: ((val: Any?) -> Void)? = nil) {
         AAExecutions.execute(command, type: .Hidden, successBlock: successBlock, failureBlock: nil)
