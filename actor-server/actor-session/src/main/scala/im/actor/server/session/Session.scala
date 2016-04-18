@@ -44,15 +44,15 @@ object SessionConfig {
 object Session {
 
   private[this] val extractEntityId: ShardRegion.ExtractEntityId = {
-    case env @ SessionEnvelope(authId, sessionId, payload) ⇒
+    case env @ SessionEnvelope(authId, sessionId, clientAddr, payload) ⇒
       Try(env.getField(SessionEnvelope.descriptor.findFieldByNumber(payload.number))) match {
-        case Success(any) ⇒ s"${authId}_$sessionId" → any
+        case Success(any) ⇒ s"${authId}_${sessionId}_${clientAddr.getOrElse(" ")}" → any
         case _            ⇒ throw new RuntimeException(s"Empty payload $env")
       }
   }
 
   private[this] val extractShardId: ShardRegion.ExtractShardId = {
-    case SessionEnvelope(authId, sessionId, _) ⇒ (authId % 10).toString // TODO: configurable
+    case SessionEnvelope(authId, sessionId, _, _) ⇒ (authId % 10).toString // TODO: configurable
   }
 
   private val typeName = "Session"
@@ -101,8 +101,8 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
   private[this] var clients = immutable.Set.empty[ActorRef]
   private[this] var updateOptimizations = immutable.Set.empty[Int]
 
-  private val (authId, sessionId) = self.path.name.split("_").toList match {
-    case a :: s :: Nil ⇒ (a.toLong, s.toLong)
+  private val (authId, sessionId, remoteAddr) = self.path.name.split("_").toList match {
+    case a :: s :: r :: Nil ⇒ (a.toLong, s.toLong, r.toString)
     case _ ⇒
       val e = new RuntimeException("Wrong actor name")
       log.error(e, e.getMessage)
@@ -193,7 +193,7 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
         }).run()
 
         // sessionMessagePublisher ! SessionStreamMessage.SendProtoMessage(NewSession(sessionId, mb.messageId))
-        sessionMessagePublisher ! Tuple2(mb, ClientData(authId, sessionId, authData))
+        sessionMessagePublisher ! Tuple2(mb, ClientData(authId, sessionId, authData, Option(remoteAddr)))
 
         unstashAll()
         context.become(resolved(sessionMessagePublisher, reSender))
@@ -208,7 +208,7 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
       recordClient(sender(), reSender)
 
       withValidMessageBox(messageBoxBytes.toByteArray) { mb ⇒
-        publisher ! Tuple2(mb, ClientData(authId, sessionId, authData))
+        publisher ! Tuple2(mb, ClientData(authId, sessionId, authData, Option(remoteAddr)))
       }
     case cmd: SubscribeCommand ⇒
       idleControl.keepAlive()

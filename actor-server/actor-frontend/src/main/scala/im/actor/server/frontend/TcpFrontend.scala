@@ -24,7 +24,7 @@ object TcpFrontend extends Frontend("tcp") {
         case (conn @ Tcp.IncomingConnection(localAddress, remoteAddress, flow)) ⇒
           log.debug("New TCP connection from {}", localAddress)
 
-          val mtProto = mtProtoBlueprint(serverKeys)
+          val mtProto = mtProtoBlueprint(serverKeys, remoteAddress.getAddress().getHostAddress())
           flow.joinMat(mtProto)(Keep.right).run()
       })
       .run()
