@@ -175,7 +175,6 @@ static void playSoundCompleted(__unused SystemSoundID ssID, __unused void *clien
     {
         [self cleanup];
     }];
-    
 }
 
 - (void)finish:(void (^)(NSString *, NSTimeInterval))completion
