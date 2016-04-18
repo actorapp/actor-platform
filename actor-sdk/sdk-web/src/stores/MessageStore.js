@@ -7,7 +7,6 @@ import { ReduceStore } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes, MessageChangeReason } from '../constants/ActorAppConstants';
 
-const INITIAL_MESSAGES_COUNT = 20;
 const MESSAGE_COUNT_STEP = 20;
 
 const getMessageId = (message) => message ? message.rid : null;
@@ -28,33 +27,9 @@ class MessageStore extends ReduceStore {
     };
   }
 
-  getAll() {
-    return this.getState().messages;
-  }
-
-  getRenderMessagesCount() {
-    return this.getState().count;
-  }
-
-  getMessages() {
-    return this.getState().messages;
-  }
-
-  getOverlay() {
-    return this.getState().overlay;
-  }
-
-  isLoaded() {
-    return this.getState().isLoaded;
-  }
-
   isAllRendered() {
     const { messages, count } = this.getState();
     return messages.length === count;
-  }
-
-  getSelected() {
-    return this.getState().selected;
   }
 
   reduce (state, action) {
