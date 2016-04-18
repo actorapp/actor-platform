@@ -62,7 +62,7 @@ private[dialog] final case class DialogState(
           unreadMessages = unreadMessages + UnreadMessage(date, randomId),
           lastMessageDate = date
         )
-      } else this
+      } else this.copy(lastMessageDate = date)
     case MessagesRead(date, readerUserId) if readerUserId == userId ⇒
       val newUnreadMessages = unreadMessages.dropWhile(um ⇒ um.date.isBefore(date) || um.date == date)
       this.copy(counter = newUnreadMessages.size, unreadMessages = newUnreadMessages)
@@ -138,6 +138,7 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
         peer = Some(peer),
         counter = state.counter,
         date = state.lastMessageDate,
+        lastMessageDate = state.lastMessageDate,
         lastReceivedDate = state.lastReceiveDate,
         lastReadDate = state.lastReadDate
       )))
