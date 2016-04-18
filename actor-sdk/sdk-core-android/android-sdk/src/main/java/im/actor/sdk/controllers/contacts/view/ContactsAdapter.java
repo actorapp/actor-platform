@@ -70,7 +70,7 @@ public class ContactsAdapter extends BindedListAdapter<Contact, ContactHolder> {
                 fastName = currentFastName;
             }
         }
-        contactHolder.bind(item, fastName, query, selectedUsers.contains(item.getUid()));
+        contactHolder.bind(item, fastName, query, selectedUsers.contains(item.getUid()), index == getItemCount() - 1);
     }
 
     @Override
