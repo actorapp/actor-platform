@@ -24,8 +24,6 @@ final class DialogProcessorSpec extends BaseAppSuite
 
   it should "not allow duplicated timestamp in messages" in uniqueTimestamp()
 
-  private val dialogExt = DialogExtension(system)
-
   private val messService = MessagingServiceImpl()
 
   def noTimeout() = {
