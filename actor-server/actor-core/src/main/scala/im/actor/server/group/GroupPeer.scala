@@ -1,8 +1,9 @@
 package im.actor.server.group
 
-import akka.actor.{ ActorSystem, ActorLogging, Actor, Props }
+import akka.actor.{ Actor, ActorLogging, ActorSystem, Props }
+import akka.persistence.SnapshotMetadata
 import im.actor.server.cqrs.ProcessorState
-import im.actor.server.dialog.{ DialogExtension, DialogCommands }
+import im.actor.server.dialog.{ DialogCommands, DialogExtension }
 
 import scala.concurrent.ExecutionContext
 
@@ -21,6 +22,8 @@ private[group] case class GroupPeerState(
     case LastReceiveDateChanged(date) ⇒ this.copy(lastReceiveDate = date)
     case LastReadDateChanged(date)    ⇒ this.copy(lastReadDate = date)
   }
+
+  override def withSnapshot(metadata: SnapshotMetadata, snapshot: Any): GroupPeerState = this
 }
 
 private[group] sealed trait GroupPeerEvent

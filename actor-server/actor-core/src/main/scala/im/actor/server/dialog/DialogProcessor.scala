@@ -3,6 +3,7 @@ package im.actor.server.dialog
 import java.time.Instant
 
 import akka.actor._
+import akka.persistence.SnapshotMetadata
 import akka.util.Timeout
 import com.github.benmanes.caffeine.cache.Cache
 import im.actor.api.rpc.misc.ApiExtension
@@ -55,7 +56,7 @@ private[dialog] final case class DialogState(
   import DialogEvents._
 
   override def updated(e: DialogEvent): DialogState = e match {
-    case NewMessage(randomId, date, senderUserId) ⇒
+    case NewMessage(randomId, date, senderUserId, messageHeader) ⇒
       if (senderUserId != userId) {
         this.copy(
           counter = counter + 1,
@@ -69,7 +70,10 @@ private[dialog] final case class DialogState(
     case MessagesRead(date, readerUserId) if readerUserId != userId && date.isAfter(lastReadDate) ⇒
       this.copy(lastReadDate = date)
     case MessagesReceived(date) if date.isAfter(lastReceiveDate) ⇒ this.copy(lastReceiveDate = date)
+    case CounterReset() ⇒ this.copy(counter = 0, unreadMessages = SortedSet.empty(UnreadMessage.ordering))
   }
+
+  override def withSnapshot(metadata: SnapshotMetadata, snapshot: Any): DialogState = this
 }
 
 object DialogProcessor {
@@ -78,7 +82,8 @@ object DialogProcessor {
     ActorSerializer.register(
       40010 → classOf[DialogEvents.MessagesRead],
       40011 → classOf[DialogEvents.MessagesReceived],
-      40012 → classOf[DialogEvents.NewMessage]
+      40012 → classOf[DialogEvents.NewMessage],
+      40013 → classOf[DialogEvents.CounterReset]
     )
   }
 
@@ -103,12 +108,12 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
   protected implicit val ec: ExecutionContext = context.dispatcher
   protected implicit val system: ActorSystem = context.system
 
+  protected implicit val timeout = Timeout(5.seconds)
+
   protected val db: Database = DbExtension(system).db
   protected val userExt = UserExtension(system)
   protected val groupExt = GroupExtension(system)
   protected implicit val socialRegion = SocialExtension(system).region
-  protected implicit val timeout = Timeout(5.seconds)
-
   protected val dialogExt = DialogExtension(system)
   protected val deliveryExt = dialogExt.getDeliveryExtension(extensions)
   protected val seqUpdExt = SeqUpdatesExtension(context.system)
@@ -131,36 +136,35 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
     )
 
   override protected def handleQuery: PartialFunction[Any, Future[Any]] = {
-    case GetCounter(_) ⇒
-      Future.successful(GetCounterResponse(state.counter))
-    case GetInfo(_) ⇒ Future.successful(
+    case GetCounter(_) ⇒ getCounter() map (GetCounterResponse(_))
+    case GetInfo(_) ⇒ getCounter() map { counter ⇒
       GetInfoResponse(Some(DialogInfo(
         peer = Some(peer),
-        counter = state.counter,
+        counter = counter,
         date = state.lastMessageDate,
         lastMessageDate = state.lastMessageDate,
         lastReceivedDate = state.lastReceiveDate,
         lastReadDate = state.lastReadDate
       )))
-    )
+    }
   }
 
   override protected def handleCommand: Receive = actions(state) orElse reactions(state)
 
   // when receiving this messages, dialog reacts on other dialog's action
   def reactions(state: DialogState): Receive = {
-    case sm: SendMessage if accepts(sm)       ⇒ ackSendMessage(state, sm) //User's message been sent
-    case mrv: MessageReceived if accepts(mrv) ⇒ ackMessageReceived(mrv) //User's messages been received
-    case mrd: MessageRead if accepts(mrd)     ⇒ ackMessageRead(mrd) //User's messages been read
+    case sm: SendMessage if accepts(sm)       ⇒ ackSendMessage(state, sm) // User's message been sent
+    case mrv: MessageReceived if accepts(mrv) ⇒ ackMessageReceived(mrv) // User's messages been received
+    case mrd: MessageRead if accepts(mrd)     ⇒ ackMessageRead(mrd) // User's messages been read
     case sr: SetReaction if accepts(sr)       ⇒ ackSetReaction(sr)
     case rr: RemoveReaction if accepts(rr)    ⇒ ackRemoveReaction(rr)
   }
 
   // when receiving this messages, dialog is required to take an action
   def actions(state: DialogState): Receive = {
-    case sm: SendMessage if invokes(sm)                             ⇒ sendMessage(state, sm) //User sends message
-    case mrv: MessageReceived if invokes(mrv)                       ⇒ messageReceived(state, mrv) //User received messages
-    case mrd: MessageRead if invokes(mrd)                           ⇒ messageRead(state, mrd) //User reads messages
+    case sm: SendMessage if invokes(sm)                             ⇒ sendMessage(state, sm) // User sends message
+    case mrv: MessageReceived if invokes(mrv)                       ⇒ messageReceived(state, mrv) // User received messages
+    case mrd: MessageRead if invokes(mrd)                           ⇒ messageRead(state, mrd) // User reads messages
     case sr: SetReaction if invokes(sr)                             ⇒ setReaction(state, sr)
     case rr: RemoveReaction if invokes(rr)                          ⇒ removeReaction(state, rr)
     case WriteMessageSelf(_, senderUserId, date, randomId, message) ⇒ writeMessageSelf(state, senderUserId, date, randomId, message)
@@ -191,4 +195,11 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
    * @return does dialog owner accepts this command
    */
   private def accepts(dc: DirectDialogCommand) = (dc.getDest == selfPeer) || ((dc.getDest == peer) && (dc.getOrigin != selfPeer))
+
+  private def getCounter(): Future[Int] = {
+    groupExt.isMember(peer.id, userId) map {
+      case true  ⇒ state.counter
+      case false ⇒ 0
+    }
+  }
 }
