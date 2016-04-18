@@ -134,8 +134,6 @@ private trait DialogRootQueryHandlers {
   private implicit val timeout = Timeout(ActorConfig.defaultTimeout)
 
   def getDialogs(endDate: Instant, limit: Int): Future[GetDialogsResponse] = {
-    println(s"=== getDialogs ${state.activePeers}")
-
     val dialogs =
       endDateTimeFrom(endDate) match {
         case Some(_) ⇒ state.activePeers.view.filter(sd ⇒ sd.ts.isBefore(endDate) || sd.ts == endDate).take(limit)
