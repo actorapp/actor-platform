@@ -22,6 +22,8 @@ import im.actor.sdk.util.Fonts;
 import im.actor.sdk.util.KeyboardHelper;
 import im.actor.sdk.view.SelectorFactory;
 
+import static im.actor.sdk.util.ActorSDKMessenger.messenger;
+
 public class SignEmailFragment extends BaseAuthFragment {
 
     private EditText emailEditText;
@@ -107,7 +109,14 @@ public class SignEmailFragment extends BaseAuthFragment {
         ((TextView) v.findViewById(R.id.email_login_hint)).setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
         emailEditText = (EditText) v.findViewById(R.id.tv_email);
         emailEditText.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
-        setSuggestedEmail(emailEditText);
+        String savedAuthId = messenger().getPreferences().getString("sign_in_auth_id");
+        boolean useSaved = savedAuthId != null && !savedAuthId.isEmpty() && savedAuthId.contains("@");
+        if (useSaved) {
+            emailEditText.setText(savedAuthId);
+        } else {
+            setSuggestedEmail(emailEditText);
+
+        }
 
         emailEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override

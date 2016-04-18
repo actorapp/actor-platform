@@ -115,7 +115,7 @@
     <!-- Sign in Fragment-->
     <string name="sign_in_title">Вход</string>
     <string name="sign_in_hint">Пожалуйста, введите свой номер телефона или email</string>
-    <string name="sign_in_edit_text_hint">телефона или email</string>
+    <string name="sign_in_edit_text_hint">телефон или email</string>
     <string name="sign_in_get_code">Войти</string>
 
 
