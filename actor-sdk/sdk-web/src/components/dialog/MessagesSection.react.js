@@ -47,26 +47,14 @@ class MessagesSection extends Component {
 
   render() {
     const { peer, isMember } = this.props;
-    const {
-      uid,
-      messages: {
-        messages, overlay, receiveDate, readDate, isLoaded, isLoading, count, selected
-      }
-    } = this.state;
+    const { uid, messages } = this.state;
 
     return (
       <MessagesList
         uid={uid}
         peer={peer}
-        isMember={isMember}
         messages={messages}
-        overlay={overlay}
-        readDate={readDate}
-        receiveDate={receiveDate}
-        count={count}
-        selected={selected}
-        isLoaded={isLoaded}
-        isLoading={isLoading}
+        isMember={isMember}
         onSelect={this.onSelect}
         onLoadMore={this.onLoadMore}
       />
