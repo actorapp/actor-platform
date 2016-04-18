@@ -46,6 +46,7 @@ import im.actor.runtime.js.fs.JsBlob;
 import im.actor.runtime.js.fs.JsFile;
 import im.actor.runtime.js.mvvm.JsDisplayListCallback;
 import im.actor.runtime.js.utils.JsPromise;
+import im.actor.runtime.js.utils.JsPromiseDispatcher;
 import im.actor.runtime.js.utils.JsPromiseExecutor;
 import im.actor.runtime.markdown.MarkdownParser;
 
@@ -429,7 +430,7 @@ public class JsFacade implements Exportable {
     public void preInitChat(JsPeer peer) {
         messenger.onConversationPreLoad(peer.convert());
     }
-    
+
     @UsedByApp
     public JsMessagesBind bindMessages(JsPeer peer, JsMessagesBindClosure callback) {
         if (callback == null) {
@@ -654,7 +655,8 @@ public class JsFacade implements Exportable {
                     public void apply(Exception e) {
                         reject();
                     }
-                });
+                })
+                        .done(JsPromiseDispatcher.INSTANCE);
             }
         });
     }
@@ -674,7 +676,8 @@ public class JsFacade implements Exportable {
                     public void apply(Exception e) {
                         reject();
                     }
-                });
+                })
+                        .done(JsPromiseDispatcher.INSTANCE);
             }
         });
     }
