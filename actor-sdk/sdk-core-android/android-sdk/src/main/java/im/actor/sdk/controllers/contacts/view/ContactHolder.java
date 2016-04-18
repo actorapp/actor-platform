@@ -37,6 +37,7 @@ public class ContactHolder extends BindedViewHolder {
     private boolean isSelectable;
 
     private OnItemClickedListener<Contact> onItemClickedListener;
+    private final View separator;
 
     public ContactHolder(FrameLayout fl, boolean isSelectable, Context context, OnItemClickedListener<Contact> onItemClickedListener) {
         super(fl);
@@ -116,18 +117,18 @@ public class ContactHolder extends BindedViewHolder {
             cont.addView(isSelected, layoutParams);
         }
 
-        View div = new View(context);
-        div.setBackgroundColor(ActorSDK.sharedActor().style.getContactDividerColor());
+        separator = new View(context);
+        separator.setBackgroundColor(ActorSDK.sharedActor().style.getContactDividerColor());
         {
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                     context.getResources().getDimensionPixelSize(R.dimen.div_size));
             layoutParams.gravity = Gravity.BOTTOM;
             layoutParams.leftMargin = Screen.dp(72);
-            cont.addView(div, layoutParams);
+            cont.addView(separator, layoutParams);
         }
     }
 
-    public void bind(final Contact data, String shortName, String query, boolean selected) {
+    public void bind(final Contact data, String shortName, String query, boolean selected, boolean isLast) {
 
         if (shortName == null) {
             fastTitle.setVisibility(View.GONE);
@@ -161,6 +162,12 @@ public class ContactHolder extends BindedViewHolder {
                 return onItemClickedListener.onLongClicked(data);
             }
         });
+
+        if (isLast) {
+            separator.setVisibility(View.GONE);
+        } else {
+            separator.setVisibility(View.VISIBLE);
+        }
     }
 
     public void unbind() {
