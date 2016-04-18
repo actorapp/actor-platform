@@ -4,7 +4,7 @@ import java.sql.SQLException
 
 import akka.actor.ActorLogging
 import akka.pattern.pipe
-import akka.persistence.{ PersistentActor, RecoveryCompleted }
+import akka.persistence.{ PersistentActor, RecoveryCompleted, SnapshotMetadata, SnapshotOffer }
 import im.actor.concurrent.AlertingActor
 
 import scala.concurrent.Future
@@ -13,6 +13,8 @@ import scala.util.control.NoStackTrace
 
 trait ProcessorState[S, E] {
   def updated(e: E): S
+
+  def withSnapshot(metadata: SnapshotMetadata, snapshot: Any): S
 }
 
 abstract class ProcessorError(msg: String) extends RuntimeException(msg) with NoStackTrace
@@ -50,6 +52,8 @@ abstract class Processor[S <: ProcessorState[S, E], E: ClassTag] extends Persist
   override final def receiveRecover = {
     case e: E ⇒
       _state = _state.updated(e)
+    case SnapshotOffer(metadata, snapshot) ⇒
+      _state = _state.withSnapshot(metadata, snapshot)
     case RecoveryCompleted ⇒ onRecoveryCompleted()
   }
 

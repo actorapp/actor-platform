@@ -862,7 +862,7 @@ final class GroupsServiceSpec
 
       whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100)) { resp ⇒
         val dialog = resp.toOption.get.dialogs.head
-        dialog.unreadCount > 6 shouldEqual true
+        dialog.unreadCount should be > 6
       }
 
       whenReady(service.handleLeaveGroup(groupOutPeer, Random.nextLong())) { resp ⇒
@@ -973,6 +973,14 @@ final class GroupsServiceSpec
     }
     val outPeer = ApiOutPeer(ApiPeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
 
+    {
+      implicit val clientData = clientData2
+      whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100)) { resp ⇒
+        val dialog = resp.toOption.get.dialogs.head
+        dialog.unreadCount shouldBe 2
+      }
+    }
+
     for (_ ← 1 to 6) {
       implicit val clientData = clientData1
       whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("hello public", Vector.empty, None), None)) { _ ⇒ }
@@ -984,7 +992,7 @@ final class GroupsServiceSpec
       implicit val clientData = clientData2
       whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100)) { resp ⇒
         val dialog = resp.toOption.get.dialogs.head
-        dialog.unreadCount shouldBe 6
+        dialog.unreadCount shouldBe 8
       }
     }
 
