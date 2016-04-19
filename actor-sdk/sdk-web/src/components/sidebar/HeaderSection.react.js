@@ -17,6 +17,7 @@ import LoginActionCreators from '../../actions/LoginActionCreators';
 import HelpActionCreators from '../../actions/HelpActionCreators';
 import AddContactActionCreators from '../../actions/AddContactActionCreators';
 import PreferencesActionCreators from '../../actions/PreferencesActionCreators';
+import BlockedUsersActionCreators from '../../actions/BlockedUsersActionCreators';
 
 import MyProfileStore from '../../stores/MyProfileStore';
 import CreateGroupStore from '../../stores/CreateGroupStore';
@@ -80,6 +81,7 @@ class HeaderSection extends Component {
 
   openMyProfile = () => MyProfileActions.show();
   openCreateGroup = () => CreateGroupActionCreators.open();
+  openBlockedUsers = () => BlockedUsersActionCreators.open();
   openAddContactModal = () => AddContactActionCreators.open();
   onSettingsOpen = () => PreferencesActionCreators.show();
 
@@ -230,6 +232,10 @@ class HeaderSection extends Component {
               <li className="dropdown__menu__item" onClick={this.openCreateGroup}>
                 <i className="material-icons">group_add</i>
                 <FormattedMessage id="menu.createGroup"/>
+              </li>
+              <li className="dropdown__menu__item" onClick={this.openBlockedUsers}>
+                <i className="material-icons">block</i>
+                <FormattedMessage id="menu.blockedUsers"/>
               </li>
               <li className="dropdown__menu__separator"/>
               <li className="dropdown__menu__item" onClick={this.onSettingsOpen}>

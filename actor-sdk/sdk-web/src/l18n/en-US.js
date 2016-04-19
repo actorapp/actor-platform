@@ -31,6 +31,7 @@ export default {
       'editProfile': 'Edit profile',
       'addToContacts': 'Add contact',
       'createGroup': 'Create group',
+      'blockedUsers': 'Blocked users',
       'helpAndFeedback': 'Help & Feedback',
       'twitter': 'Our Twitter',
       'preferences': 'Preferences',
@@ -238,6 +239,12 @@ export default {
     'inviteByLinkModalCopyButton': 'Copy link',
     'inviteByLinkModalRevokeButton': 'Revoke link',
     'inviteLinkCopied': 'Invitation link copied.',
+
+    'blockedUsersTitle': 'Blocked users',
+    'blockedUsersNotExists': 'You haven\'t block anyone.',
+    'blockedUsersNotFound': 'Sorry, no users were found.',
+    'blockedUsersSearch': 'Search for contacts or usernames',
+    'blockedUsersUnblock': 'Unblock',
 
     'preferencesModalTitle': 'Preferences',
     'preferencesGeneralTab': 'General',
