@@ -1,19 +1,7 @@
 .modal--crop {
-  .modal__header {
-    &__title {
-      font-size: 40px;
-      line-height: 50px;
-      font-weight: 500;
-      margin: 0;
-      padding: 0;
-      color: #656565;
-    }
-  }
-
-  .modal__content {
-    max-width: 600px;
-    margin: 0 auto;
-  }
+  // .modal__content {
+  //   padding: 0;
+  // }
 
   .modal__footer {
     text-align: right;
