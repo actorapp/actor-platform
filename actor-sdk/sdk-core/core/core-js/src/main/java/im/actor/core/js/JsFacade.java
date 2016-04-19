@@ -22,6 +22,7 @@ import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerSearchEntity;
 import im.actor.core.entity.PeerSearchType;
 import im.actor.core.entity.PeerType;
+import im.actor.core.entity.User;
 import im.actor.core.js.annotations.UsedByApp;
 import im.actor.core.js.entity.*;
 import im.actor.core.js.modules.JsBindedValueCallback;
@@ -1025,6 +1026,30 @@ public class JsFacade implements Exportable {
                         reject(e.getMessage());
                     }
                 });
+            }
+        });
+    }
+
+    @UsedByApp
+    public JsPromise loadBlockedUsers() {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                messenger.loadBlockedUsers().then(new Consumer<List<User>>() {
+                    @Override
+                    public void apply(List<User> users) {
+                        JsArray<JsUser> res = JsArray.createArray().cast();
+                        for (User u : users) {
+                            res.push(getUser(u.getUid()));
+                        }
+                        resolve(res);
+                    }
+                }).failure(new Consumer<Exception>() {
+                    @Override
+                    public void apply(Exception e) {
+                        reject(e);
+                    }
+                }).done(JsPromiseDispatcher.INSTANCE);
             }
         });
     }
