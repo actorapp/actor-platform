@@ -33,6 +33,7 @@ import im.actor.core.entity.content.LocationContent;
 import im.actor.core.viewmodel.FileVM;
 import im.actor.core.viewmodel.UploadFileVM;
 import im.actor.sdk.ActorSDK;
+
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.conversation.MessagesAdapter;
 import im.actor.sdk.controllers.conversation.messages.preprocessor.PreprocessedData;
@@ -160,7 +161,7 @@ public class LocationHolder extends MessageHolder {
 
             try {
                 Class.forName("com.google.android.gms.maps.GoogleMap");
-                Intent intent = new Intent("im.actor.locationPreview");
+                Intent intent = new Intent("im.actor.locationPreview_" + context.getPackageName());
                 intent.putExtra("latitude", latitude);
                 intent.putExtra("longitude", longitude);
                 context.startActivity(intent);
