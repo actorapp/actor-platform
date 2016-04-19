@@ -18,6 +18,7 @@ import QuickSearchActionCreators from './QuickSearchActionCreators';
 import FaviconActionCreators from './FaviconActionCreators';
 import EventBusActionCreators from './EventBusActionCreators';
 import StickersActionCreators from './StickersActionCreators';
+import BlockedUsersActionCreators from './BlockedUsersActionCreators';
 
 class LoginActionCreators extends ActionCreators {
   changeLogin(login) {
@@ -118,7 +119,8 @@ class LoginActionCreators extends ActionCreators {
       ActorClient.bindSearch(QuickSearchActionCreators.setQuickSearchList),
       ActorClient.bindTempGlobalCounter(FaviconActionCreators.setFavicon),
       ActorClient.bindEventBus(EventBusActionCreators.broadcastEvent),
-      ActorClient.bindStickers(StickersActionCreators.setStickers)
+      ActorClient.bindStickers(StickersActionCreators.setStickers),
+      ActorClient.bindUserBlocked(BlockedUsersActionCreators.setUsers)
     ]);
 
     dispatch(ActionTypes.AUTH_SET_LOGGED_IN);
