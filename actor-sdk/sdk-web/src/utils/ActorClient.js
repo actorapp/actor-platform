@@ -137,12 +137,11 @@ class ActorClient {
   }
 
   bindStickers(callback) {
-    window.messenger.bindStickers(callback);
-    return {
-      unbind() {
-        window.messenger.unbindStickers(callback);
-      }
-    };
+    return ActorClient.createBindings('bindStickers', 'unbindStickers', callback);
+  }
+
+  bindUserBlocked(callback) {
+    return ActorClient.createBindings('bindUserBlocked', 'unbindUserBlocked', callback);
   }
 
   makeCall(userId) {
@@ -484,6 +483,14 @@ class ActorClient {
 
   sendSticker(peer, sticker) {
     window.messenger.sendSticker(peer, sticker);
+  }
+
+  blockUser(id) {
+    return window.messenger.blockUser(id);
+  }
+
+  unblockUser(id) {
+    return window.messenger.unblockUser(id);
   }
 }
 
