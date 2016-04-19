@@ -5173,6 +5173,21 @@
         {
           "type": "struct",
           "content": {
+            "name": "EmptyMessage",
+            "doc": [
+              "Empty Message"
+            ],
+            "trait": {
+              "name": "Message",
+              "key": 9
+            },
+            "expandable": "true",
+            "attributes": []
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
             "name": "DialogShort",
             "doc": [
               "Short Dialog from grouped conversation list",
