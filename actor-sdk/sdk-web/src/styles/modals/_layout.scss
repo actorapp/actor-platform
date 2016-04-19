@@ -13,12 +13,12 @@
 
   align-items: center;
   justify-content: center;
-  overflow: auto;
   &--fullscreen {
     .modal {
       flex: 1 1 auto;
       width: 100%;
       border-radius: 0;
+      overflow: auto;
     }
   }
 }
