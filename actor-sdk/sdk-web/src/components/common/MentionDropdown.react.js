@@ -6,8 +6,7 @@ import { map } from 'lodash';
 import React, { PropTypes, Component } from 'react';
 import { findDOMNode } from 'react-dom';
 import classnames from 'classnames';
-import ReactMixin from 'react-mixin';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
+import { shouldComponentUpdate } from 'react-addons-pure-render-mixin';
 
 import { KeyCodes } from '../../constants/ActorAppConstants';
 
@@ -32,6 +31,8 @@ class MentionDropdown extends Component {
       isOpen: mentions && mentions.length > 0,
       selectedIndex: 0
     };
+
+    this.shouldComponentUpdate = shouldComponentUpdate.bind(this);
   }
 
   componentWillUnmount() {
@@ -184,7 +185,5 @@ class MentionDropdown extends Component {
     );
   }
 }
-
-ReactMixin.onClass(MentionDropdown, PureRenderMixin);
 
 export default MentionDropdown;

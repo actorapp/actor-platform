@@ -4,8 +4,7 @@
 
 import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
-import ReactMixin from 'react-mixin';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
+import { shouldComponentUpdate } from 'react-addons-pure-render-mixin';
 import { FormattedMessage } from 'react-intl';
 import isInside from '../../../utils/isInside';
 import confirm from '../../../utils/confirm';
@@ -37,6 +36,8 @@ class RecentContextMenu extends Component {
     if (props.hideOnScroll) {
       document.addEventListener('scroll', this.handleClose, true);
     }
+
+    this.shouldComponentUpdate = shouldComponentUpdate.bind(this);
   }
 
   componentWillUnmount() {
@@ -130,7 +131,5 @@ class RecentContextMenu extends Component {
     );
   }
 }
-
-ReactMixin.onClass(RecentContextMenu, PureRenderMixin);
 
 export default RecentContextMenu;
