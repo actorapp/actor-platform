@@ -3,8 +3,7 @@
  */
 
 import React, { Component, PropTypes } from 'react';
-import ReactMixin from 'react-mixin';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
+import { shouldComponentUpdate } from 'react-addons-pure-render-mixin';
 import classnames from 'classnames';
 
 import AvatarItem from '../../common/AvatarItem.react';
@@ -14,6 +13,8 @@ import { escapeWithEmoji } from '../../../utils/EmojiUtils';
 class PeopleItem extends Component {
   constructor(props) {
     super(props);
+
+    this.shouldComponentUpdate = shouldComponentUpdate.bind(this);
   }
 
   static propTypes = {
@@ -28,7 +29,7 @@ class PeopleItem extends Component {
     onClick(contact);
   };
 
-  handleMouseOver= () => {
+  handleMouseOver = () => {
     const { onMouseOver } = this.props;
     onMouseOver();
   };
@@ -56,7 +57,5 @@ class PeopleItem extends Component {
     );
   }
 }
-
-ReactMixin.onClass(PeopleItem, PureRenderMixin);
 
 export default PeopleItem;
