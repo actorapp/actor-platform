@@ -2,13 +2,31 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-// import { dispatch, dispatchAsync } from '../dispatcher/ActorAppDispatcher';
-// import { ActionTypes } from '../constants/ActorAppConstants';
+import { dispatch } from '../dispatcher/ActorAppDispatcher';
+import { ActionTypes } from '../constants/ActorAppConstants';
 import ActorClient from '../utils/ActorClient';
 
 class BlockedUsersActionCreators {
-  setUsers(users) {
-    console.debug('set blocked users', users);
+  open() {
+    dispatch(ActionTypes.BLOCKED_USERS_OPEN);
+    this.loadUsers();
+  }
+
+  hide() {
+    dispatch(ActionTypes.BLOCKED_USERS_HIDE);
+  }
+
+  setQuery(query) {
+    dispatch(ActionTypes.BLOCKED_USERS_SET_QUERY, { query });
+  }
+
+  loadUsers() {
+    dispatch(ActionTypes.BLOCKED_USERS_LOAD);
+    ActorClient.loadBlockedUsers().then((users) => {
+      dispatch(ActionTypes.BLOCKED_USERS_SET, { users });
+    }).catch((error) => {
+      dispatch(ActionTypes.BLOCKED_USERS_LOAD_FAILED, { error });
+    });
   }
 
   blockUser(id) {
@@ -19,9 +37,11 @@ class BlockedUsersActionCreators {
     });
   }
 
-  unblockUser(id) {
+  unblockUser(id, reload = false) {
     ActorClient.unblockUser(id).then(() => {
-      console.debug('users unblocked ' + id);
+      if (reload) {
+        this.loadUsers();
+      }
     }).catch((e) => {
       console.error(e);
     });

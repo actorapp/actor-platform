@@ -492,6 +492,10 @@ class ActorClient {
   unblockUser(id) {
     return window.messenger.unblockUser(id);
   }
+
+  loadBlockedUsers() {
+    return window.messenger.loadBlockedUsers();
+  }
 }
 
 export default new ActorClient();

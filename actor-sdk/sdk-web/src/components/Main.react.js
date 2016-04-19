@@ -16,6 +16,7 @@ import Favicon from './common/Favicon.react';
 import ModalsWrapper from './modals/ModalsWrapper.react';
 import MenuOverlay from './common/MenuOverlay.react';
 import InviteUser from './modals/InviteUser.react';
+import BlockedUsers from './modals/BlockedUsers.react';
 import InviteByLink from './modals/invite-user/InviteByLink.react';
 import EditGroup from './modals/EditGroup.react';
 import SmallCall from './SmallCall.react';
@@ -92,6 +93,7 @@ class Main extends Component {
         <ModalsWrapper/>
         <MenuOverlay/>
         <InviteUser/>
+        <BlockedUsers/>
         <InviteByLink/>
         <EditGroup/>
 
