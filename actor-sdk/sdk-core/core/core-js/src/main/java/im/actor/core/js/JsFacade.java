@@ -1031,7 +1031,7 @@ public class JsFacade implements Exportable {
     }
 
     @UsedByApp
-    private JsPromise loadBlockedUsers() {
+    public JsPromise loadBlockedUsers() {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
             public void execute() {
@@ -1042,12 +1042,12 @@ public class JsFacade implements Exportable {
                         for (User u : users) {
                             res.push(getUser(u.getUid()));
                         }
-                        resolve();
+                        resolve(res);
                     }
                 }).failure(new Consumer<Exception>() {
                     @Override
                     public void apply(Exception e) {
-                        reject();
+                        reject(e);
                     }
                 }).done(JsPromiseDispatcher.INSTANCE);
             }
