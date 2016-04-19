@@ -220,6 +220,14 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
                 }
             });
 
+            // Sign for blocked separately
+            userVM.getIsBlocked().subscribe(new ValueChangedListener<Boolean>() {
+                @Override
+                public void onChanged(Boolean val, Value<Boolean> valueModel) {
+                    value.changeValue(JsUser.fromUserVM(userVM, messenger));
+                }
+            });
+
             users.put(uid, value);
         }
         return users.get(uid);
