@@ -100,6 +100,8 @@ export default {
         'italic': 'курсив',
         'preformatted': 'форматированный'
       },
+      'notMemger': 'Вы не участник данной группы',
+      'unblock': 'Разблокировать пользователя',
       'dropzone': 'Перетащите файлы сюда для отправки.'
     },
 
@@ -209,6 +211,7 @@ export default {
     'clearConversation': 'Очистить диалог',
     'deleteConversation': 'Удалить диалог',
     'blockUser': 'Заблокировать',
+    'unblockUser': 'Разблокировать',
     'leaveGroup': 'Покинуть группу',
     'sharedMedia': 'Вложения',
     'notifications': 'Уведомления',
