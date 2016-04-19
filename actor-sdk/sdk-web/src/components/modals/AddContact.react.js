@@ -52,13 +52,13 @@ class AddContact extends Component {
 
   handleQueryChange = (event) => {
     const query = event.target.value;
-    this.setState({query});
+    this.setState({ query });
     this.findUsers(query);
   };
 
   findUsers = debounce((query) => {
     AddContactActionCreators.findUsers(query);
-  }, 300, {trailing: true});
+  }, 300, { trailing: true });
 
   addContact = () => AddContactActionCreators.findUsers(this.state.query);
 

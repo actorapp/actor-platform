@@ -2,7 +2,7 @@
  * Copyright (C) 2016 Actor LLC. <https://actor.im>
  */
 
-import React, { Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 
 import convertImage from '../../utils/convertImage';
 

@@ -7,7 +7,7 @@ import { ActionTypes } from '../constants/ActorAppConstants';
 
 export function loggerAppend(tag, type, message) {
   dispatch(ActionTypes.LOGGER_APPEND, {
-    payload: {type, tag, message}
+    payload: { type, tag, message }
   });
 }
 

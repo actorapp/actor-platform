@@ -84,7 +84,7 @@ class CropAvatarModal extends Component {
       x: (event.pageX - wrapperRect.left) - cropPosition.x,
       y: (event.pageY - wrapperRect.top) - cropPosition.y
     };
-    this.setState({dragOffset});
+    this.setState({ dragOffset });
 
     wrapper.addEventListener('mousemove', this.onMoving);
     wrapper.addEventListener('touchmove', this.onMoving);
@@ -111,14 +111,14 @@ class CropAvatarModal extends Component {
       cropPosition.y = wrapperRect.height - cropSize;
     }
 
-    this.setState({cropPosition})
+    this.setState({ cropPosition })
   };
 
   onStartResizeTop = (event) => {
     const wrapper = findDOMNode(this.refs.wrapper);
     const resizeLastCoord = event.pageY;
     event.preventDefault();
-    this.setState({resizeLastCoord});
+    this.setState({ resizeLastCoord });
     wrapper.addEventListener('mousemove', this.onResizeTop);
     wrapper.addEventListener('touchmove', this.onResizeTop);
   };
@@ -127,7 +127,7 @@ class CropAvatarModal extends Component {
     const wrapper = findDOMNode(this.refs.wrapper);
     const resizeLastCoord = event.pageX;
     event.preventDefault();
-    this.setState({resizeLastCoord});
+    this.setState({ resizeLastCoord });
     wrapper.addEventListener('mousemove', this.onResizeRight);
     wrapper.addEventListener('touchmove', this.onResizeRight);
   };
@@ -136,7 +136,7 @@ class CropAvatarModal extends Component {
     const wrapper = findDOMNode(this.refs.wrapper);
     const resizeLastCoord = event.pageY;
     event.preventDefault();
-    this.setState({resizeLastCoord});
+    this.setState({ resizeLastCoord });
     wrapper.addEventListener('mousemove', this.onResizeBottom);
     wrapper.addEventListener('touchmove', this.onResizeBottom);
   };
@@ -145,7 +145,7 @@ class CropAvatarModal extends Component {
     const wrapper = findDOMNode(this.refs.wrapper);
     const resizeLastCoord = event.pageX;
     event.preventDefault();
-    this.setState({resizeLastCoord});
+    this.setState({ resizeLastCoord });
     wrapper.addEventListener('mousemove', this.onResizeLeft);
     wrapper.addEventListener('touchmove', this.onResizeLeft);
   };
@@ -198,7 +198,7 @@ class CropAvatarModal extends Component {
       resizeCropPosition = cropPosition;
     }
 
-    this.setState({resizeLastCoord: axisCoord});
+    this.setState({ resizeLastCoord: axisCoord });
     this.updateCropSize(resizedCropSize, resizeCropPosition);
   };
 
@@ -217,7 +217,7 @@ class CropAvatarModal extends Component {
     wrapper.removeEventListener('touchmove', this.onResizeLeft);
   };
 
-  updateCropSize = (cropSize, cropPosition) => this.setState({cropSize, cropPosition});
+  updateCropSize = (cropSize, cropPosition) => this.setState({ cropSize, cropPosition });
 
   onCrop = () => {
     const { cropPosition, cropSize, scaleRatio } = this.state;
@@ -249,7 +249,7 @@ class CropAvatarModal extends Component {
       y: ((naturalHeight / 2) - (cropSize / 2)) * scaleRatio
     };
 
-    this.setState({cropPosition, scaledWidth, scaledHeight, naturalWidth, naturalHeight, scaleRatio});
+    this.setState({ cropPosition, scaledWidth, scaledHeight, naturalWidth, naturalHeight, scaleRatio });
   };
 
   render() {
@@ -292,7 +292,7 @@ class CropAvatarModal extends Component {
                  onTouchEnd={this.removeListeners}
                  onMouseUp={this.removeListeners}>
               <div className="crop-wrapper__scale"
-                   style={{width: cropSize, height: cropSize, left: cropPosition.x, top: cropPosition.y}}>
+                   style={{ width: cropSize, height: cropSize, left: cropPosition.x, top: cropPosition.y }}>
                 <div className="crop-wrapper__scale__handler crop-wrapper__scale__handler--top"
                      onMouseDown={this.onStartResizeTop}
                      onTouchStart={this.onStartResizeTop}/>
@@ -309,18 +309,18 @@ class CropAvatarModal extends Component {
               <div className="crop-wrapper__overlay"
                    onMouseDown={this.onStartMoving}
                    onTouchStart={this.onStartMoving}
-                   style={{ width: cropSize, height: cropSize, left: cropPosition.x, top: cropPosition.y}}>
+                   style={{ width: cropSize, height: cropSize, left: cropPosition.x, top: cropPosition.y }}>
                 <img className="crop-wrapper__image-crop"
                      draggable="false"
                      ref="cropImage"
                      src={pictureSource}
-                     style={{left: -cropPosition.x, top: -cropPosition.y, width: scaledWidth, height: scaledHeight}}/>
+                     style={{ left: -cropPosition.x, top: -cropPosition.y, width: scaledWidth, height: scaledHeight }}/>
               </div>
               <img className="crop-wrapper__image-original"
                    draggable="false"
                    ref="originalImage"
                    src={pictureSource}
-                   style={{maxHeight: maxImageHeight}}/>
+                   style={{ maxHeight: maxImageHeight }}/>
             </div>
           </div>
         </Modal>

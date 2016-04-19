@@ -20,7 +20,7 @@ class Deactivated extends Component {
       <div className="deactivated row center-xs middle-xs">
         <div className="deactivated__window">
           <h2><FormattedMessage id="main.deactivated.header"/></h2>
-          <p><FormattedMessage id="main.deactivated.text" values={{appName: this.appName}}/></p>
+          <p><FormattedMessage id="main.deactivated.text" values={{ appName: this.appName }}/></p>
         </div>
       </div>
     );

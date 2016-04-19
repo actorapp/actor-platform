@@ -147,7 +147,7 @@ class MessageItem extends Component {
             <a onClick={this.onClick}>
               {
                 message.sender.title
-                  ? <span className="message__sender__name" dangerouslySetInnerHTML={{__html: messageSender}}/>
+                  ? <span className="message__sender__name" dangerouslySetInnerHTML={{ __html: messageSender }}/>
                   : null
               }
               {
@@ -224,4 +224,4 @@ class MessageItem extends Component {
   }
 }
 
-export default Container.create(MessageItem, {withProps: true});
+export default Container.create(MessageItem, { withProps: true });

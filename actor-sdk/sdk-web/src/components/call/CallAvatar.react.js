@@ -2,7 +2,7 @@
 * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
 */
 
-import React, {Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 
 import { CallStates } from '../../constants/ActorAppConstants';
@@ -44,7 +44,7 @@ class CallAvatar extends Component {
   }
 
   render() {
-    const {peerInfo, small} = this.props;
+    const { peerInfo, small } = this.props;
 
     return (
       <div className="call__avatar">

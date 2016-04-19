@@ -64,7 +64,7 @@ class InviteByLink extends Component {
     const { group, inviteUrl, isOpen } = this.state;
     const { intl } = this.context;
 
-    const groupName = (group !== null) ? <b dangerouslySetInnerHTML={{__html: escapeWithEmoji(group.name)}}/> : null;
+    const groupName = (group !== null) ? <b dangerouslySetInnerHTML={{ __html: escapeWithEmoji(group.name) }}/> : null;
 
     const modalStyle = {
       content : {
@@ -108,7 +108,7 @@ class InviteByLink extends Component {
           </header>
 
           <div className="modal-new__body">
-            <FormattedMessage id="inviteByLinkModalDescription" values={{groupName}}/>
+            <FormattedMessage id="inviteByLinkModalDescription" values={{ groupName }}/>
             <textarea className="textarea" onClick={this.onInviteLinkClick} readOnly row="3" value={inviteUrl}/>
           </div>
 

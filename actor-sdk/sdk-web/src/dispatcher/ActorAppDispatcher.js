@@ -41,7 +41,7 @@ export function dispatch(type, action = {}) {
     }
   }
 
-  flux.dispatch({type, ...action});
+  flux.dispatch({ type, ...action });
 
   if (action.error) {
     return Promise.reject(action.error);
@@ -60,8 +60,8 @@ export function dispatchAsync(promise, types, action = {}) {
 
   dispatch(request, action);
   return promise.then(
-    response => dispatch(success, {...action, response}),
-    error => dispatch(failure, {...action, error})
+    response => dispatch(success, { ...action, response }),
+    error => dispatch(failure, { ...action, error })
   ).catch(logError);
 }
 

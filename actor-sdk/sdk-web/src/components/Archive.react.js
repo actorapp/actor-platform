@@ -67,7 +67,7 @@ class Archive extends Component {
         ArchiveActionCreators.loadMoreArchivedDialogs();
       }
     }
-  }, 5, {maxWait: 30});
+  }, 5, { maxWait: 30 });
 
   render() {
     const { isLoading, dialogs } = this.state;
@@ -135,4 +135,4 @@ class Archive extends Component {
   }
 }
 
-export default Container.create(Archive, {pure: false});
+export default Container.create(Archive, { pure: false });

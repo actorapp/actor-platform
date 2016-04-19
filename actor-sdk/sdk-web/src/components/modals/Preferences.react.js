@@ -13,7 +13,7 @@ import SharedContainer from '../../utils/SharedContainer'
 import { KeyCodes, appName } from '../../constants/ActorAppConstants';
 
 import PreferencesActionCreators from '../../actions/PreferencesActionCreators';
-import {loggerToggle} from '../../actions/LoggerActionCreators';
+import { loggerToggle } from '../../actions/LoggerActionCreators';
 
 import PreferencesStore from '../../stores/PreferencesStore';
 
@@ -95,11 +95,11 @@ class PreferencesModal extends Component {
     }
   };
 
-  changeSendByEnter = (event) => this.setState({isSendByEnterEnabled: event.target.value === 'true'});
-  changeSoundEffectsEnabled = (event) => this.setState({isSoundEffectsEnabled: event.target.checked});
-  changeGroupsNotificationsEnabled = (event) => this.setState({isGroupsNotificationsEnabled: event.target.checked});
-  changeMentionNotifications = (event) => this.setState({isOnlyMentionNotifications: event.target.checked});
-  changeIsShowNotificationTextEnabled = (event) => this.setState({isShowNotificationsTextEnabled: event.target.checked});
+  changeSendByEnter = (event) => this.setState({ isSendByEnterEnabled: event.target.value === 'true' });
+  changeSoundEffectsEnabled = (event) => this.setState({ isSoundEffectsEnabled: event.target.checked });
+  changeGroupsNotificationsEnabled = (event) => this.setState({ isGroupsNotificationsEnabled: event.target.checked });
+  changeMentionNotifications = (event) => this.setState({ isOnlyMentionNotifications: event.target.checked });
+  changeIsShowNotificationTextEnabled = (event) => this.setState({ isShowNotificationsTextEnabled: event.target.checked });
 
   onTerminateAllSessionsClick = () => PreferencesActionCreators.terminateAllSessions();
 

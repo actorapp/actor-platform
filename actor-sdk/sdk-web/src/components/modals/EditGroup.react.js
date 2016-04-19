@@ -59,8 +59,8 @@ class EditGroup extends Component {
   removeListeners = () => document.removeEventListener('keydown', this.onKeyDown, false);
 
   onClose = () => EditGroupActionCreators.hide();
-  onTitleChange = event => this.setState({title: event.target.value});
-  onAboutChange = event => this.setState({about: event.target.value});
+  onTitleChange = event => this.setState({ title: event.target.value });
+  onAboutChange = event => this.setState({ about: event.target.value });
 
   onKeyDown = event => {
     if (event.keyCode === KeyCodes.ESC) {
@@ -188,4 +188,4 @@ class EditGroup extends Component {
   }
 }
 
-export default Container.create(EditGroup, {pure: false});
+export default Container.create(EditGroup, { pure: false });

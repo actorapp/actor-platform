@@ -84,7 +84,7 @@ export default function confirm(message, options = {})  {
   element.className = 'modal-backdrop';
   const wrapper = document.body.appendChild(element);
 
-  const component = render(createElement(Confirm, {message, ...options}), wrapper);
+  const component = render(createElement(Confirm, { message, ...options }), wrapper);
 
   function cleanup() {
     unmountComponentAtNode(wrapper);

@@ -27,6 +27,7 @@
     "no-console": 0,
     "no-trailing-spaces": 0,
     "jsx-quotes": 1,
+    "object-curly-spacing": [2, "always"],
     "react/display-name": 0,
     "react/jsx-boolean-value": 1,
     "react/jsx-no-undef": 1,

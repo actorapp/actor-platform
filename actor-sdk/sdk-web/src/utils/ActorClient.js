@@ -47,7 +47,7 @@ class ActorClient {
       if (active) {
         callback(...args);
       } else {
-        console.error('You\'re trying to emit new data to inactive callback!', {bindName, unbindName});
+        console.error('You\'re trying to emit new data to inactive callback!', { bindName, unbindName });
       }
     };
 

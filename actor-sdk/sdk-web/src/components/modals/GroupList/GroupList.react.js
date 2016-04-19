@@ -55,11 +55,11 @@ class GroupList extends Component {
 
   handleSearchChange = (event) => {
     const query = event.target.value;
-    this.setState({query});
+    this.setState({ query });
     this.searchGroups(query)
   };
 
-  searchGroups = debounce((query) => GroupListActionCreators.search(query), 300, {trailing: true});
+  searchGroups = debounce((query) => GroupListActionCreators.search(query), 300, { trailing: true });
 
   handleGroupSelect = (peer) => {
     const peerStr = PeerUtils.peerToString(peer);
@@ -78,7 +78,7 @@ class GroupList extends Component {
         index = 0;
       }
 
-      this.setState({selectedIndex: index});
+      this.setState({ selectedIndex: index });
 
       const scrollContainerNode = findDOMNode(this.refs.results).getElementsByClassName('ss-scrollarea')[0];
       const selectedNode = findDOMNode(this.refs.selected);
@@ -98,7 +98,7 @@ class GroupList extends Component {
         index = results.length - 1;
       }
 
-      this.setState({selectedIndex: index});
+      this.setState({ selectedIndex: index });
 
       const scrollContainerNode = findDOMNode(this.refs.results).getElementsByClassName('ss-scrollarea')[0];
       const selectedNode = findDOMNode(this.refs.selected);
@@ -174,7 +174,7 @@ class GroupList extends Component {
     if (results.length === 0) {
       return (
         <li className="group__list__item group__list__item--empty text-center">
-          <FormattedHTMLMessage id="modal.groups.notFound" values={{query}} />
+          <FormattedHTMLMessage id="modal.groups.notFound" values={{ query }} />
         </li>
       );
     }
@@ -187,7 +187,7 @@ class GroupList extends Component {
           isSelected={selectedIndex === index}
           ref={selectedIndex === index ? 'selected' : null}
           onClick={this.handleGroupSelect}
-          onMouseOver={() => this.setState({selectedIndex: index})}
+          onMouseOver={() => this.setState({ selectedIndex: index })}
         />
       )
     });
@@ -215,4 +215,4 @@ class GroupList extends Component {
   }
 }
 
-export default Container.create(GroupList, {pure: false});
+export default Container.create(GroupList, { pure: false });

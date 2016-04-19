@@ -40,7 +40,7 @@ class Welcome extends Component {
   renderUserText(id) {
     const user = UserStore.getUser(id);
     return (
-      <FormattedHTMLMessage id="message.welcome.private" values={{name: user.name}}/>
+      <FormattedHTMLMessage id="message.welcome.private" values={{ name: user.name }}/>
     );
   }
 
@@ -53,7 +53,7 @@ class Welcome extends Component {
 
     return (
       <div>
-        <FormattedHTMLMessage id="message.welcome.group.main" values={{name: group.name, creator}}/>
+        <FormattedHTMLMessage id="message.welcome.group.main" values={{ name: group.name, creator }}/>
         <p key={2}>
           {intl.messages['message.welcome.group.actions.start']}
           <a onClick={this.onInviteClick}>{intl.messages['message.welcome.group.actions.invite']}</a>

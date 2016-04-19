@@ -38,7 +38,7 @@ class Sticker extends Component {
   onLoad() {
     this.setCached();
     if (!this.state.isLoaded) {
-      this.setState({isLoaded: true});
+      this.setState({ isLoaded: true });
     }
   }
 
@@ -109,7 +109,7 @@ class Sticker extends Component {
 
     return (
       <div className={className}>
-        <div className={stickerClassName} style={{width, height}}>
+        <div className={stickerClassName} style={{ width, height }}>
           {this.renderPreloader()}
           {this.renderSticker()}
         </div>

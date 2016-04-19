@@ -44,7 +44,7 @@ class Scrollbar extends Component {
     const wrapperClassName = classnames('scroll-wrapper', className);
 
     return (
-      <div className={wrapperClassName} ref="scroll" onScroll={this.handleScroll} style={{...style}}>
+      <div className={wrapperClassName} ref="scroll" onScroll={this.handleScroll} style={{ ...style }}>
         {children}
       </div>
     );

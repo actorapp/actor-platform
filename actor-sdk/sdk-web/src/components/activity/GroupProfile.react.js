@@ -79,7 +79,7 @@ class GroupProfile extends Component {
     const { isMoreDropdownOpen } = this.state;
 
     if (!isMoreDropdownOpen) {
-      this.setState({isMoreDropdownOpen: true});
+      this.setState({ isMoreDropdownOpen: true });
       document.addEventListener('click', this.closeMoreDropdown, false);
     } else {
       this.closeMoreDropdown();
@@ -87,7 +87,7 @@ class GroupProfile extends Component {
   };
 
   closeMoreDropdown = () => {
-    this.setState({isMoreDropdownOpen: false});
+    this.setState({ isMoreDropdownOpen: false });
     document.removeEventListener('click', this.closeMoreDropdown, false);
   };
 
@@ -95,7 +95,7 @@ class GroupProfile extends Component {
     const { group } = this.props;
 
     confirm(
-      <FormattedMessage id="modal.confirm.group.clear" values={{name: group.name}} />
+      <FormattedMessage id="modal.confirm.group.clear" values={{ name: group.name }} />
     ).then(
       () => {
         const peer = ActorClient.getGroupPeer(gid);
@@ -109,7 +109,7 @@ class GroupProfile extends Component {
     const { group } = this.props;
 
     confirm(
-      <FormattedMessage id="modal.confirm.group.leave" values={{name: group.name}} />
+      <FormattedMessage id="modal.confirm.group.leave" values={{ name: group.name }} />
     ).then(
       () => DialogActionCreators.leaveGroup(gid),
       () => {}
@@ -120,7 +120,7 @@ class GroupProfile extends Component {
     const { group } = this.props;
 
     confirm(
-      <FormattedMessage id="modal.confirm.group.delete" values={{name: group.name}} />
+      <FormattedMessage id="modal.confirm.group.delete" values={{ name: group.name }} />
     ).then(
       () => {
         const peer = ActorClient.getGroupPeer(gid);
@@ -169,17 +169,17 @@ class GroupProfile extends Component {
                     title={group.name}
                     onClick={this.handleAvatarClick}/>
 
-        <h3 className="group_profile__meta__title" dangerouslySetInnerHTML={{__html: escapeWithEmoji(group.name)}}/>
+        <h3 className="group_profile__meta__title" dangerouslySetInnerHTML={{ __html: escapeWithEmoji(group.name) }}/>
         <div className="group_profile__meta__created">
           {intl.messages['createdBy']}
           &nbsp;
-          <span dangerouslySetInnerHTML={{__html: escapeWithEmoji(admin.name)}}/>
+          <span dangerouslySetInnerHTML={{ __html: escapeWithEmoji(admin.name) }}/>
         </div>
       </header>
     ,
       group.about ? (
         <div className="group_profile__meta__description" key={2}
-             dangerouslySetInnerHTML={{__html: escapeWithEmoji(group.about).replace(/\n/g, '<br/>')}}/>
+             dangerouslySetInnerHTML={{ __html: escapeWithEmoji(group.about).replace(/\n/g, '<br/>') }}/>
       ) : null
     ];
 
@@ -217,7 +217,7 @@ class GroupProfile extends Component {
                           </button>
                     }
                   </div>
-                  <div style={{width: 10}}/>
+                  <div style={{ width: 10 }}/>
                   <div className="col-xs">
                     <div className={dropdownClassNames}>
                       <button className="dropdown__button button button--flat button--wide"
@@ -297,4 +297,4 @@ class GroupProfile extends Component {
   }
 }
 
-export default Container.create(GroupProfile, {pure:false, withProps: true});
+export default Container.create(GroupProfile, { pure:false, withProps: true });

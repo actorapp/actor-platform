@@ -62,7 +62,7 @@ class PeopleList extends Component {
 
   handleSearchChange = (event) => {
     const query = event.target.value;
-    this.setState({query});
+    this.setState({ query });
   };
 
   handleContactSelect = (contact) => {
@@ -81,7 +81,7 @@ class PeopleList extends Component {
         index = 0;
       }
 
-      this.setState({selectedIndex: index});
+      this.setState({ selectedIndex: index });
 
       const scrollContainerNode = findDOMNode(this.refs.results).getElementsByClassName('ss-scrollarea')[0];
       const selectedNode = findDOMNode(this.refs.selected);
@@ -101,7 +101,7 @@ class PeopleList extends Component {
         index = results.length - 1;
       }
 
-      this.setState({selectedIndex: index});
+      this.setState({ selectedIndex: index });
 
       const scrollContainerNode = findDOMNode(this.refs.results).getElementsByClassName('ss-scrollarea')[0];
       const selectedNode = findDOMNode(this.refs.selected);
@@ -183,7 +183,7 @@ class PeopleList extends Component {
         onClick={this.handleContactSelect}
         isSelected={selectedIndex === index}
         ref={selectedIndex === index ? 'selected' : null}
-        onMouseOver={() => this.setState({selectedIndex: index})}
+        onMouseOver={() => this.setState({ selectedIndex: index })}
       />
     ));
   }
@@ -217,4 +217,4 @@ class PeopleList extends Component {
   }
 }
 
-export default Container.create(PeopleList, {pure: false});
+export default Container.create(PeopleList, { pure: false });

@@ -91,13 +91,13 @@ class TextField extends Component {
 
   handleFocus = (event) => {
     const { onFocus } = this.props;
-    this.setState({isFocused: true});
+    this.setState({ isFocused: true });
     onFocus && onFocus(event);
   };
 
   handleBlur = (event) => {
     const { onBlur } = this.props;
-    this.setState({isFocused: false});
+    this.setState({ isFocused: false });
     onBlur && onBlur(event);
   };
 }

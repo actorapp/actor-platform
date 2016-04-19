@@ -61,7 +61,7 @@ class SearchMessagesActionCreators {
       request: ActionTypes.SEARCH_TEXT,
       success: ActionTypes.SEARCH_TEXT_SUCCESS,
       failure: ActionTypes.SEARCH_TEXT_ERROR
-    }, {peer, query});
+    }, { peer, query });
   }
 
   findAllDocs() {
