@@ -4700,6 +4700,18 @@
           <ref role="NX6Kv" node="5_CDdZ2rA8j" resolve="box" />
         </node>
       </node>
+      <node concept="2m5naR" id="7EMmOqgXU6c" role="2m5mJr">
+        <property role="TrG5h" value="EmptyMessage" />
+        <property role="tsOgz" value="true" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="55bmeIQey3W" resolve="Message" />
+        <node concept="Nu42z" id="7EMmOqgXUkq" role="3BtCOu">
+          <property role="Nu42W" value="09" />
+        </node>
+        <node concept="NXeRC" id="7EMmOqgXUks" role="NXodf">
+          <property role="NXePf" value="Empty Message" />
+        </node>
+      </node>
       <node concept="2m5naR" id="5TxE3W6ZYRc" role="2m5mJr">
         <property role="TrG5h" value="DialogShort" />
         <node concept="2m7Kf5" id="5TxE3W6ZYX$" role="2m0hLx">
