@@ -20,6 +20,7 @@ import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.SearchEntity;
 import im.actor.core.entity.content.FastThumb;
+import im.actor.core.js.entity.JsBlockedUser;
 import im.actor.core.js.entity.JsCall;
 import im.actor.core.js.entity.JsCounter;
 import im.actor.core.js.entity.JsDialogGroup;
@@ -174,6 +175,10 @@ public class JsMessenger extends Messenger {
 
     public JsBindedValue<JsOnlineUser> getJsUserOnline(int gid) {
         return jsBindingModule.getUserOnline(gid);
+    }
+
+    public JsBindedValue<JsBlockedUser> getJsUserBlocked(int uid) {
+        return jsBindingModule.getUserBlocked(uid);
     }
 
     public JsBindedValue<JsGroup> getJsGroup(int gid) {

@@ -7,6 +7,7 @@ package im.actor.core.network.api;
 import java.io.IOException;
 import java.util.HashMap;
 
+import im.actor.core.network.*;
 import im.actor.core.network.parser.ApiParserConfig;
 import im.actor.runtime.*;
 import im.actor.runtime.Runtime;
@@ -16,13 +17,6 @@ import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.Props;
 import im.actor.core.util.RandomUtils;
-import im.actor.core.network.ActorApiCallback;
-import im.actor.core.network.AuthKeyStorage;
-import im.actor.core.network.Endpoints;
-import im.actor.core.network.NetworkState;
-import im.actor.core.network.RpcCallback;
-import im.actor.core.network.RpcException;
-import im.actor.core.network.RpcInternalException;
 import im.actor.core.network.mtp.MTProto;
 import im.actor.core.network.mtp.MTProtoCallback;
 import im.actor.core.network.mtp.entity.ProtoSerializer;
@@ -37,6 +31,7 @@ import im.actor.core.network.parser.Request;
 import im.actor.core.network.parser.Response;
 import im.actor.core.network.parser.RpcScope;
 import im.actor.runtime.threading.AtomicIntegerCompat;
+import im.actor.runtime.threading.CommonTimer;
 
 public class ApiBroker extends Actor {
 
@@ -69,6 +64,7 @@ public class ApiBroker extends Actor {
 
     private final HashMap<Long, RequestHolder> requests = new HashMap<Long, RequestHolder>();
     private final HashMap<Long, Long> idMap = new HashMap<Long, Long>();
+    private final HashMap<Long, CommonTimer> timeouts = new HashMap<Long, CommonTimer>();
 
     private long currentAuthId;
     private MTProto proto;
@@ -193,6 +189,10 @@ public class ApiBroker extends Actor {
     }
 
     private void performRequest(long randomId, Request message, RpcCallback callback) {
+        performRequest(randomId, message, callback, 0);
+    }
+
+    private void performRequest(long randomId, Request message, RpcCallback callback, long timeout) {
         Log.d(TAG, "-> request#" + randomId + ": " + message);
         // Log.d(TAG, message + " rid#" + randomId);
         RequestHolder holder = new RequestHolder(
@@ -207,6 +207,13 @@ public class ApiBroker extends Actor {
             holder.protoId = mid;
             idMap.put(mid, randomId);
             // Log.d(TAG, message + " rid#" + randomId + " <- mid#" + mid);
+        }
+
+        if (timeout > 0)
+        {
+            CommonTimer commonTimer = new CommonTimer(new TimeoutTask(holder.publicId));
+            timeouts.put(holder.publicId, commonTimer);
+            commonTimer.schedule(timeout);
         }
     }
 
@@ -231,6 +238,12 @@ public class ApiBroker extends Actor {
             rid = idMap.get(mid);
         } else {
             return;
+        }
+
+        CommonTimer timer = timeouts.get(rid);
+        if (timer != null) {
+            timer.cancel();
+            timeouts.remove(rid);
         }
 
         RequestHolder holder;
@@ -308,6 +321,13 @@ public class ApiBroker extends Actor {
     }
 
     private void cancelRequest(long randomId) {
+
+        CommonTimer timer = timeouts.get(randomId);
+        if (timer != null) {
+            timer.cancel();
+            timeouts.remove(randomId);
+        }
+
         RequestHolder holder = requests.get(randomId);
         if (holder != null) {
             requests.remove(randomId);
@@ -358,11 +378,19 @@ public class ApiBroker extends Actor {
         private Request message;
         private RpcCallback callback;
         private long rid;
+        private long timeout;
 
         public PerformRequest(long rid, Request message, RpcCallback callback) {
             this.rid = rid;
             this.message = message;
             this.callback = callback;
+            this.timeout = 0;
+        }
+        public PerformRequest(long rid, Request message, RpcCallback callback, long timeout) {
+            this.rid = rid;
+            this.message = message;
+            this.callback = callback;
+            this.timeout = timeout;
         }
 
         public long getRid() {
@@ -376,6 +404,12 @@ public class ApiBroker extends Actor {
         public RpcCallback getCallback() {
             return callback;
         }
+
+        public long getTimeout() {
+            return timeout;
+        }
+
+
     }
 
     public static class CancelRequest {
@@ -480,6 +514,25 @@ public class ApiBroker extends Actor {
         }
     }
 
+    private class TimeoutTask implements Runnable {
+
+        private final long rid;
+
+        public TimeoutTask(long rid){
+            this.rid = rid;
+        }
+        @Override
+        public void run() {
+            if (requests.containsKey(rid))
+            {
+                RpcCallback callBack = requests.get(rid).callback;
+                if (callBack != null)
+                    callBack.onError(new RpcTimeoutException());
+            }
+            cancelRequest(rid);
+        }
+    }
+
     private class RequestHolder {
         private final long requestTime;
         private final RpcRequest message;
@@ -578,7 +631,7 @@ public class ApiBroker extends Actor {
             createMtProto(initMTProto.getAuthId(), initMTProto.getAuthKey());
         } else if (message instanceof PerformRequest) {
             PerformRequest request = (PerformRequest) message;
-            performRequest(request.getRid(), request.getMessage(), request.getCallback());
+            performRequest(request.getRid(), request.getMessage(), request.getCallback(), request.getTimeout());
         } else if (message instanceof CancelRequest) {
             CancelRequest cancelRequest = (CancelRequest) message;
             cancelRequest(cancelRequest.getRandomId());

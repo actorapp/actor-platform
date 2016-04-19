@@ -37,12 +37,16 @@ import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.Log;
 import im.actor.runtime.Storage;
+import im.actor.runtime.actors.messages.*;
+import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.function.Consumer;
 import im.actor.runtime.js.JsFileSystemProvider;
 import im.actor.runtime.js.JsLogProvider;
 import im.actor.runtime.js.fs.JsBlob;
 import im.actor.runtime.js.fs.JsFile;
 import im.actor.runtime.js.mvvm.JsDisplayListCallback;
 import im.actor.runtime.js.utils.JsPromise;
+import im.actor.runtime.js.utils.JsPromiseDispatcher;
 import im.actor.runtime.js.utils.JsPromiseExecutor;
 import im.actor.runtime.markdown.MarkdownParser;
 
@@ -426,7 +430,7 @@ public class JsFacade implements Exportable {
     public void preInitChat(JsPeer peer) {
         messenger.onConversationPreLoad(peer.convert());
     }
-    
+
     @UsedByApp
     public JsMessagesBind bindMessages(JsPeer peer, JsMessagesBindClosure callback) {
         if (callback == null) {
@@ -618,6 +622,64 @@ public class JsFacade implements Exportable {
             return;
         }
         messenger.getJsUserOnline(uid).unsubscribe(callback);
+    }
+
+    @UsedByApp
+    public void bindUserBlocked(int uid, JsBindedValueCallback callback) {
+        if (callback == null) {
+            return;
+        }
+        messenger.getJsUserBlocked(uid).subscribe(callback);
+    }
+
+    @UsedByApp
+    public void unbindUserBlocked(int uid, JsBindedValueCallback callback) {
+        if (callback == null) {
+            return;
+        }
+        messenger.getJsUserBlocked(uid).unsubscribe(callback);
+    }
+
+    @UsedByApp
+    public JsPromise blockUser(final int uid) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                messenger.blockUser(uid).then(new Consumer<im.actor.runtime.actors.messages.Void>() {
+                    @Override
+                    public void apply(Void aVoid) {
+                        resolve();
+                    }
+                }).failure(new Consumer<Exception>() {
+                    @Override
+                    public void apply(Exception e) {
+                        reject();
+                    }
+                })
+                        .done(JsPromiseDispatcher.INSTANCE);
+            }
+        });
+    }
+
+    @UsedByApp
+    public JsPromise unblockUser(final int uid) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                messenger.unblockUser(uid).then(new Consumer<im.actor.runtime.actors.messages.Void>() {
+                    @Override
+                    public void apply(Void aVoid) {
+                        resolve();
+                    }
+                }).failure(new Consumer<Exception>() {
+                    @Override
+                    public void apply(Exception e) {
+                        reject();
+                    }
+                })
+                        .done(JsPromiseDispatcher.INSTANCE);
+            }
+        });
     }
 
     // Groups

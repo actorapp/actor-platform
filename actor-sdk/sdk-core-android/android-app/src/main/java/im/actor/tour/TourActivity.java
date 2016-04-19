@@ -1,5 +1,6 @@
 package im.actor.tour;
 
+import android.content.Context;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,6 +28,16 @@ public class TourActivity extends ActionBarActivity {
     private static final int SIGNIN_OAUTH = 4;
     private int lastPageIndex = 3;
     private int contentTopPadding;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        String authState = getSharedPreferences("properties.ini", Context.MODE_PRIVATE).getString("auth_state", null);
+        if (authState != null && !authState.equals("SIGN_UP") && !authState.equals("AUTH_START")) {
+            ActorSDK.sharedActor().startMessagingApp(this);
+            finish();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +73,7 @@ public class TourActivity extends ActionBarActivity {
             public void onClick(View v) {
                 Bundle authExtras = new Bundle();
                 authExtras.putInt(AuthActivity.SIGN_TYPE_KEY, AuthActivity.SIGN_TYPE_UP);
-                ActorSDK.sharedActor().getActivityManager().startAuthActivity(TourActivity.this, authExtras);
+                ActorSDK.sharedActor().startAuthActivity(TourActivity.this, authExtras);
                 finish();
 
             }
@@ -73,7 +84,7 @@ public class TourActivity extends ActionBarActivity {
             public void onClick(View v) {
                 Bundle authExtras = new Bundle();
                 authExtras.putInt(AuthActivity.SIGN_TYPE_KEY, AuthActivity.SIGN_TYPE_IN);
-                ActorSDK.sharedActor().getActivityManager().startAuthActivity(TourActivity.this, authExtras);
+                ActorSDK.sharedActor().startAuthActivity(TourActivity.this, authExtras);
                 finish();
 
             }

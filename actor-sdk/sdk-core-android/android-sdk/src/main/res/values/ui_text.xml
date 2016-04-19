@@ -34,6 +34,10 @@
     <string name="toast_unable_change_nick">Unable to change the nickname</string>
     <string name="toast_empty_about">"About" section can\'t be empty</string>
     <string name="toast_unable_open">No app is available to open this</string>
+    <string name="toast_unable_leave">Unable to leave from group</string>
+    <string name="toast_unable_create_group">Unable to create the group</string>
+    <string name="toast_unable_delete_chat">Unable to delete the chat</string>
+    <string name="toast_unable_clear_chat">Unable to clear the chat</string>
 
     <string name="menu_share">Share</string>
     <string name="menu_save">Save to Phone</string>
@@ -181,6 +185,7 @@
     <string name="settings_notifications">Notifications</string>
     <string name="settings_chat">Chat Settings</string>
     <string name="settings_security">Security</string>
+    <string name="settings_blocked_list">Blocked list</string>
     <string name="nickname_empty">Set nickname</string>
     <string name="nickname_change">Change nickname</string>
     <string name="nickname">Nickname</string>
@@ -488,6 +493,13 @@
     <string name="security_toast_unable_remove_auth">Unable to remove auth</string>
     <string name="security_this_title">(This) </string>
     <string name="security_toast_unable_to_load">Unable to load. Please try again.</string>
+
+    <!-- Blocked list -->
+    <string name="blocked_title">Blocked list</string>
+    <string name="blocked_empty_list">You haven\'t blocked anyone</string>
+    <string name="blocked_loading">Loading blocked list…</string>
+    <string name="blocked_unblock">UNBLOCK</string>
+
 
     <!-- Alerts -->
     <string name="alert_delete_messages_text">Are you sure you want to delete {0} messages?</string>

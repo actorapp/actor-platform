@@ -13,10 +13,10 @@ import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.api.rpc.users.ApiSex
 import im.actor.server.ApiConversions._
 import im.actor.server.acl.ACLUtils
-import im.actor.server.dialog.DialogExtension
-import im.actor.server.model.{ Group, Peer, AvatarData, PeerType }
+import im.actor.server.dialog.{ DialogExtension, UserAcl }
+import im.actor.server.model.{ AvatarData, Group, Peer, PeerType }
 import im.actor.server.persist._
-import im.actor.server.file.{ ImageUtils, Avatar }
+import im.actor.server.file.{ Avatar, ImageUtils }
 import im.actor.server.group.GroupErrors._
 import im.actor.server.office.PushTexts
 import im.actor.server.sequence.{ PushData, PushRules, SeqState, SeqStateDate }
@@ -24,12 +24,14 @@ import im.actor.util.ThreadLocalSecureRandom
 import ACLUtils._
 import im.actor.util.misc.IdUtils._
 import ImageUtils._
+import akka.http.scaladsl.util.FastFuture
+import im.actor.concurrent.FutureExt
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.Future
 
-private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupCommandHelpers {
+private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupCommandHelpers with UserAcl {
   this: GroupProcessor ⇒
 
   import GroupCommands._
@@ -64,10 +66,20 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
     val accessHash = genAccessHash()
 
     val rng = ThreadLocalSecureRandom.current()
-    userIds.filterNot(_ == creatorUserId) foreach { userId ⇒
-      val randomId = rng.nextLong()
-      context.parent ! Invite(groupId, userId, creatorUserId, randomId)
-    }
+
+    // exclude ids of users, who blocked group creator
+    val resolvedUserIds = FutureExt.ftraverse((userIds - creatorUserId).toSeq) { userId ⇒
+      withNonBlockedUser(creatorUserId, userId)(
+        default = FastFuture.successful(Some(userId)),
+        failed = FastFuture.successful(None)
+      )
+    } map (_.flatten)
+
+    // send invites to all users, that creator can invite
+    for {
+      userIds ← resolvedUserIds
+      _ = userIds foreach (u ⇒ context.parent ! Invite(groupId, u, creatorUserId, rng.nextLong()))
+    } yield ()
 
     val date = now()
 
@@ -76,8 +88,6 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
 
     persist(created) { _ ⇒
       context become working(state)
-
-      val serviceMessage = GroupServiceMessages.groupCreated
 
       val update = UpdateGroupInvite(groupId = groupId, inviteUserId = creatorUserId, date = date.toEpochMilli, randomId = randomId)
 
@@ -98,8 +108,16 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
             isHidden = false
           )
           _ ← GroupUserRepo.create(groupId, creatorUserId, creatorUserId, date, None, isAdmin = true)
-          _ ← DBIO.from(Future.sequence((userIds + creatorUserId) map { uid ⇒
-            dialogExt.writeMessageSelf(uid, ApiPeer(ApiPeerType.Group, state.id), creatorUserId, new DateTime(date.toEpochMilli), randomId, serviceMessage)
+          memeberIds ← DBIO.from(resolvedUserIds)
+          _ ← DBIO.from(Future.sequence((memeberIds :+ creatorUserId) map { uid ⇒
+            dialogExt.writeMessageSelf(
+              userId = uid,
+              peer = ApiPeer(ApiPeerType.Group, state.id),
+              senderUserId = creatorUserId,
+              date = new DateTime(date.toEpochMilli),
+              randomId = randomId,
+              message = GroupServiceMessages.groupCreated
+            )
           }))
           seqstate ← if (isBot(state, creatorUserId)) DBIO.successful(SeqState(0, ByteString.EMPTY))
           else DBIO.from(seqUpdExt.deliverSingleUpdate(

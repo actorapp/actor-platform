@@ -37,6 +37,7 @@ import im.actor.core.entity.AuthStartRes;
 import im.actor.core.entity.Sex;
 import im.actor.core.entity.User;
 import im.actor.core.modules.Modules;
+import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.sequence.internal.LoggedIn;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
@@ -518,7 +519,7 @@ public class Authentication {
                             }
                         });
                     }
-                });
+                }, AbsModule.RPC_TIMEOUT);
             }
         };
     }
@@ -772,5 +773,8 @@ public class Authentication {
 
     private <T extends Response> void request(Request<T> request, RpcCallback<T> callback) {
         modules.getActorApi().request(request, callback);
+    }
+    private <T extends Response> void request(Request<T> request, RpcCallback<T> callback, long timeout) {
+        modules.getActorApi().request(request, callback, timeout);
     }
 }

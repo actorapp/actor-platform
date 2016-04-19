@@ -3,6 +3,7 @@ package im.actor.server.dialog
 import java.time.Instant
 
 import akka.actor.{ ActorRef, PoisonPill, Status }
+import akka.http.scaladsl.util.FastFuture
 import akka.pattern.pipe
 import im.actor.api.rpc.PeersImplicits
 import im.actor.api.rpc.messaging._
@@ -21,7 +22,7 @@ import org.joda.time.DateTime
 import scala.concurrent.Future
 import scala.util.Failure
 
-trait DialogCommandHandlers extends PeersImplicits {
+trait DialogCommandHandlers extends PeersImplicits with UserAcl {
   this: DialogProcessor ⇒
 
   import DialogCommands._
@@ -48,21 +49,24 @@ trait DialogCommandHandlers extends PeersImplicits {
         discardOld = false
       )
 
-      validateAccessHash(sm.dest, sm.senderAuthId, sm.accessHash) map { valid ⇒
-        if (valid) {
-          withCachedFuture[AuthSidRandomId, SeqStateDate](sm.senderAuthSid → sm.randomId) {
-            val sendDate = calcSendDate(state)
-            val message = sm.message
-            PubSubExtension(system).publish(PeerMessage(sm.origin, sm.dest, sm.randomId, sendDate, message))
-            for {
-              _ ← dialogExt.ackSendMessage(peer, sm.copy(date = Some(sendDate)))
-              _ ← db.run(writeHistoryMessage(selfPeer, peer, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray))
-              _ = dialogExt.updateCounters(peer, userId)
-              SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sendDate, message, sm.isFat)
-            } yield SeqStateDate(seq, state, sendDate)
-          } pipeTo self
-        } else {
-          self ! Status.Failure(InvalidAccessHash)
+      withValidAccessHash(sm.dest, sm.senderAuthId, sm.accessHash) {
+        withCachedFuture[AuthSidRandomId, SeqStateDate](sm.senderAuthSid → sm.randomId) {
+          val sendDate = calcSendDate(state)
+          val message = sm.message
+          PubSubExtension(system).publish(PeerMessage(sm.origin, sm.dest, sm.randomId, sendDate, message))
+
+          withNonBlockedPeer[SeqStateDate](userId, sm.dest)(
+            default = for {
+            _ ← dialogExt.ackSendMessage(peer, sm.copy(date = Some(sendDate)))
+            _ ← db.run(writeHistoryMessage(selfPeer, peer, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray))
+            _ = dialogExt.updateCounters(peer, userId)
+            SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sendDate, message, sm.isFat)
+          } yield SeqStateDate(seq, state, sendDate),
+            failed = for {
+            _ ← db.run(writeHistoryMessageSelf(userId, peer, userId, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray))
+            SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sendDate, message, sm.isFat)
+          } yield SeqStateDate(seq, state, sendDate)
+          )
         }
       }
     }
@@ -381,12 +385,12 @@ trait DialogCommandHandlers extends PeersImplicits {
     context become initialized(state.updated(Unfavourited))
 
   /**
-   * check access hash
+   * check access hash and execute `f`, if access hash is valid
    * If `optAccessHash` is `None` - we simply don't check access hash
    * If `optSenderAuthId` is None, and we are validating access hash for private peer - it is invalid
    */
-  private def validateAccessHash(peer: Peer, optSenderAuthId: Option[Long], optAccessHash: Option[Long]): Future[Boolean] =
-    optAccessHash map { hash ⇒
+  private def withValidAccessHash[A](peer: Peer, optSenderAuthId: Option[Long], optAccessHash: Option[Long])(f: ⇒ Future[A]): Unit = {
+    val validateHash = optAccessHash map { hash ⇒
       peer.`type` match {
         case PeerType.Private ⇒
           optSenderAuthId map { authId ⇒ userExt.checkAccessHash(peer.id, authId, hash) } getOrElse Future.successful(false)
@@ -395,4 +399,12 @@ trait DialogCommandHandlers extends PeersImplicits {
         case unknown ⇒ throw new RuntimeException(s"Unknown peer type $unknown")
       }
     } getOrElse Future.successful(true)
+
+    (for {
+      isValid ← validateHash
+      result ← if (isValid) f else FastFuture.successful(Status.Failure(InvalidAccessHash))
+    } yield result) pipeTo self
+    ()
+  }
+
 }
