@@ -50,7 +50,7 @@ class PeopleItem extends Component {
                     title={contact.name}/>
 
         <div className="col-xs">
-          <span className="title" dangerouslySetInnerHTML={{__html: escapeWithEmoji(contact.name)}}/>
+          <span className="title" dangerouslySetInnerHTML={{ __html: escapeWithEmoji(contact.name) }}/>
         </div>
       </li>
     );

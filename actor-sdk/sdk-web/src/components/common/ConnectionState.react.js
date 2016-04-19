@@ -41,7 +41,7 @@ class ConnectionState extends Component {
       <div className={className}>
         {
           connectionState !== ConnectionStates.UPDATING
-            ? <FormattedMessage id={`connectionState.${connectionState}`} values={{appName: this.appName}}/>
+            ? <FormattedMessage id={`connectionState.${connectionState}`} values={{ appName: this.appName }}/>
             : null
         }
       </div>
@@ -49,4 +49,4 @@ class ConnectionState extends Component {
   }
 }
 
-export default Container.create(ConnectionState, {pure: false});
+export default Container.create(ConnectionState, { pure: false });

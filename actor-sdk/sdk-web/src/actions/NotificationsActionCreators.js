@@ -9,7 +9,7 @@ import ActorClient from '../utils/ActorClient';
 const DialogInfoActionCreators = {
   changeNotificationsEnabled(peer, isEnabled) {
     ActorClient.changeNotificationsEnabled(peer, isEnabled);
-    dispatch(ActionTypes.NOTIFICATION_CHANGE, {peer, isEnabled});
+    dispatch(ActionTypes.NOTIFICATION_CHANGE, { peer, isEnabled });
   }
 };
 

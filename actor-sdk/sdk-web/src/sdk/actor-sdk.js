@@ -164,7 +164,7 @@ class ActorSDK {
     Modal.setAppElement(appRootElemet);
 
     if (window.location.hash !== '#/deactivated') {
-      if (LoginStore.isLoggedIn()) LoginActionCreators.setLoggedIn({redirect: false});
+      if (LoginStore.isLoggedIn()) LoginActionCreators.setLoggedIn({ redirect: false });
     }
   };
 

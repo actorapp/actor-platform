@@ -35,7 +35,7 @@ class VoiceRecorder extends Component {
 
   handleStopRecord = () => {
     this.recorder.stop();
-    this.setState({isRecording: false});
+    this.setState({ isRecording: false });
   };
 
   handleSendRecord = (event) => {
@@ -47,14 +47,14 @@ class VoiceRecorder extends Component {
 
   handleStreamReady = () => {
     this.recorder.start();
-    this.setState({isRecording: true});
+    this.setState({ isRecording: true });
   };
 
-  handleChangeDuration = (event) => this.setState({duration: event.detail.toFixed(2)});
+  handleChangeDuration = (event) => this.setState({ duration: event.detail.toFixed(2) });
 
   render() {
     if (isRecordingSupported) {
-      const {isRecording, duration} = this.state;
+      const { isRecording, duration } = this.state;
 
       const voiceRecorderClassName = classnames('voice-recorder', {
         'voice-recorder--recording': isRecording

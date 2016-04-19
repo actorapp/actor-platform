@@ -58,7 +58,7 @@ class EmojiDropdown extends Component {
               onMouseEnter={this.handleEmojiTabMouseEnter}
               className="emojis__header__tabs__tab"
               activeClass="emojis__header__tabs__tab--active">
-          <span dangerouslySetInnerHTML={{__html: categoryIcon}}/>
+          <span dangerouslySetInnerHTML={{ __html: categoryIcon }}/>
         </Link>
       );
 
@@ -70,7 +70,7 @@ class EmojiDropdown extends Component {
         emoji.colons_mode = false;
 
         currentCategoryEmojis.push(
-          <a onClick={() => this.onSelect(emojiColon)} key={index} dangerouslySetInnerHTML={{__html: convertedChar}}/>
+          <a onClick={() => this.onSelect(emojiColon)} key={index} dangerouslySetInnerHTML={{ __html: convertedChar }}/>
         );
       });
 
@@ -131,7 +131,7 @@ class EmojiDropdown extends Component {
     }
   };
 
-  changeDropdownTitle = (title) => this.setState({dropdownTitle: title});
+  changeDropdownTitle = (title) => this.setState({ dropdownTitle: title });
 
   handleEmojiTabMouseEnter = (event) => {
     event.stopPropagation();
@@ -154,10 +154,10 @@ class EmojiDropdown extends Component {
   };
 
   handleEmojisTabMouseEnter() {
-    this.setState({isStickersOpen: false});
+    this.setState({ isStickersOpen: false });
   }
   handleStickerTabMouseEnter() {
-    this.setState({isStickersOpen: true});
+    this.setState({ isStickersOpen: true });
   }
 
   renderStickers() {

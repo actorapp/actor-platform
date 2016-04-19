@@ -111,9 +111,9 @@ class ComposeSection extends Component {
     const { peer } = this.state;
 
     if (text.length >= 3) {
-      this.setState({isMarkdownHintShow: true})
+      this.setState({ isMarkdownHintShow: true })
     } else {
-      this.setState({isMarkdownHintShow: false})
+      this.setState({ isMarkdownHintShow: false })
     }
 
     ComposeActionCreators.onTyping(peer, text, this.getCaretPosition());
@@ -125,7 +125,7 @@ class ComposeSection extends Component {
     const send = () => {
       event.preventDefault();
       this.sendTextMessage();
-      this.setState({isMarkdownHintShow: false})
+      this.setState({ isMarkdownHintShow: false })
     };
 
     if (mentions === null) {
@@ -314,4 +314,4 @@ class ComposeSection extends Component {
   }
 }
 
-export default Container.create(ComposeSection, {pure: false});
+export default Container.create(ComposeSection, { pure: false });

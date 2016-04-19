@@ -37,7 +37,7 @@ class SearchResults extends Component {
     if (isSearching) {
       return (
         <li className="search__results__item search__results__item--not-found">
-          <FormattedMessage id="search.searching" values={{query}} />
+          <FormattedMessage id="search.searching" values={{ query }} />
         </li>
       );
     }
@@ -45,7 +45,7 @@ class SearchResults extends Component {
     if (!results.length) {
       return (
         <li className="search__results__item search__results__item--not-found">
-          <FormattedHTMLMessage id="search.notFound" values={{query}} />
+          <FormattedHTMLMessage id="search.notFound" values={{ query }} />
         </li>
       );
     }

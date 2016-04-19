@@ -64,4 +64,4 @@ class MenuOverlay extends Component {
   }
 }
 
-export default Container.create(MenuOverlay, {pure: false});
+export default Container.create(MenuOverlay, { pure: false });

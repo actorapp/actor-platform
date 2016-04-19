@@ -59,14 +59,14 @@ class HeaderSection extends Component {
   };
 
   componentWillMount() {
-    this.setState({isOpened: false});
+    this.setState({ isOpened: false });
   }
 
   toggleHeaderMenu = () => {
     const { isOpened } = this.state;
 
     if (!isOpened) {
-      this.setState({isOpened: true});
+      this.setState({ isOpened: true });
       document.addEventListener('click', this.closeHeaderMenu, false);
     } else {
       this.closeHeaderMenu();
@@ -74,7 +74,7 @@ class HeaderSection extends Component {
   };
 
   closeHeaderMenu = () => {
-    this.setState({isOpened: false});
+    this.setState({ isOpened: false });
     document.removeEventListener('click', this.closeHeaderMenu, false);
   };
 
@@ -213,7 +213,7 @@ class HeaderSection extends Component {
                       size="tiny"
                       title={profile.name} />
           <span className="sidebar__header__user__name col-xs"
-                dangerouslySetInnerHTML={{__html: escapeWithEmoji(profile.name)}}/>
+                dangerouslySetInnerHTML={{ __html: escapeWithEmoji(profile.name) }}/>
           <div className={menuClass}>
             <span className="dropdown__button">
               <i className="material-icons">arrow_drop_down</i>

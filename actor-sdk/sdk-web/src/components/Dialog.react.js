@@ -137,4 +137,4 @@ class DialogSection extends Component {
   }
 }
 
-export default Container.create(DialogSection, {withProps: true});
+export default Container.create(DialogSection, { withProps: true });

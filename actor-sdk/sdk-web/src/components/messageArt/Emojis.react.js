@@ -42,7 +42,7 @@ class Emojis extends Component {
           className="emojis__header__tabs__tab"
           activeClass="emojis__header__tabs__tab--active"
         >
-          <span dangerouslySetInnerHTML={{__html: categoryIcon}}/>
+          <span dangerouslySetInnerHTML={{ __html: categoryIcon }}/>
         </Link>
       );
 
@@ -54,7 +54,7 @@ class Emojis extends Component {
         emoji.colons_mode = false;
 
         currentCategoryEmojis.push(
-          <a onClick={() => props.onSelect(emojiColon)} key={index} dangerouslySetInnerHTML={{__html: convertedChar}}/>
+          <a onClick={() => props.onSelect(emojiColon)} key={index} dangerouslySetInnerHTML={{ __html: convertedChar }}/>
         );
       });
 
@@ -68,7 +68,7 @@ class Emojis extends Component {
 
   }
 
-  changeDropdownTitle = (title) => this.setState({dropdownTitle: title});
+  changeDropdownTitle = (title) => this.setState({ dropdownTitle: title });
 
   handleEmojiTabMouseEnter = (event) => {
     event.stopPropagation();

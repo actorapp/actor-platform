@@ -64,7 +64,7 @@ class MentionDropdown extends Component {
     document.removeEventListener('click', this.closeMentions, false);
   }
 
-  closeMentions = () => this.setState({isOpen: false});
+  closeMentions = () => this.setState({ isOpen: false });
 
   onSelect = (value) => this.props.onSelect(value);
 
@@ -104,7 +104,7 @@ class MentionDropdown extends Component {
           }
 
           this.handleScroll(scrollIndex * DROPDOWN_ITEM_HEIGHT);
-          this.setState({selectedIndex: index});
+          this.setState({ selectedIndex: index });
           break;
         case KeyCodes.ARROW_DOWN:
         case KeyCodes.TAB:
@@ -124,7 +124,7 @@ class MentionDropdown extends Component {
           }
 
           this.handleScroll(scrollIndex * DROPDOWN_ITEM_HEIGHT);
-          this.setState({selectedIndex: index});
+          this.setState({ selectedIndex: index });
           break;
         default:
       }
@@ -153,7 +153,7 @@ class MentionDropdown extends Component {
         <li className={itemClassName}
             key={index}
             onClick={() => this.onSelect(mention)}
-            onMouseOver={() => this.setState({selectedIndex: index})}>
+            onMouseOver={() => this.setState({ selectedIndex: index })}>
           <AvatarItem image={mention.peer.avatar}
                       placeholder={mention.peer.placeholder}
                       size="tiny"

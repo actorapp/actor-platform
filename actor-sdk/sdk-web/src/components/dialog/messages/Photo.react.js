@@ -33,7 +33,7 @@ class Photo extends Component {
   onLoad = () => {
     this.setCached();
     if (!this.state.isImageLoaded) {
-      this.setState({isImageLoaded: true});
+      this.setState({ isImageLoaded: true });
     }
   };
 
@@ -90,11 +90,11 @@ class Photo extends Component {
     const imageClassName = isImageLoaded ? classnames(className, loadedClassName) : className;
 
     return (
-      <div className={imageClassName} style={{width, height}}>
+      <div className={imageClassName} style={{ width, height }}>
         {preview}
         {original}
         {preloader}
-        <svg dangerouslySetInnerHTML={{__html: '<filter id="blur-effect"><feGaussianBlur stdDeviation="3"/></filter>'}}/>
+        <svg dangerouslySetInnerHTML={{ __html: '<filter id="blur-effect"><feGaussianBlur stdDeviation="3"/></filter>' }}/>
       </div>
     );
   }

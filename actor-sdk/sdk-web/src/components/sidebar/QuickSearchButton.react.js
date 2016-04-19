@@ -48,4 +48,4 @@ class QuickSearchButton extends Component {
   }
 }
 
-export default Container.create(QuickSearchButton, {pure: false});
+export default Container.create(QuickSearchButton, { pure: false });

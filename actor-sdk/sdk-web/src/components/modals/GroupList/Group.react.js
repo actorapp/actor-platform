@@ -56,7 +56,7 @@ class Group extends Component {
 
         <div className="col-xs">
           <div className="meta">
-            <span className="title" dangerouslySetInnerHTML={{__html: escapeWithEmoji(group.peerInfo.title)}}/>
+            <span className="title" dangerouslySetInnerHTML={{ __html: escapeWithEmoji(group.peerInfo.title) }}/>
             {
               group.isJoined
                 ? <span className="join-status">Joined</span>
@@ -64,7 +64,7 @@ class Group extends Component {
             }
             {
               group.description
-                ? <span className="description" dangerouslySetInnerHTML={{__html: escapeWithEmoji(group.description)}}/>
+                ? <span className="description" dangerouslySetInnerHTML={{ __html: escapeWithEmoji(group.description) }}/>
                 : null
             }
           </div>

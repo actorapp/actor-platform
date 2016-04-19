@@ -138,4 +138,4 @@ class SendAttachment extends Component {
   }
 }
 
-export default Container.create(SendAttachment, {pure: false});
+export default Container.create(SendAttachment, { pure: false });

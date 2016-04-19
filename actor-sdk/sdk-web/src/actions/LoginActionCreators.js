@@ -76,7 +76,7 @@ class LoginActionCreators extends ActionCreators {
           this.startSignup();
           break;
         case 'logged_in':
-          this.setLoggedIn({redirect: true});
+          this.setLoggedIn({ redirect: true });
           break;
         default:
           console.error('Unsupported state', state);
@@ -91,7 +91,7 @@ class LoginActionCreators extends ActionCreators {
       failure: ActionTypes.AUTH_SIGNUP_FAILURE
     }, { name });
 
-    const setLoggedIn = () => this.setLoggedIn({redirect: true});
+    const setLoggedIn = () => this.setLoggedIn({ redirect: true });
 
     signUpPromise()
       .then(setLoggedIn)

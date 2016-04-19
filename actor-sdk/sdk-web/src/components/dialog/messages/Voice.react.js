@@ -71,7 +71,7 @@ class Voice extends Component {
   setCached() {
     const { content } = this.props;
     cache[content.fileUrl] = true;
-    this.setState({isLoaded: cache[content.fileUrl]});
+    this.setState({ isLoaded: cache[content.fileUrl] });
   }
 
   humanTime = (millis) => {
@@ -90,7 +90,7 @@ class Voice extends Component {
 
   handlePlayClick = () => {
     this.audio.play();
-    this.setState({isPlaying: true})
+    this.setState({ isPlaying: true })
   };
 
   handlePauseClick = () => {
@@ -99,7 +99,7 @@ class Voice extends Component {
   };
 
   handlePlayEnding = () => {
-    this.setState({isPlaying: false});
+    this.setState({ isPlaying: false });
   };
 
   handleRewind = (event) => {
@@ -126,7 +126,7 @@ class Voice extends Component {
           <div className="voice__controls">
             {
               !isLoaded
-                ? <i className="material-icons" style={{opacity: 0.3}}>play_circle_filled</i>
+                ? <i className="material-icons" style={{ opacity: 0.3 }}>play_circle_filled</i>
                 : isPlaying
                     ? <i className="material-icons" onClick={this.handlePauseClick}>pause_circle_filled</i>
                     : <i className="material-icons" onClick={this.handlePlayClick}>play_circle_filled</i>
@@ -144,7 +144,7 @@ class Voice extends Component {
             {
               isLoaded
                 ? <div className="voice__rewind" onClick={this.handleRewind} ref="rewind">
-                    <div className="played" style={{width: progress + '%'}}/>
+                    <div className="played" style={{ width: progress + '%' }}/>
                   </div>
                 : <div className="voice__rewind voice__rewind--loading"/>
             }

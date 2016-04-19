@@ -20,7 +20,7 @@ class LoggerSection extends Component {
   static calculateState() {
     const isOpen = LoggerStore.isOpen();
     if (!isOpen) {
-      return {isOpen: false};
+      return { isOpen: false };
     }
 
     const logs = LoggerStore.getLogs();

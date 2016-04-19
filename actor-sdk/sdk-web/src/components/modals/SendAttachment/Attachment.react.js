@@ -41,7 +41,7 @@ class Attachment extends Component {
           }
         </div>
 
-        <div className="col-xs-7" style={{paddingLeft: 16}}>
+        <div className="col-xs-7" style={{ paddingLeft: 16 }}>
           <div className="attachment__meta attachment__meta--name">
             <div className="attachment__meta__title">{intl.messages['modal.attachments.name']}</div>
             <div className="attachment__meta__content">{attachment.file.name}</div>
