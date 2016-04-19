@@ -18,6 +18,7 @@ object WebrtcErrors {
   val CallAlreadyStareted = RpcError(400, "CALL_ALREADY_STARTED", "Call already started.", canTryAgain = false, None)
   val NotAParticipant = RpcError(403, "NOT_A_PARTICIPANT", "Not a participant.", canTryAgain = false, None)
   val NotJoinedToEventBus = RpcError(400, "NOT_JOINED_TO_EVENT_BUS", "Not joined to event bus.", canTryAgain = false, None)
+  val CallForbidden = RpcError(403, "CALL_FORBIDDEN", "You are forbidden to call this user", canTryAgain = false, None)
 }
 
 final class WebrtcServiceImpl(implicit system: ActorSystem, sessionRegion: SessionRegion) extends WebrtcService {
@@ -119,5 +120,6 @@ final class WebrtcServiceImpl(implicit system: ActorSystem, sessionRegion: Sessi
     case WebrtcCallErrors.CallNotStarted      ⇒ WebrtcErrors.CallNotStarted
     case WebrtcCallErrors.NotAParticipant     ⇒ WebrtcErrors.NotAParticipant
     case WebrtcCallErrors.NotJoinedToEventBus ⇒ WebrtcErrors.NotJoinedToEventBus
+    case WebrtcCallErrors.CallForbidden       ⇒ WebrtcErrors.CallForbidden
   }
 }

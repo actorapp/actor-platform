@@ -22,6 +22,8 @@ object GroupErrors {
   case object TopicTooLong extends Exception with NoStackTrace
 
   case object NoBotFound extends Exception with NoStackTrace
+
+  case object BlockedByUser extends Exception with NoStackTrace
 }
 
 object GroupOffice {

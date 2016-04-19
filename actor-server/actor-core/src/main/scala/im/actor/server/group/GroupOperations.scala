@@ -1,9 +1,11 @@
 package im.actor.server.group
 
+import akka.http.scaladsl.util.FastFuture
 import akka.pattern.ask
 import akka.util.Timeout
 import im.actor.api.rpc.AuthorizedClientData
 import im.actor.api.rpc.groups.{ ApiGroup, ApiMember }
+import im.actor.server.dialog.UserAcl
 import im.actor.server.file.Avatar
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 
@@ -11,7 +13,7 @@ import scala.concurrent.{ ExecutionContext, Future }
 
 trait GroupOperations extends Commands with Queries
 
-private[group] sealed trait Commands {
+private[group] sealed trait Commands extends UserAcl {
   import GroupCommands._
 
   val processorRegion: GroupProcessorRegion
@@ -49,8 +51,19 @@ private[group] sealed trait Commands {
   def inviteToGroup(groupId: Int, inviteeUserId: Int, randomId: Long)(implicit client: AuthorizedClientData): Future[SeqStateDate] =
     inviteToGroup(client.userId, groupId, inviteeUserId, randomId)
 
-  def inviteToGroup(clientUserId: Int, groupId: Int, inviteeUserId: Int, randomId: Long): Future[SeqStateDate] =
-    (processorRegion.ref ? Invite(groupId, inviteeUserId, clientUserId, randomId)).mapTo[SeqStateDate]
+  /**
+   * The reason we make block check here is cause invite happens in two major places across server code:
+   * • when group is created. we check that only group creator adds only users, that didn't block him.
+   * • when user invites another user. We need to check if invitee blocked inviter.
+   *
+   * We don't need double check on both group creation and invite send. So we do this check here
+   */
+  def inviteToGroup(clientUserId: Int, groupId: Int, inviteeUserId: Int, randomId: Long): Future[SeqStateDate] = {
+    withNonBlockedUser(clientUserId, inviteeUserId)(
+      default = (processorRegion.ref ? Invite(groupId, inviteeUserId, clientUserId, randomId)).mapTo[SeqStateDate],
+      failed = FastFuture.failed(GroupErrors.BlockedByUser)
+    )
+  }
 
   def updateAvatar(groupId: Int, clientUserId: Int, avatarOpt: Option[Avatar], randomId: Long): Future[UpdateAvatarAck] =
     (processorRegion.ref ? UpdateAvatar(groupId, clientUserId, avatarOpt, randomId)).mapTo[UpdateAvatarAck]
