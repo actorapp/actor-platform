@@ -4,8 +4,7 @@
 
 import { map } from 'lodash';
 import React, { Component, PropTypes } from 'react';
-import ReactMixin from 'react-mixin';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
+import { shouldComponentUpdate } from 'react-addons-pure-render-mixin';
 
 import GroupMember from '../activity/GroupMember.react';
 
@@ -17,6 +16,8 @@ class GroupProfileMembers extends Component {
 
   constructor(props) {
     super(props);
+
+    this.shouldComponentUpdate = shouldComponentUpdate.bind(this);
   }
 
   render() {
@@ -31,7 +32,5 @@ class GroupProfileMembers extends Component {
     );
   }
 }
-
-ReactMixin.onClass(GroupProfileMembers, PureRenderMixin);
 
 export default GroupProfileMembers;
