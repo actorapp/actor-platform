@@ -47,12 +47,13 @@ private object UnreadMessage {
 private case class UnreadMessage(date: Instant, randomId: Long)
 
 private[dialog] final case class DialogState(
-  userId:          Int,
-  lastMessageDate: Instant, //we don't use it now anywhere. should we remove it?
-  lastReceiveDate: Instant,
-  lastReadDate:    Instant,
-  counter:         Int,
-  unreadMessages:  SortedSet[UnreadMessage]
+  userId:            Int,
+  lastMessageDate:   Instant, //we don't use it now anywhere. should we remove it?
+  lastReceiveDate:   Instant,
+  lastReadDate:      Instant,
+  counter:           Int,
+  unreadMessages:    SortedSet[UnreadMessage],
+  unreadMessagesMap: Map[Long, Long]
 ) extends ProcessorState[DialogState, DialogEvent] {
   import DialogEvents._
 
@@ -62,19 +63,52 @@ private[dialog] final case class DialogState(
         this.copy(
           counter = counter + 1,
           unreadMessages = unreadMessages + UnreadMessage(date, randomId),
+          unreadMessagesMap = unreadMessagesMap + (randomId → date.toEpochMilli),
           lastMessageDate = date
         )
       } else this.copy(lastMessageDate = date)
     case MessagesRead(date, readerUserId) if readerUserId == userId ⇒
-      val newUnreadMessages = unreadMessages.dropWhile(um ⇒ um.date.isBefore(date) || um.date == date)
-      this.copy(counter = newUnreadMessages.size, unreadMessages = newUnreadMessages)
+      val readMessages = unreadMessages.takeWhile(um ⇒ um.date.isBefore(date) || um.date == date)
+      val newUnreadMessages = unreadMessages -- readMessages
+      val newUnreadMessagesMap = unreadMessagesMap -- readMessages.map(_.randomId)
+
+      this.copy(
+        counter = newUnreadMessages.size,
+        unreadMessages = newUnreadMessages,
+        unreadMessagesMap = newUnreadMessagesMap
+      )
     case MessagesRead(date, readerUserId) if readerUserId != userId && date.isAfter(lastReadDate) ⇒
       this.copy(lastReadDate = date)
     case MessagesReceived(date) if date.isAfter(lastReceiveDate) ⇒ this.copy(lastReceiveDate = date)
-    case CounterReset() ⇒ this.copy(counter = 0, unreadMessages = SortedSet.empty(UnreadMessage.ordering))
+    case CounterReset() ⇒
+      this.copy(counter = 0, unreadMessages = SortedSet.empty(UnreadMessage.ordering), unreadMessagesMap = Map.empty)
   }
 
-  override def withSnapshot(metadata: SnapshotMetadata, snapshot: Any): DialogState = this
+  override def withSnapshot(metadata: SnapshotMetadata, snapshot: Any): DialogState = snapshot match {
+    case s: DialogStateSnapshot ⇒
+      copy(
+        userId = s.userId,
+        lastMessageDate = s.lastMessageDate,
+        lastReceiveDate = s.lastReceiveDate,
+        lastReadDate = s.lastReadDate,
+        counter = s.counter,
+        unreadMessages = SortedSet(
+          (s.unreadMessages.toSeq map {
+            case (randomId, ts) ⇒ UnreadMessage(Instant.ofEpochMilli(ts), randomId)
+          }): _*
+        )(UnreadMessage.ordering),
+        unreadMessagesMap = s.unreadMessages
+      )
+  }
+
+  override lazy val snapshot = DialogStateSnapshot(
+    userId = userId,
+    lastMessageDate = lastMessageDate,
+    lastReceiveDate = lastReceiveDate,
+    lastReadDate = lastReadDate,
+    counter = counter,
+    unreadMessages = unreadMessagesMap
+  )
 }
 
 object DialogProcessor {
@@ -84,7 +118,8 @@ object DialogProcessor {
       40010 → classOf[DialogEvents.MessagesRead],
       40011 → classOf[DialogEvents.MessagesReceived],
       40012 → classOf[DialogEvents.NewMessage],
-      40013 → classOf[DialogEvents.CounterReset]
+      40013 → classOf[DialogEvents.CounterReset],
+      40014 → classOf[DialogStateSnapshot]
     )
   }
 
@@ -98,6 +133,7 @@ object DialogProcessor {
 
 private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, extensions: Seq[ApiExtension])
   extends Processor[DialogState, DialogEvent]
+  with IncrementalSnapshots[DialogState, DialogEvent]
   with AlertingActor
   with DialogCommandHandlers
   with ActorFutures
@@ -133,8 +169,14 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
       lastReceiveDate = Instant.ofEpochMilli(0),
       lastReadDate = Instant.ofEpochMilli(0),
       counter = 0,
-      unreadMessages = SortedSet.empty(UnreadMessage.ordering)
+      unreadMessages = SortedSet.empty(UnreadMessage.ordering),
+      unreadMessagesMap = Map.empty
     )
+
+  override protected def saveSnapshotIfNeeded(): Unit = {
+    super.saveSnapshotIfNeeded()
+
+  }
 
   override protected def handleQuery: PartialFunction[Any, Future[Any]] = {
     case GetCounter(_) ⇒ getCounter() map (GetCounterResponse(_))

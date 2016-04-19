@@ -140,6 +140,15 @@ message DialogRootQueries {
     }
 }
 
+message DialogStateSnapshot {
+    int32 user_id = 1;
+    int64 last_message_date = 2 [(scalapb.field).type = "java.time.Instant"];
+    int64 last_receive_date = 3 [(scalapb.field).type = "java.time.Instant"];
+    int64 last_read_date = 4 [(scalapb.field).type = "java.time.Instant"];
+    int32 counter = 5;
+    map<int64, int64> unread_messages = 6;
+}
+
 message DialogRootEnvelope {
     oneof query {
         DialogRootQueries.GetCounter get_counter = 2;
