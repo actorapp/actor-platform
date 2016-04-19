@@ -22,7 +22,7 @@ class ActivitySection extends Component {
   static calculateState() {
     return {
       peer: DialogStore.getCurrentPeer(),
-      info: DialogInfoStore.getInfo(),
+      info: DialogInfoStore.getState(),
       isOpen: ActivityStore.isOpen()
     };
   }

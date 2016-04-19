@@ -4,6 +4,7 @@
 
 import { isFunction } from 'lodash';
 import React, { Component, PropTypes } from 'react';
+import { FormattedMessage } from 'react-intl';
 
 import DefaultTyping from './TypingSection.react';
 import DefaultCompose from './ComposeSection.react';
@@ -14,7 +15,9 @@ class DialogFooter extends Component {
   };
 
   static propTypes = {
-    isMember: PropTypes.bool.isRequired
+    isMember: PropTypes.bool.isRequired,
+    isBlocked: PropTypes.bool.isRequired,
+    onUnblock: PropTypes.func.isRequired
   };
 
   constructor(props, context) {
@@ -35,10 +38,19 @@ class DialogFooter extends Component {
   }
 
   render() {
-    if (!this.props.isMember) {
+    const { isMember, isBlocked, onUnblock } = this.props;
+    if (!isMember) {
       return (
-        <footer className="chat__footer chat__footer--disabled row center-xs middle-xs">
-          <h3>You are not a member</h3>
+        <footer className="chat__footer chat__footer--disabled">
+          <FormattedMessage id="compose.notMemger" />
+        </footer>
+      );
+    }
+
+    if (isBlocked) {
+      return (
+        <footer className="chat__footer chat__footer--disabled chat__footer--clickable" onClick={onUnblock}>
+          <FormattedMessage id="compose.unblock" />
         </footer>
       );
     }

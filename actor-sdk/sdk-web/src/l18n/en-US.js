@@ -102,7 +102,9 @@ export default {
         'italic': 'italics',
         'preformatted': 'preformatted'
       },
-      'dropzone': 'Drop here to send.'
+      'dropzone': 'Drop here to send.',
+      'notMemger': 'You are not a member',
+      'unblock': 'Unblock user'
     },
 
     // Modals
@@ -211,6 +213,7 @@ export default {
     'clearConversation': 'Clear conversation',
     'deleteConversation': 'Delete conversation',
     'blockUser': 'Block user',
+    'unblockUser': 'Unblock user',
     'leaveGroup': 'Leave group',
     'sharedMedia': 'Shared media',
     'notifications': 'Notifications',
