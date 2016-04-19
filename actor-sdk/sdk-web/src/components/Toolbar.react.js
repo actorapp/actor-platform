@@ -41,7 +41,7 @@ class ToolbarSection extends Component {
     const thisPeer = DialogStore.getCurrentPeer();
     return {
       thisPeer,
-      dialogInfo: DialogInfoStore.getInfo(),
+      dialogInfo: DialogInfoStore.getState(),
       isActivityOpen: ActivityStore.isOpen(),
       message: OnlineStore.getMessage(),
       isFavorite: DialogStore.isFavorite(thisPeer.id),

@@ -18,10 +18,12 @@ import DefaultSearch from './search/SearchSection.react';
 import DefaultCall from './Call.react';
 import ConnectionState from './common/ConnectionState.react';
 
-import ActivityStore from '../stores/ActivityStore';
 import DialogStore from '../stores/DialogStore';
+import DialogInfoStore from '../stores/DialogInfoStore';
+import ActivityStore from '../stores/ActivityStore';
 
 import DialogActionCreators from '../actions/DialogActionCreators';
+import BlockedUsersActionCreators from '../actions/BlockedUsersActionCreators';
 
 class DialogSection extends Component {
   static contextTypes = {
@@ -35,12 +37,16 @@ class DialogSection extends Component {
   };
 
   static getStores() {
-    return [ActivityStore, DialogStore];
+    return [ActivityStore, DialogStore, DialogInfoStore];
   }
 
   static calculateState() {
+    const peer = DialogStore.getCurrentPeer();
+    const dialogInfo = DialogInfoStore.getState();
+
     return {
-      peer: DialogStore.getCurrentPeer(),
+      peer,
+      dialogInfo,
       isMember: DialogStore.isMember(),
       isActivityOpen: ActivityStore.isOpen()
     };
@@ -49,6 +55,8 @@ class DialogSection extends Component {
   constructor(props, context) {
     super(props, context);
     this.updatePeer(this.props.params.id);
+
+    this.onUnblock = this.onUnblock.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -68,6 +76,11 @@ class DialogSection extends Component {
     } else {
       history.replace('/im');
     }
+  }
+
+  onUnblock() {
+    const { dialogInfo } = this.state;
+    BlockedUsersActionCreators.unblockUser(dialogInfo.id);
   }
 
   getActivityComponents() {
@@ -108,7 +121,7 @@ class DialogSection extends Component {
   }
 
   render() {
-    const { peer, isMember } = this.state;
+    const { peer, isMember, dialogInfo } = this.state;
     if (!peer) {
       return <section className="main" />;
     }
@@ -127,7 +140,11 @@ class DialogSection extends Component {
             <ConnectionState/>
             <div className="chat">
               <MessagesSection peer={peer} isMember={isMember} />
-              <DialogFooter isMember={isMember} />
+              <DialogFooter
+                isMember={isMember}
+                isBlocked={dialogInfo.isBlocked}
+                onUnblock={this.onUnblock}
+              />
             </div>
           </section>
           {activity.map((Activity, index) => <Activity key={index} />)}

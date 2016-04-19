@@ -2,33 +2,30 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import { Store } from 'flux/utils';
+import { ReduceStore } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes, PeerTypes } from '../constants/ActorAppConstants';
 import ActorClient from '../utils/ActorClient';
 
-let _info = null;
-
-class DialogInfoStore extends Store {
-  getInfo() {
-    return _info;
+class DialogInfoStore extends ReduceStore {
+  getInitialState() {
+    return null;
   }
 
-  __onDispatch(action) {
+  reduce(state, action) {
     switch(action.type) {
       case ActionTypes.SELECT_DIALOG_PEER:
         if (action.peer.type === PeerTypes.GROUP) {
-          _info = ActorClient.getGroup(action.peer.id);
-        } else if (action.peer.type === PeerTypes.USER) {
-          _info = ActorClient.getUser(action.peer.id);
+          return ActorClient.getGroup(action.peer.id);
         }
-        this.__emitChange();
-        break;
+
+        return ActorClient.getUser(action.peer.id);
+
       case ActionTypes.DIALOG_INFO_CHANGED:
-        _info = action.info;
-        this.__emitChange();
-        break;
+        return action.info;
+
       default:
+        return state;
     }
   }
 }

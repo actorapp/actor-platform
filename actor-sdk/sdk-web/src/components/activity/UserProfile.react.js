@@ -16,6 +16,7 @@ import ContactActionCreators from '../../actions/ContactActionCreators';
 import DialogActionCreators from '../../actions/DialogActionCreators';
 import NotificationsActionCreators from '../../actions/NotificationsActionCreators';
 import CallActionCreators from '../../actions/CallActionCreators';
+import BlockedUsersActionCreators from '../../actions/BlockedUsersActionCreators';
 
 import UserStore from '../../stores/UserStore';
 import NotificationsStore from '../../stores/NotificationsStore';
@@ -130,7 +131,7 @@ class UserProfile extends Component {
     confirm(
       <FormattedMessage id="modal.confirm.user.block" values={{ name: user.name }} />
     ).then(
-      () => DialogActionCreators.blockUser(user.id),
+      () => BlockedUsersActionCreators.blockUser(user.id),
       () => {}
     );
   }
