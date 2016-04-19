@@ -290,6 +290,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     case GroupErrors.UserAlreadyAdmin   ⇒ GroupRpcErrors.UserAlreadyAdmin
     case GroupErrors.AboutTooLong       ⇒ GroupRpcErrors.AboutTooLong
     case GroupErrors.TopicTooLong       ⇒ GroupRpcErrors.TopicTooLong
+    case GroupErrors.BlockedByUser      ⇒ GroupRpcErrors.BlockedByUser
     case FileErrors.LocationInvalid     ⇒ FileRpcErrors.LocationInvalid
     case GroupErrors.UserAlreadyInvited ⇒ GroupRpcErrors.UserAlreadyInvited
   }
