@@ -1,7 +1,7 @@
 package im.actor.server.persist.contact
 
 import im.actor.server.model.contact.{ ContactStatus, UserContact }
-import slick.dbio.Effect.Write
+import slick.dbio.Effect.{ Read, Write }
 import im.actor.server.db.ActorPostgresDriver.api._
 import slick.profile.FixedSqlAction
 import ContactStatusColumnType._
@@ -89,6 +89,9 @@ object UserContactRepo {
 
   def findBlockedIds(ownerUserId: Int): DBIO[Seq[Int]] =
     byOwnerUserIdBlockedC.applied(ownerUserId).map(_.contactUserId).result
+
+  def isBlocked(ownerUserId: Int, contactUserId: Int): DBIO[Boolean] =
+    byOwnerUserIdBlockedC.applied(ownerUserId).filter(_.contactUserId === contactUserId).exists.result
 
   def delete(ownerUserId: Int, contactUserId: Int) =
     byPKNotDeleted(ownerUserId, contactUserId).map(_.isDeleted).update(true)

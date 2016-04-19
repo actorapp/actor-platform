@@ -9,7 +9,7 @@ import im.actor.api.rpc.messaging.{ ApiServiceExPhoneCall, ApiServiceExPhoneMiss
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.api.rpc.webrtc._
 import im.actor.concurrent.{ FutureExt, StashingActor }
-import im.actor.server.dialog.DialogExtension
+import im.actor.server.dialog.{ DialogExtension, UserAcl }
 import im.actor.server.eventbus.{ EventBus, EventBusExtension }
 import im.actor.server.group.GroupExtension
 import im.actor.server.model.{ Peer, PeerType }
@@ -32,6 +32,7 @@ object WebrtcCallErrors {
   object CallNotStarted extends WebrtcCallError("Call not started")
   object CallAlreadyStarted extends WebrtcCallError("Call already started")
   object NotJoinedToEventBus extends WebrtcCallError("Not joined to EventBus")
+  object CallForbidden extends WebrtcCallError("You are forbidden to call this user")
 }
 
 private[webrtc] sealed trait WebrtcCallMessage
@@ -140,12 +141,12 @@ private trait Members {
   }
 }
 
-private final class WebrtcCallActor extends StashingActor with ActorLogging with Members with APNSSend {
+private final class WebrtcCallActor extends StashingActor with ActorLogging with Members with APNSSend with UserAcl {
   import WebrtcCallMessages._
   import context.dispatcher
 
   private val id = self.path.name.toLong
-  private implicit val system: ActorSystem = context.system
+  protected implicit val system: ActorSystem = context.system
 
   private val weakUpdExt = WeakUpdatesExtension(system)
   private val dialogExt = DialogExtension(system)
@@ -489,11 +490,15 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
       device
     }
 
-  private def fetchMembers(callerUserId: Int, peer: Peer) =
+  private def fetchMembers(callerUserId: Int, peer: Peer): Future[Seq[Int]] =
     peer match {
-      case Peer(PeerType.Private, userId) ⇒ FastFuture.successful(Seq(callerUserId, userId))
-      case Peer(PeerType.Group, groupId)  ⇒ groupExt.getMemberIds(groupId) map (_._1)
-      case _                              ⇒ FastFuture.failed(new RuntimeException(s"Unknown peer type: ${peer.`type`}"))
+      case Peer(PeerType.Private, userId) ⇒
+        withNonBlockedUser(callerUserId, userId)(
+          default = FastFuture.successful(Seq(callerUserId, userId)),
+          failed = FastFuture.failed(WebrtcCallErrors.CallForbidden)
+        )
+      case Peer(PeerType.Group, groupId) ⇒ groupExt.getMemberIds(groupId) map (_._1)
+      case _                             ⇒ FastFuture.failed(new RuntimeException(s"Unknown peer type: ${peer.`type`}"))
     }
 
   private def scheduleIncomingCallUpdates(callees: Seq[UserId]): Future[Unit] = {
