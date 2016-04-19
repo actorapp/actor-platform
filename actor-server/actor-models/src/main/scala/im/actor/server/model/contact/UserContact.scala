@@ -5,8 +5,7 @@ case class UserContact(
   ownerUserId:   Int,
   contactUserId: Int,
   name:          Option[String],
-  isDeleted:     Boolean,
-  status:        ContactStatus
+  isDeleted:     Boolean
 )
 
 @SerialVersionUID(1L)
@@ -15,8 +14,7 @@ case class UserPhoneContact(
   ownerUserId:   Int,
   contactUserId: Int,
   name:          Option[String],
-  isDeleted:     Boolean,
-  status:        ContactStatus
+  isDeleted:     Boolean
 )
 
 @SerialVersionUID(1L)
@@ -25,6 +23,5 @@ case class UserEmailContact(
   ownerUserId:   Int,
   contactUserId: Int,
   name:          Option[String],
-  isDeleted:     Boolean,
-  status:        ContactStatus
+  isDeleted:     Boolean
 )
