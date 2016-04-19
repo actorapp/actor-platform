@@ -4,7 +4,7 @@ import java.sql.SQLException
 
 import akka.actor.ActorLogging
 import akka.pattern.pipe
-import akka.persistence.{ PersistentActor, RecoveryCompleted, SnapshotMetadata, SnapshotOffer }
+import akka.persistence._
 import im.actor.concurrent.AlertingActor
 
 import scala.concurrent.Future
@@ -15,11 +15,13 @@ trait ProcessorState[S, E] {
   def updated(e: E): S
 
   def withSnapshot(metadata: SnapshotMetadata, snapshot: Any): S
+
+  def snapshot: Any = this
 }
 
 abstract class ProcessorError(msg: String) extends RuntimeException(msg) with NoStackTrace
 
-trait PersistenceDebug extends PersistentActor with ActorLogging {
+trait PersistenceDebug extends PersistentActor with ActorLogging with AlertingActor {
   override protected def onPersistFailure(cause: Throwable, event: Any, seqNr: Long): Unit = {
     super.onPersistFailure(cause, event, seqNr)
 
@@ -29,18 +31,49 @@ trait PersistenceDebug extends PersistentActor with ActorLogging {
   }
 }
 
-abstract class Processor[S <: ProcessorState[S, E], E: ClassTag] extends PersistentActor with PersistenceDebug with AlertingActor {
+trait IncrementalSnapshots[S <: ProcessorState[S, E], E] extends ProcessorStateControl[S, E] {
+  private var _commitsNum = 0
 
-  import context.dispatcher
+  val SnapshotCommitsThreshold = 100
 
-  type CommandHandler = PartialFunction[Any, Unit]
-  type QueryHandler = PartialFunction[Any, Future[Any]]
+  override protected def afterCommit(): Unit = {
+    super.afterCommit()
+    _commitsNum += 1
+    if (_commitsNum == SnapshotCommitsThreshold) {
+      log.debug("Saving snapshot due to threshold hit")
+      saveSnapshot(state.snapshot)
+    }
+  }
+}
 
+trait ProcessorStateControl[S <: ProcessorState[S, E], E] extends PersistenceDebug {
   private[this] var _state: S = getInitialState
 
   protected def getInitialState: S
 
   protected final def state: S = _state
+
+  protected def setState(state: S) = this._state = state
+
+  protected def commit(e: E): S = {
+    beforeCommit()
+    setState(state.updated(e))
+    afterCommit()
+    state
+  }
+
+  protected def beforeCommit() = {}
+
+  protected def afterCommit() = {}
+}
+
+abstract class Processor[S <: ProcessorState[S, E], E: ClassTag]
+  extends ProcessorStateControl[S, E] {
+
+  import context.dispatcher
+
+  type CommandHandler = PartialFunction[Any, Unit]
+  type QueryHandler = PartialFunction[Any, Future[Any]]
 
   override def receiveCommand = handleCommand orElse (handleQuery andThen (_ pipeTo sender()))
 
@@ -51,10 +84,12 @@ abstract class Processor[S <: ProcessorState[S, E], E: ClassTag] extends Persist
 
   override final def receiveRecover = {
     case e: E ⇒
-      _state = _state.updated(e)
+      setState(state.updated(e))
     case SnapshotOffer(metadata, snapshot) ⇒
-      _state = _state.withSnapshot(metadata, snapshot)
+      setState(state.withSnapshot(metadata, snapshot))
     case RecoveryCompleted ⇒ onRecoveryCompleted()
+    case SaveSnapshotFailure(metadata, cause) ⇒
+      log.error(cause, "Failed to save snapshot, metadata: {}", metadata)
   }
 
   protected def handleCommand: Receive
@@ -63,14 +98,9 @@ abstract class Processor[S <: ProcessorState[S, E], E: ClassTag] extends Persist
 
   protected def onRecoveryCompleted() = {}
 
-  protected def commit(e: E): S = {
-    _state = _state.updated(e)
-    state
-  }
-
   protected def reply(msg: AnyRef): Unit = sender() ! msg
 
   protected def replyFuture(msgFuture: Future[Any]): Unit = msgFuture pipeTo sender()
 
-  protected def setState(state: S) = this._state = state
+  protected def saveSnapshotIfNeeded(): Unit = {}
 }
