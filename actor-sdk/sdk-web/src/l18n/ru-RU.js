@@ -28,6 +28,7 @@ export default {
       'editProfile': 'Редактировать профиль',
       'addToContacts': 'Добавить контакт',
       'createGroup': 'Создать группу',
+      'blockedUsers': 'Заблокированные пользователи',
       'helpAndFeedback': 'Помощь и обратная связь',
       'twitter': 'Наш твиттер',
       'preferences': 'Настройки',
@@ -100,6 +101,8 @@ export default {
         'italic': 'курсив',
         'preformatted': 'форматированный'
       },
+      'notMemger': 'Вы не участник данной группы',
+      'unblock': 'Разблокировать пользователя',
       'dropzone': 'Перетащите файлы сюда для отправки.'
     },
 
@@ -209,6 +212,7 @@ export default {
     'clearConversation': 'Очистить диалог',
     'deleteConversation': 'Удалить диалог',
     'blockUser': 'Заблокировать',
+    'unblockUser': 'Разблокировать',
     'leaveGroup': 'Покинуть группу',
     'sharedMedia': 'Вложения',
     'notifications': 'Уведомления',
@@ -233,6 +237,12 @@ export default {
     'inviteByLinkModalCopyButton': 'Скопировать',
     'inviteByLinkModalRevokeButton': 'Отменить',
     'inviteLinkCopied': 'Ссылка скопирована.',
+
+    'blockedUsersTitle': 'Заблокированные пользователи',
+    'blockedUsersNotExists': 'Вы никого не заблокировали.',
+    'blockedUsersNotFound': 'Извините, ничего не найдено',
+    'blockedUsersSearch': 'Поиск по именам и никнеймам',
+    'blockedUsersUnblock': 'Помиловать',
 
     'preferencesModalTitle': 'Настройки',
     'preferencesGeneralTab': 'Основные',
