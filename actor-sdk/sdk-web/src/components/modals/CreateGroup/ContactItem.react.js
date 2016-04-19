@@ -26,7 +26,7 @@ class ContactItem extends Component {
     const { contact, onToggle } = this.props;
     const { isSelected } = this.state;
 
-    this.setState({isSelected: !isSelected});
+    this.setState({ isSelected: !isSelected });
 
     onToggle(contact, !isSelected);
   };
@@ -45,7 +45,7 @@ class ContactItem extends Component {
                     title={contact.name}/>
 
         <div className="col-xs">
-          <span className="title" dangerouslySetInnerHTML={{__html: escapeWithEmoji(contact.name)}}/>
+          <span className="title" dangerouslySetInnerHTML={{ __html: escapeWithEmoji(contact.name) }}/>
         </div>
 
         <div className="controls">

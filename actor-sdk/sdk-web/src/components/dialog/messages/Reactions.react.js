@@ -29,17 +29,17 @@ class MessageReactions extends Component {
         isThisMyReaction: false
       })
     } else {
-      this.setState({canAnimateHeart: true})
+      this.setState({ canAnimateHeart: true })
     }
   }
 
   handleAddLike = () => {
     MessageActionCreators.addLike(this.props.peer, this.props.message.rid);
-    this.setState({isThisMyReaction: true})
+    this.setState({ isThisMyReaction: true })
   };
   handleRemoveLike = () => {
     MessageActionCreators.removeLike(this.props.peer, this.props.message.rid);
-    this.setState({isThisMyReaction: true})
+    this.setState({ isThisMyReaction: true })
   };
 
   render() {

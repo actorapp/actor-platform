@@ -15,7 +15,7 @@ class Typing extends Component {
 
   static calculateState() {
     const typing = TypingStore.getTyping();
-    return (typing === null) ? {show: false} : {typing, show: true};
+    return (typing === null) ? { show: false } : { typing, show: true };
   }
 
   constructor(props) {

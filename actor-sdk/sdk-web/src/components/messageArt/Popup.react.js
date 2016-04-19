@@ -49,7 +49,7 @@ class Popup extends Component {
   }
 
   handleTabClick(state) {
-    this.setState({currentState: state})
+    this.setState({ currentState: state })
   }
 
   renderBody() {

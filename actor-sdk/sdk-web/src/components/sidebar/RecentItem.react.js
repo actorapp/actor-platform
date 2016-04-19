@@ -63,7 +63,7 @@ class RecentItem extends Component {
                       size="tiny"
                       title={dialog.peer.title}/>
 
-          <div className="title col-xs" dangerouslySetInnerHTML={{__html: escapeWithEmoji(dialog.peer.title)}}/>
+          <div className="title col-xs" dangerouslySetInnerHTML={{ __html: escapeWithEmoji(dialog.peer.title) }}/>
 
           {
             dialog.counter > 0

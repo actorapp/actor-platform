@@ -68,7 +68,7 @@ class QuickSearch extends Component {
 
   handleSearch = (event) => {
     const query = event.target.value;
-    this.setState({query});
+    this.setState({ query });
     QuickSearchActionCreators.search(query);
   };
 
@@ -107,7 +107,7 @@ class QuickSearch extends Component {
         }
 
         this.handleScroll(scrollIndex * RESULT_ITEM_HEIGHT);
-        this.setState({selectedIndex: index});
+        this.setState({ selectedIndex: index });
         break;
       case KeyCodes.ARROW_DOWN:
       case KeyCodes.TAB:
@@ -127,7 +127,7 @@ class QuickSearch extends Component {
         }
 
         this.handleScroll(scrollIndex * RESULT_ITEM_HEIGHT);
-        this.setState({selectedIndex: index});
+        this.setState({ selectedIndex: index });
         break;
 
       case KeyCodes.ESC:
@@ -167,7 +167,7 @@ class QuickSearch extends Component {
         <li className={resultClassName}
             key={index}
             onClick={() => this.handleDialogSelect(result.peerInfo.peer)}
-            onMouseOver={() => this.setState({selectedIndex: index})}>
+            onMouseOver={() => this.setState({ selectedIndex: index })}>
           <AvatarItem image={result.peerInfo.avatar}
                       placeholder={result.peerInfo.placeholder}
                       size="small"
@@ -219,14 +219,14 @@ class QuickSearch extends Component {
                    ref="query"/>
           </div>
 
-          <Scrollbar style={{height: RESULT_ITEM_HEIGHT * 8}} ref="results">
+          <Scrollbar style={{ height: RESULT_ITEM_HEIGHT * 8 }} ref="results">
             <ul className="results">
               {
                 resultsList.length > 0
                   ? resultsList
                   : <li className="results__item results__item--suggestion row">
                       <FormattedHTMLMessage id="modal.quickSearch.notFound"
-                                            values={{query}}/>
+                                            values={{ query }}/>
                       <button className="button button--rised hide">Create new dialog {query}</button>
                     </li>
               }
@@ -239,4 +239,4 @@ class QuickSearch extends Component {
 
 }
 
-export default Container.create(QuickSearch, {pure: false});
+export default Container.create(QuickSearch, { pure: false });

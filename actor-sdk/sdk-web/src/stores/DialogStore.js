@@ -25,10 +25,6 @@ class DialogStore extends Store {
     return this.currentPeer;
   }
 
-  getLastPeer() {
-    return this.lastPeer;
-  }
-
   isMember() {
     if (this.currentPeer !== null && this.currentPeer.type === PeerTypes.GROUP) {
       const group = ActorClient.getGroup(this.currentPeer.id);
@@ -39,7 +35,7 @@ class DialogStore extends Store {
   }
 
   isFavorite(id) {
-    const favoriteDialogs = find(this.dialogs, {key: 'favourites'});
+    const favoriteDialogs = find(this.dialogs, { key: 'favourites' });
     if (!favoriteDialogs) return false;
 
     return some(favoriteDialogs.shorts, (dialog) => dialog.peer.peer.id === id);

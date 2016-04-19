@@ -47,7 +47,7 @@ class DropZone extends Component {
       return;
     }
 
-    this.setState({isActive: true});
+    this.setState({ isActive: true });
   }
 
   onWindowDragOver() {
@@ -59,7 +59,7 @@ class DropZone extends Component {
     clearTimeout(this.timeout);
     this.timeout = setTimeout(() => {
       if (!this.dragging) {
-        this.setState({isActive: false});
+        this.setState({ isActive: false });
       }
     }, 300);
   }
@@ -91,11 +91,11 @@ class DropZone extends Component {
   }
 
   onDragEnter() {
-    this.setState({isHovered: true});
+    this.setState({ isHovered: true });
   }
 
   onDragLeave() {
-    this.setState({isHovered: false});
+    this.setState({ isHovered: false });
   }
 
   render() {

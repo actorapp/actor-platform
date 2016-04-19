@@ -111,7 +111,7 @@ class Call extends Component {
   }
 
   render() {
-    const {isOpen, call, peerInfo} = this.state;
+    const { isOpen, call, peerInfo } = this.state;
     if (!isOpen) {
       return <section className="activity" />;
     }

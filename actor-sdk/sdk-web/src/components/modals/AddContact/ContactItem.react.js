@@ -43,7 +43,7 @@ class ContactItem extends Component {
                       title={name}/>
           <div className="col-xs">
             <div className="name">
-              <span dangerouslySetInnerHTML={{__html: escapeWithEmoji(name)}}/>
+              <span dangerouslySetInnerHTML={{ __html: escapeWithEmoji(name) }}/>
               {
                 isBot
                   ? <small>BOT</small>

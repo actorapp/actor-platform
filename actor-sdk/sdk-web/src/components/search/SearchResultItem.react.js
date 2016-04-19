@@ -17,7 +17,7 @@ class SearchResultItem extends Component {
   };
 
   render() {
-    const { content, date, sender} = this.props;
+    const { content, date, sender } = this.props;
 
     let resultContent;
     switch (content.content) {

@@ -6,11 +6,11 @@ import { dispatch } from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
 
 const OnlineActionCreators = {
-  setUserOnline({...args}) {
+  setUserOnline({ ...args }) {
     dispatch(ActionTypes.USER_ONLINE_CHANGE, { ...args });
   },
 
-  setGroupOnline({...args}) {
+  setGroupOnline({ ...args }) {
     dispatch(ActionTypes.GROUP_ONLINE_CHANGE, { ...args });
   }
 };

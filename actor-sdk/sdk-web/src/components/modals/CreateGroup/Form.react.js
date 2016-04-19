@@ -88,7 +88,7 @@ class CreateGroupForm extends Component {
   handleNameChange = event => {
     event.preventDefault();
 
-    this.setState({name: event.target.value});
+    this.setState({ name: event.target.value });
   };
 
   handleNameSubmit = event => {
@@ -110,7 +110,7 @@ class CreateGroupForm extends Component {
   };
 
   onSearchChange = (e) => {
-    this.setState({search: e.target.value});
+    this.setState({ search: e.target.value });
   };
 
   render() {
@@ -167,7 +167,7 @@ class CreateGroupForm extends Component {
                   step === CreateGroupSteps.CONTACTS_SELECTION ||
                   step === CreateGroupSteps.CREATION_STARTED
                     ? <div className="count">
-                        <FormattedMessage id="members" values={{numMembers: selectedUserIds.size}}/>
+                        <FormattedMessage id="members" values={{ numMembers: selectedUserIds.size }}/>
                       </div>
                     : null
                 }
@@ -193,4 +193,4 @@ class CreateGroupForm extends Component {
   }
 }
 
-export default Container.create(CreateGroupForm, {pure: false});
+export default Container.create(CreateGroupForm, { pure: false });

@@ -44,7 +44,7 @@ class ContactItem extends Component {
         </div>
 
         <div className="contact__body col-xs">
-          <span className="title" dangerouslySetInnerHTML={{__html: escapeWithEmoji(name)}}/>
+          <span className="title" dangerouslySetInnerHTML={{ __html: escapeWithEmoji(name) }}/>
         </div>
 
         <div className="contact__controls">

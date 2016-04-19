@@ -80,4 +80,4 @@ class SessionItem extends Component {
   }
 }
 
-export default Container.create(SessionItem, {pure: false, withProps: true});
+export default Container.create(SessionItem, { pure: false, withProps: true });

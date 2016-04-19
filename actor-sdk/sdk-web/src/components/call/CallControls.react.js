@@ -2,7 +2,7 @@
 * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
 */
 
-import React, {Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import { CallStates } from '../../constants/ActorAppConstants';
 
 import AnswerButton from './AnswerButton.react';
@@ -34,7 +34,7 @@ class CallControls extends Component {
   };
 
   render() {
-    const {isOutgoing, small} = this.props;
+    const { isOutgoing, small } = this.props;
 
     const secondaryControls = [];
     const mainControls = small ? secondaryControls : [];

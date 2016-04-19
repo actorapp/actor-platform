@@ -115,7 +115,7 @@ class ToolbarSection extends Component {
     const { call, message } = this.state;
     if (call.isCalling) {
       return (
-        <FormattedMessage id={`toolbar.callState.${call.state}`} values={{time: call.time}} />
+        <FormattedMessage id={`toolbar.callState.${call.state}`} values={{ time: call.time }} />
       );
     }
 
@@ -202,7 +202,7 @@ class ToolbarSection extends Component {
 
         <div className="toolbar__peer col-xs">
           <header>
-            <span className="toolbar__peer__title" dangerouslySetInnerHTML={{__html: escapeWithEmoji(dialogInfo.name)}}/>
+            <span className="toolbar__peer__title" dangerouslySetInnerHTML={{ __html: escapeWithEmoji(dialogInfo.name) }}/>
             <Tooltip
               placement="bottom"
               mouseEnterDelay={0.15} mouseLeaveDelay={0}
@@ -227,4 +227,4 @@ class ToolbarSection extends Component {
   }
 }
 
-export default Container.create(ToolbarSection, {pure: false});
+export default Container.create(ToolbarSection, { pure: false });

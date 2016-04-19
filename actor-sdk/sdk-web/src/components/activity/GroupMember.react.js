@@ -48,7 +48,7 @@ class GroupMember extends Component {
   onKick = (gid, uid) => {
     const { peerInfo } = this.props;
 
-    confirm(<FormattedMessage id="modal.confirm.kick" values={{name: peerInfo.title}}/>).then(
+    confirm(<FormattedMessage id="modal.confirm.kick" values={{ name: peerInfo.title }}/>).then(
       () => KickUserActionCreators.kickMember(gid, uid),
       () => {}
     );
@@ -85,7 +85,7 @@ class GroupMember extends Component {
         </a>
 
         <a onClick={() => this.onClick(peerInfo.peer.id)}
-           dangerouslySetInnerHTML={{__html: escapeWithEmoji(peerInfo.title)}}/>
+           dangerouslySetInnerHTML={{ __html: escapeWithEmoji(peerInfo.title) }}/>
 
         <div className="controls pull-right">
           {this.renderControls()}
@@ -95,4 +95,4 @@ class GroupMember extends Component {
   }
 }
 
-export default Container.create(GroupMember, {pure: false, withProps: true});
+export default Container.create(GroupMember, { pure: false, withProps: true });

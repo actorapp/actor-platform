@@ -84,9 +84,9 @@ class MyProfile extends Component {
     }
   };
 
-  handleNameChange = event => this.setState({name: event.target.value});
-  handleNicknameChange = event => this.setState({nick: event.target.value});
-  handleAboutChange = event => this.setState({about: event.target.value});
+  handleNameChange = event => this.setState({ name: event.target.value });
+  handleNicknameChange = event => this.setState({ nick: event.target.value });
+  handleAboutChange = event => this.setState({ about: event.target.value });
 
   isProfileChanged = () => {
     const { name, nick, about } = this.state;
@@ -245,4 +245,4 @@ class MyProfile extends Component {
   }
 }
 
-export default Container.create(MyProfile, {pure: false});
+export default Container.create(MyProfile, { pure: false });
