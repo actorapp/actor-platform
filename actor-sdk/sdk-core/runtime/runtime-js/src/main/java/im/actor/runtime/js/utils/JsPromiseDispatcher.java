@@ -12,6 +12,6 @@ public class JsPromiseDispatcher extends PromiseDispatcher {
 
     @Override
     public void dispatch(Promise promise, Runnable runnable) {
-
+        runnable.run();
     }
 }
