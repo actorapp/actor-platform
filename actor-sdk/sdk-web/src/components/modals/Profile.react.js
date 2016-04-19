@@ -11,6 +11,7 @@ import ProfileStore from '../../stores/ProfileStore';
 
 import ProfileActionCreators from '../../actions/ProfileActionCreators';
 
+import ModalCloseButton from './ModalCloseButton.react';
 import TextField from '../common/TextField.react';
 import PictureChanger from './profile/PictureChanger.react';
 
@@ -20,7 +21,6 @@ class Profile extends Component {
   }
 
   static calculateState(prevState) {
-    console.debug('prevState', prevState)
     const state = ProfileStore.getState();
     return {
       profile: state.profile,
@@ -178,10 +178,7 @@ class Profile extends Component {
         onRequestClose={this.handleClose}
         isOpen>
 
-        <div className="modal__close-button" onClick={this.handleClose}>
-          <i className="close_icon material-icons">close</i>
-          <div className="text"><FormattedMessage id="button.close"/></div>
-        </div>
+        <ModalCloseButton onClick={this.handleClose}/>
 
         <div className="modal__content">
 

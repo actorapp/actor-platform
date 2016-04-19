@@ -5,12 +5,6 @@
     @include no-select();
   }
 
-  &__content {
-    margin: 0 auto;
-    padding: 100px 32px;
-    max-width: 600px;
-  }
-
   &__close-button {
     position: fixed;
     top: 32px;
@@ -70,5 +64,28 @@
 
   &__footer {
     margin-top: 32px;
+  }
+}
+
+.modal-overlay--fullscreen {
+  background-color: white;
+  .modal {
+    &__content {
+      margin: 0 auto;
+      padding: 100px 32px;
+      max-width: 600px;
+    }
+
+    &__header {
+      &__title {
+        font-size: 40px;
+        line-height: 50px;
+        font-weight: 500;
+        margin: 0;
+        padding: 0;
+        color: #656565;
+      }
+    }
+
   }
 }

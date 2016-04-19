@@ -14,6 +14,8 @@ import ProfileActionCreators from '../../actions/ProfileActionCreators';
 
 import CropStore from '../../stores/CropAvatarStore';
 
+import ModalCloseButton from './ModalCloseButton.react';
+
 const MIN_CROP_SIZE = 100;
 
 class CropAvatarModal extends Component {
@@ -246,10 +248,7 @@ class CropAvatarModal extends Component {
         onRequestClose={this.handleClose}
         isOpen>
 
-        <div className="modal__close-button" onClick={this.handleClose}>
-          <i className="close_icon material-icons">close</i>
-          <div className="text"><FormattedMessage id="button.close"/></div>
-        </div>
+        <ModalCloseButton onClick={this.handleClose}/>
 
         <div className="modal__content">
           <header className="modal__header">
