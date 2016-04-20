@@ -143,6 +143,17 @@ public class Messenger {
     public Promise<AuthStartRes> doStartEmailAuth(String email) {
         return modules.getAuthModule().doStartEmailAuth(email);
     }
+      /**
+         * Starting username auth
+         *
+         * @param email email for authentication
+         * @return promise of AuthStartRes
+         */
+        @NotNull
+        @ObjectiveCName("doStartAuthWithUsername:")
+        public Promise<AuthStartRes> doStartUsernameAuth(String username) {
+            return modules.getAuthModule().doStartUsernameAuth(username);
+        }
 
     /**
      * Starting phone auth
@@ -168,6 +179,19 @@ public class Messenger {
     public Promise<AuthCodeRes> doValidateCode(String code, String transactionHash) {
         return modules.getAuthModule().doValidateCode(transactionHash, code);
     }
+
+       /**
+         * Validating password
+         *
+         * @param password            password
+         * @param transactionHash transaction hash
+         * @return promise of AuthCodeRes
+         */
+        @NotNull
+        @ObjectiveCName("doValidatePassword:withTransaction:")
+        public Promise<AuthCodeRes>doValidatePassword(String password, String transactionHash) {
+            return modules.getAuthModule().doValidateCode(transactionHash, password);
+        }
 
 
     /**

@@ -46,6 +46,9 @@ public class AAAuthLogInViewController: AAAuthViewController {
         } else if ActorSDK.sharedActor().authStrategy == .PhoneEmail {
             field.placeholder = AALocalized("AuthLoginPhoneEmail")
             field.keyboardType = .Default
+        } else if ActorSDK.sharedActor().authStrategy == .Username {
+            field.placeholder = AALocalized("AuthLoginPhoneEmail")
+            field.keyboardType = .Default
         }
         field.autocapitalizationType = .None
         field.autocorrectionType = .No
@@ -93,21 +96,32 @@ public class AAAuthLogInViewController: AAAuthViewController {
                 return
             }
         }
-        
-        if ActorSDK.sharedActor().authStrategy == .PhoneOnly || ActorSDK.sharedActor().authStrategy == .PhoneEmail {
-            let numbersSet = NSCharacterSet(charactersInString: "0123456789").invertedSet
-            let stripped = value.strip(numbersSet)
-            if let parsed = Int64(stripped) {
-                Actor.doStartAuthWithPhone(jlong(parsed)).startUserAction().then { (res: ACAuthStartRes!) -> () in
+        if ActorSDK.sharedActor().authStrategy == .EmailOnly || ActorSDK.sharedActor().authStrategy == .PhoneEmail {
+            if (AATools.isValidEmail(value)) {
+                Actor.doStartAuthWithEmail(value).startUserAction().then { (res: ACAuthStartRes!) -> () in
                     if res.authMode.toNSEnum() == .OTP {
-                        let formatted = RMPhoneFormat().format("\(parsed)")
-                        self.navigateNext(AAAuthOTPViewController(phone: formatted, transactionHash: res.transactionHash))
+                        self.navigateNext(AAAuthOTPViewController(email: value, transactionHash: res.transactionHash))
                     } else {
                         self.alertUser(AALocalized("AuthUnsupported").replace("{app_name}", dest: ActorSDK.sharedActor().appName))
                     }
                 }
                 return
             }
+        }
+        
+        if ActorSDK.sharedActor().authStrategy == .Username
+        {
+            //if (AATools.isValidEmail(value))
+            
+                Actor.doStartAuthWithUsername(value).startUserAction().then { (res: ACAuthStartRes!) -> () in
+                    if res.authMode.toNSEnum() == .OTP {
+                        self.navigateNext(AAAuthOTPViewController(email: value, transactionHash: res.transactionHash))
+                    } else {
+                        self.alertUser(AALocalized("AuthUnsupported").replace("{app_name}", dest: ActorSDK.sharedActor().appName))
+                    }
+                }
+                return
+            
         }
         
         shakeView(field, originalX: 20)
