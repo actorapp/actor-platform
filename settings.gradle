@@ -33,3 +33,9 @@ include ":actor-sdk:sdk-core-android:android-google-maps"
 //
 
 include ":actor-sdk:sdk-core-ios"
+
+//
+// SDK Command Line Client
+//
+
+include ":actor-sdk:sdk-core-clc:app-clc"
