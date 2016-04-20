@@ -31,7 +31,7 @@ trait PersistenceDebug extends PersistentActor with ActorLogging with AlertingAc
   }
 }
 
-trait IncrementalSnapshots[S <: ProcessorState[S, E], E] extends ProcessorStateControl[S, E] {
+trait IncrementalSnapshots[S <: ProcessorState[S, E], E] extends ProcessorStateControl[S, E] with PersistenceDebug {
   private var _commitsNum = 0
 
   val SnapshotCommitsThreshold = 100
@@ -46,7 +46,7 @@ trait IncrementalSnapshots[S <: ProcessorState[S, E], E] extends ProcessorStateC
   }
 }
 
-trait ProcessorStateControl[S <: ProcessorState[S, E], E] extends PersistenceDebug {
+trait ProcessorStateControl[S <: ProcessorState[S, E], E] {
   private[this] var _state: S = getInitialState
 
   protected def getInitialState: S
@@ -67,8 +67,14 @@ trait ProcessorStateControl[S <: ProcessorState[S, E], E] extends PersistenceDeb
   protected def afterCommit() = {}
 }
 
+
+final class ProcessorStateProbe[S <: ProcessorState[S, E], E](initial: S) extends ProcessorStateControl[S, E] {
+  override protected def getInitialState: S = initial
+}
+
 abstract class Processor[S <: ProcessorState[S, E], E: ClassTag]
-  extends ProcessorStateControl[S, E] {
+  extends ProcessorStateControl[S, E]
+  with PersistenceDebug {
 
   import context.dispatcher
 
