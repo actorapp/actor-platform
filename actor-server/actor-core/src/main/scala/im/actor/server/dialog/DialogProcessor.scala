@@ -46,6 +46,18 @@ private object UnreadMessage {
 
 private case class UnreadMessage(date: Instant, randomId: Long)
 
+private[dialog] object DialogState {
+  def initial(userId: Int) = DialogState(
+    userId = userId,
+    lastMessageDate = Instant.ofEpochMilli(0),
+    lastReceiveDate = Instant.ofEpochMilli(0),
+    lastReadDate = Instant.ofEpochMilli(0),
+    counter = 0,
+    unreadMessages = SortedSet.empty(UnreadMessage.ordering),
+    unreadMessagesMap = Map.empty
+  )
+}
+
 private[dialog] final case class DialogState(
   userId:            Int,
   lastMessageDate:   Instant, //we don't use it now anywhere. should we remove it?
@@ -162,16 +174,7 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
 
   override def persistenceId: String = DialogProcessor.persistenceId(userId, peer)
 
-  override protected def getInitialState: DialogState =
-    DialogState(
-      userId = userId,
-      lastMessageDate = Instant.ofEpochMilli(0),
-      lastReceiveDate = Instant.ofEpochMilli(0),
-      lastReadDate = Instant.ofEpochMilli(0),
-      counter = 0,
-      unreadMessages = SortedSet.empty(UnreadMessage.ordering),
-      unreadMessagesMap = Map.empty
-    )
+  override protected def getInitialState: DialogState = DialogState.initial(userId)
 
   override protected def saveSnapshotIfNeeded(): Unit = {
     super.saveSnapshotIfNeeded()
