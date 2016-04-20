@@ -9,10 +9,12 @@ public class RouterNewMessages implements RouterMessageOnlyActive {
 
     private Peer peer;
     private List<Message> messages;
+    private boolean isLastInDifference;
 
-    public RouterNewMessages(Peer peer, List<Message> messages) {
+    public RouterNewMessages(Peer peer, List<Message> messages, boolean isLastInDifference) {
         this.peer = peer;
         this.messages = messages;
+        this.isLastInDifference = isLastInDifference;
     }
 
     public Peer getPeer() {
@@ -21,5 +23,9 @@ public class RouterNewMessages implements RouterMessageOnlyActive {
 
     public List<Message> getMessages() {
         return messages;
+    }
+
+    public boolean isLastInDifference() {
+        return isLastInDifference;
     }
 }

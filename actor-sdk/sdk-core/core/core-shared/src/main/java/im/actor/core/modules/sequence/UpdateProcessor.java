@@ -7,6 +7,7 @@ package im.actor.core.modules.sequence;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import im.actor.core.api.ApiDialogGroup;
 import im.actor.core.api.ApiDialogShort;
@@ -181,15 +182,19 @@ public class UpdateProcessor extends AbsModule {
             messagesProcessor.onMessageReadByMe(buildApiPeer(peer), time.getDate(), time.getCounter());
         }
 
-        for (Peer peer : combinedDifference.getMessages().keySet()) {
-            messagesProcessor.onMessages(buildApiPeer(peer), combinedDifference.getMessages().get(peer));
+        int i = 0;
+        Set<Peer> peers = combinedDifference.getMessages().keySet();
+        for (Peer peer : peers) {
+            if (++i != peers.size()) {
+                messagesProcessor.onMessages(buildApiPeer(peer), combinedDifference.getMessages().get(peer));
+            } else {
+                messagesProcessor.onMessages(buildApiPeer(peer), combinedDifference.getMessages().get(peer), true);
+            }
         }
 
         for (Update u : combinedDifference.getOtherUpdates()) {
             processUpdate(u);
         }
-
-        messagesProcessor.onDifferenceEnd();
 
         applyRelated(users, groups, true);
     }

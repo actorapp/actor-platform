@@ -65,11 +65,11 @@ public class RouterInt extends ActorInterface implements BusSubscriber {
     public void onNewMessage(Peer peer, Message message) {
         ArrayList<Message> messages = new ArrayList<>();
         messages.add(message);
-        onNewMessages(peer, messages);
+        onNewMessages(peer, messages, true);
     }
 
-    public void onNewMessages(Peer peer, List<Message> messages) {
-        send(new RouterNewMessages(peer, messages));
+    public void onNewMessages(Peer peer, List<Message> messages, boolean isLast) {
+        send(new RouterNewMessages(peer, messages, isLast));
     }
 
     public void onOutgoingMessage(Peer peer, Message message) {
