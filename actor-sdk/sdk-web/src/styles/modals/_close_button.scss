@@ -12,6 +12,7 @@
 
   color: rgba(black, .3);
   border-radius: 50%;
+
   @include no-select();
 
   .close_icon {
@@ -34,7 +35,6 @@
     pointer-events: none;
 
     opacity: 0;
-
   }
   &:hover {
     background-color: rgba(black, .05);

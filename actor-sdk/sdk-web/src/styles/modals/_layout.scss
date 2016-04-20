@@ -23,12 +23,9 @@
   }
 
   &__header,
+  &__body,
   &__footer {
     padding: $modal-padding;
-  }
-
-  &__body {
-    padding: 0 $modal-padding;
   }
 
   &--fullscreen {

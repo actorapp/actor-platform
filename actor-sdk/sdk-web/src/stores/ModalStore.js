@@ -26,16 +26,41 @@ class ModalStore extends ReduceStore {
 
       case ActionTypes.CROP_MODAL_SHOW:
         return {
-          ...state,
           prevModal: ModalTypes.PROFILE,
           currentModal: ModalTypes.CROP
         }
       case ActionTypes.CROP_MODAL_HIDE:
         return {
-          ...state,
           prevModal: null,
           currentModal: state.prevModal
         }
+
+      case ActionTypes.GROUP_LIST_SHOW:
+      return {
+        ...state,
+        currentModal: ModalTypes.GROUP_LIST
+      }
+      case ActionTypes.GROUP_LIST_HIDE:
+        return this.getInitialState();
+
+      case ActionTypes.CONTACT_ADD_MODAL_SHOW:
+        return {
+          ...state,
+          currentModal: ModalTypes.ADD_CONTACT
+        }
+      case ActionTypes.CONTACT_ADD_MODAL_HIDE:
+        return this.getInitialState();
+
+      case ActionTypes.GROUP_CREATE_MODAL_SHOW:
+        return {
+          ...state,
+          currentModal: ModalTypes.CREATE_GROUP
+        }
+      case ActionTypes.GROUP_CREATE_MODAL_HIDE:
+        return this.getInitialState();
+
+
+
       default:
         return state;
     }
