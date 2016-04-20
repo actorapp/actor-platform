@@ -1,33 +1,37 @@
-@import "profile/picture_changer";
+@import 'profile/picture_changer';
 
-.modal--profile {
-  .modal__body {
-    .col-xs {
-      margin-right: 32px;
-      & > div {
-        margin-bottom: 16px;
-      }
+.modal__content {
+  &.profile {
+
+    .nick,
+    .phone,
+    .mail,
+    .about {
+      padding-top: $modal-padding;
     }
 
     .about {
       label {
         font-size: 13px;
+
         color: $dark-sky-blue;
       }
+
       textarea {
-        margin-top: 4px;
-        padding: 8px 6px;
         font-size: 16px;
         line-height: 20px;
+
         height: 80px;
+        margin-top: 4px;
+        padding: 8px 6px;
       }
     }
-  }
 
-  .modal__footer {
-    text-align: right;
-    .button {
-      margin-left: 8px;
+    .modal__footer {
+      text-align: right;
+      .button {
+        margin-left: 8px;
+      }
     }
   }
 }
