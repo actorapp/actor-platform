@@ -86,6 +86,7 @@ final class DialogRootStateSpec extends ActorSuite with PeersImplicits {
     probe.commit(Archived(Instant.now, Some(bob)))
 
     getArchivedPeers should be(Seq(bob, alice))
+    checkSnapshot
   }
 
   private def getGroupPeers(typ: DialogGroupType)(implicit probe: ProcessorStateProbe[DialogRootState]) =
