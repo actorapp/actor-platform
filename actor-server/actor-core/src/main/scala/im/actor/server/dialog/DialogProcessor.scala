@@ -35,7 +35,7 @@ trait DialogQuery {
 }
 
 private object UnreadMessage {
-  val ordering = new Ordering[UnreadMessage] {
+  val OrderingAsc = new Ordering[UnreadMessage] {
     override def compare(x: UnreadMessage, y: UnreadMessage): Int =
       if (x.randomId == y.randomId) 0
       else if (x.date.isBefore(y.date)) -1
@@ -53,7 +53,7 @@ private[dialog] object DialogState {
     lastReceiveDate = Instant.ofEpochMilli(0),
     lastReadDate = Instant.ofEpochMilli(0),
     counter = 0,
-    unreadMessages = SortedSet.empty(UnreadMessage.ordering),
+    unreadMessages = SortedSet.empty(UnreadMessage.OrderingAsc),
     unreadMessagesMap = Map.empty
   )
 }
@@ -93,7 +93,7 @@ private[dialog] final case class DialogState(
       this.copy(lastReadDate = date)
     case MessagesReceived(date) if date.isAfter(lastReceiveDate) ⇒ this.copy(lastReceiveDate = date)
     case CounterReset() ⇒
-      this.copy(counter = 0, unreadMessages = SortedSet.empty(UnreadMessage.ordering), unreadMessagesMap = Map.empty)
+      this.copy(counter = 0, unreadMessages = SortedSet.empty(UnreadMessage.OrderingAsc), unreadMessagesMap = Map.empty)
   }
 
   override def withSnapshot(metadata: SnapshotMetadata, snapshot: Any): DialogState = snapshot match {
@@ -108,7 +108,7 @@ private[dialog] final case class DialogState(
           (s.unreadMessages.toSeq map {
             case (randomId, ts) ⇒ UnreadMessage(Instant.ofEpochMilli(ts), randomId)
           }): _*
-        )(UnreadMessage.ordering),
+        )(UnreadMessage.OrderingAsc),
         unreadMessagesMap = s.unreadMessages
       )
   }

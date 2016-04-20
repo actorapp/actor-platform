@@ -6,6 +6,7 @@ import akka.actor.{ ActorRef, Props, Status }
 import akka.pattern.{ ask, pipe }
 import akka.persistence.SnapshotMetadata
 import akka.util.Timeout
+import com.google.protobuf.wrappers.Int64Value
 import im.actor.concurrent._
 import im.actor.server.cqrs._
 import im.actor.server.dialog.DialogCommands.{ SendMessage, WriteMessageSelf }
@@ -32,11 +33,19 @@ trait DialogRootCommand
 trait DialogRootQuery
 
 private object SortableDialog {
-  val ordering = new Ordering[SortableDialog] {
+  val OrderingAsc = new Ordering[SortableDialog] {
     override def compare(x: SortableDialog, y: SortableDialog): Int =
       if (x.peer == y.peer) 0
       else if (x.ts.isBefore(y.ts)) -1
       else if (x.ts.isAfter(y.ts)) 1
+      else 0
+  }
+
+  val OrderingDesc = new Ordering[SortableDialog] {
+    override def compare(x: SortableDialog, y: SortableDialog): Int =
+      if (x.peer == y.peer) 0
+      else if (x.ts.isBefore(y.ts)) 1
+      else if (x.ts.isAfter(y.ts)) -1
       else 0
   }
 }
@@ -45,12 +54,12 @@ private case class SortableDialog(ts: Instant, peer: Peer)
 
 private object DialogRootState {
   val initial = DialogRootState(
-    Map(
-      DialogGroupType.Groups → SortedSet.empty(SortableDialog.ordering),
-      DialogGroupType.DirectMessages → SortedSet.empty(SortableDialog.ordering)
+    active = Map(
+      DialogGroupType.Groups → SortedSet.empty(SortableDialog.OrderingAsc),
+      DialogGroupType.DirectMessages → SortedSet.empty(SortableDialog.OrderingAsc)
     ),
-    SortedSet.empty(SortableDialog.ordering),
-    SortedSet.empty(SortableDialog.ordering)
+    activePeers = SortedSet.empty(SortableDialog.OrderingAsc),
+    archived = SortedSet.empty(SortableDialog.OrderingDesc)
   )
 }
 
@@ -74,7 +83,7 @@ private final case class DialogRootState(
       val state = DialogRootState.initial.copy(
         archived = SortedSet(
           (_archived map (di ⇒ SortableDialog(di.date, di.getPeer))): _*
-        )(SortableDialog.ordering)
+        )(SortableDialog.OrderingAsc)
       )
 
       dialogGroups.foldLeft(state) {
@@ -142,7 +151,7 @@ private final case class DialogRootState(
   private def withDialogsInGroup(group: DialogGroupType, sortableDialogs: Seq[SortableDialog]) = {
     val activeBase =
       if (this.active.contains(group)) this.active
-      else this.active + (group → SortedSet.empty(SortableDialog.ordering))
+      else this.active + (group → SortedSet.empty(SortableDialog.OrderingAsc))
 
     copy(
       active = activeBase map {
@@ -161,7 +170,7 @@ private final case class DialogRootState(
       case _                         ⇒ throw new RuntimeException("Unknown peer type")
     }
 
-    group → (this.active.getOrElse(group, SortedSet.empty(SortableDialog.ordering)) + sortableDialog)
+    group → (this.active.getOrElse(group, SortedSet.empty(SortableDialog.OrderingAsc)) + sortableDialog)
   }
 }
 
@@ -197,8 +206,22 @@ private trait DialogRootQueryHandlers {
       }
 
     for {
-      infoss ← Future.sequence(dialogs map (sd ⇒ getInfo(sd.peer) map (sd.ts.toEpochMilli → _.getInfo)))
-    } yield GetDialogsResponse(infoss.toMap)
+      infos ← Future.sequence(dialogs map (sd ⇒ getInfo(sd.peer) map (sd.ts.toEpochMilli → _.getInfo)))
+    } yield GetDialogsResponse(infos.toMap)
+  }
+
+  def getArchivedDialogs(offsetOpt: Option[Int64Value], limit: Int): Future[GetArchivedDialogsResponse] = {
+    val dialogs = (offsetOpt.map(offset ⇒ Instant.ofEpochMilli(offset.value)) match {
+      case None         ⇒ state.archived
+      case Some(offset) ⇒ state.archived.dropWhile(sd ⇒ sd.ts.isAfter(offset) || sd.ts == offset)
+    }).take(limit)
+
+    for {
+      infos ← Future.sequence(dialogs map (sd ⇒ getInfo(sd.peer) map (sd.ts.toEpochMilli → _.getInfo)))
+    } yield GetArchivedDialogsResponse(
+      dialogs = infos.toMap,
+      nextOffset = infos.lastOption map (tup ⇒ Int64Value(tup._1))
+    )
   }
 
   def getDialogGroups(): Future[GetDialogGroupsResponse] =
@@ -241,9 +264,10 @@ private class DialogRoot(userId: Int, extensions: Seq[ApiExtension])
   override protected def getInitialState: DialogRootState = DialogRootState.initial
 
   override protected def handleQuery: PartialFunction[Any, Future[Any]] = {
-    case GetCounter()               ⇒ getCounter()
-    case GetDialogGroups()          ⇒ getDialogGroups()
-    case GetDialogs(endDate, limit) ⇒ getDialogs(endDate, limit)
+    case GetCounter()                      ⇒ getCounter()
+    case GetDialogGroups()                 ⇒ getDialogGroups()
+    case GetDialogs(endDate, limit)        ⇒ getDialogs(endDate, limit)
+    case GetArchivedDialogs(offset, limit) ⇒ getArchivedDialogs(offset, limit)
   }
 
   override protected def handleCommand: Receive = {

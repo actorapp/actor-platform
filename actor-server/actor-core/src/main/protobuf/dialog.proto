@@ -143,6 +143,17 @@ message DialogRootQueries {
     message GetDialogsResponse {
         map<int64, DialogInfo> dialogs = 1;
     }
+
+    message GetArchivedDialogs {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogRootQuery";
+        google.protobuf.Int64Value offset = 1;
+        int32 limit = 2;
+    }
+
+    message GetArchivedDialogsResponse {
+        map<int64, DialogInfo> dialogs = 1;
+        google.protobuf.Int64Value nextOffset = 2;
+    }
 }
 
 message DialogStateSnapshot {
@@ -159,6 +170,7 @@ message DialogRootEnvelope {
         DialogRootQueries.GetCounter get_counter = 2;
         DialogRootQueries.GetDialogGroups get_dialog_groups = 3;
         DialogRootQueries.GetDialogs get_dialogs = 10;
+        DialogRootQueries.GetArchivedDialogs get_archived_dialogs = 11;
     }
     oneof command {
         DialogRootCommands.Archive archive = 6;
