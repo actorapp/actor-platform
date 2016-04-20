@@ -34,9 +34,19 @@ class CreateGroupForm extends Component {
     };
   }
 
+  constructor(props, context) {
+    super(props, context);
+
+    this.onContactToggle = this.onContactToggle.bind(this);
+    this.handleNameChange = this.handleNameChange.bind(this);
+    this.handleNameSubmit = this.handleNameSubmit.bind(this);
+    this.handleCreateGroup = this.handleCreateGroup.bind(this);
+    this.onSearchChange = this.onSearchChange.bind(this);
+  }
+
   componentDidMount() {
     if (this.state.step === CreateGroupSteps.NAME_INPUT) {
-      this.refs.groupName.focus();
+      this.refs.name.focus();
     }
   }
 
@@ -49,14 +59,13 @@ class CreateGroupForm extends Component {
   }
 
   renderContacts() {
-    const { intl } = this.context;
     const { selectedUserIds } = this.state;
     const contacts = this.getContacts();
 
     if (!contacts.length) {
       return (
         <li className="contacts__list__item contacts__list__item--empty text-center">
-          {intl.messages['inviteModalNotFound']}
+          <FormattedMessage id="inviteModalNotFound"/>
         </li>
       );
     }
@@ -75,7 +84,7 @@ class CreateGroupForm extends Component {
     });
   }
 
-  onContactToggle = (contact, isSelected) => {
+  onContactToggle(contact, isSelected) {
     const { selectedUserIds } = this.state;
 
     if (isSelected) {
@@ -83,15 +92,15 @@ class CreateGroupForm extends Component {
     } else {
       CreateGroupActionCreators.setSelectedUserIds(selectedUserIds.remove(contact.uid));
     }
-  };
+  }
 
-  handleNameChange = event => {
+  handleNameChange(event) {
     event.preventDefault();
 
     this.setState({name: event.target.value});
-  };
+  }
 
-  handleNameSubmit = event => {
+  handleNameSubmit(event) {
     event.preventDefault();
 
     const { name } = this.state;
@@ -100,96 +109,127 @@ class CreateGroupForm extends Component {
     if (trimmedName.length > 0) {
       CreateGroupActionCreators.setGroupName(trimmedName);
     }
-  };
+  }
 
-  handleCreateGroup = event => {
+  handleCreateGroup(event) {
+    event.preventDefault();
     const { name, selectedUserIds } = this.state;
 
-    event.preventDefault();
     CreateGroupActionCreators.createGroup(name, null, selectedUserIds.toJS());
-  };
+  }
 
-  onSearchChange = (e) => {
-    this.setState({search: e.target.value});
-  };
+  onSearchChange(event) {
+    this.setState({search: event.target.value});
+  }
+
+  renderGroupNameInput() {
+    const { name } = this.state;
+    return (
+      <TextField
+        className="input__material--wide"
+        floatingLabel={<FormattedMessage id="modal.createGroup.groupName"/>}
+        ref="name"
+        onChange={this.handleNameChange}
+        value={name}/>
+    );
+  }
+
+  renderAddUsersButton() {
+    return (
+      <button className="button button--lightblue" onClick={this.handleNameSubmit}>
+        <FormattedMessage id="button.addMembers"/>
+      </button>
+    );
+  }
+
+  renderUserSearchInput() {
+    const { search } = this.state;
+    const { intl } = this.context;
+
+    return (
+      <div className="modal__search">
+        <i className="material-icons">search</i>
+        <input
+          className="input input--search"
+          onChange={this.onSearchChange}
+          placeholder={intl.messages['inviteModalSearch']}
+          type="search"
+          value={search}/>
+      </div>
+    );
+  }
+
+  renderSelectedUsersCount() {
+    const { selectedUserIds } = this.state;
+    return (
+      <div className="count">
+        <FormattedMessage id="members" values={{numMembers: selectedUserIds.size}}/>
+      </div>
+    );
+  }
+
+  renderCreateGroupButton() {
+    const { step } = this.state;
+
+    if (step !== CreateGroupSteps.CREATION_STARTED) {
+      return (
+        <button className="button button--lightblue" onClick={this.handleCreateGroup}>
+          <FormattedMessage id="button.createGroup"/>
+        </button>
+      )
+    }
+
+    return (
+      <button className="button button--lightblue" disabled>
+        <FormattedMessage id="button.createGroup"/>
+      </button>
+    );
+  }
 
   render() {
-    const { step, name, selectedUserIds, search } = this.state;
-    const { intl } = this.context;
-    let stepForm;
+    const { step } = this.state;
 
     switch (step) {
       case CreateGroupSteps.NAME_INPUT:
-        stepForm = (
+        return (
           <form className="group-name">
-            <div className="modal-new__body">
-              <TextField className="input__material--wide"
-                         floatingLabel={intl.messages['modal.createGroup.groupName']}
-                         ref="groupName"
-                         onChange={this.handleNameChange}
-                         value={name}/>
+            <div className="modal__body">
+              {this.renderGroupNameInput()}
             </div>
 
-            <footer className="modal-new__footer text-right">
-              <button className="button button--lightblue"
-                      onClick={this.handleNameSubmit}>
-                {intl.messages['button.addMembers']}
-              </button>
+            <footer className="modal__footer text-right">
+              {this.renderAddUsersButton()}
             </footer>
-
           </form>
         );
-        break;
 
       case CreateGroupSteps.CONTACTS_SELECTION:
       case CreateGroupSteps.CREATION_STARTED:
-        stepForm = (
+        return (
           <form className="group-members">
-            <div className="modal-new__body">
-              {/*TODO: refactor this!!! */}
-              <div className="modal-new__search">
-                <i className="material-icons">search</i>
-                <input className="input input--search"
-                       onChange={this.onSearchChange}
-                       placeholder={intl.messages['inviteModalSearch']}
-                       type="search"
-                       value={search}/>
-              </div>
+            <div className="modal__body">
+              {this.renderUserSearchInput()}
 
               <ul className="contacts__list">
                 {this.renderContacts()}
               </ul>
             </div>
 
-            <footer className="modal-new__footer ">
-              <span className="pull-left">
-                {
-                  step === CreateGroupSteps.CONTACTS_SELECTION ||
-                  step === CreateGroupSteps.CREATION_STARTED
-                    ? <div className="count">
-                        <FormattedMessage id="members" values={{numMembers: selectedUserIds.size}}/>
-                      </div>
-                    : null
-                }
-              </span>
-              <span className="text-right">
-                {
-                  step === CreateGroupSteps.CREATION_STARTED
-                    ? <button className="button button--lightblue"
-                              disabled>{intl.messages['button.createGroup']}</button>
-                    : <button className="button button--lightblue"
-                              onClick={this.handleCreateGroup}>{intl.messages['button.createGroup']}</button>
-                }
-              </span>
-
+            <footer className="modal__footer">
+              <div className="row">
+                <div className="col-xs text-left">
+                  {this.renderSelectedUsersCount()}
+                </div>
+                <div className="col-xs text-right">
+                  {this.renderCreateGroupButton()}
+                </div>
+              </div>
             </footer>
           </form>
         );
-        break;
       default:
+        return null;
     }
-
-    return stepForm;
   }
 }
 

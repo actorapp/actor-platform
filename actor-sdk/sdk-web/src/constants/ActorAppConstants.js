@@ -82,8 +82,8 @@ export const ActionTypes = keymirror({
   CONTACT_LIST_SEARCH: null,
 
   // Group actions
-  GROUP_CREATE_MODAL_OPEN: null,
-  GROUP_CREATE_MODAL_CLOSE: null,
+  GROUP_CREATE_MODAL_SHOW: null,
+  GROUP_CREATE_MODAL_HIDE: null,
   GROUP_CREATE_SET_NAME: null,
   //GROUP_CREATE_SET_AVATAR: null,
   GROUP_CREATE_SET_MEMBERS: null,
@@ -364,7 +364,10 @@ export const ModalTypes = keymirror({
   PROFILE: null,
   CROP: null,
   GROUP_LIST: null,
-  PEOPLE_LIST: null
+  PEOPLE_LIST: null,
+  ADD_CONTACT: null,
+  CREATE_GROUP: null,
+  PREFERENCES: null
 });
 
 export const Path = {

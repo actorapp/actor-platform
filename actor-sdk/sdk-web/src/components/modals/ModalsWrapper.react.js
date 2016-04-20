@@ -10,6 +10,10 @@ import ModalStore from '../../stores/ModalStore';
 
 import Profile from './Profile.react';
 import Crop from './Crop.react';
+import GroupList from './GroupList.react';
+import AddContact from './AddContact.react';
+import CreateGroup from './CreateGroup.react';
+import Preferences from './Preferences.react';
 
 class ModalsWrapper extends Component {
   static getStores() {
@@ -30,6 +34,15 @@ class ModalsWrapper extends Component {
         return <Profile/>;
       case ModalTypes.CROP:
         return <Crop/>;
+      case ModalTypes.GROUP_LIST:
+        return <GroupList/>;
+      case ModalTypes.ADD_CONTACT:
+        return <AddContact/>;
+      case ModalTypes.CREATE_GROUP:
+        return <CreateGroup/>;
+      case ModalTypes.PREFERENCES:
+        return <Preferences/>;
+
       default:
         console.warn(`Unsupported modal type: ${currentModal}`);
         return null;

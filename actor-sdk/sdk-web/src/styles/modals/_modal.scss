@@ -5,6 +5,7 @@
   }
 }
 
+// Default modal styles
 .modal {
   outline: none;
   &__content {
@@ -15,7 +16,6 @@
   &__header {
     box-sizing: border-box;
     height: 60px;
-    padding: $modal-padding;
 
     box-shadow: 0 1px 0 0 rgba(black, .1);
 
@@ -36,12 +36,51 @@
         color: rgba($modal-text-color, .4);
       }
     }
+    &__close {
+      float: right;
+      margin: 0 8px 0 0;
+      cursor: pointer;
+      color: $modal-header-icon-color;
+      &:hover {
+        color: rgba($modal-header-icon-color, .8);
+        transform: scale(1.1);
+      }
+      &:active {
+        transform: scale(.9);
+      }
+    }
   }
-  &__body {
-    padding: 0 $modal-padding $modal-padding;
-  }
-  &__footer {
-    padding: 0 $modal-padding;
+  &__search {
+    position: relative;
+    .material-icons {
+      font-size: 18px;
+      line-height: 24px;
+
+      position: absolute;
+      top: 6px;
+      left: 8px;
+
+      pointer-events: none;
+
+      color: rgba(black, .25);
+    }
+    .input {
+      font-size: 14px;
+
+      margin: 0;
+      padding-left: 30px;
+
+      color: rgba(black, .2);
+      border: 1px solid $cloudy-blue;
+      background-color: white;
+      line-height: 32px;
+      width: 100%;
+      box-sizing: border-box;
+      border-radius: 2px;
+      &:focus {
+        color: $greyish-brown;
+      }
+    }
   }
 }
 

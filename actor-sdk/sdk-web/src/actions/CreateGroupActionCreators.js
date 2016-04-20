@@ -12,12 +12,12 @@ import ComposeActionCreators from '../actions/ComposeActionCreators';
 
 const CreateGroupActionCreators = {
   open() {
-    dispatch(ActionTypes.GROUP_CREATE_MODAL_OPEN);
+    dispatch(ActionTypes.GROUP_CREATE_MODAL_SHOW);
     ComposeActionCreators.toggleAutoFocus(false);
   },
 
   close() {
-    dispatch(ActionTypes.GROUP_CREATE_MODAL_CLOSE);
+    dispatch(ActionTypes.GROUP_CREATE_MODAL_HIDE);
     ComposeActionCreators.toggleAutoFocus(true);
   },
 

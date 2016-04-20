@@ -135,6 +135,4 @@ class MessageActions extends Component {
   }
 }
 
-ReactMixin.onClass(MessageActions, PureRenderMixin);
-
 export default MessageActions;

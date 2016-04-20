@@ -2,7 +2,7 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { Container } from 'flux/utils';
 import classnames from 'classnames';
 import ActorClient from '../../utils/ActorClient';
@@ -19,19 +19,17 @@ import AddContactActionCreators from '../../actions/AddContactActionCreators';
 import PreferencesActionCreators from '../../actions/PreferencesActionCreators';
 
 import ProfileStore from '../../stores/ProfileStore';
-import CreateGroupStore from '../../stores/CreateGroupStore';
-import AddContactStore from '../../stores/AddContactStore';
-import PreferencesStore from '../../stores/PreferencesStore';
 
 import SvgIcon from '../common/SvgIcon.react';
 import AvatarItem from '../common/AvatarItem.react';
-import CreateGroupModal from '../modals/CreateGroup';
-import AddContactModal from '../modals/AddContact.react';
-import PreferencesModal from '../modals/Preferences.react';
 
 class HeaderSection extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      isOpened: false
+    }
 
     this.openHelp = this.openHelp.bind(this);
     this.openTwitter = this.openTwitter.bind(this);
@@ -40,24 +38,13 @@ class HeaderSection extends Component {
   }
 
   static getStores() {
-    return [ProfileStore, CreateGroupStore, AddContactStore, PreferencesStore];
+    return [ProfileStore];
   }
 
   static calculateState() {
     return {
-      profile: ProfileStore.getProfile(),
-      isAddContactsOpen: AddContactStore.isOpen(),
-      isCreateGroupOpen: CreateGroupStore.isModalOpen(),
-      isPreferencesOpen: PreferencesStore.isOpen()
+      profile: ProfileStore.getProfile()
     }
-  }
-
-  static contextTypes = {
-    intl: PropTypes.object
-  };
-
-  componentWillMount() {
-    this.setState({isOpened: false});
   }
 
   toggleHeaderMenu = () => {
@@ -119,8 +106,7 @@ class HeaderSection extends Component {
   }
 
   setLogout = () => {
-    const { intl } = this.context;
-    confirm(intl.messages['modal.confirm.logout']).then(
+    confirm(<FormattedMessage id="modal.confirm.logout"/>).then(
       () => LoginActionCreators.setLoggedOut(),
       () => {}
     );
@@ -192,7 +178,7 @@ class HeaderSection extends Component {
   }
 
   render() {
-    const { profile, isOpened, isProfileOpen, isCreateGroupOpen, isAddContactsOpen, isPreferencesOpen } = this.state;
+    const { profile, isOpened } = this.state;
 
     if (!profile) return null;
 
@@ -247,14 +233,6 @@ class HeaderSection extends Component {
             </ul>
           </div>
         </div>
-
-
-        {/* Modals */}
-        {/* TODO: Move all modals to other place */}
-        {isCreateGroupOpen ? <CreateGroupModal/> : null}
-        {isAddContactsOpen ? <AddContactModal/> : null}
-        {isPreferencesOpen ? <PreferencesModal/> : null}
-
       </header>
     );
 
