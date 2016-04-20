@@ -11,6 +11,7 @@ final class DialogRootStateSpec extends ActorSuite with PeersImplicits {
   it should "have DMs and Groups by default" in default
   it should "sort dialogs by appearing" in show
   it should "remove Favourites on Unfavourite" in favouriteUnfavourite
+  it should "remove from Archived on Favourite or new message" in removeFromArchived
 
   import DialogRootEvents._
 
@@ -47,9 +48,32 @@ final class DialogRootStateSpec extends ActorSuite with PeersImplicits {
     getGroupPeers(DialogGroupType.DirectMessages) should contain(alice)
   }
 
+  def removeFromArchived() = {
+    implicit val probe = ProcessorStateProbe(DialogRootState.initial)
+
+    val alice = Peer.privat(1)
+
+    probe.commit(Archived(Instant.now, Some(alice)))
+    getArchivedPeers should be(Seq(alice))
+
+    probe.commit(Unarchived(Instant.now, Some(alice)))
+    getArchivedPeers should be(Seq.empty)
+    getGroupPeers(DialogGroupType.DirectMessages) should be(Seq(alice))
+
+    probe.commit(Archived(Instant.now, Some(alice)))
+    getGroupPeers(DialogGroupType.DirectMessages) should be(Seq.empty)
+
+    probe.commit(Favourited(Instant.now, Some(alice)))
+    getArchivedPeers should be(Seq.empty)
+    getGroupPeers(DialogGroupType.Favourites) should be(Seq(alice))
+  }
+
   private def getGroupPeers(typ: DialogGroupType)(implicit probe: ProcessorStateProbe[DialogRootState]) =
     probe.state.active.get(typ).get.toSeq.map(_.peer)
 
   private def getActivePeers(implicit probe: ProcessorStateProbe[DialogRootState]) =
     probe.state.activePeers.toSeq.map(_.peer)
+
+  private def getArchivedPeers(implicit probe: ProcessorStateProbe[DialogRootState]) =
+    probe.state.archived.toSeq.map(_.peer)
 }
