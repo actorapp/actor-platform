@@ -3,9 +3,9 @@
  */
 
 import React, { Component, PropTypes } from 'react';
+import EventListener from 'fbjs/lib/EventListener';
 import { findDOMNode } from 'react-dom';
-import ReactMixin from 'react-mixin';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
+import { shouldComponentUpdate } from 'react-addons-pure-render-mixin';
 import { FormattedMessage } from 'react-intl';
 import isInside from '../../../utils/isInside';
 import confirm from '../../../utils/confirm';
@@ -20,8 +20,7 @@ import DialogActionCreators from '../../../actions/DialogActionCreators';
 class RecentContextMenu extends Component {
   static propTypes = {
     peer: PropTypes.object.isRequired,
-    contextPos: PropTypes.object.isRequired,
-    hideOnScroll: PropTypes.bool.isRequired
+    contextPos: PropTypes.object.isRequired
   };
 
   static contextTypes = {
@@ -31,22 +30,23 @@ class RecentContextMenu extends Component {
   constructor(props) {
     super(props);
 
-    document.addEventListener('click', this.handleDocumentClick, true);
-    document.addEventListener('contextmenu', this.handleClose, true);
+    this.shouldComponentUpdate = shouldComponentUpdate.bind(this);
+  }
 
-    if (props.hideOnScroll) {
-      document.addEventListener('scroll', this.handleClose, true);
-    }
+  componentDidMount() {
+    this.listeners = [
+      EventListener.listen(document, 'click', this.handleDocumentClick),
+      EventListener.listen(document, 'contextmenu', this.handleClose),
+      EventListener.listen(document, 'scroll', this.handleClose)
+    ];
   }
 
   componentWillUnmount() {
-    const { hideOnScroll } = this.props;
-    document.removeEventListener('click', this.handleDocumentClick, true);
-    document.removeEventListener('contextmenu', this.handleClose, true);
+    this.listeners.forEach((listener) => {
+      listener.remove();
+    });
 
-    if (hideOnScroll) {
-      document.removeEventListener('scroll', this.handleClose, true);
-    }
+    this.listeners = null;
   }
 
   handleDocumentClick = (event) => {
@@ -130,7 +130,5 @@ class RecentContextMenu extends Component {
     );
   }
 }
-
-ReactMixin.onClass(RecentContextMenu, PureRenderMixin);
 
 export default RecentContextMenu;

@@ -3,13 +3,15 @@
  */
 
 import React, { Component, PropTypes } from 'react';
-import ReactMixin from 'react-mixin';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
 
 class Loading extends Component {
   static contextTypes = {
     intl: PropTypes.object
   };
+
+  shouldComponentUpdate() {
+    return false;
+  }
 
   render() {
     const { intl } = this.context;
@@ -23,7 +25,5 @@ class Loading extends Component {
     )
   }
 }
-
-ReactMixin.onClass(Loading, PureRenderMixin);
 
 export default Loading;
