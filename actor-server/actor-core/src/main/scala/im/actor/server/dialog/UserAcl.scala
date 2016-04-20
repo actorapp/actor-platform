@@ -3,11 +3,11 @@ package im.actor.server.dialog
 import akka.actor.ActorSystem
 import im.actor.server.db.DbExtension
 import im.actor.server.model.Peer
-import im.actor.server.persist.contact.UserContactRepo
+import im.actor.server.persist.social.RelationRepo
 
 import scala.concurrent.Future
 
-trait UserAcl {
+trait UserACL {
 
   protected val system: ActorSystem
 
@@ -28,7 +28,7 @@ trait UserAcl {
   )(default: ⇒ Future[A], failed: ⇒ Future[A]): Future[A] = {
     import system.dispatcher
     for {
-      isBlocked ← DbExtension(system).db.run(UserContactRepo.isBlocked(contactOwnerUserId, contactUserId))
+      isBlocked ← DbExtension(system).db.run(RelationRepo.isBlocked(contactOwnerUserId, contactUserId))
       result ← if (isBlocked) failed else default
     } yield result
   }
