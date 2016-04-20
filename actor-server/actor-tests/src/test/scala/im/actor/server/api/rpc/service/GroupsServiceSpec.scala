@@ -973,6 +973,8 @@ final class GroupsServiceSpec
     }
     val outPeer = ApiOutPeer(ApiPeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
 
+    Thread.sleep(500)
+
     {
       implicit val clientData = clientData2
       whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100)) { resp ⇒
