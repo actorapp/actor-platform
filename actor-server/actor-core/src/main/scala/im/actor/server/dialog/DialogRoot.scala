@@ -79,7 +79,7 @@ private final case class DialogRootState(
 
       dialogGroups.foldLeft(state) {
         case (acc, DialogGroup(group, infos)) ⇒
-          withDialogsInGroup(group, infos map (di ⇒ SortableDialog(di.date, di.getPeer)))
+          acc.withDialogsInGroup(group, infos map (di ⇒ SortableDialog(di.date, di.getPeer)))
       }
     }
   }
@@ -139,14 +139,19 @@ private final case class DialogRootState(
     )
   }
 
-  private def withDialogsInGroup(group: DialogGroupType, sortableDialogs: Seq[SortableDialog]) =
+  private def withDialogsInGroup(group: DialogGroupType, sortableDialogs: Seq[SortableDialog]) = {
+    val activeBase =
+      if (this.active.contains(group)) this.active
+      else this.active + (group → SortedSet.empty(SortableDialog.ordering))
+
     copy(
-      active = this.active map {
+      active = activeBase map {
       case (`group`, dialogs) ⇒ (group, dialogs ++ sortableDialogs)
       case other              ⇒ other
     },
       activePeers = this.activePeers ++ sortableDialogs
     )
+  }
 
   private def dialogGroup(sortableDialog: SortableDialog, isFavourite: Boolean = false) = {
     val group = (isFavourite, sortableDialog.peer.typ) match {
