@@ -35,8 +35,8 @@ private object SortableDialog {
   val ordering = new Ordering[SortableDialog] {
     override def compare(x: SortableDialog, y: SortableDialog): Int =
       if (x.peer == y.peer) 0
-      else if (x.ts.isBefore(y.ts)) 1
-      else if (x.ts.isAfter(y.ts)) -1
+      else if (x.ts.isBefore(y.ts)) -1
+      else if (x.ts.isAfter(y.ts)) 1
       else 0
   }
 }
@@ -46,8 +46,8 @@ private case class SortableDialog(ts: Instant, peer: Peer)
 private object DialogRootState {
   val initial = DialogRootState(
     Map(
-      DialogGroupType.DirectMessages → SortedSet.empty(SortableDialog.ordering),
-      DialogGroupType.Groups → SortedSet.empty(SortableDialog.ordering)
+      DialogGroupType.Groups → SortedSet.empty(SortableDialog.ordering),
+      DialogGroupType.DirectMessages → SortedSet.empty(SortableDialog.ordering)
     ),
     SortedSet.empty(SortableDialog.ordering),
     SortedSet.empty(SortableDialog.ordering)
@@ -58,10 +58,10 @@ private final case class DialogRootState(
   active:      Map[DialogGroupType, SortedSet[SortableDialog]],
   activePeers: SortedSet[SortableDialog],
   archived:    SortedSet[SortableDialog]
-) extends ProcessorState[DialogRootState, DialogRootEvent] {
+) extends ProcessorState[DialogRootState] {
   import DialogRootEvents._
 
-  override def updated(e: DialogRootEvent): DialogRootState = e match {
+  override def updated(e: Event): DialogRootState = e match {
     case Created(ts, Some(peer))      ⇒ withShownPeer(ts, peer)
     case Archived(ts, Some(peer))     ⇒ withArchivedPeer(ts, peer)
     case Unarchived(ts, Some(peer))   ⇒ withShownPeer(ts, peer)
@@ -122,7 +122,7 @@ private final case class DialogRootState(
 
     copy(
       activePeers = this.activePeers + sortableDialog,
-      active = this.active.mapValues(_.filterNot(_ == peer)) + dialogGroup(sortableDialog, isFavourite = true),
+      active = this.active.mapValues(_.filterNot(_.peer == peer)) + dialogGroup(sortableDialog, isFavourite = true),
       archived = this.archived - sortableDialog
     )
   }
@@ -132,7 +132,7 @@ private final case class DialogRootState(
 
     copy(
       active =
-        (this.active.mapValues(_.filterNot(_ == peer)) + dialogGroup(sortableDialog)).filter {
+        (this.active.mapValues(_.filterNot(_.peer == peer)) + dialogGroup(sortableDialog)).filter {
           case (DialogGroupType.Favourites, peers) if peers.isEmpty ⇒ false
           case _ ⇒ true
         }
@@ -219,8 +219,8 @@ private trait DialogRootQueryHandlers {
 }
 
 private class DialogRoot(userId: Int, extensions: Seq[ApiExtension])
-  extends Processor[DialogRootState, DialogRootEvent]
-  with IncrementalSnapshots[DialogRootState, DialogRootEvent]
+  extends Processor[DialogRootState]
+  with IncrementalSnapshots[DialogRootState]
   with DialogRootQueryHandlers {
   import DialogRootEvents._
   import DialogRootQueries._
