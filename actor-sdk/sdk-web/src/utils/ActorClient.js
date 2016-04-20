@@ -140,10 +140,6 @@ class ActorClient {
     return ActorClient.createBindings('bindStickers', 'unbindStickers', callback);
   }
 
-  bindUserBlocked(callback) {
-    return ActorClient.createBindings('bindUserBlocked', 'unbindUserBlocked', callback);
-  }
-
   makeCall(userId) {
     return window.messenger.doCall(userId);
   }
