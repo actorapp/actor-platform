@@ -21,7 +21,7 @@ object ResumableProjection {
   private[cqrs] val maxHits = 20
 }
 
-private[cqrs] trait ResumableProjectionStateBase extends ProcessorState[ResumableProjectionState, Event] {
+private[cqrs] trait ResumableProjectionStateBase extends ProcessorState[ResumableProjectionState] {
   this: ResumableProjectionState ⇒
 
   import ResumableProjectionEvents._
@@ -49,7 +49,7 @@ final class ResumableProjection(id: String)(implicit factory: ActorRefFactory) {
 
   private var isStopped = false
 
-  private val _actor = factory.actorOf(Props(new Processor[ResumableProjectionState, Event] {
+  private val _actor = factory.actorOf(Props(new Processor[ResumableProjectionState] {
     import ResumableProjectionEvents._
 
     override def persistenceId: String = s"RProj_$id"
