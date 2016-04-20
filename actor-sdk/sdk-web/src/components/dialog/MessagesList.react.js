@@ -144,6 +144,10 @@ class MessagesList extends Component {
       return <Welcome peer={peer} key="header" />;
     }
 
+    if (!messages.messages.length) {
+      return null;
+    }
+
     return <Loading key="header" />;
   }
 
