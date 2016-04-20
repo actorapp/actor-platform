@@ -45,8 +45,6 @@ public class ActorStyle {
     /// View Controller background color for settings
     public var vcBackyardColor = UIColor(red: 238/255.0, green: 238/255.0, blue: 238/255.0, alpha: 1)
     
-
-    
     //
     // UINavigationBar
     //
@@ -725,8 +723,9 @@ public class ActorStyle {
     public var welcomeLoginTextColor = UIColor.whiteColor()
     
     /// Welcome Logo
-    public var welcomeLogo: UIImage? = UIImage.bundled("logo_welcome")
-    
+    public var welcomeLogo:     UIImage? = UIImage.bundled("logo_welcome")
+    public var welcomeLogoSize: CGSize = CGSize(width: 90, height: 90)
+    public var logoViewVerticalGap: CGFloat = 145
     
     //
     // Auth Screen
