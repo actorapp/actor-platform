@@ -45,7 +45,7 @@ object RelationRepo {
     related(userId, relatedTo).map(_.status).update(RelationStatus.Approved)
 
   def isBlocked(userId: Int, relatedTo: Int): DBIO[Boolean] =
-    related(userId, relatedTo).map(_.status === RelationStatus.Approved).exists.result
+    related(userId, relatedTo).filter(_.status === RelationStatus.Blocked).exists.result
 
   def fetchBlockedIds(userId: Int): DBIO[Seq[Int]] =
     relations.filter(r ⇒ r.userId === userId && r.status === RelationStatus.Blocked).map(_.relatedTo).result
