@@ -32,6 +32,11 @@ message DialogGroup {
     repeated DialogInfo dialogs = 2;
 }
 
+message DialogRootStateSnapshot {
+    repeated DialogGroup dialog_groups = 1;
+    repeated DialogInfo archived = 2;
+}
+
 message DialogRootEvents {
     message Created {
         option (scalapb.message).extends = "im.actor.server.dialog.DialogRootEvent";
