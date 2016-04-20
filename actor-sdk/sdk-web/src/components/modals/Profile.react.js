@@ -173,19 +173,18 @@ class Profile extends Component {
 
     return (
       <Modal
-        overlayClassName="modal-overlay modal-overlay--fullscreen"
-        className="modal modal--profile"
+        overlayClassName="modal-overlay modal-overlay--white"
+        className="modal modal--fullscreen"
         onRequestClose={this.handleClose}
+        shouldCloseOnOverlayClick={false}
         isOpen>
 
         <ModalCloseButton onClick={this.handleClose}/>
 
-        <div className="modal__content">
+        <div className="modal__content profile">
 
           <header className="modal__header">
-            <h1 className="modal__header__title">
-              <FormattedMessage id="modal.profile.title"/>
-            </h1>
+            <FormattedMessage id="modal.profile.title" tagName="h1"/>
           </header>
 
           <div className="modal__body row">

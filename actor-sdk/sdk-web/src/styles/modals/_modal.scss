@@ -1,91 +1,78 @@
-.modal {
-  &__header {
-    margin-bottom: 32px;
-
-    @include no-select();
-  }
-
-  &__close-button {
-    position: fixed;
-    top: 32px;
-    right: 32px;
-
-    width: 48px;
-    height: 48px;
-
-    cursor: pointer;
-    transition: background 100ms;
-    text-align: center;
-
-    color: rgba(black, .3);
-    border-radius: 50%;
-    .close_icon {
-      font-size: 32px;
-      line-height: 48px;
-
-      z-index: 1010;
-
-      transition: 100ms;
-    }
-    .text {
-      line-height: 20px;
-
-      position: absolute;
-      z-index: 1050;
-      top: 14px;
-      right: 60px;
-
-      transition: opacity 100ms;
-      pointer-events: none;
-
-      opacity: 0;
-
-      @include no-select();
-    }
-    &:hover {
-      background-color: rgba(black, .05);
-      .text {
-        opacity: 1;
-      }
-      .close_icon {
-        color: rgba(black, .5);
-      }
-    }
-    &:active {
-      background-color: rgba(black, .1);
-      .close_icon {
-        transform: scale(.8);
-      }
-    }
-  }
-
-  &__body {
-  }
-
-  &__footer {
-    margin-top: 32px;
+.modal-overlay {
+  background-color: $modal-backdrop-color;
+  &--white {
+    background-color: $modal-background;
   }
 }
 
-.modal-overlay--fullscreen {
-  background-color: white;
-  .modal {
-    &__content {
-      margin: 0 auto;
-      padding: 100px 32px;
-      max-width: 600px;
-    }
+.modal {
+  outline: none;
+  &__content {
+    border-radius: $modal-border-raidus;
+    background-color: $modal-background;
+    box-shadow: 0 4px 10px 0 rgba(black, .25);
+  }
+  &__header {
+    box-sizing: border-box;
+    height: 60px;
+    padding: $modal-padding;
 
-    &__header {
-      &__title {
-        font-size: 40px;
-        line-height: 50px;
-        font-weight: 500;
-        margin: 0;
-        padding: 0;
-        color: #656565;
+    box-shadow: 0 1px 0 0 rgba(black, .1);
+
+    @include no-select();
+    h1 {
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 24px;
+
+      display: inline-block;
+
+      margin: 0;
+
+      vertical-align: middle;
+
+      color: $modal-text-color;
+      small {
+        color: rgba($modal-text-color, .4);
       }
     }
+  }
+  &__body {
+    padding: 0 $modal-padding $modal-padding;
+  }
+  &__footer {
+    padding: 0 $modal-padding;
+  }
+}
 
+// Fullscreen modal styles
+.modal--fullscreen {
+  .modal {
+    &__content {
+      background-color: transparent;
+      box-shadow: none;
+    }
+    &__header {
+      height: auto;
+      padding: 0 $modal-padding;
+
+      box-shadow: none;
+      h1 {
+        font-size: 40px;
+        font-weight: 500;
+        line-height: 50px;
+
+        margin: 0;
+        padding: 0;
+
+        color: $modal-text-light-color;
+        small {
+          font-size: 20px;
+          font-weight: 400;
+
+          color: rgba($modal-text-light-color, .3);
+        }
+      }
+    }
   }
 }

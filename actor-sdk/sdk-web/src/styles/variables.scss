@@ -106,13 +106,15 @@ $call-rings-size-small: $avatar-large-size + 5;
 $call-rings-step-small: 15px;
 
 // Modal
-$modal-default-width: 300px;
-$modal-default-background: rgb(255, 255, 255);
-$modal-default-radius: 4px;
+$modal-min-width: 300px;
+$modal-max-width: 700px;
+$modal-background: rgb(255, 255, 255);
 $modal-backdrop-color: rgba(0, 0, 0, .6);
+$modal-padding: 18px;
+$modal-border-raidus: 4px;
 $modal-header-height: 60px;
-$modal-text-color: rgba(57, 57, 57, .85);
-$modal-text-light-color: rgba(57, 57, 57, .6);
+$modal-text-color: rgb(77, 77, 77);
+$modal-text-light-color:  rgb(101, 101, 101);
 
 // Login
 $login-text-color: #8ba8cb;
