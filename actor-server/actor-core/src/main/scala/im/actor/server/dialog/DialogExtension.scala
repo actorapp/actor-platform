@@ -284,6 +284,28 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
     } yield dialogs
   }
 
+  def fetchArchivedDialogs(userId: Int, offset: Option[Array[Byte]], limit: Int): Future[(Map[Instant, DialogInfo], Option[Array[Byte]])] = {
+    (processorRegion(Peer.privat(userId)) ?
+      UserEnvelope(userId)
+      .withDialogRootEnvelope(DialogRootEnvelope()
+        .withGetArchivedDialogs(DialogRootQueries.GetArchivedDialogs(offset map Int64Value.parseFrom, limit))))
+      .mapTo[DialogRootQueries.GetArchivedDialogsResponse]
+      .map {
+        case DialogRootQueries.GetArchivedDialogsResponse(dialogs, nextOffset) ⇒
+          (
+            dialogs.map { case (date, dialog) ⇒ Instant.ofEpochMilli(date) → dialog },
+            nextOffset map (_.toByteArray)
+          )
+      }
+  }
+
+  def fetchArchivedApiDialogs(userId: Int, offset: Option[Array[Byte]], limit: Int): Future[(Iterable[ApiDialog], Option[Array[Byte]])] = {
+    for {
+      (infos, nextOffset) ← fetchArchivedDialogs(userId, offset, limit)
+      dialogs ← Future.sequence(infos map { case (date, info) ⇒ getApiDialog(userId, info, date) })
+    } yield (dialogs, nextOffset)
+  }
+
   def getDialogInfo(userId: Int, peer: Peer): Future[DialogInfo] = {
     (userExt.processorRegion.ref ? UserEnvelope(userId).withDialogEnvelope(DialogEnvelope().withGetInfo(DialogQueries.GetInfo(Some(peer)))))
       .mapTo[DialogQueries.GetInfoResponse]
