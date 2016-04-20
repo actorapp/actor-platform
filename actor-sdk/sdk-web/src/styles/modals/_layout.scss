@@ -1,34 +1,45 @@
 .modal-overlay {
   position: fixed;
-  z-index: 100;
+  z-index: 1000;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
 
   display: flex;
+  // justify-content: center;
+  overflow: auto;
   flex-direction: column;
 
-  background-color: $modal-backdrop-color;
-
-  align-items: center;
-  justify-content: center;
-  &--fullscreen {
-    .modal {
-      flex: 1 1 auto;
-      width: 100%;
-      border-radius: 0;
-      overflow: auto;
-    }
-  }
+  // align-items: center;
 }
 
 .modal {
-  min-width: $modal-default-width;
+  margin: 120px auto 100px;
+  padding: 0 $modal-padding;
+  &__content {
+    min-width: $modal-min-width;
+    max-width: $modal-max-width;
+  }
 
-  border-radius: $modal-default-radius;
-  outline: none;
-  background-color: $modal-default-background;
+  &__header,
+  &__footer {
+    padding: $modal-padding;
+  }
 
-  flex: 0 1 auto;
+  &__body {
+    padding: 0 $modal-padding;
+  }
+
+  &--fullscreen {
+    // flex: 1 1 auto;
+    .modal__content {
+      min-width: 500px;
+      max-width: 600px;
+    }
+
+    .modal__body {
+      padding: $modal-padding;
+    }
+  }
 }
