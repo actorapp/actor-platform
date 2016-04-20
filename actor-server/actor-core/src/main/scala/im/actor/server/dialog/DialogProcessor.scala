@@ -54,10 +54,10 @@ private[dialog] final case class DialogState(
   counter:           Int,
   unreadMessages:    SortedSet[UnreadMessage],
   unreadMessagesMap: Map[Long, Long]
-) extends ProcessorState[DialogState, DialogEvent] {
+) extends ProcessorState[DialogState] {
   import DialogEvents._
 
-  override def updated(e: DialogEvent): DialogState = e match {
+  override def updated(e: Event): DialogState = e match {
     case NewMessage(randomId, date, senderUserId, messageHeader) ⇒
       if (senderUserId != userId) {
         this.copy(
@@ -132,8 +132,8 @@ object DialogProcessor {
 }
 
 private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, extensions: Seq[ApiExtension])
-  extends Processor[DialogState, DialogEvent]
-  with IncrementalSnapshots[DialogState, DialogEvent]
+  extends Processor[DialogState]
+  with IncrementalSnapshots[DialogState]
   with AlertingActor
   with DialogCommandHandlers
   with ActorFutures

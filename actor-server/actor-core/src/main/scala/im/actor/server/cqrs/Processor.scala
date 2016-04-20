@@ -11,8 +11,8 @@ import scala.concurrent.Future
 import scala.reflect.ClassTag
 import scala.util.control.NoStackTrace
 
-trait ProcessorState[S, E] {
-  def updated(e: E): S
+trait ProcessorState[S] {
+  def updated(e: Event): S
 
   def withSnapshot(metadata: SnapshotMetadata, snapshot: Any): S
 
@@ -31,7 +31,7 @@ trait PersistenceDebug extends PersistentActor with ActorLogging with AlertingAc
   }
 }
 
-trait IncrementalSnapshots[S <: ProcessorState[S, E], E] extends ProcessorStateControl[S, E] with PersistenceDebug {
+trait IncrementalSnapshots[S <: ProcessorState[S]] extends ProcessorStateControl[S] with PersistenceDebug {
   private var _commitsNum = 0
 
   val SnapshotCommitsThreshold = 100
@@ -46,16 +46,16 @@ trait IncrementalSnapshots[S <: ProcessorState[S, E], E] extends ProcessorStateC
   }
 }
 
-trait ProcessorStateControl[S <: ProcessorState[S, E], E] {
+trait ProcessorStateControl[S <: ProcessorState[S]] {
   private[this] var _state: S = getInitialState
 
   protected def getInitialState: S
 
-  protected final def state: S = _state
+  final def state: S = _state
 
-  protected def setState(state: S) = this._state = state
+  def setState(state: S) = this._state = state
 
-  protected def commit(e: E): S = {
+  def commit(e: Event): S = {
     beforeCommit()
     setState(state.updated(e))
     afterCommit()
@@ -67,13 +67,16 @@ trait ProcessorStateControl[S <: ProcessorState[S, E], E] {
   protected def afterCommit() = {}
 }
 
+object ProcessorStateProbe {
+  def apply[S <: ProcessorState[S]](initial: S) = new ProcessorStateProbe[S](initial)
+}
 
-final class ProcessorStateProbe[S <: ProcessorState[S, E], E](initial: S) extends ProcessorStateControl[S, E] {
+final class ProcessorStateProbe[S <: ProcessorState[S]](initial: S) extends ProcessorStateControl[S] {
   override protected def getInitialState: S = initial
 }
 
-abstract class Processor[S <: ProcessorState[S, E], E: ClassTag]
-  extends ProcessorStateControl[S, E]
+abstract class Processor[S <: ProcessorState[S]]
+  extends ProcessorStateControl[S]
   with PersistenceDebug {
 
   import context.dispatcher
@@ -89,7 +92,7 @@ abstract class Processor[S <: ProcessorState[S, E], E: ClassTag]
   }
 
   override final def receiveRecover = {
-    case e: E ⇒
+    case e: Event ⇒
       setState(state.updated(e))
     case SnapshotOffer(metadata, snapshot) ⇒
       setState(state.withSnapshot(metadata, snapshot))
