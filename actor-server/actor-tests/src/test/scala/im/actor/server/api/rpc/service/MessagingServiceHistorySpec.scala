@@ -135,6 +135,9 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
       {
         implicit val clientData = clientData1
 
+        // Archiving should not hide from LoadDialogs
+        whenReady(service.handleArchiveChat(user2Peer))(identity)
+
         whenReady(service.handleLoadDialogs(0, 100)) { resp ⇒
           resp should matchPattern {
             case Ok(_) ⇒

@@ -78,6 +78,8 @@ private final case class DialogRootState(
     case Unfavourited(ts, Some(peer)) ⇒ withUnfavouritedPeer(ts, peer)
   }
 
+  lazy val allPeers = activePeers ++ archived
+
   override def withSnapshot(metadata: SnapshotMetadata, snapshot: Any): DialogRootState = snapshot match {
     case DialogRootStateSnapshot(dialogGroups, _archived) ⇒ {
       val state = DialogRootState.initial.copy(
@@ -201,8 +203,8 @@ private trait DialogRootQueryHandlers {
   def getDialogs(endDate: Instant, limit: Int): Future[GetDialogsResponse] = {
     val dialogs =
       endDateTimeFrom(endDate) match {
-        case Some(_) ⇒ state.activePeers.view.filter(sd ⇒ sd.ts.isBefore(endDate) || sd.ts == endDate).take(limit)
-        case None    ⇒ state.activePeers.takeRight(limit)
+        case Some(_) ⇒ state.allPeers.view.filter(sd ⇒ sd.ts.isBefore(endDate) || sd.ts == endDate).take(limit)
+        case None    ⇒ state.allPeers.takeRight(limit)
       }
 
     for {
