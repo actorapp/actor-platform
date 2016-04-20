@@ -2,6 +2,7 @@ package im.actor.server.dialog
 
 import java.time.Instant
 
+import akka.persistence.SnapshotMetadata
 import im.actor.api.rpc.PeersImplicits
 import im.actor.server.ActorSuite
 import im.actor.server.cqrs.ProcessorStateProbe
@@ -32,6 +33,7 @@ final class DialogRootStateSpec extends ActorSuite with PeersImplicits {
     getActivePeers should be(Seq(alice, bob))
 
     getGroupPeers(DialogGroupType.DirectMessages) should be(Seq(alice, bob))
+    checkSnapshot
   }
 
   def favouriteUnfavourite() = {
@@ -46,6 +48,7 @@ final class DialogRootStateSpec extends ActorSuite with PeersImplicits {
 
     probe.state.active.keys shouldNot contain(DialogGroupType.Favourites)
     getGroupPeers(DialogGroupType.DirectMessages) should contain(alice)
+    checkSnapshot
   }
 
   def removeFromArchived() = {
@@ -55,17 +58,21 @@ final class DialogRootStateSpec extends ActorSuite with PeersImplicits {
 
     probe.commit(Archived(Instant.now, Some(alice)))
     getArchivedPeers should be(Seq(alice))
+    checkSnapshot
 
     probe.commit(Unarchived(Instant.now, Some(alice)))
     getArchivedPeers should be(Seq.empty)
     getGroupPeers(DialogGroupType.DirectMessages) should be(Seq(alice))
+    checkSnapshot
 
     probe.commit(Archived(Instant.now, Some(alice)))
     getGroupPeers(DialogGroupType.DirectMessages) should be(Seq.empty)
+    checkSnapshot
 
     probe.commit(Favourited(Instant.now, Some(alice)))
     getArchivedPeers should be(Seq.empty)
     getGroupPeers(DialogGroupType.Favourites) should be(Seq(alice))
+    checkSnapshot
   }
 
   private def getGroupPeers(typ: DialogGroupType)(implicit probe: ProcessorStateProbe[DialogRootState]) =
@@ -76,4 +83,7 @@ final class DialogRootStateSpec extends ActorSuite with PeersImplicits {
 
   private def getArchivedPeers(implicit probe: ProcessorStateProbe[DialogRootState]) =
     probe.state.archived.toSeq.map(_.peer)
+
+  private def checkSnapshot(implicit probe: ProcessorStateProbe[DialogRootState]) =
+    DialogRootState.initial.withSnapshot(SnapshotMetadata("", 0), probe.state.snapshot) should be(probe.state)
 }
