@@ -4,10 +4,10 @@
 
 import { map } from 'lodash';
 import React, { PropTypes, Component } from 'react';
+import EventListener from 'fbjs/lib/EventListener';
 import { findDOMNode } from 'react-dom';
 import classnames from 'classnames';
-import ReactMixin from 'react-mixin';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
+import { shouldComponentUpdate } from 'react-addons-pure-render-mixin';
 
 import { KeyCodes } from '../../constants/ActorAppConstants';
 
@@ -32,6 +32,8 @@ class MentionDropdown extends Component {
       isOpen: mentions && mentions.length > 0,
       selectedIndex: 0
     };
+
+    this.shouldComponentUpdate = shouldComponentUpdate.bind(this);
   }
 
   componentWillUnmount() {
@@ -55,13 +57,21 @@ class MentionDropdown extends Component {
   }
 
   setListeners() {
-    document.addEventListener('keydown', this.onKeyDown, false);
-    document.addEventListener('click', this.closeMentions, false);
+    this.cleanListeners();
+    this.listeners = [
+      EventListener.listen(document, 'keydown', this.onKeyDown),
+      EventListener.listen(document, 'click', this.closeMentions)
+    ];
   }
 
   cleanListeners() {
-    document.removeEventListener('keydown', this.onKeyDown, false);
-    document.removeEventListener('click', this.closeMentions, false);
+    if (this.listeners) {
+      this.listeners.forEach((listener) => {
+        listener.remove();
+      });
+
+      this.listeners = null;
+    }
   }
 
   closeMentions = () => this.setState({ isOpen: false });
@@ -184,7 +194,5 @@ class MentionDropdown extends Component {
     );
   }
 }
-
-ReactMixin.onClass(MentionDropdown, PureRenderMixin);
 
 export default MentionDropdown;

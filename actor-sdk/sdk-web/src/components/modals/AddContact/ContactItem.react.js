@@ -3,8 +3,7 @@
  */
 
 import React, { Component, PropTypes } from 'react';
-import ReactMixin from 'react-mixin';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
+import { shouldComponentUpdate } from 'react-addons-pure-render-mixin';
 import AvatarItem from '../../common/AvatarItem.react';
 import { FormattedMessage } from 'react-intl';
 import { escapeWithEmoji } from '../../../utils/EmojiUtils';
@@ -29,6 +28,8 @@ class ContactItem extends Component {
 
   constructor(props) {
     super(props);
+
+    this.shouldComponentUpdate = shouldComponentUpdate.bind(this);
   }
 
   render() {
@@ -99,7 +100,5 @@ class ContactItem extends Component {
     onSelect && onSelect(id, isContact)
   };
 }
-
-ReactMixin.onClass(ContactItem, PureRenderMixin);
 
 export default ContactItem;
