@@ -2,7 +2,6 @@ package im.actor.server.api.rpc.service.messaging
 
 import java.time.Instant
 
-import com.google.protobuf.wrappers.Int32Value
 import im.actor.api.rpc.PeerHelpers._
 import im.actor.api.rpc._
 import im.actor.api.rpc.messaging._
@@ -10,10 +9,10 @@ import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeerType }
 import im.actor.server.dialog.HistoryUtils
 import im.actor.server.group.GroupUtils
-import im.actor.server.model.{ DialogObsolete, HistoryMessage, Peer, PeerType }
+import im.actor.server.model.{ DialogObsolete, HistoryMessage, Peer }
 import im.actor.server.persist.contact.UserContactRepo
-import im.actor.server.persist.{ GroupUserRepo, HistoryMessageRepo }
 import im.actor.server.persist.dialog.DialogRepo
+import im.actor.server.persist.{ GroupUserRepo, HistoryMessageRepo }
 import im.actor.server.sequence.SeqState
 import im.actor.server.user.UserUtils
 import org.joda.time.DateTime
@@ -26,9 +25,9 @@ import scala.language.postfixOps
 trait HistoryHandlers {
   self: MessagingServiceImpl ⇒
 
+  import DBIOResultRpc._
   import HistoryUtils._
   import Implicits._
-  import DBIOResultRpc._
 
   override def doHandleMessageReceived(peer: ApiOutPeer, date: Long, clientData: im.actor.api.rpc.ClientData): Future[HandlerResult[ResponseVoid]] = {
     authorized(clientData) { client ⇒
@@ -68,20 +67,17 @@ trait HistoryHandlers {
     }
   }
 
-  override def doHandleLoadArchived(nextOffset: Option[Array[Byte]], limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadArchived]] =
+  override def doHandleLoadArchived(offset: Option[Array[Byte]], limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadArchived]] =
     authorized(clientData) { implicit client ⇒
-      val offset = nextOffset map (Int32Value.parseFrom(_).value) getOrElse 0
-
-      db.run(for {
-        models ← DialogRepo.fetchArchived(client.userId, offset, limit)
-        dialogs ← DBIO.sequence(models map getDialogStruct) map (_.flatten)
-        (users, groups) ← getDialogsUsersGroups(dialogs)
+      for {
+        (dialogs, nextOffset) ← dialogExt.fetchArchivedApiDialogs(client.userId, offset, limit)
+        (users, groups) ← db.run(getDialogsUsersGroups(dialogs.toSeq))
       } yield Ok(ResponseLoadArchived(
         groups.toVector,
         users.toVector,
         dialogs.toVector,
-        Some(Int32Value(offset + dialogs.length).toByteArray)
-      )))
+        nextOffset
+      ))
     }
 
   override def doHandleLoadDialogs(endDate: Long, limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadDialogs]] =
