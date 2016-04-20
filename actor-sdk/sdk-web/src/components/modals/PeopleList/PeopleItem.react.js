@@ -3,8 +3,7 @@
  */
 
 import React, { Component, PropTypes } from 'react';
-import ReactMixin from 'react-mixin';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
+import { shouldComponentUpdate } from 'react-addons-pure-render-mixin';
 import classnames from 'classnames';
 
 import AvatarItem from '../../common/AvatarItem.react';
@@ -12,16 +11,18 @@ import AvatarItem from '../../common/AvatarItem.react';
 import { escapeWithEmoji } from '../../../utils/EmojiUtils';
 
 class PeopleItem extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   static propTypes = {
     contact: PropTypes.object.isRequired,
     isSelected: PropTypes.bool.isRequired,
     onClick: PropTypes.func.isRequired,
     onMouseOver: PropTypes.func.isRequired
   };
+
+  constructor(props) {
+    super(props);
+
+    this.shouldComponentUpdate = shouldComponentUpdate.bind(this);
+  }
 
   handleClick = () => {
     const { contact, onClick } = this.props;
@@ -56,7 +57,5 @@ class PeopleItem extends Component {
     );
   }
 }
-
-ReactMixin.onClass(PeopleItem, PureRenderMixin);
 
 export default PeopleItem;
