@@ -1,7 +1,7 @@
 package im.actor.server.api.rpc.service
 
 import im.actor.api.rpc._
-import im.actor.api.rpc.messaging.{ ApiDialogShort, ApiTextMessage, ResponseLoadGroupedDialogs }
+import im.actor.api.rpc.messaging.{ ApiDialogShort, ApiTextMessage, ResponseLoadArchived, ResponseLoadGroupedDialogs }
 import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeer, ApiPeerType }
 import im.actor.server.acl.ACLUtils
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
@@ -30,6 +30,8 @@ final class GroupedDialogsSpec
 
   "Favourited dialogs" should "appear on favourite" in appearFavourite
   it should "not be in grouped dialogs if no favourites left" in noGroupInFavAbsent
+
+  "Archived dialogs" should "be loaded by desc order" in archived
 
   private implicit lazy val groupsService = new GroupsServiceImpl(GroupInviteConfig(""))
   private implicit lazy val service = MessagingServiceImpl()
@@ -255,5 +257,43 @@ final class GroupedDialogsSpec
     whenReady(service.handleUnfavouriteDialog(bobPeer))(identity)
 
     getDialogGroups().get(DialogExtension.groupKey(DialogGroupType.Favourites)) shouldBe empty
+  }
+
+  def archived() = {
+    val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
+    val (bob, _, _, _) = createUser()
+    val (eve, _, _, _) = createUser()
+    val (kira, _, _, _) = createUser()
+
+    implicit val clientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid, 42)))
+    val bobPeer = getOutPeer(bob.id, aliceAuthId)
+    val evePeer = getOutPeer(eve.id, aliceAuthId)
+    val kiraPeer = getOutPeer(kira.id, aliceAuthId)
+
+    prepareDialogs(bob, eve, kira)
+    whenReady(service.handleArchiveChat(bobPeer))(identity)
+    whenReady(service.handleArchiveChat(evePeer))(identity)
+    whenReady(service.handleArchiveChat(kiraPeer))(identity)
+
+    val offset1 = whenReady(service.handleLoadArchived(None, 1)) { resp ⇒
+      val okResp = resp.toOption.get
+      okResp.dialogs.size shouldBe 1
+      okResp.dialogs.head.peer.id shouldBe kiraPeer.id
+      okResp.nextOffset
+    }
+
+    val offset2 = whenReady(service.handleLoadArchived(offset1, 1)) { resp ⇒
+      val okResp = resp.toOption.get
+      okResp.dialogs.size shouldBe 1
+      okResp.dialogs.head.peer.id shouldBe evePeer.id
+      okResp.nextOffset
+    }
+
+    whenReady(service.handleLoadArchived(offset2, 1)) { resp ⇒
+      val okResp = resp.toOption.get
+      okResp.dialogs.size shouldBe 1
+      okResp.dialogs.head.peer.id shouldBe bobPeer.id
+      okResp.nextOffset
+    }
   }
 }
