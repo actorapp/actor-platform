@@ -15,7 +15,8 @@ import AddContact from './AddContact.react';
 import CreateGroup from './CreateGroup.react';
 import EditGroup from './EditGroup.react';
 import Preferences from './Preferences.react';
-
+import Invite from './Invite.react';
+import InviteByLink from './InviteByLink.react';
 import QuickSearch from './QuickSearch.react';
 
 class ModalsWrapper extends Component {
@@ -28,7 +29,6 @@ class ModalsWrapper extends Component {
   }
 
   render() {
-    console.debug(this.state);
     const { currentModal } = this.state;
     if (!currentModal) return null;
 
@@ -47,6 +47,10 @@ class ModalsWrapper extends Component {
         return <EditGroup/>;
       case ModalTypes.PREFERENCES:
         return <Preferences/>;
+      case ModalTypes.INVITE:
+        return <Invite/>;
+      case ModalTypes.INVITE_BY_LINK:
+        return <InviteByLink/>;
       case ModalTypes.QUICK_SEARCH:
         return <QuickSearch/>;
 
