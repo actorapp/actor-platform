@@ -225,17 +225,6 @@ export default {
     'integrationTokenHint': 'If you have programming chops, or know someone who does — this integration token allows the biggest amount of flexibility and communication with your own systems.',
     'integrationTokenHelp': 'Learn how to integrate',
 
-    // Modals
-    'inviteModalTitle': 'Add more people',
-    'inviteModalSearch': 'Search for contacts or usernames',
-    'inviteModalNotFound': 'Sorry, no users were found.',
-    'inviteByLink': 'Invite to group by link',
-    'inviteByLinkModalTitle': 'Invite by link',
-    'inviteByLinkModalDescription': 'Anyone on the web will be able to join ”{groupName}” by opening this link:',
-    'inviteByLinkModalCopyButton': 'Copy link',
-    'inviteByLinkModalRevokeButton': 'Revoke link',
-    'inviteLinkCopied': 'Invitation link copied.',
-
     // Sidebar
     'sidebar': {
       'recents': {
@@ -309,6 +298,19 @@ export default {
           terminate: 'Kill',
           terminateAll: 'Terminate all sessions'
         }
+      }
+    },
+
+    invite: {
+      title: 'Add more people',
+      search: 'Search for contacts or usernames',
+      notFound: 'Sorry, no users were found.',
+      inviteByLink: 'Invite to group by link',
+      byLink: {
+        title: 'Invite by link',
+        description: 'Anyone on the web will be able to join ”<b>{groupName}</b>” by opening this link:',
+        copy: 'Copy link',
+        revoke: 'Revoke link'
       }
     },
 

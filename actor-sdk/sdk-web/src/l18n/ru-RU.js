@@ -223,17 +223,6 @@ export default {
     'integrationTokenHint': 'Вы можете использовать этот токен для настройки интеграции с вашими собственными системами.',
     'integrationTokenHelp': 'Узнайте, как пользоваться токенами',
 
-    // Modals
-    'inviteModalTitle': 'Пригласить людей в группу',
-    'inviteModalSearch': 'Поиск по именам и никнеймам',
-    'inviteModalNotFound': 'Извините, ничего не найдено',
-    'inviteByLink': 'Ссылка для приглашения в группу',
-    'inviteByLinkModalTitle': 'Пригласить по ссылке',
-    'inviteByLinkModalDescription': 'Любой в интернете теперь может присоедениться к ”{groupName}”, открыв эту ссылку:',
-    'inviteByLinkModalCopyButton': 'Скопировать',
-    'inviteByLinkModalRevokeButton': 'Отменить',
-    'inviteLinkCopied': 'Ссылка скопирована.',
-
     // Sidebar
     'sidebar': {
       'recents': {
@@ -304,6 +293,19 @@ export default {
           terminate: 'Завершить',
           terminateAll: 'Завершить все сеансы'
         }
+      }
+    },
+
+    invite: {
+      title: 'Пригласить людей в группу',
+      search: 'Поиск по именам и никнеймам',
+      notFound: 'Извините, ничего не найдено.',
+      inviteByLink: 'Ссылка для приглашения в группу',
+      byLink: {
+        title: 'Пригласить по ссылке',
+        description: 'Любой в интернете теперь может присоедениться к ”<b>{groupName}</b>”, открыв эту ссылку:',
+        copy: 'Скопировать',
+        revoke: 'Отменить'
       }
     },
 

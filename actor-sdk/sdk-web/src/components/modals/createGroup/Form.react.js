@@ -152,7 +152,7 @@ class CreateGroupForm extends Component {
         <input
           className="input input--search"
           onChange={this.onSearchChange}
-          placeholder={intl.messages['inviteModalSearch']}
+          placeholder={intl.messages['invite.search']}
           type="search"
           value={search}/>
       </div>
