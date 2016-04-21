@@ -69,17 +69,21 @@ export const ActionTypes = keymirror({
   ACTIVITY_HIDE: null,
 
   // Contact actions
-  CONTACT_ADD: null,
-  CONTACT_REMOVE: null,
   CONTACT_LIST_SHOW: null,
   CONTACT_LIST_HIDE: null,
   CONTACT_LIST_CHANGED: null,
+  CONTACT_LIST_SEARCH: null,
   CONTACT_ADD_MODAL_SHOW: null,
   CONTACT_ADD_MODAL_HIDE: null,
+  CONTACT_ADD: null,
+  CONTACT_ADD_SUCCESS: null,
+  CONTACT_ADD_ERROR: null,
+  CONTACT_REMOVE: null,
+  CONTACT_REMOVE_SUCCESS: null,
+  CONTACT_REMOVE_ERROR: null,
   CONTACT_FIND: null,
   CONTACT_FIND_SUCCESS: null,
   CONTACT_FIND_ERROR: null,
-  CONTACT_LIST_SEARCH: null,
 
   // Group actions
   GROUP_CREATE_MODAL_SHOW: null,
