@@ -53,7 +53,7 @@ trait DialogProcessorMigration extends Processor[DialogState] {
 
     case PersistEvents(events) ⇒
       persistAll(events) { _ ⇒
-        events foreach commit(_)
+        events foreach (e => commit(e))
         unstashAll()
         context become receiveCommand
       }
