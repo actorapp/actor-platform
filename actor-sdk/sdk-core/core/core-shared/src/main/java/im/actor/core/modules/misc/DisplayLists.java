@@ -23,9 +23,8 @@ public class DisplayLists extends AbsModule {
 
     private PlatformDisplayList<Contact> contactsGlobalList;
 
-    private HashMap<Peer, PlatformDisplayList<Message>> chatsGlobalLists = new HashMap<Peer, PlatformDisplayList<Message>>();
-    private HashMap<Peer, PlatformDisplayList<Message>> chatsDocsGlobalLists = new HashMap<Peer, PlatformDisplayList<Message>>();
-    private HashMap<String, PlatformDisplayList> chatsCustomGlobalLists = new HashMap<String, PlatformDisplayList>();
+    private HashMap<Peer, PlatformDisplayList<Message>> chatsGlobalLists = new HashMap<>();
+    private HashMap<Peer, PlatformDisplayList<Message>> chatsDocsGlobalLists = new HashMap<>();
 
     public DisplayLists(ModuleContext context) {
         super(context);

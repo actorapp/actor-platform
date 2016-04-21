@@ -96,26 +96,12 @@ public class Updates extends AbsModule implements BusSubscriber {
     }
 
     public void executeRelatedResponse(List<ApiUser> users, List<ApiGroup> groups, final ActorRef ref, final Runnable runnable) {
-        executeRelatedResponse(users, groups, new Runnable() {
-            @Override
-            public void run() {
-                ref.send(runnable);
-            }
-        });
+        executeRelatedResponse(users, groups, () -> ref.send(runnable));
     }
 
     public Promise<Void> applyRelatedData(final List<ApiUser> users, final List<ApiGroup> groups) {
-        return new Promise<>(new PromiseFunc<Void>() {
-            @Override
-            public void exec(@NotNull final PromiseResolver<Void> resolver) {
-                executeRelatedResponse(users, groups, new Runnable() {
-                    @Override
-                    public void run() {
-                        resolver.result(null);
-                    }
-                });
-            }
-        });
+        return new Promise<>((PromiseFunc<Void>) resolver ->
+                executeRelatedResponse(users, groups, () -> resolver.result(null)));
     }
 
     public void resetModule() {

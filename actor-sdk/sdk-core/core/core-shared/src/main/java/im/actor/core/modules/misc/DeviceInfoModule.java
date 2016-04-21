@@ -18,11 +18,6 @@ public class DeviceInfoModule extends AbsModule {
     }
 
     public void run() {
-        actorRef = system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public DeviceInfoActor create() {
-                return new DeviceInfoActor(context());
-            }
-        }), "device_info/notifier");
+        actorRef = system().actorOf("device_info/notifier", () -> new DeviceInfoActor(context()));
     }
 }

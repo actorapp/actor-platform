@@ -53,24 +53,11 @@ public class FilesModule extends AbsModule {
     }
 
     public void run() {
-        fileUrlInt = new FileUrlInt(system().actorOf("actor/download/urls", new ActorCreator() {
-            @Override
-            public Actor create() {
-                return new FileUrlLoader(context());
-            }
+        fileUrlInt = new FileUrlInt(system().actorOf("actor/download/urls", () -> {
+            return new FileUrlLoader(context());
         }));
-        downloadManager = system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public DownloadManager create() {
-                return new DownloadManager(context());
-            }
-        }).changeDispatcher("heavy"), "actor/download/manager");
-        uploadManager = system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public UploadManager create() {
-                return new UploadManager(context());
-            }
-        }).changeDispatcher("heavy"), "actor/upload/manager");
+        downloadManager = system().actorOf(Props.create(() -> new DownloadManager(context())).changeDispatcher("heavy"), "actor/download/manager");
+        uploadManager = system().actorOf(Props.create(() -> new UploadManager(context())).changeDispatcher("heavy"), "actor/upload/manager");
     }
 
     public KeyValueEngine<Downloaded> getDownloadedEngine() {
@@ -101,43 +88,23 @@ public class FilesModule extends AbsModule {
         downloadManager.send(new DownloadManager.RequestState(fileId, new FileCallback() {
             @Override
             public void onNotDownloaded() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.onNotDownloaded();
-                    }
-                });
+                runOnUiThread(() -> callback.onNotDownloaded());
             }
 
             @Override
             public void onDownloading(final float progress) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.onDownloading(progress);
-                    }
-                });
+                runOnUiThread(() -> callback.onDownloading(progress));
             }
 
             @Override
             public void onDownloaded(final FileSystemReference reference) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.onDownloaded(reference);
-                    }
-                });
+                runOnUiThread(() -> callback.onDownloaded(reference));
             }
         }));
     }
 
     public void startDownloading(final FileReference location) {
-        im.actor.runtime.Runtime.dispatch(new Runnable() {
-            @Override
-            public void run() {
-                downloadManager.send(new DownloadManager.StartDownload(location));
-            }
-        });
+        im.actor.runtime.Runtime.dispatch(() -> downloadManager.send(new DownloadManager.StartDownload(location)));
     }
 
     public void cancelDownloading(long fileId) {

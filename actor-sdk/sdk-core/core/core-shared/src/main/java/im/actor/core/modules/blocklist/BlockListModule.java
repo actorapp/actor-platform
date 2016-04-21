@@ -41,128 +41,101 @@ public class BlockListModule extends AbsModule {
     public BlockListModule(final ModuleContext context) {
         super(context);
 
-        blockListProcessor = system().actorOf("actor/blocked", new ActorCreator() {
-            @Override
-            public Actor create() {
-                return new BlockListActor(context);
-            }
+        blockListProcessor = system().actorOf("actor/blocked", () -> {
+            return new BlockListActor(context);
         });
     }
 
     public Promise<List<User>> loadBlockedUsers() {
-        return new Promise<>(new PromiseFunc<List<User>>() {
+        return new Promise<>((PromiseFunc<List<User>>) resolver -> request(new RequestLoadBlockedUsers(), new RpcCallback<ResponseLoadBlockedUsers>() {
             @Override
-            public void exec(@NotNull final PromiseResolver<List<User>> resolver) {
-                request(new RequestLoadBlockedUsers(), new RpcCallback<ResponseLoadBlockedUsers>() {
-                    @Override
-                    public void onResult(ResponseLoadBlockedUsers response) {
-                        List<ApiUserOutPeer> missingPeers = new ArrayList<>();
-                        final List<User> res = new ArrayList<>();
-                        for (ApiUserOutPeer outPeer : response.getUserPeers()) {
-                            User u = users().getValue(outPeer.getUid());
-                            if (u != null) {
-                                res.add(u);
-                            } else {
-                                missingPeers.add(outPeer);
-                            }
-                        }
+            public void onResult(ResponseLoadBlockedUsers response) {
+                List<ApiUserOutPeer> missingPeers = new ArrayList<>();
+                final List<User> res = new ArrayList<>();
+                for (ApiUserOutPeer outPeer : response.getUserPeers()) {
+                    User u = users().getValue(outPeer.getUid());
+                    if (u != null) {
+                        res.add(u);
+                    } else {
+                        missingPeers.add(outPeer);
+                    }
+                }
 
-                        if (missingPeers.size() > 0) {
-                            request(new RequestGetReferencedEntitites(missingPeers, new ArrayList<ApiGroupOutPeer>()), new RpcCallback<ResponseGetReferencedEntitites>() {
-                                @Override
-                                public void onResult(final ResponseGetReferencedEntitites response) {
-                                    updates().executeRelatedResponse(response.getUsers(), response.getGroups(), new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            for (ApiUser usr : response.getUsers()) {
-                                                res.add(users().getValue(usr.getId()));
-                                            }
-
-                                            resolver.result(res);
-                                        }
-                                    });
+                if (missingPeers.size() > 0) {
+                    request(new RequestGetReferencedEntitites(missingPeers, new ArrayList<>()), new RpcCallback<ResponseGetReferencedEntitites>() {
+                        @Override
+                        public void onResult(final ResponseGetReferencedEntitites response) {
+                            updates().executeRelatedResponse(response.getUsers(), response.getGroups(), () -> {
+                                for (ApiUser usr : response.getUsers()) {
+                                    res.add(users().getValue(usr.getId()));
                                 }
 
-                                @Override
-                                public void onError(RpcException e) {
-                                    resolver.error(e);
-                                }
+                                resolver.result(res);
                             });
-                        } else {
-                            resolver.result(res);
                         }
-                    }
 
-                    @Override
-                    public void onError(RpcException e) {
-                        resolver.error(e);
-                    }
-                });
+                        @Override
+                        public void onError(RpcException e) {
+                            resolver.error(e);
+                        }
+                    });
+                } else {
+                    resolver.result(res);
+                }
             }
-        });
+
+            @Override
+            public void onError(RpcException e) {
+                resolver.error(e);
+            }
+        }));
     }
 
     public Promise<Void> blockUser(final int uid) {
-        return new Promise<>(new PromiseFunc<Void>() {
-            @Override
-            public void exec(@NotNull final PromiseResolver<Void> resolver) {
-                ApiOutPeer outPeer = buildApiOutPeer(Peer.user(uid));
-                if (outPeer == null) {
-                    resolver.error(new RuntimeException());
-                    return;
+        return new Promise<>((PromiseFunc<Void>) resolver -> {
+            ApiOutPeer outPeer = buildApiOutPeer(Peer.user(uid));
+            if (outPeer == null) {
+                resolver.error(new RuntimeException());
+                return;
+            }
+
+            request(new RequestBlockUser(new ApiUserOutPeer(outPeer.getId(), outPeer.getAccessHash())), new RpcCallback<ResponseSeq>() {
+                @Override
+                public void onResult(ResponseSeq response) {
+                    updates().onSeqUpdateReceived(response.getSeq(), response.getState(),
+                            new UpdateUserBlocked(uid));
+                    updates().executeAfter(response.getSeq(), () -> resolver.result(null));
                 }
 
-                request(new RequestBlockUser(new ApiUserOutPeer(outPeer.getId(), outPeer.getAccessHash())), new RpcCallback<ResponseSeq>() {
-                    @Override
-                    public void onResult(ResponseSeq response) {
-                        updates().onSeqUpdateReceived(response.getSeq(), response.getState(),
-                                new UpdateUserBlocked(uid));
-                        updates().executeAfter(response.getSeq(), new Runnable() {
-                            @Override
-                            public void run() {
-                                resolver.result(null);
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(RpcException e) {
-                        resolver.error(e);
-                    }
-                });
-            }
+                @Override
+                public void onError(RpcException e) {
+                    resolver.error(e);
+                }
+            });
         });
     }
 
     public Promise<Void> unblockUser(final int uid) {
-        return new Promise<>(new PromiseFunc<Void>() {
-            @Override
-            public void exec(@NotNull final PromiseResolver<Void> resolver) {
-                ApiOutPeer outPeer = buildApiOutPeer(Peer.user(uid));
-                if (outPeer == null) {
-                    resolver.error(new RuntimeException());
-                    return;
+        return new Promise<>((PromiseFunc<Void>) resolver -> {
+            ApiOutPeer outPeer = buildApiOutPeer(Peer.user(uid));
+            if (outPeer == null) {
+                resolver.error(new RuntimeException());
+                return;
+            }
+
+            request(new RequestUnblockUser(new ApiUserOutPeer(outPeer.getId(), outPeer.getAccessHash())), new RpcCallback<ResponseSeq>() {
+                @Override
+                public void onResult(ResponseSeq response) {
+                    updates().onSeqUpdateReceived(response.getSeq(), response.getState(),
+                            new UpdateUserUnblocked(uid));
+                    updates().executeAfter(response.getSeq(), () -> resolver.result(null));
                 }
 
-                request(new RequestUnblockUser(new ApiUserOutPeer(outPeer.getId(), outPeer.getAccessHash())), new RpcCallback<ResponseSeq>() {
-                    @Override
-                    public void onResult(ResponseSeq response) {
-                        updates().onSeqUpdateReceived(response.getSeq(), response.getState(),
-                                new UpdateUserUnblocked(uid));
-                        updates().executeAfter(response.getSeq(), new Runnable() {
-                            @Override
-                            public void run() {
-                                resolver.result(null);
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(RpcException e) {
-                        resolver.error(e);
-                    }
-                });
-            }
+                @Override
+                public void onError(RpcException e) {
+                    resolver.error(e);
+                }
+            });
         });
     }
 

@@ -49,18 +49,8 @@ public class ContactsModule extends AbsModule {
     }
 
     public void run() {
-        bookImportActor = system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public BookImportActor create() {
-                return new BookImportActor(context());
-            }
-        }).changeDispatcher("heavy"), "actor/book_import");
-        contactSyncActor = system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public ContactsSyncActor create() {
-                return new ContactsSyncActor(context());
-            }
-        }).changeDispatcher("heavy"), "actor/contacts_sync");
+        bookImportActor = system().actorOf(Props.create(() -> new BookImportActor(context())).changeDispatcher("heavy"), "actor/book_import");
+        contactSyncActor = system().actorOf(Props.create(() -> new ContactsSyncActor(context())).changeDispatcher("heavy"), "actor/contacts_sync");
     }
 
     public SyncKeyValue getBookImportState() {
@@ -92,127 +82,76 @@ public class ContactsModule extends AbsModule {
     }
 
     public Command<UserVM[]> findUsers(final String query) {
-        return new Command<UserVM[]>() {
+        return callback -> request(new RequestSearchContacts(query), new RpcCallback<ResponseSearchContacts>() {
             @Override
-            public void start(final CommandCallback<UserVM[]> callback) {
-                request(new RequestSearchContacts(query), new RpcCallback<ResponseSearchContacts>() {
-                    @Override
-                    public void onResult(ResponseSearchContacts response) {
-                        if (response.getUsers().size() == 0) {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    callback.onResult(new UserVM[0]);
-                                }
-                            });
-                            return;
-                        }
-
-                        updates().onUpdateReceived(new UsersFounded(response.getUsers(), callback));
-                    }
-
-                    @Override
-                    public void onError(RpcException e) {
-                        e.printStackTrace();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onResult(new UserVM[0]);
-                            }
-                        });
-                    }
-                });
-            }
-        };
-    }
-
-    public Command<Boolean> addContact(final int uid) {
-        return new Command<Boolean>() {
-            @Override
-            public void start(final CommandCallback<Boolean> callback) {
-                User user = users().getValue(uid);
-                if (user == null) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.onError(new RpcInternalException());
-                        }
-                    });
+            public void onResult(ResponseSearchContacts response) {
+                if (response.getUsers().size() == 0) {
+                    runOnUiThread(() -> callback.onResult(new UserVM[0]));
                     return;
                 }
 
-                request(new RequestAddContact(uid, user.getAccessHash()), new RpcCallback<ResponseSeq>() {
-                    @Override
-                    public void onResult(ResponseSeq response) {
-                        ArrayList<Integer> uids = new ArrayList<>();
-                        uids.add(uid);
-                        SeqUpdate update = new SeqUpdate(response.getSeq(), response.getState(),
-                                UpdateContactsAdded.HEADER, new UpdateContactsAdded(uids).toByteArray());
-                        updates().onUpdateReceived(update);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onResult(true);
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(RpcException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(new RpcInternalException());
-                            }
-                        });
-                    }
-                });
+                updates().onUpdateReceived(new UsersFounded(response.getUsers(), callback));
             }
+
+            @Override
+            public void onError(RpcException e) {
+                e.printStackTrace();
+                runOnUiThread(() -> callback.onResult(new UserVM[0]));
+            }
+        });
+    }
+
+    public Command<Boolean> addContact(final int uid) {
+        return callback -> {
+            User user = users().getValue(uid);
+            if (user == null) {
+                runOnUiThread(() -> callback.onError(new RpcInternalException()));
+                return;
+            }
+
+            request(new RequestAddContact(uid, user.getAccessHash()), new RpcCallback<ResponseSeq>() {
+                @Override
+                public void onResult(ResponseSeq response) {
+                    ArrayList<Integer> uids = new ArrayList<>();
+                    uids.add(uid);
+                    SeqUpdate update = new SeqUpdate(response.getSeq(), response.getState(),
+                            UpdateContactsAdded.HEADER, new UpdateContactsAdded(uids).toByteArray());
+                    updates().onUpdateReceived(update);
+                    runOnUiThread(() -> callback.onResult(true));
+                }
+
+                @Override
+                public void onError(RpcException e) {
+                    runOnUiThread(() -> callback.onError(new RpcInternalException()));
+                }
+            });
         };
     }
 
     public Command<Boolean> removeContact(final int uid) {
-        return new Command<Boolean>() {
-            @Override
-            public void start(final CommandCallback<Boolean> callback) {
-                User user = users().getValue(uid);
-                if (user == null) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.onError(new RpcInternalException());
-                        }
-                    });
-                    return;
+        return callback -> {
+            User user = users().getValue(uid);
+            if (user == null) {
+                runOnUiThread(() -> callback.onError(new RpcInternalException()));
+                return;
+            }
+
+            request(new RequestRemoveContact(uid, user.getAccessHash()), new RpcCallback<ResponseSeq>() {
+                @Override
+                public void onResult(ResponseSeq response) {
+                    ArrayList<Integer> uids = new ArrayList<>();
+                    uids.add(uid);
+                    SeqUpdate update = new SeqUpdate(response.getSeq(), response.getState(),
+                            UpdateContactsRemoved.HEADER, new UpdateContactsRemoved(uids).toByteArray());
+                    updates().onUpdateReceived(update);
+                    runOnUiThread(() -> callback.onResult(true));
                 }
 
-                request(new RequestRemoveContact(uid, user.getAccessHash()), new RpcCallback<ResponseSeq>() {
-                    @Override
-                    public void onResult(ResponseSeq response) {
-                        ArrayList<Integer> uids = new ArrayList<>();
-                        uids.add(uid);
-                        SeqUpdate update = new SeqUpdate(response.getSeq(), response.getState(),
-                                UpdateContactsRemoved.HEADER, new UpdateContactsRemoved(uids).toByteArray());
-                        updates().onUpdateReceived(update);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onResult(true);
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(RpcException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(new RpcInternalException());
-                            }
-                        });
-                    }
-                });
-            }
+                @Override
+                public void onError(RpcException e) {
+                    runOnUiThread(() -> callback.onError(new RpcInternalException()));
+                }
+            });
         };
     }
 
