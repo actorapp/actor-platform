@@ -132,9 +132,12 @@ public class SequenceActor extends ModuleActor {
 
         Log.d(TAG, "Handling update #" + seq);
         startWakeLock();
-        handler.onSeqUpdate(type, body, users, groups).then(updateProcessed -> {
-            Log.d(TAG, "Handling update ended #" + seq);
-            onUpdatesApplied(seq, state);
+        handler.onSeqUpdate(type, body, users, groups).then(new Consumer<SequenceHandlerActor.UpdateProcessed>() {
+            @Override
+            public void apply(SequenceHandlerActor.UpdateProcessed updateProcessed) {
+                Log.d(TAG, "Handling update ended #" + seq);
+                onUpdatesApplied(seq, state);
+            }
         }).failure(e -> {
             SequenceActor.this.seq = finishedSeq;
             SequenceActor.this.state = finishedState;
