@@ -47,11 +47,11 @@ trait DialogCommandHandlers extends PeersImplicits with UserACL {
       withCachedFuture[AuthSidRandomId, SeqStateDate](sm.senderAuthSid → sm.randomId) {
         val sendDate = calcSendDate(state)
         val message = sm.message
-        PubSubExtension(system).publish(PeerMessage(sm.origin, sm.dest, sm.randomId, sendDate, message))
+        PubSubExtension(system).publish(PeerMessage(sm.getOrigin, sm.getDest, sm.randomId, sendDate, message))
 
-        withNonBlockedPeer[SeqStateDate](userId, sm.dest)(
+        withNonBlockedPeer[SeqStateDate](userId, sm.getDest)(
           default = for {
-          _ ← dialogExt.ackSendMessage(peer, sm.copy(date = Some(sendDate)))
+          _ ← dialogExt.ackSendMessage(peer, sm.copy(date = Some(Int64Value(sendDate))))
           _ ← db.run(writeHistoryMessage(selfPeer, peer, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray))
           //_ = dialogExt.updateCounters(peer, userId)
           SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sendDate, message, sm.isFat)
