@@ -11,9 +11,7 @@ import DefaultSidebar from './Sidebar.react';
 import Favicon from './common/Favicon.react';
 
 import ModalsWrapper from './modals/ModalsWrapper.react';
-// import MenuOverlay from './common/MenuOverlay.react';
-// import InviteUser from './modals/InviteUser.react';
-// import InviteByLink from './modals/invite-user/InviteByLink.react';
+import MenuOverlay from './common/MenuOverlay.react';
 import SmallCall from './SmallCall.react';
 
 class Main extends Component {
@@ -76,12 +74,7 @@ class Main extends Component {
         {this.props.children}
 
         <ModalsWrapper/>
-        {/*
         <MenuOverlay/>
-        <InviteUser/>
-        <InviteByLink/>
-        <EditGroup/>
-        */}
 
         {this.renderCall()}
       </div>
