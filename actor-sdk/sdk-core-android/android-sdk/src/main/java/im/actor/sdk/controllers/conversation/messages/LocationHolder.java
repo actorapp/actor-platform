@@ -33,10 +33,10 @@ import im.actor.core.entity.content.LocationContent;
 import im.actor.core.viewmodel.FileVM;
 import im.actor.core.viewmodel.UploadFileVM;
 import im.actor.sdk.ActorSDK;
+
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.conversation.MessagesAdapter;
 import im.actor.sdk.controllers.conversation.messages.preprocessor.PreprocessedData;
-import im.actor.sdk.controllers.conversation.preview.MapActivity;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.TintImageView;
 
@@ -156,13 +156,21 @@ public class LocationHolder extends MessageHolder {
             ApplicationInfo app = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
             Bundle bundle = app.metaData;
 
-            if (bundle.containsKey("com.google.android.geo.API_KEY")) {
-                Intent intent = new Intent(context, MapActivity.class);
-                intent.putExtra("latitude", ((LocationContent) currentMessage.getContent()).getLatitude());
-                intent.putExtra("longitude", ((LocationContent) currentMessage.getContent()).getLongitude());
+            double latitude = ((LocationContent) currentMessage.getContent()).getLatitude();
+            double longitude = ((LocationContent) currentMessage.getContent()).getLongitude();
+
+            try {
+                Class.forName("com.google.android.gms.maps.GoogleMap");
+                Intent intent = new Intent("im.actor.locationPreview_" + context.getPackageName());
+                intent.putExtra("latitude", latitude);
+                intent.putExtra("longitude", longitude);
                 context.startActivity(intent);
-            } else {
-//                Toast.makeText(context, "please, set up google map api key in AndroidManifest metadata", Toast.LENGTH_LONG).show();
+            } catch (ClassNotFoundException e) {
+                String uri = "geo:" + latitude + ","
+                        + longitude + "?q=" + latitude
+                        + "," + longitude;
+                context.startActivity(new Intent(android.content.Intent.ACTION_VIEW,
+                        Uri.parse(uri)));
             }
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();

@@ -266,16 +266,28 @@
             android:label="@string/picker_file_activity_title"
             android:theme="@style/PickerTheme.FilePicker" />
 
-        <activity
-            android:name=".controllers.pickers.map.MapPickerActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:theme="@style/CommonActivityTheme" />
 
         <activity
-            android:name=".controllers.conversation.preview.MapActivity"
+            android:name="im.actor.map.MapPickerActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:theme="@style/CommonActivityTheme">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="im.actor.pickLocation_${applicationId}" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="im.actor.map.MapActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/CommonActivityTheme"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="im.actor.locationPreview_${applicationId}" />
+            </intent-filter>
+        </activity>
+
 
         <activity
             android:name=".controllers.activity.ShortcutActivity"

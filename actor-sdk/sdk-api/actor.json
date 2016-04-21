@@ -3816,6 +3816,96 @@
           }
         },
         {
+          "type": "struct",
+          "content": {
+            "name": "QuotedMessage",
+            "doc": [
+              "Quoted Message",
+              {
+                "type": "reference",
+                "argument": "messageId",
+                "category": "full",
+                "description": "  Message Id if present"
+              },
+              {
+                "type": "reference",
+                "argument": "publicGroupId",
+                "category": "full",
+                "description": "  Public Group id if present"
+              },
+              {
+                "type": "reference",
+                "argument": "senderUserId",
+                "category": "full",
+                "description": "  Sender of message"
+              },
+              {
+                "type": "reference",
+                "argument": "messageDate",
+                "category": "full",
+                "description": "  Date of message"
+              },
+              {
+                "type": "reference",
+                "argument": "quotedMessageContent",
+                "category": "full",
+                "description": "  Optional Quoted Message Content. Can be empty if messageId is present and message is in current peer."
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "alias",
+                    "childType": "randomId"
+                  }
+                },
+                "id": 1,
+                "name": "messageId"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "alias",
+                    "childType": "groupId"
+                  }
+                },
+                "id": 2,
+                "name": "publicGroupId"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 3,
+                "name": "senderUserId"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
+                "id": 4,
+                "name": "messageDate"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "trait",
+                    "childType": "Message"
+                  }
+                },
+                "id": 5,
+                "name": "quotedMessageContent"
+              }
+            ]
+          }
+        },
+        {
           "type": "trait",
           "content": {
             "isContainer": "true",
@@ -5083,6 +5173,21 @@
         {
           "type": "struct",
           "content": {
+            "name": "EmptyMessage",
+            "doc": [
+              "Empty Message"
+            ],
+            "trait": {
+              "name": "Message",
+              "key": 9
+            },
+            "expandable": "true",
+            "attributes": []
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
             "name": "DialogShort",
             "doc": [
               "Short Dialog from grouped conversation list",
@@ -5220,6 +5325,45 @@
           }
         },
         {
+          "type": "struct",
+          "content": {
+            "name": "MessageOutReference",
+            "doc": [
+              "Message Out Reference",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Out Peer of message"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "  Message random id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "rid"
+              }
+            ]
+          }
+        },
+        {
           "type": "rpc",
           "content": {
             "name": "SendMessage",
@@ -5234,13 +5378,13 @@
                 "type": "reference",
                 "argument": "peer",
                 "category": "full",
-                "description": "Destination peer for message (now supported only user's peer)"
+                "description": "Destination peer for message"
               },
               {
                 "type": "reference",
                 "argument": "rid",
                 "category": "full",
-                "description": "Message random id (generated on clien side)"
+                "description": "Message random id (generated on client side)"
               },
               {
                 "type": "reference",
@@ -5253,6 +5397,12 @@
                 "argument": "isOnlyForUser",
                 "category": "full",
                 "description": "If message is shown only for specific user"
+              },
+              {
+                "type": "reference",
+                "argument": "quotedMessageReference",
+                "category": "full",
+                "description": "Quoted message if present"
               }
             ],
             "attributes": [
@@ -5290,6 +5440,17 @@
                 },
                 "id": 5,
                 "name": "isOnlyForUser"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MessageOutReference"
+                  }
+                },
+                "id": 6,
+                "name": "quotedMessageReference"
               }
             ]
           }
@@ -5765,6 +5926,12 @@
                 "argument": "attributes",
                 "category": "full",
                 "description": "  optional message attributes"
+              },
+              {
+                "type": "reference",
+                "argument": "quotedMessage",
+                "category": "full",
+                "description": "  optional quoted message"
               }
             ],
             "attributes": [
@@ -5818,6 +5985,17 @@
                 },
                 "id": 6,
                 "name": "attributes"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "QuotedMessage"
+                  }
+                },
+                "id": 7,
+                "name": "quotedMessage"
               }
             ]
           }
@@ -5872,6 +6050,63 @@
                 },
                 "id": 3,
                 "name": "message"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "MessageQuotedChanged",
+            "header": 169,
+            "doc": [
+              "Update about quoted message changed",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "  Rid of message"
+              },
+              {
+                "type": "reference",
+                "argument": "quotedMessage",
+                "category": "full",
+                "description": "  Quoted Message"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Peer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "rid"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "QuotedMessage"
+                  }
+                },
+                "id": 3,
+                "name": "quotedMessage"
               }
             ]
           }
@@ -6411,9 +6646,15 @@
               },
               {
                 "type": "reference",
-                "argument": "attributes",
+                "argument": "attribute",
                 "category": "full",
                 "description": "  Optional message attributes"
+              },
+              {
+                "type": "reference",
+                "argument": "quotedMessage",
+                "category": "full",
+                "description": "  Optional quoted Message"
               }
             ],
             "attributes": [
@@ -6480,7 +6721,18 @@
                   }
                 },
                 "id": 8,
-                "name": "attributes"
+                "name": "attribute"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "QuotedMessage"
+                  }
+                },
+                "id": 9,
+                "name": "quotedMessage"
               }
             ]
           }

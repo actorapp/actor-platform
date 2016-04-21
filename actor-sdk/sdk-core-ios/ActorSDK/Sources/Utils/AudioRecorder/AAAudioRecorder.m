@@ -16,6 +16,8 @@
     AATimer *_timer;
     
     AAOpusAudioRecorder *_modernRecorder;
+    
+    BOOL sessionCanceled;
 }
 
 @end
@@ -65,6 +67,7 @@ static void playSoundCompleted(__unused SystemSoundID ssID, __unused void *clien
 
 - (void)start
 {
+    sessionCanceled = false;
     NSLog(@"[AAAudioRecorder start]");
     
     [[AAAudioRecorder audioRecorderQueue] dispatchOnQueue:^
@@ -136,13 +139,15 @@ static void playSoundCompleted(__unused SystemSoundID ssID, __unused void *clien
 
 - (void)_commitRecord
 {
-    [_modernRecorder record];
-    
-    dispatch_async(dispatch_get_main_queue(), ^
-    {
-        id<AAAudioRecorderDelegate> delegate = _delegate;
-        [_delegate audioRecorderDidStartRecording];
-    });
+    if(!sessionCanceled){
+        [_modernRecorder record];
+        
+        dispatch_async(dispatch_get_main_queue(), ^
+                       {
+                           id<AAAudioRecorderDelegate> delegate = _delegate;
+                           [_delegate audioRecorderDidStartRecording];
+                       });
+    }
 }
 
 - (void)cleanup
@@ -164,6 +169,8 @@ static void playSoundCompleted(__unused SystemSoundID ssID, __unused void *clien
 
 - (void)cancel
 {
+    sessionCanceled = true;
+    
     [[AAAudioRecorder audioRecorderQueue] dispatchOnQueue:^
     {
         [self cleanup];

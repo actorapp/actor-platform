@@ -1,13 +1,10 @@
-package im.actor.sdk.controllers.conversation.preview;
+package im.actor.map;
 
 import android.os.Bundle;
 
-import im.actor.sdk.R;
+import im.actor.maps.google.R;
 import im.actor.sdk.controllers.activity.BaseFragmentActivity;
 
-/**
- * Created by root on 10/22/15.
- */
 public class MapActivity extends BaseFragmentActivity {
 
     @Override

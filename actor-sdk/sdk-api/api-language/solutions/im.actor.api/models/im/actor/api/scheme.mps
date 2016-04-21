@@ -3480,6 +3480,78 @@
           <ref role="NX6Kv" node="4bVh48GpG9m" resolve="isOnlyForYou" />
         </node>
       </node>
+      <node concept="2m5naR" id="7EMmOqgXscl" role="2m5mJr">
+        <property role="TrG5h" value="QuotedMessage" />
+        <node concept="2m7Kf5" id="7EMmOqgXspI" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="messageId" />
+          <node concept="2m5nlT" id="7EMmOqgXF7i" role="2m7DVh">
+            <node concept="wb0Ql" id="7EMmOqgXHW8" role="3GH5xg">
+              <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="7EMmOqgXHWb" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="publicGroupId" />
+          <node concept="2m5nlT" id="7EMmOqgXHWp" role="2m7DVh">
+            <node concept="wb0Ql" id="7EMmOqgXHWv" role="3GH5xg">
+              <ref role="wb18D" node="5qm50Y0e3uO" resolve="groupId" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="7EMmOqgXBSN" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="senderUserId" />
+          <node concept="wb0Ql" id="7EMmOqgXDUR" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="7EMmOqgXDUU" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="messageDate" />
+          <node concept="wb0Ql" id="7EMmOqgXDV5" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="7EMmOqgXCIS" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="quotedMessageContent" />
+          <node concept="2m5nlT" id="7EMmOqgXCJ1" role="2m7DVh">
+            <node concept="3BlaRf" id="7EMmOqgXDUL" role="3GH5xg">
+              <ref role="3BrLez" node="55bmeIQey3W" resolve="Message" />
+            </node>
+          </node>
+        </node>
+        <node concept="NXeRC" id="7EMmOqgXF79" role="NXodf">
+          <property role="NXePf" value="Quoted Message" />
+        </node>
+        <node concept="NX1gA" id="7EMmOqgXF7e" role="NXodf">
+          <property role="NX6R2" value="Message Id if present" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="7EMmOqgXspI" resolve="messageId" />
+        </node>
+        <node concept="NX1gA" id="7EMmOqgXIai" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Public Group id if present" />
+          <ref role="NX6Kv" node="7EMmOqgXHWb" resolve="publicGroupId" />
+        </node>
+        <node concept="NX1gA" id="7EMmOqgXGJL" role="NXodf">
+          <property role="NX6R2" value="Sender of message" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="7EMmOqgXBSN" resolve="senderUserId" />
+        </node>
+        <node concept="NX1gA" id="7EMmOqgXGJV" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Date of message" />
+          <ref role="NX6Kv" node="7EMmOqgXDUU" resolve="messageDate" />
+        </node>
+        <node concept="NX1gA" id="7EMmOqgXGK7" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Optional Quoted Message Content. Can be empty if messageId is present and message is in current peer." />
+          <ref role="NX6Kv" node="7EMmOqgXCIS" resolve="quotedMessageContent" />
+        </node>
+      </node>
       <node concept="1Dx9M1" id="2uPas5ecVzB" role="1Dx9rD">
         <property role="1Dx9K7" value="Actor can work with encrypted and plain messages in one conversation. For both types of messages API" />
       </node>
@@ -4628,6 +4700,18 @@
           <ref role="NX6Kv" node="5_CDdZ2rA8j" resolve="box" />
         </node>
       </node>
+      <node concept="2m5naR" id="7EMmOqgXU6c" role="2m5mJr">
+        <property role="TrG5h" value="EmptyMessage" />
+        <property role="tsOgz" value="true" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="55bmeIQey3W" resolve="Message" />
+        <node concept="Nu42z" id="7EMmOqgXUkq" role="3BtCOu">
+          <property role="Nu42W" value="09" />
+        </node>
+        <node concept="NXeRC" id="7EMmOqgXUks" role="NXodf">
+          <property role="NXePf" value="Empty Message" />
+        </node>
+      </node>
       <node concept="2m5naR" id="5TxE3W6ZYRc" role="2m5mJr">
         <property role="TrG5h" value="DialogShort" />
         <node concept="2m7Kf5" id="5TxE3W6ZYX$" role="2m0hLx">
@@ -4738,6 +4822,36 @@
           <ref role="NX6Kv" node="64HNz1Io3qN" resolve="code" />
         </node>
       </node>
+      <node concept="2m5naR" id="7EMmOqgXLg8" role="2m5mJr">
+        <property role="TrG5h" value="MessageOutReference" />
+        <node concept="2m7Kf5" id="7EMmOqgXLup" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="7EMmOqgXLut" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6hj" resolve="OutPeer" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="7EMmOqgXLuw" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="7EMmOqgXLuD" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="7EMmOqgXLH5" role="NXodf">
+          <property role="NXePf" value="Message Out Reference" />
+        </node>
+        <node concept="NX1gA" id="7EMmOqgXLHa" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Out Peer of message" />
+          <ref role="NX6Kv" node="7EMmOqgXLup" resolve="peer" />
+        </node>
+        <node concept="NX1gA" id="7EMmOqgXLHi" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Message random id" />
+          <ref role="NX6Kv" node="7EMmOqgXLuw" resolve="rid" />
+        </node>
+      </node>
       <node concept="2m6fVq" id="GBscvBBqzL" role="2m5mJr">
         <property role="TrG5h" value="SendMessage" />
         <node concept="2m7Kf5" id="GBscvBBqBa" role="2m0hLx">
@@ -4770,6 +4884,15 @@
             </node>
           </node>
         </node>
+        <node concept="2m7Kf5" id="7EMmOqgXLuG" role="2m0hLx">
+          <property role="2m7DUN" value="6" />
+          <property role="TrG5h" value="quotedMessageReference" />
+          <node concept="2m5nlT" id="7EMmOqgXLuT" role="2m7DVh">
+            <node concept="2m5mGg" id="7EMmOqgXLuZ" role="3GH5xg">
+              <ref role="2m5mJy" node="7EMmOqgXLg8" resolve="MessageOutReference" />
+            </node>
+          </node>
+        </node>
         <node concept="Nu42z" id="GBscvBBqzM" role="NuuwV">
           <property role="Nu42W" value="5c" />
         </node>
@@ -4780,12 +4903,12 @@
           <property role="NXePf" value="Sending plain message" />
         </node>
         <node concept="NX1gA" id="2EAJ7H6foAP" role="1GBnQ6">
-          <property role="NX6R2" value="Destination peer for message (now supported only user's peer)" />
+          <property role="NX6R2" value="Destination peer for message" />
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="GBscvBBqBa" resolve="peer" />
         </node>
         <node concept="NX1gA" id="2EAJ7H6foAQ" role="1GBnQ6">
-          <property role="NX6R2" value="Message random id (generated on clien side)" />
+          <property role="NX6R2" value="Message random id (generated on client side)" />
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="GBscvBBqBh" resolve="rid" />
         </node>
@@ -4798,6 +4921,11 @@
           <property role="NX6R2" value="If message is shown only for specific user" />
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="4bVh48GpHih" resolve="isOnlyForUser" />
+        </node>
+        <node concept="NX1gA" id="7EMmOqgXLGX" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Quoted message if present" />
+          <ref role="NX6Kv" node="7EMmOqgXLuG" resolve="quotedMessageReference" />
         </node>
       </node>
       <node concept="2m6fVq" id="5Wm9DsmkMGN" role="2m5mJr">
@@ -5187,6 +5315,11 @@
           <property role="NX6R2" value="optional message attributes" />
           <ref role="NX6Kv" node="4bVh48GpHiO" resolve="attributes" />
         </node>
+        <node concept="NX1gA" id="7EMmOqgXO6o" role="NXp_2">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="optional quoted message" />
+          <ref role="NX6Kv" node="7EMmOqgXO5P" resolve="quotedMessage" />
+        </node>
         <node concept="2m7Kf5" id="GBscvBBk8_" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="peer" />
@@ -5228,6 +5361,15 @@
           <node concept="2m5nlT" id="4bVh48GpHj2" role="2m7DVh">
             <node concept="2m5mGg" id="4bVh48GpHj8" role="3GH5xg">
               <ref role="2m5mJy" node="4bVh48GpFWR" resolve="MessageAttributes" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="7EMmOqgXO5P" role="2m0hLx">
+          <property role="2m7DUN" value="7" />
+          <property role="TrG5h" value="quotedMessage" />
+          <node concept="2m5nlT" id="7EMmOqgXO66" role="2m7DVh">
+            <node concept="2m5mGg" id="7EMmOqgXO6c" role="3GH5xg">
+              <ref role="2m5mJy" node="7EMmOqgXscl" resolve="QuotedMessage" />
             </node>
           </node>
         </node>
@@ -5278,6 +5420,53 @@
         </node>
         <node concept="Nu42z" id="2tyCW$U5Q8U" role="NuuwV">
           <property role="Nu42W" value="A2" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="7EMmOqgXOku" role="2m5mJr">
+        <property role="TrG5h" value="MessageQuotedChanged" />
+        <node concept="2m7Kf5" id="7EMmOqgXOyt" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="7EMmOqgXOyx" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6fx" resolve="Peer" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="7EMmOqgXOy$" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="7EMmOqgXOyE" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="7EMmOqgXOyH" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="quotedMessage" />
+          <node concept="2m5nlT" id="7EMmOqgXOyP" role="2m7DVh">
+            <node concept="2m5mGg" id="7EMmOqgXOyV" role="3GH5xg">
+              <ref role="2m5mJy" node="7EMmOqgXscl" resolve="QuotedMessage" />
+            </node>
+          </node>
+        </node>
+        <node concept="Nu42z" id="7EMmOqgXOkv" role="NuuwV">
+          <property role="Nu42W" value="A9" />
+        </node>
+        <node concept="NXeRC" id="7EMmOqgXOyY" role="NXp_2">
+          <property role="NXePf" value="Update about quoted message changed" />
+        </node>
+        <node concept="NX1gA" id="7EMmOqgXOz3" role="NXp_2">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Destination peer" />
+          <ref role="NX6Kv" node="7EMmOqgXOyt" resolve="peer" />
+        </node>
+        <node concept="NX1gA" id="7EMmOqgXOzb" role="NXp_2">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Rid of message" />
+          <ref role="NX6Kv" node="7EMmOqgXOy$" resolve="rid" />
+        </node>
+        <node concept="NX1gA" id="7EMmOqgXOzl" role="NXp_2">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Quoted Message" />
+          <ref role="NX6Kv" node="7EMmOqgXOyH" resolve="quotedMessage" />
         </node>
       </node>
       <node concept="NpBTk" id="2tyCW$U5TMH" role="2m5mJr">
@@ -5721,7 +5910,12 @@
         <node concept="NX1gA" id="4bVh48GpIrv" role="NXodf">
           <property role="1GSvIU" value="full" />
           <property role="NX6R2" value="Optional message attributes" />
-          <ref role="NX6Kv" node="4bVh48GpIqW" resolve="attributes" />
+          <ref role="NX6Kv" node="4bVh48GpIqW" resolve="attribute" />
+        </node>
+        <node concept="NX1gA" id="7EMmOqgXPKk" role="NXodf">
+          <property role="NX6R2" value="Optional quoted Message" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="7EMmOqgXPJH" resolve="quotedMessage" />
         </node>
         <node concept="2m7Kf5" id="gbd4oSj4vC" role="2m0hLx">
           <property role="2m7DUN" value="1" />
@@ -5771,10 +5965,19 @@
         </node>
         <node concept="2m7Kf5" id="4bVh48GpIqW" role="2m0hLx">
           <property role="2m7DUN" value="8" />
-          <property role="TrG5h" value="attributes" />
+          <property role="TrG5h" value="attribute" />
           <node concept="2m5nlT" id="4bVh48GpIre" role="2m7DVh">
             <node concept="2m5mGg" id="4bVh48GpIrk" role="3GH5xg">
               <ref role="2m5mJy" node="4bVh48GpFWR" resolve="MessageAttributes" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="7EMmOqgXPJH" role="2m0hLx">
+          <property role="2m7DUN" value="9" />
+          <property role="TrG5h" value="quotedMessage" />
+          <node concept="2m5nlT" id="7EMmOqgXPK2" role="2m7DVh">
+            <node concept="2m5mGg" id="7EMmOqgXPK8" role="3GH5xg">
+              <ref role="2m5mJy" node="7EMmOqgXscl" resolve="QuotedMessage" />
             </node>
           </node>
         </node>
