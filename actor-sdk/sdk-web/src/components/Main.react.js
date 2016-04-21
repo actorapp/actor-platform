@@ -3,12 +3,9 @@
  */
 
 import React, { Component, PropTypes } from 'react';
-import { KeyCodes } from '../constants/ActorAppConstants';
-
 import { preloadEmojiSheet } from '../utils/EmojiUtils'
 
 import VisibilityActionCreators from '../actions/VisibilityActionCreators';
-import QuickSearchActionCreators from '../actions/QuickSearchActionCreators';
 
 import DefaultSidebar from './Sidebar.react';
 import Favicon from './common/Favicon.react';
@@ -17,7 +14,6 @@ import ModalsWrapper from './modals/ModalsWrapper.react';
 // import MenuOverlay from './common/MenuOverlay.react';
 // import InviteUser from './modals/InviteUser.react';
 // import InviteByLink from './modals/invite-user/InviteByLink.react';
-// import EditGroup from './modals/EditGroup.react';
 import SmallCall from './SmallCall.react';
 
 class Main extends Component {
@@ -37,18 +33,17 @@ class Main extends Component {
     super(props);
 
     // Preload emoji spritesheet
+    // TODO: Fix! Its not working properly.
     preloadEmojiSheet();
   }
 
   componentDidMount() {
     this.onVisibilityChange();
     document.addEventListener('visibilitychange', this.onVisibilityChange);
-    document.addEventListener('keydown', this.onKeyDown, false);
   }
 
   componentWillUnmount() {
     document.removeEventListener('visibilitychange', this.onVisibilityChange);
-    document.removeEventListener('keydown', this.onKeyDown, false);
   }
 
   onVisibilityChange = () => {
@@ -56,15 +51,6 @@ class Main extends Component {
       VisibilityActionCreators.createAppHidden();
     } else {
       VisibilityActionCreators.createAppVisible();
-    }
-  };
-
-  onKeyDown = (event) => {
-    // TODO: Make this hotkey work on windows
-    if (event.keyCode === KeyCodes.K && event.metaKey) {
-      event.stopPropagation();
-      event.preventDefault();
-      QuickSearchActionCreators.show();
     }
   };
 
