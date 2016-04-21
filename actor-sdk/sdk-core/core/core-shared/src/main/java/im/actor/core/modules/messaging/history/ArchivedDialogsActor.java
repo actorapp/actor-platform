@@ -7,7 +7,6 @@ package im.actor.core.modules.messaging.history;
 import im.actor.core.api.rpc.RequestLoadArchived;
 import im.actor.core.api.rpc.ResponseLoadArchived;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.sequence.internal.ArchivedDialogLoaded;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.modules.ModuleActor;
@@ -64,7 +63,12 @@ public class ArchivedDialogsActor extends ModuleActor {
                 new RpcCallback<ResponseLoadArchived>() {
                     @Override
                     public void onResult(final ResponseLoadArchived response) {
-                        updates().applyRelatedData(response.getUsers(), response.getGroups()).then(aVoid -> onLoadedMore(response)).done(self());
+                        updates().applyRelatedData(response.getUsers(), response.getGroups()).then(new Consumer<Void>() {
+                            @Override
+                            public void apply(Void aVoid) {
+                                onLoadedMore(response);
+                            }
+                        }).done(self());
                     }
 
                     @Override
