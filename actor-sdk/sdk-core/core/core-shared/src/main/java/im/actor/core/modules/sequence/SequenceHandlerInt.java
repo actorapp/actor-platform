@@ -11,6 +11,7 @@ import im.actor.core.modules.sequence.internal.InternalUpdate;
 import im.actor.core.modules.sequence.internal.RelatedResponse;
 import im.actor.runtime.actors.ActorInterface;
 import im.actor.runtime.actors.ActorRef;
+import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.promise.Promise;
 import im.actor.core.modules.sequence.SequenceHandlerActor.*;
 
@@ -20,13 +21,13 @@ public class SequenceHandlerInt extends ActorInterface {
         super(dest);
     }
 
-    public Promise<UpdateProcessed> onSeqUpdate(int updateKey, byte[] data,
-                                                @Nullable List<ApiUser> users,
-                                                @Nullable List<ApiGroup> groups) {
+    public Promise<Void> onSeqUpdate(int updateKey, byte[] data,
+                                     @Nullable List<ApiUser> users,
+                                     @Nullable List<ApiGroup> groups) {
         return ask(new SeqUpdate(updateKey, data, users, groups));
     }
 
-    public Promise<UpdateProcessed> onDifferenceUpdate(ResponseGetDifference difference) {
+    public Promise<Void> onDifferenceUpdate(ResponseGetDifference difference) {
         return ask(new DifferenceUpdate(difference));
     }
 
