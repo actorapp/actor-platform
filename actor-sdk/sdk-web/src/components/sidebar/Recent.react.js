@@ -34,7 +34,7 @@ class Recent extends Component {
       haveUnreadBelow: false,
       lastUnreadBelow: null,
       firstUnreadAbove: null
-    }
+    };
   }
 
   static contextTypes = {
