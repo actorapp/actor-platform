@@ -236,28 +236,6 @@ export default {
     'inviteByLinkModalRevokeButton': 'Revoke link',
     'inviteLinkCopied': 'Invitation link copied.',
 
-    'preferencesModalTitle': 'Preferences',
-    'preferencesGeneralTab': 'General',
-    'preferencesNotificationsTab': 'Notifications & Sounds',
-    'preferencesSecurityTab': 'Security',
-    'preferencesSendMessageTitle': 'Send message',
-    'preferencesSendMessage': 'send message',
-    'preferencesNewLine': 'new line',
-    'preferencesEffectsTitle': 'Effects',
-    'preferencesEnableEffects': 'Enable sound effects',
-    'preferencesNotificationsTitle': 'Notifications',
-    'preferencesNotificationsGroup': 'Enable group notifications',
-    'preferencesNotificationsOnlyMention': 'Enable mention only notifications',
-    'preferencesNotificationsOnlyMentionHint': 'You can enable notifications only for messages that mention you.',
-    'preferencesPrivacyTitle': 'Privacy',
-    'preferencesMessagePreview': 'Message preview',
-    'preferencesMessagePreviewHint': 'Remove message text from notifications.',
-    'preferencesSessionsTitle': 'Active sessions',
-    'preferencesSessionsCurrentSession': 'Current session',
-    'preferencesSessionsAuthTime': 'Auth time',
-    'preferencesSessionsTerminate': 'Kill',
-    'preferencesSessionsTerminateAll': 'Terminate all sessions',
-
     // Sidebar
     'sidebar': {
       'recents': {
@@ -282,6 +260,7 @@ export default {
         'empty': 'There is no one in your network yet'
       }
     },
+
     'main': {
       'empty': 'Try to be better than yesterday!',
       'install': '<h1>The Web version of <b>{appName}</b> works only in desktop browsers at this time</h1>' +
@@ -290,6 +269,46 @@ export default {
       'deactivated': {
         'header': 'Tab deactivated',
         'text': 'Oops, we have detected another tab with {appName}, so we had to deactivate this one to prevent you from dangerous things happening.'
+      }
+    },
+
+    preferences: {
+      title: 'Preferences',
+      general: {
+        title: 'General',
+        send: {
+          title: 'Send message',
+          sendMessage: 'send message',
+          newLine: 'new line'
+        }
+      },
+      notifications: {
+        title: 'Notifications & Sounds',
+        effects: {
+          title: 'Effects',
+          enable: 'Enable sound effects'
+        },
+        notification: {
+          title: 'Notifications',
+          enable: 'Enable group notifications',
+          onlyMentionEnable: 'Enable mention only notifications',
+          onlyMentionHint: 'You can enable notifications only for messages that contains you mention.'
+        },
+        privacy: {
+          title: 'Privacy',
+          messagePreview: 'Message preview',
+          messagePreviewHint: 'Remove message text from notifications.'
+        }
+      },
+      security: {
+        title: 'Security',
+        sessions: {
+          title: 'Active sessions',
+          current: 'Current session',
+          authTime: 'Auth time',
+          terminate: 'Kill',
+          terminateAll: 'Terminate all sessions'
+        }
       }
     },
 
@@ -303,11 +322,8 @@ export default {
       end: 'End call',
       addUser: 'Add user',
       fullScreen: 'Fullscreen',
-      video: 'Video'
-    },
-
-    toolbar: {
-      callState: {
+      video: 'Video',
+      state: {
         calling: 'calling',
         connecting: 'connecting',
         in_progress: 'On call: {time}',
