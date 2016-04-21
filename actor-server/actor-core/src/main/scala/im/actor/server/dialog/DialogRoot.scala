@@ -135,11 +135,11 @@ private final case class DialogRootState(
 
     if (activePeers.exists(_.ts == ts)) withFavouritedPeer(ts.plusMillis(1), peer)
     else
-    copy(
-      activePeers = this.activePeers + sortableDialog,
-      active = this.active.mapValues(_.filterNot(_.peer == peer)) + dialogGroup(sortableDialog, isFavourite = true),
-      archived = this.archived - sortableDialog
-    )
+      copy(
+        activePeers = this.activePeers + sortableDialog,
+        active = this.active.mapValues(_.filterNot(_.peer == peer)) + dialogGroup(sortableDialog, isFavourite = true),
+        archived = this.archived - sortableDialog
+      )
   }
 
   private def withUnfavouritedPeer(ts: Instant, peer: Peer) = {

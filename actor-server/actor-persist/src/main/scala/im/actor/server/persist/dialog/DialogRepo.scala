@@ -3,7 +3,6 @@ package im.actor.server.persist.dialog
 import com.github.tototoshi.slick.PostgresJodaSupport._
 import im.actor.server.db.ActorPostgresDriver.api._
 import im.actor.server.model._
-import im.actor.server.persist.GroupRepo
 import org.joda.time.DateTime
 import slick.lifted.ColumnOrdered
 
@@ -135,87 +134,6 @@ object DialogRepo extends UserDialogOperations with DialogCommonOperations {
   private def byPKSimple(userId: Rep[Int], peerType: Rep[Int], peerId: Rep[Int]) =
     dialogs.filter({ case (_, u) ⇒ u.userId === userId && u.peerType === peerType && u.peerId === peerId })
 
-  def create(dialog: DialogObsolete)(implicit ec: ExecutionContext): DBIO[Int] = {
-    val dialogId = getDialogId(Some(dialog.userId), dialog.peer)
-
-    val common = DialogCommon(
-      dialogId = dialogId,
-      lastMessageDate = dialog.lastMessageDate,
-      lastReceivedAt = dialog.lastReceivedAt,
-      lastReadAt = dialog.lastReadAt
-    )
-
-    val user = UserDialog(
-      userId = dialog.userId,
-      peer = dialog.peer,
-      ownerLastReceivedAt = dialog.ownerLastReceivedAt,
-      ownerLastReadAt = dialog.ownerLastReadAt,
-      createdAt = dialog.createdAt,
-      shownAt = dialog.shownAt,
-      isFavourite = dialog.isFavourite,
-      archivedAt = dialog.archivedAt
-    )
-
-    for {
-      exists ← commonExists(dialogId)
-      result ← if (exists) {
-        UserDialogRepo.userDialogs += user
-      } else {
-        for {
-          c ← (DialogCommonRepo.dialogCommon += common)
-            .asTry
-            .flatMap {
-              case Failure(e) ⇒
-                commonExists(common.dialogId) flatMap {
-                  case true  ⇒ DBIO.successful(1)
-                  case false ⇒ DBIO.failed(e)
-                }
-              case Success(res) ⇒ DBIO.successful(res)
-            }
-          _ ← UserDialogRepo.userDialogs += user
-        } yield c
-      }
-    } yield result
-  }
-
   def findDialog(userId: Int, peer: Peer)(implicit ec: ExecutionContext): DBIO[Option[DialogObsolete]] =
     byPKC((userId, peer.typ.value, peer.id)).result.headOption map (_.map { case (c, u) ⇒ DialogObsolete.fromCommonAndUser(c, u) })
-
-  def fetchSortByLastMessageData(userId: Int, dateOpt: Option[DateTime], limit: Int, fetchArchived: Boolean = false)(implicit ec: ExecutionContext): DBIO[Seq[DialogObsolete]] =
-    fetch(userId, dateOpt: Option[DateTime], limit, { case (_, u) ⇒ u.shownAt.asc }, fetchArchived)
-
-  def fetch(userId: Int, dateOpt: Option[DateTime], limit: Int, fetchArchived: Boolean = false)(implicit ec: ExecutionContext): DBIO[Seq[DialogObsolete]] =
-    fetch(userId, dateOpt: Option[DateTime], limit, { case (c, _) ⇒ c.lastMessageDate.desc }, fetchArchived)
-
-  def fetch[A](userId: Int, dateOpt: Option[DateTime], limit: Int, sorting: ((DialogCommonTable, UserDialogTable)) ⇒ ColumnOrdered[A], fetchArchived: Boolean)(implicit ec: ExecutionContext): DBIO[Seq[DialogObsolete]] = {
-    val baseQuery: Query[(DialogCommonTable, UserDialogTable), (DialogCommon, UserDialog), Seq] = {
-      (if (fetchArchived) dialogs else notArchived)
-        .filter({ case (_, u) ⇒ u.userId === userId })
-        .sortBy(sorting)
-    }
-
-    val limitedQuery = dateOpt match {
-      case Some(date) ⇒ baseQuery.filter({ case (c, _) ⇒ c.lastMessageDate <= date })
-      case None       ⇒ baseQuery
-    }
-
-    for {
-      limited ← limitedQuery.take(limit).result
-      // work-around for case when there are more than one dialog with the same lastMessageDate
-      result ← limited
-        .lastOption match {
-          case Some((last, _)) ⇒
-            for {
-              sameDate ← baseQuery.filter({ case (c, _) ⇒ c.lastMessageDate === last.lastMessageDate }).result
-            } yield limited.filterNot({ case (c, _) ⇒ c.lastMessageDate == last.lastMessageDate }) ++ sameDate
-          case None ⇒ DBIO.successful(limited)
-        }
-      dialogs = result map { case (c, u) ⇒ DialogObsolete.fromCommonAndUser(c, u) }
-    } yield dialogs
-  }
-
-  def archivedExist(userId: Int) = archivedExistC(userId).result
-
-  def fetchArchived(userId: Int, offset: Int, limit: Int)(implicit ec: ExecutionContext) =
-    archivedByUserIdC((userId, offset.toLong, limit.toLong)).result map (_ map { case (c, u) ⇒ DialogObsolete.fromCommonAndUser(c, u) })
 }
