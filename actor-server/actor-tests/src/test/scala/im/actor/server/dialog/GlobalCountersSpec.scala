@@ -15,7 +15,7 @@ final class GlobalCountersSpec
 
   "Global counter" should "count unread messages in public groups" in publicGroups
 
-  it should "not count messages in public group, after user been kicked from it" in pendingUntilFixed(publicGroupsAfterKick)
+  it should "not count messages in public group, after user been kicked from it" in publicGroupsAfterKick
 
   private implicit lazy val msgService = MessagingServiceImpl()
   private implicit lazy val groupsService = new GroupsServiceImpl(GroupInviteConfig(""))
