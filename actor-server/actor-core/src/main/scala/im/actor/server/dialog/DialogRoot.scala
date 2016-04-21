@@ -92,10 +92,11 @@ private trait DialogRootQueryHandlers {
   }
 }
 
-private class DialogRoot(userId: Int, extensions: Seq[ApiExtension])
+private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
   extends Processor[DialogRootState]
   with IncrementalSnapshots[DialogRootState]
-  with DialogRootQueryHandlers {
+  with DialogRootQueryHandlers
+  with DialogRootMigration {
   import DialogRootEvents._
   import DialogRootQueries._
   import DialogRootCommands._
