@@ -49,7 +49,7 @@ private object DialogRootState {
   )
 }
 
-private final case class DialogRootState(
+private[dialog] final case class DialogRootState(
   active:      Map[DialogGroupType, SortedSet[SortableDialog]],
   activePeers: SortedSet[SortableDialog],
   archived:    SortedSet[SortableDialog]
