@@ -15,21 +15,15 @@ import im.actor.core.api.base.SeqUpdate;
 import im.actor.core.api.base.SeqUpdateTooLong;
 import im.actor.core.api.rpc.RequestGetDifference;
 import im.actor.core.api.rpc.RequestGetState;
-import im.actor.core.api.rpc.ResponseGetDifference;
-import im.actor.core.api.rpc.ResponseSeq;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.sequence.internal.ExecuteAfter;
-import im.actor.core.network.RpcCallback;
-import im.actor.core.network.RpcException;
 import im.actor.core.modules.ModuleActor;
 import im.actor.runtime.*;
 import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.Cancellable;
 import im.actor.runtime.actors.messages.Void;
-import im.actor.runtime.function.Consumer;
 import im.actor.runtime.power.WakeLock;
-import im.actor.runtime.actors.messages.Void;
 
 public class SequenceActor extends ModuleActor {
 
@@ -39,7 +33,7 @@ public class SequenceActor extends ModuleActor {
 
     // Do Not Remove! WorkAround for missing j2objc translator include
     private static final Void DUMB = null;
-    
+
     private static final String TAG = "Updates";
     private static final int INVALIDATE_GAP = 2000;// 2 Secs
     private static final int INVALIDATE_MAX_SEC_HOLE = 10;
@@ -167,33 +161,27 @@ public class SequenceActor extends ModuleActor {
             ArrayList<ApiUpdateOptimization> optimizations = new ArrayList<>();
             optimizations.add(ApiUpdateOptimization.STRIP_ENTITIES);
             optimizations.add(ApiUpdateOptimization.STRIP_COUNTERS);
-            request(new RequestGetState(optimizations), new RpcCallback<ResponseSeq>() {
-                @Override
-                public void onResult(ResponseSeq response) {
-                    if (isValidated) {
-                        return;
-                    }
-
-                    Log.d(TAG, "State loaded {seq=" + seq + "}");
-
-                    seq = response.getSeq();
-                    state = response.getState();
-                    persistState(seq, state);
-
-                    stopWakeLock();
-
-                    onBecomeValid(response.getSeq(), response.getState());
+            api(new RequestGetState(optimizations)).then(response -> {
+                if (isValidated) {
+                    return;
                 }
 
-                @Override
-                public void onError(RpcException e) {
-                    if (isValidated) {
-                        return;
-                    }
-                    isValidated = true;
-                    invalidate();
+                Log.d(TAG, "State loaded {seq=" + seq + "}");
+
+                seq = response.getSeq();
+                state = response.getState();
+                persistState(seq, state);
+
+                stopWakeLock();
+
+                onBecomeValid(response.getSeq(), response.getState());
+            }).failure(e -> {
+                if (isValidated) {
+                    return;
                 }
-            });
+                isValidated = true;
+                invalidate();
+            }).done(self());
         } else {
             Log.d(TAG, "Loading difference...");
             onUpdateStarted();
@@ -201,40 +189,35 @@ public class SequenceActor extends ModuleActor {
             ArrayList<ApiUpdateOptimization> optimizations = new ArrayList<>();
             optimizations.add(ApiUpdateOptimization.STRIP_ENTITIES);
             optimizations.add(ApiUpdateOptimization.STRIP_COUNTERS);
-            request(new RequestGetDifference(seq, state, optimizations), new RpcCallback<ResponseGetDifference>() {
-                @Override
-                public void onResult(final ResponseGetDifference response) {
-                    if (isValidated) {
-                        return;
-                    }
+            api(new RequestGetDifference(seq, state, optimizations)).then(response -> {
 
-                    Log.d(TAG, "Difference loaded {seq=" + response.getSeq() + "} in "
-                            + (im.actor.runtime.Runtime.getCurrentTime() - loadStart) + " ms, " +
-                            "userRefs: " + response.getUsersRefs().size() + ", " +
-                            "groupRefs: " + response.getGroupsRefs().size());
-
-                    handler.onDifferenceUpdate(response).then(updateProcessed ->
-                            onUpdatesApplied(response.getSeq(), response.getState())
-                    ).done(self());
-
-                    onBecomeValid(response.getSeq(), response.getState());
-
-                    if (response.needMore()) {
-                        invalidate();
-                    } else {
-                        onUpdateEnded();
-                    }
+                if (isValidated) {
+                    return;
                 }
 
-                @Override
-                public void onError(RpcException e) {
-                    if (isValidated) {
-                        return;
-                    }
-                    isValidated = true;
+                Log.d(TAG, "Difference loaded {seq=" + response.getSeq() + "} in "
+                        + (Runtime.getCurrentTime() - loadStart) + " ms, " +
+                        "userRefs: " + response.getUsersRefs().size() + ", " +
+                        "groupRefs: " + response.getGroupsRefs().size());
 
+                handler.onDifferenceUpdate(response).then(updateProcessed ->
+                        onUpdatesApplied(response.getSeq(), response.getState())
+                ).done(self());
+
+                onBecomeValid(response.getSeq(), response.getState());
+
+                if (response.needMore()) {
                     invalidate();
+                } else {
+                    onUpdateEnded();
                 }
+            }).failure(e -> {
+                if (isValidated) {
+                    return;
+                }
+                isValidated = true;
+
+                invalidate();
             });
         }
     }
