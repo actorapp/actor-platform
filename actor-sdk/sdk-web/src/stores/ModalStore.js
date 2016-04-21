@@ -27,7 +27,7 @@ class ModalStore extends ReduceStore {
       case ActionTypes.CROP_MODAL_SHOW:
         return {
           ...state,
-          prevModal: ModalTypes.PROFILE,
+          prevModal: action.prevModal,
           currentModal: ModalTypes.CROP
         }
       case ActionTypes.CROP_MODAL_HIDE:
@@ -61,6 +61,13 @@ class ModalStore extends ReduceStore {
       case ActionTypes.GROUP_CREATE_MODAL_HIDE:
         return this.getInitialState();
 
+      case ActionTypes.GROUP_EDIT_MODAL_SHOW:
+        return {
+          ...state,
+          currentModal: ModalTypes.EDIT_GROUP
+        }
+      case ActionTypes.GROUP_EDIT_MODAL_HIDE:
+        return this.getInitialState();
 
 
       default:
