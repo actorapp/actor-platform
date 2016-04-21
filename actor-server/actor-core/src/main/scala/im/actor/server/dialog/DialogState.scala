@@ -73,8 +73,10 @@ private[dialog] final case class DialogState(
         unreadMessages = newUnreadMessages,
         unreadMessagesMap = newUnreadMessagesMap
       )
-    case MessagesRead(date, readerUserId) if readerUserId != userId && date.isAfter(lastReadDate) ⇒
-      this.copy(lastReadDate = date)
+    case MessagesRead(date, readerUserId) if readerUserId != userId ⇒
+      if (date.isAfter(lastReadDate))
+        this.copy(lastReadDate = date)
+      else this
     case MessagesReceived(date) if date.isAfter(lastReceiveDate) ⇒ this.copy(lastReceiveDate = date)
     case CounterReset() ⇒
       this.copy(counter = 0, unreadMessages = SortedSet.empty(UnreadMessage.OrderingAsc), unreadMessagesMap = Map.empty)

@@ -66,7 +66,8 @@ trait DialogRootMigration extends Processor[DialogRootState] {
       Favourited(ts, Some(dialog.peer))
     }
 
-    persistAll(Initialized(Instant.now()) +: (created ++ archived ++ favourited).toList) { _ ⇒
+    persistAll(Initialized(Instant.now()) +: (created ++ archived ++ favourited).toList) { events ⇒
+      events foreach commit
       onComplete
     }
   }
