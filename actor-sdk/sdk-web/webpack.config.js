@@ -76,6 +76,6 @@ export default {
     new webpack.NoErrorsPlugin()
   ],
   postcss: [
-    autoprefixer({browsers: ['last 3 versions']})
+    autoprefixer({ browsers: ['last 3 versions'] })
   ]
 };
