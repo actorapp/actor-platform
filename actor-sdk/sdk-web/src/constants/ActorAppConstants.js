@@ -149,9 +149,9 @@ export const ActionTypes = keymirror({
   INVITE_USER_SUCCESS: null,
   INVITE_USER_ERROR: null,
 
-  PREFERENCES_SAVE: null,
-  PREFERENCES_MODAL_HIDE: null,
   PREFERENCES_MODAL_SHOW: null,
+  PREFERENCES_MODAL_HIDE: null,
+  PREFERENCES_SAVE: null,
   PREFERENCES_CHANGE_TAB: null,
   PREFERENCES_SESSION_LOAD: null,
   PREFERENCES_SESSION_LOAD_SUCCESS: null,
@@ -374,6 +374,13 @@ export const ModalTypes = keymirror({
   PREFERENCES: null
 });
 
+export const PreferencesTabTypes = keymirror({
+  GENERAL: null,
+  NOTIFICATIONS: null,
+  SECURITY: null
+});
+
+
 export const Path = {
   toImages: 'assets/images',
   toEmoji: 'assets/images/emoji'
@@ -403,6 +410,7 @@ export default {
   KeyCodes,
   AsyncActionStates,
   ModalTypes,
+  PreferencesTabTypes,
   Path,
   endpoints,
   appName,
