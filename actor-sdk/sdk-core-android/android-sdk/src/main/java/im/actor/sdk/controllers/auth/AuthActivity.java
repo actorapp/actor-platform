@@ -72,7 +72,6 @@ public class AuthActivity extends BaseFragmentActivity {
         currentPhone = preferences.getLong("currentPhone", 0);
         currentEmail = preferences.getString("currentEmail");
         transactionHash = preferences.getString("transactionHash");
-        currentCode = preferences.getString("currentCode");
         isRegistered = preferences.getBool("isRegistered", false);
         currentName = preferences.getString("currentName");
         signType = preferences.getInt("signType", signType);
@@ -102,7 +101,6 @@ public class AuthActivity extends BaseFragmentActivity {
         preferences.putLong("currentPhone", currentPhone);
         preferences.putString("currentEmail", currentEmail);
         preferences.putString("transactionHash", transactionHash);
-        preferences.putString("currentCode", currentCode);
         preferences.putBool("isRegistered", isRegistered);
         preferences.putString("currentName", currentName);
         preferences.putInt("signType", signType);
@@ -303,6 +301,7 @@ public class AuthActivity extends BaseFragmentActivity {
                             canTryAgain = true;
                         } else {
                             if ("PHONE_CODE_EXPIRED".equals(re.getTag()) || "EMAIL_CODE_EXPIRED".equals(re.getTag())) {
+                                currentCode = "";
                                 message = getString(R.string.auth_error_code_expired);
                                 canTryAgain = false;
                             } else if ("PHONE_CODE_INVALID".equals(re.getTag()) || "EMAIL_CODE_INVALID".equals(re.getTag())) {
@@ -454,6 +453,10 @@ public class AuthActivity extends BaseFragmentActivity {
             alertDialog.dismiss();
             alertDialog = null;
         }
+    }
+
+    public String getCurrentCode() {
+        return currentCode;
     }
 
     public String getTransactionHash() {
