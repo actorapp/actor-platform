@@ -139,13 +139,13 @@ class PreferencesModal extends Component {
     return (
       <aside className="preferences__tabs">
         <a className={generalTabClassNames} onClick={() => this.handleChangeTab('GENERAL')}>
-          <FormattedMessage id="preferencesGeneralTab"/>
+          <FormattedMessage id="preferences.general.title"/>
         </a>
         <a className={notificationTabClassNames} onClick={() => this.handleChangeTab('NOTIFICATIONS')}>
-          <FormattedMessage id="preferencesNotificationsTab"/>
+          <FormattedMessage id="preferences.notifications.title"/>
         </a>
         <a className={securityTabClassNames} onClick={() => this.handleChangeTab('SECURITY')}>
-          <FormattedMessage id="preferencesSecurityTab"/>
+          <FormattedMessage id="preferences.security.title"/>
         </a>
         <footer className="preferences__tabs__footer">
           {this.renderAppDetail()}
@@ -162,7 +162,7 @@ class PreferencesModal extends Component {
         <ul>
           <li>
             <i className="icon material-icons">keyboard</i>
-            <FormattedMessage id="preferencesSendMessageTitle" tagName="h4"/>
+            <FormattedMessage id="preferences.general.send.title" tagName="h4"/>
             <div className="radio">
               <input
                 type="radio"
@@ -172,8 +172,8 @@ class PreferencesModal extends Component {
                 defaultChecked={isSendByEnterEnabled}
                 onChange={this.toggleSendByEnter}/>
               <label htmlFor="sendByEnterEnabled">
-                <b>Enter</b> – <FormattedMessage id="preferencesSendMessage"/>,
-                <b>Shift + Enter</b> – <FormattedMessage id="preferencesNewLine"/>
+                <b>Enter</b> – <FormattedMessage id="preferences.general.send.sendMessage"/>,
+                <b>Shift + Enter</b> – <FormattedMessage id="preferences.general.send.newLine"/>
               </label>
             </div>
             <div className="radio">
@@ -185,8 +185,8 @@ class PreferencesModal extends Component {
                 defaultChecked={!isSendByEnterEnabled}
                 onChange={this.toggleSendByEnter}/>
               <label htmlFor="sendByEnterDisabled">
-                <b>Cmd + Enter</b> – <FormattedMessage id="preferencesSendMessage"/>,
-                <b>Enter</b> – <FormattedMessage id="preferencesNewLine"/>
+                <b>Cmd + Enter</b> – <FormattedMessage id="preferences.general.send.sendMessage"/>,
+                <b>Enter</b> – <FormattedMessage id="preferences.general.send.newLine"/>
               </label>
             </div>
           </li>
@@ -208,7 +208,7 @@ class PreferencesModal extends Component {
         <ul>
           <li>
             <i className="icon material-icons">music_note</i>
-            <FormattedMessage id="preferencesEffectsTitle" tagName="h4"/>
+            <FormattedMessage id="preferences.notifications.effects.title" tagName="h4"/>
             <div className="checkbox">
               <input
                 type="checkbox"
@@ -216,13 +216,13 @@ class PreferencesModal extends Component {
                 defaultChecked={isSoundEffectsEnabled}
                 onChange={this.changeSoundEffectsEnabled}/>
               <label htmlFor="soundEffects">
-                <FormattedMessage id="preferencesEnableEffects"/>
+                <FormattedMessage id="preferences.notifications.effects.enable"/>
               </label>
             </div>
           </li>
           <li>
             <i className="icon material-icons">notifications</i>
-            <FormattedMessage id="preferencesNotificationsTitle" tagName="h4"/>
+            <FormattedMessage id="preferences.notifications.notification.title" tagName="h4"/>
             <div className="checkbox">
               <input
                 type="checkbox"
@@ -230,7 +230,7 @@ class PreferencesModal extends Component {
                 defaultChecked={isGroupsNotificationsEnabled}
                 onChange={this.changeGroupsNotificationsEnabled}/>
               <label htmlFor="groupNotifications">
-                <FormattedMessage id="preferencesNotificationsGroup"/>
+                <FormattedMessage id="preferences.notifications.notification.enable"/>
               </label>
             </div>
             <div className="checkbox">
@@ -240,14 +240,14 @@ class PreferencesModal extends Component {
                 defaultChecked={isOnlyMentionNotifications}
                 onChange={this.changeMentionNotifications}/>
               <label htmlFor="mentionsNotifications">
-                <FormattedMessage id="preferencesNotificationsOnlyMention"/>
+                <FormattedMessage id="preferences.notifications.notification.onlyMentionEnable"/>
               </label>
             </div>
-            <p className="hint"><FormattedMessage id="preferencesNotificationsOnlyMentionHint"/></p>
+            <p className="hint"><FormattedMessage id="preferences.notifications.notification.onlyMentionHint"/></p>
           </li>
           <li>
             <i className="icon material-icons">visibility</i>
-            <FormattedMessage id="preferencesPrivacyTitle" tagName="h4"/>
+            <FormattedMessage id="preferences.notifications.privacy.title" tagName="h4"/>
             <div className="checkbox">
               <input
                 type="checkbox"
@@ -255,10 +255,10 @@ class PreferencesModal extends Component {
                 defaultChecked={isShowNotificationsTextEnabled}
                 onChange={this.changeIsShowNotificationTextEnabled}/>
               <label htmlFor="notificationTextPreview">
-                <FormattedMessage id="preferencesMessagePreview"/>
+                <FormattedMessage id="preferences.notifications.privacy.messagePreview"/>
               </label>
             </div>
-            <p className="hint"><FormattedMessage id="preferencesMessagePreviewHint"/></p>
+            <p className="hint"><FormattedMessage id="preferences.notifications.privacy.messagePreviewHint"/></p>
           </li>
         </ul>
       </div>
@@ -271,12 +271,12 @@ class PreferencesModal extends Component {
         <ul>
           <li>
             <i className="icon material-icons">devices</i>
-            <FormattedMessage id="preferencesSessionsTitle" tagName="h4"/>
+            <FormattedMessage id="preferences.security.sessions.title" tagName="h4"/>
             <ul className="session-list">
               {this.renderSessionList()}
               <li className="session-list__session">
                 <a className="link--red" onClick={this.handleTerminateAllSessionsClick}>
-                  <FormattedMessage id="preferencesSessionsTerminateAll"/>
+                  <FormattedMessage id="preferences.security.sessions.terminateAll"/>
                 </a>
               </li>
             </ul>
@@ -325,7 +325,7 @@ class PreferencesModal extends Component {
           <div className="preferences">
             <header className="modal__header">
               <i className="modal__header__icon material-icons">settings</i>
-              <FormattedMessage id="preferencesModalTitle" tagName="h1"/>
+              <FormattedMessage id="preferences.title" tagName="h1"/>
               <button className="button button--lightblue" onClick={this.handleSave}>
                 <FormattedMessage id="button.done"/>
               </button>

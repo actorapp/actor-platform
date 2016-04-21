@@ -115,7 +115,7 @@ class ToolbarSection extends Component {
     const { call, message } = this.state;
     if (call.isCalling) {
       return (
-        <FormattedMessage id={`toolbar.callState.${call.state}`} values={{time: call.time}} />
+        <FormattedMessage id={`call.callState.${call.state}`} values={{time: call.time}} />
       );
     }
 

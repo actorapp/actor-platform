@@ -50,7 +50,7 @@ class SessionItem extends Component {
     if (holder !== 'THIS_DEVICE') return null;
 
     return (
-      <FormattedMessage id="preferencesSessionsCurrentSession" tagName="small"/>
+      <FormattedMessage id="preferences.security.sessions.current" tagName="small"/>
     );
   }
 
@@ -59,7 +59,7 @@ class SessionItem extends Component {
 
     return (
       <small>
-        <b><FormattedMessage id="preferencesSessionsAuthTime"/>:</b> {authTime.toString()}
+        <b><FormattedMessage id="preferences.security.sessions.authTime"/>:</b> {authTime.toString()}
       </small>
     );
   }
@@ -72,7 +72,7 @@ class SessionItem extends Component {
         currentState={terminateState}
         pending={
           <a className="session-list__session__terminate link--blue" onClick={this.handleTerminateSession}>
-            <FormattedMessage id="preferencesSessionsTerminate"/>
+            <FormattedMessage id="preferences.security.sessions.terminate"/>
           </a>
         }
         processing={

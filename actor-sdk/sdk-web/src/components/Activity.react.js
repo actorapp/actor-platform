@@ -46,7 +46,7 @@ class ActivitySection extends Component {
       case PeerTypes.USER:
         return <UserProfile user={info} />;
       case PeerTypes.GROUP:
-        return <GroupProfile group={info}/>;
+        return <GroupProfile group={info} />;
       default:
         return null;
     }
