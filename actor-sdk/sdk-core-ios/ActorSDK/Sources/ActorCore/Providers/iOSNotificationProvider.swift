@@ -47,8 +47,8 @@ import AudioToolbox.AudioServices
             // Clearing notifications
             if let number = Actor.getGlobalState().globalCounter.get() {
                 UIApplication.sharedApplication().applicationIconBadgeNumber = 0 // If current value will equals to number + 1
-                UIApplication.sharedApplication().applicationIconBadgeNumber = number.intValue() + 1
-                UIApplication.sharedApplication().applicationIconBadgeNumber = number.intValue()
+                UIApplication.sharedApplication().applicationIconBadgeNumber = number.integerValue + 1
+                UIApplication.sharedApplication().applicationIconBadgeNumber = number.integerValue
             } else {
                 UIApplication.sharedApplication().applicationIconBadgeNumber = 0
             }
