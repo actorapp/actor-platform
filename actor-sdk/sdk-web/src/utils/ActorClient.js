@@ -230,11 +230,11 @@ class ActorClient {
   }
 
   addContact(uid) {
-    window.messenger.addContact(uid);
+    return window.messenger.addContact(uid);
   }
 
   removeContact(uid) {
-    window.messenger.removeContact(uid);
+    return window.messenger.removeContact(uid);
   }
 
   // Profile
