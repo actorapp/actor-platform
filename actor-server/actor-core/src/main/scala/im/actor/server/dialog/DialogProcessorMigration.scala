@@ -66,7 +66,7 @@ trait DialogProcessorMigration extends Processor[DialogState] {
     context become migrating
     db.run(DialogRepo.findDialog(userId, peer)) map {
       case Some(model) ⇒ self ! model
-      case _           ⇒ self ! Status.Failure(new IllegalStateException("Cannot find dialog"))
+      case _           ⇒ self ! PersistEvents(List(Initialized()))
     }
   }
 }
