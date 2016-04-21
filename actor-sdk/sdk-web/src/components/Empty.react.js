@@ -3,7 +3,6 @@
  */
 
 import React, { Component } from 'react';
-import { FormattedMessage } from 'react-intl';
 
 import SvgIcon from './common/SvgIcon.react';
 import ConnectionState from './common/ConnectionState.react';
@@ -20,7 +19,6 @@ class EmptyScreen extends Component {
               <div className="logo">
                 <SvgIcon className="icon icon--gray" glyph="star" />
               </div>
-              <h2><FormattedMessage id="main.empty"/></h2>
             </div>
           </section>
         </div>
