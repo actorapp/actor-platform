@@ -234,28 +234,6 @@ export default {
     'inviteByLinkModalRevokeButton': 'Отменить',
     'inviteLinkCopied': 'Ссылка скопирована.',
 
-    'preferencesModalTitle': 'Настройки',
-    'preferencesGeneralTab': 'Основные',
-    'preferencesNotificationsTab': 'Уведомления и Звуки',
-    'preferencesSecurityTab': 'Безопасность',
-    'preferencesSendMessageTitle': 'Отправка сообщений',
-    'preferencesSendMessage': 'отправить сообщение',
-    'preferencesNewLine': 'новая строка',
-    'preferencesEffectsTitle': 'Эффекты',
-    'preferencesEnableEffects': 'Включить звуковые эффекты',
-    'preferencesNotificationsTitle': 'Уведомления',
-    'preferencesNotificationsGroup': 'Включить уведомления для групп',
-    'preferencesNotificationsOnlyMention': 'Включить уведомления только для упоминаний',
-    'preferencesNotificationsOnlyMentionHint': 'Вы можете включить уведомления только для сообщений, в которых вы упомянуты.',
-    'preferencesPrivacyTitle': 'Конфиденциальность',
-    'preferencesMessagePreview': 'Предварительный просмотр сообщений',
-    'preferencesMessagePreviewHint': 'Удаляет текст сообщений из уведомлений.',
-    'preferencesSessionsTitle': 'Активные сессии',
-    'preferencesSessionsCurrentSession': 'Текущий сеанс',
-    'preferencesSessionsAuthTime': 'Авторизовано',
-    'preferencesSessionsTerminate': 'Завершить',
-    'preferencesSessionsTerminateAll': 'Завершить все сеансы',
-
     // Sidebar
     'sidebar': {
       'recents': {
@@ -280,6 +258,7 @@ export default {
         'empty': 'В вашей сети пока никого нет'
       }
     },
+
     'main': {
       'empty': 'Старайся быть лучше, чем был вчера!',
       'deactivated': {
@@ -287,6 +266,47 @@ export default {
         'text': 'Упс, похоже что вы открыли еще одну вкладку с {appName}. Мы вынуждены деактивировать эту вкладку, чтобы избежать ошибок.'
       }
     },
+
+    preferences: {
+      title: 'Настройки',
+      general: {
+        title: 'Основные',
+        send: {
+          title: 'Отправка сообщений',
+          sendMessage: 'отправить сообщение',
+          newLine: 'новая строка'
+        }
+      },
+      notifications: {
+        title: 'Уведомления и Звуки',
+        effects: {
+          title: 'Эффекты',
+          enable: 'Включить звуковые эффекты'
+        },
+        notification: {
+          title: 'Уведомления',
+          enable: 'Включить уведомления для групп',
+          onlyMentionEnable: 'Включить уведомления только для упоминаний',
+          onlyMentionHint: 'Вы можете включить уведомления только для сообщений, в которых вы упомянуты.'
+        },
+        privacy: {
+          title: 'Конфиденциальность',
+          messagePreview: 'Предварительный просмотр сообщений',
+          messagePreviewHint: 'Удаляет текст сообщений из уведомлений.'
+        }
+      },
+      security: {
+        title: 'Безопасность',
+        sessions: {
+          title: 'Активные сессии',
+          current: 'Текущий сеанс',
+          authTime: 'Авторизовано',
+          terminate: 'Завершить',
+          terminateAll: 'Завершить все сеансы'
+        }
+      }
+    },
+
     call: {
       outgoing: 'Исходящий вызов',
       incoming: 'Входящий вызов',
@@ -297,11 +317,8 @@ export default {
       end: 'Завершить вызов',
       addUser: 'Добавить пользователя',
       fullScreen: 'Полный экран',
-      video: 'Видео'
-    },
-
-    toolbar: {
-      callState: {
+      video: 'Видео',
+      state: {
         calling: 'звоню',
         connecting: 'соединение',
         in_progress: 'Звонок: {time}',
@@ -332,11 +349,11 @@ export default {
       delete: 'Удалить'
     },
 
-    'search': {
-      'placeholder': 'Поиск',
-      'emptyQuery': 'Начните печатать чтобы начать поиск',
-      'searching': 'Поиск "{query}"',
-      'notFound': 'По запросу "{query}" ничего не найдено<br/>Попробуйте поискать что-нибуь другое'
+    search: {
+      placeholder: 'Поиск',
+      emptyQuery: 'Начните печатать чтобы начать поиск',
+      searching: 'Поиск "{query}"',
+      notFound: 'По запросу "{query}" ничего не найдено<br/>Попробуйте поискать что-нибуь другое'
     }
   }
 };
