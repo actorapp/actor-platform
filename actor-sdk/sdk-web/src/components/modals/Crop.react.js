@@ -257,54 +257,56 @@ class CropAvatarModal extends Component {
 
         <ModalCloseButton onClick={this.handleClose}/>
 
-        <div className="modal__content crop">
-          <header className="modal__header">
-              <FormattedMessage id="modal.crop.title" tagName="h1"/>
-          </header>
+        <div className="modal__content">
+          <div className="crop">
+            <header className="modal__header">
+                <FormattedMessage id="modal.crop.title" tagName="h1"/>
+            </header>
 
-          <div className="modal__body">
-            <div className="crop-wrapper"
-                 ref="wrapper"
-                 onTouchEnd={this.removeListeners}
-                 onMouseUp={this.removeListeners}>
-              <div className="crop-wrapper__scale"
-                   style={{width: cropSize, height: cropSize, left: cropPosition.x, top: cropPosition.y}}>
-                <div className="crop-wrapper__scale__handler crop-wrapper__scale__handler--top"
-                     onMouseDown={this.onStartResizeTop}
-                     onTouchStart={this.onStartResizeTop}/>
-                <div className="crop-wrapper__scale__handler crop-wrapper__scale__handler--right"
-                     onMouseDown={this.onStartResizeRight}
-                     onTouchStart={this.onStartResizeRight}/>
-                <div className="crop-wrapper__scale__handler crop-wrapper__scale__handler--bottom"
-                     onMouseDown={this.onStartResizeBottom}
-                     onTouchStart={this.onStartResizeBottom}/>
-                <div className="crop-wrapper__scale__handler crop-wrapper__scale__handler--left"
-                     onMouseDown={this.onStartResizeLeft}
-                     onTouchStart={this.onStartResizeLeft}/>
-              </div>
-              <div className="crop-wrapper__overlay"
-                   onMouseDown={this.onStartMoving}
-                   onTouchStart={this.onStartMoving}
-                   style={{ width: cropSize, height: cropSize, left: cropPosition.x, top: cropPosition.y}}>
-                <img className="crop-wrapper__image-crop"
-                     draggable="false"
-                     ref="cropImage"
-                     src={pictureSource}
-                     style={{left: -cropPosition.x, top: -cropPosition.y, width: scaledWidth, height: scaledHeight}}/>
-              </div>
+            <div className="modal__body">
+              <div className="crop-wrapper"
+                   ref="wrapper"
+                   onTouchEnd={this.removeListeners}
+                   onMouseUp={this.removeListeners}>
+                <div className="crop-wrapper__scale"
+                     style={{width: cropSize, height: cropSize, left: cropPosition.x, top: cropPosition.y}}>
+                  <div className="crop-wrapper__scale__handler crop-wrapper__scale__handler--top"
+                       onMouseDown={this.onStartResizeTop}
+                       onTouchStart={this.onStartResizeTop}/>
+                  <div className="crop-wrapper__scale__handler crop-wrapper__scale__handler--right"
+                       onMouseDown={this.onStartResizeRight}
+                       onTouchStart={this.onStartResizeRight}/>
+                  <div className="crop-wrapper__scale__handler crop-wrapper__scale__handler--bottom"
+                       onMouseDown={this.onStartResizeBottom}
+                       onTouchStart={this.onStartResizeBottom}/>
+                  <div className="crop-wrapper__scale__handler crop-wrapper__scale__handler--left"
+                       onMouseDown={this.onStartResizeLeft}
+                       onTouchStart={this.onStartResizeLeft}/>
+                </div>
+                <div className="crop-wrapper__overlay"
+                     onMouseDown={this.onStartMoving}
+                     onTouchStart={this.onStartMoving}
+                     style={{ width: cropSize, height: cropSize, left: cropPosition.x, top: cropPosition.y}}>
+                  <img className="crop-wrapper__image-crop"
+                       draggable="false"
+                       ref="cropImage"
+                       src={pictureSource}
+                       style={{left: -cropPosition.x, top: -cropPosition.y, width: scaledWidth, height: scaledHeight}}/>
+                </div>
 
-              <img
-                className="crop-wrapper__image-original"
-                draggable="false"
-                ref="originalImage"
-                src={pictureSource}
-                style={{maxHeight: maxImageHeight}}/>
+                <img
+                  className="crop-wrapper__image-original"
+                  draggable="false"
+                  ref="originalImage"
+                  src={pictureSource}
+                  style={{maxHeight: maxImageHeight}}/>
+              </div>
             </div>
-          </div>
 
-          <footer className="modal__footer">
-            {this.renderControls()}
-          </footer>
+            <footer className="modal__footer">
+              {this.renderControls()}
+            </footer>
+          </div>
         </div>
       </Modal>
     );

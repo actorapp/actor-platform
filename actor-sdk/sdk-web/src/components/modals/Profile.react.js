@@ -181,32 +181,32 @@ class Profile extends Component {
 
         <ModalCloseButton onClick={this.handleClose}/>
 
-        <div className="modal__content profile">
+        <div className="modal__content">
+          <div className="profile">
+            <header className="modal__header">
+              <FormattedMessage id="modal.profile.title" tagName="h1"/>
+            </header>
 
-          <header className="modal__header">
-            <FormattedMessage id="modal.profile.title" tagName="h1"/>
-          </header>
+            <div className="modal__body row">
 
-          <div className="modal__body row">
+              <div className="col-xs">
+                {this.renderName()}
+                {this.renderNick()}
+                {this.renderPhones()}
+                {this.renderEmails()}
+                {this.renderAbout()}
+              </div>
 
-            <div className="col-xs">
-              {this.renderName()}
-              {this.renderNick()}
-              {this.renderPhones()}
-              {this.renderEmails()}
-              {this.renderAbout()}
+              <PictureChanger {...profile}
+                onRemove={this.handleAvatarRemove}
+                onChange={this.handleAvatarChange}/>
+
             </div>
 
-            <PictureChanger {...profile}
-              onRemove={this.handleAvatarRemove}
-              onChange={this.handleAvatarChange}/>
-
+            <footer className="modal__footer">
+              {this.renderControls()}
+            </footer>
           </div>
-
-          <footer className="modal__footer">
-            {this.renderControls()}
-          </footer>
-
         </div>
 
       </Modal>

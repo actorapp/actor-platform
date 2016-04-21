@@ -1,8 +1,8 @@
 .modal__content {
-  &.crop {
-
+  .crop {
     .crop-wrapper {
       position: relative;
+
       overflow: hidden;
       &__image-original {
         width: auto;
@@ -99,6 +99,9 @@
 
     .modal__footer {
       text-align: right;
+      .button {
+        margin-right: 8px;
+      }
     }
   }
 }

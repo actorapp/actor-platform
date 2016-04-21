@@ -25,10 +25,6 @@ const CreateGroupActionCreators = {
     dispatch(ActionTypes.GROUP_CREATE_SET_NAME, { name });
   },
 
-  //setGroupAvatar(avatar) {
-  //  dispatch(ActionTypes.GROUP_CREATE_SET_AVATAR, { avatar });
-  //},
-
   setSelectedUserIds(selectedUserIds) {
     dispatch(ActionTypes.GROUP_CREATE_SET_MEMBERS, { selectedUserIds });
   },
