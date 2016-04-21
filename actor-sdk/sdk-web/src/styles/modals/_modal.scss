@@ -38,12 +38,16 @@
     }
     &__close {
       float: right;
+
       margin: 0 8px 0 0;
+
       cursor: pointer;
+
       color: $modal-header-icon-color;
       &:hover {
-        color: rgba($modal-header-icon-color, .8);
         transform: scale(1.1);
+
+        color: rgba($modal-header-icon-color, .8);
       }
       &:active {
         transform: scale(.9);
@@ -66,17 +70,17 @@
     }
     .input {
       font-size: 14px;
+      line-height: 32px;
 
+      box-sizing: border-box;
+      width: 100%;
       margin: 0;
       padding-left: 30px;
 
       color: rgba(black, .2);
       border: 1px solid $cloudy-blue;
-      background-color: white;
-      line-height: 32px;
-      width: 100%;
-      box-sizing: border-box;
       border-radius: 2px;
+      background-color: white;
       &:focus {
         color: $greyish-brown;
       }
