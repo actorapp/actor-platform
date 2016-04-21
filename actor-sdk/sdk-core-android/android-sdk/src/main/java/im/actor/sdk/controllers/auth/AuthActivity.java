@@ -133,9 +133,11 @@ public class AuthActivity extends BaseFragmentActivity {
                 break;
             case AUTH_PHONE:
                 currentAuthType = AUTH_TYPE_PHONE;
+                currentCode = "";
                 showFragment(ActorSDK.sharedActor().getDelegatedFragment(ActorSDK.sharedActor().getDelegate().getAuthStartIntent(), new SignPhoneFragment(), BaseAuthFragment.class), false, false);
                 break;
             case AUTH_EMAIL:
+                currentCode = "";
                 currentAuthType = AUTH_TYPE_EMAIL;
                 showFragment(ActorSDK.sharedActor().getDelegatedFragment(ActorSDK.sharedActor().getDelegate().getAuthStartIntent(), new SignEmailFragment(), BaseAuthFragment.class), false, false);
                 break;
