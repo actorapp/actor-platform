@@ -83,9 +83,9 @@ public class ValidateCodeFragment extends BaseAuthFragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() == 6) {
-                    sendCode();
-                }
+//                if (s.length() == 6) {
+//                    sendCode();
+//                }
             }
 
             @Override
@@ -104,6 +104,7 @@ public class ValidateCodeFragment extends BaseAuthFragment {
             }
         });
 
+        codeEnterEditText.setText(((AuthActivity) getActivity()).getCurrentCode());
 
         onClick(v, R.id.button_confirm_sms_code, new View.OnClickListener() {
             @Override
