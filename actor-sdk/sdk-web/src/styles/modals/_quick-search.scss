@@ -24,6 +24,8 @@
     }
     .input {
       padding: 0 16px;
+      z-index: 10;
+      position: relative;
       input {
         font-size: 26px;
         font-weight: 500;
