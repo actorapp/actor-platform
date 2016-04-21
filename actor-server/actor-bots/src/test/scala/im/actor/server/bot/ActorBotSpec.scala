@@ -21,7 +21,6 @@ final class ActorBotSpec
   it should "report about taken username" in takenUsername // TODO: make it independent from rcv
   it should "be found by username" in username
 
-  private lazy val dialogExt = DialogExtension(system)
   private lazy val msgService = MessagingServiceImpl()
   private lazy val contactsService = new ContactsServiceImpl
 
