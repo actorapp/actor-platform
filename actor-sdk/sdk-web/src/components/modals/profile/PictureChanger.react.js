@@ -5,6 +5,8 @@
 import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 import { FormattedMessage } from 'react-intl';
+import { ModalTypes } from '../../../constants/ActorAppConstants';
+import classnames from 'classnames';
 
 import CropActionCreators from '../../../actions/CropActionCreators';
 
@@ -15,6 +17,14 @@ class PictureChanger extends Component {
     bigAvatar: PropTypes.string,
     placeholder: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
+
+    small: PropTypes.bool,
+
+    fromModal: PropTypes.oneOf([
+      ModalTypes.PROFILE,
+      ModalTypes.CREATE_GROUP,
+      ModalTypes.EDIT_GROUP
+    ]).isRequired,
 
     onRemove: PropTypes.func.isRequired,
     onChange: PropTypes.func.isRequired
@@ -33,26 +43,27 @@ class PictureChanger extends Component {
   }
 
   handlePictureInputChange() {
+    const { fromModal, onChange } = this.props;
     const reader = new FileReader();
     const imageForm = findDOMNode(this.refs.imageForm);
     const file = findDOMNode(this.refs.imageInput).files[0];
 
     reader.onload = (event) => {
-      CropActionCreators.show(event.target.result);
+      CropActionCreators.show(event.target.result, fromModal, onChange);
       imageForm.reset();
     }
     reader.readAsDataURL(file);
   }
 
   renderPictureChanger() {
-    const { bigAvatar, placeholder, name } = this.props;
+    const { bigAvatar, placeholder, name, small } = this.props;
 
     return (
-      <div className="profile-picture__changer">
+      <div className="picture-changer__changer">
         <AvatarItem
           image={bigAvatar}
           placeholder={placeholder}
-          size="huge"
+          size={small ? 'big' : 'huge'}
           title={name}/>
 
         <a onClick={this.handleChangeAvatarClick}>
@@ -68,7 +79,7 @@ class PictureChanger extends Component {
     if (!bigAvatar) return null;
 
     return (
-      <div className="profile-picture__controls">
+      <div className="picture-changer__controls">
         <a onClick={this.props.onRemove}>
           <FormattedMessage id="modal.profile.avatarRemove"/>
         </a>
@@ -77,8 +88,12 @@ class PictureChanger extends Component {
   }
 
   render() {
+    const pictureChangerClassName = classnames('picture-changer', {
+      'picture-changer--small': this.props.small
+    })
+
     return (
-      <div className="profile-picture">
+      <div className={pictureChangerClassName}>
         {this.renderPictureChanger()}
         {this.renderPictureRemover()}
 

@@ -7,8 +7,8 @@ import { ActionTypes } from '../constants/ActorAppConstants';
 import ComposeActionCreators from '../actions/ComposeActionCreators';
 
 export default {
-  show(source) {
-    dispatch(ActionTypes.CROP_MODAL_SHOW, { source });
+  show(source, prevModal, callback) {
+    dispatch(ActionTypes.CROP_MODAL_SHOW, { source, prevModal, callback });
     ComposeActionCreators.toggleAutoFocus(false);
   },
 

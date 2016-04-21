@@ -36,6 +36,13 @@
         color: rgba($modal-text-color, .4);
       }
     }
+    &__icon {
+      line-height: 24px;
+      margin-right: 16px;
+      margin-left: 2px;
+      color: rgba(black, .4);
+    }
+
     &__close {
       float: right;
 
@@ -50,6 +57,12 @@
       &:active {
         transform: scale(.9);
       }
+    }
+    .button {
+      float: right;
+
+      min-width: 0;
+      margin-top: -6px;
     }
   }
   &__search {

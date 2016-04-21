@@ -89,7 +89,6 @@ export const ActionTypes = keymirror({
   GROUP_CREATE_MODAL_SHOW: null,
   GROUP_CREATE_MODAL_HIDE: null,
   GROUP_CREATE_SET_NAME: null,
-  //GROUP_CREATE_SET_AVATAR: null,
   GROUP_CREATE_SET_MEMBERS: null,
   GROUP_CREATE: null,
   GROUP_CREATE_SUCCESS: null,
@@ -99,7 +98,6 @@ export const ActionTypes = keymirror({
   GROUP_EDIT_TITLE: null,
   GROUP_EDIT_TITLE_SUCCESS: null,
   GROUP_EDIT_TITLE_ERROR: null,
-  GROUP_INFO_CHANGED: null,
   GROUP_EDIT_ABOUT: null,
   GROUP_EDIT_ABOUT_SUCCESS: null,
   GROUP_EDIT_ABOUT_ERROR: null,
@@ -121,6 +119,7 @@ export const ActionTypes = keymirror({
   GROUP_JOIN_VIA_LINK: null,
   GROUP_JOIN_VIA_LINK_SUCCESS: null,
   GROUP_JOIN_VIA_LINK_ERROR: null,
+  GROUP_INFO_CHANGED: null,
 
   GROUP_LIST_SHOW: null,
   GROUP_LIST_HIDE: null,
@@ -371,6 +370,7 @@ export const ModalTypes = keymirror({
   PEOPLE_LIST: null,
   ADD_CONTACT: null,
   CREATE_GROUP: null,
+  EDIT_GROUP: null,
   PREFERENCES: null
 });
 

@@ -6,6 +6,7 @@ import React, { Component } from 'react';
 import { Container } from 'flux/utils';
 import Modal from 'react-modal';
 import { FormattedMessage } from 'react-intl';
+import { ModalTypes } from '../../constants/ActorAppConstants';
 
 import ProfileStore from '../../stores/ProfileStore';
 
@@ -198,6 +199,7 @@ class Profile extends Component {
               </div>
 
               <PictureChanger {...profile}
+                fromModal={ModalTypes.PROFILE}
                 onRemove={this.handleAvatarRemove}
                 onChange={this.handleAvatarChange}/>
 

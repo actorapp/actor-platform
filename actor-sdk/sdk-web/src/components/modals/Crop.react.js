@@ -26,6 +26,7 @@ class CropAvatarModal extends Component {
   static calculateState() {
     return {
       pictureSource: CropStore.getState().source,
+      callback: CropStore.getState().callback,
       cropPosition: {
         x: 0,
         y: 0
@@ -199,7 +200,7 @@ class CropAvatarModal extends Component {
   updateCropSize = (cropSize, cropPosition) => this.setState({cropSize, cropPosition});
 
   onCrop = () => {
-    const { cropPosition, cropSize, scaleRatio } = this.state;
+    const { cropPosition, cropSize, scaleRatio, callback } = this.state;
     const cropImage = findDOMNode(this.refs.cropImage);
     let canvas = document.createElement('canvas');
     let context = canvas.getContext('2d');
@@ -210,8 +211,7 @@ class CropAvatarModal extends Component {
 
     const croppedImage = dataURItoBlob(canvas.toDataURL());
 
-    // TODO: is this right?
-    ProfileActionCreators.changeMyAvatar(croppedImage);
+    callback && callback(croppedImage);
     this.handleClose();
   };
 

@@ -9,7 +9,8 @@ import { ActionTypes } from '../constants/ActorAppConstants';
 class CropStore extends ReduceStore {
   getInitialState() {
     return {
-      source: null
+      source: null,
+      callback: null
     };
   }
 
@@ -18,10 +19,12 @@ class CropStore extends ReduceStore {
       case ActionTypes.CROP_MODAL_SHOW:
         return {
           ...state,
-          source: action.source
+          source: action.source,
+          callback: action.callback
         }
       case ActionTypes.CROP_MODAL_HIDE:
         return this.getInitialState();
+
       default:
         return state;
     }
