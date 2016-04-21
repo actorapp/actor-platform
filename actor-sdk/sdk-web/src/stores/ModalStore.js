@@ -77,6 +77,14 @@ class ModalStore extends ReduceStore {
       case ActionTypes.PREFERENCES_MODAL_HIDE:
         return this.getInitialState();
 
+      case ActionTypes.QUICK_SEARCH_SHOW:
+        return {
+          ...state,
+          currentModal: ModalTypes.QUICK_SEARCH
+        }
+      case ActionTypes.QUICK_SEARCH_HIDE:
+        return this.getInitialState();
+
       default:
         return state;
     }
