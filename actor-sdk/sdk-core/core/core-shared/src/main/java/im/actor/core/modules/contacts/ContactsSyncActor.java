@@ -251,12 +251,7 @@ public class ContactsSyncActor extends ModuleActor {
         for (int u : contacts) {
             userList.add(getUser(u));
         }
-        Collections.sort(userList, new Comparator<User>() {
-            @Override
-            public int compare(User lhs, User rhs) {
-                return lhs.getName().compareTo(rhs.getName());
-            }
-        });
+        Collections.sort(userList, (lhs, rhs) -> lhs.getName().compareTo(rhs.getName()));
 
         List<Contact> registeredContacts = new ArrayList<Contact>();
         int index = -1;

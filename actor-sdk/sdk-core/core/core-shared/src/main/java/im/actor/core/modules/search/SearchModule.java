@@ -56,12 +56,7 @@ public class SearchModule extends AbsModule {
     }
 
     public void run() {
-        actorRef = system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public SearchActor create() {
-                return new SearchActor(context());
-            }
-        }), "actor/search");
+        actorRef = system().actorOf("actor/search", () -> new SearchActor(context()));
     }
 
     public ListEngine<SearchEntity> getSearchList() {
@@ -81,7 +76,7 @@ public class SearchModule extends AbsModule {
     }
 
     public Command<List<MessageSearchEntity>> findTextMessages(Peer peer, String query) {
-        ArrayList<ApiSearchCondition> conditions = new ArrayList<ApiSearchCondition>();
+        ArrayList<ApiSearchCondition> conditions = new ArrayList<>();
         conditions.add(new ApiSearchPeerCondition(buildApiOutPeer(peer)));
         conditions.add(new ApiSearchPieceText(query));
         return findMessages(new ApiSearchAndCondition(conditions));
@@ -100,52 +95,34 @@ public class SearchModule extends AbsModule {
     }
 
     private Command<List<MessageSearchEntity>> findAllContent(Peer peer, ApiSearchContentType contentType) {
-        ArrayList<ApiSearchCondition> conditions = new ArrayList<ApiSearchCondition>();
+        ArrayList<ApiSearchCondition> conditions = new ArrayList<>();
         conditions.add(new ApiSearchPeerCondition(buildApiOutPeer(peer)));
         conditions.add(new ApiSearchPeerContentType(contentType));
         return findMessages(new ApiSearchAndCondition(conditions));
     }
 
     private Command<List<MessageSearchEntity>> findMessages(final ApiSearchCondition condition) {
-        return new Command<List<MessageSearchEntity>>() {
+        return callback -> request(new RequestMessageSearch(condition), new RpcCallback<ResponseMessageSearchResponse>() {
             @Override
-            public void start(final CommandCallback<List<MessageSearchEntity>> callback) {
-                request(new RequestMessageSearch(condition), new RpcCallback<ResponseMessageSearchResponse>() {
-                    @Override
-                    public void onResult(final ResponseMessageSearchResponse response) {
-                        updates().executeRelatedResponse(response.getUsers(), response.getGroups(), new Runnable() {
-                            @Override
-                            public void run() {
-                                final ArrayList<MessageSearchEntity> res = new ArrayList<MessageSearchEntity>();
-                                for (ApiMessageSearchItem r : response.getSearchResults()) {
-                                    ApiMessageSearchResult itm = r.getResult();
-                                    res.add(new MessageSearchEntity(
-                                            convert(itm.getPeer()), itm.getRid(),
-                                            itm.getDate(), itm.getSenderId(),
-                                            AbsContent.fromMessage(itm.getContent())));
-                                }
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        callback.onResult(res);
-                                    }
-                                });
-                            }
-                        });
+            public void onResult(final ResponseMessageSearchResponse response) {
+                updates().executeRelatedResponse(response.getUsers(), response.getGroups(), () -> {
+                    final ArrayList<MessageSearchEntity> res = new ArrayList<>();
+                    for (ApiMessageSearchItem r : response.getSearchResults()) {
+                        ApiMessageSearchResult itm = r.getResult();
+                        res.add(new MessageSearchEntity(
+                                convert(itm.getPeer()), itm.getRid(),
+                                itm.getDate(), itm.getSenderId(),
+                                AbsContent.fromMessage(itm.getContent())));
                     }
-
-                    @Override
-                    public void onError(final RpcException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(e);
-                            }
-                        });
-                    }
+                    runOnUiThread(() -> callback.onResult(res));
                 });
             }
-        };
+
+            @Override
+            public void onError(final RpcException e) {
+                runOnUiThread(() -> callback.onError(e));
+            }
+        });
     }
 
     public Command<List<PeerSearchEntity>> findPeers(final PeerSearchType type) {
@@ -157,45 +134,29 @@ public class SearchModule extends AbsModule {
         } else {
             apiType = ApiSearchPeerType.CONTACTS;
         }
-        return new Command<List<PeerSearchEntity>>() {
-            @Override
-            public void start(final CommandCallback<List<PeerSearchEntity>> callback) {
-                ArrayList<ApiSearchCondition> conditions = new ArrayList<>();
-                conditions.add(new ApiSearchPeerTypeCondition(apiType));
-                request(new RequestPeerSearch(conditions), new RpcCallback<ResponsePeerSearch>() {
-                    @Override
-                    public void onResult(final ResponsePeerSearch response) {
-                        updates().executeRelatedResponse(response.getUsers(),
-                                response.getGroups(), new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        final ArrayList<PeerSearchEntity> res = new ArrayList<>();
-                                        for (ApiPeerSearchResult r : response.getSearchResults()) {
-                                            res.add(new PeerSearchEntity(convert(r.getPeer()), r.getTitle(),
-                                                    r.getDescription(), r.getMembersCount(), r.getDateCreated(),
-                                                    r.getCreator(), r.isPublic(), r.isJoined()));
-                                        }
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                callback.onResult(res);
-                                            }
-                                        });
-                                    }
-                                });
-                    }
+        return callback -> {
+            ArrayList<ApiSearchCondition> conditions = new ArrayList<>();
+            conditions.add(new ApiSearchPeerTypeCondition(apiType));
+            request(new RequestPeerSearch(conditions), new RpcCallback<ResponsePeerSearch>() {
+                @Override
+                public void onResult(final ResponsePeerSearch response) {
+                    updates().executeRelatedResponse(response.getUsers(),
+                            response.getGroups(), () -> {
+                                final ArrayList<PeerSearchEntity> res = new ArrayList<>();
+                                for (ApiPeerSearchResult r : response.getSearchResults()) {
+                                    res.add(new PeerSearchEntity(convert(r.getPeer()), r.getTitle(),
+                                            r.getDescription(), r.getMembersCount(), r.getDateCreated(),
+                                            r.getCreator(), r.isPublic(), r.isJoined()));
+                                }
+                                runOnUiThread(() -> callback.onResult(res));
+                            });
+                }
 
-                    @Override
-                    public void onError(final RpcException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(e);
-                            }
-                        });
-                    }
-                });
-            }
+                @Override
+                public void onError(final RpcException e) {
+                    runOnUiThread(() -> callback.onError(e));
+                }
+            });
         };
     }
 
