@@ -27,8 +27,8 @@ import im.actor.core.viewmodel.AvatarUploadState;
 
 public class GroupAvatarChangeActor extends ModuleActor {
 
-    private HashMap<Integer, Long> currentTasks = new HashMap<Integer, Long>();
-    private HashMap<Long, Integer> tasksMap = new HashMap<Long, Integer>();
+    private HashMap<Integer, Long> currentTasks = new HashMap<>();
+    private HashMap<Long, Integer> tasksMap = new HashMap<>();
 
     public GroupAvatarChangeActor(ModuleContext context) {
         super(context);
@@ -71,12 +71,7 @@ public class GroupAvatarChangeActor extends ModuleActor {
                                 response.getAvatar(), response.getDate()).toByteArray()));
 
                 // After update applied turn of uploading state
-                updates().onUpdateReceived(new ExecuteAfter(response.getSeq(), new Runnable() {
-                    @Override
-                    public void run() {
-                        self().send(new AvatarChanged(gid, rid));
-                    }
-                }));
+                updates().onUpdateReceived(new ExecuteAfter(response.getSeq(), () -> self().send(new AvatarChanged(gid, rid))));
             }
 
             @Override
@@ -149,12 +144,7 @@ public class GroupAvatarChangeActor extends ModuleActor {
                                 response.getDate()));
 
                 // After update applied turn of uploading state
-                updates().onUpdateReceived(new ExecuteAfter(response.getSeq(), new Runnable() {
-                    @Override
-                    public void run() {
-                        self().send(new AvatarChanged(gid, rid));
-                    }
-                }));
+                updates().onUpdateReceived(new ExecuteAfter(response.getSeq(), () -> self().send(new AvatarChanged(gid, rid))));
             }
 
             @Override

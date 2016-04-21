@@ -62,11 +62,8 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
     public void preStart() {
         super.preStart();
 
-        ActorRef ref = system().actorOf(getPath() + "/peer", new ActorCreator() {
-            @Override
-            public Actor create() {
-                return new PeerCallActor(peerCallback, CallBusActor.this.selfSettings, context());
-            }
+        ActorRef ref = system().actorOf(getPath() + "/peer", () -> {
+            return new PeerCallActor(peerCallback, CallBusActor.this.selfSettings, context());
         });
         this.peerCall = new PeerCallInt(ref);
     }
@@ -314,72 +311,37 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
 
         @Override
         public void onOffer(final long deviceId, final long sessionId, @NotNull final String sdp) {
-            self().send(new Runnable() {
-                @Override
-                public void run() {
-                    callCallback.onOffer(deviceId, sessionId, sdp);
-                }
-            });
+            self().send((Runnable) () -> callCallback.onOffer(deviceId, sessionId, sdp));
         }
 
         @Override
         public void onAnswer(final long deviceId, final long sessionId, @NotNull final String sdp) {
-            self().send(new Runnable() {
-                @Override
-                public void run() {
-                    callCallback.onAnswer(deviceId, sessionId, sdp);
-                }
-            });
+            self().send((Runnable) () -> callCallback.onAnswer(deviceId, sessionId, sdp));
         }
 
         @Override
         public void onCandidate(final long deviceId, final int mdpIndex, @NotNull final String id, @NotNull final String sdp) {
-            self().send(new Runnable() {
-                @Override
-                public void run() {
-                    callCallback.onCandidate(deviceId, mdpIndex, id, sdp);
-                }
-            });
+            self().send((Runnable) () -> callCallback.onCandidate(deviceId, mdpIndex, id, sdp));
         }
 
         @Override
         public void onNegotiationSuccessful(final long deviceId, final long sessionId) {
-            self().send(new Runnable() {
-                @Override
-                public void run() {
-                    callCallback.onNegotiationSuccessful(deviceId, sessionId);
-                }
-            });
+            self().send((Runnable) () -> callCallback.onNegotiationSuccessful(deviceId, sessionId));
         }
 
         @Override
         public void onPeerStateChanged(final long deviceId, @NotNull final PeerState state) {
-            self().send(new Runnable() {
-                @Override
-                public void run() {
-                    callCallback.onPeerStateChanged(deviceId, state);
-                }
-            });
+            self().send((Runnable) () -> callCallback.onPeerStateChanged(deviceId, state));
         }
 
         @Override
         public void onStreamAdded(final long deviceId, @NotNull final WebRTCMediaStream stream) {
-            self().send(new Runnable() {
-                @Override
-                public void run() {
-                    callCallback.onStreamAdded(deviceId, stream);
-                }
-            });
+            self().send((Runnable) () -> callCallback.onStreamAdded(deviceId, stream));
         }
 
         @Override
         public void onStreamRemoved(final long deviceId, @NotNull final WebRTCMediaStream stream) {
-            self().send(new Runnable() {
-                @Override
-                public void run() {
-                    callCallback.onStreamRemoved(deviceId, stream);
-                }
-            });
+            self().send((Runnable) () -> callCallback.onStreamRemoved(deviceId, stream));
         }
     }
 }

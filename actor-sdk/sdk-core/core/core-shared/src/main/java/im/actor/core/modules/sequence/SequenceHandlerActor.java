@@ -21,6 +21,7 @@ import im.actor.core.modules.sequence.internal.RelatedResponse;
 import im.actor.core.modules.ModuleActor;
 import im.actor.core.network.parser.Update;
 import im.actor.runtime.Log;
+import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.ask.AskMessage;
 import im.actor.runtime.function.Constructor;
 import im.actor.runtime.function.Consumer;
@@ -36,12 +37,7 @@ import im.actor.runtime.promise.Promises;
 public class SequenceHandlerActor extends ModuleActor {
 
     public static Constructor<SequenceHandlerActor> CONSTRUCTOR(final ModuleContext context) {
-        return new Constructor<SequenceHandlerActor>() {
-            @Override
-            public SequenceHandlerActor create() {
-                return new SequenceHandlerActor(context);
-            }
-        };
+        return () -> new SequenceHandlerActor(context);
     }
 
     private static final String TAG = "SequenceHandlerActor";
@@ -124,7 +120,7 @@ public class SequenceHandlerActor extends ModuleActor {
 
     private Promise<UpdateProcessed> onDifferenceUpdate(final ResponseGetDifference difference) {
         long parseStart = im.actor.runtime.Runtime.getCurrentTime();
-        final ArrayList<Update> updates = new ArrayList<Update>();
+        final ArrayList<Update> updates = new ArrayList<>();
         for (ApiUpdateContainer u : difference.getUpdates()) {
             try {
                 updates.add(updatesParser.read(u.getUpdateHeader(), u.getUpdate()));
@@ -161,34 +157,24 @@ public class SequenceHandlerActor extends ModuleActor {
         if (pendingGroupPeers.size() > 0 || pendingUserPeers.size() > 0) {
             Log.d(TAG, "Downloading pending peers (users: " + pendingUserPeers.size() + ", groups: " + pendingGroupPeers.size() + ")");
             isUpdating = true;
-            return new Promise<>(new PromiseFunc<UpdateProcessed>() {
-                @Override
-                public void exec(final PromiseResolver<UpdateProcessed> resolver) {
+            return new Promise<>((PromiseFunc<UpdateProcessed>) resolver ->
                     api(new RequestGetReferencedEntitites(pendingUserPeers, pendingGroupPeers))
-                            .then(new Consumer<ResponseGetReferencedEntitites>() {
-                                @Override
-                                public void apply(ResponseGetReferencedEntitites responseGetReferencedEntitites) {
-                                    Log.d(TAG, "Pending peers downloaded");
-                                    processor.applyRelated(responseGetReferencedEntitites.getUsers(),
-                                            responseGetReferencedEntitites.getGroups(), false);
-                                    long applyStart = im.actor.runtime.Runtime.getCurrentTime();
-                                    processor.applyDifferenceUpdate(difference.getUsers(), difference.getGroups(), updates);
-                                    Log.d(TAG, "Difference applied in " + (im.actor.runtime.Runtime.getCurrentTime() - applyStart) + " ms");
-                                    resolver.result(new UpdateProcessed());
-                                    unstashAll();
-                                    isUpdating = false;
-                                }
+                            .then(responseGetReferencedEntitites -> {
+                                Log.d(TAG, "Pending peers downloaded");
+                                processor.applyRelated(responseGetReferencedEntitites.getUsers(),
+                                        responseGetReferencedEntitites.getGroups(), false);
+                                long applyStart = Runtime.getCurrentTime();
+                                processor.applyDifferenceUpdate(difference.getUsers(), difference.getGroups(), updates);
+                                Log.d(TAG, "Difference applied in " + (Runtime.getCurrentTime() - applyStart) + " ms");
+                                resolver.result(new UpdateProcessed());
+                                unstashAll();
+                                isUpdating = false;
                             })
-                            .failure(new Consumer<Exception>() {
-                                @Override
-                                public void apply(Exception e) {
-                                    resolver.error(e);
-                                    unstashAll();
-                                    isUpdating = false;
-                                }
-                            }).done(self());
-                }
-            });
+                            .failure(e -> {
+                                resolver.error(e);
+                                unstashAll();
+                                isUpdating = false;
+                            }).done(self()));
         } else {
             long applyStart = im.actor.runtime.Runtime.getCurrentTime();
             processor.applyDifferenceUpdate(difference.getUsers(), difference.getGroups(), updates);

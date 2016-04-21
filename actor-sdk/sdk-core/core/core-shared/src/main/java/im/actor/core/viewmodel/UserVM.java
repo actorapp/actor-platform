@@ -43,12 +43,7 @@ public class UserVM extends BaseValueModel<User> {
     private static final long PRESENCE_UPDATE_DELAY = 60 * 1000L;
 
     public static ValueModelCreator<User, UserVM> CREATOR(final ModuleContext modules) {
-        return new ValueModelCreator<User, UserVM>() {
-            @Override
-            public UserVM create(User baseValue) {
-                return new UserVM(baseValue, modules);
-            }
-        };
+        return baseValue -> new UserVM(baseValue, modules);
     }
 
     private int id;

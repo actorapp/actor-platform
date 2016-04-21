@@ -234,52 +234,46 @@ public class UploadTask extends ModuleActor {
         inputFile.read(fileOffset, data, 0, size, new FileReadCallback() {
             @Override
             public void onFileRead(final int fileOffset, final byte[] data, int offset, int len) {
-                self().send(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (isCompleted) {
+                self().send((Runnable) () -> {
+                    if (isCompleted) {
+                        return;
+                    }
+                    if (LOG) {
+                        Log.d(TAG, "Block #" + blockIndex + " read");
+                    }
+
+                    if (isWriteToDestProvider) {
+                        if (!outputFile.write(fileOffset, data, 0, finalSize)) {
+                            if (LOG) {
+                                Log.w(TAG, "write #" + blockIndex + " error");
+                            }
+                            reportError();
                             return;
                         }
-                        if (LOG) {
-                            Log.d(TAG, "Block #" + blockIndex + " read");
-                        }
-
-                        if (isWriteToDestProvider) {
-                            if (!outputFile.write(fileOffset, data, 0, finalSize)) {
-                                if (LOG) {
-                                    Log.w(TAG, "write #" + blockIndex + " error");
-                                }
-                                reportError();
-                                return;
-                            }
-                        }
-
-                        crc32.update(data, 0, finalSize);
-
-                        if (LOG) {
-                            Log.d(TAG, "Starting block upload #" + blockIndex);
-                        }
-
-                        uploadCount++;
-                        uploadPart(blockIndex, data, 0);
-                        checkQueue();
                     }
+
+                    crc32.update(data, 0, finalSize);
+
+                    if (LOG) {
+                        Log.d(TAG, "Starting block upload #" + blockIndex);
+                    }
+
+                    uploadCount++;
+                    uploadPart(blockIndex, data, 0);
+                    checkQueue();
                 });
             }
 
             @Override
             public void onFileReadError() {
-                self().send(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (isCompleted) {
-                            return;
-                        }
-                        if (LOG) {
-                            Log.w(TAG, "Block #" + blockIndex + " read failure");
-                        }
-                        reportError();
+                self().send((Runnable) () -> {
+                    if (isCompleted) {
+                        return;
                     }
+                    if (LOG) {
+                        Log.w(TAG, "Block #" + blockIndex + " read failure");
+                    }
+                    reportError();
                 });
             }
         });
@@ -303,19 +297,16 @@ public class UploadTask extends ModuleActor {
                         HTTP.putMethod(response.getUrl(), data, new FileUploadCallback() {
                             @Override
                             public void onUploaded() {
-                                self().send(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        if (LOG) {
-                                            Log.d(TAG, "Block #" + blockIndex + " uploaded");
-                                        }
-                                        uploadCount--;
-                                        uploaded++;
-
-                                        reportProgress(uploaded / (float) blocksCount);
-
-                                        checkQueue();
+                                self().send((Runnable) () -> {
+                                    if (LOG) {
+                                        Log.d(TAG, "Block #" + blockIndex + " uploaded");
                                     }
+                                    uploadCount--;
+                                    uploaded++;
+
+                                    reportProgress(uploaded / (float) blocksCount);
+
+                                    checkQueue();
                                 });
                             }
 
@@ -335,14 +326,11 @@ public class UploadTask extends ModuleActor {
                                     schedule(new Retry(blockIndex, data, attempt + 1), retryInSecs * 1000L);
                                 } else {
                                     // User Error
-                                    self().send(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            if (LOG) {
-                                                Log.w(TAG, "Block #" + blockIndex + " upload failure");
-                                            }
-                                            reportError();
+                                    self().send((Runnable) () -> {
+                                        if (LOG) {
+                                            Log.w(TAG, "Block #" + blockIndex + " upload failure");
                                         }
+                                        reportError();
                                     });
                                 }
                             }
@@ -389,12 +377,7 @@ public class UploadTask extends ModuleActor {
             lastNotifyDate = im.actor.runtime.Runtime.getActorTime();
             performReportProgress();
         } else {
-            notifyCancellable = schedule(new Runnable() {
-                @Override
-                public void run() {
-                    performReportProgress();
-                }
-            }, delta);
+            notifyCancellable = schedule((Runnable) () -> performReportProgress(), delta);
         }
     }
 

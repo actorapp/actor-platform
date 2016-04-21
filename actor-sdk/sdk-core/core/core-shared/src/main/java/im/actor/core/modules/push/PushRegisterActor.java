@@ -6,7 +6,6 @@ package im.actor.core.modules.push;
 
 import java.util.ArrayList;
 
-import im.actor.core.api.ApiEncryptionKey;
 import im.actor.core.api.rpc.RequestRegisterActorPush;
 import im.actor.core.api.rpc.RequestRegisterApplePush;
 import im.actor.core.api.rpc.RequestRegisterApplePushKit;
@@ -148,7 +147,7 @@ public class PushRegisterActor extends ModuleActor {
         preferences().putBool("push.actor.registered", false);
         preferences().putString("push.actor.endpoint", endpoint);
 
-        request(new RequestRegisterActorPush(endpoint, new ArrayList<ApiEncryptionKey>()), new RpcCallback<ResponseVoid>() {
+        request(new RequestRegisterActorPush(endpoint, new ArrayList<>()), new RpcCallback<ResponseVoid>() {
             @Override
             public void onResult(ResponseVoid response) {
                 preferences().putBool("push.actor.registered", true);

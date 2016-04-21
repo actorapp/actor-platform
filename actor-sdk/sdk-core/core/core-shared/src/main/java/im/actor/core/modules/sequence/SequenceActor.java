@@ -34,12 +34,7 @@ import im.actor.runtime.power.WakeLock;
 public class SequenceActor extends ModuleActor {
 
     public static ActorCreator CONSTRUCTOR(final ModuleContext context) {
-        return new ActorCreator() {
-            @Override
-            public Actor create() {
-                return new SequenceActor(context);
-            }
-        };
+        return () -> new SequenceActor(context);
     }
 
     private static final String TAG = "Updates";
@@ -137,19 +132,13 @@ public class SequenceActor extends ModuleActor {
 
         Log.d(TAG, "Handling update #" + seq);
         startWakeLock();
-        handler.onSeqUpdate(type, body, users, groups).then(new Consumer<SequenceHandlerActor.UpdateProcessed>() {
-            @Override
-            public void apply(SequenceHandlerActor.UpdateProcessed updateProcessed) {
-                Log.d(TAG, "Handling update ended #" + seq);
-                onUpdatesApplied(seq, state);
-            }
-        }).failure(new Consumer<Exception>() {
-            @Override
-            public void apply(Exception e) {
-                SequenceActor.this.seq = finishedSeq;
-                SequenceActor.this.state = finishedState;
-                invalidate();
-            }
+        handler.onSeqUpdate(type, body, users, groups).then(updateProcessed -> {
+            Log.d(TAG, "Handling update ended #" + seq);
+            onUpdatesApplied(seq, state);
+        }).failure(e -> {
+            SequenceActor.this.seq = finishedSeq;
+            SequenceActor.this.state = finishedState;
+            invalidate();
         }).done(self());
 
         // Saving memory-only state
@@ -220,12 +209,9 @@ public class SequenceActor extends ModuleActor {
                             "userRefs: " + response.getUsersRefs().size() + ", " +
                             "groupRefs: " + response.getGroupsRefs().size());
 
-                    handler.onDifferenceUpdate(response).then(new Consumer<SequenceHandlerActor.UpdateProcessed>() {
-                        @Override
-                        public void apply(SequenceHandlerActor.UpdateProcessed updateProcessed) {
-                            onUpdatesApplied(response.getSeq(), response.getState());
-                        }
-                    }).done(self());
+                    handler.onDifferenceUpdate(response).then(updateProcessed ->
+                            onUpdatesApplied(response.getSeq(), response.getState())
+                    ).done(self());
 
                     onBecomeValid(response.getSeq(), response.getState());
 

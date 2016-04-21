@@ -28,12 +28,7 @@ public class AppStateModule extends AbsModule {
 
     public void run() {
         this.appStateVM = new AppStateVM(context());
-        listStatesActor = system().actorOf("actor/app/state", new ActorCreator() {
-            @Override
-            public ListsStatesActor create() {
-                return new ListsStatesActor(context());
-            }
-        });
+        listStatesActor = system().actorOf("actor/app/state", () -> new ListsStatesActor(context()));
     }
 
     public void onDialogsUpdate(boolean isEmpty) {

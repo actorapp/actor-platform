@@ -36,7 +36,7 @@ public class CallViewModels {
     }
 
     public synchronized CallVM spawnNewIncomingVM(long callId, Peer peer, CallState callState) {
-        CallVM callVM = new CallVM(callId, peer, false, new ArrayList<CallMember>(), callState);
+        CallVM callVM = new CallVM(callId, peer, false, new ArrayList<>(), callState);
         synchronized (callModels) {
             callModels.put(callId, callVM);
         }

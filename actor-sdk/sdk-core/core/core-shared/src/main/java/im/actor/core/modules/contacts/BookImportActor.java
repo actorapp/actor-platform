@@ -90,12 +90,7 @@ public class BookImportActor extends ModuleActor {
         }
 
         context().getConfiguration().getPhoneBookProvider()
-                .loadPhoneBook(new PhoneBookProvider.Callback() {
-                    @Override
-                    public void onLoaded(List<PhoneBookContact> contacts) {
-                        self().send(new PhoneBookLoaded(contacts));
-                    }
-                });
+                .loadPhoneBook(contacts -> self().send(new PhoneBookLoaded(contacts)));
     }
 
     private void onPhoneBookLoaded(List<PhoneBookContact> phoneBook) {
@@ -222,7 +217,7 @@ public class BookImportActor extends ModuleActor {
                             UpdateContactsAdded.HEADER,
                             new UpdateContactsAdded(uids).toByteArray(),
                             response.getUsers(),
-                            new ArrayList<ApiGroup>()));
+                            new ArrayList<>()));
                 } else {
                     if (ENABLE_LOG) {
                         Log.d(TAG, "Import success, but no new contacts found");

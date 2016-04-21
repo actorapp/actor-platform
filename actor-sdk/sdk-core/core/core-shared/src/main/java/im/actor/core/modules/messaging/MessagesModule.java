@@ -120,49 +120,14 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
 
         this.router = new RouterInt(context());
 
-        this.dialogsActor = system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public DialogsActor create() {
-                return new DialogsActor(context());
-            }
-        }), "actor/dialogs");
-        this.dialogsHistoryActor = system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public DialogsHistoryActor create() {
-                return new DialogsHistoryActor(context());
-            }
-        }), "actor/dialogs/history");
-        this.archivedDialogsActor = system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public ArchivedDialogsActor create() {
-                return new ArchivedDialogsActor(context());
-            }
-        }), "actor/dialogs/archived");
+        this.dialogsActor = system().actorOf("actor/dialogs", () -> new DialogsActor(context()));
+        this.dialogsHistoryActor = system().actorOf("actor/dialogs/history", () -> new DialogsHistoryActor(context()));
+        this.archivedDialogsActor = system().actorOf("actor/dialogs/archived", () -> new ArchivedDialogsActor(context()));
 
-        this.plainReadActor = system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public CursorReaderActor create() {
-                return new CursorReaderActor(context());
-            }
-        }).changeDispatcher("heavy"), "actor/plain/read");
-        this.plainReceiverActor = system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public CursorReceiverActor create() {
-                return new CursorReceiverActor(context());
-            }
-        }).changeDispatcher("heavy"), "actor/plain/receive");
-        this.sendMessageActor = system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public SenderActor create() {
-                return new SenderActor(context());
-            }
-        }), "actor/sender/small");
-        this.deletionsActor = system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public MessageDeleteActor create() {
-                return new MessageDeleteActor(context());
-            }
-        }), "actor/deletions");
+        this.plainReadActor = system().actorOf(Props.create(() -> new CursorReaderActor(context())).changeDispatcher("heavy"), "actor/plain/read");
+        this.plainReceiverActor = system().actorOf(Props.create(() -> new CursorReceiverActor(context())).changeDispatcher("heavy"), "actor/plain/receive");
+        this.sendMessageActor = system().actorOf(Props.create(() -> new SenderActor(context())), "actor/sender/small");
+        this.deletionsActor = system().actorOf(Props.create(() -> new MessageDeleteActor(context())), "actor/deletions");
 
         context().getEvents().subscribe(this, PeerChatOpened.EVENT);
         context().getEvents().subscribe(this, PeerChatPreload.EVENT);
@@ -187,11 +152,8 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
     public ActorRef getHistoryActor(final Peer peer) {
         synchronized (historyLoaderActors) {
             if (!historyLoaderActors.containsKey(peer)) {
-                historyLoaderActors.put(peer, system().actorOf("history/" + peer, new ActorCreator() {
-                    @Override
-                    public Actor create() {
-                        return new ConversationHistoryActor(peer, context());
-                    }
+                historyLoaderActors.put(peer, system().actorOf("history/" + peer, () -> {
+                    return new ConversationHistoryActor(peer, context());
                 }));
             }
             return historyLoaderActors.get(peer);
@@ -252,74 +214,55 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
     }
 
     public void loadMoreDialogs() {
-        im.actor.runtime.Runtime.dispatch(new Runnable() {
-            @Override
-            public void run() {
-                dialogsHistoryActor.send(new DialogsHistoryActor.LoadMore());
-            }
-        });
+        im.actor.runtime.Runtime.dispatch(() -> dialogsHistoryActor.send(new DialogsHistoryActor.LoadMore()));
     }
 
     public void loadMoreArchivedDialogs(final boolean init, final RpcCallback<ResponseLoadArchived> callback) {
-        im.actor.runtime.Runtime.dispatch(new Runnable() {
-            @Override
-            public void run() {
-                archivedDialogsActor.send(new ArchivedDialogsActor.LoadMore(init, callback));
-            }
-        });
+        im.actor.runtime.Runtime.dispatch(() -> archivedDialogsActor.send(new ArchivedDialogsActor.LoadMore(init, callback)));
     }
 
     public void loadMoreHistory(final Peer peer) {
-        im.actor.runtime.Runtime.dispatch(new Runnable() {
-            @Override
-            public void run() {
-                getHistoryActor(peer).send(new ConversationHistoryActor.LoadMore());
-            }
-        });
+        im.actor.runtime.Runtime.dispatch(() -> getHistoryActor(peer).send(new ConversationHistoryActor.LoadMore()));
     }
 
 
     public Command<ResponseSeqDate> updateMessage(final Peer peer, final String message, final long rid) {
         context().getTypingModule().onMessageSent(peer);
-        return new Command<ResponseSeqDate>() {
+        return callback -> {
+            ArrayList<Integer> mentions = new ArrayList<>();
+            TextContent content = TextContent.create(message, null, mentions);
 
-            @Override
-            public void start(final CommandCallback<ResponseSeqDate> callback) {
-                ArrayList<Integer> mentions = new ArrayList<Integer>();
-                TextContent content = TextContent.create(message, null, mentions);
-
-                if (peer.getPeerType() == PeerType.GROUP) {
-                    Group group = groups().getValue(peer.getPeerId());
-                    String lowText = message.toLowerCase();
-                    for (GroupMember member : group.getMembers()) {
-                        User user = users().getValue(member.getUid());
-                        if (user.getNick() != null) {
-                            String nick = "@" + user.getNick().toLowerCase();
-                            // TODO: Better filtering
-                            if (lowText.contains(nick + ":")
-                                    || lowText.contains(nick + " ")
-                                    || lowText.contains(" " + nick)
-                                    || lowText.endsWith(nick)
-                                    || lowText.equals(nick)) {
-                                mentions.add(user.getUid());
-                            }
+            if (peer.getPeerType() == PeerType.GROUP) {
+                Group group = groups().getValue(peer.getPeerId());
+                String lowText = message.toLowerCase();
+                for (GroupMember member : group.getMembers()) {
+                    User user = users().getValue(member.getUid());
+                    if (user.getNick() != null) {
+                        String nick = "@" + user.getNick().toLowerCase();
+                        // TODO: Better filtering
+                        if (lowText.contains(nick + ":")
+                                || lowText.contains(nick + " ")
+                                || lowText.contains(" " + nick)
+                                || lowText.endsWith(nick)
+                                || lowText.equals(nick)) {
+                            mentions.add(user.getUid());
                         }
                     }
                 }
-
-                ApiMessage editMessage = new ApiTextMessage(message, ((TextContent) content).getMentions(), ((TextContent) content).getTextMessageEx());
-                request(new RequestUpdateMessage(buidOutPeer(peer), rid, editMessage), new RpcCallback<ResponseSeqDate>() {
-                    @Override
-                    public void onResult(ResponseSeqDate response) {
-                        callback.onResult(response);
-                    }
-
-                    @Override
-                    public void onError(RpcException e) {
-                        callback.onError(e);
-                    }
-                });
             }
+
+            ApiMessage editMessage = new ApiTextMessage(message, ((TextContent) content).getMentions(), ((TextContent) content).getTextMessageEx());
+            request(new RequestUpdateMessage(buidOutPeer(peer), rid, editMessage), new RpcCallback<ResponseSeqDate>() {
+                @Override
+                public void onResult(ResponseSeqDate response) {
+                    callback.onResult(response);
+                }
+
+                @Override
+                public void onError(RpcException e) {
+                    callback.onError(e);
+                }
+            });
         };
 
     }
@@ -419,531 +362,308 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
     }
 
     public Command<Boolean> deleteChat(final Peer peer) {
-        return new Command<Boolean>() {
-            @Override
-            public void start(final CommandCallback<Boolean> callback) {
-                ApiOutPeer outPeer;
-                final ApiPeer apiPeer = buildApiPeer(peer);
-                if (peer.getPeerType() == PeerType.PRIVATE) {
-                    User user = users().getValue(peer.getPeerId());
-                    if (user == null) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(new RpcInternalException());
-                            }
-                        });
-                        return;
-                    }
-                    outPeer = new ApiOutPeer(ApiPeerType.PRIVATE, user.getUid(),
-                            user.getAccessHash());
-                } else if (peer.getPeerType() == PeerType.GROUP) {
-                    Group group = groups().getValue(peer.getPeerId());
-                    if (group == null) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(new RpcInternalException());
-                            }
-                        });
-                        return;
-                    }
-                    outPeer = new ApiOutPeer(ApiPeerType.GROUP, group.getGroupId(),
-                            group.getAccessHash());
-                } else {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.onError(new RpcInternalException());
-                        }
-                    });
+        return callback -> {
+            ApiOutPeer outPeer;
+            final ApiPeer apiPeer = buildApiPeer(peer);
+            if (peer.getPeerType() == PeerType.PRIVATE) {
+                User user = users().getValue(peer.getPeerId());
+                if (user == null) {
+                    runOnUiThread(() -> callback.onError(new RpcInternalException()));
                     return;
                 }
-                request(new RequestDeleteChat(outPeer), new RpcCallback<ResponseSeq>() {
-                    @Override
-                    public void onResult(ResponseSeq response) {
-                        updates().onUpdateReceived(new SeqUpdate(response.getSeq(),
-                                response.getState(),
-                                UpdateChatDelete.HEADER,
-                                new UpdateChatDelete(apiPeer).toByteArray()));
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onResult(true);
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(final RpcException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(e);
-                            }
-                        });
-                    }
-                }, RPC_TIMEOUT);
+                outPeer = new ApiOutPeer(ApiPeerType.PRIVATE, user.getUid(),
+                        user.getAccessHash());
+            } else if (peer.getPeerType() == PeerType.GROUP) {
+                Group group = groups().getValue(peer.getPeerId());
+                if (group == null) {
+                    runOnUiThread(() -> callback.onError(new RpcInternalException()));
+                    return;
+                }
+                outPeer = new ApiOutPeer(ApiPeerType.GROUP, group.getGroupId(),
+                        group.getAccessHash());
+            } else {
+                runOnUiThread(() -> callback.onError(new RpcInternalException()));
+                return;
             }
+            request(new RequestDeleteChat(outPeer), new RpcCallback<ResponseSeq>() {
+                @Override
+                public void onResult(ResponseSeq response) {
+                    updates().onUpdateReceived(new SeqUpdate(response.getSeq(),
+                            response.getState(),
+                            UpdateChatDelete.HEADER,
+                            new UpdateChatDelete(apiPeer).toByteArray()));
+                    runOnUiThread(() -> callback.onResult(true));
+                }
+
+                @Override
+                public void onError(final RpcException e) {
+                    runOnUiThread(() -> callback.onError(e));
+                }
+            }, RPC_TIMEOUT);
         };
     }
 
     public Command<Boolean> clearChat(final Peer peer) {
-        return new Command<Boolean>() {
-            @Override
-            public void start(final CommandCallback<Boolean> callback) {
-                ApiOutPeer outPeer;
-                final ApiPeer apiPeer;
-                if (peer.getPeerType() == PeerType.PRIVATE) {
-                    User user = users().getValue(peer.getPeerId());
-                    if (user == null) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(new RpcInternalException());
-                            }
-                        });
-                        return;
-                    }
-                    outPeer = new ApiOutPeer(ApiPeerType.PRIVATE, user.getUid(),
-                            user.getAccessHash());
-                    apiPeer = new ApiPeer(ApiPeerType.PRIVATE,
-                            user.getUid());
-                } else if (peer.getPeerType() == PeerType.GROUP) {
-                    Group group = groups().getValue(peer.getPeerId());
-                    if (group == null) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(new RpcInternalException());
-                            }
-                        });
-                        return;
-                    }
-                    outPeer = new ApiOutPeer(ApiPeerType.GROUP, group.getGroupId(),
-                            group.getAccessHash());
-                    apiPeer = new ApiPeer(ApiPeerType.GROUP,
-                            group.getGroupId());
-                } else {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.onError(new RpcInternalException());
-                        }
-                    });
+        return callback -> {
+            ApiOutPeer outPeer;
+            final ApiPeer apiPeer;
+            if (peer.getPeerType() == PeerType.PRIVATE) {
+                User user = users().getValue(peer.getPeerId());
+                if (user == null) {
+                    runOnUiThread(() -> callback.onError(new RpcInternalException()));
                     return;
                 }
-                request(new RequestClearChat(outPeer), new RpcCallback<ResponseSeq>() {
-                    @Override
-                    public void onResult(ResponseSeq response) {
-                        updates().onUpdateReceived(new SeqUpdate(response.getSeq(),
-                                response.getState(),
-                                UpdateChatClear.HEADER,
-                                new UpdateChatClear(apiPeer).toByteArray()));
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onResult(true);
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(final RpcException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(e);
-                            }
-                        });
-                    }
-                }, RPC_TIMEOUT);
+                outPeer = new ApiOutPeer(ApiPeerType.PRIVATE, user.getUid(),
+                        user.getAccessHash());
+                apiPeer = new ApiPeer(ApiPeerType.PRIVATE,
+                        user.getUid());
+            } else if (peer.getPeerType() == PeerType.GROUP) {
+                Group group = groups().getValue(peer.getPeerId());
+                if (group == null) {
+                    runOnUiThread(() -> callback.onError(new RpcInternalException()));
+                    return;
+                }
+                outPeer = new ApiOutPeer(ApiPeerType.GROUP, group.getGroupId(),
+                        group.getAccessHash());
+                apiPeer = new ApiPeer(ApiPeerType.GROUP,
+                        group.getGroupId());
+            } else {
+                runOnUiThread(() -> callback.onError(new RpcInternalException()));
+                return;
             }
+            request(new RequestClearChat(outPeer), new RpcCallback<ResponseSeq>() {
+                @Override
+                public void onResult(ResponseSeq response) {
+                    updates().onUpdateReceived(new SeqUpdate(response.getSeq(),
+                            response.getState(),
+                            UpdateChatClear.HEADER,
+                            new UpdateChatClear(apiPeer).toByteArray()));
+                    runOnUiThread(() -> callback.onResult(true));
+                }
+
+                @Override
+                public void onError(final RpcException e) {
+                    runOnUiThread(() -> callback.onError(e));
+                }
+            }, RPC_TIMEOUT);
         };
     }
 
     public Command<Boolean> addReaction(final Peer peer, final long rid, final String reaction) {
-        return new Command<Boolean>() {
-            @Override
-            public void start(final CommandCallback<Boolean> callback) {
-                ApiOutPeer outPeer;
-                final ApiPeer apiPeer;
-                if (peer.getPeerType() == PeerType.PRIVATE) {
-                    User user = users().getValue(peer.getPeerId());
-                    if (user == null) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(new RpcInternalException());
-                            }
-                        });
-                        return;
-                    }
-                    outPeer = new ApiOutPeer(ApiPeerType.PRIVATE, user.getUid(),
-                            user.getAccessHash());
-                    apiPeer = new ApiPeer(ApiPeerType.PRIVATE,
-                            user.getUid());
-                } else if (peer.getPeerType() == PeerType.GROUP) {
-                    Group group = groups().getValue(peer.getPeerId());
-                    if (group == null) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(new RpcInternalException());
-                            }
-                        });
-                        return;
-                    }
-                    outPeer = new ApiOutPeer(ApiPeerType.GROUP, group.getGroupId(),
-                            group.getAccessHash());
-                    apiPeer = new ApiPeer(ApiPeerType.GROUP,
-                            group.getGroupId());
-                } else {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.onError(new RpcInternalException());
-                        }
-                    });
+        return callback -> {
+            ApiOutPeer outPeer;
+            final ApiPeer apiPeer;
+            if (peer.getPeerType() == PeerType.PRIVATE) {
+                User user = users().getValue(peer.getPeerId());
+                if (user == null) {
+                    runOnUiThread(() -> callback.onError(new RpcInternalException()));
                     return;
                 }
-
-                request(new RequestMessageSetReaction(outPeer, rid, reaction), new RpcCallback<ResponseReactionsResponse>() {
-                    @Override
-                    public void onResult(ResponseReactionsResponse response) {
-                        updates().onSeqUpdateReceived(response.getSeq(),
-                                response.getState(),
-                                new UpdateReactionsUpdate(apiPeer, rid, response.getReactions()));
-
-                        updates().executeAfter(response.getSeq(),
-                                new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                callback.onResult(true);
-                                            }
-                                        });
-                                    }
-                                });
-                    }
-
-                    @Override
-                    public void onError(final RpcException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(e);
-                            }
-                        });
-                    }
-                });
+                outPeer = new ApiOutPeer(ApiPeerType.PRIVATE, user.getUid(),
+                        user.getAccessHash());
+                apiPeer = new ApiPeer(ApiPeerType.PRIVATE,
+                        user.getUid());
+            } else if (peer.getPeerType() == PeerType.GROUP) {
+                Group group = groups().getValue(peer.getPeerId());
+                if (group == null) {
+                    runOnUiThread(() -> callback.onError(new RpcInternalException()));
+                    return;
+                }
+                outPeer = new ApiOutPeer(ApiPeerType.GROUP, group.getGroupId(),
+                        group.getAccessHash());
+                apiPeer = new ApiPeer(ApiPeerType.GROUP,
+                        group.getGroupId());
+            } else {
+                runOnUiThread(() -> callback.onError(new RpcInternalException()));
+                return;
             }
+
+            request(new RequestMessageSetReaction(outPeer, rid, reaction), new RpcCallback<ResponseReactionsResponse>() {
+                @Override
+                public void onResult(ResponseReactionsResponse response) {
+                    updates().onSeqUpdateReceived(response.getSeq(),
+                            response.getState(),
+                            new UpdateReactionsUpdate(apiPeer, rid, response.getReactions()));
+
+                    updates().executeAfter(response.getSeq(), () -> runOnUiThread(() -> callback.onResult(true)));
+                }
+
+                @Override
+                public void onError(final RpcException e) {
+                    runOnUiThread(() -> callback.onError(e));
+                }
+            });
         };
     }
 
     public Command<Boolean> removeReaction(final Peer peer, final long rid, final String reaction) {
-        return new Command<Boolean>() {
-            @Override
-            public void start(final CommandCallback<Boolean> callback) {
-                ApiOutPeer outPeer;
-                final ApiPeer apiPeer;
-                if (peer.getPeerType() == PeerType.PRIVATE) {
-                    User user = users().getValue(peer.getPeerId());
-                    if (user == null) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(new RpcInternalException());
-                            }
-                        });
-                        return;
-                    }
-                    outPeer = new ApiOutPeer(ApiPeerType.PRIVATE, user.getUid(),
-                            user.getAccessHash());
-                    apiPeer = new ApiPeer(ApiPeerType.PRIVATE,
-                            user.getUid());
-                } else if (peer.getPeerType() == PeerType.GROUP) {
-                    Group group = groups().getValue(peer.getPeerId());
-                    if (group == null) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(new RpcInternalException());
-                            }
-                        });
-                        return;
-                    }
-                    outPeer = new ApiOutPeer(ApiPeerType.GROUP, group.getGroupId(),
-                            group.getAccessHash());
-                    apiPeer = new ApiPeer(ApiPeerType.GROUP,
-                            group.getGroupId());
-                } else {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.onError(new RpcInternalException());
-                        }
-                    });
+        return callback -> {
+            ApiOutPeer outPeer;
+            final ApiPeer apiPeer;
+            if (peer.getPeerType() == PeerType.PRIVATE) {
+                User user = users().getValue(peer.getPeerId());
+                if (user == null) {
+                    runOnUiThread(() -> callback.onError(new RpcInternalException()));
                     return;
                 }
-
-                request(new RequestMessageRemoveReaction(outPeer, rid, reaction), new RpcCallback<ResponseReactionsResponse>() {
-                    @Override
-                    public void onResult(ResponseReactionsResponse response) {
-                        updates().onSeqUpdateReceived(response.getSeq(),
-                                response.getState(),
-                                new UpdateReactionsUpdate(apiPeer, rid, response.getReactions()));
-
-                        updates().executeAfter(response.getSeq(),
-                                new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                callback.onResult(true);
-                                            }
-                                        });
-                                    }
-                                });
-                    }
-
-                    @Override
-                    public void onError(final RpcException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(e);
-                            }
-                        });
-                    }
-                });
+                outPeer = new ApiOutPeer(ApiPeerType.PRIVATE, user.getUid(),
+                        user.getAccessHash());
+                apiPeer = new ApiPeer(ApiPeerType.PRIVATE,
+                        user.getUid());
+            } else if (peer.getPeerType() == PeerType.GROUP) {
+                Group group = groups().getValue(peer.getPeerId());
+                if (group == null) {
+                    runOnUiThread(() -> callback.onError(new RpcInternalException()));
+                    return;
+                }
+                outPeer = new ApiOutPeer(ApiPeerType.GROUP, group.getGroupId(),
+                        group.getAccessHash());
+                apiPeer = new ApiPeer(ApiPeerType.GROUP,
+                        group.getGroupId());
+            } else {
+                runOnUiThread(() -> callback.onError(new RpcInternalException()));
+                return;
             }
+
+            request(new RequestMessageRemoveReaction(outPeer, rid, reaction), new RpcCallback<ResponseReactionsResponse>() {
+                @Override
+                public void onResult(ResponseReactionsResponse response) {
+                    updates().onSeqUpdateReceived(response.getSeq(),
+                            response.getState(),
+                            new UpdateReactionsUpdate(apiPeer, rid, response.getReactions()));
+
+                    updates().executeAfter(response.getSeq(), () -> runOnUiThread(() -> callback.onResult(true)));
+                }
+
+                @Override
+                public void onError(final RpcException e) {
+                    runOnUiThread(() -> callback.onError(e));
+                }
+            });
         };
     }
 
     public Command<Boolean> favoriteChat(final Peer peer) {
-        return new Command<Boolean>() {
-            @Override
-            public void start(final CommandCallback<Boolean> callback) {
-                ApiOutPeer outPeer;
-                if (peer.getPeerType() == PeerType.PRIVATE) {
-                    User user = users().getValue(peer.getPeerId());
-                    if (user == null) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(new RpcInternalException());
-                            }
-                        });
-                        return;
-                    }
-                    outPeer = new ApiOutPeer(ApiPeerType.PRIVATE, user.getUid(),
-                            user.getAccessHash());
-                } else if (peer.getPeerType() == PeerType.GROUP) {
-                    Group group = groups().getValue(peer.getPeerId());
-                    if (group == null) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(new RpcInternalException());
-                            }
-                        });
-                        return;
-                    }
-                    outPeer = new ApiOutPeer(ApiPeerType.GROUP, group.getGroupId(),
-                            group.getAccessHash());
-                } else {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.onError(new RpcInternalException());
-                        }
-                    });
+        return callback -> {
+            ApiOutPeer outPeer;
+            if (peer.getPeerType() == PeerType.PRIVATE) {
+                User user = users().getValue(peer.getPeerId());
+                if (user == null) {
+                    runOnUiThread(() -> callback.onError(new RpcInternalException()));
                     return;
                 }
-                request(new RequestFavouriteDialog(outPeer), new RpcCallback<ResponseDialogsOrder>() {
-                    @Override
-                    public void onResult(ResponseDialogsOrder response) {
-                        updates().onSeqUpdateReceived(response.getSeq(),
-                                response.getState(),
-                                new UpdateChatGroupsChanged(response.getGroups()));
-
-                        updates().executeAfter(response.getSeq(),
-                                new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                callback.onResult(true);
-                                            }
-                                        });
-                                    }
-                                });
-                    }
-
-                    @Override
-                    public void onError(final RpcException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(e);
-                            }
-                        });
-                    }
-                });
+                outPeer = new ApiOutPeer(ApiPeerType.PRIVATE, user.getUid(),
+                        user.getAccessHash());
+            } else if (peer.getPeerType() == PeerType.GROUP) {
+                Group group = groups().getValue(peer.getPeerId());
+                if (group == null) {
+                    runOnUiThread(() -> callback.onError(new RpcInternalException()));
+                    return;
+                }
+                outPeer = new ApiOutPeer(ApiPeerType.GROUP, group.getGroupId(),
+                        group.getAccessHash());
+            } else {
+                runOnUiThread(() -> callback.onError(new RpcInternalException()));
+                return;
             }
+            request(new RequestFavouriteDialog(outPeer), new RpcCallback<ResponseDialogsOrder>() {
+                @Override
+                public void onResult(ResponseDialogsOrder response) {
+                    updates().onSeqUpdateReceived(response.getSeq(),
+                            response.getState(),
+                            new UpdateChatGroupsChanged(response.getGroups()));
+
+                    updates().executeAfter(response.getSeq(),
+                            () -> runOnUiThread(() -> callback.onResult(true)));
+                }
+
+                @Override
+                public void onError(final RpcException e) {
+                    runOnUiThread(() -> callback.onError(e));
+                }
+            });
         };
     }
 
     public Command<Boolean> unfavoriteChat(final Peer peer) {
-        return new Command<Boolean>() {
-            @Override
-            public void start(final CommandCallback<Boolean> callback) {
-                ApiOutPeer outPeer;
-                if (peer.getPeerType() == PeerType.PRIVATE) {
-                    User user = users().getValue(peer.getPeerId());
-                    if (user == null) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(new RpcInternalException());
-                            }
-                        });
-                        return;
-                    }
-                    outPeer = new ApiOutPeer(ApiPeerType.PRIVATE, user.getUid(),
-                            user.getAccessHash());
-                } else if (peer.getPeerType() == PeerType.GROUP) {
-                    Group group = groups().getValue(peer.getPeerId());
-                    if (group == null) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(new RpcInternalException());
-                            }
-                        });
-                        return;
-                    }
-                    outPeer = new ApiOutPeer(ApiPeerType.GROUP, group.getGroupId(),
-                            group.getAccessHash());
-                } else {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.onError(new RpcInternalException());
-                        }
-                    });
+        return callback -> {
+            ApiOutPeer outPeer;
+            if (peer.getPeerType() == PeerType.PRIVATE) {
+                User user = users().getValue(peer.getPeerId());
+                if (user == null) {
+                    runOnUiThread(() -> callback.onError(new RpcInternalException()));
                     return;
                 }
-                request(new RequestUnfavouriteDialog(outPeer), new RpcCallback<ResponseDialogsOrder>() {
-                    @Override
-                    public void onResult(ResponseDialogsOrder response) {
-                        updates().onSeqUpdateReceived(response.getSeq(),
-                                response.getState(),
-                                new UpdateChatGroupsChanged(response.getGroups()));
-
-                        updates().executeAfter(response.getSeq(),
-                                new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                callback.onResult(true);
-                                            }
-                                        });
-                                    }
-                                });
-                    }
-
-                    @Override
-                    public void onError(final RpcException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(e);
-                            }
-                        });
-                    }
-                });
+                outPeer = new ApiOutPeer(ApiPeerType.PRIVATE, user.getUid(),
+                        user.getAccessHash());
+            } else if (peer.getPeerType() == PeerType.GROUP) {
+                Group group = groups().getValue(peer.getPeerId());
+                if (group == null) {
+                    runOnUiThread(() -> callback.onError(new RpcInternalException()));
+                    return;
+                }
+                outPeer = new ApiOutPeer(ApiPeerType.GROUP, group.getGroupId(),
+                        group.getAccessHash());
+            } else {
+                runOnUiThread(() -> callback.onError(new RpcInternalException()));
+                return;
             }
+            request(new RequestUnfavouriteDialog(outPeer), new RpcCallback<ResponseDialogsOrder>() {
+                @Override
+                public void onResult(ResponseDialogsOrder response) {
+                    updates().onSeqUpdateReceived(response.getSeq(),
+                            response.getState(),
+                            new UpdateChatGroupsChanged(response.getGroups()));
+
+                    updates().executeAfter(response.getSeq(),
+                            () -> runOnUiThread(() -> callback.onResult(true)));
+                }
+
+                @Override
+                public void onError(final RpcException e) {
+                    runOnUiThread(() -> callback.onError(e));
+                }
+            });
         };
     }
 
 
     public Command<Boolean> archiveChat(final Peer peer) {
-        return new Command<Boolean>() {
-            @Override
-            public void start(final CommandCallback<Boolean> callback) {
-                final ApiOutPeer outPeer;
-                if (peer.getPeerType() == PeerType.PRIVATE) {
-                    User user = users().getValue(peer.getPeerId());
-                    if (user == null) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(new RpcInternalException());
-                            }
-                        });
-                        return;
-                    }
-                    outPeer = new ApiOutPeer(ApiPeerType.PRIVATE, user.getUid(),
-                            user.getAccessHash());
-                } else if (peer.getPeerType() == PeerType.GROUP) {
-                    Group group = groups().getValue(peer.getPeerId());
-                    if (group == null) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(new RpcInternalException());
-                            }
-                        });
-                        return;
-                    }
-                    outPeer = new ApiOutPeer(ApiPeerType.GROUP, group.getGroupId(),
-                            group.getAccessHash());
-                } else {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.onError(new RpcInternalException());
-                        }
-                    });
+        return callback -> {
+            final ApiOutPeer outPeer;
+            if (peer.getPeerType() == PeerType.PRIVATE) {
+                User user = users().getValue(peer.getPeerId());
+                if (user == null) {
+                    runOnUiThread(() -> callback.onError(new RpcInternalException()));
                     return;
                 }
-                request(new RequestArchiveChat(outPeer), new RpcCallback<ResponseSeq>() {
-                    @Override
-                    public void onResult(ResponseSeq response) {
-
-                        updates().executeAfter(response.getSeq(),
-                                new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                callback.onResult(true);
-                                            }
-                                        });
-                                    }
-                                });
-                    }
-
-                    @Override
-                    public void onError(final RpcException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(e);
-                            }
-                        });
-                    }
-                });
+                outPeer = new ApiOutPeer(ApiPeerType.PRIVATE, user.getUid(),
+                        user.getAccessHash());
+            } else if (peer.getPeerType() == PeerType.GROUP) {
+                Group group = groups().getValue(peer.getPeerId());
+                if (group == null) {
+                    runOnUiThread(() -> callback.onError(new RpcInternalException()));
+                    return;
+                }
+                outPeer = new ApiOutPeer(ApiPeerType.GROUP, group.getGroupId(),
+                        group.getAccessHash());
+            } else {
+                runOnUiThread(() -> callback.onError(new RpcInternalException()));
+                return;
             }
+            request(new RequestArchiveChat(outPeer), new RpcCallback<ResponseSeq>() {
+                @Override
+                public void onResult(ResponseSeq response) {
+
+                    updates().executeAfter(response.getSeq(),
+                            () -> runOnUiThread(() -> callback.onResult(true)));
+                }
+
+                @Override
+                public void onError(final RpcException e) {
+                    runOnUiThread(() -> callback.onError(e));
+                }
+            });
         };
     }
 
