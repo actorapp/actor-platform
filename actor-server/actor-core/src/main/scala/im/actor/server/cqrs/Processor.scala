@@ -36,8 +36,8 @@ trait IncrementalSnapshots[S <: ProcessorState[S]] extends ProcessorStateControl
 
   val SnapshotCommitsThreshold = 100
 
-  override protected def afterCommit(): Unit = {
-    super.afterCommit()
+  override protected def afterCommit(e: Event): Unit = {
+    super.afterCommit(e)
     _commitsNum += 1
     if (_commitsNum == SnapshotCommitsThreshold) {
       log.debug("Saving snapshot due to threshold hit")
@@ -56,15 +56,15 @@ trait ProcessorStateControl[S <: ProcessorState[S]] {
   def setState(state: S) = this._state = state
 
   def commit(e: Event): S = {
-    beforeCommit()
+    beforeCommit(e)
     setState(state.updated(e))
-    afterCommit()
+    afterCommit(e)
     state
   }
 
-  protected def beforeCommit() = {}
+  protected def beforeCommit(e: Event) = {}
 
-  protected def afterCommit() = {}
+  protected def afterCommit(e: Event) = {}
 }
 
 object ProcessorStateProbe {

@@ -4,10 +4,13 @@ import com.github.tototoshi.slick.PostgresJodaSupport._
 import im.actor.server.db.ActorPostgresDriver.api._
 import im.actor.server.model._
 import org.joda.time.DateTime
+import slick.dbio.DBIOAction
+import slick.dbio.Effect.Read
 import slick.lifted.ColumnOrdered
+import slick.profile.FixedSqlStreamingAction
 
 import scala.concurrent.ExecutionContext
-import scala.util.{ Success, Failure }
+import scala.util.{ Failure, Success }
 
 final class DialogCommonTable(tag: Tag) extends Table[DialogCommon](tag, "dialog_commons") {
 
@@ -115,6 +118,8 @@ object DialogRepo extends UserDialogOperations with DialogCommonOperations {
 
   private val byPKC = Compiled(byPKSimple _)
 
+  private val byUserC = Compiled(byUserId _)
+
   private val archived = DialogRepo.dialogs.filter(_._2.archivedAt.isDefined)
 
   private val notArchived = DialogRepo.dialogs.filter(_._2.archivedAt.isEmpty)
@@ -134,6 +139,12 @@ object DialogRepo extends UserDialogOperations with DialogCommonOperations {
   private def byPKSimple(userId: Rep[Int], peerType: Rep[Int], peerId: Rep[Int]) =
     dialogs.filter({ case (_, u) ⇒ u.userId === userId && u.peerType === peerType && u.peerId === peerId })
 
+  private def byUserId(userId: Rep[Int]) =
+    dialogs.filter({ case (_, u) ⇒ u.userId === userId })
+
   def findDialog(userId: Int, peer: Peer)(implicit ec: ExecutionContext): DBIO[Option[DialogObsolete]] =
     byPKC((userId, peer.typ.value, peer.id)).result.headOption map (_.map { case (c, u) ⇒ DialogObsolete.fromCommonAndUser(c, u) })
+
+  def fetchDialogs(userId: Int)(implicit ec: ExecutionContext): DBIO[Seq[DialogObsolete]] =
+    byUserId(userId).result map (_.map { case (c, u) ⇒ DialogObsolete.fromCommonAndUser(c, u) })
 }
