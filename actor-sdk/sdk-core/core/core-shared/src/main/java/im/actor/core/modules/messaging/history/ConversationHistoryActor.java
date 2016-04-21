@@ -5,11 +5,8 @@
 package im.actor.core.modules.messaging.history;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
-import im.actor.core.api.ApiGroup;
-import im.actor.core.api.ApiListLoadMode;
 import im.actor.core.api.ApiMessageContainer;
 import im.actor.core.api.ApiMessageReaction;
 import im.actor.core.api.ApiMessageState;
@@ -122,10 +119,14 @@ public class ConversationHistoryActor extends ModuleActor {
     }
 
     private Function<ResponseLoadHistory, Promise<ResponseLoadHistory>> applyRelated() {
-        return responseLoadHistory ->
-                updates()
-                        .applyRelatedData(responseLoadHistory.getUsers(), new ArrayList<>())
-                        .map((Function<Void, ResponseLoadHistory>) aVoid -> responseLoadHistory);
+        return responseLoadHistory -> updates()
+                .applyRelatedData(responseLoadHistory.getUsers(), new ArrayList<>())
+                .map(new Function<Void, ResponseLoadHistory>() {
+                    @Override
+                    public ResponseLoadHistory apply(Void aVoid) {
+                        return responseLoadHistory;
+                    }
+                });
     }
 
     @Override
