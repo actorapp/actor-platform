@@ -14,8 +14,9 @@ import GroupList from './GroupList.react';
 import AddContact from './AddContact.react';
 import CreateGroup from './CreateGroup.react';
 import EditGroup from './EditGroup.react';
-
 import Preferences from './Preferences.react';
+
+import QuickSearch from './QuickSearch.react';
 
 class ModalsWrapper extends Component {
   static getStores() {
@@ -46,6 +47,8 @@ class ModalsWrapper extends Component {
         return <EditGroup/>;
       case ModalTypes.PREFERENCES:
         return <Preferences/>;
+      case ModalTypes.QUICK_SEARCH:
+        return <QuickSearch/>;
 
       default:
         console.warn(`Unsupported modal type: ${currentModal}`);
