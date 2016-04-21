@@ -104,7 +104,7 @@ trait HistoryHandlers {
             }
         }
         (groups, users) ← GroupUtils.getGroupsUsers(groupIds, userIds, client.userId, client.authId)
-        archivedExist ← db.run(DialogRepo.archivedExist(client.userId))
+        archivedExist ← dialogExt.fetchArchivedDialogs(client.userId, None, 1) map (_._1.nonEmpty)
         showInvite ← db.run(UserContactRepo.count(client.userId)) map (_ < 5)
       } yield Ok(ResponseLoadGroupedDialogs(
         dialogGroups,
@@ -246,35 +246,6 @@ trait HistoryHandlers {
     DBIO.from(for {
       info ← dialogExt.getDialogInfo(client.userId, peer)
     } yield (new DateTime(info.lastReceivedDate.toEpochMilli), new DateTime(info.lastReadDate.toEpochMilli)))
-  }
-
-  private def getDialogStruct(dialogModel: DialogObsolete)(implicit client: AuthorizedClientData): dbio.DBIO[Option[ApiDialog]] = {
-    withHistoryOwner(dialogModel.peer, client.userId) { historyOwner ⇒
-      for {
-        (lastReceivedAt, lastReadAt) ← getLastReceiveReadDates(dialogModel.peer)
-        messageOpt ← HistoryMessageRepo.findNewest(historyOwner, dialogModel.peer) map (_.map(_.ofUser(client.userId)))
-        firstUnreadOpt ← HistoryMessageRepo.findAfter(historyOwner, dialogModel.peer, lastReadAt, 1) map (_.headOption map (_.ofUser(client.userId)))
-        reactions ← messageOpt map (m ⇒ dialogExt.fetchReactions(dialogModel.peer, client.userId, m.randomId)) getOrElse DBIO.successful(Vector.empty)
-        unreadCount ← dialogExt.getUnreadCount(client.userId, historyOwner, dialogModel.peer, dialogModel.ownerLastReadAt)
-      } yield {
-        val emptyMessageContent = ApiTextMessage(text = "", mentions = Vector.empty, ext = None)
-        val messageModel = messageOpt.getOrElse(HistoryMessage(dialogModel.userId, dialogModel.peer, new DateTime(0), 0, 0, emptyMessageContent.header, emptyMessageContent.toByteArray, None))
-        messageModel.asStruct(lastReceivedAt, lastReadAt, reactions).toOption map { message ⇒
-          ApiDialog(
-            peer = dialogModel.peer.asStruct,
-            unreadCount = unreadCount,
-            sortDate = dialogModel.lastMessageDate.getMillis,
-            senderUserId = message.senderUserId,
-            randomId = message.randomId,
-            date = message.date,
-            message = message.message,
-            state = message.state,
-            firstUnreadDate = firstUnreadOpt map (_.date.getMillis),
-            attributes = None
-          )
-        }
-      }
-    }
   }
 
   private def getDialogsUsersGroups(dialogs: Seq[ApiDialog])(implicit client: AuthorizedClientData) = {

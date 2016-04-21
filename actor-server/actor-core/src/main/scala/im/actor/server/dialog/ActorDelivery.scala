@@ -62,7 +62,7 @@ final class ActorDelivery()(implicit val system: ActorSystem)
 
   override def sendCountersUpdate(userId: Int): Future[Unit] =
     for {
-      counter ← db.run(dialogExt.getUnreadTotal(userId))
+      counter ← dialogExt.getUnreadTotal(userId)
       _ ← sendCountersUpdate(userId, counter)
     } yield ()
 
@@ -124,7 +124,7 @@ final class ActorDelivery()(implicit val system: ActorSystem)
 
   override def read(readerUserId: Int, readerAuthSid: Int, peer: Peer, date: Long, unreadCountOpt: Option[Int]): Future[Unit] =
     for {
-      unreadCount ← unreadCountOpt.fold(db.run(dialogExt.getUnreadTotal(readerUserId)))(FastFuture.successful)
+      unreadCount ← unreadCountOpt.fold(dialogExt.getUnreadTotal(readerUserId))(FastFuture.successful)
       _ ← seqUpdatesExt.deliverSingleUpdate(
         userId = readerUserId,
         update = UpdateMessageReadByMe(peer.asStruct, date, Some(unreadCount)),

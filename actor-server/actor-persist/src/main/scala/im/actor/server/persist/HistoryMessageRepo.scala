@@ -177,13 +177,6 @@ object HistoryMessageRepo {
       .map(m ⇒ (m.messageContentHeader, m.messageContentData))
       .update((messageContentHeader, messageContentData))
 
-  def getUnreadCount(historyOwner: Int, clientUserId: Int, peer: Peer, lastReadAt: DateTime, noServiceMessages: Boolean = false): FixedSqlAction[Int, PostgresDriver.api.NoStream, Read] =
-    (if (noServiceMessages) withoutServiceMessages else notDeletedMessages)
-      .filter(m ⇒ m.userId === historyOwner && m.peerType === peer.typ.value && m.peerId === peer.id)
-      .filter(m ⇒ m.date > lastReadAt && m.senderUserId =!= clientUserId)
-      .length
-      .result
-
   def uniqueAsc(fromTs: Long, limit: Int): SqlStreamingAction[Vector[HistoryMessage], HistoryMessage, Effect] = {
     implicit val getMessageResult: GetResult[HistoryMessage] = GetResult(r ⇒
       HistoryMessage(
@@ -207,26 +200,6 @@ object HistoryMessageRepo {
          limit $limit"""
       .as[HistoryMessage]
   }
-
-  /**
-   * Fetch unread messages count
-   *
-   * @param userId user to fetch unread messages for
-   * @param historyOwner user owns history(user itself or SharedUserId in case of public groups)
-   * @return Unread messages count
-   */
-  private def unreadTotalOwner(userId: Rep[Int], historyOwner: Rep[Int]) =
-    (for {
-      ud ← DialogRepo.findUsersVisible(userId)
-      m ← notDeletedMessages.filter(_.senderUserId =!= userId)
-      if m.userId === historyOwner && m.peerType === ud.peerType && m.peerId === ud.peerId && m.date > ud.ownerLastReadAt
-    } yield m.date).length
-
-  private val unreadTotalC = Compiled { (userId: Rep[Int]) ⇒
-    unreadTotalOwner(userId, SharedUserId) + unreadTotalOwner(userId, userId)
-  }
-
-  def getUnreadTotal(userId: Int): DBIO[Int] = unreadTotalC(userId).result
 
   def haveMessagesBetween(userId: Int, peer: Peer, minDate: DateTime, maxDate: DateTime) =
     notDeletedMessages
