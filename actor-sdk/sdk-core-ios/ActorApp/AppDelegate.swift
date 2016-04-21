@@ -26,6 +26,7 @@ import ActorSDK
         
         // Creating Actor
         ActorSDK.sharedActor().createActor()
+        ActorSDK.sharedActor().enablePhoneBookImport = false
         
     }
     
