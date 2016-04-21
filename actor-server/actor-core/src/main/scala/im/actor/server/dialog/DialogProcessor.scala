@@ -46,7 +46,8 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
   with AlertingActor
   with DialogCommandHandlers
   with ActorFutures
-  with StashingActor {
+  with StashingActor
+  with DialogProcessorMigration {
   import DialogCommands._
   import DialogQueries._
   import DialogProcessor._
