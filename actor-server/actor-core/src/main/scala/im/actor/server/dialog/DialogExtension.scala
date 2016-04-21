@@ -229,27 +229,14 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
     }
   }
 
-  def getUnreadTotal(userId: Int): DBIO[Int] =
-    DBIO.from(
-      (processorRegion(Peer.privat(userId)) ?
-        UserEnvelope(userId)
-        .withDialogRootEnvelope(
-          DialogRootEnvelope()
-            .withGetCounter(DialogRootQueries.GetCounter())
-        ))
-        .mapTo[DialogRootQueries.GetCounterResponse] map (_.counter)
-    )
-
-  def getUnreadCount(clientUserId: Int, historyOwner: Int, peer: Peer, ownerLastReadAt: DateTime): DBIO[Int] = {
-    if (isSharedUser(historyOwner)) {
-      for {
-        isMember ← DBIO.from(groupExt.getMemberIds(peer.id) map { case (memberIds, _, _) ⇒ memberIds contains clientUserId })
-        result ← if (isMember) HistoryMessageRepo.getUnreadCount(historyOwner, clientUserId, peer, ownerLastReadAt) else DBIO.successful(0)
-      } yield result
-    } else {
-      HistoryMessageRepo.getUnreadCount(historyOwner, clientUserId, peer, ownerLastReadAt)
-    }
-  }
+  def getUnreadTotal(userId: Int): Future[Int] =
+    (processorRegion(Peer.privat(userId)) ?
+      UserEnvelope(userId)
+      .withDialogRootEnvelope(
+        DialogRootEnvelope()
+          .withGetCounter(DialogRootQueries.GetCounter())
+      ))
+      .mapTo[DialogRootQueries.GetCounterResponse] map (_.counter)
 
   def isSharedUser(userId: Int): Boolean = userId == 0
 

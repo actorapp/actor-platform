@@ -4,21 +4,20 @@ import akka.actor.ActorSystem
 import akka.event.Logging
 import com.relayrides.pushy.apns.PushManager
 import com.relayrides.pushy.apns.util.{ ApnsPayloadBuilder, SimpleApnsPushNotification }
-import im.actor.server.db.DbExtension
+import im.actor.server.dialog.DialogExtension
 import im.actor.server.model.push.ApplePushCredentials
-import im.actor.server.persist.HistoryMessageRepo
 
 private[sequence] final class ApplePushProvider(userId: Int, system: ActorSystem) extends PushProvider {
   import system.dispatcher
 
   private val log = Logging(system, getClass)
-  private val db = DbExtension(system).db
+  private val dialogExt = DialogExtension(system)
   private val applePushExt = ApplePushExtension(system)
 
   def deliverInvisible(seq: Int, creds: ApplePushCredentials): Unit = {
     withMgr(creds.apnsKey) { mgr ⇒
       log.debug("Delivering invisible(seq:{}) to apnsKey: {}", seq, creds.apnsKey)
-      db.run(HistoryMessageRepo.getUnreadTotal(userId)) foreach { unreadTotal ⇒
+      dialogExt.getUnreadTotal(userId) foreach { unreadTotal ⇒
         val builder =
           new ApnsPayloadBuilder()
             .addCustomProperty("seq", seq)

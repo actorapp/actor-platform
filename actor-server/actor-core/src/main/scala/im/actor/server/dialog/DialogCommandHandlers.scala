@@ -131,7 +131,7 @@ trait DialogCommandHandlers extends PeersImplicits {
 
         (for {
           _ ← dialogExt.ackMessageRead(peer, mr)
-          unreadCount ← db.run(dialogExt.getUnreadTotal(userId))
+          unreadCount ← dialogExt.getUnreadTotal(userId)
           _ ← deliveryExt.read(userId, mr.readerAuthSid, peer, mr.date, Some(unreadCount))
           _ = deliveryExt.sendCountersUpdate(userId, unreadCount)
         } yield MessageReadAck()) pipeTo sender()
