@@ -35,11 +35,7 @@ class MessageStore extends ReduceStore {
   reduce (state, action) {
     switch (action.type) {
       case ActionTypes.BIND_DIALOG_PEER:
-        return {
-          ...state,
-          selected: state.selected.clear(),
-          changeReason: MessageChangeReason.UNKNOWN
-        };
+        return this.getInitialState();
 
       case ActionTypes.MESSAGES_CHANGED:
         const firstMessageId = getMessageId(action.messages[0]);
