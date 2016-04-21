@@ -1,12 +1,5 @@
 {
   "presets": [
-    "es2015-loose",
-    "react"
-  ],
-  "plugins": [
-    "transform-strict-mode",
-    "transform-class-properties",
-    "transform-object-rest-spread",
-    "transform-runtime"
+    "actor"
   ]
 }
