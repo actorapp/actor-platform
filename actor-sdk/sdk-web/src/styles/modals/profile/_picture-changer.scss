@@ -1,5 +1,5 @@
-.profile-picture {
-  margin-left: $modal-padding;
+.picture-changer {
+  margin-left: 24px;
   &__controls {
     margin-top: 16px;
 
@@ -59,6 +59,15 @@
           display: block;
         }
       }
+    }
+  }
+
+  &--small {
+    a {
+      font-size: 13px;
+    }
+    .picture-changer__controls {
+      margin-top: 8px;
     }
   }
 }

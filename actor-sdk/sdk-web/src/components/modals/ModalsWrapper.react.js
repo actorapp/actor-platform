@@ -13,6 +13,8 @@ import Crop from './Crop.react';
 import GroupList from './GroupList.react';
 import AddContact from './AddContact.react';
 import CreateGroup from './CreateGroup.react';
+import EditGroup from './EditGroup.react';
+
 import Preferences from './Preferences.react';
 
 class ModalsWrapper extends Component {
@@ -40,6 +42,8 @@ class ModalsWrapper extends Component {
         return <AddContact/>;
       case ModalTypes.CREATE_GROUP:
         return <CreateGroup/>;
+      case ModalTypes.EDIT_GROUP:
+        return <EditGroup/>;
       case ModalTypes.PREFERENCES:
         return <Preferences/>;
 
