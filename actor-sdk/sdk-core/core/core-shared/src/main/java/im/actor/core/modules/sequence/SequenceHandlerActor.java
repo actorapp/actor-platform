@@ -23,6 +23,7 @@ import im.actor.core.network.parser.Update;
 import im.actor.runtime.Log;
 import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.ask.AskMessage;
+import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.function.Constructor;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.promise.Promise;
@@ -81,9 +82,9 @@ public class SequenceHandlerActor extends ModuleActor {
         afterApply.run();
     }
 
-    private Promise<UpdateProcessed> onSeqUpdate(int type, byte[] body,
-                                                 @Nullable List<ApiUser> users,
-                                                 @Nullable List<ApiGroup> groups) throws Exception {
+    private Promise<Void> onSeqUpdate(int type, byte[] body,
+                                      @Nullable List<ApiUser> users,
+                                      @Nullable List<ApiGroup> groups) throws Exception {
 
         Update update;
         try {
@@ -91,7 +92,7 @@ public class SequenceHandlerActor extends ModuleActor {
         } catch (IOException e) {
             Log.w(TAG, "Unable to parse update: ignoring");
             Log.e(TAG, e);
-            return Promises.success(new UpdateProcessed());
+            return Promises.success(Void.INSTANCE);
         }
 
         if (groups == null || users == null) {
@@ -115,10 +116,10 @@ public class SequenceHandlerActor extends ModuleActor {
         }
 
         // Log.d(TAG, "Processing update success");
-        return Promises.success(new UpdateProcessed());
+        return Promises.success(Void.INSTANCE);
     }
 
-    private Promise<UpdateProcessed> onDifferenceUpdate(final ResponseGetDifference difference) {
+    private Promise<Void> onDifferenceUpdate(final ResponseGetDifference difference) {
         long parseStart = im.actor.runtime.Runtime.getCurrentTime();
         final ArrayList<Update> updates = new ArrayList<>();
         for (ApiUpdateContainer u : difference.getUpdates()) {
@@ -157,7 +158,7 @@ public class SequenceHandlerActor extends ModuleActor {
         if (pendingGroupPeers.size() > 0 || pendingUserPeers.size() > 0) {
             Log.d(TAG, "Downloading pending peers (users: " + pendingUserPeers.size() + ", groups: " + pendingGroupPeers.size() + ")");
             isUpdating = true;
-            return new Promise<>((PromiseFunc<UpdateProcessed>) resolver ->
+            return new Promise<>((PromiseFunc<Void>) resolver ->
                     api(new RequestGetReferencedEntitites(pendingUserPeers, pendingGroupPeers))
                             .then(responseGetReferencedEntitites -> {
                                 Log.d(TAG, "Pending peers downloaded");
@@ -166,7 +167,7 @@ public class SequenceHandlerActor extends ModuleActor {
                                 long applyStart = Runtime.getCurrentTime();
                                 processor.applyDifferenceUpdate(difference.getUsers(), difference.getGroups(), updates);
                                 Log.d(TAG, "Difference applied in " + (Runtime.getCurrentTime() - applyStart) + " ms");
-                                resolver.result(new UpdateProcessed());
+                                resolver.result(Void.INSTANCE);
                                 unstashAll();
                                 isUpdating = false;
                             })
@@ -179,7 +180,7 @@ public class SequenceHandlerActor extends ModuleActor {
             long applyStart = im.actor.runtime.Runtime.getCurrentTime();
             processor.applyDifferenceUpdate(difference.getUsers(), difference.getGroups(), updates);
             Log.d(TAG, "Difference applied in " + (im.actor.runtime.Runtime.getCurrentTime() - applyStart) + " ms");
-            return Promises.success(new UpdateProcessed());
+            return Promises.success(Void.INSTANCE);
         }
     }
 
@@ -256,7 +257,7 @@ public class SequenceHandlerActor extends ModuleActor {
         }
     }
 
-    public static class SeqUpdate implements AskMessage<UpdateProcessed> {
+    public static class SeqUpdate implements AskMessage<Void> {
 
         private int type;
         private byte[] body;
@@ -294,7 +295,7 @@ public class SequenceHandlerActor extends ModuleActor {
         }
     }
 
-    public static class DifferenceUpdate implements AskMessage<UpdateProcessed> {
+    public static class DifferenceUpdate implements AskMessage<Void> {
         private ResponseGetDifference difference;
 
         public DifferenceUpdate(ResponseGetDifference difference) {
@@ -304,9 +305,5 @@ public class SequenceHandlerActor extends ModuleActor {
         public ResponseGetDifference getDifference() {
             return difference;
         }
-    }
-
-    public static class UpdateProcessed {
-
     }
 }
