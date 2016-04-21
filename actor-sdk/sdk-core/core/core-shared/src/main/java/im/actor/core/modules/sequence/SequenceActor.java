@@ -24,12 +24,12 @@ import im.actor.core.network.RpcException;
 import im.actor.core.modules.ModuleActor;
 import im.actor.runtime.*;
 import im.actor.runtime.Runtime;
-import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.Cancellable;
-import im.actor.runtime.function.Constructor;
+import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.power.WakeLock;
+import im.actor.runtime.actors.messages.Void;
 
 public class SequenceActor extends ModuleActor {
 
@@ -37,6 +37,9 @@ public class SequenceActor extends ModuleActor {
         return () -> new SequenceActor(context);
     }
 
+    // Do Not Remove! WorkAround for missing j2objc translator include
+    private static final Void DUMB = null;
+    
     private static final String TAG = "Updates";
     private static final int INVALIDATE_GAP = 2000;// 2 Secs
     private static final int INVALIDATE_MAX_SEC_HOLE = 10;
@@ -132,12 +135,10 @@ public class SequenceActor extends ModuleActor {
 
         Log.d(TAG, "Handling update #" + seq);
         startWakeLock();
-        handler.onSeqUpdate(type, body, users, groups).then(new Consumer<SequenceHandlerActor.UpdateProcessed>() {
-            @Override
-            public void apply(SequenceHandlerActor.UpdateProcessed updateProcessed) {
-                Log.d(TAG, "Handling update ended #" + seq);
-                onUpdatesApplied(seq, state);
-            }
+
+        handler.onSeqUpdate(type, body, users, groups).then(aVoid -> {
+            Log.d(TAG, "Handling update ended #" + seq);
+            onUpdatesApplied(seq, state);
         }).failure(e -> {
             SequenceActor.this.seq = finishedSeq;
             SequenceActor.this.state = finishedState;
