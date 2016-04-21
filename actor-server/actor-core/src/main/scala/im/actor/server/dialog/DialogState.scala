@@ -3,11 +3,10 @@ package im.actor.server.dialog
 import java.time.Instant
 
 import akka.persistence.SnapshotMetadata
-import im.actor.server.cqrs.{Event, ProcessorState, TaggedEvent}
+import im.actor.server.cqrs.{ Event, ProcessorState, TaggedEvent }
 import im.actor.server.model.Peer
 
 import scala.collection.SortedSet
-
 
 private[dialog] trait DialogEvent extends TaggedEvent {
   override def tags: Set[String] = Set("dialog")
@@ -44,14 +43,14 @@ private[dialog] object DialogState {
 }
 
 private[dialog] final case class DialogState(
-                                              userId:            Int,
-                                              lastMessageDate:   Instant, //we don't use it now anywhere. should we remove it?
-                                              lastReceiveDate:   Instant,
-                                              lastReadDate:      Instant,
-                                              counter:           Int,
-                                              unreadMessages:    SortedSet[UnreadMessage],
-                                              unreadMessagesMap: Map[Long, Long]
-                                            ) extends ProcessorState[DialogState] {
+  userId:            Int,
+  lastMessageDate:   Instant, //we don't use it now anywhere. should we remove it?
+  lastReceiveDate:   Instant,
+  lastReadDate:      Instant,
+  counter:           Int,
+  unreadMessages:    SortedSet[UnreadMessage],
+  unreadMessagesMap: Map[Long, Long]
+) extends ProcessorState[DialogState] {
   import DialogEvents._
 
   override def updated(e: Event): DialogState = e match {
