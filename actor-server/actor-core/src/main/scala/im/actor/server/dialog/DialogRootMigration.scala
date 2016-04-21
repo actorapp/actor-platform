@@ -4,17 +4,17 @@ import java.time.Instant
 
 import akka.actor.Status
 import akka.pattern.pipe
-import im.actor.server.cqrs.{Event, Processor}
+import im.actor.server.cqrs.{ Event, Processor }
 import im.actor.server.db.DbExtension
 import im.actor.server.model.DialogObsolete
 import im.actor.server.persist.dialog.DialogRepo
-
-private case class CreateEvents(models: Seq[DialogObsolete])
 
 trait DialogRootMigration extends Processor[DialogRootState] {
 
   import DialogRootEvents._
   import context.dispatcher
+
+  private case class CreateEvents(models: Seq[DialogObsolete])
 
   val userId: Int
   private val db = DbExtension(context.system).db
@@ -22,7 +22,7 @@ trait DialogRootMigration extends Processor[DialogRootState] {
 
   override def afterCommit(e: Event): Unit = e match {
     case Initialized(_) ⇒ needMigrate = false
-    case _ ⇒
+    case _              ⇒
   }
 
   override protected def onRecoveryCompleted(): Unit = {
@@ -34,6 +34,7 @@ trait DialogRootMigration extends Processor[DialogRootState] {
   private def migrating: Receive = {
     case CreateEvents(models) ⇒
       createEvents(models) {
+        unstashAll()
         context become receiveCommand
       }
     case Status.Failure(e) ⇒
