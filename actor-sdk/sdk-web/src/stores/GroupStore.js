@@ -30,11 +30,9 @@ class GroupStore extends ReduceStore {
       case ActionTypes.GROUP_CLEAR:
       case ActionTypes.GROUP_CLEAR_SUCCESS:
       case ActionTypes.GROUP_CLEAR_ERROR:
-
       case ActionTypes.GROUP_LEAVE:
       case ActionTypes.GROUP_LEAVE_SUCCESS:
       case ActionTypes.GROUP_LEAVE_ERROR:
-
       case ActionTypes.GROUP_DELETE:
       case ActionTypes.GROUP_DELETE_SUCCESS:
       case ActionTypes.GROUP_DELETE_ERROR:

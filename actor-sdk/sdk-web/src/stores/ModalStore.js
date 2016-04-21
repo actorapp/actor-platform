@@ -26,11 +26,13 @@ class ModalStore extends ReduceStore {
 
       case ActionTypes.CROP_MODAL_SHOW:
         return {
+          ...state,
           prevModal: ModalTypes.PROFILE,
           currentModal: ModalTypes.CROP
         }
       case ActionTypes.CROP_MODAL_HIDE:
         return {
+          ...state,
           prevModal: null,
           currentModal: state.prevModal
         }
