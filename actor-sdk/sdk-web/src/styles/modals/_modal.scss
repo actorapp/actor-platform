@@ -7,8 +7,11 @@
 
 // Default modal styles
 .modal {
+  color: $modal-text-color;
   outline: none;
   &__content {
+    overflow: hidden;
+
     border-radius: $modal-border-raidus;
     background-color: $modal-background;
     box-shadow: 0 4px 10px 0 rgba(black, .25);
@@ -38,8 +41,10 @@
     }
     &__icon {
       line-height: 24px;
+
       margin-right: 16px;
       margin-left: 2px;
+
       color: rgba(black, .4);
     }
 
