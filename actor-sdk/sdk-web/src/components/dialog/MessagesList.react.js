@@ -2,7 +2,7 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import { isFunction } from 'lodash';
+import { isFunction, debounce } from 'lodash';
 
 import React, { Component, PropTypes } from 'react';
 
@@ -69,7 +69,7 @@ class MessagesList extends Component {
     this.dimensions = null;
     this.isLoading = false;
 
-    this.onScroll = this.onScroll.bind(this);
+    this.onScroll = debounce(this.onScroll.bind(this), 5, { maxWait: 30 });
     this.onResize = this.onResize.bind(this);
   }
 
@@ -103,6 +103,8 @@ class MessagesList extends Component {
         const currDimensions = scroller.getDimensions();
         scroller.scrollTo(currDimensions.scrollHeight - dimensions.scrollHeight);
       }
+    } else {
+      this.restoreScroll();
     }
   }
 
