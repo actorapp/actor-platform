@@ -26,89 +26,44 @@ public class SecurityModule extends AbsModule {
     }
 
     public Command<List<ApiAuthSession>> loadSessions() {
-        return new Command<List<ApiAuthSession>>() {
+        return callback -> request(new RequestGetAuthSessions(), new RpcCallback<ResponseGetAuthSessions>() {
             @Override
-            public void start(final CommandCallback<List<ApiAuthSession>> callback) {
-                request(new RequestGetAuthSessions(), new RpcCallback<ResponseGetAuthSessions>() {
-                    @Override
-                    public void onResult(final ResponseGetAuthSessions response) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onResult(response.getUserAuths());
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(final RpcException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(e);
-                            }
-                        });
-                    }
-                });
+            public void onResult(final ResponseGetAuthSessions response) {
+                runOnUiThread(() -> callback.onResult(response.getUserAuths()));
             }
-        };
+
+            @Override
+            public void onError(final RpcException e) {
+                runOnUiThread(() -> callback.onError(e));
+            }
+        });
     }
 
     public Command<Boolean> terminateAllSessions() {
-        return new Command<Boolean>() {
+        return callback -> request(new RequestTerminateAllSessions(), new RpcCallback<ResponseVoid>() {
             @Override
-            public void start(final CommandCallback<Boolean> callback) {
-                request(new RequestTerminateAllSessions(), new RpcCallback<ResponseVoid>() {
-                    @Override
-                    public void onResult(ResponseVoid response) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onResult(true);
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(final RpcException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(e);
-                            }
-                        });
-                    }
-                });
+            public void onResult(ResponseVoid response) {
+                runOnUiThread(() -> callback.onResult(true));
             }
-        };
+
+            @Override
+            public void onError(final RpcException e) {
+                runOnUiThread(() -> callback.onError(e));
+            }
+        });
     }
 
     public Command<Boolean> terminateSession(final int id) {
-        return new Command<Boolean>() {
+        return callback -> request(new RequestTerminateSession(id), new RpcCallback<ResponseVoid>() {
             @Override
-            public void start(final CommandCallback<Boolean> callback) {
-                request(new RequestTerminateSession(id), new RpcCallback<ResponseVoid>() {
-                    @Override
-                    public void onResult(ResponseVoid response) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onResult(true);
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(final RpcException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(e);
-                            }
-                        });
-                    }
-                });
+            public void onResult(ResponseVoid response) {
+                runOnUiThread(() -> callback.onResult(true));
             }
-        };
+
+            @Override
+            public void onError(final RpcException e) {
+                runOnUiThread(() -> callback.onError(e));
+            }
+        });
     }
 }

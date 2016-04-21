@@ -100,62 +100,32 @@ public class PeerConnectionInt extends ActorInterface {
 
         @Override
         public void onOffer(final long sessionId, final String sdp) {
-            callbackDest.send(new Runnable() {
-                @Override
-                public void run() {
-                    callback.onOffer(sessionId, sdp);
-                }
-            });
+            callbackDest.send((Runnable) () -> callback.onOffer(sessionId, sdp));
         }
 
         @Override
         public void onAnswer(final long sessionId, final String sdp) {
-            callbackDest.send(new Runnable() {
-                @Override
-                public void run() {
-                    callback.onAnswer(sessionId, sdp);
-                }
-            });
+            callbackDest.send((Runnable) () -> callback.onAnswer(sessionId, sdp));
         }
 
         @Override
         public void onCandidate(final int mdpIndex, final String id, final String sdp) {
-            callbackDest.send(new Runnable() {
-                @Override
-                public void run() {
-                    callback.onCandidate(mdpIndex, id, sdp);
-                }
-            });
+            callbackDest.send((Runnable) () -> callback.onCandidate(mdpIndex, id, sdp));
         }
 
         @Override
         public void onNegotiationSuccessful(final long sessionId) {
-            callbackDest.send(new Runnable() {
-                @Override
-                public void run() {
-                    callback.onNegotiationSuccessful(sessionId);
-                }
-            });
+            callbackDest.send((Runnable) () -> callback.onNegotiationSuccessful(sessionId));
         }
 
         @Override
         public void onStreamAdded(final WebRTCMediaStream stream) {
-            callbackDest.send(new Runnable() {
-                @Override
-                public void run() {
-                    callback.onStreamAdded(stream);
-                }
-            });
+            callbackDest.send((Runnable) () -> callback.onStreamAdded(stream));
         }
 
         @Override
         public void onStreamRemoved(final WebRTCMediaStream stream) {
-            callbackDest.send(new Runnable() {
-                @Override
-                public void run() {
-                    callback.onStreamRemoved(stream);
-                }
-            });
+            callbackDest.send((Runnable) () -> callback.onStreamRemoved(stream));
         }
     }
 }

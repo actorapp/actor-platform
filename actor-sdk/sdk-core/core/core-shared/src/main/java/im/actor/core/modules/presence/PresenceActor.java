@@ -44,12 +44,7 @@ import im.actor.runtime.promise.PromisesArray;
 public class PresenceActor extends ModuleActor implements BusSubscriber {
 
     public static ActorRef create(final ModuleContext messenger) {
-        return ActorSystem.system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public PresenceActor create() {
-                return new PresenceActor(messenger);
-            }
-        }), "actor/presence/users");
+        return ActorSystem.system().actorOf("actor/presence/users", () -> new PresenceActor(messenger));
     }
 
     private static final int ONLINE_TIMEOUT = 5 * 60 * 1000;

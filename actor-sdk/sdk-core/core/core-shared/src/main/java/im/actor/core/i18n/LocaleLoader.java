@@ -9,7 +9,7 @@ public class LocaleLoader {
 
     public static HashMap<String, String> loadPropertiesFile(String name) {
         String fileContent = Assets.loadAsset(name);
-        HashMap<String, String> res = new HashMap<String, String>();
+        HashMap<String, String> res = new HashMap<>();
         String[] lines = linesWorkaround(fileContent);
         for (String line : lines) {
             if (line.startsWith("#")) {
@@ -24,7 +24,7 @@ public class LocaleLoader {
     }
 
     static String[] linesWorkaround(String s) {
-        ArrayList<String> res = new ArrayList<String>();
+        ArrayList<String> res = new ArrayList<>();
         int index;
         while ((index = s.indexOf("\n")) >= 0) {
             res.add(s.substring(0, index));

@@ -36,8 +36,6 @@ import im.actor.core.modules.messaging.router.entity.RouterOutgoingError;
 import im.actor.core.modules.messaging.router.entity.RouterOutgoingMessage;
 import im.actor.core.modules.messaging.router.entity.RouterOutgoingSent;
 import im.actor.core.modules.messaging.router.entity.RouterPeersChanged;
-import im.actor.runtime.actors.Actor;
-import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorInterface;
 import im.actor.runtime.eventbus.BusSubscriber;
 import im.actor.runtime.eventbus.Event;
@@ -50,12 +48,7 @@ public class RouterInt extends ActorInterface implements BusSubscriber {
 
     public RouterInt(final ModuleContext context) {
         this.context = context;
-        setDest(system().actorOf("actor/router", new ActorCreator() {
-            @Override
-            public Actor create() {
-                return new RouterActor(context);
-            }
-        }));
+        setDest(system().actorOf("actor/router", () -> new RouterActor(context)));
 
         context.getEvents().subscribe(this, PeerChatOpened.EVENT);
         context.getEvents().subscribe(this, PeerChatClosed.EVENT);
@@ -141,11 +134,11 @@ public class RouterInt extends ActorInterface implements BusSubscriber {
     }
 
     public void onUsersChanged(List<User> users) {
-        onPeersChanged(users, new ArrayList<Group>());
+        onPeersChanged(users, new ArrayList<>());
     }
 
     public void onGroupsChanged(List<Group> groups) {
-        onPeersChanged(new ArrayList<User>(), groups);
+        onPeersChanged(new ArrayList<>(), groups);
     }
 
     public void onPeersChanged(List<User> users, List<Group> groups) {

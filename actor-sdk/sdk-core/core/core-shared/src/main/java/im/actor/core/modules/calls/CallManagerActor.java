@@ -22,12 +22,7 @@ import im.actor.runtime.power.WakeLock;
 public class CallManagerActor extends ModuleActor {
 
     public static ActorCreator CONSTRUCTOR(final ModuleContext context) {
-        return new ActorCreator() {
-            @Override
-            public Actor create() {
-                return new CallManagerActor(context);
-            }
-        };
+        return () -> new CallManagerActor(context);
     }
 
     private static final String TAG = "CallManagerActor";
@@ -71,11 +66,8 @@ public class CallManagerActor extends ModuleActor {
         // Spawning new Actor for call
         //
         final WakeLock wakeLock = Runtime.makeWakeLock();
-        system().actorOf("actor/master/" + RandomUtils.nextRid(), new ActorCreator() {
-            @Override
-            public Actor create() {
-                return new CallActor(peer, callback, wakeLock, context());
-            }
+        system().actorOf("actor/master/" + RandomUtils.nextRid(), () -> {
+            return new CallActor(peer, callback, wakeLock, context());
         });
     }
 
@@ -164,11 +156,8 @@ public class CallManagerActor extends ModuleActor {
         // Spawning new Actor for call
         //
         final WakeLock finalWakeLock = wakeLock;
-        system().actorOf("actor/call" + RandomUtils.nextRid(), new ActorCreator() {
-            @Override
-            public Actor create() {
-                return new CallActor(callId, finalWakeLock, context());
-            }
+        system().actorOf("actor/call" + RandomUtils.nextRid(), () -> {
+            return new CallActor(callId, finalWakeLock, context());
         });
     }
 

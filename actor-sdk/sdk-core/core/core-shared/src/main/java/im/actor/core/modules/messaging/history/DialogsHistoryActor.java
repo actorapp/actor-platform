@@ -50,17 +50,10 @@ public class DialogsHistoryActor extends ModuleActor {
         }
         isLoading = true;
 
-        api(new RequestLoadDialogs(historyMaxDate, LIMIT)).then(new Consumer<ResponseLoadDialogs>() {
-            @Override
-            public void apply(final ResponseLoadDialogs response) {
-                updates().executeRelatedResponse(response.getUsers(), response.getGroups(), new Runnable() {
-                    @Override
-                    public void run() {
-                        onLoadedMore(response.getDialogs());
-                    }
-                });
-            }
-        }).done(self());
+        api(new RequestLoadDialogs(historyMaxDate, LIMIT))
+                .then(response ->
+                        updates().executeRelatedResponse(response.getUsers(), response.getGroups(),
+                                (Runnable) () -> onLoadedMore(response.getDialogs()))).done(self());
     }
 
     private void onLoadedMore(List<ApiDialog> rawDialogs) {
@@ -84,14 +77,11 @@ public class DialogsHistoryActor extends ModuleActor {
 
         if (dialogs.size() > 0) {
             final long finalMaxLoadedDate = maxLoadedDate;
-            context().getMessagesModule().getRouter().onDialogsHistoryLoaded(dialogs, new Runnable() {
-                @Override
-                public void run() {
-                    if (dialogs.size() < LIMIT) {
-                        markAsLoaded();
-                    } else {
-                        markAsSliceLoaded(finalMaxLoadedDate);
-                    }
+            context().getMessagesModule().getRouter().onDialogsHistoryLoaded(dialogs, () -> {
+                if (dialogs.size() < LIMIT) {
+                    markAsLoaded();
+                } else {
+                    markAsSliceLoaded(finalMaxLoadedDate);
                 }
             });
         } else {

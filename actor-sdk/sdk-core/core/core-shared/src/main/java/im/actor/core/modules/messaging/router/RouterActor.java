@@ -104,26 +104,19 @@ public class RouterActor extends ModuleActor {
             }
         }
         if (!activeDialogStorage.isLoaded()) {
-            api(new RequestLoadGroupedDialogs()).then(new Consumer<ResponseLoadGroupedDialogs>() {
-                @Override
-                public void apply(final ResponseLoadGroupedDialogs responseLoadGroupedDialogs) {
+            api(new RequestLoadGroupedDialogs()).then(responseLoadGroupedDialogs ->
                     updates().applyRelatedData(responseLoadGroupedDialogs.getUsers(),
-                            responseLoadGroupedDialogs.getGroups()).then(new Consumer<Void>() {
-                        @Override
-                        public void apply(Void aVoid) {
-                            boolean showArchived = false;
-                            boolean showInvite = false;
-                            if (responseLoadGroupedDialogs.showArchived() != null) {
-                                showArchived = responseLoadGroupedDialogs.showArchived();
-                            }
-                            if (responseLoadGroupedDialogs.showInvite() != null) {
-                                showInvite = responseLoadGroupedDialogs.showInvite();
-                            }
-                            onActiveDialogsChanged(responseLoadGroupedDialogs.getDialogs(), showArchived, showInvite);
+                            responseLoadGroupedDialogs.getGroups()).then(aVoid -> {
+                        boolean showArchived = false;
+                        boolean showInvite = false;
+                        if (responseLoadGroupedDialogs.showArchived() != null) {
+                            showArchived = responseLoadGroupedDialogs.showArchived();
                         }
-                    }).done(self());
-                }
-            }).done(self());
+                        if (responseLoadGroupedDialogs.showInvite() != null) {
+                            showInvite = responseLoadGroupedDialogs.showInvite();
+                        }
+                        onActiveDialogsChanged(responseLoadGroupedDialogs.getDialogs(), showArchived, showInvite);
+                    }).done(self())).done(self());
         } else {
             notifyActiveDialogsVM();
         }

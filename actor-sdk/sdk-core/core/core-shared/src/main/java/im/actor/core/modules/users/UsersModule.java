@@ -57,144 +57,81 @@ public class UsersModule extends AbsModule {
     // Actions
 
     public Command<Boolean> editMyName(final String newName) {
-        return new Command<Boolean>() {
+        return callback -> request(new RequestEditName(newName), new RpcCallback<ResponseSeq>() {
             @Override
-            public void start(final CommandCallback<Boolean> callback) {
-                request(new RequestEditName(newName), new RpcCallback<ResponseSeq>() {
-                    @Override
-                    public void onResult(ResponseSeq response) {
-                        updates().onSeqUpdateReceived(
-                                response.getSeq(),
-                                response.getState(),
-                                new UpdateUserNameChanged(
-                                        myUid(),
-                                        newName));
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onResult(true);
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(final RpcException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(e);
-                            }
-                        });
-                    }
-                });
+            public void onResult(ResponseSeq response) {
+                updates().onSeqUpdateReceived(
+                        response.getSeq(),
+                        response.getState(),
+                        new UpdateUserNameChanged(
+                                myUid(),
+                                newName));
+                runOnUiThread(() -> callback.onResult(true));
             }
-        };
+
+            @Override
+            public void onError(final RpcException e) {
+                runOnUiThread(() -> callback.onError(e));
+            }
+        });
     }
 
     public Command<Boolean> editName(final int uid, final String name) {
-        return new Command<Boolean>() {
-            @Override
-            public void start(final CommandCallback<Boolean> callback) {
-                User user = getUsersStorage().getValue(uid);
-                if (user == null) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.onError(new RpcInternalException());
-                        }
-                    });
-                    return;
-                }
-                request(new RequestEditUserLocalName(
-                        user.getUid(), user.getAccessHash(), name), new RpcCallback<ResponseSeq>() {
-                    @Override
-                    public void onResult(ResponseSeq response) {
-                        SeqUpdate update = new SeqUpdate(response.getSeq(), response.getState(),
-                                UpdateUserLocalNameChanged.HEADER, new UpdateUserLocalNameChanged(uid,
-                                name).toByteArray());
-                        updates().onUpdateReceived(update);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onResult(true);
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(final RpcException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(e);
-                            }
-                        });
-                    }
-                });
+        return callback -> {
+            User user = getUsersStorage().getValue(uid);
+            if (user == null) {
+                runOnUiThread(() -> callback.onError(new RpcInternalException()));
+                return;
             }
+            request(new RequestEditUserLocalName(
+                    user.getUid(), user.getAccessHash(), name), new RpcCallback<ResponseSeq>() {
+                @Override
+                public void onResult(ResponseSeq response) {
+                    SeqUpdate update = new SeqUpdate(response.getSeq(), response.getState(),
+                            UpdateUserLocalNameChanged.HEADER, new UpdateUserLocalNameChanged(uid,
+                            name).toByteArray());
+                    updates().onUpdateReceived(update);
+                    runOnUiThread(() -> callback.onResult(true));
+                }
+
+                @Override
+                public void onError(final RpcException e) {
+                    runOnUiThread(() -> callback.onError(e));
+                }
+            });
         };
     }
 
     public Command<Boolean> editNick(final String nick) {
-        return new Command<Boolean>() {
+        return callback -> request(new RequestEditNickName(nick), new RpcCallback<ResponseSeq>() {
             @Override
-            public void start(final CommandCallback<Boolean> callback) {
-                request(new RequestEditNickName(nick), new RpcCallback<ResponseSeq>() {
-                    @Override
-                    public void onResult(ResponseSeq response) {
-                        updates().onSeqUpdateReceived(response.getSeq(), response.getState(),
-                                new UpdateUserNickChanged(myUid(), nick));
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onResult(true);
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(final RpcException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(e);
-                            }
-                        });
-                    }
-                });
+            public void onResult(ResponseSeq response) {
+                updates().onSeqUpdateReceived(response.getSeq(), response.getState(),
+                        new UpdateUserNickChanged(myUid(), nick));
+                runOnUiThread(() -> callback.onResult(true));
             }
-        };
+
+            @Override
+            public void onError(final RpcException e) {
+                runOnUiThread(() -> callback.onError(e));
+            }
+        });
     }
 
     public Command<Boolean> editAbout(final String about) {
-        return new Command<Boolean>() {
+        return callback -> request(new RequestEditAbout(about), new RpcCallback<ResponseSeq>() {
             @Override
-            public void start(final CommandCallback<Boolean> callback) {
-                request(new RequestEditAbout(about), new RpcCallback<ResponseSeq>() {
-                    @Override
-                    public void onResult(ResponseSeq response) {
-                        updates().onSeqUpdateReceived(response.getSeq(), response.getState(),
-                                new UpdateUserAboutChanged(myUid(), about));
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onResult(true);
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(final RpcException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(e);
-                            }
-                        });
-                    }
-                });
+            public void onResult(ResponseSeq response) {
+                updates().onSeqUpdateReceived(response.getSeq(), response.getState(),
+                        new UpdateUserAboutChanged(myUid(), about));
+                runOnUiThread(() -> callback.onResult(true));
             }
-        };
+
+            @Override
+            public void onError(final RpcException e) {
+                runOnUiThread(() -> callback.onError(e));
+            }
+        });
     }
 
     public void resetModule() {

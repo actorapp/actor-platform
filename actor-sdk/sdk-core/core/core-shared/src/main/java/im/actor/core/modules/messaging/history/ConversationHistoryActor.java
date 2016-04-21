@@ -68,22 +68,12 @@ public class ConversationHistoryActor extends ModuleActor {
         api(new RequestLoadHistory(buidOutPeer(peer), historyMaxDate, null, LIMIT))
                 .mapPromise(applyRelated())
                 .then(applyHistory(peer))
-                .then(new Consumer<ResponseLoadHistory>() {
-                    @Override
-                    public void apply(ResponseLoadHistory responseLoadHistory) {
-                        isLoading = false;
-                    }
-                })
+                .then(responseLoadHistory -> isLoading = false)
                 .done(self());
     }
 
     private Consumer<ResponseLoadHistory> applyHistory(final Peer peer) {
-        return new Consumer<ResponseLoadHistory>() {
-            @Override
-            public void apply(ResponseLoadHistory responseLoadHistory) {
-                applyHistory(peer, responseLoadHistory.getHistory());
-            }
-        };
+        return responseLoadHistory -> applyHistory(peer, responseLoadHistory.getHistory());
     }
 
     private void applyHistory(Peer peer, List<ApiMessageContainer> history) {
@@ -132,17 +122,10 @@ public class ConversationHistoryActor extends ModuleActor {
     }
 
     private Function<ResponseLoadHistory, Promise<ResponseLoadHistory>> applyRelated() {
-        return new Function<ResponseLoadHistory, Promise<ResponseLoadHistory>>() {
-            @Override
-            public Promise<ResponseLoadHistory> apply(final ResponseLoadHistory responseLoadHistory) {
-                return updates().applyRelatedData(responseLoadHistory.getUsers(), new ArrayList<ApiGroup>()).map(new Function<Void, ResponseLoadHistory>() {
-                    @Override
-                    public ResponseLoadHistory apply(Void aVoid) {
-                        return responseLoadHistory;
-                    }
-                });
-            }
-        };
+        return responseLoadHistory ->
+                updates()
+                        .applyRelatedData(responseLoadHistory.getUsers(), new ArrayList<>())
+                        .map((Function<Void, ResponseLoadHistory>) aVoid -> responseLoadHistory);
     }
 
     @Override
