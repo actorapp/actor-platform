@@ -19,12 +19,7 @@ public class PresenceModule extends AbsModule {
         super(modules);
 
         // Creating own presence actor
-        system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public OwnPresenceActor create() {
-                return new OwnPresenceActor(modules);
-            }
-        }), "actor/presence/own");
+        system().actorOf("actor/presence/own", () -> new OwnPresenceActor(modules));
 
         // Creating users and groups presence actor
         PresenceActor.create(modules);

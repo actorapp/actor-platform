@@ -285,18 +285,12 @@ public class PresenceActor extends ModuleActor implements BusSubscriber {
 
         if (requests.size() > 0) {
             isRequesting = true;
-            PromisesArray.ofPromises(requests).zip().then(new Consumer<List<ResponseVoid>>() {
-                @Override
-                public void apply(List<ResponseVoid> responseVoids) {
-                    isRequesting = false;
-                    onCheckQueue();
-                }
-            }).failure(new Consumer<Exception>() {
-                @Override
-                public void apply(Exception e) {
-                    isRequesting = false;
-                    onCheckQueue();
-                }
+            PromisesArray.ofPromises(requests).zip().then(responseVoids -> {
+                isRequesting = false;
+                onCheckQueue();
+            }).failure(e -> {
+                isRequesting = false;
+                onCheckQueue();
             }).done(self());
         }
     }
