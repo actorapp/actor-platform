@@ -47,7 +47,13 @@ class Profile extends Component {
   }
 
   handleSave() {
-    console.debug('VALIDATION AND SAVE');
+    const { nick, name, about, profile } = this.state;
+
+    if (name !== profile.name) ProfileActionCreators.editMyName(name);
+    if (nick !== profile.nick) ProfileActionCreators.editMyNick(nick);
+    if (about !== profile.about) ProfileActionCreators.editMyAbout(about);
+
+    this.handleClose();
   }
 
   handleNameChange(event) {
