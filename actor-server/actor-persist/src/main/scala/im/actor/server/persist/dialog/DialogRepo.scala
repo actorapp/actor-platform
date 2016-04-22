@@ -111,6 +111,49 @@ final class UserDialogTable(tag: Tag) extends Table[UserDialog](tag, "user_dialo
 
 object DialogRepo extends UserDialogOperations with DialogCommonOperations {
 
+  def create(dialog: DialogObsolete)(implicit ec: ExecutionContext): DBIO[Int] = {
+    val dialogId = getDialogId(Some(dialog.userId), dialog.peer)
+
+    val common = DialogCommon(
+      dialogId = dialogId,
+      lastMessageDate = dialog.lastMessageDate,
+      lastReceivedAt = dialog.lastReceivedAt,
+      lastReadAt = dialog.lastReadAt
+    )
+
+    val user = UserDialog(
+      userId = dialog.userId,
+      peer = dialog.peer,
+      ownerLastReceivedAt = dialog.ownerLastReceivedAt,
+      ownerLastReadAt = dialog.ownerLastReadAt,
+      createdAt = dialog.createdAt,
+      shownAt = dialog.shownAt,
+      isFavourite = dialog.isFavourite,
+      archivedAt = dialog.archivedAt
+    )
+
+    for {
+      exists ← commonExists(dialogId)
+      result ← if (exists) {
+        UserDialogRepo.userDialogs += user
+      } else {
+        for {
+          c ← (DialogCommonRepo.dialogCommon += common)
+            .asTry
+            .flatMap {
+              case Failure(e) ⇒
+                commonExists(common.dialogId) flatMap {
+                  case true  ⇒ DBIO.successful(1)
+                  case false ⇒ DBIO.failed(e)
+                }
+              case Success(res) ⇒ DBIO.successful(res)
+            }
+          _ ← UserDialogRepo.userDialogs += user
+        } yield c
+      }
+    } yield result
+  }
+
   private val dialogs = for {
     c ← DialogCommonRepo.dialogCommon
     u ← UserDialogRepo.userDialogs if c.dialogId === repDialogId(u.userId, u.peerId, u.peerType)
