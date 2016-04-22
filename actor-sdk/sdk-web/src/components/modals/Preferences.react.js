@@ -115,10 +115,12 @@ class PreferencesModal extends Component {
 
   renderAppDetail() {
     return (
+      // TODO: Fix build erros for commented code
       <span onClick={this.handleAppDetailClick}>
-        {`${this.appName}: v${__ACTOR_SDK_VERSION__}`}
-        <br/>
-        {`Core: v${__ACTOR_CORE_VERSION__}`}
+        {`${this.appName}: v1.0.268`}
+        {/*{`${this.appName}: v${__ACTOR_SDK_VERSION__}`}*/}
+        {/*<br/>*/}
+        {/*{`Core: v${__ACTOR_CORE_VERSION__}`}*/}
       </span>
     );
   }

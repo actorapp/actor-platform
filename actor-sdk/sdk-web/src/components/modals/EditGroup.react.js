@@ -63,7 +63,6 @@ class EditGroup extends Component {
   }
 
   handleChangeGroupAvatar(croppedImage) {
-    console.debug('handleChangeGroupAvatar', croppedImage);
     const { group } = this.state;
     EditGroupActionCreators.changeGroupAvatar(group.id, croppedImage);
   }

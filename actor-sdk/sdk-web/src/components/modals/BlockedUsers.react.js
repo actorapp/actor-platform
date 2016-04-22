@@ -27,10 +27,6 @@ class BlockedUsers extends Component {
     return BlockedUsersStore.getState();
   }
 
-  componentDidMount() {
-    console.debug('block mouned')
-  }
-
   constructor(props, context) {
     super(props, context);
 
