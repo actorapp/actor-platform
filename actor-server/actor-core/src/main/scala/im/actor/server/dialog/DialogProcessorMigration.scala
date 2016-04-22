@@ -60,8 +60,11 @@ trait DialogProcessorMigration extends Processor[DialogState] {
         }
       } yield PersistEvents(
         Initialized() +:
-          newMessages.toList :+
-          MessagesRead(Instant.ofEpochMilli(d.lastReadAt.getMillis))
+          (newMessages.toList ++
+            List(
+              MessagesRead(Instant.ofEpochMilli(d.ownerLastReadAt.getMillis), readerUserId = userId),
+              MessagesRead(Instant.ofEpochMilli(d.lastReadAt.getMillis))
+            ))
       )) pipeTo self
     case PersistEvents(events) ⇒
       log.warning("Persisting events")

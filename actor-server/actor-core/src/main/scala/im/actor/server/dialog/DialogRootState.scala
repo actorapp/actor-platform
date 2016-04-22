@@ -20,11 +20,12 @@ trait DialogRootQuery
 
 private object SortableDialog {
   val OrderingAsc = new Ordering[SortableDialog] {
-    override def compare(x: SortableDialog, y: SortableDialog): Int =
+    override def compare(x: SortableDialog, y: SortableDialog): Int = {
       if (x.peer == y.peer) 0
       else if (x.ts.isBefore(y.ts)) -1
       else if (x.ts.isAfter(y.ts)) 1
       else 0
+    }
   }
 
   val OrderingDesc = new Ordering[SortableDialog] {
@@ -36,7 +37,15 @@ private object SortableDialog {
   }
 }
 
-private case class SortableDialog(ts: Instant, peer: Peer)
+private case class SortableDialog(ts: Instant, peer: Peer) {
+  override def hashCode = peer.hashCode()
+
+  override def equals(obj: Any) =
+    obj match {
+      case sd: SortableDialog ⇒ sd.peer == peer
+      case _                  ⇒ false
+    }
+}
 
 private object ActiveDialogs {
   val empty = ActiveDialogs(
@@ -60,25 +69,27 @@ private[dialog] case class ActiveDialogs(
   }
 
   def withoutPeer(sd: SortableDialog) = {
-    sd.peer.typ match {
-      case PeerType.Private ⇒ copy(dms = dms - sd, favourites = favourites - sd)
-      case PeerType.Group   ⇒ copy(groups = groups - sd, favourites = favourites - sd)
+    val res = sd.peer.typ match {
+      case PeerType.Private ⇒ copy(dms = dms.filterNot(_.peer == sd.peer), favourites = favourites.filterNot(_.peer == sd.peer))
+      case PeerType.Group   ⇒ copy(groups = groups.filterNot(_.peer == sd.peer), favourites = favourites.filterNot(_.peer == sd.peer))
       case unknown          ⇒ throw PeerErrors.UnknownPeerType(unknown)
     }
+    println(res.groups)
+    res
   }
 
   def withFavouritedPeer(sd: SortableDialog) = {
     sd.peer.typ match {
-      case PeerType.Private ⇒ copy(dms = dms - sd, favourites = favourites + sd)
-      case PeerType.Group   ⇒ copy(groups = groups - sd, favourites = favourites + sd)
+      case PeerType.Private ⇒ copy(dms = dms.filterNot(_.peer == sd.peer), favourites = favourites + sd)
+      case PeerType.Group   ⇒ copy(groups = groups.filterNot(_.peer == sd.peer), favourites = favourites + sd)
       case unknown          ⇒ throw PeerErrors.UnknownPeerType(unknown)
     }
   }
 
   def withUnfavouritedPeer(sd: SortableDialog) = {
     sd.peer.typ match {
-      case PeerType.Private ⇒ copy(dms = dms + sd, favourites = favourites - sd)
-      case PeerType.Group   ⇒ copy(groups = groups + sd, favourites = favourites - sd)
+      case PeerType.Private ⇒ copy(dms = dms + sd, favourites = favourites.filterNot(_.peer == sd.peer))
+      case PeerType.Group   ⇒ copy(groups = groups + sd, favourites = favourites.filterNot(_.peer == sd.peer))
       case unknown          ⇒ throw PeerErrors.UnknownPeerType(unknown)
     }
   }
