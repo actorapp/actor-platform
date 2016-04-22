@@ -603,6 +603,7 @@
 
 "ErrorAlreadyJoined" = "你已经是群组成员";
 
-"ErrorUnableToJoin" = "不能加入群组";
+"ErrorUnableToJoin" = "无法加入群组";
 
-"ErrorUnableToCall" = "不能拨打这个号码";
+"ErrorUnableToCall" = "无法拨打这个号码";
+
