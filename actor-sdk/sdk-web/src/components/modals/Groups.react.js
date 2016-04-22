@@ -2,8 +2,6 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import { debounce } from 'lodash';
-
 import React, { Component, PropTypes } from 'react';
 import Modal from 'react-modal';
 import { findDOMNode } from 'react-dom';
@@ -11,7 +9,7 @@ import { Container } from 'flux/utils';
 import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
 import history from '../../utils/history';
 import PeerUtils from '../../utils/PeerUtils';
-// import Scrollbar from '../common/Scrollbar.react';
+import fuzzaldrin from 'fuzzaldrin';
 
 import ModalCloseButton from './ModalCloseButton.react';
 import { KeyCodes } from '../../constants/ActorAppConstants';
@@ -23,10 +21,6 @@ import GroupListStore from '../../stores/GroupListStore';
 import Group from './groups/Group.react';
 
 class GroupList extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   static contextTypes = {
     intl: PropTypes.object
   };
@@ -35,12 +29,27 @@ class GroupList extends Component {
     return [GroupListStore];
   }
 
-  static calculateState() {
+  static calculateState(prevState) {
     return {
-      list: GroupListStore.getList(),
-      results: GroupListStore.getResults(),
-      selectedIndex: 0
+      ...prevState,
+      selectedIndex: 0,
+      list: GroupListStore.getState()
     };
+  }
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      query: null,
+      selectedIndex: 0
+    }
+
+    this.handleClose = this.handleClose.bind(this);
+    this.handleSearchChange = this.handleSearchChange.bind(this);
+    this.handleGroupSelect = this.handleGroupSelect.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.handleScroll = this.handleScroll.bind(this);
   }
 
   componentDidMount() {
@@ -52,25 +61,29 @@ class GroupList extends Component {
     document.removeEventListener('keydown', this.handleKeyDown, false);
   }
 
-  setFocus = () => findDOMNode(this.refs.search).focus();
-  handleClose = () => GroupListActionCreators.close();
+  setFocus() {
+    findDOMNode(this.refs.search).focus()
+  }
 
-  handleSearchChange = (event) => {
+  handleClose() {
+    GroupListActionCreators.close();
+  }
+
+  handleSearchChange(event) {
     const query = event.target.value;
     this.setState({query});
-    this.searchGroups(query)
-  };
+  }
 
-  searchGroups = debounce((query) => GroupListActionCreators.search(query), 300, {trailing: true});
-
-  handleGroupSelect = (peer) => {
+  handleGroupSelect(peer) {
     const peerStr = PeerUtils.peerToString(peer);
     history.push(`/im/${peerStr}`);
     this.handleClose()
-  };
+  }
 
-  handleKeyDown = (event) => {
-    const { results, selectedIndex } = this.state;
+  handleKeyDown(event) {
+    const { selectedIndex } = this.state;
+    const results = this.getList();
+    const offset = 18;
     let index = selectedIndex;
 
     const selectNext = () => {
@@ -82,13 +95,13 @@ class GroupList extends Component {
 
       this.setState({selectedIndex: index});
 
-      const scrollContainerNode = findDOMNode(this.refs.results).getElementsByClassName('ss-scrollarea')[0];
+      const scrollContainerNode = findDOMNode(this.refs.results);
       const selectedNode = findDOMNode(this.refs.selected);
       const scrollContainerNodeRect = scrollContainerNode.getBoundingClientRect();
       const selectedNodeRect = selectedNode.getBoundingClientRect();
 
       if ((scrollContainerNodeRect.top + scrollContainerNodeRect.height) < (selectedNodeRect.top + selectedNodeRect.height)) {
-        this.handleScroll(scrollContainerNode.scrollTop + (selectedNodeRect.top + selectedNodeRect.height) - (scrollContainerNodeRect.top + scrollContainerNodeRect.height));
+        this.handleScroll(scrollContainerNode.scrollTop + (selectedNodeRect.top + selectedNodeRect.height) - (scrollContainerNodeRect.top + scrollContainerNodeRect.height) + offset);
       } else if (scrollContainerNodeRect.top > selectedNodeRect.top) {
         this.handleScroll(0);
       }
@@ -102,13 +115,13 @@ class GroupList extends Component {
 
       this.setState({selectedIndex: index});
 
-      const scrollContainerNode = findDOMNode(this.refs.results).getElementsByClassName('ss-scrollarea')[0];
+      const scrollContainerNode = findDOMNode(this.refs.results);
       const selectedNode = findDOMNode(this.refs.selected);
       const scrollContainerNodeRect = scrollContainerNode.getBoundingClientRect();
       const selectedNodeRect = selectedNode.getBoundingClientRect();
 
       if (scrollContainerNodeRect.top > selectedNodeRect.top) {
-        this.handleScroll(scrollContainerNode.scrollTop + selectedNodeRect.top - scrollContainerNodeRect.top);
+        this.handleScroll(scrollContainerNode.scrollTop + selectedNodeRect.top - scrollContainerNodeRect.top - offset);
       } else if (selectedNodeRect.top > (scrollContainerNodeRect.top + scrollContainerNodeRect.height)) {
        this.handleScroll(scrollContainerNode.scrollHeight);
       }
@@ -142,42 +155,55 @@ class GroupList extends Component {
         break;
       default:
     }
-  };
+  }
 
-  handleScroll = (top) => this.refs.results.scrollTo(top);
+  handleScroll(top) {
+    findDOMNode(this.refs.results).scrollTop = top;
+  }
+
+  getList() {
+    const { query, list } = this.state;
+
+    if (!query || query === '') return list;
+
+    return list.filter((group) => {
+      return fuzzaldrin.score(group.peerInfo.title, query) > 0;
+    });
+  }
 
   renderSearchInput() {
     const { query } = this.state;
     const { intl } = this.context;
 
     return (
-      <input className="newmodal__search__input"
-             onChange={this.handleSearchChange}
-             placeholder={intl.messages['modal.groups.search']}
-             type="search"
-             ref="search"
-             value={query}/>
-    );
-  }
-
-  renderLoading() {
-    const { list } = this.state;
-
-    if (list.length !== 0) return null;
-
-    return (
-      <div><FormattedMessage id="modal.groups.loading"/></div>
+      <section className="large-search">
+        <input className="input"
+               onChange={this.handleSearchChange}
+               placeholder={intl.messages['modal.groups.search']}
+               type="search"
+               ref="search"
+               value={query}/>
+      </section>
     );
   }
 
   renderList() {
-    const { query, results, selectedIndex } = this.state;
+    const { query, selectedIndex, list } = this.state;
+    const results = this.getList();
+
+    if (list.length === 0) {
+      return (
+        <div className="result-list__item result-list__item--empty text-center">
+          <FormattedMessage id="modal.groups.loading"/>
+        </div>
+      );
+    }
 
     if (results.length === 0) {
       return (
-        <li className="group__list__item group__list__item--empty text-center">
-          <FormattedHTMLMessage id="modal.groups.notFound" values={{query}} />
-        </li>
+        <div className="result-list__item result-list__item--empty text-center">
+          <FormattedHTMLMessage id="modal.groups.notFound" values={{query}}/>
+        </div>
       );
     }
 
@@ -213,11 +239,10 @@ class GroupList extends Component {
               <FormattedMessage id="modal.groups.title" tagName="h1"/>
             </header>
 
-            <div className="modal__body">
-              {this.renderSearchInput()}
+            {this.renderSearchInput()}
 
-              <div className="result-list" ref="results">
-                {this.renderLoading()}
+            <div className="modal__body" ref="results">
+              <div className="result-list">
                 {this.renderList()}
               </div>
             </div>

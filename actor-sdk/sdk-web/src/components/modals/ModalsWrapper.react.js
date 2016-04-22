@@ -11,7 +11,7 @@ import ModalStore from '../../stores/ModalStore';
 import Profile from './Profile.react';
 import Crop from './Crop.react';
 import Groups from './Groups.react';
-import Peoples from './Peoples.react';
+import People from './People.react';
 import AddContact from './AddContact.react';
 import CreateGroup from './CreateGroup.react';
 import EditGroup from './EditGroup.react';
@@ -42,7 +42,7 @@ class ModalsWrapper extends Component {
       case ModalTypes.GROUP_LIST:
         return <Groups/>;
       case ModalTypes.PEOPLE_LIST:
-        return <Peoples/>;
+        return <People/>;
       case ModalTypes.ADD_CONTACT:
         return <AddContact/>;
       case ModalTypes.CREATE_GROUP:

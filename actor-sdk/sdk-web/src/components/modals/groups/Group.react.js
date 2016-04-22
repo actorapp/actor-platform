@@ -34,14 +34,15 @@ class Group extends Component {
 
   render() {
     const { group, isSelected } = this.props;
-    const resultClassName = classnames('group__list__item row', {
-      'group__list__item--active': isSelected
+    const resultClassName = classnames('result-list__item row', {
+      'result-list__item--active': isSelected
     });
 
     return (
-      <div className={resultClassName}
-          onClick={this.handleClick}
-          onMouseOver={this.handleMouseOver}>
+      <div
+        className={resultClassName}
+        onClick={this.handleClick}
+        onMouseOver={this.handleMouseOver}>
         <div>
           <AvatarItem image={group.peerInfo.avatar}
                       placeholder={group.peerInfo.placeholder}

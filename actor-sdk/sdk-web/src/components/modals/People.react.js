@@ -2,12 +2,12 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import fuzzaldrin from 'fuzzaldrin';
 import React, { Component, PropTypes } from 'react';
 import Modal from 'react-modal';
 import { findDOMNode } from 'react-dom';
 import { Container } from 'flux/utils';
 import { FormattedMessage } from 'react-intl';
+import fuzzaldrin from 'fuzzaldrin';
 
 import { KeyCodes } from '../../constants/ActorAppConstants';
 
@@ -31,6 +31,7 @@ class PeopleList extends Component {
   static calculateState(prevState) {
     return {
       ...prevState,
+      selectedIndex: 0,
       contacts: PeopleStore.getState()
     };
   }
@@ -78,7 +79,9 @@ class PeopleList extends Component {
   }
 
   handleKeyDown(event) {
-    const { results, selectedIndex } = this.state;
+    const { selectedIndex } = this.state;
+    const results = this.getPeople();
+    const offset = 18;
     let index = selectedIndex;
 
     const selectNext = () => {
@@ -90,13 +93,13 @@ class PeopleList extends Component {
 
       this.setState({selectedIndex: index});
 
-      const scrollContainerNode = findDOMNode(this.refs.results).getElementsByClassName('ss-scrollarea')[0];
+      const scrollContainerNode = findDOMNode(this.refs.results);
       const selectedNode = findDOMNode(this.refs.selected);
       const scrollContainerNodeRect = scrollContainerNode.getBoundingClientRect();
       const selectedNodeRect = selectedNode.getBoundingClientRect();
 
       if ((scrollContainerNodeRect.top + scrollContainerNodeRect.height) < (selectedNodeRect.top + selectedNodeRect.height)) {
-        this.handleScroll(scrollContainerNode.scrollTop + (selectedNodeRect.top + selectedNodeRect.height) - (scrollContainerNodeRect.top + scrollContainerNodeRect.height));
+        this.handleScroll(scrollContainerNode.scrollTop + (selectedNodeRect.top + selectedNodeRect.height) - (scrollContainerNodeRect.top + scrollContainerNodeRect.height) + offset);
       } else if (scrollContainerNodeRect.top > selectedNodeRect.top) {
         this.handleScroll(0);
       }
@@ -110,13 +113,13 @@ class PeopleList extends Component {
 
       this.setState({selectedIndex: index});
 
-      const scrollContainerNode = findDOMNode(this.refs.results).getElementsByClassName('ss-scrollarea')[0];
+      const scrollContainerNode = findDOMNode(this.refs.results);
       const selectedNode = findDOMNode(this.refs.selected);
       const scrollContainerNodeRect = scrollContainerNode.getBoundingClientRect();
       const selectedNodeRect = selectedNode.getBoundingClientRect();
 
       if (scrollContainerNodeRect.top > selectedNodeRect.top) {
-        this.handleScroll(scrollContainerNode.scrollTop + selectedNodeRect.top - scrollContainerNodeRect.top);
+        this.handleScroll(scrollContainerNode.scrollTop + selectedNodeRect.top - scrollContainerNodeRect.top - offset);
       } else if (selectedNodeRect.top > (scrollContainerNodeRect.top + scrollContainerNodeRect.height)) {
         this.handleScroll(scrollContainerNode.scrollHeight);
       }
@@ -153,32 +156,34 @@ class PeopleList extends Component {
   }
 
   handleScroll(top)  {
-    this.refs.results.scrollTo(top);
+    const scrollContainerNode = findDOMNode(this.refs.results);
+    scrollContainerNode.scrollTop = top;
   }
 
   getPeople() {
     const { query, contacts } = this.state;
-    if (!query) {
-      return contacts;
-    }
+    if (!query || query === '') return contacts;
 
     return contacts.filter((contact) => {
-      const score = fuzzaldrin.score(contact.name, query);
-      return score > 0;
+      return fuzzaldrin.score(contact.name, query) > 0;
     });
   }
 
   renderPeople() {
-    const { contacts, selectedIndex } = this.state;
+    const { selectedIndex, contacts } = this.state;
+    const people = this.getPeople();
 
-    if (!contacts.length) {
-      return <div><FormattedMessage id="modal.contacts.loading"/></div>;
+    if (contacts.length === 0) {
+      return (
+        <li className="result-list__item result-list__item--empty text-center">
+          <FormattedMessage id="modal.contacts.loading"/>
+        </li>
+      );
     }
 
-    const people = this.getPeople();
     if (!people.length) {
       return (
-        <li className="result__list__item result__list__item--empty text-center">
+        <li className="result-list__item result-list__item--empty text-center">
           <FormattedMessage id="modal.contacts.notFound"/>
         </li>
       );
@@ -201,7 +206,7 @@ class PeopleList extends Component {
     const { intl } = this.context;
 
     return (
-      <section className="modal__search">
+      <section className="large-search">
         <input className="input"
                onChange={this.handleSearchChange}
                placeholder={intl.messages['modal.contacts.search']}
@@ -232,8 +237,8 @@ class PeopleList extends Component {
 
             {this.renderSearch()}
 
-            <div className="modal__body" ref="result">
-              <ul className="result__list">
+            <div className="modal__body" ref="results">
+              <ul className="result-list">
                 {this.renderPeople()}
               </ul>
             </div>
