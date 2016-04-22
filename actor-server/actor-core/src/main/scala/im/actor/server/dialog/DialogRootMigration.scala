@@ -16,6 +16,7 @@ trait DialogRootMigration extends Processor[DialogRootState] {
   import context.dispatcher
 
   private case class CreateEvents(models: Seq[DialogObsolete])
+  private case object EventsPersisted
 
   val userId: Int
   private val db = DbExtension(context.system).db
@@ -42,10 +43,10 @@ trait DialogRootMigration extends Processor[DialogRootState] {
 
   private def migrating: Receive = {
     case CreateEvents(models) ⇒
-      createEvents(models) {
-        unstashAll()
-        context become receiveCommand
-      }
+      createEvents(models)
+    case EventsPersisted ⇒
+      unstashAll()
+      context become receiveCommand
     case Status.Failure(e) ⇒
       log.error(e, "Failed to migrate")
       throw e
@@ -62,7 +63,7 @@ trait DialogRootMigration extends Processor[DialogRootState] {
     } yield CreateEvents(models)) pipeTo self
   }
 
-  private def createEvents(models: Seq[DialogObsolete])(onComplete: ⇒ Unit): Unit = {
+  private def createEvents(models: Seq[DialogObsolete]): Unit = {
     val created = models map { dialog ⇒
       Created(Instant.ofEpochMilli(dialog.createdAt.getMillis), Some(dialog.peer))
     }
@@ -78,10 +79,9 @@ trait DialogRootMigration extends Processor[DialogRootState] {
     }
 
     val events: List[Event] = Initialized(Instant.now()) +: (created ++ archived ++ favourited).toList
-    persistAll(events)(_ ⇒ ())
+    persistAll(events)(e ⇒ commit(e))
     deferAsync(()) { _ ⇒
-      events foreach (e ⇒ commit(e))
-      onComplete
+      self ! EventsPersisted
     }
   }
 }
