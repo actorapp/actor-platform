@@ -25,6 +25,7 @@ public abstract class DisplayListFragment<T extends BserObject & ListEngineItem,
 
     private BindedDisplayList<T> displayList;
     private BindedListAdapter<T, V> adapter;
+    private RecyclerView.OnScrollListener onScrollListener;
 
     protected View inflate(LayoutInflater inflater, ViewGroup container, int resource, BindedDisplayList<T> displayList) {
         View res = inflater.inflate(resource, container, false);
@@ -49,6 +50,10 @@ public abstract class DisplayListFragment<T extends BserObject & ListEngineItem,
         adapter = onCreateAdapter(displayList, getActivity());
 
         collection.setAdapter(adapter);
+
+        if (onScrollListener != null) {
+            collection.addOnScrollListener(onScrollListener);
+        }
 
 //        if (emptyCollection != null) {
 //            emptyCollection.setVisibility(View.GONE);
@@ -108,6 +113,10 @@ public abstract class DisplayListFragment<T extends BserObject & ListEngineItem,
 
     public RecyclerView getCollection() {
         return collection;
+    }
+
+    public void setOnScrollListener(RecyclerView.OnScrollListener onScrollListener) {
+        this.onScrollListener = onScrollListener;
     }
 
     @Override
