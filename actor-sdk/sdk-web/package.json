@@ -53,6 +53,7 @@
     "babel-polyfill": "6.7.4",
     "classnames": "2.2.3",
     "crosstab": "0.2.12",
+    "favico.js": "0.3.10",
     "fbjs": "0.8.1",
     "flexboxgrid": "6.3.0",
     "flux": "2.1.1",
