@@ -22,7 +22,6 @@ import StickersActionCreators from '../../actions/StickersActionCreators';
 import GroupStore from '../../stores/GroupStore';
 import PreferencesStore from '../../stores/PreferencesStore';
 import ComposeStore from '../../stores/ComposeStore';
-import AttachmentStore from '../../stores/AttachmentStore';
 import DialogStore from '../../stores/DialogStore';
 import MessageArtStore from '../../stores/MessageArtStore';
 
@@ -31,11 +30,10 @@ import MentionDropdown from '../common/MentionDropdown.react';
 import MessageArt from '../messageArt/MessageArt.react';
 import VoiceRecorder from '../common/VoiceRecorder.react';
 import DropZone from '../common/DropZone.react';
-import SendAttachment from '../modals/SendAttachment';
 
 class ComposeSection extends Component {
   static getStores() {
-    return [DialogStore, GroupStore, PreferencesStore, AttachmentStore, ComposeStore, MessageArtStore];
+    return [DialogStore, GroupStore, PreferencesStore, ComposeStore, MessageArtStore];
   }
 
   static calculateState(prevState) {
@@ -45,7 +43,6 @@ class ComposeSection extends Component {
       profile: ActorClient.getUser(ActorClient.getUid()),
       sendByEnter: PreferencesStore.isSendByEnterEnabled(),
       mentions: ComposeStore.getMentions(),
-      isSendAttachmentOpen: AttachmentStore.isOpen(),
       isMarkdownHintShow: prevState ? prevState.isMarkdownHintShow || false : false,
       isAutoFocusEnabled: ComposeStore.isAutoFocusEnabled(),
       isMessageArtOpen: MessageArtStore.getState().isOpen,
@@ -243,7 +240,7 @@ class ComposeSection extends Component {
   };
 
   render() {
-    const { text, profile, mentions, stickers, isMarkdownHintShow, isSendAttachmentOpen, isMessageArtOpen } = this.state;
+    const { text, profile, mentions, stickers, isMarkdownHintShow, isMessageArtOpen } = this.state;
     const { intl } = this.context;
     const markdownHintClassName = classnames('compose__markdown-hint', {
       'compose__markdown-hint--active': isMarkdownHintShow
@@ -305,10 +302,6 @@ class ComposeSection extends Component {
         <form className="compose__hidden" ref="attachmentForm">
           <input ref="attachment" onChange={this.handleComposeAttachmentChange} type="file"/>
         </form>
-
-        {/* Attachment modal */}
-        {isSendAttachmentOpen ? <SendAttachment/> : null}
-
       </section>
     );
   }

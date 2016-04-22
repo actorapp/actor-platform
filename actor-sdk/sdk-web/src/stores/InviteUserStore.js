@@ -9,8 +9,6 @@ import { ActionTypes, AsyncActionStates } from '../constants/ActorAppConstants';
 class InviteUserStore extends ReduceStore {
   getInitialState() {
     return {
-      isOpen: false,
-      isInviteByLinkOpen: false,
       query: null,
       group: null,
       inviteUrl: null,
@@ -25,30 +23,20 @@ class InviteUserStore extends ReduceStore {
           ...state,
           group: action.info
         };
+
       case ActionTypes.INVITE_USER_MODAL_SHOW:
         return {
           ...state,
-          isOpen: true,
           group: action.group
         };
       case ActionTypes.INVITE_USER_MODAL_HIDE:
         return this.getInitialState();
+
       case ActionTypes.INVITE_USER_BY_LINK_MODAL_SHOW:
         return {
           ...state,
-          isInviteByLinkOpen: true,
           group: action.group,
           inviteUrl: action.url
-        };
-      case ActionTypes.INVITE_USER_QUERY_CHANGE:
-        return {
-          ...state,
-          query: action.query
-        };
-      case ActionTypes.INVITE_USER_BY_LINK_MODAL_HIDE:
-        return {
-          ...state,
-          isInviteByLinkOpen: false
         };
 
       // Invite user
@@ -75,14 +63,6 @@ class InviteUserStore extends ReduceStore {
       default:
         return state;
     }
-  }
-
-  isModalOpen() {
-    return this.getState().isOpen;
-  }
-
-  isInviteWithLinkModalOpen() {
-    return this.getState().isInviteByLinkOpen;
   }
 
   getGroup() {
