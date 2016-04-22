@@ -41,6 +41,7 @@ trait IncrementalSnapshots[S <: ProcessorState[S]] extends ProcessorStateControl
     _commitsNum += 1
     if (_commitsNum == SnapshotCommitsThreshold) {
       log.debug("Saving snapshot due to threshold hit")
+      _commitsNum = 0
       saveSnapshot(state.snapshot)
     }
   }
