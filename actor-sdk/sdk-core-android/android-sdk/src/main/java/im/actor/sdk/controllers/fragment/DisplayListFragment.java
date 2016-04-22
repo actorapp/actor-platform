@@ -117,6 +117,9 @@ public abstract class DisplayListFragment<T extends BserObject & ListEngineItem,
 
     public void setOnScrollListener(RecyclerView.OnScrollListener onScrollListener) {
         this.onScrollListener = onScrollListener;
+        if (collection != null) {
+            collection.addOnScrollListener(onScrollListener);
+        }
     }
 
     @Override
