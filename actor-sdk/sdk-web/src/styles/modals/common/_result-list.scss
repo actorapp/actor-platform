@@ -2,20 +2,29 @@
   margin: 0;
   padding: $modal-padding 0;
   &__item {
-    list-style: none;
     padding: 8px 14px;
+
+    list-style: none;
+    .avatar {
+      margin-right: $modal-padding;
+    }
+    .title {
+      line-height: 44px;
+    }
+
     &--active {
       font-weight: 500;
 
       cursor: pointer;
 
       color: white;
-      border-radius: 2px;
-      background: rgba($dark-sky-blue, 1);
+      border-radius: $default-border-radius;
+      background-color: rgba($dark-sky-blue, 1);
     }
-    .title {
-      margin-right: $modal-padding;
-      line-height: 44px;
+
+    &--empty {
+      text-align: center;
+      padding: ($modal-padding * 2) 0;
     }
   }
 }

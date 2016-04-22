@@ -37,8 +37,8 @@ class PeopleItem extends Component {
 
   render() {
     const { contact, isSelected } = this.props;
-    const resultClassName = classnames('result__list__item row', {
-      'result__list__item--active': isSelected
+    const resultClassName = classnames('result-list__item row', {
+      'result-list__item--active': isSelected
     });
 
     return (

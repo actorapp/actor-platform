@@ -1,21 +1,8 @@
-.people-list,
-.group-list {
-  display: flex;
-  flex-direction: column;
-
-  width: 100%;
-  max-width: 540px;
-
-  .modal__body {
-    overflow: scroll;
-
-    box-sizing: border-box;
-    padding: 0 $modal-padding;
-
-    flex: 1 1 auto;
-  }
-
-  .large-search {
-    margin: $modal-padding $modal-padding 0;
+.people-list {
+  .result-list__item {
+    &--active {
+      cursor: pointer;
+      text-shadow: 0 1px 1px rgb(34, 117, 215);
+    }
   }
 }

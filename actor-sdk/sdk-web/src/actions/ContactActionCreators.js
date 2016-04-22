@@ -37,9 +37,5 @@ export default {
       success: ActionTypes.CONTACT_REMOVE_SUCCESS,
       failure: ActionTypes.CONTACT_REMOVE_ERROR
     }, { uid });
-  },
-
-  search(query) {
-    dispatch(ActionTypes.CONTACT_LIST_SEARCH, { query })
   }
 };
