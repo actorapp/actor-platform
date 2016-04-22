@@ -21,9 +21,6 @@ class ModalStore extends ReduceStore {
           ...state,
           currentModal: ModalTypes.PROFILE
         }
-      case ActionTypes.PROFILE_HIDE:
-        return this.getInitialState();
-
       case ActionTypes.CROP_MODAL_SHOW:
         return {
           ...state,
@@ -36,71 +33,46 @@ class ModalStore extends ReduceStore {
           prevModal: null,
           currentModal: state.prevModal
         }
-
       case ActionTypes.GROUP_LIST_SHOW:
-      return {
-        ...state,
-        currentModal: ModalTypes.GROUP_LIST
-      }
-      case ActionTypes.GROUP_LIST_HIDE:
-        return this.getInitialState();
-
+        return {
+          ...state,
+          currentModal: ModalTypes.GROUP_LIST
+        }
       case ActionTypes.CONTACT_LIST_SHOW:
         return {
           ...state,
           currentModal: ModalTypes.PEOPLE_LIST
         }
-      case ActionTypes.CONTACT_LIST_HIDE:
-        return this.getInitialState();
-
       case ActionTypes.CONTACT_ADD_MODAL_SHOW:
         return {
           ...state,
           currentModal: ModalTypes.ADD_CONTACT
         }
-      case ActionTypes.CONTACT_ADD_MODAL_HIDE:
-        return this.getInitialState();
-
       case ActionTypes.GROUP_CREATE_MODAL_SHOW:
         return {
           ...state,
           currentModal: ModalTypes.CREATE_GROUP
         }
-      case ActionTypes.GROUP_CREATE_MODAL_HIDE:
-        return this.getInitialState();
-
       case ActionTypes.GROUP_EDIT_MODAL_SHOW:
         return {
           ...state,
           currentModal: ModalTypes.EDIT_GROUP
         }
-      case ActionTypes.GROUP_EDIT_MODAL_HIDE:
-        return this.getInitialState();
-
       case ActionTypes.PREFERENCES_MODAL_SHOW:
         return {
           ...state,
           currentModal: ModalTypes.PREFERENCES
         }
-      case ActionTypes.PREFERENCES_MODAL_HIDE:
-        return this.getInitialState();
-
       case ActionTypes.QUICK_SEARCH_SHOW:
         return {
           ...state,
           currentModal: ModalTypes.QUICK_SEARCH
         }
-      case ActionTypes.QUICK_SEARCH_HIDE:
-        return this.getInitialState();
-
       case ActionTypes.INVITE_USER_MODAL_SHOW:
         return {
           ...state,
           currentModal: ModalTypes.INVITE
         }
-      case ActionTypes.INVITE_USER_MODAL_HIDE:
-        return this.getInitialState();
-
       case ActionTypes.INVITE_USER_BY_LINK_MODAL_SHOW:
         return {
           ...state,
@@ -113,8 +85,23 @@ class ModalStore extends ReduceStore {
           prevModal: null,
           currentModal: state.prevModal
         }
+      case ActionTypes.ATTACHMENT_MODAL_SHOW:
+        return {
+          ...state,
+          currentModal: ModalTypes.ATTACHMENTS
+        }
 
-
+      case ActionTypes.PROFILE_HIDE:
+      case ActionTypes.GROUP_LIST_HIDE:
+      case ActionTypes.CONTACT_LIST_HIDE:
+      case ActionTypes.CONTACT_ADD_MODAL_HIDE:
+      case ActionTypes.GROUP_CREATE_MODAL_HIDE:
+      case ActionTypes.GROUP_EDIT_MODAL_HIDE:
+      case ActionTypes.PREFERENCES_MODAL_HIDE:
+      case ActionTypes.QUICK_SEARCH_HIDE:
+      case ActionTypes.INVITE_USER_MODAL_HIDE:
+      case ActionTypes.ATTACHMENT_MODAL_HIDE:
+        return this.getInitialState();
 
       default:
         return state;
