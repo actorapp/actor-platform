@@ -202,7 +202,7 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
 
   private def isArchived(peer: Peer): Boolean = state.archived.contains(SortableDialog(Instant.MIN, peer))
 
-  private def isFavourited(peer: Peer): Boolean = state.active.get(DialogGroupType.Favourites).exists(_.contains(SortableDialog(Instant.MIN, peer)))
+  private def isFavourited(peer: Peer): Boolean = state.active.favourites.contains(SortableDialog(Instant.MIN, peer))
 
   private def dialogShown(peer: Peer): Boolean = state.activePeers.contains(SortableDialog(Instant.MIN, peer))
 
@@ -224,14 +224,19 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
   }
 
   protected def fetchDialogGroups(): Future[Seq[DialogGroup]] = {
-    val infosFutures =
-      state.active map {
-        case (group, sortableDialogs) ⇒
-          FutureExt.ftraverse(sortableDialogs.toSeq)(sd ⇒ getInfo(sd.peer))
-            .map(infos ⇒ DialogGroup(group, infos.map(_.getInfo)))
-      }
+    for {
+      favInfos ← Future.sequence(state.active.favourites map (sd ⇒ getInfo(sd.peer) map (_.getInfo)))
+      groupInfos ← Future.sequence(state.active.groups map (sd ⇒ getInfo(sd.peer) map (_.getInfo)))
+      dmInfos ← Future.sequence(state.active.dms map (sd ⇒ getInfo(sd.peer) map (_.getInfo)))
+    } yield {
+      val base = List(
+        DialogGroup(DialogGroupType.Groups, groupInfos.toSeq),
+        DialogGroup(DialogGroupType.DirectMessages, dmInfos.toSeq)
+      )
 
-    Future.sequence(infosFutures) map (_.toSeq)
+      if (favInfos.nonEmpty) DialogGroup(DialogGroupType.Favourites, favInfos.toSeq) :: base
+      else base
+    }
   }
 
   private def sendChatGroupsChanged(ignoreAuthSid: Option[Int] = None): Future[SeqState] = {
