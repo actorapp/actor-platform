@@ -16,6 +16,7 @@ trait DialogProcessorMigration extends Processor[DialogState] {
   import context.dispatcher
 
   private case class PersistEvents(events: List[Event])
+  private case object EventsPersisted
 
   private var needMigrate = true
 
@@ -64,15 +65,15 @@ trait DialogProcessorMigration extends Processor[DialogState] {
       )) pipeTo self
     case PersistEvents(events) ⇒
       log.warning("Persisting events")
-      persistAll(events)(_ ⇒ ())
+      persistAll(events)(e ⇒ commit(e))
 
       deferAsync(()) { _ ⇒
-        log.warning("Persisted events, commiting")
-        events foreach (e ⇒ commit(e))
         log.warning("Migration completed")
-        unstashAll()
-        context become receiveCommand
+        self ! EventsPersisted
       }
+    case EventsPersisted ⇒
+      unstashAll()
+      context become receiveCommand
     case Status.Failure(e) ⇒
       log.error(e, "Failed to migrate")
       throw e
