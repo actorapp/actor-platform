@@ -200,11 +200,11 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
     }
   }
 
-  private def isArchived(peer: Peer): Boolean = state.archived.contains(SortableDialog(Instant.MIN, peer))
+  private def isArchived(peer: Peer): Boolean = state.archived.exists(_.peer == peer)
 
-  private def isFavourited(peer: Peer): Boolean = state.active.favourites.contains(SortableDialog(Instant.MIN, peer))
+  private def isFavourited(peer: Peer): Boolean = state.active.favourites.exists(_.peer == peer)
 
-  private def dialogShown(peer: Peer): Boolean = state.activePeers.contains(SortableDialog(Instant.MIN, peer))
+  private def dialogShown(peer: Peer): Boolean = state.activePeers.exists(_.peer == peer)
 
   protected def dialogRef(dc: DirectDialogCommand): ActorRef = {
     val peer = dc.getDest match {
