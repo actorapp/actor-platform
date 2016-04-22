@@ -52,7 +52,7 @@ public abstract class DisplayListFragment<T extends BserObject & ListEngineItem,
         collection.setAdapter(adapter);
 
         if (onScrollListener != null) {
-            collection.addOnScrollListener(onScrollListener);
+            collection.setOnScrollListener(onScrollListener);
         }
 
 //        if (emptyCollection != null) {
