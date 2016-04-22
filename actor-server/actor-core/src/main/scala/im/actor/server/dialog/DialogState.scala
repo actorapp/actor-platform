@@ -64,9 +64,9 @@ private[dialog] final case class DialogState(
         )
       } else this.copy(lastMessageDate = date)
     case MessagesRead(date, readerUserId) if readerUserId == userId ⇒
-      val readMessages = unreadMessages.takeWhile(um ⇒ um.date.isBefore(date) || um.date == date)
-      val newUnreadMessages = unreadMessages -- readMessages
-      val newUnreadMessagesMap = unreadMessagesMap -- readMessages.map(_.randomId)
+      val readMessages = unreadMessages.takeWhile(um ⇒ um.date.isBefore(date) || um.date == date).map(_.randomId)
+      val newUnreadMessages = unreadMessages.dropWhile(um => readMessages.contains(um.randomId))
+      val newUnreadMessagesMap = unreadMessagesMap -- readMessages
 
       this.copy(
         counter = newUnreadMessages.size,
