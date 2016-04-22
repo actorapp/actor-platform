@@ -10,10 +10,7 @@ import classnames from 'classnames';
 class TextField extends Component {
   static propTypes = {
     className: PropTypes.string,
-    floatingLabel: PropTypes.oneOfType([
-      PropTypes.node,
-      PropTypes.string
-    ]),
+    floatingLabel: PropTypes.node,
     type: PropTypes.string,
     value: PropTypes.string,
     ref: PropTypes.string,
