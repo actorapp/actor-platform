@@ -4,7 +4,7 @@ import java.time.Instant
 
 import akka.persistence.SnapshotMetadata
 import im.actor.server.cqrs.{ Event, ProcessorState, TaggedEvent }
-import im.actor.server.model.{ Peer, PeerType }
+import im.actor.server.model.{ Peer, PeerErrors, PeerType }
 
 import scala.collection.SortedSet
 
@@ -38,19 +38,62 @@ private object SortableDialog {
 
 private case class SortableDialog(ts: Instant, peer: Peer)
 
+private object ActiveDialogs {
+  val empty = ActiveDialogs(
+    SortedSet.empty(SortableDialog.OrderingAsc),
+    SortedSet.empty(SortableDialog.OrderingAsc),
+    SortedSet.empty(SortableDialog.OrderingAsc)
+  )
+}
+
+private[dialog] case class ActiveDialogs(
+  favourites: SortedSet[SortableDialog],
+  groups:     SortedSet[SortableDialog],
+  dms:        SortedSet[SortableDialog]
+) {
+  def withPeer(sd: SortableDialog) = {
+    sd.peer.typ match {
+      case PeerType.Private ⇒ copy(dms = dms + sd)
+      case PeerType.Group   ⇒ copy(groups = groups + sd)
+      case unknown          ⇒ throw new PeerErrors.UnknownPeerType(unknown)
+    }
+  }
+
+  def withoutPeer(sd: SortableDialog) = {
+    sd.peer.typ match {
+      case PeerType.Private ⇒ copy(dms = dms - sd, favourites = favourites - sd)
+      case PeerType.Group   ⇒ copy(groups = groups - sd, favourites = favourites - sd)
+      case unknown          ⇒ throw PeerErrors.UnknownPeerType(unknown)
+    }
+  }
+
+  def withFavouritedPeer(sd: SortableDialog) = {
+    sd.peer.typ match {
+      case PeerType.Private ⇒ copy(dms = dms - sd, favourites = favourites + sd)
+      case PeerType.Group   ⇒ copy(groups = groups - sd, favourites = favourites + sd)
+      case unknown          ⇒ throw PeerErrors.UnknownPeerType(unknown)
+    }
+  }
+
+  def withUnfavouritedPeer(sd: SortableDialog) = {
+    sd.peer.typ match {
+      case PeerType.Private ⇒ copy(dms = dms + sd, favourites = favourites - sd)
+      case PeerType.Group   ⇒ copy(groups = groups + sd, favourites = favourites - sd)
+      case unknown          ⇒ throw PeerErrors.UnknownPeerType(unknown)
+    }
+  }
+}
+
 private object DialogRootState {
   val initial = DialogRootState(
-    active = Map(
-      DialogGroupType.Groups → SortedSet.empty(SortableDialog.OrderingAsc),
-      DialogGroupType.DirectMessages → SortedSet.empty(SortableDialog.OrderingAsc)
-    ),
+    active = ActiveDialogs.empty,
     activePeers = SortedSet.empty(SortableDialog.OrderingAsc),
     archived = SortedSet.empty(SortableDialog.OrderingDesc)
   )
 }
 
 private[dialog] final case class DialogRootState(
-  active:      Map[DialogGroupType, SortedSet[SortableDialog]],
+  active:      ActiveDialogs,
   activePeers: SortedSet[SortableDialog],
   archived:    SortedSet[SortableDialog]
 ) extends ProcessorState[DialogRootState] {
@@ -82,16 +125,27 @@ private[dialog] final case class DialogRootState(
     }
   }
 
-  override lazy val snapshot: Any = DialogRootStateSnapshot(
-    dialogGroups = active.toSeq map {
-    case (typ, sortableDialogs) ⇒
-      DialogGroup(
-        typ,
-        sortableDialogs.toSeq map (sd ⇒ DialogInfo(Some(sd.peer), date = sd.ts))
-      )
-  },
-    archived = archived.toSeq map { sd ⇒ DialogInfo(Some(sd.peer), date = sd.ts) }
-  )
+  override lazy val snapshot: Any = {
+    val favourites = DialogGroup(
+      DialogGroupType.Favourites,
+      active.favourites.toSeq map (sd ⇒ DialogInfo(Some(sd.peer), date = sd.ts))
+    )
+
+    val groups = DialogGroup(
+      DialogGroupType.Groups,
+      active.groups.toSeq map (sd ⇒ DialogInfo(Some(sd.peer), date = sd.ts))
+    )
+
+    val dms = DialogGroup(
+      DialogGroupType.DirectMessages,
+      active.dms.toSeq map (sd ⇒ DialogInfo(Some(sd.peer), date = sd.ts))
+    )
+
+    DialogRootStateSnapshot(
+      dialogGroups = Seq(favourites, groups, dms),
+      archived = archived.toSeq map { sd ⇒ DialogInfo(Some(sd.peer), date = sd.ts) }
+    )
+  }
 
   private def withShownPeer(ts: Instant, peer: Peer): DialogRootState = {
     val sortableDialog = SortableDialog(ts, peer)
@@ -100,7 +154,7 @@ private[dialog] final case class DialogRootState(
     else
       copy(
         activePeers = this.activePeers + sortableDialog,
-        active = this.active + dialogGroup(sortableDialog),
+        active = this.active.withPeer(sortableDialog),
         archived = this.archived - sortableDialog
       )
   }
@@ -112,7 +166,7 @@ private[dialog] final case class DialogRootState(
     else
       copy(
         activePeers = this.activePeers - sortableDialog,
-        active = this.active mapValues (_ - sortableDialog),
+        active = this.active.withoutPeer(sortableDialog),
         archived = this.archived + sortableDialog
       )
   }
@@ -124,7 +178,7 @@ private[dialog] final case class DialogRootState(
     else
       copy(
         activePeers = this.activePeers + sortableDialog,
-        active = this.active.mapValues(_.filterNot(_.peer == peer)) + dialogGroup(sortableDialog, isFavourite = true),
+        active = this.active.withFavouritedPeer(sortableDialog),
         archived = this.archived - sortableDialog
       )
   }
@@ -133,36 +187,21 @@ private[dialog] final case class DialogRootState(
     val sortableDialog = SortableDialog(ts, peer)
 
     copy(
-      active =
-        (this.active.mapValues(_.filterNot(_.peer == peer)) + dialogGroup(sortableDialog)).filter {
-          case (DialogGroupType.Favourites, peers) if peers.isEmpty ⇒ false
-          case _ ⇒ true
-        }
+      active = this.active.withUnfavouritedPeer(sortableDialog)
     )
   }
 
   private def withDialogsInGroup(group: DialogGroupType, sortableDialogs: Seq[SortableDialog]) = {
-    val activeBase =
-      if (this.active.contains(group)) this.active
-      else this.active + (group → SortedSet.empty(SortableDialog.OrderingAsc))
-
-    copy(
-      active = activeBase map {
-      case (`group`, dialogs) ⇒ (group, dialogs ++ sortableDialogs)
-      case other              ⇒ other
-    },
-      activePeers = this.activePeers ++ sortableDialogs
-    )
-  }
-
-  private def dialogGroup(sortableDialog: SortableDialog, isFavourite: Boolean = false) = {
-    val group = (isFavourite, sortableDialog.peer.typ) match {
-      case (true, _)                 ⇒ DialogGroupType.Favourites
-      case (false, PeerType.Private) ⇒ DialogGroupType.DirectMessages
-      case (false, PeerType.Group)   ⇒ DialogGroupType.Groups
-      case _                         ⇒ throw new RuntimeException("Unknown peer type")
+    val newActive = group match {
+      case DialogGroupType.Favourites     ⇒ active.copy(favourites = active.favourites ++ sortableDialogs)
+      case DialogGroupType.Groups         ⇒ active.copy(groups = active.groups ++ sortableDialogs)
+      case DialogGroupType.DirectMessages ⇒ active.copy(dms = active.dms ++ sortableDialogs)
+      case unknown                        ⇒ throw DialogErrors.UnknownDialogGroupType(unknown)
     }
 
-    group → (this.active.getOrElse(group, SortedSet.empty(SortableDialog.OrderingAsc)) + sortableDialog)
+    copy(
+      active = newActive,
+      activePeers = this.activePeers ++ sortableDialogs
+    )
   }
 }
