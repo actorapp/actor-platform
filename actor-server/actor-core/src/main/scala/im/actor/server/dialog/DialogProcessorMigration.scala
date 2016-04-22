@@ -38,8 +38,10 @@ trait DialogProcessorMigration extends Processor[DialogState] {
 
   private def migrating: Receive = {
     case d: DialogObsolete ⇒
+      log.warning("Finding messages")
       (for {
         models ← db.run(HistoryMessageRepo.findAfter(userId, peer, d.ownerLastReadAt, Long.MaxValue))
+        _ = log.warning("Found {} messages", models.size)
         newMessages = models map { m ⇒
           NewMessage(
             randomId = m.randomId,
@@ -54,8 +56,11 @@ trait DialogProcessorMigration extends Processor[DialogState] {
           MessagesRead(Instant.ofEpochMilli(d.lastReadAt.getMillis))
       )) pipeTo self
     case PersistEvents(events) ⇒
+      log.warning("Persisting events")
       persistAll(events) { _ ⇒
+        log.warning("Persisted events, commiting")
         events foreach (e => commit(e))
+        log.warning("Migration completed")
         unstashAll()
         context become receiveCommand
       }
@@ -68,6 +73,7 @@ trait DialogProcessorMigration extends Processor[DialogState] {
   }
 
   private def migrate(): Unit = {
+    log.warning("Starting migration")
     context become migrating
     (db.run(DialogRepo.findDialog(userId, peer)) map {
       case Some(model) ⇒ model
