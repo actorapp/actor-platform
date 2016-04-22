@@ -1,17 +1,15 @@
-.modal__content {
-  .confirm {
-    max-width: 360px;
-    .modal__header {
-      height: auto;
+.confirm {
+  max-width: 360px;
+  .modal__header {
+    height: auto;
 
-      box-shadow: none;
-    }
-    .modal__footer {
-      padding-top: 0;
-      .button {
-        min-width: 80px;
-        margin-left: 4px;
-      }
+    box-shadow: none;
+  }
+  .modal__footer {
+    padding-top: 0;
+    .button {
+      min-width: 80px;
+      margin-left: 4px;
     }
   }
 }

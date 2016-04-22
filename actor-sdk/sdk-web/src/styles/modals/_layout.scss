@@ -39,4 +39,17 @@
       padding: $modal-padding;
     }
   }
+  &--without-scroll {
+    display: flex;
+    overflow: hidden;
+
+    margin-bottom: 0;
+
+    .modal__content {
+      display: flex;
+      overflow: hidden;
+
+      max-height: 100%;
+    }
+  }
 }

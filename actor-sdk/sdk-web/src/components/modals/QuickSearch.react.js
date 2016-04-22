@@ -216,8 +216,9 @@ class QuickSearch extends Component {
     const { intl } = this.context;
 
     return (
-      <div className="input">
+      <div className="large-search">
         <input
+          className="input"
           type="text"
           placeholder={intl.messages['modal.quickSearch.placeholder']}
           onChange={this.handleSearch}
@@ -235,14 +236,17 @@ class QuickSearch extends Component {
         onRequestClose={this.handleClose}
         isOpen>
 
-        <div className="modal__content">
-          <div className="quick-search">
+        <div className="quick-search">
+          <div className="modal__content">
+
             {this.renderHeader()}
+
             {this.renderSearchInput()}
 
-            <ul className="results" style={{height: RESULT_ITEM_HEIGHT * 8}} ref="results">
+            <ul className="results" ref="results">
               {this.renderResults()}
             </ul>
+
           </div>
         </div>
 

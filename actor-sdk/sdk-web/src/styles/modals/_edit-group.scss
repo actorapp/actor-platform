@@ -1,26 +1,30 @@
-.modal__content {
-  .edit-group {
-    width: 440px;
+.edit-group {
+  width: 440px;
 
-    .modal__body {
-      padding: 24px;
+  .modal__body {
+    padding: 24px;
+  }
+
+  .picture-changer {
+    margin-left: 32px;
+  }
+
+  .about {
+    margin-top: $modal-padding;
+    label {
+      font-size: 12px;
+
+      display: inline-block;
+
+      margin-bottom: 8px;
+
+      color: $dark-sky-blue;
     }
+  }
 
-    .picture-changer {
-      margin-left: 32px;
-    }
-
-    .about {
-      margin-top: $modal-padding;
-      label {
-        font-size: 12px;
-
-        display: inline-block;
-
-        margin-bottom: 8px;
-
-        color: $dark-sky-blue;
-      }
+  .input__material {
+    input {
+      color: rgb(77, 77, 77);
     }
   }
 }

@@ -29,8 +29,9 @@ class CreateGroup extends Component {
         onRequestClose={this.handleClose}
         isOpen>
 
-        <div className="modal__content">
-          <div className="create-group">
+        <div className="create-group">
+          <div className="modal__content">
+
             <header className="modal__header">
               <FormattedMessage id="modal.createGroup.title" tagName="h1"/>
               <a className="modal__header__close material-icons"
@@ -38,6 +39,7 @@ class CreateGroup extends Component {
             </header>
 
             <CreateGroupForm/>
+
           </div>
         </div>
 

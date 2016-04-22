@@ -1,34 +1,39 @@
-.modal__content {
-  .profile {
-    .nick,
-    .phone,
-    .mail,
-    .about {
-      padding-top: $modal-padding;
+.profile {
+  width: 600px;
+  .nick,
+  .phone,
+  .mail,
+  .about {
+    padding-top: $modal-padding;
+  }
+
+  .input__material {
+    input {
+      color: rgb(77, 77, 77);
+    }
+  }
+
+  .about {
+    label {
+      font-size: 13px;
+
+      color: $dark-sky-blue;
     }
 
-    .about {
-      label {
-        font-size: 13px;
+    textarea {
+      font-size: 16px;
+      line-height: 20px;
 
-        color: $dark-sky-blue;
-      }
-
-      textarea {
-        font-size: 16px;
-        line-height: 20px;
-
-        height: 80px;
-        margin-top: 4px;
-        padding: 8px 6px;
-      }
+      height: 80px;
+      margin-top: 4px;
+      padding: 8px 6px;
     }
+  }
 
-    .modal__footer {
-      text-align: right;
-      .button {
-        margin-left: 8px;
-      }
+  .modal__footer {
+    text-align: right;
+    .button {
+      margin-left: 8px;
     }
   }
 }

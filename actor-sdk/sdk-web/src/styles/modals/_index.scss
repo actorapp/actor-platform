@@ -4,12 +4,16 @@
 
 @import 'layout';
 @import 'modal';
-@import 'close-button';
-@import 'picture-changer';
+@import 'common/close-button';
+@import 'common/picture-changer';
+@import 'common/large-search';
+@import 'common/small-search';
+@import 'common/result-list';
 
 @import 'profile';
 @import 'crop';
-// @import "groups";
+@import "groups";
+@import 'people';
 
 @import 'create-group';
 @import 'edit-group';

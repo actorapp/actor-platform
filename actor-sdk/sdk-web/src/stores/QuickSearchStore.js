@@ -15,8 +15,6 @@ class QuickSearchStore extends ReduceStore {
 
   reduce(state, action) {
     switch (action.type) {
-      case ActionTypes.QUICK_SEARCH_HIDE:
-        return this.getInitialState();
       case ActionTypes.QUICK_SEARCH_CHANGED:
         return {
           ...state,

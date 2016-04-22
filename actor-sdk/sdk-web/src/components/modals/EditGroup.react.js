@@ -109,8 +109,9 @@ class EditGroup extends Component {
         onRequestClose={this.handleClose}
         isOpen>
 
-        <div className="modal__content">
-          <div className="edit-group">
+        <div className="edit-group">
+          <div className="modal__content">
+
             <header className="modal__header">
               <i className="modal__header__icon material-icons">edit</i>
               <FormattedMessage id="modal.group.title" tagName="h1"/>
@@ -120,7 +121,6 @@ class EditGroup extends Component {
             </header>
 
             <div className="modal__body row">
-
               <div className="col-xs">
                 {this.renderTitle()}
                 {this.renderAbout()}
@@ -131,10 +131,11 @@ class EditGroup extends Component {
                 fromModal={ModalTypes.EDIT_GROUP}
                 onRemove={this.handleRemoveGroupPicture}
                 onChange={this.handleChangeGroupAvatar}/>
-
             </div>
+
           </div>
         </div>
+
       </Modal>
     );
   }

@@ -321,8 +321,9 @@ class PreferencesModal extends Component {
         onRequestClose={this.handleClose}
         isOpen>
 
-        <div className="modal__content">
-          <div className="preferences">
+        <div className="preferences">
+          <div className="modal__content">
+
             <header className="modal__header">
               <i className="modal__header__icon material-icons">settings</i>
               <FormattedMessage id="preferences.title" tagName="h1"/>
@@ -337,8 +338,10 @@ class PreferencesModal extends Component {
                 {this.renderCurrentTab()}
               </div>
             </div>
+
           </div>
         </div>
+
       </Modal>
     );
   }

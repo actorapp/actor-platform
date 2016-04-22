@@ -1,178 +1,180 @@
-.modal__content {
-  .preferences {
-    width: 760px;
-    .modal__body {
-      margin-top: 1px;
-      display: flex;
-      flex-direction: row;
+.preferences {
+  width: 760px;
+  .modal__body {
+    display: flex;
+    flex-direction: row;
 
-      height: 440px;
-      padding: 0;
+    height: 440px;
+    margin-top: 1px;
+    padding: 0;
 
-      background-color: $pale-grey;
+    background-color: $pale-grey;
 
-      flex: 1;
-    }
+    flex: 1;
+  }
 
-    &__tabs {
-      position: relative;
+  &__tabs {
+    position: relative;
+
+    display: block;
+
+    width: 200px;
+    height: 100%;
+    &__tab {
+      font-size: 15px;
+      line-height: 20px;
 
       display: block;
 
-      width: 200px;
-      height: 100%;
-      &__tab {
-        font-size: 15px;
-        line-height: 20px;
+      padding: 10px 16px;
 
-        display: block;
+      cursor: pointer;
 
-        padding: 10px 16px;
-
-        cursor: pointer;
-
-        color: $greyish-brown;
-        &--active {
-          color: white;
-          background-color: $dark-sky-blue2;
-        }
+      color: $greyish-brown;
+      &--active {
+        color: white;
+        background-color: $dark-sky-blue2;
       }
+    }
 
-      &__footer {
-        position: absolute;
-        right: 0;
-        bottom: 0;
-        left: 0;
+    &__footer {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
 
-        padding: 10px 16px;
-        span {
-          font-size: 12px;
+      padding: 10px 16px;
+      span {
+        font-size: 12px;
 
-          cursor: default;
+        cursor: default;
 
-          color: rgba(black, .4);
+        color: rgba(black, .4);
 
-          @include no-select();
-        }
+        @include no-select();
       }
+    }
 
-      &__content {
-        width: 100%;
-        ul {
-          margin: 0;
-          padding: 0;
+    &__content {
+      width: 100%;
+      ul {
+        margin: 0;
+        padding: 0;
 
-          list-style: none;
-          li {
-            font-size: 15px;
-            line-height: 24px;
-
-            position: relative;
-
-            padding: 32px 32px 32px 0;
-
-            border-bottom: 1px solid rgba(black, .12);
-            .icon {
-              line-height: 24px;
-
-              position: absolute;
-              top: 32px;
-              left: -52px;
-
-              color: rgba(black, .4);
-            }
-            .hint {
-              font-size: 13px;
-              line-height: 18px;
-
-              margin: 0;
-              padding-left: 32px;
-
-              color: rgba(black, .3);
-            }
-            &:last-child {
-              border-bottom: none;
-            }
-          }
-        }
-        h4 {
-          font-size: 13px;
-          font-weight: 500;
+        list-style: none;
+        li {
+          font-size: 15px;
           line-height: 24px;
 
-          display: inline-block;
+          position: relative;
 
-          margin-top: 0;
+          padding: 32px 32px 32px 0;
 
-          text-transform: uppercase;
-
-          color: rgba(black, .4);
-        }
-        .radio {
-          margin-bottom: 8px;
-          b {
-            font-weight: 500;
-          }
-          &:last-child {
-            margin-bottom: 0;
-          }
-        }
-        .checkbox {
-          margin-bottom: 8px;
-        }
-        .session-list {
-          margin: 0;
-          padding: 0;
-
-          list-style: none;
-          a {
-            cursor: pointer;
-          }
-          &__session {
+          border-bottom: 1px solid rgba(black, .12);
+          .icon {
             line-height: 24px;
 
-            position: relative;
+            position: absolute;
+            top: 32px;
+            left: -52px;
 
-            margin-right: -32px;
-            margin-bottom: 8px;
-            padding: 0 32px 8px 0;
-            &__terminate {
-              position: absolute;
-              top: 14px;
-              right: 32px;
-            }
-            .title {
-              small {
-                font-style: italic;
+            color: rgba(black, .4);
+          }
+          .hint {
+            font-size: 13px;
+            line-height: 18px;
 
-                margin-left: 6px;
-              }
-            }
+            margin: 0;
+            padding-left: 32px;
+
+            color: rgba(black, .3);
+          }
+          &:last-child {
+            border-bottom: none;
+          }
+        }
+      }
+      h4 {
+        font-size: 13px;
+        font-weight: 500;
+        line-height: 24px;
+
+        display: inline-block;
+
+        margin-top: 0;
+
+        text-transform: uppercase;
+
+        color: rgba(black, .4);
+      }
+      .radio {
+        margin-bottom: 8px;
+        b {
+          font-weight: 500;
+        }
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+      .checkbox {
+        margin-bottom: 8px;
+      }
+      .session-list {
+        margin: 0;
+        padding: 0;
+
+        list-style: none;
+        a {
+          cursor: pointer;
+        }
+        &__session {
+          line-height: 24px;
+
+          position: relative;
+
+          margin-right: -32px;
+          margin-bottom: 8px;
+          padding: 0 32px 8px 0;
+          &__terminate {
+            position: absolute;
+            top: 14px;
+            right: 32px;
+          }
+          .title {
             small {
-              font-size: 13px;
+              font-style: italic;
 
-              color: rgba(0, 0, 0, .3);
-              b {
-                font-weight: 400;
+              margin-left: 6px;
+            }
+          }
+          small {
+            font-size: 13px;
 
-                color: rgba(0, 0, 0, .5);
-              }
+            color: rgba(0, 0, 0, .3);
+            b {
+              font-weight: 400;
+
+              color: rgba(0, 0, 0, .5);
             }
           }
         }
       }
     }
+  }
 
-    &__body {
-      display: flex;
-      overflow-x: hidden;
-      overflow-y: auto;
+  &__body {
+    position: relative;
+    z-index: 5;
 
-      padding: 0 0 0 80px;
+    display: flex;
+    overflow-x: hidden;
+    overflow-y: auto;
 
-      background-color: white;
+    padding: 0 0 0 80px;
 
-      flex: 1;
-    }
+    background-color: white;
+    box-shadow: -2px 0 5px -2px rgba(black, .1);
+
+    flex: 1;
   }
 }

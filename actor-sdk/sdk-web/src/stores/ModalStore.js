@@ -45,6 +45,14 @@ class ModalStore extends ReduceStore {
       case ActionTypes.GROUP_LIST_HIDE:
         return this.getInitialState();
 
+      case ActionTypes.CONTACT_LIST_SHOW:
+        return {
+          ...state,
+          currentModal: ModalTypes.PEOPLE_LIST
+        }
+      case ActionTypes.CONTACT_LIST_HIDE:
+        return this.getInitialState();
+
       case ActionTypes.CONTACT_ADD_MODAL_SHOW:
         return {
           ...state,
@@ -105,6 +113,7 @@ class ModalStore extends ReduceStore {
           prevModal: null,
           currentModal: state.prevModal
         }
+
 
 
       default:
