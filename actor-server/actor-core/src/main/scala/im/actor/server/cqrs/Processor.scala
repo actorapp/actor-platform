@@ -32,16 +32,18 @@ trait PersistenceDebug extends PersistentActor with ActorLogging with AlertingAc
 }
 
 trait IncrementalSnapshots[S <: ProcessorState[S]] extends ProcessorStateControl[S] with PersistenceDebug {
-  private var _commitsNum = 0
-
   val SnapshotCommitsThreshold = 100
+
+  private var _commitsNum = 0
+  private var _savingSequenceNr = 0L
 
   override protected def afterCommit(e: Event): Unit = {
     super.afterCommit(e)
     _commitsNum += 1
-    if (_commitsNum == SnapshotCommitsThreshold) {
+    if (_commitsNum >= SnapshotCommitsThreshold && _savingSequenceNr != snapshotSequenceNr) {
       log.debug("Saving snapshot due to threshold hit")
       _commitsNum = 0
+      _savingSequenceNr = snapshotSequenceNr
       saveSnapshot(state.snapshot)
     }
   }
