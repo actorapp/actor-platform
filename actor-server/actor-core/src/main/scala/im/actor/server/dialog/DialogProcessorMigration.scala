@@ -63,7 +63,9 @@ trait DialogProcessorMigration extends Processor[DialogState] {
       )) pipeTo self
     case PersistEvents(events) ⇒
       log.warning("Persisting events")
-      persistAll(events) { _ ⇒
+      persistAll(events)(_ => ())
+
+      deferAsync(()) { _ ⇒
         log.warning("Persisted events, commiting")
         events foreach (e => commit(e))
         log.warning("Migration completed")
