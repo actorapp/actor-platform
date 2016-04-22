@@ -20,9 +20,12 @@ trait DialogRootMigration extends Processor[DialogRootState] {
   private val db = DbExtension(context.system).db
   private var needMigrate = true
 
-  override def afterCommit(e: Event): Unit = e match {
-    case Initialized(_) ⇒ needMigrate = false
-    case _              ⇒
+  override def afterCommit(e: Event): Unit = {
+    super.afterCommit(e)
+    e match {
+      case Initialized(_) ⇒ needMigrate = false
+      case _              ⇒
+    }
   }
 
   override protected def onRecoveryCompleted(): Unit = {
