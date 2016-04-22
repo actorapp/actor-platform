@@ -46,8 +46,7 @@ object Dependencies {
 
     val betterFiles             = "com.github.pathikrit"          %% "better-files"                  % "2.13.0"
 
-    val concmap                 = "com.googlecode.concurrentlinkedhashmap" % "concurrentlinkedhashmap-lru" % "1.4.2"
-    val caffeine                = "com.github.ben-manes.caffeine" %  "caffeine"                      % "1.2.0"
+    val caffeine                = "com.github.ben-manes.caffeine" %  "caffeine"                      % "2.2.7"
 
     val cats                    = "org.spire-math"                %% "cats"                          % V.cats
 
@@ -206,7 +205,7 @@ object Dependencies {
 
   val sdk = Seq.empty
 
-  val runtime = shared ++ Seq(akkaActor, actorConcurrent, akkaHttp, akkaSlf4j, akkaStream, akkaPersistenceJdbc, apacheCommonsCodec, caffeine, cats, concmap, jodaConvert, jodaTime, icu4j, libPhoneNumber, scalapbSer, akkaTestkit % "test", scalatest % "test")
+  val runtime = shared ++ Seq(akkaActor, actorConcurrent, akkaHttp, akkaSlf4j, akkaStream, akkaPersistenceJdbc, apacheCommonsCodec, caffeine, cats, jodaConvert, jodaTime, icu4j, libPhoneNumber, scalapbSer, akkaTestkit % "test", scalatest % "test")
 
   val voximplant = shared ++ Seq(akkaActor, dispatch, playJson)
 
