@@ -71,7 +71,7 @@ public class ReceiverActor extends Actor {
         if (message instanceof ProtoMessage) {
             onReceive((ProtoMessage) message);
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 

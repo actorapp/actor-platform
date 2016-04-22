@@ -108,7 +108,7 @@ public abstract class CursorActor extends ModuleActor {
             OnCompleted completed = (OnCompleted) message;
             onMoved(completed.getPeer(), completed.getDate());
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 

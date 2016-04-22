@@ -93,7 +93,7 @@ public class ArchivedDialogsActor extends ModuleActor {
         if (message instanceof LoadMore) {
             onLoadMore(((LoadMore) message).isInit(), ((LoadMore) message).getCallback());
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 

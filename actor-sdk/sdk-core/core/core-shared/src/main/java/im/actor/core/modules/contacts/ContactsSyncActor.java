@@ -302,7 +302,7 @@ public class ContactsSyncActor extends ModuleActor {
         } else if (message instanceof PerformSync) {
             performSync();
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 

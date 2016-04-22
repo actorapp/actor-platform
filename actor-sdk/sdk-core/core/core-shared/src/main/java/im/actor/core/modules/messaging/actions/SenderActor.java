@@ -555,7 +555,7 @@ public class SenderActor extends ModuleActor {
             ForwardContent forwardContent = (ForwardContent) message;
             doForwardContent(forwardContent.getPeer(), forwardContent.getContent());
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 

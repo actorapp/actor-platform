@@ -331,7 +331,7 @@ public class UploadManager extends ModuleActor {
             ResumeUpload resumeUpload = (ResumeUpload) message;
             resumeUpload(resumeUpload.getRid());
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 

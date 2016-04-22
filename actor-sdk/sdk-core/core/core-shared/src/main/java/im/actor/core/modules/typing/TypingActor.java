@@ -161,7 +161,7 @@ public class TypingActor extends ModuleActor {
             StopGroupTyping typing = (StopGroupTyping) message;
             stopGroupTyping(typing.getGid(), typing.getUid());
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 

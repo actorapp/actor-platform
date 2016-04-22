@@ -256,7 +256,7 @@ public class BookImportActor extends ModuleActor {
         } else if (message instanceof PhoneBookLoaded) {
             onPhoneBookLoaded(((PhoneBookLoaded) message).getPhoneBook());
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 
