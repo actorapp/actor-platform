@@ -661,7 +661,7 @@ public class ApiBroker extends Actor {
             onKeyCreated(((AuthKeyActor.KeyCreated) message).getAuthKeyId(),
                     ((AuthKeyActor.KeyCreated) message).getAuthKey());
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 }

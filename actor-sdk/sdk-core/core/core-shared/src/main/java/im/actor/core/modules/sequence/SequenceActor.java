@@ -218,7 +218,7 @@ public class SequenceActor extends ModuleActor {
                 isValidated = true;
 
                 invalidate();
-            });
+            }).done(self());
         }
     }
 
@@ -379,7 +379,7 @@ public class SequenceActor extends ModuleActor {
             }
             onPushSeqReceived(((PushSeq) message).seq);
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 

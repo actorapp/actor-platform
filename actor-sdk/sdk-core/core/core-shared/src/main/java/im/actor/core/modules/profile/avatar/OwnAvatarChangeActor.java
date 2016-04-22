@@ -135,7 +135,7 @@ public class OwnAvatarChangeActor extends ModuleActor {
         } else if (message instanceof AvatarChanged) {
             avatarChanged(((AvatarChanged) message).getRid());
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 
