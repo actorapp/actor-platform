@@ -190,6 +190,13 @@ export default {
         },
         delete: 'Удалить эту группу?',
         kick: 'Исключить этого пользователя?'
+      },
+      blockedUsers: {
+        title: 'Заблокированные пользователи',
+        notExists: 'Вы никого не заблокировали.',
+        notFound: 'Извините, ничего не найдено',
+        search: 'Поиск по именам и никнеймам',
+        unblock: 'Помиловать'
       }
     },
 
@@ -228,12 +235,6 @@ export default {
     'integrationToken': 'Интеграция',
     'integrationTokenHint': 'Вы можете использовать этот токен для настройки интеграции с вашими собственными системами.',
     'integrationTokenHelp': 'Узнайте, как пользоваться токенами',
-
-    'blockedUsersTitle': 'Заблокированные пользователи',
-    'blockedUsersNotExists': 'Вы никого не заблокировали.',
-    'blockedUsersNotFound': 'Извините, ничего не найдено',
-    'blockedUsersSearch': 'Поиск по именам и никнеймам',
-    'blockedUsersUnblock': 'Помиловать',
 
     // Sidebar
     'sidebar': {

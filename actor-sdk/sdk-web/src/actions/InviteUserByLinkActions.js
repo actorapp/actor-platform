@@ -22,6 +22,6 @@ export default {
 
   hide() {
     dispatch(ActionTypes.INVITE_USER_BY_LINK_MODAL_HIDE);
-    ComposeActionCreators.toggleAutoFocus(true);
+    // ComposeActionCreators.toggleAutoFocus(true);
   }
 };
