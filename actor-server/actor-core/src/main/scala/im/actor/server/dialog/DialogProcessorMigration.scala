@@ -5,9 +5,9 @@ import java.time.Instant
 import akka.actor.Status
 import akka.pattern.pipe
 import akka.persistence.SnapshotMetadata
-import im.actor.server.cqrs.{Event, Processor}
+import im.actor.server.cqrs.{ Event, Processor }
 import im.actor.server.db.DbExtension
-import im.actor.server.model.{DialogObsolete, Peer}
+import im.actor.server.model.{ DialogObsolete, Peer }
 import im.actor.server.persist.HistoryMessageRepo
 import im.actor.server.persist.dialog.DialogRepo
 
@@ -46,15 +46,16 @@ trait DialogProcessorMigration extends Processor[DialogState] {
     case d: DialogObsolete ⇒
       log.warning("Finding messages")
       (for {
-        models ← db.run(HistoryMessageRepo.findAfter(userId, peer, d.ownerLastReadAt, Long.MaxValue))
-        _ = log.warning("Found {} messages", models.size)
-        newMessages = models map { m ⇒
-          NewMessage(
-            randomId = m.randomId,
-            date = Instant.ofEpochMilli(m.date.getMillis),
-            senderUserId = m.senderUserId,
-            messageHeader = m.messageContentHeader
-          )
+        metas ← db.run(HistoryMessageRepo.findMetaAfter(userId, peer, d.ownerLastReadAt, Long.MaxValue))
+        _ = log.warning("Found {} messages", metas.size)
+        newMessages = metas map {
+          case (randomId, date, senderUserId, header) ⇒
+            NewMessage(
+              randomId = randomId,
+              date = Instant.ofEpochMilli(date.getMillis),
+              senderUserId = senderUserId,
+              messageHeader = header
+            )
         }
       } yield PersistEvents(
         Initialized() +:
@@ -63,11 +64,11 @@ trait DialogProcessorMigration extends Processor[DialogState] {
       )) pipeTo self
     case PersistEvents(events) ⇒
       log.warning("Persisting events")
-      persistAll(events)(_ => ())
+      persistAll(events)(_ ⇒ ())
 
       deferAsync(()) { _ ⇒
         log.warning("Persisted events, commiting")
-        events foreach (e => commit(e))
+        events foreach (e ⇒ commit(e))
         log.warning("Migration completed")
         unstashAll()
         context become receiveCommand

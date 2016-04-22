@@ -62,7 +62,7 @@ private[dialog] final case class DialogRootState(
     case Unarchived(ts, Some(peer))   ⇒ withShownPeer(ts, peer)
     case Favourited(ts, Some(peer))   ⇒ withFavouritedPeer(ts, peer)
     case Unfavourited(ts, Some(peer)) ⇒ withUnfavouritedPeer(ts, peer)
-    case Initialized(_) => this
+    case Initialized(_)               ⇒ this
   }
 
   lazy val allPeers = activePeers ++ archived
