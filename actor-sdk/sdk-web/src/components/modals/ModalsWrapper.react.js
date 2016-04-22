@@ -19,7 +19,7 @@ import Preferences from './Preferences.react';
 import Invite from './Invite.react';
 import InviteByLink from './InviteByLink.react';
 import QuickSearch from './QuickSearch.react';
-// import Attachment from './Attachment.react';
+import Attachments from './Attachments.react';
 
 class ModalsWrapper extends Component {
   static getStores() {
@@ -57,8 +57,8 @@ class ModalsWrapper extends Component {
         return <InviteByLink/>;
       case ModalTypes.QUICK_SEARCH:
         return <QuickSearch/>;
-      // case ModalTypes.ATTACHMENT:
-      //   return <Attachment/>;
+      case ModalTypes.ATTACHMENTS:
+        return <Attachments/>;
 
       default:
         console.warn(`Unsupported modal type: ${currentModal}`);

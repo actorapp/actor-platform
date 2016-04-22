@@ -187,7 +187,8 @@ export default {
           'title': 'Are you sure you want to hide this conversation?',
           'body': 'User {name} isn\'t in your contact list.'
         },
-        delete: 'Delete this group?'
+        delete: 'Delete this group?',
+        kick: 'Kick this user?'
       }
     },
 
