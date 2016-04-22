@@ -1,0 +1,56 @@
+$peview-max-size: 170px;
+
+.attachment {
+  &__preview {
+    height: $peview-max-size;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .wrapper {
+      flex: 0 0 auto;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      display: flex;
+      max-width: 100%;
+      max-height: 100%;
+      img {
+        flex: 0 0 auto;
+        max-width: 100%;
+        max-height: 100%;
+        box-shadow: 0 1px 2px 0 rgba(black, .2);
+      }
+    }
+  }
+  &__meta {
+    margin-bottom: 8px;
+    &__title {
+      font-size: 14px;
+      line-height: 18px;
+
+      color: $greyish;
+    }
+    &__content {
+      line-height: 32px;
+
+      @include text-elipsis();
+    }
+  }
+  &__extra {
+    &__title {
+      font-size: 14px;
+      line-height: 18px;
+
+      color: $greyish;
+    }
+    &__switcher {
+      line-height: 32px;
+      .switch {
+        margin-top: 4px;
+      }
+      .switch-label {
+        cursor: pointer;
+      }
+    }
+  }
+}

@@ -2,7 +2,7 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import { dispatch } from '../dispatcher/ActorAppDispatcher';
+import { dispatch, dispatchAsync } from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
 import ActorClient from '../utils/ActorClient';
 
@@ -24,16 +24,18 @@ export default {
   },
 
   addContact(uid) {
-    ActorClient.addContact(uid);
-    dispatch(ActionTypes.CONTACT_ADD, { uid });
+    return dispatchAsync(ActorClient.addContact(uid), {
+      request: ActionTypes.CONTACT_ADD,
+      success: ActionTypes.CONTACT_ADD_SUCCESS,
+      failure: ActionTypes.CONTACT_ADD_ERROR
+    }, { uid });
   },
 
   removeContact(uid) {
-    ActorClient.removeContact(uid);
-    dispatch(ActionTypes.CONTACT_REMOVE, { uid });
-  },
-
-  search(query) {
-    dispatch(ActionTypes.CONTACT_LIST_SEARCH, { query })
+    return dispatchAsync(ActorClient.removeContact(uid), {
+      request: ActionTypes.CONTACT_REMOVE,
+      success: ActionTypes.CONTACT_REMOVE_SUCCESS,
+      failure: ActionTypes.CONTACT_REMOVE_ERROR
+    }, { uid });
   }
 };

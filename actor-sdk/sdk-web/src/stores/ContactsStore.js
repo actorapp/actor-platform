@@ -1,25 +1,5 @@
-/*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
- */
+import PeopleStore from './PeopleStore';
 
-import { ReduceStore } from 'flux/utils';
-import Dispatcher from '../dispatcher/ActorAppDispatcher';
-import { ActionTypes } from '../constants/ActorAppConstants';
-import ActorClient from '../utils/ActorClient';
+console.warn('use PeopleStore.js instead this.')
 
-class PeopleStore extends ReduceStore {
-  getInitialState() {
-    return [];
-  }
-
-  reduce(state, action) {
-    if (action.type === ActionTypes.CONTACT_LIST_CHANGED) {
-      const uid = ActorClient.getUid();
-      return action.contacts.filter((contact) => contact.uid !== uid);
-    }
-
-    return state;
-  }
-}
-
-export default new PeopleStore(Dispatcher);
+export default PeopleStore;

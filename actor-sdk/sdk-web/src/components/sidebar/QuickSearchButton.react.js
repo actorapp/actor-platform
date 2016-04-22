@@ -3,49 +3,72 @@
  */
 
 import React, { Component } from 'react';
-import { Container } from 'flux/utils';
 import { FormattedMessage } from 'react-intl';
+import EventListener from 'fbjs/lib/EventListener';
+import { KeyCodes } from '../../constants/ActorAppConstants';
 
 import QuickSearchActionCreators from '../../actions/QuickSearchActionCreators';
 
-import QuickSearchStore from '../../stores/QuickSearchStore';
-
-import QuickSearch from '../modals/QuickSearch.react';
 import Tooltip from 'rc-tooltip';
 
 class QuickSearchButton extends Component {
-  static getStores() {
-    return [QuickSearchStore]
+  constructor(props) {
+    super(props);
+
+    this.openQuickSearch = this.openQuickSearch.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
-  static calculateState() {
-    return {
-      isQuickSearchOpen: QuickSearchStore.isOpen()
-    };
+  componentDidMount() {
+    this.setListeners();
   }
 
-  openQuickSearch = () => QuickSearchActionCreators.show();
+  componentWillUnmount() {
+    this.cleanListeners();
+  }
+
+  setListeners() {
+    this.cleanListeners();
+    this.listeners = [
+      EventListener.listen(document, 'keydown', this.handleKeyDown)
+    ];
+  }
+
+  cleanListeners() {
+    if (this.listeners) {
+      this.listeners.forEach((listener) => listener.remove());
+      this.listeners = null;
+    }
+  }
+
+  handleKeyDown(event) {
+    if (event.keyCode === KeyCodes.K && event.metaKey) {
+      event.stopPropagation();
+      event.preventDefault();
+      this.openQuickSearch()
+    }
+  }
+
+  openQuickSearch() {
+    QuickSearchActionCreators.show();
+  }
 
   render() {
-    const { isQuickSearchOpen } = this.state;
-
     return (
       <footer className="sidebar__quick-search">
         <Tooltip
           placement="top"
-          mouseEnterDelay={0.15} mouseLeaveDelay={0}
-          overlay={<FormattedMessage id="tooltip.quicksearch"/>}
-        >
+          mouseEnterDelay={0.15}
+          mouseLeaveDelay={0}
+          overlay={<FormattedMessage id="tooltip.quicksearch"/>}>
           <a onClick={this.openQuickSearch}>
             <div className="icon-holder"><i className="material-icons">search</i></div>
             <FormattedMessage id="button.quickSearch"/>
           </a>
         </Tooltip>
-
-        {isQuickSearchOpen ? <QuickSearch/> : null}
       </footer>
     )
   }
 }
 
-export default Container.create(QuickSearchButton, { pure: false });
+export default QuickSearchButton;

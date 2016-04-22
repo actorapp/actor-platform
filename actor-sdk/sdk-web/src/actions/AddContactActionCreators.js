@@ -16,7 +16,6 @@ export default {
     ComposeActionCreators.toggleAutoFocus(false);
   },
 
-
   close() {
     dispatch(ActionTypes.CONTACT_ADD_MODAL_HIDE);
     ComposeActionCreators.toggleAutoFocus(true);
