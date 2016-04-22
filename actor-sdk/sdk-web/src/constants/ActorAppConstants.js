@@ -72,7 +72,6 @@ export const ActionTypes = keymirror({
   CONTACT_LIST_SHOW: null,
   CONTACT_LIST_HIDE: null,
   CONTACT_LIST_CHANGED: null,
-  CONTACT_LIST_SEARCH: null,
   CONTACT_ADD_MODAL_SHOW: null,
   CONTACT_ADD_MODAL_HIDE: null,
   CONTACT_ADD: null,
@@ -126,7 +125,6 @@ export const ActionTypes = keymirror({
   GROUP_LIST_LOAD: null,
   GROUP_LIST_LOAD_SUCCESS: null,
   GROUP_LIST_LOAD_ERROR: null,
-  GROUP_LIST_SEARCH: null,
 
   NOTIFICATION_CHANGE: null,
 
