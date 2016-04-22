@@ -40,7 +40,9 @@ trait DialogRootMigration extends Processor[DialogRootState] {
     case Status.Failure(e) ⇒
       log.error(e, "Failed to migrate")
       throw e
-    case _ ⇒ stash()
+    case msg ⇒
+      log.debug("Stashing while migrating {}", msg.getClass.getName)
+      stash()
   }
 
   private def migrate(): Unit = {
