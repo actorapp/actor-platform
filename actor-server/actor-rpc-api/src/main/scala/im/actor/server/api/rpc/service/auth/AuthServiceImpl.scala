@@ -182,7 +182,7 @@ final class AuthServiceImpl(
             _ ← fromDBIO(AuthPhoneTransactionRepo.create(phoneAuthTransaction))
           } yield transactionHash
       }
-      _ ← fromDBIOEither[Unit, CodeFailure](AuthErrors.activationFailure)(sendSmsCode(normalizedPhone, genSmsCode(normalizedPhone), transactionHash))
+      _ ← fromDBIOEither[Unit, CodeFailure](AuthErrors.activationFailure)(sendSmsCode(normalizedPhone, transactionHash))
       isRegistered = optPhone.isDefined
     } yield ResponseStartPhoneAuth(transactionHash, isRegistered, Some(ApiPhoneActivationType.CODE))
     db.run(action.value)
@@ -266,9 +266,8 @@ final class AuthServiceImpl(
   override def doHandleSendCodeByPhoneCall(transactionHash: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val action = for {
       tx ← fromDBIOOption(AuthErrors.PhoneCodeExpired)(AuthPhoneTransactionRepo.find(transactionHash))
-      code ← fromDBIO(AuthCodeRepo.findByTransactionHash(tx.transactionHash) map (_ map (_.code) getOrElse (genSmsCode(tx.phoneNumber))))
       lang = PhoneNumberUtils.normalizeWithCountry(tx.phoneNumber).headOption.map(_._2).getOrElse("en")
-      _ ← fromDBIOEither[Unit, CodeFailure](AuthErrors.activationFailure)(sendCallCode(tx.phoneNumber, genSmsCode(tx.phoneNumber), transactionHash, lang))
+      _ ← fromDBIOEither[Unit, CodeFailure](AuthErrors.activationFailure)(sendCallCode(tx.phoneNumber, transactionHash, lang))
     } yield ResponseVoid
 
     db.run(action.value)
@@ -332,7 +331,7 @@ final class AuthServiceImpl(
           activationType match {
             case CODE ⇒
               for {
-                _ ← fromDBIOEither[Unit, CodeFailure](AuthErrors.activationFailure)(sendEmailCode(validEmail, genEmailCode(validEmail), hash))
+                _ ← fromDBIOEither[Unit, CodeFailure](AuthErrors.activationFailure)(sendEmailCode(validEmail, hash))
               } yield hash
             case OAUTH2 ⇒
               point(hash)
@@ -355,7 +354,7 @@ final class AuthServiceImpl(
             case CODE ⇒
               for {
                 _ ← fromDBIO(AuthEmailTransactionRepo.create(emailAuthTransaction))
-                _ ← fromDBIOEither[Unit, CodeFailure](AuthErrors.activationFailure)(sendEmailCode(validEmail, genEmailCode(validEmail), transactionHash))
+                _ ← fromDBIOEither[Unit, CodeFailure](AuthErrors.activationFailure)(sendEmailCode(validEmail, transactionHash))
               } yield transactionHash
             case OAUTH2 ⇒
               for {

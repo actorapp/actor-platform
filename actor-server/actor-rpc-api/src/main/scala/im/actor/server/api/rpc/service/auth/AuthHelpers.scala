@@ -229,29 +229,19 @@ trait AuthHelpers extends Helpers {
     } yield userStruct
   }
 
-  protected def sendSmsCode(phoneNumber: Long, code: String, txHash: String)(implicit system: ActorSystem): DBIO[CodeFailure Xor Unit] = {
-    log.info("Sending sms code {} to {}", code, phoneNumber)
-    DBIO.from(activationContext.send(txHash, SmsCode(phoneNumber, code)))
+  protected def sendSmsCode(phoneNumber: Long, txHash: String)(implicit system: ActorSystem): DBIO[CodeFailure Xor Unit] = {
+    log.info("Sending sms code to {}", phoneNumber)
+    DBIO.from(activationContext.send(txHash, SmsCode(phoneNumber)))
   }
 
-  protected def sendCallCode(phoneNumber: Long, code: String, txHash: String, language: String)(implicit system: ActorSystem): DBIO[CodeFailure Xor Unit] = {
-    log.info("Sending call code {} to {}", code, phoneNumber)
-    DBIO.from(activationContext.send(txHash, CallCode(phoneNumber, code, language)))
+  protected def sendCallCode(phoneNumber: Long, txHash: String, language: String)(implicit system: ActorSystem): DBIO[CodeFailure Xor Unit] = {
+    log.info("Sending call code to {}", phoneNumber)
+    DBIO.from(activationContext.send(txHash, CallCode(phoneNumber, language)))
   }
 
-  protected def sendEmailCode(email: String, code: String, txHash: String)(implicit system: ActorSystem): DBIO[CodeFailure Xor Unit] = {
-    log.info("Sending email code {} to {}", code, email)
-    DBIO.from(activationContext.send(txHash, EmailCode(email, code)))
-  }
-
-  protected def genSmsHash() = ThreadLocalSecureRandom.current.nextLong().toString
-
-  protected def genEmailCode(email: String): String =
-    if (isTestEmail(email)) genTestCode(email) else genCode()
-
-  protected def genSmsCode(phone: Long): String = phone.toString match {
-    case strNumber if isTestPhone(phone) ⇒ Try(strNumber(4).toString * 4).getOrElse(phone.toString)
-    case _                               ⇒ genCode()
+  protected def sendEmailCode(email: String, txHash: String)(implicit system: ActorSystem): DBIO[CodeFailure Xor Unit] = {
+    log.info("Sending email code to {}", email)
+    DBIO.from(activationContext.send(txHash, EmailCode(email)))
   }
 
   protected def newUser(name: String, countryCode: String, optSex: Option[ApiSex], username: Option[String]): Result[Xor.Right[User]] = {
@@ -298,10 +288,5 @@ trait AuthHelpers extends Helpers {
       _ ← fromEither[Unit](Error(error))
     } yield ()
   }
-
-  private def genTestCode(email: String): String =
-    (email replaceAll (""".*acme""", "")) replaceAll (".com", "")
-
-  private def genCode() = ThreadLocalSecureRandom.current.nextLong().toString.dropWhile(c ⇒ c == '0' || c == '-').take(5)
 
 }
