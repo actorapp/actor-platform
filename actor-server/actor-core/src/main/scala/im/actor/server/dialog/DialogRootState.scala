@@ -69,13 +69,11 @@ private[dialog] case class ActiveDialogs(
   }
 
   def withoutPeer(sd: SortableDialog) = {
-    val res = sd.peer.typ match {
+    sd.peer.typ match {
       case PeerType.Private ⇒ copy(dms = dms.filterNot(_.peer == sd.peer), favourites = favourites.filterNot(_.peer == sd.peer))
       case PeerType.Group   ⇒ copy(groups = groups.filterNot(_.peer == sd.peer), favourites = favourites.filterNot(_.peer == sd.peer))
       case unknown          ⇒ throw PeerErrors.UnknownPeerType(unknown)
     }
-    println(res.groups)
-    res
   }
 
   def withFavouritedPeer(sd: SortableDialog) = {
