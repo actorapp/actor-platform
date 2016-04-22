@@ -191,7 +191,7 @@ private[dialog] final case class DialogRootState(
       copy(
         activePeers = this.activePeers + sortableDialog,
         active = this.active.withFavouritedPeer(sortableDialog),
-        archived = this.archived - sortableDialog
+        archived = this.archived.filterNot(_.peer == peer)
       )
   }
 
