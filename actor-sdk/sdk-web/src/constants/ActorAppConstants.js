@@ -373,7 +373,8 @@ export const ModalTypes = keymirror({
   PREFERENCES: null,
   INVITE: null,
   INVITE_BY_LINK: null,
-  QUICK_SEARCH: null
+  QUICK_SEARCH: null,
+  ATTACHMENT: null
 });
 
 export const PreferencesTabTypes = keymirror({

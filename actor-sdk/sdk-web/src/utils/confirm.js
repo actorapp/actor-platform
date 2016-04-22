@@ -56,8 +56,10 @@ class Confirm extends Component {
     return (
       <IntlProvider {...this.intlData}>
         <div className="modal">
-          <div className="modal__content">
-            <div className="confirm">
+
+          <div className="confirm">
+            <div className="modal__content">
+
               <header className="modal__header">
                 <h1>{message}</h1>
               </header>
@@ -72,8 +74,10 @@ class Confirm extends Component {
                   {confirmLabel ||<FormattedMessage id="button.ok"/>}
                 </button>
               </footer>
+
             </div>
           </div>
+
         </div>
       </IntlProvider>
     );

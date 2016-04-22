@@ -1,0 +1,21 @@
+.people-list,
+.group-list {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  max-width: 540px;
+
+  .modal__body {
+    overflow: scroll;
+
+    box-sizing: border-box;
+    padding: 0 $modal-padding;
+
+    flex: 1 1 auto;
+  }
+
+  .large-search {
+    margin: $modal-padding $modal-padding 0;
+  }
+}

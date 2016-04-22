@@ -65,7 +65,7 @@ class CreateGroupForm extends Component {
     if (!contacts.length) {
       return (
         <li className="contacts__list__item contacts__list__item--empty text-center">
-          <FormattedMessage id="inviteModalNotFound"/>
+          <FormattedMessage id="invite.notFound"/>
         </li>
       );
     }
@@ -147,10 +147,10 @@ class CreateGroupForm extends Component {
     const { intl } = this.context;
 
     return (
-      <div className="modal__search">
+      <div className="small-search">
         <i className="material-icons">search</i>
         <input
-          className="input input--search"
+          className="input"
           onChange={this.onSearchChange}
           placeholder={intl.messages['invite.search']}
           type="search"

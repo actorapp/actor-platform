@@ -46,6 +46,10 @@ class CreateGroupStore extends ReduceStore {
         console.error('Failed to create group', action.error);
         return state;
 
+      case ActionTypes.GROUP_CREATE_MODAL_HIDE:
+        return this.getInitialState();
+
+
       default:
         return state;
     }

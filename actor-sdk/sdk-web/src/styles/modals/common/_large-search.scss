@@ -1,0 +1,31 @@
+.large-search {
+  input {
+    font-size: 26px;
+    font-weight: 500;
+    line-height: 30px;
+
+    z-index: 10;
+
+    box-sizing: border-box;
+    width: 100%;
+    padding: 12px;
+
+    transition: 100ms;
+
+    color: rgba(0, 0, 0, .6);
+    border: none;
+    border-radius: 2px;
+    outline: none;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, .1);
+
+    @include placeholder(rgba(black, .15));
+    &:hover {
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, .15);
+    }
+    &:focus {
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, .2);
+      //box-shadow: 0 0 0 1px rgba($dark-sky-blue, .45);
+      //box-shadow: 0 0 0 1px rgba(0, 0, 0, .05), 0 1px 8px -1px rgba($dark-sky-blue, .6);
+    }
+  }
+}

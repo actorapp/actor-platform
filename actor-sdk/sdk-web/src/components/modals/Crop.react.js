@@ -257,8 +257,9 @@ class CropAvatarModal extends Component {
 
         <ModalCloseButton onClick={this.handleClose}/>
 
-        <div className="modal__content">
-          <div className="crop">
+        <div className="crop">
+          <div className="modal__content">
+
             <header className="modal__header">
                 <FormattedMessage id="modal.crop.title" tagName="h1"/>
             </header>
@@ -306,8 +307,10 @@ class CropAvatarModal extends Component {
             <footer className="modal__footer">
               {this.renderControls()}
             </footer>
+
           </div>
         </div>
+
       </Modal>
     );
   }

@@ -1,0 +1,21 @@
+.result-list {
+  margin: 0;
+  padding: $modal-padding 0;
+  &__item {
+    list-style: none;
+    padding: 8px 14px;
+    &--active {
+      font-weight: 500;
+
+      cursor: pointer;
+
+      color: white;
+      border-radius: 2px;
+      background: rgba($dark-sky-blue, 1);
+    }
+    .title {
+      margin-right: $modal-padding;
+      line-height: 44px;
+    }
+  }
+}

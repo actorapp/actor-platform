@@ -15,7 +15,7 @@ import { hasMember } from '../../utils/GroupUtils';
 import InviteUserActions from '../../actions/InviteUserActions';
 import InviteUserByLinkActions from '../../actions/InviteUserByLinkActions';
 
-import ContactsStore from '../../stores/ContactsStore';
+import PeopleStore from '../../stores/PeopleStore';
 import InviteUserStore from '../../stores/InviteUserStore';
 
 import ContactItem from '../common/ContactItem.react';
@@ -23,12 +23,12 @@ import Stateful from '../common/Stateful.react';
 
 class InviteUser extends Component {
   static getStores() {
-    return [InviteUserStore, ContactsStore];
+    return [InviteUserStore, PeopleStore];
   }
 
   static calculateState() {
     return {
-      contacts: ContactsStore.getState(),
+      contacts: PeopleStore.getState(),
       group: InviteUserStore.getState().group,
       users: InviteUserStore.getState().users
     };
@@ -81,7 +81,7 @@ class InviteUser extends Component {
     if (!contacts.length) {
       return (
         <li className="contacts__list__item contacts__list__item--empty text-center">
-          <FormattedMessage id="inviteModalNotFound"/>
+          <FormattedMessage id="invite.notFound"/>
         </li>
       );
     }
@@ -119,9 +119,9 @@ class InviteUser extends Component {
     const { intl } = this.context;
 
     return (
-      <div className="modal__search">
+      <div className="small-search">
         <i className="material-icons">search</i>
-        <input className="input input--search"
+        <input className="input"
                onChange={this.onSearchChange}
                placeholder={intl.messages['invite.search']}
                type="search"
@@ -147,8 +147,9 @@ class InviteUser extends Component {
         onRequestClose={this.handleClose}
         isOpen>
 
-        <div className="modal__content">
-          <div className="invite">
+        <div className="invite">
+          <div className="modal__content">
+
             <header className="modal__header">
               <i className="modal__header__icon material-icons">person_add</i>
               <FormattedMessage id="invite.title" tagName="h1"/>
@@ -159,14 +160,17 @@ class InviteUser extends Component {
 
             <div className="modal__body">
               {this.renderSearch()}
+
               {this.inviteByLinkButton()}
 
               <ul className="contacts__list">
                 {this.renderContacts()}
               </ul>
             </div>
+
           </div>
         </div>
+
       </Modal>
     );
   }

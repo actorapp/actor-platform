@@ -138,8 +138,9 @@ class AddContact extends Component {
         onRequestClose={this.handleClose}
         isOpen>
 
-        <div className="modal__content">
-          <div className="add-contact">
+        <div className="add-contact">
+          <div className="modal__content">
+
             <header className="modal__header">
               <FormattedMessage id="modal.addContact.title" tagName="h1"/>
               <a className="modal__header__close material-icons"
@@ -155,6 +156,7 @@ class AddContact extends Component {
                 {this.renderUserSearchResults()}
               </ul>
             </footer>
+
           </div>
         </div>
 
