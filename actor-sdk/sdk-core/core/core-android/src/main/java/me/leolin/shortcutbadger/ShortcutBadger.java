@@ -7,6 +7,8 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Build;
 import android.util.Log;
+
+import im.actor.sdk.ActorSDK;
 import me.leolin.shortcutbadger.impl.*;
 
 import java.lang.reflect.Constructor;
@@ -65,10 +67,7 @@ public abstract class ShortcutBadger {
             ResolveInfo resolveInfo = context.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
             String currentHomePackage = resolveInfo.activityInfo.packageName;
 
-            if (Build.MANUFACTURER.equalsIgnoreCase("Xiaomi")) {
-                mShortcutBadger = new XiaomiHomeBadger(context);
-                return mShortcutBadger;
-            }
+
 
             for (Class<? extends ShortcutBadger> badger : BADGERS) {
                 Constructor<? extends ShortcutBadger> constructor = badger.getConstructor(Context.class);
@@ -77,6 +76,10 @@ public abstract class ShortcutBadger {
                     mShortcutBadger = shortcutBadger;
                     break;
                 }
+            }
+
+            if (mShortcutBadger == null && Build.MANUFACTURER.equalsIgnoreCase("Xiaomi")) {
+                mShortcutBadger = new XiaomiHomeBadger(context);
             }
         } catch (Exception e) {
             Log.e(LOG_TAG, e.getMessage(), e);
@@ -105,8 +108,7 @@ public abstract class ShortcutBadger {
     protected abstract List<String> getSupportLaunchers();
 
     protected String getEntryActivityName() {
-        ComponentName componentName = mContext.getPackageManager().getLaunchIntentForPackage(mContext.getPackageName()).getComponent();
-        return componentName.getClassName();
+        return ActorSDK.sharedActor().getComponentName().getClassName();
     }
 
     protected String getContextPackageName() {
