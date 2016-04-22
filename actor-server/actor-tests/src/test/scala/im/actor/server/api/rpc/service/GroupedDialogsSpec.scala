@@ -1,7 +1,7 @@
 package im.actor.server.api.rpc.service
 
 import im.actor.api.rpc._
-import im.actor.api.rpc.messaging.{ ApiDialogShort, ApiTextMessage, ResponseLoadArchived, ResponseLoadGroupedDialogs }
+import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeer, ApiPeerType }
 import im.actor.server.acl.ACLUtils
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
@@ -55,6 +55,11 @@ final class GroupedDialogsSpec
         inside(resp) {
           case Ok(ResponseLoadGroupedDialogs(dgroups, users, groups, _, _)) ⇒
             dgroups.length shouldBe 2
+
+            dgroups.map(_.key) should be(Seq(
+              DialogExtension.groupKey(DialogGroupType.Groups),
+              DialogExtension.groupKey(DialogGroupType.DirectMessages)
+            ))
 
             val (gs, ps) = dgroups.foldLeft(IndexedSeq.empty[ApiDialogShort], IndexedSeq.empty[ApiDialogShort]) {
               case ((gs, ps), dg) ⇒
@@ -236,6 +241,11 @@ final class GroupedDialogsSpec
 
     prepareDialogs(bob)
     whenReady(service.handleFavouriteDialog(bobPeer))(identity)
+
+    whenReady(service.handleLoadGroupedDialogs()) { resp ⇒
+      resp.toOption.get.dialogs.map(_.key).head should be(DialogExtension.groupKey(DialogGroupType.Favourites))
+    }
+
     inside(getDialogGroups(DialogGroupType.Favourites)) {
       case Vector(d) ⇒ d.peer.id should equal(bob.id)
     }

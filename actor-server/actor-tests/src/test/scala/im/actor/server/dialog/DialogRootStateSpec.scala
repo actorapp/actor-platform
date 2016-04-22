@@ -9,18 +9,12 @@ import im.actor.server.cqrs.ProcessorStateProbe
 import im.actor.server.model.Peer
 
 final class DialogRootStateSpec extends ActorSuite with PeersImplicits {
-  it should "have DMs and Groups by default" in default
   it should "sort dialogs by appearing" in show
   it should "remove Favourites on Unfavourite" in favouriteUnfavourite
   it should "remove from Archived on Favourite or new message" in removeFromArchived
   it should "order archived by date desc" in archivedOrder
 
   import DialogRootEvents._
-
-  def default() = {
-    val probe = ProcessorStateProbe(DialogRootState.initial)
-    probe.state.active.keys should be(Set(DialogGroupType.Groups, DialogGroupType.DirectMessages))
-  }
 
   def show() = {
     implicit val probe = ProcessorStateProbe(DialogRootState.initial)
@@ -47,7 +41,6 @@ final class DialogRootStateSpec extends ActorSuite with PeersImplicits {
 
     probe.commit(Unfavourited(Instant.now, Some(alice)))
 
-    probe.state.active.keys shouldNot contain(DialogGroupType.Favourites)
     getGroupPeers(DialogGroupType.DirectMessages) should contain(alice)
     checkSnapshot
   }
@@ -90,7 +83,12 @@ final class DialogRootStateSpec extends ActorSuite with PeersImplicits {
   }
 
   private def getGroupPeers(typ: DialogGroupType)(implicit probe: ProcessorStateProbe[DialogRootState]) =
-    probe.state.active.get(typ).get.toSeq.map(_.peer)
+    typ match {
+      case DialogGroupType.Favourites     ⇒ probe.state.active.favourites.toSeq.map(_.peer)
+      case DialogGroupType.Groups         ⇒ probe.state.active.groups.toSeq.map(_.peer)
+      case DialogGroupType.DirectMessages ⇒ probe.state.active.dms.toSeq.map(_.peer)
+      case unknown                        ⇒ throw DialogErrors.UnknownDialogGroupType(unknown)
+    }
 
   private def getActivePeers(implicit probe: ProcessorStateProbe[DialogRootState]) =
     probe.state.activePeers.toSeq.map(_.peer)
