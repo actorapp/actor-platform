@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.Props;
+import im.actor.runtime.android.AndroidContext;
 import im.actor.runtime.files.FileSystemReference;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
@@ -63,16 +65,17 @@ public class AudioHolder extends MessageHolder {
     protected String currentAudio;
     protected static String currentPlayingAudio;
     protected ImageView playBtn;
-    protected Activity activity;
     protected static ActorRef audioActor;
     protected FileVM downloadFileVM;
     protected UploadFileVM uploadFileVM;
     protected long currentDuration;
     protected boolean treckingTouch;
+    protected Handler mainThread;
 
     public AudioHolder(MessagesAdapter fragment, final View itemView) {
         super(fragment, itemView, false);
-        context = fragment.getMessagesFragment().getActivity();
+        context = fragment.getMessagesFragment().getContext();
+        mainThread = new Handler(context.getMainLooper());
         waitColor = ActorSDK.sharedActor().style.getConvStatePendingColor();
         sentColor = ActorSDK.sharedActor().style.getConvStateSentColor();
         deliveredColor = ActorSDK.sharedActor().style.getConvStateDeliveredColor();
@@ -130,11 +133,10 @@ public class AudioHolder extends MessageHolder {
         messageBubble = (FrameLayout) itemView.findViewById(R.id.fl_bubble);
         playBtn = (ImageView) itemView.findViewById(R.id.contact_avatar);
         playBtn.getBackground().setColorFilter(Color.parseColor("#4295e3"), PorterDuff.Mode.MULTIPLY);
-        activity = (Activity) playBtn.getContext();
         callback = new AudioPlayerActor.AudioPlayerCallback() {
             @Override
             public void onStart(final String fileName) {
-                activity.runOnUiThread(new Runnable() {
+                mainThread.post(new Runnable() {
                     @Override
                     public void run() {
                         play(fileName);
@@ -144,7 +146,7 @@ public class AudioHolder extends MessageHolder {
 
             @Override
             public void onStop(final String fileName) {
-                activity.runOnUiThread(new Runnable() {
+                mainThread.post(new Runnable() {
                     @Override
                     public void run() {
                         stop();
@@ -154,7 +156,7 @@ public class AudioHolder extends MessageHolder {
 
             @Override
             public void onPause(final String fileName, float progress) {
-                activity.runOnUiThread(new Runnable() {
+                mainThread.post(new Runnable() {
                     @Override
                     public void run() {
                         if (currentAudio != null && currentAudio.equals(fileName)) {
@@ -166,7 +168,7 @@ public class AudioHolder extends MessageHolder {
 
             @Override
             public void onProgress(final String fileName, final float progress) {
-                activity.runOnUiThread(new Runnable() {
+                mainThread.post(new Runnable() {
                     @Override
                     public void run() {
                         if (currentAudio != null && currentAudio.equals(fileName) && currentPlayingAudio.equals(currentAudio)) {
@@ -178,11 +180,11 @@ public class AudioHolder extends MessageHolder {
 
             @Override
             public void onError(final String fileName) {
-                activity.runOnUiThread(new Runnable() {
+                mainThread.post(new Runnable() {
                     @Override
                     public void run() {
                         if (currentAudio != null && currentAudio.equals(fileName)) {
-                            Toast.makeText(activity, "error playing this file", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "error playing this file", Toast.LENGTH_SHORT).show();
                             keepScreenOn(false);
                         }
                     }
