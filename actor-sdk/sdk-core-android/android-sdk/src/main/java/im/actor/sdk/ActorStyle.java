@@ -58,7 +58,7 @@ public class ActorStyle {
     private int dialogsTitleColor = 0;
     private int dialogsTextColor = 0;
     private int dialogsTypingColor = 0;
-    private int dialogsActionColor = 0;
+    private int dialogsActionColor = 0xff5882ac;
 
     private int primaryAltColor = Color.parseColor("#4ca665");
     private int primaryAltHoveredColor = Color.parseColor("#ff3d8652");

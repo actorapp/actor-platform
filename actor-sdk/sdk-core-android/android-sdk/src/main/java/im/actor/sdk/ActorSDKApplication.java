@@ -2,6 +2,7 @@ package im.actor.sdk;
 
 import android.app.ActivityManager;
 import android.app.Application;
+import android.content.ComponentName;
 
 /**
  * Implementation of Application object that handles everything required for creating and
@@ -26,6 +27,7 @@ public class ActorSDKApplication extends Application {
         if (!myProcessName.endsWith(":actor_push")) {
             onConfigureActorSDK();
             ActorSDK.sharedActor().createActor(this);
+            ActorSDK.sharedActor().setComponentName(getPackageManager().getLaunchIntentForPackage(getPackageName()).getComponent());
         }
     }
 
