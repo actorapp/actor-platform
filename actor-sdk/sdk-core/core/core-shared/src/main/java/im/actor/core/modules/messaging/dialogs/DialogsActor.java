@@ -387,7 +387,7 @@ public class DialogsActor extends ModuleActor {
             CounterChanged counterChanged = (CounterChanged) message;
             onCounterChanged(counterChanged.getPeer(), counterChanged.getCounter());
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 

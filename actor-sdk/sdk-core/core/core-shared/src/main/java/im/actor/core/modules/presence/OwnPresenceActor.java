@@ -97,7 +97,7 @@ public class OwnPresenceActor extends ModuleActor implements BusSubscriber {
         } else if (message instanceof PerformOnline) {
             performOnline();
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 

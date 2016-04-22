@@ -176,7 +176,7 @@ public class PushRegisterActor extends ModuleActor {
             RegisterAppleVoipPush appleVoipPush = (RegisterAppleVoipPush) message;
             registerApplePushKit(appleVoipPush.getApnsKey(), appleVoipPush.getToken());
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 

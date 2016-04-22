@@ -497,7 +497,7 @@ public class DownloadManager extends ModuleActor {
         } else if (message instanceof UnsubscribeToDownloads) {
             unsubscribe(((UnsubscribeToDownloads) message).getCallback());
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 

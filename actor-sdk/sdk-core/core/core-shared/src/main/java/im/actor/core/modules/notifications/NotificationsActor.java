@@ -574,7 +574,7 @@ public class NotificationsActor extends ModuleActor {
         } else if (message instanceof ResumeNotifications) {
             onNotificationsResumed();
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 
