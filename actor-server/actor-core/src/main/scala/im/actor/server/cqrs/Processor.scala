@@ -63,9 +63,19 @@ trait ProcessorStateControl[S <: ProcessorState[S]] {
     state
   }
 
+  def applySnapshot(metadata: SnapshotMetadata, snapshot: Any): Unit = {
+    beforeSnapshotApply(metadata, snapshot)
+    setState(state.withSnapshot(metadata, snapshot))
+    afterSnapshotApply(metadata, snapshot)
+  }
+
   protected def beforeCommit(e: Event) = {}
 
   protected def afterCommit(e: Event) = {}
+
+  protected def beforeSnapshotApply(metadata: SnapshotMetadata, snapshot: Any): Unit = {}
+
+  protected def afterSnapshotApply(metadata: SnapshotMetadata, snapshot: Any): Unit = {}
 }
 
 object ProcessorStateProbe {
