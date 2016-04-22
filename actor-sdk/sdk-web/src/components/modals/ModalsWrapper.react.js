@@ -2,104 +2,69 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { Container } from 'flux/utils';
-import classnames from 'classnames';
-import { KeyCodes } from '../../constants/ActorAppConstants';
+import { ModalTypes } from '../../constants/ActorAppConstants';
 
-import ContactActionCreators from '../../actions/ContactActionCreators';
-import GroupListActionCreators from '../../actions/GroupListActionCreators';
+import ModalStore from '../../stores/ModalStore';
 
-import PeopleStore from '../../stores/PeopleStore';
-import GroupListStore from '../../stores/GroupListStore';
-
-import PeopleList from './PeopleList'
-import GroupList from './GroupList'
+import Profile from './Profile.react';
+import Crop from './Crop.react';
+import Groups from './Groups.react';
+import People from './People.react';
+import AddContact from './AddContact.react';
+import CreateGroup from './CreateGroup.react';
+import EditGroup from './EditGroup.react';
+import Preferences from './Preferences.react';
+import Invite from './Invite.react';
+import InviteByLink from './InviteByLink.react';
+import QuickSearch from './QuickSearch.react';
+import Attachments from './Attachments.react';
 
 class ModalsWrapper extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   static getStores() {
-    return [PeopleStore, GroupListStore];
+    return [ModalStore];
   }
 
   static calculateState() {
-    return {
-      isPeoplesOpen: PeopleStore.isOpen(),
-      isGroupsOpen: GroupListStore.isOpen()
-    };
+    return ModalStore.getState();
   }
-
-  static contextTypes = {
-    intl: PropTypes.object
-  };
-
-  componentWillMount() {
-    document.addEventListener('keydown', this.handleKeyDown, false);
-
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('keydown', this.handleKeyDown, false);
-  }
-
-  handleKeyDown = (event) => {
-    switch (event.keyCode) {
-      case KeyCodes.ESC:
-        event.preventDefault();
-        this.handleClose();
-        break;
-      case KeyCodes.G:
-        if (event.ctrlKey) {
-          event.preventDefault();
-          this.handleClose();
-          GroupListActionCreators.open();
-        }
-        break;
-      case KeyCodes.P:
-        if (event.ctrlKey) {
-          event.preventDefault();
-          this.handleClose();
-          ContactActionCreators.open();
-        }
-        break;
-      default:
-    }
-  };
-
-  handleClose = () => {
-    const { isPeoplesOpen, isGroupsOpen } = this.state;
-
-    if (isPeoplesOpen) {
-      ContactActionCreators.close();
-    }
-    if (isGroupsOpen) {
-      GroupListActionCreators.close();
-    }
-  };
 
   render() {
-    const { isPeoplesOpen, isGroupsOpen } = this.state;
-    const { intl } = this.context;
+    const { currentModal } = this.state;
+    if (!currentModal) return null;
 
-    const wrapperClassName = classnames('modal-wrapper', {
-      'modal-wrapper--opened': isPeoplesOpen || isGroupsOpen
-    });
+    switch (currentModal) {
+      case ModalTypes.PROFILE:
+        return <Profile/>;
+      case ModalTypes.CROP:
+        return <Crop/>;
+      case ModalTypes.GROUP_LIST:
+        return <Groups/>;
+      case ModalTypes.PEOPLE_LIST:
+        return <People/>;
+      case ModalTypes.ADD_CONTACT:
+        return <AddContact/>;
+      case ModalTypes.CREATE_GROUP:
+        return <CreateGroup/>;
+      case ModalTypes.EDIT_GROUP:
+        return <EditGroup/>;
+      case ModalTypes.PREFERENCES:
+        return <Preferences/>;
+      case ModalTypes.INVITE:
+        return <Invite/>;
+      case ModalTypes.INVITE_BY_LINK:
+        return <InviteByLink/>;
+      case ModalTypes.QUICK_SEARCH:
+        return <QuickSearch/>;
+      case ModalTypes.ATTACHMENTS:
+        return <Attachments/>;
 
-    return (
-      <div className={wrapperClassName}>
-        <div className="modal-wrapper__close" onClick={this.handleClose}>
-          <i className="close_icon material-icons">close</i>
-          <div className="text">{intl.messages['button.close']}</div>
-        </div>
-
-        {isPeoplesOpen ? <PeopleList/> : null}
-        {isGroupsOpen ? <GroupList/> : null}
-      </div>
-    );
+      default:
+        console.warn(`Unsupported modal type: ${currentModal}`);
+        return null;
+    }
   }
 }
 
-export default Container.create(ModalsWrapper, { pure: false });
+export default Container.create(ModalsWrapper);

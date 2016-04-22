@@ -1,0 +1,29 @@
+.large-search {
+  input {
+    font-size: 26px;
+    font-weight: 400;
+    line-height: 30px;
+
+    z-index: 10;
+
+    box-sizing: border-box;
+    width: 100%;
+    padding: 12px;
+
+    transition: 100ms;
+
+    color: rgba(black, .6);
+    border: none;
+    border-radius: 2px;
+    outline: none;
+    box-shadow: 0 0 0 1px rgba(black, .1);
+
+    @include placeholder(rgba(black, .15));
+    &:hover {
+      box-shadow: 0 0 0 1px rgba(black, .15);
+    }
+    &:focus {
+      box-shadow: 0 0 0 1px rgba(black, .225);
+    }
+  }
+}

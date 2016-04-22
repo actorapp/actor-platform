@@ -1,40 +1,24 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2016 Actor LLC. <https://actor.im>
  */
 
 import { ReduceStore } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
+import ActorClient from '../utils/ActorClient';
 
 class PeopleStore extends ReduceStore {
   getInitialState() {
-    return {
-      isOpen: false,
-      query: null
-    };
+    return [];
   }
 
   reduce(state, action) {
-    switch (action.type) {
-      case ActionTypes.CONTACT_LIST_SHOW:
-        return {
-          ...state,
-          isOpen: true
-        };
-      case ActionTypes.CONTACT_LIST_HIDE:
-        return this.getInitialState();
-      case ActionTypes.CONTACT_LIST_SEARCH:
-        return {
-          ...state,
-          query: action.query
-        };
-      default:
-        return state;
+    if (action.type === ActionTypes.CONTACT_LIST_CHANGED) {
+      const uid = ActorClient.getUid();
+      return action.contacts.filter((contact) => contact.uid !== uid);
     }
-  }
 
-  isOpen() {
-    return this.getState().isOpen;
+    return state;
   }
 }
 

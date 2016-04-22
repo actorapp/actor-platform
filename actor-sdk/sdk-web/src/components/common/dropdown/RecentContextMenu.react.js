@@ -84,9 +84,8 @@ class RecentContextMenu extends Component {
   };
 
   handleDelete = () => {
-    const { intl } = this.context;
     const { peer } = this.props;
-    confirm(intl.messages['modal.confirm.delete']).then(
+    confirm(<FormattedMessage id="modal.confirm.delete"/>).then(
       () => DialogActionCreators.deleteChat(peer),
       () => {}
     );
