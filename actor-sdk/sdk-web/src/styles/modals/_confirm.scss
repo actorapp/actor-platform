@@ -1,0 +1,16 @@
+.confirm {
+  max-width: 360px;
+  margin-top: 100px;
+  .modal__header {
+    height: auto;
+    padding-top: 24px;
+
+    box-shadow: none;
+  }
+  .modal__footer {
+    .button {
+      min-width: 80px;
+      margin-left: 4px;
+    }
+  }
+}

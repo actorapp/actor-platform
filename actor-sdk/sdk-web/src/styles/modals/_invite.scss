@@ -1,0 +1,74 @@
+$invite-modal-width: 400px;
+.invite {
+  width: $invite-modal-width;
+  .modal__body {
+    padding: 0;
+  }
+  .small-search {
+    margin: $modal-padding $modal-padding 0;
+  }
+  .link {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 24px;
+
+    display: inline-block;
+
+    margin: 8px $modal-padding;
+
+    vertical-align: middle;
+    text-transform: uppercase;
+    .material-icons {
+      font-size: 22px;
+
+      margin-right: 16px;
+      margin-left: 5px;
+
+      vertical-align: bottom;
+    }
+  }
+  .contacts__list {
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    width: 100%;
+    min-height: 228px;
+    max-height: 364px;
+    margin: 0;
+    padding: 0 0 8px;
+
+    list-style: none;
+
+    color: $greyish-brown;
+    &__item {
+      &--member {
+        user-select: none;
+
+        opacity: .4;
+      }
+      &--empty {
+        line-height: 32px;
+
+        padding: $modal-padding;
+
+        color: $dove-gray;
+      }
+    }
+    .contact {
+      padding-right: $modal-padding;
+      padding-left: $modal-padding;
+    }
+  }
+}
+
+.invite-by-link {
+  width: $invite-modal-width;
+  .modal__header {
+    .icon {
+      cursor: pointer;
+    }
+  }
+  .textarea {
+    margin-top: $modal-padding;
+  }
+}
