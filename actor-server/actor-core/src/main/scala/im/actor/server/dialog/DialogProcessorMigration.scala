@@ -50,7 +50,6 @@ trait DialogProcessorMigration extends Processor[DialogState] {
           newMessages.toList :+
           MessagesRead(Instant.ofEpochMilli(d.lastReadAt.getMillis))
       )) pipeTo self
-
     case PersistEvents(events) ⇒
       persistAll(events) { _ ⇒
         events foreach (e => commit(e))
@@ -60,14 +59,16 @@ trait DialogProcessorMigration extends Processor[DialogState] {
     case Status.Failure(e) ⇒
       log.error(e, "Failed to migrate")
       throw e
-    case _ ⇒ stash()
+    case msg ⇒
+      log.debug("Stashing while migrating {}", msg.getClass.getName)
+      stash()
   }
 
   private def migrate(): Unit = {
     context become migrating
-    db.run(DialogRepo.findDialog(userId, peer)) map {
-      case Some(model) ⇒ self ! model
-      case _           ⇒ self ! PersistEvents(List(Initialized()))
-    }
+    (db.run(DialogRepo.findDialog(userId, peer)) map {
+      case Some(model) ⇒ model
+      case _           ⇒ PersistEvents(List(Initialized()))
+    }) pipeTo self
   }
 }
