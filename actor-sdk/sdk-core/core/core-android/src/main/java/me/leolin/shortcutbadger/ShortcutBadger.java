@@ -7,8 +7,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Build;
 import android.util.Log;
-
-import im.actor.sdk.ActorSDK;
 import me.leolin.shortcutbadger.impl.*;
 
 import java.lang.reflect.Constructor;
@@ -108,7 +106,8 @@ public abstract class ShortcutBadger {
     protected abstract List<String> getSupportLaunchers();
 
     protected String getEntryActivityName() {
-        return ActorSDK.sharedActor().getComponentName().getClassName();
+        ComponentName componentName = mContext.getPackageManager().getLaunchIntentForPackage(mContext.getPackageName()).getComponent();
+        return componentName.getClassName();
     }
 
     protected String getContextPackageName() {
