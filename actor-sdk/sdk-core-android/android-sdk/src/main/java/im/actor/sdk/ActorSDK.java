@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Application;
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -174,6 +175,7 @@ public class ActorSDK {
      * Call enabled
      */
     private boolean callsEnabled = false;
+    private ComponentName componentName;
 
     private ActorSDK() {
         endpoints = new String[]{
@@ -944,6 +946,14 @@ public class ActorSDK {
         } else {
             return callback.onNotDelegated();
         }
+    }
+
+    public void setComponentName(ComponentName componentName) {
+        this.componentName = componentName;
+    }
+
+    public ComponentName getComponentName() {
+        return componentName;
     }
 
     /**
