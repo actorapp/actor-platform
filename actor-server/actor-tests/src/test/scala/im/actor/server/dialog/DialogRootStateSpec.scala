@@ -14,6 +14,7 @@ final class DialogRootStateSpec extends ActorSuite with PeersImplicits {
   it should "remove from Archived on Favourite or new message" in removeFromArchived
   it should "archive groups and DMs" in archive
   it should "order archived by date desc" in archivedOrder
+  it should "not add to DMs or groups if already in favourites" in keepInFavourites
 
   import DialogRootEvents._
 
@@ -44,6 +45,23 @@ final class DialogRootStateSpec extends ActorSuite with PeersImplicits {
 
     getGroupPeers(DialogGroupType.DirectMessages) should contain(alice)
     checkSnapshot
+  }
+
+  def keepInFavourites() = {
+    implicit val probe = ProcessorStateProbe(DialogRootState.initial)
+
+    val alice = Peer.privat(1)
+    val group = Peer.group(100)
+
+    probe.commit(Favourited(Instant.now, Some(alice)))
+    probe.commit(Favourited(Instant.now, Some(group)))
+    probe.commit(Created(Instant.now, Some(alice)))
+    probe.commit(Created(Instant.now, Some(group)))
+
+    probe.state.active.dms shouldBe empty
+    probe.state.active.dms shouldBe empty
+    probe.state.active.favourites.map(_.peer).toSeq should be(Seq(alice, group))
+    probe.state.activePeers.map(_.peer).toSeq should be(Seq(alice, group))
   }
 
   def removeFromArchived() = {
