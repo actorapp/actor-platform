@@ -58,7 +58,7 @@ class ContactItem extends Component {
 
     return emails.map((email, index) => {
       return (
-        <div className="email" key={`e${index}`}>
+        <div className="email row" key={`e${index}`}>
           <div className="title"><FormattedMessage id="profile.email"/>:</div>
           <div className="col-xs">
             <a href={'mailto:' + email.email}>{email.email}</a>
@@ -104,14 +104,11 @@ class ContactItem extends Component {
                       placeholder={placeholder}
                       size="large"
                       title={name}/>
+
           <div className="col-xs">
             <div className="name">
               <span dangerouslySetInnerHTML={{__html: escapeWithEmoji(name)}}/>
-              {
-                isBot
-                  ? <small>BOT</small>
-                  : null
-              }
+              {isBot ? <small>BOT</small> : null}
             </div>
             <div className="nick">{nick}</div>
           </div>
@@ -122,6 +119,7 @@ class ContactItem extends Component {
           {this.renderEmails()}
           {this.renderPhones()}
         </div>
+
         <div className="controls">
           {this.renderControls()}
         </div>

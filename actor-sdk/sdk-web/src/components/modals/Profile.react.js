@@ -182,14 +182,14 @@ class Profile extends Component {
 
         <ModalCloseButton onClick={this.handleClose}/>
 
-        <div className="modal__content">
-          <div className="profile">
+        <div className="profile">
+          <div className="modal__content">
+
             <header className="modal__header">
               <FormattedMessage id="modal.profile.title" tagName="h1"/>
             </header>
 
             <div className="modal__body row">
-
               <div className="col-xs">
                 {this.renderName()}
                 {this.renderNick()}
@@ -202,12 +202,12 @@ class Profile extends Component {
                 fromModal={ModalTypes.PROFILE}
                 onRemove={this.handleAvatarRemove}
                 onChange={this.handleAvatarChange}/>
-
             </div>
 
             <footer className="modal__footer">
               {this.renderControls()}
             </footer>
+
           </div>
         </div>
 

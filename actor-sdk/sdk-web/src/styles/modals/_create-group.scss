@@ -1,48 +1,54 @@
-.modal__content {
-  .create-group {
-    width: 400px;
+.create-group {
+  width: 400px;
 
+  .modal__body {
+    padding: 0;
+  }
+  .small-search {
+    margin: $modal-padding $modal-padding 0;
+  }
+
+  .group-name {
     .modal__body {
-      padding: 0;
-    }
-    .modal__search {
-      margin: $modal-padding $modal-padding 0;
+      padding: $modal-padding;
     }
 
-    .group-name {
-      .modal__body {
-        padding: $modal-padding;
+    .input__material {
+      input {
+        color: rgb(77, 77, 77);
       }
     }
+  }
 
-    .count {
-      font-size: 12px;
-      line-height: 16px;
 
-      display: inline-block;
+  .count {
+    font-size: 12px;
+    line-height: 16px;
 
-      padding: 10px 0;
+    display: inline-block;
 
-      text-transform: uppercase;
+    padding: 10px 0;
 
-      color: rgba($dorado, .5);
-    }
+    text-transform: uppercase;
 
-    .contacts__list {
-      overflow-x: hidden;
-      overflow-y: auto;
+    color: rgba($dorado, .5);
+  }
 
-      max-height: 314px;
-      margin: 0;
-      padding: $modal-padding 0 0;
+  .contacts__list {
+    overflow-x: hidden;
+    overflow-y: auto;
 
-      list-style: none;
+    min-height: 230px;
+    max-height: 364px;
+    margin: 0;
+    padding: $modal-padding 0 0;
 
-      color: $greyish-brown;
-    }
+    list-style: none;
 
-    .modal__footer {
-      padding-bottom: $default-padding;
-    }
+    color: $greyish-brown;
+  }
+
+  .modal__footer {
+    padding-bottom: $default-padding;
   }
 }

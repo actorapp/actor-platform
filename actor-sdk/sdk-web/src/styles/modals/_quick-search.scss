@@ -1,131 +1,106 @@
-.modal__content {
-  .quick-search {
-    width: 400px;
+.quick-search {
+  width: 460px;
+  .header {
+    font-size: 11px;
+    line-height: 16px;
 
-    .header {
-      font-size: 11px;
-      line-height: 16px;
+    padding: 6px 16px;
 
+    cursor: default;
+    user-select: none;
+
+    color: rgba(0, 0, 0, .5);
+
+    @include clearfix();
+    span,
+    strong {
+      display: inline-block;
+    }
+    .pull-right {
+      margin-left: 6px;
+    }
+  }
+
+  .large-search {
+    position: relative;
+    z-index: 10;
+
+    padding: 0 $modal-padding;
+  }
+
+  .results {
+    overflow-y: scroll;
+
+    margin: 0;
+    padding: 8px 0 0;
+    min-height: 176px;
+    max-height: 352px;
+    &__item {
+      line-height: 32px;
+
+      box-sizing: border-box;
+      margin: 0;
       padding: 6px 16px;
 
-      cursor: default;
-      user-select: none;
+      list-style: none;
 
-      color: rgba(0, 0, 0, .5);
+      cursor: pointer;
 
-      @include clearfix();
-      span,
-      strong {
-        display: inline-block;
-      }
-      .pull-right {
-        margin-left: 6px;
-      }
-    }
-    .input {
-      padding: 0 16px;
-      z-index: 10;
-      position: relative;
-      input {
-        font-size: 26px;
-        font-weight: 500;
-        line-height: 30px;
-
-        box-sizing: border-box;
-        width: 100%;
-        padding: 12px;
-
-        transition: 100ms;
-
-        color: rgba(0, 0, 0, .6);
-        border: none;
-        border-radius: 2px;
-        //height: 64px;
-        outline: none;
-        box-shadow: 0 0 0 1px rgba(0, 0, 0, .1);
-
-        @include placeholder(rgba(black, .15));
-        &:hover {
-          box-shadow: 0 0 0 1px rgba(0, 0, 0, .15);
-        }
-        &:focus {
-          box-shadow: 0 0 0 1px rgba(0, 0, 0, .2);
-          //box-shadow: 0 0 0 1px rgba($dark-sky-blue, .45);
-          //box-shadow: 0 0 0 1px rgba(0, 0, 0, .05), 0 1px 8px -1px rgba($dark-sky-blue, .6);
+      color: $mine-shaft;
+      .avatar {
+        margin-right: 12px;
+        .avatar__placeholder {
+          cursor: pointer;
         }
       }
-    }
-    .results {
-      overflow-y: scroll;
-      margin: 0;
-      padding:  8px 0 0;
-      &__item {
+      .title {
+        font-size: 15px;
         line-height: 32px;
 
-        box-sizing: border-box;
-        margin: 0;
-        padding: 6px 16px;
+        display: inline-block;
 
-        list-style: none;
+        user-select: none;
+        vertical-align: middle;
 
-        cursor: pointer;
+        @include text-elipsis();
+      }
+      .hint {
+        font-size: 13px;
+        line-height: 32px;
 
-        color: $mine-shaft;
-        .avatar {
-          margin-right: 12px;
-          .avatar__placeholder {
-            cursor: pointer;
-          }
-        }
-        .title {
-          font-size: 15px;
-          line-height: 32px;
+        display: none;
 
+        text-align: right;
+        vertical-align: middle;
+      }
+      &--active {
+        font-weight: 500;
+
+        color: white;
+        background-color: $dark-sky-blue;
+        text-shadow: 0 1px 1px darken($dark-sky-blue, 10);
+        .hint {
           display: inline-block;
 
-          user-select: none;
-          vertical-align: middle;
-
-          @include text-elipsis();
+          opacity: .7;
         }
-        .hint {
-          font-size: 13px;
-          line-height: 32px;
+      }
+      &--suggestion {
+        font-weight: 400 !important;
 
-          display: none;
+        display: block;
 
-          text-align: right;
-          vertical-align: middle;
-        }
-        &--active {
-          font-weight: 500;
+        cursor: default !important;
+        text-align: center;
 
-          color: white;
-          background-color: $dark-sky-blue;
-          text-shadow: 0 1px 1px darken($dark-sky-blue, 10);
-          .hint {
-            display: inline-block;
-
-            opacity: .7;
-          }
-        }
-        &--suggestion {
-          font-weight: 400 !important;
-
+        color: $dove-gray !important;
+        background-color: white !important;
+        text-shadow: none !important;
+        & > span {
           display: block;
-
-          cursor: default !important;
-          text-align: center;
-
-          color: $dove-gray !important;
-          background-color: white !important;
-          text-shadow: none !important;
-          & > span {
-            display: block;
-          }
-          .button {
-            margin-top: 10px;
-          }
+        }
+        .button {
+          margin-top: 10px;
         }
       }
     }

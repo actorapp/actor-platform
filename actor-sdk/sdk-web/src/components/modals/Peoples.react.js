@@ -4,21 +4,37 @@
 
 import fuzzaldrin from 'fuzzaldrin';
 import React, { Component, PropTypes } from 'react';
+import Modal from 'react-modal';
 import { findDOMNode } from 'react-dom';
 import { Container } from 'flux/utils';
-import Scrollbar from '../../common/Scrollbar.react';
+import { FormattedMessage } from 'react-intl';
 
-import { KeyCodes } from '../../../constants/ActorAppConstants';
+import { KeyCodes } from '../../constants/ActorAppConstants';
 
-import ContactActionCreators from '../../../actions/ContactActionCreators';
-import DialogActionCreators from '../../../actions/DialogActionCreators';
+import ContactActionCreators from '../../actions/ContactActionCreators';
+import DialogActionCreators from '../../actions/DialogActionCreators';
 
-import PeopleStore from '../../../stores/PeopleStore';
-import ContactsStore from '../../../stores/ContactsStore';
+import PeopleStore from '../../stores/PeopleStore';
 
-import People from './PeopleItem.react';
+import People from './peoples/PeopleItem.react';
+import ModalCloseButton from './ModalCloseButton.react';
 
 class PeopleList extends Component {
+  static contextTypes = {
+    intl: PropTypes.object
+  };
+
+  static getStores() {
+    return [PeopleStore];
+  }
+
+  static calculateState(prevState) {
+    return {
+      ...prevState,
+      contacts: PeopleStore.getState()
+    };
+  }
+
   constructor(props) {
     super(props);
 
@@ -26,25 +42,12 @@ class PeopleList extends Component {
       query: null,
       selectedIndex: 0
     };
-  }
 
-  static contextTypes = {
-    intl: PropTypes.object
-  };
-
-  static getStores() {
-    return [PeopleStore, ContactsStore];
-  }
-
-  static calculateState(prevState) {
-    const { isOpen } = PeopleStore.getState();
-    const contacts = ContactsStore.getState();
-
-    return {
-      ...prevState,
-      isOpen,
-      contacts
-    };
+    this.handleClose = this.handleClose.bind(this);
+    this.handleSearchChange = this.handleSearchChange.bind(this);
+    this.handleContactSelect = this.handleContactSelect.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.handleScroll = this.handleScroll.bind(this);
   }
 
   componentDidMount() {
@@ -56,21 +59,25 @@ class PeopleList extends Component {
     document.removeEventListener('keydown', this.handleKeyDown, false);
   }
 
-  setFocus = () => findDOMNode(this.refs.search).focus();
+  setFocus() {
+    findDOMNode(this.refs.search).focus();
+  }
 
-  handleClose = () => ContactActionCreators.close();
+  handleClose() {
+    ContactActionCreators.close();
+  }
 
-  handleSearchChange = (event) => {
+  handleSearchChange(event) {
     const query = event.target.value;
     this.setState({query});
-  };
+  }
 
-  handleContactSelect = (contact) => {
+  handleContactSelect(contact) {
     DialogActionCreators.selectDialogPeerUser(contact.uid);
     this.handleClose()
-  };
+  }
 
-  handleKeyDown = (event) => {
+  handleKeyDown(event) {
     const { results, selectedIndex } = this.state;
     let index = selectedIndex;
 
@@ -143,9 +150,11 @@ class PeopleList extends Component {
         break;
       default:
     }
-  };
+  }
 
-  handleScroll = (top) => this.refs.results.scrollTo(top);
+  handleScroll(top)  {
+    this.refs.results.scrollTo(top);
+  }
 
   getPeople() {
     const { query, contacts } = this.state;
@@ -160,18 +169,17 @@ class PeopleList extends Component {
   }
 
   renderPeople() {
-    const { intl } = this.context;
     const { contacts, selectedIndex } = this.state;
 
     if (!contacts.length) {
-      return <div>{intl.messages['modal.contacts.loading']}</div>;
+      return <div><FormattedMessage id="modal.contacts.loading"/></div>;
     }
 
     const people = this.getPeople();
     if (!people.length) {
       return (
-        <li className="contacts__list__item contacts__list__item--empty text-center">
-          {intl.messages['modal.contacts.notFound']}
+        <li className="result__list__item result__list__item--empty text-center">
+          <FormattedMessage id="modal.contacts.notFound"/>
         </li>
       );
     }
@@ -188,31 +196,52 @@ class PeopleList extends Component {
     ));
   }
 
-  render() {
+  renderSearch() {
     const { query } = this.state;
     const { intl } = this.context;
 
     return (
-      <div className="newmodal newmodal__contacts">
-        <header className="newmodal__header">
-          <h2>{intl.messages['modal.contacts.title']}</h2>
-        </header>
+      <section className="modal__search">
+        <input className="input"
+               onChange={this.handleSearchChange}
+               placeholder={intl.messages['modal.contacts.search']}
+               type="search"
+               ref="search"
+               value={query}/>
+      </section>
+    );
+  }
 
-        <section className="newmodal__search">
-          <input className="newmodal__search__input"
-                 onChange={this.handleSearchChange}
-                 placeholder={intl.messages['modal.contacts.search']}
-                 type="search"
-                 ref="search"
-                 value={query}/>
-        </section>
+  render() {
+    return (
+      <Modal
+        overlayClassName="modal-overlay modal-overlay--white"
+        className="modal modal--fullscreen modal--without-scroll"
+        onRequestClose={this.handleClose}
+        shouldCloseOnOverlayClick={false}
+        isOpen>
 
-        <Scrollbar ref="results">
-          <ul className="newmodal__result contacts__list">
-            {this.renderPeople()}
-          </ul>
-        </Scrollbar>
-      </div>
+        <ModalCloseButton onClick={this.handleClose}/>
+
+        <div className="people-list">
+          <div className="modal__content">
+
+            <header className="modal__header">
+              <FormattedMessage id="modal.contacts.title" tagName="h1"/>
+            </header>
+
+            {this.renderSearch()}
+
+            <div className="modal__body" ref="result">
+              <ul className="result__list">
+                {this.renderPeople()}
+              </ul>
+            </div>
+
+          </div>
+        </div>
+
+      </Modal>
     )
   }
 }

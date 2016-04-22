@@ -5,20 +5,22 @@
 import { debounce } from 'lodash';
 
 import React, { Component, PropTypes } from 'react';
+import Modal from 'react-modal';
 import { findDOMNode } from 'react-dom';
 import { Container } from 'flux/utils';
 import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
-import history from '../../../utils/history';
-import PeerUtils from '../../../utils/PeerUtils';
-import Scrollbar from '../../common/Scrollbar.react';
+import history from '../../utils/history';
+import PeerUtils from '../../utils/PeerUtils';
+// import Scrollbar from '../common/Scrollbar.react';
 
-import { KeyCodes } from '../../../constants/ActorAppConstants';
+import ModalCloseButton from './ModalCloseButton.react';
+import { KeyCodes } from '../../constants/ActorAppConstants';
 
-import GroupListActionCreators from '../../../actions/GroupListActionCreators'
+import GroupListActionCreators from '../../actions/GroupListActionCreators'
 
-import GroupListStore from '../../../stores/GroupListStore';
+import GroupListStore from '../../stores/GroupListStore';
 
-import Group from './Group.react';
+import Group from './groups/Group.react';
 
 class GroupList extends Component {
   constructor(props) {
@@ -195,22 +197,35 @@ class GroupList extends Component {
 
   render() {
     return (
-      <div className="newmodal newmodal__groups">
-        <header className="newmodal__header">
-          <h2><FormattedMessage id="modal.groups.title"/></h2>
-        </header>
+      <Modal
+        overlayClassName="modal-overlay modal-overlay--white"
+        className="modal modal--fullscreen modal--without-scroll"
+        onRequestClose={this.handleClose}
+        shouldCloseOnOverlayClick={false}
+        isOpen>
 
-        <section className="newmodal__search">
-          {this.renderSearchInput()}
-        </section>
+        <ModalCloseButton onClick={this.handleClose}/>
 
-        <Scrollbar ref="results">
-          <div className="newmodal__result group__list">
-            {this.renderLoading()}
-            {this.renderList()}
+        <div className="group-list">
+          <div className="modal__content">
+
+            <header className="modal__header">
+              <FormattedMessage id="modal.groups.title" tagName="h1"/>
+            </header>
+
+            <div className="modal__body">
+              {this.renderSearchInput()}
+
+              <div className="result-list" ref="results">
+                {this.renderLoading()}
+                {this.renderList()}
+              </div>
+            </div>
+
           </div>
-        </Scrollbar>
-      </div>
+        </div>
+
+      </Modal>
     )
   }
 }

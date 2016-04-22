@@ -10,7 +10,8 @@ import ModalStore from '../../stores/ModalStore';
 
 import Profile from './Profile.react';
 import Crop from './Crop.react';
-import GroupList from './GroupList.react';
+import Groups from './Groups.react';
+import Peoples from './Peoples.react';
 import AddContact from './AddContact.react';
 import CreateGroup from './CreateGroup.react';
 import EditGroup from './EditGroup.react';
@@ -18,6 +19,7 @@ import Preferences from './Preferences.react';
 import Invite from './Invite.react';
 import InviteByLink from './InviteByLink.react';
 import QuickSearch from './QuickSearch.react';
+// import Attachment from './Attachment.react';
 
 class ModalsWrapper extends Component {
   static getStores() {
@@ -38,7 +40,9 @@ class ModalsWrapper extends Component {
       case ModalTypes.CROP:
         return <Crop/>;
       case ModalTypes.GROUP_LIST:
-        return <GroupList/>;
+        return <Groups/>;
+      case ModalTypes.PEOPLE_LIST:
+        return <Peoples/>;
       case ModalTypes.ADD_CONTACT:
         return <AddContact/>;
       case ModalTypes.CREATE_GROUP:
@@ -53,6 +57,8 @@ class ModalsWrapper extends Component {
         return <InviteByLink/>;
       case ModalTypes.QUICK_SEARCH:
         return <QuickSearch/>;
+      // case ModalTypes.ATTACHMENT:
+      //   return <Attachment/>;
 
       default:
         console.warn(`Unsupported modal type: ${currentModal}`);

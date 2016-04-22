@@ -46,6 +46,7 @@ class InviteByLink extends Component {
   }
 
   renderControls() {
+    {/* TODO : Implement token copy and revoke functional */}
     return (
       <footer className="modal__footer">
         <button className="button button--rised pull-left hide">
@@ -68,8 +69,9 @@ class InviteByLink extends Component {
         onRequestClose={this.handleClose}
         isOpen>
 
-        <div className="modal__content">
-          <div className="invite-by-link">
+        <div className="invite-by-link">
+          <div className="modal__content">
+
             <header className="modal__header">
               <SvgIcon
                 className="modal__header__icon icon icon--blue"
@@ -87,8 +89,12 @@ class InviteByLink extends Component {
                 row="3"
                 value={inviteUrl}/>
             </div>
+
+            {/*{this.renderControls()}*/}
+
           </div>
         </div>
+
       </Modal>
     );
   }
