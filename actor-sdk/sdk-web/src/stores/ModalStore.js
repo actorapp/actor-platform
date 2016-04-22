@@ -92,7 +92,6 @@ class ModalStore extends ReduceStore {
         }
 
       case ActionTypes.BLOCKED_USERS_OPEN:
-        console.debug('ActionTypes.BLOCKED_USERS_OPEN')
         return {
           ...state,
           currentModal: ModalTypes.BLOCKED_USERS

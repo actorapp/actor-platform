@@ -3,7 +3,6 @@
  */
 
 import React, { Component, PropTypes } from 'react';
-import { findDOMNode } from 'react-dom';
 import Modal from 'react-modal';
 import { Container } from 'flux/utils';
 import fuzzaldrin from 'fuzzaldrin';
