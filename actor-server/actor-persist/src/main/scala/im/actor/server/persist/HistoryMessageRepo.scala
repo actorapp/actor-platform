@@ -101,6 +101,17 @@ object HistoryMessageRepo {
   def findAfter(userId: Int, peer: Peer, date: DateTime, limit: Long) =
     afterC((userId, peer.typ.value, peer.id, date, limit)).result
 
+  private val metaAfterC = Compiled { (userId: Rep[Int], peerType: Rep[Int], peerId: Rep[Int], date: Rep[DateTime], limit: ConstColumn[Long]) ⇒
+    byUserIdPeer(userId, peerType, peerId)
+      .filter(_.date >= date)
+      .sortBy(_.date.asc)
+      .take(limit)
+      .map(hm ⇒ (hm.randomId, hm.date, hm.senderUserId, hm.messageContentHeader))
+  }
+
+  def findMetaAfter(userId: Int, peer: Peer, date: DateTime, limit: Long) =
+    metaAfterC((userId, peer.typ.value, peer.id, date, limit)).result
+
   private val beforeC = Compiled { (userId: Rep[Int], peerId: Rep[Int], peerType: Rep[Int], date: Rep[DateTime], limit: ConstColumn[Long]) ⇒
     byUserIdPeer(userId, peerType, peerId)
       .filter(_.date <= date)
