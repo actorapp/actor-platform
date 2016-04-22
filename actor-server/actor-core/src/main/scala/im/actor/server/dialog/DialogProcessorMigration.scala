@@ -22,9 +22,12 @@ trait DialogProcessorMigration extends Processor[DialogState] {
   val peer: Peer
   private val db = DbExtension(context.system).db
 
-  override def afterCommit(e: Event) = e match {
-    case Initialized() ⇒ needMigrate = false
-    case _             ⇒
+  override def afterCommit(e: Event) = {
+    super.afterCommit(e)
+    e match {
+      case Initialized() ⇒ needMigrate = false
+      case _             ⇒
+    }
   }
 
   override protected def onRecoveryCompleted(): Unit = {
