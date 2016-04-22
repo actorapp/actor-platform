@@ -182,7 +182,7 @@ public class GroupAvatarChangeActor extends ModuleActor {
             RemoveAvatar removeAvatar = (RemoveAvatar) message;
             removeAvatar(removeAvatar.getGid());
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 

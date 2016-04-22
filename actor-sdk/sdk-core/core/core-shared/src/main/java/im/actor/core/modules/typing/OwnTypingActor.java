@@ -104,7 +104,7 @@ public class OwnTypingActor extends ModuleActor {
         } else if (message instanceof AbortTyping) {
             onAbortTyping(((AbortTyping) message).getPeer());
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 

@@ -66,7 +66,7 @@ public class SearchActor extends ModuleActor {
         } else if (message instanceof Clear) {
             clear();
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 

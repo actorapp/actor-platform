@@ -139,7 +139,7 @@ public class PersistentRequestsActor extends ModuleActor {
             onNewCursorRequest(cursorRequest.getName(), cursorRequest.getKey(),
                     cursorRequest.getRequest());
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 
