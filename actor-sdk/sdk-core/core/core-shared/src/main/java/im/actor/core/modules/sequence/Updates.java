@@ -55,7 +55,9 @@ public class Updates extends AbsModule implements BusSubscriber {
     }
 
     public void onPushReceived(int seq) {
-        updateActor.send(new SequenceActor.PushSeq(seq));
+        if (updateActor != null) {
+            updateActor.send(new SequenceActor.PushSeq(seq));
+        }
     }
 
     public void onSeqUpdateReceived(int seq, byte[] state, Update update) {
