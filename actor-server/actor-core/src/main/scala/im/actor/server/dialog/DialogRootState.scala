@@ -61,11 +61,13 @@ private[dialog] case class ActiveDialogs(
   dms:        SortedSet[SortableDialog]
 ) {
   def withPeer(sd: SortableDialog) = {
-    sd.peer.typ match {
-      case PeerType.Private ⇒ copy(dms = dms + sd)
-      case PeerType.Group   ⇒ copy(groups = groups + sd)
-      case unknown          ⇒ throw new PeerErrors.UnknownPeerType(unknown)
-    }
+    if (favourites.exists(_.peer == sd.peer)) this
+    else
+      sd.peer.typ match {
+        case PeerType.Private ⇒ copy(dms = dms + sd)
+        case PeerType.Group   ⇒ copy(groups = groups + sd)
+        case unknown          ⇒ throw new PeerErrors.UnknownPeerType(unknown)
+      }
   }
 
   def withoutPeer(sd: SortableDialog) = {
@@ -157,27 +159,28 @@ private[dialog] final case class DialogRootState(
   }
 
   private def withShownPeer(ts: Instant, peer: Peer): DialogRootState = {
-    val sortableDialog = SortableDialog(ts, peer)
-
     if (this.activePeers.exists(_.ts == ts)) withShownPeer(ts.plusMillis(1), peer)
-    else
+    else {
+      val sortableDialog = SortableDialog(ts, peer)
+
       copy(
         activePeers = this.activePeers + sortableDialog,
         active = this.active.withPeer(sortableDialog),
-        archived = this.archived - sortableDialog
+        archived = this.archived.filterNot(_.peer == peer)
       )
+    }
   }
 
   private def withArchivedPeer(ts: Instant, peer: Peer): DialogRootState = {
-    val sortableDialog = SortableDialog(ts, peer)
-
     if (archived.exists(_.ts == ts)) withArchivedPeer(ts.plusMillis(1), peer)
-    else
+    else {
+      val sortableDialog = SortableDialog(ts, peer)
       copy(
-        activePeers = this.activePeers - sortableDialog,
+        activePeers = this.activePeers.filterNot(_.peer == peer),
         active = this.active.withoutPeer(sortableDialog),
         archived = this.archived + sortableDialog
       )
+    }
   }
 
   private def withFavouritedPeer(ts: Instant, peer: Peer): DialogRootState = {
