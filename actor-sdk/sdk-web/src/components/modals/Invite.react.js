@@ -3,6 +3,7 @@
  */
 
 import React, { Component, PropTypes } from 'react';
+import { findDOMNode } from 'react-dom';
 import Modal from 'react-modal';
 import { Container } from 'flux/utils';
 import fuzzaldrin from 'fuzzaldrin';
@@ -123,6 +124,7 @@ class InviteUser extends Component {
         <i className="material-icons">search</i>
         <input className="input"
                onChange={this.onSearchChange}
+               ref="search"
                placeholder={intl.messages['invite.search']}
                type="search"
                value={search}/>

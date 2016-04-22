@@ -192,6 +192,13 @@ export default {
         },
         delete: 'Delete this group?',
         kick: 'Kick this user?'
+      },
+      blockedUsers: {
+        title: 'Blocked users',
+        notExists: 'You haven\'t block anyone.',
+        notFound: 'Sorry, no users were found.',
+        search: 'Search for contacts or usernames',
+        unblock: 'Unblock'
       }
     },
 
@@ -230,12 +237,6 @@ export default {
     'integrationToken': 'Integration Token',
     'integrationTokenHint': 'If you have programming chops, or know someone who does — this integration token allows the biggest amount of flexibility and communication with your own systems.',
     'integrationTokenHelp': 'Learn how to integrate',
-
-    'blockedUsersTitle': 'Blocked users',
-    'blockedUsersNotExists': 'You haven\'t block anyone.',
-    'blockedUsersNotFound': 'Sorry, no users were found.',
-    'blockedUsersSearch': 'Search for contacts or usernames',
-    'blockedUsersUnblock': 'Unblock',
 
     // Sidebar
     'sidebar': {

@@ -20,6 +20,7 @@ import Invite from './Invite.react';
 import InviteByLink from './InviteByLink.react';
 import QuickSearch from './QuickSearch.react';
 import Attachments from './Attachments.react';
+import BlockedUsers from './BlockedUsers.react';
 
 class ModalsWrapper extends Component {
   static getStores() {
@@ -59,6 +60,8 @@ class ModalsWrapper extends Component {
         return <QuickSearch/>;
       case ModalTypes.ATTACHMENTS:
         return <Attachments/>;
+      case ModalTypes.BLOCKED_USERS:
+        return <BlockedUsers/>;
 
       default:
         console.warn(`Unsupported modal type: ${currentModal}`);

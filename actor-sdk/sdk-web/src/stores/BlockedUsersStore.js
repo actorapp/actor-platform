@@ -9,7 +9,6 @@ import { ActionTypes } from '../constants/ActorAppConstants';
 class BlockedUsersStore extends ReduceStore {
   getInitialState() {
     return {
-      isOpen: false,
       users: [],
       query: null
     };
@@ -17,12 +16,6 @@ class BlockedUsersStore extends ReduceStore {
 
   reduce(state, action) {
     switch (action.type) {
-      case ActionTypes.BLOCKED_USERS_OPEN:
-        return {
-          ...state,
-          isOpen: true
-        };
-
       case ActionTypes.BLOCKED_USERS_HIDE:
         return this.getInitialState();
 
