@@ -5,7 +5,7 @@ import java.time.Instant
 import akka.actor.Status
 import akka.pattern.pipe
 import akka.persistence.SnapshotMetadata
-import im.actor.server.cqrs.{Event, Processor}
+import im.actor.server.cqrs.{ Event, Processor }
 import im.actor.server.db.DbExtension
 import im.actor.server.model.DialogObsolete
 import im.actor.server.persist.dialog.DialogRepo
@@ -78,8 +78,8 @@ trait DialogRootMigration extends Processor[DialogRootState] {
     }
 
     val events: List[Event] = Initialized(Instant.now()) +: (created ++ archived ++ favourited).toList
-    persistAll(events)(_ => ())
-    deferAsync(()) { _ =>
+    persistAll(events)(_ ⇒ ())
+    deferAsync(()) { _ ⇒
       events foreach (e ⇒ commit(e))
       onComplete
     }
