@@ -2,7 +2,7 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { Container } from 'flux/utils';
 import classnames from 'classnames';
 import ActorClient from '../../utils/ActorClient';
@@ -11,7 +11,7 @@ import confirm from '../../utils/confirm'
 import SharedContainer from '../../utils/SharedContainer';
 import { FormattedMessage } from 'react-intl';
 
-import MyProfileActions from '../../actions/MyProfileActionCreators';
+import ProfileActionCreators from '../../actions/ProfileActionCreators';
 import CreateGroupActionCreators from '../../actions/CreateGroupActionCreators';
 import LoginActionCreators from '../../actions/LoginActionCreators';
 import HelpActionCreators from '../../actions/HelpActionCreators';
@@ -19,21 +19,18 @@ import AddContactActionCreators from '../../actions/AddContactActionCreators';
 import PreferencesActionCreators from '../../actions/PreferencesActionCreators';
 import BlockedUsersActionCreators from '../../actions/BlockedUsersActionCreators';
 
-import MyProfileStore from '../../stores/MyProfileStore';
-import CreateGroupStore from '../../stores/CreateGroupStore';
-import AddContactStore from '../../stores/AddContactStore';
-import PreferencesStore from '../../stores/PreferencesStore';
+import ProfileStore from '../../stores/ProfileStore';
 
 import SvgIcon from '../common/SvgIcon.react';
 import AvatarItem from '../common/AvatarItem.react';
-import CreateGroupModal from '../modals/CreateGroup';
-import MyProfileModal from '../modals/MyProfile.react';
-import AddContactModal from '../modals/AddContact.react';
-import PreferencesModal from '../modals/Preferences.react';
 
 class HeaderSection extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      isOpened: false
+    }
 
     this.openHelp = this.openHelp.bind(this);
     this.openTwitter = this.openTwitter.bind(this);
@@ -42,25 +39,13 @@ class HeaderSection extends Component {
   }
 
   static getStores() {
-    return [MyProfileStore, CreateGroupStore, AddContactStore, PreferencesStore];
+    return [ProfileStore];
   }
 
   static calculateState() {
     return {
-      profile: MyProfileStore.getProfile(),
-      isMyProfileOpen: MyProfileStore.isModalOpen(),
-      isAddContactsOpen: AddContactStore.isOpen(),
-      isCreateGroupOpen: CreateGroupStore.isModalOpen(),
-      isPreferencesOpen: PreferencesStore.isOpen()
+      profile: ProfileStore.getProfile()
     }
-  }
-
-  static contextTypes = {
-    intl: PropTypes.object
-  };
-
-  componentWillMount() {
-    this.setState({ isOpened: false });
   }
 
   toggleHeaderMenu = () => {
@@ -79,7 +64,7 @@ class HeaderSection extends Component {
     document.removeEventListener('click', this.closeHeaderMenu, false);
   };
 
-  openMyProfile = () => MyProfileActions.show();
+  openMyProfile = () => ProfileActionCreators.show();
   openCreateGroup = () => CreateGroupActionCreators.open();
   openBlockedUsers = () => BlockedUsersActionCreators.open();
   openAddContactModal = () => AddContactActionCreators.open();
@@ -123,8 +108,7 @@ class HeaderSection extends Component {
   }
 
   setLogout = () => {
-    const { intl } = this.context;
-    confirm(intl.messages['modal.confirm.logout']).then(
+    confirm(<FormattedMessage id="modal.confirm.logout"/>).then(
       () => LoginActionCreators.setLoggedOut(),
       () => {}
     );
@@ -196,7 +180,7 @@ class HeaderSection extends Component {
   }
 
   render() {
-    const { profile, isOpened, isMyProfileOpen, isCreateGroupOpen, isAddContactsOpen, isPreferencesOpen } = this.state;
+    const { profile, isOpened } = this.state;
 
     if (!profile) return null;
 
@@ -255,15 +239,6 @@ class HeaderSection extends Component {
             </ul>
           </div>
         </div>
-
-
-        {/* Modals */}
-        {/* TODO: Move all modals to other place */}
-        {isMyProfileOpen ? <MyProfileModal/> : null}
-        {isCreateGroupOpen ? <CreateGroupModal/> : null}
-        {isAddContactsOpen ? <AddContactModal/> : null}
-        {isPreferencesOpen ? <PreferencesModal/> : null}
-
       </header>
     );
 

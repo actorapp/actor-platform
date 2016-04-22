@@ -189,7 +189,9 @@ export default {
         'nonContactHide': {
           'title': 'Are you sure you want to hide this conversation?',
           'body': 'User {name} isn\'t in your contact list.'
-        }
+        },
+        delete: 'Delete this group?',
+        kick: 'Kick this user?'
       }
     },
 
@@ -229,44 +231,11 @@ export default {
     'integrationTokenHint': 'If you have programming chops, or know someone who does — this integration token allows the biggest amount of flexibility and communication with your own systems.',
     'integrationTokenHelp': 'Learn how to integrate',
 
-    // Modals
-    'inviteModalTitle': 'Add more people',
-    'inviteModalSearch': 'Search for contacts or usernames',
-    'inviteModalNotFound': 'Sorry, no users were found.',
-    'inviteByLink': 'Invite to group by link',
-    'inviteByLinkModalTitle': 'Invite by link',
-    'inviteByLinkModalDescription': 'Anyone on the web will be able to join ”{groupName}” by opening this link:',
-    'inviteByLinkModalCopyButton': 'Copy link',
-    'inviteByLinkModalRevokeButton': 'Revoke link',
-    'inviteLinkCopied': 'Invitation link copied.',
-
     'blockedUsersTitle': 'Blocked users',
     'blockedUsersNotExists': 'You haven\'t block anyone.',
     'blockedUsersNotFound': 'Sorry, no users were found.',
     'blockedUsersSearch': 'Search for contacts or usernames',
     'blockedUsersUnblock': 'Unblock',
-
-    'preferencesModalTitle': 'Preferences',
-    'preferencesGeneralTab': 'General',
-    'preferencesNotificationsTab': 'Notifications & Sounds',
-    'preferencesSecurityTab': 'Security',
-    'preferencesSendMessageTitle': 'Send message',
-    'preferencesSendMessage': 'send message',
-    'preferencesNewLine': 'new line',
-    'preferencesEffectsTitle': 'Effects',
-    'preferencesEnableEffects': 'Enable sound effects',
-    'preferencesNotificationsTitle': 'Notifications',
-    'preferencesNotificationsGroup': 'Enable group notifications',
-    'preferencesNotificationsOnlyMention': 'Enable mention only notifications',
-    'preferencesNotificationsOnlyMentionHint': 'You can enable notifications only for messages that mention you.',
-    'preferencesPrivacyTitle': 'Privacy',
-    'preferencesMessagePreview': 'Message preview',
-    'preferencesMessagePreviewHint': 'Remove message text from notifications.',
-    'preferencesSessionsTitle': 'Active sessions',
-    'preferencesSessionsCurrentSession': 'Current session',
-    'preferencesSessionsAuthTime': 'Auth time',
-    'preferencesSessionsTerminate': 'Kill',
-    'preferencesSessionsTerminateAll': 'Terminate all sessions',
 
     // Sidebar
     'sidebar': {
@@ -292,6 +261,7 @@ export default {
         'empty': 'There is no one in your network yet'
       }
     },
+
     'main': {
       'empty': 'Try to be better than yesterday!',
       'install': '<h1>The Web version of <b>{appName}</b> works only in desktop browsers at this time</h1>' +
@@ -300,6 +270,59 @@ export default {
       'deactivated': {
         'header': 'Tab deactivated',
         'text': 'Oops, we have detected another tab with {appName}, so we had to deactivate this one to prevent you from dangerous things happening.'
+      }
+    },
+
+    preferences: {
+      title: 'Preferences',
+      general: {
+        title: 'General',
+        send: {
+          title: 'Send message',
+          sendMessage: 'send message',
+          newLine: 'new line'
+        }
+      },
+      notifications: {
+        title: 'Notifications & Sounds',
+        effects: {
+          title: 'Effects',
+          enable: 'Enable sound effects'
+        },
+        notification: {
+          title: 'Notifications',
+          enable: 'Enable group notifications',
+          onlyMentionEnable: 'Enable mention only notifications',
+          onlyMentionHint: 'You can enable notifications only for messages that contains you mention.'
+        },
+        privacy: {
+          title: 'Privacy',
+          messagePreview: 'Message preview',
+          messagePreviewHint: 'Remove message text from notifications.'
+        }
+      },
+      security: {
+        title: 'Security',
+        sessions: {
+          title: 'Active sessions',
+          current: 'Current session',
+          authTime: 'Auth time',
+          terminate: 'Kill',
+          terminateAll: 'Terminate all sessions'
+        }
+      }
+    },
+
+    invite: {
+      title: 'Add more people',
+      search: 'Search for contacts or usernames',
+      notFound: 'Sorry, no users were found.',
+      inviteByLink: 'Invite to group by link',
+      byLink: {
+        title: 'Invite by link',
+        description: 'Anyone on the web will be able to join ”<b>{groupName}</b>” by opening this link:',
+        copy: 'Copy link',
+        revoke: 'Revoke link'
       }
     },
 
@@ -313,11 +336,8 @@ export default {
       end: 'End call',
       addUser: 'Add user',
       fullScreen: 'Fullscreen',
-      video: 'Video'
-    },
-
-    toolbar: {
-      callState: {
+      video: 'Video',
+      state: {
         calling: 'calling',
         connecting: 'connecting',
         in_progress: 'On call: {time}',

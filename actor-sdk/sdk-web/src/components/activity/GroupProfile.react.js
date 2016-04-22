@@ -256,23 +256,12 @@ class GroupProfile extends Component {
                 </footer>
               </li>
 
-              <li className="profile__list__item group_profile__media no-p hide">
-                <Fold icon="attach_file" iconClassName="icon--gray" title={intl.messages['sharedMedia']}>
-                  <ul>
-                    <li><a>230 Shared Photos and Videos</a></li>
-                    <li><a>49 Shared Links</a></li>
-                    <li><a>49 Shared Files</a></li>
-                  </ul>
-                </Fold>
-              </li>
-
               <li className="profile__list__item group_profile__notifications no-p">
                 <ToggleNotifications isNotificationsEnabled={isNotificationsEnabled} onNotificationChange={this.onNotificationChange}/>
               </li>
 
               <li className="profile__list__item group_profile__members no-p">
-                <Fold iconElement={iconElement}
-                      title={message}>
+                <Fold iconElement={iconElement} title={message}>
                   <GroupProfileMembers groupId={group.id} members={group.members}/>
                 </Fold>
               </li>

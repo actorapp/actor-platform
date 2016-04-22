@@ -38,7 +38,6 @@ export const ActionTypes = keymirror({
   DIALOGS_CHANGED: null,
   DIALOG_INFO_CHANGED: null,
   TYPING_CHANGED: null,
-  MY_PROFILE_CHANGED: null,
   MESSAGES_CHANGED: null,
   CONNECTION_STATE_CHANGED: null,
 
@@ -70,23 +69,25 @@ export const ActionTypes = keymirror({
   ACTIVITY_HIDE: null,
 
   // Contact actions
-  CONTACT_ADD: null,
-  CONTACT_REMOVE: null,
   CONTACT_LIST_SHOW: null,
   CONTACT_LIST_HIDE: null,
   CONTACT_LIST_CHANGED: null,
   CONTACT_ADD_MODAL_SHOW: null,
   CONTACT_ADD_MODAL_HIDE: null,
+  CONTACT_ADD: null,
+  CONTACT_ADD_SUCCESS: null,
+  CONTACT_ADD_ERROR: null,
+  CONTACT_REMOVE: null,
+  CONTACT_REMOVE_SUCCESS: null,
+  CONTACT_REMOVE_ERROR: null,
   CONTACT_FIND: null,
   CONTACT_FIND_SUCCESS: null,
   CONTACT_FIND_ERROR: null,
-  CONTACT_LIST_SEARCH: null,
 
   // Group actions
-  GROUP_CREATE_MODAL_OPEN: null,
-  GROUP_CREATE_MODAL_CLOSE: null,
+  GROUP_CREATE_MODAL_SHOW: null,
+  GROUP_CREATE_MODAL_HIDE: null,
   GROUP_CREATE_SET_NAME: null,
-  //GROUP_CREATE_SET_AVATAR: null,
   GROUP_CREATE_SET_MEMBERS: null,
   GROUP_CREATE: null,
   GROUP_CREATE_SUCCESS: null,
@@ -96,7 +97,6 @@ export const ActionTypes = keymirror({
   GROUP_EDIT_TITLE: null,
   GROUP_EDIT_TITLE_SUCCESS: null,
   GROUP_EDIT_TITLE_ERROR: null,
-  GROUP_INFO_CHANGED: null,
   GROUP_EDIT_ABOUT: null,
   GROUP_EDIT_ABOUT_SUCCESS: null,
   GROUP_EDIT_ABOUT_ERROR: null,
@@ -118,13 +118,13 @@ export const ActionTypes = keymirror({
   GROUP_JOIN_VIA_LINK: null,
   GROUP_JOIN_VIA_LINK_SUCCESS: null,
   GROUP_JOIN_VIA_LINK_ERROR: null,
+  GROUP_INFO_CHANGED: null,
 
   GROUP_LIST_SHOW: null,
   GROUP_LIST_HIDE: null,
   GROUP_LIST_LOAD: null,
   GROUP_LIST_LOAD_SUCCESS: null,
   GROUP_LIST_LOAD_ERROR: null,
-  GROUP_LIST_SEARCH: null,
 
   NOTIFICATION_CHANGE: null,
 
@@ -142,14 +142,13 @@ export const ActionTypes = keymirror({
   INVITE_USER_MODAL_HIDE: null,
   INVITE_USER_BY_LINK_MODAL_SHOW: null,
   INVITE_USER_BY_LINK_MODAL_HIDE: null,
-  INVITE_USER_QUERY_CHANGE: null,
   INVITE_USER: null,
   INVITE_USER_SUCCESS: null,
   INVITE_USER_ERROR: null,
 
-  PREFERENCES_SAVE: null,
-  PREFERENCES_MODAL_HIDE: null,
   PREFERENCES_MODAL_SHOW: null,
+  PREFERENCES_MODAL_HIDE: null,
+  PREFERENCES_SAVE: null,
   PREFERENCES_CHANGE_TAB: null,
   PREFERENCES_SESSION_LOAD: null,
   PREFERENCES_SESSION_LOAD_SUCCESS: null,
@@ -161,20 +160,27 @@ export const ActionTypes = keymirror({
   PREFERENCES_SESSION_TERMINATE_ALL_SUCCESS: null,
   PREFERENCES_SESSION_TERMINATE_ALL_ERROR: null,
 
-  MY_PROFILE_MODAL_SHOW: null,
-  MY_PROFILE_MODAL_HIDE: null,
-  MY_PROFILE_SAVE_NAME: null,
-  MY_PROFILE_SAVE_NICKNAME: null,
-  MY_PROFILE_EDIT_ABOUT: null,
-  MY_PROFILE_EDIT_ABOUT_SUCCESS: null,
-  MY_PROFILE_EDIT_ABOUT_ERROR: null,
+  // Profile
+
+  PROFILE_SHOW: null,
+  PROFILE_HIDE: null,
+  PROFILE_CHANGED: null,
+  PROFILE_EDIT_NAME: null,
+  PROFILE_EDIT_NAME_SUCCESS: null,
+  PROFILE_EDIT_NAME_ERROR: null,
+  PROFILE_EDIT_NICK: null,
+  PROFILE_EDIT_NICK_SUCCESS: null,
+  PROFILE_EDIT_NICK_ERROR: null,
+  PROFILE_EDIT_ABOUT: null,
+  PROFILE_EDIT_ABOUT_SUCCESS: null,
+  PROFILE_EDIT_ABOUT_ERROR: null,
+
+  CROP_MODAL_SHOW: null,
+  CROP_MODAL_HIDE: null,
 
   KICK_USER: null,
   KICK_USER_SUCCESS: null,
   KICK_USER_ERROR: null,
-
-  CROP_AVATAR_MODAL_SHOW: null,
-  CROP_AVATAR_MODAL_HIDE: null,
 
   QUICK_SEARCH_SHOW: null,
   QUICK_SEARCH_HIDE: null,
@@ -362,6 +368,28 @@ export const LoggerTypes = {
   DEBUG: 'd'
 };
 
+export const ModalTypes = keymirror({
+  PROFILE: null,
+  CROP: null,
+  GROUP_LIST: null,
+  PEOPLE_LIST: null,
+  ADD_CONTACT: null,
+  CREATE_GROUP: null,
+  EDIT_GROUP: null,
+  PREFERENCES: null,
+  INVITE: null,
+  INVITE_BY_LINK: null,
+  QUICK_SEARCH: null,
+  ATTACHMENTS: null
+});
+
+export const PreferencesTabTypes = keymirror({
+  GENERAL: null,
+  NOTIFICATIONS: null,
+  SECURITY: null
+});
+
+
 export const Path = {
   toImages: 'assets/images',
   toEmoji: 'assets/images/emoji'
@@ -390,6 +418,8 @@ export default {
   MessageContentTypes,
   KeyCodes,
   AsyncActionStates,
+  ModalTypes,
+  PreferencesTabTypes,
   Path,
   endpoints,
   appName,

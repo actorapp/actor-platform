@@ -25,13 +25,8 @@ import OnlineStore from '../../stores/OnlineStore';
 import AvatarItem from '../common/AvatarItem.react';
 import ContactDetails from '../common/ContactDetails.react';
 import ToggleNotifications from '../common/ToggleNotifications.react';
-import Fold from '../common/Fold.react';
 
 class UserProfile extends Component {
-  static contextTypes = {
-    intl: PropTypes.object
-  };
-
   static propTypes = {
     user: PropTypes.object.isRequired
   };
@@ -63,16 +58,24 @@ class UserProfile extends Component {
     this.onDeleteChat = this.onDeleteChat.bind(this);
     this.onBlockUser = this.onBlockUser.bind(this);
     this.onRemoveFromContacts = this.onRemoveFromContacts.bind(this);
+    this.onAddToContacts = this.onAddToContacts.bind(this);
+    this.onNotificationChange = this.onNotificationChange.bind(this);
+    this.closeActionsDropdown = this.closeActionsDropdown.bind(this);
+    this.toggleActionsDropdown = this.toggleActionsDropdown.bind(this);
+    this.handleAvatarClick = this.handleAvatarClick.bind(this);
+    this.makeCall = this.makeCall.bind(this);
   }
 
-  addToContacts = () => ContactActionCreators.addContact(this.props.user.id);
+  onAddToContacts() {
+     ContactActionCreators.addContact(this.props.user.id);
+  }
 
-  onNotificationChange = (event) => {
+  onNotificationChange(event) {
     const { peer } = this.state;
     NotificationsActionCreators.changeNotificationsEnabled(peer, event.target.checked);
-  };
+  }
 
-  toggleActionsDropdown = () => {
+  toggleActionsDropdown() {
     const { isActionsDropdownOpen } = this.state;
 
     if (!isActionsDropdownOpen) {
@@ -81,12 +84,12 @@ class UserProfile extends Component {
     } else {
       this.closeActionsDropdown();
     }
-  };
+  }
 
-  closeActionsDropdown = () => {
+  closeActionsDropdown() {
     this.setState({ isActionsDropdownOpen: false });
     document.removeEventListener('click', this.closeActionsDropdown, false);
-  };
+  }
 
   onClearChat() {
     const { user } = this.props;
@@ -136,16 +139,46 @@ class UserProfile extends Component {
     );
   }
 
-  handleAvatarClick = () => lightbox.open(this.props.user.bigAvatar);
+  handleAvatarClick() {
+    lightbox.open(this.props.user.bigAvatar)
+  }
 
-  makeCall = () => {
+  makeCall() {
     const { user } = this.props;
     CallActionCreators.makeCall(user.id);
-  };
+  }
+
+  renderAbout() {
+    const { about } = this.props.user;
+    if (!about) return null;
+
+    return (
+      <div
+        className="user_profile__meta__about"
+        dangerouslySetInnerHTML={{ __html: escapeWithEmoji(about).replace(/\n/g, '<br/>') }}/>
+    )
+  }
+
+  renderToggleContact() {
+    const { isContact } = this.props.user;
+
+    if (isContact) {
+      return (
+        <li className="dropdown__menu__item" onClick={this.onRemoveFromContacts}>
+          <FormattedMessage id="removeFromContacts"/>
+        </li>
+      );
+    }
+
+    return (
+      <li className="dropdown__menu__item" onClick={this.onAddToContacts}>
+        <FormattedMessage id="addToContacts"/>
+      </li>
+    );
+  }
 
   render() {
     const { user } = this.props;
-    const { intl } = this.context;
     const { isNotificationsEnabled, isActionsDropdownOpen, message } = this.state;
 
     const dropdownClassNames = classnames('dropdown', {
@@ -168,18 +201,13 @@ class UserProfile extends Component {
               <div className="user_profile__meta__message">{message}</div>
             </header>
 
-            {
-              user.about
-                ? <div className="user_profile__meta__about"
-                       dangerouslySetInnerHTML={{ __html: escapeWithEmoji(user.about).replace(/\n/g, '<br/>') }}/>
-                : null
-            }
+            {this.renderAbout()}
 
             <footer className="row">
               <div className="col-xs">
                 <button className="button button--green button--wide" onClick={this.makeCall}>
                   <i className="material-icons">phone</i>
-                  {intl.messages['button.call']}
+                  <FormattedMessage id="button.call"/>
                 </button>
               </div>
               <div style={{ width: 10 }}/>
@@ -187,26 +215,18 @@ class UserProfile extends Component {
                 <div className={dropdownClassNames}>
                   <button className="dropdown__button button button--flat button--wide" onClick={this.toggleActionsDropdown}>
                     <i className="material-icons">more_horiz</i>
-                    {intl.messages['actions']}
+                    <FormattedMessage id="actions"/>
                   </button>
                   <ul className="dropdown__menu dropdown__menu--right">
-                    {
-                      user.isContact
-                        ? <li className="dropdown__menu__item" onClick={this.onRemoveFromContacts}>
-                            {intl.messages['removeFromContacts']}
-                          </li>
-                        : <li className="dropdown__menu__item" onClick={this.addToContacts}>
-                            {intl.messages['addToContacts']}
-                          </li>
-                    }
+                    {this.renderToggleContact()}
                     <li className="dropdown__menu__item" onClick={this.onBlockUser}>
-                      {intl.messages['blockUser']}
+                      <FormattedMessage id="blockUser"/>
                     </li>
                     <li className="dropdown__menu__item" onClick={this.onClearChat}>
-                      {intl.messages['clearConversation']}
+                      <FormattedMessage id="clearConversation"/>
                     </li>
                     <li className="dropdown__menu__item" onClick={this.onDeleteChat}>
-                      {intl.messages['deleteConversation']}
+                      <FormattedMessage id="deleteConversation"/>
                     </li>
                   </ul>
                 </div>
@@ -218,18 +238,10 @@ class UserProfile extends Component {
             <ContactDetails peerInfo={user}/>
           </li>
 
-          <li className="profile__list__item user_profile__media no-p hide">
-            <Fold icon="attach_file" iconClassName="icon--gray" title={intl.messages['sharedMedia']}>
-              <ul>
-                <li><a>230 Shared Photos and Videos</a></li>
-                <li><a>49 Shared Links</a></li>
-                <li><a>49 Shared Files</a></li>
-              </ul>
-            </Fold>
-          </li>
-
           <li className="profile__list__item user_profile__notifications no-p">
-            <ToggleNotifications isNotificationsEnabled={isNotificationsEnabled} onNotificationChange={this.onNotificationChange}/>
+            <ToggleNotifications
+              isNotificationsEnabled={isNotificationsEnabled}
+              onNotificationChange={this.onNotificationChange}/>
           </li>
 
         </ul>
