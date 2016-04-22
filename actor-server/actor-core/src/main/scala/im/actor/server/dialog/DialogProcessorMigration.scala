@@ -4,9 +4,10 @@ import java.time.Instant
 
 import akka.actor.Status
 import akka.pattern.pipe
-import im.actor.server.cqrs.{ Event, Processor }
+import akka.persistence.SnapshotMetadata
+import im.actor.server.cqrs.{Event, Processor}
 import im.actor.server.db.DbExtension
-import im.actor.server.model.{ DialogObsolete, Peer }
+import im.actor.server.model.{DialogObsolete, Peer}
 import im.actor.server.persist.HistoryMessageRepo
 import im.actor.server.persist.dialog.DialogRepo
 
@@ -28,6 +29,11 @@ trait DialogProcessorMigration extends Processor[DialogState] {
       case Initialized() ⇒ needMigrate = false
       case _             ⇒
     }
+  }
+
+  override protected def afterSnapshotApply(metadata: SnapshotMetadata, snapshot: Any): Unit = {
+    super.afterSnapshotApply(metadata, snapshot)
+    needMigrate = false
   }
 
   override protected def onRecoveryCompleted(): Unit = {
