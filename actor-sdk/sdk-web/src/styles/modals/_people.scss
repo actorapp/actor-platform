@@ -1,0 +1,8 @@
+.people-list {
+  .result-list__item {
+    &--active {
+      cursor: pointer;
+      text-shadow: 0 1px 1px rgb(34, 117, 215);
+    }
+  }
+}

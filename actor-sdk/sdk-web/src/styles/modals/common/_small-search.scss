@@ -1,0 +1,33 @@
+.small-search {
+  position: relative;
+  .material-icons {
+    font-size: 18px;
+    line-height: 24px;
+
+    position: absolute;
+    top: 6px;
+    left: 8px;
+
+    pointer-events: none;
+
+    color: rgba(black, .25);
+  }
+  .input {
+    font-size: 14px;
+    line-height: 32px;
+
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0;
+    padding-left: 30px;
+
+    color: rgba(black, .4);
+    border: 1px solid $cloudy-blue;
+    border-radius: 2px;
+    outline: none !important;
+    background-color: white;
+    &:focus {
+      color: $greyish-brown;
+    }
+  }
+}
