@@ -103,7 +103,7 @@ object HistoryMessageRepo {
 
   private val metaAfterC = Compiled { (userId: Rep[Int], peerType: Rep[Int], peerId: Rep[Int], date: Rep[DateTime], limit: ConstColumn[Long]) ⇒
     byUserIdPeer(userId, peerType, peerId)
-      .filter(_.date >= date)
+      .filter(_.date > date)
       .sortBy(_.date.asc)
       .take(limit)
       .map(hm ⇒ (hm.randomId, hm.date, hm.senderUserId, hm.messageContentHeader))
