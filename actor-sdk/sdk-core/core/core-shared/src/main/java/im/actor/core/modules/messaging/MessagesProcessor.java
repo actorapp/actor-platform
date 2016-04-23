@@ -9,24 +9,18 @@ import java.util.List;
 
 import im.actor.core.api.ApiDialogGroup;
 import im.actor.core.api.ApiMessage;
-import im.actor.core.api.ApiMessageContainer;
 import im.actor.core.api.ApiMessageReaction;
-import im.actor.core.api.ApiMessageState;
 import im.actor.core.api.ApiPeer;
-import im.actor.core.api.rpc.ResponseLoadArchived;
-import im.actor.core.api.rpc.ResponseLoadHistory;
 import im.actor.core.api.updates.UpdateMessage;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.MessageState;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.Reaction;
 import im.actor.core.entity.content.AbsContent;
-import im.actor.core.entity.content.ServiceUserRegistered;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.messaging.actions.SenderActor;
-import im.actor.core.entity.EntityConverter;
-import im.actor.core.modules.messaging.history.ArchivedDialogsActor;
+import im.actor.runtime.Log;
 import im.actor.runtime.annotations.Verified;
 
 import static im.actor.core.entity.EntityConverter.convert;
@@ -47,6 +41,11 @@ public class MessagesProcessor extends AbsModule {
 
     @Verified
     public void onMessages(ApiPeer _peer, List<UpdateMessage> messages) {
+        onMessages(_peer, messages, false);
+    }
+
+    @Verified
+    public void onMessages(ApiPeer _peer, List<UpdateMessage> messages, boolean isLast) {
 
         Peer peer = convert(_peer);
 
@@ -65,7 +64,7 @@ public class MessagesProcessor extends AbsModule {
         }
 
 
-        context().getMessagesModule().getRouter().onNewMessages(peer, nMessages);
+        context().getMessagesModule().getRouter().onNewMessages(peer, nMessages, isLast);
     }
 
     @Verified
@@ -85,7 +84,7 @@ public class MessagesProcessor extends AbsModule {
 
         ArrayList<Message> messages = new ArrayList<>();
         messages.add(message);
-        context().getMessagesModule().getRouter().onNewMessages(peer, messages);
+        context().getMessagesModule().getRouter().onNewMessages(peer, messages, true);
     }
 
     @Verified

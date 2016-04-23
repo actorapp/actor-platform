@@ -20,7 +20,6 @@ import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.sequence.Processor;
 import im.actor.core.modules.contacts.ContactsSyncActor;
-import im.actor.core.modules.messaging.dialogs.DialogsActor;
 import im.actor.runtime.Log;
 import im.actor.runtime.annotations.Verified;
 
@@ -180,7 +179,7 @@ public class UsersProcessor extends AbsModule implements Processor {
     public void onUserRegistered(long rid, int uid, long date) {
         ArrayList<Message> messages = new ArrayList<>();
         messages.add(new Message(rid, date, date, uid, MessageState.UNKNOWN, ServiceUserRegistered.create()));
-        context().getMessagesModule().getRouter().onNewMessages(Peer.user(uid), messages);
+        context().getMessagesModule().getRouter().onNewMessages(Peer.user(uid), messages, true);
     }
 
     @Override

@@ -187,7 +187,7 @@ public class RouterActor extends ModuleActor {
     // Incoming Messages
     //
 
-    private void onNewMessages(Peer peer, List<Message> messages) {
+    private void onNewMessages(Peer peer, List<Message> messages, boolean isLastInDifference) {
 
         assertTrue(messages.size() != 0);
 
@@ -265,11 +265,10 @@ public class RouterActor extends ModuleActor {
         //
         dialogsActor(new DialogsActor.InMessage(peer, topMessage, state.getUnreadCount()));
 
-
         //
         // Playing notifications
         //
-        if (!isConversationVisible) {
+        if (!isConversationVisible && isLastInDifference) {
             for (Message m : messages) {
                 if (m.getSenderId() != myUid()) {
                     boolean hasCurrentMention = false;
@@ -286,6 +285,10 @@ public class RouterActor extends ModuleActor {
                             hasCurrentMention);
                 }
             }
+        }
+
+        if (isLastInDifference) {
+            onDifferenceEnd();
         }
     }
 
@@ -663,7 +666,7 @@ public class RouterActor extends ModuleActor {
             onAppHidden();
         } else if (message instanceof RouterNewMessages) {
             RouterNewMessages routerNewMessages = (RouterNewMessages) message;
-            onNewMessages(routerNewMessages.getPeer(), routerNewMessages.getMessages());
+            onNewMessages(routerNewMessages.getPeer(), routerNewMessages.getMessages(), routerNewMessages.isLastInDifference());
         } else if (message instanceof RouterOutgoingMessage) {
             RouterOutgoingMessage routerOutgoingMessage = (RouterOutgoingMessage) message;
             onOutgoingMessage(routerOutgoingMessage.getPeer(), routerOutgoingMessage.getMessage());

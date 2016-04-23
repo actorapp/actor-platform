@@ -23,6 +23,7 @@ import im.actor.core.modules.notifications.entity.PendingNotification;
 import im.actor.core.modules.notifications.entity.PendingStorage;
 import im.actor.core.modules.notifications.entity.ReadState;
 import im.actor.core.modules.ModuleActor;
+import im.actor.runtime.Log;
 import im.actor.runtime.Storage;
 import im.actor.runtime.eventbus.Event;
 import im.actor.runtime.storage.SyncKeyValue;
@@ -132,6 +133,7 @@ public class NotificationsActor extends ModuleActor {
      */
     public void onNewMessage(Peer peer, int sender, long date, ContentDescription description,
                              boolean hasCurrentUserMention) {
+        Log.d("PAUSE", "NA - onNewMessage, paused:" + isNotificationsPaused);
 
         // Check if message already read to avoid incorrect notifications
         // for already read messages
