@@ -17,7 +17,8 @@
     flex: 0 0 auto;
   }
   .modal__body {
-    overflow: scroll;
+    overflow-x: hidden;
+    overflow-y: scroll;
 
     box-sizing: border-box;
     padding: 0 $modal-padding;
