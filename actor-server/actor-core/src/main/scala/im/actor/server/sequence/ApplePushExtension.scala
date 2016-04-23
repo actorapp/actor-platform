@@ -39,6 +39,13 @@ final class ApplePushExtension(system: ActorSystem) extends Extension with AnyRe
       .getOrElse(system.settings.config.getConfig("push.apple"))
   )
 
+  // there are some apple push keys, that require topic(bundleId)
+  // to be included in apple push notification. We provide apns key -> bundle id
+  // mapping for them.
+  val apnsBundleId: Map[Int, String] = (config.certs collect {
+    case ApnsCert(Some(key), Some(bundleId), _, _, _, _) ⇒ key → bundleId
+  }).toMap
+
   private val (clients, voipClients): (TrieMap[String, Future[Client]], TrieMap[String, Future[Client]]) = {
     val (certs, voipCerts) = config.certs.partition(!_.isVoip)
     (createClients(certs), createClients(voipCerts))
