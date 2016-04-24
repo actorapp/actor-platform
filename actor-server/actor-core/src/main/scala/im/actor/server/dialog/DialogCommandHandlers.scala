@@ -2,7 +2,7 @@ package im.actor.server.dialog
 
 import java.time.Instant
 
-import akka.actor.{ ActorRef, PoisonPill, Status }
+import akka.actor.Status
 import akka.http.scaladsl.util.FastFuture
 import akka.pattern.pipe
 import com.google.protobuf.wrappers.Int64Value
@@ -27,7 +27,7 @@ trait DialogCommandHandlers extends PeersImplicits with UserACL {
   import DialogCommands._
   import DialogEvents._
 
-  protected def sendMessage(s: DialogState, sm: SendMessage): Unit = {
+  protected def sendMessage(sm: SendMessage): Unit = {
     becomeStashing(replyTo ⇒ ({
       case seq: SeqStateDate ⇒
         persist(NewMessage(sm.randomId, Instant.ofEpochMilli(seq.date), sm.getOrigin.id, sm.message.header)) { e ⇒
@@ -41,7 +41,7 @@ trait DialogCommandHandlers extends PeersImplicits with UserACL {
         replyTo forward fail
         context.become(receiveCommand)
         unstashAll()
-    }: Receive) orElse reactions(state), discardOld = true)
+    }: Receive) orElse reactions, discardOld = true)
 
     withValidAccessHash(sm.getDest, sm.senderAuthId map (_.value), sm.accessHash map (_.value)) {
       withCachedFuture[AuthSidRandomId, SeqStateDate](sm.senderAuthSid → sm.randomId) {
@@ -65,7 +65,7 @@ trait DialogCommandHandlers extends PeersImplicits with UserACL {
     }
   }
 
-  protected def ackSendMessage(s: DialogState, sm: SendMessage): Unit = {
+  protected def ackSendMessage(sm: SendMessage): Unit = {
     val messageDate = sm.date getOrElse {
       throw new RuntimeException("No message date found in SendMessage")
     }
@@ -88,7 +88,6 @@ trait DialogCommandHandlers extends PeersImplicits with UserACL {
   }
 
   protected def writeMessageSelf(
-    s:            DialogState,
     senderUserId: Int,
     dateMillis:   Long,
     randomId:     Long,
@@ -105,7 +104,7 @@ trait DialogCommandHandlers extends PeersImplicits with UserACL {
     }
   }
 
-  protected def messageReceived(state: DialogState, mr: MessageReceived): Unit = {
+  protected def messageReceived(mr: MessageReceived): Unit = {
     val mustReceive = mustMakeReceive(state, mr)
 
     if (mustReceive) {
@@ -127,12 +126,15 @@ trait DialogCommandHandlers extends PeersImplicits with UserACL {
     }
   }
 
-  protected def messageRead(state: DialogState, mr: MessageRead): Unit = {
+  protected def messageRead(mr: MessageRead): Unit = {
     val mustRead = mustMakeRead(state, mr)
+    log.debug(s"mustRead is ${mustRead}")
 
     if (mustRead) {
       persist(MessagesRead(Instant.ofEpochMilli(mr.date), mr.getOrigin.id)) { e ⇒
+        log.debug(s"persisted MessagesRead, origin=${mr.getOrigin.id}, date=${Instant.ofEpochMilli(mr.date)}, counter=${state.counter}, unreadMessages=${state.unreadMessages}")
         commit(e)
+        log.debug(s"after commit: counter=${state.counter}, unreadMessages=${state.unreadMessages}")
 
         (for {
           _ ← dialogExt.ackMessageRead(peer, mr)
@@ -149,13 +151,14 @@ trait DialogCommandHandlers extends PeersImplicits with UserACL {
     require(mr.getOrigin.typ.isPrivate)
     persist(MessagesRead(Instant.ofEpochMilli(mr.date), mr.getOrigin.id)) { e ⇒
       commit(e)
+      log.debug(s"=== new lastReadDate is ${state.lastReadDate}")
       (deliveryExt.notifyRead(userId, peer, mr.date, mr.now) map { _ ⇒ MessageReadAck() }) pipeTo sender() andThen {
         case Failure(err) ⇒ log.error(err, "Failed to ack MessageRead")
       }
     }
   }
 
-  protected def setReaction(state: DialogState, sr: SetReaction): Unit = {
+  protected def setReaction(sr: SetReaction): Unit = {
     (for {
       reactions ← db.run {
         ReactionEventRepo.create(DialogId(peer, userId), sr.randomId, sr.code, userId)
@@ -179,7 +182,7 @@ trait DialogCommandHandlers extends PeersImplicits with UserACL {
     } yield SetReactionAck()) pipeTo sender()
   }
 
-  protected def removeReaction(state: DialogState, rr: RemoveReaction): Unit = {
+  protected def removeReaction(rr: RemoveReaction): Unit = {
     (for {
       reactions ← db.run {
         ReactionEventRepo.delete(DialogId(peer, userId), rr.randomId, rr.code, userId)
@@ -232,7 +235,7 @@ trait DialogCommandHandlers extends PeersImplicits with UserACL {
    * @return `true` if we must process message received request and `false` otherwise
    */
   private def mustMakeReceive(state: DialogState, mr: MessageReceived): Boolean =
-    Instant.ofEpochMilli(mr.date).isAfter(state.lastReceiveDate) && (mr.date <= mr.now || state.lastMessageDate.isAfter(Instant.ofEpochMilli(mr.date)))
+    Instant.ofEpochMilli(mr.date).isAfter(state.lastOwnerReceiveDate) && (mr.date <= mr.now || state.lastMessageDate.isAfter(Instant.ofEpochMilli(mr.date)))
 
   /**
    *
@@ -249,7 +252,7 @@ trait DialogCommandHandlers extends PeersImplicits with UserACL {
    * @return `true` if we must process message received request and `false` otherwise
    */
   private def mustMakeRead(state: DialogState, mr: MessageRead): Boolean =
-    Instant.ofEpochMilli(mr.date).isAfter(state.lastReadDate) && (mr.date <= mr.now || state.lastMessageDate.isAfter(Instant.ofEpochMilli(mr.date)))
+    Instant.ofEpochMilli(mr.date).isAfter(state.lastOwnerReadDate) && (mr.date <= mr.now || state.lastMessageDate.isAfter(Instant.ofEpochMilli(mr.date)))
 
   /**
    * check access hash and execute `f`, if access hash is valid

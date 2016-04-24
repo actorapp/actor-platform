@@ -29,6 +29,7 @@ object DialogRoot {
       45013 → classOf[DialogRootEvents.Shown],
       45014 → classOf[DialogRootEvents.Unarchived],
       45015 → classOf[DialogRootEvents.Unfavourited],
+      45017 → classOf[DialogRootEvents.Initialized],
       45016 → classOf[DialogRootStateSnapshot]
     )
   }
