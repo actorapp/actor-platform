@@ -1,6 +1,7 @@
 package im.actor.server.dialog
 
 import akka.actor._
+import akka.event.Logging
 import akka.http.scaladsl.util.FastFuture
 import akka.util.Timeout
 import com.github.benmanes.caffeine.cache.Cache
@@ -22,12 +23,13 @@ import scala.concurrent.{ ExecutionContext, Future }
 
 object DialogProcessor {
 
-  def register(): Unit = {
+  private[dialog] def register(): Unit = {
     ActorSerializer.register(
       40010 → classOf[DialogEvents.MessagesRead],
       40011 → classOf[DialogEvents.MessagesReceived],
       40012 → classOf[DialogEvents.NewMessage],
-      40013 → classOf[DialogEvents.CounterReset],
+      40013 → classOf[DialogEvents.SetCounter],
+      40015 → classOf[DialogEvents.Initialized],
       40014 → classOf[DialogStateSnapshot]
     )
   }
@@ -93,11 +95,11 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
     }
   }
 
-  override protected def handleCommand: Receive = actions(state) orElse reactions(state)
+  override protected def handleCommand: Receive = actions orElse reactions
 
   // when receiving this messages, dialog reacts on other dialog's action
-  def reactions(state: DialogState): Receive = {
-    case sm: SendMessage if accepts(sm)       ⇒ ackSendMessage(state, sm) // User's message been sent
+  def reactions: Receive = {
+    case sm: SendMessage if accepts(sm)       ⇒ ackSendMessage(sm) // User's message been sent
     case mrv: MessageReceived if accepts(mrv) ⇒ ackMessageReceived(mrv) // User's messages been received
     case mrd: MessageRead if accepts(mrd)     ⇒ ackMessageRead(mrd) // User's messages been read
     case sr: SetReaction if accepts(sr)       ⇒ ackSetReaction(sr)
@@ -105,13 +107,13 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
   }
 
   // when receiving this messages, dialog is required to take an action
-  def actions(state: DialogState): Receive = {
-    case sm: SendMessage if invokes(sm)                             ⇒ sendMessage(state, sm) // User sends message
-    case mrv: MessageReceived if invokes(mrv)                       ⇒ messageReceived(state, mrv) // User received messages
-    case mrd: MessageRead if invokes(mrd)                           ⇒ messageRead(state, mrd) // User reads messages
-    case sr: SetReaction if invokes(sr)                             ⇒ setReaction(state, sr)
-    case rr: RemoveReaction if invokes(rr)                          ⇒ removeReaction(state, rr)
-    case WriteMessageSelf(_, senderUserId, date, randomId, message) ⇒ writeMessageSelf(state, senderUserId, date, randomId, message)
+  def actions: Receive = {
+    case sm: SendMessage if invokes(sm)                             ⇒ sendMessage(sm) // User sends message
+    case mrv: MessageReceived if invokes(mrv)                       ⇒ messageReceived(mrv) // User received messages
+    case mrd: MessageRead if invokes(mrd)                           ⇒ messageRead(mrd) // User reads messages
+    case sr: SetReaction if invokes(sr)                             ⇒ setReaction(sr)
+    case rr: RemoveReaction if invokes(rr)                          ⇒ removeReaction(rr)
+    case WriteMessageSelf(_, senderUserId, date, randomId, message) ⇒ writeMessageSelf(senderUserId, date, randomId, message)
   }
 
   /**

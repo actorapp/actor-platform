@@ -48,24 +48,15 @@ trait DialogProcessorMigration extends Processor[DialogState] {
       log.warning("Finding messages")
       (for {
         historyOwner ← HistoryUtils.getHistoryOwner(peer, userId)
-        metas ← db.run(HistoryMessageRepo.findMetaAfter(historyOwner, peer, d.ownerLastReadAt, Long.MaxValue))
-        _ = log.warning("Found {} messages", metas.size)
-        newMessages = metas map {
-          case (randomId, date, senderUserId, header) ⇒
-            NewMessage(
-              randomId = randomId,
-              date = Instant.ofEpochMilli(date.getMillis),
-              senderUserId = senderUserId,
-              messageHeader = header
-            )
-        }
+        unreadCount ← db.run(HistoryMessageRepo.getUnreadCount(historyOwner, userId, peer, d.ownerLastReadAt))
+        _ = log.warning("Found {} messages", unreadCount)
       } yield PersistEvents(
-        Initialized() +:
-          (newMessages.toList ++
-            List(
-              MessagesRead(Instant.ofEpochMilli(d.ownerLastReadAt.getMillis), readerUserId = userId),
-              MessagesRead(Instant.ofEpochMilli(d.lastReadAt.getMillis))
-            ))
+        List(
+          Initialized(),
+          SetCounter(unreadCount),
+          MessagesRead(Instant.ofEpochMilli(d.ownerLastReadAt.getMillis), readerUserId = userId),
+          MessagesRead(Instant.ofEpochMilli(d.lastReadAt.getMillis))
+        )
       )) pipeTo self
     case PersistEvents(events) ⇒
       log.warning("Persisting events")

@@ -165,7 +165,9 @@ message DialogRootQueries {
 message DialogStateSnapshot {
     int32 user_id = 1;
     int64 last_message_date = 2 [(scalapb.field).type = "java.time.Instant"];
+    int64 last_owner_receive_date = 7 [(scalapb.field).type = "java.time.Instant"];
     int64 last_receive_date = 3 [(scalapb.field).type = "java.time.Instant"];
+    int64 last_owner_read_date = 8 [(scalapb.field).type = "java.time.Instant"];
     int64 last_read_date = 4 [(scalapb.field).type = "java.time.Instant"];
     int32 counter = 5;
     map<int64, int64> unread_messages = 6;
@@ -334,6 +336,7 @@ message DialogEvents {
         option (scalapb.message).extends = "im.actor.server.dialog.DialogEvent";
 
         int64 date = 1 [(scalapb.field).type = "java.time.Instant"];
+        int32 receiver_user_id = 2;
     }
 
     message MessagesRead {
@@ -343,8 +346,10 @@ message DialogEvents {
         int32 reader_user_id = 8;
     }
 
-    message CounterReset {
+    message SetCounter {
         option (scalapb.message).extends = "im.actor.server.dialog.DialogEvent";
+
+        int32 count = 1;
     }
 
     message Initialized {
