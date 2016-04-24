@@ -23,7 +23,6 @@ final class ActorDelivery()(implicit val system: ActorSystem)
   implicit val seqUpdatesExt: SeqUpdatesExtension = SeqUpdatesExtension(system)
   private val userExt = UserExtension(system)
   private val dialogExt = DialogExtension(system)
-  private val db = DbExtension(system).db
 
   override def receiverDelivery(
     receiverUserId: Int,
@@ -122,9 +121,8 @@ final class ActorDelivery()(implicit val system: ActorSystem)
     ) map (_ ⇒ ())
   }
 
-  override def read(readerUserId: Int, readerAuthSid: Int, peer: Peer, date: Long, unreadCountOpt: Option[Int]): Future[Unit] =
+  override def read(readerUserId: Int, readerAuthSid: Int, peer: Peer, date: Long, unreadCount: Int): Future[Unit] =
     for {
-      unreadCount ← unreadCountOpt.fold(dialogExt.getUnreadTotal(readerUserId))(FastFuture.successful)
       _ ← seqUpdatesExt.deliverSingleUpdate(
         userId = readerUserId,
         update = UpdateMessageReadByMe(peer.asStruct, date, Some(unreadCount)),

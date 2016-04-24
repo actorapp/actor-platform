@@ -27,6 +27,7 @@ final class DialogProcessorStateSpec extends ActorSuite with PeersImplicits {
 
     val date2 = date1.plusMillis(1)
     probe.commit(NewMessage(Random.nextLong(), date2, alice.id))
+    probe.commit(NewMessage(Random.nextLong(), date2, userId))
     probe.state.counter should be(2)
 
     checkSnapshot(userId)
@@ -38,10 +39,13 @@ final class DialogProcessorStateSpec extends ActorSuite with PeersImplicits {
     probe.state.counter should be(1)
 
     probe.commit(NewMessage(Random.nextLong(), Instant.now(), alice.id))
-    probe.commit(NewMessage(Random.nextLong(), Instant.now(), alice.id))
-    probe.commit(NewMessage(Random.nextLong(), Instant.now(), alice.id))
-
+    probe.commit(NewMessage(Random.nextLong(), Instant.now().plusMillis(1), alice.id))
+    val lastDate = Instant.now().plusMillis(2)
+    probe.commit(NewMessage(Random.nextLong(), lastDate, alice.id))
     probe.state.counter should be(4)
+
+    probe.commit(MessagesRead(lastDate, userId))
+    probe.state.counter should be(0)
 
     checkSnapshot(userId)
   }

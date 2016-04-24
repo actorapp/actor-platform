@@ -13,7 +13,7 @@ import im.actor.server.persist.dialog.DialogRepo
 
 trait DialogProcessorMigration extends Processor[DialogState] {
   import DialogEvents._
-  import context.dispatcher
+  import context.{ dispatcher, system }
 
   private case class PersistEvents(events: List[Event])
   private case object EventsPersisted
@@ -47,7 +47,8 @@ trait DialogProcessorMigration extends Processor[DialogState] {
     case d: DialogObsolete ⇒
       log.warning("Finding messages")
       (for {
-        metas ← db.run(HistoryMessageRepo.findMetaAfter(userId, peer, d.ownerLastReadAt, Long.MaxValue))
+        historyOwner ← HistoryUtils.getHistoryOwner(peer, userId)
+        metas ← db.run(HistoryMessageRepo.findMetaAfter(historyOwner, peer, d.ownerLastReadAt, Long.MaxValue))
         _ = log.warning("Found {} messages", metas.size)
         newMessages = metas map {
           case (randomId, date, senderUserId, header) ⇒

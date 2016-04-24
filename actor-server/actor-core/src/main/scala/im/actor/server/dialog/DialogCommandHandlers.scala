@@ -136,7 +136,7 @@ trait DialogCommandHandlers extends PeersImplicits with UserACL {
 
         (for {
           _ ← dialogExt.ackMessageRead(peer, mr)
-          _ ← deliveryExt.read(userId, mr.readerAuthSid, peer, mr.date, Some(state.counter))
+          _ ← deliveryExt.read(userId, mr.readerAuthSid, peer, mr.date, state.counter)
           _ = deliveryExt.sendCountersUpdate(userId)
         } yield MessageReadAck()) pipeTo sender()
       }
