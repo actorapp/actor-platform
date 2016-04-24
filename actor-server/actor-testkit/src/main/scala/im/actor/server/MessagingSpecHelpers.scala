@@ -24,6 +24,12 @@ trait MessagingSpecHelpers extends ScalaFutures with PeersImplicits with Matcher
 
   lazy val dialogExt = DialogExtension(system)
 
+  def sendMessageToUser(userId: Int, text: String)(
+    implicit
+    clientData: ClientData,
+    msgService: MessagingService
+  ): Long = sendMessageToUser(userId, ApiTextMessage(text, Vector.empty, None))
+
   def sendMessageToUser(userId: Int, message: ApiMessage)(
     implicit
     clientData: ClientData,
@@ -84,6 +90,12 @@ trait MessagingSpecHelpers extends ScalaFutures with PeersImplicits with Matcher
     dgs get DialogExtension.groupKey(group) match {
       case Some(ds) ⇒ ds
       case None     ⇒ throw new RuntimeException(s"Group $group not found in $dgs")
+    }
+  }
+
+  def loadDialogs(minDate: Long = 0L, limit: Int = Int.MaxValue)(implicit clientData: ClientData, service: MessagingService): IndexedSeq[ApiDialog] = {
+    whenReady(service.handleLoadDialogs(minDate, limit)) { resp ⇒
+      resp.toOption.get.dialogs
     }
   }
 
