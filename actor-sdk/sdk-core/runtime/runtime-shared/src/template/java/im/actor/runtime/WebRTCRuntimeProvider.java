@@ -14,13 +14,13 @@ public class WebRTCRuntimeProvider implements WebRTCRuntime {
     @NotNull
     @Override
     public Promise<WebRTCPeerConnection> createPeerConnection(WebRTCIceServer[] webRTCIceServers, WebRTCSettings settings) {
-        return Promises.failure(new RuntimeException("Dumb"));
+        return Promise.failure(new RuntimeException("Dumb"));
     }
 
     @NotNull
     @Override
     public Promise<WebRTCMediaStream> getUserAudio() {
-        return Promises.failure(new RuntimeException("Dumb"));
+        return Promise.failure(new RuntimeException("Dumb"));
     }
 
     @Override

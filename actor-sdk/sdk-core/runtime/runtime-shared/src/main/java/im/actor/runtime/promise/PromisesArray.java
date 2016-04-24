@@ -32,7 +32,7 @@ public class PromisesArray<T> {
     public static <T> PromisesArray<T> of(Collection<T> collection) {
         final ArrayList<Promise<T>> res = new ArrayList<>();
         for (T t : collection) {
-            res.add(Promises.success(t));
+            res.add(Promise.success(t));
         }
         final Promise<T>[] promises = (Promise<T>[]) res.toArray();
         return new PromisesArray<>((PromiseFunc<Promise<T>[]>) executor -> {
@@ -51,7 +51,7 @@ public class PromisesArray<T> {
     public static <T> PromisesArray<T> of(T... items) {
         ArrayList<Promise<T>> res = new ArrayList<>();
         for (T t : items) {
-            res.add(Promises.success(t));
+            res.add(Promise.success(t));
         }
         final Promise[] promises = (Promise[]) res.toArray();
         return new PromisesArray<>((PromiseFunc<Promise<T>[]>) executor -> {
@@ -262,7 +262,7 @@ public class PromisesArray<T> {
 
                         ArrayList<Promise<R>> resultList = new ArrayList<>();
                         for (R r : resMap) {
-                            resultList.add(Promises.success(r));
+                            resultList.add(Promise.success(r));
                         }
 
                         resolver.result(resultList.toArray(new Promise[0]));
@@ -309,7 +309,7 @@ public class PromisesArray<T> {
                         ArrayList<Promise<R>> resultList = new ArrayList<>();
                         for (int i2 = 0; i2 < sourcePromises.length; i2++) {
                             for (int j = 0; j < res[i2].length; j++) {
-                                resultList.add(Promises.success((R) res[i2][j]));
+                                resultList.add(Promise.success((R) res[i2][j]));
                             }
                         }
 
@@ -382,6 +382,6 @@ public class PromisesArray<T> {
      * @return promise
      */
     public Promise<List<T>> zip() {
-        return zipPromise(Promises::success);
+        return zipPromise(Promise::success);
     }
 }

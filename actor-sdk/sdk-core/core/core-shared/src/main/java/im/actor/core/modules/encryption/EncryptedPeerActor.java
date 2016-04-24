@@ -33,9 +33,9 @@ import im.actor.runtime.crypto.box.ActorBoxKey;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
 import im.actor.runtime.promise.Promises;
 import im.actor.runtime.promise.PromisesArray;
-import im.actor.runtime.promise.Tuple2;
+import im.actor.runtime.function.Tuple2;
 
-import static im.actor.runtime.promise.Promises.success;
+import static im.actor.runtime.promise.Promise.success;
 
 public class EncryptedPeerActor extends ModuleActor {
 

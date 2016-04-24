@@ -2,42 +2,15 @@ package im.actor.runtime.promise;
 
 import com.google.j2objc.annotations.ObjectiveCName;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
-
 import im.actor.runtime.Log;
-import im.actor.runtime.function.Consumer;
-import im.actor.runtime.function.Function;
+import im.actor.runtime.function.Tuple2;
+import im.actor.runtime.function.Tuple3;
+import im.actor.runtime.function.Tuple4;
 
 /**
  * Various methods for creating promises.
  */
 public class Promises {
-
-    /**
-     * Always success promise
-     *
-     * @param val success value
-     * @param <T> type of value
-     * @return promise
-     */
-    @ObjectiveCName("success:")
-    public static <T> Promise<T> success(T val) {
-        return Promise.success(val);
-    }
-
-    /**
-     * Always failed promise
-     *
-     * @param e   fail reason
-     * @param <T> type of promise
-     * @return promise
-     */
-    @ObjectiveCName("failure:")
-    public static <T> Promise<T> failure(Exception e) {
-        return Promise.failure(e);
-    }
 
     @ObjectiveCName("logWithTag:withResolver:withFunc:")
     public static <T> Promise<T> log(final String TAG, final PromiseResolver<T> resolver, final PromiseFunc<T> func) {
