@@ -1,5 +1,7 @@
 package im.actor.runtime.collections;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -144,7 +146,7 @@ public class ManagedList<T> extends ArrayList<T> {
     public Promise<T> firstPromise() {
         return new Promise<T>(new PromiseFunc<T>() {
             @Override
-            public void exec(PromiseResolver<T> executor) {
+            public void exec(@NotNull PromiseResolver<T> executor) {
                 if (size() == 0) {
                     executor.error(new RuntimeException("Array is empty"));
                 } else {

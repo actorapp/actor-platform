@@ -68,12 +68,15 @@ import im.actor.core.viewmodel.UploadFileCallback;
 import im.actor.core.viewmodel.UploadFileVM;
 import im.actor.core.viewmodel.UploadFileVMCallback;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.mvvm.MVVMCollection;
 import im.actor.runtime.mvvm.ValueModel;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.storage.PreferencesStorage;
+import im.actor.runtime.threading.SimpleDispatcher;
+import im.actor.runtime.threading.ThreadDispatcher;
 
 /**
  * Entry point to Actor Messaging
@@ -104,6 +107,13 @@ public class Messenger {
         ActorSystem.system().addDispatcher("network_manager", 1);
         ActorSystem.system().addDispatcher("heavy", 2);
         ActorSystem.system().addDispatcher("updates", 1);
+
+        // Configure dispatcher
+        timing.section("Dispatcher");
+        if (!Runtime.isMainThread()) {
+            throw new RuntimeException("Messenger need to be created on Main Thread!");
+        }
+        ThreadDispatcher.pushDispatcher(Runtime::postToMainThread);
 
         timing.section("Modules:Create");
         this.modules = new Modules(this, configuration);

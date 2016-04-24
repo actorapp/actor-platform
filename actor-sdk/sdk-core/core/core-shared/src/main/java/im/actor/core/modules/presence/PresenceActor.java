@@ -286,7 +286,7 @@ public class PresenceActor extends ModuleActor implements BusSubscriber {
             }).failure(e -> {
                 isRequesting = false;
                 onCheckQueue();
-            }).done(self());
+            });
         }
     }
 

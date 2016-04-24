@@ -99,7 +99,7 @@ public class PeerCallActor extends ModuleActor {
         }).failure(e -> {
             Log.d(TAG, "Unable to load audio");
             self().send(PoisonPill.INSTANCE);
-        }).done(self());
+        });
 //
 //        if (webRTCMediaStream != null) {
 //            webRTCMediaStream.setEnabled(!isMuted);

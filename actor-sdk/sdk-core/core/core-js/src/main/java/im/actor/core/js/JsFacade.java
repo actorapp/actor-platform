@@ -656,8 +656,7 @@ public class JsFacade implements Exportable {
                     public void apply(Exception e) {
                         reject();
                     }
-                })
-                        .done(JsPromiseDispatcher.INSTANCE);
+                });
             }
         });
     }
@@ -677,8 +676,7 @@ public class JsFacade implements Exportable {
                     public void apply(Exception e) {
                         reject();
                     }
-                })
-                        .done(JsPromiseDispatcher.INSTANCE);
+                });
             }
         });
     }
@@ -1049,7 +1047,7 @@ public class JsFacade implements Exportable {
                     public void apply(Exception e) {
                         reject(e);
                     }
-                }).done(JsPromiseDispatcher.INSTANCE);
+                });
             }
         });
     }

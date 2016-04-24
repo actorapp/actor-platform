@@ -175,7 +175,7 @@ public class SequenceHandlerActor extends ModuleActor {
                                 resolver.error(e);
                                 unstashAll();
                                 isUpdating = false;
-                            }).done(self()));
+                            }));
         } else {
             long applyStart = im.actor.runtime.Runtime.getCurrentTime();
             processor.applyDifferenceUpdate(difference.getUsers(), difference.getGroups(), updates);

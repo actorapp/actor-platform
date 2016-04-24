@@ -218,7 +218,7 @@ public class AuthActivity extends BaseFragmentActivity {
             public void apply(Exception e) {
                 handleAuthError(e);
             }
-        }).done(authActor);
+        });
     }
 
 
@@ -241,7 +241,7 @@ public class AuthActivity extends BaseFragmentActivity {
                             public void apply(Exception e) {
                                 handleAuthError(e);
                             }
-                        }).done(authActor);
+                        });
                     } else {
                         signUp(messenger().doSignup(currentName, currentSex, transactionHash), currentName, currentSex);
                     }
@@ -252,7 +252,7 @@ public class AuthActivity extends BaseFragmentActivity {
             public void apply(Exception e) {
                 handleAuthError(e);
             }
-        }).done(authActor);
+        });
     }
 
     public void signUp(Promise<AuthRes> promise, String name, Sex sex) {
@@ -272,7 +272,7 @@ public class AuthActivity extends BaseFragmentActivity {
                     public void apply(Exception e) {
                         handleAuthError(e);
                     }
-                }).done(authActor);
+                });
 
             }
         }).failure(new Consumer<Exception>() {
@@ -280,8 +280,7 @@ public class AuthActivity extends BaseFragmentActivity {
             public void apply(Exception e) {
                 handleAuthError(e);
             }
-        })
-                .done(authActor).done(authActor);
+        });
     }
 
     public void handleAuthError(final Exception e) {

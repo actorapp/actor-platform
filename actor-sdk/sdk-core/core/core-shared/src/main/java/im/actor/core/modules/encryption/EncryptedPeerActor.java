@@ -85,8 +85,7 @@ public class EncryptedPeerActor extends ModuleActor {
                         Log.w(TAG, "Unable to fetch initial parameters");
                         Log.e(TAG, e);
                     }
-                })
-                .done(self());
+                });
     }
 
     private Promise<EncryptBoxResponse> doEncrypt(final byte[] data) {
@@ -219,7 +218,9 @@ public class EncryptedPeerActor extends ModuleActor {
                     @Override
                     public Promise<EncryptedSessionActor.DecryptedPackage> apply(Tuple2<SessionActor, EncryptedBoxKey> src) {
                         Log.d(TAG, "Key size:" + src.getT2().getEncryptedKey().length);
-                        return ask(src.getT1().getActorRef(), new EncryptedSessionActor.DecryptPackage(src.getT2().getEncryptedKey()));
+                        // return ask(src.getT1().getActorRef(), new EncryptedSessionActor.DecryptPackage(src.getT2().getEncryptedKey()));
+                        // TODO: Implement
+                        return null;
                     }
                 })
                 .map(new Function<EncryptedSessionActor.DecryptedPackage, DecryptBoxResponse>() {
@@ -275,7 +276,9 @@ public class EncryptedPeerActor extends ModuleActor {
         return new Function<SessionActor, Promise<EncryptedSessionActor.EncryptedPackageRes>>() {
             @Override
             public Promise<EncryptedSessionActor.EncryptedPackageRes> apply(SessionActor sessionActor) {
-                return ask(sessionActor.getActorRef(), new EncryptedSessionActor.EncryptPackage(encKey));
+                // return ask(sessionActor.getActorRef(), new EncryptedSessionActor.EncryptPackage(encKey));
+                // TODO: Implement
+                return null;
             }
         };
     }
