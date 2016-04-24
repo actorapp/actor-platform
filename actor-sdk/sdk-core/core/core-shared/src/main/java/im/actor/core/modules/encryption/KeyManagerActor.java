@@ -537,15 +537,16 @@ public class KeyManagerActor extends ModuleActor {
         return fetchUserGroups(uid)
                 .map(userKeys -> {
                     UserKeysGroup keysGroup = null;
-                    for (UserKeysGroup g : userKeys.getUserKeysGroups()) {
-                        if (g.getKeyGroupId() == keyGroupId) {
-                            keysGroup = g;
-                        }
-                    }
-                    if (keysGroup == null) {
-                        throw new RuntimeException("Key Group #" + keyGroupId + " not found");
-                    }
-                    return new Tuple2<>(keysGroup, userKeys);
+//                    for (UserKeysGroup g : userKeys.getUserKeysGroups()) {
+//                        if (g.getKeyGroupId() == keyGroupId) {
+//                            keysGroup = g;
+//                        }
+//                    }
+//                    if (keysGroup == null) {
+//                        throw new RuntimeException("Key Group #" + keyGroupId + " not found");
+//                    }
+//                    return new Tuple2<>(keysGroup, userKeys);
+                    return null;
                 });
     }
 

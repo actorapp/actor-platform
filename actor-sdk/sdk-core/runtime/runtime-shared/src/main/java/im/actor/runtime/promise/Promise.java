@@ -7,7 +7,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
-import im.actor.runtime.Log;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.threading.SimpleDispatcher;
 import im.actor.runtime.threading.ThreadDispatcher;
@@ -18,7 +17,31 @@ import im.actor.runtime.threading.ThreadDispatcher;
  *
  * @param <T> type of result
  */
-public class Promise<T> implements PromiseMethods<T> {
+public class Promise<T> implements PromiseMethods<T, Promise<T>> {
+
+    /**
+     * Success promise. Have result immediately.
+     *
+     * @param val success value
+     * @param <T> type of value
+     * @return promise
+     */
+    @ObjectiveCName("success:")
+    public static <T> Promise<T> success(T val) {
+        return new Promise<>(val);
+    }
+
+    /**
+     * Failed promise. Have result immediately.
+     *
+     * @param e   fail reason
+     * @param <T> type of promise
+     * @return promise
+     */
+    @ObjectiveCName("failure:")
+    public static <T> Promise<T> failure(Exception e) {
+        return new Promise<>(e);
+    }
 
     //
     // Dispatching parameters
@@ -42,6 +65,32 @@ public class Promise<T> implements PromiseMethods<T> {
     public Promise(PromiseFunc<T> executor) {
         this.dispatcher = ThreadDispatcher.peekDispatcher();
         this.dispatcher.dispatch(() -> executor.exec(new PromiseResolver<>(Promise.this)));
+    }
+
+    /**
+     * Successful constructor of promise
+     *
+     * @param value value
+     */
+    @ObjectiveCName("initWithValue:")
+    private Promise(T value) {
+        this.dispatcher = ThreadDispatcher.peekDispatcher();
+        this.result = value;
+        this.exception = null;
+        this.isFinished = true;
+    }
+
+    /**
+     * Exception constructor of promise
+     *
+     * @param e exception
+     */
+    @ObjectiveCName("initWithException:")
+    private Promise(Exception e) {
+        this.dispatcher = ThreadDispatcher.peekDispatcher();
+        this.result = null;
+        this.exception = e;
+        this.isFinished = true;
     }
 
 
@@ -104,37 +153,6 @@ public class Promise<T> implements PromiseMethods<T> {
             });
         }
         return this;
-    }
-
-    /**
-     * Pipe result to resolver
-     *
-     * @param resolver destination resolver
-     * @return this
-     */
-    @ObjectiveCName("pipeTo:")
-    public synchronized Promise<T> pipeTo(final PromiseResolver<T> resolver) {
-        then(resolver::result);
-        failure(resolver::error);
-        return this;
-    }
-
-    @ObjectiveCName("log:")
-    public Promise<T> log(final String TAG) {
-        then(t -> Log.d(TAG, "Result: " + t));
-        failure(e -> Log.w(TAG, "Error: " + e));
-        return this;
-    }
-
-    /**
-     * Cast promise to different type
-     *
-     * @param <R> destination type
-     * @return casted promise
-     */
-    @ObjectiveCName("cast")
-    public <R> Promise<R> cast() {
-        return (Promise<R>) this;
     }
 
 

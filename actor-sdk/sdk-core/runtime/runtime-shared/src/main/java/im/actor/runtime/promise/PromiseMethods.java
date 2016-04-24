@@ -2,14 +2,13 @@ package im.actor.runtime.promise;
 
 import com.google.j2objc.annotations.ObjectiveCName;
 
-import org.jetbrains.annotations.NotNull;
-
+import im.actor.runtime.Log;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.function.ConsumerDouble;
 import im.actor.runtime.function.Function;
 import im.actor.runtime.function.Supplier;
 
-public interface PromiseMethods<T> {
+public interface PromiseMethods<T, V extends PromiseMethods<T, V>> {
 
     /**
      * Handling successful result
@@ -18,7 +17,7 @@ public interface PromiseMethods<T> {
      * @return this
      */
     @ObjectiveCName("then:")
-    Promise<T> then(final Consumer<T> then);
+    V then(final Consumer<T> then);
 
     /**
      * Handling failure
@@ -27,88 +26,77 @@ public interface PromiseMethods<T> {
      * @return this
      */
     @ObjectiveCName("failure:")
-    Promise<T> failure(final Consumer<Exception> failure);
+    V failure(final Consumer<Exception> failure);
 
 
-    default Promise<T> complete(final ConsumerDouble<T, Exception> completeHandler) {
+    default V complete(final ConsumerDouble<T, Exception> completeHandler) {
         then(t -> completeHandler.apply(t, null));
         failure(e -> completeHandler.apply(null, e));
-        return (Promise<T>) this;
+        return (V) this;
+    }
+
+
+    /**
+     * Pipe result to resolver
+     *
+     * @param resolver destination resolver
+     * @return this
+     */
+    @ObjectiveCName("pipeTo:")
+    default PromiseMethods<T, V> pipeTo(final PromiseResolver<T> resolver) {
+        then(resolver::result);
+        failure(resolver::error);
+        return this;
+    }
+
+    @ObjectiveCName("log:")
+    default PromiseMethods<T, V> log(final String TAG) {
+        then(t -> Log.d(TAG, "Result: " + t));
+        failure(e -> Log.w(TAG, "Error: " + e));
+        return this;
     }
 
     @ObjectiveCName("mapIfNull:")
     default Promise<T> mapIfNull(final Supplier<T> producer) {
-        final Promise<T> self = (Promise<T>) this;
-        return new Promise<T>(new PromiseFunc<T>() {
-            @Override
-            public void exec(final PromiseResolver<T> resolver) {
-                self.then(new Consumer<T>() {
-                    @Override
-                    public void apply(T t) {
-                        if (t == null) {
-                            try {
-                                t = producer.get();
-                            } catch (Exception e) {
-                                resolver.error(e);
-                                return;
-                            }
-                            resolver.result(t);
-                        } else {
-                            resolver.result(t);
-                        }
-                    }
-                });
-                self.failure(new Consumer<Exception>() {
-                    @Override
-                    public void apply(Exception e) {
+        final PromiseMethods<T, V> self = this;
+        return new Promise<T>(resolver -> {
+            self.then(t -> {
+                if (t == null) {
+                    try {
+                        t = producer.get();
+                    } catch (Exception e) {
                         resolver.error(e);
+                        return;
                     }
-                });
-            }
+                    resolver.result(t);
+                } else {
+                    resolver.result(t);
+                }
+            });
+            self.failure(resolver::error);
         });
     }
 
     @ObjectiveCName("mapIfNullPromise:")
     default Promise<T> mapIfNullPromise(final Supplier<Promise<T>> producer) {
-        final Promise<T> self = (Promise<T>) this;
-        return new Promise<T>(new PromiseFunc<T>() {
-            @Override
-            public void exec(final PromiseResolver<T> resolver) {
-                self.then(new Consumer<T>() {
-                    @Override
-                    public void apply(T t) {
-                        if (t == null) {
-                            Promise<T> promise;
-                            try {
-                                promise = producer.get();
-                            } catch (Exception e) {
-                                resolver.error(e);
-                                return;
-                            }
-                            promise.then(new Consumer<T>() {
-                                @Override
-                                public void apply(T t1) {
-                                    resolver.result(t1);
-                                }
-                            });
-                            promise.failure(new Consumer<Exception>() {
-                                @Override
-                                public void apply(Exception e) {
-                                    resolver.error(e);
-                                }
-                            });
-                        } else {
-                            resolver.result(t);
-                        }
-                    }
-                });
-                self.failure(new Consumer<Exception>() {
-                    @Override
-                    public void apply(Exception e) {
+        final PromiseMethods<T, V> self = this;
+        return new Promise<T>(resolver -> {
+            self.then(t -> {
+                if (t == null) {
+                    Promise<T> promise;
+                    try {
+                        promise = producer.get();
+                    } catch (Exception e) {
                         resolver.error(e);
+                        return;
                     }
-                });
-            }
+                    promise.then(resolver::result);
+                    promise.failure(resolver::error);
+                } else {
+                    resolver.result(t);
+                }
+            });
+            self.failure(resolver::error);
         });
     }
 
@@ -121,31 +109,20 @@ public interface PromiseMethods<T> {
      */
     @ObjectiveCName("map:")
     default <R> Promise<R> map(final Function<T, R> res) {
-        final Promise<T> self = (Promise<T>) this;
-        return new Promise<>(new PromiseFunc<R>() {
-            @Override
-            public void exec(@NotNull PromiseResolver<R> resolver) {
-                self.then(new Consumer<T>() {
-                    @Override
-                    public void apply(T t) {
-                        R r;
-                        try {
-                            r = res.apply(t);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            resolver.tryError(e);
-                            return;
-                        }
-                        resolver.tryResult(r);
-                    }
-                });
-                self.failure(new Consumer<Exception>() {
-                    @Override
-                    public void apply(Exception e) {
-                        resolver.error(e);
-                    }
-                });
-            }
+        final PromiseMethods<T, V> self = this;
+        return new Promise<>((PromiseFunc<R>) resolver -> {
+            self.then(t -> {
+                R r;
+                try {
+                    r = res.apply(t);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    resolver.tryError(e);
+                    return;
+                }
+                resolver.tryResult(r);
+            });
+            self.failure(resolver::error);
         });
     }
 
@@ -158,125 +135,52 @@ public interface PromiseMethods<T> {
      */
     @ObjectiveCName("mapPromise:")
     default <R> Promise<R> mapPromise(final Function<T, Promise<R>> res) {
-        final Promise<T> self = (Promise<T>) this;
-        return new Promise<>(new PromiseFunc<R>() {
-            @Override
-            public void exec(@NotNull PromiseResolver<R> resolver) {
-                self.then(new Consumer<T>() {
-                    @Override
-                    public void apply(T t) {
-                        Promise<R> promise;
-                        try {
-                            promise = res.apply(t);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            resolver.tryError(e);
-                            return;
-                        }
+        final PromiseMethods<T, V> self = this;
+        return new Promise<>((PromiseFunc<R>) resolver -> {
+            self.then(t -> {
+                Promise<R> promise;
+                try {
+                    promise = res.apply(t);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    resolver.tryError(e);
+                    return;
+                }
 
-                        promise.then(new Consumer<R>() {
-                            @Override
-                            public void apply(R r) {
-                                resolver.result(r);
-                            }
-                        });
-                        promise.failure(new Consumer<Exception>() {
-                            @Override
-                            public void apply(Exception e) {
-                                resolver.error(e);
-                            }
-                        });
-                    }
-                });
-                self.failure(new Consumer<Exception>() {
-                    @Override
-                    public void apply(Exception e) {
-                        resolver.tryError(e);
-                    }
-                });
-            }
+                promise.then(resolver::result);
+                promise.failure(resolver::error);
+            });
+            self.failure(resolver::tryError);
         });
     }
 
     default <R> Promise<T> mapPromiseSelf(final Function<T, Promise<R>> res) {
-        return mapPromise(new Function<T, Promise<T>>() {
-            @Override
-            public Promise<T> apply(final T t) {
-                return res.apply(t).map(new Function<R, T>() {
-                    @Override
-                    public T apply(R r) {
-                        return t;
-                    }
-                });
-            }
-        });
+        return mapPromise(t -> res.apply(t).map((Function<R, T>) r -> t));
     }
 
     @ObjectiveCName("fallback:")
     default Promise<T> fallback(final Function<Exception, Promise<T>> catchThen) {
-        final Promise<T> self = (Promise<T>) this;
-        return new Promise<T>(new PromiseFunc<T>() {
-            @Override
-            public void exec(final PromiseResolver<T> resolver) {
-                self.then(new Consumer<T>() {
-                    @Override
-                    public void apply(T t) {
-                        resolver.result(t);
-                    }
-                });
-                self.failure(new Consumer<Exception>() {
-                    @Override
-                    public void apply(Exception e) {
-                        Promise<T> res = catchThen.apply(e);
-                        res.then(new Consumer<T>() {
-                            @Override
-                            public void apply(T t) {
-                                resolver.result(t);
-                            }
-                        });
-                        res.failure(new Consumer<Exception>() {
-                            @Override
-                            public void apply(Exception e) {
-                                resolver.error(e);
-                            }
-                        });
-                    }
-                });
-            }
+        final PromiseMethods<T, V> self = this;
+        return new Promise<T>(resolver -> {
+            self.then(resolver::result);
+            self.failure(e -> {
+                Promise<T> res = catchThen.apply(e);
+                res.then(resolver::result);
+                res.failure(resolver::error);
+            });
         });
     }
 
     @ObjectiveCName("afterVoid:")
     default <R> Promise<R> afterVoid(final Supplier<Promise<R>> promiseSupplier) {
-        final Promise<T> self = (Promise<T>) this;
-        return new Promise<R>(new PromiseFunc<R>() {
-            @Override
-            public void exec(final PromiseResolver<R> resolver) {
-                self.then(new Consumer<T>() {
-                    @Override
-                    public void apply(T t) {
-                        Promise<R> promise = promiseSupplier.get();
-                        promise.then(new Consumer<R>() {
-                            @Override
-                            public void apply(R r) {
-                                resolver.result(r);
-                            }
-                        });
-                        promise.failure(new Consumer<Exception>() {
-                            @Override
-                            public void apply(Exception e) {
-                                resolver.error(e);
-                            }
-                        });
-                    }
-                });
-                self.failure(new Consumer<Exception>() {
-                    @Override
-                    public void apply(Exception e) {
-                        resolver.error(e);
-                    }
-                });
-            }
+        final PromiseMethods<T, V> self = this;
+        return new Promise<R>(resolver -> {
+            self.then(t -> {
+                Promise<R> promise = promiseSupplier.get();
+                promise.then(resolver::result);
+                promise.failure(resolver::error);
+            });
+            self.failure(resolver::error);
         });
     }
 
