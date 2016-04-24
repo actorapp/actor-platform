@@ -91,7 +91,6 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
     CommonSerialization.register()
     UserProcessor.register()
     GroupProcessor.register()
-    DialogProcessor.register()
     StickerMessages.register()
 
     val serverConfig = ActorConfig.load(defaultConfig)

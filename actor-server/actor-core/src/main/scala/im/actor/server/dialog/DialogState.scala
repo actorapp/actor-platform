@@ -2,9 +2,11 @@ package im.actor.server.dialog
 
 import java.time.Instant
 
+import akka.event.{ Logging, LoggingAdapter }
 import akka.persistence.SnapshotMetadata
 import im.actor.server.cqrs.{ Event, ProcessorState, TaggedEvent }
 import im.actor.server.model.Peer
+import org.slf4j.LoggerFactory
 
 import scala.collection.SortedSet
 
@@ -34,7 +36,9 @@ private[dialog] object DialogState {
   def initial(userId: Int) = DialogState(
     userId = userId,
     lastMessageDate = Instant.ofEpochMilli(0),
+    lastOwnerReceiveDate = Instant.ofEpochMilli(0),
     lastReceiveDate = Instant.ofEpochMilli(0),
+    lastOwnerReadDate = Instant.ofEpochMilli(0),
     lastReadDate = Instant.ofEpochMilli(0),
     counter = 0,
     unreadMessages = SortedSet.empty(UnreadMessage.OrderingAsc),
@@ -43,15 +47,19 @@ private[dialog] object DialogState {
 }
 
 private[dialog] final case class DialogState(
-  userId:            Int,
-  lastMessageDate:   Instant, //we don't use it now anywhere. should we remove it?
-  lastReceiveDate:   Instant,
-  lastReadDate:      Instant,
-  counter:           Int,
-  unreadMessages:    SortedSet[UnreadMessage],
-  unreadMessagesMap: Map[Long, Long]
+  userId:               Int,
+  lastMessageDate:      Instant, //we don't use it now anywhere. should we remove it?
+  lastOwnerReceiveDate: Instant,
+  lastReceiveDate:      Instant,
+  lastOwnerReadDate:    Instant,
+  lastReadDate:         Instant,
+  counter:              Int,
+  unreadMessages:       SortedSet[UnreadMessage],
+  unreadMessagesMap:    Map[Long, Long]
 ) extends ProcessorState[DialogState] {
   import DialogEvents._
+
+  val log = LoggerFactory.getLogger(s"$userId/DialogRoot")
 
   override def updated(e: Event): DialogState = e match {
     case NewMessage(randomId, date, senderUserId, messageHeader) ⇒
@@ -64,24 +72,31 @@ private[dialog] final case class DialogState(
         )
       } else this.copy(lastMessageDate = date)
     case MessagesRead(date, readerUserId) if readerUserId == userId ⇒
+      log.debug(s"unreadMessages (fromState) ${unreadMessages}")
       val readMessages = unreadMessages.takeWhile(um ⇒ um.date.isBefore(date) || um.date == date).map(_.randomId)
-      val newUnreadMessages = unreadMessages.dropWhile(um ⇒ readMessages.contains(um.randomId))
+      log.debug(s"readMessages ${readMessages}")
+      log.debug(s"readMessages date ${unreadMessages.headOption map (um ⇒ um.date.isBefore(date) || um.date == date)}")
+      val newUnreadMessages = unreadMessages.drop(readMessages.size)
       val newUnreadMessagesMap = unreadMessagesMap -- readMessages
 
       this.copy(
         counter = newUnreadMessages.size,
         unreadMessages = newUnreadMessages,
-        unreadMessagesMap = newUnreadMessagesMap
+        unreadMessagesMap = newUnreadMessagesMap,
+        lastOwnerReadDate = date
       )
     case MessagesRead(date, readerUserId) if readerUserId != userId ⇒
-      if (date.isAfter(lastReadDate))
+      if (date.isBefore(Instant.now().plusMillis(1)) && (date.isAfter(lastReadDate) || date == lastReadDate))
         this.copy(lastReadDate = date)
       else this
-    case MessagesReceived(date) ⇒
-      if (date.isAfter(lastReceiveDate)) this.copy(lastReceiveDate = date)
+    case MessagesReceived(date, receiverUserId) if receiverUserId == userId ⇒
+      this.copy(lastOwnerReceiveDate = date)
+    case MessagesReceived(date, receiverUserId) if receiverUserId != userId ⇒
+      if (date.isBefore(Instant.now().plusMillis(1)) && (date.isAfter(lastReceiveDate) || date == lastReceiveDate))
+        this.copy(lastReceiveDate = date)
       else this
-    case CounterReset() ⇒
-      this.copy(counter = 0, unreadMessages = SortedSet.empty(UnreadMessage.OrderingAsc), unreadMessagesMap = Map.empty)
+    case SetCounter(newCounter) ⇒
+      this.copy(counter = newCounter)
     case Initialized() ⇒ this
   }
 
@@ -90,7 +105,9 @@ private[dialog] final case class DialogState(
       copy(
         userId = s.userId,
         lastMessageDate = s.lastMessageDate,
+        lastOwnerReceiveDate = s.lastOwnerReceiveDate,
         lastReceiveDate = s.lastReceiveDate,
+        lastOwnerReadDate = s.lastOwnerReadDate,
         lastReadDate = s.lastReadDate,
         counter = s.counter,
         unreadMessages = SortedSet(
@@ -105,7 +122,9 @@ private[dialog] final case class DialogState(
   override lazy val snapshot = DialogStateSnapshot(
     userId = userId,
     lastMessageDate = lastMessageDate,
+    lastOwnerReceiveDate = lastOwnerReceiveDate,
     lastReceiveDate = lastReceiveDate,
+    lastOwnerReadDate = lastOwnerReadDate,
     lastReadDate = lastReadDate,
     counter = counter,
     unreadMessages = unreadMessagesMap
