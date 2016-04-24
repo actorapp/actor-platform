@@ -41,7 +41,7 @@ import im.actor.runtime.crypto.ratchet.RatchetKeySignature;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.promise.Promises;
 import im.actor.runtime.promise.PromisesArray;
-import im.actor.runtime.promise.Tuple2;
+import im.actor.runtime.function.Tuple2;
 import im.actor.runtime.storage.KeyValueStorage;
 
 /**
@@ -215,7 +215,7 @@ public class KeyManagerActor extends ModuleActor {
      * Fetching Own Identity key and group id
      */
     private Promise<OwnIdentity> fetchOwnIdentity() {
-        return Promises.success(new OwnIdentity(ownKeys.getKeyGroupId(), ownKeys.getIdentityKey()));
+        return Promise.success(new OwnIdentity(ownKeys.getKeyGroupId(), ownKeys.getIdentityKey()));
     }
 
     /**
@@ -225,7 +225,7 @@ public class KeyManagerActor extends ModuleActor {
      */
     private Promise<PrivateKey> fetchPreKey(byte[] publicKey) {
         try {
-            return Promises.success(ManagedList.of(ownKeys.getPreKeys())
+            return Promise.success(ManagedList.of(ownKeys.getPreKeys())
                     .filter(PrivateKey.PRE_KEY_EQUALS(publicKey))
                     .first());
         } catch (Exception e) {
@@ -244,7 +244,7 @@ public class KeyManagerActor extends ModuleActor {
      */
     private Promise<PrivateKey> fetchPreKey(long keyId) {
         try {
-            return Promises.success(ManagedList.of(ownKeys.getPreKeys())
+            return Promise.success(ManagedList.of(ownKeys.getPreKeys())
                     .filter(PrivateKey.PRE_KEY_EQUALS_ID(keyId))
                     .first());
         } catch (Exception e) {
@@ -279,7 +279,7 @@ public class KeyManagerActor extends ModuleActor {
 
         final UserKeys userKeys = getCachedUserKeys(uid);
         if (userKeys != null) {
-            return Promises.success(userKeys);
+            return Promise.success(userKeys);
         }
 
         return api(new RequestLoadPublicKeyGroups(new ApiUserOutPeer(uid, user.getAccessHash())))
@@ -331,7 +331,7 @@ public class KeyManagerActor extends ModuleActor {
 
                         for (PublicKey p : keysGroup.getT1().getEphemeralKeys()) {
                             if (p.getKeyId() == keyId) {
-                                return Promises.success(p);
+                                return Promise.success(p);
                             }
                         }
 

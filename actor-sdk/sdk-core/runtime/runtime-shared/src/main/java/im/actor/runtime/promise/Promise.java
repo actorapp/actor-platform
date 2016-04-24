@@ -60,11 +60,13 @@ public class Promise<T> implements PromiseMethods<T, Promise<T>> {
 
     /**
      * Default constructor of promise
+     *
+     * @param executor Executor
      */
     @ObjectiveCName("initWithExecutor:")
     public Promise(PromiseFunc<T> executor) {
         this.dispatcher = ThreadDispatcher.peekDispatcher();
-        this.dispatcher.dispatch(() -> executor.exec(new PromiseResolver<>(Promise.this)));
+        executor.exec(new PromiseResolver<>(this));
     }
 
     /**
@@ -241,5 +243,18 @@ public class Promise<T> implements PromiseMethods<T, Promise<T>> {
                 callbacks.clear();
             });
         }
+    }
+
+    /**
+     * Callback for retrieving result of promise
+     *
+     * @param <T> type of successful result
+     */
+    interface PromiseCallback<T> {
+        @ObjectiveCName("onResult:")
+        void onResult(T t);
+
+        @ObjectiveCName("onError:")
+        void onError(Exception e);
     }
 }

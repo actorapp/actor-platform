@@ -101,7 +101,7 @@ public class SessionManagerActor extends ModuleActor {
                                                 ownPreKey,
                                                 theirPreKey);
 
-                                        return Promises.success(null);
+                                        return Promise.success(null);
                                     }
                                 });
                     }
