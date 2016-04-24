@@ -9,8 +9,6 @@ import java.util.ArrayList;
 
 import im.actor.runtime.Log;
 import im.actor.runtime.function.Consumer;
-import im.actor.runtime.function.Function;
-import im.actor.runtime.function.Supplier;
 import im.actor.runtime.threading.SimpleDispatcher;
 import im.actor.runtime.threading.ThreadDispatcher;
 
@@ -20,14 +18,13 @@ import im.actor.runtime.threading.ThreadDispatcher;
  *
  * @param <T> type of result
  */
-public class Promise<T> {
+public class Promise<T> implements PromiseMethods<T> {
 
     //
     // Dispatching parameters
     //
 
     private final ArrayList<PromiseCallback<T>> callbacks = new ArrayList<>();
-    private final PromiseFunc<T> executor;
     private final SimpleDispatcher dispatcher;
 
     //
@@ -37,25 +34,20 @@ public class Promise<T> {
     private volatile T result;
     private volatile Exception exception;
     private volatile boolean isFinished;
-    // private boolean isStarted;
 
     /**
      * Default constructor of promise
      */
     @ObjectiveCName("initWithExecutor:")
     public Promise(PromiseFunc<T> executor) {
-        this.executor = executor;
         this.dispatcher = ThreadDispatcher.peekDispatcher();
         this.dispatcher.dispatch(() -> executor.exec(new PromiseResolver<>(Promise.this)));
     }
 
-    /**
-     * Internal constructor to work-around lambda support issueses
-     */
-    Promise() {
-        this.executor = null;
-        this.dispatcher = null;
-    }
+
+    //
+    // Receiving Results
+    //
 
     /**
      * Handling successful result
@@ -115,28 +107,6 @@ public class Promise<T> {
     }
 
     /**
-     * Handling complete
-     *
-     * @param callback callback for completion
-     * @return this
-     */
-    @ObjectiveCName("complete:")
-    public synchronized Promise<T> complete(final PromiseCallback<T> callback) {
-        if (isFinished) {
-            dispatcher.dispatch(() -> {
-                if (exception != null) {
-                    callback.onError(exception);
-                } else {
-                    callback.onResult(result);
-                }
-            });
-        } else {
-            callbacks.add(callback);
-        }
-        return this;
-    }
-
-    /**
      * Pipe result to resolver
      *
      * @param resolver destination resolver
@@ -144,62 +114,16 @@ public class Promise<T> {
      */
     @ObjectiveCName("pipeTo:")
     public synchronized Promise<T> pipeTo(final PromiseResolver<T> resolver) {
-        complete(new PromiseCallback<T>() {
-            @Override
-            public void onResult(T t) {
-                resolver.result(t);
-            }
-
-            @Override
-            public void onError(Exception e) {
-                resolver.error(e);
-            }
-        });
+        then(resolver::result);
+        failure(resolver::error);
         return this;
     }
 
-//    /**
-//     * Call this method to start promise execution
-//     *
-//     * @param ref Scheduling actor
-//     * @return this
-//     */
-//    @ObjectiveCName("doneWithRef:")
-//    public Promise<T> done(ActorRef ref) {
-//        return done(new SimpleActorDispatcher(ref));
-//    }
-
-//    /**
-//     * Call this method to start promise execution
-//     *
-//     * @param dispatcher Scheduling dispatcher
-//     * @return this
-//     */
-//    @ObjectiveCName("done:")
-//    public Promise<T> done(SimpleDispatcher dispatcher) {
-//        if (isStarted) {
-//            // throw new RuntimeException("Promise already started!");
-//            return this;
-//        }
-//        isStarted = true;
-//        dispatchActor = dispatcher;
-//        dispatchActor.dispatch(() -> exec(new PromiseResolver<>(Promise.this, dispatchActor)));
-//        return this;
-//    }
-
     @ObjectiveCName("log:")
     public Promise<T> log(final String TAG) {
-        return complete(new PromiseCallback<T>() {
-            @Override
-            public void onResult(T t) {
-                Log.d(TAG, "Result: " + t);
-            }
-
-            @Override
-            public void onError(Exception e) {
-                Log.w(TAG, "Error: " + e);
-            }
-        });
+        then(t -> Log.d(TAG, "Result: " + t));
+        failure(e -> Log.w(TAG, "Error: " + e));
+        return this;
     }
 
     /**
@@ -213,313 +137,10 @@ public class Promise<T> {
         return (Promise<R>) this;
     }
 
-    /**
-     * Getting result if finished
-     *
-     * @return result
-     */
-    @ObjectiveCName("getResult")
-    public T getResult() {
-        if (!isFinished) {
-            throw new RuntimeException("Promise is not finished!");
-        }
-        return result;
-    }
 
-    /**
-     * Is promise finished
-     *
-     * @return result
-     */
-    @ObjectiveCName("isFinished")
-    public boolean isFinished() {
-        return isFinished;
-    }
-
-    /**
-     * Exception if promise finished with error
-     *
-     * @return exception
-     */
-    @ObjectiveCName("getException")
-    public Exception getException() {
-        if (!isFinished) {
-            throw new RuntimeException("Promise is not finished!");
-        }
-        return exception;
-    }
-
-    @ObjectiveCName("mapIfNull:")
-    public Promise<T> mapIfNull(final Supplier<T> producer) {
-        final Promise<T> self = this;
-        return new Promise<T>(new PromiseFunc<T>() {
-            @Override
-            public void exec(final PromiseResolver<T> resolver) {
-                self.then(new Consumer<T>() {
-                    @Override
-                    public void apply(T t) {
-                        if (t == null) {
-                            try {
-                                t = producer.get();
-                            } catch (Exception e) {
-                                resolver.error(e);
-                                return;
-                            }
-                            resolver.result(t);
-                        } else {
-                            resolver.result(t);
-                        }
-                    }
-                });
-                self.failure(new Consumer<Exception>() {
-                    @Override
-                    public void apply(Exception e) {
-                        resolver.error(e);
-                    }
-                });
-            }
-        });
-    }
-
-    @ObjectiveCName("mapIfNullPromise:")
-    public Promise<T> mapIfNullPromise(final Supplier<Promise<T>> producer) {
-        final Promise<T> self = this;
-        return new Promise<T>(new PromiseFunc<T>() {
-            @Override
-            public void exec(final PromiseResolver<T> resolver) {
-                self.then(new Consumer<T>() {
-                    @Override
-                    public void apply(T t) {
-                        if (t == null) {
-                            Promise<T> promise;
-                            try {
-                                promise = producer.get();
-                            } catch (Exception e) {
-                                resolver.error(e);
-                                return;
-                            }
-                            promise.then(new Consumer<T>() {
-                                @Override
-                                public void apply(T t1) {
-                                    resolver.result(t1);
-                                }
-                            });
-                            promise.failure(new Consumer<Exception>() {
-                                @Override
-                                public void apply(Exception e) {
-                                    resolver.error(e);
-                                }
-                            });
-                        } else {
-                            resolver.result(t);
-                        }
-                    }
-                });
-                self.failure(new Consumer<Exception>() {
-                    @Override
-                    public void apply(Exception e) {
-                        resolver.error(e);
-                    }
-                });
-            }
-        });
-    }
-
-    /**
-     * Mapping result value of promise to another value
-     *
-     * @param res mapping function
-     * @param <R> destination type
-     * @return promise
-     */
-    @ObjectiveCName("map:")
-    public <R> Promise<R> map(final Function<T, R> res) {
-        final Promise<T> self = this;
-        return new Promise<>(new PromiseFunc<R>() {
-            @Override
-            public void exec(@NotNull PromiseResolver<R> resolver) {
-                self.then(new Consumer<T>() {
-                    @Override
-                    public void apply(T t) {
-                        R r;
-                        try {
-                            r = res.apply(t);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            resolver.tryError(e);
-                            return;
-                        }
-                        resolver.tryResult(r);
-                    }
-                });
-                self.failure(new Consumer<Exception>() {
-                    @Override
-                    public void apply(Exception e) {
-                        resolver.error(e);
-                    }
-                });
-            }
-        });
-    }
-
-    /**
-     * Map result of promise to promise of value
-     *
-     * @param res mapping function
-     * @param <R> destination type
-     * @return promise
-     */
-    @ObjectiveCName("mapPromise:")
-    public <R> Promise<R> mapPromise(final Function<T, Promise<R>> res) {
-        final Promise<T> self = this;
-        return new Promise<>(new PromiseFunc<R>() {
-            @Override
-            public void exec(@NotNull PromiseResolver<R> resolver) {
-                self.then(new Consumer<T>() {
-                    @Override
-                    public void apply(T t) {
-                        Promise<R> promise;
-                        try {
-                            promise = res.apply(t);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            resolver.tryError(e);
-                            return;
-                        }
-
-                        promise.then(new Consumer<R>() {
-                            @Override
-                            public void apply(R r) {
-                                resolver.result(r);
-                            }
-                        });
-                        promise.failure(new Consumer<Exception>() {
-                            @Override
-                            public void apply(Exception e) {
-                                resolver.error(e);
-                            }
-                        });
-                    }
-                });
-                self.failure(new Consumer<Exception>() {
-                    @Override
-                    public void apply(Exception e) {
-                        resolver.tryError(e);
-                    }
-                });
-            }
-        });
-    }
-
-    public <R> Promise<T> mapPromiseSelf(final Function<T, Promise<R>> res) {
-        return mapPromise(new Function<T, Promise<T>>() {
-            @Override
-            public Promise<T> apply(final T t) {
-                return res.apply(t).map(new Function<R, T>() {
-                    @Override
-                    public T apply(R r) {
-                        return t;
-                    }
-                });
-            }
-        });
-    }
-
-    @ObjectiveCName("fallback:")
-    public Promise<T> fallback(final Function<Exception, Promise<T>> catchThen) {
-        final Promise<T> self = this;
-        return new Promise<T>(new PromiseFunc<T>() {
-            @Override
-            public void exec(final PromiseResolver<T> resolver) {
-                self.then(new Consumer<T>() {
-                    @Override
-                    public void apply(T t) {
-                        resolver.result(t);
-                    }
-                });
-                self.failure(new Consumer<Exception>() {
-                    @Override
-                    public void apply(Exception e) {
-                        Promise<T> res = catchThen.apply(e);
-                        res.then(new Consumer<T>() {
-                            @Override
-                            public void apply(T t) {
-                                resolver.result(t);
-                            }
-                        });
-                        res.failure(new Consumer<Exception>() {
-                            @Override
-                            public void apply(Exception e) {
-                                resolver.error(e);
-                            }
-                        });
-                    }
-                });
-            }
-        });
-    }
-
-    @ObjectiveCName("afterVoid:")
-    public <R> Promise<R> afterVoid(final Supplier<Promise<R>> promiseSupplier) {
-        final Promise<T> self = this;
-        return new Promise<R>(new PromiseFunc<R>() {
-            @Override
-            public void exec(final PromiseResolver<R> resolver) {
-                self.then(new Consumer<T>() {
-                    @Override
-                    public void apply(T t) {
-                        Promise<R> promise = promiseSupplier.get();
-                        promise.then(new Consumer<R>() {
-                            @Override
-                            public void apply(R r) {
-                                resolver.result(r);
-                            }
-                        });
-                        promise.failure(new Consumer<Exception>() {
-                            @Override
-                            public void apply(Exception e) {
-                                resolver.error(e);
-                            }
-                        });
-                    }
-                });
-                self.failure(new Consumer<Exception>() {
-                    @Override
-                    public void apply(Exception e) {
-                        resolver.error(e);
-                    }
-                });
-            }
-        });
-    }
-
-    /**
-     * Delivering result
-     */
-    private void deliverResult() {
-        if (callbacks.size() > 0) {
-            dispatcher.dispatch(() -> {
-                if (exception != null) {
-                    for (PromiseCallback<T> callback : callbacks) {
-                        try {
-                            callback.onError(exception);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                } else {
-                    for (PromiseCallback<T> callback : callbacks) {
-                        try {
-                            callback.onResult(result);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-                callbacks.clear();
-            });
-        }
-    }
+    //
+    // Delivering Results
+    //
 
     /**
      * Called when promise ended with error
@@ -574,5 +195,33 @@ public class Promise<T> {
             return;
         }
         result(res);
+    }
+
+    /**
+     * Delivering result
+     */
+    private void deliverResult() {
+        if (callbacks.size() > 0) {
+            dispatcher.dispatch(() -> {
+                if (exception != null) {
+                    for (PromiseCallback<T> callback : callbacks) {
+                        try {
+                            callback.onError(exception);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } else {
+                    for (PromiseCallback<T> callback : callbacks) {
+                        try {
+                            callback.onResult(result);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                callbacks.clear();
+            });
+        }
     }
 }
