@@ -8,7 +8,6 @@ import im.actor.runtime.mvvm.PlatformDisplayList;
 import im.actor.runtime.mvvm.MVVMCollection;
 import im.actor.runtime.mvvm.ValueDefaultCreator;
 import im.actor.runtime.mvvm.ValueModelCreator;
-import im.actor.runtime.storage.IndexStorage;
 import im.actor.runtime.storage.KeyValueItem;
 import im.actor.runtime.storage.KeyValueStorage;
 import im.actor.runtime.storage.ListEngine;
@@ -40,10 +39,6 @@ public class Storage {
 
     public static PreferencesStorage createPreferencesStorage() {
         return storageRuntime.createPreferencesStorage();
-    }
-
-    public static IndexStorage createIndex(String name) {
-        return storageRuntime.createIndex(name);
     }
 
     public static KeyValueStorage createKeyValue(String name) {
