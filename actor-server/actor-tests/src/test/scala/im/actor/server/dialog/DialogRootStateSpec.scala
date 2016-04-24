@@ -39,9 +39,10 @@ final class DialogRootStateSpec extends ActorSuite with PeersImplicits {
     val bob = Peer.privat(2)
     val eve = Peer.privat(3)
 
-    probe.commit(Created(Instant.now(), Some(alice)))
-    probe.commit(Created(Instant.now().plusMillis(1), Some(bob)))
-    probe.commit(Created(Instant.now().plusMillis(1), Some(eve)))
+    val now = Instant.now()
+    probe.commit(Created(now, Some(alice)))
+    probe.commit(Created(now, Some(bob)))
+    probe.commit(Created(now, Some(eve)))
 
     getMobilePeers should be(Seq(eve, bob, alice))
     checkSnapshot
@@ -85,7 +86,8 @@ final class DialogRootStateSpec extends ActorSuite with PeersImplicits {
     probe.state.active.dms shouldBe empty
     probe.state.active.dms shouldBe empty
     probe.state.active.favourites.map(_.peer).toSeq should be(Seq(alice, group))
-    probe.state.mobile.map(_.peer).toSeq should be(Seq(alice, group))
+    probe.state.mobile.map(_.peer).toSeq should be(Seq(group, alice))
+    checkSnapshot
   }
 
   def removeFromArchived() = {
