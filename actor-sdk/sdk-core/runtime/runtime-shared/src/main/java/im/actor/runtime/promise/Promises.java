@@ -23,8 +23,8 @@ public class Promises {
      * @return promise
      */
     @ObjectiveCName("success:")
-    public static <T> Promise<T> success(final T val) {
-        return new Promise<>((PromiseFunc<T>) resolver -> resolver.result(val));
+    public static <T> Promise<T> success(T val) {
+        return Promise.success(val);
     }
 
     /**
@@ -35,8 +35,8 @@ public class Promises {
      * @return promise
      */
     @ObjectiveCName("failure:")
-    public static <T> Promise<T> failure(final Exception e) {
-        return new Promise<>((PromiseFunc<T>) resolver -> resolver.error(e));
+    public static <T> Promise<T> failure(Exception e) {
+        return Promise.failure(e);
     }
 
     @ObjectiveCName("logWithTag:withResolver:withFunc:")
@@ -64,7 +64,7 @@ public class Promises {
     @ObjectiveCName("tupleWithT1:withT2:")
     public static <T1, T2> Promise<Tuple2<T1, T2>> tuple(Promise<T1> t1, Promise<T2> t2) {
 
-        return PromisesArray.ofPromises(t1.cast(), t2.cast())
+        return PromisesArray.ofPromises((Promise<Object>) t1, (Promise<Object>) t2)
                 .zip()
                 .map(src -> new Tuple2<>((T1) src.get(0), (T2) src.get(1)));
     }
@@ -82,7 +82,7 @@ public class Promises {
      */
     @ObjectiveCName("tupleWithT1:withT2:withT3:")
     public static <T1, T2, T3> Promise<Tuple3<T1, T2, T3>> tuple(Promise<T1> t1, Promise<T2> t2, Promise<T3> t3) {
-        return PromisesArray.ofPromises(t1.cast(), t2.cast(), t3.cast())
+        return PromisesArray.ofPromises((Promise<Object>) t1, (Promise<Object>) t2, (Promise<Object>) t3)
                 .zip()
                 .map(src -> new Tuple3<>((T1) src.get(0), (T2) src.get(1), (T3) src.get(3)));
     }
@@ -106,7 +106,7 @@ public class Promises {
                                                                          Promise<T3> t3,
                                                                          Promise<T4> t4) {
 
-        return PromisesArray.ofPromises(t1.cast(), t2.cast(), t3.cast(), t4.cast())
+        return PromisesArray.ofPromises((Promise<Object>) t1, (Promise<Object>) t2, (Promise<Object>) t3, (Promise<Object>) t4)
                 .zip()
                 .map(src -> new Tuple4<>((T1) src.get(0), (T2) src.get(1), (T3) src.get(2), (T4) src.get(3)));
     }

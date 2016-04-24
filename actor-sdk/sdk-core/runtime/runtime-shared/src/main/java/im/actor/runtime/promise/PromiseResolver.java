@@ -5,8 +5,6 @@ import com.google.j2objc.annotations.ObjectiveCName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import im.actor.runtime.threading.SimpleDispatcher;
-
 /**
  * Object for completing promises
  *
