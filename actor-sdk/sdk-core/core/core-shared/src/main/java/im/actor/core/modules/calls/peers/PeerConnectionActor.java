@@ -142,7 +142,7 @@ public class PeerConnectionActor extends ModuleActor {
 
         isReady = false;
         peerConnection.createOffer()
-                .mapPromise(new Function<WebRTCSessionDescription, Promise<WebRTCSessionDescription>>() {
+                .flatMap(new Function<WebRTCSessionDescription, Promise<WebRTCSessionDescription>>() {
                     @Override
                     public Promise<WebRTCSessionDescription> apply(WebRTCSessionDescription webRTCSessionDescription) {
                         return peerConnection.setLocalDescription(webRTCSessionDescription);
@@ -181,12 +181,12 @@ public class PeerConnectionActor extends ModuleActor {
         //
 
         isReady = false;
-        peerConnection.setRemoteDescription(new WebRTCSessionDescription("offer", sdp)).mapPromise(new Function<WebRTCSessionDescription, Promise<WebRTCSessionDescription>>() {
+        peerConnection.setRemoteDescription(new WebRTCSessionDescription("offer", sdp)).flatMap(new Function<WebRTCSessionDescription, Promise<WebRTCSessionDescription>>() {
             @Override
             public Promise<WebRTCSessionDescription> apply(WebRTCSessionDescription description) {
                 return peerConnection.createAnswer();
             }
-        }).mapPromise(new Function<WebRTCSessionDescription, Promise<WebRTCSessionDescription>>() {
+        }).flatMap(new Function<WebRTCSessionDescription, Promise<WebRTCSessionDescription>>() {
             @Override
             public Promise<WebRTCSessionDescription> apply(WebRTCSessionDescription webRTCSessionDescription) {
                 return peerConnection.setLocalDescription(webRTCSessionDescription);

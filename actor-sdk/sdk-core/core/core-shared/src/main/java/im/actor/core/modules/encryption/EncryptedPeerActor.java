@@ -190,7 +190,7 @@ public class EncryptedPeerActor extends ModuleActor {
         return PromisesArray.of(data.getKeys())
                 .filter(EncryptedBoxKey.FILTER(myUid(), ownKeyGroupId))
                 .first()
-                .mapPromise(new Function<EncryptedBoxKey, Promise<Tuple2<SessionActor, EncryptedBoxKey>>>() {
+                .flatMap(new Function<EncryptedBoxKey, Promise<Tuple2<SessionActor, EncryptedBoxKey>>>() {
                     @Override
                     public Promise<Tuple2<SessionActor, EncryptedBoxKey>> apply(final EncryptedBoxKey boxKey) {
                         final long senderPreKeyId = ByteStrings.bytesToLong(boxKey.getEncryptedKey(), 4);
@@ -214,7 +214,7 @@ public class EncryptedPeerActor extends ModuleActor {
                                 });
                     }
                 })
-                .mapPromise(new Function<Tuple2<SessionActor, EncryptedBoxKey>, Promise<EncryptedSessionActor.DecryptedPackage>>() {
+                .flatMap(new Function<Tuple2<SessionActor, EncryptedBoxKey>, Promise<EncryptedSessionActor.DecryptedPackage>>() {
                     @Override
                     public Promise<EncryptedSessionActor.DecryptedPackage> apply(Tuple2<SessionActor, EncryptedBoxKey> src) {
                         Log.d(TAG, "Key size:" + src.getT2().getEncryptedKey().length);
