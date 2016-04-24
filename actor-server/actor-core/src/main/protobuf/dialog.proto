@@ -35,9 +35,17 @@ message DialogGroup {
 message DialogRootStateSnapshot {
     repeated DialogGroup dialog_groups = 1;
     repeated DialogInfo archived = 2;
+    repeated DialogInfo mobile = 3;
 }
 
 message DialogRootEvents {
+    message Bumped {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogRootEvent";
+
+        int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];
+        Peer peer = 2;
+    }
+
     message Created {
         option (scalapb.message).extends = "im.actor.server.dialog.DialogRootEvent";
 
@@ -53,13 +61,6 @@ message DialogRootEvents {
     }
 
     message Unarchived {
-        option (scalapb.message).extends = "im.actor.server.dialog.DialogRootEvent";
-
-        int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];
-        Peer peer = 2;
-    }
-
-    message Shown {
         option (scalapb.message).extends = "im.actor.server.dialog.DialogRootEvent";
 
         int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];

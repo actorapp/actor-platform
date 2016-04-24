@@ -93,40 +93,52 @@ private[dialog] case class ActiveDialogs(
       case unknown          ⇒ throw PeerErrors.UnknownPeerType(unknown)
     }
   }
+
+  def exists(f: SortableDialog ⇒ Boolean) = favourites.exists(f) || groups.exists(f) || dms.exists(f)
+
+  def map[A](f: SortableDialog ⇒ A) = favourites.map(f) ++ groups.map(f) ++ dms.map(f)
+
+  def find(f: SortableDialog ⇒ Boolean) = favourites.find(f).getOrElse(groups.find(f).getOrElse(dms.find(f)))
 }
 
 private object DialogRootState {
   val initial = DialogRootState(
     active = ActiveDialogs.empty,
-    activePeers = SortedSet.empty(SortableDialog.OrderingAsc),
+    // activePeers = SortedSet.empty(SortableDialog.OrderingAsc),
+    mobile = SortedSet.empty(SortableDialog.OrderingDesc),
     archived = SortedSet.empty(SortableDialog.OrderingDesc)
   )
 }
 
 private[dialog] final case class DialogRootState(
-  active:      ActiveDialogs,
-  activePeers: SortedSet[SortableDialog],
-  archived:    SortedSet[SortableDialog]
+  active: ActiveDialogs,
+  // activePeers: SortedSet[SortableDialog],
+  mobile:   SortedSet[SortableDialog],
+  archived: SortedSet[SortableDialog]
 ) extends ProcessorState[DialogRootState] {
   import DialogRootEvents._
 
   override def updated(e: Event): DialogRootState = e match {
-    case Created(ts, Some(peer))      ⇒ withShownPeer(ts, peer)
+    case Created(ts, Some(peer))      ⇒ withNewPeer(ts, peer)
     case Archived(ts, Some(peer))     ⇒ withArchivedPeer(ts, peer)
-    case Unarchived(ts, Some(peer))   ⇒ withShownPeer(ts, peer)
+    case Unarchived(ts, Some(peer))   ⇒ withUnarchivedPeer(ts, peer)
     case Favourited(ts, Some(peer))   ⇒ withFavouritedPeer(ts, peer)
     case Unfavourited(ts, Some(peer)) ⇒ withUnfavouritedPeer(ts, peer)
+    case Bumped(ts, Some(peer))       ⇒ withBumpedPeer(ts, peer)
     case Initialized(_)               ⇒ this
   }
 
-  lazy val allPeers = activePeers ++ archived
+  // lazy val allPeers = activePeers ++ archived
 
   override def withSnapshot(metadata: SnapshotMetadata, snapshot: Any): DialogRootState = snapshot match {
-    case DialogRootStateSnapshot(dialogGroups, _archived) ⇒ {
+    case DialogRootStateSnapshot(dialogGroups, _archived, _mobile) ⇒ {
       val state = DialogRootState.initial.copy(
         archived = SortedSet(
           (_archived map (di ⇒ SortableDialog(di.date, di.getPeer))): _*
-        )(SortableDialog.OrderingAsc)
+        )(SortableDialog.OrderingAsc),
+        mobile = SortedSet(
+          (_mobile map (di ⇒ SortableDialog(di.date, di.getPeer))): _*
+        )(SortableDialog.OrderingDesc)
       )
 
       dialogGroups.foldLeft(state) {
@@ -154,17 +166,36 @@ private[dialog] final case class DialogRootState(
 
     DialogRootStateSnapshot(
       dialogGroups = Seq(favourites, groups, dms),
-      archived = archived.toSeq map { sd ⇒ DialogInfo(Some(sd.peer), date = sd.ts) }
+      archived = archived.toSeq map { sd ⇒ DialogInfo(Some(sd.peer), date = sd.ts) },
+      mobile = mobile.toSeq map (sd ⇒ DialogInfo(Some(sd.peer), date = sd.ts))
     )
   }
 
-  private def withShownPeer(ts: Instant, peer: Peer): DialogRootState = {
-    if (this.activePeers.exists(_.ts == ts)) withShownPeer(ts.plusMillis(1), peer)
+  private def withBumpedPeer(ts: Instant, peer: Peer): DialogRootState = {
+    copy(
+      mobile = mobile.filterNot(_.peer == peer) + SortableDialog(ts, peer)
+    )
+  }
+
+  private def withNewPeer(ts: Instant, peer: Peer): DialogRootState = {
+    if (this.mobile.find(_.peer == peer).exists(_.ts == ts)) withNewPeer(ts.plusMillis(1), peer)
     else {
       val sortableDialog = SortableDialog(ts, peer)
 
       copy(
-        activePeers = this.activePeers + sortableDialog,
+        active = this.active.withPeer(sortableDialog),
+        archived = this.archived.filterNot(_.peer == peer),
+        mobile = this.mobile + sortableDialog
+      )
+    }
+  }
+
+  private def withUnarchivedPeer(ts: Instant, peer: Peer): DialogRootState = {
+    if (this.mobile.find(_.peer == peer).exists(_.ts == ts)) withUnarchivedPeer(ts.plusMillis(1), peer)
+    else {
+      val sortableDialog = SortableDialog(ts, peer)
+
+      copy(
         active = this.active.withPeer(sortableDialog),
         archived = this.archived.filterNot(_.peer == peer)
       )
@@ -176,7 +207,7 @@ private[dialog] final case class DialogRootState(
     else {
       val sortableDialog = SortableDialog(ts, peer)
       copy(
-        activePeers = this.activePeers.filterNot(_.peer == peer),
+        // activePeers = this.activePeers.filterNot(_.peer == peer),
         active = this.active.withoutPeer(sortableDialog),
         archived = this.archived + sortableDialog
       )
@@ -186,10 +217,10 @@ private[dialog] final case class DialogRootState(
   private def withFavouritedPeer(ts: Instant, peer: Peer): DialogRootState = {
     val sortableDialog = SortableDialog(ts, peer)
 
-    if (activePeers.exists(_.ts == ts)) withFavouritedPeer(ts.plusMillis(1), peer)
+    if (active.favourites.exists(_.ts == ts)) withFavouritedPeer(ts.plusMillis(1), peer)
     else
       copy(
-        activePeers = this.activePeers + sortableDialog,
+        // activePeers = this.activePeers + sortableDialog,
         active = this.active.withFavouritedPeer(sortableDialog),
         archived = this.archived.filterNot(_.peer == peer)
       )
@@ -212,8 +243,8 @@ private[dialog] final case class DialogRootState(
     }
 
     copy(
-      active = newActive,
-      activePeers = this.activePeers ++ sortableDialogs
+      active = newActive
+    // activePeers = this.activePeers ++ sortableDialogs
     )
   }
 }

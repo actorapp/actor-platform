@@ -9,7 +9,8 @@ import im.actor.server.cqrs.ProcessorStateProbe
 import im.actor.server.model.Peer
 
 final class DialogRootStateSpec extends ActorSuite with PeersImplicits {
-  it should "sort dialogs by appearing" in show
+  it should "sort groued dialogs by appearing" in show
+  it should "sort mobile dialogs by last message date" in mobileDialogs
   it should "remove Favourites on Unfavourite" in favouriteUnfavourite
   it should "remove from Archived on Favourite or new message" in removeFromArchived
   it should "archive groups and DMs" in archive
@@ -27,9 +28,32 @@ final class DialogRootStateSpec extends ActorSuite with PeersImplicits {
     probe.commit(Created(Instant.now(), Some(alice)))
     probe.commit(Created(Instant.now().plusMillis(1), Some(bob)))
 
-    getActivePeers should be(Seq(alice, bob))
-
     getGroupPeers(DialogGroupType.DirectMessages) should be(Seq(alice, bob))
+    checkSnapshot
+  }
+
+  def mobileDialogs() = {
+    implicit val probe = ProcessorStateProbe(DialogRootState.initial)
+
+    val alice = Peer.privat(1)
+    val bob = Peer.privat(2)
+    val eve = Peer.privat(3)
+
+    probe.commit(Created(Instant.now(), Some(alice)))
+    probe.commit(Created(Instant.now().plusMillis(1), Some(bob)))
+    probe.commit(Created(Instant.now().plusMillis(1), Some(eve)))
+
+    getMobilePeers should be(Seq(eve, bob, alice))
+    checkSnapshot
+
+    probe.commit(Archived(Instant.now(), Some(alice)))
+
+    getMobilePeers should be(Seq(eve, bob, alice))
+    checkSnapshot
+
+    probe.commit(Bumped(Instant.now(), Some(alice)))
+
+    getMobilePeers should be(Seq(alice, eve, bob))
     checkSnapshot
   }
 
@@ -61,7 +85,7 @@ final class DialogRootStateSpec extends ActorSuite with PeersImplicits {
     probe.state.active.dms shouldBe empty
     probe.state.active.dms shouldBe empty
     probe.state.active.favourites.map(_.peer).toSeq should be(Seq(alice, group))
-    probe.state.activePeers.map(_.peer).toSeq should be(Seq(alice, group))
+    probe.state.mobile.map(_.peer).toSeq should be(Seq(alice, group))
   }
 
   def removeFromArchived() = {
@@ -126,8 +150,8 @@ final class DialogRootStateSpec extends ActorSuite with PeersImplicits {
       case unknown                        ⇒ throw DialogErrors.UnknownDialogGroupType(unknown)
     }
 
-  private def getActivePeers(implicit probe: ProcessorStateProbe[DialogRootState]) =
-    probe.state.activePeers.toSeq.map(_.peer)
+  private def getMobilePeers(implicit probe: ProcessorStateProbe[DialogRootState]) =
+    probe.state.mobile.toSeq.map(_.peer)
 
   private def getArchivedPeers(implicit probe: ProcessorStateProbe[DialogRootState]) =
     probe.state.archived.toSeq.map(_.peer)

@@ -26,11 +26,11 @@ object DialogRoot {
       45010 → classOf[DialogRootEvents.Archived],
       45011 → classOf[DialogRootEvents.Created],
       45012 → classOf[DialogRootEvents.Favourited],
-      45013 → classOf[DialogRootEvents.Shown],
       45014 → classOf[DialogRootEvents.Unarchived],
       45015 → classOf[DialogRootEvents.Unfavourited],
       45017 → classOf[DialogRootEvents.Initialized],
-      45016 → classOf[DialogRootStateSnapshot]
+      45016 → classOf[DialogRootStateSnapshot],
+      45018 → classOf[DialogRootEvents.Bumped]
     )
   }
 
@@ -48,8 +48,8 @@ private trait DialogRootQueryHandlers {
   def getDialogs(endDate: Instant, limit: Int): Future[GetDialogsResponse] = {
     val dialogs =
       endDateTimeFrom(endDate) match {
-        case Some(_) ⇒ state.allPeers.view.filter(sd ⇒ sd.ts.isBefore(endDate) || sd.ts == endDate).take(limit)
-        case None    ⇒ state.allPeers.takeRight(limit)
+        case Some(_) ⇒ state.mobile.view.filter(sd ⇒ sd.ts.isBefore(endDate) || sd.ts == endDate).take(limit)
+        case None    ⇒ state.mobile.takeRight(limit)
       }
 
     for {
@@ -75,7 +75,7 @@ private trait DialogRootQueryHandlers {
     fetchDialogGroups() map (GetDialogGroupsResponse(_))
 
   def getCounter(): Future[GetCounterResponse] = {
-    val refs = state.activePeers.toSeq map (sd ⇒ sd.peer → dialogRef(sd.peer))
+    val refs = state.active.map(sd ⇒ sd.peer → dialogRef(sd.peer)).toSeq
 
     for {
       counters ← FutureExt.ftraverse(refs) {
@@ -120,14 +120,25 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
 
   override protected def handleCommand: Receive = {
     case dc: DialogCommand if dc.isInstanceOf[SendMessage] || dc.isInstanceOf[WriteMessageSelf] ⇒
-      needShowDialog(dc) match {
-        case Some(peer) ⇒
-          val e = if (isArchived(peer)) Unarchived(Instant.now(), Some(peer)) else Created(Instant.now(), Some(peer))
+      needCheckDialog(dc) match {
+        case peerOpt @ Some(peer) ⇒
+          val now = Instant.now
 
-          persist(e) { _ ⇒
-            commit(e)
+          val isCreated = isDialogCreated(peer)
+          val isShown = isDialogShown(peer)
+
+          val events = if (isCreated) {
+            (if (!isShown) List(Unarchived(now, peerOpt)) else List.empty) ++
+              (if (!isDialogOnTop(peer)) List(Bumped(now, peerOpt)) else List.empty)
+          } else List(Created(now, peerOpt))
+
+          persistAll(events)(e ⇒ commit(e))
+
+          deferAsync(()) { _ ⇒
             handleDialogCommand(dc)
-            sendChatGroupsChanged()
+
+            if (!isCreated || !isShown)
+              sendChatGroupsChanged()
           }
         case None ⇒
           handleDialogCommand(dc)
@@ -181,8 +192,8 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
     }
   }
 
-  private def needShowDialog(cmd: DialogCommand): Option[Peer] = {
-    val checkPeerOpt = cmd match {
+  private def needCheckDialog(cmd: DialogCommand): Option[Peer] = {
+    cmd match {
       case sm: SendMessage ⇒
         Some(sm.getOrigin.typ match {
           case PeerType.Group ⇒ sm.getDest
@@ -194,18 +205,17 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
       case wm: WriteMessageSelf ⇒ Some(wm.getDest)
       case _                    ⇒ None
     }
-
-    checkPeerOpt flatMap { checkPeer ⇒
-      if (dialogShown(checkPeer)) None
-      else Some(checkPeer)
-    }
   }
 
   private def isArchived(peer: Peer): Boolean = state.archived.exists(_.peer == peer)
 
   private def isFavourited(peer: Peer): Boolean = state.active.favourites.exists(_.peer == peer)
 
-  private def dialogShown(peer: Peer): Boolean = state.activePeers.exists(_.peer == peer)
+  private def isDialogCreated(peer: Peer): Boolean = state.mobile.exists(_.peer == peer)
+
+  private def isDialogShown(peer: Peer): Boolean = state.active.exists(_.peer == peer)
+
+  private def isDialogOnTop(peer: Peer): Boolean = state.mobile.headOption.exists(_.peer == peer)
 
   protected def dialogRef(dc: DirectDialogCommand): ActorRef = {
     val peer = dc.getDest match {
