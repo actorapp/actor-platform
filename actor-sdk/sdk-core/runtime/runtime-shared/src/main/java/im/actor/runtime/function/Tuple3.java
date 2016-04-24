@@ -1,4 +1,4 @@
-package im.actor.runtime.promise;
+package im.actor.runtime.function;
 
 import com.google.j2objc.annotations.Property;
 
