@@ -25,7 +25,7 @@ public class CocoaWebRTCProxyProvider implements WebRTCRuntime {
     @Override
     public Promise<WebRTCPeerConnection> createPeerConnection(WebRTCIceServer[] webRTCIceServers, WebRTCSettings settings) {
         if (rtcRuntime == null) {
-            return Promises.failure(new RuntimeException("WebRTC Runtime not set"));
+            return Promise.failure(new RuntimeException("WebRTC Runtime not set"));
         }
         return rtcRuntime.createPeerConnection(webRTCIceServers, settings);
     }
@@ -34,7 +34,7 @@ public class CocoaWebRTCProxyProvider implements WebRTCRuntime {
     @Override
     public Promise<WebRTCMediaStream> getUserAudio() {
         if (rtcRuntime == null) {
-            return Promises.failure(new RuntimeException("WebRTC Runtime not set"));
+            return Promise.failure(new RuntimeException("WebRTC Runtime not set"));
         }
         return rtcRuntime.getUserAudio();
     }

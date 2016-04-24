@@ -1,7 +1,5 @@
 package im.actor.runtime.function;
 
-import im.actor.runtime.promise.Tuple2;
-
 public abstract class FunctionTupled2<T1, T2, R> implements Function<Tuple2<T1, T2>, R> {
 
     public abstract R apply(T1 t1, T2 t2);

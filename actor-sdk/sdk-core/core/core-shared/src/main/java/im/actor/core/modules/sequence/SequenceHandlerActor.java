@@ -92,7 +92,7 @@ public class SequenceHandlerActor extends ModuleActor {
         } catch (IOException e) {
             Log.w(TAG, "Unable to parse update: ignoring");
             Log.e(TAG, e);
-            return Promises.success(Void.INSTANCE);
+            return Promise.success(Void.INSTANCE);
         }
 
         if (groups == null || users == null) {
@@ -116,7 +116,7 @@ public class SequenceHandlerActor extends ModuleActor {
         }
 
         // Log.d(TAG, "Processing update success");
-        return Promises.success(Void.INSTANCE);
+        return Promise.success(Void.INSTANCE);
     }
 
     private Promise<Void> onDifferenceUpdate(final ResponseGetDifference difference) {
@@ -180,7 +180,7 @@ public class SequenceHandlerActor extends ModuleActor {
             long applyStart = im.actor.runtime.Runtime.getCurrentTime();
             processor.applyDifferenceUpdate(difference.getUsers(), difference.getGroups(), updates);
             Log.d(TAG, "Difference applied in " + (im.actor.runtime.Runtime.getCurrentTime() - applyStart) + " ms");
-            return Promises.success(Void.INSTANCE);
+            return Promise.success(Void.INSTANCE);
         }
     }
 

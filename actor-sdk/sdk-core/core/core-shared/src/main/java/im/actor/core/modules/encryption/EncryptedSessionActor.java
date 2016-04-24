@@ -19,6 +19,8 @@ import im.actor.runtime.crypto.IntegrityException;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
 import im.actor.core.modules.encryption.KeyManagerActor.*;
 
+import static im.actor.runtime.promise.Promise.success;
+
 /**
  * Axolotl Ratchet encryption session
  * Session is identified by:
@@ -88,7 +90,7 @@ public class EncryptedSessionActor extends ModuleActor {
         // Stage 3: Decrypt
         //
 
-        return Promises.success(latestTheirEphemeralKey)
+        return success(latestTheirEphemeralKey)
                 .mapIfNullPromise(keyManager.supplyUserPreKey(uid, session.getTheirKeyGroupId()))
                 .map(new Function<byte[], EncryptedSessionChain>() {
                     @Override
@@ -184,12 +186,12 @@ public class EncryptedSessionActor extends ModuleActor {
                 break;
             }
         }
-        return Promises.success(pickedChain)
+        return success(pickedChain)
                 .mapPromise(new Function<EncryptedSessionChain, Promise<EncryptedSessionChain>>() {
                     @Override
                     public Promise<EncryptedSessionChain> apply(EncryptedSessionChain src) {
                         if (src != null) {
-                            return Promises.success(src);
+                            return success(src);
                         }
 
                         // TODO: Implement!
