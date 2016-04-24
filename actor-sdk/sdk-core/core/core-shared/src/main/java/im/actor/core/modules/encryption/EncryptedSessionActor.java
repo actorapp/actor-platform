@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import im.actor.core.entity.encryption.PeerSession;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.encryption.entity.PrivateKey;
 import im.actor.core.modules.encryption.session.EncryptedSessionChain;
 import im.actor.core.modules.ModuleActor;
 import im.actor.runtime.*;
@@ -13,11 +12,9 @@ import im.actor.runtime.actors.ask.AskResult;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.function.Function;
 import im.actor.runtime.promise.Promise;
-import im.actor.runtime.promise.Promises;
 import im.actor.runtime.crypto.Curve25519;
 import im.actor.runtime.crypto.IntegrityException;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
-import im.actor.core.modules.encryption.KeyManagerActor.*;
 
 import static im.actor.runtime.promise.Promise.success;
 
@@ -187,7 +184,7 @@ public class EncryptedSessionActor extends ModuleActor {
             }
         }
         return success(pickedChain)
-                .mapPromise(new Function<EncryptedSessionChain, Promise<EncryptedSessionChain>>() {
+                .flatMap(new Function<EncryptedSessionChain, Promise<EncryptedSessionChain>>() {
                     @Override
                     public Promise<EncryptedSessionChain> apply(EncryptedSessionChain src) {
                         if (src != null) {

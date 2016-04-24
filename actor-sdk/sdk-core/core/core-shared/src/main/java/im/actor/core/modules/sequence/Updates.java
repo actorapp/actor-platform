@@ -4,6 +4,8 @@
 
 package im.actor.core.modules.sequence;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 import im.actor.core.api.ApiGroup;
@@ -23,6 +25,7 @@ import im.actor.runtime.eventbus.BusSubscriber;
 import im.actor.runtime.eventbus.Event;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseFunc;
+import im.actor.runtime.promise.PromiseResolver;
 
 import static im.actor.runtime.actors.ActorSystem.system;
 
@@ -64,6 +67,13 @@ public class Updates extends AbsModule implements BusSubscriber {
         updateActor.send(new SeqUpdate(seq, state, update.getHeaderKey(), update.toByteArray()));
     }
 
+    public Promise<Void> applyUpdate(int seq, byte[] state, Update update) {
+        return new Promise<>((PromiseFunc<Void>) resolver -> {
+            onSeqUpdateReceived(seq, state, update);
+            executeAfter(seq, () -> resolver.result(null));
+        });
+    }
+
     public void onFatSeqUpdateReceived(int seq, byte[] state, Update update,
                                        List<ApiUser> users, List<ApiGroup> groups) {
         updateActor.send(new FatSeqUpdate(seq, state, update.getHeaderKey(), update.toByteArray(),
@@ -80,6 +90,13 @@ public class Updates extends AbsModule implements BusSubscriber {
         } else {
             updateActor.send(update);
         }
+    }
+
+    public Promise<Void> onSeqUpdateReceived(SeqUpdate seqUpdate) {
+        return new Promise<>((PromiseFunc<Void>) resolver -> {
+            onUpdateReceived(seqUpdate);
+            executeAfter(seqUpdate.getSeq(), () -> resolver.result(null));
+        });
     }
 
 //    public void onUpdateReceived(Object update, Long delay) {

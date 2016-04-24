@@ -14,7 +14,7 @@ import im.actor.runtime.function.Predicate;
 import im.actor.runtime.function.Predicates;
 
 /**
- * Array of Promises. Allows you to invoke map, mapPromise and other useful methods
+ * Array of Promises. Allows you to invoke map, flatMap and other useful methods
  * for manipulating data.
  *
  * @param <T> type of array
@@ -122,7 +122,8 @@ public class PromisesArray<T> {
                 //
                 // Handling results
                 //
-                mapped.pipeTo(resolver);
+                mapped.then(resolver::result);
+                mapped.failure(resolver::error);
             });
 
             //

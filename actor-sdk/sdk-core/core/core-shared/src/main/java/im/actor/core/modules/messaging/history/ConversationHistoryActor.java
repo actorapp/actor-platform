@@ -70,7 +70,7 @@ public class ConversationHistoryActor extends ModuleActor {
                         Log.d("ConversationHistory", "Loaded!");
                     }
                 })
-                .mapPromise(applyRelated())
+                .flatMap(applyRelated())
                 .then(applyHistory(peer))
                 .then(responseLoadHistory -> isLoading = false);
     }

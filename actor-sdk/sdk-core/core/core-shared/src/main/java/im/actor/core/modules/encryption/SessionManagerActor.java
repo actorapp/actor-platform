@@ -82,7 +82,7 @@ public class SessionManagerActor extends ModuleActor {
                                 keyManager.getOwnRandomPreKey(),
                                 keyManager.getUserKeyGroups(uid),
                                 keyManager.getUserRandomPreKey(uid, keyGroupId))
-                                .mapPromise(new FunctionTupled4<KeyManagerActor.OwnIdentity,
+                                .flatMap(new FunctionTupled4<KeyManagerActor.OwnIdentity,
                                         PrivateKey, UserKeys, PublicKey, Promise<PeerSession>>() {
                                     @Override
                                     public Promise<PeerSession> apply(KeyManagerActor.OwnIdentity ownIdentity,
