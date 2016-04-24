@@ -4,9 +4,13 @@
 
 package im.actor.core.modules;
 
+import org.jetbrains.annotations.NotNull;
+
 import im.actor.core.api.ApiOutPeer;
 import im.actor.core.api.ApiPeer;
 import im.actor.core.api.ApiPeerType;
+import im.actor.core.api.rpc.RequestEditUserLocalName;
+import im.actor.core.api.rpc.ResponseSeq;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
@@ -18,6 +22,9 @@ import im.actor.core.network.parser.Request;
 import im.actor.core.network.parser.Response;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.mtproto.ManagedConnection;
+import im.actor.runtime.promise.Promise;
+import im.actor.runtime.promise.PromiseFunc;
+import im.actor.runtime.promise.PromiseResolver;
 import im.actor.runtime.storage.KeyValueEngine;
 import im.actor.runtime.storage.KeyValueStorage;
 import im.actor.runtime.storage.PreferencesStorage;
@@ -27,7 +34,6 @@ public abstract class AbsModule {
     public static final int RPC_TIMEOUT = (int) (1.1 * ManagedConnection.CONNECTION_TIMEOUT);
 
     public static final String STORAGE_DIALOGS = "dialogs";
-    public static final String STORAGE_DIALOGS_DESC = "dialogs_desc";
     public static final String STORAGE_USERS = "users";
     public static final String STORAGE_GROUPS = "groups";
     public static final String STORAGE_DOWNLOADS = "downloads";
@@ -100,6 +106,22 @@ public abstract class AbsModule {
 
             }
         }, timeout);
+    }
+
+    public <T extends Response> Promise<T> api(Request<T> request) {
+        return new Promise<>((PromiseFunc<T>) resolver -> {
+            request(request, new RpcCallback<T>() {
+                @Override
+                public void onResult(T response) {
+                    resolver.result(response);
+                }
+
+                @Override
+                public void onError(RpcException e) {
+                    resolver.error(e);
+                }
+            });
+        });
     }
 
     public <T extends Response> void request(Request<T> request) {
