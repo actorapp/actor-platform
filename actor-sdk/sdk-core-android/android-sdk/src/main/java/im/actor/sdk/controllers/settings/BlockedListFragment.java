@@ -48,8 +48,7 @@ public class BlockedListFragment extends BaseFragment {
                             public void apply(Void aVoid) {
                                 checkBlockedList();
                             }
-                        })
-                        .done(getPromiseActor()));
+                        }));
             }
         });
         list.setAdapter(adapter);
@@ -78,8 +77,7 @@ public class BlockedListFragment extends BaseFragment {
                         });
 
                     }
-                })
-                .done(getPromiseActor());
+                });
     }
 
 }

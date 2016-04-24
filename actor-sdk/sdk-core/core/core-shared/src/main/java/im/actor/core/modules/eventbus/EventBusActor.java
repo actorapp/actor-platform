@@ -54,7 +54,7 @@ public class EventBusActor extends ModuleActor {
         isProcessing = true;
         api(new RequestJoinEventBus(busId, timeout)).then(responseJoinEventBus ->
                 connectBus(busId, responseJoinEventBus.getDeviceId(), timeout, true)
-        ).failure(e -> dispose()).done(self());
+        ).failure(e -> dispose());
     }
 
     public void createBus() {
@@ -65,7 +65,7 @@ public class EventBusActor extends ModuleActor {
         isProcessing = true;
         api(new RequestCreateNewEventBus(timeout, true)).then(responseCreateNewEventBus ->
                 connectBus(responseCreateNewEventBus.getId(), responseCreateNewEventBus.getDeviceId(), timeout, false)
-        ).failure(e -> dispose()).done(self());
+        ).failure(e -> dispose());
     }
 
     public void connectBus(String busId, long deviceId, boolean isJoined) {

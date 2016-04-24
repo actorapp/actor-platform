@@ -2,6 +2,8 @@ package im.actor.runtime.promise;
 
 import com.google.j2objc.annotations.ObjectiveCName;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 import im.actor.runtime.Log;
@@ -22,12 +24,7 @@ public class Promises {
      */
     @ObjectiveCName("success:")
     public static <T> Promise<T> success(final T val) {
-        return new Promise<T>() {
-            @Override
-            void exec(PromiseResolver resolver) {
-                resolver.result(val);
-            }
-        };
+        return new Promise<>((PromiseFunc<T>) resolver -> resolver.result(val));
     }
 
     /**
@@ -39,35 +36,19 @@ public class Promises {
      */
     @ObjectiveCName("failure:")
     public static <T> Promise<T> failure(final Exception e) {
-        return new Promise<T>() {
-            @Override
-            void exec(PromiseResolver<T> resolver) {
-                resolver.error(e);
-            }
-        };
+        return new Promise<>((PromiseFunc<T>) resolver -> resolver.error(e));
     }
 
     @ObjectiveCName("logWithTag:withResolver:withFunc:")
     public static <T> Promise<T> log(final String TAG, final PromiseResolver<T> resolver, final PromiseFunc<T> func) {
-        return new Promise<T>() {
-            @Override
-            void exec(PromiseResolver<T> resolver) {
-                func.exec(resolver);
-            }
-        }.then(new Consumer<T>() {
-            @Override
-            public void apply(T t) {
-                Log.d(TAG, "Result: " + t);
-                resolver.result(t);
-            }
-        }).failure(new Consumer<Exception>() {
-            @Override
-            public void apply(Exception e) {
-                Log.d(TAG, "Error: " + e);
-                Log.e(TAG, e);
-                e.printStackTrace();
-                resolver.error(e);
-            }
+        return new Promise<T>(func::exec).then(t -> {
+            Log.d(TAG, "Result: " + t);
+            resolver.result(t);
+        }).failure(e -> {
+            Log.d(TAG, "Error: " + e);
+            Log.e(TAG, e);
+            e.printStackTrace();
+            resolver.error(e);
         });
     }
 
@@ -85,12 +66,7 @@ public class Promises {
 
         return PromisesArray.ofPromises(t1.cast(), t2.cast())
                 .zip()
-                .map(new Function<List<Object>, Tuple2<T1, T2>>() {
-                    @Override
-                    public Tuple2<T1, T2> apply(List<Object> src) {
-                        return new Tuple2<>((T1) src.get(0), (T2) src.get(1));
-                    }
-                });
+                .map(src -> new Tuple2<>((T1) src.get(0), (T2) src.get(1)));
     }
 
     /**
@@ -108,12 +84,7 @@ public class Promises {
     public static <T1, T2, T3> Promise<Tuple3<T1, T2, T3>> tuple(Promise<T1> t1, Promise<T2> t2, Promise<T3> t3) {
         return PromisesArray.ofPromises(t1.cast(), t2.cast(), t3.cast())
                 .zip()
-                .map(new Function<List<Object>, Tuple3<T1, T2, T3>>() {
-                    @Override
-                    public Tuple3<T1, T2, T3> apply(List<Object> src) {
-                        return new Tuple3<>((T1) src.get(0), (T2) src.get(1), (T3) src.get(3));
-                    }
-                });
+                .map(src -> new Tuple3<>((T1) src.get(0), (T2) src.get(1), (T3) src.get(3)));
     }
 
     /**
@@ -137,11 +108,6 @@ public class Promises {
 
         return PromisesArray.ofPromises(t1.cast(), t2.cast(), t3.cast(), t4.cast())
                 .zip()
-                .map(new Function<List<Object>, Tuple4<T1, T2, T3, T4>>() {
-                    @Override
-                    public Tuple4<T1, T2, T3, T4> apply(List<Object> src) {
-                        return new Tuple4<>((T1) src.get(0), (T2) src.get(1), (T3) src.get(2), (T4) src.get(3));
-                    }
-                });
+                .map(src -> new Tuple4<>((T1) src.get(0), (T2) src.get(1), (T3) src.get(2), (T4) src.get(3)));
     }
 }

@@ -20,6 +20,7 @@ import im.actor.core.entity.Reaction;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.ModuleActor;
+import im.actor.runtime.Log;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.function.Function;
@@ -63,10 +64,15 @@ public class ConversationHistoryActor extends ModuleActor {
         }
         isLoading = true;
         api(new RequestLoadHistory(buidOutPeer(peer), historyMaxDate, null, LIMIT))
+                .then(new Consumer<ResponseLoadHistory>() {
+                    @Override
+                    public void apply(ResponseLoadHistory responseLoadHistory) {
+                        Log.d("ConversationHistory", "Loaded!");
+                    }
+                })
                 .mapPromise(applyRelated())
                 .then(applyHistory(peer))
-                .then(responseLoadHistory -> isLoading = false)
-                .done(self());
+                .then(responseLoadHistory -> isLoading = false);
     }
 
     private Consumer<ResponseLoadHistory> applyHistory(final Peer peer) {

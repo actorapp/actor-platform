@@ -137,7 +137,7 @@ public class SequenceActor extends ModuleActor {
             SequenceActor.this.seq = finishedSeq;
             SequenceActor.this.state = finishedState;
             invalidate();
-        }).done(self());
+        });
 
         // Saving memory-only state
         this.seq = seq;
@@ -181,7 +181,7 @@ public class SequenceActor extends ModuleActor {
                 }
                 isValidated = true;
                 invalidate();
-            }).done(self());
+            });
         } else {
             Log.d(TAG, "Loading difference...");
             onUpdateStarted();
@@ -202,7 +202,7 @@ public class SequenceActor extends ModuleActor {
 
                 handler.onDifferenceUpdate(response).then(updateProcessed ->
                         onUpdatesApplied(response.getSeq(), response.getState())
-                ).done(self());
+                );
 
                 onBecomeValid(response.getSeq(), response.getState());
 
@@ -218,7 +218,7 @@ public class SequenceActor extends ModuleActor {
                 isValidated = true;
 
                 invalidate();
-            }).done(self());
+            });
         }
     }
 

@@ -192,19 +192,21 @@ public class EncryptedSessionActor extends ModuleActor {
                             return Promises.success(src);
                         }
 
-                        return ask(context().getEncryption().getKeyManager(), new FetchOwnPreKeyByPublic(ephemeralKey))
-                                .map(new Function<PrivateKey, EncryptedSessionChain>() {
-                                    @Override
-                                    public EncryptedSessionChain apply(PrivateKey src) {
-                                        EncryptedSessionChain chain = new EncryptedSessionChain(session, src.getKey(), theirEphemeralKey);
-                                        decryptionChains.add(0, chain);
-                                        if (decryptionChains.size() > MAX_DECRYPT_CHAINS) {
-                                            decryptionChains.remove(MAX_DECRYPT_CHAINS)
-                                                    .safeErase();
-                                        }
-                                        return chain;
-                                    }
-                                });
+                        // TODO: Implement!
+                        return null;
+//                        return ask(context().getEncryption().getKeyManager(), new FetchOwnPreKeyByPublic(ephemeralKey))
+//                                .map(new Function<PrivateKey, EncryptedSessionChain>() {
+//                                    @Override
+//                                    public EncryptedSessionChain apply(PrivateKey src) {
+//                                        EncryptedSessionChain chain = new EncryptedSessionChain(session, src.getKey(), theirEphemeralKey);
+//                                        decryptionChains.add(0, chain);
+//                                        if (decryptionChains.size() > MAX_DECRYPT_CHAINS) {
+//                                            decryptionChains.remove(MAX_DECRYPT_CHAINS)
+//                                                    .safeErase();
+//                                        }
+//                                        return chain;
+//                                    }
+//                                });
                     }
                 });
     }

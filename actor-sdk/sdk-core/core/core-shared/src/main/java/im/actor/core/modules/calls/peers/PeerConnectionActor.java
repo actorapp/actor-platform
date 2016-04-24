@@ -116,7 +116,7 @@ public class PeerConnectionActor extends ModuleActor {
             Log.d(TAG, "preStart:error");
             e.printStackTrace();
             onHandshakeFailure();
-        }).done(self());
+        });
     }
 
     public void onResetState() {
@@ -148,7 +148,7 @@ public class PeerConnectionActor extends ModuleActor {
         }).failure(e -> {
             e.printStackTrace();
             onHandshakeFailure();
-        }).done(self());
+        });
     }
 
     public void onOffer(final long sessionId, @NotNull String sdp) {
@@ -179,7 +179,7 @@ public class PeerConnectionActor extends ModuleActor {
         }).failure(e -> {
             e.printStackTrace();
             onHandshakeFailure();
-        }).done(self());
+        });
     }
 
     public void onAnswer(final long sessionId, @NotNull String sdp) {
@@ -200,7 +200,7 @@ public class PeerConnectionActor extends ModuleActor {
         }).failure(e -> {
             e.printStackTrace();
             onHandshakeFailure();
-        }).done(self());
+        });
     }
 
     private void onReady() {
