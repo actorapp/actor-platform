@@ -4,12 +4,10 @@
 
 package im.actor.core.modules.users;
 
-import im.actor.core.api.base.SeqUpdate;
 import im.actor.core.api.rpc.RequestEditAbout;
 import im.actor.core.api.rpc.RequestEditName;
 import im.actor.core.api.rpc.RequestEditNickName;
 import im.actor.core.api.rpc.RequestEditUserLocalName;
-import im.actor.core.api.rpc.ResponseSeq;
 import im.actor.core.api.updates.UpdateUserAboutChanged;
 import im.actor.core.api.updates.UpdateUserLocalNameChanged;
 import im.actor.core.api.updates.UpdateUserNameChanged;
@@ -17,20 +15,12 @@ import im.actor.core.api.updates.UpdateUserNickChanged;
 import im.actor.core.entity.User;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.network.RpcCallback;
-import im.actor.core.network.RpcException;
-import im.actor.core.network.RpcInternalException;
-import im.actor.core.viewmodel.Command;
-import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.Storage;
-import im.actor.runtime.actors.ActorCreator;
-import im.actor.runtime.actors.ActorRef;
-import im.actor.runtime.actors.Props;
+import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.mvvm.MVVMCollection;
+import im.actor.runtime.promise.Promise;
 import im.actor.runtime.storage.KeyValueEngine;
-
-import static im.actor.runtime.actors.ActorSystem.system;
 
 public class UsersModule extends AbsModule {
 
@@ -53,85 +43,48 @@ public class UsersModule extends AbsModule {
     public MVVMCollection<User, UserVM> getUsers() {
         return collection;
     }
-    
+
+    public Promise<Long> getUserAccessHash(int uid) {
+        return getUsersStorage().getValueAsync(uid).map(User::getAccessHash);
+    }
+
     // Actions
 
-    public Command<Boolean> editMyName(final String newName) {
-        return callback -> request(new RequestEditName(newName), new RpcCallback<ResponseSeq>() {
-            @Override
-            public void onResult(ResponseSeq response) {
-                updates().onSeqUpdateReceived(
-                        response.getSeq(),
-                        response.getState(),
-                        new UpdateUserNameChanged(
-                                myUid(),
-                                newName));
-                runOnUiThread(() -> callback.onResult(true));
-            }
-
-            @Override
-            public void onError(final RpcException e) {
-                runOnUiThread(() -> callback.onError(e));
-            }
-        });
+    public Promise<Void> editName(final int uid, final String name) {
+        return getUserAccessHash(uid)
+                .flatMap(aLong -> api(new RequestEditUserLocalName(uid, aLong, name)))
+                .flatMap(responseSeq -> updates().applyUpdate(
+                        responseSeq.getSeq(),
+                        responseSeq.getState(),
+                        new UpdateUserLocalNameChanged(uid, name))
+                );
     }
 
-    public Command<Boolean> editName(final int uid, final String name) {
-        return callback -> {
-            User user = getUsersStorage().getValue(uid);
-            if (user == null) {
-                runOnUiThread(() -> callback.onError(new RpcInternalException()));
-                return;
-            }
-            request(new RequestEditUserLocalName(
-                    user.getUid(), user.getAccessHash(), name), new RpcCallback<ResponseSeq>() {
-                @Override
-                public void onResult(ResponseSeq response) {
-                    SeqUpdate update = new SeqUpdate(response.getSeq(), response.getState(),
-                            UpdateUserLocalNameChanged.HEADER, new UpdateUserLocalNameChanged(uid,
-                            name).toByteArray());
-                    updates().onUpdateReceived(update);
-                    runOnUiThread(() -> callback.onResult(true));
-                }
-
-                @Override
-                public void onError(final RpcException e) {
-                    runOnUiThread(() -> callback.onError(e));
-                }
-            });
-        };
+    public Promise<Void> editMyName(final String newName) {
+        return api(new RequestEditName(newName))
+                .flatMap(responseSeq -> updates().applyUpdate(
+                        responseSeq.getSeq(),
+                        responseSeq.getState(),
+                        new UpdateUserNameChanged(myUid(), newName))
+                );
     }
 
-    public Command<Boolean> editNick(final String nick) {
-        return callback -> request(new RequestEditNickName(nick), new RpcCallback<ResponseSeq>() {
-            @Override
-            public void onResult(ResponseSeq response) {
-                updates().onSeqUpdateReceived(response.getSeq(), response.getState(),
-                        new UpdateUserNickChanged(myUid(), nick));
-                runOnUiThread(() -> callback.onResult(true));
-            }
-
-            @Override
-            public void onError(final RpcException e) {
-                runOnUiThread(() -> callback.onError(e));
-            }
-        });
+    public Promise<Void> editNick(final String nick) {
+        return api(new RequestEditNickName(nick))
+                .flatMap(responseSeq -> updates().applyUpdate(
+                        responseSeq.getSeq(),
+                        responseSeq.getState(),
+                        new UpdateUserNickChanged(myUid(), nick))
+                );
     }
 
-    public Command<Boolean> editAbout(final String about) {
-        return callback -> request(new RequestEditAbout(about), new RpcCallback<ResponseSeq>() {
-            @Override
-            public void onResult(ResponseSeq response) {
-                updates().onSeqUpdateReceived(response.getSeq(), response.getState(),
-                        new UpdateUserAboutChanged(myUid(), about));
-                runOnUiThread(() -> callback.onResult(true));
-            }
-
-            @Override
-            public void onError(final RpcException e) {
-                runOnUiThread(() -> callback.onError(e));
-            }
-        });
+    public Promise<Void> editAbout(final String about) {
+        return api(new RequestEditAbout(about))
+                .flatMap(responseSeq -> updates().applyUpdate(
+                        responseSeq.getSeq(),
+                        responseSeq.getState(),
+                        new UpdateUserAboutChanged(myUid(), about))
+                );
     }
 
     public void resetModule() {

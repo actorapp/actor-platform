@@ -39,7 +39,6 @@ import im.actor.runtime.promise.Promise;
 import im.actor.runtime.crypto.Curve25519;
 import im.actor.runtime.crypto.ratchet.RatchetKeySignature;
 import im.actor.runtime.function.Consumer;
-import im.actor.runtime.promise.Promises;
 import im.actor.runtime.promise.PromisesArray;
 import im.actor.runtime.function.Tuple2;
 import im.actor.runtime.storage.KeyValueStorage;
@@ -321,7 +320,7 @@ public class KeyManagerActor extends ModuleActor {
         }
 
         return pickUserGroup(uid, keyGroupId)
-                .mapPromise(new Function<Tuple2<UserKeysGroup, UserKeys>, Promise<PublicKey>>() {
+                .flatMap(new Function<Tuple2<UserKeysGroup, UserKeys>, Promise<PublicKey>>() {
                     @Override
                     public Promise<PublicKey> apply(final Tuple2<UserKeysGroup, UserKeys> keysGroup) {
 
@@ -391,7 +390,7 @@ public class KeyManagerActor extends ModuleActor {
      */
     private Promise<PublicKey> fetchUserPreKey(final int uid, final int keyGroupId) {
         return pickUserGroup(uid, keyGroupId)
-                .mapPromise(new Function<Tuple2<UserKeysGroup, UserKeys>, Promise<PublicKey>>() {
+                .flatMap(new Function<Tuple2<UserKeysGroup, UserKeys>, Promise<PublicKey>>() {
                     @Override
                     public Promise<PublicKey> apply(final Tuple2<UserKeysGroup, UserKeys> keyGroups) {
                         return api(new RequestLoadPrePublicKeys(new ApiUserOutPeer(uid, getUser(uid).getAccessHash()), keyGroupId))

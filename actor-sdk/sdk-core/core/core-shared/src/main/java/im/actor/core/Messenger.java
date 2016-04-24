@@ -53,6 +53,7 @@ import im.actor.core.util.Timing;
 import im.actor.core.viewmodel.AppStateVM;
 import im.actor.core.viewmodel.CallVM;
 import im.actor.core.viewmodel.Command;
+import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.ConversationVM;
 import im.actor.core.viewmodel.DialogGroupsVM;
 import im.actor.core.viewmodel.FileCallback;
@@ -83,6 +84,9 @@ import im.actor.runtime.threading.ThreadDispatcher;
  * Before using Messenger you need to create Configuration object by using ConfigurationBuilder.
  */
 public class Messenger {
+
+    // Do Not Remove! WorkAround for missing j2objc translator include
+    private static final Void DUMB = null;
 
     protected Modules modules;
 
@@ -1254,7 +1258,11 @@ public class Messenger {
     @Nullable
     @ObjectiveCName("editMyNameCommandWithName:")
     public Command<Boolean> editMyName(final String newName) {
-        return modules.getUsersModule().editMyName(newName);
+        return callback -> modules.getUsersModule().editMyName(newName)
+                .then(v -> {
+                    callback.onResult(true);
+                })
+                .failure(callback::onError);
     }
 
     /**
@@ -1266,7 +1274,9 @@ public class Messenger {
     @Nullable
     @ObjectiveCName("editMyNickCommandWithNick:")
     public Command<Boolean> editMyNick(final String newNick) {
-        return modules.getUsersModule().editNick(newNick);
+        return callback -> modules.getUsersModule().editNick(newNick)
+                .then(v -> callback.onResult(true))
+                .failure(callback::onError);
     }
 
     /**
@@ -1278,7 +1288,9 @@ public class Messenger {
     @Nullable
     @ObjectiveCName("editMyAboutCommandWithNick:")
     public Command<Boolean> editMyAbout(final String newAbout) {
-        return modules.getUsersModule().editAbout(newAbout);
+        return callback -> modules.getUsersModule().editAbout(newAbout)
+                .then(v -> callback.onResult(true))
+                .failure(callback::onError);
     }
 
     /**
@@ -1309,7 +1321,9 @@ public class Messenger {
     @Nullable
     @ObjectiveCName("editNameCommandWithUid:withName:")
     public Command<Boolean> editName(final int uid, final String name) {
-        return modules.getUsersModule().editName(uid, name);
+        return callback -> modules.getUsersModule().editName(uid, name)
+                .then(v -> callback.onResult(true))
+                .failure(callback::onError);
     }
 
     /**
