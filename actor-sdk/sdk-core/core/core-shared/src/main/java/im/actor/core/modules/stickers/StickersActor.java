@@ -43,7 +43,7 @@ public class StickersActor extends ModuleActor {
                 context().getPreferences().putBool("stickers_loaded", true);
                 isLoaded = true;
                 unstashAll();
-            }).done(self());
+            });
         } else {
             isLoaded = true;
             notifyVM();

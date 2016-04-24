@@ -68,7 +68,7 @@ public class ArchivedDialogsActor extends ModuleActor {
                             public void apply(Void aVoid) {
                                 onLoadedMore(response);
                             }
-                        }).done(self());
+                        });
                     }
 
                     @Override

@@ -105,7 +105,7 @@ public class DownloadTask extends ModuleActor {
                 Log.d(TAG, "Unable to load file url");
             }
             reportError();
-        }).done(self());
+        });
     }
 
     private void startDownload() {

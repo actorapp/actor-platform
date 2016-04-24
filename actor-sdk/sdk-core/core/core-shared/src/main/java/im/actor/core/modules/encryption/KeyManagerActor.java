@@ -137,7 +137,7 @@ public class KeyManagerActor extends ModuleActor {
 
                     // Just ignore
                 }
-            }).done(self());
+            });
         } else {
             onMainKeysReady();
         }
@@ -190,7 +190,7 @@ public class KeyManagerActor extends ModuleActor {
 
                             // Ignore. This will freeze all encryption operations.
                         }
-                    }).done(self());
+                    });
         } else {
             onAllKeysReady();
         }
@@ -534,21 +534,18 @@ public class KeyManagerActor extends ModuleActor {
     }
 
     private Promise<Tuple2<UserKeysGroup, UserKeys>> pickUserGroup(int uid, final int keyGroupId) {
-        return ask(self(), new FetchUserKeys(uid))
-                .map(new Function<UserKeys, Tuple2<UserKeysGroup, UserKeys>>() {
-                    @Override
-                    public Tuple2<UserKeysGroup, UserKeys> apply(UserKeys userKeys) {
-                        UserKeysGroup keysGroup = null;
-                        for (UserKeysGroup g : userKeys.getUserKeysGroups()) {
-                            if (g.getKeyGroupId() == keyGroupId) {
-                                keysGroup = g;
-                            }
+        return fetchUserGroups(uid)
+                .map(userKeys -> {
+                    UserKeysGroup keysGroup = null;
+                    for (UserKeysGroup g : userKeys.getUserKeysGroups()) {
+                        if (g.getKeyGroupId() == keyGroupId) {
+                            keysGroup = g;
                         }
-                        if (keysGroup == null) {
-                            throw new RuntimeException("Key Group #" + keyGroupId + " not found");
-                        }
-                        return new Tuple2<>(keysGroup, userKeys);
                     }
+                    if (keysGroup == null) {
+                        throw new RuntimeException("Key Group #" + keyGroupId + " not found");
+                    }
+                    return new Tuple2<>(keysGroup, userKeys);
                 });
     }
 

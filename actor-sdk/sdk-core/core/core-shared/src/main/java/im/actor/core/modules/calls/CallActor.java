@@ -60,13 +60,13 @@ public class CallActor extends AbsCallActor {
                 callBus.joinMasterBus(responseDoCall.getEventBusId(), responseDoCall.getDeviceId());
                 callBus.startOwn();
                 callVM = callViewModels.spawnNewOutgoingVM(responseDoCall.getCallId(), peer);
-            }).failure(e -> self().send(PoisonPill.INSTANCE)).done(self());
+            }).failure(e -> self().send(PoisonPill.INSTANCE));
         } else {
             api(new RequestGetCallInfo(callId)).then(responseGetCallInfo -> {
                 peer = convert(responseGetCallInfo.getPeer());
                 callBus.joinBus(responseGetCallInfo.getEventBusId());
                 callVM = callViewModels.spawnNewIncomingVM(callId, peer, CallState.RINGING);
-            }).failure(e -> self().send(PoisonPill.INSTANCE)).done(self());
+            }).failure(e -> self().send(PoisonPill.INSTANCE));
         }
     }
 

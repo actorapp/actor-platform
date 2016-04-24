@@ -71,7 +71,7 @@ public class FileUrlLoader extends ModuleActor {
             }
             isExecuting = false;
             scheduleCheck();
-        }).done(self());
+        });
     }
 
     public Promise<String> askUrl(final long fileId, final long accessHash) {

@@ -21,8 +21,7 @@ public class AskcableActor extends Actor {
                     // Just ignore. We assume
                     return;
                 }
-                p.pipeTo(askRequest.getFuture())
-                        .done(self());
+                p.pipeTo(askRequest.getFuture());
             } catch (Exception e) {
                 e.printStackTrace();
                 askRequest.getFuture().tryError(e);
