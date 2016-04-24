@@ -141,14 +141,28 @@ public class PeerConnectionActor extends ModuleActor {
         //
 
         isReady = false;
-        peerConnection.createOffer().mapPromise(description -> peerConnection.setLocalDescription(description)).then(description -> {
-            callback.onOffer(sessionId, description.getSdp());
-            state = PeerConnectionState.WAITING_ANSWER;
-            onReady();
-        }).failure(e -> {
-            e.printStackTrace();
-            onHandshakeFailure();
-        });
+        peerConnection.createOffer()
+                .mapPromise(new Function<WebRTCSessionDescription, Promise<WebRTCSessionDescription>>() {
+                    @Override
+                    public Promise<WebRTCSessionDescription> apply(WebRTCSessionDescription webRTCSessionDescription) {
+                        return peerConnection.setLocalDescription(webRTCSessionDescription);
+                    }
+                })
+                .then(new Consumer<WebRTCSessionDescription>() {
+                    @Override
+                    public void apply(WebRTCSessionDescription webRTCSessionDescription) {
+                        callback.onOffer(sessionId, webRTCSessionDescription.getSdp());
+                        state = PeerConnectionState.WAITING_ANSWER;
+                        onReady();
+                    }
+                })
+                .failure(new Consumer<Exception>() {
+                    @Override
+                    public void apply(Exception e) {
+                        e.printStackTrace();
+                        onHandshakeFailure();
+                    }
+                });
     }
 
     public void onOffer(final long sessionId, @NotNull String sdp) {
@@ -172,13 +186,24 @@ public class PeerConnectionActor extends ModuleActor {
             public Promise<WebRTCSessionDescription> apply(WebRTCSessionDescription description) {
                 return peerConnection.createAnswer();
             }
-        }).mapPromise(description -> peerConnection.setLocalDescription(description)).then(description -> {
-            callback.onAnswer(sessionId, description.getSdp());
-            onHandShakeCompleted(sessionId);
-            onReady();
-        }).failure(e -> {
-            e.printStackTrace();
-            onHandshakeFailure();
+        }).mapPromise(new Function<WebRTCSessionDescription, Promise<WebRTCSessionDescription>>() {
+            @Override
+            public Promise<WebRTCSessionDescription> apply(WebRTCSessionDescription webRTCSessionDescription) {
+                return peerConnection.setLocalDescription(webRTCSessionDescription);
+            }
+        }).then(new Consumer<WebRTCSessionDescription>() {
+            @Override
+            public void apply(WebRTCSessionDescription webRTCSessionDescription) {
+                callback.onAnswer(sessionId, webRTCSessionDescription.getSdp());
+                onHandShakeCompleted(sessionId);
+                onReady();
+            }
+        }).failure(new Consumer<Exception>() {
+            @Override
+            public void apply(Exception e) {
+                e.printStackTrace();
+                onHandshakeFailure();
+            }
         });
     }
 
