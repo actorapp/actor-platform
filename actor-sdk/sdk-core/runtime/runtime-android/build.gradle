@@ -22,6 +22,10 @@ android {
     }
 }
 
+retrolambda {
+    defaultMethods true
+}
+
 android {
     sourceSets {
         main {
