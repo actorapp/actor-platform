@@ -1,5 +1,7 @@
 package im.actor.runtime.promise;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -7,10 +9,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import im.actor.runtime.Log;
 import im.actor.runtime.RandomRuntime;
 import im.actor.runtime.RandomRuntimeProvider;
-import im.actor.runtime.function.ArrayFunction;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.function.Function;
 import im.actor.runtime.function.ListFunction;
@@ -127,12 +127,10 @@ public class PromisesArray<T> {
         return mapSourcePromises(new Function<Promise<T>, Promise<R>>() {
             @Override
             public Promise<R> apply(final Promise<T> srcPromise) {
-
-                return new Promise<R>() {
+                return new Promise<R>(new PromiseFunc<R>() {
                     @Override
-                    void exec(final PromiseResolver<R> resolver) {
-
-                        //                        //
+                    public void exec(@NotNull PromiseResolver<R> resolver) {
+                        //
                         // Handling results from source PromisesArray
                         //
 
@@ -158,7 +156,7 @@ public class PromisesArray<T> {
                                     public void apply(Exception e) {
                                         resolver.error(e);
                                     }
-                                }).done(resolver.getDispatcher());
+                                });
                             }
                         });
 
@@ -172,14 +170,8 @@ public class PromisesArray<T> {
                                 resolver.error(e);
                             }
                         });
-
-                        //
-                        // Starting source promise
-                        //
-
-                        srcPromise.done(resolver.getDispatcher());
                     }
-                };
+                });
             }
         });
     }
@@ -196,7 +188,7 @@ public class PromisesArray<T> {
             public Promise<T> apply(final Promise<T> tPromise) {
                 return new Promise<T>(new PromiseFunc<T>() {
                     @Override
-                    public void exec(final PromiseResolver<T> resolver) {
+                    public void exec(@NotNull final PromiseResolver<T> resolver) {
                         tPromise.then(new Consumer<T>() {
                             @Override
                             public void apply(T t) {
@@ -209,7 +201,6 @@ public class PromisesArray<T> {
                                 resolver.result(null);
                             }
                         });
-                        tPromise.done(resolver.getDispatcher());
                     }
                 });
             }
@@ -263,12 +254,6 @@ public class PromisesArray<T> {
                         executor.error(e);
                     }
                 });
-
-                //
-                // Starting source promises
-                //
-
-                promises.done(executor.getDispatcher());
             }
         });
     }
@@ -337,10 +322,10 @@ public class PromisesArray<T> {
     }
 
     public <R> PromisesArray<R> flatMapAll(final Function<T[], R[]> fuc) {
-        return new PromisesArray<R>(new Promise<Promise<R>[]>() {
+        return new PromisesArray<R>(new Promise<>(new PromiseFunc<Promise<R>[]>() {
             @Override
-            void exec(final PromiseResolver resolver) {
-                //
+            public void exec(@NotNull PromiseResolver<Promise<R>[]> resolver) {
+//
                 // Handling source results
                 //
 
@@ -380,7 +365,6 @@ public class PromisesArray<T> {
                                     resolver.error(e);
                                 }
                             });
-                            sourcePromises[i].done(resolver.getDispatcher());
                         }
                         if (sourcePromises.length == 0) {
                             resolver.result(new Promise[0]);
@@ -398,20 +382,14 @@ public class PromisesArray<T> {
                         resolver.error(e);
                     }
                 });
-
-                //
-                // Starting source promises
-                //
-
-                promises.done(resolver.getDispatcher());
             }
-        });
+        }));
     }
 
     public <R> PromisesArray<R> flatMap(final Function<T, R[]> map) {
-        return new PromisesArray<R>(new Promise<Promise<R>[]>() {
+        return new PromisesArray<R>(new Promise<>(new PromiseFunc<Promise<R>[]>() {
             @Override
-            void exec(final PromiseResolver resolver) {
+            public void exec(@NotNull PromiseResolver<Promise<R>[]> resolver) {
                 //
                 // Handling source results
                 //
@@ -453,7 +431,6 @@ public class PromisesArray<T> {
                                     resolver.error(e);
                                 }
                             });
-                            sourcePromises[i].done(resolver.getDispatcher());
                         }
 
                         if (sourcePromises.length == 0) {
@@ -472,14 +449,8 @@ public class PromisesArray<T> {
                         resolver.error(e);
                     }
                 });
-
-                //
-                // Starting source promises
-                //
-
-                promises.done(resolver.getDispatcher());
             }
-        });
+        }));
     }
 
     /**
@@ -490,9 +461,9 @@ public class PromisesArray<T> {
      * @return promise
      */
     public <R> Promise<R> zipPromise(final ListFunction<T, Promise<R>> fuc) {
-        return new Promise<R>() {
+        return new Promise<>(new PromiseFunc<R>() {
             @Override
-            void exec(final PromiseResolver<R> resolver) {
+            public void exec(@NotNull PromiseResolver<R> resolver) {
                 promises.then(new Consumer<Promise<T>[]>() {
                     @Override
                     public void apply(final Promise<T>[] promises1) {
@@ -529,7 +500,6 @@ public class PromisesArray<T> {
                                             resolver.error(e);
                                         }
                                     });
-                                    promise.done(resolver.getDispatcher());
                                 }
                             });
                             promises1[i].failure(new Consumer<Exception>() {
@@ -538,7 +508,6 @@ public class PromisesArray<T> {
                                     resolver.error(e);
                                 }
                             });
-                            promises1[i].done(resolver.getDispatcher());
                         }
 
                         if (promises1.length == 0) {
@@ -555,7 +524,6 @@ public class PromisesArray<T> {
                                     resolver.error(e);
                                 }
                             });
-                            promise.done(resolver.getDispatcher());
                         }
                     }
                 });
@@ -565,10 +533,8 @@ public class PromisesArray<T> {
                         resolver.error(e);
                     }
                 });
-
-                promises.done(resolver.getDispatcher());
             }
-        };
+        });
     }
 
     /**

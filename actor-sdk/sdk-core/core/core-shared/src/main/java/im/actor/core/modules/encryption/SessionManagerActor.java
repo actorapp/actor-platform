@@ -154,8 +154,7 @@ public class SessionManagerActor extends ModuleActor {
                                     }
                                 });
                     }
-                })
-                .done(self());
+                });
     }
 
     /**

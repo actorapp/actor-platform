@@ -8,10 +8,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 
 import im.actor.runtime.Log;
-import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.function.Function;
 import im.actor.runtime.function.Supplier;
+import im.actor.runtime.threading.SimpleDispatcher;
+import im.actor.runtime.threading.ThreadDispatcher;
 
 /**
  * Promise support implementations. It is much more like js promises than traditional
@@ -27,7 +28,7 @@ public class Promise<T> {
 
     private final ArrayList<PromiseCallback<T>> callbacks = new ArrayList<>();
     private final PromiseFunc<T> executor;
-    private PromiseDispatcher dispatchActor;
+    private final SimpleDispatcher dispatcher;
 
     //
     // State of Promise
@@ -36,7 +37,7 @@ public class Promise<T> {
     private volatile T result;
     private volatile Exception exception;
     private volatile boolean isFinished;
-    private boolean isStarted;
+    // private boolean isStarted;
 
     /**
      * Default constructor of promise
@@ -44,6 +45,8 @@ public class Promise<T> {
     @ObjectiveCName("initWithExecutor:")
     public Promise(PromiseFunc<T> executor) {
         this.executor = executor;
+        this.dispatcher = ThreadDispatcher.peekDispatcher();
+        this.dispatcher.dispatch(() -> executor.exec(new PromiseResolver<>(Promise.this)));
     }
 
     /**
@@ -51,6 +54,7 @@ public class Promise<T> {
      */
     Promise() {
         this.executor = null;
+        this.dispatcher = null;
     }
 
     /**
@@ -63,12 +67,7 @@ public class Promise<T> {
     public synchronized Promise<T> then(final Consumer<T> then) {
         if (isFinished) {
             if (exception == null) {
-                dispatchActor.dispatch(this, new Runnable() {
-                    @Override
-                    public void run() {
-                        then.apply(result);
-                    }
-                });
+                dispatcher.dispatch(() -> then.apply(result));
             }
         } else {
             callbacks.add(new PromiseCallback<T>() {
@@ -96,12 +95,7 @@ public class Promise<T> {
     public synchronized Promise<T> failure(final Consumer<Exception> failure) {
         if (isFinished) {
             if (exception != null) {
-                dispatchActor.dispatch(this, new Runnable() {
-                    @Override
-                    public void run() {
-                        failure.apply(exception);
-                    }
-                });
+                dispatcher.dispatch(() -> failure.apply(exception));
             }
         } else {
 
@@ -129,14 +123,11 @@ public class Promise<T> {
     @ObjectiveCName("complete:")
     public synchronized Promise<T> complete(final PromiseCallback<T> callback) {
         if (isFinished) {
-            dispatchActor.dispatch(this, new Runnable() {
-                @Override
-                public void run() {
-                    if (exception != null) {
-                        callback.onError(exception);
-                    } else {
-                        callback.onResult(result);
-                    }
+            dispatcher.dispatch(() -> {
+                if (exception != null) {
+                    callback.onError(exception);
+                } else {
+                    callback.onResult(result);
                 }
             });
         } else {
@@ -167,39 +158,34 @@ public class Promise<T> {
         return this;
     }
 
-    /**
-     * Call this method to start promise execution
-     *
-     * @param ref Scheduling actor
-     * @return this
-     */
-    @ObjectiveCName("doneWithRef:")
-    public Promise<T> done(ActorRef ref) {
-        return done(new PromiseActorDispatcher(ref));
-    }
+//    /**
+//     * Call this method to start promise execution
+//     *
+//     * @param ref Scheduling actor
+//     * @return this
+//     */
+//    @ObjectiveCName("doneWithRef:")
+//    public Promise<T> done(ActorRef ref) {
+//        return done(new SimpleActorDispatcher(ref));
+//    }
 
-    /**
-     * Call this method to start promise execution
-     *
-     * @param dispatcher Scheduling dispatcher
-     * @return this
-     */
-    @ObjectiveCName("done:")
-    public Promise<T> done(PromiseDispatcher dispatcher) {
-        if (isStarted) {
-            // throw new RuntimeException("Promise already started!");
-            return this;
-        }
-        isStarted = true;
-        dispatchActor = dispatcher;
-        dispatchActor.dispatch(this, new Runnable() {
-            @Override
-            public void run() {
-                exec(new PromiseResolver<>(Promise.this, dispatchActor));
-            }
-        });
-        return this;
-    }
+//    /**
+//     * Call this method to start promise execution
+//     *
+//     * @param dispatcher Scheduling dispatcher
+//     * @return this
+//     */
+//    @ObjectiveCName("done:")
+//    public Promise<T> done(SimpleDispatcher dispatcher) {
+//        if (isStarted) {
+//            // throw new RuntimeException("Promise already started!");
+//            return this;
+//        }
+//        isStarted = true;
+//        dispatchActor = dispatcher;
+//        dispatchActor.dispatch(() -> exec(new PromiseResolver<>(Promise.this, dispatchActor)));
+//        return this;
+//    }
 
     @ObjectiveCName("log:")
     public Promise<T> log(final String TAG) {
@@ -214,15 +200,6 @@ public class Promise<T> {
                 Log.w(TAG, "Error: " + e);
             }
         });
-    }
-
-    /**
-     * Main execution method
-     *
-     * @param resolver resolver
-     */
-    void exec(PromiseResolver<T> resolver) {
-        executor.exec(resolver);
     }
 
     /**
@@ -300,7 +277,6 @@ public class Promise<T> {
                         resolver.error(e);
                     }
                 });
-                self.done(resolver.getDispatcher());
             }
         });
     }
@@ -334,7 +310,6 @@ public class Promise<T> {
                                     resolver.error(e);
                                 }
                             });
-                            promise.done(resolver.getDispatcher());
                         } else {
                             resolver.result(t);
                         }
@@ -346,7 +321,6 @@ public class Promise<T> {
                         resolver.error(e);
                     }
                 });
-                self.done(resolver.getDispatcher());
             }
         });
     }
@@ -361,9 +335,9 @@ public class Promise<T> {
     @ObjectiveCName("map:")
     public <R> Promise<R> map(final Function<T, R> res) {
         final Promise<T> self = this;
-        return new Promise<R>() {
+        return new Promise<>(new PromiseFunc<R>() {
             @Override
-            void exec(final PromiseResolver<R> resolver) {
+            public void exec(@NotNull PromiseResolver<R> resolver) {
                 self.then(new Consumer<T>() {
                     @Override
                     public void apply(T t) {
@@ -384,9 +358,8 @@ public class Promise<T> {
                         resolver.error(e);
                     }
                 });
-                self.done(resolver.getDispatcher());
             }
-        };
+        });
     }
 
     /**
@@ -399,9 +372,9 @@ public class Promise<T> {
     @ObjectiveCName("mapPromise:")
     public <R> Promise<R> mapPromise(final Function<T, Promise<R>> res) {
         final Promise<T> self = this;
-        return new Promise<R>() {
+        return new Promise<>(new PromiseFunc<R>() {
             @Override
-            void exec(final PromiseResolver<R> resolver) {
+            public void exec(@NotNull PromiseResolver<R> resolver) {
                 self.then(new Consumer<T>() {
                     @Override
                     public void apply(T t) {
@@ -426,7 +399,6 @@ public class Promise<T> {
                                 resolver.error(e);
                             }
                         });
-                        promise.done(resolver.getDispatcher());
                     }
                 });
                 self.failure(new Consumer<Exception>() {
@@ -435,9 +407,8 @@ public class Promise<T> {
                         resolver.tryError(e);
                     }
                 });
-                self.done(resolver.getDispatcher());
             }
-        };
+        });
     }
 
     public <R> Promise<T> mapPromiseSelf(final Function<T, Promise<R>> res) {
@@ -482,10 +453,8 @@ public class Promise<T> {
                                 resolver.error(e);
                             }
                         });
-                        res.done(resolver.getDispatcher());
                     }
                 });
-                self.done(resolver.getDispatcher());
             }
         });
     }
@@ -512,7 +481,6 @@ public class Promise<T> {
                                 resolver.error(e);
                             }
                         });
-                        promise.done(resolver.getDispatcher());
                     }
                 });
                 self.failure(new Consumer<Exception>() {
@@ -521,7 +489,6 @@ public class Promise<T> {
                         resolver.error(e);
                     }
                 });
-                self.done(resolver.getDispatcher());
             }
         });
     }
@@ -531,28 +498,25 @@ public class Promise<T> {
      */
     private void deliverResult() {
         if (callbacks.size() > 0) {
-            dispatchActor.dispatch(this, new Runnable() {
-                @Override
-                public void run() {
-                    if (exception != null) {
-                        for (PromiseCallback<T> callback : callbacks) {
-                            try {
-                                callback.onError(exception);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    } else {
-                        for (PromiseCallback<T> callback : callbacks) {
-                            try {
-                                callback.onResult(result);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+            dispatcher.dispatch(() -> {
+                if (exception != null) {
+                    for (PromiseCallback<T> callback : callbacks) {
+                        try {
+                            callback.onError(exception);
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     }
-                    callbacks.clear();
+                } else {
+                    for (PromiseCallback<T> callback : callbacks) {
+                        try {
+                            callback.onResult(result);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
+                callbacks.clear();
             });
         }
     }

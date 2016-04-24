@@ -116,7 +116,7 @@ public class RouterActor extends ModuleActor {
                             }
                             onActiveDialogsChanged(responseLoadGroupedDialogs.getDialogs(), showArchived, showInvite);
                         }
-                    }).done(self())).done(self());
+                    }));
         } else {
             notifyActiveDialogsVM();
         }

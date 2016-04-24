@@ -247,7 +247,7 @@ public class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewCon
                 counterTimer = nil
             }
             
-            Actor.doSendCodeViaCall(self.transactionHash).done()
+            Actor.doSendCodeViaCall(self.transactionHash)
         }
         
         updateTimerText()
