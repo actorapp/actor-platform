@@ -18,6 +18,10 @@ apply plugin: 'me.tatarka.retrolambda'
 group = 'im.actor'
 version = '0.0.1'
 
+retrolambda {
+    defaultMethods true
+}
+
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
