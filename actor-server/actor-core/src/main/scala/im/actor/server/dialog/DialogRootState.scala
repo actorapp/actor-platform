@@ -178,7 +178,7 @@ private[dialog] final case class DialogRootState(
   }
 
   private def withNewPeer(ts: Instant, peer: Peer): DialogRootState = {
-    if (this.mobile.find(_.peer == peer).exists(_.ts == ts)) withNewPeer(ts.plusMillis(1), peer)
+    if (this.mobile.exists(_.ts == ts)) withNewPeer(ts.plusMillis(1), peer)
     else {
       val sortableDialog = SortableDialog(ts, peer)
 
@@ -191,7 +191,7 @@ private[dialog] final case class DialogRootState(
   }
 
   private def withUnarchivedPeer(ts: Instant, peer: Peer): DialogRootState = {
-    if (this.mobile.find(_.peer == peer).exists(_.ts == ts)) withUnarchivedPeer(ts.plusMillis(1), peer)
+    if (this.active.exists(_.ts == ts)) withUnarchivedPeer(ts.plusMillis(1), peer)
     else {
       val sortableDialog = SortableDialog(ts, peer)
 
