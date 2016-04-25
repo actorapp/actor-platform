@@ -160,10 +160,7 @@ private[user] trait UserCommandHandlers {
           relatedUserIds ← getRelations(userId)
           (seqstate, _) ← seqUpdatesExt.broadcastOwnSingleUpdate(userId, relatedUserIds, update)
           _ ← db.run(UserRepo.setName(userId, name))
-        } yield {
-          relatedUserIds foreach (dialogExt.sendChatGroupsChanged(_))
-          seqstate
-        }
+        } yield seqstate
       }
     } else {
       replyTo ! Status.Failure(UserErrors.InvalidName)

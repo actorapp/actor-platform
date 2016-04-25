@@ -144,7 +144,7 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
             handleDialogCommand(dc)
 
             if (!isCreated || !isShown)
-              deliverChatGroupsChanged()
+              sendChatGroupsChanged()
           }
         case None ⇒
           handleDialogCommand(dc)
@@ -153,7 +153,6 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
     case Unarchive(Some(peer), clientAuthSid)   ⇒ unarchive(peer, clientAuthSid map (_.value))
     case Favourite(Some(peer), clientAuthSid)   ⇒ favourite(peer, clientAuthSid map (_.value))
     case Unfavourite(Some(peer), clientAuthSid) ⇒ unfavourite(peer, clientAuthSid map (_.value))
-    case SendChatGroupsChanged()                ⇒ sendChatGroupsChanged()
     case dc: DialogCommand                      ⇒ handleDialogCommand(dc)
     case dq: DialogQuery                        ⇒ handleDialogQuery(dq)
   }
@@ -168,34 +167,34 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
   }
 
   private def archive(peer: Peer, clientAuthSid: Option[Int]) = {
-    if (isArchived(peer)) deliverChatGroupsChanged(clientAuthSid) pipeTo sender()
+    if (isArchived(peer)) sendChatGroupsChanged(clientAuthSid) pipeTo sender()
     else persist(Archived(Instant.now(), Some(peer))) { e ⇒
       commit(e)
-      deliverChatGroupsChanged(clientAuthSid) pipeTo sender()
+      sendChatGroupsChanged(clientAuthSid) pipeTo sender()
     }
   }
 
   private def unarchive(peer: Peer, clientAuthSid: Option[Int]) = {
-    if (!isArchived(peer)) deliverChatGroupsChanged(clientAuthSid) pipeTo sender()
+    if (!isArchived(peer)) sendChatGroupsChanged(clientAuthSid) pipeTo sender()
     else persist(Unarchived(Instant.now(), Some(peer))) { e ⇒
       commit(e)
-      deliverChatGroupsChanged(clientAuthSid) pipeTo sender()
+      sendChatGroupsChanged(clientAuthSid) pipeTo sender()
     }
   }
 
   private def favourite(peer: Peer, clientAuthSid: Option[Int]) = {
-    if (isFavourited(peer)) deliverChatGroupsChanged(clientAuthSid) pipeTo sender()
+    if (isFavourited(peer)) sendChatGroupsChanged(clientAuthSid) pipeTo sender()
     else persist(Favourited(Instant.now(), Some(peer))) { e ⇒
       commit(e)
-      deliverChatGroupsChanged(clientAuthSid) pipeTo sender()
+      sendChatGroupsChanged(clientAuthSid) pipeTo sender()
     }
   }
 
   private def unfavourite(peer: Peer, clientAuthSid: Option[Int]) = {
-    if (!isFavourited(peer)) deliverChatGroupsChanged(clientAuthSid) pipeTo sender()
+    if (!isFavourited(peer)) sendChatGroupsChanged(clientAuthSid) pipeTo sender()
     else persist(Unfavourited(Instant.now(), Some(peer))) { e ⇒
       commit(e)
-      deliverChatGroupsChanged(clientAuthSid) pipeTo sender()
+      sendChatGroupsChanged(clientAuthSid) pipeTo sender()
     }
   }
 
@@ -213,8 +212,6 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
       case _                    ⇒ None
     }
   }
-
-  private def sendChatGroupsChanged() = deliverChatGroupsChanged() pipeTo sender()
 
   private def isArchived(peer: Peer): Boolean = state.archived.exists(_.peer == peer)
 
@@ -259,7 +256,7 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
     }
   }
 
-  private def deliverChatGroupsChanged(ignoreAuthSid: Option[Int] = None): Future[SeqState] = {
+  private def sendChatGroupsChanged(ignoreAuthSid: Option[Int] = None): Future[SeqState] = {
     for {
       groups ← DialogExtension(context.system).fetchApiGroupedDialogs(userId)
       update = UpdateChatGroupsChanged(groups)
