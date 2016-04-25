@@ -255,6 +255,16 @@ message GroupQueries {
     message GetAccessHashResponse {
         required int64 access_hash = 1;
     }
+
+    message GetTitle {
+        option (scalapb.message).extends = "im.actor.server.group.GroupQuery";
+
+        required int32 group_id = 1;
+    }
+
+    message GetTitleResponse {
+        required string title = 1;
+    }
 }
 
 message GroupEvents {
