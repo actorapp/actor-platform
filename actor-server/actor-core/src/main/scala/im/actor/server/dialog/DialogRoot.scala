@@ -245,16 +245,16 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
 
   protected def fetchDialogGroups(): Future[Seq[DialogGroup]] = {
     for {
-      favInfos ← Future.sequence(state.active.favourites.toSeq map (sd ⇒ getInfo(sd.peer) map (_.getInfo))) flatMap sortFavourites
-      groupInfos ← Future.sequence(state.active.groups map (sd ⇒ getInfo(sd.peer) map (_.getInfo)))
-      dmInfos ← Future.sequence(state.active.dms map (sd ⇒ getInfo(sd.peer) map (_.getInfo)))
+      favInfos ← Future.sequence(state.active.favourites.toSeq map (sd ⇒ getInfo(sd.peer) map (_.getInfo))) flatMap sort
+      groupInfos ← Future.sequence(state.active.groups.toSeq map (sd ⇒ getInfo(sd.peer) map (_.getInfo))) flatMap sort
+      dmInfos ← Future.sequence(state.active.dms.toSeq map (sd ⇒ getInfo(sd.peer) map (_.getInfo))) flatMap sort
     } yield {
       val base = List(
-        DialogGroup(DialogGroupType.Groups, groupInfos.toSeq),
-        DialogGroup(DialogGroupType.DirectMessages, dmInfos.toSeq)
+        DialogGroup(DialogGroupType.Groups, groupInfos),
+        DialogGroup(DialogGroupType.DirectMessages, dmInfos)
       )
 
-      if (favInfos.nonEmpty) DialogGroup(DialogGroupType.Favourites, favInfos.toSeq) :: base
+      if (favInfos.nonEmpty) DialogGroup(DialogGroupType.Favourites, favInfos) :: base
       else base
     }
   }
@@ -271,7 +271,7 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
   protected def getInfo(peer: Peer): Future[DialogQueries.GetInfoResponse] =
     (dialogRef(peer) ? DialogQueries.GetInfo(Some(peer))).mapTo[GetInfoResponse]
 
-  private def sortFavourites(infos: Seq[DialogInfo]): Future[Seq[DialogInfo]] = {
+  private def sort(infos: Seq[DialogInfo]): Future[Seq[DialogInfo]] = {
     for {
       infosNames ← Future.sequence(infos map (info ⇒ getName(info.getPeer) map (info → _)))
     } yield infosNames.sortWith {
