@@ -2,6 +2,8 @@ package im.actor.sdk;
 
 import android.graphics.Color;
 
+import im.actor.sdk.util.Screen;
+
 /**
  * Actor Styling class
  */
@@ -134,6 +136,11 @@ public class ActorStyle {
     private int convMediaStateWarrningColor = Color.parseColor("#ffed534b");
     private int convLikeColor = Color.parseColor("#e2264d");
 
+    // DialogsFragment layout settings
+    private int dialogsPaddingTop = Screen.dp(8);
+
+    // ContactsFragment layout settings
+    private int contactsMainPaddingTop = 0;
 
     public int getMainPressedColor() {
         return getDarkenArgb(getMainColor(), 0.95);
@@ -935,5 +942,21 @@ public class ActorStyle {
 
     public void setDefaultBackgrouds(int[] defaultBackgrouds) {
         this.defaultBackgrouds = defaultBackgrouds;
+    }
+
+    public int getDialogsPaddingTop() {
+        return dialogsPaddingTop;
+    }
+
+    public void setDialogsPaddingTop(int dialogsPaddingTop) {
+        this.dialogsPaddingTop = dialogsPaddingTop;
+    }
+
+    public int getContactsMainPaddingTop() {
+        return contactsMainPaddingTop;
+    }
+
+    public void setContactsMainPaddingTop(int contactsMainPaddingTop) {
+        this.contactsMainPaddingTop = contactsMainPaddingTop;
     }
 }

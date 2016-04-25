@@ -68,13 +68,10 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
                 ((TextView) emptyView.findViewById(R.id.empty_collection_text)).setTextColor(ActorSDK.sharedActor().style.getMainColor());
             }
         }
-        int topPadding = 0;
-        if (getArguments() != null) {
-            topPadding = getArguments().getInt("top_padding", topPadding);
-        }
+
         View headerPadding = new View(getActivity());
         headerPadding.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
-        headerPadding.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, topPadding));
+        headerPadding.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, useCompactVersion ? 0 : ActorSDK.sharedActor().style.getContactsMainPaddingTop()));
         addHeaderView(headerPadding);
 
         addFootersAndHeaders();
