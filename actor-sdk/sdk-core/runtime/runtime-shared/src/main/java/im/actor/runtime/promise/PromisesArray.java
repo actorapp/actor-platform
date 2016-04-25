@@ -108,29 +108,12 @@ public class PromisesArray<T> {
      */
     public <R> PromisesArray<R> map(final Function<T, Promise<R>> fun) {
         return mapSourcePromises(srcPromise -> new Promise<R>(resolver -> {
-            //
-            // Handling results from source PromisesArray
-            //
-
             srcPromise.then(t -> {
-
-                //
-                // Mapping value to promise
-                //
                 Promise<R> mapped = fun.apply(t);
-
-                //
-                // Handling results
-                //
-                mapped.then(resolver::result);
-                mapped.failure(resolver::error);
+                mapped.then(t2 -> resolver.result(t2));
+                mapped.failure(e -> resolver.error(e));
             });
-
-            //
-            // Handling failures
-            //
-
-            srcPromise.failure(resolver::error);
+            srcPromise.failure(e -> resolver.error(e));
         }));
     }
 
@@ -142,10 +125,8 @@ public class PromisesArray<T> {
 
     public PromisesArray<T> ignoreFailed() {
         return mapSourcePromises(tPromise -> new Promise<T>(resolver -> {
-            tPromise.then(resolver::result);
-            tPromise.failure(e -> {
-                resolver.result(null);
-            });
+            tPromise.then(t -> resolver.result(t));
+            tPromise.failure(e -> resolver.result(null));
         }));
     }
 
@@ -185,7 +166,7 @@ public class PromisesArray<T> {
             // Handling failure
             //
 
-            promises.failure(executor::error);
+            promises.failure(e -> executor.error(e));
         });
     }
 
@@ -268,7 +249,7 @@ public class PromisesArray<T> {
 
                         resolver.result(resultList.toArray(new Promise[0]));
                     });
-                    sourcePromises[i].failure(resolver::error);
+                    sourcePromises[i].failure(e -> resolver.error(e));
                 }
                 if (sourcePromises.length == 0) {
                     resolver.result(new Promise[0]);
@@ -279,7 +260,7 @@ public class PromisesArray<T> {
             // Handling failure
             //
 
-            promises.failure(resolver::error);
+            promises.failure(e -> resolver.error(e));
         }));
     }
 
@@ -316,7 +297,7 @@ public class PromisesArray<T> {
 
                         resolver.result(resultList.toArray(new Promise[0]));
                     });
-                    sourcePromises[i].failure(resolver::error);
+                    sourcePromises[i].failure(e -> resolver.error(e));
                 }
 
                 if (sourcePromises.length == 0) {
@@ -328,7 +309,7 @@ public class PromisesArray<T> {
             // Handling failure
             //
 
-            promises.failure(resolver::error);
+            promises.failure(e -> resolver.error(e));
         }));
     }
 
@@ -360,20 +341,18 @@ public class PromisesArray<T> {
                             }
                         }
 
-                        Promise<R> promise = fuc.apply(res);
-                        promise.then(resolver::result);
-                        promise.failure(resolver::error);
+                        fuc.apply(res)
+                                .pipeTo(resolver);
                     });
-                    promises1[i].failure(resolver::error);
+                    promises1[i].failure(e -> resolver.error(e));
                 }
 
                 if (promises1.length == 0) {
-                    Promise<R> promise = fuc.apply(res);
-                    promise.then(resolver::result);
-                    promise.failure(resolver::error);
+                    fuc.apply(res)
+                            .pipeTo(resolver);
                 }
             });
-            promises.failure(resolver::error);
+            promises.failure(e -> resolver.error(e));
         });
     }
 
@@ -383,6 +362,6 @@ public class PromisesArray<T> {
      * @return promise
      */
     public Promise<List<T>> zip() {
-        return zipPromise(Promise::success);
+        return zipPromise(t -> Promise.success(t));
     }
 }

@@ -177,6 +177,7 @@ public class Promise<T> {
         if (e == null) {
             throw new RuntimeException("Error can't be null");
         }
+        Log.d("Promise", "error " + this);
         isFinished = true;
         exception = e;
         deliverResult();
@@ -203,6 +204,7 @@ public class Promise<T> {
         if (isFinished) {
             throw new RuntimeException("Promise " + this + " already completed!");
         }
+        Log.d("Promise", "result " + this);
         isFinished = true;
         result = res;
         deliverResult();
@@ -275,7 +277,7 @@ public class Promise<T> {
                 }
                 resolver.tryResult(r);
             });
-            self.failure(resolver::error);
+            self.failure(e -> resolver.error(e));
         });
     }
 
@@ -300,10 +302,10 @@ public class Promise<T> {
                     return;
                 }
 
-                promise.then(resolver::result);
-                promise.failure(resolver::error);
+                promise.then(t2 -> resolver.result(t2));
+                promise.failure(e -> resolver.error(e));
             });
-            self.failure(resolver::tryError);
+            self.failure(e -> resolver.error(e));
         });
     }
 
@@ -326,9 +328,9 @@ public class Promise<T> {
      * @return this
      */
     @ObjectiveCName("pipeTo:")
-    public Promise<T> pipeTo(final PromiseResolver<T> resolver) {
-        then(resolver::result);
-        failure(resolver::error);
+    public Promise<T> pipeTo(PromiseResolver<T> resolver) {
+        then(t -> resolver.result(t));
+        failure(e -> resolver.error(e));
         return this;
     }
 
@@ -344,8 +346,8 @@ public class Promise<T> {
             self.then(resolver::result);
             self.failure(e -> {
                 Promise<T> res = catchThen.apply(e);
-                res.then(resolver::result);
-                res.failure(resolver::error);
+                res.then(t -> resolver.result(t));
+                res.failure(e2 -> resolver.error(e2));
             });
         });
     }
@@ -356,10 +358,10 @@ public class Promise<T> {
         return new Promise<R>(resolver -> {
             self.then(t -> {
                 Promise<R> promise = promiseSupplier.get();
-                promise.then(resolver::result);
-                promise.failure(resolver::error);
+                promise.then(t2 -> resolver.result(t2));
+                promise.failure(e -> resolver.error(e));
             });
-            self.failure(resolver::error);
+            self.failure(e -> resolver.error(e));
         });
     }
 
@@ -381,7 +383,7 @@ public class Promise<T> {
                     resolver.result(t);
                 }
             });
-            self.failure(resolver::error);
+            self.failure(e -> resolver.error(e));
         });
     }
 
@@ -398,13 +400,13 @@ public class Promise<T> {
                         resolver.error(e);
                         return;
                     }
-                    promise.then(resolver::result);
-                    promise.failure(resolver::error);
+                    promise.then(t2 -> resolver.result(t2));
+                    promise.failure(e -> resolver.error(e));
                 } else {
                     resolver.result(t);
                 }
             });
-            self.failure(resolver::error);
+            self.failure(e -> resolver.error(e));
         });
     }
 
@@ -412,9 +414,8 @@ public class Promise<T> {
     public Promise<T> log(final String TAG) {
         then(t -> Log.d(TAG, "Result: " + t));
         failure(e -> Log.w(TAG, "Error: " + e));
-        return (Promise<T>) this;
+        return this;
     }
-
 
 
     //
