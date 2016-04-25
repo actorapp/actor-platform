@@ -199,6 +199,7 @@ private[group] final class GroupProcessor
     case GroupQueries.IsPublic(_)                    ⇒ isPublic(state)
     case GroupQueries.GetAccessHash(_)               ⇒ getAccessHash(state)
     case GroupQueries.IsHistoryShared(_)             ⇒ isHistoryShared(state)
+    case GroupQueries.GetTitle(_)                    ⇒ getTitle(state)
   }
 
   override def handleInitCommand: Receive = {

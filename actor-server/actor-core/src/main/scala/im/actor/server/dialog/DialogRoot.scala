@@ -3,20 +3,23 @@ package im.actor.server.dialog
 import java.time.Instant
 
 import akka.actor.{ ActorRef, Props, Status }
+import akka.http.scaladsl.util.FastFuture
 import akka.pattern.{ ask, pipe }
 import akka.util.Timeout
 import com.google.protobuf.wrappers.Int64Value
 import im.actor.concurrent._
 import im.actor.server.cqrs._
 import im.actor.server.dialog.DialogCommands.{ SendMessage, WriteMessageSelf }
-import im.actor.server.model.{ Peer, PeerType }
+import im.actor.server.model.{ Peer, PeerErrors, PeerType }
 import im.actor.api.rpc._
 import im.actor.api.rpc.messaging.UpdateChatGroupsChanged
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.config.ActorConfig
 import im.actor.serialization.ActorSerializer
 import im.actor.server.dialog.DialogQueries.GetInfoResponse
+import im.actor.server.group.GroupExtension
 import im.actor.server.sequence.{ PushRules, SeqState, SeqUpdatesExtension }
+import im.actor.server.user.UserExtension
 
 import scala.concurrent.Future
 
@@ -102,6 +105,9 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
   import DialogRootQueries._
   import DialogRootCommands._
   import context.dispatcher
+
+  private val userExt = UserExtension(context.system)
+  private val groupExt = GroupExtension(context.system)
 
   private implicit val timeout = Timeout(ActorConfig.defaultTimeout)
 
@@ -236,7 +242,7 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
 
   protected def fetchDialogGroups(): Future[Seq[DialogGroup]] = {
     for {
-      favInfos ← Future.sequence(state.active.favourites map (sd ⇒ getInfo(sd.peer) map (_.getInfo)))
+      favInfos ← Future.sequence(state.active.favourites.toSeq map (sd ⇒ getInfo(sd.peer) map (_.getInfo))) flatMap sortFavourites
       groupInfos ← Future.sequence(state.active.groups map (sd ⇒ getInfo(sd.peer) map (_.getInfo)))
       dmInfos ← Future.sequence(state.active.dms map (sd ⇒ getInfo(sd.peer) map (_.getInfo)))
     } yield {
@@ -261,4 +267,27 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
 
   protected def getInfo(peer: Peer): Future[DialogQueries.GetInfoResponse] =
     (dialogRef(peer) ? DialogQueries.GetInfo(Some(peer))).mapTo[GetInfoResponse]
+
+  private def sortFavourites(infos: Seq[DialogInfo]): Future[Seq[DialogInfo]] = {
+    for {
+      infosNames ← Future.sequence(infos map (info ⇒ getName(info.getPeer) map (info → _)))
+    } yield infosNames.sortWith {
+      case ((di1, name1), (di2, name2)) ⇒
+        if (di1.getPeer.typ.isGroup && di2.getPeer.typ.isPrivate) true
+        else if (di1.getPeer.typ.isPrivate && di2.getPeer.typ.isGroup) false
+        else name1.headOption.getOrElse(' ') < name2.headOption.getOrElse(' ')
+    }.map(_._1)
+  }
+
+  private def getName(peer: Peer): Future[String] = {
+    peer.typ match {
+      case PeerType.Private ⇒
+        for {
+          localNameOpt ← userExt.getLocalName(userId, peer.id)
+          name ← localNameOpt map FastFuture.successful getOrElse userExt.getName(peer.id, userId)
+        } yield name
+      case PeerType.Group ⇒ groupExt.getTitle(peer.id)
+      case unknown        ⇒ FastFuture.failed(PeerErrors.UnknownPeerType(unknown))
+    }
+  }
 }
