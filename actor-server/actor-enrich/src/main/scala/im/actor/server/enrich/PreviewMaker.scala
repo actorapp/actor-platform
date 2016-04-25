@@ -1,13 +1,11 @@
 package im.actor.server.enrich
 
 import akka.actor._
-import akka.http.scaladsl.model.HttpMethods.GET
-import akka.http.scaladsl.model._
-import akka.http.scaladsl.model.headers._
 import akka.pattern.pipe
-import akka.stream.{ ActorMaterializer, Materializer }
-import akka.util.ByteString
 import im.actor.server.model.Peer
+import spray.http.HttpHeaders.`Content-Disposition`
+import spray.http.HttpMethods.GET
+import spray.http._
 
 import scala.concurrent.{ ExecutionContext, Future }
 
@@ -37,7 +35,7 @@ object PreviewMaker {
 
   sealed trait PreviewResult
   final case class PreviewSuccess(
-    content:      ByteString,
+    content:      Array[Byte],
     fileName:     Option[String],
     contentType:  String,
     clientUserId: Int,
@@ -46,7 +44,7 @@ object PreviewMaker {
   ) extends PreviewResult
   final case class PreviewFailure(message: String, randomId: Long) extends PreviewResult
 
-  private def getFileName(cdOption: Option[`Content-Disposition`]) = cdOption.flatMap(_.params.get("filename"))
+  private def getFileName(cdOption: Option[`Content-Disposition`]) = cdOption.flatMap(_.parameters.get("filename"))
 }
 
 class PreviewMaker(config: RichMessageConfig) extends Actor with ActorLogging with PreviewHelpers {
@@ -54,17 +52,15 @@ class PreviewMaker(config: RichMessageConfig) extends Actor with ActorLogging wi
   import PreviewMaker._
 
   protected implicit val system: ActorSystem = context.system
-  protected implicit val ec: ExecutionContext = system.dispatcher
-  protected implicit val mat: Materializer = ActorMaterializer()
+  import system.dispatcher
 
   def receive = {
     case gp: GetPreview ⇒
       val result: Future[PreviewResult] = withRequest(HttpRequest(GET, gp.url), gp.randomId) { response ⇒
         val cd: Option[`Content-Disposition`] = response.header[`Content-Disposition`]
         response match {
-          case HttpResponse(_: StatusCodes.Success, _, entity: HttpEntity.Default, _) ⇒ downloadDefault(entity, getFileName(cd), gp, config.maxSize)
-          case HttpResponse(_: StatusCodes.Success, _, entity: HttpEntity.Chunked, _) ⇒ downloadChunked(entity, getFileName(cd), gp, config.maxSize)
-          case HttpResponse(status, _, _, _) ⇒ Future.successful(Failures.failedWith(status, gp.randomId))
+          case HttpResponse(_: StatusCodes.Success, entity: HttpEntity.NonEmpty, _, _) ⇒ downloadDefault(entity, getFileName(cd), gp, config.maxSize)
+          case HttpResponse(status, _, _, _) ⇒ Failures.failedWith(status, gp.randomId)
         }
       }
       result pipeTo sender()
