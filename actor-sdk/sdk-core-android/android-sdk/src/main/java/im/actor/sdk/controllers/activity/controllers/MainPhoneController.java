@@ -661,23 +661,21 @@ public class MainPhoneController extends MainBaseController {
             switch (position) {
                 default:
                 case 0:
-                    return getDialogsFragment();
+                    return getDialogsFragment(new DialogsFragment());
                 case 1:
-                    return getContactsFragment();
+                    return getContactsFragment(new ContactsFragment());
 
             }
         }
 
         @NonNull
-        public ContactsFragment getContactsFragment() {
-            ContactsFragment res2 = new ContactsFragment();
+        public ContactsFragment getContactsFragment(ContactsFragment res2) {
             res2.setHasOptionsMenu(false);
             return res2;
         }
 
         @NonNull
-        public DialogsFragment getDialogsFragment() {
-            DialogsFragment res1 = new DialogsFragment();
+        public DialogsFragment getDialogsFragment(DialogsFragment res1) {
             Bundle arguments = new Bundle();
             arguments.putString("invite_url", joinGroupUrl);
             res1.setArguments(arguments);
