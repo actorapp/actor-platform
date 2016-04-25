@@ -62,7 +62,7 @@ object Dependencies {
     val playJson                = "com.typesafe.play"             %% "play-json"                     % "2.4.2"
     val upickle                 = "com.lihaoyi"                   %% "upickle"                       % "0.3.6"
 
-    val postgresJdbc            = "org.postgresql"                %  "postgresql"                    % "9.4-1208-jdbc41" exclude("org.slf4j", "slf4j-simple")
+    val postgresJdbc            = "org.postgresql"                %  "postgresql"                    % "9.4-1208" exclude("org.slf4j", "slf4j-simple")
     val slick                   = "com.typesafe.slick"            %% "slick"                         % V.slick
     val slickHikaricp           = "com.typesafe.slick"            %% "slick-hikaricp"                % V.slick
     val slickJoda               = "com.github.tototoshi"          %% "slick-joda-mapper"             % "2.0.0"
