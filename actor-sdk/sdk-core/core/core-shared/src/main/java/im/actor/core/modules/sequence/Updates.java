@@ -81,11 +81,7 @@ public class Updates extends AbsModule implements BusSubscriber {
     }
 
     public void onUpdateReceived(Object update) {
-        if (update instanceof WeakUpdate) {
-            WeakUpdate weakUpdate = (WeakUpdate) update;
-            updateHandlerInt.onWeakUpdate(weakUpdate.getUpdateHeader(),
-                    weakUpdate.getUpdate(), weakUpdate.getDate());
-        } else if (update instanceof InternalUpdate) {
+        if (update instanceof InternalUpdate) {
             updateHandlerInt.onInternalUpdate((InternalUpdate) update);
         } else {
             updateActor.send(update);

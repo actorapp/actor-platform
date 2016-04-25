@@ -65,16 +65,6 @@ public class UsersProcessor extends AbsModule implements Processor {
     }
 
     @Verified
-    public boolean hasUsers(Collection<Integer> uids) {
-        for (Integer uid : uids) {
-            if (users().getValue(uid) == null) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    @Verified
     private void onUserNameChanged(int uid, String name) {
         User u = users().getValue(uid);
         if (u != null) {
