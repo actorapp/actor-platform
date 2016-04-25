@@ -189,5 +189,5 @@ object DialogRepo extends UserDialogOperations with DialogCommonOperations {
     byPKC((userId, peer.typ.value, peer.id)).result.headOption map (_.map { case (c, u) ⇒ DialogObsolete.fromCommonAndUser(c, u) })
 
   def fetchDialogs(userId: Int)(implicit ec: ExecutionContext): DBIO[Seq[DialogObsolete]] =
-    byUserId(userId).result map (_.map { case (c, u) ⇒ DialogObsolete.fromCommonAndUser(c, u) })
+    byUserC(userId).result map (_.map { case (c, u) ⇒ DialogObsolete.fromCommonAndUser(c, u) })
 }
