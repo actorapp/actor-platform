@@ -220,7 +220,6 @@ public class ActorSDK {
                 .setDownsampleEnabled(true)
                 .build();
         Fresco.initialize(application, config);
-        AndroidContext.setContext(application);
         // TODO: Replace
         new SmileProcessor(application).loadEmoji();
 
