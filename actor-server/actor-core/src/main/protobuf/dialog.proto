@@ -122,10 +122,6 @@ message DialogRootCommands {
 
         Peer dest = 1;
     }
-
-    message SendChatGroupsChanged {
-        option (scalapb.message).extends = "im.actor.server.dialog.DialogRootCommand";
-    }
 }
 
 message DialogRootQueries {
@@ -191,7 +187,6 @@ message DialogRootEnvelope {
         DialogRootCommands.Favourite favourite = 7;
         DialogRootCommands.Unfavourite unfavourite = 8;
         DialogRootCommands.Delete delete = 9;
-        DialogRootCommands.SendChatGroupsChanged send_chat_groups_changed = 12;
     }
 }
 

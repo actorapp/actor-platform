@@ -181,11 +181,6 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
         .mapTo[SeqState]
     }
 
-  def sendChatGroupsChanged(userId: Int): Future[SeqState] =
-    (userExt.processorRegion.ref ?
-      UserEnvelope(userId).withDialogRootEnvelope(DialogRootEnvelope().withSendChatGroupsChanged(DialogRootCommands.SendChatGroupsChanged())))
-      .mapTo[SeqState]
-
   def setReaction(userId: Int, authSid: Int, peer: Peer, randomId: Long, code: String): Future[SetReactionAck] =
     withValidPeer(peer, userId) {
       (userExt.processorRegion.ref ? UserEnvelope(userId).withDialogEnvelope(DialogEnvelope().withSetReaction(SetReaction(

@@ -9,13 +9,11 @@ import akka.util.Timeout
 import im.actor.api.rpc.users.UpdateUserLocalNameChanged
 import im.actor.server.cqrs.{ Event, Processor, ProcessorState }
 import im.actor.server.db.DbExtension
-import im.actor.server.dialog.DialogExtension
 import im.actor.server.persist.contact.UserContactRepo
 import im.actor.server.sequence.SeqState
 import im.actor.server.user.UserCommands.EditLocalName
 
 import scala.concurrent.Future
-import scala.util.Success
 
 private final case class UserContactsState(localNames: Map[Int, String] = Map.empty) extends ProcessorState[UserContactsState] {
   import UserEvents._
@@ -44,14 +42,11 @@ private[user] final class UserContactsActor(userId: Int) extends Processor[UserC
   import UserQueries._
   import UserEvents._
 
-  import context.dispatcher
-
   override def persistenceId: String = s"User_${userId}_Contacts"
 
   override def getInitialState: UserContactsState = UserContactsState()
 
   private val userExt = UserExtension(context.system)
-  private val dialogExt = DialogExtension(context.system)
   private val db = DbExtension(context.system).db
 
   override protected def handleCommand: Receive = {
@@ -61,9 +56,7 @@ private[user] final class UserContactsActor(userId: Int) extends Processor[UserC
 
   override protected def handleQuery: QueryHandler = {
     case GetLocalName(_, contactUserId) ⇒
-      Future.successful(GetLocalNameResponse(state.localNames.get(contactUserId))) andThen {
-        case Success(_) ⇒ dialogExt.sendChatGroupsChanged(userId)
-      }
+      Future.successful(GetLocalNameResponse(state.localNames.get(contactUserId)))
   }
 
   private def editLocalName(contactUserId: Int, nameOpt: Option[String], supressUpdate: Boolean): Unit = {

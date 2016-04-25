@@ -30,7 +30,6 @@ import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.Future
-import scala.util.Success
 
 private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupCommandHelpers with UserACL {
   this: GroupProcessor ⇒
@@ -308,7 +307,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
       val update = UpdateGroupTitleChanged(groupId = groupId, userId = clientUserId, title = title, date = date.toEpochMilli, randomId = randomId)
       val serviceMessage = GroupServiceMessages.changedTitle(title)
 
-      (for {
+      for {
         _ ← db.run(GroupRepo.updateTitle(groupId, title, clientUserId, randomId, date))
         _ ← dialogExt.writeMessage(
           ApiPeer(ApiPeerType.Group, groupId),
@@ -323,9 +322,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
           update,
           PushRules().withData(PushData().withText(PushTexts.TitleChanged))
         )
-      } yield SeqStateDate(seqstate.seq, seqstate.state, date.toEpochMilli)) andThen {
-        case Success(_) ⇒ group.members.map(_._1) foreach (dialogExt.sendChatGroupsChanged(_))
-      }
+      } yield SeqStateDate(seqstate.seq, seqstate.state, date.toEpochMilli)
     }
   }
 
