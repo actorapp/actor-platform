@@ -5,6 +5,8 @@ import com.google.j2objc.annotations.ObjectiveCName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import im.actor.runtime.Log;
+
 /**
  * Object for completing promises
  *
@@ -35,6 +37,7 @@ public class PromiseResolver<T> {
      */
     @ObjectiveCName("result:")
     public void result(@Nullable T res) {
+        Log.d("Resolver", "" + this);
         promise.result(res);
     }
 
@@ -55,6 +58,7 @@ public class PromiseResolver<T> {
      */
     @ObjectiveCName("error:")
     public void error(@NotNull Exception e) {
+        Log.d("Resolver", "" + this);
         promise.error(e);
     }
 
