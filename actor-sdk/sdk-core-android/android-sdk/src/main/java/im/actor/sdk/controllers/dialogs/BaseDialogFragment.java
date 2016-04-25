@@ -42,12 +42,6 @@ public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, Dia
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        int topPadding = Screen.dp(8);
-        if (getArguments() != null) {
-            joinGroupUrl = getArguments().getString("invite_url", null);
-            topPadding = getArguments().getInt("top_padding", topPadding);
-        }
-
         View res = inflate(inflater, container, R.layout.fragment_dialogs, messenger().getDialogsDisplayList());
         res.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
 
@@ -61,7 +55,7 @@ public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, Dia
         // Header
 
         View header = new View(getActivity());
-        header.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, topPadding));
+        header.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ActorSDK.sharedActor().style.getDialogsPaddingTop()));
         header.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         addHeaderView(header);
 
