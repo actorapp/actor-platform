@@ -174,7 +174,8 @@ private[dialog] final case class DialogRootState(
   }
 
   private def withBumpedPeer(ts: Instant, peer: Peer): DialogRootState = {
-    if (mobile.exists(_.peer == peer))
+    if (mobile.exists(_.ts == ts)) withBumpedPeer(ts.plusMillis(1), peer)
+    else if (mobile.exists(_.peer == peer))
       copy(
         mobile = mobile.filterNot(_.peer == peer) + SortableDialog(ts, peer)
       )
