@@ -5,6 +5,7 @@ import akka.event.Logging.MDC
 import akka.http.scaladsl.util.FastFuture
 import akka.pattern.pipe
 import akka.stream.actor._
+import cats.data.Xor
 import com.github.kxbmap.configs.Bytes
 import im.actor.api.rpc.codecs.RequestCodec
 import im.actor.api.rpc.{ ClientData, Error, Ok, RpcError, RpcInternalError, RpcOk, RpcResult }
@@ -67,7 +68,8 @@ private[session] class RpcHandler(authId: Long, sessionId: Long, config: RpcConf
   private[this] var protoMessageQueue = immutable.Queue.empty[(Option[RpcResult], Long)]
 
   // FIXME: invalidate on incoming ack
-  private[this] val responseCache = createCache[java.lang.Long, Future[RpcResult]](config.maxCachedResults)
+  private[this] val responseCache =
+    createCache[java.lang.Long, Future[ResponseFailure Xor RpcResult]](config.maxCachedResults)
 
   def subscriber: Receive = {
     case OnNext(HandleRpcRequest(messageId, requestBytes, clientData)) ⇒
@@ -75,7 +77,7 @@ private[session] class RpcHandler(authId: Long, sessionId: Long, config: RpcConf
 
       Option(responseCache.getIfPresent(messageId)) match {
         case Some(rspFuture) ⇒
-          rspFuture map (CachedResponse(messageId, _, clientData)) pipeTo self
+          rspFuture map (_ fold (identity, CachedResponse(messageId, _, clientData))) pipeTo self
         case None ⇒
           val scheduledAck = context.system.scheduler.scheduleOnce(config.ackDelay, self, Ack(messageId))
           requestQueue += (messageId → scheduledAck)
@@ -86,13 +88,12 @@ private[session] class RpcHandler(authId: Long, sessionId: Long, config: RpcConf
               case Attempt.Successful(DecodeResult(request, _)) ⇒
                 log.debug("Request messageId {}: {}, userId: {}", messageId, request, userIdOpt)
 
-                val resultFuture = handleRequest(request, clientData)
+                val resultFuture = handleRequest(request, clientData) map Xor.right recover {
+                  case e: Throwable ⇒ Xor.left(ResponseFailure(messageId, request, e, clientData))
+                }
                 responseCache.put(messageId, resultFuture)
 
-                resultFuture.map(Response(messageId, _, clientData))
-                  .recover {
-                    case e: Throwable ⇒ ResponseFailure(messageId, request, e, clientData)
-                  }
+                resultFuture.map(_ map (Response(messageId, _, clientData)) fold (identity, identity))
               case Attempt.Failure(err) ⇒
                 log.warning("Failed to decode request: {}", err.messageWithContext)
                 FastFuture.successful(Response(messageId, RpcErrors.RequestNotSupported, clientData))
