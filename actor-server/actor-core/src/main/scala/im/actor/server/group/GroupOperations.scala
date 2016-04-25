@@ -119,4 +119,7 @@ private[group] sealed trait Queries {
 
   def getAccessHash(groupId: Int): Future[Long] =
     (viewRegion.ref ? GetAccessHash(groupId)).mapTo[GetAccessHashResponse] map (_.accessHash)
+
+  def getTitle(groupId: Int): Future[String] =
+    (viewRegion.ref ? GetTitle(groupId)).mapTo[GetTitleResponse] map (_.title)
 }
