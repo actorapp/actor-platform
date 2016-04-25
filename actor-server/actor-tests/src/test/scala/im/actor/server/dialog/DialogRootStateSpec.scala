@@ -16,11 +16,14 @@ final class DialogRootStateSpec extends ActorSuite with PeersImplicits {
   it should "archive groups and DMs" in archive
   it should "order archived by date desc" in archivedOrder
   it should "not add to DMs or groups if already in favourites" in keepInFavourites
+  it should "not create dialogs with itself" in noDialogsWithItself
 
   import DialogRootEvents._
 
+  val userId = 31337
+
   def show() = {
-    implicit val probe = ProcessorStateProbe(DialogRootState.initial)
+    implicit val probe = ProcessorStateProbe(DialogRootState.initial(userId))
 
     val alice = Peer.privat(1)
     val bob = Peer.privat(2)
@@ -33,7 +36,7 @@ final class DialogRootStateSpec extends ActorSuite with PeersImplicits {
   }
 
   def mobileDialogs() = {
-    implicit val probe = ProcessorStateProbe(DialogRootState.initial)
+    implicit val probe = ProcessorStateProbe(DialogRootState.initial(userId))
 
     val alice = Peer.privat(1)
     val bob = Peer.privat(2)
@@ -59,7 +62,7 @@ final class DialogRootStateSpec extends ActorSuite with PeersImplicits {
   }
 
   def favouriteUnfavourite() = {
-    implicit val probe = ProcessorStateProbe(DialogRootState.initial)
+    implicit val probe = ProcessorStateProbe(DialogRootState.initial(userId))
 
     val alice = Peer.privat(1)
 
@@ -73,7 +76,7 @@ final class DialogRootStateSpec extends ActorSuite with PeersImplicits {
   }
 
   def keepInFavourites() = {
-    implicit val probe = ProcessorStateProbe(DialogRootState.initial)
+    implicit val probe = ProcessorStateProbe(DialogRootState.initial(userId))
 
     val alice = Peer.privat(1)
     val group = Peer.group(100)
@@ -91,10 +94,11 @@ final class DialogRootStateSpec extends ActorSuite with PeersImplicits {
   }
 
   def removeFromArchived() = {
-    implicit val probe = ProcessorStateProbe(DialogRootState.initial)
+    implicit val probe = ProcessorStateProbe(DialogRootState.initial(userId))
 
     val alice = Peer.privat(1)
 
+    probe.commit(Created(Instant.now, Some(alice)))
     probe.commit(Archived(Instant.now, Some(alice)))
     getArchivedPeers should be(Seq(alice))
     checkSnapshot
@@ -115,7 +119,7 @@ final class DialogRootStateSpec extends ActorSuite with PeersImplicits {
   }
 
   def archive() = {
-    implicit val probe = ProcessorStateProbe(DialogRootState.initial)
+    implicit val probe = ProcessorStateProbe(DialogRootState.initial(userId))
 
     val group1 = Peer.group(1)
     val group2 = Peer.group(2)
@@ -132,16 +136,42 @@ final class DialogRootStateSpec extends ActorSuite with PeersImplicits {
   }
 
   def archivedOrder() = {
-    implicit val probe = ProcessorStateProbe(DialogRootState.initial)
+    implicit val probe = ProcessorStateProbe(DialogRootState.initial(userId))
 
     val alice = Peer.privat(1)
     val bob = Peer.privat(2)
 
+    probe.commit(Created(Instant.now, Some(alice)))
+    probe.commit(Created(Instant.now, Some(bob)))
     probe.commit(Archived(Instant.now, Some(alice)))
     probe.commit(Archived(Instant.now, Some(bob)))
 
     getArchivedPeers should be(Seq(bob, alice))
     checkSnapshot
+  }
+
+  def noDialogsWithItself() = {
+    implicit val probe = ProcessorStateProbe(DialogRootState.initial(userId))
+
+    val alice = Peer.privat(userId)
+
+    def checkNoAlice() = {
+      probe.state.mobile shouldBe empty
+      probe.state.active.exists(_.peer == alice) shouldBe false
+      probe.state.archived shouldBe empty
+    }
+
+    probe.commit(Created(Instant.now, Some(alice)))
+    checkNoAlice
+
+    probe.commit(Archived(Instant.now, Some(alice)))
+    checkNoAlice
+
+    probe.commit(Bumped(Instant.now, Some(alice)))
+    checkNoAlice
+
+    probe.commit(Unarchived(Instant.now, Some(alice)))
+    checkNoAlice
   }
 
   private def getGroupPeers(typ: DialogGroupType)(implicit probe: ProcessorStateProbe[DialogRootState]) =
@@ -159,5 +189,5 @@ final class DialogRootStateSpec extends ActorSuite with PeersImplicits {
     probe.state.archived.toSeq.map(_.peer)
 
   private def checkSnapshot(implicit probe: ProcessorStateProbe[DialogRootState]) =
-    DialogRootState.initial.withSnapshot(SnapshotMetadata("", 0), probe.state.snapshot) should be(probe.state)
+    DialogRootState.initial(userId).withSnapshot(SnapshotMetadata("", 0), probe.state.snapshot) should be(probe.state)
 }
