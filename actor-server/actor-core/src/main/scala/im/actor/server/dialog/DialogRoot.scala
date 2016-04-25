@@ -109,7 +109,7 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
 
   override def persistenceId: String = s"DialogRoot_$userId"
 
-  override protected def getInitialState: DialogRootState = DialogRootState.initial
+  override protected def getInitialState: DialogRootState = DialogRootState.initial(userId)
 
   override protected def handleQuery: PartialFunction[Any, Future[Any]] = {
     case GetCounter()                      ⇒ getCounter()
