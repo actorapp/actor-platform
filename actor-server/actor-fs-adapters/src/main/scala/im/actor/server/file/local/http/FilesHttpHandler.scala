@@ -27,7 +27,8 @@ private[local] final class FilesHttpHandler(storageConfig: LocalFileStorageConfi
   extends HttpHandler
   with RequestSigning
   with FileStorageOperations
-  with AnyRefLogSource {
+  with AnyRefLogSource
+  with GetFileFix {
   import FilesRejections._
 
   protected implicit val mat = ActorMaterializer()
@@ -69,7 +70,8 @@ private[local] final class FilesHttpHandler(storageConfig: LocalFileStorageConfi
                       respondWithDefaultHeader(
                         `Content-Disposition`(attachment, Map("filename" -> file.name))
                       ) {
-                        getFromFile(file.toJava)
+                        //TODO: remove as soon, as https://github.com/akka/akka/issues/20338 get fixed
+                        getFromFileFix(file.toJava)
                       }
                     case Success(None) =>
                       complete(HttpResponse(StatusCodes.NotFound))
