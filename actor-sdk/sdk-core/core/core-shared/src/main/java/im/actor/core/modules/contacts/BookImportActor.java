@@ -109,7 +109,7 @@ public class BookImportActor extends ModuleActor {
         List<Long> oldids = new ArrayList<Long>();
         try {
             oldids.addAll(Bser.parse(new PhoneBookIds(), preferences().getBytes("phone_book_ids")).getIds());
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         for (PhoneBookContact record : phoneBook) {

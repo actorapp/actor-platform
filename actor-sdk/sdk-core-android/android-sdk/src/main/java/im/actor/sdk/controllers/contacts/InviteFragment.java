@@ -255,7 +255,10 @@ public class InviteFragment extends DisplayListFragment<PhoneBookContact, Invite
     public void onCollectionChanged() {
         super.onCollectionChanged();
         checkSendButton();
-        ((InviteContactAdapter) getAdapter()).updateIds();
+        InviteContactAdapter adapter = (InviteContactAdapter) getAdapter();
+        if (adapter != null) {
+            adapter.updateIds();
+        }
     }
 
 }
