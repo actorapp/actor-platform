@@ -1,0 +1,40 @@
+.sidebar__button {
+  line-height: 20px;
+
+  display: inline-block;
+
+  margin: 16px;
+
+  cursor: pointer !important;
+
+  color: rgba(white, .8);
+
+  @include no-select();
+
+  &__icon {
+    font-size: 20px;
+    line-height: 20px;
+
+    display: inline-block;
+
+    width: 20px;
+    height: 20px;
+    margin-right: 12px;
+    .material-icons {
+      vertical-align: top;
+    }
+  }
+  &__title {
+    font-size: 14px;
+    font-weight: 500;
+
+    display: inline-block;
+
+    vertical-align: middle;
+    text-transform: uppercase;
+  }
+
+  &:hover {
+    color: white;
+  }
+}
