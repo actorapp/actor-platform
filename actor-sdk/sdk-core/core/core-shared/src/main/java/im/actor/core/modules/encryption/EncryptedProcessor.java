@@ -1,23 +1,18 @@
 package im.actor.core.modules.encryption;
 
-import im.actor.core.api.updates.UpdateEncryptedPackage;
-import im.actor.core.api.updates.UpdatePublicKeyGroupAdded;
-import im.actor.core.api.updates.UpdatePublicKeyGroupChanged;
-import im.actor.core.api.updates.UpdatePublicKeyGroupRemoved;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.encryption.EncryptedMsgActor;
-import im.actor.core.modules.encryption.KeyManagerActor;
-import im.actor.core.modules.sequence.Processor;
+import im.actor.core.modules.sequence.processor.SequenceProcessor;
+import im.actor.core.network.parser.Update;
 
-public class EncryptedProcessor extends AbsModule implements Processor {
+public class EncryptedProcessor extends AbsModule implements SequenceProcessor {
 
     public EncryptedProcessor(ModuleContext context) {
         super(context);
     }
 
     @Override
-    public boolean process(Object update) {
+    public boolean process(Update update) {
 //        if (update instanceof UpdatePublicKeyGroupAdded) {
 //            context().getEncryption().getKeyManager().send(new KeyManagerActor.PublicKeysGroupAdded(
 //                    ((UpdatePublicKeyGroupAdded) update).getUid(),

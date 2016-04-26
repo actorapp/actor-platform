@@ -13,10 +13,18 @@ import java.util.List;
 import im.actor.core.api.ApiAvatar;
 import im.actor.core.api.ApiGroup;
 import im.actor.core.api.ApiMember;
+import im.actor.core.api.updates.UpdateGroupAboutChanged;
+import im.actor.core.api.updates.UpdateGroupAvatarChanged;
+import im.actor.core.api.updates.UpdateGroupInvite;
+import im.actor.core.api.updates.UpdateGroupMembersUpdate;
+import im.actor.core.api.updates.UpdateGroupTitleChanged;
+import im.actor.core.api.updates.UpdateGroupTopicChanged;
+import im.actor.core.api.updates.UpdateGroupUserInvited;
+import im.actor.core.api.updates.UpdateGroupUserKick;
+import im.actor.core.api.updates.UpdateGroupUserLeave;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.MessageState;
-import im.actor.core.entity.Peer;
 import im.actor.core.entity.content.ServiceGroupAvatarChanged;
 import im.actor.core.entity.content.ServiceGroupCreated;
 import im.actor.core.entity.content.ServiceGroupTitleChanged;
@@ -25,34 +33,18 @@ import im.actor.core.entity.content.ServiceGroupUserKicked;
 import im.actor.core.entity.content.ServiceGroupUserLeave;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.messaging.dialogs.DialogsActor;
 import im.actor.core.entity.EntityConverter;
 import im.actor.core.modules.messaging.router.RouterInt;
+import im.actor.core.modules.sequence.processor.SequenceProcessor;
+import im.actor.core.network.parser.Update;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.annotations.Verified;
 import im.actor.runtime.promise.Promise;
 
-import static im.actor.core.util.JavaUtil.equalsE;
-
-public class GroupsProcessor extends AbsModule {
+public class GroupsProcessor extends AbsModule implements SequenceProcessor {
 
     public GroupsProcessor(ModuleContext context) {
         super(context);
-    }
-
-    @Verified
-    public Promise<Void> applyGroups(Collection<ApiGroup> updated) {
-        ArrayList<Group> batch = new ArrayList<>();
-        for (ApiGroup group : updated) {
-            Group saved = groups().getValue(group.getId());
-            if (saved == null) {
-                batch.add(EntityConverter.convert(group));
-            }
-        }
-        if (batch.size() > 0) {
-            groups().addOrUpdateItems(batch);
-        }
-        return Promise.success(null);
     }
 
     @Verified
@@ -285,5 +277,58 @@ public class GroupsProcessor extends AbsModule {
 
     private RouterInt getRouter() {
         return context().getMessagesModule().getRouter();
+    }
+
+    @Override
+    public boolean process(Update update) {
+        if (update instanceof UpdateGroupTitleChanged) {
+            UpdateGroupTitleChanged titleChanged = (UpdateGroupTitleChanged) update;
+            onTitleChanged(titleChanged.getGroupId(), titleChanged.getRid(),
+                    titleChanged.getUid(), titleChanged.getTitle(), titleChanged.getDate(),
+                    false);
+            return true;
+        } else if (update instanceof UpdateGroupTopicChanged) {
+            UpdateGroupTopicChanged topicChanged = (UpdateGroupTopicChanged) update;
+            onTopicChanged(topicChanged.getGroupId(), topicChanged.getTopic());
+            return true;
+        } else if (update instanceof UpdateGroupAboutChanged) {
+            UpdateGroupAboutChanged aboutChanged = (UpdateGroupAboutChanged) update;
+            onAboutChanged(aboutChanged.getGroupId(), aboutChanged.getAbout());
+            return true;
+        } else if (update instanceof UpdateGroupAvatarChanged) {
+            UpdateGroupAvatarChanged avatarChanged = (UpdateGroupAvatarChanged) update;
+            onAvatarChanged(avatarChanged.getGroupId(), avatarChanged.getRid(),
+                    avatarChanged.getUid(), avatarChanged.getAvatar(),
+                    avatarChanged.getDate(), false);
+            return true;
+        } else if (update instanceof UpdateGroupInvite) {
+            UpdateGroupInvite groupInvite = (UpdateGroupInvite) update;
+            onGroupInvite(groupInvite.getGroupId(),
+                    groupInvite.getRid(), groupInvite.getInviteUid(), groupInvite.getDate(),
+                    false);
+            return true;
+        } else if (update instanceof UpdateGroupUserLeave) {
+            UpdateGroupUserLeave leave = (UpdateGroupUserLeave) update;
+            onUserLeave(leave.getGroupId(), leave.getRid(), leave.getUid(),
+                    leave.getDate(), false);
+            return true;
+        } else if (update instanceof UpdateGroupUserKick) {
+            UpdateGroupUserKick userKick = (UpdateGroupUserKick) update;
+            onUserKicked(userKick.getGroupId(),
+                    userKick.getRid(), userKick.getUid(), userKick.getKickerUid(), userKick.getDate(),
+                    false);
+            return true;
+        } else if (update instanceof UpdateGroupUserInvited) {
+            UpdateGroupUserInvited userInvited = (UpdateGroupUserInvited) update;
+            onUserAdded(userInvited.getGroupId(),
+                    userInvited.getRid(), userInvited.getUid(), userInvited.getInviterUid(), userInvited.getDate(),
+                    false);
+            return true;
+        } else if (update instanceof UpdateGroupMembersUpdate) {
+            onMembersUpdated(((UpdateGroupMembersUpdate) update).getGroupId(),
+                    ((UpdateGroupMembersUpdate) update).getMembers());
+            return true;
+        }
+        return false;
     }
 }

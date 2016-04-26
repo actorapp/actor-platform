@@ -18,37 +18,21 @@ import im.actor.core.entity.User;
 import im.actor.core.entity.content.ServiceUserRegistered;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.sequence.Processor;
 import im.actor.core.modules.contacts.ContactsSyncActor;
-import im.actor.core.modules.messaging.dialogs.DialogsActor;
-import im.actor.runtime.Log;
+import im.actor.core.modules.sequence.processor.SequenceProcessor;
+import im.actor.core.network.parser.Update;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.annotations.Verified;
 import im.actor.runtime.promise.Promise;
 
 import static im.actor.core.util.JavaUtil.equalsE;
 
-public class UsersProcessor extends AbsModule implements Processor {
+public class UsersProcessor extends AbsModule implements SequenceProcessor {
 
     public UsersProcessor(ModuleContext context) {
         super(context);
     }
-
-    @Verified
-    public Promise<Void> applyUsers(Collection<ApiUser> updated) {
-        ArrayList<User> batch = new ArrayList<>();
-        for (ApiUser u : updated) {
-            User saved = users().getValue(u.getId());
-            if (saved == null) {
-                batch.add(new User(u));
-            }
-        }
-        if (batch.size() > 0) {
-            users().addOrUpdateItems(batch);
-        }
-        return Promise.success(null);
-    }
-
+    
     @Verified
     private void onUserNameChanged(int uid, String name) {
         User u = users().getValue(uid);
@@ -159,7 +143,7 @@ public class UsersProcessor extends AbsModule implements Processor {
     }
 
     @Override
-    public boolean process(Object update) {
+    public boolean process(Update update) {
         if (update instanceof UpdateUserNameChanged) {
             UpdateUserNameChanged userNameChanged = (UpdateUserNameChanged) update;
             onUserNameChanged(userNameChanged.getUid(), userNameChanged.getName());

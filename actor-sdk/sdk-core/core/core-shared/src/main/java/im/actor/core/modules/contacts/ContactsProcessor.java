@@ -7,9 +7,10 @@ package im.actor.core.modules.contacts;
 import im.actor.core.api.updates.UpdateContactsAdded;
 import im.actor.core.api.updates.UpdateContactsRemoved;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.sequence.Processor;
+import im.actor.core.modules.sequence.processor.SequenceProcessor;
+import im.actor.core.network.parser.Update;
 
-public class ContactsProcessor implements Processor {
+public class ContactsProcessor implements SequenceProcessor {
 
     private ModuleContext context;
 
@@ -18,7 +19,7 @@ public class ContactsProcessor implements Processor {
     }
 
     @Override
-    public boolean process(Object update) {
+    public boolean process(Update update) {
         if (update instanceof UpdateContactsAdded) {
             UpdateContactsAdded contactsAdded = (UpdateContactsAdded) update;
             int[] uids = new int[contactsAdded.getUids().size()];

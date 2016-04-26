@@ -3,9 +3,11 @@ package im.actor.core.modules.calls;
 import im.actor.core.api.updates.UpdateCallHandled;
 import im.actor.core.api.updates.UpdateIncomingCall;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.sequence.Processor;
+import im.actor.core.modules.sequence.processor.WeakProcessor;
+import im.actor.core.network.parser.Update;
 
-public class CallsProcessor implements Processor {
+public class CallsProcessor implements WeakProcessor {
+
     private ModuleContext context;
 
     public CallsProcessor(ModuleContext context) {
@@ -13,7 +15,7 @@ public class CallsProcessor implements Processor {
     }
 
     @Override
-    public boolean process(Object update) {
+    public boolean process(Update update, long date) {
         if (update instanceof UpdateIncomingCall) {
             UpdateIncomingCall updateIncomingCall = (UpdateIncomingCall) update;
             if (context.getConfiguration().isVoiceCallsEnabled()) {
