@@ -8,8 +8,7 @@ import im.actor.server.JNDI
 import org.flywaydb.core.Flyway
 import slick.driver.PostgresDriver.api.Database
 import slick.jdbc.hikaricp.HikariCPJdbcDataSource
-import slick.jdbc.JdbcDataSource
-import slick.util.AsyncExecutor
+import slick.jdbc.{ DataSourceJdbcDataSource, JdbcDataSource }
 
 import scala.util.{ Failure, Success, Try }
 
@@ -19,7 +18,14 @@ trait DbExtension extends Extension {
 }
 
 final class DbExtensionImpl(val db: Database) extends Extension with FlywayInit {
-  private lazy val flyway: Flyway = initFlyway(db.source.asInstanceOf[HikariCPJdbcDataSource].ds)
+  private lazy val flyway: Flyway = {
+    val ds = db.source match {
+      case s: HikariCPJdbcDataSource   ⇒ s.ds
+      case s: DataSourceJdbcDataSource ⇒ s.ds
+      case s                           ⇒ throw new IllegalArgumentException(s"Unknown DataSource: ${s.getClass.getName}")
+    }
+    initFlyway(ds)
+  }
 
   def clean(): Unit = flyway.clean()
 
