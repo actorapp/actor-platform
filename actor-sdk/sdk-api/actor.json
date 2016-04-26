@@ -6917,7 +6917,7 @@
               },
               {
                 "type": {
-                  "type": "opt",
+                  "type": "list",
                   "childType": {
                     "type": "enum",
                     "childType": "UpdateOptimization"
