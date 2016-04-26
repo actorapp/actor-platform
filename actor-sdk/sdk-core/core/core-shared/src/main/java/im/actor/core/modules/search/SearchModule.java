@@ -30,6 +30,7 @@ import im.actor.core.entity.PeerSearchType;
 import im.actor.core.entity.SearchEntity;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.modules.AbsModule;
+import im.actor.core.modules.Configuration;
 import im.actor.core.modules.Modules;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
@@ -97,7 +98,7 @@ public class SearchModule extends AbsModule {
     }
 
     private Promise<List<MessageSearchEntity>> findMessages(final ApiSearchCondition condition) {
-        return api(new RequestMessageSearch(condition))
+        return api(new RequestMessageSearch(condition, Configuration.OPTIMIZATIONS))
                 .chain(responseMessageSearchResponse ->
                         updates().applyRelatedData(
                                 responseMessageSearchResponse.getUsers(),
@@ -122,7 +123,7 @@ public class SearchModule extends AbsModule {
         ArrayList<ApiSearchCondition> conditions = new ArrayList<>();
         conditions.add(new ApiSearchPeerTypeCondition(apiType));
 
-        return api(new RequestPeerSearch(conditions))
+        return api(new RequestPeerSearch(conditions, Configuration.OPTIMIZATIONS))
                 .chain(responsePeerSearch ->
                         updates().applyRelatedData(
                                 responsePeerSearch.getUsers(),

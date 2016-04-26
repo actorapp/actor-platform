@@ -7821,8 +7821,7 @@
               {
                 "type": "bool",
                 "id": 6,
-                "name": "isMember",
-                "deprecated": "true"
+                "name": "isMember"
               },
               {
                 "type": {
@@ -7830,8 +7829,7 @@
                   "childType": "bool"
                 },
                 "id": 16,
-                "name": "isAdmin",
-                "deprecated": "true"
+                "name": "isAdmin"
               },
               {
                 "type": {
@@ -7839,8 +7837,7 @@
                   "childType": "userId"
                 },
                 "id": 8,
-                "name": "creatorUid",
-                "deprecated": "true"
+                "name": "creatorUid"
               },
               {
                 "type": {
@@ -7851,8 +7848,7 @@
                   }
                 },
                 "id": 9,
-                "name": "members",
-                "deprecated": "true"
+                "name": "members"
               },
               {
                 "type": {
@@ -7860,8 +7856,7 @@
                   "childType": "date"
                 },
                 "id": 10,
-                "name": "createDate",
-                "deprecated": "true"
+                "name": "createDate"
               },
               {
                 "type": {
@@ -7869,8 +7864,7 @@
                   "childType": "string"
                 },
                 "id": 17,
-                "name": "theme",
-                "deprecated": "true"
+                "name": "theme"
               },
               {
                 "type": {
@@ -7878,8 +7872,7 @@
                   "childType": "string"
                 },
                 "id": 18,
-                "name": "about",
-                "deprecated": "true"
+                "name": "about"
               }
             ]
           }

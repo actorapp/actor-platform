@@ -40,6 +40,7 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 1: return RequestSendAuthCodeObsolete.fromBytes(payload);
             case 90: return RequestSendAuthCallObsolete.fromBytes(payload);
             case 96: return RequestEditUserLocalName.fromBytes(payload);
+            case 2649: return RequestLoadFullUsers.fromBytes(payload);
             case 53: return RequestEditName.fromBytes(payload);
             case 205: return RequestEditNickName.fromBytes(payload);
             case 206: return RequestCheckNickName.fromBytes(payload);
@@ -176,6 +177,7 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 5: return ResponseAuth.fromBytes(payload);
             case 81: return ResponseGetAuthSessions.fromBytes(payload);
             case 2: return ResponseSendAuthCodeObsolete.fromBytes(payload);
+            case 2650: return ResponseLoadFullUsers.fromBytes(payload);
             case 103: return ResponseEditAvatar.fromBytes(payload);
             case 8: return ResponseImportContacts.fromBytes(payload);
             case 88: return ResponseGetContacts.fromBytes(payload);

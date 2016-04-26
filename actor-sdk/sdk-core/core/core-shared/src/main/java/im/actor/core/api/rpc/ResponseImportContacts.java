@@ -25,11 +25,13 @@ public class ResponseImportContacts extends Response {
     private List<ApiUser> users;
     private int seq;
     private byte[] state;
+    private List<ApiUserOutPeer> userPeers;
 
-    public ResponseImportContacts(@NotNull List<ApiUser> users, int seq, @NotNull byte[] state) {
+    public ResponseImportContacts(@NotNull List<ApiUser> users, int seq, @NotNull byte[] state, @NotNull List<ApiUserOutPeer> userPeers) {
         this.users = users;
         this.seq = seq;
         this.state = state;
+        this.userPeers = userPeers;
     }
 
     public ResponseImportContacts() {
@@ -50,6 +52,11 @@ public class ResponseImportContacts extends Response {
         return this.state;
     }
 
+    @NotNull
+    public List<ApiUserOutPeer> getUserPeers() {
+        return this.userPeers;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         List<ApiUser> _users = new ArrayList<ApiUser>();
@@ -59,6 +66,11 @@ public class ResponseImportContacts extends Response {
         this.users = values.getRepeatedObj(1, _users);
         this.seq = values.getInt(2);
         this.state = values.getBytes(3);
+        List<ApiUserOutPeer> _userPeers = new ArrayList<ApiUserOutPeer>();
+        for (int i = 0; i < values.getRepeatedCount(4); i ++) {
+            _userPeers.add(new ApiUserOutPeer());
+        }
+        this.userPeers = values.getRepeatedObj(4, _userPeers);
     }
 
     @Override
@@ -69,6 +81,7 @@ public class ResponseImportContacts extends Response {
             throw new IOException();
         }
         writer.writeBytes(3, this.state);
+        writer.writeRepeatedObj(4, this.userPeers);
     }
 
     @Override

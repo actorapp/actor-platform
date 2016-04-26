@@ -13,6 +13,8 @@ import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.sequence.processor.SequenceProcessor;
 import im.actor.core.network.parser.Update;
+import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.promise.Promise;
 
 public class StickersProcessor extends AbsModule implements SequenceProcessor {
 
@@ -29,14 +31,14 @@ public class StickersProcessor extends AbsModule implements SequenceProcessor {
     }
 
     @Override
-    public boolean process(Update update) {
+    public Promise<Void> process(Update update) {
         if (update instanceof UpdateOwnStickersChanged) {
             onOwnStickerCollectionsChanged(((UpdateOwnStickersChanged) update).getCollections());
-            return true;
+            return Promise.success(null);
         } else if (update instanceof UpdateStickerCollectionsChanged) {
             onStickerCollectionsChanged(((UpdateStickerCollectionsChanged) update).getCollections());
-            return true;
+            return Promise.success(null);
         }
-        return false;
+        return null;
     }
 }

@@ -1,183 +1,54 @@
 package im.actor.core.modules.users;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
-import im.actor.core.api.ApiAvatar;
-import im.actor.core.api.ApiUser;
 import im.actor.core.api.updates.UpdateContactRegistered;
 import im.actor.core.api.updates.UpdateUserAboutChanged;
 import im.actor.core.api.updates.UpdateUserAvatarChanged;
 import im.actor.core.api.updates.UpdateUserLocalNameChanged;
 import im.actor.core.api.updates.UpdateUserNameChanged;
 import im.actor.core.api.updates.UpdateUserNickChanged;
-import im.actor.core.entity.Message;
-import im.actor.core.entity.MessageState;
-import im.actor.core.entity.Peer;
-import im.actor.core.entity.User;
-import im.actor.core.entity.content.ServiceUserRegistered;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.contacts.ContactsSyncActor;
 import im.actor.core.modules.sequence.processor.SequenceProcessor;
+import im.actor.core.modules.users.router.UserRouterInt;
 import im.actor.core.network.parser.Update;
 import im.actor.runtime.actors.messages.Void;
-import im.actor.runtime.annotations.Verified;
 import im.actor.runtime.promise.Promise;
-
-import static im.actor.core.util.JavaUtil.equalsE;
 
 public class UsersProcessor extends AbsModule implements SequenceProcessor {
 
     public UsersProcessor(ModuleContext context) {
         super(context);
     }
-    
-    @Verified
-    private void onUserNameChanged(int uid, String name) {
-        User u = users().getValue(uid);
-        if (u != null) {
-
-            // Ignore if name not changed
-            if (u.getServerName().equals(name)) {
-                return;
-            }
-
-            // Changing user name
-            u = u.editName(name);
-
-            // Updating user in collection
-            users().addOrUpdateItem(u);
-
-            // Notify if user doesn't have local name
-            if (u.getLocalName() == null) {
-                onUserDescChanged(u);
-            }
-        }
-    }
-
-    @Verified
-    private void onUserNickChanged(int uid, String nick) {
-        User u = users().getValue(uid);
-        if (u != null) {
-
-            // Ignore if name not changed
-            if (equalsE(u.getNick(), nick)) {
-                return;
-            }
-
-            // Changing user name
-            u = u.editNick(nick);
-
-            // Updating user in collection
-            users().addOrUpdateItem(u);
-        }
-    }
-
-    @Verified
-    private void onUserAboutChanged(int uid, String about) {
-        User u = users().getValue(uid);
-        if (u != null) {
-
-            // Ignore if name not changed
-            if (equalsE(u.getAbout(), about)) {
-                return;
-            }
-
-            // Changing about information
-            u = u.editAbout(about);
-
-            // Updating user in collection
-            users().addOrUpdateItem(u);
-        }
-    }
-
-    @Verified
-    private void onUserLocalNameChanged(int uid, String name) {
-        User u = users().getValue(uid);
-        if (u != null) {
-
-            // Ignore if local name not changed
-            if (equalsE(u.getLocalName(), name)) {
-                return;
-            }
-
-            // Changing user local name
-            u = u.editLocalName(name);
-
-            // Updating user in collection
-            users().addOrUpdateItem(u);
-
-            // Notify about user change
-            onUserDescChanged(u);
-        }
-    }
-
-    @Verified
-    private void onUserAvatarChanged(int uid, ApiAvatar avatar) {
-        User u = users().getValue(uid);
-        if (u != null) {
-
-            // Ignore if avatar not changed
-            // Disabled because of future-compatibility it is unable to check equality
-            // if (equalsE(u.getAvatar(), new im.actor.model.entity.Avatar(avatar))) {
-            //    return;
-            // }
-
-            // Changing user avatar
-            u = u.editAvatar(avatar);
-
-            // Updating user in collection
-            users().addOrUpdateItem(u);
-
-            // Notify about user change
-            onUserDescChanged(u);
-        }
-    }
-
-    @Verified
-    public void onUserRegistered(long rid, int uid, long date) {
-        ArrayList<Message> messages = new ArrayList<>();
-        messages.add(new Message(rid, date, date, uid, MessageState.UNKNOWN, ServiceUserRegistered.create()));
-        context().getMessagesModule().getRouter().onNewMessages(Peer.user(uid), messages);
-    }
 
     @Override
-    public boolean process(Update update) {
+    public Promise<Void> process(Update update) {
         if (update instanceof UpdateUserNameChanged) {
             UpdateUserNameChanged userNameChanged = (UpdateUserNameChanged) update;
-            onUserNameChanged(userNameChanged.getUid(), userNameChanged.getName());
-            return true;
+            return getRouter().onUserNameChanged(userNameChanged.getUid(), userNameChanged.getName());
         } else if (update instanceof UpdateUserLocalNameChanged) {
             UpdateUserLocalNameChanged localNameChanged = (UpdateUserLocalNameChanged) update;
-            onUserLocalNameChanged(localNameChanged.getUid(), localNameChanged.getLocalName());
-            return true;
+            return getRouter().onUserLocalNameChanged(localNameChanged.getUid(), localNameChanged.getLocalName());
         } else if (update instanceof UpdateUserNickChanged) {
             UpdateUserNickChanged nickChanged = (UpdateUserNickChanged) update;
-            onUserNickChanged(nickChanged.getUid(), nickChanged.getNickname());
-            return true;
+            return getRouter().onUserNicknameChanged(nickChanged.getUid(), nickChanged.getNickname());
         } else if (update instanceof UpdateUserAboutChanged) {
             UpdateUserAboutChanged userAboutChanged = (UpdateUserAboutChanged) update;
-            onUserAboutChanged(userAboutChanged.getUid(), userAboutChanged.getAbout());
-            return true;
+            return getRouter().onUserAboutChanged(userAboutChanged.getUid(), userAboutChanged.getAbout());
         } else if (update instanceof UpdateUserAvatarChanged) {
             UpdateUserAvatarChanged avatarChanged = (UpdateUserAvatarChanged) update;
-            onUserAvatarChanged(avatarChanged.getUid(), avatarChanged.getAvatar());
-            return true;
+            return getRouter().onUserAvatarChanged(avatarChanged.getUid(), avatarChanged.getAvatar());
         } else if (update instanceof UpdateContactRegistered) {
             UpdateContactRegistered registered = (UpdateContactRegistered) update;
             if (!registered.isSilent()) {
-                onUserRegistered(registered.getRid(), registered.getUid(), registered.getDate());
+                return getRouter().onUserRegistered(registered.getUid(), registered.getRid(),
+                        registered.getDate());
             }
-            return true;
+            return Promise.success(null);
         }
-        return false;
+        return null;
     }
 
-    @Verified
-    private void onUserDescChanged(User u) {
-        context().getMessagesModule().getRouter().onUserChanged(u);
-        context().getContactsModule().getContactSyncActor()
-                .send(new ContactsSyncActor.UserChanged(u));
+    private UserRouterInt getRouter() {
+        return context().getUsersModule().getUserRouter();
     }
 }

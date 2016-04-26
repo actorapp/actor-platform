@@ -12,6 +12,7 @@ public enum ApiUpdateOptimization {
     ENABLE_COMBINED(3),
     FASTER_MESSAGES(4),
     STRIP_COUNTERS(5),
+    COMPACT_USERS(6),
     UNSUPPORTED_VALUE(-1);
 
     private int value;
@@ -31,6 +32,7 @@ public enum ApiUpdateOptimization {
             case 3: return ApiUpdateOptimization.ENABLE_COMBINED;
             case 4: return ApiUpdateOptimization.FASTER_MESSAGES;
             case 5: return ApiUpdateOptimization.STRIP_COUNTERS;
+            case 6: return ApiUpdateOptimization.COMPACT_USERS;
             default: return ApiUpdateOptimization.UNSUPPORTED_VALUE;
         }
     }

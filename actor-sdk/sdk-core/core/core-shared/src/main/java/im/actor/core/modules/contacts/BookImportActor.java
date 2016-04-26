@@ -10,7 +10,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
+import im.actor.core.api.ApiUserOutPeer;
 import im.actor.core.entity.PhoneBookIds;
+import im.actor.core.modules.Configuration;
 import im.actor.core.modules.contacts.entity.BookImportStorage;
 import im.actor.core.providers.PhoneBookProvider;
 import im.actor.core.api.ApiEmailToImport;
@@ -216,7 +218,7 @@ public class BookImportActor extends ModuleActor {
                 throw new RuntimeException();
             }
         }
-        request(new RequestImportContacts(phoneToImports, emailToImports), new RpcCallback<ResponseImportContacts>() {
+        request(new RequestImportContacts(phoneToImports, emailToImports, Configuration.OPTIMIZATIONS), new RpcCallback<ResponseImportContacts>() {
             @Override
             public void onResult(ResponseImportContacts response) {
 
@@ -237,21 +239,40 @@ public class BookImportActor extends ModuleActor {
                 //
                 // Generating update
                 //
-                if (response.getUsers().size() != 0) {
+                if (response.getUsers().size() != 0 || response.getUserPeers().size() != 0) {
+
                     if (ENABLE_LOG) {
-                        Log.d(TAG, "Import success with " + response.getUsers().size() + " new contacts");
+                        Log.d(TAG, "Import success with " +
+                                (response.getUsers().size() + response.getUserPeers().size()) + " new contacts");
                     }
 
-                    ArrayList<Integer> uids = new ArrayList<>();
-                    for (ApiUser u : response.getUsers()) {
-                        uids.add(u.getId());
+                    if (response.getUserPeers().size() != 0) {
+
+                        // Optimized version
+                        ArrayList<Integer> uids = new ArrayList<>();
+                        for (ApiUserOutPeer u : response.getUserPeers()) {
+                            uids.add(u.getUid());
+                        }
+                        loadRequiredPeers(response.getUserPeers(), new ArrayList<>())
+                                .flatMap(v -> updates().applyUpdate(
+                                        response.getSeq(),
+                                        response.getState(),
+                                        new UpdateContactsAdded(uids))
+                                );
+                    } else {
+
+                        // Old version
+                        ArrayList<Integer> uids = new ArrayList<>();
+                        for (ApiUser u : response.getUsers()) {
+                            uids.add(u.getId());
+                        }
+                        updates().onUpdateReceived(new FatSeqUpdate(
+                                response.getSeq(), response.getState(),
+                                UpdateContactsAdded.HEADER,
+                                new UpdateContactsAdded(uids).toByteArray(),
+                                response.getUsers(),
+                                new ArrayList<>()));
                     }
-                    updates().onUpdateReceived(new FatSeqUpdate(
-                            response.getSeq(), response.getState(),
-                            UpdateContactsAdded.HEADER,
-                            new UpdateContactsAdded(uids).toByteArray(),
-                            response.getUsers(),
-                            new ArrayList<>()));
                 } else {
                     if (ENABLE_LOG) {
                         Log.d(TAG, "Import success, but no new contacts found");
