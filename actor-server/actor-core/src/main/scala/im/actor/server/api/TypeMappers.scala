@@ -1,5 +1,6 @@
 package im.actor.server.api
 
+import java.net.InetAddress
 import java.time.Instant
 
 import akka.actor.{ ActorRef, ActorSystem, ExtendedActorSystem }
@@ -39,6 +40,18 @@ private[api] trait MessageMapper {
 
   private def unapplyMessage(message: ApiMessage): ByteString = {
     ByteString.copyFrom(message.toByteArray)
+  }
+
+  private def applyInetAddress(remoteAddr: String): InetAddress = {
+    if (remoteAddr != null) {
+      InetAddress.getByName(remoteAddr)
+    } else {
+      null
+    }
+  }
+
+  private def unapplyInetAddress(address: InetAddress): String = {
+    address.getHostName
   }
 
   private def applyUser(bytes: ByteString): ApiUser = {
@@ -169,6 +182,8 @@ private[api] trait MessageMapper {
   implicit val dateTimeMapper: TypeMapper[Long, DateTime] = TypeMapper(applyDateTime)(unapplyDateTime)
 
   implicit val instantMapper: TypeMapper[Long, Instant] = TypeMapper(applyInstant)(unapplyInstant)
+
+  implicit val inetAddressMapper: TypeMapper[String, InetAddress] = TypeMapper(applyInetAddress)(unapplyInetAddress)
 
   implicit val instantOptMapper: TypeMapper[Int64Value, Instant] = TypeMapper(applyInstantOpt)(unapplyInstantOpt)
 
