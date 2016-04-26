@@ -120,7 +120,7 @@ class ActorSDK {
     const Login = (typeof this.delegate.components.login == 'function') ? this.delegate.components.login : DefaultLogin;
     const Deactivated = (typeof this.delegate.components.deactivated == 'function') ? this.delegate.components.deactivated : DefaultDeactivated;
     const Install = (typeof this.delegate.components.install == 'function') ? this.delegate.components.install : DefaultInstall;
-    const Archive = (typeof this.delegate.components.archive == 'function') ? this.delegate.components.archive : DefaultArchive;
+    const Archive = (typeof this.delegate.components.archive == 'function') ? this.delegate.components.archive : DefaultArchive; // TODO: Rename this component
     const Join = (typeof this.delegate.components.join == 'function') ? this.delegate.components.join : DefaultJoin;
     const Empty = (typeof this.delegate.components.empty == 'function') ? this.delegate.components.empty : DefaultEmpty;
     const Dialog = (typeof this.delegate.components.dialog == 'function') ? this.delegate.components.dialog : DefaultDialog;
@@ -147,7 +147,7 @@ class ActorSDK {
             <Route path="join/:token" component={Join} onEnter={RouterHooks.requireAuth}/>
 
             <Route path="im" component={Main} onEnter={RouterHooks.requireAuth}>
-              <Route path="archive" component={Archive}/>
+              <Route path="history" component={Archive}/>
               <Route path=":id" component={Dialog}/>
               <IndexRoute component={Empty}/>
             </Route>
