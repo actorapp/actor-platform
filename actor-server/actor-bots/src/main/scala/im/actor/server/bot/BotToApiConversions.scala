@@ -102,6 +102,7 @@ trait BotToApiConversions {
       case StickerMessage(stickerId, fastPreview, image512, image256, stickerCollectionId, stickerCollectionAccessHash) ⇒
         ApiStickerMessage(stickerId, fastPreview, image512, image256, stickerCollectionId, stickerCollectionAccessHash)
       case ServiceMessage(_)  ⇒ throw new RuntimeException("Service messages are not supported")
+      //      case EmptyMessage ⇒ ApiEmptyMessage // TODO needs pr
       case UnsupportedMessage ⇒ ApiUnsupportedMessage
     }
 
