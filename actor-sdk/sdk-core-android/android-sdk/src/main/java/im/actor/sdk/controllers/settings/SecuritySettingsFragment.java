@@ -18,6 +18,7 @@ import java.util.List;
 import im.actor.core.api.ApiAuthHolder;
 import im.actor.core.api.ApiAuthSession;
 import im.actor.core.viewmodel.CommandCallback;
+import im.actor.runtime.actors.messages.Void;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.fragment.BaseFragment;
@@ -56,9 +57,9 @@ public class SecuritySettingsFragment extends BaseFragment {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 execute(messenger().terminateAllSessions(), R.string.progress_common,
-                                        new CommandCallback<Boolean>() {
+                                        new CommandCallback<Void>() {
                                             @Override
-                                            public void onResult(Boolean res) {
+                                            public void onResult(Void res) {
                                                 performLoad();
                                             }
 
@@ -123,9 +124,9 @@ public class SecuritySettingsFragment extends BaseFragment {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
                                                 execute(messenger().terminateSession(item.getId()), R.string.progress_common,
-                                                        new CommandCallback<Boolean>() {
+                                                        new CommandCallback<Void>() {
                                                             @Override
-                                                            public void onResult(Boolean res) {
+                                                            public void onResult(Void res) {
                                                                 performLoad();
                                                             }
 

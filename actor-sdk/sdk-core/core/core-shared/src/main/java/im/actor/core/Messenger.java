@@ -2174,7 +2174,9 @@ public class Messenger {
     @NotNull
     @ObjectiveCName("loadSessionsCommand")
     public Command<List<ApiAuthSession>> loadSessions() {
-        return modules.getSecurityModule().loadSessions();
+        return callback -> modules.getSecurityModule().loadSessions()
+                .then(r -> callback.onResult(r))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -2184,8 +2186,10 @@ public class Messenger {
      */
     @NotNull
     @ObjectiveCName("terminateAllSessionsCommand")
-    public Command<Boolean> terminateAllSessions() {
-        return modules.getSecurityModule().terminateAllSessions();
+    public Command<Void> terminateAllSessions() {
+        return callback -> modules.getSecurityModule().terminateAllSessions()
+                .then(r -> callback.onResult(r))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -2196,8 +2200,10 @@ public class Messenger {
      */
     @NotNull
     @ObjectiveCName("terminateSessionCommandWithId:")
-    public Command<Boolean> terminateSession(int id) {
-        return modules.getSecurityModule().terminateSession(id);
+    public Command<Void> terminateSession(int id) {
+        return callback -> modules.getSecurityModule().terminateSession(id)
+                .then(r -> callback.onResult(r))
+                .failure(e -> callback.onError(e));
     }
 
     //////////////////////////////////////

@@ -65,6 +65,10 @@ import im.actor.core.modules.sequence.internal.UsersFounded;
 import im.actor.core.modules.users.UsersProcessor;
 import im.actor.core.network.parser.Update;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.function.Function;
+import im.actor.runtime.promise.Promise;
+import im.actor.runtime.promise.PromisesArray;
 
 public class UpdateProcessor extends AbsModule {
 
@@ -97,10 +101,11 @@ public class UpdateProcessor extends AbsModule {
         this.blockListProcessor = new BlockListProcessor(context);
     }
 
-    public void applyRelated(List<ApiUser> users,
-                             List<ApiGroup> groups) {
-        usersProcessor.applyUsers(users);
-        groupsProcessor.applyGroups(groups);
+    public Promise<Void> applyRelated(List<ApiUser> users, List<ApiGroup> groups) {
+
+        return PromisesArray.ofPromises(usersProcessor.applyUsers(users), groupsProcessor.applyGroups(groups))
+                .zip()
+                .map((Function<List<Void>, Void>) voids -> null);
     }
 
     public void processInternalUpdate(InternalUpdate update) {

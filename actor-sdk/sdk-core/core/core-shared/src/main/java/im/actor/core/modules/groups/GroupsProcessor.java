@@ -28,7 +28,9 @@ import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.messaging.dialogs.DialogsActor;
 import im.actor.core.entity.EntityConverter;
 import im.actor.core.modules.messaging.router.RouterInt;
+import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.annotations.Verified;
+import im.actor.runtime.promise.Promise;
 
 import static im.actor.core.util.JavaUtil.equalsE;
 
@@ -39,7 +41,7 @@ public class GroupsProcessor extends AbsModule {
     }
 
     @Verified
-    public void applyGroups(Collection<ApiGroup> updated) {
+    public Promise<Void> applyGroups(Collection<ApiGroup> updated) {
         ArrayList<Group> batch = new ArrayList<>();
         for (ApiGroup group : updated) {
             Group saved = groups().getValue(group.getId());
@@ -47,10 +49,10 @@ public class GroupsProcessor extends AbsModule {
                 batch.add(EntityConverter.convert(group));
             }
         }
-
         if (batch.size() > 0) {
             groups().addOrUpdateItems(batch);
         }
+        return Promise.success(null);
     }
 
     @Verified
