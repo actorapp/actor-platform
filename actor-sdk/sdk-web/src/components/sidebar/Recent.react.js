@@ -189,6 +189,7 @@ class Recent extends Component {
         title={<FormattedMessage id="sidebar.recents.history" />}
         glyph="history"
         onClick={this.handleHistoryClick}
+        key="history"
       />
     );
   }
