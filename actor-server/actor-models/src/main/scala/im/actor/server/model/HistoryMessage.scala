@@ -10,7 +10,9 @@ case class HistoryMessage(
   randomId:             Long,
   messageContentHeader: Int,
   messageContentData:   Array[Byte],
-  deletedAt:            Option[DateTime]
+  deletedAt:            Option[DateTime],
+  quotedMessagePeer:    Option[Peer]     = None,
+  quotedMessageRid:     Option[Long]     = None
 ) {
   def ofUser(userId: Int) = this.copy(userId = userId)
 }
