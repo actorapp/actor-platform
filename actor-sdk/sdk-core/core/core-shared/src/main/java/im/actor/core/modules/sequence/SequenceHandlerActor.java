@@ -38,6 +38,9 @@ public class SequenceHandlerActor extends ModuleActor {
 
     private static final String TAG = "SequenceHandlerActor";
 
+    // Do Not Remove! WorkAround for missing j2objc translator include
+    private static final Void DUMB = null;
+
     private final UpdateProcessor processor;
 
     private boolean isUpdating;
@@ -54,25 +57,41 @@ public class SequenceHandlerActor extends ModuleActor {
     //
 
     private Promise<Void> onRelatedResponse(List<ApiUser> relatedUsers, List<ApiGroup> relatedGroups) {
-        processor.applyRelated(relatedUsers, relatedGroups);
-        return Promise.success(null);
+
+        beginUpdates();
+
+        // TODO: Wait database flush
+
+        return processor.applyRelated(relatedUsers, relatedGroups)
+                .then(v -> endUpdates());
     }
 
-    private Promise<Void> onSeqUpdate(Update update,
+    private Promise<Void> onSeqUpdate(final Update update,
                                       @Nullable List<ApiUser> users,
                                       @Nullable List<ApiGroup> groups) throws Exception {
 
-        // Processing update
         Log.d(TAG, "Processing update: " + update);
 
-        if (groups != null && users != null) {
-            processor.applyRelated(users, groups);
+        beginUpdates();
+
+        // Related Users
+        Promise<Void> currentPromise;
+        if (groups != null && users != null && (users.size() > 0 || groups.size() > 0)) {
+            currentPromise = processor.applyRelated(users, groups);
+        } else {
+            currentPromise = Promise.success(null);
         }
 
-        processor.processUpdate(update);
+        // Update Application
+        currentPromise = currentPromise
+                .chain(v -> processor.processUpdate(update));
 
-        // Log.d(TAG, "Processing update success");
-        return Promise.success(Void.INSTANCE);
+        // Handling update end
+        currentPromise.then(v -> endUpdates());
+
+        // TODO: Wait database flush
+
+        return currentPromise;
     }
 
     private Promise<Void> onDifferenceUpdate(@NotNull List<ApiUser> users,
@@ -89,54 +108,51 @@ public class SequenceHandlerActor extends ModuleActor {
             Log.d(TAG, command);
         }
 
-        final ArrayList<ApiUserOutPeer> pendingUserPeers = new ArrayList<>();
-        final ArrayList<ApiGroupOutPeer> pendingGroupPeers = new ArrayList<>();
-        for (ApiUserOutPeer refPeer : userOutPeers) {
-            if (getUser(refPeer.getUid()) != null) {
-                continue;
-            }
-            pendingUserPeers.add(refPeer);
-        }
-        for (ApiGroupOutPeer refPeer : groupOutPeers) {
-            if (getGroup(refPeer.getGroupId()) != null) {
-                continue;
-            }
-            pendingGroupPeers.add(refPeer);
-        }
+        beginUpdates();
 
-        if (pendingGroupPeers.size() > 0 || pendingUserPeers.size() > 0) {
-            Log.d(TAG, "Downloading pending peers (users: " + pendingUserPeers.size() + ", groups: " + pendingGroupPeers.size() + ")");
-            isUpdating = true;
-            return new Promise<>((PromiseFunc<Void>) resolver ->
-                    api(new RequestGetReferencedEntitites(pendingUserPeers, pendingGroupPeers))
-                            .then(responseGetReferencedEntitites -> {
-                                Log.d(TAG, "Pending peers downloaded");
-                                processor.applyRelated(responseGetReferencedEntitites.getUsers(),
-                                        responseGetReferencedEntitites.getGroups());
-                                long applyStart = Runtime.getCurrentTime();
-                                processor.applyDifferenceUpdate(users, groups, updates);
-                                Log.d(TAG, "Difference applied in " + (Runtime.getCurrentTime() - applyStart) + " ms");
-                                resolver.result(Void.INSTANCE);
-                                unstashAll();
-                                isUpdating = false;
-                            }));
-        } else {
-            long applyStart = im.actor.runtime.Runtime.getCurrentTime();
-            processor.applyDifferenceUpdate(users, groups, updates);
+        // Related Users
+        Promise<Void> currentPromise = processor.applyRelated(users, groups);
+
+        // Loading missing peers
+        currentPromise = currentPromise.chain(v -> loadRequiredPeers(userOutPeers, groupOutPeers));
+
+        // Apply Diff
+        long applyStart = im.actor.runtime.Runtime.getCurrentTime();
+        currentPromise = currentPromise.then(v -> {
+            processor.applyDifferenceUpdate(updates);
             Log.d(TAG, "Difference applied in " + (im.actor.runtime.Runtime.getCurrentTime() - applyStart) + " ms");
-            return Promise.success(Void.INSTANCE);
-        }
+            endUpdates();
+        });
+
+        // TODO: Wait database flush
+
+        return currentPromise;
     }
 
 
     //
-    // Non-sequenced data
+    // Weak Updates
     //
 
     private void onWeakUpdateReceived(Update update, long date) {
         Log.d(TAG, "Processing weak update: " + update);
         this.processor.processWeakUpdate(update, date);
     }
+
+
+    //
+    // Tools
+    //
+
+    private void beginUpdates() {
+        isUpdating = true;
+    }
+
+    private void endUpdates() {
+        isUpdating = false;
+        unstashAll();
+    }
+
 
     //
     // Message Processing

@@ -24,12 +24,16 @@ import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.runtime.Crypto;
 import im.actor.runtime.Log;
+import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.bser.DataInput;
 import im.actor.runtime.bser.DataOutput;
 
 public class ContactsSyncActor extends ModuleActor {
 
     private static final String TAG = "ContactsServerSync";
+
+    // j2objc workaround
+    private static final Void DUMB = null;
 
     private final boolean ENABLE_LOG;
 
