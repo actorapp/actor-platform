@@ -39,21 +39,12 @@ public class GroupsProcessor extends AbsModule {
     }
 
     @Verified
-    public void applyGroups(Collection<ApiGroup> updated, boolean forced) {
+    public void applyGroups(Collection<ApiGroup> updated) {
         ArrayList<Group> batch = new ArrayList<>();
         for (ApiGroup group : updated) {
             Group saved = groups().getValue(group.getId());
             if (saved == null) {
                 batch.add(EntityConverter.convert(group));
-            } else if (forced) {
-                Group upd = EntityConverter.convert(group);
-                batch.add(upd);
-
-                // Sending changes to dialogs
-                if (!equalsE(upd.getAvatar(), saved.getAvatar()) ||
-                        !upd.getTitle().equals(saved.getTitle())) {
-                    onGroupDescChanged(upd);
-                }
             }
         }
 

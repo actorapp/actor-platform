@@ -16,15 +16,11 @@ public class BlockListProcessor extends AbsModule implements Processor {
     public boolean process(Object update) {
         if (update instanceof UpdateUserBlocked) {
             UpdateUserBlocked blocked = (UpdateUserBlocked) update;
-            context().getBlockList()
-                    .getBlockListProcessor()
-                    .send(new BlockListActor.UserBlocked(blocked.getUid()));
+            context().getBlockList().markBlocked(blocked.getUid());
             return true;
         } else if (update instanceof UpdateUserUnblocked) {
             UpdateUserUnblocked unblocked = (UpdateUserUnblocked) update;
-            context().getBlockList()
-                    .getBlockListProcessor()
-                    .send(new BlockListActor.UserUnblocked(unblocked.getUid()));
+            context().getBlockList().markNonBlocked(unblocked.getUid());
             return true;
         }
         return false;

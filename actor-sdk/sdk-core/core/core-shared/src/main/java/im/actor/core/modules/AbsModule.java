@@ -6,10 +6,16 @@ package im.actor.core.modules;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import im.actor.core.api.ApiGroupOutPeer;
 import im.actor.core.api.ApiOutPeer;
 import im.actor.core.api.ApiPeer;
 import im.actor.core.api.ApiPeerType;
+import im.actor.core.api.ApiUserOutPeer;
 import im.actor.core.api.rpc.RequestEditUserLocalName;
+import im.actor.core.api.rpc.RequestGetReferencedEntitites;
 import im.actor.core.api.rpc.ResponseSeq;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.Peer;
@@ -21,10 +27,15 @@ import im.actor.core.network.RpcException;
 import im.actor.core.network.parser.Request;
 import im.actor.core.network.parser.Response;
 import im.actor.runtime.actors.ActorRef;
+import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.function.Function;
+import im.actor.runtime.function.Tuple2;
 import im.actor.runtime.mtproto.ManagedConnection;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseFunc;
 import im.actor.runtime.promise.PromiseResolver;
+import im.actor.runtime.promise.Promises;
+import im.actor.runtime.promise.PromisesArray;
 import im.actor.runtime.storage.KeyValueEngine;
 import im.actor.runtime.storage.KeyValueStorage;
 import im.actor.runtime.storage.PreferencesStorage;
@@ -184,6 +195,43 @@ public abstract class AbsModule {
         return false;
     }
 
+    public Promise<Void> loadRequiredPeers(List<ApiUserOutPeer> users) {
+        return loadRequiredPeers(users, new ArrayList<>());
+    }
 
+    public Promise<Void> loadRequiredPeers(List<ApiUserOutPeer> users, List<ApiGroupOutPeer> groups) {
+
+        Promise<List<ApiUserOutPeer>> usersMissingPeers = Promise.success(users)
+                .flatMap(apiUserOutPeers ->
+                        PromisesArray.of(users)
+                                .map(apiUserOutPeer -> users()
+                                        .containsAsync(apiUserOutPeer.getUid())
+                                        .map(v -> v ? null : apiUserOutPeer))
+                                .filterNull()
+                                .zip());
+
+
+        Promise<List<ApiGroupOutPeer>> groupMissingPeers = Promise.success(groups)
+                .flatMap(apiGroupOutPeers ->
+                        PromisesArray.of(groups)
+                                .map(apiGroupOutPeer -> groups()
+                                        .containsAsync(apiGroupOutPeer.getGroupId())
+                                        .map(v -> v ? null : apiGroupOutPeer))
+                                .filterNull()
+                                .zip());
+
+        return Promises.tuple(usersMissingPeers, groupMissingPeers)
+                .flatMap(missing -> {
+                    if (missing.getT1().size() > 0 || missing.getT2().size() > 0) {
+                        return api(new RequestGetReferencedEntitites(missing.getT1(), missing.getT2()))
+                                .flatMap(responseGetReferencedEntitites ->
+                                        updates().applyRelatedData(
+                                                responseGetReferencedEntitites.getUsers(),
+                                                responseGetReferencedEntitites.getGroups()));
+                    } else {
+                        return Promise.success(null);
+                    }
+                });
+    }
 }
 

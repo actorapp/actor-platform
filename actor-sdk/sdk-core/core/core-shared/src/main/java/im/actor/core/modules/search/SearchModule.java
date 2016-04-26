@@ -39,6 +39,8 @@ import im.actor.runtime.Storage;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Props;
+import im.actor.runtime.collections.ManagedList;
+import im.actor.runtime.promise.Promise;
 import im.actor.runtime.storage.ListEngine;
 
 import static im.actor.core.entity.EntityConverter.convert;
@@ -63,6 +65,80 @@ public class SearchModule extends AbsModule {
         return searchList;
     }
 
+
+    //
+    // Message Search
+    //
+
+    public Promise<List<MessageSearchEntity>> findTextMessages(Peer peer, String query) {
+        ArrayList<ApiSearchCondition> conditions = new ArrayList<>();
+        conditions.add(new ApiSearchPeerCondition(getApiOutPeer(peer)));
+        conditions.add(new ApiSearchPieceText(query));
+        return findMessages(new ApiSearchAndCondition(conditions));
+    }
+
+    public Promise<List<MessageSearchEntity>> findAllDocs(Peer peer) {
+        return findAllContent(peer, ApiSearchContentType.DOCUMENTS);
+    }
+
+    public Promise<List<MessageSearchEntity>> findAllLinks(Peer peer) {
+        return findAllContent(peer, ApiSearchContentType.LINKS);
+    }
+
+    public Promise<List<MessageSearchEntity>> findAllPhotos(Peer peer) {
+        return findAllContent(peer, ApiSearchContentType.PHOTOS);
+    }
+
+    private Promise<List<MessageSearchEntity>> findAllContent(Peer peer, ApiSearchContentType contentType) {
+        ArrayList<ApiSearchCondition> conditions = new ArrayList<>();
+        conditions.add(new ApiSearchPeerCondition(getApiOutPeer(peer)));
+        conditions.add(new ApiSearchPeerContentType(contentType));
+        return findMessages(new ApiSearchAndCondition(conditions));
+    }
+
+    private Promise<List<MessageSearchEntity>> findMessages(final ApiSearchCondition condition) {
+        return api(new RequestMessageSearch(condition))
+                .chain(responseMessageSearchResponse ->
+                        updates().applyRelatedData(
+                                responseMessageSearchResponse.getUsers(),
+                                responseMessageSearchResponse.getGroups()))
+                .map(responseMessageSearchResponse1 ->
+                        ManagedList.of(responseMessageSearchResponse1.getSearchResults())
+                                .map(itm -> new MessageSearchEntity(
+                                        convert(itm.getResult().getPeer()), itm.getResult().getRid(),
+                                        itm.getResult().getDate(), itm.getResult().getSenderId(),
+                                        AbsContent.fromMessage(itm.getResult().getContent()))));
+    }
+
+    public Promise<List<PeerSearchEntity>> findPeers(final PeerSearchType type) {
+        final ApiSearchPeerType apiType;
+        if (type == PeerSearchType.GROUPS) {
+            apiType = ApiSearchPeerType.GROUPS;
+        } else if (type == PeerSearchType.PUBLIC) {
+            apiType = ApiSearchPeerType.PUBLIC;
+        } else {
+            apiType = ApiSearchPeerType.CONTACTS;
+        }
+        ArrayList<ApiSearchCondition> conditions = new ArrayList<>();
+        conditions.add(new ApiSearchPeerTypeCondition(apiType));
+
+        return api(new RequestPeerSearch(conditions))
+                .chain(responsePeerSearch ->
+                        updates().applyRelatedData(
+                                responsePeerSearch.getUsers(),
+                                responsePeerSearch.getGroups()))
+                .map(responsePeerSearch1 ->
+                        ManagedList.of(responsePeerSearch1.getSearchResults())
+                                .map(r -> new PeerSearchEntity(convert(r.getPeer()), r.getTitle(),
+                                        r.getDescription(), r.getMembersCount(), r.getDateCreated(),
+                                        r.getCreator(), r.isPublic(), r.isJoined())));
+    }
+
+
+    //
+    // Local Search
+    //
+
     public void onDialogsChanged(List<Dialog> dialogs) {
         actorRef.send(new SearchActor.OnDialogsUpdated(dialogs));
     }
@@ -73,91 +149,6 @@ public class SearchModule extends AbsModule {
             res[i] = contacts[i];
         }
         actorRef.send(new SearchActor.OnContactsUpdated(res));
-    }
-
-    public Command<List<MessageSearchEntity>> findTextMessages(Peer peer, String query) {
-        ArrayList<ApiSearchCondition> conditions = new ArrayList<>();
-        conditions.add(new ApiSearchPeerCondition(getApiOutPeer(peer)));
-        conditions.add(new ApiSearchPieceText(query));
-        return findMessages(new ApiSearchAndCondition(conditions));
-    }
-
-    public Command<List<MessageSearchEntity>> findAllDocs(Peer peer) {
-        return findAllContent(peer, ApiSearchContentType.DOCUMENTS);
-    }
-
-    public Command<List<MessageSearchEntity>> findAllLinks(Peer peer) {
-        return findAllContent(peer, ApiSearchContentType.LINKS);
-    }
-
-    public Command<List<MessageSearchEntity>> findAllPhotos(Peer peer) {
-        return findAllContent(peer, ApiSearchContentType.PHOTOS);
-    }
-
-    private Command<List<MessageSearchEntity>> findAllContent(Peer peer, ApiSearchContentType contentType) {
-        ArrayList<ApiSearchCondition> conditions = new ArrayList<>();
-        conditions.add(new ApiSearchPeerCondition(getApiOutPeer(peer)));
-        conditions.add(new ApiSearchPeerContentType(contentType));
-        return findMessages(new ApiSearchAndCondition(conditions));
-    }
-
-    private Command<List<MessageSearchEntity>> findMessages(final ApiSearchCondition condition) {
-        return callback -> request(new RequestMessageSearch(condition), new RpcCallback<ResponseMessageSearchResponse>() {
-            @Override
-            public void onResult(final ResponseMessageSearchResponse response) {
-                updates().executeRelatedResponse(response.getUsers(), response.getGroups(), () -> {
-                    final ArrayList<MessageSearchEntity> res = new ArrayList<>();
-                    for (ApiMessageSearchItem r : response.getSearchResults()) {
-                        ApiMessageSearchResult itm = r.getResult();
-                        res.add(new MessageSearchEntity(
-                                convert(itm.getPeer()), itm.getRid(),
-                                itm.getDate(), itm.getSenderId(),
-                                AbsContent.fromMessage(itm.getContent())));
-                    }
-                    runOnUiThread(() -> callback.onResult(res));
-                });
-            }
-
-            @Override
-            public void onError(final RpcException e) {
-                runOnUiThread(() -> callback.onError(e));
-            }
-        });
-    }
-
-    public Command<List<PeerSearchEntity>> findPeers(final PeerSearchType type) {
-        final ApiSearchPeerType apiType;
-        if (type == PeerSearchType.GROUPS) {
-            apiType = ApiSearchPeerType.GROUPS;
-        } else if (type == PeerSearchType.PUBLIC) {
-            apiType = ApiSearchPeerType.PUBLIC;
-        } else {
-            apiType = ApiSearchPeerType.CONTACTS;
-        }
-        return callback -> {
-            ArrayList<ApiSearchCondition> conditions = new ArrayList<>();
-            conditions.add(new ApiSearchPeerTypeCondition(apiType));
-            request(new RequestPeerSearch(conditions), new RpcCallback<ResponsePeerSearch>() {
-                @Override
-                public void onResult(final ResponsePeerSearch response) {
-                    updates().executeRelatedResponse(response.getUsers(),
-                            response.getGroups(), () -> {
-                                final ArrayList<PeerSearchEntity> res = new ArrayList<>();
-                                for (ApiPeerSearchResult r : response.getSearchResults()) {
-                                    res.add(new PeerSearchEntity(convert(r.getPeer()), r.getTitle(),
-                                            r.getDescription(), r.getMembersCount(), r.getDateCreated(),
-                                            r.getCreator(), r.isPublic(), r.isJoined()));
-                                }
-                                runOnUiThread(() -> callback.onResult(res));
-                            });
-                }
-
-                @Override
-                public void onError(final RpcException e) {
-                    runOnUiThread(() -> callback.onError(e));
-                }
-            });
-        };
     }
 
     public void resetModule() {
