@@ -22,7 +22,9 @@ import im.actor.core.modules.sequence.Processor;
 import im.actor.core.modules.contacts.ContactsSyncActor;
 import im.actor.core.modules.messaging.dialogs.DialogsActor;
 import im.actor.runtime.Log;
+import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.annotations.Verified;
+import im.actor.runtime.promise.Promise;
 
 import static im.actor.core.util.JavaUtil.equalsE;
 
@@ -33,26 +35,18 @@ public class UsersProcessor extends AbsModule implements Processor {
     }
 
     @Verified
-    public void applyUsers(Collection<ApiUser> updated) {
+    public Promise<Void> applyUsers(Collection<ApiUser> updated) {
         ArrayList<User> batch = new ArrayList<>();
         for (ApiUser u : updated) {
-
             User saved = users().getValue(u.getId());
             if (saved == null) {
                 batch.add(new User(u));
-            }
-
-            if (saved != null) {
-                if (saved.getAccessHash() != u.getAccessHash()) {
-                    Log.w("UsersProcessor", "User #" + u.getId() + " Access Hash changed! " +
-                            "Was: " + saved.getAccessHash() + " " +
-                            "Got: " + u.getAccessHash());
-                }
             }
         }
         if (batch.size() > 0) {
             users().addOrUpdateItems(batch);
         }
+        return Promise.success(null);
     }
 
     @Verified
