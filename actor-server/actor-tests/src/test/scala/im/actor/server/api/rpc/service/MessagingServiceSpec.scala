@@ -33,6 +33,8 @@ class MessagingServiceSpec
 
   "Private Messaging" should "send messages" in s.privat.sendMessage
 
+  "Private Quote Messaging" should "quote messages" in s.privat.quoteMessage
+
   it should "not repeat message sending with same authId and RandomId" in s.privat.cached
 
   "Group Messaging" should "send messages" in s.group.sendMessage
@@ -110,6 +112,82 @@ class MessagingServiceSpec
               upd.peer shouldEqual ApiPeer(ApiPeerType.Private, user1.id)
               upd.randomId shouldEqual randomId
               upd.senderUserId shouldEqual user1.id
+          }
+        }
+      }
+
+      def quoteMessage() = {
+        val (user1, user1AuthId1, user1AuthSid1, _) = createUser()
+        val (user1AuthId2, user1AuthSid2) = createAuthId(user1.id)
+        val user1Peer = peers.ApiPeer(ApiPeerType.Private, user1.id)
+        val user1Model = getUserModel(user1.id)
+
+        val (user2, user2AuthId, user2AuthSid, _) = createUser()
+        val user2Model = getUserModel(user2.id)
+        val user2AccessHash = ACLUtils.userAccessHash(user1AuthId1, user2.id, user2Model.accessSalt)
+        val user2Peer = peers.ApiOutPeer(ApiPeerType.Private, user2.id, user2AccessHash)
+
+        val user1AccessHash = ACLUtils.userAccessHash(user2AuthId, user1.id, user1Model.accessSalt)
+        val user1OutPeer = peers.ApiOutPeer(ApiPeerType.Private, user1.id, user1AccessHash)
+
+        val (user3, user3AuthId, user3AuthSid, _) = createUser()
+        val user3Model = getUserModel(user3.id)
+        val user3AccessHash = ACLUtils.userAccessHash(user2AuthId, user3.id, user3Model.accessSalt)
+        val user3Peer = peers.ApiOutPeer(ApiPeerType.Private, user3.id, user3AccessHash)
+
+        val sessionId = createSessionId()
+        val clientData11 = ClientData(user1AuthId1, sessionId, Some(AuthData(user1.id, user1AuthSid1, 42)))
+        val clientData12 = ClientData(user1AuthId2, sessionId, Some(AuthData(user1.id, user1AuthSid2, 42)))
+        val clientData2 = ClientData(user2AuthId, sessionId, Some(AuthData(user2.id, user2AuthSid, 42)))
+        val clientData3 = ClientData(user3AuthId, sessionId, Some(AuthData(user3.id, user3AuthSid, 42)))
+
+        val randomId = Random.nextLong()
+
+        {
+          implicit val clientData = clientData11
+
+          whenReady(service.handleSendMessage(user2Peer, randomId, ApiTextMessage("Hi Shiva original", Vector.empty, None), None, None)) { resp ⇒
+            resp should matchPattern {
+              case Ok(ResponseSeqDate(_, _, _)) ⇒
+            }
+          }
+
+          expectUpdate(classOf[UpdateMessageSent]) { upd ⇒
+            upd.peer shouldEqual ApiPeer(ApiPeerType.Private, user2.id)
+            upd.randomId shouldEqual randomId
+          }
+        }
+
+        val randomId2 = Random.nextLong()
+
+        {
+          implicit val clientData = clientData2
+
+          val apiMessageOutReference = ApiMessageOutReference(user1OutPeer, randomId)
+          whenReady(service.handleSendMessage(user3Peer, randomId2, ApiEmptyMessage, None, Some(apiMessageOutReference))) { resp ⇒
+            resp should matchPattern {
+              case Ok(ResponseSeqDate(_, _, _)) ⇒
+            }
+          }
+
+          expectUpdate(classOf[UpdateMessageSent]) { upd ⇒
+            upd.peer shouldEqual ApiPeer(ApiPeerType.Private, user3.id)
+            upd.randomId shouldEqual randomId2
+          }
+        }
+
+        {
+          implicit val clientData = clientData3
+
+          expectUpdatesUnordered(classOf[UpdateChatGroupsChanged], classOf[UpdateMessage], classOf[UpdateCountersChanged]) {
+            case Seq(upd: UpdateMessage) ⇒
+              upd.peer shouldEqual ApiPeer(ApiPeerType.Private, user2.id)
+              upd.randomId shouldEqual randomId2
+              upd.senderUserId shouldEqual user2.id
+              upd.quotedMessage should matchPattern {
+                case Some(ApiQuotedMessage(Some(randomId), _, user1.id, _, Some(ApiTextMessage("Hi Shiva original", _, _)))) ⇒
+              }
+
           }
         }
       }
