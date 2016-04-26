@@ -202,9 +202,9 @@ public abstract class AbsModule {
     public Promise<Void> loadRequiredPeers(List<ApiUserOutPeer> users, List<ApiGroupOutPeer> groups) {
 
         Promise<List<ApiUserOutPeer>> usersMissingPeers = Promise.success(users)
-                .flatMap(apiUserOutPeers ->
+                .flatMap((Function<List<ApiUserOutPeer>, Promise<List<ApiUserOutPeer>>>) apiUserOutPeers ->
                         PromisesArray.of(users)
-                                .map(apiUserOutPeer -> users()
+                                .map((Function<ApiUserOutPeer, Promise<ApiUserOutPeer>>) apiUserOutPeer -> users()
                                         .containsAsync(apiUserOutPeer.getUid())
                                         .map(v -> v ? null : apiUserOutPeer))
                                 .filterNull()
@@ -212,9 +212,9 @@ public abstract class AbsModule {
 
 
         Promise<List<ApiGroupOutPeer>> groupMissingPeers = Promise.success(groups)
-                .flatMap(apiGroupOutPeers ->
+                .flatMap((Function<List<ApiGroupOutPeer>, Promise<List<ApiGroupOutPeer>>>) apiGroupOutPeers ->
                         PromisesArray.of(groups)
-                                .map(apiGroupOutPeer -> groups()
+                                .map((Function<ApiGroupOutPeer, Promise<ApiGroupOutPeer>>) apiGroupOutPeer -> groups()
                                         .containsAsync(apiGroupOutPeer.getGroupId())
                                         .map(v -> v ? null : apiGroupOutPeer))
                                 .filterNull()
