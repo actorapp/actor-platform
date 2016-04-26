@@ -27,6 +27,7 @@ import im.actor.core.entity.MessageSearchEntity;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerSearchEntity;
 import im.actor.core.entity.PeerSearchType;
+import im.actor.core.entity.PhoneBookContact;
 import im.actor.core.entity.PublicGroup;
 import im.actor.core.entity.Sex;
 import im.actor.core.entity.User;
@@ -1621,6 +1622,13 @@ public class Messenger {
         return modules.getContactsModule().findUsers(query);
     }
 
+    public PhoneBookContact getPhoneBookContact(long contactId) {
+        return modules.getContactsModule().getPhoneBook().getValue(contactId);
+    }
+
+    //////////////////////////////////////
+    //             Bindings
+    //////////////////////////////////////
 
     /**
      * Bind File View Model
