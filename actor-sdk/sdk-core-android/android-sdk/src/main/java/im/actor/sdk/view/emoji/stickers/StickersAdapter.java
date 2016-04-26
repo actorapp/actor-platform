@@ -46,7 +46,7 @@ public class StickersAdapter extends RecyclerView.Adapter<StickersAdapter.Sticke
                     List<Sticker> stickers = pack.getStickers();
                     if (stickers.size() > 0) {
                         Sticker sticker = stickers.get(0);
-                        StickersAdapter.this.stickers.add(new StickerCat(sticker.toWrapped(), sticker.getCollectionId(), sticker.getCollectionAccessHash()));
+                        StickersAdapter.this.stickers.add(new StickerCat(sticker.toApi(), sticker.getCollectionId(), sticker.getCollectionAccessHash()));
                     }
                     StickersAdapter.this.stickers.addAll(stickers);
                 }

@@ -15,23 +15,31 @@ import im.actor.core.api.updates.UpdateUserNickChanged;
 import im.actor.core.entity.User;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.users.router.UserRouter;
+import im.actor.core.modules.users.router.UserRouterInt;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.Storage;
+import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.mvvm.MVVMCollection;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.storage.KeyValueEngine;
 
+import static im.actor.runtime.actors.ActorSystem.system;
+
 public class UsersModule extends AbsModule {
 
+    private UserRouterInt userRouter;
     private KeyValueEngine<User> users;
     private MVVMCollection<User, UserVM> collection;
 
-    public UsersModule(final ModuleContext context) {
+    public UsersModule(ModuleContext context) {
         super(context);
 
         this.collection = Storage.createKeyValue(STORAGE_USERS, UserVM.CREATOR(context()), User.CREATOR);
         this.users = collection.getEngine();
+
+        this.userRouter = new UserRouterInt(context);
     }
 
     // Model
@@ -44,14 +52,16 @@ public class UsersModule extends AbsModule {
         return collection;
     }
 
-    public Promise<Long> getUserAccessHash(int uid) {
-        return getUsersStorage().getValueAsync(uid).map(User::getAccessHash);
+    public UserRouterInt getUserRouter() {
+        return userRouter;
     }
 
     // Actions
 
     public Promise<Void> editName(final int uid, final String name) {
-        return getUserAccessHash(uid)
+        return getUsersStorage()
+                .getValueAsync(uid)
+                .map(User::getAccessHash)
                 .flatMap(aLong -> api(new RequestEditUserLocalName(uid, aLong, name)))
                 .flatMap(responseSeq -> updates().applyUpdate(
                         responseSeq.getSeq(),

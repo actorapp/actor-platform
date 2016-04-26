@@ -102,21 +102,19 @@ public class RouterActor extends ModuleActor {
             }
         }
         if (!activeDialogStorage.isLoaded()) {
-            api(new RequestLoadGroupedDialogs()).then(responseLoadGroupedDialogs ->
-                    updates().applyRelatedData(responseLoadGroupedDialogs.getUsers(), responseLoadGroupedDialogs.getGroups()).then(new Consumer<Void>() {
-                        @Override
-                        public void apply(Void aVoid) {
-                            boolean showArchived = false;
-                            boolean showInvite = false;
-                            if (responseLoadGroupedDialogs.showArchived() != null) {
-                                showArchived = responseLoadGroupedDialogs.showArchived();
-                            }
-                            if (responseLoadGroupedDialogs.showInvite() != null) {
-                                showInvite = responseLoadGroupedDialogs.showInvite();
-                            }
-                            onActiveDialogsChanged(responseLoadGroupedDialogs.getDialogs(), showArchived, showInvite);
+            api(new RequestLoadGroupedDialogs())
+                    .chain(r -> updates().applyRelatedData(r.getUsers(), r.getGroups()))
+                    .then(r -> {
+                        boolean showArchived = false;
+                        boolean showInvite = false;
+                        if (r.showArchived() != null) {
+                            showArchived = r.showArchived();
                         }
-                    }));
+                        if (r.showInvite() != null) {
+                            showInvite = r.showInvite();
+                        }
+                        onActiveDialogsChanged(r.getDialogs(), showArchived, showInvite);
+                    });
         } else {
             notifyActiveDialogsVM();
         }

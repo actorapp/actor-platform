@@ -21,12 +21,7 @@ import im.actor.runtime.storage.ListEngineItem;
 
 public class Sticker extends WrapperEntity<ApiStickerDescriptor> {
 
-    public static final BserCreator<Sticker> CREATOR = new BserCreator<Sticker>() {
-        @Override
-        public Sticker createInstance() {
-            return new Sticker();
-        }
-    };
+    public static final BserCreator<Sticker> CREATOR = Sticker::new;
 
     private static final int RECORD_ID = 10;
 
@@ -120,6 +115,10 @@ public class Sticker extends WrapperEntity<ApiStickerDescriptor> {
 
     public ApiStickerMessage toMessage() {
         return new ApiStickerMessage(id, null, image512Location, image256Location, collectionId, collectionAccessHash);
+    }
+
+    public ApiStickerDescriptor toApi() {
+        return getWrapped();
     }
 
     @NotNull

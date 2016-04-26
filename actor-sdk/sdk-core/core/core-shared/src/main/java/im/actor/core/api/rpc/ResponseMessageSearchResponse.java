@@ -26,12 +26,16 @@ public class ResponseMessageSearchResponse extends Response {
     private List<ApiUser> users;
     private List<ApiGroup> groups;
     private byte[] loadMoreState;
+    private List<ApiUserOutPeer> userOutPeers;
+    private List<ApiGroupOutPeer> groupOutPeers;
 
-    public ResponseMessageSearchResponse(@NotNull List<ApiMessageSearchItem> searchResults, @NotNull List<ApiUser> users, @NotNull List<ApiGroup> groups, @Nullable byte[] loadMoreState) {
+    public ResponseMessageSearchResponse(@NotNull List<ApiMessageSearchItem> searchResults, @NotNull List<ApiUser> users, @NotNull List<ApiGroup> groups, @Nullable byte[] loadMoreState, @NotNull List<ApiUserOutPeer> userOutPeers, @NotNull List<ApiGroupOutPeer> groupOutPeers) {
         this.searchResults = searchResults;
         this.users = users;
         this.groups = groups;
         this.loadMoreState = loadMoreState;
+        this.userOutPeers = userOutPeers;
+        this.groupOutPeers = groupOutPeers;
     }
 
     public ResponseMessageSearchResponse() {
@@ -58,6 +62,16 @@ public class ResponseMessageSearchResponse extends Response {
         return this.loadMoreState;
     }
 
+    @NotNull
+    public List<ApiUserOutPeer> getUserOutPeers() {
+        return this.userOutPeers;
+    }
+
+    @NotNull
+    public List<ApiGroupOutPeer> getGroupOutPeers() {
+        return this.groupOutPeers;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         List<ApiMessageSearchItem> _searchResults = new ArrayList<ApiMessageSearchItem>();
@@ -76,6 +90,16 @@ public class ResponseMessageSearchResponse extends Response {
         }
         this.groups = values.getRepeatedObj(3, _groups);
         this.loadMoreState = values.optBytes(4);
+        List<ApiUserOutPeer> _userOutPeers = new ArrayList<ApiUserOutPeer>();
+        for (int i = 0; i < values.getRepeatedCount(5); i ++) {
+            _userOutPeers.add(new ApiUserOutPeer());
+        }
+        this.userOutPeers = values.getRepeatedObj(5, _userOutPeers);
+        List<ApiGroupOutPeer> _groupOutPeers = new ArrayList<ApiGroupOutPeer>();
+        for (int i = 0; i < values.getRepeatedCount(6); i ++) {
+            _groupOutPeers.add(new ApiGroupOutPeer());
+        }
+        this.groupOutPeers = values.getRepeatedObj(6, _groupOutPeers);
     }
 
     @Override
@@ -86,6 +110,8 @@ public class ResponseMessageSearchResponse extends Response {
         if (this.loadMoreState != null) {
             writer.writeBytes(4, this.loadMoreState);
         }
+        writer.writeRepeatedObj(5, this.userOutPeers);
+        writer.writeRepeatedObj(6, this.groupOutPeers);
     }
 
     @Override
@@ -94,6 +120,8 @@ public class ResponseMessageSearchResponse extends Response {
         res += "searchResults=" + this.searchResults;
         res += ", users=" + this.users;
         res += ", groups=" + this.groups;
+        res += ", userOutPeers=" + this.userOutPeers;
+        res += ", groupOutPeers=" + this.groupOutPeers;
         res += "}";
         return res;
     }

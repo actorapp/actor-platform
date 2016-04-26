@@ -25,11 +25,15 @@ public class ResponsePeerSearch extends Response {
     private List<ApiPeerSearchResult> searchResults;
     private List<ApiUser> users;
     private List<ApiGroup> groups;
+    private List<ApiUserOutPeer> userPeers;
+    private List<ApiGroupOutPeer> groupPeers;
 
-    public ResponsePeerSearch(@NotNull List<ApiPeerSearchResult> searchResults, @NotNull List<ApiUser> users, @NotNull List<ApiGroup> groups) {
+    public ResponsePeerSearch(@NotNull List<ApiPeerSearchResult> searchResults, @NotNull List<ApiUser> users, @NotNull List<ApiGroup> groups, @NotNull List<ApiUserOutPeer> userPeers, @NotNull List<ApiGroupOutPeer> groupPeers) {
         this.searchResults = searchResults;
         this.users = users;
         this.groups = groups;
+        this.userPeers = userPeers;
+        this.groupPeers = groupPeers;
     }
 
     public ResponsePeerSearch() {
@@ -51,6 +55,16 @@ public class ResponsePeerSearch extends Response {
         return this.groups;
     }
 
+    @NotNull
+    public List<ApiUserOutPeer> getUserPeers() {
+        return this.userPeers;
+    }
+
+    @NotNull
+    public List<ApiGroupOutPeer> getGroupPeers() {
+        return this.groupPeers;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         List<ApiPeerSearchResult> _searchResults = new ArrayList<ApiPeerSearchResult>();
@@ -68,6 +82,16 @@ public class ResponsePeerSearch extends Response {
             _groups.add(new ApiGroup());
         }
         this.groups = values.getRepeatedObj(3, _groups);
+        List<ApiUserOutPeer> _userPeers = new ArrayList<ApiUserOutPeer>();
+        for (int i = 0; i < values.getRepeatedCount(4); i ++) {
+            _userPeers.add(new ApiUserOutPeer());
+        }
+        this.userPeers = values.getRepeatedObj(4, _userPeers);
+        List<ApiGroupOutPeer> _groupPeers = new ArrayList<ApiGroupOutPeer>();
+        for (int i = 0; i < values.getRepeatedCount(5); i ++) {
+            _groupPeers.add(new ApiGroupOutPeer());
+        }
+        this.groupPeers = values.getRepeatedObj(5, _groupPeers);
     }
 
     @Override
@@ -75,6 +99,8 @@ public class ResponsePeerSearch extends Response {
         writer.writeRepeatedObj(1, this.searchResults);
         writer.writeRepeatedObj(2, this.users);
         writer.writeRepeatedObj(3, this.groups);
+        writer.writeRepeatedObj(4, this.userPeers);
+        writer.writeRepeatedObj(5, this.groupPeers);
     }
 
     @Override

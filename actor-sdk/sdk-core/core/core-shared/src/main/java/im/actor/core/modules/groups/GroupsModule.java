@@ -290,7 +290,8 @@ public class GroupsModule extends AbsModule {
                                         responseJoinGroup.getRid(),
                                         new ApiServiceMessage("Joined chat",
                                                 new ApiServiceExUserJoined()),
-                                        new ApiMessageAttributes()),
+                                        new ApiMessageAttributes(),
+                                        null),
                                 responseJoinGroup.getUsers(),
                                 responseJoinGroup.getGroup()
                         )

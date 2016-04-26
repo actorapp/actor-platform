@@ -32,7 +32,9 @@ import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.messaging.actions.SenderActor;
 import im.actor.core.modules.sequence.processor.SequenceProcessor;
 import im.actor.core.network.parser.Update;
+import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.annotations.Verified;
+import im.actor.runtime.promise.Promise;
 
 import static im.actor.core.entity.EntityConverter.convert;
 
@@ -42,16 +44,18 @@ public class MessagesProcessor extends AbsModule implements SequenceProcessor {
         super(context);
     }
 
-    public void onDifferenceStart() {
+    public Promise<Void> onDifferenceStart() {
         context().getMessagesModule().getRouter().onDifferenceStart();
+        return Promise.success(null);
     }
 
-    public void onDifferenceEnd() {
+    public Promise<Void> onDifferenceEnd() {
         context().getMessagesModule().getRouter().onDifferenceEnd();
+        return Promise.success(null);
     }
 
     @Verified
-    public void onMessages(ApiPeer _peer, List<UpdateMessage> messages) {
+    public Promise<Void> onMessages(ApiPeer _peer, List<UpdateMessage> messages) {
 
         Peer peer = convert(_peer);
 
@@ -71,10 +75,11 @@ public class MessagesProcessor extends AbsModule implements SequenceProcessor {
 
 
         context().getMessagesModule().getRouter().onNewMessages(peer, nMessages);
+        return Promise.success(null);
     }
 
     @Verified
-    public void onMessage(ApiPeer _peer, int senderUid, long date, long rid, ApiMessage content) {
+    public Promise<Void> onMessage(ApiPeer _peer, int senderUid, long date, long rid, ApiMessage content) {
 
         Peer peer = convert(_peer);
 
@@ -91,15 +96,16 @@ public class MessagesProcessor extends AbsModule implements SequenceProcessor {
         ArrayList<Message> messages = new ArrayList<>();
         messages.add(message);
         context().getMessagesModule().getRouter().onNewMessages(peer, messages);
+        return Promise.success(null);
     }
 
     @Verified
-    public void onMessageSent(ApiPeer _peer, long rid, long date) {
+    public Promise<Void> onMessageSent(ApiPeer _peer, long rid, long date) {
         Peer peer = convert(_peer);
 
         // We are not invalidating sequence because of this update
         if (!isValidPeer(peer)) {
-            return;
+            return Promise.success(null);
         }
 
         // Change message state in conversation
@@ -107,15 +113,16 @@ public class MessagesProcessor extends AbsModule implements SequenceProcessor {
 
         // Notify Sender Actor
         sendActor().send(new SenderActor.MessageSent(peer, rid));
+        return Promise.success(null);
     }
 
     @Verified
-    public void onReactionsChanged(ApiPeer _peer, long rid, List<ApiMessageReaction> apiReactions) {
+    public Promise<Void> onReactionsChanged(ApiPeer _peer, long rid, List<ApiMessageReaction> apiReactions) {
         Peer peer = convert(_peer);
 
         // We are not invalidating sequence because of this update
         if (!isValidPeer(peer)) {
-            return;
+            return Promise.success(null);
         }
 
         ArrayList<Reaction> reactions = new ArrayList<>();
@@ -125,158 +132,163 @@ public class MessagesProcessor extends AbsModule implements SequenceProcessor {
 
         // Change message state in conversation
         context().getMessagesModule().getRouter().onReactionsChanged(peer, rid, reactions);
+        return Promise.success(null);
     }
 
     @Verified
-    public void onMessageContentChanged(ApiPeer _peer, long rid, ApiMessage message) {
+    public Promise<Void> onMessageContentChanged(ApiPeer _peer, long rid, ApiMessage message) {
         Peer peer = convert(_peer);
         // We are not invalidating sequence because of this update
         if (!isValidPeer(peer)) {
-            return;
+            return Promise.success(null);
         }
         AbsContent content = AbsContent.fromMessage(message);
         context().getMessagesModule().getRouter().onContentChanged(peer, rid, content);
+        return Promise.success(null);
     }
 
     @Verified
-    public void onMessageRead(ApiPeer _peer, long startDate) {
+    public Promise<Void> onMessageRead(ApiPeer _peer, long startDate) {
         Peer peer = convert(_peer);
 
         // We are not invalidating sequence because of this update
         if (!isValidPeer(peer)) {
-            return;
+            return Promise.success(null);
         }
 
         context().getMessagesModule().getRouter().onMessageRead(peer, startDate);
+
+        return Promise.success(null);
     }
 
     @Verified
-    public void onMessageReceived(ApiPeer _peer, long startDate) {
+    public Promise<Void> onMessageReceived(ApiPeer _peer, long startDate) {
         Peer peer = convert(_peer);
 
         // We are not invalidating sequence because of this update
         if (!isValidPeer(peer)) {
-            return;
+            return Promise.success(null);
         }
 
         context().getMessagesModule().getRouter().onMessageReceived(peer, startDate);
+
+        return Promise.success(null);
     }
 
     @Verified
-    public void onMessageReadByMe(ApiPeer _peer, long startDate, int counter) {
+    public Promise<Void> onMessageReadByMe(ApiPeer _peer, long startDate, int counter) {
         Peer peer = convert(_peer);
 
         // We are not invalidating sequence because of this update
         if (!isValidPeer(peer)) {
-            return;
+            return Promise.success(null);
         }
 
         context().getMessagesModule().getRouter().onMessageReadByMe(peer, startDate, counter);
+
+        return Promise.success(null);
     }
 
     @Verified
-    public void onMessageDelete(ApiPeer _peer, List<Long> rids) {
+    public Promise<Void> onMessageDelete(ApiPeer _peer, List<Long> rids) {
         Peer peer = convert(_peer);
 
         // We are not invalidating sequence because of this update
         if (!isValidPeer(peer)) {
-            return;
+            return Promise.success(null);
         }
 
         // Deleting messages from conversation
         context().getMessagesModule().getRouter().onMessagesDeleted(peer, rids);
 
         // TODO: Notify send actor
+
+        return Promise.success(null);
     }
 
     @Verified
-    public void onChatClear(ApiPeer _peer) {
+    public Promise<Void> onChatClear(ApiPeer _peer) {
         Peer peer = convert(_peer);
 
         // We are not invalidating sequence because of this update
         if (!isValidPeer(peer)) {
-            return;
+            return Promise.success(null);
         }
 
         context().getMessagesModule().getRouter().onChatClear(peer);
 
         // TODO: Notify send actor
+
+        return Promise.success(null);
     }
 
     @Verified
-    public void onChatDelete(ApiPeer _peer) {
+    public Promise<Void> onChatDelete(ApiPeer _peer) {
         Peer peer = convert(_peer);
 
         // We are not invalidating sequence because of this update
         if (!isValidPeer(peer)) {
-            return;
+            return Promise.success(null);
         }
 
         context().getMessagesModule().getRouter().onChatDelete(peer);
 
         // TODO: Notify send actor
+
+        return Promise.success(null);
     }
 
     @Verified
-    public void onChatGroupsChanged(List<ApiDialogGroup> groups) {
+    public Promise<Void> onChatGroupsChanged(List<ApiDialogGroup> groups) {
 
         // TODO: Implement
 
         context().getMessagesModule().getRouter().onActiveDialogsChanged(groups, true, true);
+
+        return Promise.success(null);
     }
 
     @Override
-    public boolean process(Update update) {
+    public Promise<Void> process(Update update) {
         if (update instanceof UpdateMessage) {
             UpdateMessage message = (UpdateMessage) update;
-            onMessage(message.getPeer(), message.getSenderUid(), message.getDate(), message.getRid(),
+            return onMessage(message.getPeer(), message.getSenderUid(), message.getDate(), message.getRid(),
                     message.getMessage());
-            return true;
         } else if (update instanceof UpdateMessageRead) {
             UpdateMessageRead messageRead = (UpdateMessageRead) update;
-            onMessageRead(messageRead.getPeer(), messageRead.getStartDate());
-            return true;
+            return onMessageRead(messageRead.getPeer(), messageRead.getStartDate());
         } else if (update instanceof UpdateMessageReadByMe) {
             UpdateMessageReadByMe messageReadByMe = (UpdateMessageReadByMe) update;
             if (messageReadByMe.getUnreadCounter() != null) {
-                onMessageReadByMe(messageReadByMe.getPeer(), messageReadByMe.getStartDate(), messageReadByMe.getUnreadCounter());
+                return onMessageReadByMe(messageReadByMe.getPeer(), messageReadByMe.getStartDate(), messageReadByMe.getUnreadCounter());
             } else {
-                onMessageReadByMe(messageReadByMe.getPeer(), messageReadByMe.getStartDate(), 0);
+                return onMessageReadByMe(messageReadByMe.getPeer(), messageReadByMe.getStartDate(), 0);
             }
-            return true;
         } else if (update instanceof UpdateMessageReceived) {
             UpdateMessageReceived received = (UpdateMessageReceived) update;
-            onMessageReceived(received.getPeer(), received.getStartDate());
-            return true;
+            return onMessageReceived(received.getPeer(), received.getStartDate());
         } else if (update instanceof UpdateMessageDelete) {
             UpdateMessageDelete messageDelete = (UpdateMessageDelete) update;
-            onMessageDelete(messageDelete.getPeer(), messageDelete.getRids());
-            return true;
+            return onMessageDelete(messageDelete.getPeer(), messageDelete.getRids());
         } else if (update instanceof UpdateMessageSent) {
             UpdateMessageSent messageSent = (UpdateMessageSent) update;
-            onMessageSent(messageSent.getPeer(), messageSent.getRid(), messageSent.getDate());
-            return true;
+            return onMessageSent(messageSent.getPeer(), messageSent.getRid(), messageSent.getDate());
         } else if (update instanceof UpdateMessageContentChanged) {
             UpdateMessageContentChanged contentChanged = (UpdateMessageContentChanged) update;
-            onMessageContentChanged(contentChanged.getPeer(), contentChanged.getRid(), contentChanged.getMessage());
-            return true;
+            return onMessageContentChanged(contentChanged.getPeer(), contentChanged.getRid(), contentChanged.getMessage());
         } else if (update instanceof UpdateChatClear) {
             UpdateChatClear chatClear = (UpdateChatClear) update;
-            onChatClear(chatClear.getPeer());
-            return true;
+            return onChatClear(chatClear.getPeer());
         } else if (update instanceof UpdateChatDelete) {
             UpdateChatDelete chatDelete = (UpdateChatDelete) update;
-            onChatDelete(chatDelete.getPeer());
-            return true;
+            return onChatDelete(chatDelete.getPeer());
         } else if (update instanceof UpdateChatGroupsChanged) {
             UpdateChatGroupsChanged chatGroupsChanged = (UpdateChatGroupsChanged) update;
-            onChatGroupsChanged(chatGroupsChanged.getDialogs());
-            return true;
+            return onChatGroupsChanged(chatGroupsChanged.getDialogs());
         } else if (update instanceof UpdateReactionsUpdate) {
-            onReactionsChanged(((UpdateReactionsUpdate) update).getPeer(),
+            return onReactionsChanged(((UpdateReactionsUpdate) update).getPeer(),
                     ((UpdateReactionsUpdate) update).getRid(), ((UpdateReactionsUpdate) update).getReactions());
-            return true;
         }
-        return false;
+        return null;
     }
 }

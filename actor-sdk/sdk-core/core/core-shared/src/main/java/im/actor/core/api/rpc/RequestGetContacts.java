@@ -23,9 +23,11 @@ public class RequestGetContacts extends Request<ResponseGetContacts> {
     }
 
     private String contactsHash;
+    private List<ApiUpdateOptimization> optimizations;
 
-    public RequestGetContacts(@NotNull String contactsHash) {
+    public RequestGetContacts(@NotNull String contactsHash, @NotNull List<ApiUpdateOptimization> optimizations) {
         this.contactsHash = contactsHash;
+        this.optimizations = optimizations;
     }
 
     public RequestGetContacts() {
@@ -37,9 +39,18 @@ public class RequestGetContacts extends Request<ResponseGetContacts> {
         return this.contactsHash;
     }
 
+    @NotNull
+    public List<ApiUpdateOptimization> getOptimizations() {
+        return this.optimizations;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.contactsHash = values.getString(1);
+        this.optimizations = new ArrayList<ApiUpdateOptimization>();
+        for (int b : values.getRepeatedInt(2)) {
+            optimizations.add(ApiUpdateOptimization.parse(b));
+        }
     }
 
     @Override
@@ -48,12 +59,16 @@ public class RequestGetContacts extends Request<ResponseGetContacts> {
             throw new IOException();
         }
         writer.writeString(1, this.contactsHash);
+        for (ApiUpdateOptimization i : this.optimizations) {
+            writer.writeInt(2, i.getValue());
+        }
     }
 
     @Override
     public String toString() {
         String res = "rpc GetContacts{";
         res += "contactsHash=" + this.contactsHash;
+        res += ", optimizations=" + this.optimizations;
         res += "}";
         return res;
     }

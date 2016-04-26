@@ -2,7 +2,11 @@ package im.actor.runtime.promise;
 
 import com.google.j2objc.annotations.ObjectiveCName;
 
+import java.util.List;
+
 import im.actor.runtime.Log;
+import im.actor.runtime.function.Consumer;
+import im.actor.runtime.function.Supplier;
 import im.actor.runtime.function.Tuple2;
 import im.actor.runtime.function.Tuple3;
 import im.actor.runtime.function.Tuple4;
@@ -82,5 +86,22 @@ public class Promises {
         return PromisesArray.ofPromises((Promise<Object>) t1, (Promise<Object>) t2, (Promise<Object>) t3, (Promise<Object>) t4)
                 .zip()
                 .map(src -> new Tuple4<>((T1) src.get(0), (T2) src.get(1), (T3) src.get(2), (T4) src.get(3)));
+    }
+
+    /**
+     * Execute promises step by step
+     *
+     * @param queue queue of promises
+     * @param <T>   type of promises
+     * @return promise
+     */
+    public static <T> Promise traverse(List<Supplier<Promise<T>>> queue) {
+
+        if (queue.size() == 0) {
+            return Promise.success(null);
+        }
+
+        return queue.remove(0).get()
+                .flatMap(v -> traverse(queue));
     }
 }

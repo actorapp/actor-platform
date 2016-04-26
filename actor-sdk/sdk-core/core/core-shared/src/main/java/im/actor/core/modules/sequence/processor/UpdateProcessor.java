@@ -4,6 +4,7 @@
 
 package im.actor.core.modules.sequence.processor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.core.api.ApiGroup;
@@ -21,6 +22,7 @@ import im.actor.core.modules.encryption.EncryptedProcessor;
 import im.actor.core.modules.eventbus.EventBusProcessor;
 import im.actor.core.modules.groups.GroupsProcessor;
 import im.actor.core.modules.presence.PresenceProcessor;
+import im.actor.core.modules.settings.SettingsProcessor;
 import im.actor.core.modules.stickers.StickersProcessor;
 import im.actor.core.modules.typing.TypingProcessor;
 import im.actor.core.modules.messaging.MessagesProcessor;
@@ -31,6 +33,7 @@ import im.actor.core.network.parser.Update;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.function.Function;
 import im.actor.runtime.function.Predicate;
+import im.actor.runtime.function.Supplier;
 import im.actor.runtime.function.Tuple2;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.Promises;
@@ -61,7 +64,8 @@ public class UpdateProcessor extends AbsModule {
                 new ContactsProcessor(context),
                 new BlockListProcessor(context),
                 new EncryptedProcessor(context),
-                new StickersProcessor(context)
+                new StickersProcessor(context),
+                new SettingsProcessor(context)
         };
 
         this.typingProcessor = new TypingProcessor(context);
@@ -91,7 +95,7 @@ public class UpdateProcessor extends AbsModule {
                         return apiUserBooleanTuple2.getT2();
                     }
                 })
-                .flatMap(r -> new User[]{new User(r.getT1())})
+                .flatMap(r -> new User[]{new User(r.getT1(), null)})
                 .zip()
                 .map(u -> {
                     if (u.size() > 0) {
@@ -146,8 +150,9 @@ public class UpdateProcessor extends AbsModule {
         }
 
         for (SequenceProcessor sequenceProcessor : sequenceProcessors) {
-            if (sequenceProcessor.process(update)) {
-                return Promise.success(null);
+            Promise<Void> res = sequenceProcessor.process(update);
+            if (res != null) {
+                return res;
             }
         }
 
@@ -159,35 +164,40 @@ public class UpdateProcessor extends AbsModule {
     // Difference
     //
 
-    public void applyDifferenceUpdate(List<Update> updates) {
+    public Promise<Void> applyDifferenceUpdate(List<Update> updates) {
 
         CombinedDifference combinedDifference = GetDiffCombiner.buildDiff(updates);
 
-        messagesProcessor.onDifferenceStart();
+        ArrayList<Supplier<Promise<Void>>> pending = new ArrayList<>();
+
+        pending.add(() -> messagesProcessor.onDifferenceStart());
 
         for (Peer peer : combinedDifference.getReceived().keySet()) {
             long time = combinedDifference.getReceived().get(peer);
-            messagesProcessor.onMessageReceived(buildApiPeer(peer), time);
+            pending.add(() -> messagesProcessor.onMessageReceived(buildApiPeer(peer), time));
         }
 
         for (Peer peer : combinedDifference.getRead().keySet()) {
             long time = combinedDifference.getRead().get(peer);
-            messagesProcessor.onMessageRead(buildApiPeer(peer), time);
+            pending.add(() -> messagesProcessor.onMessageRead(buildApiPeer(peer), time));
         }
 
         for (Peer peer : combinedDifference.getReadByMe().keySet()) {
             CombinedDifference.ReadByMeValue time = combinedDifference.getReadByMe().get(peer);
-            messagesProcessor.onMessageReadByMe(buildApiPeer(peer), time.getDate(), time.getCounter());
+            pending.add(() -> messagesProcessor.onMessageReadByMe(buildApiPeer(peer), time.getDate(), time.getCounter()));
         }
 
         for (Peer peer : combinedDifference.getMessages().keySet()) {
-            messagesProcessor.onMessages(buildApiPeer(peer), combinedDifference.getMessages().get(peer));
+            pending.add(() -> messagesProcessor.onMessages(buildApiPeer(peer), combinedDifference.getMessages().get(peer)));
         }
 
         for (Update u : combinedDifference.getOtherUpdates()) {
-            processUpdate(u);
+            pending.add(() -> processUpdate(u));
         }
 
-        messagesProcessor.onDifferenceEnd();
+        pending.add(() -> messagesProcessor.onDifferenceEnd());
+
+        return Promises.traverse(pending)
+                .map(v -> null);
     }
 }

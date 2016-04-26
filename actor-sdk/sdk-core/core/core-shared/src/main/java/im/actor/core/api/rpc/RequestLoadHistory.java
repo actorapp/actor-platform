@@ -26,12 +26,14 @@ public class RequestLoadHistory extends Request<ResponseLoadHistory> {
     private long date;
     private ApiListLoadMode loadMode;
     private int limit;
+    private List<ApiUpdateOptimization> optimizations;
 
-    public RequestLoadHistory(@NotNull ApiOutPeer peer, long date, @Nullable ApiListLoadMode loadMode, int limit) {
+    public RequestLoadHistory(@NotNull ApiOutPeer peer, long date, @Nullable ApiListLoadMode loadMode, int limit, @NotNull List<ApiUpdateOptimization> optimizations) {
         this.peer = peer;
         this.date = date;
         this.loadMode = loadMode;
         this.limit = limit;
+        this.optimizations = optimizations;
     }
 
     public RequestLoadHistory() {
@@ -56,6 +58,11 @@ public class RequestLoadHistory extends Request<ResponseLoadHistory> {
         return this.limit;
     }
 
+    @NotNull
+    public List<ApiUpdateOptimization> getOptimizations() {
+        return this.optimizations;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.peer = values.getObj(1, new ApiOutPeer());
@@ -65,6 +72,10 @@ public class RequestLoadHistory extends Request<ResponseLoadHistory> {
             this.loadMode = ApiListLoadMode.parse(val_loadMode);
         }
         this.limit = values.getInt(4);
+        this.optimizations = new ArrayList<ApiUpdateOptimization>();
+        for (int b : values.getRepeatedInt(6)) {
+            optimizations.add(ApiUpdateOptimization.parse(b));
+        }
     }
 
     @Override
@@ -78,6 +89,9 @@ public class RequestLoadHistory extends Request<ResponseLoadHistory> {
             writer.writeInt(5, this.loadMode.getValue());
         }
         writer.writeInt(4, this.limit);
+        for (ApiUpdateOptimization i : this.optimizations) {
+            writer.writeInt(6, i.getValue());
+        }
     }
 
     @Override
@@ -87,6 +101,7 @@ public class RequestLoadHistory extends Request<ResponseLoadHistory> {
         res += ", date=" + this.date;
         res += ", loadMode=" + this.loadMode;
         res += ", limit=" + this.limit;
+        res += ", optimizations=" + this.optimizations;
         res += "}";
         return res;
     }

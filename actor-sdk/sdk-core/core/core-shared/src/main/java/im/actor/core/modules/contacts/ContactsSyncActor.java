@@ -18,6 +18,7 @@ import im.actor.core.api.rpc.RequestGetContacts;
 import im.actor.core.api.rpc.ResponseGetContacts;
 import im.actor.core.entity.Contact;
 import im.actor.core.entity.User;
+import im.actor.core.modules.Configuration;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.ModuleActor;
 import im.actor.core.network.RpcCallback;
@@ -114,15 +115,21 @@ public class ContactsSyncActor extends ModuleActor {
             Log.d(TAG, "Performing sync with uids: " + hash);
         }
 
-        request(new RequestGetContacts(hashValue), new RpcCallback<ResponseGetContacts>() {
+        request(new RequestGetContacts(hashValue, Configuration.OPTIMIZATIONS), new RpcCallback<ResponseGetContacts>() {
             @Override
             public void onResult(ResponseGetContacts response) {
 
                 if (ENABLE_LOG) {
-                    Log.d(TAG, "Sync received (0) " + response.getUsers().size() + " contacts");
+                    Log.d(TAG, "Sync received " + (response.getUsers().size() + response.getUserPeers().size()) + " contacts");
                 }
 
-                updates().applyRelatedData(response.getUsers()).then(v -> onContactsLoaded(response));
+                if (response.getUserPeers().size() > 0) {
+                    loadRequiredPeers(response.getUserPeers(), new ArrayList<>())
+                            .then(v -> onContactsLoaded(response));
+                } else {
+                    updates().applyRelatedData(response.getUsers())
+                            .then(v -> onContactsLoaded(response));
+                }
             }
 
             @Override
@@ -257,7 +264,7 @@ public class ContactsSyncActor extends ModuleActor {
         }
         Collections.sort(userList, (lhs, rhs) -> lhs.getName().compareTo(rhs.getName()));
 
-        List<Contact> registeredContacts = new ArrayList<Contact>();
+        List<Contact> registeredContacts = new ArrayList<>();
         int index = -1;
         for (User userModel : userList) {
             Contact contact = new Contact(userModel.getUid(),
