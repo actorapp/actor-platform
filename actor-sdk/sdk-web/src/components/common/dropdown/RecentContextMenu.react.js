@@ -35,9 +35,9 @@ class RecentContextMenu extends Component {
 
   componentDidMount() {
     this.listeners = [
-      EventListener.listen(document, 'click', this.handleDocumentClick),
-      EventListener.listen(document, 'contextmenu', this.handleClose),
-      EventListener.listen(document, 'scroll', this.handleClose)
+      EventListener.capture(document, 'click', this.handleDocumentClick),
+      EventListener.capture(document, 'contextmenu', this.handleClose),
+      EventListener.capture(document, 'scroll', this.handleClose)
     ];
   }
 
