@@ -9,29 +9,34 @@ import java.util.List;
 
 import im.actor.core.api.ApiDialogGroup;
 import im.actor.core.api.ApiMessage;
-import im.actor.core.api.ApiMessageContainer;
 import im.actor.core.api.ApiMessageReaction;
-import im.actor.core.api.ApiMessageState;
 import im.actor.core.api.ApiPeer;
-import im.actor.core.api.rpc.ResponseLoadArchived;
-import im.actor.core.api.rpc.ResponseLoadHistory;
+import im.actor.core.api.updates.UpdateChatClear;
+import im.actor.core.api.updates.UpdateChatDelete;
+import im.actor.core.api.updates.UpdateChatGroupsChanged;
 import im.actor.core.api.updates.UpdateMessage;
+import im.actor.core.api.updates.UpdateMessageContentChanged;
+import im.actor.core.api.updates.UpdateMessageDelete;
+import im.actor.core.api.updates.UpdateMessageRead;
+import im.actor.core.api.updates.UpdateMessageReadByMe;
+import im.actor.core.api.updates.UpdateMessageReceived;
+import im.actor.core.api.updates.UpdateMessageSent;
+import im.actor.core.api.updates.UpdateReactionsUpdate;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.MessageState;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.Reaction;
 import im.actor.core.entity.content.AbsContent;
-import im.actor.core.entity.content.ServiceUserRegistered;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.messaging.actions.SenderActor;
-import im.actor.core.entity.EntityConverter;
-import im.actor.core.modules.messaging.history.ArchivedDialogsActor;
+import im.actor.core.modules.sequence.processor.SequenceProcessor;
+import im.actor.core.network.parser.Update;
 import im.actor.runtime.annotations.Verified;
 
 import static im.actor.core.entity.EntityConverter.convert;
 
-public class MessagesProcessor extends AbsModule {
+public class MessagesProcessor extends AbsModule implements SequenceProcessor {
 
     public MessagesProcessor(ModuleContext context) {
         super(context);
@@ -218,5 +223,60 @@ public class MessagesProcessor extends AbsModule {
         // TODO: Implement
 
         context().getMessagesModule().getRouter().onActiveDialogsChanged(groups, true, true);
+    }
+
+    @Override
+    public boolean process(Update update) {
+        if (update instanceof UpdateMessage) {
+            UpdateMessage message = (UpdateMessage) update;
+            onMessage(message.getPeer(), message.getSenderUid(), message.getDate(), message.getRid(),
+                    message.getMessage());
+            return true;
+        } else if (update instanceof UpdateMessageRead) {
+            UpdateMessageRead messageRead = (UpdateMessageRead) update;
+            onMessageRead(messageRead.getPeer(), messageRead.getStartDate());
+            return true;
+        } else if (update instanceof UpdateMessageReadByMe) {
+            UpdateMessageReadByMe messageReadByMe = (UpdateMessageReadByMe) update;
+            if (messageReadByMe.getUnreadCounter() != null) {
+                onMessageReadByMe(messageReadByMe.getPeer(), messageReadByMe.getStartDate(), messageReadByMe.getUnreadCounter());
+            } else {
+                onMessageReadByMe(messageReadByMe.getPeer(), messageReadByMe.getStartDate(), 0);
+            }
+            return true;
+        } else if (update instanceof UpdateMessageReceived) {
+            UpdateMessageReceived received = (UpdateMessageReceived) update;
+            onMessageReceived(received.getPeer(), received.getStartDate());
+            return true;
+        } else if (update instanceof UpdateMessageDelete) {
+            UpdateMessageDelete messageDelete = (UpdateMessageDelete) update;
+            onMessageDelete(messageDelete.getPeer(), messageDelete.getRids());
+            return true;
+        } else if (update instanceof UpdateMessageSent) {
+            UpdateMessageSent messageSent = (UpdateMessageSent) update;
+            onMessageSent(messageSent.getPeer(), messageSent.getRid(), messageSent.getDate());
+            return true;
+        } else if (update instanceof UpdateMessageContentChanged) {
+            UpdateMessageContentChanged contentChanged = (UpdateMessageContentChanged) update;
+            onMessageContentChanged(contentChanged.getPeer(), contentChanged.getRid(), contentChanged.getMessage());
+            return true;
+        } else if (update instanceof UpdateChatClear) {
+            UpdateChatClear chatClear = (UpdateChatClear) update;
+            onChatClear(chatClear.getPeer());
+            return true;
+        } else if (update instanceof UpdateChatDelete) {
+            UpdateChatDelete chatDelete = (UpdateChatDelete) update;
+            onChatDelete(chatDelete.getPeer());
+            return true;
+        } else if (update instanceof UpdateChatGroupsChanged) {
+            UpdateChatGroupsChanged chatGroupsChanged = (UpdateChatGroupsChanged) update;
+            onChatGroupsChanged(chatGroupsChanged.getDialogs());
+            return true;
+        } else if (update instanceof UpdateReactionsUpdate) {
+            onReactionsChanged(((UpdateReactionsUpdate) update).getPeer(),
+                    ((UpdateReactionsUpdate) update).getRid(), ((UpdateReactionsUpdate) update).getReactions());
+            return true;
+        }
+        return false;
     }
 }

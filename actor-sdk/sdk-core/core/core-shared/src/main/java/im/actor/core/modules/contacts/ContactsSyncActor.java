@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import im.actor.core.api.ApiGroup;
 import im.actor.core.api.ApiUser;
 import im.actor.core.api.rpc.RequestGetContacts;
 import im.actor.core.api.rpc.ResponseGetContacts;
@@ -117,8 +118,7 @@ public class ContactsSyncActor extends ModuleActor {
                     Log.d(TAG, "Sync received (0) " + response.getUsers().size() + " contacts");
                 }
 
-                updates().onUpdateReceived(
-                        new im.actor.core.modules.sequence.internal.ContactsLoaded(response));
+                updates().applyRelatedData(response.getUsers()).then(v -> onContactsLoaded(response));
             }
 
             @Override
@@ -291,9 +291,7 @@ public class ContactsSyncActor extends ModuleActor {
 
     @Override
     public void onReceive(Object message) {
-        if (message instanceof ContactsLoaded) {
-            onContactsLoaded(((ContactsLoaded) message).getResult());
-        } else if (message instanceof ContactsAdded) {
+        if (message instanceof ContactsAdded) {
             onContactsAdded(((ContactsAdded) message).getUids());
         } else if (message instanceof ContactsRemoved) {
             onContactsRemoved(((ContactsRemoved) message).getUids());
@@ -308,18 +306,6 @@ public class ContactsSyncActor extends ModuleActor {
 
     private static class PerformSync {
 
-    }
-
-    public static class ContactsLoaded {
-        private ResponseGetContacts result;
-
-        public ContactsLoaded(ResponseGetContacts result) {
-            this.result = result;
-        }
-
-        public ResponseGetContacts getResult() {
-            return result;
-        }
     }
 
     public static class ContactsAdded {

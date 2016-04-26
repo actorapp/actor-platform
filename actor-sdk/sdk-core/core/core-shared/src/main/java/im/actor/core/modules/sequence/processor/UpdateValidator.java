@@ -1,4 +1,4 @@
-package im.actor.core.modules.sequence;
+package im.actor.core.modules.sequence.processor;
 
 import java.util.Collection;
 import java.util.HashSet;

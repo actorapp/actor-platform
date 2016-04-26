@@ -22,14 +22,13 @@ import im.actor.core.api.rpc.RequestGetState;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.sequence.internal.ExecuteAfter;
 import im.actor.core.modules.ModuleActor;
+import im.actor.core.modules.sequence.processor.UpdateValidator;
 import im.actor.core.network.parser.Update;
 import im.actor.runtime.*;
 import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.Cancellable;
 import im.actor.runtime.actors.messages.Void;
-import im.actor.runtime.collections.ManagedList;
-import im.actor.runtime.function.Consumer;
 import im.actor.runtime.power.WakeLock;
 
 public class SequenceActor extends ModuleActor {
