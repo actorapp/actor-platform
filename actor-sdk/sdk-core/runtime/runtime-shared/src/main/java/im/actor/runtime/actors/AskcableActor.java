@@ -22,7 +22,6 @@ public class AskcableActor extends Actor {
                     // Just ignore. We assume that message is stashed
                     return;
                 }
-                Log.d("Asckable", "" + askRequest.getFuture());
                 p.pipeTo(askRequest.getFuture());
             } catch (Exception e) {
                 e.printStackTrace();

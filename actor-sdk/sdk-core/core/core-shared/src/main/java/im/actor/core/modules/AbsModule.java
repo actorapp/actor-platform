@@ -147,7 +147,7 @@ public abstract class AbsModule {
         }
     }
 
-    public ApiOutPeer buildApiOutPeer(Peer peer) {
+    public ApiOutPeer getApiOutPeer(Peer peer) {
         if (peer.getPeerType() == PeerType.PRIVATE) {
             return new ApiOutPeer(ApiPeerType.PRIVATE, peer.getPeerId(),
                     users().getValue(peer.getPeerId()).getAccessHash());
@@ -157,6 +157,22 @@ public abstract class AbsModule {
         } else {
             return null;
         }
+    }
+
+    public Promise<ApiOutPeer> buildOutPeer(Peer peer) {
+        return new Promise<>((PromiseFunc<ApiOutPeer>) resolver -> {
+            if (peer.getPeerType() == PeerType.PRIVATE) {
+                users().getValueAsync(peer.getPeerId())
+                        .map(user -> new ApiOutPeer(ApiPeerType.PRIVATE, user.getUid(), user.getAccessHash()))
+                        .pipeTo(resolver);
+            } else if (peer.getPeerType() == PeerType.GROUP) {
+                groups().getValueAsync(peer.getPeerId())
+                        .map(group -> new ApiOutPeer(ApiPeerType.GROUP, group.getGroupId(), group.getAccessHash()))
+                        .pipeTo(resolver);
+            } else {
+                throw new RuntimeException("Unknown peer: " + peer);
+            }
+        });
     }
 
     public boolean isValidPeer(Peer peer) {

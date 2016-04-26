@@ -6,6 +6,7 @@ package im.actor.core.modules.sequence;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.core.api.ApiGroup;
@@ -49,10 +50,6 @@ public class Updates extends AbsModule implements BusSubscriber {
         context().getEvents().subscribe(this, NewSessionCreated.EVENT);
     }
 
-    public ActorRef getUpdateActor() {
-        return updateActor;
-    }
-
     public SequenceHandlerInt getUpdateHandler() {
         return updateHandlerInt;
     }
@@ -63,21 +60,29 @@ public class Updates extends AbsModule implements BusSubscriber {
         }
     }
 
-    public void onSeqUpdateReceived(int seq, byte[] state, Update update) {
-        updateActor.send(new SeqUpdate(seq, state, update.getHeaderKey(), update.toByteArray()));
-    }
 
     public Promise<Void> applyUpdate(int seq, byte[] state, Update update) {
         return new Promise<>((PromiseFunc<Void>) resolver -> {
-            onSeqUpdateReceived(seq, state, update);
+            updateActor.send(new SeqUpdate(seq, state, update.getHeaderKey(), update.toByteArray()));
             executeAfter(seq, () -> resolver.result(null));
         });
     }
 
-    public void onFatSeqUpdateReceived(int seq, byte[] state, Update update,
-                                       List<ApiUser> users, List<ApiGroup> groups) {
-        updateActor.send(new FatSeqUpdate(seq, state, update.getHeaderKey(), update.toByteArray(),
-                users, groups));
+    public Promise<Void> applyUpdate(int seq, byte[] state, Update update,
+                                     List<ApiUser> users, ApiGroup group) {
+        ArrayList<ApiGroup> groups = new ArrayList<>();
+        groups.add(group);
+        return applyUpdate(seq, state, update, users, groups);
+
+    }
+
+    public Promise<Void> applyUpdate(int seq, byte[] state, Update update,
+                                     List<ApiUser> users, List<ApiGroup> groups) {
+        return new Promise<>((PromiseFunc<Void>) resolver -> {
+            updateActor.send(new FatSeqUpdate(seq, state, update.getHeaderKey(), update.toByteArray(),
+                    users, groups));
+            executeAfter(seq, () -> resolver.result(null));
+        });
     }
 
     public void onUpdateReceived(Object update) {
@@ -88,12 +93,12 @@ public class Updates extends AbsModule implements BusSubscriber {
         }
     }
 
-    public Promise<Void> onSeqUpdateReceived(SeqUpdate seqUpdate) {
-        return new Promise<>((PromiseFunc<Void>) resolver -> {
-            onUpdateReceived(seqUpdate);
-            executeAfter(seqUpdate.getSeq(), () -> resolver.result(null));
-        });
-    }
+//    public Promise<Void> onSeqUpdateReceived(SeqUpdate seqUpdate) {
+//        return new Promise<>((PromiseFunc<Void>) resolver -> {
+//            onUpdateReceived(seqUpdate);
+//            executeAfter(seqUpdate.getSeq(), () -> resolver.result(null));
+//        });
+//    }
 
 //    public void onUpdateReceived(Object update, Long delay) {
 //        updateActor.send(update, delay);
@@ -107,8 +112,10 @@ public class Updates extends AbsModule implements BusSubscriber {
         updateHandlerInt.executeRelatedResponse(users, groups, runnable);
     }
 
-    public void executeRelatedResponse(List<ApiUser> users, List<ApiGroup> groups, final ActorRef ref, final Runnable runnable) {
-        executeRelatedResponse(users, groups, () -> ref.send(runnable));
+    public Promise<Void> applyRelatedData(final List<ApiUser> users, final ApiGroup group) {
+        ArrayList<ApiGroup> groups = new ArrayList<>();
+        groups.add(group);
+        return applyRelatedData(users, groups);
     }
 
     public Promise<Void> applyRelatedData(final List<ApiUser> users, final List<ApiGroup> groups) {
