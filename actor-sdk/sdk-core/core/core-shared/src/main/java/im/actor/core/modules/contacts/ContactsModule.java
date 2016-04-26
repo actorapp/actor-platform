@@ -6,6 +6,7 @@ package im.actor.core.modules.contacts;
 
 import java.util.ArrayList;
 
+import im.actor.core.api.ApiUser;
 import im.actor.core.api.base.SeqUpdate;
 import im.actor.core.api.rpc.RequestAddContact;
 import im.actor.core.api.rpc.RequestRemoveContact;
@@ -22,6 +23,7 @@ import im.actor.core.viewmodel.Command;
 import im.actor.runtime.Storage;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Props;
+import im.actor.runtime.promise.Promise;
 import im.actor.runtime.storage.ListEngine;
 import im.actor.core.entity.Contact;
 import im.actor.core.network.RpcCallback;
@@ -86,24 +88,16 @@ public class ContactsModule extends AbsModule {
         return preferences().getBool("contact_" + uid, false);
     }
 
-    public Command<UserVM[]> findUsers(final String query) {
-        return callback -> request(new RequestSearchContacts(query), new RpcCallback<ResponseSearchContacts>() {
-            @Override
-            public void onResult(ResponseSearchContacts response) {
-                if (response.getUsers().size() == 0) {
-                    runOnUiThread(() -> callback.onResult(new UserVM[0]));
-                    return;
-                }
-
-                updates().onUpdateReceived(new UsersFounded(response.getUsers(), callback));
-            }
-
-            @Override
-            public void onError(RpcException e) {
-                e.printStackTrace();
-                runOnUiThread(() -> callback.onResult(new UserVM[0]));
-            }
-        });
+    public Promise<UserVM[]> findUsers(final String query) {
+        return api(new RequestSearchContacts(query))
+                .chain(responseSearchContacts -> updates().applyRelatedData(responseSearchContacts.getUsers()))
+                .map(responseSearchContacts1 -> {
+                    ArrayList<UserVM> users = new ArrayList<>();
+                    for (ApiUser u : responseSearchContacts1.getUsers()) {
+                        users.add(context().getUsersModule().getUsers().get(u.getId()));
+                    }
+                    return users.toArray(new UserVM[users.size()]);
+                });
     }
 
     public Command<Boolean> addContact(final int uid) {

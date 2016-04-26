@@ -4,13 +4,11 @@
 
 package im.actor.core.modules.sequence.processor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.core.api.ApiGroup;
 import im.actor.core.api.ApiUser;
 import im.actor.core.api.updates.UpdateMessage;
-import im.actor.core.entity.EntityConverter;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.User;
@@ -31,9 +29,17 @@ import im.actor.core.modules.sequence.internal.GetDiffCombiner;
 import im.actor.core.modules.users.UsersProcessor;
 import im.actor.core.network.parser.Update;
 import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.function.Function;
+import im.actor.runtime.function.Predicate;
+import im.actor.runtime.function.Tuple2;
 import im.actor.runtime.promise.Promise;
+import im.actor.runtime.promise.Promises;
+import im.actor.runtime.promise.PromisesArray;
 
 public class UpdateProcessor extends AbsModule {
+
+    // Do Not Remove! WorkAround for missing j2objc translator include
+    private static final Void DUMB = null;
 
     private MessagesProcessor messagesProcessor;
 
@@ -48,8 +54,8 @@ public class UpdateProcessor extends AbsModule {
         super(context);
 
         this.messagesProcessor = new MessagesProcessor(context);
-
         sequenceProcessors = new SequenceProcessor[]{
+                messagesProcessor,
                 new UsersProcessor(context),
                 new GroupsProcessor(context),
                 new ContactsProcessor(context),
@@ -76,31 +82,46 @@ public class UpdateProcessor extends AbsModule {
 
         // Users
 
-        ArrayList<User> batch = new ArrayList<>();
-        for (ApiUser u : users) {
-            User saved = users().getValue(u.getId());
-            if (saved == null) {
-                batch.add(new User(u));
-            }
-        }
-        if (batch.size() > 0) {
-            users().addOrUpdateItems(batch);
-        }
+        Promise<Void> userPromise = PromisesArray.of(users)
+                .map((Function<ApiUser, Promise<Tuple2<ApiUser, Boolean>>>) u -> users().containsAsync(u.getId())
+                        .map(r -> new Tuple2<ApiUser, Boolean>(u, !r)))
+                .filter(new Predicate<Tuple2<ApiUser, Boolean>>() {
+                    @Override
+                    public boolean apply(Tuple2<ApiUser, Boolean> apiUserBooleanTuple2) {
+                        return apiUserBooleanTuple2.getT2();
+                    }
+                })
+                .flatMap(r -> new User[]{new User(r.getT1())})
+                .zip()
+                .map(u -> {
+                    if (u.size() > 0) {
+                        users().addOrUpdateItems(u);
+                    }
+                    return null;
+                });
 
         // Groups
 
-        ArrayList<Group> groupsBatch = new ArrayList<>();
-        for (ApiGroup group : groups) {
-            Group saved = groups().getValue(group.getId());
-            if (saved == null) {
-                groupsBatch.add(EntityConverter.convert(group));
-            }
-        }
-        if (batch.size() > 0) {
-            groups().addOrUpdateItems(groupsBatch);
-        }
+        Promise<Void> groupsPromise = PromisesArray.of(groups)
+                .map((Function<ApiGroup, Promise<Tuple2<ApiGroup, Boolean>>>) g -> groups().containsAsync(g.getId())
+                        .map(r -> new Tuple2<ApiGroup, Boolean>(g, !r)))
+                .filter(new Predicate<Tuple2<ApiGroup, Boolean>>() {
+                    @Override
+                    public boolean apply(Tuple2<ApiGroup, Boolean> apiGroupBooleanTuple2) {
+                        return apiGroupBooleanTuple2.getT2();
+                    }
+                })
+                .flatMap(r -> new Group[]{new Group(r.getT1())})
+                .zip()
+                .map(u -> {
+                    if (u.size() > 0) {
+                        groups().addOrUpdateItems(u);
+                    }
+                    return null;
+                });
 
-        return Promise.success(null);
+        return Promises.tuple(userPromise, groupsPromise)
+                .map(v -> null);
     }
 
 
@@ -116,7 +137,7 @@ public class UpdateProcessor extends AbsModule {
         }
     }
 
-    public void processUpdate(Update update) {
+    public Promise<Void> processUpdate(Update update) {
 
         // Small hack for stopping typing indicator
         if (update instanceof UpdateMessage) {
@@ -126,9 +147,11 @@ public class UpdateProcessor extends AbsModule {
 
         for (SequenceProcessor sequenceProcessor : sequenceProcessors) {
             if (sequenceProcessor.process(update)) {
-                return;
+                return Promise.success(null);
             }
         }
+
+        return Promise.success(null);
     }
 
 
@@ -136,11 +159,9 @@ public class UpdateProcessor extends AbsModule {
     // Difference
     //
 
-    public void applyDifferenceUpdate(List<ApiUser> users, List<ApiGroup> groups, List<Update> updates) {
+    public void applyDifferenceUpdate(List<Update> updates) {
 
         CombinedDifference combinedDifference = GetDiffCombiner.buildDiff(updates);
-
-        applyRelated(users, groups);
 
         messagesProcessor.onDifferenceStart();
 

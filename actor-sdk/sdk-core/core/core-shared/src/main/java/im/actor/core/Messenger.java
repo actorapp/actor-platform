@@ -1647,7 +1647,9 @@ public class Messenger {
     @NotNull
     @ObjectiveCName("findUsersCommandWithQuery:")
     public Command<UserVM[]> findUsers(String query) {
-        return modules.getContactsModule().findUsers(query);
+        return callback -> modules.getContactsModule().findUsers(query)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     public PhoneBookContact getPhoneBookContact(long contactId) {
