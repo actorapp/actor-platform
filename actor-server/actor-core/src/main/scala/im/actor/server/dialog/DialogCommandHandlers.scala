@@ -6,7 +6,7 @@ import akka.actor.Status
 import akka.http.scaladsl.util.FastFuture
 import akka.pattern.pipe
 import com.google.protobuf.wrappers.Int64Value
-import im.actor.api.rpc.PeersImplicits
+import im.actor.api.rpc.{ HistoryImplicits, PeersImplicits }
 import im.actor.api.rpc.messaging._
 import im.actor.server.ApiConversions._
 import im.actor.server.dialog.HistoryUtils._
@@ -22,7 +22,7 @@ import org.joda.time.DateTime
 import scala.concurrent.Future
 import scala.util.Failure
 
-trait DialogCommandHandlers extends PeersImplicits with UserAcl {
+trait DialogCommandHandlers extends PeersImplicits with HistoryImplicits with UserACL {
   this: DialogProcessor ⇒
 
   import DialogCommands._
@@ -55,16 +55,18 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
           seqState ← if (exists) {
             FastFuture.failed(NotUniqueRandomId)
           } else {
+                  val quotedMessage = sm.quotedMessage.map(_.asStruct)
+
             withNonBlockedPeer[SeqStateDate](userId, sm.getDest)(
               default = for {
               _ ← dialogExt.ackSendMessage(peer, sm.copy(date = Some(Int64Value(sendDate))))
               _ ← db.run(writeHistoryMessage(selfPeer, peer, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray))
               //_ = dialogExt.updateCounters(peer, userId)
-              SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sendDate, message, sm.isFat)
+              SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sendDate, message, sm.isFat, quotedMessage)
             } yield SeqStateDate(seq, state, sendDate),
               failed = for {
               _ ← db.run(writeHistoryMessageSelf(userId, peer, userId, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray))
-              SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sendDate, message, sm.isFat)
+              SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sendDate, message, sm.isFat, quotedMessage)
             } yield SeqStateDate(seq, state, sendDate)
             )
           }
@@ -86,8 +88,10 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
         SocialManager.recordRelation(userId, sm.getOrigin.id)
       }
 
+      val quotedMessage = sm.quotedMessage.map(_.asStruct)
+
       deliveryExt
-        .receiverDelivery(userId, sm.getOrigin.id, peer, sm.randomId, messageDate.value, sm.message, sm.isFat)
+        .receiverDelivery(userId, sm.getOrigin.id, peer, sm.randomId, messageDate.value, sm.message, sm.isFat, quotedMessage)
         .map(_ ⇒ SendMessageAck())
         .pipeTo(sender())
 

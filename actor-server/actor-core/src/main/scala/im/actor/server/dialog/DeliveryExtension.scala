@@ -1,6 +1,6 @@
 package im.actor.server.dialog
 
-import im.actor.api.rpc.messaging.ApiMessage
+import im.actor.api.rpc.messaging.{ ApiQuotedMessage, ApiMessage }
 import im.actor.server.sequence.SeqState
 import im.actor.server.model.Peer
 
@@ -9,23 +9,25 @@ import scala.concurrent.Future
 trait DeliveryExtension {
 
   def receiverDelivery(
-    receiverUserId: Int,
-    senderUserId:   Int,
-    peer:           Peer,
-    randomId:       Long,
-    timestamp:      Long,
-    message:        ApiMessage,
-    isFat:          Boolean
+    receiverUserId:   Int,
+    senderUserId:     Int,
+    peer:             Peer,
+    randomId:         Long,
+    timestamp:        Long,
+    message:          ApiMessage,
+    isFat:            Boolean,
+    quotedMessageRef: Option[ApiQuotedMessage]
   ): Future[Unit]
 
   def senderDelivery(
-    senderUserId:  Int,
-    senderAuthSid: Int,
-    peer:          Peer,
-    randomId:      Long,
-    timestamp:     Long,
-    message:       ApiMessage,
-    isFat:         Boolean
+    senderUserId:     Int,
+    senderAuthSid:    Int,
+    peer:             Peer,
+    randomId:         Long,
+    timestamp:        Long,
+    message:          ApiMessage,
+    isFat:            Boolean,
+    quotedMessageRef: Option[ApiQuotedMessage]
   ): Future[SeqState]
 
   def sendCountersUpdate(userId: Int): Future[Unit]

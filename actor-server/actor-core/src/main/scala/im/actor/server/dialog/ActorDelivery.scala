@@ -25,13 +25,14 @@ final class ActorDelivery()(implicit val system: ActorSystem)
   private val dialogExt = DialogExtension(system)
 
   override def receiverDelivery(
-    receiverUserId: Int,
-    senderUserId:   Int,
-    peer:           Peer,
-    randomId:       Long,
-    timestamp:      Long,
-    message:        ApiMessage,
-    isFat:          Boolean
+    receiverUserId:   Int,
+    senderUserId:     Int,
+    peer:             Peer,
+    randomId:         Long,
+    timestamp:        Long,
+    message:          ApiMessage,
+    isFat:            Boolean,
+    quotedMessageRef: Option[ApiQuotedMessage]
   ): Future[Unit] = {
     val receiverUpdate = UpdateMessage(
       peer = peer.asStruct,
@@ -40,7 +41,7 @@ final class ActorDelivery()(implicit val system: ActorSystem)
       randomId = randomId,
       message = message,
       attributes = None,
-      quotedMessage = None
+      quotedMessage = quotedMessageRef
     )
 
     for {
@@ -78,7 +79,8 @@ final class ActorDelivery()(implicit val system: ActorSystem)
     randomId:      Long,
     timestamp:     Long,
     message:       ApiMessage,
-    isFat:         Boolean
+    isFat:         Boolean,
+    quotedMessage: Option[ApiQuotedMessage]
   ): Future[SeqState] = {
     val apiPeer = peer.asStruct
     val senderUpdate = UpdateMessage(
@@ -88,7 +90,7 @@ final class ActorDelivery()(implicit val system: ActorSystem)
       randomId = randomId,
       message = message,
       attributes = None,
-      quotedMessage = None
+      quotedMessage = quotedMessage
     )
 
     val senderClientUpdate = UpdateMessageSent(apiPeer, randomId, timestamp)
