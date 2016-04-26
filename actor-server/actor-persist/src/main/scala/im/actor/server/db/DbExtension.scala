@@ -27,7 +27,7 @@ final class DbExtensionImpl(val ds: HikariCPJdbcDataSource, val db: Database) ex
 }
 
 object DbExtension extends ExtensionId[DbExtensionImpl] with ExtensionIdProvider {
-  private val JndiPath = "DefaultDataSource"
+  private val JndiPath = "DefaultDatabase"
 
   override def lookup = DbExtension
 
@@ -69,7 +69,8 @@ object DbExtension extends ExtensionId[DbExtensionImpl] with ExtensionIdProvider
   }
 
   private def initDb(ds: HikariCPJdbcDataSource, queueSize: Int): Database = {
-    JNDI.initialContext.rebind(JndiPath, ds.ds)
-    Database.forSource(ds, executor = AsyncExecutor("AsyncExecutor.actor", 20, queueSize))
+    val db = Database.forSource(ds, executor = AsyncExecutor("AsyncExecutor.actor", 20, queueSize))
+    JNDI.initialContext.rebind(JndiPath, db)
+    db
   }
 }
