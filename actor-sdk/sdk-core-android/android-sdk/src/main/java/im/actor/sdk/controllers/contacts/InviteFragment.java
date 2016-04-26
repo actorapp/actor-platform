@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.telephony.SmsManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -160,7 +159,7 @@ public class InviteFragment extends DisplayListFragment<PhoneBookContact, Invite
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.invite, menu);
         sendButton = menu.getItem(0);
-        checkSEndButton();
+        checkSendButton();
     }
 
     @Override
@@ -246,7 +245,7 @@ public class InviteFragment extends DisplayListFragment<PhoneBookContact, Invite
         startActivity(i);
     }
 
-    public void checkSEndButton() {
+    public void checkSendButton() {
         if (sendButton != null) {
             sendButton.setVisible(getDisplayList().getSize() != 0);
         }
@@ -255,7 +254,8 @@ public class InviteFragment extends DisplayListFragment<PhoneBookContact, Invite
     @Override
     public void onCollectionChanged() {
         super.onCollectionChanged();
-        checkSEndButton();
+        checkSendButton();
+        ((InviteContactAdapter) getAdapter()).updateIds();
     }
 
 }
