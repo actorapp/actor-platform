@@ -37,7 +37,7 @@ import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
 public abstract class BaseContactFragment extends DisplayListFragment<Contact, ContactHolder> {
 
-    private static final boolean USE_APP_INVITES = false;
+    private static final boolean USE_APP_INVITES = true;
     private final boolean useCompactVersion;
     private final boolean userSearch;
     private final boolean useSelection;

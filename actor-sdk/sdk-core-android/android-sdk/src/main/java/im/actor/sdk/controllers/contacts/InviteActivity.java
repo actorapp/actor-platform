@@ -13,7 +13,7 @@ public class InviteActivity extends BaseFragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getSupportActionBar().setTitle(R.string.contacts_share);
+        getSupportActionBar().setTitle(R.string.contacts_invite_via_link);
 
 
         if (savedInstanceState == null) {
