@@ -82,7 +82,7 @@ public class Updates extends AbsModule implements BusSubscriber {
 
 
     public Promise<Void> applyRelatedData(final List<ApiUser> users) {
-        return applyRelatedData(users, new ApiGroup());
+        return applyRelatedData(users, new ArrayList<>());
     }
 
     public Promise<Void> applyRelatedData(final List<ApiUser> users, final ApiGroup group) {

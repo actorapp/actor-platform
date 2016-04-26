@@ -34,7 +34,7 @@ public class PromisesArray<T> {
         for (T t : collection) {
             res.add(Promise.success(t));
         }
-        final Promise<T>[] promises = (Promise<T>[]) res.toArray();
+        final Promise[] promises = res.toArray(new Promise[res.size()]);
         return new PromisesArray<>((PromiseFunc<Promise<T>[]>) executor -> {
             executor.result(promises);
         });
@@ -53,7 +53,7 @@ public class PromisesArray<T> {
         for (T t : items) {
             res.add(Promise.success(t));
         }
-        final Promise[] promises = (Promise[]) res.toArray();
+        final Promise[] promises = res.toArray(new Promise[res.size()]);
         return new PromisesArray<>((PromiseFunc<Promise<T>[]>) executor -> {
             executor.result(promises);
         });

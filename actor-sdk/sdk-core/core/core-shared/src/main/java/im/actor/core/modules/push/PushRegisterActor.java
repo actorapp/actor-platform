@@ -18,6 +18,9 @@ import im.actor.core.network.RpcException;
 
 public class PushRegisterActor extends ModuleActor {
 
+    // j2objc workaround
+    private static final ResponseVoid DUMB = null;
+
     public PushRegisterActor(ModuleContext modules) {
         super(modules);
     }
