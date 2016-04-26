@@ -316,10 +316,10 @@ public class JsFacade implements Exportable {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
             public void execute() {
-                messenger.terminateSession(id).start(new CommandCallback<Boolean>() {
+                messenger.terminateSession(id).start(new CommandCallback<Void>() {
                     @Override
-                    public void onResult(Boolean res) {
-                        resolve(res);
+                    public void onResult(Void res) {
+                        resolve();
                     }
 
                     @Override
@@ -337,10 +337,10 @@ public class JsFacade implements Exportable {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
             public void execute() {
-                messenger.terminateAllSessions().start(new CommandCallback<Boolean>() {
+                messenger.terminateAllSessions().start(new CommandCallback<Void>() {
                     @Override
-                    public void onResult(Boolean res) {
-                        resolve(res);
+                    public void onResult(Void res) {
+                        resolve();
                     }
 
                     @Override
