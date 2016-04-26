@@ -18,8 +18,8 @@ trait DbExtension extends Extension {
   val db: Database
 }
 
-final class DbExtensionImpl(val ds: HikariCPJdbcDataSource, val db: Database) extends Extension with FlywayInit {
-  private lazy val flyway: Flyway = initFlyway(ds.ds)
+final class DbExtensionImpl(val db: Database) extends Extension with FlywayInit {
+  private lazy val flyway: Flyway = initFlyway(db.source.asInstanceOf[HikariCPJdbcDataSource].ds)
 
   def clean(): Unit = flyway.clean()
 
@@ -34,16 +34,13 @@ object DbExtension extends ExtensionId[DbExtensionImpl] with ExtensionIdProvider
   override def createExtension(system: ExtendedActorSystem): DbExtensionImpl = {
     val log = Logging(system, getClass)
 
-    val sqlConfig = system.settings.config.getConfig("services.postgresql")
-    val queueSize = sqlConfig.getInt("queueSize")
-    val ds = initDs(sqlConfig).get
-    val db = initDb(ds, queueSize)
+    val db = initDb(system.settings.config)
 
     system.registerOnTermination {
       db.close()
     }
 
-    val ext = new DbExtensionImpl(ds, db)
+    val ext = new DbExtensionImpl(db)
 
     Try(ext.migrate()) match {
       case Success(_) ⇒
@@ -68,8 +65,22 @@ object DbExtension extends ExtensionId[DbExtensionImpl] with ExtensionIdProvider
     )).resolve(), null, "main", getClass.getClassLoader)
   }
 
-  private def initDb(ds: HikariCPJdbcDataSource, queueSize: Int): Database = {
-    val db = Database.forSource(ds, executor = AsyncExecutor("AsyncExecutor.actor", 20, queueSize))
+  private def initDb(appConfig: Config): Database = {
+    val sqlConfig = appConfig.getConfig("services.postgresql")
+
+    val useConfig = for {
+      host ← sqlConfig.get[Try[String]]("host")
+      port ← sqlConfig.get[Try[Int]]("port")
+      db ← sqlConfig.get[Try[String]]("db")
+      _ ← sqlConfig.get[Try[String]]("user")
+      _ ← sqlConfig.get[Try[String]]("password")
+    } yield sqlConfig.withFallback(ConfigFactory.parseString(
+      s"""
+         |url: "jdbc:postgresql://"${host}":"${port}"/"${db}
+      """.stripMargin
+    ))
+
+    val db = Database.forConfig("", useConfig.get)
     JNDI.initialContext.rebind(JndiPath, db)
     db
   }
