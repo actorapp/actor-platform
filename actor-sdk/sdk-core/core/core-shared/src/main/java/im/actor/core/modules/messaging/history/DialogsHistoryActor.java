@@ -51,9 +51,10 @@ public class DialogsHistoryActor extends ModuleActor {
         isLoading = true;
 
         api(new RequestLoadDialogs(historyMaxDate, LIMIT))
-                .then(response ->
-                        updates().executeRelatedResponse(response.getUsers(), response.getGroups(),
-                                (Runnable) () -> onLoadedMore(response.getDialogs())));
+                .chain(responseLoadDialogs ->
+                        updates().applyRelatedData(responseLoadDialogs.getUsers(), responseLoadDialogs.getGroups()))
+                .then(responseLoadDialogs1 ->
+                        onLoadedMore(responseLoadDialogs1.getDialogs()));
     }
 
     private void onLoadedMore(List<ApiDialog> rawDialogs) {

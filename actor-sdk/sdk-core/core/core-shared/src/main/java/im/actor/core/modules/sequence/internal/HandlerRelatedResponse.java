@@ -4,17 +4,17 @@ import java.util.List;
 
 import im.actor.core.api.ApiGroup;
 import im.actor.core.api.ApiUser;
+import im.actor.runtime.actors.ask.AskMessage;
+import im.actor.runtime.actors.messages.Void;
 
-public class RelatedResponse extends InternalUpdate {
+public class HandlerRelatedResponse implements AskMessage<Void> {
 
     private List<ApiUser> relatedUsers;
     private List<ApiGroup> relatedGroups;
-    private Runnable afterApply;
 
-    public RelatedResponse(List<ApiUser> relatedUsers, List<ApiGroup> relatedGroups, Runnable afterApply) {
+    public HandlerRelatedResponse(List<ApiUser> relatedUsers, List<ApiGroup> relatedGroups) {
         this.relatedUsers = relatedUsers;
         this.relatedGroups = relatedGroups;
-        this.afterApply = afterApply;
     }
 
     public List<ApiUser> getRelatedUsers() {
@@ -23,9 +23,5 @@ public class RelatedResponse extends InternalUpdate {
 
     public List<ApiGroup> getRelatedGroups() {
         return relatedGroups;
-    }
-
-    public Runnable getAfterApply() {
-        return afterApply;
     }
 }

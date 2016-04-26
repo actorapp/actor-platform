@@ -184,5 +184,11 @@ public class MVVMCollection<T extends BserObject & KeyValueItem, V extends BaseV
                 return Promise.failure(new RuntimeException());
             }
         }
+
+        @Override
+        public Promise<Boolean> containsAsync(long key) {
+            T res = getValue(key);
+            return Promise.success(res != null);
+        }
     }
 }
