@@ -4,8 +4,6 @@
 
 package im.actor.core.modules.sequence;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +11,6 @@ import im.actor.core.api.ApiGroup;
 import im.actor.core.api.ApiUser;
 import im.actor.core.api.base.FatSeqUpdate;
 import im.actor.core.api.base.SeqUpdate;
-import im.actor.core.api.base.WeakUpdate;
 import im.actor.core.events.NewSessionCreated;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
@@ -26,7 +23,6 @@ import im.actor.runtime.eventbus.BusSubscriber;
 import im.actor.runtime.eventbus.Event;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseFunc;
-import im.actor.runtime.promise.PromiseResolver;
 
 import static im.actor.runtime.actors.ActorSystem.system;
 
@@ -85,32 +81,6 @@ public class Updates extends AbsModule implements BusSubscriber {
         });
     }
 
-    public void onUpdateReceived(Object update) {
-        if (update instanceof InternalUpdate) {
-            updateHandlerInt.onInternalUpdate((InternalUpdate) update);
-        } else {
-            updateActor.send(update);
-        }
-    }
-
-//    public Promise<Void> onSeqUpdateReceived(SeqUpdate seqUpdate) {
-//        return new Promise<>((PromiseFunc<Void>) resolver -> {
-//            onUpdateReceived(seqUpdate);
-//            executeAfter(seqUpdate.getSeq(), () -> resolver.result(null));
-//        });
-//    }
-
-//    public void onUpdateReceived(Object update, Long delay) {
-//        updateActor.send(update, delay);
-//    }
-
-    public void executeAfter(int seq, Runnable runnable) {
-        updateActor.send(new ExecuteAfter(seq, runnable));
-    }
-
-    public void executeRelatedResponse(List<ApiUser> users, List<ApiGroup> groups, Runnable runnable) {
-        updateHandlerInt.executeRelatedResponse(users, groups, runnable);
-    }
 
     public Promise<Void> applyRelatedData(final List<ApiUser> users, final ApiGroup group) {
         ArrayList<ApiGroup> groups = new ArrayList<>();
@@ -119,9 +89,24 @@ public class Updates extends AbsModule implements BusSubscriber {
     }
 
     public Promise<Void> applyRelatedData(final List<ApiUser> users, final List<ApiGroup> groups) {
-        return new Promise<>((PromiseFunc<Void>) resolver ->
-                executeRelatedResponse(users, groups, () -> resolver.result(null)));
+        return updateHandlerInt.onRelatedResponse(users, groups);
     }
+
+
+    @Deprecated
+    public void onUpdateReceived(Object update) {
+        if (update instanceof InternalUpdate) {
+            updateHandlerInt.onInternalUpdate((InternalUpdate) update);
+        } else {
+            updateActor.send(update);
+        }
+    }
+
+    @Deprecated
+    public void executeAfter(int seq, Runnable runnable) {
+        updateActor.send(new ExecuteAfter(seq, runnable));
+    }
+
 
     public void resetModule() {
         // TODO: Implement

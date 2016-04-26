@@ -34,4 +34,7 @@ public interface KeyValueEngine<V extends KeyValueItem> {
 
     @ObjectiveCName("getValueAsyncWithKey:")
     Promise<V> getValueAsync(long key);
+
+    @ObjectiveCName("containsAsyncWithKey:")
+    Promise<Boolean> containsAsync(long key);
 }

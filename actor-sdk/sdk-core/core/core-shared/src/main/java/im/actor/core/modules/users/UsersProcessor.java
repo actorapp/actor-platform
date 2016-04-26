@@ -33,22 +33,13 @@ public class UsersProcessor extends AbsModule implements Processor {
     }
 
     @Verified
-    public void applyUsers(Collection<ApiUser> updated, boolean forced) {
+    public void applyUsers(Collection<ApiUser> updated) {
         ArrayList<User> batch = new ArrayList<>();
         for (ApiUser u : updated) {
 
             User saved = users().getValue(u.getId());
             if (saved == null) {
                 batch.add(new User(u));
-            } else if (forced) {
-                User upd = new User(u);
-                batch.add(upd);
-
-                // Sending changes to dialogs
-                if (!upd.getName().equals(saved.getName()) ||
-                        !equalsE(upd.getAvatar(), saved.getAvatar())) {
-                    onUserDescChanged(upd);
-                }
             }
 
             if (saved != null) {
