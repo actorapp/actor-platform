@@ -12,7 +12,6 @@ import im.actor.core.api.ApiUserOutPeer;
 import im.actor.core.modules.sequence.internal.HandlerDifferenceUpdates;
 import im.actor.core.modules.sequence.internal.HandlerSeqUpdate;
 import im.actor.core.modules.sequence.internal.HandlerWeakUpdate;
-import im.actor.core.modules.sequence.internal.InternalUpdate;
 import im.actor.core.modules.sequence.internal.HandlerRelatedResponse;
 import im.actor.core.network.parser.Update;
 import im.actor.runtime.actors.ActorInterface;
@@ -47,9 +46,5 @@ public class SequenceHandlerInt extends ActorInterface {
 
     public void onWeakUpdate(Update update, long date) {
         send(new HandlerWeakUpdate(update, date));
-    }
-
-    public void onInternalUpdate(InternalUpdate internalUpdate) {
-        send(internalUpdate);
     }
 }

@@ -4,8 +4,6 @@
 
 package im.actor.core.modules.auth;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -38,7 +36,6 @@ import im.actor.core.entity.Sex;
 import im.actor.core.entity.User;
 import im.actor.core.modules.Modules;
 import im.actor.core.modules.AbsModule;
-import im.actor.core.modules.sequence.internal.LoggedIn;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.network.parser.Request;
@@ -49,7 +46,6 @@ import im.actor.runtime.*;
 import im.actor.runtime.Runtime;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseFunc;
-import im.actor.runtime.promise.PromiseResolver;
 
 public class Authentication {
 
@@ -279,13 +275,7 @@ public class Authentication {
             modules.getUsersModule().getUsersStorage().addOrUpdateItem(new User(auth.getUser()));
             modules.getPreferences().putBool(KEY_AUTH, true);
             modules.getPreferences().putInt(KEY_AUTH_UID, myUid);
-
-            modules.getUpdatesModule().onUpdateReceived(new LoggedIn(auth, new Runnable() {
-                @Override
-                public void run() {
-                    resolver.result(true);
-                }
-            }));
+            resolver.result(true);
         });
     }
 
@@ -639,15 +629,13 @@ public class Authentication {
         modules.getPreferences().putInt(KEY_AUTH_UID, myUid);
         modules.onLoggedIn(true);
         modules.getUsersModule().getUsersStorage().addOrUpdateItem(new User(response.getUser()));
-        modules.getUpdatesModule().onUpdateReceived(new LoggedIn(response, () -> {
-            state = AuthState.LOGGED_IN;
-            callback.onResult(state);
-        }));
+        callback.onResult(state);
     }
 
     private <T extends Response> void request(Request<T> request, RpcCallback<T> callback) {
         modules.getActorApi().request(request, callback);
     }
+
     private <T extends Response> void request(Request<T> request, RpcCallback<T> callback, long timeout) {
         modules.getActorApi().request(request, callback, timeout);
     }

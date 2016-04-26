@@ -5,9 +5,10 @@ import im.actor.core.api.updates.UpdateEventBusDeviceDisconnected;
 import im.actor.core.api.updates.UpdateEventBusDisposed;
 import im.actor.core.api.updates.UpdateEventBusMessage;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.sequence.Processor;
+import im.actor.core.modules.sequence.processor.WeakProcessor;
+import im.actor.core.network.parser.Update;
 
-public class EventBusProcessor implements Processor {
+public class EventBusProcessor implements WeakProcessor {
 
     private ModuleContext context;
 
@@ -16,7 +17,7 @@ public class EventBusProcessor implements Processor {
     }
 
     @Override
-    public boolean process(Object update) {
+    public boolean process(Update update, long date) {
         if (update instanceof UpdateEventBusMessage ||
                 update instanceof UpdateEventBusDeviceConnected ||
                 update instanceof UpdateEventBusDeviceDisconnected ||
