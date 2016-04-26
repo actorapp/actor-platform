@@ -57,6 +57,21 @@ trait MessagingSpecHelpers extends ScalaFutures with PeersImplicits with Matcher
     }
   }
 
+  //todo send with quote
+  def sendPrivateMessageWithQuote(userId: Int, message: ApiMessage, apiMessageOutReference: ApiMessageOutReference)(
+    implicit
+    clientData: ClientData,
+    msgService: MessagingService
+  ): SeqStateDate = {
+    val randomId = Random.nextLong
+    whenReady(ACLUtils.getOutPeer(ApiPeer(ApiPeerType.Private, userId), clientData.authId)) { peer ⇒
+      whenReady(msgService.handleSendMessage(peer, randomId, message, None, Some(apiMessageOutReference))) { resp ⇒
+        val respSeqDate = resp.toOption.get
+        SeqStateDate(respSeqDate.seq, ByteString.copyFrom(respSeqDate.state), respSeqDate.date)
+      }
+    }
+  }
+
   def findPrivateDialog(withUserId: Int)(implicit clientData: ClientData, ec: ExecutionContext): DialogInfo = {
     clientData.authData shouldBe defined
     val clientUserId = clientData.authData.get.userId
