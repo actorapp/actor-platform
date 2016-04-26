@@ -37,8 +37,8 @@ class MessageActions extends Component {
 
   componentDidMount() {
     this.listeners = [
-      EventListener.listen(document, 'click', this.handleDocumentClick),
-      EventListener.listen(document, 'scroll', this.handleDropdownClose)
+      EventListener.capture(document, 'click', this.handleDocumentClick),
+      EventListener.capture(document, 'scroll', this.handleDropdownClose)
     ];
   }
 
