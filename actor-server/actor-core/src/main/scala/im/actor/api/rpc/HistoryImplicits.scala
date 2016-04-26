@@ -3,7 +3,8 @@ package im.actor.api.rpc
 import cats.data.Xor
 import com.google.protobuf.CodedInputStream
 import im.actor.api.rpc.Refs.ApiMessageAttributes
-import im.actor.api.rpc.messaging.{ ApiMessage, ApiMessageContainer, ApiMessageReaction, ApiMessageState }
+import im.actor.api.rpc.messaging.{ ApiMessage, ApiMessageContainer, ApiMessageReaction, ApiMessageState, ApiQuotedMessage }
+import im.actor.server.dialog.DialogCommands.QuotedMessage
 import im.actor.server.model.{ HistoryMessage, MessageReaction }
 import org.joda.time.DateTime
 
@@ -28,6 +29,10 @@ trait HistoryImplicits {
               Some(ApiMessageState.Sent)
           } else None // for incoming
 
+          val quotedMessage = None;
+          val historyMessag: Option[HistoryMessage] = None;
+
+          val apiQuotedMessage = model.quotedMessagePeer.map(_ ⇒ ApiQuotedMessage(model.quotedMessageRid, None, model.quotedMessagePeer.get.id, historyMessag.get.date.getMillis, quotedMessage)) //TODO hp
           ApiMessageContainer(
             senderUserId = model.senderUserId,
             randomId = model.randomId,
@@ -35,14 +40,20 @@ trait HistoryImplicits {
             message = messageContent,
             state = state,
             reactions = reactions.toVector map (r ⇒ ApiMessageReaction(r.userIds.toVector, r.code)),
-            attribute = attributes,
-            quotedMessage = None
+            attributes = attributes,
+            quotedMessage = apiQuotedMessage
           )
         }
       } catch {
         case e: Exception ⇒ Xor.Left(e.getMessage)
       }
     }
+  }
+
+  implicit class ExtQuotedMessageModel(quotedMessage: QuotedMessage) {
+    lazy val asStruct: ApiQuotedMessage =
+      ApiQuotedMessage(quotedMessage.messageId map (_.value), quotedMessage.publicGroupId map (_.value),
+        quotedMessage.senderUserId, quotedMessage.date, Some(quotedMessage.message))
   }
 
 }
