@@ -25,12 +25,12 @@ message SessionEnvelope {
         UnsubscribeFromWeak unsubscribe_from_weak = 11;
         GetUpdateOptimizations get_update_optimizations = 12;
     }
-    optional string remote_addr = 13;
 }
 
 message HandleMessageBox {
     option (scalapb.message).extends = "im.actor.server.session.SessionMessage";
     required bytes message_box_bytes = 1;
+    optional string remote_addr = 2 [(scalapb.field).type = "java.net.InetAddress"];
 }
 
 message AuthorizeUser {
