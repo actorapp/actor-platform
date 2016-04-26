@@ -14,7 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import im.actor.core.entity.Contact;
@@ -38,6 +37,7 @@ import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
 public abstract class BaseContactFragment extends DisplayListFragment<Contact, ContactHolder> {
 
+    private static final boolean USE_APP_INVITES = false;
     private final boolean useCompactVersion;
     private final boolean userSearch;
     private final boolean useSelection;
@@ -117,11 +117,18 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
             addFooterOrHeaderAction(ActorSDK.sharedActor().style.getActionShareColor(), R.drawable.ic_share_white_24dp, R.string.contacts_share, false, new Runnable() {
                 @Override
                 public void run() {
-                    String inviteMessage = getResources().getString(R.string.invite_message).replace("{inviteUrl}", ActorSDK.sharedActor().getInviteUrl()).replace("{appName}", ActorSDK.sharedActor().getAppName());
-                    Intent sendIntent = new Intent(Intent.ACTION_SEND);
-                    sendIntent.putExtra(Intent.EXTRA_TEXT, inviteMessage);
-                    sendIntent.setType("text/plain");
-                    startActivity(sendIntent);
+                    Intent intent;
+
+                    if (USE_APP_INVITES) {
+                        intent = new Intent(getActivity(), InviteActivity.class);
+                    } else {
+                        String inviteMessage = getResources().getString(R.string.invite_message).replace("{inviteUrl}", ActorSDK.sharedActor().getInviteUrl()).replace("{appName}", ActorSDK.sharedActor().getAppName());
+                        intent = new Intent(Intent.ACTION_SEND);
+                        intent.putExtra(Intent.EXTRA_TEXT, inviteMessage);
+                        intent.setType("text/plain");
+                    }
+
+                    startActivity(intent);
                 }
             }, true);
 
