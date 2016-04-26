@@ -163,6 +163,12 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity
+            android:name=".controllers.contacts.InviteActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:theme="@style/CommonActivityTheme"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
             android:name=".controllers.compose.CreateGroupActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/CommonActivityTheme"

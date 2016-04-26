@@ -4,10 +4,13 @@
 
 package im.actor.core.modules.contacts;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
+import im.actor.core.entity.PhoneBookIds;
 import im.actor.core.modules.contacts.entity.BookImportStorage;
 import im.actor.core.providers.PhoneBookProvider;
 import im.actor.core.api.ApiEmailToImport;
@@ -26,6 +29,7 @@ import im.actor.core.modules.ModuleActor;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.runtime.Log;
+import im.actor.runtime.bser.Bser;
 
 public class BookImportActor extends ModuleActor {
 
@@ -101,6 +105,13 @@ public class BookImportActor extends ModuleActor {
 
         int newPhones = 0;
         int newEmails = 0;
+        ArrayList<Long> newids = new ArrayList<Long>();
+        List<Long> oldids = new ArrayList<Long>();
+        try {
+            oldids.addAll(Bser.parse(new PhoneBookIds(), preferences().getBytes("phone_book_ids")).getIds());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         for (PhoneBookContact record : phoneBook) {
             for (PhoneBookPhone phone : record.getPhones()) {
                 if (storage.isImported(phone.getNumber())) {
@@ -125,7 +136,29 @@ public class BookImportActor extends ModuleActor {
                 importQueue.add(new ImportEmailQueueItem(email.getEmail().toLowerCase(), record.getName()));
                 newEmails++;
             }
+
+            newids.add(record.getContactId());
         }
+
+        int size = phoneBook.size();
+        for (PhoneBookContact c : phoneBook) {
+            if (!oldids.contains(c.getContactId())) {
+                context().getContactsModule().getPhoneBook().addOrUpdateItem(c.setSortId(size--));
+            }
+        }
+
+        ArrayList<Long> toRemove = new ArrayList<Long>();
+        for (long oldId : oldids) {
+            if (!newids.contains(oldId)) {
+                toRemove.add(oldId);
+            }
+        }
+
+        long[] toRemoveArray = new long[toRemove.size()];
+        for (int i = 0; i < toRemove.size(); i++) {
+            toRemoveArray[i] = toRemove.get(i);
+        }
+        context().getContactsModule().getPhoneBook().removeItems(toRemoveArray);
 
         if (ENABLE_LOG) {
             if (newPhones == 0 && newEmails == 0) {
