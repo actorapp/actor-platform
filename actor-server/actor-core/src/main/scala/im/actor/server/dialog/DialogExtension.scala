@@ -9,6 +9,7 @@ import akka.pattern.ask
 import akka.util.Timeout
 import com.google.protobuf.wrappers.{ Int32Value, Int64Value }
 import im.actor.api.rpc._
+import im.actor.api.rpc.collections.ApiInt64Value
 import im.actor.api.rpc.messaging.{ ApiDialog, ApiDialogGroup, ApiMessage, ApiTextMessage }
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.api.rpc.peers.ApiPeer
@@ -57,18 +58,22 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
     }
 
   def sendMessage(
-    peer:          ApiPeer,
-    senderUserId:  UserId,
-    senderAuthSid: Int,
-    senderAuthId:  Option[Long], // required only in case of access hash check for private peer
-    randomId:      RandomId,
-    message:       ApiMessage,
-    accessHash:    Option[Long]   = None,
-    isFat:         Boolean        = false,
-    forUserId:     Option[UserId] = None
+    peer:                 ApiPeer,
+    senderUserId:         UserId,
+    senderAuthSid:        Int,
+    senderAuthId:         Option[Long], // required only in case of access hash check for private peer
+    randomId:             RandomId,
+    message:              ApiMessage,
+    accessHash:           Option[Long]           = None,
+    isFat:                Boolean                = false,
+    forUserId:            Option[UserId]         = None,
+    quotedHistoryMessage: Option[HistoryMessage] = None
   ): Future[SeqStateDate] =
     withValidPeer(peer.asModel, senderUserId, Future.successful(SeqStateDate())) {
+      //todo hp: send message?
       // we don't set date here, cause actual date set inside dialog processor
+      val quotedMessage = quotedHistoryMessage flatMap (hm ⇒ ApiMessage.parseFrom(hm.messageContentData).fold(l ⇒ None, r ⇒ Some(QuotedMessage(Some(Int64Value(hm.randomId)), Some(Int32Value(hm.peer.id)), hm.senderUserId, hm.date.getMillis, r))))
+
       val sendMessage = SendMessage(
         origin = Some(Peer.privat(senderUserId)),
         dest = Some(peer.asModel),
@@ -79,7 +84,8 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
         message = message,
         accessHash = accessHash map (Int64Value(_)),
         isFat = isFat,
-        forUserId = forUserId map (Int32Value(_))
+        forUserId = forUserId map (Int32Value(_)),
+        quotedMessage = quotedMessage
       )
       (userExt.processorRegion.ref ? UserEnvelope(senderUserId).withDialogEnvelope(DialogEnvelope().withSendMessage(sendMessage))).mapTo[SeqStateDate]
     }
