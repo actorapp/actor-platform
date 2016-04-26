@@ -10,6 +10,7 @@ import im.actor.api.rpc.misc._
 import im.actor.api.rpc.peers._
 import im.actor.config.ActorConfig
 import im.actor.server.messaging.{ MessageParsing, MessageUpdating }
+import im.actor.server.model.HistoryMessage
 import im.actor.server.persist.HistoryMessageRepo
 
 import scala.concurrent._
@@ -38,28 +39,45 @@ private[messaging] trait MessagingHandlers extends PeersImplicits
   private val editTimeWindow: Long = 5.minutes.toMillis
 
   override def doHandleSendMessage(
-    outPeer:         ApiOutPeer,
-    randomId:        Long,
-    message:         ApiMessage,
-    isOnlyForUser:   Option[Int],
-    quotedReference: Option[ApiMessageOutReference],
-    clientData:      ClientData
+    outPeer:                ApiOutPeer,
+    randomId:               Long,
+    message:                ApiMessage,
+    isOnlyForUser:          Option[Int],
+    quotedMessageReference: Option[ApiMessageOutReference],
+    clientData:             ClientData
   ): Future[HandlerResult[ResponseSeqDate]] =
     authorized(clientData) { implicit client ⇒
-      (for (
-        s ← fromFuture(dialogExt.sendMessage(
-          peer = outPeer.asPeer,
-          senderUserId = client.userId,
-          senderAuthSid = client.authSid,
-          senderAuthId = Some(client.authId),
-          randomId = randomId,
-          message = message,
-          accessHash = Some(outPeer.accessHash),
-          forUserId = isOnlyForUser
-        ))
-      ) yield ResponseSeqDate(s.seq, s.state.toByteArray, s.date)).value
+      withQuoteMessage(quotedMessageReference) { histMessage ⇒
+        (for (
+          s ← fromFuture(dialogExt.sendMessage(
+            peer = outPeer.asPeer,
+            senderUserId = client.userId,
+            senderAuthSid = client.authSid,
+            senderAuthId = Some(client.authId),
+            randomId = randomId,
+            message = message,
+            accessHash = Some(outPeer.accessHash),
+            forUserId = isOnlyForUser,
+            isFat = false,
+            quotedHistoryMessage = histMessage
+          ))
+        ) yield ResponseSeqDate(s.seq, s.state.toByteArray, s.date)).value
+      }
     }
 
+  def withQuoteMessage(quotedMessageReference: Option[ApiMessageOutReference])(f: Option[HistoryMessage] ⇒ Future[HandlerResult[ResponseSeqDate]]): Future[HandlerResult[ResponseSeqDate]] = {
+    quotedMessageReference match {
+      case Some(quoted) ⇒
+        for {
+          histMessage ← (db.run(HistoryMessageRepo.find(quoted.peer.asModel, quoted.randomId)))
+          _ ← Future.successful(if (histMessage.isEmpty) CommonRpcErrors.forbidden("Ref doesn't exist"))
+          _ ← Future.successful(if (parseMessage(histMessage.get.messageContentData).isLeft) IntenalError)
+          result ← f(histMessage)
+        } yield result
+      case None ⇒ f(None)
+    }
+
+  }
   override def doHandleNotifyDialogOpened(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
     FastFuture.failed(new RuntimeException("Not implemented"))
 
