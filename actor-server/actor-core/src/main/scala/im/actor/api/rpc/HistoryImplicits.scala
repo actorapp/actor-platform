@@ -35,7 +35,8 @@ trait HistoryImplicits {
             message = messageContent,
             state = state,
             reactions = reactions.toVector map (r ⇒ ApiMessageReaction(r.userIds.toVector, r.code)),
-            attributes = attributes
+            attribute = attributes,
+            quotedMessage = None
           )
         }
       } catch {

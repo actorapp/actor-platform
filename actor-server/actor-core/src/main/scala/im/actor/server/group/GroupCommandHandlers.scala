@@ -13,7 +13,7 @@ import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.api.rpc.users.ApiSex
 import im.actor.server.ApiConversions._
 import im.actor.server.acl.ACLUtils
-import im.actor.server.dialog.{ DialogExtension, UserACL }
+import im.actor.server.dialog.{ DialogExtension, UserAcl }
 import im.actor.server.model.{ AvatarData, Group, Peer, PeerType }
 import im.actor.server.persist._
 import im.actor.server.file.{ Avatar, ImageUtils }
@@ -31,7 +31,7 @@ import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.Future
 
-private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupCommandHelpers with UserACL {
+private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupCommandHelpers with UserAcl {
   this: GroupProcessor ⇒
 
   import GroupCommands._

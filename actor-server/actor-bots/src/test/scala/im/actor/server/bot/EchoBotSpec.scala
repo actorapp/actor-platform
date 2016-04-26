@@ -74,9 +74,9 @@ final class EchoBotSpec
 
     val botOutPeer = getOutPeer(EchoBot.UserId, authId)
 
-    whenReady(msgService.handleLoadHistory(botOutPeer, 0, None, 100)) { rsp ⇒
+    whenReady(msgService.handleLoadHistory(botOutPeer, 0, None, 100, Vector.empty)) { rsp ⇒
       inside(rsp) {
-        case Ok(ResponseLoadHistory(history, _)) ⇒
+        case Ok(ResponseLoadHistory(history, _, _, _, _)) ⇒
           history.length shouldBe 2
           val tm = history.last.message.asInstanceOf[ApiTextMessage]
           tm.text shouldBe "Hello"
@@ -102,9 +102,9 @@ final class EchoBotSpec
 
     Thread.sleep(2000)
 
-    whenReady(msgService.handleLoadHistory(outPeer, 0, None, 100)) { rsp ⇒
+    whenReady(msgService.handleLoadHistory(outPeer, 0, None, 100, Vector.empty)) { rsp ⇒
       inside(rsp) {
-        case Ok(ResponseLoadHistory(history, _)) ⇒
+        case Ok(ResponseLoadHistory(history, _, _, _, _)) ⇒
           history.length shouldBe 4
           val tm = history.last.message.asInstanceOf[ApiTextMessage]
           tm.text shouldBe "Hello"

@@ -37,11 +37,12 @@ private[messaging] trait MessagingHandlers extends PeersImplicits
   private val editTimeWindow: Long = 5.minutes.toMillis
 
   override def doHandleSendMessage(
-    outPeer:       ApiOutPeer,
-    randomId:      Long,
-    message:       ApiMessage,
-    isOnlyForUser: Option[Int],
-    clientData:    ClientData
+    outPeer:         ApiOutPeer,
+    randomId:        Long,
+    message:         ApiMessage,
+    isOnlyForUser:   Option[Int],
+    quotedReference: Option[ApiMessageOutReference],
+    clientData:      ClientData
   ): Future[HandlerResult[ResponseSeqDate]] =
     authorized(clientData) { implicit client ⇒
       (for (

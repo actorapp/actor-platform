@@ -77,7 +77,7 @@ class MessagingServiceSpec
         {
           implicit val clienData = clientData11
 
-          whenReady(service.handleSendMessage(user2Peer, randomId, ApiTextMessage("Hi Shiva", Vector.empty, None), None)) { resp ⇒
+          whenReady(service.handleSendMessage(user2Peer, randomId, ApiTextMessage("Hi Shiva", Vector.empty, None), None, None)) { resp ⇒
             resp should matchPattern {
               case Ok(ResponseSeqDate(2, _, _)) ⇒
             }
@@ -128,11 +128,11 @@ class MessagingServiceSpec
           val randomId = Random.nextLong()
           val text = "Hi Shiva"
           val actions = Future.sequence(List(
-            service.handleSendMessage(user2Peer, randomId, ApiTextMessage(text, Vector.empty, None), None),
-            service.handleSendMessage(user2Peer, randomId, ApiTextMessage(text, Vector.empty, None), None),
-            service.handleSendMessage(user2Peer, randomId, ApiTextMessage(text, Vector.empty, None), None),
-            service.handleSendMessage(user2Peer, randomId, ApiTextMessage(text, Vector.empty, None), None),
-            service.handleSendMessage(user2Peer, randomId, ApiTextMessage(text, Vector.empty, None), None)
+            service.handleSendMessage(user2Peer, randomId, ApiTextMessage(text, Vector.empty, None), None, None),
+            service.handleSendMessage(user2Peer, randomId, ApiTextMessage(text, Vector.empty, None), None, None),
+            service.handleSendMessage(user2Peer, randomId, ApiTextMessage(text, Vector.empty, None), None, None),
+            service.handleSendMessage(user2Peer, randomId, ApiTextMessage(text, Vector.empty, None), None, None),
+            service.handleSendMessage(user2Peer, randomId, ApiTextMessage(text, Vector.empty, None), None, None)
           ))
 
           whenReady(actions) { resps ⇒
@@ -178,7 +178,7 @@ class MessagingServiceSpec
         {
           implicit val clientData = clientData11
 
-          whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, randomId, ApiTextMessage("Hi again", Vector.empty, None), None)) { resp ⇒
+          whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, randomId, ApiTextMessage("Hi again", Vector.empty, None), None, None)) { resp ⇒
             resp should matchPattern {
               case Ok(ResponseSeqDate(4, _, _)) ⇒
             }
@@ -216,7 +216,7 @@ class MessagingServiceSpec
 
         val alienClientData = ClientData(user1AuthId1, sessionId, Some(AuthData(alien.id, authSidAlien, 42)))
 
-        whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage("Hi again", Vector.empty, None), None)(alienClientData)) { resp ⇒
+        whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage("Hi again", Vector.empty, None), None, None)(alienClientData)) { resp ⇒
           resp should matchForbidden
         }
 
@@ -264,11 +264,11 @@ class MessagingServiceSpec
           val randomId = Random.nextLong()
           val text = "Hi Shiva"
           val actions = Future.sequence(List(
-            service.handleSendMessage(group2OutPeer.asOutPeer, randomId, ApiTextMessage(text, Vector.empty, None), None),
-            service.handleSendMessage(group2OutPeer.asOutPeer, randomId, ApiTextMessage(text, Vector.empty, None), None),
-            service.handleSendMessage(group2OutPeer.asOutPeer, randomId, ApiTextMessage(text, Vector.empty, None), None),
-            service.handleSendMessage(group2OutPeer.asOutPeer, randomId, ApiTextMessage(text, Vector.empty, None), None),
-            service.handleSendMessage(group2OutPeer.asOutPeer, randomId, ApiTextMessage(text, Vector.empty, None), None)
+            service.handleSendMessage(group2OutPeer.asOutPeer, randomId, ApiTextMessage(text, Vector.empty, None), None, None),
+            service.handleSendMessage(group2OutPeer.asOutPeer, randomId, ApiTextMessage(text, Vector.empty, None), None, None),
+            service.handleSendMessage(group2OutPeer.asOutPeer, randomId, ApiTextMessage(text, Vector.empty, None), None, None),
+            service.handleSendMessage(group2OutPeer.asOutPeer, randomId, ApiTextMessage(text, Vector.empty, None), None, None),
+            service.handleSendMessage(group2OutPeer.asOutPeer, randomId, ApiTextMessage(text, Vector.empty, None), None, None)
           ))
 
           whenReady(actions) { resps ⇒
@@ -314,7 +314,7 @@ class MessagingServiceSpec
           probe.expectMsg(SubscribeAck(Subscribe(topic, Some("testProbe"), probe.ref)))
         }
 
-        whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage("Hi PubSub", Vector.empty, None), None)) { resp ⇒
+        whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage("Hi PubSub", Vector.empty, None), None, None)) { resp ⇒
           probe.expectMsgClass(classOf[PeerMessage])
           probe.expectMsgClass(classOf[PeerMessage])
         }
@@ -335,7 +335,7 @@ class MessagingServiceSpec
 
         def sendMessageToAlice(text: String): Future[ResponseSeqDate] = {
           implicit val clientData = ClientData(bobAuthId, 1, Some(AuthData(bob.id, bobAuthSid, 42)))
-          service.handleSendMessage(aliceOutPeer, ACLUtils.randomLong(), textMessage(text), None) map (_.toOption.get)
+          service.handleSendMessage(aliceOutPeer, ACLUtils.randomLong(), textMessage(text), None, None) map (_.toOption.get)
         }
 
         val toAlice = for (i ← 1 to 100) yield sendMessageToAlice(i.toString)
@@ -345,9 +345,9 @@ class MessagingServiceSpec
         {
           implicit val clientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid, 42)))
 
-          whenReady(service.handleLoadHistory(bobOutPeer, 0L, None, Int.MaxValue)) { resp ⇒
+          whenReady(service.handleLoadHistory(bobOutPeer, 0L, None, Int.MaxValue, Vector.empty)) { resp ⇒
             inside(resp) {
-              case Ok(ResponseLoadHistory(history, _)) ⇒
+              case Ok(ResponseLoadHistory(history, _, _, _, _)) ⇒
                 val textMessages = history map { e ⇒
                   val parsed = parseMessage(e.message.toByteArray)
                   inside(parsed) {

@@ -506,7 +506,7 @@ final class AuthServiceSpec
       {
         implicit val clientData = regClientData
         val unregPhones = Vector(ApiPhoneToImport(phoneNumber, localName))
-        whenReady(contactService.handleImportContacts(unregPhones, Vector.empty))(_ ⇒ ())
+        whenReady(contactService.handleImportContacts(unregPhones, Vector.empty, Vector.empty))(_ ⇒ ())
       }
 
       sendSessionHello(authId, sessionId)
@@ -530,9 +530,9 @@ final class AuthServiceSpec
           _ shouldBe empty
         }
 
-        whenReady(contactService.handleGetContacts("wrongHash")) { resp ⇒
+        whenReady(contactService.handleGetContacts("wrongHash", Vector.empty)) { resp ⇒
           inside(resp) {
-            case Ok(ResponseGetContacts(users, false)) ⇒
+            case Ok(ResponseGetContacts(users, false, _)) ⇒
               users should have length 1
               val newUser = users.head
               newUser.name shouldEqual userName
