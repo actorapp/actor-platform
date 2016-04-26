@@ -24,10 +24,12 @@ public class ResponseGetContacts extends Response {
 
     private List<ApiUser> users;
     private boolean isNotChanged;
+    private List<ApiUserOutPeer> userPeers;
 
-    public ResponseGetContacts(@NotNull List<ApiUser> users, boolean isNotChanged) {
+    public ResponseGetContacts(@NotNull List<ApiUser> users, boolean isNotChanged, @NotNull List<ApiUserOutPeer> userPeers) {
         this.users = users;
         this.isNotChanged = isNotChanged;
+        this.userPeers = userPeers;
     }
 
     public ResponseGetContacts() {
@@ -43,6 +45,11 @@ public class ResponseGetContacts extends Response {
         return this.isNotChanged;
     }
 
+    @NotNull
+    public List<ApiUserOutPeer> getUserPeers() {
+        return this.userPeers;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         List<ApiUser> _users = new ArrayList<ApiUser>();
@@ -51,12 +58,18 @@ public class ResponseGetContacts extends Response {
         }
         this.users = values.getRepeatedObj(1, _users);
         this.isNotChanged = values.getBool(2);
+        List<ApiUserOutPeer> _userPeers = new ArrayList<ApiUserOutPeer>();
+        for (int i = 0; i < values.getRepeatedCount(3); i ++) {
+            _userPeers.add(new ApiUserOutPeer());
+        }
+        this.userPeers = values.getRepeatedObj(3, _userPeers);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeRepeatedObj(1, this.users);
         writer.writeBool(2, this.isNotChanged);
+        writer.writeRepeatedObj(3, this.userPeers);
     }
 
     @Override

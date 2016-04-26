@@ -23,9 +23,11 @@ public class ResponseSearchContacts extends Response {
     }
 
     private List<ApiUser> users;
+    private List<ApiUserOutPeer> userPeers;
 
-    public ResponseSearchContacts(@NotNull List<ApiUser> users) {
+    public ResponseSearchContacts(@NotNull List<ApiUser> users, @NotNull List<ApiUserOutPeer> userPeers) {
         this.users = users;
+        this.userPeers = userPeers;
     }
 
     public ResponseSearchContacts() {
@@ -37,6 +39,11 @@ public class ResponseSearchContacts extends Response {
         return this.users;
     }
 
+    @NotNull
+    public List<ApiUserOutPeer> getUserPeers() {
+        return this.userPeers;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         List<ApiUser> _users = new ArrayList<ApiUser>();
@@ -44,11 +51,17 @@ public class ResponseSearchContacts extends Response {
             _users.add(new ApiUser());
         }
         this.users = values.getRepeatedObj(1, _users);
+        List<ApiUserOutPeer> _userPeers = new ArrayList<ApiUserOutPeer>();
+        for (int i = 0; i < values.getRepeatedCount(2); i ++) {
+            _userPeers.add(new ApiUserOutPeer());
+        }
+        this.userPeers = values.getRepeatedObj(2, _userPeers);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeRepeatedObj(1, this.users);
+        writer.writeRepeatedObj(2, this.userPeers);
     }
 
     @Override

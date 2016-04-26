@@ -20,12 +20,7 @@ public class StickerPack extends WrapperEntity<ApiStickerCollection> {
 
     private static final int RECORD_ID = 10;
 
-    public static final BserCreator<StickerPack> CREATOR = new BserCreator<StickerPack>() {
-        @Override
-        public StickerPack createInstance() {
-            return new StickerPack();
-        }
-    };
+    public static final BserCreator<StickerPack> CREATOR = StickerPack::new;
 
     @Property("readonly, nonatomic")
     private int id;

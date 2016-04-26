@@ -28,6 +28,7 @@ public abstract class ApiMessage extends BserObject {
             case 6: return Bser.parse(new ApiStickerMessage(), content);
             case 7: return Bser.parse(new ApiBinaryMessage(), content);
             case 8: return Bser.parse(new ApiEncryptedMessage(), content);
+            case 9: return Bser.parse(new ApiEmptyMessage(), content);
             default: return new ApiMessageUnsupported(key, content);
         }
     }

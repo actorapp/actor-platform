@@ -4,6 +4,8 @@ import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.sequence.processor.SequenceProcessor;
 import im.actor.core.network.parser.Update;
+import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.promise.Promise;
 
 public class EncryptedProcessor extends AbsModule implements SequenceProcessor {
 
@@ -12,7 +14,7 @@ public class EncryptedProcessor extends AbsModule implements SequenceProcessor {
     }
 
     @Override
-    public boolean process(Update update) {
+    public Promise<Void> process(Update update) {
 //        if (update instanceof UpdatePublicKeyGroupAdded) {
 //            context().getEncryption().getKeyManager().send(new KeyManagerActor.PublicKeysGroupAdded(
 //                    ((UpdatePublicKeyGroupAdded) update).getUid(),
@@ -28,6 +30,6 @@ public class EncryptedProcessor extends AbsModule implements SequenceProcessor {
 //        } else if (update instanceof UpdateEncryptedPackage) {
 //
 //        }
-        return false;
+        return null;
     }
 }

@@ -272,7 +272,7 @@ public class Authentication {
             state = AuthState.LOGGED_IN;
             myUid = auth.getUser().getId();
             modules.onLoggedIn(true);
-            modules.getUsersModule().getUsersStorage().addOrUpdateItem(new User(auth.getUser()));
+            modules.getUsersModule().getUsersStorage().addOrUpdateItem(new User(auth.getUser(), null));
             modules.getPreferences().putBool(KEY_AUTH, true);
             modules.getPreferences().putInt(KEY_AUTH_UID, myUid);
             resolver.result(true);
@@ -628,7 +628,7 @@ public class Authentication {
         modules.getPreferences().putBool(KEY_AUTH, true);
         modules.getPreferences().putInt(KEY_AUTH_UID, myUid);
         modules.onLoggedIn(true);
-        modules.getUsersModule().getUsersStorage().addOrUpdateItem(new User(response.getUser()));
+        modules.getUsersModule().getUsersStorage().addOrUpdateItem(new User(response.getUser(), null));
         callback.onResult(state);
     }
 

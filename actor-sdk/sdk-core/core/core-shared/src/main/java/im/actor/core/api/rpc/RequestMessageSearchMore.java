@@ -23,9 +23,11 @@ public class RequestMessageSearchMore extends Request<ResponseMessageSearchRespo
     }
 
     private byte[] loadMoreState;
+    private List<ApiUpdateOptimization> optimizations;
 
-    public RequestMessageSearchMore(@NotNull byte[] loadMoreState) {
+    public RequestMessageSearchMore(@NotNull byte[] loadMoreState, @NotNull List<ApiUpdateOptimization> optimizations) {
         this.loadMoreState = loadMoreState;
+        this.optimizations = optimizations;
     }
 
     public RequestMessageSearchMore() {
@@ -37,9 +39,18 @@ public class RequestMessageSearchMore extends Request<ResponseMessageSearchRespo
         return this.loadMoreState;
     }
 
+    @NotNull
+    public List<ApiUpdateOptimization> getOptimizations() {
+        return this.optimizations;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.loadMoreState = values.getBytes(1);
+        this.optimizations = new ArrayList<ApiUpdateOptimization>();
+        for (int b : values.getRepeatedInt(2)) {
+            optimizations.add(ApiUpdateOptimization.parse(b));
+        }
     }
 
     @Override
@@ -48,11 +59,15 @@ public class RequestMessageSearchMore extends Request<ResponseMessageSearchRespo
             throw new IOException();
         }
         writer.writeBytes(1, this.loadMoreState);
+        for (ApiUpdateOptimization i : this.optimizations) {
+            writer.writeInt(2, i.getValue());
+        }
     }
 
     @Override
     public String toString() {
         String res = "rpc MessageSearchMore{";
+        res += "optimizations=" + this.optimizations;
         res += "}";
         return res;
     }
