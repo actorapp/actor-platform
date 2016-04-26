@@ -3044,6 +3044,15 @@
             <property role="TrG5h" value="isNotChanged" />
             <node concept="2m5ndN" id="GBscvBBgw8" role="2m7DVh" />
           </node>
+          <node concept="2m7Kf5" id="IudSR6LC3u" role="2m0hLx">
+            <property role="2m7DUN" value="3" />
+            <property role="TrG5h" value="userPeers" />
+            <node concept="2m5nlk" id="IudSR6LDhb" role="2m7DVh">
+              <node concept="2m5mGg" id="IudSR6LDhh" role="3GJlyp">
+                <ref role="2m5mJy" node="GBscvBB6ia" resolve="UserOutPeer" />
+              </node>
+            </node>
+          </node>
           <node concept="Nu42z" id="GBscvBBgvK" role="NuuwV">
             <property role="Nu42W" value="58" />
           </node>

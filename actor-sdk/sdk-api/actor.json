@@ -3225,6 +3225,17 @@
                   "type": "bool",
                   "id": 2,
                   "name": "isNotChanged"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "UserOutPeer"
+                    }
+                  },
+                  "id": 3,
+                  "name": "userPeers"
                 }
               ]
             },
