@@ -280,55 +280,55 @@ public class GroupsProcessor extends AbsModule implements SequenceProcessor {
     }
 
     @Override
-    public boolean process(Update update) {
+    public Promise<Void> process(Update update) {
         if (update instanceof UpdateGroupTitleChanged) {
             UpdateGroupTitleChanged titleChanged = (UpdateGroupTitleChanged) update;
             onTitleChanged(titleChanged.getGroupId(), titleChanged.getRid(),
                     titleChanged.getUid(), titleChanged.getTitle(), titleChanged.getDate(),
                     false);
-            return true;
+            return Promise.success(null);
         } else if (update instanceof UpdateGroupTopicChanged) {
             UpdateGroupTopicChanged topicChanged = (UpdateGroupTopicChanged) update;
             onTopicChanged(topicChanged.getGroupId(), topicChanged.getTopic());
-            return true;
+            return Promise.success(null);
         } else if (update instanceof UpdateGroupAboutChanged) {
             UpdateGroupAboutChanged aboutChanged = (UpdateGroupAboutChanged) update;
             onAboutChanged(aboutChanged.getGroupId(), aboutChanged.getAbout());
-            return true;
+            return Promise.success(null);
         } else if (update instanceof UpdateGroupAvatarChanged) {
             UpdateGroupAvatarChanged avatarChanged = (UpdateGroupAvatarChanged) update;
             onAvatarChanged(avatarChanged.getGroupId(), avatarChanged.getRid(),
                     avatarChanged.getUid(), avatarChanged.getAvatar(),
                     avatarChanged.getDate(), false);
-            return true;
+            return Promise.success(null);
         } else if (update instanceof UpdateGroupInvite) {
             UpdateGroupInvite groupInvite = (UpdateGroupInvite) update;
             onGroupInvite(groupInvite.getGroupId(),
                     groupInvite.getRid(), groupInvite.getInviteUid(), groupInvite.getDate(),
                     false);
-            return true;
+            return Promise.success(null);
         } else if (update instanceof UpdateGroupUserLeave) {
             UpdateGroupUserLeave leave = (UpdateGroupUserLeave) update;
             onUserLeave(leave.getGroupId(), leave.getRid(), leave.getUid(),
                     leave.getDate(), false);
-            return true;
+            return Promise.success(null);
         } else if (update instanceof UpdateGroupUserKick) {
             UpdateGroupUserKick userKick = (UpdateGroupUserKick) update;
             onUserKicked(userKick.getGroupId(),
                     userKick.getRid(), userKick.getUid(), userKick.getKickerUid(), userKick.getDate(),
                     false);
-            return true;
+            return Promise.success(null);
         } else if (update instanceof UpdateGroupUserInvited) {
             UpdateGroupUserInvited userInvited = (UpdateGroupUserInvited) update;
             onUserAdded(userInvited.getGroupId(),
                     userInvited.getRid(), userInvited.getUid(), userInvited.getInviterUid(), userInvited.getDate(),
                     false);
-            return true;
+            return Promise.success(null);
         } else if (update instanceof UpdateGroupMembersUpdate) {
             onMembersUpdated(((UpdateGroupMembersUpdate) update).getGroupId(),
                     ((UpdateGroupMembersUpdate) update).getMembers());
-            return true;
+            return Promise.success(null);
         }
-        return false;
+        return null;
     }
 }

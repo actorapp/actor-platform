@@ -6,6 +6,7 @@ package im.actor.core.modules.messaging.history;
 
 import im.actor.core.api.rpc.RequestLoadArchived;
 import im.actor.core.api.rpc.ResponseLoadArchived;
+import im.actor.core.modules.Configuration;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
@@ -59,7 +60,7 @@ public class ArchivedDialogsActor extends ModuleActor {
         isLoading = true;
 
         Log.d(TAG, "Loading archived dialogs");
-        lastRequest = request(new RequestLoadArchived(nextOffset, LIMIT),
+        lastRequest = request(new RequestLoadArchived(nextOffset, LIMIT, Configuration.OPTIMIZATIONS),
                 new RpcCallback<ResponseLoadArchived>() {
                     @Override
                     public void onResult(final ResponseLoadArchived response) {

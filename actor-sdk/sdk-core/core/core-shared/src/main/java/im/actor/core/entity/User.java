@@ -16,6 +16,7 @@ import java.util.List;
 import im.actor.core.api.ApiAvatar;
 import im.actor.core.api.ApiContactRecord;
 import im.actor.core.api.ApiContactType;
+import im.actor.core.api.ApiFullUser;
 import im.actor.core.api.ApiUser;
 import im.actor.runtime.bser.BserCreator;
 import im.actor.runtime.bser.BserValues;
@@ -28,16 +29,12 @@ import im.actor.runtime.storage.KeyValueItem;
 #define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
 ]-*/
 
-public class User extends WrapperEntity<ApiUser> implements KeyValueItem {
+public class User extends WrapperExtEntity<ApiFullUser, ApiUser> implements KeyValueItem {
 
     private static final int RECORD_ID = 10;
+    private static final int RECORD_FULL_ID = 20;
 
-    public static BserCreator<User> CREATOR = new BserCreator<User>() {
-        @Override
-        public User createInstance() {
-            return new User();
-        }
-    };
+    public static BserCreator<User> CREATOR = User::new;
 
     @Property("readonly, nonatomic")
     private int uid;
@@ -70,16 +67,16 @@ public class User extends WrapperEntity<ApiUser> implements KeyValueItem {
     @SuppressWarnings("NullableProblems")
     private List<ContactRecord> records;
 
-    public User(@NotNull ApiUser wrappedUser) {
-        super(RECORD_ID, wrappedUser);
+    public User(@NotNull ApiUser wrappedUser, @Nullable ApiFullUser ext) {
+        super(RECORD_ID, RECORD_FULL_ID, wrappedUser, ext);
     }
 
     public User(@NotNull byte[] data) throws IOException {
-        super(RECORD_ID, data);
+        super(RECORD_ID, RECORD_FULL_ID, data);
     }
 
     private User() {
-        super(RECORD_ID);
+        super(RECORD_ID, RECORD_FULL_ID);
     }
 
     @NotNull
@@ -150,18 +147,13 @@ public class User extends WrapperEntity<ApiUser> implements KeyValueItem {
                 w.getAccessHash(),
                 name,
                 w.getLocalName(),
+                w.getNick(),
                 w.getSex(),
                 w.getAvatar(),
-                w.getContactInfo(),
                 w.isBot(),
-                w.getNick(),
-                w.getAbout(),
-                w.getExternal(),
-                w.getPreferredLanguages(),
-                w.getTimeZone(),
-                w.getBotCommands());
+                w.getExt());
         res.setUnmappedObjects(w.getUnmappedObjects());
-        return new User(res);
+        return new User(res, getWrappedExt());
     }
 
     public User editLocalName(@NotNull String localName) {
@@ -171,18 +163,13 @@ public class User extends WrapperEntity<ApiUser> implements KeyValueItem {
                 w.getAccessHash(),
                 w.getName(),
                 localName,
+                w.getNick(),
                 w.getSex(),
                 w.getAvatar(),
-                w.getContactInfo(),
                 w.isBot(),
-                w.getNick(),
-                w.getAbout(),
-                w.getExternal(),
-                w.getPreferredLanguages(),
-                w.getTimeZone(),
-                w.getBotCommands());
+                w.getExt());
         res.setUnmappedObjects(w.getUnmappedObjects());
-        return new User(res);
+        return new User(res, getWrappedExt());
     }
 
     public User editNick(@Nullable String nick) {
@@ -192,39 +179,13 @@ public class User extends WrapperEntity<ApiUser> implements KeyValueItem {
                 w.getAccessHash(),
                 w.getName(),
                 w.getLocalName(),
-                w.getSex(),
-                w.getAvatar(),
-                w.getContactInfo(),
-                w.isBot(),
                 nick,
-                w.getAbout(),
-                w.getExternal(),
-                w.getPreferredLanguages(),
-                w.getTimeZone(),
-                w.getBotCommands());
-        res.setUnmappedObjects(w.getUnmappedObjects());
-        return new User(res);
-    }
-
-    public User editAbout(@Nullable String about) {
-        ApiUser w = getWrapped();
-        ApiUser res = new ApiUser(
-                w.getId(),
-                w.getAccessHash(),
-                w.getName(),
-                w.getLocalName(),
                 w.getSex(),
                 w.getAvatar(),
-                w.getContactInfo(),
                 w.isBot(),
-                w.getNick(),
-                about,
-                w.getExternal(),
-                w.getPreferredLanguages(),
-                w.getTimeZone(),
-                w.getBotCommands());
+                w.getExt());
         res.setUnmappedObjects(w.getUnmappedObjects());
-        return new User(res);
+        return new User(res, getWrappedExt());
     }
 
     public User editAvatar(@Nullable ApiAvatar avatar) {
@@ -234,22 +195,40 @@ public class User extends WrapperEntity<ApiUser> implements KeyValueItem {
                 w.getAccessHash(),
                 w.getName(),
                 w.getLocalName(),
+                w.getNick(),
                 w.getSex(),
                 avatar,
-                w.getContactInfo(),
                 w.isBot(),
-                w.getNick(),
-                w.getAbout(),
-                w.getExternal(),
-                w.getPreferredLanguages(),
-                w.getTimeZone(),
-                w.getBotCommands());
+                w.getExt());
         res.setUnmappedObjects(w.getUnmappedObjects());
-        return new User(res);
+        return new User(res, getWrappedExt());
+    }
+
+    public User updateExt(@Nullable ApiFullUser ext) {
+        return new User(getWrapped(), ext);
+    }
+
+    public User editAbout(@Nullable String about) {
+        ApiFullUser ext = getWrappedExt();
+        if (ext != null) {
+            ApiFullUser upd = new ApiFullUser(
+                    ext.getId(),
+                    ext.getContactInfo(),
+                    about,
+                    ext.getPreferredLanguages(),
+                    ext.getTimeZone(),
+                    ext.getBotCommands(),
+                    ext.getExt(),
+                    ext.isBlocked()
+            );
+            return new User(getWrapped(), upd);
+        } else {
+            return this;
+        }
     }
 
     @Override
-    protected void applyWrapped(@NotNull ApiUser wrapped) {
+    protected void applyWrapped(@NotNull ApiUser wrapped, @Nullable ApiFullUser ext) {
         this.uid = wrapped.getId();
         this.accessHash = wrapped.getAccessHash();
         this.name = wrapped.getName();
@@ -259,7 +238,9 @@ public class User extends WrapperEntity<ApiUser> implements KeyValueItem {
         } else {
             this.username = null;
         }
-        this.about = wrapped.getAbout();
+        if (wrapped.getAvatar() != null) {
+            this.avatar = new Avatar(wrapped.getAvatar());
+        }
         this.isBot = false;
         if (wrapped.isBot() != null) {
             this.isBot = wrapped.isBot();
@@ -276,25 +257,29 @@ public class User extends WrapperEntity<ApiUser> implements KeyValueItem {
             }
         }
 
-        this.records = new ArrayList<ContactRecord>();
-        for (ApiContactRecord record : wrapped.getContactInfo()) {
-            if (record.getType() == ApiContactType.PHONE) {
-                this.records.add(new ContactRecord(ContactRecordType.PHONE, record.getTypeSpec(), "" + record.getLongValue(),
-                        record.getTitle(), record.getSubtitle()));
-            } else if (record.getType() == ApiContactType.EMAIL) {
-                this.records.add(new ContactRecord(ContactRecordType.EMAIL, record.getTypeSpec(), record.getStringValue(),
-                        record.getTitle(), record.getSubtitle()));
-            } else if (record.getType() == ApiContactType.WEB) {
-                this.records.add(new ContactRecord(ContactRecordType.WEB, record.getTypeSpec(), record.getStringValue(),
-                        record.getTitle(), record.getSubtitle()));
-            } else if (record.getType() == ApiContactType.SOCIAL) {
-                this.records.add(new ContactRecord(ContactRecordType.SOCIAL, record.getTypeSpec(), record.getStringValue(),
-                        record.getTitle(), record.getSubtitle()));
-            }
-        }
+        // Extension
 
-        if (wrapped.getAvatar() != null) {
-            this.avatar = new Avatar(wrapped.getAvatar());
+        if (ext != null) {
+            this.records = new ArrayList<>();
+            for (ApiContactRecord record : ext.getContactInfo()) {
+                if (record.getType() == ApiContactType.PHONE) {
+                    this.records.add(new ContactRecord(ContactRecordType.PHONE, record.getTypeSpec(), "" + record.getLongValue(),
+                            record.getTitle(), record.getSubtitle()));
+                } else if (record.getType() == ApiContactType.EMAIL) {
+                    this.records.add(new ContactRecord(ContactRecordType.EMAIL, record.getTypeSpec(), record.getStringValue(),
+                            record.getTitle(), record.getSubtitle()));
+                } else if (record.getType() == ApiContactType.WEB) {
+                    this.records.add(new ContactRecord(ContactRecordType.WEB, record.getTypeSpec(), record.getStringValue(),
+                            record.getTitle(), record.getSubtitle()));
+                } else if (record.getType() == ApiContactType.SOCIAL) {
+                    this.records.add(new ContactRecord(ContactRecordType.SOCIAL, record.getTypeSpec(), record.getStringValue(),
+                            record.getTitle(), record.getSubtitle()));
+                }
+            }
+            this.about = ext.getAbout();
+        } else {
+            this.records = new ArrayList<>();
+            this.about = null;
         }
     }
 
@@ -329,4 +314,8 @@ public class User extends WrapperEntity<ApiUser> implements KeyValueItem {
         return new ApiUser();
     }
 
+    @Override
+    protected ApiFullUser createExtInstance() {
+        return new ApiFullUser();
+    }
 }

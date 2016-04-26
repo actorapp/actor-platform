@@ -118,11 +118,12 @@ public class SequenceHandlerActor extends ModuleActor {
 
         // Apply Diff
         long applyStart = im.actor.runtime.Runtime.getCurrentTime();
-        currentPromise = currentPromise.then(v -> {
-            processor.applyDifferenceUpdate(updates);
-            Log.d(TAG, "Difference applied in " + (im.actor.runtime.Runtime.getCurrentTime() - applyStart) + " ms");
-            endUpdates();
-        });
+        currentPromise = currentPromise
+                .chain(v -> processor.applyDifferenceUpdate(updates))
+                .then(v -> {
+                    Log.d(TAG, "Difference applied in " + (im.actor.runtime.Runtime.getCurrentTime() - applyStart) + " ms");
+                    endUpdates();
+                });
 
         // TODO: Wait database flush
 

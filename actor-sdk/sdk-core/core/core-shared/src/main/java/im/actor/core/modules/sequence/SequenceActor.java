@@ -10,7 +10,6 @@ import java.util.List;
 
 import im.actor.core.api.ApiGroup;
 import im.actor.core.api.ApiUpdateContainer;
-import im.actor.core.api.ApiUpdateOptimization;
 import im.actor.core.api.ApiUser;
 import im.actor.core.api.base.FatSeqUpdate;
 import im.actor.core.api.base.SeqUpdate;
@@ -19,6 +18,7 @@ import im.actor.core.api.base.WeakUpdate;
 import im.actor.core.api.parser.UpdatesParser;
 import im.actor.core.api.rpc.RequestGetDifference;
 import im.actor.core.api.rpc.RequestGetState;
+import im.actor.core.modules.Configuration;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.sequence.internal.ExecuteAfter;
 import im.actor.core.modules.ModuleActor;
@@ -199,10 +199,7 @@ public class SequenceActor extends ModuleActor {
 
         if (seq < 0) {
             Log.d(TAG, "Loading fresh state...");
-            ArrayList<ApiUpdateOptimization> optimizations = new ArrayList<>();
-            optimizations.add(ApiUpdateOptimization.STRIP_ENTITIES);
-            optimizations.add(ApiUpdateOptimization.STRIP_COUNTERS);
-            api(new RequestGetState(optimizations)).then(response -> {
+            api(new RequestGetState(Configuration.OPTIMIZATIONS)).then(response -> {
                 if (isValidated) {
                     return;
                 }
@@ -221,10 +218,7 @@ public class SequenceActor extends ModuleActor {
             Log.d(TAG, "Loading difference...");
             onUpdateStarted();
             final long loadStart = im.actor.runtime.Runtime.getCurrentTime();
-            ArrayList<ApiUpdateOptimization> optimizations = new ArrayList<>();
-            optimizations.add(ApiUpdateOptimization.STRIP_ENTITIES);
-            optimizations.add(ApiUpdateOptimization.STRIP_COUNTERS);
-            api(new RequestGetDifference(seq, state, optimizations)).then(response -> {
+            api(new RequestGetDifference(seq, state, Configuration.OPTIMIZATIONS)).then(response -> {
 
                 if (isValidated) {
                     return;
