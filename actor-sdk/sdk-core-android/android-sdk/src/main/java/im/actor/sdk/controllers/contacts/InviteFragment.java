@@ -1,13 +1,23 @@
 package im.actor.sdk.controllers.contacts;
 
 import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.telephony.SmsManager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import im.actor.core.entity.PhoneBookContact;
 import im.actor.runtime.android.view.BindedListAdapter;
@@ -26,6 +36,7 @@ public class InviteFragment extends DisplayListFragment<PhoneBookContact, Invite
 
 
     private View emptyView;
+    private MenuItem sendButton;
 
     public InviteFragment() {
     }
@@ -142,6 +153,109 @@ public class InviteFragment extends DisplayListFragment<PhoneBookContact, Invite
 
     public boolean isSelected(long id) {
         return ((InviteContactAdapter) getAdapter()).isSelected(id);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.invite, menu);
+        sendButton = menu.getItem(0);
+        checkSEndButton();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.send_invites) {
+            sendInvites();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void sendInvites() {
+        ArrayList<Long> phones = new ArrayList<Long>();
+        ArrayList<String> emails = new ArrayList<String>();
+        Long[] selected = ((InviteContactAdapter) getAdapter()).getSelected();
+        HashMap<Long, Integer> selectedTypes = ((InviteContactAdapter) getAdapter()).getSelectedContactsTypes();
+        PhoneBookContact contact;
+        Integer selectedType;
+
+        //Prepare email/phones lists
+        String phoneNumbersStrings = "";
+        String emailsString = "";
+        String email;
+        long number;
+
+        for (long s : selected) {
+            contact = messenger().getPhoneBookContact(s);
+            selectedType = selectedTypes.get(s);
+            selectedType = selectedType != null ? selectedType : InviteContactHolder.TYPE_PHONE;
+            if ((selectedType == InviteContactHolder.TYPE_EMAIL && contact.getEmails().size() > 0) || contact.getPhones().size() == 0) {
+                email = contact.getEmails().get(0).getEmail();
+                emails.add(email);
+                emailsString += email + ";";
+
+            } else {
+                number = contact.getPhones().get(0).getNumber();
+                phones.add(number);
+                phoneNumbersStrings += number + ";";
+            }
+
+        }
+
+        String inviteMessage = getResources().getString(R.string.invite_message).replace("{inviteUrl}", ActorSDK.sharedActor().getInviteUrl()).replace("{appName}", ActorSDK.sharedActor().getAppName());
+
+        if (phones.size() > 0 && emails.size() > 0) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            String[] options = new String[]{getString(R.string.invite_options_sms), getString(R.string.invite_options_email)};
+            final String finalPhoneNumbersStrings = phoneNumbersStrings;
+            final String finalEmailsString = emailsString;
+            builder.setItems(options, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (which == 0) {
+                        sendSmsInvites(finalPhoneNumbersStrings, inviteMessage);
+                    } else {
+                        sendEmailInvites(finalEmailsString, inviteMessage);
+                    }
+                    dialog.dismiss();
+                }
+            }).show();
+        } else if (phones.size() > 0) {
+            sendSmsInvites(phoneNumbersStrings, inviteMessage);
+
+        } else {
+            sendEmailInvites(emailsString, inviteMessage);
+        }
+
+//        SmsManager smsManager = SmsManager.getDefault();
+//        smsManager.sendTextMessage(phoneNumbers, null, inviteMessage, null, null);
+    }
+
+    private void sendEmailInvites(String emailsString, String inviteMessage) {
+        Uri emailsToUri = Uri.parse("mailto:" + emailsString);
+        Intent i = new Intent(Intent.ACTION_SENDTO, emailsToUri);
+        i.putExtra(Intent.EXTRA_TEXT, inviteMessage);
+        startActivity(Intent.createChooser(i, getString(R.string.contacts_invite_via_link)));
+    }
+
+    private void sendSmsInvites(String phoneNumbersStrings, String inviteMessage) {
+        Uri smsToUri = Uri.parse("smsto:" + phoneNumbersStrings);
+        Intent i = new Intent(Intent.ACTION_SENDTO, smsToUri);
+        i.putExtra("sms_body", inviteMessage);
+        startActivity(i);
+    }
+
+    public void checkSEndButton() {
+        if (sendButton != null) {
+            sendButton.setVisible(getDisplayList().getSize() != 0);
+        }
+    }
+
+    @Override
+    public void onCollectionChanged() {
+        super.onCollectionChanged();
+        checkSEndButton();
     }
 
 }

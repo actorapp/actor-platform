@@ -44,7 +44,10 @@
     <string name="menu_saved">Saved</string>
     <string name="menu_next">Next</string>
 
+    <!-- Invites -->
     <string name="invite_message">Hi! Let\'s switch to {appName}! {inviteUrl}</string>
+    <string name="invite_options_sms">Invite via sms</string>
+    <string name="invite_options_email">Invite via email</string>
 
     <!-- Tour -->
     <string name="tour_sign_up">SIGN UP</string>
