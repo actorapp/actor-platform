@@ -15,7 +15,6 @@ import im.actor.core.events.NewSessionCreated;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.sequence.internal.ExecuteAfter;
-import im.actor.core.modules.sequence.internal.InternalUpdate;
 import im.actor.core.network.parser.Update;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.messages.Void;
@@ -82,6 +81,10 @@ public class Updates extends AbsModule implements BusSubscriber {
     }
 
 
+    public Promise<Void> applyRelatedData(final List<ApiUser> users) {
+        return applyRelatedData(users, new ApiGroup());
+    }
+
     public Promise<Void> applyRelatedData(final List<ApiUser> users, final ApiGroup group) {
         ArrayList<ApiGroup> groups = new ArrayList<>();
         groups.add(group);
@@ -95,11 +98,7 @@ public class Updates extends AbsModule implements BusSubscriber {
 
     @Deprecated
     public void onUpdateReceived(Object update) {
-        if (update instanceof InternalUpdate) {
-            updateHandlerInt.onInternalUpdate((InternalUpdate) update);
-        } else {
-            updateActor.send(update);
-        }
+        updateActor.send(update);
     }
 
     @Deprecated

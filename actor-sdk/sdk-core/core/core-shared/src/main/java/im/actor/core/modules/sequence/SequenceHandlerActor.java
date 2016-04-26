@@ -15,9 +15,9 @@ import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.sequence.internal.HandlerDifferenceUpdates;
 import im.actor.core.modules.sequence.internal.HandlerSeqUpdate;
 import im.actor.core.modules.sequence.internal.HandlerWeakUpdate;
-import im.actor.core.modules.sequence.internal.InternalUpdate;
 import im.actor.core.modules.sequence.internal.HandlerRelatedResponse;
 import im.actor.core.modules.ModuleActor;
+import im.actor.core.modules.sequence.processor.UpdateProcessor;
 import im.actor.core.network.parser.Update;
 import im.actor.runtime.Log;
 import im.actor.runtime.Runtime;
@@ -133,10 +133,6 @@ public class SequenceHandlerActor extends ModuleActor {
     // Non-sequenced data
     //
 
-    private void onInternalUpdate(InternalUpdate internalUpdate) {
-        processor.processInternalUpdate(internalUpdate);
-    }
-
     private void onWeakUpdateReceived(Update update, long date) {
         Log.d(TAG, "Processing weak update: " + update);
         this.processor.processWeakUpdate(update, date);
@@ -155,12 +151,6 @@ public class SequenceHandlerActor extends ModuleActor {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        } else if (message instanceof InternalUpdate) {
-            if (isUpdating) {
-                stash();
-                return;
-            }
-            onInternalUpdate((InternalUpdate) message);
         } else {
             super.onReceive(message);
         }
