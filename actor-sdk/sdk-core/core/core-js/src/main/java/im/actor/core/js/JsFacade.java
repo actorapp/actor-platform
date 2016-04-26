@@ -643,42 +643,12 @@ public class JsFacade implements Exportable {
 
     @UsedByApp
     public JsPromise blockUser(final int uid) {
-        return JsPromise.create(new JsPromiseExecutor() {
-            @Override
-            public void execute() {
-                messenger.blockUser(uid).then(new Consumer<im.actor.runtime.actors.messages.Void>() {
-                    @Override
-                    public void apply(Void aVoid) {
-                        resolve();
-                    }
-                }).failure(new Consumer<Exception>() {
-                    @Override
-                    public void apply(Exception e) {
-                        reject();
-                    }
-                });
-            }
-        });
+        return JsPromise.from(messenger.blockUser(uid));
     }
 
     @UsedByApp
     public JsPromise unblockUser(final int uid) {
-        return JsPromise.create(new JsPromiseExecutor() {
-            @Override
-            public void execute() {
-                messenger.unblockUser(uid).then(new Consumer<im.actor.runtime.actors.messages.Void>() {
-                    @Override
-                    public void apply(Void aVoid) {
-                        resolve();
-                    }
-                }).failure(new Consumer<Exception>() {
-                    @Override
-                    public void apply(Exception e) {
-                        reject();
-                    }
-                });
-            }
-        });
+        return JsPromise.from(messenger.unblockUser(uid));
     }
 
     // Groups
@@ -1030,26 +1000,15 @@ public class JsFacade implements Exportable {
 
     @UsedByApp
     public JsPromise loadBlockedUsers() {
-        return JsPromise.create(new JsPromiseExecutor() {
-            @Override
-            public void execute() {
-                messenger.loadBlockedUsers().then(new Consumer<List<User>>() {
-                    @Override
-                    public void apply(List<User> users) {
-                        JsArray<JsUser> res = JsArray.createArray().cast();
-                        for (User u : users) {
-                            res.push(getUser(u.getUid()));
-                        }
-                        resolve(res);
+        return JsPromise.from(messenger.loadBlockedUsers()
+                .map(users -> {
+                    JsArray<JsUser> res = JsArray.createArray().cast();
+                    for (User u : users) {
+                        res.push(getUser(u.getUid()));
                     }
-                }).failure(new Consumer<Exception>() {
-                    @Override
-                    public void apply(Exception e) {
-                        reject(e);
-                    }
-                });
-            }
-        });
+                    return res;
+                })
+        );
     }
 
     @UsedByApp
