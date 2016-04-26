@@ -3,12 +3,14 @@
  */
 
 import React, { Component, PropTypes } from 'react';
+import classnames from 'classnames';
 import { shouldComponentUpdate } from 'react-addons-pure-render-mixin';
 
 class SidebarButton extends Component {
   static propTypes = {
     title: PropTypes.node.isRequired,
     glyph: PropTypes.string.isRequired,
+    className: PropTypes.string,
     onClick: PropTypes.func.isRequired
   };
 
@@ -19,14 +21,15 @@ class SidebarButton extends Component {
   }
 
   render() {
-    const { title, glyph, onClick } = this.props;
+    const { title, glyph, onClick, className } = this.props;
+    const buttonClassName = classnames('sidebar__button', className);
 
     return (
-      <div className="recent__history" onClick={onClick}>
-        <div className="recent__history__icon">
+      <div className={buttonClassName} onClick={onClick}>
+        <div className="sidebar__button__icon">
           <i className="material-icons">{glyph}</i>
         </div>
-        <div className="recent__history__title">
+        <div className="sidebar__button__title">
           {title}
         </div>
       </div>
