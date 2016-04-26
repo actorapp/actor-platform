@@ -8,7 +8,7 @@ import akka.util.Timeout
 import com.google.protobuf.ByteString
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.api.rpc.{ AuthorizedClientData, Update }
-import im.actor.api.rpc.users.{ ApiSex, ApiUser }
+import im.actor.api.rpc.users.{ ApiFullUser, ApiSex, ApiUser }
 import im.actor.server.auth.DeviceInfo
 import im.actor.server.bots.BotCommand
 import im.actor.server.db.DbExtension
@@ -260,6 +260,9 @@ private[user] sealed trait Queries {
 
   def getApiStruct(userId: Int, clientUserId: Int, clientAuthId: Long): Future[ApiUser] =
     (viewRegion.ref ? GetApiStruct(userId, clientUserId, clientAuthId)).mapTo[GetApiStructResponse] map (_.struct)
+
+  def getApiFullStruct(userId: Int, clientUserId: Int, clientAuthId: Long): Future[ApiFullUser] =
+    (viewRegion.ref ? GetApiFullStruct(userId, clientUserId, clientAuthId)).mapTo[GetApiFullStructResponse] map (_.struct)
 
   def getLocalName(ownerUserId: Int, contactUserId: Int): Future[Option[String]] =
     (viewRegion.ref ? GetLocalName(ownerUserId, contactUserId)).mapTo[GetLocalNameResponse] map (_.localName)

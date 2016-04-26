@@ -29,7 +29,7 @@ trait MessagingSpecHelpers extends ScalaFutures with PeersImplicits with Matcher
   ): Long = {
     val randomId = Random.nextLong
     whenReady(ACLUtils.getOutPeer(ApiPeer(ApiPeerType.Private, userId), clientData.authId)) { peer ⇒
-      whenReady(msgService.handleSendMessage(peer, randomId, message, None))(identity)
+      whenReady(msgService.handleSendMessage(peer, randomId, message, None, None))(identity)
     }
     randomId
   }
@@ -42,7 +42,7 @@ trait MessagingSpecHelpers extends ScalaFutures with PeersImplicits with Matcher
   ): SeqStateDate = {
     val randomId = Random.nextLong
     whenReady(ACLUtils.getOutPeer(ApiPeer(ApiPeerType.Private, userId), clientData.authId)) { peer ⇒
-      whenReady(msgService.handleSendMessage(peer, randomId, message, None)) { resp ⇒
+      whenReady(msgService.handleSendMessage(peer, randomId, message, None, None)) { resp ⇒
         val respSeqDate = resp.toOption.get
         SeqStateDate(respSeqDate.seq, ByteString.copyFrom(respSeqDate.state), respSeqDate.date)
       }
@@ -67,7 +67,7 @@ trait MessagingSpecHelpers extends ScalaFutures with PeersImplicits with Matcher
   ): Long = {
     val randomId = Random.nextLong
     whenReady(ACLUtils.getOutPeer(ApiPeer(ApiPeerType.Group, groupId), clientData.authId)) { peer ⇒
-      whenReady(msgService.handleSendMessage(peer, randomId, message, None))(identity)
+      whenReady(msgService.handleSendMessage(peer, randomId, message, None, None))(identity)
     }
     randomId
   }

@@ -31,9 +31,9 @@ final class UnreadCountersSpec extends BaseAppSuite with ImplicitAuthService wit
 
       Thread.sleep(1000)
 
-      whenReady(msgService.handleLoadDialogs(0, 100)) { resp ⇒
+      whenReady(msgService.handleLoadDialogs(0, 100, Vector.empty)) { resp ⇒
         inside(resp) {
-          case Ok(ResponseLoadDialogs(_, _, dialogs)) ⇒
+          case Ok(ResponseLoadDialogs(_, _, dialogs, _, _)) ⇒
             dialogs.head.unreadCount should ===(1)
         }
       }
@@ -53,9 +53,9 @@ final class UnreadCountersSpec extends BaseAppSuite with ImplicitAuthService wit
 
     Thread.sleep(1000)
 
-    whenReady(msgService.handleLoadDialogs(0, 100)) { resp ⇒
+    whenReady(msgService.handleLoadDialogs(0, 100, Vector.empty)) { resp ⇒
       inside(resp) {
-        case Ok(ResponseLoadDialogs(_, _, dialogs)) ⇒
+        case Ok(ResponseLoadDialogs(_, _, dialogs, _, _)) ⇒
           dialogs.head.unreadCount should ===(0)
       }
     }

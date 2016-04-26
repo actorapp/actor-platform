@@ -40,7 +40,8 @@ final class ActorDelivery()(implicit val system: ActorSystem)
       date = timestamp,
       randomId = randomId,
       message = message,
-      attributes = None
+      attributes = None,
+      quotedMessage = None
     )
 
     for {
@@ -87,7 +88,8 @@ final class ActorDelivery()(implicit val system: ActorSystem)
       date = timestamp,
       randomId = randomId,
       message = message,
-      None
+      attributes = None,
+      quotedMessage = None
     )
 
     val senderClientUpdate = UpdateMessageSent(apiPeer, randomId, timestamp)

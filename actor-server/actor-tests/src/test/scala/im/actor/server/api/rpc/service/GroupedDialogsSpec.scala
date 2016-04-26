@@ -48,8 +48,8 @@ final class GroupedDialogsSpec
     val groupPeer = ApiOutPeer(ApiPeerType.Group, group.groupPeer.groupId, group.groupPeer.accessHash)
 
     whenReady(Future.sequence(Seq(
-      service.handleSendMessage(user2Peer, Random.nextLong, ApiTextMessage("Hi there", Vector.empty, None), None),
-      service.handleSendMessage(groupPeer, Random.nextLong, ApiTextMessage("Hi all there", Vector.empty, None), None)
+      service.handleSendMessage(user2Peer, Random.nextLong, ApiTextMessage("Hi there", Vector.empty, None), None, None),
+      service.handleSendMessage(groupPeer, Random.nextLong, ApiTextMessage("Hi all there", Vector.empty, None), None, None)
     ))) { _ ⇒
       whenReady(service.handleLoadGroupedDialogs()) { resp ⇒
         inside(resp) {

@@ -258,6 +258,18 @@ message UserQueries {
         required bytes struct = 1 [(scalapb.field).type = "im.actor.api.rpc.users.ApiUser"];
     }
 
+    message GetApiFullStruct {
+        option (scalapb.message).extends = "im.actor.server.user.UserQuery";
+
+        required int32 user_id = 1;
+        required int32 client_user_id = 2;
+        required int64 client_auth_id = 3;
+    }
+
+    message GetApiFullStructResponse {
+        required bytes struct = 1 [(scalapb.field).type = "im.actor.api.rpc.users.ApiFullUser"];
+    }
+
     message GetContactRecords {
         option (scalapb.message).extends = "im.actor.server.user.UserQuery";
 
