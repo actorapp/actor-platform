@@ -11,6 +11,7 @@ import android.widget.Toast;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.runtime.actors.messages.Void;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.fragment.BaseFragment;
@@ -125,9 +126,9 @@ public class EditNameFragment extends BaseFragment {
                         }
                     });
                 } else if (type == EditNameActivity.TYPE_GROUP) {
-                    execute(messenger().editGroupTitle(id, name), R.string.edit_name_process, new CommandCallback<Boolean>() {
+                    execute(messenger().editGroupTitle(id, name), R.string.edit_name_process, new CommandCallback<Void>() {
                         @Override
-                        public void onResult(Boolean res) {
+                        public void onResult(Void res) {
                             getActivity().finish();
                         }
 
@@ -137,9 +138,9 @@ public class EditNameFragment extends BaseFragment {
                         }
                     });
                 } else if (type == EditNameActivity.TYPE_GROUP_THEME) {
-                    execute(messenger().editGroupTheme(id, name), R.string.edit_theme_process, new CommandCallback<Boolean>() {
+                    execute(messenger().editGroupTheme(id, name), R.string.edit_theme_process, new CommandCallback<Void>() {
                         @Override
-                        public void onResult(Boolean res) {
+                        public void onResult(Void res) {
                             getActivity().finish();
                         }
 

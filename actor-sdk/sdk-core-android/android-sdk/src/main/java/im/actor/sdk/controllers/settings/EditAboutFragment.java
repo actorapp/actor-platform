@@ -11,6 +11,7 @@ import android.widget.Toast;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.runtime.actors.messages.Void;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.fragment.BaseFragment;
@@ -93,9 +94,9 @@ public class EditAboutFragment extends BaseFragment {
                     });
                     //TODO: set group about
                 } else if (type == EditAboutActivity.TYPE_GROUP) {
-                    execute(messenger().editGroupAbout(id, about), R.string.edit_about_process, new CommandCallback<Boolean>() {
+                    execute(messenger().editGroupAbout(id, about), R.string.edit_about_process, new CommandCallback<Void>() {
                         @Override
-                        public void onResult(Boolean res) {
+                        public void onResult(Void res) {
                             getActivity().finish();
                         }
 

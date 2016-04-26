@@ -98,10 +98,6 @@ public class SequenceHandlerActor extends ModuleActor {
                                              @NotNull List<ApiGroupOutPeer> groupOutPeers,
                                              @NotNull List<Update> updates) {
 
-//        long parseStart = im.actor.runtime.Runtime.getCurrentTime();
-//
-//        Log.d(TAG, "Difference parsed  in " + (im.actor.runtime.Runtime.getCurrentTime() - parseStart) + " ms");
-
         if (updates.size() > 0) {
             String command = "Difference updates:";
             for (Update u : updates) {

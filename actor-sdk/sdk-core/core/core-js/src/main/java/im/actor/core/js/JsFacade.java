@@ -452,9 +452,9 @@ public class JsFacade implements Exportable {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
             public void execute() {
-                messenger.deleteChat(peer.convert()).start(new CommandCallback<Boolean>() {
+                messenger.deleteChat(peer.convert()).start(new CommandCallback<Void>() {
                     @Override
-                    public void onResult(Boolean res) {
+                    public void onResult(Void res) {
                         Log.d(TAG, "deleteChat:result");
                         resolve();
                     }
@@ -474,9 +474,9 @@ public class JsFacade implements Exportable {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
             public void execute() {
-                messenger.clearChat(peer.convert()).start(new CommandCallback<Boolean>() {
+                messenger.clearChat(peer.convert()).start(new CommandCallback<Void>() {
                     @Override
-                    public void onResult(Boolean res) {
+                    public void onResult(Void res) {
                         Log.d(TAG, "clearChat:result");
                         resolve();
                     }
@@ -496,9 +496,9 @@ public class JsFacade implements Exportable {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
             public void execute() {
-                messenger.archiveChat(peer.convert()).start(new CommandCallback<Boolean>() {
+                messenger.archiveChat(peer.convert()).start(new CommandCallback<Void>() {
                     @Override
-                    public void onResult(Boolean res) {
+                    public void onResult(Void res) {
                         Log.d(TAG, "archiveChat:result");
                         resolve();
                     }
@@ -518,9 +518,9 @@ public class JsFacade implements Exportable {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
             public void execute() {
-                messenger.favouriteChat(peer.convert()).start(new CommandCallback<Boolean>() {
+                messenger.favouriteChat(peer.convert()).start(new CommandCallback<Void>() {
                     @Override
-                    public void onResult(Boolean res) {
+                    public void onResult(Void res) {
                         Log.d(TAG, "favouriteChat:result");
                         resolve();
                     }
@@ -540,9 +540,9 @@ public class JsFacade implements Exportable {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
             public void execute() {
-                messenger.unfavoriteChat(peer.convert()).start(new CommandCallback<Boolean>() {
+                messenger.unfavoriteChat(peer.convert()).start(new CommandCallback<Void>() {
                     @Override
-                    public void onResult(Boolean res) {
+                    public void onResult(Void res) {
                         Log.d(TAG, "unfavouriteChat:result");
                         resolve();
                     }
@@ -1298,7 +1298,7 @@ public class JsFacade implements Exportable {
             @Override
             public void execute() {
                 //noinspection ConstantConditions
-                messenger.joinGroupViaLink(url).start(new CommandCallback<Integer>() {
+                messenger.joinGroupViaToken(url).start(new CommandCallback<Integer>() {
                     @Override
                     public void onResult(Integer res) {
                         Log.d(TAG, "joinGroupViaLink:result");
@@ -1321,9 +1321,9 @@ public class JsFacade implements Exportable {
             @Override
             public void execute() {
                 //noinspection ConstantConditions
-                messenger.editGroupTitle(gid, newTitle).start(new CommandCallback<Boolean>() {
+                messenger.editGroupTitle(gid, newTitle).start(new CommandCallback<Void>() {
                     @Override
-                    public void onResult(Boolean res) {
+                    public void onResult(Void res) {
                         Log.d(TAG, "editGroupTitle:result");
                         resolve();
                     }
@@ -1343,9 +1343,9 @@ public class JsFacade implements Exportable {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
             public void execute() {
-                messenger.editGroupAbout(gid, newAbout).start(new CommandCallback<Boolean>() {
+                messenger.editGroupAbout(gid, newAbout).start(new CommandCallback<Void>() {
                     @Override
-                    public void onResult(Boolean res) {
+                    public void onResult(Void res) {
                         resolve();
                     }
 
@@ -1400,9 +1400,9 @@ public class JsFacade implements Exportable {
             @Override
             public void execute() {
                 //noinspection ConstantConditions
-                messenger.inviteMember(gid, uid).start(new CommandCallback<Boolean>() {
+                messenger.inviteMember(gid, uid).start(new CommandCallback<Void>() {
                     @Override
-                    public void onResult(Boolean res) {
+                    public void onResult(Void res) {
                         Log.d(TAG, "inviteMember:result");
                         resolve();
                     }
@@ -1423,9 +1423,9 @@ public class JsFacade implements Exportable {
             @Override
             public void execute() {
                 //noinspection ConstantConditions
-                messenger.kickMember(gid, uid).start(new CommandCallback<Boolean>() {
+                messenger.kickMember(gid, uid).start(new CommandCallback<Void>() {
                     @Override
-                    public void onResult(Boolean res) {
+                    public void onResult(Void res) {
                         Log.d(TAG, "kickMember:result");
                         resolve();
                     }
@@ -1446,9 +1446,9 @@ public class JsFacade implements Exportable {
             @Override
             public void execute() {
                 //noinspection ConstantConditions
-                messenger.leaveGroup(gid).start(new CommandCallback<Boolean>() {
+                messenger.leaveGroup(gid).start(new CommandCallback<Void>() {
                     @Override
-                    public void onResult(Boolean res) {
+                    public void onResult(Void res) {
                         Log.d(TAG, "leaveGroup:result");
                         resolve();
                     }
@@ -1584,9 +1584,9 @@ public class JsFacade implements Exportable {
             @Override
             public void execute() {
                 messenger.addReaction(peer.convert(), Long.parseLong(rid), "\u2764")
-                        .start(new CommandCallback<Boolean>() {
+                        .start(new CommandCallback<Void>() {
                             @Override
-                            public void onResult(Boolean res) {
+                            public void onResult(Void res) {
                                 resolve();
                             }
 
@@ -1606,9 +1606,9 @@ public class JsFacade implements Exportable {
             @Override
             public void execute() {
                 messenger.removeReaction(peer.convert(), Long.parseLong(rid), "\u2764")
-                        .start(new CommandCallback<Boolean>() {
+                        .start(new CommandCallback<Void>() {
                             @Override
-                            public void onResult(Boolean res) {
+                            public void onResult(Void res) {
                                 resolve();
                             }
 
