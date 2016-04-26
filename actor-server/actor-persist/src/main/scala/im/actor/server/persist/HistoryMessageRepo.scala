@@ -29,11 +29,17 @@ final class HistoryMessageTable(tag: Tag) extends Table[HistoryMessage](tag, "hi
 
   def deletedAt = column[Option[DateTime]]("deleted_at")
 
-  def * = (userId, peerType, peerId, date, senderUserId, randomId, messageContentHeader, messageContentData, deletedAt) <>
+  def quotedPeerType = column[Option[Int]]("quoted_peer_type", O.PrimaryKey)
+
+  def quotedPeerId = column[Option[Int]]("quoted_peer_id", O.PrimaryKey)
+
+  def quotedRandomId = column[Option[Long]]("quoted_random_id", O.PrimaryKey)
+
+  def * = (userId, peerType, peerId, date, senderUserId, randomId, messageContentHeader, messageContentData, deletedAt, quotedPeerType, quotedPeerId, quotedRandomId) <>
     (applyHistoryMessage.tupled, unapplyHistoryMessage)
 
-  private def applyHistoryMessage: (Int, Int, Int, DateTime, Int, Long, Int, Array[Byte], Option[DateTime]) ⇒ HistoryMessage = {
-    case (userId, peerType, peerId, date, senderUserId, randomId, messageContentHeader, messageContentData, deletedAt) ⇒
+  private def applyHistoryMessage: (Int, Int, Int, DateTime, Int, Long, Int, Array[Byte], Option[DateTime], Option[Int], Option[Int], Option[Long]) ⇒ HistoryMessage = {
+    case (userId, peerType, peerId, date, senderUserId, randomId, messageContentHeader, messageContentData, deletedAt, quotedPeerType, quotedPeerId, quotedRandomId) ⇒
       HistoryMessage(
         userId = userId,
         peer = Peer(PeerType.fromValue(peerType), peerId),
@@ -42,14 +48,16 @@ final class HistoryMessageTable(tag: Tag) extends Table[HistoryMessage](tag, "hi
         randomId = randomId,
         messageContentHeader = messageContentHeader,
         messageContentData = messageContentData,
-        deletedAt = deletedAt
+        deletedAt = deletedAt,
+        quotedMessagePeer = quotedPeerType map (_ ⇒ Peer(PeerType.fromValue(quotedPeerType.get), quotedPeerId.get)),
+        quotedMessageRid = quotedRandomId
       )
   }
 
-  private def unapplyHistoryMessage: HistoryMessage ⇒ Option[(Int, Int, Int, DateTime, Int, Long, Int, Array[Byte], Option[DateTime])] = { historyMessage ⇒
+  private def unapplyHistoryMessage: HistoryMessage ⇒ Option[(Int, Int, Int, DateTime, Int, Long, Int, Array[Byte], Option[DateTime], Option[Int], Option[Int], Option[Long])] = { historyMessage ⇒
     HistoryMessage.unapply(historyMessage) map {
-      case (userId, peer, date, senderUserId, randomId, messageContentHeader, messageContentData, deletedAt) ⇒
-        (userId, peer.typ.value, peer.id, date, senderUserId, randomId, messageContentHeader, messageContentData, deletedAt)
+      case (userId, peer, date, senderUserId, randomId, messageContentHeader, messageContentData, deletedAt, quotedPeer, quotedRandomId) ⇒
+        (userId, peer.typ.value, peer.id, date, senderUserId, randomId, messageContentHeader, messageContentData, deletedAt, quotedPeer.map(_.typ.value), quotedPeer.map(_.id), quotedRandomId)
     }
   }
 }
@@ -186,6 +194,9 @@ object HistoryMessageRepo {
   def find(userId: Int, peer: Peer, randomIds: Set[Long]): FixedSqlStreamingAction[Seq[HistoryMessage], HistoryMessage, Read] =
     notDeletedMessages.filter(m ⇒ m.userId === userId && m.peerType === peer.typ.value && m.peerId === peer.id && (m.randomId inSet randomIds)).result
 
+  def find(peer: Peer, randomId: Long): SqlAction[Option[HistoryMessage], NoStream, Read] =
+    notDeletedMessages.filter(m ⇒ m.peerType === peer.typ.value && m.peerId === peer.id && (m.randomId === randomId)).take(1).result.headOption
+
   def updateContentAll(userIds: Set[Int], randomId: Long, peerType: PeerType, peerIds: Set[Int],
                        messageContentHeader: Int, messageContentData: Array[Byte]): FixedSqlAction[Int, NoStream, Write] =
     notDeletedMessages
@@ -205,12 +216,15 @@ object HistoryMessageRepo {
         randomId = r.nextLong,
         messageContentHeader = r.nextInt,
         messageContentData = r.nextBytes,
-        deletedAt = getDatetimeOptionResult(r)
+        deletedAt = getDatetimeOptionResult(r),
+        quotedMessagePeer = r.nextIntOption() map (typ ⇒ Peer(PeerType.fromValue(typ), r.nextInt())),
+        quotedMessageRid = r.nextLongOption()
+
       ))
 
     val serviceHeader = 2
     val date = new DateTime(fromTs)
-    sql"""select distinct on (date, random_id) user_id, peer_type, peer_id, date, sender_user_id, random_id, message_content_header, message_content_data, deleted_at from history_messages
+    sql"""select distinct on (date, random_id) user_id, peer_type, peer_id, date, sender_user_id, random_id, message_content_header, message_content_data, deleted_at, quoted_peer_type, quoted_peer_id, quoted_random_id from history_messages
          where message_content_header != $serviceHeader
          and date > $date
          and deleted_at is null
