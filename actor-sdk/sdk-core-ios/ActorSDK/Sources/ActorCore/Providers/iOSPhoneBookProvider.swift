@@ -75,7 +75,7 @@ class PhoneBookProvider: NSObject, ACPhoneBookProvider {
                         
                         let contactPhones = JavaUtilArrayList()
                         let contactEmails = JavaUtilArrayList()
-                        let contact = ACPhoneBookContact(long: jlong(index), withNSString: contactName, withJavaUtilArrayList: contactPhones, withJavaUtilArrayList: contactEmails)
+                        let contact = ACPhoneBookContact(long: jlong(index), withNSString: contactName, withJavaUtilList: contactPhones, withJavaUtilList: contactEmails)
                         index += 1
                         if let phones: ABMultiValueRef =
                             self.extractProperty(person as ABRecord, propertyName: kABPersonPhoneProperty) as ABMultiValueRef? {

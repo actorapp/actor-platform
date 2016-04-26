@@ -73,6 +73,7 @@ import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.function.Consumer;
 import im.actor.runtime.mvvm.MVVMCollection;
 import im.actor.runtime.mvvm.ValueModel;
 import im.actor.runtime.promise.Promise;
@@ -740,8 +741,10 @@ public class Messenger {
      * @param rid  message rundom id
      */
     @ObjectiveCName("updateMessageWithPeer:withText:withRid:")
-    public Command<ResponseSeqDate> updateMessage(@NotNull Peer peer, @NotNull String text, long rid) {
-        return modules.getMessagesModule().updateMessage(peer, text, rid);
+    public Command<Void> updateMessage(@NotNull Peer peer, @NotNull String text, long rid) {
+        return callback -> modules.getMessagesModule().updateMessage(peer, text, rid)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
 
@@ -891,7 +894,7 @@ public class Messenger {
     public void sendLocation(@NotNull Peer peer,
                              @NotNull Double longitude, @NotNull Double latitude,
                              @Nullable String street, @Nullable String place) {
-        modules.getMessagesModule().sendLoacation(peer, longitude, latitude, street, place);
+        modules.getMessagesModule().sendLocation(peer, longitude, latitude, street, place);
     }
 
     /**
@@ -962,8 +965,10 @@ public class Messenger {
      * @return Command for execution
      */
     @ObjectiveCName("deleteChatCommandWithPeer:")
-    public Command<Boolean> deleteChat(Peer peer) {
-        return modules.getMessagesModule().deleteChat(peer);
+    public Command<Void> deleteChat(Peer peer) {
+        return callback -> modules.getMessagesModule().deleteChat(peer)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -984,8 +989,10 @@ public class Messenger {
      * @return Command for execution
      */
     @ObjectiveCName("clearChatCommandWithPeer:")
-    public Command<Boolean> clearChat(Peer peer) {
-        return modules.getMessagesModule().clearChat(peer);
+    public Command<Void> clearChat(Peer peer) {
+        return callback -> modules.getMessagesModule().clearChat(peer)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -995,8 +1002,10 @@ public class Messenger {
      * @return Command for execution
      */
     @ObjectiveCName("archiveChatCommandWithPeer:")
-    public Command<Boolean> archiveChat(Peer peer) {
-        return modules.getMessagesModule().archiveChat(peer);
+    public Command<Void> archiveChat(Peer peer) {
+        return callback -> modules.getMessagesModule().archiveChat(peer)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1006,8 +1015,10 @@ public class Messenger {
      * @return Command for execution
      */
     @ObjectiveCName("favouriteChatCommandWithPeer:")
-    public Command<Boolean> favouriteChat(Peer peer) {
-        return modules.getMessagesModule().favoriteChat(peer);
+    public Command<Void> favouriteChat(Peer peer) {
+        return callback -> modules.getMessagesModule().favoriteChat(peer)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1017,8 +1028,10 @@ public class Messenger {
      * @return Command for execution
      */
     @ObjectiveCName("unfavouriteChatCommandWithPeer:")
-    public Command<Boolean> unfavoriteChat(Peer peer) {
-        return modules.getMessagesModule().unfavoriteChat(peer);
+    public Command<Void> unfavoriteChat(Peer peer) {
+        return callback -> modules.getMessagesModule().unfavoriteChat(peer)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1030,8 +1043,10 @@ public class Messenger {
      * @return Command for execution
      */
     @ObjectiveCName("addReactionWithPeer:withRid:withCode:")
-    public Command<Boolean> addReaction(Peer peer, long rid, String code) {
-        return modules.getMessagesModule().addReaction(peer, rid, code);
+    public Command<Void> addReaction(Peer peer, long rid, String code) {
+        return callback -> modules.getMessagesModule().addReaction(peer, rid, code)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1043,8 +1058,10 @@ public class Messenger {
      * @return Command for execution
      */
     @ObjectiveCName("removeReactionWithPeer:withRid:withCode:")
-    public Command<Boolean> removeReaction(Peer peer, long rid, String code) {
-        return modules.getMessagesModule().removeReaction(peer, rid, code);
+    public Command<Void> removeReaction(Peer peer, long rid, String code) {
+        return callback -> modules.getMessagesModule().removeReaction(peer, rid, code)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1336,8 +1353,10 @@ public class Messenger {
      */
     @Nullable
     @ObjectiveCName("editGroupTitleCommandWithGid:withTitle:")
-    public Command<Boolean> editGroupTitle(final int gid, final String title) {
-        return modules.getGroupsModule().editTitle(gid, title);
+    public Command<Void> editGroupTitle(final int gid, final String title) {
+        return callback -> modules.getGroupsModule().editTitle(gid, title)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1349,8 +1368,10 @@ public class Messenger {
      */
     @NotNull
     @ObjectiveCName("editGroupThemeCommandWithGid:withTheme:")
-    public Command<Boolean> editGroupTheme(final int gid, final String theme) {
-        return modules.getGroupsModule().editTheme(gid, theme);
+    public Command<Void> editGroupTheme(final int gid, final String theme) {
+        return callback -> modules.getGroupsModule().editTheme(gid, theme)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1362,8 +1383,10 @@ public class Messenger {
      */
     @NotNull
     @ObjectiveCName("editGroupAboutCommandWithGid:withAbout:")
-    public Command<Boolean> editGroupAbout(final int gid, final String about) {
-        return modules.getGroupsModule().editAbout(gid, about);
+    public Command<Void> editGroupAbout(final int gid, final String about) {
+        return callback -> modules.getGroupsModule().editAbout(gid, about)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1403,7 +1426,9 @@ public class Messenger {
     @Nullable
     @ObjectiveCName("createGroupCommandWithTitle:withAvatar:withUids:")
     public Command<Integer> createGroup(String title, String avatarDescriptor, int[] uids) {
-        return modules.getGroupsModule().createGroup(title, avatarDescriptor, uids);
+        return callback -> modules.getGroupsModule().createGroup(title, avatarDescriptor, uids)
+                .then(integer -> callback.onResult(integer))
+                .failure(e -> callback.onError(e));
     }
 
 
@@ -1415,8 +1440,10 @@ public class Messenger {
      */
     @Nullable
     @ObjectiveCName("leaveGroupCommandWithGid:")
-    public Command<Boolean> leaveGroup(final int gid) {
-        return modules.getGroupsModule().leaveGroup(gid);
+    public Command<Void> leaveGroup(final int gid) {
+        return callback -> modules.getGroupsModule().leaveGroup(gid)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1428,8 +1455,10 @@ public class Messenger {
      */
     @Nullable
     @ObjectiveCName("inviteMemberCommandWithGid:withUid:")
-    public Command<Boolean> inviteMember(int gid, int uid) {
-        return modules.getGroupsModule().addMemberToGroup(gid, uid);
+    public Command<Void> inviteMember(int gid, int uid) {
+        return callback -> modules.getGroupsModule().addMember(gid, uid)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1441,8 +1470,10 @@ public class Messenger {
      */
     @Nullable
     @ObjectiveCName("kickMemberCommandWithGid:withUid:")
-    public Command<Boolean> kickMember(int gid, int uid) {
-        return modules.getGroupsModule().kickMember(gid, uid);
+    public Command<Void> kickMember(int gid, int uid) {
+        return callback -> modules.getGroupsModule().kickMember(gid, uid)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1454,8 +1485,10 @@ public class Messenger {
      */
     @Nullable
     @ObjectiveCName("makeAdminCommandWithGid:withUid:")
-    public Command<Boolean> makeAdmin(final int gid, final int uid) {
-        return modules.getGroupsModule().makeAdmin(gid, uid);
+    public Command<Void> makeAdmin(final int gid, final int uid) {
+        return callback -> modules.getGroupsModule().makeAdmin(gid, uid)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1467,7 +1500,9 @@ public class Messenger {
     @Nullable
     @ObjectiveCName("requestInviteLinkCommandWithGid:")
     public Command<String> requestInviteLink(int gid) {
-        return modules.getGroupsModule().requestInviteLink(gid);
+        return callback -> modules.getGroupsModule().requestInviteLink(gid)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1479,45 +1514,24 @@ public class Messenger {
     @Nullable
     @ObjectiveCName("requestRevokeLinkCommandWithGid:")
     public Command<String> revokeInviteLink(int gid) {
-        return modules.getGroupsModule().requestRevokeLink(gid);
+        return callback -> modules.getGroupsModule().requestRevokeLink(gid)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
      * Join group using invite link
      *
-     * @param url invite link
+     * @param token invite token
      * @return Command for execution
      */
     @Nullable
-    @ObjectiveCName("joinGroupViaLinkCommandWithUrl:")
-    public Command<Integer> joinGroupViaLink(String url) {
-        return modules.getGroupsModule().joinGroupViaLink(url);
+    @ObjectiveCName("joinGroupViaLinkCommandWithToken:")
+    public Command<Integer> joinGroupViaToken(String token) {
+        return callback -> modules.getGroupsModule().joinGroupByToken(token)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
-
-    /**
-     * Join public group
-     *
-     * @param gid        group's id
-     * @param accessHash group's accessHash
-     * @return Command for execution
-     */
-    @Nullable
-    @ObjectiveCName("joinPublicGroupCommandWithGig:withAccessHash:")
-    public Command<Integer> joinPublicGroup(int gid, long accessHash) {
-        return modules.getGroupsModule().joinPublicGroup(gid, accessHash);
-    }
-
-    /**
-     * Listing public groups
-     *
-     * @return Command for execution
-     */
-    @Nullable
-    @ObjectiveCName("listPublicGroups")
-    public Command<List<PublicGroup>> listPublicGroups() {
-        return modules.getGroupsModule().listPublicGroups();
-    }
-
 
     /**
      * Request integration token for group
@@ -1528,7 +1542,9 @@ public class Messenger {
     @Nullable
     @ObjectiveCName("requestIntegrationTokenCommandWithGid:")
     public Command<String> requestIntegrationToken(int gid) {
-        return modules.getGroupsModule().requestIntegrationToken(gid);
+        return callback -> modules.getGroupsModule().requestIntegrationToken(gid)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1540,7 +1556,9 @@ public class Messenger {
     @NotNull
     @ObjectiveCName("revokeIntegrationTokenCommandWithGid:")
     public Command<String> revokeIntegrationToken(int gid) {
-        return modules.getGroupsModule().revokeIntegrationToken(gid);
+        return callback -> modules.getGroupsModule().revokeIntegrationToken(gid)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     //////////////////////////////////////
