@@ -37,6 +37,7 @@ public class InviteContactAdapter extends BindedListAdapter<PhoneBookContact, In
         this.context = context;
         this.onItemClickedListener = onItemClickedListener;
 
+        updateIds();
 
     }
 
@@ -97,6 +98,7 @@ public class InviteContactAdapter extends BindedListAdapter<PhoneBookContact, In
             for (long id : ids.getIds()) {
                 selectedUsers.add(id);
             }
+            notifyDataSetChanged();
         } catch (Exception e) {
             e.printStackTrace();
         }
