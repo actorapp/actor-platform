@@ -37,7 +37,11 @@
     <string name="menu_saved">Сохранено</string>
     <string name="menu_next">Далее</string>
 
+
+    <!-- Invites -->
     <string name="invite_message">Привет! Давай продолжим общаться в {appName} {inviteUrl}</string>
+    <string name="invite_options_sms">Отправить sms приглашения</string>
+    <string name="invite_options_email">Отправить email приглашения</string>
 
     <!-- Tour -->
     <string name="tour_sign_up">РЕГИСТРАЦИЯ</string>
