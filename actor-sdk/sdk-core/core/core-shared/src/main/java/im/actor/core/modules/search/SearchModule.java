@@ -77,7 +77,7 @@ public class SearchModule extends AbsModule {
 
     public Command<List<MessageSearchEntity>> findTextMessages(Peer peer, String query) {
         ArrayList<ApiSearchCondition> conditions = new ArrayList<>();
-        conditions.add(new ApiSearchPeerCondition(buildApiOutPeer(peer)));
+        conditions.add(new ApiSearchPeerCondition(getApiOutPeer(peer)));
         conditions.add(new ApiSearchPieceText(query));
         return findMessages(new ApiSearchAndCondition(conditions));
     }
@@ -96,7 +96,7 @@ public class SearchModule extends AbsModule {
 
     private Command<List<MessageSearchEntity>> findAllContent(Peer peer, ApiSearchContentType contentType) {
         ArrayList<ApiSearchCondition> conditions = new ArrayList<>();
-        conditions.add(new ApiSearchPeerCondition(buildApiOutPeer(peer)));
+        conditions.add(new ApiSearchPeerCondition(getApiOutPeer(peer)));
         conditions.add(new ApiSearchPeerContentType(contentType));
         return findMessages(new ApiSearchAndCondition(conditions));
     }

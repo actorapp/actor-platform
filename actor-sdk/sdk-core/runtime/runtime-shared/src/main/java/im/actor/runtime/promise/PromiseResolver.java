@@ -37,7 +37,6 @@ public class PromiseResolver<T> {
      */
     @ObjectiveCName("result:")
     public void result(@Nullable T res) {
-        Log.d("Resolver", "" + this);
         promise.result(res);
     }
 
@@ -58,7 +57,6 @@ public class PromiseResolver<T> {
      */
     @ObjectiveCName("error:")
     public void error(@NotNull Exception e) {
-        Log.d("Resolver", "" + this);
         promise.error(e);
     }
 

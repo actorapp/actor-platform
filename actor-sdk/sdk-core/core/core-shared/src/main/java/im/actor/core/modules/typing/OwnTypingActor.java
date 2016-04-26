@@ -23,12 +23,7 @@ import im.actor.runtime.annotations.Verified;
 public class OwnTypingActor extends ModuleActor {
 
     public static ActorRef get(final ModuleContext context) {
-        return ActorSystem.system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public OwnTypingActor create() {
-                return new OwnTypingActor(context);
-            }
-        }), "actor/typing/own");
+        return ActorSystem.system().actorOf("actor/typing/own", () -> new OwnTypingActor(context));
     }
 
     private static final long TYPING_DELAY = 3000L;

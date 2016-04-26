@@ -177,7 +177,6 @@ public class Promise<T> {
         if (e == null) {
             throw new RuntimeException("Error can't be null");
         }
-        Log.d("Promise", "error " + this);
         isFinished = true;
         exception = e;
         deliverResult();
@@ -204,7 +203,6 @@ public class Promise<T> {
         if (isFinished) {
             throw new RuntimeException("Promise " + this + " already completed!");
         }
-        Log.d("Promise", "result " + this);
         isFinished = true;
         result = res;
         deliverResult();
@@ -304,6 +302,25 @@ public class Promise<T> {
 
                 promise.then(t2 -> resolver.result(t2));
                 promise.failure(e -> resolver.error(e));
+            });
+            self.failure(e -> resolver.error(e));
+        });
+    }
+
+    /**
+     * Chaining result to next promise and returning current value as result promise
+     *
+     * @param res chaining function
+     * @param <R> destination type
+     * @return promise
+     */
+    public <R> Promise<T> chain(final Function<T, Promise<R>> res) {
+        final Promise<T> self = this;
+        return new Promise<>(resolver -> {
+            self.then(t -> {
+                Promise<R> chained = res.apply(t);
+                chained.then(t2 -> resolver.result(t));
+                chained.failure(e -> resolver.error(e));
             });
             self.failure(e -> resolver.error(e));
         });

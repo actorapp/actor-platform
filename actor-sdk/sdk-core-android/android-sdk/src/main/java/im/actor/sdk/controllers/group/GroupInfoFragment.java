@@ -33,6 +33,7 @@ import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserPhone;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.runtime.actors.messages.Void;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.R;
@@ -309,9 +310,9 @@ public class GroupInfoFragment extends BaseFragment {
                                                     @Override
                                                     public void onClick(DialogInterface dialog2, int which) {
                                                         execute(messenger().kickMember(chatId, userVM.getId()),
-                                                                R.string.progress_common, new CommandCallback<Boolean>() {
+                                                                R.string.progress_common, new CommandCallback<Void>() {
                                                                     @Override
-                                                                    public void onResult(Boolean res) {
+                                                                    public void onResult(Void res) {
 
                                                                     }
 
@@ -478,9 +479,9 @@ public class GroupInfoFragment extends BaseFragment {
                         @Override
                         public void onClick(DialogInterface dialog2, int which) {
                             execute(messenger().inviteMember(chatId, userModel.getId()),
-                                    R.string.progress_common, new CommandCallback<Boolean>() {
+                                    R.string.progress_common, new CommandCallback<Void>() {
                                         @Override
-                                        public void onResult(Boolean res) {
+                                        public void onResult(Void res) {
 
                                         }
 

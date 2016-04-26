@@ -86,51 +86,25 @@ public class BlockListModule extends AbsModule {
     }
 
     public Promise<Void> blockUser(final int uid) {
-        return new Promise<>((PromiseFunc<Void>) resolver -> {
-            ApiOutPeer outPeer = buildApiOutPeer(Peer.user(uid));
-            if (outPeer == null) {
-                resolver.error(new RuntimeException());
-                return;
-            }
-
-            request(new RequestBlockUser(new ApiUserOutPeer(outPeer.getId(), outPeer.getAccessHash())), new RpcCallback<ResponseSeq>() {
-                @Override
-                public void onResult(ResponseSeq response) {
-                    updates().onSeqUpdateReceived(response.getSeq(), response.getState(),
-                            new UpdateUserBlocked(uid));
-                    updates().executeAfter(response.getSeq(), () -> resolver.result(null));
-                }
-
-                @Override
-                public void onError(RpcException e) {
-                    resolver.error(e);
-                }
-            });
-        });
+        return buildOutPeer(Peer.user(uid))
+                .flatMap(apiOutPeer ->
+                        api(new RequestBlockUser(new ApiUserOutPeer(apiOutPeer.getId(), apiOutPeer.getAccessHash()))))
+                .flatMap(responseSeq ->
+                        updates().applyUpdate(
+                                responseSeq.getSeq(),
+                                responseSeq.getState(),
+                                new UpdateUserBlocked(uid)));
     }
 
     public Promise<Void> unblockUser(final int uid) {
-        return new Promise<>((PromiseFunc<Void>) resolver -> {
-            ApiOutPeer outPeer = buildApiOutPeer(Peer.user(uid));
-            if (outPeer == null) {
-                resolver.error(new RuntimeException());
-                return;
-            }
-
-            request(new RequestUnblockUser(new ApiUserOutPeer(outPeer.getId(), outPeer.getAccessHash())), new RpcCallback<ResponseSeq>() {
-                @Override
-                public void onResult(ResponseSeq response) {
-                    updates().onSeqUpdateReceived(response.getSeq(), response.getState(),
-                            new UpdateUserUnblocked(uid));
-                    updates().executeAfter(response.getSeq(), () -> resolver.result(null));
-                }
-
-                @Override
-                public void onError(RpcException e) {
-                    resolver.error(e);
-                }
-            });
-        });
+        return buildOutPeer(Peer.user(uid))
+                .flatMap(apiOutPeer ->
+                        api(new RequestUnblockUser(new ApiUserOutPeer(apiOutPeer.getId(), apiOutPeer.getAccessHash()))))
+                .flatMap(responseSeq ->
+                        updates().applyUpdate(
+                                responseSeq.getSeq(),
+                                responseSeq.getState(),
+                                new UpdateUserUnblocked(uid)));
     }
 
     public ActorRef getBlockListProcessor() {

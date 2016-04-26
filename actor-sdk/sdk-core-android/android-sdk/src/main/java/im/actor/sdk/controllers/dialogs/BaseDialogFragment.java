@@ -106,7 +106,7 @@ public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, Dia
             }
             if (urlSplit != null) {
                 joinGroupUrl = urlSplit[urlSplit.length - 1];
-                execute(messenger().joinGroupViaLink(joinGroupUrl), R.string.invite_link_title, new CommandCallback<Integer>() {
+                execute(messenger().joinGroupViaToken(joinGroupUrl), R.string.invite_link_title, new CommandCallback<Integer>() {
                     @Override
                     public void onResult(Integer res) {
                         getActivity().startActivity(Intents.openGroupDialog(res, true, getActivity()));

@@ -5,21 +5,13 @@
 package im.actor.core.modules.sequence;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
-import im.actor.core.api.ApiDialogGroup;
-import im.actor.core.api.ApiDialogShort;
 import im.actor.core.api.ApiGroup;
-import im.actor.core.api.ApiPeerType;
 import im.actor.core.api.ApiUser;
-import im.actor.core.api.rpc.ResponseLoadArchived;
 import im.actor.core.api.updates.UpdateChatClear;
 import im.actor.core.api.updates.UpdateChatDelete;
 import im.actor.core.api.updates.UpdateChatGroupsChanged;
-import im.actor.core.api.updates.UpdateContactRegistered;
-import im.actor.core.api.updates.UpdateContactsAdded;
-import im.actor.core.api.updates.UpdateContactsRemoved;
 import im.actor.core.api.updates.UpdateGroupAboutChanged;
 import im.actor.core.api.updates.UpdateGroupAvatarChanged;
 import im.actor.core.api.updates.UpdateGroupInvite;
@@ -44,7 +36,6 @@ import im.actor.core.api.updates.UpdateStickerCollectionsChanged;
 import im.actor.core.api.updates.UpdateTyping;
 import im.actor.core.api.updates.UpdateTypingStop;
 import im.actor.core.api.updates.UpdateUserLastSeen;
-import im.actor.core.api.updates.UpdateUserLocalNameChanged;
 import im.actor.core.api.updates.UpdateUserOffline;
 import im.actor.core.api.updates.UpdateUserOnline;
 import im.actor.core.entity.Peer;
@@ -62,7 +53,6 @@ import im.actor.core.modules.settings.SettingsProcessor;
 import im.actor.core.modules.stickers.StickersProcessor;
 import im.actor.core.modules.typing.TypingProcessor;
 import im.actor.core.modules.messaging.MessagesProcessor;
-import im.actor.core.modules.sequence.internal.ArchivedDialogLoaded;
 import im.actor.core.modules.sequence.internal.CombinedDifference;
 import im.actor.core.modules.sequence.internal.ContactsLoaded;
 import im.actor.core.modules.sequence.internal.GetDiffCombiner;
@@ -116,39 +106,29 @@ public class UpdateProcessor extends AbsModule {
 
     public void processInternalUpdate(InternalUpdate update) {
         if (update instanceof LoggedIn) {
-            ArrayList<ApiUser> users = new ArrayList<ApiUser>();
+            ArrayList<ApiUser> users = new ArrayList<>();
             users.add(((LoggedIn) update).getAuth().getUser());
-            applyRelated(users, new ArrayList<ApiGroup>(), true);
+            applyRelated(users, new ArrayList<>(), true);
             runOnUiThread(((LoggedIn) update).getRunnable());
         } else if (update instanceof ContactsLoaded) {
             ContactsLoaded contactsLoaded = (ContactsLoaded) update;
-            applyRelated(contactsLoaded.getContacts().getUsers(), new ArrayList<ApiGroup>(), false);
+            applyRelated(contactsLoaded.getContacts().getUsers(), new ArrayList<>(), false);
             context().getContactsModule().getContactSyncActor()
                     .send(new ContactsSyncActor.ContactsLoaded(contactsLoaded.getContacts()));
         } else if (update instanceof UsersFounded) {
             final UsersFounded founded = (UsersFounded) update;
-            applyRelated(((UsersFounded) update).getUsers(), new ArrayList<ApiGroup>(), false);
-            final ArrayList<UserVM> users = new ArrayList<UserVM>();
+            applyRelated(((UsersFounded) update).getUsers(), new ArrayList<>(), false);
+            final ArrayList<UserVM> users = new ArrayList<>();
             for (ApiUser u : founded.getUsers()) {
                 users.add(context().getUsersModule().getUsers().get(u.getId()));
             }
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    founded.getCommandCallback().onResult(users.toArray(new UserVM[users.size()]));
-                }
-            });
+            runOnUiThread(() -> founded.getCommandCallback().onResult(users.toArray(new UserVM[users.size()])));
         } else if (update instanceof GroupCreated) {
             final GroupCreated created = (GroupCreated) update;
-            ArrayList<ApiGroup> groups = new ArrayList<ApiGroup>();
+            ArrayList<ApiGroup> groups = new ArrayList<>();
             groups.add(created.getGroup());
             applyRelated(created.getUsers(), groups, false);
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    created.getCallback().onResult(created.getGroup().getId());
-                }
-            });
+            runOnUiThread(() -> created.getCallback().onResult(created.getGroup().getId()));
         } else if (update instanceof RelatedResponse) {
             RelatedResponse relatedResponse = (RelatedResponse) update;
             applyRelated(relatedResponse.getRelatedUsers(), relatedResponse.getRelatedGroups(), false);
