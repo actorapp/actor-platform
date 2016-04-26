@@ -159,6 +159,7 @@ public class BookImportActor extends ModuleActor {
             toRemoveArray[i] = toRemove.get(i);
         }
         context().getContactsModule().getPhoneBook().removeItems(toRemoveArray);
+        context().getPreferences().putBytes("phone_book_ids", new PhoneBookIds(newids).toByteArray());
 
         if (ENABLE_LOG) {
             if (newPhones == 0 && newEmails == 0) {

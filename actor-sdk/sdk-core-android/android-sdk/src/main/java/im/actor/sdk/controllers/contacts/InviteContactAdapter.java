@@ -37,14 +37,7 @@ public class InviteContactAdapter extends BindedListAdapter<PhoneBookContact, In
         this.context = context;
         this.onItemClickedListener = onItemClickedListener;
 
-        try {
-            PhoneBookIds ids = Bser.parse(new PhoneBookIds(), messenger().getPreferences().getBytes("phone_book_ids"));
-            for (long id : ids.getIds()) {
-                selectedUsers.add(id);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
     }
 
     public void setQuery(String query) {
@@ -96,5 +89,16 @@ public class InviteContactAdapter extends BindedListAdapter<PhoneBookContact, In
     @Override
     public InviteContactHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         return new InviteContactHolder(new FrameLayout(context), context, onItemClickedListener);
+    }
+
+    public void updateIds() {
+        try {
+            PhoneBookIds ids = Bser.parse(new PhoneBookIds(), messenger().getPreferences().getBytes("phone_book_ids"));
+            for (long id : ids.getIds()) {
+                selectedUsers.add(id);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
