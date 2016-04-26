@@ -243,6 +243,15 @@ message DialogCommands {
 
     message WriteMessageSelfAck {}
 
+    message QuotedMessage {
+        google.protobuf.Int64Value message_id = 1;
+        google.protobuf.Int32Value public_group_id = 2;
+        int32 sender_user_id = 3;
+        int64 date = 4;
+        bytes message = 5 [(scalapb.field).type = "im.actor.api.rpc.messaging.ApiMessage"];
+    }
+
+
     message SendMessage {
         option (scalapb.message).extends = "im.actor.server.dialog.DirectDialogCommand";
 
@@ -256,6 +265,7 @@ message DialogCommands {
         google.protobuf.Int64Value access_hash = 10;
         bool is_fat = 6;
         google.protobuf.Int32Value for_user_id = 12;
+        QuotedMessage quoted_message = 13;
     }
 
     message SendMessageAck {}
