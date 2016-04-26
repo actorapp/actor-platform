@@ -106,9 +106,9 @@ abstract class Processor[S <: ProcessorState[S]]
 
   override final def receiveRecover = {
     case e: Event ⇒
-      setState(state.updated(e))
+      commit(e)
     case SnapshotOffer(metadata, snapshot) ⇒
-      setState(state.withSnapshot(metadata, snapshot))
+      applySnapshot(metadata, snapshot)
     case RecoveryCompleted ⇒ onRecoveryCompleted()
     case SaveSnapshotFailure(metadata, cause) ⇒
       log.error(cause, "Failed to save snapshot, metadata: {}", metadata)
