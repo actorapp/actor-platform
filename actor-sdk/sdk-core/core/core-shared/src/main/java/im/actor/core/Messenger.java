@@ -1119,7 +1119,9 @@ public class Messenger {
      */
     @ObjectiveCName("findPeersWithType:")
     public Command<List<PeerSearchEntity>> findPeers(PeerSearchType type) {
-        return modules.getSearchModule().findPeers(type);
+        return callback -> modules.getSearchModule().findPeers(type)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1131,7 +1133,9 @@ public class Messenger {
      */
     @ObjectiveCName("findTextMessagesWithPeer:withQuery:")
     public Command<List<MessageSearchEntity>> findTextMessages(Peer peer, String query) {
-        return modules.getSearchModule().findTextMessages(peer, query);
+        return callback -> modules.getSearchModule().findTextMessages(peer, query)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1142,7 +1146,9 @@ public class Messenger {
      */
     @ObjectiveCName("findAllDocsWithPeer:")
     public Command<List<MessageSearchEntity>> findAllDocs(Peer peer) {
-        return modules.getSearchModule().findAllDocs(peer);
+        return callback -> modules.getSearchModule().findAllDocs(peer)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1153,7 +1159,9 @@ public class Messenger {
      */
     @ObjectiveCName("findAllLinksWithPeer:")
     public Command<List<MessageSearchEntity>> findAllLinks(Peer peer) {
-        return modules.getSearchModule().findAllLinks(peer);
+        return callback -> modules.getSearchModule().findAllLinks(peer)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1164,7 +1172,9 @@ public class Messenger {
      */
     @ObjectiveCName("findAllPhotosWithPeer:")
     public Command<List<MessageSearchEntity>> findAllPhotos(Peer peer) {
-        return modules.getSearchModule().findAllPhotos(peer);
+        return callback -> modules.getSearchModule().findAllPhotos(peer)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     //////////////////////////////////////

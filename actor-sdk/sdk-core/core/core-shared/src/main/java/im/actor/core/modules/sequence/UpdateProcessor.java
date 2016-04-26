@@ -59,7 +59,7 @@ import im.actor.core.modules.sequence.internal.GetDiffCombiner;
 import im.actor.core.modules.sequence.internal.GroupCreated;
 import im.actor.core.modules.sequence.internal.InternalUpdate;
 import im.actor.core.modules.sequence.internal.LoggedIn;
-import im.actor.core.modules.sequence.internal.RelatedResponse;
+import im.actor.core.modules.sequence.internal.HandlerRelatedResponse;
 import im.actor.core.modules.sequence.internal.StickersLoaded;
 import im.actor.core.modules.sequence.internal.UsersFounded;
 import im.actor.core.modules.users.UsersProcessor;
@@ -98,26 +98,25 @@ public class UpdateProcessor extends AbsModule {
     }
 
     public void applyRelated(List<ApiUser> users,
-                             List<ApiGroup> groups,
-                             boolean force) {
-        usersProcessor.applyUsers(users, force);
-        groupsProcessor.applyGroups(groups, force);
+                             List<ApiGroup> groups) {
+        usersProcessor.applyUsers(users);
+        groupsProcessor.applyGroups(groups);
     }
 
     public void processInternalUpdate(InternalUpdate update) {
         if (update instanceof LoggedIn) {
             ArrayList<ApiUser> users = new ArrayList<>();
             users.add(((LoggedIn) update).getAuth().getUser());
-            applyRelated(users, new ArrayList<>(), true);
+            applyRelated(users, new ArrayList<>());
             runOnUiThread(((LoggedIn) update).getRunnable());
         } else if (update instanceof ContactsLoaded) {
             ContactsLoaded contactsLoaded = (ContactsLoaded) update;
-            applyRelated(contactsLoaded.getContacts().getUsers(), new ArrayList<>(), false);
+            applyRelated(contactsLoaded.getContacts().getUsers(), new ArrayList<>());
             context().getContactsModule().getContactSyncActor()
                     .send(new ContactsSyncActor.ContactsLoaded(contactsLoaded.getContacts()));
         } else if (update instanceof UsersFounded) {
             final UsersFounded founded = (UsersFounded) update;
-            applyRelated(((UsersFounded) update).getUsers(), new ArrayList<>(), false);
+            applyRelated(((UsersFounded) update).getUsers(), new ArrayList<>());
             final ArrayList<UserVM> users = new ArrayList<>();
             for (ApiUser u : founded.getUsers()) {
                 users.add(context().getUsersModule().getUsers().get(u.getId()));
@@ -127,12 +126,8 @@ public class UpdateProcessor extends AbsModule {
             final GroupCreated created = (GroupCreated) update;
             ArrayList<ApiGroup> groups = new ArrayList<>();
             groups.add(created.getGroup());
-            applyRelated(created.getUsers(), groups, false);
+            applyRelated(created.getUsers(), groups);
             runOnUiThread(() -> created.getCallback().onResult(created.getGroup().getId()));
-        } else if (update instanceof RelatedResponse) {
-            RelatedResponse relatedResponse = (RelatedResponse) update;
-            applyRelated(relatedResponse.getRelatedUsers(), relatedResponse.getRelatedGroups(), false);
-            relatedResponse.getAfterApply().run();
         } else if (update instanceof StickersLoaded) {
             stickersProcessor.onOwnStickerCollectionsChanged(((StickersLoaded) update).getCollections());
         }
@@ -140,9 +135,9 @@ public class UpdateProcessor extends AbsModule {
 
     public void applyDifferenceUpdate(List<ApiUser> users, List<ApiGroup> groups, List<Update> updates) {
 
-        applyRelated(users, groups, false);
-
         CombinedDifference combinedDifference = GetDiffCombiner.buildDiff(updates);
+
+        applyRelated(users, groups);
 
         messagesProcessor.onDifferenceStart();
 
@@ -170,8 +165,6 @@ public class UpdateProcessor extends AbsModule {
         }
 
         messagesProcessor.onDifferenceEnd();
-
-        applyRelated(users, groups, true);
     }
 
     public void processWeakUpdate(Update update, long date) {
