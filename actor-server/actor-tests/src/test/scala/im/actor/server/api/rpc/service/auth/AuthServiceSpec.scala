@@ -1028,7 +1028,7 @@ final class AuthServiceSpec
 
     private def sendSessionHello(authId: Long, sessionId: Long): Unit = {
       val message = HandleMessageBox(ByteString.copyFrom(MessageBoxCodec.encode(MessageBox(Random.nextLong(), SessionHello)).require.toByteBuffer))
-      sessionRegion.ref ! SessionEnvelope(authId, sessionId, None).withHandleMessageBox(message)
+      sessionRegion.ref ! SessionEnvelope(authId, sessionId).withHandleMessageBox(message)
     }
   }
 
