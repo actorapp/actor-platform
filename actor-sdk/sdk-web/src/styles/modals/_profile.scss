@@ -1,21 +1,30 @@
 .profile {
-  width: 600px;
+  width: 640px;
   .nick,
   .phone,
   .email,
   .about {
-    padding-top: $modal-padding;
+    padding-top: 32px;
   }
 
   .input__material {
+    label {
+      font-size: 18px;
+      transform: translateY(24px) translateZ(0);
+    }
     input {
+      font-size: 18px;
+      line-height: 20px;
       color: rgb(77, 77, 77);
+    }
+    .error {
+      top: 50px;
     }
   }
 
   .about {
     label {
-      font-size: 13px;
+      font-size: 14px;
 
       color: $dark-sky-blue;
     }
