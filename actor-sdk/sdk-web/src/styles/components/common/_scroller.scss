@@ -25,12 +25,17 @@
 
 .scroller__scrollbar {
   display: flex;
-  width: 8px;
-  pointer-events: none;
+  width: 4px;
   position: absolute;
+  z-index: 1000;
+  top: 0;
   bottom: 0;
   right: 0;
-  top: 0;
+
+  &:hover,
+  &--active {
+    width: 8px;
+  }
 }
 
 .scroller__thumb {

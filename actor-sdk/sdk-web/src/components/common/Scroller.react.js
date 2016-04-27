@@ -7,6 +7,8 @@ import { shouldComponentUpdate } from 'react-addons-pure-render-mixin';
 import classNames from 'classnames';
 import noop from 'lodash/noop';
 
+const raf = window.requestAnimationFrame;
+
 class Scroller extends Component {
   static propTypes = {
     className: PropTypes.string,
@@ -26,13 +28,16 @@ class Scroller extends Component {
     super(props);
 
     this.state = {
-      scrollTop: 0,
-      scrollHeight: 0,
-      offsetHeight: 0
+      top: 0,
+      height: 0,
+      draging: false
     };
 
     this.onScroll = this.onScroll.bind(this);
     this.onResize = this.onResize.bind(this);
+    this.onMouseDown = this.onMouseDown.bind(this);
+    this.onMouseMove = this.onMouseMove.bind(this);
+    this.onMouseUp = this.onMouseUp.bind(this);
     this.onReference = this.onReference.bind(this);
     this.shouldComponentUpdate = shouldComponentUpdate.bind(this);
   }
@@ -64,8 +69,46 @@ class Scroller extends Component {
     this.updateState(false, this.props.onResize);
   }
 
+  onMouseDown(event) {
+    this.setState({ dragging: true });
+    this.lastPageY = event.pageY;
+
+    document.onselectstart = () => false;
+    document.addEventListener('mousemove', this.onMouseMove);
+    document.addEventListener('mouseup', this.onMouseUp);
+
+    return false;
+  }
+
+  onMouseMove(event) {
+    const delta = event.pageY - this.lastPageY;
+    this.lastPageY = event.pageY;
+
+    raf(() => this.container.scrollTop += delta / this.scrollRatio);
+  }
+
+  onMouseUp() {
+    this.setState({ dragging: false });
+
+    document.onselectstart = undefined;
+    document.removeEventListener('mousemove', this.onMouseMove);
+    document.removeEventListener('mouseup', this.onMouseUp);
+  }
+
+  getDimensions() {
+    return {
+      scrollTop: this.container.scrollTop,
+      scrollHeight: this.container.scrollHeight,
+      offsetHeight: this.container.offsetHeight
+    };
+  }
+
+  getBoundingClientRect() {
+    return this.container.getBoundingClientRect();
+  }
+
   getThumbStyle() {
-    const { scrollTop, scrollHeight, offsetHeight } = this.state;
+    const { scrollTop, scrollHeight, offsetHeight } = this.getDimensions();
 
     if (scrollHeight === 0 || scrollHeight <= offsetHeight) {
       return { top: 0, height: 0 };
@@ -83,17 +126,23 @@ class Scroller extends Component {
   }
 
   render() {
+    const { top, height, dragging } = this.state;
+
     const className = classNames('scroller__container', this.props.className);
+    const scrollbarClassName = classNames('scroller__scrollbar', {
+      'scroller__scrollbar--active': dragging
+    });
 
     return (
       <div className="scroller__wrapper">
         <div className={className} ref={this.onReference} onScroll={this.onScroll}>
           {this.props.children}
         </div>
-        <div className="scroller__scrollbar">
+        <div className={scrollbarClassName}>
           <div
             className="scroller__thumb"
-            style={this.getThumbStyle()}
+            style={{ top, height }}
+            onMouseDown={this.onMouseDown}
           />
         </div>
       </div>
@@ -103,8 +152,11 @@ class Scroller extends Component {
   updateState(shouldUpdate, callback) {
     this.shouldUpdate = shouldUpdate;
 
-    window.requestAnimationFrame(() => {
-      this.setState(this.getDimensions(), callback);
+    raf(() => {
+      const { scrollHeight, clientHeight } = this.container;
+      this.scrollRatio = clientHeight / scrollHeight;
+
+      this.setState(this.getThumbStyle(), callback);
     });
   }
 
@@ -114,18 +166,6 @@ class Scroller extends Component {
 
   scrollToBottom() {
     this.scrollTo(this.container.scrollHeight);
-  }
-
-  getDimensions() {
-    return {
-      scrollTop: this.container.scrollTop,
-      scrollHeight: this.container.scrollHeight,
-      offsetHeight: this.container.offsetHeight
-    };
-  }
-
-  getBoundingClientRect() {
-    return this.container.getBoundingClientRect();
   }
 }
 
