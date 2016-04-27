@@ -1,15 +1,12 @@
 .sidebar__button {
+  display: block;
+  width: 100%;
+  padding: 8px 16px;
   line-height: 20px;
-
-  display: inline-block;
-
-  margin: 16px;
-
-  cursor: pointer !important;
-
   color: rgba(white, .8);
 
   @include no-select();
+  cursor: pointer;
 
   &__icon {
     font-size: 20px;
@@ -24,6 +21,7 @@
       vertical-align: top;
     }
   }
+
   &__title {
     font-size: 14px;
     font-weight: 500;
@@ -35,6 +33,10 @@
   }
 
   &:hover {
-    color: white;
+    background-color: $dusk;
+  }
+
+  &--active {
+    background-color: $dark-sky-blue !important;
   }
 }
