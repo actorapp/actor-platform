@@ -48,7 +48,7 @@ private[messaging] trait MessagingHandlers extends PeersImplicits
   ): Future[HandlerResult[ResponseSeqDate]] =
     authorized(clientData) { implicit client ⇒
       withQuoteMessage(quotedMessageReference) { histMessage ⇒
-        (for (
+        (for {
           s ← fromFuture(dialogExt.sendMessage(
             peer = outPeer.asPeer,
             senderUserId = client.userId,
@@ -61,23 +61,23 @@ private[messaging] trait MessagingHandlers extends PeersImplicits
             isFat = false,
             quotedHistoryMessage = histMessage
           ))
-        ) yield ResponseSeqDate(s.seq, s.state.toByteArray, s.date)).value
+        } yield ResponseSeqDate(s.seq, s.state.toByteArray, s.date)).value
       }
     }
 
   def withQuoteMessage(quotedMessageReference: Option[ApiMessageOutReference])(f: Option[HistoryMessage] ⇒ Future[HandlerResult[ResponseSeqDate]]): Future[HandlerResult[ResponseSeqDate]] = {
     quotedMessageReference match {
       case Some(quoted) ⇒
-        for {
-          histMessage ← (db.run(HistoryMessageRepo.find(quoted.peer.asModel, quoted.randomId)))
-          _ ← Future.successful(if (histMessage.isEmpty) CommonRpcErrors.forbidden("Ref doesn't exist"))
-          _ ← Future.successful(if (parseMessage(histMessage.get.messageContentData).isLeft) IntenalError)
-          result ← f(histMessage)
-        } yield result
-      case None ⇒ f(None)
+        (for {
+          histMessage ← fromFutureOption(CommonRpcErrors.QuotedNotFound)(db.run(HistoryMessageRepo.find(quoted.peer.asModel, quoted.randomId)))
+          _ ← fromXor((e: Any) ⇒ IntenalError)(Xor.fromEither(parseMessage(histMessage.messageContentData)))
+          result ← fromFutureXor(f(Some(histMessage)))
+        } yield result).value
+      case None ⇒
+        f(None)
     }
-
   }
+
   override def doHandleNotifyDialogOpened(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
     FastFuture.failed(new RuntimeException("Not implemented"))
 
