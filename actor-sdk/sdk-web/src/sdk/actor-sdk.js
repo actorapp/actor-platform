@@ -9,7 +9,7 @@ import 'intl';
 import Actor from 'actor-js';
 import React from 'react';
 import { render } from 'react-dom';
-import { Router, Route, IndexRoute, IndexRedirect } from 'react-router';
+import { Router, Route, IndexRoute, Redirect, IndexRedirect } from 'react-router';
 import Modal from 'react-modal';
 import Pace from 'pace';
 import crosstab from 'crosstab';
@@ -144,14 +144,15 @@ class ActorSDK {
             <Route path="auth" component={Login}/>
             <Route path="deactivated" component={Deactivated}/>
             <Route path="install" component={Install}/>
-            <Route path="join/:token" component={Join} onEnter={RouterHooks.requireAuth}/>
 
             <Route path="im" component={Main} onEnter={RouterHooks.requireAuth}>
-              <Route path="history" component={Archive}/>
-              <Route path=":id" component={Dialog}/>
-              <IndexRoute component={Empty}/>
+              <Route path="history" component={Archive} />
+              <Route path="join/:token" component={Join} />
+              <Route path=":id" component={Dialog} />
+              <IndexRoute component={Empty} />
             </Route>
 
+            <Redirect from="join/:token" to="im/join/:token" />
             <IndexRedirect to="im"/>
           </Route>
         </Router>
