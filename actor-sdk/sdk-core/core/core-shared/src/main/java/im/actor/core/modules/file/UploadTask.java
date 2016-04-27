@@ -63,6 +63,7 @@ public class UploadTask extends ModuleActor {
     private CRC32 crc32;
 
     private float currentProgress;
+    private boolean alreadyInTemp;
 
     public UploadTask(long rid, String descriptor, String fileName, ActorRef manager, ModuleContext context) {
         super(context);
@@ -76,7 +77,8 @@ public class UploadTask extends ModuleActor {
 
     @Override
     public void preStart() {
-        isWriteToDestProvider = Storage.isFsPersistent();
+        alreadyInTemp = Storage.isAlreadyInTemp(descriptor);
+        isWriteToDestProvider = Storage.isFsPersistent() && !alreadyInTemp;
 
         srcReference = Storage.fileFromDescriptor(descriptor);
         if (srcReference == null) {
@@ -196,8 +198,8 @@ public class UploadTask extends ModuleActor {
                     FileReference location = new FileReference(response.getUploadedFileLocation(),
                             fileName, srcReference.getSize());
 
-                    if (isWriteToDestProvider) {
-                        FileSystemReference reference = Storage.commitTempFile(destReference, location.getFileId(),
+                    if (isWriteToDestProvider || alreadyInTemp) {
+                        FileSystemReference reference = Storage.commitTempFile(alreadyInTemp ? srcReference : destReference, location.getFileId(),
                                 location.getFileName());
                         reportComplete(location, reference);
                     } else {
