@@ -16,6 +16,7 @@ import { loggerToggle } from '../../actions/LoggerActionCreators';
 import PreferencesStore from '../../stores/PreferencesStore';
 
 import Session from './preferences/Session.react'
+import BlockedUsers from './preferences/BlockedUsers.react'
 
 class PreferencesModal extends Component {
   static getStores() {
@@ -134,19 +135,25 @@ class PreferencesModal extends Component {
     const notificationTabClassNames = classnames('preferences__tabs__tab', {
       'preferences__tabs__tab--active': activeTab ===  PreferencesTabTypes.NOTIFICATIONS
     });
+    const blockTabClassNames = classnames('preferences__tabs__tab', {
+      'preferences__tabs__tab--active': activeTab ===  PreferencesTabTypes.BLOCKED
+    });
     const securityTabClassNames = classnames('preferences__tabs__tab', {
       'preferences__tabs__tab--active': activeTab ===  PreferencesTabTypes.SECURITY
     });
 
     return (
       <aside className="preferences__tabs">
-        <a className={generalTabClassNames} onClick={() => this.handleChangeTab('GENERAL')}>
+        <a className={generalTabClassNames} onClick={() => this.handleChangeTab(PreferencesTabTypes.GENERAL)}>
           <FormattedMessage id="preferences.general.title"/>
         </a>
-        <a className={notificationTabClassNames} onClick={() => this.handleChangeTab('NOTIFICATIONS')}>
+        <a className={notificationTabClassNames} onClick={() => this.handleChangeTab(PreferencesTabTypes.NOTIFICATIONS)}>
           <FormattedMessage id="preferences.notifications.title"/>
         </a>
-        <a className={securityTabClassNames} onClick={() => this.handleChangeTab('SECURITY')}>
+        <a className={blockTabClassNames} onClick={() => this.handleChangeTab(PreferencesTabTypes.BLOCKED)}>
+          <FormattedMessage id="preferences.blocked.title"/>
+        </a>
+        <a className={securityTabClassNames} onClick={() => this.handleChangeTab(PreferencesTabTypes.SECURITY)}>
           <FormattedMessage id="preferences.security.title"/>
         </a>
         <footer className="preferences__tabs__footer">
@@ -157,6 +164,7 @@ class PreferencesModal extends Component {
   }
 
   renderGeneralTab() {
+    // FIXME: Sometimes radio buttons doesnt checked after changing tab;
     const { isSendByEnterEnabled } = this.state;
 
     return (
@@ -198,6 +206,7 @@ class PreferencesModal extends Component {
   }
 
   renderNotificationsTab() {
+    // FIXME: Checkboxes blinking on changing tabs
     const {
       isSoundEffectsEnabled,
       isGroupsNotificationsEnabled,
@@ -308,6 +317,8 @@ class PreferencesModal extends Component {
         return this.renderGeneralTab()
       case PreferencesTabTypes.NOTIFICATIONS:
         return this.renderNotificationsTab()
+      case PreferencesTabTypes.BLOCKED:
+        return <BlockedUsers/>
       case PreferencesTabTypes.SECURITY:
         return this.renderSecurityTab()
       default:
@@ -316,6 +327,7 @@ class PreferencesModal extends Component {
   }
 
   render() {
+    console.debug(this.state);
     return (
       <Modal
         overlayClassName="modal-overlay"
