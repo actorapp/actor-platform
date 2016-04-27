@@ -15,7 +15,6 @@ import im.actor.core.api.rpc.ResponseSearchContacts;
 import im.actor.core.api.rpc.ResponseSeq;
 import im.actor.core.api.updates.UpdateContactsAdded;
 import im.actor.core.api.updates.UpdateContactsRemoved;
-import im.actor.core.entity.PhoneBookContact;
 import im.actor.core.entity.User;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.Configuration;
@@ -38,7 +37,6 @@ import static im.actor.runtime.actors.ActorSystem.system;
 public class ContactsModule extends AbsModule {
 
     private ListEngine<Contact> contacts;
-    private ListEngine<PhoneBookContact> phoneBook;
     private ActorRef bookImportActor;
     private ActorRef contactSyncActor;
     private SyncKeyValue bookImportState;
@@ -47,7 +45,6 @@ public class ContactsModule extends AbsModule {
         super(modules);
 
         contacts = Storage.createList(STORAGE_CONTACTS, Contact.CREATOR);
-        phoneBook = Storage.createList(STORAGE_PHONE_BOOK, PhoneBookContact.CREATOR);
         bookImportState = new SyncKeyValue(Storage.createKeyValue(STORAGE_BOOK_IMPORT));
     }
 
@@ -62,11 +59,6 @@ public class ContactsModule extends AbsModule {
 
     public ListEngine<Contact> getContacts() {
         return contacts;
-    }
-
-    public ListEngine<PhoneBookContact> getPhoneBook() {
-        //This one
-        return phoneBook;
     }
 
     public void onPhoneBookChanged() {

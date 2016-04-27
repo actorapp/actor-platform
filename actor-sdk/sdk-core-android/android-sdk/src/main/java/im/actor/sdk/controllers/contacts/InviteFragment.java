@@ -1,6 +1,5 @@
 package im.actor.sdk.controllers.contacts;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -12,105 +11,89 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import im.actor.core.entity.PhoneBookContact;
-import im.actor.runtime.android.view.BindedListAdapter;
-import im.actor.runtime.generic.mvvm.BindedDisplayList;
-import im.actor.runtime.mvvm.Value;
-import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
-import im.actor.sdk.controllers.fragment.DisplayListFragment;
-import im.actor.sdk.util.Screen;
+import im.actor.sdk.controllers.fragment.BaseFragment;
+import im.actor.sdk.core.AndroidPhoneBook;
 import im.actor.sdk.view.adapters.OnItemClickedListener;
+import im.actor.sdk.view.adapters.RecyclerListView;
 
-import static im.actor.sdk.util.ActorSDKMessenger.messenger;
-
-public class InviteFragment extends DisplayListFragment<PhoneBookContact, InviteContactHolder> {
+public class InviteFragment extends BaseFragment {
 
 
-    private View emptyView;
     private MenuItem sendButton;
+    private RecyclerListView collection;
+    private InviteAdapter adapter;
+    private List<PhoneBookContact> contacts;
+    private TextView emptyText;
 
     public InviteFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return onCreateContactsView(R.layout.fragment_base_contacts, inflater, container, savedInstanceState);
-    }
+        View res = inflater.inflate(R.layout.fragment_list, container, false);
 
-    protected View onCreateContactsView(int layoutId, LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View res = inflate(inflater, container, layoutId, messenger().buildPhoneBookContactsDisplayList());
-        res.findViewById(R.id.collection).setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
-        emptyView = res.findViewById(R.id.emptyCollection);
-        if (emptyView != null) {
-            emptyView.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
-            emptyView.findViewById(R.id.empty_collection_bg).setBackgroundColor(ActorSDK.sharedActor().style.getMainColor());
-            ((TextView) emptyView.findViewById(R.id.empty_collection_text)).setTextColor(ActorSDK.sharedActor().style.getMainColor());
-        } else {
-            emptyView = res.findViewById(R.id.empty_collection_text);
-            if (emptyView != null && emptyView instanceof TextView) {
-                ((TextView) emptyView.findViewById(R.id.empty_collection_text)).setTextColor(ActorSDK.sharedActor().style.getMainColor());
-            }
-        }
+        res.findViewById(R.id.listView).setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
 
-        View headerPadding = new View(getActivity());
-        headerPadding.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
-        headerPadding.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(8)));
-        addHeaderView(headerPadding);
+        emptyText = (TextView) res.findViewById(R.id.emptyView);
+        emptyText.setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
+        emptyText.setText(R.string.progress_common);
+
+        collection = (RecyclerListView) res.findViewById(R.id.listView);
+        AndroidPhoneBook phoneBookLoader = new AndroidPhoneBook();
+        phoneBookLoader.useDelay(false);
+
+        phoneBookLoader.loadPhoneBook(contacts -> {
+            if (contacts.size() > 0) {
+
+                getActivity().runOnUiThread(() -> {
+                    InviteFragment.this.contacts = contacts;
+
+                    adapter = new InviteAdapter(getActivity(), contacts, new OnItemClickedListener<PhoneBookContact>() {
+                        @Override
+                        public void onClicked(PhoneBookContact item) {
+
+                            onItemClicked(item);
+                        }
+
+                        @Override
+                        public boolean onLongClicked(PhoneBookContact item) {
+                            return false;
+                        }
+
+                    });
+
+                    collection.setAdapter(adapter);
+
+                    hideView(emptyText);
+                    showView(collection);
 
 
-        if (emptyView != null) {
-            if (messenger().getAppState().getIsContactsEmpty().get()) {
-                emptyView.setVisibility(View.VISIBLE);
-            } else {
-                emptyView.setVisibility(View.GONE);
-            }
-        }
-        bind(messenger().getAppState().getIsContactsEmpty(), new ValueChangedListener<Boolean>() {
-            @Override
-            public void onChanged(Boolean val, Value<Boolean> Value) {
-                if (emptyView != null) {
-                    if (val) {
-                        emptyView.setVisibility(View.VISIBLE);
-                    } else {
-                        emptyView.setVisibility(View.GONE);
+                    if (sendButton != null) {
+                        sendButton.setVisible(true);
                     }
-                }
+                });
+
             }
         });
+
+
         res.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
 
         return res;
     }
 
 
-    @Override
-    protected BindedListAdapter<PhoneBookContact, InviteContactHolder> onCreateAdapter(BindedDisplayList<PhoneBookContact> displayList, Activity activity) {
-        return new InviteContactAdapter(displayList, activity, new OnItemClickedListener<PhoneBookContact>() {
-            @Override
-            public void onClicked(PhoneBookContact item) {
-
-                onItemClicked(item);
-            }
-
-            @Override
-            public boolean onLongClicked(PhoneBookContact item) {
-                return false;
-            }
-
-        });
-    }
-
     public void onItemClicked(PhoneBookContact contact) {
-        long contactId = contact.getContactId();
-        boolean selected = isSelected(contactId);
+        boolean selected = isSelected(contact);
         boolean needDialog = contact.getEmails().size() > 0 && contact.getPhones().size() > 0;
 
         if (needDialog) {
@@ -123,9 +106,9 @@ public class InviteFragment extends DisplayListFragment<PhoneBookContact, Invite
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setItems(items, (dialog, which) -> {
                 if (which == 2) {
-                    unselect(contactId);
+                    unselect(contact);
                 } else {
-                    select(contactId, which);
+                    select(contact, which);
                 }
                 getAdapter().notifyDataSetChanged();
 
@@ -134,24 +117,24 @@ public class InviteFragment extends DisplayListFragment<PhoneBookContact, Invite
 
         } else {
             if (selected) {
-                unselect(contactId);
+                unselect(contact);
             } else {
-                select(contactId, -1);
+                select(contact, -1);
             }
             getAdapter().notifyDataSetChanged();
         }
     }
 
-    public void select(long id, int type) {
-        ((InviteContactAdapter) getAdapter()).select(id, type);
+    public void select(PhoneBookContact id, int type) {
+        getAdapter().select(id, type);
     }
 
-    public void unselect(long id) {
-        ((InviteContactAdapter) getAdapter()).unselect(id);
+    public void unselect(PhoneBookContact id) {
+        getAdapter().unselect(id);
     }
 
-    public boolean isSelected(long id) {
-        return ((InviteContactAdapter) getAdapter()).isSelected(id);
+    public boolean isSelected(PhoneBookContact id) {
+        return getAdapter().isSelected(id);
     }
 
     @Override
@@ -159,7 +142,9 @@ public class InviteFragment extends DisplayListFragment<PhoneBookContact, Invite
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.invite, menu);
         sendButton = menu.getItem(0);
-        checkSendButton();
+        if (adapter != null && adapter.getCount() > 0) {
+            sendButton.setVisible(true);
+        }
     }
 
     @Override
@@ -174,9 +159,9 @@ public class InviteFragment extends DisplayListFragment<PhoneBookContact, Invite
     private void sendInvites() {
         ArrayList<Long> phones = new ArrayList<Long>();
         ArrayList<String> emails = new ArrayList<String>();
-        Long[] selected = ((InviteContactAdapter) getAdapter()).getSelected();
-        HashMap<Long, Integer> selectedTypes = ((InviteContactAdapter) getAdapter()).getSelectedContactsTypes();
-        PhoneBookContact contact;
+        PhoneBookContact[] selected = getAdapter().getSelected();
+        HashMap<PhoneBookContact, Integer> selectedTypes = getAdapter().getSelectedContactsTypes();
+
         Integer selectedType;
 
         //Prepare email/phones lists
@@ -185,9 +170,9 @@ public class InviteFragment extends DisplayListFragment<PhoneBookContact, Invite
         String email;
         long number;
 
-        for (long s : selected) {
-            contact = messenger().getPhoneBookContact(s);
-            selectedType = selectedTypes.get(s);
+        for (PhoneBookContact contact : selected) {
+
+            selectedType = selectedTypes.get(contact);
             selectedType = selectedType != null ? selectedType : InviteContactHolder.TYPE_PHONE;
             if ((selectedType == InviteContactHolder.TYPE_EMAIL && contact.getEmails().size() > 0) || contact.getPhones().size() == 0) {
                 email = contact.getEmails().get(0).getEmail();
@@ -245,20 +230,16 @@ public class InviteFragment extends DisplayListFragment<PhoneBookContact, Invite
         startActivity(i);
     }
 
-    public void checkSendButton() {
-        if (sendButton != null) {
-            sendButton.setVisible(getDisplayList().getSize() != 0);
-        }
+
+    public InviteAdapter getAdapter() {
+        return adapter;
     }
 
     @Override
-    public void onCollectionChanged() {
-        super.onCollectionChanged();
-        checkSendButton();
-        InviteContactAdapter adapter = (InviteContactAdapter) getAdapter();
+    public void onDestroy() {
+        super.onDestroy();
         if (adapter != null) {
-            adapter.updateIds();
+            adapter.dispose();
         }
     }
-
 }
