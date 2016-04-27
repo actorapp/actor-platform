@@ -1652,10 +1652,6 @@ public class Messenger {
                 .failure(e -> callback.onError(e));
     }
 
-    public PhoneBookContact getPhoneBookContact(long contactId) {
-        return modules.getContactsModule().getPhoneBook().getValue(contactId);
-    }
-
     //////////////////////////////////////
     //             Bindings
     //////////////////////////////////////
