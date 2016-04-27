@@ -33,7 +33,6 @@ object Dependencies {
     val akkaClusterSharding     = "com.typesafe.akka"             %% "akka-cluster-sharding"         % V.akka
     val akkaStream              = "com.typesafe.akka"             %% "akka-stream"                   % V.akka
     val akkaHttp                = "com.typesafe.akka"             %% "akka-http-experimental"        % V.akka
-    val akkaHttpCore            = "com.typesafe.akka"             %% "akka-http-core-experimental"   % V.akka
     val akkaHttpPlayJson        = "de.heikoseeberger"             %% "akka-http-play-json"           % V.akkaHttpJson
     val akkaHttpCirce           = "de.heikoseeberger"             %% "akka-http-circe"               % V.akkaHttpJson
     val akkaSlf4j               = "com.typesafe.akka"             %% "akka-slf4j"                    % V.akka
@@ -200,8 +199,6 @@ object Dependencies {
     guava,
     scodecBits, scodecCore
   )
-
-  val notifications = shared ++ Seq(akkaClusterTools, slick)
 
   val sdk = Seq.empty
 
