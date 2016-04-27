@@ -70,9 +70,11 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
     quotedHistoryMessage: Option[HistoryMessage] = None
   ): Future[SeqStateDate] =
     withValidPeer(peer.asModel, senderUserId, Future.successful(SeqStateDate())) {
-      //todo hp: send message?
+      //todo hp: send content of message and public id?
       // we don't set date here, cause actual date set inside dialog processor
-      val quotedMessage = quotedHistoryMessage flatMap (hm ⇒ ApiMessage.parseFrom(hm.messageContentData).fold(l ⇒ None, r ⇒ Some(QuotedMessage(Some(Int64Value(hm.randomId)), Some(Int32Value(hm.peer.id)), hm.senderUserId, hm.date.getMillis, r))))
+      val quotedMessage = quotedHistoryMessage flatMap (hm ⇒ ApiMessage.parseFrom(hm.messageContentData).fold(
+        l ⇒ None, r ⇒ Some(QuotedMessage(Some(Int64Value(hm.randomId)), None, hm.senderUserId, Some(hm.peer), hm.date.getMillis, r))
+      ))
 
       val sendMessage = SendMessage(
         origin = Some(Peer.privat(senderUserId)),
