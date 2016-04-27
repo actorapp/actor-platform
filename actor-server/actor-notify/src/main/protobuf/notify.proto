@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+package im.actor.server;
+
+option (scalapb.options) = {
+    import: "im.actor.server.api.TypeMappers._"
+    import: "scala.collection.JavaConversions._"
+};
+
+import "scalapb/scalapb.proto";
+
+message NotifyProcessorEvents {
+    message NotifyScheduled {
+        option (scalapb.message).extends = "im.actor.server.notify.NotifyProcessorEvent";
+
+        int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];
+        int32 user_id = 2;
+        int64 at = 3;
+    }
+
+    message NotifyCanceled {
+        option (scalapb.message).extends = "im.actor.server.notify.NotifyProcessorEvent";
+
+        int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];
+        int32 user_id = 2;
+    }
+
+    message NewUsersAdded {
+        option (scalapb.message).extends = "im.actor.server.notify.NotifyProcessorEvent";
+
+        int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];
+        repeated int32 user_ids = 2;
+        int64 last_user_register_date = 3;
+    }
+}
+
+message NotifyProcessorCommands {
+    message FindNewUsers {
+        option (scalapb.message).extends = "im.actor.server.notify.NotifyProcessorCommand";
+    }
+
+    message FindNewUsersResponse {
+        repeated int32 user_ids = 1;
+        int64 last_user_register_date = 2;
+    }
+
+    message SubscribeToPresence {
+        option (scalapb.message).extends = "im.actor.server.notify.NotifyProcessorCommand";
+    }
+
+    message CheckNotify {
+        option (scalapb.message).extends = "im.actor.server.notify.NotifyProcessorCommand";
+    }
+
+    message Notify {
+        option (scalapb.message).extends = "im.actor.server.notify.NotifyProcessorCommand";
+
+        int32 user_id = 1;
+    }
+
+    message CancelNotify {
+        option (scalapb.message).extends = "im.actor.server.notify.NotifyProcessorCommand";
+
+        int32 user_id = 1;
+    }
+}
