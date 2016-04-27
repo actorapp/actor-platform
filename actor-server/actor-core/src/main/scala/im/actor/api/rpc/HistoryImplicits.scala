@@ -29,10 +29,12 @@ trait HistoryImplicits {
               Some(ApiMessageState.Sent)
           } else None // for incoming
 
+          //TODO hp: send content of message and ...
           val quotedMessage = None;
-          val historyMessag: Option[HistoryMessage] = None;
+          val historyMessage: Option[HistoryMessage] = None;
 
-          val apiQuotedMessage = model.quotedMessagePeer.map(_ ⇒ ApiQuotedMessage(model.quotedMessageRid, None, model.quotedMessagePeer.get.id, historyMessag.get.date.getMillis, quotedMessage)) //TODO hp
+          val apiQuotedMessage = model.quotedMessagePeer.map(_ ⇒
+            ApiQuotedMessage(model.quotedMessageRid, None, model.quotedMessagePeer.get.id, historyMessage.map(_.date.getMillis).getOrElse(0), quotedMessage))
           ApiMessageContainer(
             senderUserId = model.senderUserId,
             randomId = model.randomId,
