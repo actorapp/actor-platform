@@ -4,7 +4,6 @@ import java.time.{ LocalDateTime, ZoneOffset }
 import java.util.TimeZone
 
 import akka.actor.{ ActorSystem, Status }
-import akka.http.scaladsl.util.FastFuture
 import akka.pattern.pipe
 import im.actor.api.rpc.contacts.{ UpdateContactRegistered, UpdateContactsAdded, UpdateContactsRemoved }
 import im.actor.api.rpc.messaging._
@@ -17,23 +16,24 @@ import im.actor.server.ApiConversions._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.bots.BotCommand
 import im.actor.server.file.{ Avatar, ImageUtils }
-import im.actor.server.model.{ AvatarData, Sex, User }
 import im.actor.server.model.contact.{ UserContact, UserEmailContact, UserPhoneContact }
+import im.actor.server.model.{ AvatarData, Sex, User }
 import im.actor.server.office.EntityNotFound
-import im.actor.server.persist.contact._
 import im.actor.server.persist._
+import im.actor.server.persist.contact._
+import im.actor.server.persist.social.RelationRepo
 import im.actor.server.sequence.{ PushRules, SequenceErrors }
 import im.actor.server.social.SocialManager._
 import im.actor.server.user.UserCommands._
 import im.actor.server.user.UserErrors.{ BotCommandAlreadyExists, InvalidBotCommand }
-import im.actor.util.misc.StringUtils
 import im.actor.util.ThreadLocalSecureRandom
+import im.actor.util.misc.StringUtils
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.Future
-import scala.util.{ Failure, Success }
 import scala.util.control.NoStackTrace
+import scala.util.{ Failure, Success }
 
 abstract class UserError(message: String) extends RuntimeException(message) with NoStackTrace
 
@@ -239,10 +239,14 @@ private[user] trait UserCommandHandlers {
     persistReply(UserEvents.AboutChanged(now(), about), user) { _ ⇒
       val update = UpdateUserAboutChanged(userId, about)
       for {
+        ids ← db.run(RelationRepo.fetchBlockedIds(user.id))
         _ ← db.run(UserRepo.setAbout(userId, about))
+        uniqueIds = ids.toSet
         relatedUserIds ← getRelations(userId)
-        (seqstate, _) ← seqUpdatesExt.broadcastOwnSingleUpdate(userId, relatedUserIds, update)
+        relationExceptBlock = relatedUserIds.diff(uniqueIds)
+        (seqstate, _) ← seqUpdatesExt.broadcastOwnSingleUpdate(userId, relationExceptBlock, update)
       } yield seqstate
+
     }
   }
 
@@ -359,9 +363,12 @@ private[user] trait UserCommandHandlers {
       val relationsF = getRelations(user.id)
 
       for {
+        ids ← db.run(RelationRepo.fetchBlockedIds(user.id))
+        uniqueIds = ids.toSet
         _ ← db.run(AvatarDataRepo.createOrUpdate(avatarData))
         relatedUserIds ← relationsF
-        (seqstate, _) ← seqUpdatesExt.broadcastOwnSingleUpdate(user.id, relatedUserIds, update)
+        relationExceptBlock = relatedUserIds.diff(uniqueIds)
+        (seqstate, _) ← seqUpdatesExt.broadcastOwnSingleUpdate(user.id, relationExceptBlock, update)
       } yield UpdateAvatarAck(avatarOpt, seqstate)
     }
   }

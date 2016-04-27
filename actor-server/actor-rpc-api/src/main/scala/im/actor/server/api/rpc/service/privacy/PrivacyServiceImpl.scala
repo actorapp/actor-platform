@@ -1,16 +1,20 @@
 package im.actor.server.api.rpc.service.privacy
 
 import akka.actor.ActorSystem
-import im.actor.api.rpc._
-import im.actor.api.rpc.ClientData
 import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.api.rpc.peers.ApiUserOutPeer
 import im.actor.api.rpc.privacy.{ PrivacyService, ResponseLoadBlockedUsers, UpdateUserBlocked, UpdateUserUnblocked }
+import im.actor.api.rpc.users.{ UpdateUserAboutChanged, UpdateUserAvatarChanged }
+import im.actor.api.rpc.{ ClientData, _ }
 import im.actor.server.acl.ACLUtils
 import im.actor.server.db.DbExtension
+import im.actor.server.file.ImageUtils
 import im.actor.server.model.social.{ Relation, RelationStatus }
+import im.actor.server.persist
+import im.actor.server.persist.AvatarDataRepo
 import im.actor.server.persist.social.RelationRepo
 import im.actor.server.sequence.SeqUpdatesExtension
+import im.actor.server.ApiConversions._
 
 import scala.concurrent.{ ExecutionContext, Future }
 
@@ -21,6 +25,7 @@ private object PrivacyServiceErrors {
 
 final class PrivacyServiceImpl(implicit system: ActorSystem) extends PrivacyService {
   import FutureResultRpc._
+  import ImageUtils._
   import PrivacyServiceErrors._
 
   implicit protected val ec: ExecutionContext = system.dispatcher
@@ -42,6 +47,8 @@ final class PrivacyServiceImpl(implicit system: ActorSystem) extends PrivacyServ
             val newRelation = Relation(client.userId, peer.userId, RelationStatus.Blocked)
             fromFuture(db.run(RelationRepo.create(newRelation)))
         }
+        _ ← fromFuture(seqUpdExt.deliverSingleUpdate(peer.userId, UpdateUserAboutChanged(client.userId, None)))
+        _ ← fromFuture(seqUpdExt.deliverSingleUpdate(peer.userId, UpdateUserAvatarChanged(client.userId, None)))
         s ← fromFuture(seqUpdExt.deliverSingleUpdate(client.userId, UpdateUserBlocked(peer.userId)))
       } yield ResponseSeq(s.seq, s.state.toByteArray)).value
     }
@@ -60,6 +67,10 @@ final class PrivacyServiceImpl(implicit system: ActorSystem) extends PrivacyServ
             val newRelation = Relation(client.userId, peer.userId, RelationStatus.Approved)
             fromFuture(db.run(RelationRepo.create(newRelation)))
         }
+        avatarOpt ← fromFuture(db.run(AvatarDataRepo.findByUserId(client.userId).headOption))
+        user ← fromFuture(db.run(persist.UserRepo.find(client.userId)))
+        _ ← fromFuture(seqUpdExt.deliverSingleUpdate(peer.userId, UpdateUserAboutChanged(client.userId, user.get.about)))
+        _ ← fromFuture(seqUpdExt.deliverSingleUpdate(peer.userId, UpdateUserAvatarChanged(client.userId, avatarOpt map getAvatar map avatarToApi)))
         s ← fromFuture(seqUpdExt.deliverSingleUpdate(client.userId, UpdateUserUnblocked(peer.userId)))
       } yield ResponseSeq(s.seq, s.state.toByteArray)).value
     }

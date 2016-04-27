@@ -8,6 +8,7 @@ import im.actor.api.rpc.users.{ ApiFullUser, ApiUser }
 import im.actor.server.ApiConversions._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.dialog.UserAcl
+import im.actor.server.persist.social.RelationRepo
 
 private[user] trait UserQueriesHandlers extends UserAcl {
   self: UserProcessor ⇒
@@ -19,6 +20,8 @@ private[user] trait UserQueriesHandlers extends UserAcl {
 
   protected def getApiStruct(state: UserState, clientUserId: Int, clientAuthId: Long)(implicit system: ActorSystem): Unit = {
     (for {
+      ids ← db.run(RelationRepo.fetchBlockedIds(state.id))
+      uniqueIds = ids.toSet
       localName ← if (clientUserId == state.id || clientUserId == 0)
         FastFuture.successful(None)
       else
@@ -29,11 +32,11 @@ private[user] trait UserQueriesHandlers extends UserAcl {
       name = state.name,
       localName = UserUtils.normalizeLocalName(localName),
       sex = Some(state.sex),
-      avatar = state.avatar,
+      avatar = if (!(uniqueIds.contains(clientUserId))) state.avatar else None,
       isBot = Some(state.isBot),
       contactInfo = UserUtils.defaultUserContactRecords(state.phones.toVector, state.emails.toVector, state.socialContacts.toVector),
       nick = state.nickname,
-      about = state.about,
+      about = if (!(uniqueIds.contains(clientUserId))) state.about else None,
       preferredLanguages = state.preferredLanguages.toVector,
       timeZone = state.timeZone,
       botCommands = state.botCommands,
@@ -49,15 +52,15 @@ private[user] trait UserQueriesHandlers extends UserAcl {
       else
         userExt.getLocalName(clientUserId, state.id)
     } yield GetApiFullStructResponse(ApiFullUser(
-      id = userId,
-      contactInfo = UserUtils.defaultUserContactRecords(state.phones.toVector, state.emails.toVector, state.socialContacts.toVector),
-      about = state.about,
-      preferredLanguages = state.preferredLanguages.toVector,
-      timeZone = state.timeZone,
-      botCommands = state.botCommands,
-      ext = None,
-      isBlocked = Some(isBlocked)
-    ))) pipeTo sender()
+        id = userId,
+        contactInfo = UserUtils.defaultUserContactRecords(state.phones.toVector, state.emails.toVector, state.socialContacts.toVector),
+        about = state.about,
+        preferredLanguages = state.preferredLanguages.toVector,
+        timeZone = state.timeZone,
+        botCommands = state.botCommands,
+        ext = None,
+        isBlocked = Some(isBlocked)
+      ))) pipeTo sender()
   }
 
   protected def getContactRecords(state: UserState): Unit =
