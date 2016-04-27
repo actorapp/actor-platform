@@ -10,7 +10,6 @@ import im.actor.core.entity.Contact;
 import im.actor.core.entity.Dialog;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
-import im.actor.core.entity.PhoneBookContact;
 import im.actor.core.entity.SearchEntity;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
@@ -87,15 +86,6 @@ public class DisplayLists extends AbsModule {
 
         PlatformDisplayList<Contact> res = Storage.createDisplayList(context().getContactsModule().getContacts(),
                 isShared, Contact.ENTITY_NAME);
-        res.initTop();
-        return res;
-    }
-
-    public PlatformDisplayList<PhoneBookContact> buildPhoneBookContactList() {
-        im.actor.runtime.Runtime.checkMainThread();
-
-        PlatformDisplayList<PhoneBookContact> res = Storage.createDisplayList(context().getContactsModule().getPhoneBook(),
-                false, PhoneBookContact.ENTITY_NAME);
         res.initTop();
         return res;
     }
