@@ -243,7 +243,7 @@ public class AndroidMessenger extends im.actor.core.Messenger {
             }
             Bitmap fastThumb = ImageHelper.scaleFit(bmp, 90, 90);
 
-            String resultFileName = getExternalTempFile("image", "jpg");
+            String resultFileName = getExternalUploadTempFile("image", "jpg");
             if (resultFileName == null) {
                 return;
             }
@@ -408,6 +408,21 @@ public class AndroidMessenger extends im.actor.core.Messenger {
         String externalPath = externalFile.getAbsolutePath();
 
         File dest = new File(externalPath + "/actor/tmp/");
+        dest.mkdirs();
+
+        File outputFile = new File(dest, prefix + "_" + random.nextLong() + "." + postfix);
+        return outputFile.getAbsolutePath();
+    }
+
+
+    public String getExternalUploadTempFile(String prefix, String postfix) {
+        File externalFile = context.getExternalFilesDir(null);
+        if (externalFile == null) {
+            return null;
+        }
+        String externalPath = externalFile.getAbsolutePath();
+
+        File dest = new File(externalPath + "/actor/upload_tmp/");
         dest.mkdirs();
 
         File outputFile = new File(dest, prefix + "_" + random.nextLong() + "." + postfix);
