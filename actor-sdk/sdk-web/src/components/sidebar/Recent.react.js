@@ -40,7 +40,6 @@ class Recent extends Component {
     this.scrollToLastHiddenBelow = this.scrollToLastHiddenBelow.bind(this);
     this.handleGroupListTitleClick = this.handleGroupListTitleClick .bind(this);
     this.handlePrivateListTitleClick = this.handlePrivateListTitleClick.bind(this);
-    this.handleHistoryClick = this.handleHistoryClick.bind(this);
 
     this.shouldComponentUpdate = shouldComponentUpdate.bind(this);
   }
@@ -63,10 +62,6 @@ class Recent extends Component {
 
   handleCreateGroup() {
     CreateGroupActionCreators.open();
-  }
-
-  handleHistoryClick() {
-    history.push('/im/history')
   }
 
   checkInvisibleCounters() {
@@ -189,7 +184,6 @@ class Recent extends Component {
         to="/im/history"
         title={<FormattedMessage id="sidebar.recents.history" />}
         glyph="history"
-        onClick={this.handleHistoryClick}
         key="history"
       />
     );
