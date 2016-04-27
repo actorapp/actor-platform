@@ -745,7 +745,7 @@ public class ChatActivity extends ActorEditTextActivity {
         bindGlobalCounter(new ValueChangedListener<Integer>() {
             @Override
             public void onChanged(Integer val, Value<Integer> valueModel) {
-                if (val > 0) {
+                if (val != null && val > 0) {
                     counter.setText(Integer.toString(val));
                     showView(counter);
                 } else {
