@@ -198,13 +198,6 @@ export default {
         },
         delete: 'Delete this group?',
         kick: 'Kick this user?'
-      },
-      blockedUsers: {
-        title: 'Blocked users',
-        notExists: 'You haven\'t block anyone.',
-        notFound: 'Sorry, no users were found.',
-        search: 'Search for contacts or usernames',
-        unblock: 'Unblock'
       }
     },
 
@@ -318,6 +311,13 @@ export default {
           terminate: 'Kill',
           terminateAll: 'Terminate all sessions'
         }
+      },
+      blocked: {
+        title: 'Blocked Users',
+        notExists: 'You haven\'t block anyone.',
+        notFound: 'Sorry, no users were found.',
+        search: 'Search for contacts or usernames',
+        unblock: 'Unblock'
       }
     },
 
