@@ -31,7 +31,7 @@ class SidebarLink extends Component {
         to={to}
         className={buttonClassName}
         activeClassName="sidebar__button--active"
-        onlyActiveOnIndex={onlyActiveOnIndex}
+        onlyActiveOnIndex={onlyActiveOnIndex || false}
       >
         <div className="sidebar__button__icon">
           <i className="material-icons">{glyph}</i>
