@@ -68,7 +68,22 @@ const LoginActionCreators = {
       success: ActionTypes.AUTH_CODE_SEND_SUCCESS,
       failure: ActionTypes.AUTH_CODE_SEND_FAILURE
     }, { code });
+    const handleState = (state) => {
+      switch (state) {
+        case 'signup':
+          this.startSignup();
+          break;
+        case 'logged_in':
+          this.setLoggedIn({redirect: true});
+          break;
+        default:
+          console.error('Unsupported state', state);
+      }
+    };
 
+    sendCodePromise()
+      .then(handleState);
+  },
   sendPassword(password) {
      const sendPasswordPromise = () => dispatchAsync(ActorClient.sendPassword(password), {
        request: ActionTypes.AUTH_CODE_SEND,
@@ -108,22 +123,7 @@ const LoginActionCreators = {
 
 
 
-    const handleState = (state) => {
-      switch (state) {
-        case 'signup':
-          this.startSignup();
-          break;
-        case 'logged_in':
-          this.setLoggedIn({redirect: true});
-          break;
-        default:
-          console.error('Unsupported state', state);
-      }
-    };
 
-    sendCodePromise()
-      .then(handleState);
-  },
 
   startSignup() {
     dispatch(ActionTypes.AUTH_SIGNUP_START);
