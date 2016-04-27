@@ -6,11 +6,18 @@
   position: relative;
 
   display: flex;
-  overflow-x: hidden;
 
   flex: 1 1 auto;
   &__container {
     flex: 1 1 auto;
+  }
+
+  .scroller__scrollbar {
+    right: -2px;
+    &:hover,
+    &--active {
+      right: -4px;
+    }
   }
 }
 
