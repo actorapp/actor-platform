@@ -454,7 +454,7 @@ final class GroupsServiceSpec
 
             whenReady(service.handleJoinGroup(url)) { resp ⇒
               inside(resp) {
-                case Error(err) ⇒ err shouldEqual GroupRpcErrors.UserAlreadyInvited
+                case Error(err) ⇒ err shouldEqual GroupRpcErrors.YouAlreadyAMember
               }
             }
           }
