@@ -20,6 +20,10 @@ import EventBusActionCreators from './EventBusActionCreators';
 import StickersActionCreators from './StickersActionCreators';
 
 class LoginActionCreators extends ActionCreators {
+  start() {
+    dispatch(ActionTypes.AUTH_START);
+  }
+
   changeLogin(login) {
     dispatch(ActionTypes.AUTH_CHANGE_LOGIN, { login });
   }
