@@ -11,6 +11,7 @@ import DelegateContainer from '../utils/DelegateContainer';
 import LocationContainer from '../utils/LocationContainer';
 
 import ActionCreators from './ActionCreators';
+import JoinGroupActions from './JoinGroupActions';
 import ProfileActionCreators from './ProfileActionCreators';
 import DialogActionCreators from './DialogActionCreators';
 import ContactActionCreators from './ContactActionCreators';
@@ -126,6 +127,8 @@ class LoginActionCreators extends ActionCreators {
     ]);
 
     dispatch(ActionTypes.AUTH_SET_LOGGED_IN);
+
+    JoinGroupActions.joinAfterLogin();
   }
 
   setLoggedOut() {
