@@ -83,7 +83,7 @@ class Attachments extends Component {
     AttachmentsActionCreators.sendAll(this.state.attachments);
   }
 
-  renderHeadeButton() {
+  renderHeaderButton() {
     const { attachments } = this.state;
     if (attachments.length <= 1) return null;
 
@@ -96,6 +96,7 @@ class Attachments extends Component {
 
   renderAttachment() {
     const { attachments, selectedIndex } = this.state;
+    if (attachments.length === 0) return null;
 
     return (
       <Attachment attachment={attachments[selectedIndex]}/>
@@ -143,7 +144,7 @@ class Attachments extends Component {
 
             <header className="modal__header">
               <FormattedMessage id="modal.attachments.title" tagName="h1"/>
-              {this.renderHeadeButton()}
+              {this.renderHeaderButton()}
             </header>
 
             <div className="modal__body">

@@ -387,7 +387,8 @@ export const ModalTypes = keymirror({
 export const PreferencesTabTypes = keymirror({
   GENERAL: null,
   NOTIFICATIONS: null,
-  SECURITY: null
+  SECURITY: null,
+  BLOCKED: null
 });
 
 
