@@ -118,7 +118,13 @@ export default {
         'email': 'Email',
         'about': 'About',
         'avatarChange': 'Change avatar',
-        'avatarRemove': 'Remove'
+        'avatarRemove': 'Remove',
+        errors: {
+          nick: {
+            length: 'Nick should contain from 5 to 32 characters',
+            chars: 'Please use latin characters, numbers and underscores'
+          }
+        }
       },
       'group': {
         'title': 'Edit group',
