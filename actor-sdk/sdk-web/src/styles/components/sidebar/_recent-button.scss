@@ -1,23 +1,26 @@
 .sidebar__button {
+  line-height: 24px;
+
   display: block;
-  width: 100%;
-  padding: 8px 16px;
-  line-height: 20px;
-  color: rgba(white, .8);
+
   box-sizing: border-box;
+  padding: 6px 16px;
+
+  cursor: pointer;
+
+  color: rgba(white, .8);
 
   @include no-select();
-  cursor: pointer;
 
   &__icon {
     font-size: 20px;
-    line-height: 20px;
+    line-height: 24px;
 
     display: inline-block;
 
-    width: 20px;
-    height: 20px;
-    margin-right: 12px;
+    margin-right: 8px;
+
+    vertical-align: top;
     .material-icons {
       vertical-align: top;
     }
@@ -26,10 +29,11 @@
   &__title {
     font-size: 14px;
     font-weight: 500;
+    line-height: 24px;
 
     display: inline-block;
 
-    vertical-align: middle;
+    vertical-align: top;
     text-transform: uppercase;
   }
 

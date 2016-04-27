@@ -65,11 +65,15 @@
 }
 
 .recent__group {
+  margin-bottom: 14px;
+  &:last-child {
+    margin-bottom: 0;
+  }
   &__header {
-    margin: 8px 16px 4px;
+    margin: 4px 16px;
   }
   &__title {
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 500;
     line-height: 14px;
 
@@ -88,8 +92,8 @@
 
       border-bottom: 1px dotted rgba(white, .5);
       &:hover {
-        color: rgba(white, .7);
-        border-bottom: 1px dotted rgba(white, .7);
+        color: white;
+        border-bottom: 1px dotted white;
       }
     }
   }
@@ -116,7 +120,7 @@
   flex-direction: row;
 
   box-sizing: border-box;
-  padding: 8px 16px;
+  padding: 6px 16px;
 
   cursor: pointer;
 
