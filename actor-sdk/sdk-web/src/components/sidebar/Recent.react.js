@@ -181,6 +181,7 @@ class Recent extends Component {
 
     return (
       <SidebarLink
+        className="sidebar__history"
         to="/im/history"
         title={<FormattedMessage id="sidebar.recents.history" />}
         glyph="history"
