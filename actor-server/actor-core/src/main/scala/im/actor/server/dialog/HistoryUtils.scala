@@ -23,7 +23,9 @@ object HistoryUtils {
     date:                 DateTime,
     randomId:             Long,
     messageContentHeader: Int,
-    messageContentData:   Array[Byte]
+    messageContentData:   Array[Byte],
+    quotedMessagePeer:    Option[Peer],
+    quotedMessageRid:     Option[Long]
   )(implicit system: ActorSystem): DBIO[Unit] = {
     import system.dispatcher
     requirePrivatePeer(fromPeer)
@@ -38,7 +40,9 @@ object HistoryUtils {
         randomId = randomId,
         messageContentHeader = messageContentHeader,
         messageContentData = messageContentData,
-        deletedAt = None
+        deletedAt = None,
+        quotedMessagePeer = quotedMessagePeer,
+        quotedMessageRid = quotedMessageRid
       )
 
       val messages =
