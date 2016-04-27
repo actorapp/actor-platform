@@ -16,7 +16,7 @@ import AddContactActionCreators from '../../actions/AddContactActionCreators';
 
 import Scroller from '../common/Scroller.react';
 import RecentGroup from './RecentGroup.react';
-import SidebarButton from './SidebarButton.react';
+import SidebarLink from './SidebarLink.react';
 
 class Recent extends Component {
   static propTypes = {
@@ -185,7 +185,8 @@ class Recent extends Component {
     if (isArchiveEmpty) return null;
 
     return (
-      <SidebarButton
+      <SidebarLink
+        to="/im/history"
         title={<FormattedMessage id="sidebar.recents.history" />}
         glyph="history"
         onClick={this.handleHistoryClick}
