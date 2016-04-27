@@ -15,6 +15,7 @@ export const ActionTypes = keymirror({
   APP_HIDDEN: null,
   APP_VISIBLE: null,
 
+  AUTH_START: null,
   AUTH_CHANGE_LOGIN: null,
   AUTH_CHANGE_CODE: null,
   AUTH_CHANGE_NAME: null,
