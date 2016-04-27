@@ -33,9 +33,9 @@ class MessagingServiceSpec
 
   "Private Messaging" should "send messages" in s.privat.sendMessage
 
-  "Private Quote Messaging" should "quote messages" in s.privat.quoteMessage
-
   it should "not repeat message sending with same authId and RandomId" in s.privat.cached
+
+  "Private Quote Messaging" should "quote messages" in s.privat.quoteMessage
 
   "Group Messaging" should "send messages" in s.group.sendMessage
 
@@ -190,6 +190,20 @@ class MessagingServiceSpec
 
           }
         }
+
+        val randomId4 = Random.nextLong()
+
+        {
+          implicit val clientData = clientData2
+
+          val apiMessageOutReference = ApiMessageOutReference(user1OutPeer, -1)
+          whenReady(service.handleSendMessage(user3Peer, randomId4, ApiEmptyMessage, None, Some(apiMessageOutReference))) { resp ⇒
+            inside(resp) {
+              case Error(CommonRpcErrors.QuotedNotFound) ⇒
+            }
+          }
+        }
+
       }
 
       def cached(): Unit = {
