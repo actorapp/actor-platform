@@ -107,13 +107,7 @@ public class BookImportActor extends ModuleActor {
 
         int newPhones = 0;
         int newEmails = 0;
-        ArrayList<Long> newids = new ArrayList<Long>();
-        List<Long> oldids = new ArrayList<Long>();
-        try {
-            oldids.addAll(Bser.parse(new PhoneBookIds(), preferences().getBytes("phone_book_ids")).getIds());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
         for (PhoneBookContact record : phoneBook) {
             for (PhoneBookPhone phone : record.getPhones()) {
                 if (storage.isImported(phone.getNumber())) {
@@ -139,29 +133,7 @@ public class BookImportActor extends ModuleActor {
                 newEmails++;
             }
 
-            newids.add(record.getContactId());
         }
-
-        int size = phoneBook.size();
-        for (PhoneBookContact c : phoneBook) {
-            if (!oldids.contains(c.getContactId())) {
-                context().getContactsModule().getPhoneBook().addOrUpdateItem(c.setSortId(size--));
-            }
-        }
-
-        ArrayList<Long> toRemove = new ArrayList<Long>();
-        for (long oldId : oldids) {
-            if (!newids.contains(oldId)) {
-                toRemove.add(oldId);
-            }
-        }
-
-        long[] toRemoveArray = new long[toRemove.size()];
-        for (int i = 0; i < toRemove.size(); i++) {
-            toRemoveArray[i] = toRemove.get(i);
-        }
-        context().getContactsModule().getPhoneBook().removeItems(toRemoveArray);
-        context().getPreferences().putBytes("phone_book_ids", new PhoneBookIds(newids).toByteArray());
 
         if (ENABLE_LOG) {
             if (newPhones == 0 && newEmails == 0) {

@@ -33,16 +33,20 @@ public class AndroidPhoneBook implements PhoneBookProvider {
     private static final boolean DISABLE_PHONE_BOOK = false;
     private static final String TAG = "PhoneBookLoader";
     private static PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+    private boolean useDelay = true;
 
     @Override
     public void loadPhoneBook(final Callback callback) {
         new Thread() {
             @Override
             public void run() {
-                try {
-                    Thread.sleep(PRELOAD_DELAY);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                if (useDelay) {
+                    try {
+                        Thread.sleep(PRELOAD_DELAY);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
                 }
                 ArrayList<PhoneBookContact> contacts = loadPhoneBook(AndroidContext.getContext(),
                         Devices.getDeviceCountry());
@@ -242,5 +246,9 @@ public class AndroidPhoneBook implements PhoneBookProvider {
         }
         Log.d(TAG, "Phone book loaded in " + (SystemClock.uptimeMillis() - start) + " ms in " + (index) + " iterations");
         return res;
+    }
+
+    public void useDelay(boolean useDelay) {
+        this.useDelay = useDelay;
     }
 }

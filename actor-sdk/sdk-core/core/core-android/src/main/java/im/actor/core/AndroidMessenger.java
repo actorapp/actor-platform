@@ -383,10 +383,6 @@ public class AndroidMessenger extends im.actor.core.Messenger {
         return (BindedDisplayList<Contact>) modules.getDisplayListsModule().buildContactList(false);
     }
 
-    public BindedDisplayList<PhoneBookContact> buildPhoneBookContactsDisplayList() {
-        return (BindedDisplayList<PhoneBookContact>) modules.getDisplayListsModule().buildPhoneBookContactList();
-    }
-
     private boolean isScreenOn() {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
             DisplayManager dm = (DisplayManager) context.getSystemService(Context.DISPLAY_SERVICE);
