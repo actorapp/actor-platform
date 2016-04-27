@@ -23,6 +23,7 @@ package object rpc extends PeersImplicits with HistoryImplicits with DialogConve
     val EntityNotFound = RpcError(404, "ENTITY_NOT_FOUND", "", false, None)
     val NotSupportedInOss = RpcError(400, "NOT_SUPPORTED_IN_OSS", "Feature is not supported in the Open-Source version.", canTryAgain = false, None)
     val IntenalError = RpcError(500, "INTERNAL_ERROR", "", false, None)
+    val QuotedNotFound = RpcError(404, "QUOTED_MESSAGE_NOT_FOUND", "", false, None)
 
     def forbidden(userMessage: String = "You are not allowed to do this.") = RpcError(403, "FORBIDDEN", userMessage, false, None)
   }
