@@ -4,6 +4,7 @@
   padding: 8px 16px;
   line-height: 20px;
   color: rgba(white, .8);
+  box-sizing: border-box;
 
   @include no-select();
   cursor: pointer;
