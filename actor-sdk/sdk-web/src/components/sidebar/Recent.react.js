@@ -7,7 +7,6 @@ import { forEach, debounce } from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import { shouldComponentUpdate } from 'react-addons-pure-render-mixin';
 import { FormattedMessage } from 'react-intl';
-import history from '../../utils/history';
 
 import GroupListActionCreators from '../../actions/GroupListActionCreators';
 import ContactActionCreators from '../../actions/ContactActionCreators';
