@@ -54,4 +54,4 @@ class SidebarSection extends Component {
   }
 }
 
-export default Container.create(SidebarSection);
+export default Container.create(SidebarSection, { pure: false });
