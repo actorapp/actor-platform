@@ -40,7 +40,6 @@ public abstract class ActorInterface {
         return new Promise<>(new PromiseFunc<T>() {
             @Override
             public void exec(@NotNull PromiseResolver<T> executor) {
-                Log.d("Act", "ask: " + executor);
                 send(new AskIntRequest(message, executor));
             }
         });
