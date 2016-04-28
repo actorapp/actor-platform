@@ -1,15 +1,14 @@
-package im.actor.server.file.local.http
+package im.actor.server.file.local.http.fix
 
 import java.io.File
 
 import akka.http.scaladsl.model.headers.EntityTag
-import akka.http.scaladsl.server._
-import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.model.{ ContentType, DateTime, HttpEntity }
-import akka.http.scaladsl.server.Route
-import akka.http.scaladsl.server.directives.BasicDirectives.{ extractSettings ⇒ _, pass ⇒ _, _ }
-import akka.http.scaladsl.server.directives.CacheConditionDirectives.{ conditional ⇒ _, _ }
-import akka.http.scaladsl.server.directives.{ BasicDirectives, CodingDirectives, ContentTypeResolver, RangeDirectives }
+import akka.http.scaladsl.server.Directives._
+import akka.http.scaladsl.server.{ Route, _ }
+import akka.http.scaladsl.server.directives.BasicDirectives.{ extractSettings ⇒ _, pass ⇒ _ }
+import akka.http.scaladsl.server.directives.CacheConditionDirectives.{ conditional ⇒ _ }
+import akka.http.scaladsl.server.directives.{ BasicDirectives, CodingDirectives, ContentTypeResolver }
 import akka.stream.ActorAttributes
 import akka.stream.scaladsl.FileIO
 
@@ -17,7 +16,7 @@ import akka.stream.scaladsl.FileIO
 trait GetFileFix {
 
   private val withRangeSupportAndPrecompressedMediaTypeSupportAndExtractSettings =
-    RangeDirectives.withRangeSupport &
+    RangeDirectivesFix.withRangeSupport &
       CodingDirectives.withPrecompressedMediaTypeSupport &
       BasicDirectives.extractSettings
 
@@ -31,10 +30,8 @@ trait GetFileFix {
           if (file.length > 0) {
             withRangeSupportAndPrecompressedMediaTypeSupportAndExtractSettings { settings ⇒
               complete {
-                HttpEntity.Chunked.fromData(
-                  contentType,
-                  FileIO.fromFile(file).withAttributes(ActorAttributes.dispatcher(settings.fileIODispatcher))
-                )
+                HttpEntity.Default(contentType, file.length,
+                  FileIO.fromFile(file).withAttributes(ActorAttributes.dispatcher(settings.fileIODispatcher)))
               }
             }
           } else complete(HttpEntity.Empty)
