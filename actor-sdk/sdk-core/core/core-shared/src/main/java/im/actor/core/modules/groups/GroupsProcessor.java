@@ -261,16 +261,6 @@ public class GroupsProcessor extends AbsModule implements SequenceProcessor {
     }
 
     @Verified
-    public boolean hasGroups(Collection<Integer> gids) {
-        for (Integer uid : gids) {
-            if (groups().getValue(uid) == null) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    @Verified
     private void onGroupDescChanged(Group group) {
         getRouter().onGroupChanged(group);
     }
