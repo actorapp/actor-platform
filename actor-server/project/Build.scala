@@ -263,7 +263,8 @@ object Build extends sbt.Build with Versioning with Releasing {
     id = "actor-fs-adapters",
     base = file("actor-fs-adapters"),
     settings = defaultSettingsServer ++ Seq(
-      libraryDependencies ++= Dependencies.fileAdapter
+      libraryDependencies ++= Dependencies.fileAdapter,
+      scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Xfatal-warnings")
     )
   )
     .dependsOn(actorHttpApi, actorPersist)
