@@ -13,6 +13,7 @@ import akka.http.scaladsl.server._
 import akka.stream.ActorMaterializer
 import im.actor.server.api.http.HttpHandler
 import im.actor.server.api.http.HttpApiHelpers._
+import im.actor.server.file.local.http.fix.GetFileFix
 import im.actor.server.file.local.{ FileStorageOperations, LocalFileStorageConfig, RequestSigning }
 import im.actor.util.log.AnyRefLogSource
 
@@ -63,22 +64,20 @@ private[local] final class FilesHttpHandler(storageConfig: LocalFileStorageConfi
               //v1/files/:fileId
               path(Segments(0, 1)) { seqName =>
                 log.debug("Download file request, fileId: {}", fileId)
-                withRangeSupport {
-                  onComplete(getFile(fileId)) {
-                    case Success(Some(file)) =>
-                      log.debug("Serving fileId: {}, file: {} parts", fileId, file)
-                      respondWithDefaultHeader(
-                        `Content-Disposition`(attachment, Map("filename" -> file.name))
-                      ) {
-                        //TODO: remove as soon, as https://github.com/akka/akka/issues/20338 get fixed
-                        getFromFileFix(file.toJava)
-                      }
-                    case Success(None) =>
-                      complete(HttpResponse(StatusCodes.NotFound))
-                    case Failure(e) =>
-                      log.error(e, "Failed to get file content, fileId: {}", fileId)
-                      complete(HttpResponse(500))
-                  }
+                onComplete(getFile(fileId)) {
+                  case Success(Some(file)) =>
+                    log.debug("Serving fileId: {}, file: {} parts", fileId, file)
+                    respondWithDefaultHeader(
+                      `Content-Disposition`(attachment, Map("filename" -> file.name))
+                    ) {
+                      //TODO: remove as soon, as https://github.com/akka/akka/issues/20338 get fixed
+                      getFromFileFix(file.toJava)
+                    }
+                  case Success(None) =>
+                    complete(HttpResponse(StatusCodes.NotFound))
+                  case Failure(e) =>
+                    log.error(e, "Failed to get file content, fileId: {}", fileId)
+                    complete(HttpResponse(500))
                 }
               }
             } ~
