@@ -9,16 +9,14 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
-import im.actor.core.api.ApiGroup;
 import im.actor.core.api.ApiUser;
 import im.actor.core.api.rpc.RequestGetContacts;
 import im.actor.core.api.rpc.ResponseGetContacts;
 import im.actor.core.entity.Contact;
 import im.actor.core.entity.User;
-import im.actor.core.modules.Configuration;
+import im.actor.core.modules.api.ApiSupportConfiguration;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.ModuleActor;
 import im.actor.core.network.RpcCallback;
@@ -115,7 +113,7 @@ public class ContactsSyncActor extends ModuleActor {
             Log.d(TAG, "Performing sync with uids: " + hash);
         }
 
-        request(new RequestGetContacts(hashValue, Configuration.OPTIMIZATIONS), new RpcCallback<ResponseGetContacts>() {
+        request(new RequestGetContacts(hashValue, ApiSupportConfiguration.OPTIMIZATIONS), new RpcCallback<ResponseGetContacts>() {
             @Override
             public void onResult(ResponseGetContacts response) {
 

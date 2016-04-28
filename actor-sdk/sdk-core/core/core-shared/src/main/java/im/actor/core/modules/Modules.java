@@ -179,6 +179,8 @@ public class Modules implements ModuleContext {
 
 
         timing = new Timing("ACCOUNT_RUN");
+        timing.section("Users");
+        users.run();
         timing.section("Settings");
         settings.run();
         timing.section("DeviceInfo");

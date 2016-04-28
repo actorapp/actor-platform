@@ -1,4 +1,4 @@
-package im.actor.core.modules;
+package im.actor.core.modules.api;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,7 +6,7 @@ import java.util.List;
 
 import im.actor.core.api.ApiUpdateOptimization;
 
-public class Configuration {
+public class ApiSupportConfiguration {
 
     public static final List<ApiUpdateOptimization> OPTIMIZATIONS;
 

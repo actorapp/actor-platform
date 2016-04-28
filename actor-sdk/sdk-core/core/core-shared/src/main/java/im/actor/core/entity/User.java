@@ -67,6 +67,10 @@ public class User extends WrapperExtEntity<ApiFullUser, ApiUser> implements KeyV
     @SuppressWarnings("NullableProblems")
     private List<ContactRecord> records;
 
+    @NotNull
+    @Property("readonly, nonatomic")
+    private boolean haveExtension;
+
     public User(@NotNull ApiUser wrappedUser, @Nullable ApiFullUser ext) {
         super(RECORD_ID, RECORD_FULL_ID, wrappedUser, ext);
     }
@@ -129,6 +133,10 @@ public class User extends WrapperExtEntity<ApiFullUser, ApiUser> implements KeyV
     @NotNull
     public Sex getSex() {
         return sex;
+    }
+
+    public boolean isHaveExtension() {
+        return haveExtension;
     }
 
     @NotNull
@@ -260,6 +268,7 @@ public class User extends WrapperExtEntity<ApiFullUser, ApiUser> implements KeyV
         // Extension
 
         if (ext != null) {
+            this.haveExtension = true;
             this.records = new ArrayList<>();
             for (ApiContactRecord record : ext.getContactInfo()) {
                 if (record.getType() == ApiContactType.PHONE) {
@@ -278,6 +287,7 @@ public class User extends WrapperExtEntity<ApiFullUser, ApiUser> implements KeyV
             }
             this.about = ext.getAbout();
         } else {
+            this.haveExtension = false;
             this.records = new ArrayList<>();
             this.about = null;
         }
