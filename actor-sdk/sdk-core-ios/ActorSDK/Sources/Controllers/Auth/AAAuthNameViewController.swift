@@ -92,7 +92,18 @@ public class AAAuthNameViewController: AAAuthViewController {
             } else {
                 if ActorSDK.sharedActor().authStrategy == .PhoneOnly || ActorSDK.sharedActor().authStrategy == .PhoneEmail {
                     navigateNext(AAAuthPhoneViewController(name: name))
-                } else {
+                }
+                    else if(ActorSDK.sharedActor().authStrategy == .Username)
+                {
+                    Actor.doStartAuthWithUsername(name).startUserAction().then { (res: ACAuthStartRes!) -> () in
+                        if res.authMode.toNSEnum() == .OTP {
+                            self.navigateNext(AAAuthOTPViewController(email: name, name: name, transactionHash: res.transactionHash))
+                        } else {
+                            self.alertUser(AALocalized("AuthUnsupported").replace("{app_name}", dest: ActorSDK.sharedActor().appName))
+                        }
+                    }
+                }
+                else {
                     navigateNext(AAAuthEmailViewController(name: name))
                 }
             }

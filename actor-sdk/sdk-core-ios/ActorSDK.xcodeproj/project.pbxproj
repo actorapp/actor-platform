@@ -370,6 +370,7 @@
 		BEE6EB041C4D9A4900A2280E /* AAWallpapersCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE6EB031C4D9A4900A2280E /* AAWallpapersCell.swift */; };
 		BEF11DB61C466D800076400A /* begin_record.caf in Resources */ = {isa = PBXBuildFile; fileRef = 153F6B3C1C2A9B1900C0B960 /* begin_record.caf */; };
 		BEFE68D51C4657360001F2D6 /* AAThumbnailCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEFE68D41C4657360001F2D6 /* AAThumbnailCollectionCell.swift */; };
+		EF1F2A281CACAF240000D859 /* AAAuthUsernameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF1F2A271CACAF240000D859 /* AAAuthUsernameViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -755,6 +756,7 @@
 		BEE6EB031C4D9A4900A2280E /* AAWallpapersCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAWallpapersCell.swift; sourceTree = "<group>"; };
 		BEFE68D41C4657360001F2D6 /* AAThumbnailCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAThumbnailCollectionCell.swift; sourceTree = "<group>"; };
 		E30822B631D108159E8B306B /* Pods-ActorSDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorSDK.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ActorSDK/Pods-ActorSDK.debug.xcconfig"; sourceTree = "<group>"; };
+		EF1F2A271CACAF240000D859 /* AAAuthUsernameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthUsernameViewController.swift; sourceTree = "<group>"; };
 		F076508E3899D309954904A3 /* Pods-ActorSDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorSDK.release.xcconfig"; path = "Pods/Target Support Files/Pods-ActorSDK/Pods-ActorSDK.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1120,6 +1122,7 @@
 				06D5C0561C8D6E20002D5045 /* AAAuthLogInViewController.swift */,
 				06C1D0761C8BC9FC00B73632 /* AAAuthNameViewController.swift */,
 				06C1D07A1C8BFE5C00B73632 /* AAAuthPhoneViewController.swift */,
+				EF1F2A271CACAF240000D859 /* AAAuthUsernameViewController.swift */,
 				066CBCDB1C8D419F004507E2 /* AAAuthEmailViewController.swift */,
 				06D5C05B1C8EA842002D5045 /* AAAuthOTPViewController.swift */,
 			);
@@ -2158,6 +2161,7 @@
 				153F6B5B1C2B109400C0B960 /* AABubbleVoiceCell.swift in Sources */,
 				061851091C95CBF000C522D5 /* YYLabel.m in Sources */,
 				15D35F251C20186200E3717A /* bitwise.c in Sources */,
+				EF1F2A281CACAF240000D859 /* AAAuthUsernameViewController.swift in Sources */,
 				066A531A1BC533E7000E606E /* AAAutoCompleteCell.swift in Sources */,
 				065975051BC757A300B8C7DF /* ActorRuntime.swift in Sources */,
 				066A517B1BC4C373000E606E /* FMDatabase.m in Sources */,
