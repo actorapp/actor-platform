@@ -86,23 +86,8 @@ public class UpdateProcessor extends AbsModule {
 
         // Users
 
-        Promise<Void> userPromise = PromisesArray.of(users)
-                .map((Function<ApiUser, Promise<Tuple2<ApiUser, Boolean>>>) u -> users().containsAsync(u.getId())
-                        .map(r -> new Tuple2<ApiUser, Boolean>(u, !r)))
-                .filter(new Predicate<Tuple2<ApiUser, Boolean>>() {
-                    @Override
-                    public boolean apply(Tuple2<ApiUser, Boolean> apiUserBooleanTuple2) {
-                        return apiUserBooleanTuple2.getT2();
-                    }
-                })
-                .flatMap(r -> new User[]{new User(r.getT1(), null)})
-                .zip()
-                .map(u -> {
-                    if (u.size() > 0) {
-                        users().addOrUpdateItems(u);
-                    }
-                    return null;
-                });
+        Promise<Void> userPromise = context().getUsersModule().getUserRouter()
+                .applyUsers(users);
 
         // Groups
 
