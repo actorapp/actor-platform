@@ -102,7 +102,7 @@ public class UserVM extends BaseValueModel<User> {
         about = new StringValueModel("user." + id + ".about", user.getAbout());
         avatar = new AvatarValueModel("user." + id + ".avatar", user.getAvatar());
         isContact = new BooleanValueModel("user." + id + ".contact", modules.getContactsModule().isUserContact(id));
-        isBlocked = new BooleanValueModel("user." + id + ".blocked", modules.getBlockList().isUserBlocked(id));
+        isBlocked = new BooleanValueModel("user." + id + ".blocked", user.isBlocked());
         presence = new ValueModelUserPresence("user." + id + ".presence", new UserPresence(UserPresence.State.UNKNOWN));
         phones = new ValueModelUserPhone("user." + id + ".phones", buildPhones(user.getRecords()));
         emails = new ValueModelUserEmail("user." + id + ".emails", buildEmails(user.getRecords()));
@@ -128,6 +128,7 @@ public class UserVM extends BaseValueModel<User> {
         isChanged |= nick.change(rawObj.getNick());
         isChanged |= about.change(rawObj.getAbout());
         isChanged |= avatar.change(rawObj.getAvatar());
+        isChanged |= isBlocked.change(rawObj.isBlocked());
 
         // TODO: better changed checking?
         isChanged |= phones.change(buildPhones(rawObj.getRecords()));
