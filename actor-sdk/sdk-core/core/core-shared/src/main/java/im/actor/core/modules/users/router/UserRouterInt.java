@@ -1,9 +1,15 @@
 package im.actor.core.modules.users.router;
 
+import java.util.List;
+
 import im.actor.core.api.ApiAvatar;
+import im.actor.core.api.ApiUser;
+import im.actor.core.api.ApiUserOutPeer;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.users.router.entity.RouterAboutChanged;
+import im.actor.core.modules.users.router.entity.RouterApplyUsers;
 import im.actor.core.modules.users.router.entity.RouterAvatarChanged;
+import im.actor.core.modules.users.router.entity.RouterFetchMissingUsers;
 import im.actor.core.modules.users.router.entity.RouterLoadFullUser;
 import im.actor.core.modules.users.router.entity.RouterLocalNameChanged;
 import im.actor.core.modules.users.router.entity.RouterNameChanged;
@@ -20,6 +26,8 @@ public class UserRouterInt extends ActorInterface {
     public UserRouterInt(ModuleContext context) {
         super(system().actorOf("users/router", () -> new UserRouter(context)));
     }
+
+    // Updates
 
     public Promise<Void> onUserNameChanged(int uid, String name) {
         return ask(new RouterNameChanged(uid, name));
@@ -45,7 +53,17 @@ public class UserRouterInt extends ActorInterface {
         return ask(new RouterUserRegistered(rid, uid, date));
     }
 
+    // Entities
+
     public void onFullUserNeeded(int uid) {
         send(new RouterLoadFullUser(uid));
+    }
+
+    public Promise<List<ApiUserOutPeer>> fetchMissingUsers(List<ApiUserOutPeer> users) {
+        return ask(new RouterFetchMissingUsers(users));
+    }
+
+    public Promise<Void> applyUsers(List<ApiUser> users) {
+        return ask(new RouterApplyUsers(users));
     }
 }

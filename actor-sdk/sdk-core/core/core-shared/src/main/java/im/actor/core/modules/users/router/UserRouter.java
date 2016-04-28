@@ -2,8 +2,10 @@ package im.actor.core.modules.users.router;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import im.actor.core.api.ApiAvatar;
+import im.actor.core.api.ApiUser;
 import im.actor.core.api.ApiUserOutPeer;
 import im.actor.core.api.rpc.RequestLoadFullUsers;
 import im.actor.core.api.rpc.ResponseLoadFullUsers;
@@ -16,7 +18,9 @@ import im.actor.core.modules.ModuleActor;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.contacts.ContactsSyncActor;
 import im.actor.core.modules.users.router.entity.RouterAboutChanged;
+import im.actor.core.modules.users.router.entity.RouterApplyUsers;
 import im.actor.core.modules.users.router.entity.RouterAvatarChanged;
+import im.actor.core.modules.users.router.entity.RouterFetchMissingUsers;
 import im.actor.core.modules.users.router.entity.RouterLoadFullUser;
 import im.actor.core.modules.users.router.entity.RouterLocalNameChanged;
 import im.actor.core.modules.users.router.entity.RouterNameChanged;
@@ -27,6 +31,7 @@ import im.actor.runtime.annotations.Verified;
 import im.actor.runtime.function.Function;
 import im.actor.runtime.function.Tuple2;
 import im.actor.runtime.promise.Promise;
+import im.actor.runtime.promise.PromisesArray;
 
 import static im.actor.core.util.JavaUtil.equalsE;
 
@@ -42,36 +47,6 @@ public class UserRouter extends ModuleActor {
         super(context);
     }
 
-    @Verified
-    private void onLoadFullUser(int uid) {
-        if (requestedFullUsers.contains(uid)) {
-            return;
-        }
-        requestedFullUsers.add(uid);
-
-        freeze();
-        users().getValueAsync(uid)
-                .flatMap((Function<User, Promise<Tuple2<ResponseLoadFullUsers, User>>>) u -> {
-                    if (!u.isHaveExtension()) {
-                        ArrayList<ApiUserOutPeer> users = new ArrayList<>();
-                        users.add(new ApiUserOutPeer(u.getUid(), u.getAccessHash()));
-                        return api(new RequestLoadFullUsers(users))
-                                .map(responseLoadFullUsers ->
-                                        new Tuple2<>(responseLoadFullUsers, u));
-                    } else {
-                        return Promise.failure(new RuntimeException("Already loaded"));
-                    }
-                })
-                .then(r -> {
-
-                    // Changing user extension
-                    User upd = r.getT2().updateExt(r.getT1().getFullUsers().get(0));
-
-                    // Updating user in collection
-                    users().addOrUpdateItem(upd);
-                })
-                .after((r, e) -> unfreeze());
-    }
 
     @Verified
     private Promise<Void> onUserNameChanged(int uid, String name) {
@@ -208,6 +183,80 @@ public class UserRouter extends ModuleActor {
         return Promise.success((Void) null);
     }
 
+
+    //
+    // Users changed
+    //
+
+    @Verified
+    private void onLoadFullUser(int uid) {
+        if (requestedFullUsers.contains(uid)) {
+            return;
+        }
+        requestedFullUsers.add(uid);
+
+        freeze();
+        users().getValueAsync(uid)
+                .flatMap((Function<User, Promise<Tuple2<ResponseLoadFullUsers, User>>>) u -> {
+                    if (!u.isHaveExtension()) {
+                        ArrayList<ApiUserOutPeer> users = new ArrayList<>();
+                        users.add(new ApiUserOutPeer(u.getUid(), u.getAccessHash()));
+                        return api(new RequestLoadFullUsers(users))
+                                .map(responseLoadFullUsers ->
+                                        new Tuple2<>(responseLoadFullUsers, u));
+                    } else {
+                        return Promise.failure(new RuntimeException("Already loaded"));
+                    }
+                })
+                .then(r -> {
+
+                    // Changing user extension
+                    User upd = r.getT2().updateExt(r.getT1().getFullUsers().get(0));
+
+                    // Updating user in collection
+                    users().addOrUpdateItem(upd);
+                })
+                .after((r, e) -> unfreeze());
+    }
+
+    @Verified
+    private Promise<List<ApiUserOutPeer>> fetchMissingUsers(List<ApiUserOutPeer> users) {
+        freeze();
+        return PromisesArray.of(users)
+                .map(u -> users().containsAsync(u.getUid())
+                        .map(v -> v ? null : u))
+                .filterNull()
+                .zip()
+                .after((r, e) -> unfreeze());
+    }
+
+
+    @Verified
+    private Promise<Void> applyUsers(List<ApiUser> users) {
+        freeze();
+        return PromisesArray.of(users)
+                .map(u -> users().containsAsync(u.getId())
+                        .map(v -> new Tuple2<ApiUser, Boolean>(u, v)))
+                .filter(t -> !t.getT2())
+                .zip()
+                .then(x -> {
+                    List<User> res = new ArrayList<>();
+                    for (Tuple2<ApiUser, Boolean> u : x) {
+                        res.add(new User(u.getT1(), null));
+                    }
+                    if (res.size() > 0) {
+                        users().addOrUpdateItems(res);
+                    }
+                })
+                .map(x -> (Void) null)
+                .after((r, e) -> unfreeze());
+    }
+
+
+    //
+    // Tools
+    //
+
     private void freeze() {
         isFreezed = true;
     }
@@ -216,6 +265,7 @@ public class UserRouter extends ModuleActor {
         isFreezed = false;
         unstashAll();
     }
+
 
     //
     // Messages
@@ -265,6 +315,20 @@ public class UserRouter extends ModuleActor {
             }
             RouterUserRegistered userRegistered = (RouterUserRegistered) message;
             return onUserRegistered(userRegistered.getRid(), userRegistered.getUid(), userRegistered.getDate());
+        } else if (message instanceof RouterFetchMissingUsers) {
+            if (isFreezed) {
+                stash();
+                return null;
+            }
+            RouterFetchMissingUsers fetchMissingUsers = (RouterFetchMissingUsers) message;
+            return fetchMissingUsers(fetchMissingUsers.getSourcePeers());
+        } else if (message instanceof RouterApplyUsers) {
+            if (isFreezed) {
+                stash();
+                return null;
+            }
+            RouterApplyUsers applyUsers = (RouterApplyUsers) message;
+            return applyUsers(applyUsers.getUsers());
         } else {
             return super.onAsk(message);
         }

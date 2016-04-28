@@ -204,15 +204,8 @@ public class ModuleActor extends AskcableActor implements BusSubscriber {
 
     public Promise<Void> loadRequiredPeers(List<ApiUserOutPeer> users, List<ApiGroupOutPeer> groups) {
 
-        Promise<List<ApiUserOutPeer>> usersMissingPeers = Promise.success(users)
-                .flatMap((Function<List<ApiUserOutPeer>, Promise<List<ApiUserOutPeer>>>) apiUserOutPeers ->
-                        PromisesArray.of(users)
-                                .map((Function<ApiUserOutPeer, Promise<ApiUserOutPeer>>) apiUserOutPeer -> users()
-                                        .containsAsync(apiUserOutPeer.getUid())
-                                        .map(v -> v ? null : apiUserOutPeer))
-                                .filterNull()
-                                .zip());
-
+        Promise<List<ApiUserOutPeer>> usersMissingPeers = context().getUsersModule().getUserRouter()
+                .fetchMissingUsers(users);
 
         Promise<List<ApiGroupOutPeer>> groupMissingPeers = Promise.success(groups)
                 .flatMap((Function<List<ApiGroupOutPeer>, Promise<List<ApiGroupOutPeer>>>) apiGroupOutPeers ->
