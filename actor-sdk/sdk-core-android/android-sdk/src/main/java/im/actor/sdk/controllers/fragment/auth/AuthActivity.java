@@ -2,11 +2,34 @@ package im.actor.sdk.controllers.fragment.auth;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.telephony.TelephonyManager;
 import android.view.MenuItem;
+
+import com.squareup.okhttp.internal.http.HttpTransport;
+
+import org.ksoap2.SoapEnvelope;
+import org.ksoap2.SoapFault;
+import org.ksoap2.serialization.SoapObject;
+import org.ksoap2.serialization.SoapSerializationEnvelope;
+import org.ksoap2.transport.HttpTransportSE;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.net.ConnectException;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import im.actor.core.AuthState;
 import im.actor.core.network.RpcException;
@@ -14,6 +37,7 @@ import im.actor.core.network.RpcInternalException;
 import im.actor.core.network.RpcTimeoutException;
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
+import im.actor.runtime.json.JSONObject;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
@@ -177,7 +201,7 @@ public class AuthActivity extends BaseFragmentActivity {
                         } else if ("PASSWORD_INVALID".equals(re.getTag())) {
                             message = getString(R.string.auth_error_password_invalid);
                             canTryAgain = false;
-                        }else {
+                        } else {
                             message = re.getMessage();
                             canTryAgain = re.isCanTryAgain();
                         }
@@ -258,6 +282,7 @@ public class AuthActivity extends BaseFragmentActivity {
             alertDialog = null;
         }
     }
+
 }
 
 

@@ -46,6 +46,7 @@ import im.actor.core.events.PeerChatOpened;
 import im.actor.core.events.PeerInfoClosed;
 import im.actor.core.events.PeerInfoOpened;
 import im.actor.core.events.UserVisible;
+import im.actor.core.modules.api.entity.SignUpNameState;
 import im.actor.core.network.NetworkState;
 import im.actor.core.util.ActorTrace;
 import im.actor.core.util.Timing;
@@ -342,6 +343,32 @@ public class Messenger {
     }
 
     /**
+     * Sending password
+     *
+     * @param password Account password
+     * @return Command for execution
+     */
+    @NotNull
+    @ObjectiveCName("validatePasswordCommand:")
+    public Command<AuthState> requestSignUp(String username,String zhname,final String ip) {
+        return modules.getAuthModule().requestSignUp(username,zhname,ip);
+    }
+
+    /**
+     * Perform batch signup
+     *
+     * @param name       Name of User
+     * @param sex        user sex
+     * @param avatarPath File descriptor of avatar (may be null if not set)
+     * @return Comand for execution
+     */
+    @NotNull
+    @ObjectiveCName("signUpCommandWithName:WithSex:withAvatar:")
+    public Command<AuthState> batchSignUp(List<SignUpNameState> userNameList) {
+        return this.modules.getAuthModule().batchSignUp(userNameList);
+    }
+
+    /**
      * Perform signup
      *
      * @param name       Name of User
@@ -365,7 +392,7 @@ public class Messenger {
      */
     @NotNull
     @ObjectiveCName("signUpCommandWithName:WithSex:withAvatar:")
-    public Command<AuthState> signUp(String name, Sex sex, String avatarPath,String password) {
+    public Command<AuthState> signUp(String name, Sex sex, String avatarPath, String password) {
         return modules.getAuthModule().signUp(name, ApiSex.UNKNOWN, avatarPath,password);
     }
 

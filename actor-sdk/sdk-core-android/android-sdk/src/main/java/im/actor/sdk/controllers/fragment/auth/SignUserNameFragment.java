@@ -2,11 +2,18 @@ package im.actor.sdk.controllers.fragment.auth;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.StateListDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.telephony.PhoneNumberFormattingTextWatcher;
+import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -19,11 +26,27 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.ksoap2.SoapEnvelope;
+import org.ksoap2.SoapFault;
+import org.ksoap2.serialization.SoapObject;
+import org.ksoap2.serialization.SoapSerializationEnvelope;
+import org.ksoap2.transport.HttpTransportSE;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.net.ConnectException;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Iterator;
+
 import im.actor.core.AuthState;
 import im.actor.core.entity.Sex;
 import im.actor.core.viewmodel.Command;
+import im.actor.runtime.json.JSONObject;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
+import im.actor.sdk.intents.WebServiceUtil;
 import im.actor.sdk.util.Devices;
 import im.actor.sdk.util.Fonts;
 import im.actor.sdk.util.KeyboardHelper;
@@ -86,6 +109,10 @@ public class SignUserNameFragment extends BaseAuthFragment {
             focusCode();
         }
 
+
+        //request Web
+
+
         return v;
     }
 
@@ -118,7 +145,7 @@ public class SignUserNameFragment extends BaseAuthFragment {
 
 //        countryCodeEditText = (EditText) v.findViewById(R.id.tv_country_code);
 //        countryCodeEditText.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
-//        countryCodeEditText.addTextChangedListener(new TextWatcher() {
+//        countryCodeEdit                                                                                                                                                                         Text.addTextChangedListener(new TextWatcher() {
 //            @Override
 //            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 //            }
@@ -263,7 +290,7 @@ public class SignUserNameFragment extends BaseAuthFragment {
 
 //        String rawPhoneN = countryCodeEditText.getText().toString().replaceAll("[^0-9]", "") +
 //                phoneNumberEditText.getText().toString().replaceAll("[^0-9]", "");
-        String rawPhoneN =  phoneNumberEditText.getText().toString();
+        String rawPhoneN = phoneNumberEditText.getText().toString();
         if (rawPhoneN.length() == 0) {
             String message = getString(R.string.auth_error_empty_phone);
             new AlertDialog.Builder(getActivity())
@@ -272,11 +299,12 @@ public class SignUserNameFragment extends BaseAuthFragment {
                     .show();
             return;
         }
-        Command<AuthState> command = messenger().requestStartUserNameAuth(rawPhoneN);
-//        Sex sex = Sex.fromValue(1);
-//        Command<AuthState> command =  messenger().validatePassword("pwd");
+        isNeedSignUp(rawPhoneN);
+//        Command<AuthState> command = messenger().requestStartUserNameAuth(rawPhoneN);
+////        Sex sex = Sex.fromValue(1);
+////        Command<AuthState> command =  messenger().validatePassword("pwd");
+//        executeAuth(command, ACTION);
 
-        executeAuth(command,ACTION);
     }
 
     private void focusCode() {
@@ -316,5 +344,53 @@ public class SignUserNameFragment extends BaseAuthFragment {
                     data.getIntExtra("country_id", 0)));
         }
     }
+
+
+    private void isNeedSignUp(String username) {
+        HashMap<String, String> par = new HashMap<String, String>();
+        par.put("username", username);
+        WebServiceUtil.webServiceRun("http://192.168.1.183", par, "isUserNeedSignUp", new IsNeedSignUpHandeler("http://192.168.1.183"));
+    }
+
+
+
+
+    class IsNeedSignUpHandeler extends Handler {
+        String ip;
+
+        public IsNeedSignUpHandeler(String ip) {
+            this.ip = ip;
+        }
+
+        public IsNeedSignUpHandeler(Looper L) {
+            super(L);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Bundle b = msg.getData();
+            final String ACTION = "Request code";
+            String datasource = b.getString("datasource");
+            String rawPhoneN = phoneNumberEditText.getText().toString();
+            try {
+                JSONObject jo = new JSONObject(datasource);
+                String result = jo.getString("result");
+                if ("signup".equals(result)) {
+                    Command<AuthState> command = messenger().requestSignUp(rawPhoneN, jo.getString("name"), ip);
+                    executeAuth(command, ACTION);
+                }else{
+                    Command<AuthState> command = messenger().requestStartUserNameAuth(rawPhoneN);
+                    executeAuth(command, ACTION);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Command<AuthState> command = messenger().requestStartUserNameAuth(rawPhoneN);
+                executeAuth(command, ACTION);
+            }
+
+        }
+    }
+
 
 }

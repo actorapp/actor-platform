@@ -4,10 +4,17 @@
 
 package im.actor.core.modules;
 
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import im.actor.core.ApiConfiguration;
 import im.actor.core.AuthState;
@@ -36,6 +43,7 @@ import im.actor.core.entity.AuthRes;
 import im.actor.core.entity.AuthStartRes;
 import im.actor.core.entity.Sex;
 import im.actor.core.entity.User;
+import im.actor.core.modules.api.entity.SignUpNameState;
 import im.actor.core.modules.sequence.internal.LoggedIn;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
@@ -45,9 +53,13 @@ import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.runtime.*;
 import im.actor.runtime.Runtime;
+import im.actor.runtime.json.JSONObject;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseFunc;
 import im.actor.runtime.promise.PromiseResolver;
+import im.actor.sdk.intents.WebServiceUtil;
+
+import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
 public class Authentication {
 
@@ -729,9 +741,9 @@ public class Authentication {
 //                                    return;
 //                                }
 
-                                if ("USERNAME_CODE_EXPIRED".equals(e.getTag()) ||"PHONE_CODE_EXPIRED".equals(e.getTag()) || "EMAIL_CODE_EXPIRED".equals(e.getTag())) {
-                                    resetAuth();
-                                } else if ("PHONE_NUMBER_UNOCCUPIED".equals(e.getTag()) || "EMAIL_UNOCCUPIED".equals(e.getTag())|| "USERNAME_UNOCCUPIED".equals(e.getTag())) {
+                                if ("USERNAME_CODE_EXPIRED".equals(e.getTag()) || "PHONE_CODE_EXPIRED".equals(e.getTag()) || "EMAIL_CODE_EXPIRED".equals(e.getTag())) {
+                                     resetAuth();
+                                } else if ("PHONE_NUMBER_UNOCCUPIED".equals(e.getTag()) || "EMAIL_UNOCCUPIED".equals(e.getTag()) || "USERNAME_UNOCCUPIED".equals(e.getTag())) {
                                     state = AuthState.SIGN_UP;
                                     Runtime.postToMainThread(new Runnable() {
                                         @Override
@@ -753,6 +765,192 @@ public class Authentication {
                         });
             }
         };
+    }
+
+
+    @Deprecated
+    public Command<AuthState> requestSignUp(final String username,final String zhname,final String ip) {
+        ArrayList<String> langs = new ArrayList<>();
+        for (String s : modules.getConfiguration().getPreferredLanguages()) {
+            langs.add(s);
+        }
+        System.out.println("requestSignUp" + username);
+        request(new RequestStartUsernameAuth(username,
+                apiConfiguration.getAppId(),
+                apiConfiguration.getAppKey(),
+                deviceHash,
+                apiConfiguration.getDeviceTitle(),
+                modules.getConfiguration().getTimeZone(),
+                langs), new RpcCallback<ResponseStartUsernameAuth>() {
+
+            @Override
+            public void onResult(ResponseStartUsernameAuth response) {
+                final String hash = response.getTransactionHash();
+                System.out.println("onResult" + username);
+
+//                modules.getPreferences().putString(KEY_TRANSACTION_HASH, response.getTransactionHash());
+                im.actor.runtime.Runtime.postToMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        request(new RequestSignUp(hash, username, ApiSex.UNKNOWN,
+                                "11111111"), new RpcCallback<ResponseAuth>() {
+                            @Override
+                            public void onResult(ResponseAuth response) {
+
+                            }
+
+                            @Override
+                            public void onError(final RpcException e) {
+                                if ("NICKNAME_BUSY".equals(e.getTag())) {
+                                    HashMap<String, String> par = new HashMap<String, String>();
+                                    par.put("oaUserName", username);
+                                    WebServiceUtil.webServiceRun(ip, par, "syncUser", new SignUpHandeler());
+                                } else {
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+
+            @Override
+            public void onError(final RpcException e) {
+                im.actor.runtime.Runtime.postToMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.e(TAG, e);
+                    }
+                });
+            }
+        });
+        return null;
+    }
+
+
+    class SignUpHandeler extends Handler {
+
+        public SignUpHandeler() {
+        }
+
+        public SignUpHandeler(Looper L) {
+            super(L);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Bundle b = msg.getData();
+            String datasource = b.getString("datasource");
+            try {
+                JSONObject jo = new JSONObject(datasource);
+                String result = jo.getString("result");
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+
+    @Deprecated
+    public Command<AuthState> batchSignUp(final List<SignUpNameState> userNameList) {
+        if (userNameList == null) {
+            return null;
+        }
+        signUpName(userNameList);
+        return null;
+//        return new Command<AuthState>() {
+//            @Override
+//            public void start(final CommandCallback<AuthState> callback) {
+//                signUpName(userNameList);
+//            }
+//        };
+    }
+
+    private void requestSignUp(final String name, final List<SignUpNameState> userNameList) {
+        ArrayList<String> langs = new ArrayList<>();
+        for (String s : modules.getConfiguration().getPreferredLanguages()) {
+            langs.add(s);
+        }
+        System.out.println("requestSignUp" + name);
+        request(new RequestStartUsernameAuth(name,
+                apiConfiguration.getAppId(),
+                apiConfiguration.getAppKey(),
+                deviceHash,
+                apiConfiguration.getDeviceTitle(),
+                modules.getConfiguration().getTimeZone(),
+                langs), new RpcCallback<ResponseStartUsernameAuth>() {
+
+            @Override
+            public void onResult(ResponseStartUsernameAuth response) {
+                final String hash = response.getTransactionHash();
+                System.out.println("onResult" + name);
+
+//                modules.getPreferences().putString(KEY_TRANSACTION_HASH, response.getTransactionHash());
+                im.actor.runtime.Runtime.postToMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        request(new RequestSignUp(hash, name, ApiSex.UNKNOWN,
+                                null), new RpcCallback<ResponseAuth>() {
+                            @Override
+                            public void onResult(ResponseAuth response) {
+
+                            }
+
+                            @Override
+                            public void onError(final RpcException e) {
+                                if ("NICKNAME_BUSY".equals(e.getTag())) {
+//                                    resetAuth();
+                                    for (int i = 0; i < userNameList.size(); i++) {
+                                        if (userNameList.get(i).getName() == name) {
+                                            userNameList.get(i).setState(2);
+                                            if (i < userNameList.size() - 1) {
+                                                Runtime.postToMainThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        signUpName(userNameList);
+                                                    }
+                                                });
+                                            }
+                                            return;
+                                        }
+                                    }
+                                } else {
+//                                    for (int i = 0; i < userNameList.size(); i++) {
+//                                        signUpName(userNameList);
+//                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+
+            @Override
+            public void onError(final RpcException e) {
+                im.actor.runtime.Runtime.postToMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.e(TAG, e);
+                    }
+                });
+            }
+        });
+
+    }
+
+    private void signUpName(List<SignUpNameState> userNameList) {
+        for (int i = 0; i < userNameList.size(); i++) {
+            if (userNameList.get(i).getState() == 0) {
+                requestSignUp(userNameList.get(i).getName(), userNameList);
+                break;
+            } else if (i == userNameList.size() - 1) {
+                userNameList.clear();
+                userNameList = null;
+                break;
+            }
+        }
     }
 
     @Deprecated

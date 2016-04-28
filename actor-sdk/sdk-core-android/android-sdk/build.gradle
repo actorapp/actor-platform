@@ -55,29 +55,22 @@ android {
 }
 
 dependencies {
-
     // Calls
     compile 'io.pristine:libjingle:11139@aar'
-
     // UI
     compile 'com.facebook.fresco:fresco:0.7.0'
     compile 'com.facebook.rebound:rebound:0.3.8'
-
     compile 'com.soundcloud.android:android-crop:1.0.0@aar'
     compile('com.github.chrisbanes.photoview:library:1.2.4') {
         exclude module: 'support-v13'
     }
-
     compile 'com.droidkit:progress:0.5'
     compile 'com.getbase:floatingactionbutton:1.9.1'
-
     // Phone parser
     compile files('libs/libphonenumber-5.9.jar')
-
     // Core
     compile 'com.squareup.okhttp:okhttp:2.5.0'
     compile 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.0.2'
-
     // Android Support
     compile 'com.android.support:support-v4:23.2.0'
     compile 'com.android.support:support-v13:23.2.0'
@@ -86,6 +79,7 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:23.2.0'
     compile 'com.android.support:design:23.2.0'
     compile 'com.google.android.gms:play-services-maps:8.4.0'
+    compile files('libs/ksoap2-android-assembly-2.6.5-jar-with-dependencies.jar')
 }
 
 //
