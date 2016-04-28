@@ -12,10 +12,8 @@ import im.actor.core.api.ApiUser;
 import im.actor.core.api.updates.UpdateMessage;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.Peer;
-import im.actor.core.entity.User;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.blocklist.BlockListProcessor;
 import im.actor.core.modules.calls.CallsProcessor;
 import im.actor.core.modules.contacts.ContactsProcessor;
 import im.actor.core.modules.encryption.EncryptedProcessor;
@@ -62,7 +60,6 @@ public class UpdateProcessor extends AbsModule {
                 new UsersProcessor(context),
                 new GroupsProcessor(context),
                 new ContactsProcessor(context),
-                new BlockListProcessor(context),
                 new EncryptedProcessor(context),
                 new StickersProcessor(context),
                 new SettingsProcessor(context)

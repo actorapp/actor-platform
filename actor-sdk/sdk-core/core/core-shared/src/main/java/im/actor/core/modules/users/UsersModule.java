@@ -4,14 +4,22 @@
 
 package im.actor.core.modules.users;
 
+import java.util.List;
+
+import im.actor.core.api.ApiUserOutPeer;
+import im.actor.core.api.rpc.RequestBlockUser;
 import im.actor.core.api.rpc.RequestEditAbout;
 import im.actor.core.api.rpc.RequestEditName;
 import im.actor.core.api.rpc.RequestEditNickName;
 import im.actor.core.api.rpc.RequestEditUserLocalName;
+import im.actor.core.api.rpc.RequestLoadBlockedUsers;
+import im.actor.core.api.rpc.RequestUnblockUser;
 import im.actor.core.api.updates.UpdateUserAboutChanged;
+import im.actor.core.api.updates.UpdateUserBlocked;
 import im.actor.core.api.updates.UpdateUserLocalNameChanged;
 import im.actor.core.api.updates.UpdateUserNameChanged;
 import im.actor.core.api.updates.UpdateUserNickChanged;
+import im.actor.core.api.updates.UpdateUserUnblocked;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.User;
@@ -30,6 +38,7 @@ import im.actor.runtime.eventbus.BusSubscriber;
 import im.actor.runtime.eventbus.Event;
 import im.actor.runtime.mvvm.MVVMCollection;
 import im.actor.runtime.promise.Promise;
+import im.actor.runtime.promise.PromisesArray;
 import im.actor.runtime.storage.KeyValueEngine;
 
 import static im.actor.runtime.actors.ActorSystem.system;
@@ -108,6 +117,37 @@ public class UsersModule extends AbsModule implements BusSubscriber {
                         responseSeq.getState(),
                         new UpdateUserAboutChanged(myUid(), about))
                 );
+    }
+
+    public Promise<List<User>> loadBlockedUsers() {
+        return api(new RequestLoadBlockedUsers())
+                .chain(response -> loadRequiredPeers(response.getUserPeers()))
+                .flatMap(responseLoadBlockedUsers ->
+                        PromisesArray.of(responseLoadBlockedUsers.getUserPeers())
+                                .map(apiUserOutPeer -> users().getValueAsync(apiUserOutPeer.getUid()))
+                                .zip());
+    }
+
+    public Promise<Void> blockUser(final int uid) {
+        return buildOutPeer(Peer.user(uid))
+                .flatMap(apiOutPeer ->
+                        api(new RequestBlockUser(new ApiUserOutPeer(apiOutPeer.getId(), apiOutPeer.getAccessHash()))))
+                .flatMap(responseSeq ->
+                        updates().applyUpdate(
+                                responseSeq.getSeq(),
+                                responseSeq.getState(),
+                                new UpdateUserBlocked(uid)));
+    }
+
+    public Promise<Void> unblockUser(final int uid) {
+        return buildOutPeer(Peer.user(uid))
+                .flatMap(apiOutPeer ->
+                        api(new RequestUnblockUser(new ApiUserOutPeer(apiOutPeer.getId(), apiOutPeer.getAccessHash()))))
+                .flatMap(responseSeq ->
+                        updates().applyUpdate(
+                                responseSeq.getSeq(),
+                                responseSeq.getState(),
+                                new UpdateUserUnblocked(uid)));
     }
 
     public void resetModule() {
