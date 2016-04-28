@@ -23,8 +23,11 @@ import im.actor.runtime.Log;
 import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.function.Constructor;
+import im.actor.runtime.function.Function;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseFunc;
+import im.actor.runtime.promise.Promises;
+import im.actor.runtime.promise.PromisesArray;
 
 /*-[
 #pragma clang diagnostic ignored "-Wnullability-completeness"
@@ -152,6 +155,37 @@ public class SequenceHandlerActor extends ModuleActor {
     private void endUpdates() {
         isUpdating = false;
         unstashAll();
+    }
+
+    /**
+     * Copied method to avoid full applyRelated route to avoid deadlock
+     */
+    public Promise<Void> loadRequiredPeers(List<ApiUserOutPeer> users, List<ApiGroupOutPeer> groups) {
+
+        Promise<List<ApiUserOutPeer>> usersMissingPeers = context().getUsersModule().getUserRouter()
+                .fetchMissingUsers(users);
+
+        Promise<List<ApiGroupOutPeer>> groupMissingPeers = Promise.success(groups)
+                .flatMap((Function<List<ApiGroupOutPeer>, Promise<List<ApiGroupOutPeer>>>) apiGroupOutPeers ->
+                        PromisesArray.of(groups)
+                                .map((Function<ApiGroupOutPeer, Promise<ApiGroupOutPeer>>) apiGroupOutPeer -> groups()
+                                        .containsAsync(apiGroupOutPeer.getGroupId())
+                                        .map(v -> v ? null : apiGroupOutPeer))
+                                .filterNull()
+                                .zip());
+
+        return Promises.tuple(usersMissingPeers, groupMissingPeers)
+                .flatMap(missing -> {
+                    if (missing.getT1().size() > 0 || missing.getT2().size() > 0) {
+                        return api(new RequestGetReferencedEntitites(missing.getT1(), missing.getT2()))
+                                .flatMap(responseGetReferencedEntitites ->
+                                        processor.applyRelated(
+                                                responseGetReferencedEntitites.getUsers(),
+                                                responseGetReferencedEntitites.getGroups()));
+                    } else {
+                        return Promise.success(null);
+                    }
+                });
     }
 
 
