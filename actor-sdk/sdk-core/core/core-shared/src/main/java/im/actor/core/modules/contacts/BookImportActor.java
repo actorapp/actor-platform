@@ -4,19 +4,15 @@
 
 package im.actor.core.modules.contacts;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
 import im.actor.core.api.ApiUserOutPeer;
 import im.actor.core.entity.PhoneBookIds;
-import im.actor.core.modules.Configuration;
+import im.actor.core.modules.api.ApiSupportConfiguration;
 import im.actor.core.modules.contacts.entity.BookImportStorage;
-import im.actor.core.providers.PhoneBookProvider;
 import im.actor.core.api.ApiEmailToImport;
-import im.actor.core.api.ApiGroup;
 import im.actor.core.api.ApiPhoneToImport;
 import im.actor.core.api.ApiUser;
 import im.actor.core.api.base.FatSeqUpdate;
@@ -31,11 +27,15 @@ import im.actor.core.modules.ModuleActor;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.runtime.Log;
+import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.bser.Bser;
 
 public class BookImportActor extends ModuleActor {
 
     private static final String TAG = "ContactsImport";
+
+    // j2objc workaround
+    private static final Void DUMB = null;
 
     private final boolean ENABLE_LOG;
 
@@ -218,7 +218,7 @@ public class BookImportActor extends ModuleActor {
                 throw new RuntimeException();
             }
         }
-        request(new RequestImportContacts(phoneToImports, emailToImports, Configuration.OPTIMIZATIONS), new RpcCallback<ResponseImportContacts>() {
+        request(new RequestImportContacts(phoneToImports, emailToImports, ApiSupportConfiguration.OPTIMIZATIONS), new RpcCallback<ResponseImportContacts>() {
             @Override
             public void onResult(ResponseImportContacts response) {
 

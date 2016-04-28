@@ -7,9 +7,6 @@ package im.actor.core.modules.search;
 import java.util.ArrayList;
 import java.util.List;
 
-import im.actor.core.api.ApiMessageSearchItem;
-import im.actor.core.api.ApiMessageSearchResult;
-import im.actor.core.api.ApiPeerSearchResult;
 import im.actor.core.api.ApiSearchAndCondition;
 import im.actor.core.api.ApiSearchCondition;
 import im.actor.core.api.ApiSearchContentType;
@@ -20,8 +17,6 @@ import im.actor.core.api.ApiSearchPeerTypeCondition;
 import im.actor.core.api.ApiSearchPieceText;
 import im.actor.core.api.rpc.RequestMessageSearch;
 import im.actor.core.api.rpc.RequestPeerSearch;
-import im.actor.core.api.rpc.ResponseMessageSearchResponse;
-import im.actor.core.api.rpc.ResponsePeerSearch;
 import im.actor.core.entity.Dialog;
 import im.actor.core.entity.MessageSearchEntity;
 import im.actor.core.entity.Peer;
@@ -30,16 +25,10 @@ import im.actor.core.entity.PeerSearchType;
 import im.actor.core.entity.SearchEntity;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.modules.AbsModule;
-import im.actor.core.modules.Configuration;
+import im.actor.core.modules.api.ApiSupportConfiguration;
 import im.actor.core.modules.Modules;
-import im.actor.core.network.RpcCallback;
-import im.actor.core.network.RpcException;
-import im.actor.core.viewmodel.Command;
-import im.actor.core.viewmodel.CommandCallback;
 import im.actor.runtime.Storage;
-import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
-import im.actor.runtime.actors.Props;
 import im.actor.runtime.collections.ManagedList;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.storage.ListEngine;
@@ -98,7 +87,7 @@ public class SearchModule extends AbsModule {
     }
 
     private Promise<List<MessageSearchEntity>> findMessages(final ApiSearchCondition condition) {
-        return api(new RequestMessageSearch(condition, Configuration.OPTIMIZATIONS))
+        return api(new RequestMessageSearch(condition, ApiSupportConfiguration.OPTIMIZATIONS))
                 .chain(responseMessageSearchResponse ->
                         updates().applyRelatedData(
                                 responseMessageSearchResponse.getUsers(),
@@ -123,7 +112,7 @@ public class SearchModule extends AbsModule {
         ArrayList<ApiSearchCondition> conditions = new ArrayList<>();
         conditions.add(new ApiSearchPeerTypeCondition(apiType));
 
-        return api(new RequestPeerSearch(conditions, Configuration.OPTIMIZATIONS))
+        return api(new RequestPeerSearch(conditions, ApiSupportConfiguration.OPTIMIZATIONS))
                 .chain(responsePeerSearch ->
                         updates().applyRelatedData(
                                 responsePeerSearch.getUsers(),
