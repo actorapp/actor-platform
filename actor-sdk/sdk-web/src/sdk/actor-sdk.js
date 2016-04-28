@@ -80,6 +80,7 @@ class ActorSDK {
       calls: true,
       search: false
     },
+    routes: null,
     isExperimental: false,
     logHandler: defaultLogHandler
   };
@@ -96,6 +97,38 @@ class ActorSDK {
     if (this.delegate.l18n) extendL18n();
 
     SharedContainer.set(this);
+  }
+
+  getRoutes() {
+    if (this.routes) {
+      return this.routes;
+    }
+
+    const Login = (typeof this.delegate.components.login == 'function') ? this.delegate.components.login : DefaultLogin;
+    const Deactivated = (typeof this.delegate.components.deactivated == 'function') ? this.delegate.components.deactivated : DefaultDeactivated;
+    const Install = (typeof this.delegate.components.install == 'function') ? this.delegate.components.install : DefaultInstall;
+    const Archive = (typeof this.delegate.components.archive == 'function') ? this.delegate.components.archive : DefaultArchive; // TODO: Rename this component
+    const Join = (typeof this.delegate.components.join == 'function') ? this.delegate.components.join : DefaultJoin;
+    const Empty = (typeof this.delegate.components.empty == 'function') ? this.delegate.components.empty : DefaultEmpty;
+    const Dialog = (typeof this.delegate.components.dialog == 'function') ? this.delegate.components.dialog : DefaultDialog;
+
+    return (
+      <Route path="/" component={App}>
+        <Route path="auth" component={Login}/>
+        <Route path="deactivated" component={Deactivated}/>
+        <Route path="install" component={Install}/>
+
+        <Route path="im" component={Main} onEnter={RouterHooks.requireAuth}>
+          <Route path="history" component={Archive} />
+          <Route path="join/:token" component={Join} />
+          <Route path=":id" component={Dialog} />
+          <IndexRoute component={Empty} />
+        </Route>
+
+        <Redirect from="join/:token" to="im/join/:token" />
+        <IndexRedirect to="im"/>
+      </Route>
+    );
   }
 
   _starter = () => {
@@ -117,13 +150,6 @@ class ActorSDK {
       });
     }
 
-    const Login = (typeof this.delegate.components.login == 'function') ? this.delegate.components.login : DefaultLogin;
-    const Deactivated = (typeof this.delegate.components.deactivated == 'function') ? this.delegate.components.deactivated : DefaultDeactivated;
-    const Install = (typeof this.delegate.components.install == 'function') ? this.delegate.components.install : DefaultInstall;
-    const Archive = (typeof this.delegate.components.archive == 'function') ? this.delegate.components.archive : DefaultArchive; // TODO: Rename this component
-    const Join = (typeof this.delegate.components.join == 'function') ? this.delegate.components.join : DefaultJoin;
-    const Empty = (typeof this.delegate.components.empty == 'function') ? this.delegate.components.empty : DefaultEmpty;
-    const Dialog = (typeof this.delegate.components.dialog == 'function') ? this.delegate.components.dialog : DefaultDialog;
     const intlData = getIntlData(this.forceLocale);
 
     /**
@@ -140,21 +166,7 @@ class ActorSDK {
     const root = (
       <IntlProvider {...intlData}>
         <Router history={history} createElement={createElement}>
-          <Route path="/" component={App}>
-            <Route path="auth" component={Login}/>
-            <Route path="deactivated" component={Deactivated}/>
-            <Route path="install" component={Install}/>
-
-            <Route path="im" component={Main} onEnter={RouterHooks.requireAuth}>
-              <Route path="history" component={Archive} />
-              <Route path="join/:token" component={Join} />
-              <Route path=":id" component={Dialog} />
-              <IndexRoute component={Empty} />
-            </Route>
-
-            <Redirect from="join/:token" to="im/join/:token" />
-            <IndexRedirect to="im"/>
-          </Route>
+          {this.getRoutes()}
         </Router>
       </IntlProvider>
     );
