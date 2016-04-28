@@ -8,9 +8,6 @@ import ActorClient from '../utils/ActorClient';
 import history from '../utils/history';
 import JoinGroupStore from '../stores/JoinGroupStore';
 
-
-const INVITE_URL_BASE = 'https://quit.email';
-
 function joinSuccess(peer) {
   dispatch(ActionTypes.GROUP_JOIN_VIA_LINK_SUCCESS);
   setTimeout(() => history.replace(`/im/${peer.key}`), 1000);
@@ -29,8 +26,6 @@ export default {
   },
   joinGroupViaLink(token) {
     dispatch(ActionTypes.GROUP_JOIN_VIA_LINK, { token });
-
-    const url = INVITE_URL_BASE + '/join/' + token;
-    ActorClient.joinGroupViaLink(url).then(joinSuccess, joinFailed);
+    ActorClient.joinGroupViaToken(token).then(joinSuccess, joinFailed);
   }
 };
