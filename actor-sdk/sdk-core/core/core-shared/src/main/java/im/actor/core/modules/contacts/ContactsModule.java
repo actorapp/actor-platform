@@ -11,14 +11,13 @@ import im.actor.core.api.base.SeqUpdate;
 import im.actor.core.api.rpc.RequestAddContact;
 import im.actor.core.api.rpc.RequestRemoveContact;
 import im.actor.core.api.rpc.RequestSearchContacts;
-import im.actor.core.api.rpc.ResponseSearchContacts;
 import im.actor.core.api.rpc.ResponseSeq;
 import im.actor.core.api.updates.UpdateContactsAdded;
 import im.actor.core.api.updates.UpdateContactsRemoved;
 import im.actor.core.entity.PhoneBookContact;
 import im.actor.core.entity.User;
 import im.actor.core.modules.AbsModule;
-import im.actor.core.modules.Configuration;
+import im.actor.core.modules.api.ApiSupportConfiguration;
 import im.actor.core.modules.Modules;
 import im.actor.core.viewmodel.Command;
 import im.actor.runtime.Storage;
@@ -90,7 +89,7 @@ public class ContactsModule extends AbsModule {
     }
 
     public Promise<UserVM[]> findUsers(final String query) {
-        return api(new RequestSearchContacts(query, Configuration.OPTIMIZATIONS))
+        return api(new RequestSearchContacts(query, ApiSupportConfiguration.OPTIMIZATIONS))
                 .chain(responseSearchContacts -> updates().applyRelatedData(responseSearchContacts.getUsers()))
                 .map(responseSearchContacts1 -> {
                     ArrayList<UserVM> users = new ArrayList<>();

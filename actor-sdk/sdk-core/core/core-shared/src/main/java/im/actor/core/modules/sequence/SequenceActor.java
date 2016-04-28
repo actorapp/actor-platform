@@ -18,7 +18,7 @@ import im.actor.core.api.base.WeakUpdate;
 import im.actor.core.api.parser.UpdatesParser;
 import im.actor.core.api.rpc.RequestGetDifference;
 import im.actor.core.api.rpc.RequestGetState;
-import im.actor.core.modules.Configuration;
+import im.actor.core.modules.api.ApiSupportConfiguration;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.sequence.internal.ExecuteAfter;
 import im.actor.core.modules.ModuleActor;
@@ -199,7 +199,7 @@ public class SequenceActor extends ModuleActor {
 
         if (seq < 0) {
             Log.d(TAG, "Loading fresh state...");
-            api(new RequestGetState(Configuration.OPTIMIZATIONS)).then(response -> {
+            api(new RequestGetState(ApiSupportConfiguration.OPTIMIZATIONS)).then(response -> {
                 if (isValidated) {
                     return;
                 }
@@ -218,7 +218,7 @@ public class SequenceActor extends ModuleActor {
             Log.d(TAG, "Loading difference...");
             onUpdateStarted();
             final long loadStart = im.actor.runtime.Runtime.getCurrentTime();
-            api(new RequestGetDifference(seq, state, Configuration.OPTIMIZATIONS)).then(response -> {
+            api(new RequestGetDifference(seq, state, ApiSupportConfiguration.OPTIMIZATIONS)).then(response -> {
 
                 if (isValidated) {
                     return;

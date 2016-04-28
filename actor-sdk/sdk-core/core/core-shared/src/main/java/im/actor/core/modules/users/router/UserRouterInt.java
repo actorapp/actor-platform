@@ -4,6 +4,7 @@ import im.actor.core.api.ApiAvatar;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.users.router.entity.RouterAboutChanged;
 import im.actor.core.modules.users.router.entity.RouterAvatarChanged;
+import im.actor.core.modules.users.router.entity.RouterLoadFullUser;
 import im.actor.core.modules.users.router.entity.RouterLocalNameChanged;
 import im.actor.core.modules.users.router.entity.RouterNameChanged;
 import im.actor.core.modules.users.router.entity.RouterNicknameChanged;
@@ -42,5 +43,9 @@ public class UserRouterInt extends ActorInterface {
 
     public Promise<Void> onUserRegistered(int uid, long rid, long date) {
         return ask(new RouterUserRegistered(rid, uid, date));
+    }
+
+    public void onFullUserNeeded(int uid) {
+        send(new RouterLoadFullUser(uid));
     }
 }

@@ -10,13 +10,11 @@ import java.util.List;
 import im.actor.core.api.ApiDialog;
 import im.actor.core.api.ApiMessageState;
 import im.actor.core.api.rpc.RequestLoadDialogs;
-import im.actor.core.api.rpc.ResponseLoadDialogs;
 import im.actor.core.entity.content.AbsContent;
-import im.actor.core.modules.Configuration;
+import im.actor.core.modules.api.ApiSupportConfiguration;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.messaging.history.entity.DialogHistory;
 import im.actor.core.modules.ModuleActor;
-import im.actor.runtime.function.Consumer;
 
 import static im.actor.core.entity.EntityConverter.convert;
 
@@ -51,7 +49,7 @@ public class DialogsHistoryActor extends ModuleActor {
         }
         isLoading = true;
 
-        api(new RequestLoadDialogs(historyMaxDate, LIMIT, Configuration.OPTIMIZATIONS))
+        api(new RequestLoadDialogs(historyMaxDate, LIMIT, ApiSupportConfiguration.OPTIMIZATIONS))
                 .chain(r -> loadRequiredPeers(r.getUserPeers(), r.getGroupPeers()))
                 .chain(r -> updates().applyRelatedData(r.getUsers(), r.getGroups()))
                 .then(r -> onLoadedMore(r.getDialogs()));

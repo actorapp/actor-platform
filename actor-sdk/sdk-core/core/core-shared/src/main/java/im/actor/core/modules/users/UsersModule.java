@@ -12,7 +12,12 @@ import im.actor.core.api.updates.UpdateUserAboutChanged;
 import im.actor.core.api.updates.UpdateUserLocalNameChanged;
 import im.actor.core.api.updates.UpdateUserNameChanged;
 import im.actor.core.api.updates.UpdateUserNickChanged;
+import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerType;
 import im.actor.core.entity.User;
+import im.actor.core.events.PeerChatOpened;
+import im.actor.core.events.PeerInfoOpened;
+import im.actor.core.events.UserVisible;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.users.router.UserRouter;
@@ -21,13 +26,15 @@ import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.Storage;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.eventbus.BusSubscriber;
+import im.actor.runtime.eventbus.Event;
 import im.actor.runtime.mvvm.MVVMCollection;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.storage.KeyValueEngine;
 
 import static im.actor.runtime.actors.ActorSystem.system;
 
-public class UsersModule extends AbsModule {
+public class UsersModule extends AbsModule implements BusSubscriber {
 
     private UserRouterInt userRouter;
     private KeyValueEngine<User> users;
@@ -40,6 +47,12 @@ public class UsersModule extends AbsModule {
         this.users = collection.getEngine();
 
         this.userRouter = new UserRouterInt(context);
+    }
+
+    public void run() {
+        context().getEvents().subscribe(this, PeerChatOpened.EVENT);
+        context().getEvents().subscribe(this, UserVisible.EVENT);
+        context().getEvents().subscribe(this, PeerInfoOpened.EVENT);
     }
 
     // Model
@@ -99,5 +112,22 @@ public class UsersModule extends AbsModule {
 
     public void resetModule() {
         users.clear();
+    }
+
+    @Override
+    public void onBusEvent(Event event) {
+        if (event instanceof PeerChatOpened) {
+            Peer peer = ((PeerChatOpened) event).getPeer();
+            if (peer.getPeerType() == PeerType.PRIVATE) {
+                getUserRouter().onFullUserNeeded(peer.getPeerId());
+            }
+        } else if (event instanceof UserVisible) {
+            getUserRouter().onFullUserNeeded(((UserVisible) event).getUid());
+        } else if (event instanceof PeerInfoOpened) {
+            Peer peer = ((PeerInfoOpened) event).getPeer();
+            if (peer.getPeerType() == PeerType.PRIVATE) {
+                getUserRouter().onFullUserNeeded(peer.getPeerId());
+            }
+        }
     }
 }
