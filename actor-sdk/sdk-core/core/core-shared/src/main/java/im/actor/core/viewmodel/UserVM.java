@@ -61,6 +61,8 @@ public class UserVM extends BaseValueModel<User> {
     @NotNull
     private AvatarValueModel avatar;
     @NotNull
+    private StringValueModel timeZone;
+    @NotNull
     private Sex sex;
     @NotNull
     private BooleanValueModel isContact;
@@ -103,6 +105,7 @@ public class UserVM extends BaseValueModel<User> {
         avatar = new AvatarValueModel("user." + id + ".avatar", user.getAvatar());
         isContact = new BooleanValueModel("user." + id + ".contact", modules.getContactsModule().isUserContact(id));
         isBlocked = new BooleanValueModel("user." + id + ".blocked", user.isBlocked());
+        timeZone = new StringValueModel("user." + id + ".time_zone", user.getTimeZone());
         presence = new ValueModelUserPresence("user." + id + ".presence", new UserPresence(UserPresence.State.UNKNOWN));
         phones = new ValueModelUserPhone("user." + id + ".phones", buildPhones(user.getRecords()));
         emails = new ValueModelUserEmail("user." + id + ".emails", buildEmails(user.getRecords()));
@@ -126,6 +129,7 @@ public class UserVM extends BaseValueModel<User> {
         isChanged |= localName.change(rawObj.getLocalName());
         isChanged |= serverName.change(rawObj.getServerName());
         isChanged |= nick.change(rawObj.getNick());
+        isChanged |= timeZone.change(rawObj.getTimeZone());
         isChanged |= about.change(rawObj.getAbout());
         isChanged |= avatar.change(rawObj.getAvatar());
         isChanged |= isBlocked.change(rawObj.isBlocked());
@@ -302,6 +306,17 @@ public class UserVM extends BaseValueModel<User> {
     @ObjectiveCName("getLinksModel")
     public ValueModelUserLink getLinks() {
         return links;
+    }
+
+    /**
+     * Get User's time zone
+     *
+     * @return ValueModel of Time Zone
+     */
+    @NotNull
+    @ObjectiveCName("getTimeZoneModel")
+    public StringValueModel getTimeZone() {
+        return timeZone;
     }
 
     /**

@@ -70,6 +70,9 @@ public class User extends WrapperExtEntity<ApiFullUser, ApiUser> implements KeyV
     private List<ContactRecord> records;
     @Property("readonly, nonatomic")
     private boolean isBlocked;
+    @Nullable
+    @Property("readonly, nonatomic")
+    private String timeZone;
 
     @NotNull
     @Property("readonly, nonatomic")
@@ -154,6 +157,11 @@ public class User extends WrapperExtEntity<ApiFullUser, ApiUser> implements KeyV
 
     public boolean isBlocked() {
         return isBlocked;
+    }
+
+    @Nullable
+    public String getTimeZone() {
+        return timeZone;
     }
 
     public User editName(@NotNull String name) {
@@ -414,6 +422,7 @@ public class User extends WrapperExtEntity<ApiFullUser, ApiUser> implements KeyV
             } else {
                 this.isBlocked = false;
             }
+            this.timeZone = ext.getTimeZone();
             for (ApiContactRecord record : ext.getContactInfo()) {
                 if (record.getType() == ApiContactType.PHONE) {
                     this.records.add(new ContactRecord(ContactRecordType.PHONE, record.getTypeSpec(), "" + record.getLongValue(),
@@ -435,6 +444,7 @@ public class User extends WrapperExtEntity<ApiFullUser, ApiUser> implements KeyV
             this.haveExtension = false;
             this.records = new ArrayList<>();
             this.about = null;
+            this.timeZone = null;
         }
     }
 
