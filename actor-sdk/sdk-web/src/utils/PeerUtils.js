@@ -46,6 +46,6 @@ export default {
   },
 
   equals(peer1, peer2) {
-    return peer1 && peer2 && peer1.id === peer2.id && peer1.type === peer2.type;
+    return Boolean(peer1 && peer2) && peer1.id === peer2.id && peer1.type === peer2.type;
   }
 };

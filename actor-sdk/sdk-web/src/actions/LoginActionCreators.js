@@ -11,6 +11,7 @@ import DelegateContainer from '../utils/DelegateContainer';
 import LocationContainer from '../utils/LocationContainer';
 
 import ActionCreators from './ActionCreators';
+import JoinGroupActions from './JoinGroupActions';
 import ProfileActionCreators from './ProfileActionCreators';
 import DialogActionCreators from './DialogActionCreators';
 import ContactActionCreators from './ContactActionCreators';
@@ -20,6 +21,10 @@ import EventBusActionCreators from './EventBusActionCreators';
 import StickersActionCreators from './StickersActionCreators';
 
 class LoginActionCreators extends ActionCreators {
+  start() {
+    dispatch(ActionTypes.AUTH_START);
+  }
+
   changeLogin(login) {
     dispatch(ActionTypes.AUTH_CHANGE_LOGIN, { login });
   }
@@ -122,6 +127,8 @@ class LoginActionCreators extends ActionCreators {
     ]);
 
     dispatch(ActionTypes.AUTH_SET_LOGGED_IN);
+
+    JoinGroupActions.joinAfterLogin();
   }
 
   setLoggedOut() {

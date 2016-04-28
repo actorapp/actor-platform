@@ -16,6 +16,10 @@
   flex-direction: column;
 }
 
+.sidebar__history {
+  margin-top: 16px;
+}
+
 .sidebar__header {
   flex: 0 0 auto;
   height: $toolbar-height;

@@ -8,6 +8,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:visible="false"
         android:id="@+id/send_invites"
         android:icon="@drawable/attach_send2"
         android:title="@string/contacts_invite_via_link"

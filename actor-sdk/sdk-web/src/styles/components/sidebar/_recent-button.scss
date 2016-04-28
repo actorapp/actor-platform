@@ -1,11 +1,12 @@
 .sidebar__button {
-  line-height: 20px;
+  line-height: 24px;
 
-  display: inline-block;
+  display: block;
 
-  margin: 16px;
+  box-sizing: border-box;
+  padding: 6px 16px;
 
-  cursor: pointer !important;
+  cursor: pointer;
 
   color: rgba(white, .8);
 
@@ -13,28 +14,34 @@
 
   &__icon {
     font-size: 20px;
-    line-height: 20px;
+    line-height: 24px;
 
     display: inline-block;
 
-    width: 20px;
-    height: 20px;
-    margin-right: 12px;
+    margin-right: 8px;
+
+    vertical-align: top;
     .material-icons {
       vertical-align: top;
     }
   }
+
   &__title {
     font-size: 14px;
     font-weight: 500;
+    line-height: 24px;
 
     display: inline-block;
 
-    vertical-align: middle;
+    vertical-align: top;
     text-transform: uppercase;
   }
 
   &:hover {
-    color: white;
+    background-color: $dusk;
+  }
+
+  &--active {
+    background-color: $dark-sky-blue !important;
   }
 }

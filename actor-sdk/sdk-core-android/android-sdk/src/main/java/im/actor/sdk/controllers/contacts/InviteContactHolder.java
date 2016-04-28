@@ -1,6 +1,7 @@
 package im.actor.sdk.controllers.contacts;
 
 import android.content.Context;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -17,13 +18,14 @@ import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.util.Screen;
+import im.actor.sdk.view.adapters.ViewHolder;
 import im.actor.sdk.view.avatar.AvatarView;
 import im.actor.sdk.util.Fonts;
 import im.actor.sdk.view.adapters.OnItemClickedListener;
 import im.actor.sdk.view.SearchHighlight;
 import im.actor.core.entity.Contact;
 
-public class InviteContactHolder extends BindedViewHolder {
+public class InviteContactHolder extends ViewHolder<PhoneBookContact> {
 
     public static final int TYPE_PHONE = 0;
     public static final int TYPE_EMAIL = 1;
@@ -39,18 +41,20 @@ public class InviteContactHolder extends BindedViewHolder {
 
     private FrameLayout cont;
 
+    private FrameLayout fl;
+
 
     private OnItemClickedListener<PhoneBookContact> onItemClickedListener;
     private final View separator;
 
     public InviteContactHolder(FrameLayout fl, Context context, OnItemClickedListener<PhoneBookContact> onItemClickedListener) {
-        super(fl);
 
+        this.fl = fl;
         this.onItemClickedListener = onItemClickedListener;
 
         int padding = Screen.dp(16);
 
-        fl.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(64)));
+        fl.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(64)));
 
         cont = new FrameLayout(context);
         cont.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
@@ -107,7 +111,7 @@ public class InviteContactHolder extends BindedViewHolder {
         subtitle = new TextView(context);
         subtitle.setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
         subtitle.setPadding(Screen.dp(72), 0, Screen.dp(64), 0);
-        subtitle.setTextSize(15);
+        subtitle.setTextSize(14);
         subtitle.setGravity(Gravity.CENTER_VERTICAL);
         subtitle.setSingleLine(true);
         subtitle.setEllipsize(TextUtils.TruncateAt.END);
@@ -116,8 +120,8 @@ public class InviteContactHolder extends BindedViewHolder {
         {
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             layoutParams.gravity = Gravity.CENTER_VERTICAL;
-            layoutParams.topMargin = Screen.dp(14);
-            layoutParams.bottomMargin = Screen.dp(14);
+            layoutParams.topMargin = Screen.dp(12);
+            layoutParams.bottomMargin = Screen.dp(12);
 
             LinearLayout ll = new LinearLayout(context);
             LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -145,6 +149,8 @@ public class InviteContactHolder extends BindedViewHolder {
             layoutParams.leftMargin = Screen.dp(72);
             cont.addView(separator, layoutParams);
         }
+
+
     }
 
     public void bind(final PhoneBookContact data, String shortName, String query, boolean selected, int type, boolean isLast) {
@@ -176,7 +182,6 @@ public class InviteContactHolder extends BindedViewHolder {
 
         isSelected.setChecked(selected);
 
-
         cont.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -184,12 +189,30 @@ public class InviteContactHolder extends BindedViewHolder {
             }
         });
 
+        cont.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                return onItemClickedListener.onLongClicked(data);
+            }
+        });
+
+
 
         if (isLast) {
             separator.setVisibility(View.GONE);
         } else {
             separator.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public View init(PhoneBookContact data, ViewGroup viewGroup, Context context) {
+        return fl;
+    }
+
+    @Override
+    public void bind(PhoneBookContact data, int position, Context context) {
+
     }
 
     public void unbind() {
