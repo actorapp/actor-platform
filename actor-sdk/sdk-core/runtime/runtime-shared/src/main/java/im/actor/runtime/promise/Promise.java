@@ -369,20 +369,6 @@ public class Promise<T> {
         });
     }
 
-    @ObjectiveCName("afterVoid:")
-    public <R> Promise<R> afterVoid(final Supplier<Promise<R>> promiseSupplier) {
-        final Promise<T> self = this;
-        return new Promise<R>(resolver -> {
-            self.then(t -> {
-                Promise<R> promise = promiseSupplier.get();
-                promise.then(t2 -> resolver.result(t2));
-                promise.failure(e -> resolver.error(e));
-            });
-            self.failure(e -> resolver.error(e));
-        });
-    }
-
-
     @ObjectiveCName("mapIfNull:")
     public Promise<T> mapIfNull(final Supplier<T> producer) {
         final Promise<T> self = this;

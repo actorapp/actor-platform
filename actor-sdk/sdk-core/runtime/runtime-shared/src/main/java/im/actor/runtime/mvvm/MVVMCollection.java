@@ -89,7 +89,7 @@ public class MVVMCollection<T extends BserObject & KeyValueItem, V extends BaseV
     }
 
     private void notifyClear() {
-        im.actor.runtime.Runtime.postToMainThread(values::clear);
+        im.actor.runtime.Runtime.postToMainThread(() -> values.clear());
     }
 
     private class ProxyKeyValueEngine implements KeyValueEngine<T> {
