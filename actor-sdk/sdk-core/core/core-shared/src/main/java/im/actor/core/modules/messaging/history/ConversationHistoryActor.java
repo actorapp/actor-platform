@@ -18,7 +18,7 @@ import im.actor.core.entity.MessageState;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.Reaction;
 import im.actor.core.entity.content.AbsContent;
-import im.actor.core.modules.Configuration;
+import im.actor.core.modules.api.ApiSupportConfiguration;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.ModuleActor;
 import im.actor.runtime.Log;
@@ -64,7 +64,7 @@ public class ConversationHistoryActor extends ModuleActor {
             return;
         }
         isLoading = true;
-        api(new RequestLoadHistory(buidOutPeer(peer), historyMaxDate, null, LIMIT, Configuration.OPTIMIZATIONS))
+        api(new RequestLoadHistory(buidOutPeer(peer), historyMaxDate, null, LIMIT, ApiSupportConfiguration.OPTIMIZATIONS))
                 .then(new Consumer<ResponseLoadHistory>() {
                     @Override
                     public void apply(ResponseLoadHistory responseLoadHistory) {
