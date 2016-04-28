@@ -118,7 +118,13 @@ export default {
         'email': 'Email',
         'about': 'About',
         'avatarChange': 'Change avatar',
-        'avatarRemove': 'Remove'
+        'avatarRemove': 'Remove',
+        errors: {
+          nick: {
+            length: 'Nick should contain from 5 to 32 characters',
+            chars: 'Please use latin characters, numbers and underscores'
+          }
+        }
       },
       'group': {
         'title': 'Edit group',
@@ -192,13 +198,6 @@ export default {
         },
         delete: 'Delete this group?',
         kick: 'Kick this user?'
-      },
-      blockedUsers: {
-        title: 'Blocked users',
-        notExists: 'You haven\'t block anyone.',
-        notFound: 'Sorry, no users were found.',
-        search: 'Search for contacts or usernames',
-        unblock: 'Unblock'
       }
     },
 
@@ -312,6 +311,13 @@ export default {
           terminate: 'Kill',
           terminateAll: 'Terminate all sessions'
         }
+      },
+      blocked: {
+        title: 'Blocked Users',
+        notExists: 'You haven\'t block anyone.',
+        notFound: 'Sorry, no users were found.',
+        search: 'Search for contacts or usernames',
+        unblock: 'Unblock'
       }
     },
 

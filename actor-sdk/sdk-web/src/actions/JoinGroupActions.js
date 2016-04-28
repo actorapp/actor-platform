@@ -2,37 +2,30 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import { dispatchAsync } from '../dispatcher/ActorAppDispatcher';
+import { dispatch } from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
 import ActorClient from '../utils/ActorClient';
 import history from '../utils/history';
+import JoinGroupStore from '../stores/JoinGroupStore';
 
-import DialogActionCreators from './DialogActionCreators';
+function joinSuccess(peer) {
+  dispatch(ActionTypes.GROUP_JOIN_VIA_LINK_SUCCESS);
+  setTimeout(() => history.replace(`/im/${peer.key}`), 1000);
+}
 
-const urlBase = 'https://quit.email';
+function joinFailed(error) {
+  dispatch(ActionTypes.GROUP_JOIN_VIA_LINK_ERROR, { error });
+}
 
 export default {
+  joinAfterLogin() {
+    const { token } = JoinGroupStore.getState();
+    if (token) {
+      history.push(`/join/${token}`);
+    }
+  },
   joinGroupViaLink(token) {
-    const url = urlBase + '/join/' + token;
-
-    const joinViaLink = () => dispatchAsync(ActorClient.joinGroupViaLink(url), {
-      request: ActionTypes.GROUP_JOIN_VIA_LINK,
-      success: ActionTypes.GROUP_JOIN_VIA_LINK_SUCCESS,
-      failure: ActionTypes.GROUP_JOIN_VIA_LINK_ERROR
-    }, { token });
-
-    const selectJoined = (peer) => {
-      if (peer) {
-        DialogActionCreators.selectDialogPeer(peer);
-      } else {
-        throw new Error();
-      }
-    };
-
-    const goHome = () => history.replace('/');
-
-    joinViaLink()
-      .then(selectJoined)
-      .catch(goHome)
+    dispatch(ActionTypes.GROUP_JOIN_VIA_LINK, { token });
+    ActorClient.joinGroupViaToken(token).then(joinSuccess, joinFailed);
   }
 };

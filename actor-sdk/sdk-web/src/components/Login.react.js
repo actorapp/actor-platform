@@ -19,6 +19,8 @@ class Login extends Component {
   constructor(props) {
     super(props);
 
+    LoginActionCreators.start();
+
     const SharedActor = SharedContainer.get();
     this.appName = SharedActor.appName ? SharedActor.appName : appName;
   }

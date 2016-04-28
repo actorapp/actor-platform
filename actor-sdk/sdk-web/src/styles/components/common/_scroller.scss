@@ -15,4 +15,33 @@
 
 .scroller__container {
   overflow-y: scroll;
+
+  -ms-overflow-style: none;
+  overflow: -moz-scrollbars-none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.scroller__scrollbar {
+  display: flex;
+  width: 4px;
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  bottom: 0;
+  right: 0;
+
+  &:hover,
+  &--active {
+    width: 8px;
+  }
+}
+
+.scroller__thumb {
+  background-color: #adc2dc;
+  position: absolute;
+  right: 0;
+  left: 0;
+  top: 0;
 }
