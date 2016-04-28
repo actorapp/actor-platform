@@ -5,7 +5,6 @@
 import { forEach, debounce } from 'lodash';
 
 import React, { Component, PropTypes } from 'react';
-import { shouldComponentUpdate } from 'react-addons-pure-render-mixin';
 import { FormattedMessage } from 'react-intl';
 
 import GroupListActionCreators from '../../actions/GroupListActionCreators';
@@ -39,8 +38,6 @@ class Recent extends Component {
     this.scrollToLastHiddenBelow = this.scrollToLastHiddenBelow.bind(this);
     this.handleGroupListTitleClick = this.handleGroupListTitleClick .bind(this);
     this.handlePrivateListTitleClick = this.handlePrivateListTitleClick.bind(this);
-
-    this.shouldComponentUpdate = shouldComponentUpdate.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
