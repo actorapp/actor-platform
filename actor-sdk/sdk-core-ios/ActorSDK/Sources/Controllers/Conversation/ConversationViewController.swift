@@ -72,7 +72,7 @@ public class ConversationViewController:
     // MARK: - Init
     ////////////////////////////////////////////////////////////
     
-    override init(peer: ACPeer) {
+    public override init(peer: ACPeer) {
         
         // Data
         
@@ -230,7 +230,7 @@ public class ConversationViewController:
         }
     }
     
-    required public init(coder aDecoder: NSCoder!) {
+    public init(coder aDecoder: NSCoder!) {
         fatalError("init(coder:) has not been implemented")
     }
     
