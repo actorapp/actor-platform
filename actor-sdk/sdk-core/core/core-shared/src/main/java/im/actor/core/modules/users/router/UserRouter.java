@@ -24,7 +24,6 @@ import im.actor.core.modules.users.router.entity.RouterNicknameChanged;
 import im.actor.core.modules.users.router.entity.RouterUserRegistered;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.annotations.Verified;
-import im.actor.runtime.function.Consumer;
 import im.actor.runtime.function.Function;
 import im.actor.runtime.function.Tuple2;
 import im.actor.runtime.promise.Promise;
@@ -52,13 +51,13 @@ public class UserRouter extends ModuleActor {
 
         freeze();
         users().getValueAsync(uid)
-                .flatMap((Function<User, Promise<Tuple2<ResponseLoadFullUsers, User>>>)u -> {
+                .flatMap((Function<User, Promise<Tuple2<ResponseLoadFullUsers, User>>>) u -> {
                     if (!u.isHaveExtension()) {
                         ArrayList<ApiUserOutPeer> users = new ArrayList<>();
                         users.add(new ApiUserOutPeer(u.getUid(), u.getAccessHash()));
                         return api(new RequestLoadFullUsers(users))
                                 .map(responseLoadFullUsers ->
-                                        new Tuple2<ResponseLoadFullUsers, User>(responseLoadFullUsers, u));
+                                        new Tuple2<>(responseLoadFullUsers, u));
                     } else {
                         return Promise.failure(new RuntimeException("Already loaded"));
                     }
