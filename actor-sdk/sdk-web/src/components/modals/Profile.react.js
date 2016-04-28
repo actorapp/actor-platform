@@ -2,7 +2,7 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
 import Modal from 'react-modal';
 import { FormattedMessage } from 'react-intl';
@@ -27,12 +27,17 @@ class Profile extends Component {
       profile: state.profile,
       name: prevState ? prevState.name : state.profile.name,
       nick: prevState ? prevState.nick : state.profile.nick,
-      about: prevState ? prevState.about : state.profile.about
+      about: prevState ? prevState.about : state.profile.about,
+      errors: prevState ? prevState.errors : {}
     };
   }
 
-  constructor(props) {
-    super(props);
+  static contextTypes = {
+    intl: PropTypes.object
+  };
+
+  constructor(props, context) {
+    super(props, context);
 
     this.handleClose = this.handleClose.bind(this);
     this.handleSave = this.handleSave.bind(this);
@@ -47,13 +52,14 @@ class Profile extends Component {
   }
 
   handleSave() {
-    const { nick, name, about, profile } = this.state;
+    const { nick, name, about, profile, errors } = this.state;
 
-    if (name !== profile.name) ProfileActionCreators.editMyName(name);
-    if (nick !== profile.nick) ProfileActionCreators.editMyNick(nick);
-    if (about !== profile.about) ProfileActionCreators.editMyAbout(about);
-
-    this.handleClose();
+    if (!errors.nick) {
+      if (name !== profile.name) ProfileActionCreators.editMyName(name);
+      if (nick !== profile.nick) ProfileActionCreators.editMyNick(nick);
+      if (about !== profile.about) ProfileActionCreators.editMyAbout(about);
+      this.handleClose();
+    }
   }
 
   handleNameChange(event) {
@@ -61,7 +67,28 @@ class Profile extends Component {
   }
 
   handleNickChange(event) {
-    this.setState({ nick: event.target.value });
+    const nick = event.target.value;
+
+    this.setState({
+      nick,
+      errors: {
+        nick: this.validateNick(nick)
+      }
+    });
+  }
+
+  validateNick(nick) {
+    const { intl } = this.context;
+
+    if (nick.length < 5 || nick.length > 32) {
+      return intl.messages['modal.profile.errors.nick.length'];
+    }
+
+    if (!/^[0-9a-zA-Z_]+$/.test(nick)) {
+      return intl.messages['modal.profile.errors.nick.chars'];
+    }
+
+    return null;
   }
 
   handleAboutChange(event) {
@@ -77,7 +104,7 @@ class Profile extends Component {
   }
 
   renderControls() {
-    const { isProfileChanged } = this.state;
+    const { errors } = this.state;
 
     return (
       <div className="controls">
@@ -86,7 +113,7 @@ class Profile extends Component {
         </button>
         <button
           className="button button--rised"
-          disabled={isProfileChanged}
+          disabled={errors.nick}
           onClick={this.handleSave}>
           <FormattedMessage id="button.save"/>
         </button>
@@ -110,13 +137,14 @@ class Profile extends Component {
   }
 
   renderNick() {
-    const { nick } = this.state;
+    const { nick, errors } = this.state;
 
     return (
       <div className="nick">
         <TextField
           className="input__material--wide"
           floatingLabel={<FormattedMessage id="modal.profile.nick"/>}
+          errorText={errors.nick}
           onChange={this.handleNickChange}
           type="text"
           value={nick}/>
