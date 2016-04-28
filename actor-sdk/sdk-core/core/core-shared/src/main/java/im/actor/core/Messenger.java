@@ -1583,7 +1583,7 @@ public class Messenger {
     @NotNull
     @ObjectiveCName("loadBlockedUsers")
     public Promise<List<User>> loadBlockedUsers() {
-        return modules.getBlockList().loadBlockedUsers();
+        return modules.getUsersModule().loadBlockedUsers();
     }
 
     /**
@@ -1595,7 +1595,7 @@ public class Messenger {
     @NotNull
     @ObjectiveCName("blockUser:")
     public Promise<Void> blockUser(int uid) {
-        return modules.getBlockList().blockUser(uid);
+        return modules.getUsersModule().blockUser(uid);
     }
 
     /**
@@ -1607,7 +1607,7 @@ public class Messenger {
     @NotNull
     @ObjectiveCName("unblockUser:")
     public Promise<Void> unblockUser(int uid) {
-        return modules.getBlockList().unblockUser(uid);
+        return modules.getUsersModule().unblockUser(uid);
     }
 
     //////////////////////////////////////

@@ -5,10 +5,27 @@ import java.util.HashSet;
 import java.util.List;
 
 import im.actor.core.api.ApiAvatar;
+import im.actor.core.api.ApiBotCommand;
+import im.actor.core.api.ApiContactRecord;
+import im.actor.core.api.ApiMapValue;
 import im.actor.core.api.ApiUser;
 import im.actor.core.api.ApiUserOutPeer;
 import im.actor.core.api.rpc.RequestLoadFullUsers;
 import im.actor.core.api.rpc.ResponseLoadFullUsers;
+import im.actor.core.api.updates.UpdateContactRegistered;
+import im.actor.core.api.updates.UpdateUserAboutChanged;
+import im.actor.core.api.updates.UpdateUserAvatarChanged;
+import im.actor.core.api.updates.UpdateUserBlocked;
+import im.actor.core.api.updates.UpdateUserBotCommandsChanged;
+import im.actor.core.api.updates.UpdateUserContactsChanged;
+import im.actor.core.api.updates.UpdateUserExtChanged;
+import im.actor.core.api.updates.UpdateUserFullExtChanged;
+import im.actor.core.api.updates.UpdateUserLocalNameChanged;
+import im.actor.core.api.updates.UpdateUserNameChanged;
+import im.actor.core.api.updates.UpdateUserNickChanged;
+import im.actor.core.api.updates.UpdateUserPreferredLanguagesChanged;
+import im.actor.core.api.updates.UpdateUserTimeZoneChanged;
+import im.actor.core.api.updates.UpdateUserUnblocked;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.MessageState;
 import im.actor.core.entity.Peer;
@@ -17,15 +34,11 @@ import im.actor.core.entity.content.ServiceUserRegistered;
 import im.actor.core.modules.ModuleActor;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.contacts.ContactsSyncActor;
-import im.actor.core.modules.users.router.entity.RouterAboutChanged;
 import im.actor.core.modules.users.router.entity.RouterApplyUsers;
-import im.actor.core.modules.users.router.entity.RouterAvatarChanged;
 import im.actor.core.modules.users.router.entity.RouterFetchMissingUsers;
 import im.actor.core.modules.users.router.entity.RouterLoadFullUser;
-import im.actor.core.modules.users.router.entity.RouterLocalNameChanged;
-import im.actor.core.modules.users.router.entity.RouterNameChanged;
-import im.actor.core.modules.users.router.entity.RouterNicknameChanged;
-import im.actor.core.modules.users.router.entity.RouterUserRegistered;
+import im.actor.core.modules.users.router.entity.RouterUserUpdate;
+import im.actor.core.network.parser.Update;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.annotations.Verified;
 import im.actor.runtime.function.Function;
@@ -47,6 +60,10 @@ public class UserRouter extends ModuleActor {
         super(context);
     }
 
+
+    //
+    // Small User
+    //
 
     @Verified
     private Promise<Void> onUserNameChanged(int uid, String name) {
@@ -73,45 +90,6 @@ public class UserRouter extends ModuleActor {
                 .after((r, e) -> unfreeze());
     }
 
-    @Verified
-    private Promise<Void> onUserNickChanged(int uid, String nick) {
-        freeze();
-        return users().getValueAsync(uid)
-                .fallback(u -> null)
-                .flatMap(u -> {
-                    // Ignore if username not changed
-                    if (u != null && !equalsE(u.getNick(), nick)) {
-
-                        // Changing user name
-                        u = u.editNick(nick);
-
-                        // Updating user in collection
-                        users().addOrUpdateItem(u);
-                    }
-                    return Promise.success((Void) null);
-                })
-                .after((r, e) -> unfreeze());
-    }
-
-    @Verified
-    private Promise<Void> onUserAboutChanged(int uid, String about) {
-        freeze();
-        return users().getValueAsync(uid)
-                .fallback(u -> null)
-                .flatMap(u -> {
-                    // Ignore if name not changed
-                    if (u != null && !equalsE(u.getAbout(), about)) {
-
-                        // Changing about information
-                        u = u.editAbout(about);
-
-                        // Updating user in collection
-                        users().addOrUpdateItem(u);
-                    }
-                    return Promise.success((Void) null);
-                })
-                .after((r, e) -> unfreeze());
-    }
 
     @Verified
     private Promise<Void> onUserLocalNameChanged(int uid, String name) {
@@ -166,6 +144,195 @@ public class UserRouter extends ModuleActor {
                 })
                 .after((r, e) -> unfreeze());
     }
+
+    @Verified
+    private Promise<Void> onUserNickChanged(int uid, String nick) {
+        freeze();
+        return users().getValueAsync(uid)
+                .fallback(u -> null)
+                .flatMap(u -> {
+                    // Ignore if username not changed
+                    if (u != null && !equalsE(u.getNick(), nick)) {
+
+                        // Changing user name
+                        u = u.editNick(nick);
+
+                        // Updating user in collection
+                        users().addOrUpdateItem(u);
+                    }
+                    return Promise.success((Void) null);
+                })
+                .after((r, e) -> unfreeze());
+    }
+
+    @Verified
+    private Promise<Void> onUserExtChanged(int uid, ApiMapValue ext) {
+        freeze();
+        return users().getValueAsync(uid)
+                .fallback(u -> null)
+                .flatMap(u -> {
+                    // Ignore if username not changed
+                    if (u != null) {
+
+                        // Changing user name
+                        u = u.editExt(ext);
+
+                        // Updating user in collection
+                        users().addOrUpdateItem(u);
+                    }
+                    return Promise.success((Void) null);
+                })
+                .after((r, e) -> unfreeze());
+    }
+
+
+    //
+    // Full User
+    //
+
+    @Verified
+    private Promise<Void> onUserAboutChanged(int uid, String about) {
+        freeze();
+        return users().getValueAsync(uid)
+                .fallback(u -> null)
+                .flatMap(u -> {
+                    // Ignore if name not changed
+                    if (u != null && u.isHaveExtension() && !equalsE(u.getAbout(), about)) {
+
+                        // Changing about information
+                        u = u.editAbout(about);
+
+                        // Updating user in collection
+                        users().addOrUpdateItem(u);
+                    }
+                    return Promise.success((Void) null);
+                })
+                .after((r, e) -> unfreeze());
+    }
+
+    @Verified
+    private Promise<Void> onUserPreferredLanguagesChanged(int uid, List<String> languages) {
+        freeze();
+        return users().getValueAsync(uid)
+                .fallback(u -> null)
+                .flatMap(u -> {
+                    // Ignore if name not changed
+                    if (u != null && u.isHaveExtension()) {
+
+                        // Changing about information
+                        u = u.editPreferredLanguages(languages);
+
+                        // Updating user in collection
+                        users().addOrUpdateItem(u);
+                    }
+                    return Promise.success((Void) null);
+                })
+                .after((r, e) -> unfreeze());
+    }
+
+    @Verified
+    private Promise<Void> onUserTimeZoneChanged(int uid, String timeZone) {
+        freeze();
+        return users().getValueAsync(uid)
+                .fallback(u -> null)
+                .flatMap(u -> {
+                    // Ignore if name not changed
+                    if (u != null && u.isHaveExtension()) {
+
+                        // Changing about information
+                        u = u.editTimeZone(timeZone);
+
+                        // Updating user in collection
+                        users().addOrUpdateItem(u);
+                    }
+                    return Promise.success((Void) null);
+                })
+                .after((r, e) -> unfreeze());
+    }
+
+    @Verified
+    private Promise<Void> onUserContactsChanged(int uid, List<ApiContactRecord> contacts) {
+        freeze();
+        return users().getValueAsync(uid)
+                .fallback(u -> null)
+                .flatMap(u -> {
+                    // Ignore if name not changed
+                    if (u != null && u.isHaveExtension()) {
+
+                        // Changing about information
+                        u = u.editContacts(contacts);
+
+                        // Updating user in collection
+                        users().addOrUpdateItem(u);
+                    }
+                    return Promise.success((Void) null);
+                })
+                .after((r, e) -> unfreeze());
+    }
+
+    @Verified
+    private Promise<Void> onUserCommandsChanged(int uid, List<ApiBotCommand> commands) {
+        freeze();
+        return users().getValueAsync(uid)
+                .fallback(u -> null)
+                .flatMap(u -> {
+                    // Ignore if name not changed
+                    if (u != null && u.isHaveExtension()) {
+
+                        // Changing about information
+                        u = u.editBotCommands(commands);
+
+                        // Updating user in collection
+                        users().addOrUpdateItem(u);
+                    }
+                    return Promise.success((Void) null);
+                })
+                .after((r, e) -> unfreeze());
+    }
+
+    @Verified
+    private Promise<Void> onUserBlockedChanged(int uid, boolean isBlocked) {
+        freeze();
+        return users().getValueAsync(uid)
+                .fallback(u -> null)
+                .flatMap(u -> {
+                    // Ignore if name not changed
+                    if (u != null && u.isHaveExtension()) {
+
+                        // Changing about information
+                        u = u.editBlocked(isBlocked);
+
+                        // Updating user in collection
+                        users().addOrUpdateItem(u);
+                    }
+                    return Promise.success((Void) null);
+                })
+                .after((r, e) -> unfreeze());
+    }
+
+    @Verified
+    private Promise<Void> onUserFullExtChanged(int uid, ApiMapValue ext) {
+        freeze();
+        return users().getValueAsync(uid)
+                .fallback(u -> null)
+                .flatMap(u -> {
+                    // Ignore if name not changed
+                    if (u != null && u.isHaveExtension()) {
+
+                        // Changing about information
+                        u = u.editFullExt(ext);
+
+                        // Updating user in collection
+                        users().addOrUpdateItem(u);
+                    }
+                    return Promise.success((Void) null);
+                })
+                .after((r, e) -> unfreeze());
+    }
+
+    //
+    // Misc
+    //
 
     @Verified
     public Promise<Void> onUserRegistered(long rid, int uid, long date) {
@@ -271,50 +438,94 @@ public class UserRouter extends ModuleActor {
     // Messages
     //
 
+    private Promise<Void> onUpdate(Update update) {
+        if (update instanceof UpdateUserNameChanged) {
+            UpdateUserNameChanged updateUserNameChanged = (UpdateUserNameChanged) update;
+            return onUserNameChanged(
+                    updateUserNameChanged.getUid(),
+                    updateUserNameChanged.getName());
+        } else if (update instanceof UpdateUserLocalNameChanged) {
+            UpdateUserLocalNameChanged localNameChanged = (UpdateUserLocalNameChanged) update;
+            return onUserLocalNameChanged(
+                    localNameChanged.getUid(),
+                    localNameChanged.getLocalName());
+        } else if (update instanceof UpdateUserNickChanged) {
+            UpdateUserNickChanged nickChanged = (UpdateUserNickChanged) update;
+            return onUserNickChanged(
+                    nickChanged.getUid(),
+                    nickChanged.getNickname());
+        } else if (update instanceof UpdateUserAvatarChanged) {
+            UpdateUserAvatarChanged userAvatarChanged = (UpdateUserAvatarChanged) update;
+            return onUserAvatarChanged(
+                    userAvatarChanged.getUid(),
+                    userAvatarChanged.getAvatar());
+        } else if (update instanceof UpdateUserAboutChanged) {
+            UpdateUserAboutChanged aboutChanged = (UpdateUserAboutChanged) update;
+            return onUserAboutChanged(
+                    aboutChanged.getUid(),
+                    aboutChanged.getAbout());
+        } else if (update instanceof UpdateUserPreferredLanguagesChanged) {
+            UpdateUserPreferredLanguagesChanged languagesChanged = (UpdateUserPreferredLanguagesChanged) update;
+            return onUserPreferredLanguagesChanged(
+                    languagesChanged.getUid(),
+                    languagesChanged.getPreferredLanguages());
+        } else if (update instanceof UpdateContactRegistered) {
+            UpdateContactRegistered contactRegistered = (UpdateContactRegistered) update;
+            if (!contactRegistered.isSilent()) {
+                return onUserRegistered(
+                        contactRegistered.getRid(),
+                        contactRegistered.getUid(),
+                        contactRegistered.getDate());
+            }
+        } else if (update instanceof UpdateUserTimeZoneChanged) {
+            UpdateUserTimeZoneChanged timeZoneChanged = (UpdateUserTimeZoneChanged) update;
+            return onUserTimeZoneChanged(
+                    timeZoneChanged.getUid(),
+                    timeZoneChanged.getTimeZone());
+        } else if (update instanceof UpdateUserContactsChanged) {
+            UpdateUserContactsChanged contactsChanged = (UpdateUserContactsChanged) update;
+            return onUserContactsChanged(
+                    contactsChanged.getUid(),
+                    contactsChanged.getContactRecords());
+        } else if (update instanceof UpdateUserExtChanged) {
+            UpdateUserExtChanged extChanged = (UpdateUserExtChanged) update;
+            return onUserExtChanged(
+                    extChanged.getUid(),
+                    extChanged.getExt());
+        } else if (update instanceof UpdateUserFullExtChanged) {
+            UpdateUserFullExtChanged extChanged = (UpdateUserFullExtChanged) update;
+            return onUserFullExtChanged(
+                    extChanged.getUid(),
+                    extChanged.getExt());
+        } else if (update instanceof UpdateUserBotCommandsChanged) {
+            UpdateUserBotCommandsChanged commandsChanged = (UpdateUserBotCommandsChanged) update;
+            return onUserCommandsChanged(
+                    commandsChanged.getUid(),
+                    commandsChanged.getCommands());
+        } else if (update instanceof UpdateUserBlocked) {
+            UpdateUserBlocked updateUserBlocked = (UpdateUserBlocked) update;
+            return onUserBlockedChanged(
+                    updateUserBlocked.getUid(),
+                    true);
+        } else if (update instanceof UpdateUserUnblocked) {
+            UpdateUserUnblocked unblocked = (UpdateUserUnblocked) update;
+            return onUserBlockedChanged(
+                    unblocked.getUid(),
+                    true);
+        }
+        return Promise.success(null);
+    }
+
     @Override
     public Promise onAsk(Object message) throws Exception {
-        if (message instanceof RouterNameChanged) {
+        if (message instanceof RouterUserUpdate) {
             if (isFreezed) {
                 stash();
                 return null;
             }
-            RouterNameChanged nameChanged = (RouterNameChanged) message;
-            return onUserNameChanged(nameChanged.getUid(), nameChanged.getName());
-        } else if (message instanceof RouterLocalNameChanged) {
-            if (isFreezed) {
-                stash();
-                return null;
-            }
-            RouterLocalNameChanged localNameChanged = (RouterLocalNameChanged) message;
-            return onUserLocalNameChanged(localNameChanged.getUid(), localNameChanged.getLocalName());
-        } else if (message instanceof RouterAvatarChanged) {
-            if (isFreezed) {
-                stash();
-                return null;
-            }
-            RouterAvatarChanged avatarChanged = (RouterAvatarChanged) message;
-            return onUserAvatarChanged(avatarChanged.getUid(), avatarChanged.getAvatar());
-        } else if (message instanceof RouterNicknameChanged) {
-            if (isFreezed) {
-                stash();
-                return null;
-            }
-            RouterNicknameChanged nicknameChanged = (RouterNicknameChanged) message;
-            return onUserNickChanged(nicknameChanged.getUid(), nicknameChanged.getNickname());
-        } else if (message instanceof RouterAboutChanged) {
-            if (isFreezed) {
-                stash();
-                return null;
-            }
-            RouterAboutChanged aboutChanged = (RouterAboutChanged) message;
-            return onUserAboutChanged(aboutChanged.getUid(), aboutChanged.getAbout());
-        } else if (message instanceof RouterUserRegistered) {
-            if (isFreezed) {
-                stash();
-                return null;
-            }
-            RouterUserRegistered userRegistered = (RouterUserRegistered) message;
-            return onUserRegistered(userRegistered.getRid(), userRegistered.getUid(), userRegistered.getDate());
+
+            RouterUserUpdate userUpdate = (RouterUserUpdate) message;
+            return onUpdate(userUpdate.getUpdate());
         } else if (message instanceof RouterFetchMissingUsers) {
             if (isFreezed) {
                 stash();

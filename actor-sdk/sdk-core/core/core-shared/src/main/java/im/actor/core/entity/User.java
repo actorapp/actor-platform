@@ -14,9 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.core.api.ApiAvatar;
+import im.actor.core.api.ApiBotCommand;
 import im.actor.core.api.ApiContactRecord;
 import im.actor.core.api.ApiContactType;
 import im.actor.core.api.ApiFullUser;
+import im.actor.core.api.ApiMapValue;
 import im.actor.core.api.ApiUser;
 import im.actor.runtime.bser.BserCreator;
 import im.actor.runtime.bser.BserValues;
@@ -66,6 +68,8 @@ public class User extends WrapperExtEntity<ApiFullUser, ApiUser> implements KeyV
     @Property("readonly, nonatomic")
     @SuppressWarnings("NullableProblems")
     private List<ContactRecord> records;
+    @Property("readonly, nonatomic")
+    private boolean isBlocked;
 
     @NotNull
     @Property("readonly, nonatomic")
@@ -148,6 +152,10 @@ public class User extends WrapperExtEntity<ApiFullUser, ApiUser> implements KeyV
         return isBot;
     }
 
+    public boolean isBlocked() {
+        return isBlocked;
+    }
+
     public User editName(@NotNull String name) {
         ApiUser w = getWrapped();
         ApiUser res = new ApiUser(
@@ -196,6 +204,22 @@ public class User extends WrapperExtEntity<ApiFullUser, ApiUser> implements KeyV
         return new User(res, getWrappedExt());
     }
 
+    public User editExt(@Nullable ApiMapValue ext) {
+        ApiUser w = getWrapped();
+        ApiUser res = new ApiUser(
+                w.getId(),
+                w.getAccessHash(),
+                w.getName(),
+                w.getLocalName(),
+                w.getNick(),
+                w.getSex(),
+                w.getAvatar(),
+                w.isBot(),
+                ext);
+        res.setUnmappedObjects(w.getUnmappedObjects());
+        return new User(res, getWrappedExt());
+    }
+
     public User editAvatar(@Nullable ApiAvatar avatar) {
         ApiUser w = getWrapped();
         ApiUser res = new ApiUser(
@@ -235,6 +259,121 @@ public class User extends WrapperExtEntity<ApiFullUser, ApiUser> implements KeyV
         }
     }
 
+    public User editPreferredLanguages(List<String> preferredLanguages) {
+        ApiFullUser ext = getWrappedExt();
+        if (ext != null) {
+            ApiFullUser upd = new ApiFullUser(
+                    ext.getId(),
+                    ext.getContactInfo(),
+                    ext.getAbout(),
+                    preferredLanguages,
+                    ext.getTimeZone(),
+                    ext.getBotCommands(),
+                    ext.getExt(),
+                    ext.isBlocked()
+            );
+            return new User(getWrapped(), upd);
+        } else {
+            return this;
+        }
+    }
+
+    public User editTimeZone(String timeZone) {
+        ApiFullUser ext = getWrappedExt();
+        if (ext != null) {
+            ApiFullUser upd = new ApiFullUser(
+                    ext.getId(),
+                    ext.getContactInfo(),
+                    ext.getAbout(),
+                    ext.getPreferredLanguages(),
+                    timeZone,
+                    ext.getBotCommands(),
+                    ext.getExt(),
+                    ext.isBlocked()
+            );
+            return new User(getWrapped(), upd);
+        } else {
+            return this;
+        }
+    }
+
+    public User editContacts(List<ApiContactRecord> contacts) {
+        ApiFullUser ext = getWrappedExt();
+        if (ext != null) {
+            ApiFullUser upd = new ApiFullUser(
+                    ext.getId(),
+                    contacts,
+                    ext.getAbout(),
+                    ext.getPreferredLanguages(),
+                    ext.getTimeZone(),
+                    ext.getBotCommands(),
+                    ext.getExt(),
+                    ext.isBlocked()
+            );
+            return new User(getWrapped(), upd);
+        } else {
+            return this;
+        }
+    }
+
+    public User editBotCommands(List<ApiBotCommand> commands) {
+        ApiFullUser ext = getWrappedExt();
+        if (ext != null) {
+            ApiFullUser upd = new ApiFullUser(
+                    ext.getId(),
+                    ext.getContactInfo(),
+                    ext.getAbout(),
+                    ext.getPreferredLanguages(),
+                    ext.getTimeZone(),
+                    commands,
+                    ext.getExt(),
+                    ext.isBlocked()
+            );
+            return new User(getWrapped(), upd);
+        } else {
+            return this;
+        }
+    }
+
+    public User editFullExt(ApiMapValue extv) {
+        ApiFullUser ext = getWrappedExt();
+        if (ext != null) {
+            ApiFullUser upd = new ApiFullUser(
+                    ext.getId(),
+                    ext.getContactInfo(),
+                    ext.getAbout(),
+                    ext.getPreferredLanguages(),
+                    ext.getTimeZone(),
+                    ext.getBotCommands(),
+                    extv,
+                    ext.isBlocked()
+            );
+            return new User(getWrapped(), upd);
+        } else {
+            return this;
+        }
+    }
+
+    public User editBlocked(boolean isBlocked) {
+        ApiFullUser ext = getWrappedExt();
+        if (ext != null) {
+            ApiFullUser upd = new ApiFullUser(
+                    ext.getId(),
+                    ext.getContactInfo(),
+                    ext.getAbout(),
+                    ext.getPreferredLanguages(),
+                    ext.getTimeZone(),
+                    ext.getBotCommands(),
+                    ext.getExt(),
+                    isBlocked
+            );
+            return new User(getWrapped(), upd);
+        } else {
+            return this;
+        }
+    }
+
+
     @Override
     protected void applyWrapped(@NotNull ApiUser wrapped, @Nullable ApiFullUser ext) {
         this.uid = wrapped.getId();
@@ -270,6 +409,11 @@ public class User extends WrapperExtEntity<ApiFullUser, ApiUser> implements KeyV
         if (ext != null) {
             this.haveExtension = true;
             this.records = new ArrayList<>();
+            if (ext.isBlocked() != null) {
+                this.isBlocked = ext.isBlocked();
+            } else {
+                this.isBlocked = false;
+            }
             for (ApiContactRecord record : ext.getContactInfo()) {
                 if (record.getType() == ApiContactType.PHONE) {
                     this.records.add(new ContactRecord(ContactRecordType.PHONE, record.getTypeSpec(), "" + record.getLongValue(),
@@ -287,6 +431,7 @@ public class User extends WrapperExtEntity<ApiFullUser, ApiUser> implements KeyV
             }
             this.about = ext.getAbout();
         } else {
+            this.isBlocked = false;
             this.haveExtension = false;
             this.records = new ArrayList<>();
             this.about = null;
