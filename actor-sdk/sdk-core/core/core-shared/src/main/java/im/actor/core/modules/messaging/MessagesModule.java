@@ -51,6 +51,7 @@ import im.actor.core.events.PeerChatOpened;
 import im.actor.core.events.PeerChatPreload;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.messaging.dialogs.DialogsInt;
 import im.actor.core.modules.messaging.history.ArchivedDialogsActor;
 import im.actor.core.modules.messaging.actions.CursorReaderActor;
 import im.actor.core.modules.messaging.actions.CursorReceiverActor;
@@ -96,7 +97,7 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
 
     private ListEngine<Dialog> dialogs;
 
-    private ActorRef dialogsActor;
+    private DialogsInt dialogsInt;
     private ActorRef dialogsHistoryActor;
     private ActorRef archivedDialogsActor;
     private ActorRef plainReadActor;
@@ -129,7 +130,7 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
 
         this.router = new RouterInt(context());
 
-        this.dialogsActor = system().actorOf("actor/dialogs", () -> new DialogsActor(context()));
+        this.dialogsInt = new DialogsInt(context());
         this.dialogsHistoryActor = system().actorOf("actor/dialogs/history", () -> new DialogsHistoryActor(context()));
         this.archivedDialogsActor = system().actorOf("actor/dialogs/archived", () -> new ArchivedDialogsActor(context()));
 
@@ -205,8 +206,8 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
         return conversationStates.get(peer.getUnuqueId());
     }
 
-    public ActorRef getDialogsActor() {
-        return dialogsActor;
+    public DialogsInt getDialogsInt() {
+        return dialogsInt;
     }
 
     public ListEngine<Dialog> getDialogsEngine() {

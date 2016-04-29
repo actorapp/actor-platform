@@ -38,7 +38,17 @@ import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.messaging.actions.CursorReaderActor;
 import im.actor.core.modules.messaging.actions.CursorReceiverActor;
 import im.actor.core.modules.messaging.actions.SenderActor;
-import im.actor.core.modules.messaging.dialogs.DialogsActor;
+import im.actor.core.modules.messaging.dialogs.DialogsInt;
+import im.actor.core.modules.messaging.dialogs.entity.ChatClear;
+import im.actor.core.modules.messaging.dialogs.entity.ChatDelete;
+import im.actor.core.modules.messaging.dialogs.entity.CounterChanged;
+import im.actor.core.modules.messaging.dialogs.entity.GroupChanged;
+import im.actor.core.modules.messaging.dialogs.entity.InMessage;
+import im.actor.core.modules.messaging.dialogs.entity.MessageDeleted;
+import im.actor.core.modules.messaging.dialogs.entity.PeerReadChanged;
+import im.actor.core.modules.messaging.dialogs.entity.PeerReceiveChanged;
+import im.actor.core.modules.messaging.dialogs.entity.UserChanged;
+import im.actor.core.modules.messaging.dialogs.entity.HistoryLoaded;
 import im.actor.core.modules.messaging.history.entity.DialogHistory;
 import im.actor.core.modules.messaging.router.entity.ActiveDialogGroup;
 import im.actor.core.modules.messaging.router.entity.ActiveDialogStorage;
@@ -75,6 +85,9 @@ import static im.actor.core.util.AssertUtils.assertTrue;
 public class RouterActor extends ModuleActor {
 
     private static final String TAG = "RouterActor";
+
+    // j2objc workaround
+    private static final Void DUMB = null;
 
     // Visibility
     private final HashSet<Peer> visiblePeers = new HashSet<>();
@@ -269,7 +282,7 @@ public class RouterActor extends ModuleActor {
         //
         // Updating Dialog List
         //
-        dialogsActor(new DialogsActor.InMessage(peer, topMessage, state.getUnreadCount()));
+        Promise<Void> res = getDialogsRouter().onMessage(peer, topMessage, state.getUnreadCount());
 
 
         //
@@ -294,7 +307,7 @@ public class RouterActor extends ModuleActor {
             }
         }
 
-        return Promise.success(null);
+        return res;
     }
 
 
@@ -319,9 +332,10 @@ public class RouterActor extends ModuleActor {
             conversation(peer).addOrUpdateItem(updatedMsg);
 
             // Notify dialogs
-            dialogsActor(new DialogsActor.InMessage(peer, updatedMsg, -1));
+            return getDialogsRouter().onMessage(peer, updatedMsg, -1);
+        } else {
+            return Promise.success(null);
         }
-        return Promise.success(null);
     }
 
     private Promise<Void> onOutgoingError(Peer peer, long rid) {
@@ -361,9 +375,7 @@ public class RouterActor extends ModuleActor {
             conversationStates.addOrUpdateItem(state);
         }
 
-        dialogsActor(new DialogsActor.HistoryLoaded(dialogs));
-
-        return Promise.success(null);
+        return getDialogsRouter().onHistoryLoaded(dialogs);
     }
 
     private Promise<Void> onChatHistoryLoaded(Peer peer, List<Message> messages, Long maxReadDate,
@@ -421,12 +433,15 @@ public class RouterActor extends ModuleActor {
     //
 
     private Promise<Void> onContentUpdate(Peer peer, long rid, AbsContent content) {
+
         Message message = conversation(peer).getValue(rid);
-        // Ignore if we already doesn't have this message
+
         if (message != null) {
             conversation(peer).addOrUpdateItem(message.changeContent(content));
+            return getDialogsRouter().onMessageContentChanged(peer, rid, content);
+        } else {
+            return Promise.success(null);
         }
-        return Promise.success(null);
     }
 
     private Promise<Void> onReactionsUpdate(Peer peer, long rid, List<Reaction> reactions) {
@@ -451,27 +466,22 @@ public class RouterActor extends ModuleActor {
         conversation(peer).removeItems(JavaUtil.unbox(rids));
 
         Message head = conversation(peer).getHeadValue();
-        dialogsActor(new DialogsActor.MessageDeleted(peer, head.getMessageState() == MessageState.PENDING ? null : head));
 
-        return Promise.success(null);
+        return getDialogsRouter().onMessageDeleted(peer, head.getMessageState() == MessageState.PENDING ? null : head);
     }
 
     private Promise<Void> onChatClear(Peer peer) {
 
         conversation(peer).clear();
 
-        dialogsActor(new DialogsActor.ChatClear(peer));
-
-        return Promise.success(null);
+        return getDialogsRouter().onChatClear(peer);
     }
 
     private Promise<Void> onChatDelete(Peer peer) {
 
         conversation(peer).clear();
 
-        dialogsActor(new DialogsActor.ChatDelete(peer));
-
-        return Promise.success(null);
+        return getDialogsRouter().onChatDelete(peer);
     }
 
 
@@ -482,10 +492,13 @@ public class RouterActor extends ModuleActor {
     private Promise<Void> onMessageRead(Peer peer, long date) {
         ConversationState state = conversationStates.getValue(peer.getUnuqueId());
         boolean isChanged = false;
+        Promise<Void> res;
         if (date > state.getOutReadDate()) {
             state = state.changeOutReadDate(date);
-            dialogsActor(new DialogsActor.PeerReadChanged(peer, date));
+            res = getDialogsRouter().onPeerReadChanged(peer, date);
             isChanged = true;
+        } else {
+            res = Promise.success(null);
         }
         if (date > state.getOutReceiveDate()) {
             state = state.changeOutReceiveDate(date);
@@ -495,32 +508,36 @@ public class RouterActor extends ModuleActor {
             conversationStates.addOrUpdateItem(state);
         }
 
-        return Promise.success(null);
+        return res;
     }
 
     private Promise<Void> onMessageReceived(Peer peer, long date) {
         ConversationState state = conversationStates.getValue(peer.getUnuqueId());
         if (date > state.getOutReceiveDate()) {
-            dialogsActor(new DialogsActor.PeerReceiveChanged(peer, date));
             state = state.changeOutReceiveDate(date);
             conversationStates.addOrUpdateItem(state);
+
+            return getDialogsRouter().onPeerReceiveChanged(peer, date);
+        } else {
+            return Promise.success(null);
         }
-        return Promise.success(null);
     }
 
     private Promise<Void> onMessageReadByMe(Peer peer, long date, int counter) {
+
         ConversationState state = conversationStates.getValue(peer.getUnuqueId());
         state = state
                 .changeCounter(counter)
                 .changeInReadDate(date);
         conversationStates.addOrUpdateItem(state);
 
-        dialogsActor(new DialogsActor.CounterChanged(peer, counter));
+        Promise<Void> res = getDialogsRouter().onCounterChanged(peer, counter);
 
         notifyActiveDialogsVM();
 
         context().getNotificationsModule().onOwnRead(peer, date);
-        return Promise.success(null);
+
+        return res;
     }
 
 
@@ -529,6 +546,9 @@ public class RouterActor extends ModuleActor {
     //
 
     private Promise<Void> onPeersChanged(List<User> users, List<Group> groups) {
+
+        Promise<Void> res = Promise.success(null);
+
         boolean isActiveNeedUpdate = false;
         for (User u : users) {
             if (!isActiveNeedUpdate) {
@@ -539,7 +559,7 @@ public class RouterActor extends ModuleActor {
                     }
                 }
             }
-            dialogsActor(new DialogsActor.UserChanged(u));
+            res = res.chain(v -> getDialogsRouter().onUserChanged(u));
         }
         for (Group group : groups) {
             if (!isActiveNeedUpdate) {
@@ -550,14 +570,15 @@ public class RouterActor extends ModuleActor {
                     }
                 }
             }
-            dialogsActor(new DialogsActor.GroupChanged(group));
+
+            res = res.chain(v -> getDialogsRouter().onGroupChanged(group));
         }
 
         if (isActiveNeedUpdate) {
             notifyActiveDialogsVM();
         }
 
-        return Promise.success(null);
+        return res;
     }
 
 
@@ -603,9 +624,9 @@ public class RouterActor extends ModuleActor {
                 context().getMessagesModule().getPlainReadActor()
                         .send(new CursorReaderActor.MarkRead(peer, state.getInMaxMessageDate()));
 
-                dialogsActor(new DialogsActor.CounterChanged(peer, 0));
-
                 notifyActiveDialogsVM();
+
+                getDialogsRouter().onCounterChanged(peer, 0);
             }
         }
     }
@@ -630,8 +651,8 @@ public class RouterActor extends ModuleActor {
     // Tools
     //
 
-    private void dialogsActor(Object message) {
-        context().getMessagesModule().getDialogsActor().send(message);
+    private DialogsInt getDialogsRouter() {
+        return context().getMessagesModule().getDialogsInt();
     }
 
     private ListEngine<Message> conversation(Peer peer) {
