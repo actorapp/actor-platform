@@ -15,10 +15,14 @@ import im.actor.core.modules.api.ApiSupportConfiguration;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.messaging.history.entity.DialogHistory;
 import im.actor.core.modules.ModuleActor;
+import im.actor.runtime.actors.messages.Void;
 
 import static im.actor.core.entity.EntityConverter.convert;
 
 public class DialogsHistoryActor extends ModuleActor {
+
+    // j2objc workaround
+    private static final Void DUMB = null;
 
     private static final int LIMIT = 20;
     private static final String KEY_VERSION = "_1";
@@ -76,7 +80,7 @@ public class DialogsHistoryActor extends ModuleActor {
 
         if (dialogs.size() > 0) {
             final long finalMaxLoadedDate = maxLoadedDate;
-            context().getMessagesModule().getRouter().onDialogsHistoryLoaded(dialogs, () -> {
+            context().getMessagesModule().getRouter().onDialogsHistoryLoaded(dialogs).then((v) -> {
                 if (dialogs.size() < LIMIT) {
                     markAsLoaded();
                 } else {

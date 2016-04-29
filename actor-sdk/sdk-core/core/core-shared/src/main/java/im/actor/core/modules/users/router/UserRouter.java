@@ -336,9 +336,7 @@ public class UserRouter extends ModuleActor {
 
     @Verified
     public Promise<Void> onUserRegistered(long rid, int uid, long date) {
-        ArrayList<Message> messages = new ArrayList<>();
-        messages.add(new Message(rid, date, date, uid, MessageState.UNKNOWN, ServiceUserRegistered.create()));
-        context().getMessagesModule().getRouter().onNewMessages(Peer.user(uid), messages);
+        context().getMessagesModule().getRouter().onNewMessage(Peer.user(uid), new Message(rid, date, date, uid, MessageState.UNKNOWN, ServiceUserRegistered.create()));
         return Promise.success((Void) null);
     }
 
@@ -390,7 +388,7 @@ public class UserRouter extends ModuleActor {
     private Promise<List<ApiUserOutPeer>> fetchMissingUsers(List<ApiUserOutPeer> users) {
         freeze();
         return PromisesArray.of(users)
-                .map(u -> users().containsAsync(u.getUid())
+                .map((Function<ApiUserOutPeer, Promise<ApiUserOutPeer>>) u -> users().containsAsync(u.getUid())
                         .map(v -> v ? null : u))
                 .filterNull()
                 .zip()
@@ -402,8 +400,8 @@ public class UserRouter extends ModuleActor {
     private Promise<Void> applyUsers(List<ApiUser> users) {
         freeze();
         return PromisesArray.of(users)
-                .map(u -> users().containsAsync(u.getId())
-                        .map(v -> new Tuple2<ApiUser, Boolean>(u, v)))
+                .map((Function<ApiUser, Promise<Tuple2<ApiUser, Boolean>>>) u -> users().containsAsync(u.getId())
+                        .map(v -> new Tuple2<>(u, v)))
                 .filter(t -> !t.getT2())
                 .zip()
                 .then(x -> {
