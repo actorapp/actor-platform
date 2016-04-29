@@ -72,7 +72,7 @@ public class ConversationViewController:
     // MARK: - Init
     ////////////////////////////////////////////////////////////
     
-    override init(peer: ACPeer) {
+    public override init(peer: ACPeer) {
         
         // Data
         
