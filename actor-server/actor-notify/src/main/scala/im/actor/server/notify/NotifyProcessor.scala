@@ -1,6 +1,5 @@
 package im.actor.server.notify
 
-import java.nio.file.Files
 import java.time.{ Instant, LocalDateTime, ZoneOffset }
 
 import akka.http.scaladsl.util.FastFuture
@@ -22,11 +21,8 @@ import NotifyProcessorEvents._
 import NotifyProcessorCommands._
 import akka.actor.{ ActorRef, ActorSystem, PoisonPill, Props }
 import akka.cluster.singleton.{ ClusterSingletonManager, ClusterSingletonManagerSettings, ClusterSingletonProxy, ClusterSingletonProxySettings }
-import im.actor.env.ActorEnv
 import im.actor.serialization.ActorSerializer
 import im.actor.server.user.UserExtension
-
-import scala.util.Try
 
 trait NotifyProcessorEvent extends TaggedEvent {
   val ts: Instant
@@ -105,11 +101,7 @@ private[notify] class NotifyProcessor extends Processor[NotifyProcessorState] {
 
   private val notifyConfig = NotifyConfig.load.get
   private val notifyAfter = notifyConfig.notifyAfter.toMillis
-
-  private val emailTemplatePath = ActorEnv.getAbsolutePath(notifyConfig.emailTemplatePath)
-  private val emailTemplate: Option[String] =
-    Try(new String(Files.readAllBytes(emailTemplatePath))).toOption
-  private val compatTemplate = "You have $$UNREAD_COUNT$$ unread messages in $$DIALOG_COUNT$$ dialogs."
+  private val notificationTemplate = NotificationTemplate(notifyConfig.emailTemplatePath)
 
   self ! SubscribeToPresence()
   system.scheduler.schedule(Duration.Zero, 10.minutes, self, FindNewUsers())
@@ -168,7 +160,7 @@ private[notify] class NotifyProcessor extends Processor[NotifyProcessorState] {
           _ ← emailIfNeeded(userEmail, user.name, grouped) match {
             case Some(email) ⇒
               log.debug("Sending email notification: {} to email: {}", email.subject, userEmail)
-              emailExt.emailSender.send(email) map { _ ⇒
+              emailExt.sender.send(email) map { _ ⇒
                 self ! CancelNotify(userId)
               }
             case None ⇒
@@ -188,23 +180,10 @@ private[notify] class NotifyProcessor extends Processor[NotifyProcessorState] {
     if (unreadCount > 0) {
       val dialogCount = dialogs.count(_.counter > 0)
       val subject = s"You have $unreadCount unread messages"
-      val content = renderTemplate(name, unreadCount, dialogCount)
+      val content = notificationTemplate.render(name, unreadCount, dialogCount)
       Some(Message(email, subject, content))
     } else {
       None
-    }
-  }
-
-  private def renderTemplate(name: String, unreadCount: Int, dialogCount: Int): Content = {
-    def render(text: String) =
-      text
-        .replace("$$NAME$$", name)
-        .replace("$$UNREAD_COUNT$$", unreadCount.toString)
-        .replace("$$DIALOG_COUNT$$", dialogCount.toString)
-    val compatText = render(compatTemplate)
-    emailTemplate match {
-      case Some(template) ⇒ Content(Some(render(template)), Some(compatText))
-      case None           ⇒ Content(None, Some(compatText))
     }
   }
 
