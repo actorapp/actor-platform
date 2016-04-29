@@ -20,6 +20,10 @@ class DialogFooter extends Component {
     onUnblock: PropTypes.func.isRequired
   };
 
+  static defaultProps = {
+    isBlocked: false
+  };
+
   constructor(props, context) {
     super(props, context);
 

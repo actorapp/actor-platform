@@ -38,21 +38,27 @@ class ToolbarSection extends Component {
   }
 
   static calculateState() {
-    const thisPeer = DialogStore.getCurrentPeer();
+    const peer = DialogStore.getCurrentPeer();
+    if (!peer) {
+      return {
+        dialogInfo: null
+      };
+    }
+
     return {
-      thisPeer,
+      peer,
       dialogInfo: DialogInfoStore.getState(),
       isActivityOpen: ActivityStore.isOpen(),
       message: OnlineStore.getMessage(),
-      isFavorite: DialogStore.isFavorite(thisPeer.id),
+      isFavorite: DialogStore.isFavorite(peer.id),
       search: SearchMessagesStore.getState(),
-      call: ToolbarSection.calculateCallState(thisPeer)
+      call: ToolbarSection.calculateCallState(peer)
     };
   }
 
-  static calculateCallState(thisPeer) {
+  static calculateCallState(peer) {
     const call = CallStore.getState();
-    if (!call.isOpen || !PeerUtils.equals(thisPeer, call.peer)) {
+    if (!call.isOpen || !PeerUtils.equals(peer, call.peer)) {
       return {
         isCalling: false
       };
@@ -76,11 +82,11 @@ class ToolbarSection extends Component {
   }
 
   onFavoriteToggle = () => {
-    const { thisPeer, isFavorite } = this.state;
+    const { peer, isFavorite } = this.state;
     if (isFavorite) {
-      FavoriteActionCreators.unfavoriteChat(thisPeer);
+      FavoriteActionCreators.unfavoriteChat(peer);
     } else {
-      FavoriteActionCreators.favoriteChat(thisPeer);
+      FavoriteActionCreators.favoriteChat(peer);
     }
   };
 
