@@ -4,8 +4,10 @@ import java.util.List;
 
 import im.actor.core.entity.Group;
 import im.actor.core.entity.User;
+import im.actor.runtime.actors.ask.AskMessage;
+import im.actor.runtime.actors.messages.Void;
 
-public class RouterPeersChanged {
+public class RouterPeersChanged implements AskMessage<Void> {
 
     private List<User> users;
     private List<Group> groups;

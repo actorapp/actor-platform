@@ -10,6 +10,9 @@ import java.util.List;
 import im.actor.core.api.ApiGroup;
 import im.actor.core.api.ApiUser;
 import im.actor.core.api.updates.UpdateMessage;
+import im.actor.core.api.updates.UpdateMessageRead;
+import im.actor.core.api.updates.UpdateMessageReadByMe;
+import im.actor.core.api.updates.UpdateMessageReceived;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.Peer;
 import im.actor.core.modules.AbsModule;
@@ -156,21 +159,21 @@ public class UpdateProcessor extends AbsModule {
 
         for (Peer peer : combinedDifference.getReceived().keySet()) {
             long time = combinedDifference.getReceived().get(peer);
-            pending.add(() -> messagesProcessor.onMessageReceived(buildApiPeer(peer), time));
+            pending.add(() -> processUpdate(new UpdateMessageReceived(buildApiPeer(peer), time, 0)));
         }
 
         for (Peer peer : combinedDifference.getRead().keySet()) {
             long time = combinedDifference.getRead().get(peer);
-            pending.add(() -> messagesProcessor.onMessageRead(buildApiPeer(peer), time));
+            pending.add(() -> processUpdate(new UpdateMessageRead(buildApiPeer(peer), time, 0)));
         }
 
         for (Peer peer : combinedDifference.getReadByMe().keySet()) {
             CombinedDifference.ReadByMeValue time = combinedDifference.getReadByMe().get(peer);
-            pending.add(() -> messagesProcessor.onMessageReadByMe(buildApiPeer(peer), time.getDate(), time.getCounter()));
+            pending.add(() -> processUpdate(new UpdateMessageReadByMe(buildApiPeer(peer), time.getDate(), time.getCounter())));
         }
 
         for (Peer peer : combinedDifference.getMessages().keySet()) {
-            pending.add(() -> messagesProcessor.onMessages(buildApiPeer(peer), combinedDifference.getMessages().get(peer)));
+            pending.add(() -> messagesProcessor.onDifferenceMessages(buildApiPeer(peer), combinedDifference.getMessages().get(peer)));
         }
 
         for (Update u : combinedDifference.getOtherUpdates()) {

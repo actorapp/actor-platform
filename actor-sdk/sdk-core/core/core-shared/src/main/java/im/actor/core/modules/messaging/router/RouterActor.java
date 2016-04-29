@@ -7,7 +7,19 @@ import java.util.List;
 
 import im.actor.core.api.ApiDialogGroup;
 import im.actor.core.api.ApiDialogShort;
+import im.actor.core.api.ApiMessageReaction;
 import im.actor.core.api.rpc.RequestLoadGroupedDialogs;
+import im.actor.core.api.updates.UpdateChatClear;
+import im.actor.core.api.updates.UpdateChatDelete;
+import im.actor.core.api.updates.UpdateChatGroupsChanged;
+import im.actor.core.api.updates.UpdateMessage;
+import im.actor.core.api.updates.UpdateMessageContentChanged;
+import im.actor.core.api.updates.UpdateMessageDelete;
+import im.actor.core.api.updates.UpdateMessageRead;
+import im.actor.core.api.updates.UpdateMessageReadByMe;
+import im.actor.core.api.updates.UpdateMessageReceived;
+import im.actor.core.api.updates.UpdateMessageSent;
+import im.actor.core.api.updates.UpdateReactionsUpdate;
 import im.actor.core.entity.Avatar;
 import im.actor.core.entity.ContentDescription;
 import im.actor.core.entity.ConversationState;
@@ -25,39 +37,35 @@ import im.actor.core.modules.ModuleActor;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.messaging.actions.CursorReaderActor;
 import im.actor.core.modules.messaging.actions.CursorReceiverActor;
+import im.actor.core.modules.messaging.actions.SenderActor;
 import im.actor.core.modules.messaging.dialogs.DialogsActor;
 import im.actor.core.modules.messaging.history.entity.DialogHistory;
 import im.actor.core.modules.messaging.router.entity.ActiveDialogGroup;
 import im.actor.core.modules.messaging.router.entity.ActiveDialogStorage;
-import im.actor.core.modules.messaging.router.entity.RouterActiveDialogsChanged;
 import im.actor.core.modules.messaging.router.entity.RouterAppHidden;
 import im.actor.core.modules.messaging.router.entity.RouterAppVisible;
 import im.actor.core.modules.messaging.router.entity.RouterApplyChatHistory;
 import im.actor.core.modules.messaging.router.entity.RouterApplyDialogsHistory;
 import im.actor.core.modules.messaging.router.entity.RouterChangedContent;
-import im.actor.core.modules.messaging.router.entity.RouterChangedReactions;
-import im.actor.core.modules.messaging.router.entity.RouterChatClear;
-import im.actor.core.modules.messaging.router.entity.RouterChatDelete;
 import im.actor.core.modules.messaging.router.entity.RouterConversationHidden;
 import im.actor.core.modules.messaging.router.entity.RouterConversationVisible;
 import im.actor.core.modules.messaging.router.entity.RouterDeletedMessages;
 import im.actor.core.modules.messaging.router.entity.RouterDifferenceEnd;
 import im.actor.core.modules.messaging.router.entity.RouterDifferenceStart;
 import im.actor.core.modules.messaging.router.entity.RouterMessageOnlyActive;
-import im.actor.core.modules.messaging.router.entity.RouterMessageRead;
-import im.actor.core.modules.messaging.router.entity.RouterMessageReadByMe;
-import im.actor.core.modules.messaging.router.entity.RouterMessageReceived;
+import im.actor.core.modules.messaging.router.entity.RouterMessageUpdate;
 import im.actor.core.modules.messaging.router.entity.RouterNewMessages;
 import im.actor.core.modules.messaging.router.entity.RouterOutgoingError;
 import im.actor.core.modules.messaging.router.entity.RouterOutgoingMessage;
 import im.actor.core.modules.messaging.router.entity.RouterOutgoingSent;
 import im.actor.core.modules.messaging.router.entity.RouterPeersChanged;
+import im.actor.core.network.parser.Update;
 import im.actor.core.util.JavaUtil;
 import im.actor.core.viewmodel.DialogGroup;
 import im.actor.core.viewmodel.DialogSmall;
 import im.actor.core.viewmodel.generics.ArrayListDialogSmall;
 import im.actor.runtime.actors.messages.Void;
-import im.actor.runtime.function.Consumer;
+import im.actor.runtime.promise.Promise;
 import im.actor.runtime.storage.KeyValueEngine;
 import im.actor.runtime.storage.ListEngine;
 
@@ -185,7 +193,7 @@ public class RouterActor extends ModuleActor {
     // Incoming Messages
     //
 
-    private void onNewMessages(Peer peer, List<Message> messages) {
+    private Promise<Void> onNewMessages(Peer peer, List<Message> messages) {
 
         assertTrue(messages.size() != 0);
 
@@ -285,6 +293,8 @@ public class RouterActor extends ModuleActor {
                 }
             }
         }
+
+        return Promise.success(null);
     }
 
 
@@ -292,11 +302,12 @@ public class RouterActor extends ModuleActor {
     // Outgoing Messages
     //
 
-    private void onOutgoingMessage(Peer peer, Message message) {
+    private Promise<Void> onOutgoingMessage(Peer peer, Message message) {
         conversation(peer).addOrUpdateItem(message);
+        return Promise.success(null);
     }
 
-    private void onOutgoingSent(Peer peer, long rid, long date) {
+    private Promise<Void> onOutgoingSent(Peer peer, long rid, long date) {
         Message msg = conversation(peer).getValue(rid);
         // If we have pending message
         if (msg != null && (msg.getMessageState() == MessageState.PENDING)) {
@@ -310,9 +321,10 @@ public class RouterActor extends ModuleActor {
             // Notify dialogs
             dialogsActor(new DialogsActor.InMessage(peer, updatedMsg, -1));
         }
+        return Promise.success(null);
     }
 
-    private void onOutgoingError(Peer peer, long rid) {
+    private Promise<Void> onOutgoingError(Peer peer, long rid) {
         Message msg = conversation(peer).getValue(rid);
         // If we have pending message
         if (msg != null && (msg.getMessageState() == MessageState.PENDING)) {
@@ -322,6 +334,7 @@ public class RouterActor extends ModuleActor {
                     .changeState(MessageState.ERROR);
             conversation(peer).addOrUpdateItem(updatedMsg);
         }
+        return Promise.success(null);
     }
 
 
@@ -329,7 +342,7 @@ public class RouterActor extends ModuleActor {
     // History Messages
     //
 
-    private void onDialogHistoryLoaded(List<DialogHistory> dialogs) {
+    private Promise<Void> onDialogHistoryLoaded(List<DialogHistory> dialogs) {
         for (DialogHistory d : dialogs) {
             ConversationState state = conversationStates.getValue(d.getPeer().getUnuqueId());
             if (d.getUnreadCount() > 0) {
@@ -349,10 +362,12 @@ public class RouterActor extends ModuleActor {
         }
 
         dialogsActor(new DialogsActor.HistoryLoaded(dialogs));
+
+        return Promise.success(null);
     }
 
-    private void onChatHistoryLoaded(Peer peer, List<Message> messages, Long maxReadDate,
-                                     Long maxReceiveDate, boolean isEnded) {
+    private Promise<Void> onChatHistoryLoaded(Peer peer, List<Message> messages, Long maxReadDate,
+                                              Long maxReceiveDate, boolean isEnded) {
 
         long maxMessageDate = 0;
 
@@ -396,6 +411,8 @@ public class RouterActor extends ModuleActor {
         if (isChanged) {
             conversationStates.addOrUpdateItem(state);
         }
+
+        return Promise.success(null);
     }
 
 
@@ -403,26 +420,24 @@ public class RouterActor extends ModuleActor {
     // Message Updating
     //
 
-    private void onContentUpdate(Peer peer, long rid, AbsContent content) {
+    private Promise<Void> onContentUpdate(Peer peer, long rid, AbsContent content) {
         Message message = conversation(peer).getValue(rid);
-
         // Ignore if we already doesn't have this message
-        if (message == null) {
-            return;
+        if (message != null) {
+            conversation(peer).addOrUpdateItem(message.changeContent(content));
         }
-
-        conversation(peer).addOrUpdateItem(message.changeContent(content));
+        return Promise.success(null);
     }
 
-    private void onReactionsUpdate(Peer peer, long rid, List<Reaction> reactions) {
+    private Promise<Void> onReactionsUpdate(Peer peer, long rid, List<Reaction> reactions) {
         Message message = conversation(peer).getValue(rid);
 
         // Ignore if we already doesn't have this message
-        if (message == null) {
-            return;
+        if (message != null) {
+            conversation(peer).addOrUpdateItem(message.changeReactions(reactions));
         }
 
-        conversation(peer).addOrUpdateItem(message.changeReactions(reactions));
+        return Promise.success(null);
     }
 
 
@@ -430,27 +445,33 @@ public class RouterActor extends ModuleActor {
     // Message Deletions
     //
 
-    private void onMessageDeleted(Peer peer, List<Long> rids) {
+    private Promise<Void> onMessageDeleted(Peer peer, List<Long> rids) {
 
         // Delete Messages
         conversation(peer).removeItems(JavaUtil.unbox(rids));
 
         Message head = conversation(peer).getHeadValue();
         dialogsActor(new DialogsActor.MessageDeleted(peer, head));
+
+        return Promise.success(null);
     }
 
-    private void onChatClear(Peer peer) {
+    private Promise<Void> onChatClear(Peer peer) {
 
         conversation(peer).clear();
 
         dialogsActor(new DialogsActor.ChatClear(peer));
+
+        return Promise.success(null);
     }
 
-    private void onChatDelete(Peer peer) {
+    private Promise<Void> onChatDelete(Peer peer) {
 
         conversation(peer).clear();
 
         dialogsActor(new DialogsActor.ChatDelete(peer));
+
+        return Promise.success(null);
     }
 
 
@@ -458,7 +479,7 @@ public class RouterActor extends ModuleActor {
     // Read States
     //
 
-    private void onMessageRead(Peer peer, long date) {
+    private Promise<Void> onMessageRead(Peer peer, long date) {
         ConversationState state = conversationStates.getValue(peer.getUnuqueId());
         boolean isChanged = false;
         if (date > state.getOutReadDate()) {
@@ -473,18 +494,21 @@ public class RouterActor extends ModuleActor {
         if (isChanged) {
             conversationStates.addOrUpdateItem(state);
         }
+
+        return Promise.success(null);
     }
 
-    private void onMessageReceived(Peer peer, long date) {
+    private Promise<Void> onMessageReceived(Peer peer, long date) {
         ConversationState state = conversationStates.getValue(peer.getUnuqueId());
         if (date > state.getOutReceiveDate()) {
             dialogsActor(new DialogsActor.PeerReceiveChanged(peer, date));
             state = state.changeOutReceiveDate(date);
             conversationStates.addOrUpdateItem(state);
         }
+        return Promise.success(null);
     }
 
-    private void onMessageReadByMe(Peer peer, long date, int counter) {
+    private Promise<Void> onMessageReadByMe(Peer peer, long date, int counter) {
         ConversationState state = conversationStates.getValue(peer.getUnuqueId());
         state = state
                 .changeCounter(counter)
@@ -496,6 +520,7 @@ public class RouterActor extends ModuleActor {
         notifyActiveDialogsVM();
 
         context().getNotificationsModule().onOwnRead(peer, date);
+        return Promise.success(null);
     }
 
 
@@ -503,7 +528,7 @@ public class RouterActor extends ModuleActor {
     // Peer Changed
     //
 
-    private void onPeersChanged(List<User> users, List<Group> groups) {
+    private Promise<Void> onPeersChanged(List<User> users, List<Group> groups) {
         boolean isActiveNeedUpdate = false;
         for (User u : users) {
             if (!isActiveNeedUpdate) {
@@ -531,6 +556,8 @@ public class RouterActor extends ModuleActor {
         if (isActiveNeedUpdate) {
             notifyActiveDialogsVM();
         }
+
+        return Promise.success(null);
     }
 
 
@@ -588,12 +615,14 @@ public class RouterActor extends ModuleActor {
     // Difference Handling
     //
 
-    public void onDifferenceStart() {
+    public Promise<Void> onDifferenceStart() {
         context().getNotificationsModule().pauseNotifications();
+        return Promise.success(null);
     }
 
-    public void onDifferenceEnd() {
+    public Promise<Void> onDifferenceEnd() {
         context().getNotificationsModule().resumeNotifications();
+        return Promise.success(null);
     }
 
 
@@ -639,9 +668,126 @@ public class RouterActor extends ModuleActor {
         context().getAppStateModule().getGlobalStateVM().onGlobalCounterChanged(counter);
     }
 
+    public boolean isValidPeer(Peer peer) {
+        if (peer.getPeerType() == PeerType.PRIVATE) {
+            return users().getValue(peer.getPeerId()) != null;
+        } else if (peer.getPeerType() == PeerType.GROUP) {
+            return groups().getValue(peer.getPeerId()) != null;
+        }
+        return false;
+    }
+
+
     //
     // Messages
     //
+
+    public Promise<Void> onUpdate(Update update) {
+        if (update instanceof UpdateMessage) {
+            UpdateMessage msg = (UpdateMessage) update;
+
+            Peer peer = convert(msg.getPeer());
+
+            AbsContent msgContent = AbsContent.fromMessage(msg.getMessage());
+
+            Message message = new Message(
+                    msg.getRid(),
+                    msg.getDate(),
+                    msg.getDate(),
+                    msg.getSenderUid(),
+                    myUid() == msg.getSenderUid() ? MessageState.SENT : MessageState.UNKNOWN,
+                    msgContent);
+
+            ArrayList<Message> messages = new ArrayList<>();
+            messages.add(message);
+            return onNewMessages(peer, messages);
+        } else if (update instanceof UpdateMessageSent) {
+            UpdateMessageSent messageSent = (UpdateMessageSent) update;
+            Peer peer = convert(messageSent.getPeer());
+            if (isValidPeer(peer)) {
+                // Notify Sender
+                context().getMessagesModule()
+                        .getSendMessageActor()
+                        .send(new SenderActor.MessageSent(peer, messageSent.getRid()));
+                onOutgoingSent(
+                        peer,
+                        messageSent.getRid(),
+                        messageSent.getDate());
+            }
+            return Promise.success(null);
+        } else if (update instanceof UpdateMessageRead) {
+            UpdateMessageRead read = (UpdateMessageRead) update;
+            Peer peer = convert(read.getPeer());
+            if (isValidPeer(peer)) {
+                onMessageRead(peer, read.getReadDate());
+            }
+            return Promise.success(null);
+        } else if (update instanceof UpdateMessageReadByMe) {
+            UpdateMessageReadByMe readByMe = (UpdateMessageReadByMe) update;
+            Peer peer = convert(readByMe.getPeer());
+            if (isValidPeer(peer)) {
+                int counter = 0;
+                if (readByMe.getUnreadCounter() != null) {
+                    counter = readByMe.getUnreadCounter();
+                }
+                onMessageReadByMe(peer, readByMe.getStartDate(), counter);
+            }
+            return Promise.success(null);
+        } else if (update instanceof UpdateMessageReceived) {
+            UpdateMessageReceived received = (UpdateMessageReceived) update;
+            Peer peer = convert(received.getPeer());
+            if (isValidPeer(peer)) {
+                onMessageReceived(peer, received.getStartDate());
+            }
+            return Promise.success(null);
+        } else if (update instanceof UpdateChatDelete) {
+            UpdateChatDelete delete = (UpdateChatDelete) update;
+            Peer peer = convert(delete.getPeer());
+            if (isValidPeer(peer)) {
+                onChatDelete(peer);
+            }
+            return Promise.success(null);
+        } else if (update instanceof UpdateChatClear) {
+            UpdateChatClear clear = (UpdateChatClear) update;
+            Peer peer = convert(clear.getPeer());
+            if (isValidPeer(peer)) {
+                onChatClear(peer);
+            }
+            return Promise.success(null);
+        } else if (update instanceof UpdateChatGroupsChanged) {
+            UpdateChatGroupsChanged chatGroupsChanged = (UpdateChatGroupsChanged) update;
+            onActiveDialogsChanged(chatGroupsChanged.getDialogs(), true, true);
+            return Promise.success(null);
+        } else if (update instanceof UpdateMessageDelete) {
+            UpdateMessageDelete delete = (UpdateMessageDelete) update;
+            Peer peer = convert(delete.getPeer());
+            if (isValidPeer(peer)) {
+                onMessageDeleted(peer, delete.getRids());
+            }
+            return Promise.success(null);
+        } else if (update instanceof UpdateMessageContentChanged) {
+            UpdateMessageContentChanged contentChanged = (UpdateMessageContentChanged) update;
+            Peer peer = convert(contentChanged.getPeer());
+            if (isValidPeer(peer)) {
+                AbsContent content = AbsContent.fromMessage(contentChanged.getMessage());
+                onContentUpdate(peer, contentChanged.getRid(), content);
+            }
+            return Promise.success(null);
+        } else if (update instanceof UpdateReactionsUpdate) {
+            UpdateReactionsUpdate reactionsUpdate = (UpdateReactionsUpdate) update;
+            Peer peer = convert(reactionsUpdate.getPeer());
+            if (isValidPeer(peer)) {
+                ArrayList<Reaction> reactions = new ArrayList<>();
+                for (ApiMessageReaction r : reactionsUpdate.getReactions()) {
+                    reactions.add(new Reaction(r.getCode(), r.getUsers()));
+                }
+                onReactionsUpdate(peer, reactionsUpdate.getRid(), reactions);
+            }
+            return Promise.success(null);
+        }
+
+        return Promise.success(null);
+    }
 
     @Override
     public void onReceive(Object message) {
@@ -659,64 +805,71 @@ public class RouterActor extends ModuleActor {
             onAppVisible();
         } else if (message instanceof RouterAppHidden) {
             onAppHidden();
-        } else if (message instanceof RouterNewMessages) {
-            RouterNewMessages routerNewMessages = (RouterNewMessages) message;
-            onNewMessages(routerNewMessages.getPeer(), routerNewMessages.getMessages());
-        } else if (message instanceof RouterOutgoingMessage) {
-            RouterOutgoingMessage routerOutgoingMessage = (RouterOutgoingMessage) message;
-            onOutgoingMessage(routerOutgoingMessage.getPeer(), routerOutgoingMessage.getMessage());
-        } else if (message instanceof RouterOutgoingSent) {
-            RouterOutgoingSent routerOutgoingSent = (RouterOutgoingSent) message;
-            onOutgoingSent(routerOutgoingSent.getPeer(), routerOutgoingSent.getRid(), routerOutgoingSent.getDate());
-        } else if (message instanceof RouterOutgoingError) {
-            RouterOutgoingError outgoingError = (RouterOutgoingError) message;
-            onOutgoingError(outgoingError.getPeer(), outgoingError.getRid());
-        } else if (message instanceof RouterChangedContent) {
-            RouterChangedContent routerChangedContent = (RouterChangedContent) message;
-            onContentUpdate(routerChangedContent.getPeer(), routerChangedContent.getRid(), routerChangedContent.getContent());
-        } else if (message instanceof RouterChangedReactions) {
-            RouterChangedReactions routerChangedReactions = (RouterChangedReactions) message;
-            onReactionsUpdate(routerChangedReactions.getPeer(), routerChangedReactions.getRid(), routerChangedReactions.getReactions());
-        } else if (message instanceof RouterDeletedMessages) {
-            RouterDeletedMessages routerDeletedMessages = (RouterDeletedMessages) message;
-            onMessageDeleted(routerDeletedMessages.getPeer(), routerDeletedMessages.getRids());
-        } else if (message instanceof RouterMessageRead) {
-            RouterMessageRead messageRead = (RouterMessageRead) message;
-            onMessageRead(messageRead.getPeer(), messageRead.getDate());
-        } else if (message instanceof RouterMessageReadByMe) {
-            RouterMessageReadByMe readByMe = (RouterMessageReadByMe) message;
-            onMessageReadByMe(readByMe.getPeer(), readByMe.getDate(), readByMe.getCounter());
-        } else if (message instanceof RouterMessageReceived) {
-            RouterMessageReceived messageReceived = (RouterMessageReceived) message;
-            onMessageReceived(messageReceived.getPeer(), messageReceived.getDate());
-        } else if (message instanceof RouterApplyDialogsHistory) {
-            RouterApplyDialogsHistory dialogsHistory = (RouterApplyDialogsHistory) message;
-            onDialogHistoryLoaded(dialogsHistory.getDialogs());
-            dialogsHistory.getExecuteAfter().run();
-        } else if (message instanceof RouterApplyChatHistory) {
-            RouterApplyChatHistory chatHistory = (RouterApplyChatHistory) message;
-            onChatHistoryLoaded(chatHistory.getPeer(),
-                    chatHistory.getMessages(), chatHistory.getMaxReadDate(),
-                    chatHistory.getMaxReceiveDate(), chatHistory.isEnded());
-        } else if (message instanceof RouterChatClear) {
-            RouterChatClear routerChatClear = (RouterChatClear) message;
-            onChatClear(routerChatClear.getPeer());
-        } else if (message instanceof RouterChatDelete) {
-            RouterChatDelete chatDelete = (RouterChatDelete) message;
-            onChatDelete(chatDelete.getPeer());
-        } else if (message instanceof RouterPeersChanged) {
-            RouterPeersChanged peersChanged = (RouterPeersChanged) message;
-            onPeersChanged(peersChanged.getUsers(), peersChanged.getGroups());
-        } else if (message instanceof RouterActiveDialogsChanged) {
-            RouterActiveDialogsChanged dialogsChanged = (RouterActiveDialogsChanged) message;
-            onActiveDialogsChanged(dialogsChanged.getGroups(), dialogsChanged.isHasArchived(),
-                    dialogsChanged.isShowInvite());
-        } else if (message instanceof RouterDifferenceStart) {
-            onDifferenceStart();
-        } else if (message instanceof RouterDifferenceEnd) {
-            onDifferenceEnd();
         } else {
             super.onReceive(message);
+        }
+    }
+
+    @Override
+    public Promise onAsk(Object message) throws Exception {
+        if (!activeDialogStorage.isLoaded() && message instanceof RouterMessageOnlyActive) {
+            stash();
+            return null;
+        }
+        if (message instanceof RouterMessageUpdate) {
+            return onUpdate(((RouterMessageUpdate) message).getUpdate());
+        } else if (message instanceof RouterDifferenceStart) {
+            return onDifferenceStart();
+        } else if (message instanceof RouterDifferenceEnd) {
+            return onDifferenceEnd();
+        } else if (message instanceof RouterPeersChanged) {
+            RouterPeersChanged peersChanged = (RouterPeersChanged) message;
+            return onPeersChanged(peersChanged.getUsers(), peersChanged.getGroups());
+        } else if (message instanceof RouterApplyChatHistory) {
+            RouterApplyChatHistory chatHistory = (RouterApplyChatHistory) message;
+            return onChatHistoryLoaded(
+                    chatHistory.getPeer(),
+                    chatHistory.getMessages(),
+                    chatHistory.getMaxReadDate(),
+                    chatHistory.getMaxReceiveDate(),
+                    chatHistory.isEnded());
+        } else if (message instanceof RouterApplyDialogsHistory) {
+            RouterApplyDialogsHistory dialogsHistory = (RouterApplyDialogsHistory) message;
+            return onDialogHistoryLoaded(dialogsHistory.getDialogs());
+        } else if (message instanceof RouterNewMessages) {
+            RouterNewMessages routerNewMessages = (RouterNewMessages) message;
+            return onNewMessages(
+                    routerNewMessages.getPeer(),
+                    routerNewMessages.getMessages());
+        } else if (message instanceof RouterOutgoingMessage) {
+            RouterOutgoingMessage routerOutgoingMessage = (RouterOutgoingMessage) message;
+            return onOutgoingMessage(
+                    routerOutgoingMessage.getPeer(),
+                    routerOutgoingMessage.getMessage());
+        } else if (message instanceof RouterOutgoingSent) {
+            RouterOutgoingSent routerOutgoingSent = (RouterOutgoingSent) message;
+            return onOutgoingSent(
+                    routerOutgoingSent.getPeer(),
+                    routerOutgoingSent.getRid(),
+                    routerOutgoingSent.getDate());
+        } else if (message instanceof RouterOutgoingError) {
+            RouterOutgoingError outgoingError = (RouterOutgoingError) message;
+            return onOutgoingError(
+                    outgoingError.getPeer(),
+                    outgoingError.getRid());
+        } else if (message instanceof RouterChangedContent) {
+            RouterChangedContent routerChangedContent = (RouterChangedContent) message;
+            return onContentUpdate(
+                    routerChangedContent.getPeer(),
+                    routerChangedContent.getRid(),
+                    routerChangedContent.getContent());
+        } else if (message instanceof RouterDeletedMessages) {
+            RouterDeletedMessages routerDeletedMessages = (RouterDeletedMessages) message;
+            return onMessageDeleted(
+                    routerDeletedMessages.getPeer(),
+                    routerDeletedMessages.getRids());
+        } else {
+            return super.onAsk(message);
         }
     }
 }
