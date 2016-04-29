@@ -23,8 +23,7 @@ trait DialogQuery {
 private object UnreadMessage {
   val OrderingAsc = new Ordering[UnreadMessage] {
     override def compare(x: UnreadMessage, y: UnreadMessage): Int =
-      if (x.randomId == y.randomId) 0
-      else if (x.date.isBefore(y.date)) -1
+      if (x.date.isBefore(y.date)) -1
       else if (x.date.isAfter(y.date)) 1
       else 0
   }
@@ -129,4 +128,10 @@ private[dialog] final case class DialogState(
     counter = counter,
     unreadMessages = unreadMessagesMap
   )
+
+  private[dialog] def nextDate: Instant = {
+    val now = Instant.now()
+    if (unreadMessages.lastOption.exists(_.date == now)) now.plusMillis(1L)
+    else now
+  }
 }
