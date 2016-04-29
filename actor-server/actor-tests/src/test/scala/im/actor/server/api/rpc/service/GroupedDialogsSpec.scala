@@ -99,11 +99,7 @@ final class GroupedDialogsSpec
     }
 
     sendMessageToUser(bob.id, textMessage("Hi Bob!"))
-    inside(getDialogGroups(DialogGroupType.DirectMessages)) {
-      case Vector(d1, d2) ⇒
-        d1.peer.id should equal(eve.id)
-        d2.peer.id should equal(bob.id)
-    }
+    getDialogGroups(DialogGroupType.DirectMessages).map(_.peer.id).toSet should equal(Set(eve.id, bob.id))
   }
 
   def appearHidden2() = {
@@ -133,11 +129,7 @@ final class GroupedDialogsSpec
 
     {
       implicit val cd = aliceCD
-      inside(getDialogGroups(DialogGroupType.DirectMessages)) {
-        case Vector(d1, d2) ⇒
-          d1.peer.id should equal(eve.id)
-          d2.peer.id should equal(bob.id)
-      }
+      getDialogGroups(DialogGroupType.DirectMessages).map(_.peer.id).toSet should equal(Set(eve.id, bob.id))
     }
   }
 
@@ -157,11 +149,7 @@ final class GroupedDialogsSpec
     }
 
     whenReady(service.handleShowDialog(bobPeer))(identity)
-    inside(getDialogGroups(DialogGroupType.DirectMessages)) {
-      case Vector(d1, d2) ⇒
-        d1.peer.id should equal(eve.id)
-        d2.peer.id should equal(bob.id)
-    }
+    getDialogGroups(DialogGroupType.DirectMessages).map(_.peer.id).toSet should equal(Set(eve.id, bob.id))
   }
 
   def appearFavourite() = {
