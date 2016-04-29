@@ -45,7 +45,7 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
 
     withValidAccessHash(sm.getDest, sm.senderAuthId map (_.value), sm.accessHash map (_.value)) {
       withCachedFuture[AuthSidRandomId, SeqStateDate](sm.senderAuthSid → sm.randomId) {
-        val sendDate = calcSendDate(state)
+        val sendDate = calcSendDate
         val message = sm.message
         PubSubExtension(system).publish(PeerMessage(sm.getOrigin, sm.getDest, sm.randomId, sendDate, message))
 
@@ -212,12 +212,12 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
    * When `candidate` date is same as last message date, we increment `candidate` value by 1,
    * thus resulting date can possibly be in future
    *
-   * @param state current dialog state
    * @return unique message date in current dialog
    */
-  private def calcSendDate(state: DialogState): Long = {
-    val candidate = Instant.now.toEpochMilli
-    if (state.lastMessageDate.toEpochMilli == candidate) state.lastMessageDate.toEpochMilli + 1 else candidate
+  private def calcSendDate(): Long = {
+    val candidate = state.nextDate.toEpochMilli
+    if (state.lastMessageDate.toEpochMilli == candidate) state.lastMessageDate.toEpochMilli + 1
+    else candidate
   }
 
   /**
