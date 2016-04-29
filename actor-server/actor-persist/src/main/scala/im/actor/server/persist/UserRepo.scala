@@ -73,6 +73,8 @@ object UserRepo {
 
   def activeUserIdsCreatedAfter(createdAfter: LocalDateTime): DBIO[Seq[(Int, LocalDateTime)]] = activeHumanUsersIds(createdAfter).result
 
+  def fetchPeople = activeHumanUsersIdsC.result
+
   def create(user: User) =
     users += user
 
