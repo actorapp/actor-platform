@@ -49,72 +49,72 @@ private case class SortableDialog(ts: Instant, peer: Peer) {
 
 private object ActiveDialogs {
   val empty = ActiveDialogs(
-    SortedSet.empty(SortableDialog.OrderingAsc),
-    SortedSet.empty(SortableDialog.OrderingAsc),
-    SortedSet.empty(SortableDialog.OrderingAsc)
+    Set.empty,
+    Set.empty,
+    Set.empty
   )
 }
 
 private[dialog] case class ActiveDialogs(
-  favourites: SortedSet[SortableDialog],
-  groups:     SortedSet[SortableDialog],
-  dms:        SortedSet[SortableDialog]
+  favourites: Set[Peer],
+  groups:     Set[Peer],
+  dms:        Set[Peer]
 ) {
-  def withPeer(sd: SortableDialog) = {
-    if (favourites.exists(_.peer == sd.peer)) this
+  def withPeer(peer: Peer) = {
+    if (favourites.contains(peer)) this
     else
-      sd.peer.typ match {
-        case PeerType.Private ⇒ copy(dms = dms + sd)
-        case PeerType.Group   ⇒ copy(groups = groups + sd)
+      peer.typ match {
+        case PeerType.Private ⇒ copy(dms = dms + peer)
+        case PeerType.Group   ⇒ copy(groups = groups + peer)
         case unknown          ⇒ throw new PeerErrors.UnknownPeerType(unknown)
       }
   }
 
-  def withoutPeer(sd: SortableDialog) = {
-    sd.peer.typ match {
-      case PeerType.Private ⇒ copy(dms = dms.filterNot(_.peer == sd.peer), favourites = favourites.filterNot(_.peer == sd.peer))
-      case PeerType.Group   ⇒ copy(groups = groups.filterNot(_.peer == sd.peer), favourites = favourites.filterNot(_.peer == sd.peer))
+  def withoutPeer(peer: Peer) = {
+    peer.typ match {
+      case PeerType.Private ⇒ copy(dms = dms - peer, favourites = favourites - peer)
+      case PeerType.Group   ⇒ copy(groups = groups - peer, favourites = favourites - peer)
       case unknown          ⇒ throw PeerErrors.UnknownPeerType(unknown)
     }
   }
 
-  def withFavouritedPeer(sd: SortableDialog) = {
-    sd.peer.typ match {
-      case PeerType.Private ⇒ copy(dms = dms.filterNot(_.peer == sd.peer), favourites = favourites + sd)
-      case PeerType.Group   ⇒ copy(groups = groups.filterNot(_.peer == sd.peer), favourites = favourites + sd)
+  def withFavouritedPeer(peer: Peer) = {
+    peer.typ match {
+      case PeerType.Private ⇒ copy(dms = dms - peer, favourites = favourites + peer)
+      case PeerType.Group   ⇒ copy(groups = groups - peer, favourites = favourites + peer)
       case unknown          ⇒ throw PeerErrors.UnknownPeerType(unknown)
     }
   }
 
-  def withUnfavouritedPeer(sd: SortableDialog) = {
-    sd.peer.typ match {
-      case PeerType.Private ⇒ copy(dms = dms + sd, favourites = favourites.filterNot(_.peer == sd.peer))
-      case PeerType.Group   ⇒ copy(groups = groups + sd, favourites = favourites.filterNot(_.peer == sd.peer))
+  def withUnfavouritedPeer(peer: Peer) = {
+    peer.typ match {
+      case PeerType.Private ⇒ copy(dms = dms + peer, favourites = favourites - peer)
+      case PeerType.Group   ⇒ copy(groups = groups + peer, favourites = favourites - peer)
       case unknown          ⇒ throw PeerErrors.UnknownPeerType(unknown)
     }
   }
 
-  def exists(f: SortableDialog ⇒ Boolean) = favourites.exists(f) || groups.exists(f) || dms.exists(f)
+  def exists(f: Peer ⇒ Boolean) = favourites.exists(f) || groups.exists(f) || dms.exists(f)
 
-  def map[A](f: SortableDialog ⇒ A) = favourites.map(f) ++ groups.map(f) ++ dms.map(f)
+  def map[A](f: Peer ⇒ A) = favourites.map(f) ++ groups.map(f) ++ dms.map(f)
 
-  def find(f: SortableDialog ⇒ Boolean) = favourites.find(f).getOrElse(groups.find(f).getOrElse(dms.find(f)))
+  def find(f: Peer ⇒ Boolean) = favourites.find(f).getOrElse(groups.find(f).getOrElse(dms.find(f)))
+
+  def contains(peer: Peer) = favourites.contains(peer) || groups.contains(peer) || dms.contains(peer)
 }
 
 private object DialogRootState {
   def initial(userId: Int) = DialogRootState(
     userId = userId,
     active = ActiveDialogs.empty,
-    // activePeers = SortedSet.empty(SortableDialog.OrderingAsc),
     mobile = SortedSet.empty(SortableDialog.OrderingDesc),
     archived = SortedSet.empty(SortableDialog.OrderingDesc)
   )
 }
 
 private[dialog] final case class DialogRootState(
-  userId: Int,
-  active: ActiveDialogs,
-  // activePeers: SortedSet[SortableDialog],
+  userId:   Int,
+  active:   ActiveDialogs,
   mobile:   SortedSet[SortableDialog],
   archived: SortedSet[SortableDialog]
 ) extends ProcessorState[DialogRootState] {
@@ -145,7 +145,7 @@ private[dialog] final case class DialogRootState(
 
       dialogGroups.foldLeft(state) {
         case (acc, DialogGroup(group, infos)) ⇒
-          acc.withDialogsInGroup(group, infos map (di ⇒ SortableDialog(di.date, di.getPeer)))
+          acc.withDialogsInGroup(group, infos map (_.getPeer))
       }
     }
   }
@@ -153,17 +153,17 @@ private[dialog] final case class DialogRootState(
   override lazy val snapshot: Any = {
     val favourites = DialogGroup(
       DialogGroupType.Favourites,
-      active.favourites.toSeq map (sd ⇒ DialogInfo(Some(sd.peer), date = sd.ts))
+      active.favourites.toSeq map (peer ⇒ DialogInfo(Some(peer)))
     )
 
     val groups = DialogGroup(
       DialogGroupType.Groups,
-      active.groups.toSeq map (sd ⇒ DialogInfo(Some(sd.peer), date = sd.ts))
+      active.groups.toSeq map (peer ⇒ DialogInfo(Some(peer)))
     )
 
     val dms = DialogGroup(
       DialogGroupType.DirectMessages,
-      active.dms.toSeq map (sd ⇒ DialogInfo(Some(sd.peer), date = sd.ts))
+      active.dms.toSeq map (peer ⇒ DialogInfo(Some(peer)))
     )
 
     DialogRootStateSnapshot(
@@ -189,7 +189,7 @@ private[dialog] final case class DialogRootState(
       val sortableDialog = SortableDialog(ts, peer)
 
       copy(
-        active = this.active.withPeer(sortableDialog),
+        active = this.active.withPeer(peer),
         archived = this.archived.filterNot(_.peer == peer),
         mobile = this.mobile + sortableDialog
       )
@@ -198,61 +198,49 @@ private[dialog] final case class DialogRootState(
 
   private def withUnarchivedPeer(ts: Instant, peer: Peer): DialogRootState = {
     if (!this.archived.exists(_.peer == peer)) this
-    else if (this.active.exists(_.ts == ts)) withUnarchivedPeer(ts.plusMillis(1), peer)
     else {
       val sortableDialog = SortableDialog(ts, peer)
 
       copy(
-        active = this.active.withPeer(sortableDialog),
+        active = this.active.withPeer(peer),
         archived = this.archived.filterNot(_.peer == peer)
       )
     }
   }
 
   private def withArchivedPeer(ts: Instant, peer: Peer): DialogRootState = {
-    if (!this.active.exists(_.peer == peer)) this
+    if (peer.typ.isPrivate && peer.id == userId) this
     else if (archived.exists(_.ts == ts)) withArchivedPeer(ts.plusMillis(1), peer)
     else {
       val sortableDialog = SortableDialog(ts, peer)
       copy(
-        // activePeers = this.activePeers.filterNot(_.peer == peer),
-        active = this.active.withoutPeer(sortableDialog),
+        active = this.active.withoutPeer(peer),
         archived = this.archived + sortableDialog
       )
     }
   }
 
   private def withFavouritedPeer(ts: Instant, peer: Peer): DialogRootState = {
-    val sortableDialog = SortableDialog(ts, peer)
-
-    if (active.favourites.exists(_.ts == ts)) withFavouritedPeer(ts.plusMillis(1), peer)
-    else
-      copy(
-        // activePeers = this.activePeers + sortableDialog,
-        active = this.active.withFavouritedPeer(sortableDialog),
-        archived = this.archived.filterNot(_.peer == peer)
-      )
+    copy(
+      active = this.active.withFavouritedPeer(peer),
+      archived = this.archived.filterNot(_.peer == peer)
+    )
   }
 
   private def withUnfavouritedPeer(ts: Instant, peer: Peer) = {
-    val sortableDialog = SortableDialog(ts, peer)
-
     copy(
-      active = this.active.withUnfavouritedPeer(sortableDialog)
+      active = this.active.withUnfavouritedPeer(peer)
     )
   }
 
-  private def withDialogsInGroup(group: DialogGroupType, sortableDialogs: Seq[SortableDialog]) = {
+  private def withDialogsInGroup(group: DialogGroupType, peers: Seq[Peer]) = {
     val newActive = group match {
-      case DialogGroupType.Favourites     ⇒ active.copy(favourites = active.favourites ++ sortableDialogs)
-      case DialogGroupType.Groups         ⇒ active.copy(groups = active.groups ++ sortableDialogs)
-      case DialogGroupType.DirectMessages ⇒ active.copy(dms = active.dms ++ sortableDialogs)
+      case DialogGroupType.Favourites     ⇒ active.copy(favourites = active.favourites ++ peers)
+      case DialogGroupType.Groups         ⇒ active.copy(groups = active.groups ++ peers)
+      case DialogGroupType.DirectMessages ⇒ active.copy(dms = active.dms ++ peers)
       case unknown                        ⇒ throw DialogErrors.UnknownDialogGroupType(unknown)
     }
 
-    copy(
-      active = newActive
-    // activePeers = this.activePeers ++ sortableDialogs
-    )
+    copy(active = newActive)
   }
 }
