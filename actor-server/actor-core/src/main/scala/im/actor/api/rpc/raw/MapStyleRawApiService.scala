@@ -18,9 +18,20 @@ trait ProductImplicits {
    * @param product case class or case object
    */
   implicit class Product2ApiValue(product: Product) {
-    def asApiMap: ApiMapValue = {
-      //case object or empty case class
+    def asApiArray: ApiArrayValue =
       if (product.productArity == 0) {
+        //case object or empty case class
+        ApiArrayValue(Vector.empty[ApiRawValue])
+      } else {
+        val items = product.getClass.getDeclaredFields.foldLeft(Vector.empty[ApiRawValue]) { (a, f) ⇒
+          f.setAccessible(true)
+          a :+ toApiRawValue(f.get(product))
+        }
+        ApiArrayValue(items)
+      }
+    def asApiMap: ApiMapValue =
+      if (product.productArity == 0) {
+        //case object or empty case class
         ApiMapValue(Vector.empty[ApiMapValueItem])
       } else {
         val items = product.getClass.getDeclaredFields.foldLeft(Vector.empty[ApiMapValueItem]) { (a, f) ⇒
@@ -29,7 +40,6 @@ trait ProductImplicits {
         }
         ApiMapValue(items)
       }
-    }
   }
 
   private def toApiRawValue: PartialFunction[Any, ApiRawValue] = {
