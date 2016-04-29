@@ -342,10 +342,8 @@ public class UserRouter extends ModuleActor {
 
     @Verified
     private Promise<Void> onUserDescChanged(User u) {
-        context().getMessagesModule().getRouter().onUserChanged(u);
-        context().getContactsModule().getContactSyncActor()
-                .send(new ContactsSyncActor.UserChanged(u));
-        return Promise.success((Void) null);
+        context().getContactsModule().getContactSyncActor().send(new ContactsSyncActor.UserChanged(u));
+        return context().getMessagesModule().getRouter().onUserChanged(u);
     }
 
 
