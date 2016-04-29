@@ -41,7 +41,7 @@ object Dependencies {
     val sprayClient             = "io.spray"                      %% "spray-client"                  % "1.3.3"
     val sprayWebsocket          = "com.wandoulabs.akka"           %% "spray-websocket"               % "0.1.4"
 
-    val akkaPersistenceJdbc     = "com.github.dnvriend"           %% "akka-persistence-jdbc"         % "2.2.20-SNAPSHOT"
+    val akkaPersistenceJdbc     = "com.github.dnvriend"           %% "akka-persistence-jdbc"         % "2.2.20"
     val apacheEmail             = "org.apache.commons"            %  "commons-email"                 % "1.4"
 
     val betterFiles             = "com.github.pathikrit"          %% "better-files"                  % "2.13.0"
