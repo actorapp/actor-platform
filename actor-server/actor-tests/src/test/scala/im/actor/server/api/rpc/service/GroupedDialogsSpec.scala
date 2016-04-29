@@ -21,9 +21,6 @@ final class GroupedDialogsSpec
   with MessagingSpecHelpers {
   "LoadGroupedDialogs" should "load groups and privates" in loadGrouped
 
-  "Dialogs" should "appear in bottom on new incoming message" in incomingGoBottom
-  it should "appear in bottom on new outgoing message" in outgoingGoBottom
-
   "Hidden dialogs" should "appear on new message" in appearHidden
   it should "appear when peer sends message to dialog" in appearHidden2
   it should "appear on show" in appearShown
@@ -83,70 +80,6 @@ final class GroupedDialogsSpec
             groups.map(_.id).toSet shouldBe Set(group.groupPeer.groupId)
         }
       }
-    }
-  }
-
-  def incomingGoBottom() = {
-    val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
-    val (bob, bobAuthId, bobAuthSid, _) = createUser()
-    val (eve, eveAuthId, eveAuthSid, _) = createUser()
-
-    val aliceClient = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid, 42)))
-    val bobClient = ClientData(bobAuthId, 1, Some(AuthData(bob.id, bobAuthSid, 42)))
-    val eveClient = ClientData(eveAuthId, 1, Some(AuthData(eve.id, eveAuthSid, 42)))
-
-    {
-      implicit val clientData = eveClient
-      sendMessageToUser(alice.id, ApiTextMessage("Hi, I am Eve", Vector.empty, None))
-    }
-
-    Thread.sleep(1)
-
-    {
-      implicit val clientData = bobClient
-      sendMessageToUser(alice.id, ApiTextMessage("Hi, I am Bob", Vector.empty, None))
-    }
-
-    {
-      implicit val clientData = aliceClient
-      val dgs = getDialogGroups()
-      val privates = dgs(DialogExtension.groupKey(DialogGroupType.DirectMessages))
-      privates.size should equal(2)
-      privates.head.peer.id should equal(eve.id)
-      privates.last.peer.id should equal(bob.id)
-    }
-
-    {
-      implicit val clientData = eveClient
-      sendMessageToUser(alice.id, ApiTextMessage("Hi, I am Eve", Vector.empty, None))
-    }
-
-    {
-      implicit val clientData = aliceClient
-      val privates = getDialogGroups(DialogGroupType.DirectMessages)
-      privates.head.peer.id should equal(eve.id)
-    }
-  }
-
-  def outgoingGoBottom() = {
-    val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
-    val (bob, _, _, _) = createUser()
-    val (eve, _, _, _) = createUser()
-
-    implicit val clientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid, 42)))
-
-    prepareDialogs(bob, eve)
-
-    inside(getDialogGroups(DialogGroupType.DirectMessages)) {
-      case privates ⇒
-        privates.head.peer.id should equal(bob.id)
-    }
-
-    sendMessageToUser(eve.id, textMessage("Grrr"))
-
-    inside(getDialogGroups(DialogGroupType.DirectMessages)) {
-      case privates ⇒
-        privates.head.peer.id should equal(bob.id)
     }
   }
 
