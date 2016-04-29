@@ -88,7 +88,7 @@ final class DialogRootStateSpec extends ActorSuite with PeersImplicits {
 
     probe.state.active.dms shouldBe empty
     probe.state.active.dms shouldBe empty
-    probe.state.active.favourites.map(_.peer).toSeq should be(Seq(alice, group))
+    probe.state.active.favourites should be(Set(alice, group))
     probe.state.mobile.map(_.peer).toSeq should be(Seq(group, alice))
     checkSnapshot
   }
@@ -157,7 +157,7 @@ final class DialogRootStateSpec extends ActorSuite with PeersImplicits {
 
     def checkNoAlice() = {
       probe.state.mobile shouldBe empty
-      probe.state.active.exists(_.peer == alice) shouldBe false
+      probe.state.active.contains(alice) shouldBe false
       probe.state.archived shouldBe empty
     }
 
@@ -176,9 +176,9 @@ final class DialogRootStateSpec extends ActorSuite with PeersImplicits {
 
   private def getGroupPeers(typ: DialogGroupType)(implicit probe: ProcessorStateProbe[DialogRootState]) =
     typ match {
-      case DialogGroupType.Favourites     ⇒ probe.state.active.favourites.toSeq.map(_.peer)
-      case DialogGroupType.Groups         ⇒ probe.state.active.groups.toSeq.map(_.peer)
-      case DialogGroupType.DirectMessages ⇒ probe.state.active.dms.toSeq.map(_.peer)
+      case DialogGroupType.Favourites     ⇒ probe.state.active.favourites.toSeq
+      case DialogGroupType.Groups         ⇒ probe.state.active.groups.toSeq
+      case DialogGroupType.DirectMessages ⇒ probe.state.active.dms.toSeq
       case unknown                        ⇒ throw DialogErrors.UnknownDialogGroupType(unknown)
     }
 
