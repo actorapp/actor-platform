@@ -451,7 +451,7 @@ public class RouterActor extends ModuleActor {
         conversation(peer).removeItems(JavaUtil.unbox(rids));
 
         Message head = conversation(peer).getHeadValue();
-        dialogsActor(new DialogsActor.MessageDeleted(peer, head));
+        dialogsActor(new DialogsActor.MessageDeleted(peer, head.getMessageState() == MessageState.PENDING ? null : head));
 
         return Promise.success(null);
     }
