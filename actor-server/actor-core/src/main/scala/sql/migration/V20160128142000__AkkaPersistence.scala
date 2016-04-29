@@ -5,7 +5,7 @@ import java.time.Instant
 import java.util.Base64
 
 import akka.actor.ActorSystem
-import akka.persistence.jdbc.serialization.SerializationFacade
+import akka.persistence.jdbc.serialization.{ SerializationFacade, Serialized }
 import akka.persistence.journal.Tagged
 import akka.persistence.{ AtomicWrite, PersistentRepr }
 import akka.serialization.{ Serialization, SerializationExtension }
@@ -18,7 +18,7 @@ import im.actor.server.group.{ GroupEvent, GroupProcessor }
 import im.actor.server.user.{ UserEvent, UserProcessor }
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration
 import org.joda.time.DateTime
-import shardakka.keyvalue.{ ValueEvents, ValueQueries, ValueCommands, RootEvents }
+import shardakka.keyvalue.{ RootEvents, ValueCommands, ValueEvents, ValueQueries }
 
 import scala.concurrent._
 import scala.concurrent.duration.Duration
@@ -86,7 +86,7 @@ final class V20160128142000__AkkaPersistence extends JdbcMigration {
     val flowResult =
       Source(events)
         .map(p ⇒ AtomicWrite(p._1))
-        .via(SerializationFacade(system, ",").serialize)
+        .via(SerializationFacade(system, ",").serialize(serialize = true))
         .map(_.get)
         .map { iter ⇒
           val ps = connection.prepareStatement(sql)
@@ -98,7 +98,7 @@ final class V20160128142000__AkkaPersistence extends JdbcMigration {
               ps.setLong(2, ser.sequenceNr)
               ps.setLong(3, ser.created)
               ps.setString(4, ser.tags.orNull)
-              ps.setBytes(5, ser.serialized)
+              ps.setBytes(5, ser.asInstanceOf[Serialized].serialized)
               ps.addBatch()
             }
             ps.execute()
