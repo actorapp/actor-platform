@@ -42,7 +42,7 @@ private[group] trait GroupQueryHandlers extends GroupCommandHelpers {
       about = group.about,
       isHidden = Some(group.isHidden),
       ext = None,
-      groupType = if (group.typ.isPublic) Some("public") else None
+      membersCount = Some(apiMembers.size)
     )
 
     sender() ! GetApiStructResponse(struct)

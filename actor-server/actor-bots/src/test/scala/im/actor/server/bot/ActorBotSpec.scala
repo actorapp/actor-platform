@@ -50,9 +50,9 @@ final class ActorBotSpec
 
     val botOutPeer = getOutPeer(ActorBot.UserId, authId)
 
-    whenReady(msgService.handleLoadHistory(botOutPeer, 0, None, 100)) { rsp ⇒
+    whenReady(msgService.handleLoadHistory(botOutPeer, 0, None, 100, Vector.empty)) { rsp ⇒
       inside(rsp) {
-        case Ok(ResponseLoadHistory(history, _)) ⇒
+        case Ok(ResponseLoadHistory(history, _, _, _, _)) ⇒
           history.length shouldBe 2
           val tm = history.last.message.asInstanceOf[ApiTextMessage]
           tm.text.startsWith("Yay!") shouldBe true
@@ -81,9 +81,9 @@ final class ActorBotSpec
 
     val botOutPeer = getOutPeer(ActorBot.UserId, authId)
 
-    whenReady(msgService.handleLoadHistory(botOutPeer, 0, None, 100)) { rsp ⇒
+    whenReady(msgService.handleLoadHistory(botOutPeer, 0, None, 100, Vector.empty)) { rsp ⇒
       inside(rsp) {
-        case Ok(ResponseLoadHistory(history, _)) ⇒
+        case Ok(ResponseLoadHistory(history, _, _, _, _)) ⇒
           history.length shouldBe 2
           val tm = history.last.message.asInstanceOf[ApiTextMessage]
           tm.text shouldBe "Username already taken"
@@ -96,9 +96,9 @@ final class ActorBotSpec
 
     implicit val clientData = ClientData(authId, Random.nextLong(), Some(AuthData(user.id, authSid, 42)))
 
-    whenReady(contactsService.handleSearchContacts("actor")) { resp ⇒
+    whenReady(contactsService.handleSearchContacts("actor", Vector.empty)) { resp ⇒
       inside(resp) {
-        case Ok(ResponseSearchContacts(users)) ⇒
+        case Ok(ResponseSearchContacts(users, _)) ⇒
           users.length shouldBe 1
       }
     }

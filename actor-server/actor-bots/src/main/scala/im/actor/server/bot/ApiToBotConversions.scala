@@ -69,6 +69,7 @@ trait ApiToBotConversions {
       case _: ApiUnsupportedMessage ⇒ UnsupportedMessage
       case _: ApiEncryptedMessage   ⇒ UnsupportedMessage
       case _: ApiBinaryMessage      ⇒ UnsupportedMessage
+      case _: ApiEmptyMessage       ⇒ UnsupportedMessage
     }
 
   implicit def toTextModernAttach(ma: ApiTextModernAttach): TextModernAttach =

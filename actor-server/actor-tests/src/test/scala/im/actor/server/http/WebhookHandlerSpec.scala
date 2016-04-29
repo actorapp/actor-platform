@@ -145,16 +145,16 @@ class WebhookHandlerSpec
       object Parser extends CommandParser
       val commands = sendText map Parser.parseCommand
 
-      whenReady(messagingService.handleSendMessage(group.asOutPeer, 1L, ApiTextMessage(sendText.head, Vector.empty, None), None))(_ ⇒ ())
-      whenReady(messagingService.handleSendMessage(group.asOutPeer, 2L, GroupServiceMessages.changedTitle("xx"), None))(_ ⇒ ())
+      whenReady(messagingService.handleSendMessage(group.asOutPeer, 1L, ApiTextMessage(sendText.head, Vector.empty, None), None, None))(_ ⇒ ())
+      whenReady(messagingService.handleSendMessage(group.asOutPeer, 2L, GroupServiceMessages.changedTitle("xx"), None, None))(_ ⇒ ())
 
-      whenReady(messagingService.handleSendMessage(group.asOutPeer, 3L, ApiTextMessage(sendText(1), Vector.empty, None), None))(_ ⇒ ())
-      whenReady(messagingService.handleSendMessage(group.asOutPeer, 4L, ApiJsonMessage("Some info"), None))(_ ⇒ ())
+      whenReady(messagingService.handleSendMessage(group.asOutPeer, 3L, ApiTextMessage(sendText(1), Vector.empty, None), None, None))(_ ⇒ ())
+      whenReady(messagingService.handleSendMessage(group.asOutPeer, 4L, ApiJsonMessage("Some info"), None, None))(_ ⇒ ())
 
-      whenReady(messagingService.handleSendMessage(group.asOutPeer, 5L, ApiTextMessage(sendText(2), Vector.empty, None), None))(_ ⇒ ())
-      whenReady(messagingService.handleSendMessage(group.asOutPeer, 6L, ApiDocumentMessage(1L, 2L, 1, "", "", None, None), None))(_ ⇒ ())
+      whenReady(messagingService.handleSendMessage(group.asOutPeer, 5L, ApiTextMessage(sendText(2), Vector.empty, None), None, None))(_ ⇒ ())
+      whenReady(messagingService.handleSendMessage(group.asOutPeer, 6L, ApiDocumentMessage(1L, 2L, 1, "", "", None, None), None, None))(_ ⇒ ())
 
-      whenReady(messagingService.handleSendMessage(group.asOutPeer, 7L, ApiTextMessage(sendText(3), Vector.empty, None), None))(_ ⇒ ())
+      whenReady(messagingService.handleSendMessage(group.asOutPeer, 7L, ApiTextMessage(sendText(3), Vector.empty, None), None, None))(_ ⇒ ())
       Thread.sleep(4000)
 
       val messages3000 = hook3000.getMessages

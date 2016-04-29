@@ -7,7 +7,7 @@ import im.actor.server.persist.social.RelationRepo
 
 import scala.concurrent.Future
 
-trait UserACL {
+trait UserAcl {
 
   protected val system: ActorSystem
 
@@ -28,9 +28,11 @@ trait UserACL {
   )(default: ⇒ Future[A], failed: ⇒ Future[A]): Future[A] = {
     import system.dispatcher
     for {
-      isBlocked ← DbExtension(system).db.run(RelationRepo.isBlocked(contactOwnerUserId, contactUserId))
+      isBlocked ← checkIsBlocked(contactUserId, contactOwnerUserId)
       result ← if (isBlocked) failed else default
     } yield result
   }
 
+  protected def checkIsBlocked(contactUserId: Int, contactOwnerUserId: Int): Future[Boolean] =
+    DbExtension(system).db.run(RelationRepo.isBlocked(contactOwnerUserId, contactUserId))
 }

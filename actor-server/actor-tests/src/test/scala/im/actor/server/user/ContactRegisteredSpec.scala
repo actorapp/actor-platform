@@ -24,9 +24,9 @@ final class ContactRegisteredSpec extends BaseAppSuite with ImplicitAuthService 
 
     Thread.sleep(300)
 
-    whenReady(msgService.handleLoadDialogs(0, 100)) { resp ⇒
+    whenReady(msgService.handleLoadDialogs(0, 100, Vector.empty)) { resp ⇒
       inside(resp) {
-        case Ok(ResponseLoadDialogs(_, _, Vector(dialog))) ⇒
+        case Ok(ResponseLoadDialogs(_, _, Vector(dialog), _, _)) ⇒
           dialog.peer should ===(ApiPeer(ApiPeerType.Private, bob.authData.get.userId))
 
           inside(dialog.message) {
@@ -36,9 +36,9 @@ final class ContactRegisteredSpec extends BaseAppSuite with ImplicitAuthService 
       }
     }
 
-    whenReady(msgService.handleLoadHistory(getOutPeer(bob.authData.get.userId, clientData.authId), 0, None, 100)) { resp ⇒
+    whenReady(msgService.handleLoadHistory(getOutPeer(bob.authData.get.userId, clientData.authId), 0, None, 100, Vector.empty)) { resp ⇒
       inside(resp) {
-        case Ok(ResponseLoadHistory(Vector(hm), _)) ⇒
+        case Ok(ResponseLoadHistory(Vector(hm), _, _, _, _)) ⇒
           inside(hm.message) {
             case ApiServiceMessage(_, Some(ApiServiceExContactRegistered(userId))) ⇒
               userId should ===(bob.authData.get.userId)
@@ -61,9 +61,9 @@ final class ContactRegisteredSpec extends BaseAppSuite with ImplicitAuthService 
     {
       implicit val clientData = bob
 
-      whenReady(msgService.handleLoadDialogs(0, 100)) { resp ⇒
+      whenReady(msgService.handleLoadDialogs(0, 100, Vector.empty)) { resp ⇒
         inside(resp) {
-          case Ok(ResponseLoadDialogs(_, _, Vector())) ⇒
+          case Ok(ResponseLoadDialogs(_, _, Vector(), _, _)) ⇒
         }
       }
 
@@ -75,9 +75,9 @@ final class ContactRegisteredSpec extends BaseAppSuite with ImplicitAuthService 
         }
       }
 
-      whenReady(msgService.handleLoadHistory(getOutPeer(alice.authData.get.userId, bob.authId), 0, None, 100)) { resp ⇒
+      whenReady(msgService.handleLoadHistory(getOutPeer(alice.authData.get.userId, bob.authId), 0, None, 100, Vector.empty)) { resp ⇒
         inside(resp) {
-          case Ok(ResponseLoadHistory(Vector(), Vector())) ⇒
+          case Ok(ResponseLoadHistory(Vector(), Vector(), _, _, _)) ⇒
         }
       }
     }
