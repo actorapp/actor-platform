@@ -62,6 +62,19 @@ object UserRepo {
   val activeHumanUsers =
     users.filter(u ⇒ u.deletedAt.isEmpty && !u.isBot)
 
+  private val activeHumanUsersC = Compiled(activeHumanUsers)
+
+  private val activeHumanUsersIdsC = Compiled(activeHumanUsers map (_.id))
+
+  private def activeHumanUsersIds(createdAfter: Rep[LocalDateTime]) =
+    Compiled {
+      users.filter(u ⇒ u.deletedAt.isEmpty && !u.isBot && u.createdAt > createdAfter).sortBy(_.createdAt.asc).map(u ⇒ u.id → u.createdAt)
+    }
+
+  def activeUserIdsCreatedAfter(createdAfter: LocalDateTime): DBIO[Seq[(Int, LocalDateTime)]] = activeHumanUsersIds(createdAfter).result
+
+  def fetchPeople = activeHumanUsersC.result
+
   def create(user: User) =
     users += user
 
@@ -79,8 +92,6 @@ object UserRepo {
   def allIds = users.map(_.id).result
 
   def all = users.result
-
-  def fetchPeople = activeHumanUsers.result
 
   def find(id: Int) =
     byIdC(id).result.headOption
@@ -136,7 +147,7 @@ object UserRepo {
       result
   }
 
-  def activeUsersIds = activeHumanUsers.map(_.id).result
+  def activeUsersIds = activeHumanUsersIdsC.result
 
   def fetchPagedNewest(pageNumber: Int, pageSize: Int): DBIO[Seq[User]] =
     paged(pageNumber, pageSize, { ut ⇒ ut.createdAt.desc }).result
