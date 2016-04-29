@@ -185,53 +185,5 @@ public abstract class AbsModule {
             }
         });
     }
-
-    public boolean isValidPeer(Peer peer) {
-        if (peer.getPeerType() == PeerType.PRIVATE) {
-            return users().getValue(peer.getPeerId()) != null;
-        } else if (peer.getPeerType() == PeerType.GROUP) {
-            return groups().getValue(peer.getPeerId()) != null;
-        }
-        return false;
-    }
-
-    public Promise<Void> loadRequiredPeers(List<ApiUserOutPeer> users) {
-        return loadRequiredPeers(users, new ArrayList<>());
-    }
-
-    public Promise<Void> loadRequiredPeers(List<ApiUserOutPeer> users, List<ApiGroupOutPeer> groups) {
-
-        Promise<List<ApiUserOutPeer>> usersMissingPeers = Promise.success(users)
-                .flatMap((Function<List<ApiUserOutPeer>, Promise<List<ApiUserOutPeer>>>) apiUserOutPeers ->
-                        PromisesArray.of(users)
-                                .map((Function<ApiUserOutPeer, Promise<ApiUserOutPeer>>) apiUserOutPeer -> users()
-                                        .containsAsync(apiUserOutPeer.getUid())
-                                        .map(v -> v ? null : apiUserOutPeer))
-                                .filterNull()
-                                .zip());
-
-
-        Promise<List<ApiGroupOutPeer>> groupMissingPeers = Promise.success(groups)
-                .flatMap((Function<List<ApiGroupOutPeer>, Promise<List<ApiGroupOutPeer>>>) apiGroupOutPeers ->
-                        PromisesArray.of(groups)
-                                .map((Function<ApiGroupOutPeer, Promise<ApiGroupOutPeer>>) apiGroupOutPeer -> groups()
-                                        .containsAsync(apiGroupOutPeer.getGroupId())
-                                        .map(v -> v ? null : apiGroupOutPeer))
-                                .filterNull()
-                                .zip());
-
-        return Promises.tuple(usersMissingPeers, groupMissingPeers)
-                .flatMap(missing -> {
-                    if (missing.getT1().size() > 0 || missing.getT2().size() > 0) {
-                        return api(new RequestGetReferencedEntitites(missing.getT1(), missing.getT2()))
-                                .flatMap(responseGetReferencedEntitites ->
-                                        updates().applyRelatedData(
-                                                responseGetReferencedEntitites.getUsers(),
-                                                responseGetReferencedEntitites.getGroups()));
-                    } else {
-                        return Promise.success(null);
-                    }
-                });
-    }
 }
 

@@ -30,12 +30,7 @@ public class PusherActor extends Actor {
     private static final String TAG = "ProtoSender";
 
     public static ActorRef senderActor(final MTProto proto) {
-        return ActorSystem.system().actorOf(new ActorSelection(Props.create(new ActorCreator() {
-            @Override
-            public PusherActor create() {
-                return new PusherActor(proto);
-            }
-        }).changeDispatcher("network"), proto.getActorPath() + "/sender"));
+        return ActorSystem.system().actorOf(Props.create(() -> new PusherActor(proto)).changeDispatcher("network"), proto.getActorPath() + "/sender");
     }
 
     private static final int ACK_THRESHOLD = 10;
@@ -97,7 +92,7 @@ public class PusherActor extends Actor {
             pendingConfirm.clear();
 
             // Resending unsent messages
-            ArrayList<ProtoMessage> toSend = new ArrayList<ProtoMessage>();
+            ArrayList<ProtoMessage> toSend = new ArrayList<>();
             for (ProtoMessage unsentPackage : unsentPackages.values()) {
                 if (isEnableLog) {
                     Log.d(TAG, "ReSending #" + unsentPackage.getMessageId());
@@ -159,7 +154,7 @@ public class PusherActor extends Actor {
             confirm.clear();
 
             // Resending all required messages
-            ArrayList<ProtoMessage> toSend = new ArrayList<ProtoMessage>();
+            ArrayList<ProtoMessage> toSend = new ArrayList<>();
             for (ProtoMessage unsentPackage : unsentPackages.values()) {
                 if (unsentPackage.getMessageId() < newSession.getMessageId()) {
                     if (isEnableLog) {
@@ -213,7 +208,7 @@ public class PusherActor extends Actor {
         if (items.size() == 1) {
             doSend(items.get(0));
         } else if (items.size() > 1) {
-            ArrayList<ProtoMessage> messages = new ArrayList<ProtoMessage>();
+            ArrayList<ProtoMessage> messages = new ArrayList<>();
             int currentPayload = 0;
             for (int i = 0; i < items.size(); i++) {
                 ProtoMessage message = items.get(i);
@@ -236,7 +231,7 @@ public class PusherActor extends Actor {
 
     private void doSend(ProtoMessage message) {
         if (confirm.size() > 0) {
-            ArrayList<ProtoMessage> mtpMessages = new ArrayList<ProtoMessage>();
+            ArrayList<ProtoMessage> mtpMessages = new ArrayList<>();
             mtpMessages.add(message);
             doSend(mtpMessages);
         } else {
@@ -252,18 +247,31 @@ public class PusherActor extends Actor {
     public static class SendMessage {
         private long mid;
         private byte[] message;
+        private boolean isRPC;
 
-        public SendMessage(long rid, byte[] message) {
+        public SendMessage(long rid, byte[] message, boolean isRPC) {
             this.mid = rid;
             this.message = message;
+            this.isRPC = isRPC;
         }
     }
 
     public static class ForgetMessage {
-        private long mid;
 
-        public ForgetMessage(long rid) {
+        private long mid;
+        private boolean isResponse;
+
+        public ForgetMessage(long rid, boolean isResponse) {
             this.mid = rid;
+            this.isResponse = isResponse;
+        }
+
+        public long getMid() {
+            return mid;
+        }
+
+        public boolean isResponse() {
+            return isResponse;
         }
     }
 
@@ -300,10 +308,6 @@ public class PusherActor extends Actor {
     }
 
     public static class ForceAck {
-
-    }
-
-    public static class StopActor {
 
     }
 }

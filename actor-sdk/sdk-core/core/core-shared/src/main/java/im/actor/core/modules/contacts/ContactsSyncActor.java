@@ -122,7 +122,7 @@ public class ContactsSyncActor extends ModuleActor {
                 }
 
                 if (response.getUserPeers().size() > 0) {
-                    loadRequiredPeers(response.getUserPeers(), new ArrayList<>())
+                    updates().loadRequiredPeers(response.getUserPeers(), new ArrayList<>())
                             .then(v -> onContactsLoaded(response));
                 } else {
                     updates().applyRelatedData(response.getUsers())

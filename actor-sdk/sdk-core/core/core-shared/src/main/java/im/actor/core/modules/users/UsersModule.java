@@ -4,6 +4,7 @@
 
 package im.actor.core.modules.users;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.core.api.ApiUserOutPeer;
@@ -121,7 +122,7 @@ public class UsersModule extends AbsModule implements BusSubscriber {
 
     public Promise<List<User>> loadBlockedUsers() {
         return api(new RequestLoadBlockedUsers())
-                .chain(response -> loadRequiredPeers(response.getUserPeers()))
+                .chain(response -> updates().loadRequiredPeers(response.getUserPeers(), new ArrayList<>()))
                 .flatMap(responseLoadBlockedUsers ->
                         PromisesArray.of(responseLoadBlockedUsers.getUserPeers())
                                 .map(apiUserOutPeer -> users().getValueAsync(apiUserOutPeer.getUid()))

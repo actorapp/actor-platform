@@ -1287,10 +1287,8 @@ public class Messenger {
     @ObjectiveCName("editMyNameCommandWithName:")
     public Command<Boolean> editMyName(final String newName) {
         return callback -> modules.getUsersModule().editMyName(newName)
-                .then(v -> {
-                    callback.onResult(true);
-                })
-                .failure(callback::onError);
+                .then(v -> callback.onResult(true))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1304,7 +1302,7 @@ public class Messenger {
     public Command<Boolean> editMyNick(final String newNick) {
         return callback -> modules.getUsersModule().editNick(newNick)
                 .then(v -> callback.onResult(true))
-                .failure(callback::onError);
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1318,7 +1316,7 @@ public class Messenger {
     public Command<Boolean> editMyAbout(final String newAbout) {
         return callback -> modules.getUsersModule().editAbout(newAbout)
                 .then(v -> callback.onResult(true))
-                .failure(callback::onError);
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1351,7 +1349,7 @@ public class Messenger {
     public Command<Boolean> editName(final int uid, final String name) {
         return callback -> modules.getUsersModule().editName(uid, name)
                 .then(v -> callback.onResult(true))
-                .failure(callback::onError);
+                .failure(e -> callback.onError(e));
     }
 
     /**

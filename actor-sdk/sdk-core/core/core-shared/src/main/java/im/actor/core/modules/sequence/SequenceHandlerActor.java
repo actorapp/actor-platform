@@ -59,16 +59,6 @@ public class SequenceHandlerActor extends ModuleActor {
     // Sequenced data
     //
 
-    private Promise<Void> onRelatedResponse(List<ApiUser> relatedUsers, List<ApiGroup> relatedGroups) {
-
-        beginUpdates();
-
-        // TODO: Wait database flush
-
-        return processor.applyRelated(relatedUsers, relatedGroups)
-                .then(v -> endUpdates());
-    }
-
     private Promise<Void> onSeqUpdate(final Update update,
                                       @Nullable List<ApiUser> users,
                                       @Nullable List<ApiGroup> groups) throws Exception {
@@ -80,7 +70,7 @@ public class SequenceHandlerActor extends ModuleActor {
         // Related Users
         Promise<Void> currentPromise;
         if (groups != null && users != null && (users.size() > 0 || groups.size() > 0)) {
-            currentPromise = processor.applyRelated(users, groups);
+            currentPromise = updates().applyRelatedData(users, groups);
         } else {
             currentPromise = Promise.success(null);
         }
@@ -114,10 +104,10 @@ public class SequenceHandlerActor extends ModuleActor {
         beginUpdates();
 
         // Related Users
-        Promise<Void> currentPromise = processor.applyRelated(users, groups);
+        Promise<Void> currentPromise = updates().applyRelatedData(users, groups);
 
         // Loading missing peers
-        currentPromise = currentPromise.chain(v -> loadRequiredPeers(userOutPeers, groupOutPeers));
+        currentPromise = currentPromise.chain(v -> updates().loadRequiredPeers(userOutPeers, groupOutPeers));
 
         // Apply Diff
         long applyStart = im.actor.runtime.Runtime.getCurrentTime();
@@ -155,37 +145,6 @@ public class SequenceHandlerActor extends ModuleActor {
     private void endUpdates() {
         isUpdating = false;
         unstashAll();
-    }
-
-    /**
-     * Copied method to avoid full applyRelated route to avoid deadlock
-     */
-    public Promise<Void> loadRequiredPeers(List<ApiUserOutPeer> users, List<ApiGroupOutPeer> groups) {
-
-        Promise<List<ApiUserOutPeer>> usersMissingPeers = context().getUsersModule().getUserRouter()
-                .fetchMissingUsers(users);
-
-        Promise<List<ApiGroupOutPeer>> groupMissingPeers = Promise.success(groups)
-                .flatMap((Function<List<ApiGroupOutPeer>, Promise<List<ApiGroupOutPeer>>>) apiGroupOutPeers ->
-                        PromisesArray.of(groups)
-                                .map((Function<ApiGroupOutPeer, Promise<ApiGroupOutPeer>>) apiGroupOutPeer -> groups()
-                                        .containsAsync(apiGroupOutPeer.getGroupId())
-                                        .map(v -> v ? null : apiGroupOutPeer))
-                                .filterNull()
-                                .zip());
-
-        return Promises.tuple(usersMissingPeers, groupMissingPeers)
-                .flatMap(missing -> {
-                    if (missing.getT1().size() > 0 || missing.getT2().size() > 0) {
-                        return api(new RequestGetReferencedEntitites(missing.getT1(), missing.getT2()))
-                                .flatMap(responseGetReferencedEntitites ->
-                                        processor.applyRelated(
-                                                responseGetReferencedEntitites.getUsers(),
-                                                responseGetReferencedEntitites.getGroups()));
-                    } else {
-                        return Promise.success(null);
-                    }
-                });
     }
 
 
@@ -228,14 +187,6 @@ public class SequenceHandlerActor extends ModuleActor {
                     differenceUpdate.getUserOutPeers(),
                     differenceUpdate.getGroupOutPeers(),
                     differenceUpdate.getUpdates());
-        } else if (message instanceof HandlerRelatedResponse) {
-            HandlerRelatedResponse relatedResponse = (HandlerRelatedResponse) message;
-            // Should we wait update to end?
-            if (isUpdating) {
-                stash();
-                return null;
-            }
-            return onRelatedResponse(relatedResponse.getRelatedUsers(), relatedResponse.getRelatedGroups());
         } else {
             return super.onAsk(message);
         }
