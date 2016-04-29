@@ -140,13 +140,13 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
 
   def initializing: Receive = receiveStashing(
     replyTo ⇒ {
-    case state: DialogState ⇒
-      context become initialized(state)
-      unstashAll()
-    case Status.Failure(cause) ⇒
-      log.error(cause, "Failed to init dialog")
-      self ! Kill
-  },
+      case state: DialogState ⇒
+        context become initialized(state)
+        unstashAll()
+      case Status.Failure(cause) ⇒
+        log.error(cause, "Failed to init dialog")
+        self ! Kill
+    },
     debugMessage = debugMessage("initializing dialog")
   )
 

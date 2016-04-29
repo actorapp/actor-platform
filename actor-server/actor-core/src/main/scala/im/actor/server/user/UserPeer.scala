@@ -3,6 +3,8 @@ package im.actor.server.user
 import java.time.{ Instant, Period }
 
 import akka.actor.{ ActorRef, Props }
+import akka.pattern.ask
+import akka.util.Timeout
 import im.actor.api.rpc.PeersImplicits
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.concurrent.{ AlertingActor, FutureExt }
@@ -28,6 +30,8 @@ private[user] final class UserPeer(userId: Int, extensions: Seq[ApiExtension]) e
   private val dialogExt = DialogExtension(context.system)
   private val archiveInterval = context.system.scheduler.schedule(0.seconds, 1.hour, self, StartArchiving)
 
+  private val timeout = Timeout(20.seconds)
+
   override def postStop(): Unit = {
     super.postStop()
     archiveInterval.cancel()
@@ -35,9 +39,9 @@ private[user] final class UserPeer(userId: Int, extensions: Seq[ApiExtension]) e
 
   def receive: Receive = {
     // Forward to a group or a corresponding user dialog
-    case dc: DirectDialogCommand   ⇒ dialogRef(dc) forward dc
+    case dc: DirectDialogCommand   ⇒ dialogRef(dc).ask(dc)(timeout, sender())
     // Forward to a dest user dialog
-    case dc: DialogCommand         ⇒ dialogRef(dc.dest) forward dc
+    case dc: DialogCommand         ⇒ dialogRef(dc.dest).ask(dc)(timeout, sender())
     case StartArchiving            ⇒ startArchiving()
     case ArchiveIfExpired(dialogs) ⇒ archiveIfExpired(dialogs)
     case Archive(peer)             ⇒ archive(peer)

@@ -4,6 +4,7 @@ import java.time.Instant
 
 import akka.actor._
 import akka.cluster.sharding.ShardRegion
+import akka.pattern.ask
 import akka.persistence.RecoveryCompleted
 import akka.util.Timeout
 import im.actor.api.rpc.misc.ApiExtension
@@ -161,7 +162,7 @@ private[user] final class UserProcessor
   protected implicit val seqUpdatesExt: SeqUpdatesExtension = SeqUpdatesExtension(system)
   protected implicit val socialRegion: SocialManagerRegion = SocialExtension(system).region
 
-  protected implicit val timeout: Timeout = Timeout(10.seconds)
+  protected implicit val timeout: Timeout = Timeout(20.seconds)
 
   protected val userId = self.path.name.toInt
   override protected val notFoundError = UserErrors.UserNotFound(userId)
@@ -246,7 +247,7 @@ private[user] final class UserProcessor
     case query: GetLocalName                ⇒ contacts.ref forward query
     case StopOffice                         ⇒ context stop self
     case ReceiveTimeout                     ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
-    case dc: DialogCommand                  ⇒ userPeer(state.internalExtensions) forward dc
+    case dc: DialogCommand                  ⇒ userPeer(state.internalExtensions).ask(dc)(timeout = timeout, sender = sender())
   }
 
   override protected def handleQuery(state: UserState): Receive = {

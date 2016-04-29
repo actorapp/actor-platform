@@ -32,19 +32,19 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
     withCreated(s) { state ⇒
       becomeStashing(
         replyTo ⇒ ({
-        case seq: SeqStateDate ⇒
-          replyTo ! seq
-          if (state.isArchived) {
-            self.tell(Show(peer), ActorRef.noSender)
-          }
-          updateMessageDate(state, seq.date)
-          unstashAll()
-        case fail: Status.Failure ⇒
-          log.error(fail.cause, "Failed to send message")
-          replyTo forward fail
-          context unbecome ()
-          unstashAll()
-      }: Receive) orElse reactions(state),
+          case seq: SeqStateDate ⇒
+            replyTo ! seq
+            if (state.isArchived) {
+              self.tell(Show(peer), ActorRef.noSender)
+            }
+            updateMessageDate(state, seq.date)
+            unstashAll()
+          case fail: Status.Failure ⇒
+            log.error(fail.cause, "Failed to send message")
+            replyTo forward fail
+            context unbecome ()
+            unstashAll()
+        }: Receive) orElse reactions(state),
         debugMessage = debugMessage("send message"),
         discardOld = false
       )
