@@ -62,6 +62,8 @@ object UserRepo {
   val activeHumanUsers =
     users.filter(u ⇒ u.deletedAt.isEmpty && !u.isBot)
 
+  private val activeHumanUsersC = Compiled(activeHumanUsers)
+
   private val activeHumanUsersIdsC = Compiled(activeHumanUsers map (_.id))
 
   private def activeHumanUsersIds(createdAfter: Rep[LocalDateTime]) =
@@ -71,7 +73,7 @@ object UserRepo {
 
   def activeUserIdsCreatedAfter(createdAfter: LocalDateTime): DBIO[Seq[(Int, LocalDateTime)]] = activeHumanUsersIds(createdAfter).result
 
-  def fetchPeople = activeHumanUsersIdsC.result
+  def fetchPeople = activeHumanUsersC.result
 
   def create(user: User) =
     users += user
