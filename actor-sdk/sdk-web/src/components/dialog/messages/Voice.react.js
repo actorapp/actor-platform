@@ -13,7 +13,8 @@ let cache = [];
  */
 class Voice extends Component {
   static propTypes = {
-    content: PropTypes.object.isRequired,
+    fileUrl: PropTypes.string,
+    duration: PropTypes.number.isRequired,
     className: PropTypes.string
   };
 
@@ -24,23 +25,23 @@ class Voice extends Component {
       isLoaded: this.isCached(),
       isPlaying: false,
       currentTime: 0,
-      duration: props.content.duration / 1000
+      duration: props.duration / 1000
     };
   }
 
   componentDidMount() {
-    const { content } = this.props;
+    const { fileUrl } = this.props;
 
-    if (content.fileUrl) {
-      this.createAudioElement(content.fileUrl);
+    if (fileUrl) {
+      this.createAudioElement(fileUrl);
     }
   }
 
   componentDidUpdate() {
-    const { content } = this.props;
+    const { fileUrl } = this.props;
 
-    if (content.fileUrl && !this.isCached()) {
-      this.createAudioElement(content.fileUrl);
+    if (fileUrl && !this.isCached()) {
+      this.createAudioElement(fileUrl);
     }
   }
 
@@ -64,14 +65,14 @@ class Voice extends Component {
   }
 
   isCached() {
-    const { content } = this.props;
-    return cache[content.fileUrl] === true;
+    const { fileUrl } = this.props;
+    return cache[fileUrl] === true;
   }
 
   setCached() {
-    const { content } = this.props;
-    cache[content.fileUrl] = true;
-    this.setState({ isLoaded: cache[content.fileUrl] });
+    const { fileUrl } = this.props;
+    cache[fileUrl] = true;
+    this.setState({ isLoaded: cache[fileUrl] });
   }
 
   humanTime = (millis) => {

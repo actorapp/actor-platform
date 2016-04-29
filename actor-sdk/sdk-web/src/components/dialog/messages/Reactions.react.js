@@ -9,6 +9,11 @@ import CSSTransitionGroup from 'react-addons-css-transition-group';
 import MessageActionCreators from '../../../actions/MessageActionCreators';
 
 class MessageReactions extends Component {
+  static propTypes = {
+    peer: PropTypes.object.isRequired,
+    message: PropTypes.object.isRequired
+  };
+
   constructor(props) {
     super(props);
 
@@ -16,11 +21,6 @@ class MessageReactions extends Component {
       canAnimateHeart: true
     };
   }
-
-  static propTypes = {
-    peer: PropTypes.object.isRequired,
-    message: PropTypes.object.isRequired
-  };
 
   componentWillReceiveProps() {
     if (this.state.isThisMyReaction) {
