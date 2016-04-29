@@ -91,12 +91,12 @@ public class MTProto {
 
     public long sendRpcMessage(ProtoStruct protoStruct) {
         long mtId = MTUids.nextId();
-        sender.send(new PusherActor.SendMessage(mtId, new MTRpcRequest(protoStruct.toByteArray()).toByteArray()));
+        sender.send(new PusherActor.SendMessage(mtId, new MTRpcRequest(protoStruct.toByteArray()).toByteArray(), true));
         return mtId;
     }
 
     public void cancelRpc(long mtId) {
-        sender.send(new PusherActor.ForgetMessage(mtId));
+        sender.send(new PusherActor.ForgetMessage(mtId, true));
     }
 
     public void onNetworkChanged(NetworkState state) {

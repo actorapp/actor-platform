@@ -79,42 +79,6 @@ public class UpdateProcessor extends AbsModule {
 
 
     //
-    // Entities Handling
-    //
-
-    public Promise<Void> applyRelated(List<ApiUser> users, List<ApiGroup> groups) {
-
-        // Users
-
-        Promise<Void> userPromise = context().getUsersModule().getUserRouter()
-                .applyUsers(users);
-
-        // Groups
-
-        Promise<Void> groupsPromise = PromisesArray.of(groups)
-                .map((Function<ApiGroup, Promise<Tuple2<ApiGroup, Boolean>>>) g -> groups().containsAsync(g.getId())
-                        .map(r -> new Tuple2<ApiGroup, Boolean>(g, !r)))
-                .filter(new Predicate<Tuple2<ApiGroup, Boolean>>() {
-                    @Override
-                    public boolean apply(Tuple2<ApiGroup, Boolean> apiGroupBooleanTuple2) {
-                        return apiGroupBooleanTuple2.getT2();
-                    }
-                })
-                .flatMap(r -> new Group[]{new Group(r.getT1())})
-                .zip()
-                .map(u -> {
-                    if (u.size() > 0) {
-                        groups().addOrUpdateItems(u);
-                    }
-                    return null;
-                });
-
-        return Promises.tuple(userPromise, groupsPromise)
-                .map(v -> null);
-    }
-
-
-    //
     // Update Handling
     //
 

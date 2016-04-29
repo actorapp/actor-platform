@@ -2,10 +2,15 @@ package im.actor.core.modules.groups.router;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.core.api.ApiAvatar;
+import im.actor.core.api.ApiGroup;
+import im.actor.core.api.ApiGroupOutPeer;
 import im.actor.core.api.ApiMember;
+import im.actor.core.api.ApiUser;
+import im.actor.core.api.ApiUserOutPeer;
 import im.actor.core.api.updates.UpdateGroupAboutChanged;
 import im.actor.core.api.updates.UpdateGroupAvatarChanged;
 import im.actor.core.api.updates.UpdateGroupInvite;
@@ -18,6 +23,7 @@ import im.actor.core.api.updates.UpdateGroupUserLeave;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.MessageState;
+import im.actor.core.entity.User;
 import im.actor.core.entity.content.ServiceGroupAvatarChanged;
 import im.actor.core.entity.content.ServiceGroupCreated;
 import im.actor.core.entity.content.ServiceGroupTitleChanged;
@@ -26,15 +32,22 @@ import im.actor.core.entity.content.ServiceGroupUserKicked;
 import im.actor.core.entity.content.ServiceGroupUserLeave;
 import im.actor.core.modules.ModuleActor;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.groups.router.entity.GroupUpdate;
+import im.actor.core.modules.groups.router.entity.RouterApplyGroups;
+import im.actor.core.modules.groups.router.entity.RouterFetchMissingGroups;
+import im.actor.core.modules.groups.router.entity.RouterGroupUpdate;
 import im.actor.core.modules.messaging.router.RouterInt;
 import im.actor.core.network.parser.Update;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.annotations.Verified;
 import im.actor.runtime.function.Function;
+import im.actor.runtime.function.Tuple2;
 import im.actor.runtime.promise.Promise;
+import im.actor.runtime.promise.PromisesArray;
 
 public class GroupRouter extends ModuleActor {
+
+    // j2objc workaround
+    private static final Void DUMB = null;
 
     private boolean isFreezed = false;
 
@@ -42,11 +55,16 @@ public class GroupRouter extends ModuleActor {
         super(context);
     }
 
+
+    //
+    // Updates
+    //
+
     @Verified
     public Promise<Void> onGroupInvite(int groupId, long rid, int inviterId, long date, boolean isSilent) {
-        return forGroup(groupId, g -> {
-            // Updating group
-            groups().addOrUpdateItem(g
+        return forGroup(groupId, group -> {
+
+            groups().addOrUpdateItem(group
                     .addMember(myUid(), inviterId, date));
 
             if (!isSilent) {
@@ -54,12 +72,12 @@ public class GroupRouter extends ModuleActor {
                     // If current user invite himself, add create group message
                     Message message = new Message(rid, date, date, inviterId,
                             MessageState.UNKNOWN, ServiceGroupCreated.create());
-                    return getRouter().onNewMessage(g.peer(), message);
+                    return getRouter().onNewMessage(group.peer(), message);
                 } else {
                     // else add invite message
                     Message message = new Message(rid, date, date, inviterId,
                             MessageState.SENT, ServiceGroupUserInvited.create(myUid()));
-                    return getRouter().onNewMessage(g.peer(), message);
+                    return getRouter().onNewMessage(group.peer(), message);
                 }
             }
 
@@ -70,6 +88,7 @@ public class GroupRouter extends ModuleActor {
     @Verified
     public Promise<Void> onUserLeave(int groupId, long rid, int uid, long date, boolean isSilent) {
         return forGroup(groupId, group -> {
+
             if (uid == myUid()) {
                 // If current user leave, clear members and change member state
                 groups().addOrUpdateItem(group
@@ -113,6 +132,7 @@ public class GroupRouter extends ModuleActor {
                         ServiceGroupUserKicked.create(uid));
                 return getRouter().onNewMessage(group.peer(), message);
             }
+
             return Promise.success(null);
         });
     }
@@ -121,7 +141,6 @@ public class GroupRouter extends ModuleActor {
     public Promise<Void> onUserAdded(int groupId, long rid, int uid, int adder, long date, boolean isSilent) {
         return forGroup(groupId, group -> {
 
-            // Adding member
             groups().addOrUpdateItem(group.addMember(uid, adder, date));
 
             // Create message if needed
@@ -179,11 +198,7 @@ public class GroupRouter extends ModuleActor {
     public Promise<Void> onAboutChanged(int groupId, String about) {
         return forGroup(groupId, group -> {
 
-            // Change group title
-            Group upd = group.editAbout(about);
-
-            // Update group
-            groups().addOrUpdateItem(upd);
+            groups().addOrUpdateItem(group.editAbout(about));
 
             return Promise.success(null);
         });
@@ -220,11 +235,7 @@ public class GroupRouter extends ModuleActor {
     public Promise<Void> onMembersUpdated(int groupId, List<ApiMember> members) {
         return forGroup(groupId, group -> {
 
-            // Updating members list
-            group = group.updateMembers(members);
-
-            // Update group
-            groups().addOrUpdateItem(group);
+            groups().addOrUpdateItem(group.updateMembers(members));
 
             return Promise.success(null);
         });
@@ -245,6 +256,54 @@ public class GroupRouter extends ModuleActor {
                     unstashAll();
                 });
     }
+
+
+    //
+    // Entities
+    //
+
+    @Verified
+    private Promise<List<ApiGroupOutPeer>> fetchMissingGroups(List<ApiGroupOutPeer> groups) {
+        isFreezed = true;
+        return PromisesArray.of(groups)
+                .map((Function<ApiGroupOutPeer, Promise<ApiGroupOutPeer>>) u -> groups().containsAsync(u.getGroupId())
+                        .map(v -> v ? null : u))
+                .filterNull()
+                .zip()
+                .after((r, e) -> {
+                    isFreezed = false;
+                    unstashAll();
+                });
+    }
+
+    @Verified
+    private Promise<Void> applyGroups(List<ApiGroup> groups) {
+        isFreezed = true;
+        return PromisesArray.of(groups)
+                .map((Function<ApiGroup, Promise<Tuple2<ApiGroup, Boolean>>>) u -> groups().containsAsync(u.getId())
+                        .map(v -> new Tuple2<>(u, v)))
+                .filter(t -> !t.getT2())
+                .zip()
+                .then(x -> {
+                    List<Group> res = new ArrayList<>();
+                    for (Tuple2<ApiGroup, Boolean> u : x) {
+                        res.add(new Group(u.getT1()));
+                    }
+                    if (res.size() > 0) {
+                        groups().addOrUpdateItems(res);
+                    }
+                })
+                .map(x -> (Void) null)
+                .after((r, e) -> {
+                    isFreezed = false;
+                    unstashAll();
+                });
+    }
+
+
+    //
+    // Tools
+    //
 
     @Verified
     private Promise<Void> onGroupDescChanged(Group group) {
@@ -305,12 +364,24 @@ public class GroupRouter extends ModuleActor {
 
     @Override
     public Promise onAsk(Object message) throws Exception {
-        if (message instanceof GroupUpdate) {
+        if (message instanceof RouterGroupUpdate) {
             if (isFreezed) {
                 stash();
                 return null;
             }
-            return onUpdate(((GroupUpdate) message).getUpdate());
+            return onUpdate(((RouterGroupUpdate) message).getUpdate());
+        } else if (message instanceof RouterApplyGroups) {
+            if (isFreezed) {
+                stash();
+                return null;
+            }
+            return applyGroups(((RouterApplyGroups) message).getGroups());
+        } else if (message instanceof RouterFetchMissingGroups) {
+            if (isFreezed) {
+                stash();
+                return null;
+            }
+            return fetchMissingGroups(((RouterFetchMissingGroups) message).getGroups());
         } else {
             return super.onAsk(message);
         }

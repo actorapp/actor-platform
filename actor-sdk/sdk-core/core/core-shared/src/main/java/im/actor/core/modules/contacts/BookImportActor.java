@@ -225,7 +225,7 @@ public class BookImportActor extends ModuleActor {
                         for (ApiUserOutPeer u : response.getUserPeers()) {
                             uids.add(u.getUid());
                         }
-                        loadRequiredPeers(response.getUserPeers(), new ArrayList<>())
+                        updates().loadRequiredPeers(response.getUserPeers(), new ArrayList<>())
                                 .flatMap(v -> updates().applyUpdate(
                                         response.getSeq(),
                                         response.getState(),
