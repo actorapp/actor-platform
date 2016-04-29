@@ -15,6 +15,7 @@
 }
 
 .modal {
+  min-height: auto;
   margin: 120px auto 100px;
   padding: 0 $modal-padding;
   &__content {
