@@ -66,17 +66,23 @@ class MessagesList extends Component {
       };
     }
 
+    this.state = {
+      isScrollToBottomNeeded: false
+    };
+
     this.dimensions = null;
     this.isLoading = false;
 
     this.onScroll = debounce(this.onScroll.bind(this), 5, { maxWait: 30 });
     this.onResize = this.onResize.bind(this);
+    this.handleScrollToBottom = this.handleScrollToBottom.bind(this);
   }
 
-  shouldComponentUpdate(prevProps) {
-    return prevProps.peer !== this.props.peer ||
-           prevProps.messages !== this.props.messages ||
-           prevProps.isMember !== this.props.isMember;
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextProps.peer !== this.props.peer ||
+           nextProps.messages !== this.props.messages ||
+           nextProps.isMember !== this.props.isMember ||
+           nextState.isScrollToBottomNeeded !== this.state.isScrollToBottomNeeded;
   }
 
   componentDidMount() {
@@ -90,7 +96,11 @@ class MessagesList extends Component {
     }
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.isScrollToBottomNeeded !== this.state.isScrollToBottomNeeded) {
+      return;
+    }
+
     const { dimensions, refs: { scroller }, props: { uid, messages } } = this;
 
     if (messages.changeReason === MessageChangeReason.PUSH) {
@@ -110,6 +120,7 @@ class MessagesList extends Component {
 
   onScroll() {
     const dimensions = this.refs.scroller.getDimensions();
+
     if (dimensions.scrollHeight === dimensions.scrollTop + dimensions.offsetHeight) {
       this.dimensions = null;
     } else {
@@ -120,6 +131,8 @@ class MessagesList extends Component {
       this.isLoading = true;
       this.props.onLoadMore();
     }
+
+    this.setState({ isScrollToBottomNeeded: dimensions.scrollTop < dimensions.scrollHeight - (2 * dimensions.offsetHeight) });
   }
 
   onResize() {
@@ -132,6 +145,11 @@ class MessagesList extends Component {
     } else {
       scroller.scrollToBottom();
     }
+  }
+
+  handleScrollToBottom() {
+    const { refs: { scroller } } = this;
+    scroller.scrollToBottom();
   }
 
   renderHeader() {
@@ -186,6 +204,19 @@ class MessagesList extends Component {
     return result;
   }
 
+  renderScrollToBottomButton() {
+    const { isScrollToBottomNeeded } = this.state;
+    if (!isScrollToBottomNeeded) {
+      return null;
+    }
+
+    return (
+      <div className="chat__messages__scroll-to-bottom" onClick={this.handleScrollToBottom}>
+        <i className="material-icons">keyboard_arrow_down</i>
+      </div>
+    );
+  }
+
   render() {
     return (
       <Scroller
@@ -196,6 +227,7 @@ class MessagesList extends Component {
       >
         {this.renderHeader()}
         {this.renderMessages()}
+        {this.renderScrollToBottomButton()}
       </Scroller>
     )
   }
