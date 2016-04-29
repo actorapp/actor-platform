@@ -50,18 +50,54 @@ class MessageItem extends Component {
     isShort: PropTypes.bool.isRequired,
     isSelected: PropTypes.bool,
     onSelect: PropTypes.func
-  };
+  }
 
   static contextTypes = {
     delegate: PropTypes.object,
     isExperimental: PropTypes.bool
-  };
-
-  shouldComponentUpdate(nextProps) {
-    return (this.props.message !== nextProps.message || this.props.isShort !== nextProps.isShort);
   }
 
-  onClick = () => {
+  constructor(props, context) {
+    super(props, context);
+
+    this.onClick = this.onClick.bind(this);
+  }
+
+  componentWillMount() {
+    const { dialog } = this.context.delegate.components;
+    if (dialog && dialog.messages) {
+      this.components = {
+        Service: isFunction(dialog.messages.service) ? dialog.messages.service : DefaultService,
+        Text: isFunction(dialog.messages.text) ? dialog.messages.text : DefaultText,
+        Modern: isFunction(dialog.messages.modern) ? dialog.messages.modern : DefaultModern,
+        Photo: isFunction(dialog.messages.photo) ? dialog.messages.photo : DefaultPhoto,
+        Document: isFunction(dialog.messages.document) ? dialog.messages.document : DefaultDocument,
+        Voice: isFunction(dialog.messages.voice) ? dialog.messages.voice : DefaultVoice,
+        Contact: isFunction(dialog.messages.contact) ? dialog.messages.contact : DefaultContact,
+        Location: isFunction(dialog.messages.location) ? dialog.messages.location : DefaultLocation,
+        Sticker:  isFunction(dialog.messages.sticker) ? dialog.messages.sticker : DefaultSticker
+      };
+    } else {
+      this.components = {
+        Service: DefaultService,
+        Text: DefaultText,
+        Modern: DefaultModern,
+        Photo: DefaultPhoto,
+        Document: DefaultDocument,
+        Voice: DefaultVoice,
+        Contact: DefaultContact,
+        Location: DefaultLocation,
+        Sticker: DefaultSticker
+      };
+    }
+  }
+
+  shouldComponentUpdate(nextProps) {
+    return this.props.message !== nextProps.message ||
+           this.props.isShort !== nextProps.isShort;
+  }
+
+  onClick() {
     const { message, peer } = this.props;
 
     if (PeerUtils.equals(peer, message.sender.peer)) {
@@ -69,7 +105,7 @@ class MessageItem extends Component {
     } else {
       DialogActionCreators.selectDialogPeerUser(message.sender.peer.id);
     }
-  };
+  }
 
   showActions = (event) => {
     const { message } = this.props;
@@ -81,143 +117,183 @@ class MessageItem extends Component {
     onSelect && onSelect(message.rid);
   };
 
-  render() {
-    const { peer, message, state, isShort, isSelected } = this.props;
-    const { isHighlighted } = this.state;
-    const { delegate, isExperimental } = this.context;
+  renderHeader() {
+    const { isShort, message, state } = this.props;
 
-    let Service, Text, Modern, Photo, Document, Voice, Contact, Location, Sticker;
-    if (delegate.components.dialog && delegate.components.dialog.messages && !isFunction(delegate.components.dialog.messages.message)) {
-      Service = delegate.components.dialog.messages.service || DefaultService;
-      Text = delegate.components.dialog.messages.text || DefaultText;
-      Modern = delegate.components.dialog.messages.modern || DefaultModern;
-      Photo = delegate.components.dialog.messages.photo || DefaultPhoto;
-      Document = delegate.components.dialog.messages.document || DefaultDocument;
-      Voice = delegate.components.dialog.messages.voice || DefaultVoice;
-      Contact = delegate.components.dialog.messages.contact || DefaultContact;
-      Location = delegate.components.dialog.messages.location || DefaultLocation;
-      Sticker = delegate.components.dialog.messages.sticker || DefaultSticker;
-    } else {
-      Service = DefaultService;
-      Text = DefaultText;
-      Modern = DefaultModern;
-      Photo = DefaultPhoto;
-      Document = DefaultDocument;
-      Voice = DefaultVoice;
-      Contact = DefaultContact;
-      Location = DefaultLocation;
-      Sticker = DefaultSticker;
+    if (isShort) {
+      return null;
     }
-
-    let header = null,
-        messageContent = null,
-        leftBlock = null;
 
     const messageSender = escapeWithEmoji(message.sender.title);
 
-    const messageClassName = classnames('message', {
-      'message--same-sender': isShort,
-      'message--active': isHighlighted,
-      'message--selected': isSelected
-    });
-    const messageActionsMenuClassName = classnames('message__actions__menu', {
-      'message__actions__menu--opened': isHighlighted
-    });
+    return (
+      <header className="message__header">
+        <h3 className="message__sender">
+          <a onClick={this.onClick}>
+            {
+              message.sender.title
+                ? <span className="message__sender__name" dangerouslySetInnerHTML={{ __html: messageSender }}/>
+                : null
+            }
+            {
+              message.sender.userName
+                ? <span className="message__sender__nick">@{message.sender.userName}</span>
+                : null
+            }
+          </a>
+        </h3>
+        <time className="message__timestamp">{message.date}</time>
+        <State state={state} />
+      </header>
+    );
+  }
+
+  renderLeftBlock() {
+    const { isShort, message, state } = this.props;
 
     if (isShort) {
-      leftBlock = (
+      return (
         <div className="message__info text-right">
           <time className="message__timestamp">{message.date}</time>
           <State state={state} />
         </div>
       );
     } else {
-      leftBlock = (
+      return (
         <div className="message__info message__info--avatar">
           <a onClick={this.onClick}>
-            <AvatarItem image={message.sender.avatar}
-                        placeholder={message.sender.placeholder}
-                        title={message.sender.title}/>
+            <AvatarItem
+              image={message.sender.avatar}
+              placeholder={message.sender.placeholder}
+              title={message.sender.title}
+            />
           </a>
         </div>
-      );
-      header = (
-        <header className="message__header">
-          <h3 className="message__sender">
-            <a onClick={this.onClick}>
-              {
-                message.sender.title
-                  ? <span className="message__sender__name" dangerouslySetInnerHTML={{ __html: messageSender }}/>
-                  : null
-              }
-              {
-                message.sender.userName
-                  ? <span className="message__sender__nick">@{message.sender.userName}</span>
-                  : null
-              }
-            </a>
-          </h3>
-          <time className="message__timestamp">{message.date}</time>
-          <State state={state} />
-        </header>
-      );
+      )
     }
+  }
+
+  renderContent() {
+    const { message } = this.props;
+    const { Service, Text, Photo, Document, Voice, Contact, Location, Modern, Sticker } = this.components;
 
     switch (message.content.content) {
       case MessageContentTypes.SERVICE:
-        messageContent = <Service {...message.content} className="message__content message__content--service"/>;
-        break;
+        return (
+          <Service
+            {...message.content}
+            className="message__content message__content--service"
+          />
+        );
       case MessageContentTypes.TEXT:
-        messageContent = <Text {...message.content} className="message__content message__content--text"/>;
-        break;
+        return (
+          <Text
+            {...message.content}
+            className="message__content message__content--text"
+          />
+        );
       case MessageContentTypes.PHOTO:
-        messageContent = (<Photo content={message.content} className="message__content message__content--photo"
-                                loadedClassName="message__content--photo--loaded"/>);
-        break;
+        return (
+          <Photo
+            {...message.content}
+            className="message__content message__content--photo"
+            loadedClassName="message__content--photo--loaded"
+          />
+        );
       case MessageContentTypes.DOCUMENT:
-        messageContent = <Document content={message.content} className="message__content message__content--document"/>;
-        break;
+        return (
+          <Document
+            {...message.content}
+            className="message__content message__content--document"
+          />
+        );
       case MessageContentTypes.VOICE:
-        messageContent = <Voice content={message.content} className="message__content message__content--voice"/>;
-        break;
+        return (
+          <Voice
+            {...message.content}
+            className="message__content message__content--voice"
+          />
+        );
       case MessageContentTypes.CONTACT:
-        messageContent = <Contact {...message.content} className="message__content message__content--contact"/>;
-        break;
+        return (
+          <Contact
+            {...message.content}
+            className="message__content message__content--contact"
+          />
+        );
       case MessageContentTypes.LOCATION:
-        messageContent = <Location content={message.content} className="message__content message__content--location"/>;
-        break;
+        return (
+          <Location
+            {...message.content}
+            className="message__content message__content--location"
+          />
+        );
       case MessageContentTypes.TEXT_MODERN:
-        messageContent = <Modern {...message.content} className="message__content message__content--modern"/>;
-        break;
+        return (
+          <Modern
+            {...message.content}
+            className="message__content message__content--modern"
+          />
+        );
       case MessageContentTypes.STICKER:
-        messageContent = <Sticker {...message.content} className="message__content message__content--sticker"/>;
-        break;
+        return (
+          <Sticker
+            {...message.content}
+            className="message__content message__content--sticker"
+          />
+        );
       default:
+        return null;
     }
+  }
+
+  renderActions() {
+    const { peer, message } = this.props;
+    const { isHighlighted } = this.state;
+    const { isExperimental } = this.context;
+
+    const messageActionsMenuClassName = classnames('message__actions__menu', {
+      'message__actions__menu--opened': isHighlighted
+    });
+
+    return (
+      <div className="message__actions">
+        <Reactions peer={peer} message={message}/>
+
+        <div className={messageActionsMenuClassName} onClick={this.showActions}>
+          <SvgIcon className="icon icon--dropdown" glyph="cog" />
+        </div>
+
+        {
+          isExperimental
+            ? <div className="message__actions__selector" onClick={this.toggleMessageSelection}>
+                <i className="icon material-icons icon-check"></i>
+              </div>
+            : null
+        }
+      </div>
+    );
+  }
+
+  render() {
+    const { isShort, isSelected } = this.props;
+    const { isHighlighted } = this.state;
+
+    const messageClassName = classnames('message', {
+      'message--short': isShort,
+      'message--active': isHighlighted,
+      'message--selected': isSelected
+    });
 
     return (
       <div className={messageClassName}>
         <div className="row">
-          {leftBlock}
+          {this.renderLeftBlock()}
           <div className="message__body col-xs">
-            {header}
-            {messageContent}
+            {this.renderHeader()}
+            {this.renderContent()}
           </div>
-          <div className="message__actions">
-            <Reactions peer={peer} message={message}/>
-
-            <div className={messageActionsMenuClassName} onClick={this.showActions}>
-              <SvgIcon className="icon icon--dropdown" glyph="cog" />
-            </div>
-
-            {
-              isExperimental
-                ? <div className="message__actions__selector" onClick={this.toggleMessageSelection}>
-                    <i className="icon material-icons icon-check"></i>
-                  </div>
-                : null
-            }
-          </div>
+          {this.renderActions()}
         </div>
       </div>
     );
