@@ -12,8 +12,26 @@ $chat-footer-height: 100px;
 }
 
 .chat__messages {
+  position: relative;
   .message {
     min-height: min-content;
+  }
+
+  &__scroll-to-bottom {
+    position: fixed;
+    right: 18px;
+    top: 82px;
+    border-radius: 2px;
+    border: 1px solid $dark-sky-blue2;
+    background-color: rgba(white, .7);
+    color: $dark-sky-blue2;
+    padding: 4px;
+    cursor: pointer;
+    transition: 200ms;
+    &:hover {
+      color: white;
+      background-color: $dark-sky-blue2;
+    }
   }
 }
 
