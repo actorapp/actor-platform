@@ -101,10 +101,11 @@ public class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewCon
         hintLabel.numberOfLines = 2
         hintLabel.lineBreakMode = .ByWordWrapping
         
+        codeField.secureTextEntry = true;
         codeField.font = UIFont.systemFontOfSize(17)
         codeField.textColor = ActorSDK.sharedActor().style.authTextColor
         codeField.placeholder = AALocalized("AuthOTPPlaceholder")
-        codeField.keyboardType = .NumberPad
+        
         codeField.autocapitalizationType = .None
         codeField.autocorrectionType = .No
         

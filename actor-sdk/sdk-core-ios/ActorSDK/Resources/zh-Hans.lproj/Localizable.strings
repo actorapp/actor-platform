@@ -102,33 +102,33 @@
  * Calls
  */
 
-"CallsStartAudio" = "Audio Call";
+"CallsStartAudio" = "视频聊天";
 
-"CallsStartGroupAudio" = "Group Audio Call";
+"CallsStartGroupAudio" = "组视频通话";
 
-"CallsAnswer" = "answer";
+"CallsAnswer" = "接听";
 
-"CallsDecline" = "decline";
+"CallsDecline" = "拒绝";
 
-"CallsMute" = "mute";
+"CallsMute" = "静音";
 
-"CallsSpeaker" = "speaker";
+"CallsSpeaker" = "麦克风";
 
-"CallsVideo" = "video";
+"CallsVideo" = "摄像头";
 
-"CallStateRinging" = "Ringing...";
+"CallStateRinging" = "拨号中...";
 
-"CallStateConnecting" = "Connecting...";
+"CallStateConnecting" = "连接中...";
 
-"CallStateIncoming" = "Incoming call...";
+"CallStateIncoming" = "您有新的来电...";
 
-"CallPrivateTitle" = "Private Call";
+"CallPrivateTitle" = "私人通话";
 
-"CallPrivateText" = "Call from {name}";
+"CallPrivateText" = "来自{name}的电话";
 
-"CallGroupTitle" = "Group Call";
+"CallGroupTitle" = "组通话";
 
-"CallGroupText" = "Group call {name}";
+"CallGroupText" = "{name}对话组的通话";
 
 /*
  * Profile
@@ -427,13 +427,13 @@
  * Welcome
  */
 
-"WelcomeTitle" = "Welcome to {app_name}!";
+"WelcomeTitle" = "欢迎使用{app_name}!";
 
 "WelcomeTagline" = "Free, fast and secure messaging.";
 
-"WelcomeSignUp" = "Sign Up";
+"WelcomeSignUp" = "注册";
 
-"WelcomeLogIn" = "Log In";
+"WelcomeLogIn" = "登录";
 
 
 /*
@@ -444,13 +444,13 @@
 
 "AuthUnsupported" = "This account is unsupported in this version of {app_name}. Please, update application for logging in to this account.";
 
-"AuthLoginTitle" = "Login to {app_name}";
+"AuthLoginTitle" = "登录";
 
 "AuthLoginPhone" = "Phone";
 
 "AuthLoginEmail" = "Email";
 
-"AuthLoginPhoneEmail" = "Phone or Email";
+"AuthLoginPhoneEmail" = "账号名称";
 
 "AuthNameTitle" = "Hi! What's your name?";
 
@@ -482,11 +482,11 @@
 
 "AuthDisclaimerPrivacy" = "Privacy Policy";
 
-"AuthOTPEmailTitle" = "Confirm your email";
+"AuthOTPEmailTitle" = "请输入密码";
 
 "AuthOTPPhoneTitle" = "Confirm your phone";
 
-"AuthOTPEmailHint" = "We’ve sent you email with confirmation code.\nPlease enter it below.";
+"AuthOTPEmailHint" = "密码与您在OA上的密码相同.\n请在输入框中输入您的密码.";
 
 "AuthOTPPhoneHint" = "We’ve sent you SMS with confirmation code.\nPlease enter it below.";
 
