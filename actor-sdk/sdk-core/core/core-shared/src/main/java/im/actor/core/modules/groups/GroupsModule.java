@@ -43,6 +43,7 @@ import im.actor.core.entity.Group;
 import im.actor.core.entity.User;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.groups.router.GroupRouterInt;
 import im.actor.core.modules.profile.avatar.GroupAvatarChangeActor;
 import im.actor.core.util.RandomUtils;
 import im.actor.core.viewmodel.GroupAvatarVM;
@@ -64,12 +65,15 @@ public class GroupsModule extends AbsModule {
     private final MVVMCollection<Group, GroupVM> collection;
     private final HashMap<Integer, GroupAvatarVM> avatarVMs;
     private final ActorRef avatarChangeActor;
+    private final GroupRouterInt groupRouterInt;
 
     public GroupsModule(final ModuleContext context) {
         super(context);
 
         collection = Storage.createKeyValue(STORAGE_GROUPS, GroupVM.CREATOR(context.getAuthModule().myUid()), Group.CREATOR);
         groups = collection.getEngine();
+
+        groupRouterInt = new GroupRouterInt(context);
 
         avatarVMs = new HashMap<>();
         avatarChangeActor = system().actorOf("actor/avatar/group", () -> new GroupAvatarChangeActor(context));
@@ -97,6 +101,9 @@ public class GroupsModule extends AbsModule {
         return collection;
     }
 
+    public GroupRouterInt getRouter() {
+        return groupRouterInt;
+    }
 
     //
     // Actions
