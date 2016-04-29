@@ -54,7 +54,7 @@ public class DialogsHistoryActor extends ModuleActor {
         isLoading = true;
 
         api(new RequestLoadDialogs(historyMaxDate, LIMIT, ApiSupportConfiguration.OPTIMIZATIONS))
-                .chain(r -> loadRequiredPeers(r.getUserPeers(), r.getGroupPeers()))
+                .chain(r -> updates().loadRequiredPeers(r.getUserPeers(), r.getGroupPeers()))
                 .chain(r -> updates().applyRelatedData(r.getUsers(), r.getGroups()))
                 .then(r -> onLoadedMore(r.getDialogs()));
     }

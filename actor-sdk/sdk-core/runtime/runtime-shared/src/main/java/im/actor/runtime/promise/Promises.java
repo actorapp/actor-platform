@@ -18,7 +18,7 @@ public class Promises {
 
     @ObjectiveCName("logWithTag:withResolver:withFunc:")
     public static <T> Promise<T> log(final String TAG, final PromiseResolver<T> resolver, final PromiseFunc<T> func) {
-        return new Promise<T>(func::exec).then(t -> {
+        return new Promise<T>(r -> func.exec(r)).then(t -> {
             Log.d(TAG, "Result: " + t);
             resolver.result(t);
         }).failure(e -> {
