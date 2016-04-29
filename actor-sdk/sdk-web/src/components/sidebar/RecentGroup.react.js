@@ -17,7 +17,8 @@ class RecentGroup extends Component {
     archive: PropTypes.object.isRequired,
     currentPeer: PropTypes.object,
     onTitleClick: PropTypes.func,
-    onPlusClick: PropTypes.func
+    onPlusClick: PropTypes.func,
+    onItemUpdate: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -51,7 +52,7 @@ class RecentGroup extends Component {
     const titleMessage = <FormattedMessage id={`sidebar.recents.${group}`} />;
     if (!onTitleClick) {
       return (
-        <div  className="recent__group__header">
+        <div className="recent__group__header">
           <div className="recent__group__title">
             {titleMessage}
           </div>
@@ -62,7 +63,7 @@ class RecentGroup extends Component {
     const tooltipMessage = <FormattedMessage id={`tooltip.recent.${group}List`}/>;
 
     return (
-      <div  className="recent__group__header">
+      <div className="recent__group__header">
         <div className="recent__group__title recent__group__title--clickable" onClick={onTitleClick}>
           <Tooltip
             placement="right"
@@ -79,7 +80,7 @@ class RecentGroup extends Component {
   }
 
   renderGroupList() {
-    const { items, archive, currentPeer } = this.props;
+    const { items, archive, currentPeer, onItemUpdate } = this.props;
 
     return map(items, (dialog) => {
       const peer = dialog.peer.peer;
@@ -91,6 +92,7 @@ class RecentGroup extends Component {
           dialog={dialog}
           archiveState={archive[peerKey]}
           isActive={isActive}
+          onUpdate={onItemUpdate}
           key={peerKey}
         />
       );

@@ -36,12 +36,8 @@ class Recent extends Component {
     this.checkInvisibleCounters = debounce(this.checkInvisibleCounters.bind(this), 50, { maxWait: 150, leading: true });
     this.scrollToFirstHiddenAbove = this.scrollToFirstHiddenAbove.bind(this);
     this.scrollToLastHiddenBelow = this.scrollToLastHiddenBelow.bind(this);
-    this.handleGroupListTitleClick = this.handleGroupListTitleClick .bind(this);
+    this.handleGroupListTitleClick = this.handleGroupListTitleClick.bind(this);
     this.handlePrivateListTitleClick = this.handlePrivateListTitleClick.bind(this);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.dialogs !== this.props.dialogs) this.checkInvisibleCounters();
   }
 
   handleGroupListTitleClick () {
@@ -146,6 +142,7 @@ class Recent extends Component {
           archive={archive}
           onTitleClick={this.getTitleClickHandler(group)}
           onPlusClick={this.getTitleAddHandler(group)}
+          onItemUpdate={this.checkInvisibleCounters}
         />
       );
     });

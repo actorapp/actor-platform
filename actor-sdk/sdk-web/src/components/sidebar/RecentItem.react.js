@@ -18,7 +18,8 @@ class RecentItem extends Component {
   static propTypes = {
     isActive: PropTypes.bool.isRequired,
     dialog: PropTypes.object.isRequired,
-    archiveState: PropTypes.number.isRequired
+    archiveState: PropTypes.number.isRequired,
+    onUpdate: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -31,6 +32,14 @@ class RecentItem extends Component {
 
     this.handleClick = this.handleClick.bind(this);
     this.handleOpenContextMenu = this.handleOpenContextMenu.bind(this);
+  }
+
+  componentDidMount() {
+    this.props.onUpdate();
+  }
+
+  componentDidUpdate() {
+    this.props.onUpdate();
   }
 
   shouldComponentUpdate(nextProps) {
