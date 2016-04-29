@@ -15,7 +15,11 @@ let cache = [];
  */
 class Photo extends Component {
   static propTypes = {
-    content: PropTypes.object.isRequired,
+    fileUrl: PropTypes.string,
+    w: PropTypes.number.isRequired,
+    h: PropTypes.number.isRequired,
+    preview: PropTypes.string.isRequired,
+    isUploading: PropTypes.bool.isRequired,
     className: PropTypes.string,
     loadedClassName: PropTypes.string
   };
@@ -26,31 +30,39 @@ class Photo extends Component {
     this.state = {
       isImageLoaded: this.isCached()
     };
+
+    this.openLightBox = this.openLightBox.bind(this);
+    this.onLoad = this.onLoad.bind(this);
+    this.isCached = this.isCached.bind(this);
+    this.setCached = this.setCached.bind(this);
+    this.getDimentions = this.getDimentions.bind(this);
   }
 
-  openLightBox = () => lightbox.open(this.props.content.fileUrl, 'message');
+  openLightBox() {
+    lightbox.open(this.props.fileUrl, 'message');
+  }
 
-  onLoad = () => {
+  onLoad() {
     this.setCached();
     if (!this.state.isImageLoaded) {
       this.setState({ isImageLoaded: true });
     }
-  };
+  }
 
-  isCached = () => cache[this.props.content.fileUrl] === true;
+  isCached() {
+    cache[this.props.fileUrl] === true;
+  }
 
-  setCached = () => {
-    cache[this.props.content.fileUrl] = true;
-  };
+  setCached() {
+    cache[this.props.fileUrl] = true;
+  }
 
-  render() {
-    const { content, className, loadedClassName } = this.props;
-    const { isImageLoaded } = this.state;
-
+  getDimentions() {
+    const { w, h } = this.props;
     const MAX_WIDTH = 300;
     const MAX_HEIGHT = 400;
-    let width = content.w;
-    let height = content.h;
+    let width = w;
+    let height = h;
 
     if (width > height) {
       if (width > MAX_WIDTH) {
@@ -64,36 +76,64 @@ class Photo extends Component {
       }
     }
 
-    let original = null,
-        preview = null,
-        preloader = null;
+    return { width, height };
+  }
 
-    if (content.fileUrl) {
-      original = (
-        <img className="photo photo--original"
-             height={content.h}
-             onClick={this.openLightBox}
-             onLoad={this.onLoad}
-             src={content.fileUrl}
-             width={content.w}/>
-      );
+  renderPreview() {
+    const { preview } = this.props;
+
+    if (this.isCached()) {
+      return null;
     }
 
-    if (!this.isCached()) {
-      preview = <img className="photo photo--preview" src={content.preview}/>;
+    return (
+      <img className="photo photo--preview" src={preview}/>
+    )
+  }
 
-      if (content.isUploading === true || isImageLoaded === false) {
-        preloader = <div className="preloader"><div/><div/><div/><div/><div/></div>;
-      }
+  renderPreloader() {
+    const { isUploading } = this.props;
+    const { isImageLoaded } = this.state;
+
+    if (this.isCached() || isUploading !== true || isImageLoaded !== false) {
+      return null;
     }
+
+    return (
+      <div className="preloader"><div/><div/><div/><div/><div/></div>
+    );
+  }
+
+  renderOriginal() {
+    const { fileUrl, w, h } = this.props;
+
+    if (!fileUrl) {
+      return null;
+    }
+
+    return (
+      <img
+        className="photo photo--original"
+        height={h}
+        onClick={this.openLightBox}
+        onLoad={this.onLoad}
+        src={fileUrl}
+        width={w}
+      />
+    );
+  }
+
+  render() {
+    const { className, loadedClassName } = this.props;
+    const { isImageLoaded } = this.state;
 
     const imageClassName = isImageLoaded ? classnames(className, loadedClassName) : className;
 
     return (
-      <div className={imageClassName} style={{ width, height }}>
-        {preview}
-        {original}
-        {preloader}
+      <div className={imageClassName} style={this.getDimentions()}>
+        {this.renderPreview()}
+        {this.renderOriginal()}
+        {this.renderPreloader()}
         <svg dangerouslySetInnerHTML={{ __html: '<filter id="blur-effect"><feGaussianBlur stdDeviation="3"/></filter>' }}/>
       </div>
     );

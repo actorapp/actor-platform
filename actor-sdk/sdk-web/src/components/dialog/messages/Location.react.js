@@ -12,29 +12,37 @@ const MAP_SIZE = '300x100';
  */
 class Location extends Component {
   static propTypes = {
-    content: PropTypes.object.isRequired,
+    latitude: PropTypes.number.isRequired,
+    longitude: PropTypes.number.isRequired,
     className: PropTypes.string
   };
+  constructor(props) {
+    super(props);
 
-  handleMapClick = (event) => {
-    const { content } = this.props;
-    const linkToMap = `https://maps.google.com/maps?q=loc:${content.latitude},${content.longitude}`;
+    this.handleMapClick = this.handleMapClick.bind(this);
+  }
+
+  handleMapClick(event) {
+    const { latitude, longitude } = this.props;
+    const linkToMap = `https://maps.google.com/maps?q=loc:${latitude},${longitude}`;
 
     if (ActorClient.isElectron()) {
       ActorClient.handleLinkClick(event);
     } else {
       window.open(linkToMap);
     }
-  };
+  }
 
   render() {
-    const { content, className } = this.props;
-    const imageSrc = `https://maps.googleapis.com/maps/api/staticmap?center=${content.latitude},${content.longitude}&zoom=15&size=${MAP_SIZE}&scale=2&maptype=roadmap&markers=color:red%7C${content.latitude},${content.longitude}`;
+    const { latitude, longitude, className } = this.props;
 
     return (
       <div className={className}>
         <div className="location" onClick={this.handleMapClick}>
-          <img src={imageSrc} alt="Location"/>
+          <img
+            src={`https://maps.googleapis.com/maps/api/staticmap?center=${latitude},${longitude}&zoom=15&size=${MAP_SIZE}&scale=2&maptype=roadmap&markers=color:red%7C${latitude},${longitude}`}
+            alt="Location"
+          />
         </div>
       </div>
     );
