@@ -14,5 +14,6 @@ public interface JsMessagesBindClosure extends Exportable {
                 JsArray<JavaScriptObject> overlays,
                 boolean isLoaded,
                 double receiveDate,
-                double readDate);
+                double readDate,
+                double readByMeDate);
 }
