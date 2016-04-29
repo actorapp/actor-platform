@@ -341,9 +341,9 @@ object Build extends sbt.Build with Versioning with Releasing {
     actorEmail,
     actorFrontend,
     actorHttpApi,
-    actorRpcApi,
+    actorNotify,
     actorOAuth,
-    actorNotify
+    actorRpcApi
   ).aggregate(
     actorActivation,
     actorBots,
@@ -356,6 +356,7 @@ object Build extends sbt.Build with Versioning with Releasing {
     actorFrontend,
     actorHttpApi,
     actorModels,
+    actorNotify,
     actorOAuth,
     actorPersist,
     actorRpcApi,
