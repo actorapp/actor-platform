@@ -222,7 +222,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     authorized(clientData) { implicit client ⇒
       val action = withPublicGroup(peer) { fullGroup ⇒
         GroupUserRepo.find(fullGroup.id, client.userId) flatMap {
-          case Some(_) ⇒ DBIO.successful(Error(GroupRpcErrors.UserAlreadyInvited))
+          case Some(_) ⇒ DBIO.successful(Error(GroupRpcErrors.YouAlreadyAMember))
           case None ⇒
             val group = Group.fromFull(fullGroup)
             for {
@@ -292,7 +292,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     case GroupErrors.TopicTooLong       ⇒ GroupRpcErrors.TopicTooLong
     case GroupErrors.BlockedByUser      ⇒ GroupRpcErrors.BlockedByUser
     case FileErrors.LocationInvalid     ⇒ FileRpcErrors.LocationInvalid
-    case GroupErrors.UserAlreadyInvited ⇒ GroupRpcErrors.UserAlreadyInvited
+    case GroupErrors.UserAlreadyInvited ⇒ GroupRpcErrors.YouAlreadyAMember
   }
 
 }

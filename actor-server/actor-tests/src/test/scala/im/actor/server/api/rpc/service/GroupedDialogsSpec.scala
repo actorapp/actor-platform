@@ -48,8 +48,8 @@ final class GroupedDialogsSpec
     val groupPeer = ApiOutPeer(ApiPeerType.Group, group.groupPeer.groupId, group.groupPeer.accessHash)
 
     whenReady(Future.sequence(Seq(
-      service.handleSendMessage(user2Peer, Random.nextLong, ApiTextMessage("Hi there", Vector.empty, None), None),
-      service.handleSendMessage(groupPeer, Random.nextLong, ApiTextMessage("Hi all there", Vector.empty, None), None)
+      service.handleSendMessage(user2Peer, Random.nextLong, ApiTextMessage("Hi there", Vector.empty, None), None, None),
+      service.handleSendMessage(groupPeer, Random.nextLong, ApiTextMessage("Hi all there", Vector.empty, None), None, None)
     ))) { _ ⇒
       whenReady(service.handleLoadGroupedDialogs()) { resp ⇒
         inside(resp) {
@@ -285,21 +285,21 @@ final class GroupedDialogsSpec
     whenReady(service.handleArchiveChat(evePeer))(identity)
     whenReady(service.handleArchiveChat(kiraPeer))(identity)
 
-    val offset1 = whenReady(service.handleLoadArchived(None, 1)) { resp ⇒
+    val offset1 = whenReady(service.handleLoadArchived(None, 1, Vector.empty)) { resp ⇒
       val okResp = resp.toOption.get
       okResp.dialogs.size shouldBe 1
       okResp.dialogs.head.peer.id shouldBe kiraPeer.id
       okResp.nextOffset
     }
 
-    val offset2 = whenReady(service.handleLoadArchived(offset1, 1)) { resp ⇒
+    val offset2 = whenReady(service.handleLoadArchived(offset1, 1, Vector.empty)) { resp ⇒
       val okResp = resp.toOption.get
       okResp.dialogs.size shouldBe 1
       okResp.dialogs.head.peer.id shouldBe evePeer.id
       okResp.nextOffset
     }
 
-    whenReady(service.handleLoadArchived(offset2, 1)) { resp ⇒
+    whenReady(service.handleLoadArchived(offset2, 1, Vector.empty)) { resp ⇒
       val okResp = resp.toOption.get
       okResp.dialogs.size shouldBe 1
       okResp.dialogs.head.peer.id shouldBe bobPeer.id

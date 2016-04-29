@@ -454,7 +454,7 @@ final class GroupsServiceSpec
 
             whenReady(service.handleJoinGroup(url)) { resp ⇒
               inside(resp) {
-                case Error(err) ⇒ err shouldEqual GroupRpcErrors.UserAlreadyInvited
+                case Error(err) ⇒ err shouldEqual GroupRpcErrors.YouAlreadyAMember
               }
             }
           }
@@ -560,7 +560,7 @@ final class GroupsServiceSpec
 
     val peer = ApiOutPeer(ApiPeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
 
-    whenReady(messagingService.handleSendMessage(peer, 22324L, ApiTextMessage("hello", Vector.empty, None), None)(clientData1)) { _ ⇒ }
+    whenReady(messagingService.handleSendMessage(peer, 22324L, ApiTextMessage("hello", Vector.empty, None), None, None)(clientData1)) { _ ⇒ }
 
     whenReady(messagingService.handleMessageRead(peer, System.currentTimeMillis)(clientData2)) { _ ⇒ }
 
@@ -854,13 +854,13 @@ final class GroupsServiceSpec
 
     for (_ ← 1 to 6) {
       implicit val clientData = clientData1
-      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("hello", Vector.empty, None), None)) { _ ⇒ }
+      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("hello", Vector.empty, None), None, None)) { _ ⇒ }
     }
 
     {
       implicit val clientData = clientData2
 
-      whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100)) { resp ⇒
+      whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100, Vector.empty)) { resp ⇒
         val dialog = resp.toOption.get.dialogs.head
         dialog.unreadCount should be > 6
       }
@@ -869,7 +869,7 @@ final class GroupsServiceSpec
         resp should matchPattern { case Ok(_) ⇒ }
       }
 
-      whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100)) { resp ⇒
+      whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100, Vector.empty)) { resp ⇒
         val dialog = resp.toOption.get.dialogs.head
         dialog.unreadCount shouldEqual 0
       }
@@ -877,13 +877,13 @@ final class GroupsServiceSpec
 
     for (_ ← 1 to 6) {
       implicit val clientData = clientData1
-      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("bye left user", Vector.empty, None), None)) { _ ⇒ }
+      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("bye left user", Vector.empty, None), None, None)) { _ ⇒ }
     }
 
     {
       implicit val clientData = clientData2
 
-      whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100)) { resp ⇒
+      whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100, Vector.empty)) { resp ⇒
         val dialog = resp.toOption.get.dialogs.head
         dialog.unreadCount shouldEqual 0
       }
@@ -912,12 +912,12 @@ final class GroupsServiceSpec
 
     for (_ ← 1 to 6) {
       implicit val clientData = clientData1
-      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("hello", Vector.empty, None), None)) { _ ⇒ }
+      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("hello", Vector.empty, None), None, None)) { _ ⇒ }
     }
 
     {
       implicit val clientData = clientData2
-      whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100)) { resp ⇒
+      whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100, Vector.empty)) { resp ⇒
         val dialog = resp.toOption.get.dialogs.head
         dialog.unreadCount > 6 shouldEqual true
       }
@@ -932,7 +932,7 @@ final class GroupsServiceSpec
 
     {
       implicit val clientData = clientData2
-      whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100)) { resp ⇒
+      whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100, Vector.empty)) { resp ⇒
         val dialog = resp.toOption.get.dialogs.head
         dialog.unreadCount shouldEqual 0
       }
@@ -940,13 +940,13 @@ final class GroupsServiceSpec
 
     for (_ ← 1 to 6) {
       implicit val clientData = clientData1
-      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("bye kicked user", Vector.empty, None), None)) { _ ⇒ }
+      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("bye kicked user", Vector.empty, None), None, None)) { _ ⇒ }
     }
 
     {
       implicit val clientData = clientData2
 
-      whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100)) { resp ⇒
+      whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100, Vector.empty)) { resp ⇒
         val dialog = resp.toOption.get.dialogs.head
         dialog.unreadCount shouldEqual 0
       }
@@ -977,7 +977,7 @@ final class GroupsServiceSpec
 
     {
       implicit val clientData = clientData2
-      whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100)) { resp ⇒
+      whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100, Vector.empty)) { resp ⇒
         val dialog = resp.toOption.get.dialogs.head
         dialog.unreadCount shouldBe 2
       }
@@ -985,14 +985,14 @@ final class GroupsServiceSpec
 
     for (_ ← 1 to 6) {
       implicit val clientData = clientData1
-      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("hello public", Vector.empty, None), None)) { _ ⇒ }
+      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("hello public", Vector.empty, None), None, None)) { _ ⇒ }
     }
 
     Thread.sleep(2000)
 
     {
       implicit val clientData = clientData2
-      whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100)) { resp ⇒
+      whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100, Vector.empty)) { resp ⇒
         val dialog = resp.toOption.get.dialogs.head
         dialog.unreadCount shouldBe 8
       }
@@ -1007,7 +1007,7 @@ final class GroupsServiceSpec
 
     {
       implicit val clientData = clientData2
-      whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100)) { resp ⇒
+      whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100, Vector.empty)) { resp ⇒
         val dialog = resp.toOption.get.dialogs.head
         dialog.unreadCount shouldEqual 0
       }
@@ -1015,13 +1015,13 @@ final class GroupsServiceSpec
 
     for (_ ← 1 to 6) {
       implicit val clientData = clientData1
-      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("bye kicked user", Vector.empty, None), None)) { _ ⇒ }
+      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("bye kicked user", Vector.empty, None), None, None)) { _ ⇒ }
     }
 
     {
       implicit val clientData = clientData2
 
-      whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100)) { resp ⇒
+      whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100, Vector.empty)) { resp ⇒
         val dialog = resp.toOption.get.dialogs.head
         dialog.unreadCount shouldEqual 0
       }
@@ -1067,7 +1067,7 @@ final class GroupsServiceSpec
       implicit val clientData = clientData2
 
       val randomId = Random.nextLong()
-      whenReady(messagingService.handleSendMessage(outPeer, randomId, ApiTextMessage("WTF? am i kicked?!!?!?!?!?!?!?!?!??!?!?!", Vector.empty, None), None)) { resp ⇒
+      whenReady(messagingService.handleSendMessage(outPeer, randomId, ApiTextMessage("WTF? am i kicked?!!?!?!?!?!?!?!?!??!?!?!", Vector.empty, None), None, None)) { resp ⇒
         inside(resp) {
           case Error(err) ⇒ err.code shouldEqual 403
         }

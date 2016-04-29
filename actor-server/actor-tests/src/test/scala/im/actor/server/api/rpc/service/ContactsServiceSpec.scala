@@ -66,18 +66,18 @@ final class ContactsServiceSpec
           UserExtension(system).getApiStruct(u.id, user.id, authId)
         }), 3.seconds)
 
-        whenReady(service.handleGetContacts(service.hashIds(Seq.empty))) { resp ⇒
+        whenReady(service.handleGetContacts(service.hashIds(Seq.empty), Vector.empty)) { resp ⇒
           resp should matchPattern {
-            case Ok(api.contacts.ResponseGetContacts(users, false)) if users.toSet == expectedUsers.toSet ⇒
+            case Ok(api.contacts.ResponseGetContacts(users, false, _)) if users.toSet == expectedUsers.toSet ⇒
           }
         }
       }
 
       def notChanged() = {
         val shuffledIds = Random.shuffle(userModels.map(_.id))
-        whenReady(service.handleGetContacts(service.hashIds(shuffledIds))) { resp ⇒
+        whenReady(service.handleGetContacts(service.hashIds(shuffledIds), Vector.empty)) { resp ⇒
           resp should matchPattern {
-            case Ok(api.contacts.ResponseGetContacts(Vector(), true)) ⇒
+            case Ok(api.contacts.ResponseGetContacts(Vector(), true, _)) ⇒
           }
         }
       }
@@ -87,9 +87,9 @@ final class ContactsServiceSpec
           removeContact(user.id, user.accessSalt)
         }
         val activeContactIds = Random.shuffle(userModels.drop(5).map(_.id))
-        whenReady(service.handleGetContacts(service.hashIds(activeContactIds))) { resp ⇒
+        whenReady(service.handleGetContacts(service.hashIds(activeContactIds), Vector.empty)) { resp ⇒
           resp should matchPattern {
-            case Ok(api.contacts.ResponseGetContacts(Vector(), true)) ⇒
+            case Ok(api.contacts.ResponseGetContacts(Vector(), true, _)) ⇒
           }
         }
       }
@@ -119,9 +119,9 @@ final class ContactsServiceSpec
           3.seconds
         ))
 
-        whenReady(service.handleGetContacts(service.hashIds(Seq.empty))) { resp ⇒
+        whenReady(service.handleGetContacts(service.hashIds(Seq.empty), Vector.empty)) { resp ⇒
           resp should matchPattern {
-            case Ok(api.contacts.ResponseGetContacts(expectedUsers, false)) ⇒
+            case Ok(api.contacts.ResponseGetContacts(expectedUsers, false, _)) ⇒
           }
         }
       }
@@ -145,9 +145,9 @@ final class ContactsServiceSpec
           }
         }
 
-        whenReady(service.handleGetContacts(service.hashIds(Seq.empty))) { resp ⇒
+        whenReady(service.handleGetContacts(service.hashIds(Seq.empty), Vector.empty)) { resp ⇒
           resp should matchPattern {
-            case Ok(api.contacts.ResponseGetContacts(Vector(), true)) ⇒
+            case Ok(api.contacts.ResponseGetContacts(Vector(), true, _)) ⇒
           }
         }
       }
@@ -167,11 +167,11 @@ final class ContactsServiceSpec
       implicit val clientData = api.ClientData(authId, sessionId, Some(AuthData(user.id, authSid, 42)))
 
       def ru() = {
-        whenReady(service.handleImportContacts(Vector(ApiPhoneToImport(79031161616L, Some("Kaizer 7"))), Vector.empty)) { resp ⇒
+        whenReady(service.handleImportContacts(Vector(ApiPhoneToImport(79031161616L, Some("Kaizer 7"))), Vector.empty, Vector.empty)) { resp ⇒
           resp.toOption.get.users.map(_.id) shouldEqual Vector(user2.id)
         }
 
-        whenReady(service.handleImportContacts(Vector(ApiPhoneToImport(89031171717L, Some("Kaizer 8"))), Vector.empty)) { resp ⇒
+        whenReady(service.handleImportContacts(Vector(ApiPhoneToImport(89031171717L, Some("Kaizer 8"))), Vector.empty, Vector.empty)) { resp ⇒
           resp.toOption.get.users.map(_.id) shouldEqual Vector(user3.id)
         }
       }

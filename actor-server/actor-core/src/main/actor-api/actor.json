@@ -1770,12 +1770,6 @@
               },
               {
                 "type": "reference",
-                "argument": "about",
-                "category": "full",
-                "description": "  User's about information"
-              },
-              {
-                "type": "reference",
                 "argument": "sex",
                 "category": "full",
                 "description": "  optional sex of user"
@@ -1788,39 +1782,45 @@
               },
               {
                 "type": "reference",
-                "argument": "contactInfo",
-                "category": "compact",
-                "description": "  phones of user"
-              },
-              {
-                "type": "reference",
                 "argument": "isBot",
                 "category": "full",
                 "description": "  Is user actually bot. By default is false."
               },
               {
                 "type": "reference",
-                "argument": "external",
+                "argument": "ext",
                 "category": "full",
-                "description": "  If not null, is user come from outer network"
+                "description": "  Extension values"
+              },
+              {
+                "type": "reference",
+                "argument": "about",
+                "category": "full",
+                "description": "  [DEPRECATED] User's about information"
+              },
+              {
+                "type": "reference",
+                "argument": "contactInfo",
+                "category": "compact",
+                "description": "  [DEPRECATED] Contact information of user"
               },
               {
                 "type": "reference",
                 "argument": "preferredLanguages",
                 "category": "full",
-                "description": "  Preferred user languages"
+                "description": "  [DEPRECATED] Preferred user languages"
               },
               {
                 "type": "reference",
                 "argument": "timeZone",
                 "category": "full",
-                "description": "  Time Zone of user in TZ format"
+                "description": "  [DEPRECATED] Time Zone of user in TZ format"
               },
               {
                 "type": "reference",
                 "argument": "botCommands",
                 "category": "full",
-                "description": "  Available Bot Commands"
+                "description": "  [DEPRECATED] Available Bot Commands"
               }
             ],
             "expandable": "true",
@@ -1854,6 +1854,14 @@
               {
                 "type": {
                   "type": "opt",
+                  "childType": "string"
+                },
+                "id": 13,
+                "name": "nick"
+              },
+              {
+                "type": {
+                  "type": "opt",
                   "childType": {
                     "type": "enum",
                     "childType": "Sex"
@@ -1875,17 +1883,6 @@
               },
               {
                 "type": {
-                  "type": "list",
-                  "childType": {
-                    "type": "struct",
-                    "childType": "ContactRecord"
-                  }
-                },
-                "id": 12,
-                "name": "contactInfo"
-              },
-              {
-                "type": {
                   "type": "opt",
                   "childType": "bool"
                 },
@@ -1895,10 +1892,25 @@
               {
                 "type": {
                   "type": "opt",
-                  "childType": "string"
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MapValue"
+                  }
                 },
-                "id": 13,
-                "name": "nick"
+                "id": 20,
+                "name": "ext"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "ContactRecord"
+                  }
+                },
+                "id": 12,
+                "name": "contactInfo",
+                "deprecated": "true"
               },
               {
                 "type": {
@@ -1906,15 +1918,8 @@
                   "childType": "string"
                 },
                 "id": 14,
-                "name": "about"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "string"
-                },
-                "id": 15,
-                "name": "external"
+                "name": "about",
+                "deprecated": "true"
               },
               {
                 "type": {
@@ -1922,7 +1927,8 @@
                   "childType": "string"
                 },
                 "id": 16,
-                "name": "preferredLanguages"
+                "name": "preferredLanguages",
+                "deprecated": "true"
               },
               {
                 "type": {
@@ -1930,7 +1936,8 @@
                   "childType": "string"
                 },
                 "id": 17,
-                "name": "timeZone"
+                "name": "timeZone",
+                "deprecated": "true"
               },
               {
                 "type": {
@@ -1941,7 +1948,141 @@
                   }
                 },
                 "id": 19,
+                "name": "botCommands",
+                "deprecated": "true"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "FullUser",
+            "doc": [
+              "Full User representation",
+              {
+                "type": "reference",
+                "argument": "id",
+                "category": "full",
+                "description": "  User's Id"
+              },
+              {
+                "type": "reference",
+                "argument": "contactInfo",
+                "category": "compact",
+                "description": "  User's contact information"
+              },
+              {
+                "type": "reference",
+                "argument": "about",
+                "category": "full",
+                "description": "  User's about information"
+              },
+              {
+                "type": "reference",
+                "argument": "preferredLanguages",
+                "category": "full",
+                "description": "  Preferred user languages"
+              },
+              {
+                "type": "reference",
+                "argument": "timeZone",
+                "category": "full",
+                "description": "  Time Zone of user in TZ format"
+              },
+              {
+                "type": "reference",
+                "argument": "botCommands",
+                "category": "full",
+                "description": "  Available Commands for Bot"
+              },
+              {
+                "type": "reference",
+                "argument": "ext",
+                "category": "full",
+                "description": "  Extension values. NOTE: This values are not related to ext field in User object."
+              },
+              {
+                "type": "reference",
+                "argument": "isBlocked",
+                "category": "full",
+                "description": "  Is user blocked. Default is false."
+              }
+            ],
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "id"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "ContactRecord"
+                  }
+                },
+                "id": 2,
+                "name": "contactInfo"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 3,
+                "name": "about"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "string"
+                },
+                "id": 4,
+                "name": "preferredLanguages"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 5,
+                "name": "timeZone"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "BotCommand"
+                  }
+                },
+                "id": 6,
                 "name": "botCommands"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MapValue"
+                  }
+                },
+                "id": 7,
+                "name": "ext"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 8,
+                "name": "isBlocked"
               }
             ]
           }
@@ -2410,6 +2551,146 @@
               }
             ]
           }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "UserExtChanged",
+            "header": 218,
+            "doc": [
+              "Update about user ext changed",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  User's id"
+              },
+              {
+                "type": "reference",
+                "argument": "ext",
+                "category": "full",
+                "description": "  New Ext Value in User (NOT FullUser) object."
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MapValue"
+                  }
+                },
+                "id": 2,
+                "name": "ext"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "UserFullExtChanged",
+            "header": 219,
+            "doc": [
+              "Update about user ext changed",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  User's Id"
+              },
+              {
+                "type": "reference",
+                "argument": "ext",
+                "category": "full",
+                "description": "  New Ext Value in FullUser (NOT User) object."
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MapValue"
+                  }
+                },
+                "id": 3,
+                "name": "ext"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "LoadFullUsers",
+            "header": 2649,
+            "response": {
+              "type": "anonymous",
+              "header": 2650,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "fullUsers",
+                  "category": "compact",
+                  "description": "  Loaded users"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "FullUser"
+                    }
+                  },
+                  "id": 1,
+                  "name": "fullUsers"
+                }
+              ]
+            },
+            "doc": [
+              "Loading Full User information",
+              {
+                "type": "reference",
+                "argument": "userPeers",
+                "category": "compact",
+                "description": "User's peers to load. Should be non-empy"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "UserOutPeer"
+                  }
+                },
+                "id": 1,
+                "name": "userPeers"
+              }
+            ]
+          }
         }
       ]
     },
@@ -2797,6 +3078,12 @@
                   "argument": "state",
                   "category": "compact",
                   "description": "  Sequence state if users are imported"
+                },
+                {
+                  "type": "reference",
+                  "argument": "userPeers",
+                  "category": "full",
+                  "description": "  Imported user peers"
                 }
               ],
               "attributes": [
@@ -2823,6 +3110,17 @@
                   },
                   "id": 3,
                   "name": "state"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "UserOutPeer"
+                    }
+                  },
+                  "id": 4,
+                  "name": "userPeers"
                 }
               ]
             },
@@ -2840,6 +3138,12 @@
                 "argument": "emails",
                 "category": "compact",
                 "description": "Emails for import"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled optimizations"
               }
             ],
             "attributes": [
@@ -2864,6 +3168,17 @@
                 },
                 "id": 2,
                 "name": "emails"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 3,
+                "name": "optimizations"
               }
             ]
           }
@@ -2910,6 +3225,17 @@
                   "type": "bool",
                   "id": 2,
                   "name": "isNotChanged"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "UserOutPeer"
+                    }
+                  },
+                  "id": 3,
+                  "name": "userPeers"
                 }
               ]
             },
@@ -2923,6 +3249,12 @@
                 "argument": "contactsHash",
                 "category": "full",
                 "description": "Hash of saved list in application"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled optimizations"
               }
             ],
             "attributes": [
@@ -2930,6 +3262,17 @@
                 "type": "string",
                 "id": 1,
                 "name": "contactsHash"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 2,
+                "name": "optimizations"
               }
             ]
           }
@@ -3031,6 +3374,12 @@
                   "argument": "users",
                   "category": "compact",
                   "description": "  Founded users"
+                },
+                {
+                  "type": "reference",
+                  "argument": "userPeers",
+                  "category": "compact",
+                  "description": "  Founded users peers"
                 }
               ],
               "attributes": [
@@ -3044,6 +3393,17 @@
                   },
                   "id": 1,
                   "name": "users"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "UserOutPeer"
+                    }
+                  },
+                  "id": 2,
+                  "name": "userPeers"
                 }
               ]
             },
@@ -3061,6 +3421,17 @@
                 "type": "string",
                 "id": 1,
                 "name": "request"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 2,
+                "name": "optimizations"
               }
             ]
           }
@@ -3451,6 +3822,96 @@
                 },
                 "id": 4,
                 "name": "isOnlyForYou"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "QuotedMessage",
+            "doc": [
+              "Quoted Message",
+              {
+                "type": "reference",
+                "argument": "messageId",
+                "category": "full",
+                "description": "  Message Id if present"
+              },
+              {
+                "type": "reference",
+                "argument": "publicGroupId",
+                "category": "full",
+                "description": "  Public Group id if present"
+              },
+              {
+                "type": "reference",
+                "argument": "senderUserId",
+                "category": "full",
+                "description": "  Sender of message"
+              },
+              {
+                "type": "reference",
+                "argument": "messageDate",
+                "category": "full",
+                "description": "  Date of message"
+              },
+              {
+                "type": "reference",
+                "argument": "quotedMessageContent",
+                "category": "full",
+                "description": "  Optional Quoted Message Content. Can be empty if messageId is present and message is in current peer."
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "alias",
+                    "childType": "randomId"
+                  }
+                },
+                "id": 1,
+                "name": "messageId"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "alias",
+                    "childType": "groupId"
+                  }
+                },
+                "id": 2,
+                "name": "publicGroupId"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 3,
+                "name": "senderUserId"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
+                "id": 4,
+                "name": "messageDate"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "trait",
+                    "childType": "Message"
+                  }
+                },
+                "id": 5,
+                "name": "quotedMessageContent"
               }
             ]
           }
@@ -4723,6 +5184,21 @@
         {
           "type": "struct",
           "content": {
+            "name": "EmptyMessage",
+            "doc": [
+              "Empty Message"
+            ],
+            "trait": {
+              "name": "Message",
+              "key": 9
+            },
+            "expandable": "true",
+            "attributes": []
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
             "name": "DialogShort",
             "doc": [
               "Short Dialog from grouped conversation list",
@@ -4860,6 +5336,45 @@
           }
         },
         {
+          "type": "struct",
+          "content": {
+            "name": "MessageOutReference",
+            "doc": [
+              "Message Out Reference",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Out Peer of message"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "  Message random id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "rid"
+              }
+            ]
+          }
+        },
+        {
           "type": "rpc",
           "content": {
             "name": "SendMessage",
@@ -4874,13 +5389,13 @@
                 "type": "reference",
                 "argument": "peer",
                 "category": "full",
-                "description": "Destination peer for message (now supported only user's peer)"
+                "description": "Destination peer for message"
               },
               {
                 "type": "reference",
                 "argument": "rid",
                 "category": "full",
-                "description": "Message random id (generated on clien side)"
+                "description": "Message random id (generated on client side)"
               },
               {
                 "type": "reference",
@@ -4893,6 +5408,12 @@
                 "argument": "isOnlyForUser",
                 "category": "full",
                 "description": "If message is shown only for specific user"
+              },
+              {
+                "type": "reference",
+                "argument": "quotedMessageReference",
+                "category": "full",
+                "description": "Quoted message if present"
               }
             ],
             "attributes": [
@@ -4930,6 +5451,17 @@
                 },
                 "id": 5,
                 "name": "isOnlyForUser"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MessageOutReference"
+                  }
+                },
+                "id": 6,
+                "name": "quotedMessageReference"
               }
             ]
           }
@@ -5405,6 +5937,12 @@
                 "argument": "attributes",
                 "category": "full",
                 "description": "  optional message attributes"
+              },
+              {
+                "type": "reference",
+                "argument": "quotedMessage",
+                "category": "full",
+                "description": "  optional quoted message"
               }
             ],
             "attributes": [
@@ -5458,6 +5996,17 @@
                 },
                 "id": 6,
                 "name": "attributes"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "QuotedMessage"
+                  }
+                },
+                "id": 7,
+                "name": "quotedMessage"
               }
             ]
           }
@@ -5512,6 +6061,63 @@
                 },
                 "id": 3,
                 "name": "message"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "MessageQuotedChanged",
+            "header": 169,
+            "doc": [
+              "Update about quoted message changed",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "  Rid of message"
+              },
+              {
+                "type": "reference",
+                "argument": "quotedMessage",
+                "category": "full",
+                "description": "  Quoted Message"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Peer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "rid"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "QuotedMessage"
+                  }
+                },
+                "id": 3,
+                "name": "quotedMessage"
               }
             ]
           }
@@ -6051,9 +6657,15 @@
               },
               {
                 "type": "reference",
-                "argument": "attributes",
+                "argument": "attribute",
                 "category": "full",
                 "description": "  Optional message attributes"
+              },
+              {
+                "type": "reference",
+                "argument": "quotedMessage",
+                "category": "full",
+                "description": "  Optional quoted Message"
               }
             ],
             "attributes": [
@@ -6120,7 +6732,18 @@
                   }
                 },
                 "id": 8,
-                "name": "attributes"
+                "name": "attribute"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "QuotedMessage"
+                  }
+                },
+                "id": 9,
+                "name": "quotedMessage"
               }
             ]
           }
@@ -6190,6 +6813,39 @@
                   },
                   "id": 2,
                   "name": "users"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "UserOutPeer"
+                    }
+                  },
+                  "id": 4,
+                  "name": "userPeers"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "Group"
+                    }
+                  },
+                  "id": 5,
+                  "name": "groups"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "GroupOutPeer"
+                    }
+                  },
+                  "id": 6,
+                  "name": "groupPeers"
                 }
               ]
             },
@@ -6218,6 +6874,12 @@
                 "argument": "limit",
                 "category": "full",
                 "description": "maximum amount of messages (max is 100)"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled optimizations"
               }
             ],
             "attributes": [
@@ -6252,6 +6914,17 @@
                 "type": "int32",
                 "id": 4,
                 "name": "limit"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 6,
+                "name": "optimizations"
               }
             ]
           }
@@ -6469,6 +7142,28 @@
                   },
                   "id": 3,
                   "name": "dialogs"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "UserOutPeer"
+                    }
+                  },
+                  "id": 4,
+                  "name": "userPeers"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "GroupOutPeer"
+                    }
+                  },
+                  "id": 5,
+                  "name": "groupPeers"
                 }
               ]
             },
@@ -6485,6 +7180,12 @@
                 "argument": "limit",
                 "category": "full",
                 "description": "limit maximum amount of messages (max is 100)"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled optimizations"
               }
             ],
             "attributes": [
@@ -6500,6 +7201,17 @@
                 "type": "int32",
                 "id": 2,
                 "name": "limit"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 3,
+                "name": "optimizations"
               }
             ]
           }
@@ -6575,6 +7287,28 @@
                 },
                 {
                   "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "UserOutPeer"
+                    }
+                  },
+                  "id": 5,
+                  "name": "userPeers"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "GroupOutPeer"
+                    }
+                  },
+                  "id": 6,
+                  "name": "groupPeers"
+                },
+                {
+                  "type": {
                     "type": "opt",
                     "childType": "bytes"
                   },
@@ -6596,6 +7330,12 @@
                 "argument": "limit",
                 "category": "full",
                 "description": "Maximum number of elements"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled optimizations"
               }
             ],
             "attributes": [
@@ -6611,6 +7351,17 @@
                 "type": "int32",
                 "id": 2,
                 "name": "limit"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 3,
+                "name": "optimizations"
               }
             ]
           }
@@ -6944,69 +7695,69 @@
               },
               {
                 "type": "reference",
-                "argument": "theme",
-                "category": "hidden",
-                "description": "  Theme of group"
-              },
-              {
-                "type": "reference",
-                "argument": "about",
-                "category": "hidden",
-                "description": "  About of group"
-              },
-              {
-                "type": "reference",
                 "argument": "avatar",
                 "category": "compact",
                 "description": "  Avatar of group"
               },
               {
                 "type": "reference",
-                "argument": "isMember",
+                "argument": "membersCount",
                 "category": "full",
-                "description": "  is member of group (deprecated)"
-              },
-              {
-                "type": "reference",
-                "argument": "creatorUid",
-                "category": "hidden",
-                "description": "  Group creator"
-              },
-              {
-                "type": "reference",
-                "argument": "members",
-                "category": "compact",
-                "description": "  Members of group"
-              },
-              {
-                "type": "reference",
-                "argument": "createDate",
-                "category": "full",
-                "description": "  Date of creation"
-              },
-              {
-                "type": "reference",
-                "argument": "ext",
-                "category": "hidden",
-                "description": "  Group extension Data"
-              },
-              {
-                "type": "reference",
-                "argument": "isAdmin",
-                "category": "hidden",
-                "description": "  Is current user admin (deprecated)"
+                "description": "  Number of members"
               },
               {
                 "type": "reference",
                 "argument": "isHidden",
                 "category": "full",
-                "description": "  Is group hidden"
+                "description": "  Is group hidden (not showing it in recent list). Default is false."
               },
               {
                 "type": "reference",
-                "argument": "groupType",
+                "argument": "ext",
                 "category": "full",
-                "description": "  Group type"
+                "description": "  Group extension Data"
+              },
+              {
+                "type": "reference",
+                "argument": "isMember",
+                "category": "full",
+                "description": "  [DEPRECATED] Is current user a member of a group"
+              },
+              {
+                "type": "reference",
+                "argument": "isAdmin",
+                "category": "full",
+                "description": "  [DEPRECATED] Is current user an admin of a group"
+              },
+              {
+                "type": "reference",
+                "argument": "theme",
+                "category": "hidden",
+                "description": "  [DEPRECATED] Theme of group"
+              },
+              {
+                "type": "reference",
+                "argument": "about",
+                "category": "hidden",
+                "description": "  [DEPRECATED] About of group"
+              },
+              {
+                "type": "reference",
+                "argument": "creatorUid",
+                "category": "hidden",
+                "description": "  [DEPRECATED] Group creator"
+              },
+              {
+                "type": "reference",
+                "argument": "members",
+                "category": "compact",
+                "description": "  [DEPRECATED] Members of group"
+              },
+              {
+                "type": "reference",
+                "argument": "createDate",
+                "category": "full",
+                "description": "  [DEPRECATED] Date of creation"
               }
             ],
             "expandable": "true",
@@ -7041,62 +7792,12 @@
                 "name": "avatar"
               },
               {
-                "type": "bool",
-                "id": 6,
-                "name": "isMember",
-                "deprecated": "true"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "userId"
-                },
-                "id": 8,
-                "name": "creatorUid"
-              },
-              {
-                "type": {
-                  "type": "list",
-                  "childType": {
-                    "type": "struct",
-                    "childType": "Member"
-                  }
-                },
-                "id": 9,
-                "name": "members"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "date"
-                },
-                "id": 10,
-                "name": "createDate"
-              },
-              {
                 "type": {
                   "type": "opt",
-                  "childType": "bool"
+                  "childType": "int32"
                 },
-                "id": 16,
-                "name": "isAdmin",
-                "deprecated": "true"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "string"
-                },
-                "id": 17,
-                "name": "theme"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "string"
-                },
-                "id": 18,
-                "name": "about"
+                "id": 24,
+                "name": "membersCount"
               },
               {
                 "type": {
@@ -7109,10 +7810,138 @@
               {
                 "type": {
                   "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MapValue"
+                  }
+                },
+                "id": 22,
+                "name": "ext"
+              },
+              {
+                "type": "bool",
+                "id": 6,
+                "name": "isMember",
+                "deprecated": "true"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 16,
+                "name": "isAdmin",
+                "deprecated": "true"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 8,
+                "name": "creatorUid",
+                "deprecated": "true"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Member"
+                  }
+                },
+                "id": 9,
+                "name": "members",
+                "deprecated": "true"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
+                "id": 10,
+                "name": "createDate",
+                "deprecated": "true"
+              },
+              {
+                "type": {
+                  "type": "opt",
                   "childType": "string"
                 },
-                "id": 23,
-                "name": "groupType"
+                "id": 17,
+                "name": "theme",
+                "deprecated": "true"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 18,
+                "name": "about",
+                "deprecated": "true"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "GroupFull",
+            "doc": [
+              "Goup Full information"
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "id"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "theme"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 3,
+                "name": "about"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Member"
+                  }
+                },
+                "id": 4,
+                "name": "members"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 5,
+                "name": "creatorUid"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
+                "id": 6,
+                "name": "createDate"
               },
               {
                 "type": {
@@ -7122,7 +7951,7 @@
                     "childType": "MapValue"
                   }
                 },
-                "id": 22,
+                "id": 7,
                 "name": "ext"
               }
             ]
@@ -9824,6 +10653,18 @@
                   "argument": "groups",
                   "category": "full",
                   "description": "  Related groups"
+                },
+                {
+                  "type": "reference",
+                  "argument": "userPeers",
+                  "category": "full",
+                  "description": "  Related user peers"
+                },
+                {
+                  "type": "reference",
+                  "argument": "groupPeers",
+                  "category": "full",
+                  "description": "  Related group peers"
                 }
               ],
               "attributes": [
@@ -9859,6 +10700,28 @@
                   },
                   "id": 3,
                   "name": "groups"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "UserOutPeer"
+                    }
+                  },
+                  "id": 4,
+                  "name": "userPeers"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "GroupOutPeer"
+                    }
+                  },
+                  "id": 5,
+                  "name": "groupPeers"
                 }
               ]
             },
@@ -9869,6 +10732,12 @@
                 "argument": "query",
                 "category": "full",
                 "description": "Search query. Warring not all combinations can be processed by server. (acts as OR)"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled Optimizations"
               }
             ],
             "attributes": [
@@ -9882,6 +10751,17 @@
                 },
                 "id": 1,
                 "name": "query"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 2,
+                "name": "optimizations"
               }
             ]
           }
@@ -10016,6 +10896,18 @@
                 "argument": "loadMoreState",
                 "category": "hidden",
                 "description": "  State for loading more results"
+              },
+              {
+                "type": "reference",
+                "argument": "userOutPeers",
+                "category": "full",
+                "description": "  Search user peers"
+              },
+              {
+                "type": "reference",
+                "argument": "groupOutPeers",
+                "category": "full",
+                "description": "  Search group peers"
               }
             ],
             "attributes": [
@@ -10059,6 +10951,28 @@
                 },
                 "id": 4,
                 "name": "loadMoreState"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "UserOutPeer"
+                  }
+                },
+                "id": 5,
+                "name": "userOutPeers"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "GroupOutPeer"
+                  }
+                },
+                "id": 6,
+                "name": "groupOutPeers"
               }
             ]
           }
@@ -10079,6 +10993,12 @@
                 "argument": "query",
                 "category": "full",
                 "description": "Search query"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled Optimizations"
               }
             ],
             "attributes": [
@@ -10089,6 +11009,17 @@
                 },
                 "id": 1,
                 "name": "query"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 2,
+                "name": "optimizations"
               }
             ]
           }
@@ -10109,6 +11040,12 @@
                 "argument": "loadMoreState",
                 "category": "hidden",
                 "description": "State for loading more results"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled Optimizations"
               }
             ],
             "attributes": [
@@ -10116,6 +11053,17 @@
                 "type": "bytes",
                 "id": 1,
                 "name": "loadMoreState"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 2,
+                "name": "optimizations"
               }
             ]
           }
@@ -17605,6 +18553,10 @@
               {
                 "name": "STRIP_COUNTERS",
                 "id": 5
+              },
+              {
+                "name": "COMPACT_USERS",
+                "id": 6
               }
             ]
           }

@@ -21,7 +21,7 @@ import org.joda.time.DateTime
 import scala.concurrent.Future
 import scala.util.Failure
 
-trait DialogCommandHandlers extends PeersImplicits with UserACL {
+trait DialogCommandHandlers extends PeersImplicits with UserAcl {
   this: DialogProcessor ⇒
 
   import DialogCommands._

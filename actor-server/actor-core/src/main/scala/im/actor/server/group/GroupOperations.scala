@@ -5,7 +5,7 @@ import akka.pattern.ask
 import akka.util.Timeout
 import im.actor.api.rpc.AuthorizedClientData
 import im.actor.api.rpc.groups.{ ApiGroup, ApiMember }
-import im.actor.server.dialog.UserACL
+import im.actor.server.dialog.UserAcl
 import im.actor.server.file.Avatar
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 
@@ -13,7 +13,7 @@ import scala.concurrent.{ ExecutionContext, Future }
 
 trait GroupOperations extends Commands with Queries
 
-private[group] sealed trait Commands extends UserACL {
+private[group] sealed trait Commands extends UserAcl {
   import GroupCommands._
 
   val processorRegion: GroupProcessorRegion

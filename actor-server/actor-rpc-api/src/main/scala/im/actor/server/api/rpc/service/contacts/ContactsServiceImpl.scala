@@ -5,24 +5,23 @@ import java.security.MessageDigest
 import im.actor.api.rpc.peers.ApiUserOutPeer
 import im.actor.concurrent.FutureExt
 import im.actor.server.acl.ACLUtils
-import im.actor.server.model.{ UserPhone, UserEmail, User }
-import im.actor.server.persist.contact.{ UnregisteredPhoneContactRepo, UnregisteredEmailContactRepo, UserContactRepo }
+import im.actor.server.model.{ User, UserEmail, UserPhone }
+import im.actor.server.persist.contact.{ UnregisteredEmailContactRepo, UnregisteredPhoneContactRepo, UserContactRepo }
 import im.actor.server.persist.{ UserEmailRepo, UserPhoneRepo, UserRepo }
 import im.actor.server.user.UserCommands.ContactToAdd
 
 import scala.collection.immutable
 import scala.concurrent._
 import scala.concurrent.duration._
-
 import akka.actor._
 import akka.util.Timeout
 import scodec.bits.BitVector
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
-
 import im.actor.api.rpc._
 import im.actor.api.rpc.contacts._
 import im.actor.api.rpc.misc._
+import im.actor.api.rpc.sequence.ApiUpdateOptimization
 import im.actor.api.rpc.users.ApiUser
 import im.actor.server.db.DbExtension
 import im.actor.server.sequence.{ SeqState, SeqUpdatesExtension }
@@ -59,7 +58,12 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
     BitVector(md.digest(uids.getBytes)).toHex
   }
 
-  override def doHandleImportContacts(phones: IndexedSeq[ApiPhoneToImport], emails: IndexedSeq[ApiEmailToImport], clientData: ClientData): Future[HandlerResult[ResponseImportContacts]] =
+  override def doHandleImportContacts(
+    phones:        IndexedSeq[ApiPhoneToImport],
+    emails:        IndexedSeq[ApiEmailToImport],
+    optimizations: IndexedSeq[ApiUpdateOptimization.Value],
+    clientData:    ClientData
+  ): Future[HandlerResult[ResponseImportContacts]] =
     authorized(clientData) { implicit client ⇒
       val action = (for {
         contacts ← fromFuture(userExt.getContactRecordsSet(client.userId))
@@ -74,24 +78,38 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
         eUsersState ← fromDBIO(importEmails(user, optEmail, emails.filterNot(e ⇒ clientEmails.contains(e.email)))(client))
         (eUsers, eSeqstate) = eUsersState
 
-      } yield ResponseImportContacts((pUsers ++ eUsers).toVector, eSeqstate.seq, eSeqstate.state.toByteArray)).value
+      } yield {
+        val users = (pUsers ++ eUsers).toVector
+
+        ResponseImportContacts(
+          users = if (optimizations.contains(ApiUpdateOptimization.STRIP_ENTITIES)) Vector.empty else users,
+          eSeqstate.seq,
+          eSeqstate.state.toByteArray,
+          userPeers = users map (u ⇒ ApiUserOutPeer(u.id, u.accessHash))
+        )
+      }).value
       db.run(action)
     }
 
-  override def doHandleGetContacts(contactsHash: String, clientData: ClientData): Future[HandlerResult[ResponseGetContacts]] =
+  override def doHandleGetContacts(
+    contactsHash:  String,
+    optimizations: IndexedSeq[ApiUpdateOptimization.Value],
+    clientData:    ClientData
+  ): Future[HandlerResult[ResponseGetContacts]] =
     authorized(clientData) { implicit client ⇒
       val action = UserContactRepo.findContactIdsActive(client.userId).map(hashIds).flatMap { hash ⇒
         if (contactsHash == hash) {
-          DBIO.successful(Ok(ResponseGetContacts(Vector.empty[users.ApiUser], isNotChanged = true)))
+          DBIO.successful(Ok(ResponseGetContacts(Vector.empty, isNotChanged = true, Vector.empty)))
         } else {
           for {
             userIds ← UserContactRepo.findContactIdsActive(client.userId)
-            userStructs ← DBIO.from(Future.sequence(userIds.map(userId ⇒
-              userExt.getApiStruct(userId, client.userId, client.authId))))
+            users ← DBIO.from(Future.sequence(userIds.map(userId ⇒
+              userExt.getApiStruct(userId, client.userId, client.authId)))) map (_.toVector)
           } yield {
             Ok(ResponseGetContacts(
-              users = userStructs.toVector,
-              isNotChanged = false
+              users = if (optimizations.contains(ApiUpdateOptimization.STRIP_ENTITIES)) Vector.empty else users,
+              isNotChanged = false,
+              userPeers = users map (u ⇒ ApiUserOutPeer(u.id, u.accessHash))
             ))
           }
         }
@@ -132,7 +150,7 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
       db.run(action)
     }
 
-  override def doHandleSearchContacts(query: String, clientData: ClientData): Future[HandlerResult[ResponseSearchContacts]] =
+  override def doHandleSearchContacts(query: String, optimizations: IndexedSeq[ApiUpdateOptimization.Value], clientData: ClientData): Future[HandlerResult[ResponseSearchContacts]] =
     authorized(clientData) { implicit client ⇒
       val action = (for {
         nicknameUsers ← findByNickname(query, client)
@@ -141,7 +159,10 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
       } yield {
         val users = nicknameUsers ++ phoneUsers ++ emailUsers
         users foreach (u ⇒ recordRelation(u.id, client.userId))
-        ResponseSearchContacts(users)
+        ResponseSearchContacts(
+          users = if (optimizations.contains(ApiUpdateOptimization.STRIP_ENTITIES)) Vector.empty else users,
+          userPeers = users map (u ⇒ ApiUserOutPeer(u.id, u.accessHash))
+        )
       }).value
       db.run(action)
     }

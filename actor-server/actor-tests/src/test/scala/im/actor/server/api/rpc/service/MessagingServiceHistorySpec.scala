@@ -70,19 +70,19 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
       val (message1Date, message2Date, message3Date) = {
         implicit val clientData = clientData1
 
-        val message1Date = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage("Hi Shiva 1", Vector.empty, None), None))(_.toOption.get.date)
+        val message1Date = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage("Hi Shiva 1", Vector.empty, None), None, None))(_.toOption.get.date)
 
         Thread.sleep(step)
 
-        val message2Date = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage("Hi Shiva 2", Vector.empty, None), None))(_.toOption.get.date)
+        val message2Date = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage("Hi Shiva 2", Vector.empty, None), None, None))(_.toOption.get.date)
 
         Thread.sleep(step)
 
-        val message3Date = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage("Hi Shiva 3", Vector.empty, None), None))(_.toOption.get.date)
+        val message3Date = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage("Hi Shiva 3", Vector.empty, None), None, None))(_.toOption.get.date)
 
         Thread.sleep(step)
 
-        whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage("Hi Shiva 4", Vector.empty, None), None))(_ ⇒ ())
+        whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage("Hi Shiva 4", Vector.empty, None), None, None))(_ ⇒ ())
 
         (message1Date, message2Date, message3Date)
       }
@@ -118,7 +118,7 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
       {
         implicit val clientData = clientData1
 
-        whenReady(service.handleLoadHistory(user2Peer, message3Date, None, 100)) { resp ⇒
+        whenReady(service.handleLoadHistory(user2Peer, message3Date, None, 100, Vector.empty)) { resp ⇒
           resp should matchPattern {
             case Ok(_) ⇒
           }
@@ -138,7 +138,7 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
         // Archiving should not hide from LoadDialogs
         whenReady(service.handleArchiveChat(user2Peer))(identity)
 
-        whenReady(service.handleLoadDialogs(0, 100)) { resp ⇒
+        whenReady(service.handleLoadDialogs(0, 100, Vector.empty)) { resp ⇒
           resp should matchPattern {
             case Ok(_) ⇒
           }
@@ -155,7 +155,7 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
       {
         implicit val clientData = clientData2
 
-        whenReady(service.handleLoadDialogs(0, 100)) { resp ⇒
+        whenReady(service.handleLoadDialogs(0, 100, Vector.empty)) { resp ⇒
           resp should matchPattern {
             case Ok(_) ⇒
           }
@@ -184,17 +184,17 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
       {
         implicit val clientData = clientData1
         whenReady(groupsService.handleEnterGroup(groupOutPeer))(identity)
-        whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), firstMessage, None))(identity)
+        whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), firstMessage, None, None))(identity)
       }
 
       {
         implicit val clientData = clientData2
         whenReady(groupsService.handleEnterGroup(groupOutPeer))(identity)
-        whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), secondMessage, None))(identity)
+        whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), secondMessage, None, None))(identity)
 
         Thread.sleep(2000)
 
-        whenReady(service.handleLoadHistory(groupOutPeer.asOutPeer, 0, None, 100)) { resp ⇒
+        whenReady(service.handleLoadHistory(groupOutPeer.asOutPeer, 0, None, 100, Vector.empty)) { resp ⇒
           val history = resp.toOption.get.history
           //history does not contain message about group creation, as group was not created by Zero user
           history.length shouldEqual 4
@@ -225,9 +225,9 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
           val startDate = System.currentTimeMillis()
 
           val sendMessages = Future.sequence(Seq(
-            service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage("Hi Shiva 1", Vector.empty, None), None),
-            futureSleep(1500).flatMap(_ ⇒ service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage("Hi Shiva 2", Vector.empty, None), None)),
-            futureSleep(3000).flatMap(_ ⇒ service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage("Hi Shiva 3", Vector.empty, None), None))
+            service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage("Hi Shiva 1", Vector.empty, None), None, None),
+            futureSleep(1500).flatMap(_ ⇒ service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage("Hi Shiva 2", Vector.empty, None), None, None)),
+            futureSleep(3000).flatMap(_ ⇒ service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage("Hi Shiva 3", Vector.empty, None), None, None))
           ))
 
           whenReady(sendMessages)(_ ⇒ ())
@@ -312,7 +312,7 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
             info.lastReadDate.toEpochMilli should be > date1.toEpochMilli
           }
 
-          whenReady(service.handleLoadDialogs(Long.MaxValue, 100)) { resp ⇒
+          whenReady(service.handleLoadDialogs(Long.MaxValue, 100, Vector.empty)) { resp ⇒
             val dialog = resp.toOption.get.dialogs.head
 
             dialog.unreadCount shouldEqual 1
@@ -379,7 +379,7 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
         val startDate = {
           implicit val clientData = clientData1
 
-          whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage("Hi Shiva 1", Vector.empty, None), None)) { resp ⇒
+          whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage("Hi Shiva 1", Vector.empty, None), None, None)) { resp ⇒
             val seqStateDate = resp.toOption.get
             seqStateDate.date
           }
@@ -520,7 +520,7 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
             info.lastReadDate.toEpochMilli should be > date1.toEpochMilli
           }
 
-          whenReady(service.handleLoadDialogs(Long.MaxValue, 100)) { resp ⇒
+          whenReady(service.handleLoadDialogs(Long.MaxValue, 100, Vector.empty)) { resp ⇒
             val dialog = resp.toOption.get.dialogs.head
             dialog.unreadCount shouldEqual 1
           }

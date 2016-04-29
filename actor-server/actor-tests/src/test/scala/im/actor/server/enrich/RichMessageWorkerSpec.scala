@@ -58,13 +58,13 @@ class RichMessageWorkerSpec
 
       def dontChangePrivate() = {
 
-        val resp1 = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage(NonImages.mixedText, Vector.empty, None), None))(_.toOption.get)
+        val resp1 = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage(NonImages.mixedText, Vector.empty, None), None, None))(_.toOption.get)
         expectNoUpdate(resp1.seq, classOf[UpdateMessageContentChanged])
 
-        val resp2 = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage(NonImages.plainText, Vector.empty, None), None))(_.toOption.get)
+        val resp2 = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage(NonImages.plainText, Vector.empty, None), None, None))(_.toOption.get)
         expectNoUpdate(resp2.seq, classOf[UpdateMessageContentChanged])
 
-        val resp3 = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage(NonImages.nonImageUrl, Vector.empty, None), None))(_.toOption.get)
+        val resp3 = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage(NonImages.nonImageUrl, Vector.empty, None), None, None))(_.toOption.get)
         expectNoUpdate(resp2.seq, classOf[UpdateMessageContentChanged])
 
       }
@@ -74,7 +74,7 @@ class RichMessageWorkerSpec
         {
           val image = Images.noNameHttp
           val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
-          val resp = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage(image.url, Vector.empty, None), None))(_.toOption.get)
+          val resp = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage(image.url, Vector.empty, None), None, None))(_.toOption.get)
 
           expectUpdate(resp.seq, classOf[UpdateMessageContentChanged]) { update ⇒
             update.message should matchPattern {
@@ -87,7 +87,7 @@ class RichMessageWorkerSpec
           val image = Images.withNameHttp
           val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
           val imageName = image.fileName.get
-          val resp = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage(image.url, Vector.empty, None), None))(_.toOption.get)
+          val resp = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage(image.url, Vector.empty, None), None, None))(_.toOption.get)
 
           expectUpdate(resp.seq, classOf[UpdateMessageContentChanged]) { update ⇒
             update.message should matchPattern {
@@ -99,7 +99,7 @@ class RichMessageWorkerSpec
         {
           val image = Images.noNameHttps
           val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
-          val resp = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage(image.url, Vector.empty, None), None))(_.toOption.get)
+          val resp = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage(image.url, Vector.empty, None), None, None))(_.toOption.get)
 
           expectUpdate(resp.seq, classOf[UpdateMessageContentChanged]) { update ⇒
             update.message should matchPattern {
@@ -122,13 +122,13 @@ class RichMessageWorkerSpec
 
       def dontChangeGroup() = {
 
-        val resp1 = whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage(NonImages.mixedText, Vector.empty, None), None))(_.toOption.get)
+        val resp1 = whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage(NonImages.mixedText, Vector.empty, None), None, None))(_.toOption.get)
         expectNoUpdate(resp1.seq, classOf[UpdateMessageContentChanged])
 
-        val resp2 = whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage(NonImages.plainText, Vector.empty, None), None))(_.toOption.get)
+        val resp2 = whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage(NonImages.plainText, Vector.empty, None), None, None))(_.toOption.get)
         expectNoUpdate(resp2.seq, classOf[UpdateMessageContentChanged])
 
-        val resp3 = whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage(NonImages.nonImageUrl, Vector.empty, None), None))(_.toOption.get)
+        val resp3 = whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage(NonImages.nonImageUrl, Vector.empty, None), None, None))(_.toOption.get)
         expectNoUpdate(resp3.seq, classOf[UpdateMessageContentChanged])
       }
 
@@ -137,7 +137,7 @@ class RichMessageWorkerSpec
         {
           val image = Images.noNameHttp
           val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
-          val resp = whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage(image.url, Vector.empty, None), None))(_.toOption.get)
+          val resp = whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage(image.url, Vector.empty, None), None, None))(_.toOption.get)
 
           expectUpdate(resp.seq, classOf[UpdateMessageContentChanged]) { update ⇒
             update.message should matchPattern {
@@ -150,7 +150,7 @@ class RichMessageWorkerSpec
           val image = Images.withNameHttp
           val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
           val imageName = image.fileName.get
-          val resp = whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage(image.url, Vector.empty, None), None))(_.toOption.get)
+          val resp = whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage(image.url, Vector.empty, None), None, None))(_.toOption.get)
 
           expectUpdate(resp.seq, classOf[UpdateMessageContentChanged]) { update ⇒
             update.message should matchPattern {
@@ -162,7 +162,7 @@ class RichMessageWorkerSpec
         {
           val image = Images.noNameHttps
           val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
-          val resp = whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage(image.url, Vector.empty, None), None))(_.toOption.get)
+          val resp = whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage(image.url, Vector.empty, None), None, None))(_.toOption.get)
 
           expectUpdate(resp.seq, classOf[UpdateMessageContentChanged]) { update ⇒
             update.message should matchPattern {

@@ -2,14 +2,16 @@ package im.actor.server.api.rpc.service.messaging
 
 import java.time.Instant
 
+import com.google.protobuf.wrappers.Int32Value
 import im.actor.api.rpc.PeerHelpers._
 import im.actor.api.rpc._
-import im.actor.api.rpc.messaging._
+import im.actor.api.rpc.messaging.{ ApiEmptyMessage, _ }
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
-import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeerType }
+import im.actor.api.rpc.peers.{ ApiGroupOutPeer, ApiOutPeer, ApiPeerType, ApiUserOutPeer }
+import im.actor.api.rpc.sequence.ApiUpdateOptimization
 import im.actor.server.dialog.HistoryUtils
 import im.actor.server.group.GroupUtils
-import im.actor.server.model.{ DialogObsolete, HistoryMessage, Peer }
+import im.actor.server.model.{ DialogObsolete, HistoryMessage, Peer, PeerType }
 import im.actor.server.persist.contact.UserContactRepo
 import im.actor.server.persist.dialog.DialogRepo
 import im.actor.server.persist.{ GroupUserRepo, HistoryMessageRepo }
@@ -67,29 +69,50 @@ trait HistoryHandlers {
     }
   }
 
-  override def doHandleLoadArchived(offset: Option[Array[Byte]], limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadArchived]] =
+  override def doHandleLoadArchived(
+    offset:        Option[Array[Byte]],
+    limit:         Int,
+    optimizations: IndexedSeq[ApiUpdateOptimization.Value],
+    clientData:    ClientData
+  ): Future[HandlerResult[ResponseLoadArchived]] =
     authorized(clientData) { implicit client ⇒
       for {
         (dialogs, nextOffset) ← dialogExt.fetchArchivedApiDialogs(client.userId, offset, limit)
         (users, groups) ← db.run(getDialogsUsersGroups(dialogs.toSeq))
-      } yield Ok(ResponseLoadArchived(
-        groups.toVector,
-        users.toVector,
-        dialogs.toVector,
-        nextOffset
-      ))
+      } yield {
+        val stripEntities = optimizations.contains(ApiUpdateOptimization.STRIP_ENTITIES)
+        Ok(ResponseLoadArchived(
+          dialogs = dialogs.toVector,
+          nextOffset = nextOffset,
+          groups = if (stripEntities) Vector.empty else groups.toVector,
+          users = if (stripEntities) Vector.empty else users.toVector,
+          userPeers = users.toVector map (u ⇒ ApiUserOutPeer(u.id, u.accessHash)),
+          groupPeers = groups.toVector map (g ⇒ ApiGroupOutPeer(g.id, g.accessHash))
+        ))
+      }
     }
 
-  override def doHandleLoadDialogs(endDate: Long, limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadDialogs]] =
+  override def doHandleLoadDialogs(
+    endDate:       Long,
+    limit:         Int,
+    optimizations: IndexedSeq[ApiUpdateOptimization.Value],
+    clientData:    ClientData
+  ): Future[HandlerResult[ResponseLoadDialogs]] =
     authorized(clientData) { implicit client ⇒
       for {
         dialogs ← dialogExt.fetchApiDialogs(client.userId, Instant.ofEpochMilli(endDate), limit)
         (users, groups) ← db.run(getDialogsUsersGroups(dialogs.toSeq))
-      } yield Ok(ResponseLoadDialogs(
-        groups = groups.toVector,
-        users = users.toVector,
-        dialogs = dialogs.toVector
-      ))
+      } yield {
+        val stripEntities = optimizations.contains(ApiUpdateOptimization.STRIP_ENTITIES)
+
+        Ok(ResponseLoadDialogs(
+          groups = if (stripEntities) Vector.empty else groups.toVector,
+          users = if (stripEntities) Vector.empty else users.toVector,
+          dialogs = dialogs.toVector,
+          userPeers = users.toVector map (u ⇒ ApiUserOutPeer(u.id, u.accessHash)),
+          groupPeers = groups.toVector map (g ⇒ ApiGroupOutPeer(g.id, g.accessHash))
+        ))
+      }
     }
 
   override def doHandleLoadGroupedDialogs(clientData: ClientData): Future[HandlerResult[ResponseLoadGroupedDialogs]] =
@@ -143,11 +166,12 @@ trait HistoryHandlers {
     }
 
   override def doHandleLoadHistory(
-    peer:       ApiOutPeer,
-    date:       Long,
-    mode:       Option[ApiListLoadMode.Value],
-    limit:      Int,
-    clientData: ClientData
+    peer:          ApiOutPeer,
+    date:          Long,
+    mode:          Option[ApiListLoadMode.Value],
+    limit:         Int,
+    optimizations: IndexedSeq[ApiUpdateOptimization.Value],
+    clientData:    ClientData
   ): Future[HandlerResult[ResponseLoadHistory]] =
     authorized(clientData) { implicit client ⇒
       val action = withOutPeerDBIO(peer) {
@@ -163,10 +187,10 @@ trait HistoryHandlers {
           }
           reactions ← dialogExt.fetchReactions(modelPeer, client.userId, messageModels.map(_.randomId).toSet)
 
-          (messages, userIds) = messageModels.view
+          (messages, userIds, groupIds) = messageModels.view
             .map(_.ofUser(client.userId))
-            .foldLeft(Vector.empty[ApiMessageContainer], Set.empty[Int]) {
-              case ((msgs, uids), message) ⇒
+            .foldLeft(Vector.empty[ApiMessageContainer], Set.empty[Int], Set.empty[Int]) {
+              case ((msgs, uids, guids), message) ⇒
                 message.asStruct(lastReceivedAt, lastReadAt, reactions.getOrElse(message.randomId, Vector.empty)).toOption match {
                   case Some(messageStruct) ⇒
                     val newMsgs = msgs :+ messageStruct
@@ -177,12 +201,23 @@ trait HistoryHandlers {
                       else
                         uids)
 
-                    (newMsgs, newUserIds)
-                  case None ⇒ (msgs, uids)
+                    (newMsgs, newUserIds, guids ++ messageStruct._relatedGroupIds)
+                  case None ⇒ (msgs, uids, guids)
                 }
             }
-          userStructs ← DBIO.from(Future.sequence(userIds.toVector map (userExt.getApiStruct(_, client.userId, client.authId))))
-        } yield Ok(ResponseLoadHistory(messages, userStructs))
+          users ← DBIO.from(Future.sequence(userIds.toVector map (userExt.getApiStruct(_, client.userId, client.authId))))
+          groups ← DBIO.from(Future.sequence(groupIds.toVector map (groupExt.getApiStruct(_, client.userId))))
+        } yield {
+          val stripEntities = optimizations.contains(ApiUpdateOptimization.STRIP_ENTITIES)
+
+          Ok(ResponseLoadHistory(
+            history = messages,
+            users = if (stripEntities) Vector.empty else users,
+            userPeers = users map (u ⇒ ApiUserOutPeer(u.id, u.accessHash)),
+            groups = if (stripEntities) Vector.empty else groups,
+            groupPeers = groups map (g ⇒ ApiGroupOutPeer(g.id, g.accessHash))
+          ))
+        }
       }
       db.run(action)
     }
@@ -270,6 +305,7 @@ trait HistoryHandlers {
       case ApiServiceMessage(_, extOpt)   ⇒ extOpt map relatedUsers getOrElse Set.empty
       case ApiTextMessage(_, mentions, _) ⇒ mentions.toSet
       case ApiJsonMessage(_)              ⇒ Set.empty
+      case _: ApiEmptyMessage             ⇒ Set.empty
       case _: ApiDocumentMessage          ⇒ Set.empty
       case _: ApiStickerMessage           ⇒ Set.empty
       case _: ApiUnsupportedMessage       ⇒ Set.empty
