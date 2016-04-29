@@ -155,9 +155,9 @@ final class SessionSpec extends BaseSessionSpec with BeforeAndAfterEach {
       }
 
       {
-        val encodedLoadDialogs = RequestCodec.encode(Request(RequestLoadDialogs(0L, 100))).require
+        val encodedLoadDialogs = RequestCodec.encode(Request(RequestLoadDialogs(0L, 100, Vector.empty))).require
         val encodedGetDifference = RequestCodec.encode(Request(RequestGetDifference(0, Array(), Vector.empty))).require
-        val encodedGetContacts = RequestCodec.encode(Request(RequestGetContacts(""))).require
+        val encodedGetContacts = RequestCodec.encode(Request(RequestGetContacts("", Vector.empty))).require
         sendMessageBox(authId, sessionId, sessionRegion.ref, Random.nextLong, ProtoRpcRequest(encodedLoadDialogs))
         sendMessageBox(authId, sessionId, sessionRegion.ref, Random.nextLong, ProtoRpcRequest(encodedGetDifference))
         sendMessageBox(authId, sessionId, sessionRegion.ref, Random.nextLong, ProtoRpcRequest(encodedGetContacts))

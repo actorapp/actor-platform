@@ -34,9 +34,9 @@ final class SearchServiceSpec
 
     whenReady(searchService.handlePeerSearch(Vector(
       ApiSearchPeerTypeCondition(ApiSearchPeerType.Contacts)
-    ))) { resp ⇒
+    ), Vector.empty)) { resp ⇒
       inside(resp) {
-        case Ok(ResponsePeerSearch(results, users, groups)) ⇒
+        case Ok(ResponsePeerSearch(results, users, groups, _, _)) ⇒
           groups shouldBe empty
           users.map(_.id) shouldBe Seq(user2.id)
           results.length shouldBe 1
@@ -55,9 +55,9 @@ final class SearchServiceSpec
 
     whenReady(searchService.handlePeerSearch(Vector(
       ApiSearchPeerTypeCondition(ApiSearchPeerType.Groups)
-    ))) { resp ⇒
+    ), Vector.empty)) { resp ⇒
       inside(resp) {
-        case Ok(ResponsePeerSearch(result, users, groups)) ⇒
+        case Ok(ResponsePeerSearch(result, users, groups, _, _)) ⇒
           groups.length shouldBe 1
           val group = groups.head
           group.title shouldBe "Hell yeah"
@@ -67,9 +67,9 @@ final class SearchServiceSpec
     whenReady(searchService.handlePeerSearch(Vector(
       ApiSearchPeerTypeCondition(ApiSearchPeerType.Groups),
       ApiSearchPieceText("zz")
-    ))) { resp ⇒
+    ), Vector.empty)) { resp ⇒
       inside(resp) {
-        case Ok(ResponsePeerSearch(result, users, groups)) ⇒
+        case Ok(ResponsePeerSearch(result, users, groups, _, _)) ⇒
           groups shouldBe empty
       }
     }
@@ -77,9 +77,9 @@ final class SearchServiceSpec
     whenReady(searchService.handlePeerSearch(Vector(
       ApiSearchPeerTypeCondition(ApiSearchPeerType.Groups),
       ApiSearchPieceText("ell")
-    ))) { resp ⇒
+    ), Vector.empty)) { resp ⇒
       inside(resp) {
-        case Ok(ResponsePeerSearch(result, users, groups)) ⇒
+        case Ok(ResponsePeerSearch(result, users, groups, _, _)) ⇒
           groups should not be empty
       }
     }

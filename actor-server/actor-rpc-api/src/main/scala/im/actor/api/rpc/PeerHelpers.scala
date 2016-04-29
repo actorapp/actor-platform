@@ -104,6 +104,14 @@ object PeerHelpers {
     renderCheckResult(checkOptsFutures, f)
   }
 
+  def withUserOutPeersF[R <: RpcResponse](userOutPeers: Seq[ApiUserOutPeer])(f: ⇒ Future[RpcError Xor R])(
+    implicit
+    client:      AuthorizedClientData,
+    actorSystem: ActorSystem,
+    ec:          ExecutionContext
+  ): Future[RpcError Xor R] =
+    DbExtension(actorSystem).db.run(withUserOutPeers(userOutPeers)(DBIO.from(f)))
+
   val InvalidToken = RpcError(403, "INVALID_INVITE_TOKEN", "No correct token provided.", false, None)
 
   def withValidInviteToken[R <: RpcResponse](baseUrl: String, urlOrToken: String)(f: (FullGroup, GroupInviteToken) ⇒ DBIO[RpcError Xor R])(

@@ -9,7 +9,7 @@ import im.actor.api.rpc.messaging.{ ApiServiceExPhoneCall, ApiServiceExPhoneMiss
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.api.rpc.webrtc._
 import im.actor.concurrent.{ FutureExt, StashingActor }
-import im.actor.server.dialog.{ DialogExtension, UserACL }
+import im.actor.server.dialog.{ DialogExtension, UserAcl }
 import im.actor.server.eventbus.{ EventBus, EventBusExtension }
 import im.actor.server.group.GroupExtension
 import im.actor.server.model.{ Peer, PeerType }
@@ -141,7 +141,7 @@ private trait Members {
   }
 }
 
-private final class WebrtcCallActor extends StashingActor with ActorLogging with Members with APNSSend with UserACL {
+private final class WebrtcCallActor extends StashingActor with ActorLogging with Members with APNSSend with UserAcl {
   import WebrtcCallMessages._
   import context.dispatcher
 
