@@ -8,9 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.core.api.ApiGroup;
+import im.actor.core.api.ApiGroupOutPeer;
 import im.actor.core.api.ApiUser;
+import im.actor.core.api.ApiUserOutPeer;
 import im.actor.core.api.base.FatSeqUpdate;
 import im.actor.core.api.base.SeqUpdate;
+import im.actor.core.api.rpc.RequestGetReferencedEntitites;
 import im.actor.core.events.NewSessionCreated;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
@@ -22,10 +25,15 @@ import im.actor.runtime.eventbus.BusSubscriber;
 import im.actor.runtime.eventbus.Event;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseFunc;
+import im.actor.runtime.promise.Promises;
+import im.actor.runtime.promise.PromisesArray;
 
 import static im.actor.runtime.actors.ActorSystem.system;
 
 public class Updates extends AbsModule implements BusSubscriber {
+
+    // j2objc workaround
+    private static final Void DUMB = null;
 
     private ActorRef updateActor;
     private ActorRef updateHandler;
@@ -92,7 +100,33 @@ public class Updates extends AbsModule implements BusSubscriber {
     }
 
     public Promise<Void> applyRelatedData(final List<ApiUser> users, final List<ApiGroup> groups) {
-        return updateHandlerInt.onRelatedResponse(users, groups);
+        Promise<Void> res = Promise.success(null);
+        if (users.size() > 0) {
+            res = res.chain(v -> context().getUsersModule().getUserRouter().applyUsers(users));
+        }
+        if (groups.size() > 0) {
+            res = res.chain(v -> context().getGroupsModule().getRouter().applyGroups(groups));
+        }
+        return res;
+    }
+
+    public Promise<Void> loadRequiredPeers(List<ApiUserOutPeer> users, List<ApiGroupOutPeer> groups) {
+
+        Promise<List<ApiUserOutPeer>> usersMissingPeers = context().getUsersModule().getUserRouter()
+                .fetchMissingUsers(users);
+
+        Promise<List<ApiGroupOutPeer>> groupMissingPeers = context().getGroupsModule().getRouter()
+                .fetchPendingGroups(groups);
+
+        return Promises.tuple(usersMissingPeers, groupMissingPeers)
+                .flatMap(missing -> {
+                    if (missing.getT1().size() > 0 || missing.getT2().size() > 0) {
+                        return api(new RequestGetReferencedEntitites(missing.getT1(), missing.getT2()))
+                                .flatMap(r -> applyRelatedData(r.getUsers(), r.getGroups()));
+                    } else {
+                        return Promise.success(null);
+                    }
+                });
     }
 
 

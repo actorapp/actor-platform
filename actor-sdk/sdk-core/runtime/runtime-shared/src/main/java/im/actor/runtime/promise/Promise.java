@@ -360,7 +360,7 @@ public class Promise<T> {
     public Promise<T> fallback(final Function<Exception, Promise<T>> catchThen) {
         final Promise<T> self = this;
         return new Promise<T>(resolver -> {
-            self.then(resolver::result);
+            self.then(r -> resolver.result(r));
             self.failure(e -> {
                 Promise<T> res = catchThen.apply(e);
                 res.then(t -> resolver.result(t));
