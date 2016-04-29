@@ -4,8 +4,10 @@ import akka.actor._
 import akka.util.Timeout
 import cats.data.Xor
 import im.actor.api.rpc._
+import im.actor.api.rpc.PeerHelpers._
 import im.actor.api.rpc.misc.ResponseSeq
-import im.actor.api.rpc.users.{ UpdateUserLocalNameChanged, UsersService }
+import im.actor.api.rpc.peers.ApiUserOutPeer
+import im.actor.api.rpc.users.{ ResponseLoadFullUsers, UsersService }
 import im.actor.server.acl.ACLUtils
 import im.actor.server.db.DbExtension
 import im.actor.server.persist.UserRepo
@@ -55,4 +57,21 @@ final class UsersServiceImpl(implicit actorSystem: ActorSystem) extends UsersSer
       }
     }
   }
+
+  /**
+   * Loading Full User information
+   *
+   * @param userPeers User's peers to load. Should be non-empty
+   */
+  override protected def doHandleLoadFullUsers(
+    userPeers:  IndexedSeq[ApiUserOutPeer],
+    clientData: ClientData
+  ): Future[HandlerResult[ResponseLoadFullUsers]] =
+    authorized(clientData) { implicit client ⇒
+      withUserOutPeersF(userPeers) {
+        for {
+          fullUsers ← Future.sequence(userPeers map (u ⇒ userExt.getApiFullStruct(u.userId, client.userId, client.authId)))
+        } yield Ok(ResponseLoadFullUsers(fullUsers.toVector))
+      }
+    }
 }

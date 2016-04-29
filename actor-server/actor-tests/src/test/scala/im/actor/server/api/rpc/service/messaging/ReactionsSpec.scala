@@ -46,9 +46,9 @@ final class ReactionsSpec
     {
       implicit val clientData = aliceClient
       val peer = getOutPeer(bob.id, aliceAuthId)
-      whenReady(service.handleLoadHistory(peer, 0, None, Int.MaxValue)) { resp ⇒
+      whenReady(service.handleLoadHistory(peer, 0, None, Int.MaxValue, Vector.empty)) { resp ⇒
         inside(resp) {
-          case Ok(ResponseLoadHistory(history, _)) ⇒
+          case Ok(ResponseLoadHistory(history, _, _, _, _)) ⇒
             history.head.reactions should be(Vector(ApiMessageReaction(Vector(bob.id), "like")))
         }
       }
