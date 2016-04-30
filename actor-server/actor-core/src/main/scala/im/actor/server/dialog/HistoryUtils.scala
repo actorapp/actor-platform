@@ -61,7 +61,7 @@ object HistoryUtils {
           val historyMessage = HistoryMessage(SharedUserId, toPeer, date, fromPeer.id, randomId, messageContentHeader, messageContentData, None)
           HistoryMessageRepo.create(historyMessage) map (_ ⇒ ())
         } else {
-          DBIO.from(GroupExtension(system).getMemberIds(toPeer.id)) map (_._1) flatMap { groupUserIds =>
+          DBIO.from(GroupExtension(system).getMemberIds(toPeer.id)) map (_._1) flatMap { groupUserIds ⇒
             val historyMessages = groupUserIds.map { groupUserId ⇒
               HistoryMessage(groupUserId, toPeer, date, fromPeer.id, randomId, messageContentHeader, messageContentData, None)
             }
