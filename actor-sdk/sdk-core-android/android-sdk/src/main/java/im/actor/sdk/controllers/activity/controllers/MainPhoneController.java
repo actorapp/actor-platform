@@ -105,7 +105,7 @@ public class MainPhoneController extends MainBaseController {
     public void onDialogClicked(final Dialog item) {
         if ((sendUriMultiple != null && !sendUriMultiple.isEmpty()) || docContent != null || (sendUriString != null && !sendUriString.isEmpty())) {
             new AlertDialog.Builder(getActivity())
-                    .setMessage(getActivity().getString(R.string.confirm_share) + " " + item.getDialogTitle() + "?")
+                    .setMessage(getActivity().getString(R.string.confirm_share, item.getDialogTitle()))
                     .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -128,7 +128,7 @@ public class MainPhoneController extends MainBaseController {
     public void onContactClicked(final Contact contact) {
         if ((sendUriMultiple != null && !sendUriMultiple.isEmpty()) || docContent != null || (sendUriString != null && !sendUriString.isEmpty())) {
             new AlertDialog.Builder(getActivity())
-                    .setMessage(getActivity().getString(R.string.confirm_share) + " " + contact.getName() + "?")
+                    .setMessage(getActivity().getString(R.string.confirm_share, contact.getName()))
                     .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

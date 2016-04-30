@@ -529,7 +529,7 @@
     <string name="alert_revoke_integration_token_message">Revoke token?</string>
     <string name="alert_revoke_integration_token_yes">Revoke</string>
 
-    <string name="confirm_share">Share with</string>
+    <string name="confirm_share">Share with "%1$s"?</string>
 
     <!-- Errors -->
     <string name="error_connection">Unable to connect. Please make sure that you\'re connected to the Internet and try

@@ -21,9 +21,10 @@
     <string name="progress_common">آماده سازی…</string>
 
     <string name="toast_no_sdcard">کارت حافظه وجود ندارد</string>
-    <string name="toast_phone_copied">شماره تلفن کپی شد</string>
-    <string name="toast_email_copied">ایمیل کپی شد</string>
-    <string name="toast_messages_copied">پیام کپی شد</string>
+    <string name="toast_phone_copied">شماره تلفن رونوشت گرفته شد</string>
+    <string name="toast_email_copied">ایمیل رونوشت گرفته شد</string>
+    <string name="toast_messages_copied">پیام رونوشت گرفته شد</string>
+    <string name="toast_nickname_copied">نام کاربری رونوشت گرفته شد</string>
     <string name="toast_unable_kick">حذف عضو از گروه ممکن نیست</string>
     <string name="toast_unable_add">اضافه کردن کاربر به گروه ممکن نیست</string>
     <string name="toast_already_member">کاربر هم‌اکنون نیز عضو گروه است</string>
@@ -43,7 +44,12 @@
     <string name="menu_saved">ذخیره شد</string>
     <string name="menu_next">بعدی</string>
 
+    <!-- Invites -->
     <string name="invite_message">سلام. به  {appName} بپیوند! {inviteUrl}</string>
+    <string name="invite_options_sms">دعوت با پیامک</string>
+    <string name="invite_options_email">دعوت با ایمیل</string>
+
+
 
     <!-- Tour -->
     <string name="tour_sign_up">ثبت نام</string>
@@ -67,7 +73,7 @@
 
     <!-- Phone Sign Fragment -->
     <string name="auth_phone_title"> شناسایی شماره همراه</string>
-    <string name="auth_phone_hint">لطفن شماره‌تان را وارد کنید.</string>
+    <string name="auth_phone_hint">لطفا شماره‌تان را وارد کنید.</string>
     <string name="auth_phone_number_hint">شماره همراه</string>
     <string name="auth_phone_get_code">تایید شماره</string>
     <string name="auth_phone_why">چه نیازی به شماره همراه‌تان هست؟</string>
@@ -76,9 +82,15 @@
     <string name="auth_phone_country_title">یک کشور را انتخاب کنید</string>
     <string name="auth_phone_error_invalid_country">کد کشور نامعتبر</string>
 
+    <string name="auth_email_why_description">ما از ایمیل کاری شما برای شناسایی‌تان استفاده می‌کنیم. بنابرین ما می‌توانیم همکاران‌تان را به لیست مخاطبین‌تان اضافه کنیم و شما را فورا به گروه‌های کاری بیفزاییم</string>
+    <string name="auth_email_why">چرا ما ایمیل کاری شما را نیاز داریم؟</string>
+
+    <string name="auth_switch_to_email">از ایمیل برای ثبت نام استفاده کنید</string>
+    <string name="auth_switch_to_phone">از تلفن برای ثبت نام استفاده کنید</string>
+
     <!-- Choose auth type-->
     <string name="choose_auth_type_title">روش شناسایی را انتخاب کنید</string>
-    <string name="choose_auth_type_hint">لطفن انتخاب کنید</string>
+    <string name="choose_auth_type_hint">لطفا انتخاب کنید</string>
     <string name="choose_auth_type_sign_up">ثبت‌نام</string>
     <string name="choose_auth_type_sign_in">ورود</string>
     <string name="choose_auth_type_using_tel">با شماره همراه</string>
@@ -87,7 +99,7 @@
 
     <!-- Email Sign Fragment -->
     <string name="auth_email_title">شناسایی ایمیل</string>
-    <string name="auth_email_hint">لطفن ایمیل‌تان را وارد کنید</string>
+    <string name="auth_email_hint">لطفا ایمیل‌تان را وارد کنید</string>
     <string name="auth_email_edit_text_hint">ایمیل</string>
     <string name="auth_email_get_code">تایید ایمیل</string>
 
@@ -102,8 +114,12 @@
 
     <!-- Sign in Fragment-->
     <string name="sign_in_title">ورود</string>
-    <string name="sign_in_hint">لطفن شماره همراه خودتان را وارد کنید</string>
-    <string name="sign_in_edit_text_hint">شماره همراه</string>
+    <string name="sign_in_hint">لطفا شماره همراه خودتان را وارد کنید</string>
+    <string name="sign_in_hint_phone_only">لطفا شماره همراه‌تان را وارد کنید</string>
+    <string name="sign_in_hint_email_only">لطفا ایمیل‌تان را وارد کنید</string>
+    <string name="sign_in_edit_text_hint">شماره همراه یا ایمیل</string>
+    <string name="sign_in_edit_text_hint_phone_only">شماره همراه</string>
+    <string name="sign_in_edit_text_hint_email_only">ایمیل</string>
     <string name="sign_in_get_code">ورود</string>
 
     <!-- Validate code Fragment -->
@@ -120,17 +136,18 @@
 
     <!-- Sign Up Fragment -->
     <string name="auth_profile_title">مشخصات نمایه</string>
-    <string name="auth_profile_hint">لطفن یک نام برای خودتان انتخاب کنید </string>
+    <string name="auth_profile_hint">لطفا یک نام برای خودتان انتخاب کنید </string>
     <string name="auth_profile_name_hint">نام شما</string>
     <string name="auth_profile_done">{appName} را شروع کنید</string>
 
     <!-- Auth errors -->
-    <string name="auth_error_empty_phone">لطفن شماره همراه خودتان را وارد کنید</string>
-    <string name="auth_error_empty_email">لطفن ایمیل‌تان را وارد کنید</string>
-    <string name="auth_error_code_expired">زمان اعتبار کد فعال‌سازی گذشته است. لطفن از ابتدا شروع کنید..</string>
+    <string name="auth_error_wrong_auth_id">لطفا یک شماره همراه یا ایمیل معتبر وارد کنید</string>
+    <string name="auth_error_empty_phone">لطفا شماره همراه خودتان را وارد کنید</string>
+    <string name="auth_error_empty_email">لطفا ایمیل‌تان را وارد کنید</string>
+    <string name="auth_error_code_expired">زمان اعتبار کد فعال‌سازی گذشته است. لطفا از ابتدا شروع کنید..</string>
 
-    <string name="auth_error_code_invalid">کد نامعتبر است. لطفن دوباره تلاش کنید.</string>
-    <string name="auth_error_failed_get_oauth2_token">شناسایی کارگزار با خطا مواجه شد. لطفن دوباره تلاش کنید.</string>
+    <string name="auth_error_code_invalid">کد نامعتبر است. لطفا دوباره تلاش کنید.</string>
+    <string name="auth_error_failed_get_oauth2_token">شناسایی کارگزار با خطا مواجه شد. لطفا دوباره تلاش کنید.</string>
 
     <!-- Typing -->
     <string name="typing_private">در حال تایپ</string>
@@ -152,10 +169,10 @@
     <string name="main_fab_add_contact">افزون مخاطب</string>
 
     <string name="main_sync_title">هم‌گام سازی در جریان است</string>
-    <string name="main_sync_message">لطفن اندکی صبر کنید تا نرم‌افزار را برایتان فعال کنیم.</string>
+    <string name="main_sync_message">لطفا اندکی صبر کنید تا نرم‌افزار را برایتان فعال کنیم.</string>
 
     <string name="main_empty_title">دوستان‌تان را دعوت کنید</string>
-    <string name="main_empty_invite_hint">هنوز هیچ‌یک از دوستان‌تان {appName} نشده است. لطفن دعوت‌شان کنید.</string>
+    <string name="main_empty_invite_hint">هنوز هیچ‌یک از دوستان‌تان {appName} نشده است. لطفا دعوت‌شان کنید.</string>
     <string name="main_empty_invite_action">به یک دوست معرفی کنید.</string>
     <string name="main_empty_add_hint">یا یک مخاطب را مستقیمن اضافه کنید</string>
     <string name="main_empty_add_action">افزودن مخاطب</string>
@@ -173,6 +190,7 @@
     <string name="settings_notifications">اعلان‌ها</string>
     <string name="settings_chat">تنظیمات گپ</string>
     <string name="settings_security">امنیت</string>
+    <string name="settings_blocked_list">لیست بلاک شده ها</string>
     <string name="nickname_empty">یک نام کاربری انتخاب کنید</string>
     <string name="nickname_change">ویرایش نام کاربری</string>
     <string name="nickname">نام کاربری</string>
@@ -184,7 +202,7 @@
 
     <!-- Profile controls -->
     <string name="phone_menu_call">با {0} تماس بگیرید</string>
-    <string name="phone_menu_email">به {0} ایمیل بزنید</string>
+    <string name="email_menu_email">به {0} ایمیل بزنید</string>
     <string name="phone_menu_sms">به {0} پیامک بزنید</string>
     <string name="phone_menu_share">با {0} اشتراک بگذارید</string>
     <string name="phone_menu_copy">رونوشت بگیرید</string>
@@ -286,6 +304,9 @@
     <string name="profile_shared_media">رسانه</string>
     <string name="profile_settings_header">تنظیمات</string>
     <string name="profile_settings_notifications">اعلان‌ها</string>
+    <string name="profile_settings_block">بلاک کنید</string>
+    <string name="profile_settings_unblock">از بلاک خارج کنید</string>
+    <string name="profile_settings_block_confirm">{user} را بلاک می‌کنید؟</string>
 
     <string name="profile_contacts_added">در لیست مخاطبین</string>
     <string name="profile_contacts_available">افزودن به مخاطبین</string>
@@ -339,6 +360,8 @@
     <string name="about_group_empty">متن درباره گروه را بنویسید</string>
     <string name="theme_group">زمینه فعالیت گروه</string>
     <string name="theme_group_empty">زمینه فعالیت گروه را مشخص کنید</string>
+
+    <string name="members_adapter_bot_online_status">بات</string>
 
     <!-- Avatar -->
     <string name="avatar_title_your">نگاره شما</string>
@@ -408,6 +431,7 @@
     <!-- Documents -->
     <string name="documents_title">اسناد</string>
     <string name="documents_empty">هنوز هیچ سندی وجود ندارد</string>
+    <string name="file_saved">فایل ذخیره شد:</string>
 
     <!-- Edit name -->
     <string name="edit_name_title_you">نام خود را بنویسید</string>
@@ -476,7 +500,13 @@
     <string name="security_authorized_loading">بارگذاری...</string>
     <string name="security_toast_unable_remove_auth">خطا در پاک کردن دست‌گاه</string>
     <string name="security_this_title">(همین) </string>
-    <string name="security_toast_unable_to_load">خطا! لطفن دوباره تلاش کنید</string>
+    <string name="security_toast_unable_to_load">خطا! لطفا دوباره تلاش کنید</string>
+
+    <!-- Blocked list -->
+    <string name="blocked_title">لیست بلاک‌شده ها</string>
+    <string name="blocked_empty_list">شما هیچ‌کسی را بلاک نکرده‌اید</string>
+    <string name="blocked_loading">بارگزاری لیست بلاک‌شده‌ها</string>
+    <string name="blocked_unblock">از بلاک خارج کنید</string>
 
     <!-- Alerts -->
     <string name="alert_delete_messages_text">آیا برای پاک کردن این {0} گپ‌ دل‌استوارید؟</string>
@@ -534,7 +564,7 @@
     <string name="confirm_share">با "%1$s" اشتراکش می‌گذارید؟</string>
 
     <!-- Errors -->
-    <string name="error_connection">مشکل در ارتباط وجود دارد. لطفن اتصال اینترنت‌تان را بررسی کنید.</string>
+    <string name="error_connection">مشکل در ارتباط وجود دارد. لطفا اتصال اینترنت‌تان را بررسی کنید.</string>
     <string name="error_unknown">مشکلی در انجام درخواست شما پیش آمده است.</string>
     <string name="error_view_url">آدرس ناشناخته است</string>
 
