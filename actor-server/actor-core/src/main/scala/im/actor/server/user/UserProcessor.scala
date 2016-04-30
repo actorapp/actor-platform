@@ -4,6 +4,7 @@ import java.time.Instant
 
 import akka.actor._
 import akka.cluster.sharding.ShardRegion
+import akka.pattern.{ ask, pipe }
 import akka.persistence.RecoveryCompleted
 import akka.util.Timeout
 import im.actor.api.rpc.misc.ApiExtension
@@ -20,7 +21,6 @@ import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.concurrent.duration._
-import scala.util.Try
 
 trait UserEvent extends TaggedEvent {
   val ts: Instant
