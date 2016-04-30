@@ -27,6 +27,7 @@ trait PersistenceDebug extends PersistentActor with ActorLogging with AlertingAc
 
     cause match {
       case e: SQLException ⇒ log.error(e.getNextException, "Next exception:")
+      case _ =>
     }
   }
 }
