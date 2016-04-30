@@ -16804,6 +16804,10 @@
           <property role="TrG5h" value="COMPACT_USERS" />
           <property role="2m7y0m" value="6" />
         </node>
+        <node concept="2m7y0F" id="1kct6f0x0n2" role="2m7ymf">
+          <property role="TrG5h" value="GROUPS_V2" />
+          <property role="2m7y0m" value="7" />
+        </node>
       </node>
       <node concept="2m6fVq" id="GBscvBBAdf" role="2m5mJr">
         <property role="TrG5h" value="GetState" />
