@@ -141,7 +141,7 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
             List(Created(now, peerOpt))
           }
 
-          persistAll(events)(e ⇒ commit(e))
+          persistAllAsync(events)(e ⇒ commit(e))
 
           deferAsync(()) { _ ⇒
             handleDialogCommand(dc)
