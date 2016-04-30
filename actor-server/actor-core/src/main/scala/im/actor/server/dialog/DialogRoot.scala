@@ -158,12 +158,12 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
   }
 
   def handleDialogCommand: PartialFunction[DialogCommand, Unit] = {
-    case ddc: DirectDialogCommand ⇒ dialogRef(ddc) forward ddc
-    case dc: DialogCommand        ⇒ dialogRef(dc.getDest) forward dc
+    case ddc: DirectDialogCommand ⇒ (dialogRef(ddc) ? ddc) pipeTo sender()
+    case dc: DialogCommand        ⇒ (dialogRef(dc.getDest) ? dc) pipeTo sender()
   }
 
   def handleDialogQuery: PartialFunction[DialogQuery, Unit] = {
-    case dq: DialogQuery ⇒ dialogRef(dq.getDest) forward dq
+    case dq: DialogQuery ⇒ (dialogRef(dq.getDest) ? dq) pipeTo sender()
   }
 
   private def archive(peer: Peer, clientAuthSid: Option[Int]) = {

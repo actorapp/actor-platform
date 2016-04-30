@@ -4,7 +4,7 @@ import java.time.Instant
 
 import akka.actor._
 import akka.cluster.sharding.ShardRegion
-import akka.pattern.pipe
+import akka.pattern.{ ask, pipe }
 import akka.persistence.RecoveryCompleted
 import akka.util.Timeout
 import im.actor.api.rpc.collections.ApiMapValue
@@ -248,7 +248,7 @@ private[group] final class GroupProcessor
     case StopOffice     ⇒ context stop self
     case ReceiveTimeout ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
     case de: DialogEnvelope ⇒
-      groupPeer forward de.getAllFields.values.head
+      (groupPeer ? de.getAllFields.values.head) pipeTo sender()
   }
 
   private[this] var groupStateMaybe: Option[GroupState] = None
