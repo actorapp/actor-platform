@@ -117,7 +117,7 @@ public class ContactsModule extends AbsModule {
                 public void onError(RpcException e) {
                     runOnUiThread(() -> callback.onError(new RpcInternalException()));
                 }
-            });
+            }, RPC_TIMEOUT);
         };
     }
 
@@ -144,7 +144,7 @@ public class ContactsModule extends AbsModule {
                 public void onError(RpcException e) {
                     runOnUiThread(() -> callback.onError(new RpcInternalException()));
                 }
-            });
+            }, RPC_TIMEOUT);
         };
     }
 
