@@ -14,10 +14,64 @@
         android:focusable="true"
         android:focusableInTouchMode="true" />
 
+    <LinearLayout
+            android:id="@+id/privacyBar"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:layout_alignParentTop="true"
+            android:visibility="gone">
+
+        <LinearLayout
+                android:id="@+id/addContact"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/selector"
+                android:gravity="center"
+                android:visibility="gone"
+                android:orientation="vertical">
+
+            <TextView
+                    android:id="@+id/addContactTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:singleLine="true"
+                    android:text="@string/profile_contacts_available"
+                    android:textColor="@color/action"/>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+                android:id="@+id/ignoreUser"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0"
+                android:background="@drawable/selector"
+                android:gravity="center"
+                android:visibility="gone"
+                android:orientation="vertical">
+
+            <TextView
+                    android:id="@+id/ignoreUserText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:singleLine="true"
+                    android:text="@string/profile_compose"
+                    android:textColor="@color/action" />
+        </LinearLayout>
+
+    </LinearLayout>
+
     <FrameLayout
         android:id="@+id/messagesFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/privacyBar"
         android:layout_above="@+id/mentionsList" />
 
     <TextView

@@ -211,6 +211,12 @@ public class ChatActivity extends ActorEditTextActivity {
     private int shareMenuMaxHeight = 0;
     private FastShareAdapter fastShareAdapter;
 
+    //////////////////////////////////
+    //Privacy bar
+    //////////////////////////////////
+    private LinearLayout privacyBar;
+    private LinearLayout addContactBar;
+    private LinearLayout ignoreUserBar;
 
     //////////////////////////////////
     // Utility variables
@@ -466,6 +472,12 @@ public class ChatActivity extends ActorEditTextActivity {
         emptyBotHint = (TextView) findViewById(R.id.botEmptyHint);
 
         checkEmptyBot();
+
+        //privacy
+        privacyBar = (LinearLayout) findViewById(R.id.privacyBar);
+        addContactBar = (LinearLayout) findViewById(R.id.addContact);
+        addContactBar.setOnClickListener(view -> execute(messenger().addContact(peer.getPeerId())));
+        ignoreUserBar = (LinearLayout) findViewById(R.id.ignoreUser);
     }
 
     private void startCamera() {
@@ -772,6 +784,15 @@ public class ChatActivity extends ActorEditTextActivity {
                     execute(messenger().unblockUser(peer.getPeerId()));
                 }
             });
+
+            bind(users().get(peer.getPeerId()).isContact(), new ValueChangedListener<Boolean>() {
+                @Override
+                public void onChanged(Boolean val, Value<Boolean> valueModel) {
+                    privacyBar.setVisibility(val ? View.GONE :  View.VISIBLE);
+                    addContactBar.setVisibility(val ? View.GONE : View.VISIBLE);
+                }
+            });
+
 
             // Bind empty bot about
             if (isBot) {
