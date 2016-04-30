@@ -136,7 +136,10 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
           val events = if (isCreated) {
             (if (!isShown) List(Unarchived(now, peerOpt)) else List.empty) ++
               (if (!isDialogOnTop(peer)) List(Bumped(now, peerOpt)) else List.empty)
-          } else List(Created(now, peerOpt))
+          } else {
+            log.debug("Creating dialog with peer type: {} id: {}", peerOpt.get.`type`, peerOpt.get.id)
+            List(Created(now, peerOpt))
+          }
 
           persistAll(events)(e ⇒ commit(e))
 
