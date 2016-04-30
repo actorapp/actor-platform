@@ -78,12 +78,9 @@ private trait DialogRootQueryHandlers {
     fetchDialogGroups() map (GetDialogGroupsResponse(_))
 
   def getCounter(): Future[GetCounterResponse] = {
-    val refs = state.active.map(peer ⇒ peer → dialogRef(peer)).toSeq
-
     for {
-      counters ← FutureExt.ftraverse(refs) {
-        case (peer, ref) ⇒
-          (ref ? DialogQueries.GetCounter(Some(peer))).mapTo[DialogQueries.GetCounterResponse] map (_.counter)
+      counters ← FutureExt.ftraverse(state.active.map(identity).toSeq) { peer ⇒
+        (context.parent ? DialogQueries.GetCounter(Some(peer))).mapTo[DialogQueries.GetCounterResponse] map (_.counter)
       }
     } yield GetCounterResponse(counters.sum)
   }
@@ -144,29 +141,18 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
           persistAllAsync(events)(e ⇒ commit(e))
 
           deferAsync(()) { _ ⇒
-            handleDialogCommand(dc)
+            sender() ! (())
 
             if (!isCreated || !isShown)
               sendChatGroupsChanged()
           }
         case None ⇒
-          handleDialogCommand(dc)
+          sender() ! (())
       }
     case Archive(Some(peer), clientAuthSid)     ⇒ archive(peer, clientAuthSid map (_.value))
     case Unarchive(Some(peer), clientAuthSid)   ⇒ unarchive(peer, clientAuthSid map (_.value))
     case Favourite(Some(peer), clientAuthSid)   ⇒ favourite(peer, clientAuthSid map (_.value))
     case Unfavourite(Some(peer), clientAuthSid) ⇒ unfavourite(peer, clientAuthSid map (_.value))
-    case dc: DialogCommand                      ⇒ handleDialogCommand(dc)
-    case dq: DialogQuery                        ⇒ handleDialogQuery(dq)
-  }
-
-  def handleDialogCommand: PartialFunction[DialogCommand, Unit] = {
-    case ddc: DirectDialogCommand ⇒ dialogRef(ddc) forward ddc
-    case dc: DialogCommand        ⇒ dialogRef(dc.getDest) forward dc
-  }
-
-  def handleDialogQuery: PartialFunction[DialogQuery, Unit] = {
-    case dq: DialogQuery ⇒ dialogRef(dq.getDest) forward dq
   }
 
   private def archive(peer: Peer, clientAuthSid: Option[Int]) = {
@@ -226,23 +212,6 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
 
   private def isDialogOnTop(peer: Peer): Boolean = state.mobile.headOption.exists(_.peer == peer)
 
-  protected def dialogRef(dc: DirectDialogCommand): ActorRef = {
-    val peer = dc.getDest match {
-      case Peer(PeerType.Group, _)   ⇒ dc.getDest
-      case Peer(PeerType.Private, _) ⇒ if (dc.getOrigin == selfPeer) dc.getDest else dc.getOrigin
-    }
-    dialogRef(peer)
-  }
-
-  protected def dialogRef(peer: Peer): ActorRef =
-    context.child(dialogName(peer)) getOrElse context.actorOf(DialogProcessor.props(userId, peer, extensions), dialogName(peer))
-
-  private def dialogName(peer: Peer): String = peer.typ match {
-    case PeerType.Private ⇒ s"Private_${peer.id}"
-    case PeerType.Group   ⇒ s"Group_${peer.id}"
-    case other            ⇒ throw new Exception(s"Unknown peer type: $other")
-  }
-
   protected def fetchDialogGroups(): Future[Seq[DialogGroup]] = {
     for {
       favInfos ← Future.sequence(state.active.favourites.toSeq map (peer ⇒ getInfo(peer) map (_.getInfo))) flatMap sortActiveGroup
@@ -251,7 +220,7 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
     } yield {
       val base = List(
         DialogGroup(DialogGroupType.Groups, groupInfos),
-        DialogGroup(DialogGroupType.DirectMessages, dmInfos.toSeq)
+        DialogGroup(DialogGroupType.DirectMessages, dmInfos)
       )
 
       if (favInfos.nonEmpty) DialogGroup(DialogGroupType.Favourites, favInfos) :: base
@@ -269,7 +238,7 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
   }
 
   protected def getInfo(peer: Peer): Future[DialogQueries.GetInfoResponse] =
-    (dialogRef(peer) ? DialogQueries.GetInfo(Some(peer))).mapTo[GetInfoResponse]
+    (context.parent ? DialogQueries.GetInfo(Some(peer))).mapTo[GetInfoResponse]
 
   private def sortActiveGroup(infos: Seq[DialogInfo]): Future[Seq[DialogInfo]] = {
     for {
