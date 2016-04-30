@@ -74,7 +74,7 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
       throw new RuntimeException("No message date found in SendMessage")
     }
 
-    persist(NewMessage(sm.randomId, Instant.ofEpochMilli(messageDate.value), sm.getOrigin.id, sm.message.header)) { e ⇒
+    persistAsync(NewMessage(sm.randomId, Instant.ofEpochMilli(messageDate.value), sm.getOrigin.id, sm.message.header)) { e ⇒
       commit(e)
 
       if (peer.typ == PeerType.Private) {
@@ -121,7 +121,7 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
   }
 
   protected def ackMessageReceived(mr: MessageReceived): Unit = {
-    persist(MessagesReceived(Instant.ofEpochMilli(mr.date))) { e ⇒
+    persistAsync(MessagesReceived(Instant.ofEpochMilli(mr.date))) { e ⇒
       commit(e)
 
       (deliveryExt.notifyReceive(userId, peer, mr.date, mr.now) map { _ ⇒ MessageReceivedAck() }) pipeTo sender() andThen {
@@ -135,7 +135,7 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
     log.debug(s"mustRead is ${mustRead}")
 
     if (mustRead) {
-      persist(MessagesRead(Instant.ofEpochMilli(mr.date), mr.getOrigin.id)) { e ⇒
+      persistAsync(MessagesRead(Instant.ofEpochMilli(mr.date), mr.getOrigin.id)) { e ⇒
         log.debug(s"persisted MessagesRead, origin=${mr.getOrigin.id}, date=${Instant.ofEpochMilli(mr.date)}, counter=${state.counter}, unreadMessages=${state.unreadMessages}")
         commit(e)
         log.debug(s"after commit: counter=${state.counter}, unreadMessages=${state.unreadMessages}")
@@ -153,7 +153,7 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
 
   protected def ackMessageRead(mr: MessageRead): Unit = {
     require(mr.getOrigin.typ.isPrivate)
-    persist(MessagesRead(Instant.ofEpochMilli(mr.date), mr.getOrigin.id)) { e ⇒
+    persistAsync(MessagesRead(Instant.ofEpochMilli(mr.date), mr.getOrigin.id)) { e ⇒
       commit(e)
       log.debug(s"=== new lastReadDate is ${state.lastReadDate}")
       (deliveryExt.notifyRead(userId, peer, mr.date, mr.now) map { _ ⇒ MessageReadAck() }) pipeTo sender() andThen {
