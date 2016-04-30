@@ -32,7 +32,7 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
 
     private static final int STASH = 1;
 
-    public static final long TIMEOUT = 6000;
+    public static final long TIMEOUT = 18000;
 
     @NotNull
     private final PeerSettings selfSettings;
