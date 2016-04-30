@@ -24,10 +24,12 @@ public class RequestLoadArchived extends Request<ResponseLoadArchived> {
 
     private byte[] nextOffset;
     private int limit;
+    private List<ApiUpdateOptimization> optimizations;
 
-    public RequestLoadArchived(@Nullable byte[] nextOffset, int limit) {
+    public RequestLoadArchived(@Nullable byte[] nextOffset, int limit, @NotNull List<ApiUpdateOptimization> optimizations) {
         this.nextOffset = nextOffset;
         this.limit = limit;
+        this.optimizations = optimizations;
     }
 
     public RequestLoadArchived() {
@@ -43,10 +45,19 @@ public class RequestLoadArchived extends Request<ResponseLoadArchived> {
         return this.limit;
     }
 
+    @NotNull
+    public List<ApiUpdateOptimization> getOptimizations() {
+        return this.optimizations;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.nextOffset = values.optBytes(1);
         this.limit = values.getInt(2);
+        this.optimizations = new ArrayList<ApiUpdateOptimization>();
+        for (int b : values.getRepeatedInt(3)) {
+            optimizations.add(ApiUpdateOptimization.parse(b));
+        }
     }
 
     @Override
@@ -55,6 +66,9 @@ public class RequestLoadArchived extends Request<ResponseLoadArchived> {
             writer.writeBytes(1, this.nextOffset);
         }
         writer.writeInt(2, this.limit);
+        for (ApiUpdateOptimization i : this.optimizations) {
+            writer.writeInt(3, i.getValue());
+        }
     }
 
     @Override
@@ -62,6 +76,7 @@ public class RequestLoadArchived extends Request<ResponseLoadArchived> {
         String res = "rpc LoadArchived{";
         res += "nextOffset=" + byteArrayToStringCompact(this.nextOffset);
         res += ", limit=" + this.limit;
+        res += ", optimizations=" + this.optimizations;
         res += "}";
         return res;
     }

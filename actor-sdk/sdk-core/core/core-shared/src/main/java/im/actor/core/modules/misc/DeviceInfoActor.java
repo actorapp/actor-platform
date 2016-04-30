@@ -23,7 +23,7 @@ public class DeviceInfoActor extends ModuleActor {
         //
         // Loading Information
         //
-        ArrayList<String> langs = new ArrayList<String>();
+        ArrayList<String> langs = new ArrayList<>();
         for (String s : context().getConfiguration().getPreferredLanguages()) {
             langs.add(s);
         }

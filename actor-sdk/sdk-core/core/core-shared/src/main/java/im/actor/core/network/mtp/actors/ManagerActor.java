@@ -168,7 +168,7 @@ public class ManagerActor extends Actor {
             InMessage m = (InMessage) message;
             onInMessage(m.data, m.offset, m.len);
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 

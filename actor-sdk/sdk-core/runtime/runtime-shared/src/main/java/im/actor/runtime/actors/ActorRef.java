@@ -48,6 +48,15 @@ public class ActorRef {
     }
 
     /**
+     * Execute on Actor Thread
+     *
+     * @param runnable runnable
+     */
+    public void post(Runnable runnable) {
+        send(runnable);
+    }
+
+    /**
      * Send message with specified sender
      *
      * @param message message

@@ -447,7 +447,7 @@ public class SenderActor extends ModuleActor {
         if (outPeer == null || apiPeer == null) {
             return;
         }
-        request(new RequestSendMessage(outPeer, rid, message, null),
+        request(new RequestSendMessage(outPeer, rid, message, null, null),
                 new RpcCallback<ResponseSeqDate>() {
                     @Override
                     public void onResult(ResponseSeqDate response) {
@@ -555,7 +555,7 @@ public class SenderActor extends ModuleActor {
             ForwardContent forwardContent = (ForwardContent) message;
             doForwardContent(forwardContent.getPeer(), forwardContent.getContent());
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 

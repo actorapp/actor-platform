@@ -2,15 +2,13 @@ platform :ios, '8.0'
 use_frameworks!
 
 workspace 'ActorSDK'
-xcodeproj 'ActorSDK.xcodeproj'
-xcodeproj 'ActorApp.xcodeproj'
+project 'ActorSDK.xcodeproj'
+project 'ActorApp.xcodeproj'
 
 inhibit_all_warnings!
 
-# link_with 'ActorApp'
-
 target 'ActorApp' do
-    xcodeproj 'ActorApp.xcodeproj'
+    project 'ActorApp.xcodeproj'
 
     # Core Tools
     pod 'RegexKitLite'
@@ -38,7 +36,7 @@ target 'ActorApp' do
 end
 
 target 'ActorSDK' do
-    xcodeproj 'ActorSDK.xcodeproj'
+    project 'ActorSDK.xcodeproj'
 
     # J2Objc Runtime
     pod 'J2ObjC-Framework'

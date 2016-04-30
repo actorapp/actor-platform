@@ -36,7 +36,7 @@ public abstract class HolderAdapter<V> extends BaseAdapter {
             view = convertView;
         }
 
-        holder.bind(obj, position, context);
+        onBindViewHolder(holder, obj, position, context);
 
         return view;
     }
@@ -51,6 +51,10 @@ public abstract class HolderAdapter<V> extends BaseAdapter {
         for (ViewHolder holder : holders) {
             holder.unbind();
         }
+    }
+
+    protected void onBindViewHolder(ViewHolder<V> holder, V obj, int position, Context context) {
+        holder.bind(obj, position, context);
     }
 
     protected abstract ViewHolder<V> createHolder(V obj);

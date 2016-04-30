@@ -23,9 +23,11 @@ public class RequestPeerSearch extends Request<ResponsePeerSearch> {
     }
 
     private List<ApiSearchCondition> query;
+    private List<ApiUpdateOptimization> optimizations;
 
-    public RequestPeerSearch(@NotNull List<ApiSearchCondition> query) {
+    public RequestPeerSearch(@NotNull List<ApiSearchCondition> query, @NotNull List<ApiUpdateOptimization> optimizations) {
         this.query = query;
+        this.optimizations = optimizations;
     }
 
     public RequestPeerSearch() {
@@ -37,11 +39,20 @@ public class RequestPeerSearch extends Request<ResponsePeerSearch> {
         return this.query;
     }
 
+    @NotNull
+    public List<ApiUpdateOptimization> getOptimizations() {
+        return this.optimizations;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.query = new ArrayList<ApiSearchCondition>();
         for (byte[] b : values.getRepeatedBytes(1)) {
             query.add(ApiSearchCondition.fromBytes(b));
+        }
+        this.optimizations = new ArrayList<ApiUpdateOptimization>();
+        for (int b : values.getRepeatedInt(2)) {
+            optimizations.add(ApiUpdateOptimization.parse(b));
         }
     }
 
@@ -50,12 +61,16 @@ public class RequestPeerSearch extends Request<ResponsePeerSearch> {
         for (ApiSearchCondition i : this.query) {
             writer.writeBytes(1, i.buildContainer());
         }
+        for (ApiUpdateOptimization i : this.optimizations) {
+            writer.writeInt(2, i.getValue());
+        }
     }
 
     @Override
     public String toString() {
         String res = "rpc PeerSearch{";
         res += "query=" + this.query;
+        res += ", optimizations=" + this.optimizations;
         res += "}";
         return res;
     }

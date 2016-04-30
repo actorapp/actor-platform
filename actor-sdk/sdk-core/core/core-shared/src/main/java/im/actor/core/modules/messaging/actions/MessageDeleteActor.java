@@ -105,7 +105,7 @@ public class MessageDeleteActor extends ModuleActor {
             }
             onDeleteMessage(deleteMessage.getPeer(), rids);
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 

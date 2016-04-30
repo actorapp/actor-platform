@@ -7,10 +7,10 @@ import im.actor.api.rpc.PeersImplicits
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.concurrent.{ AlertingActor, FutureExt }
 import im.actor.server.dialog._
-import im.actor.server.model.{ Dialog, Peer, PeerType }
+import im.actor.server.model.{ DialogObsolete, Peer, PeerType }
 
 import scala.concurrent.duration._
-
+/*
 private[user] object UserPeer {
   def props(userId: Int, extensions: Seq[ApiExtension]) = Props(classOf[UserPeer], userId, extensions)
 
@@ -83,3 +83,4 @@ private[user] final class UserPeer(userId: Int, extensions: Seq[ApiExtension]) e
   }
 
 }
+*/ 

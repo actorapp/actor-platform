@@ -9,10 +9,10 @@ import im.actor.api.rpc.sequence.ApiUpdateOptimization
 import im.actor.api.rpc.users.ApiUser
 import im.actor.concurrent.FutureExt
 import im.actor.server.db.DbExtension
+import im.actor.server.dialog.DialogExtension
 import im.actor.server.group.{ GroupExtension, GroupUtils }
 import im.actor.server.persist.contact.UserContactRepo
 import im.actor.server.persist.GroupRepo
-import im.actor.server.persist.dialog.DialogRepo
 import im.actor.server.user.UserExtension
 
 import scala.concurrent.{ ExecutionContext, Future }
@@ -147,7 +147,7 @@ class SearchServiceImpl(implicit system: ActorSystem) extends SearchService {
   // TODO: rewrite it using async
   private def searchGroups(text: Option[String])(implicit client: AuthorizedClientData): Future[IndexedSeq[ApiGroup]] = {
     for {
-      ids ← db.run(DialogRepo.findGroupIds(client.userId))
+      ids ← DialogExtension(system).fetchGroupedDialogs(client.userId) map (_.filter(_.typ.isGroups).flatMap(_.dialogs.map(_.getPeer.id)))
       groupOpts ← FutureExt.ftraverse(ids) { id ⇒
         groupExt.isPublic(id) flatMap { isPublic ⇒
           if (isPublic) Future.successful(None)

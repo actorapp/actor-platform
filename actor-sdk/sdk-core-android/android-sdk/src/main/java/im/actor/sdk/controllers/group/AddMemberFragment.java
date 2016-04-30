@@ -10,6 +10,7 @@ import im.actor.core.entity.GroupMember;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.runtime.actors.messages.Void;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
@@ -63,9 +64,9 @@ public class AddMemberFragment extends BaseContactFragment {
                     @Override
                     public void onClick(DialogInterface dialog2, int which) {
                         execute(messenger().inviteMember(gid, userModel.getId()),
-                                R.string.progress_common, new CommandCallback<Boolean>() {
+                                R.string.progress_common, new CommandCallback<Void>() {
                                     @Override
-                                    public void onResult(Boolean res) {
+                                    public void onResult(Void res) {
                                         getActivity().finish();
                                     }
 

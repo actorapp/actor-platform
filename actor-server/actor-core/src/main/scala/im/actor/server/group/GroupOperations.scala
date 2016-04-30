@@ -114,6 +114,12 @@ private[group] sealed trait Queries {
   def getMemberIds(groupId: Int): Future[(Seq[Int], Seq[Int], Option[Int])] =
     (viewRegion.ref ? GetMembers(groupId)).mapTo[GetMembersResponse] map (r ⇒ (r.memberIds, r.invitedUserIds, r.botId))
 
+  def isMember(groupId: Int, userId: Int): Future[Boolean] =
+    getMemberIds(groupId) map (_._1.contains(userId))
+
   def getAccessHash(groupId: Int): Future[Long] =
     (viewRegion.ref ? GetAccessHash(groupId)).mapTo[GetAccessHashResponse] map (_.accessHash)
+
+  def getTitle(groupId: Int): Future[String] =
+    (viewRegion.ref ? GetTitle(groupId)).mapTo[GetTitleResponse] map (_.title)
 }

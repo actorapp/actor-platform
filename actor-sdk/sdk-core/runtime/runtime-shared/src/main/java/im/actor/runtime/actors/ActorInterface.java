@@ -5,9 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import im.actor.runtime.Log;
 import im.actor.runtime.actors.ask.AskIntRequest;
 import im.actor.runtime.actors.ask.AskMessage;
-import im.actor.runtime.actors.ask.AskResult;
 import im.actor.runtime.actors.messages.PoisonPill;
-import im.actor.runtime.function.Consumer;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseFunc;
 import im.actor.runtime.promise.PromiseResolver;
@@ -41,7 +39,7 @@ public abstract class ActorInterface {
     protected <T> Promise<T> ask(@NotNull final AskMessage<T> message) {
         return new Promise<>(new PromiseFunc<T>() {
             @Override
-            public void exec(PromiseResolver<T> executor) {
+            public void exec(@NotNull PromiseResolver<T> executor) {
                 send(new AskIntRequest(message, executor));
             }
         });

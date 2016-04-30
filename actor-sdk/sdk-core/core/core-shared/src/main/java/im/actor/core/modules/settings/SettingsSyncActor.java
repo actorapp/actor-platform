@@ -98,7 +98,7 @@ public class SettingsSyncActor extends ModuleActor {
             saveState();
             performSync(action);
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 

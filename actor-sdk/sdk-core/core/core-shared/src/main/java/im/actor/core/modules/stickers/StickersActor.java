@@ -36,17 +36,14 @@ public class StickersActor extends ModuleActor {
         }
 
         if (!context().getPreferences().getBool("stickers_loaded", false)) {
-            api(new RequestLoadOwnStickers()).then(new Consumer<ResponseLoadOwnStickers>() {
-                @Override
-                public void apply(ResponseLoadOwnStickers responseLoadOwnStickers) {
+            api(new RequestLoadOwnStickers()).then(responseLoadOwnStickers -> {
 
-                    onOwnStickerCollectionChanged(responseLoadOwnStickers.getOwnStickers());
+                onOwnStickerCollectionChanged(responseLoadOwnStickers.getOwnStickers());
 
-                    context().getPreferences().putBool("stickers_loaded", true);
-                    isLoaded = true;
-                    unstashAll();
-                }
-            }).done(self());
+                context().getPreferences().putBool("stickers_loaded", true);
+                isLoaded = true;
+                unstashAll();
+            });
         } else {
             isLoaded = true;
             notifyVM();

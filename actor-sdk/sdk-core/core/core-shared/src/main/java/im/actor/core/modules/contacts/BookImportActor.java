@@ -8,10 +8,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import im.actor.core.api.ApiUserOutPeer;
+import im.actor.core.entity.PhoneBookIds;
+import im.actor.core.modules.api.ApiSupportConfiguration;
 import im.actor.core.modules.contacts.entity.BookImportStorage;
-import im.actor.core.providers.PhoneBookProvider;
 import im.actor.core.api.ApiEmailToImport;
-import im.actor.core.api.ApiGroup;
 import im.actor.core.api.ApiPhoneToImport;
 import im.actor.core.api.ApiUser;
 import im.actor.core.api.base.FatSeqUpdate;
@@ -26,10 +27,15 @@ import im.actor.core.modules.ModuleActor;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.runtime.Log;
+import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.bser.Bser;
 
 public class BookImportActor extends ModuleActor {
 
     private static final String TAG = "ContactsImport";
+
+    // j2objc workaround
+    private static final Void DUMB = null;
 
     private final boolean ENABLE_LOG;
 
@@ -90,12 +96,7 @@ public class BookImportActor extends ModuleActor {
         }
 
         context().getConfiguration().getPhoneBookProvider()
-                .loadPhoneBook(new PhoneBookProvider.Callback() {
-                    @Override
-                    public void onLoaded(List<PhoneBookContact> contacts) {
-                        self().send(new PhoneBookLoaded(contacts));
-                    }
-                });
+                .loadPhoneBook(contacts -> self().send(new PhoneBookLoaded(contacts)));
     }
 
     private void onPhoneBookLoaded(List<PhoneBookContact> phoneBook) {
@@ -106,6 +107,7 @@ public class BookImportActor extends ModuleActor {
 
         int newPhones = 0;
         int newEmails = 0;
+
         for (PhoneBookContact record : phoneBook) {
             for (PhoneBookPhone phone : record.getPhones()) {
                 if (storage.isImported(phone.getNumber())) {
@@ -130,6 +132,7 @@ public class BookImportActor extends ModuleActor {
                 importQueue.add(new ImportEmailQueueItem(email.getEmail().toLowerCase(), record.getName()));
                 newEmails++;
             }
+
         }
 
         if (ENABLE_LOG) {
@@ -187,7 +190,7 @@ public class BookImportActor extends ModuleActor {
                 throw new RuntimeException();
             }
         }
-        request(new RequestImportContacts(phoneToImports, emailToImports), new RpcCallback<ResponseImportContacts>() {
+        request(new RequestImportContacts(phoneToImports, emailToImports, ApiSupportConfiguration.OPTIMIZATIONS), new RpcCallback<ResponseImportContacts>() {
             @Override
             public void onResult(ResponseImportContacts response) {
 
@@ -208,21 +211,40 @@ public class BookImportActor extends ModuleActor {
                 //
                 // Generating update
                 //
-                if (response.getUsers().size() != 0) {
+                if (response.getUsers().size() != 0 || response.getUserPeers().size() != 0) {
+
                     if (ENABLE_LOG) {
-                        Log.d(TAG, "Import success with " + response.getUsers().size() + " new contacts");
+                        Log.d(TAG, "Import success with " +
+                                (response.getUsers().size() + response.getUserPeers().size()) + " new contacts");
                     }
 
-                    ArrayList<Integer> uids = new ArrayList<>();
-                    for (ApiUser u : response.getUsers()) {
-                        uids.add(u.getId());
+                    if (response.getUserPeers().size() != 0) {
+
+                        // Optimized version
+                        ArrayList<Integer> uids = new ArrayList<>();
+                        for (ApiUserOutPeer u : response.getUserPeers()) {
+                            uids.add(u.getUid());
+                        }
+                        updates().loadRequiredPeers(response.getUserPeers(), new ArrayList<>())
+                                .flatMap(v -> updates().applyUpdate(
+                                        response.getSeq(),
+                                        response.getState(),
+                                        new UpdateContactsAdded(uids))
+                                );
+                    } else {
+
+                        // Old version
+                        ArrayList<Integer> uids = new ArrayList<>();
+                        for (ApiUser u : response.getUsers()) {
+                            uids.add(u.getId());
+                        }
+                        updates().onUpdateReceived(new FatSeqUpdate(
+                                response.getSeq(), response.getState(),
+                                UpdateContactsAdded.HEADER,
+                                new UpdateContactsAdded(uids).toByteArray(),
+                                response.getUsers(),
+                                new ArrayList<>()));
                     }
-                    updates().onUpdateReceived(new FatSeqUpdate(
-                            response.getSeq(), response.getState(),
-                            UpdateContactsAdded.HEADER,
-                            new UpdateContactsAdded(uids).toByteArray(),
-                            response.getUsers(),
-                            new ArrayList<ApiGroup>()));
                 } else {
                     if (ENABLE_LOG) {
                         Log.d(TAG, "Import success, but no new contacts found");
@@ -261,7 +283,7 @@ public class BookImportActor extends ModuleActor {
         } else if (message instanceof PhoneBookLoaded) {
             onPhoneBookLoaded(((PhoneBookLoaded) message).getPhoneBook());
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 

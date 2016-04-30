@@ -24,10 +24,12 @@ public class RequestImportContacts extends Request<ResponseImportContacts> {
 
     private List<ApiPhoneToImport> phones;
     private List<ApiEmailToImport> emails;
+    private List<ApiUpdateOptimization> optimizations;
 
-    public RequestImportContacts(@NotNull List<ApiPhoneToImport> phones, @NotNull List<ApiEmailToImport> emails) {
+    public RequestImportContacts(@NotNull List<ApiPhoneToImport> phones, @NotNull List<ApiEmailToImport> emails, @NotNull List<ApiUpdateOptimization> optimizations) {
         this.phones = phones;
         this.emails = emails;
+        this.optimizations = optimizations;
     }
 
     public RequestImportContacts() {
@@ -44,6 +46,11 @@ public class RequestImportContacts extends Request<ResponseImportContacts> {
         return this.emails;
     }
 
+    @NotNull
+    public List<ApiUpdateOptimization> getOptimizations() {
+        return this.optimizations;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         List<ApiPhoneToImport> _phones = new ArrayList<ApiPhoneToImport>();
@@ -56,12 +63,19 @@ public class RequestImportContacts extends Request<ResponseImportContacts> {
             _emails.add(new ApiEmailToImport());
         }
         this.emails = values.getRepeatedObj(2, _emails);
+        this.optimizations = new ArrayList<ApiUpdateOptimization>();
+        for (int b : values.getRepeatedInt(3)) {
+            optimizations.add(ApiUpdateOptimization.parse(b));
+        }
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeRepeatedObj(1, this.phones);
         writer.writeRepeatedObj(2, this.emails);
+        for (ApiUpdateOptimization i : this.optimizations) {
+            writer.writeInt(3, i.getValue());
+        }
     }
 
     @Override
@@ -69,6 +83,7 @@ public class RequestImportContacts extends Request<ResponseImportContacts> {
         String res = "rpc ImportContacts{";
         res += "phones=" + this.phones.size();
         res += ", emails=" + this.emails.size();
+        res += ", optimizations=" + this.optimizations;
         res += "}";
         return res;
     }

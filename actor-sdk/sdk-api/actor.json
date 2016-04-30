@@ -3225,6 +3225,17 @@
                   "type": "bool",
                   "id": 2,
                   "name": "isNotChanged"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "UserOutPeer"
+                    }
+                  },
+                  "id": 3,
+                  "name": "userPeers"
                 }
               ]
             },
@@ -6906,7 +6917,7 @@
               },
               {
                 "type": {
-                  "type": "opt",
+                  "type": "list",
                   "childType": {
                     "type": "enum",
                     "childType": "UpdateOptimization"
@@ -7659,6 +7670,91 @@
       "package": "groups",
       "items": [
         {
+          "type": "comment",
+          "content": "Entities"
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "Member",
+            "doc": [
+              "Member information",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  User id"
+              },
+              {
+                "type": "reference",
+                "argument": "inviterUid",
+                "category": "full",
+                "description": "  User inviter id"
+              },
+              {
+                "type": "reference",
+                "argument": "date",
+                "category": "full",
+                "description": "  Adding date"
+              },
+              {
+                "type": "reference",
+                "argument": "isAdmin",
+                "category": "full",
+                "description": "  is member admin of group"
+              }
+            ],
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 2,
+                "name": "inviterUid"
+              },
+              {
+                "type": "int64",
+                "id": 3,
+                "name": "date"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 4,
+                "name": "isAdmin"
+              }
+            ]
+          }
+        },
+        {
+          "type": "enum",
+          "content": {
+            "name": "GroupType",
+            "values": [
+              {
+                "name": "GROUP",
+                "id": 1
+              },
+              {
+                "name": "CHANNEL",
+                "id": 2
+              }
+            ]
+          }
+        },
+        {
           "type": "struct",
           "content": {
             "name": "Group",
@@ -7679,7 +7775,7 @@
               {
                 "type": "reference",
                 "argument": "title",
-                "category": "hidden",
+                "category": "full",
                 "description": "  Title of group"
               },
               {
@@ -7702,15 +7798,27 @@
               },
               {
                 "type": "reference",
-                "argument": "ext",
+                "argument": "isMember",
                 "category": "full",
-                "description": "  Group extension Data"
+                "description": "  Is current user a member of a group. Default is true."
               },
               {
                 "type": "reference",
-                "argument": "isMember",
+                "argument": "groupType",
                 "category": "full",
-                "description": "  [DEPRECATED] Is current user a member of a group"
+                "description": "  Group Type. Used only for displaying information. Default is GROUP."
+              },
+              {
+                "type": "reference",
+                "argument": "canSendMessage",
+                "category": "full",
+                "description": "  Can user send messages. Default is equals isMember for Group and false for channels."
+              },
+              {
+                "type": "reference",
+                "argument": "ext",
+                "category": "full",
+                "description": "  Group extension Data"
               },
               {
                 "type": "reference",
@@ -7793,8 +7901,35 @@
                   "type": "opt",
                   "childType": "bool"
                 },
+                "id": 6,
+                "name": "isMember"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
                 "id": 20,
                 "name": "isHidden"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "GroupType"
+                  }
+                },
+                "id": 25,
+                "name": "groupType"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 26,
+                "name": "canSendMessage"
               },
               {
                 "type": {
@@ -7806,12 +7941,6 @@
                 },
                 "id": 22,
                 "name": "ext"
-              },
-              {
-                "type": "bool",
-                "id": 6,
-                "name": "isMember",
-                "deprecated": "true"
               },
               {
                 "type": {
@@ -7878,7 +8007,67 @@
           "content": {
             "name": "GroupFull",
             "doc": [
-              "Goup Full information"
+              "Goup Full information",
+              {
+                "type": "reference",
+                "argument": "id",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "createDate",
+                "category": "full",
+                "description": "  Date created"
+              },
+              {
+                "type": "reference",
+                "argument": "ownerUid",
+                "category": "full",
+                "description": "  Group owner"
+              },
+              {
+                "type": "reference",
+                "argument": "members",
+                "category": "full",
+                "description": "  Group members. Can be empty when isAsyncMembers enabled."
+              },
+              {
+                "type": "reference",
+                "argument": "theme",
+                "category": "full",
+                "description": "  Group Theme"
+              },
+              {
+                "type": "reference",
+                "argument": "about",
+                "category": "full",
+                "description": "  Group about"
+              },
+              {
+                "type": "reference",
+                "argument": "isAsyncMembers",
+                "category": "full",
+                "description": "  Is Members need to be loaded asynchronous."
+              },
+              {
+                "type": "reference",
+                "argument": "canViewMembers",
+                "category": "full",
+                "description": "  Can current user view members of the group. Default is true."
+              },
+              {
+                "type": "reference",
+                "argument": "canInvitePeople",
+                "category": "full",
+                "description": "  Can current user invite new people. Default is true."
+              },
+              {
+                "type": "reference",
+                "argument": "isSharedHistory",
+                "category": "full",
+                "description": "  Is history shared among all users."
+              }
             ],
             "attributes": [
               {
@@ -7888,6 +8077,33 @@
                 },
                 "id": 1,
                 "name": "id"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
+                "id": 6,
+                "name": "createDate"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 5,
+                "name": "ownerUid"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Member"
+                  }
+                },
+                "id": 12,
+                "name": "members"
               },
               {
                 "type": {
@@ -7907,30 +8123,386 @@
               },
               {
                 "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MapValue"
+                  }
+                },
+                "id": 7,
+                "name": "ext"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 11,
+                "name": "isAsyncMembers"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 8,
+                "name": "canViewMembers"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 9,
+                "name": "canInvitePeople"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 10,
+                "name": "isSharedHistory"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "LoadFullGroups",
+            "header": 2782,
+            "response": {
+              "type": "anonymous",
+              "header": 2783,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "groups",
+                  "category": "compact",
+                  "description": "  Groups to load"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "GroupFull"
+                    }
+                  },
+                  "id": 1,
+                  "name": "groups"
+                }
+              ]
+            },
+            "doc": [
+              "Loading Full Groups",
+              {
+                "type": "reference",
+                "argument": "groups",
+                "category": "compact",
+                "description": "Groups to load"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
                   "type": "list",
                   "childType": {
                     "type": "struct",
-                    "childType": "Member"
+                    "childType": "GroupOutPeer"
                   }
                 },
-                "id": 4,
-                "name": "members"
+                "id": 1,
+                "name": "groups"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "LoadMembers",
+            "header": 2786,
+            "response": {
+              "type": "anonymous",
+              "header": 2787,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "members",
+                  "category": "full",
+                  "description": "  Group members"
+                },
+                {
+                  "type": "reference",
+                  "argument": "next",
+                  "category": "full",
+                  "description": "  Load more reference"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "UserOutPeer"
+                    }
+                  },
+                  "id": 1,
+                  "name": "members"
+                },
+                {
+                  "type": {
+                    "type": "opt",
+                    "childType": "bytes"
+                  },
+                  "id": 2,
+                  "name": "next"
+                }
+              ]
+            },
+            "doc": [
+              "Loading group members",
+              {
+                "type": "reference",
+                "argument": "group",
+                "category": "full",
+                "description": "Group peer"
+              },
+              {
+                "type": "reference",
+                "argument": "limit",
+                "category": "full",
+                "description": "Limit members"
+              },
+              {
+                "type": "reference",
+                "argument": "next",
+                "category": "full",
+                "description": "Load more reference"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "group"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "limit"
               },
               {
                 "type": {
-                  "type": "alias",
-                  "childType": "userId"
+                  "type": "opt",
+                  "childType": "bytes"
                 },
-                "id": 5,
-                "name": "creatorUid"
+                "id": 3,
+                "name": "next"
+              }
+            ]
+          }
+        },
+        {
+          "type": "comment",
+          "content": "Update"
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupTitleChanged",
+            "header": 2609,
+            "doc": [
+              "Update about title changed",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
               },
+              {
+                "type": "reference",
+                "argument": "title",
+                "category": "full",
+                "description": "  Group Title"
+              }
+            ],
+            "attributes": [
               {
                 "type": {
                   "type": "alias",
-                  "childType": "date"
+                  "childType": "groupId"
                 },
-                "id": 6,
-                "name": "createDate"
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "title"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupAvatarChanged",
+            "header": 2610,
+            "doc": [
+              "Update about avatar changed",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "avatar",
+                "category": "full",
+                "description": "  Group Avatar"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Avatar"
+                  }
+                },
+                "id": 2,
+                "name": "avatar"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupTopicChanged",
+            "header": 2616,
+            "doc": [
+              "Update about topic changed",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "topic",
+                "category": "full",
+                "description": "  Updated topic"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "topic"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupAboutChanged",
+            "header": 2617,
+            "doc": [
+              "Update about about changed",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "about",
+                "category": "full",
+                "description": "  Updated about"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "about"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupExtChanged",
+            "header": 2613,
+            "doc": [
+              "Update about ext changed",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "ext",
+                "category": "full",
+                "description": "  Updated ext"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
               },
               {
                 "type": {
@@ -7940,52 +8512,83 @@
                     "childType": "MapValue"
                   }
                 },
-                "id": 7,
+                "id": 2,
                 "name": "ext"
               }
             ]
           }
         },
         {
-          "type": "struct",
+          "type": "update",
           "content": {
-            "name": "Member",
+            "name": "GroupFullExtChanged",
+            "header": 2618,
             "doc": [
-              "Member information",
+              "Update about full ext changed",
               {
                 "type": "reference",
-                "argument": "uid",
+                "argument": "groupId",
                 "category": "full",
-                "description": "  User id"
+                "description": "  Group Id"
               },
               {
                 "type": "reference",
-                "argument": "inviterUid",
+                "argument": "ext",
                 "category": "full",
-                "description": "  User inviter id"
-              },
-              {
-                "type": "reference",
-                "argument": "date",
-                "category": "full",
-                "description": "  Adding date"
-              },
-              {
-                "type": "reference",
-                "argument": "isAdmin",
-                "category": "full",
-                "description": "  is member admin of group"
+                "description": "  Updated ext"
               }
             ],
-            "expandable": "true",
             "attributes": [
               {
                 "type": {
                   "type": "alias",
-                  "childType": "userId"
+                  "childType": "groupId"
                 },
                 "id": 1,
-                "name": "uid"
+                "name": "groupId"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MapValue"
+                  }
+                },
+                "id": 2,
+                "name": "ext"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupOwnerChanged",
+            "header": 2619,
+            "doc": [
+              "Update about owner changed",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "userId",
+                "category": "full",
+                "description": "  New Owner"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
               },
               {
                 "type": {
@@ -7993,23 +8596,355 @@
                   "childType": "userId"
                 },
                 "id": 2,
-                "name": "inviterUid"
-              },
-              {
-                "type": "int64",
-                "id": 3,
-                "name": "date"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "bool"
-                },
-                "id": 4,
-                "name": "isAdmin"
+                "name": "userId"
               }
             ]
           }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupHistoryShared",
+            "header": 2620,
+            "doc": [
+              "Update about history shared",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupCanSendMessagesChanged",
+            "header": 2624,
+            "doc": [
+              "Update about can send messages changed",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "canSendMessages",
+                "category": "full",
+                "description": "  Can send messages"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": "bool",
+                "id": 2,
+                "name": "canSendMessages"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupCanViewMembersChanged",
+            "header": 2625,
+            "doc": [
+              "Update about can view members changed",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "canViewMembers",
+                "category": "full",
+                "description": "  Can view members"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": "bool",
+                "id": 2,
+                "name": "canViewMembers"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupCanInviteMembersChanged",
+            "header": 2626,
+            "doc": [
+              "Update about can invite members changed",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "canInviteMembers",
+                "category": "full",
+                "description": "  Can invite members"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": "bool",
+                "id": 2,
+                "name": "canInviteMembers"
+              }
+            ]
+          }
+        },
+        {
+          "type": "comment",
+          "content": " "
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupMemberChanged",
+            "header": 2612,
+            "doc": [
+              "Update about membership changed",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "isMember",
+                "category": "full",
+                "description": "  Is current user a member"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": "bool",
+                "id": 2,
+                "name": "isMember"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupMembersBecameAsync",
+            "header": 2615,
+            "doc": [
+              "Update about members became async",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupMembersUpdated",
+            "header": 2614,
+            "doc": [
+              "Update about members updated",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "members",
+                "category": "full",
+                "description": "  Group Members"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Member"
+                  }
+                },
+                "id": 2,
+                "name": "members"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupMemberDiff",
+            "header": 2623,
+            "doc": [
+              "Update about members changed",
+              {
+                "type": "reference",
+                "argument": "removedUsers",
+                "category": "full",
+                "description": "  Removed Users"
+              },
+              {
+                "type": "reference",
+                "argument": "addedMembers",
+                "category": "full",
+                "description": "  Added members"
+              },
+              {
+                "type": "reference",
+                "argument": "membersCount",
+                "category": "full",
+                "description": "  Current Members count"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "alias",
+                    "childType": "userId"
+                  }
+                },
+                "id": 1,
+                "name": "removedUsers"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Member"
+                  }
+                },
+                "id": 2,
+                "name": "addedMembers"
+              },
+              {
+                "type": "int32",
+                "id": 3,
+                "name": "membersCount"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupMembersCountChanged",
+            "header": 2622,
+            "doc": [
+              "Update about members count changed",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "membersCount",
+                "category": "full",
+                "description": "  Members count"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "membersCount"
+              }
+            ]
+          }
+        },
+        {
+          "type": "comment",
+          "content": "Actions"
         },
         {
           "type": "rpc",
@@ -8980,9 +9915,13 @@
           }
         },
         {
+          "type": "comment",
+          "content": "Updates"
+        },
+        {
           "type": "update",
           "content": {
-            "name": "GroupInvite",
+            "name": "GroupInviteObsolete",
             "header": 36,
             "doc": [
               "Update about inviting current user to group",
@@ -9050,7 +9989,7 @@
         {
           "type": "update",
           "content": {
-            "name": "GroupUserInvited",
+            "name": "GroupUserInvitedObsolete",
             "header": 21,
             "doc": [
               "Update about inviting user to group",
@@ -9132,7 +10071,7 @@
         {
           "type": "update",
           "content": {
-            "name": "GroupUserLeave",
+            "name": "GroupUserLeaveObsolete",
             "header": 23,
             "doc": [
               "Update about leaving user",
@@ -9200,7 +10139,7 @@
         {
           "type": "update",
           "content": {
-            "name": "GroupUserKick",
+            "name": "GroupUserKickObsolete",
             "header": 24,
             "doc": [
               "Update about kicking user",
@@ -9282,7 +10221,7 @@
         {
           "type": "update",
           "content": {
-            "name": "GroupMembersUpdate",
+            "name": "GroupMembersUpdateObsolete",
             "header": 44,
             "doc": [
               "Silent group members update",
@@ -9325,7 +10264,7 @@
         {
           "type": "update",
           "content": {
-            "name": "GroupTitleChanged",
+            "name": "GroupTitleChangedObsolete",
             "header": 38,
             "doc": [
               "Update about group title change",
@@ -9404,7 +10343,7 @@
         {
           "type": "update",
           "content": {
-            "name": "GroupTopicChanged",
+            "name": "GroupTopicChangedObsolete",
             "header": 213,
             "doc": [
               "Update about group topic change",
@@ -9486,7 +10425,7 @@
         {
           "type": "update",
           "content": {
-            "name": "GroupAboutChanged",
+            "name": "GroupAboutChangedObsolete",
             "header": 214,
             "doc": [
               "Update about group about change",
@@ -9526,7 +10465,7 @@
         {
           "type": "update",
           "content": {
-            "name": "GroupAvatarChanged",
+            "name": "GroupAvatarChangedObsolete",
             "header": 39,
             "doc": [
               "Update about group avatar change",
@@ -9607,6 +10546,10 @@
               }
             ]
           }
+        },
+        {
+          "type": "comment",
+          "content": "Invite"
         },
         {
           "type": "response",

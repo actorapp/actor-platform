@@ -134,7 +134,6 @@
 		066A51921BC4C383000E606E /* CocoaFileSystemRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A518B1BC4C383000E606E /* CocoaFileSystemRuntime.swift */; };
 		066A519A1BC4C390000E606E /* FMDBList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A51951BC4C390000E606E /* FMDBList.swift */; };
 		066A519B1BC4C390000E606E /* FMDBKeyValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A51961BC4C390000E606E /* FMDBKeyValue.swift */; };
-		066A519C1BC4C390000E606E /* FMDBIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A51971BC4C390000E606E /* FMDBIndex.swift */; };
 		066A519D1BC4C390000E606E /* UDPreferencesStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A51981BC4C390000E606E /* UDPreferencesStorage.swift */; };
 		066A519E1BC4C390000E606E /* FMDBExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A51991BC4C390000E606E /* FMDBExtensions.swift */; };
 		066A52001BC4E0B0000E606E /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 066A51FF1BC4E0B0000E606E /* libsqlite3.tbd */; };
@@ -506,7 +505,6 @@
 		066A518B1BC4C383000E606E /* CocoaFileSystemRuntime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaFileSystemRuntime.swift; sourceTree = "<group>"; };
 		066A51951BC4C390000E606E /* FMDBList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FMDBList.swift; sourceTree = "<group>"; };
 		066A51961BC4C390000E606E /* FMDBKeyValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FMDBKeyValue.swift; sourceTree = "<group>"; };
-		066A51971BC4C390000E606E /* FMDBIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FMDBIndex.swift; sourceTree = "<group>"; };
 		066A51981BC4C390000E606E /* UDPreferencesStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UDPreferencesStorage.swift; sourceTree = "<group>"; };
 		066A51991BC4C390000E606E /* FMDBExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FMDBExtensions.swift; sourceTree = "<group>"; };
 		066A51FF1BC4E0B0000E606E /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
@@ -1026,7 +1024,6 @@
 				066A516E1BC4C369000E606E /* FMDB */,
 				065975011BC7534100B8C7DF /* FMDBBridge.swift */,
 				066A51991BC4C390000E606E /* FMDBExtensions.swift */,
-				066A51971BC4C390000E606E /* FMDBIndex.swift */,
 				066A51961BC4C390000E606E /* FMDBKeyValue.swift */,
 				066A51951BC4C390000E606E /* FMDBList.swift */,
 				066A51981BC4C390000E606E /* UDPreferencesStorage.swift */,
@@ -1903,7 +1900,7 @@
 				TargetAttributes = {
 					066A50D11BC4AE63000E606E = {
 						CreatedOnToolsVersion = 7.0;
-						DevelopmentTeam = DR9YEJ8YRD;
+						DevelopmentTeam = HVJR44Y5B6;
 					};
 				};
 			};
@@ -2135,7 +2132,6 @@
 				066A53151BC533D5000E606E /* AAConversationContentController.swift in Sources */,
 				066A52151BC4EE04000E606E /* AAAvatarView.swift in Sources */,
 				066A52591BC4EF61000E606E /* Executions.swift in Sources */,
-				066A519C1BC4C390000E606E /* FMDBIndex.swift in Sources */,
 				153F6B8A1C2D7BA300C0B960 /* AATapLabelDelegate.swift in Sources */,
 				15D35F5E1C20187E00E3717A /* AANativeAudioPlayer.m in Sources */,
 				066A52DB1BC52385000E606E /* AAContactActionCell.swift in Sources */,

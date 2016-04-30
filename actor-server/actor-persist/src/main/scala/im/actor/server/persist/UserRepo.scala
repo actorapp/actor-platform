@@ -1,11 +1,13 @@
 package im.actor.server.persist
 
-import java.time.{ ZoneOffset, LocalDateTime }
+import java.time.{ LocalDateTime, ZoneOffset }
 
 import im.actor.server.db.ActorPostgresDriver.api._
-import im.actor.server.model.{ Sex, UserState, User }
+import im.actor.server.model.{ Sex, User, UserState }
 import im.actor.util.misc.PhoneNumberUtils
+import slick.dbio.Effect.Read
 import slick.lifted.ColumnOrdered
+import slick.profile.FixedSqlStreamingAction
 
 import scala.concurrent.ExecutionContext
 
@@ -59,7 +61,7 @@ object UserRepo {
     } yield users
   val idsByEmailC = Compiled(idsByEmail _)
 
-  val activeHumanUsers =
+  private val activeHumanUsers =
     users.filter(u ⇒ u.deletedAt.isEmpty && !u.isBot)
 
   private val activeHumanUsersC = Compiled(activeHumanUsers)

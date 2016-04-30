@@ -20,6 +20,7 @@ import im.actor.runtime.actors.messages.DeadLetter;
 import im.actor.runtime.actors.messages.PoisonPill;
 import im.actor.runtime.actors.messages.StartActor;
 import im.actor.runtime.function.Consumer;
+import im.actor.runtime.threading.ThreadDispatcher;
 
 /**
  * Abstract Actor Dispatcher, used for dispatching messages for actors
@@ -103,7 +104,13 @@ public class ActorDispatcher {
             try {
                 Actor actor = scope.getProps().create();
                 actor.initActor(scope.getPath(), new ActorContext(scope), scope.getMailbox());
-                actor.preStart();
+                ThreadDispatcher.pushDispatcher(actor.getDispatcher());
+                try {
+                    actor.preStart();
+                } finally {
+                    ThreadDispatcher.popDispatcher();
+                }
+
                 scope.onActorCreated(actor);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -118,7 +125,12 @@ public class ActorDispatcher {
             if (envelope.getMessage() == StartActor.INSTANCE) {
                 // Already created actor
             } else if (envelope.getMessage() == PoisonPill.INSTANCE) {
-                scope.getActor().postStop();
+                ThreadDispatcher.pushDispatcher(scope.getActor().getDispatcher());
+                try {
+                    scope.getActor().postStop();
+                } finally {
+                    ThreadDispatcher.popDispatcher();
+                }
                 onActorDie(scope);
             } else {
                 scope.getActor().handleMessage(envelope.getMessage(), envelope.getSender());
@@ -127,7 +139,12 @@ public class ActorDispatcher {
             if (actorSystem.getTraceInterface() != null) {
                 actorSystem.getTraceInterface().onActorDie(scope.getActorRef(), envelope, e);
             }
-            scope.getActor().postStop();
+            ThreadDispatcher.pushDispatcher(scope.getActor().getDispatcher());
+            try {
+                scope.getActor().postStop();
+            } finally {
+                ThreadDispatcher.popDispatcher();
+            }
             onActorDie(scope);
         } finally {
             if (actorSystem.getTraceInterface() != null) {

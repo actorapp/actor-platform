@@ -10,16 +10,19 @@ import java.util.List;
 import im.actor.core.api.ApiDialog;
 import im.actor.core.api.ApiMessageState;
 import im.actor.core.api.rpc.RequestLoadDialogs;
-import im.actor.core.api.rpc.ResponseLoadDialogs;
 import im.actor.core.entity.content.AbsContent;
+import im.actor.core.modules.api.ApiSupportConfiguration;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.messaging.history.entity.DialogHistory;
 import im.actor.core.modules.ModuleActor;
-import im.actor.runtime.function.Consumer;
+import im.actor.runtime.actors.messages.Void;
 
 import static im.actor.core.entity.EntityConverter.convert;
 
 public class DialogsHistoryActor extends ModuleActor {
+
+    // j2objc workaround
+    private static final Void DUMB = null;
 
     private static final int LIMIT = 20;
     private static final String KEY_VERSION = "_1";
@@ -50,17 +53,10 @@ public class DialogsHistoryActor extends ModuleActor {
         }
         isLoading = true;
 
-        api(new RequestLoadDialogs(historyMaxDate, LIMIT)).then(new Consumer<ResponseLoadDialogs>() {
-            @Override
-            public void apply(final ResponseLoadDialogs response) {
-                updates().executeRelatedResponse(response.getUsers(), response.getGroups(), new Runnable() {
-                    @Override
-                    public void run() {
-                        onLoadedMore(response.getDialogs());
-                    }
-                });
-            }
-        }).done(self());
+        api(new RequestLoadDialogs(historyMaxDate, LIMIT, ApiSupportConfiguration.OPTIMIZATIONS))
+                .chain(r -> updates().loadRequiredPeers(r.getUserPeers(), r.getGroupPeers()))
+                .chain(r -> updates().applyRelatedData(r.getUsers(), r.getGroups()))
+                .then(r -> onLoadedMore(r.getDialogs()));
     }
 
     private void onLoadedMore(List<ApiDialog> rawDialogs) {
@@ -84,14 +80,11 @@ public class DialogsHistoryActor extends ModuleActor {
 
         if (dialogs.size() > 0) {
             final long finalMaxLoadedDate = maxLoadedDate;
-            context().getMessagesModule().getRouter().onDialogsHistoryLoaded(dialogs, new Runnable() {
-                @Override
-                public void run() {
-                    if (dialogs.size() < LIMIT) {
-                        markAsLoaded();
-                    } else {
-                        markAsSliceLoaded(finalMaxLoadedDate);
-                    }
+            context().getMessagesModule().getRouter().onDialogsHistoryLoaded(dialogs).then((v) -> {
+                if (dialogs.size() < LIMIT) {
+                    markAsLoaded();
+                } else {
+                    markAsSliceLoaded(finalMaxLoadedDate);
                 }
             });
         } else {

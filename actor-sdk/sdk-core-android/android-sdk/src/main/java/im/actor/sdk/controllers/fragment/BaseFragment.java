@@ -183,8 +183,7 @@ public class BaseFragment extends BinderCompatFragment {
                     public void apply(Exception e) {
                         dismissDialog(dialog);
                     }
-                })
-                .done(promiseActor);
+                });
     }
 
     public View buildRecord(String titleText, String valueText,

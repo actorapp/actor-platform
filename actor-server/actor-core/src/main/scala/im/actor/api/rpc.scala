@@ -8,7 +8,7 @@ import im.actor.server.user.UserErrors.UserNotFound
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.reflect.ClassTag
 
-package object rpc extends PeersImplicits with HistoryImplicits {
+package object rpc extends PeersImplicits with HistoryImplicits with DialogConverters {
 
   object Implicits extends PeersImplicits with HistoryImplicits
 

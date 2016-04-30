@@ -14,7 +14,7 @@ object Dependencies {
     val slick = "3.1.1"
     val slickPg = "0.10.2"
     val scalatest = "2.2.4"
-    val shardakka = "0.1.22"
+    val shardakka = "0.1.24"
     val scalapbSer = "0.1.14"
   }
 
@@ -33,7 +33,6 @@ object Dependencies {
     val akkaClusterSharding     = "com.typesafe.akka"             %% "akka-cluster-sharding"         % V.akka
     val akkaStream              = "com.typesafe.akka"             %% "akka-stream"                   % V.akka
     val akkaHttp                = "com.typesafe.akka"             %% "akka-http-experimental"        % V.akka
-    val akkaHttpCore            = "com.typesafe.akka"             %% "akka-http-core-experimental"   % V.akka
     val akkaHttpPlayJson        = "de.heikoseeberger"             %% "akka-http-play-json"           % V.akkaHttpJson
     val akkaHttpCirce           = "de.heikoseeberger"             %% "akka-http-circe"               % V.akkaHttpJson
     val akkaSlf4j               = "com.typesafe.akka"             %% "akka-slf4j"                    % V.akka
@@ -46,8 +45,7 @@ object Dependencies {
 
     val betterFiles             = "com.github.pathikrit"          %% "better-files"                  % "2.13.0"
 
-    val concmap                 = "com.googlecode.concurrentlinkedhashmap" % "concurrentlinkedhashmap-lru" % "1.4.2"
-    val caffeine                = "com.github.ben-manes.caffeine" %  "caffeine"                      % "1.2.0"
+    val caffeine                = "com.github.ben-manes.caffeine" %  "caffeine"                      % "2.2.7"
 
     val cats                    = "org.spire-math"                %% "cats"                          % V.cats
 
@@ -63,7 +61,7 @@ object Dependencies {
     val playJson                = "com.typesafe.play"             %% "play-json"                     % "2.4.2"
     val upickle                 = "com.lihaoyi"                   %% "upickle"                       % "0.3.6"
 
-    val postgresJdbc            = "org.postgresql"                %  "postgresql"                    % "9.4-1201-jdbc41" exclude("org.slf4j", "slf4j-simple")
+    val postgresJdbc            = "org.postgresql"                %  "postgresql"                    % "9.4.1208" exclude("org.slf4j", "slf4j-simple")
     val slick                   = "com.typesafe.slick"            %% "slick"                         % V.slick
     val slickHikaricp           = "com.typesafe.slick"            %% "slick-hikaricp"                % V.slick
     val slickJoda               = "com.github.tototoshi"          %% "slick-joda-mapper"             % "2.0.0"
@@ -202,11 +200,9 @@ object Dependencies {
     scodecBits, scodecCore
   )
 
-  val notifications = shared ++ Seq(akkaClusterTools, slick)
-
   val sdk = Seq.empty
 
-  val runtime = shared ++ Seq(akkaActor, actorConcurrent, akkaHttp, akkaSlf4j, akkaStream, akkaPersistenceJdbc, apacheCommonsCodec, caffeine, cats, concmap, jodaConvert, jodaTime, icu4j, libPhoneNumber, scalapbSer, akkaTestkit % "test", scalatest % "test")
+  val runtime = shared ++ Seq(akkaActor, actorConcurrent, akkaHttp, akkaSlf4j, akkaStream, akkaPersistenceJdbc, apacheCommonsCodec, caffeine, cats, jodaConvert, jodaTime, icu4j, libPhoneNumber, scalapbSer, akkaTestkit % "test", scalatest % "test")
 
   val voximplant = shared ++ Seq(akkaActor, dispatch, playJson)
 

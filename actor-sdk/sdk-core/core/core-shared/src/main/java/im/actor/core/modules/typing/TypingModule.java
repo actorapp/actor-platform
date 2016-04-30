@@ -19,8 +19,8 @@ public class TypingModule extends AbsModule {
 
     private ActorRef ownTypingActor;
     private ActorRef typingActor;
-    private HashMap<Integer, UserTypingVM> uids = new HashMap<Integer, UserTypingVM>();
-    private HashMap<Integer, GroupTypingVM> groups = new HashMap<Integer, GroupTypingVM>();
+    private HashMap<Integer, UserTypingVM> uids = new HashMap<>();
+    private HashMap<Integer, GroupTypingVM> groups = new HashMap<>();
 
     public TypingModule(final ModuleContext context) {
         super(context);

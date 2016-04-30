@@ -1,5 +1,7 @@
 package im.actor.server.api.rpc.service
 
+import java.time.Instant
+
 import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc._
 import im.actor.api.rpc.counters.UpdateCountersChanged
@@ -11,8 +13,7 @@ import im.actor.server._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.group.GroupExtension
-import im.actor.server.model.PeerType
-import im.actor.server.persist.dialog.DialogRepo
+import im.actor.server.model.{ Peer, PeerType }
 
 import scala.concurrent.Future
 import scala.util.Random
@@ -134,6 +135,9 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
       {
         implicit val clientData = clientData1
 
+        // Archiving should not hide from LoadDialogs
+        whenReady(service.handleArchiveChat(user2Peer))(identity)
+
         whenReady(service.handleLoadDialogs(0, 100, Vector.empty)) { resp ⇒
           resp should matchPattern {
             case Ok(_) ⇒
@@ -242,15 +246,15 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
 
           Thread.sleep(100) // Let peer managers write to db
 
-          whenReady(db.run(DialogRepo.findDialog(user1.id, model.Peer(PeerType.Private, user2.id)))) { dialogOpt ⇒
-            dialogOpt.get.lastReceivedAt.getMillis should be < startDate + 3000
-            dialogOpt.get.lastReceivedAt.getMillis should be > startDate + 1000
+          whenReady(dialogExt.getDialogInfo(user1.id, Peer(PeerType.Private, user2.id))) { info ⇒
+            info.lastReceivedDate.toEpochMilli should be < startDate + 3000
+            info.lastReceivedDate.toEpochMilli should be > startDate + 1000
           }
         }
 
         {
           implicit val clientData = clientData1
-          expectUpdates(
+          expectUpdatesUnordered(
             classOf[UpdateChatGroupsChanged],
             classOf[UpdateMessageSent],
             classOf[UpdateMessageSent],
@@ -275,29 +279,27 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
         val user1AccessHash = ACLUtils.userAccessHash(authId21, user1.id, getUserModel(user1.id).accessSalt)
         val user1Peer = peers.ApiOutPeer(ApiPeerType.Private, user1.id, user1AccessHash)
 
-        val user2AccessHash = ACLUtils.userAccessHash(authId1, user2.id, getUserModel(user2.id).accessSalt)
-        val user2Peer = peers.ApiOutPeer(ApiPeerType.Private, user2.id, user2AccessHash)
-
-        val startDate = {
+        val (date1, date2, date3) = {
           implicit val clientData = clientData1
 
-          val startDate = System.currentTimeMillis()
+          sendMessageToUser(user2.id, ApiTextMessage("Hi Shiva 1", Vector.empty, None))
+          val date1 = Instant.now()
+          Thread.sleep(100)
 
-          val sendMessages = Future.sequence(Seq(
-            service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage("Hi Shiva 1", Vector.empty, None), None, None),
-            futureSleep(1500).flatMap(_ ⇒ service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage("Hi Shiva 2", Vector.empty, None), None, None)),
-            futureSleep(3000).flatMap(_ ⇒ service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage("Hi Shiva 3", Vector.empty, None), None, None))
-          ))
+          sendMessageToUser(user2.id, ApiTextMessage("Hi Shiva 2", Vector.empty, None))
+          val date2 = Instant.now()
+          Thread.sleep(100)
 
-          whenReady(sendMessages)(_ ⇒ ())
+          sendMessageToUser(user2.id, ApiTextMessage("Hi Shiva 3", Vector.empty, None))
+          val date3 = Instant.now()
 
-          startDate
+          (date1, date2, date3)
         }
 
         {
           implicit val clientData = clientData21
 
-          whenReady(service.handleMessageRead(user1Peer, startDate + 2000)) { resp ⇒
+          whenReady(service.handleMessageRead(user1Peer, date2.plusMillis(1).toEpochMilli)) { resp ⇒
             resp should matchPattern {
               case Ok(ResponseVoid) ⇒
             }
@@ -305,10 +307,9 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
 
           Thread.sleep(100) // Let peer managers write to db
 
-          whenReady(db.run(persist.dialog.DialogRepo.findDialog(user1.id, model.Peer(PeerType.Private, user2.id)))) { optDialog ⇒
-            val dialog = optDialog.get
-            dialog.lastReadAt.getMillis should be < startDate + 3000
-            dialog.lastReadAt.getMillis should be > startDate + 1000
+          whenReady(dialogExt.getDialogInfo(user1.id, Peer(PeerType.Private, user2.id))) { info ⇒
+            info.lastReadDate.toEpochMilli should be < date3.toEpochMilli
+            info.lastReadDate.toEpochMilli should be > date1.toEpochMilli
           }
 
           whenReady(service.handleLoadDialogs(Long.MaxValue, 100, Vector.empty)) { resp ⇒
@@ -320,7 +321,7 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
 
         {
           implicit val clientData = clientData1
-          expectUpdates(
+          expectUpdatesUnordered(
             classOf[UpdateChatGroupsChanged],
             classOf[UpdateMessageSent],
             classOf[UpdateMessageSent],
@@ -331,7 +332,7 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
 
         {
           implicit val clientData = clientData21
-          expectUpdates(
+          expectUpdatesUnordered(
             classOf[UpdateChatGroupsChanged],
             classOf[UpdateMessage],
             //classOf[UpdateCountersChanged],
@@ -347,7 +348,7 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
         {
           //UpdateMessageReadByMe sent to user2 second device
           implicit val clientData = clientData22
-          expectUpdates(
+          expectUpdatesUnordered(
             classOf[UpdateChatGroupsChanged],
             classOf[UpdateMessage],
             //classOf[UpdateCountersChanged],
@@ -425,22 +426,27 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
 
         val startDate = System.currentTimeMillis()
 
-        {
+        val (date1, date2, date3) = {
           implicit val clientData = clientData1
 
-          val sendMessages = Future.sequence(Seq(
-            service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage("Hi Shiva 1", Vector.empty, None), None, None),
-            futureSleep(1500).flatMap(_ ⇒ service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage("Hi Shiva 2", Vector.empty, None), None, None)),
-            futureSleep(3000).flatMap(_ ⇒ service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage("Hi Shiva 3", Vector.empty, None), None, None))
-          ))
+          sendMessageToGroup(groupOutPeer.groupId, ApiTextMessage("Hi Shiva 1", Vector.empty, None))
+          val date1 = Instant.now()
+          Thread.sleep(100)
 
-          whenReady(sendMessages)(_ ⇒ ())
+          sendMessageToGroup(groupOutPeer.groupId, ApiTextMessage("Hi Shiva 2", Vector.empty, None))
+          val date2 = Instant.now()
+          Thread.sleep(100)
+
+          sendMessageToGroup(groupOutPeer.groupId, ApiTextMessage("Hi Shiva 1", Vector.empty, None))
+          val date3 = Instant.now()
+
+          (date1, date2, date3)
         }
 
         {
           implicit val clientData = clientData2
 
-          whenReady(service.handleMessageReceived(groupOutPeer.asOutPeer, startDate + 2000)) { resp ⇒
+          whenReady(service.handleMessageReceived(groupOutPeer.asOutPeer, date2.plusMillis(1).toEpochMilli)) { resp ⇒
             resp should matchPattern {
               case Ok(ResponseVoid) ⇒
             }
@@ -448,9 +454,9 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
 
           Thread.sleep(100) // Let peer managers write to db
 
-          whenReady(db.run(persist.dialog.DialogRepo.findDialog(user1.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { dialogOpt ⇒
-            dialogOpt.get.lastReceivedAt.getMillis should be < startDate + 3000
-            dialogOpt.get.lastReceivedAt.getMillis should be > startDate + 1000
+          whenReady(dialogExt.getDialogInfo(user1.id, Peer(PeerType.Group, groupOutPeer.groupId))) { info ⇒
+            info.lastReceivedDate.toEpochMilli should be < date3.toEpochMilli
+            info.lastReceivedDate.toEpochMilli should be > date1.toEpochMilli
           }
         }
 
@@ -479,18 +485,21 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
           createGroup("Fun group", Set(user2.id)).groupPeer
         }
 
-        val startDate = System.currentTimeMillis()
-
-        {
+        val (date1, date2, date3) = {
           implicit val clientData = clientData1
 
-          val sendMessages = Future.sequence(Seq(
-            service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage("Hi Shiva 1", Vector.empty, None), None, None),
-            futureSleep(1500).flatMap(_ ⇒ service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage("Hi Shiva 2", Vector.empty, None), None, None)),
-            futureSleep(3000).flatMap(_ ⇒ service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage("Hi Shiva 3", Vector.empty, None), None, None))
-          ))
+          sendMessageToGroup(groupOutPeer.groupId, ApiTextMessage("Hi Shiva 1", Vector.empty, None))
+          val date1 = Instant.now()
+          Thread.sleep(100)
 
-          whenReady(sendMessages)(_ ⇒ ())
+          sendMessageToGroup(groupOutPeer.groupId, ApiTextMessage("Hi Shiva 2", Vector.empty, None))
+          val date2 = Instant.now()
+          Thread.sleep(100)
+
+          sendMessageToGroup(groupOutPeer.groupId, ApiTextMessage("Hi Shiva 3", Vector.empty, None))
+          val date3 = Instant.now()
+
+          (date1, date2, date3)
         }
 
         Thread.sleep(300)
@@ -498,7 +507,7 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
         {
           implicit val clientData = clientData2
 
-          whenReady(service.handleMessageRead(groupOutPeer.asOutPeer, startDate + 2000)) { resp ⇒
+          whenReady(service.handleMessageRead(groupOutPeer.asOutPeer, date2.plusMillis(1).toEpochMilli)) { resp ⇒
             resp should matchPattern {
               case Ok(ResponseVoid) ⇒
             }
@@ -506,9 +515,9 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
 
           Thread.sleep(300)
 
-          whenReady(db.run(persist.dialog.DialogRepo.findDialog(user1.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { dialogOpt ⇒
-            dialogOpt.get.lastReadAt.getMillis should be < startDate + 3000
-            dialogOpt.get.lastReadAt.getMillis should be > startDate + 1000
+          whenReady(dialogExt.getDialogInfo(user1.id, Peer(PeerType.Group, groupOutPeer.groupId))) { info ⇒
+            info.lastReadDate.toEpochMilli should be < date3.toEpochMilli
+            info.lastReadDate.toEpochMilli should be > date1.toEpochMilli
           }
 
           whenReady(service.handleLoadDialogs(Long.MaxValue, 100, Vector.empty)) { resp ⇒

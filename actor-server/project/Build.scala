@@ -204,6 +204,14 @@ object Build extends sbt.Build with Versioning with Releasing {
   )
     .dependsOn(actorPersist, actorRuntime)//runtime deps because of ActorConfig
 
+  lazy val actorNotify = Project(
+    id = "actor-notify",
+    base = file("actor-notify"),
+    settings = defaultSettingsServer ++
+      Seq(libraryDependencies ++= Dependencies.shared)
+  )
+    .dependsOn(actorCore, actorEmail)
+
   lazy val actorOAuth = Project(
     id = "actor-oauth",
     base = file("actor-oauth"),
@@ -333,8 +341,9 @@ object Build extends sbt.Build with Versioning with Releasing {
     actorEmail,
     actorFrontend,
     actorHttpApi,
-    actorRpcApi,
-    actorOAuth
+    actorNotify,
+    actorOAuth,
+    actorRpcApi
   ).aggregate(
     actorActivation,
     actorBots,
@@ -347,6 +356,7 @@ object Build extends sbt.Build with Versioning with Releasing {
     actorFrontend,
     actorHttpApi,
     actorModels,
+    actorNotify,
     actorOAuth,
     actorPersist,
     actorRpcApi,

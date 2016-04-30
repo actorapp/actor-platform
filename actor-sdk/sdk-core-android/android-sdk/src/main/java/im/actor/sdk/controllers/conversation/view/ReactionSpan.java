@@ -7,6 +7,7 @@ import android.view.View;
 
 import im.actor.core.entity.Peer;
 import im.actor.core.viewmodel.CommandCallback;
+import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.android.AndroidContext;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
@@ -40,9 +41,9 @@ public class ReactionSpan extends BaseUrlSpan {
     @Override
     public void onClick(View widget) {
         if (hasMyReaction) {
-            ActorSDK.sharedActor().getMessenger().removeReaction(peer, rid, code).start(new CommandCallback<Boolean>() {
+            ActorSDK.sharedActor().getMessenger().removeReaction(peer, rid, code).start(new CommandCallback<Void>() {
                 @Override
-                public void onResult(Boolean res) {
+                public void onResult(Void res) {
 
                 }
 
@@ -52,9 +53,9 @@ public class ReactionSpan extends BaseUrlSpan {
                 }
             });
         } else {
-            ActorSDK.sharedActor().getMessenger().addReaction(peer, rid, code).start(new CommandCallback<Boolean>() {
+            ActorSDK.sharedActor().getMessenger().addReaction(peer, rid, code).start(new CommandCallback<Void>() {
                 @Override
-                public void onResult(Boolean res) {
+                public void onResult(Void res) {
 
                 }
 

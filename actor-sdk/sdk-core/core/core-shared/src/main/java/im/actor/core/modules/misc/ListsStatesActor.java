@@ -46,7 +46,7 @@ public class ListsStatesActor extends ModuleActor {
         } else if (message instanceof OnDialogsLoaded) {
             onDialogsLoaded();
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 

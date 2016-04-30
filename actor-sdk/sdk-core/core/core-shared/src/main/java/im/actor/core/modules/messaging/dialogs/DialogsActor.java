@@ -18,11 +18,24 @@ import im.actor.core.entity.Peer;
 import im.actor.core.entity.User;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.messaging.dialogs.entity.ChatClear;
+import im.actor.core.modules.messaging.dialogs.entity.ChatDelete;
+import im.actor.core.modules.messaging.dialogs.entity.CounterChanged;
+import im.actor.core.modules.messaging.dialogs.entity.GroupChanged;
+import im.actor.core.modules.messaging.dialogs.entity.HistoryLoaded;
+import im.actor.core.modules.messaging.dialogs.entity.InMessage;
+import im.actor.core.modules.messaging.dialogs.entity.MessageContentChanged;
+import im.actor.core.modules.messaging.dialogs.entity.MessageDeleted;
+import im.actor.core.modules.messaging.dialogs.entity.PeerReadChanged;
+import im.actor.core.modules.messaging.dialogs.entity.PeerReceiveChanged;
+import im.actor.core.modules.messaging.dialogs.entity.UserChanged;
 import im.actor.core.modules.messaging.history.entity.DialogHistory;
 import im.actor.core.modules.ModuleActor;
 import im.actor.runtime.Log;
 import im.actor.runtime.Runtime;
+import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.annotations.Verified;
+import im.actor.runtime.promise.Promise;
 import im.actor.runtime.storage.ListEngine;
 
 import static im.actor.core.util.JavaUtil.equalsE;
@@ -45,19 +58,19 @@ public class DialogsActor extends ModuleActor {
     }
 
     @Verified
-    private void onMessage(Peer peer, Message message, boolean forceWrite, int counter) {
+    private Promise<Void> onMessage(Peer peer, Message message, boolean forceWrite, int counter) {
         long start = im.actor.runtime.Runtime.getCurrentTime();
         PeerDesc peerDesc = buildPeerDesc(peer);
         if (peerDesc == null) {
             Log.d("DialogsActor", "unknown peer desc");
-            return;
+            return Promise.success(null);
         }
 
         if (message == null) {
             // Ignore empty message if not forcing write
             if (!forceWrite) {
                 Log.d("DialogsActor", "not force");
-                return;
+                return Promise.success(null);
             }
 
             // Else perform chat clear
@@ -85,7 +98,7 @@ public class DialogsActor extends ModuleActor {
                 // Ignore old messages if no force
                 if (!forceWrite && dialog.getSortDate() > message.getSortDate()) {
                     Log.d("DialogsActor", "too old");
-                    return;
+                    return Promise.success(null);
                 }
 
                 builder.setPeer(dialog.getPeer())
@@ -104,7 +117,7 @@ public class DialogsActor extends ModuleActor {
                 // Do not create dialogs for silent messages
                 if (contentDescription.isSilent()) {
                     Log.d("DialogsActor", "is silent in");
-                    return;
+                    return Promise.success(null);
                 }
 
                 builder.setPeer(peer)
@@ -119,17 +132,17 @@ public class DialogsActor extends ModuleActor {
             notifyState(forceUpdate);
         }
 
-        Log.d("DialogsActor", "onMessage in " + (Runtime.getCurrentTime() - start) + " ms");
+        return Promise.success(null);
     }
 
     @Verified
-    private void onUserChanged(User user) {
+    private Promise<Void> onUserChanged(User user) {
         Dialog dialog = dialogs.getValue(user.peer().getUnuqueId());
         if (dialog != null) {
             // Ignore if nothing changed
             if (dialog.getDialogTitle().equals(user.getName())
                     && equalsE(dialog.getDialogAvatar(), user.getAvatar())) {
-                return;
+                return Promise.success(null);
             }
 
             // Update dialog peer info
@@ -137,16 +150,18 @@ public class DialogsActor extends ModuleActor {
             addOrUpdateItem(updated);
             updateSearch(updated);
         }
+
+        return Promise.success(null);
     }
 
     @Verified
-    private void onGroupChanged(Group group) {
+    private Promise<Void> onGroupChanged(Group group) {
         Dialog dialog = dialogs.getValue(group.peer().getUnuqueId());
         if (dialog != null) {
             // Ignore if nothing changed
             if (dialog.getDialogTitle().equals(group.getTitle())
                     && equalsE(dialog.getDialogAvatar(), group.getAvatar())) {
-                return;
+                return Promise.success(null);
             }
 
             // Update dialog peer info
@@ -154,18 +169,21 @@ public class DialogsActor extends ModuleActor {
             addOrUpdateItem(updated);
             updateSearch(updated);
         }
+        return Promise.success(null);
     }
 
     @Verified
-    private void onChatDeleted(Peer peer) {
-        // Removing dialog
+    private Promise<Void> onChatDeleted(Peer peer) {
+
         dialogs.removeItem(peer.getUnuqueId());
 
         notifyState(true);
+
+        return Promise.success(null);
     }
 
     @Verified
-    private void onChatClear(Peer peer) {
+    private Promise<Void> onChatClear(Peer peer) {
         Dialog dialog = dialogs.getValue(peer.getUnuqueId());
 
         // If we have dialog for this peer
@@ -181,10 +199,12 @@ public class DialogsActor extends ModuleActor {
                     .setSenderId(0)
                     .createDialog());
         }
+
+        return Promise.success(null);
     }
 
     @Verified
-    private void onPeerRead(Peer peer, long date) {
+    private Promise<Void> onPeerRead(Peer peer, long date) {
         Dialog dialog = dialogs.getValue(peer.getUnuqueId());
         if (dialog != null) {
             addOrUpdateItem(new DialogBuilder(dialog)
@@ -192,56 +212,55 @@ public class DialogsActor extends ModuleActor {
                     .updateKnownReceiveDate(date)
                     .createDialog());
         }
+        return Promise.success(null);
     }
 
     @Verified
-    private void onPeerReceive(Peer peer, long date) {
+    private Promise<Void> onPeerReceive(Peer peer, long date) {
         Dialog dialog = dialogs.getValue(peer.getUnuqueId());
         if (dialog != null) {
             addOrUpdateItem(new DialogBuilder(dialog)
                     .updateKnownReceiveDate(date)
                     .createDialog());
         }
+        return Promise.success(null);
     }
 
     @Verified
-    private void onMessageContentChanged(Peer peer, long rid, AbsContent content) {
+    private Promise<Void> onMessageContentChanged(Peer peer, long rid, AbsContent content) {
         Dialog dialog = dialogs.getValue(peer.getUnuqueId());
 
         // If message is on top
         if (dialog != null && dialog.getRid() == rid) {
 
-            // Update dialog
             ContentDescription description = ContentDescription.fromContent(content);
+
             addOrUpdateItem(new DialogBuilder(dialog)
                     .setText(description.getText())
                     .setRelatedUid(description.getRelatedUser())
                     .setMessageType(description.getContentType())
                     .createDialog());
         }
+
+        return Promise.success(null);
     }
 
     @Verified
-    private void onCounterChanged(Peer peer, int count) {
+    private Promise<Void> onCounterChanged(Peer peer, int count) {
         Dialog dialog = dialogs.getValue(peer.getUnuqueId());
 
-        // If we have dialog for this peer
-        if (dialog != null) {
-
-            // Counter not actually changed
-            if (dialog.getUnreadCount() == count) {
-                return;
-            }
-
-            // Update dialog
+        // If we have dialog for this peer and counter changed
+        if (dialog != null && dialog.getUnreadCount() != count) {
             addOrUpdateItem(new DialogBuilder(dialog)
                     .setUnreadCount(count)
                     .createDialog());
         }
+
+        return Promise.success(null);
     }
 
     @Verified
-    private void onHistoryLoaded(List<DialogHistory> history) {
+    private Promise<Void> onHistoryLoaded(List<DialogHistory> history) {
         ArrayList<Dialog> updated = new ArrayList<Dialog>();
         for (DialogHistory dialogHistory : history) {
             // Ignore already available dialogs
@@ -284,6 +303,7 @@ public class DialogsActor extends ModuleActor {
         updateSearch(updated);
         context().getAppStateModule().onDialogsLoaded();
         notifyState(true);
+        return Promise.success(null);
     }
 
     // Utils
@@ -387,189 +407,46 @@ public class DialogsActor extends ModuleActor {
             CounterChanged counterChanged = (CounterChanged) message;
             onCounterChanged(counterChanged.getPeer(), counterChanged.getCounter());
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 
-    public static class InMessage {
-        private Peer peer;
-        private Message message;
-        private int counter;
-
-        public InMessage(Peer peer, Message message, int counter) {
-            this.peer = peer;
-            this.message = message;
-            this.counter = counter;
-        }
-
-        public Peer getPeer() {
-            return peer;
-        }
-
-        public Message getMessage() {
-            return message;
-        }
-
-        public int getCounter() {
-            return counter;
-        }
-    }
-
-    public static class CounterChanged {
-        private Peer peer;
-        private int counter;
-
-        public CounterChanged(Peer peer, int counter) {
-            this.peer = peer;
-            this.counter = counter;
-        }
-
-        public Peer getPeer() {
-            return peer;
-        }
-
-        public int getCounter() {
-            return counter;
-        }
-    }
-
-    public static class UserChanged {
-        private User user;
-
-        public UserChanged(User user) {
-            this.user = user;
-        }
-
-        public User getUser() {
-            return user;
-        }
-    }
-
-    public static class GroupChanged {
-        private Group group;
-
-        public GroupChanged(Group group) {
-            this.group = group;
-        }
-
-        public Group getGroup() {
-            return group;
-        }
-    }
-
-    public static class ChatClear {
-        private Peer peer;
-
-        public ChatClear(Peer peer) {
-            this.peer = peer;
-        }
-
-        public Peer getPeer() {
-            return peer;
-        }
-    }
-
-    public static class ChatDelete {
-        private Peer peer;
-
-        public ChatDelete(Peer peer) {
-            this.peer = peer;
-        }
-
-        public Peer getPeer() {
-            return peer;
-        }
-    }
-
-    public static class PeerReadChanged {
-
-        private Peer peer;
-        private long date;
-
-        public PeerReadChanged(Peer peer, long date) {
-            this.peer = peer;
-            this.date = date;
-        }
-
-        public Peer getPeer() {
-            return peer;
-        }
-
-        public long getDate() {
-            return date;
-        }
-    }
-
-    public static class PeerReceiveChanged {
-
-        private Peer peer;
-        private long date;
-
-        public PeerReceiveChanged(Peer peer, long date) {
-            this.peer = peer;
-            this.date = date;
-        }
-
-        public Peer getPeer() {
-            return peer;
-        }
-
-        public long getDate() {
-            return date;
-        }
-    }
-
-    public static class MessageContentChanged {
-        private Peer peer;
-        private long rid;
-        private AbsContent content;
-
-        public MessageContentChanged(Peer peer, long rid, AbsContent content) {
-            this.peer = peer;
-            this.rid = rid;
-            this.content = content;
-        }
-
-        public Peer getPeer() {
-            return peer;
-        }
-
-        public long getRid() {
-            return rid;
-        }
-
-        public AbsContent getContent() {
-            return content;
-        }
-    }
-
-    public static class MessageDeleted {
-        private Peer peer;
-        private Message topMessage;
-
-        public MessageDeleted(Peer peer, Message topMessage) {
-            this.peer = peer;
-            this.topMessage = topMessage;
-        }
-
-        public Peer getPeer() {
-            return peer;
-        }
-
-        public Message getTopMessage() {
-            return topMessage;
-        }
-    }
-
-    public static class HistoryLoaded {
-        private List<DialogHistory> history;
-
-        public HistoryLoaded(List<DialogHistory> history) {
-            this.history = history;
-        }
-
-        public List<DialogHistory> getHistory() {
-            return history;
+    @Override
+    public Promise onAsk(Object message) throws Exception {
+        if (message instanceof InMessage) {
+            InMessage inMessage = (InMessage) message;
+            return onMessage(inMessage.getPeer(), inMessage.getMessage(), false, inMessage.getCounter());
+        } else if (message instanceof UserChanged) {
+            UserChanged userChanged = (UserChanged) message;
+            return onUserChanged(userChanged.getUser());
+        } else if (message instanceof ChatClear) {
+            return onChatClear(((ChatClear) message).getPeer());
+        } else if (message instanceof ChatDelete) {
+            return onChatDeleted(((ChatDelete) message).getPeer());
+        } else if (message instanceof PeerReadChanged) {
+            PeerReadChanged peerReadChanged = (PeerReadChanged) message;
+            return onPeerRead(peerReadChanged.getPeer(), peerReadChanged.getDate());
+        } else if (message instanceof PeerReceiveChanged) {
+            PeerReceiveChanged peerReceiveChanged = (PeerReceiveChanged) message;
+            return onPeerReceive(peerReceiveChanged.getPeer(), peerReceiveChanged.getDate());
+        } else if (message instanceof MessageDeleted) {
+            MessageDeleted deleted = (MessageDeleted) message;
+            return onMessage(deleted.getPeer(), deleted.getTopMessage(), true, -1);
+        } else if (message instanceof HistoryLoaded) {
+            HistoryLoaded historyLoaded = (HistoryLoaded) message;
+            return onHistoryLoaded(historyLoaded.getHistory());
+        } else if (message instanceof GroupChanged) {
+            GroupChanged groupChanged = (GroupChanged) message;
+            return onGroupChanged(groupChanged.getGroup());
+        } else if (message instanceof MessageContentChanged) {
+            MessageContentChanged contentChanged = (MessageContentChanged) message;
+            return onMessageContentChanged(contentChanged.getPeer(), contentChanged.getRid(),
+                    contentChanged.getContent());
+        } else if (message instanceof CounterChanged) {
+            CounterChanged counterChanged = (CounterChanged) message;
+            return onCounterChanged(counterChanged.getPeer(), counterChanged.getCounter());
+        } else {
+            return super.onAsk(message);
         }
     }
 }

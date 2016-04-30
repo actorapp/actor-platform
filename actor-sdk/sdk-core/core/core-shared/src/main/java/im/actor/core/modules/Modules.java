@@ -9,7 +9,6 @@ import im.actor.core.Messenger;
 import im.actor.core.i18n.I18nEngine;
 import im.actor.core.modules.api.ApiModule;
 import im.actor.core.modules.auth.Authentication;
-import im.actor.core.modules.blocklist.BlockListModule;
 import im.actor.core.modules.eventbus.EventBusModule;
 import im.actor.core.modules.sequence.Updates;
 import im.actor.core.modules.misc.AppStateModule;
@@ -83,7 +82,6 @@ public class Modules implements ModuleContext {
     private volatile EncryptionModule encryptionModule;
     private volatile DeviceInfoModule deviceInfoModule;
     private volatile EventBusModule eventBusModule;
-    private volatile BlockListModule blockListModule;
 
     public Modules(Messenger messenger, Configuration configuration) {
         this.messenger = messenger;
@@ -173,12 +171,11 @@ public class Modules implements ModuleContext {
         deviceInfoModule = new DeviceInfoModule(this);
         timing.section("EventBus");
         eventBusModule = new EventBusModule(this);
-        timing.section("BlockList");
-        blockListModule = new BlockListModule(this);
-        timing.end();
 
 
         timing = new Timing("ACCOUNT_RUN");
+        timing.section("Users");
+        users.run();
         timing.section("Settings");
         settings.run();
         timing.section("DeviceInfo");
@@ -391,11 +388,6 @@ public class Modules implements ModuleContext {
     @Override
     public EventBusModule getEventBus() {
         return eventBusModule;
-    }
-
-    @Override
-    public BlockListModule getBlockList() {
-        return blockListModule;
     }
 
     @Override

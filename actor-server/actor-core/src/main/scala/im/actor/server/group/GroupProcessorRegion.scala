@@ -3,10 +3,6 @@ package im.actor.server.group
 import akka.actor.{ ActorRef, ActorSystem, Props }
 import akka.cluster.sharding.{ ClusterSharding, ClusterShardingSettings, ShardRegion }
 import akka.event.Logging
-import im.actor.server.dialog.DialogCommands.Envelope
-import im.actor.server.model.{ Peer, PeerType }
-
-import scala.util.{ Try, Success }
 
 object GroupProcessorRegion {
   private def extractEntityId(system: ActorSystem): ShardRegion.ExtractEntityId = {
@@ -15,27 +11,18 @@ object GroupProcessorRegion {
     {
       case c: GroupCommand ⇒ (c.groupId.toString, c)
       case q: GroupQuery   ⇒ (q.groupId.toString, q)
-      case e @ Envelope(peer, payload) ⇒ peer match {
-        case Peer(PeerType.Group, groupId) ⇒
-          Try(e.getField(Envelope.descriptor.findFieldByNumber(payload.number))) match {
-            case Success(any) ⇒ (groupId.toString, any)
-            case _ ⇒
-              val error = new RuntimeException(s"Payload not found for $e")
-              log.error(error, error.getMessage)
-              throw error
-          }
-        case Peer(peerType, _) ⇒ throw new RuntimeException(s"DialogCommand with peerType: $peerType passed in GroupProcessor")
-      }
+      case GroupEnvelope(groupId, dialogEnvelope) ⇒
+        (
+          groupId.toString,
+          dialogEnvelope.get
+        )
     }
   }
 
   private def extractShardId(system: ActorSystem): ShardRegion.ExtractShardId = msg ⇒ msg match {
-    case c: GroupCommand ⇒ (c.groupId % 100).toString // TODO: configurable
-    case q: GroupQuery   ⇒ (q.groupId % 100).toString
-    case Envelope(peer, payload) ⇒ peer match {
-      case Peer(PeerType.Group, groupId) ⇒ (groupId % 100).toString
-      case Peer(peerType, _)             ⇒ throw new RuntimeException(s"DialogCommand with peerType: $peerType passed in GroupProcessor")
-    }
+    case c: GroupCommand  ⇒ (c.groupId % 100).toString // TODO: configurable
+    case q: GroupQuery    ⇒ (q.groupId % 100).toString
+    case e: GroupEnvelope ⇒ (e.groupId % 100).toString
   }
 
   val typeName = "GroupProcessor"

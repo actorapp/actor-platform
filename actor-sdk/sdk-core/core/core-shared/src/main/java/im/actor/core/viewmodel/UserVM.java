@@ -43,12 +43,7 @@ public class UserVM extends BaseValueModel<User> {
     private static final long PRESENCE_UPDATE_DELAY = 60 * 1000L;
 
     public static ValueModelCreator<User, UserVM> CREATOR(final ModuleContext modules) {
-        return new ValueModelCreator<User, UserVM>() {
-            @Override
-            public UserVM create(User baseValue) {
-                return new UserVM(baseValue, modules);
-            }
-        };
+        return baseValue -> new UserVM(baseValue, modules);
     }
 
     private int id;
@@ -65,6 +60,8 @@ public class UserVM extends BaseValueModel<User> {
     private StringValueModel about;
     @NotNull
     private AvatarValueModel avatar;
+    @NotNull
+    private StringValueModel timeZone;
     @NotNull
     private Sex sex;
     @NotNull
@@ -107,7 +104,8 @@ public class UserVM extends BaseValueModel<User> {
         about = new StringValueModel("user." + id + ".about", user.getAbout());
         avatar = new AvatarValueModel("user." + id + ".avatar", user.getAvatar());
         isContact = new BooleanValueModel("user." + id + ".contact", modules.getContactsModule().isUserContact(id));
-        isBlocked = new BooleanValueModel("user." + id + ".blocked", modules.getBlockList().isUserBlocked(id));
+        isBlocked = new BooleanValueModel("user." + id + ".blocked", user.isBlocked());
+        timeZone = new StringValueModel("user." + id + ".time_zone", user.getTimeZone());
         presence = new ValueModelUserPresence("user." + id + ".presence", new UserPresence(UserPresence.State.UNKNOWN));
         phones = new ValueModelUserPhone("user." + id + ".phones", buildPhones(user.getRecords()));
         emails = new ValueModelUserEmail("user." + id + ".emails", buildEmails(user.getRecords()));
@@ -131,8 +129,10 @@ public class UserVM extends BaseValueModel<User> {
         isChanged |= localName.change(rawObj.getLocalName());
         isChanged |= serverName.change(rawObj.getServerName());
         isChanged |= nick.change(rawObj.getNick());
+        isChanged |= timeZone.change(rawObj.getTimeZone());
         isChanged |= about.change(rawObj.getAbout());
         isChanged |= avatar.change(rawObj.getAvatar());
+        isChanged |= isBlocked.change(rawObj.isBlocked());
 
         // TODO: better changed checking?
         isChanged |= phones.change(buildPhones(rawObj.getRecords()));
@@ -306,6 +306,17 @@ public class UserVM extends BaseValueModel<User> {
     @ObjectiveCName("getLinksModel")
     public ValueModelUserLink getLinks() {
         return links;
+    }
+
+    /**
+     * Get User's time zone
+     *
+     * @return ValueModel of Time Zone
+     */
+    @NotNull
+    @ObjectiveCName("getTimeZoneModel")
+    public StringValueModel getTimeZone() {
+        return timeZone;
     }
 
     /**

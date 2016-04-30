@@ -8,19 +8,18 @@ import akka.persistence.RecoveryCompleted
 import akka.util.Timeout
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.serialization.ActorSerializer
-import im.actor.server.acl.ACLUtils
 import im.actor.server.bots.BotCommand
 import im.actor.server.cqrs.TaggedEvent
 import im.actor.server.db.DbExtension
-import im.actor.server.dialog.{ DialogCommand, DialogExtension }
+import im.actor.server.dialog._
 import im.actor.server.office.{ PeerProcessor, StopOffice }
 import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
-import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
+import scala.util.Try
 
 trait UserEvent extends TaggedEvent {
   val ts: Instant
@@ -90,7 +89,6 @@ object UserProcessor {
       10030 → classOf[UserCommands.AddSocialContactAck],
       10031 → classOf[UserCommands.UpdateIsAdmin],
       10032 → classOf[UserCommands.UpdateIsAdminAck],
-      10033 → classOf[UserCommands.NotifyDialogsChanged],
       10035 → classOf[UserCommands.ChangePreferredLanguages],
       10036 → classOf[UserCommands.ChangeTimeZone],
       10037 → classOf[UserCommands.EditLocalName],
@@ -146,8 +144,7 @@ object UserProcessor {
 private[user] final class UserProcessor
   extends PeerProcessor[UserState, UserEvent]
   with UserCommandHandlers
-  with UserQueriesHandlers
-  with ActorLogging {
+  with UserQueriesHandlers {
 
   import UserCommands._
   import UserQueries._
@@ -237,7 +234,6 @@ private[user] final class UserProcessor
     case AddContacts(_, contactsToAdd)      ⇒ addContacts(state, contactsToAdd)
     case RemoveContact(_, contactUserId)    ⇒ removeContact(state, contactUserId)
     case UpdateIsAdmin(_, isAdmin)          ⇒ updateIsAdmin(state, isAdmin)
-    case NotifyDialogsChanged(_)            ⇒ notifyDialogsChanged(state)
     case ChangeTimeZone(_, timeZone)        ⇒ changeTimeZone(state, timeZone)
     case ChangePreferredLanguages(_, langs) ⇒ changePreferredLanguages(state, langs)
     case AddBotCommand(_, command)          ⇒ addBotCommand(state, command)
@@ -246,7 +242,12 @@ private[user] final class UserProcessor
     case query: GetLocalName                ⇒ contacts.ref forward query
     case StopOffice                         ⇒ context stop self
     case ReceiveTimeout                     ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
-    case dc: DialogCommand                  ⇒ userPeer(state.internalExtensions) forward dc
+    case e @ DialogRootEnvelope(query, command) ⇒
+      val msg = e.getAllFields.values.head
+      dialogRoot(state.internalExtensions) forward msg
+    case de: DialogEnvelope ⇒
+      val msg = de.getAllFields.values.head
+      dialogRoot(state.internalExtensions) forward msg
   }
 
   override protected def handleQuery(state: UserState): Receive = {
@@ -261,9 +262,9 @@ private[user] final class UserProcessor
     case GetName(_)                                      ⇒ getName(state)
   }
 
-  private def userPeer(extensions: Seq[ApiExtension]): ActorRef = {
-    val userPeer = "UserPeer"
-    context.child(userPeer).getOrElse(context.actorOf(UserPeer.props(userId, extensions), userPeer))
+  private def dialogRoot(extensions: Seq[ApiExtension]): ActorRef = {
+    val name = "DialogRoot"
+    context.child(name).getOrElse(context.actorOf(DialogRoot.props(userId, extensions), name))
   }
 
   protected[this] var userStateMaybe: Option[UserState] = None

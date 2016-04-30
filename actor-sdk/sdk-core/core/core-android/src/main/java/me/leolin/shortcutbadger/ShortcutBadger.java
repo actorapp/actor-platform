@@ -65,10 +65,7 @@ public abstract class ShortcutBadger {
             ResolveInfo resolveInfo = context.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
             String currentHomePackage = resolveInfo.activityInfo.packageName;
 
-            if (Build.MANUFACTURER.equalsIgnoreCase("Xiaomi")) {
-                mShortcutBadger = new XiaomiHomeBadger(context);
-                return mShortcutBadger;
-            }
+
 
             for (Class<? extends ShortcutBadger> badger : BADGERS) {
                 Constructor<? extends ShortcutBadger> constructor = badger.getConstructor(Context.class);
@@ -77,6 +74,10 @@ public abstract class ShortcutBadger {
                     mShortcutBadger = shortcutBadger;
                     break;
                 }
+            }
+
+            if (mShortcutBadger == null && Build.MANUFACTURER.equalsIgnoreCase("Xiaomi")) {
+                mShortcutBadger = new XiaomiHomeBadger(context);
             }
         } catch (Exception e) {
             Log.e(LOG_TAG, e.getMessage(), e);

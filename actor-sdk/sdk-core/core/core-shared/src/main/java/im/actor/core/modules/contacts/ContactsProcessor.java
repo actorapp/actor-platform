@@ -7,9 +7,12 @@ package im.actor.core.modules.contacts;
 import im.actor.core.api.updates.UpdateContactsAdded;
 import im.actor.core.api.updates.UpdateContactsRemoved;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.sequence.Processor;
+import im.actor.core.modules.sequence.processor.SequenceProcessor;
+import im.actor.core.network.parser.Update;
+import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.promise.Promise;
 
-public class ContactsProcessor implements Processor {
+public class ContactsProcessor implements SequenceProcessor {
 
     private ModuleContext context;
 
@@ -18,7 +21,7 @@ public class ContactsProcessor implements Processor {
     }
 
     @Override
-    public boolean process(Object update) {
+    public Promise<Void> process(Update update) {
         if (update instanceof UpdateContactsAdded) {
             UpdateContactsAdded contactsAdded = (UpdateContactsAdded) update;
             int[] uids = new int[contactsAdded.getUids().size()];
@@ -27,7 +30,7 @@ public class ContactsProcessor implements Processor {
             }
             context.getContactsModule().getContactSyncActor()
                     .send(new ContactsSyncActor.ContactsAdded(uids));
-            return true;
+            return Promise.success(null);
         } else if (update instanceof UpdateContactsRemoved) {
             UpdateContactsRemoved contactsRemoved = (UpdateContactsRemoved) update;
             int[] uids = new int[contactsRemoved.getUids().size()];
@@ -36,8 +39,8 @@ public class ContactsProcessor implements Processor {
             }
             context.getContactsModule().getContactSyncActor()
                     .send(new ContactsSyncActor.ContactsRemoved(uids));
-            return true;
+            return Promise.success(null);
         }
-        return false;
+        return null;
     }
 }

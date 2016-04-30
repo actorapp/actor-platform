@@ -3,7 +3,6 @@ syntax = 'proto3';
 package im.actor.server.model;
 
 import "scalapb/scalapb.proto";
-import "google/protobuf/wrappers.proto";
 
 message EncryptionKey {
     int64 id = 1;

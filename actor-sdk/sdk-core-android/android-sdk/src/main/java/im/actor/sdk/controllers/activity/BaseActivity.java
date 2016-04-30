@@ -261,8 +261,7 @@ public class BaseActivity extends AppCompatActivity {
                     public void apply(Exception e) {
                         dismissDialog(dialog);
                     }
-                })
-                .done(promiseActor);
+                });
     }
 
     public void dismissDialog(ProgressDialog progressDialog) {

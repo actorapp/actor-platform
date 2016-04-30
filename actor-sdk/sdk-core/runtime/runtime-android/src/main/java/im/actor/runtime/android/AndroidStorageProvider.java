@@ -9,14 +9,11 @@ import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
 
-import im.actor.runtime.Log;
 import im.actor.runtime.StorageRuntime;
 import im.actor.runtime.android.storage.AndroidProperties;
 import im.actor.runtime.android.storage.NoOpOpenHelper;
-import im.actor.runtime.android.storage.SQLiteIndexStorage;
 import im.actor.runtime.android.storage.SQLiteKeyValue;
 import im.actor.runtime.android.storage.SQLiteList;
-import im.actor.runtime.storage.IndexStorage;
 import im.actor.runtime.storage.KeyValueStorage;
 import im.actor.runtime.storage.ListStorage;
 import im.actor.runtime.storage.PreferencesStorage;
@@ -35,11 +32,6 @@ public class AndroidStorageProvider implements StorageRuntime {
     @Override
     public PreferencesStorage createPreferencesStorage() {
         return properties;
-    }
-
-    @Override
-    public IndexStorage createIndex(String name) {
-        return new SQLiteIndexStorage(getDatabase(), "i_" + name);
     }
 
     @Override

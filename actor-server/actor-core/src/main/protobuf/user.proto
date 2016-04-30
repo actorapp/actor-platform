@@ -12,6 +12,7 @@ import "scalapb/scalapb.proto";
 import "sequence.proto";
 import "file.proto";
 import "bots.proto";
+import "dialog.proto";
 
 message UserState {
     option (scalapb.message).extends = "im.actor.server.office.ProcessorState";
@@ -210,12 +211,6 @@ message UserCommands {
         required int32 contact_user_id = 2;
     }
 
-    message NotifyDialogsChanged {
-        option (scalapb.message).extends = "im.actor.server.user.UserCommand";
-
-        required int32 user_id = 1;
-    }
-
     message AddBotCommand {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";
 
@@ -340,6 +335,14 @@ message UserQueries {
     message GetNameResponse {
         required string name = 1;
     }
+}
+
+// TODO: put UserCommands and UserQueries inside
+
+message UserEnvelope {
+    required int32 user_id = 1;
+    optional DialogRootEnvelope dialog_root_envelope = 2;
+    optional DialogEnvelope dialog_envelope = 3;
 }
 
 message UserEvents {

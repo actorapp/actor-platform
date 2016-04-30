@@ -2,6 +2,7 @@ package im.actor.runtime.android;
 
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.support.annotation.NonNull;
 
 import org.jetbrains.annotations.NotNull;
 import org.webrtc.PeerConnection;
@@ -43,7 +44,7 @@ public class AndroidWebRTCRuntimeProvider implements WebRTCRuntime {
     public Promise<WebRTCPeerConnection> createPeerConnection(final WebRTCIceServer[] webRTCIceServers, final WebRTCSettings settings) {
         return new Promise<>(new PromiseFunc<WebRTCPeerConnection>() {
             @Override
-            public void exec(@NotNull final PromiseResolver<WebRTCPeerConnection> resolver) {
+            public void exec(@NonNull @NotNull final PromiseResolver<WebRTCPeerConnection> resolver) {
                 resolver.result(new AndroidPeerConnection(webRTCIceServers, settings));
 
             }
@@ -55,7 +56,7 @@ public class AndroidWebRTCRuntimeProvider implements WebRTCRuntime {
     public Promise<WebRTCMediaStream> getUserAudio() {
         return new Promise<>(new PromiseFunc<WebRTCMediaStream>() {
             @Override
-            public void exec(@NotNull final PromiseResolver<WebRTCMediaStream> resolver) {
+            public void exec(@NonNull @NotNull final PromiseResolver<WebRTCMediaStream> resolver) {
                 sVcHandler.post(new Runnable() {
                     @Override
                     public void run() {

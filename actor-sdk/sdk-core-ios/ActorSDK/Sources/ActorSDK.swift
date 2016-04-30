@@ -572,7 +572,7 @@ import DZNWebViewController
             let alert = UIAlertController(title: nil, message: AALocalized("GroupJoinMessage"), preferredStyle: .Alert)
             alert.addAction(UIAlertAction(title: AALocalized("AlertNo"), style: .Cancel, handler: nil))
             alert.addAction(UIAlertAction(title: AALocalized("GroupJoinAction"), style: .Default){ (action) -> Void in
-                AAExecutions.execute(Actor.joinGroupViaLinkCommandWithUrl(token)!, type: .Safe, ignore: [], successBlock: { (val) -> Void in
+                AAExecutions.execute(Actor.joinGroupViaLinkCommandWithToken(token)!, type: .Safe, ignore: [], successBlock: { (val) -> Void in
                     
                     // TODO: Fix for iPad
                     let groupId = val as! JavaLangInteger

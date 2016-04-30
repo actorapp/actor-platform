@@ -24,12 +24,9 @@ import im.actor.core.ConfigurationBuilder;
 import im.actor.core.DeviceCategory;
 import im.actor.core.PlatformType;
 import im.actor.core.entity.Peer;
-import im.actor.core.events.IncomingCall;
 import im.actor.runtime.Log;
 import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.android.view.BindedViewHolder;
-import im.actor.runtime.eventbus.BusSubscriber;
-import im.actor.runtime.eventbus.Event;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.controllers.conversation.ChatActivity;
@@ -223,7 +220,6 @@ public class ActorSDK {
                 .setDownsampleEnabled(true)
                 .build();
         Fresco.initialize(application, config);
-        AndroidContext.setContext(application);
         // TODO: Replace
         new SmileProcessor(application).loadEmoji();
 
@@ -293,15 +289,15 @@ public class ActorSDK {
         // Actor Push
         //
 
-        if (actorPushEndpoint != null && delegate.useActorPush()) {
-            ActorPushRegister.registerForPush(application, actorPushEndpoint, new ActorPushRegister.Callback() {
-                @Override
-                public void onRegistered(String endpoint) {
-                    Log.d(TAG, "On Actor push registered: " + endpoint);
-                    messenger.registerActorPush(endpoint);
-                }
-            });
-        }
+//        if (actorPushEndpoint != null && delegate.useActorPush()) {
+//            ActorPushRegister.registerForPush(application, actorPushEndpoint, new ActorPushRegister.Callback() {
+//                @Override
+//                public void onRegistered(String endpoint) {
+//                    Log.d(TAG, "On Actor push registered: " + endpoint);
+//                    messenger.registerActorPush(endpoint);
+//                }
+//            });
+//        }
 
         //
         // GCM
@@ -315,17 +311,6 @@ public class ActorSDK {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        //
-        // Calls subscribing
-        //
-
-        messenger.getEvents().subscribe(new BusSubscriber() {
-            @Override
-            public void onBusEvent(Event event) {
-                delegate.onIncominCall(((IncomingCall) event).getCall(), ((IncomingCall) event).getUid());
-            }
-        }, IncomingCall.EVENT);
     }
 
     /**

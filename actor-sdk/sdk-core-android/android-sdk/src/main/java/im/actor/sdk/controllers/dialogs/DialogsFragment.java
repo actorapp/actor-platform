@@ -8,6 +8,7 @@ import im.actor.core.entity.Dialog;
 import im.actor.core.entity.PeerType;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.GroupVM;
+import im.actor.runtime.actors.messages.Void;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
@@ -53,9 +54,9 @@ public class DialogsFragment extends BaseDialogFragment {
                                             @Override
                                             public void onClick(DialogInterface d, int which) {
                                                 execute(messenger().deleteChat(dialog.getPeer()), R.string.progress_common,
-                                                        new CommandCallback<Boolean>() {
+                                                        new CommandCallback<Void>() {
                                                             @Override
-                                                            public void onResult(Boolean res) {
+                                                            public void onResult(Void res) {
 
                                                             }
 
@@ -98,9 +99,9 @@ public class DialogsFragment extends BaseDialogFragment {
                                                 @Override
                                                 public void onClick(DialogInterface d, int which) {
                                                     execute(messenger().leaveGroup(dialog.getPeer().getPeerId()), R.string.progress_common,
-                                                            new CommandCallback<Boolean>() {
+                                                            new CommandCallback<Void>() {
                                                                 @Override
-                                                                public void onResult(Boolean res) {
+                                                                public void onResult(Void res) {
 
                                                                 }
 
@@ -119,9 +120,9 @@ public class DialogsFragment extends BaseDialogFragment {
                                                 @Override
                                                 public void onClick(DialogInterface d, int which) {
                                                     execute(messenger().deleteChat(dialog.getPeer()), R.string.progress_common,
-                                                            new CommandCallback<Boolean>() {
+                                                            new CommandCallback<Void>() {
                                                                 @Override
-                                                                public void onResult(Boolean res) {
+                                                                public void onResult(Void res) {
 
                                                                 }
 

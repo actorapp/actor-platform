@@ -65,6 +65,7 @@ import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.Props;
 import im.actor.runtime.actors.messages.PoisonPill;
+import im.actor.runtime.actors.messages.Void;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.R;
@@ -744,7 +745,7 @@ public class ChatActivity extends ActorEditTextActivity {
         bindGlobalCounter(new ValueChangedListener<Integer>() {
             @Override
             public void onChanged(Integer val, Value<Integer> valueModel) {
-                if (val > 0) {
+                if (val != null && val > 0) {
                     counter.setText(Integer.toString(val));
                     showView(counter);
                 } else {
@@ -793,9 +794,9 @@ public class ChatActivity extends ActorEditTextActivity {
         }
 
         if (textEditing) {
-            execute(messenger().updateMessage(peer, rawText, currentEditRid), new CommandCallback<ResponseSeqDate>() {
+            execute(messenger().updateMessage(peer, rawText, currentEditRid), new CommandCallback<Void>() {
                 @Override
-                public void onResult(ResponseSeqDate res) {
+                public void onResult(Void res) {
 
                 }
 
@@ -1189,9 +1190,9 @@ public class ChatActivity extends ActorEditTextActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             execute(messenger().clearChat(peer), R.string.progress_common,
-                                    new CommandCallback<Boolean>() {
+                                    new CommandCallback<Void>() {
                                         @Override
-                                        public void onResult(Boolean res) {
+                                        public void onResult(Void res) {
 
                                         }
 
@@ -1212,9 +1213,9 @@ public class ChatActivity extends ActorEditTextActivity {
                     .setPositiveButton(R.string.alert_leave_group_yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog2, int which) {
-                            execute(messenger().leaveGroup(peer.getPeerId()), R.string.progress_common, new CommandCallback<Boolean>() {
+                            execute(messenger().leaveGroup(peer.getPeerId()), R.string.progress_common, new CommandCallback<Void>() {
                                 @Override
-                                public void onResult(Boolean res) {
+                                public void onResult(Void res) {
 
                                 }
 

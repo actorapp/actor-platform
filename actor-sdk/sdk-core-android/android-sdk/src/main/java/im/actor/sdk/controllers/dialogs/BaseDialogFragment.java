@@ -42,10 +42,6 @@ public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, Dia
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        if (getArguments() != null) {
-            joinGroupUrl = getArguments().getString("invite_url", null);
-        }
-
         View res = inflate(inflater, container, R.layout.fragment_dialogs, messenger().getDialogsDisplayList());
         res.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
 
@@ -59,7 +55,7 @@ public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, Dia
         // Header
 
         View header = new View(getActivity());
-        header.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(8)));
+        header.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ActorSDK.sharedActor().style.getDialogsPaddingTop()));
         header.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         addHeaderView(header);
 
@@ -110,7 +106,7 @@ public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, Dia
             }
             if (urlSplit != null) {
                 joinGroupUrl = urlSplit[urlSplit.length - 1];
-                execute(messenger().joinGroupViaLink(joinGroupUrl), R.string.invite_link_title, new CommandCallback<Integer>() {
+                execute(messenger().joinGroupViaToken(joinGroupUrl), R.string.invite_link_title, new CommandCallback<Integer>() {
                     @Override
                     public void onResult(Integer res) {
                         getActivity().startActivity(Intents.openGroupDialog(res, true, getActivity()));

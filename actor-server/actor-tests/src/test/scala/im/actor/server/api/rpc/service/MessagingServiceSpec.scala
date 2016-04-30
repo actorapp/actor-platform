@@ -79,7 +79,7 @@ class MessagingServiceSpec
 
           whenReady(service.handleSendMessage(user2Peer, randomId, ApiTextMessage("Hi Shiva", Vector.empty, None), None, None)) { resp ⇒
             resp should matchPattern {
-              case Ok(ResponseSeqDate(2, _, _)) ⇒
+              case Ok(ResponseSeqDate(_, _, _)) ⇒
             }
           }
 
@@ -102,7 +102,7 @@ class MessagingServiceSpec
         {
           implicit val clientData = clientData2
 
-          expectUpdates(classOf[UpdateChatGroupsChanged], classOf[UpdateMessage], classOf[UpdateCountersChanged]) {
+          expectUpdatesUnordered(classOf[UpdateChatGroupsChanged], classOf[UpdateMessage], classOf[UpdateCountersChanged]) {
             case Seq(upd: UpdateMessage) ⇒
               upd.peer shouldEqual ApiPeer(ApiPeerType.Private, user1.id)
               upd.randomId shouldEqual randomId
@@ -136,7 +136,7 @@ class MessagingServiceSpec
           ))
 
           whenReady(actions) { resps ⇒
-            resps foreach (_ should matchPattern { case Ok(ResponseSeqDate(2, _, _)) ⇒ })
+            resps foreach (_ should matchPattern { case Ok(ResponseSeqDate(_, _, _)) ⇒ })
           }
 
           expectUpdate(classOf[UpdateMessageSent])(identity)
@@ -180,7 +180,7 @@ class MessagingServiceSpec
 
           whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, randomId, ApiTextMessage("Hi again", Vector.empty, None), None, None)) { resp ⇒
             resp should matchPattern {
-              case Ok(ResponseSeqDate(4, _, _)) ⇒
+              case Ok(ResponseSeqDate(_, _, _)) ⇒
             }
           }
 
@@ -272,7 +272,7 @@ class MessagingServiceSpec
           ))
 
           whenReady(actions) { resps ⇒
-            resps foreach (_ should matchPattern { case Ok(ResponseSeqDate(4, _, _)) ⇒ })
+            resps foreach (_ should matchPattern { case Ok(ResponseSeqDate(_, _, _)) ⇒ })
           }
 
           expectUpdate(classOf[UpdateMessageSent])(identity)

@@ -8,6 +8,9 @@ import com.google.j2objc.annotations.ObjectiveCName;
 
 import java.util.List;
 
+import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.promise.Promise;
+
 public interface KeyValueEngine<V extends KeyValueItem> {
 
     @ObjectiveCName("addOrUpdateItem:")
@@ -26,5 +29,12 @@ public interface KeyValueEngine<V extends KeyValueItem> {
     void clear();
 
     @ObjectiveCName("getValueWithKey:")
+    @Deprecated
     V getValue(long key);
+
+    @ObjectiveCName("getValueAsyncWithKey:")
+    Promise<V> getValueAsync(long key);
+
+    @ObjectiveCName("containsAsyncWithKey:")
+    Promise<Boolean> containsAsync(long key);
 }

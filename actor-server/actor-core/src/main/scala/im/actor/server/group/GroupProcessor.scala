@@ -12,8 +12,8 @@ import im.actor.serialization.ActorSerializer
 import im.actor.server.KeyValueMappings
 import im.actor.server.cqrs.TaggedEvent
 import im.actor.server.db.DbExtension
-import im.actor.server.dialog.{ DirectDialogCommand, DialogExtension }
-import im.actor.server.file.{ FileStorageExtension, FileStorageAdapter, Avatar }
+import im.actor.server.dialog.{ DialogEnvelope, DialogExtension, DirectDialogCommand }
+import im.actor.server.file.{ Avatar, FileStorageAdapter, FileStorageExtension }
 import im.actor.server.model.Group
 import im.actor.server.office.{ PeerProcessor, ProcessorState, StopOffice }
 import im.actor.server.sequence.SeqUpdatesExtension
@@ -199,6 +199,7 @@ private[group] final class GroupProcessor
     case GroupQueries.IsPublic(_)                    ⇒ isPublic(state)
     case GroupQueries.GetAccessHash(_)               ⇒ getAccessHash(state)
     case GroupQueries.IsHistoryShared(_)             ⇒ isHistoryShared(state)
+    case GroupQueries.GetTitle(_)                    ⇒ getTitle(state)
   }
 
   override def handleInitCommand: Receive = {
@@ -244,9 +245,10 @@ private[group] final class GroupProcessor
       makeUserAdmin(state, clientUserId, candidateId)
     case RevokeIntegrationToken(_, userId) ⇒
       revokeIntegrationToken(state, userId)
-    case StopOffice              ⇒ context stop self
-    case ReceiveTimeout          ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
-    case dc: DirectDialogCommand ⇒ groupPeer forward dc
+    case StopOffice     ⇒ context stop self
+    case ReceiveTimeout ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
+    case de: DialogEnvelope ⇒
+      groupPeer forward de.getAllFields.values.head
   }
 
   private[this] var groupStateMaybe: Option[GroupState] = None

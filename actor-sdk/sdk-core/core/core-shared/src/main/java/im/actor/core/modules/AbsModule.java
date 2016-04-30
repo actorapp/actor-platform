@@ -4,9 +4,19 @@
 
 package im.actor.core.modules;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import im.actor.core.api.ApiGroupOutPeer;
 import im.actor.core.api.ApiOutPeer;
 import im.actor.core.api.ApiPeer;
 import im.actor.core.api.ApiPeerType;
+import im.actor.core.api.ApiUserOutPeer;
+import im.actor.core.api.rpc.RequestEditUserLocalName;
+import im.actor.core.api.rpc.RequestGetReferencedEntitites;
+import im.actor.core.api.rpc.ResponseSeq;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
@@ -17,7 +27,15 @@ import im.actor.core.network.RpcException;
 import im.actor.core.network.parser.Request;
 import im.actor.core.network.parser.Response;
 import im.actor.runtime.actors.ActorRef;
+import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.function.Function;
+import im.actor.runtime.function.Tuple2;
 import im.actor.runtime.mtproto.ManagedConnection;
+import im.actor.runtime.promise.Promise;
+import im.actor.runtime.promise.PromiseFunc;
+import im.actor.runtime.promise.PromiseResolver;
+import im.actor.runtime.promise.Promises;
+import im.actor.runtime.promise.PromisesArray;
 import im.actor.runtime.storage.KeyValueEngine;
 import im.actor.runtime.storage.KeyValueStorage;
 import im.actor.runtime.storage.PreferencesStorage;
@@ -27,11 +45,11 @@ public abstract class AbsModule {
     public static final int RPC_TIMEOUT = (int) (1.1 * ManagedConnection.CONNECTION_TIMEOUT);
 
     public static final String STORAGE_DIALOGS = "dialogs";
-    public static final String STORAGE_DIALOGS_DESC = "dialogs_desc";
     public static final String STORAGE_USERS = "users";
     public static final String STORAGE_GROUPS = "groups";
     public static final String STORAGE_DOWNLOADS = "downloads";
     public static final String STORAGE_CONTACTS = "contacts";
+    public static final String STORAGE_PHONE_BOOK = "phone_book";
     public static final String STORAGE_NOTIFICATIONS = "notifications";
     public static final String STORAGE_SEARCH = "search";
 
@@ -102,6 +120,22 @@ public abstract class AbsModule {
         }, timeout);
     }
 
+    public <T extends Response> Promise<T> api(Request<T> request) {
+        return new Promise<>((PromiseFunc<T>) resolver -> {
+            request(request, new RpcCallback<T>() {
+                @Override
+                public void onResult(T response) {
+                    resolver.result(response);
+                }
+
+                @Override
+                public void onError(RpcException e) {
+                    resolver.error(e);
+                }
+            });
+        });
+    }
+
     public <T extends Response> void request(Request<T> request) {
         request(request, 0);
     }
@@ -124,7 +158,7 @@ public abstract class AbsModule {
         }
     }
 
-    public ApiOutPeer buildApiOutPeer(Peer peer) {
+    public ApiOutPeer getApiOutPeer(Peer peer) {
         if (peer.getPeerType() == PeerType.PRIVATE) {
             return new ApiOutPeer(ApiPeerType.PRIVATE, peer.getPeerId(),
                     users().getValue(peer.getPeerId()).getAccessHash());
@@ -136,15 +170,20 @@ public abstract class AbsModule {
         }
     }
 
-    public boolean isValidPeer(Peer peer) {
-        if (peer.getPeerType() == PeerType.PRIVATE) {
-            return users().getValue(peer.getPeerId()) != null;
-        } else if (peer.getPeerType() == PeerType.GROUP) {
-            return groups().getValue(peer.getPeerId()) != null;
-        }
-        return false;
+    public Promise<ApiOutPeer> buildOutPeer(Peer peer) {
+        return new Promise<>((PromiseFunc<ApiOutPeer>) resolver -> {
+            if (peer.getPeerType() == PeerType.PRIVATE) {
+                users().getValueAsync(peer.getPeerId())
+                        .map(user -> new ApiOutPeer(ApiPeerType.PRIVATE, user.getUid(), user.getAccessHash()))
+                        .pipeTo(resolver);
+            } else if (peer.getPeerType() == PeerType.GROUP) {
+                groups().getValueAsync(peer.getPeerId())
+                        .map(group -> new ApiOutPeer(ApiPeerType.GROUP, group.getGroupId(), group.getAccessHash()))
+                        .pipeTo(resolver);
+            } else {
+                throw new RuntimeException("Unknown peer: " + peer);
+            }
+        });
     }
-
-
 }
 

@@ -43,13 +43,12 @@ public class BlockedListFragment extends BaseFragment {
             @Override
             public void onClick(UserVM u) {
                 execute(messenger().unblockUser(u.getId())
-                        .then(new Consumer<im.actor.runtime.actors.messages.Void>() {
+                        .then(new Consumer<Void>() {
                             @Override
                             public void apply(Void aVoid) {
                                 checkBlockedList();
                             }
-                        })
-                        .done(getPromiseActor()));
+                        }));
             }
         });
         list.setAdapter(adapter);
@@ -78,8 +77,7 @@ public class BlockedListFragment extends BaseFragment {
                         });
 
                     }
-                })
-                .done(getPromiseActor());
+                });
     }
 
 }

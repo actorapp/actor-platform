@@ -5,11 +5,8 @@
 package im.actor.core.modules.messaging.history;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
-import im.actor.core.api.ApiGroup;
-import im.actor.core.api.ApiListLoadMode;
 import im.actor.core.api.ApiMessageContainer;
 import im.actor.core.api.ApiMessageReaction;
 import im.actor.core.api.ApiMessageState;
@@ -21,8 +18,10 @@ import im.actor.core.entity.MessageState;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.Reaction;
 import im.actor.core.entity.content.AbsContent;
+import im.actor.core.modules.api.ApiSupportConfiguration;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.ModuleActor;
+import im.actor.runtime.Log;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.function.Function;
@@ -65,25 +64,20 @@ public class ConversationHistoryActor extends ModuleActor {
             return;
         }
         isLoading = true;
-        api(new RequestLoadHistory(buidOutPeer(peer), historyMaxDate, null, LIMIT))
-                .mapPromise(applyRelated())
-                .then(applyHistory(peer))
+        api(new RequestLoadHistory(buidOutPeer(peer), historyMaxDate, null, LIMIT, ApiSupportConfiguration.OPTIMIZATIONS))
                 .then(new Consumer<ResponseLoadHistory>() {
                     @Override
                     public void apply(ResponseLoadHistory responseLoadHistory) {
-                        isLoading = false;
+                        Log.d("ConversationHistory", "Loaded!");
                     }
                 })
-                .done(self());
+                .flatMap(applyRelated())
+                .then(applyHistory(peer))
+                .then(responseLoadHistory -> isLoading = false);
     }
 
     private Consumer<ResponseLoadHistory> applyHistory(final Peer peer) {
-        return new Consumer<ResponseLoadHistory>() {
-            @Override
-            public void apply(ResponseLoadHistory responseLoadHistory) {
-                applyHistory(peer, responseLoadHistory.getHistory());
-            }
-        };
+        return responseLoadHistory -> applyHistory(peer, responseLoadHistory.getHistory());
     }
 
     private void applyHistory(Peer peer, List<ApiMessageContainer> history) {
@@ -132,17 +126,14 @@ public class ConversationHistoryActor extends ModuleActor {
     }
 
     private Function<ResponseLoadHistory, Promise<ResponseLoadHistory>> applyRelated() {
-        return new Function<ResponseLoadHistory, Promise<ResponseLoadHistory>>() {
-            @Override
-            public Promise<ResponseLoadHistory> apply(final ResponseLoadHistory responseLoadHistory) {
-                return updates().applyRelatedData(responseLoadHistory.getUsers(), new ArrayList<ApiGroup>()).map(new Function<Void, ResponseLoadHistory>() {
+        return responseLoadHistory -> updates()
+                .applyRelatedData(responseLoadHistory.getUsers(), new ArrayList<>())
+                .map(new Function<Void, ResponseLoadHistory>() {
                     @Override
                     public ResponseLoadHistory apply(Void aVoid) {
                         return responseLoadHistory;
                     }
                 });
-            }
-        };
     }
 
     @Override

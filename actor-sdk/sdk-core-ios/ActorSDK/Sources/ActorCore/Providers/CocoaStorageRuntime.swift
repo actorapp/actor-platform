@@ -18,10 +18,6 @@ import Foundation
         return preferences
     }
     
-    func createIndexWithName(name: String!) -> ARIndexStorage! {
-        return FMDBIndex(databasePath: dbPath, tableName: name)
-    }
-
     func createKeyValueWithName(name: String!) -> ARKeyValueStorage! {
         return FMDBKeyValue(databasePath: dbPath, tableName: name)
     }

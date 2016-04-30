@@ -32,7 +32,7 @@ class CocoaWebRTCRuntime: NSObject, ARWebRTCRuntime {
         let audio = peerConnectionFactory.audioTrackWithID("audio0")
         let mediaStream = peerConnectionFactory.mediaStreamWithLabel("ARDAMSa0")
         mediaStream.addAudioTrack(audio)
-        return ARPromises.success(MediaStream(stream: mediaStream))
+        return ARPromise.success(MediaStream(stream: mediaStream))
     }
     
     func initRTC() {

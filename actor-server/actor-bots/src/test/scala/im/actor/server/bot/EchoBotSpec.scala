@@ -44,7 +44,6 @@ final class EchoBotSpec
   it should "reply with the same message (private)" in replyPrivate
   it should "reply with the same message (group)" in replyGroup
 
-  private lazy val dialogExt = DialogExtension(system)
   private lazy val msgService = MessagingServiceImpl()
   private implicit lazy val groupsService = new GroupsServiceImpl(GroupInviteConfig(""))
 

@@ -4,6 +4,7 @@ import java.time.Instant
 
 import akka.actor.{ ActorRef, ActorSystem, ExtendedActorSystem }
 import akka.serialization.Serialization
+import com.google.protobuf.wrappers.Int64Value
 import com.google.protobuf.{ ByteString, CodedInputStream }
 import com.trueaccord.scalapb.TypeMapper
 import im.actor.api.rpc.files.ApiAvatar
@@ -98,6 +99,10 @@ private[api] trait MessageMapper {
 
   private def unapplyInstant(dt: Instant): Long = dt.toEpochMilli
 
+  private def applyInstantOpt(millis: Int64Value): Instant = Instant.ofEpochMilli(millis.value)
+
+  private def unapplyInstantOpt(dt: Instant): Int64Value = Int64Value(dt.toEpochMilli)
+
   private def applyAvatar(buf: ByteString): ApiAvatar =
     get(ApiAvatar.parseFrom(CodedInputStream.newInstance(buf.asReadOnlyByteBuffer())))
 
@@ -164,6 +169,8 @@ private[api] trait MessageMapper {
   implicit val dateTimeMapper: TypeMapper[Long, DateTime] = TypeMapper(applyDateTime)(unapplyDateTime)
 
   implicit val instantMapper: TypeMapper[Long, Instant] = TypeMapper(applyInstant)(unapplyInstant)
+
+  implicit val instantOptMapper: TypeMapper[Int64Value, Instant] = TypeMapper(applyInstantOpt)(unapplyInstantOpt)
 
   implicit val avatarMapper: TypeMapper[ByteString, ApiAvatar] = TypeMapper(applyAvatar)(unapplyAvatar)
 

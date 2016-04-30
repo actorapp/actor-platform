@@ -9,7 +9,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import im.actor.core.api.ApiUser;
@@ -17,18 +16,23 @@ import im.actor.core.api.rpc.RequestGetContacts;
 import im.actor.core.api.rpc.ResponseGetContacts;
 import im.actor.core.entity.Contact;
 import im.actor.core.entity.User;
+import im.actor.core.modules.api.ApiSupportConfiguration;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.ModuleActor;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.runtime.Crypto;
 import im.actor.runtime.Log;
+import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.bser.DataInput;
 import im.actor.runtime.bser.DataOutput;
 
 public class ContactsSyncActor extends ModuleActor {
 
     private static final String TAG = "ContactsServerSync";
+
+    // j2objc workaround
+    private static final Void DUMB = null;
 
     private final boolean ENABLE_LOG;
 
@@ -109,16 +113,21 @@ public class ContactsSyncActor extends ModuleActor {
             Log.d(TAG, "Performing sync with uids: " + hash);
         }
 
-        request(new RequestGetContacts(hashValue), new RpcCallback<ResponseGetContacts>() {
+        request(new RequestGetContacts(hashValue, ApiSupportConfiguration.OPTIMIZATIONS), new RpcCallback<ResponseGetContacts>() {
             @Override
             public void onResult(ResponseGetContacts response) {
 
                 if (ENABLE_LOG) {
-                    Log.d(TAG, "Sync received (0) " + response.getUsers().size() + " contacts");
+                    Log.d(TAG, "Sync received " + (response.getUsers().size() + response.getUserPeers().size()) + " contacts");
                 }
 
-                updates().onUpdateReceived(
-                        new im.actor.core.modules.sequence.internal.ContactsLoaded(response));
+                if (response.getUserPeers().size() > 0) {
+                    updates().loadRequiredPeers(response.getUserPeers(), new ArrayList<>())
+                            .then(v -> onContactsLoaded(response));
+                } else {
+                    updates().applyRelatedData(response.getUsers())
+                            .then(v -> onContactsLoaded(response));
+                }
             }
 
             @Override
@@ -251,14 +260,9 @@ public class ContactsSyncActor extends ModuleActor {
         for (int u : contacts) {
             userList.add(getUser(u));
         }
-        Collections.sort(userList, new Comparator<User>() {
-            @Override
-            public int compare(User lhs, User rhs) {
-                return lhs.getName().compareTo(rhs.getName());
-            }
-        });
+        Collections.sort(userList, (lhs, rhs) -> lhs.getName().compareTo(rhs.getName()));
 
-        List<Contact> registeredContacts = new ArrayList<Contact>();
+        List<Contact> registeredContacts = new ArrayList<>();
         int index = -1;
         for (User userModel : userList) {
             Contact contact = new Contact(userModel.getUid(),
@@ -296,9 +300,7 @@ public class ContactsSyncActor extends ModuleActor {
 
     @Override
     public void onReceive(Object message) {
-        if (message instanceof ContactsLoaded) {
-            onContactsLoaded(((ContactsLoaded) message).getResult());
-        } else if (message instanceof ContactsAdded) {
+        if (message instanceof ContactsAdded) {
             onContactsAdded(((ContactsAdded) message).getUids());
         } else if (message instanceof ContactsRemoved) {
             onContactsRemoved(((ContactsRemoved) message).getUids());
@@ -307,24 +309,12 @@ public class ContactsSyncActor extends ModuleActor {
         } else if (message instanceof PerformSync) {
             performSync();
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 
     private static class PerformSync {
 
-    }
-
-    public static class ContactsLoaded {
-        private ResponseGetContacts result;
-
-        public ContactsLoaded(ResponseGetContacts result) {
-            this.result = result;
-        }
-
-        public ResponseGetContacts getResult() {
-            return result;
-        }
     }
 
     public static class ContactsAdded {

@@ -25,12 +25,7 @@ public class StickersModule extends AbsModule {
 
     public void run() {
         this.stickersVM = new StickersVM();
-        this.stickersActor = system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public StickersActor create() {
-                return new StickersActor(context());
-            }
-        }), "actor/stickers");
+        this.stickersActor = system().actorOf("actor/stickers", () -> new StickersActor(context()));
     }
 
     public ActorRef getStickersActor() {

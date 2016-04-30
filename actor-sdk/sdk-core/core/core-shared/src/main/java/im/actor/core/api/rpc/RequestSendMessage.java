@@ -26,12 +26,14 @@ public class RequestSendMessage extends Request<ResponseSeqDate> {
     private long rid;
     private ApiMessage message;
     private Integer isOnlyForUser;
+    private ApiMessageOutReference quotedMessageReference;
 
-    public RequestSendMessage(@NotNull ApiOutPeer peer, long rid, @NotNull ApiMessage message, @Nullable Integer isOnlyForUser) {
+    public RequestSendMessage(@NotNull ApiOutPeer peer, long rid, @NotNull ApiMessage message, @Nullable Integer isOnlyForUser, @Nullable ApiMessageOutReference quotedMessageReference) {
         this.peer = peer;
         this.rid = rid;
         this.message = message;
         this.isOnlyForUser = isOnlyForUser;
+        this.quotedMessageReference = quotedMessageReference;
     }
 
     public RequestSendMessage() {
@@ -57,12 +59,18 @@ public class RequestSendMessage extends Request<ResponseSeqDate> {
         return this.isOnlyForUser;
     }
 
+    @Nullable
+    public ApiMessageOutReference getQuotedMessageReference() {
+        return this.quotedMessageReference;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.peer = values.getObj(1, new ApiOutPeer());
         this.rid = values.getLong(3);
         this.message = ApiMessage.fromBytes(values.getBytes(4));
         this.isOnlyForUser = values.optInt(5);
+        this.quotedMessageReference = values.optObj(6, new ApiMessageOutReference());
     }
 
     @Override
@@ -80,6 +88,9 @@ public class RequestSendMessage extends Request<ResponseSeqDate> {
         if (this.isOnlyForUser != null) {
             writer.writeInt(5, this.isOnlyForUser);
         }
+        if (this.quotedMessageReference != null) {
+            writer.writeObject(6, this.quotedMessageReference);
+        }
     }
 
     @Override
@@ -89,6 +100,7 @@ public class RequestSendMessage extends Request<ResponseSeqDate> {
         res += ", rid=" + this.rid;
         res += ", message=" + this.message;
         res += ", isOnlyForUser=" + this.isOnlyForUser;
+        res += ", quotedMessageReference=" + this.quotedMessageReference;
         res += "}";
         return res;
     }

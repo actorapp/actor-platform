@@ -1,6 +1,5 @@
 package im.actor.runtime;
 
-import im.actor.runtime.storage.IndexStorage;
 import im.actor.runtime.storage.KeyValueStorage;
 import im.actor.runtime.storage.ListStorage;
 import im.actor.runtime.storage.PreferencesStorage;
@@ -9,11 +8,6 @@ public class StorageRuntimeProvider implements StorageRuntime {
 
     @Override
     public PreferencesStorage createPreferencesStorage() {
-        throw new RuntimeException("Dumb");
-    }
-
-    @Override
-    public IndexStorage createIndex(String name) {
         throw new RuntimeException("Dumb");
     }
 

@@ -80,7 +80,8 @@ public class JsMessagesBind implements Exportable, JsDisplayListCallback<JsMessa
         boolean isLoaded = this.conversationVM.getIsLoaded().get();
         double readDate = this.conversationVM.getReadDate().get() / 1000.0;
         double receiveDate = this.conversationVM.getReceiveDate().get() / 1000.0;
-        closure.onBind(arrays, overlays, isLoaded, receiveDate, readDate);
+        double readByMeDate = this.conversationVM.getOwnReadDate().get() / 1000.0;
+        closure.onBind(arrays, overlays, isLoaded, receiveDate, readDate, readByMeDate);
     }
 
     @Export

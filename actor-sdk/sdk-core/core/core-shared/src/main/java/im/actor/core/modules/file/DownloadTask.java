@@ -14,7 +14,6 @@ import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Cancellable;
 import im.actor.runtime.files.FileSystemReference;
 import im.actor.runtime.files.OutputFile;
-import im.actor.runtime.function.Consumer;
 import im.actor.runtime.http.FileDownloadCallback;
 
 public class DownloadTask extends ModuleActor {
@@ -95,25 +94,18 @@ public class DownloadTask extends ModuleActor {
             Log.d(TAG, "Loading url...");
         }
 
-        context().getFilesModule().getFileUrlInt().askForUrl(fileReference.getFileId(),
-                fileReference.getAccessHash()).then(new Consumer<String>() {
-            @Override
-            public void apply(String url) {
-                fileUrl = url;
-                if (LOG) {
-                    Log.d(TAG, "Loaded file url: " + fileUrl);
-                }
-                startDownload();
+        context().getFilesModule().getFileUrlInt().askForUrl(fileReference.getFileId(), fileReference.getAccessHash()).then(url -> {
+            fileUrl = url;
+            if (LOG) {
+                Log.d(TAG, "Loaded file url: " + fileUrl);
             }
-        }).failure(new Consumer<Exception>() {
-            @Override
-            public void apply(Exception e) {
-                if (LOG) {
-                    Log.d(TAG, "Unable to load file url");
-                }
-                reportError();
+            startDownload();
+        }).failure(e -> {
+            if (LOG) {
+                Log.d(TAG, "Unable to load file url");
             }
-        }).done(self());
+            reportError();
+        });
     }
 
     private void startDownload() {
@@ -199,21 +191,18 @@ public class DownloadTask extends ModuleActor {
         HTTP.getMethod(fileUrl, fileOffset, blockSize, fileReference.getFileSize(), new FileDownloadCallback() {
             @Override
             public void onDownloaded(final byte[] data) {
-                self().send(new Runnable() {
-                    @Override
-                    public void run() {
-                        downloaded++;
-                        if (LOG) {
-                            Log.d(TAG, "Download part #" + blockIndex + " completed");
-                        }
-                        if (!outputFile.write(fileOffset, data, 0, data.length)) {
-                            reportError();
-                            return;
-                        }
-                        currentDownloads--;
-                        reportProgress(downloaded / (float) blocksCount);
-                        checkQueue();
+                self().send((Runnable) () -> {
+                    downloaded++;
+                    if (LOG) {
+                        Log.d(TAG, "Download part #" + blockIndex + " completed");
                     }
+                    if (!outputFile.write(fileOffset, data, 0, data.length)) {
+                        reportError();
+                        return;
+                    }
+                    currentDownloads--;
+                    reportProgress(downloaded / (float) blocksCount);
+                    checkQueue();
                 });
             }
 
@@ -232,14 +221,11 @@ public class DownloadTask extends ModuleActor {
 
                     self().send(new Retry(blockIndex, fileOffset, attempt + 1));
                 } else {
-                    self().send(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (LOG) {
-                                Log.d(TAG, "Download part #" + blockIndex + " failure");
-                            }
-                            reportError();
+                    self().send((Runnable) () -> {
+                        if (LOG) {
+                            Log.d(TAG, "Download part #" + blockIndex + " failure");
                         }
+                        reportError();
                     });
                 }
             }
@@ -274,12 +260,7 @@ public class DownloadTask extends ModuleActor {
             lastNotifyDate = im.actor.runtime.Runtime.getActorTime();
             performReportProgress();
         } else {
-            notifyCancellable = schedule(new Runnable() {
-                @Override
-                public void run() {
-                    performReportProgress();
-                }
-            }, delta);
+            notifyCancellable = schedule((Runnable) () -> performReportProgress(), delta);
         }
     }
 

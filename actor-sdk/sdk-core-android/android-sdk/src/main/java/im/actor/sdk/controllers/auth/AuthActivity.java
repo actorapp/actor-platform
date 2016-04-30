@@ -72,7 +72,6 @@ public class AuthActivity extends BaseFragmentActivity {
         currentPhone = preferences.getLong("currentPhone", 0);
         currentEmail = preferences.getString("currentEmail");
         transactionHash = preferences.getString("transactionHash");
-        currentCode = preferences.getString("currentCode");
         isRegistered = preferences.getBool("isRegistered", false);
         currentName = preferences.getString("currentName");
         signType = preferences.getInt("signType", signType);
@@ -102,7 +101,6 @@ public class AuthActivity extends BaseFragmentActivity {
         preferences.putLong("currentPhone", currentPhone);
         preferences.putString("currentEmail", currentEmail);
         preferences.putString("transactionHash", transactionHash);
-        preferences.putString("currentCode", currentCode);
         preferences.putBool("isRegistered", isRegistered);
         preferences.putString("currentName", currentName);
         preferences.putInt("signType", signType);
@@ -135,9 +133,11 @@ public class AuthActivity extends BaseFragmentActivity {
                 break;
             case AUTH_PHONE:
                 currentAuthType = AUTH_TYPE_PHONE;
+                currentCode = "";
                 showFragment(ActorSDK.sharedActor().getDelegatedFragment(ActorSDK.sharedActor().getDelegate().getAuthStartIntent(), new SignPhoneFragment(), BaseAuthFragment.class), false, false);
                 break;
             case AUTH_EMAIL:
+                currentCode = "";
                 currentAuthType = AUTH_TYPE_EMAIL;
                 showFragment(ActorSDK.sharedActor().getDelegatedFragment(ActorSDK.sharedActor().getDelegate().getAuthStartIntent(), new SignEmailFragment(), BaseAuthFragment.class), false, false);
                 break;
@@ -218,7 +218,7 @@ public class AuthActivity extends BaseFragmentActivity {
             public void apply(Exception e) {
                 handleAuthError(e);
             }
-        }).done(authActor);
+        });
     }
 
 
@@ -241,7 +241,7 @@ public class AuthActivity extends BaseFragmentActivity {
                             public void apply(Exception e) {
                                 handleAuthError(e);
                             }
-                        }).done(authActor);
+                        });
                     } else {
                         signUp(messenger().doSignup(currentName, currentSex, transactionHash), currentName, currentSex);
                     }
@@ -252,7 +252,7 @@ public class AuthActivity extends BaseFragmentActivity {
             public void apply(Exception e) {
                 handleAuthError(e);
             }
-        }).done(authActor);
+        });
     }
 
     public void signUp(Promise<AuthRes> promise, String name, Sex sex) {
@@ -272,7 +272,7 @@ public class AuthActivity extends BaseFragmentActivity {
                     public void apply(Exception e) {
                         handleAuthError(e);
                     }
-                }).done(authActor);
+                });
 
             }
         }).failure(new Consumer<Exception>() {
@@ -280,8 +280,7 @@ public class AuthActivity extends BaseFragmentActivity {
             public void apply(Exception e) {
                 handleAuthError(e);
             }
-        })
-                .done(authActor).done(authActor);
+        });
     }
 
     public void handleAuthError(final Exception e) {
@@ -303,6 +302,7 @@ public class AuthActivity extends BaseFragmentActivity {
                             canTryAgain = true;
                         } else {
                             if ("PHONE_CODE_EXPIRED".equals(re.getTag()) || "EMAIL_CODE_EXPIRED".equals(re.getTag())) {
+                                currentCode = "";
                                 message = getString(R.string.auth_error_code_expired);
                                 canTryAgain = false;
                             } else if ("PHONE_CODE_INVALID".equals(re.getTag()) || "EMAIL_CODE_INVALID".equals(re.getTag())) {
@@ -454,6 +454,10 @@ public class AuthActivity extends BaseFragmentActivity {
             alertDialog.dismiss();
             alertDialog = null;
         }
+    }
+
+    public String getCurrentCode() {
+        return currentCode;
     }
 
     public String getTransactionHash() {

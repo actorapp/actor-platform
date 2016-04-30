@@ -59,7 +59,7 @@ object UserErrors {
   final case class BotCommandAlreadyExists(slashCommand: String)
     extends UserError(s"Bot command already exists: $slashCommand")
 
-  final case object ContactNotFound extends UserError("Contact not found")
+  case object ContactNotFound extends UserError("Contact not found")
 
 }
 
@@ -341,15 +341,6 @@ private[user] trait UserCommandHandlers {
         relatedUserIds ← relationsF
         (seqstate, _) ← seqUpdatesExt.broadcastOwnSingleUpdate(user.id, relatedUserIds, update)
       } yield UpdateAvatarAck(avatarOpt, seqstate)
-    }
-  }
-
-  protected def notifyDialogsChanged(user: UserState): Unit = {
-    deferStashingReply(UserEvents.DialogsChanged(now()), user) { _ ⇒
-      for {
-        shortDialogs ← dialogExt.fetchGroupedDialogShorts(user.id)
-        seqstate ← seqUpdatesExt.deliverSingleUpdate(user.id, UpdateChatGroupsChanged(shortDialogs), reduceKey = Some("chat_groups_changed"))
-      } yield seqstate
     }
   }
 

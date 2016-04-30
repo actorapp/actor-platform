@@ -27,11 +27,8 @@ public abstract class AbsCallActor extends ModuleActor implements CallBusCallbac
     @Override
     public void preStart() {
         super.preStart();
-        callBus = new CallBusInt(system().actorOf(getPath() + "/bus", new ActorCreator() {
-            @Override
-            public Actor create() {
-                return new CallBusActor(new CallBusCallbackWrapper(), selfSettings, context());
-            }
+        callBus = new CallBusInt(system().actorOf(getPath() + "/bus", () -> {
+            return new CallBusActor(new CallBusCallbackWrapper(), selfSettings, context());
         }));
     }
 
@@ -69,42 +66,22 @@ public abstract class AbsCallActor extends ModuleActor implements CallBusCallbac
 
         @Override
         public void onBusStarted(final String busId) {
-            self().send(new Runnable() {
-                @Override
-                public void run() {
-                    AbsCallActor.this.onBusStarted(busId);
-                }
-            });
+            self().send((Runnable) () -> AbsCallActor.this.onBusStarted(busId));
         }
 
         @Override
         public void onCallConnected() {
-            self().send(new Runnable() {
-                @Override
-                public void run() {
-                    AbsCallActor.this.onCallConnected();
-                }
-            });
+            self().send((Runnable) () -> AbsCallActor.this.onCallConnected());
         }
 
         @Override
         public void onCallEnabled() {
-            self().send(new Runnable() {
-                @Override
-                public void run() {
-                    AbsCallActor.this.onCallEnabled();
-                }
-            });
+            self().send((Runnable) () -> AbsCallActor.this.onCallEnabled());
         }
 
         @Override
         public void onBusStopped() {
-            self().send(new Runnable() {
-                @Override
-                public void run() {
-                    AbsCallActor.this.onBusStopped();
-                }
-            });
+            self().send((Runnable) () -> AbsCallActor.this.onBusStopped());
         }
     }
 }

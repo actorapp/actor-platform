@@ -4,10 +4,15 @@
 
 package im.actor.core.modules;
 
+import java.util.List;
+
 import im.actor.core.Configuration;
+import im.actor.core.api.ApiGroupOutPeer;
 import im.actor.core.api.ApiPeer;
 import im.actor.core.api.ApiPeerType;
 import im.actor.core.api.ApiOutPeer;
+import im.actor.core.api.ApiUserOutPeer;
+import im.actor.core.api.rpc.RequestGetReferencedEntitites;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
@@ -20,11 +25,15 @@ import im.actor.core.network.parser.Response;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.actors.AskcableActor;
+import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.function.Function;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseFunc;
 import im.actor.runtime.promise.PromiseResolver;
 import im.actor.runtime.eventbus.BusSubscriber;
 import im.actor.runtime.eventbus.Event;
+import im.actor.runtime.promise.Promises;
+import im.actor.runtime.promise.PromisesArray;
 import im.actor.runtime.storage.KeyValueEngine;
 import im.actor.runtime.storage.PreferencesStorage;
 
@@ -44,17 +53,7 @@ public class ModuleActor extends AskcableActor implements BusSubscriber {
 
     public void subscribe(String eventType) {
         if (subscriber == null) {
-            subscriber = new BusSubscriber() {
-                @Override
-                public void onBusEvent(final Event event) {
-                    self().send(new Runnable() {
-                        @Override
-                        public void run() {
-                            ModuleActor.this.onBusEvent(event);
-                        }
-                    });
-                }
-            };
+            subscriber = event -> self().post(() -> ModuleActor.this.onBusEvent(event));
         }
 
         context().getEvents().subscribe(subscriber, eventType);
@@ -181,22 +180,17 @@ public class ModuleActor extends AskcableActor implements BusSubscriber {
     }
 
     public <T extends Response> Promise<T> api(final Request<T> request) {
-        return new Promise<>(new PromiseFunc<T>() {
+        return new Promise<>((PromiseFunc<T>) executor -> context.getActorApi().request(request, new RpcCallback<T>() {
             @Override
-            public void exec(final PromiseResolver<T> executor) {
-                context.getActorApi().request(request, new RpcCallback<T>() {
-                    @Override
-                    public void onResult(T response) {
-                        executor.result(response);
-                    }
-
-                    @Override
-                    public void onError(RpcException e) {
-                        executor.error(e);
-                    }
-                });
+            public void onResult(T response) {
+                executor.result(response);
             }
-        });
+
+            @Override
+            public void onError(RpcException e) {
+                executor.error(e);
+            }
+        }));
     }
 
     public void cancelRequest(long rid) {

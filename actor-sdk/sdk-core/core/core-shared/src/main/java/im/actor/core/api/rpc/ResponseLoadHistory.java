@@ -24,10 +24,16 @@ public class ResponseLoadHistory extends Response {
 
     private List<ApiMessageContainer> history;
     private List<ApiUser> users;
+    private List<ApiUserOutPeer> userPeers;
+    private List<ApiGroup> groups;
+    private List<ApiGroupOutPeer> groupPeers;
 
-    public ResponseLoadHistory(@NotNull List<ApiMessageContainer> history, @NotNull List<ApiUser> users) {
+    public ResponseLoadHistory(@NotNull List<ApiMessageContainer> history, @NotNull List<ApiUser> users, @NotNull List<ApiUserOutPeer> userPeers, @NotNull List<ApiGroup> groups, @NotNull List<ApiGroupOutPeer> groupPeers) {
         this.history = history;
         this.users = users;
+        this.userPeers = userPeers;
+        this.groups = groups;
+        this.groupPeers = groupPeers;
     }
 
     public ResponseLoadHistory() {
@@ -44,6 +50,21 @@ public class ResponseLoadHistory extends Response {
         return this.users;
     }
 
+    @NotNull
+    public List<ApiUserOutPeer> getUserPeers() {
+        return this.userPeers;
+    }
+
+    @NotNull
+    public List<ApiGroup> getGroups() {
+        return this.groups;
+    }
+
+    @NotNull
+    public List<ApiGroupOutPeer> getGroupPeers() {
+        return this.groupPeers;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         List<ApiMessageContainer> _history = new ArrayList<ApiMessageContainer>();
@@ -56,12 +77,30 @@ public class ResponseLoadHistory extends Response {
             _users.add(new ApiUser());
         }
         this.users = values.getRepeatedObj(2, _users);
+        List<ApiUserOutPeer> _userPeers = new ArrayList<ApiUserOutPeer>();
+        for (int i = 0; i < values.getRepeatedCount(4); i ++) {
+            _userPeers.add(new ApiUserOutPeer());
+        }
+        this.userPeers = values.getRepeatedObj(4, _userPeers);
+        List<ApiGroup> _groups = new ArrayList<ApiGroup>();
+        for (int i = 0; i < values.getRepeatedCount(5); i ++) {
+            _groups.add(new ApiGroup());
+        }
+        this.groups = values.getRepeatedObj(5, _groups);
+        List<ApiGroupOutPeer> _groupPeers = new ArrayList<ApiGroupOutPeer>();
+        for (int i = 0; i < values.getRepeatedCount(6); i ++) {
+            _groupPeers.add(new ApiGroupOutPeer());
+        }
+        this.groupPeers = values.getRepeatedObj(6, _groupPeers);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeRepeatedObj(1, this.history);
         writer.writeRepeatedObj(2, this.users);
+        writer.writeRepeatedObj(4, this.userPeers);
+        writer.writeRepeatedObj(5, this.groups);
+        writer.writeRepeatedObj(6, this.groupPeers);
     }
 
     @Override

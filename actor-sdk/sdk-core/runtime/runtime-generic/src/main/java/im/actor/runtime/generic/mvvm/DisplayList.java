@@ -323,7 +323,7 @@ public class DisplayList<T> {
                 onEditList(((EditList<T>) message).modification, ((EditList) message).executeAfter,
                         ((EditList) message).isLoadMore);
             } else {
-                drop(message);
+                super.onReceive(message);
             }
         }
     }

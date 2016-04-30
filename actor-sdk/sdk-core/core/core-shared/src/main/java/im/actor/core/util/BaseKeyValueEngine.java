@@ -8,13 +8,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.promise.Promise;
 import im.actor.runtime.storage.KeyValueEngine;
 import im.actor.runtime.storage.KeyValueItem;
 import im.actor.runtime.storage.KeyValueRecord;
 import im.actor.runtime.storage.KeyValueStorage;
 
 public abstract class BaseKeyValueEngine<T extends KeyValueItem> implements KeyValueEngine<T> {
-    private final HashMap<Long, T> cache = new HashMap<Long, T>();
+    private final HashMap<Long, T> cache = new HashMap<>();
 
     private KeyValueStorage storage;
 
@@ -39,7 +41,7 @@ public abstract class BaseKeyValueEngine<T extends KeyValueItem> implements KeyV
             cache.put(t.getEngineId(), t);
         }
 
-        ArrayList<KeyValueRecord> records = new ArrayList<KeyValueRecord>();
+        ArrayList<KeyValueRecord> records = new ArrayList<>();
         for (T v : values) {
             records.add(new KeyValueRecord(v.getEngineId(), serialize(v)));
         }
@@ -81,5 +83,21 @@ public abstract class BaseKeyValueEngine<T extends KeyValueItem> implements KeyV
             }
         }
         return null;
+    }
+
+    @Override
+    public Promise<T> getValueAsync(long key) {
+        T res = getValue(key);
+        if (res != null) {
+            return Promise.success(res);
+        } else {
+            return Promise.failure(new RuntimeException());
+        }
+    }
+
+    @Override
+    public Promise<Boolean> containsAsync(long key) {
+        T res = getValue(key);
+        return Promise.success(res != null);
     }
 }

@@ -14,7 +14,7 @@ trait FavouritesHandlers extends PeersImplicits {
     authorized(clientData) { client ⇒
       for {
         SeqState(seq, state) ← dialogExt.favourite(client.userId, peer.asModel)
-        groups ← dialogExt.fetchGroupedDialogShorts(client.userId)
+        groups ← dialogExt.fetchApiGroupedDialogs(client.userId)
       } yield Ok(ResponseDialogsOrder(seq, state.toByteArray, groups))
     }
 
@@ -22,7 +22,7 @@ trait FavouritesHandlers extends PeersImplicits {
     authorized(clientData) { client ⇒
       for {
         SeqState(seq, state) ← dialogExt.unfavourite(client.userId, peer.asModel)
-        groups ← dialogExt.fetchGroupedDialogShorts(client.userId)
+        groups ← dialogExt.fetchApiGroupedDialogs(client.userId)
       } yield Ok(ResponseDialogsOrder(seq, state.toByteArray, groups))
     }
 }

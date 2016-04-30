@@ -4,43 +4,41 @@
 
 package im.actor.core.modules.sequence;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.core.api.ApiGroup;
-import im.actor.core.api.ApiUpdateOptimization;
+import im.actor.core.api.ApiUpdateContainer;
 import im.actor.core.api.ApiUser;
 import im.actor.core.api.base.FatSeqUpdate;
 import im.actor.core.api.base.SeqUpdate;
 import im.actor.core.api.base.SeqUpdateTooLong;
+import im.actor.core.api.base.WeakUpdate;
+import im.actor.core.api.parser.UpdatesParser;
 import im.actor.core.api.rpc.RequestGetDifference;
 import im.actor.core.api.rpc.RequestGetState;
-import im.actor.core.api.rpc.ResponseGetDifference;
-import im.actor.core.api.rpc.ResponseSeq;
+import im.actor.core.modules.api.ApiSupportConfiguration;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.sequence.internal.ExecuteAfter;
-import im.actor.core.network.RpcCallback;
-import im.actor.core.network.RpcException;
 import im.actor.core.modules.ModuleActor;
+import im.actor.core.modules.sequence.processor.UpdateValidator;
+import im.actor.core.network.parser.Update;
 import im.actor.runtime.*;
 import im.actor.runtime.Runtime;
-import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.Cancellable;
-import im.actor.runtime.function.Constructor;
-import im.actor.runtime.function.Consumer;
+import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.power.WakeLock;
 
 public class SequenceActor extends ModuleActor {
 
     public static ActorCreator CONSTRUCTOR(final ModuleContext context) {
-        return new ActorCreator() {
-            @Override
-            public Actor create() {
-                return new SequenceActor(context);
-            }
-        };
+        return () -> new SequenceActor(context);
     }
+
+    // Do Not Remove! WorkAround for missing j2objc translator include
+    private static final Void DUMB = null;
 
     private static final String TAG = "Updates";
     private static final int INVALIDATE_GAP = 2000;// 2 Secs
@@ -61,6 +59,10 @@ public class SequenceActor extends ModuleActor {
 
     private Cancellable forceInvalidateCancellable;
 
+    private UpdateValidator validator;
+
+    private UpdatesParser updatesParser;
+
     private SequenceHandlerInt handler;
 
     private WakeLock currentWakeLock;
@@ -76,11 +78,26 @@ public class SequenceActor extends ModuleActor {
         finishedSeq = seq;
         finishedState = state;
 
+        validator = new UpdateValidator(context());
+        updatesParser = new UpdatesParser();
+
         handler = context().getUpdatesModule().getUpdateHandler();
 
         currentWakeLock = im.actor.runtime.Runtime.makeWakeLock();
 
         self().send(new Invalidate());
+    }
+
+    private void onWeakUpdateReceived(int type, byte[] body, long date) {
+        Update update;
+        try {
+            update = updatesParser.read(type, body);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        handler.onWeakUpdate(update, date);
     }
 
     private void onPushSeqReceived(int seq) {
@@ -135,22 +152,33 @@ public class SequenceActor extends ModuleActor {
             return;
         }
 
-        Log.d(TAG, "Handling update #" + seq);
-        startWakeLock();
-        handler.onSeqUpdate(type, body, users, groups).then(new Consumer<SequenceHandlerActor.UpdateProcessed>() {
-            @Override
-            public void apply(SequenceHandlerActor.UpdateProcessed updateProcessed) {
+        Update update = null;
+        try {
+            update = updatesParser.read(type, body);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (update != null) {
+
+            if ((users == null || users.size() == 0) && (groups == null || groups.size() == 0)) {
+                if (validator.isCausesInvalidation(update)) {
+                    Log.w(TAG, "Invalidating: No Users of Groups available for update");
+                    forceInvalidate();
+                    return;
+                }
+            }
+
+
+            Log.d(TAG, "Handling update #" + seq);
+
+            startWakeLock();
+
+            handler.onSeqUpdate(update, users, groups).then(aVoid -> {
                 Log.d(TAG, "Handling update ended #" + seq);
                 onUpdatesApplied(seq, state);
-            }
-        }).failure(new Consumer<Exception>() {
-            @Override
-            public void apply(Exception e) {
-                SequenceActor.this.seq = finishedSeq;
-                SequenceActor.this.state = finishedState;
-                invalidate();
-            }
-        }).done(self());
+            });
+        }
 
         // Saving memory-only state
         this.seq = seq;
@@ -171,79 +199,60 @@ public class SequenceActor extends ModuleActor {
 
         if (seq < 0) {
             Log.d(TAG, "Loading fresh state...");
-            ArrayList<ApiUpdateOptimization> optimizations = new ArrayList<>();
-            optimizations.add(ApiUpdateOptimization.STRIP_ENTITIES);
-            optimizations.add(ApiUpdateOptimization.STRIP_COUNTERS);
-            request(new RequestGetState(optimizations), new RpcCallback<ResponseSeq>() {
-                @Override
-                public void onResult(ResponseSeq response) {
-                    if (isValidated) {
-                        return;
-                    }
-
-                    Log.d(TAG, "State loaded {seq=" + seq + "}");
-
-                    seq = response.getSeq();
-                    state = response.getState();
-                    persistState(seq, state);
-
-                    stopWakeLock();
-
-                    onBecomeValid(response.getSeq(), response.getState());
+            api(new RequestGetState(ApiSupportConfiguration.OPTIMIZATIONS)).then(response -> {
+                if (isValidated) {
+                    return;
                 }
 
-                @Override
-                public void onError(RpcException e) {
-                    if (isValidated) {
-                        return;
-                    }
-                    isValidated = true;
-                    invalidate();
-                }
+                Log.d(TAG, "State loaded {seq=" + seq + "}");
+
+                seq = response.getSeq();
+                state = response.getState();
+                persistState(seq, state);
+
+                stopWakeLock();
+
+                onBecomeValid(response.getSeq(), response.getState());
             });
         } else {
             Log.d(TAG, "Loading difference...");
             onUpdateStarted();
             final long loadStart = im.actor.runtime.Runtime.getCurrentTime();
-            ArrayList<ApiUpdateOptimization> optimizations = new ArrayList<>();
-            optimizations.add(ApiUpdateOptimization.STRIP_ENTITIES);
-            optimizations.add(ApiUpdateOptimization.STRIP_COUNTERS);
-            request(new RequestGetDifference(seq, state, optimizations), new RpcCallback<ResponseGetDifference>() {
-                @Override
-                public void onResult(final ResponseGetDifference response) {
-                    if (isValidated) {
-                        return;
-                    }
+            api(new RequestGetDifference(seq, state, ApiSupportConfiguration.OPTIMIZATIONS)).then(response -> {
 
-                    Log.d(TAG, "Difference loaded {seq=" + response.getSeq() + "} in "
-                            + (im.actor.runtime.Runtime.getCurrentTime() - loadStart) + " ms, " +
-                            "userRefs: " + response.getUsersRefs().size() + ", " +
-                            "groupRefs: " + response.getGroupsRefs().size());
+                if (isValidated) {
+                    return;
+                }
 
-                    handler.onDifferenceUpdate(response).then(new Consumer<SequenceHandlerActor.UpdateProcessed>() {
-                        @Override
-                        public void apply(SequenceHandlerActor.UpdateProcessed updateProcessed) {
-                            onUpdatesApplied(response.getSeq(), response.getState());
-                        }
-                    }).done(self());
-
-                    onBecomeValid(response.getSeq(), response.getState());
-
-                    if (response.needMore()) {
-                        invalidate();
-                    } else {
-                        onUpdateEnded();
+                long parsingStart = Runtime.getCurrentTime();
+                ArrayList<Update> updates = new ArrayList<>();
+                for (ApiUpdateContainer container : response.getUpdates()) {
+                    try {
+                        updates.add(updatesParser.read(container.getUpdateHeader(), container.getUpdate()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        // Ignore
                     }
                 }
 
-                @Override
-                public void onError(RpcException e) {
-                    if (isValidated) {
-                        return;
-                    }
-                    isValidated = true;
+                Log.d(TAG, "Difference loaded {seq=" + response.getSeq() + "} in "
+                        + (Runtime.getCurrentTime() - loadStart) + " ms, " +
+                        "parsed in " + (Runtime.getCurrentTime() - parsingStart) + " ms, " +
+                        "userRefs: " + response.getUsersRefs().size() + ", " +
+                        "groupRefs: " + response.getGroupsRefs().size());
 
+                handler.onDifferenceUpdate(
+                        response.getUsers(), response.getGroups(), response.getUsersRefs(),
+                        response.getGroupsRefs(), updates).then(updateProcessed ->
+                        onUpdatesApplied(response.getSeq(), response.getState())
+                );
+
+                onBecomeValid(response.getSeq(), response.getState());
+
+                if (response.needMore()) {
                     invalidate();
+                } else {
+                    onUpdateEnded();
                 }
             });
         }
@@ -405,8 +414,12 @@ public class SequenceActor extends ModuleActor {
                 return;
             }
             onPushSeqReceived(((PushSeq) message).seq);
+        } else if (message instanceof WeakUpdate) {
+            WeakUpdate weakUpdate = (WeakUpdate) message;
+            onWeakUpdateReceived(weakUpdate.getUpdateHeader(), weakUpdate.getUpdate(),
+                    weakUpdate.getDate());
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 

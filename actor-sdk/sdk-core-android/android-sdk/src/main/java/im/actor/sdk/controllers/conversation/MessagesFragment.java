@@ -38,17 +38,13 @@ import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.content.AbsContent;
-import im.actor.core.entity.content.DocumentContent;
-import im.actor.core.entity.content.FileLocalSource;
-import im.actor.core.entity.content.FileRemoteSource;
-import im.actor.core.entity.content.PhotoContent;
 import im.actor.core.entity.content.TextContent;
 import im.actor.core.entity.content.UnsupportedContent;
-import im.actor.core.entity.content.VideoContent;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.ConversationVM;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.Log;
+import im.actor.runtime.actors.messages.Void;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
@@ -407,9 +403,9 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
                         Message currentMessage = messagesAdapter.getSelected()[0];
 
                         if (hasMyReaction) {
-                            ActorSDK.sharedActor().getMessenger().removeReaction(getPeer(), currentMessage.getRid(), "\u2764").start(new CommandCallback<Boolean>() {
+                            ActorSDK.sharedActor().getMessenger().removeReaction(getPeer(), currentMessage.getRid(), "\u2764").start(new CommandCallback<Void>() {
                                 @Override
-                                public void onResult(Boolean res) {
+                                public void onResult(Void res) {
 
                                 }
 
@@ -419,9 +415,9 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
                                 }
                             });
                         } else {
-                            ActorSDK.sharedActor().getMessenger().addReaction(getPeer(), currentMessage.getRid(), "\u2764").start(new CommandCallback<Boolean>() {
+                            ActorSDK.sharedActor().getMessenger().addReaction(getPeer(), currentMessage.getRid(), "\u2764").start(new CommandCallback<Void>() {
                                 @Override
-                                public void onResult(Boolean res) {
+                                public void onResult(Void res) {
 
                                 }
 

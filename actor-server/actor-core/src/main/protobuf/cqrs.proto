@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package im.actor.server;
+
+import "scalapb/scalapb.proto";
+
+message ResumableProjectionEvents {
+    message OffsetWritten {
+        option (scalapb.message).extends = "im.actor.server.cqrs.Event";
+
+        int64 offset = 1;
+    }
+}
+
+message ResumableProjectionState {
+    option (scalapb.message).extends = "im.actor.server.cqrs.ResumableProjectionStateBase";
+
+    int64 offset = 1;
+    int32 hits = 2;
+}

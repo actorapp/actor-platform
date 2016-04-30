@@ -24,10 +24,12 @@ public class RequestLoadDialogs extends Request<ResponseLoadDialogs> {
 
     private long minDate;
     private int limit;
+    private List<ApiUpdateOptimization> optimizations;
 
-    public RequestLoadDialogs(long minDate, int limit) {
+    public RequestLoadDialogs(long minDate, int limit, @NotNull List<ApiUpdateOptimization> optimizations) {
         this.minDate = minDate;
         this.limit = limit;
+        this.optimizations = optimizations;
     }
 
     public RequestLoadDialogs() {
@@ -42,16 +44,28 @@ public class RequestLoadDialogs extends Request<ResponseLoadDialogs> {
         return this.limit;
     }
 
+    @NotNull
+    public List<ApiUpdateOptimization> getOptimizations() {
+        return this.optimizations;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.minDate = values.getLong(1);
         this.limit = values.getInt(2);
+        this.optimizations = new ArrayList<ApiUpdateOptimization>();
+        for (int b : values.getRepeatedInt(3)) {
+            optimizations.add(ApiUpdateOptimization.parse(b));
+        }
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeLong(1, this.minDate);
         writer.writeInt(2, this.limit);
+        for (ApiUpdateOptimization i : this.optimizations) {
+            writer.writeInt(3, i.getValue());
+        }
     }
 
     @Override
@@ -59,6 +73,7 @@ public class RequestLoadDialogs extends Request<ResponseLoadDialogs> {
         String res = "rpc LoadDialogs{";
         res += "minDate=" + this.minDate;
         res += ", limit=" + this.limit;
+        res += ", optimizations=" + this.optimizations;
         res += "}";
         return res;
     }

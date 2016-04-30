@@ -10,10 +10,17 @@ option (scalapb.options) = {
 import "scalapb/scalapb.proto";
 import "file.proto";
 import "sequence.proto";
+import "dialog.proto";
 
 enum GroupType {
     General = 1;
     Public = 2;
+}
+
+// TODO: put GroupCommands and GroupQueries inside
+message GroupEnvelope {
+    required int32 group_id = 1;
+    optional DialogEnvelope dialog_envelope = 2;
 }
 
 message GroupCommands {
@@ -247,6 +254,16 @@ message GroupQueries {
 
     message GetAccessHashResponse {
         required int64 access_hash = 1;
+    }
+
+    message GetTitle {
+        option (scalapb.message).extends = "im.actor.server.group.GroupQuery";
+
+        required int32 group_id = 1;
+    }
+
+    message GetTitleResponse {
+        required string title = 1;
     }
 }
 

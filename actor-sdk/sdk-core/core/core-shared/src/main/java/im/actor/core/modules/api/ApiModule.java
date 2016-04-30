@@ -47,11 +47,8 @@ public class ApiModule extends AbsModule implements BusSubscriber {
 
         context.getEvents().subscribe(this, AppVisibleChanged.EVENT);
 
-        persistentRequests = system().actorOf("api/persistence", new ActorCreator() {
-            @Override
-            public PersistentRequestsActor create() {
-                return new PersistentRequestsActor(context());
-            }
+        persistentRequests = system().actorOf("api/persistence", () -> {
+            return new PersistentRequestsActor(context());
         });
     }
 

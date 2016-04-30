@@ -2,7 +2,6 @@ package im.actor.runtime;
 
 import im.actor.runtime.clc.*;
 import im.actor.runtime.storage.PreferencesStorage;
-import im.actor.runtime.storage.IndexStorage;
 import im.actor.runtime.storage.KeyValueStorage;
 import im.actor.runtime.storage.ListStorage;
 import org.slf4j.Logger;
@@ -31,24 +30,6 @@ public class StorageRuntimeProvider implements StorageRuntime, ClcContext {
             context = "";
         }
         return this.preferences;
-    }
-
-    static Connection i_db = null;
-
-    @Override
-    public IndexStorage createIndex(String name) {
-
-        try {
-            if (i_db == null) {
-                Class.forName("org.sqlite.JDBC");
-                i_db = DriverManager.getConnection("jdbc:sqlite:index.db");
-            }
-            return new ClcIndexStorage(i_db, name, this.context);
-
-        } catch (SQLException | ClassNotFoundException e) {
-            logger.error("Error in creating index storage", e);
-        }
-        return null;
     }
 
     static Connection kv_db = null;

@@ -207,7 +207,7 @@ class AsyncStorageActor<T extends BserObject & ListEngineItem> extends Actor {
             loadCenter(((LoadCenter) message).getCenterSortKey(),
                     ((LoadCenter) message).getLimit(), ((LoadCenter) message).getCallback());
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 

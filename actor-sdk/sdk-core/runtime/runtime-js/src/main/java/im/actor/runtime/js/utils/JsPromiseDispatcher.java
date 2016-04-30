@@ -1,9 +1,10 @@
 package im.actor.runtime.js.utils;
 
-import im.actor.runtime.promise.Promise;
-import im.actor.runtime.promise.PromiseDispatcher;
+import org.jetbrains.annotations.NotNull;
 
-public class JsPromiseDispatcher extends PromiseDispatcher {
+import im.actor.runtime.threading.SimpleDispatcher;
+
+public class JsPromiseDispatcher implements SimpleDispatcher {
 
     public static final JsPromiseDispatcher INSTANCE = new JsPromiseDispatcher();
 
@@ -11,7 +12,7 @@ public class JsPromiseDispatcher extends PromiseDispatcher {
     }
 
     @Override
-    public void dispatch(Promise promise, Runnable runnable) {
+    public void dispatch(@NotNull Runnable runnable) {
         runnable.run();
     }
 }

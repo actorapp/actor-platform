@@ -22,12 +22,7 @@ public class ProfileModule extends AbsModule {
     public ProfileModule(final Modules modules) {
         super(modules);
         ownAvatarVM = new OwnAvatarVM();
-        avatarChangeActor = system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public OwnAvatarChangeActor create() {
-                return new OwnAvatarChangeActor(modules);
-            }
-        }), "actor/avatar/my");
+        avatarChangeActor = system().actorOf("actor/avatar/my", () -> new OwnAvatarChangeActor(modules));
     }
 
     public OwnAvatarVM getOwnAvatarVM() {

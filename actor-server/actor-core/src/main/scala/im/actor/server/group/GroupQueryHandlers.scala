@@ -67,4 +67,7 @@ private[group] trait GroupQueryHandlers extends GroupCommandHelpers {
 
   def isHistoryShared(group: GroupState): Unit =
     sender() ! IsHistorySharedResponse(group.isHistoryShared)
+
+  def getTitle(group: GroupState): Unit =
+    sender() ! GetTitleResponse(group.title)
 }
