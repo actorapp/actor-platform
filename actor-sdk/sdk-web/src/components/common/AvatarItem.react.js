@@ -3,58 +3,89 @@
  */
 
 import React, { Component, PropTypes } from 'react';
-import classnames from 'classnames';
+import classNames from 'classnames';
 
-export default class AvatarItem extends Component {
+const AvatarSizes = {
+  tiny: 24,
+  small: 32,
+  normal: 36,
+  medium: 44,
+  large: 60,
+  big: 120,
+  huge: 200
+};
+
+class AvatarItem extends Component {
   static propTypes = {
-    className: PropTypes.string,
     image: PropTypes.string,
     placeholder: PropTypes.string.isRequired,
-    size: PropTypes.string,
     title: PropTypes.string.isRequired,
-
+    size: PropTypes.oneOf(Object.keys(AvatarSizes)).isRequired,
+    className: PropTypes.string,
     onClick: PropTypes.func
   };
 
-  constructor(props) {
-    super(props);
-  }
-
-  handleClick = (event) => {
-    const { onClick } = this.props;
-    onClick && onClick(event);
+  static defaultProps = {
+    size: 'normal'
   };
 
-  render() {
-    const { title, className, image, size, placeholder } = this.props;
+  shouldComponentUpdate(prevProps) {
+    return prevProps.image !== this.props.image ||
+           prevProps.placeholder !== this.props.placeholder ||
+           prevProps.title !== this.props.title ||
+           prevProps.size !== this.props.size ||
+           prevProps.className !== this.props.className;
+  }
 
-    const placeholderClassName = classnames('avatar__placeholder', `avatar__placeholder--${placeholder}`);
-    const avatarClassName = classnames('avatar', {
-      'avatar--tiny': size === 'tiny',
-      'avatar--small': size === 'small',
-      'avatar--medium': size === 'medium',
-      'avatar--large': size === 'large',
-      'avatar--big': size === 'big',
-      'avatar--huge': size === 'huge',
-      'avatar--without-shadow': !image
-    }, className);
-
-    const avatar = image ? <img alt={title} className="avatar__image" src={image}/> : null;
-
+  getFirstChar() {
+    const { title } = this.props;
     const emojiFirstChar = /([\uE000-\uF8FF]|\uD83C|\uD83D)/g;
 
-    let placeholderChar;
     if (title.length == 0) {
-      placeholderChar = '#'
-    } else {
-      placeholderChar = title[0].match(emojiFirstChar) ? '#' : title[0];
+      return '#';
     }
 
+    return title[0].match(emojiFirstChar) ? '#' : title[0];
+  }
+
+  render() {
+    const { image, placeholder, title, size, onClick } = this.props;
+
+    if (image) {
+      const className = classNames(
+        'avatar__image',
+        { 'avatar--clickable': onClick },
+        this.props.className
+      );
+
+      const imgSize = AvatarSizes[size];
+
+      return (
+        <img
+          className={className}
+          src={image}
+          width={imgSize}
+          height={imgSize}
+          alt={title}
+          onClick={onClick}
+        />
+      );
+    }
+
+    const className = classNames(
+      'avatar__placeholder',
+      `avatar__placeholder--${size}`,
+      `avatar__placeholder--${placeholder}`,
+      this.props.className,
+      { 'avatar--clickable': onClick }
+    );
+
     return (
-      <div className={avatarClassName} onClick={this.handleClick}>
-        {avatar}
-        <span className={placeholderClassName}>{placeholderChar}</span>
+      <div className={className} onClick={onClick} title={title}>
+        {this.getFirstChar()}
       </div>
     );
   }
 }
+
+export default AvatarItem;

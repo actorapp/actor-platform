@@ -20,6 +20,10 @@
   margin-top: 16px;
 }
 
+.sidebar__avatar {
+  margin: 18px 10px 18px 0;
+}
+
 .sidebar__header {
   flex: 0 0 auto;
   height: $toolbar-height;
@@ -29,10 +33,6 @@
   &__user {
     height: $sidebar-header-height;
     padding: 2px 14px;
-
-    .avatar {
-      margin: 18px 10px 18px 0;
-    }
 
     &__name {
       font-size: 16px;

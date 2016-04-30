@@ -141,7 +141,8 @@
 
       max-height: 210px;
       .dropdown__menu__item {
-        .avatar {
+        .avatar__image,
+        .avatar__placeholder {
           float: left;
 
           margin-top: -1px;
@@ -241,7 +242,8 @@
     color: $greyish-brown;
     &__item {
       padding: 7px 14px;
-      .avatar {
+      .avatar__image,
+      .avatar__placeholder {
         margin-right: 10px;
       }
       .title {

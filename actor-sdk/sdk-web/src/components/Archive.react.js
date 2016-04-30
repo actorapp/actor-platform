@@ -81,11 +81,14 @@ class Archive extends Component {
       return (
         <div className="archive-section__list__item col-xs-12 col-sm-6 col-md-4 col-lg-3" key={index}>
           <Link to={`/im/${peer.peer.key}`} className="archive-item row">
-            <div className="archive-item__avatar">
-              <AvatarItem image={peer.avatar}
-                          placeholder={peer.placeholder}
-                          size="medium"
-                          title={peer.title}/>
+            <div className="archive-item__user">
+              <AvatarItem
+                className="archive-item__avatar"
+                size="medium"
+                image={peer.avatar}
+                placeholder={peer.placeholder}
+                title={peer.title}
+              />
               {
                 counter !== 0
                   ? <div className="archive-item__counter">{counter}</div>

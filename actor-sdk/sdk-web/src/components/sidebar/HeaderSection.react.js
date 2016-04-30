@@ -192,10 +192,13 @@ class HeaderSection extends Component {
     return (
       <header className={headerClass}>
         <div className="sidebar__header__user row" onClick={this.toggleHeaderMenu}>
-          <AvatarItem image={profile.avatar}
-                      placeholder={profile.placeholder}
-                      size="tiny"
-                      title={profile.name} />
+          <AvatarItem
+            className="sidebar__avatar"
+            image={profile.avatar}
+            placeholder={profile.placeholder}
+            size="tiny"
+            title={profile.name}
+          />
           <span className="sidebar__header__user__name col-xs"
                 dangerouslySetInnerHTML={{ __html: escapeWithEmoji(profile.name) }}/>
           <div className={menuClass}>

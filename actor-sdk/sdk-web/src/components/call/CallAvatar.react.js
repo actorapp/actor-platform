@@ -47,8 +47,9 @@ class CallAvatar extends Component {
     const { peerInfo, small } = this.props;
 
     return (
-      <div className="call__avatar">
+      <div className="call__avatar__container">
         <AvatarItem
+          className="call__avatar"
           size={small ? 'large' : 'big'}
           title={peerInfo.name}
           image={peerInfo.avatar}

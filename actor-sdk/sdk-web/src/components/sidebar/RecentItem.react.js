@@ -113,14 +113,13 @@ class RecentItem extends Component {
 
     return (
       <div onContextMenu={this.handleOpenContextMenu} onClick={this.handleClick} className={recentItemClassName}>
-        <div className="recent__item__avatar">
-          <AvatarItem
-            size="tiny"
-            image={dialog.peer.avatar}
-            placeholder={dialog.peer.placeholder}
-            title={dialog.peer.title}
-          />
-        </div>
+        <AvatarItem
+          className="recent__item__avatar"
+          size="tiny"
+          image={dialog.peer.avatar}
+          placeholder={dialog.peer.placeholder}
+          title={dialog.peer.title}
+        />
         <div className="recent__item__title col-xs" dangerouslySetInnerHTML={{ __html: title }}/>
         {this.renderCounter()}
         {this.renderArchiveState()}
