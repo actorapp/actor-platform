@@ -19822,6 +19822,10 @@
               {
                 "name": "COMPACT_USERS",
                 "id": 6
+              },
+              {
+                "name": "GROUPS_V2",
+                "id": 7
               }
             ]
           }
