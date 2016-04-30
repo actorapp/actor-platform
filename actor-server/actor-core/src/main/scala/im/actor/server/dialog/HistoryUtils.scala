@@ -55,21 +55,18 @@ object HistoryUtils {
         _ ← HistoryMessageRepo.create(messages)
       } yield ()
     } else if (toPeer.typ == PeerType.Group) {
-      val groupInfo = for {
-        isShared ← GroupExtension(system).isHistoryShared(toPeer.id)
-        (memberIds, _, _) ← GroupExtension(system).getMemberIds(toPeer.id)
-      } yield (isShared, memberIds)
-
       for {
-        (isHistoryShared, groupUserIds) ← DBIO.from(groupInfo)
+        isHistoryShared ← DBIO.from(GroupExtension(system).isHistoryShared(toPeer.id))
         _ ← if (isHistoryShared) {
           val historyMessage = HistoryMessage(SharedUserId, toPeer, date, fromPeer.id, randomId, messageContentHeader, messageContentData, None)
           HistoryMessageRepo.create(historyMessage) map (_ ⇒ ())
         } else {
-          val historyMessages = groupUserIds.map { groupUserId ⇒
-            HistoryMessage(groupUserId, toPeer, date, fromPeer.id, randomId, messageContentHeader, messageContentData, None)
+          DBIO.from(GroupExtension(system).getMemberIds(toPeer.id)) map (_._1) flatMap { groupUserIds =>
+            val historyMessages = groupUserIds.map { groupUserId ⇒
+              HistoryMessage(groupUserId, toPeer, date, fromPeer.id, randomId, messageContentHeader, messageContentData, None)
+            }
+            HistoryMessageRepo.create(historyMessages) map (_ ⇒ ())
           }
-          HistoryMessageRepo.create(historyMessages) map (_ ⇒ ())
         }
       } yield ()
     } else {
