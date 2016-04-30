@@ -72,7 +72,7 @@ trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorFuture
   }
 
   protected final def working(state: State): Receive = handleCommand(state) orElse handleQuery(state) orElse {
-    case unmatched ⇒ log.warning("Unmatched message: {}, sender: {}", unmatched, sender())
+    case unmatched ⇒ log.warning("Unmatched message: {}, {}, sender: {}", unmatched.getClass.getName, unmatched, sender())
   }
 
   protected final def stashingBehavior: Receive = unstashing orElse {
