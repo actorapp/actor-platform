@@ -30,19 +30,19 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
   protected def sendMessage(sm: SendMessage): Unit = {
     becomeStashing(
       replyTo ⇒ ({
-      case seq: SeqStateDate ⇒
-        persist(NewMessage(sm.randomId, Instant.ofEpochMilli(seq.date), sm.getOrigin.id, sm.message.header)) { e ⇒
-          commit(e)
-          replyTo ! seq
+        case seq: SeqStateDate ⇒
+          persist(NewMessage(sm.randomId, Instant.ofEpochMilli(seq.date), sm.getOrigin.id, sm.message.header)) { e ⇒
+            commit(e)
+            replyTo ! seq
+            unstashAll()
+            context.unbecome()
+          }
+        case fail: Status.Failure ⇒
+          log.error(fail.cause, "Failed to send message")
+          replyTo forward fail
           unstashAll()
           context.unbecome()
-        }
-      case fail: Status.Failure ⇒
-        log.error(fail.cause, "Failed to send message")
-        replyTo forward fail
-        unstashAll()
-        context.unbecome()
-    }: Receive) orElse reactions,
+      }: Receive) orElse reactions,
       debugMessage = debugMessage("send message"),
       discardOld = false
     )

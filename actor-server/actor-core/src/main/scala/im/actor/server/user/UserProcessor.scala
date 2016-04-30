@@ -13,12 +13,13 @@ import im.actor.server.bots.BotCommand
 import im.actor.server.cqrs.TaggedEvent
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog._
+import im.actor.server.model.{ Peer, PeerType }
 import im.actor.server.office.{ PeerProcessor, StopOffice }
 import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
 import slick.driver.PostgresDriver.api._
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ ExecutionContext, Future }
 import scala.concurrent.duration._
 import scala.util.Try
 
@@ -245,10 +246,25 @@ private[user] final class UserProcessor
     case ReceiveTimeout                     ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
     case e @ DialogRootEnvelope(query, command) ⇒
       val msg = e.getAllFields.values.head
+
       (dialogRoot(state.internalExtensions) ? msg) pipeTo sender()
     case de: DialogEnvelope ⇒
       val msg = de.getAllFields.values.head
-      (dialogRoot(state.internalExtensions) ? msg) pipeTo sender()
+
+      (for {
+        result ← msg match {
+          case dc: DialogCommand if dc.isInstanceOf[DialogCommands.SendMessage] || dc.isInstanceOf[DialogCommands.WriteMessageSelf] ⇒
+            for {
+              _ ← dialogRoot(state.internalExtensions) ? msg
+              result ← handleDialogCommand(state)(dc)
+            } yield result
+          case dc: DialogCommand ⇒ handleDialogCommand(state)(dc)
+          case dq: DialogQuery   ⇒ handleDialogQuery(state)(dq)
+        }
+      } yield result) pipeTo sender()
+    // messages sent from DialogRoot:
+    case dc: DialogCommand ⇒ handleDialogCommand(state)(dc) pipeTo sender()
+    case dq: DialogQuery   ⇒ handleDialogQuery(state)(dq) pipeTo sender()
   }
 
   override protected def handleQuery(state: UserState): Receive = {
@@ -261,11 +277,6 @@ private[user] final class UserProcessor
     case GetUser(_)                                      ⇒ getUser(state)
     case IsAdmin(_)                                      ⇒ isAdmin(state)
     case GetName(_)                                      ⇒ getName(state)
-  }
-
-  private def dialogRoot(extensions: Seq[ApiExtension]): ActorRef = {
-    val name = "DialogRoot"
-    context.child(name).getOrElse(context.actorOf(DialogRoot.props(userId, extensions), name))
   }
 
   protected[this] var userStateMaybe: Option[UserState] = None
@@ -286,4 +297,38 @@ private[user] final class UserProcessor
       log.error("Unmatched recovery event {}", unmatched)
   }
 
+  private def handleDialogCommand(state: UserState): PartialFunction[DialogCommand, Future[Any]] = {
+    case ddc: DirectDialogCommand ⇒ dialogRef(state, ddc) ? ddc
+    case dc: DialogCommand        ⇒ dialogRef(state, dc.getDest) ? dc
+  }
+
+  private def handleDialogQuery(state: UserState): PartialFunction[DialogQuery, Future[Any]] = {
+    case dq: DialogQuery ⇒ dialogRef(state, dq.getDest) ? dq
+  }
+
+  private def dialogRef(state: UserState, dc: DirectDialogCommand): ActorRef = {
+    val peer = dc.getDest match {
+      case Peer(PeerType.Group, _)   ⇒ dc.getDest
+      case Peer(PeerType.Private, _) ⇒ if (dc.getOrigin.id == userId) dc.getDest else dc.getOrigin
+    }
+    dialogRef(state, peer)
+  }
+
+  private def dialogRef(state: UserState, peer: Peer): ActorRef =
+    try {
+      context.child(dialogName(peer)) getOrElse context.actorOf(DialogProcessor.props(userId, peer, state.internalExtensions), dialogName(peer))
+    } catch {
+      case _: InvalidActorNameException ⇒ dialogRef(state, peer)
+    }
+
+  private def dialogRoot(extensions: Seq[ApiExtension]): ActorRef = {
+    val name = "DialogRoot"
+    context.child(name).getOrElse(context.actorOf(DialogRoot.props(userId, extensions), name))
+  }
+
+  private def dialogName(peer: Peer): String = peer.typ match {
+    case PeerType.Private ⇒ s"Private_${peer.id}"
+    case PeerType.Group   ⇒ s"Group_${peer.id}"
+    case other            ⇒ throw new Exception(s"Unknown peer type: $other")
+  }
 }
