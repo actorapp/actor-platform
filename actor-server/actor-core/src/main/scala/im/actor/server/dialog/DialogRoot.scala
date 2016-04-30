@@ -220,7 +220,7 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
 
   private def isFavourited(peer: Peer): Boolean = state.active.favourites.contains(peer)
 
-  private def isDialogCreated(peer: Peer): Boolean = state.mobile.exists(_.peer == peer)
+  private def isDialogCreated(peer: Peer): Boolean = state.mobilePeers.contains(peer)
 
   private def isDialogShown(peer: Peer): Boolean = state.active.contains(peer)
 
