@@ -200,12 +200,13 @@ class ToolbarSection extends Component {
 
     return (
       <header className={headerClassName}>
-        <AvatarItem image={dialogInfo.avatar}
-                    placeholder={dialogInfo.placeholder}
-                    size="medium"
-                    title={dialogInfo.name}/>
-
-
+        <AvatarItem
+          className="toolbar__avatar"
+          size="medium"
+          image={dialogInfo.avatar}
+          placeholder={dialogInfo.placeholder}
+          title={dialogInfo.name}
+        />
         <div className="toolbar__peer col-xs">
           <header>
             <span className="toolbar__peer__title" dangerouslySetInnerHTML={{ __html: escapeWithEmoji(dialogInfo.name) }}/>

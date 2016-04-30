@@ -73,11 +73,13 @@ class GroupMember extends Component {
 
     return (
       <li className="group_profile__members__list__item">
-        <a onClick={() => this.onClick(peerInfo.peer.id)}>
-          <AvatarItem image={peerInfo.avatar}
-                      placeholder={peerInfo.placeholder}
-                      title={peerInfo.title}/>
-        </a>
+        <AvatarItem
+          className="group_profile__avatar"
+          image={peerInfo.avatar}
+          placeholder={peerInfo.placeholder}
+          title={peerInfo.title}
+          onClick={() => this.onClick(peerInfo.peer.id)}
+        />
 
         <a onClick={() => this.onClick(peerInfo.peer.id)}
            dangerouslySetInnerHTML={{ __html: escapeWithEmoji(peerInfo.title) }}/>

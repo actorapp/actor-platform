@@ -191,11 +191,14 @@ class UserProfile extends Component {
         <ul className="profile__list">
           <li className="profile__list__item user_profile__meta">
             <header>
-              <AvatarItem image={user.bigAvatar}
-                          placeholder={user.placeholder}
-                          size="large"
-                          title={user.name}
-                          onClick={this.handleAvatarClick}/>
+              <AvatarItem
+                className="profile__avatar"
+                size="large"
+                image={user.bigAvatar}
+                placeholder={user.placeholder}
+                title={user.name}
+                onClick={this.handleAvatarClick}
+              />
 
               <h3 className="user_profile__meta__title" dangerouslySetInnerHTML={{ __html: escapeWithEmoji(user.name) }}/>
               <div className="user_profile__meta__message">{message}</div>

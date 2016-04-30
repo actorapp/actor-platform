@@ -163,12 +163,14 @@ class GroupProfile extends Component {
 
     const groupMeta = [
       <header key={1}>
-        <AvatarItem image={group.bigAvatar}
-                    placeholder={group.placeholder}
-                    size="large"
-                    title={group.name}
-                    onClick={this.handleAvatarClick}/>
-
+        <AvatarItem
+          className="profile__avatar"
+          size="large"
+          image={group.bigAvatar}
+          placeholder={group.placeholder}
+          title={group.name}
+          onClick={this.handleAvatarClick}
+        />
         <h3 className="group_profile__meta__title" dangerouslySetInnerHTML={{ __html: escapeWithEmoji(group.name) }}/>
         <div className="group_profile__meta__created">
           {intl.messages['createdBy']}

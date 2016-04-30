@@ -17,10 +17,7 @@
     position: relative;
 
     border-radius: 50%;
-    .avatar {
-      position: relative;
-      z-index: 0;
-    }
+
     a {
       font-size: 16px;
       font-weight: 700;
@@ -50,9 +47,10 @@
     }
 
     &:hover {
-      .avatar {
+      .picture-changer__avatar {
         opacity: .6;
       }
+
       a {
         background-color: rgba(0, 0, 0, .1);
         span {
@@ -70,4 +68,9 @@
       margin-top: 8px;
     }
   }
+}
+
+.picture-changer__avatar {
+  position: relative;
+  z-index: 0;
 }
