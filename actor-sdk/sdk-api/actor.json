@@ -8943,8 +8943,1178 @@
           }
         },
         {
+          "type": "update",
+          "content": {
+            "name": "GroupMemberAdminChanged",
+            "header": 2627,
+            "doc": [
+              "Update about member admin changed",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "userId",
+                "category": "full",
+                "description": "  User Id"
+              },
+              {
+                "type": "reference",
+                "argument": "isAdmin",
+                "category": "full",
+                "description": "  Is Admin flag"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 2,
+                "name": "userId"
+              },
+              {
+                "type": "bool",
+                "id": 3,
+                "name": "isAdmin"
+              }
+            ]
+          }
+        },
+        {
           "type": "comment",
           "content": "Actions"
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "CreateGroup",
+            "header": 230,
+            "response": {
+              "type": "anonymous",
+              "header": 216,
+              "doc": [
+                "Created group",
+                {
+                  "type": "reference",
+                  "argument": "seq",
+                  "category": "full",
+                  "description": "  Update Seq"
+                },
+                {
+                  "type": "reference",
+                  "argument": "state",
+                  "category": "compact",
+                  "description": "  Update state"
+                },
+                {
+                  "type": "reference",
+                  "argument": "group",
+                  "category": "full",
+                  "description": "  Created group"
+                },
+                {
+                  "type": "reference",
+                  "argument": "users",
+                  "category": "full",
+                  "description": "  Referenced users"
+                },
+                {
+                  "type": "reference",
+                  "argument": "userPeers",
+                  "category": "full",
+                  "description": "  Referenced users"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": "int32",
+                  "id": 1,
+                  "name": "seq"
+                },
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "seq_state"
+                  },
+                  "id": 2,
+                  "name": "state"
+                },
+                {
+                  "type": {
+                    "type": "struct",
+                    "childType": "Group"
+                  },
+                  "id": 3,
+                  "name": "group"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "User"
+                    }
+                  },
+                  "id": 4,
+                  "name": "users"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "UserOutPeer"
+                    }
+                  },
+                  "id": 5,
+                  "name": "userPeers"
+                }
+              ]
+            },
+            "doc": [
+              "Creating group chat",
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "Random Id for avoiding double create"
+              },
+              {
+                "type": "reference",
+                "argument": "title",
+                "category": "full",
+                "description": "Group Title"
+              },
+              {
+                "type": "reference",
+                "argument": "users",
+                "category": "hidden",
+                "description": "Members of group"
+              },
+              {
+                "type": "reference",
+                "argument": "groupType",
+                "category": "full",
+                "description": "Group Type"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled Optimizations"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 1,
+                "name": "rid"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "title"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "UserOutPeer"
+                  }
+                },
+                "id": 3,
+                "name": "users"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "GroupType"
+                  }
+                },
+                "id": 6,
+                "name": "groupType"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 7,
+                "name": "optimizations"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "EditGroupTitle",
+            "header": 85,
+            "response": {
+              "type": "reference",
+              "name": "SeqDate"
+            },
+            "doc": [
+              "Changing group title",
+              {
+                "type": "reference",
+                "argument": "groupPeer",
+                "category": "full",
+                "description": "Group's peer"
+              },
+              {
+                "type": "reference",
+                "argument": "title",
+                "category": "full",
+                "description": "new group title"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "Random Id of operation"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled Optimizations"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "groupPeer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 4,
+                "name": "rid"
+              },
+              {
+                "type": "string",
+                "id": 3,
+                "name": "title"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 5,
+                "name": "optimizations"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "EditGroupAvatar",
+            "header": 86,
+            "response": {
+              "type": "anonymous",
+              "header": 115,
+              "doc": [
+                "Updated group avatar",
+                {
+                  "type": "reference",
+                  "argument": "avatar",
+                  "category": "compact",
+                  "description": "  Changed avatar"
+                },
+                {
+                  "type": "reference",
+                  "argument": "seq",
+                  "category": "full",
+                  "description": "  Sequence number"
+                },
+                {
+                  "type": "reference",
+                  "argument": "state",
+                  "category": "compact",
+                  "description": "  Sequence state"
+                },
+                {
+                  "type": "reference",
+                  "argument": "date",
+                  "category": "full",
+                  "description": "  Avatar change date"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "struct",
+                    "childType": "Avatar"
+                  },
+                  "id": 1,
+                  "name": "avatar"
+                },
+                {
+                  "type": "int32",
+                  "id": 2,
+                  "name": "seq"
+                },
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "seq_state"
+                  },
+                  "id": 3,
+                  "name": "state"
+                },
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "date"
+                  },
+                  "id": 4,
+                  "name": "date"
+                }
+              ]
+            },
+            "doc": [
+              "Changing group avatar",
+              {
+                "type": "reference",
+                "argument": "groupPeer",
+                "category": "full",
+                "description": "Group's peer"
+              },
+              {
+                "type": "reference",
+                "argument": "fileLocation",
+                "category": "compact",
+                "description": "uploaded file for avatar"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "Random Id of operation"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled Optimizations"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "groupPeer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 4,
+                "name": "rid"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "FileLocation"
+                },
+                "id": 3,
+                "name": "fileLocation"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 5,
+                "name": "optimizations"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "RemoveGroupAvatar",
+            "header": 101,
+            "response": {
+              "type": "reference",
+              "name": "SeqDate"
+            },
+            "doc": [
+              "Removing group avatar",
+              {
+                "type": "reference",
+                "argument": "groupPeer",
+                "category": "full",
+                "description": "Group's peer"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "Random Id of operation"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled Optimizations"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "groupPeer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 4,
+                "name": "rid"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 5,
+                "name": "optimizations"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "EditGroupTopic",
+            "header": 211,
+            "response": {
+              "type": "reference",
+              "name": "SeqDate"
+            },
+            "doc": [
+              "Edit group topic",
+              {
+                "type": "reference",
+                "argument": "groupPeer",
+                "category": "full",
+                "description": "Group's peer"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "Random id of operation"
+              },
+              {
+                "type": "reference",
+                "argument": "topic",
+                "category": "full",
+                "description": "New Topic"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled Optimizations"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "groupPeer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "rid"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 3,
+                "name": "topic"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 4,
+                "name": "optimizations"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "EditGroupAbout",
+            "header": 213,
+            "response": {
+              "type": "reference",
+              "name": "SeqDate"
+            },
+            "doc": [
+              "Edit Group About",
+              {
+                "type": "reference",
+                "argument": "groupPeer",
+                "category": "full",
+                "description": "Group's peer"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "Random id of operation"
+              },
+              {
+                "type": "reference",
+                "argument": "about",
+                "category": "full",
+                "description": "New About"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled Optimizations"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "groupPeer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "rid"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 3,
+                "name": "about"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 5,
+                "name": "optimizations"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "InviteUser",
+            "header": 69,
+            "response": {
+              "type": "reference",
+              "name": "SeqDate"
+            },
+            "doc": [
+              "Inviting user to group",
+              {
+                "type": "reference",
+                "argument": "groupPeer",
+                "category": "full",
+                "description": "Group's peer"
+              },
+              {
+                "type": "reference",
+                "argument": "user",
+                "category": "full",
+                "description": "Users for invitation"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "Random Id of operation"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled Optimizations"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "groupPeer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 4,
+                "name": "rid"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "UserOutPeer"
+                },
+                "id": 3,
+                "name": "user"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 5,
+                "name": "optimizations"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "LeaveGroup",
+            "header": 70,
+            "response": {
+              "type": "reference",
+              "name": "SeqDate"
+            },
+            "doc": [
+              "Leaving group",
+              {
+                "type": "reference",
+                "argument": "groupPeer",
+                "category": "full",
+                "description": "Group's peer"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "Random Id of operation"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled Optimizations"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "groupPeer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "rid"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 3,
+                "name": "optimizations"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "KickUser",
+            "header": 71,
+            "response": {
+              "type": "reference",
+              "name": "SeqDate"
+            },
+            "doc": [
+              "Kicking user from group",
+              {
+                "type": "reference",
+                "argument": "groupPeer",
+                "category": "full",
+                "description": "Group's peer"
+              },
+              {
+                "type": "reference",
+                "argument": "user",
+                "category": "full",
+                "description": "users for removing"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "Random Id of operation"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled Optimizations"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "groupPeer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 4,
+                "name": "rid"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "UserOutPeer"
+                },
+                "id": 3,
+                "name": "user"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 5,
+                "name": "optimizations"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "MakeUserAdmin",
+            "header": 2784,
+            "response": {
+              "type": "reference",
+              "name": "SeqDate"
+            },
+            "doc": [
+              "Make user admin",
+              {
+                "type": "reference",
+                "argument": "groupPeer",
+                "category": "full",
+                "description": "Group's peer"
+              },
+              {
+                "type": "reference",
+                "argument": "userPeer",
+                "category": "full",
+                "description": "User's peer"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "groupPeer"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "UserOutPeer"
+                },
+                "id": 2,
+                "name": "userPeer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "TransferOwnership",
+            "header": 2789,
+            "response": {
+              "type": "reference",
+              "name": "SeqDate"
+            },
+            "doc": [
+              "Transfer ownership of group",
+              {
+                "type": "reference",
+                "argument": "groupPeer",
+                "category": "full",
+                "description": "Group's peer"
+              },
+              {
+                "type": "reference",
+                "argument": "newOwner",
+                "category": "full",
+                "description": "New group's owner"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "groupPeer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 2,
+                "name": "newOwner"
+              }
+            ]
+          }
+        },
+        {
+          "type": "comment",
+          "content": "Invite"
+        },
+        {
+          "type": "response",
+          "content": {
+            "name": "InviteUrl",
+            "header": 178,
+            "doc": [
+              "Response for invite url methods"
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "url"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "GetGroupInviteUrl",
+            "header": 177,
+            "response": {
+              "type": "reference",
+              "name": "InviteUrl"
+            },
+            "doc": [
+              "Building invite url",
+              {
+                "type": "reference",
+                "argument": "groupPeer",
+                "category": "full",
+                "description": "Destination group peer"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "groupPeer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "RevokeInviteUrl",
+            "header": 179,
+            "response": {
+              "type": "reference",
+              "name": "InviteUrl"
+            },
+            "doc": [
+              "Revoking invite urls",
+              {
+                "type": "reference",
+                "argument": "groupPeer",
+                "category": "full",
+                "description": "Destination group peer"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "groupPeer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "JoinGroup",
+            "header": 180,
+            "response": {
+              "type": "anonymous",
+              "header": 181,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "group",
+                  "category": "hidden",
+                  "description": "  Joined group"
+                },
+                {
+                  "type": "reference",
+                  "argument": "users",
+                  "category": "hidden",
+                  "description": "  Users from members"
+                },
+                {
+                  "type": "reference",
+                  "argument": "userPeers",
+                  "category": "hidden",
+                  "description": "  User Peers"
+                },
+                {
+                  "type": "reference",
+                  "argument": "rid",
+                  "category": "full",
+                  "description": "  Random id"
+                },
+                {
+                  "type": "reference",
+                  "argument": "seq",
+                  "category": "full",
+                  "description": "  Sequence number"
+                },
+                {
+                  "type": "reference",
+                  "argument": "state",
+                  "category": "hidden",
+                  "description": "  State"
+                },
+                {
+                  "type": "reference",
+                  "argument": "date",
+                  "category": "full",
+                  "description": "  Date of join"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "struct",
+                    "childType": "Group"
+                  },
+                  "id": 1,
+                  "name": "group"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "User"
+                    }
+                  },
+                  "id": 5,
+                  "name": "users"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "UserOutPeer"
+                    }
+                  },
+                  "id": 7,
+                  "name": "userPeers"
+                },
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "randomId"
+                  },
+                  "id": 6,
+                  "name": "rid"
+                },
+                {
+                  "type": "int32",
+                  "id": 2,
+                  "name": "seq"
+                },
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "seq_state"
+                  },
+                  "id": 3,
+                  "name": "state"
+                },
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "date"
+                  },
+                  "id": 4,
+                  "name": "date"
+                }
+              ]
+            },
+            "doc": [
+              "Join group method",
+              {
+                "type": "reference",
+                "argument": "token",
+                "category": "full",
+                "description": "Url or Token for joining to group"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "hidden",
+                "description": "Enabled Optimizations"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "token"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 2,
+                "name": "optimizations"
+              }
+            ]
+          }
+        },
+        {
+          "type": "comment",
+          "content": "Obsolete Actions"
         },
         {
           "type": "rpc",
@@ -9028,7 +10198,7 @@
               ]
             },
             "doc": [
-              "Creating group chat (obsolete)",
+              "[OBSOLETE] Creating group chat",
               {
                 "type": "reference",
                 "argument": "rid",
@@ -9079,157 +10249,7 @@
         {
           "type": "rpc",
           "content": {
-            "name": "CreateGroup",
-            "header": 230,
-            "response": {
-              "type": "anonymous",
-              "header": 216,
-              "doc": [
-                "Created group",
-                {
-                  "type": "reference",
-                  "argument": "seq",
-                  "category": "full",
-                  "description": "  Update Seq"
-                },
-                {
-                  "type": "reference",
-                  "argument": "state",
-                  "category": "compact",
-                  "description": "  Update state"
-                },
-                {
-                  "type": "reference",
-                  "argument": "group",
-                  "category": "full",
-                  "description": "  Created group"
-                },
-                {
-                  "type": "reference",
-                  "argument": "users",
-                  "category": "full",
-                  "description": "  Referenced users"
-                }
-              ],
-              "attributes": [
-                {
-                  "type": "int32",
-                  "id": 1,
-                  "name": "seq"
-                },
-                {
-                  "type": {
-                    "type": "alias",
-                    "childType": "seq_state"
-                  },
-                  "id": 2,
-                  "name": "state"
-                },
-                {
-                  "type": {
-                    "type": "struct",
-                    "childType": "Group"
-                  },
-                  "id": 3,
-                  "name": "group"
-                },
-                {
-                  "type": {
-                    "type": "list",
-                    "childType": {
-                      "type": "struct",
-                      "childType": "User"
-                    }
-                  },
-                  "id": 4,
-                  "name": "users"
-                }
-              ]
-            },
-            "doc": [
-              "Creating group chat",
-              {
-                "type": "reference",
-                "argument": "rid",
-                "category": "full",
-                "description": "Random Id for avoiding double create"
-              },
-              {
-                "type": "reference",
-                "argument": "title",
-                "category": "full",
-                "description": "Group Title"
-              },
-              {
-                "type": "reference",
-                "argument": "users",
-                "category": "hidden",
-                "description": "Members of group"
-              },
-              {
-                "type": "reference",
-                "argument": "groupType",
-                "category": "hidden",
-                "description": "Group Type. 'public' for public groups"
-              },
-              {
-                "type": "reference",
-                "argument": "userData",
-                "category": "hidden",
-                "description": "Group external data"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "randomId"
-                },
-                "id": 1,
-                "name": "rid"
-              },
-              {
-                "type": "string",
-                "id": 2,
-                "name": "title"
-              },
-              {
-                "type": {
-                  "type": "list",
-                  "childType": {
-                    "type": "struct",
-                    "childType": "UserOutPeer"
-                  }
-                },
-                "id": 3,
-                "name": "users"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "string"
-                },
-                "id": 5,
-                "name": "groupType"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": {
-                    "type": "struct",
-                    "childType": "MapValue"
-                  }
-                },
-                "id": 4,
-                "name": "userData"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "EnterGroup",
+            "name": "EnterGroupObsolete",
             "header": 199,
             "response": {
               "type": "anonymous",
@@ -9325,7 +10345,7 @@
               ]
             },
             "doc": [
-              "Join random group by peer id",
+              "[OBSOLETE] Join random group by peer id",
               {
                 "type": "reference",
                 "argument": "peer",
@@ -9348,498 +10368,7 @@
         {
           "type": "rpc",
           "content": {
-            "name": "EditGroupTitle",
-            "header": 85,
-            "response": {
-              "type": "reference",
-              "name": "SeqDate"
-            },
-            "doc": [
-              "Changing group title",
-              {
-                "type": "reference",
-                "argument": "groupPeer",
-                "category": "full",
-                "description": "Group's peer"
-              },
-              {
-                "type": "reference",
-                "argument": "title",
-                "category": "full",
-                "description": "new group title"
-              },
-              {
-                "type": "reference",
-                "argument": "rid",
-                "category": "full",
-                "description": "Random Id of operation"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "GroupOutPeer"
-                },
-                "id": 1,
-                "name": "groupPeer"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "randomId"
-                },
-                "id": 4,
-                "name": "rid"
-              },
-              {
-                "type": "string",
-                "id": 3,
-                "name": "title"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "EditGroupAvatar",
-            "header": 86,
-            "response": {
-              "type": "anonymous",
-              "header": 115,
-              "doc": [
-                "Updated group avatar",
-                {
-                  "type": "reference",
-                  "argument": "avatar",
-                  "category": "compact",
-                  "description": "  Changed avatar"
-                },
-                {
-                  "type": "reference",
-                  "argument": "seq",
-                  "category": "full",
-                  "description": "  Sequence number"
-                },
-                {
-                  "type": "reference",
-                  "argument": "state",
-                  "category": "compact",
-                  "description": "  Sequence state"
-                },
-                {
-                  "type": "reference",
-                  "argument": "date",
-                  "category": "full",
-                  "description": "  Avatar change date"
-                }
-              ],
-              "attributes": [
-                {
-                  "type": {
-                    "type": "struct",
-                    "childType": "Avatar"
-                  },
-                  "id": 1,
-                  "name": "avatar"
-                },
-                {
-                  "type": "int32",
-                  "id": 2,
-                  "name": "seq"
-                },
-                {
-                  "type": {
-                    "type": "alias",
-                    "childType": "seq_state"
-                  },
-                  "id": 3,
-                  "name": "state"
-                },
-                {
-                  "type": {
-                    "type": "alias",
-                    "childType": "date"
-                  },
-                  "id": 4,
-                  "name": "date"
-                }
-              ]
-            },
-            "doc": [
-              "Changing group avatar",
-              {
-                "type": "reference",
-                "argument": "groupPeer",
-                "category": "full",
-                "description": "Group's peer"
-              },
-              {
-                "type": "reference",
-                "argument": "fileLocation",
-                "category": "compact",
-                "description": "uploaded file for avatar"
-              },
-              {
-                "type": "reference",
-                "argument": "rid",
-                "category": "full",
-                "description": "Random Id of operation"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "GroupOutPeer"
-                },
-                "id": 1,
-                "name": "groupPeer"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "randomId"
-                },
-                "id": 4,
-                "name": "rid"
-              },
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "FileLocation"
-                },
-                "id": 3,
-                "name": "fileLocation"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "RemoveGroupAvatar",
-            "header": 101,
-            "response": {
-              "type": "reference",
-              "name": "SeqDate"
-            },
-            "doc": [
-              "Removing group avatar",
-              {
-                "type": "reference",
-                "argument": "groupPeer",
-                "category": "full",
-                "description": "Group's peer"
-              },
-              {
-                "type": "reference",
-                "argument": "rid",
-                "category": "full",
-                "description": "Random Id of operation"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "GroupOutPeer"
-                },
-                "id": 1,
-                "name": "groupPeer"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "randomId"
-                },
-                "id": 4,
-                "name": "rid"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "InviteUser",
-            "header": 69,
-            "response": {
-              "type": "reference",
-              "name": "SeqDate"
-            },
-            "doc": [
-              "Inviting user to group",
-              {
-                "type": "reference",
-                "argument": "groupPeer",
-                "category": "full",
-                "description": "Group's peer"
-              },
-              {
-                "type": "reference",
-                "argument": "user",
-                "category": "full",
-                "description": "Users for invitation"
-              },
-              {
-                "type": "reference",
-                "argument": "rid",
-                "category": "full",
-                "description": "Random Id of operation"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "GroupOutPeer"
-                },
-                "id": 1,
-                "name": "groupPeer"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "randomId"
-                },
-                "id": 4,
-                "name": "rid"
-              },
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "UserOutPeer"
-                },
-                "id": 3,
-                "name": "user"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "LeaveGroup",
-            "header": 70,
-            "response": {
-              "type": "reference",
-              "name": "SeqDate"
-            },
-            "doc": [
-              "Leaving group",
-              {
-                "type": "reference",
-                "argument": "groupPeer",
-                "category": "full",
-                "description": "Group's peer"
-              },
-              {
-                "type": "reference",
-                "argument": "rid",
-                "category": "full",
-                "description": "Random Id of operation"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "GroupOutPeer"
-                },
-                "id": 1,
-                "name": "groupPeer"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "randomId"
-                },
-                "id": 2,
-                "name": "rid"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "KickUser",
-            "header": 71,
-            "response": {
-              "type": "reference",
-              "name": "SeqDate"
-            },
-            "doc": [
-              "Kicking user from group",
-              {
-                "type": "reference",
-                "argument": "groupPeer",
-                "category": "full",
-                "description": "Group's peer"
-              },
-              {
-                "type": "reference",
-                "argument": "user",
-                "category": "full",
-                "description": "users for removing"
-              },
-              {
-                "type": "reference",
-                "argument": "rid",
-                "category": "full",
-                "description": "Random Id of operation"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "GroupOutPeer"
-                },
-                "id": 1,
-                "name": "groupPeer"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "randomId"
-                },
-                "id": 4,
-                "name": "rid"
-              },
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "UserOutPeer"
-                },
-                "id": 3,
-                "name": "user"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "EditGroupTopic",
-            "header": 211,
-            "response": {
-              "type": "reference",
-              "name": "SeqDate"
-            },
-            "doc": [
-              "Edit group topic",
-              {
-                "type": "reference",
-                "argument": "groupPeer",
-                "category": "full",
-                "description": "Group's peer"
-              },
-              {
-                "type": "reference",
-                "argument": "rid",
-                "category": "full",
-                "description": "Random id of operation"
-              },
-              {
-                "type": "reference",
-                "argument": "topic",
-                "category": "full",
-                "description": "New Topic"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "GroupOutPeer"
-                },
-                "id": 1,
-                "name": "groupPeer"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "randomId"
-                },
-                "id": 2,
-                "name": "rid"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "string"
-                },
-                "id": 3,
-                "name": "topic"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "EditGroupAbout",
-            "header": 213,
-            "response": {
-              "type": "reference",
-              "name": "SeqDate"
-            },
-            "doc": [
-              "Edit Group About",
-              {
-                "type": "reference",
-                "argument": "groupPeer",
-                "category": "full",
-                "description": "Group's peer"
-              },
-              {
-                "type": "reference",
-                "argument": "rid",
-                "category": "full",
-                "description": "Random id of operation"
-              },
-              {
-                "type": "reference",
-                "argument": "about",
-                "category": "hidden",
-                "description": "New About"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "GroupOutPeer"
-                },
-                "id": 1,
-                "name": "groupPeer"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "randomId"
-                },
-                "id": 2,
-                "name": "rid"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "string"
-                },
-                "id": 3,
-                "name": "about"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "MakeUserAdmin",
+            "name": "MakeUserAdminObsolete",
             "header": 214,
             "response": {
               "type": "anonymous",
@@ -9880,7 +10409,7 @@
               ]
             },
             "doc": [
-              "Make user admin",
+              "[OBSOLETE] Make user admin",
               {
                 "type": "reference",
                 "argument": "groupPeer",
@@ -9916,7 +10445,7 @@
         },
         {
           "type": "comment",
-          "content": "Updates"
+          "content": "Obsolete Updates"
         },
         {
           "type": "update",
@@ -10543,202 +11072,6 @@
                 },
                 "id": 4,
                 "name": "date"
-              }
-            ]
-          }
-        },
-        {
-          "type": "comment",
-          "content": "Invite"
-        },
-        {
-          "type": "response",
-          "content": {
-            "name": "InviteUrl",
-            "header": 178,
-            "doc": [
-              "Response for invite url methods"
-            ],
-            "attributes": [
-              {
-                "type": "string",
-                "id": 1,
-                "name": "url"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "GetGroupInviteUrl",
-            "header": 177,
-            "response": {
-              "type": "reference",
-              "name": "InviteUrl"
-            },
-            "doc": [
-              "Building invite url",
-              {
-                "type": "reference",
-                "argument": "groupPeer",
-                "category": "full",
-                "description": "Destination group peer"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "GroupOutPeer"
-                },
-                "id": 1,
-                "name": "groupPeer"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "RevokeInviteUrl",
-            "header": 179,
-            "response": {
-              "type": "reference",
-              "name": "InviteUrl"
-            },
-            "doc": [
-              "Revoking invite urls",
-              {
-                "type": "reference",
-                "argument": "groupPeer",
-                "category": "full",
-                "description": "Destination group peer"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "GroupOutPeer"
-                },
-                "id": 1,
-                "name": "groupPeer"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "JoinGroup",
-            "header": 180,
-            "response": {
-              "type": "anonymous",
-              "header": 181,
-              "doc": [
-                {
-                  "type": "reference",
-                  "argument": "group",
-                  "category": "hidden",
-                  "description": "  Joined group"
-                },
-                {
-                  "type": "reference",
-                  "argument": "users",
-                  "category": "hidden",
-                  "description": "  Users from members"
-                },
-                {
-                  "type": "reference",
-                  "argument": "rid",
-                  "category": "full",
-                  "description": "  Random id"
-                },
-                {
-                  "type": "reference",
-                  "argument": "seq",
-                  "category": "full",
-                  "description": "  Sequence number"
-                },
-                {
-                  "type": "reference",
-                  "argument": "state",
-                  "category": "hidden",
-                  "description": "  State"
-                },
-                {
-                  "type": "reference",
-                  "argument": "date",
-                  "category": "full",
-                  "description": "  Date of join"
-                }
-              ],
-              "attributes": [
-                {
-                  "type": {
-                    "type": "struct",
-                    "childType": "Group"
-                  },
-                  "id": 1,
-                  "name": "group"
-                },
-                {
-                  "type": {
-                    "type": "list",
-                    "childType": {
-                      "type": "struct",
-                      "childType": "User"
-                    }
-                  },
-                  "id": 5,
-                  "name": "users"
-                },
-                {
-                  "type": {
-                    "type": "alias",
-                    "childType": "randomId"
-                  },
-                  "id": 6,
-                  "name": "rid"
-                },
-                {
-                  "type": "int32",
-                  "id": 2,
-                  "name": "seq"
-                },
-                {
-                  "type": {
-                    "type": "alias",
-                    "childType": "seq_state"
-                  },
-                  "id": 3,
-                  "name": "state"
-                },
-                {
-                  "type": {
-                    "type": "alias",
-                    "childType": "date"
-                  },
-                  "id": 4,
-                  "name": "date"
-                }
-              ]
-            },
-            "doc": [
-              "Join group method",
-              {
-                "type": "reference",
-                "argument": "token",
-                "category": "full",
-                "description": "Url or Token for joining to group"
-              }
-            ],
-            "attributes": [
-              {
-                "type": "string",
-                "id": 1,
-                "name": "token"
               }
             ]
           }
@@ -19489,6 +19822,10 @@
               {
                 "name": "COMPACT_USERS",
                 "id": 6
+              },
+              {
+                "name": "GROUPS_V2",
+                "id": 7
               }
             ]
           }
