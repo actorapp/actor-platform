@@ -115,11 +115,11 @@
       }
     }
   }
+}
 
-  .avatar {
-    margin-top: 10px;
-    margin-right: 16px;
-  }
+.toolbar__avatar {
+  margin-top: 10px;
+  margin-right: 16px;
 }
 
 // Connection state banner
@@ -154,5 +154,58 @@
   }
   &--connection {
     background-color: rgba($squash, .97);
+  }
+}
+
+.toolbar__search {
+  position: relative;
+
+  width: 200px;
+  margin-right: 8px;
+
+  transition: width 200ms ease-out;
+  .search-icon {
+    font-size: 22px;
+    line-height: 24px;
+
+    position: absolute;
+    top: 6px;
+    left: 10px;
+
+    pointer-events: none;
+
+    color: rgba(black, .25);
+  }
+  .close-icon {
+    font-size: 20px;
+
+    position: absolute;
+    top: 8px;
+    right: 8px;
+
+    cursor: pointer;
+
+    color: rgba(black, .25);
+    &:hover {
+      color: rgba(black, .5);
+    }
+  }
+
+  .input:focus,
+  &--focused .input {
+    color: rgba(black, .6);
+    background-color: white;
+    box-shadow: 0 0 0 2px $dark-sky-blue;
+    & + .search-icon {
+      color: $dark-sky-blue;
+    }
+  }
+
+  .input {
+    padding-left: 38px;
+  }
+
+  &--focused {
+    width: 340px;
   }
 }

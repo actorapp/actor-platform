@@ -161,13 +161,13 @@ class MessageItem extends Component {
     } else {
       return (
         <div className="message__info message__info--avatar">
-          <a onClick={this.onClick}>
-            <AvatarItem
-              image={message.sender.avatar}
-              placeholder={message.sender.placeholder}
-              title={message.sender.title}
-            />
-          </a>
+          <AvatarItem
+            className="message__avatar"
+            image={message.sender.avatar}
+            placeholder={message.sender.placeholder}
+            title={message.sender.title}
+            onClick={this.onClick}
+          />
         </div>
       )
     }

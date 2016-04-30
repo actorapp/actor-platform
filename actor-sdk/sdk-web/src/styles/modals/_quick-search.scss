@@ -47,12 +47,6 @@
       cursor: pointer;
 
       color: $mine-shaft;
-      .avatar {
-        margin-right: 12px;
-        .avatar__placeholder {
-          cursor: pointer;
-        }
-      }
       .title {
         font-size: 15px;
         line-height: 32px;
@@ -105,4 +99,8 @@
       }
     }
   }
+}
+
+.quick-search__avatar {
+  margin-right: 12px;
 }

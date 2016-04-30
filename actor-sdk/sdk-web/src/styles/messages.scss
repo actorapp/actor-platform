@@ -78,6 +78,10 @@ $sticker-max-size: 180px;
   }
 }
 
+.message__avatar {
+  margin: 0 14px 0 12px;
+}
+
 .message {
   position: relative;
 
@@ -176,12 +180,6 @@ $sticker-max-size: 180px;
     line-height: 1px;
 
     width: 62px;
-    .avatar {
-      margin: 0 14px 0 12px;
-    }
-    a > .avatar {
-      cursor: pointer;
-    }
   }
   &__content {
     line-height: $message-line-height;

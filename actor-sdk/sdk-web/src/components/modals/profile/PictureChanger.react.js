@@ -61,10 +61,12 @@ class PictureChanger extends Component {
     return (
       <div className="picture-changer__changer">
         <AvatarItem
+          className="picture-changer__avatar"
           image={bigAvatar}
           placeholder={placeholder}
           size={small ? 'big' : 'huge'}
-          title={name}/>
+          title={name}
+        />
 
         <a onClick={this.handleChangeAvatarClick}>
           <FormattedMessage id="modal.profile.avatarChange"/>

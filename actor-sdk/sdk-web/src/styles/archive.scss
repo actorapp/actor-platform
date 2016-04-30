@@ -46,11 +46,12 @@
     padding: 8px 16px;
     text-decoration: none;
 
-    &__avatar {
+    &__user {
       position: relative;
-      .avatar {
-        margin-right: 16px;
-      }
+    }
+
+    &__avatar {
+      margin-right: 16px;
     }
 
     &__title {

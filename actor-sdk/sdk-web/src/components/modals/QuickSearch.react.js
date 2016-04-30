@@ -187,10 +187,12 @@ class QuickSearch extends Component {
           onClick={() => this.handleDialogSelect(result.peerInfo.peer)}
           onMouseOver={() => this.setState({ selectedIndex: index })}>
           <AvatarItem
+            className="quick-search__avatar"
+            size="small"
             image={result.peerInfo.avatar}
             placeholder={result.peerInfo.placeholder}
-            size="small"
-            title={result.peerInfo.title}/>
+            title={result.peerInfo.title}
+          />
           <div className="title col-xs">
             <div className="hint pull-right"><FormattedMessage id="modal.quickSearch.openDialog"/></div>
             {result.peerInfo.title}
