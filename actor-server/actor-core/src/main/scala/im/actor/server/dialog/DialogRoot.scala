@@ -141,13 +141,10 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
           persistAllAsync(events)(e ⇒ commit(e))
 
           deferAsync(()) { _ ⇒
-            sender() ! (())
-
             if (!isCreated || !isShown)
               sendChatGroupsChanged()
           }
         case None ⇒
-          sender() ! (())
       }
     case Archive(Some(peer), clientAuthSid)     ⇒ archive(peer, clientAuthSid map (_.value))
     case Unarchive(Some(peer), clientAuthSid)   ⇒ unarchive(peer, clientAuthSid map (_.value))
