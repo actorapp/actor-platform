@@ -80,7 +80,16 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
 
       } yield {
         val users = (pUsers ++ eUsers).toVector
-
+          _ = (pUsers ++ eUsers).map(user ⇒
+            for {
+              relation ← fromDBIO(RelationRepo.find(client.userId, user.id))
+              _ ← relation match {
+                case Some(relation) ⇒
+                  fromDBIO(RelationRepo.approve(client.userId, user.id))
+                case None ⇒
+                  fromDBIO(RelationRepo.create(client.userId, user.id))
+              }
+            } yield ())
         ResponseImportContacts(
           users = if (optimizations.contains(ApiUpdateOptimization.STRIP_ENTITIES)) Vector.empty else users,
           eSeqstate.seq,
