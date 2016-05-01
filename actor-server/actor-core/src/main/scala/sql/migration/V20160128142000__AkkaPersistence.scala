@@ -68,9 +68,6 @@ final class V20160128142000__AkkaPersistence extends JdbcMigration {
       }
 
     batchWrite(connection, events)
-
-    system.terminate()
-    Await.result(system.whenTerminated, Duration.Inf)
   }
 
   private def batchWrite(
