@@ -73,7 +73,7 @@ class MessagesList extends Component {
     this.dimensions = null;
     this.isLoading = false;
 
-    this.onScroll = throttle(this.onScroll.bind(this), 30);
+    this.onScroll = throttle(this.onScroll.bind(this), 600);
     this.onResize = this.onResize.bind(this);
     this.handleScrollToBottom = this.handleScrollToBottom.bind(this);
   }

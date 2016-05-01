@@ -33,7 +33,7 @@ class Recent extends Component {
       firstUnreadAbove: null
     };
 
-    this.checkInvisibleCounters = throttle(this.checkInvisibleCounters.bind(this), 50);
+    this.checkInvisibleCounters = throttle(this.checkInvisibleCounters.bind(this), 300);
     this.scrollToFirstHiddenAbove = this.scrollToFirstHiddenAbove.bind(this);
     this.scrollToLastHiddenBelow = this.scrollToLastHiddenBelow.bind(this);
     this.handleGroupListTitleClick = this.handleGroupListTitleClick.bind(this);
