@@ -3,7 +3,6 @@ package im.actor.server.user
 import akka.actor.ActorSystem
 import akka.http.scaladsl.util.FastFuture
 import akka.pattern.pipe
-import im.actor.api.rpc.collections._
 import im.actor.api.rpc.users.{ ApiFullUser, ApiUser }
 import im.actor.server.ApiConversions._
 import im.actor.server.acl.ACLUtils
@@ -47,23 +46,26 @@ private[user] trait UserQueriesHandlers extends UserAcl {
 
   protected def getApiFullStruct(state: UserState, clientUserId: Int, clientAuthId: Long)(implicit system: ActorSystem): Unit = {
     (for {
+      isApproved: Boolean ← db.run(RelationRepo.isApproved(state.id, clientUserId))
       isBlocked ← checkIsBlocked(state.id, clientUserId)
       localName ← if (clientUserId == state.id || clientUserId == 0)
         FastFuture.successful(None)
       else
         userExt.getLocalName(clientUserId, state.id)
     } yield GetApiFullStructResponse(ApiFullUser(
-        id = userId,
-        contactInfo = UserUtils.defaultUserContactRecords(state.phones.toVector, state.emails.toVector, state.socialContacts.toVector),
-        about = state.about,
-        preferredLanguages = state.preferredLanguages.toVector,
-        timeZone = state.timeZone,
-        botCommands = state.botCommands,
-        ext = None,
-        isBlocked = Some(isBlocked)
-      ))) pipeTo sender()
+      id = userId,
+      contactInfo = if (isApproved || clientUserId == state.id)
+      UserUtils.defaultUserContactRecords(state.phones.toVector, state.emails.toVector, state.socialContacts.toVector)
+    else UserUtils.defaultUserContactRecords(Vector.empty, Vector.empty, state.socialContacts.toVector),
+      about = state.about,
+      preferredLanguages = state.preferredLanguages.toVector,
+      timeZone = state.timeZone,
+      botCommands = state.botCommands,
+      ext = None,
+      isBlocked = Some(isBlocked)
+    ))) pipeTo sender()
   }
-
+  
   protected def getContactRecords(state: UserState): Unit =
     sender() ! GetContactRecordsResponse(state.phones, state.emails)
 
