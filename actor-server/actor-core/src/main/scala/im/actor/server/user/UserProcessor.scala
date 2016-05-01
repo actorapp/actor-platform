@@ -310,11 +310,7 @@ private[user] final class UserProcessor
   }
 
   private def dialogRef(state: UserState, peer: Peer): ActorRef =
-    try {
-      context.child(dialogName(peer)) getOrElse context.actorOf(DialogProcessor.props(userId, peer, state.internalExtensions), dialogName(peer))
-    } catch {
-      case _: InvalidActorNameException ⇒ dialogRef(state, peer)
-    }
+    context.child(dialogName(peer)) getOrElse context.actorOf(DialogProcessor.props(userId, peer, state.internalExtensions), dialogName(peer))
 
   private def dialogRoot(extensions: Seq[ApiExtension]): ActorRef = {
     val name = "DialogRoot"
