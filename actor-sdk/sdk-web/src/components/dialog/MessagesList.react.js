@@ -2,7 +2,7 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import { isFunction, debounce } from 'lodash';
+import { isFunction, throttle } from 'lodash';
 
 import React, { Component, PropTypes } from 'react';
 
@@ -73,7 +73,7 @@ class MessagesList extends Component {
     this.dimensions = null;
     this.isLoading = false;
 
-    this.onScroll = debounce(this.onScroll.bind(this), 5, { maxWait: 30 });
+    this.onScroll = throttle(this.onScroll.bind(this), 30);
     this.onResize = this.onResize.bind(this);
     this.handleScrollToBottom = this.handleScrollToBottom.bind(this);
   }
