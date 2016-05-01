@@ -2,7 +2,7 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import { forEach, debounce } from 'lodash';
+import { forEach, throttle } from 'lodash';
 
 import React, { Component, PropTypes } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -33,7 +33,7 @@ class Recent extends Component {
       firstUnreadAbove: null
     };
 
-    this.checkInvisibleCounters = debounce(this.checkInvisibleCounters.bind(this), 50, { maxWait: 150, leading: true });
+    this.checkInvisibleCounters = throttle(this.checkInvisibleCounters.bind(this), 50);
     this.scrollToFirstHiddenAbove = this.scrollToFirstHiddenAbove.bind(this);
     this.scrollToLastHiddenBelow = this.scrollToLastHiddenBelow.bind(this);
     this.handleGroupListTitleClick = this.handleGroupListTitleClick.bind(this);
