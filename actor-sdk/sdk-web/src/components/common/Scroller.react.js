@@ -114,7 +114,7 @@ class Scroller extends Component {
       return { top: 0, height: 0 };
     }
 
-    const height = (offsetHeight / scrollHeight) * offsetHeight;
+    const height = Math.max(30, (offsetHeight / scrollHeight) * offsetHeight);
     const offsetAvailable = scrollHeight - offsetHeight;
     const offsetPercent = offsetAvailable === 0 ? 0 : (scrollTop / offsetAvailable);
     const offset = (offsetHeight - height) * offsetPercent;
