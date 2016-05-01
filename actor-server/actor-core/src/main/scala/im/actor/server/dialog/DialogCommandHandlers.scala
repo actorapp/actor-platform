@@ -105,7 +105,7 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
   }
 
   protected def messageReceived(mr: MessageReceived): Unit = {
-    val mustReceive = mustMakeReceive(state, mr)
+    val mustReceive = mustMakeReceive(mr)
 
     if (mustReceive) {
       (for {
@@ -127,7 +127,7 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
   }
 
   protected def messageRead(mr: MessageRead): Unit = {
-    val mustRead = mustMakeRead(state, mr)
+    val mustRead = mustMakeRead(mr)
     log.debug(s"mustRead is ${mustRead}")
 
     if (mustRead) {
@@ -234,7 +234,7 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
    * @param mr message received request from client
    * @return `true` if we must process message received request and `false` otherwise
    */
-  private def mustMakeReceive(state: DialogState, mr: MessageReceived): Boolean =
+  private def mustMakeReceive(mr: MessageReceived): Boolean =
     Instant.ofEpochMilli(mr.date).isAfter(state.lastOwnerReceiveDate) && (mr.date <= mr.now || state.lastMessageDate.isAfter(Instant.ofEpochMilli(mr.date)))
 
   /**
@@ -251,7 +251,7 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
    * @param mr message received request from client
    * @return `true` if we must process message received request and `false` otherwise
    */
-  private def mustMakeRead(state: DialogState, mr: MessageRead): Boolean =
+  private def mustMakeRead(mr: MessageRead): Boolean =
     Instant.ofEpochMilli(mr.date).isAfter(state.lastOwnerReadDate) && (mr.date <= mr.now || state.lastMessageDate.isAfter(Instant.ofEpochMilli(mr.date)))
 
   /**
