@@ -250,20 +250,16 @@ private[user] final class UserProcessor
     case de: DialogEnvelope ⇒
       val msg = de.getAllFields.values.head
 
-      (for {
-        result ← msg match {
-          case dc: DialogCommand if dc.isInstanceOf[DialogCommands.SendMessage] || dc.isInstanceOf[DialogCommands.WriteMessageSelf] ⇒
-            for {
-              _ ← dialogRoot(state.internalExtensions) ? msg
-              result ← handleDialogCommand(state)(dc)
-            } yield result
-          case dc: DialogCommand ⇒ handleDialogCommand(state)(dc)
-          case dq: DialogQuery   ⇒ handleDialogQuery(state)(dq)
-        }
-      } yield result) pipeTo sender()
+      msg match {
+        case dc: DialogCommand if dc.isInstanceOf[DialogCommands.SendMessage] || dc.isInstanceOf[DialogCommands.WriteMessageSelf] ⇒
+          dialogRoot(state.internalExtensions) ! msg
+          handleDialogCommand(state)(dc)
+        case dc: DialogCommand ⇒ handleDialogCommand(state)(dc)
+        case dq: DialogQuery   ⇒ handleDialogQuery(state)(dq)
+      }
     // messages sent from DialogRoot:
-    case dc: DialogCommand ⇒ handleDialogCommand(state)(dc) pipeTo sender()
-    case dq: DialogQuery   ⇒ handleDialogQuery(state)(dq) pipeTo sender()
+    case dc: DialogCommand ⇒ handleDialogCommand(state)(dc)
+    case dq: DialogQuery   ⇒ handleDialogQuery(state)(dq)
   }
 
   override protected def handleQuery(state: UserState): Receive = {
@@ -296,13 +292,13 @@ private[user] final class UserProcessor
       log.error("Unmatched recovery event {}", unmatched)
   }
 
-  private def handleDialogCommand(state: UserState): PartialFunction[DialogCommand, Future[Any]] = {
-    case ddc: DirectDialogCommand ⇒ dialogRef(state, ddc) ? ddc
-    case dc: DialogCommand        ⇒ dialogRef(state, dc.getDest) ? dc
+  private def handleDialogCommand(state: UserState): PartialFunction[DialogCommand, Unit] = {
+    case ddc: DirectDialogCommand ⇒ dialogRef(state, ddc) forward ddc
+    case dc: DialogCommand        ⇒ dialogRef(state, dc.getDest) forward dc
   }
 
-  private def handleDialogQuery(state: UserState): PartialFunction[DialogQuery, Future[Any]] = {
-    case dq: DialogQuery ⇒ dialogRef(state, dq.getDest) ? dq
+  private def handleDialogQuery(state: UserState): PartialFunction[DialogQuery, Unit] = {
+    case dq: DialogQuery ⇒ dialogRef(state, dq.getDest) forward dq
   }
 
   private def dialogRef(state: UserState, dc: DirectDialogCommand): ActorRef = {
