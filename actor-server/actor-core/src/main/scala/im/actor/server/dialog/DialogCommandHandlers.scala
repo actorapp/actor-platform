@@ -247,7 +247,6 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
    * • greater than current last read date
    * • less or equal than current date(`now`), or less or equal than last message date.
    *
-   * @param state current dialog state
    * @param mr message received request from client
    * @return `true` if we must process message received request and `false` otherwise
    */
