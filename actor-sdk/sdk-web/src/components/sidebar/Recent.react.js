@@ -12,7 +12,7 @@ import ContactActionCreators from '../../actions/ContactActionCreators';
 import CreateGroupActionCreators from '../../actions/CreateGroupActionCreators';
 import AddContactActionCreators from '../../actions/AddContactActionCreators';
 
-import Scroller from '../common/Scroller.react';
+import CustomScroller from '../common/CustomScroller.react';
 import RecentGroup from './RecentGroup.react';
 import SidebarLink from './SidebarLink.react';
 
@@ -194,14 +194,14 @@ class Recent extends Component {
     return (
       <section className="recent">
         {this.renderUnreadAbove()}
-        <Scroller
+        <CustomScroller
           className="recent__container"
           ref="scroller"
           onScroll={this.checkInvisibleCounters}
           onResize={this.checkInvisibleCounters}
         >
           {this.renderScrollableContent()}
-        </Scroller>
+        </CustomScroller>
         {this.renderUnreadBelow()}
       </section>
     );
