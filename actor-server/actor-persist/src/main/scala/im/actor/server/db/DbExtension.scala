@@ -35,9 +35,13 @@ final class DbExtensionImpl(val db: Database) extends Extension with FlywayInit 
 object DbExtension extends ExtensionId[DbExtensionImpl] with ExtensionIdProvider {
   private val JndiPath = "DefaultDatabase"
 
+  private var _system: ActorSystem = null
+  def system = _system
+
   override def lookup = DbExtension
 
   override def createExtension(system: ExtendedActorSystem): DbExtensionImpl = {
+    this._system = system
     val log = Logging(system, getClass)
 
     val db = initDb(system.settings.config)
