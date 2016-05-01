@@ -230,12 +230,13 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
    * • greater than current last receive date
    * • less or equal than current date(`now`), or less or equal than last message date.
    *
-   * @param state current dialog state
    * @param mr message received request from client
    * @return `true` if we must process message received request and `false` otherwise
    */
   private def mustMakeReceive(mr: MessageReceived): Boolean =
-    Instant.ofEpochMilli(mr.date).isAfter(state.lastOwnerReceiveDate) && (mr.date <= mr.now || state.lastMessageDate.isAfter(Instant.ofEpochMilli(mr.date)))
+    Instant.ofEpochMilli(mr.date).isAfter(state.lastOwnerReceiveDate) &&
+      (mr.date <= mr.now ||
+        Instant.ofEpochMilli(mr.date).compareTo(state.lastMessageDate) <= 0)
 
   /**
    *
@@ -251,7 +252,9 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
    * @return `true` if we must process message received request and `false` otherwise
    */
   private def mustMakeRead(mr: MessageRead): Boolean =
-    Instant.ofEpochMilli(mr.date).isAfter(state.lastOwnerReadDate) && (mr.date <= mr.now || state.lastMessageDate.isAfter(Instant.ofEpochMilli(mr.date)))
+    Instant.ofEpochMilli(mr.date).isAfter(state.lastOwnerReadDate) &&
+      (mr.date <= mr.now ||
+        Instant.ofEpochMilli(mr.date).compareTo(state.lastMessageDate) <= 0)
 
   /**
    * check access hash and execute `f`, if access hash is valid
