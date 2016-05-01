@@ -311,7 +311,6 @@ trait HistoryHandlers {
       case _: ApiUnsupportedMessage       ⇒ Set.empty
       case _: ApiBinaryMessage            ⇒ Set.empty
       case _: ApiEncryptedMessage         ⇒ Set.empty
-      case _: ApiEmptyMessage             ⇒ Set.empty
     }
   }
 

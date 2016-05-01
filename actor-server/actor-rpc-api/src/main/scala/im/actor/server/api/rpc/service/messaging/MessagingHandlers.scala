@@ -65,7 +65,7 @@ private[messaging] trait MessagingHandlers extends PeersImplicits
       }
     }
 
-  def withQuoteMessage(quotedMessageReference: Option[ApiMessageOutReference])(f: Option[HistoryMessage] ⇒ Future[HandlerResult[ResponseSeqDate]]): Future[HandlerResult[ResponseSeqDate]] = {
+  private def withQuoteMessage(quotedMessageReference: Option[ApiMessageOutReference])(f: Option[HistoryMessage] ⇒ Future[HandlerResult[ResponseSeqDate]]): Future[HandlerResult[ResponseSeqDate]] = {
     quotedMessageReference match {
       case Some(quoted) ⇒
         (for {
