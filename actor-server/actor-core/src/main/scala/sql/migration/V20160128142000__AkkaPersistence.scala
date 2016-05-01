@@ -13,6 +13,7 @@ import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Source
 import im.actor.serialization.ActorSerializer
 import im.actor.server.CommonSerialization
+import im.actor.server.db.DbExtension
 import im.actor.server.event.TSEvent
 import im.actor.server.group.{ GroupEvent, GroupProcessor }
 import im.actor.server.user.{ UserEvent, UserProcessor }
@@ -42,7 +43,7 @@ final class V20160128142000__AkkaPersistence extends JdbcMigration {
   ActorSerializer.register(5502, classOf[ValueEvents.ValueDeleted])
 
   override def migrate(connection: Connection): Unit = {
-    implicit val system = ActorSystem("migration")
+    implicit val system = DbExtension.system
     implicit val serialization = SerializationExtension(system)
 
     val seqs = getSeqs(connection)
