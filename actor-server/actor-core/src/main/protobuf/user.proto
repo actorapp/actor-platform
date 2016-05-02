@@ -14,6 +14,14 @@ import "file.proto";
 import "bots.proto";
 import "dialog.proto";
 
+message UserExt {
+    required string key = 1;
+    oneof value {
+        string string_value = 2;
+        bool bool_value = 3;
+    }
+}
+
 message UserState {
     option (scalapb.message).extends = "im.actor.server.office.ProcessorState";
 
@@ -38,6 +46,7 @@ message UserState {
     repeated string preferred_languages = 19;
     optional string time_zone = 20;
     repeated BotCommand bot_commands = 21;
+    repeated UserExt ext = 22;
 }
 
 message SocialContact {
@@ -228,6 +237,24 @@ message UserCommands {
     }
 
     message RemoveBotCommandAck {}
+
+    message AddExt {
+        option (scalapb.message).extends = "im.actor.server.user.UserCommand";
+
+        required int32 user_id = 1;
+        required UserExt ext = 2;
+    }
+
+    message AddExtAck {}
+
+    message RemoveExt {
+        option (scalapb.message).extends = "im.actor.server.user.UserCommand";
+
+        required int32 user_id = 1;
+        required string key = 2;
+    }
+
+    message RemoveExtAck {}
 }
 
 message UserQueries {
@@ -486,6 +513,19 @@ message UserEvents {
 
         required int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];
         required string slash_command = 2;
+    }
+
+    message ExtAdded {
+        option (scalapb.message).extends = "im.actor.server.user.UserEvent";
+
+        required int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];
+        required UserExt ext = 2;
+    }
+
+    message ExtRemoved {
+        option (scalapb.message).extends = "im.actor.server.user.UserEvent";
+        required int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];
+        required string key = 2;
     }
 
 }
