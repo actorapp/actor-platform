@@ -1,8 +1,6 @@
 package im.actor.runtime.clc;
 
 import im.actor.runtime.StorageRuntimeProvider;
-import im.actor.runtime.storage.IndexStorage;
-import im.actor.runtime.storage.KeyValueEngine;
 import im.actor.runtime.storage.KeyValueRecord;
 import im.actor.runtime.storage.KeyValueStorage;
 import org.junit.After;
@@ -15,9 +13,6 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
-/**
- * Created by amir on 4/12/16.
- */
 public class ClcKeyValueStorageTest {
 
     private StorageRuntimeProvider srp;
