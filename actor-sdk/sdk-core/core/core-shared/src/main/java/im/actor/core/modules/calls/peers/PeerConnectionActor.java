@@ -37,13 +37,8 @@ public class PeerConnectionActor extends ModuleActor {
                                            @NotNull final WebRTCMediaStream mediaStream,
                                            @NotNull final PeerConnectionCallback callback,
                                            @NotNull final ModuleContext context) {
-        return new ActorCreator() {
-            @Override
-            public Actor create() {
-                return new PeerConnectionActor(iceServers, selfSettings, theirSettings, mediaStream,
-                        callback, context);
-            }
-        };
+        return () -> new PeerConnectionActor(iceServers, selfSettings, theirSettings, mediaStream,
+                callback, context);
     }
 
 
