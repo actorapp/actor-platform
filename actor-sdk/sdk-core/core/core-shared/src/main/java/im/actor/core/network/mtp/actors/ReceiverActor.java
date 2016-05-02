@@ -35,12 +35,7 @@ public class ReceiverActor extends Actor {
     private static final String TAG = "ProtoReceiver";
 
     public static ActorRef receiver(final MTProto proto) {
-        return ActorSystem.system().actorOf(new ActorSelection(Props.create(new ActorCreator() {
-            @Override
-            public ReceiverActor create() {
-                return new ReceiverActor(proto);
-            }
-        }).changeDispatcher("network"), proto.getActorPath() + "/receiver"));
+        return ActorSystem.system().actorOf(proto.getActorPath() + "/receiver", Props.create(() -> new ReceiverActor(proto)).changeDispatcher("network"));
     }
 
     private static final int MAX_RECEIVED_BUFFER = 1000;

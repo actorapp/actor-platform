@@ -2,14 +2,10 @@ package im.actor.core.network.parser;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import im.actor.core.api.parser.RpcParser;
-import im.actor.core.api.parser.UpdatesParser;
 
 public class ApiParserConfig {
 
-    private ArrayList<ParsingExtension> extensions = new ArrayList<ParsingExtension>();
+    private ArrayList<ParsingExtension> extensions = new ArrayList<>();
 
     public void addExtension(ParsingExtension extension) {
         extensions.add(extension);
