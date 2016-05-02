@@ -7456,13 +7456,47 @@
                   },
                   "id": 5,
                   "name": "showInvite"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "UserOutPeer"
+                    }
+                  },
+                  "id": 6,
+                  "name": "userPeers"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "GroupOutPeer"
+                    }
+                  },
+                  "id": 7,
+                  "name": "groupPeers"
                 }
               ]
             },
             "doc": [
               "Load all dialogs from grouped list"
             ],
-            "attributes": []
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 1,
+                "name": "optimizations"
+              }
+            ]
           }
         },
         {
