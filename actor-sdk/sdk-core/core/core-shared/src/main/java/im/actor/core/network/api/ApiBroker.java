@@ -12,7 +12,6 @@ import im.actor.core.network.parser.ApiParserConfig;
 import im.actor.runtime.*;
 import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.Actor;
-import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.Props;
@@ -40,14 +39,15 @@ public class ApiBroker extends Actor {
                                final int maxDelay,
                                final int maxFailureCount,
                                final ApiParserConfig parserConfig) {
-        return ActorSystem.system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public ApiBroker create() {
-                return new ApiBroker(endpoints, keyStorage, callback, isEnableLog, minDelay,
+        return ActorSystem.system().actorOf(Props.create(() ->
+                new ApiBroker(endpoints,
+                        keyStorage,
+                        callback,
+                        isEnableLog,
+                        minDelay,
                         maxDelay,
-                        maxFailureCount, parserConfig);
-            }
-        }).changeDispatcher("network"), "api/broker#" + id);
+                        maxFailureCount, parserConfig))
+                .changeDispatcher("network"), "api/broker#" + id);
     }
 
     private static final String TAG = "ApiBroker";
@@ -62,9 +62,9 @@ public class ApiBroker extends Actor {
     private final int maxDelay;
     private final int maxFailureCount;
 
-    private final HashMap<Long, RequestHolder> requests = new HashMap<Long, RequestHolder>();
-    private final HashMap<Long, Long> idMap = new HashMap<Long, Long>();
-    private final HashMap<Long, CommonTimer> timeouts = new HashMap<Long, CommonTimer>();
+    private final HashMap<Long, RequestHolder> requests = new HashMap<>();
+    private final HashMap<Long, Long> idMap = new HashMap<>();
+    private final HashMap<Long, CommonTimer> timeouts = new HashMap<>();
 
     private long currentAuthId;
     private MTProto proto;
@@ -90,12 +90,7 @@ public class ApiBroker extends Actor {
     public void preStart() {
         this.currentAuthId = keyStorage.getAuthKey();
 
-        this.keyManager = system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public AuthKeyActor create() {
-                return new AuthKeyActor();
-            }
-        }), getPath() + "/key");
+        this.keyManager = system().actorOf(getPath() + "/key", AuthKeyActor::new);
 
         if (currentAuthId == 0) {
             this.keyManager.send(new AuthKeyActor.StartKeyCreation(this.endpoints), self());
@@ -188,10 +183,6 @@ public class ApiBroker extends Actor {
         }
     }
 
-    private void performRequest(long randomId, Request message, RpcCallback callback) {
-        performRequest(randomId, message, callback, 0);
-    }
-
     private void performRequest(long randomId, Request message, RpcCallback callback, long timeout) {
         Log.d(TAG, "-> request#" + randomId + ": " + message);
         // Log.d(TAG, message + " rid#" + randomId);
@@ -209,8 +200,7 @@ public class ApiBroker extends Actor {
             // Log.d(TAG, message + " rid#" + randomId + " <- mid#" + mid);
         }
 
-        if (timeout > 0)
-        {
+        if (timeout > 0) {
             CommonTimer commonTimer = new CommonTimer(new TimeoutTask(holder.publicId));
             timeouts.put(holder.publicId, commonTimer);
             commonTimer.schedule(timeout);
@@ -386,6 +376,7 @@ public class ApiBroker extends Actor {
             this.callback = callback;
             this.timeout = 0;
         }
+
         public PerformRequest(long rid, Request message, RpcCallback callback, long timeout) {
             this.rid = rid;
             this.message = message;
@@ -518,13 +509,13 @@ public class ApiBroker extends Actor {
 
         private final long rid;
 
-        public TimeoutTask(long rid){
+        public TimeoutTask(long rid) {
             this.rid = rid;
         }
+
         @Override
         public void run() {
-            if (requests.containsKey(rid))
-            {
+            if (requests.containsKey(rid)) {
                 RpcCallback callBack = requests.get(rid).callback;
                 if (callBack != null)
                     callBack.onError(new RpcTimeoutException());

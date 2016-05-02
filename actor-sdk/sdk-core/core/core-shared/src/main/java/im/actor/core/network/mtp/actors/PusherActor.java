@@ -5,15 +5,12 @@
 package im.actor.core.network.mtp.actors;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 import im.actor.runtime.actors.Actor;
-import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
-import im.actor.runtime.actors.ActorSelection;
 import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.Cancellable;
 import im.actor.runtime.actors.Props;
@@ -30,7 +27,10 @@ public class PusherActor extends Actor {
     private static final String TAG = "ProtoSender";
 
     public static ActorRef senderActor(final MTProto proto) {
-        return ActorSystem.system().actorOf(Props.create(() -> new PusherActor(proto)).changeDispatcher("network"), proto.getActorPath() + "/sender");
+        return ActorSystem.system().actorOf(Props.create(() ->
+                        new PusherActor(proto))
+                        .changeDispatcher("network"),
+                proto.getActorPath() + "/sender");
     }
 
     private static final int ACK_THRESHOLD = 10;
