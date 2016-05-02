@@ -328,6 +328,30 @@ private[user] trait UserCommandHandlers {
       sender() ! RemoveBotCommandAck()
     }
 
+  protected def addExt(user: UserState, ext: UserExt) = {
+    persist(UserEvents.ExtAdded(now(), ext)) { e ⇒
+      val newState = updatedState(e, user)
+      context become working(newState)
+      val update = UpdateUserExtChanged(userId, Some(extToApi(newState.ext)))
+      (for {
+        relatedUserIds ← getRelations(user.id)
+        _ ← seqUpdatesExt.broadcastSingleUpdate(relatedUserIds, update)
+      } yield AddExtAck()) pipeTo sender()
+    }
+  }
+
+  protected def removeExt(user: UserState, key: String) = {
+    persist(UserEvents.ExtRemoved(now(), key)) { e ⇒
+      val newState = updatedState(e, user)
+      context become working(newState)
+      val update = UpdateUserExtChanged(userId, Some(extToApi(newState.ext)))
+      (for {
+        relatedUserIds ← getRelations(user.id)
+        _ ← seqUpdatesExt.broadcastSingleUpdate(relatedUserIds, update)
+      } yield RemoveExtAck()) pipeTo sender()
+    }
+  }
+
   protected def updateAvatar(user: UserState, avatarOpt: Option[Avatar]): Unit = {
     persistReply(UserEvents.AvatarUpdated(now(), avatarOpt), user) { evt ⇒
       val avatarData = avatarOpt map (getAvatarData(AvatarData.OfUser, user.id, _)) getOrElse AvatarData.empty(AvatarData.OfUser, user.id.toLong)
