@@ -34,7 +34,8 @@ private[user] trait UserQueriesHandlers extends UserAcl {
       isBot = Some(state.isBot),
       contactInfo = if (isApproved || clientUserId == state.id)
         UserUtils.defaultUserContactRecords(state.phones.toVector, state.emails.toVector, state.socialContacts.toVector)
-      else UserUtils.defaultUserContactRecords(Vector.empty, Vector.empty, state.socialContacts.toVector),
+      else
+        UserUtils.defaultUserContactRecords(Vector.empty, Vector.empty, state.socialContacts.toVector),
       nick = state.nickname,
       about = state.about,
       preferredLanguages = state.preferredLanguages.toVector,
@@ -55,8 +56,9 @@ private[user] trait UserQueriesHandlers extends UserAcl {
     } yield GetApiFullStructResponse(ApiFullUser(
       id = userId,
       contactInfo = if (isApproved || clientUserId == state.id)
-      UserUtils.defaultUserContactRecords(state.phones.toVector, state.emails.toVector, state.socialContacts.toVector)
-    else UserUtils.defaultUserContactRecords(Vector.empty, Vector.empty, state.socialContacts.toVector),
+        UserUtils.defaultUserContactRecords(state.phones.toVector, state.emails.toVector, state.socialContacts.toVector)
+      else
+        UserUtils.defaultUserContactRecords(Vector.empty, Vector.empty, state.socialContacts.toVector),
       about = state.about,
       preferredLanguages = state.preferredLanguages.toVector,
       timeZone = state.timeZone,
