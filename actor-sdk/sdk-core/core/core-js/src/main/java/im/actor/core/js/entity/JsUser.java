@@ -55,17 +55,19 @@ public class JsUser extends JavaScriptObject {
                 Placeholders.getPlaceholder(userVM.getId()),
                 userVM.isContact().get(), userVM.isBot(),
                 presenceString, isOnline, userVM.getIsBlocked().get(), convertedPhones, convertedEmails,
-                userVM.getTimeZone().get());
+                userVM.getTimeZone().get(),
+                userVM.getIsVerified().get());
     }
 
     public static native JsUser create(int id, String name, String nick, String about,
                                        String avatar, String bigAvatar, String placeholder,
                                        boolean isContact, boolean isBot, String presence, boolean isOnline, boolean isBlocked, JsArray<JsPhone> phones,
                                        JsArray<JsEmail> emails,
-                                       String timeZone)/*-{
+                                       String timeZone,
+                                       boolean isVerified)/*-{
         return {id: id, name: name, nick: nick, about: about, avatar: avatar, bigAvatar: bigAvatar, placeholder: placeholder,
             isContact: isContact, isBot: isBot, presence: presence, isOnline: isOnline, isBlocked: isBlocked, phones: phones, emails: emails,
-            timeZone: timeZone};
+            timeZone: timeZone, isVerified: isVerified};
     }-*/;
 
     protected JsUser() {

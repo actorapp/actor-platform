@@ -69,6 +69,8 @@ public class UserVM extends BaseValueModel<User> {
     @NotNull
     private BooleanValueModel isBlocked;
     @NotNull
+    private BooleanValueModel isVerified;
+    @NotNull
     private ValueModelUserPresence presence;
     private CommonTimer presenceTimer;
 
@@ -105,6 +107,7 @@ public class UserVM extends BaseValueModel<User> {
         avatar = new AvatarValueModel("user." + id + ".avatar", user.getAvatar());
         isContact = new BooleanValueModel("user." + id + ".contact", modules.getContactsModule().isUserContact(id));
         isBlocked = new BooleanValueModel("user." + id + ".blocked", user.isBlocked());
+        isVerified = new BooleanValueModel("user." + id + ".is_verified", user.isVerified());
         timeZone = new StringValueModel("user." + id + ".time_zone", user.getTimeZone());
         presence = new ValueModelUserPresence("user." + id + ".presence", new UserPresence(UserPresence.State.UNKNOWN));
         phones = new ValueModelUserPhone("user." + id + ".phones", buildPhones(user.getRecords()));
@@ -133,6 +136,7 @@ public class UserVM extends BaseValueModel<User> {
         isChanged |= about.change(rawObj.getAbout());
         isChanged |= avatar.change(rawObj.getAvatar());
         isChanged |= isBlocked.change(rawObj.isBlocked());
+        isChanged |= isVerified.change(rawObj.isVerified());
 
         // TODO: better changed checking?
         isChanged |= phones.change(buildPhones(rawObj.getRecords()));
@@ -262,6 +266,17 @@ public class UserVM extends BaseValueModel<User> {
     @ObjectiveCName("isBlockedModel")
     public BooleanValueModel getIsBlocked() {
         return isBlocked;
+    }
+
+    /**
+     * Get ValueModel of flag if user is verified
+     *
+     * @return ValueModel of Boolean
+     */
+    @NotNull
+    @ObjectiveCName("isBlockedModel")
+    public BooleanValueModel getIsVerified() {
+        return isVerified;
     }
 
     /**
