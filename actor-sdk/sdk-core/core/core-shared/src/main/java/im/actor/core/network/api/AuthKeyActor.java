@@ -152,6 +152,10 @@ public class AuthKeyActor extends Actor {
                     }
                     long[] keys = startAuth.getAvailableKeys();
 
+                    if (keys.length == 0) {
+                        throw new IOException("No keys installed on server. Please, configure your server correctly.");
+                    }
+
                     if (endpoints.getTrustedKeys().length == 0) {
                         gotoKeyDownloadState(keys[0], startAuth.getServerNonce());
                     } else {
