@@ -6505,6 +6505,15 @@
       </node>
       <node concept="2m6fVq" id="5TxE3W703CS" role="2m5mJr">
         <property role="TrG5h" value="LoadGroupedDialogs" />
+        <node concept="2m7Kf5" id="1Jz_9S8FLF" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="optimizations" />
+          <node concept="2m5nlk" id="1Jz_9S8GUf" role="2m7DVh">
+            <node concept="3GJkcs" id="1Jz_9S8H6n" role="3GJlyp">
+              <ref role="3GJkik" node="4fp6Gpc4YV7" resolve="UpdateOptimization" />
+            </node>
+          </node>
+        </node>
         <node concept="NXeRC" id="5TxE3W706uG" role="1GBnQ6">
           <property role="NXePf" value="Load all dialogs from grouped list" />
         </node>
@@ -6551,6 +6560,24 @@
             <property role="TrG5h" value="showInvite" />
             <node concept="2m5nlT" id="6gbxTdnerkE" role="2m7DVh">
               <node concept="2m5ndN" id="6gbxTdnerkK" role="3GH5xg" />
+            </node>
+          </node>
+          <node concept="2m7Kf5" id="1Jz_9S8H6q" role="2m0hLx">
+            <property role="2m7DUN" value="6" />
+            <property role="TrG5h" value="userPeers" />
+            <node concept="2m5nlk" id="1Jz_9S8H6H" role="2m7DVh">
+              <node concept="2m5mGg" id="1Jz_9S8H6N" role="3GJlyp">
+                <ref role="2m5mJy" node="GBscvBB6ia" resolve="UserOutPeer" />
+              </node>
+            </node>
+          </node>
+          <node concept="2m7Kf5" id="1Jz_9S8H6Q" role="2m0hLx">
+            <property role="2m7DUN" value="7" />
+            <property role="TrG5h" value="groupPeers" />
+            <node concept="2m5nlk" id="1Jz_9S8H7c" role="2m7DVh">
+              <node concept="2m5mGg" id="1Jz_9S8HbF" role="3GJlyp">
+                <ref role="2m5mJy" node="GBscvBB6j2" resolve="GroupOutPeer" />
+              </node>
             </node>
           </node>
           <node concept="Nu42z" id="5TxE3W7073x" role="NuuwV">
