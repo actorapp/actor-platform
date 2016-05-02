@@ -8,8 +8,9 @@ import com.google.gwt.core.client.JavaScriptObject;
 
 public class JsPeerInfo extends JavaScriptObject {
 
-    public native static JsPeerInfo create(JsPeer peer, String title, String userName,  String avatar, String placeholder)/*-{
-        return {peer: peer, title: title, userName: userName, avatar: avatar, placeholder: placeholder}
+    public native static JsPeerInfo create(JsPeer peer, String title, String userName,  String avatar, String placeholder,
+                                           boolean isVerified)/*-{
+        return {peer: peer, title: title, userName: userName, avatar: avatar, placeholder: placeholder, isVerified: isVerified};
     }-*/;
 
     protected JsPeerInfo() {

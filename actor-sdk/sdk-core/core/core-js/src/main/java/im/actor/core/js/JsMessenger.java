@@ -217,7 +217,8 @@ public class JsMessenger extends Messenger {
                     userVM.getName().get(),
                     userVM.getNick().get(),
                     getSmallAvatarUrl(userVM.getAvatar().get()),
-                    Placeholders.getPlaceholder(peer.getPeerId()));
+                    Placeholders.getPlaceholder(peer.getPeerId()),
+                    userVM.getIsVerified().get());
         } else if (peer.getPeerType() == PeerType.GROUP) {
             GroupVM groupVM = getGroups().get(peer.getPeerId());
             return JsPeerInfo.create(
@@ -225,7 +226,8 @@ public class JsMessenger extends Messenger {
                     groupVM.getName().get(),
                     null,
                     getSmallAvatarUrl(groupVM.getAvatar().get()),
-                    Placeholders.getPlaceholder(peer.getPeerId()));
+                    Placeholders.getPlaceholder(peer.getPeerId()),
+                    false);
         } else {
             throw new RuntimeException();
         }

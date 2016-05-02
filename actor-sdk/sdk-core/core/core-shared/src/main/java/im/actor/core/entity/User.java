@@ -18,7 +18,9 @@ import im.actor.core.api.ApiBotCommand;
 import im.actor.core.api.ApiContactRecord;
 import im.actor.core.api.ApiContactType;
 import im.actor.core.api.ApiFullUser;
+import im.actor.core.api.ApiInt32Value;
 import im.actor.core.api.ApiMapValue;
+import im.actor.core.api.ApiMapValueItem;
 import im.actor.core.api.ApiUser;
 import im.actor.runtime.bser.BserCreator;
 import im.actor.runtime.bser.BserValues;
@@ -73,6 +75,8 @@ public class User extends WrapperExtEntity<ApiFullUser, ApiUser> implements KeyV
     @Nullable
     @Property("readonly, nonatomic")
     private String timeZone;
+    @Property("readonly, nonatomic")
+    private boolean isVerified;
 
     @NotNull
     @Property("readonly, nonatomic")
@@ -162,6 +166,10 @@ public class User extends WrapperExtEntity<ApiFullUser, ApiUser> implements KeyV
     @Nullable
     public String getTimeZone() {
         return timeZone;
+    }
+
+    public boolean isVerified() {
+        return isVerified;
     }
 
     public User editName(@NotNull String name) {
@@ -409,6 +417,17 @@ public class User extends WrapperExtEntity<ApiFullUser, ApiUser> implements KeyV
                 case MALE:
                     this.sex = Sex.MALE;
                     break;
+            }
+        }
+
+        if (wrapped.getExt() != null) {
+            this.isVerified = true;
+            for (ApiMapValueItem i : wrapped.getExt().getItems()) {
+                if ("is_verified".equals(i.getKey())) {
+                    if (i.getValue() instanceof ApiInt32Value) {
+                        this.isVerified = ((ApiInt32Value) i.getValue()).getValue() > 0;
+                    }
+                }
             }
         }
 
