@@ -134,6 +134,8 @@ object UserProcessor {
       12019 → classOf[UserEvents.LocalNameChanged],
       12020 → classOf[UserEvents.BotCommandAdded],
       12021 → classOf[UserEvents.BotCommandRemoved],
+      12022 → classOf[UserEvents.ExtAdded],
+      12023 → classOf[UserEvents.ExtRemoved],
 
       13000 → classOf[UserState],
       13001 → classOf[SocialContact]
