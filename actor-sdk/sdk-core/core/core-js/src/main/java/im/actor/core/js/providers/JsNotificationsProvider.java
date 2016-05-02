@@ -122,7 +122,9 @@ public class JsNotificationsProvider implements NotificationProvider {
             }
         }
 
-        playSound();
+        if (!JsElectronApp.isElectron()) {
+            playSound();
+        }
 
         if (!JsNotification.isSupported()) {
             return;
