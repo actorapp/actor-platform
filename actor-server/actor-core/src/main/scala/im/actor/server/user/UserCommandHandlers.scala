@@ -335,7 +335,7 @@ private[user] trait UserCommandHandlers {
       val update = UpdateUserExtChanged(userId, Some(extToApi(newState.ext)))
       (for {
         relatedUserIds ← getRelations(user.id)
-        _ ← seqUpdatesExt.broadcastSingleUpdate(relatedUserIds, update)
+        _ ← seqUpdatesExt.broadcastSingleUpdate(relatedUserIds + user.id, update)
       } yield AddExtAck()) pipeTo sender()
     }
   }
@@ -347,7 +347,7 @@ private[user] trait UserCommandHandlers {
       val update = UpdateUserExtChanged(userId, Some(extToApi(newState.ext)))
       (for {
         relatedUserIds ← getRelations(user.id)
-        _ ← seqUpdatesExt.broadcastSingleUpdate(relatedUserIds, update)
+        _ ← seqUpdatesExt.broadcastSingleUpdate(relatedUserIds + user.id, update)
       } yield RemoveExtAck()) pipeTo sender()
     }
   }
