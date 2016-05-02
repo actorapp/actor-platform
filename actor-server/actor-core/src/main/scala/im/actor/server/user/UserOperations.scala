@@ -125,6 +125,12 @@ private[user] sealed trait Commands extends AuthCommands {
   def removeBotCommand(userId: Int, slashCommand: String): Future[RemoveBotCommandAck] =
     (processorRegion.ref ? RemoveBotCommand(userId, slashCommand)).mapTo[RemoveBotCommandAck]
 
+  def addExt(userId: Int, ext: UserExt): Future[Unit] =
+    (processorRegion.ref ? AddExt(userId, ext)) map (_ ⇒ ())
+
+  def removeExt(userId: Int, key: String): Future[Unit] =
+    (processorRegion.ref ? RemoveExt(userId, key)) map (_ ⇒ ())
+
   def broadcastUserUpdate(
     userId:     Int,
     update:     Update,
