@@ -347,36 +347,28 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
                 UserTypingVM userTypingVM = context().getTypingModule().getTyping(peer.getPeerId());
 
                 final JsBindedValue<JsTyping> value = new JsBindedValue<>();
-                userTypingVM.getTyping().subscribe(new ValueChangedListener<Boolean>() {
-                    @Override
-                    public void onChanged(Boolean val, Value<Boolean> valueModel) {
-                        String typingValue = null;
-                        if (val) {
-                            typingValue = messenger.getFormatter().formatTyping("");
-                        }
-                        value.changeValue(JsTyping.create(typingValue));
+                userTypingVM.getTyping().subscribe((val, valueModel) -> {
+                    String typingValue = null;
+                    if (val) {
+                        typingValue = messenger.getFormatter().formatTyping("");
                     }
+                    value.changeValue(JsTyping.create(typingValue));
                 });
                 typing.put(peer, value);
             } else if (peer.getPeerType() == PeerType.GROUP) {
                 GroupTypingVM groupTypingVM = context().getTypingModule().getGroupTyping(peer.getPeerId());
                 final JsBindedValue<JsTyping> value = new JsBindedValue<>();
-                groupTypingVM.getActive().subscribe(new ValueChangedListener<int[]>() {
-                    @Override
-                    public void onChanged(int[] val, Value<int[]> valueModel) {
-                        String typingValue = null;
-                        if (val.length == 1) {
-                            typingValue = messenger.getFormatter().formatTyping(context()
-                                    .getUsersModule()
-                                    .getUsers()
-                                    .get(val[0])
-                                    .getName()
-                                    .get());
-                        } else if (val.length > 1) {
-                            typingValue = messenger.getFormatter().formatTyping(val.length);
-                        }
-                        value.changeValue(JsTyping.create(typingValue));
+                groupTypingVM.getActive().subscribe((val, valueModel) -> {
+                    ArrayList<String> names = new ArrayList<>();
+                    for (int i : val) {
+                        names.add(context()
+                                .getUsersModule()
+                                .getUsers()
+                                .get(i)
+                                .getName()
+                                .get());
                     }
+                    value.changeValue(JsTyping.create(messenger.getFormatter().formatTyping(names)));
                 });
                 typing.put(peer, value);
             } else {

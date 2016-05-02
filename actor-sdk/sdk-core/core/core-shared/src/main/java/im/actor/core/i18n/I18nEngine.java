@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import im.actor.core.entity.ContentType;
 import im.actor.core.entity.Dialog;
@@ -184,9 +185,31 @@ public class I18nEngine {
         return locale.get("TypingUser").replace("{user}", name);
     }
 
+    @ObjectiveCName("formatTypingWithName:")
+    public String formatTyping(List<String> names) {
+        if (names.size() == 1) {
+            return formatTyping(names.get(0));
+        }
+        return locale.get("TypingUserMultiple").replace("{users}", formatSequence(names));
+    }
+
     @ObjectiveCName("formatTypingWithCount:")
     public String formatTyping(int count) {
         return locale.get("TypingMultiple").replace("{count}", "" + count);
+    }
+
+    @ObjectiveCName("formatSequence:")
+    public String formatSequence(List<String> values) {
+        String res = values.get(0);
+        for (int i = 1; i < values.size(); i++) {
+            if (i == values.size() - 1) {
+                res += locale.get("SequenceAnd");
+            } else {
+                res += locale.get("SequenceOr");
+            }
+            res += values.get(i);
+        }
+        return res;
     }
 
     @ObjectiveCName("formatFileSize:")
