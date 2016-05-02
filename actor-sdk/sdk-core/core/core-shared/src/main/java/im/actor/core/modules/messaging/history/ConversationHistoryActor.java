@@ -21,11 +21,7 @@ import im.actor.core.entity.content.AbsContent;
 import im.actor.core.modules.api.ApiSupportConfiguration;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.ModuleActor;
-import im.actor.runtime.Log;
-import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.function.Consumer;
-import im.actor.runtime.function.Function;
-import im.actor.runtime.promise.Promise;
 
 public class ConversationHistoryActor extends ModuleActor {
 
@@ -105,29 +101,20 @@ public class ConversationHistoryActor extends ModuleActor {
         boolean isEnded = history.size() < LIMIT;
 
         // Sending updates to conversation actor
+        final long finalMaxLoadedDate = maxLoadedDate;
         context().getMessagesModule().getRouter()
-                .onChatHistoryLoaded(peer, messages, maxReceiveDate, maxReadDate, isEnded);
-
-        // Saving Internal State
-        if (isEnded) {
-            historyLoaded = true;
-        } else {
-            historyLoaded = false;
-            historyMaxDate = maxLoadedDate;
-        }
-        preferences().putLong(KEY_LOADED_DATE, maxLoadedDate);
-        preferences().putBool(KEY_LOADED, historyLoaded);
-        preferences().putBool(KEY_LOADED_INIT, true);
-    }
-
-    private Function<ResponseLoadHistory, Promise<ResponseLoadHistory>> applyRelated() {
-        return responseLoadHistory -> updates()
-                .applyRelatedData(responseLoadHistory.getUsers(), new ArrayList<>())
-                .map(new Function<Void, ResponseLoadHistory>() {
-                    @Override
-                    public ResponseLoadHistory apply(Void aVoid) {
-                        return responseLoadHistory;
+                .onChatHistoryLoaded(peer, messages, maxReceiveDate, maxReadDate, isEnded)
+                .then(r -> {
+                    // Saving Internal State
+                    if (isEnded) {
+                        historyLoaded = true;
+                    } else {
+                        historyLoaded = false;
+                        historyMaxDate = finalMaxLoadedDate;
                     }
+                    preferences().putLong(KEY_LOADED_DATE, finalMaxLoadedDate);
+                    preferences().putBool(KEY_LOADED, historyLoaded);
+                    preferences().putBool(KEY_LOADED_INIT, true);
                 });
     }
 
