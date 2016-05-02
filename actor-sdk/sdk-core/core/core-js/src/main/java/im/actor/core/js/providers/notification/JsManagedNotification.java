@@ -21,6 +21,7 @@ public class JsManagedNotification {
                 body: body,
                 tag: 'new-message',
                 icon: icon,
+                silent: true
             });
             n.onclick = function() {
                 $wnd.focus();
