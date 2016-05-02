@@ -40,12 +40,7 @@ public class ActorDispatcher {
         this.name = name;
         this.actorSystem = actorSystem;
         this.dispatchers = new QueueDispatcher[dispatchersCount];
-        final Consumer<Envelope> handler = new Consumer<Envelope>() {
-            @Override
-            public void apply(Envelope envelope) {
-                processEnvelope(envelope);
-            }
-        };
+        final Consumer<Envelope> handler = envelope -> processEnvelope(envelope);
         for (int i = 0; i < dispatchers.length; i++) {
             this.dispatchers[i] = new QueueDispatcher<>(name + "_" + i, priority, queueCollection, handler);
         }

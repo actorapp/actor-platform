@@ -65,13 +65,8 @@ public class ConversationHistoryActor extends ModuleActor {
         }
         isLoading = true;
         api(new RequestLoadHistory(buidOutPeer(peer), historyMaxDate, null, LIMIT, ApiSupportConfiguration.OPTIMIZATIONS))
-                .then(new Consumer<ResponseLoadHistory>() {
-                    @Override
-                    public void apply(ResponseLoadHistory responseLoadHistory) {
-                        Log.d("ConversationHistory", "Loaded!");
-                    }
-                })
-                .flatMap(applyRelated())
+                .chain(r -> updates().applyRelatedData(r.getUsers(), r.getGroups()))
+                .chain(r -> updates().loadRequiredPeers(r.getUserPeers(), r.getGroupPeers()))
                 .then(applyHistory(peer))
                 .then(responseLoadHistory -> isLoading = false);
     }
