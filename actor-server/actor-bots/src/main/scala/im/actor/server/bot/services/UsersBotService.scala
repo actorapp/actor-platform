@@ -8,7 +8,7 @@ import im.actor.concurrent.FutureResult
 import im.actor.server.bot.{ ApiToBotConversions, BotServiceBase }
 import im.actor.server.db.DbExtension
 import im.actor.server.file.{ FileStorageAdapter, FileStorageExtension, ImageUtils }
-import im.actor.server.user.{ UserErrors, UserUtils }
+import im.actor.server.user.{ UserErrors, UserExt, UserUtils }
 
 private[bot] final class UsersBotService(system: ActorSystem) extends BotServiceBase(system) with FutureResult[BotError] with ApiToBotConversions {
   import im.actor.bots.BotMessages._
@@ -27,6 +27,9 @@ private[bot] final class UsersBotService(system: ActorSystem) extends BotService
     case ChangeUserAbout(userId, about)           ⇒ changeUserAbout(userId, about).toWeak
     case AddSlashCommand(userId, command)         ⇒ addSlashCommand(userId, command).toWeak
     case RemoveSlashCommand(userId, slashCommand) ⇒ removeSlashCommand(userId, slashCommand).toWeak
+    case AddUserExtString(userId, key, value)     ⇒ addUserExtString(userId, key, value).toWeak
+    case AddUserExtBool(userId, key, value)       ⇒ addUserExtBool(userId, key, value).toWeak
+    case RemoveUserExt(userId, key)               ⇒ removeUserExt(userId, key).toWeak
     case FindUser(query)                          ⇒ findUser(query).toWeak
     case IsAdmin(userId)                          ⇒ isAdmin(userId).toWeak
   }
@@ -105,6 +108,33 @@ private[bot] final class UsersBotService(system: ActorSystem) extends BotService
       ifIsAdmin(botUserId) {
         (for {
           _ ← fromFuture(handleBotCommandErrors)(userExt.removeBotCommand(userId, slashCommand))
+        } yield Void).value
+      }
+  }
+
+  private def addUserExtString(userId: Int, key: String, value: String) = RequestHandler[AddUserExtString, AddUserExtString#Response] {
+    (botUserId: BotUserId, botAuthId: BotAuthId, botAuthSid: BotAuthSid) ⇒
+      ifIsAdmin(botUserId) {
+        (for {
+          _ ← fromFuture(handleBotCommandErrors)(userExt.addExt(userId, UserExt(key).withValue(UserExt.Value.StringValue(value))))
+        } yield Void).value
+      }
+  }
+
+  private def addUserExtBool(userId: Int, key: String, value: Boolean) = RequestHandler[AddUserExtString, AddUserExtString#Response] {
+    (botUserId: BotUserId, botAuthId: BotAuthId, botAuthSid: BotAuthSid) ⇒
+      ifIsAdmin(botUserId) {
+        (for {
+          _ ← fromFuture(handleBotCommandErrors)(userExt.addExt(userId, UserExt(key).withValue(UserExt.Value.BoolValue(value))))
+        } yield Void).value
+      }
+  }
+
+  private def removeUserExt(userId: Int, key: String) = RequestHandler[AddUserExtString, AddUserExtString#Response] {
+    (botUserId: BotUserId, botAuthId: BotAuthId, botAuthSid: BotAuthSid) ⇒
+      ifIsAdmin(botUserId) {
+        (for {
+          _ ← fromFuture(handleBotCommandErrors)(userExt.removeExt(userId, key))
         } yield Void).value
       }
   }

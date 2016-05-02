@@ -7,6 +7,7 @@ import akka.cluster.sharding.ShardRegion
 import akka.pattern.{ ask, pipe }
 import akka.persistence.RecoveryCompleted
 import akka.util.Timeout
+import im.actor.api.rpc.collections.{ ApiInt32Value, ApiMapValue, ApiMapValueItem, ApiStringValue }
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.serialization.ActorSerializer
 import im.actor.server.bots.BotCommand
@@ -212,6 +213,8 @@ private[user] final class UserProcessor
             state.botCommands filterNot (_.slashCommand == slashCommand)
           else state.botCommands
         state.copy(botCommands = updCommands)
+      case UserEvents.ExtAdded(_, ext)   ⇒ state.copy(ext = state.ext :+ ext)
+      case UserEvents.ExtRemoved(_, key) ⇒ state.copy(ext = state.ext.filterNot(_.key == key))
     }
   }
 
@@ -239,6 +242,8 @@ private[user] final class UserProcessor
     case ChangePreferredLanguages(_, langs) ⇒ changePreferredLanguages(state, langs)
     case AddBotCommand(_, command)          ⇒ addBotCommand(state, command)
     case RemoveBotCommand(_, slashCommand)  ⇒ removeBotCommand(state, slashCommand)
+    case AddExt(_, ext)                     ⇒ addExt(state, ext)
+    case RemoveExt(_, key)                  ⇒ removeExt(state, key)
     case cmd: EditLocalName                 ⇒ contacts.ref forward cmd
     case query: GetLocalName                ⇒ contacts.ref forward query
     case StopOffice                         ⇒ context stop self
@@ -272,6 +277,15 @@ private[user] final class UserProcessor
     case GetUser(_)                                      ⇒ getUser(state)
     case IsAdmin(_)                                      ⇒ isAdmin(state)
     case GetName(_)                                      ⇒ getName(state)
+  }
+
+  protected def extToApi(exts: Seq[UserExt]): ApiMapValue = {
+    ApiMapValue(
+      exts.toVector map { ext ⇒
+        if (ext.value.isBoolValue) ApiMapValueItem(ext.key, ApiInt32Value(if (ext.getBoolValue) 1 else 0))
+        else ApiMapValueItem(ext.key, ApiStringValue(ext.getStringValue))
+      }
+    )
   }
 
   protected[this] var userStateMaybe: Option[UserState] = None

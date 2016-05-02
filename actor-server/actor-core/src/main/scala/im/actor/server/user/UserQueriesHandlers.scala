@@ -3,6 +3,7 @@ package im.actor.server.user
 import akka.actor.ActorSystem
 import akka.http.scaladsl.util.FastFuture
 import akka.pattern.pipe
+import im.actor.api.rpc.collections._
 import im.actor.api.rpc.users.{ ApiFullUser, ApiUser }
 import im.actor.server.ApiConversions._
 import im.actor.server.acl.ACLUtils
@@ -36,7 +37,7 @@ private[user] trait UserQueriesHandlers extends UserAcl {
       preferredLanguages = state.preferredLanguages.toVector,
       timeZone = state.timeZone,
       botCommands = state.botCommands,
-      ext = None
+      ext = if (state.ext.nonEmpty) Some(extToApi(state.ext)) else None
     ))) pipeTo sender()
   }
 
