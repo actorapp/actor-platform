@@ -27,9 +27,9 @@ public class AsyncListEngine<T extends BserObject & ListEngineItem>
         implements ListEngineDisplayExt<T> {
 
     private final AsyncStorageInt<T> asyncStorageInt;
-    private final ObjectCache<Long, T> cache = new ObjectCache<Long, T>();
+    private final ObjectCache<Long, T> cache = new ObjectCache<>();
     private final Object LOCK = new Object();
-    private CopyOnWriteArrayList<ListEngineDisplayListener<T>> listeners = new CopyOnWriteArrayList<ListEngineDisplayListener<T>>();
+    private CopyOnWriteArrayList<ListEngineDisplayListener<T>> listeners = new CopyOnWriteArrayList<>();
 
     public AsyncListEngine(ListStorageDisplayEx storage, BserCreator<T> creator) {
         this.asyncStorageInt = new AsyncStorageInt<T>(storage, creator);
@@ -231,16 +231,13 @@ public class AsyncListEngine<T extends BserObject & ListEngineItem>
     }
 
     private ListEngineDisplayLoadCallback<T> cover(final ListEngineDisplayLoadCallback<T> callback) {
-        return new ListEngineDisplayLoadCallback<T>() {
-            @Override
-            public void onLoaded(List<T> items, long topSortKey, long bottomSortKey) {
-                synchronized (LOCK) {
-                    for (T i : items) {
-                        cache.onObjectLoaded(i.getEngineId(), i);
-                    }
+        return (items, topSortKey, bottomSortKey) -> {
+            synchronized (LOCK) {
+                for (T i : items) {
+                    cache.onObjectLoaded(i.getEngineId(), i);
                 }
-                callback.onLoaded(items, topSortKey, bottomSortKey);
             }
+            callback.onLoaded(items, topSortKey, bottomSortKey);
         };
     }
 }
