@@ -9,9 +9,11 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 import im.actor.core.api.ApiUser;
+import im.actor.core.api.ApiUserOutPeer;
 import im.actor.core.api.rpc.RequestGetContacts;
 import im.actor.core.api.rpc.ResponseGetContacts;
 import im.actor.core.entity.Contact;
@@ -157,14 +159,23 @@ public class ContactsSyncActor extends ModuleActor {
             return;
         }
 
+        // Reading all uids
+        HashSet<Integer> uids = new HashSet<>();
+        for (ApiUser u : result.getUsers()) {
+            uids.add(u.getId());
+        }
+        for (ApiUserOutPeer u : result.getUserPeers()) {
+            uids.add(u.getUid());
+        }
+
         if (ENABLE_LOG) {
-            Log.d(TAG, "Sync received " + result.getUsers().size() + " contacts");
+            Log.d(TAG, "Sync received " + uids.size() + " contacts");
         }
 
         outer:
         for (Integer uid : contacts.toArray(new Integer[contacts.size()])) {
-            for (ApiUser u : result.getUsers()) {
-                if (u.getId() == uid) {
+            for (Integer u : uids) {
+                if (u.equals(uid)) {
                     continue outer;
                 }
             }
@@ -177,18 +188,18 @@ public class ContactsSyncActor extends ModuleActor {
             }
             context().getContactsModule().markNonContact(uid);
         }
-        for (ApiUser u : result.getUsers()) {
-            if (contacts.contains(u.getId())) {
+        for (Integer u : uids) {
+            if (contacts.contains(u)) {
                 continue;
             }
             if (ENABLE_LOG) {
-                Log.d(TAG, "Adding: #" + u.getId());
+                Log.d(TAG, "Adding: #" + u);
             }
-            contacts.add(u.getId());
-            if (getUser(u.getId()) != null) {
-                getUserVM(u.getId()).isContact().change(true);
+            contacts.add(u);
+            if (getUser(u) != null) {
+                getUserVM(u).isContact().change(true);
             }
-            context().getContactsModule().markContact(u.getId());
+            context().getContactsModule().markContact(u);
         }
         saveList();
 
@@ -256,7 +267,7 @@ public class ContactsSyncActor extends ModuleActor {
         if (ENABLE_LOG) {
             Log.d(TAG, "Saving contact EngineList");
         }
-        ArrayList<User> userList = new ArrayList<User>();
+        ArrayList<User> userList = new ArrayList<>();
         for (int u : contacts) {
             userList.add(getUser(u));
         }
