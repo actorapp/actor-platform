@@ -60,23 +60,11 @@ public class ArchivedDialogsActor extends ModuleActor {
         isLoading = true;
 
         Log.d(TAG, "Loading archived dialogs");
-        lastRequest = request(new RequestLoadArchived(nextOffset, LIMIT, ApiSupportConfiguration.OPTIMIZATIONS),
-                new RpcCallback<ResponseLoadArchived>() {
-                    @Override
-                    public void onResult(final ResponseLoadArchived response) {
-                        updates().applyRelatedData(response.getUsers(), response.getGroups()).then(new Consumer<Void>() {
-                            @Override
-                            public void apply(Void aVoid) {
-                                onLoadedMore(response);
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(RpcException e) {
-                        lastCallback.onError(e);
-                    }
-                });
+        api(new RequestLoadArchived(nextOffset, LIMIT, ApiSupportConfiguration.OPTIMIZATIONS))
+                .chain(r -> updates().applyRelatedData(r.getUsers(), r.getGroups()))
+                .chain(r -> updates().loadRequiredPeers(r.getUserPeers(), r.getGroupPeers()))
+                .then(r -> onLoadedMore(r))
+                .failure(e -> lastCallback.onError((RpcException) e));
     }
 
     private void onLoadedMore(ResponseLoadArchived responseLoadArchiveds) {

@@ -38,7 +38,7 @@ public class DownloadTask extends ModuleActor {
     private Cancellable notifyCancellable;
 
     private String fileUrl;
-    private int blockSize = 32 * 1024;
+    private int blockSize = 128 * 1024;
     private int blocksCount;
     private int nextBlock = 0;
     private int currentDownloads = 0;
