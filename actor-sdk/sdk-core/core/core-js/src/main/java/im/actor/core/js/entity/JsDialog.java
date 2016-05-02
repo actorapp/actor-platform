@@ -45,7 +45,7 @@ public class JsDialog extends JavaScriptObject {
                     src.getMessageType(), src.getText(), src.getRelatedUid());
 
             JsPeerInfo peerInfo = JsPeerInfo.create(JsPeer.create(src.getPeer()), src.getDialogTitle(), null, fileUrl,
-                    Placeholders.getPlaceholder(src.getPeer().getPeerId()));
+                    Placeholders.getPlaceholder(src.getPeer().getPeerId()), false);
 
             String state = "unknown";
             if (messenger.myUid() == src.getSenderId()) {
