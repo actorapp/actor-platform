@@ -68,46 +68,6 @@ const LoginActionCreators = {
       success: ActionTypes.AUTH_CODE_SEND_SUCCESS,
       failure: ActionTypes.AUTH_CODE_SEND_FAILURE
     }, { code });
-
-  sendPassword(password) {
-     const sendPasswordPromise = () => dispatchAsync(ActorClient.sendPassword(password), {
-       request: ActionTypes.AUTH_CODE_SEND,
-       success: ActionTypes.AUTH_CODE_SEND_SUCCESS,
-       failure: ActionTypes.AUTH_CODE_SEND_FAILURE
-     }, { password });
-
-     const handleState = (state) => {
-        switch (state) {
-          case 'signup':
-            this.startSignup();
-            break;
-          case 'logged_in':
-            this.setLoggedIn({redirect: true});
-            break;
-          default:
-            console.error('Unsupported state', state);
-        }
-     };
-
-      sendPasswordPromise()
-        .then(handleState);
-  },
-
-  sendSignup(name,password) {
-          const signUpPromise = () => dispatchAsync(ActorClient.signUp(name,password), {
-                                                    request: ActionTypes.AUTH_SIGNUP,
-                                                    success: ActionTypes.AUTH_SIGNUP_SUCCESS,
-                                                    failure: ActionTypes.AUTH_SIGNUP_FAILURE
-                                                    }, { name,password });
-
-          const setLoggedIn = () => this.setLoggedIn({redirect: true});
-
-          signUpPromise()
-          .then(setLoggedIn)
-  },
-
-
-
     const handleState = (state) => {
       switch (state) {
         case 'signup':
@@ -124,6 +84,43 @@ const LoginActionCreators = {
     sendCodePromise()
       .then(handleState);
   },
+    
+    sendPassword(password) {
+        const sendPasswordPromise = () => dispatchAsync(ActorClient.sendPassword(password), {
+                                                        request: ActionTypes.AUTH_CODE_SEND,
+                                                        success: ActionTypes.AUTH_CODE_SEND_SUCCESS,
+                                                        failure: ActionTypes.AUTH_CODE_SEND_FAILURE
+                                                        }, { password });
+        
+        const handleState = (state) => {
+            switch (state) {
+                case 'signup':
+                    this.startSignup();
+                    break;
+                case 'logged_in':
+                    this.setLoggedIn({redirect: true});
+                    break;
+                default:
+                    console.error('Unsupported state', state);
+            }
+        };
+        
+        sendPasswordPromise()
+        .then(handleState);
+    },
+    
+    sendSignup(name,password) {
+        const signUpPromise = () => dispatchAsync(ActorClient.signUp(name,password), {
+                                                  request: ActionTypes.AUTH_SIGNUP,
+                                                  success: ActionTypes.AUTH_SIGNUP_SUCCESS,
+                                                  failure: ActionTypes.AUTH_SIGNUP_FAILURE
+                                                  }, { name,password });
+        
+        const setLoggedIn = () => this.setLoggedIn({redirect: true});
+        
+        signUpPromise()
+        .then(setLoggedIn)
+    },
 
   startSignup() {
     dispatch(ActionTypes.AUTH_SIGNUP_START);
