@@ -18,7 +18,7 @@ import im.actor.server.db.DbExtension
 import im.actor.server.dialog.DialogCommands._
 import im.actor.server.group.{ GroupEnvelope, GroupExtension }
 import im.actor.server.model._
-import im.actor.server.persist.HistoryMessageRepo
+import im.actor.server.persist.{ GroupRepo, HistoryMessageRepo }
 import im.actor.server.persist.messaging.ReactionEventRepo
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.user.{ UserEnvelope, UserExtension }
@@ -57,6 +57,18 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
       case _ ⇒ f
     }
 
+  def withQuotedMessage(peer: Peer, quotedHistoryMessage: Option[HistoryMessage])(f: Option[QuotedMessage] ⇒ Future[SeqStateDate]): Future[SeqStateDate] = {
+    if (quotedHistoryMessage.isEmpty) f(None)
+    else {
+      val historyMessage = quotedHistoryMessage.get
+      val quotedMessageId = if (peer.id != historyMessage.peer.id && historyMessage.peer.typ.isPrivate) None else Some(historyMessage.randomId) // remove if needed on DialogcommandHandlers
+      val message = ApiMessage.parseFrom(historyMessage.messageContentData).fold(
+        l ⇒ None, r ⇒ Some(QuotedMessage(quotedMessageId map (Int64Value(_)), None, historyMessage.senderUserId, Some(historyMessage.peer), historyMessage.date.getMillis, r))
+      )
+      f(message)
+    }
+  }
+
   def sendMessage(
     peer:                 ApiPeer,
     senderUserId:         UserId,
@@ -72,9 +84,14 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
     withValidPeer(peer.asModel, senderUserId, Future.successful(SeqStateDate())) {
       //todo hp: send content of message and public id?
       // we don't set date here, cause actual date set inside dialog processor
-      val quotedMessage = quotedHistoryMessage flatMap (hm ⇒ ApiMessage.parseFrom(hm.messageContentData).fold(
-        l ⇒ None, r ⇒ Some(QuotedMessage(Some(Int64Value(hm.randomId)), None, hm.senderUserId, Some(hm.peer), hm.date.getMillis, r))
-      ))
+
+      val quotedMessage = quotedHistoryMessage flatMap (hm ⇒ {
+        val historyMessage = quotedHistoryMessage.get
+        val quotedMessageId = Some(historyMessage.randomId) // remove if needed on DialogcommandHandlers if (peer.id != historyMessage.peer.id && historyMessage.peer.typ.isPrivate) None else
+        ApiMessage.parseFrom(historyMessage.messageContentData).fold(
+          l ⇒ None, r ⇒ Some(QuotedMessage(quotedMessageId map (Int64Value(_)), None, historyMessage.senderUserId, Some(historyMessage.peer), historyMessage.date.getMillis, r))
+        )
+      })
 
       val sendMessage = SendMessage(
         origin = Some(Peer.privat(senderUserId)),
@@ -90,6 +107,7 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
         quotedMessage = quotedMessage
       )
       (userExt.processorRegion.ref ? UserEnvelope(senderUserId).withDialogEnvelope(DialogEnvelope().withSendMessage(sendMessage))).mapTo[SeqStateDate]
+
     }
 
   def ackSendMessage(peer: Peer, sm: SendMessage): Future[Unit] =
