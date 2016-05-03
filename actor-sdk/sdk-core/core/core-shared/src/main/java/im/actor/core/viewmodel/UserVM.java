@@ -274,7 +274,7 @@ public class UserVM extends BaseValueModel<User> {
      * @return ValueModel of Boolean
      */
     @NotNull
-    @ObjectiveCName("isBlockedModel")
+    @ObjectiveCName("isVerifiedModel")
     public BooleanValueModel getIsVerified() {
         return isVerified;
     }
