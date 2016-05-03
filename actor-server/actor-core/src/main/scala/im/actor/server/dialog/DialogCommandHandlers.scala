@@ -5,12 +5,13 @@ import java.time.Instant
 import akka.actor.Status
 import akka.http.scaladsl.util.FastFuture
 import akka.pattern.pipe
-import com.google.protobuf.wrappers.Int64Value
+import com.google.protobuf.wrappers.{ Int32Value, Int64Value }
 import im.actor.api.rpc.{ HistoryImplicits, PeersImplicits }
 import im.actor.api.rpc.messaging._
 import im.actor.server.ApiConversions._
 import im.actor.server.dialog.HistoryUtils._
 import im.actor.server.model._
+import im.actor.server.persist.GroupRepo
 import im.actor.server.persist.messaging.ReactionEventRepo
 import im.actor.server.pubsub.{ PeerMessage, PubSubExtension }
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
@@ -54,7 +55,7 @@ trait DialogCommandHandlers extends PeersImplicits with HistoryImplicits with Us
         withNonBlockedPeer[SeqStateDate](userId, sm.getDest)(
           default = for {
           _ ← dialogExt.ackSendMessage(peer, sm.copy(date = Some(Int64Value(sendDate))))
-          _ ← db.run(writeHistoryMessage(selfPeer, peer, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray, None, quotedMessage.flatMap(_.messageId)))
+          _ ← db.run(writeHistoryMessage(selfPeer, peer, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray, sm.quotedMessage.flatMap(_.peer), quotedMessage.flatMap(_.messageId)))
           //_ = dialogExt.updateCounters(peer, userId)
           SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sendDate, message, sm.isFat, quotedMessage)
         } yield SeqStateDate(seq, state, sendDate),
@@ -80,13 +81,29 @@ trait DialogCommandHandlers extends PeersImplicits with HistoryImplicits with Us
         SocialManager.recordRelation(userId, sm.getOrigin.id)
       }
 
-      val quotedMessage = sm.quotedMessage.map(_.asStruct)
-
-      deliveryExt
-        .receiverDelivery(userId, sm.getOrigin.id, peer, sm.randomId, messageDate.value, sm.message, sm.isFat, quotedMessage)
-        .map(_ ⇒ SendMessageAck())
-        .pipeTo(sender())
-
+      //remove publicGroupId and quotedMessageId per user
+      //      if (sm.quotedMessage.map(qm => if(qm.getPeer.typ.isGroup) ) )
+      sm.quotedMessage match {
+        case Some(quoted) ⇒ {
+          val quotedPeer = quoted.getPeer
+          for {
+            group ← if (quotedPeer.typ.isGroup) db.run(GroupRepo.findFull(quotedPeer.id)) else Future.successful(None)
+            isMember ← if (quotedPeer.typ.isGroup) (groupExt.isMember(group.get.id, userId)) else Future.successful(false)
+            publicGroupId = if (quotedPeer.typ.isGroup && ((group.get.isPublic || isMember) && quotedPeer.id != peer.id)) Some(Int32Value(group.get.id)) else None // remove the public group on dialogCommandHandlers per user of revieve group
+            quotedMessageId = if ((quotedPeer.id != peer.id) || (quotedPeer.typ.isGroup && (!group.get.isPublic && !isMember)) || (quotedPeer.typ.isPrivate && quotedPeer.id != peer.id)) None else quoted.messageId
+            quotedMessage = Some(sm.getQuotedMessage.copy(messageId = quotedMessageId).copy(publicGroupId = publicGroupId))
+            result = deliveryExt
+              .receiverDelivery(userId, sm.getOrigin.id, peer, sm.randomId, messageDate.value, sm.message, sm.isFat, quotedMessage map (_.asStruct))
+              .map(_ ⇒ SendMessageAck())
+              .pipeTo(sender())
+          } yield result
+        }
+        case _ ⇒
+          deliveryExt
+            .receiverDelivery(userId, sm.getOrigin.id, peer, sm.randomId, messageDate.value, sm.message, sm.isFat, None)
+            .map(_ ⇒ SendMessageAck())
+            .pipeTo(sender())
+      }
       deliveryExt.sendCountersUpdate(userId)
     }
   }
