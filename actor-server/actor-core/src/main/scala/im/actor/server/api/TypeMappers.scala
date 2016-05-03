@@ -42,16 +42,16 @@ private[api] trait MessageMapper {
     ByteString.copyFrom(message.toByteArray)
   }
 
-  private def applyInetAddress(remoteAddr: String): InetAddress = {
-    if (remoteAddr != null) {
-      InetAddress.getByName(remoteAddr)
+  private def applyInetAddress(bytes: ByteString): InetAddress = {
+    if (bytes.size() > 0) {
+      InetAddress.getByAddress(bytes.toByteArray)
     } else {
       null
     }
   }
 
-  private def unapplyInetAddress(address: InetAddress): String = {
-    address.getHostName
+  private def unapplyInetAddress(remoteAddr: InetAddress): ByteString = {
+    ByteString.copyFrom(remoteAddr.getAddress())
   }
 
   private def applyUser(bytes: ByteString): ApiUser = {
@@ -183,7 +183,7 @@ private[api] trait MessageMapper {
 
   implicit val instantMapper: TypeMapper[Long, Instant] = TypeMapper(applyInstant)(unapplyInstant)
 
-  implicit val inetAddressMapper: TypeMapper[String, InetAddress] = TypeMapper(applyInetAddress)(unapplyInetAddress)
+  implicit val inetAddressMapper: TypeMapper[ByteString, InetAddress] = TypeMapper(applyInetAddress)(unapplyInetAddress)
 
   implicit val instantOptMapper: TypeMapper[Int64Value, Instant] = TypeMapper(applyInstantOpt)(unapplyInstantOpt)
 
