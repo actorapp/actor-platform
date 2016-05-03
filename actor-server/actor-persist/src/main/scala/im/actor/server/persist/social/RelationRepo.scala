@@ -32,6 +32,9 @@ object RelationRepo {
   def fetch(userId: Int): FixedSqlStreamingAction[Seq[Int], Int, Read] =
     relations.filter(_.userId === userId).map(_.relatedTo).result
 
+  def fetchWithoutBlocks(userId: Int): FixedSqlStreamingAction[Seq[Int], Int, Read] =
+    relations.filter(r ⇒ r.userId === userId && r.status =!= RelationStatus.Blocked).map(_.relatedTo).result
+
   private def related(userId: Rep[Int], relatedTo: Rep[Int]) =
     relations.filter(r ⇒ r.userId === userId && r.relatedTo === relatedTo)
 

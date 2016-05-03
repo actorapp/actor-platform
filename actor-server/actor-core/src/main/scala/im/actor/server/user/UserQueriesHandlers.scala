@@ -3,7 +3,6 @@ package im.actor.server.user
 import akka.actor.ActorSystem
 import akka.http.scaladsl.util.FastFuture
 import akka.pattern.pipe
-import im.actor.api.rpc.collections._
 import im.actor.api.rpc.users.{ ApiFullUser, ApiUser }
 import im.actor.server.ApiConversions._
 import im.actor.server.acl.ACLUtils
@@ -21,7 +20,7 @@ private[user] trait UserQueriesHandlers extends UserAcl {
   protected def getApiStruct(state: UserState, clientUserId: Int, clientAuthId: Long)(implicit system: ActorSystem): Unit = {
     (for {
       ids ← db.run(RelationRepo.fetchBlockedIds(state.id))
-      uniqueIds = ids.toSet
+      blockIds = ids.toSet
       localName ← if (clientUserId == state.id || clientUserId == 0)
         FastFuture.successful(None)
       else
@@ -32,11 +31,11 @@ private[user] trait UserQueriesHandlers extends UserAcl {
       name = state.name,
       localName = UserUtils.normalizeLocalName(localName),
       sex = Some(state.sex),
-      avatar = if (!(uniqueIds.contains(clientUserId))) state.avatar else None,
+      avatar = if (!(blockIds.contains(clientUserId))) state.avatar else None,
       isBot = Some(state.isBot),
       contactInfo = UserUtils.defaultUserContactRecords(state.phones.toVector, state.emails.toVector, state.socialContacts.toVector),
       nick = state.nickname,
-      about = if (!(uniqueIds.contains(clientUserId))) state.about else None,
+      about = if (!(blockIds.contains(clientUserId))) state.about else None,
       preferredLanguages = state.preferredLanguages.toVector,
       timeZone = state.timeZone,
       botCommands = state.botCommands,

@@ -38,6 +38,7 @@ object SocialExtension extends ExtensionId[SocialExtensionImpl] with ExtensionId
 case class SocialManagerRegion(ref: ActorRef)
 
 object SocialManager {
+
   private case class Envelope(userId: Int, payload: Message)
 
   private sealed trait Message
@@ -52,7 +53,13 @@ object SocialManager {
   private case object GetRelations extends Message
 
   @SerialVersionUID(1L)
+  private case object GetRelationsWithoutBlocks extends Message
+
+  @SerialVersionUID(1L)
   private case class Relations(userIds: Set[Int])
+
+  @SerialVersionUID(1L)
+  private case class RelationsWithoutBlocks(userIds: Set[Int])
 
   @SerialVersionUID(1L)
   private case class Initiated(userIds: Set[Int])
@@ -105,6 +112,15 @@ object SocialManager {
   ): Future[Set[Int]] = {
     region.ref.ask(Envelope(userId, GetRelations)).mapTo[Relations] map (_.userIds)
   }
+
+  def getRelationsWithoutBlocks(userId: Int)(
+    implicit
+    region:  SocialManagerRegion,
+    timeout: Timeout,
+    ec:      ExecutionContext
+  ): Future[Set[Int]] = {
+    region.ref.ask(Envelope(userId, GetRelationsWithoutBlocks)).mapTo[RelationsWithoutBlocks] map (_.userIds)
+  }
 }
 
 private class SocialManager(implicit db: Database) extends Actor with ActorLogging with Stash {
@@ -115,6 +131,18 @@ private class SocialManager(implicit db: Database) extends Actor with ActorLoggi
   context.setReceiveTimeout(15.minutes) // TODO: configurable
 
   def receive = {
+    case env @ Envelope(userId, GetRelationsWithoutBlocks) ⇒
+      stash()
+
+      db.run(RelationRepo.fetchWithoutBlocks(userId)) onComplete {
+        case Success(userIds) ⇒
+          self ! Initiated(userIds.toSet)
+        case Failure(e) ⇒
+          log.error(e, "Failed to load relationsWithoutBlocks")
+          context.stop(self)
+      }
+      context.become(stashing)
+
     case env @ Envelope(userId, _) ⇒
       stash()
 
@@ -122,7 +150,7 @@ private class SocialManager(implicit db: Database) extends Actor with ActorLoggi
         case Success(userIds) ⇒
           self ! Initiated(userIds.toSet)
         case Failure(e) ⇒
-          log.error(e, "Failed to load realations")
+          log.error(e, "Failed to load relations")
           context.stop(self)
       }
 
@@ -155,6 +183,10 @@ private class SocialManager(implicit db: Database) extends Actor with ActorLoggi
       }
     case env @ Envelope(userId, GetRelations) ⇒
       sender() ! Relations(userIds)
+
+    case env @ Envelope(userId, GetRelationsWithoutBlocks) ⇒
+      sender() ! RelationsWithoutBlocks(userIds)
+
     case ReceiveTimeout ⇒
       context.parent ! ShardRegion.Passivate(stopMessage = PoisonPill)
   }
