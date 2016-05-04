@@ -20,6 +20,18 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/mentionsList" />
 
+    <TextView
+        android:padding="20dp"
+        android:visibility="invisible"
+        android:id="@+id/botEmptyHint"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/conv_bubble_media_in" />
+
+
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="2dp"
@@ -362,6 +374,23 @@
                 android:layout_gravity="center"
                 android:scaleType="centerInside"
                 android:src="@drawable/conv_record" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/botEmptyTextBlock"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible">
+
+            <TextView
+                android:id="@+id/empty_bot_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:gravity="center"
+                android:text="@string/chat_empty_bot"
+                android:textAllCaps="true"
+                android:textSize="18sp" />
         </FrameLayout>
 
         <FrameLayout

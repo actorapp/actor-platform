@@ -30,7 +30,6 @@ import im.actor.core.entity.Contact;
 import im.actor.core.entity.Dialog;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
-import im.actor.core.entity.PhoneBookContact;
 import im.actor.core.entity.SearchEntity;
 import im.actor.core.entity.content.FastThumb;
 import im.actor.core.network.NetworkState;
@@ -40,20 +39,16 @@ import im.actor.core.utils.ImageHelper;
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.GalleryVM;
-import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.Props;
 import im.actor.runtime.android.AndroidContext;
-import im.actor.runtime.bser.BserCreator;
-import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.eventbus.EventBus;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.runtime.mvvm.Value;
 import im.actor.runtime.mvvm.ValueChangedListener;
-import im.actor.runtime.storage.ListEngineItem;
 import im.actor.core.utils.GalleryScannerActor;
 import me.leolin.shortcutbadger.ShortcutBadger;
 
@@ -510,5 +505,9 @@ public class AndroidMessenger extends im.actor.core.Messenger {
 
     public EventBus getEvents() {
         return modules.getEvents();
+    }
+
+    public boolean checkChatIsempty(Peer peer) {
+        return modules.getMessagesModule().getConversationEngine(peer).getCount() == 0;
     }
 }
