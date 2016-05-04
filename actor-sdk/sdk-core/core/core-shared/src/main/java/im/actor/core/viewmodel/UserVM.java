@@ -16,12 +16,14 @@ import im.actor.core.entity.ContactRecordType;
 import im.actor.core.entity.Sex;
 import im.actor.core.entity.User;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.viewmodel.generics.ArrayListBotCommands;
 import im.actor.core.viewmodel.generics.ArrayListContactRecord;
 import im.actor.core.viewmodel.generics.ArrayListUserEmail;
 import im.actor.core.viewmodel.generics.ArrayListUserPhone;
 import im.actor.core.viewmodel.generics.ArrayListUserLink;
 import im.actor.core.viewmodel.generics.AvatarValueModel;
 import im.actor.core.viewmodel.generics.BooleanValueModel;
+import im.actor.core.viewmodel.generics.ValueModelBotCommands;
 import im.actor.core.viewmodel.generics.ValueModelContactRecord;
 import im.actor.core.viewmodel.generics.StringValueModel;
 import im.actor.core.viewmodel.generics.ValueModelUserEmail;
@@ -84,6 +86,10 @@ public class UserVM extends BaseValueModel<User> {
     private ValueModelContactRecord contacts;
 
     @NotNull
+    private ValueModelBotCommands botCommands;
+
+
+    @NotNull
     private ArrayList<ModelChangedListener<UserVM>> listeners = new ArrayList<>();
 
     /**
@@ -114,7 +120,7 @@ public class UserVM extends BaseValueModel<User> {
         emails = new ValueModelUserEmail("user." + id + ".emails", buildEmails(user.getRecords()));
         links = new ValueModelUserLink("user." + id + ".links", buildLinks(user.getRecords()));
         contacts = new ValueModelContactRecord("user." + id + ".contacts", new ArrayListContactRecord(user.getRecords()));
-
+        botCommands = new ValueModelBotCommands("user." + id + ".bat_commands", new ArrayListBotCommands(user.getCommands()));
         // Notify about presence change every minute as text representation can change
         presenceTimer = new CommonTimer(new Runnable() {
             @Override
@@ -137,6 +143,7 @@ public class UserVM extends BaseValueModel<User> {
         isChanged |= avatar.change(rawObj.getAvatar());
         isChanged |= isBlocked.change(rawObj.isBlocked());
         isChanged |= isVerified.change(rawObj.isVerified());
+        isChanged |= botCommands.change(new ArrayListBotCommands(rawObj.getCommands()));
 
         // TODO: better changed checking?
         isChanged |= phones.change(buildPhones(rawObj.getRecords()));
@@ -344,6 +351,18 @@ public class UserVM extends BaseValueModel<User> {
     public ValueModelContactRecord getContacts() {
         return contacts;
     }
+
+    /**
+     * Get Bot commands
+     *
+     * @return ValueModel of ArrayList of BotCommands
+     */
+    @NotNull
+    @ObjectiveCName("getBotCommandsModel")
+    public ValueModelBotCommands getBotCommands() {
+        return botCommands;
+    }
+
 
     /**
      * Subscribe to UserVM updates

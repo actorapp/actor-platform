@@ -49,7 +49,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Set;
 
-import im.actor.core.api.rpc.ResponseSeqDate;
 import im.actor.core.entity.MentionFilterResult;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
@@ -70,6 +69,7 @@ import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
+import im.actor.sdk.controllers.conversation.botcommands.CommandsAdapter;
 import im.actor.sdk.controllers.conversation.mentions.MentionsAdapter;
 import im.actor.sdk.controllers.conversation.messages.AudioHolder;
 import im.actor.sdk.controllers.conversation.view.FastShareAdapter;
@@ -79,6 +79,7 @@ import im.actor.sdk.intents.ActorIntent;
 import im.actor.sdk.util.Randoms;
 import im.actor.sdk.util.Screen;
 import im.actor.core.utils.GalleryScannerActor;
+import im.actor.sdk.view.adapters.HolderAdapter;
 import im.actor.sdk.view.adapters.RecyclerListView;
 import im.actor.sdk.view.avatar.AvatarView;
 import im.actor.sdk.controllers.conversation.view.TypingDrawable;
@@ -98,6 +99,7 @@ import static im.actor.sdk.util.ActorSDKMessenger.groups;
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 import static im.actor.sdk.util.ActorSDKMessenger.users;
 
+@SuppressWarnings("NullableProblems")
 public class ChatActivity extends ActorEditTextActivity {
 
     public static final String EXTRA_CHAT_PEER = "chat_peer";
@@ -150,10 +152,10 @@ public class ChatActivity extends ActorEditTextActivity {
     private ImageView barTypingIcon;
     // Toolbar typing text
     private TextView barTyping;
-    private boolean isMentionsVisible = false;
+    private boolean isAutocompleteVisible = false;
 
     //////////////////////////////////
-    // Voice messges
+    // Voice messages
     //////////////////////////////////
     private View audioContainer;
     private View recordPoint;
@@ -171,16 +173,17 @@ public class ChatActivity extends ActorEditTextActivity {
     //////////////////////////////////
     // Mentions
     //////////////////////////////////
-    private MentionsAdapter mentionsAdapter;
-    private RecyclerListView mentionsList;
-    private String mentionSearchString = "";
-    private int mentionStart;
-    private FrameLayout quoteContainer;
+    private HolderAdapter autocompleteAdapter;
+    private CommandsAdapter commandsAdapter;
+    private RecyclerListView autocompleteList;
+    private String autocompleteString = "";
+    private int autocompleteTriggerStart;
 
     //////////////////////////////////
     // Quote
     //////////////////////////////////
     private TextView quoteText;
+    private FrameLayout quoteContainer;
     private String currentQuote = "";
     private String sendUri;
 
@@ -217,6 +220,7 @@ public class ChatActivity extends ActorEditTextActivity {
     private long currentEditRid;
     private Animation.AnimationListener animationListener;
     private Menu menu;
+    private boolean isBot = false;
 
     public static Intent build(Peer peer, boolean compose, Context context) {
         final Intent intent = new Intent(context, ChatActivity.class);
@@ -290,8 +294,8 @@ public class ChatActivity extends ActorEditTextActivity {
         });
 
         // Mentions
-        mentionsList = (RecyclerListView) findViewById(R.id.mentionsList);
-        mentionsList.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
+        autocompleteList = (RecyclerListView) findViewById(R.id.mentionsList);
+        autocompleteList.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
 
         //Quote
         quoteContainer = (FrameLayout) findViewById(R.id.quoteContainer);
@@ -559,6 +563,8 @@ public class ChatActivity extends ActorEditTextActivity {
     public void onResume() {
         super.onResume();
 
+        isBot = (peer.getPeerType() == PeerType.PRIVATE && users().get(peer.getPeerId()).isBot());
+
         if (peer.getPeerType() == PeerType.PRIVATE && menu != null) {
             menu.findItem(R.id.add_to_contacts).setVisible(users().get(peer.getPeerId()).isContact().get());
             invalidateOptionsMenu();
@@ -780,7 +786,7 @@ public class ChatActivity extends ActorEditTextActivity {
         }
 
         messageEditText.setText("");
-        mentionSearchString = "";
+        autocompleteString = "";
 
         if (rawText.length() == 0) {
             return;
@@ -1009,25 +1015,34 @@ public class ChatActivity extends ActorEditTextActivity {
     }
 
     // Mentions
+    // Bot commands
 
-    private void showMentions(boolean initEmpty) {
-        if (isMentionsVisible) {
+    private void showAutoComplete(boolean initEmpty, boolean isMentions) {
+        if (isAutocompleteVisible) {
             return;
         }
-        isMentionsVisible = true;
+        isAutocompleteVisible = true;
 
+        if (!isMentions) {
+            autocompleteAdapter = new CommandsAdapter(peer.getPeerId(), this, new CommandsAdapter.CommandsUpdatedCallback() {
+                @Override
+                public void onMentionsUpdated(int oldRowsCount, int newRowsCount) {
+                    onMentionsChanged(oldRowsCount, newRowsCount);
+                }
+            });
+        } else {
+            GroupVM groupInfo = groups().get(peer.getPeerId());
+            autocompleteAdapter = new MentionsAdapter(groupInfo.getId(), this, new MentionsAdapter.MentionsUpdatedCallback() {
 
-        GroupVM groupInfo = groups().get(peer.getPeerId());
-        mentionsAdapter = new MentionsAdapter(groupInfo.getId(), this, new MentionsAdapter.MentionsUpdatedCallback() {
+                @Override
+                public void onMentionsUpdated(int oldRowsCount, int newRowsCount) {
+                    onMentionsChanged(oldRowsCount, newRowsCount);
+                }
+            }, initEmpty);
+        }
 
-            @Override
-            public void onMentionsUpdated(int oldRowsCount, int newRowsCount) {
-                onMentionsChanged(oldRowsCount, newRowsCount);
-            }
-        }, initEmpty);
-
-        mentionsList.setAdapter(mentionsAdapter);
-        mentionsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        autocompleteList.setAdapter(autocompleteAdapter);
+        autocompleteList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Object item = parent.getItemAtPosition(position);
@@ -1035,15 +1050,15 @@ public class ChatActivity extends ActorEditTextActivity {
 
                     String origMention = ((MentionFilterResult) item).getMentionString();
 
-                    if (mentionStart != -1 && mentionStart + mentionSearchString.length() + 1 <= messageEditText.getText().length()) {
+                    if (autocompleteTriggerStart != -1 && autocompleteTriggerStart + autocompleteString.length() + 1 <= messageEditText.getText().length()) {
 
-                        String mentionString = origMention + (mentionStart == 0 ? ": " : " ");
+                        String mentionString = origMention + (autocompleteTriggerStart == 0 ? ": " : " ");
 
                         Editable text = messageEditText.getText();
 
-                        int cursorPosition = mentionStart + mentionString.length();
+                        int cursorPosition = autocompleteTriggerStart + mentionString.length();
 
-                        text.replace(mentionStart, mentionStart + mentionSearchString.length() + 1, mentionString);
+                        text.replace(autocompleteTriggerStart, autocompleteTriggerStart + autocompleteString.length() + 1, mentionString);
 
                         messageEditText.setSelection(cursorPosition, cursorPosition);
                     }
@@ -1052,23 +1067,23 @@ public class ChatActivity extends ActorEditTextActivity {
             }
         });
         hideShare();
-        expandMentions(mentionsList, 0, mentionsList.getCount());
+        expandMentions(autocompleteList, 0, autocompleteList.getCount());
     }
 
     private void hideMentions() {
-        if (!isMentionsVisible) {
+        if (!isAutocompleteVisible) {
             return;
         }
-        isMentionsVisible = false;
+        isAutocompleteVisible = false;
 
-        expandMentions(mentionsList, mentionsAdapter.getCount(), 0);
-        mentionsAdapter = null;
-        mentionsList.setAdapter(null);
+        expandMentions(autocompleteList, autocompleteAdapter.getCount(), 0);
+        autocompleteAdapter = null;
+        autocompleteList.setAdapter(null);
     }
 
     private void onMentionsChanged(int oldRowsCount, int newRowsCount) {
-        if (mentionsAdapter != null) {
-            expandMentions(mentionsList, oldRowsCount, newRowsCount);
+        if (autocompleteAdapter != null) {
+            expandMentions(autocompleteList, oldRowsCount, newRowsCount);
         }
     }
 
@@ -1108,7 +1123,7 @@ public class ChatActivity extends ActorEditTextActivity {
 
     @Override
     public void onBackPressed() {
-        if (isMentionsVisible) {
+        if (isAutocompleteVisible) {
             hideMentions();
         } else if (isShareVisible) {
             hideShare();
@@ -1349,31 +1364,44 @@ public class ChatActivity extends ActorEditTextActivity {
 
             currentWord = currentWord.isEmpty() ? str : currentWord;
 
-            if (peer.getPeerType() == PeerType.GROUP) {
-                //Open mentions
-                if (count == 1 && s.charAt(start) == '@' && !str.endsWith(" ")) {
-                    showMentions(false);
-                    mentionSearchString = "";
+            char autocompleteTriggerChar = '@';
+            String autocompleteTriggerString = "@";
 
-                } else if (currentWord.startsWith("@") && !str.endsWith(" ")) {
-                    showMentions(true);
+
+            if (peer.getPeerType() == PeerType.GROUP || isBot) {
+
+                if (isBot) {
+                    autocompleteTriggerChar = '/';
+                    autocompleteTriggerString = "/";
+                }
+                //Open mentions
+                if (count == 1 && s.charAt(start) == autocompleteTriggerChar && !str.endsWith(" ")) {
+                    showAutoComplete(false, !isBot);
+                    autocompleteString = "";
+
+                } else if (currentWord.startsWith(autocompleteTriggerString) && !str.endsWith(" ")) {
+                    showAutoComplete(true, !isBot);
                 } else {
                     hideMentions();
                 }
 
                 //Set mentions query
-                mentionStart = firstPeace.lastIndexOf("@");
-                if (currentWord.startsWith("@") && currentWord.length() > 1) {
-                    mentionSearchString = currentWord.substring(1, currentWord.length());
+                autocompleteTriggerStart = firstPeace.lastIndexOf(autocompleteTriggerString);
+                if (currentWord.startsWith(autocompleteTriggerString) && currentWord.length() > 1) {
+                    autocompleteString = currentWord.substring(1, currentWord.length());
                 } else {
-                    mentionSearchString = "";
+                    autocompleteString = "";
                 }
 
-                if (mentionSearchString.equals(" ")) {
+                if (autocompleteString.equals(" ")) {
                     hideMentions();
-                } else if (mentionsAdapter != null) {
-                    //mentionsDisplay.initSearch(mentionSearchString, false);
-                    mentionsAdapter.setQuery(mentionSearchString.toLowerCase());
+                } else if (autocompleteAdapter != null) {
+                    //mentionsDisplay.initSearch(autocompleteString, false);
+                    if (autocompleteAdapter instanceof MentionsAdapter) {
+                        ((MentionsAdapter) autocompleteAdapter).setQuery(autocompleteString.toLowerCase());
+                    } else if (autocompleteAdapter instanceof CommandsAdapter) {
+                        ((CommandsAdapter) autocompleteAdapter).setQuery(autocompleteString.toLowerCase());
+                    }
                 }
             }
         }
@@ -1451,8 +1479,8 @@ public class ChatActivity extends ActorEditTextActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mentionsAdapter != null) {
-            mentionsAdapter.dispose();
+        if (autocompleteAdapter != null) {
+            autocompleteAdapter.dispose();
         }
         if (fastShareAdapter != null) {
             fastShareAdapter.release();
