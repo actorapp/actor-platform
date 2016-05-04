@@ -19,7 +19,6 @@ trait DialogRootMigration extends Processor[DialogRootState] {
   private case object EventsPersisted
 
   val userId: Int
-  private val db = DbExtension(context.system).db
   private var needMigrate = true
 
   override def afterCommit(e: Event): Unit = {
@@ -59,7 +58,7 @@ trait DialogRootMigration extends Processor[DialogRootState] {
     context.become(migrating)
 
     (for {
-      models ← db.run(DialogRepo.fetchDialogs(userId))
+      models ← DbExtension(context.system).db.run(DialogRepo.fetchDialogs(userId))
     } yield CreateEvents(models)) pipeTo self
   }
 

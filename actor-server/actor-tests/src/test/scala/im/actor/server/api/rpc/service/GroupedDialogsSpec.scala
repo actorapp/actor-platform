@@ -1,7 +1,9 @@
 package im.actor.server.api.rpc.service
 
+import cats.data.Xor
 import im.actor.api.rpc._
 import im.actor.api.rpc.messaging._
+import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeer, ApiPeerType }
 import im.actor.server.acl.ACLUtils
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
@@ -29,6 +31,8 @@ final class GroupedDialogsSpec
   it should "not be in grouped dialogs if no favourites left" in noGroupInFavAbsent
 
   "Archived dialogs" should "be loaded by desc order" in archived
+
+  "Deleted dialogs" should "not appear in dialog list, and should mark messages as deleted in db" in deleted
 
   private implicit lazy val groupsService = new GroupsServiceImpl(GroupInviteConfig(""))
   private implicit lazy val service = MessagingServiceImpl()
@@ -226,5 +230,48 @@ final class GroupedDialogsSpec
       okResp.dialogs.head.peer.id shouldBe bobPeer.id
       okResp.nextOffset
     }
+  }
+
+  def deleted() = {
+    val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
+    val (bob, _, _, _) = createUser()
+    val (charlie, _, _, _) = createUser()
+
+    implicit val clientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid, 42)))
+    val bobPeer = getOutPeer(bob.id, aliceAuthId)
+    val charliePeer = getOutPeer(charlie.id, aliceAuthId)
+
+    prepareDialogs(bob, charlie)
+
+    val mobileBefore = loadDialogs()
+    mobileBefore should have length 2
+
+    val groupBefore = getDialogGroups()
+    groupBefore("privates") should have length 2
+
+    whenReady(service.handleLoadHistory(charliePeer, 0L, None, 100, Vector.empty)) { resp ⇒
+      inside(resp) {
+        case Xor.Right(histResp) ⇒ histResp.history should have length 1
+      }
+    }
+
+    whenReady(service.handleDeleteChat(charliePeer)) { resp ⇒
+      resp should matchPattern {
+        case Ok(ResponseSeq(_, _)) ⇒
+      }
+    }
+
+    whenReady(service.handleLoadHistory(charliePeer, 0L, None, 100, Vector.empty)) { resp ⇒
+      inside(resp) {
+        case Xor.Right(histResp) ⇒ histResp.history shouldBe empty
+      }
+    }
+
+    val mobileAfter = loadDialogs()
+    mobileAfter should have length 1
+    mobileAfter.head.peer.id shouldEqual bobPeer.id
+
+    val groupAfter = getDialogGroups()
+    groupAfter("privates") should have length 1
   }
 }

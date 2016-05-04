@@ -94,6 +94,14 @@ private[dialog] case class ActiveDialogs(
     }
   }
 
+  def withDeletedPeer(peer: Peer) = {
+    peer.typ match {
+      case PeerType.Private ⇒ copy(dms = dms - peer, favourites = favourites - peer)
+      case PeerType.Group   ⇒ copy(groups = groups - peer, favourites = favourites - peer)
+      case unknown          ⇒ throw PeerErrors.UnknownPeerType(unknown)
+    }
+  }
+
   def exists(f: Peer ⇒ Boolean) = favourites.exists(f) || groups.exists(f) || dms.exists(f)
 
   def map[A](f: Peer ⇒ A) = favourites.map(f) ++ groups.map(f) ++ dms.map(f)
@@ -128,6 +136,7 @@ private[dialog] final case class DialogRootState(
     case Unarchived(ts, Some(peer))   ⇒ withUnarchivedPeer(ts, peer)
     case Favourited(ts, Some(peer))   ⇒ withFavouritedPeer(ts, peer)
     case Unfavourited(ts, Some(peer)) ⇒ withUnfavouritedPeer(ts, peer)
+    case Deleted(ts, Some(peer))      ⇒ withDeletedPeer(ts, peer)
     case Bumped(ts, Some(peer))       ⇒ withBumpedPeer(ts, peer)
     case Initialized(_)               ⇒ this
   }
@@ -232,6 +241,15 @@ private[dialog] final case class DialogRootState(
   private def withUnfavouritedPeer(ts: Instant, peer: Peer) = {
     copy(
       active = this.active.withUnfavouritedPeer(peer)
+    )
+  }
+
+  private def withDeletedPeer(ts: Instant, peer: Peer) = {
+    copy(
+      active = this.active.withDeletedPeer(peer),
+      archived = this.archived.filterNot(_.peer == peer),
+      mobile = this.mobile.filterNot(_.peer == peer),
+      mobilePeers = this.mobilePeers - peer
     )
   }
 
