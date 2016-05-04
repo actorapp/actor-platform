@@ -275,6 +275,9 @@
     <string name="edit_message">Edit last message</string>
     <string name="edit_message_error_not_last">Only your last message can be edited</string>
     <string name="edit_message_error_slowpoke">The message is too old</string>
+    <string name="message_forwarded">Forwarded from </string>
+    <string name="messages_forwarded">Forwarded from {0} and {1} others</string>
+    <string name="messages_quoted">Quoted From </string>
 
     <!-- Share menu-->
     <string name="share_menu_gallery">Gallery</string>
