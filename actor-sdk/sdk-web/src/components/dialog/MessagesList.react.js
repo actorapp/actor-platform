@@ -92,6 +92,7 @@ class MessagesList extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (!PeerUtils.equals(nextProps.peer, this.props.peer)) {
+      console.debug('Peer changed, set dimensions to null');
       this.dimensions = null;
       this.isLoading = false;
     }
@@ -105,32 +106,39 @@ class MessagesList extends Component {
     const { dimensions, refs: { scroller }, props: { uid, messages } } = this;
 
     if (messages.changeReason === MessageChangeReason.PUSH) {
-      if (!dimensions || isLastMessageMine(uid, messages)) {
+      const _isLastMessageMine = isLastMessageMine(uid, messages);
+      if (!dimensions || _isLastMessageMine) {
+        console.debug('Scroll to bottom due new messages PUSH', { dimensions, _isLastMessageMine });
         scroller.scrollToBottom();
       }
     } else if (messages.changeReason === MessageChangeReason.UNSHIFT) {
       this.isLoading = false;
       if (dimensions) {
-        const currDimensions = scroller.getDimensions();
-        scroller.scrollTo(currDimensions.scrollHeight - dimensions.scrollHeight);
+        const nextDimensions = scroller.getDimensions();
+        console.debug('Restore scroll due messages unshift', { dimensions, nextDimensions });
+        scroller.scrollTo(nextDimensions.scrollHeight - dimensions.scrollHeight);
       } else {
+        console.debug('Scroll to bottom due messages have been UNSHIFT', { dimensions });
         scroller.scrollToBottom();
       }
     } else {
+      console.debug('Restore scroll due messages UPDATE');
       this.restoreScroll();
     }
   }
 
   onScroll() {
     const dimensions = this.refs.scroller.getDimensions();
-
     if (dimensions.scrollHeight === dimensions.scrollTop + dimensions.offsetHeight) {
+      console.debug('Handle scroll: lock scroll to bottom', { dimensions });
       this.dimensions = null;
     } else {
+      console.debug('Handle scroll: set new dimensions', { dimensions });
       this.dimensions = dimensions;
     }
 
     if (!this.isLoading && dimensions.scrollTop < 100) {
+      console.debug('Start loading more messages');
       this.isLoading = true;
       this.props.onLoadMore();
     }
@@ -145,8 +153,10 @@ class MessagesList extends Component {
       const nextDimensions = scroller.getDimensions();
       scroller.scrollTo(ratio * nextDimensions.scrollHeight);
       this.dimensions = nextDimensions;
+      console.debug('Handle resize: fix scroll', { dimensions, ratio, nextDimensions });
     } else {
       scroller.scrollToBottom();
+      console.debug('Handle resize: scroll to bottom', { dimensions });
     }
   }
 
