@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import im.actor.core.api.ApiQuotedMessage;
+import im.actor.core.entity.content.EmptyContent;
 import im.actor.runtime.bser.Bser;
 import im.actor.runtime.bser.BserCreator;
 import im.actor.runtime.bser.BserObject;
@@ -49,13 +51,21 @@ public class Message extends BserObject implements ListEngineItem {
     private List<Reaction> reactions;
     @Property("readonly, nonatomic")
     private int contentIndex;
+    @Property("readonly, nonatomic")
+    private QuotedMessage quotedMessage;
 
     public Message(long rid, long sortDate, long date, int senderId, MessageState messageState, AbsContent content) {
-        this(rid, sortDate, date, senderId, messageState, content, new ArrayList<Reaction>(), 0);
+        this(rid, sortDate, date, senderId, messageState, content, new ArrayList<Reaction>(), 0, null);
     }
 
     public Message(long rid, long sortDate, long date, int senderId, MessageState messageState, AbsContent content,
                    List<Reaction> reactions, int contentIndex) {
+        this(rid, sortDate, date, senderId, messageState, content, new ArrayList<Reaction>(), contentIndex, null);
+
+    }
+
+    public Message(long rid, long sortDate, long date, int senderId, MessageState messageState, AbsContent content,
+                   List<Reaction> reactions, int contentIndex, QuotedMessage quotedMessage) {
         this.rid = rid;
         this.sortDate = sortDate;
         this.date = date;
@@ -64,6 +74,7 @@ public class Message extends BserObject implements ListEngineItem {
         this.content = content;
         this.reactions = reactions;
         this.contentIndex = contentIndex;
+        this.quotedMessage = quotedMessage;
     }
 
     protected Message() {
@@ -98,6 +109,10 @@ public class Message extends BserObject implements ListEngineItem {
         return contentIndex;
     }
 
+    public QuotedMessage getQuotedMessage() {
+        return quotedMessage;
+    }
+
     public boolean isSent() {
         return messageState == MessageState.SENT;
     }
@@ -111,27 +126,29 @@ public class Message extends BserObject implements ListEngineItem {
     }
 
     public AbsContent getContent() {
+        if (content instanceof EmptyContent && quotedMessage != null && quotedMessage.getContent() != null)
+            return quotedMessage.getContent();
         return content;
     }
 
     public Message changeState(MessageState messageState) {
-        return new Message(rid, sortDate, date, senderId, messageState, content, reactions, contentIndex);
+        return new Message(rid, sortDate, date, senderId, messageState, content, reactions, contentIndex, quotedMessage);
     }
 
     public Message changeDate(long date) {
-        return new Message(rid, sortDate, date, senderId, messageState, content, reactions, contentIndex);
+        return new Message(rid, sortDate, date, senderId, messageState, content, reactions, contentIndex, quotedMessage);
     }
 
     public Message changeAllDate(long date) {
-        return new Message(rid, date, date, senderId, messageState, content, reactions, contentIndex);
+        return new Message(rid, date, date, senderId, messageState, content, reactions, contentIndex, quotedMessage);
     }
 
     public Message changeContent(AbsContent content) {
-        return new Message(rid, sortDate, date, senderId, messageState, content, reactions, contentIndex + 1);
+        return new Message(rid, sortDate, date, senderId, messageState, content, reactions, contentIndex + 1, quotedMessage);
     }
 
     public Message changeReactions(List<Reaction> reactions) {
-        return new Message(rid, sortDate, date, senderId, messageState, content, reactions, contentIndex);
+        return new Message(rid, sortDate, date, senderId, messageState, content, reactions, contentIndex, quotedMessage);
     }
 
     @Override
@@ -147,6 +164,7 @@ public class Message extends BserObject implements ListEngineItem {
             reactions.add(Reaction.fromBytes(react));
         }
         contentIndex = values.getInt(8, 0);
+        quotedMessage = values.optObj(9, new QuotedMessage());
     }
 
     @Override
@@ -159,6 +177,8 @@ public class Message extends BserObject implements ListEngineItem {
         writer.writeBytes(6, AbsContent.serialize(content));
         writer.writeRepeatedObj(7, reactions);
         writer.writeInt(8, contentIndex);
+        if (quotedMessage != null)
+            writer.writeObject(9, quotedMessage);
     }
 
     @Override
