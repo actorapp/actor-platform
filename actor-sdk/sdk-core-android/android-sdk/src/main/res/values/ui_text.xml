@@ -266,6 +266,9 @@
 
     <string name="chat_not_member">You are not a member of this group</string>
 
+    <string name="chat_empty_bot">START</string>
+    <string name="chat_empty_bot_about">No description for this bot yet</string>
+
     <string name="chat_unsupported">The message is not supported in this version. Please, wait for the application to update to see message.</string>
     <string name="online">\u25CF online</string>
 

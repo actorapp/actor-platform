@@ -443,6 +443,8 @@ public class User extends WrapperExtEntity<ApiFullUser, ApiUser> implements KeyV
         if (ext != null) {
             this.haveExtension = true;
             this.records = new ArrayList<>();
+            this.commands = new ArrayList<BotCommand>();
+
             if (ext.isBlocked() != null) {
                 this.isBlocked = ext.isBlocked();
             } else {
