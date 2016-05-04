@@ -63,13 +63,14 @@ class MessageActionCreators {
     dispatch(ActionTypes.MESSAGE_LIKE_REMOVE, { peer, rid });
   }
 
-  setMessages(messages, overlay, isLoaded, receiveDate, readDate) {
+  setMessages(messages, overlay, isLoaded, receiveDate, readDate, readByMeDate) {
     dispatch(ActionTypes.MESSAGES_CHANGED, {
       messages,
       overlay,
       isLoaded,
       receiveDate,
-      readDate
+      readDate,
+      readByMeDate
     });
   }
 

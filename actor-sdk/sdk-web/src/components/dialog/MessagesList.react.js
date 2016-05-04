@@ -37,6 +37,7 @@ class MessagesList extends Component {
       isLoaded: PropTypes.bool.isRequired,
       receiveDate: PropTypes.number.isRequired,
       readDate: PropTypes.number.isRequired,
+      readByMeDate: PropTypes.number.isRequired,
       selected: PropTypes.object.isRequired,
       changeReason: PropTypes.oneOf([
         MessageChangeReason.UNKNOWN,

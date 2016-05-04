@@ -119,6 +119,8 @@ class ActorClient {
       }
     });
 
+    binding.initAll();
+
     return {
       unbind() {
         binding.unbind();
