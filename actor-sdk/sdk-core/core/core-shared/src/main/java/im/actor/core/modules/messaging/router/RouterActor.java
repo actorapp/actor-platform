@@ -8,6 +8,7 @@ import java.util.List;
 import im.actor.core.api.ApiDialogGroup;
 import im.actor.core.api.ApiDialogShort;
 import im.actor.core.api.ApiMessageReaction;
+import im.actor.core.api.ApiQuotedMessage;
 import im.actor.core.api.rpc.RequestLoadGroupedDialogs;
 import im.actor.core.api.updates.UpdateChatClear;
 import im.actor.core.api.updates.UpdateChatDelete;
@@ -31,6 +32,7 @@ import im.actor.core.entity.PeerType;
 import im.actor.core.entity.Reaction;
 import im.actor.core.entity.User;
 import im.actor.core.entity.content.AbsContent;
+import im.actor.core.entity.content.EmptyContent;
 import im.actor.core.entity.content.TextContent;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleActor;
@@ -710,6 +712,15 @@ public class RouterActor extends ModuleActor {
             Peer peer = convert(msg.getPeer());
 
             AbsContent msgContent = AbsContent.fromMessage(msg.getMessage());
+            QuotedMessage quotedMessage = null;
+            if (msg.getQuotedMessage() != null)
+            {
+                ApiQuotedMessage apiQuotedMessage = msg.getQuotedMessage();
+                AbsContent quotedContent = AbsContent.fromMessage(apiQuotedMessage.getQuotedMessageContent());
+
+                quotedMessage = new QuotedMessage(apiQuotedMessage.getMessageId(), apiQuotedMessage.getPublicGroupId(), apiQuotedMessage.getSenderUserId()
+                , apiQuotedMessage.getMessageDate(), quotedContent);
+            }
 
             Message message = new Message(
                     msg.getRid(),
@@ -717,7 +728,10 @@ public class RouterActor extends ModuleActor {
                     msg.getDate(),
                     msg.getSenderUid(),
                     myUid() == msg.getSenderUid() ? MessageState.SENT : MessageState.UNKNOWN,
-                    msgContent);
+                    msgContent,
+                    new ArrayList<Reaction>(),
+                    0,
+                    quotedMessage);
 
             ArrayList<Message> messages = new ArrayList<>();
             messages.add(message);
