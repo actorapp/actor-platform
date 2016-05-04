@@ -33,6 +33,9 @@ import android.widget.Toast;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
@@ -59,9 +62,7 @@ import im.actor.runtime.generic.mvvm.AndroidListUpdate;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.runtime.generic.mvvm.DisplayList;
 
-import static im.actor.sdk.util.ActorSDKMessenger.messenger;
-import static im.actor.sdk.util.ActorSDKMessenger.myUid;
-import static im.actor.sdk.util.ActorSDKMessenger.users;
+import static im.actor.sdk.util.ActorSDKMessenger.*;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class MessagesFragment extends DisplayListFragment<Message, MessageHolder> {
@@ -369,7 +370,7 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
                     }
 
                     menu.findItem(R.id.copy).setVisible(isAllText);
-                    menu.findItem(R.id.quote).setVisible(isAllText);
+                    menu.findItem(R.id.quote).setVisible(selected.length == 1);
                     menu.findItem(R.id.forward).setVisible(selected.length == 1 || isAllText);
                     menu.findItem(R.id.like).setVisible(selected.length == 1);
                     menu.findItem(R.id.shortcut).setVisible(peer.getPeerType() == PeerType.PRIVATE & selected.length == 1 && isAllText && users().get(peer.getPeerId()).isBot());
@@ -450,71 +451,64 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
                         return true;
 
                     } else if (menuItem.getItemId() == R.id.quote) {
-                        String quote = "";
-                        String rawQuote = "";
-                        int i = 0;
-                        for (Message m : messagesAdapter.getSelected()) {
-                            if (m.getContent() instanceof TextContent) {
-                                UserVM user = users().get(m.getSenderId());
-                                String nick = user.getNick().get();
-                                String name = (nick != null && !nick.isEmpty()) ? "@".concat(nick) : user.getName().get();
-                                String text = ((TextContent) m.getContent()).getText();
-                                quote = quote.concat(name).concat(": ").concat(text);
-                                rawQuote = rawQuote.concat(name).concat(": ").concat(text).concat("\n");
-                                if (i++ != messagesAdapter.getSelectedCount() - 1) {
-                                    quote += ";\n";
-                                } else {
-                                    quote += "\n";
-                                }
-                            }
-                        }
-                        ((ChatActivity) getActivity()).addQuote(quote, rawQuote);
+                        Message m = messagesAdapter.getSelected()[0];
+                        ((ChatActivity) getActivity()).addQuote(m);
+
+//                        String quote = "";
+//                        String rawQuote = "";
+//                        int i = 0;
+//                        for (Message m : messagesAdapter.getSelected()) {
+//                            if (m.getContent() instanceof TextContent) {
+//                                UserVM user = users().get(m.getSenderId());
+//                                String nick = user.getNick().get();
+//                                String name = (nick != null && !nick.isEmpty()) ? "@".concat(nick) : user.getName().get();
+//                                String text = ((TextContent) m.getContent()).getText();
+//                                quote = quote.concat(name).concat(": ").concat(text);
+//                                rawQuote = rawQuote.concat(name).concat(": ").concat(text).concat("\n");
+//                                if (i++ != messagesAdapter.getSelectedCount() - 1) {
+//                                    quote += ";\n";
+//                                } else {
+//                                    quote += "\n";
+//                                }
+//                            }
+//                        }
+//                        ((ChatActivity) getActivity()).addQuote(quote, rawQuote);
+
                         actionMode.finish();
                         return true;
 
                     } else if (menuItem.getItemId() == R.id.forward) {
                         Intent i = new Intent(getActivity(), ActorMainActivity.class);
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        if (messagesAdapter.getSelected().length == 1) {
-                            Message m = messagesAdapter.getSelected()[0];
-                            if (m.getContent() instanceof TextContent) {
-                                UserVM user = users().get(m.getSenderId());
-                                String nick = user.getNick().get();
-                                String name = (nick != null && !nick.isEmpty()) ? "@".concat(nick) : user.getName().get();
-                                String text = ((TextContent) m.getContent()).getText();
-                                String forward = name.concat(": ").concat(text).concat("\n");
-                                i.putExtra("forward_text", forward);
-                                i.putExtra("forward_text_raw", forward);
-                            } else if (!(m.getContent() instanceof UnsupportedContent)) {
-                                AbsContent fileMessage = m.getContent();
-                                try {
-                                    i.putExtra("forward_content", AbsContent.serialize(fileMessage));
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
+
+                        List<Long> forwardRids = new ArrayList<Long>(messagesAdapter.getSelected().length);
+                        List<String> forwardSenderNames = new ArrayList<String>(messagesAdapter.getSelected().length);
+
+                        for (Message m: messagesAdapter.getSelected())
+                        {
+                            int forwardUid;
+                            String senderName="";
+
+
+                            if (m.getQuotedMessage() == null) {
+                                forwardUid =  m.getSenderId();
+                                senderName = users().get(forwardUid).getName().get();
+                            } else if (m.getQuotedMessage() != null && m.getQuotedMessage().getPublicGroupId() != 0)
+                            {
+                                forwardUid = m.getQuotedMessage().getPublicGroupId();
+                                senderName = groups().get(forwardUid).getName().get();
+                            } else if (m.getQuotedMessage() != null && m.getQuotedMessage().getPublicGroupId() == 0){
+                                forwardUid = m.getQuotedMessage().getSenderId();
+                                senderName = users().get(forwardUid).getName().get();
                             }
-                        } else {
-                            String quote = "";
-                            String rawQuote = "";
-                            int j = 0;
-                            for (Message m : messagesAdapter.getSelected()) {
-                                if (m.getContent() instanceof TextContent) {
-                                    UserVM user = users().get(m.getSenderId());
-                                    String nick = user.getNick().get();
-                                    String name = (nick != null && !nick.isEmpty()) ? "@".concat(nick) : user.getName().get();
-                                    String text = ((TextContent) m.getContent()).getText();
-                                    quote = quote.concat(name).concat(": ").concat(text);
-                                    rawQuote = rawQuote.concat(name).concat(": ").concat(text).concat("\n");
-                                    if (j++ != messagesAdapter.getSelectedCount() - 1) {
-                                        quote += ";\n";
-                                    } else {
-                                        quote += "\n";
-                                    }
-                                }
-                            }
-                            i.putExtra("forward_text", quote);
-                            i.putExtra("forward_text_raw", rawQuote);
+
+                            forwardRids.add(m.getRid());
+                            forwardSenderNames.add(senderName);
                         }
+                        i.putExtra("forwarded_message_sender_rids", (Serializable) forwardRids);
+                        i.putExtra("forwarded_message_sender_names", (Serializable) forwardSenderNames);
+                        i.putExtra("forwarded_peer", getPeer().toByteArray());
+
                         actionMode.finish();
                         startActivity(i);
                         getActivity().finish();
