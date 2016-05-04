@@ -625,10 +625,10 @@ public class Authentication {
     private void onLoggedIn(final CommandCallback<AuthState> callback, ResponseAuth response) {
         state = AuthState.LOGGED_IN;
         myUid = response.getUser().getId();
-        modules.getPreferences().putBool(KEY_AUTH, true);
-        modules.getPreferences().putInt(KEY_AUTH_UID, myUid);
         modules.onLoggedIn(true);
         modules.getUsersModule().getUsersStorage().addOrUpdateItem(new User(response.getUser(), null));
+        modules.getPreferences().putBool(KEY_AUTH, true);
+        modules.getPreferences().putInt(KEY_AUTH_UID, myUid);
         callback.onResult(state);
     }
 
