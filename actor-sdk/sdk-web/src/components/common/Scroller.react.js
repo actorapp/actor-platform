@@ -78,11 +78,13 @@ class Scroller extends Component {
   }
 
   scrollTo(offset) {
+    console.debug(`Scroll to: ${offset}`);
     this.container.scrollTop = offset;
   }
 
   scrollToBottom() {
-    this.scrollTo(this.container.scrollHeight);
+    console.debug('Scroll to: bottom');
+    this.container.scrollTop = this.container.scrollHeight;
   }
 }
 
