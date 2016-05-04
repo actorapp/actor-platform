@@ -211,7 +211,7 @@ class MessagesList extends Component {
     }
 
     return (
-      <div className="chat__messages__scroll-to-bottom" onClick={this.handleScrollToBottom}>
+      <div className="chat__scroll-to-bottom" onClick={this.handleScrollToBottom}>
         <i className="material-icons">keyboard_arrow_down</i>
       </div>
     );
@@ -219,16 +219,18 @@ class MessagesList extends Component {
 
   render() {
     return (
-      <Scroller
-        className="chat__messages"
-        ref="scroller"
-        onScroll={this.onScroll}
-        onResize={this.onResize}
-      >
-        {this.renderHeader()}
-        {this.renderMessages()}
+      <div className="chat__container">
+        <Scroller
+          className="chat__messages"
+          ref="scroller"
+          onScroll={this.onScroll}
+          onResize={this.onResize}
+        >
+          {this.renderHeader()}
+          {this.renderMessages()}
+        </Scroller>
         {this.renderScrollToBottomButton()}
-      </Scroller>
+      </div>
     )
   }
 

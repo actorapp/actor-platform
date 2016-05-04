@@ -9,19 +9,16 @@ $chat-footer-height: 100px;
 
   flex: 1 1 auto;
   justify-content: flex-end;
-}
-
-.chat__messages {
-  position: relative;
-  .message {
-    min-height: min-content;
+  &__container {
+    display: flex;
+    position: relative;
   }
 
   &__scroll-to-bottom {
-    position: fixed;
-    right: 18px;
-    top: 82px;
-    border-radius: 2px;
+    position: absolute;;
+    right: 32px;
+    bottom: 0;
+    border-radius: $default-border-radius;
     border: 1px solid $dark-sky-blue2;
     background-color: rgba(white, .7);
     color: $dark-sky-blue2;
@@ -32,6 +29,13 @@ $chat-footer-height: 100px;
       color: white;
       background-color: $dark-sky-blue2;
     }
+  }
+}
+
+.chat__messages {
+  position: relative;
+  .message {
+    min-height: min-content;
   }
 }
 
