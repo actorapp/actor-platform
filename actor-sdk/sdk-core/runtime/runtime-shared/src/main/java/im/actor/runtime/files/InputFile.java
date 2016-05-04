@@ -6,10 +6,14 @@ package im.actor.runtime.files;
 
 import com.google.j2objc.annotations.ObjectiveCName;
 
+import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.promise.Promise;
+
 public interface InputFile {
-    @ObjectiveCName("readWithOffset:withData:withDataOffset:withLength:withCallback:")
-    void read(int fileOffset, byte[] data, int offset, int len, FileReadCallback callback);
+
+    @ObjectiveCName("readWithOffset:withLength:")
+    Promise<FilePart> read(int fileOffset, int len);
 
     @ObjectiveCName("close")
-    boolean close();
+    Promise<Void> close();
 }
