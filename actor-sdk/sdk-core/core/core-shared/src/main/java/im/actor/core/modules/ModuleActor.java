@@ -35,6 +35,7 @@ import im.actor.runtime.eventbus.Event;
 import im.actor.runtime.promise.Promises;
 import im.actor.runtime.promise.PromisesArray;
 import im.actor.runtime.storage.KeyValueEngine;
+import im.actor.runtime.storage.ListEngine;
 import im.actor.runtime.storage.PreferencesStorage;
 
 public class ModuleActor extends AskcableActor implements BusSubscriber {
@@ -94,6 +95,15 @@ public class ModuleActor extends AskcableActor implements BusSubscriber {
     public KeyValueEngine<Group> groups() {
         return context.getGroupsModule().getGroups();
     }
+
+    public ListEngine<Message> conversations(Peer peer) {
+        return context.getMessagesModule().getConversationEngine(peer);
+    }
+
+    public ListEngine<Message> conversationsDocs(Peer peer) {
+        return context.getMessagesModule().getConversationDocsEngine(peer);
+    }
+
 
     public Group getGroup(int gid) {
         return groups().getValue(gid);
