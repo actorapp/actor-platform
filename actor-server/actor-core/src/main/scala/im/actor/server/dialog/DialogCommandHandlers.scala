@@ -74,11 +74,36 @@ trait DialogCommandHandlers extends PeersImplicits with HistoryImplicits with Us
     }
   }
 
+  private def withQuotedMessage(peer: Peer, sm: SendMessage)(f: Option[ApiQuotedMessage] ⇒ Unit): Unit = {
+    //remove publicGroupId and quotedMessageId per user
+    //      if (sm.quotedMessage.map(qm => if(qm.getPeer.typ.isGroup) ) )
+    sm.quotedMessage match {
+      case Some(quoted) ⇒
+        val quotedPeer = quoted.getPeer
+        val temp = for {
+          group ← if (quotedPeer.typ.isGroup) db.run(GroupRepo.findFull(quotedPeer.id)) else FastFuture.successful(None)
+          isMember ← if (quotedPeer.typ.isGroup) (groupExt.isMember(group.get.id, userId)) else FastFuture.successful(false)
+        } yield {
+            val publicGroupId = if (quotedPeer.typ.isGroup && ((group.get.isPublic || isMember) && quotedPeer.id != peer.id))
+              (Some(Int32Value(group.get.id))) else (None) // remove the public group on dialogCommandHandlers per user of revieve group
+            val quotedMessageId = if ((quotedPeer.id != peer.id) || (quotedPeer.typ.isGroup && (!group.get.isPublic && !isMember)) ||
+                (quotedPeer.typ.isPrivate && quotedPeer.id != peer.id)) (None) else (quoted.messageId)
+            val quotedMessage = ((sm.getQuotedMessage.copy(messageId = quotedMessageId).copy(publicGroupId = publicGroupId)).asStruct)
+            f(Some(quotedMessage))
+          }
+      case _ ⇒
+        f(None)
+
+    }
+
+  }
+
   protected def ackSendMessage(sm: SendMessage): Unit = {
     val messageDate = sm.date getOrElse {
       throw new RuntimeException("No message date found in SendMessage")
     }
 
+    val replyTo = sender()
     persistAsync(NewMessage(sm.randomId, Instant.ofEpochMilli(messageDate.value), sm.getOrigin.id, sm.message.header)) { e ⇒
       commit(e)
 
@@ -87,39 +112,24 @@ trait DialogCommandHandlers extends PeersImplicits with HistoryImplicits with Us
         SocialManager.recordRelation(userId, sm.getOrigin.id)
       }
 
-      //remove publicGroupId and quotedMessageId per user
-      //      if (sm.quotedMessage.map(qm => if(qm.getPeer.typ.isGroup) ) )
-      sm.quotedMessage match {
-        case Some(quoted) ⇒ {
-          val quotedPeer = quoted.getPeer
-          for {
-            group ← if (quotedPeer.typ.isGroup) db.run(GroupRepo.findFull(quotedPeer.id)) else Future.successful(None)
-            isMember ← if (quotedPeer.typ.isGroup) (groupExt.isMember(group.get.id, userId)) else Future.successful(false)
-            publicGroupId = if (quotedPeer.typ.isGroup && ((group.get.isPublic || isMember) && quotedPeer.id != peer.id)) Some(Int32Value(group.get.id)) else None // remove the public group on dialogCommandHandlers per user of revieve group
-            quotedMessageId = if ((quotedPeer.id != peer.id) || (quotedPeer.typ.isGroup && (!group.get.isPublic && !isMember)) || (quotedPeer.typ.isPrivate && quotedPeer.id != peer.id)) None else quoted.messageId
-            quotedMessage = Some(sm.getQuotedMessage.copy(messageId = quotedMessageId).copy(publicGroupId = publicGroupId))
-            result = deliveryExt
-              .receiverDelivery(userId, sm.getOrigin.id, peer, sm.randomId, messageDate.value, sm.message, sm.isFat, quotedMessage map (_.asStruct))
-              .map(_ ⇒ SendMessageAck())
-              .pipeTo(sender())
-          } yield result
-        }
-        case _ ⇒
-          deliveryExt
-            .receiverDelivery(userId, sm.getOrigin.id, peer, sm.randomId, messageDate.value, sm.message, sm.isFat, None)
-            .map(_ ⇒ SendMessageAck())
-            .pipeTo(sender())
+      withQuotedMessage(peer, sm) { quotedMessage ⇒
+
+        deliveryExt
+          .receiverDelivery(userId, sm.getOrigin.id, peer, sm.randomId, messageDate.value, sm.message, sm.isFat, quotedMessage)
+          .map(_ ⇒ SendMessageAck())
+          .pipeTo(replyTo)
+        deliveryExt.sendCountersUpdate(userId)
       }
-      deliveryExt.sendCountersUpdate(userId)
+
     }
   }
 
   protected def writeMessageSelf(
-    senderUserId: Int,
-    dateMillis:   Long,
-    randomId:     Long,
-    message:      ApiMessage
-  ): Unit = {
+                                  senderUserId: Int,
+                                  dateMillis:   Long,
+                                  randomId:     Long,
+                                  message:      ApiMessage
+                                  ): Unit = {
     if (peer.`type` == PeerType.Private && peer.id != senderUserId && userId != senderUserId) {
       sender() ! Status.Failure(new RuntimeException(s"writeMessageSelf with senderUserId $senderUserId in dialog of user $userId with user ${peer.id}"))
     } else {
