@@ -359,16 +359,20 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
                 GroupTypingVM groupTypingVM = context().getTypingModule().getGroupTyping(peer.getPeerId());
                 final JsBindedValue<JsTyping> value = new JsBindedValue<>();
                 groupTypingVM.getActive().subscribe((val, valueModel) -> {
-                    ArrayList<String> names = new ArrayList<>();
-                    for (int i : val) {
-                        names.add(context()
-                                .getUsersModule()
-                                .getUsers()
-                                .get(i)
-                                .getName()
-                                .get());
+                    if (val.length > 0) {
+                        ArrayList<String> names = new ArrayList<>();
+                        for (int i : val) {
+                            names.add(context()
+                                    .getUsersModule()
+                                    .getUsers()
+                                    .get(i)
+                                    .getName()
+                                    .get());
+                        }
+                        value.changeValue(JsTyping.create(messenger.getFormatter().formatTyping(names)));
+                    } else {
+                        value.changeValue(JsTyping.create(null));
                     }
-                    value.changeValue(JsTyping.create(messenger.getFormatter().formatTyping(names)));
                 });
                 typing.put(peer, value);
             } else {
