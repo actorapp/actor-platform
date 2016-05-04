@@ -154,6 +154,9 @@ public abstract class AbsContent {
                 } else if (content instanceof ApiStickerMessage) {
                     return new StickerContent(remoteContainer);
                 }
+                else if (content instanceof ApiEmptyMessage) {
+                    return new EmptyContent(remoteContainer);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
