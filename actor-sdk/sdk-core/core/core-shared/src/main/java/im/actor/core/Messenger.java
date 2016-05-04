@@ -720,6 +720,18 @@ public class Messenger {
     }
 
     /**
+     * forward message
+     *
+     * @param peer     destination peer
+     * @param fromPeer destination peer
+     * @param rid      rid to be forwarded
+     */
+    @ObjectiveCName("forwardMessageWithPeer:withMessage:")
+    public void forwardMessage(@NotNull Peer peer, @NotNull Peer fromPeer, @NotNull Long rid) {
+        modules.getMessagesModule().forwardMessage(peer, fromPeer, rid);
+    }
+
+    /**
      * Send Markdown Message with mentions
      *
      * @param peer         destination peer
@@ -731,6 +743,21 @@ public class Messenger {
     public void sendMessage(@NotNull Peer peer, @NotNull String text, @Nullable String markDownText,
                             @Nullable ArrayList<Integer> mentions, boolean autoDetect) {
         modules.getMessagesModule().sendMessage(peer, text, markDownText, mentions, autoDetect);
+    }
+
+    /**
+     * Send Markdown Message with mentions and repyRid
+     *
+     * @param peer         destination peer
+     * @param text         message text
+     * @param markDownText message markdown text
+     * @param mentions     user's mentions
+     * @param replyRid     rid of repyed message
+     */
+    @ObjectiveCName("sendMessageWithPeer:withText:withMarkdownText:withMentions:autoDetect:")
+    public void sendMessage(@NotNull Peer peer, @NotNull String text, @Nullable String markDownText,
+                            @Nullable ArrayList<Integer> mentions, boolean autoDetect, @Nullable Long replyRid) {
+        modules.getMessagesModule().sendMessage(peer, text, markDownText, mentions, autoDetect, replyRid);
     }
 
     /**
@@ -810,6 +837,18 @@ public class Messenger {
     @ObjectiveCName("sendMessageWithPeer:withText:")
     public void sendMessage(@NotNull Peer peer, @NotNull String text) {
         sendMessage(peer, text, null, null, true);
+    }
+
+    /**
+     * Send Text Message with reply rid
+     *
+     * @param peer destination peer
+     * @param text message text
+     * @param replyRid rid of replyed message
+     */
+    @ObjectiveCName("sendMessageWithPeer:withText:")
+    public void sendMessage(@NotNull Peer peer, @NotNull String text, @NotNull Long replyRid) {
+        sendMessage(peer, text, null, null, true, replyRid);
     }
 
     /**
