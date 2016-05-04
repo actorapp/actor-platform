@@ -19,6 +19,7 @@ class MessageStore extends ReduceStore {
       isLoaded: false,
       receiveDate: 0,
       readDate: 0,
+      readByMeDate: 0,
       count: 0,
       firstMessageId: null,
       lastMessageId: null,
@@ -50,6 +51,7 @@ class MessageStore extends ReduceStore {
             overlay: action.overlay,
             receiveDate: action.receiveDate,
             readDate: action.readDate,
+            readByMeDate: action.readByMeDate,
             isLoaded: action.isLoaded,
             count: Math.min(action.messages.length, state.count + MESSAGE_COUNT_STEP),
             changeReason: MessageChangeReason.UNSHIFT
@@ -65,6 +67,7 @@ class MessageStore extends ReduceStore {
             overlay: action.overlay,
             receiveDate: action.receiveDate,
             readDate: action.readDate,
+            readByMeDate: action.readByMeDate,
             isLoaded: action.isLoaded,
             count: Math.min(action.messages.length, state.count + action.messages.length - state.messages.length),
             changeReason: MessageChangeReason.PUSH
@@ -79,6 +82,7 @@ class MessageStore extends ReduceStore {
           overlay: action.overlay,
           receiveDate: action.receiveDate,
           readDate: action.readDate,
+          readByMeDate: action.readByMeDate,
           isLoaded: action.isLoaded,
           count: Math.min(action.messages.length, state.count),
           changeReason: MessageChangeReason.UPDATE
