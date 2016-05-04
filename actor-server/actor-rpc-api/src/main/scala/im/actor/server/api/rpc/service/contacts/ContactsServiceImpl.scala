@@ -7,6 +7,7 @@ import im.actor.concurrent.FutureExt
 import im.actor.server.acl.ACLUtils
 import im.actor.server.model.{ User, UserEmail, UserPhone }
 import im.actor.server.persist.contact.{ UnregisteredEmailContactRepo, UnregisteredPhoneContactRepo, UserContactRepo }
+import im.actor.server.persist.social.RelationRepo
 import im.actor.server.persist.{ UserEmailRepo, UserPhoneRepo, UserRepo }
 import im.actor.server.user.UserCommands.ContactToAdd
 
@@ -80,16 +81,19 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
 
       } yield {
         val users = (pUsers ++ eUsers).toVector
-          _ = (pUsers ++ eUsers).map(user ⇒
-            for {
-              relation ← fromDBIO(RelationRepo.find(client.userId, user.id))
-              _ ← relation match {
-                case Some(relation) ⇒
-                  fromDBIO(RelationRepo.approve(client.userId, user.id))
-                case None ⇒
-                  fromDBIO(RelationRepo.create(client.userId, user.id))
-              }
-            } yield ())
+
+        (pUsers ++ eUsers).map(importedUser ⇒
+          for {
+            userContactsActiveIds ← UserContactRepo.findContactIdsActive(importedUser.id)
+            if (userContactsActiveIds.contains(client.userId))
+            relation ← RelationRepo.find(client.userId, importedUser.id)
+            _ ← relation match {
+              case Some(relation) ⇒
+                RelationRepo.approve(client.userId, importedUser.id)
+              case None ⇒
+                RelationRepo.create(client.userId, importedUser.id)
+            }
+          } yield ())
         ResponseImportContacts(
           users = if (optimizations.contains(ApiUpdateOptimization.STRIP_ENTITIES)) Vector.empty else users,
           eSeqstate.seq,
