@@ -221,6 +221,8 @@ public class ChatActivity extends ActorEditTextActivity {
     private Animation.AnimationListener animationListener;
     private Menu menu;
     private boolean isBot = false;
+    private View emptyBotSend;
+    private TextView emptyBotHint;
 
     public static Intent build(Peer peer, boolean compose, Context context) {
         final Intent intent = new Intent(context, ChatActivity.class);
@@ -456,6 +458,10 @@ public class ChatActivity extends ActorEditTextActivity {
         } else {
             fastShare.setVisibility(View.GONE);
         }
+
+        emptyBotSend = findViewById(R.id.botEmptyTextBlock);
+        emptyBotHint = (TextView) findViewById(R.id.botEmptyHint);
+
     }
 
     private void startCamera() {
@@ -561,9 +567,8 @@ public class ChatActivity extends ActorEditTextActivity {
 
     @Override
     public void onResume() {
-        super.onResume();
-
         isBot = (peer.getPeerType() == PeerType.PRIVATE && users().get(peer.getPeerId()).isBot());
+        super.onResume();
 
         if (peer.getPeerType() == PeerType.PRIVATE && menu != null) {
             menu.findItem(R.id.add_to_contacts).setVisible(users().get(peer.getPeerId()).isContact().get());
@@ -671,7 +676,37 @@ public class ChatActivity extends ActorEditTextActivity {
             messenger().forwardContent(peer, forwardContent);
             forwardContent = null;
         }
+
+        if (isBot) {
+            emptyBotSend.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
+            TextView emptyBotSendText = (TextView) emptyBotSend.findViewById(R.id.empty_bot_text);
+            emptyBotSendText.setTextColor(ActorSDK.sharedActor().style.getMainColor());
+
+            emptyBotSendText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    messenger().sendMessage(peer, "/start");
+                }
+            });
+
+            checkEmptyBot();
+        }
+
+
     }
+
+    public void checkEmptyBot() {
+        if (isBot) {
+            if (messenger().checkChatIsempty(peer)) {
+                showView(emptyBotSend);
+                showView(emptyBotHint);
+            } else {
+                hideView(emptyBotSend);
+                hideView(emptyBotHint);
+            }
+        }
+    }
+
 
     @Override
     protected void onPerformBind() {
@@ -714,6 +749,16 @@ public class ChatActivity extends ActorEditTextActivity {
                     execute(messenger().unblockUser(peer.getPeerId()));
                 }
             });
+
+            // Bind empty bot about
+            if (isBot) {
+                bind(users().get(peer.getPeerId()).getAbout(), new ValueChangedListener<String>() {
+                    @Override
+                    public void onChanged(String about, Value<String> valueModel) {
+                        emptyBotHint.setText((about != null && !about.isEmpty()) ? about : getString(R.string.chat_empty_bot_about));
+                    }
+                });
+            }
 
         } else if (peer.getPeerType() == PeerType.GROUP) {
 
