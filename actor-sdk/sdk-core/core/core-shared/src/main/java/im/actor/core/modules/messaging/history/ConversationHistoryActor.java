@@ -107,19 +107,19 @@ public class ConversationHistoryActor extends ModuleActor {
         // Sending updates to conversation actor
         final long finalMaxLoadedDate = maxLoadedDate;
         context().getMessagesModule().getRouter()
-                .onChatHistoryLoaded(peer, messages, maxReceiveDate, maxReadDate, isEnded)
-                .then(r -> {
-                    // Saving Internal State
-                    if (isEnded) {
-                        historyLoaded = true;
-                    } else {
-                        historyLoaded = false;
-                        historyMaxDate = finalMaxLoadedDate;
-                    }
-                    preferences().putLong(KEY_LOADED_DATE, finalMaxLoadedDate);
-                    preferences().putBool(KEY_LOADED, historyLoaded);
-                    preferences().putBool(KEY_LOADED_INIT, true);
-                });
+        .onChatHistoryLoaded(peer, messages, maxReceiveDate, maxReadDate, isEnded);
+//                .then(r -> {
+//                    // Saving Internal State
+//                    if (isEnded) {
+//                        historyLoaded = true;
+//                    } else {
+//                        historyLoaded = false;
+//                        historyMaxDate = finalMaxLoadedDate;
+//                    }
+//                    preferences().putLong(KEY_LOADED_DATE, finalMaxLoadedDate);
+//                    preferences().putBool(KEY_LOADED, historyLoaded);
+//                    preferences().putBool(KEY_LOADED_INIT, true);
+//                });
     }
 
     @Override
