@@ -120,7 +120,7 @@ public class UserVM extends BaseValueModel<User> {
         emails = new ValueModelUserEmail("user." + id + ".emails", buildEmails(user.getRecords()));
         links = new ValueModelUserLink("user." + id + ".links", buildLinks(user.getRecords()));
         contacts = new ValueModelContactRecord("user." + id + ".contacts", new ArrayListContactRecord(user.getRecords()));
-        botCommands = new ValueModelBotCommands("user." + id + ".bat_commands", new ArrayListBotCommands(user.getCommands()));
+        botCommands = new ValueModelBotCommands("user." + id + ".bot_commands", new ArrayListBotCommands(user.getCommands()));
         // Notify about presence change every minute as text representation can change
         presenceTimer = new CommonTimer(new Runnable() {
             @Override

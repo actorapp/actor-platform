@@ -236,6 +236,9 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
         } else {
             scrollToUnread(0, 0);
         }
+
+        checkBotEmptyView();
+
     }
 
     private void scrollToUnread(long unreadId, final int index) {
@@ -289,6 +292,21 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
         super.onResume();
 //        bindDisplayListLoad(onPauseSize != 0 && getDisplayList().getSize() != onPauseSize);
         messenger().onConversationOpen(peer);
+        checkBotEmptyView();
+    }
+
+    @Override
+    public void onCollectionChanged() {
+        super.onCollectionChanged();
+        checkBotEmptyView();
+    }
+
+    public void checkBotEmptyView() {
+        if (getActivity() == null) {
+            return;
+        }
+        ((ChatActivity) getActivity()).checkEmptyBot();
+
     }
 
     public void onAvatarClick(int uid) {

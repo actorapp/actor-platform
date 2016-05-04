@@ -259,6 +259,8 @@
     <string name="chat_not_member">Вы не участник этой группы</string>
     <string name="chat_unsupported">Сообщение не поддерживается в этой версии. Пожалуйста, подождите обновления приложения, чтобы увидеть его.</string>
 
+    <string name="chat_empty_bot_about">У этого бота пока нет описания</string>
+
     <string name="edit_message">Редактирование последнего сообщения</string>
     <string name="edit_message_error_not_last">Вы можете редактировать только последнее сообщение</string>
     <string name="edit_message_error_slowpoke">Вы можете редактировать только недавно отправленные сообщения</string>
