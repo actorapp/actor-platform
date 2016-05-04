@@ -24,6 +24,7 @@ class Scroller extends Component {
   constructor(props) {
     super(props);
 
+    this.onResize = this.onResize.bind(this);
     this.onReference = this.onReference.bind(this);
   }
 
@@ -42,6 +43,10 @@ class Scroller extends Component {
 
   componentDidUpdate() {
     this.props.onUpdate();
+  }
+
+  onResize() {
+    this.props.onResize();
   }
 
   onReference(node) {
