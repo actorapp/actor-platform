@@ -185,7 +185,7 @@ public class I18nEngine {
         return locale.get("TypingUser").replace("{user}", name);
     }
 
-    @ObjectiveCName("formatTypingWithName:")
+    @ObjectiveCName("formatTypingWithNames:")
     public String formatTyping(List<String> names) {
         if (names.size() == 1) {
             return formatTyping(names.get(0));
