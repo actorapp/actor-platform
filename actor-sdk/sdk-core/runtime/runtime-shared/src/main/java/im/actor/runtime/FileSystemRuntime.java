@@ -41,6 +41,15 @@ public interface FileSystemRuntime {
     boolean isFsPersistent();
 
     /**
+     * Is file already in temp
+     *
+     * @param descriptor file descriptor
+     * @return is file already in temp
+     */
+    @ObjectiveCName("isAlreadyInTemp:withDescriptor")
+    boolean isAlreadyInTemp(String descriptor);
+
+    /**
      * Create FileSystemReference from descriptor
      *
      * @param descriptor descriptor
