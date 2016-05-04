@@ -77,6 +77,9 @@ public class User extends WrapperExtEntity<ApiFullUser, ApiUser> implements KeyV
     private String timeZone;
     @Property("readonly, nonatomic")
     private boolean isVerified;
+    @Property("readonly, nonatomic")
+    private List<BotCommand> commands;
+
 
     @NotNull
     @Property("readonly, nonatomic")
@@ -157,6 +160,10 @@ public class User extends WrapperExtEntity<ApiFullUser, ApiUser> implements KeyV
 
     public boolean isBot() {
         return isBot;
+    }
+
+    public List<BotCommand> getCommands() {
+        return commands;
     }
 
     public boolean isBlocked() {
@@ -456,12 +463,19 @@ public class User extends WrapperExtEntity<ApiFullUser, ApiUser> implements KeyV
                     this.records.add(new ContactRecord(ContactRecordType.SOCIAL, record.getTypeSpec(), record.getStringValue(),
                             record.getTitle(), record.getSubtitle()));
                 }
+
+                //Bot commands
+                for (ApiBotCommand command : ext.getBotCommands()) {
+                    commands.add(new BotCommand(command.getSlashCommand(), command.getDescription(), command.getLocKey()));
+                }
+
             }
             this.about = ext.getAbout();
         } else {
             this.isBlocked = false;
             this.haveExtension = false;
             this.records = new ArrayList<>();
+            this.commands = new ArrayList<BotCommand>();
             this.about = null;
             this.timeZone = null;
         }
