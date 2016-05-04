@@ -29,6 +29,16 @@ public class JsFileSystemReference implements FileSystemReference {
     }
 
     @Override
+    public boolean isInAppMemory() {
+        return false;
+    }
+
+    @Override
+    public boolean isInTempDirectory() {
+        return false;
+    }
+
+    @Override
     public int getSize() {
         return file.getSize();
     }

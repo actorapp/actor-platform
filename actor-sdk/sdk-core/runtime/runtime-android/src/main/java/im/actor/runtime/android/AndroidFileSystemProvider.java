@@ -25,7 +25,9 @@ public class AndroidFileSystemProvider implements FileSystemRuntime {
         String externalPath = externalFile.getAbsolutePath();
         File dest = new File(externalPath + "/actor/tmp/");
         if (dest.exists()) {
-            for (File file : dest.listFiles()) file.delete();
+            for (File file : dest.listFiles()) {
+                file.delete();
+            }
         }
     }
 
@@ -105,8 +107,7 @@ public class AndroidFileSystemProvider implements FileSystemRuntime {
         if (!new File(sourceFile.getDescriptor()).renameTo(new File(realFileName))) {
             return null;
         }
-        AndroidFileSystemReference androidFileSystemReference = new AndroidFileSystemReference(realFileName);
-        return androidFileSystemReference;
+        return new AndroidFileSystemReference(realFileName);
     }
 
     @Override
@@ -115,15 +116,8 @@ public class AndroidFileSystemProvider implements FileSystemRuntime {
     }
 
     @Override
-    public boolean isAlreadyInTemp(String descriptor) {
-        File externalFile = AndroidContext.getContext().getExternalFilesDir(null);
-        return externalFile != null && descriptor.startsWith(externalFile.getAbsolutePath() + "/actor/upload_tmp/");
-    }
-
-    @Override
     public synchronized FileSystemReference fileFromDescriptor(String descriptor) {
         checkTempDirs();
-
         return new AndroidFileSystemReference(descriptor);
     }
 }

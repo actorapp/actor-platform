@@ -82,10 +82,6 @@ public class Storage {
         return fileSystemRuntime.isFsPersistent();
     }
 
-    public static boolean isAlreadyInTemp(String descriptor) {
-        return fileSystemRuntime.isAlreadyInTemp(descriptor);
-    }
-
     public static FileSystemReference fileFromDescriptor(String descriptor) {
         return fileSystemRuntime.fileFromDescriptor(descriptor);
     }
