@@ -26,10 +26,13 @@ import android.widget.TextView;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 import im.actor.core.entity.Contact;
 import im.actor.core.entity.Dialog;
+import im.actor.core.entity.Peer;
 import im.actor.core.entity.SearchEntity;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorStyle;
@@ -96,8 +99,9 @@ public class MainPhoneController extends MainBaseController {
     private String sendText = "";
     private ArrayList<String> sendUriMultiple = new ArrayList<String>();
     private int shareUser;
-    private String forwardText = "";
-    private String forwardTextRaw = "";
+    private List<Long> forwardedMessageSenderRids;
+    private List<String> forwardedMessageSenderNames;
+    private Peer forwardedPeer;
     private byte[] docContent = null;
 
     public MainPhoneController(ActorMainActivity mainActivity) {
@@ -154,9 +158,9 @@ public class MainPhoneController extends MainBaseController {
         startActivity(Intents.openDialog(item.getPeer(), false, getActivity()).putExtra("send_uri", sendUriString)
                 .putExtra("send_uri_multiple", sendUriMultiple)
                 .putExtra("send_text", sendText)
-                .putExtra("forward_text", forwardText)
-                .putExtra("forward_text_raw", forwardTextRaw)
-                .putExtra("forward_content", docContent)
+                .putExtra("forwarded_message_sender_rids", (Serializable) forwardedMessageSenderRids)
+                .putExtra("forwarded_message_sender_names", (Serializable) forwardedMessageSenderNames)
+                .putExtra("forwarded_peer", forwardedPeer == null ? null : forwardedPeer.toByteArray())
                 .putExtra("share_user", shareUser));
         clearShare();
     }
@@ -165,9 +169,9 @@ public class MainPhoneController extends MainBaseController {
         getActivity().startActivity(Intents.openPrivateDialog(contact.getUid(), true, getActivity()).putExtra("send_uri", sendUriString)
                 .putExtra("send_uri_multiple", sendUriMultiple)
                 .putExtra("send_text", sendText)
-                .putExtra("forward_text", forwardText)
-                .putExtra("forward_text_raw", forwardTextRaw)
-                .putExtra("forward_content", docContent)
+                .putExtra("forwarded_message_sender_rids", (Serializable) forwardedMessageSenderRids)
+                .putExtra("forwarded_message_sender_names", (Serializable) forwardedMessageSenderNames)
+                .putExtra("forwarded_peer", forwardedPeer == null ? null : forwardedPeer.toByteArray())
                 .putExtra("share_user", shareUser));
 
         clearShare();
@@ -176,9 +180,9 @@ public class MainPhoneController extends MainBaseController {
     private void clearShare() {
         sendUriMultiple.clear();
         sendUriString = "";
-        docContent = null;
-        forwardText = "";
-        forwardTextRaw = "";
+        forwardedMessageSenderRids = null;
+        forwardedMessageSenderNames = null;
+        forwardedPeer = null;
         sendText = "";
         shareUser = 0;
     }
@@ -390,11 +394,14 @@ public class MainPhoneController extends MainBaseController {
                 Bundle extras = intent.getExtras();
                 if (extras.containsKey("share_user")) {
                     shareUser = extras.getInt("share_user");
-                } else if (extras.containsKey("forward_text")) {
-                    forwardText = extras.getString("forward_text");
-                    forwardTextRaw = extras.getString("forward_text_raw");
-                } else if (extras.containsKey("forward_content")) {
-                    docContent = extras.getByteArray("forward_content");
+                } else if (extras.containsKey("forwarded_message_sender_rids")) {
+                    try {
+                        forwardedMessageSenderRids = (List<Long>) extras.getSerializable("forwarded_message_sender_rids");
+                        forwardedMessageSenderNames = (List<String>) extras.getSerializable("forwarded_message_sender_names");
+                        forwardedPeer = Peer.fromBytes(extras.getByteArray("forwarded_peer"));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -425,7 +432,7 @@ public class MainPhoneController extends MainBaseController {
                     public void onChanged(Boolean isAppLoaded, Value<Boolean> Value,
                                           Boolean isAppEmpty, Value<Boolean> Value2) {
                         if (isAppEmpty) {
-                            if (isAppLoaded) {
+                            if (true || isAppLoaded) {
                                 onHideToolbarCustomView();
                                 emptyContactsView.setVisibility(View.VISIBLE);
                                 syncInProgressView.setVisibility(View.GONE);

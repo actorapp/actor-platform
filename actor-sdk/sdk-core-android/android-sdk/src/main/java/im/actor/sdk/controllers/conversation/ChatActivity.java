@@ -47,13 +47,17 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import im.actor.core.entity.BotCommand;
 import im.actor.core.entity.MentionFilterResult;
+import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.content.AbsContent;
+import im.actor.core.entity.content.TextContent;
 import im.actor.core.network.RpcException;
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
@@ -189,6 +193,8 @@ public class ChatActivity extends ActorEditTextActivity {
     private TextView quoteText;
     private FrameLayout quoteContainer;
     private String currentQuote = "";
+    private long currentQuoteRid = 0;
+
     private String sendUri;
 
     //////////////////////////////////
@@ -196,8 +202,9 @@ public class ChatActivity extends ActorEditTextActivity {
     //////////////////////////////////
     private ArrayList<String> sendUriMultiple;
     private int shareUser;
-    private String forwardText;
-    private String forwardTextRaw;
+    private List<Long> forwardedMessageSenderRids;
+    private List<String> forwardedMessageSenderNames;
+    private Peer forwardedPeer;
     private String sendText;
     private AbsContent forwardContent;
     // Camera photo destination name
@@ -313,10 +320,12 @@ public class ChatActivity extends ActorEditTextActivity {
                 goneView(quoteContainer);
                 quoteText.setText("");
                 currentQuote = "";
+                currentQuoteRid = 0;
                 if (textEditing) {
                     messageEditText.setText("");
                 }
                 textEditing = false;
+                forwardedMessageSenderRids = null;
                 checkSendButton();
 
             }
@@ -482,13 +491,12 @@ public class ChatActivity extends ActorEditTextActivity {
         shareUser = intent.getIntExtra("share_user", 0);
 
         //Forwarding
-        forwardText = intent.getStringExtra("forward_text");
-        forwardTextRaw = intent.getStringExtra("forward_text_raw");
-        sendText = intent.getStringExtra("send_text");
         try {
-            forwardContent = AbsContent.parse(intent.getByteArrayExtra("forward_content"));
+            forwardedMessageSenderRids = (List<Long>) intent.getSerializableExtra("forwarded_message_sender_rids");
+            forwardedMessageSenderNames = (List<String>) intent.getSerializableExtra("forwarded_message_sender_names");
+            forwardedPeer = Peer.fromBytes(intent.getByteArrayExtra("forwarded_peer"));
         } catch (Exception e) {
-
+            forwardedMessageSenderRids = null;
         }
     }
 
@@ -496,6 +504,10 @@ public class ChatActivity extends ActorEditTextActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         //Notify old chat closed
+        initialize(intent);
+    }
+
+    public void initialize(Intent intent) {
         messenger().onConversationClosed(peer);
 
         peer = Peer.fromUniqueId(intent.getExtras().getLong(EXTRA_CHAT_PEER));
@@ -670,15 +682,23 @@ public class ChatActivity extends ActorEditTextActivity {
             shareUser = 0;
         }
 
-        if (forwardTextRaw != null && !forwardTextRaw.isEmpty()) {
-            addQuote(forwardText, forwardTextRaw);
-            forwardText = "";
-            forwardTextRaw = "";
-        }
 
-        if (forwardContent != null) {
-            messenger().forwardContent(peer, forwardContent);
-            forwardContent = null;
+        if ( forwardedMessageSenderRids != null)
+        {
+            int ridsNumber = new HashSet<String>(forwardedMessageSenderNames).size();
+            String peerName = forwardedMessageSenderNames.get(0);
+            if (ridsNumber == 1)
+            {
+                addQuote(getString(R.string.message_forwarded) + peerName);
+                //todo hp preview docs
+
+            }
+            else {
+                users().get(forwardedPeer.getPeerId()).getName();
+                addQuote(getString(R.string.messages_forwarded).replace("{0}", peerName).replace("{1}", "" + (ridsNumber - 1)));
+
+            }
+
         }
 
         if (isBot) {
@@ -845,7 +865,6 @@ public class ChatActivity extends ActorEditTextActivity {
         String rawText = messageEditText.getText().toString();
 
         if (currentQuote != null && !currentQuote.isEmpty()) {
-            rawText = currentQuote.concat(rawText);
             goneView(quoteContainer);
             currentQuote = "";
         }
@@ -853,7 +872,7 @@ public class ChatActivity extends ActorEditTextActivity {
         messageEditText.setText("");
         autocompleteString = "";
 
-        if (rawText.length() == 0) {
+        if (rawText.length() == 0 && forwardedMessageSenderRids == null) {
             return;
         }
 
@@ -892,7 +911,20 @@ public class ChatActivity extends ActorEditTextActivity {
             checkSendButton();
             textEditing = false;
         } else {
-            messenger().sendMessage(peer, rawText);
+            if (forwardedMessageSenderRids != null)
+            {
+
+                for (Long rid: forwardedMessageSenderRids) {
+                    messenger().forwardMessage(peer, forwardedPeer, rid);
+                }
+                forwardedMessageSenderRids = null;
+                forwardedMessageSenderNames = null;
+                forwardedPeer = null;
+            }
+            if (rawText.length() > 0) {
+                messenger().sendMessage(peer, rawText, currentQuoteRid);
+                currentQuoteRid = 0;
+            }
         }
     }
 
@@ -1179,17 +1211,32 @@ public class ChatActivity extends ActorEditTextActivity {
 
     // Quotes
 
-    public void addQuote(String quote, String rawQuote) {
-        textEditing = false;
-        if (quote != null && !quote.isEmpty()) {
-            quoteText.setText(quote);
-        } else {
-            quoteText.setText(rawQuote);
+    public void addQuote(Message message) {
+        if (message.getContent() instanceof TextContent)
+        {
+            String quote = ((TextContent) message.getContent()).getText();
+            addQuote(quote);
+            currentQuoteRid = message.getRid();
         }
-        currentQuote = rawQuote;
+    }
+
+    public void addQuote(String quote) {
+        textEditing = false;
+        if (quote != null && !quote.isEmpty())
+            quoteText.setText(quote);
+
+        currentQuote = quote;
         hideShare();
         quoteText.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_editor_format_quote_gray), null, null, null);
         showView(quoteContainer);
+
+        if (forwardedMessageSenderRids != null && forwardedMessageSenderRids.size() > 0)
+        {
+            sendButton.setEnabled(true);
+            zoomInView(sendButton);
+            zoomOutView(audioButton);
+
+        }
         checkSendButton();
 
     }
@@ -1397,8 +1444,7 @@ public class ChatActivity extends ActorEditTextActivity {
 
     public void onEditTextMessage(long rid, String text) {
         currentQuote = null;
-        forwardText = null;
-        forwardTextRaw = null;
+        currentQuoteRid = 0;
         textEditing = true;
         currentEditRid = rid;
         quoteText.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_content_create), null, null, null);
