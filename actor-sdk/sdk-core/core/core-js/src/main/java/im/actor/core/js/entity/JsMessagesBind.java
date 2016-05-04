@@ -25,28 +25,21 @@ public class JsMessagesBind implements Exportable, JsDisplayListCallback<JsMessa
     private JsArray<JsMessage> arrays;
     private JsArray<JavaScriptObject> overlays;
     private boolean isLocked = true;
-    private ValueChangedListener<Boolean> isLoadedListener = new ValueChangedListener<Boolean>() {
-        @Override
-        public void onChanged(Boolean val, Value<Boolean> valueModel) {
-            if (!isLocked) {
-                notifySubscriber();
-            }
+    private boolean isInited = false;
+
+    private ValueChangedListener<Boolean> isLoadedListener = (val, valueModel) -> {
+        if (!isLocked) {
+            notifySubscriber();
         }
     };
-    private ValueChangedListener<Long> readDateListener = new ValueChangedListener<Long>() {
-        @Override
-        public void onChanged(Long val, Value<Long> valueModel) {
-            if (!isLocked) {
-                notifySubscriber();
-            }
+    private ValueChangedListener<Long> readDateListener = (val, valueModel) -> {
+        if (!isLocked) {
+            notifySubscriber();
         }
     };
-    private ValueChangedListener<Long> receiveDateListener = new ValueChangedListener<Long>() {
-        @Override
-        public void onChanged(Long val, Value<Long> valueModel) {
-            if (!isLocked) {
-                notifySubscriber();
-            }
+    private ValueChangedListener<Long> receiveDateListener = (val, valueModel) -> {
+        if (!isLocked) {
+            notifySubscriber();
         }
     };
 
@@ -62,6 +55,14 @@ public class JsMessagesBind implements Exportable, JsDisplayListCallback<JsMessa
         this.conversationVM.getReadDate().subscribe(readDateListener);
         this.conversationVM.getReceiveDate().subscribe(receiveDateListener);
         this.bind = displayList.subscribe(this, true);
+    }
+
+    @Export
+    public void initAll() {
+        if (isInited) {
+            throw new RuntimeException("Already inited!");
+        }
+        isInited = true;
         this.bind.initAll();
         notifySubscriber();
         this.isLocked = false;

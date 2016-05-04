@@ -442,6 +442,25 @@ public class JsFacade implements Exportable {
         return new JsMessagesBind(callback, messenger.getSharedChatList(peerC), messenger.getConversationVM(peerC));
     }
 
+    public JsPromise editMessage(JsPeer peer, String id, String newText) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                messenger.updateMessage(peer.convert(), newText, Long.parseLong(id)).start(new CommandCallback<Void>() {
+                    @Override
+                    public void onResult(Void res) {
+                        resolve();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        reject(e.getMessage());
+                    }
+                });
+            }
+        });
+    }
+
     @UsedByApp
     public void deleteMessage(JsPeer peer, String id) {
         messenger.deleteMessages(peer.convert(), new long[]{Long.parseLong(id)});
