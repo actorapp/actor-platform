@@ -74,8 +74,8 @@ class MessagesList extends Component {
     this.dimensions = null;
     this.isLoading = false;
 
-    this.onScroll = throttle(this.onScroll.bind(this), 50);
     this.onResize = this.onResize.bind(this);
+    this.onScroll = throttle(this.onScroll.bind(this), 300);
     this.handleScrollToBottom = this.handleScrollToBottom.bind(this);
   }
 
@@ -113,6 +113,8 @@ class MessagesList extends Component {
       if (dimensions) {
         const currDimensions = scroller.getDimensions();
         scroller.scrollTo(currDimensions.scrollHeight - dimensions.scrollHeight);
+      } else {
+        scroller.scrollToBottom();
       }
     } else {
       this.restoreScroll();
@@ -149,8 +151,7 @@ class MessagesList extends Component {
   }
 
   handleScrollToBottom() {
-    const { refs: { scroller } } = this;
-    scroller.scrollToBottom();
+    this.refs.scroller.scrollToBottom();
   }
 
   renderHeader() {
