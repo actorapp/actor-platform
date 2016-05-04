@@ -9,7 +9,7 @@ import im.actor.server.cqrs.ProcessorStateProbe
 import im.actor.server.model.Peer
 
 final class DialogRootStateSpec extends ActorSuite with PeersImplicits {
-  it should "sort groued dialogs by appearing" in show
+  it should "sort grouped dialogs by appearing" in show
   it should "sort mobile dialogs by last message date" in mobileDialogs
   it should "remove Favourites on Unfavourite" in favouriteUnfavourite
   it should "remove from Archived on Favourite or new message" in removeFromArchived
@@ -17,6 +17,7 @@ final class DialogRootStateSpec extends ActorSuite with PeersImplicits {
   it should "order archived by date desc" in archivedOrder
   it should "not add to DMs or groups if already in favourites" in keepInFavourites
   it should "not create dialogs with itself" in noDialogsWithItself
+  it should "delete dialog from both grouped dialogs and archived" in deleteDialog
 
   import DialogRootEvents._
 
@@ -172,6 +173,32 @@ final class DialogRootStateSpec extends ActorSuite with PeersImplicits {
 
     probe.commit(Unarchived(Instant.now, Some(alice)))
     checkNoAlice
+  }
+
+  def deleteDialog() = {
+    implicit val probe = ProcessorStateProbe(DialogRootState.initial(userId))
+
+    val alice = Peer.privat(1)
+    val bob = Peer.privat(2)
+    val carol = Peer.privat(3)
+
+    probe.commit(Created(Instant.now, Some(alice)))
+    probe.commit(Created(Instant.now, Some(bob)))
+    probe.commit(Created(Instant.now, Some(carol)))
+
+    probe.commit(Archived(Instant.now, Some(alice)))
+    probe.commit(Favourited(Instant.now, Some(bob)))
+
+    probe.commit(Deleted(Instant.now, Some(alice)))
+    probe.commit(Deleted(Instant.now, Some(bob)))
+
+    getGroupPeers(DialogGroupType.DirectMessages).contains(carol) shouldEqual true
+    getGroupPeers(DialogGroupType.Favourites) shouldBe empty
+    getArchivedPeers shouldBe empty
+
+    getMobilePeers shouldBe Seq(carol)
+
+    checkSnapshot
   }
 
   private def getGroupPeers(typ: DialogGroupType)(implicit probe: ProcessorStateProbe[DialogRootState]) =

@@ -45,7 +45,7 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
 
     withValidAccessHash(sm.getDest, sm.senderAuthId map (_.value), sm.accessHash map (_.value)) {
       withCachedFuture[AuthSidRandomId, SeqStateDate](sm.senderAuthSid → sm.randomId) {
-        val sendDate = calcSendDate
+        val sendDate = calcSendDate()
         val message = sm.message
         PubSubExtension(system).publish(PeerMessage(sm.getOrigin, sm.getDest, sm.randomId, sendDate, message))
 
