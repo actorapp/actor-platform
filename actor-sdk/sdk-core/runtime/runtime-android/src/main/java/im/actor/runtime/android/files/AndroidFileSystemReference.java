@@ -31,6 +31,18 @@ public class AndroidFileSystemReference implements FileSystemReference {
     }
 
     @Override
+    public boolean isInAppMemory() {
+        // TODO: Implement
+        return false;
+    }
+
+    @Override
+    public boolean isInTempDirectory() {
+        // TODO: Implement
+        return false;
+    }
+
+    @Override
     public int getSize() {
         return (int) new File(fileName).length();
     }
