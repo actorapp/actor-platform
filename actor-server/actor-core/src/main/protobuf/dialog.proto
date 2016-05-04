@@ -81,6 +81,13 @@ message DialogRootEvents {
         Peer peer = 2;
     }
 
+    message Deleted {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogRootEvent";
+
+        int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];
+        Peer peer = 2;
+    }
+
     message Initialized {
         option (scalapb.message).extends = "im.actor.server.dialog.DialogRootEvent";
 
@@ -121,6 +128,7 @@ message DialogRootCommands {
         option (scalapb.message).extends = "im.actor.server.dialog.DialogRootCommand";
 
         Peer dest = 1;
+        google.protobuf.Int32Value client_auth_sid = 2;
     }
 }
 

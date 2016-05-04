@@ -2,22 +2,24 @@ package im.actor.server.dialog
 
 import java.time.Instant
 
-import akka.actor.{ ActorRef, Props, Status }
+import akka.actor.Props
 import akka.http.scaladsl.util.FastFuture
 import akka.pattern.{ ask, pipe }
 import akka.util.Timeout
 import com.google.protobuf.wrappers.Int64Value
-import im.actor.concurrent._
-import im.actor.server.cqrs._
-import im.actor.server.dialog.DialogCommands.{ SendMessage, WriteMessageSelf }
-import im.actor.server.model.{ Peer, PeerErrors, PeerType }
 import im.actor.api.rpc._
-import im.actor.api.rpc.messaging.UpdateChatGroupsChanged
+import im.actor.api.rpc.messaging.{ UpdateChatDelete, UpdateChatGroupsChanged }
 import im.actor.api.rpc.misc.ApiExtension
+import im.actor.concurrent._
 import im.actor.config.ActorConfig
 import im.actor.serialization.ActorSerializer
+import im.actor.server.cqrs._
+import im.actor.server.db.DbExtension
+import im.actor.server.dialog.DialogCommands.{ SendMessage, WriteMessageSelf }
 import im.actor.server.dialog.DialogQueries.GetInfoResponse
 import im.actor.server.group.GroupExtension
+import im.actor.server.model.{ Peer, PeerErrors, PeerType }
+import im.actor.server.persist.HistoryMessageRepo
 import im.actor.server.sequence.{ PushRules, SeqState, SeqUpdatesExtension }
 import im.actor.server.user.UserExtension
 
@@ -33,7 +35,8 @@ object DialogRoot {
       45015 → classOf[DialogRootEvents.Unfavourited],
       45017 → classOf[DialogRootEvents.Initialized],
       45016 → classOf[DialogRootStateSnapshot],
-      45018 → classOf[DialogRootEvents.Bumped]
+      45018 → classOf[DialogRootEvents.Bumped],
+      45019 → classOf[DialogRootEvents.Deleted]
     )
   }
 
@@ -43,7 +46,6 @@ object DialogRoot {
 private trait DialogRootQueryHandlers {
   this: DialogRoot ⇒
   import DialogRootQueries._
-
   import context._
 
   private implicit val timeout = Timeout(ActorConfig.defaultTimeout)
@@ -98,13 +100,15 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
   with IncrementalSnapshots[DialogRootState]
   with DialogRootQueryHandlers
   with DialogRootMigration {
+  import DialogRootCommands._
   import DialogRootEvents._
   import DialogRootQueries._
-  import DialogRootCommands._
   import context.dispatcher
 
-  private val userExt = UserExtension(context.system)
-  private val groupExt = GroupExtension(context.system)
+  private val system = context.system
+  private val userExt = UserExtension(system)
+  private val groupExt = GroupExtension(system)
+  private val db = DbExtension(system).db
 
   private implicit val timeout = Timeout(ActorConfig.defaultTimeout)
 
@@ -150,6 +154,7 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
     case Unarchive(Some(peer), clientAuthSid)   ⇒ unarchive(peer, clientAuthSid map (_.value))
     case Favourite(Some(peer), clientAuthSid)   ⇒ favourite(peer, clientAuthSid map (_.value))
     case Unfavourite(Some(peer), clientAuthSid) ⇒ unfavourite(peer, clientAuthSid map (_.value))
+    case Delete(Some(peer), clientAuthSid)      ⇒ delete(peer, clientAuthSid map (_.value))
   }
 
   private def archive(peer: Peer, clientAuthSid: Option[Int]) = {
@@ -184,6 +189,19 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
     }
   }
 
+  private def delete(peer: Peer, clientAuthSid: Option[Int]) = {
+    if (!dialogExists(peer)) sendChatGroupsChanged(clientAuthSid) pipeTo sender()
+    else persist(Deleted(Instant.now(), Some(peer))) { e ⇒
+      commit(e)
+      (for {
+        _ ← db.run(HistoryMessageRepo.deleteAll(userId, peer))
+        _ ← SeqUpdatesExtension(system).deliverSingleUpdate(userId, UpdateChatDelete(peer.asStruct))
+        seqState ← sendChatGroupsChanged(clientAuthSid)
+        //        _ = thatDialog ! PoisonPill // kill that dialog would be good
+      } yield seqState) pipeTo sender()
+    }
+  }
+
   private def needCheckDialog(cmd: DialogCommand): Option[Peer] = {
     cmd match {
       case sm: SendMessage ⇒
@@ -198,6 +216,8 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
       case _                    ⇒ None
     }
   }
+
+  private def dialogExists(peer: Peer): Boolean = state.active.contains(peer) || state.archived.exists(_.peer == peer)
 
   private def isArchived(peer: Peer): Boolean = state.archived.exists(_.peer == peer)
 
@@ -227,9 +247,9 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
 
   private def sendChatGroupsChanged(ignoreAuthSid: Option[Int] = None): Future[SeqState] = {
     for {
-      groups ← DialogExtension(context.system).fetchApiGroupedDialogs(userId)
+      groups ← DialogExtension(system).fetchApiGroupedDialogs(userId)
       update = UpdateChatGroupsChanged(groups)
-      seqstate ← SeqUpdatesExtension(context.system).
+      seqstate ← SeqUpdatesExtension(system).
         deliverSingleUpdate(userId, update, PushRules().withExcludeAuthSids(ignoreAuthSid.toSeq))
     } yield seqstate
   }
