@@ -44,6 +44,11 @@ public class JsFileSystemProvider implements FileSystemRuntime {
     }
 
     @Override
+    public boolean isAlreadyInTemp(String descriptor) {
+        return false;
+    }
+
+    @Override
     public FileSystemReference fileFromDescriptor(String descriptor) {
         if (files.containsKey(descriptor)) {
             return new JsFileSystemReference(files.get(descriptor), descriptor);
