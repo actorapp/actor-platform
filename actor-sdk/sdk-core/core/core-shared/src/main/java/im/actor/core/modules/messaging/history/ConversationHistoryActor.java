@@ -21,9 +21,13 @@ import im.actor.core.entity.content.AbsContent;
 import im.actor.core.modules.api.ApiSupportConfiguration;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.ModuleActor;
+import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.function.Consumer;
 
 public class ConversationHistoryActor extends ModuleActor {
+
+    // j2objc workaround
+    private static final Void DUMB = null;
 
     private static final int LIMIT = 20;
 
