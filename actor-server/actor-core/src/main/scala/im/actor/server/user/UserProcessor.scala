@@ -7,7 +7,7 @@ import akka.cluster.sharding.ShardRegion
 import akka.pattern.{ ask, pipe }
 import akka.persistence.RecoveryCompleted
 import akka.util.Timeout
-import im.actor.api.rpc.collections.{ ApiInt32Value, ApiMapValue, ApiMapValueItem, ApiStringValue }
+import im.actor.api.rpc.collections._
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.serialization.ActorSerializer
 import im.actor.server.bots.BotCommand
