@@ -115,6 +115,12 @@ public class AndroidFileSystemProvider implements FileSystemRuntime {
     }
 
     @Override
+    public boolean isAlreadyInTemp(String descriptor) {
+        File externalFile = AndroidContext.getContext().getExternalFilesDir(null);
+        return externalFile != null && descriptor.startsWith(externalFile.getAbsolutePath() + "/actor/upload_tmp/");
+    }
+
+    @Override
     public synchronized FileSystemReference fileFromDescriptor(String descriptor) {
         checkTempDirs();
 
