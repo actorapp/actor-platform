@@ -131,6 +131,61 @@ public class SenderActor extends ModuleActor {
         return res;
     }
 
+    private void doForwardMessage(final Peer peer, final Peer fromPeer, final long fromRid) {
+        final long rid = RandomUtils.nextRid();
+
+        final ApiOutPeer outPeer = buidOutPeer(peer);
+        final ApiOutPeer fromOutPeer = buidOutPeer(fromPeer);
+
+        final ApiPeer apiPeer = buildApiPeer(peer);
+
+        if (outPeer == null || apiPeer == null) {
+            return;
+        }
+
+        long date = createPendingDate();
+        long sortDate = date + 365 * 24 * 60 * 60 * 1000L;
+
+        Message message = conversations(fromPeer).getValue(fromRid);
+
+        long messageId;
+        int senderUserId;
+        long messageDate;
+        AbsContent content = null;
+        if (message.getQuotedMessage() == null)
+        {
+            messageId = message.getRid();
+            senderUserId = message.getSenderId();
+            messageDate = message.getDate();
+            content = message.getContent();
+
+
+        } else {
+            messageId = message.getQuotedMessage().getMessageId();
+            senderUserId = message.getQuotedMessage().getSenderId();
+            messageDate = message.getQuotedMessage().getDate();
+            content = message.getQuotedMessage().getContent();
+
+        }
+
+        int publicGroupId = fromPeer.getPeerType().equals(PeerType.GROUP) ? fromPeer.getPeerId() : 0;
+
+        AbsContent emptyContent = EmptyContent.fromMessage(new ApiEmptyMessage());
+        QuotedMessage quotedMessage = new QuotedMessage(messageId, publicGroupId, senderUserId, messageDate, content );
+        Message forwardedMessage = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, emptyContent,
+                message.getReactions(), message.getContentIndex(), quotedMessage);
+
+        context().getMessagesModule().getRouter().onOutgoingMessage(peer, forwardedMessage);
+
+        pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, message.getContent()));
+        savePending();
+
+        ApiMessageOutReference apiMessageOutReference = new ApiMessageOutReference(fromOutPeer, fromRid);
+
+        performSendContent(peer, rid, emptyContent, apiMessageOutReference);
+    }
+
+
     // Sending text
 
     public void doSendText(@NotNull Peer peer, @NotNull String text,
@@ -388,6 +443,9 @@ public class SenderActor extends ModuleActor {
     // Sending content
 
     private void performSendContent(final Peer peer, final long rid, AbsContent content) {
+        performSendContent(peer, rid, content, null);
+    }
+        private void performSendContent(final Peer peer, final long rid, AbsContent content, ApiMessageOutReference apiMessageOutReference) {
         WakeLock wakeLock = im.actor.runtime.Runtime.makeWakeLock();
 
         ApiMessage message;
@@ -434,20 +492,22 @@ public class SenderActor extends ModuleActor {
             message = new ApiJsonMessage(((JsonContent) content).getRawJson());
         } else if (content instanceof StickerContent) {
             message = ((ContentRemoteContainer) content.getContentContainer()).getMessage();
+        } else if (content instanceof EmptyContent) {
+            message = new ApiEmptyMessage();
         } else {
             return;
         }
 
-        performSendApiContent(peer, rid, message, wakeLock);
+        performSendApiContent(peer, rid, message, wakeLock, apiMessageOutReference);
     }
 
-    private void performSendApiContent(final Peer peer, final long rid, ApiMessage message, final WakeLock wakeLock) {
+    private void performSendApiContent(final Peer peer, final long rid, ApiMessage message, final WakeLock wakeLock, ApiMessageOutReference apiMessageOutReference) {
         final ApiOutPeer outPeer = buidOutPeer(peer);
         final ApiPeer apiPeer = buildApiPeer(peer);
         if (outPeer == null || apiPeer == null) {
             return;
         }
-        request(new RequestSendMessage(outPeer, rid, message, null, null),
+        request(new RequestSendMessage(outPeer, rid, message, null, apiMessageOutReference),
                 new RpcCallback<ResponseSeqDate>() {
                     @Override
                     public void onResult(ResponseSeqDate response) {
@@ -554,9 +614,37 @@ public class SenderActor extends ModuleActor {
         } else if (message instanceof ForwardContent) {
             ForwardContent forwardContent = (ForwardContent) message;
             doForwardContent(forwardContent.getPeer(), forwardContent.getContent());
+        } else if (message instanceof ForwardMessage) {
+            ForwardMessage forwardMessage = (ForwardMessage) message;
+            doForwardMessage(forwardMessage.getPeer(), forwardMessage.getFromPeer(), forwardMessage.getFromRid());
         } else {
             super.onReceive(message);
         }
+    }
+
+    public static class ForwardMessage {
+        private Peer peer;
+        private Peer fromPeer;
+        private Long fromRid;
+
+        public ForwardMessage(Peer peer, Peer fromPeer, Long fromRid) {
+            this.peer = peer;
+            this.fromPeer = fromPeer;
+            this.fromRid = fromRid;
+        }
+
+        public Peer getPeer() {
+            return peer;
+        }
+
+        public Peer getFromPeer() {
+            return fromPeer;
+        }
+
+        public Long getFromRid() {
+            return fromRid;
+        }
+
     }
 
     public static class SendDocument {
