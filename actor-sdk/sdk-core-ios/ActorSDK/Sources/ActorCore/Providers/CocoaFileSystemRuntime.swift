@@ -88,6 +88,14 @@ class CocoaFile : NSObject, ARFileSystemReference {
         return NSFileManager().fileExistsAtPath(realPath);
     }
     
+    func isInAppMemory() -> jboolean {
+        return false
+    }
+    
+    func isInTempDirectory() -> jboolean {
+        return false
+    }
+    
     func getSize() -> jint {
         do {
             let attrs = try NSFileManager().attributesOfItemAtPath(realPath)
@@ -97,29 +105,28 @@ class CocoaFile : NSObject, ARFileSystemReference {
         }
     }
     
-    func openWriteWithSize(size: jint) -> AROutputFile! {
+    
+    func openRead() -> ARPromise! {
+        let fileHandle = NSFileHandle(forReadingAtPath: realPath)
         
-        let fileHandle = NSFileHandle(forWritingAtPath: realPath)
-
         if (fileHandle == nil) {
-            return nil
+            return ARPromise.failure(JavaLangRuntimeException(NSString: "Unable to open file"))
+        }
+        
+        return ARPromise.success(CocoaInputFile(fileHandle: fileHandle!))
+    }
+    
+    func openWriteWithSize(size: jint) -> ARPromise! {
+        let fileHandle = NSFileHandle(forWritingAtPath: realPath)
+        
+        if (fileHandle == nil) {
+            return ARPromise.failure(JavaLangRuntimeException(NSString: "Unable to open file"))
         }
         
         fileHandle!.seekToFileOffset(UInt64(size))
         fileHandle!.seekToFileOffset(0)
         
-        return CocoaOutputFile(fileHandle: fileHandle!)
-    }
-    
-    func openRead() -> ARInputFile! {
-        
-        let fileHandle = NSFileHandle(forReadingAtPath: realPath)
-        
-        if (fileHandle == nil) {
-            return nil
-        }
-        
-        return CocoaInputFile(fileHandle: fileHandle!)
+        return ARPromise.success(CocoaOutputFile(fileHandle: fileHandle!))
     }
 }
 
@@ -157,29 +164,56 @@ class CocoaInputFile :NSObject, ARInputFile {
         self.fileHandle = fileHandle
     }
     
-    func readWithOffset(fileOffset: jint, withData data: IOSByteArray!, withDataOffset offset: jint, withLength len: jint, withCallback callback: ARFileReadCallback!) {
+    func readWithOffset(fileOffset: jint, withLength len: jint) -> ARPromise! {
         
-        dispatchBackground {
-            
-            self.fileHandle.seekToFileOffset(UInt64(fileOffset))
-            
-            let readed: NSData = self.fileHandle.readDataOfLength(Int(len))
-            
-            var srcBuffer = UnsafeMutablePointer<UInt8>(readed.bytes)
-            var destBuffer = UnsafeMutablePointer<UInt8>(data.buffer())
-            let len = min(Int(len), Int(readed.length))
-            for _ in offset..<offset+len {
-                destBuffer.memory = srcBuffer.memory
-                destBuffer = destBuffer.successor()
-                srcBuffer = srcBuffer.successor()
+        return ARPromise { (resolver) in
+            dispatchBackground {
+                self.fileHandle.seekToFileOffset(UInt64(fileOffset))
+                
+                let readed: NSData = self.fileHandle.readDataOfLength(Int(len))
+                let data = IOSByteArray(length: UInt(len))
+                var srcBuffer = UnsafeMutablePointer<UInt8>(readed.bytes)
+                var destBuffer = UnsafeMutablePointer<UInt8>(data.buffer())
+                let readCount = min(Int(len), Int(readed.length))
+                for _ in 0..<readCount {
+                    destBuffer.memory = srcBuffer.memory
+                    destBuffer = destBuffer.successor()
+                    srcBuffer = srcBuffer.successor()
+                }
+                
+                resolver.result(ARFilePart(offset: fileOffset, withLength: len, withContents: data))
             }
-            
-            callback.onFileReadWithOffset(fileOffset, withData: data, withDataOffset: offset, withLength: jint(len))
         }
     }
     
-    func close() -> Bool {
+    func close() -> ARPromise! {
         self.fileHandle.closeFile()
-        return true
+        return ARPromise.success(nil)
     }
+    
+//    func readWithOffset(fileOffset: jint, withData data: IOSByteArray!, withDataOffset offset: jint, withLength len: jint, withCallback callback: ARFileReadCallback!) {
+//        
+//        dispatchBackground {
+//            
+//            self.fileHandle.seekToFileOffset(UInt64(fileOffset))
+//            
+//            let readed: NSData = self.fileHandle.readDataOfLength(Int(len))
+//            
+//            var srcBuffer = UnsafeMutablePointer<UInt8>(readed.bytes)
+//            var destBuffer = UnsafeMutablePointer<UInt8>(data.buffer())
+//            let len = min(Int(len), Int(readed.length))
+//            for _ in offset..<offset+len {
+//                destBuffer.memory = srcBuffer.memory
+//                destBuffer = destBuffer.successor()
+//                srcBuffer = srcBuffer.successor()
+//            }
+//            
+//            callback.onFileReadWithOffset(fileOffset, withData: data, withDataOffset: offset, withLength: jint(len))
+//        }
+//    }
+    
+//    func close() -> Bool {
+//        self.fileHandle.closeFile()
+//        return true
+//    }
 }

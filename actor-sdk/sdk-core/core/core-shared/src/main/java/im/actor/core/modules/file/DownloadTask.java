@@ -67,16 +67,15 @@ public class DownloadTask extends ModuleActor {
             return;
         }
 
-        outputFile = destReference.openWrite(fileReference.getFileSize());
-        if (outputFile == null) {
+        destReference.openWrite(fileReference.getFileSize()).then(r -> {
+            outputFile = r;
+            requestUrl();
+        }).failure(e -> {
             reportError();
             if (LOG) {
                 Log.d(TAG, "Unable to write wile");
             }
-            return;
-        }
-
-        requestUrl();
+        });
     }
 
     @Override
@@ -206,10 +205,7 @@ public class DownloadTask extends ModuleActor {
                     && ((HTTPError) e).getErrorCode() < 600)
                     || ((HTTPError) e).getErrorCode() == 0)) {
                 // Server on unknown error
-                int retryInSecs = ((HTTPError) e).getRetryInSecs();
-                if (retryInSecs <= 0) {
-                    retryInSecs = DEFAULT_RETRY;
-                }
+                int retryInSecs = DEFAULT_RETRY;
 
                 if (LOG) {
                     Log.w(TAG, "Download part #" + blockIndex + " failure #" + ((HTTPError) e).getErrorCode() + " trying again in " + retryInSecs + " sec, attempt #" + (attempt + 1));
