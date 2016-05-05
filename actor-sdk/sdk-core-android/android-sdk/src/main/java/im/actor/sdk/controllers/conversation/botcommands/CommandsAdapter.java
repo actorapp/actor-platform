@@ -14,7 +14,6 @@ import im.actor.core.viewmodel.UserVM;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.util.Screen;
-import im.actor.sdk.view.SearchHighlight;
 import im.actor.sdk.view.adapters.HolderAdapter;
 import im.actor.sdk.view.adapters.ViewHolder;
 import im.actor.sdk.view.avatar.AvatarView;
@@ -29,9 +28,12 @@ public class CommandsAdapter extends HolderAdapter<BotCommand> {
     private List<BotCommand> commandsToShow = new ArrayList<BotCommand>();
     private CommandsUpdatedCallback updatedCallback;
     private int highlightColor;
+    private UserVM botUser;
+    private String query = "";
 
     public CommandsAdapter(int uid, Context context, CommandsUpdatedCallback updatedCallback) {
         super(context);
+        botUser = users().get(uid);
         highlightColor = context.getResources().getColor(R.color.primary);
         commands = users().get(uid).getBotCommands().get();
         commandsToShow = users().get(uid).getBotCommands().get();
@@ -41,9 +43,13 @@ public class CommandsAdapter extends HolderAdapter<BotCommand> {
     }
 
     public void setQuery(String q) {
+        if (q == null || q.equals(query)) {
+            return;
+        }
+        query = q;
         ArrayList<BotCommand> filterd = new ArrayList<BotCommand>();
         for (BotCommand command : commands) {
-            if (command.getSlashCommand().toLowerCase().startsWith("q")) {
+            if (command.getSlashCommand().toLowerCase().startsWith(q)) {
                 filterd.add(command);
             }
         }
@@ -79,7 +85,7 @@ public class CommandsAdapter extends HolderAdapter<BotCommand> {
         void onMentionsUpdated(int oldRowsCount, int newRowsCount);
     }
 
-    private class CommandHolder extends ViewHolder<BotCommand> {
+    public class CommandHolder extends ViewHolder<BotCommand> {
 
         BotCommand data;
         private TextView userName;
@@ -104,9 +110,8 @@ public class CommandsAdapter extends HolderAdapter<BotCommand> {
 
         @Override
         public void bind(BotCommand data, int position, Context context) {
-            UserVM user = users().get(uid);
             this.data = data;
-            avatarView.bind(user);
+            avatarView.bind(botUser);
             CharSequence name = data.getSlashCommand();
             userName.setText(name);
 
@@ -114,6 +119,9 @@ public class CommandsAdapter extends HolderAdapter<BotCommand> {
             mentionHint.setText(hint);
         }
 
+        public BotCommand getCommand() {
+            return data;
+        }
 
         @Override
         public void unbind() {
