@@ -86,6 +86,10 @@ class Scroller extends Component {
     console.debug('Scroll to: bottom');
     this.container.scrollTop = this.container.scrollHeight;
   }
+
+  scrollToNode(node) {
+    this.scrollTo(Math.min(node.offsetTop, this.container.scrollHeight));
+  }
 }
 
 export default Scroller;

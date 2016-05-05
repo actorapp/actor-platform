@@ -25,3 +25,27 @@ export function quoteMessage(text) {
     .map(((line) => `> ${line}`))
     .join('\n');
 }
+
+export function isLastMessageMine(uid, { messages }) {
+  const lastMessage = messages[messages.length - 1];
+  return lastMessage && uid === lastMessage.sender.peer.id;
+}
+
+export function getFirstUnreadMessageIndex(messages, readDate, uid) {
+  if (readDate === 0 || !messages.length) {
+    return -1;
+  }
+
+  let index = -1;
+  for (let i = messages.length - 1; i--; i >= 0) {
+    const message = messages[i];
+    if (message.sortDate <= readDate || message.sender.peer.id === uid) {
+      return index;
+    }
+
+    index = i;
+  }
+
+  // maybe unreachable
+  return index;
+}
