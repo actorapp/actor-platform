@@ -3,6 +3,7 @@ package im.actor.sdk.controllers.activity.base;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -57,6 +58,12 @@ public abstract class ControllerActivity<T extends Controller> extends BaseActiv
     protected void onResume() {
         super.onResume();
         controller.onResume();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        controller.onSaveInstanceState(outState);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
