@@ -139,7 +139,11 @@ class MessagesList extends Component {
       this.props.onLoadMore();
     }
 
-    this.setState({ showScrollToBottom: dimensions.scrollTop < dimensions.scrollHeight - (2 * dimensions.offsetHeight) });
+    const showScrollToBottom = dimensions.scrollTop < dimensions.scrollHeight - (2 * dimensions.offsetHeight);
+
+    if (showScrollToBottom !== this.state.showScrollToBottom) {
+      this.setState({ showScrollToBottom });
+    }
   }
 
   onResize() {

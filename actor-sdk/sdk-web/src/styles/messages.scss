@@ -7,8 +7,8 @@ $contact-avatar-size: 48px;
 $like-red: rgb(226, 38, 77);
 $maximum-image-height: 400px;
 $extend-background: 1px;
-$message-hover-background: rgba(black, .025);
-$message-selected-background: rgba($dusk, .1);
+$message-hover-background: #F9F9F9;
+$message-selected-background: #EBEEF1;
 $modern-text-line-width: 2px;
 $modern-text-padding: 6px;
 $sticker-max-size: 180px;
@@ -85,23 +85,14 @@ $sticker-max-size: 180px;
 .message {
   position: relative;
 
+  display: flex;
+  flex: 0 1 auto;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  box-sizing: border-box;
   margin: 0;
   padding: 6px 39px 6px 32px;
-
-  &:before {
-    position: absolute;
-    top: - $extend-background;
-    left: 0;
-
-    display: none;
-
-    width: 100%;
-    height: $extend-background;
-
-    content: '';
-
-    background-color: $message-hover-background;
-  }
 
   &__header {
     font-weight: 500;
@@ -113,7 +104,9 @@ $sticker-max-size: 180px;
   }
   &__body {
     padding-right: 16px;
-    overflow: hidden;
+    flex-grow: 1;
+    flex-basis: 0;
+    max-width: 100%;
   }
   &__sender {
     font-size: 15px;
@@ -553,9 +546,6 @@ $sticker-max-size: 180px;
   &--active,
   &:hover {
     background-color: $message-hover-background;
-    &:before {
-      display: block;
-    }
     .message__info .message__timestamp {
       opacity: 1;
     }
