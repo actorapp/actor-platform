@@ -49,6 +49,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Set;
 
+import im.actor.core.entity.BotCommand;
 import im.actor.core.entity.MentionFilterResult;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
@@ -1113,8 +1114,8 @@ public class ChatActivity extends ActorEditTextActivity {
                         messageEditText.setSelection(cursorPosition, cursorPosition);
                     }
                     hideMentions();
-                } else if (item != null && item instanceof CommandsAdapter.CommandHolder) {
-                    messenger().sendMessage(peer, ((CommandsAdapter.CommandHolder) item).getCommand().getSlashCommand());
+                } else if (item != null && item instanceof BotCommand) {
+                    messenger().sendMessage(peer, ((BotCommand) item).getSlashCommand());
                     hideMentions();
                 }
             }
