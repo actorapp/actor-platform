@@ -1,10 +1,17 @@
 package im.actor.runtime.http;
 
-public class HTTPResponse {
-    
-    private int code;
-    private byte[] content;
+import com.google.j2objc.annotations.ObjectiveCName;
+import com.google.j2objc.annotations.Property;
 
+public class HTTPResponse {
+
+    @Property("readonly, nonatomic")
+    private final int code;
+
+    @Property("readonly, nonatomic")
+    private final byte[] content;
+
+    @ObjectiveCName("initWithCode:withContent:")
     public HTTPResponse(int code, byte[] content) {
         this.code = code;
         this.content = content;
