@@ -86,4 +86,8 @@ public abstract class Controller<T extends AppCompatActivity> {
 
     public void onNewIntent(Intent intent) {
     }
+
+    public void onSaveInstanceState(Bundle outState) {
+
+    }
 }
