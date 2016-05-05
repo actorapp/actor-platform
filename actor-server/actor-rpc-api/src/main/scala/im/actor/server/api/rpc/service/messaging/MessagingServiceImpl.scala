@@ -1,10 +1,10 @@
 package im.actor.server.api.rpc.service.messaging
 
 import akka.actor._
-import im.actor.api.rpc.{ RpcError, Error, CommonRpcErrors }
+import im.actor.api.rpc.{ CommonRpcErrors, RpcError }
 import im.actor.api.rpc.messaging._
 import im.actor.server.db.DbExtension
-import im.actor.server.dialog.{ InvalidAccessHash, DialogErrors, DialogExtension }
+import im.actor.server.dialog.{ DialogErrors, DialogExtension, InvalidAccessHash, NotUniqueRandomId }
 import im.actor.server.group.{ GroupErrors, GroupExtension }
 import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
 import im.actor.server.user.UserExtension
@@ -34,6 +34,7 @@ final class MessagingServiceImpl(implicit protected val actorSystem: ActorSystem
       RpcError(406, "DIALOG_ALREADY_ARCHIVED", "Dialog is already archived.", canTryAgain = false, None)
     case DialogErrors.DialogAlreadyShown(peer) ⇒
       RpcError(406, "DIALOG_ALREADY_SHOWN", "Dialog is already shown.", canTryAgain = false, None)
+    case NotUniqueRandomId ⇒ MessagingRpcErors.NotUniqueRandomId
   }
 
 }
