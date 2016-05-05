@@ -6,21 +6,16 @@ import { isFunction, throttle } from 'lodash';
 
 import React, { Component, PropTypes } from 'react';
 
+import { FormattedMessage } from 'react-intl';
 import { MessageChangeReason } from '../../constants/ActorAppConstants';
 
 import PeerUtils from '../../utils/PeerUtils';
-import { getMessageState } from '../../utils/MessageUtils';
-
+import { getMessageState, isLastMessageMine } from '../../utils/MessageUtils';
 import Scroller from '../common/Scroller.react';
 
 import DefaultMessageItem from './messages/MessageItem.react';
 import DefaultWelcome from './messages/Welcome.react';
 import Loading from './messages/Loading.react';
-
-function isLastMessageMine(uid, { messages }) {
-  const lastMessage = messages[messages.length - 1];
-  return lastMessage && uid === lastMessage.sender.peer.id;
-}
 
 class MessagesList extends Component {
   static contextTypes = {
@@ -37,7 +32,7 @@ class MessagesList extends Component {
       isLoaded: PropTypes.bool.isRequired,
       receiveDate: PropTypes.number.isRequired,
       readDate: PropTypes.number.isRequired,
-      readByMeDate: PropTypes.number.isRequired,
+      firstUnreadId: PropTypes.string,
       selected: PropTypes.object.isRequired,
       changeReason: PropTypes.oneOf([
         MessageChangeReason.UNKNOWN,
@@ -108,7 +103,14 @@ class MessagesList extends Component {
 
     const { dimensions, refs: { scroller }, props: { uid, messages } } = this;
 
-    if (messages.changeReason === MessageChangeReason.PUSH) {
+    if (messages.firstUnreadId && messages.firstUnreadId !== prevProps.messages.firstUnreadId) {
+      if (this.refs.unread) {
+        console.debug('Scroll to unread divider');
+        this.refs.scroller.scrollToNode(this.refs.unread);
+      } else {
+        console.debug('Scroll to unread divider impossible');
+      }
+    } else if (messages.changeReason === MessageChangeReason.PUSH) {
       const _isLastMessageMine = isLastMessageMine(uid, messages);
       if (!dimensions || _isLastMessageMine) {
         console.debug('Scroll to bottom due new messages PUSH', { dimensions, _isLastMessageMine });
@@ -184,7 +186,7 @@ class MessagesList extends Component {
   }
 
   renderMessages() {
-    const { uid, peer, messages: { messages, overlay, count, selected, receiveDate, readDate } } = this.props;
+    let { uid, peer, messages: { messages, overlay, count, selected, receiveDate, readDate, firstUnreadId } } = this.props;
     const { MessageItem } = this.components;
 
     const result = [];
@@ -199,6 +201,13 @@ class MessagesList extends Component {
       }
 
       const message = messages[index];
+      if (message.rid === firstUnreadId) {
+        result.push(
+          <div className="unread-divider" ref="unread" key="unread">
+            <FormattedMessage id="message.unread"/>
+          </div>
+        );
+      }
 
       result.push(
         <MessageItem

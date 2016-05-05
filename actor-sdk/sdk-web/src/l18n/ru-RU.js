@@ -80,7 +80,8 @@ export default {
           }
         }
       },
-      'loading': 'Загрузка сообщений из истории'
+      'loading': 'Загрузка сообщений из истории',
+      'unread': 'Новые сообщения'
     },
 
     // Connection state

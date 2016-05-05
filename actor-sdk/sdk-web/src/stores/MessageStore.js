@@ -6,6 +6,8 @@ import Immutable from 'immutable';
 import { ReduceStore } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes, MessageChangeReason } from '../constants/ActorAppConstants';
+import { getFirstUnreadMessageIndex } from '../utils/MessageUtils';
+import UserStore from './UserStore';
 
 const MESSAGE_COUNT_STEP = 20;
 
@@ -19,10 +21,10 @@ class MessageStore extends ReduceStore {
       isLoaded: false,
       receiveDate: 0,
       readDate: 0,
-      readByMeDate: 0,
       count: 0,
       firstMessageId: null,
       lastMessageId: null,
+      firstUnreadId: null,
       changeReason: MessageChangeReason.UNKNOWN,
       selected: new Immutable.Set()
     };
@@ -42,39 +44,7 @@ class MessageStore extends ReduceStore {
         const firstMessageId = getMessageId(action.messages[0]);
         const lastMessageId = getMessageId(action.messages[action.messages.length - 1]);
 
-        if (firstMessageId !== state.firstMessageId) {
-          return {
-            ...state,
-            firstMessageId,
-            lastMessageId,
-            messages: action.messages,
-            overlay: action.overlay,
-            receiveDate: action.receiveDate,
-            readDate: action.readDate,
-            readByMeDate: action.readByMeDate,
-            isLoaded: action.isLoaded,
-            count: Math.min(action.messages.length, state.count + MESSAGE_COUNT_STEP),
-            changeReason: MessageChangeReason.UNSHIFT
-          };
-        }
-
-        if (lastMessageId !== state.lastMessageId) {
-          return {
-            ...state,
-            firstMessageId,
-            lastMessageId,
-            messages: action.messages,
-            overlay: action.overlay,
-            receiveDate: action.receiveDate,
-            readDate: action.readDate,
-            readByMeDate: action.readByMeDate,
-            isLoaded: action.isLoaded,
-            count: Math.min(action.messages.length, state.count + action.messages.length - state.messages.length),
-            changeReason: MessageChangeReason.PUSH
-          };
-        }
-
-        return {
+        const nextState = {
           ...state,
           firstMessageId,
           lastMessageId,
@@ -82,11 +52,34 @@ class MessageStore extends ReduceStore {
           overlay: action.overlay,
           receiveDate: action.receiveDate,
           readDate: action.readDate,
-          readByMeDate: action.readByMeDate,
-          isLoaded: action.isLoaded,
-          count: Math.min(action.messages.length, state.count),
-          changeReason: MessageChangeReason.UPDATE
+          isLoaded: action.isLoaded
         };
+
+        if (firstMessageId !== state.firstMessageId) {
+          nextState.count = Math.min(action.messages.length, state.count + MESSAGE_COUNT_STEP);
+          nextState.changeReason = MessageChangeReason.UNSHIFT;
+        } else if (lastMessageId !== state.lastMessageId) {
+          // TODO: possible incorrect
+          const lengthDiff = action.messages.length - state.messages.length;
+
+          nextState.count = Math.min(action.messages.length, state.count + lengthDiff);
+          nextState.changeReason = MessageChangeReason.PUSH;
+        } else {
+          nextState.count = Math.min(action.messages.length, state.count);
+          nextState.changeReason = MessageChangeReason.UPDATE;
+        }
+
+        const firstUnreadIndex = getFirstUnreadMessageIndex(action.messages, action.readByMeDate, UserStore.getMyId());
+        if (firstUnreadIndex === -1) {
+          nextState.firstUnreadId = null;
+        } else {
+          nextState.firstUnreadId = action.messages[firstUnreadIndex].rid;
+          if (firstUnreadIndex > nextState.count) {
+            nextState.count = firstUnreadIndex;
+          }
+        }
+
+        return nextState;
 
       case ActionTypes.MESSAGES_LOAD_MORE:
         return {
