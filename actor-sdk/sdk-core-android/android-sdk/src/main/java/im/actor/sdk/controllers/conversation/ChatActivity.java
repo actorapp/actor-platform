@@ -484,7 +484,7 @@ public class ChatActivity extends ActorEditTextActivity {
         try {
             forwardContent = AbsContent.parse(intent.getByteArrayExtra("forward_content"));
         } catch (Exception e) {
-            e.printStackTrace();
+
         }
     }
 
@@ -1086,6 +1086,11 @@ public class ChatActivity extends ActorEditTextActivity {
             }, initEmpty);
         }
 
+//        if(autocompleteAdapter.getCount() == 0){
+//            isAutocompleteVisible = false;
+//            return;
+//        }
+
         autocompleteList.setAdapter(autocompleteAdapter);
         autocompleteList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -1108,10 +1113,14 @@ public class ChatActivity extends ActorEditTextActivity {
                         messageEditText.setSelection(cursorPosition, cursorPosition);
                     }
                     hideMentions();
+                } else if (item != null && item instanceof CommandsAdapter.CommandHolder) {
+                    messenger().sendMessage(peer, ((CommandsAdapter.CommandHolder) item).getCommand().getSlashCommand());
+                    hideMentions();
                 }
             }
         });
         hideShare();
+
         expandMentions(autocompleteList, 0, autocompleteList.getCount());
     }
 
