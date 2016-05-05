@@ -15,6 +15,7 @@ import im.actor.core.*;
 import im.actor.core.api.ApiAuthSession;
 import im.actor.core.api.ApiDialog;
 import im.actor.core.api.rpc.ResponseLoadArchived;
+import im.actor.core.entity.BotCommand;
 import im.actor.core.entity.EntityConverter;
 import im.actor.core.entity.MentionFilterResult;
 import im.actor.core.entity.MessageSearchEntity;
@@ -55,6 +56,7 @@ import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -861,6 +863,17 @@ public class JsFacade implements Exportable {
             mentions.push(JsMentionFilterResult.create(m));
         }
         return mentions;
+    }
+
+    @UsedByApp
+    public JsArray<JsBotCommand> findBotCommands(int uid, String query) {
+        JsArray<JsBotCommand> commands = JsArray.createArray().cast();
+        for (BotCommand c : messenger.getUser(uid).getBotCommands().get()) {
+            if (c.getSlashCommand().startsWith(query)) {
+                commands.push(JsBotCommand.create(c.getSlashCommand(), c.getDescription()));
+            }
+        }
+        return commands;
     }
 
     // Typing
