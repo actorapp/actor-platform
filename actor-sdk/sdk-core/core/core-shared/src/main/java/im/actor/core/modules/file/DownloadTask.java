@@ -14,7 +14,7 @@ import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Cancellable;
 import im.actor.runtime.files.FileSystemReference;
 import im.actor.runtime.files.OutputFile;
-import im.actor.runtime.http.FileDownloadCallback;
+import im.actor.runtime.http.HTTPError;
 
 public class DownloadTask extends ModuleActor {
 
@@ -67,16 +67,15 @@ public class DownloadTask extends ModuleActor {
             return;
         }
 
-        outputFile = destReference.openWrite(fileReference.getFileSize());
-        if (outputFile == null) {
+        destReference.openWrite(fileReference.getFileSize()).then(r -> {
+            outputFile = r;
+            requestUrl();
+        }).failure(e -> {
             reportError();
             if (LOG) {
                 Log.d(TAG, "Unable to write wile");
             }
-            return;
-        }
-
-        requestUrl();
+        });
     }
 
     @Override
@@ -188,46 +187,36 @@ public class DownloadTask extends ModuleActor {
     }
 
     private void downloadPart(final int blockIndex, final int fileOffset, final int attempt) {
-        HTTP.getMethod(fileUrl, fileOffset, blockSize, fileReference.getFileSize(), new FileDownloadCallback() {
-            @Override
-            public void onDownloaded(final byte[] data) {
-                self().send((Runnable) () -> {
-                    downloaded++;
-                    if (LOG) {
-                        Log.d(TAG, "Download part #" + blockIndex + " completed");
-                    }
-                    if (!outputFile.write(fileOffset, data, 0, data.length)) {
-                        reportError();
-                        return;
-                    }
-                    currentDownloads--;
-                    reportProgress(downloaded / (float) blocksCount);
-                    checkQueue();
-                });
+        HTTP.getMethod(fileUrl, fileOffset, blockSize, fileReference.getFileSize()).then(r -> {
+            downloaded++;
+            if (LOG) {
+                Log.d(TAG, "Download part #" + blockIndex + " completed");
             }
+            if (!outputFile.write(fileOffset, r.getContent(), 0, r.getContent().length)) {
+                reportError();
+                return;
+            }
+            currentDownloads--;
+            reportProgress(downloaded / (float) blocksCount);
+            checkQueue();
+        }).failure(e -> {
+            if ((e instanceof HTTPError)
+                    && ((((HTTPError) e).getErrorCode() >= 500
+                    && ((HTTPError) e).getErrorCode() < 600)
+                    || ((HTTPError) e).getErrorCode() == 0)) {
+                // Server on unknown error
+                int retryInSecs = DEFAULT_RETRY;
 
-            @Override
-            public void onDownloadFailure(int error, int retryInSecs) {
-                if ((error >= 500 && error < 600) || error == 0) {
-                    // Server on unknown error
-
-                    if (retryInSecs <= 0) {
-                        retryInSecs = DEFAULT_RETRY;
-                    }
-
-                    if (LOG) {
-                        Log.w(TAG, "Download part #" + blockIndex + " failure #" + error + " trying again in " + retryInSecs + " sec, attempt #" + (attempt + 1));
-                    }
-
-                    self().send(new Retry(blockIndex, fileOffset, attempt + 1));
-                } else {
-                    self().send((Runnable) () -> {
-                        if (LOG) {
-                            Log.d(TAG, "Download part #" + blockIndex + " failure");
-                        }
-                        reportError();
-                    });
+                if (LOG) {
+                    Log.w(TAG, "Download part #" + blockIndex + " failure #" + ((HTTPError) e).getErrorCode() + " trying again in " + retryInSecs + " sec, attempt #" + (attempt + 1));
                 }
+
+                self().send(new Retry(blockIndex, fileOffset, attempt + 1));
+            } else {
+                if (LOG) {
+                    Log.d(TAG, "Download part #" + blockIndex + " failure");
+                }
+                reportError();
             }
         });
     }
