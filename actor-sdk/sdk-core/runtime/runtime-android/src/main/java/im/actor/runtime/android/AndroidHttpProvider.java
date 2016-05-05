@@ -30,8 +30,9 @@ import javax.net.ssl.TrustManagerFactory;
 
 import im.actor.runtime.HttpRuntime;
 import im.actor.runtime.Log;
-import im.actor.runtime.http.FileDownloadCallback;
-import im.actor.runtime.http.FileUploadCallback;
+import im.actor.runtime.http.HTTPError;
+import im.actor.runtime.http.HTTPResponse;
+import im.actor.runtime.promise.Promise;
 import okio.Buffer;
 
 public class AndroidHttpProvider implements HttpRuntime {
@@ -51,21 +52,15 @@ public class AndroidHttpProvider implements HttpRuntime {
                     .inputStream());
             client.setSslSocketFactory(sslContext.getSocketFactory());
         } catch (Resources.NotFoundException e) {
-
+            // Just Ignore
         }
 
         try {
             final String trustHostname = resources.getString(resources.getIdentifier("trusted_hostname", "string", AndroidContext.getContext().getPackageName()));
-            client.setHostnameVerifier(new HostnameVerifier() {
-                @Override
-                public boolean verify(String hostname, SSLSession session) {
-                    return hostname.equals(trustHostname);
-                }
-            });
+            client.setHostnameVerifier((hostname, session) -> hostname.equals(trustHostname));
         } catch (Resources.NotFoundException e) {
-
+            // Just Ignore
         }
-
     }
 
     public SSLContext sslContextForTrustedCertificates(InputStream in) {
@@ -113,56 +108,62 @@ public class AndroidHttpProvider implements HttpRuntime {
     }
 
     @Override
-    public void getMethod(String url, int startOffset, int size, int totalSize, final FileDownloadCallback callback) {
-        final Request request = new Request.Builder()
-                .url(url)
-                .addHeader("Range", "bytes=" + startOffset + "-" + (startOffset + size))
-                .build();
-        Log.d(TAG, "Downloading part: " + request.toString());
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Request request, IOException e) {
-                Log.d(TAG, "Downloading part error: " + request.toString());
-                e.printStackTrace();
-                callback.onDownloadFailure(0, 0);
-            }
-
-            @Override
-            public void onResponse(Response response) throws IOException {
-                Log.d(TAG, "Downloading part response: " + request.toString() + " -> " + response.toString());
-                if (response.code() >= 200 && response.code() < 300) {
-                    callback.onDownloaded(response.body().bytes());
-                } else {
-                    callback.onDownloadFailure(response.code(), 0);
+    public Promise<HTTPResponse> getMethod(String url, int startOffset, int size, int totalSize) {
+        return new Promise<>(resolver -> {
+            final Request request = new Request.Builder()
+                    .url(url)
+                    .addHeader("Range", "bytes=" + startOffset + "-" + (startOffset + size))
+                    .build();
+            Log.d(TAG, "Downloading part: " + request.toString());
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Request request, IOException e) {
+                    Log.d(TAG, "Downloading part error: " + request.toString());
+                    e.printStackTrace();
+                    // TODO: Better error?
+                    resolver.error(new HTTPError(0));
                 }
-            }
+
+                @Override
+                public void onResponse(Response response) throws IOException {
+                    Log.d(TAG, "Downloading part response: " + request.toString() + " -> " + response.toString());
+                    if (response.code() >= 200 && response.code() < 300) {
+                        resolver.result(new HTTPResponse(response.code(), response.body().bytes()));
+                    } else {
+                        resolver.error(new HTTPError(response.code()));
+                    }
+                }
+            });
         });
     }
 
     @Override
-    public void putMethod(String url, byte[] contents, final FileUploadCallback callback) {
-        final Request request = new Request.Builder()
-                .url(url)
-                .method("PUT", RequestBody.create(MEDIA_TYPE, contents))
-                .build();
-        Log.d(TAG, "Uploading part: " + request.toString());
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Request request, IOException e) {
-                Log.d(TAG, "Uploading part error: " + request.toString());
-                e.printStackTrace();
-                callback.onUploadFailure(0, 0);
-            }
-
-            @Override
-            public void onResponse(Response response) throws IOException {
-                Log.d(TAG, "Upload part response: " + request.toString() + " -> " + response.toString());
-                if (response.code() >= 200 && response.code() < 300) {
-                    callback.onUploaded();
-                } else {
-                    callback.onUploadFailure(response.code(), 0);
+    public Promise<HTTPResponse> putMethod(String url, byte[] contents) {
+        return new Promise<>(resolver -> {
+            final Request request = new Request.Builder()
+                    .url(url)
+                    .method("PUT", RequestBody.create(MEDIA_TYPE, contents))
+                    .build();
+            Log.d(TAG, "Uploading part: " + request.toString());
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Request request, IOException e) {
+                    Log.d(TAG, "Uploading part error: " + request.toString());
+                    e.printStackTrace();
+                    // TODO: Better error?
+                    resolver.error(new HTTPError(0));
                 }
-            }
+
+                @Override
+                public void onResponse(Response response) throws IOException {
+                    Log.d(TAG, "Upload part response: " + request.toString() + " -> " + response.toString());
+                    if (response.code() >= 200 && response.code() < 300) {
+                        resolver.result(new HTTPResponse(response.code(), null));
+                    } else {
+                        resolver.error(new HTTPError(response.code()));
+                    }
+                }
+            });
         });
     }
 }
