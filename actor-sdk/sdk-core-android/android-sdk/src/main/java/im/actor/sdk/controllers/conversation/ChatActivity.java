@@ -1115,7 +1115,7 @@ public class ChatActivity extends ActorEditTextActivity {
                     }
                     hideMentions();
                 } else if (item != null && item instanceof BotCommand) {
-                    messenger().sendMessage(peer, ((BotCommand) item).getSlashCommand());
+                    messenger().sendMessage(peer, "/".concat(((BotCommand) item).getSlashCommand()));
                     hideMentions();
                 }
             }
