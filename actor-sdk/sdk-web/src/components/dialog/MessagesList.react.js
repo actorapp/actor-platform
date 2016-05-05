@@ -68,7 +68,7 @@ class MessagesList extends Component {
     }
 
     this.state = {
-      isScrollToBottomNeeded: false
+      showScrollToBottom: false
     };
 
     this.dimensions = null;
@@ -83,7 +83,7 @@ class MessagesList extends Component {
     return nextProps.peer !== this.props.peer ||
            nextProps.messages !== this.props.messages ||
            nextProps.isMember !== this.props.isMember ||
-           nextState.isScrollToBottomNeeded !== this.state.isScrollToBottomNeeded;
+           nextState.showScrollToBottom !== this.state.showScrollToBottom;
   }
 
   componentDidMount() {
@@ -95,11 +95,14 @@ class MessagesList extends Component {
       console.debug('Peer changed, set dimensions to null');
       this.dimensions = null;
       this.isLoading = false;
+    } else {
+      console.debug('Update dimensions due messages will rerender');
+      this.updateDimensions(this.refs.scroller.getDimensions());
     }
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.isScrollToBottomNeeded !== this.state.isScrollToBottomNeeded) {
+    if (prevState.showScrollToBottom !== this.state.showScrollToBottom) {
       return;
     }
 
@@ -109,7 +112,7 @@ class MessagesList extends Component {
       const _isLastMessageMine = isLastMessageMine(uid, messages);
       if (!dimensions || _isLastMessageMine) {
         console.debug('Scroll to bottom due new messages PUSH', { dimensions, _isLastMessageMine });
-        scroller.scrollToBottom();
+        this.scrollToBottom();
       }
     } else if (messages.changeReason === MessageChangeReason.UNSHIFT) {
       this.isLoading = false;
@@ -119,7 +122,7 @@ class MessagesList extends Component {
         scroller.scrollTo(nextDimensions.scrollHeight - dimensions.scrollHeight);
       } else {
         console.debug('Scroll to bottom due messages have been UNSHIFT', { dimensions });
-        scroller.scrollToBottom();
+        this.scrollToBottom();
       }
     } else {
       console.debug('Restore scroll due messages UPDATE');
@@ -129,21 +132,14 @@ class MessagesList extends Component {
 
   onScroll() {
     const dimensions = this.refs.scroller.getDimensions();
-    if (dimensions.scrollHeight === dimensions.scrollTop + dimensions.offsetHeight) {
-      console.debug('Handle scroll: lock scroll to bottom', { dimensions });
-      this.dimensions = null;
-    } else {
-      console.debug('Handle scroll: set new dimensions', { dimensions });
-      this.dimensions = dimensions;
-    }
-
+    this.updateDimensions(dimensions);
     if (!this.isLoading && dimensions.scrollTop < 100) {
       console.debug('Start loading more messages');
       this.isLoading = true;
       this.props.onLoadMore();
     }
 
-    this.setState({ isScrollToBottomNeeded: dimensions.scrollTop < dimensions.scrollHeight - (2 * dimensions.offsetHeight) });
+    this.setState({ showScrollToBottom: dimensions.scrollTop < dimensions.scrollHeight - (2 * dimensions.offsetHeight) });
   }
 
   onResize() {
@@ -217,8 +213,8 @@ class MessagesList extends Component {
   }
 
   renderScrollToBottomButton() {
-    const { isScrollToBottomNeeded } = this.state;
-    if (!isScrollToBottomNeeded) {
+    const { showScrollToBottom } = this.state;
+    if (!showScrollToBottom) {
       return null;
     }
 
@@ -244,6 +240,21 @@ class MessagesList extends Component {
         {this.renderScrollToBottomButton()}
       </div>
     )
+  }
+
+  scrollToBottom() {
+    this.dimensions = null;
+    this.refs.scroller.scrollToBottom();
+  }
+
+  updateDimensions(dimensions) {
+    if (dimensions.scrollHeight === dimensions.scrollTop + dimensions.offsetHeight) {
+      console.debug('Update dimensions: lock scroll to bottom', { dimensions });
+      this.dimensions = null;
+    } else {
+      console.debug('Update dimensions: set new dimensions', { dimensions });
+      this.dimensions = dimensions;
+    }
   }
 
   restoreScroll() {
