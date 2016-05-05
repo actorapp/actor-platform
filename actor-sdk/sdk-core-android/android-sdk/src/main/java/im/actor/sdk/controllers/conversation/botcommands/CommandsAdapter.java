@@ -88,8 +88,8 @@ public class CommandsAdapter extends HolderAdapter<BotCommand> {
     public class CommandHolder extends ViewHolder<BotCommand> {
 
         BotCommand data;
-        private TextView userName;
-        private TextView mentionHint;
+        private TextView commandName;
+        private TextView description;
         private AvatarView avatarView;
 
         @Override
@@ -97,10 +97,10 @@ public class CommandsAdapter extends HolderAdapter<BotCommand> {
             View res = ((Activity) context).getLayoutInflater().inflate(R.layout.fragment_chat_mention_item, viewGroup, false);
             res.findViewById(R.id.divider).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
 
-            userName = (TextView) res.findViewById(R.id.name);
-            userName.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
-            mentionHint = (TextView) res.findViewById(R.id.mentionHint);
-            mentionHint.setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
+            commandName = (TextView) res.findViewById(R.id.name);
+            commandName.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
+            description = (TextView) res.findViewById(R.id.mentionHint);
+            description.setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
             avatarView = (AvatarView) res.findViewById(R.id.avatar);
             avatarView.init(Screen.dp(35), 18);
             this.data = data;
@@ -112,11 +112,11 @@ public class CommandsAdapter extends HolderAdapter<BotCommand> {
         public void bind(BotCommand data, int position, Context context) {
             this.data = data;
             avatarView.bind(botUser);
-            CharSequence name = data.getSlashCommand();
-            userName.setText(name);
+            String name = data.getSlashCommand();
+            commandName.setText("/".concat(name));
 
             CharSequence hint = data.getDescription();
-            mentionHint.setText(hint);
+            description.setText(hint);
         }
 
         public BotCommand getCommand() {
