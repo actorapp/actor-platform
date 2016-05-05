@@ -180,7 +180,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
     }
   }
 
-  protected def setJoined(group: GroupState, joiningUserId: Int, joinintUserAuthSid: Int, invitingUserId: Int): Unit = {
+  protected def setJoined(group: GroupState, joiningUserId: Int, joiningUserAuthSid: Int, invitingUserId: Int): Unit = {
     if (!hasMember(group, joiningUserId) || isInvited(group, joiningUserId)) {
       val replyTo = sender()
 
@@ -200,7 +200,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
                 seqstatedate ← DBIO.from(DialogExtension(system).sendMessage(
                   peer = ApiPeer(ApiPeerType.Group, groupId),
                   senderUserId = joiningUserId,
-                  senderAuthSid = joinintUserAuthSid,
+                  senderAuthSid = joiningUserAuthSid,
                   senderAuthId = None,
                   randomId = randomId,
                   message = GroupServiceMessages.userJoined,
