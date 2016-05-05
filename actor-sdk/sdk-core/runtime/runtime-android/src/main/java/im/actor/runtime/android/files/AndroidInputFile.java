@@ -10,8 +10,10 @@ import java.io.RandomAccessFile;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import im.actor.runtime.files.FileReadCallback;
+import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.files.FilePart;
 import im.actor.runtime.files.InputFile;
+import im.actor.runtime.promise.Promise;
 
 public class AndroidInputFile implements InputFile {
 
@@ -23,47 +25,34 @@ public class AndroidInputFile implements InputFile {
         randomAccessFile = new RandomAccessFile(fileName, "r");
     }
 
-//    @Override
-//    public synchronized boolean read(int fileOffset, byte[] data, int offset, int len) {
-//        try {
-//            randomAccessFile.seek(fileOffset);
-//            // TODO: Better reading
-//            randomAccessFile.read(data, offset, len);
-//            return true;
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return false;
-//    }
-
     @Override
-    public void read(final int fileOffset, final byte[] data, final int offset, final int len, final FileReadCallback callback) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
+    public Promise<FilePart> read(int fileOffset, int len) {
+        return new Promise<>(resolver -> {
+            executor.execute(() -> {
                 try {
+                    byte[] data = new byte[len];
                     randomAccessFile.seek(fileOffset);
-                    // TODO: Better reading
-                    randomAccessFile.read(data, offset, len);
-
-                    callback.onFileRead(fileOffset, data, offset, len);
-                } catch (IOException e) {
+                    // TODO: Better reading. For big len result can be truncated
+                    randomAccessFile.read(data, 0, len);
+                    resolver.result(new FilePart(fileOffset, len, data));
+                } catch (Exception e) {
                     e.printStackTrace();
-
-                    callback.onFileReadError();
+                    resolver.error(e);
                 }
-            }
+            });
         });
     }
 
+
     @Override
-    public synchronized boolean close() {
-        try {
-            randomAccessFile.close();
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
+    public Promise<Void> close() {
+        return new Promise<>(resolver -> {
+            try {
+                randomAccessFile.close();
+                resolver.result(null);
+            } catch (IOException e) {
+                resolver.error(e);
+            }
+        });
     }
 }
