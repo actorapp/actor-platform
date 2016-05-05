@@ -47,7 +47,7 @@ public class AndroidFileSystemReference implements FileSystemReference {
     public int getSize() {
         return (int) new File(fileName).length();
     }
-    
+
     @Override
     public Promise<OutputFile> openWrite(int size) {
         try {
