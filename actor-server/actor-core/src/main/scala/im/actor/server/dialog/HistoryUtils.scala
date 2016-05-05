@@ -29,48 +29,54 @@ object HistoryUtils {
     requirePrivatePeer(fromPeer)
     // requireDifferentPeers(fromPeer, toPeer)
 
-    if (toPeer.typ == PeerType.Private) {
-      val outMessage = HistoryMessage(
-        userId = fromPeer.id,
-        peer = toPeer,
-        date = date,
-        senderUserId = fromPeer.id,
-        randomId = randomId,
-        messageContentHeader = messageContentHeader,
-        messageContentData = messageContentData,
-        deletedAt = None
-      )
-
-      val messages =
-        if (fromPeer != toPeer) {
-          Seq(
-            outMessage,
-            outMessage.copy(userId = toPeer.id, peer = fromPeer)
+    HistoryMessageRepo.existstWithRandomId(fromPeer.id, toPeer, randomId) flatMap { exists ⇒
+      if (exists) {
+        DBIO.failed(NotUniqueRandomId)
+      } else {
+        if (toPeer.typ == PeerType.Private) {
+          val outMessage = HistoryMessage(
+            userId = fromPeer.id,
+            peer = toPeer,
+            date = date,
+            senderUserId = fromPeer.id,
+            randomId = randomId,
+            messageContentHeader = messageContentHeader,
+            messageContentData = messageContentData,
+            deletedAt = None
           )
-        } else {
-          Seq(outMessage)
-        }
 
-      for {
-        _ ← HistoryMessageRepo.create(messages)
-      } yield ()
-    } else if (toPeer.typ == PeerType.Group) {
-      for {
-        isHistoryShared ← DBIO.from(GroupExtension(system).isHistoryShared(toPeer.id))
-        _ ← if (isHistoryShared) {
-          val historyMessage = HistoryMessage(SharedUserId, toPeer, date, fromPeer.id, randomId, messageContentHeader, messageContentData, None)
-          HistoryMessageRepo.create(historyMessage) map (_ ⇒ ())
-        } else {
-          DBIO.from(GroupExtension(system).getMemberIds(toPeer.id)) map (_._1) flatMap { groupUserIds ⇒
-            val historyMessages = groupUserIds.map { groupUserId ⇒
-              HistoryMessage(groupUserId, toPeer, date, fromPeer.id, randomId, messageContentHeader, messageContentData, None)
+          val messages =
+            if (fromPeer != toPeer) {
+              Seq(
+                outMessage,
+                outMessage.copy(userId = toPeer.id, peer = fromPeer)
+              )
+            } else {
+              Seq(outMessage)
             }
-            HistoryMessageRepo.create(historyMessages) map (_ ⇒ ())
-          }
+
+          for {
+            _ ← HistoryMessageRepo.create(messages)
+          } yield ()
+        } else if (toPeer.typ == PeerType.Group) {
+          for {
+            isHistoryShared ← DBIO.from(GroupExtension(system).isHistoryShared(toPeer.id))
+            _ ← if (isHistoryShared) {
+              val historyMessage = HistoryMessage(SharedUserId, toPeer, date, fromPeer.id, randomId, messageContentHeader, messageContentData, None)
+              HistoryMessageRepo.create(historyMessage) map (_ ⇒ ())
+            } else {
+              DBIO.from(GroupExtension(system).getMemberIds(toPeer.id)) map (_._1) flatMap { groupUserIds ⇒
+                val historyMessages = groupUserIds.map { groupUserId ⇒
+                  HistoryMessage(groupUserId, toPeer, date, fromPeer.id, randomId, messageContentHeader, messageContentData, None)
+                }
+                HistoryMessageRepo.create(historyMessages) map (_ ⇒ ())
+              }
+            }
+          } yield ()
+        } else {
+          DBIO.failed(new Exception("PeerType is not supported") with NoStackTrace)
         }
-      } yield ()
-    } else {
-      DBIO.failed(new Exception("PeerType is not supported") with NoStackTrace)
+      }
     }
   }
 
@@ -84,16 +90,21 @@ object HistoryUtils {
     messageContentData:   Array[Byte]
   )(implicit ec: ExecutionContext): DBIO[Unit] = {
     for {
-      _ ← HistoryMessageRepo.create(HistoryMessage(
-        userId = userId,
-        peer = toPeer,
-        date = date,
-        senderUserId = senderUserId,
-        randomId = randomId,
-        messageContentHeader = messageContentHeader,
-        messageContentData = messageContentData,
-        deletedAt = None
-      ))
+      exists ← HistoryMessageRepo.existstWithRandomId(userId, toPeer, randomId)
+      _ ← if (exists) {
+        DBIO.failed(NotUniqueRandomId)
+      } else {
+        HistoryMessageRepo.create(HistoryMessage(
+          userId = userId,
+          peer = toPeer,
+          date = date,
+          senderUserId = senderUserId,
+          randomId = randomId,
+          messageContentHeader = messageContentHeader,
+          messageContentData = messageContentData,
+          deletedAt = None
+        ))
+      }
     } yield ()
   }
 

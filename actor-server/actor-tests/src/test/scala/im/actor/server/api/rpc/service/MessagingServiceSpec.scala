@@ -14,6 +14,7 @@ import im.actor.api.rpc.sequence.{ ApiUpdateContainer, ResponseGetDifference }
 import im.actor.server._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
+import im.actor.server.api.rpc.service.messaging.MessagingRpcErors
 import im.actor.server.persist.HistoryMessageRepo
 import im.actor.server.pubsub.PeerMessage
 
@@ -47,6 +48,8 @@ class MessagingServiceSpec
   it should "allow user to edit own message" in s.generic.editOwnMessage
 
   it should "not allow user to edit alien messages" in s.generic.notEditAlienMessage
+
+  it should "keep randomId unique inside single dialog" in s.generic.uniqueRandomId
 
   object s {
     implicit val ec = system.dispatcher
@@ -496,6 +499,61 @@ class MessagingServiceSpec
           messages foreach { mess ⇒
             inside(parseMessage(mess.messageContentData)) {
               case Right(ApiTextMessage("XXXXXXXXX", _, _)) ⇒
+            }
+          }
+        }
+      }
+
+      def uniqueRandomId() = {
+        val (alice, aliceAuthId1, aliceAuthSid1, _) = createUser()
+        val (aliceAuthId2, aliceAuthSid2) = createAuthId(alice.id)
+
+        val (bob, bobAuthId, bobAuthSid, _) = createUser()
+
+        val RandomId = 22L
+
+        {
+          implicit val cd = ClientData(aliceAuthId1, 1, Some(AuthData(alice.id, aliceAuthSid1, 42)))
+          whenReady(service.handleSendMessage(
+            getOutPeer(bob.id, aliceAuthId1),
+            RandomId,
+            ApiTextMessage("Hello from device number one", Vector.empty, None),
+            None,
+            None
+          )) { resp ⇒
+            resp should matchPattern {
+              case Ok(_) ⇒
+            }
+
+          }
+        }
+
+        {
+          implicit val cd = ClientData(aliceAuthId2, 1, Some(AuthData(alice.id, aliceAuthSid2, 42)))
+          whenReady(service.handleSendMessage(
+            getOutPeer(bob.id, aliceAuthId2),
+            RandomId,
+            ApiTextMessage("Hello from second device with same random id", Vector.empty, None),
+            None,
+            None
+          )) { resp ⇒
+            inside(resp) {
+              case Error(MessagingRpcErors.NotUniqueRandomId) ⇒
+            }
+          }
+        }
+
+        {
+          implicit val cd = ClientData(bobAuthId, 1, Some(AuthData(bob.id, bobAuthSid, 42)))
+          whenReady(service.handleSendMessage(
+            getOutPeer(alice.id, bobAuthId),
+            RandomId,
+            ApiTextMessage("Hello you back, and same random id again", Vector.empty, None),
+            None,
+            None
+          )) { resp ⇒
+            inside(resp) {
+              case Error(MessagingRpcErors.NotUniqueRandomId) ⇒
             }
           }
         }

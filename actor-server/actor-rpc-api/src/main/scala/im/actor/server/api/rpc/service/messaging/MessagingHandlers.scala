@@ -19,6 +19,7 @@ object MessagingRpcErors {
   val NotLastMessage = RpcError(400, "NOT_LAST_MESSAGE", "You are trying to edit not last message.", false, None)
   val NotInTimeWindow = RpcError(400, "NOT_IN_TIME_WINDOW", "You can't edit message sent more than 5 minutes age.", false, None)
   val NotTextMessage = RpcError(400, "NOT_TEXT_MESSAGE", "You can edit only text messages.", false, None)
+  val NotUniqueRandomId = RpcError(400, "RANDOM_ID_NOT_UNIQUE", "", false, None)
 }
 
 private[messaging] trait MessagingHandlers extends PeersImplicits
