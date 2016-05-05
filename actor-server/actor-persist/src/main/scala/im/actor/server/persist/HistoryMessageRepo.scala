@@ -126,6 +126,13 @@ object HistoryMessageRepo {
       .take(limit)
   }
 
+  private val byUserIdPeerRidC = Compiled { (userId: Rep[Int], peerType: Rep[Int], peerId: Rep[Int], randomId: Rep[Long]) ⇒
+    byUserIdPeer(userId, peerType, peerId).filter(_.randomId === randomId)
+  }
+
+  def existstWithRandomId(userId: Int, peer: Peer, randomId: Long): DBIO[Boolean] =
+    byUserIdPeerRidC.applied((userId, peer.typ.value, peer.id, randomId)).exists.result
+
   def findBefore(userId: Int, peer: Peer, date: DateTime, limit: Long) =
     beforeC((userId, peer.typ.value, peer.id, date, limit)).result
 
