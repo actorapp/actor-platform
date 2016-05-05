@@ -465,13 +465,14 @@ public class User extends WrapperExtEntity<ApiFullUser, ApiUser> implements KeyV
                     this.records.add(new ContactRecord(ContactRecordType.SOCIAL, record.getTypeSpec(), record.getStringValue(),
                             record.getTitle(), record.getSubtitle()));
                 }
-
-                //Bot commands
-                for (ApiBotCommand command : ext.getBotCommands()) {
-                    commands.add(new BotCommand(command.getSlashCommand(), command.getDescription(), command.getLocKey()));
-                }
-
             }
+
+            //Bot commands
+            for (ApiBotCommand command : ext.getBotCommands()) {
+                commands.add(new BotCommand(command.getSlashCommand(), command.getDescription(), command.getLocKey()));
+            }
+
+
             this.about = ext.getAbout();
         } else {
             this.isBlocked = false;
