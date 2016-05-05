@@ -287,14 +287,12 @@ class MessageItem extends Component {
 
     return (
       <div className={messageClassName}>
-        <div className="row">
-          {this.renderLeftBlock()}
-          <div className="message__body col-xs">
-            {this.renderHeader()}
-            {this.renderContent()}
-          </div>
-          {this.renderActions()}
+        {this.renderLeftBlock()}
+        <div className="message__body col-xs">
+          {this.renderHeader()}
+          {this.renderContent()}
         </div>
+        {this.renderActions()}
       </div>
     );
   }
