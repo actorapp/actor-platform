@@ -11,6 +11,7 @@ import java.io.IOException;
 import im.actor.runtime.files.FileSystemReference;
 import im.actor.runtime.files.InputFile;
 import im.actor.runtime.files.OutputFile;
+import im.actor.runtime.promise.Promise;
 
 public class AndroidFileSystemReference implements FileSystemReference {
 
@@ -46,24 +47,22 @@ public class AndroidFileSystemReference implements FileSystemReference {
     public int getSize() {
         return (int) new File(fileName).length();
     }
-
+    
     @Override
-    public OutputFile openWrite(int size) {
+    public Promise<OutputFile> openWrite(int size) {
         try {
-            return new AndroidOutputFile(fileName, size);
+            return Promise.success(new AndroidOutputFile(fileName, size));
         } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+            return Promise.failure(e);
         }
     }
 
     @Override
-    public InputFile openRead() {
+    public Promise<InputFile> openRead() {
         try {
-            return new AndroidInputFile(fileName);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return null;
+            return Promise.success(new AndroidInputFile(fileName));
+        } catch (IOException e) {
+            return Promise.failure(e);
         }
     }
 }
