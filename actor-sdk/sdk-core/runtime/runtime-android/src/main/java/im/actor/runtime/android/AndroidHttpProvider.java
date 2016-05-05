@@ -121,7 +121,7 @@ public class AndroidHttpProvider implements HttpRuntime {
                     Log.d(TAG, "Downloading part error: " + request.toString());
                     e.printStackTrace();
                     // TODO: Better error?
-                    resolver.error(new HTTPError(0, 0));
+                    resolver.error(new HTTPError(0));
                 }
 
                 @Override
@@ -130,7 +130,7 @@ public class AndroidHttpProvider implements HttpRuntime {
                     if (response.code() >= 200 && response.code() < 300) {
                         resolver.result(new HTTPResponse(response.code(), response.body().bytes()));
                     } else {
-                        resolver.error(new HTTPError(response.code(), 0));
+                        resolver.error(new HTTPError(response.code()));
                     }
                 }
             });
@@ -151,7 +151,7 @@ public class AndroidHttpProvider implements HttpRuntime {
                     Log.d(TAG, "Uploading part error: " + request.toString());
                     e.printStackTrace();
                     // TODO: Better error?
-                    resolver.error(new HTTPError(0, 0));
+                    resolver.error(new HTTPError(0));
                 }
 
                 @Override
@@ -160,7 +160,7 @@ public class AndroidHttpProvider implements HttpRuntime {
                     if (response.code() >= 200 && response.code() < 300) {
                         resolver.result(new HTTPResponse(response.code(), null));
                     } else {
-                        resolver.error(new HTTPError(response.code(), 0));
+                        resolver.error(new HTTPError(response.code()));
                     }
                 }
             });

@@ -24,8 +24,12 @@ import im.actor.runtime.files.FileSystemReference;
 import im.actor.runtime.files.InputFile;
 import im.actor.runtime.files.OutputFile;
 import im.actor.runtime.http.HTTPError;
+import im.actor.runtime.http.HTTPResponse;
 
 public class UploadTask extends ModuleActor {
+
+    // j2objc workaround
+    private static final HTTPResponse DUMB = null;
 
     private static final int SIM_BLOCKS_COUNT = 4;
     private static final int NOTIFY_THROTTLE = 1000;
@@ -268,10 +272,7 @@ public class UploadTask extends ModuleActor {
                         if ((httpError.getErrorCode() >= 500 && httpError.getErrorCode() < 600) || httpError.getErrorCode() == 0) {
                             // Is Server Error or unknown error
 
-                            int retryInSecs = httpError.getRetryInSecs();
-                            if (retryInSecs <= 0) {
-                                retryInSecs = DEFAULT_RETRY;
-                            }
+                            int retryInSecs = DEFAULT_RETRY;
 
                             if (LOG) {
                                 Log.w(TAG, "Block #" + blockIndex + " upload error #" + httpError.getErrorCode() + " trying again in " + retryInSecs + " sec, attempt #" + (attempt + 1));
