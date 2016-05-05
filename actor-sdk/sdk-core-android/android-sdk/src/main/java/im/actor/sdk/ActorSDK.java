@@ -289,15 +289,15 @@ public class ActorSDK {
         // Actor Push
         //
 
-//        if (actorPushEndpoint != null && delegate.useActorPush()) {
-//            ActorPushRegister.registerForPush(application, actorPushEndpoint, new ActorPushRegister.Callback() {
-//                @Override
-//                public void onRegistered(String endpoint) {
-//                    Log.d(TAG, "On Actor push registered: " + endpoint);
-//                    messenger.registerActorPush(endpoint);
-//                }
-//            });
-//        }
+        if (actorPushEndpoint != null && delegate.useActorPush()) {
+            ActorPushRegister.registerForPush(application, actorPushEndpoint, new ActorPushRegister.Callback() {
+                @Override
+                public void onRegistered(String endpoint) {
+                    Log.d(TAG, "On Actor push registered: " + endpoint);
+                    messenger.registerActorPush(endpoint);
+                }
+            });
+        }
 
         //
         // GCM
