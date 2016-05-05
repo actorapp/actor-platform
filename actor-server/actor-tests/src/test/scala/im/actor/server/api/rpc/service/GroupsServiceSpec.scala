@@ -785,7 +785,7 @@ final class GroupsServiceSpec
     }
 
     val topic2 = Some("Fun stuff. Typo!")
-    whenReady(service.handleEditGroupTopic(groupOutPeer, 1L, topic2)(clientData2)) { resp ⇒
+    whenReady(service.handleEditGroupTopic(groupOutPeer, 2L, topic2)(clientData2)) { resp ⇒
       resp should matchPattern {
         case Ok(_: ResponseSeqDate) ⇒
       }
@@ -810,7 +810,7 @@ final class GroupsServiceSpec
     }
 
     val emptyTopic = ""
-    whenReady(service.handleEditGroupTopic(groupOutPeer, 1L, Some(emptyTopic))) { resp ⇒
+    whenReady(service.handleEditGroupTopic(groupOutPeer, 2L, Some(emptyTopic))) { resp ⇒
       resp shouldEqual Error(GroupRpcErrors.TopicTooLong)
     }
 
