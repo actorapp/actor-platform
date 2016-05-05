@@ -6,7 +6,9 @@ package im.actor.core.modules.contacts;
 
 import java.util.ArrayList;
 
+import im.actor.core.api.ApiOutPeer;
 import im.actor.core.api.ApiUser;
+import im.actor.core.api.ApiUserOutPeer;
 import im.actor.core.api.base.SeqUpdate;
 import im.actor.core.api.rpc.RequestAddContact;
 import im.actor.core.api.rpc.RequestRemoveContact;
@@ -82,11 +84,11 @@ public class ContactsModule extends AbsModule {
 
     public Promise<UserVM[]> findUsers(final String query) {
         return api(new RequestSearchContacts(query, ApiSupportConfiguration.OPTIMIZATIONS))
-                .chain(responseSearchContacts -> updates().applyRelatedData(responseSearchContacts.getUsers()))
+                .chain(responseSearchContacts -> updates().loadRequiredPeers(responseSearchContacts.getUserPeers(), new ArrayList<>()))
                 .map(responseSearchContacts1 -> {
                     ArrayList<UserVM> users = new ArrayList<>();
-                    for (ApiUser u : responseSearchContacts1.getUsers()) {
-                        users.add(context().getUsersModule().getUsers().get(u.getId()));
+                    for (ApiUserOutPeer u : responseSearchContacts1.getUserPeers()) {
+                        users.add(context().getUsersModule().getUsers().get(u.getUid()));
                     }
                     return users.toArray(new UserVM[users.size()]);
                 });
