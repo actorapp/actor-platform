@@ -31,7 +31,7 @@ public class JsHttpProvider implements HttpRuntime {
                     if (request1.getStatus() >= 200 && request1.getStatus() < 300) {
                         resolver.result(new HTTPResponse(request1.getStatus(), null));
                     } else {
-                        resolver.error(new HTTPError(request1.getStatus(), 0));
+                        resolver.error(new HTTPError(request1.getStatus()));
                     }
                 }
             });
