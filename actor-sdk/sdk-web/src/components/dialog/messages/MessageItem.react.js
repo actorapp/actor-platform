@@ -153,7 +153,7 @@ class MessageItem extends Component {
 
     if (isShort) {
       return (
-        <div className="message__info text-right">
+        <div className="message__info">
           <time className="message__timestamp">{message.date}</time>
           <State state={state} />
         </div>
@@ -288,7 +288,7 @@ class MessageItem extends Component {
     return (
       <div className={messageClassName}>
         {this.renderLeftBlock()}
-        <div className="message__body col-xs">
+        <div className="message__body">
           {this.renderHeader()}
           {this.renderContent()}
         </div>
