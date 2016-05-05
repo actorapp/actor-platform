@@ -103,10 +103,10 @@ $sticker-max-size: 180px;
     margin: 0 0 4px;
   }
   &__body {
-    padding-right: 16px;
-    flex-grow: 1;
-    flex-basis: 0;
+    flex: 1 0 0;
     max-width: 100%;
+    padding-right: 16px;
+    box-sizing: border-box;
   }
   &__sender {
     font-size: 15px;
@@ -170,9 +170,9 @@ $sticker-max-size: 180px;
   }
 
   &__info {
-    line-height: 1px;
-
     width: 62px;
+    line-height: 1px;
+    text-align: right;
   }
   &__content {
     line-height: $message-line-height;
@@ -265,21 +265,23 @@ $sticker-max-size: 180px;
 
   &--short {
     padding: 3px 39px 3px 10px;
+
     .message__info {
       box-sizing: border-box;
       width: 84px;
       padding-right: 14px;
     }
+
     .message__status {
       margin-left: 4px;
     }
+
     .message__timestamp {
       line-height: 20px;
-
       margin: 0;
-
       opacity: 0;
     }
+
     .message__actions__selector {
       top: 4px;
     }
