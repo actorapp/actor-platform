@@ -12,7 +12,7 @@ addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.7.5")
 
 addSbtPlugin("io.spray" % "sbt-revolver" % "0.7.2")
 
-addSbtPlugin("im.actor" %% "sbt-actor-api" % "0.7.17")
+addSbtPlugin("im.actor" %% "sbt-actor-api" % "0.7.18")
 
 addSbtPlugin("com.trueaccord.scalapb" % "sbt-scalapb" % "0.5.21")
 
