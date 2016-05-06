@@ -23,6 +23,7 @@ import DialogInfoStore from '../stores/DialogInfoStore';
 import ActivityStore from '../stores/ActivityStore';
 
 import DialogActionCreators from '../actions/DialogActionCreators';
+import MessageActionCreators from '../actions/MessageActionCreators';
 import BlockedUsersActionCreators from '../actions/BlockedUsersActionCreators';
 
 class DialogSection extends Component {
@@ -56,6 +57,7 @@ class DialogSection extends Component {
     super(props, context);
     this.updatePeer(this.props.params.id);
 
+    this.onStart = this.onStart.bind(this);
     this.onUnblock = this.onUnblock.bind(this);
   }
 
@@ -76,6 +78,11 @@ class DialogSection extends Component {
     } else {
       history.replace('/im');
     }
+  }
+
+  onStart() {
+    const { peer } = this.state;
+    MessageActionCreators.sendTextMessage(peer, '/start');
   }
 
   onUnblock() {
@@ -141,9 +148,10 @@ class DialogSection extends Component {
             <div className="chat">
               <MessagesSection peer={peer} isMember={isMember} />
               <DialogFooter
+                info={dialogInfo}
                 isMember={isMember}
-                isBlocked={dialogInfo.isBlocked}
                 onUnblock={this.onUnblock}
+                onStart={this.onStart}
               />
             </div>
           </section>
