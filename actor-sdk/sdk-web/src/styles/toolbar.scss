@@ -89,6 +89,19 @@
         }
       }
     }
+
+    &__verified {
+      display: inline-block;
+      margin-left: 4px;
+      vertical-align: top;
+
+      .material-icons {
+        font-size: 18px;
+        line-height: 20px;
+
+        color: $color-green
+      }
+    }
     &__message {
       font-size: 14px;
       line-height: 16px;
