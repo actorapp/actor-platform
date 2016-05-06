@@ -310,6 +310,10 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
                         ));
     }
 
+    public Promise<Boolean> chatIsEmpty(Peer peer) {
+        return new Promise<>(resolver -> resolver.result(getConversationEngine(peer).getCount() == 0));
+    }
+
 
     public void forwardContent(Peer peer, AbsContent content) {
         sendMessageActor.send(new SenderActor.ForwardContent(peer, content));
