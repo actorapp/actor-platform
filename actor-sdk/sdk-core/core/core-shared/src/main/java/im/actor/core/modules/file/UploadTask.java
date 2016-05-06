@@ -25,6 +25,7 @@ import im.actor.runtime.files.InputFile;
 import im.actor.runtime.files.OutputFile;
 import im.actor.runtime.http.HTTPError;
 import im.actor.runtime.http.HTTPResponse;
+import im.actor.runtime.promise.Promise;
 
 public class UploadTask extends ModuleActor {
 
@@ -105,7 +106,11 @@ public class UploadTask extends ModuleActor {
         srcReference.openRead()
                 .flatMap(f -> {
                     inputFile = f;
-                    return destReference.openWrite(srcReference.getSize());
+                    if (isWriteToDestProvider) {
+                        return destReference.openWrite(srcReference.getSize());
+                    } else {
+                        return Promise.success(null);
+                    }
                 })
                 .flatMap(f -> {
                     outputFile = f;
