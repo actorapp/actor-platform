@@ -405,11 +405,6 @@ public class AABubbleCell: UICollectionViewCell {
     public override func layoutSubviews() {
         super.layoutSubviews()
         
-//        if (!needLayout) {
-//            return
-//        }
-//        needLayout = false
-        
         UIView.performWithoutAnimation { () -> Void in
             let endPadding: CGFloat = 32
             let startPadding: CGFloat = (!self.isOut && self.isGroup) ? AABubbleCell.avatarPadding : 0

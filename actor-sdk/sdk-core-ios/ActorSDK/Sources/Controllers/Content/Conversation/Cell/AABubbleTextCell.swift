@@ -52,10 +52,6 @@ public class AABubbleTextCell : AABubbleCell {
             }
         }
         
-//        messageText.textLongPressAction = { (containerView: UIView, text: NSAttributedString, range: NSRange, rect: CGRect) -> () in
-//            
-//        }
-
         messageText.highlightLongPressAction = { (containerView: UIView, text: NSAttributedString, range: NSRange, rect: CGRect) -> () in
             self.bubble
             let attributes = text.attributesAtIndex(range.location, effectiveRange: nil)
