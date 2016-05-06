@@ -7,7 +7,7 @@ import { dispatch } from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
 
 import ActorClient from '../utils/ActorClient';
-import { emoji } from '../utils/EmojiUtils';
+import { prepareTextMessage } from '../utils/MessageUtils';
 
 const replaceColons = (text) => {
   emoji.change_replace_mode('unified');
@@ -24,7 +24,7 @@ class MessageActionCreators {
   }
 
   sendTextMessage(peer, text) {
-    ActorClient.sendTextMessage(peer, replaceColons(text));
+    ActorClient.sendTextMessage(peer, prepareTextMessage(text));
     dispatch(ActionTypes.MESSAGE_SEND_TEXT, { peer, text });
   }
 
