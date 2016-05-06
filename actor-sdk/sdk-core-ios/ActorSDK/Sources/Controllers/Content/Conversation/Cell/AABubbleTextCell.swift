@@ -52,6 +52,13 @@ public class AABubbleTextCell : AABubbleCell {
             }
         }
         
+<<<<<<< 4f88375c6c9d386f420a0978a7fc685f23d87d68
+=======
+//        messageText.textLongPressAction = { (containerView: UIView, text: NSAttributedString, range: NSRange, rect: CGRect) -> () in
+//            
+//        }
+
+>>>>>>> fix(IOS): change buble color on tap
         messageText.highlightLongPressAction = { (containerView: UIView, text: NSAttributedString, range: NSRange, rect: CGRect) -> () in
             self.bubble
             let attributes = text.attributesAtIndex(range.location, effectiveRange: nil)
