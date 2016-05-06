@@ -16,7 +16,6 @@ class Document extends Component {
     fileSize: PropTypes.string.isRequired,
     fileExtension: PropTypes.string.isRequired,
     isUploading: PropTypes.bool.isRequired,
-    content: PropTypes.object.isRequired,
     className: PropTypes.string
   }
 

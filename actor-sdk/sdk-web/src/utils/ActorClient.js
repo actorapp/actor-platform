@@ -182,6 +182,10 @@ class ActorClient {
     window.messenger.sendMessage(peer, text);
   }
 
+  editMessage(peer, rid, text) {
+    return window.messenger.editMessage(peer, rid, text);
+  }
+
   sendFileMessage(peer, file) {
     window.messenger.sendFile(peer, file);
   }

@@ -2,7 +2,7 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import { isFunction } from 'lodash';
+import { isFunction, noop } from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
 import classnames from 'classnames';
@@ -20,6 +20,7 @@ import SvgIcon from '../../common/SvgIcon.react';
 import AvatarItem from '../../common/AvatarItem.react';
 import State from './State.react';
 import Reactions from './Reactions.react';
+import MessageEdit from './MessageEdit.react';
 
 // Default message content components
 import DefaultService from './Service.react';
@@ -33,6 +34,27 @@ import DefaultModern from './Modern.react';
 import DefaultSticker from './Sticker.react';
 
 class MessageItem extends Component {
+  static contextTypes = {
+    delegate: PropTypes.object,
+    isExperimental: PropTypes.bool
+  }
+
+  static propTypes = {
+    peer: PropTypes.object.isRequired,
+    message: PropTypes.object.isRequired,
+    state: PropTypes.string.isRequired,
+    isShort: PropTypes.bool.isRequired,
+    isEditing: PropTypes.bool.isRequired,
+    onEdit: PropTypes.func.isRequired,
+    isSelected: PropTypes.bool.isRequired,
+    onSelect: PropTypes.func.isRequired
+  }
+
+  static defaultProps = {
+    isSelected: false,
+    onSelect: noop
+  };
+
   static getStores() {
     return [DropdownStore];
   }
@@ -41,20 +63,6 @@ class MessageItem extends Component {
     return {
       isHighlighted: props && props.message ? DropdownStore.isMessageDropdownOpen(props.message.rid) : false
     }
-  }
-
-  static propTypes = {
-    peer: PropTypes.object.isRequired,
-    message: PropTypes.object.isRequired,
-    state: PropTypes.string.isRequired,
-    isShort: PropTypes.bool.isRequired,
-    isSelected: PropTypes.bool,
-    onSelect: PropTypes.func
-  }
-
-  static contextTypes = {
-    delegate: PropTypes.object,
-    isExperimental: PropTypes.bool
   }
 
   constructor(props, context) {
@@ -114,7 +122,7 @@ class MessageItem extends Component {
 
   toggleMessageSelection = () => {
     const { message, onSelect } = this.props;
-    onSelect && onSelect(message.rid);
+    onSelect(message.rid);
   };
 
   renderHeader() {
@@ -175,6 +183,12 @@ class MessageItem extends Component {
 
   renderContent() {
     const { message } = this.props;
+    if (this.props.isEditing) {
+      return (
+        <MessageEdit message={message} onSubmit={this.props.onEdit} />
+      );
+    }
+
     const { Service, Text, Photo, Document, Voice, Contact, Location, Modern, Sticker } = this.components;
 
     switch (message.content.content) {
