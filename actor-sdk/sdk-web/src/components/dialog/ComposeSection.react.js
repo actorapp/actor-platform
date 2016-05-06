@@ -6,11 +6,8 @@ import { forEach } from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 import { Container } from 'flux/utils';
-import classnames from 'classnames';
 
 import ActorClient from '../../utils/ActorClient';
-import Inputs from '../../utils/Inputs';
-
 import { KeyCodes } from '../../constants/ActorAppConstants';
 
 import MessageActionCreators from '../../actions/MessageActionCreators';
@@ -25,6 +22,8 @@ import ComposeStore from '../../stores/ComposeStore';
 import DialogStore from '../../stores/DialogStore';
 import MessageArtStore from '../../stores/MessageArtStore';
 
+import ComposeTextArea from './compose/ComposeTextArea.react';
+import ComposeMarkdownHint from './compose/ComposeMarkdownHint.react';
 import AvatarItem from '../common/AvatarItem.react';
 import MentionDropdown from '../common/MentionDropdown.react';
 import MessageArt from '../messageArt/MessageArt.react';
@@ -32,144 +31,78 @@ import VoiceRecorder from '../common/VoiceRecorder.react';
 import DropZone from '../common/DropZone.react';
 
 class ComposeSection extends Component {
+  static contextTypes = {
+    intl: PropTypes.object
+  };
+
   static getStores() {
     return [DialogStore, GroupStore, PreferencesStore, ComposeStore, MessageArtStore];
   }
 
-  static calculateState(prevState) {
+  static calculateState() {
     return {
       peer: DialogStore.getCurrentPeer(),
       text: ComposeStore.getText(),
       profile: ActorClient.getUser(ActorClient.getUid()),
       sendByEnter: PreferencesStore.isSendByEnterEnabled(),
       mentions: ComposeStore.getMentions(),
-      isMarkdownHintShow: prevState ? prevState.isMarkdownHintShow || false : false,
       isAutoFocusEnabled: ComposeStore.isAutoFocusEnabled(),
       isMessageArtOpen: MessageArtStore.getState().isOpen,
       stickers: MessageArtStore.getState().stickers
     };
   }
 
-  static contextTypes = {
-    intl: PropTypes.object
-  };
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.peer !== this.state.peer) {
+      if (this.refs.area) {
+        this.refs.area.autoFocus();
+      }
+    }
+  }
 
   constructor(props) {
     super(props);
 
-    this.setListeners();
+    this.onTyping = this.onTyping.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+    this.onPaste = this.onPaste.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
   }
 
-  componentWillUnmount() {
-    this.setBlur();
-    this.clearListeners();
+  onTyping(text, caretPosition) {
+    ComposeActionCreators.onTyping(this.state.peer, text, caretPosition);
   }
 
-  componentDidMount() {
-    this.setFocus();
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const { isAutoFocusEnabled } = this.state;
-
-    if (isAutoFocusEnabled) {
-      if (prevState.isAutoFocusEnabled !== true) {
-        this.setListeners();
-      }
-      this.setFocus();
-    } else {
-      if (prevState.isAutoFocusEnabled !== false) {
-        this.clearListeners();
-      }
-    }
-  }
-
-  setListeners() {
-    window.addEventListener('focus', this.setFocus);
-    document.addEventListener('keydown', this.handleKeyDown, false);
-  }
-
-  clearListeners() {
-    window.removeEventListener('focus', this.setFocus);
-    document.removeEventListener('keydown', this.handleKeyDown, false);
-  }
-
-  handleKeyDown = (event) => {
-    const { isAutoFocusEnabled } = this.state;
-    if (isAutoFocusEnabled) {
-      if (!event.metaKey && !event.altKey && !event.ctrlKey && !event.shiftKey) {
-        this.setFocus();
-      }
-    }
-  };
-
-  onMessageChange = (event) => {
-    const text = event.target.value;
-    const { peer } = this.state;
-
-    if (text.length >= 3) {
-      this.setState({ isMarkdownHintShow: true })
-    } else {
-      this.setState({ isMarkdownHintShow: false })
-    }
-
-    ComposeActionCreators.onTyping(peer, text, this.getCaretPosition());
-  };
-
-  onKeyDown = event => {
-    const { mentions, sendByEnter } = this.state;
-
-    const send = () => {
-      event.preventDefault();
-      this.sendTextMessage();
-      this.setState({ isMarkdownHintShow: false })
-    };
-
-    if (mentions === null) {
-      if (sendByEnter === true) {
-        if (event.keyCode === KeyCodes.ENTER && !event.shiftKey) {
-          send();
-        }
-      } else {
-        if (event.keyCode === KeyCodes.ENTER && event.metaKey) {
-          send();
-        }
-      }
-    }
-  };
-
-  sendTextMessage = () => {
+  onSubmit() {
     const { peer, text } = this.state;
 
-    if (text.trim().length !== 0) {
+    if (text.trim().length) {
       MessageActionCreators.sendTextMessage(peer, text);
     }
+
     ComposeActionCreators.cleanText();
-  };
+  }
+
+  onPaste(event) {
+    const attachments = Array.from(event.clipboardData.items)
+      .filter((item) => item.type.indexOf('image') !== -1)
+      .map((item) => item.getAsFile());
+
+    if (attachments.length) {
+      event.preventDefault();
+      AttachmentsActionCreators.show(attachments);
+    }
+  }
+
+  onKeyDown(event) {
+    if (event.keyCode === KeyCodes.ARROW_UP && !event.target.value) {
+      MessageActionCreators.editLastMessage();
+    }
+  }
 
   resetAttachmentForm = () => {
     const form = findDOMNode(this.refs.attachmentForm);
     form.reset();
-  };
-
-  onPaste = event => {
-    let preventDefault = false;
-    let attachments = [];
-
-    forEach(event.clipboardData.items, (item) => {
-      if (item.type.indexOf('image') !== -1) {
-        preventDefault = true;
-        attachments.push(item.getAsFile());
-      }
-    }, this);
-
-    if (attachments.length > 0) {
-      AttachmentsActionCreators.show(attachments);
-    }
-
-    if (preventDefault) {
-      event.preventDefault();
-    }
   };
 
   onMentionSelect = (mention) => {
@@ -181,12 +114,6 @@ class ComposeSection extends Component {
 
   onMentionClose = () => {
     ComposeActionCreators.closeMention();
-  };
-
-  getCaretPosition = () => {
-    const composeArea = findDOMNode(this.refs.area);
-    const selection = Inputs.getInputSelection(composeArea);
-    return selection.start;
   };
 
   handleEmojiSelect = (emoji) => {
@@ -202,10 +129,6 @@ class ComposeSection extends Component {
 
   setFocus = () => {
     findDOMNode(this.refs.area).focus();
-  };
-
-  setBlur = () => {
-    findDOMNode(this.refs.area).blur();
   };
 
   handleDrop = (files) => {
@@ -240,11 +163,8 @@ class ComposeSection extends Component {
   };
 
   render() {
-    const { text, profile, mentions, stickers, isMarkdownHintShow, isMessageArtOpen } = this.state;
+    const { text, profile, mentions, stickers, isAutoFocusEnabled, isMessageArtOpen, sendByEnter } = this.state;
     const { intl } = this.context;
-    const markdownHintClassName = classnames('compose__markdown-hint', {
-      'compose__markdown-hint--active': isMarkdownHintShow
-    });
 
     return (
       <section className="compose">
@@ -264,26 +184,24 @@ class ComposeSection extends Component {
 
         <VoiceRecorder onFinish={this.sendVoiceRecord}/>
 
-        {/* TODO: Move this hint to component */}
-        <div className={markdownHintClassName}>
-          <b>*{intl.messages['compose.markdown.bold']}*</b>
-          &nbsp;&nbsp;
-          <i>_{intl.messages['compose.markdown.italic']}_</i>
-          &nbsp;&nbsp;
-          <code>```{intl.messages['compose.markdown.preformatted']}```</code>
-        </div>
+        <AvatarItem
+          className="my-avatar"
+          image={profile.avatar}
+          placeholder={profile.placeholder}
+          title={profile.name}
+        />
 
-        <AvatarItem className="my-avatar"
-                    image={profile.avatar}
-                    placeholder={profile.placeholder}
-                    title={profile.name}/>
-
-        <textarea className="compose__message"
-                  onChange={this.onMessageChange}
-                  onKeyDown={this.onKeyDown}
-                  onPaste={this.onPaste}
-                  value={text}
-                  ref="area"/>
+        <ComposeMarkdownHint isActive={text.length >= 3} />
+        <ComposeTextArea
+          ref="area"
+          value={text}
+          autoFocus={isAutoFocusEnabled}
+          sendByEnter={sendByEnter}
+          onTyping={this.onTyping}
+          onSubmit={this.onSubmit}
+          onPaste={this.onPaste}
+          onKeyDown={this.onKeyDown}
+        />
 
         <DropZone onDropComplete={this.handleDrop}>
           {intl.messages['compose.dropzone']}
