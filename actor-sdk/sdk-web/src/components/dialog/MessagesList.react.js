@@ -194,20 +194,24 @@ class MessagesList extends Component {
 
     const result = [];
     for (let index = messages.length - count; index < messages.length; index++) {
+      const message = messages[index];
+      if (message.rid === firstUnreadId) {
+        result.push(
+          <div className="unread-divider" ref="unread" key="unread">
+            <div className="text">
+              <i className="material-icons">expand_more</i>
+              <FormattedMessage id="message.unread"/>
+              <i className="material-icons">expand_more</i>
+            </div>
+          </div>
+        );
+      }
+
       const overlayItem = overlay[index];
       if (overlayItem && overlayItem.dateDivider) {
         result.push(
           <div className="date-divider" key={overlayItem.dateDivider}>
             {overlayItem.dateDivider}
-          </div>
-        );
-      }
-
-      const message = messages[index];
-      if (message.rid === firstUnreadId) {
-        result.push(
-          <div className="unread-divider" ref="unread" key="unread">
-            <FormattedMessage id="message.unread"/>
           </div>
         );
       }
