@@ -1,8 +1,10 @@
 package im.actor.sdk.view.markdown;
 
+import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,6 +13,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -117,6 +120,7 @@ public class AndroidMarkdown {
                     public void onClick(View view) {
                         Context ctx = view.getContext();
                         if (url.getUrl().startsWith("send:")) {
+                            ctx = extractContext(ctx);
                             if (ctx instanceof ChatActivity) {
                                 ActorSDK.sharedActor().getMessenger().sendMessage(((ChatActivity) ctx).getPeer(), url.getUrl().replace("send:", ""));
                             }
@@ -143,6 +147,16 @@ public class AndroidMarkdown {
                 throw new RuntimeException("Unknown text type: " + text);
             }
         }
+    }
+
+    private static Context extractContext(Context ctx) {
+        if (ctx instanceof AppCompatActivity) {
+            return ctx;
+        } else if (ctx instanceof ContextWrapper) {
+            return extractContext(((ContextWrapper) ctx).getBaseContext());
+        }
+
+        return ctx;
     }
 
     public static CustomTabsIntent buildChromeIntent() {
