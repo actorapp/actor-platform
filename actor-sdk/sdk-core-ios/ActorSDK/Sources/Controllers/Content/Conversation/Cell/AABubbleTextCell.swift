@@ -51,7 +51,9 @@ public class AABubbleTextCell : AABubbleCell {
                 }
             }
         }
+        
         messageText.highlightLongPressAction = { (containerView: UIView, text: NSAttributedString, range: NSRange, rect: CGRect) -> () in
+            self.bubble
             let attributes = text.attributesAtIndex(range.location, effectiveRange: nil)
             if let attrs = attributes["YYTextHighlight"] as? YYTextHighlight {
                 if let url = attrs.userInfo!["url"] as? String {
@@ -60,7 +62,6 @@ public class AABubbleTextCell : AABubbleCell {
             }
         }
 
-        
         senderNameLabel.displaysAsynchronously = true
         senderNameLabel.ignoreCommonProperties = true
         senderNameLabel.fadeOnAsynchronouslyDisplay = true
