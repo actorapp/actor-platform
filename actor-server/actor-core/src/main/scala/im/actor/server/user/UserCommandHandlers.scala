@@ -294,10 +294,8 @@ private[user] trait UserCommandHandlers {
 
   protected def addBotCommand(user: UserState, rawCommand: BotCommand): Unit = {
     val command = rawCommand.copy(slashCommand = rawCommand.slashCommand.trim)
-    def isValid(command: BotCommand) = {
-      val slashCommand = command.slashCommand
-      slashCommand.nonEmpty && slashCommand.matches("[A-Za-z]*") && slashCommand.length < 32
-    }
+    def isValid(command: BotCommand) = command.slashCommand.matches("^[0-9a-zA-Z_]{2,32}")
+
     if (user.botCommands.exists(_.slashCommand == command.slashCommand)) {
       sender() ! Status.Failure(BotCommandAlreadyExists(command.slashCommand))
     } else {
