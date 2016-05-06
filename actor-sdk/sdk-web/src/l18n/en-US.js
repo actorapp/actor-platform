@@ -106,6 +106,7 @@ export default {
       },
       'dropzone': 'Drop here to send.',
       'notMemger': 'You are not a member',
+      'start': 'Start',
       'unblock': 'Unblock user'
     },
 

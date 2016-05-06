@@ -15,9 +15,10 @@ class DialogFooter extends Component {
   };
 
   static propTypes = {
+    info: PropTypes.object.isRequired,
     isMember: PropTypes.bool.isRequired,
-    isBlocked: PropTypes.bool.isRequired,
-    onUnblock: PropTypes.func.isRequired
+    onUnblock: PropTypes.func.isRequired,
+    onStart: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -42,7 +43,7 @@ class DialogFooter extends Component {
   }
 
   render() {
-    const { isMember, isBlocked, onUnblock } = this.props;
+    const { info, isMember, onUnblock, onStart } = this.props;
     if (!isMember) {
       return (
         <footer className="chat__footer chat__footer--disabled">
@@ -51,10 +52,18 @@ class DialogFooter extends Component {
       );
     }
 
-    if (isBlocked) {
+    if (info.isBlocked) {
       return (
         <footer className="chat__footer chat__footer--disabled chat__footer--clickable" onClick={onUnblock}>
           <FormattedMessage id="compose.unblock" />
+        </footer>
+      );
+    }
+
+    if (info.isBot && !info.isStarted) {
+      return (
+        <footer className="chat__footer chat__footer--disabled chat__footer--clickable" onClick={onStart}>
+          <FormattedMessage id="compose.start" />
         </footer>
       );
     }
