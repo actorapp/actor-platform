@@ -66,6 +66,7 @@ import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.Props;
 import im.actor.runtime.actors.messages.PoisonPill;
 import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.function.BiFunction;
 import im.actor.runtime.function.Consumer;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorStyle;
@@ -81,6 +82,7 @@ import im.actor.sdk.intents.ActorIntent;
 import im.actor.sdk.util.Randoms;
 import im.actor.sdk.util.Screen;
 import im.actor.core.utils.GalleryScannerActor;
+import im.actor.sdk.view.TintDrawable;
 import im.actor.sdk.view.adapters.HolderAdapter;
 import im.actor.sdk.view.adapters.RecyclerListView;
 import im.actor.sdk.view.avatar.AvatarView;
@@ -421,7 +423,6 @@ public class ChatActivity extends ActorEditTextActivity {
         }
 
 
-
         final ImageButton shareMenuSend = (ImageButton) findViewById(R.id.share_send);
         shareMenuSend.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
         shareMenuSend.setOnClickListener(new View.OnClickListener() {
@@ -739,6 +740,21 @@ public class ChatActivity extends ActorEditTextActivity {
             // Binding User name to Toolbar
             bind(barTitle, user.getName());
 
+            bind(user.getIsVerified(), new ValueChangedListener<Boolean>() {
+                @Override
+                public void onChanged(Boolean val, Value<Boolean> valueModel) {
+
+                    barTitle.setCompoundDrawablesWithIntrinsicBounds(
+                            null,
+                            null,
+                            val ? new TintDrawable(
+                                    getResources().getDrawable(R.drawable.ic_verified_user_black_18dp),
+                                    ActorSDK.sharedActor().style.getVerifiedColor()) : null,
+                            null);
+                }
+            });
+
+
             // Binding User presence to Toolbar
             bind(barSubtitle, user);
 
@@ -747,11 +763,8 @@ public class ChatActivity extends ActorEditTextActivity {
 
             // Bind user blocked
             inputBlockedText.setText(R.string.profile_settings_unblock);
-            bind(users().get(peer.getPeerId()).getIsBlocked(), new ValueChangedListener<Boolean>() {
-                @Override
-                public void onChanged(Boolean val, Value<Boolean> valueModel) {
-                    inputBlockContainer.setVisibility(val ? View.VISIBLE : View.GONE);
-                }
+            bind(users().get(peer.getPeerId()).getIsBlocked(), (val, valueModel) -> {
+                inputBlockContainer.setVisibility(val ? View.VISIBLE : View.GONE);
             });
             inputBlockedText.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -762,11 +775,8 @@ public class ChatActivity extends ActorEditTextActivity {
 
             // Bind empty bot about
             if (isBot) {
-                bind(users().get(peer.getPeerId()).getAbout(), new ValueChangedListener<String>() {
-                    @Override
-                    public void onChanged(String about, Value<String> valueModel) {
-                        emptyBotHint.setText((about != null && !about.isEmpty()) ? about : getString(R.string.chat_empty_bot_about));
-                    }
+                bind(users().get(peer.getPeerId()).getAbout(), (about, valueModel) -> {
+                    emptyBotHint.setText((about != null && !about.isEmpty()) ? about : getString(R.string.chat_empty_bot_about));
                 });
             }
 
@@ -1278,7 +1288,8 @@ public class ChatActivity extends ActorEditTextActivity {
 
                                         @Override
                                         public void onError(Exception e) {
-                                            Toast.makeText(getApplicationContext(), R.string.toast_unable_clear_chat, Toast.LENGTH_LONG).show();                                                                }
+                                            Toast.makeText(getApplicationContext(), R.string.toast_unable_clear_chat, Toast.LENGTH_LONG).show();
+                                        }
                                     });
                         }
                     })
@@ -1397,6 +1408,7 @@ public class ChatActivity extends ActorEditTextActivity {
         showView(quoteContainer);
         //we don't force check send button here, because it forces from text watcher
     }
+
 
     private class TextWatcherImp implements TextWatcher {
 
