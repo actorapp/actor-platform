@@ -509,6 +509,12 @@ import DZNWebViewController
     func openUrl(url: String) {
         if let u = NSURL(string: url) {
             
+            // Handle phone call
+            if (u.scheme.lowercaseString == "telprompt") {
+                 UIApplication.sharedApplication().openURL(u)
+                return
+            }
+            
             // Handle web invite url
             if (u.scheme.lowercaseString == "http" || u.scheme.lowercaseString == "https") &&  inviteUrlHost != nil {
                 
@@ -539,6 +545,8 @@ import DZNWebViewController
                 
                 return
             }
+            
+            
             
             if (url.isValidUrl()){
                 
