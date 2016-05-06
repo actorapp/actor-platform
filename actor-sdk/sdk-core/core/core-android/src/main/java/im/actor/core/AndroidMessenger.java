@@ -507,7 +507,4 @@ public class AndroidMessenger extends im.actor.core.Messenger {
         return modules.getEvents();
     }
 
-    public boolean checkChatIsempty(Peer peer) {
-        return modules.getMessagesModule().getConversationEngine(peer).getCount() == 0;
-    }
 }

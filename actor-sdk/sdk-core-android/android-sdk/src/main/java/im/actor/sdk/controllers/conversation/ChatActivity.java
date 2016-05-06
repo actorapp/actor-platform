@@ -66,6 +66,7 @@ import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.Props;
 import im.actor.runtime.actors.messages.PoisonPill;
 import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.function.Consumer;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.R;
@@ -237,7 +238,7 @@ public class ChatActivity extends ActorEditTextActivity {
         // Reading peer of chat
         intent = getIntent();
         peer = Peer.fromUniqueId(intent.getExtras().getLong(EXTRA_CHAT_PEER));
-
+        checkIsBot();
         if (saveInstance == null) {
             // Set compose state for auto-showing menu
             isCompose = intent.getExtras().getBoolean(EXTRA_CHAT_COMPOSE, false);
@@ -463,6 +464,7 @@ public class ChatActivity extends ActorEditTextActivity {
         emptyBotSend = findViewById(R.id.botEmptyTextBlock);
         emptyBotHint = (TextView) findViewById(R.id.botEmptyHint);
 
+        checkEmptyBot();
     }
 
     private void startCamera() {
@@ -568,7 +570,7 @@ public class ChatActivity extends ActorEditTextActivity {
 
     @Override
     public void onResume() {
-        isBot = (peer.getPeerType() == PeerType.PRIVATE && users().get(peer.getPeerId()).isBot());
+        checkIsBot();
         super.onResume();
 
         if (peer.getPeerType() == PeerType.PRIVATE && menu != null) {
@@ -696,15 +698,22 @@ public class ChatActivity extends ActorEditTextActivity {
 
     }
 
+    public void checkIsBot() {
+        isBot = (peer.getPeerType() == PeerType.PRIVATE && users().get(peer.getPeerId()).isBot());
+    }
+
     public void checkEmptyBot() {
         if (isBot) {
-            if (messenger().checkChatIsempty(peer)) {
-                showView(emptyBotSend);
-                showView(emptyBotHint);
-            } else {
-                hideView(emptyBotSend);
-                hideView(emptyBotHint);
-            }
+            messenger().isStarted(peer.getPeerId())
+                    .then(empty -> {
+                        if (empty) {
+                            showView(emptyBotSend);
+                            showView(emptyBotHint);
+                        } else {
+                            hideView(emptyBotSend);
+                            hideView(emptyBotHint);
+                        }
+                    });
         }
     }
 
