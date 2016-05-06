@@ -16,19 +16,10 @@ public class ConversationState extends BserObject implements KeyValueItem {
         return Bser.parse(new ConversationState(), data);
     }
 
-    public static BserCreator<ConversationState> CREATOR = new BserCreator<ConversationState>() {
-        @Override
-        public ConversationState createInstance() {
-            return new ConversationState();
-        }
-    };
+    public static BserCreator<ConversationState> CREATOR = ConversationState::new;
 
-    public static ValueDefaultCreator<ConversationState> DEFAULT_CREATOR = new ValueDefaultCreator<ConversationState>() {
-        @Override
-        public ConversationState createDefaultInstance(long id) {
-            return new ConversationState(Peer.fromUniqueId(id), false, 0, 0, 0, 0, 0);
-        }
-    };
+    public static ValueDefaultCreator<ConversationState> DEFAULT_CREATOR = id ->
+            new ConversationState(Peer.fromUniqueId(id), false, 0, 0, 0, 0, 0);
 
     public static final String ENTITY_NAME = "ConversationState";
 
