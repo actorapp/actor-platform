@@ -12,15 +12,13 @@
     @include clearfix();
     &__title {
       display: inline-block;
-
       margin: 5px 0 5px 6px;
     }
     &__tabs {
+      float: right;
       line-height: 1px;
-
       margin: 0;
       padding: 0;
-
       list-style: none;
       &__tab {
         line-height: 24px;
@@ -89,32 +87,30 @@
         margin: 0;
         padding: 6px 2px 10px;
       }
-      a {
-        line-height: 1px;
-
-        display: block;
-        float: left;
-
-        padding: 2px;
-
-        cursor: pointer;
-
-        border-radius: 2px;
-        .emoji-outer {
-          transform-origin: 50% 50%;
-          pointer-events: none;
-        }
-        &:hover {
-          .emoji-outer {
-            transform: scale(1.4);
-          }
-        }
-      }
     }
 
     .emoji-outer {
       width: 28px;
       height: 28px;
+    }
+  }
+
+  .emoji__item {
+    display: block;
+    float: left;
+    line-height: 1px;
+    padding: 2px;
+    cursor: pointer;
+    border-radius: 2px;
+    &:hover {
+      .emoji-outer {
+        transform: scale(1.4);
+      }
+    }
+
+    .emoji-outer {
+      transform-origin: 50% 50%;
+      pointer-events: none;
     }
   }
 }
