@@ -21,6 +21,7 @@ class MessageStore extends ReduceStore {
       isLoaded: false,
       receiveDate: 0,
       readDate: 0,
+      readByMeDate: 0,
       count: 0,
       firstMessageId: null,
       lastMessageId: null,
@@ -52,6 +53,7 @@ class MessageStore extends ReduceStore {
           overlay: action.overlay,
           receiveDate: action.receiveDate,
           readDate: action.readDate,
+          readByMeDate: action.readByMeDate,
           isLoaded: action.isLoaded
         };
 
@@ -69,15 +71,18 @@ class MessageStore extends ReduceStore {
           nextState.changeReason = MessageChangeReason.UPDATE;
         }
 
-        const firstUnreadIndex = getFirstUnreadMessageIndex(action.messages, action.readByMeDate, UserStore.getMyId());
-        if (firstUnreadIndex === -1) {
-          nextState.firstUnreadId = null;
-        } else {
-          nextState.firstUnreadId = action.messages[firstUnreadIndex].rid;
-          if (firstUnreadIndex > nextState.count) {
-            nextState.count = firstUnreadIndex;
+        if (state.readByMeDate === 0 && action.readByMeDate > 0) {
+          const unreadIndex = getFirstUnreadMessageIndex(action.messages, action.readByMeDate, UserStore.getMyId());
+          if (unreadIndex === -1) {
+            nextState.firstUnreadId = null;
+          } else {
+            nextState.firstUnreadId = action.messages[unreadIndex].rid;
+            if (unreadIndex > nextState.count) {
+              nextState.count = unreadIndex;
+            }
           }
         }
+
 
         return nextState;
 
