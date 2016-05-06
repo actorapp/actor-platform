@@ -72,11 +72,11 @@ private[dialog] final case class DialogState(
       } else this.copy(lastMessageDate = date)
     case MessagesRead(date, readerUserId) if readerUserId == userId ⇒
       log.debug(s"unreadMessages (fromState) ${unreadMessages}")
-      val readMessages = unreadMessages.takeWhile(um ⇒ um.date.isBefore(date) || um.date == date).map(_.randomId)
+      val readMessages = unreadMessages.takeWhile(um ⇒ um.date.isBefore(date) || um.date == date)
       log.debug(s"readMessages ${readMessages}")
       log.debug(s"readMessages date ${unreadMessages.headOption map (um ⇒ um.date.isBefore(date) || um.date == date)}")
       val newUnreadMessages = unreadMessages.drop(readMessages.size)
-      val newUnreadMessagesMap = unreadMessagesMap -- readMessages
+      val newUnreadMessagesMap = unreadMessagesMap -- readMessages.map(_.randomId)
 
       this.copy(
         counter = newUnreadMessages.size,
