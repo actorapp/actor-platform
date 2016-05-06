@@ -540,28 +540,31 @@ import DZNWebViewController
                 return
             }
             
-            if let bindedController = bindedToWindow?.rootViewController {
-                // Dismiss Old Presented Controller to show new one
-                if let presented = bindedController.presentedViewController {
-                    presented.dismissViewControllerAnimated(true, completion: nil)
-                }
+            if (url.isValidUrl()){
                 
-                // Building Controller for Web preview
-                let controller: UIViewController
-                if #available(iOS 9.0, *) {
-                    controller = SFSafariViewController(URL: u)
+                if let bindedController = bindedToWindow?.rootViewController {
+                    // Dismiss Old Presented Controller to show new one
+                    if let presented = bindedController.presentedViewController {
+                        presented.dismissViewControllerAnimated(true, completion: nil)
+                    }
+                    
+                    // Building Controller for Web preview
+                    let controller: UIViewController
+                    if #available(iOS 9.0, *) {
+                        controller = SFSafariViewController(URL: u)
+                    } else {
+                        controller = AANavigationController(rootViewController: DZNWebViewController(URL: u))
+                    }
+                    if AADevice.isiPad {
+                        controller.modalPresentationStyle = .FullScreen
+                    }
+                    
+                    // Presenting controller
+                    bindedController.presentViewController(controller, animated: true, completion: nil)
                 } else {
-                    controller = AANavigationController(rootViewController: DZNWebViewController(URL: u))
+                    // Just Fallback. Might never happend
+                    UIApplication.sharedApplication().openURL(u)
                 }
-                if AADevice.isiPad {
-                    controller.modalPresentationStyle = .FullScreen
-                }
-                
-                // Presenting controller
-                bindedController.presentViewController(controller, animated: true, completion: nil)
-            } else {
-                // Just Fallback. Might never happend
-                UIApplication.sharedApplication().openURL(u)
             }
         }
     }
