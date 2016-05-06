@@ -2,21 +2,20 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import { debounce } from 'lodash';
+import { throttle } from 'lodash';
 import { dispatch } from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
 
-import ActorClient from '../utils/ActorClient';
-import { prepareTextMessage } from '../utils/MessageUtils';
+import ComposeActionCreators from './ComposeActionCreators';
 
-const replaceColons = (text) => {
-  emoji.change_replace_mode('unified');
-  return emoji.replace_colons(text);
-};
+import ActorClient from '../utils/ActorClient';
+import { prepareTextMessage, findLastEditableMessage } from '../utils/MessageUtils';
+
+import MessageStore from '../stores/MessageStore';
 
 class MessageActionCreators {
   constructor() {
-    this.setMessages = debounce(this.setMessages, 10, { maxWait: 50, leading: true });
+    this.setMessages = throttle(this.setMessages, 10);
   }
 
   setMessageShown(peer, message) {
@@ -76,6 +75,30 @@ class MessageActionCreators {
 
   toggleSelected(id) {
     dispatch(ActionTypes.MESSAGES_TOGGLE_SELECTED, { id });
+  }
+
+  editLastMessage() {
+    const uid = ActorClient.getUid();
+    const { messages } = MessageStore.getState();
+    const message = findLastEditableMessage(messages, uid);
+
+    if (message) {
+      ComposeActionCreators.toggleAutoFocus(false);
+      dispatch(ActionTypes.MESSAGES_EDIT_START, { message });
+    }
+  }
+
+  endEdit(peer, message, text) {
+    if (!text) {
+      this.deleteMessage(peer, message.rid);
+    } else if (text !== message.content.text) {
+      ActorClient.editMessage(peer, message.rid, text).catch((e) => {
+        console.error(e);
+      });
+    }
+
+    dispatch(ActionTypes.MESSAGES_EDIT_END);
+    ComposeActionCreators.toggleAutoFocus(true);
   }
 }
 

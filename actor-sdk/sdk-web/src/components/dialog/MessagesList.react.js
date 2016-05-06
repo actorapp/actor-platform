@@ -42,8 +42,10 @@ class MessagesList extends Component {
       ]).isRequired
     }).isRequired,
     isMember: PropTypes.bool.isRequired,
+    editMessage: PropTypes.object.isRequired,
     onSelect: PropTypes.func.isRequired,
-    onLoadMore: PropTypes.func.isRequired
+    onLoadMore: PropTypes.func.isRequired,
+    onEdit: PropTypes.func.isRequired
   };
 
   constructor(props, context) {
@@ -78,6 +80,7 @@ class MessagesList extends Component {
     return nextProps.peer !== this.props.peer ||
            nextProps.messages !== this.props.messages ||
            nextProps.isMember !== this.props.isMember ||
+           nextProps.editMessage !== this.props.editMessage ||
            nextState.showScrollToBottom !== this.state.showScrollToBottom;
   }
 
@@ -186,7 +189,7 @@ class MessagesList extends Component {
   }
 
   renderMessages() {
-    let { uid, peer, messages: { messages, overlay, count, selected, receiveDate, readDate, firstUnreadId } } = this.props;
+    const { uid, peer, editMessage, messages: { messages, overlay, count, selected, receiveDate, readDate, firstUnreadId } } = this.props;
     const { MessageItem } = this.components;
 
     const result = [];
@@ -216,6 +219,8 @@ class MessagesList extends Component {
           state={getMessageState(message, uid, receiveDate, readDate)}
           isShort={overlayItem.useShort}
           isSelected={selected.has(message.rid)}
+          isEditing={message === editMessage.message}
+          onEdit={this.props.onEdit}
           onSelect={this.props.onSelect}
           key={message.sortKey}
         />
