@@ -1569,6 +1569,18 @@ public class Messenger {
                 .failure(e -> callback.onError(e));
     }
 
+    /**
+     * Check if chat with bot is started
+     *
+     * @param uid bot user id
+     * @return is chat with bot started
+     */
+    @ObjectiveCName("isStartedWithUid:")
+    public Promise<Boolean> isStarted(int uid) {
+        return modules.getMessagesModule().chatIsEmpty(Peer.user(uid));
+    }
+
+
     //////////////////////////////////////
     //         Blocked List
     //////////////////////////////////////
