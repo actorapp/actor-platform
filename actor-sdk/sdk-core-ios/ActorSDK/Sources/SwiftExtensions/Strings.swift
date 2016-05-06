@@ -118,7 +118,14 @@ public extension String {
         }
         return res
     }
-    
+        
+    public func isValidUrl () -> Bool {
+            if let url = NSURL(string: self) {
+                return UIApplication.sharedApplication().canOpenURL(url)
+            }
+        return false
+    }
+
     public var ns: NSString {
         return self as NSString
     }
