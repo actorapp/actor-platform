@@ -3,11 +3,8 @@
  */
 
 import React, { Component, PropTypes } from 'react';
-import { emoji, getEmojiCategories } from '../../utils/EmojiUtils';
 import { Element, Link } from 'react-scroll';
-
-let emojiTabs = [];
-let emojis = [];
+import emojiData from './emojiData';
 
 class Emojis extends Component {
   static propTypes = {
@@ -18,73 +15,77 @@ class Emojis extends Component {
     super(props);
 
     this.state = {
-      dropdownTitle: ''
-    }
+      title: 'Emoji'
+    };
 
-    const emojiCategories = getEmojiCategories();
+    this.onSetActive = this.onSetActive.bind(this);
+    this.onTabMouseEnter = this.onTabMouseEnter.bind(this);
+  }
 
-    emojiCategories.forEach((category, index) => {
-      let currentCategoryEmojis = [];
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextState.title !== this.state.title;
+  }
 
-      emoji.change_replace_mode('css');
-      const categoryIcon = emoji.replace_colons(category.icon);
+  onSetActive(title) {
+    this.setState({ title });
+  }
 
+  onTabMouseEnter(event) {
+    event.stopPropagation();
+    event.preventDefault();
+    event.target.click();
+  }
+
+  render() {
+    const { title } = this.state;
+
+    const emojis = [];
+    const emojiTabs = [];
+
+    emojiData.forEach((category, cKey) => {
       emojiTabs.push(
         <Link
-          to={category.title}
           spy
           offset={30}
           duration={300}
-          key={index}
-          onSetActive={() => this.changeDropdownTitle(category.title)}
-          onMouseEnter={this.handleEmojiTabMouseEnter}
+          to={category.title}
+          key={cKey}
+          onSetActive={() => this.onSetActive(category.title)}
+          onMouseEnter={this.onTabMouseEnter}
           containerId="emojiContainer"
           className="emojis__header__tabs__tab"
           activeClass="emojis__header__tabs__tab--active"
         >
-          <span dangerouslySetInnerHTML={{ __html: categoryIcon }}/>
+          <span dangerouslySetInnerHTML={{ __html: category.icon }} />
         </Link>
       );
 
-      category.data.forEach((emojiChar, index) => {
-        emoji.change_replace_mode('css');
-        const convertedChar = emoji.replace_unified(emojiChar);
-        emoji.colons_mode = true;
-        const emojiColon = emoji.replace_unified(emojiChar);
-        emoji.colons_mode = false;
-
-        currentCategoryEmojis.push(
-          <a onClick={() => props.onSelect(emojiColon)} key={index} dangerouslySetInnerHTML={{ __html: convertedChar }}/>
+      const items = category.items.map((item, iKey) => {
+        return (
+          <span
+            key={iKey}
+            className="emoji__item"
+            onClick={() => this.props.onSelect(item.title)}
+            dangerouslySetInnerHTML={{ __html: item.icon }}
+          />
         );
       });
 
       emojis.push(
-        <Element name={category.title} key={index}>
+        <Element name={category.title} key={cKey}>
           <p>{category.title}</p>
-          {currentCategoryEmojis}
+          {items}
         </Element>
       );
     });
 
-  }
-
-  changeDropdownTitle = (title) => this.setState({ dropdownTitle: title });
-
-  handleEmojiTabMouseEnter = (event) => {
-    event.stopPropagation();
-    event.preventDefault();
-    event.target.click();
-  };
-
-  render() {
-    const { dropdownTitle } = this.state;
-
     return (
       <div className="emojis">
         <header className="emojis__header">
-          <p className="emojis__header__title">{dropdownTitle || 'Emoji'}</p>
-
-          <div className="emojis__header__tabs pull-right">
+          <p className="emojis__header__title">
+            {title}
+          </p>
+          <div className="emojis__header__tabs">
             {emojiTabs}
           </div>
         </header>
