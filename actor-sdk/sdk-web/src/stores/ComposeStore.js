@@ -2,12 +2,24 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import { Store } from 'flux/utils';
+import { ReduceStore } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import ActorClient from '../utils/ActorClient';
 import { ActionTypes, PeerTypes } from '../constants/ActorAppConstants';
 
 import DraftStore from './DraftStore';
+
+function parseCommand(text) {
+  const matches = /^\/(.)?(?: (.+))?/.exec(text);
+  if (!matches) {
+    return null;
+  }
+
+  return {
+    name: matches[1],
+    args: matches[2]
+  };
+}
 
 const getQuery = (text, position) => {
   const run = (runText, query) => {
@@ -40,120 +52,106 @@ const getQuery = (text, position) => {
   return run(runText, null);
 };
 
-let text = '';
-let mentions = null;
-let _isAutoFocusEnabled = true;
-
-class ComposeStore extends Store {
-  constructor(dispatcher) {
-    super(dispatcher);
+class ComposeStore extends ReduceStore {
+  getInitialState() {
+    return {
+      text: '',
+      mentions: null,
+      commands: null,
+      autoFocus: true
+    };
   }
 
-  getMentions() {
-    return mentions;
-  }
-
-  getText() {
-    return text;
-  }
-
-  isAutoFocusEnabled() {
-    return _isAutoFocusEnabled;
-  }
-
-  onTyping = (action) => {
-    text = action.text;
-    const query = getQuery(text, action.caretPosition);
-
-    if (action.peer.type === PeerTypes.GROUP && query !== null) {
-      mentions = ActorClient.findMentions(action.peer.id, query.text);
-    } else {
-      mentions = null;
-    }
-
-    this.__emitChange();
-  };
-
-  onMentionInsert = (action) => {
-    const query = getQuery(action.text, action.caretPosition);
-    const mentionEnding = query.atStart ? ': ' : ' ';
-
-    text = action.text.substring(0, action.caretPosition - query.text.length - 1) +
-      action.mention.mentionText +
-      mentionEnding +
-      action.text.substring(action.caretPosition, action.text.length);
-
-    mentions = null;
-
-    this.__emitChange();
-  };
-
-  onMentionClose = () => {
-    mentions = null;
-    this.__emitChange();
-  };
-
-  onComposeClean = () => {
-    text = '';
-    mentions = null;
-    this.__emitChange();
-  };
-
-  onDraftLoad = () => {
-    text = DraftStore.getDraft();
-    this.__emitChange();
-  };
-
-  onEmojiInsert = (action) => {
-    const emojiText = `${action.emoji} `;
-
-    text = action.text.substring(0, action.caretPosition) +
-      emojiText +
-      action.text.substring(action.caretPosition, action.text.length);
-
-    this.__emitChange();
-  };
-
-  onComposePaste = (newText) => {
-    text = newText;
-    this.__emitChange();
-  };
-
-  __onDispatch(action) {
+  reduce(state, action) {
     switch (action.type) {
       case ActionTypes.COMPOSE_TYPING:
-        this.onTyping(action);
-        break;
+        const nextState = {
+          ...state,
+          text: action.text,
+          commands: null,
+          mentions: null
+        };
+
+        const command = parseCommand(action.text);
+        if (command) {
+          nextState.commands = ActorClient.findBotCommands(action.peer.id, command.name || '');
+        }
+
+        if (action.peer.type === PeerTypes.GROUP) {
+          const query = getQuery(action.text, action.caretPosition);
+          if (query) {
+            nextState.mentions = ActorClient.findMentions(action.peer.id, query.text);
+          }
+        }
+
+        return nextState;
+
       case ActionTypes.COMPOSE_MENTION_INSERT:
-        this.onMentionInsert(action);
-        break;
+        const query = getQuery(action.text, action.caretPosition);
+        if (!query) {
+          console.error('Mention not found', { state, action });
+          return state;
+        }
+
+        const mentionEnding = query.atStart ? ': ' : ' ';
+        const textBeforeMention = action.text.substring(0, action.caretPosition - query.text.length - 1);
+        const textAfterMention = action.text.substring(action.caretPosition, action.text.length);
+
+        return {
+          ...state,
+          text: textBeforeMention + action.mention.mentionText + mentionEnding + textAfterMention,
+          mentions: null
+        };
+
       case ActionTypes.COMPOSE_MENTION_CLOSE:
-        this.onMentionClose();
-        break;
+        return {
+          ...state,
+          mentions: null
+        };
+
       case ActionTypes.COMPOSE_CLEAN:
-        this.onComposeClean();
-        break;
+        return {
+          ...state,
+          text: '',
+          commands: null,
+          mentions: null
+        };
+
       case ActionTypes.DRAFT_LOAD:
-        this.onDraftLoad();
-        break;
+        return {
+          ...state,
+          text: DraftStore.getDraft()
+        };
+
       case ActionTypes.EMOJI_INSERT:
-        this.onEmojiInsert(action);
-        break;
+        const textBeforeEmoji = action.text.substring(0, action.caretPosition);
+        const textAfterEmoji = action.text.substring(action.caretPosition, action.text.length);
+
+        return {
+          ...state,
+          text: textBeforeEmoji + action.emoji + ' ' + textAfterEmoji
+        };
+
       case ActionTypes.COMPOSE_PASTE:
-        this.onComposePaste(action.text);
-        break;
+        return {
+          ...state,
+          text: action.text
+        };
 
       case ActionTypes.COMPOSE_TOGGLE_AUTO_FOCUS:
-        _isAutoFocusEnabled = action.isEnable;
-        this.__emitChange();
-        break;
+        return {
+          ...state,
+          autoFocus: action.isEnable
+        };
 
       case ActionTypes.SEARCH_TOGGLE_FOCUS:
-        _isAutoFocusEnabled = !action.isEnable;
-        this.__emitChange();
-        break;
+        return {
+          ...state,
+          autoFocus: !action.isEnable
+        };
 
       default:
+        return state;
     }
   }
 }
