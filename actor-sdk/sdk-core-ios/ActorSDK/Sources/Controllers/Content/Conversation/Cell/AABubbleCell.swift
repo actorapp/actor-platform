@@ -63,12 +63,14 @@ public class AABubbleCell: UICollectionViewCell {
     private static var cachedOutTextBg = UIImage.tinted("BubbleOutgoingFull", color: ActorSDK.sharedActor().style.chatTextBubbleOutColor)
     private static var cachedOutTextBgBorder = UIImage.tinted("BubbleOutgoingFullBorder", color: ActorSDK.sharedActor().style.chatTextBubbleOutBorderColor)
     private static var cachedOutTextCompactBg = UIImage.tinted("BubbleOutgoingPartial", color: ActorSDK.sharedActor().style.chatTextBubbleOutColor)
+    private static var cachedOutTextCompactSelectedBg = UIImage.tinted("BubbleOutgoingPartial", color: ActorSDK.sharedActor().style.chatTextBubbleOutSelectedColor)
     private static var cachedOutTextCompactBgBorder = UIImage.tinted("BubbleOutgoingPartialBorder", color: ActorSDK.sharedActor().style.chatTextBubbleOutBorderColor)
 
     private static var cachedInTextBg = UIImage.tinted("BubbleIncomingFull", color: ActorSDK.sharedActor().style.chatTextBubbleInColor)
     private static var cachedInTextBgBorder = UIImage.tinted("BubbleIncomingFullBorder", color: ActorSDK.sharedActor().style.chatTextBubbleInBorderColor)
     private static var cachedInTextCompactBg = UIImage.tinted("BubbleIncomingPartial", color: ActorSDK.sharedActor().style.chatTextBubbleInColor)
-    private static var cachedInTextCompactBgBorder:UIImage = UIImage.tinted("BubbleIncomingPartialBorder", color: ActorSDK.sharedActor().style.chatTextBubbleInBorderColor)
+    private static var cachedInTextCompactSelectedBg = UIImage.tinted("BubbleIncomingPartial", color: ActorSDK.sharedActor().style.chatTextBubbleInSelectedColor)
+    private static var cachedInTextCompactBgBorder = UIImage.tinted("BubbleIncomingPartialBorder", color: ActorSDK.sharedActor().style.chatTextBubbleInBorderColor)
     
     //
     // Cached media bubble images
@@ -177,6 +179,7 @@ public class AABubbleCell: UICollectionViewCell {
         contentView.addSubview(dateText)
         
         avatarView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(AABubbleCell.avatarDidTap)))
+        
         avatarView.userInteractionEnabled = true
         
         backgroundColor = UIColor.clearColor()
@@ -290,35 +293,108 @@ public class AABubbleCell: UICollectionViewCell {
                 if (isCompact) {
                     bubble.image = AABubbleCell.cachedInTextCompactBg
                     bubbleBorder.image = AABubbleCell.cachedInTextCompactBgBorder
+                    bubble.highlightedImage = AABubbleCell.cachedInTextCompactSelectedBg
+                    bubbleBorder.highlightedImage = AABubbleCell.cachedInTextCompactBgBorder
                 } else {
                     bubble.image = AABubbleCell.cachedInTextBg
                     bubbleBorder.image = AABubbleCell.cachedInTextBgBorder
+                    bubble.highlightedImage = AABubbleCell.cachedInTextBg
+                    bubbleBorder.highlightedImage = AABubbleCell.cachedInTextBgBorder
                 }
             break
             case BubbleType.TextOut:
                 if (isCompact) {
                     bubble.image =  AABubbleCell.cachedOutTextCompactBg
                     bubbleBorder.image =  AABubbleCell.cachedOutTextCompactBgBorder
+                    bubble.highlightedImage =  AABubbleCell.cachedOutTextCompactSelectedBg
+                    bubbleBorder.highlightedImage =  AABubbleCell.cachedOutTextCompactBgBorder
                 } else {
                     bubble.image =  AABubbleCell.cachedOutTextBg
                     bubbleBorder.image =  AABubbleCell.cachedOutTextBgBorder
+                    bubble.highlightedImage =  AABubbleCell.cachedOutTextBg
+                    bubbleBorder.highlightedImage =  AABubbleCell.cachedOutTextBgBorder
                 }
             break
             case BubbleType.MediaIn:
                 bubble.image =  AABubbleCell.cachedMediaBg
                 bubbleBorder.image =  AABubbleCell.cachedMediaBgBorder
+                bubble.highlightedImage =  AABubbleCell.cachedMediaBg
+                bubbleBorder.highlightedImage =  AABubbleCell.cachedMediaBgBorder
             break
             case BubbleType.MediaOut:
                 bubble.image =  AABubbleCell.cachedMediaBg
                 bubbleBorder.image =  AABubbleCell.cachedMediaBgBorder
+                bubble.highlightedImage =  AABubbleCell.cachedMediaBg
+                bubbleBorder.highlightedImage =  AABubbleCell.cachedMediaBgBorder
             break
             case BubbleType.Service:
                 bubble.image = AABubbleCell.cachedServiceBg
                 bubbleBorder.image = nil
+                bubble.highlightedImage = AABubbleCell.cachedServiceBg
+                bubbleBorder.highlightedImage = nil
             break
             case BubbleType.Sticker:
                 bubble.image = nil;
                 bubbleBorder.image = nil
+                bubble.highlightedImage = nil;
+                bubbleBorder.highlightedImage = nil
+            break
+        }
+    }
+    
+    func updateView() {
+      print(self.highlighted)
+        let type = self.bubbleType! as BubbleType
+        switch (type) {
+        case BubbleType.TextIn:
+            if (!isFullSize!) {
+                bubble.image = AABubbleCell.cachedInTextCompactBg
+                bubbleBorder.image = AABubbleCell.cachedInTextCompactBgBorder
+                bubble.highlightedImage = AABubbleCell.cachedInTextCompactSelectedBg
+                bubbleBorder.highlightedImage = AABubbleCell.cachedInTextCompactBgBorder
+            } else {
+                bubble.image = AABubbleCell.cachedInTextBg
+                bubbleBorder.image = AABubbleCell.cachedInTextBgBorder
+                bubble.highlightedImage = AABubbleCell.cachedInTextBg
+                bubbleBorder.highlightedImage = AABubbleCell.cachedInTextBgBorder
+            }
+            break
+        case BubbleType.TextOut:
+            if (!isFullSize!) {
+                bubble.image =  AABubbleCell.cachedOutTextCompactBg
+                bubbleBorder.image =  AABubbleCell.cachedOutTextCompactBgBorder
+                bubble.highlightedImage =  AABubbleCell.cachedOutTextCompactSelectedBg
+                bubbleBorder.highlightedImage =  AABubbleCell.cachedOutTextCompactBgBorder
+            } else {
+                bubble.image =  AABubbleCell.cachedOutTextBg
+                bubbleBorder.image =  AABubbleCell.cachedOutTextBgBorder
+                bubble.highlightedImage =  AABubbleCell.cachedOutTextBg
+                bubbleBorder.highlightedImage =  AABubbleCell.cachedOutTextBgBorder
+            }
+            break
+        case BubbleType.MediaIn:
+            bubble.image =  AABubbleCell.cachedMediaBg
+            bubbleBorder.image =  AABubbleCell.cachedMediaBgBorder
+            bubble.highlightedImage =  AABubbleCell.cachedMediaBg
+            bubbleBorder.highlightedImage =  AABubbleCell.cachedMediaBgBorder
+            break
+        case BubbleType.MediaOut:
+            bubble.image =  AABubbleCell.cachedMediaBg
+            bubbleBorder.image =  AABubbleCell.cachedMediaBgBorder
+            bubble.highlightedImage =  AABubbleCell.cachedMediaBg
+            bubbleBorder.highlightedImage =  AABubbleCell.cachedMediaBgBorder
+            break
+        case BubbleType.Service:
+            bubble.image = AABubbleCell.cachedServiceBg
+            bubbleBorder.image = nil
+            bubble.highlightedImage = AABubbleCell.cachedServiceBg
+            bubbleBorder.highlightedImage = nil
+            break
+        case BubbleType.Sticker:
+            bubble.image = nil;
+            bubbleBorder.image = nil
+            bubble.highlightedImage = nil;
+            bubbleBorder.highlightedImage = nil
             break
         }
     }

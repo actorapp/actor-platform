@@ -358,9 +358,15 @@ public class ActorStyle {
     // Bubble Colors
     
     public var chatTextBubbleOutColor = UIColor(rgb: 0xD2FEFD)
+    
+    public var chatTextBubbleOutSelectedColor = UIColor.lightGrayColor()
+    
     public var chatTextBubbleOutBorderColor = UIColor(rgb: 0x99E4E3)
     
     public var chatTextBubbleInColor = UIColor.whiteColor()
+    
+    public var chatTextBubbleInSelectedColor = UIColor.blueColor()
+    
     public var chatTextBubbleInBorderColor = UIColor(rgb: 0xCCCCCC)
     
     public var chatMediaBubbleColor = UIColor.whiteColor()
