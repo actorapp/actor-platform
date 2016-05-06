@@ -43,7 +43,7 @@ public class JsFileSystemReference implements FileSystemReference {
     public int getSize() {
         return file.getSize();
     }
-    
+
     @Override
     public Promise<OutputFile> openWrite(int size) {
         return Promise.failure(new RuntimeException("Unsupported exception"));
