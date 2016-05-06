@@ -306,6 +306,10 @@ class ActorClient {
     return window.messenger.hideChat(peer);
   }
 
+  findBotCommands(id, query) {
+    return window.messenger.findBotCommands(id, query);
+  }
+
   // Mentions
 
   findMentions(gid, query = '') {
