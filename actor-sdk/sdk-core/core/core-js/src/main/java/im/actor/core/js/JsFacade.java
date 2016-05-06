@@ -672,6 +672,11 @@ public class JsFacade implements Exportable {
         return JsPromise.from(messenger.unblockUser(uid));
     }
 
+    @UsedByApp
+    public JsPromise isStarted(final int uid) {
+        return JsPromise.from(messenger.isStarted(uid));
+    }
+
     // Groups
 
     @UsedByApp
