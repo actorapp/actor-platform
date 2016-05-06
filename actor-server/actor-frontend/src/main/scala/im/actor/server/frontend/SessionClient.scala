@@ -213,7 +213,7 @@ private[frontend] final class SessionClient(sessionRegion: SessionRegion, remote
       } else {
         unpack(mbBits) match {
           case Success(rawBits) ⇒
-            sessionRegion.ref ! SessionEnvelope(authId, sessionId).withHandleMessageBox(HandleMessageBox(ByteString.copyFrom(rawBits.toByteBuffer), Option(remoteAddr)))
+            sessionRegion.ref ! SessionEnvelope(authId, sessionId).withHandleMessageBox(HandleMessageBox(ByteString.copyFrom(rawBits.toByteBuffer), Some(remoteAddr)))
           case Failure(EncryptedPackageDecodeError) ⇒
             enqueuePackage(Drop(0, 0, "Cannot parse EncryptedPackage"))
             onCompleteThenStop()
