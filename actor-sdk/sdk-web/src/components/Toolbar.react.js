@@ -181,6 +181,18 @@ class ToolbarSection extends Component {
     )
   }
 
+  renderVerified() {
+    if (!this.state.dialogInfo.isVerified) {
+      return null;
+    }
+
+    return (
+      <span className="toolbar__peer__verified">
+        <i className="material-icons">verified_user</i>
+      </span>
+    );
+  }
+
   render() {
     const { dialogInfo, isFavorite, call } = this.state;
 
@@ -210,6 +222,7 @@ class ToolbarSection extends Component {
         <div className="toolbar__peer col-xs">
           <header>
             <span className="toolbar__peer__title" dangerouslySetInnerHTML={{ __html: escapeWithEmoji(dialogInfo.name) }}/>
+            {this.renderVerified()}
             <Tooltip
               placement="bottom"
               mouseEnterDelay={0.15} mouseLeaveDelay={0}
