@@ -29,9 +29,8 @@
 
         <TextView
             android:id="@+id/name"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:lines="1"
@@ -41,9 +40,8 @@
 
         <TextView
             android:id="@+id/mentionHint"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:lines="1"
