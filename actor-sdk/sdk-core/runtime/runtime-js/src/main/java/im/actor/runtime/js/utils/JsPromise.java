@@ -11,14 +11,13 @@ import im.actor.runtime.promise.Promise;
 public class JsPromise extends JavaScriptObject {
 
     public static <T> JsPromise from(Promise<T> promise) {
-        create(new JsPromiseExecutor() {
+        return create(new JsPromiseExecutor() {
             @Override
             public void execute() {
                 promise.then(this::resolve)
                         .failure(this::reject);
             }
         });
-        return null;
     }
 
     public static native JsPromise create(JsPromiseExecutor executor)/*-{
