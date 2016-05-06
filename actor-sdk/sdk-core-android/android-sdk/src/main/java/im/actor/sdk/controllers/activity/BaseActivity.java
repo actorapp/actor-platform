@@ -20,7 +20,9 @@ import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.Props;
 import im.actor.runtime.actors.messages.PoisonPill;
+import im.actor.runtime.function.BiFunction;
 import im.actor.runtime.function.Consumer;
+import im.actor.runtime.function.Function;
 import im.actor.runtime.promise.Promise;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
@@ -72,6 +74,18 @@ public class BaseActivity extends AppCompatActivity {
 
     public void bind(final TextView textView, Value<String> value) {
         BINDER.bind(textView, value);
+    }
+
+    public <T> void bind(TextView textView, Value<T> value, Function<T, CharSequence> bind) {
+        BINDER.bind(value, (val, valueModel) -> {
+            textView.setText(bind.apply(val));
+        });
+    }
+
+    public <T1, T2> void bind(TextView textView, Value<T1> value1, Value<T2> value2, BiFunction<T1, T2, CharSequence> bind) {
+        BINDER.bind(value1, value2, (val, valueModel, val2, valueModel2) -> {
+            textView.setText(bind.apply(val, val2));
+        });
     }
 
     public void bind(final AvatarView avatarView, final int id,
@@ -190,8 +204,7 @@ public class BaseActivity extends AppCompatActivity {
         messenger().onActivityClosed();
     }
 
-    protected boolean getIsResumed()
-    {
+    protected boolean getIsResumed() {
         return isResumed;
     }
 
