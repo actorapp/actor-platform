@@ -203,6 +203,16 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
         return cell
     }
     
+    public override func collectionView(collectionView: UICollectionView, didUnhighlightItemAtIndexPath indexPath: NSIndexPath) {
+        let cell = collectionView.cellForItemAtIndexPath(indexPath) as! AABubbleCell
+        cell.updateView()
+    }
+
+    public override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        let cell = collectionView.cellForItemAtIndexPath(indexPath) as! AABubbleCell
+        cell.updateView()
+    }
+    
     public override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
         
