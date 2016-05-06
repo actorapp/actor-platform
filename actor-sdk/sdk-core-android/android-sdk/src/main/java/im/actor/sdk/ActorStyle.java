@@ -34,9 +34,11 @@ public class ActorStyle {
 
     //main color
     private int mainColor = 0xff4d74a6;
+
     public int getMainColor() {
         return mainColor;
     }
+
     public void setMainColor(int mainColor) {
         this.mainColor = mainColor;
     }
@@ -195,6 +197,16 @@ public class ActorStyle {
 
     public void setAvatarBackgroundResource(int avatarBackgroundResource) {
         this.avatarBackgroundResource = avatarBackgroundResource;
+    }
+
+    private int verifiedColor = 0;
+
+    public int getVerifiedColor() {
+        return getColorWithFallback(verifiedColor, getAccentColor());
+    }
+
+    public void setVerifiedColor(int verifiedColor) {
+        this.verifiedColor = verifiedColor;
     }
 
     //
@@ -894,9 +906,11 @@ public class ActorStyle {
 
     // DialogsFragment layout settings
     private int dialogsPaddingTop = Screen.dp(8);
+
     public int getDialogsPaddingTop() {
         return dialogsPaddingTop;
     }
+
     public void setDialogsPaddingTop(int dialogsPaddingTop) {
         this.dialogsPaddingTop = dialogsPaddingTop;
     }
@@ -907,6 +921,7 @@ public class ActorStyle {
     public int getContactsMainPaddingTop() {
         return contactsMainPaddingTop;
     }
+
     public void setContactsMainPaddingTop(int contactsMainPaddingTop) {
         this.contactsMainPaddingTop = contactsMainPaddingTop;
     }
