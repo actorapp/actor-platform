@@ -11,10 +11,15 @@ class ComposeTextArea extends Component {
     value: PropTypes.string.isRequired,
     autoFocus: PropTypes.bool.isRequired,
     sendByEnter: PropTypes.bool.isRequired,
+    sendEnabled: PropTypes.bool.isRequired,
     onSubmit: PropTypes.func.isRequired,
     onTyping: PropTypes.func.isRequired,
     onPaste: PropTypes.func,
     onKeyDown: PropTypes.func
+  };
+
+  static defaultProps = {
+    sendEnabled: true
   };
 
   constructor(props) {
@@ -42,6 +47,7 @@ class ComposeTextArea extends Component {
   shouldComponentUpdate(nextProps) {
     return nextProps.value !== this.props.value ||
            nextProps.autoFocus !== this.props.autoFocus ||
+           nextProps.sendEnabled !== this.props.sendEnabled ||
            nextProps.sendByEnter !== this.props.sendByEnter;
   }
 
@@ -71,7 +77,7 @@ class ComposeTextArea extends Component {
   }
 
   onKeyDown(event) {
-    if (this.isSendEvent(event)) {
+    if (this.props.sendEnabled && this.isSendEvent(event)) {
       event.preventDefault();
       this.props.onSubmit();
     } else if (this.props.onKeyDown) {
@@ -100,9 +106,9 @@ class ComposeTextArea extends Component {
         ref="area"
         className="compose__message"
         value={value}
-        onPaste={this.props.onPaste}
         onChange={this.onChange}
         onKeyDown={this.onKeyDown}
+        onPaste={this.props.onPaste}
       />
     );
   }
