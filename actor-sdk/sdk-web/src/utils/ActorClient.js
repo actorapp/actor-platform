@@ -307,13 +307,23 @@ class ActorClient {
   }
 
   findBotCommands(id, query) {
-    return window.messenger.findBotCommands(id, query);
+    const result = window.messenger.findBotCommands(id, query);
+    if (result && result.length) {
+      return result;
+    }
+
+    return null;
   }
 
   // Mentions
 
   findMentions(gid, query = '') {
-    return window.messenger.findMentions(gid, query);
+    const result = window.messenger.findBotCommands(gid, query);
+    if (result && result.length) {
+      return result;
+    }
+
+    return null;
   }
 
   deleteChat(peer) {
