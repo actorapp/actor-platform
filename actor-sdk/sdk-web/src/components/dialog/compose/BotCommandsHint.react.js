@@ -55,14 +55,14 @@ class BotCommandsHint extends Component {
   }
 
   scrollTo(top) {
-    const menuListNode = findDOMNode(this.refs.mentionList);
+    const menuListNode = findDOMNode(this.refs.list);
     menuListNode.scrollTop = top;
   }
 
   onKeyDown(event) {
     const { commands } = this.props;
     const { selectedIndex } = this.state;
-    const visibleItems = 6;
+    const visibleItems = 3;
     let index = selectedIndex;
 
     if (index !== null) {
@@ -147,14 +147,14 @@ class BotCommandsHint extends Component {
 
   render() {
     return (
-      <div className="mention mention--opened">
-        <div className="mention__wrapper">
-          <header className="mention__header">
+      <div className="bot-commands bot-commands">
+        <div className="bot-commands__wrapper">
+          <header className="bot-commands__header">
             <div className="pull-left"><strong>tab</strong>&nbsp; or &nbsp;<strong>↑</strong><strong>↓</strong>&nbsp; to navigate</div>
             <div className="pull-left"><strong>↵</strong>&nbsp; to select</div>
             <div className="pull-right"><strong>esc</strong>&nbsp; to close</div>
           </header>
-          <ul className="mention__list" ref="mentionList">
+          <ul className="bot-commands__list" ref="list">
             {this.renderCommands()}
           </ul>
         </div>
