@@ -21,7 +21,7 @@ function parseCommand(text) {
   };
 }
 
-const getQuery = (text, position) => {
+function parseMentionQuery(text, position) {
   const run = (runText, query) => {
     if (runText.length === 0) {
       return null;
@@ -50,7 +50,7 @@ const getQuery = (text, position) => {
 
   const runText = text.substring(0, position);
   return run(runText, null);
-};
+}
 
 class ComposeStore extends ReduceStore {
   getInitialState() {
@@ -72,22 +72,22 @@ class ComposeStore extends ReduceStore {
           mentions: null
         };
 
-        const command = parseCommand(action.text);
-        if (command) {
-          nextState.commands = ActorClient.findBotCommands(action.peer.id, command.name || '');
-        }
-
         if (action.peer.type === PeerTypes.GROUP) {
-          const query = getQuery(action.text, action.caretPosition);
+          const query = parseMentionQuery(action.text, action.caretPosition);
           if (query) {
             nextState.mentions = ActorClient.findMentions(action.peer.id, query.text);
+          }
+        } else {
+          const command = parseCommand(action.text);
+          if (command) {
+            nextState.commands = ActorClient.findBotCommands(action.peer.id, command.name || '');
           }
         }
 
         return nextState;
 
       case ActionTypes.COMPOSE_MENTION_INSERT:
-        const query = getQuery(action.text, action.caretPosition);
+        const query = parseMentionQuery(action.text, action.caretPosition);
         if (!query) {
           console.error('Mention not found', { state, action });
           return state;

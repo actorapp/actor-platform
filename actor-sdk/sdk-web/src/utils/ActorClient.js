@@ -318,7 +318,7 @@ class ActorClient {
   // Mentions
 
   findMentions(gid, query = '') {
-    const result = window.messenger.findBotCommands(gid, query);
+    const result = window.messenger.findMentions(gid, query);
     if (result && result.length) {
       return result;
     }
