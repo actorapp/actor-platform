@@ -13,6 +13,7 @@ import im.actor.core.events.PeerChatClosed;
 import im.actor.core.events.PeerChatOpened;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.messaging.history.entity.DialogHistory;
+import im.actor.core.modules.messaging.router.entity.RouterAppHidden;
 import im.actor.core.modules.messaging.router.entity.RouterAppVisible;
 import im.actor.core.modules.messaging.router.entity.RouterApplyChatHistory;
 import im.actor.core.modules.messaging.router.entity.RouterApplyDialogsHistory;
@@ -162,7 +163,7 @@ public class RouterInt extends ActorInterface implements BusSubscriber {
             if (((AppVisibleChanged) event).isVisible()) {
                 send(new RouterAppVisible());
             } else {
-                send(new RouterAppVisible());
+                send(new RouterAppHidden());
             }
         }
     }
