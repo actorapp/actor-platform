@@ -78,11 +78,10 @@ class MessageStore extends ReduceStore {
           } else {
             nextState.firstUnreadId = action.messages[unreadIndex].rid;
             if (unreadIndex > nextState.count) {
-              nextState.count = unreadIndex;
+              nextState.count = Math.min((action.messages.length - unreadIndex) + MESSAGE_COUNT_STEP, action.messages.length);
             }
           }
         }
-
 
         return nextState;
 
