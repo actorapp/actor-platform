@@ -10,7 +10,7 @@ import { shouldComponentUpdate } from 'react-addons-pure-render-mixin';
 
 import { KeyCodes } from '../../../constants/ActorAppConstants';
 
-const DROPDOWN_ITEM_HEIGHT = 38;
+const DROPDOWN_ITEM_HEIGHT = 33;
 let scrollIndex = 0;
 
 class BotCommandsHint extends Component {
@@ -29,45 +29,29 @@ class BotCommandsHint extends Component {
 
     this.scrollTo = this.scrollTo.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
+    this.onDocumentClick = this.onDocumentClick.bind(this);
+    this.onDocumentKeyDown = this.onDocumentKeyDown.bind(this);
     this.shouldComponentUpdate = shouldComponentUpdate.bind(this);
   }
 
-  componentWillUnmount() {
-    this.cleanListeners();
-  }
-
-  componentWillUpdate(nextProps, nextState) {
-    if (nextState.isOpen && !this.state.isOpen) {
-      this.setListeners();
-    } else if (!nextState.isOpen && this.state.isOpen) {
-      this.cleanListeners();
-    }
-  }
-
-  componentWillReceiveProps(props) {
-    const { commands } = props;
-    this.setState({
-      isOpen: commands && commands.length > 0,
-      selectedIndex: 0
-    });
-  }
-
-  setListeners() {
-    this.cleanListeners();
+  componentDidMount() {
     this.listeners = [
-      EventListener.listen(document, 'keydown', this.onKeyDown),
-      EventListener.listen(document, 'click', this.props.onClose)
+      EventListener.listen(document, 'click', this.onDocumentClick),
+      EventListener.listen(document, 'keydown', this.onDocumentKeyDown)
     ];
   }
 
-  cleanListeners() {
-    if (this.listeners) {
-      this.listeners.forEach((listener) => {
-        listener.remove();
-      });
+  componentWillUnmount() {
+    this.listeners.forEach((listener) => listener.remove());
+    this.listeners = null;
+  }
 
-      this.listeners = null;
-    }
+  onDocumentClick() {
+    this.props.onClose();
+  }
+
+  onDocumentKeyDown(event) {
+    this.onKeyDown(event);
   }
 
   scrollTo(top) {
@@ -78,19 +62,15 @@ class BotCommandsHint extends Component {
   onKeyDown(event) {
     const { commands } = this.props;
     const { selectedIndex } = this.state;
-    const visibleItems = 3;
+    const visibleItems = 6;
     let index = selectedIndex;
-
-    if (event.keyCode === KeyCodes.ESC) {
-      this.props.onClose();
-    }
 
     if (index !== null) {
       switch (event.keyCode) {
         case KeyCodes.ENTER:
           event.stopPropagation();
           event.preventDefault();
-          this.props.onSelect(commands[selectedIndex]);
+          this.props.onSelect(commands[selectedIndex].command);
           break;
 
         case KeyCodes.ARROW_UP:
@@ -134,6 +114,10 @@ class BotCommandsHint extends Component {
           break;
         default:
       }
+    }
+
+    if (event.keyCode === KeyCodes.ESC) {
+      this.props.onClose();
     }
   }
 

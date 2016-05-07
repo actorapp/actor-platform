@@ -33,19 +33,22 @@ class MentionDropdown extends Component {
       selectedIndex: 0
     };
 
+    this.onKeyDown = this.onKeyDown.bind(this);
+    this.onDocumentClick = this.onDocumentClick.bind(this);
+    this.onDocumentKeyDown = this.onDocumentKeyDown.bind(this);
     this.shouldComponentUpdate = shouldComponentUpdate.bind(this);
   }
 
-  componentWillUnmount() {
-    this.cleanListeners();
+  componentDidMount() {
+    this.listeners = [
+      EventListener.listen(document, 'click', this.onDocumentClick),
+      EventListener.listen(document, 'keydown', this.onDocumentKeyDown)
+    ];
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    if (nextState.isOpen && !this.state.isOpen) {
-      this.setListeners();
-    } else if (!nextState.isOpen && this.state.isOpen) {
-      this.cleanListeners();
-    }
+  componentWillUnmount() {
+    this.listeners.forEach((listener) => listener.remove());
+    this.listeners = null;
   }
 
   componentWillReceiveProps(props) {
@@ -56,21 +59,15 @@ class MentionDropdown extends Component {
     });
   }
 
-  setListeners() {
-    this.cleanListeners();
-    this.listeners = [
-      EventListener.listen(document, 'keydown', this.onKeyDown),
-      EventListener.listen(document, 'click', this.closeMentions)
-    ];
+  onDocumentClick() {
+    if (this.state.isOpen) {
+      this.closeMentions();
+    }
   }
 
-  cleanListeners() {
-    if (this.listeners) {
-      this.listeners.forEach((listener) => {
-        listener.remove();
-      });
-
-      this.listeners = null;
+  onDocumentKeyDown(event) {
+    if (this.state.isOpen) {
+      this.onKeyDown(event);
     }
   }
 
@@ -83,7 +80,7 @@ class MentionDropdown extends Component {
     menuListNode.scrollTop = top;
   };
 
-  onKeyDown = (event) => {
+  onKeyDown(event) {
     const { mentions, onClose } = this.props;
     const { selectedIndex } = this.state;
     const visibleItems = 6;
@@ -144,7 +141,7 @@ class MentionDropdown extends Component {
       this.closeMentions();
       if (onClose) onClose();
     }
-  };
+  }
 
   render() {
     const { className, mentions } = this.props;

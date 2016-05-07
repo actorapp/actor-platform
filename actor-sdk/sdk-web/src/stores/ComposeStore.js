@@ -74,7 +74,8 @@ class ComposeStore extends ReduceStore {
 
         const command = parseCommand(action.text);
         if (command) {
-          nextState.commands = ActorClient.findBotCommands(action.peer.id, command.name || '');
+          const commands = ActorClient.findBotCommands(action.peer.id, command.name || '');
+          nextState.commands = commands.length ? commands : null;
         }
 
         if (action.peer.type === PeerTypes.GROUP) {
