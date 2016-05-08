@@ -365,46 +365,46 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
             }
         });
 
-        view.findViewById(R.id.encryption).setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                if (AndroidLogProvider.isSendLogsEnabled()) {
-                    AndroidLogProvider.setSendLogs(null);
-                    Toast.makeText(getActivity(), "send logs off", Toast.LENGTH_LONG).show();
-                } else {
-
-                    android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
-                    builder.setTitle("Send logs integration url");
-
-                    LinearLayout ll = new LinearLayout(getActivity());
-                    ll.setPadding(Screen.dp(20), 0, Screen.dp(20), 0);
-
-                    final EditText input = new EditText(getActivity());
-                    ll.addView(input, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    builder.setView(ll);
-
-                    builder.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            AndroidLogProvider.setSendLogs(input.getText().toString());
-                            Toast.makeText(getActivity(), "send logs on", Toast.LENGTH_LONG).show();
-
-                        }
-                    });
-                    builder.setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    });
-
-                    builder.create().show();
-
-
-                }
-                return true;
-            }
-        });
+//        view.findViewById(R.id.encryption).setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View v) {
+//                if (AndroidLogProvider.isSendLogsEnabled()) {
+//                    AndroidLogProvider.setSendLogs(null);
+//                    Toast.makeText(getActivity(), "send logs off", Toast.LENGTH_LONG).show();
+//                } else {
+//
+//                    android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
+//                    builder.setTitle("Send logs integration url");
+//
+//                    LinearLayout ll = new LinearLayout(getActivity());
+//                    ll.setPadding(Screen.dp(20), 0, Screen.dp(20), 0);
+//
+//                    final EditText input = new EditText(getActivity());
+//                    ll.addView(input, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+//                    builder.setView(ll);
+//
+//                    builder.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            AndroidLogProvider.setSendLogs(input.getText().toString());
+//                            Toast.makeText(getActivity(), "send logs on", Toast.LENGTH_LONG).show();
+//
+//                        }
+//                    });
+//                    builder.setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            dialog.cancel();
+//                        }
+//                    });
+//
+//                    builder.create().show();
+//
+//
+//                }
+//                return true;
+//            }
+//        });
 
         view.findViewById(R.id.blockedList).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -413,13 +413,13 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
             }
         });
 
-        view.findViewById(R.id.chatSettings).setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Toast.makeText(getActivity(), AndroidLogProvider.toggleWriteLogs() ? "write logs on" : "write logs off", Toast.LENGTH_LONG).show();
-                return true;
-            }
-        });
+//        view.findViewById(R.id.chatSettings).setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View v) {
+//                Toast.makeText(getActivity(), AndroidLogProvider.toggleWriteLogs() ? "write logs on" : "write logs off", Toast.LENGTH_LONG).show();
+//                return true;
+//            }
+//        });
 
         View askQuestion = view.findViewById(R.id.askQuestion);
 
