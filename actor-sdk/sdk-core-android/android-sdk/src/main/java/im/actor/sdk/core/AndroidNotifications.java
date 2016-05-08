@@ -50,8 +50,7 @@ public class AndroidNotifications implements NotificationProvider {
 
     public AndroidNotifications(Context context) {
         this.context = context;
-        soundPool = new SoundPool(1, AudioManager.STREAM_NOTIFICATION, 0);
-        soundId = soundPool.load(context, R.raw.notification, 1);
+
     }
 
     private AndroidMessenger messenger() {
@@ -60,6 +59,10 @@ public class AndroidNotifications implements NotificationProvider {
 
     @Override
     public void onMessageArriveInApp(Messenger messenger) {
+        if (soundPool == null) {
+            soundPool = new SoundPool(1, AudioManager.STREAM_NOTIFICATION, 0);
+            soundId = soundPool.load(context, R.raw.notification, 1);
+        }
         soundPool.play(soundId, 1.0f, 1.0f, 0, 0, 1.0f);
     }
 
@@ -165,7 +168,6 @@ public class AndroidNotifications implements NotificationProvider {
             builder.setContentTitle(sender);
             builder.setContentText(messagesCount + context.getString(R.string.notifications_single_conversation_аfter_messages_count));
             visiblePeer = topNotification.getPeer();
-
 
 
             final NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
@@ -319,7 +321,7 @@ public class AndroidNotifications implements NotificationProvider {
     private String getNotificationSender(Notification pendingNotification) {
         String sender;
         if (pendingNotification.getPeer().getPeerType() == PeerType.GROUP) {
-            sender =messenger().getUser(pendingNotification.getSender()).getName().get();
+            sender = messenger().getUser(pendingNotification.getSender()).getName().get();
             sender += "@";
             sender += messenger().getGroup(pendingNotification.getPeer().getPeerId()).getName().get();
         } else {

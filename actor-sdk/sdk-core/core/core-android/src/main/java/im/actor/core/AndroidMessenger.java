@@ -39,6 +39,7 @@ import im.actor.core.utils.ImageHelper;
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.GalleryVM;
+import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
@@ -64,9 +65,9 @@ public class AndroidMessenger extends im.actor.core.Messenger {
     private BindedDisplayList<Dialog> dialogList;
     //    private BindedDisplayList<Sticker> stickersList;
 //    private BindedDisplayList<StickerPack> stickerPacksList;
-    private HashMap<Peer, BindedDisplayList<Message>> messagesLists = new HashMap<Peer, BindedDisplayList<Message>>();
-    private HashMap<Peer, BindedDisplayList<Message>> docsLists = new HashMap<Peer, BindedDisplayList<Message>>();
-    private HashMap<String, BindedDisplayList> customLists = new HashMap<String, BindedDisplayList>();
+    private HashMap<Peer, BindedDisplayList<Message>> messagesLists = new HashMap<>();
+    private HashMap<Peer, BindedDisplayList<Message>> docsLists = new HashMap<>();
+    private HashMap<String, BindedDisplayList> customLists = new HashMap<>();
     private GalleryVM galleryVM;
     private ActorRef galleryScannerActor;
 
@@ -75,85 +76,85 @@ public class AndroidMessenger extends im.actor.core.Messenger {
 
         this.context = context;
 
-        this.appStateActor = system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public AppStateActor create() {
-                return new AppStateActor(AndroidMessenger.this);
-            }
-        }), "actor/android/state");
+        this.appStateActor = system().actorOf("actor/android/state", () -> new AppStateActor(AndroidMessenger.this));
 
         // Catch all phone book changes
-        context.getContentResolver()
-                .registerContentObserver(ContactsContract.Contacts.CONTENT_URI, true,
-                        new ContentObserver(null) {
-                            @Override
-                            public void onChange(boolean selfChange) {
-                                onPhoneBookChanged();
-                            }
-                        });
+        Runtime.dispatch(() ->
+                context.getContentResolver()
+                        .registerContentObserver(ContactsContract.Contacts.CONTENT_URI, true,
+                                new ContentObserver(null) {
+                                    @Override
+                                    public void onChange(boolean selfChange) {
+                                        onPhoneBookChanged();
+                                    }
+                                }));
 
         // Counters
-        modules.getAppStateModule().getGlobalStateVM().getGlobalCounter().subscribe(new ValueChangedListener<Integer>() {
-            @Override
-            public void onChanged(Integer val, Value<Integer> valueModel) {
-                if (val != null) {
-                    ShortcutBadger.with(AndroidContext.getContext()).count(val);
-                }
-            }
-        });
+        modules.getAppStateModule()
+                .getGlobalStateVM()
+                .getGlobalCounter()
+                .subscribe((val, valueModel) -> {
+                    if (val != null) {
+                        ShortcutBadger.with(AndroidContext.getContext()).count(val);
+                    }
+                });
 
         // Catch network change
-        context.registerReceiver(new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                ConnectivityManager cm =
-                        (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        Runtime.dispatch(() -> context.registerReceiver(
+                new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        ConnectivityManager cm =
+                                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-                NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-                boolean isConnected = activeNetwork != null &&
-                        activeNetwork.isConnectedOrConnecting();
+                        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+                        boolean isConnected = activeNetwork != null &&
+                                activeNetwork.isConnectedOrConnecting();
 
-                NetworkState state;
-                if (isConnected) {
-                    switch (activeNetwork.getType()) {
-                        case ConnectivityManager.TYPE_WIFI:
-                        case ConnectivityManager.TYPE_WIMAX:
-                        case ConnectivityManager.TYPE_ETHERNET:
-                            state = NetworkState.WI_FI;
-                            break;
-                        case ConnectivityManager.TYPE_MOBILE:
-                            state = NetworkState.MOBILE;
-                            break;
-                        default:
-                            state = NetworkState.UNKNOWN;
+                        NetworkState state;
+                        if (isConnected) {
+                            switch (activeNetwork.getType()) {
+                                case ConnectivityManager.TYPE_WIFI:
+                                case ConnectivityManager.TYPE_WIMAX:
+                                case ConnectivityManager.TYPE_ETHERNET:
+                                    state = NetworkState.WI_FI;
+                                    break;
+                                case ConnectivityManager.TYPE_MOBILE:
+                                    state = NetworkState.MOBILE;
+                                    break;
+                                default:
+                                    state = NetworkState.UNKNOWN;
+                            }
+                        } else {
+                            state = NetworkState.NO_CONNECTION;
+                        }
+                        onNetworkChanged(state);
                     }
-                } else {
-                    state = NetworkState.NO_CONNECTION;
-                }
-                onNetworkChanged(state);
-            }
-        }, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
+                }, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)));
 
 
         // Screen change processor
-        IntentFilter screenFilter = new IntentFilter();
-        screenFilter.addAction(Intent.ACTION_SCREEN_OFF);
-        screenFilter.addAction(Intent.ACTION_SCREEN_ON);
-        context.registerReceiver(new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
-                    appStateActor.send(new AppStateActor.OnScreenOn());
-                } else if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-                    appStateActor.send(new AppStateActor.OnScreenOff());
+        Runtime.dispatch(() -> {
+            IntentFilter screenFilter = new IntentFilter();
+            screenFilter.addAction(Intent.ACTION_SCREEN_OFF);
+            screenFilter.addAction(Intent.ACTION_SCREEN_ON);
+            context.registerReceiver(new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
+                        appStateActor.send(new AppStateActor.OnScreenOn());
+                    } else if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
+                        appStateActor.send(new AppStateActor.OnScreenOff());
+                    }
                 }
+            }, screenFilter);
+            if (isScreenOn()) {
+                appStateActor.send(new AppStateActor.OnScreenOn());
+            } else {
+                appStateActor.send(new AppStateActor.OnScreenOff());
             }
-        }, screenFilter);
-        if (isScreenOn()) {
-            appStateActor.send(new AppStateActor.OnScreenOn());
-        } else {
-            appStateActor.send(new AppStateActor.OnScreenOff());
-        }
+        });
+
     }
 
     public Context getContext() {
@@ -283,83 +284,74 @@ public class AndroidMessenger extends im.actor.core.Messenger {
     }
 
     public Command<Boolean> sendUri(final Peer peer, final Uri uri) {
-        return new Command<Boolean>() {
-            @Override
-            public void start(final CommandCallback<Boolean> callback) {
-                fileDownloader.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        String[] filePathColumn = {MediaStore.Images.Media.DATA, MediaStore.Video.Media.MIME_TYPE,
-                                MediaStore.Video.Media.TITLE};
-                        String picturePath;
-                        String mimeType;
-                        String fileName;
+        return callback -> fileDownloader.execute(() -> {
+            String[] filePathColumn = {MediaStore.Images.Media.DATA, MediaStore.Video.Media.MIME_TYPE,
+                    MediaStore.Video.Media.TITLE};
+            String picturePath;
+            String mimeType;
+            String fileName;
 
-
-                        Cursor cursor = context.getContentResolver().query(uri, filePathColumn, null, null, null);
-                        if (cursor != null) {
-                            cursor.moveToFirst();
-                            picturePath = cursor.getString(cursor.getColumnIndex(filePathColumn[0]));
-                            mimeType = cursor.getString(cursor.getColumnIndex(filePathColumn[1]));
-                            fileName = cursor.getString(cursor.getColumnIndex(filePathColumn[2]));
-                            if (mimeType == null) {
-                                mimeType = "?/?";
-                            }
-                            cursor.close();
-                        } else {
-                            picturePath = uri.getPath();
-                            fileName = new File(uri.getPath()).getName();
-                            int index = fileName.lastIndexOf(".");
-                            if (index > 0) {
-                                mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileName.substring(index + 1));
-                            } else {
-                                mimeType = "?/?";
-                            }
-                        }
-
-                        if (picturePath == null || !uri.getScheme().equals("file")) {
-                            File externalFile = context.getExternalFilesDir(null);
-                            if (externalFile == null) {
-                                callback.onError(new NullPointerException());
-                                return;
-                            }
-                            String externalPath = externalFile.getAbsolutePath();
-
-                            File dest = new File(externalPath + "/Actor/");
-                            dest.mkdirs();
-
-                            File outputFile = new File(dest, "upload_" + random.nextLong() + ".jpg");
-                            picturePath = outputFile.getAbsolutePath();
-
-                            try {
-                                IOUtils.copy(context.getContentResolver().openInputStream(uri), new File(picturePath));
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                                callback.onError(e);
-                                return;
-                            }
-                        }
-
-                        if (fileName == null) {
-                            fileName = picturePath;
-                        }
-
-                        if (mimeType.startsWith("video/")) {
-                            sendVideo(peer, picturePath, fileName);
-//                            trackVideoSend(peer);
-                        } else if (mimeType.startsWith("image/")) {
-                            sendPhoto(peer, picturePath, new File(fileName).getName());
-//                            trackPhotoSend(peer);
-                        } else {
-                            sendDocument(peer, picturePath, new File(fileName).getName());
-//                            trackDocumentSend(peer);
-                        }
-
-                        callback.onResult(true);
-                    }
-                });
+            Cursor cursor = context.getContentResolver().query(uri, filePathColumn, null, null, null);
+            if (cursor != null) {
+                cursor.moveToFirst();
+                picturePath = cursor.getString(cursor.getColumnIndex(filePathColumn[0]));
+                mimeType = cursor.getString(cursor.getColumnIndex(filePathColumn[1]));
+                fileName = cursor.getString(cursor.getColumnIndex(filePathColumn[2]));
+                if (mimeType == null) {
+                    mimeType = "?/?";
+                }
+                cursor.close();
+            } else {
+                picturePath = uri.getPath();
+                fileName = new File(uri.getPath()).getName();
+                int index = fileName.lastIndexOf(".");
+                if (index > 0) {
+                    mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileName.substring(index + 1));
+                } else {
+                    mimeType = "?/?";
+                }
             }
-        };
+
+            if (picturePath == null || !uri.getScheme().equals("file")) {
+                File externalFile = context.getExternalFilesDir(null);
+                if (externalFile == null) {
+                    callback.onError(new NullPointerException());
+                    return;
+                }
+                String externalPath = externalFile.getAbsolutePath();
+
+                File dest = new File(externalPath + "/Actor/");
+                dest.mkdirs();
+
+                File outputFile = new File(dest, "upload_" + random.nextLong() + ".jpg");
+                picturePath = outputFile.getAbsolutePath();
+
+                try {
+                    IOUtils.copy(context.getContentResolver().openInputStream(uri), new File(picturePath));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    callback.onError(e);
+                    return;
+                }
+            }
+
+            if (fileName == null) {
+                fileName = picturePath;
+            }
+
+            if (mimeType.startsWith("video/")) {
+                sendVideo(peer, picturePath, fileName);
+//                            trackVideoSend(peer);
+            } else if (mimeType.startsWith("image/")) {
+                sendPhoto(peer, picturePath, new File(fileName).getName());
+//                            trackPhotoSend(peer);
+            } else {
+                sendDocument(peer, picturePath, new File(fileName).getName());
+//                            trackDocumentSend(peer);
+            }
+
+            callback.onResult(true);
+        });
     }
 
     public void onActivityOpen() {

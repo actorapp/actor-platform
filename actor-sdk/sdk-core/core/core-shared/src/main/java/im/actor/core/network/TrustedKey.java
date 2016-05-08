@@ -12,19 +12,24 @@ import im.actor.runtime.crypto.primitives.util.ByteStrings;
 
 public class TrustedKey {
 
-    private final long keyId;
+    private boolean isLoaded = false;
+    private long keyId;
     private final byte[] key;
 
     public TrustedKey(byte[] key) {
-        byte[] hash = new byte[32];
-        Digest sha256 = Crypto.createSHA256();
-        sha256.update(key, 0, key.length);
-        sha256.doFinal(hash, 0);
-        this.keyId = ByteStrings.bytesToLong(hash);
+
         this.key = key;
     }
 
-    public long getKeyId() {
+    public synchronized long getKeyId() {
+        if (!isLoaded) {
+            isLoaded = true;
+            byte[] hash = new byte[32];
+            Digest sha256 = Crypto.createSHA256();
+            sha256.update(key, 0, key.length);
+            sha256.doFinal(hash, 0);
+            this.keyId = ByteStrings.bytesToLong(hash);
+        }
         return keyId;
     }
 
