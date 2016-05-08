@@ -432,7 +432,7 @@ public class MainPhoneController extends MainBaseController {
                     public void onChanged(Boolean isAppLoaded, Value<Boolean> Value,
                                           Boolean isAppEmpty, Value<Boolean> Value2) {
                         if (isAppEmpty) {
-                            if (true || isAppLoaded) {
+                            if (isAppLoaded) {
                                 onHideToolbarCustomView();
                                 emptyContactsView.setVisibility(View.VISIBLE);
                                 syncInProgressView.setVisibility(View.GONE);
