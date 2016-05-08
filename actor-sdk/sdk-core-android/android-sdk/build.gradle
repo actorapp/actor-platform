@@ -1,6 +1,6 @@
 buildscript {
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.0.0'
+        classpath 'com.android.tools.build:gradle:2.1.0'
         classpath 'com.github.dcendents:android-maven-plugin:1.2'
         classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3"
         classpath 'me.tatarka:gradle-retrolambda:3.2.5'
@@ -16,10 +16,6 @@ apply plugin: 'me.tatarka.retrolambda'
 group = 'im.actor'
 version = '0.0.1'
 
-retrolambda {
-    defaultMethods true
-}
-
 android {
 
     compileSdkVersion 23
@@ -28,25 +24,33 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 23
-        multiDexEnabled true
     }
 
     sourceSets {
         main {
 
-            res.srcDirs = ['src/main/res',
+            res {
+                srcDirs = ['src/main/res',
                            'src/main/res-material']
+            }
 
-            resources.srcDirs = [
-                    '../../sdk-core/core/core-shared/src/main/resources'
-            ]
+            resources {
+                srcDirs = ['../../sdk-core/core/core-shared/src/main/resources']
+            }
 
-            java.srcDirs = ['src/main/java',
-                            '../../sdk-core/core/core-shared/src/main/java',
-                            '../../sdk-core/core/core-android/src/main/java',
-                            '../../sdk-core/runtime/runtime-shared/src/main/java',
-                            '../../sdk-core/runtime/runtime-generic/src/main/java',
-                            '../../sdk-core/runtime/runtime-android/src/main/java',]
+            assets {
+                srcDirs = ['../../sdk-core/core/core-shared/src/main/resources',
+                           'src/main/assets']
+            }
+
+            java {
+                srcDirs = ['src/main/java',
+                           '../../sdk-core/core/core-shared/src/main/java',
+                           '../../sdk-core/core/core-android/src/main/java',
+                           '../../sdk-core/runtime/runtime-shared/src/main/java',
+                           '../../sdk-core/runtime/runtime-generic/src/main/java',
+                           '../../sdk-core/runtime/runtime-android/src/main/java']
+            }
         }
     }
 
