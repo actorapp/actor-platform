@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import im.actor.runtime.Assets;
+import im.actor.runtime.Log;
+import im.actor.runtime.Runtime;
 
 public class LocaleLoader {
 
