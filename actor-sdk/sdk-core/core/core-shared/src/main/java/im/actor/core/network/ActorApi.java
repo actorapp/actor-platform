@@ -45,8 +45,7 @@ public class ActorApi {
     public ActorApi(Endpoints endpoints, AuthKeyStorage keyStorage, ActorApiCallback callback,
                     boolean isEnableLog, int minDelay,
                     int maxDelay,
-                    int maxFailureCount,
-                    ApiParserConfig parserConfig) {
+                    int maxFailureCount) {
         this.endpoints = endpoints;
         this.keyStorage = keyStorage;
         this.callback = callback;
@@ -55,7 +54,7 @@ public class ActorApi {
         this.maxDelay = maxDelay;
         this.maxFailureCount = maxFailureCount;
         this.apiBroker = ApiBroker.get(endpoints, keyStorage, callback, isEnableLog,
-                NEXT_ID.get(), minDelay, maxDelay, maxFailureCount, parserConfig);
+                NEXT_ID.get(), minDelay, maxDelay, maxFailureCount);
     }
 
     /**
