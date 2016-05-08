@@ -221,7 +221,7 @@ public class ActorSDK {
                 .build();
         Fresco.initialize(application, config);
         // TODO: Replace
-        new SmileProcessor(application).loadEmoji();
+        SmileProcessor emojiProcessor = new SmileProcessor(application);
 
         ActorSystem.system().addDispatcher("voice_capture_dispatcher", 1);
 
@@ -311,6 +311,9 @@ public class ActorSDK {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        // Load Emoji after everything
+        // emojiProcessor.loadEmoji();
     }
 
     /**
