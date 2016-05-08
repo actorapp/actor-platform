@@ -177,12 +177,12 @@ public class ActorSDK {
 
     private ActorSDK() {
         endpoints = new String[]{
-                "tls://front1-mtproto-api-rev2.actor.im",
-                "tls://front2-mtproto-api-rev2.actor.im",
+                "tls://front1-mtproto-api-rev2.actor.im@104.155.30.208",
+                "tls://front2-mtproto-api-rev2.actor.im@104.155.30.208",
 
-                "tcp://front1-mtproto-api-rev3.actor.im:443",
-                "tcp://front2-mtproto-api-rev3.actor.im:443",
-                "tcp://front3-mtproto-api-rev3.actor.im:443"
+                "tcp://front1-mtproto-api-rev3.actor.im@104.155.30.208:443",
+                "tcp://front2-mtproto-api-rev3.actor.im@104.155.30.208:443",
+                "tcp://front3-mtproto-api-rev3.actor.im@104.155.30.208:443"
         };
         trustedKeys = new String[]{
                 "d9d34ed487bd5b434eda2ef2c283db587c3ae7fb88405c3834d9d1a6d247145b",
