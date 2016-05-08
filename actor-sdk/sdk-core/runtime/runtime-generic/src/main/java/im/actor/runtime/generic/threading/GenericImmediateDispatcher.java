@@ -2,28 +2,33 @@ package im.actor.runtime.generic.threading;
 
 import java.util.ArrayList;
 
+import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.ThreadPriority;
 import im.actor.runtime.threading.ImmediateDispatcher;
 
 public class GenericImmediateDispatcher implements ImmediateDispatcher {
 
     boolean isClosed = false;
-    private final Thread workingThread;
+    private Thread workingThread;
     private final ArrayList<Runnable> queue = new ArrayList<>();
 
     public GenericImmediateDispatcher(String name, ThreadPriority priority) {
-        this.workingThread = new DispatcherThread();
-        switch (priority) {
-            case HIGH:
-                this.workingThread.setPriority(Thread.MAX_PRIORITY);
-            case LOW:
-                this.workingThread.setPriority(Thread.MIN_PRIORITY);
-            default:
-            case NORMAL:
-                this.workingThread.setPriority(Thread.NORM_PRIORITY);
-        }
-        this.workingThread.setName(name);
-        this.workingThread.start();
+
+        // Async Init of thread
+        Runtime.dispatch(() -> {
+            this.workingThread = new DispatcherThread();
+            switch (priority) {
+                case HIGH:
+                    this.workingThread.setPriority(Thread.MAX_PRIORITY);
+                case LOW:
+                    this.workingThread.setPriority(Thread.MIN_PRIORITY);
+                default:
+                case NORMAL:
+                    this.workingThread.setPriority(Thread.NORM_PRIORITY);
+            }
+            this.workingThread.setName(name);
+            this.workingThread.start();
+        });
     }
 
     @Override
