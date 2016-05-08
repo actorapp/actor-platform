@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 
+import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.ThreadPriority;
 import im.actor.runtime.android.threading.AndroidDispatcher;
 import im.actor.runtime.android.time.SntpClient;
@@ -29,20 +30,24 @@ public class AndroidThreadingProvider extends GenericThreadingProvider {
     public AndroidThreadingProvider() {
         this.serverHost = "europe.pool.ntp.org";
         this.preference = AndroidContext.getContext().getSharedPreferences(PROPS, Context.MODE_PRIVATE);
-        this.syncDelta = preference.getLong("delta", syncDelta);
 
-        invalidateSync();
+        Runtime.dispatch(() -> {
 
-        IntentFilter timeChangedFilter = new IntentFilter();
-        timeChangedFilter.addAction(Intent.ACTION_TIME_CHANGED);
-        timeChangedFilter.addAction(Intent.ACTION_DATE_CHANGED);
-        AndroidContext.getContext().registerReceiver(new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Log.d("AndroidClockSync", "Time changed: invalidating sync");
-                invalidateSync();
-            }
-        }, timeChangedFilter);
+            this.syncDelta = preference.getLong("delta", syncDelta);
+
+            invalidateSync();
+
+            IntentFilter timeChangedFilter = new IntentFilter();
+            timeChangedFilter.addAction(Intent.ACTION_TIME_CHANGED);
+            timeChangedFilter.addAction(Intent.ACTION_DATE_CHANGED);
+            AndroidContext.getContext().registerReceiver(new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    Log.d("AndroidClockSync", "Time changed: invalidating sync");
+                    invalidateSync();
+                }
+            }, timeChangedFilter);
+        });
     }
 
     // TODO: Better invalidation

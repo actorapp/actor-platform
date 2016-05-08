@@ -32,7 +32,8 @@ public class AndroidPhoneBook implements PhoneBookProvider {
     private static final int READ_ITEM_DELAY = 10;
     private static final boolean DISABLE_PHONE_BOOK = false;
     private static final String TAG = "PhoneBookLoader";
-    private static PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+    private static final Object initSync = new Object();
+    private static PhoneNumberUtil PHONE_UTIL;
     private boolean useDelay = true;
 
     @Override
@@ -159,8 +160,16 @@ public class AndroidPhoneBook implements PhoneBookProvider {
                 continue;
             }
 
+            if (PHONE_UTIL == null) {
+                synchronized (initSync) {
+                    if (PHONE_UTIL == null) {
+                        PHONE_UTIL = PhoneNumberUtil.getInstance();
+                    }
+                }
+            }
+
             try {
-                final Phonenumber.PhoneNumber phonenumber = phoneUtil.parse(rawPhone, isoCountry);
+                final Phonenumber.PhoneNumber phonenumber = PHONE_UTIL.parse(rawPhone, isoCountry);
                 rawPhone = phonenumber.getCountryCode() + "" + phonenumber.getNationalNumber();
             } catch (final NumberParseException e) {
                 rawPhone = rawPhone.replaceAll("[^\\d]", "");

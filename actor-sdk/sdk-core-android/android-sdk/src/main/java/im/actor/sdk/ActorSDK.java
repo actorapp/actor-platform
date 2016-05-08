@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Debug;
 import android.view.ViewGroup;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -25,6 +26,7 @@ import im.actor.core.DeviceCategory;
 import im.actor.core.PlatformType;
 import im.actor.core.entity.Peer;
 import im.actor.runtime.Log;
+import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.sdk.controllers.Intents;
@@ -210,6 +212,8 @@ public class ActorSDK {
 
     public void createActor(final Application application) {
 
+        // Debug.startMethodTracing("create_actor9");
+
         this.application = application;
 
         //
@@ -290,12 +294,9 @@ public class ActorSDK {
         //
 
         if (actorPushEndpoint != null && delegate.useActorPush()) {
-            ActorPushRegister.registerForPush(application, actorPushEndpoint, new ActorPushRegister.Callback() {
-                @Override
-                public void onRegistered(String endpoint) {
-                    Log.d(TAG, "On Actor push registered: " + endpoint);
-                    messenger.registerActorPush(endpoint);
-                }
+            ActorPushRegister.registerForPush(application, actorPushEndpoint, endpoint -> {
+                Log.d(TAG, "On Actor push registered: " + endpoint);
+                messenger.registerActorPush(endpoint);
             });
         }
 
@@ -303,17 +304,21 @@ public class ActorSDK {
         // GCM
         //
 
-        try {
-            if (pushId != 0) {
-                final ActorPushManager pushManager = (ActorPushManager) Class.forName("im.actor.push.PushManager").newInstance();
-                pushManager.registerPush(application);
+        Runtime.dispatch(() -> {
+            try {
+                if (pushId != 0) {
+                    final ActorPushManager pushManager = (ActorPushManager) Class.forName("im.actor.push.PushManager").newInstance();
+                    pushManager.registerPush(application);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        });
 
         // Load Emoji after everything
-        // emojiProcessor.loadEmoji();
+        emojiProcessor.loadEmoji();
+
+        // Debug.stopMethodTracing();
     }
 
     /**
