@@ -7,8 +7,11 @@ package im.actor.core.network.api;
 import java.io.IOException;
 import java.util.HashMap;
 
+import im.actor.core.api.parser.RpcParser;
+import im.actor.core.api.parser.UpdatesParser;
 import im.actor.core.network.*;
 import im.actor.core.network.parser.ApiParserConfig;
+import im.actor.core.network.parser.ParsingExtension;
 import im.actor.runtime.*;
 import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.Actor;
@@ -37,8 +40,7 @@ public class ApiBroker extends Actor {
     public static ActorRef get(final Endpoints endpoints, final AuthKeyStorage keyStorage, final ActorApiCallback callback,
                                final boolean isEnableLog, int id, final int minDelay,
                                final int maxDelay,
-                               final int maxFailureCount,
-                               final ApiParserConfig parserConfig) {
+                               final int maxFailureCount) {
         return ActorSystem.system().actorOf(Props.create(() ->
                 new ApiBroker(endpoints,
                         keyStorage,
@@ -46,7 +48,7 @@ public class ApiBroker extends Actor {
                         isEnableLog,
                         minDelay,
                         maxDelay,
-                        maxFailureCount, parserConfig))
+                        maxFailureCount))
                 .changeDispatcher("network"), "api/broker#" + id);
     }
 
@@ -74,8 +76,7 @@ public class ApiBroker extends Actor {
 
     public ApiBroker(Endpoints endpoints, AuthKeyStorage keyStorage,
                      ActorApiCallback callback,
-                     boolean isEnableLog, int minDelay, int maxDelay, int maxFailureCount,
-                     ApiParserConfig parserConfig) {
+                     boolean isEnableLog, int minDelay, int maxDelay, int maxFailureCount) {
         this.isEnableLog = isEnableLog;
         this.endpoints = endpoints;
         this.keyStorage = keyStorage;
@@ -83,7 +84,8 @@ public class ApiBroker extends Actor {
         this.minDelay = minDelay;
         this.maxDelay = maxDelay;
         this.maxFailureCount = maxFailureCount;
-        this.parserConfig = parserConfig;
+        this.parserConfig = new ApiParserConfig();
+        this.parserConfig.addExtension(new ParsingExtension(new RpcParser(), new UpdatesParser()));
     }
 
     @Override

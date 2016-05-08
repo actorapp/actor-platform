@@ -1,7 +1,5 @@
 package im.actor.core.modules.api;
 
-import im.actor.core.api.parser.RpcParser;
-import im.actor.core.api.parser.UpdatesParser;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.Modules;
 import im.actor.core.events.AppVisibleChanged;
@@ -11,10 +9,7 @@ import im.actor.core.network.ActorApi;
 import im.actor.core.network.ActorApiCallback;
 import im.actor.core.network.AuthKeyStorage;
 import im.actor.core.network.Endpoints;
-import im.actor.core.network.parser.ApiParserConfig;
-import im.actor.core.network.parser.ParsingExtension;
 import im.actor.core.network.parser.Request;
-import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.eventbus.BusSubscriber;
 import im.actor.runtime.eventbus.Event;
@@ -25,14 +20,10 @@ public class ApiModule extends AbsModule implements BusSubscriber {
 
     private final ActorApi actorApi;
     private final ActorRef persistentRequests;
-    private final ApiParserConfig parserConfig = new ApiParserConfig();
     private final AuthKeyStorage authKeyStorage;
 
     public ApiModule(Modules context) {
         super(context);
-
-        // Register initial scheme parsers
-        this.parserConfig.addExtension(new ParsingExtension(new RpcParser(), new UpdatesParser()));
 
         this.authKeyStorage = new PreferenceApiStorage(context().getPreferences());
 
@@ -43,7 +34,7 @@ public class ApiModule extends AbsModule implements BusSubscriber {
                 context().getConfiguration().isEnableNetworkLogging(),
                 context().getConfiguration().getMinDelay(),
                 context().getConfiguration().getMaxDelay(),
-                context().getConfiguration().getMaxFailureCount(), parserConfig);
+                context().getConfiguration().getMaxFailureCount());
 
         context.getEvents().subscribe(this, AppVisibleChanged.EVENT);
 
@@ -59,15 +50,6 @@ public class ApiModule extends AbsModule implements BusSubscriber {
      */
     public ActorApi getActorApi() {
         return actorApi;
-    }
-
-    /**
-     * Get API Parser configuration
-     *
-     * @return Actor API parser config
-     */
-    public ApiParserConfig getParserConfig() {
-        return parserConfig;
     }
 
     /**
