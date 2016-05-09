@@ -212,22 +212,32 @@ public class ActorSDK {
 
     public void createActor(final Application application) {
 
-        // Debug.startMethodTracing("create_actor9");
+        // Debug.startMethodTracing("create_actor11");
 
         this.application = application;
+
+        boolean[] isLoaded = new boolean[1];
+        isLoaded[0] = false;
 
         //
         // SDK Tools
         //
 
-        ImagePipelineConfig config = ImagePipelineConfig.newBuilder(application)
-                .setDownsampleEnabled(true)
-                .build();
-        Fresco.initialize(application, config);
-        // TODO: Replace
-        SmileProcessor emojiProcessor = new SmileProcessor(application);
+        Runtime.dispatch(() -> {
+            ImagePipelineConfig config = ImagePipelineConfig.newBuilder(application)
+                    .setDownsampleEnabled(true)
+                    .build();
+            Fresco.initialize(application, config);
 
-        ActorSystem.system().addDispatcher("voice_capture_dispatcher", 1);
+            SmileProcessor emojiProcessor = new SmileProcessor(application);
+            ActorSystem.system().addDispatcher("voice_capture_dispatcher", 1);
+            synchronized (isLoaded) {
+                isLoaded[0] = true;
+                isLoaded.notifyAll();
+            }
+            emojiProcessor.loadEmoji();
+
+        });
 
         //
         // SDK Configuration
@@ -278,33 +288,33 @@ public class ActorSDK {
 
         this.messenger = new AndroidMessenger(AndroidContext.getContext(), builder.build());
 
-        //
-        // Keep Alive
-        //
-
-        if (isKeepAliveEnabled) {
-            Intent keepAliveService = new Intent(application, KeepAliveService.class);
-            PendingIntent pendingIntent = PendingIntent.getService(application, 0, keepAliveService, 0);
-            AlarmManager alarm = (AlarmManager) application.getSystemService(Context.ALARM_SERVICE);
-            alarm.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), 30 * 1000, pendingIntent);
-        }
-
-        //
-        // Actor Push
-        //
-
-        if (actorPushEndpoint != null && delegate.useActorPush()) {
-            ActorPushRegister.registerForPush(application, actorPushEndpoint, endpoint -> {
-                Log.d(TAG, "On Actor push registered: " + endpoint);
-                messenger.registerActorPush(endpoint);
-            });
-        }
-
-        //
-        // GCM
-        //
-
         Runtime.dispatch(() -> {
+
+            //
+            // Keep Alive
+            //
+            if (isKeepAliveEnabled) {
+                Intent keepAliveService = new Intent(application, KeepAliveService.class);
+                PendingIntent pendingIntent = PendingIntent.getService(application, 0, keepAliveService, 0);
+                AlarmManager alarm = (AlarmManager) application.getSystemService(Context.ALARM_SERVICE);
+                alarm.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), 30 * 1000, pendingIntent);
+            }
+
+
+            //
+            // Actor Push
+            //
+            if (actorPushEndpoint != null && delegate.useActorPush()) {
+                ActorPushRegister.registerForPush(application, actorPushEndpoint, endpoint -> {
+                    Log.d(TAG, "On Actor push registered: " + endpoint);
+                    messenger.registerActorPush(endpoint);
+                });
+            }
+
+
+            //
+            // GCM
+            //
             try {
                 if (pushId != 0) {
                     final ActorPushManager pushManager = (ActorPushManager) Class.forName("im.actor.push.PushManager").newInstance();
@@ -315,8 +325,18 @@ public class ActorSDK {
             }
         });
 
-        // Load Emoji after everything
-        emojiProcessor.loadEmoji();
+
+        if (!isLoaded[0]) {
+            synchronized (isLoaded) {
+                if (!isLoaded[0]) {
+                    try {
+                        isLoaded.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
 
         // Debug.stopMethodTracing();
     }
