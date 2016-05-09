@@ -263,7 +263,7 @@ class ComposeSection extends Component {
             <i className="material-icons">attachment</i> {intl.messages['compose.attach']}
           </button>
           <span className="col-xs"/>
-          <button className="button button--lightblue" onClick={this.sendTextMessage}>
+          <button className="button button--lightblue" onClick={this.onSubmit}>
             {intl.messages['compose.send']}
           </button>
         </footer>
