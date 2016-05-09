@@ -3,6 +3,7 @@ package im.actor.core.network;
 import im.actor.runtime.Crypto;
 import im.actor.runtime.crypto.Digest;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
+import im.actor.runtime.util.Hex;
 
 // Disabling Bounds checks for speeding up calculations
 
@@ -13,27 +14,35 @@ import im.actor.runtime.crypto.primitives.util.ByteStrings;
 public class TrustedKey {
 
     private boolean isLoaded = false;
+    private final String hexKey;
     private long keyId;
-    private final byte[] key;
+    private byte[] key;
 
-    public TrustedKey(byte[] key) {
-
-        this.key = key;
+    public TrustedKey(String hexKey) {
+        this.hexKey = hexKey;
     }
 
-    public synchronized long getKeyId() {
+    public long getKeyId() {
+        load();
+        return keyId;
+    }
+
+    public byte[] getKey() {
+        load();
+        return key;
+    }
+
+    private synchronized void load() {
         if (!isLoaded) {
             isLoaded = true;
+
+            this.key = Hex.fromHex(hexKey);
+
             byte[] hash = new byte[32];
             Digest sha256 = Crypto.createSHA256();
             sha256.update(key, 0, key.length);
             sha256.doFinal(hash, 0);
             this.keyId = ByteStrings.bytesToLong(hash);
         }
-        return keyId;
-    }
-
-    public byte[] getKey() {
-        return key;
     }
 }

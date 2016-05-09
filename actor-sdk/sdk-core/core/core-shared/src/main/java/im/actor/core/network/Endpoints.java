@@ -29,8 +29,8 @@ public class Endpoints {
         if (preferEncrypted) {
             ArrayList<ConnectionEndpoint> secure = new ArrayList<>();
             for (ConnectionEndpoint e : endpoints) {
-                if (e.getType() == ConnectionEndpoint.Type.TCP_TLS ||
-                        e.getType() == ConnectionEndpoint.Type.WS_TLS) {
+                if (e.getType() == ConnectionEndpoint.TYPE_TCP_TLS ||
+                        e.getType() == ConnectionEndpoint.TYPE_WS_TLS) {
                     secure.add(e);
                 }
             }
@@ -41,8 +41,8 @@ public class Endpoints {
         } else {
             ArrayList<ConnectionEndpoint> plainText = new ArrayList<>();
             for (ConnectionEndpoint e : endpoints) {
-                if (e.getType() == ConnectionEndpoint.Type.TCP ||
-                        e.getType() == ConnectionEndpoint.Type.WS) {
+                if (e.getType() == ConnectionEndpoint.TYPE_TCP ||
+                        e.getType() == ConnectionEndpoint.TYPE_WS) {
                     plainText.add(e);
                 }
             }

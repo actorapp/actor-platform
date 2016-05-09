@@ -70,7 +70,7 @@ public class AsyncTcpConnection extends AsyncConnection {
                         socket1.connect(new InetSocketAddress(endpoint1.getKnownIp(), endpoint1.getPort()), ManagedConnection.CONNECTION_TIMEOUT);
 
                         // Converting SSL socket
-                        if (endpoint1.getType() == ConnectionEndpoint.Type.TCP_TLS) {
+                        if (endpoint1.getType() == ConnectionEndpoint.TYPE_TCP_TLS) {
                             SSLSocketFactory socketFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
                             socket1 = socketFactory.createSocket(socket1,
                                     endpoint1.getHost(), endpoint1.getPort(), true);
@@ -102,7 +102,7 @@ public class AsyncTcpConnection extends AsyncConnection {
                 socket1.connect(new InetSocketAddress(endpoint1.getHost(), endpoint1.getPort()), ManagedConnection.CONNECTION_TIMEOUT);
 
                 // Converting SSL socket
-                if (endpoint1.getType() == ConnectionEndpoint.Type.TCP_TLS) {
+                if (endpoint1.getType() == ConnectionEndpoint.TYPE_TCP_TLS) {
                     SSLSocketFactory socketFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
                     socket1 = socketFactory.createSocket(socket1,
                             endpoint1.getHost(), endpoint1.getPort(), true);

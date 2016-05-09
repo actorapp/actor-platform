@@ -21,6 +21,7 @@ import im.actor.core.modules.sequence.processor.UpdateProcessor;
 import im.actor.core.network.parser.Update;
 import im.actor.runtime.Log;
 import im.actor.runtime.Runtime;
+import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.function.Constructor;
 import im.actor.runtime.function.Function;
@@ -35,7 +36,7 @@ import im.actor.runtime.promise.PromisesArray;
 
 public class SequenceHandlerActor extends ModuleActor {
 
-    public static Constructor<SequenceHandlerActor> CONSTRUCTOR(final ModuleContext context) {
+    public static ActorCreator CONSTRUCTOR(final ModuleContext context) {
         return () -> new SequenceHandlerActor(context);
     }
 

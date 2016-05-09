@@ -87,42 +87,42 @@ public class Modules implements ModuleContext {
         this.messenger = messenger;
         this.configuration = configuration;
 
-        Timing timing = new Timing("MODULES_INIT");
+        // Timing timing = new Timing("MODULES_INIT");
 
-        timing.section("I18N");
+        // timing.section("I18N");
         this.i18nEngine = new I18nEngine(this);
 
-        timing.section("Preferences");
+        // timing.section("Preferences");
         this.preferences = Storage.createPreferencesStorage();
 
-        timing.section("Storage");
+        // timing.section("Storage");
         this.storageModule = new StorageModule(this);
 
-        timing.section("Events");
+        // timing.section("Events");
         this.events = new EventBus();
 
-        timing.section("App State");
+        // timing.section("App State");
         appStateModule = new AppStateModule(this);
 
-        timing.section("API");
+        // timing.section("API");
         this.api = new ApiModule(this);
 
-        timing.section("External");
+        // timing.section("External");
         this.external = new ExternalModule(this);
 
-        timing.section("Pushes");
+        // timing.section("Pushes");
         this.pushes = new PushesModule(this);
 
-        timing.section("Auth");
+        // timing.section("Auth");
         this.authentication = new Authentication(this);
-        timing.end();
+        // timing.end();
     }
 
     public void run() {
-        Timing timing = new Timing("RUN");
-        timing.section("Auth");
+        // Timing timing = new Timing("RUN");
+        // timing.section("Auth");
         this.authentication.run();
-        timing.end();
+        // timing.end();
     }
 
     public void onLoggedIn(boolean first) {
