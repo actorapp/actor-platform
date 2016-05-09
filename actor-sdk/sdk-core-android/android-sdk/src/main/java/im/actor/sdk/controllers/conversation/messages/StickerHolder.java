@@ -13,6 +13,7 @@ import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.conversation.MessagesAdapter;
 import im.actor.sdk.controllers.conversation.messages.preprocessor.PreprocessedData;
+import im.actor.sdk.util.DateFormatting;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.util.Strings;
 import im.actor.sdk.view.TintImageView;
@@ -116,7 +117,7 @@ public class StickerHolder extends MessageHolder {
         }
 
         // Update time
-        time.setText(Strings.formatTime(message.getDate()));
+        time.setText(DateFormatting.formatTime(message.getDate()));
 
     }
 

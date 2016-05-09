@@ -28,8 +28,7 @@ public class PusherActor extends Actor {
 
     public static ActorRef senderActor(final MTProto proto) {
         return ActorSystem.system().actorOf(Props.create(() ->
-                        new PusherActor(proto))
-                        .changeDispatcher("network"),
+                        new PusherActor(proto)),
                 proto.getActorPath() + "/sender");
     }
 

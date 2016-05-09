@@ -32,6 +32,9 @@ public class TourActivity extends ActionBarActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+        ActorSDK.sharedActor().waitForReady();
+
         String authState = getSharedPreferences("properties.ini", Context.MODE_PRIVATE).getString("auth_state", null);
         if (authState != null && !authState.equals("SIGN_UP") && !authState.equals("AUTH_START")) {
             ActorSDK.sharedActor().startMessagingApp(this);

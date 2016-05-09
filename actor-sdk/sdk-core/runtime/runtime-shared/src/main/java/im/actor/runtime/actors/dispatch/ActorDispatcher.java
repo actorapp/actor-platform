@@ -6,6 +6,7 @@ package im.actor.runtime.actors.dispatch;
 
 import java.util.HashMap;
 
+import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorContext;
 import im.actor.runtime.actors.ActorRef;
@@ -69,7 +70,11 @@ public class ActorDispatcher {
             scopes.put(scope.getPath(), scope);
 
             // Sending init message
-            scope.getActorRef().send(StartActor.INSTANCE);
+            if (!Runtime.isSingleThread() && !Runtime.isMainThread()) {
+                scope.getActorRef().send(StartActor.INSTANCE);
+            } else {
+                Runtime.dispatch(() -> scope.getActorRef().send(StartActor.INSTANCE));
+            }
             return scope.getActorRef();
         }
     }

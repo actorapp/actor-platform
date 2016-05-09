@@ -28,11 +28,6 @@ public class AndroidDispatcher implements Dispatcher {
     public DispatchCancel dispatch(final Runnable message, long delay) {
         final Object o = new Object();
         handler.postAtTime(message, o, SystemClock.uptimeMillis() + delay);
-        return new DispatchCancel() {
-            @Override
-            public void cancel() {
-                handler.removeCallbacks(message, o);
-            }
-        };
+        return () -> handler.removeCallbacks(message, o);
     }
 }
