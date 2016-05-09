@@ -35,20 +35,16 @@ import im.actor.runtime.mvvm.Value;
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
 public class BaseActivity extends AppCompatActivity {
+
     private final ActorBinder BINDER = new ActorBinder();
 
     private boolean isResumed = false;
 
-    private ActorRef promiseActor = ActorSystem.system().actorOf(Props.create(new ActorCreator() {
-        @Override
-        public Actor create() {
-            return new Actor();
-        }
-    }), "actor/promise_actor_" + hashCode());
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ActorSDK.sharedActor().waitForReady();
+
         onCreateToolbar();
         notifyOnResume();
 
@@ -143,7 +139,6 @@ public class BaseActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         notifyOnPause();
-        promiseActor.send(PoisonPill.INSTANCE);
     }
 
     @Override
@@ -262,19 +257,8 @@ public class BaseActivity extends AppCompatActivity {
 
     public <T> void execute(Promise<T> promise, int title) {
         final ProgressDialog dialog = ProgressDialog.show(this, "", getString(title), true, false);
-        promise
-                .then(new Consumer<T>() {
-                    @Override
-                    public void apply(T t) {
-                        dismissDialog(dialog);
-                    }
-                })
-                .failure(new Consumer<Exception>() {
-                    @Override
-                    public void apply(Exception e) {
-                        dismissDialog(dialog);
-                    }
-                });
+        promise.then(t -> dismissDialog(dialog))
+                .failure(e -> dismissDialog(dialog));
     }
 
     public void dismissDialog(ProgressDialog progressDialog) {
@@ -284,5 +268,4 @@ public class BaseActivity extends AppCompatActivity {
             ex.printStackTrace();
         }
     }
-
 }
