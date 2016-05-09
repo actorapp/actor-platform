@@ -20,7 +20,7 @@ import slick.dbio.DBIO
 import scala.concurrent.{ ExecutionContext, Future }
 
 object ACLUtils extends ACLBase with ACLFiles {
-  val PasswordMinLength = 3
+  val PasswordMinLength = 0
   val PasswordMaxLength = 160
 
   type Hash = Array[Byte]

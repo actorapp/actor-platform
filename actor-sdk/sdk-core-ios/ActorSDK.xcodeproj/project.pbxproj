@@ -371,6 +371,8 @@
 		BEF11DB61C466D800076400A /* begin_record.caf in Resources */ = {isa = PBXBuildFile; fileRef = 153F6B3C1C2A9B1900C0B960 /* begin_record.caf */; };
 		BEFE68D51C4657360001F2D6 /* AAThumbnailCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEFE68D41C4657360001F2D6 /* AAThumbnailCollectionCell.swift */; };
 		EF1F2A281CACAF240000D859 /* AAAuthUsernameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF1F2A271CACAF240000D859 /* AAAuthUsernameViewController.swift */; };
+		EFB8AB311CD8BC3300DCF967 /* WebserviceCallback.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB8AB301CD8BC3300DCF967 /* WebserviceCallback.swift */; };
+		EFDD1CB81CD837D9001DFA6E /* CocoaWebserviceRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFDD1CB71CD837D9001DFA6E /* CocoaWebserviceRuntime.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -757,6 +759,8 @@
 		BEFE68D41C4657360001F2D6 /* AAThumbnailCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAThumbnailCollectionCell.swift; sourceTree = "<group>"; };
 		E30822B631D108159E8B306B /* Pods-ActorSDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorSDK.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ActorSDK/Pods-ActorSDK.debug.xcconfig"; sourceTree = "<group>"; };
 		EF1F2A271CACAF240000D859 /* AAAuthUsernameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthUsernameViewController.swift; sourceTree = "<group>"; };
+		EFB8AB301CD8BC3300DCF967 /* WebserviceCallback.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WebserviceCallback.swift; path = Storage/WebserviceCallback.swift; sourceTree = "<group>"; };
+		EFDD1CB71CD837D9001DFA6E /* CocoaWebserviceRuntime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaWebserviceRuntime.swift; sourceTree = "<group>"; };
 		F076508E3899D309954904A3 /* Pods-ActorSDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorSDK.release.xcconfig"; path = "Pods/Target Support Files/Pods-ActorSDK/Pods-ActorSDK.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1016,6 +1020,8 @@
 				066A51871BC4C383000E606E /* iOSNotificationProvider.swift */,
 				066A51881BC4C383000E606E /* iOSPhoneBookProvider.swift */,
 				06E322C81C69344A00D66F53 /* iOSCallsProvider.swift */,
+				EFDD1CB71CD837D9001DFA6E /* CocoaWebserviceRuntime.swift */,
+				EFB8AB301CD8BC3300DCF967 /* WebserviceCallback.swift */,
 			);
 			path = Providers;
 			sourceTree = "<group>";
@@ -1903,7 +1909,7 @@
 				TargetAttributes = {
 					066A50D11BC4AE63000E606E = {
 						CreatedOnToolsVersion = 7.0;
-						DevelopmentTeam = HVJR44Y5B6;
+						DevelopmentTeam = D94R58LQ65;
 					};
 				};
 			};
@@ -2076,6 +2082,7 @@
 				066A518D1BC4C383000E606E /* CocoaStorageRuntime.swift in Sources */,
 				066A52F01BC52B02000E606E /* AASettingsViewController.swift in Sources */,
 				060135081C95ED4C00A18C4E /* YYTransaction.m in Sources */,
+				EFDD1CB81CD837D9001DFA6E /* CocoaWebserviceRuntime.swift in Sources */,
 				066A52741BC5101A000E606E /* ABPhoneField.m in Sources */,
 				153F6B611C2BF8EC00C0B960 /* AAAuthWelcomeController.swift in Sources */,
 				152AA8A91C2989270030DEEE /* SLKTextInputbar.m in Sources */,
@@ -2233,6 +2240,7 @@
 				BED5A1F11C48396A0045FDB0 /* NYTPhotoCaptionView.m in Sources */,
 				BED5A20F1C4839880045FDB0 /* NSBundle+NYTPhotoViewer.m in Sources */,
 				06129AA61C8359FB0099286B /* CocoaLifecycleRuntime.swift in Sources */,
+				EFB8AB311CD8BC3300DCF967 /* WebserviceCallback.swift in Sources */,
 				066A516D1BC4C366000E606E /* ActorCoreExt.swift in Sources */,
 				066A517E1BC4C373000E606E /* FMDatabaseAdditions.m in Sources */,
 				066A519A1BC4C390000E606E /* FMDBList.swift in Sources */,

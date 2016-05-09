@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import SwiftyJSON
 
 public class AAAuthLogInViewController: AAAuthViewController {
     
@@ -11,7 +12,8 @@ public class AAAuthLogInViewController: AAAuthViewController {
     let welcomeLabel = UILabel()
     let field = UITextField()
     let fieldLine = UIView()
-    
+    let ws = CocoaWebServiceRuntime();
+
     var isFirstAppear = true
     
     public override init() {
@@ -83,49 +85,11 @@ public class AAAuthLogInViewController: AAAuthViewController {
             shakeView(fieldLine, originalX: 10)
             return
         }
+        let dic = NSMutableDictionary()
+        dic.setValue(value, forKey: "username")
+        ws.asyncPostRequest("http://192.168.1.183/actor.asmx",method:"isUserNeedSignUp", withParams: dic,withCallback: usernameValidateCallback(name:value,container:self))
+
         
-        if ActorSDK.sharedActor().authStrategy == .EmailOnly || ActorSDK.sharedActor().authStrategy == .PhoneEmail {
-            if (AATools.isValidEmail(value)) {
-                Actor.doStartAuthWithEmail(value).startUserAction().then { (res: ACAuthStartRes!) -> () in
-                    if res.authMode.toNSEnum() == .OTP {
-                        self.navigateNext(AAAuthOTPViewController(email: value, transactionHash: res.transactionHash))
-                    } else {
-                        self.alertUser(AALocalized("AuthUnsupported").replace("{app_name}", dest: ActorSDK.sharedActor().appName))
-                    }
-                }
-                return
-            }
-        }
-        if ActorSDK.sharedActor().authStrategy == .EmailOnly || ActorSDK.sharedActor().authStrategy == .PhoneEmail {
-            if (AATools.isValidEmail(value)) {
-                Actor.doStartAuthWithEmail(value).startUserAction().then { (res: ACAuthStartRes!) -> () in
-                    if res.authMode.toNSEnum() == .OTP {
-                        self.navigateNext(AAAuthOTPViewController(email: value, transactionHash: res.transactionHash))
-                    } else {
-                        self.alertUser(AALocalized("AuthUnsupported").replace("{app_name}", dest: ActorSDK.sharedActor().appName))
-                    }
-                }
-                return
-            }
-        }
-        
-        if ActorSDK.sharedActor().authStrategy == .Username
-        {
-            //if (AATools.isValidEmail(value))
-            
-                Actor.doStartAuthWithUsername(value).startUserAction().then { (res: ACAuthStartRes!) -> () in
-                    if res.authMode.toNSEnum() == .OTP {
-                        self.navigateNext(AAAuthOTPViewController(email: value, transactionHash: res.transactionHash))
-                    } else {
-                        self.alertUser(AALocalized("AuthUnsupported").replace("{app_name}", dest: ActorSDK.sharedActor().appName))
-                    }
-                }
-                return
-            
-        }
-        
-        shakeView(field, originalX: 20)
-        shakeView(fieldLine, originalX: 10)
     }
     
     public override func viewWillDisappear(animated: Bool) {
@@ -140,6 +104,86 @@ public class AAAuthLogInViewController: AAAuthViewController {
         if isFirstAppear {
             isFirstAppear = false
             field.becomeFirstResponder()
+        }
+    }
+    class usernameValidateCallback:WebserviceCallback
+    {
+        var value="";
+        var container:AAViewController;
+        init(name:String,container:AAViewController)
+        {
+            self.value=name;
+            self.container=container;
+        }
+        func setName(name:String)
+        {
+            self.value=name;
+        }
+        func setContainer(container:AAViewController)
+        {
+            self.container=container;
+        }
+        func onNetworkProblem() {
+            print("network error")
+        }
+        func onServiceSuccess(result: JSON) {
+            if ActorSDK.sharedActor().authStrategy == .EmailOnly || ActorSDK.sharedActor().authStrategy == .PhoneEmail {
+                if (AATools.isValidEmail(value)) {
+                    Actor.doStartAuthWithEmail(value).startUserAction().then { (res: ACAuthStartRes!) -> () in
+                        if res.authMode.toNSEnum() == .OTP {
+                            self.container.navigateNext(AAAuthOTPViewController(email: self.value, transactionHash: res.transactionHash))
+                        } else {
+                            self.container.alertUser(AALocalized("AuthUnsupported").replace("{app_name}", dest: ActorSDK.sharedActor().appName))
+                        }
+                    }
+                    return
+                }
+            }
+            if ActorSDK.sharedActor().authStrategy == .EmailOnly || ActorSDK.sharedActor().authStrategy == .PhoneEmail {
+                if (AATools.isValidEmail(value)) {
+                    Actor.doStartAuthWithEmail(value).startUserAction().then { (res: ACAuthStartRes!) -> () in
+                        if res.authMode.toNSEnum() == .OTP {
+                            self.container.navigateNext(AAAuthOTPViewController(email: self.value, transactionHash: res.transactionHash))
+                        } else {
+                            self.container.alertUser(AALocalized("AuthUnsupported").replace("{app_name}", dest: ActorSDK.sharedActor().appName))
+                        }
+                    }
+                    return
+                }
+            }
+            
+            if ActorSDK.sharedActor().authStrategy == .Username
+            {
+                //if (AATools.isValidEmail(value))
+                var needSignUp = false
+                if(result["next"]=="signup")
+                {
+                    needSignUp = true
+                }
+                
+                Actor.doStartAuthWithUsername(value).startUserAction().then { (res: ACAuthStartRes!) -> () in
+                    if res.authMode.toNSEnum() == .OTP {
+                        self.container.navigateNext(AAAuthOTPViewController(email: self.value,name: result["name"].stringValue,needSignUp:needSignUp, transactionHash: res.transactionHash))
+                    } else {
+                        self.container.alertUser(AALocalized("AuthUnsupported").replace("{app_name}", dest: ActorSDK.sharedActor().appName))
+                    }
+                }
+                return
+                
+            }
+            
+          
+            print("success")
+        }
+        func onServiceFail(result: JSON) {
+            AAExecutions.errorWithMessage(result["description"].stringValue, rep: nil, cancel: { () -> () in
+                self.container.navigateBack()})
+            print("fail")
+        }
+        func onServiceError(result: String) {
+            AAExecutions.errorWithMessage("网络错误", rep: nil, cancel: { () -> () in
+                self.container.navigateBack()})
+            print("error")
         }
     }
 }

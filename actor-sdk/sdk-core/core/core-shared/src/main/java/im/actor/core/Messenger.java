@@ -215,9 +215,9 @@ public class Messenger {
      * @return promise of AuthRes
      */
     @NotNull
-    @ObjectiveCName("doSignupWithName:withSex:withTransaction:")
-    public Promise<AuthRes> doSignup(String name, Sex sex, String transactionHash) {
-        return modules.getAuthModule().doSignup(name, sex, transactionHash);
+    @ObjectiveCName("doSignupWithName:withSex:withTransaction:withPassword:")
+    public Promise<AuthRes> doSignup(String name, Sex sex, String transactionHash,String password) {
+        return modules.getAuthModule().doSignup(name, sex, transactionHash ,password);
     }
 
     /**
