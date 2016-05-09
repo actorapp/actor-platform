@@ -388,19 +388,6 @@
     <!-- Group add -->
     <string name="group_add_title">Add member</string>
 
-    <!-- Join public group -->
-    <string name="join_public_group_title">Public groups</string>
-    <string name="join_public_group_members_count">Members: </string>
-    <string name="join_public_group_friends_count">Friends: </string>
-    <string name="join">JOIN</string>
-    <string name="open">OPEN</string>
-    <string name="join_public_group_top_title">Hey!</string>
-    <string name="join_public_group_top_subtitle">Check out our top public chats</string>
-    <string name="join_public_group_top_by_friends_title">Chat with friends!</string>
-    <string name="join_public_group_top_by_friends_subtitle">Top chats with your friends</string>
-    <string name="join_public_group_all_groups">All groups</string>
-
-
     <!-- Invite link-->
     <string name="invite_link_title">Invite Link</string>
     <string name="invite_link_hint">Anyone who has {appName} installed will be able to join your group by following this link</string>
@@ -412,19 +399,6 @@
     <string name="invite_link_error_get_link">Unable to get invite link</string>
     <string name="invite_link_error_revoke_link">Unable to revoke invite link</string>
     <string name="invite_link_empty_view">Loading invite link</string>
-
-    <!-- Integration token-->
-    <string name="integration_token_title">Integration Token</string>
-    <string name="integration_token_hint">This token can be used for setting up integrations with this group</string>
-    <string name="integration_token_action_copy">Copy token</string>
-    <string name="integration_token_action_revoke">Revoke token</string>
-    <string name="integration_token_action_share">Share token</string>
-    <string name="integration_token_copied">Token copied to clipboard</string>
-    <string name="integration_token_chooser_title">Send token</string>
-    <string name="integration_token_error_get_token">Unable to get token</string>
-    <string name="integration_token_error_revoke_link">Unable to revoke token</string>
-    <string name="integration_token_error_revoke_link_not_admin">Unable to revoke token - you are not admin of this group</string>
-    <string name="integration_token_empty_view">Loading integration token</string>
 
     <!-- Documents -->
     <string name="documents_title">Documents</string>
