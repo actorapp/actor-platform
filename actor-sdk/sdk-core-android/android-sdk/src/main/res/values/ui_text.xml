@@ -30,8 +30,8 @@
     <string name="toast_already_member">User is already a member of the group</string>
     <string name="toast_empty_name">"Name" section can\'t be empty</string>
     <string name="toast_unable_change">Unable to change the name</string>
-    <string name="toast_empty_nick">"Nickname" section can\'t be empty</string>
-    <string name="toast_unable_change_nick">Unable to change the nickname</string>
+    <string name="toast_empty_nick">"Username" section can\'t be empty</string>
+    <string name="toast_unable_change_nick">Unable to change the username</string>
     <string name="toast_empty_about">"About" section can\'t be empty</string>
     <string name="toast_unable_open">No app is available to open this</string>
     <string name="toast_unable_leave">Unable to leave from group</string>
@@ -189,9 +189,9 @@
     <string name="settings_chat">Chat Settings</string>
     <string name="settings_security">Security</string>
     <string name="settings_blocked_list">Blocked list</string>
-    <string name="nickname_empty">Set nickname</string>
-    <string name="nickname_change">Change nickname</string>
-    <string name="nickname">Nickname</string>
+    <string name="nickname_empty">Set username</string>
+    <string name="nickname_change">Change username</string>
+    <string name="nickname">Username</string>
     <string name="nickname_hint">You can choose a username in {appName}. Other people will be able to find you by this username and contact you without using your phone number.\n\nYou can use a–z, 0–9 and underscores. Minimum length is 5 characters.</string>
     <string name="nickname_edittext_hint">Enter your Username</string>
     <string name="about_user_me">About me</string>
@@ -371,7 +371,7 @@
 
     <!-- Add Contact -->
     <string name="add_contact_title">Add contact</string>
-    <string name="add_contact_phone_hint">Enter email, nickname or phone</string>
+    <string name="add_contact_phone_hint">Enter email, username or phone</string>
     <string name="add_contact_bar_cancel">CANCEL</string>
     <string name="add_contact_bar_continue">CONTINUE</string>
 
@@ -440,7 +440,7 @@
     <string name="edit_name_cancel">CANCEL</string>
     <string name="edit_name_save">SAVE</string>
     <string name="edit_name_process">Changing name…</string>
-    <string name="edit_nick_process">Changing nickname…</string>
+    <string name="edit_nick_process">Changing username…</string>
     <string name="edit_about_process">Changing description…</string>
     <string name="edit_theme_process">Changing theme…</string>
     <string name="edit_about_edittext_hint">Tell people anything you want, briefly.</string>
