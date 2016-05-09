@@ -94,6 +94,8 @@
                         android:id="@+id/typing"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:lines="1"
                         android:singleLine="true"
                         android:textColor="#ffffff"
                         android:textSize="13sp" />
@@ -103,6 +105,9 @@
                     android:id="@+id/subtitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:singleLine="true"
                     android:textColor="#ffffff"
                     android:textSize="13sp" />
             </FrameLayout>
