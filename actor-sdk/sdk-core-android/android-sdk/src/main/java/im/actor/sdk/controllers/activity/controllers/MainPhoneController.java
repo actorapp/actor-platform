@@ -86,10 +86,7 @@ public class MainPhoneController extends MainBaseController {
     private View syncInProgressView;
     private View emptyContactsView;
 
-    private View fabContent;
     private com.getbase.floatingactionbutton.FloatingActionButton fabRoot;
-
-    private boolean isFabVisible = false;
 
     private String joinGroupUrl;
     private String sendUriString = "";
@@ -122,7 +119,7 @@ public class MainPhoneController extends MainBaseController {
                         }
                     })
                     .show();
-        }else{
+        } else {
             openDialog(item);
         }
     }
@@ -214,13 +211,6 @@ public class MainPhoneController extends MainBaseController {
         inviteBtnText.setTypeface(Fonts.medium());
         inviteBtnText.setTextColor(style.getTextPrimaryInvColor());
 
-        isFabVisible = false;
-
-        fabContent = findViewById(R.id.fabContainer);
-        ((TextView) fabContent.findViewById(R.id.fab_add_contact_text)).setTextColor(style.getTextPrimaryColor());
-        ((TextView) fabContent.findViewById(R.id.fab_create_group_text)).setTextColor(style.getTextPrimaryColor());
-        ((TextView) fabContent.findViewById(R.id.fab_compose_text)).setTextColor(style.getTextPrimaryColor());
-        fabContent.setBackgroundColor(ActorSDK.sharedActor().style.getMainFabbgColor());
         fabRoot = (FloatingActionButton) findViewById(R.id.rootFab);
         if (ActorSDK.sharedActor().style.getFabColor() != 0) {
             fabRoot.setColorNormal(ActorSDK.sharedActor().style.getFabColor());
@@ -228,19 +218,7 @@ public class MainPhoneController extends MainBaseController {
         if (ActorSDK.sharedActor().style.getFabPressedColor() != 0) {
             fabRoot.setColorPressed(ActorSDK.sharedActor().style.getFabPressedColor());
         }
-        fabRoot.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showFab();
-            }
-        });
-
-        fabContent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goneFab();
-            }
-        });
+        fabRoot.setOnClickListener(v -> startActivity(new Intent(getActivity(), ComposeActivity.class)));
 
         searchList = (RecyclerView) findViewById(R.id.searchList);
         searchList.setLayoutManager(new ChatLinearLayoutManager(getActivity()));
@@ -290,58 +268,8 @@ public class MainPhoneController extends MainBaseController {
             }
         });
 
-        com.getbase.floatingactionbutton.FloatingActionButton fabCompose = (FloatingActionButton) findViewById(R.id.composeContainer);
-        if (style.getFabColor() != 0) {
-            fabCompose.setColorNormal(style.getFabColor());
-        }
-        if (style.getFabPressedColor() != 0) {
-            fabCompose.setColorPressed(style.getFabPressedColor());
-        }
-        fabCompose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goneFab();
-                startActivity(new Intent(getActivity(), ComposeActivity.class));
-            }
-        });
 
-        com.getbase.floatingactionbutton.FloatingActionButton fabCreateGroup = (FloatingActionButton) findViewById(R.id.createGroupContainer);
-        if (style.getFabColor() != 0) {
-            fabCreateGroup.setColorNormal(style.getFabColor());
-        }
-        if (style.getFabPressedColor() != 0) {
-            fabCreateGroup.setColorPressed(style.getFabPressedColor());
-        }
-        fabCreateGroup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goneFab();
-                startActivity(new Intent(getActivity(), CreateGroupActivity.class));
-            }
-        });
-
-        com.getbase.floatingactionbutton.FloatingActionButton fabAddContact = (FloatingActionButton) findViewById(R.id.addContactContainer);
-        if (style.getFabColor() != 0) {
-            fabAddContact.setColorNormal(style.getFabColor());
-        }
-        if (style.getFabPressedColor() != 0) {
-            fabAddContact.setColorPressed(style.getFabPressedColor());
-        }
-        fabAddContact.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goneFab();
-                startActivity(new Intent(getActivity(), AddContactActivity.class));
-            }
-        });
-
-
-        findViewById(R.id.addContactButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getActivity(), AddContactActivity.class));
-            }
-        });
+        findViewById(R.id.addContactButton).setOnClickListener(v -> startActivity(new Intent(getActivity(), AddContactActivity.class)));
 
         findViewById(R.id.inviteButton).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -529,10 +457,6 @@ public class MainPhoneController extends MainBaseController {
 
     @Override
     public boolean onBackPressed() {
-        if (isFabVisible) {
-            goneFab();
-            return true;
-        }
         if (isSearchVisible) {
             hideSearch();
             return true;
@@ -545,20 +469,6 @@ public class MainPhoneController extends MainBaseController {
     public void onPause() {
         super.onPause();
         hideSearch();
-    }
-
-    private void showFab() {
-        if (!isFabVisible) {
-            isFabVisible = true;
-            showView(fabContent, true, false);
-        }
-    }
-
-    private void goneFab() {
-        if (isFabVisible) {
-            isFabVisible = false;
-            goneView(fabContent, true, false);
-        }
     }
 
     private void showSearch() {
