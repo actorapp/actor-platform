@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-
-    <string name="example_title_activity_test">TestActivity</string>
-    <string name="example_app_name">Picker</string>
-    <string name="example_action_settings">Settings</string>
-
     <string name="picker_empty">Nothing here</string>
     <string name="picker_loading">Loading</string>
     <string name="picker_internalerror">Error has occurred</string>

@@ -1,0 +1,282 @@
+{
+	"app": {
+		"name": "Actor"
+	},
+
+	"language": {
+		"format": {
+			"time": {
+				"yesterday":{
+					"short": "Вчера",
+					"full": "Вчера"
+				},
+				"now": "Сейчас",
+				"minutes": {
+					"short": "{minutes} мин.",
+					"full": "{minutes} минут"
+				},
+				"hours": {
+					"short": "{hours} ч.",
+					"full": "{hours} часов"
+				}
+			}
+		},
+
+		"file_size": {
+			"bytes": "{bytes} б",
+			"kbytes": "{kbytes} кб",
+			"mbytes": "{mbytes} мб",
+			"gbytes": "{gbytes} гб"
+		},
+
+		"referencing": {
+			"you": "Вы",
+			"Thee": "Вас"
+		},
+
+		"sequence": {
+			"or": ", ",
+			"and": " и "
+		}
+	},
+
+	"groups": {
+		"members": { 
+			"default": "{count} участников",
+			"one": "{count} участник",
+			"few": "{count} участника",
+			"many": "{count} участников",
+		}
+	},
+
+	"presence": {
+		"online": "в сети",
+		"offline": "не в сети",
+		"now": {
+			"male": "был только что",
+			"female": "была только что",
+			"default": "был(а) только что"
+		},
+		"today": {
+			"male": "был сегодня в {time}",
+			"female": "была сегодня в {time}",
+			"default": "был(а) сегодня в {time}"
+		},
+		"yesterday": {
+			"male": "был вчера в {time}",
+			"female": "была вчера в {time}",
+			"default": "был(а) вчера в {time}"
+		},
+		"at_day": { 
+			"male": "был {date}",
+			"female": "была {date}",
+			"default": "был(а) {date}"
+		},
+		"at_day_time": { 
+			"male": "был {date} в {time}",
+			"female": "была {date} в {time}",
+			"default": "был(а) {date} в {time}"
+		},
+		"members": "{count} в сети"
+	},
+
+	"typing": {
+		"simple": "печатает...",
+		"user": "{user} печатает...",
+		"group": {
+			"sequenced": "{users} печатают...",
+			"many": { 
+				"one": "{count} печатает...",
+				"few": "{count} печатают...",
+				"many": "{count} печатает...",
+				"default": "{count} печатает...",
+			}
+		}
+	},
+
+	"content": {
+
+		"unknown": "Неподдерживаемое сообщение",
+		"document": "Документ",
+		"photo": "Фото",
+		"video": "Видео",
+		"audio": "Аудио",
+		"contact": "Контакт",
+		"location": "Расположение",
+		"sticker": "Стикер",
+
+		"service": {
+			"registered": {
+				"full": {
+					"male": "{name} зарегистрировался в {app_name}",
+					"female": "{name} зарегистрировалась в {app_name}",
+					"default": "{name} зарегистрировался(ась) в {app_name}",
+				},
+				"compact": {
+					"male": "Зарегистрировался в {app_name}",
+					"female": "Зарегистрировалась в {app_name}",
+					"default": "Зарегистрировался(ась) в {app_name}",
+				}
+			},
+			"groups": {
+				"created": { 
+					"you": "{name} создали группу",
+					"male": "{name} создал группу",
+					"female": "{name} создала группу",
+					"default": "{name} создал(-а) группу"
+				},
+				"invited": { 
+					"you": "{name} пригласили {name_added}",
+					"male": "{name} пригласил {name_added}",
+					"female": "{name} пригласила {name_added}",
+					"default": "{name} пригласил(-а) {name_added}"
+				},
+				"joined": {
+					"you": "{name} вошли в группу",
+					"male": "{name} вошел в группу",
+					"female": "{name} вошла в группу",
+					"default": "{name} вошел(-шла) в группу"
+				},
+				"kicked": { 
+					"you": "{name} исключили {name_kicked}",
+					"male": "{name} исключил {name_kicked}",
+					"female": "{name} исключила {name_kicked}",
+					"default": "{name} исключил(-а) {name_kicked}"
+				},
+				"left": { 
+					"you": "{name} покинули группу",
+					"male": "{name} покинул группу",
+					"female": "{name} покинула группу",
+					"default": "{name} покинул(-а) группу"
+				},
+				"title_changed": {
+					"full":  {
+						"you": "{name} изменили название группы на \"{title}\"",
+						"male": "{name} изменил название группы на \"{title}\"",
+						"female": "{name} изменила название группы на \"{title}\"",
+						"default": "{name} изменил(-а) название группы на \"{title}\"",
+					}, 
+					"compact": {
+						"you": "{name} изменили тему группы",
+						"male": "{name} изменил тему группы",
+						"female": "{name} изменила тему группы",
+						"default": "{name} изменил(-а) тему группы",
+					},
+				},
+				"topic_changed": {
+					"full":  {
+						"you": "{name} изменили тему группы на \"{title}\"",
+						"male": "{name} изменил тему группы на \"{title}\"",
+						"female": "{name} изменила тему группы на \"{title}\"",
+						"default": "{name} изменил(-а) тему группы на \"{title}\"",
+					}, 
+					"compact": {
+						"you": "{name} изменили тему группы",
+						"male": "{name} изменил тему группы",
+						"female": "{name} изменила тему группы",
+						"default": "{name} изменил(-а) тему группы",
+					},
+				},
+				"about_changed": {
+					"full":  {
+						"you": "{name} изменили описание группы на \"{title}\"",
+						"male": "{name} изменил описание группы на \"{title}\"",
+						"female": "{name} изменила описание группы на \"{title}\"",
+						"default": "{name} изменил(-а) описание группы на \"{title}\"",
+					}, 
+					"compact": {
+						"you": "{name} изменили описание группы",
+						"male": "{name} изменил описание группы",
+						"female": "{name} изменила описание группы",
+						"default": "{name} изменил(-а) описание группы",
+					},
+				},
+				"avatar_changed": {
+						"you": "{name} изменили фото группы",
+						"male": "{name} изменил фото группы",
+						"female": "{name} изменила фото группы",
+						"default": "{name} изменил(-а) фото группы",
+				},
+				"avatar_removed": {
+						"you": "{name} удалили фото группы",
+						"male": "{name} удалил фото группы",
+						"female": "{name} удалила фото группы",
+						"default": "{name} удалил(-а) фото группы",
+				}
+			},
+			"calls": {
+				"missed": "Пропущен вызов",
+				"ended": "Вызов завершен"
+			}
+		}
+	},
+
+	"errors": {
+		"unknown": "Неизвестная ошибка. Пожалуйста, попробуйте еще раз.",
+		"internal": "Внутренняя ошибка сервера. Пожалуйста, попробуйте ещё раз.",
+		"phone": {
+			"empty": "Пожалуйста, введите свой номер телефона.",
+			"incorrect": "Введён некорректный номер телефона. Пожалуйста, попробуйте ещё раз."
+		},
+		"code": {
+			"empty": "Пожалуйста, введите код подтверждения.",
+			"incorrect": "Введён некорректный код. Пожалуйста, попробуйте ещё раз.",
+			"expired": "Срок действия кода истёк. Пожалуйста, авторизуйтесь заново."
+		},
+		"groups": {
+			"already_joined": "Вы уже вступили в эту группу.",
+			"unable_to_join": "Невозможно присоединиться к группе."
+		}
+	},
+
+	"months": {
+		"january": { 
+			"compact": "янв",
+			"full":"январь"
+		},
+		"february": { 
+			"compact": "фев",
+			"full":"февраль"
+		},
+		"march": { 
+			"compact": "мар",
+			"full":"март"
+		},
+		"april": { 
+			"compact": "апр",
+			"full":"апрель"
+		},
+		"may": { 
+			"compact": "май",
+			"full":"май"
+		},
+		"june": { 
+			"compact": "июн",
+			"full":"июнь"
+		},
+		"july": { 
+			"compact": "июл",
+			"full":"июль"
+		},
+		"august": { 
+			"compact": "авг",
+			"full":"август"
+		},
+		"september": { 
+			"compact": "сен",
+			"full":"сентябрь"
+		},
+		"october": { 
+			"compact": "окт",
+			"full":"октябрь"
+		},
+		"november": { 
+			"compact": "ноя",
+			"full":"ноябрь"
+		},
+		"december": { 
+			"compact": "дек",
+			"full":"декабрь"
+		}
+	}
+}
