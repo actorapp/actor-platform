@@ -17,8 +17,8 @@ import im.actor.sdk.core.audio.AudioPlayerActor;
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
 public class AndroidCallProvider implements CallsProvider {
-    private ActorRef toneActor;
 
+    private ActorRef toneActor;
 
     @Override
     public void onCallStart(long callId) {
@@ -43,10 +43,8 @@ public class AndroidCallProvider implements CallsProvider {
     @Override
     public void startOutgoingBeep() {
         if (toneActor == null) {
-            toneActor = ActorSystem.system().actorOf(Props.create(new ActorCreator() {
-                @Override
-                public AudioActorEx create() {
-                    return new AudioActorEx(messenger().getContext(), new AudioPlayerActor.AudioPlayerCallback() {
+            toneActor = ActorSystem.system().actorOf("actor/android_tone", () ->
+                    new AudioActorEx(messenger().getContext(), new AudioPlayerActor.AudioPlayerCallback() {
                         @Override
                         public void onStart(String fileName) {
 
@@ -71,9 +69,7 @@ public class AndroidCallProvider implements CallsProvider {
                         public void onError(String fileName) {
 
                         }
-                    });
-                }
-            }), "actor/android_tone");
+                    }));
         }
 
         toneActor.send(new AndroidPlayerActor.Play(""));
@@ -81,7 +77,7 @@ public class AndroidCallProvider implements CallsProvider {
 
     @Override
     public void stopOutgoingBeep() {
-        if(toneActor!=null){
+        if (toneActor != null) {
             toneActor.send(new AudioActorEx.Stop());
         }
     }
