@@ -37,9 +37,13 @@ import im.actor.core.modules.Modules;
 import im.actor.core.network.RpcException;
 import im.actor.core.util.JavaUtil;
 import im.actor.core.viewmodel.UserPresence;
+import im.actor.runtime.Assets;
 import im.actor.runtime.LocaleRuntime;
 import im.actor.runtime.Log;
 import im.actor.runtime.Runtime;
+import im.actor.runtime.Storage;
+import im.actor.runtime.intl.IntlEngine;
+import im.actor.runtime.json.JSONException;
 
 public class I18nEngine {
 
@@ -67,6 +71,14 @@ public class I18nEngine {
         // Loading locale
         this.locale = new HashMap<>();
         this.currentLocale = runtime.getCurrentLocale();
+
+        // Debug Code
+        try {
+            IntlEngine engine = new IntlEngine(Assets.loadAsset("AppText.json"));
+            String s2 = engine + "";
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void assumeLoaded() {
