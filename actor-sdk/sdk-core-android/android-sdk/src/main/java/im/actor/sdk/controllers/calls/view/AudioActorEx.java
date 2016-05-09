@@ -30,25 +30,17 @@ public class AudioActorEx extends AndroidPlayerActor {
         state = STATE_NONE;
 
         try {
-            if(mplayer == null){
+            if (mplayer == null) {
                 mplayer = new MediaPlayer();
             }
             mplayer.setAudioStreamType(AudioManager.STREAM_VOICE_CALL);
             mplayer.setDataSource(context, Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.tone));
             mplayer.prepare();
             mplayer.start();
-            mplayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mp) {
-                    self().send(new Play(""));
-                }
-            });
-            mplayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-                @Override
-                public boolean onError(MediaPlayer mp, int what, int extra) {
-                    self().send(new Error());
-                    return false;
-                }
+            mplayer.setOnCompletionListener(mp -> self().send(new Play("")));
+            mplayer.setOnErrorListener((mp, what, extra) -> {
+                self().send(new Error());
+                return false;
             });
         } catch (Exception e) {
             e.printStackTrace();
@@ -70,6 +62,4 @@ public class AudioActorEx extends AndroidPlayerActor {
             mplayer = null;
         }
     }
-
-
 }
