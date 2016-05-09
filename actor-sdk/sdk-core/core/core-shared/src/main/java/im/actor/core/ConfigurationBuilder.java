@@ -19,6 +19,7 @@ import im.actor.core.util.StringMatch;
 import im.actor.runtime.Crypto;
 import im.actor.runtime.Log;
 import im.actor.runtime.mtproto.ConnectionEndpoint;
+import im.actor.runtime.util.Hex;
 import im.actor.runtime.webrtc.WebRTCIceServer;
 
 /**
@@ -119,7 +120,7 @@ public class ConfigurationBuilder {
     @NotNull
     @ObjectiveCName("addTrustedKey:")
     public ConfigurationBuilder addTrustedKey(String trustedKey) {
-        trustedKeys.add(new TrustedKey(Crypto.fromHex(trustedKey)));
+        trustedKeys.add(new TrustedKey(Hex.fromHex(trustedKey)));
         return this;
     }
 
@@ -318,7 +319,7 @@ public class ConfigurationBuilder {
     @NotNull
     @ObjectiveCName("addEndpoint:withKnownIp:")
     public ConfigurationBuilder addEndpoint(@NotNull String url) {
-        
+
         // Manual buggy parsing for GWT
         // TODO: Correct URL parsing
         String scheme = url.substring(0, url.indexOf(":")).toLowerCase();
