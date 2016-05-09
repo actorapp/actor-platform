@@ -51,8 +51,11 @@ public class I18nEngine {
     private final LocaleRuntime runtime;
     private final HashMap<String, String> locale;
 
-    private final String[] MONTHS_SHORT;
-    private final String[] MONTHS;
+    private String[] MONTHS_SHORT;
+    private String[] MONTHS;
+
+    private boolean isi18nInited = false;
+    private final Object INIT_LOCK = new Object();
 
     private String currentLocale;
 
@@ -64,52 +67,64 @@ public class I18nEngine {
         // Loading locale
         this.locale = new HashMap<>();
         this.currentLocale = runtime.getCurrentLocale();
+    }
 
-        boolean isLoaded = false;
-        if (currentLocale != null) {
-            if (JavaUtil.contains(SUPPORTED_LOCALES, currentLocale)) {
-                this.locale.putAll(LocaleLoader.loadPropertiesFile("AppText_" + currentLocale + ".properties"));
-                this.locale.putAll(LocaleLoader.loadPropertiesFile("Months_" + currentLocale + ".properties"));
-                isLoaded = true;
-            } else {
+    private void assumeLoaded() {
+        if (isi18nInited) {
+            return;
+        }
+        synchronized (INIT_LOCK) {
+            if (isi18nInited) {
+                return;
+            }
+            isi18nInited = true;
+
+            boolean isLoaded = false;
+            if (currentLocale != null) {
+                if (JavaUtil.contains(SUPPORTED_LOCALES, currentLocale)) {
+                    this.locale.putAll(LocaleLoader.loadPropertiesFile("AppText_" + currentLocale + ".properties"));
+                    this.locale.putAll(LocaleLoader.loadPropertiesFile("Months_" + currentLocale + ".properties"));
+                    isLoaded = true;
+                } else {
+                    this.currentLocale = "En";
+                }
+            }
+            if (!isLoaded) {
+                this.locale.putAll(LocaleLoader.loadPropertiesFile("AppText.properties"));
+                this.locale.putAll(LocaleLoader.loadPropertiesFile("Months.properties"));
                 this.currentLocale = "En";
             }
-        }
-        if (!isLoaded) {
-            this.locale.putAll(LocaleLoader.loadPropertiesFile("AppText.properties"));
-            this.locale.putAll(LocaleLoader.loadPropertiesFile("Months.properties"));
-            this.currentLocale = "En";
-        }
 
-        MONTHS_SHORT = new String[]{
-                locale.get("JanShort"),
-                locale.get("FebShort"),
-                locale.get("MarShort"),
-                locale.get("AprShort"),
-                locale.get("MayShort"),
-                locale.get("JunShort"),
-                locale.get("JulShort"),
-                locale.get("AugShort"),
-                locale.get("SepShort"),
-                locale.get("OctShort"),
-                locale.get("NovShort"),
-                locale.get("DecShort"),
-        };
+            MONTHS_SHORT = new String[]{
+                    locale.get("JanShort"),
+                    locale.get("FebShort"),
+                    locale.get("MarShort"),
+                    locale.get("AprShort"),
+                    locale.get("MayShort"),
+                    locale.get("JunShort"),
+                    locale.get("JulShort"),
+                    locale.get("AugShort"),
+                    locale.get("SepShort"),
+                    locale.get("OctShort"),
+                    locale.get("NovShort"),
+                    locale.get("DecShort"),
+            };
 
-        MONTHS = new String[]{
-                locale.get("JanFull"),
-                locale.get("FebFull"),
-                locale.get("MarFull"),
-                locale.get("AprFull"),
-                locale.get("MayFull"),
-                locale.get("JunFull"),
-                locale.get("JulFull"),
-                locale.get("AugFull"),
-                locale.get("SepFull"),
-                locale.get("OctFull"),
-                locale.get("NovFull"),
-                locale.get("DecFull"),
-        };
+            MONTHS = new String[]{
+                    locale.get("JanFull"),
+                    locale.get("FebFull"),
+                    locale.get("MarFull"),
+                    locale.get("AprFull"),
+                    locale.get("MayFull"),
+                    locale.get("JunFull"),
+                    locale.get("JulFull"),
+                    locale.get("AugFull"),
+                    locale.get("SepFull"),
+                    locale.get("OctFull"),
+                    locale.get("NovFull"),
+                    locale.get("DecFull"),
+            };
+        }
     }
 
     private String formatTwoDigit(int v) {
@@ -142,6 +157,7 @@ public class I18nEngine {
     public String getApplicationName() {
         String appName = modules.getConfiguration().getCustomAppName();
         if (appName == null) {
+            assumeLoaded();
             appName = locale.get("AppName");
         }
         return appName;
@@ -149,6 +165,7 @@ public class I18nEngine {
 
     @ObjectiveCName("formatShortDate:")
     public String formatShortDate(long date) {
+        assumeLoaded();
         // Not using Calendar for GWT
         long delta = new Date().getTime() - date;
         if (delta < 60 * 1000) {
@@ -170,6 +187,7 @@ public class I18nEngine {
 
     @ObjectiveCName("formatMonth:")
     public String formatMonth(Date date) {
+        assumeLoaded();
         int month = date.getMonth();
         int d = date.getDate();
         return d + " " + MONTHS[month].toUpperCase();
@@ -177,16 +195,19 @@ public class I18nEngine {
 
     @ObjectiveCName("formatTyping")
     public String formatTyping() {
+        assumeLoaded();
         return locale.get("Typing");
     }
 
     @ObjectiveCName("formatTypingWithName:")
     public String formatTyping(String name) {
+        assumeLoaded();
         return locale.get("TypingUser").replace("{user}", name);
     }
 
     @ObjectiveCName("formatTypingWithNames:")
     public String formatTyping(List<String> names) {
+        assumeLoaded();
         if (names.size() == 1) {
             return formatTyping(names.get(0));
         }
@@ -195,11 +216,13 @@ public class I18nEngine {
 
     @ObjectiveCName("formatTypingWithCount:")
     public String formatTyping(int count) {
+        assumeLoaded();
         return locale.get("TypingMultiple").replace("{count}", "" + count);
     }
 
     @ObjectiveCName("formatSequence:")
     public String formatSequence(List<String> values) {
+        assumeLoaded();
         String res = values.get(0);
         for (int i = 1; i < values.size(); i++) {
             if (i == values.size() - 1) {
@@ -214,6 +237,7 @@ public class I18nEngine {
 
     @ObjectiveCName("formatFileSize:")
     public String formatFileSize(int bytes) {
+        assumeLoaded();
         if (bytes < 0) {
             bytes = 0;
         }
@@ -244,6 +268,8 @@ public class I18nEngine {
         if (value == null) {
             return null;
         }
+
+        assumeLoaded();
 
         if (value.getState() == UserPresence.State.OFFLINE) {
 
@@ -337,11 +363,13 @@ public class I18nEngine {
 
     @ObjectiveCName("formatGroupMembers:")
     public String formatGroupMembers(int count) {
+        assumeLoaded();
         return locale.get("GroupMembers").replace("{count}", "" + count);
     }
 
     @ObjectiveCName("formatGroupOnline:")
     public String formatGroupOnline(int count) {
+        assumeLoaded();
         return locale.get("GroupOnline").replace("{count}", "" + count);
     }
 
@@ -374,6 +402,7 @@ public class I18nEngine {
 
     @ObjectiveCName("formatContentTextWithSenderId:withContentType:withText:withRelatedUid:")
     public String formatContentText(int senderId, ContentType contentType, String text, int relatedUid) {
+        assumeLoaded();
         switch (contentType) {
             case TEXT:
                 return text;
@@ -458,6 +487,7 @@ public class I18nEngine {
 
     @ObjectiveCName("formatFullServiceMessageWithSenderId:withContent:")
     public String formatFullServiceMessage(int senderId, ServiceContent content) {
+        assumeLoaded();
         if (content instanceof ServiceUserRegistered) {
             return getTemplateNamed(senderId, "ServiceRegisteredFull")
                     .replace("{app_name}", getApplicationName());
@@ -504,6 +534,7 @@ public class I18nEngine {
 
     @ObjectiveCName("formatErrorTextWithTag:")
     public String formatErrorText(String tag) {
+        assumeLoaded();
         return locale.get(Errors.mapError(tag));
     }
 
@@ -513,6 +544,7 @@ public class I18nEngine {
             RpcException e = (RpcException) o;
             String res = Errors.mapError(e.getTag(), null);
             if (res != null) {
+                assumeLoaded();
                 return locale.get(res);
             } else {
                 if (e.getMessage().equals("")) {
@@ -531,6 +563,7 @@ public class I18nEngine {
     @ObjectiveCName("formatPerformerNameWithUid:")
     public String formatPerformerName(int uid) {
         if (uid == modules.getAuthModule().myUid()) {
+            assumeLoaded();
             return locale.get("You");
         } else {
             return getUser(uid).getName();
@@ -540,6 +573,7 @@ public class I18nEngine {
     @ObjectiveCName("getSubjectNameWithUid:")
     public String getSubjectName(int uid) {
         if (uid == modules.getAuthModule().myUid()) {
+            assumeLoaded();
             return locale.get("Thee");
         } else {
             User user = getUser(uid);
@@ -604,12 +638,14 @@ public class I18nEngine {
         // verb for 'you' in persian language continues with suffix
         if (currentLocale.equals("Fa")) {
             if (senderId == modules.getAuthModule().myUid())
-                newString = (newString + locale.get("YouSuffixVerb")).replace("\r", "");
+                assumeLoaded();
+            newString = (newString + locale.get("YouSuffixVerb")).replace("\r", "");
         }
         return newString;
     }
 
     private String getTemplate(int senderId, String baseString) {
+        assumeLoaded();
         if (senderId == modules.getAuthModule().myUid()) {
             if (locale.containsKey(baseString + "You")) {
                 return locale.get(baseString + "You");

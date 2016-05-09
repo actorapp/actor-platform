@@ -120,7 +120,7 @@ public class ConfigurationBuilder {
     @NotNull
     @ObjectiveCName("addTrustedKey:")
     public ConfigurationBuilder addTrustedKey(String trustedKey) {
-        trustedKeys.add(new TrustedKey(Hex.fromHex(trustedKey)));
+        trustedKeys.add(new TrustedKey(trustedKey));
         return this;
     }
 
@@ -346,22 +346,22 @@ public class ConfigurationBuilder {
             if (port <= 0) {
                 port = 443;
             }
-            endpoints.add(new ConnectionEndpoint(host, port, knownIp, ConnectionEndpoint.Type.TCP_TLS));
+            endpoints.add(new ConnectionEndpoint(host, port, knownIp, ConnectionEndpoint.TYPE_TCP_TLS));
         } else if (scheme.equals("tcp")) {
             if (port <= 0) {
                 port = 80;
             }
-            endpoints.add(new ConnectionEndpoint(host, port, knownIp, ConnectionEndpoint.Type.TCP));
+            endpoints.add(new ConnectionEndpoint(host, port, knownIp, ConnectionEndpoint.TYPE_TCP));
         } else if (scheme.equals("ws")) {
             if (port <= 0) {
                 port = 80;
             }
-            endpoints.add(new ConnectionEndpoint(host, port, knownIp, ConnectionEndpoint.Type.WS));
+            endpoints.add(new ConnectionEndpoint(host, port, knownIp, ConnectionEndpoint.TYPE_WS));
         } else if (scheme.equals("wss")) {
             if (port <= 0) {
                 port = 443;
             }
-            endpoints.add(new ConnectionEndpoint(host, port, knownIp, ConnectionEndpoint.Type.WS_TLS));
+            endpoints.add(new ConnectionEndpoint(host, port, knownIp, ConnectionEndpoint.TYPE_WS_TLS));
         } else {
             throw new RuntimeException("Unknown scheme type: " + scheme);
         }

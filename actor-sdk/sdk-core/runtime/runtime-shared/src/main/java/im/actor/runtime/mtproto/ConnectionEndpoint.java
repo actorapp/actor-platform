@@ -12,6 +12,11 @@ import org.jetbrains.annotations.Nullable;
 
 public class ConnectionEndpoint {
 
+    public static final int TYPE_TCP = 0;
+    public static final int TYPE_TCP_TLS = 1;
+    public static final int TYPE_WS = 2;
+    public static final int TYPE_WS_TLS = 3;
+
     @NotNull
     @Property("readonly, nonatomic")
     private String host;
@@ -20,20 +25,18 @@ public class ConnectionEndpoint {
     private String knownIp;
     @Property("readonly, nonatomic")
     private int port;
-    @NotNull
     @Property("readonly, nonatomic")
-    private Type type;
+    private int type;
 
     @ObjectiveCName("initWithHost:withPort:withKnownIp:withType:")
-    public ConnectionEndpoint(@NotNull String host, int port, @Nullable String knownIp, @NotNull Type type) {
+    public ConnectionEndpoint(@NotNull String host, int port, @Nullable String knownIp, int type) {
         this.host = host;
         this.port = port;
         this.type = type;
         this.knownIp = knownIp;
     }
 
-    @NotNull
-    public Type getType() {
+    public int getType() {
         return type;
     }
 
@@ -49,9 +52,5 @@ public class ConnectionEndpoint {
     @Nullable
     public String getKnownIp() {
         return knownIp;
-    }
-
-    public enum Type {
-        TCP, TCP_TLS, WS, WS_TLS
     }
 }

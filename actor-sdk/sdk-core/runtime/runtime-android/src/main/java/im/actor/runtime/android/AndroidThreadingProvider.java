@@ -23,16 +23,15 @@ public class AndroidThreadingProvider extends GenericThreadingProvider {
 
     private static final String PROPS = "time_sync.ini";
 
-    private final SharedPreferences preference;
+    private SharedPreferences preference;
     private long syncDelta;
     private String serverHost;
 
     public AndroidThreadingProvider() {
         this.serverHost = "europe.pool.ntp.org";
-        this.preference = AndroidContext.getContext().getSharedPreferences(PROPS, Context.MODE_PRIVATE);
 
         Runtime.dispatch(() -> {
-
+            this.preference = AndroidContext.getContext().getSharedPreferences(PROPS, Context.MODE_PRIVATE);
             this.syncDelta = preference.getLong("delta", syncDelta);
 
             invalidateSync();

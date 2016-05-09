@@ -60,7 +60,7 @@ public abstract class Value<T> {
      */
     @ObjectiveCName("subscribeWithListener:notify:")
     public void subscribe(ValueChangedListener<T> listener, boolean notify) {
-        im.actor.runtime.Runtime.checkMainThread();
+        // im.actor.runtime.Runtime.checkMainThread();
 
         if (listeners.contains(listener)) {
             return;
@@ -78,7 +78,7 @@ public abstract class Value<T> {
      */
     @ObjectiveCName("unsubscribeWithListener:")
     public void unsubscribe(ValueChangedListener<T> listener) {
-        im.actor.runtime.Runtime.checkMainThread();
+        // im.actor.runtime.Runtime.checkMainThread();
 
         listeners.remove(listener);
     }
@@ -89,12 +89,7 @@ public abstract class Value<T> {
      * @param value new value
      */
     protected void notify(final T value) {
-        im.actor.runtime.Runtime.postToMainThread(new Runnable() {
-            @Override
-            public void run() {
-                notifyInMainThread(value);
-            }
-        });
+        im.actor.runtime.Runtime.postToMainThread(() -> notifyInMainThread(value));
     }
 
     /**

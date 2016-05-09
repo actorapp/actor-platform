@@ -48,8 +48,7 @@ public class ApiBroker extends Actor {
                         isEnableLog,
                         minDelay,
                         maxDelay,
-                        maxFailureCount))
-                .changeDispatcher("network"), "api/broker#" + id);
+                        maxFailureCount)), "api/broker#" + id);
     }
 
     private static final String TAG = "ApiBroker";
