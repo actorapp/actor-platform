@@ -90,11 +90,8 @@ public class ProfileFragment extends BaseFragment {
         avatarView = (AvatarView) res.findViewById(R.id.avatar);
         avatarView.init(Screen.dp(96), 48);
         avatarView.bind(user.getAvatar().get(), user.getName().get(), user.getId());
-        avatarView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(ViewAvatarActivity.viewAvatar(user.getId(), getActivity()));
-            }
+        avatarView.setOnClickListener(v -> {
+            startActivity(ViewAvatarActivity.viewAvatar(user.getId(), getActivity()));
         });
 
 
@@ -123,34 +120,25 @@ public class ProfileFragment extends BaseFragment {
         final View addContact = res.findViewById(R.id.addContact);
         final ImageView addContactIcon = (ImageView) addContact.findViewById(R.id.addContactIcon);
         final TextView addContactTitle = (TextView) addContact.findViewById(R.id.addContactTitle);
-        bind(user.isContact(), new ValueChangedListener<Boolean>() {
-            @Override
-            public void onChanged(Boolean isContact, Value<Boolean> valueModel) {
-                if (isContact) {
-                    addContactTitle.setText(getString(R.string.profile_contacts_added));
-                    addContactTitle.setTextColor(style.getProfileContactIconColor());
-                    Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_check_circle_black_24dp));
-                    DrawableCompat.setTint(drawable, style.getProfileContactIconColor());
-                    addContactIcon.setImageDrawable(drawable);
-                    addContact.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            execute(ActorSDK.sharedActor().getMessenger().removeContact(user.getId()));
-                        }
-                    });
-                } else {
-                    addContactTitle.setText(getString(R.string.profile_contacts_available));
-                    addContactTitle.setTextColor(style.getProfileContactIconColor());
-                    Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_person_add_white_24dp));
-                    DrawableCompat.setTint(drawable, style.getProfileContactIconColor());
-                    addContactIcon.setImageDrawable(drawable);
-                    addContact.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            execute(ActorSDK.sharedActor().getMessenger().addContact(user.getId()));
-                        }
-                    });
-                }
+        bind(user.isContact(), (isContact, valueModel) -> {
+            if (isContact) {
+                addContactTitle.setText(getString(R.string.profile_contacts_added));
+                addContactTitle.setTextColor(style.getProfileContactIconColor());
+                Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_check_circle_black_24dp));
+                DrawableCompat.setTint(drawable, style.getProfileContactIconColor());
+                addContactIcon.setImageDrawable(drawable);
+                addContact.setOnClickListener(v -> {
+                    execute(ActorSDK.sharedActor().getMessenger().removeContact(user.getId()));
+                });
+            } else {
+                addContactTitle.setText(getString(R.string.profile_contacts_available));
+                addContactTitle.setTextColor(style.getProfileContactIconColor());
+                Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_person_add_white_24dp));
+                DrawableCompat.setTint(drawable, style.getProfileContactIconColor());
+                addContactIcon.setImageDrawable(drawable);
+                addContact.setOnClickListener(v -> {
+                    execute(ActorSDK.sharedActor().getMessenger().addContact(user.getId()));
+                });
             }
         });
 
@@ -168,11 +156,8 @@ public class ProfileFragment extends BaseFragment {
             newMessageIcon.setImageDrawable(drawable);
             newMessageTitle.setTextColor(style.getListActionColor());
         }
-        newMessageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(Intents.openPrivateDialog(user.getId(), true, getActivity()));
-            }
+        newMessageView.setOnClickListener(v -> {
+            startActivity(Intents.openPrivateDialog(user.getId(), true, getActivity()));
         });
 
 
@@ -190,11 +175,8 @@ public class ProfileFragment extends BaseFragment {
                 voiceViewIcon.setImageDrawable(drawable);
                 voiceViewTitle.setTextColor(style.getListActionColor());
 
-                voiceCallView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        execute(ActorSDK.sharedActor().getMessenger().doCall(user.getId()));
-                    }
+                voiceCallView.setOnClickListener(v -> {
+                    execute(ActorSDK.sharedActor().getMessenger().doCall(user.getId()));
                 });
             } else {
                 Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_phone_white_24dp));
@@ -250,56 +232,47 @@ public class ProfileFragment extends BaseFragment {
                     inflater, contactsContainer);
 
 
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    new AlertDialog.Builder(getActivity())
-                            .setItems(new CharSequence[]{
-                                    getString(R.string.phone_menu_call).replace("{0}", phoneNumber),
-                                    getString(R.string.phone_menu_sms).replace("{0}", phoneNumber),
-                                    getString(R.string.phone_menu_share).replace("{0}", phoneNumber),
-                                    getString(R.string.phone_menu_copy)
-                            }, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    if (which == 0) {
-                                        startActivity(new Intent(Intent.ACTION_DIAL)
-                                                .setData(Uri.parse("tel:+" + userPhone.getPhone())));
-                                    } else if (which == 1) {
-                                        startActivity(new Intent(Intent.ACTION_VIEW)
-                                                .setData(Uri.parse("sms:+" + userPhone.getPhone())));
-                                    } else if (which == 2) {
-                                        startActivity(new Intent(Intent.ACTION_SEND)
-                                                .setType("text/plain")
-                                                .putExtra(Intent.EXTRA_TEXT, getString(R.string.settings_share_text)
-                                                        .replace("{0}", phoneNumber)
-                                                        .replace("{1}", user.getName().get())));
-                                    } else if (which == 3) {
-                                        ClipboardManager clipboard =
-                                                (ClipboardManager) getActivity()
-                                                        .getSystemService(Context.CLIPBOARD_SERVICE);
-                                        ClipData clip = ClipData.newPlainText("Phone number", phoneNumber);
-                                        clipboard.setPrimaryClip(clip);
-                                        Snackbar.make(res, R.string.toast_phone_copied, Snackbar.LENGTH_SHORT)
-                                                .show();
-                                    }
-                                }
-                            })
-                            .show()
-                            .setCanceledOnTouchOutside(true);
-                }
+            view.setOnClickListener(v -> {
+                new AlertDialog.Builder(getActivity())
+                        .setItems(new CharSequence[]{
+                                getString(R.string.phone_menu_call).replace("{0}", phoneNumber),
+                                getString(R.string.phone_menu_sms).replace("{0}", phoneNumber),
+                                getString(R.string.phone_menu_share).replace("{0}", phoneNumber),
+                                getString(R.string.phone_menu_copy)
+                        }, (dialog, which) -> {
+                            if (which == 0) {
+                                startActivity(new Intent(Intent.ACTION_DIAL)
+                                        .setData(Uri.parse("tel:+" + userPhone.getPhone())));
+                            } else if (which == 1) {
+                                startActivity(new Intent(Intent.ACTION_VIEW)
+                                        .setData(Uri.parse("sms:+" + userPhone.getPhone())));
+                            } else if (which == 2) {
+                                startActivity(new Intent(Intent.ACTION_SEND)
+                                        .setType("text/plain")
+                                        .putExtra(Intent.EXTRA_TEXT, getString(R.string.settings_share_text)
+                                                .replace("{0}", phoneNumber)
+                                                .replace("{1}", user.getName().get())));
+                            } else if (which == 3) {
+                                ClipboardManager clipboard =
+                                        (ClipboardManager) getActivity()
+                                                .getSystemService(Context.CLIPBOARD_SERVICE);
+                                ClipData clip = ClipData.newPlainText("Phone number", phoneNumber);
+                                clipboard.setPrimaryClip(clip);
+                                Snackbar.make(res, R.string.toast_phone_copied, Snackbar.LENGTH_SHORT)
+                                        .show();
+                            }
+                        })
+                        .show()
+                        .setCanceledOnTouchOutside(true);
             });
 
-            view.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-                    ClipData clip = ClipData.newPlainText("Phone number", "+" + userPhone.getPhone());
-                    clipboard.setPrimaryClip(clip);
-                    Snackbar.make(res, R.string.toast_phone_copied, Snackbar.LENGTH_SHORT)
-                            .show();
-                    return true;
-                }
+            view.setOnLongClickListener(v -> {
+                ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("Phone number", "+" + userPhone.getPhone());
+                clipboard.setPrimaryClip(clip);
+                Snackbar.make(res, R.string.toast_phone_copied, Snackbar.LENGTH_SHORT)
+                        .show();
+                return true;
             });
 
             isFirstContact = false;
@@ -318,43 +291,34 @@ public class ProfileFragment extends BaseFragment {
                     userName == null && i == emails.size() - 1,
                     inflater, contactsContainer);
 
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    new AlertDialog.Builder(getActivity())
-                            .setItems(new CharSequence[]{
-                                    getString(R.string.email_menu_email).replace("{0}", userEmail.getEmail()),
-                                    getString(R.string.phone_menu_copy)
-                            }, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    if (which == 0) {
-                                        startActivity(new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", userEmail.getEmail(), null)));
-                                    } else if (which == 1) {
-                                        ClipboardManager clipboard =
-                                                (ClipboardManager) getActivity()
-                                                        .getSystemService(Context.CLIPBOARD_SERVICE);
-                                        ClipData clip = ClipData.newPlainText("Email", userEmail.getEmail());
-                                        clipboard.setPrimaryClip(clip);
-                                        Snackbar.make(res, R.string.toast_email_copied, Snackbar.LENGTH_SHORT)
-                                                .show();
-                                    }
-                                }
-                            })
-                            .show()
-                            .setCanceledOnTouchOutside(true);
-                }
+            view.setOnClickListener(v -> {
+                new AlertDialog.Builder(getActivity())
+                        .setItems(new CharSequence[]{
+                                getString(R.string.email_menu_email).replace("{0}", userEmail.getEmail()),
+                                getString(R.string.phone_menu_copy)
+                        }, (dialog, which) -> {
+                            if (which == 0) {
+                                startActivity(new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", userEmail.getEmail(), null)));
+                            } else if (which == 1) {
+                                ClipboardManager clipboard =
+                                        (ClipboardManager) getActivity()
+                                                .getSystemService(Context.CLIPBOARD_SERVICE);
+                                ClipData clip = ClipData.newPlainText("Email", userEmail.getEmail());
+                                clipboard.setPrimaryClip(clip);
+                                Snackbar.make(res, R.string.toast_email_copied, Snackbar.LENGTH_SHORT)
+                                        .show();
+                            }
+                        })
+                        .show()
+                        .setCanceledOnTouchOutside(true);
             });
-            view.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-                    ClipData clip = ClipData.newPlainText("Email", "+" + userEmail.getEmail());
-                    clipboard.setPrimaryClip(clip);
-                    Snackbar.make(res, R.string.toast_email_copied, Snackbar.LENGTH_SHORT)
-                            .show();
-                    return true;
-                }
+            view.setOnLongClickListener(v -> {
+                ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("Email", "+" + userEmail.getEmail());
+                clipboard.setPrimaryClip(clip);
+                Snackbar.make(res, R.string.toast_email_copied, Snackbar.LENGTH_SHORT)
+                        .show();
+                return true;
             });
             isFirstContact = false;
         }
@@ -376,20 +340,17 @@ public class ProfileFragment extends BaseFragment {
                                 true,
                                 inflater, contactsContainer);
                     } else {
-                        ((TextView)userNameRecord.findViewById(R.id.value)).setText(newUserName);
+                        ((TextView) userNameRecord.findViewById(R.id.value)).setText(newUserName);
                     }
 
 
-                    userNameRecord.setOnLongClickListener(new View.OnLongClickListener() {
-                        @Override
-                        public boolean onLongClick(View v) {
-                            ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-                            ClipData clip = ClipData.newPlainText("Nickname", newUserName);
-                            clipboard.setPrimaryClip(clip);
-                            Snackbar.make(res, R.string.toast_nickname_copied, Snackbar.LENGTH_SHORT)
-                                    .show();
-                            return true;
-                        }
+                    userNameRecord.setOnLongClickListener(v -> {
+                        ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText("Username", newUserName);
+                        clipboard.setPrimaryClip(clip);
+                        Snackbar.make(res, R.string.toast_nickname_copied, Snackbar.LENGTH_SHORT)
+                                .show();
+                        return true;
                     });
                 }
             }
@@ -412,7 +373,7 @@ public class ProfileFragment extends BaseFragment {
                                 true,
                                 inflater, contactsContainer);
                     } else {
-                        ((TextView)userAboutRecord.findViewById(R.id.value)).setText(newUserAbout);
+                        ((TextView) userAboutRecord.findViewById(R.id.value)).setText(newUserAbout);
                     }
                 }
             }
@@ -430,18 +391,8 @@ public class ProfileFragment extends BaseFragment {
             ((TextView) notificationContainer.findViewById(R.id.settings_notifications_title)).setTextColor(style.getTextPrimaryColor());
             final SwitchCompat notificationEnable = (SwitchCompat) res.findViewById(R.id.enableNotifications);
             notificationEnable.setChecked(messenger().isNotificationsEnabled(Peer.user(user.getId())));
-            notificationEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    messenger().changeNotificationsEnabled(Peer.user(user.getId()), isChecked);
-                }
-            });
-            notificationContainer.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    notificationEnable.setChecked(!notificationEnable.isChecked());
-                }
-            });
+            notificationEnable.setOnCheckedChangeListener((buttonView, isChecked) -> messenger().changeNotificationsEnabled(Peer.user(user.getId()), isChecked));
+            notificationContainer.setOnClickListener(v -> notificationEnable.setChecked(!notificationEnable.isChecked()));
             ImageView iconView = (ImageView) res.findViewById(R.id.settings_notification_icon);
             Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_list_black_24dp));
             DrawableCompat.setTint(drawable, style.getSettingsIconColor());
@@ -453,38 +404,25 @@ public class ProfileFragment extends BaseFragment {
             View blockContainer = res.findViewById(R.id.blockCont);
             final TextView blockTitle = (TextView) blockContainer.findViewById(R.id.settings_block_title);
             blockTitle.setTextColor(style.getTextPrimaryColor());
-            bind(user.getIsBlocked(), new ValueChangedListener<Boolean>() {
-                @Override
-                public void onChanged(Boolean val, Value<Boolean> valueModel) {
-                    blockTitle.setText(val ? R.string.profile_settings_unblock : R.string.profile_settings_block);
-                }
+            bind(user.getIsBlocked(), (val, valueModel) -> {
+                blockTitle.setText(val ? R.string.profile_settings_unblock : R.string.profile_settings_block);
             });
-            blockContainer.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (!user.getIsBlocked().get()) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                        builder
-                                .setMessage(getString(R.string.profile_settings_block_confirm).replace("{user}", user.getName().get()))
-                                .setPositiveButton(R.string.dialog_yes, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        execute(messenger().blockUser(user.getId()));
-                                        dialog.dismiss();
-                                    }
-                                })
-                                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                    }
-                                })
-                                .show();
-                    } else {
-                        execute(messenger().unblockUser(user.getId()));
-                    }
-
+            blockContainer.setOnClickListener(v -> {
+                if (!user.getIsBlocked().get()) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setMessage(getString(R.string.profile_settings_block_confirm).replace("{user}", user.getName().get()))
+                            .setPositiveButton(R.string.dialog_yes, (dialog, which) -> {
+                                execute(messenger().blockUser(user.getId()));
+                                dialog.dismiss();
+                            })
+                            .setNegativeButton(R.string.dialog_cancel, (dialog, which) -> {
+                                dialog.dismiss();
+                            })
+                            .show();
+                } else {
+                    execute(messenger().unblockUser(user.getId()));
                 }
+
             });
             ImageView blockIconView = (ImageView) res.findViewById(R.id.settings_block_icon);
             Drawable blockDrawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_block_white_18dp));
@@ -497,12 +435,7 @@ public class ProfileFragment extends BaseFragment {
         // Scroll Coordinate
         //
         final ScrollView scrollView = ((ScrollView) res.findViewById(R.id.scrollContainer));
-        scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-            @Override
-            public void onScrollChanged() {
-                updateBar(scrollView.getScrollY());
-            }
-        });
+        scrollView.getViewTreeObserver().addOnScrollChangedListener(() -> updateBar(scrollView.getScrollY()));
         updateBar(scrollView.getScrollY());
 
         return res;
