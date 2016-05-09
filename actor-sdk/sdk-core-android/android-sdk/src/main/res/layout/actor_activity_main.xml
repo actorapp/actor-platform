@@ -47,7 +47,7 @@
             android:layout_gravity="bottom|right"
             android:layout_marginBottom="10dp"
             android:layout_marginRight="10dp"
-            app:fab_icon="@drawable/ic_plus_white_24dp" />
+            app:fab_icon="@drawable/ic_edit_white_24dp" />
 
         <FrameLayout
             android:id="@+id/searchCont"
@@ -247,104 +247,5 @@
                 </LinearLayout>
             </FrameLayout>
         </ScrollView>
-    </FrameLayout>
-
-    <FrameLayout
-        android:id="@+id/fabContainer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|right"
-            android:layout_marginBottom="10dp"
-            android:layout_marginRight="10dp"
-            android:gravity="right"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/fab_add_contact_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:paddingRight="8dp"
-                    android:text="@string/main_fab_add_contact"
-                    android:textStyle="bold" />
-
-                <com.getbase.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/addContactContainer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:fab_icon="@drawable/ic_person_add_white_24dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/fab_create_group_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:paddingRight="8dp"
-                    android:text="@string/main_fab_new_group"
-                    android:textStyle="bold" />
-
-                <com.getbase.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/createGroupContainer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:fab_icon="@drawable/ic_group_white_24dp" />
-            </LinearLayout>
-
-            <!--<LinearLayout-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content">-->
-
-                <!--<TextView-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_gravity="center_vertical"-->
-                    <!--android:paddingRight="8dp"-->
-                    <!--android:text="@string/main_fab_join_public_group"-->
-                    <!--android:textColor="@color/text_primary"-->
-                    <!--android:textStyle="bold" />-->
-
-                <!--<com.getbase.floatingactionbutton.FloatingActionButton-->
-                    <!--android:id="@+id/joinPublicGroupContainer"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--app:fab_colorNormal="@color/action"-->
-                    <!--app:fab_colorPressed="@color/action_pressed"-->
-                    <!--app:fab_icon="@drawable/ic_social_public_24dp" />-->
-            <!--</LinearLayout>-->
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/fab_compose_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:paddingRight="8dp"
-                    android:text="@string/main_fab_compose"
-                    android:textStyle="bold" />
-
-                <com.getbase.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/composeContainer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:fab_icon="@drawable/ic_message_white_24dp" />
-            </LinearLayout>
-        </LinearLayout>
     </FrameLayout>
 </RelativeLayout>
