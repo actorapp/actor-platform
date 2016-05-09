@@ -11,6 +11,7 @@ import im.actor.sdk.controllers.conversation.MessagesAdapter;
 import im.actor.sdk.controllers.conversation.messages.preprocessor.PreprocessedData;
 import im.actor.sdk.controllers.conversation.view.BubbleContainer;
 import im.actor.sdk.controllers.conversation.view.ReactionSpan;
+import im.actor.sdk.util.DateFormatting;
 import im.actor.sdk.util.Strings;
 import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.core.entity.Message;
@@ -65,7 +66,7 @@ public abstract class MessageHolder extends BindedViewHolder
         // Date div
         boolean useDiv;
         if (prev != null) {
-            useDiv = !Strings.areSameDays(prev.getDate(), message.getDate());
+            useDiv = !DateFormatting.areSameDays(prev.getDate(), message.getDate());
         } else {
             useDiv = true;
         }
@@ -152,9 +153,9 @@ public abstract class MessageHolder extends BindedViewHolder
         Spannable timeWithReactions = null;
         if (reactions != null) {
             SpannableStringBuilder builder = new SpannableStringBuilder(reactions);
-            timeWithReactions = builder.append(Strings.formatTime(currentMessage.getDate()));
+            timeWithReactions = builder.append(DateFormatting.formatTime(currentMessage.getDate()));
         }
-        time.setText(timeWithReactions != null ? timeWithReactions : Strings.formatTime(currentMessage.getDate()));
+        time.setText(timeWithReactions != null ? timeWithReactions : DateFormatting.formatTime(currentMessage.getDate()));
         time.setMovementMethod(LinkMovementMethod.getInstance());
     }
 }

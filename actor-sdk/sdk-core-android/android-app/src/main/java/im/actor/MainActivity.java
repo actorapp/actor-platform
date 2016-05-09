@@ -16,6 +16,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        ActorSDK.sharedActor().waitForReady();
+
         if (!messenger().isLoggedIn()) {
             startActivity(new Intent(this, TourActivity.class));
             finish();

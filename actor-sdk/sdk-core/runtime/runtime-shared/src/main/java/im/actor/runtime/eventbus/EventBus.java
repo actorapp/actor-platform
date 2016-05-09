@@ -11,21 +11,23 @@ import im.actor.runtime.Log;
  */
 public class EventBus {
 
-    private HashMap<String, Event> stickyEvents = new HashMap<String, Event>();
-    private HashMap<BusSubscriber, SubscriberConfig> subscribers = new HashMap<BusSubscriber, SubscriberConfig>();
+    private HashMap<String, Event> stickyEvents = new HashMap<>();
+    private HashMap<BusSubscriber, SubscriberConfig> subscribers = new HashMap<>();
 
     public synchronized void subscribe(BusSubscriber subscriber) {
         subscribe(subscriber, null);
     }
 
     public synchronized void subscribe(BusSubscriber subscriber, String eventType) {
-        if (!subscribers.containsKey(subscriber)) {
-            subscribers.put(subscriber, new SubscriberConfig(eventType));
-        } else {
-            SubscriberConfig config = subscribers.get(subscriber);
+        SubscriberConfig config = subscribers.get(subscriber);
+        if (config != null) {
             if (!config.getTypes().contains(eventType)) {
                 config.getTypes().add(eventType);
             }
+        } else {
+            config = new SubscriberConfig(eventType);
+            config.getTypes().add(eventType);
+            subscribers.put(subscriber, config);
         }
 
         if (eventType != null && stickyEvents.containsKey(eventType)) {
@@ -38,21 +40,11 @@ public class EventBus {
     }
 
     public void post(final Event event) {
-        im.actor.runtime.Runtime.dispatch(new Runnable() {
-            @Override
-            public void run() {
-                deliver(event, false);
-            }
-        });
+        im.actor.runtime.Runtime.dispatch(() -> deliver(event, false));
     }
 
     public void postSticky(final Event event) {
-        im.actor.runtime.Runtime.dispatch(new Runnable() {
-            @Override
-            public void run() {
-                deliver(event, true);
-            }
-        });
+        im.actor.runtime.Runtime.dispatch(() -> deliver(event, true));
     }
 
     private synchronized void deliver(Event e, boolean isSticky) {
@@ -72,7 +64,7 @@ public class EventBus {
     }
 
     private class SubscriberConfig {
-        private ArrayList<String> types = new ArrayList<String>();
+        private ArrayList<String> types = new ArrayList<>();
 
         public SubscriberConfig(String baseType) {
             this.types.add(baseType);

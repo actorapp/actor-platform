@@ -29,6 +29,7 @@ import im.actor.runtime.Log;
 import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.android.view.BindedViewHolder;
+import im.actor.runtime.threading.ThreadDispatcher;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.controllers.conversation.ChatActivity;
@@ -76,6 +77,16 @@ public class ActorSDK {
      * Actor Messenger instance
      */
     private AndroidMessenger messenger;
+
+    /**
+     * Is Messenger Loaded
+     */
+    private boolean isLoaded;
+
+    /**
+     * Loading Lock
+     */
+    private final Object LOAD_LOCK = new Object();
 
 
     //
@@ -212,18 +223,15 @@ public class ActorSDK {
 
     public void createActor(final Application application) {
 
-        // Debug.startMethodTracing("create_actor11");
-
         this.application = application;
 
-        boolean[] isLoaded = new boolean[1];
-        isLoaded[0] = false;
-
-        //
-        // SDK Tools
-        //
+        ThreadDispatcher.pushDispatcher(Runtime::postToMainThread);
 
         Runtime.dispatch(() -> {
+
+            //
+            // SDK Tools
+            //
             ImagePipelineConfig config = ImagePipelineConfig.newBuilder(application)
                     .setDownsampleEnabled(true)
                     .build();
@@ -231,64 +239,61 @@ public class ActorSDK {
 
             SmileProcessor emojiProcessor = new SmileProcessor(application);
             ActorSystem.system().addDispatcher("voice_capture_dispatcher", 1);
-            synchronized (isLoaded) {
-                isLoaded[0] = true;
-                isLoaded.notifyAll();
+
+            //
+            // SDK Configuration
+            //
+            ConfigurationBuilder builder = new ConfigurationBuilder();
+            for (String s : endpoints) {
+                builder.addEndpoint(s);
             }
-            emojiProcessor.loadEmoji();
+            for (String t : trustedKeys) {
+                builder.addTrustedKey(t);
+            }
+            builder.setPhoneBookProvider(new AndroidPhoneBook());
+            builder.setNotificationProvider(new AndroidNotifications(application));
+            builder.setDeviceCategory(DeviceCategory.MOBILE);
+            builder.setPlatformType(PlatformType.ANDROID);
+            builder.setIsEnabledGroupedChatList(false);
+            builder.setApiConfiguration(new ApiConfiguration(
+                    appName,
+                    apiAppId,
+                    apiAppKey,
+                    Devices.getDeviceName(),
+                    AndroidContext.getContext().getPackageName() + ":" + Build.SERIAL));
 
-        });
+            //
+            // Adding Locales
+            //
+            Locale defaultLocale = Locale.getDefault();
+            Log.d(TAG, "Found Locale: " + defaultLocale.getLanguage() + "-" + defaultLocale.getCountry());
+            Log.d(TAG, "Found Locale: " + defaultLocale.getLanguage());
+            builder.addPreferredLanguage(defaultLocale.getLanguage() + "-" + defaultLocale.getCountry());
+            builder.addPreferredLanguage(defaultLocale.getLanguage());
 
-        //
-        // SDK Configuration
-        //
+            //
+            // Adding TimeZone
+            //
+            String timeZone = TimeZone.getDefault().getID();
+            Log.d(TAG, "Found TimeZone: " + timeZone);
+            builder.setTimeZone(timeZone);
 
-        ConfigurationBuilder builder = new ConfigurationBuilder();
-        for (String s : endpoints) {
-            builder.addEndpoint(s);
-        }
-        for (String t : trustedKeys) {
-            builder.addTrustedKey(t);
-        }
-        builder.setPhoneBookProvider(new AndroidPhoneBook());
-        builder.setNotificationProvider(new AndroidNotifications(AndroidContext.getContext()));
-        builder.setDeviceCategory(DeviceCategory.MOBILE);
-        builder.setPlatformType(PlatformType.ANDROID);
-        builder.setIsEnabledGroupedChatList(false);
-        builder.setApiConfiguration(new ApiConfiguration(
-                appName,
-                apiAppId,
-                apiAppKey,
-                Devices.getDeviceName(),
-                AndroidContext.getContext().getPackageName() + ":" + Build.SERIAL));
-        //
-        // Adding Locales
-        //
-        Locale defaultLocale = Locale.getDefault();
-        Log.d(TAG, "Found Locale: " + defaultLocale.getLanguage() + "-" + defaultLocale.getCountry());
-        Log.d(TAG, "Found Locale: " + defaultLocale.getLanguage());
-        builder.addPreferredLanguage(defaultLocale.getLanguage() + "-" + defaultLocale.getCountry());
-        builder.addPreferredLanguage(defaultLocale.getLanguage());
+            //
+            // App Name
+            //
+            if (customApplicationName != null) {
+                builder.setCustomAppName(customApplicationName);
+            }
 
-        //
-        // Adding TimeZone
-        //
-        String timeZone = TimeZone.getDefault().getID();
-        Log.d(TAG, "Found TimeZone: " + timeZone);
-        builder.setTimeZone(timeZone);
+            //
+            // Calls Support
+            //
+            builder.setCallsProvider(new AndroidCallProvider());
 
-        //
-        // App Name
-        //
-        if (customApplicationName != null) {
-            builder.setCustomAppName(customApplicationName);
-        }
-
-        builder.setCallsProvider(new AndroidCallProvider());
-
-        this.messenger = new AndroidMessenger(AndroidContext.getContext(), builder.build());
-
-        Runtime.dispatch(() -> {
+            //
+            // Building Messenger
+            //
+            this.messenger = new AndroidMessenger(application, builder.build());
 
             //
             // Keep Alive
@@ -323,28 +328,43 @@ public class ActorSDK {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+            synchronized (LOAD_LOCK) {
+                isLoaded = true;
+                LOAD_LOCK.notifyAll();
+            }
+
+            //
+            // Loading Emoji
+            //
+
+            emojiProcessor.loadEmoji();
         });
+    }
 
-
-        if (!isLoaded[0]) {
-            synchronized (isLoaded) {
-                if (!isLoaded[0]) {
+    /**
+     * Waiting for Messenger Ready
+     */
+    public void waitForReady() {
+        if (!isLoaded) {
+            synchronized (LOAD_LOCK) {
+                if (!isLoaded) {
                     try {
-                        isLoaded.wait();
+                        long start = Runtime.getActorTime();
+                        LOAD_LOCK.wait();
+                        Log.d(TAG, "Waited for startup in " + (Runtime.getActorTime() - start) + " ms");
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
             }
         }
-
-        // Debug.stopMethodTracing();
     }
 
     /**
      * Call this method for staring messaging app
      *
-     * @param context
+     * @param context Current Activity
      */
     public void startMessagingApp(Activity context) {
         if (messenger.isLoggedIn()) {

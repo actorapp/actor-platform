@@ -4,36 +4,24 @@
 
 package im.actor.runtime.android;
 
-import android.os.Handler;
-import android.os.HandlerThread;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import im.actor.runtime.DispatcherRuntime;
 
 public class AndroidDispatcherProvider implements DispatcherRuntime {
 
-    private Handler handler;
-    private final HandlerThread handlerThread;
+    private Executor EXECUTOR;
 
     public AndroidDispatcherProvider() {
-        handlerThread = new HandlerThread("CallbacksThread", Thread.MIN_PRIORITY) {
-            @Override
-            protected void onLooperPrepared() {
-                handler = new Handler(getLooper());
-            }
-        };
-        handlerThread.start();
+
     }
 
     @Override
-    public void dispatch(Runnable runnable) {
-        while (handler == null) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                return;
-            }
+    public synchronized void dispatch(Runnable runnable) {
+        if (EXECUTOR == null) {
+            EXECUTOR = Executors.newSingleThreadExecutor();
         }
-        handler.post(runnable);
+        EXECUTOR.execute(runnable);
     }
 }

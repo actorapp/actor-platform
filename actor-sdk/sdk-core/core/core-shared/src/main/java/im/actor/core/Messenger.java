@@ -104,30 +104,28 @@ public class Messenger {
         // Must be implemented in Configuration object
 
         // Start Messenger initialization
-        Timing timing = new Timing("MESSENGER_INIT");
+        // Timing timing = new Timing("MESSENGER_INIT");
 
         // Actor system
-        timing.section("Actors");
+        // timing.section("Actors");
         ActorSystem.system().setTraceInterface(new ActorTrace());
-        ActorSystem.system().addDispatcher("network", 2);
         ActorSystem.system().addDispatcher("network_manager", 1);
         ActorSystem.system().addDispatcher("heavy", 2);
-        ActorSystem.system().addDispatcher("updates", 1);
 
         // Configure dispatcher
-        timing.section("Dispatcher");
-        if (!Runtime.isMainThread()) {
-            throw new RuntimeException("Messenger need to be created on Main Thread!");
-        }
-        ThreadDispatcher.pushDispatcher(Runtime::postToMainThread);
+        // timing.section("Dispatcher");
+//        if (!Runtime.isMainThread()) {
+//            throw new RuntimeException("Messenger need to be created on Main Thread!");
+//        }
+        // ThreadDispatcher.pushDispatcher(Runtime::postToMainThread);
 
-        timing.section("Modules:Create");
+        // timing.section("Modules:Create");
         this.modules = new Modules(this, configuration);
 
-        timing.section("Modules:Run");
+        // timing.section("Modules:Run");
         this.modules.run();
 
-        timing.end();
+        // timing.end();
     }
 
     //////////////////////////////////////

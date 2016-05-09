@@ -20,6 +20,10 @@ import static im.actor.runtime.actors.ActorSystem.system;
 
 class AsyncStorageInt<T extends BserObject & ListEngineItem> {
 
+    static {
+        system().addDispatcher("db", 1);
+    }
+
     private static int NEXT_ID = 0;
 
     private ActorRef storageActor;

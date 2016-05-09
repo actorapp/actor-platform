@@ -15,10 +15,10 @@ import im.actor.runtime.storage.ListStorageDisplayEx;
 
 public class GenericEnginesProvider implements EnginesRuntime {
 
-    static {
-        ActorSystem.system().addDispatcher("display_list");
-        ActorSystem.system().addDispatcher("db", 1);
-    }
+//    static {
+//        ActorSystem.system().addDispatcher("display_list");
+//        ActorSystem.system().addDispatcher("db", 1);
+//    }
 
     private DisplayList.OperationMode operationMode;
 

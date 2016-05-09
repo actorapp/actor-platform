@@ -29,6 +29,10 @@ import static im.actor.runtime.actors.ActorSystem.system;
 
 public class DisplayList<T> {
 
+    static {
+        system().addDispatcher("display_list");
+    }
+
     private static int NEXT_ID = 0;
     private final int DISPLAY_LIST_ID;
     private ActorRef executor;
