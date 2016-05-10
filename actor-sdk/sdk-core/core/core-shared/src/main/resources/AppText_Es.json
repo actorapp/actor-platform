@@ -4,6 +4,8 @@
 	},
 
 	"language": {
+		"code": "Es",
+
 		"format": {
 			"time": {
 				"yesterday": "Ayer",
@@ -28,7 +30,7 @@
 
 		"referencing": {
 			"you": "Tu",
-			"Thee": "Tu"
+			"thee": "Tu"
 		},
 
 		"sequence": {
