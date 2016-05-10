@@ -510,10 +510,14 @@ class MessagingServiceSpec
 
         val (bob, bobAuthId, bobAuthSid, _) = createUser()
 
+        val bobClientData = ClientData(bobAuthId, 1, Some(AuthData(bob.id, bobAuthSid, 42)))
+        val aliceClientData1 = ClientData(aliceAuthId1, 1, Some(AuthData(alice.id, aliceAuthSid1, 42)))
+        val aliceClientData2 = ClientData(aliceAuthId2, 1, Some(AuthData(alice.id, aliceAuthSid2, 42)))
+
         val RandomId = 22L
 
         {
-          implicit val cd = ClientData(aliceAuthId1, 1, Some(AuthData(alice.id, aliceAuthSid1, 42)))
+          implicit val cd = aliceClientData1
           whenReady(service.handleSendMessage(
             getOutPeer(bob.id, aliceAuthId1),
             RandomId,
@@ -524,12 +528,13 @@ class MessagingServiceSpec
             resp should matchPattern {
               case Ok(_) ⇒
             }
-
           }
         }
 
+        val bobSeq = getCurrentSeq(bobClientData)
+
         {
-          implicit val cd = ClientData(aliceAuthId2, 1, Some(AuthData(alice.id, aliceAuthSid2, 42)))
+          implicit val cd = aliceClientData2
           whenReady(service.handleSendMessage(
             getOutPeer(bob.id, aliceAuthId2),
             RandomId,
@@ -544,7 +549,16 @@ class MessagingServiceSpec
         }
 
         {
-          implicit val cd = ClientData(bobAuthId, 1, Some(AuthData(bob.id, bobAuthSid, 42)))
+          implicit val cd = bobClientData
+          expectNoUpdate(bobSeq, classOf[UpdateMessage])
+          expectNoUpdate(bobSeq, classOf[UpdateCountersChanged])
+        }
+
+        val aliceSeq1 = getCurrentSeq(aliceClientData1)
+        val aliceSeq2 = getCurrentSeq(aliceClientData2)
+
+        {
+          implicit val cd = bobClientData
           whenReady(service.handleSendMessage(
             getOutPeer(alice.id, bobAuthId),
             RandomId,
@@ -557,6 +571,19 @@ class MessagingServiceSpec
             }
           }
         }
+
+        {
+          implicit val cd = aliceClientData1
+          expectNoUpdate(aliceSeq1, classOf[UpdateMessage])
+          expectNoUpdate(aliceSeq1, classOf[UpdateCountersChanged])
+        }
+
+        {
+          implicit val cd = aliceClientData2
+          expectNoUpdate(aliceSeq2, classOf[UpdateMessage])
+          expectNoUpdate(aliceSeq2, classOf[UpdateCountersChanged])
+        }
+
       }
 
     }
