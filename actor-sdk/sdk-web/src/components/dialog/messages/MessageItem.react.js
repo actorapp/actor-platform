@@ -185,7 +185,7 @@ class MessageItem extends Component {
               className="message__avatar"
               image={group.avatar}
               placeholder={group.placeholder}
-              title={group.title}
+              title={group.name}
               onClick={this.onClick}
             />
           </div>
