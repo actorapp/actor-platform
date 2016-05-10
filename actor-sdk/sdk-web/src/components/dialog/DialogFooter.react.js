@@ -47,7 +47,7 @@ class DialogFooter extends Component {
     if (!isMember) {
       return (
         <footer className="chat__footer chat__footer--disabled">
-          <FormattedMessage id="compose.notMemger" />
+          <FormattedMessage id="compose.notMember" />
         </footer>
       );
     }
