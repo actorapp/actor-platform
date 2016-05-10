@@ -401,9 +401,9 @@ public class I18nEngine extends IntlEngine {
         } else if (content instanceof ServiceGroupUserJoined) {
             return getTemplateNamed(senderId, "content.service.groups.joined");
         } else if (content instanceof ServiceCallEnded) {
-            return get("content.calls.ended");
+            return get("content.service.calls.ended");
         } else if (content instanceof ServiceCallMissed) {
-            return get("content.calls.missed");
+            return get("content.service.calls.missed");
         }
 
         return content.getCompatText();
