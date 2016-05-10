@@ -90,7 +90,7 @@ public class Modules implements ModuleContext {
         // Timing timing = new Timing("MODULES_INIT");
 
         // timing.section("I18N");
-        this.i18nEngine = new I18nEngine(this);
+        this.i18nEngine = I18nEngine.create(this);
 
         // timing.section("Preferences");
         this.preferences = Storage.createPreferencesStorage();
