@@ -4,12 +4,14 @@
 
 .menu-overlay {
   position: fixed;
+  z-index: 10;
   top: 0;
   left: 0;
+
+  display: none;
+
   width: 0;
   height: 0;
-  z-index: 10;
-  display: none;
 
   &--opened {
     display: block;
@@ -21,14 +23,12 @@
   &--opened {
     .dropdown__button {
       visibility: visible;
-
       //transition: opacity $default-transition-duration $default-transition-timing, visibility 0s;
 
       opacity: 1;
     }
     .dropdown__menu {
       visibility: visible;
-
       //transition: opacity $default-transition-duration $default-transition-timing, visibility 0s;
 
       opacity: 1;
@@ -52,7 +52,6 @@
     padding: 8px 0;
 
     list-style: none;
-
     //transition: opacity $default-transition-duration $default-transition-timing, visibility 0s $default-transition-duration;
 
     opacity: 0;
@@ -70,8 +69,9 @@
       font-size: 15px;
       line-height: 22px;
 
-      padding: 10px 16px 10px 50px;
       overflow: hidden;
+
+      padding: 10px 16px 10px 50px;
 
       cursor: pointer !important;
 
@@ -98,8 +98,10 @@
       }
       a {
         display: block;
-        color: $greyish-brown;
+
         text-decoration: none;
+
+        color: $greyish-brown;
       }
       &--light {
         color: rgba(0, 0, 0, .4);
@@ -126,8 +128,8 @@
     }
 
     &--context {
-      right: -4px;
       top: 6px;
+      right: -4px;
     }
   }
 
@@ -167,13 +169,16 @@
       min-width: 160px;
       padding: 0;
       &__item {
-        line-height: 20px;
         font-size: 12px;
+        line-height: 20px;
+
         padding: 4px 16px 4px 32px;
+
         color: rgba(black, .4);
         .icon {
           font-size: 18px;
           line-height: 20px;
+
           margin-left: -24px;
         }
         &:hover {
@@ -244,6 +249,7 @@
       .avatar__image,
       .avatar__placeholder {
         margin-right: 10px;
+
         vertical-align: middle;
       }
       .title {
@@ -265,7 +271,9 @@
             }
           }
           &:first-child {
-            color: $greyish-brown;
+            font-weight: 500;
+
+            color: rgb(120, 120, 120);
           }
         }
       }
@@ -296,11 +304,13 @@
 
   &__wrapper {
     position: absolute;
-    width: 100%;
     z-index: 5;
+    right: 1px;
     bottom: 0;
     left: 1px;
+
     overflow: hidden;
+
     border-radius: 2px;
     background-color: rgba(white, .975);
     box-shadow: 0 0 0 1px $cloudy-blue, 0 0 6px 0 rgba(black, .13);
@@ -333,7 +343,9 @@
 
   &__list {
     font-size: 15px;
+
     overflow: auto;
+
     max-height: 3.5 * 33px - 8px;
     margin: 0;
     padding: 8px 0;
@@ -346,6 +358,7 @@
       .avatar__image,
       .avatar__placeholder {
         margin-right: 10px;
+
         vertical-align: middle;
       }
       .title {
@@ -367,7 +380,9 @@
             }
           }
           &:first-child {
-            color: $greyish-brown;
+            font-weight: 500;
+
+            color: rgb(120, 120, 120);
           }
         }
       }
