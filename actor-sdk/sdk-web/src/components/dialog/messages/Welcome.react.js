@@ -66,7 +66,7 @@ class Welcome extends Component {
           </div>
           <div className="message__body col-xs">
             <FormattedHTMLMessage id="message.welcome.private" values={{ name: user.name }}/>
-            <p style={{marginTop: 16}}>{user.about}</p>
+            <p style={{ marginTop: 16 }}>{user.about}</p>
           </div>
         </div>
       );
