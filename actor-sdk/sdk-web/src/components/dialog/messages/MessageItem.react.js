@@ -15,6 +15,7 @@ import ActivityActionCreators from '../../../actions/ActivityActionCreators';
 import DropdownActionCreators from '../../../actions/DropdownActionCreators';
 
 import DropdownStore from '../../../stores/DropdownStore';
+import GroupStore from '../../../stores/GroupStore';
 
 import SvgIcon from '../../common/SvgIcon.react';
 import AvatarItem from '../../common/AvatarItem.react';
@@ -125,6 +126,21 @@ class MessageItem extends Component {
     onSelect(message.rid);
   };
 
+  renderTitle() {
+    const { message, peer } = this.props;
+
+    if (PeerUtils.isGroupBot(message.sender)) {
+      const group = GroupStore.getGroup(peer.id);
+      return (
+        <span className="message__sender__name" dangerouslySetInnerHTML={{ __html: escapeWithEmoji(group.name) }}/>
+      );
+    } else {
+      return (
+        <span className="message__sender__name" dangerouslySetInnerHTML={{ __html: escapeWithEmoji(message.sender.title) }}/>
+      );
+    }
+  }
+
   renderHeader() {
     const { isShort, message, state } = this.props;
 
@@ -132,17 +148,11 @@ class MessageItem extends Component {
       return null;
     }
 
-    const messageSender = escapeWithEmoji(message.sender.title);
-
     return (
       <header className="message__header">
         <h3 className="message__sender">
           <a onClick={this.onClick}>
-            {
-              message.sender.title
-                ? <span className="message__sender__name" dangerouslySetInnerHTML={{ __html: messageSender }}/>
-                : null
-            }
+            {this.renderTitle()}
             {
               message.sender.userName
                 ? <span className="message__sender__nick">@{message.sender.userName}</span>
@@ -157,7 +167,7 @@ class MessageItem extends Component {
   }
 
   renderLeftBlock() {
-    const { isShort, message, state } = this.props;
+    const { isShort, message, state, peer } = this.props
 
     if (isShort) {
       return (
@@ -167,17 +177,32 @@ class MessageItem extends Component {
         </div>
       );
     } else {
-      return (
-        <div className="message__info message__info--avatar">
-          <AvatarItem
-            className="message__avatar"
-            image={message.sender.avatar}
-            placeholder={message.sender.placeholder}
-            title={message.sender.title}
-            onClick={this.onClick}
-          />
-        </div>
-      )
+      if (PeerUtils.isGroupBot(message.sender)) {
+        const group = GroupStore.getGroup(peer.id);
+        return (
+          <div className="message__info message__info--avatar">
+            <AvatarItem
+              className="message__avatar"
+              image={group.avatar}
+              placeholder={group.placeholder}
+              title={group.title}
+              onClick={this.onClick}
+            />
+          </div>
+        )
+      } else {
+        return (
+          <div className="message__info message__info--avatar">
+            <AvatarItem
+              className="message__avatar"
+              image={message.sender.avatar}
+              placeholder={message.sender.placeholder}
+              title={message.sender.title}
+              onClick={this.onClick}
+            />
+          </div>
+        )
+      }
     }
   }
 
