@@ -17,6 +17,7 @@ import LoginActionCreators from '../../actions/LoginActionCreators';
 import HelpActionCreators from '../../actions/HelpActionCreators';
 import AddContactActionCreators from '../../actions/AddContactActionCreators';
 import PreferencesActionCreators from '../../actions/PreferencesActionCreators';
+import AboutActionCreators from '../../actions/AboutActionCreators';
 
 import ProfileStore from '../../stores/ProfileStore';
 
@@ -35,6 +36,7 @@ class HeaderSection extends Component {
     this.openTwitter = this.openTwitter.bind(this);
     this.openFacebook = this.openFacebook.bind(this);
     this.openHomePage = this.openHomePage.bind(this);
+    this.openAboutModal = this.openAboutModal.bind(this);
   }
 
   static getStores() {
@@ -103,6 +105,10 @@ class HeaderSection extends Component {
     } else {
       window.open(homePage, '_blank');
     }
+  }
+
+  openAboutModal() {
+    AboutActionCreators.open()
   }
 
   setLogout = () => {
@@ -177,6 +183,15 @@ class HeaderSection extends Component {
     }
   }
 
+  renderAboutLink() {
+    return (
+      <li className="dropdown__menu__item" onClick={this.openAboutModal}>
+        <i className="material-icons">info_outline</i>
+        <FormattedMessage id="menu.about"/>
+      </li>
+    );
+  }
+
   render() {
     const { profile, isOpened } = this.state;
 
@@ -228,6 +243,8 @@ class HeaderSection extends Component {
               {this.renderTwitterLink()}
               {this.renderFacebookLink()}
               {this.renderHomeLink()}
+
+              {this.renderAboutLink()}
 
               <li className="dropdown__menu__separator"/>
               <li className="dropdown__menu__item" onClick={this.setLogout}>
