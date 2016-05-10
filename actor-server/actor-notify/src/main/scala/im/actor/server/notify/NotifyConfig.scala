@@ -7,7 +7,11 @@ import im.actor.config.ActorConfig
 
 import scala.concurrent.duration.FiniteDuration
 
-private[notify] final case class NotifyConfig(notifyAfter: FiniteDuration, emailTemplatePath: String)
+private[notify] final case class NotifyConfig(
+  notifyAfter:       FiniteDuration,
+  emailTemplatePath: String,
+  resolvedDomains:   Set[String]
+)
 
 private[notify] object NotifyConfig {
   def load(config: Config): Try[NotifyConfig] = Try(config.extract[NotifyConfig])

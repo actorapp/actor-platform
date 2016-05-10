@@ -84,7 +84,7 @@ private[notify] object NotifyProcessor {
     )
   }
 
-  private def props = Props(classOf[NotifyProcessor])
+  private def props = Props(classOf[NotifyProcessor]).withDispatcher("notify-prio-dispatcher")
 
 }
 
@@ -102,6 +102,7 @@ private[notify] class NotifyProcessor extends Processor[NotifyProcessorState] {
   private val notifyConfig = NotifyConfig.load.get
   private val notifyAfter = notifyConfig.notifyAfter.toMillis
   private val notificationTemplate = NotificationTemplate(notifyConfig.emailTemplatePath)
+  private val resolvedDomains = notifyConfig.resolvedDomains
 
   self ! SubscribeToPresence()
   system.scheduler.schedule(Duration.Zero, 10.minutes, self, FindNewUsers())
@@ -154,7 +155,7 @@ private[notify] class NotifyProcessor extends Processor[NotifyProcessorState] {
   private def notify(userId: Int): Unit = for {
     user ← userExt.getUser(userId)
     result ← user.emails match {
-      case userEmail +: _ ⇒
+      case userEmail +: _ if resolvedDomains contains userEmail ⇒
         for {
           grouped ← dialogExt.fetchGroupedDialogs(userId)
           _ ← emailIfNeeded(userEmail, user.name, grouped) match {
