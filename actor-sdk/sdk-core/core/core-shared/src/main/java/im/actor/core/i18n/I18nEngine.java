@@ -343,7 +343,7 @@ public class I18nEngine extends IntlEngine {
             case SERVICE_ABOUT:
                 return getTemplateNamed(senderId, "content.service.groups.about_changed.compact");
             case SERVICE_JOINED:
-                return getTemplateNamed(senderId, "content.service.groups.joined.compact");
+                return getTemplateNamed(senderId, "content.service.groups.joined");
             case SERVICE_CALL_ENDED:
                 return get("content.service.calls.ended");
             case SERVICE_CALL_MISSED:
