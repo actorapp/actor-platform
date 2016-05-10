@@ -8,7 +8,7 @@ import com.google.protobuf.wrappers.Int64Value
 import com.google.protobuf.{ ByteString, CodedInputStream }
 import com.trueaccord.scalapb.TypeMapper
 import im.actor.api.rpc.files.ApiAvatar
-import im.actor.api.rpc.groups.ApiGroup
+import im.actor.api.rpc.groups.{ ApiGroup, ApiGroupFull }
 import im.actor.api.rpc.messaging.ApiMessage
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.api.rpc.peers.ApiPeer
@@ -77,6 +77,19 @@ private[api] trait MessageMapper {
   }
 
   private def unapplyGroup(group: ApiGroup): ByteString = {
+    ByteString.copyFrom(group.toByteArray)
+  }
+
+  private def applyFullGroup(bytes: ByteString): ApiGroupFull = {
+    if (bytes.size() > 0) {
+      val res = ApiGroupFull.parseFrom(CodedInputStream.newInstance(bytes.toByteArray))
+      get(res)
+    } else {
+      null
+    }
+  }
+
+  private def unapplyFullGroup(group: ApiGroupFull): ByteString = {
     ByteString.copyFrom(group.toByteArray)
   }
 
@@ -163,6 +176,8 @@ private[api] trait MessageMapper {
   implicit val fullUserMapper: TypeMapper[ByteString, ApiFullUser] = TypeMapper(applyFullUser)(unapplyFullUser)
 
   implicit val groupMapper: TypeMapper[ByteString, ApiGroup] = TypeMapper(applyGroup)(unapplyGroup)
+
+  implicit val fullGroupMapper: TypeMapper[ByteString, ApiGroupFull] = TypeMapper(applyFullGroup)(unapplyFullGroup)
 
   implicit val peerMapper: TypeMapper[ByteString, ApiPeer] = TypeMapper(applyPeer)(unapplyPeer)
 
