@@ -6,6 +6,7 @@ import akka.actor._
 import akka.cluster.sharding.ShardRegion
 import akka.pattern.pipe
 import akka.persistence.RecoveryCompleted
+import akka.stream.{ ActorMaterializer, ActorMaterializerSettings, Materializer }
 import akka.util.Timeout
 import im.actor.api.rpc.collections.ApiMapValue
 import im.actor.serialization.ActorSerializer
@@ -137,6 +138,7 @@ private[group] final class GroupProcessor
 
   protected implicit val system: ActorSystem = context.system
   protected implicit val ec: ExecutionContext = context.dispatcher
+  protected implicit val mat: Materializer = ActorMaterializer(ActorMaterializerSettings(system))
 
   protected implicit val timeout: Timeout = Timeout(10.seconds)
 
@@ -191,15 +193,17 @@ private[group] final class GroupProcessor
   }
 
   override def handleQuery(state: GroupState): Receive = {
-    case GroupQueries.GetIntegrationToken(_, userId) ⇒ getIntegrationToken(state, userId)
-    case GroupQueries.GetIntegrationTokenInternal(_) ⇒ getIntegrationToken(state)
-    case GroupQueries.GetApiStruct(_, userId)        ⇒ getApiStruct(state, userId)
-    case GroupQueries.CheckAccessHash(_, accessHash) ⇒ checkAccessHash(state, accessHash)
-    case GroupQueries.GetMembers(_)                  ⇒ getMembers(state)
-    case GroupQueries.IsPublic(_)                    ⇒ isPublic(state)
-    case GroupQueries.GetAccessHash(_)               ⇒ getAccessHash(state)
-    case GroupQueries.IsHistoryShared(_)             ⇒ isHistoryShared(state)
-    case GroupQueries.GetTitle(_)                    ⇒ getTitle(state)
+    case GroupQueries.GetIntegrationToken(_, userId)              ⇒ getIntegrationToken(state, userId)
+    case GroupQueries.GetIntegrationTokenInternal(_)              ⇒ getIntegrationToken(state)
+    case GroupQueries.GetApiStruct(_, userId)                     ⇒ getApiStruct(state, userId)
+    case GroupQueries.GetApiFullStruct(_, userId)                 ⇒ getApiFullStruct(state, userId)
+    case GroupQueries.CheckAccessHash(_, accessHash)              ⇒ checkAccessHash(state, accessHash)
+    case GroupQueries.GetMembers(_)                               ⇒ getMembers(state)
+    case GroupQueries.IsPublic(_)                                 ⇒ isPublic(state)
+    case GroupQueries.GetAccessHash(_)                            ⇒ getAccessHash(state)
+    case GroupQueries.IsHistoryShared(_)                          ⇒ isHistoryShared(state)
+    case GroupQueries.GetTitle(_)                                 ⇒ getTitle(state)
+    case GroupQueries.LoadMembers(_, clientUserId, limit, offset) ⇒ loadMembers(state, clientUserId, limit, offset)
   }
 
   override def handleInitCommand: Receive = {

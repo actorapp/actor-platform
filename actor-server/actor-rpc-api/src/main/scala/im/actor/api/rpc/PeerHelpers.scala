@@ -178,6 +178,48 @@ object PeerHelpers {
 
   def genInviteUrl(baseUrl: String, token: String = "") = s"$baseUrl/join/$token"
 
+  def withGroupOutPeerF[R <: RpcResponse](groupOutPeer: ApiGroupOutPeer)(f: FullGroup ⇒ Future[RpcError Xor R])(
+    implicit
+    ec:     ExecutionContext,
+    system: ActorSystem
+  ) =
+    DbExtension(system).db.run(withGroupOutPeer(groupOutPeer)(fg ⇒ DBIO.from(f(fg))))
+
+  def withGroupOutPeer[R <: RpcResponse](groupOutPeer: ApiGroupOutPeer)(f: FullGroup ⇒ DBIO[RpcError Xor R])(implicit ec: ExecutionContext): DBIO[RpcError Xor R] = {
+    GroupRepo.findFull(groupOutPeer.groupId) flatMap {
+      case Some(group) ⇒
+        if (group.accessHash != groupOutPeer.accessHash) {
+          DBIO.successful(Error(InvalidAccessHash))
+        } else {
+          f(group)
+        }
+      case None ⇒
+        DBIO.successful(Error(CommonRpcErrors.GroupNotFound))
+    }
+  }
+
+  def withGroupOutPeers[R <: RpcResponse](groupOutPeers: Seq[ApiGroupOutPeer])(f: ⇒ DBIO[RpcError Xor R])(
+    implicit
+    client:      AuthorizedClientData,
+    actorSystem: ActorSystem,
+    ec:          ExecutionContext
+  ): DBIO[RpcError Xor R] = {
+    val checkOptsFutures = groupOutPeers map {
+      case ApiGroupOutPeer(groupId, accessHash) ⇒
+        DBIO.from(ACLUtils.checkOutPeer(ApiOutPeer(ApiPeerType.Group, groupId, accessHash), client.authId) map (Some(_)))
+    }
+
+    renderCheckResult(checkOptsFutures, f)
+  }
+
+  def withGroupOutPeersF[R <: RpcResponse](groupOutPeers: Seq[ApiGroupOutPeer])(f: ⇒ Future[RpcError Xor R])(
+    implicit
+    client:      AuthorizedClientData,
+    actorSystem: ActorSystem,
+    ec:          ExecutionContext
+  ): Future[RpcError Xor R] =
+    DbExtension(actorSystem).db.run(withGroupOutPeers(groupOutPeers)(DBIO.from(f)))
+
   private def checkUserPeer(userId: Int, accessHash: Long)(
     implicit
     client:      AuthorizedClientData,
@@ -188,19 +230,6 @@ object PeerHelpers {
       userOpt ← UserRepo.find(userId)
     } yield {
       userOpt map (u ⇒ ACLUtils.userAccessHash(client.authId, u.id, u.accessSalt) == accessHash)
-    }
-  }
-
-  private def withGroupOutPeer[R <: RpcResponse](groupOutPeer: ApiGroupOutPeer)(f: FullGroup ⇒ DBIO[RpcError Xor R])(implicit ec: ExecutionContext): DBIO[RpcError Xor R] = {
-    GroupRepo.findFull(groupOutPeer.groupId) flatMap {
-      case Some(group) ⇒
-        if (group.accessHash != groupOutPeer.accessHash) {
-          DBIO.successful(Error(InvalidAccessHash))
-        } else {
-          f(group)
-        }
-      case None ⇒
-        DBIO.successful(Error(CommonRpcErrors.GroupNotFound))
     }
   }
 

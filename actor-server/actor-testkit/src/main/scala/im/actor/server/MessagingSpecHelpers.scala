@@ -78,7 +78,7 @@ trait MessagingSpecHelpers extends ScalaFutures with PeersImplicits with Matcher
   def textMessage(text: String) = ApiTextMessage(text, Vector.empty, None)
 
   def getDialogGroups()(implicit clientData: ClientData, service: MessagingService): Map[String, IndexedSeq[ApiDialogShort]] = {
-    whenReady(service.handleLoadGroupedDialogs()) { resp ⇒
+    whenReady(service.handleLoadGroupedDialogs(Vector.empty)) { resp ⇒
       resp.toOption.get.dialogs map {
         case ApiDialogGroup(_, key, dialogs) ⇒ key → dialogs
       } toMap
