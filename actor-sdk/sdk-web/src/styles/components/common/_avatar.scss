@@ -12,7 +12,7 @@
     border-radius: 100%;
   }
   &__placeholder {
-    display: flex;
+    display: inline-flex;
     flex-direction: column;
 
     user-select: none;
