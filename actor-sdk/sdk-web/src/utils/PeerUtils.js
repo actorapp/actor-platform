@@ -50,6 +50,7 @@ export default {
   },
 
   isGroupBot(user) {
-    return  user.title.toLowerCase().includes('bot') || user.userName.toLowerCase().includes('bot');
+    return (user.title && user.title.toLowerCase().includes('bot')) ||
+           (user.userName && user.userName.toLowerCase().includes('bot'));
   }
 };
