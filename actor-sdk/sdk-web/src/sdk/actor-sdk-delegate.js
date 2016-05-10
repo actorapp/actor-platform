@@ -22,7 +22,8 @@ class ActorSDKDelegate {
       join: null,
       archive: null,
       empty: null,
-      sidebar: null
+      sidebar: null,
+      modal: null
     },
     features: {
       calls: true,
