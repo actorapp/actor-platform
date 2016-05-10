@@ -67,9 +67,9 @@ final class ContactRegisteredSpec extends BaseAppSuite with ImplicitAuthService 
         }
       }
 
-      whenReady(msgService.handleLoadGroupedDialogs()) { resp ⇒
+      whenReady(msgService.handleLoadGroupedDialogs(Vector.empty)) { resp ⇒
         inside(resp) {
-          case Ok(ResponseLoadGroupedDialogs(Vector(dgp, dgg), _, _, _, _)) ⇒
+          case Ok(ResponseLoadGroupedDialogs(Vector(dgp, dgg), _, _, _, _, _, _)) ⇒
             dgp.dialogs should ===(Vector())
             dgg.dialogs should ===(Vector())
         }

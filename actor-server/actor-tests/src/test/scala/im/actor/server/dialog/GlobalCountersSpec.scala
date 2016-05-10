@@ -74,7 +74,7 @@ final class GlobalCountersSpec
       }
 
       // Global counter for kicked user should go to zero
-      whenReady(groupsService.handleKickUser(groupPeer, 12L, getUserOutPeer(alice.id, aliceAuthId)))(identity)
+      whenReady(groupsService.handleKickUser(groupPeer, 12L, getUserOutPeer(alice.id, aliceAuthId), Vector.empty))(identity)
 
       // These messages should not go to counter
       for (i ← 1 to 10) {

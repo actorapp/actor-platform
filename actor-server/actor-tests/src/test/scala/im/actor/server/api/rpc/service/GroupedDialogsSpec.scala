@@ -52,9 +52,9 @@ final class GroupedDialogsSpec
       service.handleSendMessage(user2Peer, Random.nextLong, ApiTextMessage("Hi there", Vector.empty, None), None, None),
       service.handleSendMessage(groupPeer, Random.nextLong, ApiTextMessage("Hi all there", Vector.empty, None), None, None)
     ))) { _ ⇒
-      whenReady(service.handleLoadGroupedDialogs()) { resp ⇒
+      whenReady(service.handleLoadGroupedDialogs(Vector.empty)) { resp ⇒
         inside(resp) {
-          case Ok(ResponseLoadGroupedDialogs(dgroups, users, groups, _, _)) ⇒
+          case Ok(ResponseLoadGroupedDialogs(dgroups, users, groups, _, _, _, _)) ⇒
             dgroups.length shouldBe 2
 
             dgroups.map(_.key) should be(Seq(
@@ -167,7 +167,7 @@ final class GroupedDialogsSpec
     prepareDialogs(bob)
     whenReady(service.handleFavouriteDialog(bobPeer))(identity)
 
-    whenReady(service.handleLoadGroupedDialogs()) { resp ⇒
+    whenReady(service.handleLoadGroupedDialogs(Vector.empty)) { resp ⇒
       resp.toOption.get.dialogs.map(_.key).head should be(DialogExtension.groupKey(DialogGroupType.Favourites))
     }
 

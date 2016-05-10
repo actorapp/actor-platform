@@ -115,7 +115,10 @@ trait HistoryHandlers {
       }
     }
 
-  override def doHandleLoadGroupedDialogs(clientData: ClientData): Future[HandlerResult[ResponseLoadGroupedDialogs]] =
+  override def doHandleLoadGroupedDialogs(
+    optimizations: IndexedSeq[ApiUpdateOptimization.Value],
+    clientData:    ClientData
+  ): Future[HandlerResult[ResponseLoadGroupedDialogs]] =
     authorized(clientData) { implicit client ⇒
       for {
         dialogGroups ← dialogExt.fetchApiGroupedDialogs(client.userId)
@@ -129,13 +132,19 @@ trait HistoryHandlers {
         (groups, users) ← GroupUtils.getGroupsUsers(groupIds, userIds, client.userId, client.authId)
         archivedExist ← dialogExt.fetchArchivedDialogs(client.userId, None, 1) map (_._1.nonEmpty)
         showInvite ← db.run(UserContactRepo.count(client.userId)) map (_ < 5)
-      } yield Ok(ResponseLoadGroupedDialogs(
-        dialogGroups,
-        users.toVector,
-        groups.toVector,
-        Some(archivedExist),
-        Some(showInvite)
-      ))
+      } yield {
+        val stripEntities = optimizations contains ApiUpdateOptimization.STRIP_ENTITIES
+
+        Ok(ResponseLoadGroupedDialogs(
+          dialogs = dialogGroups,
+          users = if (stripEntities) Vector.empty else users.toVector,
+          groups = if (stripEntities) Vector.empty else groups.toVector,
+          showArchived = Some(archivedExist),
+          showInvite = Some(showInvite),
+          userPeers = if (stripEntities) users.toVector map (u ⇒ ApiUserOutPeer(u.id, u.accessHash)) else Vector.empty,
+          groupPeers = if (stripEntities) groups.toVector map (g ⇒ ApiGroupOutPeer(g.id, g.accessHash)) else Vector.empty
+        ))
+      }
     }
 
   override def doHandleHideDialog(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseDialogsOrder]] =

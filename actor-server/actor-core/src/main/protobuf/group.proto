@@ -15,6 +15,7 @@ import "dialog.proto";
 enum GroupType {
     General = 1;
     Public = 2;
+    Channel = 3;
 }
 
 // TODO: put GroupCommands and GroupQueries inside
@@ -203,6 +204,17 @@ message GroupQueries {
         required bytes struct = 1 [(scalapb.field).type = "im.actor.api.rpc.groups.ApiGroup"];
     }
 
+    message GetApiFullStruct {
+        option (scalapb.message).extends = "im.actor.server.group.GroupQuery";
+
+        required int32 group_id = 1;
+        required int32 client_user_id = 2;
+    }
+
+    message GetApiFullStructResponse {
+        required bytes struct = 1 [(scalapb.field).type = "im.actor.api.rpc.groups.ApiGroupFull"];
+    }
+
     message CheckAccessHash {
         option (scalapb.message).extends = "im.actor.server.group.GroupQuery";
 
@@ -264,6 +276,20 @@ message GroupQueries {
 
     message GetTitleResponse {
         required string title = 1;
+    }
+
+    message LoadMembers {
+        option (scalapb.message).extends = "im.actor.server.group.GroupQuery";
+
+        required int32 group_id = 1;
+        required int32 client_user_id = 3;
+        required int32 limmit = 4;
+        optional bytes offset = 2;
+    }
+
+    message LoadMembersResponse {
+        repeated int32 user_ids = 1;
+        optional bytes offset = 2;
     }
 }
 
