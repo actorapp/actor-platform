@@ -11,8 +11,7 @@ const l18n = {};
 
 const options = {
   endpoints: [
-    'wss://front1-ws-mtproto-api-rev2.actor.im',
-    'wss://front2-ws-mtproto-api-rev2.actor.im'
+              'ws://220.189.207.18:9080'
   ],
   delegate: new ActorSDKDelegate(components, actions, l18n),
   isExperimental: true
@@ -21,3 +20,5 @@ const options = {
 const app = new ActorSDK(options);
 
 app.startApp();
+//    'wss://front1-ws-mtproto-api-rev2.actor.im',
+//    'wss://front2-ws-mtproto-api-rev2.actor.im'

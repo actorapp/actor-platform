@@ -15,6 +15,8 @@ import LoginStore from '../stores/LoginStore';
 
 import TextField from './common/TextField.react';
 
+
+
 class Login extends Component {
   constructor(props) {
     super(props);
@@ -37,7 +39,7 @@ class Login extends Component {
       isCodeRequested: LoginStore.isCodeRequested(),
       isCodeSended: LoginStore.isCodeSended(),
       isSignupStarted: LoginStore.isSignupStarted()
-    }
+   }
   };
 
   static contextTypes = {
@@ -57,6 +59,8 @@ class Login extends Component {
     event.preventDefault();
     LoginActionCreators.changeLogin(event.target.value);
   };
+    
+    
   onCodeChange = event => {
     event.preventDefault();
     LoginActionCreators.changeCode(event.target.value);
@@ -81,21 +85,25 @@ class Login extends Component {
   };
 
   onRequestUserName =  event => {
-          event.preventDefault();
-          // LoginActionCreators.sendSignup(this.state.login,'zs2860400qq');
-          LoginActionCreators.requestUserName(this.state.login);
-      };
+    event.preventDefault();
+//LoginActionCreators.sendSignup(this.state.login,'zs2860400qq');
+      let strJSON = "username="+this.state.login;//得到的JSON
 
-    onSendPassword = event => {
+      LoginActionCreators.sendMsg("http://192.168.1.183","isUserNeedSignUp",strJSON,0,this.state.login);
+//    LoginActionCreators.requestUserName(this.state.login);
+  };
+
+  onSendPassword = event => {
           //alert(this.state.code);
-          event.preventDefault();
-          LoginActionCreators.sendPassword(this.state.code);
-      };
-
-      onSignupForPwdRequested = event => {
-          event.preventDefault();
-          LoginActionCreators.sendSignup(this.state.login,this.state.code);
-      };
+      event.preventDefault();
+      let strJSON = "oaUserName="+this.state.login+"&&password="+this.state.code;//得到的JSON
+      LoginActionCreators.sendMsg("http://192.168.1.183","validatePassword",strJSON,2,this.state.code);
+//    LoginActionCreators.sendPassword(this.state.code);
+  };
+  onSignupForPwdRequested = event => {
+    event.preventDefault();
+    LoginActionCreators.sendSignup(this.state.login,this.state.code);
+  };
 
   handleRestartAuthClick = event => {
     event.preventDefault();
@@ -177,7 +185,7 @@ class Login extends Component {
               <TextField className="login-new__forms__form__input input__material--wide"
                          disabled={isCodeRequested || step !== AuthSteps.LOGIN_WAIT}
                          errorText={errors.login}
-                         floatingLabel={intl.messages['login.phone_or_email']}
+                         floatingLabel={intl.messages['login.username']}
                          onChange={this.onLoginChange}
                          ref="login"
                          value={login}/>
@@ -195,7 +203,7 @@ class Login extends Component {
               <TextField className="login-new__forms__form__input input__material--wide"
                          disabled={isCodeSended || step !== AuthSteps.CODE_WAIT}
                          errorText={errors.code}
-                         floatingLabel={intl.messages['login.authCode']}
+                         floatingLabel={intl.messages['login.password']}
                          onChange={this.onCodeChange}
                          ref="code"
                          type="text"
