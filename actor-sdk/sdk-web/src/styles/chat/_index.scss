@@ -55,11 +55,11 @@ $chat-footer-height: 100px;
     color: #ccc;
   }
 
-  &--clickable {
-    cursor: pointer;
-    color: $dark-sky-blue;
-    :hover {
-      color: darken($dark-sky-blue, 10%);
-    }
-  }
+  // &--clickable {
+  //   cursor: pointer;
+  //   color: $dark-sky-blue;
+  //   :hover {
+  //     color: darken($dark-sky-blue, 10%);
+  //   }
+  // }
 }

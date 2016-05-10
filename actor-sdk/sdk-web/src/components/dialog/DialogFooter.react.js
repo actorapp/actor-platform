@@ -54,16 +54,20 @@ class DialogFooter extends Component {
 
     if (info.isBlocked) {
       return (
-        <footer className="chat__footer chat__footer--disabled chat__footer--clickable" onClick={onUnblock}>
-          <FormattedMessage id="compose.unblock" />
+        <footer className="chat__footer chat__footer--disabled">
+          <button className="button button--flat" onClick={onUnblock}>
+            <FormattedMessage id="compose.unblock" />
+          </button>
         </footer>
       );
     }
 
     if (info.isBot && !info.isStarted) {
       return (
-        <footer className="chat__footer chat__footer--disabled chat__footer--clickable" onClick={onStart}>
-          <FormattedMessage id="compose.start" />
+        <footer className="chat__footer chat__footer--disabled">
+          <button className="button button--flat" onClick={onStart}>
+            <FormattedMessage id="compose.start" />
+          </button>
         </footer>
       );
     }
