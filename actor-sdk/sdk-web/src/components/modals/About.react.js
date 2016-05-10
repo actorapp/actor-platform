@@ -4,12 +4,17 @@
 
 import React, { Component, PropTypes } from 'react';
 import Modal from 'react-modal';
+// import { FormattedMessage } from 'react-intl';
+import SharedContainer from '../../utils/SharedContainer';
 
 import AboutActionCreators from '../../actions/AboutActionCreators';
 
 class About extends Component {
   constructor(props, context) {
     super(props, context);
+
+    const SharedActor = SharedContainer.get();
+    this.appName = SharedActor.appName ? SharedActor.appName : appName;
   }
 
   handleClose() {
@@ -17,7 +22,8 @@ class About extends Component {
   }
 
   render() {
-    console.debug('About render')
+    const appTitle = `${this.appName} messenger`;
+
     return (
       <Modal
         overlayClassName="modal-overlay"
@@ -28,12 +34,14 @@ class About extends Component {
         <div className="about">
           <div className="modal__content">
 
-            <header className="modal__header">
-              <i className="modal__header__icon material-icons">person_add</i>
-              <FormattedMessage id="invite.title" tagName="h1"/>
-            </header>
-
             <div className="modal__body">
+              <img
+                className="about__logo"
+                src="/assets/images/about_logo.png"
+                alt={appTitle}/>
+
+              <div className="about__title">{appTitle}</div>
+              <div className="about__version"></div>
             </div>
 
           </div>
