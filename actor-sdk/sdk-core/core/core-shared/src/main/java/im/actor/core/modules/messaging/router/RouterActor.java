@@ -740,7 +740,7 @@ public class RouterActor extends ModuleActor {
             UpdateMessageRead read = (UpdateMessageRead) update;
             Peer peer = convert(read.getPeer());
             if (isValidPeer(peer)) {
-                onMessageRead(peer, read.getReadDate());
+                onMessageRead(peer, read.getStartDate());
             }
             return Promise.success(null);
         } else if (update instanceof UpdateMessageReadByMe) {
