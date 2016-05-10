@@ -4,6 +4,9 @@
 	},
 
 	"language": {
+
+		"code": "En",
+
 		"format": {
 			"time": {
 				"yesterday":{
@@ -31,7 +34,7 @@
 
 		"referencing": {
 			"you": "You",
-			"Thee": "You"
+			"thee": "You"
 		},
 
 		"sequence": {
@@ -42,8 +45,8 @@
 
 	"groups": {
 		"members": { 
-			"default": "{count} members",
-			"one": "{count} member"
+			"one": "{count} member",
+			"other": "{count} members"
 		}
 	},
 

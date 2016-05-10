@@ -4,6 +4,9 @@
 	},
 
 	"language": {
+
+		"code": "Pt",
+
 		"format": {
 			"time": {
 				"yesterday":{
@@ -31,7 +34,7 @@
 
 		"referencing": {
 			"you": "Você",
-			"Thee": "Você"
+			"thee": "Você"
 		},
 
 		"sequence": {
