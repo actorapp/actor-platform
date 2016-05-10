@@ -123,7 +123,7 @@ class SearchServiceImpl(implicit system: ActorSystem) extends SearchService {
       dateCreated = Some(apiGroup.createDate),
       creator = Some(apiGroup.creatorUserId),
       isPublic = Some(isPublic),
-      isJoined = Some(apiGroup.isMember)
+      isJoined = apiGroup.isMember
     )
 
   private def searchContacts(text: Option[String])(implicit client: AuthorizedClientData): Future[IndexedSeq[ApiUser]] = {

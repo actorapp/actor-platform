@@ -183,7 +183,7 @@ trait ApiToBotConversions {
         title = apiGroup.title,
         about = apiGroup.about,
         avatar = apiGroup.avatar,
-        isMember = apiGroup.isMember,
+        isMember = apiGroup.isMember getOrElse false,
         creatorUserId = apiGroup.creatorUserId,
         members = apiGroup.members
       )

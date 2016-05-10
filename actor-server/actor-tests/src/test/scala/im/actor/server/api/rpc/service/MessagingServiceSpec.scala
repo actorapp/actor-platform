@@ -223,27 +223,27 @@ class MessagingServiceSpec
           resp should matchForbidden
         }
 
-        whenReady(groupsService.handleEditGroupTitle(groupOutPeer, 4L, "Loosers")(alienClientData)) { resp ⇒
+        whenReady(groupsService.handleEditGroupTitle(groupOutPeer, 4L, "Loosers", Vector.empty)(alienClientData)) { resp ⇒
           resp should matchForbidden
         }
 
         val (user3, authId3, _, _) = createUser()
         val user3OutPeer = ApiUserOutPeer(user3.id, 11)
 
-        whenReady(groupsService.handleInviteUser(groupOutPeer, 4L, user3OutPeer)(alienClientData)) { resp ⇒
+        whenReady(groupsService.handleInviteUser(groupOutPeer, 4L, user3OutPeer, Vector.empty)(alienClientData)) { resp ⇒
           resp should matchForbidden
         }
 
         val fileLocation = ApiFileLocation(1L, 1L)
-        whenReady(groupsService.handleEditGroupAvatar(groupOutPeer, 5L, fileLocation)(alienClientData)) { resp ⇒
+        whenReady(groupsService.handleEditGroupAvatar(groupOutPeer, 5L, fileLocation, Vector.empty)(alienClientData)) { resp ⇒
           resp should matchForbidden
         }
 
-        whenReady(groupsService.handleRemoveGroupAvatar(groupOutPeer, 5L)(alienClientData)) { resp ⇒
+        whenReady(groupsService.handleRemoveGroupAvatar(groupOutPeer, 5L, Vector.empty)(alienClientData)) { resp ⇒
           resp should matchForbidden
         }
 
-        whenReady(groupsService.handleLeaveGroup(groupOutPeer, 5L)(alienClientData)) { resp ⇒
+        whenReady(groupsService.handleLeaveGroup(groupOutPeer, 5L, Vector.empty)(alienClientData)) { resp ⇒
           resp should matchForbidden
         }
 

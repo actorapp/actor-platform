@@ -102,8 +102,8 @@ final class GroupsServiceSpec
     val groupOutPeer = createGroup("Fun group", Set(user2.id)).groupPeer
 
     expectUpdate(classOf[UpdateChatGroupsChanged])(identity)
-    expectUpdate(classOf[UpdateGroupUserInvited])(identity)
-    expectUpdate(classOf[UpdateGroupInvite])(identity)
+    expectUpdate(classOf[UpdateGroupUserInvitedObsolete])(identity)
+    expectUpdate(classOf[UpdateGroupInviteObsolete])(identity)
 
     whenReady(db.run(persist.GroupUserRepo.findUserIds(groupOutPeer.groupId))) { userIds ⇒
       userIds.toSet shouldEqual Set(user1.id, user2.id)
@@ -126,19 +126,19 @@ final class GroupsServiceSpec
       implicit val clientData = clientData1
       val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
 
-      whenReady(service.handleInviteUser(groupOutPeer, Random.nextLong(), user2OutPeer)) { resp ⇒
+      whenReady(service.handleInviteUser(groupOutPeer, Random.nextLong(), user2OutPeer, Vector.empty)) { resp ⇒
         resp should matchPattern {
           case Ok(ResponseSeqDate(3, _, _)) ⇒
         }
       }
-      expectUpdate(classOf[UpdateGroupUserInvited])(identity)
-      expectUpdate(classOf[UpdateGroupInvite])(identity)
+      expectUpdate(classOf[UpdateGroupUserInvitedObsolete])(identity)
+      expectUpdate(classOf[UpdateGroupInviteObsolete])(identity)
       expectUpdate(classOf[UpdateChatGroupsChanged])(identity)
     }
 
     {
       implicit val clientData = clientData2
-      expectUpdate(classOf[UpdateGroupInvite])(identity)
+      expectUpdate(classOf[UpdateGroupInviteObsolete])(identity)
       //UpdateChatGroupsChanged will come after creation of dialog
     }
 
@@ -157,20 +157,20 @@ final class GroupsServiceSpec
 
       val groupOutPeer = createGroup("Fun group", Set(user2.id)).groupPeer
 
-      whenReady(service.handleEditGroupTitle(groupOutPeer, Random.nextLong(), "Very fun group")) { resp ⇒
+      whenReady(service.handleEditGroupTitle(groupOutPeer, Random.nextLong(), "Very fun group", Vector.empty)) { resp ⇒
         resp should matchPattern {
           case Ok(ResponseSeqDate(4, _, _)) ⇒
         }
       }
       expectUpdate(classOf[UpdateChatGroupsChanged])(identity)
-      expectUpdate(classOf[UpdateGroupUserInvited])(identity)
-      expectUpdate(classOf[UpdateGroupInvite])(identity)
+      expectUpdate(classOf[UpdateGroupUserInvitedObsolete])(identity)
+      expectUpdate(classOf[UpdateGroupInviteObsolete])(identity)
       expectUpdate(classOf[UpdateGroupTitleChanged])(identity)
     }
 
     {
       implicit val clientData = clientData2
-      expectUpdate(classOf[UpdateGroupInvite])(identity)
+      expectUpdate(classOf[UpdateGroupInviteObsolete])(identity)
       expectUpdate(classOf[UpdateGroupTitleChanged])(identity)
       //UpdateChatGroupsChanged will come after creation of dialog
     }
@@ -198,7 +198,7 @@ final class GroupsServiceSpec
 
     }
 
-    whenReady(service.handleInviteUser(groupOutPeer, Random.nextLong(), user2OutPeer)) { resp ⇒
+    whenReady(service.handleInviteUser(groupOutPeer, Random.nextLong(), user2OutPeer, Vector.empty)) { resp ⇒
       resp should matchPattern { case Ok(_) ⇒ }
       whenReady(db.run(persist.HistoryMessageRepo.find(user1.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { serviceMessages ⇒
         serviceMessages should have length 2
@@ -216,7 +216,7 @@ final class GroupsServiceSpec
     }
 
     //TODO: is it ok to remove avatar of group without avatar
-    whenReady(service.handleRemoveGroupAvatar(groupOutPeer, Random.nextLong())) { resp ⇒
+    whenReady(service.handleRemoveGroupAvatar(groupOutPeer, Random.nextLong(), Vector.empty)) { resp ⇒
       resp should matchPattern { case Ok(_) ⇒ }
 
       Thread.sleep(500)
@@ -240,7 +240,7 @@ final class GroupsServiceSpec
       }
     }
 
-    whenReady(service.handleEditGroupTitle(groupOutPeer, Random.nextLong(), "Not fun group")) { resp ⇒
+    whenReady(service.handleEditGroupTitle(groupOutPeer, Random.nextLong(), "Not fun group", Vector.empty)) { resp ⇒
       resp should matchPattern { case Ok(_) ⇒ }
       whenReady(db.run(persist.HistoryMessageRepo.find(user1.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { serviceMessages ⇒
         serviceMessages should have length 4
@@ -248,7 +248,7 @@ final class GroupsServiceSpec
       }
     }
 
-    whenReady(service.handleLeaveGroup(groupOutPeer, Random.nextLong())(ClientData(authId2, sessionId, Some(AuthData(user2.id, authSid2, 42))))) { resp ⇒
+    whenReady(service.handleLeaveGroup(groupOutPeer, Random.nextLong(), Vector.empty)(ClientData(authId2, sessionId, Some(AuthData(user2.id, authSid2, 42))))) { resp ⇒
       resp should matchPattern { case Ok(_) ⇒ }
       whenReady(db.run(persist.HistoryMessageRepo.find(user1.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { serviceMessages ⇒
         serviceMessages should have length 5
@@ -256,7 +256,7 @@ final class GroupsServiceSpec
       }
     }
 
-    whenReady(service.handleInviteUser(groupOutPeer, Random.nextLong(), user2OutPeer)) { resp ⇒
+    whenReady(service.handleInviteUser(groupOutPeer, Random.nextLong(), user2OutPeer, Vector.empty)) { resp ⇒
       resp should matchPattern { case Ok(_) ⇒ }
       whenReady(db.run(persist.HistoryMessageRepo.find(user1.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { serviceMessages ⇒
         serviceMessages should have length 6
@@ -264,7 +264,7 @@ final class GroupsServiceSpec
       }
     }
 
-    whenReady(service.handleKickUser(groupOutPeer, Random.nextLong(), user2OutPeer)) { resp ⇒
+    whenReady(service.handleKickUser(groupOutPeer, Random.nextLong(), user2OutPeer, Vector.empty)) { resp ⇒
       resp should matchPattern { case Ok(_) ⇒ }
       whenReady(db.run(persist.HistoryMessageRepo.find(user1.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { serviceMessages ⇒
         serviceMessages should have length 7
@@ -416,9 +416,9 @@ final class GroupsServiceSpec
 
           {
             implicit val clientData = ClientData(authId2, sessionId, Some(AuthData(user2.id, authSid2, 42)))
-            whenReady(service.handleJoinGroup(url)) { resp ⇒
+            whenReady(service.handleJoinGroup(url, Vector.empty)) { resp ⇒
               resp should matchPattern {
-                case Ok(ResponseJoinGroup(_, _, _, _, _, _)) ⇒
+                case Ok(ResponseJoinGroup(_, _, _, _, _, _, _)) ⇒
               }
             }
           }
@@ -452,7 +452,7 @@ final class GroupsServiceSpec
             val outPeer = ApiOutPeer(ApiPeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
             whenReady(messagingService.handleMessageRead(outPeer, System.currentTimeMillis()))(_ ⇒ ())
 
-            whenReady(service.handleJoinGroup(url)) { resp ⇒
+            whenReady(service.handleJoinGroup(url, Vector.empty)) { resp ⇒
               inside(resp) {
                 case Error(err) ⇒ err shouldEqual GroupRpcErrors.YouAlreadyAMember
               }
@@ -483,7 +483,7 @@ final class GroupsServiceSpec
         case Ok(ResponseInviteUrl(url)) ⇒
           url should startWith(groupInviteConfig.baseUrl)
 
-          whenReady(service.handleJoinGroup(url)(clientData2))(_ ⇒ ())
+          whenReady(service.handleJoinGroup(url, Vector.empty)(clientData2))(_ ⇒ ())
 
           expectUpdate(createGroupResponse.seq, classOf[UpdateMessage]) { upd ⇒
             upd.message shouldEqual GroupServiceMessages.userJoined
@@ -513,7 +513,7 @@ final class GroupsServiceSpec
       implicit val clientData = clientData1
       val groupOutPeer = createGroup("Invite Fun group", Set.empty).groupPeer
 
-      whenReady(service.handleInviteUser(groupOutPeer, Random.nextLong, user2OutPeer)) { _ ⇒ }
+      whenReady(service.handleInviteUser(groupOutPeer, Random.nextLong, user2OutPeer, Vector.empty)) { _ ⇒ }
 
       sendMessageToGroup(groupOutPeer.groupId, ApiTextMessage("This is message to initialize group dialog", Vector.empty, None))
 
@@ -529,8 +529,8 @@ final class GroupsServiceSpec
 
     {
       implicit val clientData = clientData1
-      expectUpdate(classOf[UpdateGroupInvite])(identity)
-      expectUpdate(classOf[UpdateGroupUserInvited])(identity)
+      expectUpdate(classOf[UpdateGroupInviteObsolete])(identity)
+      expectUpdate(classOf[UpdateGroupUserInvitedObsolete])(identity)
       expectUpdate(classOf[UpdateMessageRead])(identity)
       expectUpdate(classOf[UpdateCountersChanged])(identity)
       expectUpdate(classOf[UpdateMessage])(identity)
@@ -552,9 +552,9 @@ final class GroupsServiceSpec
 
     val url = whenReady(service.handleGetGroupInviteUrl(groupOutPeer)(clientData1)) { _.toOption.get.url }
 
-    whenReady(service.handleJoinGroup(url)(clientData2)) { resp ⇒
+    whenReady(service.handleJoinGroup(url, Vector.empty)(clientData2)) { resp ⇒
       resp should matchPattern {
-        case Ok(ResponseJoinGroup(_, _, _, _, _, _)) ⇒
+        case Ok(ResponseJoinGroup(_, _, _, _, _, _, _)) ⇒
       }
     }
 
@@ -567,7 +567,7 @@ final class GroupsServiceSpec
     {
       implicit val clientData = clientData1
       expectUpdate(classOf[UpdateChatGroupsChanged])(identity)
-      expectUpdate(classOf[UpdateGroupInvite])(identity)
+      expectUpdate(classOf[UpdateGroupInviteObsolete])(identity)
       expectUpdate(classOf[UpdateMessageSent])(identity)
       expectUpdate(classOf[UpdateMessage])(identity)
       expectUpdate(classOf[UpdateCountersChanged])(identity)
@@ -636,9 +636,9 @@ final class GroupsServiceSpec
 
     val groupOutPeer = createGroup("Fun group", Set(user2.id)).groupPeer
 
-    whenReady(service.handleMakeUserAdmin(groupOutPeer, user2OutPeer)) { resp ⇒
+    whenReady(service.handleMakeUserAdminObsolete(groupOutPeer, user2OutPeer)) { resp ⇒
       inside(resp) {
-        case Ok(ResponseMakeUserAdmin(members, _, _)) ⇒
+        case Ok(ResponseMakeUserAdminObsolete(members, _, _)) ⇒
           members.find(_.userId == user2.id) foreach (_.isAdmin shouldEqual Some(true))
       }
     }
@@ -678,9 +678,9 @@ final class GroupsServiceSpec
 
     val groupOutPeer = createGroup("Fun group", Set(user2.id)).groupPeer
 
-    whenReady(service.handleMakeUserAdmin(groupOutPeer, user2OutPeer)) { resp ⇒
+    whenReady(service.handleMakeUserAdminObsolete(groupOutPeer, user2OutPeer)) { resp ⇒
       resp should matchPattern {
-        case Ok(_: ResponseMakeUserAdmin) ⇒
+        case Ok(_: ResponseMakeUserAdminObsolete) ⇒
       }
     }
 
@@ -697,7 +697,7 @@ final class GroupsServiceSpec
     val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
 
     val about = Some("It is group for fun")
-    whenReady(service.handleEditGroupAbout(groupOutPeer, 1L, about)) { resp ⇒
+    whenReady(service.handleEditGroupAbout(groupOutPeer, 1L, about, Vector.empty)) { resp ⇒
       resp should matchPattern {
         case Ok(_: ResponseSeqDate) ⇒
       }
@@ -720,7 +720,7 @@ final class GroupsServiceSpec
       createGroup("Fun group", Set(user2.id)).groupPeer
     }
 
-    whenReady(service.handleEditGroupAbout(groupOutPeer, 1L, Some("It is group for fun"))(clientData2)) { resp ⇒
+    whenReady(service.handleEditGroupAbout(groupOutPeer, 1L, Some("It is group for fun"), Vector.empty)(clientData2)) { resp ⇒
       resp shouldEqual Error(CommonRpcErrors.forbidden("Only admin can perform this action."))
     }
   }
@@ -732,7 +732,7 @@ final class GroupsServiceSpec
 
     val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
 
-    whenReady(service.handleEditGroupAbout(groupOutPeer, 1L, None)) { resp ⇒
+    whenReady(service.handleEditGroupAbout(groupOutPeer, 1L, None, Vector.empty)) { resp ⇒
       resp should matchPattern {
         case Ok(_: ResponseSeqDate) ⇒
       }
@@ -751,12 +751,12 @@ final class GroupsServiceSpec
     val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
 
     val longAbout = 1 to 300 map (e ⇒ ".") mkString ""
-    whenReady(service.handleEditGroupAbout(groupOutPeer, 1L, Some(longAbout))) { resp ⇒
+    whenReady(service.handleEditGroupAbout(groupOutPeer, 1L, Some(longAbout), Vector.empty)) { resp ⇒
       resp shouldEqual Error(GroupRpcErrors.AboutTooLong)
     }
 
     val emptyAbout = ""
-    whenReady(service.handleEditGroupAbout(groupOutPeer, 1L, Some(emptyAbout))) { resp ⇒
+    whenReady(service.handleEditGroupAbout(groupOutPeer, 1L, Some(emptyAbout), Vector.empty)) { resp ⇒
       resp shouldEqual Error(GroupRpcErrors.AboutTooLong)
     }
 
@@ -778,14 +778,14 @@ final class GroupsServiceSpec
     }
 
     val topic1 = Some("Fun stufff")
-    whenReady(service.handleEditGroupTopic(groupOutPeer, 1L, topic1)(clientData1)) { resp ⇒
+    whenReady(service.handleEditGroupTopic(groupOutPeer, 1L, topic1, Vector.empty)(clientData1)) { resp ⇒
       resp should matchPattern {
         case Ok(_: ResponseSeqDate) ⇒
       }
     }
 
     val topic2 = Some("Fun stuff. Typo!")
-    whenReady(service.handleEditGroupTopic(groupOutPeer, 2L, topic2)(clientData2)) { resp ⇒
+    whenReady(service.handleEditGroupTopic(groupOutPeer, 2L, topic2, Vector.empty)(clientData2)) { resp ⇒
       resp should matchPattern {
         case Ok(_: ResponseSeqDate) ⇒
       }
@@ -805,12 +805,12 @@ final class GroupsServiceSpec
     val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
 
     val longTopic = 1 to 300 map (e ⇒ ".") mkString ""
-    whenReady(service.handleEditGroupTopic(groupOutPeer, 1L, Some(longTopic))) { resp ⇒
+    whenReady(service.handleEditGroupTopic(groupOutPeer, 1L, Some(longTopic), Vector.empty)) { resp ⇒
       resp shouldEqual Error(GroupRpcErrors.TopicTooLong)
     }
 
     val emptyTopic = ""
-    whenReady(service.handleEditGroupTopic(groupOutPeer, 2L, Some(emptyTopic))) { resp ⇒
+    whenReady(service.handleEditGroupTopic(groupOutPeer, 2L, Some(emptyTopic), Vector.empty)) { resp ⇒
       resp shouldEqual Error(GroupRpcErrors.TopicTooLong)
     }
 
@@ -827,7 +827,7 @@ final class GroupsServiceSpec
 
     val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
 
-    whenReady(service.handleEditGroupTopic(groupOutPeer, 1L, None)) { resp ⇒
+    whenReady(service.handleEditGroupTopic(groupOutPeer, 1L, None, Vector.empty)) { resp ⇒
       resp should matchPattern {
         case Ok(_: ResponseSeqDate) ⇒
       }
@@ -865,7 +865,7 @@ final class GroupsServiceSpec
         dialog.unreadCount should be > 6
       }
 
-      whenReady(service.handleLeaveGroup(groupOutPeer, Random.nextLong())) { resp ⇒
+      whenReady(service.handleLeaveGroup(groupOutPeer, Random.nextLong(), Vector.empty)) { resp ⇒
         resp should matchPattern { case Ok(_) ⇒ }
       }
 
@@ -925,7 +925,7 @@ final class GroupsServiceSpec
 
     {
       implicit val clientData = clientData1
-      whenReady(service.handleKickUser(groupOutPeer, Random.nextLong(), user2OutPeer)) { resp ⇒
+      whenReady(service.handleKickUser(groupOutPeer, Random.nextLong(), user2OutPeer, Vector.empty)) { resp ⇒
         resp should matchPattern { case Ok(_) ⇒ }
       }
     }
@@ -1000,7 +1000,7 @@ final class GroupsServiceSpec
 
     {
       implicit val clientData = clientData1
-      whenReady(service.handleKickUser(groupOutPeer, Random.nextLong(), user2OutPeer)) { resp ⇒
+      whenReady(service.handleKickUser(groupOutPeer, Random.nextLong(), user2OutPeer, Vector.empty)) { resp ⇒
         resp should matchPattern { case Ok(_) ⇒ }
       }
     }
@@ -1055,7 +1055,7 @@ final class GroupsServiceSpec
 
     {
       implicit val clientData = clientData1
-      whenReady(service.handleKickUser(groupOutPeer, Random.nextLong(), user2OutPeer)) { resp ⇒
+      whenReady(service.handleKickUser(groupOutPeer, Random.nextLong(), user2OutPeer, Vector.empty)) { resp ⇒
         resp should matchPattern { case Ok(_) ⇒ }
       }
     }

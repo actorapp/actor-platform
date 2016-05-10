@@ -5,7 +5,7 @@ import java.time.Instant
 import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc._
 import im.actor.api.rpc.counters.UpdateCountersChanged
-import im.actor.api.rpc.groups.{ UpdateGroupInvite, UpdateGroupUserInvited }
+import im.actor.api.rpc.groups.{ UpdateGroupInviteObsolete, UpdateGroupUserInvitedObsolete }
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.peers.{ ApiGroupOutPeer, ApiPeerType }
@@ -183,13 +183,13 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
 
       {
         implicit val clientData = clientData1
-        whenReady(groupsService.handleEnterGroup(groupOutPeer))(identity)
+        whenReady(groupsService.handleEnterGroupObsolete(groupOutPeer))(identity)
         whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), firstMessage, None, None))(identity)
       }
 
       {
         implicit val clientData = clientData2
-        whenReady(groupsService.handleEnterGroup(groupOutPeer))(identity)
+        whenReady(groupsService.handleEnterGroupObsolete(groupOutPeer))(identity)
         whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), secondMessage, None, None))(identity)
 
         Thread.sleep(2000)
@@ -463,8 +463,8 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
         {
           implicit val clientData = clientData1
           expectUpdate(classOf[UpdateChatGroupsChanged])(identity)
-          expectUpdate(classOf[UpdateGroupUserInvited])(identity)
-          expectUpdate(classOf[UpdateGroupInvite])(identity)
+          expectUpdate(classOf[UpdateGroupUserInvitedObsolete])(identity)
+          expectUpdate(classOf[UpdateGroupInviteObsolete])(identity)
           expectUpdate(classOf[UpdateMessageSent])(identity)
           expectUpdate(classOf[UpdateMessageSent])(identity)
           expectUpdate(classOf[UpdateMessageSent])(identity)
@@ -529,8 +529,8 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
         {
           implicit val clientData = clientData1
           expectUpdate(classOf[UpdateChatGroupsChanged])(identity)
-          expectUpdate(classOf[UpdateGroupUserInvited])(identity)
-          expectUpdate(classOf[UpdateGroupInvite])(identity)
+          expectUpdate(classOf[UpdateGroupUserInvitedObsolete])(identity)
+          expectUpdate(classOf[UpdateGroupInviteObsolete])(identity)
           expectUpdate(classOf[UpdateMessageSent])(identity)
           expectUpdate(classOf[UpdateMessageSent])(identity)
           expectUpdate(classOf[UpdateMessageSent])(identity)
@@ -542,7 +542,7 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
         {
           implicit val clientData = clientData2
           expectUpdate(classOf[UpdateChatGroupsChanged])(identity)
-          expectUpdate(classOf[UpdateGroupInvite])(identity)
+          expectUpdate(classOf[UpdateGroupInviteObsolete])(identity)
 
           expectUpdate(classOf[UpdateCountersChanged])(identity)
           expectUpdate(classOf[UpdateMessage])(identity)
