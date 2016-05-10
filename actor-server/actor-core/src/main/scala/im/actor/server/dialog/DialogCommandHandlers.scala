@@ -11,6 +11,7 @@ import im.actor.api.rpc.messaging._
 import im.actor.server.ApiConversions._
 import im.actor.server.dialog.HistoryUtils._
 import im.actor.server.model._
+import im.actor.server.persist.HistoryMessageRepo
 import im.actor.server.persist.messaging.ReactionEventRepo
 import im.actor.server.pubsub.{ PeerMessage, PubSubExtension }
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
@@ -49,18 +50,25 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
         val message = sm.message
         PubSubExtension(system).publish(PeerMessage(sm.getOrigin, sm.getDest, sm.randomId, sendDate, message))
 
-        withNonBlockedPeer[SeqStateDate](userId, sm.getDest)(
-          default = for {
-          _ ← dialogExt.ackSendMessage(peer, sm.copy(date = Some(Int64Value(sendDate))))
-          _ ← db.run(writeHistoryMessage(selfPeer, peer, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray))
-          //_ = dialogExt.updateCounters(peer, userId)
-          SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sendDate, message, sm.isFat)
-        } yield SeqStateDate(seq, state, sendDate),
-          failed = for {
-          _ ← db.run(writeHistoryMessageSelf(userId, peer, userId, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray))
-          SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sendDate, message, sm.isFat)
-        } yield SeqStateDate(seq, state, sendDate)
-        )
+        for {
+          exists ← db.run(HistoryMessageRepo.existstWithRandomId(userId, peer, sm.randomId))
+          seqState ← if (exists) {
+            FastFuture.failed(NotUniqueRandomId)
+          } else {
+            withNonBlockedPeer[SeqStateDate](userId, sm.getDest)(
+              default = for {
+              _ ← dialogExt.ackSendMessage(peer, sm.copy(date = Some(Int64Value(sendDate))))
+              _ ← db.run(writeHistoryMessage(selfPeer, peer, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray))
+              //_ = dialogExt.updateCounters(peer, userId)
+              SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sendDate, message, sm.isFat)
+            } yield SeqStateDate(seq, state, sendDate),
+              failed = for {
+              _ ← db.run(writeHistoryMessageSelf(userId, peer, userId, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray))
+              SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sendDate, message, sm.isFat)
+            } yield SeqStateDate(seq, state, sendDate)
+            )
+          }
+        } yield seqState
       }
     }
   }
