@@ -50,7 +50,6 @@ export default {
   },
 
   isGroupBot(user) {
-    return (user.title && user.title.toLowerCase().includes('bot')) ||
-           (user.userName && user.userName.toLowerCase().includes('bot'));
+    return !user.avatar && !user.userName && user.title === 'Bot';
   }
 };
