@@ -408,7 +408,7 @@ class ReadsSpec extends ActorSuite {
 
     readMessages.size shouldEqual unreadMessages.size
     // this one doesn't hold
-//    readMessagesIds.size shouldEqual unreadMessages.size
+    //    readMessagesIds.size shouldEqual unreadMessages.size
     newUnreadMessages.size shouldEqual 0
   }
 
