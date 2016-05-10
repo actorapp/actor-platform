@@ -379,7 +379,7 @@ public class I18nEngine extends IntlEngine {
                     .replace("{name_kicked}",
                             getSubjectName(((ServiceGroupUserKicked) content).getKickedUid()));
         } else if (content instanceof ServiceGroupUserLeave) {
-            return getTemplateNamed(senderId, "content.service.groups.leaved");
+            return getTemplateNamed(senderId, "content.service.groups.left");
         } else if (content instanceof ServiceGroupTitleChanged) {
             return getTemplateNamed(senderId, "content.service.groups.title_changed.full")
                     .replace("{title}",
