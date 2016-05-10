@@ -92,14 +92,17 @@
 
     &__verified {
       display: inline-block;
-      margin-left: 4px;
+
+      margin-left: 6px;
+
+      cursor: default;
       vertical-align: top;
 
       .material-icons {
-        font-size: 18px;
+        font-size: 16px;
         line-height: 20px;
 
-        color: $color-green
+        color: $color-green;
       }
     }
     &__message {
