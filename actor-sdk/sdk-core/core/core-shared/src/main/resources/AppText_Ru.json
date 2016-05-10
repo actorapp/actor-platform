@@ -4,6 +4,9 @@
 	},
 
 	"language": {
+
+		"code": "Ru",
+
 		"format": {
 			"time": {
 				"yesterday":{
@@ -31,7 +34,7 @@
 
 		"referencing": {
 			"you": "Вы",
-			"Thee": "Вас"
+			"thee": "Вас"
 		},
 
 		"sequence": {

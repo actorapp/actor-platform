@@ -4,6 +4,8 @@
 	},
 
 	"language": {
+		"code": "Fa",
+
 		"format": {
 			"time": {
 				"yesterday": "دیروز",
@@ -22,7 +24,7 @@
 
 		"referencing": {
 			"you": "شما",
-			"Thee": "شما"
+			"thee": "شما"
 		},
 
 		"sequence": {
