@@ -24,7 +24,8 @@
       }
     }
 
-    .contact__avatar {
+    .avatar__image,
+    .avatar__placeholder {
       margin-right: 16px;
     }
 
@@ -101,5 +102,10 @@
         text-align: right;
       }
     }
+  }
+
+  .modal__footer {
+    padding-left: 0;
+    padding-right: 0;
   }
 }
