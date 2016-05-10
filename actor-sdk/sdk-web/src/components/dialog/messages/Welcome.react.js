@@ -15,6 +15,8 @@ import InviteUserActions from '../../../actions/InviteUserActions';
 import UserStore from '../../../stores/UserStore';
 import GroupStore from '../../../stores/GroupStore';
 
+import AvatarItem from './../../common/AvatarItem.react';
+
 class Welcome extends Component {
   static propTypes = {
     peer: PropTypes.object.isRequired
@@ -37,10 +39,45 @@ class Welcome extends Component {
     InviteUserActions.show(group);
   }
 
+  renderWelcomeAvatar() {
+    return (
+      <div className="message__info">
+        <div className="welcome-avatar">
+          <SvgIcon className="icon icon--gray" glyph="star" />
+        </div>
+      </div>
+    );
+  }
+
   renderUserText(id) {
     const user = UserStore.getUser(id);
+
+    if (user.isBot) {
+      return (
+        <div className="row">
+          <div className="message__info">
+            <AvatarItem
+              image={user.avatar}
+              className="message__avatar"
+              placeholder={user.placeholder}
+              size="normal"
+              title={user.name}
+            />
+          </div>
+          <div className="message__body col-xs">
+            <FormattedHTMLMessage id="message.welcome.private" values={{ name: user.name }}/>
+            <p style={{marginTop: 16}}>{user.about}</p>
+          </div>
+        </div>
+      );
+    }
     return (
-      <FormattedHTMLMessage id="message.welcome.private" values={{ name: user.name }}/>
+      <div className="row">
+        {this.renderWelcomeAvatar()}
+        <div className="message__body col-xs">
+          <FormattedHTMLMessage id="message.welcome.private" values={{ name: user.name }}/>
+        </div>
+      </div>
     );
   }
 
@@ -52,13 +89,16 @@ class Welcome extends Component {
     const creator = group.adminId === myID ? intl.messages['message.welcome.group.you'] : admin.name;
 
     return (
-      <div>
-        <FormattedHTMLMessage id="message.welcome.group.main" values={{ name: group.name, creator }}/>
-        <p key={2}>
-          {intl.messages['message.welcome.group.actions.start']}
-          <a onClick={this.onInviteClick}>{intl.messages['message.welcome.group.actions.invite']}</a>
-          {intl.messages['message.welcome.group.actions.end']}
-        </p>
+      <div className="row">
+        {this.renderWelcomeAvatar()}
+        <div className="message__body col-xs">
+          <FormattedHTMLMessage id="message.welcome.group.main" values={{ name: group.name, creator }}/>
+          <p>
+            {intl.messages['message.welcome.group.actions.start']}
+            <a onClick={this.onInviteClick}>{intl.messages['message.welcome.group.actions.invite']}</a>
+            {intl.messages['message.welcome.group.actions.end']}
+          </p>
+        </div>
       </div>
     );
   }
@@ -76,15 +116,8 @@ class Welcome extends Component {
 
   render() {
     return(
-      <div className="message message--welcome row">
-        <div className="message__info">
-          <div className="welcome-avatar">
-            <SvgIcon className="icon icon--gray" glyph="star" />
-          </div>
-        </div>
-        <div className="message__body col-xs">
-          {this.renderText()}
-        </div>
+      <div className="message message--welcome">
+        {this.renderText()}
       </div>
     )
   }
