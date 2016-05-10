@@ -4,6 +4,8 @@
 	},
 
 	"language": {
+		"code": "Ar",
+
 		"format": {
 			"time": {
 				"yesterday": "امس",
@@ -22,7 +24,7 @@
 
 		"referencing": {
 			"you": "انت",
-			"Thee": "انت"
+			"thee": "انت"
 		},
 
 		"sequence": {
