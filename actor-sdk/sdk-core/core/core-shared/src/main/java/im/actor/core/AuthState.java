@@ -19,4 +19,5 @@ public enum AuthState {
     COMPLETE_OAUTH,
     SIGN_UP,
     LOGGED_IN,
+    BATCHSIGNUP,
 }

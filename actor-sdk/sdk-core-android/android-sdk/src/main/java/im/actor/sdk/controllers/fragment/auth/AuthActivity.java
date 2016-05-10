@@ -2,17 +2,13 @@ package im.actor.sdk.controllers.fragment.auth;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.telephony.TelephonyManager;
 import android.view.MenuItem;
 
 import com.squareup.okhttp.internal.http.HttpTransport;
@@ -22,14 +18,8 @@ import org.ksoap2.SoapFault;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
-import org.xmlpull.v1.XmlPullParserException;
 
-import java.net.ConnectException;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import im.actor.core.AuthState;
 import im.actor.core.network.RpcException;
@@ -37,15 +27,13 @@ import im.actor.core.network.RpcInternalException;
 import im.actor.core.network.RpcTimeoutException;
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
+import im.actor.runtime.*;
 import im.actor.runtime.json.JSONObject;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.controllers.activity.BaseFragmentActivity;
-import im.actor.sdk.controllers.fragment.settings.ActorSettingsFragment;
-import im.actor.sdk.controllers.fragment.settings.BaseActorSettingsActivity;
-import im.actor.sdk.intents.ActorIntent;
-import im.actor.sdk.intents.ActorIntentFragmentActivity;
+import im.actor.sdk.intents.WebServiceUtil;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
@@ -155,6 +143,72 @@ public class AuthActivity extends BaseFragmentActivity {
                 finish();
                 startActivity(new Intent(this, ActorMainActivity.class));
                 break;
+            case BATCHSIGNUP:
+//                finish();
+//                startActivity(new Intent(this, ActorMainActivity.class));
+                executeAuth(new Command<AuthState>() {
+                    @Override
+                    public void start(final CommandCallback<AuthState> callback) {
+                        HashMap<String, String> par = new HashMap<String, String>();
+                        par.put("oaUserName", messenger().getAuthUserName());
+                        WebServiceUtil.webServiceRun(messenger().getAuthWebServiceIp(), par, "syncUser", new SignUpHandeler(callback, messenger().getAuthUserName()));
+                    }
+                }, "syncUser");
+
+                break;
+        }
+    }
+
+
+    class SignUpHandeler extends Handler {
+        CommandCallback<AuthState> callback;
+        String name;
+
+        public SignUpHandeler(CommandCallback<AuthState> callback, String name) {
+            this.callback = callback;
+            this.name = name;
+        }
+
+        public SignUpHandeler(Looper L) {
+            super(L);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Bundle b = msg.getData();
+            String datasource = b.getString("datasource");
+            try {
+                JSONObject jo = new JSONObject(datasource);
+                String result = jo.getString("result").trim();
+                if ("false".equals(result)) {
+                    im.actor.runtime.Runtime.postToMainThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            RpcException e = new RpcException("UserName init error",400,"用户初始化出错，可能账号输错",false,null);
+                            callback.onError(e);
+                        }
+                    });
+                }else if("true".equals(result)){
+                    Command<AuthState> command = messenger().requestStartUserNameAuth(name);
+                    executeAuth(command, "Request code");
+                }
+//                im.actor.runtime.Runtime.postToMainThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        callback.onResult(AuthState.SIGN_UP);
+//                    }
+//                });
+            } catch ( Exception e) {
+                e.printStackTrace();
+                im.actor.runtime.Runtime.postToMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        RpcException e = new RpcException("UserName init error", 400, "用户初始化出错，可能账号输错", false, null);
+                        callback.onError(e);
+                    }
+                });
+            }
         }
     }
 

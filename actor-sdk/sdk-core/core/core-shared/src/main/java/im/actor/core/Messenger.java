@@ -144,17 +144,18 @@ public class Messenger {
     public Promise<AuthStartRes> doStartEmailAuth(String email) {
         return modules.getAuthModule().doStartEmailAuth(email);
     }
-      /**
-         * Starting username auth
-         *
-         * @param email email for authentication
-         * @return promise of AuthStartRes
-         */
-        @NotNull
-        @ObjectiveCName("doStartAuthWithUsername:")
-        public Promise<AuthStartRes> doStartUsernameAuth(String username) {
-            return modules.getAuthModule().doStartUsernameAuth(username);
-        }
+
+    /**
+     * Starting username auth
+     *
+     * @param email email for authentication
+     * @return promise of AuthStartRes
+     */
+    @NotNull
+    @ObjectiveCName("doStartAuthWithUsername:")
+    public Promise<AuthStartRes> doStartUsernameAuth(String username) {
+        return modules.getAuthModule().doStartUsernameAuth(username);
+    }
 
     /**
      * Starting phone auth
@@ -181,18 +182,18 @@ public class Messenger {
         return modules.getAuthModule().doValidateCode(transactionHash, code);
     }
 
-       /**
-         * Validating password
-         *
-         * @param password            password
-         * @param transactionHash transaction hash
-         * @return promise of AuthCodeRes
-         */
-        @NotNull
-        @ObjectiveCName("doValidatePassword:withTransaction:")
-        public Promise<AuthCodeRes>doValidatePassword(String password, String transactionHash) {
-            return modules.getAuthModule().doValidateCode(transactionHash, password);
-        }
+    /**
+     * Validating password
+     *
+     * @param password        password
+     * @param transactionHash transaction hash
+     * @return promise of AuthCodeRes
+     */
+    @NotNull
+    @ObjectiveCName("doValidatePassword:withTransaction:")
+    public Promise<AuthCodeRes> doValidatePassword(String password, String transactionHash) {
+        return modules.getAuthModule().doValidateCode(transactionHash, password);
+    }
 
 
     /**
@@ -350,9 +351,10 @@ public class Messenger {
      */
     @NotNull
     @ObjectiveCName("validatePasswordCommand:")
-    public Command<AuthState> requestSignUp(String username,String zhname,final String ip) {
-        return modules.getAuthModule().requestSignUp(username,zhname,ip);
+    public Command<AuthState> requestSignUp(String nickName,String name, final String ip) {
+        return modules.getAuthModule().requestSignUp(nickName, name,ip);
     }
+
 
     /**
      * Perform batch signup
@@ -393,7 +395,7 @@ public class Messenger {
     @NotNull
     @ObjectiveCName("signUpCommandWithName:WithSex:withAvatar:")
     public Command<AuthState> signUp(String name, Sex sex, String avatarPath, String password) {
-        return modules.getAuthModule().signUp(name, ApiSex.UNKNOWN, avatarPath,password);
+        return modules.getAuthModule().signUp(name, ApiSex.UNKNOWN, avatarPath, password);
     }
 
     /**
@@ -426,6 +428,25 @@ public class Messenger {
     public String getAuthUserName() {
         return modules.getAuthModule().getUserName();
     }
+
+    @ObjectiveCName("getAuthZHName")
+    @Deprecated
+    public String getAuthZHName() {
+        return modules.getAuthModule().getZHName();
+    }
+
+    @ObjectiveCName("setAuthWebServiceIp")
+    @Deprecated
+    public void setAuthWebServiceIp(String ip) {
+         modules.getAuthModule().setAuthWebServiceIp(ip);
+    }
+
+    @ObjectiveCName("getAuthWebServiceIp")
+    @Deprecated
+    public String getAuthWebServiceIp() {
+        return modules.getAuthModule().getAuthWebServiceIp();
+    }
+
     /**
      * Resetting authentication process
      */
