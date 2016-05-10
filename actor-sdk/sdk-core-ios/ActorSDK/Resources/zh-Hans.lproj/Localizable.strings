@@ -51,7 +51,7 @@
 "SettingsUsernameHintField" = "输入用户名";
 
 "SettingsUsernameNotSet" = "设置用户名";
- 
+
 "SettingsUsernameTitle" = "用户名";
 
 "SettingsUsernameHintField" = "输入用户名";
@@ -84,16 +84,16 @@
 
 "SettingsAllSessions" = "所有会话";
 
-"SettingsLastSeen" = "最后一次露面";
+"SettingsLastSeen" = "谁可以查看我的最后登录时间";
 
-"SettingsLastSeenHint" = "更改谁可以看到您最后查看的时间。";
+"SettingsLastSeenHint" = "更改谁可以看到您最后登录的时间。";
 
 
-"SettingsLastSeenEverybody" = "每个人都";
+"SettingsLastSeenEverybody" = "所有人";
 
-"SettingsLastSeenContacts"  = "我的联系方式";
+"SettingsLastSeenContacts"  = "我的联系人";
 
-"SettingsLastSeenNone"    = "没人";
+"SettingsLastSeenNone"    = "禁止";
 
 
 "SettingsMobilePhone"    = "手机";
@@ -431,7 +431,7 @@
 
 "WelcomeTagline" = "Free, fast and secure messaging.";
 
-"WelcomeSignUp" = "注册";
+"WelcomeSettings" = "设置";
 
 "WelcomeLogIn" = "登录";
 
