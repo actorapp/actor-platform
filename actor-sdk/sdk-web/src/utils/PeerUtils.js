@@ -47,5 +47,9 @@ export default {
 
   equals(peer1, peer2) {
     return Boolean(peer1 && peer2) && peer1.id === peer2.id && peer1.type === peer2.type;
+  },
+
+  isGroupBot(user) {
+    return  user.title.toLowerCase().includes('bot') || user.userName.toLowerCase().includes('bot');
   }
 };
