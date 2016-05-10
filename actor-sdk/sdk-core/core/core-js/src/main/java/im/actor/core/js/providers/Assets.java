@@ -8,39 +8,21 @@ public interface Assets extends ClientBundleWithLookup {
 
     Assets INSTANCE = GWT.create(Assets.class);
 
-    @Source("AppText.properties")
-    TextResource AppText_properties();
+    @Source("AppText.json")
+    TextResource AppText_json();
 
-    @Source("AppText_Ar.properties")
-    TextResource AppText_Ar_properties();
+    @Source("AppText_Ar.json")
+    TextResource AppText_Ar_json();
 
-    @Source("AppText_Zn.properties")
-    TextResource AppText_Zn_properties();
+    @Source("AppText_Zn.json")
+    TextResource AppText_Zn_json();
 
-    @Source("AppText_Es.properties")
-    TextResource AppText_Es_properties();
+    @Source("AppText_Es.json")
+    TextResource AppText_Es_json();
 
-    @Source("AppText_Pt.properties")
-    TextResource AppText_Pt_properties();
+    @Source("AppText_Pt.json")
+    TextResource AppText_Pt_json();
 
-    @Source("AppText_Ru.properties")
-    TextResource AppText_Ru_properties();
-
-    @Source("Months.properties")
-    TextResource Months_properties();
-
-    @Source("Months_Ar.properties")
-    TextResource Months_Ar_properties();
-
-    @Source("Months_Zn.properties")
-    TextResource Months_Zn_properties();
-
-    @Source("Months_Es.properties")
-    TextResource Months_Es_properties();
-
-    @Source("Months_Pt.properties")
-    TextResource Months_Pt_properties();
-
-    @Source("Months_Ru.properties")
-    TextResource Months_Ru_properties();
+    @Source("AppText_Ru.json")
+    TextResource AppText_Ru_json();
 }

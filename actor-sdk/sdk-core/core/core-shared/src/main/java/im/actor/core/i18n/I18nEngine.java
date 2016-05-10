@@ -9,7 +9,6 @@ import com.google.j2objc.annotations.ObjectiveCName;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import im.actor.core.entity.ContentType;
@@ -37,231 +36,99 @@ import im.actor.core.modules.Modules;
 import im.actor.core.network.RpcException;
 import im.actor.core.util.JavaUtil;
 import im.actor.core.viewmodel.UserPresence;
-import im.actor.runtime.LocaleRuntime;
-import im.actor.runtime.Log;
+import im.actor.runtime.Assets;
 import im.actor.runtime.Runtime;
+import im.actor.runtime.intl.IntlEngine;
+import im.actor.runtime.json.JSONException;
 
-public class I18nEngine {
+public class I18nEngine extends IntlEngine {
 
     private static final String TAG = "I18nEngine";
 
     private static final String[] SUPPORTED_LOCALES = new String[]{"Ru", "Ar", "Zn", "Pt", "Es", "Fa"};
+    private static final String[] FEMALE = new String[]{"female", "default"};
+    private static final String[] MALE = new String[]{"male", "default"};
+    private static final String[] DEFAULT = new String[]{"default"};
+    private static final String[] YOU = new String[]{"you"};
 
-    private final Modules modules;
-    private final LocaleRuntime runtime;
-    private final HashMap<String, String> locale;
+    public static I18nEngine create(Modules modules) {
+        String currentLocale = Runtime.getLocaleRuntime().getCurrentLocale();
 
-    private String[] MONTHS_SHORT;
-    private String[] MONTHS;
-
-    private boolean isi18nInited = false;
-    private final Object INIT_LOCK = new Object();
-
-    private String currentLocale;
-
-    @ObjectiveCName("initWithModules:")
-    public I18nEngine(Modules modules) {
-        this.modules = modules;
-        this.runtime = Runtime.getLocaleRuntime();
-
-        // Loading locale
-        this.locale = new HashMap<>();
-        this.currentLocale = runtime.getCurrentLocale();
-    }
-
-    private void assumeLoaded() {
-        if (isi18nInited) {
-            return;
-        }
-        synchronized (INIT_LOCK) {
-            if (isi18nInited) {
-                return;
-            }
-            isi18nInited = true;
-
-            boolean isLoaded = false;
-            if (currentLocale != null) {
-                if (JavaUtil.contains(SUPPORTED_LOCALES, currentLocale)) {
-                    this.locale.putAll(LocaleLoader.loadPropertiesFile("AppText_" + currentLocale + ".properties"));
-                    this.locale.putAll(LocaleLoader.loadPropertiesFile("Months_" + currentLocale + ".properties"));
-                    isLoaded = true;
-                } else {
-                    this.currentLocale = "En";
+        if (currentLocale != null) {
+            if (JavaUtil.contains(SUPPORTED_LOCALES, currentLocale)) {
+                try {
+                    return new I18nEngine(
+                            modules,
+                            Assets.loadAsset("AppText_" + currentLocale + ".json"),
+                            Assets.loadAsset("AppText.json"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
-            if (!isLoaded) {
-                this.locale.putAll(LocaleLoader.loadPropertiesFile("AppText.properties"));
-                this.locale.putAll(LocaleLoader.loadPropertiesFile("Months.properties"));
-                this.currentLocale = "En";
-            }
-
-            MONTHS_SHORT = new String[]{
-                    locale.get("JanShort"),
-                    locale.get("FebShort"),
-                    locale.get("MarShort"),
-                    locale.get("AprShort"),
-                    locale.get("MayShort"),
-                    locale.get("JunShort"),
-                    locale.get("JulShort"),
-                    locale.get("AugShort"),
-                    locale.get("SepShort"),
-                    locale.get("OctShort"),
-                    locale.get("NovShort"),
-                    locale.get("DecShort"),
-            };
-
-            MONTHS = new String[]{
-                    locale.get("JanFull"),
-                    locale.get("FebFull"),
-                    locale.get("MarFull"),
-                    locale.get("AprFull"),
-                    locale.get("MayFull"),
-                    locale.get("JunFull"),
-                    locale.get("JulFull"),
-                    locale.get("AugFull"),
-                    locale.get("SepFull"),
-                    locale.get("OctFull"),
-                    locale.get("NovFull"),
-                    locale.get("DecFull"),
-            };
+        }
+        try {
+            return new I18nEngine(
+                    modules,
+                    Assets.loadAsset("AppText.json"),
+                    null);
+        } catch (JSONException e) {
+            // Shoud not happen
+            throw new RuntimeException(e);
         }
     }
 
-    private String formatTwoDigit(int v) {
-        if (v < 0) {
-            return "00";
-        } else if (v < 10) {
-            return "0" + v;
-        } else if (v < 100) {
-            return "" + v;
-        } else {
-            String res = "" + v;
-            return res.substring(res.length() - 2);
-        }
+    private final Modules modules;
+
+    @ObjectiveCName("initWithModules:")
+    public I18nEngine(Modules modules, String localization, String fallback) throws JSONException {
+        super(localization, fallback);
+        this.modules = modules;
     }
 
-    private static boolean areSameDays(long a, long b) {
-        Date date1 = new Date(a);
-        int y1 = date1.getYear();
-        int m1 = date1.getMonth();
-        int d1 = date1.getDate();
-        Date date2 = new Date(b);
-        int y2 = date2.getYear();
-        int m2 = date2.getMonth();
-        int d2 = date2.getDate();
-
-        return y1 == y2 && m1 == m2 && d1 == d2;
-    }
-
-    @ObjectiveCName("getApplicationName")
-    public String getApplicationName() {
+    @Override
+    public String getAppName() {
         String appName = modules.getConfiguration().getCustomAppName();
-        if (appName == null) {
-            assumeLoaded();
-            appName = locale.get("AppName");
+        if (appName != null) {
+            return appName;
         }
-        return appName;
+        return super.getAppName();
     }
 
-    @ObjectiveCName("formatShortDate:")
-    public String formatShortDate(long date) {
-        assumeLoaded();
-        // Not using Calendar for GWT
-        long delta = new Date().getTime() - date;
-        if (delta < 60 * 1000) {
-            return locale.get("TimeShortNow");
-        } else if (delta < 60 * 60 * 1000) {
-            return locale.get("TimeShortMinutes").replace("{minutes}", "" + delta / 60000);
-        } else if (delta < 24 * 60 * 60 * 1000) {
-            return locale.get("TimeShortHours").replace("{hours}", "" + delta / 3600000);
-        } else if (delta < 2 * 24 * 60 * 60 * 1000) {
-            return locale.get("TimeShortYesterday").replace("{hours}", "" + delta / 3600000);
-        } else {
-            // Not using Calendar for GWT
-            Date date1 = new Date(date);
-            int month = date1.getMonth();
-            int d = date1.getDate();
-            return d + " " + MONTHS_SHORT[month].toUpperCase();
-        }
-    }
 
-    @ObjectiveCName("formatMonth:")
-    public String formatMonth(Date date) {
-        assumeLoaded();
-        int month = date.getMonth();
-        int d = date.getDate();
-        return d + " " + MONTHS[month].toUpperCase();
-    }
+    //
+    // Typing
+    //
 
     @ObjectiveCName("formatTyping")
     public String formatTyping() {
-        assumeLoaded();
-        return locale.get("Typing");
+        return get("typing.simple");
     }
 
     @ObjectiveCName("formatTypingWithName:")
     public String formatTyping(String name) {
-        assumeLoaded();
-        return locale.get("TypingUser").replace("{user}", name);
+        return get("typing.user")
+                .replace("{user}", name);
     }
 
     @ObjectiveCName("formatTypingWithNames:")
     public String formatTyping(List<String> names) {
-        assumeLoaded();
         if (names.size() == 1) {
             return formatTyping(names.get(0));
         }
-        return locale.get("TypingUserMultiple").replace("{users}", formatSequence(names));
+        return get("typing.group.sequenced")
+                .replace("{users}", formatSequence(names));
     }
 
     @ObjectiveCName("formatTypingWithCount:")
     public String formatTyping(int count) {
-        assumeLoaded();
-        return locale.get("TypingMultiple").replace("{count}", "" + count);
+        return get("typing.group.many")
+                .replace("{count}", "" + count);
     }
 
-    @ObjectiveCName("formatSequence:")
-    public String formatSequence(List<String> values) {
-        assumeLoaded();
-        String res = values.get(0);
-        for (int i = 1; i < values.size(); i++) {
-            if (i == values.size() - 1) {
-                res += locale.get("SequenceAnd");
-            } else {
-                res += locale.get("SequenceOr");
-            }
-            res += values.get(i);
-        }
-        return res;
-    }
 
-    @ObjectiveCName("formatFileSize:")
-    public String formatFileSize(int bytes) {
-        assumeLoaded();
-        if (bytes < 0) {
-            bytes = 0;
-        }
-
-        if (bytes < 1024) {
-            return locale.get("FileB").replace("{bytes}", "" + bytes);
-        } else if (bytes < 1024 * 1024) {
-            return locale.get("FileKb").replace("{kbytes}", "" + (bytes / 1024));
-        } else if (bytes < 1024 * 1024 * 1024) {
-            return locale.get("FileMb").replace("{mbytes}", "" + (bytes / (1024 * 1024)));
-        } else {
-            return locale.get("FileGb").replace("{gbytes}", "" + (bytes / (1024 * 1024 * 1024)));
-        }
-    }
-
-    @ObjectiveCName("formatTime:")
-    public String formatTime(long date) {
-        return runtime.formatTime(date);
-    }
-
-    @ObjectiveCName("formatDate:")
-    public String formatDate(long date) {
-        return runtime.formatDate(date);
-    }
+    //
+    // Presence
+    //
 
     @ObjectiveCName("formatPresence:withSex:")
     public String formatPresence(UserPresence value, Sex sex) {
@@ -269,112 +136,91 @@ public class I18nEngine {
             return null;
         }
 
-        assumeLoaded();
+        String[] sexType = DEFAULT;
+        if (sex == Sex.MALE) {
+            sexType = MALE;
+        } else if (sex == Sex.FEMALE) {
+            sexType = FEMALE;
+        }
 
         if (value.getState() == UserPresence.State.OFFLINE) {
 
             long currentTime = im.actor.runtime.Runtime.getCurrentSyncedTime() / 1000L;
             int delta = (int) (currentTime - value.getLastSeen());
             if (delta < 60) {
-                Log.d(TAG, "formatPresence: onlineNow");
-                if (locale.containsKey("OnlineNowMale") && locale.containsKey("OnlineNowFemale")) {
-                    return sex == Sex.UNKNOWN
-                            ? locale.get("OnlineNow")
-                            : sex == Sex.MALE
-                            ? locale.get("OnlineNowMale")
-                            : locale.get("OnlineNowFemale");
-                } else {
-                    return locale.get("OnlineNow");
-                }
+                return get("presence.now", sexType);
             } else if (delta < 24 * 60 * 60) {
-
                 String time = formatTime(value.getLastSeen() * 1000L);
                 if (areSameDays(value.getLastSeen() * 1000L, new Date().getTime())) {
-                    if (locale.containsKey("OnlineLastSeenTodayMale") && locale.containsKey("OnlineLastSeenTodayMale")) {
-                        return (sex == Sex.UNKNOWN
-                                ? locale.get("OnlineLastSeenToday")
-                                : sex == Sex.MALE
-                                ? locale.get("OnlineLastSeenTodayMale")
-                                : locale.get("OnlineLastSeenTodayFemale")).replace("{time}", time);
-                    } else {
-                        return locale.get("OnlineLastSeenToday").replace("{time}", time);
-                    }
+                    return get("presence.today", sexType)
+                            .replace("{time}", time);
                 } else {
-                    if (locale.containsKey("OnlineLastSeenYesterdayMale") && locale.containsKey("OnlineLastSeenYesterdayMale")) {
-                        return (sex == Sex.UNKNOWN
-                                ? locale.get("OnlineLastSeenYesterday")
-                                : sex == Sex.MALE
-                                ? locale.get("OnlineLastSeenYesterdayMale")
-                                : locale.get("OnlineLastSeenYesterdayFemale")).replace("{time}", time);
-                    } else {
-                        return locale.get("OnlineLastSeenYesterday").replace("{time}", time);
-                    }
+                    return get("presence.yesterday", sexType)
+                            .replace("{time}", time);
                 }
             } else if (delta < 14 * 24 * 60 * 60) {
 
                 String time = formatTime(value.getLastSeen() * 1000L);
                 String date = formatDate(value.getLastSeen() * 1000L);
-                if (locale.containsKey("OnlineLastSeenDateTimeMale") && locale.containsKey("OnlineLastSeenDateTimeMale")) {
-                    return (sex == Sex.UNKNOWN
-                            ? locale.get("OnlineLastSeenDateTime")
-                            : sex == Sex.MALE
-                            ? locale.get("OnlineLastSeenDateTimeMale")
-                            : locale.get("OnlineLastSeenDateTimeFemale"))
-                            .replace("{time}", time)
-                            .replace("{date}", date);
-                } else {
-                    return locale.get("OnlineLastSeenDateTime")
-                            .replace("{time}", time)
-                            .replace("{date}", date);
-                }
+
+                return get("presence.at_day_time", sexType)
+                        .replace("{time}", time)
+                        .replace("{date}", date);
+
             } else if (delta < 6 * 30 * 24 * 60 * 60) {
                 String date = formatDate(value.getLastSeen() * 1000L);
-                if (locale.containsKey("OnlineLastSeenDateMale") && locale.containsKey("OnlineLastSeenDateMale")) {
-                    return (sex == Sex.UNKNOWN
-                            ? locale.get("OnlineLastSeenDate")
-                            : sex == Sex.MALE
-                            ? locale.get("OnlineLastSeenDateMale")
-                            : locale.get("OnlineLastSeenDateFemale"))
-                            .replace("{date}", date);
-                } else {
-                    return locale.get("OnlineLastSeenDate")
-                            .replace("{date}", date);
-                }
+
+                return get("presence.at_day", sexType)
+                        .replace("{date}", date);
             } else {
-                return locale.get("OnlineOff");
+                return get("presence.offline", sexType);
             }
         } else if (value.getState() == UserPresence.State.ONLINE) {
-            return locale.get("OnlineOn");
+            return get("presence.online", sexType);
         }
 
         return null;
     }
 
-    @ObjectiveCName("formatDuration:")
-    public String formatDuration(int duration) {
-        if (duration < 60) {
-            return formatTwoDigit(0) + ":" + formatTwoDigit(duration);
-        } else if (duration < 60 * 60) {
-            return formatTwoDigit(duration / 60) + ":" + formatTwoDigit(duration % 60);
-        } else {
-            return formatTwoDigit(duration / 3600) + ":" + formatTwoDigit(duration / 60) + ":" + formatTwoDigit(duration % 60);
-        }
-    }
-
-    @ObjectiveCName("formatGroupMembers:")
-    public String formatGroupMembers(int count) {
-        assumeLoaded();
-        return locale.get("GroupMembers").replace("{count}", "" + count);
-    }
-
     @ObjectiveCName("formatGroupOnline:")
     public String formatGroupOnline(int count) {
-        assumeLoaded();
-        return locale.get("GroupOnline").replace("{count}", "" + count);
+        return getPlural("presence.members", count)
+                .replace("{count}", "" + count);
     }
 
+
+    //
+    // Group
+    //
+
+    /**
+     * Formatting Group Members counter
+     *
+     * @param count number of members
+     * @return formatted string like "12 members"
+     */
+    @ObjectiveCName("formatGroupMembers:")
+    public String formatGroupMembers(int count) {
+        return getPlural("groups.members", count)
+                .replace("{count}", "" + count);
+    }
+
+
+    //
+    // Content
+    //
+
+    /**
+     * Formatting Dialog List text. Deprecated: you need to manually format Content and append
+     * performer if needed and highlight it
+     *
+     * @param dialog dialog to format
+     * @return formatted content
+     */
+    @Deprecated
     @ObjectiveCName("formatDialogText:")
     public String formatDialogText(Dialog dialog) {
+        // Detecting if dialog is empty
         if (dialog.getSenderId() == 0) {
             return "";
         } else {
@@ -392,80 +238,13 @@ public class I18nEngine {
         }
     }
 
-    @ObjectiveCName("formatNotificationText:")
-    public String formatNotificationText(Notification pendingNotification) {
-        return formatContentText(pendingNotification.getSender(),
-                pendingNotification.getContentDescription().getContentType(),
-                pendingNotification.getContentDescription().getText(),
-                pendingNotification.getContentDescription().getRelatedUser());
-    }
-
-    @ObjectiveCName("formatContentTextWithSenderId:withContentType:withText:withRelatedUid:")
-    public String formatContentText(int senderId, ContentType contentType, String text, int relatedUid) {
-        assumeLoaded();
-        switch (contentType) {
-            case TEXT:
-                return text;
-            case DOCUMENT:
-                if (text == null || text.length() == 0) {
-                    return locale.get("ContentDocument");
-                }
-                return text;// File name
-            case DOCUMENT_PHOTO:
-                return locale.get("ContentPhoto");
-            case DOCUMENT_VIDEO:
-                return locale.get("ContentVideo");
-            case DOCUMENT_AUDIO:
-                return locale.get("ContentAudio");
-            case CONTACT:
-                return locale.get("Contact");
-            case LOCATION:
-                return locale.get("Location");
-            case STICKER:
-                if (text != null && !"".equals(text)) {
-                    return text + " " + locale.get("Sticker");
-                } else {
-                    return locale.get("Sticker");
-                }
-            case SERVICE:
-                return text;// Should be service message
-            case SERVICE_REGISTERED:
-                return getTemplateNamed(senderId, "ServiceRegistered")
-                        .replace("{app_name}", getApplicationName());
-            case SERVICE_CREATED:
-                return getTemplateNamed(senderId, "ServiceGroupCreated");
-            case SERVICE_ADD:
-                return getTemplateNamed(senderId, "ServiceGroupAdded")
-                        .replace("{name_added}", getSubjectName(relatedUid));
-            case SERVICE_LEAVE:
-                return getTemplateNamed(senderId, "ServiceGroupLeaved");
-            case SERVICE_KICK:
-                return getTemplateNamed(senderId, "ServiceGroupKicked")
-                        .replace("{name_kicked}", getSubjectName(relatedUid));
-            case SERVICE_AVATAR:
-                return getTemplateNamed(senderId, "ServiceGroupAvatarChanged");
-            case SERVICE_AVATAR_REMOVED:
-                return getTemplateNamed(senderId, "ServiceGroupAvatarRemoved");
-            case SERVICE_TITLE:
-                return getTemplateNamed(senderId, "ServiceGroupTitle");
-            case SERVICE_TOPIC:
-                return getTemplateNamed(senderId, "ServiceGroupTopic");
-            case SERVICE_ABOUT:
-                return getTemplateNamed(senderId, "ServiceGroupAbout");
-            case SERVICE_JOINED:
-                return getTemplateNamed(senderId, "ServiceGroupJoined");
-            case SERVICE_CALL_ENDED:
-                return locale.get("ServiceCallEnded");
-            case SERVICE_CALL_MISSED:
-                return locale.get("ServiceCallMissed");
-            case NONE:
-                return "";
-            default:
-            case UNKNOWN_CONTENT:
-                return locale.get("ContentUnsupported");
-        }
-    }
-
+    /**
+     * If Dialog List message need to be wide in group chat as it is already includes performer
+     * in it's body.
+     *
+     * @param contentType Type of Content
+     * @return true if content is wide
+     */
     @ObjectiveCName("isLargeDialogMessage:")
     public boolean isLargeDialogMessage(ContentType contentType) {
         switch (contentType) {
@@ -479,63 +258,165 @@ public class I18nEngine {
             case SERVICE_KICK:
             case SERVICE_ADD:
             case SERVICE_JOINED:
+            case SERVICE_CALL_ENDED:
+            case SERVICE_CALL_MISSED:
+            case SERVICE_ABOUT:
+            case SERVICE_TOPIC:
                 return true;
             default:
                 return false;
         }
     }
 
+    /**
+     * Formatting Pending notification text
+     *
+     * @param pendingNotification pending notification
+     * @return formatted notification
+     */
+    @ObjectiveCName("formatNotificationText:")
+    public String formatNotificationText(Notification pendingNotification) {
+        return formatContentText(pendingNotification.getSender(),
+                pendingNotification.getContentDescription().getContentType(),
+                pendingNotification.getContentDescription().getText(),
+                pendingNotification.getContentDescription().getRelatedUser());
+    }
+
+    /**
+     * Formatting content for Dialog List and Notifications
+     *
+     * @param senderId    sender of message (used in service messages)
+     * @param contentType type of content
+     * @param text        text of message
+     * @param relatedUid  optional related uid
+     * @return formatted content
+     */
+    @ObjectiveCName("formatContentTextWithSenderId:withContentType:withText:withRelatedUid:")
+    public String formatContentText(int senderId, ContentType contentType, String text, int relatedUid) {
+        switch (contentType) {
+            case TEXT:
+                return text;
+            case DOCUMENT:
+                if (text == null || text.length() == 0) {
+                    return get("content.document");
+                }
+                return text;// File name
+            case DOCUMENT_PHOTO:
+                return get("content.photo");
+            case DOCUMENT_VIDEO:
+                return get("content.video");
+            case DOCUMENT_AUDIO:
+                return get("content.audio");
+            case CONTACT:
+                return get("content.contact");
+            case LOCATION:
+                return get("content.location");
+            case STICKER:
+                if (text != null && !"".equals(text)) {
+                    return text + " " + get("content.sticker");
+                } else {
+                    return get("content.sticker");
+                }
+            case SERVICE:
+                return text;// Should be service message
+            case SERVICE_REGISTERED:
+                return getTemplateNamed(senderId, "content.service.registered.compact")
+                        .replace("{app_name}", getAppName());
+            case SERVICE_CREATED:
+                return getTemplateNamed(senderId, "content.service.groups.created");
+            case SERVICE_ADD:
+                return getTemplateNamed(senderId, "content.service.groups.invited")
+                        .replace("{name_added}", getSubjectName(relatedUid));
+            case SERVICE_LEAVE:
+                return getTemplateNamed(senderId, "content.service.groups.left");
+            case SERVICE_KICK:
+                return getTemplateNamed(senderId, "content.service.groups.kicked")
+                        .replace("{name_kicked}", getSubjectName(relatedUid));
+            case SERVICE_AVATAR:
+                return getTemplateNamed(senderId, "content.service.groups.avatar_changed");
+            case SERVICE_AVATAR_REMOVED:
+                return getTemplateNamed(senderId, "content.service.groups.avatar_removed");
+            case SERVICE_TITLE:
+                return getTemplateNamed(senderId, "content.service.groups.title_changed.compact");
+            case SERVICE_TOPIC:
+                return getTemplateNamed(senderId, "content.service.groups.topic_changed.compact");
+            case SERVICE_ABOUT:
+                return getTemplateNamed(senderId, "content.service.groups.about_changed.compact");
+            case SERVICE_JOINED:
+                return getTemplateNamed(senderId, "content.service.groups.joined");
+            case SERVICE_CALL_ENDED:
+                return get("content.service.calls.ended");
+            case SERVICE_CALL_MISSED:
+                return get("content.service.calls.missed");
+            case NONE:
+                return "";
+            default:
+            case UNKNOWN_CONTENT:
+                return get("content.unsupported");
+        }
+    }
+
+    /**
+     * Formatting Service Content
+     *
+     * @param senderId sender of a message
+     * @param content  content of a message
+     * @return formatted message
+     */
     @ObjectiveCName("formatFullServiceMessageWithSenderId:withContent:")
     public String formatFullServiceMessage(int senderId, ServiceContent content) {
-        assumeLoaded();
         if (content instanceof ServiceUserRegistered) {
-            return getTemplateNamed(senderId, "ServiceRegisteredFull")
-                    .replace("{app_name}", getApplicationName());
+            return getTemplateNamed(senderId, "content.service.registered.full")
+                    .replace("{app_name}", getAppName());
         } else if (content instanceof ServiceGroupCreated) {
-            return getTemplateNamed(senderId, "ServiceGroupCreatedFull");
+            return getTemplateNamed(senderId, "content.service.groups.created");
         } else if (content instanceof ServiceGroupUserInvited) {
-            return getTemplateNamed(senderId, "ServiceGroupAdded")
+            return getTemplateNamed(senderId, "content.service.groups.invited")
                     .replace("{name_added}",
                             getSubjectName(((ServiceGroupUserInvited) content).getAddedUid()));
         } else if (content instanceof ServiceGroupUserKicked) {
-            return getTemplateNamed(senderId, "ServiceGroupKicked")
+            return getTemplateNamed(senderId, "content.service.groups.kicked")
                     .replace("{name_kicked}",
                             getSubjectName(((ServiceGroupUserKicked) content).getKickedUid()));
         } else if (content instanceof ServiceGroupUserLeave) {
-            return getTemplateNamed(senderId, "ServiceGroupLeaved");
+            return getTemplateNamed(senderId, "content.service.groups.left");
         } else if (content instanceof ServiceGroupTitleChanged) {
-            return getTemplateNamed(senderId, "ServiceGroupTitleFull")
+            return getTemplateNamed(senderId, "content.service.groups.title_changed.full")
                     .replace("{title}",
                             ((ServiceGroupTitleChanged) content).getNewTitle());
         } else if (content instanceof ServiceGroupTopicChanged) {
-            return getTemplateNamed(senderId, "ServiceGroupTopicFull")
+            return getTemplateNamed(senderId, "content.service.groups.topic_changed.full")
                     .replace("{topic}",
                             ((ServiceGroupTopicChanged) content).getNewTopic());
         } else if (content instanceof ServiceGroupAboutChanged) {
-            return getTemplateNamed(senderId, "ServiceGroupAboutFull")
+            return getTemplateNamed(senderId, "content.service.groups.about_changed.full")
                     .replace("{about}",
                             ((ServiceGroupAboutChanged) content).getNewAbout());
         } else if (content instanceof ServiceGroupAvatarChanged) {
             if (((ServiceGroupAvatarChanged) content).getNewAvatar() != null) {
-                return getTemplateNamed(senderId, "ServiceGroupAvatarChanged");
+                return getTemplateNamed(senderId, "content.service.groups.avatar_changed");
             } else {
-                return getTemplateNamed(senderId, "ServiceGroupAvatarRemoved");
+                return getTemplateNamed(senderId, "content.service.groups.avatar_removed");
             }
         } else if (content instanceof ServiceGroupUserJoined) {
-            return getTemplateNamed(senderId, "ServiceGroupJoined");
+            return getTemplateNamed(senderId, "content.service.groups.joined");
         } else if (content instanceof ServiceCallEnded) {
-            return locale.get("ServiceCallEnded");
+            return get("content.calls.ended");
         } else if (content instanceof ServiceCallMissed) {
-            return locale.get("ServiceCallMissed");
+            return get("content.calls.missed");
         }
 
         return content.getCompatText();
     }
 
+
+    //
+    // Formatting errors
+    //
+
     @ObjectiveCName("formatErrorTextWithTag:")
     public String formatErrorText(String tag) {
-        assumeLoaded();
-        return locale.get(Errors.mapError(tag));
+        return get(Errors.mapError(tag));
     }
 
     @ObjectiveCName("formatErrorTextWithError:")
@@ -544,8 +425,7 @@ public class I18nEngine {
             RpcException e = (RpcException) o;
             String res = Errors.mapError(e.getTag(), null);
             if (res != null) {
-                assumeLoaded();
-                return locale.get(res);
+                return get(res);
             } else {
                 if (e.getMessage().equals("")) {
                     return e.getTag();
@@ -560,27 +440,17 @@ public class I18nEngine {
         }
     }
 
-    @ObjectiveCName("formatPerformerNameWithUid:")
-    public String formatPerformerName(int uid) {
-        if (uid == modules.getAuthModule().myUid()) {
-            assumeLoaded();
-            return locale.get("You");
-        } else {
-            return getUser(uid).getName();
-        }
-    }
 
-    @ObjectiveCName("getSubjectNameWithUid:")
-    public String getSubjectName(int uid) {
-        if (uid == modules.getAuthModule().myUid()) {
-            assumeLoaded();
-            return locale.get("Thee");
-        } else {
-            User user = getUser(uid);
-            return user != null ? user.getName() : "";
-        }
-    }
+    //
+    // Exporting messages
+    //
 
+    /**
+     * Formatting messages for exporting
+     *
+     * @param messages messages to export
+     * @return formatted text
+     */
     @ObjectiveCName("formatMessagesExport:")
     public String formatMessagesExport(Message[] messages) {
         String text = "";
@@ -618,48 +488,56 @@ public class I18nEngine {
         return text;
     }
 
-    @ObjectiveCName("formatFastName:")
-    public String formatFastName(String name) {
-        if (name.length() > 1) {
-            if (Character.isLetter(name.charAt(0))) {
-                return name.substring(0, 1).toUpperCase();
-            } else {
-                return "#";
-            }
-        } else {
-            return "#";
-        }
-    }
+
+    //
+    // Tools
+    //
 
     private String getTemplateNamed(int senderId, String baseString) {
-        String newString = getTemplate(senderId, baseString).replace("{name}",
-                formatPerformerName(senderId));
+        String newString = getTemplate(senderId, baseString)
+                .replace("{name}", formatPerformerName(senderId));
 
-        // verb for 'you' in persian language continues with suffix
-        if (currentLocale.equals("Fa")) {
-            if (senderId == modules.getAuthModule().myUid())
-                assumeLoaded();
-            newString = (newString + locale.get("YouSuffixVerb")).replace("\r", "");
+        // term with 'you' in persian language should be appended with suffix
+        if (getLocaleName().equals("Fa")) {
+            if (senderId == modules.getAuthModule().myUid()) {
+                newString += "ید";
+            }
         }
         return newString;
     }
 
     private String getTemplate(int senderId, String baseString) {
-        assumeLoaded();
         if (senderId == modules.getAuthModule().myUid()) {
-            if (locale.containsKey(baseString + "You")) {
-                return locale.get(baseString + "You");
-            }
+            return get(baseString, YOU);
         }
-        if (locale.containsKey(baseString + "Male") && locale.containsKey(baseString + "Female")) {
-            User u = getUser(senderId);
-            if (u.getSex() == Sex.MALE) {
-                return locale.get(baseString + "Male");
-            } else if (u.getSex() == Sex.FEMALE) {
-                return locale.get(baseString + "Female");
-            }
+
+        User u = getUser(senderId);
+        String[] sexType = DEFAULT;
+        if (u.getSex() == Sex.MALE) {
+            sexType = MALE;
+        } else if (u.getSex() == Sex.FEMALE) {
+            sexType = FEMALE;
         }
-        return locale.get(baseString);
+        return get(baseString, sexType);
+    }
+
+    @ObjectiveCName("formatPerformerNameWithUid:")
+    public String formatPerformerName(int uid) {
+        if (uid == modules.getAuthModule().myUid()) {
+            return getYouVerb();
+        } else {
+            return getUser(uid).getName();
+        }
+    }
+
+    @ObjectiveCName("getSubjectNameWithUid:")
+    public String getSubjectName(int uid) {
+        if (uid == modules.getAuthModule().myUid()) {
+            return getTheeVerb();
+        } else {
+            User user = getUser(uid);
+            return user != null ? user.getName() : "";
+        }
     }
 
     private User getUser(int uid) {
