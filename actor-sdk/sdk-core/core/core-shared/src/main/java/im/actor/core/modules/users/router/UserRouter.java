@@ -507,7 +507,7 @@ public class UserRouter extends ModuleActor {
             UpdateUserUnblocked unblocked = (UpdateUserUnblocked) update;
             return onUserBlockedChanged(
                     unblocked.getUid(),
-                    true);
+                    false);
         }
         return Promise.success(null);
     }
