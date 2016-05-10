@@ -34,9 +34,9 @@ public class WebSocketConnection extends AsyncConnection {
         isClosed = true;
 
         String url;
-        if (getEndpoint().getType() == ConnectionEndpoint.Type.WS) {
+        if (getEndpoint().getType() == ConnectionEndpoint.TYPE_WS) {
             url = "ws://" + getEndpoint().getHost() + ":" + getEndpoint().getPort() + "/";
-        } else if (getEndpoint().getType() == ConnectionEndpoint.Type.WS_TLS) {
+        } else if (getEndpoint().getType() == ConnectionEndpoint.TYPE_WS_TLS) {
             url = "wss://" + getEndpoint().getHost() + ":" + getEndpoint().getPort() + "/";
         } else {
             throw new RuntimeException();

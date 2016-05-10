@@ -147,11 +147,6 @@
     <string name="auth_error_code_invalid">The code is invalid. Please try again.</string>
     <string name="auth_error_failed_get_oauth2_token">Authorization server error. Please, try again.</string>
 
-    <!-- Typing -->
-    <string name="typing_private">typing…</string>
-    <string name="typing_group">{0} is typing…</string>
-    <string name="typing_group_many">{0} people are typing…</string>
-
     <!-- Main -->
     <string name="main_search_hint">Type something to search</string>
     <string name="main_search_empty">Nothing found</string>

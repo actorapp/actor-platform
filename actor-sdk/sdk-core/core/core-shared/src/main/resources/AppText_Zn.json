@@ -4,6 +4,9 @@
 	},
 
 	"language": {
+
+		"code": "Zn",
+
 		"format": {
 			"time": {
 				"yesterday": "昨天",
@@ -28,7 +31,7 @@
 
 		"referencing": {
 			"you": "你",
-			"Thee": "你"
+			"thee": "你"
 		},
 
 		"sequence": {
