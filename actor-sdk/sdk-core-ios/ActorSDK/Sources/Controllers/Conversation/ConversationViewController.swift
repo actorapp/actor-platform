@@ -920,7 +920,7 @@ public class ConversationViewController:
         let stickerViewFrame = self.stickersButton.frame
         stickersButton.frame.origin.x = self.stickersButton.frame.origin.x + 500
         
-        UIView.animateWithDuration(1.5, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 1.0, options: UIViewAnimationOptions.CurveLinear, animations: { () -> Void in
+        UIView.animateWithDuration(1.3, delay: 0.0, usingSpringWithDamping: 0.8, initialSpringVelocity: 1.0, options: UIViewAnimationOptions.CurveLinear, animations: { () -> Void in
             
             self.leftButton.frame = leftButtonFrame
             self.textView.frame = textViewFrame
