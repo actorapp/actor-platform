@@ -9,7 +9,7 @@ import SafariServices
 import DZNWebViewController
 
 @objc public class ActorSDK: NSObject, PKPushRegistryDelegate {
-
+    
     //
     // Shared instance
     //
@@ -39,12 +39,12 @@ import DZNWebViewController
     //
     //  Configuration
     //
-
+    
     /// Server Endpoints
     public var endpoints = [
         "tcp://front1-mtproto-api-rev3.actor.im:443",
         "tcp://front2-mtproto-api-rev3.actor.im:443"
-    ] {
+        ] {
         didSet {
             trustedKeys = []
         }
@@ -80,10 +80,10 @@ import DZNWebViewController
     
     /// Invitation URL for apps
     public var inviteUrl: String = "https://actor.im/dl"
-
+    
     /// Privacy Policy URL
     public var privacyPolicyUrl: String? = nil
-
+    
     /// Privacy Policy Text
     public var privacyPolicyText: String? = nil
     
@@ -110,16 +110,16 @@ import DZNWebViewController
     
     /// Support home page
     public var supportHomepage: String? = "https://actor.im"
-
+    
     /// Support account
     public var supportTwitter: String? = "actorapp"
-
+    
     /// Invite url scheme
     public var inviteUrlScheme: String? = nil
     
     /// Web Invite Domain host
     public var inviteUrlHost: String? = nil
-
+    
     /// Enable voice calls feature
     public var enableCalls: Bool = true
     
@@ -205,7 +205,7 @@ import DZNWebViewController
         let timeZone = NSTimeZone.defaultTimeZone().name
         log("Found time zone :\(timeZone)")
         builder.setTimeZone(timeZone)
-  
+        
         // Logs
         // builder.setEnableFilesLogging(true)
         
@@ -337,7 +337,7 @@ import DZNWebViewController
         if apiPushId != nil {
             messenger.registerApplePushKitWithApnsId(jint(apiPushId!), withToken: token)
         }
-
+        
     }
     
     private func requestPush() {
@@ -349,7 +349,7 @@ import DZNWebViewController
     
     private func requestPushKit() {
         let voipRegistry = PKPushRegistry(queue: dispatch_get_main_queue())
-        voipRegistry.delegate = self        
+        voipRegistry.delegate = self
         voipRegistry.desiredPushTypes = Set([PKPushTypeVoIP])
     }
     
@@ -384,7 +384,7 @@ import DZNWebViewController
     /// Get main navigations with check in delegate for customize from SDK
     
     private func getMainNavigations() -> [AANavigationController] {
-    
+        
         
         var mainNavigations = [AANavigationController]()
         
@@ -418,11 +418,11 @@ import DZNWebViewController
             mainNavigations.append(AANavigationController(rootViewController: AASettingsViewController()))
         }
         
-    
+        
         return mainNavigations;
         
     }
-
+    
     
     //
     // Presenting Messenger
@@ -500,7 +500,7 @@ import DZNWebViewController
         presentMessengerInWindow(window)
         window.makeKeyAndVisible()
     }
-
+    
     //
     // Data Processing
     //
@@ -511,7 +511,7 @@ import DZNWebViewController
             
             // Handle phone call
             if (u.scheme.lowercaseString == "telprompt") {
-                 UIApplication.sharedApplication().openURL(u)
+                UIApplication.sharedApplication().openURL(u)
                 return
             }
             
@@ -546,33 +546,28 @@ import DZNWebViewController
                 return
             }
             
-            
-            
-            if (url.isValidUrl()){
-                
-                if let bindedController = bindedToWindow?.rootViewController {
-                    // Dismiss Old Presented Controller to show new one
-                    if let presented = bindedController.presentedViewController {
-                        presented.dismissViewControllerAnimated(true, completion: nil)
-                    }
-                    
-                    // Building Controller for Web preview
-                    let controller: UIViewController
-                    if #available(iOS 9.0, *) {
-                        controller = SFSafariViewController(URL: u)
-                    } else {
-                        controller = AANavigationController(rootViewController: DZNWebViewController(URL: u))
-                    }
-                    if AADevice.isiPad {
-                        controller.modalPresentationStyle = .FullScreen
-                    }
-                    
-                    // Presenting controller
-                    bindedController.presentViewController(controller, animated: true, completion: nil)
-                } else {
-                    // Just Fallback. Might never happend
-                    UIApplication.sharedApplication().openURL(u)
+            if let bindedController = bindedToWindow?.rootViewController {
+                // Dismiss Old Presented Controller to show new one
+                if let presented = bindedController.presentedViewController {
+                    presented.dismissViewControllerAnimated(true, completion: nil)
                 }
+                
+                // Building Controller for Web preview
+                let controller: UIViewController
+                if #available(iOS 9.0, *) {
+                    controller = SFSafariViewController(URL: url.isValidUrl())
+                } else {
+                    controller = AANavigationController(rootViewController: DZNWebViewController(URL: url.isValidUrl()))
+                }
+                if AADevice.isiPad {
+                    controller.modalPresentationStyle = .FullScreen
+                }
+                
+                // Presenting controller
+                bindedController.presentViewController(controller, animated: true, completion: nil)
+            } else {
+                // Just Fallback. Might never happend
+                UIApplication.sharedApplication().openURL(url.isValidUrl())
             }
         }
     }
@@ -596,8 +591,8 @@ import DZNWebViewController
                         navController.pushViewController(ConversationViewController(peer: ACPeer.groupWithInt(groupId.intValue)), animated: true)
                     }
                     
-                }, failureBlock: nil)
-            })
+                    }, failureBlock: nil)
+                })
             bindedController.presentViewController(alert, animated: true, completion: nil)
         }
     }
@@ -745,7 +740,7 @@ import DZNWebViewController
         if !automaticOnlineHandling || !isStarted {
             return
         }
-
+        
         //
         // This event is fired when user press power button and lock screeen.
         // In iOS power button also cancel ongoint call.
@@ -789,7 +784,7 @@ import DZNWebViewController
         }
         self.completionHandler = completionHandler
     }
-
+    
     //
     // Handling invite url
     //
@@ -799,7 +794,7 @@ import DZNWebViewController
         dispatchOnUi { () -> Void in
             self.openUrl(url.absoluteString)
         }
-
+        
         return true
     }
     

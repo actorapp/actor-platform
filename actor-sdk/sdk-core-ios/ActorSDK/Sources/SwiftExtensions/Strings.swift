@@ -118,12 +118,16 @@ public extension String {
         }
         return res
     }
-        
-    public func isValidUrl () -> Bool {
-            if let url = NSURL(string: self) {
-                return UIApplication.sharedApplication().canOpenURL(url)
+    
+    public func isValidUrl () -> NSURL {
+        let adoptedUrl = (self.lowercaseString.hasPrefix("http") || self.lowercaseString.hasPrefix("https")) ? self : "http://\(self)"
+        if let url = NSURL(string: adoptedUrl) {
+            if (UIApplication.sharedApplication().canOpenURL(url)){
+                return url
             }
-        return false
+        }
+        // Just Fallback. Might never happend
+        return NSURL(string:"https://actor.im")!
     }
 
     public var ns: NSString {
