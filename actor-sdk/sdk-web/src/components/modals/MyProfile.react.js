@@ -4,4 +4,4 @@
 
 console.warn('MyProfile component is deprecated and will be remove in near future. Use Profile instead this.');
 
-export * from './MyProfile.react';
+export * from './Profile.react';

@@ -259,13 +259,13 @@ export const ActionTypes = keymirror({
   MESSAGE_ART_SHOW: null,
   MESSAGE_ART_CLOSE: null,
 
-
-  BLOCKED_USERS_OPEN: null,
-  BLOCKED_USERS_HIDE: null,
   BLOCKED_USERS_LOAD: null,
   BLOCKED_USERS_SET: null,
   BLOCKED_USERS_LOAD_FAILED: null,
-  BLOCKED_USERS_SET_QUERY: null
+  BLOCKED_USERS_SET_QUERY: null,
+
+  ABOUT_MODAL_SHOW: null,
+  ABOUT_MODAL_HIDE: null
 });
 
 export const EventTypes = {
@@ -384,14 +384,15 @@ export const ModalTypes = keymirror({
   INVITE_BY_LINK: null,
   QUICK_SEARCH: null,
   ATTACHMENTS: null,
-  BLOCKED_USERS: null
+  ABOUT: null
 });
 
 export const PreferencesTabTypes = keymirror({
   GENERAL: null,
   NOTIFICATIONS: null,
   SECURITY: null,
-  BLOCKED: null
+  BLOCKED: null,
+  ABOUT: null
 });
 
 
