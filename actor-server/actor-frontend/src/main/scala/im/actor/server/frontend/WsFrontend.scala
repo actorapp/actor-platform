@@ -1,5 +1,7 @@
 package im.actor.server.frontend
 
+import java.net.InetAddress
+
 import akka.actor.ActorSystem
 import akka.event.Logging
 import akka.http.scaladsl.Http
@@ -42,7 +44,7 @@ object WsFrontend extends Frontend("ws") {
     connections runForeach { conn ⇒
       log.debug("New HTTP Connection {}", conn.remoteAddress)
 
-      conn.handleWith(route(mtProtoBlueprint(serverKeys)))
+      conn.handleWith(route(mtProtoBlueprint(serverKeys, conn.remoteAddress.getAddress())))
     }
   }
 

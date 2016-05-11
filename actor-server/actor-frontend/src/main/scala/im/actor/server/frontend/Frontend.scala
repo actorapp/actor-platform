@@ -1,5 +1,6 @@
 package im.actor.server.frontend
 
+import java.net.InetAddress
 import java.util.concurrent.atomic.AtomicLong
 
 import kamon.Kamon
@@ -93,6 +94,6 @@ abstract class Frontend(connIdPrefix: String) {
 
   private def nextConnId(): String = s"conn-$connIdPrefix-${connCounter.incrementAndGet()}"
 
-  protected def mtProtoBlueprint(serverKeys: Seq[ServerKey])(implicit sessionRegion: SessionRegion, system: ActorSystem): MTProtoBlueprint.MTProtoFlow =
-    MTProtoBlueprint(nextConnId(), connectionTime, connectionCount, serverKeys)
+  protected def mtProtoBlueprint(serverKeys: Seq[ServerKey], remoteAddress: InetAddress)(implicit sessionRegion: SessionRegion, system: ActorSystem): MTProtoBlueprint.MTProtoFlow =
+    MTProtoBlueprint(nextConnId(), connectionTime, connectionCount, serverKeys, remoteAddress)
 }
