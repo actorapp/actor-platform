@@ -62,10 +62,10 @@ private[group] trait GroupQueryHandlers extends GroupCommandHelpers {
       ownerUserId = group.creatorUserId,
       createDate = group.createdAt.toEpochMilli,
       ext = None,
-      canViewMembers = Some(true),
-      canInvitePeople = Some(true),
-      isSharedHistory = Some(group.typ.isPublic || group.typ.isChannel),
-      isAsyncMembers = Some(false),
+      canViewMembers = Some(canViewMembers(group, clientUserId)),
+      canInvitePeople = Some(canInvitePeople(group, clientUserId)),
+      isSharedHistory = Some(group.isHistoryShared),
+      isAsyncMembers = Some(group.members.size > 100),
       members = apiMembers
     )
 
@@ -113,13 +113,19 @@ private[group] trait GroupQueryHandlers extends GroupCommandHelpers {
   }
 
   private def getApiMembers(group: GroupState, clientUserId: Int) = {
-    val isMember = hasMember(group, clientUserId)
-
-    if (isMember) {
+    if (isMember(group, clientUserId)) {
       group.members.toVector map {
         case (_, m) ⇒
           ApiMember(m.userId, m.inviterUserId, m.invitedAt.toEpochMilli, Some(m.isAdmin))
       }
     } else Vector.empty[ApiMember]
   }
+
+  private def canInvitePeople(group: GroupState, clientUserId: Int) =
+    isMember(group, clientUserId)
+
+  private def isMember(group: GroupState, clientUserId: Int) = hasMember(group, clientUserId)
+
+  private def canViewMembers(group: GroupState, clientUserId: Int) =
+    (group.typ.isGeneral || group.typ.isPublic) && isMember(group, clientUserId)
 }
