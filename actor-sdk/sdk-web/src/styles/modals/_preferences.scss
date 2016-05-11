@@ -44,17 +44,6 @@
       right: 0;
       bottom: 0;
       left: 0;
-
-      padding: 10px 16px;
-      span {
-        font-size: 12px;
-
-        cursor: default;
-
-        color: rgba(black, .4);
-
-        @include no-select();
-      }
     }
 
     &__content {

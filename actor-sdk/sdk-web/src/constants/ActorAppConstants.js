@@ -391,7 +391,8 @@ export const PreferencesTabTypes = keymirror({
   GENERAL: null,
   NOTIFICATIONS: null,
   SECURITY: null,
-  BLOCKED: null
+  BLOCKED: null,
+  ABOUT: null
 });
 
 
