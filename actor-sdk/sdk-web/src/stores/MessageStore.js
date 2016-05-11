@@ -23,9 +23,10 @@ class MessageStore extends ReduceStore {
       readDate: 0,
       readByMeDate: 0,
       count: 0,
-      firstMessageId: null,
-      lastMessageId: null,
-      firstUnreadId: null,
+      firstId: null,
+      lastId: null,
+      unreadId: null,
+      editId: null,
       changeReason: MessageChangeReason.UNKNOWN,
       selected: new Immutable.Set()
     };
@@ -42,13 +43,13 @@ class MessageStore extends ReduceStore {
         return this.getInitialState();
 
       case ActionTypes.MESSAGES_CHANGED:
-        const firstMessageId = getMessageId(action.messages[0]);
-        const lastMessageId = getMessageId(action.messages[action.messages.length - 1]);
+        const firstId = getMessageId(action.messages[0]);
+        const lastId = getMessageId(action.messages[action.messages.length - 1]);
 
         const nextState = {
           ...state,
-          firstMessageId,
-          lastMessageId,
+          firstId,
+          lastId,
           messages: action.messages,
           overlay: action.overlay,
           receiveDate: action.receiveDate,
@@ -57,10 +58,10 @@ class MessageStore extends ReduceStore {
           isLoaded: action.isLoaded
         };
 
-        if (firstMessageId !== state.firstMessageId) {
+        if (firstId !== state.firstId) {
           nextState.count = Math.min(action.messages.length, state.count + MESSAGE_COUNT_STEP);
           nextState.changeReason = MessageChangeReason.UNSHIFT;
-        } else if (lastMessageId !== state.lastMessageId) {
+        } else if (lastId !== state.lastId) {
           // TODO: possible incorrect
           const lengthDiff = action.messages.length - state.messages.length;
 
@@ -74,9 +75,9 @@ class MessageStore extends ReduceStore {
         if (state.readByMeDate === 0 && action.readByMeDate > 0) {
           const unreadIndex = getFirstUnreadMessageIndex(action.messages, action.readByMeDate, UserStore.getMyId());
           if (unreadIndex === -1) {
-            nextState.firstUnreadId = null;
+            nextState.unreadId = null;
           } else {
-            nextState.firstUnreadId = action.messages[unreadIndex].rid;
+            nextState.unreadId = action.messages[unreadIndex].rid;
             if (unreadIndex > nextState.count) {
               nextState.count = Math.min((action.messages.length - unreadIndex) + MESSAGE_COUNT_STEP, action.messages.length);
             }
@@ -96,6 +97,18 @@ class MessageStore extends ReduceStore {
         return {
           ...state,
           selected: state.selected.has(action.id) ? state.selected.remove(action.id) : state.selected.add(action.id)
+        };
+
+      case ActionTypes.MESSAGES_EDIT_START:
+        return {
+          ...state,
+          editId: action.message.rid
+        };
+
+      case ActionTypes.MESSAGES_EDIT_END:
+        return {
+          ...state,
+          editId: null
         };
 
       default:

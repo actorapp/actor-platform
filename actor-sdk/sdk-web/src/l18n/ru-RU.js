@@ -97,6 +97,7 @@ export default {
       'sendFile': 'Документ',
       'sendPhoto': 'Изображение',
       'send': 'Отправить',
+      'edit': 'Сохранить',
       'markdown': {
         'bold': 'жирный',
         'italic': 'курсив',

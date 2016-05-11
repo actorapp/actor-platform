@@ -79,6 +79,12 @@
       opacity: 1;
     }
   }
+
+  &--editing {
+    .compose__message {
+      background-color: $message-edit-background;
+    }
+  }
 }
 
 .dropzone {
