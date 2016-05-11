@@ -81,7 +81,7 @@ public class DialogHolder extends BindedViewHolder {
         background.setBackgroundResource(R.drawable.selector_fill);
         fl.addView(background, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         avatar = new AvatarView(context);
-        avatar.init(Screen.dp(56), 24);
+        avatar.init(Screen.dp(56), 22);
         {
             FrameLayout.LayoutParams avatarLayoutParams = new FrameLayout.LayoutParams(Screen.dp(56), Screen.dp(56));
             avatarLayoutParams.gravity = Gravity.CENTER_VERTICAL | Gravity.LEFT;
