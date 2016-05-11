@@ -21,7 +21,6 @@ import SvgIcon from '../../common/SvgIcon.react';
 import AvatarItem from '../../common/AvatarItem.react';
 import State from './State.react';
 import Reactions from './Reactions.react';
-import MessageEdit from './MessageEdit.react';
 
 // Default message content components
 import DefaultService from './Service.react';
@@ -46,7 +45,6 @@ class MessageItem extends Component {
     state: PropTypes.string.isRequired,
     isShort: PropTypes.bool.isRequired,
     isEditing: PropTypes.bool.isRequired,
-    onEdit: PropTypes.func.isRequired,
     isSelected: PropTypes.bool.isRequired,
     onSelect: PropTypes.func.isRequired
   }
@@ -208,12 +206,6 @@ class MessageItem extends Component {
 
   renderContent() {
     const { message } = this.props;
-    if (this.props.isEditing) {
-      return (
-        <MessageEdit message={message} onSubmit={this.props.onEdit} />
-      );
-    }
-
     const { Service, Text, Photo, Document, Voice, Contact, Location, Modern, Sticker } = this.components;
 
     switch (message.content.content) {
@@ -315,13 +307,14 @@ class MessageItem extends Component {
   }
 
   render() {
-    const { isShort, isSelected } = this.props;
+    const { isShort, isSelected, isEditing } = this.props;
     const { isHighlighted } = this.state;
 
     const messageClassName = classnames('message', {
       'message--short': isShort,
       'message--active': isHighlighted,
-      'message--selected': isSelected
+      'message--selected': isSelected,
+      'message--editing': isEditing
     });
 
     return (

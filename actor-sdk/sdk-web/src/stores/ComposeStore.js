@@ -4,53 +4,9 @@
 
 import { ReduceStore } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
-import ActorClient from '../utils/ActorClient';
 import { ActionTypes, PeerTypes } from '../constants/ActorAppConstants';
-
-import DraftStore from './DraftStore';
-
-function parseCommand(text) {
-  const matches = /^\/(.)?(?: (.+))?/.exec(text);
-  if (!matches) {
-    return null;
-  }
-
-  return {
-    name: matches[1],
-    args: matches[2]
-  };
-}
-
-function parseMentionQuery(text, position) {
-  const run = (runText, query) => {
-    if (runText.length === 0) {
-      return null;
-    } else {
-      const lastChar = runText.charAt(runText.length - 1);
-      if (lastChar === '@') {
-        const charBeforeAt = runText.charAt(runText.length - 2);
-        if (charBeforeAt.trim() === '') {
-          const text = (query || '');
-          const atStart = text.length + 1 === position;
-
-          return {
-            text: text,
-            atStart: atStart
-          };
-        } else {
-          return null;
-        }
-      } else if (lastChar.trim() === '') {
-        return null;
-      } else {
-        return run(runText.substring(0, runText.length - 1), lastChar + (query || ''));
-      }
-    }
-  };
-
-  const runText = text.substring(0, position);
-  return run(runText, null);
-}
+import ActorClient from '../utils/ActorClient';
+import { parseMentionQuery, parseBotCommand } from '../utils/ComposeUtils';
 
 class ComposeStore extends ReduceStore {
   getInitialState() {
@@ -58,7 +14,8 @@ class ComposeStore extends ReduceStore {
       text: '',
       mentions: null,
       commands: null,
-      autoFocus: true
+      autoFocus: true,
+      editMessage: null
     };
   }
 
@@ -78,13 +35,27 @@ class ComposeStore extends ReduceStore {
             nextState.mentions = ActorClient.findMentions(action.peer.id, query.text);
           }
         } else {
-          const command = parseCommand(action.text);
+          const command = parseBotCommand(action.text);
           if (command) {
             nextState.commands = ActorClient.findBotCommands(action.peer.id, command.name || '');
           }
         }
 
         return nextState;
+
+      case ActionTypes.MESSAGES_EDIT_START:
+        return {
+          ...state,
+          text: action.message.content.text,
+          editMessage: action.message
+        };
+
+      case ActionTypes.MESSAGES_EDIT_END:
+        return {
+          ...state,
+          text: '',
+          editMessage: null
+        };
 
       case ActionTypes.COMPOSE_MENTION_INSERT:
         const query = parseMentionQuery(action.text, action.caretPosition);
@@ -120,7 +91,7 @@ class ComposeStore extends ReduceStore {
       case ActionTypes.DRAFT_LOAD:
         return {
           ...state,
-          text: DraftStore.getDraft()
+          text: action.draft
         };
 
       case ActionTypes.EMOJI_INSERT:

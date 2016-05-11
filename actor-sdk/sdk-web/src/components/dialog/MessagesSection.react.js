@@ -8,28 +8,23 @@ import { Container } from 'flux/utils';
 import DialogActionCreators from '../../actions/DialogActionCreators';
 import MessageActionCreators from '../../actions/MessageActionCreators';
 
-import UserStore from '../../stores/UserStore';
 import MessageStore from '../../stores/MessageStore';
-import EditMessageStore from '../../stores/EditMessageStore';
 
 import MessagesList from './MessagesList.react';
 
 class MessagesSection extends Component {
   static propTypes = {
+    uid: PropTypes.number.isRequired,
     peer: PropTypes.object.isRequired,
     isMember: PropTypes.bool.isRequired
   };
 
   static getStores() {
-    return [MessageStore, EditMessageStore];
+    return [MessageStore];
   }
 
   static calculateState() {
-    return {
-      uid: UserStore.getMyId(),
-      messages: MessageStore.getState(),
-      editMessage: EditMessageStore.getState()
-    };
+    return MessageStore.getState();
   }
 
   constructor(props) {
@@ -54,15 +49,13 @@ class MessagesSection extends Component {
   }
 
   render() {
-    const { peer, isMember } = this.props;
-    const { uid, messages, editMessage } = this.state;
+    const { uid, peer, isMember } = this.props;
 
     return (
       <MessagesList
         uid={uid}
         peer={peer}
-        messages={messages}
-        editMessage={editMessage}
+        messages={this.state}
         isMember={isMember}
         onSelect={this.onSelect}
         onLoadMore={this.onLoadMore}
@@ -72,4 +65,4 @@ class MessagesSection extends Component {
   }
 }
 
-export default Container.create(MessagesSection, { withProps: true });
+export default Container.create(MessagesSection);

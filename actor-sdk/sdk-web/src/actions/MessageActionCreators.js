@@ -6,8 +6,6 @@ import { throttle } from 'lodash';
 import { dispatch } from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
 
-import ComposeActionCreators from './ComposeActionCreators';
-
 import ActorClient from '../utils/ActorClient';
 import { prepareTextMessage, findLastEditableMessage } from '../utils/MessageUtils';
 
@@ -25,6 +23,18 @@ class MessageActionCreators {
   sendTextMessage(peer, text) {
     ActorClient.sendTextMessage(peer, prepareTextMessage(text));
     dispatch(ActionTypes.MESSAGE_SEND_TEXT, { peer, text });
+  }
+
+  editTextMessage(peer, rid, text) {
+    dispatch(ActionTypes.MESSAGES_EDIT_END);
+    ActorClient.editMessage(peer, rid, text).catch((e) => {
+      console.error(e);
+    });
+  }
+
+  deleteMessage(peer, rid) {
+    ActorClient.deleteMessage(peer, rid);
+    dispatch(ActionTypes.MESSAGE_DELETE, { peer, rid });
   }
 
   sendFileMessage(peer, file) {
@@ -45,11 +55,6 @@ class MessageActionCreators {
   sendVoiceMessage(peer, duration, voice) {
     ActorClient.sendVoiceMessage(peer, duration, voice);
     dispatch(ActionTypes.MESSAGE_SEND_VOICE, { peer, duration, voice });
-  }
-
-  deleteMessage(peer, rid) {
-    ActorClient.deleteMessage(peer, rid);
-    dispatch(ActionTypes.MESSAGE_DELETE, { peer, rid });
   }
 
   addLike(peer, rid) {
@@ -77,28 +82,18 @@ class MessageActionCreators {
     dispatch(ActionTypes.MESSAGES_TOGGLE_SELECTED, { id });
   }
 
+  startEditMessage(message) {
+    dispatch(ActionTypes.MESSAGES_EDIT_START, { message });
+  }
+
   editLastMessage() {
     const uid = ActorClient.getUid();
     const { messages } = MessageStore.getState();
     const message = findLastEditableMessage(messages, uid);
 
     if (message) {
-      ComposeActionCreators.toggleAutoFocus(false);
-      dispatch(ActionTypes.MESSAGES_EDIT_START, { message });
+      this.startEditMessage(message);
     }
-  }
-
-  endEdit(peer, message, text) {
-    if (!text) {
-      this.deleteMessage(peer, message.rid);
-    } else if (text !== message.content.text) {
-      ActorClient.editMessage(peer, message.rid, text).catch((e) => {
-        console.error(e);
-      });
-    }
-
-    dispatch(ActionTypes.MESSAGES_EDIT_END);
-    ComposeActionCreators.toggleAutoFocus(true);
   }
 }
 

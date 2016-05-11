@@ -58,6 +58,9 @@ class ComposeSection extends Component {
     this.onSubmit = this.onSubmit.bind(this);
     this.onPaste = this.onPaste.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
+    this.onEditTyping = this.onEditTyping.bind(this);
+    this.onEditSubmit = this.onEditSubmit.bind(this);
+    this.onEditKeyDown = this.onEditKeyDown.bind(this);
     this.onCommandSelect = this.onCommandSelect.bind(this);
     this.onCommandClose = this.onCommandClose.bind(this);
   }
@@ -97,7 +100,29 @@ class ComposeSection extends Component {
 
   onKeyDown(event) {
     if (event.keyCode === KeyCodes.ARROW_UP && !event.target.value) {
+      event.preventDefault();
       MessageActionCreators.editLastMessage();
+    }
+  }
+
+  onEditSubmit() {
+    const { peer, compose: { text, editMessage } } = this.state;
+
+    if (text) {
+      MessageActionCreators.editTextMessage(peer, editMessage.rid, text);
+    } else {
+      MessageActionCreators.deleteMessage(peer, editMessage.rid);
+      ComposeActionCreators.cleanText();
+    }
+  }
+
+  onEditTyping(text, caretPosition) {
+    ComposeActionCreators.changeText(this.state.peer, text, caretPosition);
+  }
+
+  onEditKeyDown(event) {
+    if (event.keyCode === KeyCodes.ESC) {
+      ComposeActionCreators.cancelEdit();
     }
   }
 
@@ -215,7 +240,53 @@ class ComposeSection extends Component {
     );
   }
 
-  render() {
+  renderEditing() {
+    const { compose, profile, stickers, isMessageArtOpen, sendByEnter } = this.state;
+    const { intl } = this.context;
+
+    return (
+      <section className="compose compose--editing">
+
+        {this.renderMentions()}
+        {this.renderCommands()}
+
+        <MessageArt
+          onSelect={this.handleEmojiSelect}
+          onStickerSelect={this.handleStickerSelect}
+          isActive={isMessageArtOpen}
+          stickers={stickers}
+        />
+
+        <AvatarItem
+          className="my-avatar"
+          image={profile.avatar}
+          placeholder={profile.placeholder}
+          title={profile.name}
+        />
+
+        <ComposeMarkdownHint isActive={compose.text.length >= 3} />
+        <ComposeTextArea
+          autoFocus
+          ref="area"
+          value={compose.text}
+          sendByEnter={sendByEnter}
+          sendEnabled={!compose.mentions && !compose.commands}
+          onTyping={this.onEditTyping}
+          onSubmit={this.onEditSubmit}
+          onKeyDown={this.onEditKeyDown}
+        />
+
+        <footer className="compose__footer row">
+          <span className="col-xs"/>
+          <button className="button button--lightblue" onClick={this.onSubmit}>
+            {intl.messages['compose.edit']}
+          </button>
+        </footer>
+      </section>
+    );
+  }
+
+  renderPosting() {
     const { compose, profile, stickers, isMessageArtOpen, sendByEnter } = this.state;
     const { intl } = this.context;
 
@@ -273,6 +344,14 @@ class ComposeSection extends Component {
         </form>
       </section>
     );
+  }
+
+  render() {
+    if (this.state.compose.editMessage) {
+      return this.renderEditing();
+    }
+
+    return this.renderPosting();
   }
 }
 
