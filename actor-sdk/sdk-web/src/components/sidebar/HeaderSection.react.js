@@ -63,12 +63,12 @@ class HeaderSection extends Component {
     } else {
       this.closeHeaderMenu();
     }
-  };
+  }
 
   closeHeaderMenu() {
     this.setState({ isOpened: false });
     document.removeEventListener('click', this.closeHeaderMenu, false);
-  };
+  }
 
   openMyProfile() {
     ProfileActionCreators.show();
@@ -128,7 +128,7 @@ class HeaderSection extends Component {
       () => LoginActionCreators.setLoggedOut(),
       () => {}
     );
-  };
+  }
 
   renderTwitterLink() {
     const { twitter } = SharedContainer.get();
