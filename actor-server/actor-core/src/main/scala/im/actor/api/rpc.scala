@@ -63,7 +63,7 @@ package object rpc extends PeersImplicits with HistoryImplicits with DialogConve
 
   private def requireAuth(implicit clientData: ClientData): MaybeAuthorized[AuthorizedClientData] =
     clientData.authData match {
-      case Some(AuthData(userId, authSid, appId)) ⇒ Authorized(AuthorizedClientData(clientData.authId, clientData.sessionId, userId, authSid, appId))
+      case Some(AuthData(userId, authSid, appId)) ⇒ Authorized(AuthorizedClientData(clientData.authId, clientData.sessionId, userId, authSid, appId, clientData.remoteAddr))
       case None                                   ⇒ NotAuthorized
     }
 
