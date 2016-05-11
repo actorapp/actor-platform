@@ -27,11 +27,14 @@
 
 .scroller__wrapper--custom {
   .scroller__container {
-    -ms-overflow-style: none;
-    overflow: -moz-scrollbars-none;
     &::-webkit-scrollbar {
       display: none;
+      width: 0;
     }
+
+    overflow: auto;
+    margin-right: -32px;
+    padding-right: 32px;
   }
 }
 
