@@ -1,6 +1,6 @@
 package im.actor.server.dialog
 
-import java.time.Instant
+import java.time.{ Instant, Period }
 
 import akka.actor.Props
 import akka.http.scaladsl.util.FastFuture
@@ -23,6 +23,7 @@ import im.actor.server.persist.HistoryMessageRepo
 import im.actor.server.sequence.{ PushRules, SeqState, SeqUpdatesExtension }
 import im.actor.server.user.UserExtension
 
+import scala.concurrent.duration._
 import scala.concurrent.Future
 
 object DialogRoot {
@@ -112,6 +113,14 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
 
   private implicit val timeout = Timeout(ActorConfig.defaultTimeout)
 
+  private val archiveCheckDelay = (userId % 60).minutes
+  private val archiveCheckInterval = system.scheduler.schedule(archiveCheckDelay, 1.hour, self, CheckArchive())
+
+  override def postStop(): Unit = {
+    super.postStop()
+    archiveCheckInterval.cancel()
+  }
+
   private val selfPeer: Peer = Peer.privat(userId)
 
   override def persistenceId: String = s"DialogRoot_$userId"
@@ -150,12 +159,26 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
           }
         case None ⇒
       }
+    case CheckArchive()                         ⇒ checkArchive()
     case Archive(Some(peer), clientAuthSid)     ⇒ archive(peer, clientAuthSid map (_.value))
     case Unarchive(Some(peer), clientAuthSid)   ⇒ unarchive(peer, clientAuthSid map (_.value))
     case Favourite(Some(peer), clientAuthSid)   ⇒ favourite(peer, clientAuthSid map (_.value))
     case Unfavourite(Some(peer), clientAuthSid) ⇒ unfavourite(peer, clientAuthSid map (_.value))
     case Delete(Some(peer), clientAuthSid)      ⇒ delete(peer, clientAuthSid map (_.value))
   }
+
+  private def checkArchive(): Unit =
+    getDialogGroups() foreach { resp ⇒
+      val toArchive = resp.groups.collect {
+        case DialogGroup(DialogGroupType.DirectMessages, ds) ⇒ ds
+        case DialogGroup(DialogGroupType.Groups, ds)         ⇒ ds
+      }.flatten filter (_.lastMessageDate.isBefore(Instant.now().minus(Period.ofDays(5))))
+
+      toArchive foreach { d ⇒
+        log.debug("Archiving dialog {} due to inactivity. Last message date: {}", d.peer, d.lastMessageDate)
+        self ! Archive(d.peer, None)
+      }
+    }
 
   private def archive(peer: Peer, clientAuthSid: Option[Int]) = {
     if (isArchived(peer)) sendChatGroupsChanged(clientAuthSid) pipeTo sender()
