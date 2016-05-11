@@ -2,12 +2,14 @@
  * Copyright (C) 2016 Actor LLC. <https://actor.im>
  */
 
+import { isFunction } from 'lodash';
 import React, { Component } from 'react';
 import { Container } from 'flux/utils';
 import classnames from 'classnames';
 import Modal from 'react-modal';
 import { FormattedMessage } from 'react-intl';
 import SharedContainer from '../../utils/SharedContainer'
+import DelegateContainer from '../../utils/DelegateContainer';
 import { appName, PreferencesTabTypes, AsyncActionStates } from '../../constants/ActorAppConstants';
 
 import PreferencesActionCreators from '../../actions/PreferencesActionCreators';
@@ -15,8 +17,8 @@ import { loggerToggle } from '../../actions/LoggerActionCreators';
 
 import PreferencesStore from '../../stores/PreferencesStore';
 
-import Session from './preferences/Session.react'
-import BlockedUsers from './preferences/BlockedUsers.react'
+import Session from './preferences/Session.react';
+import BlockedUsers from './preferences/BlockedUsers.react';
 
 class PreferencesModal extends Component {
   static getStores() {
@@ -53,6 +55,22 @@ class PreferencesModal extends Component {
     this.changeMentionNotifications = this.changeMentionNotifications.bind(this);
     this.changeIsShowNotificationTextEnabled = this.changeIsShowNotificationTextEnabled.bind(this);
     this.handleTerminateAllSessionsClick = this.handleTerminateAllSessionsClick.bind(this);
+
+    this.components = this.getComponents();
+  }
+
+  getComponents() {
+    const { components } = DelegateContainer.get();
+
+    if (components) {
+      return {
+        About: isFunction(components.about) ? components.about : null
+      };
+    }
+
+    return {
+      About: null
+    };
   }
 
   handleAppDetailClick() {
@@ -114,15 +132,21 @@ class PreferencesModal extends Component {
     PreferencesActionCreators.changeTab(tab);
   }
 
-  renderAppDetail() {
+  renderAppAbout() {
+    const { About } = this.components;
+    if (!About) {
+      return null;
+    }
+
+    const { activeTab } = this.state;
+    const aboutTabClassNames = classnames('preferences__tabs__tab', {
+      'preferences__tabs__tab--active': activeTab ===  PreferencesTabTypes.ABOUT
+    });
+
     return (
-      // TODO: Fix build erros for commented code
-      <span onClick={this.handleAppDetailClick}>
-        {`${this.appName}: v1.0.268`}
-        {/*{`${this.appName}: v${__ACTOR_SDK_VERSION__}`}*/}
-        {/*<br/>*/}
-        {/*{`Core: v${__ACTOR_CORE_VERSION__}`}*/}
-      </span>
+      <a className={aboutTabClassNames} onClick={() => this.handleChangeTab(PreferencesTabTypes.ABOUT)}>
+        <FormattedMessage id="preferences.about.title"/>
+      </a>
     );
   }
 
@@ -156,9 +180,7 @@ class PreferencesModal extends Component {
         <a className={securityTabClassNames} onClick={() => this.handleChangeTab(PreferencesTabTypes.SECURITY)}>
           <FormattedMessage id="preferences.security.title"/>
         </a>
-        <footer className="preferences__tabs__footer">
-          {this.renderAppDetail()}
-        </footer>
+        {this.renderAppAbout()}
       </aside>
     );
   }
@@ -182,7 +204,7 @@ class PreferencesModal extends Component {
                 defaultChecked={isSendByEnterEnabled}
                 onChange={this.toggleSendByEnter}/>
               <label htmlFor="sendByEnterEnabled">
-                <b>Enter</b> – <FormattedMessage id="preferences.general.send.sendMessage"/>,
+                <b>Enter</b> – <FormattedMessage id="preferences.general.send.sendMessage"/>,&nbsp;
                 <b>Shift + Enter</b> – <FormattedMessage id="preferences.general.send.newLine"/>
               </label>
             </div>
@@ -195,7 +217,7 @@ class PreferencesModal extends Component {
                 defaultChecked={!isSendByEnterEnabled}
                 onChange={this.toggleSendByEnter}/>
               <label htmlFor="sendByEnterDisabled">
-                <b>Cmd + Enter</b> – <FormattedMessage id="preferences.general.send.sendMessage"/>,
+                <b>Cmd + Enter</b> – <FormattedMessage id="preferences.general.send.sendMessage"/>,&nbsp;
                 <b>Enter</b> – <FormattedMessage id="preferences.general.send.newLine"/>
               </label>
             </div>
@@ -310,6 +332,15 @@ class PreferencesModal extends Component {
     });
   }
 
+  renderAboutTab() {
+    const { About } = this.components;
+    if (!About) {
+      return null;
+    }
+
+    return <About/>
+  }
+
   renderCurrentTab() {
     const { activeTab } = this.state;
     switch (activeTab) {
@@ -321,6 +352,8 @@ class PreferencesModal extends Component {
         return <BlockedUsers/>
       case PreferencesTabTypes.SECURITY:
         return this.renderSecurityTab()
+      case PreferencesTabTypes.ABOUT:
+        return this.renderAboutTab();
       default:
         return null;
     }
