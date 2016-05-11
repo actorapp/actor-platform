@@ -11,7 +11,9 @@ import im.actor.core.entity.Dialog;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.SearchEntity;
+import im.actor.runtime.Runtime;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
+import im.actor.runtime.threading.ThreadDispatcher;
 
 public class CocoaMessenger extends Messenger {
 
@@ -26,6 +28,8 @@ public class CocoaMessenger extends Messenger {
     @ObjectiveCName("initWithConfiguration:")
     public CocoaMessenger(@NotNull Configuration configuration) {
         super(configuration);
+
+        ThreadDispatcher.pushDispatcher(Runtime::postToMainThread);
     }
 
     @ObjectiveCName("getDialogsDisplayList")
