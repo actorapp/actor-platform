@@ -165,13 +165,13 @@ final class GroupsServiceSpec
       expectUpdate(classOf[UpdateChatGroupsChanged])(identity)
       expectUpdate(classOf[UpdateGroupUserInvitedObsolete])(identity)
       expectUpdate(classOf[UpdateGroupInviteObsolete])(identity)
-      expectUpdate(classOf[UpdateGroupTitleChanged])(identity)
+      expectUpdate(classOf[UpdateGroupTitleChangedObsolete])(identity)
     }
 
     {
       implicit val clientData = clientData2
       expectUpdate(classOf[UpdateGroupInviteObsolete])(identity)
-      expectUpdate(classOf[UpdateGroupTitleChanged])(identity)
+      expectUpdate(classOf[UpdateGroupTitleChangedObsolete])(identity)
       //UpdateChatGroupsChanged will come after creation of dialog
     }
 
