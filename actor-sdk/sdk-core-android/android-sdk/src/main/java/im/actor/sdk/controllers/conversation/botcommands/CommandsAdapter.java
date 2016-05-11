@@ -124,8 +124,10 @@ public class CommandsAdapter extends HolderAdapter<BotCommand> {
         }
 
         @Override
-        public void unbind() {
-            avatarView.unbind();
+        public void unbind(boolean full) {
+            if (full) {
+                avatarView.unbind();
+            }
         }
     }
 

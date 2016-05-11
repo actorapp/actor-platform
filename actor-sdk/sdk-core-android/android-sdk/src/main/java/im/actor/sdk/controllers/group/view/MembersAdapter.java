@@ -98,12 +98,15 @@ public class MembersAdapter extends HolderAdapter<GroupMember> {
         }
 
         @Override
-        public void unbind() {
-            avatarView.unbind();
+        public void unbind(boolean full) {
+            if (full) {
+                avatarView.unbind();
+            }
             if (onlineBinding != null) {
                 BINDER.unbind(onlineBinding);
             }
         }
+
     }
 
     @Override

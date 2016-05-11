@@ -120,8 +120,10 @@ public class MentionsAdapter extends HolderAdapter<MentionFilterResult> {
 
 
         @Override
-        public void unbind() {
-            avatarView.unbind();
+        public void unbind(boolean full) {
+            if (full) {
+                avatarView.unbind();
+            }
         }
     }
 

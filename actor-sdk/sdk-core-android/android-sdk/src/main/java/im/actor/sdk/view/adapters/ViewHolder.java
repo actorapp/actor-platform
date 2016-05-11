@@ -23,7 +23,7 @@ public abstract class ViewHolder<T> {
 
     public abstract void bind(T data, int position, Context context);
 
-    public void unbind() {
+    public void unbind(boolean full) {
 
     }
 
