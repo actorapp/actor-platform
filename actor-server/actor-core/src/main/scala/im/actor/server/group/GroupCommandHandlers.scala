@@ -1,6 +1,6 @@
 package im.actor.server.group
 
-import java.time.{Instant, LocalDateTime, ZoneOffset}
+import java.time.{ Instant, LocalDateTime, ZoneOffset }
 
 import akka.actor.Status
 import akka.pattern.pipe
@@ -9,17 +9,17 @@ import im.actor.api.rpc.Update
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.messaging.ApiServiceMessage
 import im.actor.api.rpc.misc.ApiExtension
-import im.actor.api.rpc.peers.{ApiPeer, ApiPeerType}
+import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.api.rpc.users.ApiSex
 import im.actor.server.ApiConversions._
 import im.actor.server.acl.ACLUtils
-import im.actor.server.dialog.{DialogExtension, UserAcl}
-import im.actor.server.model.{AvatarData, Group, Peer, PeerType}
+import im.actor.server.dialog.{ DialogExtension, UserAcl }
+import im.actor.server.model.{ AvatarData, Group, Peer, PeerType }
 import im.actor.server.persist._
-import im.actor.server.file.{Avatar, ImageUtils}
+import im.actor.server.file.{ Avatar, ImageUtils }
 import im.actor.server.group.GroupErrors._
 import im.actor.server.office.PushTexts
-import im.actor.server.sequence.{PushData, PushRules, SeqState, SeqStateDate}
+import im.actor.server.sequence.{ PushData, PushRules, SeqState, SeqStateDate }
 import im.actor.util.ThreadLocalSecureRandom
 import ACLUtils._
 import im.actor.util.misc.IdUtils._
