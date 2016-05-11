@@ -50,4 +50,6 @@ object RelationRepo {
   def fetchBlockedIds(userId: Int): DBIO[Seq[Int]] =
     relations.filter(r ⇒ r.userId === userId && r.status === RelationStatus.Blocked).map(_.relatedTo).result
 
+  def fetchApprovedIds(userId: Int): DBIO[Seq[Int]] =
+    relations.filter(r ⇒ r.userId === userId && r.status === RelationStatus.Approved).map(_.relatedTo).result
 }

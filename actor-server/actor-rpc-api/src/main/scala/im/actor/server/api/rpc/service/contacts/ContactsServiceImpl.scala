@@ -7,6 +7,7 @@ import im.actor.concurrent.FutureExt
 import im.actor.server.acl.ACLUtils
 import im.actor.server.model.{ User, UserEmail, UserPhone }
 import im.actor.server.persist.contact.{ UnregisteredEmailContactRepo, UnregisteredPhoneContactRepo, UserContactRepo }
+import im.actor.server.persist.social.RelationRepo
 import im.actor.server.persist.{ UserEmailRepo, UserPhoneRepo, UserRepo }
 import im.actor.server.user.UserCommands.ContactToAdd
 
@@ -102,8 +103,10 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
           DBIO.successful(Ok(ResponseGetContacts(Vector.empty, isNotChanged = true, Vector.empty)))
         } else {
           for {
-            userIds ← UserContactRepo.findContactIdsActive(client.userId)
-            users ← DBIO.from(Future.sequence(userIds.map(userId ⇒
+            userContactIds ← UserContactRepo.findContactIdsActive(client.userId)
+            approvedIds ← RelationRepo.fetchApprovedIds(client.userId)
+            approvedUserContactIds = approvedIds.intersect(userContactIds)
+            users ← DBIO.from(Future.sequence(approvedUserContactIds.map(userId ⇒
               userExt.getApiStruct(userId, client.userId, client.authId)))) map (_.toVector)
           } yield {
             Ok(ResponseGetContacts(
