@@ -46,9 +46,9 @@ public class I18nEngine extends IntlEngine {
     private static final String TAG = "I18nEngine";
 
     private static final String[] SUPPORTED_LOCALES = new String[]{"Ru", "Ar", "Zn", "Pt", "Es", "Fa"};
-    private static final String[] FEMALE = new String[]{"female", "default"};
-    private static final String[] MALE = new String[]{"male", "default"};
-    private static final String[] DEFAULT = new String[]{"default"};
+    private static final String[] FEMALE = new String[]{"female", "other"};
+    private static final String[] MALE = new String[]{"male", "other"};
+    private static final String[] DEFAULT = new String[]{"other"};
     private static final String[] YOU = new String[]{"you"};
 
     public static I18nEngine create(Modules modules) {

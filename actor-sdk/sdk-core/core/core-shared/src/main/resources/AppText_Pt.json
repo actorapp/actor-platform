@@ -44,8 +44,8 @@
 	},
 
 	"groups": {
-		"members": { 
-			"default": "{count} membros",
+		"members": {
+		  "other": "{count} membros",
 			"one": "{count} membro"
 		}
 	},
