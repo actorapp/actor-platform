@@ -11,20 +11,18 @@ import DelegateContainer from '../../utils/DelegateContainer';
 
 import ModalStore from '../../stores/ModalStore';
 
-import Profile from './Profile.react';
-import Crop from './Crop.react';
-import Groups from './Groups.react';
-import People from './People.react';
-import AddContact from './AddContact.react';
-import CreateGroup from './CreateGroup.react';
-import EditGroup from './EditGroup.react';
-import Preferences from './Preferences.react';
-import Invite from './Invite.react';
-import InviteByLink from './InviteByLink.react';
-import QuickSearch from './QuickSearch.react';
-import Attachments from './Attachments.react';
-import BlockedUsers from './BlockedUsers.react';
-import DefaultAbout from './About.react';
+import DefaultProfile from './Profile.react';
+import DefaultCrop from './Crop.react';
+import DefaultGroups from './Groups.react';
+import DefaultPeople from './People.react';
+import DefaultAddContact from './AddContact.react';
+import DefaultCreateGroup from './CreateGroup.react';
+import DefaultEditGroup from './EditGroup.react';
+import DefaultPreferences from './Preferences.react';
+import DefaultInvite from './Invite.react';
+import DefaultInviteByLink from './InviteByLink.react';
+import DefaultQuickSearch from './QuickSearch.react';
+import DefaultAttachments from './Attachments.react';
 
 class ModalsWrapper extends Component {
   static getStores() {
@@ -43,17 +41,38 @@ class ModalsWrapper extends Component {
 
   getComponents() {
     const { components } = DelegateContainer.get();
-    const modal = components.modal;
+    const modals = components.modals;
 
-    // TODO: Add more components
-    if (modal) {
+    if (modals) {
       return {
-        About: isFunction(modal.about) ? modal.about : DefaultAbout
+        Profile: isFunction(modals.profile) ? modals.profile : DefaultProfile,
+        Crop: isFunction(modals.crop) ? modals.crop : DefaultCrop,
+        Groups: isFunction(modals.groups) ? modals.groups : DefaultGroups,
+        People: isFunction(modals.people) ? modals.people : DefaultPeople,
+        AddContact: isFunction(modals.addContact) ? modals.addContact : DefaultAddContact,
+        CreateGroup: isFunction(modals.createGroup) ? modals.createGroup : DefaultCreateGroup,
+        EditGroup: isFunction(modals.editGroup) ? modals.editGroup : DefaultEditGroup,
+        Preferences: isFunction(modals.preferences) ? modals.preferences : DefaultPreferences,
+        Invite: isFunction(modals.invite) ? modals.invite : DefaultInvite,
+        InviteByLink: isFunction(modals.inviteByLink) ? modals.inviteByLink : DefaultInviteByLink,
+        QuickSearch: isFunction(modals.quickSearch) ? modals.quickSearch : DefaultQuickSearch,
+        Attachments: isFunction(modals.attachments) ? modals.attachments : DefaultAttachments
       };
     }
 
     return {
-      About: DefaultAbout
+      Profile: DefaultProfile,
+      Crop: DefaultCrop,
+      Groups: DefaultGroups,
+      People: DefaultPeople,
+      AddContact: DefaultAddContact,
+      CreateGroup: DefaultCreateGroup,
+      EditGroup: DefaultEditGroup,
+      Preferences: DefaultPreferences,
+      Invite: DefaultInvite,
+      InviteByLink: DefaultInviteByLink,
+      QuickSearch: DefaultQuickSearch,
+      Attachments : DefaultAttachments
     };
   }
 
@@ -61,7 +80,20 @@ class ModalsWrapper extends Component {
     const { currentModal } = this.state;
     if (!currentModal) return null;
 
-    const { About } = this.components;
+    const {
+      Profile,
+      Crop,
+      Groups,
+      People,
+      AddContact,
+      CreateGroup,
+      EditGroup,
+      Preferences,
+      Invite,
+      InviteByLink,
+      QuickSearch,
+      Attachments
+    } = this.components;
 
     switch (currentModal) {
       case ModalTypes.PROFILE:
@@ -88,8 +120,6 @@ class ModalsWrapper extends Component {
         return <QuickSearch/>;
       case ModalTypes.ATTACHMENTS:
         return <Attachments/>;
-      case ModalTypes.BLOCKED_USERS:
-        return <BlockedUsers/>;
       case ModalTypes.ABOUT:
         return <About/>;
 

@@ -23,7 +23,8 @@ class ActorSDKDelegate {
       archive: null,
       empty: null,
       sidebar: null,
-      modal: null
+      modals: null,
+      about: null
     },
     features: {
       calls: true,

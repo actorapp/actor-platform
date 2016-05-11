@@ -16,7 +16,7 @@ class BlockedUsersStore extends ReduceStore {
 
   reduce(state, action) {
     switch (action.type) {
-      case ActionTypes.BLOCKED_USERS_HIDE:
+      case ActionTypes.PREFERENCES_MODAL_HIDE:
         return this.getInitialState();
 
       case ActionTypes.BLOCKED_USERS_SET:
