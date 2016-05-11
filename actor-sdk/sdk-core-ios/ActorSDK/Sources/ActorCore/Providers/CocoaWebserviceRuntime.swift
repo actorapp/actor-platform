@@ -8,6 +8,7 @@
 
 import Foundation
 import SwiftyJSON
+import MBProgressHUD
 class CocoaWebServiceRuntime: NSObject {
 
     func asyncPostRequest(url:String,method:String,withParams paramsDic:NSMutableDictionary!,withCallback callback:WebserviceCallback) //异步请求1
@@ -22,7 +23,13 @@ class CocoaWebServiceRuntime: NSObject {
         bodyStr += NSString(format: "\(pairs.key)=\(pairs.value)&") as String
     }
     req.HTTPBody=NSString(string: bodyStr).dataUsingEncoding(NSUTF8StringEncoding)
-    
+    let window = UIApplication.sharedApplication().windows[1]
+    let hud = MBProgressHUD(window: window)
+    hud.mode = MBProgressHUDMode.Indeterminate
+    hud.removeFromSuperViewOnHide = true
+    window.addSubview(hud)
+    window.bringSubviewToFront(hud)
+    hud.show(true)
     NSURLConnection.sendAsynchronousRequest(req, queue: NSOperationQueue.mainQueue()) { (resp, data, error) -> Void in
         if let e = error {
             print(e)
@@ -34,14 +41,19 @@ class CocoaWebServiceRuntime: NSObject {
             let json = JSON(data:d)
             if(json==nil)
             {
+                hud.hide(true)
+
                 callback.onServiceError(k!);
                 return
             }
             if(json["result"]==false)
             {
+                hud.hide(true)
                 callback.onServiceFail(json)
                 return
             }
+            hud.hide(true)
+
             callback.onServiceSuccess(json)
             
         }

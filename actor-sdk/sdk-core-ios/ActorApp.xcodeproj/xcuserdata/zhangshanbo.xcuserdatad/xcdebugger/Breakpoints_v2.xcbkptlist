@@ -201,11 +201,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ActorSDK/Sources/ActorCore/Providers/CocoaWebserviceRuntime.swift"
-            timestampString = "484035326.698233"
+            timestampString = "484636045.022757"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "35"
-            endingLineNumber = "35"
+            startingLineNumber = "42"
+            endingLineNumber = "42"
             landmarkName = "asyncPostRequest(_:method:withParams:withCallback:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -217,11 +217,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ActorSDK/Sources/ActorCore/Providers/CocoaWebserviceRuntime.swift"
-            timestampString = "484024823.908573"
+            timestampString = "484636045.022757"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "15"
-            endingLineNumber = "15"
+            startingLineNumber = "16"
+            endingLineNumber = "16"
             landmarkName = "asyncPostRequest(_:method:withParams:withCallback:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -249,11 +249,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ActorSDK/Sources/ActorCore/Providers/CocoaWebserviceRuntime.swift"
-            timestampString = "484024823.908573"
+            timestampString = "484636045.022757"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "28"
-            endingLineNumber = "28"
+            startingLineNumber = "35"
+            endingLineNumber = "35"
             landmarkName = "asyncPostRequest(_:method:withParams:withCallback:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -265,11 +265,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ActorSDK/Sources/ActorCore/Providers/CocoaWebserviceRuntime.swift"
-            timestampString = "484024823.908573"
+            timestampString = "484636045.022757"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "33"
-            endingLineNumber = "33"
+            startingLineNumber = "40"
+            endingLineNumber = "40"
             landmarkName = "asyncPostRequest(_:method:withParams:withCallback:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -313,7 +313,7 @@
                   moduleName = "ActorSDK"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core-ios/ActorSDK/Sources/Controllers/Auth/AAAuthLogInViewController.swift"
-                  timestampString = "484553248.656909"
+                  timestampString = "484636418.890713"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "184"
@@ -328,7 +328,7 @@
                   moduleName = "ActorSDK"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core-ios/ActorSDK/Sources/Controllers/Auth/AAAuthLogInViewController.swift"
-                  timestampString = "484553248.6571"
+                  timestampString = "484636418.890913"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "185"
@@ -425,7 +425,7 @@
                   moduleName = "ActorSDK"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core-ios/ActorSDK/Sources/Controllers/Auth/AAAuthOTPViewController.swift"
-                  timestampString = "484553248.660347"
+                  timestampString = "484636418.916483"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "219"
@@ -440,7 +440,7 @@
                   moduleName = "ActorSDK"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core-ios/ActorSDK/Sources/Controllers/Auth/AAAuthOTPViewController.swift"
-                  timestampString = "484553248.660577"
+                  timestampString = "484636418.916704"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "220"
@@ -473,11 +473,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ActorSDK/Sources/Controllers/Auth/AAAuthOTPViewController.swift"
-            timestampString = "484209438.926931"
+            timestampString = "484571464.324847"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "254"
-            endingLineNumber = "254"
+            startingLineNumber = "255"
+            endingLineNumber = "255"
             landmarkName = "doActorPasswordValidate(_:)"
             landmarkType = "5">
             <Locations>
@@ -489,11 +489,11 @@
                   moduleName = "ActorSDK"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core-ios/ActorSDK/Sources/Controllers/Auth/AAAuthOTPViewController.swift"
-                  timestampString = "484553248.666326"
+                  timestampString = "484636418.92253"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "254"
-                  endingLineNumber = "254"
+                  startingLineNumber = "255"
+                  endingLineNumber = "255"
                   offsetFromSymbolStart = "24">
                </Location>
                <Location
@@ -504,11 +504,11 @@
                   moduleName = "ActorSDK"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core-ios/ActorSDK/Sources/Controllers/Auth/AAAuthOTPViewController.swift"
-                  timestampString = "484553248.666551"
+                  timestampString = "484636418.922784"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "254"
-                  endingLineNumber = "254"
+                  startingLineNumber = "255"
+                  endingLineNumber = "255"
                   offsetFromSymbolStart = "180">
                </Location>
             </Locations>
@@ -652,6 +652,102 @@
             endingLineNumber = "184"
             landmarkName = "createActor()"
             landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ActorSDK/Sources/ActorSDK.swift"
+            timestampString = "484631427.588643"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "411"
+            endingLineNumber = "411"
+            landmarkName = "presentMessengerInWindow(_:)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ActorSDK/Sources/ActorSDK.swift"
+            timestampString = "484635214.262022"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "477"
+            endingLineNumber = "477"
+            landmarkName = "presentMessengerInNewWindow()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ActorSDK/Sources/ActorCore/Providers/CocoaNetworkRuntime.swift"
+            timestampString = "484635666.3971"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "43"
+            endingLineNumber = "43"
+            landmarkName = "doConnect()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ActorSDK/Sources/Controllers/Auth/AAAuthLogInViewController.swift"
+            timestampString = "484635787.194404"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "164"
+            endingLineNumber = "164"
+            landmarkName = "onServiceSuccess(_:)"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ActorSDK.AAAuthLogInViewController.usernameValidateCallback.onServiceSuccess (SwiftyJSON.JSON) -&gt; ()"
+                  moduleName = "ActorSDK"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core-ios/ActorSDK/Sources/Controllers/Auth/AAAuthLogInViewController.swift"
+                  timestampString = "484636419.115484"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "164"
+                  endingLineNumber = "164"
+                  offsetFromSymbolStart = "2084">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "function signature specialization &lt;Arg[3] = Value Promoted from Box&gt; of ActorSDK.AAAuthLogInViewController.usernameValidateCallback.(onServiceSuccess (SwiftyJSON.JSON) -&gt; ()).(closure #3)"
+                  moduleName = "ActorSDK"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core-ios/ActorSDK/Sources/Controllers/Auth/AAAuthLogInViewController.swift"
+                  timestampString = "484636419.115663"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "165"
+                  endingLineNumber = "165"
+                  offsetFromSymbolStart = "144">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

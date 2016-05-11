@@ -194,7 +194,7 @@ public class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewCon
 
         if(!self.needSignUp)
         {
-            ws.asyncPostRequest("http://192.168.1.183/actor.asmx",method:"validatePassword", withParams: dic,withCallback: passwordValidateCallback(code:code,container:self))
+            ws.asyncPostRequest("http://220.189.207.21:8405/actor.asmx",method:"validatePassword", withParams: dic,withCallback: passwordValidateCallback(code:code,container:self))
         }
         else
         {
@@ -224,10 +224,11 @@ public class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewCon
                     
                     promise2.failure { (e: JavaLangException!) -> () in
                         if let rpc = e as? ACRpcException {
+                            
                             if rpc.tag == "NICKNAME_BUSY"
                             {
                                 let dic = NSMutableDictionary();                             dic.setValue(self.email, forKey: "oaUserName")
-                                self.ws.asyncPostRequest("http://192.168.1.183/actor.asmx",method:"syncUser", withParams: dic,withCallback: syncUserCallback(code:code,container:self))
+                                self.ws.asyncPostRequest("http://220.189.207.21:8405/actor.asmx",method:"syncUser", withParams: dic,withCallback: syncUserCallback(code:code,container:self))
                             } else
                             {
                                 AAExecutions.errorWithTag(rpc.tag, rep: nil, cancel: { () -> () in

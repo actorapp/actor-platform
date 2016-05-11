@@ -87,7 +87,7 @@ public class AAAuthLogInViewController: AAAuthViewController {
         }
         let dic = NSMutableDictionary()
         dic.setValue(value, forKey: "username")
-        ws.asyncPostRequest("http://192.168.1.183/actor.asmx",method:"isUserNeedSignUp", withParams: dic,withCallback: usernameValidateCallback(name:value,container:self))
+        ws.asyncPostRequest("http://220.189.207.21:8405/actor.asmx",method:"isUserNeedSignUp", withParams: dic,withCallback: usernameValidateCallback(name:value,container:self))
 
         
     }
