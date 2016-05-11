@@ -648,8 +648,10 @@ public class CallFragment extends BaseFragment {
 
 
             @Override
-            public void unbind() {
-                avatarView.unbind();
+            public void unbind(boolean full) {
+                if (full) {
+                    avatarView.unbind();
+                }
             }
         }
     }
