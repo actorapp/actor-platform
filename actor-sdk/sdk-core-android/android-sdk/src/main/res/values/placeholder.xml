@@ -1,15 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
   -->
 
 <resources>
     <color name="placeholder_empty">#ffb8b8b8</color>
-    <color name="placeholder_0">#59a2be</color>
-    <color name="placeholder_1">#2093cd</color>
-    <color name="placeholder_2">#ad62a7</color>
-    <color name="placeholder_3">#f16364</color>
-    <color name="placeholder_4">#f9a43e</color>
-    <color name="placeholder_5">#e4c62e</color>
-    <color name="placeholder_6">#67bf74</color>
+    <color name="placeholder_0">#509dbb</color>
+    <color name="placeholder_1">#52b3cd</color>
+    <color name="placeholder_2">#7e6eeb</color>
+    <color name="placeholder_3">#de5447</color>
+    <color name="placeholder_4">#ee7e37</color>
+    <color name="placeholder_5">#ed608b</color>
+    <color name="placeholder_6">#6ac53c</color>
 </resources>

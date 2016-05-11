@@ -32,11 +32,15 @@ public class AvatarPlaceholderDrawable extends Drawable {
         this.ctx = context;
         this.selfTextSize = selfTextSize;
         if (title == null) {
-            title = "";
+            title = "?";
         } else if (title.length() == 0) {
-            title = "";
+            title = "?";
         } else {
-            title = title.substring(0, 1).toUpperCase();
+            String[] parts = title.split(" ", 2);
+            title = parts[0].substring(0, 1).toUpperCase();
+            if (parts.length == 2 && parts[1].length() > 0) {
+                title += parts[1].substring(0, 1).toUpperCase();
+            }
         }
 
         if (COLORS == null) {
