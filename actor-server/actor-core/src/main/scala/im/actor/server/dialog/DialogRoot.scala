@@ -287,7 +287,7 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
       case ((di1, name1), (di2, name2)) ⇒
         if (di1.getPeer.typ.isGroup && di2.getPeer.typ.isPrivate) true
         else if (di1.getPeer.typ.isPrivate && di2.getPeer.typ.isGroup) false
-        else name1.headOption.getOrElse(' ') < name2.headOption.getOrElse(' ')
+        else name1 < name2
     }.map(_._1)
   }
 
