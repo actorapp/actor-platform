@@ -202,7 +202,7 @@ public class ActorStyle {
     private int verifiedColor = 0;
 
     public int getVerifiedColor() {
-        return getColorWithFallback(verifiedColor, getAccentColor());
+        return getColorWithFallback(verifiedColor, getProfileTitleColor());
     }
 
     public void setVerifiedColor(int verifiedColor) {
