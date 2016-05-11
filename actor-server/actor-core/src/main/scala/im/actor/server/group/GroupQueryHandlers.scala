@@ -120,12 +120,4 @@ private[group] trait GroupQueryHandlers extends GroupCommandHelpers {
       }
     } else Vector.empty[ApiMember]
   }
-
-  private def canInvitePeople(group: GroupState, clientUserId: Int) =
-    isMember(group, clientUserId)
-
-  private def isMember(group: GroupState, clientUserId: Int) = hasMember(group, clientUserId)
-
-  private def canViewMembers(group: GroupState, clientUserId: Int) =
-    (group.typ.isGeneral || group.typ.isPublic) && isMember(group, clientUserId)
 }
