@@ -20,7 +20,9 @@ import im.actor.runtime.json.JSONObject;
 public class IntlEngine {
 
     private static final String[] EMPTY = new String[0];
-    private static final String[] SHORT = new String[]{"compact", "full"};
+    private static final String[] SHORT = new String[]{"short"};
+    private static final String[] COMPACT = new String[]{"compact"};
+    private static final String[] FULL = new String[]{"full"};
     private static final String[] MONTHS = new String[]{
             "months.january",
             "months.february",
@@ -177,7 +179,7 @@ public class IntlEngine {
             Date date1 = new Date(date);
             int month = date1.getMonth();
             int d = date1.getDate();
-            return d + " " + get(MONTHS[month], SHORT);
+            return d + " " + get(MONTHS[month], COMPACT);
         }
     }
 
@@ -185,7 +187,7 @@ public class IntlEngine {
     public String formatMonth(Date date) {
         int month = date.getMonth();
         int d = date.getDate();
-        return d + " " + get(MONTHS[month]);
+        return d + " " + get(MONTHS[month], FULL);
     }
 
     @ObjectiveCName("formatTime:")
