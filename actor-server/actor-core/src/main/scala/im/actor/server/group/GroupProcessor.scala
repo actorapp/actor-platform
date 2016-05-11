@@ -259,7 +259,7 @@ private[group] final class GroupProcessor
 
   override def receiveRecover = {
     case created: GroupEvents.Created ⇒
-      groupStateMaybe = Some(initState(created))
+      groupStateMaybe = Some(initState(created).copy(isHistoryShared = created.typ.exists(t => t.isChannel || t.isPublic)))
     case evt: GroupEvent ⇒
       groupStateMaybe = groupStateMaybe map (updatedState(evt, _))
     case RecoveryCompleted ⇒
