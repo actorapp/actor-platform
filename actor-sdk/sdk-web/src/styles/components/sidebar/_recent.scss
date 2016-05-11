@@ -184,3 +184,34 @@
     background-color: $dark-sky-blue !important;
   }
 }
+
+.recent__group__hint {
+  // min-height: 100px;
+  user-select: none;
+  text-align: center;
+  padding: 16px;
+  cursor: default;
+  font-weight: 400;
+  position: relative;
+  color: #A2B0BF;
+  .stem {
+    position: absolute;
+    right: 20px;
+    top: 6px;
+    height: 20px;
+    overflow: hidden;
+    transform: rotate(160deg);
+    width: 24px;
+    &:after {
+      content: '';
+      display: block;
+      width: 50px;
+      height: 50px;
+      border: 1px solid rgba(white, .6);
+      border-radius: 360px;
+    }
+  }
+  .button {
+    margin-top: 14px;
+  }
+}

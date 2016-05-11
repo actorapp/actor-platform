@@ -104,48 +104,60 @@ class Recent extends Component {
     scroller.scrollTo(dimensions.scrollTop + rect.top - (scrollerRect.top + scrollerRect.height - rect.height));
   }
 
-  getTitleClickHandler(group) {
+  getGroupProps(group) {
     switch (group.key) {
       case 'groups':
-        return this.handleGroupListTitleClick;
+        return {
+          onTitleClick: this.handleCreateGroup,
+          onPlusClick: this.handleGroupListTitleClick,
+          renderEmptyHint: this.renderGroupHint
+        };
 
       case 'privates':
-        return this.handlePrivateListTitleClick;
+        return {
+          onTitleClick: this.handleAddContact,
+          onPlusClick: this.handlePrivateListTitleClick,
+          renderEmptyHint: this.renderPrivateHint
+        };
 
       default:
-        return null;
+        return {};
     }
   }
 
-  getTitleAddHandler(group) {
-    switch (group.key) {
-      case 'groups':
-        return this.handleCreateGroup;
+  renderGroupHint() {
+    return (
+      <div className="recent__group__hint">
+        <FormattedMessage id="sidebar.group.empty"/>
+        <div className="stem"/>
+      </div>
+    );
+  }
 
-      case 'privates':
-        return this.handleAddContact;
-
-      default:
-        return null;
-    }
+  renderPrivateHint() {
+    return (
+      <div className="recent__group__hint">
+        <FormattedMessage id="sidebar.private.empty"/>
+        <button className="button button--outline button--wide hide">
+          <FormattedMessage id="button.invite"/>
+        </button>
+      </div>
+    );
   }
 
   renderRecentGroups() {
     const { currentPeer, archive } = this.props;
-    return this.props.dialogs.map((group) => {
-      return (
-        <RecentGroup
-          items={group.shorts}
-          key={group.key}
-          group={group.key}
-          currentPeer={currentPeer}
-          archive={archive}
-          onTitleClick={this.getTitleClickHandler(group)}
-          onPlusClick={this.getTitleAddHandler(group)}
-          onItemUpdate={this.checkInvisibleCounters}
-        />
-      );
-    });
+    return this.props.dialogs.map((group) => (
+      <RecentGroup
+        items={group.shorts}
+        key={group.key}
+        group={group.key}
+        currentPeer={currentPeer}
+        archive={archive}
+        {...this.getGroupProps(group)}
+        onItemUpdate={this.checkInvisibleCounters}
+      />
+    ));
   }
 
   renderUnreadAbove() {
@@ -169,8 +181,11 @@ class Recent extends Component {
   }
 
   renderHistoryButton() {
-    const isArchiveEmpty = false; // TODO: Use real flag
-    if (isArchiveEmpty) return null;
+    // actually this is hack, but it's ok while we haven't real flag
+    const isArchiveEmpty = this.props.dialogs.some((group) => !group.shorts.length);
+    if (isArchiveEmpty) {
+      return null;
+    }
 
     return (
       <SidebarLink
