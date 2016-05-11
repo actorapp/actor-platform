@@ -1,6 +1,6 @@
 package im.actor.server.group
 
-import java.time.{ Instant, LocalDateTime, ZoneOffset }
+import java.time.{Instant, LocalDateTime, ZoneOffset}
 
 import akka.actor.Status
 import akka.pattern.pipe
@@ -9,23 +9,24 @@ import im.actor.api.rpc.Update
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.messaging.ApiServiceMessage
 import im.actor.api.rpc.misc.ApiExtension
-import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
+import im.actor.api.rpc.peers.{ApiPeer, ApiPeerType}
 import im.actor.api.rpc.users.ApiSex
 import im.actor.server.ApiConversions._
 import im.actor.server.acl.ACLUtils
-import im.actor.server.dialog.{ DialogExtension, UserAcl }
-import im.actor.server.model.{ AvatarData, Group, Peer, PeerType }
+import im.actor.server.dialog.{DialogExtension, UserAcl}
+import im.actor.server.model.{AvatarData, Group, Peer, PeerType}
 import im.actor.server.persist._
-import im.actor.server.file.{ Avatar, ImageUtils }
+import im.actor.server.file.{Avatar, ImageUtils}
 import im.actor.server.group.GroupErrors._
 import im.actor.server.office.PushTexts
-import im.actor.server.sequence.{ PushData, PushRules, SeqState, SeqStateDate }
+import im.actor.server.sequence.{PushData, PushRules, SeqState, SeqStateDate}
 import im.actor.util.ThreadLocalSecureRandom
 import ACLUtils._
 import im.actor.util.misc.IdUtils._
 import ImageUtils._
 import akka.http.scaladsl.util.FastFuture
 import im.actor.concurrent.FutureExt
+import im.actor.server.CommonErrors
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
@@ -428,6 +429,21 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
         } yield RevokeIntegrationTokenAck(newToken)
       }
     }
+  }
+
+  protected def transferOwnership(group: GroupState, clientUserId: Int, clientAuthSid: Int, userId: Int): Unit = {
+    if (group.ownerUserId == clientUserId) {
+      persistReply(OwnerChanged(Instant.now, userId), group) { _ ⇒
+        for {
+          (reply, _) ← seqUpdExt.broadcastOwnSingleUpdate(
+            userId = clientUserId,
+            bcastUserIds = group.members.keySet.filterNot(_ == clientUserId),
+            update = UpdateGroupOwnerChanged(group.id, userId),
+            pushRules = PushRules().withExcludeAuthSids(Seq(clientAuthSid))
+          )
+        } yield reply
+      }
+    } else sender() ! Status.Failure(CommonErrors.Forbidden)
   }
 
   private def removeUser(initiatorId: Int, userId: Int, memberIds: Set[Int], clientAuthSid: Int, serviceMessage: ApiServiceMessage, update: Update, date: Instant, randomId: Long): DBIO[SeqStateDate] = {

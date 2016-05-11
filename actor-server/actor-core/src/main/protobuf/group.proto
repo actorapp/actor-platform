@@ -173,6 +173,15 @@ message GroupCommands {
         required int32 joining_user_id = 2;
         required int32 joining_user_auth_sid = 3;
     }
+
+    message TransferOwnership {
+        option (scalapb.message).extends = "im.actor.server.group.GroupCommand";
+
+        required int32 group_id = 1;
+        required int32 client_user_id = 2;
+        required int32 client_auth_sid = 4;
+        required int32 user_id = 3;
+    }
 }
 
 message GroupQueries {
@@ -395,6 +404,13 @@ message GroupEvents {
 
         required int64 ts = 2 [(scalapb.field).type = "java.time.Instant"];
         required string token = 1;
+    }
+
+    message OwnerChanged {
+        option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
+
+        required int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];
+        required int32 user_id = 2;
     }
 }
 
