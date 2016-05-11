@@ -2,7 +2,6 @@
  * Copyright (C) 2016 Actor LLC. <https://actor.im>
  */
 
-import { map } from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import { shouldComponentUpdate } from 'react-addons-pure-render-mixin';
 import { FormattedMessage } from 'react-intl';
@@ -18,7 +17,8 @@ class RecentGroup extends Component {
     currentPeer: PropTypes.object,
     onTitleClick: PropTypes.func,
     onPlusClick: PropTypes.func,
-    onItemUpdate: PropTypes.func.isRequired
+    onItemUpdate: PropTypes.func.isRequired,
+    renderEmptyHint: PropTypes.func
   };
 
   constructor(props) {
@@ -81,8 +81,15 @@ class RecentGroup extends Component {
 
   renderGroupList() {
     const { items, archive, currentPeer, onItemUpdate } = this.props;
+    if (!items.length) {
+      if (this.props.renderEmptyHint) {
+        return this.props.renderEmptyHint();
+      }
 
-    return map(items, (dialog) => {
+      return null;
+    }
+
+    return items.map((dialog) => {
       const peer = dialog.peer.peer;
       const peerKey = PeerUtils.peerToString(peer);
       const isActive = PeerUtils.equals(peer, currentPeer);
