@@ -8,6 +8,7 @@ import im.actor.server.acl.ACLUtils
 import im.actor.server.api.rpc.service.groups.GroupRpcErrors
 import im.actor.server.db.DbExtension
 import im.actor.server.group.GroupErrors.GroupNotFound
+import im.actor.server.group.GroupExtension
 import im.actor.server.model._
 import im.actor.server.persist._
 import im.actor.server.user.UserErrors.UserNotFound
