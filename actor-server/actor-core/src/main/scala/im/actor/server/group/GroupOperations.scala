@@ -83,6 +83,9 @@ private[group] sealed trait Commands extends UserAcl {
 
   def revokeIntegrationToken(groupId: Int, clientUserId: Int): Future[String] =
     (processorRegion.ref ? RevokeIntegrationToken(groupId, clientUserId)).mapTo[RevokeIntegrationTokenAck] map (_.token)
+
+  def transferOwnership(groupId: Int, clientUserId: Int, userId: Int): Future[SeqState] =
+    (processorRegion.ref ? TransferOwnership(groupId, clientUserId, userId)).mapTo[SeqState]
 }
 
 private[group] sealed trait Queries {

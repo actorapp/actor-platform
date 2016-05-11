@@ -104,7 +104,13 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
    * @param newOwner  New group's owner
    */
   override protected def doHandleTransferOwnership(groupPeer: ApiGroupOutPeer, newOwner: Int, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] =
-    Future.failed(new RuntimeException("Not implemented"))
+    authorized(clientData) { implicit client ⇒
+      withGroupOutPeerF(groupPeer) { _ ⇒
+        for {
+          SeqState(seq, state) ← groupExt.transferOwnership(groupPeer.groupId, client.userId, newOwner)
+        } yield Ok(ResponseSeqDate(seq, state.toByteArray, 0))
+      }
+    }
 
   override def doHandleEditGroupAvatar(
     groupOutPeer:  ApiGroupOutPeer,
