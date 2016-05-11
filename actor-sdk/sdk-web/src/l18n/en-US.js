@@ -37,8 +37,7 @@ export default {
       preferences: 'Preferences',
       signOut: 'Sign Out',
       homePage: 'Home page',
-      facebook: 'Like us on Facebook',
-      about: 'About'
+      facebook: 'Like us on Facebook'
     },
 
     // Buttons
@@ -321,6 +320,9 @@ export default {
         notFound: 'Sorry, no users were found.',
         search: 'Search for contacts or usernames',
         unblock: 'Unblock'
+      },
+      about: {
+        title: 'About'
       }
     },
 
