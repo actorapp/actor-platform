@@ -110,7 +110,7 @@ public class PickCountryFragment extends BaseFragment {
             }
 
             @Override
-            public void unbind() {
+            public void unbind(boolean full) {
                 name.setText("");
                 code.setText("");
             }
