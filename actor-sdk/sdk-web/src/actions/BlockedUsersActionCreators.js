@@ -8,17 +8,6 @@ import ActorClient from '../utils/ActorClient';
 import ComposeActionCreators from './ComposeActionCreators'
 
 class BlockedUsersActionCreators {
-  open() {
-    dispatch(ActionTypes.BLOCKED_USERS_OPEN);
-    ComposeActionCreators.toggleAutoFocus(false);
-    this.loadUsers();
-  }
-
-  hide() {
-    dispatch(ActionTypes.BLOCKED_USERS_HIDE);
-    ComposeActionCreators.toggleAutoFocus(true);
-  }
-
   setQuery(query) {
     dispatch(ActionTypes.BLOCKED_USERS_SET_QUERY, { query });
   }

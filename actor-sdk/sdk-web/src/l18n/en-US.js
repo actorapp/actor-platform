@@ -28,16 +28,16 @@ export default {
     // Menus
     'menu': {
       // Sidebar menu
-      'editProfile': 'Edit profile',
-      'addToContacts': 'Add contact',
-      'createGroup': 'Create group',
-      'blockedUsers': 'Blocked users',
-      'helpAndFeedback': 'Help & Feedback',
-      'twitter': 'Our Twitter',
-      'preferences': 'Preferences',
-      'signOut': 'Sign Out',
-      'homePage': 'Home page',
-      'facebook': 'Like us on Facebook'
+      editProfile: 'Edit profile',
+      addToContacts: 'Add contact',
+      createGroup: 'Create group',
+      blockedUsers: 'Blocked users',
+      helpAndFeedback: 'Help & Feedback',
+      twitter: 'Our Twitter',
+      preferences: 'Preferences',
+      signOut: 'Sign Out',
+      homePage: 'Home page',
+      facebook: 'Like us on Facebook'
     },
 
     // Buttons
@@ -321,6 +321,9 @@ export default {
         notFound: 'Sorry, no users were found.',
         search: 'Search for contacts or usernames',
         unblock: 'Unblock'
+      },
+      about: {
+        title: 'About'
       }
     },
 
