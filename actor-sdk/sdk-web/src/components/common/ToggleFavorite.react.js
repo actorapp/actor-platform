@@ -12,7 +12,8 @@ class ToggleFavorite extends Component {
   };
 
   render() {
-    const glyph = this.props.value ? 'star' : 'star_border';
+    const { value } = this.props;
+    const glyph = value ? 'star' : 'star_border';
 
     return (
       <i className="material-icons" onClick={this.props.onToggle}>
