@@ -17,7 +17,6 @@ import LoginActionCreators from '../../actions/LoginActionCreators';
 import HelpActionCreators from '../../actions/HelpActionCreators';
 import AddContactActionCreators from '../../actions/AddContactActionCreators';
 import PreferencesActionCreators from '../../actions/PreferencesActionCreators';
-import AboutActionCreators from '../../actions/AboutActionCreators';
 
 import ProfileStore from '../../stores/ProfileStore';
 
@@ -36,7 +35,13 @@ class HeaderSection extends Component {
     this.openTwitter = this.openTwitter.bind(this);
     this.openFacebook = this.openFacebook.bind(this);
     this.openHomePage = this.openHomePage.bind(this);
-    this.openAboutModal = this.openAboutModal.bind(this);
+    this.setLogout = this.setLogout.bind(this);
+    this.toggleHeaderMenu = this.toggleHeaderMenu.bind(this);
+    this.closeHeaderMenu = this.closeHeaderMenu.bind(this);
+    this.openMyProfile = this.openMyProfile.bind(this);
+    this.openCreateGroup = this.openCreateGroup.bind(this);
+    this.openAddContactModal = this.openAddContactModal.bind(this);
+    this.onSettingsOpen = this.onSettingsOpen.bind(this);
   }
 
   static getStores() {
@@ -49,7 +54,7 @@ class HeaderSection extends Component {
     }
   }
 
-  toggleHeaderMenu = () => {
+  toggleHeaderMenu() {
     const { isOpened } = this.state;
 
     if (!isOpened) {
@@ -60,15 +65,26 @@ class HeaderSection extends Component {
     }
   };
 
-  closeHeaderMenu = () => {
+  closeHeaderMenu() {
     this.setState({ isOpened: false });
     document.removeEventListener('click', this.closeHeaderMenu, false);
   };
 
-  openMyProfile = () => ProfileActionCreators.show();
-  openCreateGroup = () => CreateGroupActionCreators.open();
-  openAddContactModal = () => AddContactActionCreators.open();
-  onSettingsOpen = () => PreferencesActionCreators.show();
+  openMyProfile() {
+    ProfileActionCreators.show();
+  }
+
+  openCreateGroup() {
+    CreateGroupActionCreators.open();
+  }
+
+  openAddContactModal() {
+    AddContactActionCreators.open();
+  }
+
+  onSettingsOpen() {
+    PreferencesActionCreators.show();
+  }
 
   openHelp() {
     HelpActionCreators.open()
@@ -107,11 +123,7 @@ class HeaderSection extends Component {
     }
   }
 
-  openAboutModal() {
-    AboutActionCreators.open()
-  }
-
-  setLogout = () => {
+  setLogout() {
     confirm(<FormattedMessage id="modal.confirm.logout"/>).then(
       () => LoginActionCreators.setLoggedOut(),
       () => {}
@@ -183,15 +195,6 @@ class HeaderSection extends Component {
     }
   }
 
-  renderAboutLink() {
-    return (
-      <li className="dropdown__menu__item" onClick={this.openAboutModal}>
-        <i className="material-icons">info_outline</i>
-        <FormattedMessage id="menu.about"/>
-      </li>
-    );
-  }
-
   render() {
     const { profile, isOpened } = this.state;
 
@@ -243,8 +246,6 @@ class HeaderSection extends Component {
               {this.renderTwitterLink()}
               {this.renderFacebookLink()}
               {this.renderHomeLink()}
-
-              {this.renderAboutLink()}
 
               <li className="dropdown__menu__separator"/>
               <li className="dropdown__menu__item" onClick={this.setLogout}>
