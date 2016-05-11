@@ -1,5 +1,7 @@
 package im.actor.server.frontend
 
+import java.net.InetAddress
+
 import akka.stream.FlowShape
 import kamon.metric.instrument.{ MinMaxCounter, Histogram }
 
@@ -23,8 +25,8 @@ object MTProtoBlueprint {
   val protoVersions: Set[Byte] = Set(1, 2, 3)
   val apiMajorVersions: Set[Byte] = Set(1)
 
-  def apply(connId: String, connTimeHist: Histogram, connCountMM: MinMaxCounter, serverKeys: Seq[ServerKey])(implicit sessionRegion: SessionRegion, system: ActorSystem): MTProtoFlow = {
-    val sessionClient = system.actorOf(SessionClient.props(sessionRegion), s"sessionClient-$connId")
+  def apply(connId: String, connTimeHist: Histogram, connCountMM: MinMaxCounter, serverKeys: Seq[ServerKey], remoteAddr: InetAddress)(implicit sessionRegion: SessionRegion, system: ActorSystem): MTProtoFlow = {
+    val sessionClient = system.actorOf(SessionClient.props(sessionRegion, remoteAddr), s"sessionClient_${connId}")
     val authManager = system.actorOf(AuthorizationManager.props(serverKeys, sessionClient), s"authManager-$connId")
     val authSource = Source.fromPublisher(ActorPublisher[MTProto](authManager))
 

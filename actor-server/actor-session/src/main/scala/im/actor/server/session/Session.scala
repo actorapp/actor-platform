@@ -46,7 +46,7 @@ object Session {
   private[this] val extractEntityId: ShardRegion.ExtractEntityId = {
     case env @ SessionEnvelope(authId, sessionId, payload) ⇒
       Try(env.getField(SessionEnvelope.descriptor.findFieldByNumber(payload.number))) match {
-        case Success(any) ⇒ s"${authId}_$sessionId" → any
+        case Success(any) ⇒ s"${authId}_${sessionId}" → any
         case _            ⇒ throw new RuntimeException(s"Empty payload $env")
       }
   }
@@ -161,7 +161,7 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
   }
 
   def anonymous: Receive = {
-    case HandleMessageBox(messageBoxBytes) ⇒
+    case HandleMessageBox(messageBoxBytes, remoteAddr) ⇒
       idleControl.keepAlive()
 
       withValidMessageBox(messageBoxBytes.toByteArray) { mb ⇒
@@ -193,7 +193,7 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
         }).run()
 
         // sessionMessagePublisher ! SessionStreamMessage.SendProtoMessage(NewSession(sessionId, mb.messageId))
-        sessionMessagePublisher ! Tuple2(mb, ClientData(authId, sessionId, authData))
+        sessionMessagePublisher ! Tuple2(mb, ClientData(authId, sessionId, authData, remoteAddr.map(_.getHostAddress)))
 
         unstashAll()
         context.become(resolved(sessionMessagePublisher, reSender))
@@ -203,12 +203,12 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
   }
 
   def resolved(publisher: ActorRef, reSender: ActorRef): Receive = {
-    case HandleMessageBox(messageBoxBytes) ⇒
+    case HandleMessageBox(messageBoxBytes, remoteAddr) ⇒
       idleControl.keepAlive()
       recordClient(sender(), reSender)
 
       withValidMessageBox(messageBoxBytes.toByteArray) { mb ⇒
-        publisher ! Tuple2(mb, ClientData(authId, sessionId, authData))
+        publisher ! Tuple2(mb, ClientData(authId, sessionId, authData, remoteAddr.map(_.getHostAddress)))
       }
     case cmd: SubscribeCommand ⇒
       idleControl.keepAlive()
