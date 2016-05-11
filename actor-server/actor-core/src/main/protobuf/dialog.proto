@@ -103,6 +103,10 @@ message DialogRootCommands {
         google.protobuf.Int32Value client_auth_sid = 2;
     }
 
+    message CheckArchive {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogRootCommand";
+    }
+
     message Archive {
         option (scalapb.message).extends = "im.actor.server.dialog.DialogRootCommand";
 
