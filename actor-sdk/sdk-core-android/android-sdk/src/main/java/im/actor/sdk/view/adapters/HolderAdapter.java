@@ -42,14 +42,14 @@ public abstract class HolderAdapter<V> extends BaseAdapter {
     }
 
     public void onMovedToScrapHeap(View view) {
-//        if (view.getTag() instanceof ViewHolder) {
-//            ((ViewHolder) view.getTag()).unbind();
-//        }
+        if (view.getTag() instanceof ViewHolder) {
+            ((ViewHolder) view.getTag()).unbind(false);
+        }
     }
 
     public void dispose() {
         for (ViewHolder holder : holders) {
-            holder.unbind();
+            holder.unbind(true);
         }
     }
 
