@@ -20,7 +20,7 @@ import im.actor.runtime.json.JSONObject;
 public class IntlEngine {
 
     private static final String[] EMPTY = new String[0];
-    private static final String[] SHORT = new String[]{"short"};
+    private static final String[] SHORT = new String[]{"compact", "full"};
     private static final String[] MONTHS = new String[]{
             "months.january",
             "months.february",
