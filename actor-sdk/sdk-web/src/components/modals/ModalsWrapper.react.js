@@ -120,8 +120,6 @@ class ModalsWrapper extends Component {
         return <QuickSearch/>;
       case ModalTypes.ATTACHMENTS:
         return <Attachments/>;
-      case ModalTypes.ABOUT:
-        return <About/>;
 
       default:
         console.warn(`Unsupported modal type: ${currentModal}`);
