@@ -14,12 +14,13 @@ class ComposeTextArea extends Component {
     sendEnabled: PropTypes.bool.isRequired,
     onSubmit: PropTypes.func.isRequired,
     onTyping: PropTypes.func.isRequired,
-    onPaste: PropTypes.func,
-    onKeyDown: PropTypes.func
+    onPaste: PropTypes.func.isRequired,
+    onKeyDown: PropTypes.func.isRequired
   };
 
   static defaultProps = {
-    sendEnabled: true
+    sendEnabled: true,
+    onPaste: () => {}
   };
 
   constructor(props) {

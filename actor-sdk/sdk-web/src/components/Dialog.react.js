@@ -18,6 +18,7 @@ import DefaultSearch from './search/SearchSection.react';
 import DefaultCall from './Call.react';
 import ConnectionState from './common/ConnectionState.react';
 
+import UserStore from '../stores/UserStore';
 import DialogStore from '../stores/DialogStore';
 import DialogInfoStore from '../stores/DialogInfoStore';
 import ActivityStore from '../stores/ActivityStore';
@@ -48,6 +49,7 @@ class DialogSection extends Component {
     return {
       peer,
       dialogInfo,
+      uid: UserStore.getMyId(),
       isMember: DialogStore.isMember(),
       isActivityOpen: ActivityStore.isOpen()
     };
@@ -128,7 +130,7 @@ class DialogSection extends Component {
   }
 
   render() {
-    const { peer, isMember, dialogInfo } = this.state;
+    const { uid, peer, isMember, dialogInfo } = this.state;
     if (!peer) {
       return <section className="main" />;
     }
@@ -146,7 +148,7 @@ class DialogSection extends Component {
           <section className="dialog">
             <ConnectionState/>
             <div className="chat">
-              <MessagesSection peer={peer} isMember={isMember} />
+              <MessagesSection uid={uid} peer={peer} isMember={isMember} />
               <DialogFooter
                 info={dialogInfo}
                 isMember={isMember}

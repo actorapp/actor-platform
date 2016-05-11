@@ -102,6 +102,7 @@ $message-state-color: rgba($mine-shaft, .3);
 $message-timestamp-color: $message-state-color;
 $message-service-text-color: rgba($mine-shaft, .5);
 $message-document-icon-size: 64px;
+$message-edit-background: lighten($color-yellow, 40%);
 
 // Call
 $call-background: #2a384a;
