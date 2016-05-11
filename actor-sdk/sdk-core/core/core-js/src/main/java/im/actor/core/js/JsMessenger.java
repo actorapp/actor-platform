@@ -54,6 +54,7 @@ import im.actor.core.viewmodel.ConversationVM;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.Log;
+import im.actor.runtime.Runtime;
 import im.actor.runtime.Storage;
 import im.actor.runtime.crypto.Base64Utils;
 import im.actor.runtime.js.JsFileSystemProvider;
@@ -62,6 +63,7 @@ import im.actor.runtime.js.fs.JsFile;
 import im.actor.runtime.js.mvvm.JsDisplayList;
 import im.actor.runtime.mvvm.Value;
 import im.actor.runtime.mvvm.ValueChangedListener;
+import im.actor.runtime.threading.ThreadDispatcher;
 
 public class JsMessenger extends Messenger {
 
@@ -84,6 +86,8 @@ public class JsMessenger extends Messenger {
         filesModule = new JsFilesModule(modules);
         jsBindingModule = new JsBindingModule(this, filesModule, modules);
         isElectron = JsElectronApp.isElectron();
+
+        ThreadDispatcher.pushDispatcher(Runtime::postToMainThread);
 
         jsIdleModule = new JsIdleModule(this, modules);
 
