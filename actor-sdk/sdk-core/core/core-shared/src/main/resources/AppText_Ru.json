@@ -44,8 +44,8 @@
 	},
 
 	"groups": {
-		"members": { 
-			"default": "{count} участников",
+		"members": {
+		  "other": "{count} участников",
 			"one": "{count} участник",
 			"few": "{count} участника",
 		  "many": "{count} участников"
@@ -58,27 +58,27 @@
 		"now": {
 			"male": "был только что",
 			"female": "была только что",
-			"default": "был(а) только что"
+		  "other": "был(а) только что"
 		},
 		"today": {
 			"male": "был сегодня в {time}",
 			"female": "была сегодня в {time}",
-			"default": "был(а) сегодня в {time}"
+		  "other": "был(а) сегодня в {time}"
 		},
 		"yesterday": {
 			"male": "был вчера в {time}",
 			"female": "была вчера в {time}",
-			"default": "был(а) вчера в {time}"
+		  "other": "был(а) вчера в {time}"
 		},
 		"at_day": { 
 			"male": "был {date}",
 			"female": "была {date}",
-			"default": "был(а) {date}"
+		  "other": "был(а) {date}"
 		},
 		"at_day_time": { 
 			"male": "был {date} в {time}",
 			"female": "была {date} в {time}",
-			"default": "был(а) {date} в {time}"
+		  "other": "был(а) {date} в {time}"
 		},
 		"members": "{count} в сети"
 	},
@@ -88,12 +88,10 @@
 		"user": "{user} печатает...",
 		"group": {
 			"sequenced": "{users} печатают...",
-			"many": { 
-				"one": "{count} печатает...",
-				"few": "{count} печатают...",
-				"many": "{count} печатает...",
-			  "default": "{count} печатает..."
-			}
+		  "one": "{count} печатает...",
+		  "few": "{count} печатают...",
+		  "many": "{count} печатает...",
+		  "other": "{count} печатает..."
 		}
 	},
 
@@ -113,12 +111,12 @@
 				"full": {
 					"male": "{name} зарегистрировался в {app_name}",
 					"female": "{name} зарегистрировалась в {app_name}",
-				  "default": "{name} зарегистрировался(ась) в {app_name}"
+				  "other": "{name} зарегистрировался(ась) в {app_name}"
 				},
 				"compact": {
 					"male": "Зарегистрировался в {app_name}",
 					"female": "Зарегистрировалась в {app_name}",
-				  "default": "Зарегистрировался(ась) в {app_name}"
+				  "other": "Зарегистрировался(ась) в {app_name}"
 				}
 			},
 			"groups": {
@@ -126,44 +124,44 @@
 					"you": "{name} создали группу",
 					"male": "{name} создал группу",
 					"female": "{name} создала группу",
-					"default": "{name} создал(-а) группу"
+				  "other": "{name} создал(-а) группу"
 				},
 				"invited": { 
 					"you": "{name} пригласили {name_added}",
 					"male": "{name} пригласил {name_added}",
 					"female": "{name} пригласила {name_added}",
-					"default": "{name} пригласил(-а) {name_added}"
+				  "other": "{name} пригласил(-а) {name_added}"
 				},
 				"joined": {
 					"you": "{name} вошли в группу",
 					"male": "{name} вошел в группу",
 					"female": "{name} вошла в группу",
-					"default": "{name} вошел(-шла) в группу"
+				  "other": "{name} вошел(-шла) в группу"
 				},
 				"kicked": { 
 					"you": "{name} исключили {name_kicked}",
 					"male": "{name} исключил {name_kicked}",
 					"female": "{name} исключила {name_kicked}",
-					"default": "{name} исключил(-а) {name_kicked}"
+				  "other": "{name} исключил(-а) {name_kicked}"
 				},
 				"left": { 
 					"you": "{name} покинули группу",
 					"male": "{name} покинул группу",
 					"female": "{name} покинула группу",
-					"default": "{name} покинул(-а) группу"
+				  "other": "{name} покинул(-а) группу"
 				},
 				"title_changed": {
 					"full":  {
 						"you": "{name} изменили название группы на \"{title}\"",
 						"male": "{name} изменил название группы на \"{title}\"",
 						"female": "{name} изменила название группы на \"{title}\"",
-					  "default": "{name} изменил(-а) название группы на \"{title}\""
+					  "other": "{name} изменил(-а) название группы на \"{title}\""
 					}, 
 					"compact": {
 						"you": "{name} изменили тему группы",
 						"male": "{name} изменил тему группы",
 						"female": "{name} изменила тему группы",
-					  "default": "{name} изменил(-а) тему группы"
+					  "other": "{name} изменил(-а) тему группы"
 					}
 				},
 				"topic_changed": {
@@ -171,13 +169,13 @@
 						"you": "{name} изменили тему группы на \"{title}\"",
 						"male": "{name} изменил тему группы на \"{title}\"",
 						"female": "{name} изменила тему группы на \"{title}\"",
-					  "default": "{name} изменил(-а) тему группы на \"{title}\""
+					  "other": "{name} изменил(-а) тему группы на \"{title}\""
 					}, 
 					"compact": {
 						"you": "{name} изменили тему группы",
 						"male": "{name} изменил тему группы",
 						"female": "{name} изменила тему группы",
-					  "default": "{name} изменил(-а) тему группы"
+					  "other": "{name} изменил(-а) тему группы"
 					}
 				},
 				"about_changed": {
@@ -185,26 +183,26 @@
 						"you": "{name} изменили описание группы на \"{title}\"",
 						"male": "{name} изменил описание группы на \"{title}\"",
 						"female": "{name} изменила описание группы на \"{title}\"",
-					  "default": "{name} изменил(-а) описание группы на \"{title}\""
+					  "other": "{name} изменил(-а) описание группы на \"{title}\""
 					}, 
 					"compact": {
 						"you": "{name} изменили описание группы",
 						"male": "{name} изменил описание группы",
 						"female": "{name} изменила описание группы",
-					  "default": "{name} изменил(-а) описание группы"
+					  "other": "{name} изменил(-а) описание группы"
 					}
 				},
 				"avatar_changed": {
 						"you": "{name} изменили фото группы",
 						"male": "{name} изменил фото группы",
 						"female": "{name} изменила фото группы",
-				  "default": "{name} изменил(-а) фото группы"
+				  "other": "{name} изменил(-а) фото группы"
 				},
 				"avatar_removed": {
 						"you": "{name} удалили фото группы",
 						"male": "{name} удалил фото группы",
 						"female": "{name} удалила фото группы",
-				  "default": "{name} удалил(-а) фото группы"
+				  "other": "{name} удалил(-а) фото группы"
 				}
 			},
 			"calls": {
