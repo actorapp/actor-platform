@@ -104,7 +104,7 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
         accessHash = accessHash map (Int64Value(_)),
         isFat = isFat,
         forUserId = forUserId map (Int32Value(_)),
-        quotedMessage = quotedMessage
+        quotedMessage = None
       )
       (userExt.processorRegion.ref ? UserEnvelope(senderUserId).withDialogEnvelope(DialogEnvelope().withSendMessage(sendMessage))).mapTo[SeqStateDate]
 

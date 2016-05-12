@@ -56,20 +56,22 @@ trait DialogCommandHandlers extends PeersImplicits with HistoryImplicits with Us
           seqState ← if (exists) {
             FastFuture.failed(NotUniqueRandomId)
           } else {
-                  val quotedMessage = sm.quotedMessage.map(_.asStruct)
 
-        withNonBlockedPeer[SeqStateDate](userId, sm.getDest)(
-          default = for {
-          _ ← dialogExt.ackSendMessage(peer, sm.copy(date = Some(Int64Value(sendDate))))
-          _ ← db.run(writeHistoryMessage(selfPeer, peer, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray, sm.quotedMessage.flatMap(_.peer), quotedMessage.flatMap(_.messageId)))
-          //_ = dialogExt.updateCounters(peer, userId)
-          SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sendDate, message, sm.isFat, quotedMessage)
-        } yield SeqStateDate(seq, state, sendDate),
-          failed = for {
-          _ ← db.run(writeHistoryMessageSelf(userId, peer, userId, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray))
-          SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sendDate, message, sm.isFat, quotedMessage)
-        } yield SeqStateDate(seq, state, sendDate)
-        )
+            val quotedMessage = sm.quotedMessage.map(_.asStruct)
+            withNonBlockedPeer[SeqStateDate](userId, sm.getDest)(
+              default = for {
+              _ ← dialogExt.ackSendMessage(peer, sm.copy(date = Some(Int64Value(sendDate))))
+              _ ← db.run(writeHistoryMessage(selfPeer, peer, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray, sm.quotedMessage.flatMap(_.peer), quotedMessage.flatMap(_.messageId)))
+              //_ = dialogExt.updateCounters(peer, userId)
+              SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sendDate, message, sm.isFat, quotedMessage)
+            } yield SeqStateDate(seq, state, sendDate),
+              failed = for {
+              _ ← db.run(writeHistoryMessageSelf(userId, peer, userId, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray))
+              SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sendDate, message, sm.isFat, quotedMessage)
+            } yield SeqStateDate(seq, state, sendDate)
+            )
+          }
+        } yield seqState
       }
     }
   }
@@ -84,13 +86,13 @@ trait DialogCommandHandlers extends PeersImplicits with HistoryImplicits with Us
           group ← if (quotedPeer.typ.isGroup) db.run(GroupRepo.findFull(quotedPeer.id)) else FastFuture.successful(None)
           isMember ← if (quotedPeer.typ.isGroup) (groupExt.isMember(group.get.id, userId)) else FastFuture.successful(false)
         } yield {
-            val publicGroupId = if (quotedPeer.typ.isGroup && ((group.get.isPublic || isMember) && quotedPeer.id != peer.id))
-              (Some(Int32Value(group.get.id))) else (None) // remove the public group on dialogCommandHandlers per user of revieve group
-            val quotedMessageId = if ((quotedPeer.id != peer.id) || (quotedPeer.typ.isGroup && (!group.get.isPublic && !isMember)) ||
-                (quotedPeer.typ.isPrivate && quotedPeer.id != peer.id)) (None) else (quoted.messageId)
-            val quotedMessage = ((sm.getQuotedMessage.copy(messageId = quotedMessageId).copy(publicGroupId = publicGroupId)).asStruct)
-            f(Some(quotedMessage))
-          }
+          val publicGroupId = if (quotedPeer.typ.isGroup && ((group.get.isPublic || isMember) && quotedPeer.id != peer.id))
+            (Some(Int32Value(group.get.id))) else (None) // remove the public group on dialogCommandHandlers per user of revieve group
+          val quotedMessageId = if ((quotedPeer.id != peer.id) || (quotedPeer.typ.isGroup && (!group.get.isPublic && !isMember)) ||
+            (quotedPeer.typ.isPrivate && quotedPeer.id != peer.id)) (None) else (quoted.messageId)
+          val quotedMessage = ((sm.getQuotedMessage.copy(messageId = quotedMessageId).copy(publicGroupId = publicGroupId)).asStruct)
+          f(Some(quotedMessage))
+        }
       case _ ⇒
         f(None)
 
@@ -125,11 +127,11 @@ trait DialogCommandHandlers extends PeersImplicits with HistoryImplicits with Us
   }
 
   protected def writeMessageSelf(
-                                  senderUserId: Int,
-                                  dateMillis:   Long,
-                                  randomId:     Long,
-                                  message:      ApiMessage
-                                  ): Unit = {
+    senderUserId: Int,
+    dateMillis:   Long,
+    randomId:     Long,
+    message:      ApiMessage
+  ): Unit = {
     if (peer.`type` == PeerType.Private && peer.id != senderUserId && userId != senderUserId) {
       sender() ! Status.Failure(new RuntimeException(s"writeMessageSelf with senderUserId $senderUserId in dialog of user $userId with user ${peer.id}"))
     } else {
