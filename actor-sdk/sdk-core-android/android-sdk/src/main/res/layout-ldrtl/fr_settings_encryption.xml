@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyleft (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/scrollContainer">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/div_size"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/terminateSessions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector"
+            android:gravity="center_vertical"
+            android:paddingBottom="@dimen/settings_content_padding"
+            android:paddingRight="24dp"
+            android:paddingLeft="24dp"
+            android:paddingTop="@dimen/settings_content_padding">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/settings_terminate_sessions_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/security_terminate_title"
+                    android:textSize="@dimen/text_primary" />
+
+                <TextView
+                    android:id="@+id/settings_terminate_sessions_hint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/security_terminate_subtitle"
+                    android:textSize="@dimen/text_secondary" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="16dp"
+            android:id="@+id/big_divider">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="4dp"
+                android:layout_gravity="top"
+                android:background="@drawable/card_shadow_bottom" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_gravity="bottom"
+                android:background="@drawable/card_shadow_top" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/security_settings_title"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center_vertical|right"
+            android:paddingRight="24dp"
+            android:text="@string/security_authorized_header"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/loading"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/selector"
+            android:gravity="center"
+            android:text="@string/security_authorized_loading"
+            android:textSize="@dimen/text_primary" />
+
+        <LinearLayout
+            android:id="@+id/authItems"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"></LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

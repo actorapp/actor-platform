@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyleft (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingRight="@dimen/settings_padding"
+        android:paddingLeft="@dimen/settings_padding">
+
+        <LinearLayout
+            android:id="@+id/about"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector"
+            android:gravity="center_vertical"
+            android:paddingBottom="@dimen/settings_content_padding"
+            android:paddingRight="@dimen/settings_content_padding"
+            android:paddingLeft="@dimen/settings_content_padding"
+            android:paddingTop="@dimen/settings_content_padding">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/help_about_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/help_about_title"
+                    android:textSize="@dimen/text_primary" />
+
+                <TextView
+                    android:id="@+id/help_about_hint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/help_about_subtitle"
+                    android:textSize="@dimen/text_secondary" />
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <View
+            android:id="@+id/divider1"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/div_size" />
+
+        <LinearLayout
+            android:id="@+id/openFaq"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector"
+            android:gravity="center_vertical"
+            android:paddingBottom="@dimen/settings_content_padding"
+            android:paddingRight="@dimen/settings_content_padding"
+            android:paddingLeft="@dimen/settings_content_padding"
+            android:paddingTop="@dimen/settings_content_padding"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/help_faq_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/help_faq_title"
+                    android:textSize="@dimen/text_primary" />
+
+                <TextView
+                    android:id="@+id/help_faq_hint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/help_faq_subtitle"
+                    android:textSize="@dimen/text_secondary" />
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/div_size"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/giveFeedback"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector"
+            android:gravity="center_vertical"
+            android:paddingBottom="@dimen/settings_content_padding"
+            android:paddingRight="@dimen/settings_content_padding"
+            android:paddingLeft="@dimen/settings_content_padding"
+            android:paddingTop="@dimen/settings_content_padding">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/help_feedback_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/help_feedback_title"
+                    android:textSize="@dimen/text_primary" />
+
+                <TextView
+                    android:id="@+id/help_feedback_hint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/help_feedback_subtitle"
+                    android:textSize="@dimen/text_secondary" />
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <View
+            android:id="@+id/divider3"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/div_size" />
+
+
+        <LinearLayout
+            android:id="@+id/versionItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector"
+            android:gravity="center_vertical"
+            android:paddingBottom="@dimen/settings_content_padding"
+            android:paddingRight="@dimen/settings_content_padding"
+            android:paddingLeft="@dimen/settings_content_padding"
+            android:paddingTop="@dimen/settings_content_padding">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/help_version_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/help_version_title"
+                    android:textSize="@dimen/text_primary" />
+
+                <TextView
+                    android:id="@+id/version"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_secondary" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

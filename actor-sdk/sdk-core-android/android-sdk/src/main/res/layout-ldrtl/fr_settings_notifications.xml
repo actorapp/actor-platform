@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyleft (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/scrollContainer">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingRight="@dimen/settings_padding"
+        android:paddingLeft="@dimen/settings_padding">
+
+        <LinearLayout
+            android:id="@+id/conversationTonesCont"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector"
+            android:gravity="center_vertical"
+            android:paddingBottom="@dimen/settings_content_padding"
+            android:paddingRight="@dimen/settings_content_padding"
+            android:paddingLeft="@dimen/settings_content_padding"
+            android:paddingTop="@dimen/settings_content_padding">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/settings_conversation_tones_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/not_conv_tones"
+                    android:textSize="@dimen/text_primary" />
+
+                <TextView
+                    android:id="@+id/settings_conversation_tones_hint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/not_conv_tones_subtitle"
+                    android:textSize="@dimen/text_secondary" />
+            </LinearLayout>
+
+            <CheckBox
+                android:id="@+id/enableConversationTones"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/settings_content_padding"
+                android:layout_marginLeft="@dimen/settings_content_padding"
+                android:gravity="center_vertical" />
+        </LinearLayout>
+
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/div_size" />
+
+        <LinearLayout
+            android:id="@+id/soundCont"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector"
+            android:gravity="center_vertical"
+            android:paddingBottom="@dimen/settings_content_padding"
+            android:paddingRight="@dimen/settings_content_padding"
+            android:paddingLeft="@dimen/settings_content_padding"
+            android:paddingTop="@dimen/settings_content_padding">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/settings_sound_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/not_sound"
+                    android:textSize="@dimen/text_primary" />
+
+                <TextView
+                    android:id="@+id/settings_sound_hint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/not_sound_subtitle"
+                    android:textSize="@dimen/text_secondary" />
+            </LinearLayout>
+
+
+            <CheckBox
+                android:id="@+id/enableSound"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/settings_content_padding"
+                android:layout_marginLeft="@dimen/settings_content_padding"
+                android:gravity="center_vertical" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/divider1"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/div_size" />
+
+        <LinearLayout
+            android:id="@+id/vibrationCont"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector"
+            android:gravity="center_vertical"
+            android:paddingBottom="@dimen/settings_content_padding"
+            android:paddingRight="@dimen/settings_content_padding"
+            android:paddingLeft="@dimen/settings_content_padding"
+            android:paddingTop="@dimen/settings_content_padding">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/settings_vibration_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/not_vibration"
+                    android:textSize="@dimen/text_primary" />
+
+                <TextView
+                    android:id="@+id/settings_vibration_hint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/not_vibration_subtitle"
+                    android:textSize="@dimen/text_secondary" />
+            </LinearLayout>
+
+
+            <CheckBox
+                android:id="@+id/enableVibration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/settings_content_padding"
+                android:layout_marginLeft="@dimen/settings_content_padding"
+                android:gravity="center_vertical" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/div_size" />
+
+        <LinearLayout
+            android:id="@+id/groupCont"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector"
+            android:gravity="center_vertical"
+            android:paddingBottom="@dimen/settings_content_padding"
+            android:paddingRight="@dimen/settings_content_padding"
+            android:paddingLeft="@dimen/settings_content_padding"
+            android:paddingTop="@dimen/settings_content_padding">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/settings_group_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/not_group"
+                    android:textSize="@dimen/text_primary" />
+
+                <TextView
+                    android:id="@+id/settings_group_hint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/not_group_subtitle"
+                    android:textSize="@dimen/text_secondary" />
+            </LinearLayout>
+
+
+            <CheckBox
+                android:id="@+id/enableGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/settings_content_padding"
+                android:layout_marginLeft="@dimen/settings_content_padding"
+                android:gravity="center_vertical" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/divider3"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/div_size" />
+
+        <LinearLayout
+            android:id="@+id/groupMentionsCont"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector"
+            android:gravity="center_vertical"
+            android:paddingBottom="@dimen/settings_content_padding"
+            android:paddingRight="@dimen/settings_content_padding"
+            android:paddingLeft="@dimen/settings_content_padding"
+            android:paddingTop="@dimen/settings_content_padding">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/settings_group_mentions_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/not_group_mentions"
+                    android:textSize="@dimen/text_primary" />
+
+                <TextView
+                    android:id="@+id/settings_group_mentions_hint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/not_group_mentions_subtitle"
+                    android:textSize="@dimen/text_secondary" />
+            </LinearLayout>
+
+
+            <CheckBox
+                android:id="@+id/enableGroupMentions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/settings_content_padding"
+                android:layout_marginLeft="@dimen/settings_content_padding"
+                android:gravity="center_vertical" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/divider4"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/div_size" />
+
+        <LinearLayout
+            android:id="@+id/titlesCont"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector"
+            android:gravity="center_vertical"
+            android:paddingBottom="@dimen/settings_content_padding"
+            android:paddingRight="@dimen/settings_content_padding"
+            android:paddingLeft="@dimen/settings_content_padding"
+            android:paddingTop="@dimen/settings_content_padding">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/settings_titles_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/not_show_text"
+                    android:textSize="@dimen/text_primary" />
+
+                <TextView
+                    android:id="@+id/settings_titles_hint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/not_show_text_subtitle"
+                    android:textSize="@dimen/text_secondary" />
+            </LinearLayout>
+
+            <CheckBox
+                android:id="@+id/enableTitles"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/settings_content_padding"
+                android:layout_marginLeft="@dimen/settings_content_padding"
+                android:gravity="center_vertical" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
