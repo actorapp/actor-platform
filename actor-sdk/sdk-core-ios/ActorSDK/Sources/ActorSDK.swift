@@ -103,7 +103,7 @@ import DZNWebViewController
     public var supportAccount: String? = nil
     
     /// Support home page
-    public var supportHomepage: String? = "https://actor.im"
+    public var supportHomepage: String? = "http://www.eaglesoft.cn"
 
     /// Support account
     public var supportTwitter: String? = "actorapp"

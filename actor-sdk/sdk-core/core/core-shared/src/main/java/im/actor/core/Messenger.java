@@ -217,9 +217,9 @@ public class Messenger {
      * @return promise of AuthRes
      */
     @NotNull
-    @ObjectiveCName("doSignupWithName:withSex:withTransaction:")
-    public Promise<AuthRes> doSignup(String name, Sex sex, String transactionHash) {
-        return modules.getAuthModule().doSignup(name, sex, transactionHash);
+    @ObjectiveCName("doSignupWithName:withSex:withTransaction:withPassword:")
+    public Promise<AuthRes> doSignup(String name, Sex sex, String transactionHash,String password) {
+        return modules.getAuthModule().doSignup(name, sex, transactionHash ,password);
     }
 
     /**
@@ -393,9 +393,15 @@ public class Messenger {
      * @return Comand for execution
      */
     @NotNull
+<<<<<<< HEAD
     @ObjectiveCName("signUpCommandWithName:WithSex:withAvatar:")
     public Command<AuthState> signUp(String name, Sex sex, String avatarPath, String password) {
         return modules.getAuthModule().signUp(name, ApiSex.UNKNOWN, avatarPath, password);
+=======
+    @ObjectiveCName("signUpCommandWithName:WithSex:withAvatar:withPassword:")
+    public Command<AuthState> signUp(String name, Sex sex, String avatarPath,String password) {
+        return modules.getAuthModule().signUp(name, ApiSex.UNKNOWN, avatarPath,password);
+>>>>>>> EaglesoftZJ/master
     }
 
     /**

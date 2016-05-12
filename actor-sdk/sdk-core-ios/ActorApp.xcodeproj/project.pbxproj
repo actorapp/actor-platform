@@ -147,6 +147,13 @@
 			remoteGlobalIDString = 991461BA441C1C883EB72D4AE7805E5F;
 			remoteInfo = zipzap;
 		};
+		EFF21C121CDC7B1F003B320F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EF1F29F41CABBEB30000D859 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 0880DF8B620E25DAA493D952A0917605;
+			remoteInfo = SwiftyJSON;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -294,6 +301,7 @@
 				EF1F2A161CABBEB30000D859 /* pop.framework */,
 				EF1F2A181CABBEB30000D859 /* RegexKitLite.framework */,
 				EF1F2A1A1CABBEB30000D859 /* RSKImageCropper.framework */,
+				EFF21C131CDC7B1F003B320F /* SwiftyJSON.framework */,
 				EF1F2A1C1CABBEB30000D859 /* SZTextView.framework */,
 				EF1F2A1E1CABBEB30000D859 /* TTTAttributedLabel.framework */,
 				EF1F2A201CABBEB30000D859 /* VBFPopFlatButton.framework */,
@@ -343,7 +351,7 @@
 				TargetAttributes = {
 					EA6B7348F8364542DDD264F741AAAA19 = {
 						CreatedOnToolsVersion = 6.4;
-						DevelopmentTeam = HVJR44Y5B6;
+						DevelopmentTeam = D94R58LQ65;
 						SystemCapabilities = {
 							com.apple.Maps.iOS = {
 								enabled = 1;
@@ -510,6 +518,13 @@
 			remoteRef = EF1F2A251CABBEB30000D859 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		EFF21C131CDC7B1F003B320F /* SwiftyJSON.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = SwiftyJSON.framework;
+			remoteRef = EFF21C121CDC7B1F003B320F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
@@ -669,7 +684,7 @@
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = im.actor.sdk.dev;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.eaglesoft.igem;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDK_PATH = "../actor-sdk";
@@ -745,7 +760,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = im.actor.sdk.dev;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.eaglesoft.igem;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDK_PATH = "../actor-sdk";
