@@ -172,6 +172,7 @@
     <string name="settings_home_page">پایگاه وب</string>
     <string name="settings_notifications">اعلان‌ها</string>
     <string name="settings_chat">تنظیمات گپ</string>
+    <string name="settings_lang">زبان</string>
     <string name="settings_security">امنیت</string>
     <string name="nickname_empty">یک نام کاربری انتخاب کنید</string>
     <string name="nickname_change">ویرایش نام کاربری</string>

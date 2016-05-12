@@ -182,6 +182,7 @@
     <string name="settings_home_page">Home page</string>
     <string name="settings_notifications">Notifications</string>
     <string name="settings_chat">Chat Settings</string>
+    <string name="settings_lang">Language</string>
     <string name="settings_security">Security</string>
     <string name="settings_blocked_list">Blocked list</string>
     <string name="nickname_empty">Set username</string>
@@ -192,6 +193,15 @@
     <string name="about_user_me">About me</string>
     <string name="about_user">About user</string>
     <string name="wallpaper">Wallpaper</string>
+    
+    <!-- Language Settings -->
+    <string name="lang_dialog_title">Select Language</string>
+
+    <string name="lang_farsi">فارسی</string>
+    <string name="lang_english">English</string>
+    <string name="lang_russian">Русский</string>
+    <string name="lang_arabic">العربي</string>
+    
 
     <!-- Profile controls -->
     <string name="phone_menu_call">Call {0}</string>

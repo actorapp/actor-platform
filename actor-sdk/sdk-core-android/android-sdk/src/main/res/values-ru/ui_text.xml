@@ -176,6 +176,7 @@
     <string name="settings_ask">Задать вопрос</string>
     <string name="settings_notifications">Оповещения</string>
     <string name="settings_chat">Настройки чата</string>
+	<string name="settings_lang">Язык</string>
     <string name="settings_home_page">Домашняя страница</string>
     <string name="settings_security">Безопасность</string>
     <string name="settings_blocked_list">Заблокированные пользователи</string>

@@ -293,6 +293,37 @@
                     </LinearLayout>
 
                     <View
+                        android:id="@+id/divider8"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/div_size"
+                        android:layout_marginLeft="72dp"
+                        android:layout_marginRight="16dp" />
+
+                    <LinearLayout
+                        android:id="@+id/langSettings"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:background="@drawable/selector"
+                        android:clickable="true">
+
+                        <im.actor.sdk.view.TintImageView
+                            android:id="@+id/settings_lang_icon"
+                            android:layout_width="24dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginRight="32dp"
+                            app:src="@drawable/ic_lang_white_18dp" />
+
+                        <TextView
+                            android:id="@+id/settings_lang_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="left|center_vertical"
+                            android:text="@string/settings_lang"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <View
                         android:id="@+id/divider2"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/div_size"

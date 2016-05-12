@@ -22,10 +22,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,21 +42,23 @@ import im.actor.core.viewmodel.UserPhone;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.core.viewmodel.generics.ArrayListUserEmail;
 import im.actor.core.viewmodel.generics.ArrayListUserPhone;
-import im.actor.runtime.android.AndroidLogProvider;
+import im.actor.runtime.mvvm.Value;
+import im.actor.runtime.mvvm.ValueChangedListener;
+import im.actor.runtime.storage.PreferencesStorage;
 import im.actor.sdk.ActorSDK;
+import im.actor.sdk.ActorSDKApplication;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
+import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.controllers.activity.BaseActivity;
 import im.actor.sdk.controllers.fragment.BaseFragment;
 import im.actor.sdk.controllers.fragment.help.HelpActivity;
 import im.actor.sdk.controllers.fragment.preview.ViewAvatarActivity;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.BackgroundPreviewView;
-import im.actor.sdk.view.avatar.CoverAvatarView;
 import im.actor.sdk.view.TintImageView;
-import im.actor.runtime.mvvm.ValueChangedListener;
-import im.actor.runtime.mvvm.Value;
+import im.actor.sdk.view.avatar.CoverAvatarView;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 import static im.actor.sdk.util.ActorSDKMessenger.myUid;
@@ -358,6 +360,81 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
             }
         });
 
+        view.findViewById(R.id.langSettings).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
+
+                final View dialogView = inflater.inflate(R.layout.dialog_language_select, null);
+                dialogBuilder.setView(dialogView);
+                dialogBuilder.setTitle(getResources().getString(R.string.lang_dialog_title));
+
+                RadioGroup radioGroup = (RadioGroup) dialogView.findViewById(R.id.  language_radio_group);
+
+                switch(ActorSDKApplication.getCurrentLocale(getContext())){
+                    case "fa":
+                        radioGroup.check(R.id.radio_farsi);
+                        break;
+                    case "ar":
+                        radioGroup.check(R.id.radio_arabic);
+                        break;
+                    case "en":
+                        radioGroup.check(R.id.radio_english);
+                        break;
+                    case "ru":
+                        radioGroup.check(R.id.radio_russian);
+                        break;
+                }
+
+
+                radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+                        String lang = "en";
+
+                        // checkedId is the RadioButton selected
+                        if (checkedId == R.id.radio_arabic) {
+                            lang = "ar";
+                        }
+                        else if (checkedId == R.id.radio_english) {
+                            lang = "en";
+                        }
+                        else if (checkedId == R.id.radio_farsi) {
+                            lang = "fa";
+                        }
+                        else if (checkedId == R.id.radio_russian) {
+                            lang = "ru";
+                        }
+
+                        PreferencesStorage preferences = messenger().getPreferences();
+                        preferences.putString("language", lang);
+                        ActorSDKApplication.setLanguage(getActivity().getApplicationContext(),lang);
+
+                        Intent refresh = new Intent(getContext(), ActorMainActivity.class);
+                        refresh.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(refresh);
+                        System.exit(0);
+
+//                        getActivity().recreate();
+
+//                        Intent mStartActivity = new Intent(getContext(), ActorMainActivity.class);
+//                        mStartActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+//                        int mPendingIntentId = 123456;
+//                        PendingIntent mPendingIntent = PendingIntent.getActivity(getContext(), mPendingIntentId,    mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+//                        AlarmManager mgr = (AlarmManager)getContext().getSystemService(Context.ALARM_SERVICE);
+//                        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+//                        System.exit(0);
+//                        Intent i = getContext().getPackageManager().getLaunchIntentForPackage( getContext().getPackageName() );
+                    }
+                });
+
+                AlertDialog alertDialog = dialogBuilder.create();
+                alertDialog.show();
+
+            }
+        });
+
         view.findViewById(R.id.encryption).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -495,6 +572,9 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
         TextView settingsNotificationsTitle = (TextView) view.findViewById(R.id.settings_notifications_title);
         settingsNotificationsTitle.setTextColor(style.getSettingsTitleColor());
 
+        TextView settingsLangTitle = (TextView) view.findViewById(R.id.settings_lang_title);
+        settingsLangTitle.setTextColor(style.getSettingsTitleColor());
+
         TextView settingsChatTitle = (TextView) view.findViewById(R.id.settings_chat_title);
         settingsChatTitle.setTextColor(style.getSettingsTitleColor());
 
@@ -528,6 +608,9 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
         TintImageView chatSettingsIcon = (TintImageView) view.findViewById(R.id.settings_chat_icon);
         chatSettingsIcon.setTint(style.getSettingsIconColor());
 
+        TintImageView chatLangIcon = (TintImageView) view.findViewById(R.id.settings_lang_icon);
+        chatLangIcon.setTint(style.getSettingsIconColor());
+
         view.findViewById(R.id.after_phone_divider).setBackgroundColor(style.getBackyardBackgroundColor());
         view.findViewById(R.id.bottom_divider).setBackgroundColor(style.getBackyardBackgroundColor());
 
@@ -538,6 +621,7 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
         view.findViewById(R.id.divider5).setBackgroundColor(style.getDividerColor());
         view.findViewById(R.id.divider6).setBackgroundColor(style.getDividerColor());
         view.findViewById(R.id.divider7).setBackgroundColor(style.getDividerColor());
+        view.findViewById(R.id.divider8).setBackgroundColor(style.getDividerColor());
 
         if (getBeforeNickSettingsView() != null) {
             FrameLayout beforeNick = (FrameLayout) view.findViewById(R.id.before_nick_container);

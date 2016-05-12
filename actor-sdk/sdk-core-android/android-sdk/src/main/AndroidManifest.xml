@@ -116,7 +116,7 @@
 
         <activity
             android:name="im.actor.sdk.controllers.conversation.ChatActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|locale"
             android:theme="@style/ChatActivityTheme"
             android:windowSoftInputMode="adjustResize" />
 

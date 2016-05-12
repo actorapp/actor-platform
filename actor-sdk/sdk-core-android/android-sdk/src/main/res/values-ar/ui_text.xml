@@ -146,7 +146,9 @@
     <string name="settings_ask">اسأل أسألة</string>
     <string name="settings_notifications">اشعارات</string>
     <string name="settings_chat">اعدادات المحادثة</string>
+    <string name="settings_lang">اللغة</string>
     <string name="settings_security">الحماية</string>
+    
 
     <!-- Profile controls -->
     <string name="phone_menu_call">اتصال {0}</string>
