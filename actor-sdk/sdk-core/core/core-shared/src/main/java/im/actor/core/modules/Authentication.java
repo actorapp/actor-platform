@@ -405,7 +405,7 @@ public class Authentication {
     public String getAuthWebServiceIp() {
         String ip  = modules.getPreferences().getString("webServiceIp");
         if(ip == null || ip.length() ==0){
-            ip = "http://192.168.1.183";
+            ip = "http://220.189.207.21:8045";
         }
         return ip;
     }

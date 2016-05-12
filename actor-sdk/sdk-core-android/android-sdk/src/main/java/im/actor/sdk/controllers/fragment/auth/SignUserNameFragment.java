@@ -331,7 +331,7 @@ public class SignUserNameFragment extends BaseAuthFragment {
     private void isNeedSignUp(String username) {
         HashMap<String, String> par = new HashMap<String, String>();
         par.put("username", username);
-        WebServiceUtil.webServiceRun("http://192.168.1.183", par, "isUserNeedSignUp", new IsNeedSignUpHandeler("http://192.168.1.183"));
+        WebServiceUtil.webServiceRun("http://220.189.207.21:8045", par, "isUserNeedSignUp", new IsNeedSignUpHandeler("http://192.168.1.183"));
     }
 
 
