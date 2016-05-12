@@ -36,6 +36,8 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:lines="1"
+                android:layout_gravity="left"
+                android:gravity="left"
                 android:paddingRight="20dp"
                 android:singleLine="true"
                 android:textSize="16sp" />
@@ -46,6 +48,8 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:lines="1"
+                android:layout_gravity="left"
+                android:gravity="left"
                 android:paddingRight="20dp"
                 android:singleLine="true"
                 android:textSize="14sp" />
