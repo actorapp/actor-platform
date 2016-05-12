@@ -3,8 +3,10 @@ package im.actor.sdk.view;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -70,9 +72,16 @@ public class BaseUrlSpan extends URLSpan {
         PendingIntent pi =
                 PendingIntent.getBroadcast(AndroidContext.getContext(), 0, actionIntent, 0);
 
+        Bitmap back_icon = BitmapFactory.decodeResource(AndroidContext.getContext().getResources(), R.drawable.ic_arrow_back_white_24dp);
+        if( RTLUtils.isRTL(AndroidContext.getContext()) ) {
+            Matrix matrix = new Matrix();
+            matrix.postRotate(180);
+            back_icon = Bitmap.createBitmap(back_icon, 0, 0, back_icon.getWidth(), back_icon.getHeight(), matrix, true);
+        }
+
         customTabsIntent.setToolbarColor(ActorSDK.sharedActor().style.getMainColor())
                 .setActionButton(BitmapFactory.decodeResource(AndroidContext.getContext().getResources(), R.drawable.ic_share_white_24dp), "Share", pi)
-                .setCloseButtonIcon(BitmapFactory.decodeResource(AndroidContext.getContext().getResources(), R.drawable.ic_arrow_back_white_24dp));
+                .setCloseButtonIcon(back_icon);
 
         return customTabsIntent.build();
     }

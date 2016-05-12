@@ -26,6 +26,10 @@ public class RTLUtils {
         return isRightToLeft;
     }
 
+    public static boolean isRTL(Context context){
+        return context.getResources().getBoolean(R.bool.is_right_to_left);
+    }
+
     public void setMarginLeft(ViewGroup.MarginLayoutParams lp, int dp){
         if( isRightToLeft ){
             lp.rightMargin = dp;
