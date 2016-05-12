@@ -51,4 +51,4 @@ Keep in touch with the Actor community in our [group chat](https://quit.email/jo
 
 # License
 
-Actor Platform is released under [Apache 2.0 License](LICENSE).
+Actor Platform is released under [AGPL](LICENSE).
