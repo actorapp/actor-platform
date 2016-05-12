@@ -11,11 +11,7 @@ const l18n = {};
 
 const options = {
   endpoints: [
-<<<<<<< HEAD
-              'ws://220.189.207.18:9080'
-=======
     'ws://220.189.207.18:9080'
->>>>>>> EaglesoftZJ/master
   ],
   delegate: new ActorSDKDelegate(components, actions, l18n),
   isExperimental: true

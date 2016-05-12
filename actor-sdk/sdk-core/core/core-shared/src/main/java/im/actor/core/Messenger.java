@@ -393,15 +393,9 @@ public class Messenger {
      * @return Comand for execution
      */
     @NotNull
-<<<<<<< HEAD
-    @ObjectiveCName("signUpCommandWithName:WithSex:withAvatar:")
-    public Command<AuthState> signUp(String name, Sex sex, String avatarPath, String password) {
-        return modules.getAuthModule().signUp(name, ApiSex.UNKNOWN, avatarPath, password);
-=======
     @ObjectiveCName("signUpCommandWithName:WithSex:withAvatar:withPassword:")
     public Command<AuthState> signUp(String name, Sex sex, String avatarPath,String password) {
         return modules.getAuthModule().signUp(name, ApiSex.UNKNOWN, avatarPath,password);
->>>>>>> EaglesoftZJ/master
     }
 
     /**
