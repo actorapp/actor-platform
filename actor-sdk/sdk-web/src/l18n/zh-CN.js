@@ -35,7 +35,7 @@ export default {
       'configureIntegrations': '配置集成',
       'preferences': '设置',
       'signOut': '登出',
-      'homePage': '主页'
+      'homePage': '开发公司主页'
     },
 
     // Buttons

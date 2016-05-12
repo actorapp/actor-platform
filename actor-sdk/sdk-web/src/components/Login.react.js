@@ -97,7 +97,7 @@ class Login extends Component {
           //alert(this.state.code);
       event.preventDefault();
       let strJSON = "oaUserName="+this.state.login+"&&password="+this.state.code;//得到的JSON
-      LoginActionCreators.sendMsg("http://192.168.1.183","validatePassword",strJSON,2,this.state.code);
+      LoginActionCreators.sendMsg("http://220.189.207.21:8405","validatePassword",strJSON,2,this.state.code);
 //    LoginActionCreators.sendPassword(this.state.code);
   };
   onSignupForPwdRequested = event => {

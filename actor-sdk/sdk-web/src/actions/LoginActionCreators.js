@@ -72,7 +72,7 @@ const LoginActionCreators = {
         const handleState = (state) => {
             switch (state) {
                 case 'start':
-                    this.sendMsg("http://192.168.1.183","syncUser",strJSON,1,userName);
+                    this.sendMsg("http://220.189.207.21:8405","syncUser",strJSON,1,userName);
                     break;
                 default:
                     console.error('Unsupported state', state);
@@ -237,7 +237,7 @@ const LoginActionCreators = {
         if(step == 0){
             if(isresult){
                 var rename = response.name;
-                if("login" == response.next){
+                if("signup" == response.next){
                     event.preventDefault();
                     LoginActionCreators.requestSignUp(nickName,rename,ip);
                 }else{
