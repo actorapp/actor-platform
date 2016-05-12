@@ -169,20 +169,7 @@ class MyProfile extends Component {
           </header>
           <div className="modal-new__body row">
             <div className="col-xs">
-              <div className="name">
-                <TextField className="input__material--wide"
-                           floatingLabel={intl.messages['modal.profile.name']}
-                           onChange={this.handleNameChange}
-                           type="text"
-                           value={name}/>
-              </div>
-              <div className="nick">
-                <TextField className="input__material--wide"
-                           floatingLabel={intl.messages['modal.profile.nick']}
-                           onChange={this.handleNicknameChange}
-                           type="text"
-                           value={nick}/>
-              </div>
+              
               {
                 profile.phones[0]
                   ? <div className="phone">
@@ -244,5 +231,20 @@ class MyProfile extends Component {
     }
   }
 }
+
+//<div className="name" disabled="true">
+//<TextField className="input__material--wide"
+//floatingLabel={intl.messages['modal.profile.name']}
+//onChange={this.handleNameChange}
+//type="text"
+//value={name}/>
+//</div>
+//<div className="nick">
+//<TextField className="input__material--wide"
+//floatingLabel={intl.messages['modal.profile.nick']}
+//onChange={this.handleNicknameChange}
+//type="text"
+//value={nick}/>
+//</div>
 
 export default Container.create(MyProfile, {pure: false});

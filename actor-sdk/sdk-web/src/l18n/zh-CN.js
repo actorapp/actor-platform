@@ -3,14 +3,14 @@ export default {
   'messages': {
       // Login
       'login': {
-          'signIn': 'Sign in',
+          'signIn': '登录',
           'wrong': 'Wrong?',
           'phone': '手机号码',
           'email': '邮箱地址',
           'phone_or_email': 'Phone number or Email address',
-          'username':'Username',
+          'username':'用户名',
           'authCode': 'Auth code',
-          'password':'Password',
+          'password':'密码',
           'yourName': 'Your name',
           'errors': {
               'numberInvalid': 'Invalid number',
@@ -34,7 +34,8 @@ export default {
       'createGroup': '创建群',
       'configureIntegrations': '配置集成',
       'preferences': '设置',
-      'signOut': '登出'
+      'signOut': '登出',
+      'homePage': '主页'
     },
 
     // Buttons
@@ -54,6 +55,30 @@ export default {
 
     // Modals
     'modal': {
+      'profile': {
+          'title': '个人简介',
+          'name': '全名',
+          'nick': '昵称',
+          'phone': '电话号码',
+          'email': '邮箱',
+          'about': '关于',
+          'avatarChange': 'Change avatar',
+          'avatarRemove': 'Remove'
+      },
+      'group': {
+          'title': '建群',
+          'name': '群组主题',
+          'about': '群组介绍',
+          'avatarChange': 'Change avatar',
+          'avatarRemove': 'Remove'
+      },
+      'groups': {
+          'title': '群组',
+          'search': '群找群组',
+          'loading': '加载',
+          'notFound': '没有找到 <strong>{query}</strong>群组.'
+      },
+      
       'addContact': {
         'title': '添加联系人',
         'phone': '手机号'
@@ -119,6 +144,63 @@ export default {
     'preferencesSessionsCurrentSession': '当前会话',
     'preferencesSessionsAuthTime': '登陆时间',
     'preferencesSessionsTerminate': '断开',
-    'preferencesSessionsTerminateAll': '断开所有会话'
+    'preferencesSessionsTerminateAll': '断开所有会话',
+      
+      // Sidebar
+     'sidebar': {
+          'recents': {
+              'empty': {
+                  'first': 'You don\'t have any conversations at this moment.',
+                  'second': {
+                      'start': 'You can ',
+                      'or': ' or ',
+                      'end': '.'
+                  }
+              },
+              'newDialog': 'create new dialog',
+              'addPeople': 'add people',
+              'favourites': 'Favorites',
+              'groups': '群组',
+              'privates': 'Direct Messages',
+          },
+          'group': {
+              'empty': 'Create your first group conversation'
+          },
+          'private': {
+              'empty': 'There is no one in your network'
+          }
+    },
+    'main': {
+          'empty': 'Try to be better than yesterday!',
+          'install': '<h1>Web version of <b>{appName}</b> works only on desktop browsers at this time</h1>' +
+          '<h3>Please install our apps for using <b>{appName}</b> on your phone.</h3>' +
+          '<p><a href="//actor.im/ios">iPhone</a> | <a href="//actor.im/android">Android</a></p>',
+          'deactivated': {
+              'header': 'Tab deactivated',
+              'text': 'Oops, we have detected another tab with {appName}, so we had to deactivate this one to prevent some dangerous things happening.'
+          }
+      },
+  call: {
+  outgoing: 'Outgoing call',
+  incoming: 'Incoming call',
+  mute: 'Mute',
+  unmute: 'Unmute',
+  answer: 'Answer',
+  decline: 'Decline',
+  end: 'End call',
+  addUser: 'Add user',
+  fullScreen: 'Fullscreen',
+  video: 'Video'
+  },
+      
+  toolbar: {
+  callState: {
+  calling: 'calling',
+  connecting: 'connecting',
+  in_progress: 'On call: {time}',
+  ended: 'ended'
+  }
+  }
+      
   }
 };

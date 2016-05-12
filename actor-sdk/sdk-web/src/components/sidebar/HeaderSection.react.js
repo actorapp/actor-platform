@@ -149,16 +149,8 @@ class HeaderSection extends Component {
                   <i className="material-icons">settings</i>
                   {intl.messages['menu.preferences']}
                 </li>
-                <li className="dropdown__menu__item" onClick={this.openHelpDialog}>
-                  <i className="material-icons">help</i>
-                  {intl.messages['menu.helpAndFeedback']}
-                </li>
-                <li className="dropdown__menu__item">
-                  <a href={`https://twitter.com/${this.twitter}`} onClick={this.openTwitter}>
-                    <SvgIcon className="icon icon--dropdown sidebar__header__twitter" glyph="twitter" />
-                    {intl.messages['menu.twitter']}
-                  </a>
-                </li>
+              
+              
                 <li className="dropdown__menu__item">
                   <a href={this.homePage} onClick={this.openHomePage}>
                     <i className="material-icons">public</i>
@@ -187,5 +179,14 @@ class HeaderSection extends Component {
     }
   }
 }
-
+//                  <li className="dropdown__menu__item" onClick={this.openHelpDialog}>
+//                  <i className="material-icons">help</i>
+//                  {intl.messages['menu.helpAndFeedback']}
+//                  </li>
+//                  <li className="dropdown__menu__item">
+//                  <a href={`https://twitter.com/${this.twitter}`} onClick={this.openTwitter}>
+//                  <SvgIcon className="icon icon--dropdown sidebar__header__twitter" glyph="twitter" />
+//                  {intl.messages['menu.twitter']}
+//                  </a>
+//                  </li>
 export default Container.create(HeaderSection);
