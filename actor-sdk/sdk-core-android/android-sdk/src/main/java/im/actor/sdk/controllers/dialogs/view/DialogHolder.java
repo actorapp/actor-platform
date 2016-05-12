@@ -20,6 +20,7 @@ import im.actor.core.entity.PeerType;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.R;
+import im.actor.sdk.view.RTLUtils;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.avatar.AvatarView;
 import im.actor.sdk.util.Fonts;
@@ -61,10 +62,14 @@ public class DialogHolder extends BindedViewHolder {
     private int errorColor;
     private long binded;
 
+    private RTLUtils rtl;
+
     public DialogHolder(Context context, FrameLayout fl, final OnItemClickedListener<Dialog> onClickListener) {
         super(fl);
 
         this.context = context;
+
+        rtl = new RTLUtils(context);
 
         final int paddingH = Screen.dp(8);
         final int paddingV = Screen.dp(8);
@@ -83,9 +88,12 @@ public class DialogHolder extends BindedViewHolder {
         avatar = new AvatarView(context);
         avatar.init(Screen.dp(56), 22);
         {
-            FrameLayout.LayoutParams avatarLayoutParams = new FrameLayout.LayoutParams(Screen.dp(56), Screen.dp(56));
-            avatarLayoutParams.gravity = Gravity.CENTER_VERTICAL | Gravity.LEFT;
-            avatarLayoutParams.leftMargin = paddingH;
+            FrameLayout.LayoutParams avatarLayoutParams = new FrameLayout.LayoutParams(Screen.dp(52), Screen.dp(52));
+
+            int gCenter = Gravity.CENTER_VERTICAL;
+            avatarLayoutParams.gravity = rtl.isRTL() ? gCenter | Gravity.RIGHT : gCenter | Gravity.LEFT;
+            rtl.setMarginLeft(avatarLayoutParams,paddingH);
+
             avatar.setLayoutParams(avatarLayoutParams);
         }
         fl.addView(avatar);
@@ -95,8 +103,8 @@ public class DialogHolder extends BindedViewHolder {
         linearLayout.setGravity(Gravity.TOP);
         {
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            layoutParams.rightMargin = Screen.dp(16);
-            layoutParams.leftMargin = Screen.dp(76);
+            rtl.setMarginRight(layoutParams,16);
+            rtl.setMarginLeft(layoutParams,Screen.dp(79));
             layoutParams.topMargin = paddingV;
             layoutParams.bottomMargin = paddingV;
             linearLayout.setLayoutParams(layoutParams);
@@ -110,6 +118,8 @@ public class DialogHolder extends BindedViewHolder {
         }
 
         title = new TextView(context);
+        int grav = rtl.isRTL() ? Gravity.RIGHT : Gravity.LEFT;
+        title.setGravity(grav);
         title.setTextColor(ActorSDK.sharedActor().style.getDialogsTitleColor());
         title.setTypeface(Fonts.medium());
         title.setTextSize(16);
@@ -128,7 +138,7 @@ public class DialogHolder extends BindedViewHolder {
         time.setTextColor(ActorSDK.sharedActor().style.getDialogsTimeColor());
         time.setTypeface(Fonts.regular());
         time.setTextSize(14);
-        time.setPadding(Screen.dp(6), 0, 0, 0);
+        rtl.setPaddings(time,Screen.dp(6), 0, 0, 0);
         time.setSingleLine();
         firstRow.addView(time);
 
@@ -138,26 +148,28 @@ public class DialogHolder extends BindedViewHolder {
         text.setTypeface(Fonts.regular());
         text.setTextColor(style.getDialogsTextColor());
         text.setTextSize(16);
-        text.setPadding(0, Screen.dp(6), Screen.dp(28), 0);
+        rtl.setPaddings(text,0, Screen.dp(6), Screen.dp(28), 0);
         text.setSingleLine();
         text.setEllipsize(TextUtils.TruncateAt.END);
+        text.setGravity(grav);
         linearLayout.addView(text);
 
         fl.addView(linearLayout);
 
         separator = new View(context);
         separator.setBackgroundColor(style.getDialogsDividerColor());
-        FrameLayout.LayoutParams divLayoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                context.getResources().getDimensionPixelSize(R.dimen.div_size));
-        divLayoutParams.leftMargin = Screen.dp(76);
+        FrameLayout.LayoutParams divLayoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,context.getResources().getDimensionPixelSize(R.dimen.div_size));
+        rtl.setMarginLeft(divLayoutParams,Screen.dp(76));
         divLayoutParams.gravity = Gravity.BOTTOM;
         fl.addView(separator, divLayoutParams);
 
         state = new TintImageView(context);
         {
-            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(Screen.dp(28), Screen.dp(12), Gravity.BOTTOM | Gravity.RIGHT);
+            int gBottom = Gravity.BOTTOM;
+            int gToSet = rtl.isRTL() ? gBottom|Gravity.LEFT : gBottom|Gravity.RIGHT;
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(Screen.dp(28), Screen.dp(12), gToSet);
             params.bottomMargin = Screen.dp(16);
-            params.rightMargin = Screen.dp(9);
+            rtl.setMarginRight(params,Screen.dp(9));
             state.setLayoutParams(params);
             fl.addView(state);
         }
@@ -166,7 +178,7 @@ public class DialogHolder extends BindedViewHolder {
         {
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM | Gravity.RIGHT);
             params.bottomMargin = Screen.dp(15);
-            params.rightMargin = Screen.dp(16);
+            rtl.setMarginRight(params,Screen.dp(16));
             counter.setLayoutParams(params);
             fl.addView(counter);
         }
@@ -192,7 +204,7 @@ public class DialogHolder extends BindedViewHolder {
         bg.setRadius(Screen.dp(2));
         bg.setOverlayColor(style.getMainBackgroundColor());
         counter.setBackgroundDrawable(bg);
-        counter.setPadding(Screen.dp(4), 0, Screen.dp(4), 0);
+        rtl.setPaddings(counter,Screen.dp(4), 0, Screen.dp(4), 0);
         counter.setTextSize(10);
         counter.setTypeface(Fonts.regular());
         counter.setGravity(Gravity.CENTER);
@@ -220,7 +232,12 @@ public class DialogHolder extends BindedViewHolder {
         if (data.getPeer().getPeerType() == PeerType.GROUP) {
             left = new TintDrawable(context.getResources().getDrawable(R.drawable.dialogs_group), ActorSDK.sharedActor().style.getDialogsTitleColor());
         }
-        title.setCompoundDrawablesWithIntrinsicBounds(left, null, null, null);
+        if( rtl.isRTL() ){
+            title.setCompoundDrawablesWithIntrinsicBounds(null, null, left, null);
+        }
+        else {
+            title.setCompoundDrawablesWithIntrinsicBounds(left, null, null, null);
+        }
 
         if (data.getDate() > 0) {
             time.setVisibility(View.VISIBLE);

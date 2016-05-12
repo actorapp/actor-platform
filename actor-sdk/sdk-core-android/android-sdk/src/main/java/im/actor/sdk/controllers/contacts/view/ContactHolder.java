@@ -13,6 +13,7 @@ import android.widget.TextView;
 import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
+import im.actor.sdk.view.RTLUtils;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.avatar.AvatarView;
 import im.actor.sdk.util.Fonts;
@@ -39,11 +40,15 @@ public class ContactHolder extends BindedViewHolder {
     private OnItemClickedListener<Contact> onItemClickedListener;
     private final View separator;
 
+    private RTLUtils rtl;
+
     public ContactHolder(FrameLayout fl, boolean isSelectable, Context context, OnItemClickedListener<Contact> onItemClickedListener) {
         super(fl);
 
         this.onItemClickedListener = onItemClickedListener;
         this.isSelectable = isSelectable;
+
+        rtl = new RTLUtils(context);
 
         int padding = Screen.dp(16);
 
@@ -56,9 +61,10 @@ public class ContactHolder extends BindedViewHolder {
         cont.addView(background, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
         {
-            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT);
-            layoutParams.leftMargin = Screen.dp(40);
+            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
+
+            rtl.setMarginLeft(layoutParams,Screen.dp(40));
+
             fl.addView(cont, layoutParams);
         }
 
@@ -70,13 +76,17 @@ public class ContactHolder extends BindedViewHolder {
         }
 
         avatar = new AvatarView(context);
-        avatar.init(Screen.dp(52), 24);
+        avatar.init(52, 24);
         {
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(Screen.dp(52), Screen.dp(52));
-            layoutParams.leftMargin = Screen.dp(6);
+
+            rtl.setMarginLeft(layoutParams,Screen.dp(6));
+
             layoutParams.topMargin = Screen.dp(6);
             layoutParams.bottomMargin = Screen.dp(6);
-            layoutParams.gravity = Gravity.CENTER_VERTICAL | Gravity.LEFT;
+
+            int gCenter = Gravity.CENTER_VERTICAL;
+            layoutParams.gravity = rtl.isRTL() ? gCenter|Gravity.RIGHT : gCenter|Gravity.LEFT;;
             cont.addView(avatar, layoutParams);
         }
 
@@ -87,21 +97,29 @@ public class ContactHolder extends BindedViewHolder {
         fastTitle.setTypeface(Fonts.medium());
         {
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(Screen.dp(40), ViewGroup.LayoutParams.WRAP_CONTENT);
-            layoutParams.leftMargin = Screen.dp(6);
-            layoutParams.gravity = Gravity.CENTER_VERTICAL;
+
+            rtl.setMarginLeft(layoutParams,Screen.dp(6));
+            int gCenter = Gravity.CENTER_VERTICAL;
+            layoutParams.gravity = rtl.isRTL() ? gCenter|Gravity.RIGHT : gCenter|Gravity.LEFT;
+
             fl.addView(fastTitle, layoutParams);
         }
 
         title = new TextView(context);
         title.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
-        title.setPadding(Screen.dp(72), 0, (isSelectable ? Screen.dp(64) : 0) + Screen.dp(8), 0);
+
+        rtl.setPaddings(title,Screen.dp(72), 0, (isSelectable ? Screen.dp(64) : 0) + Screen.dp(8), 0);
+
         title.setTextSize(16);
         title.setSingleLine(true);
         title.setEllipsize(TextUtils.TruncateAt.END);
         title.setTypeface(Fonts.regular());
         {
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            layoutParams.gravity = Gravity.CENTER_VERTICAL;
+
+            int gCenter = Gravity.CENTER_VERTICAL;
+            layoutParams.gravity = rtl.isRTL() ? gCenter|Gravity.RIGHT : gCenter|Gravity.LEFT;
+
             layoutParams.topMargin = padding;
             layoutParams.bottomMargin = padding;
             cont.addView(title, layoutParams);
@@ -112,18 +130,22 @@ public class ContactHolder extends BindedViewHolder {
             isSelected.setClickable(false);
             isSelected.setFocusable(false);
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            layoutParams.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
-            layoutParams.rightMargin = padding;
+
+            int gCenter = Gravity.CENTER_VERTICAL;
+            layoutParams.gravity = rtl.isRTL() ? gCenter|Gravity.LEFT : gCenter|Gravity.RIGHT;
+            rtl.setMarginRight(layoutParams,padding);
+
             cont.addView(isSelected, layoutParams);
         }
 
         separator = new View(context);
         separator.setBackgroundColor(ActorSDK.sharedActor().style.getContactDividerColor());
         {
-            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                    context.getResources().getDimensionPixelSize(R.dimen.div_size));
+            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,context.getResources().getDimensionPixelSize(R.dimen.div_size));
             layoutParams.gravity = Gravity.BOTTOM;
-            layoutParams.leftMargin = Screen.dp(72);
+
+            rtl.setMarginLeft(layoutParams,Screen.dp(72));
+
             cont.addView(separator, layoutParams);
         }
     }

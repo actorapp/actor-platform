@@ -25,6 +25,7 @@ import im.actor.sdk.controllers.fragment.DisplayListFragment;
 import im.actor.sdk.controllers.contacts.view.ContactHolder;
 import im.actor.sdk.controllers.contacts.view.ContactsAdapter;
 import im.actor.sdk.controllers.fragment.help.HelpActivity;
+import im.actor.sdk.view.RTLUtils;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.util.Fonts;
 import im.actor.sdk.view.adapters.OnItemClickedListener;
@@ -147,6 +148,9 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
     }
 
     protected void addFooterOrHeaderAction(int color, int icon, int text, boolean isLast, final Runnable action, boolean isHeader) {
+
+        RTLUtils rtl = new RTLUtils(getActivity().getApplicationContext());
+
         FrameLayout container = new FrameLayout(getActivity());
         container.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         {
@@ -164,7 +168,9 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
         });
         {
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(64));
-            params.leftMargin = Screen.dp(40);
+
+            rtl.setMarginLeft(params,Screen.dp(40));
+
             invitePanel.setLayoutParams(params);
             container.addView(invitePanel);
         }
@@ -174,24 +180,33 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
         inviteIcon.setResource(icon);
         {
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(Screen.dp(52), Screen.dp(52));
-            layoutParams.leftMargin = Screen.dp(6);
+
+            rtl.setMarginLeft(layoutParams,Screen.dp(6));
+            int gCenter = Gravity.CENTER_VERTICAL;
+            layoutParams.gravity =  rtl.isRTL() ? gCenter|Gravity.RIGHT : gCenter|Gravity.LEFT;
+
             layoutParams.topMargin = Screen.dp(6);
             layoutParams.bottomMargin = Screen.dp(6);
-            layoutParams.gravity = Gravity.CENTER_VERTICAL | Gravity.LEFT;
+
             invitePanel.addView(inviteIcon, layoutParams);
         }
 
         TextView inviteText = new TextView(getActivity());
         inviteText.setText(getString(text).replace("{appName}", ActorSDK.sharedActor().getAppName()));
         inviteText.setTextColor(color);
-        inviteText.setPadding(Screen.dp(72), 0, Screen.dp(8), 0);
+
+        rtl.setPaddings(inviteText,Screen.dp(72), 0, Screen.dp(8), 0);
+
         inviteText.setTextSize(16);
         inviteText.setSingleLine(true);
         inviteText.setEllipsize(TextUtils.TruncateAt.END);
         inviteText.setTypeface(Fonts.medium());
         {
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            layoutParams.gravity = Gravity.CENTER_VERTICAL;
+
+            int gCenter = Gravity.CENTER_VERTICAL;
+            layoutParams.gravity = rtl.isRTL() ? gCenter|Gravity.RIGHT : gCenter|Gravity.LEFT;
+
             layoutParams.topMargin = Screen.dp(16);
             layoutParams.bottomMargin = Screen.dp(16);
             invitePanel.addView(inviteText, layoutParams);
@@ -201,10 +216,11 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
             View div = new View(getActivity());
             div.setBackgroundColor(ActorSDK.sharedActor().style.getContactDividerColor());
             {
-                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                        getResources().getDimensionPixelSize(R.dimen.div_size));
+                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,getResources().getDimensionPixelSize(R.dimen.div_size));
                 layoutParams.gravity = Gravity.BOTTOM;
-                layoutParams.leftMargin = Screen.dp(72);
+
+                rtl.setMarginLeft(layoutParams,Screen.dp(72));
+
                 invitePanel.addView(div, layoutParams);
             }
         }
