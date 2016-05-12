@@ -74,6 +74,7 @@ class CustomScroller extends Component {
     this.lastPageY = event.pageY;
 
     document.onselectstart = () => false;
+    document.body.classList.add('scroller__active');
     document.addEventListener('mousemove', this.onMouseMove);
     document.addEventListener('mouseup', this.onMouseUp);
 
@@ -91,6 +92,7 @@ class CustomScroller extends Component {
     this.setState({ dragging: false });
 
     document.onselectstart = undefined;
+    document.body.classList.remove('scroller__active');
     document.removeEventListener('mousemove', this.onMouseMove);
     document.removeEventListener('mouseup', this.onMouseUp);
   }
