@@ -98,7 +98,9 @@ export default {
         'italic': 'cursiva',
         'preformatted': 'preformateado'
       },
-      'dropzone': 'Colocar aquí para enviar.'
+      'dropzone': 'Colocar aquí para enviar.',
+      'start': 'Empezar',
+      'unblock': 'Desbloquear usuario'
     },
 
     // Modals
@@ -167,11 +169,18 @@ export default {
       },
       'confirm': {
         'logout': '¿De verdad quieres salir?',
-        'leave': '¿De verdad quieres salir de esta conversación?',
-        'clear': '¿Realmente desea borrar esta conversación?',
-        'delete': '¿De verdad quiere eliminar esta conversación?',
-        'removeContact': '¿De verdad quiere eliminar {name} de tus contactos?',
-        'kick': '¿Seguro que deseas expulsar a {name}',
+        'user': {
+          'clear': '¿Realmente desea borrar esta conversación?',
+          'delete': '¿De verdad quiere eliminar esta conversación?',
+          'block': '¿Usted realmente desea bloquear {name}?',
+          'removeContact': '¿De verdad quiere eliminar {name} de tus contactos?'
+        },
+        'group': {
+          'clear': '¿Realmente desea borrar esta conversación?',
+          'delete': '¿De verdad quiere eliminar esta conversación?',
+          'leave': '¿De verdad quieres salir de esta conversación?',
+          'kick': '¿Seguro que deseas expulsar a {name}'
+        },
         'nonContactHide': {
           'title': '¿Está seguro de que desea ocultar esta conversación?',
           'body': 'Usuario {name} no está en su lista de contactos.'
@@ -199,6 +208,8 @@ export default {
     'deleteGroup': 'Eliminar grupo',
     'clearConversation': 'Limpiar Conversación',
     'deleteConversation': 'Eliminar Conversación',
+    'blockUser': 'Bloquear usuario',
+    'unblockUser': 'Desbloquear usuario',
     'leaveGroup': 'Abandonar grupo',
     'sharedMedia': 'Medios compartidos',
     'notifications': 'Notificationes',
@@ -212,39 +223,6 @@ export default {
     'integrationToken': 'Integration Token',
     'integrationTokenHint': 'If you have programming chops, or know someone who does, this integration token allow the most flexibility and communication with your own systems.',
     'integrationTokenHelp': 'Learn how to integrate',
-
-    // Modals
-    'inviteModalTitle': 'Añadir más personas',
-    'inviteModalSearch': 'Búsqueda de contactos o nombres de usuario',
-    'inviteModalNotFound': 'Lo sentimos, no hay usuarios localizados.',
-    'inviteByLink': 'Invitar al grupo por enlace',
-    'inviteByLinkModalTitle': 'Invitar por enlace',
-    'inviteByLinkModalDescription': 'Cualquier persona en la web será capaz de unirse a ”{groupName}” abriendo este enlace:',
-    'inviteByLinkModalCopyButton': 'Copiar enlace',
-    'inviteByLinkModalRevokeButton': 'Revocar enlace',
-    'inviteLinkCopied': 'Enlace Invitación copiado.',
-
-    'preferencesModalTitle': 'Preferencias',
-    'preferencesGeneralTab': 'General',
-    'preferencesNotificationsTab': 'Notificaciones & Sonidos',
-    'preferencesSecurityTab': 'Seguridad',
-    'preferencesSendMessageTitle': 'Enviar mensaje',
-    'preferencesSendMessage': 'enviar mensaje',
-    'preferencesNewLine': 'nueva línea',
-    'preferencesEffectsTitle': 'Efectos',
-    'preferencesEnableEffects': 'Habilitar efectos de sonido',
-    'preferencesNotificationsTitle': 'Notificaciones',
-    'preferencesNotificationsGroup': 'Habilitar notificaciones de grupo',
-    'preferencesNotificationsOnlyMention': 'Habilitar notificaciones solo por mención',
-    'preferencesNotificationsOnlyMentionHint': 'Puedes activar las notificaciones sólo para mensajes que contiene lo que mencionas.',
-    'preferencesPrivacyTitle': 'Privacidad',
-    'preferencesMessagePreview': 'Mensaje de previsualización',
-    'preferencesMessagePreviewHint': 'Retire el texto del mensaje de notificaciones.',
-    'preferencesSessionsTitle': 'Sesiones activas',
-    'preferencesSessionsCurrentSession': 'Sesión actual',
-    'preferencesSessionsAuthTime': 'Fecha de acceso',
-    'preferencesSessionsTerminate': 'Eliminar',
-    'preferencesSessionsTerminateAll': 'Terminar todas las sesiones',
 
     // Sidebar
     'sidebar': {
@@ -267,6 +245,70 @@ export default {
       'deactivated': {
         'header': 'Pestaña desactivada',
         'text': 'Vaya, ha abierto otra sesión con {appName}, así que tuvimos que desactivar ésta para evitar posibles errores.'
+      }
+    },
+
+    preferences: {
+      title: 'Preferencias',
+      general: {
+        title: 'General',
+        send: {
+          title: 'Enviar mensaje',
+          sendMessage: 'enviar mensaje',
+          newLine: 'nueva línea'
+        }
+      },
+      notifications: {
+        title: 'Notificaciones & Sonidos',
+        effects: {
+          title: 'Efectos',
+          enable: 'Habilitar efectos de sonido'
+        },
+        notification: {
+          title: 'Notificaciones',
+          enable: 'Habilitar notificaciones de grupo',
+          onlyMentionEnable: 'Habilitar notificaciones solo por mención',
+          onlyMentionHint: 'Puedes activar las notificaciones sólo para mensajes que contiene lo que mencionas.'
+        },
+        privacy: {
+          title: 'Privacidad',
+          messagePreview: 'Mensaje de previsualización',
+          messagePreviewHint: 'Retire el texto del mensaje de notificaciones.'
+        }
+      },
+      security: {
+        title: 'Seguridad',
+        sessions: {
+          title: 'Sesiones activas',
+          current: 'Sesión actual',
+          authTime: 'Fecha de acceso',
+          terminate: 'Eliminar',
+          terminateAll: 'Terminar todas las sesiones'
+        }
+      },
+      blocked: {
+        title: 'Los Usuarios Bloqueados',
+        notExists: 'Aún no bloquear a nadie.',
+        notFound: 'Lo sentimos, no se encontraron usuarios.',
+        search: 'Búsqueda de contactos o nombres de usuario',
+        unblock: 'Desbloquear'
+      },
+      about: {
+        title: 'About'
+      }
+    },
+
+    invite: {
+      title: 'Añadir más personas',
+      search: 'Búsqueda de contactos o nombres de usuario',
+      notFound: 'Lo sentimos, no hay usuarios localizados.',
+      inviteByLink: 'Invitar al grupo por enlace',
+      byLink: {
+        title: 'Invitar por enlace',
+        description: 'Cualquier persona en la web será capaz de unirse a ”{groupName}” abriendo este enlace:',
+        copy: 'Copiar enlace',
+        copied: 'Enlace Invitación copiado.',
+        revoke: 'Revocar enlace'
       }
     },
 
