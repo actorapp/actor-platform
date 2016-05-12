@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyleft (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="248dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/avatar_bgrnd"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop" />
+
+        <im.actor.sdk.view.avatar.CoverAvatarView
+            android:id="@+id/avatar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:layout_gravity="bottom"
+            android:gravity="center_vertical|right"
+            android:orientation="vertical"
+            android:paddingRight="72dp"
+            android:paddingLeft="24dp">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-2dp"
+                android:ellipsize="end"
+                android:includeFontPadding="false"
+                android:lines="1"
+                android:singleLine="true"
+                android:textSize="26sp" />
+
+            <TextView
+                android:id="@+id/theme_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-2dp"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/createdBy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-2dp"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/card_shadow_top" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/descriptionContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <!--<LinearLayout-->
+            <!--android:id="@+id/themeContainer"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="72dp"-->
+            <!--android:layout_gravity="center_vertical"-->
+            <!--android:background="@drawable/clickable_background"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:orientation="vertical"-->
+            <!--android:paddingRight="72dp"-->
+            <!--android:paddingLeft="8dp">-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/theme"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:textSize="18sp" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/group_theme_hint"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/theme_group"-->
+                <!--android:textSize="16sp" />-->
+
+
+        <!--</LinearLayout>-->
+
+        <!--<im.actor.sdk.view.DividerView-->
+            <!--android:id="@+id/themeDivider"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginRight="72dp" />-->
+
+        <LinearLayout
+            android:id="@+id/aboutContainer"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/clickable_background"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:paddingRight="72dp"
+            android:paddingLeft="8dp">
+
+            <TextView
+                android:id="@+id/about"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/about_hint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/about_group"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/after_about_divider"
+            android:layout_width="match_parent"
+            android:layout_height="16dp">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="4dp"
+                android:layout_gravity="top"
+                android:background="@drawable/card_shadow_bottom" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_gravity="bottom"
+                android:background="@drawable/card_shadow_top" />
+        </FrameLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/settings_header_text"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center_vertical|right"
+        android:paddingRight="72dp"
+        android:text="@string/profile_settings_header"
+        android:textSize="16sp" />
+
+    <LinearLayout
+        android:id="@+id/notificationsCont"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/selector"
+        android:paddingLeft="8dp">
+
+        <im.actor.sdk.view.TintImageView
+            android:id="@+id/settings_notification_icon"
+            android:layout_width="72dp"
+            android:layout_height="match_parent"
+            app:src="@drawable/ic_notifications_white_18dp" />
+
+        <TextView
+            android:id="@+id/settings_notifications_title"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="@string/profile_settings_notifications"
+            android:textSize="16sp" />
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/enableNotifications"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/after_settings_divider"
+        android:layout_width="match_parent"
+        android:layout_height="16dp">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:layout_gravity="top"
+            android:background="@drawable/card_shadow_bottom" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/card_shadow_top" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/sharedContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/shared_header_text"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center_vertical|right"
+            android:paddingRight="72dp"
+            android:text="@string/profile_shared_header"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:id="@+id/mediaContainer"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/clickable_background"
+            android:paddingLeft="8dp"
+            android:visibility="gone">
+
+            <im.actor.sdk.view.TintImageView
+                android:id="@+id/share_media_icon"
+                android:layout_width="72dp"
+                android:layout_height="match_parent"
+                app:src="@drawable/conv_attach_gallery" />
+
+            <TextView
+                android:id="@+id/settings_media_title"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="@string/profile_shared_media"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/mediaCount"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:paddingLeft="16dp"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/docsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/clickable_background"
+            android:paddingLeft="8dp">
+
+            <im.actor.sdk.view.TintImageView
+                android:id="@+id/share_docs_icon"
+                android:layout_width="72dp"
+                android:layout_height="match_parent"
+                app:src="@drawable/conv_attach_file" />
+
+            <TextView
+                android:id="@+id/share_docs_title"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="@string/profile_shared_files"
+                android:textSize="16sp" />
+
+
+            <TextView
+                android:id="@+id/docCount"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:paddingLeft="16dp"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/bottom_divider"
+            android:layout_width="match_parent"
+            android:layout_height="16dp">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="4dp"
+                android:layout_gravity="top"
+                android:background="@drawable/card_shadow_bottom" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_gravity="bottom"
+                android:background="@drawable/card_shadow_top" />
+        </FrameLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/membersTitle"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical|right"
+            android:paddingRight="72dp"
+            android:text="@string/group_members_header"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/membersCount"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:paddingLeft="16dp"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

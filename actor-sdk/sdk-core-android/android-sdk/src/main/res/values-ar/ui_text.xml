@@ -4,7 +4,7 @@
   -->
 
 <resources>
-    <string name="app_name">Actor</string>
+    <string name="app_name">اکتور</string>
     <string name="app_locale">Ar</string>
 
     <string name="dialog_ok">حسنا</string>

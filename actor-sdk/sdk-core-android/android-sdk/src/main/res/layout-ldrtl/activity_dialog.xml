@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyleft (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="0px"
+        android:layout_height="0px"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
+
+    <FrameLayout
+        android:id="@+id/messagesFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/mentionsList" />
+
+    <TextView
+        android:padding="20dp"
+        android:visibility="invisible"
+        android:id="@+id/botEmptyHint"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/conv_bubble_media_in" />
+
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:layout_above="@+id/quoteContainer"
+        android:scaleType="fitXY"
+        android:src="@drawable/conv_field_shadow" />
+
+
+    <FrameLayout
+        android:id="@+id/quoteContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/mentionsList"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/quote_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="right|center_vertical"
+            android:drawableRight="@drawable/ic_editor_format_quote_gray"
+            android:ellipsize="end"
+            android:gravity="right|center_vertical"
+            android:paddingRight="10dp"
+            android:paddingLeft="48dp"
+            android:singleLine="true" />
+
+        <FrameLayout
+
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="left|bottom">
+
+            <ImageView
+                android:id="@+id/ib_close_quote"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/clickable_background"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_content_clear_gray" />
+        </FrameLayout>
+    </FrameLayout>
+
+    <im.actor.sdk.view.adapters.RecyclerListView
+        android:id="@+id/mentionsList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_above="@+id/fl_send_panel"
+        android:layout_gravity="bottom"
+        android:divider="@null"
+        android:dividerHeight="0dp"
+        android:listSelector="@drawable/selector" />
+
+    <FrameLayout
+        android:id="@+id/closeMenuLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="245dp"
+        android:layout_above="@+id/fl_send_panel"
+        android:id="@+id/share_container"
+        android:visibility="invisible"
+        android:orientation="vertical"
+        android:gravity="bottom"
+        android:background="@android:color/transparent">
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/conv_field_shadow" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/fast_share"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/fast_share_size" />
+
+        <TableLayout
+            android:id="@+id/share_menu"
+            android:paddingTop="5dp"
+            android:layout_gravity="bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:stretchColumns="*">
+
+            <TableRow>
+
+                <LinearLayout
+                    android:gravity="center_horizontal"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <Button
+                        android:layout_width="@dimen/share_btn_size"
+                        android:layout_height="@dimen/share_btn_size"
+                        android:id="@+id/share_camera"
+                        android:background="@drawable/share_camera_selector" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/share_menu_camera" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:gravity="center_horizontal"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <Button
+                        android:layout_width="@dimen/share_btn_size"
+                        android:layout_height="@dimen/share_btn_size"
+                        android:id="@+id/share_gallery"
+                        android:background="@drawable/share_gallery_selector" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/share_menu_gallery" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <Button
+                        android:layout_width="@dimen/share_btn_size"
+                        android:layout_height="@dimen/share_btn_size"
+                        android:id="@+id/share_video"
+                        android:background="@drawable/share_video_selector" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/share_menu_video" />
+                </LinearLayout>
+
+            </TableRow>
+
+            <TableRow>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <Button
+                        android:layout_width="@dimen/share_btn_size"
+                        android:layout_height="@dimen/share_btn_size"
+                        android:id="@+id/share_file"
+                        android:background="@drawable/share_file_selector" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/share_menu_file" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:gravity="center_horizontal"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <Button
+                        android:layout_width="@dimen/share_btn_size"
+                        android:layout_height="@dimen/share_btn_size"
+                        android:id="@+id/share_location"
+                        android:background="@drawable/share_location_selector" />
+
+                    <ImageButton
+                        android:layout_width="@dimen/share_btn_size"
+                        android:layout_height="@dimen/share_btn_size"
+                        android:id="@+id/share_hide"
+                        android:background="@drawable/share_hide_selector"
+                        android:src="@drawable/attach_hide2" />
+
+                    <TextView
+                        android:id="@+id/location_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/share_menu_location" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <FrameLayout
+                        android:layout_width="@dimen/share_btn_size"
+                        android:layout_height="@dimen/share_btn_size">
+
+                        <Button
+                            android:layout_width="@dimen/share_btn_size"
+                            android:layout_height="@dimen/share_btn_size"
+                            android:id="@+id/share_contact"
+                            android:background="@drawable/share_contact_selector" />
+
+
+                        <ImageButton
+                            android:visibility="invisible"
+                            android:paddingRight="10dp"
+                            android:paddingLeft="5dp"
+                            android:scaleType="fitCenter"
+                            android:layout_width="@dimen/share_btn_size"
+                            android:layout_height="@dimen/share_btn_size"
+                            android:id="@+id/share_send"
+                            android:src="@drawable/conv_send"
+                            android:background="@drawable/share_send_selector" />
+
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/contact_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/share_menu_contact" />
+
+                </LinearLayout>
+
+            </TableRow>
+        </TableLayout>
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/fl_send_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:minHeight="56dp">
+
+        <EditText
+            android:id="@+id/et_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:background="@android:color/transparent"
+            android:cursorVisible="true"
+            android:gravity="right|center_vertical"
+            android:hint="@string/chat_message_hint"
+            android:imeOptions="flagNoExtractUi"
+            android:inputType="text|textCapSentences|textAutoCorrect|textMultiLine"
+            android:maxLines="4"
+            android:paddingBottom="10dp"
+            android:paddingRight="56dp"
+            android:paddingLeft="112dp"
+            android:paddingTop="10dp"
+            android:textCursorDrawable="@null"
+            android:textSize="16sp" />
+
+        <FrameLayout
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="right|bottom">
+
+            <ImageButton
+                android:id="@+id/ib_attach"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/selector_flat"
+                android:padding="7dp"
+                android:src="@drawable/button_attach" />
+
+            <View
+                android:id="@+id/attachAnchor"
+                android:layout_width="56dp"
+                android:layout_height="0dp"
+                android:layout_gravity="top"
+                android:layout_marginTop="46dp" />
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="left|bottom"
+            android:layout_marginLeft="56dp">
+
+            <ImageView
+                android:id="@+id/ib_emoji"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/clickable_background"
+                android:padding="7dp"
+                android:layout_gravity="center"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_emoji" />
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="left|bottom">
+
+            <im.actor.sdk.view.TintImageView
+                android:visibility="invisible"
+                android:id="@+id/ib_send"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerInside"
+                android:background="@drawable/selector_flat" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:id="@+id/sendContainer"
+            android:visibility="gone" />
+
+
+        <FrameLayout
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="left|bottom">
+
+            <ImageView
+                android:id="@+id/record_btn"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="7dp"
+                android:layout_gravity="center"
+                android:scaleType="centerInside"
+                android:src="@drawable/conv_record" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/botEmptyTextBlock"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible">
+
+            <TextView
+                android:id="@+id/empty_bot_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:gravity="center"
+                android:text="@string/chat_empty_bot"
+                android:textAllCaps="true"
+                android:textSize="18sp" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/kickedFromChat"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/kicked_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:gravity="center"
+                android:text="@string/chat_not_member"
+                android:textAllCaps="true"
+                android:textSize="18sp" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:background="@android:color/white"
+            android:clickable="true"
+            android:visibility="gone"
+            android:id="@+id/audioContainer">
+
+            <ImageView
+                android:id="@+id/record_point"
+                android:layout_width="40dp"
+                android:layout_height="48dp"
+                android:paddingRight="8dp"
+                android:scaleType="center"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/conv_voice_rec" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="19sp"
+                android:text="00:01"
+                android:textColor="@android:color/black"
+                android:background="@android:color/transparent"
+                android:id="@+id/audioTimer"
+                android:layout_gravity="center_vertical|right" />
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:paddingLeft="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:drawableRight="@drawable/conv_voice_slide_arrow"
+                    android:drawablePadding="4dp"
+                    android:textColor="#aaaaaa"
+                    android:textSize="16dp"
+                    android:layout_gravity="center"
+                    android:gravity="center_vertical"
+                    android:text="@string/chat_voice_record_cancel"
+                    android:id="@+id/audioSlide" />
+            </FrameLayout>
+        </LinearLayout>
+
+    </FrameLayout>
+
+</RelativeLayout>

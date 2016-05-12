@@ -1,0 +1,532 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyleft (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:id="@+id/scrollContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <FrameLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="248dp"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/avatar_bgrnd"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop" />
+
+                        <im.actor.sdk.view.avatar.CoverAvatarView
+                            android:id="@+id/avatar"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="64dp"
+                            android:layout_gravity="bottom"
+                            android:gravity="center_vertical|right"
+                            android:orientation="vertical"
+                            android:paddingRight="72dp"
+                            android:paddingLeft="24dp">
+
+                            <TextView
+                                android:id="@+id/name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="-2dp"
+                                android:ellipsize="end"
+                                android:includeFontPadding="false"
+                                android:lines="1"
+                                android:singleLine="true"
+                                android:textSize="26sp" />
+
+                        </LinearLayout>
+
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/before_nick_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <LinearLayout
+                        android:id="@+id/nickContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                    </LinearLayout>
+
+                    <FrameLayout
+                        android:id="@+id/about"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/selector"
+                        android:clickable="true">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/recordIcon"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_marginBottom="24dp"
+                                android:layout_marginRight="16dp"
+                                android:layout_marginLeft="32dp"
+                                android:layout_marginTop="16dp" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:gravity="center_vertical"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/value"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textSize="18sp"
+                                    android:paddingLeft="20dp" />
+
+                                <TextView
+                                    android:id="@+id/title"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textSize="16sp"
+                                    android:layout_marginBottom="10dp"
+                                    android:paddingLeft="20dp" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <View
+                            android:id="@+id/divider"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/div_size"
+                            android:layout_gravity="bottom"
+                            android:layout_marginRight="72dp"
+                            android:background="@android:color/holo_red_dark" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:id="@+id/phoneContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                    </LinearLayout>
+
+                    <FrameLayout
+                        android:id="@+id/after_phone_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <FrameLayout
+                        android:id="@+id/wallpaperDivider"
+                        android:layout_width="match_parent"
+                        android:layout_height="16dp">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="4dp"
+                            android:layout_gravity="top"
+                            android:background="@drawable/card_shadow_bottom" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_gravity="bottom"
+                            android:background="@drawable/card_shadow_top" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/settings_wallpaper_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:gravity="center_vertical|right"
+                        android:paddingRight="72dp"
+                        android:text="@string/wallpaper"
+                        android:textSize="16sp" />
+
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:requiresFadingEdge="none"
+                        android:scrollbars="none">
+
+                        <LinearLayout
+                            android:id="@+id/background_container"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <View
+                                android:layout_width="72dp"
+                                android:layout_height="90dp"
+                                android:background="@android:color/transparent" />
+
+
+                        </LinearLayout>
+                    </HorizontalScrollView>
+
+
+                    <FrameLayout
+                        android:id="@+id/after_phone_divider"
+                        android:layout_width="match_parent"
+                        android:layout_height="16dp">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="4dp"
+                            android:layout_gravity="top"
+                            android:background="@drawable/card_shadow_bottom" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_gravity="bottom"
+                            android:background="@drawable/card_shadow_top" />
+                    </FrameLayout>
+
+
+                    <LinearLayout
+                        android:id="@+id/before_settings_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+
+                    <TextView
+                        android:id="@+id/settings_header_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:gravity="center_vertical|right"
+                        android:paddingRight="72dp"
+                        android:text="@string/settings_header"
+                        android:textSize="16sp" />
+
+                    <FrameLayout
+                        android:id="@+id/settings_top_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <LinearLayout
+                        android:id="@+id/notifications"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:background="@drawable/selector"
+                        android:clickable="true">
+
+                        <im.actor.sdk.view.TintImageView
+                            android:id="@+id/settings_notification_icon"
+                            android:layout_width="24dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginRight="16dp"
+                            android:layout_marginLeft="32dp"
+                            app:src="@drawable/ic_notifications_white_18dp" />
+
+                        <TextView
+                            android:id="@+id/settings_notifications_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="right|center_vertical"
+                            android:text="@string/settings_notifications"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <View
+                        android:id="@+id/divider1"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/div_size"
+                        android:layout_marginRight="72dp"
+                        android:layout_marginLeft="16dp" />
+
+                    <LinearLayout
+                        android:id="@+id/chatSettings"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:background="@drawable/selector"
+                        android:clickable="true">
+
+                        <im.actor.sdk.view.TintImageView
+                            android:id="@+id/settings_chat_icon"
+                            android:layout_width="24dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginRight="16dp"
+                            android:layout_marginLeft="32dp"
+                            app:src="@drawable/ic_chat_white_18dp" />
+
+                        <TextView
+                            android:id="@+id/settings_chat_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="right|center_vertical"
+                            android:text="@string/settings_chat"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <View
+                        android:id="@+id/divider2"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/div_size"
+                        android:layout_marginRight="72dp"
+                        android:layout_marginLeft="16dp" />
+
+                    <LinearLayout
+                        android:id="@+id/encryption"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:background="@drawable/selector"
+                        android:clickable="true">
+
+                        <im.actor.sdk.view.TintImageView
+                            android:id="@+id/settings_security_icon"
+                            android:layout_width="24dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginRight="16dp"
+                            android:layout_marginLeft="32dp"
+                            app:src="@drawable/ic_security_white_18dp" />
+
+                        <TextView
+                            android:id="@+id/settings_security_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="right|center_vertical"
+                            android:text="@string/settings_security"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <View
+                        android:id="@+id/divider7"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/div_size"
+                        android:layout_marginRight="72dp"
+                        android:layout_marginLeft="16dp" />
+
+                    <LinearLayout
+                        android:id="@+id/blockedList"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:background="@drawable/selector"
+                        android:clickable="true">
+
+                        <im.actor.sdk.view.TintImageView
+                            android:id="@+id/settings_blocked_icon"
+                            android:layout_width="24dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginRight="16dp"
+                            android:layout_marginLeft="32dp"
+                            app:src="@drawable/ic_block_white_18dp" />
+
+                        <TextView
+                            android:id="@+id/settings_blocked_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="right|center_vertical"
+                            android:text="@string/settings_blocked_list"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <View
+                        android:id="@+id/divider3"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/div_size"
+                        android:layout_marginRight="72dp"
+                        android:layout_marginLeft="16dp" />
+
+                    <LinearLayout
+                        android:id="@+id/askQuestion"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:background="@drawable/selector"
+                        android:clickable="true">
+
+                        <im.actor.sdk.view.TintImageView
+                            android:id="@+id/settings_ask_icon"
+                            android:layout_width="24dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginRight="16dp"
+                            android:layout_marginLeft="32dp"
+                            app:src="@drawable/ic_help_white_18dp" />
+
+                        <TextView
+                            android:id="@+id/settings_ask_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="right|center_vertical"
+                            android:text="@string/settings_ask"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <View
+                        android:id="@+id/divider5"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/div_size"
+                        android:layout_marginRight="72dp"
+                        android:layout_marginLeft="16dp" />
+
+                    <LinearLayout
+                        android:id="@+id/twitter"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:background="@drawable/selector"
+                        android:clickable="true">
+
+                        <im.actor.sdk.view.TintImageView
+                            android:id="@+id/settings_twitter_icon"
+                            android:layout_width="24dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginRight="16dp"
+                            android:layout_marginLeft="32dp"
+                            app:src="@drawable/ic_twitterlogo_18dp" />
+
+                        <TextView
+                            android:id="@+id/settings_twitter"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="right|center_vertical"
+                            android:text="@string/settings_twitter"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <View
+                        android:id="@+id/divider6"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/div_size"
+                        android:layout_marginRight="72dp"
+                        android:layout_marginLeft="16dp" />
+
+                    <LinearLayout
+                        android:id="@+id/home_page"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:background="@drawable/selector"
+                        android:clickable="true">
+
+                        <im.actor.sdk.view.TintImageView
+                            android:id="@+id/settings_home_page_icon"
+                            android:layout_width="24dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginRight="16dp"
+                            android:layout_marginLeft="32dp"
+                            app:src="@drawable/ic_home_page_18dp" />
+
+                        <TextView
+                            android:id="@+id/settings_home_page"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="right|center_vertical"
+                            android:text="@string/settings_home_page"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+
+                    <View
+                        android:id="@+id/divider4"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/div_size"
+                        android:layout_marginRight="72dp"
+                        android:layout_marginLeft="16dp"
+                        android:visibility="gone" />
+
+                    <LinearLayout
+                        android:id="@+id/helpSettings"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:background="@drawable/selector"
+                        android:clickable="true"
+                        android:visibility="gone">
+
+                        <im.actor.sdk.view.TintImageView
+                            android:id="@+id/settings_help_icon"
+                            android:layout_width="24dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginRight="16dp"
+                            android:layout_marginLeft="32dp"
+                            app:src="@drawable/ic_help_white_18dp" />
+
+                        <TextView
+                            android:id="@+id/settings_help_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="right|center_vertical"
+                            android:text="@string/settings_help"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <FrameLayout
+                        android:id="@+id/settings_bottom_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+                <com.getbase.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/profileAction"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|top"
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginTop="214dp"
+                    android:visibility="gone"
+                    app:fab_icon="@drawable/ic_share_white_24dp" />
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/bottom_divider"
+                android:layout_width="match_parent"
+                android:layout_height="16dp"
+                android:layout_weight="1">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="4dp"
+                    android:layout_gravity="top"
+                    android:background="@drawable/card_shadow_bottom" />
+
+            </FrameLayout>
+
+            <LinearLayout
+                android:id="@+id/after_settings_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+
+        </LinearLayout>
+    </ScrollView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_gravity="top"
+        android:background="@drawable/profile_avatar_top_shadow" />
+</FrameLayout>
