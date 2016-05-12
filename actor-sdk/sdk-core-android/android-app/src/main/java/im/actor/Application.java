@@ -30,6 +30,7 @@ public class Application extends ActorSDKApplication {
         ActorStyle style = ActorSDK.sharedActor().style;
         style.setDialogsActiveTextColor(0xff5882ac);
         ActorSDK.sharedActor().setFastShareEnabled(true);
+        ActorSDK.sharedActor().setAppName(getString(R.string.app_name));
 
         ActorSDK.sharedActor().setCallsEnabled(true);
 
