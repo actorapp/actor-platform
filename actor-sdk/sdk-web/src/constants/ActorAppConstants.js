@@ -329,7 +329,9 @@ export const endpoints = [
 
 export const appName = 'Actor';
 export const rootElement = 'actor-web-app';
-export const homePage = 'https://actor.im';
+//export const homePage = 'https://actor.im';
+export const homePage = 'http://www.eaglesoft.cn';
+
 export const twitter = 'actorapp';
 export const helpPhone = '75551234567';
 

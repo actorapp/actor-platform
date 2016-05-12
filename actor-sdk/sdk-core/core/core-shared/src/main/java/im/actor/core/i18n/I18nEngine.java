@@ -42,7 +42,7 @@ public class I18nEngine {
 
     private static final String TAG = "I18nEngine";
 
-    private static final String[] SUPPORTED_LOCALES = new String[]{"Ru", "Ar", "Zn", "Pt", "Es", "Fa"};
+    private static final String[] SUPPORTED_LOCALES = new String[]{"Ru", "Ar", "Zh", "Pt", "Es", "Fa"};
 
     private final Modules modules;
     private final LocaleRuntime runtime;

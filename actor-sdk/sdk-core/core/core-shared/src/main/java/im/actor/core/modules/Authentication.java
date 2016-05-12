@@ -4,10 +4,13 @@
 
 package im.actor.core.modules;
 
+
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import im.actor.core.ApiConfiguration;
 import im.actor.core.AuthState;
@@ -36,6 +39,7 @@ import im.actor.core.entity.AuthRes;
 import im.actor.core.entity.AuthStartRes;
 import im.actor.core.entity.Sex;
 import im.actor.core.entity.User;
+import im.actor.core.modules.api.entity.SignUpNameState;
 import im.actor.core.modules.sequence.internal.LoggedIn;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
@@ -49,6 +53,7 @@ import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseFunc;
 import im.actor.runtime.promise.PromiseResolver;
 
+
 public class Authentication {
 
     private static final String TAG = "Authentication";
@@ -60,6 +65,7 @@ public class Authentication {
     private static final String KEY_PHONE = "auth_phone";
     private static final String KEY_EMAIL = "auth_email";
     private static final String KEY_NICKNAME = "auth_nickname";
+    private static final String KEY_ZHNAME = "auth_zhname";
     private static final String KEY_SMS_HASH = "auth_sms_hash";
     private static final String KEY_SMS_CODE = "auth_sms_code";
     private static final String KEY_TRANSACTION_HASH = "auth_transaction_hash";
@@ -178,33 +184,33 @@ public class Authentication {
         });
     }
 
-       public Promise<AuthStartRes> doStartUsernameAuth(final String username) {
-           return new Promise<>(new PromiseFunc<AuthStartRes>() {
-               @Override
-               public void exec(@NotNull final PromiseResolver<AuthStartRes> resolver) {
-                   request(new RequestStartUsernameAuth(username,
-                           apiConfiguration.getAppId(),
-                           apiConfiguration.getAppKey(),
-                           deviceHash,
-                           apiConfiguration.getDeviceTitle(),
-                           modules.getConfiguration().getTimeZone(),
-                           langs), new RpcCallback<ResponseStartUsernameAuth>() {
-                       @Override
-                       public void onResult(ResponseStartUsernameAuth response) {
-                           resolver.result(new AuthStartRes(
-                                   response.getTransactionHash(),
-                                   AuthMode.fromApi(response.getActivationType()),
-                                   response.isRegistered()));
-                       }
+    public Promise<AuthStartRes> doStartUsernameAuth(final String username) {
+        return new Promise<>(new PromiseFunc<AuthStartRes>() {
+            @Override
+            public void exec(@NotNull final PromiseResolver<AuthStartRes> resolver) {
+                request(new RequestStartUsernameAuth(username,
+                        apiConfiguration.getAppId(),
+                        apiConfiguration.getAppKey(),
+                        deviceHash,
+                        apiConfiguration.getDeviceTitle(),
+                        modules.getConfiguration().getTimeZone(),
+                        langs), new RpcCallback<ResponseStartUsernameAuth>() {
+                    @Override
+                    public void onResult(ResponseStartUsernameAuth response) {
+                        resolver.result(new AuthStartRes(
+                                response.getTransactionHash(),
+                                AuthMode.fromApi(response.getActivationType()),
+                                response.isRegistered()));
+                    }
 
-                       @Override
-                       public void onError(RpcException e) {
-                           resolver.error(e);
-                       }
-                   });
-               }
-           });
-       }
+                    @Override
+                    public void onError(RpcException e) {
+                        resolver.error(e);
+                    }
+                });
+            }
+        });
+    }
 
     //
     // Code And Password Validation
@@ -222,7 +228,7 @@ public class Authentication {
 
                     @Override
                     public void onError(RpcException e) {
-                        if ("PHONE_NUMBER_UNOCCUPIED".equals(e.getTag()) || "EMAIL_UNOCCUPIED".equals(e.getTag())|| "USERNAME_UNOCCUPIED".equals(e.getTag())) {
+                        if ("PHONE_NUMBER_UNOCCUPIED".equals(e.getTag()) || "EMAIL_UNOCCUPIED".equals(e.getTag()) || "USERNAME_UNOCCUPIED".equals(e.getTag())) {
                             resolver.result(new AuthCodeRes(transactionHash));
                         } else {
                             resolver.error(e);
@@ -233,28 +239,28 @@ public class Authentication {
         });
     }
 
-        public Promise<AuthCodeRes> doValidatePassword(final String transactionHash, final String password) {
-            return new Promise<>(new PromiseFunc<AuthCodeRes>() {
-                @Override
-                public void exec(@NotNull final PromiseResolver<AuthCodeRes> resolver) {
-                    request(new RequestValidatePassword(transactionHash, password), new RpcCallback<ResponseAuth>() {
-                        @Override
-                        public void onResult(ResponseAuth response) {
-                            resolver.result(new AuthCodeRes(new AuthRes(response.toByteArray())));
-                        }
+    public Promise<AuthCodeRes> doValidatePassword(final String transactionHash, final String password) {
+        return new Promise<>(new PromiseFunc<AuthCodeRes>() {
+            @Override
+            public void exec(@NotNull final PromiseResolver<AuthCodeRes> resolver) {
+                request(new RequestValidatePassword(transactionHash, password), new RpcCallback<ResponseAuth>() {
+                    @Override
+                    public void onResult(ResponseAuth response) {
+                        resolver.result(new AuthCodeRes(new AuthRes(response.toByteArray())));
+                    }
 
-                        @Override
-                        public void onError(RpcException e) {
-                            if ("PHONE_NUMBER_UNOCCUPIED".equals(e.getTag()) || "EMAIL_UNOCCUPIED".equals(e.getTag())|| "USERNAME_UNOCCUPIED".equals(e.getTag())) {
-                                resolver.result(new AuthCodeRes(transactionHash));
-                            } else {
-                                resolver.error(e);
-                            }
+                    @Override
+                    public void onError(RpcException e) {
+                        if ("PHONE_NUMBER_UNOCCUPIED".equals(e.getTag()) || "EMAIL_UNOCCUPIED".equals(e.getTag()) || "USERNAME_UNOCCUPIED".equals(e.getTag())) {
+                            resolver.result(new AuthCodeRes(transactionHash));
+                        } else {
+                            resolver.error(e);
                         }
-                    });
-                }
-            });
-        }
+                    }
+                });
+            }
+        });
+    }
 
     public Promise<Boolean> doSendCall(final String transactionHash) {
         return new Promise<>(new PromiseFunc<Boolean>() {
@@ -407,6 +413,25 @@ public class Authentication {
     @Deprecated
     public String getUserName() {
         return modules.getPreferences().getString(KEY_NICKNAME);
+    }
+
+    @Deprecated
+    public String getZHName() {
+        return modules.getPreferences().getString(KEY_ZHNAME);
+    }
+
+    @Deprecated
+    public String getAuthWebServiceIp() {
+        String ip  = modules.getPreferences().getString("webServiceIp");
+        if(ip == null || ip.length() ==0){
+            ip = "http://220.189.207.21:8045";
+        }
+        return ip;
+    }
+
+    @Deprecated
+    public void setAuthWebServiceIp(String ip) {
+         modules.getPreferences().putString("webServiceIp",ip);
     }
 
     @Deprecated
@@ -748,9 +773,9 @@ public class Authentication {
 //                                    return;
 //                                }
 
-                                if ("USERNAME_CODE_EXPIRED".equals(e.getTag()) ||"PHONE_CODE_EXPIRED".equals(e.getTag()) || "EMAIL_CODE_EXPIRED".equals(e.getTag())) {
+                                if ("USERNAME_CODE_EXPIRED".equals(e.getTag()) || "PHONE_CODE_EXPIRED".equals(e.getTag()) || "EMAIL_CODE_EXPIRED".equals(e.getTag())) {
                                     resetAuth();
-                                } else if ("PHONE_NUMBER_UNOCCUPIED".equals(e.getTag()) || "EMAIL_UNOCCUPIED".equals(e.getTag())|| "USERNAME_UNOCCUPIED".equals(e.getTag())) {
+                                } else if ("PHONE_NUMBER_UNOCCUPIED".equals(e.getTag()) || "EMAIL_UNOCCUPIED".equals(e.getTag()) || "USERNAME_UNOCCUPIED".equals(e.getTag())) {
                                     state = AuthState.SIGN_UP;
                                     Runtime.postToMainThread(new Runnable() {
                                         @Override
@@ -772,6 +797,195 @@ public class Authentication {
                         });
             }
         };
+    }
+
+
+    @Deprecated
+    public Command<AuthState> requestSignUp(final String nickName, final String name,final String ip) {
+        return new Command<AuthState>() {
+            @Override
+            public void start(final CommandCallback<AuthState> callback) {
+                ArrayList<String> langs = new ArrayList<>();
+                for (String s : modules.getConfiguration().getPreferredLanguages()) {
+                    langs.add(s);
+                }
+                System.out.println("requestSignUp" + nickName);
+                request(new RequestStartUsernameAuth(nickName,
+                        apiConfiguration.getAppId(),
+                        apiConfiguration.getAppKey(),
+                        deviceHash,
+                        apiConfiguration.getDeviceTitle(),
+                        modules.getConfiguration().getTimeZone(),
+                        langs), new RpcCallback<ResponseStartUsernameAuth>() {
+
+                    @Override
+                    public void onResult(ResponseStartUsernameAuth response) {
+                        final String hash = response.getTransactionHash();
+                        System.out.println("onResult" + nickName);
+
+                        modules.getPreferences().putString(KEY_TRANSACTION_HASH, response.getTransactionHash());
+                        im.actor.runtime.Runtime.postToMainThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                request(new RequestSignUp(hash, name, ApiSex.UNKNOWN,
+                                        "11111111"), new RpcCallback<ResponseAuth>() {
+                                    @Override
+                                    public void onResult(ResponseAuth response) {
+                                        state = AuthState.BATCHSIGNUP;
+                                        modules.getPreferences().putString("webServiceIp", ip);
+                                        modules.getPreferences().putString(KEY_NICKNAME, nickName);
+
+                                        Runtime.postToMainThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                callback.onResult(state);
+                                            }
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onError(final RpcException e) {
+                                        if ("NICKNAME_BUSY".equals(e.getTag())) {
+                                            state = AuthState.BATCHSIGNUP;
+                                            modules.getPreferences().putString("webServiceIp", ip);
+                                            modules.getPreferences().putString(KEY_NICKNAME, nickName);
+
+                                            Runtime.postToMainThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    callback.onResult(state);
+                                                }
+                                            });
+                                            return;
+                                        }
+                                        Runtime.postToMainThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Log.e(TAG, e);
+                                                callback.onError(e);
+                                            }
+                                        });
+
+                                    }
+                                });
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(final RpcException e) {
+                        im.actor.runtime.Runtime.postToMainThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Log.e(TAG, e);
+                                callback.onError(e);
+                            }
+                        });
+                    }
+
+                });
+            }
+        };
+//        return null;
+    }
+
+    @Deprecated
+    public Command<AuthState> batchSignUp(final List<SignUpNameState> userNameList) {
+        if (userNameList == null) {
+            return null;
+        }
+        signUpName(userNameList);
+        return null;
+//        return new Command<AuthState>() {
+//            @Override
+//            public void start(final CommandCallback<AuthState> callback) {
+//                signUpName(userNameList);
+//            }
+//        };
+    }
+
+    private void requestSignUp(final String name, final List<SignUpNameState> userNameList) {
+        ArrayList<String> langs = new ArrayList<>();
+        for (String s : modules.getConfiguration().getPreferredLanguages()) {
+            langs.add(s);
+        }
+        System.out.println("requestSignUp" + name);
+        request(new RequestStartUsernameAuth(name,
+                apiConfiguration.getAppId(),
+                apiConfiguration.getAppKey(),
+                deviceHash,
+                apiConfiguration.getDeviceTitle(),
+                modules.getConfiguration().getTimeZone(),
+                langs), new RpcCallback<ResponseStartUsernameAuth>() {
+
+            @Override
+            public void onResult(ResponseStartUsernameAuth response) {
+                final String hash = response.getTransactionHash();
+                System.out.println("onResult" + name);
+
+//                modules.getPreferences().putString(KEY_TRANSACTION_HASH, response.getTransactionHash());
+                im.actor.runtime.Runtime.postToMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        request(new RequestSignUp(hash, name, ApiSex.UNKNOWN,
+                                "11111111"), new RpcCallback<ResponseAuth>() {
+                            @Override
+                            public void onResult(ResponseAuth response) {
+
+                            }
+
+                            @Override
+                            public void onError(final RpcException e) {
+                                if ("NICKNAME_BUSY".equals(e.getTag())) {
+                                    for (int i = 0; i < userNameList.size(); i++) {
+                                        if (userNameList.get(i).getName() == name) {
+                                            userNameList.get(i).setState(2);
+                                            if (i < userNameList.size() - 1) {
+                                                Runtime.postToMainThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        signUpName(userNameList);
+                                                    }
+                                                });
+                                            }
+                                            return;
+                                        }
+                                    }
+                                } else {
+//                                    for (int i = 0; i < userNameList.size(); i++) {
+//                                        signUpName(userNameList);
+//                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+
+            @Override
+            public void onError(final RpcException e) {
+                im.actor.runtime.Runtime.postToMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.e(TAG, e);
+                    }
+                });
+            }
+        });
+
+    }
+
+    private void signUpName(List<SignUpNameState> userNameList) {
+        for (int i = 0; i < userNameList.size(); i++) {
+            if (userNameList.get(i).getState() == 0) {
+                requestSignUp(userNameList.get(i).getName(), userNameList);
+                break;
+            } else if (i == userNameList.size() - 1) {
+                userNameList.clear();
+                userNameList = null;
+                break;
+            }
+        }
     }
 
     @Deprecated
@@ -830,7 +1044,8 @@ public class Authentication {
         }));
     }
 
-    private <T extends Response> void request(Request<T> request, RpcCallback<T> callback) {
+    private <T extends Response> void request
+            (Request<T> request, RpcCallback<T> callback) {
         modules.getActorApi().request(request, callback);
     }
 }

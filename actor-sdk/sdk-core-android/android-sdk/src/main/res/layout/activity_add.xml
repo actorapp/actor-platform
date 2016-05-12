@@ -17,7 +17,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="24dp"
-        android:hint="@string/add_contact_phone_hint" />
+        android:hint="@string/add_contact_username_hint" />
 
     <View
         android:layout_width="0dp"

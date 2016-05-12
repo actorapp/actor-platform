@@ -4,6 +4,9 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
@@ -20,10 +23,18 @@ import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 
+import java.util.HashMap;
+
+import im.actor.core.AuthState;
 import im.actor.core.api.ApiSex;
 import im.actor.core.entity.Sex;
+import im.actor.core.network.RpcException;
+import im.actor.core.viewmodel.Command;
+import im.actor.core.viewmodel.CommandCallback;
+import im.actor.runtime.json.JSONObject;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
+import im.actor.sdk.intents.WebServiceUtil;
 import im.actor.sdk.util.Fonts;
 import im.actor.sdk.util.KeyboardHelper;
 import im.actor.sdk.view.SelectorFactory;
@@ -40,6 +51,7 @@ public class SignInPasswordFragment extends BaseAuthFragment {
     private EditText codeEnterEditText;
     private KeyboardHelper keyboardHelper;
     String avatarPath;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         authType = getArguments().getString("authType");
@@ -60,7 +72,7 @@ public class SignInPasswordFragment extends BaseAuthFragment {
 
         TextView sendHint = (TextView) v.findViewById(R.id.sendHint);
         sendHint.setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
-        if(authType.equals(AUTH_TYPE_PHONE)){
+        if (authType.equals(AUTH_TYPE_PHONE)) {
             String phoneNumber = "+" + messenger().getAuthPhone();
             try {
                 Phonenumber.PhoneNumber number = PhoneNumberUtil.getInstance().parse(phoneNumber, null);
@@ -80,8 +92,9 @@ public class SignInPasswordFragment extends BaseAuthFragment {
         } else if (authType.equals(AUTH_TYPE_USERNAME)) {
             String userName = messenger().getAuthUserName();
             sendHint.setText(
-                    Html.fromHtml(getString(R.string.auth_password).replace("{0}", "<b>" + userName + "</b>"))
-            );
+                    getString(R.string.auth_password_init).replace("{0}", "<b>" + userName + "</b>") );
+            TextView sendName = (TextView) v.findViewById(R.id.sendUserName);
+            sendName.setText(messenger().getAuthZHName());
         } else {
             String authId = getArguments().getString("authId");
             sendHint.setText(
@@ -127,14 +140,14 @@ public class SignInPasswordFragment extends BaseAuthFragment {
         });
 
         Button editAuth = (Button) v.findViewById(R.id.button_edit_phone);
-        if(authType.equals(AUTH_TYPE_EMAIL)){
+        if (authType.equals(AUTH_TYPE_EMAIL)) {
             editAuth.setText(getString(R.string.auth_code_wrong_email));
         }
         onClick(v, R.id.button_edit_phone, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 new AlertDialog.Builder(getActivity())
-                        .setMessage(authType.equals(AUTH_TYPE_EMAIL)?R.string.auth_code_email_change:R.string.auth_code_phone_change)
+                        .setMessage(authType.equals(AUTH_TYPE_USERNAME) ? R.string.auth_code_username_change : R.string.auth_code_phone_change)
                         .setPositiveButton(R.string.auth_code_change_yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -156,11 +169,81 @@ public class SignInPasswordFragment extends BaseAuthFragment {
     }
 
     private void sendCode() {
-        String text = codeEnterEditText.getText().toString().trim();
+        final String text = codeEnterEditText.getText().toString().trim();
         if (text.length() > 0) {
 //            executeAuth(messenger().signUp(text, null,"zs2860400q",avatarPath),"SignUp");
-            executeAuth(messenger().validatePassword(text),"Send Password");
+//            executeAuth(messenger().validatePassword(text),"Send Password");
+
+            executeAuth(new Command<AuthState>() {
+                @Override
+                public void start(final CommandCallback<AuthState> callback) {
+                    HashMap<String, String> par = new HashMap<String, String>();
+                    par.put("oaUserName", messenger().getAuthUserName());
+                    par.put("password", text);
+                    WebServiceUtil.webServiceRun(messenger().getAuthWebServiceIp(), par, "validatePassword", new SignUpHandeler(callback, text));
+                }
+            }, "validatePassword");
 //            executeAuth(messenger().validateCode(text), "Send Code");
+        }
+    }
+
+
+    class SignUpHandeler extends Handler {
+        CommandCallback<AuthState> callback;
+        String password;
+
+        public SignUpHandeler(CommandCallback<AuthState> callback, String password) {
+            this.callback = callback;
+            this.password = password;
+        }
+
+        public SignUpHandeler(Looper L) {
+            super(L);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Bundle b = msg.getData();
+            String datasource = b.getString("datasource");
+            try {
+                JSONObject jo = new JSONObject(datasource);
+                String result = jo.getString("result").trim();
+                if ("false".equals(result)) {
+                    im.actor.runtime.Runtime.postToMainThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            RpcException e = new RpcException("PASSWORD ERROR", 400, "密码错误，请重新输入", false, null);
+                            callback.onError(e);
+                        }
+                    });
+                } else if ("true".equals(result)) {
+                    executeAuth(messenger().validatePassword(password), "Send Password");
+
+//                    Command<AuthState> command = messenger().requestStartUserNameAuth(name);
+//                    executeAuth(command, "Request code");
+//                    final String ACTION = "Request code";
+//                    Command<AuthState> command = messenger().requestSignUp(name, messenger().getAuthWebServiceIp());
+//                    executeAuth(command, ACTION);
+//                    im.actor.runtime.Runtime.postToMainThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        callback.onResult(AuthState.batchSignUp);
+//                    }
+//                });
+                }
+//
+            } catch (Exception e) {
+                e.printStackTrace();
+                executeAuth(messenger().validatePassword(password), "Send Password");
+//                im.actor.runtime.Runtime.postToMainThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        RpcException e = new RpcException("PASSWORD ERROR", 400, "密码错误，请重新输入", false, null);
+//                        callback.onError(e);
+//                    }
+//                });
+            }
         }
     }
 

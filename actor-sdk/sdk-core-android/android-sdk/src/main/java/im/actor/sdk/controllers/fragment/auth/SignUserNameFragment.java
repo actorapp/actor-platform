@@ -6,24 +6,29 @@ import android.content.Intent;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.telephony.PhoneNumberFormattingTextWatcher;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.util.HashMap;
+
 import im.actor.core.AuthState;
-import im.actor.core.entity.Sex;
+import im.actor.core.network.RpcException;
 import im.actor.core.viewmodel.Command;
+import im.actor.core.viewmodel.CommandCallback;
+import im.actor.runtime.json.JSONObject;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
+import im.actor.sdk.intents.WebServiceUtil;
 import im.actor.sdk.util.Devices;
 import im.actor.sdk.util.Fonts;
 import im.actor.sdk.util.KeyboardHelper;
@@ -60,8 +65,8 @@ public class SignUserNameFragment extends BaseAuthFragment {
         }
         buttonContinue.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryInvColor());
         buttonContinue.setTypeface(Fonts.medium());
-        ((TextView) v.findViewById(R.id.button_why)).setTypeface(Fonts.medium());
-        ((TextView) v.findViewById(R.id.button_why)).setTextColor(ActorSDK.sharedActor().style.getMainColor());
+//        ((TextView) v.findViewById(R.id.button_why)).setTypeface(Fonts.medium());
+//        ((TextView) v.findViewById(R.id.button_why)).setTextColor(ActorSDK.sharedActor().style.getMainColor());
 
         keyboardHelper = new KeyboardHelper(getActivity());
 
@@ -69,22 +74,26 @@ public class SignUserNameFragment extends BaseAuthFragment {
 
         countryDb = Countries.getInstance();
 
-        String deviceCountry = Devices.getDeviceCountry();
-        if (!TextUtils.isEmpty(deviceCountry)) {
-            Country country = countryDb.getCountryByShortName(deviceCountry);
-            setCountryName(country);
-            if (country != null) {
+//        String deviceCountry = Devices.getDeviceCountry();
+//        if (!TextUtils.isEmpty(deviceCountry)) {
+//            Country country = countryDb.getCountryByShortName(deviceCountry);
+//            setCountryName(country);
+//            if (country != null) {
+//
+////                countryCodeEditText.setText(country.phoneCode);
+//                focusPhone();
+//            } else {
+//                focusCode();
+//            }
+//        } else {
+//            setCountryName(null);
+////            countryCodeEditText.setText("");
+//            focusCode();
+//        }
 
-//                countryCodeEditText.setText(country.phoneCode);
-                focusPhone();
-            } else {
-                focusCode();
-            }
-        } else {
-            setCountryName(null);
-//            countryCodeEditText.setText("");
-            focusCode();
-        }
+
+        //request Web
+
 
         return v;
     }
@@ -106,19 +115,19 @@ public class SignUserNameFragment extends BaseAuthFragment {
 
     private void initView(View v) {
         ((TextView) v.findViewById(R.id.phone_sign_hint)).setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
-        countrySelectButton = (Button) v.findViewById(R.id.button_country_select);
-        countrySelectButton.setTextColor(ActorSDK.sharedActor().style.getMainColor());
-        onClick(countrySelectButton, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                keyboardHelper.setImeVisibility(phoneNumberEditText, false);
-                startActivityForResult(new Intent(getActivity(), PickCountryActivity.class), REQUEST_COUNTRY);
-            }
-        });
+//        countrySelectButton = (Button) v.findViewById(R.id.button_country_select);
+//        countrySelectButton.setTextColor(ActorSDK.sharedActor().style.getMainColor());
+//        onClick(countrySelectButton, new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                keyboardHelper.setImeVisibility(phoneNumberEditText, false);
+//                startActivityForResult(new Intent(getActivity(), PickCountryActivity.class), REQUEST_COUNTRY);
+//            }
+//        });
 
 //        countryCodeEditText = (EditText) v.findViewById(R.id.tv_country_code);
 //        countryCodeEditText.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
-//        countryCodeEditText.addTextChangedListener(new TextWatcher() {
+//        countryCodeEdit                                                                                                                                                                         Text.addTextChangedListener(new TextWatcher() {
 //            @Override
 //            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 //            }
@@ -228,16 +237,16 @@ public class SignUserNameFragment extends BaseAuthFragment {
 //            }
 //        });
 
-        v.findViewById(R.id.button_why).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new AlertDialog.Builder(getActivity())
-                        .setMessage(R.string.auth_phone_why_description)
-                        .setPositiveButton(R.string.auth_phone_why_done, null)
-                        .show()
-                        .setCanceledOnTouchOutside(true);
-            }
-        });
+//        v.findViewById(R.id.button_why).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                new AlertDialog.Builder(getActivity())
+//                        .setMessage(R.string.auth_phone_why_description)
+//                        .setPositiveButton(R.string.auth_phone_why_done, null)
+//                        .show()
+//                        .setCanceledOnTouchOutside(true);
+//            }
+//        });
 
         onClick(v, R.id.button_continue, new View.OnClickListener() {
             @Override
@@ -263,7 +272,7 @@ public class SignUserNameFragment extends BaseAuthFragment {
 
 //        String rawPhoneN = countryCodeEditText.getText().toString().replaceAll("[^0-9]", "") +
 //                phoneNumberEditText.getText().toString().replaceAll("[^0-9]", "");
-        String rawPhoneN =  phoneNumberEditText.getText().toString();
+        String rawPhoneN = phoneNumberEditText.getText().toString();
         if (rawPhoneN.length() == 0) {
             String message = getString(R.string.auth_error_empty_phone);
             new AlertDialog.Builder(getActivity())
@@ -272,11 +281,12 @@ public class SignUserNameFragment extends BaseAuthFragment {
                     .show();
             return;
         }
-        Command<AuthState> command = messenger().requestStartUserNameAuth(rawPhoneN);
-//        Sex sex = Sex.fromValue(1);
-//        Command<AuthState> command =  messenger().validatePassword("pwd");
+        isNeedSignUp(rawPhoneN);
+//        Command<AuthState> command = messenger().requestStartUserNameAuth(rawPhoneN);
+////        Sex sex = Sex.fromValue(1);
+////        Command<AuthState> command =  messenger().validatePassword("pwd");
+//        executeAuth(command, ACTION);
 
-        executeAuth(command,ACTION);
     }
 
     private void focusCode() {
@@ -316,5 +326,72 @@ public class SignUserNameFragment extends BaseAuthFragment {
                     data.getIntExtra("country_id", 0)));
         }
     }
+
+
+    private void isNeedSignUp(String username) {
+        HashMap<String, String> par = new HashMap<String, String>();
+        par.put("username", username);
+        WebServiceUtil.webServiceRun("http://220.189.207.21:8045", par, "isUserNeedSignUp", new IsNeedSignUpHandeler("http://192.168.1.183"));
+    }
+
+
+    class IsNeedSignUpHandeler extends Handler {
+        String ip;
+
+        public IsNeedSignUpHandeler(String ip) {
+            this.ip = ip;
+        }
+
+        public IsNeedSignUpHandeler(Looper L) {
+            super(L);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Bundle b = msg.getData();
+            final String ACTION = "Request code";
+            String datasource = b.getString("datasource");
+            String rawPhoneN = phoneNumberEditText.getText().toString();
+            try {
+                JSONObject jo = new JSONObject(datasource);
+                String result = jo.getString("result");
+                String name = jo.getString("name");
+                messenger().getPreferences().putString("auth_zhname", name);
+                if ("true".equals(result)) {
+                    if ("login".equals(jo.getString("next").trim())) {
+                        Command<AuthState> command = messenger().requestSignUp(rawPhoneN,name, ip);
+                        executeAuth(command, ACTION);
+                    } else {
+                        Command<AuthState> command = messenger().requestStartUserNameAuth(rawPhoneN);
+                        executeAuth(command, ACTION);
+                    }
+
+                } else {
+                    final String errStr = jo.getString("description");
+                    executeAuth(new Command<AuthState>() {
+                        @Override
+                        public void start(final CommandCallback<AuthState> callback) {
+                            im.actor.runtime.Runtime.postToMainThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    RpcException e = new RpcException("ERROR", 400, errStr, false, null);
+                                    callback.onError(e);
+                                }
+                            });
+                        }
+                    }, "error");
+//                    Command<AuthState> command = messenger().requestStartUserNameAuth(rawPhoneN);
+//                    executeAuth(command, ACTION);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+//                Command<AuthState> command = messenger().requestStartUserNameAuth(rawPhoneN);
+//                executeAuth(command, ACTION);
+            }
+
+        }
+    }
+
 
 }

@@ -28,14 +28,14 @@
             android:text="@string/auth_phone_hint"
             android:textSize="16sp" />
 
-        <Button
+        <!--<Button
             android:id="@+id/button_country_select"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:background="@drawable/abc_textfield_default_mtrl_alpha"
-            android:textSize="15sp" />
+            android:textSize="15sp" />-->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -98,7 +98,7 @@
                 android:textSize="15sp" />
         </FrameLayout>
 
-        <Button
+        <!--<Button
             android:id="@+id/button_why"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -109,7 +109,7 @@
             android:paddingLeft="26dp"
             android:paddingRight="26dp"
             android:text="@string/auth_phone_why"
-            android:textSize="14sp" />
+            android:textSize="14sp" />-->
 
     </LinearLayout>
 </ScrollView>

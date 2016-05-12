@@ -23,6 +23,11 @@ export default {
       window.messenger.requestCodeEmail(email.trim(), resolve, reject);
     });
   },
+  requestSignUp(nickName,name,ip){
+      return new Promise((resolve, reject) => {
+                         window.messenger.requestSignUp(nickName.trim(),name,ip,resolve, reject);
+                         });
+  },
 
   sendCode(code) {
     return new Promise((resolve, reject) => {
