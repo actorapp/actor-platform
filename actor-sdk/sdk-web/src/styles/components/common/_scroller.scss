@@ -25,6 +25,10 @@
   }
 }
 
+.scroller__active {
+  user-select: none;
+}
+
 .scroller__wrapper--custom {
   .scroller__container {
     &::-webkit-scrollbar {
