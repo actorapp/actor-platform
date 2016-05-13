@@ -39,16 +39,6 @@ import im.actor.core.modules.messaging.actions.CursorReaderActor;
 import im.actor.core.modules.messaging.actions.CursorReceiverActor;
 import im.actor.core.modules.messaging.actions.SenderActor;
 import im.actor.core.modules.messaging.dialogs.DialogsInt;
-import im.actor.core.modules.messaging.dialogs.entity.ChatClear;
-import im.actor.core.modules.messaging.dialogs.entity.ChatDelete;
-import im.actor.core.modules.messaging.dialogs.entity.CounterChanged;
-import im.actor.core.modules.messaging.dialogs.entity.GroupChanged;
-import im.actor.core.modules.messaging.dialogs.entity.InMessage;
-import im.actor.core.modules.messaging.dialogs.entity.MessageDeleted;
-import im.actor.core.modules.messaging.dialogs.entity.PeerReadChanged;
-import im.actor.core.modules.messaging.dialogs.entity.PeerReceiveChanged;
-import im.actor.core.modules.messaging.dialogs.entity.UserChanged;
-import im.actor.core.modules.messaging.dialogs.entity.HistoryLoaded;
 import im.actor.core.modules.messaging.history.entity.DialogHistory;
 import im.actor.core.modules.messaging.router.entity.ActiveDialogGroup;
 import im.actor.core.modules.messaging.router.entity.ActiveDialogStorage;
@@ -437,7 +427,7 @@ public class RouterActor extends ModuleActor {
         Message message = conversation(peer).getValue(rid);
 
         if (message != null) {
-            conversation(peer).addOrUpdateItem(message.changeContent(content));
+            conversation(peer).addOrUpdateItem(message.changeContent(content.incrementUpdatedCounter(message.getContent().getUpdatedCounter())));
             return getDialogsRouter().onMessageContentChanged(peer, rid, content);
         } else {
             return Promise.success(null);

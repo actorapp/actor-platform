@@ -15,7 +15,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,9 +33,6 @@ import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
-import im.actor.sdk.controllers.conversation.messages.preprocessor.PreprocessedData;
-import im.actor.sdk.controllers.conversation.messages.preprocessor.PreprocessedList;
-import im.actor.sdk.controllers.conversation.messages.preprocessor.PreprocessedTextData;
 import im.actor.sdk.controllers.conversation.view.MentionSpan;
 import im.actor.sdk.controllers.conversation.view.ReactionSpan;
 import im.actor.sdk.view.BaseUrlSpan;
@@ -53,7 +49,7 @@ import static im.actor.sdk.util.ActorSDKMessenger.users;
 public class ChatListProcessor implements ListProcessor<Message> {
 
     private HashMap<Long, PreprocessedTextData> preprocessedTexts = new HashMap<Long, PreprocessedTextData>();
-    private HashSet<Integer> updatedTexts = new HashSet<Integer>();
+    private HashMap<Long, Integer> updatedTexts = new HashMap<Long, Integer>();
 
     private Peer peer;
     private boolean isGroup;
@@ -135,8 +131,8 @@ public class ChatListProcessor implements ListProcessor<Message> {
 
             // Process Content
             if (msg.getContent() instanceof TextContent) {
-                int updatedCounter = 0; //msg.getContent().getUpdatedCounter();
-                if (!preprocessedTexts.containsKey(msg.getRid()) || !updatedTexts.contains(updatedCounter)) {
+                int updatedCounter = msg.getContent().getUpdatedCounter();
+                if (!preprocessedTexts.containsKey(msg.getRid()) || (!updatedTexts.containsKey(msg.getRid()) || updatedTexts.get(msg.getRid()) != updatedCounter)) {
                     TextContent text = (TextContent) msg.getContent();
                     Spannable spannableString = new SpannableString(text.getText());
                     boolean hasSpannable = false;
@@ -197,7 +193,7 @@ public class ChatListProcessor implements ListProcessor<Message> {
                         spannableString = emoji().processEmojiCompatMutable(spannableString, SmileProcessor.CONFIGURATION_BUBBLES);
                         hasSpannable = true;
                     }
-                    updatedTexts.add(updatedCounter);
+                    updatedTexts.put(msg.getRid(), updatedCounter);
                     preprocessedTexts.put(msg.getRid(), new PreprocessedTextData(reactions, text.getText(),
                             hasSpannable ? spannableString : null));
                 } else {
