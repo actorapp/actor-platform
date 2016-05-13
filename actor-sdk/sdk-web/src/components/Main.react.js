@@ -79,6 +79,8 @@ class Main extends Component {
 
     return (
       <div className="app">
+        <ConnectionState/>
+        <Favicon/>
 
         <Toolbar/>
         <section className="wrapper">
@@ -86,8 +88,6 @@ class Main extends Component {
           {this.props.children}
         </section>
 
-        <Favicon/>
-        <ConnectionState/>
 
         <ModalsWrapper/>
         <MenuOverlay/>
