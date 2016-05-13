@@ -36,8 +36,6 @@ import im.actor.core.entity.content.internal.LocalDocument;
 import im.actor.core.entity.content.internal.LocalPhoto;
 import im.actor.core.entity.content.internal.LocalVideo;
 import im.actor.core.entity.content.internal.LocalVoice;
-import im.actor.core.entity.Sticker;
-import im.actor.runtime.Runtime;
 import im.actor.runtime.bser.BserParser;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
@@ -52,6 +50,8 @@ import im.actor.runtime.json.JSONObject;
 ]-*/
 
 public abstract class AbsContent {
+
+    int updatedCounter = 0;
 
     public static byte[] serialize(AbsContent content) throws IOException {
         DataOutput dataOutput = new DataOutput();
@@ -185,5 +185,14 @@ public abstract class AbsContent {
 
     protected void setContentContainer(AbsContentContainer contentContainer) {
         this.contentContainer = contentContainer;
+    }
+
+    public int getUpdatedCounter() {
+        return updatedCounter;
+    }
+
+    public AbsContent incrementUpdatedCounter(int oldCounter) {
+        updatedCounter = ++oldCounter;
+        return this;
     }
 }
