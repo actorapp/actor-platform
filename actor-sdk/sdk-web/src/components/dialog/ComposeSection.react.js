@@ -33,7 +33,8 @@ import DropZone from '../common/DropZone.react';
 
 class ComposeSection extends Component {
   static contextTypes = {
-    intl: PropTypes.object
+    intl: PropTypes.object.isRequired,
+    delegate: PropTypes.object.isRequired
   };
 
   static getStores() {
@@ -99,7 +100,8 @@ class ComposeSection extends Component {
   }
 
   onKeyDown(event) {
-    if (event.keyCode === KeyCodes.ARROW_UP && !event.target.value) {
+    const { delegate } = this.context;
+    if (delegate.features.editing && event.keyCode === KeyCodes.ARROW_UP && !event.target.value) {
       event.preventDefault();
       MessageActionCreators.editLastMessage();
     }
@@ -347,7 +349,9 @@ class ComposeSection extends Component {
   }
 
   render() {
-    if (this.state.compose.editMessage) {
+    const { delegate } = this.context;
+    const { compose } = this.state;
+    if (delegate.features.editing && compose.editMessage) {
       return this.renderEditing();
     }
 
