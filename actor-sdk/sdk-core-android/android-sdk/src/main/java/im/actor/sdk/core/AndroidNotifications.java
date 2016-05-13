@@ -229,6 +229,8 @@ public class AndroidNotifications implements NotificationProvider {
             // Multiple conversations notification
             builder.setContentTitle(ActorSDK.sharedActor().getAppName());
             builder.setContentText(messagesCount + context.getString(R.string.notification_multiple_canversations_after_msg_count) + conversationsCount + context.getString(R.string.notifications_multiple_canversations_after_coversations_count));
+            builder.setColor(ActorSDK.sharedActor().getDelegate().getNotificationColor());
+            builder.setSound(ActorSDK.sharedActor().getDelegate().getNotificationSound());
             visiblePeer = null;
 
             intent = new Intent(context, ActorMainActivity.class);
@@ -278,6 +280,8 @@ public class AndroidNotifications implements NotificationProvider {
     private android.app.Notification buildSingleConversationNotification(NotificationCompat.Builder builder, NotificationCompat.InboxStyle inboxStyle, Drawable avatarDrawable, Notification topNotification) {
 
         return builder
+                .setSound(ActorSDK.sharedActor().getDelegate().getNotificationSoundForPeer(topNotification.getPeer()))
+                .setColor(ActorSDK.sharedActor().getDelegate().getNotificationColorForPeer(topNotification.getPeer()))
                 .setLargeIcon(drawableToBitmap(avatarDrawable))
                 .setContentIntent(PendingIntent.getActivity(context, 0,
                         Intents.openDialog(topNotification.getPeer(), false, context),
@@ -288,6 +292,8 @@ public class AndroidNotifications implements NotificationProvider {
 
     private android.app.Notification buildSingleMessageNotification(Drawable d, NotificationCompat.Builder builder, String sender, CharSequence text, Notification topNotification) {
         return builder
+                .setSound(ActorSDK.sharedActor().getDelegate().getNotificationSoundForPeer(topNotification.getPeer()))
+                .setColor(ActorSDK.sharedActor().getDelegate().getNotificationColorForPeer(topNotification.getPeer()))
                 .setContentTitle(sender)
                 .setContentText(text)
                 .setLargeIcon(drawableToBitmap(d))

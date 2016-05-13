@@ -1,6 +1,8 @@
 package im.actor.sdk;
 
 import android.content.Context;
+import android.net.Uri;
+import android.provider.Settings;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -126,6 +128,37 @@ public interface ActorSDKDelegate {
      */
     MessageHolder getCustomMessageViewHolder(int dataTypeHash, MessagesAdapter messagesAdapter, ViewGroup viewGroup);
 
+    /**
+     * Override for setting specific notification sound for peer
+     *
+     * @param peer peer to set notification sound
+     * @return notification sound uri
+     */
+    Uri getNotificationSoundForPeer(Peer peer);
+
+
+    /**
+     * Override for setting specific notification color for peer
+     *
+     * @param peer peer to set notification color
+     * @return notification sound color
+     */
+    int getNotificationColorForPeer(Peer peer);
+
+
+    /**
+     * Override change notification sound
+     *
+     * @return notification sound uri
+     */
+    Uri getNotificationSound();
+
+    /**
+     * Override change notification color
+     *
+     * @return notification sound color
+     */
+    int getNotificationColor();
 
 
     /**
