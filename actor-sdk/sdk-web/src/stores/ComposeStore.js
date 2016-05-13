@@ -21,6 +21,10 @@ class ComposeStore extends ReduceStore {
 
   reduce(state, action) {
     switch (action.type) {
+      case ActionTypes.COMPOSE_CLEAN:
+      case ActionTypes.BIND_DIALOG_PEER:
+        return this.getInitialState();
+
       case ActionTypes.COMPOSE_TYPING:
         const nextState = {
           ...state,
@@ -77,14 +81,6 @@ class ComposeStore extends ReduceStore {
       case ActionTypes.COMPOSE_MENTION_CLOSE:
         return {
           ...state,
-          mentions: null
-        };
-
-      case ActionTypes.COMPOSE_CLEAN:
-        return {
-          ...state,
-          text: '',
-          commands: null,
           mentions: null
         };
 

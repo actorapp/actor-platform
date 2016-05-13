@@ -100,6 +100,22 @@
     }
   }
 
+  &--cancel {
+    color: $ticklish;
+
+    &:hover,
+    &:focus {
+      background-color: rgba($ticklish, .15);
+    }
+    &:active {
+      background-color: lighten(rgba($ticklish, .15), 15);
+    }
+    &[disabled] {
+      color: $ticklish !important;
+      background-color: transparent !important;
+    }
+  }
+
   &--flat {
     color: $dark-sky-blue;
     background-color: rgba($dark-sky-blue, .15);
