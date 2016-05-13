@@ -1,6 +1,9 @@
 package im.actor.sdk.view.avatar;
 
 import android.content.Context;
+import android.graphics.ColorFilter;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.net.Uri;
 import android.util.AttributeSet;
 
@@ -27,6 +30,7 @@ import im.actor.core.viewmodel.FileVMCallback;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.files.FileSystemReference;
+import im.actor.sdk.ActorSDK;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
@@ -65,7 +69,8 @@ public class AvatarView extends SimpleDraweeView {
                 .setRoundingParams(new RoundingParams()
                         .setRoundAsCircle(true)
                         .setRoundingMethod(RoundingParams.RoundingMethod.BITMAP_ONLY))
-                        // .setOverlay(new AvatarBorderDrawable())
+                        //.setActualImageColorFilter(new PorterDuffColorFilter(0x19000000, PorterDuff.Mode.MULTIPLY))
+                        //.setOverlay(new AvatarBorderDrawable())
                 .build();
         setHierarchy(hierarchy);
     }
