@@ -7,9 +7,11 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.SoundPool;
+import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
@@ -77,9 +79,6 @@ public class AndroidNotifications implements NotificationProvider {
         builder.setCategory(NotificationCompat.CATEGORY_MESSAGE);
 
         int defaults = NotificationCompat.DEFAULT_LIGHTS;
-        if (messenger.isNotificationSoundEnabled()) {
-            defaults |= NotificationCompat.DEFAULT_SOUND;
-        }
         if (messenger.isNotificationVibrationEnabled()) {
             defaults |= NotificationCompat.DEFAULT_VIBRATE;
         }
@@ -229,8 +228,6 @@ public class AndroidNotifications implements NotificationProvider {
             // Multiple conversations notification
             builder.setContentTitle(ActorSDK.sharedActor().getAppName());
             builder.setContentText(messagesCount + context.getString(R.string.notification_multiple_canversations_after_msg_count) + conversationsCount + context.getString(R.string.notifications_multiple_canversations_after_coversations_count));
-            builder.setColor(ActorSDK.sharedActor().getDelegate().getNotificationColor());
-            builder.setSound(ActorSDK.sharedActor().getDelegate().getNotificationSound());
             visiblePeer = null;
 
             intent = new Intent(context, ActorMainActivity.class);
@@ -248,12 +245,27 @@ public class AndroidNotifications implements NotificationProvider {
             result = builder
                     .setStyle(inboxStyle)
                     .build();
+            addCustomLedAndSound(topNotification, result);
 
             NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             manager.notify(NOTIFICATION_ID, result);
         }
 
 
+    }
+
+    public void addCustomLedAndSound(Notification topNotification, android.app.Notification result) {
+        if (messenger().isNotificationSoundEnabled()) {
+            result.defaults &= ~NotificationCompat.DEFAULT_SOUND;
+            result.sound = ActorSDK.sharedActor().getDelegate().getNotificationSoundForPeer(topNotification.getPeer());
+        }
+        result.ledARGB = ActorSDK.sharedActor().getDelegate().getNotificationColorForPeer(topNotification.getPeer());
+        if (result.ledARGB != 0) {
+            result.ledOnMS = 100;
+            result.ledOffMS = 100;
+            result.defaults &= ~NotificationCompat.DEFAULT_LIGHTS;
+            result.flags |= NotificationCompat.FLAG_SHOW_LIGHTS;
+        }
     }
 
     @Override
@@ -279,21 +291,19 @@ public class AndroidNotifications implements NotificationProvider {
 
     private android.app.Notification buildSingleConversationNotification(NotificationCompat.Builder builder, NotificationCompat.InboxStyle inboxStyle, Drawable avatarDrawable, Notification topNotification) {
 
-        return builder
-                .setSound(ActorSDK.sharedActor().getDelegate().getNotificationSoundForPeer(topNotification.getPeer()))
-                .setColor(ActorSDK.sharedActor().getDelegate().getNotificationColorForPeer(topNotification.getPeer()))
+        android.app.Notification notification = builder
                 .setLargeIcon(drawableToBitmap(avatarDrawable))
                 .setContentIntent(PendingIntent.getActivity(context, 0,
                         Intents.openDialog(topNotification.getPeer(), false, context),
                         PendingIntent.FLAG_UPDATE_CURRENT))
                 .setStyle(inboxStyle)
                 .build();
+        addCustomLedAndSound(topNotification, notification);
+        return notification;
     }
 
     private android.app.Notification buildSingleMessageNotification(Drawable d, NotificationCompat.Builder builder, String sender, CharSequence text, Notification topNotification) {
-        return builder
-                .setSound(ActorSDK.sharedActor().getDelegate().getNotificationSoundForPeer(topNotification.getPeer()))
-                .setColor(ActorSDK.sharedActor().getDelegate().getNotificationColorForPeer(topNotification.getPeer()))
+        android.app.Notification notification = builder
                 .setContentTitle(sender)
                 .setContentText(text)
                 .setLargeIcon(drawableToBitmap(d))
@@ -302,6 +312,8 @@ public class AndroidNotifications implements NotificationProvider {
                         PendingIntent.FLAG_CANCEL_CURRENT))
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(text))
                 .build();
+        addCustomLedAndSound(topNotification, notification);
+        return notification;
     }
 
     public static Bitmap drawableToBitmap(Drawable drawable) {
