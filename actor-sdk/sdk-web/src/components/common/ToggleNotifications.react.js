@@ -19,10 +19,12 @@ class ToggleNotifications extends Component {
         <i className="material-icons icon icon--squash">notifications_none</i>
         <FormattedMessage id="notifications"/>
         <div className="switch pull-right">
-          <input checked={isNotificationsEnabled}
-                 id="notifications"
-                 onChange={onNotificationChange}
-                 type="checkbox"/>
+          <input
+            checked={isNotificationsEnabled}
+            id="notifications"
+            onChange={onNotificationChange}
+            type="checkbox"
+          />
           <label htmlFor="notifications"/>
         </div>
       </label>

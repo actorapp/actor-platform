@@ -1,0 +1,32 @@
+.connection-state {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 16px;
+
+  position: absolute;
+  z-index: 1000;
+  top: 8px;
+  right: 16px;
+
+  padding: 10px;
+
+  cursor: default;
+  transition: opacity 500ms 0ms, visibility 0ms 0ms;
+  text-align: center;
+
+  color: white;
+  border-radius: 3px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, .1);
+
+  &--online {
+    visibility: hidden;
+
+    transition: opacity 500ms 1500ms, visibility 0ms 2s;
+
+    opacity: 0;
+    background-color: rgba($apple, .97);
+  }
+  &--connection {
+    background-color: rgba($squash, .97);
+  }
+}

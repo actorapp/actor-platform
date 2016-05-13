@@ -1,0 +1,27 @@
+$blue-color: #4d74a6;
+
+.toolbar {
+  height: 54px;
+
+  background-color: $dusky-blue;
+
+  flex: 0 0 auto;
+  &__menu {
+    box-sizing: border-box;
+    width: $sidebar-width;
+    padding: 0 16px;
+    span {
+      line-height: 54px;
+      font-size: 20px;
+      color: $pale-grey;
+      font-weight: 500;
+    }
+  }
+  &__controls {
+
+  }
+  &__profile {
+    box-sizing: border-box;
+    padding: 0 16px;
+  }
+}
