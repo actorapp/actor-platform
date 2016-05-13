@@ -1,6 +1,8 @@
 package im.actor.sdk;
 
 import android.content.Context;
+import android.net.Uri;
+import android.provider.Settings;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -252,5 +254,22 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
     public ActorSettingsCategory[] getAfterSettingsCategories() {
         return null;
     }
+
+    public Uri getNotificationSoundForPeer(Peer peer) {
+        return getNotificationSound();
+    }
+
+    public int getNotificationColorForPeer(Peer peer) {
+        return getNotificationColor();
+    }
+
+    public Uri getNotificationSound() {
+        return Settings.System.DEFAULT_NOTIFICATION_URI;
+    }
+
+    public int getNotificationColor() {
+        return ActorSDK.sharedActor().style.getMainColor();
+    }
+
 
 }
