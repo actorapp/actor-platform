@@ -99,7 +99,9 @@ export default {
       'sendFile': 'Send file',
       'sendPhoto': 'Send photo',
       'send': 'Send',
-      'edit': 'Edit',
+      'edit': 'Save',
+      'cancel': 'Cancel',
+      'editTitle': 'Edit message:',
       'markdown': {
         'bold': 'bold',
         'italic': 'italics',

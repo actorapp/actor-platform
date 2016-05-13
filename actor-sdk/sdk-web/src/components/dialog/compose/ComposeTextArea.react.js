@@ -114,16 +114,16 @@ class ComposeTextArea extends Component {
     );
   }
 
-  focus() {
+  focus(force = false) {
     const { area } = this.refs;
-    if (area !== document.activeElement) {
+    if (force || area !== document.activeElement) {
       area.focus();
-      if (area.createTextRange) {
+      if (typeof area.selectionStart == 'number') {
+        area.selectionStart = area.selectionEnd = area.value.length;
+      } else if (typeof area.createTextRange != 'undefined') {
         const range = area.createTextRange();
-        range.move('character', area.value.length);
+        range.collapse(false);
         range.select();
-      } else if (area.selectionStart) {
-        area.setSelectionRange(area.value.length, area.value.length);
       }
     }
   }
