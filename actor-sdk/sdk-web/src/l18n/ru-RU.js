@@ -98,6 +98,8 @@ export default {
       'sendPhoto': 'Изображение',
       'send': 'Отправить',
       'edit': 'Сохранить',
+      'cancel': 'Отменить',
+      'editTitle': 'Редактирование сообщения:',
       'markdown': {
         'bold': 'жирный',
         'italic': 'курсив',

@@ -6,6 +6,7 @@ import { forEach } from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 import { Container } from 'flux/utils';
+import { FormattedMessage } from 'react-intl';
 
 import ActorClient from '../../utils/ActorClient';
 import { KeyCodes } from '../../constants/ActorAppConstants';
@@ -60,6 +61,7 @@ class ComposeSection extends Component {
     this.onPaste = this.onPaste.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onEditTyping = this.onEditTyping.bind(this);
+    this.onEditCancel = this.onEditCancel.bind(this);
     this.onEditSubmit = this.onEditSubmit.bind(this);
     this.onEditKeyDown = this.onEditKeyDown.bind(this);
     this.onCommandSelect = this.onCommandSelect.bind(this);
@@ -68,9 +70,10 @@ class ComposeSection extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.peer !== this.state.peer) {
-      if (this.refs.area) {
-        this.refs.area.autoFocus();
-      }
+      this.refs.area.autoFocus();
+    } else if (prevState.compose.editMessage !== this.state.compose.editMessage) {
+      this.refs.area.blur();
+      this.refs.area.focus(true);
     }
   }
 
@@ -124,8 +127,13 @@ class ComposeSection extends Component {
 
   onEditKeyDown(event) {
     if (event.keyCode === KeyCodes.ESC) {
-      ComposeActionCreators.cancelEdit();
+      event.preventDefault();
+      this.onEditCancel();
     }
+  }
+
+  onEditCancel() {
+    ComposeActionCreators.cancelEdit();
   }
 
   resetAttachmentForm = () => {
@@ -280,7 +288,13 @@ class ComposeSection extends Component {
 
         <footer className="compose__footer row">
           <span className="col-xs"/>
-          <button className="button button--lightblue" onClick={this.onSubmit}>
+          <p className="compose__edit-title">
+            <FormattedMessage id="compose.editTitle" />
+          </p>
+          <button className="button button--cancel" onClick={this.onEditCancel}>
+            {intl.messages['compose.cancel']}
+          </button>
+          <button className="button button--lightblue" onClick={this.onEditSubmit}>
             {intl.messages['compose.edit']}
           </button>
         </footer>
