@@ -6,6 +6,7 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -42,6 +43,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import im.actor.maps.google.R;
+import im.actor.sdk.util.ViewUtils;
+import im.actor.sdk.view.RTLUtils;
 
 public class MapPickerActivity extends AppCompatActivity
         implements
@@ -93,6 +96,12 @@ public class MapPickerActivity extends AppCompatActivity
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(false);
+
+        Drawable back_icon = getResources().getDrawable(im.actor.sdk.R.drawable.ic_arrow_back_white_24dp);
+        if(RTLUtils.isRTL(getApplicationContext())) {
+            back_icon = ViewUtils.getRotateDrawable(back_icon, 180);
+        }
+        getSupportActionBar().setHomeAsUpIndicator(back_icon);
 
         fullSizeButton = (ImageView) findViewById(R.id.full);
         fullSizeButton.setOnClickListener(new View.OnClickListener() {

@@ -2,6 +2,7 @@ package im.actor.sdk.controllers.profile;
 
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,8 @@ import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.activity.BaseFragmentActivity;
 import im.actor.sdk.controllers.settings.BaseActorProfileActivity;
+import im.actor.sdk.util.ViewUtils;
+import im.actor.sdk.view.RTLUtils;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 import static im.actor.sdk.util.ActorSDKMessenger.users;
@@ -32,6 +35,12 @@ public class ProfileActivity extends BaseFragmentActivity {
         getSupportActionBar().setDisplayShowCustomEnabled(false);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         getSupportActionBar().setTitle(null);
+
+        Drawable back_icon = getResources().getDrawable(R.drawable.ic_arrow_back_white_24dp);
+        if(RTLUtils.isRTL(getApplicationContext())) {
+            back_icon = ViewUtils.getRotateDrawable(back_icon, 180);
+        }
+        getSupportActionBar().setHomeAsUpIndicator(back_icon);
 
         uid = getIntent().getIntExtra(Intents.EXTRA_UID, 0);
         try {

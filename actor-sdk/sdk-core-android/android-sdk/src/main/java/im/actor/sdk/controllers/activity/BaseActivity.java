@@ -2,6 +2,7 @@ package im.actor.sdk.controllers.activity;
 
 import android.app.ProgressDialog;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +28,8 @@ import im.actor.runtime.promise.Promise;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.fragment.ActorBinder;
+import im.actor.sdk.util.ViewUtils;
+import im.actor.sdk.view.RTLUtils;
 import im.actor.sdk.view.avatar.AvatarView;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.ValueDoubleChangedListener;
@@ -156,6 +159,12 @@ public class BaseActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setDisplayUseLogoEnabled(false);
         getSupportActionBar().setTitle(text);
+
+        Drawable back_icon = getResources().getDrawable(R.drawable.ic_arrow_back_white_24dp);
+        if(RTLUtils.isRTL(getApplicationContext())) {
+            back_icon = ViewUtils.getRotateDrawable(back_icon, 180);
+        }
+        getSupportActionBar().setHomeAsUpIndicator(back_icon);
     }
 
     protected void setToolbar(int text) {

@@ -1,6 +1,9 @@
 package im.actor.sdk.util;
 
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Handler;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -291,7 +294,18 @@ public class ViewUtils {
         layer.startAnimation(scaleAnimation);
     }
 
-
+    public static Drawable getRotateDrawable(final Drawable drawable, final float angle) {
+        final Drawable[] arD = { drawable };
+        return new LayerDrawable(arD) {
+            @Override
+            public void draw(final Canvas canvas) {
+                canvas.save();
+                canvas.rotate(angle, drawable.getBounds().width() / 2, drawable.getBounds().height() / 2);
+                super.draw(canvas);
+                canvas.restore();
+            }
+        };
+    }
 
 
 }

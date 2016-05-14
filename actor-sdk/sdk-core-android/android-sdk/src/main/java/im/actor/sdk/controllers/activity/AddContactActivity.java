@@ -3,6 +3,7 @@ package im.actor.sdk.controllers.activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -15,6 +16,8 @@ import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.util.KeyboardHelper;
+import im.actor.sdk.util.ViewUtils;
+import im.actor.sdk.view.RTLUtils;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
@@ -32,6 +35,12 @@ public class AddContactActivity extends BaseFragmentActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setDisplayShowCustomEnabled(false);
         getSupportActionBar().setTitle(R.string.add_contact_title);
+
+        Drawable back_icon = getResources().getDrawable(R.drawable.ic_arrow_back_white_24dp);
+        if(RTLUtils.isRTL(getApplicationContext())) {
+            back_icon = ViewUtils.getRotateDrawable(back_icon, 180);
+        }
+        getSupportActionBar().setHomeAsUpIndicator(back_icon);
 
         helper = new KeyboardHelper(this);
 

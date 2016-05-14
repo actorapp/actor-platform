@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -38,12 +39,14 @@ import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.activity.BaseActivity;
 import im.actor.sdk.util.Files;
+import im.actor.sdk.util.ViewUtils;
 import im.actor.sdk.util.images.common.ImageLoadException;
 import im.actor.sdk.util.images.ops.ImageLoading;
 import im.actor.runtime.files.FileSystemReference;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.ValueDoubleChangedListener;
 import im.actor.runtime.mvvm.Value;
+import im.actor.sdk.view.RTLUtils;
 import uk.co.senab.photoview.PhotoView;
 
 import static im.actor.sdk.util.ViewUtils.goneView;
@@ -88,6 +91,12 @@ public class ViewAvatarActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setDisplayShowCustomEnabled(false);
+
+        Drawable back_icon = getResources().getDrawable(R.drawable.ic_arrow_back_white_24dp);
+        if(RTLUtils.isRTL(getApplicationContext())) {
+            back_icon = ViewUtils.getRotateDrawable(back_icon, 180);
+        }
+        getSupportActionBar().setHomeAsUpIndicator(back_icon);
 
         if (savedInstanceState != null) {
             externalFile = savedInstanceState.getString("externalFile", null);

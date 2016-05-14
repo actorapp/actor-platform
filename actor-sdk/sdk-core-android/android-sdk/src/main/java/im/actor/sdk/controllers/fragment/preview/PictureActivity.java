@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
@@ -37,8 +38,10 @@ import im.actor.sdk.controllers.activity.BaseActivity;
 import im.actor.sdk.util.Files;
 import im.actor.sdk.util.Randoms;
 import im.actor.sdk.util.Screen;
+import im.actor.sdk.util.ViewUtils;
 import im.actor.sdk.util.images.common.ImageLoadException;
 import im.actor.sdk.util.images.ops.ImageLoading;
+import im.actor.sdk.view.RTLUtils;
 import im.actor.sdk.view.avatar.AvatarView;
 import im.actor.sdk.view.MaterialInterpolator;
 import im.actor.core.entity.FileReference;
@@ -109,6 +112,12 @@ public class PictureActivity extends BaseActivity {
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setDisplayShowCustomEnabled(false);
         actionBar.setTitle(R.string.media_picture);
+
+        Drawable back_icon = getResources().getDrawable(R.drawable.ic_arrow_back_white_24dp);
+        if(RTLUtils.isRTL(getApplicationContext())) {
+            back_icon = ViewUtils.getRotateDrawable(back_icon, 180);
+        }
+        getSupportActionBar().setHomeAsUpIndicator(back_icon);
 
         int statbarHeight = Screen.getStatusBarHeight();
         if (Build.VERSION.SDK_INT >= 19) {

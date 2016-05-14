@@ -1,11 +1,15 @@
 package im.actor.sdk.controllers.fragment.preview;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 import android.webkit.WebView;
 
+import im.actor.sdk.R;
 import im.actor.sdk.controllers.activity.BaseActivity;
+import im.actor.sdk.util.ViewUtils;
+import im.actor.sdk.view.RTLUtils;
 
 public class CodePreviewActivity extends BaseActivity {
 
@@ -23,6 +27,12 @@ public class CodePreviewActivity extends BaseActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setDisplayShowCustomEnabled(false);
+
+        Drawable back_icon = getResources().getDrawable(R.drawable.ic_arrow_back_white_24dp);
+        if(RTLUtils.isRTL(getApplicationContext())) {
+            back_icon = ViewUtils.getRotateDrawable(back_icon, 180);
+        }
+        getSupportActionBar().setHomeAsUpIndicator(back_icon);
 
         actionBar.setTitle("Code Preview");
 

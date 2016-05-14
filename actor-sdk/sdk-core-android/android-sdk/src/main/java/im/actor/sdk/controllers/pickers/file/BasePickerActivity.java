@@ -3,6 +3,7 @@ package im.actor.sdk.controllers.pickers.file;
 import android.animation.ValueAnimator;
 import android.app.Fragment;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,6 +21,8 @@ import java.io.File;
 import java.util.ArrayList;
 
 import im.actor.sdk.R;
+import im.actor.sdk.util.ViewUtils;
+import im.actor.sdk.view.RTLUtils;
 
 /**
  * Created by kiolt_000 on 15/09/2014.
@@ -43,6 +46,12 @@ public abstract class BasePickerActivity extends AppCompatActivity implements Ad
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // getSupportActionBar().setDisplayShowHomeEnabled(false);
         // getSupportActionBar().setDisplayUseLogoEnabled(false);
+
+        Drawable back_icon = getResources().getDrawable(R.drawable.ic_arrow_back_white_24dp);
+        if(RTLUtils.isRTL(getApplicationContext())) {
+            back_icon = ViewUtils.getRotateDrawable(back_icon, 180);
+        }
+        getSupportActionBar().setHomeAsUpIndicator(back_icon);
 
         View select = findViewById(R.id.select);
         select.setOnClickListener(new View.OnClickListener() {
