@@ -56,9 +56,9 @@ private[user] trait UserQueriesHandlers extends UserAcl {
     } yield GetApiFullStructResponse(ApiFullUser(
       id = userId,
       contactInfo = if (isApproved || clientUserId == state.id)
-        UserUtils.defaultUserContactRecords(state.phones.toVector, state.emails.toVector, state.socialContacts.toVector)
-      else
-        UserUtils.defaultUserContactRecords(Vector.empty, Vector.empty, state.socialContacts.toVector),
+      UserUtils.defaultUserContactRecords(state.phones.toVector, state.emails.toVector, state.socialContacts.toVector)
+    else
+      UserUtils.defaultUserContactRecords(Vector.empty, Vector.empty, state.socialContacts.toVector),
       about = state.about,
       preferredLanguages = state.preferredLanguages.toVector,
       timeZone = state.timeZone,
@@ -67,7 +67,7 @@ private[user] trait UserQueriesHandlers extends UserAcl {
       isBlocked = Some(isBlocked)
     ))) pipeTo sender()
   }
-  
+
   protected def getContactRecords(state: UserState): Unit =
     sender() ! GetContactRecordsResponse(state.phones, state.emails)
 
