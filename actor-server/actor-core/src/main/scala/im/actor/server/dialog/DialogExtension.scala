@@ -76,22 +76,12 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
     senderAuthId:         Option[Long], // required only in case of access hash check for private peer
     randomId:             RandomId,
     message:              ApiMessage,
-    accessHash:           Option[Long]           = None,
-    isFat:                Boolean                = false,
-    forUserId:            Option[UserId]         = None,
-    quotedHistoryMessage: Option[HistoryMessage] = None
+    accessHash:           Option[Long]          = None,
+    isFat:                Boolean               = false,
+    forUserId:            Option[UserId]        = None,
+    quotedHistoryMessage: Option[QuotedMessage] = None
   ): Future[SeqStateDate] =
     withValidPeer(peer.asModel, senderUserId, Future.successful(SeqStateDate())) {
-      //todo hp: send content of message and public id?
-      // we don't set date here, cause actual date set inside dialog processor
-
-      val quotedMessage = quotedHistoryMessage flatMap (hm ⇒ {
-        val historyMessage = quotedHistoryMessage.get
-        val quotedMessageId = Some(historyMessage.randomId) // remove if needed on DialogcommandHandlers if (peer.id != historyMessage.peer.id && historyMessage.peer.typ.isPrivate) None else
-        ApiMessage.parseFrom(historyMessage.messageContentData).fold(
-          l ⇒ None, r ⇒ Some(QuotedMessage(quotedMessageId map (Int64Value(_)), None, historyMessage.senderUserId, Some(historyMessage.peer), historyMessage.date.getMillis, r))
-        )
-      })
 
       val sendMessage = SendMessage(
         origin = Some(Peer.privat(senderUserId)),
@@ -104,7 +94,7 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
         accessHash = accessHash map (Int64Value(_)),
         isFat = isFat,
         forUserId = forUserId map (Int32Value(_)),
-        quotedMessage = None
+        quotedMessage = quotedHistoryMessage
       )
       (userExt.processorRegion.ref ? UserEnvelope(senderUserId).withDialogEnvelope(DialogEnvelope().withSendMessage(sendMessage))).mapTo[SeqStateDate]
 

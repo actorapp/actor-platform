@@ -3,15 +3,18 @@ package im.actor.server.api.rpc.service.messaging
 import akka.http.scaladsl.util.FastFuture
 import akka.util.Timeout
 import cats.data.Xor
+import com.google.protobuf.wrappers.Int64Value
 import im.actor.api.rpc.CommonRpcErrors.IntenalError
 import im.actor.api.rpc.{ CommonRpcErrors, _ }
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc._
 import im.actor.api.rpc.peers._
 import im.actor.config.ActorConfig
+import im.actor.server.dialog.DialogCommands.QuotedMessage
 import im.actor.server.messaging.{ MessageParsing, MessageUpdating }
 import im.actor.server.model.HistoryMessage
 import im.actor.server.persist.HistoryMessageRepo
+import im.actor.server.user.UserExt
 
 import scala.concurrent._
 import scala.concurrent.duration._
@@ -47,7 +50,7 @@ private[messaging] trait MessagingHandlers extends PeersImplicits
     clientData:             ClientData
   ): Future[HandlerResult[ResponseSeqDate]] =
     authorized(clientData) { implicit client ⇒
-      withQuoteMessage(quotedMessageReference) { histMessage ⇒
+      withQuoteMessage(quotedMessageReference, clientData) { quotedMessage ⇒
         (for {
           s ← fromFuture(dialogExt.sendMessage(
             peer = outPeer.asPeer,
@@ -59,19 +62,21 @@ private[messaging] trait MessagingHandlers extends PeersImplicits
             accessHash = Some(outPeer.accessHash),
             forUserId = isOnlyForUser,
             isFat = false,
-            quotedHistoryMessage = histMessage
+            quotedHistoryMessage = quotedMessage
           ))
         } yield ResponseSeqDate(s.seq, s.state.toByteArray, s.date)).value
       }
     }
 
-  private def withQuoteMessage(quotedMessageReference: Option[ApiMessageOutReference])(f: Option[HistoryMessage] ⇒ Future[HandlerResult[ResponseSeqDate]]): Future[HandlerResult[ResponseSeqDate]] = {
+  private def withQuoteMessage(quotedMessageReference: Option[ApiMessageOutReference], clientData: ClientData)(f: Option[QuotedMessage] ⇒ Future[HandlerResult[ResponseSeqDate]]): Future[HandlerResult[ResponseSeqDate]] = {
     quotedMessageReference match {
-      case Some(quoted) ⇒
+      case Some(messageOut) ⇒
         (for {
-          histMessage ← fromFutureOption(CommonRpcErrors.QuotedNotFound)(db.run(HistoryMessageRepo.find(quoted.peer.asModel, quoted.randomId)))
-          _ ← fromXor((e: Any) ⇒ IntenalError)(Xor.fromEither(parseMessage(histMessage.messageContentData)))
-          result ← fromFutureXor(f(Some(histMessage)))
+          //          histMessage ← fromFutureOption(CommonRpcErrors.QuotedNotFound)(db.run(HistoryMessageRepo.find(messageOut.peer.asModel, messageOut.randomId))) // todo hp: check here or in DialogCommnadHandlers
+          //          _ ← fromXor((e: Any) ⇒ IntenalError)(Xor.fromEither(parseMessage(histMessage.messageContentData)))
+          _ ← fromFutureBoolean(CommonRpcErrors.InvalidAccessHash)(userExt.checkAccessHash(messageOut.peer.id, clientData.authId, messageOut.peer.accessHash))
+          quotedMessage = Some(QuotedMessage(Some(Int64Value(messageOut.randomId)), None, 0, Some(messageOut.peer.asModel)))
+          result ← fromFutureXor(f(quotedMessage))
         } yield result).value
       case None ⇒
         f(None)

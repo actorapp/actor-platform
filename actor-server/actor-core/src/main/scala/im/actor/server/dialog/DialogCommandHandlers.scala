@@ -5,11 +5,15 @@ import java.time.Instant
 import akka.actor.Status
 import akka.http.scaladsl.util.FastFuture
 import akka.pattern.pipe
+import cats.data.Xor
 import com.google.protobuf.wrappers.{ Int32Value, Int64Value }
-import im.actor.api.rpc.{ HistoryImplicits, PeersImplicits }
+import im.actor.api.rpc.CommonRpcErrors._
+import im.actor.api.rpc.FutureResultRpc._
+import im.actor.api.rpc.{ FutureResultRpc, CommonRpcErrors, HistoryImplicits, PeersImplicits }
 import im.actor.api.rpc.messaging._
 import im.actor.server.ApiConversions._
 import im.actor.server.dialog.HistoryUtils._
+import im.actor.server.messaging.MessageParsing
 import im.actor.server.model._
 import im.actor.server.persist.GroupRepo
 import im.actor.server.persist.HistoryMessageRepo
@@ -23,11 +27,12 @@ import org.joda.time.DateTime
 import scala.concurrent.Future
 import scala.util.Failure
 
-trait DialogCommandHandlers extends PeersImplicits with HistoryImplicits with UserAcl {
+trait DialogCommandHandlers extends PeersImplicits with HistoryImplicits with UserAcl with MessageParsing {
   this: DialogProcessor ⇒
 
   import DialogCommands._
   import DialogEvents._
+  import FutureResultRpc._
 
   protected def sendMessage(sm: SendMessage): Unit = {
     becomeStashing(replyTo ⇒ ({
@@ -57,26 +62,47 @@ trait DialogCommandHandlers extends PeersImplicits with HistoryImplicits with Us
             FastFuture.failed(NotUniqueRandomId)
           } else {
 
-            val quotedMessage = sm.quotedMessage.map(_.asStruct)
-            withNonBlockedPeer[SeqStateDate](userId, sm.getDest)(
-              default = for {
-              _ ← dialogExt.ackSendMessage(peer, sm.copy(date = Some(Int64Value(sendDate))))
-              _ ← db.run(writeHistoryMessage(selfPeer, peer, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray, sm.quotedMessage.flatMap(_.peer), quotedMessage.flatMap(_.messageId)))
-              //_ = dialogExt.updateCounters(peer, userId)
-              SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sendDate, message, sm.isFat, quotedMessage)
-            } yield SeqStateDate(seq, state, sendDate),
-              failed = for {
-              _ ← db.run(writeHistoryMessageSelf(userId, peer, userId, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray))
-              SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sendDate, message, sm.isFat, quotedMessage)
-            } yield SeqStateDate(seq, state, sendDate)
-            )
+            withQuotedMessage(sm) { quotedMessage ⇒
+
+              val apiQuotedMessage = quotedMessage.map(_.asStruct)
+
+              withNonBlockedPeer[SeqStateDate](userId, sm.getDest)(
+                default = for {
+                _ ← dialogExt.ackSendMessage(peer, sm.copy(date = Some(Int64Value(sendDate))).copy(quotedMessage = quotedMessage))
+                _ ← db.run(writeHistoryMessage(selfPeer, peer, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray, quotedMessage.flatMap(_.peer), apiQuotedMessage.flatMap(_.messageId)))
+                //_ = dialogExt.updateCounters(peer, userId)
+                SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sendDate, message, sm.isFat, apiQuotedMessage)
+              } yield SeqStateDate(seq, state, sendDate),
+                failed = for {
+                _ ← db.run(writeHistoryMessageSelf(userId, peer, userId, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray))
+                SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sendDate, message, sm.isFat, apiQuotedMessage)
+              } yield SeqStateDate(seq, state, sendDate)
+              )
+            }
           }
         } yield seqState
       }
     }
   }
 
-  private def withQuotedMessage(peer: Peer, sm: SendMessage)(f: Option[ApiQuotedMessage] ⇒ Unit): Unit = {
+  private def withQuotedMessage(sm: SendMessage)(f: Option[QuotedMessage] ⇒ Future[SeqStateDate]): Future[SeqStateDate] = {
+    sm.quotedMessage match {
+      case Some(quotedMessage) ⇒
+        for {
+          historyMessage ← db.run(HistoryMessageRepo.find(quotedMessage.peer.get, quotedMessage.messageId.get.value))
+          _ ← Future(historyMessage.getOrElse(new RuntimeException)) // todo hp: check here or in MessagingHandlers
+          fullQuotedMessage ← FastFuture.successful(historyMessage flatMap (hm ⇒ ApiMessage.parseFrom(hm.messageContentData).fold(
+            l ⇒ None, r ⇒ Some(QuotedMessage(Some(Int64Value(hm.randomId)), None, hm.senderUserId, Some(hm.peer), hm.date.getMillis, r))
+          )))
+          _ ← Future(fullQuotedMessage.getOrElse(new RuntimeException))
+          result ← f(fullQuotedMessage)
+        } yield result
+      case None ⇒
+        f(None)
+    }
+
+  }
+  private def withAckQuotedMessage(peer: Peer, sm: SendMessage)(f: Option[ApiQuotedMessage] ⇒ Unit): Unit = {
     //remove publicGroupId and quotedMessageId per user
     //      if (sm.quotedMessage.map(qm => if(qm.getPeer.typ.isGroup) ) )
     sm.quotedMessage match {
@@ -114,7 +140,7 @@ trait DialogCommandHandlers extends PeersImplicits with HistoryImplicits with Us
         SocialManager.recordRelation(userId, sm.getOrigin.id)
       }
 
-      withQuotedMessage(peer, sm) { quotedMessage ⇒
+      withAckQuotedMessage(peer, sm) { quotedMessage ⇒
 
         deliveryExt
           .receiverDelivery(userId, sm.getOrigin.id, peer, sm.randomId, messageDate.value, sm.message, sm.isFat, quotedMessage)
