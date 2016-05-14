@@ -35,10 +35,12 @@ public class ActorSDKApplication extends Application {
     }
 
     public static String getCurrentLocale(Context context){
-        String lang ;
-        lang = context.getSharedPreferences("properties.ini", Context.MODE_PRIVATE).getString("language", "en");
 
-        return lang;
+        String currentLocale = Locale.getDefault().getLanguage();
+
+        currentLocale = context.getSharedPreferences("properties.ini", Context.MODE_PRIVATE).getString("language", currentLocale);
+
+        return currentLocale;
     }
 
     @Override
