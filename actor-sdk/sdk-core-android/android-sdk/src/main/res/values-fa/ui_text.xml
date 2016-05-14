@@ -53,7 +53,7 @@
     <string name="tour_sign_using_oauth">با گوگل</string>
     <string name="tour_back_to_top">برگشت به بالا</string>
 
-    <string name="tour_welcome_title">{appName}</string>
+    <string name="tour_welcome_title">اکتور</string>
     <string name="tour_welcome_subtitle">با دوستان هم‌سخن شوید</string>
 
     <string name="tour_groups_title">گروه‌های بزرگ </string>
