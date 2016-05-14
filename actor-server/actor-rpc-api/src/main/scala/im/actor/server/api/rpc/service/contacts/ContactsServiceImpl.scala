@@ -2,6 +2,7 @@ package im.actor.server.api.rpc.service.contacts
 
 import java.security.MessageDigest
 
+import akka.http.scaladsl.util.FastFuture
 import im.actor.api.rpc.peers.ApiUserOutPeer
 import im.actor.concurrent.FutureExt
 import im.actor.server.acl.ACLUtils
@@ -81,19 +82,17 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
 
       } yield {
         val users = (pUsers ++ eUsers).toVector
-
-        (pUsers ++ eUsers).map(importedUser ⇒
-          for {
-            userContactsActiveIds ← UserContactRepo.findContactIdsActive(importedUser.id)
-            if (userContactsActiveIds.contains(client.userId))
-            relation ← RelationRepo.find(client.userId, importedUser.id)
-            _ ← relation match {
-              case Some(relation) ⇒
-                RelationRepo.approve(client.userId, importedUser.id)
-              case None ⇒
-                RelationRepo.create(client.userId, importedUser.id)
-            }
-          } yield ())
+        users.map(importedUser ⇒
+          db.run(UserContactRepo.findContactIdsActive(importedUser.id)).map(ids ⇒
+            if (ids.contains(client.userId)) {
+              db.run(RelationRepo.find(client.userId, importedUser.id)).map(relation ⇒
+                relation match {
+                  case Some(relation) ⇒
+                    fromFuture(db.run(RelationRepo.approve(client.userId, importedUser.id)))
+                  case None ⇒
+                    fromFuture(db.run(RelationRepo.create(client.userId, importedUser.id)))
+                })
+            }))
         ResponseImportContacts(
           users = if (optimizations.contains(ApiUpdateOptimization.STRIP_ENTITIES)) Vector.empty else users,
           eSeqstate.seq,
