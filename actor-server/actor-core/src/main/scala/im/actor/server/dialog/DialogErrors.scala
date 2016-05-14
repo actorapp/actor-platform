@@ -18,4 +18,11 @@ object DialogErrors {
 
   final case class UnknownDialogGroupType(typ: DialogGroupType)
     extends RuntimeException(s"Unknown dialog group type: $typ")
+
+  final case class QuoteNotFound(peer: Peer, rid: Long)
+    extends RuntimeException(s"cant find quoted message: $Peer,  $rid")
+
+  final case class InternalError()
+    extends RuntimeException(s"Dialog Internal Error")
+
 }
