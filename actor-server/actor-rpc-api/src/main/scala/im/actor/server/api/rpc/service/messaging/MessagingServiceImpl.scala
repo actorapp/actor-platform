@@ -35,6 +35,9 @@ final class MessagingServiceImpl(implicit protected val actorSystem: ActorSystem
     case DialogErrors.DialogAlreadyShown(peer) ⇒
       RpcError(406, "DIALOG_ALREADY_SHOWN", "Dialog is already shown.", canTryAgain = false, None)
     case NotUniqueRandomId ⇒ MessagingRpcErors.NotUniqueRandomId
+    case DialogErrors.QuoteNotFound ⇒ MessagingRpcErors.QuotedNotFound
+    case DialogErrors.InternalError ⇒ CommonRpcErrors.IntenalError
+
   }
 
 }
