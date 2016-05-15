@@ -253,14 +253,14 @@
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
 
         <activity
-            android:name="im.actor.sdk.controllers.activity.AddContactActivity"
+            android:name=".controllers.contacts.AddContactActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
 
         <!-- Misc -->
         <activity
-            android:name="im.actor.sdk.controllers.activity.TakePhotoActivity"
+            android:name=".controllers.pickers.TakePhotoActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/Theme.Transparent" />
 
@@ -296,7 +296,7 @@
 
 
         <activity
-            android:name=".controllers.activity.ShortcutActivity"
+            android:name=".controllers.shortcuts.ShortcutActivity"
             android:theme="@style/AppcompatNoDisplay"
             android:launchMode="singleInstance">
             <intent-filter>

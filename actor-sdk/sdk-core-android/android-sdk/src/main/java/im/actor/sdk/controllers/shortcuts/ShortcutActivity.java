@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.activity;
+package im.actor.sdk.controllers.shortcuts;
 
 import android.app.Activity;
 import android.content.DialogInterface;

@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.activity;
+package im.actor.sdk.controllers.contacts;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -14,6 +14,7 @@ import im.actor.core.viewmodel.UserVM;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
+import im.actor.sdk.controllers.activity.BaseFragmentActivity;
 import im.actor.sdk.util.KeyboardHelper;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;

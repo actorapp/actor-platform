@@ -3,16 +3,13 @@ package im.actor.sdk.controllers.activity.base;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import im.actor.sdk.controllers.activity.BaseActivity;
 
-/**
- * Created by ex3ndr on 25.10.14.
- */
 public abstract class ControllerActivity<T extends Controller> extends BaseActivity {
+
     private T controller;
 
     public abstract T onCreateController();
