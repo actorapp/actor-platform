@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
   -->
 
@@ -7,6 +6,9 @@
 
     <style name="AppToolbarTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:windowContentOverlay">@null</item>
+
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="android:popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
 
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_hovered</item>
@@ -16,11 +18,11 @@
         <item name="android:colorPrimaryDark">@color/primary_hovered</item>
         <item name="android:colorAccent">@color/primary</item>
 
-
     </style>
 
     <style name="MainActivityTheme" parent="AppToolbarTheme">
         <item name="android:windowBackground">@android:color/white</item>
+
 
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

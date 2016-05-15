@@ -40,6 +40,7 @@ import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.contacts.AddContactActivity;
 import im.actor.sdk.controllers.compose.ComposeActivity;
+import im.actor.sdk.controllers.contacts.ContactsActivity;
 import im.actor.sdk.controllers.contacts.ContactsFragment;
 import im.actor.sdk.controllers.dialogs.DialogsFragment;
 import im.actor.sdk.controllers.fragment.help.HelpActivity;
@@ -50,18 +51,12 @@ import im.actor.sdk.view.adapters.FragmentNoMenuStatePagerAdapter;
 import im.actor.sdk.view.adapters.HeaderViewRecyclerAdapter;
 import im.actor.sdk.view.adapters.OnItemClickedListener;
 import im.actor.sdk.view.PagerSlidingTabStrip;
-import im.actor.runtime.mvvm.ValueDoubleChangedListener;
-import im.actor.runtime.mvvm.Value;
 
 import static im.actor.sdk.util.ViewUtils.goneView;
 import static im.actor.sdk.util.ViewUtils.showView;
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
 public class MainPhoneController extends MainBaseController {
-
-    protected ViewPager pager;
-
-    private HomePagerAdapter homePagerAdapter;
 
     private RecyclerView searchList;
     private View searchContainer;
@@ -71,16 +66,9 @@ public class MainPhoneController extends MainBaseController {
     private boolean isSearchVisible = false;
     private SearchAdapter searchAdapter;
     private BindedDisplayList<SearchEntity> searchDisplay;
-    private final DisplayList.Listener searchListener = new DisplayList.Listener() {
-        @Override
-        public void onCollectionChanged() {
-            onSearchChanged();
-        }
-    };
+    private final DisplayList.Listener searchListener = () -> onSearchChanged();
     private SearchView searchView;
     private MenuItem searchMenu;
-
-    protected PagerSlidingTabStrip barTabs;
 
     private View syncInProgressView;
     private View emptyContactsView;
@@ -105,17 +93,11 @@ public class MainPhoneController extends MainBaseController {
         if ((sendUriMultiple != null && !sendUriMultiple.isEmpty()) || docContent != null || (sendUriString != null && !sendUriString.isEmpty())) {
             new AlertDialog.Builder(getActivity())
                     .setMessage(getActivity().getString(R.string.confirm_share) + " " + item.getDialogTitle() + "?")
-                    .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            openDialog(item);
-                        }
+                    .setPositiveButton(R.string.dialog_ok, (dialog, which) -> {
+                        openDialog(item);
                     })
-                    .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
+                    .setNegativeButton(R.string.dialog_cancel, (dialog, which) -> {
+                        dialog.dismiss();
                     })
                     .show();
         } else {
@@ -128,17 +110,11 @@ public class MainPhoneController extends MainBaseController {
         if ((sendUriMultiple != null && !sendUriMultiple.isEmpty()) || docContent != null || (sendUriString != null && !sendUriString.isEmpty())) {
             new AlertDialog.Builder(getActivity())
                     .setMessage(getActivity().getString(R.string.confirm_share) + " " + contact.getName() + "?")
-                    .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            openContactDialog(contact);
-                        }
+                    .setPositiveButton(R.string.dialog_ok, (dialog, which) -> {
+                        openContactDialog(contact);
                     })
-                    .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
+                    .setNegativeButton(R.string.dialog_cancel, (dialog, which) -> {
+                        dialog.dismiss();
                     })
                     .show();
         } else {
@@ -231,54 +207,48 @@ public class MainPhoneController extends MainBaseController {
         searchHintView.setVisibility(View.GONE);
         searchEmptyView.setVisibility(View.GONE);
 
-        pager = (ViewPager) findViewById(R.id.vp_pager);
-        pager.setOffscreenPageLimit(2);
-        homePagerAdapter = getHomePagerAdapter();
-        pager.setAdapter(homePagerAdapter);
-        pager.setCurrentItem(0);
-        pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            private int prevPage = -1;
+//        pager = (ViewPager) findViewById(R.id.vp_pager);
+//        pager.setOffscreenPageLimit(2);
+//        homePagerAdapter = getHomePagerAdapter();
+//        pager.setAdapter(homePagerAdapter);
+//        pager.setCurrentItem(0);
+//        pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+//            private int prevPage = -1;
+//
+//            @Override
+//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//
+//            }
+//
+//            @Override
+//            public void onPageSelected(int position) {
+//                if (position == 0) {
+//                    prevPage = position;
+//                } else if (position == 1) {
+//                    prevPage = position;
+//                }
+//            }
+//
+//            @Override
+//            public void onPageScrollStateChanged(int state) {
+//
+//            }
+//        });
 
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                if (position == 0) {
-                    if (position != prevPage) {
-                    }
-                    if (prevPage == 1) {
-                    }
-                    prevPage = position;
-                } else if (position == 1) {
-                    if (position != prevPage) {
-                    }
-                    if (prevPage == 0) {
-                    }
-                    prevPage = position;
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-
+        if (savedInstance == null) {
+            getFragmentManager().beginTransaction()
+                    .add(R.id.contentRoot, new DialogsFragment())
+                    .commit();
+        }
 
         findViewById(R.id.addContactButton).setOnClickListener(v -> startActivity(new Intent(getActivity(), AddContactActivity.class)));
 
-        findViewById(R.id.inviteButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String inviteMessage = getResources().getString(R.string.invite_message).replace("{inviteUrl}", ActorSDK.sharedActor().getInviteUrl()).replace("{appName}", ActorSDK.sharedActor().getAppName());
-                Intent sendIntent = new Intent(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, inviteMessage);
-                sendIntent.setType("text/plain");
-                startActivity(sendIntent);
-            }
+        findViewById(R.id.inviteButton).setOnClickListener(v -> {
+            String inviteMessage = getResources().getString(R.string.invite_message).replace("{inviteUrl}", ActorSDK.sharedActor().getInviteUrl()).replace("{appName}", ActorSDK.sharedActor().getAppName());
+            Intent sendIntent = new Intent(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, inviteMessage);
+            sendIntent.setType("text/plain");
+            startActivity(sendIntent);
         });
     }
 
@@ -330,10 +300,11 @@ public class MainPhoneController extends MainBaseController {
     @Override
     public void onResume() {
         ActionBar ab = getActionBar();
-        ab.setDisplayShowCustomEnabled(true);
+        ab.setDisplayShowCustomEnabled(false);
         ab.setDisplayHomeAsUpEnabled(false);
         ab.setDisplayShowHomeEnabled(false);
-        ab.setDisplayShowTitleEnabled(false);
+        ab.setDisplayShowTitleEnabled(true);
+        ab.setTitle(getResources().getString(R.string.app_name));
 
         if (ActorSDK.sharedActor().style.getToolBarColor() != 0) {
             ab.setBackgroundDrawable(new ColorDrawable(ActorSDK.sharedActor().style.getToolBarColor()));
@@ -347,61 +318,57 @@ public class MainPhoneController extends MainBaseController {
 
         getActivity().bind(messenger().getAppState().getIsAppLoaded(),
                 messenger().getAppState().getIsAppEmpty(),
-                new ValueDoubleChangedListener<Boolean, Boolean>() {
-                    @Override
-                    public void onChanged(Boolean isAppLoaded, Value<Boolean> Value,
-                                          Boolean isAppEmpty, Value<Boolean> Value2) {
-                        if (isAppEmpty) {
-                            if (isAppLoaded) {
-                                onHideToolbarCustomView();
-                                emptyContactsView.setVisibility(View.VISIBLE);
-                                syncInProgressView.setVisibility(View.GONE);
-                                getActivity().invalidateOptionsMenu();
-                            } else {
-                                onHideToolbarCustomView();
-                                emptyContactsView.setVisibility(View.GONE);
-                                syncInProgressView.setVisibility(View.VISIBLE);
-                                getActivity().invalidateOptionsMenu();
-                            }
-                        } else {
-                            onShowToolbarCustomView();
-                            emptyContactsView.setVisibility(View.GONE);
+                (isAppLoaded, Value, isAppEmpty, Value2) -> {
+                    if (isAppEmpty) {
+                        if (isAppLoaded) {
+                            onHideToolbarCustomView();
+                            emptyContactsView.setVisibility(View.VISIBLE);
                             syncInProgressView.setVisibility(View.GONE);
                             getActivity().invalidateOptionsMenu();
+                        } else {
+                            onHideToolbarCustomView();
+                            emptyContactsView.setVisibility(View.GONE);
+                            syncInProgressView.setVisibility(View.VISIBLE);
+                            getActivity().invalidateOptionsMenu();
                         }
+                    } else {
+                        onShowToolbarCustomView();
+                        emptyContactsView.setVisibility(View.GONE);
+                        syncInProgressView.setVisibility(View.GONE);
+                        getActivity().invalidateOptionsMenu();
                     }
                 });
     }
 
     protected void onShowToolbarCustomView() {
-        barTabs.setVisibility(View.VISIBLE);
+        // barTabs.setVisibility(View.VISIBLE);
     }
 
     protected void onHideToolbarCustomView() {
-        barTabs.setVisibility(View.GONE);
+        // barTabs.setVisibility(View.GONE);
     }
 
     protected void onConfigireToolbarCustomView(ActionBar ab) {
-        FrameLayout tabsContainer = new FrameLayout(getActivity());
-        barTabs = new PagerSlidingTabStrip(getActivity());
-        barTabs.setTabBackground(R.drawable.selector_bar);
-        //barTabs.setIndicatorColorResource(R.color.main_tab_selected);
-        barTabs.setIndicatorHeight(Screen.dp(2));
-
-        barTabs.setDividerColorResource(android.R.color.transparent);
-        //barTabs.setTextColorResource(R.color.main_tab_text);
-        barTabs.setTextSize(Screen.dp(14));
-        barTabs.setUnderlineHeight(0);
-
-        barTabs.setViewPager(pager);
+//        FrameLayout tabsContainer = new FrameLayout(getActivity());
+//        barTabs = new PagerSlidingTabStrip(getActivity());
+//        barTabs.setTabBackground(R.drawable.selector_bar);
+//        //barTabs.setIndicatorColorResource(R.color.main_tab_selected);
+//        barTabs.setIndicatorHeight(Screen.dp(2));
+//
+//        barTabs.setDividerColorResource(android.R.color.transparent);
+//        //barTabs.setTextColorResource(R.color.main_tab_text);
+//        barTabs.setTextSize(Screen.dp(14));
+//        barTabs.setUnderlineHeight(0);
+//
+//        barTabs.setViewPager(pager);
 
         // Icons
         // int width = Screen.dp(72 * 2);
 
-        tabsContainer.addView(barTabs, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, Screen.dp(56)));
-        Toolbar.LayoutParams lp = new Toolbar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, Screen.dp(56));
-        tabsContainer.setLayoutParams(lp);
-        ab.setCustomView(tabsContainer);
+//        tabsContainer.addView(barTabs, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, Screen.dp(56)));
+//        Toolbar.LayoutParams lp = new Toolbar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, Screen.dp(56));
+//        tabsContainer.setLayoutParams(lp);
+//        ab.setCustomView(tabsContainer);
     }
 
 
@@ -548,6 +515,9 @@ public class MainPhoneController extends MainBaseController {
             return true;
         } else if (i == R.id.profile) {
             ActorSDK.sharedActor().startSettingActivity(getActivity());
+            return true;
+        } else if (i == R.id.contacts) {
+            startActivity(new Intent(getActivity(), ContactsActivity.class));
             return true;
         }
 
