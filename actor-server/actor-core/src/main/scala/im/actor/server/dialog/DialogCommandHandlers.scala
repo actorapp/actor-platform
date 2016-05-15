@@ -9,7 +9,6 @@ import com.google.protobuf.wrappers.{ Int32Value, Int64Value }
 import im.actor.api.rpc.{ HistoryImplicits, PeersImplicits }
 import im.actor.api.rpc.messaging._
 import im.actor.server.ApiConversions._
-import im.actor.server.dialog.DialogErrors.{InternalError, QuoteNotFound}
 import im.actor.server.dialog.HistoryUtils._
 import im.actor.server.messaging.MessageParsing
 import im.actor.server.model._
@@ -30,7 +29,6 @@ trait DialogCommandHandlers extends PeersImplicits with HistoryImplicits with Us
 
   import DialogCommands._
   import DialogEvents._
-
 
   protected def sendMessage(sm: SendMessage): Unit = {
     becomeStashing(replyTo ⇒ ({
@@ -88,11 +86,11 @@ trait DialogCommandHandlers extends PeersImplicits with HistoryImplicits with Us
       case Some(quotedMessage) ⇒
         for {
           historyMessage ← db.run(HistoryMessageRepo.find(quotedMessage.peer.get, quotedMessage.messageId.get.value))
-          _ ← Future(historyMessage.getOrElse(new QuoteNotFound(quotedMessage.peer.get, quotedMessage.messageId.get.value))) // todo hp: check here or in MessagingHandlers
+          _ ← Future(historyMessage.getOrElse(QuoteNotFound)) // todo hp: check here or in MessagingHandlers
           fullQuotedMessage ← FastFuture.successful(historyMessage flatMap (hm ⇒ ApiMessage.parseFrom(hm.messageContentData).fold(
             l ⇒ None, r ⇒ Some(QuotedMessage(Some(Int64Value(hm.randomId)), None, hm.senderUserId, Some(hm.peer), hm.date.getMillis, r))
           )))
-          _ ← Future(fullQuotedMessage.getOrElse(new InternalError))
+          _ ← Future(fullQuotedMessage.getOrElse(InternalError))
           result ← f(fullQuotedMessage)
         } yield result
       case None ⇒

@@ -4,7 +4,7 @@ import akka.actor._
 import im.actor.api.rpc.{ CommonRpcErrors, RpcError }
 import im.actor.api.rpc.messaging._
 import im.actor.server.db.DbExtension
-import im.actor.server.dialog.{ DialogErrors, DialogExtension, InvalidAccessHash, NotUniqueRandomId }
+import im.actor.server.dialog.{ DialogErrors, QuoteNotFound, InternalError, DialogExtension, InvalidAccessHash, NotUniqueRandomId }
 import im.actor.server.group.{ GroupErrors, GroupExtension }
 import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
 import im.actor.server.user.UserExtension
@@ -35,8 +35,8 @@ final class MessagingServiceImpl(implicit protected val actorSystem: ActorSystem
     case DialogErrors.DialogAlreadyShown(peer) ⇒
       RpcError(406, "DIALOG_ALREADY_SHOWN", "Dialog is already shown.", canTryAgain = false, None)
     case NotUniqueRandomId ⇒ MessagingRpcErors.NotUniqueRandomId
-    case DialogErrors.QuoteNotFound ⇒ MessagingRpcErors.QuotedNotFound
-    case DialogErrors.InternalError ⇒ CommonRpcErrors.IntenalError
+    case QuoteNotFound     ⇒ MessagingRpcErors.QuotedNotFound
+    case InternalError     ⇒ CommonRpcErrors.IntenalError
 
   }
 
