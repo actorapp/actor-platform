@@ -12,6 +12,7 @@ import im.actor.core.api.ApiDocumentExVoice;
 import im.actor.core.api.ApiDocumentMessage;
 import im.actor.core.api.ApiJsonMessage;
 import im.actor.core.api.ApiMessage;
+import im.actor.core.api.ApiEmptyMessage;
 import im.actor.core.api.ApiServiceEx;
 import im.actor.core.api.ApiServiceExChangedAvatar;
 import im.actor.core.api.ApiServiceExChangedTitle;

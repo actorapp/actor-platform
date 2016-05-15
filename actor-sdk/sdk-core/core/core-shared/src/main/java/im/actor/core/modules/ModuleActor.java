@@ -17,6 +17,7 @@ import im.actor.core.entity.Group;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.User;
+import im.actor.core.entity.Message;
 import im.actor.core.modules.sequence.Updates;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
