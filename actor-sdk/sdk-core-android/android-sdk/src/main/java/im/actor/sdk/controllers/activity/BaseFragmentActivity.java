@@ -1,33 +1,47 @@
 package im.actor.sdk.controllers.activity;
 
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
-import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 
 public class BaseFragmentActivity extends BaseActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        assert getSupportActionBar() != null;
-        getSupportActionBar().setElevation(0);
-        getSupportActionBar().setDisplayShowHomeEnabled(false);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(true);
-        getSupportActionBar().setDisplayShowCustomEnabled(false);
 
-        if (ActorSDK.sharedActor().style.getToolBarColor() != 0) {
-            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ActorSDK.sharedActor().style.getToolBarColor()));
+        // Configure ActionBar
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setElevation(0);
+            actionBar.setDisplayShowHomeEnabled(false);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowTitleEnabled(true);
+            actionBar.setDisplayShowCustomEnabled(false);
+
+            if (STYLE.getToolBarColor() != 0) {
+                actionBar.setBackgroundDrawable(new ColorDrawable(STYLE.getToolBarColor()));
+            }
         }
 
-        setContentView(R.layout.activity_base_fragment);
-        findViewById(R.id.content_frame).setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
-        getWindow().setBackgroundDrawable(new ColorDrawable(ActorSDK.sharedActor().style.getMainBackgroundColor()));
+        // Setting basic content
+        FrameLayout rootLayout = new FrameLayout(this);
+        rootLayout.setLayoutParams(new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+        rootLayout.setBackgroundColor(STYLE.getMainBackgroundColor());
+        rootLayout.setId(R.id.content_frame);
+        setContentView(rootLayout);
+
+        // Setting Background Color
+        getWindow().setBackgroundDrawable(new ColorDrawable(STYLE.getMainBackgroundColor()));
     }
 
     public void showFragment(final Fragment fragment, final boolean addToBackStack, final boolean isAnimated) {

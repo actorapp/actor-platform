@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.activity;
+package im.actor.sdk.controllers.pickers;
 
 import android.app.Activity;
 import android.app.AlertDialog;
