@@ -15,11 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
-        android:contentInsetLeft="0dp"
-        android:contentInsetStart="0dp"
         android:minHeight="56dp"
-        app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
@@ -29,8 +25,8 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/toolbar">
 
-        <android.support.v4.view.ViewPager
-            android:id="@+id/vp_pager"
+        <FrameLayout
+            android:id="@+id/contentRoot"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

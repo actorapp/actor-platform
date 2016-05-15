@@ -251,6 +251,8 @@ public class ChatActivity extends ActorEditTextActivity {
 
         super.onCreate(saveInstance);
 
+        onCreateToolbar();
+
         messageEditText.addTextChangedListener(new TextWatcherImp());
         messageEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -523,7 +525,6 @@ public class ChatActivity extends ActorEditTextActivity {
         }
     }
 
-    @Override
     protected void onCreateToolbar() {
         // Loading Toolbar header views
         // Binding to real data is performed in onResume method

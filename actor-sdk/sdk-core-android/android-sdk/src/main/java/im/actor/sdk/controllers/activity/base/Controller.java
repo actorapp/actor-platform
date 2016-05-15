@@ -12,9 +12,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-/**
- * Created by ex3ndr on 25.10.14.
- */
 public abstract class Controller<T extends AppCompatActivity> {
 
     private T activity;
@@ -23,9 +20,13 @@ public abstract class Controller<T extends AppCompatActivity> {
         this.activity = activity;
     }
 
-    public Resources getResources() { return activity.getResources(); }
+    public Resources getResources() {
+        return activity.getResources();
+    }
 
-    public Intent getIntent(){ return activity.getIntent(); }
+    public Intent getIntent() {
+        return activity.getIntent();
+    }
 
     public View findViewById(int id) {
         return activity.findViewById(id);
