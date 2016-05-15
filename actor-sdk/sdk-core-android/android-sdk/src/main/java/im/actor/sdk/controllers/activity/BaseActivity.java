@@ -14,17 +14,11 @@ import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
-import im.actor.runtime.actors.Actor;
-import im.actor.runtime.actors.ActorCreator;
-import im.actor.runtime.actors.ActorRef;
-import im.actor.runtime.actors.ActorSystem;
-import im.actor.runtime.actors.Props;
-import im.actor.runtime.actors.messages.PoisonPill;
 import im.actor.runtime.function.BiFunction;
-import im.actor.runtime.function.Consumer;
 import im.actor.runtime.function.Function;
 import im.actor.runtime.promise.Promise;
 import im.actor.sdk.ActorSDK;
+import im.actor.sdk.ActorStyle;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.fragment.ActorBinder;
 import im.actor.sdk.view.avatar.AvatarView;
@@ -36,6 +30,8 @@ import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
 public class BaseActivity extends AppCompatActivity {
 
+    public static final ActorStyle STYLE = ActorSDK.sharedActor().style;
+
     private final ActorBinder BINDER = new ActorBinder();
 
     private boolean isResumed = false;
@@ -45,16 +41,11 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ActorSDK.sharedActor().waitForReady();
 
-        onCreateToolbar();
         notifyOnResume();
 
-        if (getSupportActionBar() != null && ActorSDK.sharedActor().style.getToolBarColor() != 0) {
-            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ActorSDK.sharedActor().style.getToolBarColor()));
+        if (getSupportActionBar() != null && STYLE.getToolBarColor() != 0) {
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(STYLE.getToolBarColor()));
         }
-    }
-
-    protected void onCreateToolbar() {
-
     }
 
     @Override
@@ -63,6 +54,34 @@ public class BaseActivity extends AppCompatActivity {
         onPerformBind();
         notifyOnResume();
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        BINDER.unbindAll();
+        notifyOnPause();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        notifyOnPause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        notifyOnPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        notifyOnPause();
+    }
+
+
+    // Binding
 
     protected void onPerformBind() {
 
@@ -122,32 +141,12 @@ public class BaseActivity extends AppCompatActivity {
         BINDER.bind(value1, value2, listener);
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        BINDER.unbindAll();
-        notifyOnPause();
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        notifyOnPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        notifyOnPause();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        notifyOnPause();
-    }
+    // Toolbar
 
     protected void setToolbar(int text, boolean enableBack) {
+        if (getSupportActionBar() == null) {
+            throw new RuntimeException("Action bar is not set!");
+        }
         getSupportActionBar().setDisplayShowCustomEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (enableBack) {
@@ -163,6 +162,9 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     protected void setToolbar(View view, ActionBar.LayoutParams params, boolean enableBack) {
+        if (getSupportActionBar() == null) {
+            throw new RuntimeException("Action bar is not set!");
+        }
         getSupportActionBar().setDisplayShowCustomEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -182,26 +184,8 @@ public class BaseActivity extends AppCompatActivity {
         setToolbar(view, params, true);
     }
 
-    private void notifyOnResume() {
-        if (isResumed) {
-            return;
-        }
-        isResumed = true;
 
-        messenger().onActivityOpen();
-    }
-
-    private void notifyOnPause() {
-        if (!isResumed) {
-            return;
-        }
-        isResumed = false;
-        messenger().onActivityClosed();
-    }
-
-    protected boolean getIsResumed() {
-        return isResumed;
-    }
+    // Executions
 
     public <T> void execute(Command<T> cmd, int title, final CommandCallback<T> callback) {
         final ProgressDialog progressDialog = new ProgressDialog(this);
@@ -261,11 +245,35 @@ public class BaseActivity extends AppCompatActivity {
                 .failure(e -> dismissDialog(dialog));
     }
 
+
+    // Tools
+
     public void dismissDialog(ProgressDialog progressDialog) {
         try {
             progressDialog.dismiss();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    private void notifyOnResume() {
+        if (isResumed) {
+            return;
+        }
+        isResumed = true;
+
+        messenger().onActivityOpen();
+    }
+
+    private void notifyOnPause() {
+        if (!isResumed) {
+            return;
+        }
+        isResumed = false;
+        messenger().onActivityClosed();
+    }
+
+    protected boolean getIsResumed() {
+        return isResumed;
     }
 }

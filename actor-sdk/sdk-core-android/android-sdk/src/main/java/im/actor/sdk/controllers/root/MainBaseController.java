@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.activity.controllers;
+package im.actor.sdk.controllers.root;
 
 import im.actor.core.entity.Contact;
 import im.actor.sdk.controllers.activity.ActorMainActivity;

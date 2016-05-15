@@ -48,7 +48,7 @@ import im.actor.runtime.actors.messages.Void;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
-import im.actor.sdk.controllers.activity.ShortcutActivity;
+import im.actor.sdk.controllers.shortcuts.ShortcutActivity;
 import im.actor.sdk.controllers.conversation.messages.preprocessor.ChatListProcessor;
 import im.actor.sdk.controllers.conversation.messages.MessageHolder;
 import im.actor.sdk.controllers.fragment.DisplayListFragment;
