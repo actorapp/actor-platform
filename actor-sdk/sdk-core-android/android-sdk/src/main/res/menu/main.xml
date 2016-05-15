@@ -15,8 +15,12 @@
         app:showAsAction="always|collapseActionView" />
 
     <item
+        android:id="@+id/contacts"
+        android:title="Contacts"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/profile"
         android:title="Profile"
-        android:icon="@drawable/ic_settings_white_24dp"
-        app:showAsAction="always" />
+        app:showAsAction="never" />
 </menu>
