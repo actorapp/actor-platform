@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.activity.controllers;
+package im.actor.sdk.controllers.root;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -38,9 +38,8 @@ import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.runtime.generic.mvvm.DisplayList;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
-import im.actor.sdk.controllers.activity.AddContactActivity;
+import im.actor.sdk.controllers.contacts.AddContactActivity;
 import im.actor.sdk.controllers.compose.ComposeActivity;
-import im.actor.sdk.controllers.compose.CreateGroupActivity;
 import im.actor.sdk.controllers.contacts.ContactsFragment;
 import im.actor.sdk.controllers.dialogs.DialogsFragment;
 import im.actor.sdk.controllers.fragment.help.HelpActivity;
