@@ -64,8 +64,8 @@
         <activity
             android:name="im.actor.sdk.controllers.activity.ActorMainActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:launchMode="singleTop"
             android:label="@string/app_name"
+            android:launchMode="singleTop"
             android:theme="@style/MainActivityTheme"
             android:windowSoftInputMode="adjustResize">
 
@@ -91,8 +91,10 @@
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="actor" />
             </intent-filter>
 
@@ -173,6 +175,12 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize|stateVisible" />
+
+        <activity
+            android:name=".controllers.contacts.ContactsActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:theme="@style/CommonActivityTheme"
+            android:windowSoftInputMode="adjustResize" />
 
         <!-- Settings -->
 
@@ -272,33 +280,10 @@
             android:label="@string/picker_file_activity_title"
             android:theme="@style/PickerTheme.FilePicker" />
 
-
-        <activity
-            android:name="im.actor.map.MapPickerActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:theme="@style/CommonActivityTheme">
-            <intent-filter>
-                <category android:name="android.intent.category.DEFAULT" />
-                <action android:name="im.actor.pickLocation_${applicationId}" />
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name="im.actor.map.MapActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:theme="@style/CommonActivityTheme"
-            android:windowSoftInputMode="adjustResize">
-            <intent-filter>
-                <category android:name="android.intent.category.DEFAULT" />
-                <action android:name="im.actor.locationPreview_${applicationId}" />
-            </intent-filter>
-        </activity>
-
-
         <activity
             android:name=".controllers.shortcuts.ShortcutActivity"
-            android:theme="@style/AppcompatNoDisplay"
-            android:launchMode="singleInstance">
+            android:launchMode="singleInstance"
+            android:theme="@style/AppcompatNoDisplay">
             <intent-filter>
                 <action android:name="im.actor.action.botMessageShortcut" />
 
@@ -307,10 +292,10 @@
 
         <activity
             android:name=".controllers.calls.CallActivity"
-            android:theme="@style/CallTheme"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
-            android:showOnLockScreen="true" />
+            android:showOnLockScreen="true"
+            android:theme="@style/CallTheme" />
 
         <service
             android:name="im.actor.sdk.services.KeepAliveService"
