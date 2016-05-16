@@ -39,7 +39,7 @@ class Login extends Component {
       isCodeRequested: LoginStore.isCodeRequested(),
       isCodeSended: LoginStore.isCodeSended(),
       isSignupStarted: LoginStore.isSignupStarted()
-   }
+    }
   };
 
   static contextTypes = {
@@ -86,22 +86,14 @@ class Login extends Component {
 
   onRequestUserName =  event => {
     event.preventDefault();
-<<<<<<< Updated upstream
     LoginActionCreators.requestWebSignUp("http://220.189.207.21:8405", this.state.login);
-=======
-//LoginActionCreators.sendSignup(this.state.login,'zs2860400qq');
-      let strJSON = "username="+this.state.login;//得到的JSON
-
-      LoginActionCreators.sendMsg("http://220.189.207.21:8405","isUserNeedSignUp",strJSON,0,this.state.login);
-//    LoginActionCreators.requestUserName(this.state.login);
->>>>>>> Stashed changes
   };
 
   onSendPassword = event => {
-      event.preventDefault();
-      let strJSON = "oaUserName="+this.state.login+"&&password="+this.state.code;//得到的JSON
-      LoginActionCreators.sendPassword("http://220.189.207.21:8405",strJSON,this.state.code);
-      // LoginActionCreators.requestWebValidatePassword("http://220.189.207.21:8405",strJSON,this.state.code);
+    event.preventDefault();
+    let strJSON = "oaUserName="+this.state.login+"&&password="+this.state.code;//得到的JSON
+    LoginActionCreators.sendPassword("http://220.189.207.21:8405",strJSON,this.state.code);
+    // LoginActionCreators.requestWebValidatePassword("http://220.189.207.21:8405",strJSON,this.state.code);
   };
   onSignupForPwdRequested = event => {
     event.preventDefault();
