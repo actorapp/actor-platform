@@ -88,6 +88,7 @@ public class DialogsHistoryActor extends ModuleActor {
                 }
             });
         } else {
+            context().getAppStateModule().onDialogsLoaded();
             markAsLoaded();
         }
     }
