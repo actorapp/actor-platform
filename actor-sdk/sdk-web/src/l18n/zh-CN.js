@@ -17,10 +17,11 @@ export default {
               'nameInvalid': 'Invalid name',
               'codeInvalid': 'Invalid code',
               'codeExpired': 'Phone code is expired',
-              'codeWait': 'Try to request code later'
+              'codeWait': 'Try to request code later',
+              'passwordInvalid':'密码错误'
           },
           'welcome': {
-              'header': 'Welcome to <strong>{appName}</strong>',
+              'header': '欢迎使用<strong>易联</strong>',
               'text': '<p>{appName} Messenger brings all your business network connections into one place, makes it easily accessible wherever you go.</p>' +
               '<p>Our aim is to make your work easier, reduce your email amount, make the business world closer by reducing time to find right contacts.</p>',
               'copyright': '{appName} Messenger  2015'
@@ -43,7 +44,12 @@ export default {
       'add': '添加',
       'send': '发送',
       'createGroup': '创建群',
-      'addMembers': '添加成员'
+      'addMembers': '添加成员',
+      'quickSearch': '通讯录',
+      'checkCode': '提交',
+      'requestCode': '检查用户名',
+      'call': '通话'
+
     },
 
     // Compose
@@ -62,15 +68,15 @@ export default {
           'phone': '电话号码',
           'email': '邮箱',
           'about': '关于',
-          'avatarChange': 'Change avatar',
-          'avatarRemove': 'Remove'
+          'avatarChange': '修改头像',
+          'avatarRemove': '删除头像'
       },
       'group': {
           'title': '建群',
           'name': '群组主题',
           'about': '群组介绍',
-          'avatarChange': 'Change avatar',
-          'avatarRemove': 'Remove'
+          'avatarChange': '修改群组头像',
+          'avatarRemove': '删除'
       },
       'groups': {
           'title': '群组',
@@ -78,7 +84,7 @@ export default {
           'loading': '加载',
           'notFound': '没有找到 <strong>{query}</strong>群组.'
       },
-      
+
       'addContact': {
         'title': '添加联系人',
         'phone': '手机号'
@@ -145,7 +151,7 @@ export default {
     'preferencesSessionsAuthTime': '登陆时间',
     'preferencesSessionsTerminate': '断开',
     'preferencesSessionsTerminateAll': '断开所有会话',
-      
+
       // Sidebar
      'sidebar': {
           'recents': {
@@ -161,7 +167,7 @@ export default {
               'addPeople': 'add people',
               'favourites': 'Favorites',
               'groups': '群组',
-              'privates': 'Direct Messages',
+              'privates': '最近联系人',
           },
           'group': {
               'empty': 'Create your first group conversation'
@@ -192,7 +198,7 @@ export default {
   fullScreen: 'Fullscreen',
   video: 'Video'
   },
-      
+
   toolbar: {
   callState: {
   calling: 'calling',
@@ -201,6 +207,6 @@ export default {
   ended: 'ended'
   }
   }
-      
+
   }
 };

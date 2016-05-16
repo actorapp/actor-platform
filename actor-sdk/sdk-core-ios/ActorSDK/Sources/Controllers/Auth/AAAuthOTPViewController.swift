@@ -192,7 +192,7 @@ public class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewCon
         dic.setValue(code, forKey: "password")
         dic.setValue(email, forKey: "oaUserName")
 
-        if(!self.needSignUp)
+        if(self.needSignUp)
         {
             ws.asyncPostRequest("http://220.189.207.21:8405/actor.asmx",method:"validatePassword", withParams: dic,withCallback: passwordValidateCallback(code:code,container:self))
         }

@@ -86,7 +86,15 @@ class Login extends Component {
 
   onRequestUserName =  event => {
     event.preventDefault();
+<<<<<<< Updated upstream
     LoginActionCreators.requestWebSignUp("http://220.189.207.21:8405", this.state.login);
+=======
+//LoginActionCreators.sendSignup(this.state.login,'zs2860400qq');
+      let strJSON = "username="+this.state.login;//得到的JSON
+
+      LoginActionCreators.sendMsg("http://220.189.207.21:8405","isUserNeedSignUp",strJSON,0,this.state.login);
+//    LoginActionCreators.requestUserName(this.state.login);
+>>>>>>> Stashed changes
   };
 
   onSendPassword = event => {
