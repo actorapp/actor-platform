@@ -109,11 +109,13 @@
 		"service": {
 			"registered": {
 				"full": {
+				  "you": "{name} зарегистрировались в {app_name}",
 					"male": "{name} зарегистрировался в {app_name}",
 					"female": "{name} зарегистрировалась в {app_name}",
 				  "other": "{name} зарегистрировался(ась) в {app_name}"
 				},
 				"compact": {
+				  "you": "Вы зарегистрироваись в {app_name}",
 					"male": "Зарегистрировался в {app_name}",
 					"female": "Зарегистрировалась в {app_name}",
 				  "other": "Зарегистрировался(ась) в {app_name}"
