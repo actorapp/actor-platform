@@ -243,7 +243,7 @@ public class AuthActivity extends BaseFragmentActivity {
                             }
                         });
                     } else {
-                        signUp(messenger().doSignup(currentName, currentSex, transactionHash), currentName, currentSex);
+                        signUp(messenger().doSignup(currentName, currentSex!=null?currentSex:Sex.UNKNOWN, transactionHash), currentName, currentSex);
                     }
                 }
             }
@@ -348,7 +348,7 @@ public class AuthActivity extends BaseFragmentActivity {
                                                     break;
 
                                                 case SIGN_UP:
-                                                    signUp(messenger().doSignup(currentName, currentSex, transactionHash), currentName, currentSex);
+                                                    signUp(messenger().doSignup(currentName, currentSex!=null?currentSex:Sex.UNKNOWN, transactionHash), currentName, currentSex);
                                                     break;
                                             }
 
