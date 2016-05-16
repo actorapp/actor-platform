@@ -57,7 +57,6 @@ class LoginStore extends Store {
 
   __onDispatch(action) {
     switch (action.type) {
-
       case ActionTypes.AUTH_CHANGE_LOGIN:
         login = action.login;
         this.__emitChange();
@@ -70,7 +69,6 @@ class LoginStore extends Store {
         name = action.name;
         this.__emitChange();
         break;
-
       case ActionTypes.AUTH_CODE_REQUEST:
         isCodeRequested = true;
         this.__emitChange();
@@ -150,6 +148,7 @@ class LoginStore extends Store {
         break;
 
       case ActionTypes.AUTH_SET_LOGGED_IN:
+
         myUid = ActorClient.getUid();
         const user = ActorClient.getUser(myUid);
         this.__emitChange();

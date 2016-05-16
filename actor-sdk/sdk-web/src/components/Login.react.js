@@ -59,8 +59,8 @@ class Login extends Component {
     event.preventDefault();
     LoginActionCreators.changeLogin(event.target.value);
   };
-    
-    
+
+
   onCodeChange = event => {
     event.preventDefault();
     LoginActionCreators.changeCode(event.target.value);
@@ -86,19 +86,14 @@ class Login extends Component {
 
   onRequestUserName =  event => {
     event.preventDefault();
-//LoginActionCreators.sendSignup(this.state.login,'zs2860400qq');
-      let strJSON = "username="+this.state.login;//得到的JSON
-
-      LoginActionCreators.sendMsg("http://192.168.1.183","isUserNeedSignUp",strJSON,0,this.state.login);
-//    LoginActionCreators.requestUserName(this.state.login);
+    LoginActionCreators.requestWebSignUp("http://220.189.207.21:8405", this.state.login);
   };
 
   onSendPassword = event => {
-          //alert(this.state.code);
       event.preventDefault();
       let strJSON = "oaUserName="+this.state.login+"&&password="+this.state.code;//得到的JSON
-      LoginActionCreators.sendMsg("http://220.189.207.21:8405","validatePassword",strJSON,2,this.state.code);
-//    LoginActionCreators.sendPassword(this.state.code);
+      LoginActionCreators.sendPassword("http://220.189.207.21:8405",strJSON,this.state.code);
+      // LoginActionCreators.requestWebValidatePassword("http://220.189.207.21:8405",strJSON,this.state.code);
   };
   onSignupForPwdRequested = event => {
     event.preventDefault();
