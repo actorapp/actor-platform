@@ -3,7 +3,9 @@
  */
 
 import React, { Component, PropTypes } from 'react';
-import { Element, Link } from 'react-scroll';
+import { Element } from 'actor-react-scroll';
+import EmojiTab from './EmojiTab.react';
+import EmojiItem from './EmojiItem.react';
 import emojiData from './emojiData';
 
 class Emojis extends Component {
@@ -19,7 +21,6 @@ class Emojis extends Component {
     };
 
     this.onSetActive = this.onSetActive.bind(this);
-    this.onTabMouseEnter = this.onTabMouseEnter.bind(this);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -30,12 +31,6 @@ class Emojis extends Component {
     this.setState({ title });
   }
 
-  onTabMouseEnter(event) {
-    event.stopPropagation();
-    event.preventDefault();
-    event.target.click();
-  }
-
   render() {
     const { title } = this.state;
 
@@ -44,30 +39,12 @@ class Emojis extends Component {
 
     emojiData.forEach((category, cKey) => {
       emojiTabs.push(
-        <Link
-          spy
-          offset={30}
-          duration={300}
-          to={category.title}
-          key={cKey}
-          onSetActive={() => this.onSetActive(category.title)}
-          onMouseEnter={this.onTabMouseEnter}
-          containerId="emojiContainer"
-          className="emojis__header__tabs__tab"
-          activeClass="emojis__header__tabs__tab--active"
-        >
-          <span dangerouslySetInnerHTML={{ __html: category.icon }} />
-        </Link>
+        <EmojiTab key={cKey} category={category} onSelect={this.onSetActive} />
       );
 
-      const items = category.items.map((item, iKey) => {
+      const items = category.items.map((emoji, iKey) => {
         return (
-          <span
-            key={iKey}
-            className="emoji__item"
-            onClick={() => this.props.onSelect(item.title)}
-            dangerouslySetInnerHTML={{ __html: item.icon }}
-          />
+          <EmojiItem key={iKey} emoji={emoji} onSelect={this.props.onSelect} />
         );
       });
 
