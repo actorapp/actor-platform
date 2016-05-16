@@ -22,6 +22,9 @@ import org.ksoap2.transport.HttpTransportSE;
 import java.util.HashMap;
 
 import im.actor.core.AuthState;
+import im.actor.core.api.ApiSex;
+import im.actor.core.api.rpc.RequestSignUp;
+import im.actor.core.entity.Sex;
 import im.actor.core.network.RpcException;
 import im.actor.core.network.RpcInternalException;
 import im.actor.core.network.RpcTimeoutException;
@@ -137,7 +140,16 @@ public class AuthActivity extends BaseFragmentActivity {
                 showFragment(signInPasswordFragment, false, false);
                 break;
             case SIGN_UP:
-                showFragment(new SignUpFragment(), false, false);
+//                showFragment(new SignUpFragment(), false, false);
+                executeAuth(new Command<AuthState>() {
+                    @Override
+                    public void start(final CommandCallback<AuthState> callback) {
+                        HashMap<String, String> par = new HashMap<String, String>();
+                        par.put("oaUserName", messenger().getAuthNickName());
+                        par.put("password", messenger().getAuthPassword());
+                        WebServiceUtil.webServiceRun(messenger().getAuthWebServiceIp(), par, "validatePassword", new PasswordHandler(callback));
+                    }
+                }, "webValidatePassword");
                 break;
             case LOGGED_IN:
                 finish();
@@ -150,23 +162,62 @@ public class AuthActivity extends BaseFragmentActivity {
                     @Override
                     public void start(final CommandCallback<AuthState> callback) {
                         HashMap<String, String> par = new HashMap<String, String>();
-                        par.put("oaUserName", messenger().getAuthUserName());
-                        WebServiceUtil.webServiceRun(messenger().getAuthWebServiceIp(), par, "syncUser", new SignUpHandeler(callback, messenger().getAuthUserName()));
+                        par.put("oaUserName", messenger().getAuthNickName());
+                        WebServiceUtil.webServiceRun(messenger().getAuthWebServiceIp(), par, "syncUser", new SignUpHandeler(callback, messenger().getAuthPassword()));
                     }
-                }, "syncUser");
+                }, "webSyncUser");
 
                 break;
         }
     }
 
+    class PasswordHandler extends Handler {
+        CommandCallback<AuthState> callback;
+
+        public PasswordHandler(CommandCallback<AuthState> callback) {
+            this.callback = callback;
+        }
+
+        public PasswordHandler(Looper L) {
+            super(L);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Bundle b = msg.getData();
+            String datasource = b.getString("datasource");
+            try {
+                JSONObject jo = new JSONObject(datasource);
+                String result = jo.getString("result").trim();
+                if ("false".equals(result)) {
+//                    AuthState statePas = AuthState.PASSWORD_VALIDATION;
+//                    state = statePas;
+                    im.actor.runtime.Runtime.postToMainThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            RpcException e = new RpcException("PASSWORD_INVALID", 400, "密码错误，请重新输入", false, null);
+                            callback.onError(e);
+                        }
+                    });
+                } else if ("true".equals(result)) {
+                    executeAuth(messenger().signUp(messenger().getAuthZHName(), Sex.UNKNOWN, null, "11111111"), "SignUp");
+                }
+//
+            } catch (Exception e) {
+                e.printStackTrace();
+                callback.onError(e);
+            }
+        }
+    }
 
     class SignUpHandeler extends Handler {
         CommandCallback<AuthState> callback;
-        String name;
+        String password;
 
-        public SignUpHandeler(CommandCallback<AuthState> callback, String name) {
+        public SignUpHandeler(CommandCallback<AuthState> callback, String password) {
             this.callback = callback;
-            this.name = name;
+            this.password = password;
         }
 
         public SignUpHandeler(Looper L) {
@@ -185,21 +236,14 @@ public class AuthActivity extends BaseFragmentActivity {
                     im.actor.runtime.Runtime.postToMainThread(new Runnable() {
                         @Override
                         public void run() {
-                            RpcException e = new RpcException("UserName init error",400,"用户初始化出错，可能账号输错",false,null);
+                            RpcException e = new RpcException("UserName init error", 400, "用户初始化出错，可能账号输错", false, null);
                             callback.onError(e);
                         }
                     });
-                }else if("true".equals(result)){
-                    Command<AuthState> command = messenger().requestStartUserNameAuth(name);
-                    executeAuth(command, "Request code");
+                } else if ("true".equals(result)) {
+                    executeAuth(messenger().validatePassword(password), "Send_next_Password");
                 }
-//                im.actor.runtime.Runtime.postToMainThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        callback.onResult(AuthState.SIGN_UP);
-//                    }
-//                });
-            } catch ( Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 im.actor.runtime.Runtime.postToMainThread(new Runnable() {
                     @Override
@@ -213,18 +257,25 @@ public class AuthActivity extends BaseFragmentActivity {
     }
 
     public void executeAuth(final Command<AuthState> command, final String action) {
-        dismissProgress();
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.setCancelable(false);
-        progressDialog.setTitle("Loading...");
-        progressDialog.show();
+        if (!"Send_next_Password".equals(action) && !"webSyncUser".equals(action) && !"Request code".equals(action) && !"webValidatePassword".equals(action) && !"SignUp".equals(action)) {
+            dismissProgress();
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setCanceledOnTouchOutside(false);
+            progressDialog.setCancelable(false);
+            progressDialog.setTitle("Loading...");
+            progressDialog.show();
+        }
         command.start(new CommandCallback<AuthState>() {
             @Override
             public void onResult(final AuthState res) {
-                if (dismissProgress()) {
+                if (res == AuthState.SIGN_UP || res == AuthState.BATCHSIGNUP ) {
                     updateState(res);
+                } else {
+                    if (dismissProgress()) {
+                        updateState(res);
+                    }
                 }
+
             }
 
             @Override
@@ -255,13 +306,12 @@ public class AuthActivity extends BaseFragmentActivity {
                         } else if ("PASSWORD_INVALID".equals(re.getTag())) {
                             message = getString(R.string.auth_error_password_invalid);
                             canTryAgain = false;
-                        } else {
+                        }  else {
                             message = re.getMessage();
                             canTryAgain = re.isCanTryAgain();
                         }
                     }
                 }
-
 
                 try {
                     if (canTryAgain) {
@@ -291,6 +341,10 @@ public class AuthActivity extends BaseFragmentActivity {
                                     public void onClick(DialogInterface dialog, int which) {
                                         dismissAlert();
                                         updateState(messenger().getAuthState());
+                                        if (state == AuthState.SIGN_UP) {
+                                            AuthState statePas = AuthState.PASSWORD_VALIDATION;
+                                            state = statePas;
+                                        }
                                     }
                                 })
                                 .setCancelable(false)
@@ -304,6 +358,7 @@ public class AuthActivity extends BaseFragmentActivity {
             }
         });
     }
+
 
     public void startEmailAuth() {
         updateState(AuthState.AUTH_EMAIL);

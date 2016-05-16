@@ -272,7 +272,7 @@ public class SignUserNameFragment extends BaseAuthFragment {
 
 //        String rawPhoneN = countryCodeEditText.getText().toString().replaceAll("[^0-9]", "") +
 //                phoneNumberEditText.getText().toString().replaceAll("[^0-9]", "");
-        String rawPhoneN = phoneNumberEditText.getText().toString();
+        final String rawPhoneN = phoneNumberEditText.getText().toString();
         if (rawPhoneN.length() == 0) {
             String message = getString(R.string.auth_error_empty_phone);
             new AlertDialog.Builder(getActivity())
@@ -281,7 +281,13 @@ public class SignUserNameFragment extends BaseAuthFragment {
                     .show();
             return;
         }
-        isNeedSignUp(rawPhoneN);
+        executeAuth(new Command<AuthState>() {
+            @Override
+            public void start(final CommandCallback<AuthState> callback) {
+                isNeedSignUp(rawPhoneN);
+            }
+        }, "isNeedSignUp");
+
 //        Command<AuthState> command = messenger().requestStartUserNameAuth(rawPhoneN);
 ////        Sex sex = Sex.fromValue(1);
 ////        Command<AuthState> command =  messenger().validatePassword("pwd");
@@ -331,7 +337,7 @@ public class SignUserNameFragment extends BaseAuthFragment {
     private void isNeedSignUp(String username) {
         HashMap<String, String> par = new HashMap<String, String>();
         par.put("username", username);
-        WebServiceUtil.webServiceRun("http://220.189.207.21:8045", par, "isUserNeedSignUp", new IsNeedSignUpHandeler("http://192.168.1.183"));
+        WebServiceUtil.webServiceRun("http://220.189.207.21:8405", par, "isUserNeedSignUp", new IsNeedSignUpHandeler("http://192.168.1.183"));
     }
 
 
@@ -356,17 +362,11 @@ public class SignUserNameFragment extends BaseAuthFragment {
             try {
                 JSONObject jo = new JSONObject(datasource);
                 String result = jo.getString("result");
-                String name = jo.getString("name");
-                messenger().getPreferences().putString("auth_zhname", name);
                 if ("true".equals(result)) {
-                    if ("login".equals(jo.getString("next").trim())) {
-                        Command<AuthState> command = messenger().requestSignUp(rawPhoneN,name, ip);
-                        executeAuth(command, ACTION);
-                    } else {
-                        Command<AuthState> command = messenger().requestStartUserNameAuth(rawPhoneN);
-                        executeAuth(command, ACTION);
-                    }
-
+                    String name = jo.getString("name");
+                    messenger().getPreferences().putString("auth_zhname", name);
+                    Command<AuthState> command = messenger().requestStartUserNameAuth(rawPhoneN);
+                    executeAuth(command, ACTION);
                 } else {
                     final String errStr = jo.getString("description");
                     executeAuth(new Command<AuthState>() {
@@ -381,13 +381,21 @@ public class SignUserNameFragment extends BaseAuthFragment {
                             });
                         }
                     }, "error");
-//                    Command<AuthState> command = messenger().requestStartUserNameAuth(rawPhoneN);
-//                    executeAuth(command, ACTION);
                 }
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 e.printStackTrace();
-//                Command<AuthState> command = messenger().requestStartUserNameAuth(rawPhoneN);
-//                executeAuth(command, ACTION);
+                executeAuth(new Command<AuthState>() {
+                    @Override
+                    public void start(final CommandCallback<AuthState> callback) {
+                        im.actor.runtime.Runtime.postToMainThread(new Runnable() {
+                            @Override
+                            public void run() {
+//                                RpcException e = new RpcException("ERROR", 400, e.getMessage(), false, null);
+                                callback.onError(e);
+                            }
+                        });
+                    }
+                }, "error");
             }
 
         }

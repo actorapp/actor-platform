@@ -72,6 +72,8 @@ public class Authentication {
     //private static final String KEY_CODE = "auth_code";
     private static final String KEY_OAUTH_REDIRECT_URL = "oauth_redirect_url";
 
+    private static final String KEY_PASSWORD= "oauth_password";
+
     private Modules modules;
     private AuthState state;
 
@@ -411,7 +413,7 @@ public class Authentication {
     }
 
     @Deprecated
-    public String getUserName() {
+    public String getNickName() {
         return modules.getPreferences().getString(KEY_NICKNAME);
     }
 
@@ -424,7 +426,7 @@ public class Authentication {
     public String getAuthWebServiceIp() {
         String ip  = modules.getPreferences().getString("webServiceIp");
         if(ip == null || ip.length() ==0){
-            ip = "http://220.189.207.21:8045";
+            ip = "http://220.189.207.21:8405";
         }
         return ip;
     }
@@ -432,6 +434,11 @@ public class Authentication {
     @Deprecated
     public void setAuthWebServiceIp(String ip) {
          modules.getPreferences().putString("webServiceIp",ip);
+    }
+
+    @Deprecated
+    public String getAuthPassword() {
+       return  modules.getPreferences().getString(KEY_PASSWORD);
     }
 
     @Deprecated
@@ -686,6 +693,15 @@ public class Authentication {
                     public void onError(final RpcException e) {
                         if ("EMAIL_CODE_EXPIRED".equals(e.getTag())) {
                             resetAuth();
+                        }else if ("NICKNAME_BUSY".equals(e.getTag())) {
+                            state = AuthState.BATCHSIGNUP;
+                            Runtime.postToMainThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    callback.onResult(state);
+                                }
+                            });
+                            return;
                         }
                         Runtime.postToMainThread(new Runnable() {
                             @Override
@@ -762,24 +778,16 @@ public class Authentication {
 
                             @Override
                             public void onError(final RpcException e) {
-//                                if ("PHONE_NUMBER_UNOCCUPIED".equals(e.getTag()) || "EMAIL_UNOCCUPIED".equals(e.getTag())) {
-//                                    state = AuthState.SIGN_UP;
-//                                    Runtime.postToMainThread(new Runnable() {
-//                                        @Override
-//                                        public void run() {
-//                                            callback.onResult(AuthState.SIGN_UP);
-//                                        }
-//                                    });
-//                                    return;
-//                                }
-
                                 if ("USERNAME_CODE_EXPIRED".equals(e.getTag()) || "PHONE_CODE_EXPIRED".equals(e.getTag()) || "EMAIL_CODE_EXPIRED".equals(e.getTag())) {
                                     resetAuth();
                                 } else if ("PHONE_NUMBER_UNOCCUPIED".equals(e.getTag()) || "EMAIL_UNOCCUPIED".equals(e.getTag()) || "USERNAME_UNOCCUPIED".equals(e.getTag())) {
+                                    modules.getPreferences().putString(KEY_PASSWORD, password);
                                     state = AuthState.SIGN_UP;
                                     Runtime.postToMainThread(new Runnable() {
                                         @Override
                                         public void run() {
+                                            RpcException e = new RpcException("SIGN_UP", 400, "检验密码", false, null);
+//                                            callback.onError(e);
                                             callback.onResult(AuthState.SIGN_UP);
                                         }
                                     });
@@ -886,106 +894,6 @@ public class Authentication {
                 });
             }
         };
-//        return null;
-    }
-
-    @Deprecated
-    public Command<AuthState> batchSignUp(final List<SignUpNameState> userNameList) {
-        if (userNameList == null) {
-            return null;
-        }
-        signUpName(userNameList);
-        return null;
-//        return new Command<AuthState>() {
-//            @Override
-//            public void start(final CommandCallback<AuthState> callback) {
-//                signUpName(userNameList);
-//            }
-//        };
-    }
-
-    private void requestSignUp(final String name, final List<SignUpNameState> userNameList) {
-        ArrayList<String> langs = new ArrayList<>();
-        for (String s : modules.getConfiguration().getPreferredLanguages()) {
-            langs.add(s);
-        }
-        System.out.println("requestSignUp" + name);
-        request(new RequestStartUsernameAuth(name,
-                apiConfiguration.getAppId(),
-                apiConfiguration.getAppKey(),
-                deviceHash,
-                apiConfiguration.getDeviceTitle(),
-                modules.getConfiguration().getTimeZone(),
-                langs), new RpcCallback<ResponseStartUsernameAuth>() {
-
-            @Override
-            public void onResult(ResponseStartUsernameAuth response) {
-                final String hash = response.getTransactionHash();
-                System.out.println("onResult" + name);
-
-//                modules.getPreferences().putString(KEY_TRANSACTION_HASH, response.getTransactionHash());
-                im.actor.runtime.Runtime.postToMainThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        request(new RequestSignUp(hash, name, ApiSex.UNKNOWN,
-                                "11111111"), new RpcCallback<ResponseAuth>() {
-                            @Override
-                            public void onResult(ResponseAuth response) {
-
-                            }
-
-                            @Override
-                            public void onError(final RpcException e) {
-                                if ("NICKNAME_BUSY".equals(e.getTag())) {
-                                    for (int i = 0; i < userNameList.size(); i++) {
-                                        if (userNameList.get(i).getName() == name) {
-                                            userNameList.get(i).setState(2);
-                                            if (i < userNameList.size() - 1) {
-                                                Runtime.postToMainThread(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        signUpName(userNameList);
-                                                    }
-                                                });
-                                            }
-                                            return;
-                                        }
-                                    }
-                                } else {
-//                                    for (int i = 0; i < userNameList.size(); i++) {
-//                                        signUpName(userNameList);
-//                                    }
-                                }
-                            }
-                        });
-                    }
-                });
-            }
-
-            @Override
-            public void onError(final RpcException e) {
-                im.actor.runtime.Runtime.postToMainThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.e(TAG, e);
-                    }
-                });
-            }
-        });
-
-    }
-
-    private void signUpName(List<SignUpNameState> userNameList) {
-        for (int i = 0; i < userNameList.size(); i++) {
-            if (userNameList.get(i).getState() == 0) {
-                requestSignUp(userNameList.get(i).getName(), userNameList);
-                break;
-            } else if (i == userNameList.size() - 1) {
-                userNameList.clear();
-                userNameList = null;
-                break;
-            }
-        }
     }
 
     @Deprecated

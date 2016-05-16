@@ -4,9 +4,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
@@ -23,18 +20,8 @@ import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 
-import java.util.HashMap;
-
-import im.actor.core.AuthState;
-import im.actor.core.api.ApiSex;
-import im.actor.core.entity.Sex;
-import im.actor.core.network.RpcException;
-import im.actor.core.viewmodel.Command;
-import im.actor.core.viewmodel.CommandCallback;
-import im.actor.runtime.json.JSONObject;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
-import im.actor.sdk.intents.WebServiceUtil;
 import im.actor.sdk.util.Fonts;
 import im.actor.sdk.util.KeyboardHelper;
 import im.actor.sdk.view.SelectorFactory;
@@ -90,7 +77,7 @@ public class SignInPasswordFragment extends BaseAuthFragment {
                     Html.fromHtml(getString(R.string.auth_code_email_hint).replace("{0}", "<b>" + email + "</b>"))
             );
         } else if (authType.equals(AUTH_TYPE_USERNAME)) {
-            String userName = messenger().getAuthUserName();
+            String userName = messenger().getAuthNickName();
             sendHint.setText(
                     getString(R.string.auth_password_init).replace("{0}", "<b>" + userName + "</b>") );
             TextView sendName = (TextView) v.findViewById(R.id.sendUserName);
@@ -171,81 +158,10 @@ public class SignInPasswordFragment extends BaseAuthFragment {
     private void sendCode() {
         final String text = codeEnterEditText.getText().toString().trim();
         if (text.length() > 0) {
-//            executeAuth(messenger().signUp(text, null,"zs2860400q",avatarPath),"SignUp");
-//            executeAuth(messenger().validatePassword(text),"Send Password");
-
-            executeAuth(new Command<AuthState>() {
-                @Override
-                public void start(final CommandCallback<AuthState> callback) {
-                    HashMap<String, String> par = new HashMap<String, String>();
-                    par.put("oaUserName", messenger().getAuthUserName());
-                    par.put("password", text);
-                    WebServiceUtil.webServiceRun(messenger().getAuthWebServiceIp(), par, "validatePassword", new SignUpHandeler(callback, text));
-                }
-            }, "validatePassword");
-//            executeAuth(messenger().validateCode(text), "Send Code");
+            executeAuth(messenger().validatePassword(text),"Send Password");
         }
     }
 
-
-    class SignUpHandeler extends Handler {
-        CommandCallback<AuthState> callback;
-        String password;
-
-        public SignUpHandeler(CommandCallback<AuthState> callback, String password) {
-            this.callback = callback;
-            this.password = password;
-        }
-
-        public SignUpHandeler(Looper L) {
-            super(L);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            Bundle b = msg.getData();
-            String datasource = b.getString("datasource");
-            try {
-                JSONObject jo = new JSONObject(datasource);
-                String result = jo.getString("result").trim();
-                if ("false".equals(result)) {
-                    im.actor.runtime.Runtime.postToMainThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            RpcException e = new RpcException("PASSWORD ERROR", 400, "密码错误，请重新输入", false, null);
-                            callback.onError(e);
-                        }
-                    });
-                } else if ("true".equals(result)) {
-                    executeAuth(messenger().validatePassword(password), "Send Password");
-
-//                    Command<AuthState> command = messenger().requestStartUserNameAuth(name);
-//                    executeAuth(command, "Request code");
-//                    final String ACTION = "Request code";
-//                    Command<AuthState> command = messenger().requestSignUp(name, messenger().getAuthWebServiceIp());
-//                    executeAuth(command, ACTION);
-//                    im.actor.runtime.Runtime.postToMainThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        callback.onResult(AuthState.batchSignUp);
-//                    }
-//                });
-                }
-//
-            } catch (Exception e) {
-                e.printStackTrace();
-                executeAuth(messenger().validatePassword(password), "Send Password");
-//                im.actor.runtime.Runtime.postToMainThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        RpcException e = new RpcException("PASSWORD ERROR", 400, "密码错误，请重新输入", false, null);
-//                        callback.onError(e);
-//                    }
-//                });
-            }
-        }
-    }
 
     @Override
     public void onResume() {
