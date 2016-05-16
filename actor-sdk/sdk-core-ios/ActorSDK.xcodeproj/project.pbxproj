@@ -714,6 +714,7 @@
 		15F89F061C211FED00776ACD /* opus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opus.h; sourceTree = "<group>"; };
 		15F89F0F1C21317400776ACD /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		354C3EFA48FBFAEAD0DEEE17 /* Pods_ActorSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ActorSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		515A44751CE992E9009A31CE /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9A680E1A1CC3A34800E3CF59 /* AAUnblockActionSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAUnblockActionSheet.swift; sourceTree = "<group>"; };
 		BE237C9C1C422FFA00060648 /* AAStickersKeyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAStickersKeyboard.swift; sourceTree = "<group>"; };
 		BE2621561C4656D700A817AB /* AAConvActionSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAConvActionSheet.swift; sourceTree = "<group>"; };
@@ -1914,6 +1915,7 @@
 				"zh-Hans",
 				Base,
 				es,
+				ja,
 			);
 			mainGroup = 066A50C81BC4AE63000E606E;
 			productRefGroup = 066A50D31BC4AE63000E606E /* Products */;
@@ -2275,6 +2277,7 @@
 				065975451BC7D34200B8C7DF /* pt */,
 				065975471BC7D34400B8C7DF /* ru */,
 				065975481BC7D34600B8C7DF /* zh-Hans */,
+				515A44751CE992E9009A31CE /* ja */,
 			);
 			name = Localizable.strings;
 			path = .;

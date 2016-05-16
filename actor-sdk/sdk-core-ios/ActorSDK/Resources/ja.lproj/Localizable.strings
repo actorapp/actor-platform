@@ -8,7 +8,7 @@
 
 "TabMessages" = "メッセージ";
 
-"TabPeople" = "友達";
+"TabPeople" = "人々";
 
 "TabSettings" = "設定";
 
@@ -20,9 +20,9 @@
 
 "ContactsAddHeader" = "コンタクトの追加";
 
-"ContactsAddHint" = "電話番号を設定してください。";
+"ContactsAddHint" = "電話番号を入力してください";
 
-"ContactsActionInvite" = "友達を招待";
+"ContactsActionInvite" = "友達を招待する";
 
 "ContactsActionAdd" = "友達の追加";
 
@@ -30,41 +30,41 @@
  * Dialogs
  */
 
-"DialogsHint" = "スワイプで詳細オプションの表示";
+"DialogsHint" = "スワイプで詳細オプションを表示";
 
 /*
  * Settings
  */
 
-"SettingsEdit" = "設定";
+"SettingsEdit" = "編集";
 
 
-"SettingsSetPhoto" = "プロフィールの設定";
+"SettingsSetPhoto" = "プロフィール写真の設定";
 
 "SettingsChangeName" = "名前の変更";
 
 
-"SettingsEditHeader" = "あなたの名前";
+"SettingsEditHeader" = "あなたのお名前";
 
-"SettingsEditHint" = "本名を入力することで周りの人からあなたを探しやすくなります。";
+"SettingsEditHint" = "知り合いから簡単に検索されるよう本名を入力してください";
 
-"SettingsEditFieldHint" = "名前を入力してください。";
-
-
-"SettingsUsernameNotSet" = "ユーザーネームの設定";
-
-"SettingsUsernameTitle" = "ユーザーネーム";
-
-"SettingsUsernameHintField" = "ユーザーネームを入力してください。";
-
-"SettingsUsernameHint" = "{appname}でユーザネームを設定出来ます。ユーザネームの設定により電話番号を教えることなくコンタクトの追加が行えるようになります。\n\nユーザネームは半角アルファベット及び数字、アンダースコア(_)が使用可能で最大５文字です。";
+"SettingsEditFieldHint" = "あなたの名前を入力してください";
 
 
-"SettingsAboutNotSet" = "あなたについて";
+"SettingsUsernameNotSet" = "ユーザ名の設定";
 
-"SettingsChangeAboutTitle" = "あなたについて";
+"SettingsUsernameTitle" = "ユーザ名";
 
-"SettingsChangeAboutHint" = "公開したいあなたの事柄";
+"SettingsUsernameHintField" = "ユーザ名を入力してください";
+
+"SettingsUsernameHint" = "{appname}でのユーザ名を設定します。他のユーザに電話番号を伝えることなくあなたに連絡が取れるようになります。\n\na-zのアルファベット、0-9の数字及びアンダースコアが使用可能で最小５文字です。";
+
+
+"SettingsAboutNotSet" = "あなたのプロフィール";
+
+"SettingsChangeAboutTitle" = "プロフィールタイトル";
+
+"SettingsChangeAboutHint" = "あなたのことについて記載してください";
 
 
 "SettingsSecurity" = "セキュリティ";
@@ -76,9 +76,9 @@
 
 "SettingsAskQuestion" = "質問";
 
-"SettingsTwitter" = "App Twitter";
+"SettingsTwitter" = "公式Twitter";
 
-"SettingsAbout" = "App ウェブサイト";
+"SettingsAbout" = "公式サイト";
 
 "SettingsVersion" = "Version {version}";
 
@@ -87,17 +87,49 @@
 
 "SettingsLastSeen" = "最後のログイン";
 
-"SettingsLastSeenHint" = "ログイン状態の公開レベルの設定が行えます。";
+"SettingsLastSeenHint" = "ログイン状態の公開レベルの設定が行えます";
 
 
-"SettingsLastSeenEverybody" = "だれでも";
+"SettingsLastSeenEverybody" = "誰でも";
 
 "SettingsLastSeenContacts"  = "コンタクトリスト内";
 
 "SettingsLastSeenNone"    = "非公開";
 
-
 "SettingsMobilePhone"    = "携帯電話";
+
+/*
+ * Calls
+ */
+
+"CallsStartAudio" = "音声通話";
+
+"CallsStartGroupAudio" = "グループ通話";
+
+"CallsAnswer" = "応答";
+
+"CallsDecline" = "拒否";
+
+"CallsMute" = "ミュート";
+
+"CallsSpeaker" = "スピーカー";
+
+"CallsVideo" = "ビデオ";
+
+"CallStateRinging" = "Ringing...";
+
+"CallStateConnecting" = "Connecting...";
+
+"CallStateIncoming" = "着信中...";
+
+"CallPrivateTitle" = "プライベート通話";
+
+"CallPrivateText" = "{name}からの通話";
+
+"CallGroupTitle" = "グループ通話";
+
+"CallGroupText" = "{name}グループ通話";
+
 
 /*
  * Profile
@@ -111,23 +143,27 @@
 
 "ProfileNotificationsWarring" = "この人からの通知を無効にしますか？これは近い将来人間関係の問題に発展する恐れがあります。";
 
-"ProfileNotificationsWarringAction" = "停止";
+"ProfileNotificationsWarringAction" = "無効化";
 
 "ProfileAddToContacts" = "コンタクトに追加";
 
 "ProfileRemoveFromContacts" = "コンタクトから削除";
 
+"ProfileBlockContact" = "コンタクトの拒否";
+
+"ProfileUnblockContact" = "コンタクト拒否の解除";
+
 "ProfileRename" = "コンタクトのリネーム";
 
-"ProfileRenameMessage" = "コンタクトの名前の変更はあなたのみから見える情報となります。";
+"ProfileRenameMessage" = "コンタクトのリネームはあなたにのみ表示される表示名の変更です。";
 
-"ProfileRenameAction" = "名前の変更";
+"ProfileRenameAction" = "リネーム";
 
 "ProfileAbout" = "about";
 
-"ProfilePhone" = "電話番号";
+"ProfilePhone" = "携帯電話";
 
-"ProfileUsername" = "ユーザーネーム";
+"ProfileUsername" = "ユーザ名";
 
 "ProfileTitle" = "Info";
 
@@ -135,7 +171,7 @@
 
 "CopyNumber" = "電話番号のコピー";
 
-"NumberCopied" = "電話番号をクリップボードにコピーしました。";
+"NumberCopied" = "電話番号がクリップボードにコピーされました。";
 
 /*
  * Publics
@@ -155,7 +191,7 @@
 
 "GroupSetTitle" = "グループタイトルの設定";
 
-"GroupEditConfirm" = "グループタイトルの変更を行いますか？";
+"GroupEditConfirm" = "グループタイトルを変更しますか？";
 
 "GroupEditConfirmAction" = "テーマの変更";
 
@@ -165,19 +201,19 @@
 
 "GroupIntegrations" = "拡張";
 
-"GroupMembers" = "{0} 人";
+"GroupMembers" = "{0}人の参加者";
 
 "GroupMemberAdmin" = "管理者";
 
 "GroupMemberInfo" = "プロフィール";
 
-"GroupMemberMakeAdmin" = "グループの管理者に追加";
+"GroupMemberMakeAdmin" = "グループの管理者に変更";
 
 "GroupMemberMakeMessage" = "{name}をこのグループの管理者に設定しますか？";
 
 "GroupMemberMakeAction" = "はい";
 
-"GroupMemberKick" = "グループから追放";
+"GroupMemberKick" = "グループから追放しますか？";
 
 "GroupMemberKickMessage" = "{name}をこのグループから追放しますか？";
 
@@ -195,17 +231,17 @@
 
 "GroupAddParticipantUrl" = "グループの招待リンク";
 
-"GroupLeave" = "グループの退出";
+"GroupLeave" = "グループから退出";
 
-"GroupLeaveConfirm" = "グループから退出しますか？";
+"GroupLeaveConfirm" = "このグループから退出しますか？";
 
 "GroupLeaveConfirmAction" = "退出";
 
 "GroupInviteLinkPageTitle" = "招待リンク";
 
-"GroupInviteLinkTitle" = "・リンク";
+"GroupInviteLinkTitle" = "リンク";
 
-"GroupInviteLinkHint" = "招待リンクを送ることで知り合いがグループに参加することが出来ます。";
+"GroupInviteLinkHint" = "このリンクを送信することで知り合いがグループに参加することが出来ます。";
 
 "GroupInviteLinkRevokeMessage" = "リンクの無効化を行いますか？今後このリンクを使ってのグループへの参加が出来なくなります。";
 
@@ -233,13 +269,13 @@
  * Compose
  */
 
-"ComposeTitle" = "未読メッセージ";
+"ComposeTitle" = "新しいメッセージ";
 
 "CreateGroup" = "グループの作成";
 
-"CreateGroupTitle" = "グループタイトル";
+"CreateGroupTitle" = "グループの作成";
 
-"CreateGroupHint" = "グループのタイトル及びアイコン(オプション)を設定してください。";
+"CreateGroupHint" = "グループのタイトル及びアイコンを設定してください。";
 
 "CreateGroupNamePlaceholder" = "グループタイトル";
 
@@ -259,13 +295,13 @@
 
 "NotificationsTitle" = "通知とサウンド";
 
-"NotificationsEffectsTitle" = "・エフェクト";
+"NotificationsEffectsTitle" = "エフェクト";
 
 "NotificationsMobileTitle" = "モバイル通知";
 
 "NotificationsInAppTitle" = "アプリ内通知";
 
-"NotificationsNotificationHint" = "それぞれのユーザページで個別に通知のオン/オフ設定が出来ます。";
+"NotificationsNotificationHint" = "それぞれのユーザページで個別の通知のオン/オフ設定が出来ます。";
 
 "NotificationsPrivacyTitle" = "プライバシー";
 
@@ -281,13 +317,13 @@
 
 "NotificationsPreviewHint" = "通知メッセージ内への受信メッセージの表示有無の設定";
 
-"NotificationSecretMessage" = "未読メッセージ";
+"NotificationSecretMessage" = "新しいメッセージ";
 
 "NotificationsGroups" = "グループ通知";
 
-"NotificationsOnlyMentions" = "通知のみ";
+"NotificationsOnlyMentions" = "自分宛メッセージのみ";
 
-"NotificationsOnlyMentionsHint" = "あなた宛のメッセージのみの通知に変更します";
+"NotificationsOnlyMentionsHint" = "あなた宛のメッセージのみの通知に変更します。";
 
 /*
  * Privacy
@@ -319,9 +355,9 @@
 
 "ChatSend" = "送信";
 
-"ChatNoGroupAccess" = "あなたはメンバーではありません。";
+"ChatNoGroupAccess" = "あなたはこのグループのメンバーではありません。";
 
-"ChatNewMessages" = "未読メッセージ";
+"ChatNewMessages" = "新しいメッセージ";
 
 "ChatVoiceMessage" = "ボイスメッセージ";
 
@@ -329,9 +365,9 @@
 
 "ChatReleaseToSend" = "リリースで送信";
 
-"ChatSlideUpToCancel" = "スライドアップでキャンセル";
+"ChatSlideUpToCancel" = "上スワイプでキャンセル";
 
-"Chat.MicrophoneAccessDisabled"  = "設定 > プライバシーからマイクの使用許可設定を行って下さい。";
+"Chat.MicrophoneAccessDisabled" = "設定 > プライバシーからマイクの使用許可設定を行って下さい。";
 
 /*
  * Chat attachment menu
@@ -347,11 +383,11 @@
 
 "FindTitle" = "知り合いを探す";
 
-"FindFieldHint" = "電話番号、メールアドレス又はニックネーム";
+"FindFieldHint" = "電話番号、メールアドレスまたはユーザID";
 
-"FindHint" = "電話番号、メールアドレス又はニックネームを入力し、「検索」を押して下さい。";
+"FindHint" = "電話番号、メールアドレスまたはユーザIDを入力し、「検索」を押して下さい。";
 
-"FindNotFound" = "該当ユーザーが見つかりませんでした。";
+"FindNotFound" = "該当ユーザが見つかりませんでした。";
 
 /*
  * Placeholders
@@ -363,13 +399,13 @@
 
 "Placeholder_Empty_Action" = "友達に伝える";
 
-"Placeholder_Empty_Message2" = "又は手動でコンタクトに追加を行って下さい。";
+"Placeholder_Empty_Message2" = "または手動でコンタクトに追加を行って下さい。";
 
 "Placeholder_Empty_Action2" = "コンタクトの追加";
 
-"Placeholder_Loading_Title" = "同期実行中";
+"Placeholder_Loading_Title" = "同期中";
 
-"Placeholder_Loading_Message" = "アプリが有効になるまで数分お待ち下さい。";
+"Placeholder_Loading_Message" = "アプリが有効になるまでしばらくお待ちください。";
 
 "Placeholder_Contacts_Title" = "友達を招待";
 
@@ -379,55 +415,92 @@
 
 "Placeholder_Contacts_Message2" = "または右上のボタンから手動でコンタクトに追加を行って下さい。";
 
-"Placeholder_Dialogs_Title" = "メッセージの開始";
+"Placeholder_Dialogs_Title" = "メッセージをはじめる";
 
-"Placeholder_Dialogs_Message" = "コンタクトからメンバーを選択し、右上のボタンから会話を開始してください。";
+"Placeholder_Dialogs_Message" = "コンタクトからメンバーを選択し、右上のボタンから会話を開始して下さい。";
 
 "Placeholder_Group_Title" = "無効なメンバー";
 
 "Placeholder_Group_Message" = "残念ながらあなたはこのグループの参加者ではありません。";
 
+"Placeholder_Location_Title" = "位置サービスの有効化";
+
+"Placeholder_Location_Message" = "現在地をシェアする為にデバイスの位置サービスを有効化してください。";
+
+
+/*
+ * Welcome
+ */
+
+"WelcomeTitle" = "{app_name}へようこそ！";
+
+"WelcomeTagline" = "無料でセキュアなメッセージアプリ";
+
+"WelcomeSignUp" = "サインアップ";
+
+"WelcomeLogIn" = "ログイン";
+
+
 /*
  * Auth
  */
 
-"AuthMoreInfo" = "無料でセキュアなメッセージアプリ";
+"AuthCountryTitle" = "国コード";
 
-"AuthStarButton" = "はじめる...";
+"AuthUnsupported" = "このアカウントは{app_name}の本バージョンではサポートされていません。アプリを更新してください。";
 
-"AuthPhoneTitle" = "電話番号";
+"AuthLoginTitle" = "{app_name}にログイン";
 
-"AuthPhoneNumberHint" = "電話番号を入力してください。";
+"AuthLoginPhone" = "電話番号";
 
-"AuthPhoneHint" = "国コードを確認し、電話番号を入力してください。";
+"AuthLoginEmail" = "メールアドレス";
 
-"AuthTermsOfServiceFull" = "サインアップを行う事で利用規約に同意したものと見なします。";
+"AuthLoginPhoneEmail" = "電話番号またはメールアドレス";
 
-"AuthTermsOfService" = "利用規約";
+"AuthNameTitle" = "あなたのお名前を入力してください";
 
-"AuthPhoneTooShort" = "電話番号が短すぎます。";
+"AuthNamePlaceholder" = "あなたのお名前";
 
-"AuthCodeFieldHint" = "コード";
+"AuthPhoneTitle" = "あなたの電話番号を入力してください";
 
-"AuthCodeHint" = "SMSメッセージを送信しました。";
+"AuthPhoneUseEmail" = "メールアドレスを代わりに使用";
 
-"AuthCallHint" = "{appname}が{time}後に電話を掛けます。";
+"AuthPhoneHint" = "あなたの情報を安全に守る為、電話番号を入力してください。";
 
-"AuthCallDoneHint" = "{appname}が電話を掛けました。";
+"AuthPhonePlaceholder" = "電話番号";
 
-"AuthNoCodeHint" = "コードが確認出来ませんでしたか？";
+"AuthEmailTitle" = "あなたのメールアドレスを入力してください";
 
-"AuthProfileTitle" = "あなたの情報";
+"AuthEmailHint" = "本アプリによりスパムメールが送信されることはありません。";
 
-"AuthProfileAddPhoto1" = "追加";
+"AuthEmailPlaceholder" = "あなたのメールアドレス";
 
-"AuthProfileAddPhoto2" = "フォト";
+"AuthEmailUsePhone" = "電話番号を代わりに使用する";
 
-"AuthProfileNameHint" = "あなたの名前";
+"AuthDisclaimer" = "サインアップを行う事で利用規約、プライバシーポリシーに同意したものと見なします。";
 
-"AuthProfileHint" = "名前の入力とプロフィール画像の設定を行って下さい。";
+"AuthDisclaimerTosOnly" = "サインアップを行う事で利用規約に同意したものと見なします。";
 
-"AuthTerms" = "{app_name}にサインインすることで以下に同意したものと見なします: \n\n - 本サービスを使用してスパム、迷惑行為を行わない事\n\n- {app_name}ボットやチャンネルでの暴力的表現を行わない事\n\n本規約事項について今後変更が行われる事に同意する事";
+"AuthDisclaimerPrivacyOnly" = "サインアップを行う事でプライバシーポリシーに同意したものと見なします。";
+
+"AuthDisclaimerToS" = "利用規約";
+
+"AuthDisclaimerPrivacy" = "プライバシーポリシー";
+
+"AuthOTPEmailTitle" = "メールアドレスの確認";
+
+"AuthOTPPhoneTitle" = "電話番号の確認";
+
+"AuthOTPEmailHint" = "認証コードを送信しました。\n認証コードを入力してください。";
+
+"AuthOTPPhoneHint" = "認証コードを送信しました。\n認証コードを入力してください。";
+
+"AuthOTPPlaceholder" = "認証コード";
+
+"AuthOTPNoCode" = "認証コードが届きませんでしたか？";
+
+"AuthOTPCallHint" = "{app_name}が{time}後に音声通話を掛けます。";
+
 
 /*
  * Common Elements
@@ -435,19 +508,19 @@
 
 "CurrentLocale" = "En";
 
-"InviteText" = "{appname}に乗り換えませんか! {link}";
+"InviteText" = " {appname}に乗り換えませんか？{link}";
 
 "PhotoRemove" = "写真の削除";
 
 "PhotoRemoveGroupMessage" = "このグループ写真を削除しますか？複数のメンバーががっかりする恐れがあります。";
 
-"PhotoCamera" = "写真又は動画の撮影";
+"PhotoCamera" = "写真または動画の撮影";
 
-"PhotoLibrary" = "写真";
+"PhotoLibrary" = "メディアライブラリ";
 
 "SendDocument" = "ドキュメント";
 
-"ShareLocation" = "所在地";
+"ShareLocation" = "現在地";
 
 "ShareContact" = "コンタクトのシェア";
 
@@ -455,7 +528,7 @@
  *  Navigation
  */
 
-"NavigationEdit" = "設定";
+"NavigationEdit" = "編集";
 
 "NavigationDone" = "完了";
 
@@ -473,6 +546,8 @@
  *  Alerts
  */
 
+"AlertUnblock" = "ブロック解除";
+
 "AlertCancel" = "キャンセル";
 
 "AlertNext" = "次";
@@ -489,11 +564,11 @@
 
 "AlertError" = "エラー";
 
-"AlertTryAgain" = "再度実行";
+"AlertTryAgain" = "再度実行してください";
 
 "AlertInvite" = "招待";
 
-"UnsupportedContent" = "Messageはこのバージョンでは有効になっていません。アップデートをお待ち下さい。";
+"UnsupportedContent" = "このメッセージは本バージョンでは対応していません。アプリのアップデートをお待ち下さい。";
 
 /*
  * Actions
@@ -501,11 +576,21 @@
 
 "ActionCopyLink" = "リンクのコピー";
 
-"ActionRevokeLink" = "リンクの実行";
+"ActionRevokeLink" = "リンクの無効化";
 
-"ActionShareLink" = "リンクをシェア";
+"ActionShareLink" = "リンクのシェア";
 
-"AlertLinkCopied" = "リンクをクリップボードにコピーしました。";
+"AlertLinkCopied" = "リンクがクリップボードにコピーされました。";
+
+"ActionOpenLink" = "リンクを開く";
+
+"ActionCancel" = "キャンセル";
+
+"ActionAddPhoto1" = "追加";
+
+"ActionAddPhoto2" = "写真";
+
+"ActionOpenCode" = "コードを確認";
 
 /*
  *  Network
@@ -519,12 +604,12 @@
  * Errors
  */
 
-"ErrorPhoneIncorrect" = "入力された電話番号は無効です。再度入力してください。";
+"ErrorPhoneIncorrect" = "無効な電話番号が入力されました。再度入力してください。";
 
-"ErrorCodeExpired" = "コードの有効期限が切れました。再度登録を行って下さい。";
+"ErrorCodeExpired" = "コードが無効になりました。再度手続きを行ってください。";
 
-"ErrorAlreadyJoined" = "すでにこのグループのメンバーです。";
+"ErrorAlreadyJoined" = "あなたは既にこのグループのメンバーです。";
 
 "ErrorUnableToJoin" = "グループに参加することが出来ません。";
 
-"ErrorUnableToCall" = "この電話番号に電話を掛けることが出来ません。";
+"ErrorUnableToCall" = "このメンバーに通話することが出来ません。";
