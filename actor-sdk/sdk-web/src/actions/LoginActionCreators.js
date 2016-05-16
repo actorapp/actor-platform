@@ -79,7 +79,7 @@ const LoginActionCreators = {
                     break;
             }
         };
-        
+
         requestSignUp()
         .then(handleState);
     },
@@ -103,49 +103,7 @@ const LoginActionCreators = {
           console.error('Unsupported state', state);
       }
     };
-<<<<<<< HEAD
 
-    sendCodePromise()
-      .then(handleState);
-  },
-    
-    sendPassword(password) {
-        const sendPasswordPromise = () => dispatchAsync(ActorClient.sendPassword(password), {
-                                                        request: ActionTypes.AUTH_CODE_SEND,
-                                                        success: ActionTypes.AUTH_CODE_SEND_SUCCESS,
-                                                        failure: ActionTypes.AUTH_CODE_SEND_FAILURE
-                                                        }, { password });
-        
-        const handleState = (state) => {
-            switch (state) {
-                case 'signup':
-                    this.startSignup();
-                    break;
-                case 'logged_in':
-                    this.setLoggedIn({redirect: true});
-                    break;
-                default:
-                    console.error('Unsupported state', state);
-            }
-        };
-        
-        sendPasswordPromise()
-        .then(handleState);
-    },
-    
-    sendSignup(name,password) {
-        const signUpPromise = () => dispatchAsync(ActorClient.signUp(name,password), {
-                                                  request: ActionTypes.AUTH_SIGNUP,
-                                                  success: ActionTypes.AUTH_SIGNUP_SUCCESS,
-                                                  failure: ActionTypes.AUTH_SIGNUP_FAILURE
-                                                  }, { name,password });
-        
-        const setLoggedIn = () => this.setLoggedIn({redirect: true});
-        
-        signUpPromise()
-        .then(setLoggedIn)
-    },
-=======
 
     sendCodePromise()
       .then(handleState);
@@ -188,9 +146,6 @@ const LoginActionCreators = {
   },
 
 
-
-
->>>>>>> EaglesoftZJ/master
 
   startSignup() {
     dispatch(ActionTypes.AUTH_SIGNUP_START);
@@ -257,7 +212,7 @@ const LoginActionCreators = {
   restartAuth() {
     dispatch(ActionTypes.AUTH_RESTART)
   },
-    
+
   sendMsg(ip,methoNname,json,step,nickName){
         var wsUrl =ip +"/actor.asmx/"+methoNname;
         var xhr = false;
@@ -270,12 +225,12 @@ const LoginActionCreators = {
             }catch(e){
             }
         }
-        
+
         //打开连接
         xhr.open('POST',wsUrl,false);
         //重新设置请求头
         xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-        
+
         //发送请求
         xhr.send(json);
         var response = xhr.responseText;
@@ -295,7 +250,7 @@ const LoginActionCreators = {
                 var errstr = response.description;
                 alert(errstr);
                 //            eval("msgbox '测试1',0,'测试2'","vbscript");
-                
+
                 //            closure.apply(null, [a0, a1, a2, a3]);
                 //            console.error(errstr, ActionTypes.AUTH_CODE_SEND);
                 //            var errText = this.document.getElementByClassName("login-new__forms__form__input input__error--text");
