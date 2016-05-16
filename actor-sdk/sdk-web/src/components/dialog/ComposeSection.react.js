@@ -9,6 +9,7 @@ import { Container } from 'flux/utils';
 import { FormattedMessage } from 'react-intl';
 
 import ActorClient from '../../utils/ActorClient';
+import { isEditEvent } from '../../utils/ComposeUtils';
 import { KeyCodes } from '../../constants/ActorAppConstants';
 
 import MessageActionCreators from '../../actions/MessageActionCreators';
@@ -24,7 +25,6 @@ import DialogStore from '../../stores/DialogStore';
 import MessageArtStore from '../../stores/MessageArtStore';
 
 import ComposeTextArea from './compose/ComposeTextArea.react';
-import ComposeMarkdownHint from './compose/ComposeMarkdownHint.react';
 import BotCommandsHint from './compose/BotCommandsHint.react';
 import AvatarItem from '../common/AvatarItem.react';
 import MentionDropdown from '../common/MentionDropdown.react';
@@ -58,7 +58,7 @@ class ComposeSection extends Component {
 
     this.onTyping = this.onTyping.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
-    this.onPaste = this.onPaste.bind(this);
+    this.onAttachments = this.onAttachments.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onEditTyping = this.onEditTyping.bind(this);
     this.onEditCancel = this.onEditCancel.bind(this);
@@ -72,12 +72,12 @@ class ComposeSection extends Component {
     if (prevState.peer !== this.state.peer) {
       this.refs.area.autoFocus();
     } else if (prevState.compose.editMessage !== this.state.compose.editMessage) {
-      this.refs.area.blur();
-      this.refs.area.focus(true);
+      this.refs.area.setCaretToEnd();
     }
   }
 
   onTyping(text, caretPosition) {
+    console.debug({ text, caretPosition });
     ComposeActionCreators.onTyping(this.state.peer, text, caretPosition);
   }
 
@@ -91,20 +91,13 @@ class ComposeSection extends Component {
     ComposeActionCreators.cleanText();
   }
 
-  onPaste(event) {
-    const attachments = Array.from(event.clipboardData.items)
-      .filter((item) => item.type.indexOf('image') !== -1)
-      .map((item) => item.getAsFile());
-
-    if (attachments.length) {
-      event.preventDefault();
-      AttachmentsActionCreators.show(attachments);
-    }
+  onAttachments(attachments) {
+    AttachmentsActionCreators.show(attachments);
   }
 
   onKeyDown(event) {
     const { delegate } = this.context;
-    if (delegate.features.editing && event.keyCode === KeyCodes.ARROW_UP && !event.target.value) {
+    if (delegate.features.editing && isEditEvent(event)) {
       event.preventDefault();
       MessageActionCreators.editLastMessage();
     }
@@ -258,7 +251,6 @@ class ComposeSection extends Component {
       <section className="compose compose--editing">
 
         {this.renderMentions()}
-        {this.renderCommands()}
 
         <MessageArt
           onSelect={this.handleEmojiSelect}
@@ -274,7 +266,6 @@ class ComposeSection extends Component {
           title={profile.name}
         />
 
-        <ComposeMarkdownHint isActive={compose.text.length >= 3} />
         <ComposeTextArea
           autoFocus
           ref="area"
@@ -328,7 +319,6 @@ class ComposeSection extends Component {
           title={profile.name}
         />
 
-        <ComposeMarkdownHint isActive={compose.text.length >= 3} />
         <ComposeTextArea
           ref="area"
           value={compose.text}
@@ -337,7 +327,7 @@ class ComposeSection extends Component {
           sendEnabled={!compose.mentions && !compose.commands}
           onTyping={this.onTyping}
           onSubmit={this.onSubmit}
-          onPaste={this.onPaste}
+          onAttachments={this.onAttachments}
           onKeyDown={this.onKeyDown}
         />
 

@@ -3,8 +3,9 @@
  */
 
 import React, { Component, PropTypes } from 'react';
-import Inputs from '../../../utils/Inputs';
+import { getCaretPosition, setCaretToEnd, getClipboardImages } from '../../../utils/ComposeUtils';
 import { KeyCodes } from '../../../constants/ActorAppConstants';
+import ComposeMarkdownHint from './ComposeMarkdownHint.react';
 
 class ComposeTextArea extends Component {
   static propTypes = {
@@ -14,19 +15,19 @@ class ComposeTextArea extends Component {
     sendEnabled: PropTypes.bool.isRequired,
     onSubmit: PropTypes.func.isRequired,
     onTyping: PropTypes.func.isRequired,
-    onPaste: PropTypes.func.isRequired,
+    onAttachments: PropTypes.func,
     onKeyDown: PropTypes.func.isRequired
   };
 
   static defaultProps = {
-    sendEnabled: true,
-    onPaste: () => {}
+    sendEnabled: true
   };
 
   constructor(props) {
     super(props);
 
     this.onChange = this.onChange.bind(this);
+    this.onPaste = this.onPaste.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onWindowFocus = this.onWindowFocus.bind(this);
     this.onDocumentKeyDown = this.onDocumentKeyDown.bind(this);
@@ -34,6 +35,7 @@ class ComposeTextArea extends Component {
     this.blur = this.blur.bind(this);
     this.focus = this.focus.bind(this);
     this.autoFocus = this.autoFocus.bind(this);
+    this.setCaretToEnd = this.setCaretToEnd.bind(this);
   }
 
   componentDidMount() {
@@ -74,7 +76,28 @@ class ComposeTextArea extends Component {
   }
 
   onChange(event) {
-    this.props.onTyping(event.target.value, this.getCaretPosition());
+    this.props.onTyping(event.target.innerHTML, this.getCaretPosition());
+  }
+
+  onPaste(event) {
+    // Remove HTML from pasted text
+    const text = event.clipboardData.getData('text/plain');
+    if (text) {
+      event.preventDefault();
+      const html = text.replace(/\n/g, '<br>');
+      document.execCommand('insertHTML', false, html);
+      return;
+    }
+
+    // Lookup pasted images
+    if (this.props.onAttachments) {
+      getClipboardImages(event, (attachments) => {
+        if (attachments.length) {
+          event.preventDefault();
+          this.props.onAttachments(attachments);
+        }
+      });
+    }
   }
 
   onKeyDown(event) {
@@ -95,36 +118,32 @@ class ComposeTextArea extends Component {
   }
 
   getCaretPosition() {
-    const { start } = Inputs.getInputSelection(this.refs.area);
-    return start;
+    return getCaretPosition(this.refs.area);
   }
 
   render() {
     const { value } = this.props;
 
     return (
-      <textarea
-        ref="area"
-        className="compose__message"
-        value={value}
-        onChange={this.onChange}
-        onKeyDown={this.onKeyDown}
-        onPaste={this.props.onPaste}
-      />
+      <div>
+        <ComposeMarkdownHint isActive={value.length >= 3} />
+        <div
+          ref="area"
+          contentEditable
+          className="compose__message"
+          onInput={this.onChange}
+          onBlur={this.onChange}
+          onPaste={this.onPaste}
+          onKeyDown={this.onKeyDown}
+          dangerouslySetInnerHTML={{ __html: value }}
+        />
+      </div>
     );
   }
 
-  focus(force = false) {
-    const { area } = this.refs;
-    if (force || area !== document.activeElement) {
-      area.focus();
-      if (typeof area.selectionStart == 'number') {
-        area.selectionStart = area.selectionEnd = area.value.length;
-      } else if (typeof area.createTextRange != 'undefined') {
-        const range = area.createTextRange();
-        range.collapse(false);
-        range.select();
-      }
+  focus() {
+    if (this.refs.area !== document.activeElement) {
+      this.refs.area.focus();
     }
   }
 
@@ -132,6 +151,10 @@ class ComposeTextArea extends Component {
     if (this.props.autoFocus) {
       this.focus();
     }
+  }
+
+  setCaretToEnd() {
+    setCaretToEnd(this.refs.area);
   }
 
   blur() {

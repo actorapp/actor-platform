@@ -21,7 +21,7 @@ class EmojiItem extends Component {
   }
 
   onSelect() {
-    this.props.onSelect(this.props.emoji.title);
+    this.props.onSelect(this.props.emoji.icon);
   }
 
   render() {
