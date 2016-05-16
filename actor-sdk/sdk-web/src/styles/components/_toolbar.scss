@@ -22,6 +22,16 @@ $blue-color: #4d74a6;
   }
   &__profile {
     box-sizing: border-box;
-    padding: 0 16px;
+    .user-menu {
+      cursor: pointer;
+      user-select: none;
+      padding: 15px 8px 15px 16px;
+      &:hover {
+        background-color: rgba($baby-blue, .12);
+      }
+      &--opened {
+        background-color: rgba($baby-blue, .2) !important;
+      }
+    }
   }
 }

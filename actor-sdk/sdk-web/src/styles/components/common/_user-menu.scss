@@ -1,0 +1,45 @@
+.user-menu {
+  // transition: background $default-transition-duration $default-transition-timing;
+  &__name {
+    font-size: 16px;
+    font-weight: 500;
+
+    display: inline-block;
+
+    height: 24px;
+
+    vertical-align: middle;
+
+    color: white;
+    margin-right: 8px;
+    span {
+      line-height: 24px;
+
+      display: inline-block;
+
+      vertical-align: middle;
+    }
+  }
+  &__icon {
+    line-height: 24px;
+
+    transition: transform $default-transition-duration $default-transition-timing;
+    vertical-align: middle;
+    color: white;
+
+    backface-visibility: hidden;
+  }
+
+  .dropdown__menu {
+    top: 8px;
+  }
+
+  &--opened {
+    .user-menu__icon {
+      line-height: 24px;
+
+      transform: scaleY(-1);
+      vertical-align: middle;
+    }
+  }
+}

@@ -3,6 +3,7 @@
  */
 
 import React, { Component, PropTypes } from 'react';
+import UserMenu from './common/UserMenu.react';
 
 class AppHeader extends Component {
   constructor(props) {
@@ -11,8 +12,18 @@ class AppHeader extends Component {
 
   render() {
     return (
-      <header className={`app__toolbar`}>
-
+      <header className={`toolbar row`}>
+        <div className="toolbar__menu">
+          <span>Actor</span>
+        </div>
+        <div className="toolbar__controls col-xs">
+          <button className="button">
+            <i className="material-icons">edit</i>
+          </button>
+        </div>
+        <div className="toolbar__profile">
+          <UserMenu/>
+        </div>
       </header>
     );
   }
