@@ -36,7 +36,7 @@ import im.actor.server.cli.ActorCliService
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog.{ DialogExtension, DialogProcessor }
 import im.actor.server.enrich.{ RichMessageConfig, RichMessageWorker }
-import im.actor.server.frontend.Frontend
+import im.actor.server.frontend.{ Frontend, ServerKey }
 import im.actor.server.group._
 import im.actor.server.migrations._
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
@@ -106,7 +106,7 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
       val richMessageConfig = RichMessageConfig.load(serverConfig.getConfig("modules.enricher")).get
       val sequenceConfig = SequenceServiceConfig.load().get
       implicit val sessionConfig = SessionConfig.load(serverConfig.getConfig("session"))
-
+      val serverKeys = ((keys: Seq[ServerKey]) ⇒ { assert(keys.nonEmpty); keys })(ServerKey.loadKeysFromConfig(serverConfig).get)
       if (system.settings.config.getList("akka.cluster.seed-nodes").isEmpty) {
         system.log.info("Going to a single-node cluster mode")
 
@@ -128,19 +128,19 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
       FixUserSequenceMigrator.migrate()
 
       system.log.debug("Starting SeqUpdatesExtension")
-      val seqUpdatesExt = SeqUpdatesExtension(system)
+      SeqUpdatesExtension(system)
 
       system.log.debug("Starting WeakUpdatesExtension")
-      val weakUpdatesExt = WeakUpdatesExtension(system)
+      WeakUpdatesExtension(system)
 
       system.log.debug("Starting PresenceExtension")
-      val presenceExt = PresenceExtension(system)
+      PresenceExtension(system)
 
       system.log.debug("Starting GroupPresenceExtension")
-      val groupPresenceExt = GroupPresenceExtension(system)
+      GroupPresenceExtension(system)
 
       system.log.debug("Starting DialogExtension")
-      val dialogExt = DialogExtension(system)
+      DialogExtension(system)
 
       system.log.debug("Starting SocialExtension")
       implicit val socialManagerRegion = SocialExtension(system).region
@@ -165,7 +165,7 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
       // ReverseHooksListener.startSingleton()
 
       system.log.debug("Starting WebhooksExtension")
-      val webhooksExt = WebhooksExtension(system)
+      WebhooksExtension(system)
 
       implicit val oauth2Service = new GoogleProvider(oauth2GoogleConfig)
 
@@ -271,7 +271,7 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
       ActorCliService.start(system)
 
       system.log.debug("Starting Frontend")
-      Frontend.start(serverConfig)
+      Frontend.start(serverConfig, serverKeys)
 
       system.log.debug("Starting Http Api")
       HttpApi(system).start()

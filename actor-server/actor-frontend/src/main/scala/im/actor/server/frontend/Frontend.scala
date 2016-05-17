@@ -53,7 +53,7 @@ object Frontend {
 
   import EndpointTypes._
 
-  def start(serverConfig: Config)(
+  def start(serverConfig: Config, serverKeys: Seq[ServerKey])(
     implicit
     sessionRegion: SessionRegion,
     db:            Database,
@@ -61,20 +61,18 @@ object Frontend {
     mat:           Materializer
   ): Unit = {
     serverConfig.getConfigList("endpoints") map Endpoint.fromConfig foreach {
-      case Right(e) ⇒ startEndpoint(e, serverConfig)
+      case Right(e) ⇒ startEndpoint(e, serverKeys)
       case Left(e)  ⇒ throw e
     }
   }
 
-  def startEndpoint(endpoint: Endpoint, serverConfig: Config)(
+  def startEndpoint(endpoint: Endpoint, serverKeys: Seq[ServerKey])(
     implicit
     sessionRegion: SessionRegion,
     db:            Database,
     system:        ActorSystem,
     mat:           Materializer
   ): Unit = {
-    val serverKeys = ServerKey.loadKeysFromConfig(serverConfig).get
-
     endpoint match {
       case Endpoint(Tcp, host, port, keystore) ⇒
         TcpFrontend.start(host, port, serverKeys)
