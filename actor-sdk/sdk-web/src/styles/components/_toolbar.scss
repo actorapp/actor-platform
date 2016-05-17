@@ -10,6 +10,11 @@ $toolbar-height: 48px;
     box-sizing: border-box;
     width: $sidebar-width;
     padding: 0 16px;
+
+    cursor: default;
+    user-select: none;
+
+    text-shadow: 0 1px 1px rgba(black, .3);
     span {
       font-size: 20px;
       font-weight: 500;
@@ -33,6 +38,7 @@ $toolbar-height: 48px;
     border: none;
     outline: none;
     background-color: transparent;
+    text-shadow: 0 1px 1px rgba(black, .3);
     &:hover {
       background-color: rgba($baby-blue, .12);
     }
@@ -42,6 +48,9 @@ $toolbar-height: 48px;
 
     &.user-menu {
       padding-right: 10px;
+      .dropdown {
+        text-shadow: none;
+      }
     }
   }
 }
