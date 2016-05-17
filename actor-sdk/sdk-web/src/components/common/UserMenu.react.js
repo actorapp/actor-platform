@@ -24,6 +24,10 @@ import SvgIcon from '../common/SvgIcon.react';
 import AvatarItem from '../common/AvatarItem.react';
 
 class UserMenu extends Component {
+  static propTypes = {
+    className: PropTypes.string
+  }
+
   static getStores() {
     return [ProfileStore];
   }
@@ -241,19 +245,17 @@ class UserMenu extends Component {
   }
 
   render() {
+    const { className } = this.props;
     const { profile, isOpened } = this.state;
 
     if (!profile) return null;
 
-    const usermenuClassName = classnames('user-menu', {
+    const usermenuClassName = classnames('user-menu', className, {
       'user-menu--opened': isOpened
     });
 
     return (
       <div className={usermenuClassName} onClick={this.toggleHeaderMenu}>
-        <div className="user-menu__name">
-          <span dangerouslySetInnerHTML={{ __html: escapeWithEmoji(profile.name) }}/>
-        </div>
         <AvatarItem
           className="user-menu__avatar"
           image={profile.avatar}
@@ -261,6 +263,12 @@ class UserMenu extends Component {
           size="tiny"
           title={profile.name}
         />
+
+        <div
+          className="user-menu__name"
+          dangerouslySetInnerHTML={{ __html: escapeWithEmoji(profile.name) }}
+        />
+
         <i className="user-menu__icon material-icons">arrow_drop_down</i>
 
         {this.renderMenu()}

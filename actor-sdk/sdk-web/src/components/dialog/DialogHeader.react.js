@@ -6,6 +6,7 @@ import React, { Component, PropTypes } from 'react';
 import { FormattedMessage } from 'react-intl';
 import classnames from 'classnames';
 import Tooltip from 'rc-tooltip';
+import alert from '../../utils/alert';
 
 import { escapeWithEmoji } from '../../utils/EmojiUtils';
 import PeerUtils from '../../utils/PeerUtils';
@@ -24,6 +25,10 @@ class DialogHeader extends Component {
     message: PropTypes.string,
     isFavorite: PropTypes.bool.isRequired,
     isActivityOpen: PropTypes.bool.isRequired
+  }
+
+  static contextTypes = {
+    isExperimental: PropTypes.bool
   }
 
   constructor(props, context) {
@@ -55,6 +60,11 @@ class DialogHeader extends Component {
 
   handleInCallClick() {
     CallActionCreators.toggleFloating();
+  }
+
+  handleCallButtonClick() {
+    alert('callButtonClick')
+      .then(() => console.debug('Alert closed'));
   }
 
   renderMessage() {
@@ -142,6 +152,22 @@ class DialogHeader extends Component {
     )
   }
 
+  renderCallButton() {
+    const { isExperimental } = this.context;
+
+    if (!isExperimental) {
+      return null;
+    }
+
+    const callButtonClassName = classnames('button button--icon');
+
+    return (
+      <button className={callButtonClassName} onClick={this.handleCallButtonClick}>
+        <i className="material-icons" style={{ fontSize: 22 }}>call</i>
+      </button>
+    );
+  }
+
   render() {
     const { info, isFavorite } = this.props;
 
@@ -173,6 +199,7 @@ class DialogHeader extends Component {
         <div className="col-xs"/>
 
         <div className="dialog__header__controls">
+          {this.renderCallButton()}
           {this.renderInfoButton()}
         </div>
       </header>
