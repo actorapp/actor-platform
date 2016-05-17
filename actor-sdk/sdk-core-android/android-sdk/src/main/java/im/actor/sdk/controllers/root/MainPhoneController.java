@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import im.actor.core.entity.Contact;
 import im.actor.core.entity.Dialog;
 import im.actor.core.entity.SearchEntity;
+import im.actor.core.viewmodel.CommandCallback;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
@@ -75,7 +76,6 @@ public class MainPhoneController extends MainBaseController {
 
     private com.getbase.floatingactionbutton.FloatingActionButton fabRoot;
 
-    private String joinGroupUrl;
     private String sendUriString = "";
     private String sendText = "";
     private ArrayList<String> sendUriMultiple = new ArrayList<String>();
@@ -83,6 +83,7 @@ public class MainPhoneController extends MainBaseController {
     private String forwardText = "";
     private String forwardTextRaw = "";
     private byte[] docContent = null;
+    private String joinGroupUrl;
 
     public MainPhoneController(ActorMainActivity mainActivity) {
         super(mainActivity);
@@ -267,6 +268,31 @@ public class MainPhoneController extends MainBaseController {
             if (intent.getAction() != null) {
                 if (intent.getAction().equals(Intent.ACTION_VIEW) && intent.getData() != null) {
                     joinGroupUrl = intent.getData().toString();
+                    if (joinGroupUrl != null && !joinGroupUrl.isEmpty()) {
+                        String[] urlSplit = null;
+                        if (joinGroupUrl.contains("join")) {
+                            urlSplit = joinGroupUrl.split("/join/");
+                        } else if (joinGroupUrl.contains("token")) {
+                            urlSplit = joinGroupUrl.split("token=");
+                        }
+                        if (urlSplit != null) {
+                            joinGroupUrl = urlSplit[urlSplit.length - 1];
+
+                            getActivity().execute(messenger().joinGroupViaToken(joinGroupUrl), R.string.invite_link_title, new CommandCallback<Integer>() {
+                                @Override
+                                public void onResult(Integer res) {
+                                    getActivity().startActivity(Intents.openGroupDialog(res, true, getActivity()));
+                                    getActivity().finish();
+                                    joinGroupUrl = "";
+                                }
+
+                                @Override
+                                public void onError(Exception e) {
+                                    joinGroupUrl = "";
+                                }
+                            });
+                        }
+                    }
                 } else if (intent.getAction().equals(Intent.ACTION_SEND)) {
                     if ("text/plain".equals(getIntent().getType())) {
                         sendText = intent.getStringExtra(Intent.EXTRA_TEXT);
@@ -556,7 +582,6 @@ public class MainPhoneController extends MainBaseController {
         @NonNull
         public DialogsFragment getDialogsFragment(DialogsFragment res1) {
             Bundle arguments = new Bundle();
-            arguments.putString("invite_url", joinGroupUrl);
             res1.setArguments(arguments);
             res1.setHasOptionsMenu(false);
             return res1;
