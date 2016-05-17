@@ -1,37 +1,47 @@
-$blue-color: #4d74a6;
+$toolbar-height: 48px;
 
 .toolbar {
-  height: 54px;
+  height: $toolbar-height;
 
   background-color: $dusky-blue;
 
   flex: 0 0 auto;
-  &__menu {
+  &__aside {
     box-sizing: border-box;
     width: $sidebar-width;
     padding: 0 16px;
     span {
-      line-height: 54px;
       font-size: 20px;
-      color: $pale-grey;
       font-weight: 500;
+      line-height: $toolbar-height;
+
+      color: $pale-grey;
     }
   }
-  &__controls {
 
+  &__search {
+    display: inline-block;
   }
-  &__profile {
-    box-sizing: border-box;
-    .user-menu {
-      cursor: pointer;
-      user-select: none;
-      padding: 15px 8px 15px 16px;
-      &:hover {
-        background-color: rgba($baby-blue, .12);
-      }
-      &--opened {
-        background-color: rgba($baby-blue, .2) !important;
-      }
+
+  &__button {
+    padding: 12px 16px;
+
+    cursor: pointer;
+    user-select: none;
+
+    color: white;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    &:hover {
+      background-color: rgba($baby-blue, .12);
+    }
+    &:active {
+      background-color: rgba($baby-blue, .2) !important;
+    }
+
+    &.user-menu {
+      padding-right: 10px;
     }
   }
 }

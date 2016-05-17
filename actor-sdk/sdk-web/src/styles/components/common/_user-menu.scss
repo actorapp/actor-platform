@@ -1,30 +1,24 @@
 .user-menu {
   // transition: background $default-transition-duration $default-transition-timing;
+  &__avatar {
+    margin-right: 8px;
+  }
+
   &__name {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 500;
-
     display: inline-block;
-
-    height: 24px;
-
-    vertical-align: middle;
+    line-height: 24px;
+    vertical-align: top;
 
     color: white;
-    margin-right: 8px;
-    span {
-      line-height: 24px;
-
-      display: inline-block;
-
-      vertical-align: middle;
-    }
   }
   &__icon {
     line-height: 24px;
 
     transition: transform $default-transition-duration $default-transition-timing;
     vertical-align: middle;
+
     color: white;
 
     backface-visibility: hidden;
@@ -35,6 +29,7 @@
   }
 
   &--opened {
+    background-color: rgba($baby-blue, .2) !important;
     .user-menu__icon {
       line-height: 24px;
 
