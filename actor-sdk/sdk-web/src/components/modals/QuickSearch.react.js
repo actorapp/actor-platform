@@ -31,7 +31,7 @@ class QuickSearch extends Component {
 
   static calculateState() {
     return {
-      list: QuickSearchStore.getList(),
+      list: QuickSearchStore.getState(),
       selectedIndex: 0
     }
   }
