@@ -49,8 +49,7 @@ public class ContactsFragment extends BaseContactFragment {
 
     @Override
     public void onItemClicked(Contact contact) {
-        ((ActorMainActivity) getActivity()).onContactClicked(contact);
-
+        getActivity().startActivity(Intents.openPrivateDialog(contact.getUid(), true, getActivity()));
     }
 
     @Override
