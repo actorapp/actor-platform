@@ -777,6 +777,9 @@ public class SmileProcessor {
     }
 
     public static boolean containsEmoji(CharSequence s) {
+        if (s == null) {
+            return false;
+        }
         long prev = 0;
         long prevLong = 0;
         int prevLongCount = 0;
