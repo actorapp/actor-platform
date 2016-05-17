@@ -7,8 +7,8 @@ $contact-avatar-size: 48px;
 $like-red: rgb(226, 38, 77);
 $maximum-image-height: 400px;
 $extend-background: 1px;
-$message-hover-background: #F9F9F9;
-$message-selected-background: #EBEEF1;
+$message-hover-background: #f9f9f9;
+$message-selected-background: #ebeef1;
 $modern-text-line-width: 2px;
 $modern-text-padding: 6px;
 $sticker-max-size: 180px;
@@ -86,13 +86,14 @@ $sticker-max-size: 180px;
   position: relative;
 
   display: flex;
-  flex: 0 1 auto;
   flex-direction: row;
-  flex-wrap: wrap;
 
   box-sizing: border-box;
   margin: 0;
   padding: 6px 39px 6px 32px;
+
+  flex: 0 1 auto;
+  flex-wrap: wrap;
 
   &__header {
     font-weight: 500;
@@ -103,10 +104,11 @@ $sticker-max-size: 180px;
     margin: 0 0 4px;
   }
   &__body {
-    flex: 1 0 0;
+    box-sizing: border-box;
     max-width: 100%;
     padding-right: 16px;
-    box-sizing: border-box;
+
+    flex: 1 0 0;
   }
   &__sender {
     font-size: 15px;
@@ -170,14 +172,16 @@ $sticker-max-size: 180px;
   }
 
   &__info {
-    width: 62px;
     line-height: 1px;
+
+    width: 62px;
+
     text-align: right;
   }
   &__content {
     line-height: $message-line-height;
-    &--service {}
-    &--text {}
+
+
     &--photo {
       position: relative;
 
@@ -278,7 +282,9 @@ $sticker-max-size: 180px;
 
     .message__timestamp {
       line-height: 20px;
+
       margin: 0;
+
       opacity: 0;
     }
 
@@ -301,6 +307,9 @@ $sticker-max-size: 180px;
     &:before,
     &:after {
       display: none !important;
+    }
+    .row {
+      width: 100%;
     }
     .message__info {
       padding-top: 54px;
@@ -354,6 +363,7 @@ $sticker-max-size: 180px;
     }
   }
   &--loading {
+    background-color: transparent;
     .message__body {
       font-size: 13px;
       font-weight: 500;
@@ -551,7 +561,7 @@ $sticker-max-size: 180px;
 
   &--active,
   &:hover {
-    background-color: $message-hover-background;
+    // background-color: $message-hover-background;
     .message__info .message__timestamp {
       opacity: 1;
     }
@@ -632,8 +642,9 @@ $sticker-max-size: 180px;
     kbd,
     pre,
     samp {
-      margin: 0 0 7px;
       overflow: auto;
+
+      margin: 0 0 7px;
     }
 
     .emoji-outer {
@@ -647,9 +658,10 @@ $sticker-max-size: 180px;
     }
 
     .hljs {
-      background-color: transparent;
       margin: 0;
       padding: 0;
+
+      background-color: transparent;
     }
   }
   .photo {
@@ -702,9 +714,9 @@ $sticker-max-size: 180px;
       text-align: center;
 
       color: rgba(0, 0, 0, .2);
+      border: 1px solid rgba($body-base-color, .1);
       border-radius: $default-border-radius;
       background-color: white;
-      border: 1px solid rgba($body-base-color, .1);
       i {
         line-height: $message-document-icon-size;
       }
@@ -1101,9 +1113,10 @@ $sticker-max-size: 180px;
   }
 
   &__mention {
-    background-color: #FFFBE9;
-    border-radius: 2px;
     padding: 2px 1px;
+
+    border-radius: 2px;
+    background-color: #fffbe9;
   }
 }
 
