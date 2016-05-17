@@ -3,11 +3,10 @@
  */
 
 import React, { Component, PropTypes } from 'react';
-import classnames from 'classnames';
+import classNames from 'classnames';
 import Recorder from 'opus-recorder';
 
-let isRecordingSupported = Recorder.isRecordingSupported() ? true : false;
-console.debug('isRecordingSupported', isRecordingSupported);
+const isRecordingSupported = Recorder.isRecordingSupported();
 
 class VoiceRecorder extends Component {
   static propTypes = {
@@ -18,63 +17,96 @@ class VoiceRecorder extends Component {
     super(props);
 
     this.state = {
+      duration: 0,
       isRecording: false
     };
 
+    this.onRecordStart = this.onRecordStart.bind(this);
+    this.onRecordStop = this.onRecordStop.bind(this);
+    this.onStreamReady = this.onStreamReady.bind(this);
+    this.onRecordDone = this.onRecordDone.bind(this);
+    this.onDurationChange = this.onDurationChange.bind(this);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextState.isRecording !== this.state.isRecording ||
+           nextState.duration !== this.state.duration;
+  }
+
+  componentDidMount() {
     if (isRecordingSupported) {
       this.recorder = new Recorder();
-      this.recorder.addEventListener('duration', this.handleChangeDuration);
-      this.recorder.addEventListener('streamReady', this.handleStreamReady);
-      this.recorder.addEventListener('dataAvailable', this.handleSendRecord);
+      this.recorder.addEventListener('duration', this.onDurationChange);
+      this.recorder.addEventListener('streamReady', this.onStreamReady);
+      this.recorder.addEventListener('dataAvailable', this.onRecordDone);
     }
   }
 
-  handleStartRecord = () => {
+  componentWillUnmount() {
+    this.recorder.removeEventListener('duration', this.onDurationChange);
+    this.recorder.removeEventListener('streamReady', this.onStreamReady);
+    this.recorder.removeEventListener('dataAvailable', this.onRecordDone);
+    this.recorder = null;
+  }
+
+  onRecordStart() {
     this.recorder.initStream();
-  };
+  }
 
-  handleStopRecord = () => {
+  onRecordStop() {
     this.recorder.stop();
-    this.setState({ isRecording: false });
-  };
+    this.setState({ isRecording: false, duration: 0 });
+  }
 
-  handleSendRecord = (event) => {
-    const { onFinish } = this.props;
-    const { duration } = this.state;
-
-    onFinish && onFinish(duration * 1000, event.detail); //Duration must be in ms
-  };
-
-  handleStreamReady = () => {
+  onStreamReady() {
     this.recorder.start();
     this.setState({ isRecording: true });
-  };
+  }
 
-  handleChangeDuration = (event) => this.setState({ duration: event.detail.toFixed(2) });
+  onRecordDone(event) {
+    // duration must be in ms
+    const duration = this.state.duration * 1000;
+    if (duration >= 100) {
+      this.props.onFinish(duration, event.detail);
+    }
+  }
 
-  render() {
-    if (isRecordingSupported) {
-      const { isRecording, duration } = this.state;
+  onDurationChange(event) {
+    const duration = event.detail.toFixed(2);
+    this.setState({ duration });
+  }
 
-      const voiceRecorderClassName = classnames('voice-recorder', {
-        'voice-recorder--recording': isRecording
-      });
-
-      return (
-        <div className={voiceRecorderClassName}>
-          <i className="material-icons icon"
-             onMouseDown={this.handleStartRecord}
-             onMouseUp={this.handleStopRecord}>mic</i>
-          <div className="duration">
-            <div className="fill row middle-xs center-xs">
-              Voice message duration:&nbsp; {duration}
-            </div>
-          </div>
-        </div>
-      );
-    } else {
+  renderDuration() {
+    if (!this.state.duration) {
       return null;
     }
+
+    return (
+      <div className="voice-recorder__duration">
+        <div className="fill row middle-xs center-xs">
+          Voice message duration:&nbsp; {this.state.duration}
+        </div>
+      </div>
+    );
+  }
+
+  render() {
+    if (!isRecordingSupported) {
+      return null;
+    }
+
+    const className = classNames('voice-recorder__icon', {
+      'voice-recorder__icon--active': this.state.isRecording
+    });
+
+    return (
+      <div className="voice-recorder">
+        <span className={className} onMouseDown={this.onRecordStart} onMouseUp={this.onRecordStop}>
+          <i className="material-icons">mic</i>
+        </span>
+        {this.renderDuration()}
+      </div>
+    );
   }
 }
 

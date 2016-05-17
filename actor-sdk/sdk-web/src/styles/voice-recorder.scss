@@ -5,48 +5,40 @@
 .voice-recorder {
   position: relative;
   z-index: 14;
+}
 
-  .duration {
-    position: absolute;
-    box-shadow: inset 0 0 0 1px $dark-sky-blue;
-    background-color: white;
-    width: 100%;
-    height: 80px;
-    top: 0;
-    left: 0;
-    font-size: 18px;
-    font-weight: 500;
-    border-radius: 2px;
-    color: rgba(black, .3);
-    display: none;
-  }
-  .icon {
-    user-select: none;
-    position: absolute;
-    top: 6px;
-    right: 28px;
-    cursor: pointer;
-    transition: 150ms;
-    transform: scale(.9);
-    opacity: 0.8;
-    color: $greyish;
-    z-index: 15;
-    &:hover {
-      transform: scale(1);
-      opacity: 1;
-    }
+.voice-recorder__duration {
+  position: absolute;
+  box-shadow: inset 0 0 0 1px $dark-sky-blue;
+  background-color: white;
+  width: 100%;
+  height: 80px;
+  top: 0;
+  left: 0;
+  font-size: 18px;
+  font-weight: 500;
+  border-radius: 2px;
+  color: rgba(black, .3);
+}
+
+.voice-recorder__icon {
+  user-select: none;
+  position: absolute;
+  top: 6px;
+  right: 28px;
+  cursor: pointer;
+  transition: 150ms;
+  transform: scale(.9);
+  opacity: 0.8;
+  color: $greyish;
+  z-index: 15;
+  &:hover {
+    transform: scale(1);
+    opacity: 1;
   }
 
-  &--disabled {
-    display: none;
-  }
   &--recording {
-    .icon {
-      opacity: 1;
-      color: $dark-sky-blue;
-    }
-    .duration {
-      display: block;
-    }
+    opacity: 1;
+    color: $dark-sky-blue;
   }
 }
