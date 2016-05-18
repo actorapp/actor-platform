@@ -1,15 +1,11 @@
 package im.actor.server.sequence
 
+import akka.NotUsed
 import akka.actor._
 import akka.event.Logging
-import akka.http.scaladsl.Http
-import akka.http.scaladsl.model._
-import akka.http.scaladsl.settings.ConnectionPoolSettings
-import akka.http.scaladsl.util.FastFuture
-import akka.stream.{ ActorMaterializer, Materializer }
+import akka.stream.ActorMaterializer
 import akka.stream.actor.ActorPublisher
-import akka.stream.scaladsl.Source
-import akka.util.ByteString
+import akka.stream.scaladsl.{ Flow, Source }
 import cats.data.Xor
 import com.github.kxbmap.configs.syntax._
 import com.typesafe.config.Config
@@ -19,6 +15,9 @@ import im.actor.server.persist.push.GooglePushCredentialsRepo
 import io.circe.generic.auto._
 import io.circe.jawn._
 import io.circe.syntax._
+import spray.client.pipelining._
+import spray.http.HttpHeaders.Authorization
+import spray.http._
 
 import scala.annotation.tailrec
 import scala.concurrent.Future
@@ -73,18 +72,10 @@ final class GooglePushExtension(system: ActorSystem) extends Extension {
 
   Source.fromPublisher(ActorPublisher[(HttpRequest, GooglePushDelivery.Delivery)](deliveryPublisher))
     .via(GooglePushDelivery.flow)
-    .mapAsync(1) {
-      case (Success(resp), delivery) ⇒
-        if (resp.status == StatusCodes.OK) {
-          resp.entity.dataBytes.runFold(ByteString.empty)(_ ++ _) map (bs ⇒ Xor.Right(bs → delivery))
-        } else FastFuture.successful(Xor.Left(new RuntimeException(s"Failed to deliver message, StatusCode was not OK: ${resp.status}")))
-      case (Failure(e), delivery) ⇒
-        FastFuture.successful(Xor.Left(e))
-    }
     .runForeach {
       // TODO: flatten
-      case Xor.Right((bs, delivery)) ⇒
-        parse(new String(bs.toArray, "UTF-8")) match {
+      case Xor.Right((body, delivery)) ⇒
+        parse(body) match {
           case Xor.Right(json) ⇒
             json.asObject match {
               case Some(obj) ⇒
@@ -141,14 +132,18 @@ private object GooglePushDelivery {
 
   def props = Props(classOf[GooglePushDelivery])
 
-  def flow(implicit system: ActorSystem, mat: Materializer) = {
-    val maxConnections = system.settings.config.getInt("services.google.push.max-connections")
-
-    Http(system)
-      .cachedHostConnectionPoolHttps[GooglePushDelivery.Delivery](
-        "gcm-http.googleapis.com",
-        settings = ConnectionPoolSettings(system).withMaxConnections(maxConnections)
-      )
+  def flow(implicit system: ActorSystem): Flow[(HttpRequest, Delivery), Xor[RuntimeException, (String, Delivery)], NotUsed] = {
+    import system.dispatcher
+    val pipeline = sendReceive
+    Flow[(HttpRequest, GooglePushDelivery.Delivery)].mapAsync(1) {
+      case (req, del) ⇒
+        pipeline(req) map { resp ⇒
+          if (resp.status == StatusCodes.OK)
+            Xor.Right(resp.entity.data.asString(HttpCharsets.`UTF-8`) → del)
+          else
+            Xor.Left(new RuntimeException(s"Failed to deliver message, StatusCode was not OK: ${resp.status}"))
+        }
+    }
   }
 }
 
@@ -157,15 +152,15 @@ private final class GooglePushDelivery extends ActorPublisher[(HttpRequest, Goog
   import GooglePushDelivery._
 
   private[this] var buf = Vector.empty[(HttpRequest, Delivery)]
-  private val uri = Uri("/gcm/send")
+  private val uri = Uri("https://gcm-http.googleapis.com/gcm/send")
 
   def receive = {
     case d: Delivery if buf.size == MaxQueue ⇒
-      log.error("Current queue is already at size MaxQueue: {}, ignoring delivery", MaxQueue)
+      log.error("Current queue is already at size MaxQueue: {}, ignoring delivery: ========= delivery. key: {}, message: {}", MaxQueue, d.key, d.m)
     case d: Delivery ⇒
-      if (buf.isEmpty && totalDemand > 0)
+      if (buf.isEmpty && totalDemand > 0) {
         onNext(mkJob(d))
-      else {
+      } else {
         this.buf :+= mkJob(d)
         deliverBuf()
       }
@@ -189,7 +184,7 @@ private final class GooglePushDelivery extends ActorPublisher[(HttpRequest, Goog
     HttpRequest(
       method = HttpMethods.POST,
       uri = uri,
-      headers = List(headers.Authorization(headers.GenericHttpCredentials(s"key=${d.key}", Map.empty[String, String]))),
+      headers = List(Authorization(GenericHttpCredentials(s"key=${d.key}", Map.empty[String, String]))),
       entity = HttpEntity(ContentTypes.`application/json`, d.m.asJson.noSpaces)
     ) → d
   }
