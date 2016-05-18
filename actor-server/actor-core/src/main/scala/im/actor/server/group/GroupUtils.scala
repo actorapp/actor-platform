@@ -5,7 +5,9 @@ import im.actor.api.rpc.AuthorizedClientData
 import im.actor.api.rpc.groups.ApiGroup
 import im.actor.api.rpc.pubgroups.ApiPublicGroup
 import im.actor.api.rpc.users.ApiUser
+import im.actor.server.db.DbExtension
 import im.actor.server.file.ImageUtils
+import im.actor.server.persist.social.RelationRepo
 import im.actor.server.user.UserUtils
 import im.actor.server.{ ApiConversions, model, persist }
 import slick.dbio.Effect.Read
@@ -51,7 +53,8 @@ object GroupUtils {
     for {
       groups ← Future.sequence(groupIds map (GroupExtension(system).getApiStruct(_, clientUserId)))
       memberIds = getUserIds(groups)
-      users ← Future.sequence((userIds.toSet ++ memberIds.toSet).filterNot(_ == 0) map (UserUtils.safeGetUser(_, clientUserId, clientAuthId))) map (_.flatten)
+      whoBlockMe ← DbExtension(system).db.run(RelationRepo.fetchWhoBlockMe(clientUserId))
+      users ← Future.sequence((userIds.toSet ++ memberIds.toSet).filterNot(_ == 0) map (userAndMemberId ⇒ UserUtils.safeGetUser(userAndMemberId, clientUserId, clientAuthId, whoBlockMe.contains(userAndMemberId)))) map (_.flatten)
     } yield (groups, users.toSeq)
   }
 }

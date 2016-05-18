@@ -271,7 +271,7 @@ private[user] final class UserProcessor
 
   override protected def handleQuery(state: UserState): Receive = {
     case GetAuthIds(_)                                   ⇒ getAuthIds(state)
-    case GetApiStruct(_, clientUserId, clientAuthId)     ⇒ getApiStruct(state, clientUserId, clientAuthId)
+    case GetApiStruct(_, clientUserId, clientAuthId, isBlockMe) ⇒ getApiStruct(state, clientUserId, clientAuthId, isBlockMe)
     case GetApiFullStruct(_, clientUserId, clientAuthId) ⇒ getApiFullStruct(state, clientUserId, clientAuthId)
     case GetContactRecords(_)                            ⇒ getContactRecords(state)
     case CheckAccessHash(_, senderAuthId, accessHash)    ⇒ checkAccessHash(state, senderAuthId, accessHash)

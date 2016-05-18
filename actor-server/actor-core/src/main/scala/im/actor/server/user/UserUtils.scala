@@ -2,7 +2,9 @@ package im.actor.server.user
 
 import akka.actor.ActorSystem
 import im.actor.api.rpc.users._
+import im.actor.server.db.DbExtension
 import im.actor.server.model.{ UserEmail, User, UserPhone }
+import im.actor.server.persist.social.RelationRepo
 import im.actor.server.user.UserErrors.UserNotFound
 
 import scala.language.postfixOps
@@ -48,10 +50,11 @@ object UserUtils {
     case _                               ⇒ None
   }
 
-  def safeGetUser(userId: Int, clientUserId: Int, clientAuthId: Long)(implicit system: ActorSystem) = {
+  def safeGetUser(userId: Int, clientUserId: Int, clientAuthId: Long, isBlockMe: Boolean = false)(implicit system: ActorSystem) = {
     import system.dispatcher
+    //    DbExtension(system).db.run(RelationRepo.isBlocked(userId, clientUserId)).flatMap(isBlock ⇒
     UserExtension(system)
-      .getApiStruct(userId, clientUserId, clientAuthId)
+      .getApiStruct(userId, clientUserId, clientAuthId, isBlockedMe = isBlockMe)
       .map(Some(_))
       .recover {
         case _: UserNotFound ⇒ None

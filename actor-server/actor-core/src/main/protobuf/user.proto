@@ -274,6 +274,7 @@ message UserQueries {
         required int32 user_id = 1;
         required int32 client_user_id = 2;
         required int64 client_auth_id = 3;
+        optional bool isBlockedMe = 4;
     }
 
     message GetApiStructResponse {

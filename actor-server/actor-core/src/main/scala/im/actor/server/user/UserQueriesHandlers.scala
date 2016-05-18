@@ -8,6 +8,7 @@ import im.actor.server.ApiConversions._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.dialog.UserAcl
 import im.actor.server.persist.social.RelationRepo
+import org.scalacheck.Prop.False
 
 private[user] trait UserQueriesHandlers extends UserAcl {
   self: UserProcessor ⇒
@@ -17,10 +18,8 @@ private[user] trait UserQueriesHandlers extends UserAcl {
   protected def getAuthIds(state: UserState): Unit =
     sender() ! GetAuthIdsResponse(state.authIds)
 
-  protected def getApiStruct(state: UserState, clientUserId: Int, clientAuthId: Long)(implicit system: ActorSystem): Unit = {
+  protected def getApiStruct(state: UserState, clientUserId: Int, clientAuthId: Long, isBlockMe: Option[Boolean] = None)(implicit system: ActorSystem): Unit = {
     (for {
-      ids ← db.run(RelationRepo.fetchBlockedIds(state.id))
-      blockIds = ids.toSet
       localName ← if (clientUserId == state.id || clientUserId == 0)
         FastFuture.successful(None)
       else
@@ -31,11 +30,11 @@ private[user] trait UserQueriesHandlers extends UserAcl {
       name = state.name,
       localName = UserUtils.normalizeLocalName(localName),
       sex = Some(state.sex),
-      avatar = if (!(blockIds.contains(clientUserId))) state.avatar else None,
+      avatar = if (isBlockMe == None || isBlockMe == false) state.avatar else None,
       isBot = Some(state.isBot),
       contactInfo = UserUtils.defaultUserContactRecords(state.phones.toVector, state.emails.toVector, state.socialContacts.toVector),
       nick = state.nickname,
-      about = if (!(blockIds.contains(clientUserId))) state.about else None,
+      about = if (isBlockMe == None || isBlockMe == false) state.about else None,
       preferredLanguages = state.preferredLanguages.toVector,
       timeZone = state.timeZone,
       botCommands = state.botCommands,
@@ -46,20 +45,21 @@ private[user] trait UserQueriesHandlers extends UserAcl {
   protected def getApiFullStruct(state: UserState, clientUserId: Int, clientAuthId: Long)(implicit system: ActorSystem): Unit = {
     (for {
       isBlocked ← checkIsBlocked(state.id, clientUserId)
+      isBlockedByMe ← checkIsBlocked(clientUserId, state.id)
       localName ← if (clientUserId == state.id || clientUserId == 0)
         FastFuture.successful(None)
       else
         userExt.getLocalName(clientUserId, state.id)
     } yield GetApiFullStructResponse(ApiFullUser(
-        id = userId,
-        contactInfo = UserUtils.defaultUserContactRecords(state.phones.toVector, state.emails.toVector, state.socialContacts.toVector),
-        about = state.about,
-        preferredLanguages = state.preferredLanguages.toVector,
-        timeZone = state.timeZone,
-        botCommands = state.botCommands,
-        ext = None,
-        isBlocked = Some(isBlocked)
-      ))) pipeTo sender()
+      id = userId,
+      contactInfo = UserUtils.defaultUserContactRecords(state.phones.toVector, state.emails.toVector, state.socialContacts.toVector),
+      about = if (!(isBlockedByMe)) state.about else None,
+      preferredLanguages = state.preferredLanguages.toVector,
+      timeZone = state.timeZone,
+      botCommands = state.botCommands,
+      ext = None,
+      isBlocked = Some(isBlocked)
+    ))) pipeTo sender()
   }
 
   protected def getContactRecords(state: UserState): Unit =

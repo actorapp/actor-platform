@@ -261,8 +261,8 @@ private[user] sealed trait Queries {
   def getAuthIdsMap(userIds: Set[Int]): Future[Map[UserId, Seq[AuthId]]] =
     Future.sequence(userIds map (uid ⇒ getAuthIds(uid) map (uid → _))) map (_.toMap)
 
-  def getApiStruct(userId: Int, clientUserId: Int, clientAuthId: Long): Future[ApiUser] =
-    (viewRegion.ref ? GetApiStruct(userId, clientUserId, clientAuthId)).mapTo[GetApiStructResponse] map (_.struct)
+  def getApiStruct(userId: Int, clientUserId: Int, clientAuthId: Long, isBlockedMe: Boolean = false): Future[ApiUser] =
+    (viewRegion.ref ? GetApiStruct(userId, clientUserId, clientAuthId, Some(isBlockedMe))).mapTo[GetApiStructResponse] map (_.struct)
 
   def getApiFullStruct(userId: Int, clientUserId: Int, clientAuthId: Long): Future[ApiFullUser] =
     (viewRegion.ref ? GetApiFullStruct(userId, clientUserId, clientAuthId)).mapTo[GetApiFullStructResponse] map (_.struct)

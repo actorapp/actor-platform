@@ -53,4 +53,6 @@ object RelationRepo {
   def fetchBlockedIds(userId: Int): DBIO[Seq[Int]] =
     relations.filter(r ⇒ r.userId === userId && r.status === RelationStatus.Blocked).map(_.relatedTo).result
 
+  def fetchWhoBlockMe(userId: Int): DBIO[Seq[Int]] =
+    relations.filter(r ⇒ r.relatedTo === userId && r.status === RelationStatus.Blocked).map(_.userId).result
 }
