@@ -161,7 +161,8 @@ object Dependencies {
     jodaTime,
     postgresJdbc,
     shardakka,
-    scrImageCore
+    scrImageCore,
+    sprayClient
   )
 
   val enrich = shared ++ Seq(akkaActor, akkaHttp)
