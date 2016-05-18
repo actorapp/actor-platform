@@ -1,4 +1,5 @@
 $toolbar-height: 48px;
+$stem-size: 10px;
 
 .toolbar {
   height: $toolbar-height;
@@ -14,7 +15,6 @@ $toolbar-height: 48px;
     cursor: default;
     user-select: none;
 
-    text-shadow: 0 1px 1px rgba(black, .3);
     span {
       font-size: 20px;
       font-weight: 500;
@@ -25,7 +25,98 @@ $toolbar-height: 48px;
   }
 
   &__search {
+    position: relative;
+    z-index: 100;
+
     display: inline-block;
+
+    &__input {
+      .input {
+        font-size: 15px;
+        line-height: 24px;
+
+        display: inline-block;
+
+        box-sizing: border-box;
+        padding: 0;
+
+        color: white;
+        border: none;
+        outline: none;
+        background-color: transparent;
+
+        @include placeholder(white);
+      }
+    }
+    .search-icon {
+      line-height: 24px;
+
+      display: inline-block;
+
+      user-select: none;
+      pointer-events: none;
+
+      color: rgb(255, 255, 255);
+    }
+    .close-icon {
+      font-size: 16px;
+      line-height: 24px;
+
+      cursor: pointer;
+
+      color: rgba(white, .7);
+      &:hover {
+        transform: scale(1.1);
+
+        color: rgba(white, .9);
+      }
+      &:active {
+        transform: scale(.98);
+      }
+    }
+
+    &__dropdown {
+      position: absolute;
+      top: 100%;
+      right: -4px;
+      left: -4px;
+
+      min-height: 200px;
+      margin-top: -4px;
+
+      color: rgba($greyish-brown, .6);
+      border-radius: $default-border-radius;
+      background-color: white;
+      box-shadow: 0 1px 3px 1px rgba(0, 0, 0, .1);
+      &:before {
+        top: - $stem-size / 2;
+        left: 26px;
+
+        @include stem($stem-size);
+      }
+      &:after {
+        z-index: -1;
+        top: - $stem-size / 2;
+        left: 26px;
+
+        box-shadow: 0 1px 3px 1px rgba(0, 0, 0, .1);
+
+        @include stem($stem-size);
+      }
+    }
+    &--expanded {
+      min-width: 300px;
+
+      cursor: default !important;
+      .toolbar__search__input {
+        display: inline-flex;
+
+        margin-left: 10px;
+      }
+    }
+    &--focused {
+      background-color: rgba($baby-blue, .2) !important;
+    }
   }
 
   &__button {
@@ -33,24 +124,21 @@ $toolbar-height: 48px;
 
     cursor: pointer;
     user-select: none;
+    vertical-align: top;
 
     color: white;
     border: none;
     outline: none;
     background-color: transparent;
-    text-shadow: 0 1px 1px rgba(black, .3);
     &:hover {
       background-color: rgba($baby-blue, .12);
     }
     &:active {
-      background-color: rgba($baby-blue, .2) !important;
+      background-color: rgba($baby-blue, .2);
     }
 
     &.user-menu {
       padding-right: 10px;
-      .dropdown {
-        text-shadow: none;
-      }
     }
   }
 }

@@ -7,8 +7,10 @@
   &__name {
     font-size: 15px;
     font-weight: 500;
-    display: inline-block;
     line-height: 24px;
+
+    display: inline-block;
+
     vertical-align: top;
 
     color: white;
@@ -17,7 +19,7 @@
     line-height: 24px;
 
     transition: transform $default-transition-duration $default-transition-timing;
-    vertical-align: middle;
+    vertical-align: top;
 
     color: white;
 
@@ -25,7 +27,7 @@
   }
 
   .dropdown__menu {
-    top: 8px;
+    top: 4px;
   }
 
   &--opened {
@@ -34,7 +36,6 @@
       line-height: 24px;
 
       transform: scaleY(-1);
-      vertical-align: middle;
     }
   }
 }

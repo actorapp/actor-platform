@@ -6,6 +6,7 @@ import React, { Component, PropTypes } from 'react';
 import alert from '../utils/alert';
 
 import UserMenu from './common/UserMenu.react';
+import ToolbarSearch from './search/ToolbarSearch.react';
 
 class AppHeader extends Component {
   static contextTypes = {
@@ -43,6 +44,7 @@ class AppHeader extends Component {
         </div>
         <div className="toolbar__controls col-xs">
           {this.renderWriteButton()}
+          <ToolbarSearch className="toolbar__button"/>
         </div>
         <div className="toolbar__profile">
           <UserMenu className="toolbar__button"/>
