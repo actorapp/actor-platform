@@ -83,3 +83,15 @@
   height: 100%;
   min-height: 400px;
 }
+
+@mixin stem($stem-size) {
+  position: absolute;
+
+  width: $stem-size;
+  height: $stem-size;
+
+  content: '';
+  transform: rotate(45deg);
+
+  background-color: white;
+}
