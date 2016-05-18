@@ -33,7 +33,7 @@ trait FileStorageOperations extends LocalUploadKeyImplicits {
       dir ← getOrCreateFileDir(fileId)
       file = dir / name
       _ ← Future { blocking { file.createIfNotExists() } }
-      ioRes ← Source(List(ByteString(data))).runWith(FileIO.toFile(file.toJava))
+      ioRes ← Source(List(ByteString(data))).runWith(FileIO.toPath(file.path))
     } yield ioRes.status match {
       case Success(_)     ⇒ ()
       case Failure(cause) ⇒ throw cause
@@ -114,7 +114,7 @@ trait FileStorageOperations extends LocalUploadKeyImplicits {
     }
 
   protected def getFileData(file: File): Future[ByteString] =
-    FileIO.fromFile(file.toJava).runFold(ByteString.empty)(_ ++ _)
+    FileIO.fromPath(file.path).runFold(ByteString.empty)(_ ++ _)
 
   protected def getFileName(name: String) = if (name.trim.isEmpty) "file" else name
 
