@@ -8,11 +8,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:visible="false"
         android:id="@+id/send_invites"
         android:icon="@drawable/attach_send2"
         android:title="@string/contacts_invite_via_link"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/select_all"
+        android:title="@string/invites_select_all"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/select_none"
+        android:title="@string/invites_select_none"
+        app:showAsAction="never" />
 
 
 </menu>
