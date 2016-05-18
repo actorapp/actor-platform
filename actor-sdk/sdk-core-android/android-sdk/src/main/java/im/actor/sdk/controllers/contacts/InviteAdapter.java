@@ -102,4 +102,15 @@ public class InviteAdapter extends HolderAdapter<PhoneBookContact> {
     protected ViewHolder<PhoneBookContact> createHolder(PhoneBookContact obj) {
         return new InviteContactHolder(new FrameLayout(context), context, onItemClickedListener);
     }
+
+    public void selectNone() {
+        selectedContactType.clear();
+        selectedUsers.clear();
+        notifyDataSetChanged();
+    }
+
+    public void selectAll() {
+        selectedUsers.addAll(phoneBook);
+        notifyDataSetChanged();
+    }
 }

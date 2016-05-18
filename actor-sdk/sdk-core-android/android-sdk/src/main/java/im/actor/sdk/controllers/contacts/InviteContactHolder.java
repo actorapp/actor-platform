@@ -170,14 +170,10 @@ public class InviteContactHolder extends ViewHolder<PhoneBookContact> {
             title.setText(data.getName());
         }
 
-        if (selected) {
-            if ((type == TYPE_EMAIL && data.getEmails().size() > 0) || data.getPhones().size() == 0) {
-                subtitle.setText(data.getEmails().get(0).getEmail());
-            } else {
-                subtitle.setText(Long.toString(data.getPhones().get(0).getNumber()));
-            }
+        if ((type == TYPE_EMAIL && data.getEmails().size() > 0) || data.getPhones().size() == 0) {
+            subtitle.setText(data.getEmails().get(0).getEmail());
         } else {
-            subtitle.setText("");
+            subtitle.setText(Long.toString(data.getPhones().get(0).getNumber()));
         }
 
         isSelected.setChecked(selected);
