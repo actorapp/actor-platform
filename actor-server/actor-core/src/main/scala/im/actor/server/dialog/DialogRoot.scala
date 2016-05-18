@@ -172,7 +172,7 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
       val toArchive = resp.groups.collect {
         case DialogGroup(DialogGroupType.DirectMessages, ds) ⇒ ds
         case DialogGroup(DialogGroupType.Groups, ds)         ⇒ ds
-      }.flatten filter (d => d.counter == 0 && d.lastMessageDate.isBefore(Instant.now().minus(Period.ofDays(5))))
+      }.flatten filter (d ⇒ d.counter == 0 && d.lastMessageDate.isBefore(Instant.now().minus(Period.ofDays(5))))
 
       toArchive foreach { d ⇒
         log.debug("Archiving dialog {} due to inactivity. Last message date: {}", d.peer, d.lastMessageDate)
