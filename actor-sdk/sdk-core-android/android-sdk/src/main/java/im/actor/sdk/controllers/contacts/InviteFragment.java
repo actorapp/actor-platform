@@ -28,11 +28,12 @@ import im.actor.sdk.view.adapters.RecyclerListView;
 public class InviteFragment extends BaseFragment {
 
 
-    private MenuItem sendButton;
     private RecyclerListView collection;
     private InviteAdapter adapter;
     private List<PhoneBookContact> contacts;
     private TextView emptyText;
+    private Menu menu;
+    private MenuInflater inflater;
 
     public InviteFragment() {
     }
@@ -50,6 +51,8 @@ public class InviteFragment extends BaseFragment {
         collection = (RecyclerListView) res.findViewById(R.id.listView);
         AndroidPhoneBook phoneBookLoader = new AndroidPhoneBook();
         phoneBookLoader.useDelay(false);
+
+        res.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
 
         phoneBookLoader.loadPhoneBook(contacts -> {
             if (contacts.size() > 0) {
@@ -75,18 +78,11 @@ public class InviteFragment extends BaseFragment {
 
                     hideView(emptyText);
                     showView(collection);
-
-
-                    if (sendButton != null) {
-                        sendButton.setVisible(true);
-                    }
+                    showMenu();
                 });
 
             }
         });
-
-
-        res.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
 
         return res;
     }
@@ -140,18 +136,29 @@ public class InviteFragment extends BaseFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.invite, menu);
-        sendButton = menu.getItem(0);
-        if (adapter != null && adapter.getCount() > 0) {
-            sendButton.setVisible(true);
+        this.menu = menu;
+        this.inflater = inflater;
+        showMenu();
+    }
+
+    public void showMenu() {
+        if (menu != null && inflater != null && adapter != null) {
+            if (adapter.getCount() > 0) {
+                inflater.inflate(R.menu.invite, menu);
+            }
         }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.send_invites) {
+        int id = item.getItemId();
+        if (id == R.id.send_invites) {
             sendInvites();
             return true;
+        } else if (id == R.id.select_all) {
+            adapter.selectAll();
+        } else if (id == R.id.select_none) {
+            adapter.selectNone();
         }
         return super.onOptionsItemSelected(item);
     }

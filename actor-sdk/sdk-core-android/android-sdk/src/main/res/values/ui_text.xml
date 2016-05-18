@@ -219,7 +219,7 @@
     <string name="contacts_title">Contacts</string>
     <string name="contacts_empty_short">No contacts here yet</string>
     <string name="contacts_share">Tell your friends about {appName}</string>
-    <string name="contacts_add">Add friend...</string>
+    <string name="contacts_add">Add friend…</string>
 
     <string name="contacts_empty_title">Invite your friends</string>
     <string name="contacts_empty_invite_hint">None of your contacts are using {appName}. Use the button below to invite them.</string>
@@ -231,6 +231,12 @@
     <string name="contacts_menu_edit">Edit name</string>
 
     <string name="contacts_invite_via_link">Invite via link</string>
+
+    <string name="invites_select_all">Select all</string>
+    <string name="invites_select_none">Select none</string>
+
+    <string name="invites_share_link_one">Share link</string>
+    <string name="invites_share_link_multiple">Send link via sms/email to multiple contacts</string>
 
     <!-- Chat -->
     <string name="chat_menu_group_info">Group info</string>

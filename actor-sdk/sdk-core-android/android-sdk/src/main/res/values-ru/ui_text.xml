@@ -215,7 +215,7 @@
     <string name="contacts_title">Контакты</string>
     <string name="contacts_empty_short">Еще нет контактов</string>
     <string name="contacts_share">Рассказать друзьям об {appName}</string>
-    <string name="contacts_add">Добавить друга...</string>
+    <string name="contacts_add">Добавить друга…</string>
 
     <string name="contacts_menu_remove">Удалить {0} из контактов</string>
     <string name="contacts_menu_remove_progress">Удаление…</string>
@@ -227,6 +227,13 @@
     <string name="contacts_empty_add_hint">или добавьте контакт вручную, нажав на плюс ниже</string>
 
     <string name="contacts_invite_via_link">Отправить ссылку</string>
+
+    <string name="invites_select_all">Выбрать все</string>
+    <string name="invites_select_none">Снять выбор</string>
+
+    <string name="invites_share_link_one">Отправить ссылку</string>
+    <string name="invites_share_link_multiple">Отправить ссылку нескольким контактам</string>
+
 
     <!-- Chat -->
     <string name="chat_menu_group_info">Инф. о группе</string>
