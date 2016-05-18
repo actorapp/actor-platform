@@ -13,7 +13,6 @@ import akka.http.scaladsl.server._
 import akka.stream.ActorMaterializer
 import im.actor.server.api.http.HttpHandler
 import im.actor.server.api.http.HttpApiHelpers._
-import im.actor.server.file.local.http.fix.GetFileFix
 import im.actor.server.file.local.{ FileStorageOperations, LocalFileStorageConfig, RequestSigning }
 import im.actor.util.log.AnyRefLogSource
 
@@ -28,8 +27,7 @@ private[local] final class FilesHttpHandler(storageConfig: LocalFileStorageConfi
   extends HttpHandler
   with RequestSigning
   with FileStorageOperations
-  with AnyRefLogSource
-  with GetFileFix {
+  with AnyRefLogSource {
   import FilesRejections._
 
   protected implicit val mat = ActorMaterializer()
@@ -70,8 +68,7 @@ private[local] final class FilesHttpHandler(storageConfig: LocalFileStorageConfi
                     respondWithDefaultHeader(
                       `Content-Disposition`(attachment, Map("filename" -> file.name))
                     ) {
-                      //TODO: remove as soon, as https://github.com/akka/akka/issues/20338 get fixed
-                      getFromFileFix(file.toJava)
+                      getFromFile(file.toJava)
                     }
                   case Success(None) =>
                     complete(HttpResponse(StatusCodes.NotFound))
