@@ -82,9 +82,9 @@ final class S3StorageAdapter(_system: ActorSystem) extends FileStorageAdapter {
   private def downloadFile(bucketName: String, id: Long, name: String) = {
     for {
       dirFile ← DBIO.from(FileUtils.createTempDir())
-      file = dirFile.toPath.resolve("file").toFile
-      _ ← DBIO.from(FutureTransfer.listenFor(transferManager.download(bucketName, s3Key(id, name), file)) map (_.waitForCompletion()))
-      data ← DBIO.from(FileIO.fromFile(file).runFold(ByteString.empty)(_ ++ _))
+      path = dirFile.toPath.resolve("file")
+      _ ← DBIO.from(FutureTransfer.listenFor(transferManager.download(bucketName, s3Key(id, name), path.toFile)) map (_.waitForCompletion()))
+      data ← DBIO.from(FileIO.fromPath(path).runFold(ByteString.empty)(_ ++ _))
     } yield data.toArray
   }
 
