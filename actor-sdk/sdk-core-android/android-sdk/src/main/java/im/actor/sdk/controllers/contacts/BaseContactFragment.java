@@ -1,6 +1,8 @@
 package im.actor.sdk.controllers.contacts;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -116,18 +118,7 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
             addFooterOrHeaderAction(ActorSDK.sharedActor().style.getActionShareColor(), R.drawable.ic_share_white_24dp, R.string.contacts_share, false, new Runnable() {
                 @Override
                 public void run() {
-                    Intent intent;
-
-                    if (USE_APP_INVITES) {
-                        intent = new Intent(getActivity(), InviteActivity.class);
-                    } else {
-                        String inviteMessage = getResources().getString(R.string.invite_message).replace("{inviteUrl}", ActorSDK.sharedActor().getInviteUrl()).replace("{appName}", ActorSDK.sharedActor().getAppName());
-                        intent = new Intent(Intent.ACTION_SEND);
-                        intent.putExtra(Intent.EXTRA_TEXT, inviteMessage);
-                        intent.setType("text/plain");
-                    }
-
-                    startActivity(intent);
+                    sendInvites();
                 }
             }, true);
 
@@ -143,6 +134,39 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
             footer.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
             addFooterView(footer);
         }
+    }
+
+    public void sendInvites() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setItems(new String[]{getString(R.string.invites_share_link_one), getString(R.string.invites_share_link_multiple)}, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case 0:
+                        sendOneInvite();
+                        break;
+
+                    case 1:
+                        sendMultipleInvites();
+                        break;
+                }
+                dialog.dismiss();
+            }
+        }).show();
+    }
+
+    public void sendMultipleInvites() {
+        Intent intent = new Intent(getActivity(), InviteActivity.class);
+        startActivity(intent);
+    }
+
+    public void sendOneInvite() {
+        String inviteMessage = getResources().getString(R.string.invite_message).replace("{inviteUrl}", ActorSDK.sharedActor().getInviteUrl()).replace("{appName}", ActorSDK.sharedActor().getAppName());
+        Intent sendIntent = new Intent(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, inviteMessage);
+        sendIntent.setType("text/plain");
+        startActivity(sendIntent);
     }
 
     protected void addFooterOrHeaderAction(int color, int icon, int text, boolean isLast, final Runnable action, boolean isHeader) {
