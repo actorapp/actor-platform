@@ -13,6 +13,7 @@ public class SDKPushReceiver extends ActorPushReceiver {
             JSONObject object = new JSONObject(payload);
             if (object.has("data")) {
                 JSONObject data = object.getJSONObject("data");
+                ActorSDK.sharedActor().waitForReady();
                 if (data.has("seq")) {
                     int seq = data.getInt("seq");
                     Log.d("SDKPushReceiver", "Seq Received: " + seq);
