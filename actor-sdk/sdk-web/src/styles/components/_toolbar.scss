@@ -137,11 +137,10 @@ $stem-size: 10px;
       }
     }
     footer {
-      box-shadow: 0 -1px 0 0 rgba(0,0,0,.07);
+      box-shadow: 0 -1px 0 0 rgba(0, 0, 0, .07);
       a {
         font-size: 13px;
-        // font-weight: 500;
-        line-height: 20px;
+        line-height: 24px;
 
         display: block;
 
@@ -153,9 +152,25 @@ $stem-size: 10px;
 
         color: rgb(100, 100, 100);
         background-color: rgba(black, .02);
+        span {
+          line-height: 24px;
+
+          display: inline-block;
+
+          vertical-align: top;
+        }
+        .material-icons {
+          font-size: 16px;
+          line-height: 24px;
+
+          margin-left: 4px;
+
+          vertical-align: top;
+        }
+
         &:hover {
           color: darken(rgb(100, 100, 100), 5);
-          background-color: rgba(black, .05);
+          background-color: rgba(black, .04);
         }
       }
     }
