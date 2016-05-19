@@ -516,6 +516,11 @@ public class RouterActor extends ModuleActor {
     private Promise<Void> onMessageReadByMe(Peer peer, long date, int counter) {
 
         ConversationState state = conversationStates.getValue(peer.getUnuqueId());
+
+        if (state.getInReadDate() >= date) {
+            return Promise.success(null);
+        }
+
         state = state
                 .changeCounter(counter)
                 .changeInReadDate(date);
