@@ -74,14 +74,46 @@ $stem-size: 10px;
         transform: scale(.98);
       }
     }
+    &__results {
+      position: relative;
+      z-index: 110;
 
+      overflow: scroll;
+
+      box-sizing: border-box;
+      min-height: 152px;
+      max-height: 440px;
+      padding: 4px 0;
+      header {
+        font-size: 13px;
+        font-weight: 500;
+        // text-transform: uppercase;
+        line-height: 16px;
+
+        padding: 8px 16px;
+      }
+      .contact {
+        padding: 4px 16px;
+
+        cursor: pointer;
+        .material-icons {
+          display: none;
+        }
+        &:hover {
+          color: white;
+          background-color: $dark_sky_blue;
+          .material-icons {
+            display: block;
+          }
+        }
+      }
+    }
     &__dropdown {
       position: absolute;
       top: 100%;
       right: -4px;
       left: -4px;
 
-      min-height: 200px;
       margin-top: -4px;
 
       color: rgba($greyish-brown, .6);
@@ -104,10 +136,35 @@ $stem-size: 10px;
         @include stem($stem-size);
       }
     }
+    footer {
+      box-shadow: 0 -1px 0 0 rgba(0,0,0,.07);
+      a {
+        font-size: 13px;
+        // font-weight: 500;
+        line-height: 20px;
+
+        display: block;
+
+        margin-top: 4px;
+        padding: 10px 16px;
+
+        cursor: pointer;
+        text-decoration: none;
+
+        color: rgb(100, 100, 100);
+        background-color: rgba(black, .02);
+        &:hover {
+          color: darken(rgb(100, 100, 100), 5);
+          background-color: rgba(black, .05);
+        }
+      }
+    }
     &--expanded {
       min-width: 300px;
 
       cursor: default !important;
+
+      background-color: rgba($baby-blue, .12) !important;
       .toolbar__search__input {
         display: inline-flex;
 

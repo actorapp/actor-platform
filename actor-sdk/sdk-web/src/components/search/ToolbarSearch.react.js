@@ -6,11 +6,13 @@ import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
 import classnames from 'classnames';
 import { FormattedMessage } from 'react-intl';
+import history from '../../utils/history';
 
 import SearchStore from '../../stores/SearchStore';
 
 import SearchActionCreators from '../../actions/SearchActionCreators';
 import ComposeActionCreators from '../../actions/ComposeActionCreators';
+import DialogActionCreators from '../../actions/DialogActionCreators';
 
 import SearchInput from './SearchInput.react';
 import ContactItem from '../common/ContactItem.react';
@@ -31,8 +33,9 @@ class ToolbarSearch extends Component {
       ...prevState,
       query: searchState.query,
       results: searchState.results,
-      isSearchExpanded: prevState ? prevState.isSearchExpanded : false,
-      isSearchFocused: prevState ? prevState.isSearchFocused : false
+      isSearchExpanded: prevState ? prevState.isSearchExpanded : true,
+      isSearchFocused: prevState ? prevState.isSearchFocused : false,
+      isResultsDropdownOpen: prevState ? prevState.isResultsDropdownOpen : false
     }
   }
 
@@ -41,8 +44,9 @@ class ToolbarSearch extends Component {
 
     this.handleToolbarSearchClick = this.handleToolbarSearchClick.bind(this);
     this.handleSearchChange = this.handleSearchChange.bind(this);
-    // this.handleSearchToggleOpen = this.handleSearchToggleOpen.bind(this);
     this.handleSearchToggleFocus = this.handleSearchToggleFocus.bind(this);
+    this.handleMessagesSearch = this.handleMessagesSearch.bind(this);
+    this.handleResultClick = this.handleResultClick.bind(this);
   }
 
   handleSearchChange(query) {
@@ -50,12 +54,32 @@ class ToolbarSearch extends Component {
   }
 
   handleSearchToggleFocus(isFocused) {
+    console.debug('handleSearchToggleFocus', isFocused);
     ComposeActionCreators.toggleAutoFocus(!isFocused);
-    this.setState({ isSearchFocused: isFocused });
+    this.setState({
+      isSearchFocused: isFocused
+    });
+
+    if (isFocused) {
+      this.setState({ isResultsDropdownOpen: true })
+    }
   }
 
   handleToolbarSearchClick() {
+    console.debug('handleToolbarSearchClick');
     this.setState({ isSearchExpanded: true });
+  }
+
+  handleMessagesSearch() {
+    console.debug('handleMessagesSearch')
+    this.setState({ isResultsDropdownOpen: false })
+  }
+
+  handleResultClick(peer) {
+    console.debug('handleResultClick', peer)
+    this.setState({ isResultsDropdownOpen: false });
+    this.handleSearchChange('');
+    history.push(`/im/${peer.key}`);
   }
 
   renderSearchInput() {
@@ -82,9 +106,11 @@ class ToolbarSearch extends Component {
       return null;
     }
 
-    return groups.map((group) => {
+    const groupResults = groups.map((group, index) => {
       return (
         <ContactItem
+          key={`g.${index}`}
+          onClick={() => this.handleResultClick(group.peerInfo.peer)}
           uid={group.peerInfo.peer.id}
           name={group.peerInfo.title}
           placeholder={group.peerInfo.placeholder}
@@ -92,6 +118,13 @@ class ToolbarSearch extends Component {
         />
       );
     });
+
+    return (
+      <div>
+        <header>Groups</header>
+        {groupResults}
+      </div>
+    );
   }
 
   renderSearchContactResults() {
@@ -101,9 +134,11 @@ class ToolbarSearch extends Component {
       return null;
     }
 
-    return contacts.map((contact) => {
+    const contactsResults = contacts.map((contact, index) => {
       return (
         <ContactItem
+          key={`c.${index}`}
+          onClick={() => this.handleResultClick(contact.peerInfo.peer)}
           uid={contact.peerInfo.peer.id}
           name={contact.peerInfo.title}
           placeholder={contact.peerInfo.placeholder}
@@ -111,12 +146,21 @@ class ToolbarSearch extends Component {
         />
       );
     });
+
+    return (
+      <div>
+        <header>Contacts</header>
+        {contactsResults}
+      </div>
+    );
   }
 
   renderSearchResultsDropdown() {
-    const { query, isSearchFocused } = this.state;
+    const { query, isResultsDropdownOpen, isSearchFocused } = this.state;
 
-    if (!query || query === '' || !isSearchFocused) {
+    // if (!query || query === '' || !isSearchFocused) {
+    if (!query || query === '' || !isResultsDropdownOpen) {
+    // if (!query || query === '') {
       return null;
     }
 
@@ -125,8 +169,10 @@ class ToolbarSearch extends Component {
         <div className="toolbar__search__results">
           {this.renderSearchContactResults()}
           {this.renderSearchGroupResults()}
-          <a href="#">Search messages in current dialog</a>
         </div>
+        <footer>
+          <a onClick={this.handleMessagesSearch}>Search messages in current dialog ></a>
+        </footer>
       </div>
     );
   }
