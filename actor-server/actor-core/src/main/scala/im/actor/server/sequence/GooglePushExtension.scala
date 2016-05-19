@@ -156,7 +156,7 @@ private final class GooglePushDelivery extends ActorPublisher[(HttpRequest, Goog
 
   def receive = {
     case d: Delivery if buf.size == MaxQueue ⇒
-      log.error("Current queue is already at size MaxQueue: {}, ignoring delivery", MaxQueue)
+      log.error("Current queue is already at size MaxQueue: {}, totalDemand: {}, ignoring delivery", MaxQueue, totalDemand)
     case d: Delivery ⇒
       if (buf.isEmpty && totalDemand > 0) {
         onNext(mkJob(d))
