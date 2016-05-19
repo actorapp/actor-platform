@@ -12,7 +12,7 @@ import SearchStore from '../../stores/SearchStore';
 
 import SearchActionCreators from '../../actions/SearchActionCreators';
 import ComposeActionCreators from '../../actions/ComposeActionCreators';
-import DialogActionCreators from '../../actions/DialogActionCreators';
+import DialogSearchActionCreators from '../../actions/DialogSearchActionCreators';
 
 import SearchInput from './SearchInput.react';
 import ContactItem from '../common/ContactItem.react';
@@ -31,8 +31,7 @@ class ToolbarSearch extends Component {
 
     return {
       ...prevState,
-      query: searchState.query,
-      results: searchState.results,
+      ...searchState,
       isSearchExpanded: prevState ? prevState.isSearchExpanded : true,
       isSearchFocused: prevState ? prevState.isSearchFocused : false,
       isResultsDropdownOpen: prevState ? prevState.isResultsDropdownOpen : false
@@ -56,9 +55,7 @@ class ToolbarSearch extends Component {
   handleSearchToggleFocus(isFocused) {
     console.debug('handleSearchToggleFocus', isFocused);
     ComposeActionCreators.toggleAutoFocus(!isFocused);
-    this.setState({
-      isSearchFocused: isFocused
-    });
+    this.setState({ isSearchFocused: isFocused });
 
     if (isFocused) {
       this.setState({ isResultsDropdownOpen: true })
@@ -71,7 +68,8 @@ class ToolbarSearch extends Component {
   }
 
   handleMessagesSearch() {
-    console.debug('handleMessagesSearch')
+    const { query } = this.state;
+    DialogSearchActionCreators.open(query);
     this.setState({ isResultsDropdownOpen: false })
   }
 
@@ -171,7 +169,9 @@ class ToolbarSearch extends Component {
           {this.renderSearchGroupResults()}
         </div>
         <footer>
-          <a onClick={this.handleMessagesSearch}>Search messages in current dialog ></a>
+          <a onClick={this.handleMessagesSearch}>
+            Search messages in current dialog <i className="material-icons">arrow_forward</i>
+          </a>
         </footer>
       </div>
     );

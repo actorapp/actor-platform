@@ -13,6 +13,7 @@ import PeerUtils from '../../utils/PeerUtils';
 
 import ActivityActionCreators from '../../actions/ActivityActionCreators';
 import FavoriteActionCreators from '../../actions/FavoriteActionCreators';
+import DialogSearchActionCreators from '../../actions/DialogSearchActionCreators';
 
 import AvatarItem from '../common/AvatarItem.react';
 import ToggleFavorite from '../common/ToggleFavorite.react';
@@ -24,7 +25,8 @@ class DialogHeader extends Component {
     call: PropTypes.object.isRequired,
     message: PropTypes.string,
     isFavorite: PropTypes.bool.isRequired,
-    isActivityOpen: PropTypes.bool.isRequired
+    isActivityOpen: PropTypes.bool.isRequired,
+    isDialogSearchOpen: PropTypes.bool.isRequired
   }
 
   static contextTypes = {
@@ -37,6 +39,7 @@ class DialogHeader extends Component {
     this.onFavoriteToggle = this.onFavoriteToggle.bind(this);
     this.handleInfoButtonClick = this.handleInfoButtonClick.bind(this);
     this.handleInCallClick = this.handleInCallClick.bind(this);
+    this.handleSearchButtonClick = this.handleSearchButtonClick.bind(this);
   }
 
   onFavoriteToggle() {
@@ -65,6 +68,15 @@ class DialogHeader extends Component {
   handleCallButtonClick() {
     alert('callButtonClick')
       .then(() => console.debug('Alert closed'));
+  }
+
+  handleSearchButtonClick() {
+    const { isDialogSearchOpen } = this.props;
+    if (!isDialogSearchOpen) {
+      DialogSearchActionCreators.open();
+    } else {
+      DialogSearchActionCreators.close();
+    }
   }
 
   renderMessage() {
@@ -152,6 +164,25 @@ class DialogHeader extends Component {
     )
   }
 
+  renderSearchButton() {
+    const { isExperimental } = this.context;
+    const { isDialogSearchOpen } = this.props;
+
+    if (!isExperimental) {
+      return null;
+    }
+
+    const callButtonClassName = classnames('button button--icon', {
+      'active': isDialogSearchOpen
+    });
+
+    return (
+      <button className={callButtonClassName} onClick={this.handleSearchButtonClick}>
+        <i className="material-icons">search</i>
+      </button>
+    );
+  }
+
   renderCallButton() {
     const { isExperimental } = this.context;
 
@@ -199,6 +230,7 @@ class DialogHeader extends Component {
         <div className="col-xs"/>
 
         <div className="dialog__header__controls">
+          {this.renderSearchButton()}
           {this.renderCallButton()}
           {this.renderInfoButton()}
         </div>
