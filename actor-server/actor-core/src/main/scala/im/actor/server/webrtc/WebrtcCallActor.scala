@@ -3,7 +3,7 @@ package im.actor.server.webrtc
 import akka.actor._
 import akka.http.scaladsl.util.FastFuture
 import akka.pattern.pipe
-import com.relayrides.pushy.apns.util.{ ApnsPayloadBuilder, SimpleApnsPushNotification, TokenUtil }
+import com.relayrides.pushy.apns.util.ApnsPayloadBuilder
 import im.actor.api.rpc._
 import im.actor.api.rpc.messaging.{ ApiServiceExPhoneCall, ApiServiceExPhoneMissed, ApiServiceMessage }
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
@@ -19,7 +19,6 @@ import im.actor.server.user.UserExtension
 import im.actor.server.values.ValuesExtension
 import im.actor.types._
 
-import scala.collection.concurrent.TrieMap
 import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom
@@ -502,72 +501,60 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
     }
 
   private def scheduleIncomingCallUpdates(callees: Seq[UserId]): Future[Unit] = {
-    for {
+    val pushCredsFu = for {
       authIdsMap ← userExt.getAuthIdsMap(callees.toSet)
-      membersMap = authIdsMap flatMap {
-        case (userId, authIds) ⇒ getMember(userId) map (_ → authIds)
+      acredsMap ← FutureExt.ftraverse(authIdsMap.toSeq) {
+        case (userId, authIds) ⇒
+          apnsExt.fetchVoipCreds(authIds.toSet) map (userId → _)
       }
-      acredsMap ← FutureExt.ftraverse(membersMap.toSeq) {
-        case (member, authIds) ⇒
-          apnsExt.fetchVoipCreds(authIds.toSet) map (member → _)
+      gcredsMap ← FutureExt.ftraverse(authIdsMap.toSeq) {
+        case (userId, authIds) ⇒
+          gcmExt.fetchCreds(authIds.toSet) map (userId → _)
       }
-      gcredsMap ← FutureExt.ftraverse(membersMap.toSeq) {
-        case (member, authIds) ⇒
-          gcmExt.fetchCreds(authIds.toSet) map (member → _)
+      actorCredsMap ← FutureExt.ftraverse(authIdsMap.toSeq) {
+        case (userId, authIds) ⇒
+          actorPush.fetchCreds(userId) map (userId → _)
       }
-      ourCredsMap ← FutureExt.ftraverse(membersMap.toSeq) {
-        case (member, authIds) ⇒
-          actorPush.fetchCreds(member.userId) map (member → _)
-      }
-    } yield {
-      for {
-        (member, credsList) ← acredsMap
-        creds ← credsList
-        credsId = extractCredsId(creds)
-        clientFu ← apnsExt.voipClient(credsId)
-      } yield {
-        val payload =
-          (new ApnsPayloadBuilder)
+    } yield (acredsMap, gcredsMap, actorCredsMap)
+
+    pushCredsFu map {
+      case (appleCreds, googleCreds, actorCreds) ⇒
+        for {
+          (userId, credsList) ← appleCreds
+          creds ← credsList
+          credsId = extractCredsId(creds)
+          clientFu ← apnsExt.voipClient(credsId)
+          payload = (new ApnsPayloadBuilder)
             .addCustomProperty("callId", id)
-            .addCustomProperty("attemptIndex", member.callAttempts)
+            .addCustomProperty("attemptIndex", 1)
             .buildWithDefaultMaximumLength()
+          _ = clientFu foreach { implicit c ⇒ sendNotification(payload, creds, userId) }
+        } yield ()
 
-        clientFu foreach { implicit client ⇒
-          sendNotification(payload, creds, member.userId)
-        }
-      }
-
-      for {
-        (member, creds) ← gcredsMap
-        cred ← creds
-      } yield {
-        val message = new GooglePushMessage(
-          cred.regId,
-          None,
-          Some(Map("callId" → id.toString, "attemptIndex" → member.callAttempts.toString)),
-          time_to_live = Some(0)
-        )
-        gcmExt.send(cred.projectId, message)
-      }
-
-      for {
-        (member, creds) ← ourCredsMap
-        cred ← creds
-      } yield {
-        actorPush.deliver(ActorPushMessage(
-          "callId" → id.toString,
-          "attemptIndex" → member.callAttempts.toString
-        ), cred)
-      }
-
-      scheduledUpds =
-        callees.map { userId ⇒
-          (
-            userId,
-            system.scheduler.schedule(0.seconds, 5.seconds, self, SendIncomingCall(userId))
+        for {
+          (member, creds) ← googleCreds
+          cred ← creds
+          message = new GooglePushMessage(
+            cred.regId,
+            None,
+            Some(Map("callId" → id.toString, "attemptIndex" → "1")),
+            time_to_live = Some(0)
           )
-        }
-          .toMap
+          _ = gcmExt.send(cred.projectId, message)
+        } yield ()
+
+        for {
+          (member, creds) ← actorCreds
+          cred ← creds
+          _ = actorPush.deliver(ActorPushMessage(
+            "callId" → id.toString,
+            "attemptIndex" → "1"
+          ), cred)
+        } yield ()
+
+        scheduledUpds = (callees map { userId ⇒
+          userId → system.scheduler.schedule(0.seconds, 5.seconds, self, SendIncomingCall(userId))
+        }).toMap
     }
   }
 
