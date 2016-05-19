@@ -3,7 +3,7 @@
  */
 
 import React, { Component, PropTypes } from 'react';
-import { findDOMNode } from 'react-dom';
+// import { findDOMNode } from 'react-dom';
 import classnames from 'classnames';
 
 import { KeyCodes } from '../../constants/ActorAppConstants';
@@ -33,7 +33,7 @@ class SearchInput extends Component {
   }
 
   componentDidMount() {
-    findDOMNode(this.refs.search).focus();
+    // findDOMNode(this.refs.search).focus();
     // document.addEventListener('keydown', this.onKeyDown, false);
   }
 
