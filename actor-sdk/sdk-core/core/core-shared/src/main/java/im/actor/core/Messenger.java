@@ -350,7 +350,7 @@ public class Messenger {
      * @return Command for execution
      */
     @NotNull
-    @ObjectiveCName("requestSignUpCommandWithName:WithName:WithIp")
+    @ObjectiveCName("requestSignUpCommandWithName:WithName:WithIp:")
     public Command<AuthState> requestSignUp(String nickName,String name, final String ip) {
         return modules.getAuthModule().requestSignUp(nickName, name,ip);
     }
