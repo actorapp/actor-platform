@@ -6,11 +6,15 @@ import im.actor.api.rpc.ClientData
 import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.api.rpc.peers.ApiUserOutPeer
 import im.actor.api.rpc.privacy.{ PrivacyService, ResponseLoadBlockedUsers, UpdateUserBlocked, UpdateUserUnblocked }
+import im.actor.api.rpc.users.UpdateUserContactsChanged
 import im.actor.server.acl.ACLUtils
 import im.actor.server.db.DbExtension
 import im.actor.server.model.social.{ Relation, RelationStatus }
+import im.actor.server.persist.{ UserEmailRepo, UserPhoneRepo }
 import im.actor.server.persist.social.RelationRepo
 import im.actor.server.sequence.SeqUpdatesExtension
+import im.actor.server.user.{ UserExtension, UserUtils }
+import slick.dbio._
 
 import scala.concurrent.{ ExecutionContext, Future }
 
@@ -24,7 +28,6 @@ final class PrivacyServiceImpl(implicit system: ActorSystem) extends PrivacyServ
   import PrivacyServiceErrors._
 
   implicit protected val ec: ExecutionContext = system.dispatcher
-
   private val db = DbExtension(system).db
   private val seqUpdExt = SeqUpdatesExtension(system)
 
@@ -42,6 +45,7 @@ final class PrivacyServiceImpl(implicit system: ActorSystem) extends PrivacyServ
             val newRelation = Relation(client.userId, peer.userId, RelationStatus.Blocked)
             fromFuture(db.run(RelationRepo.create(newRelation)))
         }
+        _ ← fromFuture(seqUpdExt.deliverSingleUpdate(peer.userId, UpdateUserContactsChanged(client.userId, UserUtils.userContactRecords(Vector.empty, Vector.empty))))
         s ← fromFuture(seqUpdExt.deliverSingleUpdate(client.userId, UpdateUserBlocked(peer.userId)))
       } yield ResponseSeq(s.seq, s.state.toByteArray)).value
     }
@@ -60,6 +64,9 @@ final class PrivacyServiceImpl(implicit system: ActorSystem) extends PrivacyServ
             val newRelation = Relation(client.userId, peer.userId, RelationStatus.Approved)
             fromFuture(db.run(RelationRepo.create(newRelation)))
         }
+        phones ← fromFuture(db.run(UserPhoneRepo.findByUserId(client.userId)))
+        emails ← fromFuture(db.run(UserEmailRepo.findByUserId(client.userId)))
+        _ ← fromFuture(seqUpdExt.deliverSingleUpdate(peer.userId, UpdateUserContactsChanged(client.userId, UserUtils.userContactRecords(phones.toVector, emails.toVector))))
         s ← fromFuture(seqUpdExt.deliverSingleUpdate(client.userId, UpdateUserUnblocked(peer.userId)))
       } yield ResponseSeq(s.seq, s.state.toByteArray)).value
     }
