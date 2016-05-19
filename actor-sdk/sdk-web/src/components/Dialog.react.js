@@ -3,7 +3,6 @@
  */
 
 import { isFunction } from 'lodash';
-
 import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
 import DelegateContainer from '../utils/DelegateContainer';
@@ -17,6 +16,7 @@ import DefaultDialogFooter from './dialog/DialogFooter.react';
 import DefaultActivity from './Activity.react';
 import DefaultSearch from './search/SearchSection.react';
 import DefaultCall from './Call.react';
+import DialogSearch from './search/DialogSearch.react'
 
 import UserStore from '../stores/UserStore';
 import DialogStore from '../stores/DialogStore';
@@ -24,10 +24,12 @@ import DialogInfoStore from '../stores/DialogInfoStore';
 import ActivityStore from '../stores/ActivityStore';
 import OnlineStore from '../stores/OnlineStore';
 import CallStore from '../stores/CallStore';
+import DialogSearchStore from '../stores/DialogSearchStore'
 
 import DialogActionCreators from '../actions/DialogActionCreators';
 import MessageActionCreators from '../actions/MessageActionCreators';
 import BlockedUsersActionCreators from '../actions/BlockedUsersActionCreators';
+import DialogSearchActionCreators from '../actions/DialogSearchActionCreators';
 
 class Dialog extends Component {
   static propTypes = {
@@ -37,7 +39,7 @@ class Dialog extends Component {
   };
 
   static getStores() {
-    return [ActivityStore, DialogStore, DialogInfoStore, OnlineStore, CallStore];
+    return [ActivityStore, DialogStore, DialogInfoStore, OnlineStore, CallStore, DialogSearchStore];
   }
 
   static calculateState() {
@@ -53,7 +55,8 @@ class Dialog extends Component {
       dialogInfo: DialogInfoStore.getState(),
       message: OnlineStore.getMessage(),
       isFavorite: DialogStore.isFavorite(peer.id),
-      call: Dialog.calculateCallState(peer)
+      call: Dialog.calculateCallState(peer),
+      search: DialogSearchStore.getState()
     };
   }
 
@@ -80,6 +83,9 @@ class Dialog extends Component {
 
     this.handleStartClick = this.handleStartClick.bind(this);
     this.handleUnblock = this.handleUnblock.bind(this);
+    this.handleDialogSearchCancel = this.handleDialogSearchCancel.bind(this);
+    this.handleDialogSearchChange = this.handleDialogSearchChange.bind(this);
+    this.handleSearchFilterChange = this.handleSearchFilterChange.bind(this);
 
     this.components = this.getComponents();
   }
@@ -111,6 +117,20 @@ class Dialog extends Component {
   handleUnblock() {
     const { dialogInfo } = this.state;
     BlockedUsersActionCreators.unblockUser(dialogInfo.id);
+  }
+
+  handleDialogSearchCancel() {
+    DialogSearchActionCreators.close();
+  }
+
+  handleDialogSearchChange(query) {
+    console.debug('handleDialogSearchChange', query);
+    const { search }  = this.state;
+    DialogSearchActionCreators.changeSearchQuery(query, search.filter);
+  }
+
+  handleSearchFilterChange(value) {
+
   }
 
   getActivityComponents() {
@@ -159,9 +179,24 @@ class Dialog extends Component {
     return activity.map((Activity, index) => <Activity key={index} />)
   }
 
+  renderDialogSearch() {
+    const { search } = this.state;
+
+    if (!search.isOpen) {
+      return null;
+    }
+
+    return (
+      <DialogSearch
+        {...search}
+        onCancel={this.handleDialogSearchCancel}
+        onChange={this.handleDialogSearchChange}
+      />
+    )
+  }
+
   render() {
-    const { uid, peer, isMember, dialogInfo, message, isFavorite, call, isActivityOpen } = this.state;
-    console.debug(dialogInfo);
+    const { uid, peer, isMember, dialogInfo, message, isFavorite, call, isActivityOpen, search } = this.state;
 
     if (!peer) {
       return <section className="main" />;
@@ -181,8 +216,10 @@ class Dialog extends Component {
           call={call}
           peer={peer}
           isFavorite={isFavorite}
+          isDialogSearchOpen={search.isOpen}
           isActivityOpen={isActivityOpen}
         />
+        {this.renderDialogSearch()}
         <div className="flexrow">
           <section className="dialog">
             <div className="chat">
