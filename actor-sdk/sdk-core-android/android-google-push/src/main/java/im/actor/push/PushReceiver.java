@@ -22,6 +22,7 @@ public class PushReceiver extends WakefulBroadcastReceiver {
         String messageType = gcm.getMessageType(intent);
         if (!extras.isEmpty()) {
             if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
+                ActorSDK.sharedActor().waitForReady();
                 if (extras.containsKey("seq")) {
                     int seq = Integer.parseInt(extras.getString("seq"));
                     Log.d(TAG, "Push received #" + seq);
