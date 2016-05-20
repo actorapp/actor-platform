@@ -53,3 +53,11 @@ export default {
     return !user.avatar && !user.userName && user.title === 'Bot';
   }
 };
+
+export function isPeerUser(peer) {
+  return peer.type === PeerTypes.USER;
+}
+
+export function isPeerGroup(peer) {
+  return peer.type === PeerTypes.GROUP;
+}
