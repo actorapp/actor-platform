@@ -6,7 +6,6 @@ import React, { Component, PropTypes } from 'react';
 import { FormattedMessage } from 'react-intl';
 import classnames from 'classnames';
 import Tooltip from 'rc-tooltip';
-import alert from '../../utils/alert';
 
 import { escapeWithEmoji } from '../../utils/EmojiUtils';
 
@@ -38,6 +37,7 @@ class DialogHeader extends Component {
 
     this.onFavoriteToggle = this.onFavoriteToggle.bind(this);
     this.handleInfoButtonClick = this.handleInfoButtonClick.bind(this);
+    this.handleCallButtonClick = this.handleCallButtonClick.bind(this);
     this.handleSearchButtonClick = this.handleSearchButtonClick.bind(this);
   }
 
@@ -64,8 +64,7 @@ class DialogHeader extends Component {
 
 
   handleCallButtonClick() {
-    alert('callButtonClick')
-      .then(() => console.debug('Alert closed'));
+    CallActionCreators.makePeerCall(this.props.peer);
   }
 
   handleSearchButtonClick() {
@@ -80,16 +79,13 @@ class DialogHeader extends Component {
   renderMessage() {
     const { call, message } = this.props;
 
-    let peerMessage;
     if (call.isCalling) {
-      peerMessage = <FormattedMessage id={`call.state.${call.state}`} values={{ time: call.time }} />
-    } else {
-      peerMessage = message;
+      return (
+        <FormattedMessage id={`call.state.${call.state}`} values={{ time: call.time }} />
+      );
     }
 
-    return (
-      <div className="dialog__header__peer__message">{peerMessage}</div>
-    )
+    return message;
   }
 
   renderInfoButton() {
@@ -167,16 +163,14 @@ class DialogHeader extends Component {
   }
 
   renderCallButton() {
-    const { isExperimental } = this.context;
+    const { delegate } = this.context;
 
-    if (!isExperimental) {
+    if (!delegate.features.calls) {
       return null;
     }
 
-    const callButtonClassName = classnames('button button--icon');
-
     return (
-      <button className={callButtonClassName} onClick={this.handleCallButtonClick}>
+      <button className="button button--icon" onClick={this.handleCallButtonClick}>
         <i className="material-icons" style={{ fontSize: 22 }}>call</i>
       </button>
     );
@@ -207,7 +201,9 @@ class DialogHeader extends Component {
             {this.renderVerified()}
             {this.renderFavorite()}
           </header>
-          {this.renderMessage()}
+          <div className="dialog__header__peer__message">
+            {this.renderMessage()}
+          </div>
         </div>
 
         <div className="col-xs"/>
