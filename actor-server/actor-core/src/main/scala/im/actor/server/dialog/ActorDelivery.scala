@@ -23,7 +23,6 @@ final class ActorDelivery()(implicit val system: ActorSystem)
   implicit val seqUpdatesExt: SeqUpdatesExtension = SeqUpdatesExtension(system)
   private val userExt = UserExtension(system)
   private val dialogExt = DialogExtension(system)
-  private val db = DbExtension(system).db
 
   override def receiverDelivery(
     receiverUserId: Int,
@@ -40,7 +39,8 @@ final class ActorDelivery()(implicit val system: ActorSystem)
       date = timestamp,
       randomId = randomId,
       message = message,
-      attributes = None
+      attributes = None,
+      quotedMessage = None
     )
 
     for {
@@ -62,7 +62,7 @@ final class ActorDelivery()(implicit val system: ActorSystem)
 
   override def sendCountersUpdate(userId: Int): Future[Unit] =
     for {
-      counter ← db.run(dialogExt.getUnreadTotal(userId))
+      counter ← dialogExt.getUnreadTotal(userId)
       _ ← sendCountersUpdate(userId, counter)
     } yield ()
 
@@ -87,7 +87,8 @@ final class ActorDelivery()(implicit val system: ActorSystem)
       date = timestamp,
       randomId = randomId,
       message = message,
-      None
+      attributes = None,
+      quotedMessage = None
     )
 
     val senderClientUpdate = UpdateMessageSent(apiPeer, randomId, timestamp)
@@ -122,9 +123,8 @@ final class ActorDelivery()(implicit val system: ActorSystem)
     ) map (_ ⇒ ())
   }
 
-  override def read(readerUserId: Int, readerAuthSid: Int, peer: Peer, date: Long, unreadCountOpt: Option[Int]): Future[Unit] =
+  override def read(readerUserId: Int, readerAuthSid: Int, peer: Peer, date: Long, unreadCount: Int): Future[Unit] =
     for {
-      unreadCount ← unreadCountOpt.fold(db.run(dialogExt.getUnreadTotal(readerUserId)))(FastFuture.successful)
       _ ← seqUpdatesExt.deliverSingleUpdate(
         userId = readerUserId,
         update = UpdateMessageReadByMe(peer.asStruct, date, Some(unreadCount)),

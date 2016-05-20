@@ -1,25 +1,43 @@
 /*
- * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
+ * Copyright (C) 2016 Actor LLC. <https://actor.im>
  */
 
-import { map } from 'lodash';
-import React, { Component, PropTypes } from 'react';
+import { isFunction } from 'lodash';
+import React, { Component } from 'react';
 import { Container } from 'flux/utils';
 import classnames from 'classnames';
 import Modal from 'react-modal';
-
+import { FormattedMessage } from 'react-intl';
 import SharedContainer from '../../utils/SharedContainer'
-
-import { KeyCodes, appName } from '../../constants/ActorAppConstants';
+import DelegateContainer from '../../utils/DelegateContainer';
+import { appName, PreferencesTabTypes, AsyncActionStates } from '../../constants/ActorAppConstants';
 
 import PreferencesActionCreators from '../../actions/PreferencesActionCreators';
-import {loggerToggle} from '../../actions/LoggerActionCreators';
+import { loggerToggle } from '../../actions/LoggerActionCreators';
 
 import PreferencesStore from '../../stores/PreferencesStore';
 
-import Session from './preferences/Session.react'
+import Session from './preferences/Session.react';
+import BlockedUsers from './preferences/BlockedUsers.react';
 
 class PreferencesModal extends Component {
+  static getStores() {
+    return [PreferencesStore];
+  }
+
+  static calculateState(prevState) {
+    return {
+      isSendByEnterEnabled: prevState ? prevState.isSendByEnterEnabled : PreferencesStore.isSendByEnterEnabled(),
+      isSoundEffectsEnabled: prevState ? prevState.isSoundEffectsEnabled : PreferencesStore.isSoundEffectsEnabled(),
+      isGroupsNotificationsEnabled: prevState ? prevState.isGroupsNotificationsEnabled : PreferencesStore.isGroupsNotificationsEnabled(),
+      isOnlyMentionNotifications: prevState ? prevState.isOnlyMentionNotifications : PreferencesStore.isOnlyMentionNotifications(),
+      isShowNotificationsTextEnabled: prevState ? prevState.isShowNotificationsTextEnabled : PreferencesStore.isShowNotificationsTextEnabled(),
+      sessions: PreferencesStore.getSessions(),
+      activeTab: PreferencesStore.getCurrentTab(),
+      terminateState: PreferencesStore.getTerminateState()
+    }
+  }
+
   constructor(props) {
     super(props);
 
@@ -27,39 +45,35 @@ class PreferencesModal extends Component {
     this.appName = SharedActor.appName ? SharedActor.appName : appName;
     this.loggerToggleCount = 0;
 
-    this.onAppDetailClick = this.onAppDetailClick.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.handleSave = this.handleSave.bind(this);
+    this.handleChangeTab = this.handleChangeTab.bind(this);
+    this.handleAppDetailClick = this.handleAppDetailClick.bind(this);
+    this.toggleSendByEnter = this.toggleSendByEnter.bind(this);
+    this.changeSoundEffectsEnabled = this.changeSoundEffectsEnabled.bind(this);
+    this.changeGroupsNotificationsEnabled = this.changeGroupsNotificationsEnabled.bind(this);
+    this.changeMentionNotifications = this.changeMentionNotifications.bind(this);
+    this.changeIsShowNotificationTextEnabled = this.changeIsShowNotificationTextEnabled.bind(this);
+    this.handleTerminateAllSessionsClick = this.handleTerminateAllSessionsClick.bind(this);
+
+    this.components = this.getComponents();
   }
 
-  static contextTypes = {
-    intl: PropTypes.object.isRequired
-  };
+  getComponents() {
+    const { components } = DelegateContainer.get();
 
-  static getStores() {
-    return [PreferencesStore];
-  }
-
-  static calculateState() {
-    return {
-      isOpen: PreferencesStore.isOpen(),
-      isSendByEnterEnabled: PreferencesStore.isSendByEnterEnabled(),
-      isSoundEffectsEnabled: PreferencesStore.isSoundEffectsEnabled(),
-      isGroupsNotificationsEnabled: PreferencesStore.isGroupsNotificationsEnabled(),
-      isOnlyMentionNotifications: PreferencesStore.isOnlyMentionNotifications(),
-      isShowNotificationsTextEnabled: PreferencesStore.isShowNotificationsTextEnabled(),
-      sessions: PreferencesStore.getSessions(),
-      activeTab: PreferencesStore.getCurrentTab()
+    if (components) {
+      return {
+        About: isFunction(components.about) ? components.about : null
+      };
     }
-  };
 
-  componentWillMount() {
-    document.addEventListener('keydown', this.onKeyDown, false);
+    return {
+      About: null
+    };
   }
 
-  componentWillUnmount() {
-    document.removeEventListener('keydown', this.onKeyDown, false);
-  }
-
-  onAppDetailClick() {
+  handleAppDetailClick() {
     this.loggerToggleCount++;
     if (this.loggerToggleCount >= 4) {
       loggerToggle();
@@ -67,9 +81,11 @@ class PreferencesModal extends Component {
     }
   }
 
-  onClose = () => PreferencesActionCreators.hide();
+  handleClose() {
+    PreferencesActionCreators.hide();
+  }
 
-  onDone = () => {
+  handleSave() {
     const {
       isSendByEnterEnabled,
       isSoundEffectsEnabled,
@@ -85,218 +101,291 @@ class PreferencesModal extends Component {
       isOnlyMentionNotifications,
       isShowNotificationsTextEnabled
     });
-    this.onClose();
-  };
+    this.handleClose();
+  }
 
-  onKeyDown = event => {
-    if (event.keyCode === KeyCodes.ESC) {
-      event.preventDefault();
-      this.onClose();
+  toggleSendByEnter(event) {
+    this.setState({ isSendByEnterEnabled: event.target.value === 'true' });
+  }
+
+  changeSoundEffectsEnabled(event) {
+    this.setState({ isSoundEffectsEnabled: event.target.checked });
+  }
+
+  changeGroupsNotificationsEnabled(event) {
+    this.setState({ isGroupsNotificationsEnabled: event.target.checked });
+  }
+
+  changeMentionNotifications(event) {
+    this.setState({ isOnlyMentionNotifications: event.target.checked });
+  }
+
+  changeIsShowNotificationTextEnabled(event) {
+    this.setState({ isShowNotificationsTextEnabled: event.target.checked });
+  }
+
+  handleTerminateAllSessionsClick() {
+    PreferencesActionCreators.terminateAllSessions();
+  }
+
+  handleChangeTab(tab) {
+    PreferencesActionCreators.changeTab(tab);
+  }
+
+  renderAppAbout() {
+    const { About } = this.components;
+    if (!About) {
+      return null;
     }
-  };
 
-  changeSendByEnter = (event) => this.setState({isSendByEnterEnabled: event.target.value === 'true'});
-  changeSoundEffectsEnabled = (event) => this.setState({isSoundEffectsEnabled: event.target.checked});
-  changeGroupsNotificationsEnabled = (event) => this.setState({isGroupsNotificationsEnabled: event.target.checked});
-  changeMentionNotifications = (event) => this.setState({isOnlyMentionNotifications: event.target.checked});
-  changeIsShowNotificationTextEnabled = (event) => this.setState({isShowNotificationsTextEnabled: event.target.checked});
+    const { activeTab } = this.state;
+    const aboutTabClassNames = classnames('preferences__tabs__tab', {
+      'preferences__tabs__tab--active': activeTab ===  PreferencesTabTypes.ABOUT
+    });
 
-  onTerminateAllSessionsClick = () => PreferencesActionCreators.terminateAllSessions();
+    return (
+      <a className={aboutTabClassNames} onClick={() => this.handleChangeTab(PreferencesTabTypes.ABOUT)}>
+        <FormattedMessage id="preferences.about.title"/>
+      </a>
+    );
+  }
 
-  changeTab = (tab) => PreferencesActionCreators.changeTab(tab);
+  renderPreferencesSidebar() {
+    const { activeTab } = this.state;
 
-  render() {
+    const generalTabClassNames = classnames('preferences__tabs__tab', {
+      'preferences__tabs__tab--active': activeTab === PreferencesTabTypes.GENERAL
+    });
+    const notificationTabClassNames = classnames('preferences__tabs__tab', {
+      'preferences__tabs__tab--active': activeTab ===  PreferencesTabTypes.NOTIFICATIONS
+    });
+    const blockTabClassNames = classnames('preferences__tabs__tab', {
+      'preferences__tabs__tab--active': activeTab ===  PreferencesTabTypes.BLOCKED
+    });
+    const securityTabClassNames = classnames('preferences__tabs__tab', {
+      'preferences__tabs__tab--active': activeTab ===  PreferencesTabTypes.SECURITY
+    });
+
+    return (
+      <aside className="preferences__tabs">
+        <a className={generalTabClassNames} onClick={() => this.handleChangeTab(PreferencesTabTypes.GENERAL)}>
+          <FormattedMessage id="preferences.general.title"/>
+        </a>
+        <a className={notificationTabClassNames} onClick={() => this.handleChangeTab(PreferencesTabTypes.NOTIFICATIONS)}>
+          <FormattedMessage id="preferences.notifications.title"/>
+        </a>
+        <a className={blockTabClassNames} onClick={() => this.handleChangeTab(PreferencesTabTypes.BLOCKED)}>
+          <FormattedMessage id="preferences.blocked.title"/>
+        </a>
+        <a className={securityTabClassNames} onClick={() => this.handleChangeTab(PreferencesTabTypes.SECURITY)}>
+          <FormattedMessage id="preferences.security.title"/>
+        </a>
+        {this.renderAppAbout()}
+      </aside>
+    );
+  }
+
+  renderGeneralTab() {
+    // FIXME: Sometimes radio buttons doesnt checked after changing tab;
+    const { isSendByEnterEnabled } = this.state;
+
+    return (
+      <div className="preferences__tabs__content">
+        <ul>
+          <li>
+            <i className="icon material-icons">keyboard</i>
+            <FormattedMessage id="preferences.general.send.title" tagName="h4"/>
+            <div className="radio">
+              <input
+                type="radio"
+                name="sendByEnter"
+                id="sendByEnterEnabled"
+                value="true"
+                defaultChecked={isSendByEnterEnabled}
+                onChange={this.toggleSendByEnter}/>
+              <label htmlFor="sendByEnterEnabled">
+                <b>Enter</b> – <FormattedMessage id="preferences.general.send.sendMessage"/>,&nbsp;
+                <b>Shift + Enter</b> – <FormattedMessage id="preferences.general.send.newLine"/>
+              </label>
+            </div>
+            <div className="radio">
+              <input
+                type="radio"
+                name="sendByEnter"
+                id="sendByEnterDisabled"
+                value="false"
+                defaultChecked={!isSendByEnterEnabled}
+                onChange={this.toggleSendByEnter}/>
+              <label htmlFor="sendByEnterDisabled">
+                <b>Cmd + Enter</b> – <FormattedMessage id="preferences.general.send.sendMessage"/>,&nbsp;
+                <b>Enter</b> – <FormattedMessage id="preferences.general.send.newLine"/>
+              </label>
+            </div>
+          </li>
+        </ul>
+      </div>
+    );
+  }
+
+  renderNotificationsTab() {
+    // FIXME: Checkboxes blinking on changing tabs
     const {
-      isOpen,
-      activeTab,
-      isSendByEnterEnabled,
       isSoundEffectsEnabled,
       isGroupsNotificationsEnabled,
       isOnlyMentionNotifications,
-      isShowNotificationsTextEnabled,
-      sessions
+      isShowNotificationsTextEnabled
     } = this.state;
-    const { intl } = this.context;
-
-    const sessionList = map(sessions, (session) => <Session {...session}/>);
-
-    const generalTabClassNames = classnames('preferences__tabs__tab', {
-      'preferences__tabs__tab--active': activeTab === 'GENERAL'
-    });
-    const notificationTabClassNames = classnames('preferences__tabs__tab', {
-      'preferences__tabs__tab--active': activeTab === 'NOTIFICATIONS'
-    });
-    const securityTabClassNames = classnames('preferences__tabs__tab', {
-      'preferences__tabs__tab--active': activeTab === 'SECURITY'
-    });
-    const generalTabContentClassName = classnames('preferences__list__item', {
-      'preferences__list__item--active': activeTab === 'GENERAL'
-    });
-    const notificationTabContentClassName = classnames('preferences__list__item', {
-      'preferences__list__item--active': activeTab === 'NOTIFICATIONS'
-    });
-    const securityTabContentClassName = classnames('preferences__list__item', {
-      'preferences__list__item--active': activeTab === 'SECURITY'
-    });
-
-    const modalStyle = {
-      content : {
-        position: null,
-        top: null,
-        left: null,
-        right: null,
-        bottom: null,
-        border: null,
-        background: null,
-        overflow: null,
-        outline: null,
-        padding: null,
-        borderRadius: null,
-        width: 760
-      }
-    };
 
     return (
-      <Modal className="modal-new modal-new--preferences"
-             closeTimeoutMS={150}
-             isOpen={isOpen}
-             style={modalStyle}>
+      <div className="preferences__tabs__content">
+        <ul>
+          <li>
+            <i className="icon material-icons">music_note</i>
+            <FormattedMessage id="preferences.notifications.effects.title" tagName="h4"/>
+            <div className="checkbox">
+              <input
+                type="checkbox"
+                id="soundEffects"
+                defaultChecked={isSoundEffectsEnabled}
+                onChange={this.changeSoundEffectsEnabled}/>
+              <label htmlFor="soundEffects">
+                <FormattedMessage id="preferences.notifications.effects.enable"/>
+              </label>
+            </div>
+          </li>
+          <li>
+            <i className="icon material-icons">notifications</i>
+            <FormattedMessage id="preferences.notifications.notification.title" tagName="h4"/>
+            <div className="checkbox">
+              <input
+                type="checkbox"
+                id="groupNotifications"
+                defaultChecked={isGroupsNotificationsEnabled}
+                onChange={this.changeGroupsNotificationsEnabled}/>
+              <label htmlFor="groupNotifications">
+                <FormattedMessage id="preferences.notifications.notification.enable"/>
+              </label>
+            </div>
+            <div className="checkbox">
+              <input
+                type="checkbox"
+                id="mentionsNotifications"
+                defaultChecked={isOnlyMentionNotifications}
+                onChange={this.changeMentionNotifications}/>
+              <label htmlFor="mentionsNotifications">
+                <FormattedMessage id="preferences.notifications.notification.onlyMentionEnable"/>
+              </label>
+            </div>
+            <p className="hint"><FormattedMessage id="preferences.notifications.notification.onlyMentionHint"/></p>
+          </li>
+          <li>
+            <i className="icon material-icons">visibility</i>
+            <FormattedMessage id="preferences.notifications.privacy.title" tagName="h4"/>
+            <div className="checkbox">
+              <input
+                type="checkbox"
+                id="notificationTextPreview"
+                defaultChecked={isShowNotificationsTextEnabled}
+                onChange={this.changeIsShowNotificationTextEnabled}/>
+              <label htmlFor="notificationTextPreview">
+                <FormattedMessage id="preferences.notifications.privacy.messagePreview"/>
+              </label>
+            </div>
+            <p className="hint"><FormattedMessage id="preferences.notifications.privacy.messagePreviewHint"/></p>
+          </li>
+        </ul>
+      </div>
+    );
+  }
 
-        <div className="modal-new__header">
-          <i className="modal-new__header__icon material-icons">settings</i>
-          <h3 className="modal-new__header__title">{intl.messages['preferencesModalTitle']}</h3>
+  renderSecurityTab() {
+    return (
+      <div className="preferences__tabs__content">
+        <ul>
+          <li>
+            <i className="icon material-icons">devices</i>
+            <FormattedMessage id="preferences.security.sessions.title" tagName="h4"/>
+            <ul className="session-list">
+              {this.renderSessionList()}
+              <li className="session-list__session">
+                <a className="link--red" onClick={this.handleTerminateAllSessionsClick}>
+                  <FormattedMessage id="preferences.security.sessions.terminateAll"/>
+                </a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    );
+  }
 
-          <div className="pull-right">
-            <button className="button button--lightblue" onClick={this.onDone}>{intl.messages['button.done']}</button>
-          </div>
-        </div>
+  renderSessionList() {
+    const { sessions, terminateState } = this.state;
+    return sessions.map((session, index) => {
+      return (
+        <Session
+          {...session}
+          key={`s${index}`}
+          terminateState={terminateState[session.id] || AsyncActionStates.PENDING}
+        />
+      );
+    });
+  }
 
-        <div className="modal-new__body">
-          <div className="preferences">
-            <aside className="preferences__tabs">
-              <a className={generalTabClassNames}
-                 onClick={() => this.changeTab('GENERAL')}>
-                {intl.messages['preferencesGeneralTab']}
-              </a>
-              <a className={notificationTabClassNames}
-                 onClick={() => this.changeTab('NOTIFICATIONS')}>
-                {intl.messages['preferencesNotificationsTab']}
-              </a>
-              <a className={securityTabClassNames}
-                 onClick={() => this.changeTab('SECURITY')}>
-                {intl.messages['preferencesSecurityTab']}
-              </a>
-              <footer className="preferences__tabs__footer">
-                <span onClick={this.onAppDetailClick}>
-                  {this.appName} v1.0.123
-                </span>
-              </footer>
-            </aside>
-            <div className="preferences__body">
-              <div className="preferences__list">
-                <div className={generalTabContentClassName}>
-                  <ul>
-                    <li>
-                      <i className="icon material-icons">keyboard</i>
-                      <h4>{intl.messages['preferencesSendMessageTitle']}</h4>
-                      <div className="radio">
-                        <input type="radio"
-                               name="sendByEnter"
-                               id="sendByEnterEnabled"
-                               value="true"
-                               defaultChecked={isSendByEnterEnabled}
-                               onChange={this.changeSendByEnter}/>
-                        <label htmlFor="sendByEnterEnabled">
-                          <b>Enter</b> – {intl.messages['preferencesSendMessage']}, <b>Shift + Enter</b> – {intl.messages['preferencesNewLine']}
-                        </label>
-                      </div>
-                      <div className="radio">
-                        <input type="radio"
-                               name="sendByEnter"
-                               id="sendByEnterDisabled"
-                               value="false"
-                               defaultChecked={!isSendByEnterEnabled}
-                               onChange={this.changeSendByEnter}/>
-                        <label htmlFor="sendByEnterDisabled">
-                          <b>Cmd + Enter</b> – {intl.messages['preferencesSendMessage']}, <b>Enter</b> – {intl.messages['preferencesNewLine']}
-                        </label>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-                <div className={notificationTabContentClassName}>
-                  <ul>
-                    <li>
-                      <i className="icon material-icons">music_note</i>
-                      <h4>{intl.messages['preferencesEffectsTitle']}</h4>
-                      <div className="checkbox">
-                        <input type="checkbox"
-                               id="soundEffects"
-                               defaultChecked={isSoundEffectsEnabled}
-                               onChange={this.changeSoundEffectsEnabled}/>
-                        <label htmlFor="soundEffects">
-                          {intl.messages['preferencesEnableEffects']}
-                        </label>
-                      </div>
-                    </li>
-                    <li>
-                      <i className="icon material-icons">notifications</i>
-                      <h4>{intl.messages['preferencesNotificationsTitle']}</h4>
-                      <div className="checkbox">
-                        <input type="checkbox"
-                               id="groupNotifications"
-                               defaultChecked={isGroupsNotificationsEnabled}
-                               onChange={this.changeGroupsNotificationsEnabled}/>
-                        <label htmlFor="groupNotifications">
-                          {intl.messages['preferencesNotificationsGroup']}
-                        </label>
-                      </div>
-                      <div className="checkbox">
-                        <input type="checkbox"
-                               id="mentionsNotifications"
-                               defaultChecked={isOnlyMentionNotifications}
-                               onChange={this.changeMentionNotifications}/>
-                        <label htmlFor="mentionsNotifications">
-                          {intl.messages['preferencesNotificationsOnlyMention']}
-                        </label>
-                      </div>
-                      <p className="hint">{intl.messages['preferencesNotificationsOnlyMentionHint']}</p>
-                    </li>
-                    <li>
-                      <i className="icon material-icons">visibility</i>
-                      <h4>{intl.messages['preferencesPrivacyTitle']}</h4>
-                      <div className="checkbox">
-                        <input type="checkbox"
-                               id="notificationTextPreview"
-                               defaultChecked={isShowNotificationsTextEnabled}
-                               onChange={this.changeIsShowNotificationTextEnabled}/>
-                        <label htmlFor="notificationTextPreview">
-                          {intl.messages['preferencesMessagePreview']}
-                        </label>
-                      </div>
-                      <p className="hint">{intl.messages['preferencesMessagePreviewHint']}</p>
-                    </li>
-                  </ul>
-                </div>
-                <div className={securityTabContentClassName}>
-                  <ul>
-                    <li>
-                      <i className="icon material-icons">devices</i>
-                      <h4>{intl.messages['preferencesSessionsTitle']}</h4>
-                      <ul className="session-list">
-                        {sessionList}
-                        <li className="session-list__session">
-                          <a className="link--red" onClick={this.onTerminateAllSessionsClick}>
-                            {intl.messages['preferencesSessionsTerminateAll']}
-                          </a>
-                        </li>
-                      </ul>
-                    </li>
-                  </ul>
-                </div>
+  renderAboutTab() {
+    const { About } = this.components;
+    if (!About) {
+      return null;
+    }
 
+    return <About/>
+  }
+
+  renderCurrentTab() {
+    const { activeTab } = this.state;
+    switch (activeTab) {
+      case PreferencesTabTypes.GENERAL:
+        return this.renderGeneralTab()
+      case PreferencesTabTypes.NOTIFICATIONS:
+        return this.renderNotificationsTab()
+      case PreferencesTabTypes.BLOCKED:
+        return <BlockedUsers/>
+      case PreferencesTabTypes.SECURITY:
+        return this.renderSecurityTab()
+      case PreferencesTabTypes.ABOUT:
+        return this.renderAboutTab();
+      default:
+        return null;
+    }
+  }
+
+  render() {
+    console.debug(this.state);
+    return (
+      <Modal
+        overlayClassName="modal-overlay"
+        className="modal"
+        onRequestClose={this.handleClose}
+        isOpen>
+
+        <div className="preferences">
+          <div className="modal__content">
+
+            <header className="modal__header">
+              <i className="modal__header__icon material-icons">settings</i>
+              <FormattedMessage id="preferences.title" tagName="h1"/>
+              <button className="button button--lightblue" onClick={this.handleSave}>
+                <FormattedMessage id="button.done"/>
+              </button>
+            </header>
+
+            <div className="modal__body">
+              {this.renderPreferencesSidebar()}
+              <div className="preferences__body">
+                {this.renderCurrentTab()}
               </div>
             </div>
+
           </div>
         </div>
 
@@ -305,4 +394,4 @@ class PreferencesModal extends Component {
   }
 }
 
-export default Container.create(PreferencesModal);
+export default Container.create(PreferencesModal, { pure: false });

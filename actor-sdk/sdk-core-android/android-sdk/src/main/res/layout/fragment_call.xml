@@ -86,7 +86,7 @@
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"/>
 
-            <ListView
+            <im.actor.sdk.view.adapters.RecyclerListView
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:visibility="invisible"

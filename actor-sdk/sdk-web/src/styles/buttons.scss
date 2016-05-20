@@ -15,6 +15,7 @@
   display: inline-block;
 
   box-sizing: border-box;
+  min-width: 100px;
   height: 36px;
   padding: 8px 16px;
 
@@ -99,6 +100,22 @@
     }
   }
 
+  &--cancel {
+    color: $ticklish;
+
+    &:hover,
+    &:focus {
+      background-color: rgba($ticklish, .15);
+    }
+    &:active {
+      background-color: lighten(rgba($ticklish, .15), 15);
+    }
+    &[disabled] {
+      color: $ticklish !important;
+      background-color: transparent !important;
+    }
+  }
+
   &--flat {
     color: $dark-sky-blue;
     background-color: rgba($dark-sky-blue, .15);
@@ -160,13 +177,13 @@
     }
   }
   &--square {
-    cursor: pointer !important;
     padding: 8px 0;
 
+    cursor: pointer !important;
+    transition: all 150ms ease-out;
     text-align: center;
 
     opacity: .8;
-    transition: all 150ms ease-out;
     i {
       font-size: 24px !important;
       line-height: 24px;
@@ -207,5 +224,6 @@
 
   &[disabled] {
     opacity: .5;
+    cursor: default;
   }
 }

@@ -2,7 +2,7 @@
 * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
 */
 
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import SvgIcon from '../common/SvgIcon.react';
@@ -13,40 +13,49 @@ class ContactDetails extends Component {
   };
 
   renderNickname() {
-    const { peerInfo } = this.props;
-    return peerInfo.nick ? (
+    const { nick } = this.props.peerInfo;
+    if (!nick) return null;
+
+    return (
       <li>
         <SvgIcon className="icon icon--pink" glyph="username"/>
-        <span className="title">{peerInfo.nick}</span>
+        <span className="title">{nick}</span>
         <span className="description"><FormattedMessage id="profile.nickname"/></span>
       </li>
-    ) : null;
+    );
   }
 
   renderPhone() {
-    const { peerInfo } = this.props;
-    return peerInfo.phones[0] ? (
-      <li>
-        <i className="material-icons icon icon--green">call</i>
-        <span className="title"><a href={'tel:+' + peerInfo.phones[0].number}>{'+' + peerInfo.phones[0].number}</a></span>
-        <span className="description"><FormattedMessage id="profile.phone"/></span>
-      </li>
-    ) : null;
+    const { phones } = this.props.peerInfo;
+    if (phones.length === 0) return null;
+
+    return phones.map((phone, index) => {
+      return (
+        <li key={`p${index}`}>
+          <i className="material-icons icon icon--green">call</i>
+          <span className="title"><a href={'tel:+' + phone.number}>{'+' + phone.number}</a></span>
+          <span className="description"><FormattedMessage id="profile.phone"/></span>
+        </li>
+      );
+    });
   }
 
   renderEmail() {
-    const { peerInfo } = this.props;
-    return peerInfo.emails[0] ? (
-      <li>
-        <SvgIcon className="icon icon--blue" glyph="envelope"/>
-        <span className="title"><a href={'mailto:' + peerInfo.emails[0].email}>{peerInfo.emails[0].email}</a></span>
-        <span className="description"><FormattedMessage id="profile.email"/></span>
-      </li>
-    ) : null;
+    const { emails } = this.props.peerInfo;
+    if (emails.length === 0) return null;
+
+    return emails.map((email, index) => {
+      return (
+        <li key={`e${index}`}>
+          <SvgIcon className="icon icon--blue" glyph="envelope"/>
+          <span className="title"><a href={'mailto:' + email.email}>{email.email}</a></span>
+          <span className="description"><FormattedMessage id="profile.email"/></span>
+        </li>
+      );
+    });
   }
 
   render() {
-
     return (
       <ul className="user_profile__contact_info__list">
         {this.renderNickname()}

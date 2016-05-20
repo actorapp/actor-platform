@@ -6,7 +6,6 @@ package im.actor.runtime;
 
 import com.google.j2objc.annotations.ObjectiveCName;
 
-import im.actor.runtime.storage.IndexStorage;
 import im.actor.runtime.storage.KeyValueStorage;
 import im.actor.runtime.storage.ListStorage;
 import im.actor.runtime.storage.PreferencesStorage;
@@ -28,15 +27,6 @@ public interface StorageRuntime {
      */
     @ObjectiveCName("createPreferencesStorage")
     PreferencesStorage createPreferencesStorage();
-
-    /**
-     * Creating index storage. Called only once for each index.
-     *
-     * @param name name of index engine
-     * @return the IndexStorage
-     */
-    @ObjectiveCName("createIndexWithName:")
-    IndexStorage createIndex(String name);
 
     /**
      * Creating key value storage. Called only once for each storage.

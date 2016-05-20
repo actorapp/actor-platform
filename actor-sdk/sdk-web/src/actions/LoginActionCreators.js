@@ -10,33 +10,47 @@ import history from '../utils/history';
 import DelegateContainer from '../utils/DelegateContainer';
 import LocationContainer from '../utils/LocationContainer';
 
-import MyProfileActionCreators from './MyProfileActionCreators';
+import ActionCreators from './ActionCreators';
+import JoinGroupActions from './JoinGroupActions';
+import ProfileActionCreators from './ProfileActionCreators';
 import DialogActionCreators from './DialogActionCreators';
 import ContactActionCreators from './ContactActionCreators';
 import QuickSearchActionCreators from './QuickSearchActionCreators';
 import FaviconActionCreators from './FaviconActionCreators';
 import EventBusActionCreators from './EventBusActionCreators';
+import StickersActionCreators from './StickersActionCreators';
 import Login_react from '../components/Login.react';
 
 var zhName="";
 var nickName="";
 var ip="";
 var password="";
-const LoginActionCreators = {
+class LoginActionCreators extends ActionCreators {
+  start() {
+    dispatch(ActionTypes.AUTH_START);
+  }
+
   changeLogin(login) {
-    dispatch(ActionTypes.AUTH_CHANGE_LOGIN, {login})
-  },
+    dispatch(ActionTypes.AUTH_CHANGE_LOGIN, { login });
+  }
 
   changeCode(code) {
-    dispatch(ActionTypes.AUTH_CHANGE_CODE, {code})
-  },
+    dispatch(ActionTypes.AUTH_CHANGE_CODE, { code });
+  }
 
   changeName(name) {
-    dispatch(ActionTypes.AUTH_CHANGE_NAME, {name})
-  },
+    dispatch(ActionTypes.AUTH_CHANGE_NAME, { name });
+  }
+
+  startSignup() {
+    dispatch(ActionTypes.AUTH_SIGNUP_START);
+  }
+
+  restartAuth() {
+    dispatch(ActionTypes.AUTH_RESTART);
+  }
 
   requestCode(phone) {
-    const isEmail = /@/.test(phone);
     let promise;
     if (/@/.test(phone)) {
       promise = ActorClient.requestCodeEmail(phone);
@@ -49,7 +63,7 @@ const LoginActionCreators = {
       success: ActionTypes.AUTH_CODE_REQUEST_SUCCESS,
       failure: ActionTypes.AUTH_CODE_REQUEST_FAILURE
     }, {phone});
-  },
+  }
 
   requestSms(phone) {
     dispatchAsync(ActorClient.requestSms(phone), {
@@ -57,7 +71,7 @@ const LoginActionCreators = {
       success: ActionTypes.AUTH_CODE_REQUEST_SUCCESS,
       failure: ActionTypes.AUTH_CODE_REQUEST_FAILURE
     }, {phone});
-  },
+  }
   requestUserName(userName) {
     dispatchAsync(ActorClient.requestUserName(userName), {
       request: ActionTypes.AUTH_CODE_REQUEST,
@@ -95,7 +109,7 @@ const LoginActionCreators = {
     const methodName = "isUserNeedSignUp";
     this.nickName = nickName;
     this.ip = ip;
-    let json = "username="+nickName;//寰楀埌鐨凧SON
+    let json = "username="+nickName;//得到的JSON
     const requestWebSignUp = () =>
       dispatchAsync(ActorClient.requestWebSignUp(ip, methodName, json, nickName), {
         request: ActionTypes.AUTH_CODE_REQUEST,
@@ -128,7 +142,7 @@ const LoginActionCreators = {
   },
 
   requestWebSyncUser(ip,nickName){
-    let json = "oaUserName=" + nickName;//寰楀埌鐨凧SON
+    let json = "oaUserName=" + nickName;//得到的JSON
     const methodName="syncUser";
     const requestWebSyncUser = () =>
       dispatchAsync(ActorClient.requestWebSyncUser(ip, methodName, json), {
@@ -175,50 +189,26 @@ const LoginActionCreators = {
   },
 
   sendCode(code) {
-    const sendCodePromise = () =>
-      dispatchAsync(ActorClient.sendCode(code), {
-        request: ActionTypes.AUTH_CODE_SEND,
-        success: ActionTypes.AUTH_CODE_SEND_SUCCESS,
-        failure: ActionTypes.AUTH_CODE_SEND_FAILURE
-      }, {code});
-    const handleState = (state) =>
-      {
-        switch (state) {
-          case 'signup':
-            this.startSignup();
-            break;
-          case 'logged_in':
-            this.setLoggedIn({redirect: true});
-            break;
-          default:
-            console.error('Unsupported state', state);
-        }
-      }
-      ;
-    sendCodePromise()
-      .then(handleState);
-  },
-  sendPassword(ip,json,password) {
-    const sendPasswordPromise = () =>
-      dispatchAsync(ActorClient.sendPassword(password), {
-        request: ActionTypes.AUTH_CODE_SEND,
-        success: ActionTypes.AUTH_CODE_SEND_SUCCESS,
-        failure: ActionTypes.AUTH_CODE_SEND_FAILURE
-      }, {password});
-    const handleState = (state) =>
-    {
+    dispatchAsync(ActorClient.sendCode(code), {
+      request: ActionTypes.AUTH_CODE_SEND,
+      success: ActionTypes.AUTH_CODE_SEND_SUCCESS,
+      failure: ActionTypes.AUTH_CODE_SEND_FAILURE
+    }, {
+      code
+    }).then((state) => {
       switch (state) {
         case 'signup':
           // this.startSignup();
           LoginActionCreators.requestWebValidatePassword(ip,json,password);
           break;
         case 'logged_in':
-          this.setLoggedIn({redirect: true});
+          this.setLoggedIn({ redirect: true });
           break;
         default:
           console.error('Unsupported state', state);
       }
-    };
+    });
+  }
     sendPasswordPromise()
       .then(handleState);
   },
@@ -249,59 +239,50 @@ const LoginActionCreators = {
         failure: ActionTypes.AUTH_SIGNUP_FAILURE
       }, {name,password});
 
-    const setLoggedIn = () =>
-      this.setLoggedIn({redirect: true});
+    const setLoggedIn = () => this.setLoggedIn({ redirect: true });
 
     signUpPromise()
       .then(setLoggedIn)
-  },
+  }
 
   setLoggedIn(opts = {}) {
     const delegate = DelegateContainer.get();
 
     if (delegate.actions.setLoggedIn) {
-      delegate.actions.setLoggedIn(opts);
-    } else {
-      if (opts.redirect) {
-        const location = LocationContainer.get();
-        const nextPathname = location.state ? location.state.nextPathname : null;
-
-        if (nextPathname) {
-          history.replace(nextPathname);
-        } else {
-          history.replace('/');
-        }
-      }
-
-      ActorClient.bindUser(ActorClient.getUid(), MyProfileActionCreators.onProfileChanged);
-      // ActorClient.bindDialogs(DialogActionCreators.setDialogs);
-      ActorClient.bindGroupDialogs(DialogActionCreators.setDialogs);
-      ActorClient.bindContacts(ContactActionCreators.setContacts);
-      ActorClient.bindSearch(QuickSearchActionCreators.setQuickSearchList);
-      ActorClient.bindTempGlobalCounter(FaviconActionCreators.setFavicon);
-      ActorClient.bindEventBus(EventBusActionCreators.broadcastEvent);
-      dispatch(ActionTypes.AUTH_SET_LOGGED_IN);
+      return delegate.actions.setLoggedIn(opts);
     }
-  },
+
+    if (opts.redirect) {
+      const location = LocationContainer.get();
+      const nextPathname = location.state ? location.state.nextPathname : '/';
+
+      history.replace(nextPathname);
+    }
+
+    this.setBindings('main', [
+      ActorClient.bindUser(ActorClient.getUid(), ProfileActionCreators.setProfile),
+      ActorClient.bindGroupDialogs(DialogActionCreators.setDialogs),
+      ActorClient.bindContacts(ContactActionCreators.setContacts),
+      ActorClient.bindSearch(QuickSearchActionCreators.setQuickSearchList),
+      ActorClient.bindTempGlobalCounter(FaviconActionCreators.setFavicon),
+      ActorClient.bindEventBus(EventBusActionCreators.broadcastEvent),
+      ActorClient.bindStickers(StickersActionCreators.setStickers)
+    ]);
+
+    dispatch(ActionTypes.AUTH_SET_LOGGED_IN);
+
+    JoinGroupActions.joinAfterLogin();
+  }
 
   setLoggedOut() {
     const delegate = DelegateContainer.get();
     if (delegate.actions.setLoggedOut) {
-      delegate.actions.setLoggedOut();
-    } else {
-      ActorClient.unbindUser(ActorClient.getUid(), MyProfileActionCreators.onProfileChanged);
-      ActorClient.unbindDialogs(DialogActionCreators.setDialogs);
-      // ActorClient.unbindContacts(ContactActionCreators.setContacts);
-      ActorClient.unbindGroupDialogs(DialogActionCreators.setDialogs);
-      ActorClient.unbindSearch(QuickSearchActionCreators.setQuickSearchList);
-      ActorClient.unbindTempGlobalCounter(FaviconActionCreators.setFavicon);
-      ActorClient.unbindEventBus(EventBusActionCreators.broadcastEvent);
-      dispatch(ActionTypes.AUTH_SET_LOGGED_OUT);
+      return delegate.actions.setLoggedOut();
     }
-  },
 
-  restartAuth() {
-    dispatch(ActionTypes.AUTH_RESTART)
+    this.removeBindings('main');
+
+    dispatch(ActionTypes.AUTH_SET_LOGGED_OUT);
   }
-};
-export default LoginActionCreators;
+}
+export default new LoginActionCreators();

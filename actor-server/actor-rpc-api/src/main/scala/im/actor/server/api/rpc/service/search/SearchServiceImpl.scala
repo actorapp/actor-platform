@@ -3,15 +3,16 @@ package im.actor.server.api.rpc.service.search
 import akka.actor.ActorSystem
 import im.actor.api.rpc._
 import im.actor.api.rpc.groups.ApiGroup
-import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
+import im.actor.api.rpc.peers.{ ApiGroupOutPeer, ApiPeer, ApiPeerType, ApiUserOutPeer }
 import im.actor.api.rpc.search._
+import im.actor.api.rpc.sequence.ApiUpdateOptimization
 import im.actor.api.rpc.users.ApiUser
 import im.actor.concurrent.FutureExt
 import im.actor.server.db.DbExtension
+import im.actor.server.dialog.DialogExtension
 import im.actor.server.group.{ GroupExtension, GroupUtils }
 import im.actor.server.persist.contact.UserContactRepo
 import im.actor.server.persist.GroupRepo
-import im.actor.server.persist.dialog.DialogRepo
 import im.actor.server.user.UserExtension
 
 import scala.concurrent.{ ExecutionContext, Future }
@@ -23,7 +24,11 @@ class SearchServiceImpl(implicit system: ActorSystem) extends SearchService {
   protected val userExt = UserExtension(system)
   protected val groupExt = GroupExtension(system)
 
-  override def doHandlePeerSearch(query: IndexedSeq[ApiSearchCondition], clientData: ClientData): Future[HandlerResult[ResponsePeerSearch]] = {
+  override def doHandlePeerSearch(
+    query:         IndexedSeq[ApiSearchCondition],
+    optimizations: IndexedSeq[ApiUpdateOptimization.Value],
+    clientData:    ClientData
+  ): Future[HandlerResult[ResponsePeerSearch]] = {
     authorized(clientData) { implicit client ⇒
       val (peerTypes, texts) = query.foldLeft(Set.empty[ApiSearchPeerType.Value], Set.empty[String]) {
         case ((pts, txts), ApiSearchPieceText(t))          ⇒ (pts, txts + t)
@@ -32,20 +37,32 @@ class SearchServiceImpl(implicit system: ActorSystem) extends SearchService {
       }
 
       texts.toList match {
-        case text :: Nil ⇒ searchResult(peerTypes.toVector, Some(text))
-        case Nil         ⇒ searchResult(peerTypes.toVector, None)
+        case text :: Nil ⇒ searchResult(peerTypes.toVector, Some(text), optimizations)
+        case Nil         ⇒ searchResult(peerTypes.toVector, None, optimizations)
         case _           ⇒ Future.successful(Error(RpcError(400, "INVALID_QUERY", "Invalid query.", canTryAgain = false, None)))
       }
     }
   }
 
-  override def doHandleMessageSearch(query: ApiSearchCondition, clientData: ClientData): Future[HandlerResult[ResponseMessageSearchResponse]] =
+  override def doHandleMessageSearch(
+    query:         ApiSearchCondition,
+    optimizations: IndexedSeq[ApiUpdateOptimization.Value],
+    clientData:    ClientData
+  ): Future[HandlerResult[ResponseMessageSearchResponse]] =
     Future.successful(Error(CommonRpcErrors.NotSupportedInOss))
 
-  override def doHandleMessageSearchMore(loadMoreState: Array[Byte], clientData: ClientData): Future[HandlerResult[ResponseMessageSearchResponse]] =
+  override def doHandleMessageSearchMore(
+    loadMoreState: Array[Byte],
+    optimizations: IndexedSeq[ApiUpdateOptimization.Value],
+    clientData:    ClientData
+  ): Future[HandlerResult[ResponseMessageSearchResponse]] =
     Future.successful(Error(CommonRpcErrors.NotSupportedInOss))
 
-  private def searchResult(pts: IndexedSeq[ApiSearchPeerType.Value], text: Option[String])(implicit client: AuthorizedClientData): Future[HandlerResult[ResponsePeerSearch]] = {
+  private def searchResult(
+    pts:           IndexedSeq[ApiSearchPeerType.Value],
+    text:          Option[String],
+    optimizations: IndexedSeq[ApiUpdateOptimization.Value]
+  )(implicit client: AuthorizedClientData): Future[HandlerResult[ResponsePeerSearch]] = {
     for {
       results ← FutureExt.ftraverse(pts)(search(_, text)).map(_.reduce(_ ++ _))
       (groupIds, userIds) = results.view.map(_.peer).foldLeft(Vector.empty[Int], Vector.empty[Int]) {
@@ -56,7 +73,16 @@ class SearchServiceImpl(implicit system: ActorSystem) extends SearchService {
           }
       }
       (groups, users) ← GroupUtils.getGroupsUsers(groupIds, userIds, client.userId, client.authId)
-    } yield Ok(ResponsePeerSearch(results, users.toVector, groups.toVector))
+    } yield {
+      val stripEntities = optimizations.contains(ApiUpdateOptimization.STRIP_ENTITIES)
+      Ok(ResponsePeerSearch(
+        searchResults = results,
+        users = if (stripEntities) Vector.empty else users.toVector,
+        groups = if (stripEntities) Vector.empty else groups.toVector,
+        userPeers = users.toVector map (u ⇒ ApiUserOutPeer(u.id, u.accessHash)),
+        groupPeers = groups.toVector map (g ⇒ ApiGroupOutPeer(g.id, g.accessHash))
+      ))
+    }
   }
 
   private def search(pt: ApiSearchPeerType.Value, text: Option[String])(implicit clientData: AuthorizedClientData): Future[IndexedSeq[ApiPeerSearchResult]] = {
@@ -97,7 +123,7 @@ class SearchServiceImpl(implicit system: ActorSystem) extends SearchService {
       dateCreated = Some(apiGroup.createDate),
       creator = Some(apiGroup.creatorUserId),
       isPublic = Some(isPublic),
-      isJoined = Some(apiGroup.isMember)
+      isJoined = apiGroup.isMember
     )
 
   private def searchContacts(text: Option[String])(implicit client: AuthorizedClientData): Future[IndexedSeq[ApiUser]] = {
@@ -121,7 +147,7 @@ class SearchServiceImpl(implicit system: ActorSystem) extends SearchService {
   // TODO: rewrite it using async
   private def searchGroups(text: Option[String])(implicit client: AuthorizedClientData): Future[IndexedSeq[ApiGroup]] = {
     for {
-      ids ← db.run(DialogRepo.findGroupIds(client.userId))
+      ids ← DialogExtension(system).fetchGroupedDialogs(client.userId) map (_.filter(_.typ.isGroups).flatMap(_.dialogs.map(_.getPeer.id)))
       groupOpts ← FutureExt.ftraverse(ids) { id ⇒
         groupExt.isPublic(id) flatMap { isPublic ⇒
           if (isPublic) Future.successful(None)

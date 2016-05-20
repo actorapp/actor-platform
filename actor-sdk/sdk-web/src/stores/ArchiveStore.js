@@ -5,7 +5,6 @@
 import { Store } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes, AsyncActionStates } from '../constants/ActorAppConstants';
-import PeerUtils from '../utils/PeerUtils';
 
 class ArchiveStore extends Store {
   constructor(dispatcher) {
@@ -38,20 +37,19 @@ class ArchiveStore extends Store {
     return this.archiveChatState;
   }
 
+
   __onDispatch(action) {
-    const peerKey = action.peer ? PeerUtils.peerToString(action.peer) : null;
     switch(action.type) {
       case ActionTypes.ARCHIVE_ADD:
-        this.archiveChatState[peerKey] = AsyncActionStates.PROCESSING;
+        this.archiveChatState[action.peer.key] = AsyncActionStates.PROCESSING;
         this.__emitChange();
         break;
       case ActionTypes.ARCHIVE_ADD_SUCCESS:
-        delete this.archiveChatState[peerKey];
+        delete this.archiveChatState[action.peer.key];
         this.__emitChange();
         break;
       case ActionTypes.ARCHIVE_ADD_ERROR:
-        const key = PeerUtils.peerToString(action.peer);
-        this.archiveChatState[peerKey] = AsyncActionStates.FAILURE;
+        this.archiveChatState[action.peer.key] = AsyncActionStates.FAILURE;
         this.__emitChange();
         break;
 

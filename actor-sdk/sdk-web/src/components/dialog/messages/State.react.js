@@ -3,24 +3,22 @@
  */
 
 import React, { Component, PropTypes } from 'react';
-import { MessageContentTypes, MessageStates } from '../../../constants/ActorAppConstants';
+import { MessageStates } from '../../../constants/ActorAppConstants';
 
 class State extends Component {
   static propTypes = {
-    message: PropTypes.shape({
-      state: PropTypes.oneOf([
-        MessageStates.PENDING,
-        MessageStates.SENT,
-        MessageStates.RECEIVED,
-        MessageStates.READ,
-        MessageStates.ERROR,
-        MessageStates.UNKNOWN
-      ]).isRequired
-    }).isRequired
+    state: PropTypes.oneOf([
+      MessageStates.PENDING,
+      MessageStates.SENT,
+      MessageStates.RECEIVED,
+      MessageStates.READ,
+      MessageStates.ERROR,
+      MessageStates.UNKNOWN
+    ]).isRequired
   };
 
   renderState() {
-    const {state} = this.props.message;
+    const { state } = this.props;
 
     switch (state) {
       case MessageStates.PENDING:
@@ -40,12 +38,6 @@ class State extends Component {
   }
 
   render() {
-    const { message } = this.props;
-
-    if (message.content.content === MessageContentTypes.SERVICE) {
-      return null;
-    }
-
     const state = this.renderState();
     if (!state) {
       return null;

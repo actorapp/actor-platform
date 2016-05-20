@@ -4,55 +4,13 @@
 
 package im.actor.core.modules.misc;
 
-import java.io.IOException;
-
-import im.actor.core.api.ApiAppCounters;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.util.ModuleActor;
-import im.actor.runtime.bser.BserParser;
-import im.actor.runtime.bser.BserValues;
-import im.actor.runtime.bser.DataInput;
+import im.actor.core.modules.ModuleActor;
 
 public class ListsStatesActor extends ModuleActor {
 
-    private ApiAppCounters counters;
-
     public ListsStatesActor(ModuleContext context) {
         super(context);
-    }
-
-    @Override
-    public void preStart() {
-        super.preStart();
-
-        counters = new ApiAppCounters();
-        byte[] data = preferences().getBytes("app.counter_raw");
-        if (data != null) {
-            try {
-                ApiAppCounters nCounters = new ApiAppCounters();
-                nCounters.parse(new BserValues(BserParser.deserialize(new DataInput(data))));
-                counters = nCounters;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        Integer counter = counters.getGlobalCounter();
-        if (counter != null) {
-            context().getAppStateModule().getAppStateVM().onGlobalCounterChanged(counter);
-        } else {
-            context().getAppStateModule().getAppStateVM().onGlobalCounterChanged(0);
-        }
-    }
-
-    public void onCounterChanged(ApiAppCounters counters) {
-        preferences().putBytes("app.counter_raw", counters.toByteArray());
-        Integer counter = counters.getGlobalCounter();
-        if (counter != null) {
-            context().getAppStateModule().getAppStateVM().onGlobalCounterChanged(counter);
-        } else {
-            context().getAppStateModule().getAppStateVM().onGlobalCounterChanged(0);
-        }
     }
 
     public void onDialogsChanged(boolean isEmpty) {
@@ -87,22 +45,8 @@ public class ListsStatesActor extends ModuleActor {
             onContactsLoaded();
         } else if (message instanceof OnDialogsLoaded) {
             onDialogsLoaded();
-        } else if (message instanceof OnAppCounterChanged) {
-            onCounterChanged(((OnAppCounterChanged) message).getCounters());
         } else {
-            drop(message);
-        }
-    }
-
-    public static class OnAppCounterChanged {
-        private ApiAppCounters counters;
-
-        public OnAppCounterChanged(ApiAppCounters counters) {
-            this.counters = counters;
-        }
-
-        public ApiAppCounters getCounters() {
-            return counters;
+            super.onReceive(message);
         }
     }
 

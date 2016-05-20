@@ -24,6 +24,7 @@ import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.entity.content.FileRemoteSource;
 import im.actor.core.entity.content.StickerContent;
 import im.actor.core.js.JsMessenger;
+import im.actor.core.js.entity.JsBlockedUser;
 import im.actor.core.js.entity.JsCall;
 import im.actor.core.js.entity.JsContact;
 import im.actor.core.js.entity.JsCounter;
@@ -47,6 +48,7 @@ import im.actor.core.viewmodel.CallState;
 import im.actor.core.viewmodel.CallVM;
 import im.actor.core.viewmodel.DialogGroup;
 import im.actor.core.viewmodel.DialogSmall;
+import im.actor.core.viewmodel.GlobalStateVM;
 import im.actor.core.viewmodel.GroupTypingVM;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserPresence;
@@ -66,6 +68,7 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
     private HashMap<Integer, JsBindedValue<JsUser>> users = new HashMap<>();
     private HashMap<Integer, JsBindedValue<JsGroup>> groups = new HashMap<>();
     private HashMap<Integer, JsBindedValue<JsOnlineUser>> usersOnlines = new HashMap<>();
+    private HashMap<Integer, JsBindedValue<JsBlockedUser>> usersBloked = new HashMap<>();
     private HashMap<Integer, JsBindedValue<JsOnlineGroup>> groupOnlines = new HashMap<>();
     private HashMap<Peer, JsBindedValue<JsTyping>> typing = new HashMap<>();
     private JsBindedValue<String> onlineState;
@@ -160,7 +163,7 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
     public JsBindedValue<String> getOnlineStatus() {
         if (onlineState == null) {
 
-            final AppStateVM vm = context().getAppStateModule().getAppStateVM();
+            final GlobalStateVM vm = context().getAppStateModule().getGlobalStateVM();
             onlineState = new JsBindedValue<>("online");
 
             vm.getIsConnecting().subscribe(new ValueChangedListener<Boolean>() {
@@ -217,6 +220,14 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
                 }
             });
 
+            // Sign for blocked separately
+            userVM.getIsBlocked().subscribe(new ValueChangedListener<Boolean>() {
+                @Override
+                public void onChanged(Boolean val, Value<Boolean> valueModel) {
+                    value.changeValue(JsUser.fromUserVM(userVM, messenger));
+                }
+            });
+
             users.put(uid, value);
         }
         return users.get(uid);
@@ -245,6 +256,23 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
             usersOnlines.put(uid, value);
         }
         return usersOnlines.get(uid);
+    }
+
+    public JsBindedValue<JsBlockedUser> getUserBlocked(int uid) {
+        if (!usersBloked.containsKey(uid)) {
+            final JsBindedValue<JsBlockedUser> value = new JsBindedValue<>();
+            final UserVM userVM = context().getUsersModule().getUsers().get(uid);
+
+            userVM.getIsBlocked().subscribe(new ValueChangedListener<Boolean>() {
+                @Override
+                public void onChanged(Boolean val, Value<Boolean> valueModel) {
+                    value.changeValue(JsBlockedUser.create(val));
+                }
+            });
+
+            usersBloked.put(uid, value);
+        }
+        return usersBloked.get(uid);
     }
 
     public JsBindedValue<JsGroup> getGroup(int gid) {
@@ -319,35 +347,31 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
                 UserTypingVM userTypingVM = context().getTypingModule().getTyping(peer.getPeerId());
 
                 final JsBindedValue<JsTyping> value = new JsBindedValue<>();
-                userTypingVM.getTyping().subscribe(new ValueChangedListener<Boolean>() {
-                    @Override
-                    public void onChanged(Boolean val, Value<Boolean> valueModel) {
-                        String typingValue = null;
-                        if (val) {
-                            typingValue = messenger.getFormatter().formatTyping("");
-                        }
-                        value.changeValue(JsTyping.create(typingValue));
+                userTypingVM.getTyping().subscribe((val, valueModel) -> {
+                    String typingValue = null;
+                    if (val) {
+                        typingValue = messenger.getFormatter().formatTyping("");
                     }
+                    value.changeValue(JsTyping.create(typingValue));
                 });
                 typing.put(peer, value);
             } else if (peer.getPeerType() == PeerType.GROUP) {
                 GroupTypingVM groupTypingVM = context().getTypingModule().getGroupTyping(peer.getPeerId());
                 final JsBindedValue<JsTyping> value = new JsBindedValue<>();
-                groupTypingVM.getActive().subscribe(new ValueChangedListener<int[]>() {
-                    @Override
-                    public void onChanged(int[] val, Value<int[]> valueModel) {
-                        String typingValue = null;
-                        if (val.length == 1) {
-                            typingValue = messenger.getFormatter().formatTyping(context()
+                groupTypingVM.getActive().subscribe((val, valueModel) -> {
+                    if (val.length > 0) {
+                        ArrayList<String> names = new ArrayList<>();
+                        for (int i : val) {
+                            names.add(context()
                                     .getUsersModule()
                                     .getUsers()
-                                    .get(val[0])
+                                    .get(i)
                                     .getName()
                                     .get());
-                        } else if (val.length > 1) {
-                            typingValue = messenger.getFormatter().formatTyping(val.length);
                         }
-                        value.changeValue(JsTyping.create(typingValue));
+                        value.changeValue(JsTyping.create(messenger.getFormatter().formatTyping(names)));
+                    } else {
+                        value.changeValue(JsTyping.create(null));
                     }
                 });
                 typing.put(peer, value);
@@ -392,7 +416,7 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
 
     public JsBindedValue<JsCounter> getGlobalCounter() {
         if (globalCounter == null) {
-            ValueModel<Integer> counter = context().getAppStateModule().getAppStateVM().getGlobalCounter();
+            ValueModel<Integer> counter = context().getAppStateModule().getGlobalStateVM().getGlobalCounter();
             globalCounter = new JsBindedValue<>(JsCounter.create(counter.get()));
             counter.subscribe(new ValueChangedListener<Integer>() {
                 @Override
@@ -406,7 +430,7 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
 
     public JsBindedValue<JsCounter> getTempGlobalCounter() {
         if (tempGlobalCounter == null) {
-            ValueModel<Integer> counter = context().getAppStateModule().getAppStateVM().getGlobalTempCounter();
+            ValueModel<Integer> counter = context().getAppStateModule().getGlobalStateVM().getGlobalTempCounter();
             tempGlobalCounter = new JsBindedValue<>(JsCounter.create(counter.get()));
             counter.subscribe(new ValueChangedListener<Integer>() {
                 @Override

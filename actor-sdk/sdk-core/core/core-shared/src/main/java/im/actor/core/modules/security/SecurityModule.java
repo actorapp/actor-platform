@@ -14,101 +14,31 @@ import im.actor.core.api.rpc.ResponseGetAuthSessions;
 import im.actor.core.api.rpc.ResponseVoid;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.network.RpcCallback;
-import im.actor.core.network.RpcException;
-import im.actor.core.viewmodel.Command;
-import im.actor.core.viewmodel.CommandCallback;
+import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.promise.Promise;
 
 public class SecurityModule extends AbsModule {
+
+    // j2objc workaround
+    private static final ResponseVoid DUMB = null;
+    private static final Void DUMB2 = null;
 
     public SecurityModule(ModuleContext context) {
         super(context);
     }
 
-    public Command<List<ApiAuthSession>> loadSessions() {
-        return new Command<List<ApiAuthSession>>() {
-            @Override
-            public void start(final CommandCallback<List<ApiAuthSession>> callback) {
-                request(new RequestGetAuthSessions(), new RpcCallback<ResponseGetAuthSessions>() {
-                    @Override
-                    public void onResult(final ResponseGetAuthSessions response) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onResult(response.getUserAuths());
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(final RpcException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(e);
-                            }
-                        });
-                    }
-                });
-            }
-        };
+    public Promise<List<ApiAuthSession>> loadSessions() {
+        return api(new RequestGetAuthSessions())
+                .map(ResponseGetAuthSessions::getUserAuths);
     }
 
-    public Command<Boolean> terminateAllSessions() {
-        return new Command<Boolean>() {
-            @Override
-            public void start(final CommandCallback<Boolean> callback) {
-                request(new RequestTerminateAllSessions(), new RpcCallback<ResponseVoid>() {
-                    @Override
-                    public void onResult(ResponseVoid response) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onResult(true);
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(final RpcException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(e);
-                            }
-                        });
-                    }
-                });
-            }
-        };
+    public Promise<Void> terminateAllSessions() {
+        return api(new RequestTerminateAllSessions())
+                .map(r -> null);
     }
 
-    public Command<Boolean> terminateSession(final int id) {
-        return new Command<Boolean>() {
-            @Override
-            public void start(final CommandCallback<Boolean> callback) {
-                request(new RequestTerminateSession(id), new RpcCallback<ResponseVoid>() {
-                    @Override
-                    public void onResult(ResponseVoid response) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onResult(true);
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(final RpcException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(e);
-                            }
-                        });
-                    }
-                });
-            }
-        };
+    public Promise<Void> terminateSession(int id) {
+        return api(new RequestTerminateSession(id))
+                .map(r -> null);
     }
 }

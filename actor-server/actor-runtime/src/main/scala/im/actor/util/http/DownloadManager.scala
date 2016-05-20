@@ -25,7 +25,7 @@ class DownloadManager(implicit system: ActorSystem, materializer: Materializer) 
     for {
       filePath ← tempFileFuture
       response ← responseFuture
-      ioRes ← response.entity.dataBytes.runWith(FileIO.toFile(filePath.toFile))
+      ioRes ← response.entity.dataBytes.runWith(FileIO.toPath(filePath))
     } yield {
       ioRes.status match {
         case Success(_)     ⇒ (filePath, ioRes.count)

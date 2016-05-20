@@ -1,0 +1,48 @@
+.profile {
+  width: 640px;
+  .nick,
+  .phone,
+  .email,
+  .about {
+    padding-top: 32px;
+  }
+
+  .input__material {
+    label {
+      font-size: 18px;
+      transform: translateY(24px) translateZ(0);
+    }
+    input {
+      font-size: 18px;
+      line-height: 20px;
+      color: rgb(77, 77, 77);
+    }
+    .error {
+      top: 50px;
+    }
+  }
+
+  .about {
+    label {
+      font-size: 14px;
+
+      color: $dark-sky-blue;
+    }
+
+    textarea {
+      font-size: 16px;
+      line-height: 20px;
+
+      height: 80px;
+      margin-top: 4px;
+      padding: 8px 6px;
+    }
+  }
+
+  .modal__footer {
+    text-align: right;
+    .button {
+      margin-left: 8px;
+    }
+  }
+}

@@ -7,6 +7,7 @@ package im.actor.runtime.js.fs;
 import im.actor.runtime.files.FileSystemReference;
 import im.actor.runtime.files.InputFile;
 import im.actor.runtime.files.OutputFile;
+import im.actor.runtime.promise.Promise;
 
 public class JsFileSystemReference implements FileSystemReference {
 
@@ -29,17 +30,27 @@ public class JsFileSystemReference implements FileSystemReference {
     }
 
     @Override
+    public boolean isInAppMemory() {
+        return false;
+    }
+
+    @Override
+    public boolean isInTempDirectory() {
+        return false;
+    }
+
+    @Override
     public int getSize() {
         return file.getSize();
     }
 
     @Override
-    public OutputFile openWrite(int size) {
-        throw new RuntimeException("Unsupported exception");
+    public Promise<OutputFile> openWrite(int size) {
+        return Promise.failure(new RuntimeException("Unsupported exception"));
     }
 
     @Override
-    public InputFile openRead() {
-        return new JsFileInput(file);
+    public Promise<InputFile> openRead() {
+        return Promise.success(new JsFileInput(file));
     }
 }

@@ -23,13 +23,10 @@ public abstract class ViewHolder<T> {
 
     public abstract void bind(T data, int position, Context context);
 
-    public void unbind() {
+    public void unbind(boolean full) {
 
     }
 
-    public void dispose() {
-
-    }
 
     @Deprecated
     public View getView(View recycleView, T data, int pos, ViewGroup viewGroup, Context context) {

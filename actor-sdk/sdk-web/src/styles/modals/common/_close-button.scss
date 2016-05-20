@@ -1,0 +1,54 @@
+.modal__close-button {
+  position: absolute;
+  top: 32px;
+  right: 32px;
+
+  width: 48px;
+  height: 48px;
+
+  cursor: pointer;
+  transition: background 100ms;
+  text-align: center;
+
+  color: rgba(black, .3);
+  border-radius: 50%;
+
+  @include no-select();
+
+  .close_icon {
+    font-size: 32px;
+    line-height: 48px;
+
+    z-index: 1010;
+
+    transition: 100ms;
+  }
+  .text {
+    line-height: 20px;
+
+    position: absolute;
+    z-index: 1050;
+    top: 14px;
+    right: 60px;
+
+    transition: opacity 100ms;
+    pointer-events: none;
+
+    opacity: 0;
+  }
+  &:hover {
+    background-color: rgba(black, .05);
+    .text {
+      opacity: 1;
+    }
+    .close_icon {
+      color: rgba(black, .5);
+    }
+  }
+  &:active {
+    background-color: rgba(black, .1);
+    .close_icon {
+      transform: scale(.8);
+    }
+  }
+}

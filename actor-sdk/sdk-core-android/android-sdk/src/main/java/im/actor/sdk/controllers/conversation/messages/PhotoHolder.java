@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -31,21 +30,21 @@ import im.actor.core.entity.content.FileLocalSource;
 import im.actor.core.entity.content.FileRemoteSource;
 import im.actor.core.entity.content.PhotoContent;
 import im.actor.core.entity.content.VideoContent;
-import im.actor.core.utils.ImageHelper;
 import im.actor.core.viewmodel.FileCallback;
 import im.actor.core.viewmodel.FileVM;
 import im.actor.core.viewmodel.FileVMCallback;
 import im.actor.core.viewmodel.UploadFileCallback;
 import im.actor.core.viewmodel.UploadFileVM;
 import im.actor.core.viewmodel.UploadFileVMCallback;
+import im.actor.runtime.Log;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
+import im.actor.sdk.controllers.conversation.MessagesAdapter;
+import im.actor.sdk.controllers.conversation.messages.preprocessor.PreprocessedData;
 import im.actor.sdk.controllers.conversation.view.FastBitmapDrawable;
 import im.actor.sdk.controllers.conversation.view.FastThumbLoader;
 import im.actor.sdk.util.Screen;
-import im.actor.sdk.util.Strings;
-import im.actor.sdk.util.images.BitmapUtil;
 import im.actor.sdk.view.TintImageView;
 import im.actor.runtime.files.FileSystemReference;
 
@@ -56,6 +55,7 @@ import static im.actor.sdk.util.ActorSDKMessenger.myUid;
 
 public class PhotoHolder extends MessageHolder {
 
+    public static final String TAG = "PHOTO_HOLDER";
     private final int COLOR_PENDING;
     private final int COLOR_SENT;
     private final int COLOR_RECEIVED;
@@ -88,7 +88,9 @@ public class PhotoHolder extends MessageHolder {
     protected boolean isPhoto;
 
     int lastUpdatedIndex = 0;
+    long currenrRid = 0;
     private boolean updated = false;
+    private boolean playRequested = false;
 
     public PhotoHolder(MessagesAdapter fragment, View itemView) {
         super(fragment, itemView, false);
@@ -132,7 +134,7 @@ public class PhotoHolder extends MessageHolder {
     }
 
     @Override
-    protected void bindData(Message message, boolean isNewMessage, PreprocessedData preprocessedData) {
+    protected void bindData(Message message, long readDate, long receiveDate, boolean isNewMessage, PreprocessedData preprocessedData) {
         // Update model
         DocumentContent fileMessage = (DocumentContent) message.getContent();
 
@@ -156,17 +158,17 @@ public class PhotoHolder extends MessageHolder {
                     stateIcon.setResource(R.drawable.msg_clock);
                     stateIcon.setTint(COLOR_PENDING);
                     break;
-                case READ:
-                    stateIcon.setResource(R.drawable.msg_check_2);
-                    stateIcon.setTint(COLOR_READ);
-                    break;
-                case RECEIVED:
-                    stateIcon.setResource(R.drawable.msg_check_2);
-                    stateIcon.setTint(COLOR_RECEIVED);
-                    break;
                 case SENT:
-                    stateIcon.setResource(R.drawable.msg_check_1);
-                    stateIcon.setTint(COLOR_SENT);
+                    if (message.getSortDate() <= readDate) {
+                        stateIcon.setResource(R.drawable.msg_check_2);
+                        stateIcon.setTint(COLOR_READ);
+                    } else if (message.getSortDate() <= receiveDate) {
+                        stateIcon.setResource(R.drawable.msg_check_2);
+                        stateIcon.setTint(COLOR_RECEIVED);
+                    } else {
+                        stateIcon.setResource(R.drawable.msg_check_1);
+                        stateIcon.setTint(COLOR_SENT);
+                    }
                     break;
             }
         } else {
@@ -175,6 +177,7 @@ public class PhotoHolder extends MessageHolder {
 
         // Update time
         setTimeAndReactions(time);
+        Log.d(TAG, "isNewMessage: " + isNewMessage);
         // Update size
         if (isNewMessage) {
             int w, h;
@@ -225,16 +228,28 @@ public class PhotoHolder extends MessageHolder {
 
             needRebind = true;
         }
+        Log.d(TAG, "needRebind by new: " + needRebind);
 
         updated = false;
-        int updatedCounter = fileMessage.getUpdatedCounter();
-        if (lastUpdatedIndex != updatedCounter) {
-            updated = true;
-            needRebind = true;
-            lastUpdatedIndex = updatedCounter;
-        }
+//        int updatedCounter = fileMessage.getUpdatedCounter();
+//        Log.d(TAG, "oldRid: " + currenrRid);
+//        Log.d(TAG, "newRid: " + currentMessage.getRid());
+//        Log.d(TAG, "oldCounter: " + lastUpdatedIndex);
+//        Log.d(TAG, "newCounter: " + updatedCounter);
+
+//        if (currenrRid == currentMessage.getRid() && lastUpdatedIndex != updatedCounter) {
+//            updated = true;
+//            needRebind = true;
+//            lastUpdatedIndex = updatedCounter;
+//        }
+        currenrRid = currentMessage.getRid();
+        Log.d(TAG, "updated: " + updated);
+
 
         if (needRebind) {
+            if (!updated) {
+                playRequested = false;
+            }
             // Resetting progress state
             progressContainer.setVisibility(View.GONE);
             progressView.setVisibility(View.GONE);
@@ -256,10 +271,14 @@ public class PhotoHolder extends MessageHolder {
                 } else {
                     if (!updated) {
                         previewView.setImageURI(null);
+                        Log.d(TAG, "rebind video - setImageURI(null)!");
+
                     }
                     //TODO: better approach?
-                    if (fileMessage.getFastThumb() != null) {
+                    if (fileMessage.getFastThumb() != null && !updated) {
                         fastThumbLoader.request(fileMessage.getFastThumb().getImage());
+                        Log.d(TAG, "rebind video- new thumb!");
+
                     }
                 }
             } else {
@@ -278,6 +297,7 @@ public class PhotoHolder extends MessageHolder {
                 @Override
                 public void onNotDownloaded() {
                     messenger().startDownloading(location);
+                    playRequested = true;
                 }
 
                 @Override
@@ -293,8 +313,7 @@ public class PhotoHolder extends MessageHolder {
                             if (document instanceof PhotoContent) {
                                 Intents.openMedia(getAdapter().getMessagesFragment().getActivity(), previewView, reference.getDescriptor(), currentMessage.getSenderId());
                             } else {
-                                Activity activity = getAdapter().getMessagesFragment().getActivity();
-                                activity.startActivity(Intents.openDoc(document.getName(), reference.getDescriptor()));
+                                playVideo(document, reference);
                             }
                         }
                     });
@@ -320,6 +339,11 @@ public class PhotoHolder extends MessageHolder {
         }
     }
 
+    public void playVideo(DocumentContent document, FileSystemReference reference) {
+        Activity activity = getAdapter().getMessagesFragment().getActivity();
+        activity.startActivity(Intents.openDoc(document.getName(), reference.getDescriptor()));
+    }
+
     @Override
     public void unbind() {
         super.unbind();
@@ -339,6 +363,8 @@ public class PhotoHolder extends MessageHolder {
         fastThumbLoader.cancel();
         previewView.setImageURI(null);
         previewView.destroyDrawingCache();
+
+        playRequested = false;
     }
 
     private class UploadVMCallback implements UploadFileVMCallback {
@@ -446,10 +472,15 @@ public class PhotoHolder extends MessageHolder {
                         .setImageRequest(request)
                         .build();
                 previewView.setController(controller);
-
                 // previewView.setImageURI(Uri.fromFile(new File(reference.getDescriptor())));
             } else {
-                checkFastThumb();
+                if (!updated) {
+                    checkFastThumb();
+                }
+                if (playRequested) {
+                    playRequested = false;
+                    playVideo((DocumentContent) currentMessage.getContent(), reference);
+                }
             }
 
             progressValue.setText(100 + "");

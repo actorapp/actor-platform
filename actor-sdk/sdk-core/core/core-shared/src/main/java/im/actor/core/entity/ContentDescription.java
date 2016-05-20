@@ -18,6 +18,8 @@ import im.actor.core.entity.content.ServiceCallEnded;
 import im.actor.core.entity.content.ServiceCallMissed;
 import im.actor.core.entity.content.ServiceContent;
 import im.actor.core.entity.content.ServiceGroupAvatarChanged;
+import im.actor.core.entity.content.ServiceGroupAboutChanged;
+import im.actor.core.entity.content.ServiceGroupTopicChanged;
 import im.actor.core.entity.content.ServiceGroupCreated;
 import im.actor.core.entity.content.ServiceGroupTitleChanged;
 import im.actor.core.entity.content.ServiceGroupUserInvited;
@@ -74,6 +76,12 @@ public class ContentDescription extends BserObject {
         } else if (msg instanceof ServiceGroupTitleChanged) {
             return new ContentDescription(ContentType.SERVICE_TITLE,
                     ((ServiceGroupTitleChanged) msg).getNewTitle());
+        } else if (msg instanceof ServiceGroupTopicChanged) {
+            return new ContentDescription(ContentType.SERVICE_TOPIC,
+                    ((ServiceGroupTopicChanged) msg).getNewTopic());
+        } else if (msg instanceof ServiceGroupAboutChanged) {
+            return new ContentDescription(ContentType.SERVICE_ABOUT,
+                    ((ServiceGroupAboutChanged) msg).getNewAbout());
         } else if (msg instanceof ServiceGroupCreated) {
             return new ContentDescription(ContentType.SERVICE_CREATED);
         } else if (msg instanceof ServiceGroupUserInvited) {

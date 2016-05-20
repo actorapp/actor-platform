@@ -12,10 +12,10 @@ import com.google.gwt.core.client.JavaScriptObject;
  */
 public class JsSecureInterval extends JavaScriptObject {
 
-    public static native JsSecureInterval create(Runnable runnable)/*-{
-        console.warn("Create jsSecureInverval")
+    public static native JsSecureInterval create(boolean allowWorkers, Runnable runnable)/*-{
+        console.warn("Create jsSecureInterval")
         try {
-            if (typeof(Worker) !== "undefined") {
+            if (allowWorkers && typeof(Worker) !== "undefined") {
 
                 var code = "var timerId;\n" +
                 "\n" +

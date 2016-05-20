@@ -1,13 +1,19 @@
 package im.actor.sdk.view.markdown;
 
+import android.app.Activity;
 import android.app.ActivityOptions;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -18,6 +24,7 @@ import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.Toast;
 
+import im.actor.runtime.actors.ActorContext;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.conversation.ChatActivity;
@@ -30,12 +37,19 @@ import im.actor.runtime.markdown.MDSpan;
 import im.actor.runtime.markdown.MDText;
 import im.actor.runtime.markdown.MDUrl;
 import im.actor.runtime.markdown.MarkdownParser;
+import im.actor.sdk.receivers.ChromeCustomTabReceiver;
+
+import android.support.customtabs.CustomTabsIntent;
+
 
 public class AndroidMarkdown {
 
     private static final String EXTRA_CUSTOM_TABS_SESSION = "android.support.customtabs.extra.SESSION";
     private static final String EXTRA_CUSTOM_TABS_TOOLBAR_COLOR = "android.support.customtabs.extra.TOOLBAR_COLOR";
-    public static final String EXTRA_CUSTOM_TABS_EXIT_ANIMATION_BUNDLE = "android.support.customtabs.extra.EXIT_ANIMATION_BUNDLE";
+    public static final String EXTRA_CUSTOM_TABS_BACK_BUTTON = "android.support.customtabs.extra.CLOSE_BUTTON_ICON";
+    private static final String KEY_CUSTOM_TABS_ICON = "android.support.customtabs.customaction.ICON";
+    public static final String KEY_CUSTOM_TABS_PENDING_INTENT = "android.support.customtabs.customaction.PENDING_INTENT";
+    public static final String EXTRA_CUSTOM_TABS_ACTION_BUTTON_BUNDLE = "android.support.customtabs.extra.ACTION_BUNDLE_BUTTON";
 
     public static Spannable processOnlyLinks(String markdown) {
         return processText(markdown, MarkdownParser.MODE_ONLY_LINKS);
@@ -106,23 +120,21 @@ public class AndroidMarkdown {
                     public void onClick(View view) {
                         Context ctx = view.getContext();
                         if (url.getUrl().startsWith("send:")) {
+                            ctx = extractContext(ctx);
                             if (ctx instanceof ChatActivity) {
                                 ActorSDK.sharedActor().getMessenger().sendMessage(((ChatActivity) ctx).getPeer(), url.getUrl().replace("send:", ""));
                             }
                         } else {
-                            Intent intent = new Intent(Intent.ACTION_VIEW)
-                                    .setData(Uri.parse(url.getUrl()));
-                            Bundle b = addChromeCustomTabData(intent);
+                            Intent intent = buildChromeIntent().intent;
+                            intent.setData(Uri.parse(url.getUrl()));
                             if (intent.resolveActivity(ctx.getPackageManager()) != null) {
                                 ctx.startActivity(
                                         intent);
                             } else {
-                                Intent WithSchema = new Intent(Intent.ACTION_VIEW)
-                                        .setData(Uri.parse("http://".concat(url.getUrl())));
-                                Bundle b1 = addChromeCustomTabData(WithSchema);
-                                if (WithSchema.resolveActivity(ctx.getPackageManager()) != null) {
+                                intent.setData(Uri.parse("http://" + url.getUrl()));
+                                if (intent.resolveActivity(ctx.getPackageManager()) != null) {
                                     ctx.startActivity(
-                                            WithSchema);
+                                            intent);
                                 } else {
                                     Toast.makeText(view.getContext(), "Unknown URL type", Toast.LENGTH_SHORT).show();
                                 }
@@ -137,21 +149,32 @@ public class AndroidMarkdown {
         }
     }
 
-    public static Bundle addChromeCustomTabData(Intent intent) {
-        Bundle extras = new Bundle();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            extras.putBinder(EXTRA_CUSTOM_TABS_SESSION, null);
+    private static Context extractContext(Context ctx) {
+        if (ctx instanceof AppCompatActivity) {
+            return ctx;
+        } else if (ctx instanceof ContextWrapper) {
+            return extractContext(((ContextWrapper) ctx).getBaseContext());
         }
-        extras.putInt(EXTRA_CUSTOM_TABS_TOOLBAR_COLOR, ActorSDK.sharedActor().style.getMainColor());
-        intent.putExtras(extras);
 
+        return ctx;
+    }
 
-//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
-//            Bundle finishBundle = ActivityOptions.makeCustomAnimation(AndroidContext.getContext(), 0, android.R.anim.slide_in_left).toBundle();
-//            intent.putExtra(EXTRA_CUSTOM_TABS_EXIT_ANIMATION_BUNDLE, finishBundle);
-//            return ActivityOptions.makeCustomAnimation(AndroidContext.getContext(), android.R.anim.slide_out_right, 0).toBundle();
-//        }
+    public static CustomTabsIntent buildChromeIntent() {
+        CustomTabsIntent.Builder customTabsIntent = new CustomTabsIntent.Builder();
 
-        return null;
+//        Intent sendIntent = new Intent(Intent.ACTION_SEND);
+//        sendIntent.setType("*/*");
+//        PendingIntent pi = PendingIntent.getActivity(AndroidContext.getContext()    , 0, sendIntent, 0);
+
+        Intent actionIntent = new Intent(
+                AndroidContext.getContext(), ChromeCustomTabReceiver.class);
+        PendingIntent pi =
+                PendingIntent.getBroadcast(AndroidContext.getContext(), 0, actionIntent, 0);
+
+        customTabsIntent.setToolbarColor(ActorSDK.sharedActor().style.getMainColor())
+                .setActionButton(BitmapFactory.decodeResource(AndroidContext.getContext().getResources(), R.drawable.ic_share_white_24dp), "Share", pi)
+                .setCloseButtonIcon(BitmapFactory.decodeResource(AndroidContext.getContext().getResources(), R.drawable.ic_arrow_back_white_24dp));
+
+        return customTabsIntent.build();
     }
 }

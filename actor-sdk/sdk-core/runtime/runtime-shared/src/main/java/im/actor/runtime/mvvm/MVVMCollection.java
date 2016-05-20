@@ -11,11 +11,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.bser.BserCreator;
 import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.bser.BserParser;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.DataInput;
+import im.actor.runtime.promise.Promise;
 import im.actor.runtime.storage.KeyValueEngine;
 import im.actor.runtime.storage.KeyValueItem;
 import im.actor.runtime.storage.KeyValueRecord;
@@ -24,15 +26,22 @@ import im.actor.runtime.storage.KeyValueStorage;
 public class MVVMCollection<T extends BserObject & KeyValueItem, V extends BaseValueModel<T>> {
 
     private final KeyValueStorage collectionStorage;
-    private final HashMap<Long, V> values = new HashMap<Long, V>();
+    private final HashMap<Long, V> values = new HashMap<>();
     private final ValueModelCreator<T, V> creator;
     private final BserCreator<T> bserCreator;
+    private final ValueDefaultCreator<T> bserDefaultCreator;
 
     private ProxyKeyValueEngine proxyKeyValueEngine;
 
     public MVVMCollection(KeyValueStorage collectionStorage, ValueModelCreator<T, V> creator,
                           BserCreator<T> bserCreator) {
+        this(collectionStorage, creator, bserCreator, null);
+    }
+
+    public MVVMCollection(KeyValueStorage collectionStorage, ValueModelCreator<T, V> creator,
+                          BserCreator<T> bserCreator, ValueDefaultCreator<T> bserDefaultCreator) {
         this.creator = creator;
+        this.bserDefaultCreator = bserDefaultCreator;
         this.bserCreator = bserCreator;
         this.collectionStorage = collectionStorage;
         this.proxyKeyValueEngine = new ProxyKeyValueEngine();
@@ -62,47 +71,36 @@ public class MVVMCollection<T extends BserObject & KeyValueItem, V extends BaseV
     }
 
     private void notifyChange(final List<T> items) {
-        im.actor.runtime.Runtime.postToMainThread(new Runnable() {
-            @Override
-            public void run() {
-                for (T i : items) {
-                    if (values.containsKey(i.getEngineId())) {
-                        values.get(i.getEngineId()).update(i);
-                    }
+        im.actor.runtime.Runtime.postToMainThread(() -> {
+            for (T i : items) {
+                if (values.containsKey(i.getEngineId())) {
+                    values.get(i.getEngineId()).update(i);
                 }
             }
         });
     }
 
     private void notifyRemove(final long[] ids) {
-        im.actor.runtime.Runtime.postToMainThread(new Runnable() {
-            @Override
-            public void run() {
-                for (long l : ids) {
-                    values.remove(l);
-                }
+        im.actor.runtime.Runtime.postToMainThread(() -> {
+            for (long l : ids) {
+                values.remove(l);
             }
         });
     }
 
     private void notifyClear() {
-        im.actor.runtime.Runtime.postToMainThread(new Runnable() {
-            @Override
-            public void run() {
-                values.clear();
-            }
-        });
+        im.actor.runtime.Runtime.postToMainThread(() -> values.clear());
     }
 
     private class ProxyKeyValueEngine implements KeyValueEngine<T> {
 
-        private final HashMap<Long, T> cache = new HashMap<Long, T>();
+        private final HashMap<Long, T> cache = new HashMap<>();
 
         @Override
         public synchronized void addOrUpdateItem(T item) {
             cache.put(item.getEngineId(), item);
 
-            ArrayList<T> res = new ArrayList<T>();
+            ArrayList<T> res = new ArrayList<>();
             res.add(item);
             notifyChange(res);
 
@@ -118,7 +116,7 @@ public class MVVMCollection<T extends BserObject & KeyValueItem, V extends BaseV
 
             notifyChange(values);
 
-            ArrayList<KeyValueRecord> records = new ArrayList<KeyValueRecord>();
+            ArrayList<KeyValueRecord> records = new ArrayList<>();
             for (T v : values) {
                 records.add(new KeyValueRecord(v.getEngineId(), v.toByteArray()));
             }
@@ -170,7 +168,27 @@ public class MVVMCollection<T extends BserObject & KeyValueItem, V extends BaseV
                     e.printStackTrace();
                 }
             }
-            return null;
+            if (bserDefaultCreator != null) {
+                return bserDefaultCreator.createDefaultInstance(id);
+            } else {
+                return null;
+            }
+        }
+
+        @Override
+        public Promise<T> getValueAsync(long key) {
+            T res = getValue(key);
+            if (res != null) {
+                return Promise.success(res);
+            } else {
+                return Promise.failure(new RuntimeException());
+            }
+        }
+
+        @Override
+        public Promise<Boolean> containsAsync(long key) {
+            T res = getValue(key);
+            return Promise.success(res != null);
         }
     }
 }

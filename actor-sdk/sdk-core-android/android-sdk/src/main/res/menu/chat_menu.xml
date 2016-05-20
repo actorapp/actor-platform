@@ -8,8 +8,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:visible="false"
+        android:id="@+id/add_to_contacts"
+        android:icon="@drawable/ic_person_add_white_24dp"
+        android:title="@string/add_contact_title"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/call"
-        android:icon="@drawable/ic_call_white_36dp"
+        android:icon="@drawable/ic_phone_white_24dp"
         android:title=""
         app:showAsAction="always" />
 

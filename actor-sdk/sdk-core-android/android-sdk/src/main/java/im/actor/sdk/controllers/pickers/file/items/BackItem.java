@@ -12,12 +12,12 @@ import im.actor.sdk.R;
 public class BackItem extends ExplorerItem {
 
     public BackItem() {
-        super(new File(""), false, "build/intermediates/exploded-aar/com.droidkit/progress/0.5", R.drawable.picker_folder, true);
+        super(new File(""), false, "..", R.drawable.picker_folder, true);
     }
 
     @Override
     public String getTitle() {
-        return "build/intermediates/exploded-aar/com.droidkit/progress/0.5";
+        return "..";
     }
 
     @Override

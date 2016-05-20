@@ -12,9 +12,10 @@
 
     <im.actor.sdk.view.TintImageView
         android:id="@+id/icon"
-        android:layout_width="72dp"
-        android:layout_height="match_parent" />
-
+        android:layout_width="24dp"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="32dp" />
     <TextView
         android:id="@+id/name"
         android:layout_width="0dp"

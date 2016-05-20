@@ -9,8 +9,8 @@ import im.actor.runtime.bser.BserWriter;
 
 public class BookImportStorage extends BserObject {
 
-    private HashSet<String> importedEmails = new HashSet<String>();
-    private HashSet<Long> importedPhones = new HashSet<Long>();
+    private HashSet<String> importedEmails = new HashSet<>();
+    private HashSet<Long> importedPhones = new HashSet<>();
 
     public BookImportStorage() {
     }

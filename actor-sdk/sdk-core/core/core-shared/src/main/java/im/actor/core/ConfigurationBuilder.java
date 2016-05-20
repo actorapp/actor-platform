@@ -19,6 +19,7 @@ import im.actor.core.util.StringMatch;
 import im.actor.runtime.Crypto;
 import im.actor.runtime.Log;
 import im.actor.runtime.mtproto.ConnectionEndpoint;
+import im.actor.runtime.util.Hex;
 import im.actor.runtime.webrtc.WebRTCIceServer;
 
 /**
@@ -119,7 +120,7 @@ public class ConfigurationBuilder {
     @NotNull
     @ObjectiveCName("addTrustedKey:")
     public ConfigurationBuilder addTrustedKey(String trustedKey) {
-        trustedKeys.add(new TrustedKey(Crypto.fromHex(trustedKey)));
+        trustedKeys.add(new TrustedKey(trustedKey));
         return this;
     }
 
@@ -316,12 +317,15 @@ public class ConfigurationBuilder {
      * @return this
      */
     @NotNull
-    @ObjectiveCName("addEndpoint:")
+    @ObjectiveCName("addEndpoint:withKnownIp:")
     public ConfigurationBuilder addEndpoint(@NotNull String url) {
-        // Manual baggy parsing for GWT
+
+        // Manual buggy parsing for GWT
         // TODO: Correct URL parsing
         String scheme = url.substring(0, url.indexOf(":")).toLowerCase();
         String host = url.substring(url.indexOf("://") + "://".length());
+        String knownIp = null;
+
         if (host.endsWith("/")) {
             host = host.substring(0, host.length() - 1);
         }
@@ -332,26 +336,32 @@ public class ConfigurationBuilder {
             port = Integer.parseInt(parts[1]);
         }
 
+        if (host.contains("@")) {
+            String[] parts = host.split("@");
+            host = parts[0];
+            knownIp = parts[1];
+        }
+
         if (scheme.equals("ssl") || scheme.equals("tls")) {
             if (port <= 0) {
                 port = 443;
             }
-            endpoints.add(new ConnectionEndpoint(host, port, ConnectionEndpoint.Type.TCP_TLS));
+            endpoints.add(new ConnectionEndpoint(host, port, knownIp, ConnectionEndpoint.TYPE_TCP_TLS));
         } else if (scheme.equals("tcp")) {
             if (port <= 0) {
                 port = 80;
             }
-            endpoints.add(new ConnectionEndpoint(host, port, ConnectionEndpoint.Type.TCP));
+            endpoints.add(new ConnectionEndpoint(host, port, knownIp, ConnectionEndpoint.TYPE_TCP));
         } else if (scheme.equals("ws")) {
             if (port <= 0) {
                 port = 80;
             }
-            endpoints.add(new ConnectionEndpoint(host, port, ConnectionEndpoint.Type.WS));
+            endpoints.add(new ConnectionEndpoint(host, port, knownIp, ConnectionEndpoint.TYPE_WS));
         } else if (scheme.equals("wss")) {
             if (port <= 0) {
                 port = 443;
             }
-            endpoints.add(new ConnectionEndpoint(host, port, ConnectionEndpoint.Type.WS_TLS));
+            endpoints.add(new ConnectionEndpoint(host, port, knownIp, ConnectionEndpoint.TYPE_WS_TLS));
         } else {
             throw new RuntimeException("Unknown scheme type: " + scheme);
         }

@@ -4,43 +4,38 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
-import im.actor.core.api.ApiMessage;
 import im.actor.core.entity.encryption.PeerSession;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.encryption.entity.EncryptedBox;
 import im.actor.core.modules.encryption.entity.EncryptedBoxKey;
 import im.actor.core.modules.encryption.entity.UserKeys;
 import im.actor.core.modules.encryption.entity.UserKeysGroup;
-import im.actor.core.util.ModuleActor;
+import im.actor.core.modules.ModuleActor;
 import im.actor.core.util.RandomUtils;
 import im.actor.runtime.*;
 import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
-import im.actor.runtime.actors.ActorTime;
 import im.actor.runtime.actors.Props;
 import im.actor.runtime.actors.ask.AskMessage;
 import im.actor.runtime.actors.ask.AskResult;
 import im.actor.runtime.crypto.Cryptos;
 import im.actor.runtime.crypto.IntegrityException;
-import im.actor.runtime.crypto.primitives.digest.CombinedHash;
-import im.actor.runtime.crypto.primitives.digest.SHA512;
-import im.actor.runtime.crypto.primitives.kdf.HKDF;
 import im.actor.runtime.crypto.primitives.prf.PRF;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.function.Function;
 import im.actor.runtime.function.Predicate;
 import im.actor.runtime.promise.Promise;
-import im.actor.runtime.promise.PromiseResolver;
 import im.actor.runtime.crypto.box.ActorBox;
 import im.actor.runtime.crypto.box.ActorBoxKey;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
 import im.actor.runtime.promise.Promises;
 import im.actor.runtime.promise.PromisesArray;
-import im.actor.runtime.promise.Tuple2;
+import im.actor.runtime.function.Tuple2;
 
-import static im.actor.runtime.promise.Promises.success;
+import static im.actor.runtime.promise.Promise.success;
 
 public class EncryptedPeerActor extends ModuleActor {
 
@@ -90,8 +85,7 @@ public class EncryptedPeerActor extends ModuleActor {
                         Log.w(TAG, "Unable to fetch initial parameters");
                         Log.e(TAG, e);
                     }
-                })
-                .done(self());
+                });
     }
 
     private Promise<EncryptBoxResponse> doEncrypt(final byte[] data) {
@@ -142,11 +136,11 @@ public class EncryptedPeerActor extends ModuleActor {
                 })
                 .mapOptional(encrypt(encKeyExtended))
                 .zip()
-                .map(new Function<EncryptedSessionActor.EncryptedPackageRes[], EncryptBoxResponse>() {
+                .map(new Function<List<EncryptedSessionActor.EncryptedPackageRes>, EncryptBoxResponse>() {
                     @Override
-                    public EncryptBoxResponse apply(EncryptedSessionActor.EncryptedPackageRes[] src) {
+                    public EncryptBoxResponse apply(List<EncryptedSessionActor.EncryptedPackageRes> src) {
 
-                        if (src.length == 0) {
+                        if (src.size() == 0) {
                             throw new RuntimeException("No sessions available");
                         }
 
@@ -196,7 +190,7 @@ public class EncryptedPeerActor extends ModuleActor {
         return PromisesArray.of(data.getKeys())
                 .filter(EncryptedBoxKey.FILTER(myUid(), ownKeyGroupId))
                 .first()
-                .mapPromise(new Function<EncryptedBoxKey, Promise<Tuple2<SessionActor, EncryptedBoxKey>>>() {
+                .flatMap(new Function<EncryptedBoxKey, Promise<Tuple2<SessionActor, EncryptedBoxKey>>>() {
                     @Override
                     public Promise<Tuple2<SessionActor, EncryptedBoxKey>> apply(final EncryptedBoxKey boxKey) {
                         final long senderPreKeyId = ByteStrings.bytesToLong(boxKey.getEncryptedKey(), 4);
@@ -220,11 +214,13 @@ public class EncryptedPeerActor extends ModuleActor {
                                 });
                     }
                 })
-                .mapPromise(new Function<Tuple2<SessionActor, EncryptedBoxKey>, Promise<EncryptedSessionActor.DecryptedPackage>>() {
+                .flatMap(new Function<Tuple2<SessionActor, EncryptedBoxKey>, Promise<EncryptedSessionActor.DecryptedPackage>>() {
                     @Override
                     public Promise<EncryptedSessionActor.DecryptedPackage> apply(Tuple2<SessionActor, EncryptedBoxKey> src) {
                         Log.d(TAG, "Key size:" + src.getT2().getEncryptedKey().length);
-                        return ask(src.getT1().getActorRef(), new EncryptedSessionActor.DecryptPackage(src.getT2().getEncryptedKey()));
+                        // return ask(src.getT1().getActorRef(), new EncryptedSessionActor.DecryptPackage(src.getT2().getEncryptedKey()));
+                        // TODO: Implement
+                        return null;
                     }
                 })
                 .map(new Function<EncryptedSessionActor.DecryptedPackage, DecryptBoxResponse>() {
@@ -280,7 +276,9 @@ public class EncryptedPeerActor extends ModuleActor {
         return new Function<SessionActor, Promise<EncryptedSessionActor.EncryptedPackageRes>>() {
             @Override
             public Promise<EncryptedSessionActor.EncryptedPackageRes> apply(SessionActor sessionActor) {
-                return ask(sessionActor.getActorRef(), new EncryptedSessionActor.EncryptPackage(encKey));
+                // return ask(sessionActor.getActorRef(), new EncryptedSessionActor.EncryptPackage(encKey));
+                // TODO: Implement
+                return null;
             }
         };
     }

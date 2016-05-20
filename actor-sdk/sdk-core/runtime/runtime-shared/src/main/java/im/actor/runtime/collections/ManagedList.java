@@ -9,8 +9,6 @@ import im.actor.runtime.function.Function;
 import im.actor.runtime.function.Predicate;
 import im.actor.runtime.function.Supplier;
 import im.actor.runtime.promise.Promise;
-import im.actor.runtime.promise.PromiseFunc;
-import im.actor.runtime.promise.PromiseResolver;
 
 public class ManagedList<T> extends ArrayList<T> {
 
@@ -142,14 +140,11 @@ public class ManagedList<T> extends ArrayList<T> {
     }
 
     public Promise<T> firstPromise() {
-        return new Promise<T>(new PromiseFunc<T>() {
-            @Override
-            public void exec(PromiseResolver<T> executor) {
-                if (size() == 0) {
-                    executor.error(new RuntimeException("Array is empty"));
-                } else {
-                    executor.result(get(0));
-                }
+        return new Promise<T>(executor -> {
+            if (size() == 0) {
+                executor.error(new RuntimeException("Array is empty"));
+            } else {
+                executor.result(get(0));
             }
         });
     }

@@ -24,10 +24,12 @@ public class UpdateMessageReadByMe extends Update {
 
     private ApiPeer peer;
     private long startDate;
+    private Integer unreadCounter;
 
-    public UpdateMessageReadByMe(@NotNull ApiPeer peer, long startDate) {
+    public UpdateMessageReadByMe(@NotNull ApiPeer peer, long startDate, @Nullable Integer unreadCounter) {
         this.peer = peer;
         this.startDate = startDate;
+        this.unreadCounter = unreadCounter;
     }
 
     public UpdateMessageReadByMe() {
@@ -43,10 +45,16 @@ public class UpdateMessageReadByMe extends Update {
         return this.startDate;
     }
 
+    @Nullable
+    public Integer getUnreadCounter() {
+        return this.unreadCounter;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.peer = values.getObj(1, new ApiPeer());
         this.startDate = values.getLong(2);
+        this.unreadCounter = values.optInt(3);
     }
 
     @Override
@@ -56,6 +64,9 @@ public class UpdateMessageReadByMe extends Update {
         }
         writer.writeObject(1, this.peer);
         writer.writeLong(2, this.startDate);
+        if (this.unreadCounter != null) {
+            writer.writeInt(3, this.unreadCounter);
+        }
     }
 
     @Override
@@ -63,6 +74,7 @@ public class UpdateMessageReadByMe extends Update {
         String res = "update MessageReadByMe{";
         res += "peer=" + this.peer;
         res += ", startDate=" + this.startDate;
+        res += ", unreadCounter=" + this.unreadCounter;
         res += "}";
         return res;
     }

@@ -41,6 +41,9 @@ public class MentionsAdapter extends HolderAdapter<MentionFilterResult> {
     }
 
     public void setQuery(String q) {
+        if (q == null || q.equals(query)) {
+            return;
+        }
         query = q;
         membersToShow = messenger().findMentions(gid, q);
         int newRowsCount = membersToShow.size();
@@ -117,8 +120,10 @@ public class MentionsAdapter extends HolderAdapter<MentionFilterResult> {
 
 
         @Override
-        public void unbind() {
-            avatarView.unbind();
+        public void unbind(boolean full) {
+            if (full) {
+                avatarView.unbind();
+            }
         }
     }
 

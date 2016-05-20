@@ -6,8 +6,8 @@ import im.actor.runtime.files.FileSystemReference;
 import im.actor.runtime.mvvm.BaseValueModel;
 import im.actor.runtime.mvvm.PlatformDisplayList;
 import im.actor.runtime.mvvm.MVVMCollection;
+import im.actor.runtime.mvvm.ValueDefaultCreator;
 import im.actor.runtime.mvvm.ValueModelCreator;
-import im.actor.runtime.storage.IndexStorage;
 import im.actor.runtime.storage.KeyValueItem;
 import im.actor.runtime.storage.KeyValueStorage;
 import im.actor.runtime.storage.ListEngine;
@@ -41,10 +41,6 @@ public class Storage {
         return storageRuntime.createPreferencesStorage();
     }
 
-    public static IndexStorage createIndex(String name) {
-        return storageRuntime.createIndex(name);
-    }
-
     public static KeyValueStorage createKeyValue(String name) {
         return storageRuntime.createKeyValue(name);
     }
@@ -53,16 +49,22 @@ public class Storage {
         return enginesRuntime.createListEngine(storageRuntime.createList(name), creator);
     }
 
-    public static <V extends BaseValueModel<T>,
-            T extends BserObject & KeyValueItem> MVVMCollection<T, V> createKeyValue(String name,
-                                                                                     ValueModelCreator<T, V> wrapperCreator,
-                                                                                     BserCreator<T> creator) {
-        return new MVVMCollection<T, V>(storageRuntime.createKeyValue(name), wrapperCreator, creator);
+    public static <V extends BaseValueModel<T>, T extends BserObject & KeyValueItem> MVVMCollection<T, V> createKeyValue(String name,
+                                                                                                                         ValueModelCreator<T, V> wrapperCreator,
+                                                                                                                         BserCreator<T> creator) {
+        return new MVVMCollection<>(storageRuntime.createKeyValue(name), wrapperCreator, creator);
+    }
+
+    public static <V extends BaseValueModel<T>, T extends BserObject & KeyValueItem> MVVMCollection<T, V> createKeyValue(String name,
+                                                                                                                         ValueModelCreator<T, V> wrapperCreator,
+                                                                                                                         BserCreator<T> creator,
+                                                                                                                         ValueDefaultCreator<T> defaultCreator) {
+        return new MVVMCollection<>(storageRuntime.createKeyValue(name), wrapperCreator, creator, defaultCreator);
     }
 
     public static <T extends BserObject & ListEngineItem> PlatformDisplayList<T> createDisplayList(ListEngine<T> engine,
-                                                                                           boolean isSharedInstance,
-                                                                                           String entityName) {
+                                                                                                   boolean isSharedInstance,
+                                                                                                   String entityName) {
         return enginesRuntime.createDisplayList(engine, isSharedInstance, entityName);
     }
 

@@ -45,8 +45,8 @@ final class SessionResendOverflowSpec extends BaseSessionSpec(
         preferredLanguages = Vector.empty
       ))).require
 
-      TestProbe().send(session, handleMessageBox(Random.nextLong(), ProtoRpcRequest(encodedRequest)))
-      TestProbe().send(session, handleMessageBox(Random.nextLong(), ProtoRpcRequest(encodedRequest)))
+      for (_ ← 1 to 10)
+        TestProbe().send(session, handleMessageBox(Random.nextLong(), ProtoRpcRequest(encodedRequest)))
 
       watchProbe.expectTerminated(session)
     }

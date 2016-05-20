@@ -3,8 +3,7 @@ package im.actor.server.dialog
 import akka.actor.ActorSystem
 import im.actor.server.group.{ GroupExtension, GroupUtils }
 import im.actor.server.model.{ HistoryMessage, PeerType, Peer }
-import im.actor.server.persist.dialog.DialogRepo
-import im.actor.server.persist.{ GroupUserRepo, HistoryMessageRepo }
+import im.actor.server.persist.HistoryMessageRepo
 import org.joda.time.DateTime
 import slick.dbio.DBIO
 
@@ -54,26 +53,20 @@ object HistoryUtils {
 
       for {
         _ ← HistoryMessageRepo.create(messages)
-        _ ← DialogRepo.updateLastMessageDatePrivate(fromPeer.id, toPeer, date)
-        _ ← DialogRepo.updateLastMessageDatePrivate(toPeer.id, fromPeer, date)
       } yield ()
     } else if (toPeer.typ == PeerType.Group) {
-      val groupInfo = for {
-        isShared ← GroupExtension(system).isHistoryShared(toPeer.id)
-        (memberIds, _, _) ← GroupExtension(system).getMemberIds(toPeer.id)
-      } yield (isShared, memberIds)
-
       for {
-        (isHistoryShared, groupUserIds) ← DBIO.from(groupInfo)
-        _ ← DialogRepo.updateLastMessageDateGroup(toPeer, date)
+        isHistoryShared ← DBIO.from(GroupExtension(system).isHistoryShared(toPeer.id))
         _ ← if (isHistoryShared) {
           val historyMessage = HistoryMessage(SharedUserId, toPeer, date, fromPeer.id, randomId, messageContentHeader, messageContentData, None)
           HistoryMessageRepo.create(historyMessage) map (_ ⇒ ())
         } else {
-          val historyMessages = groupUserIds.map { groupUserId ⇒
-            HistoryMessage(groupUserId, toPeer, date, fromPeer.id, randomId, messageContentHeader, messageContentData, None)
+          DBIO.from(GroupExtension(system).getMemberIds(toPeer.id)) map (_._1) flatMap { groupUserIds ⇒
+            val historyMessages = groupUserIds.map { groupUserId ⇒
+              HistoryMessage(groupUserId, toPeer, date, fromPeer.id, randomId, messageContentHeader, messageContentData, None)
+            }
+            HistoryMessageRepo.create(historyMessages) map (_ ⇒ ())
           }
-          HistoryMessageRepo.create(historyMessages) map (_ ⇒ ())
         }
       } yield ()
     } else {
@@ -101,58 +94,7 @@ object HistoryUtils {
         messageContentData = messageContentData,
         deletedAt = None
       ))
-      _ ← toPeer.`type` match {
-        case PeerType.Private ⇒ DialogRepo.updateLastMessageDatePrivate(userId, toPeer, date)
-        case PeerType.Group   ⇒ DialogRepo.updateLastMessageDateGroup(toPeer, date)
-        case _                ⇒ throw new RuntimeException(s"Unknown peer type ${toPeer.typ}")
-      }
     } yield ()
-  }
-
-  private[dialog] def markMessagesReceived(byPeer: Peer, peer: Peer, date: DateTime)(implicit system: ActorSystem, ec: ExecutionContext): DBIO[Unit] = {
-    requirePrivatePeer(byPeer)
-    // requireDifferentPeers(byPeer, peer)
-
-    peer.typ match {
-      case PeerType.Private ⇒
-        DBIO.sequence(Seq(
-          DialogRepo.updateLastReceivedAtPrivate(peer.id, Peer(PeerType.Private, byPeer.id), date),
-          DialogRepo.updateOwnerLastReceivedAt(byPeer.id, peer, date)
-        )) map (_ ⇒ ())
-      case PeerType.Group ⇒
-        withGroup(peer.id) { _ ⇒
-          GroupUserRepo.findUserIds(peer.id) flatMap { groupUserIds ⇒
-            for {
-              _ ← DialogRepo.updateOwnerLastReceivedAt(byPeer.id, Peer(PeerType.Group, peer.id), date)
-              _ ← DialogRepo.updateLastReceivedAtGroup(Peer(PeerType.Group, peer.id), date)
-            } yield ()
-          }
-        }
-      case _ ⇒ throw new RuntimeException(s"Unknown peer type ${peer.typ}")
-    }
-  }
-
-  private[dialog] def markMessagesRead(byPeer: Peer, peer: Peer, date: DateTime)(implicit system: ActorSystem, ec: ExecutionContext): DBIO[Unit] = {
-    requirePrivatePeer(byPeer)
-    // requireDifferentPeers(byPeer, peer)
-
-    peer.typ match {
-      case PeerType.Private ⇒
-        DBIO.sequence(Seq(
-          DialogRepo.updateLastReadAtPrivate(peer.id, Peer(PeerType.Private, byPeer.id), date),
-          DialogRepo.updateOwnerLastReadAt(byPeer.id, peer, date)
-        )) map (_ ⇒ ())
-      case PeerType.Group ⇒
-        withGroup(peer.id) { _ ⇒
-          GroupUserRepo.findUserIds(peer.id) flatMap { groupUserIds ⇒
-            for {
-              _ ← DialogRepo.updateOwnerLastReadAt(byPeer.id, Peer(PeerType.Group, peer.id), date)
-              _ ← DialogRepo.updateLastReadAtGroup(Peer(PeerType.Group, peer.id), date)
-            } yield ()
-          }
-        }
-      case _ ⇒ throw new RuntimeException(s"Unknown peer type ${peer.typ}")
-    }
   }
 
   // todo: remove this in favor of getHistoryOwner

@@ -45,10 +45,13 @@ import AudioToolbox.AudioServices
     func hideAllNotifications() {
         dispatchOnUi { () -> Void in
             // Clearing notifications
-            let number = Actor.getAppState().globalCounter.get().integerValue
-            UIApplication.sharedApplication().applicationIconBadgeNumber = 0 // If current value will equals to number + 1
-            UIApplication.sharedApplication().applicationIconBadgeNumber = number + 1
-            UIApplication.sharedApplication().applicationIconBadgeNumber = number
+            if let number = Actor.getGlobalState().globalCounter.get() {
+                UIApplication.sharedApplication().applicationIconBadgeNumber = 0 // If current value will equals to number + 1
+                UIApplication.sharedApplication().applicationIconBadgeNumber = number.integerValue + 1
+                UIApplication.sharedApplication().applicationIconBadgeNumber = number.integerValue
+            } else {
+                UIApplication.sharedApplication().applicationIconBadgeNumber = 0
+            }
             
             // Clearing local notifications
             UIApplication.sharedApplication().cancelAllLocalNotifications()

@@ -17,8 +17,7 @@ import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import java.io.File;
 
 import im.actor.sdk.ActorSDK;
-import im.actor.sdk.R;
-import im.actor.sdk.controllers.fragment.settings.BaseActorSettingsFragment;
+import im.actor.sdk.controllers.settings.BaseActorSettingsFragment;
 
 public class BackgroundPreviewView extends SimpleDraweeView {
 

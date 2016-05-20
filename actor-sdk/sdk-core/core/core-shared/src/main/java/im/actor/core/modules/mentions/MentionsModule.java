@@ -32,20 +32,17 @@ public class MentionsModule extends AbsModule {
         ArrayList<MentionFilterResult> results = new ArrayList<MentionFilterResult>();
         final Group group = groups().getValue(gid);
         GroupMember[] members = group.getMembers().toArray(new GroupMember[group.getMembers().size()]);
-        Arrays.sort(members, new Comparator<GroupMember>() {
-            @Override
-            public int compare(GroupMember a, GroupMember b) {
-                User ua = users().getValue(a.getUid());
-                User ub = users().getValue(b.getUid());
-                return ua.getName().compareToIgnoreCase(ub.getName());
-            }
+        Arrays.sort(members, (a, b) -> {
+            User ua = users().getValue(a.getUid());
+            User ub = users().getValue(b.getUid());
+            return ua.getName().compareToIgnoreCase(ub.getName());
         });
 
         for (GroupMember member : members) {
             if (member.getUid() == myUid()) {
                 continue;
             }
-            
+
             User user = users().getValue(member.getUid());
 
             boolean isNick = user.getNick() != null;
@@ -69,16 +66,16 @@ public class MentionsModule extends AbsModule {
                 results.add(new MentionFilterResult(user.getUid(),
                         user.getAvatar(),
                         isNick ? "@" + mention : mention,
-                        new ArrayList<StringMatch>(),
+                        new ArrayList<>(),
                         secondName,
-                        new ArrayList<StringMatch>(), isNick));
+                        new ArrayList<>(), isNick));
             } else {
                 List<StringMatch> mentionMatches = StringMatcher.findMatches(mention, query);
                 if (secondName != null) {
                     List<StringMatch> secondNameMatches = StringMatcher.findMatches(secondName, query);
                     if (mentionMatches.size() > 0 || secondNameMatches.size() > 0) {
                         if (isNick) {
-                            List<StringMatch> nickMatches = new ArrayList<StringMatch>();
+                            List<StringMatch> nickMatches = new ArrayList<>();
                             for (StringMatch m : mentionMatches) {
                                 nickMatches.add(new StringMatch(m.getStart() + 1, m.getLength()));
                             }

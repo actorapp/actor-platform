@@ -4,6 +4,7 @@ import im.actor.core.Configuration;
 import im.actor.core.Messenger;
 import im.actor.core.i18n.I18nEngine;
 import im.actor.core.modules.api.ApiModule;
+import im.actor.core.modules.auth.Authentication;
 import im.actor.core.modules.eventbus.EventBusModule;
 import im.actor.core.modules.sequence.Updates;
 import im.actor.core.modules.misc.AppStateModule;
@@ -25,6 +26,7 @@ import im.actor.core.modules.search.SearchModule;
 import im.actor.core.modules.security.SecurityModule;
 import im.actor.core.modules.settings.SettingsModule;
 import im.actor.core.modules.stickers.StickersModule;
+import im.actor.core.modules.storage.StorageModule;
 import im.actor.core.modules.typing.TypingModule;
 import im.actor.core.modules.users.UsersModule;
 import im.actor.core.network.ActorApi;
@@ -40,6 +42,10 @@ public interface ModuleContext {
     ActorApi getActorApi();
 
     ApiModule getApiModule();
+
+    StorageModule getStorageModule();
+
+    void afterStorageReset();
 
     // Preferences
     PreferencesStorage getPreferences();

@@ -7,21 +7,17 @@ package im.actor.runtime.actors;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import im.actor.runtime.actors.ask.AskCallback;
-import im.actor.runtime.actors.ask.AskIntRequest;
-import im.actor.runtime.actors.ask.AskMessage;
 import im.actor.runtime.actors.dispatch.Mailbox;
 import im.actor.runtime.actors.messages.DeadLetter;
-import im.actor.runtime.function.Consumer;
-import im.actor.runtime.promise.Promise;
-import im.actor.runtime.promise.PromiseDispatch;
-import im.actor.runtime.promise.PromiseFunc;
-import im.actor.runtime.promise.PromiseResolver;
+import im.actor.runtime.threading.SimpleDispatcher;
+import im.actor.runtime.threading.ThreadDispatcher;
 
 /**
  * Actor object
  */
 public class Actor {
+
+    private final SimpleDispatcher dispatcher = runnable -> self().post(runnable);
 
     private Scheduler scheduler;
 
@@ -35,6 +31,13 @@ public class Actor {
 
     public Actor() {
 
+    }
+
+    /**
+     * <p>INTERNAL API</p>
+     */
+    public SimpleDispatcher getDispatcher() {
+        return dispatcher;
     }
 
     /**
@@ -111,21 +114,28 @@ public class Actor {
     }
 
     private void intHandle(Object message, ActorRef sender) {
+        ThreadDispatcher.pushDispatcher(dispatcher);
         context.setSender(sender);
         context.setMessage(message);
+        try {
 
-        if (receivers != null && receivers.size() > 0) {
-            receivers.get(receivers.size() - 1).onReceive(message);
-            return;
+            if (receivers != null && receivers.size() > 0) {
+                receivers.get(receivers.size() - 1).onReceive(message);
+                return;
+            }
+
+            if (message instanceof Runnable) {
+                ((Runnable) message).run();
+                return;
+            }
+
+            onReceive(message);
+
+        } finally {
+            ThreadDispatcher.popDispatcher();
+            context.setSender(null);
+            context.setMessage(null);
         }
-
-        if (message instanceof Runnable) {
-            ((Runnable) message).run();
-            return;
-        }
-
-
-        onReceive(message);
     }
 
     /**
@@ -240,62 +250,62 @@ public class Actor {
         throw new ActorHalterException(message, e);
     }
 
-    public <T> Promise<T> ask(final ActorRef dest, final AskMessage<T> msg) {
-        return new Promise<T>(new PromiseFunc<T>() {
-            @Override
-            public void exec(PromiseResolver<T> executor) {
-                dest.send(new AskIntRequest(msg, executor));
-            }
-        });
-    }
-
-    public void ask(ActorRef dest, Object message) {
-        ask(dest, message, null);
-    }
-
-    public void ask(final ActorRef dest, final Object message, final AskCallback callback) {
-        new Promise<>(new PromiseFunc<Object>() {
-            @Override
-            public void exec(final PromiseResolver<Object> executor) {
-                become(new Receiver() {
-                    @Override
-                    public void onReceive(Object message) {
-                        if (message instanceof PromiseDispatch) {
-                            PromiseDispatch dispatch = (PromiseDispatch) message;
-                            if (dispatch.getPromise() == executor.getPromise()) {
-                                dispatch.run();
-                            } else {
-                                stash();
-                            }
-                        } else {
-                            stash();
-                        }
-                    }
-                });
-                dest.send(new AskIntRequest(message, executor));
-            }
-        }).then(new Consumer<Object>() {
-            @Override
-            public void apply(Object o) {
-                unbecome();
-                unstashAll();
-
-                if (callback != null) {
-                    callback.onResult(o);
-                }
-            }
-        }).failure(new Consumer<Exception>() {
-            @Override
-            public void apply(Exception e) {
-                unbecome();
-                unstashAll();
-
-                if (callback != null) {
-                    callback.onError(e);
-                }
-            }
-        }).done(self());
-    }
+//    public <T> Promise<T> ask(final ActorRef dest, final AskMessage<T> msg) {
+//        return new Promise<T>(new PromiseFunc<T>() {
+//            @Override
+//            public void exec(PromiseResolver<T> executor) {
+//                dest.send(new AskIntRequest(msg, executor));
+//            }
+//        });
+//    }
+//
+//    public void ask(ActorRef dest, Object message) {
+//        ask(dest, message, null);
+//    }
+//
+//    public void ask(final ActorRef dest, final Object message, final AskCallback callback) {
+//        new Promise<>(new PromiseFunc<Object>() {
+//            @Override
+//            public void exec(@NonNull final PromiseResolver<Object> executor) {
+//                become(new Receiver() {
+//                    @Override
+//                    public void onReceive(Object message) {
+//                        if (message instanceof PromiseDispatch) {
+//                            PromiseDispatch dispatch = (PromiseDispatch) message;
+//                            if (dispatch.getPromise() == executor.getPromise()) {
+//                                dispatch.run();
+//                            } else {
+//                                stash();
+//                            }
+//                        } else {
+//                            stash();
+//                        }
+//                    }
+//                });
+//                dest.send(new AskIntRequest(message, executor));
+//            }
+//        }).then(new Consumer<Object>() {
+//            @Override
+//            public void apply(Object o) {
+//                unbecome();
+//                unstashAll();
+//
+//                if (callback != null) {
+//                    callback.onResult(o);
+//                }
+//            }
+//        }).failure(new Consumer<Exception>() {
+//            @Override
+//            public void apply(Exception e) {
+//                unbecome();
+//                unstashAll();
+//
+//                if (callback != null) {
+//                    callback.onError(e);
+//                }
+//            }
+//        }).done(self());
+//    }
 
     public Cancellable schedule(final Object obj, long delay) {
         if (scheduler == null) {
@@ -304,12 +314,7 @@ public class Actor {
         if (obj instanceof Runnable) {
             return scheduler.schedule((Runnable) obj, delay);
         } else {
-            return scheduler.schedule(new Runnable() {
-                @Override
-                public void run() {
-                    handleMessage(obj, self());
-                }
-            }, delay);
+            return scheduler.schedule(() -> handleMessage(obj, self()), delay);
         }
     }
 }

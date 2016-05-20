@@ -6,7 +6,7 @@ import java.util.HashSet;
 import im.actor.core.entity.Peer;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.calls.peers.AbsCallActor;
-import im.actor.core.util.ModuleActor;
+import im.actor.core.modules.ModuleActor;
 import im.actor.core.providers.CallsProvider;
 import im.actor.core.util.RandomUtils;
 import im.actor.core.viewmodel.CommandCallback;
@@ -21,13 +21,8 @@ import im.actor.runtime.power.WakeLock;
 
 public class CallManagerActor extends ModuleActor {
 
-    public static Constructor<CallManagerActor> CONSTRUCTOR(final ModuleContext context) {
-        return new Constructor<CallManagerActor>() {
-            @Override
-            public CallManagerActor create() {
-                return new CallManagerActor(context);
-            }
-        };
+    public static ActorCreator CONSTRUCTOR(final ModuleContext context) {
+        return () -> new CallManagerActor(context);
     }
 
     private static final String TAG = "CallManagerActor";
@@ -71,11 +66,8 @@ public class CallManagerActor extends ModuleActor {
         // Spawning new Actor for call
         //
         final WakeLock wakeLock = Runtime.makeWakeLock();
-        system().actorOf("actor/master/" + RandomUtils.nextRid(), new ActorCreator() {
-            @Override
-            public Actor create() {
-                return new CallActor(peer, callback, wakeLock, context());
-            }
+        system().actorOf("actor/master/" + RandomUtils.nextRid(), () -> {
+            return new CallActor(peer, callback, wakeLock, context());
         });
     }
 
@@ -164,11 +156,8 @@ public class CallManagerActor extends ModuleActor {
         // Spawning new Actor for call
         //
         final WakeLock finalWakeLock = wakeLock;
-        system().actorOf("actor/call" + RandomUtils.nextRid(), new ActorCreator() {
-            @Override
-            public Actor create() {
-                return new CallActor(callId, finalWakeLock, context());
-            }
+        system().actorOf("actor/call" + RandomUtils.nextRid(), () -> {
+            return new CallActor(callId, finalWakeLock, context());
         });
     }
 

@@ -25,11 +25,15 @@ public class ResponseLoadDialogs extends Response {
     private List<ApiGroup> groups;
     private List<ApiUser> users;
     private List<ApiDialog> dialogs;
+    private List<ApiUserOutPeer> userPeers;
+    private List<ApiGroupOutPeer> groupPeers;
 
-    public ResponseLoadDialogs(@NotNull List<ApiGroup> groups, @NotNull List<ApiUser> users, @NotNull List<ApiDialog> dialogs) {
+    public ResponseLoadDialogs(@NotNull List<ApiGroup> groups, @NotNull List<ApiUser> users, @NotNull List<ApiDialog> dialogs, @NotNull List<ApiUserOutPeer> userPeers, @NotNull List<ApiGroupOutPeer> groupPeers) {
         this.groups = groups;
         this.users = users;
         this.dialogs = dialogs;
+        this.userPeers = userPeers;
+        this.groupPeers = groupPeers;
     }
 
     public ResponseLoadDialogs() {
@@ -51,6 +55,16 @@ public class ResponseLoadDialogs extends Response {
         return this.dialogs;
     }
 
+    @NotNull
+    public List<ApiUserOutPeer> getUserPeers() {
+        return this.userPeers;
+    }
+
+    @NotNull
+    public List<ApiGroupOutPeer> getGroupPeers() {
+        return this.groupPeers;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         List<ApiGroup> _groups = new ArrayList<ApiGroup>();
@@ -68,6 +82,16 @@ public class ResponseLoadDialogs extends Response {
             _dialogs.add(new ApiDialog());
         }
         this.dialogs = values.getRepeatedObj(3, _dialogs);
+        List<ApiUserOutPeer> _userPeers = new ArrayList<ApiUserOutPeer>();
+        for (int i = 0; i < values.getRepeatedCount(4); i ++) {
+            _userPeers.add(new ApiUserOutPeer());
+        }
+        this.userPeers = values.getRepeatedObj(4, _userPeers);
+        List<ApiGroupOutPeer> _groupPeers = new ArrayList<ApiGroupOutPeer>();
+        for (int i = 0; i < values.getRepeatedCount(5); i ++) {
+            _groupPeers.add(new ApiGroupOutPeer());
+        }
+        this.groupPeers = values.getRepeatedObj(5, _groupPeers);
     }
 
     @Override
@@ -75,6 +99,8 @@ public class ResponseLoadDialogs extends Response {
         writer.writeRepeatedObj(1, this.groups);
         writer.writeRepeatedObj(2, this.users);
         writer.writeRepeatedObj(3, this.dialogs);
+        writer.writeRepeatedObj(4, this.userPeers);
+        writer.writeRepeatedObj(5, this.groupPeers);
     }
 
     @Override

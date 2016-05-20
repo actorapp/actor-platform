@@ -2,6 +2,7 @@ package im.actor.runtime.android.threading;
 
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.SystemClock;
 
 import im.actor.runtime.threading.DispatchCancel;
 import im.actor.runtime.threading.Dispatcher;
@@ -24,13 +25,9 @@ public class AndroidDispatcher implements Dispatcher {
     }
 
     @Override
-    public DispatchCancel dispatch(Runnable message, long delay) {
-        handler.postDelayed(message, delay);
-        return new DispatchCancel() {
-            @Override
-            public void cancel() {
-                // Do Nothing
-            }
-        };
+    public DispatchCancel dispatch(final Runnable message, long delay) {
+        final Object o = new Object();
+        handler.postAtTime(message, o, SystemClock.uptimeMillis() + delay);
+        return () -> handler.removeCallbacks(message, o);
     }
 }

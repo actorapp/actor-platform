@@ -77,39 +77,38 @@
         android:orientation="vertical"
         android:visibility="gone">
 
-        <LinearLayout
-            android:id="@+id/themeContainer"
-            android:layout_width="match_parent"
-            android:layout_height="72dp"
-            android:layout_gravity="center_vertical"
-            android:background="@drawable/clickable_background"
-            android:gravity="center_vertical"
-            android:orientation="vertical"
-            android:paddingLeft="72dp"
-            android:paddingRight="8dp">
+        <!--<LinearLayout-->
+            <!--android:id="@+id/themeContainer"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="72dp"-->
+            <!--android:layout_gravity="center_vertical"-->
+            <!--android:background="@drawable/clickable_background"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:orientation="vertical"-->
+            <!--android:paddingLeft="72dp"-->
+            <!--android:paddingRight="8dp">-->
 
-            <TextView
-                android:id="@+id/theme"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="18sp" />
+            <!--<TextView-->
+                <!--android:id="@+id/theme"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:textSize="18sp" />-->
 
-            <TextView
-                android:id="@+id/group_theme_hint"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/theme_group"
-                android:textSize="16sp" />
+            <!--<TextView-->
+                <!--android:id="@+id/group_theme_hint"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/theme_group"-->
+                <!--android:textSize="16sp" />-->
 
 
-        </LinearLayout>
+        <!--</LinearLayout>-->
 
-        <View
-            android:id="@+id/themeDivider"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/div_size"
-            android:layout_gravity="bottom"
-            android:layout_marginLeft="72dp" />
+        <!--<im.actor.sdk.view.DividerView-->
+            <!--android:id="@+id/themeDivider"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginLeft="72dp" />-->
 
         <LinearLayout
             android:id="@+id/aboutContainer"
@@ -217,6 +216,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:visibility="gone">
+
         <TextView
             android:id="@+id/shared_header_text"
             android:layout_width="match_parent"
@@ -225,6 +225,7 @@
             android:paddingLeft="72dp"
             android:text="@string/profile_shared_header"
             android:textSize="16sp" />
+
         <LinearLayout
             android:id="@+id/mediaContainer"
             android:layout_width="match_parent"
@@ -256,6 +257,7 @@
                 android:textSize="16sp" />
 
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/docsContainer"
             android:layout_width="match_parent"
@@ -287,6 +289,7 @@
                 android:textSize="16sp" />
 
         </LinearLayout>
+
         <FrameLayout
             android:id="@+id/bottom_divider"
             android:layout_width="match_parent"

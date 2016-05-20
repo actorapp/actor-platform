@@ -1,0 +1,49 @@
+/*
+ * Copyright (C) 2016 Actor LLC. <https://actor.im>
+ */
+
+.contact {
+  padding: 7px 18px;
+  &__avatar {
+    margin: 0 12px 0 0;
+  }
+  &__body {
+    .title {
+      font-size: 15px;
+      line-height: 32px;
+
+      display: inline-block;
+      .emoji-outer {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+  &__controls {
+    text-align: center;
+    .material-icons {
+      font-size: 20px;
+      line-height: 32px;
+
+      display: block;
+
+      width: 32px;
+      height: 32px;
+    }
+    a {
+      cursor: pointer;
+
+      color: $dark-sky-blue;
+      &:hover {
+        color: $body-base-color;
+      }
+    }
+  }
+  &--disabled {
+    cursor: default;
+
+    opacity: .5;
+
+    @include no-select();
+  }
+}

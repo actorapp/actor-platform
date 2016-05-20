@@ -2,71 +2,65 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import { forEach, map, debounce } from 'lodash';
+import { forEach, throttle } from 'lodash';
 
 import React, { Component, PropTypes } from 'react';
-import { findDOMNode } from 'react-dom';
-import { Link } from 'react-router';
 import { FormattedMessage } from 'react-intl';
-import  classnames from 'classnames';
 
-import PeerUtils from '../../utils/PeerUtils';
-
-import CreateGroupActionCreators from '../../actions/CreateGroupActionCreators';
-import ContactActionCreators from '../../actions/ContactActionCreators';
 import GroupListActionCreators from '../../actions/GroupListActionCreators';
+import ContactActionCreators from '../../actions/ContactActionCreators';
+import CreateGroupActionCreators from '../../actions/CreateGroupActionCreators';
 import AddContactActionCreators from '../../actions/AddContactActionCreators';
 
-import Scrollbar from '../common/Scrollbar.react';
-import RecentItem from './RecentItem.react';
+import CustomScroller from '../common/CustomScroller.react';
+import RecentGroup from './RecentGroup.react';
+import SidebarLink from './SidebarLink.react';
 
 class Recent extends Component {
-  constructor(props) {
-    super(props);
-
-    this.checkInvisibleCounters = debounce(this.checkInvisibleCounters, 50, {
-      maxWait: 150,
-      leading: true
-    });
-
-    this.state = {
-      haveUnreadAbove: false,
-      haveUnreadBelow: false,
-      lastUnreadBelow: null,
-      firstUnreadAbove: null
-    }
-  }
-
-  static contextTypes = {
-    intl: PropTypes.object
-  };
-
   static propTypes = {
     currentPeer: PropTypes.object,
     dialogs: PropTypes.array.isRequired,
     archive: PropTypes.object.isRequired
   };
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.dialogs !== this.props.dialogs) {
-      this.checkInvisibleCounters();
-    }
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      haveUnreadAbove: false,
+      haveUnreadBelow: false,
+      lastUnreadBelow: null,
+      firstUnreadAbove: null
+    };
+
+    this.checkInvisibleCounters = throttle(this.checkInvisibleCounters.bind(this), 300);
+    this.scrollToFirstHiddenAbove = this.scrollToFirstHiddenAbove.bind(this);
+    this.scrollToLastHiddenBelow = this.scrollToLastHiddenBelow.bind(this);
+    this.handleGroupListTitleClick = this.handleGroupListTitleClick.bind(this);
+    this.handlePrivateListTitleClick = this.handlePrivateListTitleClick.bind(this);
   }
 
-  handleCreateGroup = () => CreateGroupActionCreators.open();
+  handleGroupListTitleClick () {
+    GroupListActionCreators.open();
+  }
 
-  handleCreatePrivate = () => AddContactActionCreators.open();
+  handlePrivateListTitleClick() {
+    ContactActionCreators.open();
+  }
 
-  handleGroupListClick = () => GroupListActionCreators.open();
+  handleAddContact() {
+    AddContactActionCreators.open();
+  }
 
-  handlePrivateListClick = () => ContactActionCreators.open();
+  handleCreateGroup() {
+    CreateGroupActionCreators.open();
+  }
 
-  handleRecentScroll = () => this.checkInvisibleCounters();
-
-  checkInvisibleCounters = () => {
-    const unreadNodes = document.getElementsByClassName('sidebar__list__item--unread');
-    const scrollNode = findDOMNode(this.refs.container);
-    const scrollNodeRect = scrollNode.getBoundingClientRect();
+  checkInvisibleCounters() {
+    const { scroller } = this.refs;
+    const recentRect = scroller.getBoundingClientRect();
+    // TODO: refactor this
+    const unreadNodes = scroller.container.getElementsByClassName('recent__item--unread');
 
     let haveUnreadAbove = false,
         haveUnreadBelow = false,
@@ -75,11 +69,11 @@ class Recent extends Component {
 
     forEach(unreadNodes, (node) => {
       const rect = node.getBoundingClientRect();
-      if ((scrollNodeRect.top + scrollNodeRect.height) < rect.top) {
+      if ((recentRect.top + recentRect.height) < rect.top) {
         haveUnreadBelow = true;
         lastUnreadBelow = node;
       }
-      if (scrollNodeRect.top > (rect.top + rect.height)) {
+      if (recentRect.top > (rect.top + rect.height)) {
         haveUnreadAbove = true;
         if (!firstUnreadAbove) {
           firstUnreadAbove = node;
@@ -88,138 +82,142 @@ class Recent extends Component {
     });
 
     this.setState({ haveUnreadAbove, haveUnreadBelow, firstUnreadAbove, lastUnreadBelow });
-  };
+  }
 
-  scrollToFirstHiddenAbove = () => {
+  scrollToFirstHiddenAbove() {
+    const { scroller } = this.refs;
     const { firstUnreadAbove } = this.state;
     const rect = firstUnreadAbove.getBoundingClientRect();
-    const scrollNode = findDOMNode(this.refs.container).getElementsByClassName('ss-scrollarea')[0];
-    const scrollNodeRect = scrollNode.getBoundingClientRect();
+    const dimensions = scroller.getDimensions();
+    const scrollerRect = scroller.getBoundingClientRect();
 
-    this.refs.container.scrollTo(scrollNode.scrollTop + rect.top - scrollNodeRect.top)
-  };
+    scroller.scrollTo(dimensions.scrollTop + rect.top - scrollerRect.top);
+  }
 
-  scrollToLastHiddenBelow = () => {
+  scrollToLastHiddenBelow() {
+    const { scroller } = this.refs;
     const { lastUnreadBelow } = this.state;
     const rect = lastUnreadBelow.getBoundingClientRect();
-    const scrollNode = findDOMNode(this.refs.container).getElementsByClassName('ss-scrollarea')[0];
-    const scrollNodeRect = scrollNode.getBoundingClientRect();
+    const dimensions = scroller.getDimensions();
+    const scrollerRect = scroller.getBoundingClientRect();
 
-    this.refs.container.scrollTo(scrollNode.scrollTop + rect.top - (scrollNodeRect.top + scrollNodeRect.height - rect.height));
-  };
+    scroller.scrollTo(dimensions.scrollTop + rect.top - (scrollerRect.top + scrollerRect.height - rect.height));
+  }
 
-  render() {
-    const { dialogs, archive, currentPeer } = this.props;
-    const { haveUnreadAbove, haveUnreadBelow } = this.state;
-    const { intl } = this.context;
+  getGroupProps(group) {
+    switch (group.key) {
+      case 'groups':
+        return {
+          onTitleClick: this.handleGroupListTitleClick,
+          onPlusClick: this.handleCreateGroup,
+          renderEmptyHint: this.renderGroupHint
+        };
 
-    const recentGroups = map(dialogs, (dialogGroup, index) => {
-      const isEmpty = dialogGroup.shorts.length === 0;
-      let groupTitle;
+      case 'privates':
+        return {
+          onTitleClick: this.handlePrivateListTitleClick,
+          onPlusClick: this.handleAddContact,
+          renderEmptyHint: this.renderPrivateHint
+        };
 
-      switch (dialogGroup.key) {
-        case 'groups':
-          groupTitle = (
-            <li className="sidebar__list__title">
-              <a onClick={this.handleGroupListClick}>{intl.messages[`sidebar.recents.${dialogGroup.key}`]}</a>
-              <i className="material-icons sidebar__list__title__icon pull-right"
-                 onClick={this.handleCreateGroup}>add_circle_outline</i>
-            </li>
-          );
-          break;
-        case 'privates':
-          groupTitle = (
-            <li className="sidebar__list__title">
-              <a onClick={this.handlePrivateListClick}>{intl.messages[`sidebar.recents.${dialogGroup.key}`]}</a>
-              <i className="material-icons sidebar__list__title__icon pull-right"
-                 onClick={this.handleCreatePrivate}>add_circle_outline</i>
-            </li>
-          );
-          break;
-        default:
-          groupTitle = <li className="sidebar__list__title">{intl.messages[`sidebar.recents.${dialogGroup.key}`]}</li>;
-      }
+      default:
+        return {};
+    }
+  }
 
-      const groupList = map(dialogGroup.shorts, (dialog, index) => {
-        const peer = dialog.peer.peer;
-        const peerKey = PeerUtils.peerToString(peer);
+  renderGroupHint() {
+    return (
+      <div className="recent__group__hint">
+        <FormattedMessage id="sidebar.group.empty"/>
+        <div className="stem"/>
+      </div>
+    );
+  }
 
-        return (
-          <RecentItem
-            dialog={dialog}
-            archiveState={archive[peerKey]}
-            isActive={PeerUtils.equals(peer, currentPeer)}
-            key={peerKey}
-          />
-        );
-      });
+  renderPrivateHint() {
+    return (
+      <div className="recent__group__hint">
+        <FormattedMessage id="sidebar.private.empty"/>
+        <button className="button button--outline button--wide hide">
+          <FormattedMessage id="button.invite"/>
+        </button>
+      </div>
+    );
+  }
 
-      const groupClassname = classnames(`sidebar__list sidebar__list--${dialogGroup.key}`, {
-       'sidebar__list--empty': isEmpty
-      });
+  renderRecentGroups() {
+    const { currentPeer, archive } = this.props;
+    return this.props.dialogs.map((group) => (
+      <RecentGroup
+        items={group.shorts}
+        key={group.key}
+        group={group.key}
+        currentPeer={currentPeer}
+        archive={archive}
+        {...this.getGroupProps(group)}
+        onItemUpdate={this.checkInvisibleCounters}
+      />
+    ));
+  }
 
-      const getEmptyMessage = () => {
-        switch (dialogGroup.key) {
-          case 'groups':
-            return (
-              <li className="sidebar__list__item sidebar__list__item--empty">
-                <FormattedMessage id="sidebar.group.empty"/>
-                <div className="stem"/>
-              </li>
-            );
-          case 'privates':
-            return (
-              <li className="sidebar__list__item sidebar__list__item--empty">
-                <FormattedMessage id="sidebar.private.empty"/>
-                <button className="button button--outline button--wide hide">
-                  <FormattedMessage id="button.invite"/>
-                </button>
-              </li>
-            );
-          default:
-            return null;
-        }
-      };
-
-      return (
-        <ul className={groupClassname} key={index}>
-          {groupTitle}
-          {
-            isEmpty
-              ? getEmptyMessage()
-              : groupList
-          }
-        </ul>
-      )
-    });
+  renderUnreadAbove() {
+    if (!this.state.haveUnreadAbove) return null;
 
     return (
-      <section className="sidebar__recent">
-        {
-          haveUnreadAbove
-            ? <div className="sidebar__recent__unread sidebar__recent__unread--above" onClick={this.scrollToFirstHiddenAbove}>
-                <i className="material-icons">keyboard_arrow_up</i>
-              </div>
-            : null
-        }
-        <Scrollbar ref="container" onScroll={this.handleRecentScroll}>
-          <div>
-            {recentGroups}
+      <div className="recent__unread recent__unread--above" onClick={this.scrollToFirstHiddenAbove}>
+        <i className="material-icons">keyboard_arrow_up</i>
+      </div>
+    )
+  }
 
-            <footer>
-              <Link to="/im/archive" className="button button--rised button--wide">
-                <FormattedMessage id="button.archive"/>
-              </Link>
-            </footer>
-          </div>
-        </Scrollbar>
-        {
-          haveUnreadBelow
-            ? <div className="sidebar__recent__unread sidebar__recent__unread--below" onClick={this.scrollToLastHiddenBelow}>
-                <i className="material-icons">keyboard_arrow_down</i>
-              </div>
-            : null
-        }
+  renderUnreadBelow() {
+    if (!this.state.haveUnreadBelow) return null;
+
+    return (
+      <div className="recent__unread recent__unread--below" onClick={this.scrollToLastHiddenBelow}>
+        <i className="material-icons">keyboard_arrow_down</i>
+      </div>
+    )
+  }
+
+  renderHistoryButton() {
+    // actually this is hack, but it's ok while we haven't real flag
+    const isArchiveEmpty = this.props.dialogs.some((group) => !group.shorts.length);
+    if (isArchiveEmpty) {
+      return null;
+    }
+
+    return (
+      <SidebarLink
+        className="sidebar__history"
+        to="/im/history"
+        title={<FormattedMessage id="sidebar.recents.history" />}
+        glyph="history"
+        key="history"
+      />
+    );
+  }
+
+  renderScrollableContent() {
+    return [
+      this.renderRecentGroups(),
+      this.renderHistoryButton()
+    ];
+  }
+
+  render() {
+    return (
+      <section className="recent">
+        {this.renderUnreadAbove()}
+        <CustomScroller
+          className="recent__container"
+          ref="scroller"
+          onScroll={this.checkInvisibleCounters}
+          onResize={this.checkInvisibleCounters}
+        >
+          {this.renderScrollableContent()}
+        </CustomScroller>
+        {this.renderUnreadBelow()}
       </section>
     );
   }

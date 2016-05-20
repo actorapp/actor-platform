@@ -1,95 +1,27 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2016 Actor LLC. <https://actor.im>
  */
 
-import { forEach } from 'lodash';
-import { Store } from 'flux/utils';
+import { ReduceStore } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
-import ActorClient from '../utils/ActorClient';
 
-let _isOpen = false,
-    _list = [],
-    _results = [];
-
-/**
- * Class representing a store for searchable group list.
- */
-class GroupStore extends Store {
-  constructor(dispatcher) {
-    super(dispatcher);
+class GroupListStore extends ReduceStore {
+  getInitialState() {
+    return []
   }
 
-  /**
-   * @returns {boolean}
-   */
-  isOpen() {
-    return _isOpen;
-  }
-
-  /**
-   * @returns {Array}
-   */
-  getList() {
-    return _list;
-  }
-
-  /**
-   * @returns {Array}
-   */
-  getResults() {
-    return _results;
-  }
-
-
-  handleSearchQuery(query) {
-    let results = [];
-
-    if (query === '') {
-      results = _list;
-    } else {
-      forEach(_list, (result) => {
-        const title = result.peerInfo.title.toLowerCase();
-        if (title.includes(query.toLowerCase())) {
-          results.push(result);
-        }
-      })
-    }
-
-    _results = results;
-  }
-
-  __onDispatch(action) {
+  reduce(state, action) {
     switch (action.type) {
-      case ActionTypes.GROUP_LIST_SHOW:
-        _isOpen  = true;
-        this.handleSearchQuery('');
-        this.__emitChange();
-        break;
-      case ActionTypes.GROUP_LIST_HIDE:
-        _isOpen  = false;
-        _results = [];
-        this.__emitChange();
-        break;
-
       case ActionTypes.GROUP_LIST_LOAD_SUCCESS:
-        _list = action.response;
-        this.handleSearchQuery('');
-        this.__emitChange();
-        break;
+        return action.response;
       case ActionTypes.GROUP_LIST_LOAD_ERROR:
         console.error(action.error);
-        this.__emitChange();
-        break;
-
-      case ActionTypes.GROUP_LIST_SEARCH:
-        this.handleSearchQuery(action.query);
-        this.__emitChange();
-        break;
-
+        return state;
       default:
+        return state;
     }
   }
 }
 
-export default new GroupStore(Dispatcher);
+export default new GroupListStore(Dispatcher);

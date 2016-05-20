@@ -73,8 +73,14 @@ message UserSequenceCommands {
     message UnregisterPushCredentials {
         option (scalapb.message).extends = "im.actor.server.sequence.VendorPushCommand";
 
-        int64 auth_id = 1;
+        oneof creds {
+            GooglePushCredentials google = 1;
+            ApplePushCredentials apple = 2;
+            ActorPushCredentials actor = 3;
+        }
     }
+
+    message UnregisterPushCredentialsAck {}
 
     message DeliverPush {
         option (scalapb.message).extends = "im.actor.server.sequence.VendorPushCommand";

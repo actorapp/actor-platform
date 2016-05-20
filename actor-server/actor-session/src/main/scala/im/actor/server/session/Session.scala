@@ -3,9 +3,9 @@ package im.actor.server.session
 import java.util.concurrent.TimeUnit
 
 import akka.actor._
-import akka.cluster.pubsub.DistributedPubSubMediator.{ SubscribeAck, Subscribe }
+import akka.cluster.pubsub.DistributedPubSubMediator.{ Subscribe, SubscribeAck }
 import akka.cluster.sharding.ShardRegion.Passivate
-import akka.cluster.sharding.{ ClusterShardingSettings, ClusterSharding, ShardRegion }
+import akka.cluster.sharding.{ ClusterSharding, ClusterShardingSettings, ShardRegion }
 import akka.pattern.pipe
 import akka.stream.{ ClosedShape, Materializer }
 import akka.stream.actor._
@@ -17,7 +17,7 @@ import im.actor.server.db.DbExtension
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport.Drop
-import im.actor.server.persist.{ AuthSessionRepo, AuthIdRepo }
+import im.actor.server.persist.{ AuthIdRepo, AuthSessionRepo }
 import im.actor.server.pubsub.PubSubExtension
 import im.actor.server.user.{ AuthEvents, UserExtension }
 import scodec.DecodeResult
@@ -25,7 +25,7 @@ import scodec.bits.BitVector
 import slick.driver.PostgresDriver.api._
 
 import scala.collection.immutable
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ ExecutionContext, Future }
 import scala.concurrent.duration._
 import scala.util.{ Success, Try }
 
@@ -46,7 +46,7 @@ object Session {
   private[this] val extractEntityId: ShardRegion.ExtractEntityId = {
     case env @ SessionEnvelope(authId, sessionId, payload) ⇒
       Try(env.getField(SessionEnvelope.descriptor.findFieldByNumber(payload.number))) match {
-        case Success(any) ⇒ s"${authId}_$sessionId" → any
+        case Success(any) ⇒ s"${authId}_${sessionId}" → any
         case _            ⇒ throw new RuntimeException(s"Empty payload $env")
       }
   }
@@ -109,19 +109,15 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
       throw e
   }
 
-  db.run(AuthIdRepo.find(authId) flatMap {
-    case Some(_) ⇒
-      AuthSessionRepo.findByAuthId(authId) map {
-        case Some(session) ⇒ Session.Initialized(Some(AuthData(session.userId, session.id)))
-        case None          ⇒ Session.Initialized(None)
-      }
-    case None ⇒ DBIO.successful(Session.AuthIdInvalid)
-  }) pipeTo self
-
   private val updatesHandler = context.actorOf(UpdatesHandler.props(authId), "updatesHandler")
 
   val sessionMessagePublisher = context.actorOf(SessionMessagePublisher.props(), "messagePublisher")
   val rpcHandler = context.actorOf(RpcHandler.props(authId, sessionId, config.rpcConfig), "rpcHandler")
+
+  override def preStart(): Unit = {
+    super.preStart()
+    init()
+  }
 
   def receive = initializing
 
@@ -130,7 +126,7 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
       log.debug("Initialized: {}", authDataOpt)
 
       authDataOpt foreach {
-        case AuthData(userId, authSid) ⇒ authorize(userId, authSid)
+        case AuthData(userId, authSid, appId) ⇒ authorize(userId, authSid, appId)
       }
 
       unstashAll()
@@ -165,7 +161,7 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
   }
 
   def anonymous: Receive = {
-    case HandleMessageBox(messageBoxBytes) ⇒
+    case HandleMessageBox(messageBoxBytes, remoteAddr) ⇒
       idleControl.keepAlive()
 
       withValidMessageBox(messageBoxBytes.toByteArray) { mb ⇒
@@ -197,22 +193,22 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
         }).run()
 
         // sessionMessagePublisher ! SessionStreamMessage.SendProtoMessage(NewSession(sessionId, mb.messageId))
-        sessionMessagePublisher ! Tuple2(mb, ClientData(authId, sessionId, authData))
+        sessionMessagePublisher ! Tuple2(mb, ClientData(authId, sessionId, authData, remoteAddr.map(_.getHostAddress)))
 
         unstashAll()
         context.become(resolved(sessionMessagePublisher, reSender))
       }
-    case AuthorizeUser(userId, authSid) ⇒ authorize(userId, authSid, Some(sender()))
-    case internal                       ⇒ handleInternal(internal, stashUnmatched = true)
+    case AuthorizeUser(userId, authSid, appId) ⇒ authorize(userId, authSid, appId, Some(sender()))
+    case internal                              ⇒ handleInternal(internal, stashUnmatched = true)
   }
 
   def resolved(publisher: ActorRef, reSender: ActorRef): Receive = {
-    case HandleMessageBox(messageBoxBytes) ⇒
+    case HandleMessageBox(messageBoxBytes, remoteAddr) ⇒
       idleControl.keepAlive()
       recordClient(sender(), reSender)
 
       withValidMessageBox(messageBoxBytes.toByteArray) { mb ⇒
-        publisher ! Tuple2(mb, ClientData(authId, sessionId, authData))
+        publisher ! Tuple2(mb, ClientData(authId, sessionId, authData, remoteAddr.map(_.getHostAddress)))
       }
     case cmd: SubscribeCommand ⇒
       idleControl.keepAlive()
@@ -225,14 +221,14 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
       publisher ! cmd
     case GetUpdateOptimizations() ⇒
       sender() ! GetUpdateOptimizationsAck(updateOptimizations.toSeq)
-    case AuthorizeUser(userId, authSid) ⇒ authorize(userId, authSid, Some(sender()))
-    case internal                       ⇒ handleInternal(internal, stashUnmatched = false)
+    case AuthorizeUser(userId, authSid, appId) ⇒ authorize(userId, authSid, appId, Some(sender()))
+    case internal                              ⇒ handleInternal(internal, stashUnmatched = false)
   }
 
-  private def authorize(userId: Int, authSid: Int, ackTo: Option[ActorRef] = None): Unit = {
+  private def authorize(userId: Int, authSid: Int, appId: Int, ackTo: Option[ActorRef] = None): Unit = {
     log.debug("User {} authorized session {}", userId, sessionId)
 
-    this.authData = Some(AuthData(userId, authSid))
+    this.authData = Some(AuthData(userId, authSid, appId))
 
     updatesHandler ! UpdatesHandler.Authorize(userId, authSid)
 
@@ -296,6 +292,21 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
     (clients ++ client.map(Set(_)).getOrElse(Set.empty)) foreach (_ ! drop)
     self ! PoisonPill
   }
+
+  private def init(): Unit =
+    db.run(
+      for {
+        authIdModelOpt ← AuthIdRepo.find(authId)
+        authSessionOpt ← AuthSessionRepo.findByAuthId(authId)
+      } yield {
+        (authIdModelOpt, authSessionOpt) match {
+          case (Some(authIdModel), Some(authSessionModel)) ⇒
+            Session.Initialized(Some(AuthData(authSessionModel.userId, authSessionModel.id, authSessionModel.appId)))
+          case (Some(authIdModel), None) ⇒ Session.Initialized(None)
+          case (None, _)                 ⇒ DBIO.successful(Session.AuthIdInvalid)
+        }
+      }
+    ) pipeTo self
 
   override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
     super.preRestart(reason, message)

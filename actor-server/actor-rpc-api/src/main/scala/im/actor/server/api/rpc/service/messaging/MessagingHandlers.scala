@@ -19,6 +19,7 @@ object MessagingRpcErors {
   val NotLastMessage = RpcError(400, "NOT_LAST_MESSAGE", "You are trying to edit not last message.", false, None)
   val NotInTimeWindow = RpcError(400, "NOT_IN_TIME_WINDOW", "You can't edit message sent more than 5 minutes age.", false, None)
   val NotTextMessage = RpcError(400, "NOT_TEXT_MESSAGE", "You can edit only text messages.", false, None)
+  val NotUniqueRandomId = RpcError(400, "RANDOM_ID_NOT_UNIQUE", "", false, None)
 }
 
 private[messaging] trait MessagingHandlers extends PeersImplicits
@@ -36,7 +37,14 @@ private[messaging] trait MessagingHandlers extends PeersImplicits
   // TODO: configurable
   private val editTimeWindow: Long = 5.minutes.toMillis
 
-  override def doHandleSendMessage(outPeer: ApiOutPeer, randomId: Long, message: ApiMessage, isOnlyForUser: Option[Int], clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] =
+  override def doHandleSendMessage(
+    outPeer:         ApiOutPeer,
+    randomId:        Long,
+    message:         ApiMessage,
+    isOnlyForUser:   Option[Int],
+    quotedReference: Option[ApiMessageOutReference],
+    clientData:      ClientData
+  ): Future[HandlerResult[ResponseSeqDate]] =
     authorized(clientData) { implicit client ⇒
       (for (
         s ← fromFuture(dialogExt.sendMessage(
@@ -46,7 +54,8 @@ private[messaging] trait MessagingHandlers extends PeersImplicits
           senderAuthId = Some(client.authId),
           randomId = randomId,
           message = message,
-          accessHash = Some(outPeer.accessHash)
+          accessHash = Some(outPeer.accessHash),
+          forUserId = isOnlyForUser
         ))
       ) yield ResponseSeqDate(s.seq, s.state.toByteArray, s.date)).value
     }

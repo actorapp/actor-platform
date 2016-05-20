@@ -21,7 +21,7 @@ class ConfigsServiceSpec
   val (user, authId, authSid, _) = createUser()
   val sessionId = createSessionId()
 
-  implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user.id, authSid)))
+  implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user.id, authSid, 42)))
 
   def e1() = {
     whenReady(service.handleEditParameter("par1", Some("val1"))) { resp ⇒

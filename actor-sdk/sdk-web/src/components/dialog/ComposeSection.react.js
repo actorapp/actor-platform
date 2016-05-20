@@ -2,177 +2,148 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import { assign, forEach } from 'lodash';
+import { forEach } from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 import { Container } from 'flux/utils';
-import classnames from 'classnames';
+import { FormattedMessage } from 'react-intl';
 
 import ActorClient from '../../utils/ActorClient';
-import Inputs from '../../utils/Inputs';
-
 import { KeyCodes } from '../../constants/ActorAppConstants';
 
 import MessageActionCreators from '../../actions/MessageActionCreators';
 import ComposeActionCreators from '../../actions/ComposeActionCreators';
 import AttachmentsActionCreators from '../../actions/AttachmentsActionCreators';
 import EmojiActionCreators from '../../actions/EmojiActionCreators';
+import StickersActionCreators from '../../actions/StickersActionCreators';
 
 import GroupStore from '../../stores/GroupStore';
 import PreferencesStore from '../../stores/PreferencesStore';
 import ComposeStore from '../../stores/ComposeStore';
-import AttachmentStore from '../../stores/AttachmentStore';
 import DialogStore from '../../stores/DialogStore';
+import MessageArtStore from '../../stores/MessageArtStore';
 
+import ComposeTextArea from './compose/ComposeTextArea.react';
+import ComposeMarkdownHint from './compose/ComposeMarkdownHint.react';
+import BotCommandsHint from './compose/BotCommandsHint.react';
 import AvatarItem from '../common/AvatarItem.react';
 import MentionDropdown from '../common/MentionDropdown.react';
-import EmojiDropdown from '../common/EmojiDropdown.react';
+import MessageArt from '../messageArt/MessageArt.react';
 import VoiceRecorder from '../common/VoiceRecorder.react';
 import DropZone from '../common/DropZone.react';
-import SendAttachment from '../modals/SendAttachment';
 
 class ComposeSection extends Component {
+  static contextTypes = {
+    intl: PropTypes.object.isRequired,
+    delegate: PropTypes.object.isRequired
+  };
+
   static getStores() {
-    return [DialogStore, GroupStore, PreferencesStore, AttachmentStore, ComposeStore];
+    return [DialogStore, GroupStore, PreferencesStore, ComposeStore, MessageArtStore];
   }
 
-  static calculateState(prevState) {
+  static calculateState() {
     return {
       peer: DialogStore.getCurrentPeer(),
-      text: ComposeStore.getText(),
+      compose: ComposeStore.getState(),
       profile: ActorClient.getUser(ActorClient.getUid()),
       sendByEnter: PreferencesStore.isSendByEnterEnabled(),
-      mentions: ComposeStore.getMentions(),
-      isSendAttachmentOpen: AttachmentStore.isOpen(),
-      isMarkdownHintShow: prevState ? prevState.isMarkdownHintShow || false : false,
-      isAutoFocusEnabled: ComposeStore.isAutoFocusEnabled()
+      isMessageArtOpen: MessageArtStore.getState().isOpen,
+      stickers: MessageArtStore.getState().stickers
     };
   }
-
-  static contextTypes = {
-    intl: PropTypes.object
-  };
 
   constructor(props) {
     super(props);
 
-    this.setListeners();
-  }
-
-  componentWillUnmount() {
-    this.setBlur();
-    this.clearListeners();
-  }
-
-  componentDidMount() {
-    this.setFocus();
+    this.onTyping = this.onTyping.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+    this.onPaste = this.onPaste.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
+    this.onEditTyping = this.onEditTyping.bind(this);
+    this.onEditCancel = this.onEditCancel.bind(this);
+    this.onEditSubmit = this.onEditSubmit.bind(this);
+    this.onEditKeyDown = this.onEditKeyDown.bind(this);
+    this.onCommandSelect = this.onCommandSelect.bind(this);
+    this.onCommandClose = this.onCommandClose.bind(this);
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { isAutoFocusEnabled } = this.state;
-
-    if (isAutoFocusEnabled) {
-      if (prevState.isAutoFocusEnabled !== true) {
-        this.setListeners();
-      }
-      this.setFocus();
-    } else {
-      if (prevState.isAutoFocusEnabled !== false) {
-        this.clearListeners();
-      }
+    if (prevState.peer !== this.state.peer) {
+      this.refs.area.autoFocus();
+    } else if (prevState.compose.editMessage !== this.state.compose.editMessage) {
+      this.refs.area.blur();
+      this.refs.area.focus(true);
     }
   }
 
-  setListeners() {
-    window.addEventListener('focus', this.setFocus);
-    document.addEventListener('keydown', this.handleKeyDown, false);
+  onTyping(text, caretPosition) {
+    ComposeActionCreators.onTyping(this.state.peer, text, caretPosition);
   }
 
-  clearListeners() {
-    window.removeEventListener('focus', this.setFocus);
-    document.removeEventListener('keydown', this.handleKeyDown, false);
-  }
+  onSubmit() {
+    const { peer, compose: { text } } = this.state;
 
-  handleKeyDown = (event) => {
-    const { isAutoFocusEnabled } = this.state;
-    if (isAutoFocusEnabled) {
-      if (!event.metaKey && !event.altKey && !event.ctrlKey && !event.shiftKey) {
-        this.setFocus();
-      }
-    }
-  };
-
-  onMessageChange = (event) => {
-    const text = event.target.value;
-    const { peer } = this.state;
-
-    if (text.length >= 3) {
-      this.setState({isMarkdownHintShow: true})
-    } else {
-      this.setState({isMarkdownHintShow: false})
-    }
-
-    ComposeActionCreators.onTyping(peer, text, this.getCaretPosition());
-  };
-
-  onKeyDown = event => {
-    const { mentions, sendByEnter } = this.state;
-
-    const send = () => {
-      event.preventDefault();
-      this.sendTextMessage();
-      this.setState({isMarkdownHintShow: false})
-    };
-
-    if (mentions === null) {
-      if (sendByEnter === true) {
-        if (event.keyCode === KeyCodes.ENTER && !event.shiftKey) {
-          send();
-        }
-      } else {
-        if (event.keyCode === KeyCodes.ENTER && event.metaKey) {
-          send();
-        }
-      }
-    }
-  };
-
-  sendTextMessage = () => {
-    const { peer, text } = this.state;
-
-    if (text.trim().length !== 0) {
+    if (text.trim().length) {
       MessageActionCreators.sendTextMessage(peer, text);
     }
+
     ComposeActionCreators.cleanText();
-  };
+  }
+
+  onPaste(event) {
+    const attachments = Array.from(event.clipboardData.items)
+      .filter((item) => item.type.indexOf('image') !== -1)
+      .map((item) => item.getAsFile());
+
+    if (attachments.length) {
+      event.preventDefault();
+      AttachmentsActionCreators.show(attachments);
+    }
+  }
+
+  onKeyDown(event) {
+    const { delegate } = this.context;
+    if (delegate.features.editing && event.keyCode === KeyCodes.ARROW_UP && !event.target.value) {
+      event.preventDefault();
+      MessageActionCreators.editLastMessage();
+    }
+  }
+
+  onEditSubmit() {
+    const { peer, compose: { text, editMessage } } = this.state;
+
+    if (text) {
+      MessageActionCreators.editTextMessage(peer, editMessage.rid, text);
+    } else {
+      MessageActionCreators.deleteMessage(peer, editMessage.rid);
+      ComposeActionCreators.cleanText();
+    }
+  }
+
+  onEditTyping(text, caretPosition) {
+    ComposeActionCreators.changeText(this.state.peer, text, caretPosition);
+  }
+
+  onEditKeyDown(event) {
+    if (event.keyCode === KeyCodes.ESC) {
+      event.preventDefault();
+      this.onEditCancel();
+    }
+  }
+
+  onEditCancel() {
+    ComposeActionCreators.cancelEdit();
+  }
 
   resetAttachmentForm = () => {
     const form = findDOMNode(this.refs.attachmentForm);
     form.reset();
   };
 
-  onPaste = event => {
-    let preventDefault = false;
-    let attachments = [];
-
-    forEach(event.clipboardData.items, (item) => {
-      if (item.type.indexOf('image') !== -1) {
-        preventDefault = true;
-        attachments.push(item.getAsFile());
-      }
-    }, this);
-
-    if (attachments.length > 0) {
-      AttachmentsActionCreators.show(attachments);
-    }
-
-    if (preventDefault) {
-      event.preventDefault();
-    }
-  };
-
+  // TODO: move this to textarea component
   onMentionSelect = (mention) => {
-    const { peer, text } = this.state;
+    const { peer, compose: { text } } = this.state;
 
     ComposeActionCreators.insertMention(peer, text, this.getCaretPosition(), mention);
     this.setFocus();
@@ -182,23 +153,31 @@ class ComposeSection extends Component {
     ComposeActionCreators.closeMention();
   };
 
-  getCaretPosition = () => {
-    const composeArea = findDOMNode(this.refs.area);
-    const selection = Inputs.getInputSelection(composeArea);
-    return selection.start;
+  // TODO: move this to textarea component
+  handleEmojiSelect = (emoji) => {
+    const { compose: { text } } = this.state;
+    EmojiActionCreators.insertEmoji(text, this.getCaretPosition(), emoji);
+    this.setFocus();
   };
 
-  handleEmojiSelect = (emoji) => {
-    EmojiActionCreators.insertEmoji(this.state.text, this.getCaretPosition(), emoji);
+  onCommandSelect(command) {
+    const { peer } = this.state;
+    MessageActionCreators.sendTextMessage(peer, `/${command}`);
+    ComposeActionCreators.cleanText();
+  }
+
+  onCommandClose() {
+    ComposeActionCreators.cleanText();
+  }
+
+  handleStickerSelect = (sticker) => {
+    const { peer } = this.state;
+    StickersActionCreators.sendSticker(peer, sticker);
     this.setFocus();
   };
 
   setFocus = () => {
     findDOMNode(this.refs.area).focus();
-  };
-
-  setBlur = () => {
-    findDOMNode(this.refs.area).blur();
   };
 
   handleDrop = (files) => {
@@ -232,51 +211,146 @@ class ComposeSection extends Component {
     MessageActionCreators.sendVoiceMessage(peer, duration, record);
   };
 
-  render() {
-    const { text, profile, mentions, isMarkdownHintShow, isSendAttachmentOpen } = this.state;
+  // TODO: remove this method
+  getCaretPosition() {
+    if (this.refs.area) {
+      return this.refs.area.getCaretPosition();
+    }
+
+    return 0;
+  }
+
+  renderCommands() {
+    const { compose } = this.state;
+    if (!compose.commands) {
+      return null;
+    }
+
+    return (
+      <BotCommandsHint
+        commands={compose.commands}
+        onSelect={this.onCommandSelect}
+        onClose={this.onCommandClose}
+      />
+    );
+  }
+
+  renderMentions() {
+    const { compose } = this.state;
+    if (!compose.mentions) {
+      return null;
+    }
+
+    return (
+      <MentionDropdown
+        mentions={compose.mentions}
+        onSelect={this.onMentionSelect}
+        onClose={this.onMentionClose}
+      />
+    );
+  }
+
+  renderEditing() {
+    const { compose, profile, stickers, isMessageArtOpen, sendByEnter } = this.state;
     const { intl } = this.context;
-    const markdownHintClassName = classnames('compose__markdown-hint', {
-      'compose__markdown-hint--active': isMarkdownHintShow
-    });
+
+    return (
+      <section className="compose compose--editing">
+
+        {this.renderMentions()}
+        {this.renderCommands()}
+
+        <MessageArt
+          onSelect={this.handleEmojiSelect}
+          onStickerSelect={this.handleStickerSelect}
+          isActive={isMessageArtOpen}
+          stickers={stickers}
+        />
+
+        <AvatarItem
+          className="my-avatar"
+          image={profile.avatar}
+          placeholder={profile.placeholder}
+          title={profile.name}
+        />
+
+        <ComposeMarkdownHint isActive={compose.text.length >= 3} />
+        <ComposeTextArea
+          autoFocus
+          ref="area"
+          value={compose.text}
+          sendByEnter={sendByEnter}
+          sendEnabled={!compose.mentions && !compose.commands}
+          onTyping={this.onEditTyping}
+          onSubmit={this.onEditSubmit}
+          onKeyDown={this.onEditKeyDown}
+        />
+
+        <footer className="compose__footer row">
+          <span className="col-xs"/>
+          <p className="compose__edit-title">
+            <FormattedMessage id="compose.editTitle" />
+          </p>
+          <button className="button button--cancel" onClick={this.onEditCancel}>
+            {intl.messages['compose.cancel']}
+          </button>
+          <button className="button button--lightblue" onClick={this.onEditSubmit}>
+            {intl.messages['compose.edit']}
+          </button>
+        </footer>
+      </section>
+    );
+  }
+
+  renderPosting() {
+    const { compose, profile, stickers, isMessageArtOpen, sendByEnter } = this.state;
+    const { intl } = this.context;
 
     return (
       <section className="compose">
-        <MentionDropdown mentions={mentions}
-                         onSelect={this.onMentionSelect}
-                         onClose={this.onMentionClose}/>
 
-        <EmojiDropdown onSelect={this.handleEmojiSelect}/>
+        {this.renderMentions()}
+        {this.renderCommands()}
+
+        <MessageArt
+          onSelect={this.handleEmojiSelect}
+          onStickerSelect={this.handleStickerSelect}
+          isActive={isMessageArtOpen}
+          stickers={stickers}
+        />
 
         <VoiceRecorder onFinish={this.sendVoiceRecord}/>
 
-        <div className={markdownHintClassName}>
-          <b>*{intl.messages['compose.markdown.bold']}*</b>
-          &nbsp;&nbsp;
-          <i>_{intl.messages['compose.markdown.italic']}_</i>
-          &nbsp;&nbsp;
-          <code>```{intl.messages['compose.markdown.preformatted']}```</code>
-        </div>
+        <AvatarItem
+          className="my-avatar"
+          image={profile.avatar}
+          placeholder={profile.placeholder}
+          title={profile.name}
+        />
 
-        <AvatarItem className="my-avatar"
-                    image={profile.avatar}
-                    placeholder={profile.placeholder}
-                    title={profile.name}/>
+        <ComposeMarkdownHint isActive={compose.text.length >= 3} />
+        <ComposeTextArea
+          ref="area"
+          value={compose.text}
+          autoFocus={compose.autoFocus}
+          sendByEnter={sendByEnter}
+          sendEnabled={!compose.mentions && !compose.commands}
+          onTyping={this.onTyping}
+          onSubmit={this.onSubmit}
+          onPaste={this.onPaste}
+          onKeyDown={this.onKeyDown}
+        />
 
-        <textarea className="compose__message"
-                  onChange={this.onMessageChange}
-                  onKeyDown={this.onKeyDown}
-                  onPaste={this.onPaste}
-                  value={text}
-                  ref="area"/>
-
-        <DropZone onDropComplete={this.handleDrop}>{intl.messages['compose.dropzone']}</DropZone>
+        <DropZone onDropComplete={this.handleDrop}>
+          {intl.messages['compose.dropzone']}
+        </DropZone>
 
         <footer className="compose__footer row">
           <button className="button attachment" onClick={this.handleAttachmentClick}>
             <i className="material-icons">attachment</i> {intl.messages['compose.attach']}
           </button>
           <span className="col-xs"/>
-          <button className="button button--lightblue" onClick={this.sendTextMessage}>
+          <button className="button button--lightblue" onClick={this.onSubmit}>
             {intl.messages['compose.send']}
           </button>
         </footer>
@@ -284,13 +358,19 @@ class ComposeSection extends Component {
         <form className="compose__hidden" ref="attachmentForm">
           <input ref="attachment" onChange={this.handleComposeAttachmentChange} type="file"/>
         </form>
-
-        {/* Attachment modal */}
-        {isSendAttachmentOpen ? <SendAttachment/> : null}
-
       </section>
     );
   }
+
+  render() {
+    const { delegate } = this.context;
+    const { compose } = this.state;
+    if (delegate.features.editing && compose.editMessage) {
+      return this.renderEditing();
+    }
+
+    return this.renderPosting();
+  }
 }
 
-export default Container.create(ComposeSection, {pure: false});
+export default Container.create(ComposeSection, { pure: false });

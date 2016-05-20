@@ -8,25 +8,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import im.actor.core.api.ApiGroup;
 import im.actor.core.api.ApiGroupOutPeer;
-import im.actor.core.api.ApiMember;
+import im.actor.core.api.ApiMessageAttributes;
 import im.actor.core.api.ApiOutPeer;
 import im.actor.core.api.ApiPeer;
 import im.actor.core.api.ApiPeerType;
-import im.actor.core.api.ApiPublicGroup;
 import im.actor.core.api.ApiServiceExUserJoined;
 import im.actor.core.api.ApiServiceMessage;
-import im.actor.core.api.ApiUser;
 import im.actor.core.api.ApiUserOutPeer;
-import im.actor.core.api.rpc.RequestCreateGroupObsolete;
+import im.actor.core.api.rpc.RequestCreateGroup;
 import im.actor.core.api.rpc.RequestEditGroupAbout;
 import im.actor.core.api.rpc.RequestEditGroupTitle;
 import im.actor.core.api.rpc.RequestEditGroupTopic;
-import im.actor.core.api.rpc.RequestEnterGroup;
 import im.actor.core.api.rpc.RequestGetGroupInviteUrl;
 import im.actor.core.api.rpc.RequestGetIntegrationToken;
-import im.actor.core.api.rpc.RequestGetPublicGroups;
 import im.actor.core.api.rpc.RequestInviteUser;
 import im.actor.core.api.rpc.RequestJoinGroup;
 import im.actor.core.api.rpc.RequestKickUser;
@@ -34,16 +29,9 @@ import im.actor.core.api.rpc.RequestLeaveGroup;
 import im.actor.core.api.rpc.RequestMakeUserAdmin;
 import im.actor.core.api.rpc.RequestRevokeIntegrationToken;
 import im.actor.core.api.rpc.RequestRevokeInviteUrl;
-import im.actor.core.api.rpc.ResponseCreateGroupObsolete;
-import im.actor.core.api.rpc.ResponseEnterGroup;
-import im.actor.core.api.rpc.ResponseGetPublicGroups;
 import im.actor.core.api.rpc.ResponseIntegrationToken;
 import im.actor.core.api.rpc.ResponseInviteUrl;
-import im.actor.core.api.rpc.ResponseJoinGroup;
-import im.actor.core.api.rpc.ResponseMakeUserAdmin;
-import im.actor.core.api.rpc.ResponseSeqDate;
 import im.actor.core.api.updates.UpdateGroupAboutChanged;
-import im.actor.core.api.updates.UpdateGroupInvite;
 import im.actor.core.api.updates.UpdateGroupMembersUpdate;
 import im.actor.core.api.updates.UpdateGroupTitleChanged;
 import im.actor.core.api.updates.UpdateGroupTopicChanged;
@@ -51,36 +39,33 @@ import im.actor.core.api.updates.UpdateGroupUserInvited;
 import im.actor.core.api.updates.UpdateGroupUserKick;
 import im.actor.core.api.updates.UpdateGroupUserLeave;
 import im.actor.core.api.updates.UpdateMessage;
-import im.actor.core.entity.Avatar;
 import im.actor.core.entity.Group;
-import im.actor.core.entity.PublicGroup;
 import im.actor.core.entity.User;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.groups.router.GroupRouterInt;
 import im.actor.core.modules.profile.avatar.GroupAvatarChangeActor;
 import im.actor.core.util.RandomUtils;
-import im.actor.core.network.RpcCallback;
-import im.actor.core.network.RpcException;
-import im.actor.core.network.RpcInternalException;
-import im.actor.core.viewmodel.Command;
-import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.GroupAvatarVM;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.runtime.Storage;
-import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
-import im.actor.runtime.actors.Props;
+import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.function.Function;
 import im.actor.runtime.mvvm.MVVMCollection;
+import im.actor.runtime.promise.Promise;
+import im.actor.runtime.promise.Promises;
 import im.actor.runtime.storage.KeyValueEngine;
 
 import static im.actor.runtime.actors.ActorSystem.system;
 
 public class GroupsModule extends AbsModule {
 
-    private KeyValueEngine<Group> groups;
-    private MVVMCollection<Group, GroupVM> collection;
-    private HashMap<Integer, GroupAvatarVM> avatarVMs;
-    private ActorRef avatarChangeActor;
+    private final KeyValueEngine<Group> groups;
+    private final MVVMCollection<Group, GroupVM> collection;
+    private final HashMap<Integer, GroupAvatarVM> avatarVMs;
+    private final ActorRef avatarChangeActor;
+    private final GroupRouterInt groupRouterInt;
 
     public GroupsModule(final ModuleContext context) {
         super(context);
@@ -88,13 +73,19 @@ public class GroupsModule extends AbsModule {
         collection = Storage.createKeyValue(STORAGE_GROUPS, GroupVM.CREATOR(context.getAuthModule().myUid()), Group.CREATOR);
         groups = collection.getEngine();
 
-        avatarVMs = new HashMap<Integer, GroupAvatarVM>();
-        avatarChangeActor = system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public GroupAvatarChangeActor create() {
-                return new GroupAvatarChangeActor(context);
-            }
-        }), "actor/avatar/group");
+        groupRouterInt = new GroupRouterInt(context);
+
+        avatarVMs = new HashMap<>();
+        avatarChangeActor = system().actorOf("actor/avatar/group", () -> new GroupAvatarChangeActor(context));
+    }
+
+
+    //
+    // Storage
+    //
+
+    public KeyValueEngine<Group> getGroups() {
+        return groups;
     }
 
     public GroupAvatarVM getAvatarVM(int gid) {
@@ -106,12 +97,162 @@ public class GroupsModule extends AbsModule {
         }
     }
 
-    public KeyValueEngine<Group> getGroups() {
-        return groups;
-    }
-
     public MVVMCollection<Group, GroupVM> getGroupsCollection() {
         return collection;
+    }
+
+    public GroupRouterInt getRouter() {
+        return groupRouterInt;
+    }
+
+    //
+    // Actions
+    //
+
+    public Promise<Integer> createGroup(final String title, final String avatarDescriptor, final int[] uids) {
+        return Promise.success(uids)
+                .map((Function<int[], List<ApiUserOutPeer>>) ints -> {
+                    ArrayList<ApiUserOutPeer> peers = new ArrayList<>();
+                    for (int u : uids) {
+                        User user = users().getValue(u);
+                        if (user != null) {
+                            peers.add(new ApiUserOutPeer(u, user.getAccessHash()));
+                        }
+                    }
+                    return peers;
+                })
+                .flatMap(apiUserOutPeers ->
+                        api(new RequestCreateGroup(RandomUtils.nextRid(), title, apiUserOutPeers, null, null)))
+                .chain(response -> updates().applyRelatedData(response.getUsers(), response.getGroup()))
+                .map(responseCreateGroup -> responseCreateGroup.getGroup().getId())
+                .then(integer -> {
+                    if (avatarDescriptor != null) {
+                        changeAvatar(integer, avatarDescriptor);
+                    }
+                });
+    }
+
+    public Promise<Void> addMember(final int gid, final int uid) {
+        final long rid = RandomUtils.nextRid();
+        return Promises.tuple(getGroups().getValueAsync(gid), users().getValueAsync(uid))
+                .flatMap(groupUserTuple2 ->
+                        api(new RequestInviteUser(
+                                new ApiGroupOutPeer(gid, groupUserTuple2.getT1().getAccessHash()),
+                                rid,
+                                new ApiUserOutPeer(uid, groupUserTuple2.getT2().getAccessHash()))))
+                .flatMap(responseSeqDate ->
+                        updates().applyUpdate(
+                                responseSeqDate.getSeq(),
+                                responseSeqDate.getState(),
+                                new UpdateGroupUserInvited(
+                                        gid, rid,
+                                        uid, myUid(),
+                                        responseSeqDate.getDate())
+                        ));
+    }
+
+    public Promise<Void> kickMember(final int gid, final int uid) {
+        final long rid = RandomUtils.nextRid();
+        return Promises.tuple(getGroups().getValueAsync(gid), users().getValueAsync(uid))
+                .flatMap(groupUserTuple2 ->
+                        api(new RequestKickUser(
+                                new ApiGroupOutPeer(gid, groupUserTuple2.getT1().getAccessHash()),
+                                rid,
+                                new ApiUserOutPeer(uid, groupUserTuple2.getT2().getAccessHash()))))
+                .flatMap(responseSeqDate ->
+                        updates().applyUpdate(
+                                responseSeqDate.getSeq(),
+                                responseSeqDate.getState(),
+                                new UpdateGroupUserKick(
+                                        gid,
+                                        rid,
+                                        uid,
+                                        myUid(),
+                                        responseSeqDate.getDate())
+                        ));
+    }
+
+    public Promise<Void> leaveGroup(final int gid) {
+        final long rid = RandomUtils.nextRid();
+        return getGroups().getValueAsync(gid)
+                .flatMap(group ->
+                        api(new RequestLeaveGroup(
+                                new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()),
+                                rid)))
+                .flatMap(responseSeqDate ->
+                        updates().applyUpdate(
+                                responseSeqDate.getSeq(),
+                                responseSeqDate.getState(),
+                                new UpdateGroupUserLeave(
+                                        gid,
+                                        rid,
+                                        myUid(),
+                                        responseSeqDate.getDate())
+                        ));
+    }
+
+
+    public Promise<Void> makeAdmin(final int gid, final int uid) {
+        return Promises.tuple(getGroups().getValueAsync(gid), users().getValueAsync(uid))
+                .flatMap(groupUserTuple2 -> api(new RequestMakeUserAdmin(
+                        new ApiGroupOutPeer(gid, groupUserTuple2.getT1().getAccessHash()),
+                        new ApiUserOutPeer(uid, groupUserTuple2.getT2().getAccessHash()))))
+                .flatMap(responseMakeUserAdmin ->
+                        updates().applyUpdate(
+                                responseMakeUserAdmin.getSeq(),
+                                responseMakeUserAdmin.getState(),
+                                new UpdateGroupMembersUpdate(gid, responseMakeUserAdmin.getMembers())
+                        ));
+    }
+
+
+    public Promise<Void> editTitle(final int gid, final String name) {
+        final long rid = RandomUtils.nextRid();
+        return getGroups().getValueAsync(gid)
+                .flatMap(group ->
+                        api(new RequestEditGroupTitle(
+                                new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()),
+                                rid, name)))
+                .flatMap(responseSeqDate -> updates().applyUpdate(
+                        responseSeqDate.getSeq(),
+                        responseSeqDate.getState(),
+                        new UpdateGroupTitleChanged(
+                                gid, rid,
+                                myUid(), name,
+                                responseSeqDate.getDate()))
+                );
+    }
+
+    public Promise<Void> editTheme(final int gid, final String theme) {
+        final long rid = RandomUtils.nextRid();
+        return getGroups().getValueAsync(gid)
+                .flatMap(group ->
+                        api(new RequestEditGroupTopic(
+                                new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()),
+                                rid, theme)))
+                .flatMap(responseSeqDate -> updates().applyUpdate(
+                        responseSeqDate.getSeq(),
+                        responseSeqDate.getState(),
+                        new UpdateGroupTopicChanged(
+                                gid, rid,
+                                myUid(), theme,
+                                responseSeqDate.getDate())
+                ));
+    }
+
+    public Promise<Void> editAbout(final int gid, final String about) {
+        final long rid = RandomUtils.nextRid();
+        return getGroups().getValueAsync(gid)
+                .flatMap(group ->
+                        api(new RequestEditGroupAbout(
+                                new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()),
+                                rid, about)))
+                .flatMap(responseSeqDate -> updates().applyUpdate(
+                        responseSeqDate.getSeq(),
+                        responseSeqDate.getState(),
+                        new UpdateGroupAboutChanged(
+                                gid, about)
+                ));
     }
 
     public void changeAvatar(int gid, String descriptor) {
@@ -122,765 +263,76 @@ public class GroupsModule extends AbsModule {
         avatarChangeActor.send(new GroupAvatarChangeActor.RemoveAvatar(gid));
     }
 
-    public Command<Integer> createGroup(final String title, final String avatarDescriptor, final int[] uids) {
-        return new Command<Integer>() {
-            @Override
-            public void start(final CommandCallback<Integer> callback) {
-                ArrayList<ApiUserOutPeer> peers = new ArrayList<ApiUserOutPeer>();
-                for (int u : uids) {
-                    User user = users().getValue(u);
-                    if (user != null) {
-                        peers.add(new ApiUserOutPeer(u, user.getAccessHash()));
-                    }
-                }
-                final long rid = RandomUtils.nextRid();
-                request(new RequestCreateGroupObsolete(rid, title, peers), new RpcCallback<ResponseCreateGroupObsolete>() {
-                    @Override
-                    public void onResult(ResponseCreateGroupObsolete response) {
-                        List<ApiMember> members = new ArrayList<ApiMember>();
-                        for (int u : response.getUsers()) {
-                            members.add(new ApiMember(u, myUid(), response.getDate(), u == myUid()));
-                        }
-                        final ApiGroup group = new ApiGroup(
-                                response.getGroupPeer().getGroupId(),
-                                response.getGroupPeer().getAccessHash(),
-                                title, null, myUid(), members,
-                                response.getDate(), null,
-                                null, false, null, null);
-                        ArrayList<ApiGroup> groups = new ArrayList<ApiGroup>();
-                        groups.add(group);
 
-                        updates().onFatSeqUpdateReceived(
-                                response.getSeq(),
-                                response.getState(),
-                                new UpdateGroupInvite(
-                                        group.getId(),
-                                        rid,
-                                        myUid(),
-                                        response.getDate()
-                                ),
-                                new ArrayList<ApiUser>(),
-                                groups);
+    //
+    // Join
+    //
 
-                        updates().executeAfter(response.getSeq(), new Runnable() {
-                            @Override
-                            public void run() {
-                                if (avatarDescriptor != null) {
-                                    changeAvatar(group.getId(), avatarDescriptor);
-                                }
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        callback.onResult(group.getId());
-                                    }
-                                });
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(final RpcException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(e);
-                            }
-                        });
-                    }
-                });
-
-            }
-        };
+    public Promise<String> requestInviteLink(final int gid) {
+        return getGroups().getValueAsync(gid)
+                .flatMap(group ->
+                        api(new RequestGetGroupInviteUrl(
+                                new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()))))
+                .map(ResponseInviteUrl::getUrl);
     }
 
-    public Command<Boolean> editTitle(final int gid, final String name) {
-        return new Command<Boolean>() {
-            @Override
-            public void start(final CommandCallback<Boolean> callback) {
-                Group group = getGroups().getValue(gid);
-                if (group == null) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.onError(new RpcInternalException());
-                        }
-                    });
-                    return;
-                }
-                final long rid = RandomUtils.nextRid();
-                request(new RequestEditGroupTitle(new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()),
-                        rid, name), new RpcCallback<ResponseSeqDate>() {
-                    @Override
-                    public void onResult(ResponseSeqDate response) {
-
-                        updates().onSeqUpdateReceived(
-                                response.getSeq(),
-                                response.getState(),
-                                new UpdateGroupTitleChanged(
-                                        gid,
-                                        rid,
-                                        myUid(),
-                                        name,
-                                        response.getDate()));
-
-                        updates().executeAfter(response.getSeq(), new Runnable() {
-                            @Override
-                            public void run() {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        callback.onResult(true);
-                                    }
-                                });
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(final RpcException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(e);
-                            }
-                        });
-                    }
-                });
-            }
-        };
+    public Promise<String> requestRevokeLink(final int gid) {
+        return getGroups().getValueAsync(gid)
+                .flatMap(group ->
+                        api(new RequestRevokeInviteUrl(
+                                new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()))))
+                .map(ResponseInviteUrl::getUrl);
     }
 
-    public Command<Boolean> editTheme(final int gid, final String theme) {
-        return new Command<Boolean>() {
-            @Override
-            public void start(final CommandCallback<Boolean> callback) {
-                Group group = getGroups().getValue(gid);
-                if (group == null) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.onError(new RpcInternalException());
-                        }
-                    });
-                    return;
-                }
-                final long rid = RandomUtils.nextRid();
-                request(new RequestEditGroupTopic(new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()),
-                        rid, theme), new RpcCallback<ResponseSeqDate>() {
-                    @Override
-                    public void onResult(ResponseSeqDate response) {
-
-                        updates().onSeqUpdateReceived(
-                                response.getSeq(),
-                                response.getState(),
-                                new UpdateGroupTopicChanged(
-                                        gid,
-                                        rid,
-                                        myUid(),
-                                        theme,
-                                        response.getDate()));
-
-                        updates().executeAfter(response.getSeq(), new Runnable() {
-                            @Override
-                            public void run() {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        callback.onResult(true);
-                                    }
-                                });
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(final RpcException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(e);
-                            }
-                        });
-                    }
-                });
-            }
-        };
-    }
-
-    public Command<Boolean> editAbout(final int gid, final String about) {
-        return new Command<Boolean>() {
-            @Override
-            public void start(final CommandCallback<Boolean> callback) {
-                Group group = getGroups().getValue(gid);
-                if (group == null) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.onError(new RpcInternalException());
-                        }
-                    });
-                    return;
-                }
-                final long rid = RandomUtils.nextRid();
-                request(new RequestEditGroupAbout(new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()),
-                        rid, about), new RpcCallback<ResponseSeqDate>() {
-                    @Override
-                    public void onResult(ResponseSeqDate response) {
-
-                        updates().onSeqUpdateReceived(
-                                response.getSeq(),
-                                response.getState(),
-                                new UpdateGroupAboutChanged(
-                                        gid,
-                                        about));
-
-                        updates().executeAfter(response.getSeq(), new Runnable() {
-                            @Override
-                            public void run() {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        callback.onResult(true);
-                                    }
-                                });
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(final RpcException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(e);
-                            }
-                        });
-                    }
-                });
-            }
-        };
-    }
-
-    public Command<Boolean> leaveGroup(final int gid) {
-        return new Command<Boolean>() {
-            @Override
-            public void start(final CommandCallback<Boolean> callback) {
-                Group group = getGroups().getValue(gid);
-                if (group == null) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.onError(new RpcInternalException());
-                        }
-                    });
-                    return;
-                }
-                final long rid = RandomUtils.nextRid();
-                request(new RequestLeaveGroup(new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()),
-                        rid), new RpcCallback<ResponseSeqDate>() {
-                    @Override
-                    public void onResult(ResponseSeqDate response) {
-
-                        updates().onSeqUpdateReceived(
-                                response.getSeq(),
-                                response.getState(),
-                                new UpdateGroupUserLeave(
-                                        gid,
-                                        rid,
-                                        myUid(),
-                                        response.getDate())
-                        );
-
-                        updates().executeAfter(response.getSeq(), new Runnable() {
-                            @Override
-                            public void run() {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        callback.onResult(true);
-                                    }
-                                });
-                            }
-                        });
-
-                    }
-
-                    @Override
-                    public void onError(final RpcException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(e);
-                            }
-                        });
-                    }
-                });
-            }
-        };
-    }
-
-    public Command<Boolean> addMemberToGroup(final int gid, final int uid) {
-        return new Command<Boolean>() {
-            @Override
-            public void start(final CommandCallback<Boolean> callback) {
-                Group group = getGroups().getValue(gid);
-                User user = users().getValue(uid);
-                if (group == null || user == null) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.onError(new RpcInternalException());
-                        }
-                    });
-                    return;
-                }
-                final long rid = RandomUtils.nextRid();
-                request(new RequestInviteUser(new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()),
-                        rid, new ApiUserOutPeer(uid, user.getAccessHash())), new RpcCallback<ResponseSeqDate>() {
-                    @Override
-                    public void onResult(ResponseSeqDate response) {
-                        updates().onSeqUpdateReceived(
-                                response.getSeq(),
-                                response.getState(),
-                                new UpdateGroupUserInvited(
-                                        gid,
-                                        rid,
-                                        uid,
-                                        myUid(),
-                                        response.getDate()));
-
-                        updates().executeAfter(response.getSeq(), new Runnable() {
-                            @Override
-                            public void run() {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        callback.onResult(true);
-                                    }
-                                });
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(final RpcException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(e);
-                            }
-                        });
-                    }
-                });
-            }
-        };
-    }
-
-    public Command<Boolean> makeAdmin(final int gid, final int uid) {
-        return new Command<Boolean>() {
-            @Override
-            public void start(final CommandCallback<Boolean> callback) {
-                Group group = getGroups().getValue(gid);
-                User user = users().getValue(uid);
-                if (group == null || user == null) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.onError(new RpcInternalException());
-                        }
-                    });
-                    return;
-                }
-
-                request(new RequestMakeUserAdmin(new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()),
-                        new ApiUserOutPeer(uid, user.getAccessHash())), new RpcCallback<ResponseMakeUserAdmin>() {
-                    @Override
-                    public void onResult(ResponseMakeUserAdmin response) {
-                        updates().onSeqUpdateReceived(
-                                response.getSeq(),
-                                response.getState(),
-                                new UpdateGroupMembersUpdate(gid, response.getMembers()));
-
-                        updates().executeAfter(response.getSeq(), new Runnable() {
-                            @Override
-                            public void run() {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        callback.onResult(true);
-                                    }
-                                });
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(final RpcException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(e);
-                            }
-                        });
-                    }
-                });
-            }
-        };
-    }
-
-
-    public Command<Boolean> kickMember(final int gid, final int uid) {
-        return new Command<Boolean>() {
-            @Override
-            public void start(final CommandCallback<Boolean> callback) {
-                Group group = getGroups().getValue(gid);
-                User user = users().getValue(uid);
-                if (group == null || user == null) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.onError(new RpcInternalException());
-                        }
-                    });
-                    return;
-                }
-                final long rid = RandomUtils.nextRid();
-                request(new RequestKickUser(new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()),
-                        rid, new ApiUserOutPeer(uid, user.getAccessHash())), new RpcCallback<ResponseSeqDate>() {
-                    @Override
-                    public void onResult(ResponseSeqDate response) {
-
-                        updates().onSeqUpdateReceived(
-                                response.getSeq(),
-                                response.getState(),
-                                new UpdateGroupUserKick(
-                                        gid,
-                                        rid,
-                                        uid,
-                                        myUid(),
-                                        response.getDate()));
-
-                        updates().executeAfter(response.getSeq(), new Runnable() {
-                            @Override
-                            public void run() {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        callback.onResult(true);
-                                    }
-                                });
-                            }
-                        });
-
-                    }
-
-                    @Override
-                    public void onError(final RpcException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(e);
-                            }
-                        });
-                    }
-                });
-            }
-        };
-    }
-
-    public Command<String> requestInviteLink(final int gid) {
-        return new Command<String>() {
-            @Override
-            public void start(final CommandCallback<String> callback) {
-                final Group group = getGroups().getValue(gid);
-                if (group == null) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.onError(new RpcInternalException());
-                        }
-                    });
-                    return;
-                }
-                request(new RequestGetGroupInviteUrl(new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash())), new RpcCallback<ResponseInviteUrl>() {
-                    @Override
-                    public void onResult(final ResponseInviteUrl response) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onResult(response.getUrl());
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(final RpcException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(e);
-                            }
-                        });
-                    }
-                });
-            }
-        };
-    }
-
-    public Command<String> requestRevokeLink(final int gid) {
-        return new Command<String>() {
-            @Override
-            public void start(final CommandCallback<String> callback) {
-                final Group group = getGroups().getValue(gid);
-                if (group == null) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.onError(new RpcInternalException());
-                        }
-                    });
-                    return;
-                }
-                request(new RequestRevokeInviteUrl(new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash())), new RpcCallback<ResponseInviteUrl>() {
-                    @Override
-                    public void onResult(final ResponseInviteUrl response) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onResult(response.getUrl());
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(final RpcException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(e);
-                            }
-                        });
-                    }
-                });
-            }
-        };
-    }
-
-    public Command<Integer> joinGroupViaLink(final String url) {
-        return new Command<Integer>() {
-            @Override
-            public void start(final CommandCallback<Integer> callback) {
-                request(new RequestJoinGroup(url), new RpcCallback<ResponseJoinGroup>() {
-                            @Override
-                            public void onResult(final ResponseJoinGroup response) {
-
-                                ApiGroup group = response.getGroup();
-                                ArrayList<ApiGroup> groups = new ArrayList<ApiGroup>();
-                                groups.add(group);
-
-                                updates().onFatSeqUpdateReceived(
-                                        response.getSeq(),
-                                        response.getState(),
-                                        new UpdateMessage(
-                                                new ApiPeer(ApiPeerType.GROUP, group.getId()),
-                                                myUid(),
-                                                response.getDate(),
-                                                response.getRid(),
-                                                new ApiServiceMessage("Joined chat",
-                                                        new ApiServiceExUserJoined())),
-                                        response.getUsers(),
-                                        groups);
-
-                                updates().executeAfter(response.getSeq(), new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                callback.onResult(response.getGroup().getId());
-                                            }
-                                        });
-                                    }
-                                });
-                            }
-
-                            @Override
-                            public void onError(final RpcException e) {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        callback.onError(e);
-                                    }
-                                });
-                            }
-                        }
-
-                );
-            }
-        };
-    }
-
-    public Command<String> requestIntegrationToken(final int gid) {
-        return new Command<String>() {
-            @Override
-            public void start(final CommandCallback<String> callback) {
-                final Group group = getGroups().getValue(gid);
-                if (group == null) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.onError(new RpcInternalException());
-                        }
-                    });
-                    return;
-                }
-                request(new RequestGetIntegrationToken(new ApiOutPeer(ApiPeerType.GROUP, group.getGroupId(), group.getAccessHash())), new RpcCallback<ResponseIntegrationToken>() {
-                    @Override
-                    public void onResult(final ResponseIntegrationToken response) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onResult(response.getUrl());
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(final RpcException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(e);
-                            }
-                        });
-                    }
-                });
-            }
-        };
-    }
-
-    public Command<String> revokeIntegrationToken(final int gid) {
-        return new Command<String>() {
-            @Override
-            public void start(final CommandCallback<String> callback) {
-                final Group group = getGroups().getValue(gid);
-                if (group == null) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.onError(new RpcInternalException());
-                        }
-                    });
-                    return;
-                }
-                request(new RequestRevokeIntegrationToken(new ApiOutPeer(ApiPeerType.GROUP, group.getGroupId(), group.getAccessHash())), new RpcCallback<ResponseIntegrationToken>() {
-                    @Override
-                    public void onResult(final ResponseIntegrationToken response) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onResult(response.getUrl());
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(final RpcException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(e);
-                            }
-                        });
-                    }
-                });
-            }
-        };
-    }
-
-    public Command<Integer> joinPublicGroup(final int gid, final long accessHash) {
-        return new Command<Integer>() {
-            @Override
-            public void start(final CommandCallback<Integer> callback) {
-                request(new RequestEnterGroup(new ApiGroupOutPeer(gid, accessHash)), new RpcCallback<ResponseEnterGroup>() {
-                    @Override
-                    public void onResult(final ResponseEnterGroup response) {
-                        ApiGroup group = response.getGroup();
-                        ArrayList<ApiGroup> groups = new ArrayList<ApiGroup>();
-                        groups.add(group);
-
-                        updates().onFatSeqUpdateReceived(
-                                response.getSeq(),
-                                response.getState(),
+    public Promise<Integer> joinGroupByToken(final String token) {
+        return api(new RequestJoinGroup(token))
+                .chain(responseJoinGroup ->
+                        updates().applyUpdate(
+                                responseJoinGroup.getSeq(),
+                                responseJoinGroup.getState(),
                                 new UpdateMessage(
-                                        new ApiPeer(ApiPeerType.GROUP, group.getId()),
+                                        new ApiPeer(ApiPeerType.GROUP, responseJoinGroup.getGroup().getId()),
                                         myUid(),
-                                        response.getDate(),
-                                        response.getRid(),
+                                        responseJoinGroup.getDate(),
+                                        responseJoinGroup.getRid(),
                                         new ApiServiceMessage("Joined chat",
-                                                new ApiServiceExUserJoined())),
-                                response.getUsers(),
-                                groups);
-
-                        updates().executeAfter(response.getSeq(), new Runnable() {
-                            @Override
-                            public void run() {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        callback.onResult(response.getGroup().getId());
-                                    }
-                                });
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(final RpcException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(e);
-                            }
-                        });
-                    }
-                });
-            }
-        };
+                                                new ApiServiceExUserJoined()),
+                                        new ApiMessageAttributes(),
+                                        null),
+                                responseJoinGroup.getUsers(),
+                                responseJoinGroup.getGroup()
+                        )
+                )
+                .map(responseJoinGroup -> responseJoinGroup.getGroup().getId());
     }
 
-    public Command<List<PublicGroup>> listPublicGroups() {
-        return new Command<List<PublicGroup>>() {
-            @Override
-            public void start(final CommandCallback<List<PublicGroup>> callback) {
-                request(new RequestGetPublicGroups(), new RpcCallback<ResponseGetPublicGroups>() {
-                    @Override
-                    public void onResult(ResponseGetPublicGroups response) {
-                        ArrayList<PublicGroup> groups = new ArrayList<PublicGroup>();
-                        for (ApiPublicGroup g : response.getGroups()) {
-                            Avatar avatar = null;
-                            if (g.getAvatar() != null) {
-                                avatar = new Avatar(g.getAvatar());
-                            }
-                            groups.add(new PublicGroup(g.getId(), g.getAccessHash(),
-                                    g.getTitle(), avatar, g.getDescription(), g.getMembersCount(), g.getFriendsCount()));
-                        }
-                        callback.onResult(groups);
-                    }
 
-                    @Override
-                    public void onError(final RpcException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(e);
-                            }
-                        });
-                    }
-                });
-            }
-        };
+    //
+    // Integration Token
+    //
+
+    public Promise<String> requestIntegrationToken(final int gid) {
+        return getGroups().getValueAsync(gid)
+                .flatMap(group ->
+                        api(new RequestGetIntegrationToken(
+                                new ApiOutPeer(
+                                        ApiPeerType.GROUP,
+                                        group.getGroupId(),
+                                        group.getAccessHash()))))
+                .map(ResponseIntegrationToken::getUrl);
     }
+
+    public Promise<String> revokeIntegrationToken(final int gid) {
+        return getGroups().getValueAsync(gid)
+                .flatMap(group ->
+                        api(new RequestRevokeIntegrationToken(
+                                new ApiOutPeer(
+                                        ApiPeerType.GROUP,
+                                        group.getGroupId(),
+                                        group.getAccessHash()))))
+                .map(ResponseIntegrationToken::getUrl);
+    }
+
 
     public void resetModule() {
         groups.clear();

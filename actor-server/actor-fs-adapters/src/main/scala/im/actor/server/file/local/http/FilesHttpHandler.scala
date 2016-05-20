@@ -62,21 +62,19 @@ private[local] final class FilesHttpHandler(storageConfig: LocalFileStorageConfi
               //v1/files/:fileId
               path(Segments(0, 1)) { seqName =>
                 log.debug("Download file request, fileId: {}", fileId)
-                withRangeSupport {
-                  onComplete(getFile(fileId)) {
-                    case Success(Some(file)) =>
-                      log.debug("Serving fileId: {}, file: {} parts", fileId, file)
-                      respondWithDefaultHeader(
-                        `Content-Disposition`(attachment, Map("filename" -> file.name))
-                      ) {
-                        getFromFile(file.toJava)
-                      }
-                    case Success(None) =>
-                      complete(HttpResponse(StatusCodes.NotFound))
-                    case Failure(e) =>
-                      log.error(e, "Failed to get file content, fileId: {}", fileId)
-                      complete(HttpResponse(500))
-                  }
+                onComplete(getFile(fileId)) {
+                  case Success(Some(file)) =>
+                    log.debug("Serving fileId: {}, file: {} parts", fileId, file)
+                    respondWithDefaultHeader(
+                      `Content-Disposition`(attachment, Map("filename" -> file.name))
+                    ) {
+                      getFromFile(file.toJava)
+                    }
+                  case Success(None) =>
+                    complete(HttpResponse(StatusCodes.NotFound))
+                  case Failure(e) =>
+                    log.error(e, "Failed to get file content, fileId: {}", fileId)
+                    complete(HttpResponse(500))
                 }
               }
             } ~

@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import android.widget.Toast;
 import com.droidkit.progress.CircularView;
 
 import im.actor.core.entity.FileReference;
@@ -25,6 +26,8 @@ import im.actor.core.viewmodel.UploadFileVMCallback;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
+import im.actor.sdk.controllers.conversation.MessagesAdapter;
+import im.actor.sdk.controllers.conversation.messages.preprocessor.PreprocessedData;
 import im.actor.sdk.util.FileTypes;
 import im.actor.sdk.util.images.common.ImageLoadException;
 import im.actor.sdk.util.images.ops.ImageLoading;
@@ -145,7 +148,7 @@ public class DocHolder extends MessageHolder {
     }
 
     @Override
-    protected void bindData(Message message, boolean isUpdated, PreprocessedData preprocessedData) {
+    protected void bindData(Message message, long readDate, long receiveDate, boolean isUpdated, PreprocessedData preprocessedData) {
         document = (DocumentContent) message.getContent();
 
         // Update state
@@ -161,17 +164,17 @@ public class DocHolder extends MessageHolder {
                     stateIcon.setResource(R.drawable.msg_clock);
                     stateIcon.setTint(waitColor);
                     break;
-                case READ:
-                    stateIcon.setResource(R.drawable.msg_check_2);
-                    stateIcon.setTint(readColor);
-                    break;
-                case RECEIVED:
-                    stateIcon.setResource(R.drawable.msg_check_2);
-                    stateIcon.setTint(deliveredColor);
-                    break;
                 case SENT:
-                    stateIcon.setResource(R.drawable.msg_check_1);
-                    stateIcon.setTint(sentColor);
+                    if (message.getSortDate() <= readDate) {
+                        stateIcon.setResource(R.drawable.msg_check_2);
+                        stateIcon.setTint(readColor);
+                    } else if (message.getSortDate() <= receiveDate) {
+                        stateIcon.setResource(R.drawable.msg_check_2);
+                        stateIcon.setTint(deliveredColor);
+                    } else {
+                        stateIcon.setResource(R.drawable.msg_check_1);
+                        stateIcon.setTint(sentColor);
+                    }
                     break;
             }
         } else {
@@ -327,10 +330,14 @@ public class DocHolder extends MessageHolder {
                             if (document instanceof PhotoContent) {
                                 Intents.openMedia(getAdapter().getMessagesFragment().getActivity(), fileIcon, reference.getDescriptor(), currentMessage.getSenderId());
                             } else {
-                                Activity activity = getAdapter().getMessagesFragment().getActivity();
-                                activity.startActivity(Intents.openDoc(document.getName(), reference.getDescriptor()));
+                                try {
+                                    Activity activity = getAdapter().getMessagesFragment().getActivity();
+                                    activity.startActivity(Intents.openDoc(document.getName(), reference.getDescriptor()));
+                                } catch (Exception e) {
+                                    Toast.makeText(getAdapter().getMessagesFragment().getActivity(), R.string.toast_unable_open, Toast.LENGTH_LONG).show();
+                                    e.printStackTrace();
+                                }
                             }
-
                         }
                     });
                 }

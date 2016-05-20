@@ -1,0 +1,66 @@
+/*
+ * Copyright (C) 2016 Actor LLC. <https://actor.im>
+ */
+
+.scroller__wrapper,
+.scroller__container {
+  width: 100%;
+  min-height: 1px;
+}
+
+.scroller__wrapper {
+  display: flex;
+  overflow: hidden;
+}
+
+.scroller__container {
+  overflow-y: scroll;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #adc2dc;
+  }
+}
+
+.scroller__active {
+  user-select: none;
+}
+
+.scroller__wrapper--custom {
+  .scroller__container {
+    &::-webkit-scrollbar {
+      display: none;
+      width: 0;
+    }
+
+    overflow: auto;
+    margin-right: -32px;
+    padding-right: 32px;
+  }
+}
+
+.scroller__scrollbar {
+  display: flex;
+  width: 4px;
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  bottom: 0;
+  right: 0;
+
+  &:hover,
+  &--active {
+    width: 8px;
+  }
+}
+
+.scroller__thumb {
+  background-color: #adc2dc;
+  position: absolute;
+  right: 0;
+  left: 0;
+  top: 0;
+}

@@ -138,7 +138,7 @@ class AAVoiceRecorderView: UIView {
         self.sliderArrow.frame = CGRectMake(310,12,20,20)
         self.recorderImageCircle.frame = CGRectMake(-110, 15, 14, 14)
         
-        UIView.animateWithDuration(0.3, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 1.0, options: UIViewAnimationOptions.CurveLinear, animations: { () -> Void in
+        UIView.animateWithDuration(1.5, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 1.0, options: UIViewAnimationOptions.CurveLinear, animations: { () -> Void in
             
             self.timeLabel.frame = CGRectMake(29, 12, 50, 20)
             self.sliderLabel.frame = CGRectMake(140,12,100,20)

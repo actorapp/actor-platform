@@ -4,10 +4,10 @@
 
 import { map } from 'lodash';
 import React, { PropTypes, Component } from 'react';
+import EventListener from 'fbjs/lib/EventListener';
 import { findDOMNode } from 'react-dom';
 import classnames from 'classnames';
-import ReactMixin from 'react-mixin';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
+import { shouldComponentUpdate } from 'react-addons-pure-render-mixin';
 
 import { KeyCodes } from '../../constants/ActorAppConstants';
 
@@ -32,18 +32,23 @@ class MentionDropdown extends Component {
       isOpen: mentions && mentions.length > 0,
       selectedIndex: 0
     };
+
+    this.onKeyDown = this.onKeyDown.bind(this);
+    this.onDocumentClick = this.onDocumentClick.bind(this);
+    this.onDocumentKeyDown = this.onDocumentKeyDown.bind(this);
+    this.shouldComponentUpdate = shouldComponentUpdate.bind(this);
+  }
+
+  componentDidMount() {
+    this.listeners = [
+      EventListener.listen(document, 'click', this.onDocumentClick),
+      EventListener.listen(document, 'keydown', this.onDocumentKeyDown)
+    ];
   }
 
   componentWillUnmount() {
-    this.cleanListeners();
-  }
-
-  componentWillUpdate(nextProps, nextState) {
-    if (nextState.isOpen && !this.state.isOpen) {
-      this.setListeners();
-    } else if (!nextState.isOpen && this.state.isOpen) {
-      this.cleanListeners();
-    }
+    this.listeners.forEach((listener) => listener.remove());
+    this.listeners = null;
   }
 
   componentWillReceiveProps(props) {
@@ -54,17 +59,19 @@ class MentionDropdown extends Component {
     });
   }
 
-  setListeners() {
-    document.addEventListener('keydown', this.onKeyDown, false);
-    document.addEventListener('click', this.closeMentions, false);
+  onDocumentClick() {
+    if (this.state.isOpen) {
+      this.closeMentions();
+    }
   }
 
-  cleanListeners() {
-    document.removeEventListener('keydown', this.onKeyDown, false);
-    document.removeEventListener('click', this.closeMentions, false);
+  onDocumentKeyDown(event) {
+    if (this.state.isOpen) {
+      this.onKeyDown(event);
+    }
   }
 
-  closeMentions = () => this.setState({isOpen: false});
+  closeMentions = () => this.setState({ isOpen: false });
 
   onSelect = (value) => this.props.onSelect(value);
 
@@ -73,7 +80,7 @@ class MentionDropdown extends Component {
     menuListNode.scrollTop = top;
   };
 
-  onKeyDown = (event) => {
+  onKeyDown(event) {
     const { mentions, onClose } = this.props;
     const { selectedIndex } = this.state;
     const visibleItems = 6;
@@ -104,7 +111,7 @@ class MentionDropdown extends Component {
           }
 
           this.handleScroll(scrollIndex * DROPDOWN_ITEM_HEIGHT);
-          this.setState({selectedIndex: index});
+          this.setState({ selectedIndex: index });
           break;
         case KeyCodes.ARROW_DOWN:
         case KeyCodes.TAB:
@@ -124,7 +131,7 @@ class MentionDropdown extends Component {
           }
 
           this.handleScroll(scrollIndex * DROPDOWN_ITEM_HEIGHT);
-          this.setState({selectedIndex: index});
+          this.setState({ selectedIndex: index });
           break;
         default:
       }
@@ -134,62 +141,55 @@ class MentionDropdown extends Component {
       this.closeMentions();
       if (onClose) onClose();
     }
-  };
+  }
 
   render() {
     const { className, mentions } = this.props;
     const { isOpen, selectedIndex } = this.state;
 
-    const mentionClassName = classnames('mention', {
-      'mention--opened': isOpen
-    }, className);
+    if (!isOpen) {
+      return <div className="mention" />;
+    }
+
     const mentionsElements = map(mentions, (mention, index) => {
       const itemClassName = classnames('mention__list__item', {
         'mention__list__item--active': selectedIndex === index
       });
 
-      const title = mention.isNick ? [
-        <span className="nickname">{mention.mentionText}</span>,
-        <span className="name">{mention.secondText}</span>
-      ] : (
-        <span className="name">{mention.mentionText}</span>
-      );
-
       return (
         <li className={itemClassName}
             key={index}
             onClick={() => this.onSelect(mention)}
-            onMouseOver={() => this.setState({selectedIndex: index})}>
+            onMouseOver={() => this.setState({ selectedIndex: index })}>
           <AvatarItem image={mention.peer.avatar}
                       placeholder={mention.peer.placeholder}
                       size="tiny"
                       title={mention.peer.title}/>
-          <div className="title">{title}</div>
+          <div className="title">
+            {mention.isNick && <span className="nickname">{mention.mentionText}</span>}
+            <span className="name">{mention.mentionText}</span>
+          </div>
         </li>
       );
     });
 
-    if (isOpen) {
-      return (
-        <div className={mentionClassName}>
-          <div className="mention__wrapper">
-            <header className="mention__header">
-              <div className="pull-left"><strong>tab</strong>&nbsp; or &nbsp;<strong>↑</strong><strong>↓</strong>&nbsp; to navigate</div>
-              <div className="pull-left"><strong>↵</strong>&nbsp; to select</div>
-              <div className="pull-right"><strong>esc</strong>&nbsp; to close</div>
-            </header>
-            <ul className="mention__list" ref="mentionList">
-              {mentionsElements}
-            </ul>
-          </div>
+    const mentionClassName = classnames('mention mention--opened', className);
+
+    return (
+      <div className={mentionClassName}>
+        <div className="mention__wrapper">
+          <header className="mention__header">
+            <div className="pull-left"><strong>tab</strong>&nbsp; or &nbsp;<strong>↑</strong><strong>↓</strong>&nbsp; to navigate</div>
+            <div className="pull-left"><strong>↵</strong>&nbsp; to select</div>
+            <div className="pull-right"><strong>esc</strong>&nbsp; to close</div>
+          </header>
+          <ul className="mention__list" ref="mentionList">
+            {mentionsElements}
+          </ul>
         </div>
-      );
-    } else {
-      return null;
-    }
+      </div>
+    );
   }
 }
-
-ReactMixin.onClass(MentionDropdown, PureRenderMixin);
 
 export default MentionDropdown;

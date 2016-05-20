@@ -6,14 +6,16 @@ import akka.actor._
 import akka.cluster.sharding.ShardRegion
 import akka.pattern.pipe
 import akka.persistence.RecoveryCompleted
+import akka.stream.{ ActorMaterializer, ActorMaterializerSettings, Materializer }
 import akka.util.Timeout
 import im.actor.api.rpc.collections.ApiMapValue
+import im.actor.api.rpc.groups.ApiMember
 import im.actor.serialization.ActorSerializer
 import im.actor.server.KeyValueMappings
 import im.actor.server.cqrs.TaggedEvent
 import im.actor.server.db.DbExtension
-import im.actor.server.dialog.{ DirectDialogCommand, DialogExtension }
-import im.actor.server.file.{ FileStorageExtension, FileStorageAdapter, Avatar }
+import im.actor.server.dialog.{ DialogEnvelope, DialogExtension, DirectDialogCommand }
+import im.actor.server.file.{ Avatar, FileStorageAdapter, FileStorageExtension }
 import im.actor.server.model.Group
 import im.actor.server.office.{ PeerProcessor, ProcessorState, StopOffice }
 import im.actor.server.sequence.SeqUpdatesExtension
@@ -41,6 +43,7 @@ private[group] case class GroupState(
   typ:             GroupType,
   accessHash:      Long,
   creatorUserId:   Int,
+  ownerUserId:     Int,
   createdAt:       Instant,
   members:         Map[Int, Member],
   invitedUserIds:  Set[Int],
@@ -119,7 +122,8 @@ object GroupProcessor {
       22012 → classOf[GroupEvents.TitleUpdated],
       22013 → classOf[GroupEvents.TopicUpdated],
       22015 → classOf[GroupEvents.UserBecameAdmin],
-      22016 → classOf[GroupEvents.IntegrationTokenRevoked]
+      22016 → classOf[GroupEvents.IntegrationTokenRevoked],
+      22017 → classOf[GroupEvents.OwnerChanged]
     )
 
   def props: Props = Props(classOf[GroupProcessor])
@@ -137,6 +141,7 @@ private[group] final class GroupProcessor
 
   protected implicit val system: ActorSystem = context.system
   protected implicit val ec: ExecutionContext = context.dispatcher
+  protected implicit val mat: Materializer = ActorMaterializer(ActorMaterializerSettings(system))
 
   protected implicit val timeout: Timeout = Timeout(10.seconds)
 
@@ -187,18 +192,23 @@ private[group] final class GroupProcessor
         state.copy(members = state.members.updated(userId, state.members(userId).copy(isAdmin = true)))
       case GroupEvents.IntegrationTokenRevoked(_, token) ⇒
         state.copy(bot = state.bot.map(_.copy(token = token)))
+      case GroupEvents.OwnerChanged(_, userId) ⇒
+        state.copy(ownerUserId = userId)
     }
   }
 
   override def handleQuery(state: GroupState): Receive = {
-    case GroupQueries.GetIntegrationToken(_, userId) ⇒ getIntegrationToken(state, userId)
-    case GroupQueries.GetIntegrationTokenInternal(_) ⇒ getIntegrationToken(state)
-    case GroupQueries.GetApiStruct(_, userId)        ⇒ getApiStruct(state, userId)
-    case GroupQueries.CheckAccessHash(_, accessHash) ⇒ checkAccessHash(state, accessHash)
-    case GroupQueries.GetMembers(_)                  ⇒ getMembers(state)
-    case GroupQueries.IsPublic(_)                    ⇒ isPublic(state)
-    case GroupQueries.GetAccessHash(_)               ⇒ getAccessHash(state)
-    case GroupQueries.IsHistoryShared(_)             ⇒ isHistoryShared(state)
+    case GroupQueries.GetIntegrationToken(_, userId)              ⇒ getIntegrationToken(state, userId)
+    case GroupQueries.GetIntegrationTokenInternal(_)              ⇒ getIntegrationToken(state)
+    case GroupQueries.GetApiStruct(_, userId)                     ⇒ getApiStruct(state, userId)
+    case GroupQueries.GetApiFullStruct(_, userId)                 ⇒ getApiFullStruct(state, userId)
+    case GroupQueries.CheckAccessHash(_, accessHash)              ⇒ checkAccessHash(state, accessHash)
+    case GroupQueries.GetMembers(_)                               ⇒ getMembers(state)
+    case GroupQueries.IsPublic(_)                                 ⇒ isPublic(state)
+    case GroupQueries.GetAccessHash(_)                            ⇒ getAccessHash(state)
+    case GroupQueries.IsHistoryShared(_)                          ⇒ isHistoryShared(state)
+    case GroupQueries.GetTitle(_)                                 ⇒ getTitle(state)
+    case GroupQueries.LoadMembers(_, clientUserId, limit, offset) ⇒ loadMembers(state, clientUserId, limit, offset)
   }
 
   override def handleInitCommand: Receive = {
@@ -244,16 +254,19 @@ private[group] final class GroupProcessor
       makeUserAdmin(state, clientUserId, candidateId)
     case RevokeIntegrationToken(_, userId) ⇒
       revokeIntegrationToken(state, userId)
-    case StopOffice              ⇒ context stop self
-    case ReceiveTimeout          ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
-    case dc: DirectDialogCommand ⇒ groupPeer forward dc
+    case TransferOwnership(_, clientUserId, clientAuthSid, userId) ⇒
+      transferOwnership(state, clientUserId, clientAuthSid, userId)
+    case StopOffice     ⇒ context stop self
+    case ReceiveTimeout ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
+    case de: DialogEnvelope ⇒
+      groupPeer forward de.getAllFields.values.head
   }
 
   private[this] var groupStateMaybe: Option[GroupState] = None
 
   override def receiveRecover = {
     case created: GroupEvents.Created ⇒
-      groupStateMaybe = Some(initState(created))
+      groupStateMaybe = Some(initState(created).copy(isHistoryShared = created.typ.exists(t ⇒ t.isChannel || t.isPublic)))
     case evt: GroupEvent ⇒
       groupStateMaybe = groupStateMaybe map (updatedState(evt, _))
     case RecoveryCompleted ⇒
@@ -273,6 +286,7 @@ private[group] final class GroupProcessor
       title = evt.title,
       about = None,
       creatorUserId = evt.creatorUserId,
+      ownerUserId = evt.creatorUserId,
       createdAt = evt.ts,
       members = (evt.userIds map (userId ⇒ userId → Member(userId, evt.creatorUserId, evt.ts, isAdmin = userId == evt.creatorUserId))).toMap,
       bot = None,
@@ -297,4 +311,12 @@ private[group] final class GroupProcessor
   protected def isBot(group: GroupState, userId: Int): Boolean = userId == 0 || (group.bot exists (_.userId == userId))
 
   protected def isAdmin(group: GroupState, userId: Int): Boolean = group.members.get(userId) exists (_.isAdmin)
+
+  protected def canInvitePeople(group: GroupState, clientUserId: Int) =
+    isMember(group, clientUserId)
+
+  protected def isMember(group: GroupState, clientUserId: Int) = hasMember(group, clientUserId)
+
+  protected def canViewMembers(group: GroupState, clientUserId: Int) =
+    (group.typ.isGeneral || group.typ.isPublic) && isMember(group, clientUserId)
 }

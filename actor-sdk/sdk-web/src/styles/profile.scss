@@ -79,11 +79,6 @@
       @include clearfix();
     }
 
-    .avatar {
-      float: left;
-
-      margin-right: 14px;
-    }
     &__title {
       font-size: 16px;
       font-weight: 500;
@@ -194,6 +189,16 @@
   }
 }
 
+.group_profile__avatar {
+  float: left;
+  margin-right: 10px;
+}
+
+.profile__avatar {
+  float: left;
+  margin-right: 14px;
+}
+
 .group_profile {
   @include side-profile();
   &__meta {
@@ -204,11 +209,6 @@
       @include clearfix();
     }
 
-    .avatar {
-      float: left;
-
-      margin-right: 14px;
-    }
     &__title {
       font-size: 16px;
       font-weight: 500;
@@ -279,11 +279,6 @@
         @include clearfix();
         a {
           cursor: pointer;
-        }
-        .avatar {
-          float: left;
-
-          margin-right: 10px;
         }
         .controls {
           a {

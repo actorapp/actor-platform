@@ -7,8 +7,6 @@ package im.actor.core.entity;
 public enum MessageState {
     PENDING(1),
     SENT(2),
-    RECEIVED(3),
-    READ(4),
     ERROR(5),
     UNKNOWN(6);
 
@@ -27,11 +25,9 @@ public enum MessageState {
             case 1:
                 return PENDING;
             case 2:
-                return SENT;
             case 3:
-                return RECEIVED;
             case 4:
-                return READ;
+                return SENT;
             case 5:
                 return ERROR;
             default:

@@ -8,15 +8,16 @@ apply plugin: 'war'
 apply plugin: 'gwt'
 
 gwt {
-    gwtVersion = '2.7.0'
+    gwtVersion = '2.8.0-beta1'
     modules 'im.actor.ActorCore'
     devModules 'im.actor.ActorCoreDev'
 
     compiler {
         strict = true
-        style = "PRETTY" //"OBF"
-        enableClosureCompiler = false
-        disableClassMetadata = false
+        // style = "PRETTY" //"OBF"
+        style = "OBF"
+        enableClosureCompiler = true
+        disableClassMetadata = true
         disableCastChecking = true
     }
 
@@ -39,7 +40,7 @@ dependencies {
     gwt 'org.timepedia.exporter:gwtexporter:2.4.0'
 
     // Hack for IntelliJ IDEA
-    providedCompile 'com.google.gwt:gwt-user:2.7.0'
+    providedCompile 'com.google.gwt:gwt-user:2.8.0-beta1'
     providedCompile 'org.timepedia.exporter:gwtexporter:2.4.0'
 }
 

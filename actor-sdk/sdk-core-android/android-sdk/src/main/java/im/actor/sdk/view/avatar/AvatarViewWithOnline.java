@@ -38,6 +38,7 @@ public class AvatarViewWithOnline extends FrameLayout {
 
         online = new ImageView(getContext());
         online.setImageResource(R.drawable.indicator_offline);
+        online.setVisibility(INVISIBLE);
         addView(online, new LayoutParams(Screen.dp(11), Screen.dp(11), Gravity.RIGHT | Gravity.BOTTOM));
     }
 

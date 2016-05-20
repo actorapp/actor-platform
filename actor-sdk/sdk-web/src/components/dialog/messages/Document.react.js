@@ -4,54 +4,74 @@
 
 import React, { Component, PropTypes } from 'react';
 import classnames from 'classnames';
+import { FormattedMessage } from 'react-intl';
 
 /**
  * Class that represents a component for display document message content
  */
 class Document extends Component {
   static propTypes = {
-    content: PropTypes.object.isRequired,
+    fileUrl: PropTypes.string,
+    fileName: PropTypes.string.isRequired,
+    fileSize: PropTypes.string.isRequired,
+    fileExtension: PropTypes.string.isRequired,
+    isUploading: PropTypes.bool.isRequired,
     className: PropTypes.string
-  };
+  }
 
-  static contextTypes = {
-    intl: PropTypes.object
-  };
+  renderIcon() {
+    const { fileUrl, isUploading } = this.props;
+
+    if (isUploading) {
+      return (
+        <div className="document__icon">
+          <i className="material-icons">attach_file</i>
+        </div>
+      );
+    } else {
+      return (
+        <a className="document__icon" href={fileUrl}>
+          <i className="material-icons">attach_file</i>
+        </a>
+      );
+    }
+  }
+
+  renderActions() {
+    const { fileUrl, isUploading } = this.props;
+
+    if (isUploading) {
+      return (
+        <span><FormattedMessage id="message.uploading"/></span>
+      );
+    } else {
+      return (
+        <a href={fileUrl}><FormattedMessage id="message.download"/></a>
+      );
+    }
+  }
 
   render() {
-    const { content, className } = this.props;
-    const { intl } = this.context;
+    const { fileName, fileSize, fileExtension, className } = this.props;
 
     const documentClassName = classnames(className, 'row');
 
     return (
       <div className={documentClassName}>
         <div className="document row">
-          {
-            content.isUploading
-              ? <div className="document__icon">
-                  <i className="material-icons">attach_file</i>
-                </div>
-              : <a className="document__icon" href={content.fileUrl}>
-                  <i className="material-icons">attach_file</i>
-                </a>
-          }
+          {this.renderIcon()}
           <div className="col-xs">
-            <span className="document__filename">{content.fileName}</span>
+            <span className="document__filename">{fileName}</span>
             <div className="document__meta">
-              <span className="document__meta__size">{content.fileSize}</span>
-              <span className="document__meta__ext">{content.fileExtension}</span>
+              <span className="document__meta__size">{fileSize}</span>
+              <span className="document__meta__ext">{fileExtension}</span>
             </div>
             <div className="document__actions">
-              {
-                content.isUploading
-                  ? <span>{intl.messages['message.uploading']}</span>
-                  : <a href={content.fileUrl}>{intl.messages['message.download']}</a>
-              }
+              {this.renderActions()}
             </div>
           </div>
         </div>
-        <div className="col-xs"></div>
+        <div className="col-xs"/>
       </div>
     );
   }

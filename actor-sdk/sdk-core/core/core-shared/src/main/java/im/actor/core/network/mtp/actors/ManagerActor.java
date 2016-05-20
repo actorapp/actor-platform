@@ -5,7 +5,6 @@
 package im.actor.core.network.mtp.actors;
 
 import com.google.j2objc.annotations.AutoreleasePool;
-import com.google.j2objc.annotations.RetainedLocalRef;
 
 import java.io.IOException;
 
@@ -18,9 +17,7 @@ import im.actor.core.network.mtp.entity.EncryptedPackage;
 import im.actor.core.network.mtp.entity.ProtoMessage;
 import im.actor.core.util.ExponentialBackoff;
 import im.actor.runtime.*;
-import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.Actor;
-import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSelection;
 import im.actor.runtime.actors.ActorSystem;
@@ -30,7 +27,6 @@ import im.actor.runtime.bser.DataInput;
 import im.actor.runtime.bser.DataOutput;
 import im.actor.runtime.crypto.ActorProtoKey;
 import im.actor.runtime.crypto.box.CBCHmacBox;
-import im.actor.runtime.crypto.primitives.aes.AESFastEngine;
 import im.actor.runtime.crypto.primitives.kuznechik.KuznechikFastEngine;
 import im.actor.runtime.crypto.primitives.streebog.Streebog256;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
@@ -38,7 +34,6 @@ import im.actor.runtime.mtproto.Connection;
 import im.actor.runtime.mtproto.ConnectionCallback;
 import im.actor.runtime.mtproto.CreateConnectionCallback;
 import im.actor.runtime.threading.AtomicIntegerCompat;
-import im.actor.runtime.util.Hex;
 
 /**
  * Possible problems
@@ -50,12 +45,7 @@ public class ManagerActor extends Actor {
 
     public static ActorRef manager(final MTProto mtProto) {
         return ActorSystem.system().actorOf(
-                new ActorSelection(Props.create(new ActorCreator() {
-                    @Override
-                    public ManagerActor create() {
-                        return new ManagerActor(mtProto);
-                    }
-                }).changeDispatcher("network_manager"), mtProto.getActorPath() + "/manager"));
+                new ActorSelection(Props.create(() -> new ManagerActor(mtProto)).changeDispatcher("network_manager"), mtProto.getActorPath() + "/manager"));
     }
 
     private static final AtomicIntegerCompat NEXT_CONNECTION = im.actor.runtime.Runtime.createAtomicInt(1);
@@ -168,7 +158,7 @@ public class ManagerActor extends Actor {
             InMessage m = (InMessage) message;
             onInMessage(m.data, m.offset, m.len);
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 

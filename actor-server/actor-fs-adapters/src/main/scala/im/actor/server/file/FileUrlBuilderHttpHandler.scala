@@ -60,9 +60,9 @@ private[file] final class FileUrlBuilderHttpHandler(fsAdapter: FileStorageAdapte
     extractRequest { request =>
       defaultVersion {
         pathPrefix("files" / SignedLongNumber) { fileId =>
-          log.debug("Got file url builder request: {}", request)
           get {
             validateBuilderRequest(fileId) { case (fileModel, accessHash) =>
+              log.debug("Got file url builder request: {}", request)
               onSuccess(fsAdapter.getFileDownloadUrl(fileModel, accessHash)) {
                 case Some(url) => redirect(url, StatusCodes.Found)
                 case None => complete(StatusCodes.NotFound -> "File not found")
@@ -96,7 +96,7 @@ private[file] final class FileUrlBuilderHttpHandler(fsAdapter: FileStorageAdapte
                         if (isExpired(expire, now)) {
                           log.debug(
                             "Signature expired. Signature: {}, expire: {}, now: {}",
-                            hexSignature, expire, Instant.now
+                            hexSignature, Instant.ofEpochSecond(expire.toLong), now
                           )
                           reject(FileBuilderExpiredRejection)
                         } else {
@@ -127,6 +127,6 @@ private[file] final class FileUrlBuilderHttpHandler(fsAdapter: FileStorageAdapte
         }
     }
 
-  private def isExpired(expire: Int, now: Instant): Boolean = Instant.ofEpochSecond(expire.toLong).isAfter(now)
+  private def isExpired(expire: Int, now: Instant): Boolean = Instant.ofEpochSecond(expire.toLong).isBefore(now)
 
 }

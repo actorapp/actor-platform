@@ -20,7 +20,7 @@
 
 "ContactsAddHeader" = "Add Contact";
 
-"ContactsAddHint" = "Please, specify phone number";
+"ContactsAddHint" = "Please, enter the phone number";
 
 "ContactsActionInvite" = "Tell Friends about";
 
@@ -46,7 +46,7 @@
 
 "SettingsEditHeader" = "Your name";
 
-"SettingsEditHint" = "Please, enter your real name to help people better understand who you are.";
+"SettingsEditHint" = "Please, enter your real name to help people recognize you.";
 
 "SettingsEditFieldHint" = "Enter your name";
 
@@ -57,14 +57,14 @@
 
 "SettingsUsernameHintField" = "Enter your Username";
 
-"SettingsUsernameHint" = "You can choose a username in {appname}. If you do, other people will be able to find you by this username and contact you without sharing your phone number.\n\nYou can use a-z, 0-9 and underscores. Minumum length is 5 characters.";
+"SettingsUsernameHint" = "You can choose a username in {appname}. Other people will be able to find you by this username and contact you without using your phone number.\n\nYou can use a-z, 0-9 and underscores. Minumum length is 5 characters.";
 
 
-"SettingsAboutNotSet" = "Set about me";
+"SettingsAboutNotSet" = "Set your bio";
 
 "SettingsChangeAboutTitle" = "About me";
 
-"SettingsChangeAboutHint" = "Tell people anything you want about yourself";
+"SettingsChangeAboutHint" = "Tell people who you are.";
 
 
 "SettingsSecurity" = "Security";
@@ -74,7 +74,7 @@
 
 "SettingsNotifications" = "Notifications and Sounds";
 
-"SettingsAskQuestion" = "Ask Question";
+"SettingsAskQuestion" = "Ask a Question";
 
 "SettingsTwitter" = "App Twitter";
 
@@ -141,7 +141,7 @@
 
 "ProfileNotifications" = "Notifications";
 
-"ProfileNotificationsWarring" = "Are you sure want to turn off notifications for this person? This may cause relationship problems in the nearest future.";
+"ProfileNotificationsWarring" = "Are you sure you want to turn off notifications for this person? This may cause miscommunication.";
 
 "ProfileNotificationsWarringAction" = "Turn off";
 
@@ -149,9 +149,13 @@
 
 "ProfileRemoveFromContacts" = "Remove from Contacts";
 
+"ProfileBlockContact" = "Block Contact";
+
+"ProfileUnblockContact" = "Unblock Contact";
+
 "ProfileRename" = "Rename Contact";
 
-"ProfileRenameMessage" = "You can rename contacts for organizing your contact list. Changes will be visible only to you.";
+"ProfileRenameMessage" = "You can rename contacts to organize your contact list. Changes will only be visible to you.";
 
 "ProfileRenameAction" = "Rename";
 
@@ -187,7 +191,7 @@
 
 "GroupSetTitle" = "Set Group Title";
 
-"GroupEditConfirm" = "Are you sure want to change group title?";
+"GroupEditConfirm" = "Are you sure you want to change the group title?";
 
 "GroupEditConfirmAction" = "Change Theme";
 
@@ -205,21 +209,21 @@
 
 "GroupMemberMakeAdmin" = "Make Group admin";
 
-"GroupMemberMakeMessage" = "Are you sure want to make {name} admin of this group?";
+"GroupMemberMakeMessage" = "Are you sure you want to make {name} the admin of this group?";
 
 "GroupMemberMakeAction" = "Yes";
 
 "GroupMemberKick" = "Kick from Group";
 
-"GroupMemberKickMessage" = "Are you sure want to kick {name} from group?";
+"GroupMemberKickMessage" = "Are you sure you want to kick {name} from this group?";
 
 "GroupMemberKickAction" = "Kick";
 
-"GroupMemberWrite" = "Write Message";
+"GroupMemberWrite" = "Write a Message";
 
 "GroupMemberCall" = "Phone Call";
 
-"GroupMemberCallNoPhones" = "No phone number available for user.";
+"GroupMemberCallNoPhones" = "No phone number is available for user.";
 
 "GroupAddParticipant" = "Add Participant...";
 
@@ -229,7 +233,7 @@
 
 "GroupLeave" = "Leave group";
 
-"GroupLeaveConfirm" = "Are you sure want to leave group?";
+"GroupLeaveConfirm" = "Are you sure you want to leave group?";
 
 "GroupLeaveConfirmAction" = "Leave";
 
@@ -251,11 +255,11 @@
 
 "GroupIntegrationDoc" = "Open Documentation";
 
-"GroupIntegrationLinkRevokeMessage" = "Are you sure want to revoke this link? Once you do, no one will be able to send messages to the group using it.";
+"GroupIntegrationLinkRevokeMessage" = "Are you sure you want to revoke this link? Once you do, no one will be able to send messages to the group using it.";
 
 "GroupIntegrationLinkRevokeAction" = "Revoke";
 
-"GroupJoinMessage" = "Are you sure want to join group?";
+"GroupJoinMessage" = "Are you sure you want to join this group?";
 
 "GroupJoinAction" = "Join";
 
@@ -271,7 +275,7 @@
 
 "CreateGroupTitle" = "Create Group";
 
-"CreateGroupHint" = "Please provide group subject and optional group icon";
+"CreateGroupHint" = "Please provide the group's subject and an optional group icon";
 
 "CreateGroupNamePlaceholder" = "Group Subject";
 
@@ -319,7 +323,7 @@
 
 "NotificationsOnlyMentions" = "Only Mentions";
 
-"NotificationsOnlyMentionsHint" = "You can enable notifications only for messages that contains your mention";
+"NotificationsOnlyMentionsHint" = "You can enable notifications only for messages that mention you";
 
 /*
  * Privacy
@@ -333,7 +337,7 @@
 
 "PrivacyTerminateAlertSingle" = "Terminate session";
 
-"PrivacyTerminateHint" = "Logs out all devices except for this one.";
+"PrivacyTerminateHint" = "Log out all devices except for this one.";
 
 /*
  * Wallpapers
@@ -351,7 +355,7 @@
 
 "ChatSend" = "Send";
 
-"ChatNoGroupAccess" = "You are not a member";
+"ChatNoGroupAccess" = "You are not a member of this group";
 
 "ChatNewMessages" = "New messages";
 
@@ -363,7 +367,7 @@
 
 "ChatSlideUpToCancel" = "Slide up to cancel";
 
-"Chat.MicrophoneAccessDisabled"  = "We needs access to your microphone for voice messages. Please go to Settings — Privacy — Microphone and set to ON";
+"Chat.MicrophoneAccessDisabled" = "We need access to your microphone for voice messages. Please go to Settings — Privacy — Microphone turn them ОN";
 
 /*
  * Chat attachment menu
@@ -383,7 +387,7 @@
 
 "FindHint" = "Enter phone number, email or nickname and press search";
 
-"FindNotFound" = "Sorry, but we are unable to find person for this search query";
+"FindNotFound" = "Sorry, but we are unable to find the person you are looking for";
 
 /*
  * Placeholders
@@ -391,7 +395,7 @@
 
 "Placeholder_Empty_Title" = "Invite your friends";
 
-"Placeholder_Empty_Message" = "None of your contacts use {appname}. Use button bellow to invite them.";
+"Placeholder_Empty_Message" = "None of your contacts use {appname}. Use the button below to invite them.";
 
 "Placeholder_Empty_Action" = "TELL A FRIEND";
 
@@ -401,11 +405,11 @@
 
 "Placeholder_Loading_Title" = "Sync in progress";
 
-"Placeholder_Loading_Message" = "Please, wait couple minutes while we enable your app.";
+"Placeholder_Loading_Message" = "Please, wait a couple minutes. We're configuring your app.";
 
 "Placeholder_Contacts_Title" = "Invite your friends";
 
-"Placeholder_Contacts_Message" = "None of your contacts use {appname}. Use button bellow to invite them.";
+"Placeholder_Contacts_Message" = "None of your contacts are using {appname}. Use the button bellow to invite them.";
 
 "Placeholder_Contacts_Action" = "TELL A FRIEND";
 
@@ -413,7 +417,7 @@
 
 "Placeholder_Dialogs_Title" = "Start messaging";
 
-"Placeholder_Dialogs_Message" = "Pick a contact from your contacts list or press write button at upper right corner to start the conversation right now.";
+"Placeholder_Dialogs_Message" = "Pick a contact from your contact list or press Write button in the upper right corner to start a conversation right now.";
 
 "Placeholder_Group_Title" = "Not a member";
 
@@ -443,7 +447,7 @@
 
 "AuthCountryTitle" = "Country Code";
 
-"AuthUnsupported" = "This account is unsupported in this version of {app_name}. Please, update application for logging in to this account.";
+"AuthUnsupported" = "This account is not supported in this version of {app_name}. Please, update the application.";
 
 "AuthLoginTitle" = "Login to {app_name}";
 
@@ -455,7 +459,7 @@
 
 "AuthNameTitle" = "Hi! What's your name?";
 
-"AuthNamePlaceholder" = "Your full name";
+"AuthNamePlaceholder" = "Your name";
 
 "AuthPhoneTitle" = "What's your phone number?";
 
@@ -467,7 +471,7 @@
 
 "AuthEmailTitle" = "What's your email?";
 
-"AuthEmailHint" = "We won't send you spam.";
+"AuthEmailHint" = "We don't send any spam.";
 
 "AuthEmailPlaceholder" = "Your email";
 
@@ -485,15 +489,15 @@
 
 "AuthOTPEmailTitle" = "Confirm your email";
 
-"AuthOTPPhoneTitle" = "Confirm your phone";
+"AuthOTPPhoneTitle" = "Confirm your phone number";
 
-"AuthOTPEmailHint" = "We’ve sent you email with confirmation code.\nPlease enter it below.";
+"AuthOTPEmailHint" = "We’ve sent you an email with confirmation code.\nPlease enter the code below.";
 
-"AuthOTPPhoneHint" = "We’ve sent you SMS with confirmation code.\nPlease enter it below.";
+"AuthOTPPhoneHint" = "We’ve sent you a message with confirmation code.\nPlease enter the code below.";
 
 "AuthOTPPlaceholder" = "Confirmation code";
 
-"AuthOTPNoCode" = "Haven't received code?";
+"AuthOTPNoCode" = "Didn't receive the code?";
 
 "AuthOTPCallHint" = "{app_name} will call you in {time}";
 
@@ -542,6 +546,8 @@
  *  Alerts
  */
 
+"AlertUnblock" = "Unblock";
+
 "AlertCancel" = "Cancel";
 
 "AlertNext" = "Next";
@@ -562,7 +568,7 @@
 
 "AlertInvite" = "Invite";
 
-"UnsupportedContent" = "Message is unsupported in this version. Please, wait for application update to see message.";
+"UnsupportedContent" = "This message is not supported in this version. Please, wait for the application update to see message.";
 
 /*
  * Actions

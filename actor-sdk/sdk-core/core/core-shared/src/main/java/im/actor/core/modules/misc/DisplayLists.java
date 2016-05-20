@@ -23,9 +23,8 @@ public class DisplayLists extends AbsModule {
 
     private PlatformDisplayList<Contact> contactsGlobalList;
 
-    private HashMap<Peer, PlatformDisplayList<Message>> chatsGlobalLists = new HashMap<Peer, PlatformDisplayList<Message>>();
-    private HashMap<Peer, PlatformDisplayList<Message>> chatsDocsGlobalLists = new HashMap<Peer, PlatformDisplayList<Message>>();
-    private HashMap<String, PlatformDisplayList> chatsCustomGlobalLists = new HashMap<String, PlatformDisplayList>();
+    private HashMap<Peer, PlatformDisplayList<Message>> chatsGlobalLists = new HashMap<>();
+    private HashMap<Peer, PlatformDisplayList<Message>> chatsDocsGlobalLists = new HashMap<>();
 
     public DisplayLists(ModuleContext context) {
         super(context);
@@ -71,16 +70,6 @@ public class DisplayLists extends AbsModule {
         return chatsDocsGlobalLists.get(peer);
     }
 
-    public PlatformDisplayList getCustomSharedList(Peer peer, String dataType, BserCreator creator) {
-        im.actor.runtime.Runtime.checkMainThread();
-        String key = peer.getUnuqueId()+dataType;
-        if (!chatsCustomGlobalLists.containsKey(key)) {
-            chatsCustomGlobalLists.put(key, buildChatCustomList(peer, dataType, true, creator));
-        }
-
-        return chatsCustomGlobalLists.get(key);
-    }
-
     public PlatformDisplayList<Dialog> buildDialogsList(boolean isShared) {
         im.actor.runtime.Runtime.checkMainThread();
 
@@ -107,7 +96,7 @@ public class DisplayLists extends AbsModule {
         PlatformDisplayList<Message> res = Storage.createDisplayList(context().getMessagesModule().getConversationEngine(peer),
                 isShared, Message.ENTITY_NAME);
 
-        long lastRead = context().getMessagesModule().loadReadState(peer);
+        long lastRead = context().getMessagesModule().getConversationVM(peer).getOwnReadDate().get();
 
         if (lastRead != 0) {
             res.initCenter(lastRead);
@@ -123,17 +112,6 @@ public class DisplayLists extends AbsModule {
 
         PlatformDisplayList<Message> res = Storage.createDisplayList(context().getMessagesModule().getConversationDocsEngine(peer),
                 isShared, Message.ENTITY_NAME);
-
-        res.initTop();
-
-        return res;
-    }
-
-    public PlatformDisplayList buildChatCustomList(final Peer peer, String datatype, boolean isShared, BserCreator creator) {
-        im.actor.runtime.Runtime.checkMainThread();
-
-        PlatformDisplayList res = Storage.createDisplayList(context().getMessagesModule().getCustomConversationEngine(peer, datatype, creator),
-                isShared, datatype);
 
         res.initTop();
 

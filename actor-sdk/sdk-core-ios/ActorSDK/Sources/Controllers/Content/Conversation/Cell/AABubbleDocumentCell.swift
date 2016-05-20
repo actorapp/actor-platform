@@ -62,7 +62,7 @@ public class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionCo
     // MARK: -
     // MARK: Bind
     
-    public override func bind(message: ACMessage, reuse: Bool, cellLayout: AACellLayout, setting: AACellSetting) {
+    public override func bind(message: ACMessage, receiveDate: jlong, readDate: jlong, reuse: Bool, cellLayout: AACellLayout, setting: AACellSetting) {
 
         self.bindedLayout = cellLayout as! DocumentCellLayout
         
@@ -104,24 +104,19 @@ public class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionCo
         
         // Setting message status
         if (isOut) {
-            switch(message.messageState.ordinal()) {
-            case ACMessageState.PENDING().ordinal():
-                self.statusView.image = appStyle.chatIconClock
-                self.statusView.tintColor = appStyle.chatStatusSending
-                break
-            case ACMessageState.SENT().ordinal():
-                self.statusView.image = appStyle.chatIconCheck1
-                self.statusView.tintColor = appStyle.chatStatusSent
-                break
-            case ACMessageState.RECEIVED().ordinal():
-                self.statusView.image = appStyle.chatIconCheck2
-                self.statusView.tintColor = appStyle.chatStatusReceived
-                break
-            case ACMessageState.READ().ordinal():
-                self.statusView.image = appStyle.chatIconCheck2
-                self.statusView.tintColor = appStyle.chatStatusRead
-                break
-            case ACMessageState.ERROR().ordinal():
+            switch(message.messageState.toNSEnum()) {
+            case .SENT:
+                if message.sortDate <= readDate {
+                    self.statusView.image = appStyle.chatIconCheck2
+                    self.statusView.tintColor = appStyle.chatStatusRead
+                } else if message.sortDate <= receiveDate {
+                    self.statusView.image = appStyle.chatIconCheck2
+                    self.statusView.tintColor = appStyle.chatStatusReceived
+                } else {
+                    self.statusView.image = appStyle.chatIconCheck1
+                    self.statusView.tintColor = appStyle.chatStatusSent
+                }
+            case .ERROR:
                 self.statusView.image = appStyle.chatIconError
                 self.statusView.tintColor = appStyle.chatStatusError
                 break

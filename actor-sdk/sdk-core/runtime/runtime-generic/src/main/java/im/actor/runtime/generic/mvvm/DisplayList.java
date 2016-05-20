@@ -29,6 +29,10 @@ import static im.actor.runtime.actors.ActorSystem.system;
 
 public class DisplayList<T> {
 
+    static {
+        system().addDispatcher("display_list");
+    }
+
     private static int NEXT_ID = 0;
     private final int DISPLAY_LIST_ID;
     private ActorRef executor;
@@ -37,11 +41,9 @@ public class DisplayList<T> {
     private final OperationMode operationMode;
     private volatile Object processedList;
 
-    private CopyOnWriteArrayList<Listener> listeners = new CopyOnWriteArrayList<Listener>();
-    private CopyOnWriteArrayList<AndroidChangeListener<T>> androidListeners =
-            new CopyOnWriteArrayList<AndroidChangeListener<T>>();
-    private CopyOnWriteArrayList<AppleChangeListener<T>> appleListeners =
-            new CopyOnWriteArrayList<AppleChangeListener<T>>();
+    private CopyOnWriteArrayList<Listener> listeners = new CopyOnWriteArrayList<>();
+    private CopyOnWriteArrayList<AndroidChangeListener<T>> androidListeners = new CopyOnWriteArrayList<>();
+    private CopyOnWriteArrayList<AppleChangeListener<T>> appleListeners = new CopyOnWriteArrayList<>();
 
     private ListProcessor<T> listProcessor = null;
 
@@ -325,7 +327,7 @@ public class DisplayList<T> {
                 onEditList(((EditList<T>) message).modification, ((EditList) message).executeAfter,
                         ((EditList) message).isLoadMore);
             } else {
-                drop(message);
+                super.onReceive(message);
             }
         }
     }

@@ -76,7 +76,7 @@ export const getEmojiCategories = () => {
       default:
     }
 
-    emojiCategories.push({title, icon, data});
+    emojiCategories.push({ title, icon, data });
   }
 
   return emojiCategories;

@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Debug;
 import android.view.ViewGroup;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -24,21 +25,21 @@ import im.actor.core.ConfigurationBuilder;
 import im.actor.core.DeviceCategory;
 import im.actor.core.PlatformType;
 import im.actor.core.entity.Peer;
-import im.actor.core.events.IncomingCall;
 import im.actor.runtime.Log;
+import im.actor.runtime.Runtime;
+import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.android.view.BindedViewHolder;
-import im.actor.runtime.eventbus.BusSubscriber;
-import im.actor.runtime.eventbus.Event;
+import im.actor.runtime.threading.ThreadDispatcher;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.controllers.conversation.ChatActivity;
 import im.actor.sdk.controllers.conversation.messages.MessageHolder;
-import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
-import im.actor.sdk.controllers.fragment.auth.AuthActivity;
-import im.actor.sdk.controllers.fragment.group.GroupInfoActivity;
-import im.actor.sdk.controllers.fragment.profile.ProfileActivity;
-import im.actor.sdk.controllers.fragment.settings.MyProfileActivity;
-import im.actor.sdk.controllers.fragment.settings.SecuritySettingsActivity;
+import im.actor.sdk.controllers.conversation.MessagesAdapter;
+import im.actor.sdk.controllers.auth.AuthActivity;
+import im.actor.sdk.controllers.group.GroupInfoActivity;
+import im.actor.sdk.controllers.profile.ProfileActivity;
+import im.actor.sdk.controllers.settings.MyProfileActivity;
+import im.actor.sdk.controllers.settings.SecuritySettingsActivity;
 import im.actor.sdk.core.AndroidCallProvider;
 import im.actor.sdk.core.AndroidNotifications;
 import im.actor.sdk.core.AndroidPhoneBook;
@@ -76,6 +77,16 @@ public class ActorSDK {
      * Actor Messenger instance
      */
     private AndroidMessenger messenger;
+
+    /**
+     * Is Messenger Loaded
+     */
+    private boolean isLoaded;
+
+    /**
+     * Loading Lock
+     */
+    private final Object LOAD_LOCK = new Object();
 
 
     //
@@ -138,6 +149,31 @@ public class ActorSDK {
     private String twitter = "actorapp";
 
     /**
+     * Terms of service
+     */
+    private String tosUrl = null;
+
+    private String tosText = null;
+
+    /**
+     * Privacy policy
+     */
+    private String privacyUrl = null;
+
+    private String privacyText = null;
+
+    /**
+     * Fast share menu is experimental feature - disabled be default
+     */
+    private boolean fastShareEnabled = false;
+
+
+    /**
+     * Auth type - binary mask for auth type
+     */
+    private int authType = AuthActivity.AUTH_TYPE_PHONE + AuthActivity.AUTH_TYPE_EMAIL;
+
+    /**
      * Delegate
      */
     @NotNull
@@ -153,9 +189,19 @@ public class ActorSDK {
     private boolean callsEnabled = false;
 
     private ActorSDK() {
+<<<<<<< HEAD
 
         endpoints = new String[]{
                 "tcp://220.189.207.18:9070"
+=======
+        endpoints = new String[]{
+                "tls://front1-mtproto-api-rev2.actor.im@104.155.30.208",
+                "tls://front2-mtproto-api-rev2.actor.im@104.155.30.208",
+
+                "tcp://front1-mtproto-api-rev3.actor.im@104.155.30.208:443",
+                "tcp://front2-mtproto-api-rev3.actor.im@104.155.30.208:443",
+                "tcp://front3-mtproto-api-rev3.actor.im@104.155.30.208:443"
+>>>>>>> 842b482abf4bfb1ee87cc24eae4e364b76c2938c
         };
         trustedKeys = new String[]{
                 "508D39F2BBDAB7776172478939362CD5127871B60151E9B86CD6D61AD1A75849"
@@ -196,6 +242,7 @@ public class ActorSDK {
 
         this.application = application;
 
+<<<<<<< HEAD
         //
         // SDK Tools
         //
@@ -252,65 +299,148 @@ public class ActorSDK {
         if (customApplicationName != null) {
             builder.setCustomAppName(customApplicationName);
         }
+=======
+        ThreadDispatcher.pushDispatcher(Runtime::postToMainThread);
+>>>>>>> 842b482abf4bfb1ee87cc24eae4e364b76c2938c
 
-        builder.setCallsProvider(new AndroidCallProvider());
+        Runtime.dispatch(() -> {
 
-        this.messenger = new AndroidMessenger(AndroidContext.getContext(), builder.build());
+            //
+            // SDK Tools
+            //
+            ImagePipelineConfig config = ImagePipelineConfig.newBuilder(application)
+                    .setDownsampleEnabled(true)
+                    .build();
+            Fresco.initialize(application, config);
 
-        //
-        // Keep Alive
-        //
+            SmileProcessor emojiProcessor = new SmileProcessor(application);
+            ActorSystem.system().addDispatcher("voice_capture_dispatcher", 1);
 
-        if (isKeepAliveEnabled) {
-            Intent keepAliveService = new Intent(application, KeepAliveService.class);
-            PendingIntent pendingIntent = PendingIntent.getService(application, 0, keepAliveService, 0);
-            AlarmManager alarm = (AlarmManager) application.getSystemService(Context.ALARM_SERVICE);
-            alarm.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), 30 * 1000, pendingIntent);
-        }
+            //
+            // SDK Configuration
+            //
+            ConfigurationBuilder builder = new ConfigurationBuilder();
+            for (String s : endpoints) {
+                builder.addEndpoint(s);
+            }
+            for (String t : trustedKeys) {
+                builder.addTrustedKey(t);
+            }
+            builder.setPhoneBookProvider(new AndroidPhoneBook());
+            builder.setNotificationProvider(new AndroidNotifications(application));
+            builder.setDeviceCategory(DeviceCategory.MOBILE);
+            builder.setPlatformType(PlatformType.ANDROID);
+            builder.setIsEnabledGroupedChatList(false);
+            builder.setApiConfiguration(new ApiConfiguration(
+                    appName,
+                    apiAppId,
+                    apiAppKey,
+                    Devices.getDeviceName(),
+                    AndroidContext.getContext().getPackageName() + ":" + Build.SERIAL));
 
-        //
-        // Actor Push
-        //
+            //
+            // Adding Locales
+            //
+            Locale defaultLocale = Locale.getDefault();
+            Log.d(TAG, "Found Locale: " + defaultLocale.getLanguage() + "-" + defaultLocale.getCountry());
+            Log.d(TAG, "Found Locale: " + defaultLocale.getLanguage());
+            builder.addPreferredLanguage(defaultLocale.getLanguage() + "-" + defaultLocale.getCountry());
+            builder.addPreferredLanguage(defaultLocale.getLanguage());
 
-        if (actorPushEndpoint != null && delegate.useActorPush()) {
-            ActorPushRegister.registerForPush(application, actorPushEndpoint, new ActorPushRegister.Callback() {
-                @Override
-                public void onRegistered(String endpoint) {
+            //
+            // Adding TimeZone
+            //
+            String timeZone = TimeZone.getDefault().getID();
+            Log.d(TAG, "Found TimeZone: " + timeZone);
+            builder.setTimeZone(timeZone);
+
+            //
+            // App Name
+            //
+            if (customApplicationName != null) {
+                builder.setCustomAppName(customApplicationName);
+            }
+
+            //
+            // Calls Support
+            //
+            builder.setCallsProvider(new AndroidCallProvider());
+
+            //
+            // Building Messenger
+            //
+            this.messenger = new AndroidMessenger(application, builder.build());
+
+            //
+            // Keep Alive
+            //
+            if (isKeepAliveEnabled) {
+                Intent keepAliveService = new Intent(application, KeepAliveService.class);
+                PendingIntent pendingIntent = PendingIntent.getService(application, 0, keepAliveService, 0);
+                AlarmManager alarm = (AlarmManager) application.getSystemService(Context.ALARM_SERVICE);
+                alarm.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), 30 * 1000, pendingIntent);
+            }
+
+
+            //
+            // Actor Push
+            //
+            if (actorPushEndpoint != null && delegate.useActorPush()) {
+                ActorPushRegister.registerForPush(application, actorPushEndpoint, endpoint -> {
                     Log.d(TAG, "On Actor push registered: " + endpoint);
                     messenger.registerActorPush(endpoint);
+                });
+            }
+
+
+            //
+            // GCM
+            //
+            try {
+                if (pushId != 0) {
+                    final ActorPushManager pushManager = (ActorPushManager) Class.forName("im.actor.push.PushManager").newInstance();
+                    pushManager.registerPush(application);
                 }
-            });
-        }
-
-        //
-        // GCM
-        //
-
-        try {
-            if (pushId != 0) {
-                final ActorPushManager pushManager = (ActorPushManager) Class.forName("im.actor.push.PushManager").newInstance();
-                pushManager.registerPush(application);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        //
-        // Calls subscribing
-        //
-
-        messenger.getEvents().subscribe(new BusSubscriber() {
-            @Override
-            public void onBusEvent(Event event) {
-                delegate.onIncominCall(((IncomingCall) event).getCall(), ((IncomingCall) event).getUid());
+            synchronized (LOAD_LOCK) {
+                isLoaded = true;
+                LOAD_LOCK.notifyAll();
             }
-        }, IncomingCall.EVENT);
+
+            //
+            // Loading Emoji
+            //
+
+            emojiProcessor.loadEmoji();
+        });
+    }
+
+    /**
+     * Waiting for Messenger Ready
+     */
+    public void waitForReady() {
+        if (!isLoaded) {
+            synchronized (LOAD_LOCK) {
+                if (!isLoaded) {
+                    try {
+                        long start = Runtime.getActorTime();
+                        LOAD_LOCK.wait();
+                        Log.d(TAG, "Waited for startup in " + (Runtime.getActorTime() - start) + " ms");
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 
     /**
      * Call this method for staring messaging app
      *
-     * @param context
+     * @param context Current Activity
      */
     public void startMessagingApp(Activity context) {
         if (messenger.isLoggedIn()) {
@@ -559,6 +689,24 @@ public class ActorSDK {
     }
 
     /**
+     * Is fast share menu enabled
+     *
+     * @return fastShareEnabled is fast share enabled
+     */
+    public boolean isFastShareEnabled() {
+        return fastShareEnabled;
+    }
+
+    /**
+     * Setting is is fast share enabled - experimental feature, disabled by default
+     *
+     * @param fastShareEnabled
+     */
+    public void setFastShareEnabled(boolean fastShareEnabled) {
+        this.fastShareEnabled = fastShareEnabled;
+    }
+
+    /**
      * Setting is calls enabled - if enabled app will handle calls updates e.g. UpdateIncomingCall/UpdateCallSignal/UpdateCallEnded etc
      *
      * @param callsEnabled is calls enabled
@@ -602,6 +750,97 @@ public class ActorSDK {
      */
     public void setInviteUrl(String inviteUrl) {
         this.inviteUrl = inviteUrl;
+    }
+
+    /**
+     * Getting binary mask for auth type
+     *
+     * @return binary mask for auth type
+     */
+    public int getAuthType() {
+        return authType;
+    }
+
+    /**
+     * Setting binary mask for auth type
+     * available auth types are: {@link AuthActivity#AUTH_TYPE_EMAIL}, {@link AuthActivity#AUTH_TYPE_PHONE}
+     *
+     * @param authType - binary mask for auth type
+     */
+    public void setAuthType(int authType) {
+        this.authType = authType;
+    }
+
+    /**
+     * Getting terms of service url
+     *
+     * @return terms of service url
+     */
+    public String getTosUrl() {
+        return tosUrl;
+    }
+
+    /**
+     * Setting terms of service url
+     *
+     * @param tosUrl terms of service url
+     */
+    public void setTosUrl(String tosUrl) {
+        this.tosUrl = tosUrl;
+    }
+
+    /**
+     * Getting terms of service text
+     *
+     * @return terms of service text
+     */
+    public String getTosText() {
+        return tosText;
+    }
+
+    /**
+     * Setting terms of service text
+     *
+     * @param tosText terms of service text
+     */
+    public void setTosText(String tosText) {
+        this.tosText = tosText;
+    }
+
+    /**
+     * Getting privacy policy url
+     *
+     * @return privacy policy url
+     */
+    public String getPrivacyUrl() {
+        return privacyUrl;
+    }
+
+    /**
+     * Setting privacy policy url
+     *
+     * @param privacyUrl terms of service url
+     */
+    public void setPrivacyUrl(String privacyUrl) {
+        this.privacyUrl = privacyUrl;
+    }
+
+    /**
+     * Getting privacy policy text
+     *
+     * @return privacy policy text
+     */
+    public String getPrivacyText() {
+        return privacyText;
+    }
+
+    /**
+     * Setting privacy policy text
+     *
+     * @param privacyText privacy policy text
+     */
+    public void setPrivacyText(String privacyText) {
+        this.privacyText = privacyText;
     }
 
     /**

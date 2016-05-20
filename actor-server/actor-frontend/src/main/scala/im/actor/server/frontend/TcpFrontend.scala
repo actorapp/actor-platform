@@ -1,5 +1,7 @@
 package im.actor.server.frontend
 
+import java.net.InetAddress
+
 import akka.actor._
 import akka.event.Logging
 import akka.stream.Materializer
@@ -24,7 +26,7 @@ object TcpFrontend extends Frontend("tcp") {
         case (conn @ Tcp.IncomingConnection(localAddress, remoteAddress, flow)) ⇒
           log.debug("New TCP connection from {}", localAddress)
 
-          val mtProto = mtProtoBlueprint(serverKeys)
+          val mtProto = mtProtoBlueprint(serverKeys, remoteAddress.getAddress())
           flow.joinMat(mtProto)(Keep.right).run()
       })
       .run()

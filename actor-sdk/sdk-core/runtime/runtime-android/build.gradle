@@ -5,19 +5,28 @@ buildscript {
 
     dependencies {
         classpath 'com.android.tools.build:gradle:2.1.0'
+<<<<<<< HEAD
+=======
+        classpath 'me.tatarka:gradle-retrolambda:3.2.5'
+>>>>>>> 842b482abf4bfb1ee87cc24eae4e364b76c2938c
     }
 }
 
 apply plugin: 'com.android.library'
+apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '23.0.1'
+    buildToolsVersion '23.0.3'
 
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 23
     }
+}
+
+retrolambda {
+    defaultMethods true
 }
 
 android {
@@ -33,6 +42,11 @@ android {
 
     lintOptions {
         abortOnError false
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import im.actor.core.api.rpc.RequestNotifyAboutDeviceInfo;
 import im.actor.core.api.rpc.ResponseVoid;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.util.ModuleActor;
+import im.actor.core.modules.ModuleActor;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.util.JavaUtil;
@@ -23,7 +23,7 @@ public class DeviceInfoActor extends ModuleActor {
         //
         // Loading Information
         //
-        ArrayList<String> langs = new ArrayList<String>();
+        ArrayList<String> langs = new ArrayList<>();
         for (String s : context().getConfiguration().getPreferredLanguages()) {
             langs.add(s);
         }

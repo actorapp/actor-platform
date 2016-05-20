@@ -9,9 +9,9 @@ import im.actor.sdk.R;
 
 import im.actor.sdk.controllers.conversation.messages.DocHolder;
 import im.actor.sdk.controllers.conversation.messages.MessageHolder;
-import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
-import im.actor.sdk.controllers.conversation.messages.MessagesFragment;
-import im.actor.sdk.controllers.conversation.messages.PreprocessedData;
+import im.actor.sdk.controllers.conversation.MessagesAdapter;
+import im.actor.sdk.controllers.conversation.MessagesFragment;
+import im.actor.sdk.controllers.conversation.messages.preprocessor.PreprocessedData;
 import im.actor.sdk.controllers.conversation.view.BubbleContainer;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
 
@@ -35,8 +35,9 @@ public class DocumentsAdapter extends MessagesAdapter {
         }
 
         @Override
-        protected void bindData(Message message, boolean isUpdated, PreprocessedData preprocessedData) {
-            super.bindData(message, isUpdated, preprocessedData);
+        protected void bindData(Message message, long readDate, long receiveDate, boolean isUpdated, PreprocessedData preprocessedData) {
+            super.bindData(message, readDate, receiveDate, isUpdated, preprocessedData);
+
             container.hideDate();
             container.setOnClickListener((View.OnClickListener) this);
             container.setOnClickListener((BubbleContainer.OnAvatarClickListener) this);
@@ -44,5 +45,4 @@ public class DocumentsAdapter extends MessagesAdapter {
             container.setOnLongClickListener((BubbleContainer.OnAvatarLongClickListener) this);
         }
     }
-
 }

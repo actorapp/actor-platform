@@ -5,7 +5,6 @@
 import { Store } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
-import ActorClient from '../utils/ActorClient';
 
 let _state = 'updating';
 

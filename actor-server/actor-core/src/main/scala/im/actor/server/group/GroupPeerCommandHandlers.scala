@@ -15,11 +15,16 @@ trait GroupPeerCommandHandlers extends PeersImplicits {
   import GroupPeerEvents._
 
   protected def incomingMessage(state: GroupPeerState, sm: SendMessage): Unit = {
-    val senderUserId = sm.origin.id
+    val senderUserId = sm.getOrigin.id
     (withMemberIds(groupId) { (memberIds, _, optBot) ⇒
       if (canSend(memberIds, optBot, senderUserId)) {
+        val receiverIds = sm.forUserId match {
+          case Some(id) if memberIds.contains(id.value) ⇒ Seq(id.value)
+          case _                                        ⇒ memberIds - senderUserId
+        }
+
         for {
-          _ ← Future.traverse(memberIds - senderUserId) { userId ⇒
+          _ ← Future.traverse(receiverIds) { userId ⇒
             dialogExt.ackSendMessage(Peer.privat(userId), sm)
           }
         } yield {
@@ -34,20 +39,8 @@ trait GroupPeerCommandHandlers extends PeersImplicits {
     }) pipeTo sender()
   }
 
-  protected def updateCountersChanged(uc: UpdateCounters) = {
-    (withMemberIds(groupId) { (memberIds, _, _) ⇒
-      Future.traverse(memberIds - uc.origin.id) { userId ⇒
-        dialogExt.ackUpdateCounters(Peer.privat(userId), uc)
-      } map (_ ⇒ UpdateCountersAck())
-    } recover {
-      case e ⇒
-        log.error(e, "Failed to send update counters changed")
-        throw e
-    }) pipeTo sender()
-  }
-
   protected def messageReceived(state: GroupPeerState, mr: MessageReceived) = {
-    val receiverUserId = mr.origin.id
+    val receiverUserId = mr.getOrigin.id
     val canReceive = canMakeReceive(state, mr)
     ((if (canReceive) {
       withMemberIds(groupId) { (memberIds, _, _) ⇒
@@ -67,7 +60,7 @@ trait GroupPeerCommandHandlers extends PeersImplicits {
 
   protected def messageRead(state: GroupPeerState, mr: MessageRead) = {
     val withMembers = withMemberIds[Unit](groupId) _
-    val readerUserId = mr.origin.id
+    val readerUserId = mr.getOrigin.id
 
     withMembers { (_, invitedUserIds, _) ⇒
       if (invitedUserIds contains readerUserId) {
@@ -100,7 +93,7 @@ trait GroupPeerCommandHandlers extends PeersImplicits {
 
   protected def setReaction(state: GroupPeerState, sr: SetReaction): Unit = {
     withMemberIds(groupId) { (memberIds, _, _) ⇒
-      Future.traverse(memberIds - sr.origin.id) { memberId ⇒
+      Future.traverse(memberIds - sr.getOrigin.id) { memberId ⇒
         dialogExt.ackSetReaction(Peer.privat(memberId), sr)
       }
     } map (_ ⇒ SetReactionAck()) pipeTo sender()
@@ -108,7 +101,7 @@ trait GroupPeerCommandHandlers extends PeersImplicits {
 
   protected def removeReaction(state: GroupPeerState, sr: RemoveReaction): Unit = {
     withMemberIds(groupId) { (memberIds, _, _) ⇒
-      Future.traverse(memberIds - sr.origin.id) { memberId ⇒
+      Future.traverse(memberIds - sr.getOrigin.id) { memberId ⇒
         dialogExt.ackRemoveReaction(Peer.privat(memberId), sr)
       }
     } map (_ ⇒ RemoveReactionAck()) pipeTo sender()
@@ -131,9 +124,9 @@ trait GroupPeerCommandHandlers extends PeersImplicits {
     (memberIds contains senderUserId) || (optBot contains senderUserId)
 
   private def canMakeReceive(state: GroupPeerState, mr: MessageReceived): Boolean =
-    (mr.date > state.lastReceiveDate) && (state.lastSenderId != mr.origin.id)
+    (mr.date > state.lastReceiveDate) && (state.lastSenderId != mr.getOrigin.id)
 
   private def canMakeRead(state: GroupPeerState, mr: MessageRead): Boolean =
-    (mr.date > state.lastReadDate) && (state.lastSenderId != mr.origin.id)
+    (mr.date > state.lastReadDate) && (state.lastSenderId != mr.getOrigin.id)
 
 }

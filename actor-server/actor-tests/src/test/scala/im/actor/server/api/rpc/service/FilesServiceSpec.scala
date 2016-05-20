@@ -32,7 +32,7 @@ final class FilesServiceSpec
   val (user, authId, authSid, _) = createUser()
   val sessionId = createSessionId()
 
-  implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user.id, authSid)))
+  implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user.id, authSid, 42)))
 
   var uploadKey: Array[Byte] = Array.empty
 

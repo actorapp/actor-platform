@@ -1,0 +1,13 @@
+.date-divider {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 16px;
+
+  padding: 12px 32px 12px 43px;
+
+  text-transform: uppercase;
+
+  color: $havelock-blue;
+
+  @include no-select();
+}

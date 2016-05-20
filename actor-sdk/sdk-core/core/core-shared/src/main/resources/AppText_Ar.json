@@ -1,0 +1,136 @@
+{
+	"app": {
+		"name": "Actor"
+	},
+
+	"language": {
+		"code": "Ar",
+
+		"format": {
+			"time": {
+				"yesterday": "امس",
+				"now": "الان",
+				"minutes": "{minutes} دقايق",
+				"hours": "{hours} ساعات"
+			}
+		},
+
+		"file_size": {
+			"bytes": "{bytes} بايت",
+			"kbytes": "{kbytes} كيلو بايت",
+			"mbytes": "{mbytes} ميجا بايت",
+			"gbytes": "{gbytes} جيجا بايت"
+		},
+
+		"referencing": {
+			"you": "انت",
+			"thee": "انت"
+		},
+
+		"sequence": {
+			"or": ",",
+			"and": ","
+		}
+	},
+
+	"groups": {
+		"members": "{count} اعضاء"
+	},
+
+	"presence": {
+		"online": "متصل",
+		"offline": "غير متصل",
+		"now": "اخر ظهور من",
+		"today": "اخر ظهور اليوم {time}",
+		"yesterday": "اخر ظهور بالامس {time}",
+		"at_day": "اخر ظهور {date}",
+		"at_day_time": "اخر ظهور {date} على {time}",
+		"members": "{count} متصلين"
+	},
+
+	"typing": {
+		"simple": "كتابة...",
+		"user": "{user} يكتب...",
+		"group": {
+			"sequenced": "{users} يكتبون...",
+			"many": "{count} اشخاص يكتبون..."
+		}
+	},
+
+	"content": {
+
+		"unknown": "غير مدعوم",
+		"document": "مستند",
+		"photo": "صورة",
+		"video": "فيديو",
+		"audio": "Audio",
+		"contact": "Contact",
+		"location": "Location",
+		"sticker": "Sticker",
+
+		"service": {
+			"registered": {
+				"full": "{name} انضم لشبكة اكتور {app_name}",
+				"compact": "انضم لأكتور {app_name}"
+			},
+			"groups": {
+				"created": "{name} انشأ المجموعة",
+				"invited": "{name} دعى {name_added}",
+				"joined": "{name} انصم للمجموعة",
+				"kicked": "{name} ازال {name_kicked}",
+				"left": "{name} غادر",
+				"title_changed": {
+					"full":  "{name} غير الاسم الى \"{title}\"",
+					"compact": "{name} غير اسم المجموعة الى"
+				},
+				"topic_changed": {
+					"full":  "{name} changed the group topic to \"{topic}\"",
+					"compact": "{name} changed the group topic"
+				},
+				"about_changed": {
+					"full":  "{name} changed the group about to \"{about}\"",
+					"compact": "{name} changed the group about"
+				},
+				"avatar_changed": "{name} غير صورة المجموعة",
+				"avatar_removed": "{name} حذف صورة المجموعة"
+			},
+			"calls": {
+				"missed": "Missed call",
+				"ended": "Call ended"
+			}
+		}
+	},
+
+	"errors": {
+		"unknown": "Unknown error. Please, try again later.",
+		"internal": "Internal server error. Please, try again later.",
+		"phone": {
+			"empty": "Please, enter your phone number.",
+			"incorrect": "Entered phone number is invalid. Please, try again."
+		},
+		"code": {
+			"empty": "The code is invalid. Please try again.",
+			"incorrect": "Entered code is incorrect. Please, try again.",
+			"expired": "The code has expired. Please, start authentication again."
+		},
+		"groups": {
+			"already_joined": "You have already joined the group.",
+			"unable_to_join": "Unable to join the group."
+		}
+	},
+
+	"months": {
+		"january": "يناير",
+		"february": "فبراير",
+		"march": "مارس",
+		"april": "ابريل",
+		"may": "مايو",
+		"june": "يونيو",
+		"july": "يوليو",
+		"august": "اغسطس",
+		"september": "سمبتمر",
+		"october": "اكتوبر",
+		"november": "نوفمبر",
+		"december": "ديسمبر"
+	}
+}

@@ -3,81 +3,100 @@
  */
 
 import React, { Component, PropTypes } from 'react';
-import { Container } from 'flux/utils';
+import { FormattedMessage } from 'react-intl';
+import { AsyncActionStates } from '../../../constants/ActorAppConstants';
 
 import PreferencesActionCreators from '../../../actions/PreferencesActionCreators';
-
-import PreferencesStore from '../../../stores/PreferencesStore';
 
 import Stateful from '../../common/Stateful.react';
 
 class SessionItem extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  static getStores() {
-    return [PreferencesStore];
-  }
-  static calculateState = (prevState, props) => {
-    return {
-      terminateSessionState: PreferencesStore.getTerminateSessionState(props.id)
-    }
-  };
-
   static propTypes = {
     appTitle: PropTypes.string.isRequired,
     holder: PropTypes.string.isRequired,
     id: PropTypes.number.isRequired,
-    authTime: PropTypes.object.isRequired
+    authTime: PropTypes.object.isRequired,
+    terminateState: PropTypes.oneOf([
+      AsyncActionStates.PENDING,
+      AsyncActionStates.PROCESSING,
+      AsyncActionStates.SUCCESS,
+      AsyncActionStates.FAILURE
+    ]).isRequired
   };
 
-  static contextTypes = {
-    intl: PropTypes.object
-  };
+  constructor(props) {
+    super(props);
 
-  onTerminate = () => PreferencesActionCreators.terminateSession(this.props.id);
+    this.handleTerminateSession = this.handleTerminateSession.bind(this);
+  }
 
-  render() {
-    const { appTitle, holder, authTime } = this.props;
-    const { terminateSessionState } = this.state;
-    const { intl } = this.context;
+  handleTerminateSession() {
+    PreferencesActionCreators.terminateSession(this.props.id);
+  }
 
-    const currentDevice = (holder === 'THIS_DEVICE') ? (
-      <small>{intl.messages['preferencesSessionsCurrentSession']}</small>
-    ) : null;
+  renderTitle() {
+    const { appTitle } = this.props;
 
     return (
+      <div className="title">
+        {appTitle}
+        {this.renderCurrentDeviceMark()}
+      </div>
+    );
+  }
+
+  renderCurrentDeviceMark() {
+    const { holder } = this.props;
+    if (holder !== 'THIS_DEVICE') return null;
+
+    return (
+      <FormattedMessage id="preferences.security.sessions.current" tagName="small"/>
+    );
+  }
+
+  renderAuthTime() {
+    const { authTime } = this.props;
+
+    return (
+      <small>
+        <b><FormattedMessage id="preferences.security.sessions.authTime"/>:</b> {authTime.toString()}
+      </small>
+    );
+  }
+
+  renderState() {
+    const { terminateState } = this.props;
+
+    return (
+      <Stateful
+        currentState={terminateState}
+        pending={
+          <a className="session-list__session__terminate link--blue" onClick={this.handleTerminateSession}>
+            <FormattedMessage id="preferences.security.sessions.terminate"/>
+          </a>
+        }
+        processing={
+          <i className="session-list__session__terminate material-icons spin">autorenew</i>
+        }
+        success={
+          <i className="session-list__session__terminate material-icons">check</i>
+        }
+        failure={
+          <i className="session-list__session__terminate material-icons">warning</i>
+        }
+      />
+    );
+  }
+
+  render() {
+    return (
       <li className="session-list__session">
-        <div className="title">
-          {appTitle}
-          {currentDevice}
-        </div>
-
-        <small>
-          <b>{intl.messages['preferencesSessionsAuthTime']}:</b> {authTime.toString()}
-        </small>
-
-        <Stateful
-          currentState={terminateSessionState}
-          pending={
-            <a className="session-list__session__terminate link--blue" onClick={this.onTerminate}>
-              {intl.messages['preferencesSessionsTerminate']}
-            </a>
-          }
-          processing= {
-            <i className="session-list__session__terminate material-icons spin">autorenew</i>
-          }
-          success={
-            <i className="session-list__session__terminate material-icons">check</i>
-          }
-          failure={
-            <i className="session-list__session__terminate material-icons">warning</i>
-          }
-        />
+        {this.renderTitle()}
+        {this.renderAuthTime()}
+        {this.renderState()}
       </li>
     )
   }
 }
 
-export default Container.create(SessionItem, {pure: false, withProps: true});
+export default SessionItem;

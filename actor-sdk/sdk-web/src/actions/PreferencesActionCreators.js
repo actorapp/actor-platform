@@ -20,15 +20,25 @@ export default {
   },
 
   save(preferences) {
-    dispatch(ActionTypes.PREFERENCES_SAVE, {
-      preferences
-    });
+    const {
+      isSendByEnterEnabled,
+      isSoundEffectsEnabled,
+      isGroupsNotificationsEnabled,
+      isOnlyMentionNotifications,
+      isShowNotificationsTextEnabled
+    } = preferences;
+
+    ActorClient.changeSendByEnter(isSendByEnterEnabled);
+    ActorClient.changeSoundEffectsEnabled(isSoundEffectsEnabled);
+    ActorClient.changeGroupNotificationsEnabled(isGroupsNotificationsEnabled);
+    ActorClient.changeIsOnlyMentionNotifications(isOnlyMentionNotifications);
+    ActorClient.changeIsShowNotificationTextEnabled(isShowNotificationsTextEnabled);
+
+    dispatch(ActionTypes.PREFERENCES_SAVE, { preferences });
   },
 
   changeTab(tab) {
-    dispatch(ActionTypes.PREFERENCES_CHANGE_TAB, {
-      tab
-    });
+    dispatch(ActionTypes.PREFERENCES_CHANGE_TAB, { tab });
   },
 
   loadSessions() {

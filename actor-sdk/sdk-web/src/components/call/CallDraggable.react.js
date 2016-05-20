@@ -2,8 +2,7 @@
 * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
 */
 
-import React, {Component, PropTypes} from 'react';
-import { FormattedMessage } from 'react-intl';
+import React, { Component, PropTypes } from 'react';
 import Draggable from 'react-draggable';
 
 import CallBody from './CallBody.react';
@@ -29,7 +28,7 @@ class CallDraggable extends Component {
 
     return (
       <Draggable>
-        <section className="call__draggable" style={{position: 'absolute', top: 60, right: 60}}>
+        <section className="call__draggable" style={{ position: 'absolute', top: 60, right: 60 }}>
           <CallBody peerInfo={peerInfo} callState={callState} small />
           <CallControls
             callState={callState}

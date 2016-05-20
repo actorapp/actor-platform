@@ -21,7 +21,6 @@ final class ActorBotSpec
   it should "report about taken username" in takenUsername // TODO: make it independent from rcv
   it should "be found by username" in username
 
-  private lazy val dialogExt = DialogExtension(system)
   private lazy val msgService = MessagingServiceImpl()
   private lazy val contactsService = new ContactsServiceImpl
 
@@ -47,13 +46,13 @@ final class ActorBotSpec
 
     Thread.sleep(2000)
 
-    implicit val clientData = ClientData(authId, Random.nextLong(), Some(AuthData(user.id, authSid)))
+    implicit val clientData = ClientData(authId, Random.nextLong(), Some(AuthData(user.id, authSid, 42)))
 
     val botOutPeer = getOutPeer(ActorBot.UserId, authId)
 
-    whenReady(msgService.handleLoadHistory(botOutPeer, 0, None, 100)) { rsp ⇒
+    whenReady(msgService.handleLoadHistory(botOutPeer, 0, None, 100, Vector.empty)) { rsp ⇒
       inside(rsp) {
-        case Ok(ResponseLoadHistory(history, _)) ⇒
+        case Ok(ResponseLoadHistory(history, _, _, _, _)) ⇒
           history.length shouldBe 2
           val tm = history.last.message.asInstanceOf[ApiTextMessage]
           tm.text.startsWith("Yay!") shouldBe true
@@ -78,13 +77,13 @@ final class ActorBotSpec
 
     Thread.sleep(1000)
 
-    implicit val clientData = ClientData(authId, Random.nextLong(), Some(AuthData(user.id, authSid)))
+    implicit val clientData = ClientData(authId, Random.nextLong(), Some(AuthData(user.id, authSid, 42)))
 
     val botOutPeer = getOutPeer(ActorBot.UserId, authId)
 
-    whenReady(msgService.handleLoadHistory(botOutPeer, 0, None, 100)) { rsp ⇒
+    whenReady(msgService.handleLoadHistory(botOutPeer, 0, None, 100, Vector.empty)) { rsp ⇒
       inside(rsp) {
-        case Ok(ResponseLoadHistory(history, _)) ⇒
+        case Ok(ResponseLoadHistory(history, _, _, _, _)) ⇒
           history.length shouldBe 2
           val tm = history.last.message.asInstanceOf[ApiTextMessage]
           tm.text shouldBe "Username already taken"
@@ -95,11 +94,11 @@ final class ActorBotSpec
   def username() = {
     val (user, authId, authSid, _) = createUser()
 
-    implicit val clientData = ClientData(authId, Random.nextLong(), Some(AuthData(user.id, authSid)))
+    implicit val clientData = ClientData(authId, Random.nextLong(), Some(AuthData(user.id, authSid, 42)))
 
-    whenReady(contactsService.handleSearchContacts("actor")) { resp ⇒
+    whenReady(contactsService.handleSearchContacts("actor", Vector.empty)) { resp ⇒
       inside(resp) {
-        case Ok(ResponseSearchContacts(users)) ⇒
+        case Ok(ResponseSearchContacts(users, _)) ⇒
           users.length shouldBe 1
       }
     }

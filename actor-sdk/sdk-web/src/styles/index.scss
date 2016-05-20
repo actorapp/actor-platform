@@ -1,6 +1,7 @@
 @charset "UTF-8";
 
 @import 'chrome-font-fix';
+@import 'chrome-flexbox-fix';
 @import 'vendor';
 
 @import 'variables';
@@ -12,12 +13,11 @@
 @import 'pace';
 
 @import 'buttons';
-@import 'avatar';
 
 @import 'deactivated';
 @import 'login';
-@import 'sidebar';
 @import 'toolbar';
+
 @import 'messages';
 @import 'status';
 @import 'compose';
@@ -26,7 +26,7 @@
 @import 'typing';
 @import 'emoji';
 @import 'preloader';
-@import 'modals';
+// @import 'modals';
 @import 'forms';
 @import 'lightbox';
 @import 'banner';
@@ -36,7 +36,14 @@
 @import 'scrollbars';
 @import 'archive';
 @import 'call';
+@import 'tooltip';
+@import 'sticker';
+@import 'chat/index';
+@import 'modals/index';
 
 @import 'responsive';
 
 @import 'logger';
+
+@import 'themes/dark';
+@import 'components/index';

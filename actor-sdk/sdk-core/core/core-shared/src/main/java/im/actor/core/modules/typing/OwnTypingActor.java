@@ -10,7 +10,7 @@ import im.actor.core.api.rpc.RequestStopTyping;
 import im.actor.core.api.rpc.RequestTyping;
 import im.actor.core.entity.Peer;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.util.ModuleActor;
+import im.actor.core.modules.ModuleActor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;
@@ -23,12 +23,7 @@ import im.actor.runtime.annotations.Verified;
 public class OwnTypingActor extends ModuleActor {
 
     public static ActorRef get(final ModuleContext context) {
-        return ActorSystem.system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public OwnTypingActor create() {
-                return new OwnTypingActor(context);
-            }
-        }), "actor/typing/own");
+        return ActorSystem.system().actorOf("actor/typing/own", () -> new OwnTypingActor(context));
     }
 
     private static final long TYPING_DELAY = 3000L;
@@ -104,7 +99,7 @@ public class OwnTypingActor extends ModuleActor {
         } else if (message instanceof AbortTyping) {
             onAbortTyping(((AbortTyping) message).getPeer());
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 

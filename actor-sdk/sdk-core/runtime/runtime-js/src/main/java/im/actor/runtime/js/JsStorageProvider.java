@@ -5,11 +5,9 @@
 package im.actor.runtime.js;
 
 import im.actor.runtime.StorageRuntime;
-import im.actor.runtime.js.storage.JsIndexStorage;
 import im.actor.runtime.js.storage.JsKeyValueStorage;
 import im.actor.runtime.js.storage.JsListStorage;
 import im.actor.runtime.js.storage.JsPreferencesStorage;
-import im.actor.runtime.storage.IndexStorage;
 import im.actor.runtime.storage.KeyValueStorage;
 import im.actor.runtime.storage.ListStorage;
 import im.actor.runtime.storage.PreferencesStorage;
@@ -25,11 +23,6 @@ public class JsStorageProvider implements StorageRuntime {
     @Override
     public PreferencesStorage createPreferencesStorage() {
         return new JsPreferencesStorage(storage);
-    }
-
-    @Override
-    public IndexStorage createIndex(String name) {
-        return new JsIndexStorage(name, storage);
     }
 
     @Override

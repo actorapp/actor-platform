@@ -161,8 +161,11 @@
         }
         input {
           box-shadow: 0 1px 0 0 rgba(white, .15);
+          color: white;
         }
-
+        &--disabled {
+          border-bottom: 1px dotted rgba(white, .1);
+        }
         &--focus {
           label {
             color: rgba(white, .8) !important;

@@ -1,81 +1,109 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-
 <!--
   ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
   -->
-
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:descendantFocusability="beforeDescendants"
-    android:fillViewport="true"
-    android:gravity="center_horizontal"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/email_login_form"
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingLeft="24dp"
-        android:paddingRight="24dp"
-        android:paddingTop="18dp">
+        android:layout_height="match_parent"
+        android:descendantFocusability="beforeDescendants"
+        android:fillViewport="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/sendHint"
+        <LinearLayout
+            android:id="@+id/sign_in_login_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/auth_code_phone_hint"
-            android:textSize="16sp" />
-
-        <EditText
-            android:id="@+id/et_sms_code_enter"
-            android:layout_width="232dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="24dp"
-            android:gravity="center"
-            android:hint="@string/auth_code_sms_hint"
-            android:imeOptions="actionGo"
-            android:inputType="number"
-            android:textSize="18sp" />
-
-        <FrameLayout
-            android:id="@+id/button_confirm_sms_code"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="24dp"
-            android:background="@drawable/shadow_square_1">
+            android:orientation="vertical"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="8dp">
 
             <TextView
-                android:id="@+id/button_confirm_sms_code_text"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:background="@drawable/btn_primary"
+                android:id="@+id/sign_in_login_hint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center"
-                android:minWidth="88dp"
-                android:paddingLeft="24dp"
-                android:paddingRight="24dp"
-                android:text="@string/auth_code_done"
-                android:textSize="15sp" />
-        </FrameLayout>
+                android:lineSpacingMultiplier="1.1"
+                android:text="@string/sign_in_hint"
+                android:textSize="16sp" />
 
-        <Button
-            android:id="@+id/button_edit_phone"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:orientation="horizontal"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp">
+
+
+                <EditText
+                    android:id="@+id/tv_sign_in"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="12dp"
+                    android:hint="@string/sign_in_edit_text_hint"
+                    android:imeOptions="actionGo"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textColorHint="#a6a6a6" />
+
+            </LinearLayout>
+
+
+            <Button
+                android:visibility="gone"
+                android:id="@+id/button_sign_up"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:background="@null"
+                android:paddingLeft="26dp"
+                android:paddingRight="26dp"
+                android:text="@string/tour_sign_up"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/div_size" />
+
+    <FrameLayout
+        android:id="@+id/button_continue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/shadow_square_1">
+
+        <TextView
+            android:id="@+id/button_continue_text"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="8dp"
-            android:background="@null"
-            android:text="@string/auth_code_wrong_number"
-            android:textSize="14sp" />
+            android:layout_height="48dp"
+            android:background="@drawable/btn_primary"
+            android:gravity="center"
+            android:minWidth="88dp"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            android:text="@string/tour_sign_in"
+            android:textSize="15sp" />
+    </FrameLayout>
 
-    </LinearLayout>
 
-</ScrollView>
+</LinearLayout>
+
+
+

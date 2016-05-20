@@ -59,7 +59,7 @@ object UserErrors {
   final case class BotCommandAlreadyExists(slashCommand: String)
     extends UserError(s"Bot command already exists: $slashCommand")
 
-  final case object ContactNotFound extends UserError("Contact not found")
+  case object ContactNotFound extends UserError("Contact not found")
 
 }
 
@@ -158,8 +158,7 @@ private[user] trait UserCommandHandlers {
         val update = UpdateUserNameChanged(userId, name)
         for {
           relatedUserIds ← getRelations(userId)
-          _ ← seqUpdatesExt.broadcastSingleUpdate(relatedUserIds, update)
-          seqstate ← seqUpdatesExt.deliverSingleUpdate(user.id, update)
+          (seqstate, _) ← seqUpdatesExt.broadcastOwnSingleUpdate(userId, relatedUserIds, update)
           _ ← db.run(UserRepo.setName(userId, name))
         } yield seqstate
       }
@@ -295,10 +294,8 @@ private[user] trait UserCommandHandlers {
 
   protected def addBotCommand(user: UserState, rawCommand: BotCommand): Unit = {
     val command = rawCommand.copy(slashCommand = rawCommand.slashCommand.trim)
-    def isValid(command: BotCommand) = {
-      val slashCommand = command.slashCommand
-      slashCommand.nonEmpty && slashCommand.matches("[A-Za-z]*") && slashCommand.length < 32
-    }
+    def isValid(command: BotCommand) = command.slashCommand.matches("^[0-9a-zA-Z_]{2,32}")
+
     if (user.botCommands.exists(_.slashCommand == command.slashCommand)) {
       sender() ! Status.Failure(BotCommandAlreadyExists(command.slashCommand))
     } else {
@@ -329,6 +326,30 @@ private[user] trait UserCommandHandlers {
       sender() ! RemoveBotCommandAck()
     }
 
+  protected def addExt(user: UserState, ext: UserExt) = {
+    persist(UserEvents.ExtAdded(now(), ext)) { e ⇒
+      val newState = updatedState(e, user)
+      context become working(newState)
+      val update = UpdateUserExtChanged(userId, Some(extToApi(newState.ext)))
+      (for {
+        relatedUserIds ← getRelations(user.id)
+        _ ← seqUpdatesExt.broadcastSingleUpdate(relatedUserIds + user.id, update)
+      } yield AddExtAck()) pipeTo sender()
+    }
+  }
+
+  protected def removeExt(user: UserState, key: String) = {
+    persist(UserEvents.ExtRemoved(now(), key)) { e ⇒
+      val newState = updatedState(e, user)
+      context become working(newState)
+      val update = UpdateUserExtChanged(userId, Some(extToApi(newState.ext)))
+      (for {
+        relatedUserIds ← getRelations(user.id)
+        _ ← seqUpdatesExt.broadcastSingleUpdate(relatedUserIds + user.id, update)
+      } yield RemoveExtAck()) pipeTo sender()
+    }
+  }
+
   protected def updateAvatar(user: UserState, avatarOpt: Option[Avatar]): Unit = {
     persistReply(UserEvents.AvatarUpdated(now(), avatarOpt), user) { evt ⇒
       val avatarData = avatarOpt map (getAvatarData(AvatarData.OfUser, user.id, _)) getOrElse AvatarData.empty(AvatarData.OfUser, user.id.toLong)
@@ -342,15 +363,6 @@ private[user] trait UserCommandHandlers {
         relatedUserIds ← relationsF
         (seqstate, _) ← seqUpdatesExt.broadcastOwnSingleUpdate(user.id, relatedUserIds, update)
       } yield UpdateAvatarAck(avatarOpt, seqstate)
-    }
-  }
-
-  protected def notifyDialogsChanged(user: UserState): Unit = {
-    deferStashingReply(UserEvents.DialogsChanged(now()), user) { _ ⇒
-      for {
-        shortDialogs ← dialogExt.fetchGroupedDialogShorts(user.id)
-        seqstate ← seqUpdatesExt.deliverSingleUpdate(user.id, UpdateChatGroupsChanged(shortDialogs), reduceKey = Some("chat_groups_changed"))
-      } yield seqstate
     }
   }
 

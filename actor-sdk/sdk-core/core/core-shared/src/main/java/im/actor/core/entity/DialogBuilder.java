@@ -4,13 +4,11 @@
 
 package im.actor.core.entity;
 
-// Disabling Bounds checks for speeding up calculations
-
-/*-[
-#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
-]-*/
-
+/**
+ * Dialog Builder used for building new Dialog entities or mutating old one
+ */
 public class DialogBuilder {
+
     private Peer peer;
     private long sortKey;
     private String dialogTitle;
@@ -19,10 +17,11 @@ public class DialogBuilder {
     private long rid;
     private ContentType messageType;
     private String text;
-    private MessageState status;
     private int senderId;
     private long time;
     private int relatedUid = 0;
+    private Long knownReadDate;
+    private Long knownReceiveDate;
 
     public DialogBuilder() {
 
@@ -37,10 +36,11 @@ public class DialogBuilder {
         rid = dialog.getRid();
         messageType = dialog.getMessageType();
         text = dialog.getText();
-        status = dialog.getStatus();
         senderId = dialog.getSenderId();
         time = dialog.getDate();
         relatedUid = dialog.getRelatedUid();
+        knownReadDate = dialog.getKnownReadDate();
+        knownReceiveDate = dialog.getKnownReceiveDate();
     }
 
     public DialogBuilder setPeer(Peer peer) {
@@ -78,11 +78,6 @@ public class DialogBuilder {
         return this;
     }
 
-    public DialogBuilder setStatus(MessageState status) {
-        this.status = status;
-        return this;
-    }
-
     public DialogBuilder setSenderId(int senderId) {
         this.senderId = senderId;
         return this;
@@ -103,7 +98,22 @@ public class DialogBuilder {
         return this;
     }
 
+    public DialogBuilder updateKnownReadDate(Long knownReadDate) {
+        if (knownReadDate != null && (this.knownReadDate == null || this.knownReadDate < knownReadDate)) {
+            this.knownReadDate = knownReadDate;
+        }
+        return this;
+    }
+
+    public DialogBuilder updateKnownReceiveDate(Long knownReceiveDate) {
+        if (knownReceiveDate != null && (this.knownReceiveDate == null || this.knownReceiveDate < knownReceiveDate)) {
+            this.knownReceiveDate = knownReceiveDate;
+        }
+        return this;
+    }
+
     public Dialog createDialog() {
-        return new Dialog(peer, sortKey, dialogTitle, dialogAvatar, unreadCount, rid, messageType, text, status, senderId, time, relatedUid);
+        return new Dialog(peer, sortKey, dialogTitle, dialogAvatar, unreadCount, rid, messageType,
+                text, senderId, time, relatedUid, knownReadDate, knownReceiveDate);
     }
 }

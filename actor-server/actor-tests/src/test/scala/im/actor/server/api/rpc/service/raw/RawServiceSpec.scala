@@ -36,7 +36,7 @@ class RawServiceSpec
   RawApiExtension(system).register("dictionary", new DictionaryService(system))
 
   val (user, authId, authSid, _) = createUser()
-  implicit val clientData: ClientData = ClientData(authId, createSessionId(), Some(AuthData(user.id, authSid)))
+  implicit val clientData: ClientData = ClientData(authId, createSessionId(), Some(AuthData(user.id, authSid, 42)))
 
   def e1() = {
     whenReady(service.handleRawRequest("maps", "getGeo", None)) { resp ⇒

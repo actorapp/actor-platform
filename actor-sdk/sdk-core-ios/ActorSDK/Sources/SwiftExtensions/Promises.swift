@@ -7,12 +7,7 @@ import MBProgressHUD
 
 extension ARPromise {
     
-    func done() {
-        self.done(MainThreadPromiseDispatcher())
-    }
-    
     func startUserAction(ignore: [String] = []) -> ARPromise {
-        done()
         
         let window = UIApplication.sharedApplication().windows[1]
         let hud = MBProgressHUD(window: window)
@@ -57,18 +52,8 @@ class PromiseConsumer<T>: NSObject, ARConsumer {
     init(closure: (T!) -> ()) {
         self.closure = closure
     }
-    
-    
-    func applyWithId(t: AnyObject!) {
-        closure(t as! T)
-    }
-}
 
-class MainThreadPromiseDispatcher: ARPromiseDispatcher {
-    
-    override func dispatchWithARPromise(promise: ARPromise!, withJavaLangRunnable runnable: JavaLangRunnable!) {
-        dispatchOnUi {
-            runnable.run()
-        }
+    func applyWithId(t: AnyObject!) {
+        closure(t as? T)
     }
 }

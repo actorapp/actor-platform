@@ -44,7 +44,6 @@
 
 @mixin no-select() {
   user-select: none;
-  cursor: default !important;
 }
 
 @mixin textarea() {
@@ -92,4 +91,4 @@
   min-width: 650px;
   height: 100%;
   min-height: 400px;
-};
+}

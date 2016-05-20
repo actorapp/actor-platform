@@ -8,9 +8,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <im.actor.sdk.controllers.conversation.view.ChatBackgroundView
+    <ImageView
+        android:id="@+id/chatBackgroundView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop" />
 
     <im.actor.sdk.controllers.conversation.view.ChatRecyclerView
         android:id="@+id/collection"

@@ -4,6 +4,7 @@
 
 import { isFunction } from 'lodash';
 import React, { Component, PropTypes } from 'react';
+import { FormattedMessage } from 'react-intl';
 
 import DefaultTyping from './TypingSection.react';
 import DefaultCompose from './ComposeSection.react';
@@ -14,7 +15,14 @@ class DialogFooter extends Component {
   };
 
   static propTypes = {
-    isMember: PropTypes.bool.isRequired
+    info: PropTypes.object.isRequired,
+    isMember: PropTypes.bool.isRequired,
+    onUnblock: PropTypes.func.isRequired,
+    onStart: PropTypes.func.isRequired
+  };
+
+  static defaultProps = {
+    isBlocked: false
   };
 
   constructor(props, context) {
@@ -24,7 +32,7 @@ class DialogFooter extends Component {
     if (dialog && !isFunction(dialog)) {
       this.components = {
         TypingSection: dialog.typing || DefaultTyping,
-        ComposeSection: dialog.compose || DefaultCompose,
+        ComposeSection: dialog.compose || DefaultCompose
       };
     } else {
       this.components = {
@@ -35,10 +43,31 @@ class DialogFooter extends Component {
   }
 
   render() {
-    if (!this.props.isMember) {
+    const { info, isMember, onUnblock, onStart } = this.props;
+    if (!isMember) {
       return (
-        <footer className="dialog__footer dialog__footer--disabled row center-xs middle-xs">
-          <h3>You are not a member</h3>
+        <footer className="chat__footer chat__footer--disabled">
+          <FormattedMessage id="compose.notMember" />
+        </footer>
+      );
+    }
+
+    if (info.isBlocked) {
+      return (
+        <footer className="chat__footer chat__footer--disabled">
+          <button className="button button--flat" onClick={onUnblock}>
+            <FormattedMessage id="compose.unblock" />
+          </button>
+        </footer>
+      );
+    }
+
+    if (info.isBot && !info.isStarted) {
+      return (
+        <footer className="chat__footer chat__footer--disabled">
+          <button className="button button--flat" onClick={onStart}>
+            <FormattedMessage id="compose.start" />
+          </button>
         </footer>
       );
     }
@@ -46,7 +75,7 @@ class DialogFooter extends Component {
     const { TypingSection, ComposeSection } = this.components;
 
     return (
-      <footer className="dialog__footer">
+      <footer className="chat__footer">
         <TypingSection />
         <ComposeSection />
       </footer>

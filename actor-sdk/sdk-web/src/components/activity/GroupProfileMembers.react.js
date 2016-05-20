@@ -2,10 +2,8 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import { map } from 'lodash';
 import React, { Component, PropTypes } from 'react';
-import ReactMixin from 'react-mixin';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
+import { shouldComponentUpdate } from 'react-addons-pure-render-mixin';
 
 import GroupMember from '../activity/GroupMember.react';
 
@@ -17,21 +15,25 @@ class GroupProfileMembers extends Component {
 
   constructor(props) {
     super(props);
+
+    this.shouldComponentUpdate = shouldComponentUpdate.bind(this);
+  }
+
+  renderMembers() {
+    const { groupId, members } = this.props;
+
+    return members.map((member) => (
+      <GroupMember {...member} gid={groupId} key={member.peerInfo.peer.key} />
+    ));
   }
 
   render() {
-    const { groupId, members } = this.props;
-
-    const membersList = map(members, (member, index) => <GroupMember {...member} gid={groupId} key={index}/>);
-
     return (
-        <ul className="group_profile__members__list">
-          {membersList}
-        </ul>
+      <ul className="group_profile__members__list">
+        {this.renderMembers()}
+      </ul>
     );
   }
 }
-
-ReactMixin.onClass(GroupProfileMembers, PureRenderMixin);
 
 export default GroupProfileMembers;

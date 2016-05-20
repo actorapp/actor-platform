@@ -30,12 +30,14 @@ message SessionEnvelope {
 message HandleMessageBox {
     option (scalapb.message).extends = "im.actor.server.session.SessionMessage";
     required bytes message_box_bytes = 1;
+    optional bytes remote_addr = 2 [(scalapb.field).type = "java.net.InetAddress"];
 }
 
 message AuthorizeUser {
     option (scalapb.message).extends = "im.actor.server.session.SessionMessage";
     required int32 user_id = 1;
     required int32 auth_sid = 2;
+    required int32 app_id = 3;
 }
 
 message AuthorizeUserAck {

@@ -110,12 +110,7 @@ public class SettingsModule extends AbsModule {
     }
 
     public void run() {
-        settingsSync = ActorSystem.system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public SettingsSyncActor create() {
-                return new SettingsSyncActor(context());
-            }
-        }), "actor/settings");
+        settingsSync = ActorSystem.system().actorOf("actor/settings", () -> new SettingsSyncActor(context()));
     }
 
 

@@ -35,12 +35,7 @@ public class ReceiverActor extends Actor {
     private static final String TAG = "ProtoReceiver";
 
     public static ActorRef receiver(final MTProto proto) {
-        return ActorSystem.system().actorOf(new ActorSelection(Props.create(new ActorCreator() {
-            @Override
-            public ReceiverActor create() {
-                return new ReceiverActor(proto);
-            }
-        }).changeDispatcher("network"), proto.getActorPath() + "/receiver"));
+        return ActorSystem.system().actorOf(proto.getActorPath() + "/receiver", Props.create(() -> new ReceiverActor(proto)));
     }
 
     private static final int MAX_RECEIVED_BUFFER = 1000;
@@ -71,7 +66,7 @@ public class ReceiverActor extends Actor {
         if (message instanceof ProtoMessage) {
             onReceive((ProtoMessage) message);
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 
@@ -118,13 +113,13 @@ public class ReceiverActor extends Actor {
             } else if (obj instanceof MTRpcResponse) {
                 MTRpcResponse responseBox = (MTRpcResponse) obj;
                 // Forget messages
-                sender.send(new PusherActor.ForgetMessage(responseBox.getMessageId()));
+                sender.send(new PusherActor.ForgetMessage(responseBox.getMessageId(), true));
                 proto.getCallback().onRpcResponse(responseBox.getMessageId(), responseBox.getPayload());
             } else if (obj instanceof MessageAck) {
                 MessageAck ack = (MessageAck) obj;
 
                 for (long ackMsgId : ack.messagesIds) {
-                    sender.send(new PusherActor.ForgetMessage(ackMsgId));
+                    sender.send(new PusherActor.ForgetMessage(ackMsgId, false));
                 }
             } else if (obj instanceof MTPush) {
                 MTPush box = (MTPush) obj;
@@ -134,14 +129,14 @@ public class ReceiverActor extends Actor {
                 if (!receivedMessages.contains(unsent.getResponseMessageId())) {
                     disableConfirm = true;
                     sender.send(new PusherActor.SendMessage(MTUids.nextId(),
-                            new RequestResend(unsent.getMessageId()).toByteArray()));
+                            new RequestResend(unsent.getMessageId()).toByteArray(), true));
                 }
             } else if (obj instanceof UnsentMessage) {
                 UnsentMessage unsent = (UnsentMessage) obj;
                 if (!receivedMessages.contains(unsent.getMessageId())) {
                     disableConfirm = true;
                     sender.send(new PusherActor.SendMessage(MTUids.nextId(),
-                            new RequestResend(unsent.getMessageId()).toByteArray()));
+                            new RequestResend(unsent.getMessageId()).toByteArray(), false));
                 }
             } else if (obj instanceof AuthIdInvalid) {
                 proto.getCallback().onAuthKeyInvalidated(proto.getAuthId());

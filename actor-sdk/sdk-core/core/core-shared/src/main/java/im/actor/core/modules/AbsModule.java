@@ -4,9 +4,19 @@
 
 package im.actor.core.modules;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import im.actor.core.api.ApiGroupOutPeer;
 import im.actor.core.api.ApiOutPeer;
 import im.actor.core.api.ApiPeer;
 import im.actor.core.api.ApiPeerType;
+import im.actor.core.api.ApiUserOutPeer;
+import im.actor.core.api.rpc.RequestEditUserLocalName;
+import im.actor.core.api.rpc.RequestGetReferencedEntitites;
+import im.actor.core.api.rpc.ResponseSeq;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
@@ -17,35 +27,42 @@ import im.actor.core.network.RpcException;
 import im.actor.core.network.parser.Request;
 import im.actor.core.network.parser.Response;
 import im.actor.runtime.actors.ActorRef;
+import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.function.Function;
+import im.actor.runtime.function.Tuple2;
+import im.actor.runtime.mtproto.ManagedConnection;
+import im.actor.runtime.promise.Promise;
+import im.actor.runtime.promise.PromiseFunc;
+import im.actor.runtime.promise.PromiseResolver;
+import im.actor.runtime.promise.Promises;
+import im.actor.runtime.promise.PromisesArray;
 import im.actor.runtime.storage.KeyValueEngine;
 import im.actor.runtime.storage.KeyValueStorage;
 import im.actor.runtime.storage.PreferencesStorage;
 
 public abstract class AbsModule {
 
+    public static final int RPC_TIMEOUT = (int) (1.1 * ManagedConnection.CONNECTION_TIMEOUT);
+
     public static final String STORAGE_DIALOGS = "dialogs";
-    public static final String STORAGE_ARCHIVED_DIALOGS = "dialogs_archived";
-    public static final String STORAGE_DIALOGS_DESC = "dialogs_desc";
     public static final String STORAGE_USERS = "users";
-    public static final String STORAGE_STICKER_PACKS = "sticker_packs";
-    public static final String STORAGE_STICKERS = "stickers";
-    public static final String STORAGE_STICKER_ALL_PACKS = "sticker_all_packs";
     public static final String STORAGE_GROUPS = "groups";
     public static final String STORAGE_DOWNLOADS = "downloads";
     public static final String STORAGE_CONTACTS = "contacts";
+    public static final String STORAGE_PHONE_BOOK = "phone_book";
     public static final String STORAGE_NOTIFICATIONS = "notifications";
     public static final String STORAGE_SEARCH = "search";
 
     public static final String STORAGE_BOOK_IMPORT = "book_import";
 
+    public static final String STORAGE_CHAT_STATES = "chat_states";
     public static final String STORAGE_CHAT_PREFIX = "chat_";
-    public static final String STORAGE_CHAT_MEDIA_PREFIX = "chat_media_";
     public static final String STORAGE_CHAT_DOCS_PREFIX = "chat_docs_";
-    public static final String STORAGE_CHAT_CUSTOM_PREFIX = "chat_custom_";
-    public static final String STORAGE_CHAT_IN = "chat_pending";
-    public static final String STORAGE_CHAT_OUT = "chat_pending_out";
     public static final String STORAGE_CURSOR = "chat_cursor";
 
+    public static final String STORAGE_BLOB = "blob";
+
+    public static final long BLOB_DIALOGS_ACTIVE = 0;
 
     private ModuleContext context;
 
@@ -69,36 +86,8 @@ public abstract class AbsModule {
         return context().getMessagesModule().getSendMessageActor();
     }
 
-    public ActorRef dialogsActor() {
-        return context().getMessagesModule().getDialogsActor();
-    }
-
     public ActorRef stickersActor() {
         return context().getStickersModule().getStickersActor();
-    }
-
-    public ActorRef dialogsHistoryActor() {
-        return context().getMessagesModule().getDialogsHistoryActor();
-    }
-
-    public ActorRef archivedDialogsActor() {
-        return context().getMessagesModule().getArchivedDialogsActor();
-    }
-
-    public ActorRef ownReadActor() {
-        return context().getMessagesModule().getOwnReadActor();
-    }
-
-    public ActorRef plainReceiveActor() {
-        return context().getMessagesModule().getPlainReceiverActor();
-    }
-
-    public ActorRef conversationActor(Peer peer) {
-        return context().getMessagesModule().getConversationActor(peer);
-    }
-
-    public ActorRef conversationHistoryActor(Peer peer) {
-        return context().getMessagesModule().getConversationHistoryActor(peer);
     }
 
     public PreferencesStorage preferences() {
@@ -109,11 +98,15 @@ public abstract class AbsModule {
         return context.getAuthModule().myUid();
     }
 
-    public <T extends Response> void request(Request<T> request, RpcCallback<T> callback) {
-        context.getActorApi().request(request, callback);
+    public <T extends Response> void request(Request<T> request, RpcCallback<T> callback, long timeout) {
+        context.getActorApi().request(request, callback, timeout);
     }
 
-    public <T extends Response> void request(Request<T> request) {
+    public <T extends Response> void request(Request<T> request, RpcCallback<T> callback) {
+        request(request, callback, 0);
+    }
+
+    public <T extends Response> void request(Request<T> request, long timeout) {
         context.getActorApi().request(request, new RpcCallback<T>() {
             @Override
             public void onResult(T response) {
@@ -124,7 +117,27 @@ public abstract class AbsModule {
             public void onError(RpcException e) {
 
             }
+        }, timeout);
+    }
+
+    public <T extends Response> Promise<T> api(Request<T> request) {
+        return new Promise<>((PromiseFunc<T>) resolver -> {
+            request(request, new RpcCallback<T>() {
+                @Override
+                public void onResult(T response) {
+                    resolver.result(response);
+                }
+
+                @Override
+                public void onError(RpcException e) {
+                    resolver.error(e);
+                }
+            });
         });
+    }
+
+    public <T extends Response> void request(Request<T> request) {
+        request(request, 0);
     }
 
     public KeyValueEngine<User> users() {
@@ -145,7 +158,7 @@ public abstract class AbsModule {
         }
     }
 
-    public ApiOutPeer buildApiOutPeer(Peer peer) {
+    public ApiOutPeer getApiOutPeer(Peer peer) {
         if (peer.getPeerType() == PeerType.PRIVATE) {
             return new ApiOutPeer(ApiPeerType.PRIVATE, peer.getPeerId(),
                     users().getValue(peer.getPeerId()).getAccessHash());
@@ -157,15 +170,20 @@ public abstract class AbsModule {
         }
     }
 
-    public boolean isValidPeer(Peer peer) {
-        if (peer.getPeerType() == PeerType.PRIVATE) {
-            return users().getValue(peer.getPeerId()) != null;
-        } else if (peer.getPeerType() == PeerType.GROUP) {
-            return groups().getValue(peer.getPeerId()) != null;
-        }
-        return false;
+    public Promise<ApiOutPeer> buildOutPeer(Peer peer) {
+        return new Promise<>((PromiseFunc<ApiOutPeer>) resolver -> {
+            if (peer.getPeerType() == PeerType.PRIVATE) {
+                users().getValueAsync(peer.getPeerId())
+                        .map(user -> new ApiOutPeer(ApiPeerType.PRIVATE, user.getUid(), user.getAccessHash()))
+                        .pipeTo(resolver);
+            } else if (peer.getPeerType() == PeerType.GROUP) {
+                groups().getValueAsync(peer.getPeerId())
+                        .map(group -> new ApiOutPeer(ApiPeerType.GROUP, group.getGroupId(), group.getAccessHash()))
+                        .pipeTo(resolver);
+            } else {
+                throw new RuntimeException("Unknown peer: " + peer);
+            }
+        });
     }
-
-
 }
 

@@ -15,6 +15,8 @@ import im.actor.core.api.ApiMessage;
 import im.actor.core.api.ApiServiceEx;
 import im.actor.core.api.ApiServiceExChangedAvatar;
 import im.actor.core.api.ApiServiceExChangedTitle;
+import im.actor.core.api.ApiServiceExChangedTopic;
+import im.actor.core.api.ApiServiceExChangedAbout;
 import im.actor.core.api.ApiServiceExContactRegistered;
 import im.actor.core.api.ApiServiceExGroupCreated;
 import im.actor.core.api.ApiServiceExPhoneCall;
@@ -34,7 +36,6 @@ import im.actor.core.entity.content.internal.LocalDocument;
 import im.actor.core.entity.content.internal.LocalPhoto;
 import im.actor.core.entity.content.internal.LocalVideo;
 import im.actor.core.entity.content.internal.LocalVoice;
-import im.actor.core.entity.Sticker;
 import im.actor.runtime.bser.BserParser;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
@@ -50,7 +51,7 @@ import im.actor.runtime.json.JSONObject;
 
 public abstract class AbsContent {
 
-    private int updatedCounter = 0;
+    int updatedCounter = 0;
 
     public static byte[] serialize(AbsContent content) throws IOException {
         DataOutput dataOutput = new DataOutput();
@@ -62,7 +63,7 @@ public abstract class AbsContent {
         return dataOutput.toByteArray();
     }
 
-    public static AbsContent fromMessage(ApiMessage message) throws IOException {
+    public static AbsContent fromMessage(ApiMessage message) {
         return convertData(new ContentRemoteContainer(message));
     }
 
@@ -73,12 +74,12 @@ public abstract class AbsContent {
         if (reader.getBool(32, false)) {
             container = AbsContentContainer.loadContainer(reader.getBytes(33));
         } else {
-            throw new IOException("Unsupported obsolete format");
+            throw new RuntimeException("Unsupported obsolete format");
         }
         return convertData(container);
     }
 
-    protected static AbsContent convertData(AbsContentContainer container) throws IOException {
+    protected static AbsContent convertData(AbsContentContainer container) {
 
         if (container instanceof ContentLocalContainer) {
             ContentLocalContainer localContainer = (ContentLocalContainer) container;
@@ -92,7 +93,7 @@ public abstract class AbsContent {
             } else if (content instanceof LocalDocument) {
                 return new DocumentContent(localContainer);
             } else {
-                throw new IOException("Unknown type");
+                throw new RuntimeException("Unknown type");
             }
         } else if (container instanceof ContentRemoteContainer) {
             ContentRemoteContainer remoteContainer = (ContentRemoteContainer) container;
@@ -117,6 +118,10 @@ public abstract class AbsContent {
                         return new ServiceUserRegistered(remoteContainer);
                     } else if (ext instanceof ApiServiceExChangedTitle) {
                         return new ServiceGroupTitleChanged(remoteContainer);
+                    } else if (ext instanceof ApiServiceExChangedTopic) {
+                        return new ServiceGroupTopicChanged(remoteContainer);
+                    } else if (ext instanceof ApiServiceExChangedAbout) {
+                        return new ServiceGroupAboutChanged(remoteContainer);
                     } else if (ext instanceof ApiServiceExChangedAvatar) {
                         return new ServiceGroupAvatarChanged(remoteContainer);
                     } else if (ext instanceof ApiServiceExGroupCreated) {
@@ -156,7 +161,7 @@ public abstract class AbsContent {
             // Fallback
             return new UnsupportedContent(remoteContainer);
         } else {
-            throw new IOException("Unknown type");
+            throw new RuntimeException("Unknown type");
         }
     }
 
@@ -182,12 +187,12 @@ public abstract class AbsContent {
         this.contentContainer = contentContainer;
     }
 
-
     public int getUpdatedCounter() {
         return updatedCounter;
     }
 
-    public void incrementUpdatedCounter(int oldCounter) {
+    public AbsContent incrementUpdatedCounter(int oldCounter) {
         updatedCounter = ++oldCounter;
+        return this;
     }
 }

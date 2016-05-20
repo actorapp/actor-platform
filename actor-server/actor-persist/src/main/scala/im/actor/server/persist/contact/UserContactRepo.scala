@@ -22,11 +22,8 @@ object UserContactRepo {
   val contacts = TableQuery[UserContactTable]
   val active = contacts.filter(_.isDeleted === false)
 
-  def byPK(ownerUserId: Int, contactUserId: Int) =
-    contacts.filter(c ⇒ c.ownerUserId === ownerUserId && c.contactUserId === contactUserId)
-
   private def byOwnerUserIdNotDeleted(ownerUserId: Rep[Int]) =
-    contacts.filter(c ⇒ c.ownerUserId === ownerUserId && c.isDeleted === false)
+    active.filter(_.ownerUserId === ownerUserId)
 
   private val byOwnerUserIdNotDeletedC = Compiled(byOwnerUserIdNotDeleted _)
 
@@ -36,6 +33,7 @@ object UserContactRepo {
 
   def byPKNotDeleted(ownerUserId: Rep[Int], contactUserId: Rep[Int]) =
     contacts.filter(c ⇒ c.ownerUserId === ownerUserId && c.contactUserId === contactUserId && c.isDeleted === false)
+
   val nameByPKNotDeletedC = Compiled(
     (ownerUserId: Rep[Int], contactUserId: Rep[Int]) ⇒
       byPKNotDeleted(ownerUserId, contactUserId) map (_.name)
@@ -55,8 +53,7 @@ object UserContactRepo {
 
   def exists(ownerUserId: Int, contactUserId: Int) = existsC((ownerUserId, contactUserId)).result
 
-  //TODO: check usages - make sure they dont need phone number
-  def find(ownerUserId: Int, contactUserId: Int) =
+  def find(ownerUserId: Int, contactUserId: Int): DBIO[Option[UserContact]] =
     byPKNotDeleted(ownerUserId, contactUserId).result.headOption
 
   def count(ownerUserId: Int) = countC(ownerUserId).result

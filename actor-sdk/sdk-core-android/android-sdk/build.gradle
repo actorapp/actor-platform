@@ -3,6 +3,7 @@ buildscript {
         classpath 'com.android.tools.build:gradle:2.1.0'
         classpath 'com.github.dcendents:android-maven-plugin:1.2'
         classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3"
+        classpath 'me.tatarka:gradle-retrolambda:3.2.5'
     }
 }
 
@@ -10,6 +11,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'maven'
 apply plugin: 'signing'
 apply plugin: 'io.codearte.nexus-staging'
+apply plugin: 'me.tatarka.retrolambda'
 
 group = 'im.actor'
 version = '0.0.1'
@@ -17,30 +19,38 @@ version = '0.0.1'
 android {
 
     compileSdkVersion 23
-    buildToolsVersion '23.0.2'
+    buildToolsVersion '23.0.3'
 
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 23
-        multiDexEnabled true
     }
 
     sourceSets {
         main {
 
-            res.srcDirs = ['src/main/res',
+            res {
+                srcDirs = ['src/main/res',
                            'src/main/res-material']
+            }
 
-            resources.srcDirs = [
-                    '../../sdk-core/core/core-shared/src/main/resources'
-            ]
+            resources {
+                srcDirs = ['../../sdk-core/core/core-shared/src/main/resources']
+            }
 
-            java.srcDirs = ['src/main/java',
-                            '../../sdk-core/core/core-shared/src/main/java',
-                            '../../sdk-core/core/core-android/src/main/java',
-                            '../../sdk-core/runtime/runtime-shared/src/main/java',
-                            '../../sdk-core/runtime/runtime-generic/src/main/java',
-                            '../../sdk-core/runtime/runtime-android/src/main/java',]
+            assets {
+                srcDirs = ['../../sdk-core/core/core-shared/src/main/resources',
+                           'src/main/assets']
+            }
+
+            java {
+                srcDirs = ['src/main/java',
+                           '../../sdk-core/core/core-shared/src/main/java',
+                           '../../sdk-core/core/core-android/src/main/java',
+                           '../../sdk-core/runtime/runtime-shared/src/main/java',
+                           '../../sdk-core/runtime/runtime-generic/src/main/java',
+                           '../../sdk-core/runtime/runtime-android/src/main/java']
+            }
         }
     }
 
@@ -49,8 +59,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -72,6 +82,7 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.5.0'
     compile 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.0.2'
     // Android Support
+<<<<<<< HEAD
     compile 'com.android.support:support-v4:23.2.0'
     compile 'com.android.support:support-v13:23.2.0'
     compile 'com.android.support:appcompat-v7:23.2.0'
@@ -80,6 +91,15 @@ dependencies {
     compile 'com.android.support:design:23.2.0'
     compile 'com.google.android.gms:play-services-maps:8.4.0'
     compile files('libs/ksoap2-android-assembly-2.6.5-jar-with-dependencies.jar')
+=======
+    compile 'com.android.support:support-v4:23.3.0'
+    compile 'com.android.support:support-v13:23.3.0'
+    compile 'com.android.support:appcompat-v7:23.3.0'
+    compile 'com.android.support:palette-v7:23.3.0'
+    compile 'com.android.support:recyclerview-v7:23.3.0'
+    compile 'com.android.support:design:23.3.0'
+    compile 'com.android.support:customtabs:23.3.0'
+>>>>>>> 842b482abf4bfb1ee87cc24eae4e364b76c2938c
 }
 
 //

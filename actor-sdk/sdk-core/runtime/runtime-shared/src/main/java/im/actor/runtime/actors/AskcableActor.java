@@ -1,5 +1,6 @@
 package im.actor.runtime.actors;
 
+import im.actor.runtime.Log;
 import im.actor.runtime.actors.ask.AskIntRequest;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseResolver;
@@ -18,11 +19,10 @@ public class AskcableActor extends Actor {
             try {
                 Promise p = onAsk(askRequest.getMessage());
                 if (p == null) {
-                    // Just ignore. We assume
+                    // Just ignore. We assume that message is stashed
                     return;
                 }
-                p.pipeTo(askRequest.getFuture())
-                        .done(self());
+                p.pipeTo(askRequest.getFuture());
             } catch (Exception e) {
                 e.printStackTrace();
                 askRequest.getFuture().tryError(e);

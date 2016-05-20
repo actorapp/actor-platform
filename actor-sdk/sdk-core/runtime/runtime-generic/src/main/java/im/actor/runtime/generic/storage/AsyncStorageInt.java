@@ -20,17 +20,16 @@ import static im.actor.runtime.actors.ActorSystem.system;
 
 class AsyncStorageInt<T extends BserObject & ListEngineItem> {
 
+    static {
+        system().addDispatcher("db", 1);
+    }
+
     private static int NEXT_ID = 0;
 
     private ActorRef storageActor;
 
     public AsyncStorageInt(final ListStorageDisplayEx storage, final BserCreator<T> creator) {
-        storageActor = system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public AsyncStorageActor<T> create() {
-                return new AsyncStorageActor<T>(storage, creator);
-            }
-        }).changeDispatcher("db"), "list_engine/" + NEXT_ID++);
+        storageActor = system().actorOf(Props.create(() -> new AsyncStorageActor<T>(storage, creator)).changeDispatcher("db"), "list_engine/" + NEXT_ID++);
     }
 
     public void addOrUpdateItems(List<T> items) {
@@ -53,17 +52,14 @@ class AsyncStorageInt<T extends BserObject & ListEngineItem> {
 
     public T getValue(long value) {
         final Object lock = new Object();
-        final List<T> resultList = new ArrayList<T>();
+        final List<T> resultList = new ArrayList<>();
         synchronized (lock) {
-            storageActor.send(new AsyncStorageActor.LoadItem<T>(value, new AsyncStorageActor.LoadItemCallback<T>() {
-                @Override
-                public void onLoaded(T item) {
-                    synchronized (lock) {
-                        if (item != null) {
-                            resultList.add(item);
-                        }
-                        lock.notify();
+            storageActor.send(new AsyncStorageActor.LoadItem<T>(value, item -> {
+                synchronized (lock) {
+                    if (item != null) {
+                        resultList.add(item);
                     }
+                    lock.notify();
                 }
             }));
 
@@ -83,17 +79,14 @@ class AsyncStorageInt<T extends BserObject & ListEngineItem> {
 
     public T getHeadValue() {
         final Object lock = new Object();
-        final List<T> resultList = new ArrayList<T>();
+        final List<T> resultList = new ArrayList<>();
         synchronized (lock) {
-            storageActor.send(new AsyncStorageActor.LoadHead<T>(new AsyncStorageActor.LoadItemCallback<T>() {
-                @Override
-                public void onLoaded(T item) {
-                    synchronized (lock) {
-                        if (item != null) {
-                            resultList.add(item);
-                        }
-                        lock.notify();
+            storageActor.send(new AsyncStorageActor.LoadHead<T>(item -> {
+                synchronized (lock) {
+                    if (item != null) {
+                        resultList.add(item);
                     }
+                    lock.notify();
                 }
             }));
 
@@ -113,15 +106,12 @@ class AsyncStorageInt<T extends BserObject & ListEngineItem> {
 
     public int getCount() {
         final Object lock = new Object();
-        final List<Integer> resultList = new ArrayList<Integer>();
+        final List<Integer> resultList = new ArrayList<>();
         synchronized (lock) {
-            storageActor.send(new AsyncStorageActor.LoadCount(new AsyncStorageActor.LoadCountCallback() {
-                @Override
-                public void onLoaded(int count) {
-                    synchronized (lock) {
-                        resultList.add(count);
-                        lock.notify();
-                    }
+            storageActor.send(new AsyncStorageActor.LoadCount(count -> {
+                synchronized (lock) {
+                    resultList.add(count);
+                    lock.notify();
                 }
             }));
 

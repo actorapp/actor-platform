@@ -59,7 +59,7 @@ public class JsWebRTCProvider implements WebRTCRuntime {
                     public void apply(Exception e) {
                         resolver.error(e);
                     }
-                }).done(JsScheduller.scheduller());
+                });
             }
         });
     }

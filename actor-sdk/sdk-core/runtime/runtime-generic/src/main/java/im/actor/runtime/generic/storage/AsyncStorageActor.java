@@ -26,6 +26,7 @@ import im.actor.runtime.storage.ListStorageDisplayEx;
 ]-*/
 
 class AsyncStorageActor<T extends BserObject & ListEngineItem> extends Actor {
+
     private final ListStorageDisplayEx storage;
     private final BserCreator<T> creator;
 
@@ -41,7 +42,7 @@ class AsyncStorageActor<T extends BserObject & ListEngineItem> extends Actor {
             storage.updateOrAdd(new ListEngineRecord(item.getEngineId(), item.getEngineSort(),
                     item.getEngineSearch(), item.toByteArray()));
         } else if (items.size() > 0) {
-            List<ListEngineRecord> updated = new ArrayList<ListEngineRecord>();
+            List<ListEngineRecord> updated = new ArrayList<>();
             for (T i : items) {
                 updated.add(new ListEngineRecord(i.getEngineId(), i.getEngineSort(),
                         i.getEngineSearch(), i.toByteArray()));
@@ -52,7 +53,7 @@ class AsyncStorageActor<T extends BserObject & ListEngineItem> extends Actor {
 
     @AutoreleasePool
     public void replace(List<T> items) {
-        List<ListEngineRecord> updated = new ArrayList<ListEngineRecord>();
+        List<ListEngineRecord> updated = new ArrayList<>();
         for (T i : items) {
             updated.add(new ListEngineRecord(i.getEngineId(), i.getEngineSort(),
                     i.getEngineSearch(), i.toByteArray()));
@@ -207,7 +208,7 @@ class AsyncStorageActor<T extends BserObject & ListEngineItem> extends Actor {
             loadCenter(((LoadCenter) message).getCenterSortKey(),
                     ((LoadCenter) message).getLimit(), ((LoadCenter) message).getCallback());
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 
@@ -378,10 +379,10 @@ class AsyncStorageActor<T extends BserObject & ListEngineItem> extends Actor {
     }
 
     public interface LoadItemCallback<T extends BserObject & ListEngineItem> {
-        public void onLoaded(T item);
+        void onLoaded(T item);
     }
 
     public interface LoadCountCallback {
-        public void onLoaded(int count);
+        void onLoaded(int count);
     }
 }

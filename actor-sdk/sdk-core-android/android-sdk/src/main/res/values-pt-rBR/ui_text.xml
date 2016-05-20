@@ -95,7 +95,7 @@
 
     <!-- Sign Up Fragment -->
     <string name="auth_profile_title">Perfil</string>
-    <string name="auth_profile_hint">Por favor informe nome/apelido e uma foto.</string>
+    <string name="auth_profile_hint">Por favor informe nome</string>
     <string name="auth_profile_name_hint">Seu nome</string>
     <string name="auth_profile_done">COMEÇAR A CONVERSAR</string>
 

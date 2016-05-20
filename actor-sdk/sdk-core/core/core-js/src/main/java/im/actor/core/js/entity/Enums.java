@@ -39,10 +39,6 @@ public class Enums {
                 return "sent";
             case ERROR:
                 return "error";
-            case READ:
-                return "read";
-            case RECEIVED:
-                return "received";
         }
     }
 }

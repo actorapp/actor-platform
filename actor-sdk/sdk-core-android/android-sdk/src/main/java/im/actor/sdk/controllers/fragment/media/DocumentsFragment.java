@@ -7,9 +7,9 @@ import android.support.v7.widget.RecyclerView;
 
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
-import im.actor.sdk.controllers.conversation.messages.ChatListProcessor;
+import im.actor.sdk.controllers.conversation.messages.preprocessor.ChatListProcessor;
 import im.actor.sdk.controllers.conversation.messages.MessageHolder;
-import im.actor.sdk.controllers.conversation.messages.MessagesFragment;
+import im.actor.sdk.controllers.conversation.MessagesFragment;
 import im.actor.runtime.android.view.BindedListAdapter;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
 
@@ -38,9 +38,7 @@ public class DocumentsFragment extends MessagesFragment {
     protected BindedDisplayList<Message> onCreateDisplayList() {
         BindedDisplayList<Message> res = messenger().getDocsDisplayList(peer);
         if (res.getListProcessor() == null) {
-            res.setListProcessor(new ChatListProcessor(this));
-        }else{
-            ((ChatListProcessor)res.getListProcessor()).setFragment(this);
+            res.setListProcessor(new ChatListProcessor(peer, getContext()));
         }
         return res;
     }

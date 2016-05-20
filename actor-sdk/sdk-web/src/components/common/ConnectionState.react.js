@@ -2,7 +2,7 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { Container } from 'flux/utils';
 import { FormattedMessage } from 'react-intl';
 import SharedContainer from '../../utils/SharedContainer';
@@ -41,7 +41,7 @@ class ConnectionState extends Component {
       <div className={className}>
         {
           connectionState !== ConnectionStates.UPDATING
-            ? <FormattedMessage id={`connectionState.${connectionState}`} values={{appName: this.appName}}/>
+            ? <FormattedMessage id={`connectionState.${connectionState}`} values={{ appName: this.appName }}/>
             : null
         }
       </div>
@@ -49,4 +49,4 @@ class ConnectionState extends Component {
   }
 }
 
-export default Container.create(ConnectionState, {pure: false});
+export default Container.create(ConnectionState, { pure: false });

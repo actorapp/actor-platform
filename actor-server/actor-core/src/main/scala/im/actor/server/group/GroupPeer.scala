@@ -1,8 +1,9 @@
 package im.actor.server.group
 
-import akka.actor.{ ActorSystem, ActorLogging, Actor, Props }
-import im.actor.server.cqrs.ProcessorState
-import im.actor.server.dialog.{ DialogExtension, DialogCommands }
+import akka.actor.{ Actor, ActorLogging, ActorSystem, Props }
+import akka.persistence.SnapshotMetadata
+import im.actor.server.cqrs.{ Event, ProcessorState }
+import im.actor.server.dialog.{ DialogCommands, DialogExtension }
 
 import scala.concurrent.ExecutionContext
 
@@ -14,16 +15,18 @@ private[group] case class GroupPeerState(
   lastSenderId:    Int,
   lastReceiveDate: Long,
   lastReadDate:    Long
-) extends ProcessorState[GroupPeerState, GroupPeerEvent] {
+) extends ProcessorState[GroupPeerState] {
   import GroupPeerEvents._
-  override def updated(e: GroupPeerEvent): GroupPeerState = e match {
+  override def updated(e: Event): GroupPeerState = e match {
     case LastSenderIdChanged(id)      ⇒ this.copy(lastSenderId = id)
     case LastReceiveDateChanged(date) ⇒ this.copy(lastReceiveDate = date)
     case LastReadDateChanged(date)    ⇒ this.copy(lastReadDate = date)
   }
+
+  override def withSnapshot(metadata: SnapshotMetadata, snapshot: Any): GroupPeerState = this
 }
 
-private[group] sealed trait GroupPeerEvent
+private[group] sealed trait GroupPeerEvent extends Event
 
 object GroupPeerEvents {
   private[group] case class LastSenderIdChanged(id: Int) extends GroupPeerEvent
@@ -56,7 +59,6 @@ private[group] final class GroupPeer(val groupId: Int)
     case sr: SetReaction         ⇒ setReaction(state, sr)
     case rr: RemoveReaction      ⇒ removeReaction(state, rr)
     case sc: LastSenderIdChanged ⇒ context become initialized(state.updated(sc))
-    case uc: UpdateCounters      ⇒ updateCountersChanged(uc)
   }
 
   override def receive: Receive = initialized(GroupPeerState.empty)

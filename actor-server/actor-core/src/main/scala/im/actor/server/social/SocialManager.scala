@@ -107,7 +107,7 @@ object SocialManager {
   }
 }
 
-class SocialManager(implicit db: Database) extends Actor with ActorLogging with Stash {
+private class SocialManager(implicit db: Database) extends Actor with ActorLogging with Stash {
   import SocialManager._
 
   implicit val ec: ExecutionContext = context.dispatcher
@@ -118,7 +118,7 @@ class SocialManager(implicit db: Database) extends Actor with ActorLogging with 
     case env @ Envelope(userId, _) ⇒
       stash()
 
-      db.run(RelationRepo.find(userId)) onComplete {
+      db.run(RelationRepo.fetch(userId)) onComplete {
         case Success(userIds) ⇒
           self ! Initiated(userIds.toSet)
         case Failure(e) ⇒

@@ -8,6 +8,8 @@ import android.view.View;
 
 import im.actor.sdk.R;
 import im.actor.core.entity.Message;
+import im.actor.sdk.controllers.conversation.MessagesAdapter;
+import im.actor.sdk.controllers.conversation.messages.preprocessor.PreprocessedData;
 
 public class UnsupportedHolder extends TextHolder {
 
@@ -21,7 +23,7 @@ public class UnsupportedHolder extends TextHolder {
     }
 
     @Override
-    protected void bindData(Message message, boolean isUpdated, PreprocessedData preprocessedData) {
-        bindRawText(text, null, message, true);
+    protected void bindData(Message message, long readDate, long receiveDate, boolean isUpdated, PreprocessedData preprocessedData) {
+        bindRawText(text, readDate, receiveDate, null, message, true);
     }
 }

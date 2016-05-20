@@ -1,0 +1,111 @@
+.add-contact {
+  width: 400px;
+
+  .input__material {
+    input {
+      color: rgb(77, 77, 77);
+    }
+  }
+
+  &__results {
+    @include no-mp();
+    &__item {
+      list-style: none;
+
+      @include no-mp();
+      &--not-found,
+      &--searching,
+      &--empty {
+        padding: 16px 0;
+
+        text-align: center;
+
+        color: rgba(black, .3);
+      }
+    }
+
+    .avatar__image,
+    .avatar__placeholder {
+      margin-right: 16px;
+    }
+
+    .contact {
+      .name {
+        font-size: 20px;
+        font-weight: 500;
+        line-height: 24px;
+
+        margin-top: 10px;
+
+        cursor: default;
+
+        @include no-mp();
+        span,
+        small {
+          vertical-align: middle;
+        }
+
+        small {
+          font-size: 10px;
+
+          margin-left: 6px;
+          padding: 2px 4px;
+
+          text-transform: uppercase;
+
+          color: rgba(0, 0, 0, .3);
+          border-radius: 2px;
+          background: rgba(0, 0, 0, .07);
+
+          @include no-select();
+        }
+      }
+      .nick {
+        font-size: 15px;
+        font-weight: 400;
+        line-height: 20px;
+
+        color: rgba(black, .4);
+
+        @include no-mp();
+      }
+      .meta {
+        font-size: 13px;
+        line-height: 24px;
+
+        margin-top: 8px;
+        .title {
+          display: inline-block;
+
+          width: 60px;
+          margin-right: 16px;
+
+          text-align: right;
+
+          color: rgba(0, 0, 0, .3);
+        }
+        a {
+          cursor: pointer;
+          text-decoration: none;
+
+          color: $dark-sky-blue;
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+      .controls {
+        display: block;
+
+        margin-top: 16px;
+
+        text-align: right;
+      }
+    }
+  }
+
+  .modal__footer {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}

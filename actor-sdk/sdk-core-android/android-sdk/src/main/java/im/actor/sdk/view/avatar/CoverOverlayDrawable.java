@@ -9,10 +9,8 @@ import android.graphics.drawable.Drawable;
 import im.actor.sdk.R;
 import im.actor.sdk.util.Screen;
 
-/**
- * Created by ex3ndr on 01.04.15.
- */
 public class CoverOverlayDrawable extends Drawable {
+
     private Drawable bottomShadow;
 
     public CoverOverlayDrawable(Context context) {

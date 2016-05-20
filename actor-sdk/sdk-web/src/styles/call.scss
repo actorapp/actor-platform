@@ -30,7 +30,6 @@
 
   &__draggable {
     width: 240px;
-    height: 240px;
     z-index: 1000;
     background-color: $call-background;
     color: $call-title-color;
@@ -55,15 +54,15 @@
     margin-top: 24px;
   }
 
-
   &__avatar {
-    position: relative;
+    z-index: 15;
+    box-shadow: 0 0 0 1px #fff;
+  }
 
+  &__avatar__container {
+    position: relative;
     padding: 16px;
-    .avatar {
-      z-index: 15;
-      box-shadow: 0 0 0 1px white;
-    }
+
     &__rings {
       & > div {
         position: absolute;
@@ -137,7 +136,7 @@
         &:hover {
           color: $call-button-color-hover
         }
-        
+
         &[disabled] {
           color: rgba(white, .2);
         }

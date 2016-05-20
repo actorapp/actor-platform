@@ -1,6 +1,8 @@
 package im.actor.sdk;
 
 import android.content.Context;
+import android.net.Uri;
+import android.provider.Settings;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -8,14 +10,14 @@ import im.actor.core.AuthState;
 import im.actor.core.entity.Peer;
 import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
-import im.actor.sdk.controllers.activity.controllers.MainPhoneController;
+import im.actor.sdk.controllers.root.MainPhoneController;
 import im.actor.sdk.controllers.conversation.messages.MessageHolder;
-import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
-import im.actor.sdk.controllers.fragment.auth.BaseAuthFragment;
-import im.actor.sdk.controllers.fragment.auth.SignPhoneFragment;
-import im.actor.sdk.controllers.fragment.settings.ActorSettingsCategory;
-import im.actor.sdk.controllers.fragment.settings.BaseActorProfileActivity;
-import im.actor.sdk.controllers.fragment.settings.BaseGroupInfoActivity;
+import im.actor.sdk.controllers.conversation.MessagesAdapter;
+import im.actor.sdk.controllers.auth.BaseAuthFragment;
+import im.actor.sdk.controllers.auth.SignPhoneFragment;
+import im.actor.sdk.controllers.settings.ActorSettingsCategory;
+import im.actor.sdk.controllers.settings.BaseActorProfileActivity;
+import im.actor.sdk.controllers.settings.BaseGroupInfoActivity;
 import im.actor.sdk.intents.ActorIntent;
 import im.actor.sdk.intents.ActorIntentFragmentActivity;
 
@@ -252,5 +254,22 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
     public ActorSettingsCategory[] getAfterSettingsCategories() {
         return null;
     }
+
+    public Uri getNotificationSoundForPeer(Peer peer) {
+        return getNotificationSound();
+    }
+
+    public int getNotificationColorForPeer(Peer peer) {
+        return getNotificationColor();
+    }
+
+    public Uri getNotificationSound() {
+        return Settings.System.DEFAULT_NOTIFICATION_URI;
+    }
+
+    public int getNotificationColor() {
+        return ActorSDK.sharedActor().style.getMainColor();
+    }
+
 
 }

@@ -8,8 +8,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import im.actor.sdk.ActorSDK;
-import im.actor.sdk.R;
-import im.actor.sdk.controllers.fragment.settings.BaseActorSettingsFragment;
+import im.actor.sdk.controllers.settings.BaseActorSettingsFragment;
 import im.actor.sdk.view.BackgroundPreviewView;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;

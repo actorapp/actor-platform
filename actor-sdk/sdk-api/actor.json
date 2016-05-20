@@ -1770,12 +1770,6 @@
               },
               {
                 "type": "reference",
-                "argument": "about",
-                "category": "full",
-                "description": "  User's about information"
-              },
-              {
-                "type": "reference",
                 "argument": "sex",
                 "category": "full",
                 "description": "  optional sex of user"
@@ -1788,39 +1782,45 @@
               },
               {
                 "type": "reference",
-                "argument": "contactInfo",
-                "category": "compact",
-                "description": "  phones of user"
-              },
-              {
-                "type": "reference",
                 "argument": "isBot",
                 "category": "full",
                 "description": "  Is user actually bot. By default is false."
               },
               {
                 "type": "reference",
-                "argument": "external",
+                "argument": "ext",
                 "category": "full",
-                "description": "  If not null, is user come from outer network"
+                "description": "  Extension values"
+              },
+              {
+                "type": "reference",
+                "argument": "about",
+                "category": "full",
+                "description": "  [DEPRECATED] User's about information"
+              },
+              {
+                "type": "reference",
+                "argument": "contactInfo",
+                "category": "compact",
+                "description": "  [DEPRECATED] Contact information of user"
               },
               {
                 "type": "reference",
                 "argument": "preferredLanguages",
                 "category": "full",
-                "description": "  Preferred user languages"
+                "description": "  [DEPRECATED] Preferred user languages"
               },
               {
                 "type": "reference",
                 "argument": "timeZone",
                 "category": "full",
-                "description": "  Time Zone of user in TZ format"
+                "description": "  [DEPRECATED] Time Zone of user in TZ format"
               },
               {
                 "type": "reference",
                 "argument": "botCommands",
                 "category": "full",
-                "description": "  Available Bot Commands"
+                "description": "  [DEPRECATED] Available Bot Commands"
               }
             ],
             "expandable": "true",
@@ -1854,6 +1854,14 @@
               {
                 "type": {
                   "type": "opt",
+                  "childType": "string"
+                },
+                "id": 13,
+                "name": "nick"
+              },
+              {
+                "type": {
+                  "type": "opt",
                   "childType": {
                     "type": "enum",
                     "childType": "Sex"
@@ -1875,17 +1883,6 @@
               },
               {
                 "type": {
-                  "type": "list",
-                  "childType": {
-                    "type": "struct",
-                    "childType": "ContactRecord"
-                  }
-                },
-                "id": 12,
-                "name": "contactInfo"
-              },
-              {
-                "type": {
                   "type": "opt",
                   "childType": "bool"
                 },
@@ -1895,10 +1892,25 @@
               {
                 "type": {
                   "type": "opt",
-                  "childType": "string"
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MapValue"
+                  }
                 },
-                "id": 13,
-                "name": "nick"
+                "id": 20,
+                "name": "ext"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "ContactRecord"
+                  }
+                },
+                "id": 12,
+                "name": "contactInfo",
+                "deprecated": "true"
               },
               {
                 "type": {
@@ -1906,15 +1918,8 @@
                   "childType": "string"
                 },
                 "id": 14,
-                "name": "about"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "string"
-                },
-                "id": 15,
-                "name": "external"
+                "name": "about",
+                "deprecated": "true"
               },
               {
                 "type": {
@@ -1922,7 +1927,8 @@
                   "childType": "string"
                 },
                 "id": 16,
-                "name": "preferredLanguages"
+                "name": "preferredLanguages",
+                "deprecated": "true"
               },
               {
                 "type": {
@@ -1930,7 +1936,8 @@
                   "childType": "string"
                 },
                 "id": 17,
-                "name": "timeZone"
+                "name": "timeZone",
+                "deprecated": "true"
               },
               {
                 "type": {
@@ -1941,7 +1948,141 @@
                   }
                 },
                 "id": 19,
+                "name": "botCommands",
+                "deprecated": "true"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "FullUser",
+            "doc": [
+              "Full User representation",
+              {
+                "type": "reference",
+                "argument": "id",
+                "category": "full",
+                "description": "  User's Id"
+              },
+              {
+                "type": "reference",
+                "argument": "contactInfo",
+                "category": "compact",
+                "description": "  User's contact information"
+              },
+              {
+                "type": "reference",
+                "argument": "about",
+                "category": "full",
+                "description": "  User's about information"
+              },
+              {
+                "type": "reference",
+                "argument": "preferredLanguages",
+                "category": "full",
+                "description": "  Preferred user languages"
+              },
+              {
+                "type": "reference",
+                "argument": "timeZone",
+                "category": "full",
+                "description": "  Time Zone of user in TZ format"
+              },
+              {
+                "type": "reference",
+                "argument": "botCommands",
+                "category": "full",
+                "description": "  Available Commands for Bot"
+              },
+              {
+                "type": "reference",
+                "argument": "ext",
+                "category": "full",
+                "description": "  Extension values. NOTE: This values are not related to ext field in User object."
+              },
+              {
+                "type": "reference",
+                "argument": "isBlocked",
+                "category": "full",
+                "description": "  Is user blocked. Default is false."
+              }
+            ],
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "id"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "ContactRecord"
+                  }
+                },
+                "id": 2,
+                "name": "contactInfo"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 3,
+                "name": "about"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "string"
+                },
+                "id": 4,
+                "name": "preferredLanguages"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 5,
+                "name": "timeZone"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "BotCommand"
+                  }
+                },
+                "id": 6,
                 "name": "botCommands"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MapValue"
+                  }
+                },
+                "id": 7,
+                "name": "ext"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 8,
+                "name": "isBlocked"
               }
             ]
           }
@@ -2410,6 +2551,146 @@
               }
             ]
           }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "UserExtChanged",
+            "header": 218,
+            "doc": [
+              "Update about user ext changed",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  User's id"
+              },
+              {
+                "type": "reference",
+                "argument": "ext",
+                "category": "full",
+                "description": "  New Ext Value in User (NOT FullUser) object."
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MapValue"
+                  }
+                },
+                "id": 2,
+                "name": "ext"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "UserFullExtChanged",
+            "header": 219,
+            "doc": [
+              "Update about user ext changed",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  User's Id"
+              },
+              {
+                "type": "reference",
+                "argument": "ext",
+                "category": "full",
+                "description": "  New Ext Value in FullUser (NOT User) object."
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MapValue"
+                  }
+                },
+                "id": 3,
+                "name": "ext"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "LoadFullUsers",
+            "header": 2649,
+            "response": {
+              "type": "anonymous",
+              "header": 2650,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "fullUsers",
+                  "category": "compact",
+                  "description": "  Loaded users"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "FullUser"
+                    }
+                  },
+                  "id": 1,
+                  "name": "fullUsers"
+                }
+              ]
+            },
+            "doc": [
+              "Loading Full User information",
+              {
+                "type": "reference",
+                "argument": "userPeers",
+                "category": "compact",
+                "description": "User's peers to load. Should be non-empy"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "UserOutPeer"
+                  }
+                },
+                "id": 1,
+                "name": "userPeers"
+              }
+            ]
+          }
         }
       ]
     },
@@ -2797,6 +3078,12 @@
                   "argument": "state",
                   "category": "compact",
                   "description": "  Sequence state if users are imported"
+                },
+                {
+                  "type": "reference",
+                  "argument": "userPeers",
+                  "category": "full",
+                  "description": "  Imported user peers"
                 }
               ],
               "attributes": [
@@ -2823,6 +3110,17 @@
                   },
                   "id": 3,
                   "name": "state"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "UserOutPeer"
+                    }
+                  },
+                  "id": 4,
+                  "name": "userPeers"
                 }
               ]
             },
@@ -2840,6 +3138,12 @@
                 "argument": "emails",
                 "category": "compact",
                 "description": "Emails for import"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled optimizations"
               }
             ],
             "attributes": [
@@ -2864,6 +3168,17 @@
                 },
                 "id": 2,
                 "name": "emails"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 3,
+                "name": "optimizations"
               }
             ]
           }
@@ -2910,6 +3225,17 @@
                   "type": "bool",
                   "id": 2,
                   "name": "isNotChanged"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "UserOutPeer"
+                    }
+                  },
+                  "id": 3,
+                  "name": "userPeers"
                 }
               ]
             },
@@ -2923,6 +3249,12 @@
                 "argument": "contactsHash",
                 "category": "full",
                 "description": "Hash of saved list in application"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled optimizations"
               }
             ],
             "attributes": [
@@ -2930,6 +3262,17 @@
                 "type": "string",
                 "id": 1,
                 "name": "contactsHash"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 2,
+                "name": "optimizations"
               }
             ]
           }
@@ -3031,6 +3374,12 @@
                   "argument": "users",
                   "category": "compact",
                   "description": "  Founded users"
+                },
+                {
+                  "type": "reference",
+                  "argument": "userPeers",
+                  "category": "compact",
+                  "description": "  Founded users peers"
                 }
               ],
               "attributes": [
@@ -3044,6 +3393,17 @@
                   },
                   "id": 1,
                   "name": "users"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "UserOutPeer"
+                    }
+                  },
+                  "id": 2,
+                  "name": "userPeers"
                 }
               ]
             },
@@ -3061,6 +3421,17 @@
                 "type": "string",
                 "id": 1,
                 "name": "request"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 2,
+                "name": "optimizations"
               }
             ]
           }
@@ -3188,6 +3559,160 @@
       ]
     },
     {
+      "title": "Privacy",
+      "package": "privacy",
+      "items": [
+        {
+          "type": "rpc",
+          "content": {
+            "name": "BlockUser",
+            "header": 2636,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "doc": [
+              "Block User",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "Peer for blocking"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "UserOutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "UnblockUser",
+            "header": 2637,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "doc": [
+              "Unblock User",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "Peer for unblocking"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "UserOutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "LoadBlockedUsers",
+            "header": 2638,
+            "response": {
+              "type": "anonymous",
+              "header": 2639,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "userPeers",
+                  "category": "full",
+                  "description": "  Blocked user peers"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "UserOutPeer"
+                    }
+                  },
+                  "id": 1,
+                  "name": "userPeers"
+                }
+              ]
+            },
+            "doc": [
+              "Load Blocked Users"
+            ],
+            "attributes": []
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "UserBlocked",
+            "header": 2629,
+            "doc": [
+              "Update about User Blocked",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  User Id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "uid"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "UserUnblocked",
+            "header": 2630,
+            "doc": [
+              "Update about User Unblocked",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  User Id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "uid"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
       "title": "Messaging",
       "package": "messaging",
       "doc": [
@@ -3297,6 +3822,96 @@
                 },
                 "id": 4,
                 "name": "isOnlyForYou"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "QuotedMessage",
+            "doc": [
+              "Quoted Message",
+              {
+                "type": "reference",
+                "argument": "messageId",
+                "category": "full",
+                "description": "  Message Id if present"
+              },
+              {
+                "type": "reference",
+                "argument": "publicGroupId",
+                "category": "full",
+                "description": "  Public Group id if present"
+              },
+              {
+                "type": "reference",
+                "argument": "senderUserId",
+                "category": "full",
+                "description": "  Sender of message"
+              },
+              {
+                "type": "reference",
+                "argument": "messageDate",
+                "category": "full",
+                "description": "  Date of message"
+              },
+              {
+                "type": "reference",
+                "argument": "quotedMessageContent",
+                "category": "full",
+                "description": "  Optional Quoted Message Content. Can be empty if messageId is present and message is in current peer."
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "alias",
+                    "childType": "randomId"
+                  }
+                },
+                "id": 1,
+                "name": "messageId"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "alias",
+                    "childType": "groupId"
+                  }
+                },
+                "id": 2,
+                "name": "publicGroupId"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 3,
+                "name": "senderUserId"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
+                "id": 4,
+                "name": "messageDate"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "trait",
+                    "childType": "Message"
+                  }
+                },
+                "id": 5,
+                "name": "quotedMessageContent"
               }
             ]
           }
@@ -4569,6 +5184,21 @@
         {
           "type": "struct",
           "content": {
+            "name": "EmptyMessage",
+            "doc": [
+              "Empty Message"
+            ],
+            "trait": {
+              "name": "Message",
+              "key": 9
+            },
+            "expandable": "true",
+            "attributes": []
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
             "name": "DialogShort",
             "doc": [
               "Short Dialog from grouped conversation list",
@@ -4706,6 +5336,45 @@
           }
         },
         {
+          "type": "struct",
+          "content": {
+            "name": "MessageOutReference",
+            "doc": [
+              "Message Out Reference",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Out Peer of message"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "  Message random id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "rid"
+              }
+            ]
+          }
+        },
+        {
           "type": "rpc",
           "content": {
             "name": "SendMessage",
@@ -4720,13 +5389,13 @@
                 "type": "reference",
                 "argument": "peer",
                 "category": "full",
-                "description": "Destination peer for message (now supported only user's peer)"
+                "description": "Destination peer for message"
               },
               {
                 "type": "reference",
                 "argument": "rid",
                 "category": "full",
-                "description": "Message random id (generated on clien side)"
+                "description": "Message random id (generated on client side)"
               },
               {
                 "type": "reference",
@@ -4739,6 +5408,12 @@
                 "argument": "isOnlyForUser",
                 "category": "full",
                 "description": "If message is shown only for specific user"
+              },
+              {
+                "type": "reference",
+                "argument": "quotedMessageReference",
+                "category": "full",
+                "description": "Quoted message if present"
               }
             ],
             "attributes": [
@@ -4776,6 +5451,17 @@
                 },
                 "id": 5,
                 "name": "isOnlyForUser"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MessageOutReference"
+                  }
+                },
+                "id": 6,
+                "name": "quotedMessageReference"
               }
             ]
           }
@@ -5251,6 +5937,12 @@
                 "argument": "attributes",
                 "category": "full",
                 "description": "  optional message attributes"
+              },
+              {
+                "type": "reference",
+                "argument": "quotedMessage",
+                "category": "full",
+                "description": "  optional quoted message"
               }
             ],
             "attributes": [
@@ -5304,6 +5996,17 @@
                 },
                 "id": 6,
                 "name": "attributes"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "QuotedMessage"
+                  }
+                },
+                "id": 7,
+                "name": "quotedMessage"
               }
             ]
           }
@@ -5358,6 +6061,63 @@
                 },
                 "id": 3,
                 "name": "message"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "MessageQuotedChanged",
+            "header": 169,
+            "doc": [
+              "Update about quoted message changed",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "  Rid of message"
+              },
+              {
+                "type": "reference",
+                "argument": "quotedMessage",
+                "category": "full",
+                "description": "  Quoted Message"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Peer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "rid"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "QuotedMessage"
+                  }
+                },
+                "id": 3,
+                "name": "quotedMessage"
               }
             ]
           }
@@ -5897,9 +6657,15 @@
               },
               {
                 "type": "reference",
-                "argument": "attributes",
+                "argument": "attribute",
                 "category": "full",
                 "description": "  Optional message attributes"
+              },
+              {
+                "type": "reference",
+                "argument": "quotedMessage",
+                "category": "full",
+                "description": "  Optional quoted Message"
               }
             ],
             "attributes": [
@@ -5966,7 +6732,18 @@
                   }
                 },
                 "id": 8,
-                "name": "attributes"
+                "name": "attribute"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "QuotedMessage"
+                  }
+                },
+                "id": 9,
+                "name": "quotedMessage"
               }
             ]
           }
@@ -6036,6 +6813,39 @@
                   },
                   "id": 2,
                   "name": "users"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "UserOutPeer"
+                    }
+                  },
+                  "id": 4,
+                  "name": "userPeers"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "Group"
+                    }
+                  },
+                  "id": 5,
+                  "name": "groups"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "GroupOutPeer"
+                    }
+                  },
+                  "id": 6,
+                  "name": "groupPeers"
                 }
               ]
             },
@@ -6064,6 +6874,12 @@
                 "argument": "limit",
                 "category": "full",
                 "description": "maximum amount of messages (max is 100)"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled optimizations"
               }
             ],
             "attributes": [
@@ -6098,6 +6914,17 @@
                 "type": "int32",
                 "id": 4,
                 "name": "limit"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 6,
+                "name": "optimizations"
               }
             ]
           }
@@ -6315,6 +7142,28 @@
                   },
                   "id": 3,
                   "name": "dialogs"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "UserOutPeer"
+                    }
+                  },
+                  "id": 4,
+                  "name": "userPeers"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "GroupOutPeer"
+                    }
+                  },
+                  "id": 5,
+                  "name": "groupPeers"
                 }
               ]
             },
@@ -6331,6 +7180,12 @@
                 "argument": "limit",
                 "category": "full",
                 "description": "limit maximum amount of messages (max is 100)"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled optimizations"
               }
             ],
             "attributes": [
@@ -6346,6 +7201,17 @@
                 "type": "int32",
                 "id": 2,
                 "name": "limit"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 3,
+                "name": "optimizations"
               }
             ]
           }
@@ -6421,6 +7287,28 @@
                 },
                 {
                   "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "UserOutPeer"
+                    }
+                  },
+                  "id": 5,
+                  "name": "userPeers"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "GroupOutPeer"
+                    }
+                  },
+                  "id": 6,
+                  "name": "groupPeers"
+                },
+                {
+                  "type": {
                     "type": "opt",
                     "childType": "bytes"
                   },
@@ -6442,6 +7330,12 @@
                 "argument": "limit",
                 "category": "full",
                 "description": "Maximum number of elements"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled optimizations"
               }
             ],
             "attributes": [
@@ -6457,6 +7351,17 @@
                 "type": "int32",
                 "id": 2,
                 "name": "limit"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 3,
+                "name": "optimizations"
               }
             ]
           }
@@ -6551,13 +7456,47 @@
                   },
                   "id": 5,
                   "name": "showInvite"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "UserOutPeer"
+                    }
+                  },
+                  "id": 6,
+                  "name": "userPeers"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "GroupOutPeer"
+                    }
+                  },
+                  "id": 7,
+                  "name": "groupPeers"
                 }
               ]
             },
             "doc": [
               "Load all dialogs from grouped list"
             ],
-            "attributes": []
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 1,
+                "name": "optimizations"
+              }
+            ]
           }
         },
         {
@@ -6765,214 +7704,8 @@
       "package": "groups",
       "items": [
         {
-          "type": "struct",
-          "content": {
-            "name": "Group",
-            "doc": [
-              "Group information",
-              {
-                "type": "reference",
-                "argument": "id",
-                "category": "full",
-                "description": "  group id"
-              },
-              {
-                "type": "reference",
-                "argument": "accessHash",
-                "category": "danger",
-                "description": "  Access hash of group"
-              },
-              {
-                "type": "reference",
-                "argument": "title",
-                "category": "hidden",
-                "description": "  Title of group"
-              },
-              {
-                "type": "reference",
-                "argument": "theme",
-                "category": "hidden",
-                "description": "  Theme of group"
-              },
-              {
-                "type": "reference",
-                "argument": "about",
-                "category": "hidden",
-                "description": "  About of group"
-              },
-              {
-                "type": "reference",
-                "argument": "avatar",
-                "category": "compact",
-                "description": "  Avatar of group"
-              },
-              {
-                "type": "reference",
-                "argument": "isMember",
-                "category": "full",
-                "description": "  is member of group (deprecated)"
-              },
-              {
-                "type": "reference",
-                "argument": "creatorUid",
-                "category": "hidden",
-                "description": "  Group creator"
-              },
-              {
-                "type": "reference",
-                "argument": "members",
-                "category": "compact",
-                "description": "  Members of group"
-              },
-              {
-                "type": "reference",
-                "argument": "createDate",
-                "category": "full",
-                "description": "  Date of creation"
-              },
-              {
-                "type": "reference",
-                "argument": "ext",
-                "category": "hidden",
-                "description": "  Group extension Data"
-              },
-              {
-                "type": "reference",
-                "argument": "isAdmin",
-                "category": "hidden",
-                "description": "  Is current user admin (deprecated)"
-              },
-              {
-                "type": "reference",
-                "argument": "isHidden",
-                "category": "full",
-                "description": "  Is group hidden"
-              },
-              {
-                "type": "reference",
-                "argument": "groupType",
-                "category": "full",
-                "description": "  Group type"
-              }
-            ],
-            "expandable": "true",
-            "attributes": [
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "groupId"
-                },
-                "id": 1,
-                "name": "id"
-              },
-              {
-                "type": "int64",
-                "id": 2,
-                "name": "accessHash"
-              },
-              {
-                "type": "string",
-                "id": 3,
-                "name": "title"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": {
-                    "type": "struct",
-                    "childType": "Avatar"
-                  }
-                },
-                "id": 4,
-                "name": "avatar"
-              },
-              {
-                "type": "bool",
-                "id": 6,
-                "name": "isMember",
-                "deprecated": "true"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "userId"
-                },
-                "id": 8,
-                "name": "creatorUid"
-              },
-              {
-                "type": {
-                  "type": "list",
-                  "childType": {
-                    "type": "struct",
-                    "childType": "Member"
-                  }
-                },
-                "id": 9,
-                "name": "members"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "date"
-                },
-                "id": 10,
-                "name": "createDate"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "bool"
-                },
-                "id": 16,
-                "name": "isAdmin",
-                "deprecated": "true"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "string"
-                },
-                "id": 17,
-                "name": "theme"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "string"
-                },
-                "id": 18,
-                "name": "about"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "bool"
-                },
-                "id": 20,
-                "name": "isHidden"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "string"
-                },
-                "id": 23,
-                "name": "groupType"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": {
-                    "type": "struct",
-                    "childType": "MapValue"
-                  }
-                },
-                "id": 22,
-                "name": "ext"
-              }
-            ]
-          }
+          "type": "comment",
+          "content": "Entities"
         },
         {
           "type": "struct",
@@ -7040,134 +7773,1263 @@
           }
         },
         {
-          "type": "rpc",
+          "type": "enum",
           "content": {
-            "name": "CreateGroupObsolete",
-            "header": 65,
-            "response": {
-              "type": "anonymous",
-              "header": 66,
-              "doc": [
-                "Created group",
-                {
-                  "type": "reference",
-                  "argument": "groupPeer",
-                  "category": "full",
-                  "description": "  Peer of created group"
-                },
-                {
-                  "type": "reference",
-                  "argument": "seq",
-                  "category": "full",
-                  "description": "  Sequence number"
-                },
-                {
-                  "type": "reference",
-                  "argument": "state",
-                  "category": "compact",
-                  "description": "  Sequence state"
-                },
-                {
-                  "type": "reference",
-                  "argument": "users",
-                  "category": "compact",
-                  "description": "  Members of created group"
-                },
-                {
-                  "type": "reference",
-                  "argument": "date",
-                  "category": "full",
-                  "description": "  Group creation date"
-                }
-              ],
-              "attributes": [
-                {
-                  "type": {
-                    "type": "struct",
-                    "childType": "GroupOutPeer"
-                  },
-                  "id": 1,
-                  "name": "groupPeer"
-                },
-                {
-                  "type": "int32",
-                  "id": 3,
-                  "name": "seq"
-                },
-                {
-                  "type": {
-                    "type": "alias",
-                    "childType": "seq_state"
-                  },
-                  "id": 4,
-                  "name": "state"
-                },
-                {
-                  "type": {
-                    "type": "list",
-                    "childType": "int32"
-                  },
-                  "id": 5,
-                  "name": "users"
-                },
-                {
-                  "type": {
-                    "type": "alias",
-                    "childType": "date"
-                  },
-                  "id": 6,
-                  "name": "date"
-                }
-              ]
-            },
+            "name": "GroupType",
+            "values": [
+              {
+                "name": "GROUP",
+                "id": 1
+              },
+              {
+                "name": "CHANNEL",
+                "id": 2
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "Group",
             "doc": [
-              "Creating group chat (obsolete)",
+              "Group information",
               {
                 "type": "reference",
-                "argument": "rid",
+                "argument": "id",
                 "category": "full",
-                "description": "Random Id for avoiding double create"
+                "description": "  group id"
+              },
+              {
+                "type": "reference",
+                "argument": "accessHash",
+                "category": "danger",
+                "description": "  Access hash of group"
               },
               {
                 "type": "reference",
                 "argument": "title",
                 "category": "full",
-                "description": "Title of new group"
+                "description": "  Title of group"
               },
               {
                 "type": "reference",
-                "argument": "users",
+                "argument": "avatar",
                 "category": "compact",
-                "description": "Members of new group"
+                "description": "  Avatar of group"
+              },
+              {
+                "type": "reference",
+                "argument": "membersCount",
+                "category": "full",
+                "description": "  Number of members"
+              },
+              {
+                "type": "reference",
+                "argument": "isHidden",
+                "category": "full",
+                "description": "  Is group hidden (not showing it in recent list). Default is false."
+              },
+              {
+                "type": "reference",
+                "argument": "isMember",
+                "category": "full",
+                "description": "  Is current user a member of a group. Default is true."
+              },
+              {
+                "type": "reference",
+                "argument": "groupType",
+                "category": "full",
+                "description": "  Group Type. Used only for displaying information. Default is GROUP."
+              },
+              {
+                "type": "reference",
+                "argument": "canSendMessage",
+                "category": "full",
+                "description": "  Can user send messages. Default is equals isMember for Group and false for channels."
+              },
+              {
+                "type": "reference",
+                "argument": "ext",
+                "category": "full",
+                "description": "  Group extension Data"
+              },
+              {
+                "type": "reference",
+                "argument": "isAdmin",
+                "category": "full",
+                "description": "  [DEPRECATED] Is current user an admin of a group"
+              },
+              {
+                "type": "reference",
+                "argument": "theme",
+                "category": "hidden",
+                "description": "  [DEPRECATED] Theme of group"
+              },
+              {
+                "type": "reference",
+                "argument": "about",
+                "category": "hidden",
+                "description": "  [DEPRECATED] About of group"
+              },
+              {
+                "type": "reference",
+                "argument": "creatorUid",
+                "category": "hidden",
+                "description": "  [DEPRECATED] Group creator"
+              },
+              {
+                "type": "reference",
+                "argument": "members",
+                "category": "compact",
+                "description": "  [DEPRECATED] Members of group"
+              },
+              {
+                "type": "reference",
+                "argument": "createDate",
+                "category": "full",
+                "description": "  [DEPRECATED] Date of creation"
               }
             ],
+            "expandable": "true",
             "attributes": [
               {
                 "type": {
                   "type": "alias",
-                  "childType": "randomId"
+                  "childType": "groupId"
                 },
                 "id": 1,
-                "name": "rid"
+                "name": "id"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "accessHash"
               },
               {
                 "type": "string",
-                "id": 2,
+                "id": 3,
                 "name": "title"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Avatar"
+                  }
+                },
+                "id": 4,
+                "name": "avatar"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "int32"
+                },
+                "id": 24,
+                "name": "membersCount"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 6,
+                "name": "isMember"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 20,
+                "name": "isHidden"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "GroupType"
+                  }
+                },
+                "id": 25,
+                "name": "groupType"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 26,
+                "name": "canSendMessage"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MapValue"
+                  }
+                },
+                "id": 22,
+                "name": "ext"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 16,
+                "name": "isAdmin",
+                "deprecated": "true"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 8,
+                "name": "creatorUid",
+                "deprecated": "true"
               },
               {
                 "type": {
                   "type": "list",
                   "childType": {
                     "type": "struct",
-                    "childType": "UserOutPeer"
+                    "childType": "Member"
                   }
                 },
-                "id": 3,
-                "name": "users"
+                "id": 9,
+                "name": "members",
+                "deprecated": "true"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
+                "id": 10,
+                "name": "createDate",
+                "deprecated": "true"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 17,
+                "name": "theme",
+                "deprecated": "true"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 18,
+                "name": "about",
+                "deprecated": "true"
               }
             ]
           }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "GroupFull",
+            "doc": [
+              "Goup Full information",
+              {
+                "type": "reference",
+                "argument": "id",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "createDate",
+                "category": "full",
+                "description": "  Date created"
+              },
+              {
+                "type": "reference",
+                "argument": "ownerUid",
+                "category": "full",
+                "description": "  Group owner"
+              },
+              {
+                "type": "reference",
+                "argument": "members",
+                "category": "full",
+                "description": "  Group members. Can be empty when isAsyncMembers enabled."
+              },
+              {
+                "type": "reference",
+                "argument": "theme",
+                "category": "full",
+                "description": "  Group Theme"
+              },
+              {
+                "type": "reference",
+                "argument": "about",
+                "category": "full",
+                "description": "  Group about"
+              },
+              {
+                "type": "reference",
+                "argument": "isAsyncMembers",
+                "category": "full",
+                "description": "  Is Members need to be loaded asynchronous."
+              },
+              {
+                "type": "reference",
+                "argument": "canViewMembers",
+                "category": "full",
+                "description": "  Can current user view members of the group. Default is true."
+              },
+              {
+                "type": "reference",
+                "argument": "canInvitePeople",
+                "category": "full",
+                "description": "  Can current user invite new people. Default is true."
+              },
+              {
+                "type": "reference",
+                "argument": "isSharedHistory",
+                "category": "full",
+                "description": "  Is history shared among all users."
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "id"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
+                "id": 6,
+                "name": "createDate"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 5,
+                "name": "ownerUid"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Member"
+                  }
+                },
+                "id": 12,
+                "name": "members"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "theme"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 3,
+                "name": "about"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MapValue"
+                  }
+                },
+                "id": 7,
+                "name": "ext"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 11,
+                "name": "isAsyncMembers"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 8,
+                "name": "canViewMembers"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 9,
+                "name": "canInvitePeople"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 10,
+                "name": "isSharedHistory"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "LoadFullGroups",
+            "header": 2782,
+            "response": {
+              "type": "anonymous",
+              "header": 2783,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "groups",
+                  "category": "compact",
+                  "description": "  Groups to load"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "GroupFull"
+                    }
+                  },
+                  "id": 1,
+                  "name": "groups"
+                }
+              ]
+            },
+            "doc": [
+              "Loading Full Groups",
+              {
+                "type": "reference",
+                "argument": "groups",
+                "category": "compact",
+                "description": "Groups to load"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "GroupOutPeer"
+                  }
+                },
+                "id": 1,
+                "name": "groups"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "LoadMembers",
+            "header": 2786,
+            "response": {
+              "type": "anonymous",
+              "header": 2787,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "members",
+                  "category": "full",
+                  "description": "  Group members"
+                },
+                {
+                  "type": "reference",
+                  "argument": "next",
+                  "category": "full",
+                  "description": "  Load more reference"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "UserOutPeer"
+                    }
+                  },
+                  "id": 1,
+                  "name": "members"
+                },
+                {
+                  "type": {
+                    "type": "opt",
+                    "childType": "bytes"
+                  },
+                  "id": 2,
+                  "name": "next"
+                }
+              ]
+            },
+            "doc": [
+              "Loading group members",
+              {
+                "type": "reference",
+                "argument": "group",
+                "category": "full",
+                "description": "Group peer"
+              },
+              {
+                "type": "reference",
+                "argument": "limit",
+                "category": "full",
+                "description": "Limit members"
+              },
+              {
+                "type": "reference",
+                "argument": "next",
+                "category": "full",
+                "description": "Load more reference"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "group"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "limit"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bytes"
+                },
+                "id": 3,
+                "name": "next"
+              }
+            ]
+          }
+        },
+        {
+          "type": "comment",
+          "content": "Update"
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupTitleChanged",
+            "header": 2609,
+            "doc": [
+              "Update about title changed",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "title",
+                "category": "full",
+                "description": "  Group Title"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "title"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupAvatarChanged",
+            "header": 2610,
+            "doc": [
+              "Update about avatar changed",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "avatar",
+                "category": "full",
+                "description": "  Group Avatar"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Avatar"
+                  }
+                },
+                "id": 2,
+                "name": "avatar"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupTopicChanged",
+            "header": 2616,
+            "doc": [
+              "Update about topic changed",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "topic",
+                "category": "full",
+                "description": "  Updated topic"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "topic"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupAboutChanged",
+            "header": 2617,
+            "doc": [
+              "Update about about changed",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "about",
+                "category": "full",
+                "description": "  Updated about"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "about"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupExtChanged",
+            "header": 2613,
+            "doc": [
+              "Update about ext changed",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "ext",
+                "category": "full",
+                "description": "  Updated ext"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MapValue"
+                  }
+                },
+                "id": 2,
+                "name": "ext"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupFullExtChanged",
+            "header": 2618,
+            "doc": [
+              "Update about full ext changed",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "ext",
+                "category": "full",
+                "description": "  Updated ext"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MapValue"
+                  }
+                },
+                "id": 2,
+                "name": "ext"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupOwnerChanged",
+            "header": 2619,
+            "doc": [
+              "Update about owner changed",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "userId",
+                "category": "full",
+                "description": "  New Owner"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 2,
+                "name": "userId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupHistoryShared",
+            "header": 2620,
+            "doc": [
+              "Update about history shared",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupCanSendMessagesChanged",
+            "header": 2624,
+            "doc": [
+              "Update about can send messages changed",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "canSendMessages",
+                "category": "full",
+                "description": "  Can send messages"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": "bool",
+                "id": 2,
+                "name": "canSendMessages"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupCanViewMembersChanged",
+            "header": 2625,
+            "doc": [
+              "Update about can view members changed",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "canViewMembers",
+                "category": "full",
+                "description": "  Can view members"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": "bool",
+                "id": 2,
+                "name": "canViewMembers"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupCanInviteMembersChanged",
+            "header": 2626,
+            "doc": [
+              "Update about can invite members changed",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "canInviteMembers",
+                "category": "full",
+                "description": "  Can invite members"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": "bool",
+                "id": 2,
+                "name": "canInviteMembers"
+              }
+            ]
+          }
+        },
+        {
+          "type": "comment",
+          "content": " "
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupMemberChanged",
+            "header": 2612,
+            "doc": [
+              "Update about membership changed",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "isMember",
+                "category": "full",
+                "description": "  Is current user a member"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": "bool",
+                "id": 2,
+                "name": "isMember"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupMembersBecameAsync",
+            "header": 2615,
+            "doc": [
+              "Update about members became async",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupMembersUpdated",
+            "header": 2614,
+            "doc": [
+              "Update about members updated",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "members",
+                "category": "full",
+                "description": "  Group Members"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Member"
+                  }
+                },
+                "id": 2,
+                "name": "members"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupMemberDiff",
+            "header": 2623,
+            "doc": [
+              "Update about members changed",
+              {
+                "type": "reference",
+                "argument": "removedUsers",
+                "category": "full",
+                "description": "  Removed Users"
+              },
+              {
+                "type": "reference",
+                "argument": "addedMembers",
+                "category": "full",
+                "description": "  Added members"
+              },
+              {
+                "type": "reference",
+                "argument": "membersCount",
+                "category": "full",
+                "description": "  Current Members count"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "alias",
+                    "childType": "userId"
+                  }
+                },
+                "id": 1,
+                "name": "removedUsers"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Member"
+                  }
+                },
+                "id": 2,
+                "name": "addedMembers"
+              },
+              {
+                "type": "int32",
+                "id": 3,
+                "name": "membersCount"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupMembersCountChanged",
+            "header": 2622,
+            "doc": [
+              "Update about members count changed",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "membersCount",
+                "category": "full",
+                "description": "  Members count"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "membersCount"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupMemberAdminChanged",
+            "header": 2627,
+            "doc": [
+              "Update about member admin changed",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "userId",
+                "category": "full",
+                "description": "  User Id"
+              },
+              {
+                "type": "reference",
+                "argument": "isAdmin",
+                "category": "full",
+                "description": "  Is Admin flag"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 2,
+                "name": "userId"
+              },
+              {
+                "type": "bool",
+                "id": 3,
+                "name": "isAdmin"
+              }
+            ]
+          }
+        },
+        {
+          "type": "comment",
+          "content": "Actions"
         },
         {
           "type": "rpc",
@@ -7202,6 +9064,12 @@
                   "argument": "users",
                   "category": "full",
                   "description": "  Referenced users"
+                },
+                {
+                  "type": "reference",
+                  "argument": "userPeers",
+                  "category": "full",
+                  "description": "  Referenced users"
                 }
               ],
               "attributes": [
@@ -7236,6 +9104,17 @@
                   },
                   "id": 4,
                   "name": "users"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "UserOutPeer"
+                    }
+                  },
+                  "id": 5,
+                  "name": "userPeers"
                 }
               ]
             },
@@ -7262,14 +9141,14 @@
               {
                 "type": "reference",
                 "argument": "groupType",
-                "category": "hidden",
-                "description": "Group Type. 'public' for public groups"
+                "category": "full",
+                "description": "Group Type"
               },
               {
                 "type": "reference",
-                "argument": "userData",
-                "category": "hidden",
-                "description": "Group external data"
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled Optimizations"
               }
             ],
             "attributes": [
@@ -7300,140 +9179,24 @@
               {
                 "type": {
                   "type": "opt",
-                  "childType": "string"
+                  "childType": {
+                    "type": "enum",
+                    "childType": "GroupType"
+                  }
                 },
-                "id": 5,
+                "id": 6,
                 "name": "groupType"
               },
               {
                 "type": {
-                  "type": "opt",
+                  "type": "list",
                   "childType": {
-                    "type": "struct",
-                    "childType": "MapValue"
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
                   }
                 },
-                "id": 4,
-                "name": "userData"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "EnterGroup",
-            "header": 199,
-            "response": {
-              "type": "anonymous",
-              "header": 200,
-              "doc": [
-                "Joined group",
-                {
-                  "type": "reference",
-                  "argument": "group",
-                  "category": "full",
-                  "description": "  Joined group"
-                },
-                {
-                  "type": "reference",
-                  "argument": "users",
-                  "category": "full",
-                  "description": "  Referenced users"
-                },
-                {
-                  "type": "reference",
-                  "argument": "rid",
-                  "category": "full",
-                  "description": "  Rid of join message"
-                },
-                {
-                  "type": "reference",
-                  "argument": "seq",
-                  "category": "full",
-                  "description": "  Seq of Update"
-                },
-                {
-                  "type": "reference",
-                  "argument": "state",
-                  "category": "full",
-                  "description": "  State of Update"
-                },
-                {
-                  "type": "reference",
-                  "argument": "date",
-                  "category": "full",
-                  "description": "  Date of update"
-                }
-              ],
-              "attributes": [
-                {
-                  "type": {
-                    "type": "struct",
-                    "childType": "Group"
-                  },
-                  "id": 1,
-                  "name": "group"
-                },
-                {
-                  "type": {
-                    "type": "list",
-                    "childType": {
-                      "type": "struct",
-                      "childType": "User"
-                    }
-                  },
-                  "id": 2,
-                  "name": "users"
-                },
-                {
-                  "type": {
-                    "type": "alias",
-                    "childType": "randomId"
-                  },
-                  "id": 3,
-                  "name": "rid"
-                },
-                {
-                  "type": "int32",
-                  "id": 4,
-                  "name": "seq"
-                },
-                {
-                  "type": {
-                    "type": "alias",
-                    "childType": "seq_state"
-                  },
-                  "id": 5,
-                  "name": "state"
-                },
-                {
-                  "type": {
-                    "type": "alias",
-                    "childType": "date"
-                  },
-                  "id": 6,
-                  "name": "date"
-                }
-              ]
-            },
-            "doc": [
-              "Join random group by peer id",
-              {
-                "type": "reference",
-                "argument": "peer",
-                "category": "full",
-                "description": "Public group peer"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "GroupOutPeer"
-                },
-                "id": 1,
-                "name": "peer"
+                "id": 7,
+                "name": "optimizations"
               }
             ]
           }
@@ -7466,6 +9229,12 @@
                 "argument": "rid",
                 "category": "full",
                 "description": "Random Id of operation"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled Optimizations"
               }
             ],
             "attributes": [
@@ -7489,6 +9258,17 @@
                 "type": "string",
                 "id": 3,
                 "name": "title"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 5,
+                "name": "optimizations"
               }
             ]
           }
@@ -7579,6 +9359,12 @@
                 "argument": "rid",
                 "category": "full",
                 "description": "Random Id of operation"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled Optimizations"
               }
             ],
             "attributes": [
@@ -7605,6 +9391,17 @@
                 },
                 "id": 3,
                 "name": "fileLocation"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 5,
+                "name": "optimizations"
               }
             ]
           }
@@ -7631,56 +9428,12 @@
                 "argument": "rid",
                 "category": "full",
                 "description": "Random Id of operation"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "GroupOutPeer"
-                },
-                "id": 1,
-                "name": "groupPeer"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "randomId"
-                },
-                "id": 4,
-                "name": "rid"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "InviteUser",
-            "header": 69,
-            "response": {
-              "type": "reference",
-              "name": "SeqDate"
-            },
-            "doc": [
-              "Inviting user to group",
-              {
-                "type": "reference",
-                "argument": "groupPeer",
-                "category": "full",
-                "description": "Group's peer"
               },
               {
                 "type": "reference",
-                "argument": "user",
+                "argument": "optimizations",
                 "category": "full",
-                "description": "Users for invitation"
-              },
-              {
-                "type": "reference",
-                "argument": "rid",
-                "category": "full",
-                "description": "Random Id of operation"
+                "description": "Enabled Optimizations"
               }
             ],
             "attributes": [
@@ -7702,113 +9455,14 @@
               },
               {
                 "type": {
-                  "type": "struct",
-                  "childType": "UserOutPeer"
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
                 },
-                "id": 3,
-                "name": "user"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "LeaveGroup",
-            "header": 70,
-            "response": {
-              "type": "reference",
-              "name": "SeqDate"
-            },
-            "doc": [
-              "Leaving group",
-              {
-                "type": "reference",
-                "argument": "groupPeer",
-                "category": "full",
-                "description": "Group's peer"
-              },
-              {
-                "type": "reference",
-                "argument": "rid",
-                "category": "full",
-                "description": "Random Id of operation"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "GroupOutPeer"
-                },
-                "id": 1,
-                "name": "groupPeer"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "randomId"
-                },
-                "id": 2,
-                "name": "rid"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "KickUser",
-            "header": 71,
-            "response": {
-              "type": "reference",
-              "name": "SeqDate"
-            },
-            "doc": [
-              "Kicking user from group",
-              {
-                "type": "reference",
-                "argument": "groupPeer",
-                "category": "full",
-                "description": "Group's peer"
-              },
-              {
-                "type": "reference",
-                "argument": "user",
-                "category": "full",
-                "description": "users for removing"
-              },
-              {
-                "type": "reference",
-                "argument": "rid",
-                "category": "full",
-                "description": "Random Id of operation"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "GroupOutPeer"
-                },
-                "id": 1,
-                "name": "groupPeer"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "randomId"
-                },
-                "id": 4,
-                "name": "rid"
-              },
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "UserOutPeer"
-                },
-                "id": 3,
-                "name": "user"
+                "id": 5,
+                "name": "optimizations"
               }
             ]
           }
@@ -7841,6 +9495,12 @@
                 "argument": "topic",
                 "category": "full",
                 "description": "New Topic"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled Optimizations"
               }
             ],
             "attributes": [
@@ -7867,6 +9527,17 @@
                 },
                 "id": 3,
                 "name": "topic"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 4,
+                "name": "optimizations"
               }
             ]
           }
@@ -7897,8 +9568,14 @@
               {
                 "type": "reference",
                 "argument": "about",
-                "category": "hidden",
+                "category": "full",
                 "description": "New About"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled Optimizations"
               }
             ],
             "attributes": [
@@ -7925,6 +9602,228 @@
                 },
                 "id": 3,
                 "name": "about"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 5,
+                "name": "optimizations"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "InviteUser",
+            "header": 69,
+            "response": {
+              "type": "reference",
+              "name": "SeqDate"
+            },
+            "doc": [
+              "Inviting user to group",
+              {
+                "type": "reference",
+                "argument": "groupPeer",
+                "category": "full",
+                "description": "Group's peer"
+              },
+              {
+                "type": "reference",
+                "argument": "user",
+                "category": "full",
+                "description": "Users for invitation"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "Random Id of operation"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled Optimizations"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "groupPeer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 4,
+                "name": "rid"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "UserOutPeer"
+                },
+                "id": 3,
+                "name": "user"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 5,
+                "name": "optimizations"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "LeaveGroup",
+            "header": 70,
+            "response": {
+              "type": "reference",
+              "name": "SeqDate"
+            },
+            "doc": [
+              "Leaving group",
+              {
+                "type": "reference",
+                "argument": "groupPeer",
+                "category": "full",
+                "description": "Group's peer"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "Random Id of operation"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled Optimizations"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "groupPeer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "rid"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 3,
+                "name": "optimizations"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "KickUser",
+            "header": 71,
+            "response": {
+              "type": "reference",
+              "name": "SeqDate"
+            },
+            "doc": [
+              "Kicking user from group",
+              {
+                "type": "reference",
+                "argument": "groupPeer",
+                "category": "full",
+                "description": "Group's peer"
+              },
+              {
+                "type": "reference",
+                "argument": "user",
+                "category": "full",
+                "description": "users for removing"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "Random Id of operation"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled Optimizations"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "groupPeer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 4,
+                "name": "rid"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "UserOutPeer"
+                },
+                "id": 3,
+                "name": "user"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 5,
+                "name": "optimizations"
               }
             ]
           }
@@ -7933,44 +9832,10 @@
           "type": "rpc",
           "content": {
             "name": "MakeUserAdmin",
-            "header": 214,
+            "header": 2784,
             "response": {
-              "type": "anonymous",
-              "header": 215,
-              "doc": [
-                {
-                  "type": "reference",
-                  "argument": "members",
-                  "category": "full",
-                  "description": "  new members"
-                }
-              ],
-              "attributes": [
-                {
-                  "type": {
-                    "type": "list",
-                    "childType": {
-                      "type": "struct",
-                      "childType": "Member"
-                    }
-                  },
-                  "id": 1,
-                  "name": "members"
-                },
-                {
-                  "type": "int32",
-                  "id": 2,
-                  "name": "seq"
-                },
-                {
-                  "type": {
-                    "type": "alias",
-                    "childType": "seq_state"
-                  },
-                  "id": 3,
-                  "name": "state"
-                }
-              ]
+              "type": "reference",
+              "name": "SeqDate"
             },
             "doc": [
               "Make user admin",
@@ -8008,127 +9873,37 @@
           }
         },
         {
-          "type": "update",
+          "type": "rpc",
           "content": {
-            "name": "GroupInvite",
-            "header": 36,
+            "name": "TransferOwnership",
+            "header": 2789,
+            "response": {
+              "type": "reference",
+              "name": "SeqDate"
+            },
             "doc": [
-              "Update about inviting current user to group",
+              "Transfer ownership of group",
               {
                 "type": "reference",
-                "argument": "groupId",
+                "argument": "groupPeer",
                 "category": "full",
-                "description": "  Group Id"
+                "description": "Group's peer"
               },
               {
                 "type": "reference",
-                "argument": "inviteUid",
+                "argument": "newOwner",
                 "category": "full",
-                "description": "  Inviter UID. If equals to current uid than group created by user."
-              },
-              {
-                "type": "reference",
-                "argument": "date",
-                "category": "full",
-                "description": "  Date of creating"
-              },
-              {
-                "type": "reference",
-                "argument": "rid",
-                "category": "full",
-                "description": "  Random Id of operation"
+                "description": "New group's owner"
               }
             ],
             "attributes": [
               {
                 "type": {
-                  "type": "alias",
-                  "childType": "groupId"
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
                 },
                 "id": 1,
-                "name": "groupId"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "randomId"
-                },
-                "id": 9,
-                "name": "rid"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "userId"
-                },
-                "id": 5,
-                "name": "inviteUid"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "date"
-                },
-                "id": 8,
-                "name": "date"
-              }
-            ]
-          }
-        },
-        {
-          "type": "update",
-          "content": {
-            "name": "GroupUserInvited",
-            "header": 21,
-            "doc": [
-              "Update about inviting user to group",
-              {
-                "type": "reference",
-                "argument": "groupId",
-                "category": "full",
-                "description": "  Group Id"
-              },
-              {
-                "type": "reference",
-                "argument": "uid",
-                "category": "full",
-                "description": "  Added user ID"
-              },
-              {
-                "type": "reference",
-                "argument": "inviterUid",
-                "category": "full",
-                "description": "  Inviter user ID"
-              },
-              {
-                "type": "reference",
-                "argument": "date",
-                "category": "full",
-                "description": "  Date of adding user to group"
-              },
-              {
-                "type": "reference",
-                "argument": "rid",
-                "category": "full",
-                "description": "  Random Id of operation"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "groupId"
-                },
-                "id": 1,
-                "name": "groupId"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "randomId"
-                },
-                "id": 5,
-                "name": "rid"
+                "name": "groupPeer"
               },
               {
                 "type": {
@@ -8136,505 +9911,14 @@
                   "childType": "userId"
                 },
                 "id": 2,
-                "name": "uid"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "userId"
-                },
-                "id": 3,
-                "name": "inviterUid"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "date"
-                },
-                "id": 4,
-                "name": "date"
+                "name": "newOwner"
               }
             ]
           }
         },
         {
-          "type": "update",
-          "content": {
-            "name": "GroupUserLeave",
-            "header": 23,
-            "doc": [
-              "Update about leaving user",
-              {
-                "type": "reference",
-                "argument": "groupId",
-                "category": "full",
-                "description": "  Group Id"
-              },
-              {
-                "type": "reference",
-                "argument": "uid",
-                "category": "full",
-                "description": "  User's ID"
-              },
-              {
-                "type": "reference",
-                "argument": "date",
-                "category": "full",
-                "description": "  Date of user leave"
-              },
-              {
-                "type": "reference",
-                "argument": "rid",
-                "category": "full",
-                "description": "  Random Id of operation"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "groupId"
-                },
-                "id": 1,
-                "name": "groupId"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "randomId"
-                },
-                "id": 4,
-                "name": "rid"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "userId"
-                },
-                "id": 2,
-                "name": "uid"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "date"
-                },
-                "id": 3,
-                "name": "date"
-              }
-            ]
-          }
-        },
-        {
-          "type": "update",
-          "content": {
-            "name": "GroupUserKick",
-            "header": 24,
-            "doc": [
-              "Update about kicking user",
-              {
-                "type": "reference",
-                "argument": "groupId",
-                "category": "full",
-                "description": "  Group Id"
-              },
-              {
-                "type": "reference",
-                "argument": "uid",
-                "category": "full",
-                "description": "  Kicked user's ID"
-              },
-              {
-                "type": "reference",
-                "argument": "kickerUid",
-                "category": "full",
-                "description": "  Kicker user's ID"
-              },
-              {
-                "type": "reference",
-                "argument": "date",
-                "category": "full",
-                "description": "  Date of user kick"
-              },
-              {
-                "type": "reference",
-                "argument": "rid",
-                "category": "full",
-                "description": "  Random Id of operation"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "groupId"
-                },
-                "id": 1,
-                "name": "groupId"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "randomId"
-                },
-                "id": 5,
-                "name": "rid"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "userId"
-                },
-                "id": 2,
-                "name": "uid"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "userId"
-                },
-                "id": 3,
-                "name": "kickerUid"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "date"
-                },
-                "id": 4,
-                "name": "date"
-              }
-            ]
-          }
-        },
-        {
-          "type": "update",
-          "content": {
-            "name": "GroupMembersUpdate",
-            "header": 44,
-            "doc": [
-              "Silent group members update",
-              {
-                "type": "reference",
-                "argument": "groupId",
-                "category": "full",
-                "description": "  Group Id"
-              },
-              {
-                "type": "reference",
-                "argument": "members",
-                "category": "full",
-                "description": "  New members list"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "groupId"
-                },
-                "id": 1,
-                "name": "groupId"
-              },
-              {
-                "type": {
-                  "type": "list",
-                  "childType": {
-                    "type": "struct",
-                    "childType": "Member"
-                  }
-                },
-                "id": 2,
-                "name": "members"
-              }
-            ]
-          }
-        },
-        {
-          "type": "update",
-          "content": {
-            "name": "GroupTitleChanged",
-            "header": 38,
-            "doc": [
-              "Update about group title change",
-              {
-                "type": "reference",
-                "argument": "groupId",
-                "category": "full",
-                "description": "  Group Id"
-              },
-              {
-                "type": "reference",
-                "argument": "uid",
-                "category": "full",
-                "description": "  Changer UID"
-              },
-              {
-                "type": "reference",
-                "argument": "title",
-                "category": "full",
-                "description": "  New Title of group"
-              },
-              {
-                "type": "reference",
-                "argument": "date",
-                "category": "full",
-                "description": "  Date of title change"
-              },
-              {
-                "type": "reference",
-                "argument": "rid",
-                "category": "full",
-                "description": "  Random Id of operation"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "groupId"
-                },
-                "id": 1,
-                "name": "groupId"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "randomId"
-                },
-                "id": 5,
-                "name": "rid"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "userId"
-                },
-                "id": 2,
-                "name": "uid"
-              },
-              {
-                "type": "string",
-                "id": 3,
-                "name": "title"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "date"
-                },
-                "id": 4,
-                "name": "date"
-              }
-            ]
-          }
-        },
-        {
-          "type": "update",
-          "content": {
-            "name": "GroupTopicChanged",
-            "header": 213,
-            "doc": [
-              "Update about group topic change",
-              {
-                "type": "reference",
-                "argument": "groupId",
-                "category": "full",
-                "description": "  Group Id"
-              },
-              {
-                "type": "reference",
-                "argument": "uid",
-                "category": "full",
-                "description": "  Changer UID"
-              },
-              {
-                "type": "reference",
-                "argument": "topic",
-                "category": "full",
-                "description": "  New topic of group"
-              },
-              {
-                "type": "reference",
-                "argument": "date",
-                "category": "full",
-                "description": "  Date of theme change"
-              },
-              {
-                "type": "reference",
-                "argument": "rid",
-                "category": "full",
-                "description": "  Randomd Id of operation"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "groupId"
-                },
-                "id": 1,
-                "name": "groupId"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "randomId"
-                },
-                "id": 2,
-                "name": "rid"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "userId"
-                },
-                "id": 3,
-                "name": "uid"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "string"
-                },
-                "id": 4,
-                "name": "topic"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "date"
-                },
-                "id": 5,
-                "name": "date"
-              }
-            ]
-          }
-        },
-        {
-          "type": "update",
-          "content": {
-            "name": "GroupAboutChanged",
-            "header": 214,
-            "doc": [
-              "Update about group about change",
-              {
-                "type": "reference",
-                "argument": "groupId",
-                "category": "full",
-                "description": "  Group Id"
-              },
-              {
-                "type": "reference",
-                "argument": "about",
-                "category": "full",
-                "description": "  Group about"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "groupId"
-                },
-                "id": 1,
-                "name": "groupId"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "string"
-                },
-                "id": 2,
-                "name": "about"
-              }
-            ]
-          }
-        },
-        {
-          "type": "update",
-          "content": {
-            "name": "GroupAvatarChanged",
-            "header": 39,
-            "doc": [
-              "Update about group avatar change",
-              {
-                "type": "reference",
-                "argument": "groupId",
-                "category": "full",
-                "description": "  Group Id"
-              },
-              {
-                "type": "reference",
-                "argument": "uid",
-                "category": "full",
-                "description": "  Avatar changer uid"
-              },
-              {
-                "type": "reference",
-                "argument": "avatar",
-                "category": "compact",
-                "description": "  New Avatar. If null then avatar is removed"
-              },
-              {
-                "type": "reference",
-                "argument": "date",
-                "category": "full",
-                "description": "  Date of avatar change"
-              },
-              {
-                "type": "reference",
-                "argument": "rid",
-                "category": "full",
-                "description": "  Random Id of operation"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "groupId"
-                },
-                "id": 1,
-                "name": "groupId"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "randomId"
-                },
-                "id": 5,
-                "name": "rid"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "userId"
-                },
-                "id": 2,
-                "name": "uid"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": {
-                    "type": "struct",
-                    "childType": "Avatar"
-                  }
-                },
-                "id": 3,
-                "name": "avatar"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "date"
-                },
-                "id": 4,
-                "name": "date"
-              }
-            ]
-          }
+          "type": "comment",
+          "content": "Invite"
         },
         {
           "type": "response",
@@ -8736,6 +10020,12 @@
                 },
                 {
                   "type": "reference",
+                  "argument": "userPeers",
+                  "category": "hidden",
+                  "description": "  User Peers"
+                },
+                {
+                  "type": "reference",
                   "argument": "rid",
                   "category": "full",
                   "description": "  Random id"
@@ -8781,6 +10071,17 @@
                 },
                 {
                   "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "UserOutPeer"
+                    }
+                  },
+                  "id": 7,
+                  "name": "userPeers"
+                },
+                {
+                  "type": {
                     "type": "alias",
                     "childType": "randomId"
                   },
@@ -8817,6 +10118,12 @@
                 "argument": "token",
                 "category": "full",
                 "description": "Url or Token for joining to group"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "hidden",
+                "description": "Enabled Optimizations"
               }
             ],
             "attributes": [
@@ -8824,6 +10131,981 @@
                 "type": "string",
                 "id": 1,
                 "name": "token"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 2,
+                "name": "optimizations"
+              }
+            ]
+          }
+        },
+        {
+          "type": "comment",
+          "content": "Obsolete Actions"
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "CreateGroupObsolete",
+            "header": 65,
+            "response": {
+              "type": "anonymous",
+              "header": 66,
+              "doc": [
+                "Created group",
+                {
+                  "type": "reference",
+                  "argument": "groupPeer",
+                  "category": "full",
+                  "description": "  Peer of created group"
+                },
+                {
+                  "type": "reference",
+                  "argument": "seq",
+                  "category": "full",
+                  "description": "  Sequence number"
+                },
+                {
+                  "type": "reference",
+                  "argument": "state",
+                  "category": "compact",
+                  "description": "  Sequence state"
+                },
+                {
+                  "type": "reference",
+                  "argument": "users",
+                  "category": "compact",
+                  "description": "  Members of created group"
+                },
+                {
+                  "type": "reference",
+                  "argument": "date",
+                  "category": "full",
+                  "description": "  Group creation date"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "struct",
+                    "childType": "GroupOutPeer"
+                  },
+                  "id": 1,
+                  "name": "groupPeer"
+                },
+                {
+                  "type": "int32",
+                  "id": 3,
+                  "name": "seq"
+                },
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "seq_state"
+                  },
+                  "id": 4,
+                  "name": "state"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": "int32"
+                  },
+                  "id": 5,
+                  "name": "users"
+                },
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "date"
+                  },
+                  "id": 6,
+                  "name": "date"
+                }
+              ]
+            },
+            "doc": [
+              "[OBSOLETE] Creating group chat",
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "Random Id for avoiding double create"
+              },
+              {
+                "type": "reference",
+                "argument": "title",
+                "category": "full",
+                "description": "Title of new group"
+              },
+              {
+                "type": "reference",
+                "argument": "users",
+                "category": "compact",
+                "description": "Members of new group"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 1,
+                "name": "rid"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "title"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "UserOutPeer"
+                  }
+                },
+                "id": 3,
+                "name": "users"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "EnterGroupObsolete",
+            "header": 199,
+            "response": {
+              "type": "anonymous",
+              "header": 200,
+              "doc": [
+                "Joined group",
+                {
+                  "type": "reference",
+                  "argument": "group",
+                  "category": "full",
+                  "description": "  Joined group"
+                },
+                {
+                  "type": "reference",
+                  "argument": "users",
+                  "category": "full",
+                  "description": "  Referenced users"
+                },
+                {
+                  "type": "reference",
+                  "argument": "rid",
+                  "category": "full",
+                  "description": "  Rid of join message"
+                },
+                {
+                  "type": "reference",
+                  "argument": "seq",
+                  "category": "full",
+                  "description": "  Seq of Update"
+                },
+                {
+                  "type": "reference",
+                  "argument": "state",
+                  "category": "full",
+                  "description": "  State of Update"
+                },
+                {
+                  "type": "reference",
+                  "argument": "date",
+                  "category": "full",
+                  "description": "  Date of update"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "struct",
+                    "childType": "Group"
+                  },
+                  "id": 1,
+                  "name": "group"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "User"
+                    }
+                  },
+                  "id": 2,
+                  "name": "users"
+                },
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "randomId"
+                  },
+                  "id": 3,
+                  "name": "rid"
+                },
+                {
+                  "type": "int32",
+                  "id": 4,
+                  "name": "seq"
+                },
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "seq_state"
+                  },
+                  "id": 5,
+                  "name": "state"
+                },
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "date"
+                  },
+                  "id": 6,
+                  "name": "date"
+                }
+              ]
+            },
+            "doc": [
+              "[OBSOLETE] Join random group by peer id",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "Public group peer"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "MakeUserAdminObsolete",
+            "header": 214,
+            "response": {
+              "type": "anonymous",
+              "header": 215,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "members",
+                  "category": "full",
+                  "description": "  new members"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "Member"
+                    }
+                  },
+                  "id": 1,
+                  "name": "members"
+                },
+                {
+                  "type": "int32",
+                  "id": 2,
+                  "name": "seq"
+                },
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "seq_state"
+                  },
+                  "id": 3,
+                  "name": "state"
+                }
+              ]
+            },
+            "doc": [
+              "[OBSOLETE] Make user admin",
+              {
+                "type": "reference",
+                "argument": "groupPeer",
+                "category": "full",
+                "description": "Group's peer"
+              },
+              {
+                "type": "reference",
+                "argument": "userPeer",
+                "category": "full",
+                "description": "User's peer"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "groupPeer"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "UserOutPeer"
+                },
+                "id": 2,
+                "name": "userPeer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "comment",
+          "content": "Obsolete Updates"
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupInviteObsolete",
+            "header": 36,
+            "doc": [
+              "Update about inviting current user to group",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "inviteUid",
+                "category": "full",
+                "description": "  Inviter UID. If equals to current uid than group created by user."
+              },
+              {
+                "type": "reference",
+                "argument": "date",
+                "category": "full",
+                "description": "  Date of creating"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "  Random Id of operation"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 9,
+                "name": "rid"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 5,
+                "name": "inviteUid"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
+                "id": 8,
+                "name": "date"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupUserInvitedObsolete",
+            "header": 21,
+            "doc": [
+              "Update about inviting user to group",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  Added user ID"
+              },
+              {
+                "type": "reference",
+                "argument": "inviterUid",
+                "category": "full",
+                "description": "  Inviter user ID"
+              },
+              {
+                "type": "reference",
+                "argument": "date",
+                "category": "full",
+                "description": "  Date of adding user to group"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "  Random Id of operation"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 5,
+                "name": "rid"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 2,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 3,
+                "name": "inviterUid"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
+                "id": 4,
+                "name": "date"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupUserLeaveObsolete",
+            "header": 23,
+            "doc": [
+              "Update about leaving user",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  User's ID"
+              },
+              {
+                "type": "reference",
+                "argument": "date",
+                "category": "full",
+                "description": "  Date of user leave"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "  Random Id of operation"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 4,
+                "name": "rid"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 2,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
+                "id": 3,
+                "name": "date"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupUserKickObsolete",
+            "header": 24,
+            "doc": [
+              "Update about kicking user",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  Kicked user's ID"
+              },
+              {
+                "type": "reference",
+                "argument": "kickerUid",
+                "category": "full",
+                "description": "  Kicker user's ID"
+              },
+              {
+                "type": "reference",
+                "argument": "date",
+                "category": "full",
+                "description": "  Date of user kick"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "  Random Id of operation"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 5,
+                "name": "rid"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 2,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 3,
+                "name": "kickerUid"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
+                "id": 4,
+                "name": "date"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupMembersUpdateObsolete",
+            "header": 44,
+            "doc": [
+              "Silent group members update",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "members",
+                "category": "full",
+                "description": "  New members list"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Member"
+                  }
+                },
+                "id": 2,
+                "name": "members"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupTitleChangedObsolete",
+            "header": 38,
+            "doc": [
+              "Update about group title change",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  Changer UID"
+              },
+              {
+                "type": "reference",
+                "argument": "title",
+                "category": "full",
+                "description": "  New Title of group"
+              },
+              {
+                "type": "reference",
+                "argument": "date",
+                "category": "full",
+                "description": "  Date of title change"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "  Random Id of operation"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 5,
+                "name": "rid"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 2,
+                "name": "uid"
+              },
+              {
+                "type": "string",
+                "id": 3,
+                "name": "title"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
+                "id": 4,
+                "name": "date"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupTopicChangedObsolete",
+            "header": 213,
+            "doc": [
+              "Update about group topic change",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  Changer UID"
+              },
+              {
+                "type": "reference",
+                "argument": "topic",
+                "category": "full",
+                "description": "  New topic of group"
+              },
+              {
+                "type": "reference",
+                "argument": "date",
+                "category": "full",
+                "description": "  Date of theme change"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "  Randomd Id of operation"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "rid"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 3,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 4,
+                "name": "topic"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
+                "id": 5,
+                "name": "date"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupAboutChangedObsolete",
+            "header": 214,
+            "doc": [
+              "Update about group about change",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "about",
+                "category": "full",
+                "description": "  Group about"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "about"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupAvatarChangedObsolete",
+            "header": 39,
+            "doc": [
+              "Update about group avatar change",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  Avatar changer uid"
+              },
+              {
+                "type": "reference",
+                "argument": "avatar",
+                "category": "compact",
+                "description": "  New Avatar. If null then avatar is removed"
+              },
+              {
+                "type": "reference",
+                "argument": "date",
+                "category": "full",
+                "description": "  Date of avatar change"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "  Random Id of operation"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 5,
+                "name": "rid"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 2,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Avatar"
+                  }
+                },
+                "id": 3,
+                "name": "avatar"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
+                "id": 4,
+                "name": "date"
               }
             ]
           }
@@ -9670,6 +11952,18 @@
                   "argument": "groups",
                   "category": "full",
                   "description": "  Related groups"
+                },
+                {
+                  "type": "reference",
+                  "argument": "userPeers",
+                  "category": "full",
+                  "description": "  Related user peers"
+                },
+                {
+                  "type": "reference",
+                  "argument": "groupPeers",
+                  "category": "full",
+                  "description": "  Related group peers"
                 }
               ],
               "attributes": [
@@ -9705,6 +11999,28 @@
                   },
                   "id": 3,
                   "name": "groups"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "UserOutPeer"
+                    }
+                  },
+                  "id": 4,
+                  "name": "userPeers"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "GroupOutPeer"
+                    }
+                  },
+                  "id": 5,
+                  "name": "groupPeers"
                 }
               ]
             },
@@ -9715,6 +12031,12 @@
                 "argument": "query",
                 "category": "full",
                 "description": "Search query. Warring not all combinations can be processed by server. (acts as OR)"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled Optimizations"
               }
             ],
             "attributes": [
@@ -9728,6 +12050,17 @@
                 },
                 "id": 1,
                 "name": "query"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 2,
+                "name": "optimizations"
               }
             ]
           }
@@ -9862,6 +12195,18 @@
                 "argument": "loadMoreState",
                 "category": "hidden",
                 "description": "  State for loading more results"
+              },
+              {
+                "type": "reference",
+                "argument": "userOutPeers",
+                "category": "full",
+                "description": "  Search user peers"
+              },
+              {
+                "type": "reference",
+                "argument": "groupOutPeers",
+                "category": "full",
+                "description": "  Search group peers"
               }
             ],
             "attributes": [
@@ -9905,6 +12250,28 @@
                 },
                 "id": 4,
                 "name": "loadMoreState"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "UserOutPeer"
+                  }
+                },
+                "id": 5,
+                "name": "userOutPeers"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "GroupOutPeer"
+                  }
+                },
+                "id": 6,
+                "name": "groupOutPeers"
               }
             ]
           }
@@ -9925,6 +12292,12 @@
                 "argument": "query",
                 "category": "full",
                 "description": "Search query"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled Optimizations"
               }
             ],
             "attributes": [
@@ -9935,6 +12308,17 @@
                 },
                 "id": 1,
                 "name": "query"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 2,
+                "name": "optimizations"
               }
             ]
           }
@@ -9955,6 +12339,12 @@
                 "argument": "loadMoreState",
                 "category": "hidden",
                 "description": "State for loading more results"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled Optimizations"
               }
             ],
             "attributes": [
@@ -9962,6 +12352,17 @@
                 "type": "bytes",
                 "id": 1,
                 "name": "loadMoreState"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 2,
+                "name": "optimizations"
               }
             ]
           }
@@ -15011,6 +17412,33 @@
         {
           "type": "rpc",
           "content": {
+            "name": "UnregisterGooglePush",
+            "header": 2631,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Unregistering Google Push",
+              {
+                "type": "reference",
+                "argument": "token",
+                "category": "danger",
+                "description": "Token value"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "token"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
             "name": "RegisterApplePush",
             "header": 76,
             "response": {
@@ -15041,6 +17469,33 @@
               {
                 "type": "string",
                 "id": 2,
+                "name": "token"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "UnregisterApplePush",
+            "header": 2632,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Unregistering Apple Push",
+              {
+                "type": "reference",
+                "argument": "token",
+                "category": "full",
+                "description": "Token"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
                 "name": "token"
               }
             ]
@@ -15087,6 +17542,98 @@
         {
           "type": "rpc",
           "content": {
+            "name": "UnregisterApplePushKit",
+            "header": 2633,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Unregistering Apple Push Kit token",
+              {
+                "type": "reference",
+                "argument": "token",
+                "category": "hidden",
+                "description": "Token Value"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "token"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "RegisterApplePushToken",
+            "header": 2593,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Registering Apple Push Token",
+              {
+                "type": "reference",
+                "argument": "bundleId",
+                "category": "full",
+                "description": "Bundle Id of app"
+              },
+              {
+                "type": "reference",
+                "argument": "token",
+                "category": "full",
+                "description": "Push token"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "bundleId"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "token"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "UnregisterApplePushToken",
+            "header": 2634,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Unregister Apple Push token",
+              {
+                "type": "reference",
+                "argument": "token",
+                "category": "hidden",
+                "description": "Token value"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "token"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
             "name": "RegisterActorPush",
             "header": 2575,
             "response": {
@@ -15094,7 +17641,7 @@
               "name": "Void"
             },
             "doc": [
-              "Register Actor Push token",
+              "Register Actor Push endpoint",
               {
                 "type": "reference",
                 "argument": "endpoint",
@@ -15131,16 +17678,28 @@
         {
           "type": "rpc",
           "content": {
-            "name": "UnregisterPush",
-            "header": 52,
+            "name": "UnregisterActorPush",
+            "header": 2635,
             "response": {
               "type": "reference",
               "name": "Void"
             },
             "doc": [
-              "Unregister push"
+              "Unregister Actor Push endpoint",
+              {
+                "type": "reference",
+                "argument": "endpoint",
+                "category": "full",
+                "description": "Endpoint for unregistering"
+              }
             ],
-            "attributes": []
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "endpoint"
+              }
+            ]
           }
         }
       ]
@@ -17289,6 +19848,18 @@
               {
                 "name": "FASTER_MESSAGES",
                 "id": 4
+              },
+              {
+                "name": "STRIP_COUNTERS",
+                "id": 5
+              },
+              {
+                "name": "COMPACT_USERS",
+                "id": 6
+              },
+              {
+                "name": "GROUPS_V2",
+                "id": 7
               }
             ]
           }

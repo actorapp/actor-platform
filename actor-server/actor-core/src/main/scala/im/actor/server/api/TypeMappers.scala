@@ -1,19 +1,21 @@
 package im.actor.server.api
 
+import java.net.InetAddress
 import java.time.Instant
 
-import akka.actor.{ ExtendedActorSystem, ActorSystem, ActorRef }
+import akka.actor.{ ActorRef, ActorSystem, ExtendedActorSystem }
 import akka.serialization.Serialization
+import com.google.protobuf.wrappers.Int64Value
 import com.google.protobuf.{ ByteString, CodedInputStream }
 import com.trueaccord.scalapb.TypeMapper
 import im.actor.api.rpc.files.ApiAvatar
-import im.actor.api.rpc.groups.ApiGroup
+import im.actor.api.rpc.groups.{ ApiGroup, ApiGroupFull }
 import im.actor.api.rpc.messaging.ApiMessage
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.api.rpc.peers.ApiPeer
 import im.actor.api.rpc.sequence.SeqUpdate
 import im.actor.api.rpc.users.ApiSex.ApiSex
-import im.actor.api.rpc.users.{ ApiSex ⇒ S, ApiUser }
+import im.actor.api.rpc.users.{ ApiFullUser, ApiUser, ApiSex ⇒ S }
 import im.actor.serialization.ActorSerializer
 import org.joda.time.DateTime
 
@@ -40,6 +42,18 @@ private[api] trait MessageMapper {
     ByteString.copyFrom(message.toByteArray)
   }
 
+  private def applyInetAddress(bytes: ByteString): InetAddress = {
+    if (bytes.size() > 0) {
+      InetAddress.getByAddress(bytes.toByteArray)
+    } else {
+      null
+    }
+  }
+
+  private def unapplyInetAddress(remoteAddr: InetAddress): ByteString = {
+    ByteString.copyFrom(remoteAddr.getAddress())
+  }
+
   private def applyUser(bytes: ByteString): ApiUser = {
     if (bytes.size() > 0) {
       val res = ApiUser.parseFrom(CodedInputStream.newInstance(bytes.toByteArray))
@@ -53,6 +67,19 @@ private[api] trait MessageMapper {
     ByteString.copyFrom(user.toByteArray)
   }
 
+  private def applyFullUser(bytes: ByteString): ApiFullUser = {
+    if (bytes.size() > 0) {
+      val res = ApiFullUser.parseFrom(CodedInputStream.newInstance(bytes.toByteArray))
+      get(res)
+    } else {
+      null
+    }
+  }
+
+  private def unapplyFullUser(user: ApiFullUser): ByteString = {
+    ByteString.copyFrom(user.toByteArray)
+  }
+
   private def applyGroup(bytes: ByteString): ApiGroup = {
     if (bytes.size() > 0) {
       val res = ApiGroup.parseFrom(CodedInputStream.newInstance(bytes.toByteArray))
@@ -63,6 +90,19 @@ private[api] trait MessageMapper {
   }
 
   private def unapplyGroup(group: ApiGroup): ByteString = {
+    ByteString.copyFrom(group.toByteArray)
+  }
+
+  private def applyFullGroup(bytes: ByteString): ApiGroupFull = {
+    if (bytes.size() > 0) {
+      val res = ApiGroupFull.parseFrom(CodedInputStream.newInstance(bytes.toByteArray))
+      get(res)
+    } else {
+      null
+    }
+  }
+
+  private def unapplyFullGroup(group: ApiGroupFull): ByteString = {
     ByteString.copyFrom(group.toByteArray)
   }
 
@@ -84,6 +124,10 @@ private[api] trait MessageMapper {
   private def applyInstant(millis: Long): Instant = Instant.ofEpochMilli(millis)
 
   private def unapplyInstant(dt: Instant): Long = dt.toEpochMilli
+
+  private def applyInstantOpt(millis: Int64Value): Instant = Instant.ofEpochMilli(millis.value)
+
+  private def unapplyInstantOpt(dt: Instant): Int64Value = Int64Value(dt.toEpochMilli)
 
   private def applyAvatar(buf: ByteString): ApiAvatar =
     get(ApiAvatar.parseFrom(CodedInputStream.newInstance(buf.asReadOnlyByteBuffer())))
@@ -142,13 +186,21 @@ private[api] trait MessageMapper {
 
   implicit val userMapper: TypeMapper[ByteString, ApiUser] = TypeMapper(applyUser)(unapplyUser)
 
+  implicit val fullUserMapper: TypeMapper[ByteString, ApiFullUser] = TypeMapper(applyFullUser)(unapplyFullUser)
+
   implicit val groupMapper: TypeMapper[ByteString, ApiGroup] = TypeMapper(applyGroup)(unapplyGroup)
+
+  implicit val fullGroupMapper: TypeMapper[ByteString, ApiGroupFull] = TypeMapper(applyFullGroup)(unapplyFullGroup)
 
   implicit val peerMapper: TypeMapper[ByteString, ApiPeer] = TypeMapper(applyPeer)(unapplyPeer)
 
   implicit val dateTimeMapper: TypeMapper[Long, DateTime] = TypeMapper(applyDateTime)(unapplyDateTime)
 
   implicit val instantMapper: TypeMapper[Long, Instant] = TypeMapper(applyInstant)(unapplyInstant)
+
+  implicit val inetAddressMapper: TypeMapper[ByteString, InetAddress] = TypeMapper(applyInetAddress)(unapplyInetAddress)
+
+  implicit val instantOptMapper: TypeMapper[Int64Value, Instant] = TypeMapper(applyInstantOpt)(unapplyInstantOpt)
 
   implicit val avatarMapper: TypeMapper[ByteString, ApiAvatar] = TypeMapper(applyAvatar)(unapplyAvatar)
 

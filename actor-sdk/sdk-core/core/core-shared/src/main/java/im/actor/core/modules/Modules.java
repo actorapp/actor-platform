@@ -8,6 +8,7 @@ import im.actor.core.Configuration;
 import im.actor.core.Messenger;
 import im.actor.core.i18n.I18nEngine;
 import im.actor.core.modules.api.ApiModule;
+import im.actor.core.modules.auth.Authentication;
 import im.actor.core.modules.eventbus.EventBusModule;
 import im.actor.core.modules.sequence.Updates;
 import im.actor.core.modules.misc.AppStateModule;
@@ -29,10 +30,12 @@ import im.actor.core.modules.search.SearchModule;
 import im.actor.core.modules.security.SecurityModule;
 import im.actor.core.modules.settings.SettingsModule;
 import im.actor.core.modules.stickers.StickersModule;
+import im.actor.core.modules.storage.StorageModule;
 import im.actor.core.modules.typing.TypingModule;
 import im.actor.core.modules.users.UsersModule;
 import im.actor.core.network.ActorApi;
 import im.actor.core.util.Timing;
+import im.actor.runtime.Runtime;
 import im.actor.runtime.Storage;
 import im.actor.runtime.eventbus.EventBus;
 import im.actor.runtime.storage.PreferencesStorage;
@@ -47,12 +50,12 @@ public class Modules implements ModuleContext {
     private final I18nEngine i18nEngine;
     private final PreferencesStorage preferences;
     private final EventBus events;
+    private final StorageModule storageModule;
 
     // API support
     private final ApiModule api;
 
     // Modules required before authentication
-    private final AppStateModule appStateModule;
     private final ExternalModule external;
     private final Authentication authentication;
 
@@ -60,6 +63,7 @@ public class Modules implements ModuleContext {
     private volatile Updates updates;
     private volatile UsersModule users;
     private volatile GroupsModule groups;
+    private volatile AppStateModule appStateModule;
     private volatile StickersModule stickers;
     private volatile CallsModule calls;
     private volatile MessagesModule messages;
@@ -83,41 +87,54 @@ public class Modules implements ModuleContext {
         this.messenger = messenger;
         this.configuration = configuration;
 
-        Timing timing = new Timing("MODULES_INIT");
+        // Timing timing = new Timing("MODULES_INIT");
 
-        timing.section("I18N");
-        this.i18nEngine = new I18nEngine(this);
+        // timing.section("I18N");
+        this.i18nEngine = I18nEngine.create(this);
 
-        timing.section("Preferences");
+        // timing.section("Preferences");
         this.preferences = Storage.createPreferencesStorage();
 
-        timing.section("Events");
+        // timing.section("Storage");
+        this.storageModule = new StorageModule(this);
+
+        // timing.section("Events");
         this.events = new EventBus();
 
-        timing.section("API");
+        // timing.section("App State");
+        appStateModule = new AppStateModule(this);
+
+        // timing.section("API");
         this.api = new ApiModule(this);
 
-        timing.section("App State");
-        this.appStateModule = new AppStateModule(this);
-
-        timing.section("External");
+        // timing.section("External");
         this.external = new ExternalModule(this);
 
-        timing.section("Pushes");
+        // timing.section("Pushes");
         this.pushes = new PushesModule(this);
 
-        timing.section("Auth");
+        // timing.section("Auth");
         this.authentication = new Authentication(this);
-        this.authentication.run();
-        timing.end();
+        // timing.end();
     }
 
-    public void onLoggedIn() {
+    public void run() {
+        // Timing timing = new Timing("RUN");
+        // timing.section("Auth");
+        this.authentication.run();
+        // timing.end();
+    }
+
+    public void onLoggedIn(boolean first) {
         Timing timing = new Timing("ACCOUNT_CREATE");
         timing.section("Users");
         users = new UsersModule(this);
+        timing.section("Storage");
+        storageModule.run(first);
         timing.section("Groups");
         groups = new GroupsModule(this);
+        timing.section("App State");
+        appStateModule.run();
         timing.section("Stickers");
         stickers = new StickersModule(this);
         timing.section("Calls");
@@ -146,18 +163,19 @@ public class Modules implements ModuleContext {
         profile = new ProfileModule(this);
         timing.section("Mentions");
         mentions = new MentionsModule(this);
-        timing.section("Encryption");
-        encryptionModule = new EncryptionModule(this);
+//        timing.section("Encryption");
+//        encryptionModule = new EncryptionModule(this);
         timing.section("DisplayLists");
         displayLists = new DisplayLists(this);
         timing.section("DeviceInfo");
         deviceInfoModule = new DeviceInfoModule(this);
         timing.section("EventBus");
         eventBusModule = new EventBusModule(this);
-        timing.end();
 
 
         timing = new Timing("ACCOUNT_RUN");
+        timing.section("Users");
+        users.run();
         timing.section("Settings");
         settings.run();
         timing.section("DeviceInfo");
@@ -170,8 +188,8 @@ public class Modules implements ModuleContext {
         notifications.run();
         timing.section("AppState");
         appStateModule.run();
-        timing.section("Encryption");
-        encryptionModule.run();
+//        timing.section("Encryption");
+//        encryptionModule.run();
         timing.section("Contacts");
         contacts.run();
         timing.section("Messages");
@@ -186,7 +204,22 @@ public class Modules implements ModuleContext {
         stickers.run();
         timing.end();
 
-        messenger.onLoggedIn();
+        if (Runtime.isMainThread()) {
+            messenger.onLoggedIn();
+        } else {
+            Runtime.postToMainThread(new Runnable() {
+                @Override
+                public void run() {
+                    messenger.onLoggedIn();
+                }
+            });
+        }
+    }
+
+    @Override
+    public void afterStorageReset() {
+        // Recreation of Users Module to pick fresh database
+        users = new UsersModule(this);
     }
 
     public void onLoggedOut() {
@@ -265,6 +298,12 @@ public class Modules implements ModuleContext {
     public ApiModule getApiModule() {
         return api;
     }
+
+    @Override
+    public StorageModule getStorageModule() {
+        return storageModule;
+    }
+
 
     @Override
     public I18nEngine getI18nModule() {

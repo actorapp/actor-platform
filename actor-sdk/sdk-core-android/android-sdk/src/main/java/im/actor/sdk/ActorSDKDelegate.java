@@ -1,6 +1,7 @@
 package im.actor.sdk;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -8,13 +9,13 @@ import im.actor.core.AuthState;
 import im.actor.core.entity.Peer;
 import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
-import im.actor.sdk.controllers.activity.controllers.MainPhoneController;
+import im.actor.sdk.controllers.root.MainPhoneController;
 import im.actor.sdk.controllers.conversation.messages.MessageHolder;
-import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
-import im.actor.sdk.controllers.fragment.auth.BaseAuthFragment;
-import im.actor.sdk.controllers.fragment.settings.ActorSettingsCategory;
-import im.actor.sdk.controllers.fragment.settings.BaseActorProfileActivity;
-import im.actor.sdk.controllers.fragment.settings.BaseGroupInfoActivity;
+import im.actor.sdk.controllers.conversation.MessagesAdapter;
+import im.actor.sdk.controllers.auth.BaseAuthFragment;
+import im.actor.sdk.controllers.settings.ActorSettingsCategory;
+import im.actor.sdk.controllers.settings.BaseActorProfileActivity;
+import im.actor.sdk.controllers.settings.BaseGroupInfoActivity;
 import im.actor.sdk.intents.ActorIntent;
 import im.actor.sdk.intents.ActorIntentFragmentActivity;
 
@@ -126,6 +127,37 @@ public interface ActorSDKDelegate {
      */
     MessageHolder getCustomMessageViewHolder(int dataTypeHash, MessagesAdapter messagesAdapter, ViewGroup viewGroup);
 
+    /**
+     * Override for setting specific notification sound for peer
+     *
+     * @param peer peer to set notification sound
+     * @return notification sound uri
+     */
+    Uri getNotificationSoundForPeer(Peer peer);
+
+
+    /**
+     * Override for setting specific notification color for peer
+     *
+     * @param peer peer to set notification color
+     * @return notification sound color
+     */
+    int getNotificationColorForPeer(Peer peer);
+
+
+    /**
+     * Override change notification sound
+     *
+     * @return notification sound uri
+     */
+    Uri getNotificationSound();
+
+    /**
+     * Override change notification color
+     *
+     * @return notification sound color
+     */
+    int getNotificationColor();
 
 
     /**

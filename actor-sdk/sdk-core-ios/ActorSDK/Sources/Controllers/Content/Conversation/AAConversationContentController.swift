@@ -14,6 +14,8 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
     
     private let delayLoad = false
     
+    private let binder = AABinder()
+    
     private var displayList: ARBindedDisplayList!
     private var isStarted: Bool = AADevice.isiPad
     private var isVisible: Bool = false
@@ -27,6 +29,8 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
     private var isUpdating: Bool = false
     private var isBinded: Bool = false
     private var pendingUpdates = [ARAppleListUpdate]()
+    private var readDate: jlong = 0
+    private var receiveDate: jlong = 0
     
     // Audio notes
     public var voicePlayer : AAModernConversationAudioPlayer!
@@ -73,15 +77,7 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
         if delayLoad {
             
             if (isStarted) {
-                if !isBinded {
-                    isBinded = true
-                    self.willUpdate()
-                    self.collectionViewLayout.beginUpdates(false, list: self.displayList.getProcessedList() as? AAPreprocessedList, unread: unreadMessageId)
-                    self.collectionView.reloadData()
-                    prevCount = getCount()
-                    self.displayList.addAppleListener(self)
-                    self.didUpdate()
-                }
+                tryBind()
                 return
             } else {
                 self.collectionView.alpha = 0
@@ -97,30 +93,48 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
                 
                 UIView.animateWithDuration(0.6, animations: { () -> Void in self.collectionView.alpha = 1 }, completion: { (comp) -> Void in })
                 
-                if !self.isBinded {
-                    self.isBinded = true
-                    self.willUpdate()
-                    self.collectionViewLayout.beginUpdates(false, list: self.displayList.getProcessedList() as? AAPreprocessedList, unread: self.unreadMessageId)
-                    self.collectionView.reloadData()
-                    self.prevCount = self.getCount()
-                    self.displayList.addAppleListener(self)
-                    self.didUpdate()
-                }
+                self.tryBind()
             })
         } else {
             self.isStarted = true
             
             UIView.animateWithDuration(0.6, animations: { () -> Void in self.collectionView.alpha = 1 }, completion: { (comp) -> Void in })
             
-            if !self.isBinded {
-                self.isBinded = true
-                self.willUpdate()
-                self.collectionViewLayout.beginUpdates(false, list: self.displayList.getProcessedList() as? AAPreprocessedList, unread: self.unreadMessageId)
-                self.collectionView.reloadData()
-                self.prevCount = self.getCount()
-                self.displayList.addAppleListener(self)
-                self.didUpdate()
+            tryBind()
+        }
+    }
+    
+    private func tryBind() {
+        if !self.isBinded {
+            
+            self.binder.bind(Actor.getConversationVMWithACPeer(peer).getReadDate()) { (val: JavaLangLong!) in
+                
+                let nReadDate = val!.longLongValue()
+                let oReadDate = self.readDate
+                self.readDate = nReadDate
+                
+                if self.isBinded && nReadDate != oReadDate {
+                    self.messageStatesUpdated(oReadDate, end: nReadDate)
+                }
             }
+            self.binder.bind(Actor.getConversationVMWithACPeer(peer).getReceiveDate()) { (val: JavaLangLong!) in
+                
+                let nReceiveDate = val!.longLongValue()
+                let oReceiveDate = self.receiveDate
+                self.receiveDate = nReceiveDate
+                
+                if self.isBinded && nReceiveDate != oReceiveDate {
+                    self.messageStatesUpdated(oReceiveDate, end: nReceiveDate)
+                }
+            }
+            
+            self.isBinded = true
+            self.willUpdate()
+            self.collectionViewLayout.beginUpdates(false, list: self.displayList.getProcessedList() as? AAPreprocessedList, unread: self.unreadMessageId)
+            self.collectionView.reloadData()
+            self.prevCount = self.getCount()
+            self.displayList.addAppleListener(self)
+            self.didUpdate()
         }
     }
     
@@ -140,7 +154,7 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
         let layout = list!.layouts[indexPath.row]
         let bubbleCell = (cell as! AABubbleCell)
         let isShowNewMessages = message.rid == unreadMessageId
-        bubbleCell.performBind(message, setting: setting, isShowNewMessages: isShowNewMessages, layout: layout)
+        bubbleCell.performBind(message, receiveDate: receiveDate, readDate: readDate, setting: setting, isShowNewMessages: isShowNewMessages, layout: layout)
     }
     
     public func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAtIndex section: Int) -> UIEdgeInsets {
@@ -189,6 +203,16 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
         return cell
     }
     
+    public override func collectionView(collectionView: UICollectionView, didUnhighlightItemAtIndexPath indexPath: NSIndexPath) {
+        let cell = collectionView.cellForItemAtIndexPath(indexPath) as! AABubbleCell
+        cell.updateView()
+    }
+
+    public override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        let cell = collectionView.cellForItemAtIndexPath(indexPath) as! AABubbleCell
+        cell.updateView()
+    }
+    
     public override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
         
@@ -199,6 +223,9 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
             
             // Remove listener on exit
             self.displayList.removeAppleListener(self)
+            
+            // Unbinding read/receive states
+            self.binder.unbindAll()
         }
     }
     
@@ -369,6 +396,18 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
     
     private func completeUpdates(modification: ARAppleListUpdate!) {
         
+    }
+    
+    private func messageStatesUpdated(start: jlong, end: jlong) {
+        let visibleIndexes = self.collectionView.indexPathsForVisibleItems()
+        for ind in visibleIndexes {
+            if let obj = objectAtIndex(ind.row) {
+                if obj.senderId == Actor.myUid() && obj.sortDate >= start && obj.sortDate <= end {
+                    let cell = self.collectionView.cellForItemAtIndexPath(ind)
+                    self.bindCell(self.collectionView, cellForRowAtIndexPath: ind, cell: cell!)
+                }
+            }
+        }
     }
     
     public func willUpdate() {

@@ -45,8 +45,6 @@ public class ActorStyle {
     /// View Controller background color for settings
     public var vcBackyardColor = UIColor(red: 238/255.0, green: 238/255.0, blue: 238/255.0, alpha: 1)
     
-
-    
     //
     // UINavigationBar
     //
@@ -360,9 +358,15 @@ public class ActorStyle {
     // Bubble Colors
     
     public var chatTextBubbleOutColor = UIColor(rgb: 0xD2FEFD)
+    
+    public var chatTextBubbleOutSelectedColor = UIColor.lightGrayColor()
+    
     public var chatTextBubbleOutBorderColor = UIColor(rgb: 0x99E4E3)
     
     public var chatTextBubbleInColor = UIColor.whiteColor()
+    
+    public var chatTextBubbleInSelectedColor = UIColor.blueColor()
+    
     public var chatTextBubbleInBorderColor = UIColor(rgb: 0xCCCCCC)
     
     public var chatMediaBubbleColor = UIColor.whiteColor()
@@ -725,8 +729,9 @@ public class ActorStyle {
     public var welcomeLoginTextColor = UIColor.whiteColor()
     
     /// Welcome Logo
-    public var welcomeLogo: UIImage? = UIImage.bundled("logo_welcome")
-    
+    public var welcomeLogo:     UIImage? = UIImage.bundled("logo_welcome")
+    public var welcomeLogoSize: CGSize = CGSize(width: 90, height: 90)
+    public var logoViewVerticalGap: CGFloat = 145
     
     //
     // Auth Screen

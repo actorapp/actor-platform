@@ -134,7 +134,6 @@
 		066A51921BC4C383000E606E /* CocoaFileSystemRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A518B1BC4C383000E606E /* CocoaFileSystemRuntime.swift */; };
 		066A519A1BC4C390000E606E /* FMDBList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A51951BC4C390000E606E /* FMDBList.swift */; };
 		066A519B1BC4C390000E606E /* FMDBKeyValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A51961BC4C390000E606E /* FMDBKeyValue.swift */; };
-		066A519C1BC4C390000E606E /* FMDBIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A51971BC4C390000E606E /* FMDBIndex.swift */; };
 		066A519D1BC4C390000E606E /* UDPreferencesStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A51981BC4C390000E606E /* UDPreferencesStorage.swift */; };
 		066A519E1BC4C390000E606E /* FMDBExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A51991BC4C390000E606E /* FMDBExtensions.swift */; };
 		066A52001BC4E0B0000E606E /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 066A51FF1BC4E0B0000E606E /* libsqlite3.tbd */; };
@@ -336,6 +335,7 @@
 		15F89F081C211FED00776ACD /* opus_multistream.h in Headers */ = {isa = PBXBuildFile; fileRef = 15F89F041C211FED00776ACD /* opus_multistream.h */; };
 		15F89F091C211FED00776ACD /* opus_types.h in Headers */ = {isa = PBXBuildFile; fileRef = 15F89F051C211FED00776ACD /* opus_types.h */; };
 		15F89F0A1C211FED00776ACD /* opus.h in Headers */ = {isa = PBXBuildFile; fileRef = 15F89F061C211FED00776ACD /* opus.h */; };
+		9A680E1B1CC3A34800E3CF59 /* AAUnblockActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A680E1A1CC3A34800E3CF59 /* AAUnblockActionSheet.swift */; };
 		BDF21708B376E212CEAEC43D /* Pods_ActorSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 354C3EFA48FBFAEAD0DEEE17 /* Pods_ActorSDK.framework */; };
 		BE237C9D1C422FFA00060648 /* AAStickersKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE237C9C1C422FFA00060648 /* AAStickersKeyboard.swift */; };
 		BE2621571C4656D700A817AB /* AAConvActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE2621561C4656D700A817AB /* AAConvActionSheet.swift */; };
@@ -508,7 +508,6 @@
 		066A518B1BC4C383000E606E /* CocoaFileSystemRuntime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaFileSystemRuntime.swift; sourceTree = "<group>"; };
 		066A51951BC4C390000E606E /* FMDBList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FMDBList.swift; sourceTree = "<group>"; };
 		066A51961BC4C390000E606E /* FMDBKeyValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FMDBKeyValue.swift; sourceTree = "<group>"; };
-		066A51971BC4C390000E606E /* FMDBIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FMDBIndex.swift; sourceTree = "<group>"; };
 		066A51981BC4C390000E606E /* UDPreferencesStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UDPreferencesStorage.swift; sourceTree = "<group>"; };
 		066A51991BC4C390000E606E /* FMDBExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FMDBExtensions.swift; sourceTree = "<group>"; };
 		066A51FF1BC4E0B0000E606E /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
@@ -718,6 +717,7 @@
 		15F89F061C211FED00776ACD /* opus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opus.h; sourceTree = "<group>"; };
 		15F89F0F1C21317400776ACD /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		354C3EFA48FBFAEAD0DEEE17 /* Pods_ActorSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ActorSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9A680E1A1CC3A34800E3CF59 /* AAUnblockActionSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAUnblockActionSheet.swift; sourceTree = "<group>"; };
 		BE237C9C1C422FFA00060648 /* AAStickersKeyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAStickersKeyboard.swift; sourceTree = "<group>"; };
 		BE2621561C4656D700A817AB /* AAConvActionSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAConvActionSheet.swift; sourceTree = "<group>"; };
 		BE2621581C4656EE00A817AB /* AAThumbnailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAThumbnailView.swift; sourceTree = "<group>"; };
@@ -1032,7 +1032,6 @@
 				066A516E1BC4C369000E606E /* FMDB */,
 				065975011BC7534100B8C7DF /* FMDBBridge.swift */,
 				066A51991BC4C390000E606E /* FMDBExtensions.swift */,
-				066A51971BC4C390000E606E /* FMDBIndex.swift */,
 				066A51961BC4C390000E606E /* FMDBKeyValue.swift */,
 				066A51951BC4C390000E606E /* FMDBList.swift */,
 				066A51981BC4C390000E606E /* UDPreferencesStorage.swift */,
@@ -1671,6 +1670,7 @@
 				BE2621561C4656D700A817AB /* AAConvActionSheet.swift */,
 				BE2621581C4656EE00A817AB /* AAThumbnailView.swift */,
 				BEFE68D41C4657360001F2D6 /* AAThumbnailCollectionCell.swift */,
+				9A680E1A1CC3A34800E3CF59 /* AAUnblockActionSheet.swift */,
 			);
 			name = AttachmentView;
 			sourceTree = "<group>";
@@ -2142,7 +2142,6 @@
 				066A53151BC533D5000E606E /* AAConversationContentController.swift in Sources */,
 				066A52151BC4EE04000E606E /* AAAvatarView.swift in Sources */,
 				066A52591BC4EF61000E606E /* Executions.swift in Sources */,
-				066A519C1BC4C390000E606E /* FMDBIndex.swift in Sources */,
 				153F6B8A1C2D7BA300C0B960 /* AATapLabelDelegate.swift in Sources */,
 				15D35F5E1C20187E00E3717A /* AANativeAudioPlayer.m in Sources */,
 				066A52DB1BC52385000E606E /* AAContactActionCell.swift in Sources */,
@@ -2201,6 +2200,7 @@
 				066A52281BC4EEAC000E606E /* AAManagedTableController.swift in Sources */,
 				065975541BC7DF5100B8C7DF /* CocoaAssetsRuntime.swift in Sources */,
 				06E7B2521C1345E70090660C /* AAMapPinPointView.swift in Sources */,
+				9A680E1B1CC3A34800E3CF59 /* AAUnblockActionSheet.swift in Sources */,
 				06129AAB1C83B80B0099286B /* AAAudioRouter.swift in Sources */,
 				066A53121BC53317000E606E /* AAPhotoPreviewController.swift in Sources */,
 				066A52391BC4EEBA000E606E /* AAEditCell.swift in Sources */,

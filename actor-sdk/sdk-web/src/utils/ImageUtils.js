@@ -15,7 +15,7 @@ const dataURItoBlob = (dataURI) => {
     view[i] = byteString.charCodeAt(i);
   }
 
-  return new Blob([view], {type: mimeString});
+  return new Blob([view], { type: mimeString });
 };
 
 export {

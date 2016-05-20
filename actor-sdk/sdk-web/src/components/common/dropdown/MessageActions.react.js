@@ -3,10 +3,12 @@
  */
 
 import React, { Component, PropTypes } from 'react';
+import EventListener from 'fbjs/lib/EventListener';
 import { findDOMNode } from 'react-dom';
-import ReactMixin from 'react-mixin';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
+import { shouldComponentUpdate } from 'react-addons-pure-render-mixin';
+
 import isInside from '../../../utils/isInside';
+import { quoteMessage } from '../../../utils/MessageUtils';
 
 import { MessageContentTypes } from '../../../constants/ActorAppConstants';
 
@@ -20,8 +22,7 @@ class MessageActions extends Component {
   static propTypes = {
     peer: PropTypes.object.isRequired,
     message: PropTypes.object.isRequired,
-    targetRect: PropTypes.object.isRequired,
-    hideOnScroll: PropTypes.bool.isRequired
+    targetRect: PropTypes.object.isRequired
   };
 
   static contextTypes = {
@@ -30,20 +31,23 @@ class MessageActions extends Component {
 
   constructor(props) {
     super(props);
-    document.addEventListener('click', this.handleDocumentClick, true);
 
-    if (props.hideOnScroll) {
-      document.addEventListener('scroll', this.handleDropdownClose, true);
-    }
+    this.shouldComponentUpdate = shouldComponentUpdate.bind(this);
+  }
+
+  componentDidMount() {
+    this.listeners = [
+      EventListener.capture(document, 'click', this.handleDocumentClick),
+      EventListener.capture(document, 'scroll', this.handleDropdownClose)
+    ];
   }
 
   componentWillUnmount() {
-    const { hideOnScroll } = this.props;
-    document.removeEventListener('click', this.handleDocumentClick, true);
+    this.listeners.forEach((listener) => {
+      listener.remove();
+    });
 
-    if (hideOnScroll) {
-      document.removeEventListener('scroll', this.handleDropdownClose, true);
-    }
+    this.listeners = null;
   }
 
   handleDocumentClick = (event) => {
@@ -79,7 +83,7 @@ class MessageActions extends Component {
 
   handleQuote = () => {
     const { message } = this.props;
-    ComposeActionCreators.pasteText(`> ${message.content.text} \n`);
+    ComposeActionCreators.pasteText(quoteMessage(message.content.text) + '\n');
     this.handleDropdownClose();
   };
 
@@ -131,7 +135,5 @@ class MessageActions extends Component {
     );
   }
 }
-
-ReactMixin.onClass(MessageActions, PureRenderMixin);
 
 export default MessageActions;

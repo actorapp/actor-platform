@@ -87,7 +87,7 @@ class BotCommandsSpec extends BaseAppSuite
   def changeCommands() = {
     val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
     val sessionId = createSessionId()
-    val clientData = ClientData(aliceAuthId, sessionId, Some(AuthData(alice.id, aliceAuthSid)))
+    val clientData = ClientData(aliceAuthId, sessionId, Some(AuthData(alice.id, aliceAuthSid, 42)))
 
     val (botUser, _, _, _) = createUser()
 

@@ -4,7 +4,6 @@
 
 import React, { Component } from 'react';
 import { Container } from 'flux/utils';
-import classNames from 'classnames';
 
 import TypingStore from '../../stores/TypingStore';
 
@@ -14,29 +13,22 @@ class Typing extends Component {
   }
 
   static calculateState() {
-    const typing = TypingStore.getTyping();
-    return (typing === null) ? {show: false} : {typing, show: true};
-  }
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      typing: null
-    }
+    return TypingStore.getState();
   }
 
   render() {
-    const { show, typing } = this.state;
+    const { typing } = this.state;
 
-    const typingClassName = classNames('typing', {
-      'typing--hidden': !show
-    });
+    if (!typing) {
+      return <div className="typing" />;
+    }
 
     return (
-      <div className={typingClassName}>
-        <div className="typing-indicator"><i></i><i></i><i></i></div>
-        <span>{typing}</span>
+      <div className="typing">
+        <div className="typing__indicator">
+          <i></i><i></i><i></i>
+        </div>
+        <span className="typing__text">{typing}</span>
       </div>
     );
   }

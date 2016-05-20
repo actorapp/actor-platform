@@ -35,8 +35,13 @@ class AANavigationBadge {
         UIApplication.sharedApplication().windows.first!.addSubview(badgeView)
         
         // Bind badge counter
-        binder.bind(Actor.getAppState().globalCounter, closure: { (value: JavaLangInteger?) -> () in
-            self.badgeCount = Int((value!).integerValue)
+        binder.bind(Actor.getGlobalState().globalCounter, closure: { (value: JavaLangInteger?) -> () in
+            if let v = value {
+                self.badgeCount = Int(v.integerValue)
+            } else {
+                self.badgeCount = 0
+            }
+            
             badgeText.text = "\(self.badgeCount)"
             if (self.isBadgeVisible && self.badgeCount > 0) {
                 self.badgeView.showView()

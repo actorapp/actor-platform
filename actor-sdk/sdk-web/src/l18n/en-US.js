@@ -14,28 +14,30 @@ export default {
         'numberInvalid': 'Invalid number',
         'nameInvalid': 'Invalid name',
         'codeInvalid': 'Invalid code',
-        'codeExpired': 'Phone code is expired',
+        'codeExpired': 'Phone code has expired',
         'codeWait': 'Try to request code later'
       },
       'welcome': {
         'header': 'Welcome to <strong>{appName}</strong>',
-        'text': '<p>{appName} Messenger brings all your business network connections into one place, makes it easily accessible wherever you go.</p>' +
-                '<p>Our aim is to make your work easier, reduce your email amount, make the business world closer by reducing time to find right contacts.</p>',
-        'copyright': '{appName} Messenger © 2015'
+        'text': '<p>{appName} Messenger brings all of your business network connections into one place, making it easier to access wherever you go.</p>' +
+                '<p>Our goal is to make your working process easier, reduce your email load and make the people in business world closer to each other by reducing time spent on finding the right contacts.</p>',
+        'copyright': '{appName} Messenger © 2016'
       }
     },
 
     // Menus
     'menu': {
       // Sidebar menu
-      'editProfile': 'Edit Profile',
-      'addToContacts': 'Add contact',
-      'createGroup': 'Create group',
-      'helpAndFeedback': 'Help & Feedback',
-      'twitter': 'Our twitter',
-      'preferences': 'Preferences',
-      'signOut': 'Sign Out',
-      'homePage': 'Home page'
+      editProfile: 'Edit profile',
+      addToContacts: 'Add contact',
+      createGroup: 'Create group',
+      blockedUsers: 'Blocked users',
+      helpAndFeedback: 'Help & Feedback',
+      twitter: 'Our Twitter',
+      preferences: 'Preferences',
+      signOut: 'Sign Out',
+      homePage: 'Home page',
+      facebook: 'Like us on Facebook'
     },
 
     // Buttons
@@ -69,9 +71,9 @@ export default {
       'quote': 'Quote',
       'uploading': 'Uploading...',
       'welcome': {
-        'private': '<p>This is the very beginning of your private conversation with <strong>{name}</strong>.</p><p>All messages here are private between the two of you.</p>',
+        'private': '<p>This is the very beginning of your private conversation with <strong>{name}</strong>.</p><p>All messages here are only visible to the two of you.</p>',
         'group': {
-          'main': '<p>This is the very beginning of <strong>{name}</strong> group conversation which created by {creator}.</p>',
+          'main': '<p>This is the very beginning of <strong>{name}</strong> group conversation created by {creator}.</p>',
           'you': 'You',
           'actions': {
             'start': 'You can ',
@@ -80,7 +82,8 @@ export default {
           }
         }
       },
-      'loading': 'Loading messages from history'
+      'loading': 'Loading messages from history',
+      'unread': 'New messages'
     },
 
     // Connection state
@@ -96,30 +99,42 @@ export default {
       'sendFile': 'Send file',
       'sendPhoto': 'Send photo',
       'send': 'Send',
+      'edit': 'Save',
+      'cancel': 'Cancel',
+      'editTitle': 'Edit message:',
       'markdown': {
         'bold': 'bold',
         'italic': 'italics',
         'preformatted': 'preformatted'
       },
-      'dropzone': 'Drop here to send.'
+      'dropzone': 'Drop here to send.',
+      'notMember': 'You are not a member',
+      'start': 'Start',
+      'unblock': 'Unblock user'
     },
 
     // Modals
     'modal': {
       'profile': {
         'title': 'Profile',
-        'name': 'Full name',
+        'name': 'Name',
         'nick': 'Nickname',
         'phone': 'Phone number',
         'email': 'Email',
         'about': 'About',
         'avatarChange': 'Change avatar',
-        'avatarRemove': 'Remove'
+        'avatarRemove': 'Remove',
+        errors: {
+          nick: {
+            length: 'Nick should contain from 5 to 32 characters',
+            chars: 'Please use latin characters, numbers and underscores'
+          }
+        }
       },
       'group': {
         'title': 'Edit group',
         'name': 'Group title',
-        'about': 'Group about',
+        'about': 'Group summary',
         'avatarChange': 'Change avatar',
         'avatarRemove': 'Remove'
       },
@@ -129,7 +144,7 @@ export default {
       'contacts': {
         'title': 'People',
         'search': 'Search contacts',
-        'notFound': 'Sorry, no users found.',
+        'notFound': 'Sorry, no users were found :(',
         'loading': 'Loading'
       },
       'groups': {
@@ -148,10 +163,10 @@ export default {
       },
       'addContact': {
         'title': 'Add contact',
-        'query': 'Email, nickname or phone',
+        'query': 'Email, nickname or phone number',
         'phone': 'Phone number',
         'notFound': 'User with such data is not found',
-        'empty': 'Start typing to search people',
+        'empty': 'Start typing to find people',
         'searching': 'Search for "{query}"'
       },
       'createGroup': {
@@ -165,20 +180,29 @@ export default {
         'toSelect': 'to select',
         'toClose': 'to close',
         'openDialog': 'Open conversation',
-        'startDialog': 'Start new conversation',
-        'notFound': 'No matches found for <strong>{query}</strong>.<br/>Have you spelled it correctly?'
+        'startDialog': 'Start a new conversation',
+        'notFound': 'No matches found for <strong>{query}</strong>.<br/>Did you spell it correctly?'
       },
       'confirm': {
-        'logout': 'Do you really want to leave?',
-        'leave': 'Do you really want to leave this conversation?',
-        'clear': 'Do you really want to clear this conversation?',
-        'delete': 'Do you really want to delete this conversation?',
-        'removeContact': 'You really want to remove {name} from your contacts?',
-        'kick': 'Are you sure you want kick {name}',
+        'logout': 'Are you sure you want to leave?',
+        'user': {
+          'clear': 'Are you sure you want to clear the conversation with {name}?',
+          'delete': 'Are you sure you want to delete the conversation with {name}?',
+          'block': 'Are you sure you want to block {name}?',
+          'removeContact': 'Are you sure you want to remove {name} from your contacts?'
+        },
+        'group': {
+          'clear': 'Are you sure you want to clear the conversation {name}?',
+          'delete': 'Are you sure you want to delete the conversation {name}?',
+          'leave': 'Are you sure you want to leave the conversation {name}?',
+          'kick': 'Are you sure you want to kick {name}?'
+        },
         'nonContactHide': {
           'title': 'Are you sure you want to hide this conversation?',
           'body': 'User {name} isn\'t in your contact list.'
-        }
+        },
+        delete: 'Delete this group?',
+        kick: 'Kick this user?'
       }
     },
 
@@ -193,17 +217,19 @@ export default {
     'addPeople': 'Add people',
     'more': 'More',
     'actions': 'Actions',
-    'addToContacts': 'Add To Contacts',
-    'removeFromContacts': 'Remove From Contacts',
-    'setGroupPhoto': 'Set Group Photo',
-    'addIntegration': 'Add a Service Integration',
-    'editGroup': 'Edit Group',
-    'clearGroup': 'Clear Group',
-    'deleteGroup': 'Delete Group',
-    'clearConversation': 'Clear Conversation',
-    'deleteConversation': 'Delete Conversation',
-    'leaveGroup': 'Leave Group',
-    'sharedMedia': 'Shared Media',
+    'addToContacts': 'Add to contacts',
+    'removeFromContacts': 'Remove from contacts',
+    'setGroupPhoto': 'Set group photo',
+    'addIntegration': 'Add a Service integration',
+    'editGroup': 'Edit group',
+    'clearGroup': 'Clear group',
+    'deleteGroup': 'Delete group',
+    'clearConversation': 'Clear conversation',
+    'deleteConversation': 'Delete conversation',
+    'blockUser': 'Block user',
+    'unblockUser': 'Unblock user',
+    'leaveGroup': 'Leave group',
+    'sharedMedia': 'Shared media',
     'notifications': 'Notifications',
     'integrationTokenCopied': 'Integration link copied.',
     'members': '{numMembers, plural,' +
@@ -213,74 +239,106 @@ export default {
     '}',
     'kick': 'Kick',
     'integrationToken': 'Integration Token',
-    'integrationTokenHint': 'If you have programming chops, or know someone who does, this integration token allow the most flexibility and communication with your own systems.',
+    'integrationTokenHint': 'If you have programming chops, or know someone who does — this integration token allows the biggest amount of flexibility and communication with your own systems.',
     'integrationTokenHelp': 'Learn how to integrate',
-
-    // Modals
-    'inviteModalTitle': 'Add More People',
-    'inviteModalSearch': 'Search for contacts or usernames',
-    'inviteModalNotFound': 'Sorry, no users found.',
-    'inviteByLink': 'Invite to group by link',
-    'inviteByLinkModalTitle': 'Invite by link',
-    'inviteByLinkModalDescription': 'Anyone on the web will be able to join ”{groupName}” by opening this link:',
-    'inviteByLinkModalCopyButton': 'Copy link',
-    'inviteByLinkModalRevokeButton': 'Revoke link',
-    'inviteLinkCopied': 'Invitation link copied.',
-
-    'preferencesModalTitle': 'Preferences',
-    'preferencesGeneralTab': 'General',
-    'preferencesNotificationsTab': 'Notifications & Sounds',
-    'preferencesSecurityTab': 'Security',
-    'preferencesSendMessageTitle': 'Send Message',
-    'preferencesSendMessage': 'send message',
-    'preferencesNewLine': 'new line',
-    'preferencesEffectsTitle': 'Effects',
-    'preferencesEnableEffects': 'Enable sound effects',
-    'preferencesNotificationsTitle': 'Notifications',
-    'preferencesNotificationsGroup': 'Enable group notifications',
-    'preferencesNotificationsOnlyMention': 'Enable mention only notifications',
-    'preferencesNotificationsOnlyMentionHint': 'You can enable notifications only for messages that contains you mention.',
-    'preferencesPrivacyTitle': 'Privacy',
-    'preferencesMessagePreview': 'Message preview',
-    'preferencesMessagePreviewHint': 'Remove message text from notifications.',
-    'preferencesSessionsTitle': 'Active sessions',
-    'preferencesSessionsCurrentSession': 'Current session',
-    'preferencesSessionsAuthTime': 'Auth time',
-    'preferencesSessionsTerminate': 'Kill',
-    'preferencesSessionsTerminateAll': 'Terminate all sessions',
 
     // Sidebar
     'sidebar': {
       'recents': {
         'empty': {
-          'first': 'You don\'t have any conversations at this moment.',
+          'first': 'You don\'t have any ongoing conversations at the moment.',
           'second': {
             'start': 'You can ',
             'or': ' or ',
             'end': '.'
           }
         },
-        'newDialog': 'create new dialog',
+        'newDialog': 'create new dialogue',
         'addPeople': 'add people',
         'favourites': 'Favorites',
         'groups': 'Groups',
         'privates': 'Direct Messages',
+        'history': 'History'
       },
       'group': {
         'empty': 'Create your first group conversation'
       },
       'private': {
-        'empty': 'There is no one in your network'
+        'empty': 'There is no one in your network yet'
       }
     },
+
     'main': {
       'empty': 'Try to be better than yesterday!',
-      'install': '<h1>Web version of <b>{appName}</b> works only on desktop browsers at this time</h1>' +
-                 '<h3>Please install our apps for using <b>{appName}</b> on your phone.</h3>' +
+      'install': '<h1>The Web version of <b>{appName}</b> works only in desktop browsers at this time</h1>' +
+                 '<h3>Try installing our apps for using <b>{appName}</b> on your phone.</h3>' +
                  '<p><a href="//actor.im/ios">iPhone</a> | <a href="//actor.im/android">Android</a></p>',
       'deactivated': {
         'header': 'Tab deactivated',
-        'text': 'Oops, we have detected another tab with {appName}, so we had to deactivate this one to prevent some dangerous things happening.'
+        'text': 'Oops, we have detected another tab with {appName}, so we had to deactivate this one to prevent you from dangerous things happening.'
+      }
+    },
+
+    preferences: {
+      title: 'Preferences',
+      general: {
+        title: 'General',
+        send: {
+          title: 'Send message',
+          sendMessage: 'send message',
+          newLine: 'new line'
+        }
+      },
+      notifications: {
+        title: 'Notifications & Sounds',
+        effects: {
+          title: 'Effects',
+          enable: 'Enable sound effects'
+        },
+        notification: {
+          title: 'Notifications',
+          enable: 'Enable group notifications',
+          onlyMentionEnable: 'Enable mention only notifications',
+          onlyMentionHint: 'You can enable notifications only for messages that contains you mention.'
+        },
+        privacy: {
+          title: 'Privacy',
+          messagePreview: 'Message preview',
+          messagePreviewHint: 'Remove message text from notifications.'
+        }
+      },
+      security: {
+        title: 'Security',
+        sessions: {
+          title: 'Active sessions',
+          current: 'Current session',
+          authTime: 'Auth time',
+          terminate: 'Kill',
+          terminateAll: 'Terminate all sessions'
+        }
+      },
+      blocked: {
+        title: 'Blocked Users',
+        notExists: 'You haven\'t block anyone.',
+        notFound: 'Sorry, no users were found.',
+        search: 'Search for contacts or usernames',
+        unblock: 'Unblock'
+      },
+      about: {
+        title: 'About'
+      }
+    },
+
+    invite: {
+      title: 'Add more people',
+      search: 'Search for contacts or usernames',
+      notFound: 'Sorry, no users were found.',
+      inviteByLink: 'Invite to group by link',
+      byLink: {
+        title: 'Invite by link',
+        description: 'Anyone on the web will be able to join ”<b>{groupName}</b>” by opening this link:',
+        copy: 'Copy link',
+        revoke: 'Revoke link'
       }
     },
 
@@ -294,16 +352,43 @@ export default {
       end: 'End call',
       addUser: 'Add user',
       fullScreen: 'Fullscreen',
-      video: 'Video'
-    },
-
-    toolbar: {
-      callState: {
+      video: 'Video',
+      state: {
         calling: 'calling',
         connecting: 'connecting',
         in_progress: 'On call: {time}',
         ended: 'ended'
       }
+    },
+
+    tooltip: {
+      toolbar: {
+        info: 'Information about the current conversation',
+        favorite: 'Toggle favorite'
+      },
+      recent: {
+        groupsList: 'List of group conversations',
+        privatesList: 'List of private conversation',
+        groupsCreate: 'Create group',
+        privatesCreate: 'Add new contact'
+      },
+      quicksearch: 'The fastest way to find something'
+    },
+
+    context: {
+      favorite: {
+        add: 'Favorite',
+        remove: 'Unfavorite'
+      },
+      archive: 'Send to archive',
+      delete: 'Delete'
+    },
+
+    search: {
+      'placeholder': 'Search',
+      'emptyQuery': 'Start typing to find anything',
+      'searching': 'Search for "{query}"',
+      'notFound': 'Nothing found for "{query}"<br/>Maybe you\'ll get luckier with another request'
     }
   }
 };

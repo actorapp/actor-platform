@@ -28,8 +28,12 @@ public class BinderCompatFragment extends android.support.v4.app.Fragment {
         BINDER.bind(avatarView, avatar);
     }
 
-    public void bind(final TextView textView, final View container, final UserVM user) {
-        BINDER.bind(textView, container, user);
+    public ActorBinder.Binding bind(final TextView textView, final UserVM user) {
+        return BINDER.bind(textView, user);
+    }
+
+    public ActorBinder.Binding bindOnline(final TextView textView, final UserVM user) {
+        return BINDER.bindOnline(textView, user);
     }
 
     public void bind(final TextView textView, final View container, ValueModel<String> value) {
@@ -44,5 +48,9 @@ public class BinderCompatFragment extends android.support.v4.app.Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         BINDER.unbindAll();
+    }
+
+    public void unbind(ActorBinder.Binding b) {
+        BINDER.unbind(b);
     }
 }

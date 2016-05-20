@@ -1,0 +1,49 @@
+.modal-overlay {
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  display: flex;
+  // justify-content: center;
+  overflow: auto;
+  flex-direction: column;
+
+  // align-items: center;
+}
+
+.modal {
+  min-height: auto;
+  margin: 120px auto 100px;
+  padding: 0 $modal-padding;
+  &__content {
+    min-width: $modal-min-width;
+    max-width: $modal-max-width;
+  }
+
+  &__header,
+  &__body,
+  &__footer {
+    padding: $modal-padding;
+  }
+
+  &--fullscreen {
+    // flex: 1 1 auto;
+    .modal__content {
+      min-width: 600px;
+      max-width: 700px;
+    }
+
+    .modal__body {
+      padding: $modal-padding;
+    }
+  }
+  &--without-scroll {
+    display: flex;
+    overflow: hidden;
+
+    margin-bottom: 0;
+  }
+}

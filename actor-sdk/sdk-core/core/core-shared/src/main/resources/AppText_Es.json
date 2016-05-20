@@ -1,0 +1,178 @@
+{
+	"app": {
+		"name": "Actor"
+	},
+
+	"language": {
+		"code": "Es",
+
+		"format": {
+			"time": {
+				"yesterday": "Ayer",
+				"now": "Ahora",
+				"minutes": {
+					"short": "{minutes} min",
+					"full": "{minutes} minutes"
+				},
+				"hours": {
+					"short": "{hours} hrs",
+					"full": "{hours} hours"
+				}
+			}
+		},
+
+		"file_size": {
+			"bytes": "{bytes} B",
+			"kbytes": "{kbytes} KB",
+			"mbytes": "{mbytes} MB",
+			"gbytes": "{gbytes} GB"
+		},
+
+		"referencing": {
+			"you": "Tu",
+			"thee": "Tu"
+		},
+
+		"sequence": {
+			"or": ", ",
+			"and": " and "
+		}
+	},
+
+	"groups": {
+		"members": "{count} miembros"
+	},
+
+	"presence": {
+		"online": "En línea",
+		"offline": "Desconectado",
+		"now": "visto segundos atrás",
+		"today": "últ. vez {time}",
+		"yesterday": "últ. vez ayer {time}",
+		"at_day": "ult. vez el {date}",
+		"at_day_time": "ult. vez el {date} a las {time}",
+		"members": "{count} en línea"
+	},
+
+	"typing": {
+		"simple": "escribiendo...",
+		"user": "{user} está escribiendo...",
+		"group": {
+			"sequenced": "{users} estan escribiendo...",
+			"many": "{count} personas estan escribiendo..."
+		}
+	},
+
+	"content": {
+
+		"unknown": "Contenido no compatible",
+		"document": "Documentos",
+		"photo": "Foto",
+		"video": "Vídeo",
+		"audio": "Audio",
+		"contact": "Contacto",
+		"location": "Localización",
+		"sticker": "Sticker",
+
+		"service": {
+			"registered": {
+				"full": "{name} unido a la red {app_name}",
+				"compact": "Entro en {app_name}"
+			},
+			"groups": {
+				"created": "{name} сreado el grupo",
+				"invited": "{name} invitó a {name_added}",
+				"joined": "{name} se unió al grupo",
+				"kicked": "{name} expulsaste a {name_kicked}",
+				"left": "{name} elimino el grupo",
+				"title_changed": {
+					"full":  "{name} cambio el nombre del grupo a \"{title}\"",
+					"compact": "{name} a modificado el nombre del grupo"
+				},
+				"topic_changed": {
+					"full":  "{name} changed the group topic to \"{topic}\"",
+					"compact": "{name} changed the group topic"
+				},
+				"about_changed": {
+					"full":  "{name} changed the group about to \"{about}\"",
+					"compact": "{name} changed the group about"
+				},
+				"avatar_changed": "{name} modificada la foto de grupo",
+				"avatar_removed": "{name} eliminada la foto de grupo"
+			},
+			"calls": {
+				"missed": "Llamada perdida",
+				"ended": "Llamada finalizada"
+			}
+		}
+	},
+
+	"errors": {
+		"unknown": "Unknown error. Please, try again later.",
+		"internal": "Error Interno del Servidor. Por favor, inténtelo de nuevo más tarde.",
+		"phone": {
+			"empty": "Por favor, introduce tu número de teléfono.",
+			"incorrect": "Número de teléfono introducido no es válido. Por favor, vuelve a intentarlo."
+		},
+		"code": {
+			"empty": "Código no válido. Por favor, vuelve a intentarlo.",
+			"incorrect": "El código introducido es incorrecta. Por favor, vuelve a intentarlo.",
+			"expired": "Código expirado. Por favor, inicia la autenticación de nuevo."
+		},
+		"groups": {
+			"already_joined": "Ya eres miembro del grupo.",
+			"unable_to_join": "No puede unirse al grupo."
+		}
+	},
+
+	"months": {
+		"january": { 
+			"compact": "ene",
+			"full":"enero"
+		},
+		"february": { 
+			"compact": "feb",
+			"full":"febrero"
+		},
+		"march": { 
+			"compact": "mar",
+			"full":"marzo"
+		},
+		"april": { 
+			"compact": "apr",
+			"full":"abril"
+		},
+		"may": { 
+			"compact": "may",
+			"full":"mayo"
+		},
+		"june": { 
+			"compact": "jun",
+			"full":"junio"
+		},
+		"july": { 
+			"compact": "jul",
+			"full":"july"
+		},
+		"august": { 
+			"compact": "ago",
+			"full":"julio"
+		},
+		"september": { 
+			"compact": "sep",
+			"full":"septembre"
+		},
+		"october": { 
+			"compact": "oct",
+			"full":"octubre"
+		},
+		"november": { 
+			"compact": "nov",
+			"full":"noviembre"
+		},
+		"december": { 
+			"compact": "dic",
+			"full":"diciembre"
+		}
+	}
+}

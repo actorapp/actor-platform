@@ -7,8 +7,8 @@ $contact-avatar-size: 48px;
 $like-red: rgb(226, 38, 77);
 $maximum-image-height: 400px;
 $extend-background: 1px;
-$message-hover-background: rgba(black, .025);
-$message-selected-background: rgba($dusk, .1);
+$message-hover-background: #F9F9F9;
+$message-selected-background: #EBEEF1;
 $modern-text-line-width: 2px;
 $modern-text-padding: 6px;
 $sticker-max-size: 180px;
@@ -40,22 +40,9 @@ $sticker-max-size: 180px;
 
 .dialog {
   position: relative;
-  &__footer {
-    position: absolute;
-    bottom: 0;
-
-    width: 100%;
-    height: 182px;
-    h3 {
-      font-weight: 500;
-
-      color: rgba(0, 0, 0, .2);
-    }
-  }
   &--empty {
     .advice {
       max-width: 480px;
-      padding: 0 32px 64px;
 
       user-select: none;
       text-align: center;
@@ -91,93 +78,21 @@ $sticker-max-size: 180px;
   }
 }
 
-.messages {
-  position: absolute;
-  top: 0;
-  bottom: 182px;
-
-  width: 100%;
-  overflow-x: hidden;
-
-  // &::-webkit-scrollbar {
-  //   width: 4px;
-  // }
-  //
-  // &::-webkit-scrollbar-thumb {
-  //   background-color: fade-out($dusk, 0.2);
-  //   background-clip: padding-box;
-  // }
-  //
-  // &:hover {
-  //   &::-webkit-scrollbar {
-  //     width: 8px;
-  //   }
-  //
-  //   &::-webkit-scrollbar {
-  //     background-color: fade-out($dusk, 0.6);
-  //   }
-  // }
-
-  &__list {
-    width: 100%;
-    max-height: 100%;
-    margin: 0;
-    padding: 0;
-
-    list-style: none;
-  }
-
-  .scroll-wrapper {
-    .ss-wrapper {
-      .ss-scrollarea {
-        overflow-x: hidden;
-        position: absolute;
-        bottom: 0;
-
-        height: auto;
-        max-height: 100%;
-      }
-    }
-    .ss-scroll {
-      right: 6px;
-      width: 4px;
-      opacity: .2;
-      background-color: $dusk;
-      &:hover,
-      &:active {
-        width: 8px;
-        right: 4px;
-        opacity: 1 !important;
-      }
-    }
-    &:hover {
-      .ss-scroll {
-        opacity: .4;
-      }
-    }
-  }
+.message__avatar {
+  margin: 0 14px 0 12px;
 }
 
 .message {
   position: relative;
 
+  display: flex;
+  flex: 0 1 auto;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  box-sizing: border-box;
   margin: 0;
   padding: 6px 39px 6px 32px;
-
-  &:before {
-    position: absolute;
-    top: - $extend-background;
-    left: 0;
-
-    display: none;
-
-    width: 100%;
-    height: $extend-background;
-
-    content: '';
-
-    background-color: $message-hover-background;
-  }
 
   &__header {
     font-weight: 500;
@@ -188,8 +103,10 @@ $sticker-max-size: 180px;
     margin: 0 0 4px;
   }
   &__body {
+    flex: 1 0 0;
+    max-width: 100%;
     padding-right: 16px;
-    overflow: hidden;
+    box-sizing: border-box;
   }
   &__sender {
     font-size: 15px;
@@ -225,6 +142,7 @@ $sticker-max-size: 180px;
       height: 20px;
     }
   }
+
   &__timestamp {
     font-size: 12px;
 
@@ -252,15 +170,9 @@ $sticker-max-size: 180px;
   }
 
   &__info {
-    line-height: 1px;
-
     width: 62px;
-    .avatar {
-      margin: 0 14px 0 12px;
-    }
-    a > .avatar {
-      cursor: pointer;
-    }
+    line-height: 1px;
+    text-align: right;
   }
   &__content {
     line-height: $message-line-height;
@@ -351,26 +263,32 @@ $sticker-max-size: 180px;
     }
   }
 
-  &--same-sender {
+  &--short {
     padding: 3px 39px 3px 10px;
+
     .message__info {
       box-sizing: border-box;
       width: 84px;
       padding-right: 14px;
     }
+
     .message__status {
       margin-left: 4px;
     }
+
     .message__timestamp {
       line-height: 20px;
-
       margin: 0;
-
       opacity: 0;
     }
+
     .message__actions__selector {
       top: 4px;
     }
+  }
+
+  &--editing {
+    background-color: $message-edit-background;
   }
 
   &--welcome {
@@ -634,9 +552,6 @@ $sticker-max-size: 180px;
   &--active,
   &:hover {
     background-color: $message-hover-background;
-    &:before {
-      display: block;
-    }
     .message__info .message__timestamp {
       opacity: 1;
     }
@@ -718,6 +633,7 @@ $sticker-max-size: 180px;
     pre,
     samp {
       margin: 0 0 7px;
+      overflow: auto;
     }
 
     .emoji-outer {
@@ -1183,16 +1099,14 @@ $sticker-max-size: 180px;
       }
     }
   }
+
+  &__mention {
+    background-color: #FFFBE9;
+    border-radius: 2px;
+    padding: 2px 1px;
+  }
 }
 
-.date-divider {
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 16px;
-
-  padding: 12px 32px 12px 43px;
-
-  text-transform: uppercase;
-
-  color: $havelock-blue;
+.message__photo {
+  cursor: pointer;
 }

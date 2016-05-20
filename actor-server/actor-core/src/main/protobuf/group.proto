@@ -10,10 +10,18 @@ option (scalapb.options) = {
 import "scalapb/scalapb.proto";
 import "file.proto";
 import "sequence.proto";
+import "dialog.proto";
 
 enum GroupType {
     General = 1;
     Public = 2;
+    Channel = 3;
+}
+
+// TODO: put GroupCommands and GroupQueries inside
+message GroupEnvelope {
+    required int32 group_id = 1;
+    optional DialogEnvelope dialog_envelope = 2;
 }
 
 message GroupCommands {
@@ -165,6 +173,15 @@ message GroupCommands {
         required int32 joining_user_id = 2;
         required int32 joining_user_auth_sid = 3;
     }
+
+    message TransferOwnership {
+        option (scalapb.message).extends = "im.actor.server.group.GroupCommand";
+
+        required int32 group_id = 1;
+        required int32 client_user_id = 2;
+        required int32 client_auth_sid = 4;
+        required int32 user_id = 3;
+    }
 }
 
 message GroupQueries {
@@ -194,6 +211,17 @@ message GroupQueries {
 
     message GetApiStructResponse {
         required bytes struct = 1 [(scalapb.field).type = "im.actor.api.rpc.groups.ApiGroup"];
+    }
+
+    message GetApiFullStruct {
+        option (scalapb.message).extends = "im.actor.server.group.GroupQuery";
+
+        required int32 group_id = 1;
+        required int32 client_user_id = 2;
+    }
+
+    message GetApiFullStructResponse {
+        required bytes struct = 1 [(scalapb.field).type = "im.actor.api.rpc.groups.ApiGroupFull"];
     }
 
     message CheckAccessHash {
@@ -247,6 +275,30 @@ message GroupQueries {
 
     message GetAccessHashResponse {
         required int64 access_hash = 1;
+    }
+
+    message GetTitle {
+        option (scalapb.message).extends = "im.actor.server.group.GroupQuery";
+
+        required int32 group_id = 1;
+    }
+
+    message GetTitleResponse {
+        required string title = 1;
+    }
+
+    message LoadMembers {
+        option (scalapb.message).extends = "im.actor.server.group.GroupQuery";
+
+        required int32 group_id = 1;
+        required int32 client_user_id = 3;
+        required int32 limmit = 4;
+        optional bytes offset = 2;
+    }
+
+    message LoadMembersResponse {
+        repeated int32 user_ids = 1;
+        optional bytes offset = 2;
     }
 }
 
@@ -352,6 +404,13 @@ message GroupEvents {
 
         required int64 ts = 2 [(scalapb.field).type = "java.time.Instant"];
         required string token = 1;
+    }
+
+    message OwnerChanged {
+        option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
+
+        required int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];
+        required int32 user_id = 2;
     }
 }
 

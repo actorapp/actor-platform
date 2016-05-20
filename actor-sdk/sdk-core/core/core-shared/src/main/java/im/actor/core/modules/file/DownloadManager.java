@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import im.actor.core.entity.FileReference;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.file.entity.Downloaded;
-import im.actor.core.util.ModuleActor;
+import im.actor.core.modules.ModuleActor;
 import im.actor.core.util.RandomUtils;
 import im.actor.core.viewmodel.FileCallback;
 import im.actor.core.viewmodel.FileEventCallback;
@@ -63,12 +63,7 @@ public class DownloadManager extends ModuleActor {
                     Log.d(TAG, "- Downloaded");
                 }
                 final FileSystemReference fileSystemReference = Storage.fileFromDescriptor(downloaded1.getDescriptor());
-                im.actor.runtime.Runtime.dispatch(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.onDownloaded(fileSystemReference);
-                    }
-                });
+                im.actor.runtime.Runtime.dispatch(() -> callback.onDownloaded(fileSystemReference));
                 return;
             } else {
                 if (LOG) {
@@ -86,37 +81,16 @@ public class DownloadManager extends ModuleActor {
 
         final QueueItem queueItem = findItem(fileId);
         if (queueItem == null) {
-            im.actor.runtime.Runtime.dispatch(new Runnable() {
-                @Override
-                public void run() {
-                    callback.onNotDownloaded();
-                }
-
-            });
+            im.actor.runtime.Runtime.dispatch(() -> callback.onNotDownloaded());
         } else {
             if (queueItem.isStarted) {
                 final float progress = queueItem.progress;
-                im.actor.runtime.Runtime.dispatch(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.onDownloading(progress);
-                    }
-                });
+                im.actor.runtime.Runtime.dispatch(() -> callback.onDownloading(progress));
 
             } else if (queueItem.isStopped) {
-                im.actor.runtime.Runtime.dispatch(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.onNotDownloaded();
-                    }
-                });
+                im.actor.runtime.Runtime.dispatch(() -> callback.onNotDownloaded());
             } else {
-                im.actor.runtime.Runtime.dispatch(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.onDownloading(0);
-                    }
-                });
+                im.actor.runtime.Runtime.dispatch(() -> callback.onDownloading(0));
             }
         }
     }
@@ -135,12 +109,7 @@ public class DownloadManager extends ModuleActor {
                     Log.d(TAG, "- Downloaded");
                 }
                 final FileSystemReference fileSystemReference = Storage.fileFromDescriptor(downloaded1.getDescriptor());
-                im.actor.runtime.Runtime.dispatch(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.onDownloaded(fileSystemReference);
-                    }
-                });
+                im.actor.runtime.Runtime.dispatch(() -> callback.onDownloaded(fileSystemReference));
                 return;
             } else {
                 if (LOG) {
@@ -167,20 +136,10 @@ public class DownloadManager extends ModuleActor {
 
             if (autoStart) {
                 queueItem.isStopped = false;
-                im.actor.runtime.Runtime.dispatch(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.onDownloading(0);
-                    }
-                });
+                im.actor.runtime.Runtime.dispatch(() -> callback.onDownloading(0));
             } else {
                 queueItem.isStopped = true;
-                im.actor.runtime.Runtime.dispatch(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.onNotDownloaded();
-                    }
-                });
+                im.actor.runtime.Runtime.dispatch(() -> callback.onNotDownloaded());
             }
 
             queue.add(0, queueItem);
@@ -194,28 +153,13 @@ public class DownloadManager extends ModuleActor {
             }
 
             if (queueItem.isStopped) {
-                im.actor.runtime.Runtime.dispatch(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.onNotDownloaded();
-                    }
-                });
+                im.actor.runtime.Runtime.dispatch(() -> callback.onNotDownloaded());
             } else {
                 if (queueItem.isStarted) {
                     final float progress = queueItem.progress;
-                    im.actor.runtime.Runtime.dispatch(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.onDownloading(progress);
-                        }
-                    });
+                    im.actor.runtime.Runtime.dispatch(() -> callback.onDownloading(progress));
                 } else {
-                    im.actor.runtime.Runtime.dispatch(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.onDownloading(0);
-                        }
-                    });
+                    im.actor.runtime.Runtime.dispatch(() -> callback.onDownloading(0));
                 }
             }
         }
@@ -249,12 +193,7 @@ public class DownloadManager extends ModuleActor {
             if (queueItem.isStopped) {
                 queueItem.isStopped = false;
                 for (final FileCallback callback : queueItem.callbacks) {
-                    im.actor.runtime.Runtime.dispatch(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.onDownloading(0);
-                        }
-                    });
+                    im.actor.runtime.Runtime.dispatch(() -> callback.onDownloading(0));
                 }
             }
             promote(fileReference.getFileId());
@@ -287,12 +226,7 @@ public class DownloadManager extends ModuleActor {
             queueItem.isStopped = true;
 
             for (final FileCallback callback : queueItem.callbacks) {
-                im.actor.runtime.Runtime.dispatch(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.onNotDownloaded();
-                    }
-                });
+                im.actor.runtime.Runtime.dispatch(() -> callback.onNotDownloaded());
             }
         }
 
@@ -327,12 +261,7 @@ public class DownloadManager extends ModuleActor {
 
                     for (final FileCallback c : queueItem.callbacks) {
                         if (c != callback) {
-                            im.actor.runtime.Runtime.dispatch(new Runnable() {
-                                @Override
-                                public void run() {
-                                    c.onNotDownloaded();
-                                }
-                            });
+                            im.actor.runtime.Runtime.dispatch(() -> c.onNotDownloaded());
                         }
                     }
                 }
@@ -416,12 +345,7 @@ public class DownloadManager extends ModuleActor {
         pendingQueue.isStarted = true;
 
         final QueueItem finalPendingQueue = pendingQueue;
-        pendingQueue.taskRef = system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public DownloadTask create() {
-                return new DownloadTask(finalPendingQueue.fileReference, self(), context());
-            }
-        }).changeDispatcher("heavy"), "actor/download/task_" + RandomUtils.nextRid());
+        pendingQueue.taskRef = system().actorOf(Props.create(() -> new DownloadTask(finalPendingQueue.fileReference, self(), context())).changeDispatcher("heavy"), "actor/download/task_" + RandomUtils.nextRid());
     }
 
     public void onDownloadProgress(long fileId, final float progress) {
@@ -440,12 +364,7 @@ public class DownloadManager extends ModuleActor {
         queueItem.progress = progress;
 
         for (final FileCallback fileCallback : queueItem.callbacks) {
-            im.actor.runtime.Runtime.dispatch(new Runnable() {
-                @Override
-                public void run() {
-                    fileCallback.onDownloading(progress);
-                }
-            });
+            im.actor.runtime.Runtime.dispatch(() -> fileCallback.onDownloading(progress));
         }
     }
 
@@ -471,22 +390,12 @@ public class DownloadManager extends ModuleActor {
         for (final WeakCallbackHolder weakReference : callbacks) {
             final FileEventCallback callback = weakReference.getCallbackWeakReference().get();
             if (callback != null) {
-                im.actor.runtime.Runtime.dispatch(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.onDownloaded(fileId);
-                    }
-                });
+                im.actor.runtime.Runtime.dispatch(() -> callback.onDownloaded(fileId));
             }
         }
 
         for (final FileCallback fileCallback : queueItem.callbacks) {
-            im.actor.runtime.Runtime.dispatch(new Runnable() {
-                @Override
-                public void run() {
-                    fileCallback.onDownloaded(reference);
-                }
-            });
+            im.actor.runtime.Runtime.dispatch(() -> fileCallback.onDownloaded(reference));
         }
 
         checkQueue();
@@ -510,12 +419,7 @@ public class DownloadManager extends ModuleActor {
         queueItem.isStarted = false;
 
         for (final FileCallback fileCallback : queueItem.callbacks) {
-            im.actor.runtime.Runtime.dispatch(new Runnable() {
-                @Override
-                public void run() {
-                    fileCallback.onNotDownloaded();
-                }
-            });
+            im.actor.runtime.Runtime.dispatch(() -> fileCallback.onNotDownloaded());
         }
 
         checkQueue();
@@ -546,7 +450,7 @@ public class DownloadManager extends ModuleActor {
         private FileReference fileReference;
         private boolean isStopped;
 
-        private ArrayList<FileCallback> callbacks = new ArrayList<FileCallback>();
+        private ArrayList<FileCallback> callbacks = new ArrayList<>();
 
         private boolean isStarted;
         private float progress;
@@ -593,7 +497,7 @@ public class DownloadManager extends ModuleActor {
         } else if (message instanceof UnsubscribeToDownloads) {
             unsubscribe(((UnsubscribeToDownloads) message).getCallback());
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 

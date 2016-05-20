@@ -10,7 +10,6 @@ $default-transition-timing: cubic-bezier(.25, .8, .25, 1);
 $default-avatar-size: 36px;
 $default-stem-size: 14px;
 
-
 // Colors
 $havelock-blue: #4a90e2;
 $kashmir-blue: #516d90;
@@ -30,24 +29,33 @@ $color-purple: #ad62a7;
 $color-red: #f16364;
 $color-orange: #f9a43e;
 $color-yellow: #e4c62e;
+$color-pink: #ed608b;
 $color-green: #67bf74;
 // New design colors
-$dark-sky-blue: #4a90e2;
+//$dark-sky-blue: #4a90e2;
 $dark-sky-blue2: #5191db;
 $apple: #5dcc30;
 $squash: #f5a623;
 $greyish: #b4b4b4;
 $greyish-brown: #4d4d4d;
 $coral-pink: #ff556a;
-$dark-grey-blue: #324a66;
+//$dark-grey-blue: #324a66;
 $coral: #fd5c52;
 $baby-blue: #a8d0ff;
-$dusk: #49627f;
+//$dusk: #49627f;
 $dusky-blue: #425d7d;
 $cloudy-blue: #d6dce3;
 $light-grey-blue: #a5bedc;
 $pale-grey: #f5f6f7;
 $ticklish: #e77979;
+
+// More colors
+// TODO: remove unused variables;
+$dark-mint: #48bb77;
+$dark-peach: #e77979;
+$dark-grey-blue: #29384b;
+$dark-sky-blue: #468ee5;
+$dusk: #3b5271;
 
 // Body
 $body-background-color: $bismark;
@@ -95,6 +103,7 @@ $message-state-color: rgba($mine-shaft, .3);
 $message-timestamp-color: $message-state-color;
 $message-service-text-color: rgba($mine-shaft, .5);
 $message-document-icon-size: 64px;
+$message-edit-background: lighten($color-yellow, 40%);
 
 // Call
 $call-background: #2a384a;
@@ -107,13 +116,16 @@ $call-rings-size-small: $avatar-large-size + 5;
 $call-rings-step-small: 15px;
 
 // Modal
-$modal-default-width: 300px;
-$modal-default-background: rgb(255, 255, 255);
-$modal-default-radius: 4px;
+$modal-min-width: 300px;
+$modal-max-width: 800px;
+$modal-background: rgb(255, 255, 255);
 $modal-backdrop-color: rgba(0, 0, 0, .6);
+$modal-padding: 18px;
+$modal-border-raidus: 4px;
 $modal-header-height: 60px;
-$modal-text-color: rgba(57, 57, 57, .85);
-$modal-text-light-color: rgba(57, 57, 57, .6);
+$modal-header-icon-color: rgba(black, .4);
+$modal-text-color: rgb(77, 77, 77);
+$modal-text-light-color:  rgb(101, 101, 101);
 
 // Login
 $login-text-color: #8ba8cb;

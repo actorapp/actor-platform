@@ -6,7 +6,7 @@ package im.actor.core.modules.file;
 
 import im.actor.core.entity.FileReference;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.util.ModuleActor;
+import im.actor.core.modules.ModuleActor;
 import im.actor.runtime.HTTP;
 import im.actor.runtime.Log;
 import im.actor.runtime.Storage;
@@ -14,8 +14,7 @@ import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Cancellable;
 import im.actor.runtime.files.FileSystemReference;
 import im.actor.runtime.files.OutputFile;
-import im.actor.runtime.function.Consumer;
-import im.actor.runtime.http.FileDownloadCallback;
+import im.actor.runtime.http.HTTPError;
 
 public class DownloadTask extends ModuleActor {
 
@@ -39,7 +38,7 @@ public class DownloadTask extends ModuleActor {
     private Cancellable notifyCancellable;
 
     private String fileUrl;
-    private int blockSize = 32 * 1024;
+    private int blockSize = 128 * 1024;
     private int blocksCount;
     private int nextBlock = 0;
     private int currentDownloads = 0;
@@ -68,16 +67,15 @@ public class DownloadTask extends ModuleActor {
             return;
         }
 
-        outputFile = destReference.openWrite(fileReference.getFileSize());
-        if (outputFile == null) {
+        destReference.openWrite(fileReference.getFileSize()).then(r -> {
+            outputFile = r;
+            requestUrl();
+        }).failure(e -> {
             reportError();
             if (LOG) {
                 Log.d(TAG, "Unable to write wile");
             }
-            return;
-        }
-
-        requestUrl();
+        });
     }
 
     @Override
@@ -95,25 +93,18 @@ public class DownloadTask extends ModuleActor {
             Log.d(TAG, "Loading url...");
         }
 
-        context().getFilesModule().getFileUrlInt().askForUrl(fileReference.getFileId(),
-                fileReference.getAccessHash()).then(new Consumer<String>() {
-            @Override
-            public void apply(String url) {
-                fileUrl = url;
-                if (LOG) {
-                    Log.d(TAG, "Loaded file url: " + fileUrl);
-                }
-                startDownload();
+        context().getFilesModule().getFileUrlInt().askForUrl(fileReference.getFileId(), fileReference.getAccessHash()).then(url -> {
+            fileUrl = url;
+            if (LOG) {
+                Log.d(TAG, "Loaded file url: " + fileUrl);
             }
-        }).failure(new Consumer<Exception>() {
-            @Override
-            public void apply(Exception e) {
-                if (LOG) {
-                    Log.d(TAG, "Unable to load file url");
-                }
-                reportError();
+            startDownload();
+        }).failure(e -> {
+            if (LOG) {
+                Log.d(TAG, "Unable to load file url");
             }
-        }).done(self());
+            reportError();
+        });
     }
 
     private void startDownload() {
@@ -196,52 +187,36 @@ public class DownloadTask extends ModuleActor {
     }
 
     private void downloadPart(final int blockIndex, final int fileOffset, final int attempt) {
-        HTTP.getMethod(fileUrl, fileOffset, blockSize, fileReference.getFileSize(), new FileDownloadCallback() {
-            @Override
-            public void onDownloaded(final byte[] data) {
-                self().send(new Runnable() {
-                    @Override
-                    public void run() {
-                        downloaded++;
-                        if (LOG) {
-                            Log.d(TAG, "Download part #" + blockIndex + " completed");
-                        }
-                        if (!outputFile.write(fileOffset, data, 0, data.length)) {
-                            reportError();
-                            return;
-                        }
-                        currentDownloads--;
-                        reportProgress(downloaded / (float) blocksCount);
-                        checkQueue();
-                    }
-                });
+        HTTP.getMethod(fileUrl, fileOffset, blockSize, fileReference.getFileSize()).then(r -> {
+            downloaded++;
+            if (LOG) {
+                Log.d(TAG, "Download part #" + blockIndex + " completed");
             }
+            if (!outputFile.write(fileOffset, r.getContent(), 0, r.getContent().length)) {
+                reportError();
+                return;
+            }
+            currentDownloads--;
+            reportProgress(downloaded / (float) blocksCount);
+            checkQueue();
+        }).failure(e -> {
+            if ((e instanceof HTTPError)
+                    && ((((HTTPError) e).getErrorCode() >= 500
+                    && ((HTTPError) e).getErrorCode() < 600)
+                    || ((HTTPError) e).getErrorCode() == 0)) {
+                // Server on unknown error
+                int retryInSecs = DEFAULT_RETRY;
 
-            @Override
-            public void onDownloadFailure(int error, int retryInSecs) {
-                if ((error >= 500 && error < 600) || error == 0) {
-                    // Server on unknown error
-
-                    if (retryInSecs <= 0) {
-                        retryInSecs = DEFAULT_RETRY;
-                    }
-
-                    if (LOG) {
-                        Log.w(TAG, "Download part #" + blockIndex + " failure #" + error + " trying again in " + retryInSecs + " sec, attempt #" + (attempt + 1));
-                    }
-
-                    self().send(new Retry(blockIndex, fileOffset, attempt + 1));
-                } else {
-                    self().send(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (LOG) {
-                                Log.d(TAG, "Download part #" + blockIndex + " failure");
-                            }
-                            reportError();
-                        }
-                    });
+                if (LOG) {
+                    Log.w(TAG, "Download part #" + blockIndex + " failure #" + ((HTTPError) e).getErrorCode() + " trying again in " + retryInSecs + " sec, attempt #" + (attempt + 1));
                 }
+
+                self().send(new Retry(blockIndex, fileOffset, attempt + 1));
+            } else {
+                if (LOG) {
+                    Log.d(TAG, "Download part #" + blockIndex + " failure");
+                }
+                reportError();
             }
         });
     }
@@ -274,12 +249,7 @@ public class DownloadTask extends ModuleActor {
             lastNotifyDate = im.actor.runtime.Runtime.getActorTime();
             performReportProgress();
         } else {
-            notifyCancellable = schedule(new Runnable() {
-                @Override
-                public void run() {
-                    performReportProgress();
-                }
-            }, delta);
+            notifyCancellable = schedule((Runnable) () -> performReportProgress(), delta);
         }
     }
 

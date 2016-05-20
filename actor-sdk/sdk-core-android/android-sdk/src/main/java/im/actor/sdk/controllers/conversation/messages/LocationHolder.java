@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
@@ -34,9 +33,10 @@ import im.actor.core.entity.content.LocationContent;
 import im.actor.core.viewmodel.FileVM;
 import im.actor.core.viewmodel.UploadFileVM;
 import im.actor.sdk.ActorSDK;
+
 import im.actor.sdk.R;
-import im.actor.sdk.controllers.Intents;
-import im.actor.sdk.controllers.pickers.map.MapPickerActivity;
+import im.actor.sdk.controllers.conversation.MessagesAdapter;
+import im.actor.sdk.controllers.conversation.messages.preprocessor.PreprocessedData;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.TintImageView;
 
@@ -98,7 +98,7 @@ public class LocationHolder extends MessageHolder {
     }
 
     @Override
-    protected void bindData(Message message, boolean isNewMessage, PreprocessedData preprocessedData) {
+    protected void bindData(Message message, long readDate, long receiveDate, boolean isNewMessage, PreprocessedData preprocessedData) {
         // Update model
         LocationContent locationContent = (LocationContent) message.getContent();
 
@@ -123,17 +123,17 @@ public class LocationHolder extends MessageHolder {
                     stateIcon.setResource(R.drawable.msg_clock);
                     stateIcon.setTint(COLOR_PENDING);
                     break;
-                case READ:
-                    stateIcon.setResource(R.drawable.msg_check_2);
-                    stateIcon.setTint(COLOR_READ);
-                    break;
-                case RECEIVED:
-                    stateIcon.setResource(R.drawable.msg_check_2);
-                    stateIcon.setTint(COLOR_RECEIVED);
-                    break;
                 case SENT:
-                    stateIcon.setResource(R.drawable.msg_check_1);
-                    stateIcon.setTint(COLOR_SENT);
+                    if (message.getSortDate() <= readDate) {
+                        stateIcon.setResource(R.drawable.msg_check_2);
+                        stateIcon.setTint(COLOR_READ);
+                    } else if (message.getSortDate() <= receiveDate) {
+                        stateIcon.setResource(R.drawable.msg_check_2);
+                        stateIcon.setTint(COLOR_RECEIVED);
+                    } else {
+                        stateIcon.setResource(R.drawable.msg_check_1);
+                        stateIcon.setTint(COLOR_SENT);
+                    }
                     break;
             }
         } else {
@@ -156,13 +156,21 @@ public class LocationHolder extends MessageHolder {
             ApplicationInfo app = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
             Bundle bundle = app.metaData;
 
-            if (bundle.containsKey("com.google.android.geo.API_KEY")) {
-                Intent intent = new Intent(context, MapActivity.class);
-                intent.putExtra("latitude", ((LocationContent) currentMessage.getContent()).getLatitude());
-                intent.putExtra("longitude", ((LocationContent) currentMessage.getContent()).getLongitude());
+            double latitude = ((LocationContent) currentMessage.getContent()).getLatitude();
+            double longitude = ((LocationContent) currentMessage.getContent()).getLongitude();
+
+            try {
+                Class.forName("com.google.android.gms.maps.GoogleMap");
+                Intent intent = new Intent("im.actor.locationPreview_" + context.getPackageName());
+                intent.putExtra("latitude", latitude);
+                intent.putExtra("longitude", longitude);
                 context.startActivity(intent);
-            } else {
-//                Toast.makeText(context, "please, set up google map api key in AndroidManifest metadata", Toast.LENGTH_LONG).show();
+            } catch (ClassNotFoundException e) {
+                String uri = "geo:" + latitude + ","
+                        + longitude + "?q=" + latitude
+                        + "," + longitude;
+                context.startActivity(new Intent(android.content.Intent.ACTION_VIEW,
+                        Uri.parse(uri)));
             }
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();

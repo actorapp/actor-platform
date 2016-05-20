@@ -35,84 +35,64 @@ public class ExternalModule extends AbsModule {
 
     @NotNull
     public <T extends Response> Command<T> externalMethod(@NotNull final Request<T> request) {
-        return new Command<T>() {
+        return callback -> request(request, new RpcCallback<T>() {
             @Override
-            public void start(final CommandCallback<T> callback) {
-                request(request, new RpcCallback<T>() {
-                    @Override
-                    public void onResult(T response) {
-                        callback.onResult(response);
-                    }
-
-                    @Override
-                    public void onError(RpcException e) {
-                        callback.onError(e);
-                    }
-                });
+            public void onResult(T response) {
+                callback.onResult(response);
             }
-        };
+
+            @Override
+            public void onError(RpcException e) {
+                callback.onError(e);
+            }
+        });
     }
 
     public Command<WebActionDescriptor> startWebAction(final String webAction) {
-        return new Command<WebActionDescriptor>() {
-            @Override
-            public void start(final CommandCallback<WebActionDescriptor> callback) {
-                request(new RequestInitWebaction(webAction, new ApiMapValue(new ArrayList<ApiMapValueItem>())),
-                        new RpcCallback<ResponseInitWebaction>() {
-                            @Override
-                            public void onResult(ResponseInitWebaction response) {
-                                callback.onResult(
-                                        new WebActionDescriptor(
-                                                response.getUri(),
-                                                response.getRegexp(),
-                                                response.getActionHash()));
-                            }
+        return callback -> request(new RequestInitWebaction(webAction, new ApiMapValue(new ArrayList<>())),
+                new RpcCallback<ResponseInitWebaction>() {
+                    @Override
+                    public void onResult(ResponseInitWebaction response) {
+                        callback.onResult(
+                                new WebActionDescriptor(
+                                        response.getUri(),
+                                        response.getRegexp(),
+                                        response.getActionHash()));
+                    }
 
-                            @Override
-                            public void onError(RpcException e) {
-                                callback.onError(e);
-                            }
-                        });
-            }
-        };
+                    @Override
+                    public void onError(RpcException e) {
+                        callback.onError(e);
+                    }
+                });
     }
 
     public Command<Boolean> completeWebAction(final String actionHash, final String url) {
-        return new Command<Boolean>() {
+        return callback -> request(new RequestCompleteWebaction(actionHash, url), new RpcCallback<ResponseCompleteWebaction>() {
             @Override
-            public void start(final CommandCallback<Boolean> callback) {
-                request(new RequestCompleteWebaction(actionHash, url), new RpcCallback<ResponseCompleteWebaction>() {
-                    @Override
-                    public void onResult(ResponseCompleteWebaction response) {
-                        callback.onResult(true);
-                    }
-
-                    @Override
-                    public void onError(RpcException e) {
-                        callback.onError(e);
-                    }
-                });
+            public void onResult(ResponseCompleteWebaction response) {
+                callback.onResult(true);
             }
-        };
+
+            @Override
+            public void onError(RpcException e) {
+                callback.onError(e);
+            }
+        });
     }
 
     public Command<ResponseRawRequest> rawRequestCommand(final String service, final String method, final ApiRawValue params) {
-        return new Command<ResponseRawRequest>() {
+        return callback -> request(new RequestRawRequest(service, method, params), new RpcCallback<ResponseRawRequest>() {
             @Override
-            public void start(final CommandCallback<ResponseRawRequest> callback) {
-                request(new RequestRawRequest(service, method, params), new RpcCallback<ResponseRawRequest>() {
-                    @Override
-                    public void onResult(ResponseRawRequest response) {
-                        callback.onResult(response);
-                    }
-
-                    @Override
-                    public void onError(RpcException e) {
-                        callback.onError(e);
-                    }
-                });
+            public void onResult(ResponseRawRequest response) {
+                callback.onResult(response);
             }
-        };
+
+            @Override
+            public void onError(RpcException e) {
+                callback.onError(e);
+            }
+        });
     }
 
     public void rawPersistentRequest(String service, String method, ApiRawValue params) {

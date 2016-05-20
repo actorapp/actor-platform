@@ -15,12 +15,15 @@ import im.actor.core.*;
 import im.actor.core.api.ApiAuthSession;
 import im.actor.core.api.ApiDialog;
 import im.actor.core.api.rpc.ResponseLoadArchived;
+import im.actor.core.entity.BotCommand;
+import im.actor.core.entity.EntityConverter;
 import im.actor.core.entity.MentionFilterResult;
 import im.actor.core.entity.MessageSearchEntity;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerSearchEntity;
 import im.actor.core.entity.PeerSearchType;
 import im.actor.core.entity.PeerType;
+import im.actor.core.entity.User;
 import im.actor.core.js.annotations.UsedByApp;
 import im.actor.core.js.entity.*;
 import im.actor.core.js.modules.JsBindedValueCallback;
@@ -30,7 +33,6 @@ import im.actor.core.js.providers.JsCallsProvider;
 import im.actor.core.js.providers.electron.JsElectronApp;
 import im.actor.core.js.utils.HtmlMarkdownUtils;
 import im.actor.core.js.utils.IdentityUtils;
-import im.actor.core.modules.messaging.actors.entity.EntityConverter;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.viewmodel.Command;
@@ -38,12 +40,16 @@ import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.Log;
 import im.actor.runtime.Storage;
+import im.actor.runtime.actors.messages.*;
+import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.function.Consumer;
 import im.actor.runtime.js.JsFileSystemProvider;
 import im.actor.runtime.js.JsLogProvider;
 import im.actor.runtime.js.fs.JsBlob;
 import im.actor.runtime.js.fs.JsFile;
 import im.actor.runtime.js.mvvm.JsDisplayListCallback;
 import im.actor.runtime.js.utils.JsPromise;
+import im.actor.runtime.js.utils.JsPromiseDispatcher;
 import im.actor.runtime.js.utils.JsPromiseExecutor;
 import im.actor.runtime.json.JSONException;
 import im.actor.runtime.json.JSONObject;
@@ -53,6 +59,7 @@ import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -436,10 +443,10 @@ public class JsFacade implements Exportable {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
             public void execute() {
-                messenger.terminateSession(id).start(new CommandCallback<Boolean>() {
+                messenger.terminateSession(id).start(new CommandCallback<Void>() {
                     @Override
-                    public void onResult(Boolean res) {
-                        resolve(res);
+                    public void onResult(Void res) {
+                        resolve();
                     }
 
                     @Override
@@ -457,10 +464,10 @@ public class JsFacade implements Exportable {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
             public void execute() {
-                messenger.terminateAllSessions().start(new CommandCallback<Boolean>() {
+                messenger.terminateAllSessions().start(new CommandCallback<Void>() {
                     @Override
-                    public void onResult(Boolean res) {
-                        resolve(res);
+                    public void onResult(Void res) {
+                        resolve();
                     }
 
                     @Override
@@ -553,22 +560,6 @@ public class JsFacade implements Exportable {
     }
 
     @UsedByApp
-    public void bindChat(JsPeer peer, JsDisplayListCallback<JsMessage> callback) {
-        if (callback == null) {
-            return;
-        }
-        messenger.getSharedChatList(peer.convert()).subscribe(callback, true);
-    }
-
-    @UsedByApp
-    public void unbindChat(JsPeer peer, JsDisplayListCallback<JsMessage> callback) {
-        if (callback == null) {
-            return;
-        }
-        messenger.getSharedChatList(peer.convert()).unsubscribe(callback);
-    }
-
-    @UsedByApp
     public JsMessagesBind bindMessages(JsPeer peer, JsMessagesBindClosure callback) {
         if (callback == null) {
             return null;
@@ -576,6 +567,25 @@ public class JsFacade implements Exportable {
         Peer peerC = peer.convert();
 
         return new JsMessagesBind(callback, messenger.getSharedChatList(peerC), messenger.getConversationVM(peerC));
+    }
+
+    public JsPromise editMessage(JsPeer peer, String id, String newText) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                messenger.updateMessage(peer.convert(), newText, Long.parseLong(id)).start(new CommandCallback<Void>() {
+                    @Override
+                    public void onResult(Void res) {
+                        resolve();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        reject(e.getMessage());
+                    }
+                });
+            }
+        });
     }
 
     @UsedByApp
@@ -588,9 +598,9 @@ public class JsFacade implements Exportable {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
             public void execute() {
-                messenger.deleteChat(peer.convert()).start(new CommandCallback<Boolean>() {
+                messenger.deleteChat(peer.convert()).start(new CommandCallback<Void>() {
                     @Override
-                    public void onResult(Boolean res) {
+                    public void onResult(Void res) {
                         Log.d(TAG, "deleteChat:result");
                         resolve();
                     }
@@ -610,9 +620,9 @@ public class JsFacade implements Exportable {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
             public void execute() {
-                messenger.clearChat(peer.convert()).start(new CommandCallback<Boolean>() {
+                messenger.clearChat(peer.convert()).start(new CommandCallback<Void>() {
                     @Override
-                    public void onResult(Boolean res) {
+                    public void onResult(Void res) {
                         Log.d(TAG, "clearChat:result");
                         resolve();
                     }
@@ -632,9 +642,9 @@ public class JsFacade implements Exportable {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
             public void execute() {
-                messenger.archiveChat(peer.convert()).start(new CommandCallback<Boolean>() {
+                messenger.archiveChat(peer.convert()).start(new CommandCallback<Void>() {
                     @Override
-                    public void onResult(Boolean res) {
+                    public void onResult(Void res) {
                         Log.d(TAG, "archiveChat:result");
                         resolve();
                     }
@@ -654,9 +664,9 @@ public class JsFacade implements Exportable {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
             public void execute() {
-                messenger.favouriteChat(peer.convert()).start(new CommandCallback<Boolean>() {
+                messenger.favouriteChat(peer.convert()).start(new CommandCallback<Void>() {
                     @Override
-                    public void onResult(Boolean res) {
+                    public void onResult(Void res) {
                         Log.d(TAG, "favouriteChat:result");
                         resolve();
                     }
@@ -676,9 +686,9 @@ public class JsFacade implements Exportable {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
             public void execute() {
-                messenger.unfavoriteChat(peer.convert()).start(new CommandCallback<Boolean>() {
+                messenger.unfavoriteChat(peer.convert()).start(new CommandCallback<Void>() {
                     @Override
-                    public void onResult(Boolean res) {
+                    public void onResult(Void res) {
                         Log.d(TAG, "unfavouriteChat:result");
                         resolve();
                     }
@@ -759,6 +769,37 @@ public class JsFacade implements Exportable {
             return;
         }
         messenger.getJsUserOnline(uid).unsubscribe(callback);
+    }
+
+    @UsedByApp
+    public void bindUserBlocked(int uid, JsBindedValueCallback callback) {
+        if (callback == null) {
+            return;
+        }
+        messenger.getJsUserBlocked(uid).subscribe(callback);
+    }
+
+    @UsedByApp
+    public void unbindUserBlocked(int uid, JsBindedValueCallback callback) {
+        if (callback == null) {
+            return;
+        }
+        messenger.getJsUserBlocked(uid).unsubscribe(callback);
+    }
+
+    @UsedByApp
+    public JsPromise blockUser(final int uid) {
+        return JsPromise.from(messenger.blockUser(uid));
+    }
+
+    @UsedByApp
+    public JsPromise unblockUser(final int uid) {
+        return JsPromise.from(messenger.unblockUser(uid));
+    }
+
+    @UsedByApp
+    public JsPromise isStarted(final int uid) {
+        return JsPromise.from(messenger.isStarted(uid));
     }
 
     // Groups
@@ -954,6 +995,17 @@ public class JsFacade implements Exportable {
         return mentions;
     }
 
+    @UsedByApp
+    public JsArray<JsBotCommand> findBotCommands(int uid, String query) {
+        JsArray<JsBotCommand> commands = JsArray.createArray().cast();
+        for (BotCommand c : messenger.getUser(uid).getBotCommands().get()) {
+            if (c.getSlashCommand().startsWith(query)) {
+                commands.push(JsBotCommand.create(c.getSlashCommand(), c.getDescription()));
+            }
+        }
+        return commands;
+    }
+
     // Typing
 
     @UsedByApp
@@ -1106,6 +1158,19 @@ public class JsFacade implements Exportable {
                 });
             }
         });
+    }
+
+    @UsedByApp
+    public JsPromise loadBlockedUsers() {
+        return JsPromise.from(messenger.loadBlockedUsers()
+                .map(users -> {
+                    JsArray<JsUser> res = JsArray.createArray().cast();
+                    for (User u : users) {
+                        res.push(getUser(u.getUid()));
+                    }
+                    return res;
+                })
+        );
     }
 
     @UsedByApp
@@ -1354,7 +1419,7 @@ public class JsFacade implements Exportable {
             @Override
             public void execute() {
                 //noinspection ConstantConditions
-                messenger.joinGroupViaLink(url).start(new CommandCallback<Integer>() {
+                messenger.joinGroupViaToken(url).start(new CommandCallback<Integer>() {
                     @Override
                     public void onResult(Integer res) {
                         Log.d(TAG, "joinGroupViaLink:result");
@@ -1377,9 +1442,9 @@ public class JsFacade implements Exportable {
             @Override
             public void execute() {
                 //noinspection ConstantConditions
-                messenger.editGroupTitle(gid, newTitle).start(new CommandCallback<Boolean>() {
+                messenger.editGroupTitle(gid, newTitle).start(new CommandCallback<Void>() {
                     @Override
-                    public void onResult(Boolean res) {
+                    public void onResult(Void res) {
                         Log.d(TAG, "editGroupTitle:result");
                         resolve();
                     }
@@ -1399,9 +1464,9 @@ public class JsFacade implements Exportable {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
             public void execute() {
-                messenger.editGroupAbout(gid, newAbout).start(new CommandCallback<Boolean>() {
+                messenger.editGroupAbout(gid, newAbout).start(new CommandCallback<Void>() {
                     @Override
-                    public void onResult(Boolean res) {
+                    public void onResult(Void res) {
                         resolve();
                     }
 
@@ -1456,9 +1521,9 @@ public class JsFacade implements Exportable {
             @Override
             public void execute() {
                 //noinspection ConstantConditions
-                messenger.inviteMember(gid, uid).start(new CommandCallback<Boolean>() {
+                messenger.inviteMember(gid, uid).start(new CommandCallback<Void>() {
                     @Override
-                    public void onResult(Boolean res) {
+                    public void onResult(Void res) {
                         Log.d(TAG, "inviteMember:result");
                         resolve();
                     }
@@ -1479,9 +1544,9 @@ public class JsFacade implements Exportable {
             @Override
             public void execute() {
                 //noinspection ConstantConditions
-                messenger.kickMember(gid, uid).start(new CommandCallback<Boolean>() {
+                messenger.kickMember(gid, uid).start(new CommandCallback<Void>() {
                     @Override
-                    public void onResult(Boolean res) {
+                    public void onResult(Void res) {
                         Log.d(TAG, "kickMember:result");
                         resolve();
                     }
@@ -1502,9 +1567,9 @@ public class JsFacade implements Exportable {
             @Override
             public void execute() {
                 //noinspection ConstantConditions
-                messenger.leaveGroup(gid).start(new CommandCallback<Boolean>() {
+                messenger.leaveGroup(gid).start(new CommandCallback<Void>() {
                     @Override
-                    public void onResult(Boolean res) {
+                    public void onResult(Void res) {
                         Log.d(TAG, "leaveGroup:result");
                         resolve();
                     }
@@ -1640,9 +1705,9 @@ public class JsFacade implements Exportable {
             @Override
             public void execute() {
                 messenger.addReaction(peer.convert(), Long.parseLong(rid), "\u2764")
-                        .start(new CommandCallback<Boolean>() {
+                        .start(new CommandCallback<Void>() {
                             @Override
-                            public void onResult(Boolean res) {
+                            public void onResult(Void res) {
                                 resolve();
                             }
 
@@ -1662,9 +1727,9 @@ public class JsFacade implements Exportable {
             @Override
             public void execute() {
                 messenger.removeReaction(peer.convert(), Long.parseLong(rid), "\u2764")
-                        .start(new CommandCallback<Boolean>() {
+                        .start(new CommandCallback<Void>() {
                             @Override
-                            public void onResult(Boolean res) {
+                            public void onResult(Void res) {
                                 resolve();
                             }
 

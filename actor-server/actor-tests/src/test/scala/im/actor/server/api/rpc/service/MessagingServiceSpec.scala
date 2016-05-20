@@ -14,6 +14,7 @@ import im.actor.api.rpc.sequence.{ ApiUpdateContainer, ResponseGetDifference }
 import im.actor.server._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
+import im.actor.server.api.rpc.service.messaging.MessagingRpcErors
 import im.actor.server.persist.HistoryMessageRepo
 import im.actor.server.pubsub.PeerMessage
 
@@ -48,6 +49,8 @@ class MessagingServiceSpec
 
   it should "not allow user to edit alien messages" in s.generic.notEditAlienMessage
 
+  it should "keep randomId unique inside single dialog" in s.generic.uniqueRandomId
+
   object s {
     implicit val ec = system.dispatcher
 
@@ -68,18 +71,18 @@ class MessagingServiceSpec
         val user2Peer = peers.ApiOutPeer(ApiPeerType.Private, user2.id, user2AccessHash)
 
         val sessionId = createSessionId()
-        val clientData11 = ClientData(user1AuthId1, sessionId, Some(AuthData(user1.id, user1AuthSid1)))
-        val clientData12 = ClientData(user1AuthId2, sessionId, Some(AuthData(user1.id, user1AuthSid2)))
-        val clientData2 = ClientData(user2AuthId, sessionId, Some(AuthData(user2.id, user2AuthSid)))
+        val clientData11 = ClientData(user1AuthId1, sessionId, Some(AuthData(user1.id, user1AuthSid1, 42)))
+        val clientData12 = ClientData(user1AuthId2, sessionId, Some(AuthData(user1.id, user1AuthSid2, 42)))
+        val clientData2 = ClientData(user2AuthId, sessionId, Some(AuthData(user2.id, user2AuthSid, 42)))
 
         val randomId = Random.nextLong()
 
         {
           implicit val clienData = clientData11
 
-          whenReady(service.handleSendMessage(user2Peer, randomId, ApiTextMessage("Hi Shiva", Vector.empty, None), None)) { resp ⇒
+          whenReady(service.handleSendMessage(user2Peer, randomId, ApiTextMessage("Hi Shiva", Vector.empty, None), None, None)) { resp ⇒
             resp should matchPattern {
-              case Ok(ResponseSeqDate(2, _, _)) ⇒
+              case Ok(ResponseSeqDate(_, _, _)) ⇒
             }
           }
 
@@ -102,7 +105,7 @@ class MessagingServiceSpec
         {
           implicit val clientData = clientData2
 
-          expectUpdates(classOf[UpdateChatGroupsChanged], classOf[UpdateMessage], classOf[UpdateCountersChanged]) {
+          expectUpdatesUnordered(classOf[UpdateChatGroupsChanged], classOf[UpdateMessage], classOf[UpdateCountersChanged]) {
             case Seq(upd: UpdateMessage) ⇒
               upd.peer shouldEqual ApiPeer(ApiPeerType.Private, user1.id)
               upd.randomId shouldEqual randomId
@@ -115,8 +118,8 @@ class MessagingServiceSpec
         val (user1, user1AuthId, user1AuthSid, _) = createUser()
         val (user2, user2AuthId, user2AuthSid, _) = createUser()
 
-        val clientData1 = ClientData(user1AuthId, createSessionId(), Some(AuthData(user1.id, user1AuthSid)))
-        val clientData2 = ClientData(user2AuthId, createSessionId(), Some(AuthData(user2.id, user2AuthSid)))
+        val clientData1 = ClientData(user1AuthId, createSessionId(), Some(AuthData(user1.id, user1AuthSid, 42)))
+        val clientData2 = ClientData(user2AuthId, createSessionId(), Some(AuthData(user2.id, user2AuthSid, 42)))
 
         val user2Model = getUserModel(user2.id)
         val user2AccessHash = ACLUtils.userAccessHash(user1AuthId, user2.id, user2Model.accessSalt)
@@ -128,15 +131,15 @@ class MessagingServiceSpec
           val randomId = Random.nextLong()
           val text = "Hi Shiva"
           val actions = Future.sequence(List(
-            service.handleSendMessage(user2Peer, randomId, ApiTextMessage(text, Vector.empty, None), None),
-            service.handleSendMessage(user2Peer, randomId, ApiTextMessage(text, Vector.empty, None), None),
-            service.handleSendMessage(user2Peer, randomId, ApiTextMessage(text, Vector.empty, None), None),
-            service.handleSendMessage(user2Peer, randomId, ApiTextMessage(text, Vector.empty, None), None),
-            service.handleSendMessage(user2Peer, randomId, ApiTextMessage(text, Vector.empty, None), None)
+            service.handleSendMessage(user2Peer, randomId, ApiTextMessage(text, Vector.empty, None), None, None),
+            service.handleSendMessage(user2Peer, randomId, ApiTextMessage(text, Vector.empty, None), None, None),
+            service.handleSendMessage(user2Peer, randomId, ApiTextMessage(text, Vector.empty, None), None, None),
+            service.handleSendMessage(user2Peer, randomId, ApiTextMessage(text, Vector.empty, None), None, None),
+            service.handleSendMessage(user2Peer, randomId, ApiTextMessage(text, Vector.empty, None), None, None)
           ))
 
           whenReady(actions) { resps ⇒
-            resps foreach (_ should matchPattern { case Ok(ResponseSeqDate(2, _, _)) ⇒ })
+            resps foreach (_ should matchPattern { case Ok(ResponseSeqDate(_, _, _)) ⇒ })
           }
 
           expectUpdate(classOf[UpdateMessageSent])(identity)
@@ -159,9 +162,9 @@ class MessagingServiceSpec
       val (user2, user2AuthId, user2AuthSid, _) = createUser()
       val sessionId = createSessionId()
 
-      val clientData11 = ClientData(user1AuthId1, sessionId, Some(AuthData(user1.id, user1AuthSid1)))
-      val clientData12 = ClientData(user1AuthId2, sessionId, Some(AuthData(user1.id, user1AuthSid2)))
-      val clientData2 = ClientData(user2AuthId, sessionId, Some(AuthData(user2.id, user2AuthSid)))
+      val clientData11 = ClientData(user1AuthId1, sessionId, Some(AuthData(user1.id, user1AuthSid1, 42)))
+      val clientData12 = ClientData(user1AuthId2, sessionId, Some(AuthData(user1.id, user1AuthSid2, 42)))
+      val clientData2 = ClientData(user2AuthId, sessionId, Some(AuthData(user2.id, user2AuthSid, 42)))
 
       val groupResponse = {
         implicit val clientData = clientData11
@@ -178,9 +181,9 @@ class MessagingServiceSpec
         {
           implicit val clientData = clientData11
 
-          whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, randomId, ApiTextMessage("Hi again", Vector.empty, None), None)) { resp ⇒
+          whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, randomId, ApiTextMessage("Hi again", Vector.empty, None), None, None)) { resp ⇒
             resp should matchPattern {
-              case Ok(ResponseSeqDate(4, _, _)) ⇒
+              case Ok(ResponseSeqDate(_, _, _)) ⇒
             }
           }
 
@@ -214,33 +217,33 @@ class MessagingServiceSpec
       def restrictAlienUser() = {
         val (alien, authIdAlien, authSidAlien, _) = createUser()
 
-        val alienClientData = ClientData(user1AuthId1, sessionId, Some(AuthData(alien.id, authSidAlien)))
+        val alienClientData = ClientData(user1AuthId1, sessionId, Some(AuthData(alien.id, authSidAlien, 42)))
 
-        whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage("Hi again", Vector.empty, None), None)(alienClientData)) { resp ⇒
+        whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage("Hi again", Vector.empty, None), None, None)(alienClientData)) { resp ⇒
           resp should matchForbidden
         }
 
-        whenReady(groupsService.handleEditGroupTitle(groupOutPeer, 4L, "Loosers")(alienClientData)) { resp ⇒
+        whenReady(groupsService.handleEditGroupTitle(groupOutPeer, 4L, "Loosers", Vector.empty)(alienClientData)) { resp ⇒
           resp should matchForbidden
         }
 
         val (user3, authId3, _, _) = createUser()
         val user3OutPeer = ApiUserOutPeer(user3.id, 11)
 
-        whenReady(groupsService.handleInviteUser(groupOutPeer, 4L, user3OutPeer)(alienClientData)) { resp ⇒
+        whenReady(groupsService.handleInviteUser(groupOutPeer, 4L, user3OutPeer, Vector.empty)(alienClientData)) { resp ⇒
           resp should matchForbidden
         }
 
         val fileLocation = ApiFileLocation(1L, 1L)
-        whenReady(groupsService.handleEditGroupAvatar(groupOutPeer, 5L, fileLocation)(alienClientData)) { resp ⇒
+        whenReady(groupsService.handleEditGroupAvatar(groupOutPeer, 5L, fileLocation, Vector.empty)(alienClientData)) { resp ⇒
           resp should matchForbidden
         }
 
-        whenReady(groupsService.handleRemoveGroupAvatar(groupOutPeer, 5L)(alienClientData)) { resp ⇒
+        whenReady(groupsService.handleRemoveGroupAvatar(groupOutPeer, 5L, Vector.empty)(alienClientData)) { resp ⇒
           resp should matchForbidden
         }
 
-        whenReady(groupsService.handleLeaveGroup(groupOutPeer, 5L)(alienClientData)) { resp ⇒
+        whenReady(groupsService.handleLeaveGroup(groupOutPeer, 5L, Vector.empty)(alienClientData)) { resp ⇒
           resp should matchForbidden
         }
 
@@ -250,8 +253,8 @@ class MessagingServiceSpec
         val (user1, user1AuthId, user1AuthSid, _) = createUser()
         val (user2, user2AuthId, user2AuthSid, _) = createUser()
         val sessionId = createSessionId()
-        val clientData1 = ClientData(user1AuthId, sessionId, Some(AuthData(user1.id, user1AuthSid)))
-        val clientData2 = ClientData(user2AuthId, sessionId, Some(AuthData(user2.id, user2AuthSid)))
+        val clientData1 = ClientData(user1AuthId, sessionId, Some(AuthData(user1.id, user1AuthSid, 42)))
+        val clientData2 = ClientData(user2AuthId, sessionId, Some(AuthData(user2.id, user2AuthSid, 42)))
 
         val group2OutPeer = {
           implicit val clientData = clientData1
@@ -264,15 +267,15 @@ class MessagingServiceSpec
           val randomId = Random.nextLong()
           val text = "Hi Shiva"
           val actions = Future.sequence(List(
-            service.handleSendMessage(group2OutPeer.asOutPeer, randomId, ApiTextMessage(text, Vector.empty, None), None),
-            service.handleSendMessage(group2OutPeer.asOutPeer, randomId, ApiTextMessage(text, Vector.empty, None), None),
-            service.handleSendMessage(group2OutPeer.asOutPeer, randomId, ApiTextMessage(text, Vector.empty, None), None),
-            service.handleSendMessage(group2OutPeer.asOutPeer, randomId, ApiTextMessage(text, Vector.empty, None), None),
-            service.handleSendMessage(group2OutPeer.asOutPeer, randomId, ApiTextMessage(text, Vector.empty, None), None)
+            service.handleSendMessage(group2OutPeer.asOutPeer, randomId, ApiTextMessage(text, Vector.empty, None), None, None),
+            service.handleSendMessage(group2OutPeer.asOutPeer, randomId, ApiTextMessage(text, Vector.empty, None), None, None),
+            service.handleSendMessage(group2OutPeer.asOutPeer, randomId, ApiTextMessage(text, Vector.empty, None), None, None),
+            service.handleSendMessage(group2OutPeer.asOutPeer, randomId, ApiTextMessage(text, Vector.empty, None), None, None),
+            service.handleSendMessage(group2OutPeer.asOutPeer, randomId, ApiTextMessage(text, Vector.empty, None), None, None)
           ))
 
           whenReady(actions) { resps ⇒
-            resps foreach (_ should matchPattern { case Ok(ResponseSeqDate(4, _, _)) ⇒ })
+            resps foreach (_ should matchPattern { case Ok(ResponseSeqDate(_, _, _)) ⇒ })
           }
 
           expectUpdate(classOf[UpdateMessageSent])(identity)
@@ -294,7 +297,7 @@ class MessagingServiceSpec
 
       val (user, authId, authSid, _) = createUser()
       val sessionId = createSessionId()
-      implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user.id, authSid)))
+      implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user.id, authSid, 42)))
 
       val (user2, _, _, _) = createUser()
       val user2Model = getUserModel(user2.id)
@@ -314,7 +317,7 @@ class MessagingServiceSpec
           probe.expectMsg(SubscribeAck(Subscribe(topic, Some("testProbe"), probe.ref)))
         }
 
-        whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage("Hi PubSub", Vector.empty, None), None)) { resp ⇒
+        whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage("Hi PubSub", Vector.empty, None), None, None)) { resp ⇒
           probe.expectMsgClass(classOf[PeerMessage])
           probe.expectMsgClass(classOf[PeerMessage])
         }
@@ -334,8 +337,8 @@ class MessagingServiceSpec
         val bobOutPeer = whenReady(ACLUtils.getOutPeer(bobPeer, aliceAuthId))(identity)
 
         def sendMessageToAlice(text: String): Future[ResponseSeqDate] = {
-          implicit val clientData = ClientData(bobAuthId, 1, Some(AuthData(bob.id, bobAuthSid)))
-          service.handleSendMessage(aliceOutPeer, ACLUtils.randomLong(), textMessage(text), None) map (_.toOption.get)
+          implicit val clientData = ClientData(bobAuthId, 1, Some(AuthData(bob.id, bobAuthSid, 42)))
+          service.handleSendMessage(aliceOutPeer, ACLUtils.randomLong(), textMessage(text), None, None) map (_.toOption.get)
         }
 
         val toAlice = for (i ← 1 to 100) yield sendMessageToAlice(i.toString)
@@ -343,11 +346,11 @@ class MessagingServiceSpec
         toAlice foreach { whenReady(_)(identity) }
 
         {
-          implicit val clientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid)))
+          implicit val clientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid, 42)))
 
-          whenReady(service.handleLoadHistory(bobOutPeer, 0L, None, Int.MaxValue)) { resp ⇒
+          whenReady(service.handleLoadHistory(bobOutPeer, 0L, None, Int.MaxValue, Vector.empty)) { resp ⇒
             inside(resp) {
-              case Ok(ResponseLoadHistory(history, _)) ⇒
+              case Ok(ResponseLoadHistory(history, _, _, _, _)) ⇒
                 val textMessages = history map { e ⇒
                   val parsed = parseMessage(e.message.toByteArray)
                   inside(parsed) {
@@ -397,8 +400,8 @@ class MessagingServiceSpec
         val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
         val (bob, bobAuthId, bobAuthSid, _) = createUser()
 
-        val aliceCD = ClientData(aliceAuthId, sessionId, Some(AuthData(alice.id, aliceAuthSid)))
-        val bobCD = ClientData(bobAuthId, sessionId, Some(AuthData(bob.id, bobAuthSid)))
+        val aliceCD = ClientData(aliceAuthId, sessionId, Some(AuthData(alice.id, aliceAuthSid, 42)))
+        val bobCD = ClientData(bobAuthId, sessionId, Some(AuthData(bob.id, bobAuthSid, 42)))
 
         val alicePeer = ApiPeer(ApiPeerType.Private, alice.id)
         val bobPeer = ApiPeer(ApiPeerType.Private, bob.id)
@@ -444,8 +447,8 @@ class MessagingServiceSpec
         val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
         val (bob, bobAuthId, bobAuthSid, _) = createUser()
 
-        val aliceCD = ClientData(aliceAuthId, sessionId, Some(AuthData(alice.id, aliceAuthSid)))
-        val bobCD = ClientData(bobAuthId, sessionId, Some(AuthData(bob.id, bobAuthSid)))
+        val aliceCD = ClientData(aliceAuthId, sessionId, Some(AuthData(alice.id, aliceAuthSid, 42)))
+        val bobCD = ClientData(bobAuthId, sessionId, Some(AuthData(bob.id, bobAuthSid, 42)))
 
         val alicePeer = ApiPeer(ApiPeerType.Private, alice.id)
         val bobPeer = ApiPeer(ApiPeerType.Private, bob.id)
@@ -499,6 +502,88 @@ class MessagingServiceSpec
             }
           }
         }
+      }
+
+      def uniqueRandomId() = {
+        val (alice, aliceAuthId1, aliceAuthSid1, _) = createUser()
+        val (aliceAuthId2, aliceAuthSid2) = createAuthId(alice.id)
+
+        val (bob, bobAuthId, bobAuthSid, _) = createUser()
+
+        val bobClientData = ClientData(bobAuthId, 1, Some(AuthData(bob.id, bobAuthSid, 42)))
+        val aliceClientData1 = ClientData(aliceAuthId1, 1, Some(AuthData(alice.id, aliceAuthSid1, 42)))
+        val aliceClientData2 = ClientData(aliceAuthId2, 1, Some(AuthData(alice.id, aliceAuthSid2, 42)))
+
+        val RandomId = 22L
+
+        {
+          implicit val cd = aliceClientData1
+          whenReady(service.handleSendMessage(
+            getOutPeer(bob.id, aliceAuthId1),
+            RandomId,
+            ApiTextMessage("Hello from device number one", Vector.empty, None),
+            None,
+            None
+          )) { resp ⇒
+            resp should matchPattern {
+              case Ok(_) ⇒
+            }
+          }
+        }
+
+        val bobSeq = getCurrentSeq(bobClientData)
+
+        {
+          implicit val cd = aliceClientData2
+          whenReady(service.handleSendMessage(
+            getOutPeer(bob.id, aliceAuthId2),
+            RandomId,
+            ApiTextMessage("Hello from second device with same random id", Vector.empty, None),
+            None,
+            None
+          )) { resp ⇒
+            inside(resp) {
+              case Error(MessagingRpcErors.NotUniqueRandomId) ⇒
+            }
+          }
+        }
+
+        {
+          implicit val cd = bobClientData
+          expectNoUpdate(bobSeq, classOf[UpdateMessage])
+          expectNoUpdate(bobSeq, classOf[UpdateCountersChanged])
+        }
+
+        val aliceSeq1 = getCurrentSeq(aliceClientData1)
+        val aliceSeq2 = getCurrentSeq(aliceClientData2)
+
+        {
+          implicit val cd = bobClientData
+          whenReady(service.handleSendMessage(
+            getOutPeer(alice.id, bobAuthId),
+            RandomId,
+            ApiTextMessage("Hello you back, and same random id again", Vector.empty, None),
+            None,
+            None
+          )) { resp ⇒
+            inside(resp) {
+              case Error(MessagingRpcErors.NotUniqueRandomId) ⇒
+            }
+          }
+        }
+
+        {
+          implicit val cd = aliceClientData1
+          expectNoUpdate(aliceSeq1, classOf[UpdateMessage])
+          expectNoUpdate(aliceSeq1, classOf[UpdateCountersChanged])
+        }
+
+        {
+          implicit val cd = aliceClientData2
+          expectNoUpdate(aliceSeq2, classOf[UpdateMessage])
+          expectNoUpdate(aliceSeq2, classOf[UpdateCountersChanged])
+        }
+
       }
 
     }

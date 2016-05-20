@@ -35,125 +35,6 @@
 			remoteGlobalIDString = 066A50D11BC4AE63000E606E;
 			remoteInfo = ActorSDK;
 		};
-		EF1F2A071CABBEB30000D859 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = EF1F29F41CABBEB30000D859 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = F9DA23BCDE19EB5E5EE93C20672F7CD2;
-			remoteInfo = CocoaAsyncSocket;
-		};
-		EF1F2A091CABBEB30000D859 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = EF1F29F41CABBEB30000D859 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 2F81EC65201CC80D10C55E80DBB6A0B1;
-			remoteInfo = DZNWebViewController;
-		};
-		EF1F2A0B1CABBEB30000D859 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = EF1F29F41CABBEB30000D859 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = AE44A28DE3B74AD5CE51531BC62B9255;
-			remoteInfo = JDStatusBarNotification;
-		};
-		EF1F2A0D1CABBEB30000D859 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = EF1F29F41CABBEB30000D859 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 41DF501ED66504B9EF6C9C0D9B887FB7;
-			remoteInfo = M13ProgressSuite;
-		};
-		EF1F2A0F1CABBEB30000D859 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = EF1F29F41CABBEB30000D859 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = AFDDBF3D1C34CD3E1F43284770783EF5;
-			remoteInfo = MBProgressHUD;
-		};
-		EF1F2A111CABBEB30000D859 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = EF1F29F41CABBEB30000D859 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 12AFF7C480F786A93848099BE93C0426;
-			remoteInfo = "Pods-ActorApp";
-		};
-		EF1F2A131CABBEB30000D859 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = EF1F29F41CABBEB30000D859 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 250F3E0B6C87D69543433E16AFE79BE9;
-			remoteInfo = "Pods-ActorSDK";
-		};
-		EF1F2A151CABBEB30000D859 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = EF1F29F41CABBEB30000D859 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = B1D0ED490094DD4488876D46DD5E0004;
-			remoteInfo = pop;
-		};
-		EF1F2A171CABBEB30000D859 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = EF1F29F41CABBEB30000D859 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = AB55B6E44B45F992B0B61A036F683CB4;
-			remoteInfo = RegexKitLite;
-		};
-		EF1F2A191CABBEB30000D859 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = EF1F29F41CABBEB30000D859 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D5B6B1D95B3A0A03ED3707D92CABE6FF;
-			remoteInfo = RSKImageCropper;
-		};
-		EF1F2A1B1CABBEB30000D859 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = EF1F29F41CABBEB30000D859 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 5492EFADBE0EE50D1857B80E2A0FFF3A;
-			remoteInfo = SZTextView;
-		};
-		EF1F2A1D1CABBEB30000D859 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = EF1F29F41CABBEB30000D859 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 393F6F9D29B2C9A59501E2EF51652174;
-			remoteInfo = TTTAttributedLabel;
-		};
-		EF1F2A1F1CABBEB30000D859 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = EF1F29F41CABBEB30000D859 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 5FDE4D641F6D4BBA55992258131E7438;
-			remoteInfo = VBFPopFlatButton;
-		};
-		EF1F2A211CABBEB30000D859 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = EF1F29F41CABBEB30000D859 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 2E2E3256252B2246CE9707FBB6ABFDAF;
-			remoteInfo = YYCategories;
-		};
-		EF1F2A231CABBEB30000D859 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = EF1F29F41CABBEB30000D859 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = F87CCAC01540A775B65C4A3CF9E8A32E;
-			remoteInfo = YYImage;
-		};
-		EF1F2A251CABBEB30000D859 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = EF1F29F41CABBEB30000D859 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 991461BA441C1C883EB72D4AE7805E5F;
-			remoteInfo = zipzap;
-		};
-		EFF21C121CDC7B1F003B320F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = EF1F29F41CABBEB30000D859 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 0880DF8B620E25DAA493D952A0917605;
-			remoteInfo = SwiftyJSON;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -190,7 +71,6 @@
 		9B2EEB8CEF2E94D58EA09D9D /* Pods-ActorApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.debug.xcconfig"; sourceTree = "<group>"; };
 		A275ED497CA570AD01FB66A7 /* Pods_ActorApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ActorApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE8D1D9859D2C4D4C7EC7AD74BB65F0E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = "Supporting Files/Info.plist"; sourceTree = "<group>"; };
-		EF1F29F41CABBEB30000D859 /* Pods.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Pods.xcodeproj; path = Pods/Pods.xcodeproj; sourceTree = "<group>"; };
 		F76A77E9428111C798E69B43EA06A281 /* ActorApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = ActorApp.entitlements; path = "Supporting Files/ActorApp.entitlements"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -280,36 +160,11 @@
 		D873D85572C6C400293E0DF69DBA58DD = {
 			isa = PBXGroup;
 			children = (
-				EF1F29F41CABBEB30000D859 /* Pods.xcodeproj */,
 				D0310FF36675D7510E52D86CDA8E2C6C /* ActorApp */,
 				86C48777C0FD262E78F8BEC9253C9914 /* Frameworks */,
 				C83A7EEB1948C38ECEFC1D330C57A7B1 /* Products */,
 				BFFF6424C537CA65F6346593 /* Pods */,
 			);
-			sourceTree = "<group>";
-		};
-		EF1F29F51CABBEB30000D859 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				EF1F2A081CABBEB30000D859 /* CocoaAsyncSocket.framework */,
-				EF1F2A0A1CABBEB30000D859 /* DZNWebViewController.framework */,
-				EF1F2A0C1CABBEB30000D859 /* JDStatusBarNotification.framework */,
-				EF1F2A0E1CABBEB30000D859 /* M13ProgressSuite.framework */,
-				EF1F2A101CABBEB30000D859 /* MBProgressHUD.framework */,
-				EF1F2A121CABBEB30000D859 /* Pods_ActorApp.framework */,
-				EF1F2A141CABBEB30000D859 /* Pods_ActorSDK.framework */,
-				EF1F2A161CABBEB30000D859 /* pop.framework */,
-				EF1F2A181CABBEB30000D859 /* RegexKitLite.framework */,
-				EF1F2A1A1CABBEB30000D859 /* RSKImageCropper.framework */,
-				EFF21C131CDC7B1F003B320F /* SwiftyJSON.framework */,
-				EF1F2A1C1CABBEB30000D859 /* SZTextView.framework */,
-				EF1F2A1E1CABBEB30000D859 /* TTTAttributedLabel.framework */,
-				EF1F2A201CABBEB30000D859 /* VBFPopFlatButton.framework */,
-				EF1F2A221CABBEB30000D859 /* YYCategories.framework */,
-				EF1F2A241CABBEB30000D859 /* YYImage.framework */,
-				EF1F2A261CABBEB30000D859 /* zipzap.framework */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -327,7 +182,7 @@
 				06230F0D1BC7FF3500A4807B /* Embed Frameworks */,
 				AAA022A9BD9362E00B0F9BDE /* 📦 Embed Pods Frameworks */,
 				EFFD470B63C1BB419D199F19 /* 📦 Copy Pods Resources */,
-				7936862E9DD9F7ABAFBC1C2B /* Embed Pods Frameworks */,
+				851EE1A34619AE6677649A27 /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -351,7 +206,7 @@
 				TargetAttributes = {
 					EA6B7348F8364542DDD264F741AAAA19 = {
 						CreatedOnToolsVersion = 6.4;
-						DevelopmentTeam = D94R58LQ65;
+						DevelopmentTeam = HVJR44Y5B6;
 						SystemCapabilities = {
 							com.apple.Maps.iOS = {
 								enabled = 1;
@@ -386,10 +241,6 @@
 					ProductGroup = 06230F041BC7FF2F00A4807B /* Products */;
 					ProjectRef = 06230F031BC7FF2F00A4807B /* ActorSDK.xcodeproj */;
 				},
-				{
-					ProductGroup = EF1F29F51CABBEB30000D859 /* Products */;
-					ProjectRef = EF1F29F41CABBEB30000D859 /* Pods.xcodeproj */;
-				},
 			);
 			projectRoot = "";
 			targets = (
@@ -404,125 +255,6 @@
 			fileType = wrapper.framework;
 			path = ActorSDK.framework;
 			remoteRef = 06230F071BC7FF3000A4807B /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		EF1F2A081CABBEB30000D859 /* CocoaAsyncSocket.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = CocoaAsyncSocket.framework;
-			remoteRef = EF1F2A071CABBEB30000D859 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		EF1F2A0A1CABBEB30000D859 /* DZNWebViewController.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = DZNWebViewController.framework;
-			remoteRef = EF1F2A091CABBEB30000D859 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		EF1F2A0C1CABBEB30000D859 /* JDStatusBarNotification.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = JDStatusBarNotification.framework;
-			remoteRef = EF1F2A0B1CABBEB30000D859 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		EF1F2A0E1CABBEB30000D859 /* M13ProgressSuite.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = M13ProgressSuite.framework;
-			remoteRef = EF1F2A0D1CABBEB30000D859 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		EF1F2A101CABBEB30000D859 /* MBProgressHUD.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = MBProgressHUD.framework;
-			remoteRef = EF1F2A0F1CABBEB30000D859 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		EF1F2A121CABBEB30000D859 /* Pods_ActorApp.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = Pods_ActorApp.framework;
-			remoteRef = EF1F2A111CABBEB30000D859 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		EF1F2A141CABBEB30000D859 /* Pods_ActorSDK.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = Pods_ActorSDK.framework;
-			remoteRef = EF1F2A131CABBEB30000D859 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		EF1F2A161CABBEB30000D859 /* pop.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = pop.framework;
-			remoteRef = EF1F2A151CABBEB30000D859 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		EF1F2A181CABBEB30000D859 /* RegexKitLite.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = RegexKitLite.framework;
-			remoteRef = EF1F2A171CABBEB30000D859 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		EF1F2A1A1CABBEB30000D859 /* RSKImageCropper.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = RSKImageCropper.framework;
-			remoteRef = EF1F2A191CABBEB30000D859 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		EF1F2A1C1CABBEB30000D859 /* SZTextView.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = SZTextView.framework;
-			remoteRef = EF1F2A1B1CABBEB30000D859 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		EF1F2A1E1CABBEB30000D859 /* TTTAttributedLabel.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = TTTAttributedLabel.framework;
-			remoteRef = EF1F2A1D1CABBEB30000D859 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		EF1F2A201CABBEB30000D859 /* VBFPopFlatButton.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = VBFPopFlatButton.framework;
-			remoteRef = EF1F2A1F1CABBEB30000D859 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		EF1F2A221CABBEB30000D859 /* YYCategories.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = YYCategories.framework;
-			remoteRef = EF1F2A211CABBEB30000D859 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		EF1F2A241CABBEB30000D859 /* YYImage.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = YYImage.framework;
-			remoteRef = EF1F2A231CABBEB30000D859 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		EF1F2A261CABBEB30000D859 /* zipzap.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = zipzap.framework;
-			remoteRef = EF1F2A251CABBEB30000D859 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		EFF21C131CDC7B1F003B320F /* SwiftyJSON.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = SwiftyJSON.framework;
-			remoteRef = EFF21C121CDC7B1F003B320F /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -571,7 +303,7 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		7936862E9DD9F7ABAFBC1C2B /* Embed Pods Frameworks */ = {
+		851EE1A34619AE6677649A27 /* Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -684,7 +416,7 @@
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = cn.eaglesoft.igem;
+				PRODUCT_BUNDLE_IDENTIFIER = im.actor.sdk.dev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDK_PATH = "../actor-sdk";
@@ -726,7 +458,6 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "$(inherited)";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -761,7 +492,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = cn.eaglesoft.igem;
+				PRODUCT_BUNDLE_IDENTIFIER = im.actor.sdk.dev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDK_PATH = "../actor-sdk";

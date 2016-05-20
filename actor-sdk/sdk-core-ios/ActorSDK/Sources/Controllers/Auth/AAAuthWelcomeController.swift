@@ -6,12 +6,14 @@ import UIKit
 
 public class AAWelcomeController: AAViewController {
     
-    let bgImage : UIImageView = UIImageView()
-    let logoView : UIImageView = UIImageView()
-    let appNameLabel : UILabel = UILabel()
-    let someInfoLabel: UILabel = UILabel()
-    let settingsButton: UIButton = UIButton()
-    let signinButton: UIButton = UIButton()
+    let bgImage: UIImageView            = UIImageView()
+    let logoView: UIImageView           = UIImageView()
+    let appNameLabel: UILabel           = UILabel()
+    let someInfoLabel: UILabel          = UILabel()
+    let settingsButton: UIButton          = UIButton()
+    let signinButton: UIButton          = UIButton()
+    var size: CGSize                    = CGSize()
+    var logoViewVerticalGap: CGFloat    = CGFloat()
     
     public override init() {
         super.init(nibName: nil, bundle: nil)
@@ -31,6 +33,8 @@ public class AAWelcomeController: AAViewController {
         self.bgImage.contentMode = .ScaleAspectFill
         
         self.logoView.image = ActorSDK.sharedActor().style.welcomeLogo
+        self.size = ActorSDK.sharedActor().style.welcomeLogoSize
+        self.logoViewVerticalGap = ActorSDK.sharedActor().style.logoViewVerticalGap
         
         appNameLabel.text = AALocalized("WelcomeTitle").replace("{app_name}", dest: ActorSDK.sharedActor().appName)
         appNameLabel.textAlignment = .Center
@@ -70,18 +74,20 @@ public class AAWelcomeController: AAViewController {
         super.viewDidLayoutSubviews()
         
         if AADevice.isiPhone4 {
-            logoView.frame = CGRectMake((view.width - 90) / 2, 90, 90, 90)
+            logoView.frame = CGRectMake((view.width - size.width) / 2, 90, size.width, size.height)
             appNameLabel.frame = CGRectMake((view.width - 300) / 2, logoView.bottom + 30, 300, 29)
             someInfoLabel.frame = CGRectMake((view.width - 300) / 2, appNameLabel.bottom + 8, 300, 56)
             
+          
             settingsButton.frame = CGRectMake((view.width - 136) / 2, view.height - 44 - 80, 136, 44)
             signinButton.frame = CGRectMake((view.width - 136) / 2, view.height - 44 - 25, 136, 44)
         } else {
             
-            logoView.frame = CGRectMake((view.width - 90) / 2, 145, 90, 90)
+            logoView.frame = CGRectMake((view.width - size.width) / 2, logoViewVerticalGap, size.width, size.height)
             appNameLabel.frame = CGRectMake((view.width - 300) / 2, logoView.bottom + 35, 300, 29)
             someInfoLabel.frame = CGRectMake((view.width - 300) / 2, appNameLabel.bottom + 8, 300, 56)
         
+     
             settingsButton.frame = CGRectMake((view.width - 136) / 2, view.height - 44 - 90, 136, 44)
             signinButton.frame = CGRectMake((view.width - 136) / 2, view.height - 44 - 35, 136, 44)
         }

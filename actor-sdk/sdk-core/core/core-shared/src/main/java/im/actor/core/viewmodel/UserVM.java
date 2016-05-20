@@ -16,12 +16,14 @@ import im.actor.core.entity.ContactRecordType;
 import im.actor.core.entity.Sex;
 import im.actor.core.entity.User;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.viewmodel.generics.ArrayListBotCommands;
 import im.actor.core.viewmodel.generics.ArrayListContactRecord;
 import im.actor.core.viewmodel.generics.ArrayListUserEmail;
 import im.actor.core.viewmodel.generics.ArrayListUserPhone;
 import im.actor.core.viewmodel.generics.ArrayListUserLink;
 import im.actor.core.viewmodel.generics.AvatarValueModel;
 import im.actor.core.viewmodel.generics.BooleanValueModel;
+import im.actor.core.viewmodel.generics.ValueModelBotCommands;
 import im.actor.core.viewmodel.generics.ValueModelContactRecord;
 import im.actor.core.viewmodel.generics.StringValueModel;
 import im.actor.core.viewmodel.generics.ValueModelUserEmail;
@@ -43,12 +45,7 @@ public class UserVM extends BaseValueModel<User> {
     private static final long PRESENCE_UPDATE_DELAY = 60 * 1000L;
 
     public static ValueModelCreator<User, UserVM> CREATOR(final ModuleContext modules) {
-        return new ValueModelCreator<User, UserVM>() {
-            @Override
-            public UserVM create(User baseValue) {
-                return new UserVM(baseValue, modules);
-            }
-        };
+        return baseValue -> new UserVM(baseValue, modules);
     }
 
     private int id;
@@ -66,9 +63,15 @@ public class UserVM extends BaseValueModel<User> {
     @NotNull
     private AvatarValueModel avatar;
     @NotNull
+    private StringValueModel timeZone;
+    @NotNull
     private Sex sex;
     @NotNull
     private BooleanValueModel isContact;
+    @NotNull
+    private BooleanValueModel isBlocked;
+    @NotNull
+    private BooleanValueModel isVerified;
     @NotNull
     private ValueModelUserPresence presence;
     private CommonTimer presenceTimer;
@@ -83,7 +86,11 @@ public class UserVM extends BaseValueModel<User> {
     private ValueModelContactRecord contacts;
 
     @NotNull
-    private ArrayList<ModelChangedListener<UserVM>> listeners = new ArrayList<ModelChangedListener<UserVM>>();
+    private ValueModelBotCommands botCommands;
+
+
+    @NotNull
+    private ArrayList<ModelChangedListener<UserVM>> listeners = new ArrayList<>();
 
     /**
      * <p>INTERNAL API</p>
@@ -105,12 +112,15 @@ public class UserVM extends BaseValueModel<User> {
         about = new StringValueModel("user." + id + ".about", user.getAbout());
         avatar = new AvatarValueModel("user." + id + ".avatar", user.getAvatar());
         isContact = new BooleanValueModel("user." + id + ".contact", modules.getContactsModule().isUserContact(id));
+        isBlocked = new BooleanValueModel("user." + id + ".blocked", user.isBlocked());
+        isVerified = new BooleanValueModel("user." + id + ".is_verified", user.isVerified());
+        timeZone = new StringValueModel("user." + id + ".time_zone", user.getTimeZone());
         presence = new ValueModelUserPresence("user." + id + ".presence", new UserPresence(UserPresence.State.UNKNOWN));
         phones = new ValueModelUserPhone("user." + id + ".phones", buildPhones(user.getRecords()));
         emails = new ValueModelUserEmail("user." + id + ".emails", buildEmails(user.getRecords()));
         links = new ValueModelUserLink("user." + id + ".links", buildLinks(user.getRecords()));
         contacts = new ValueModelContactRecord("user." + id + ".contacts", new ArrayListContactRecord(user.getRecords()));
-
+        botCommands = new ValueModelBotCommands("user." + id + ".bot_commands", new ArrayListBotCommands(user.getCommands()));
         // Notify about presence change every minute as text representation can change
         presenceTimer = new CommonTimer(new Runnable() {
             @Override
@@ -128,8 +138,12 @@ public class UserVM extends BaseValueModel<User> {
         isChanged |= localName.change(rawObj.getLocalName());
         isChanged |= serverName.change(rawObj.getServerName());
         isChanged |= nick.change(rawObj.getNick());
+        isChanged |= timeZone.change(rawObj.getTimeZone());
         isChanged |= about.change(rawObj.getAbout());
         isChanged |= avatar.change(rawObj.getAvatar());
+        isChanged |= isBlocked.change(rawObj.isBlocked());
+        isChanged |= isVerified.change(rawObj.isVerified());
+        isChanged |= botCommands.change(new ArrayListBotCommands(rawObj.getCommands()));
 
         // TODO: better changed checking?
         isChanged |= phones.change(buildPhones(rawObj.getRecords()));
@@ -251,6 +265,28 @@ public class UserVM extends BaseValueModel<User> {
     }
 
     /**
+     * Get ValueModel of flag if user is blocked
+     *
+     * @return ValueModel of Boolean
+     */
+    @NotNull
+    @ObjectiveCName("isBlockedModel")
+    public BooleanValueModel getIsBlocked() {
+        return isBlocked;
+    }
+
+    /**
+     * Get ValueModel of flag if user is verified
+     *
+     * @return ValueModel of Boolean
+     */
+    @NotNull
+    @ObjectiveCName("isVerifiedModel")
+    public BooleanValueModel getIsVerified() {
+        return isVerified;
+    }
+
+    /**
      * Get ValueModel of User Presence
      *
      * @return ValueModel of UserPresence
@@ -295,6 +331,17 @@ public class UserVM extends BaseValueModel<User> {
     }
 
     /**
+     * Get User's time zone
+     *
+     * @return ValueModel of Time Zone
+     */
+    @NotNull
+    @ObjectiveCName("getTimeZoneModel")
+    public StringValueModel getTimeZone() {
+        return timeZone;
+    }
+
+    /**
      * Get User Contact records
      *
      * @return ValueModel of ArrayList of ContactRecord
@@ -304,6 +351,18 @@ public class UserVM extends BaseValueModel<User> {
     public ValueModelContactRecord getContacts() {
         return contacts;
     }
+
+    /**
+     * Get Bot commands
+     *
+     * @return ValueModel of ArrayList of BotCommands
+     */
+    @NotNull
+    @ObjectiveCName("getBotCommandsModel")
+    public ValueModelBotCommands getBotCommands() {
+        return botCommands;
+    }
+
 
     /**
      * Subscribe to UserVM updates

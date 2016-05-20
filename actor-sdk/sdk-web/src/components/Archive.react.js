@@ -33,7 +33,7 @@ class Archive extends Component {
       isAllLoaded: ArchiveStore.isAllLoaded(),
       dialogs: ArchiveStore.getDialogs()
     }
-  };
+  }
 
   static contextTypes = {
     intl: PropTypes.object
@@ -67,10 +67,10 @@ class Archive extends Component {
         ArchiveActionCreators.loadMoreArchivedDialogs();
       }
     }
-  }, 5, {maxWait: 30});
+  }, 5, { maxWait: 30 });
 
   render() {
-    const { isLoading, dialogs, isAllLoaded } = this.state;
+    const { isLoading, dialogs } = this.state;
     const archiveClassname = classnames('archive-section', {
       'archive-section--loading': isLoading
     });
@@ -81,11 +81,14 @@ class Archive extends Component {
       return (
         <div className="archive-section__list__item col-xs-12 col-sm-6 col-md-4 col-lg-3" key={index}>
           <Link to={`/im/${peer.peer.key}`} className="archive-item row">
-            <div className="archive-item__avatar">
-              <AvatarItem image={peer.avatar}
-                          placeholder={peer.placeholder}
-                          size="medium"
-                          title={peer.title}/>
+            <div className="archive-item__user">
+              <AvatarItem
+                className="archive-item__avatar"
+                size="medium"
+                image={peer.avatar}
+                placeholder={peer.placeholder}
+                title={peer.title}
+              />
               {
                 counter !== 0
                   ? <div className="archive-item__counter">{counter}</div>
@@ -135,4 +138,4 @@ class Archive extends Component {
   }
 }
 
-export default Container.create(Archive, {pure: false});
+export default Container.create(Archive, { pure: false });

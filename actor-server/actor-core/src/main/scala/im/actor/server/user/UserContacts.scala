@@ -4,9 +4,10 @@ import java.time.Instant
 
 import akka.actor.{ ActorRefFactory, Props }
 import akka.pattern.ask
+import akka.persistence.SnapshotMetadata
 import akka.util.Timeout
 import im.actor.api.rpc.users.UpdateUserLocalNameChanged
-import im.actor.server.cqrs.{ Processor, ProcessorState }
+import im.actor.server.cqrs.{ Event, Processor, ProcessorState }
 import im.actor.server.db.DbExtension
 import im.actor.server.persist.contact.UserContactRepo
 import im.actor.server.sequence.SeqState
@@ -14,10 +15,10 @@ import im.actor.server.user.UserCommands.EditLocalName
 
 import scala.concurrent.Future
 
-private final case class UserContactsState(localNames: Map[Int, String] = Map.empty) extends ProcessorState[UserContactsState, UserEvent] {
+private final case class UserContactsState(localNames: Map[Int, String] = Map.empty) extends ProcessorState[UserContactsState] {
   import UserEvents._
 
-  override def updated(e: UserEvent): UserContactsState = e match {
+  override def updated(e: Event): UserContactsState = e match {
     case LocalNameChanged(_, contactUserId, localNameOpt) ⇒
       localNameOpt match {
         case None ⇒ this
@@ -25,6 +26,8 @@ private final case class UserContactsState(localNames: Map[Int, String] = Map.em
           this.copy(localNames = localNames + (contactUserId → localName))
       }
   }
+
+  override def withSnapshot(metadata: SnapshotMetadata, snapshot: Any): UserContactsState = this
 }
 
 private[user] final class UserContacts(userId: Int)(implicit factory: ActorRefFactory) {
@@ -34,7 +37,7 @@ private[user] final class UserContacts(userId: Int)(implicit factory: ActorRefFa
     (ref ? EditLocalName(userId, contactUserId, nameOpt, supressUpdate)).mapTo[SeqState]
 }
 
-private[user] final class UserContactsActor(userId: Int) extends Processor[UserContactsState, UserEvent] {
+private[user] final class UserContactsActor(userId: Int) extends Processor[UserContactsState] {
   import UserCommands._
   import UserQueries._
   import UserEvents._

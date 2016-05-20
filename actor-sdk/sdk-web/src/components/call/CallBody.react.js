@@ -2,8 +2,7 @@
 * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
 */
 
-import React, {Component, PropTypes} from 'react';
-import { FormattedMessage } from 'react-intl';
+import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 
 import CallAvatar from './CallAvatar.react';
@@ -16,7 +15,7 @@ class CallBody extends Component {
   };
 
   render() {
-    const {small, peerInfo, callState} = this.props;
+    const { small, peerInfo, callState } = this.props;
     if (!peerInfo) {
       return null;
     }

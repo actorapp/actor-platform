@@ -8,7 +8,7 @@ import akka.util.Timeout
 import com.google.protobuf.ByteString
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.api.rpc.{ AuthorizedClientData, Update }
-import im.actor.api.rpc.users.{ ApiSex, ApiUser }
+import im.actor.api.rpc.users.{ ApiFullUser, ApiSex, ApiUser }
 import im.actor.server.auth.DeviceInfo
 import im.actor.server.bots.BotCommand
 import im.actor.server.db.DbExtension
@@ -119,14 +119,17 @@ private[user] sealed trait Commands extends AuthCommands {
   def editLocalName(userId: Int, contactUserId: Int, localName: Option[String], supressUpdate: Boolean = false): Future[SeqState] =
     (processorRegion.ref ? EditLocalName(userId, contactUserId, localName, supressUpdate)).mapTo[SeqState]
 
-  def notifyDialogsChanged(userId: Int): Future[SeqState] =
-    (processorRegion.ref ? NotifyDialogsChanged(userId)).mapTo[SeqState]
-
   def addBotCommand(userId: Int, command: BotCommand): Future[AddBotCommandAck] =
     (processorRegion.ref ? AddBotCommand(userId, command)).mapTo[AddBotCommandAck]
 
   def removeBotCommand(userId: Int, slashCommand: String): Future[RemoveBotCommandAck] =
     (processorRegion.ref ? RemoveBotCommand(userId, slashCommand)).mapTo[RemoveBotCommandAck]
+
+  def addExt(userId: Int, ext: UserExt): Future[Unit] =
+    (processorRegion.ref ? AddExt(userId, ext)) map (_ ⇒ ())
+
+  def removeExt(userId: Int, key: String): Future[Unit] =
+    (processorRegion.ref ? RemoveExt(userId, key)) map (_ ⇒ ())
 
   def broadcastUserUpdate(
     userId:     Int,
@@ -261,6 +264,9 @@ private[user] sealed trait Queries {
   def getApiStruct(userId: Int, clientUserId: Int, clientAuthId: Long): Future[ApiUser] =
     (viewRegion.ref ? GetApiStruct(userId, clientUserId, clientAuthId)).mapTo[GetApiStructResponse] map (_.struct)
 
+  def getApiFullStruct(userId: Int, clientUserId: Int, clientAuthId: Long): Future[ApiFullUser] =
+    (viewRegion.ref ? GetApiFullStruct(userId, clientUserId, clientAuthId)).mapTo[GetApiFullStructResponse] map (_.struct)
+
   def getLocalName(ownerUserId: Int, contactUserId: Int): Future[Option[String]] =
     (viewRegion.ref ? GetLocalName(ownerUserId, contactUserId)).mapTo[GetLocalNameResponse] map (_.localName)
 
@@ -329,7 +335,7 @@ private[user] sealed trait AuthCommands {
     log.warning(s"Terminating AuthSession ${session.id} of user ${session.userId} and authId ${session.authId}")
     for {
       _ ← removeAuth(session.userId, session.authId)
-      _ ← SeqUpdatesExtension(system).deletePushCredentials(session.authId)
+      _ ← SeqUpdatesExtension(system).unregisterAllPushCredentials(session.authId)
       _ ← db.run(p.AuthSessionRepo.delete(session.userId, session.id))
     } yield publishAuthIdInvalidated(session.authId)
   }

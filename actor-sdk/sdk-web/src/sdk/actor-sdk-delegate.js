@@ -2,33 +2,52 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
+import { defaultsDeep } from 'lodash';
+
 /**
  * Class representing a delegate for overriding default app behaviour.
  *
- * @param {object} components - Object contains custom react components.
- * @param {object} actions - Object contains custom actions.
- * @param {object} l18n - Object contains custom translations.
+ * @param {object} options - Object contains options.
+ * @param {object} options.components - Object contains custom react components.
+ * @param {object} options.features - Object contains features flags.
+ * @param {object} options.actions - Object contains custom actions.
+ * @param {object} options.l18n - Object contains custom translations.
  */
 class ActorSDKDelegate {
-  constructor(components = {}, actions = {}, l18n = {}) {
-    this.components = {
-      login: components.login || null,
-      install: components.install || null,
-      deactivated: components.deactivated || null,
-      join: components.join || null,
-      archive: components.archive || null,
-      empty: components.empty || null,
+  static defaultOptions = {
+    components: {
+      login: null,
+      install: null,
+      deactivated: null,
+      join: null,
+      archive: null,
+      empty: null,
+      sidebar: null,
+      modals: null,
+      about: null
+    },
+    features: {
+      calls: true,
+      search: false
+    },
+    actions: {
+      setLoggedIn: null,
+      setLoggedOut: null
+    },
+    l18n: {}
+  };
 
-      sidebar: components.sidebar || null,
-      dialog: components.dialog || null
-    };
+  constructor(options = {}) {
+    if (arguments.length === 3) {
+      console.error('Deprecation notice: ActorSDKDelegate constructor accept "options" parameter');
+      options = {
+        components: arguments[0],
+        actions: arguments[1],
+        l18n: arguments[2]
+      };
+    }
 
-    this.actions = {
-      setLoggedIn: actions.setLoggedIn || null,
-      setLoggedOut: actions.setLoggedOut || null
-    };
-
-    this.l18n = l18n;
+    defaultsDeep(this, options, ActorSDKDelegate.defaultOptions);
   }
 }
 

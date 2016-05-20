@@ -2,155 +2,125 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import { Store } from 'flux/utils';
+import { ReduceStore } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
-import ActorClient from '../utils/ActorClient';
 import { ActionTypes, PeerTypes } from '../constants/ActorAppConstants';
+import ActorClient from '../utils/ActorClient';
+import { parseMentionQuery, parseBotCommand } from '../utils/ComposeUtils';
 
-import DraftStore from './DraftStore';
-
-const getQuery = (text, position) => {
-  const run = (runText, query) => {
-    if (runText.length === 0) {
-      return null;
-    } else {
-      const lastChar = runText.charAt(runText.length - 1);
-      if (lastChar === '@') {
-        const charBeforeAt = runText.charAt(runText.length - 2);
-        if (charBeforeAt.trim() === '') {
-          const text = (query || '');
-          const atStart = text.length + 1 === position;
-
-          return {
-            text: text,
-            atStart: atStart
-          };
-        } else {
-          return null;
-        }
-      } else if (lastChar.trim() === '') {
-        return null;
-      } else {
-        return run(runText.substring(0, runText.length - 1), lastChar + (query || ''));
-      }
-    }
-  };
-
-  const runText = text.substring(0, position);
-  return run(runText, null);
-};
-
-let text = '';
-let mentions = null;
-let _isAutoFocusEnabled = true;
-
-class ComposeStore extends Store {
-  constructor(dispatcher) {
-    super(dispatcher);
+class ComposeStore extends ReduceStore {
+  getInitialState() {
+    return {
+      text: '',
+      mentions: null,
+      commands: null,
+      autoFocus: true,
+      editMessage: null
+    };
   }
 
-  getMentions() {
-    return mentions;
-  }
-
-  getText() {
-    return text;
-  }
-
-  isAutoFocusEnabled() {
-    return _isAutoFocusEnabled;
-  }
-
-  onTyping = (action) => {
-    text = action.text;
-    const query = getQuery(text, action.caretPosition);
-
-    if (action.peer.type === PeerTypes.GROUP && query !== null) {
-      mentions = ActorClient.findMentions(action.peer.id, query.text);
-    } else {
-      mentions = null;
-    }
-
-    this.__emitChange();
-  };
-
-  onMentionInsert = (action) => {
-    const query = getQuery(action.text, action.caretPosition);
-    const mentionEnding = query.atStart ? ': ' : ' ';
-
-    text = action.text.substring(0, action.caretPosition - query.text.length - 1) +
-      action.mention.mentionText +
-      mentionEnding +
-      action.text.substring(action.caretPosition, action.text.length);
-
-    mentions = null;
-
-    this.__emitChange();
-  };
-
-  onMentionClose = () => {
-    mentions = null;
-    this.__emitChange();
-  };
-
-  onComposeClean = () => {
-    text = '';
-    mentions = null;
-    this.__emitChange();
-  };
-
-  onDraftLoad = () => {
-    text = DraftStore.getDraft();
-    this.__emitChange();
-  };
-
-  onEmojiInsert = (action) => {
-    const emojiText = `${action.emoji} `;
-
-    text = action.text.substring(0, action.caretPosition) +
-      emojiText +
-      action.text.substring(action.caretPosition, action.text.length);
-
-    this.__emitChange();
-  };
-
-  onComposePaste = (newText) => {
-    text = newText;
-    this.__emitChange();
-  };
-
-  __onDispatch(action) {
+  reduce(state, action) {
     switch (action.type) {
-      case ActionTypes.COMPOSE_TYPING:
-        this.onTyping(action);
-        break;
-      case ActionTypes.COMPOSE_MENTION_INSERT:
-        this.onMentionInsert(action);
-        break;
-      case ActionTypes.COMPOSE_MENTION_CLOSE:
-        this.onMentionClose();
-        break;
       case ActionTypes.COMPOSE_CLEAN:
-        this.onComposeClean();
-        break;
+      case ActionTypes.BIND_DIALOG_PEER:
+        return this.getInitialState();
+
+      case ActionTypes.COMPOSE_TYPING:
+        const nextState = {
+          ...state,
+          text: action.text,
+          commands: null,
+          mentions: null
+        };
+
+        if (action.peer.type === PeerTypes.GROUP) {
+          const query = parseMentionQuery(action.text, action.caretPosition);
+          if (query) {
+            nextState.mentions = ActorClient.findMentions(action.peer.id, query.text);
+          }
+        } else {
+          const command = parseBotCommand(action.text);
+          if (command) {
+            nextState.commands = ActorClient.findBotCommands(action.peer.id, command.name || '');
+          }
+        }
+
+        return nextState;
+
+      case ActionTypes.MESSAGES_EDIT_START:
+        return {
+          ...state,
+          text: action.message.content.text,
+          editMessage: action.message
+        };
+
+      case ActionTypes.MESSAGES_EDIT_END:
+        return {
+          ...state,
+          text: '',
+          editMessage: null
+        };
+
+      case ActionTypes.COMPOSE_MENTION_INSERT:
+        const query = parseMentionQuery(action.text, action.caretPosition);
+        if (!query) {
+          console.error('Mention not found', { state, action });
+          return state;
+        }
+
+        const mentionEnding = query.atStart ? ': ' : ' ';
+        const textBeforeMention = action.text.substring(0, action.caretPosition - query.text.length - 1);
+        const textAfterMention = action.text.substring(action.caretPosition, action.text.length);
+
+        return {
+          ...state,
+          text: textBeforeMention + action.mention.mentionText + mentionEnding + textAfterMention,
+          mentions: null
+        };
+
+      case ActionTypes.COMPOSE_MENTION_CLOSE:
+        return {
+          ...state,
+          mentions: null
+        };
+
       case ActionTypes.DRAFT_LOAD:
-        this.onDraftLoad();
-        break;
+        return {
+          ...state,
+          text: action.draft
+        };
+
       case ActionTypes.EMOJI_INSERT:
-        this.onEmojiInsert(action);
-        break;
+        const textBeforeEmoji = action.text.substring(0, action.caretPosition);
+        const textAfterEmoji = action.text.substring(action.caretPosition, action.text.length);
+
+        return {
+          ...state,
+          text: textBeforeEmoji + action.emoji + ' ' + textAfterEmoji
+        };
+
       case ActionTypes.COMPOSE_PASTE:
-        this.onComposePaste(action.text);
-        break;
+        return {
+          ...state,
+          text: action.text
+        };
 
       case ActionTypes.COMPOSE_TOGGLE_AUTO_FOCUS:
-        _isAutoFocusEnabled = action.isEnable;
-        this.__emitChange();
-        break;
+        return {
+          ...state,
+          autoFocus: action.isEnable
+        };
+
+      case ActionTypes.SEARCH_TOGGLE_FOCUS:
+        return {
+          ...state,
+          autoFocus: !action.isEnable
+        };
 
       default:
+        return state;
     }
-  };
+  }
 }
 
 export default new ComposeStore(Dispatcher);

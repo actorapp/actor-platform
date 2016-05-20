@@ -22,6 +22,7 @@ public abstract class ApiTextMessageEx extends BserObject {
         switch(key) { 
             case 1: return Bser.parse(new ApiTextExMarkdown(), content);
             case 2: return Bser.parse(new ApiTextModernMessage(), content);
+            case 3: return Bser.parse(new ApiTextCommand(), content);
             default: return new ApiTextMessageExUnsupported(key, content);
         }
     }

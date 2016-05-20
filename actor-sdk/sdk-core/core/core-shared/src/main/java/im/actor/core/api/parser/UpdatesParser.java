@@ -27,11 +27,17 @@ public class UpdatesParser extends BaseParser<Update> {
             case 210: return UpdateUserAboutChanged.fromBytes(payload);
             case 212: return UpdateUserPreferredLanguagesChanged.fromBytes(payload);
             case 216: return UpdateUserTimeZoneChanged.fromBytes(payload);
+            case 217: return UpdateUserBotCommandsChanged.fromBytes(payload);
+            case 218: return UpdateUserExtChanged.fromBytes(payload);
+            case 219: return UpdateUserFullExtChanged.fromBytes(payload);
             case 5: return UpdateContactRegistered.fromBytes(payload);
             case 40: return UpdateContactsAdded.fromBytes(payload);
             case 41: return UpdateContactsRemoved.fromBytes(payload);
+            case 2629: return UpdateUserBlocked.fromBytes(payload);
+            case 2630: return UpdateUserUnblocked.fromBytes(payload);
             case 55: return UpdateMessage.fromBytes(payload);
             case 162: return UpdateMessageContentChanged.fromBytes(payload);
+            case 169: return UpdateMessageQuotedChanged.fromBytes(payload);
             case 163: return UpdateMessageDateChanged.fromBytes(payload);
             case 4: return UpdateMessageSent.fromBytes(payload);
             case 54: return UpdateMessageReceived.fromBytes(payload);

@@ -1,6 +1,6 @@
 package im.actor.server
 
-import java.nio.file.{ Files, Paths }
+import java.nio.file.Files
 
 import akka.actor._
 import akka.cluster.Cluster
@@ -20,6 +20,7 @@ import im.actor.server.api.rpc.service.features.FeaturesServiceImpl
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
+import im.actor.server.api.rpc.service.privacy.PrivacyServiceImpl
 import im.actor.server.api.rpc.service.profile.ProfileServiceImpl
 import im.actor.server.api.rpc.service.pubgroups.PubgroupsServiceImpl
 import im.actor.server.api.rpc.service.push.PushServiceImpl
@@ -90,7 +91,6 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
     CommonSerialization.register()
     UserProcessor.register()
     GroupProcessor.register()
-    DialogProcessor.register()
     StickerMessages.register()
 
     val serverConfig = ActorConfig.load(defaultConfig)
@@ -231,6 +231,9 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
       system.log.debug("Starting EventbusServiceImpl")
       val eventbusService = new EventbusServiceImpl(system)
 
+      system.log.debug("Starting PrivacyServiceImpl")
+      val privacyService = new PrivacyServiceImpl
+
       val services = Seq(
         authService,
         contactsService,
@@ -251,7 +254,8 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
         featuresService,
         webrtcService,
         encryptionService,
-        eventbusService
+        eventbusService,
+        privacyService
       )
 
       system.log.warning("Starting BotExtension")

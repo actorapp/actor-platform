@@ -2,15 +2,16 @@ package im.actor.server.dialog
 
 import java.time.Instant
 
-import akka.actor.{ ActorRef, PoisonPill, Status }
+import akka.actor.Status
+import akka.http.scaladsl.util.FastFuture
 import akka.pattern.pipe
+import com.google.protobuf.wrappers.Int64Value
 import im.actor.api.rpc.PeersImplicits
 import im.actor.api.rpc.messaging._
 import im.actor.server.ApiConversions._
 import im.actor.server.dialog.HistoryUtils._
 import im.actor.server.model._
 import im.actor.server.persist.HistoryMessageRepo
-import im.actor.server.persist.dialog.DialogRepo
 import im.actor.server.persist.messaging.ReactionEventRepo
 import im.actor.server.pubsub.{ PeerMessage, PubSubExtension }
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
@@ -21,243 +22,151 @@ import org.joda.time.DateTime
 import scala.concurrent.Future
 import scala.util.Failure
 
-trait DialogCommandHandlers extends PeersImplicits {
+trait DialogCommandHandlers extends PeersImplicits with UserAcl {
   this: DialogProcessor ⇒
 
   import DialogCommands._
   import DialogEvents._
 
-  protected def sendMessage(s: DialogState, sm: SendMessage): Unit = {
-    withCreated(s) { state ⇒
-      becomeStashing(replyTo ⇒ ({
-        case seq: SeqStateDate ⇒
+  protected def sendMessage(sm: SendMessage): Unit = {
+    becomeStashing(replyTo ⇒ ({
+      case seq: SeqStateDate ⇒
+        persist(NewMessage(sm.randomId, Instant.ofEpochMilli(seq.date), sm.getOrigin.id, sm.message.header)) { e ⇒
+          commit(e)
           replyTo ! seq
-          if (state.isArchived) {
-            self.tell(Show(peer), ActorRef.noSender)
-          }
-          updateMessageDate(state, seq.date)
           unstashAll()
-        case fail: Status.Failure ⇒
-          log.error(fail.cause, "Failed to send message")
-          replyTo forward fail
-          context unbecome ()
-          unstashAll()
-      }: Receive) orElse reactions(state), discardOld = false)
+          context.become(receiveCommand)
+        }
+      case fail: Status.Failure ⇒
+        log.error(fail.cause, "Failed to send message")
+        replyTo forward fail
+        context.become(receiveCommand)
+        unstashAll()
+    }: Receive) orElse reactions, discardOld = true)
 
-      validateAccessHash(sm.dest, sm.senderAuthId, sm.accessHash) map { valid ⇒
-        if (valid) {
-          withCachedFuture[AuthSidRandomId, SeqStateDate](sm.senderAuthSid → sm.randomId) {
-            val sendDate = calcSendDate(state)
-            val message = sm.message
-            PubSubExtension(system).publish(PeerMessage(sm.origin, sm.dest, sm.randomId, sendDate, message))
-            for {
-              _ ← dialogExt.ackSendMessage(peer, sm.copy(date = Some(sendDate)))
+    withValidAccessHash(sm.getDest, sm.senderAuthId map (_.value), sm.accessHash map (_.value)) {
+      withCachedFuture[AuthSidRandomId, SeqStateDate](sm.senderAuthSid → sm.randomId) {
+        val sendDate = calcSendDate()
+        val message = sm.message
+        PubSubExtension(system).publish(PeerMessage(sm.getOrigin, sm.getDest, sm.randomId, sendDate, message))
+
+        for {
+          exists ← db.run(HistoryMessageRepo.existstWithRandomId(userId, peer, sm.randomId))
+          seqState ← if (exists) {
+            FastFuture.failed(NotUniqueRandomId)
+          } else {
+            withNonBlockedPeer[SeqStateDate](userId, sm.getDest)(
+              default = for {
+              _ ← dialogExt.ackSendMessage(peer, sm.copy(date = Some(Int64Value(sendDate))))
               _ ← db.run(writeHistoryMessage(selfPeer, peer, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray))
-              _ = dialogExt.updateCounters(peer, userId)
+              //_ = dialogExt.updateCounters(peer, userId)
+              SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sendDate, message, sm.isFat)
+            } yield SeqStateDate(seq, state, sendDate),
+              failed = for {
+              _ ← db.run(writeHistoryMessageSelf(userId, peer, userId, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray))
               SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sendDate, message, sm.isFat)
             } yield SeqStateDate(seq, state, sendDate)
-          } pipeTo self
-        } else {
-          self ! Status.Failure(InvalidAccessHash)
-        }
+            )
+          }
+        } yield seqState
       }
     }
   }
 
-  protected def updateCountersChanged(): Unit = {
-    deliveryExt.sendCountersUpdate(userId)
-      .map(_ ⇒ SendMessageAck())
-      .pipeTo(sender())
-  }
+  protected def ackSendMessage(sm: SendMessage): Unit = {
+    val messageDate = sm.date getOrElse {
+      throw new RuntimeException("No message date found in SendMessage")
+    }
 
-  protected def ackSendMessage(s: DialogState, sm: SendMessage): Unit =
-    withCreated(s) { state ⇒
-      val messageDate = sm.date getOrElse { throw new RuntimeException("No message date found in SendMessage") }
+    persistAsync(NewMessage(sm.randomId, Instant.ofEpochMilli(messageDate.value), sm.getOrigin.id, sm.message.header)) { e ⇒
+      commit(e)
+
       if (peer.typ == PeerType.Private) {
-        SocialManager.recordRelation(sm.origin.id, userId)
-        SocialManager.recordRelation(userId, sm.origin.id)
+        SocialManager.recordRelation(sm.getOrigin.id, userId)
+        SocialManager.recordRelation(userId, sm.getOrigin.id)
       }
 
       deliveryExt
-        .receiverDelivery(userId, sm.origin.id, peer, sm.randomId, messageDate, sm.message, sm.isFat)
+        .receiverDelivery(userId, sm.getOrigin.id, peer, sm.randomId, messageDate.value, sm.message, sm.isFat)
         .map(_ ⇒ SendMessageAck())
-        .pipeTo(sender()) onSuccess {
-          case _ ⇒
-            if (state.isArchived) { self.tell(Show(peer), ActorRef.noSender) }
-        }
-    }
+        .pipeTo(sender())
 
-  protected def writeMessage(
-    s:          DialogState,
-    dateMillis: Long,
-    randomId:   Long,
-    message:    ApiMessage
-  ): Unit =
-    withCreated(s) { _ ⇒
-      val date = new DateTime(dateMillis)
-
-      db.run(writeHistoryMessage(
-        selfPeer,
-        peer,
-        date,
-        randomId,
-        message.header,
-        message.toByteArray
-      )) map (_ ⇒ WriteMessageAck()) pipeTo sender()
+      deliveryExt.sendCountersUpdate(userId)
     }
+  }
 
   protected def writeMessageSelf(
-    s:            DialogState,
     senderUserId: Int,
     dateMillis:   Long,
     randomId:     Long,
     message:      ApiMessage
-  ): Unit =
-    withCreated(s) { _ ⇒
-      val result =
-        if (peer.`type` == PeerType.Private && peer.id != senderUserId && userId != senderUserId) {
-          Future.failed(new RuntimeException(s"writeMessageSelf with senderUserId $senderUserId in dialog of user $userId with user ${peer.id}"))
-        } else {
-          db.run(writeHistoryMessageSelf(userId, peer, senderUserId, new DateTime(dateMillis), randomId, message.header, message.toByteArray))
-        }
-
-      result map (_ ⇒ WriteMessageSelfAck()) pipeTo sender()
-    }
-
-  protected def messageReceived(state: DialogState, mr: MessageReceived): Unit = {
-    val mustReceive = mustMakeReceive(state, mr)
-    (if (mustReceive) {
-      for {
-        _ ← dialogExt.ackMessageReceived(peer, mr)
-        _ ← db.run(markMessagesReceived(selfPeer, peer, new DateTime(mr.date)))
-      } yield MessageReceivedAck()
+  ): Unit = {
+    if (peer.`type` == PeerType.Private && peer.id != senderUserId && userId != senderUserId) {
+      sender() ! Status.Failure(new RuntimeException(s"writeMessageSelf with senderUserId $senderUserId in dialog of user $userId with user ${peer.id}"))
     } else {
-      Future.successful(MessageReceivedAck())
-    }) pipeTo sender() andThen {
-      case Failure(e) ⇒ log.error(e, "Failed to process MessageReceived")
+      persist(NewMessage(randomId, Instant.ofEpochMilli(dateMillis), senderUserId, message.header)) { e ⇒
+        commit(e)
+        db.run(writeHistoryMessageSelf(userId, peer, senderUserId, new DateTime(dateMillis), randomId, message.header, message.toByteArray))
+          .map(_ ⇒ WriteMessageSelfAck()) pipeTo sender()
+      }
     }
+  }
+
+  protected def messageReceived(mr: MessageReceived): Unit = {
+    val mustReceive = mustMakeReceive(mr)
 
     if (mustReceive) {
-      updateReceiveDate(state, mr.date)
+      (for {
+        _ ← dialogExt.ackMessageReceived(peer, mr)
+      } yield MessageReceivedAck()) pipeTo sender()
+    } else {
+      sender() ! MessageReceivedAck()
     }
   }
 
   protected def ackMessageReceived(mr: MessageReceived): Unit = {
-    (deliveryExt.notifyReceive(userId, peer, mr.date, mr.now) map { _ ⇒ MessageReceivedAck() }) pipeTo sender() andThen {
-      case Failure(e) ⇒ log.error(e, "Failed to ack MessageReceived")
+    persistAsync(MessagesReceived(Instant.ofEpochMilli(mr.date))) { e ⇒
+      commit(e)
+
+      (deliveryExt.notifyReceive(userId, peer, mr.date, mr.now) map { _ ⇒ MessageReceivedAck() }) pipeTo sender() andThen {
+        case Failure(err) ⇒ log.error(err, "Failed to ack MessageReceived")
+      }
     }
   }
 
-  protected def messageRead(state: DialogState, mr: MessageRead): Unit = {
-    val mustRead = mustMakeRead(state, mr)
-
-    (if (mustRead) {
-      for {
-        _ ← dialogExt.ackMessageRead(peer, mr)
-        _ ← db.run(markMessagesRead(selfPeer, peer, new DateTime(mr.date)))
-        unreadCount ← db.run(dialogExt.getUnreadTotal(userId))
-        _ ← deliveryExt.read(userId, mr.readerAuthSid, peer, mr.date, Some(unreadCount))
-        _ ← deliveryExt.sendCountersUpdate(userId, unreadCount)
-      } yield MessageReadAck()
-    } else {
-      Future.successful(MessageReadAck())
-    }) pipeTo sender() andThen {
-      case Failure(e) ⇒ log.error(e, "Failed to process MessageRead")
-    }
+  protected def messageRead(mr: MessageRead): Unit = {
+    val mustRead = mustMakeRead(mr)
+    log.debug(s"mustRead is ${mustRead}")
 
     if (mustRead) {
-      updateReadDate(state, mr.date)
+      persistAsync(MessagesRead(Instant.ofEpochMilli(mr.date), mr.getOrigin.id)) { e ⇒
+        log.debug(s"persisted MessagesRead, origin=${mr.getOrigin.id}, date=${Instant.ofEpochMilli(mr.date)}, counter=${state.counter}, unreadMessages=${state.unreadMessages}")
+        commit(e)
+        log.debug(s"after commit: counter=${state.counter}, unreadMessages=${state.unreadMessages}")
+
+        (for {
+          _ ← dialogExt.ackMessageRead(peer, mr)
+          _ ← deliveryExt.read(userId, mr.readerAuthSid, peer, mr.date, state.counter)
+          _ = deliveryExt.sendCountersUpdate(userId)
+        } yield MessageReadAck()) pipeTo sender()
+      }
+    } else {
+      sender() ! MessageReadAck()
     }
   }
 
-  protected def ackMessageRead(mr: MessageRead): Unit =
-    (deliveryExt.notifyRead(userId, peer, mr.date, mr.now) map { _ ⇒ MessageReadAck() }) pipeTo sender() andThen {
-      case Failure(e) ⇒ log.error(e, "Failed to ack MessageRead")
-    }
-
-  protected def archive(state: DialogState): Unit = {
-    if (state.isArchived)
-      sender ! Status.Failure(DialogErrors.DialogAlreadyArchived(peer))
-    else {
-      val future =
-        (for {
-          _ ← db.run(DialogRepo.archive(userId, peer))
-          _ ← db.run(markMessagesRead(selfPeer, peer, new DateTime))
-          _ ← userExt.notifyDialogsChanged(userId)
-          seqstate ← seqUpdExt.deliverSingleUpdate(userId, UpdateChatArchive(peer.asStruct))
-        } yield seqstate) pipeTo sender()
-
-      onSuccess(future) { _ ⇒
-        updateArchived(state)
+  protected def ackMessageRead(mr: MessageRead): Unit = {
+    require(mr.getOrigin.typ.isPrivate)
+    persistAsync(MessagesRead(Instant.ofEpochMilli(mr.date), mr.getOrigin.id)) { e ⇒
+      commit(e)
+      log.debug(s"=== new lastReadDate is ${state.lastReadDate}")
+      (deliveryExt.notifyRead(userId, peer, mr.date, mr.now) map { _ ⇒ MessageReadAck() }) pipeTo sender() andThen {
+        case Failure(err) ⇒ log.error(err, "Failed to ack MessageRead")
       }
     }
   }
 
-  protected def show(state: DialogState): Unit = {
-    if (!state.isArchived)
-      sender ! Status.Failure(DialogErrors.DialogAlreadyShown(peer))
-    else {
-      val future =
-        (for {
-          _ ← db.run(DialogRepo.show(userId, peer))
-          seqstate ← userExt.notifyDialogsChanged(userId)
-        } yield seqstate) pipeTo sender()
-
-      onSuccess(future) { _ ⇒
-        updateShown(state)
-      }
-    }
-  }
-
-  protected def favourite(state: DialogState): Unit = {
-    if (state.isFavourite)
-      sender ! Status.Failure(DialogErrors.DialogAlreadyFavourited(peer))
-    else {
-      val future =
-        (for {
-          _ ← db.run(DialogRepo.favourite(userId, peer))
-          seqstate ← userExt.notifyDialogsChanged(userId)
-        } yield seqstate) pipeTo sender()
-
-      onSuccess(future) { _ ⇒
-        updateFavourited(state)
-      }
-    }
-  }
-
-  protected def unfavourite(state: DialogState): Unit = {
-    if (!state.isFavourite)
-      sender ! Status.Failure(DialogErrors.DialogAlreadyUnfavourited(peer))
-    else {
-      val future =
-        (for {
-          _ ← db.run(DialogRepo.unfavourite(userId, peer))
-          seqstate ← userExt.notifyDialogsChanged(userId)
-        } yield seqstate) pipeTo sender()
-
-      onSuccess(future) { _ ⇒
-        updateUnfavourited(state)
-      }
-    }
-  }
-
-  protected def delete(state: DialogState): Unit = {
-    val update = UpdateChatDelete(peer.asStruct)
-
-    val future =
-      for {
-        _ ← db.run(
-          HistoryMessageRepo.deleteAll(userId, peer)
-            andThen DialogRepo.delete(userId, peer)
-        )
-        _ ← userExt.notifyDialogsChanged(userId)
-        seqstate ← seqUpdExt.deliverSingleUpdate(userId, update)
-      } yield seqstate
-
-    future pipeTo sender() onSuccess { case _ ⇒ self ! PoisonPill }
-  }
-
-  protected def setReaction(state: DialogState, sr: SetReaction): Unit = {
+  protected def setReaction(sr: SetReaction): Unit = {
     (for {
       reactions ← db.run {
         ReactionEventRepo.create(DialogId(peer, userId), sr.randomId, sr.code, userId)
@@ -268,7 +177,7 @@ trait DialogCommandHandlers extends PeersImplicits {
         UpdateReactionsUpdate(peer.asStruct, sr.randomId, reactions.toVector)
       )
       _ ← dialogExt.ackSetReaction(peer, sr)
-    } yield SetReactionAck(seqstate, reactions)) pipeTo sender()
+    } yield SetReactionAck(Some(seqstate), reactions)) pipeTo sender()
   }
 
   protected def ackSetReaction(sr: SetReaction): Unit = {
@@ -281,7 +190,7 @@ trait DialogCommandHandlers extends PeersImplicits {
     } yield SetReactionAck()) pipeTo sender()
   }
 
-  protected def removeReaction(state: DialogState, rr: RemoveReaction): Unit = {
+  protected def removeReaction(rr: RemoveReaction): Unit = {
     (for {
       reactions ← db.run {
         ReactionEventRepo.delete(DialogId(peer, userId), rr.randomId, rr.code, userId)
@@ -293,7 +202,7 @@ trait DialogCommandHandlers extends PeersImplicits {
       )
       _ ← dialogExt.ackRemoveReaction(peer, rr)
       _ ← dialogExt.ackRemoveReaction(peer, rr)
-    } yield RemoveReactionAck(seqstate, reactions)) pipeTo sender()
+    } yield RemoveReactionAck(Some(seqstate), reactions)) pipeTo sender()
   }
 
   protected def ackRemoveReaction(rr: RemoveReaction): Unit = {
@@ -311,12 +220,12 @@ trait DialogCommandHandlers extends PeersImplicits {
    * When `candidate` date is same as last message date, we increment `candidate` value by 1,
    * thus resulting date can possibly be in future
    *
-   * @param state current dialog state
    * @return unique message date in current dialog
    */
-  private def calcSendDate(state: DialogState): Long = {
-    val candidate = Instant.now.toEpochMilli
-    if (state.lastMessageDate == candidate) state.lastMessageDate + 1 else candidate
+  private def calcSendDate(): Long = {
+    val candidate = state.nextDate.toEpochMilli
+    if (state.lastMessageDate.toEpochMilli == candidate) state.lastMessageDate.toEpochMilli + 1
+    else candidate
   }
 
   /**
@@ -329,12 +238,13 @@ trait DialogCommandHandlers extends PeersImplicits {
    * • greater than current last receive date
    * • less or equal than current date(`now`), or less or equal than last message date.
    *
-   * @param state current dialog state
    * @param mr message received request from client
    * @return `true` if we must process message received request and `false` otherwise
    */
-  private def mustMakeReceive(state: DialogState, mr: MessageReceived): Boolean =
-    (mr.date > state.lastReceiveDate) && (mr.date <= mr.now || mr.date <= state.lastMessageDate)
+  private def mustMakeReceive(mr: MessageReceived): Boolean =
+    Instant.ofEpochMilli(mr.date).isAfter(state.lastOwnerReceiveDate) &&
+      (mr.date <= mr.now ||
+        Instant.ofEpochMilli(mr.date).compareTo(state.lastMessageDate) <= 0)
 
   /**
    *
@@ -346,41 +256,21 @@ trait DialogCommandHandlers extends PeersImplicits {
    * • greater than current last read date
    * • less or equal than current date(`now`), or less or equal than last message date.
    *
-   * @param state current dialog state
    * @param mr message received request from client
    * @return `true` if we must process message received request and `false` otherwise
    */
-  private def mustMakeRead(state: DialogState, mr: MessageRead): Boolean =
-    (mr.date > state.lastReadDate) && (mr.date <= mr.now || mr.date <= state.lastMessageDate)
-
-  protected def updateMessageDate(state: DialogState, date: Long): Unit =
-    context become initialized(state.updated(LastMessageDate(date)))
-
-  private def updateReceiveDate(state: DialogState, date: Long): Unit =
-    context become initialized(state.updated(LastReceiveDate(date)))
-
-  private def updateReadDate(state: DialogState, date: Long): Unit =
-    context become initialized(state.updated(LastReadDate(date)))
-
-  private def updateArchived(state: DialogState): Unit =
-    context become initialized(state.updated(Archived))
-
-  private def updateShown(state: DialogState): Unit =
-    context become initialized(state.updated(Shown))
-
-  private def updateFavourited(state: DialogState): Unit =
-    context become initialized(state.updated(Favourited))
-
-  private def updateUnfavourited(state: DialogState): Unit =
-    context become initialized(state.updated(Unfavourited))
+  private def mustMakeRead(mr: MessageRead): Boolean =
+    Instant.ofEpochMilli(mr.date).isAfter(state.lastOwnerReadDate) &&
+      (mr.date <= mr.now ||
+        Instant.ofEpochMilli(mr.date).compareTo(state.lastMessageDate) <= 0)
 
   /**
-   * check access hash
+   * check access hash and execute `f`, if access hash is valid
    * If `optAccessHash` is `None` - we simply don't check access hash
    * If `optSenderAuthId` is None, and we are validating access hash for private peer - it is invalid
    */
-  private def validateAccessHash(peer: Peer, optSenderAuthId: Option[Long], optAccessHash: Option[Long]): Future[Boolean] =
-    optAccessHash map { hash ⇒
+  private def withValidAccessHash[A](peer: Peer, optSenderAuthId: Option[Long], optAccessHash: Option[Long])(f: ⇒ Future[A]): Unit = {
+    val validateHash = optAccessHash map { hash ⇒
       peer.`type` match {
         case PeerType.Private ⇒
           optSenderAuthId map { authId ⇒ userExt.checkAccessHash(peer.id, authId, hash) } getOrElse Future.successful(false)
@@ -389,4 +279,12 @@ trait DialogCommandHandlers extends PeersImplicits {
         case unknown ⇒ throw new RuntimeException(s"Unknown peer type $unknown")
       }
     } getOrElse Future.successful(true)
+
+    (for {
+      isValid ← validateHash
+      result ← if (isValid) f else FastFuture.successful(Status.Failure(InvalidAccessHash))
+    } yield result) pipeTo self
+    ()
+  }
+
 }

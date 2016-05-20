@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
@@ -22,6 +21,9 @@ import im.actor.core.entity.Message;
 import im.actor.core.entity.content.ContactContent;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
+import im.actor.sdk.controllers.conversation.MessagesAdapter;
+import im.actor.sdk.controllers.conversation.messages.preprocessor.PreprocessedData;
+import im.actor.sdk.controllers.conversation.messages.preprocessor.PreprocessedTextData;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.TintImageView;
 import im.actor.sdk.view.avatar.AvatarPlaceholderDrawable;
@@ -67,7 +69,7 @@ public class ContactHolder extends MessageHolder {
     }
 
     @Override
-    protected void bindData(final Message message, boolean isUpdated, PreprocessedData preprocessedData) {
+    protected void bindData(final Message message, long readDate, long receiveDate, boolean isUpdated, PreprocessedData preprocessedData) {
         ContactContent contact = (ContactContent) message.getContent();
 
         // Update state
@@ -83,17 +85,17 @@ public class ContactHolder extends MessageHolder {
                     stateIcon.setResource(R.drawable.msg_clock);
                     stateIcon.setTint(waitColor);
                     break;
-                case READ:
-                    stateIcon.setResource(R.drawable.msg_check_2);
-                    stateIcon.setTint(readColor);
-                    break;
-                case RECEIVED:
-                    stateIcon.setResource(R.drawable.msg_check_2);
-                    stateIcon.setTint(deliveredColor);
-                    break;
                 case SENT:
-                    stateIcon.setResource(R.drawable.msg_check_1);
-                    stateIcon.setTint(sentColor);
+                    if (message.getSortDate() <= readDate) {
+                        stateIcon.setResource(R.drawable.msg_check_2);
+                        stateIcon.setTint(readColor);
+                    } else if (message.getSortDate() <= receiveDate) {
+                        stateIcon.setResource(R.drawable.msg_check_2);
+                        stateIcon.setTint(deliveredColor);
+                    } else {
+                        stateIcon.setResource(R.drawable.msg_check_1);
+                        stateIcon.setTint(sentColor);
+                    }
                     break;
             }
         } else {

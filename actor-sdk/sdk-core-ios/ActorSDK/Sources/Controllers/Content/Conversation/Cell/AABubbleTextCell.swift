@@ -33,7 +33,6 @@ public class AABubbleTextCell : AABubbleCell {
     
     private var dateWidth: CGFloat = 0
     
-    private var messageState = ACMessageState.UNKNOWN().ordinal()
     private var cellLayout: TextCellLayout!
     
     public init(frame: CGRect) {
@@ -52,7 +51,9 @@ public class AABubbleTextCell : AABubbleCell {
                 }
             }
         }
+        
         messageText.highlightLongPressAction = { (containerView: UIView, text: NSAttributedString, range: NSRange, rect: CGRect) -> () in
+            self.bubble
             let attributes = text.attributesAtIndex(range.location, effectiveRange: nil)
             if let attrs = attributes["YYTextHighlight"] as? YYTextHighlight {
                 if let url = attrs.userInfo!["url"] as? String {
@@ -61,7 +62,6 @@ public class AABubbleTextCell : AABubbleCell {
             }
         }
 
-        
         senderNameLabel.displaysAsynchronously = true
         senderNameLabel.ignoreCommonProperties = true
         senderNameLabel.fadeOnAsynchronouslyDisplay = true
@@ -92,7 +92,7 @@ public class AABubbleTextCell : AABubbleCell {
     
     // Data binding
     
-    public override func bind(message: ACMessage, reuse: Bool, cellLayout: AACellLayout, setting: AACellSetting) {
+    public override func bind(message: ACMessage, receiveDate: jlong, readDate: jlong, reuse: Bool, cellLayout: AACellLayout, setting: AACellSetting) {
         
         // Saving cell settings
         self.cellLayout = cellLayout as! TextCellLayout
@@ -150,34 +150,32 @@ public class AABubbleTextCell : AABubbleCell {
         dateText.textLayout = self.cellLayout.dateLayout
         dateWidth = self.cellLayout.dateWidth!
         
-        messageState = message.messageState.ordinal()
-        
         if (isOut) {
-            switch(self.messageState) {
-            case ACMessageState.PENDING().ordinal():
-                self.statusView.image = appStyle.chatIconClock
-                self.statusView.tintColor = appStyle.chatStatusSending
-                break;
-            case ACMessageState.SENT().ordinal():
-                self.statusView.image = appStyle.chatIconCheck1
-                self.statusView.tintColor = appStyle.chatStatusSent
-                break;
-            case ACMessageState.RECEIVED().ordinal():
-                self.statusView.image = appStyle.chatIconCheck2
-                self.statusView.tintColor = appStyle.chatStatusReceived
-                break;
-            case ACMessageState.READ().ordinal():
-                self.statusView.image = appStyle.chatIconCheck2
-                self.statusView.tintColor = appStyle.chatStatusRead
-                break;
-            case ACMessageState.ERROR().ordinal():
+            switch(message.messageState.toNSEnum()) {
+            case .SENT:
+                if message.sortDate <= readDate {
+                    self.statusView.image = appStyle.chatIconCheck2
+                    self.statusView.tintColor = appStyle.chatStatusRead
+                } else if message.sortDate <= receiveDate {
+                    self.statusView.image = appStyle.chatIconCheck2
+                    self.statusView.tintColor = appStyle.chatStatusReceived
+                } else {
+                    self.statusView.image = appStyle.chatIconCheck1
+                    self.statusView.tintColor = appStyle.chatStatusSent
+                }
+                break
+            case .ERROR:
                 self.statusView.image = appStyle.chatIconError
                 self.statusView.tintColor = appStyle.chatStatusError
+                break
+            case .PENDING:
+                self.statusView.image = appStyle.chatIconClock
+                self.statusView.tintColor = appStyle.chatStatusSending
                 break
             default:
                 self.statusView.image = appStyle.chatIconClock
                 self.statusView.tintColor = appStyle.chatStatusSending
-                break;
+                break
             }
         }
     }

@@ -4,27 +4,19 @@ import java.util.ArrayList;
 
 import im.actor.core.entity.encryption.PeerSession;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.encryption.entity.PrivateKey;
-import im.actor.core.modules.encryption.entity.UserKeys;
-import im.actor.core.modules.encryption.entity.UserKeysGroup;
-import im.actor.core.modules.encryption.entity.PublicKey;
-import im.actor.core.modules.encryption.session.EncryptedSession;
 import im.actor.core.modules.encryption.session.EncryptedSessionChain;
-import im.actor.core.util.ModuleActor;
+import im.actor.core.modules.ModuleActor;
 import im.actor.runtime.*;
-import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ask.AskMessage;
 import im.actor.runtime.actors.ask.AskResult;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.function.Function;
 import im.actor.runtime.promise.Promise;
-import im.actor.runtime.promise.PromiseResolver;
-import im.actor.runtime.promise.Promises;
 import im.actor.runtime.crypto.Curve25519;
 import im.actor.runtime.crypto.IntegrityException;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
-import im.actor.core.modules.encryption.KeyManagerActor.*;
-import im.actor.runtime.promise.Tuple4;
+
+import static im.actor.runtime.promise.Promise.success;
 
 /**
  * Axolotl Ratchet encryption session
@@ -95,7 +87,7 @@ public class EncryptedSessionActor extends ModuleActor {
         // Stage 3: Decrypt
         //
 
-        return Promises.success(latestTheirEphemeralKey)
+        return success(latestTheirEphemeralKey)
                 .mapIfNullPromise(keyManager.supplyUserPreKey(uid, session.getTheirKeyGroupId()))
                 .map(new Function<byte[], EncryptedSessionChain>() {
                     @Override
@@ -191,27 +183,29 @@ public class EncryptedSessionActor extends ModuleActor {
                 break;
             }
         }
-        return Promises.success(pickedChain)
-                .mapPromise(new Function<EncryptedSessionChain, Promise<EncryptedSessionChain>>() {
+        return success(pickedChain)
+                .flatMap(new Function<EncryptedSessionChain, Promise<EncryptedSessionChain>>() {
                     @Override
                     public Promise<EncryptedSessionChain> apply(EncryptedSessionChain src) {
                         if (src != null) {
-                            return Promises.success(src);
+                            return success(src);
                         }
 
-                        return ask(context().getEncryption().getKeyManager(), new FetchOwnPreKeyByPublic(ephemeralKey))
-                                .map(new Function<PrivateKey, EncryptedSessionChain>() {
-                                    @Override
-                                    public EncryptedSessionChain apply(PrivateKey src) {
-                                        EncryptedSessionChain chain = new EncryptedSessionChain(session, src.getKey(), theirEphemeralKey);
-                                        decryptionChains.add(0, chain);
-                                        if (decryptionChains.size() > MAX_DECRYPT_CHAINS) {
-                                            decryptionChains.remove(MAX_DECRYPT_CHAINS)
-                                                    .safeErase();
-                                        }
-                                        return chain;
-                                    }
-                                });
+                        // TODO: Implement!
+                        return null;
+//                        return ask(context().getEncryption().getKeyManager(), new FetchOwnPreKeyByPublic(ephemeralKey))
+//                                .map(new Function<PrivateKey, EncryptedSessionChain>() {
+//                                    @Override
+//                                    public EncryptedSessionChain apply(PrivateKey src) {
+//                                        EncryptedSessionChain chain = new EncryptedSessionChain(session, src.getKey(), theirEphemeralKey);
+//                                        decryptionChains.add(0, chain);
+//                                        if (decryptionChains.size() > MAX_DECRYPT_CHAINS) {
+//                                            decryptionChains.remove(MAX_DECRYPT_CHAINS)
+//                                                    .safeErase();
+//                                        }
+//                                        return chain;
+//                                    }
+//                                });
                     }
                 });
     }

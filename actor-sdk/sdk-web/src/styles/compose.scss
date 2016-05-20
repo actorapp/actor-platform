@@ -79,6 +79,12 @@
       opacity: 1;
     }
   }
+
+  &--editing {
+    .compose__message {
+      background-color: $message-edit-background;
+    }
+  }
 }
 
 .dropzone {
@@ -106,4 +112,11 @@
     border-color: $dark-sky-blue;
     color: $dark-sky-blue;
   }
+}
+
+.compose__edit-title {
+  color: $dark-sky-blue;
+  font-weight: 400;
+  font-size: 16px;
+  margin: 8px 16px;
 }

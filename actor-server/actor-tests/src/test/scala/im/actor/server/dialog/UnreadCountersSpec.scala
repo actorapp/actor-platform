@@ -19,21 +19,21 @@ final class UnreadCountersSpec extends BaseAppSuite with ImplicitAuthService wit
     val (bob, bobAuthId, bobAuthSid, _) = createUser()
 
     {
-      implicit val clientData = ClientData(bobAuthId, 2, Some(AuthData(bob.id, bobAuthSid)))
+      implicit val clientData = ClientData(bobAuthId, 2, Some(AuthData(bob.id, bobAuthSid, 42)))
 
       sendMessageToUser(alice.id, textMessage("Hi Alice!"))
     }
 
     {
-      implicit val clientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid)))
+      implicit val clientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid, 42)))
 
       sendMessageToUser(bob.id, textMessage("Hi Bob!"))
 
       Thread.sleep(1000)
 
-      whenReady(msgService.handleLoadDialogs(0, 100)) { resp ⇒
+      whenReady(msgService.handleLoadDialogs(0, 100, Vector.empty)) { resp ⇒
         inside(resp) {
-          case Ok(ResponseLoadDialogs(_, _, dialogs)) ⇒
+          case Ok(ResponseLoadDialogs(_, _, dialogs, _, _)) ⇒
             dialogs.head.unreadCount should ===(1)
         }
       }
@@ -43,7 +43,7 @@ final class UnreadCountersSpec extends BaseAppSuite with ImplicitAuthService wit
   def publicGroups(): Unit = {
 
     val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
-    implicit val aliceClientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid)))
+    implicit val aliceClientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid, 42)))
 
     val groupPeer = createPubGroup("Public", "", Set(alice.id)).groupPeer
 
@@ -53,9 +53,9 @@ final class UnreadCountersSpec extends BaseAppSuite with ImplicitAuthService wit
 
     Thread.sleep(1000)
 
-    whenReady(msgService.handleLoadDialogs(0, 100)) { resp ⇒
+    whenReady(msgService.handleLoadDialogs(0, 100, Vector.empty)) { resp ⇒
       inside(resp) {
-        case Ok(ResponseLoadDialogs(_, _, dialogs)) ⇒
+        case Ok(ResponseLoadDialogs(_, _, dialogs, _, _)) ⇒
           dialogs.head.unreadCount should ===(0)
       }
     }

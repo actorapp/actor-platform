@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
+import im.actor.sdk.util.DateFormatting;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.util.Strings;
 import im.actor.sdk.view.avatar.AvatarView;
@@ -103,7 +104,7 @@ public class BubbleContainer extends ViewGroup {
 
         // AVATAR
         avatarView = new AvatarViewWithOnline(getContext());
-        avatarView.init(Screen.dp(42), 12);
+        avatarView.init(Screen.dp(42), 24);
         addView(avatarView, new MarginLayoutParams(Screen.dp(42), Screen.dp(42)));
     }
 
@@ -179,7 +180,7 @@ public class BubbleContainer extends ViewGroup {
 
     public void showDate(long time) {
         showDateDiv = true;
-        dateDiv.setText(Strings.formatDate(time));
+        dateDiv.setText(DateFormatting.formatDate(time));
         dateDiv.setVisibility(VISIBLE);
         requestLayout();
     }
@@ -330,6 +331,6 @@ public class BubbleContainer extends ViewGroup {
     }
 
     public void setOnline(boolean online, boolean isBot) {
-        avatarView.setOnline(online, isBot);
+        // avatarView.setOnline(online, isBot);
     }
 }

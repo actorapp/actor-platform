@@ -17,7 +17,7 @@ import im.actor.runtime.actors.messages.PoisonPill;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.power.WakeLock;
 
-import static im.actor.core.modules.messaging.actors.entity.EntityConverter.convert;
+import static im.actor.core.entity.EntityConverter.convert;
 
 public class CallActor extends AbsCallActor {
 
@@ -55,38 +55,18 @@ public class CallActor extends AbsCallActor {
     public void preStart() {
         super.preStart();
         if (isMaster) {
-            api(new RequestDoCall(buidOutPeer(peer), CallBusActor.TIMEOUT)).then(new Consumer<ResponseDoCall>() {
-                @Override
-                public void apply(ResponseDoCall responseDoCall) {
-
-                    callId = responseDoCall.getCallId();
-                    callBus.joinMasterBus(responseDoCall.getEventBusId(), responseDoCall.getDeviceId());
-                    callBus.startOwn();
-                    callVM = callViewModels.spawnNewOutgoingVM(responseDoCall.getCallId(), peer);
-
-                }
-            }).failure(new Consumer<Exception>() {
-                @Override
-                public void apply(Exception e) {
-                    self().send(PoisonPill.INSTANCE);
-                }
-            }).done(self());
+            api(new RequestDoCall(buidOutPeer(peer), CallBusActor.TIMEOUT)).then(responseDoCall -> {
+                callId = responseDoCall.getCallId();
+                callBus.joinMasterBus(responseDoCall.getEventBusId(), responseDoCall.getDeviceId());
+                callBus.startOwn();
+                callVM = callViewModels.spawnNewOutgoingVM(responseDoCall.getCallId(), peer);
+            }).failure(e -> self().send(PoisonPill.INSTANCE));
         } else {
-            api(new RequestGetCallInfo(callId)).then(new Consumer<ResponseGetCallInfo>() {
-                @Override
-                public void apply(final ResponseGetCallInfo responseGetCallInfo) {
-
-                    peer = convert(responseGetCallInfo.getPeer());
-                    callBus.joinBus(responseGetCallInfo.getEventBusId());
-                    callVM = callViewModels.spawnNewIncomingVM(callId, peer, CallState.RINGING);
-
-                }
-            }).failure(new Consumer<Exception>() {
-                @Override
-                public void apply(Exception e) {
-                    self().send(PoisonPill.INSTANCE);
-                }
-            }).done(self());
+            api(new RequestGetCallInfo(callId)).then(responseGetCallInfo -> {
+                peer = convert(responseGetCallInfo.getPeer());
+                callBus.joinBus(responseGetCallInfo.getEventBusId());
+                callVM = callViewModels.spawnNewIncomingVM(callId, peer, CallState.RINGING);
+            }).failure(e -> self().send(PoisonPill.INSTANCE));
         }
     }
 

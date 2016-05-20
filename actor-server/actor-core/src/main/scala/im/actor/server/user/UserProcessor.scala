@@ -4,22 +4,23 @@ import java.time.Instant
 
 import akka.actor._
 import akka.cluster.sharding.ShardRegion
+import akka.pattern.{ ask, pipe }
 import akka.persistence.RecoveryCompleted
 import akka.util.Timeout
+import im.actor.api.rpc.collections._
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.serialization.ActorSerializer
-import im.actor.server.acl.ACLUtils
 import im.actor.server.bots.BotCommand
 import im.actor.server.cqrs.TaggedEvent
 import im.actor.server.db.DbExtension
-import im.actor.server.dialog.{ DialogCommand, DialogExtension }
+import im.actor.server.dialog._
+import im.actor.server.model.{ Peer, PeerType }
 import im.actor.server.office.{ PeerProcessor, StopOffice }
 import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
-import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ ExecutionContext, Future }
 import scala.concurrent.duration._
 
 trait UserEvent extends TaggedEvent {
@@ -90,7 +91,6 @@ object UserProcessor {
       10030 → classOf[UserCommands.AddSocialContactAck],
       10031 → classOf[UserCommands.UpdateIsAdmin],
       10032 → classOf[UserCommands.UpdateIsAdminAck],
-      10033 → classOf[UserCommands.NotifyDialogsChanged],
       10035 → classOf[UserCommands.ChangePreferredLanguages],
       10036 → classOf[UserCommands.ChangeTimeZone],
       10037 → classOf[UserCommands.EditLocalName],
@@ -134,6 +134,8 @@ object UserProcessor {
       12019 → classOf[UserEvents.LocalNameChanged],
       12020 → classOf[UserEvents.BotCommandAdded],
       12021 → classOf[UserEvents.BotCommandRemoved],
+      12022 → classOf[UserEvents.ExtAdded],
+      12023 → classOf[UserEvents.ExtRemoved],
 
       13000 → classOf[UserState],
       13001 → classOf[SocialContact]
@@ -146,8 +148,7 @@ object UserProcessor {
 private[user] final class UserProcessor
   extends PeerProcessor[UserState, UserEvent]
   with UserCommandHandlers
-  with UserQueriesHandlers
-  with ActorLogging {
+  with UserQueriesHandlers {
 
   import UserCommands._
   import UserQueries._
@@ -214,6 +215,8 @@ private[user] final class UserProcessor
             state.botCommands filterNot (_.slashCommand == slashCommand)
           else state.botCommands
         state.copy(botCommands = updCommands)
+      case UserEvents.ExtAdded(_, ext)   ⇒ state.copy(ext = state.ext :+ ext)
+      case UserEvents.ExtRemoved(_, key) ⇒ state.copy(ext = state.ext.filterNot(_.key == key))
     }
   }
 
@@ -237,32 +240,54 @@ private[user] final class UserProcessor
     case AddContacts(_, contactsToAdd)      ⇒ addContacts(state, contactsToAdd)
     case RemoveContact(_, contactUserId)    ⇒ removeContact(state, contactUserId)
     case UpdateIsAdmin(_, isAdmin)          ⇒ updateIsAdmin(state, isAdmin)
-    case NotifyDialogsChanged(_)            ⇒ notifyDialogsChanged(state)
     case ChangeTimeZone(_, timeZone)        ⇒ changeTimeZone(state, timeZone)
     case ChangePreferredLanguages(_, langs) ⇒ changePreferredLanguages(state, langs)
     case AddBotCommand(_, command)          ⇒ addBotCommand(state, command)
     case RemoveBotCommand(_, slashCommand)  ⇒ removeBotCommand(state, slashCommand)
+    case AddExt(_, ext)                     ⇒ addExt(state, ext)
+    case RemoveExt(_, key)                  ⇒ removeExt(state, key)
     case cmd: EditLocalName                 ⇒ contacts.ref forward cmd
     case query: GetLocalName                ⇒ contacts.ref forward query
     case StopOffice                         ⇒ context stop self
     case ReceiveTimeout                     ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
-    case dc: DialogCommand                  ⇒ userPeer(state.internalExtensions) forward dc
+    case e @ DialogRootEnvelope(query, command) ⇒
+      val msg = e.getAllFields.values.head
+
+      (dialogRoot(state.internalExtensions) ? msg) pipeTo sender()
+    case de: DialogEnvelope ⇒
+      val msg = de.getAllFields.values.head
+
+      msg match {
+        case dc: DialogCommand if dc.isInstanceOf[DialogCommands.SendMessage] || dc.isInstanceOf[DialogCommands.WriteMessageSelf] ⇒
+          dialogRoot(state.internalExtensions) ! msg
+          handleDialogCommand(state)(dc)
+        case dc: DialogCommand ⇒ handleDialogCommand(state)(dc)
+        case dq: DialogQuery   ⇒ handleDialogQuery(state)(dq)
+      }
+    // messages sent from DialogRoot:
+    case dc: DialogCommand ⇒ handleDialogCommand(state)(dc)
+    case dq: DialogQuery   ⇒ handleDialogQuery(state)(dq)
   }
 
   override protected def handleQuery(state: UserState): Receive = {
-    case GetAuthIds(_)                                ⇒ getAuthIds(state)
-    case GetApiStruct(_, clientUserId, clientAuthId)  ⇒ getApiStruct(state, clientUserId, clientAuthId)
-    case GetContactRecords(_)                         ⇒ getContactRecords(state)
-    case CheckAccessHash(_, senderAuthId, accessHash) ⇒ checkAccessHash(state, senderAuthId, accessHash)
-    case GetAccessHash(_, clientAuthId)               ⇒ getAccessHash(state, clientAuthId)
-    case GetUser(_)                                   ⇒ getUser(state)
-    case IsAdmin(_)                                   ⇒ isAdmin(state)
-    case GetName(_)                                   ⇒ getName(state)
+    case GetAuthIds(_)                                   ⇒ getAuthIds(state)
+    case GetApiStruct(_, clientUserId, clientAuthId)     ⇒ getApiStruct(state, clientUserId, clientAuthId)
+    case GetApiFullStruct(_, clientUserId, clientAuthId) ⇒ getApiFullStruct(state, clientUserId, clientAuthId)
+    case GetContactRecords(_)                            ⇒ getContactRecords(state)
+    case CheckAccessHash(_, senderAuthId, accessHash)    ⇒ checkAccessHash(state, senderAuthId, accessHash)
+    case GetAccessHash(_, clientAuthId)                  ⇒ getAccessHash(state, clientAuthId)
+    case GetUser(_)                                      ⇒ getUser(state)
+    case IsAdmin(_)                                      ⇒ isAdmin(state)
+    case GetName(_)                                      ⇒ getName(state)
   }
 
-  private def userPeer(extensions: Seq[ApiExtension]): ActorRef = {
-    val userPeer = "UserPeer"
-    context.child(userPeer).getOrElse(context.actorOf(UserPeer.props(userId, extensions), userPeer))
+  protected def extToApi(exts: Seq[UserExt]): ApiMapValue = {
+    ApiMapValue(
+      exts.toVector map { ext ⇒
+        if (ext.value.isBoolValue) ApiMapValueItem(ext.key, ApiInt32Value(if (ext.getBoolValue) 1 else 0))
+        else ApiMapValueItem(ext.key, ApiStringValue(ext.getStringValue))
+      }
+    )
   }
 
   protected[this] var userStateMaybe: Option[UserState] = None
@@ -283,4 +308,34 @@ private[user] final class UserProcessor
       log.error("Unmatched recovery event {}", unmatched)
   }
 
+  private def handleDialogCommand(state: UserState): PartialFunction[DialogCommand, Unit] = {
+    case ddc: DirectDialogCommand ⇒ dialogRef(state, ddc) forward ddc
+    case dc: DialogCommand        ⇒ dialogRef(state, dc.getDest) forward dc
+  }
+
+  private def handleDialogQuery(state: UserState): PartialFunction[DialogQuery, Unit] = {
+    case dq: DialogQuery ⇒ dialogRef(state, dq.getDest) forward dq
+  }
+
+  private def dialogRef(state: UserState, dc: DirectDialogCommand): ActorRef = {
+    val peer = dc.getDest match {
+      case Peer(PeerType.Group, _)   ⇒ dc.getDest
+      case Peer(PeerType.Private, _) ⇒ if (dc.getOrigin.id == userId) dc.getDest else dc.getOrigin
+    }
+    dialogRef(state, peer)
+  }
+
+  private def dialogRef(state: UserState, peer: Peer): ActorRef =
+    context.child(dialogName(peer)) getOrElse context.actorOf(DialogProcessor.props(userId, peer, state.internalExtensions), dialogName(peer))
+
+  private def dialogRoot(extensions: Seq[ApiExtension]): ActorRef = {
+    val name = "DialogRoot"
+    context.child(name).getOrElse(context.actorOf(DialogRoot.props(userId, extensions), name))
+  }
+
+  private def dialogName(peer: Peer): String = peer.typ match {
+    case PeerType.Private ⇒ s"Private_${peer.id}"
+    case PeerType.Group   ⇒ s"Group_${peer.id}"
+    case other            ⇒ throw new Exception(s"Unknown peer type: $other")
+  }
 }

@@ -26,20 +26,24 @@ import im.actor.runtime.mvvm.Value;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.ValueModel;
 import im.actor.sdk.R;
+import im.actor.sdk.controllers.fragment.ActorBinder;
 import im.actor.sdk.util.Screen;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
 public class FastShareAdapter extends RecyclerView.Adapter<FastShareAdapter.FastShareVH> {
 
-    ArrayList<String> imagesPath = new ArrayList<>();
-    Set<String> selected = new HashSet<String>();
-    Context context;
+    private ArrayList<String> imagesPath = new ArrayList<>();
+    private Set<String> selected = new HashSet<>();
+    private Context context;
     private ValueModel<Set<String>> selectedVM;
+
+    private ActorBinder binder;
 
     public FastShareAdapter(Context context) {
         this.context = context;
-        messenger().getGalleryVM().getGalleryMediaPath().subscribe(new ValueChangedListener<ArrayList<String>>() {
+        binder = new ActorBinder();
+        binder.bind(messenger().getGalleryVM().getGalleryMediaPath(), new ValueChangedListener<ArrayList<String>>() {
             @Override
             public void onChanged(ArrayList<String> val, Value<ArrayList<String>> valueModel) {
                 imagesPath.clear();
@@ -56,6 +60,9 @@ public class FastShareAdapter extends RecyclerView.Adapter<FastShareAdapter.Fast
                 .inflate(id, viewGroup, false);
     }
 
+    public void release() {
+        binder.unbindAll();
+    }
 
     @Override
     public FastShareVH onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -64,6 +71,7 @@ public class FastShareAdapter extends RecyclerView.Adapter<FastShareAdapter.Fast
 
     @Override
     public void onBindViewHolder(FastShareVH holder, int position) {
+
         holder.bind(imagesPath.get(position));
     }
 
@@ -73,9 +81,9 @@ public class FastShareAdapter extends RecyclerView.Adapter<FastShareAdapter.Fast
     }
 
     public class FastShareVH extends RecyclerView.ViewHolder {
-        SimpleDraweeView v;
-        CheckBox chb;
-        String data;
+        private SimpleDraweeView v;
+        private CompoundButton chb;
+        private String data;
 
         public FastShareVH(View itemView) {
             super(itemView);

@@ -1,0 +1,118 @@
+/*
+ * Copyright (C) 2016 Actor LLC. <https://actor.im>
+ */
+
+.avatar {
+  &__image {
+    display: inline-block;
+
+    user-select: none;
+    box-shadow: 0 0 1px rgba(0, 0, 0, .1);
+
+    border-radius: 100%;
+  }
+  &__placeholder {
+    display: inline-flex;
+    flex-direction: column;
+
+    user-select: none;
+    text-align: center;
+    text-transform: uppercase;
+
+    color: white;
+    border-radius: 100%;
+    box-shadow: 0 0 1px rgba(0, 0, 0, .1);
+    text-shadow: 0 -1px 5px rgba(0, 0, 0, .17);
+
+    align-content: center;
+    justify-content: center;
+
+    &--tiny {
+      font-size: 12px;
+      font-weight: 500;
+
+      width: $avatar-tiny-size;
+      height: $avatar-tiny-size;
+    }
+
+    &--small {
+      font-size: 14px;
+
+      width: $avatar-small-size;
+      height: $avatar-small-size;
+    }
+
+    &--normal {
+      font-size: 15px;
+      font-weight: 700;
+
+      width: $default-avatar-size;
+      height: $default-avatar-size;
+    }
+
+    &--medium {
+      font-size: 16px;
+
+      width: $avatar-medium-size;
+      height: $avatar-medium-size;
+    }
+
+    &--large {
+      font-size: 20px;
+
+      width: $avatar-large-size;
+      height: $avatar-large-size;
+    }
+
+    &--big {
+      font-size: 32px;
+
+      width: $avatar-big-size;
+      height: $avatar-big-size;
+    }
+
+    &--huge {
+      font-size: 64px;
+
+      width: $avatar-huge-size;
+      height: $avatar-huge-size;
+    }
+
+    &--clickable {
+      cursor: pointer;
+    }
+
+    // Placeholder colors
+    &--empty {
+      background-color: $color-empty;
+    }
+
+    &--lblue {
+      background-color: $color-lblue;
+    }
+
+    &--blue {
+      background-color: $color-blue;
+    }
+
+    &--purple {
+      background-color: $color-purple;
+    }
+
+    &--red {
+      background-color: $color-red;
+    }
+
+    &--orange {
+      background-color: $color-orange;
+    }
+
+    &--yellow {
+      background-color: $color-pink;
+    }
+
+    &--green {
+      background-color: $color-green;
+    }
+  }
+}

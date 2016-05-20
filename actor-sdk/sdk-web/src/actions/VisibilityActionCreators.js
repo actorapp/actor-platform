@@ -4,23 +4,30 @@
 
 import { dispatch } from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
+import ActionCreators from './ActionCreators';
 import ConnectionStateActionCreators from '../actions/ConnectionStateActionCreators';
 import DraftActionCreators from '../actions/DraftActionCreators';
 import ActorClient from '../utils/ActorClient';
 import DialogStore from '../stores/DialogStore';
 
-export default {
+class VisibilityActionCreators extends ActionCreators {
   createAppVisible() {
     dispatch(ActionTypes.APP_VISIBLE);
     ActorClient.onAppVisible();
-    ActorClient.bindConnectState(ConnectionStateActionCreators.setState);
-  },
+    this.setBindings('connect', [
+      ActorClient.bindConnectState(ConnectionStateActionCreators.setState)
+    ]);
+  }
 
   createAppHidden() {
     dispatch(ActionTypes.APP_HIDDEN);
+
     const currentPeer = DialogStore.getCurrentPeer();
-    ActorClient.onAppHidden();
-    ActorClient.unbindConnectState(ConnectionStateActionCreators.setState);
     DraftActionCreators.saveDraft(currentPeer);
+
+    ActorClient.onAppHidden();
+    this.removeBindings('connect');
   }
-};
+}
+
+export default new VisibilityActionCreators();

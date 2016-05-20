@@ -14,11 +14,8 @@ export default {
   cache: true,
   debug: true,
   devtool: '#inline-source-map',
-  hotComponents: true,
   entry: {
     app: [
-      'webpack-dev-server/client?http://localhost:3000',
-      'webpack/hot/dev-server',
       './devapp/index.js',
       './src/styles/index.scss'
     ],
@@ -30,7 +27,7 @@ export default {
   },
   output: {
     path: path.join(__dirname, 'dist'),
-    publicPath: './',
+    publicPath: '/',
     filename: '[name].js',
     chunkFilename: '[chunkhash].js',
     sourceMapFilename: '[file][hash].map'
@@ -56,7 +53,7 @@ export default {
       loaders: [
         'babel?cacheDirectory'
       ],
-      exclude: /(node_modules)/
+      exclude: /(node_modules|vendor)/
     }, {
       test: /\.json$/,
       loaders: ['json']
@@ -73,6 +70,8 @@ export default {
   },
   plugins: [
     new webpack.DefinePlugin({
+      __ACTOR_SDK_VERSION__: JSON.stringify(require('./package.json').version),
+      __ACTOR_CORE_VERSION__: JSON.stringify(require('actor-js/package.json').version),
       'process.env': {
         'NODE_ENV': JSON.stringify('development')
       }
@@ -81,10 +80,9 @@ export default {
     new webpack.ResolverPlugin([
       new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('package.json', ['main'])
     ], ['context']),
-    new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin()
   ],
   postcss: [
-    autoprefixer({browsers: ['last 3 versions']})
+    autoprefixer({ browsers: ['last 3 versions'] })
   ]
 };

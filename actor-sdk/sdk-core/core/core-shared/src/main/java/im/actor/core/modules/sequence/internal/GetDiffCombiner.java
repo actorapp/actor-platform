@@ -13,7 +13,7 @@ import im.actor.core.api.updates.UpdateUserNameChanged;
 import im.actor.core.api.updates.UpdateUserNickChanged;
 import im.actor.core.network.parser.Update;
 
-import static im.actor.core.modules.messaging.actors.entity.EntityConverter.convert;
+import static im.actor.core.entity.EntityConverter.convert;
 
 public class GetDiffCombiner {
 
@@ -30,16 +30,12 @@ public class GetDiffCombiner {
                 res.putReceived(convert(received.getPeer()), received.getStartDate());
             } else if (u instanceof UpdateMessageReadByMe) {
                 UpdateMessageReadByMe readByMe = (UpdateMessageReadByMe) u;
-                res.putReadByMe(convert(readByMe.getPeer()), readByMe.getStartDate());
+                int counter = 0;
+                if (readByMe.getUnreadCounter() != null) {
+                    counter = readByMe.getUnreadCounter();
+                }
+                res.putReadByMe(convert(readByMe.getPeer()), readByMe.getStartDate(), counter);
             } else if (u instanceof UpdateCountersChanged) {
-                res.setCounters(((UpdateCountersChanged) u).getCounters());
-            } else if (u instanceof UpdateUserNameChanged) {
-                // Ignore
-            } else if (u instanceof UpdateUserLocalNameChanged) {
-                // Ignore
-            } else if (u instanceof UpdateUserNickChanged) {
-                // Ignore
-            } else if (u instanceof UpdateUserAboutChanged) {
                 // Ignore
             } else {
                 res.getOtherUpdates().add(u);

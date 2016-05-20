@@ -19,16 +19,21 @@ import im.actor.core.entity.Group;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.file.UploadManager;
 import im.actor.core.modules.sequence.internal.ExecuteAfter;
-import im.actor.core.util.ModuleActor;
+import im.actor.core.modules.ModuleActor;
 import im.actor.core.util.RandomUtils;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.viewmodel.AvatarUploadState;
+import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.function.Consumer;
 
 public class GroupAvatarChangeActor extends ModuleActor {
 
-    private HashMap<Integer, Long> currentTasks = new HashMap<Integer, Long>();
-    private HashMap<Long, Integer> tasksMap = new HashMap<Long, Integer>();
+    // j2objc bug workaround
+    private static final Void DUMB = null;
+
+    private HashMap<Integer, Long> currentTasks = new HashMap<>();
+    private HashMap<Long, Integer> tasksMap = new HashMap<>();
 
     public GroupAvatarChangeActor(ModuleContext context) {
         super(context);
@@ -59,41 +64,31 @@ public class GroupAvatarChangeActor extends ModuleActor {
             return;
         }
 
-        request(new RequestEditGroupAvatar(new ApiGroupOutPeer(gid, accessHash), rid, new ApiFileLocation(fileReference.getFileId(),
-                fileReference.getAccessHash())), new RpcCallback<ResponseEditGroupAvatar>() {
-
-            @Override
-            public void onResult(ResponseEditGroupAvatar response) {
-                // Put update to sequence
-                updates().onUpdateReceived(new SeqUpdate(response.getSeq(),
-                        response.getState(), UpdateGroupAvatarChanged.HEADER,
-                        new UpdateGroupAvatarChanged(gid, rid, myUid(),
-                                response.getAvatar(), response.getDate()).toByteArray()));
-
-                // After update applied turn of uploading state
-                updates().onUpdateReceived(new ExecuteAfter(response.getSeq(), new Runnable() {
-                    @Override
-                    public void run() {
-                        self().send(new AvatarChanged(gid, rid));
+        api(new RequestEditGroupAvatar(new ApiGroupOutPeer(gid, accessHash), rid, new ApiFileLocation(fileReference.getFileId(),
+                fileReference.getAccessHash())))
+                .flatMap(responseEditGroupAvatar ->
+                        updates().applyUpdate(
+                                responseEditGroupAvatar.getSeq(),
+                                responseEditGroupAvatar.getState(),
+                                new UpdateGroupAvatarChanged(
+                                        gid, rid, myUid(),
+                                        responseEditGroupAvatar.getAvatar(),
+                                        responseEditGroupAvatar.getDate())
+                        ))
+                .then(v -> avatarChanged(gid, rid))
+                .failure(e -> {
+                    if (!tasksMap.containsKey(rid)) {
+                        return;
                     }
-                }));
-            }
+                    final int gid2 = tasksMap.get(rid);
+                    if (currentTasks.get(gid2) != rid) {
+                        return;
+                    }
+                    currentTasks.remove(gid2);
+                    tasksMap.remove(rid);
 
-            @Override
-            public void onError(RpcException e) {
-                if (!tasksMap.containsKey(rid)) {
-                    return;
-                }
-                final int gid = tasksMap.get(rid);
-                if (currentTasks.get(gid) != rid) {
-                    return;
-                }
-                currentTasks.remove(gid);
-                tasksMap.remove(rid);
-
-                context().getGroupsModule().getAvatarVM(gid).getUploadState().change(new AvatarUploadState(null, false));
-            }
-        });
+                    context().getGroupsModule().getAvatarVM(gid2).getUploadState().change(new AvatarUploadState(null, false));
+                });
     }
 
     public void avatarChanged(int gid, long rid) {
@@ -131,47 +126,34 @@ public class GroupAvatarChangeActor extends ModuleActor {
         tasksMap.put(rid, gid);
 
         Group group = context().getGroupsModule().getGroups().getValue(gid);
-
         ApiGroupOutPeer outPeer = new ApiGroupOutPeer(gid, group.getAccessHash());
 
         context().getProfileModule().getOwnAvatarVM().getUploadState().change(new AvatarUploadState(null, true));
-        request(new RequestRemoveGroupAvatar(outPeer, rid), new RpcCallback<ResponseSeqDate>() {
-            @Override
-            public void onResult(ResponseSeqDate response) {
-                updates().onSeqUpdateReceived(
-                        response.getSeq(),
-                        response.getState(),
-                        new UpdateGroupAvatarChanged(
-                                gid,
-                                rid,
-                                myUid(),
-                                null,
-                                response.getDate()));
-
-                // After update applied turn of uploading state
-                updates().onUpdateReceived(new ExecuteAfter(response.getSeq(), new Runnable() {
-                    @Override
-                    public void run() {
-                        self().send(new AvatarChanged(gid, rid));
+        api(new RequestRemoveGroupAvatar(outPeer, rid))
+                .flatMap(responseSeqDate ->
+                        updates().applyUpdate(
+                                responseSeqDate.getSeq(),
+                                responseSeqDate.getState(),
+                                new UpdateGroupAvatarChanged(
+                                        gid,
+                                        rid,
+                                        myUid(),
+                                        null,
+                                        responseSeqDate.getDate())))
+                .then(aVoid -> avatarChanged(gid, rid))
+                .failure(e -> {
+                    if (!tasksMap.containsKey(rid)) {
+                        return;
                     }
-                }));
-            }
+                    final int gid2 = tasksMap.get(rid);
+                    if (currentTasks.get(gid) != rid) {
+                        return;
+                    }
+                    currentTasks.remove(gid2);
+                    tasksMap.remove(rid);
 
-            @Override
-            public void onError(RpcException e) {
-                if (!tasksMap.containsKey(rid)) {
-                    return;
-                }
-                final int gid = tasksMap.get(rid);
-                if (currentTasks.get(gid) != rid) {
-                    return;
-                }
-                currentTasks.remove(gid);
-                tasksMap.remove(rid);
-
-                context().getGroupsModule().getAvatarVM(gid).getUploadState().change(new AvatarUploadState(null, false));
-            }
-        });
+                    context().getGroupsModule().getAvatarVM(gid2).getUploadState().change(new AvatarUploadState(null, false));
+                });
     }
 
     @Override
@@ -182,9 +164,6 @@ public class GroupAvatarChangeActor extends ModuleActor {
         } else if (message instanceof UploadManager.UploadCompleted) {
             UploadManager.UploadCompleted uploadCompleted = (UploadManager.UploadCompleted) message;
             uploadCompleted(uploadCompleted.getRid(), uploadCompleted.getFileReference());
-        } else if (message instanceof AvatarChanged) {
-            AvatarChanged avatarChanged = (AvatarChanged) message;
-            avatarChanged(avatarChanged.getGid(), avatarChanged.getRid());
         } else if (message instanceof UploadManager.UploadError) {
             UploadManager.UploadError uploadError = (UploadManager.UploadError) message;
             uploadError(uploadError.getRid());
@@ -192,25 +171,7 @@ public class GroupAvatarChangeActor extends ModuleActor {
             RemoveAvatar removeAvatar = (RemoveAvatar) message;
             removeAvatar(removeAvatar.getGid());
         } else {
-            drop(message);
-        }
-    }
-
-    public static class AvatarChanged {
-        private int gid;
-        private long rid;
-
-        public AvatarChanged(int gid, long rid) {
-            this.gid = gid;
-            this.rid = rid;
-        }
-
-        public int getGid() {
-            return gid;
-        }
-
-        public long getRid() {
-            return rid;
+            super.onReceive(message);
         }
     }
 

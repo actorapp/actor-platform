@@ -23,9 +23,11 @@ public class RequestSearchContacts extends Request<ResponseSearchContacts> {
     }
 
     private String request;
+    private List<ApiUpdateOptimization> optimizations;
 
-    public RequestSearchContacts(@NotNull String request) {
+    public RequestSearchContacts(@NotNull String request, @NotNull List<ApiUpdateOptimization> optimizations) {
         this.request = request;
+        this.optimizations = optimizations;
     }
 
     public RequestSearchContacts() {
@@ -37,9 +39,18 @@ public class RequestSearchContacts extends Request<ResponseSearchContacts> {
         return this.request;
     }
 
+    @NotNull
+    public List<ApiUpdateOptimization> getOptimizations() {
+        return this.optimizations;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.request = values.getString(1);
+        this.optimizations = new ArrayList<ApiUpdateOptimization>();
+        for (int b : values.getRepeatedInt(2)) {
+            optimizations.add(ApiUpdateOptimization.parse(b));
+        }
     }
 
     @Override
@@ -48,6 +59,9 @@ public class RequestSearchContacts extends Request<ResponseSearchContacts> {
             throw new IOException();
         }
         writer.writeString(1, this.request);
+        for (ApiUpdateOptimization i : this.optimizations) {
+            writer.writeInt(2, i.getValue());
+        }
     }
 
     @Override

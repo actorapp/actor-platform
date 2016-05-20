@@ -1,0 +1,1 @@
+alter table social_relations add column relation_status int not null default 0;

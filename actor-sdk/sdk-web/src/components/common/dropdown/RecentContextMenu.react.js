@@ -3,9 +3,10 @@
  */
 
 import React, { Component, PropTypes } from 'react';
+import EventListener from 'fbjs/lib/EventListener';
 import { findDOMNode } from 'react-dom';
-import ReactMixin from 'react-mixin';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
+import { shouldComponentUpdate } from 'react-addons-pure-render-mixin';
+import { FormattedMessage } from 'react-intl';
 import isInside from '../../../utils/isInside';
 import confirm from '../../../utils/confirm';
 
@@ -19,8 +20,7 @@ import DialogActionCreators from '../../../actions/DialogActionCreators';
 class RecentContextMenu extends Component {
   static propTypes = {
     peer: PropTypes.object.isRequired,
-    contextPos: PropTypes.object.isRequired,
-    hideOnScroll: PropTypes.bool.isRequired
+    contextPos: PropTypes.object.isRequired
   };
 
   static contextTypes = {
@@ -30,22 +30,23 @@ class RecentContextMenu extends Component {
   constructor(props) {
     super(props);
 
-    document.addEventListener('click', this.handleDocumentClick, true);
-    document.addEventListener('contextmenu', this.handleClose, true);
+    this.shouldComponentUpdate = shouldComponentUpdate.bind(this);
+  }
 
-    if (props.hideOnScroll) {
-      document.addEventListener('scroll', this.handleClose, true);
-    }
+  componentDidMount() {
+    this.listeners = [
+      EventListener.capture(document, 'click', this.handleDocumentClick),
+      EventListener.capture(document, 'contextmenu', this.handleClose),
+      EventListener.capture(document, 'scroll', this.handleClose)
+    ];
   }
 
   componentWillUnmount() {
-    const { hideOnScroll } = this.props;
-    document.removeEventListener('click', this.handleDocumentClick, true);
-    document.removeEventListener('contextmenu', this.handleClose, true);
+    this.listeners.forEach((listener) => {
+      listener.remove();
+    });
 
-    if (hideOnScroll) {
-      document.removeEventListener('scroll', this.handleClose, true);
-    }
+    this.listeners = null;
   }
 
   handleDocumentClick = (event) => {
@@ -64,28 +65,27 @@ class RecentContextMenu extends Component {
 
   handleClose = () => DropdownActionCreators.hideRecentContext();
 
-  handleAddToArchive = (event) => {
+  handleAddToArchive = () => {
     const { peer } = this.props;
     ArchiveActionCreators.archiveChat(peer);
     this.handleClose();
   };
 
-  handleFavorite = (event) => {
+  handleFavorite = () => {
     const { peer } = this.props;
     FavoriteActionCreators.favoriteChat(peer);
     this.handleClose();
   };
 
-  handleUnfavorite = (event) => {
+  handleUnfavorite = () => {
     const { peer } = this.props;
     FavoriteActionCreators.unfavoriteChat(peer);
     this.handleClose();
   };
 
-  handleDelete = (event) => {
-    const { intl } = this.context;
+  handleDelete = () => {
     const { peer } = this.props;
-    confirm(intl.messages['modal.confirm.delete']).then(
+    confirm(<FormattedMessage id="modal.confirm.delete"/>).then(
       () => DialogActionCreators.deleteChat(peer),
       () => {}
     );
@@ -112,24 +112,22 @@ class RecentContextMenu extends Component {
           {
             isFavorite
               ? <li className="dropdown__menu__item" onClick={this.handleUnfavorite}>
-                  <i className="icon material-icons">star_border</i> Unfavorite
+                  <i className="icon material-icons">star_border</i> <FormattedMessage id="context.favorite.remove"/>
                 </li>
               : <li className="dropdown__menu__item" onClick={this.handleFavorite}>
-                  <i className="icon material-icons">star</i> Favorite
+                  <i className="icon material-icons">star</i> <FormattedMessage id="context.favorite.add"/>
                 </li>
           }
           <li className="dropdown__menu__item" onClick={this.handleAddToArchive}>
-            <i className="icon material-icons">archive</i> Send to archive
+            <i className="icon material-icons">archive</i> <FormattedMessage id="context.archive"/>
           </li>
           <li className="dropdown__menu__item" onClick={this.handleDelete}>
-            <i className="icon material-icons">delete</i> Delete
+            <i className="icon material-icons">delete</i> <FormattedMessage id="context.delete"/>
           </li>
         </ul>
       </div>
     );
   }
 }
-
-ReactMixin.onClass(RecentContextMenu, PureRenderMixin);
 
 export default RecentContextMenu;

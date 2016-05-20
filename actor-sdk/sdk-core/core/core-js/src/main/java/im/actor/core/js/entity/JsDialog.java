@@ -45,16 +45,21 @@ public class JsDialog extends JavaScriptObject {
                     src.getMessageType(), src.getText(), src.getRelatedUid());
 
             JsPeerInfo peerInfo = JsPeerInfo.create(JsPeer.create(src.getPeer()), src.getDialogTitle(), null, fileUrl,
-                    Placeholders.getPlaceholder(src.getPeer().getPeerId()));
+                    Placeholders.getPlaceholder(src.getPeer().getPeerId()), false);
 
-            return JsDialog.create(
-                    peerInfo,
-                    // Message
-                    date,
-                    senderName, showSender,
-                    messageText, highlightContent,
-                    Enums.convert(src.getStatus()),
-                    src.getUnreadCount());
+            String state = "unknown";
+            if (messenger.myUid() == src.getSenderId()) {
+                if (src.isRead()) {
+                    state = "read";
+                } else if (src.isReceived()) {
+                    state = "received";
+                } else {
+                    state = "sent";
+                }
+            }
+
+            return JsDialog.create(peerInfo, date, senderName, showSender, messageText,
+                    highlightContent, state, src.getUnreadCount());
         }
 
         @Override

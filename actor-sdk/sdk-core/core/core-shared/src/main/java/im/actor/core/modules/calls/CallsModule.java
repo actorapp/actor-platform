@@ -54,12 +54,7 @@ public class CallsModule extends AbsModule {
     }
 
     public Command<Long> makeCall(final Peer peer) {
-        return new Command<Long>() {
-            @Override
-            public void start(final CommandCallback<Long> callback) {
-                callManager.send(new CallManagerActor.DoCall(peer, callback));
-            }
-        };
+        return callback -> callManager.send(new CallManagerActor.DoCall(peer, callback));
     }
 
     public void muteCall(long callId) {

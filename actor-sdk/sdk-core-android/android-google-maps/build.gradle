@@ -1,0 +1,176 @@
+buildscript {
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.1.0'
+        classpath 'com.github.dcendents:android-maven-plugin:1.2'
+        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3"
+        classpath 'me.tatarka:gradle-retrolambda:3.2.5'
+    }
+}
+plugins {
+    id "me.tatarka.retrolambda" version "3.2.5"
+}
+apply plugin: 'com.android.library'
+apply plugin: 'maven'
+apply plugin: 'signing'
+apply plugin: 'io.codearte.nexus-staging'
+apply plugin: 'me.tatarka.retrolambda'
+
+group = 'im.actor'
+version = '0.0.1'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.3"
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    compile 'com.android.support:appcompat-v7:23.3.0'
+
+    //compile 'im.actor:android-sdk:0.1.30'
+    compile project(':actor-sdk:sdk-core-android:android-sdk')
+
+    compile 'com.google.android.gms:play-services-maps:8.4.0'
+
+}
+
+//
+// Publishing of SDK to Maven Central
+//
+
+//
+// Prepare Android JavaDocs and Sources jar
+//
+
+android.libraryVariants.all { variant ->
+
+    task("javadoc${variant.name.capitalize()}", type: Javadoc, dependsOn: "assemble${variant.name.capitalize()}") {
+
+        title = "Actor SDK for Android: Google Extension"
+
+        // Sources
+        source = variant.javaCompile.source
+
+        // First add all of your dependencies to the classpath, then add the android jars
+        classpath += files(variant.javaCompile.classpath.files)
+        classpath += files(android.getBootClasspath())
+
+        // Configuration
+        options.links("http://d.android.com/reference")
+        failOnError = false // TODO: Fix all errors
+
+        // We're excluding these generated files
+        // TODO: Fix
+        // exclude '**/BuildConfig.java'
+        // exclude '**/R.java'
+    }
+
+    task("javadocJar${variant.name.capitalize()}", type: Jar, dependsOn: "javadoc${variant.name.capitalize()}") {
+        classifier 'javadoc'
+        destinationDir = new File("$project.buildDir/libs/")
+        from "$project.buildDir/javadoc/$variant.name"
+    }
+
+    task("sourcesJar${variant.name.capitalize()}", type: Jar, dependsOn: "assemble${variant.name.capitalize()}") {
+        classifier 'sources'
+        destinationDir = new File("$project.buildDir/libs/")
+        from variant.javaCompile.source
+    }
+}
+
+//
+// Configuration of publishing
+//
+
+String ossrhUsername = ""
+String ossrhPassword = ""
+boolean isDeployConfigured = false
+if (project.rootProject.file('gradle.properties').exists()) {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('gradle.properties').newDataInputStream())
+    ossrhUsername = properties.getProperty("ossrhUsername", "")
+    ossrhPassword = properties.getProperty("ossrhPassword", "")
+    version = properties.getProperty("version", "")
+
+    nexusStaging {
+        username ossrhUsername
+        password ossrhPassword
+    }
+
+    isDeployConfigured = true
+}
+
+project.afterEvaluate {
+
+    artifacts {
+        archives javadocJarRelease
+        archives sourcesJarRelease
+    }
+
+    if (isDeployConfigured) {
+
+        signing {
+            sign configurations.archives
+        }
+
+        uploadArchives {
+            repositories {
+                mavenDeployer {
+                    beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+                    repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                        authentication(userName: ossrhUsername, password: ossrhPassword)
+                    }
+
+                    pom.project {
+                        name 'Actor SDK for Android Google Extension'
+                        packaging 'aar'
+                        description 'Actor SDK for Android Google Extension'
+                        url 'https://github.com/actorapp/actor-platform'
+
+                        scm {
+                            url 'scm:git@github.com:actorapp/actor-platform.git'
+                            connection 'scm:git@github.com:actorapp/actor-platform.git'
+                            developerConnection 'scm:git@github.com:actorapp/actor-platform.git'
+                        }
+
+                        licenses {
+                            license {
+                                name 'The MIT License (MIT)'
+                                url 'http://opensource.org/licenses/MIT'
+                                distribution 'repo'
+                            }
+                        }
+
+                        developers {
+                            developer {
+                                id 'ex3ndr'
+                                name 'Stepan Korshakov'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -14,9 +14,17 @@ import im.actor.runtime.threading.AtomicIntegerCompat;
 
 public class ExponentialBackoff {
 
+    private final Random random = new Random();
+
     private final int minDelay;
     private final int maxDelay;
     private final int maxFailureCount;
+
+    private int currentFailureCount = 1;
+
+    public ExponentialBackoff() {
+        this(500, 15000, 50);
+    }
 
     public ExponentialBackoff(int minDelay,
                               int maxDelay,
@@ -26,43 +34,37 @@ public class ExponentialBackoff {
         this.maxFailureCount = maxFailureCount;
     }
 
-    private final AtomicIntegerCompat currentFailureCount = im.actor.runtime.Runtime.createAtomicInt(1);
-
-    private final Random random = new Random();
-
     /**
      * Calculating wait duration after failure attempt
      *
      * @return wait in ms
      */
-    public long exponentialWait() {
-        long maxDelayRet = minDelay + ((maxDelay - minDelay) / maxFailureCount) * currentFailureCount.get();
-        synchronized (random) {
-            return (long) (random.nextFloat() * maxDelayRet);
-        }
+    public synchronized long exponentialWait() {
+        long maxDelayRet = minDelay + ((maxDelay - minDelay) / maxFailureCount) * currentFailureCount;
+        return (long) (random.nextFloat() * maxDelayRet);
     }
 
     /**
      * Notification about failure
      */
-    public void onFailure() {
-        final int val = currentFailureCount.incrementAndGet();
-        if (val > maxFailureCount) {
-            currentFailureCount.compareAndSet(val, maxFailureCount);
+    public synchronized void onFailure() {
+        currentFailureCount++;
+        if (currentFailureCount > maxFailureCount) {
+            currentFailureCount = maxFailureCount;
         }
     }
 
     /**
      * Notification about success
      */
-    public void onSuccess() {
+    public synchronized void onSuccess() {
         reset();
     }
 
     /**
      * Resetting backoff object
      */
-    public void reset() {
-        currentFailureCount.set(0);
+    public synchronized void reset() {
+        currentFailureCount = 0;
     }
 }

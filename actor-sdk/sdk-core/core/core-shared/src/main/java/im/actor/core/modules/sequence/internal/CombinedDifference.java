@@ -7,27 +7,18 @@ import java.util.List;
 import im.actor.core.api.ApiAppCounters;
 import im.actor.core.api.updates.UpdateMessage;
 import im.actor.core.entity.Peer;
-import im.actor.core.modules.messaging.actors.entity.EntityConverter;
+import im.actor.core.entity.EntityConverter;
 import im.actor.core.network.parser.Update;
 
 public class CombinedDifference {
 
-    private HashMap<Peer, Long> readByMe = new HashMap<Peer, Long>();
-    private HashMap<Peer, Long> read = new HashMap<Peer, Long>();
-    private HashMap<Peer, Long> received = new HashMap<Peer, Long>();
-    private HashMap<Peer, List<UpdateMessage>> messages = new HashMap<Peer, List<UpdateMessage>>();
-    private List<Update> otherUpdates = new ArrayList<Update>();
-    private ApiAppCounters counters;
+    private HashMap<Peer, ReadByMeValue> readByMe = new HashMap<>();
+    private HashMap<Peer, Long> read = new HashMap<>();
+    private HashMap<Peer, Long> received = new HashMap<>();
+    private HashMap<Peer, List<UpdateMessage>> messages = new HashMap<>();
+    private List<Update> otherUpdates = new ArrayList<>();
 
-    public ApiAppCounters getCounters() {
-        return counters;
-    }
-
-    public void setCounters(ApiAppCounters counters) {
-        this.counters = counters;
-    }
-
-    public HashMap<Peer, Long> getReadByMe() {
+    public HashMap<Peer, ReadByMeValue> getReadByMe() {
         return readByMe;
     }
 
@@ -52,14 +43,20 @@ public class CombinedDifference {
         if (messages.containsKey(peer)) {
             messages.get(peer).add(message);
         } else {
-            ArrayList<UpdateMessage> msgs = new ArrayList<UpdateMessage>();
+            ArrayList<UpdateMessage> msgs = new ArrayList<>();
             msgs.add(message);
             messages.put(peer, msgs);
         }
     }
 
-    public void putReadByMe(Peer peer, long date) {
-        put(readByMe, peer, date);
+    public void putReadByMe(Peer peer, long date, int counter) {
+        if (readByMe.containsKey(peer)) {
+            if (readByMe.get(peer).date <= date) {
+                readByMe.put(peer, new ReadByMeValue(date, counter));
+            }
+        } else {
+            readByMe.put(peer, new ReadByMeValue(date, counter));
+        }
     }
 
     public void putRead(Peer peer, long date) {
@@ -89,6 +86,25 @@ public class CombinedDifference {
             }
         } else {
             map.put(peer, date);
+        }
+    }
+
+    public static class ReadByMeValue {
+
+        private long date;
+        private int counter;
+
+        public ReadByMeValue(long date, int counter) {
+            this.date = date;
+            this.counter = counter;
+        }
+
+        public long getDate() {
+            return date;
+        }
+
+        public int getCounter() {
+            return counter;
         }
     }
 }

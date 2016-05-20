@@ -20,12 +20,7 @@ public class PushesModule extends AbsModule {
     public PushesModule(ModuleContext modules) {
         super(modules);
 
-        pushRegisterActor = system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public PushRegisterActor create() {
-                return new PushRegisterActor(context());
-            }
-        }), "actor/push");
+        pushRegisterActor = system().actorOf("actor/push", () -> new PushRegisterActor(context()));
     }
 
     public void registerGooglePush(long projectId, String token) {

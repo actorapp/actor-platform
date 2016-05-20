@@ -17,61 +17,66 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 import im.actor.runtime.Log;
+import im.actor.runtime.Runtime;
 
 /**
  * Registration for Actor Push
  */
 public final class ActorPushRegister {
 
-    private static OkHttpClient client = new OkHttpClient();
-
     public static void registerForPush(final Context context, String endpoint, final Callback callback) {
 
-        final SharedPreferences sharedPreferences = context.getSharedPreferences("actor_push_register", Context.MODE_PRIVATE);
-        String registrationEndpoint = sharedPreferences.getString("registration_endpoint", null);
-        String registrationData = sharedPreferences.getString("registration_data", null);
-        if (registrationEndpoint != null && registrationData != null) {
-            try {
-                JSONObject data = new JSONObject(registrationData);
-                startService(data, context);
-                callback.onRegistered(registrationEndpoint);
-                return;
-            } catch (JSONException e) {
-                e.printStackTrace();
-                sharedPreferences.edit().clear().commit();
-            }
-        }
+        Runtime.dispatch(() -> {
 
-        final Request request = new Request.Builder()
-                .url(endpoint)
-                .method("POST", RequestBody.create(MediaType.parse("application/json"), "{}"))
-                .build();
+            final SharedPreferences sharedPreferences = context.getSharedPreferences("actor_push_register", Context.MODE_PRIVATE);
+            String registrationEndpoint = sharedPreferences.getString("registration_endpoint", null);
+            String registrationData = sharedPreferences.getString("registration_data", null);
 
-        client.newCall(request).enqueue(new com.squareup.okhttp.Callback() {
+            OkHttpClient client = new OkHttpClient();
 
-            @Override
-            public void onFailure(Request request, IOException e) {
-                // TODO: Handle?
-            }
-
-            @Override
-            public void onResponse(Response response) throws IOException {
+            if (registrationEndpoint != null && registrationData != null) {
                 try {
-                    String res = response.body().string();
-                    JSONObject js = new JSONObject(res).getJSONObject("data");
-                    String endpoint = js.getString("endpoint");
-                    sharedPreferences.edit()
-                            .putString("registration_endpoint", endpoint)
-                            .putString("registration_data", js.toString())
-                            .commit();
-                    startService(js, context);
-                    Log.d("ActorPushRegister", "Endpoint: " + endpoint);
-                    callback.onRegistered(endpoint);
+                    JSONObject data = new JSONObject(registrationData);
+                    startService(data, context);
+                    callback.onRegistered(registrationEndpoint);
+                    return;
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    // TODO: Handle?
+                    sharedPreferences.edit().clear().commit();
                 }
             }
+
+            final Request request = new Request.Builder()
+                    .url(endpoint)
+                    .method("POST", RequestBody.create(MediaType.parse("application/json"), "{}"))
+                    .build();
+
+            client.newCall(request).enqueue(new com.squareup.okhttp.Callback() {
+
+                @Override
+                public void onFailure(Request request, IOException e) {
+                    Log.d("ACTOR_PUSH", "ACTOR_PUSH not registered: " + e.getMessage());
+                }
+
+                @Override
+                public void onResponse(Response response) throws IOException {
+                    try {
+                        String res = response.body().string();
+                        JSONObject js = new JSONObject(res).getJSONObject("data");
+                        String endpoint1 = js.getString("endpoint");
+                        sharedPreferences.edit()
+                                .putString("registration_endpoint", endpoint1)
+                                .putString("registration_data", js.toString())
+                                .commit();
+                        startService(js, context);
+                        Log.d("ActorPushRegister", "Endpoint: " + endpoint1);
+                        callback.onRegistered(endpoint1);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        // TODO: Handle?
+                    }
+                }
+            });
         });
     }
 

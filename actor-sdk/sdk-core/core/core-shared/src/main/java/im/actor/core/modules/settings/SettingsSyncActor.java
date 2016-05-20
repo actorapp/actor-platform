@@ -16,7 +16,7 @@ import im.actor.core.api.updates.UpdateParameterChanged;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.settings.entity.SettingsSyncAction;
 import im.actor.core.modules.settings.entity.SettingsSyncState;
-import im.actor.core.util.ModuleActor;
+import im.actor.core.modules.ModuleActor;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 
@@ -98,7 +98,7 @@ public class SettingsSyncActor extends ModuleActor {
             saveState();
             performSync(action);
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 

@@ -95,14 +95,23 @@ public class JsMessage extends JavaScriptObject {
                 }
                 reactions.push(JsReaction.create(r.getCode(), uids, isOwnSet));
             }
-
+            double sortDate = value.getDate() / 1000.0;
             return create(rid, sortKey, sender, isOut, date, fullDate, Enums.convert(value.getMessageState()), isOnServer, content,
-                    reactions);
+                    reactions, sortDate);
         }
     };
 
-    public native static JsMessage create(String rid, String sortKey, JsPeerInfo sender, boolean isOut, String date, JsDate fullDate, String state, boolean isOnServer, JsContent content,
-                                          JsArray<JsReaction> reactions)/*-{
+    public native static JsMessage create(String rid,
+                                          String sortKey,
+                                          JsPeerInfo sender,
+                                          boolean isOut,
+                                          String date,
+                                          JsDate fullDate,
+                                          String state,
+                                          boolean isOnServer,
+                                          JsContent content,
+                                          JsArray<JsReaction> reactions,
+                                          double sortDate)/*-{
         return {
             rid: rid,
             sortKey: sortKey,
@@ -113,7 +122,8 @@ public class JsMessage extends JavaScriptObject {
             state: state,
             isOnServer: isOnServer,
             content: content,
-            reactions: reactions
+            reactions: reactions,
+            sortDate: sortDate
         };
     }-*/;
 

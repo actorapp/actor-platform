@@ -94,7 +94,7 @@
 
     <!-- Sign Up Fragment -->
     <string name="auth_profile_title">Informação do perfil</string>
-    <string name="auth_profile_hint">Por favor, forneça o seu nome\ne uma foto de perfil opcional.</string>
+    <string name="auth_profile_hint">Por favor, forneça o seu nome</string>
     <string name="auth_profile_name_hint">O seu nome</string>
     <string name="auth_profile_done">Iniciar o chat</string>
 

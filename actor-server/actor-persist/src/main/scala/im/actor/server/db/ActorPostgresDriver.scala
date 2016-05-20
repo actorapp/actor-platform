@@ -2,7 +2,7 @@ package im.actor.server.db
 
 import com.github.tminglei.slickpg._
 import com.google.protobuf.ByteString
-import com.google.protobuf.wrappers.StringValue
+import com.google.protobuf.wrappers.{ Int32Value, StringValue }
 
 trait ByteStringImplicits {
 
@@ -20,6 +20,11 @@ trait ProtoWrappersImplicits {
   implicit val stringValueColumnType = MappedColumnType.base[StringValue, String](
     { sv ⇒ sv.value },
     { s ⇒ StringValue(s) }
+  )
+
+  implicit val int32ValueColumnType = MappedColumnType.base[Int32Value, Int](
+    { iv ⇒ iv.value },
+    { i ⇒ Int32Value(i) }
   )
 }
 

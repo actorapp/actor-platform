@@ -2,24 +2,50 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import { Store } from 'flux/utils';
+import { ReduceStore } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
-import { ActionTypes, AsyncActionStates } from '../constants/ActorAppConstants';
+import { ActionTypes, AsyncActionStates, PreferencesTabTypes } from '../constants/ActorAppConstants';
 
 import ActorClient from '../utils/ActorClient';
 
-let _isOpen = false,
-    _sessions = [],
-    _currentTab = 'GENERAL',
-    _terminateSessionState = [];
-
-class PreferencesStore extends Store {
-  constructor(Dispatcher) {
-    super(Dispatcher);
+class PreferencesStore extends ReduceStore {
+  getInitialState() {
+    return {
+      sessions: [],
+      currentTab: PreferencesTabTypes.GENERAL,
+      terminateState: {}
+    }
   }
 
-  isOpen() {
-    return _isOpen;
+  reduce(state, action) {
+    switch(action.type) {
+      case ActionTypes.PREFERENCES_SESSION_LOAD_SUCCESS:
+        return {
+          ...state,
+          sessions: action.response
+        }
+      case ActionTypes.PREFERENCES_MODAL_HIDE:
+        return this.getInitialState();
+
+      case ActionTypes.PREFERENCES_CHANGE_TAB:
+        return {
+          ...state,
+          currentTab: action.tab
+        }
+
+      case ActionTypes.PREFERENCES_SESSION_TERMINATE:
+        state.terminateState[action.id] = AsyncActionStates.PROCESSING;
+        return state;
+      case ActionTypes.PREFERENCES_SESSION_TERMINATE_SUCCESS:
+        delete state.terminateState[action.id];
+        return state;
+      case ActionTypes.PREFERENCES_SESSION_TERMINATE_ERROR:
+        state.terminateState[action.id] = AsyncActionStates.FAILURE;
+        return state;
+
+      default:
+        return state;
+    }
   }
 
   isSendByEnterEnabled() {
@@ -43,73 +69,16 @@ class PreferencesStore extends Store {
   }
 
   getSessions() {
-    return _sessions;
+    return this.getState().sessions;
   }
 
   getCurrentTab() {
-    return _currentTab;
+    return this.getState().currentTab;
   }
 
-  getTerminateSessionState(id) {
-    return (_terminateSessionState[id] || AsyncActionStates.PENDING);
+  getTerminateState() {
+    return this.getState().terminateState;
   }
-
-
-  savePreferences(newPreferences) {
-    const {
-      isSendByEnterEnabled,
-      isSoundEffectsEnabled,
-      isGroupsNotificationsEnabled,
-      isOnlyMentionNotifications,
-      isShowNotificationsTextEnabled
-    } = newPreferences;
-
-    ActorClient.changeSendByEnter(isSendByEnterEnabled);
-    ActorClient.changeSoundEffectsEnabled(isSoundEffectsEnabled);
-    ActorClient.changeGroupNotificationsEnabled(isGroupsNotificationsEnabled);
-    ActorClient.changeIsOnlyMentionNotifications(isOnlyMentionNotifications);
-    ActorClient.changeIsShowNotificationTextEnabled(isShowNotificationsTextEnabled);
-  }
-
-  __onDispatch(action) {
-    switch(action.type) {
-      case ActionTypes.PREFERENCES_MODAL_SHOW:
-        _isOpen = true;
-        this.__emitChange();
-        break;
-      case ActionTypes.PREFERENCES_MODAL_HIDE:
-        _isOpen = false;
-        this.__emitChange();
-        break;
-      case ActionTypes.PREFERENCES_SAVE:
-        this.savePreferences(action.preferences);
-        this.__emitChange();
-        break;
-      case ActionTypes.PREFERENCES_SESSION_LOAD_SUCCESS:
-        _sessions = action.response;
-        this.__emitChange();
-        break;
-      case ActionTypes.PREFERENCES_CHANGE_TAB:
-        _currentTab = action.tab;
-        this.__emitChange();
-        break;
-
-      case ActionTypes.PREFERENCES_SESSION_TERMINATE:
-        _terminateSessionState[action.id] = AsyncActionStates.PROCESSING;
-        this.__emitChange();
-        break;
-      case ActionTypes.PREFERENCES_SESSION_TERMINATE_SUCCESS:
-        delete _terminateSessionState[action.id];
-        this.__emitChange();
-        break;
-      case ActionTypes.PREFERENCES_SESSION_TERMINATE_ERROR:
-        _terminateSessionState[action.id] = AsyncActionStates.FAILURE;
-        this.__emitChange();
-        break;
-
-      default:
-    }
-  };
 }
 
 export default new PreferencesStore(Dispatcher);

@@ -2,7 +2,7 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import { map, debounce } from 'lodash';
+import { debounce } from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
 import Modal from 'react-modal';
@@ -14,20 +14,15 @@ import AddContactActionCreators from '../../actions/AddContactActionCreators';
 import AddContactStore from '../../stores/AddContactStore';
 
 import TextField from '../common/TextField.react';
-import ContactItem from './AddContact/ContactItem.react';
+import ContactItem from './addContact/ContactItem.react';
 
 class AddContact extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   static getStores() {
     return [AddContactStore];
   }
 
   static calculateState() {
     return {
-      isOpen: AddContactStore.isOpen(),
       results: AddContactStore.getResults(),
       isSearching: AddContactStore.isSearching()
     };
@@ -36,6 +31,17 @@ class AddContact extends Component {
   static contextTypes = {
     intl: PropTypes.object
   };
+
+  constructor(props, context) {
+    super(props, context);
+
+    this.handleClose = this.handleClose.bind(this);
+    this.handleQueryChange = this.handleQueryChange.bind(this);
+    this.findUsers = debounce(this.findUsers, 300, { trailing: true });
+    this.addContact = this.addContact.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.handleSelect = this.handleSelect.bind(this);
+  }
 
   componentWillMount() {
     document.addEventListener('keydown', this.handleKeyDown, false);
@@ -49,105 +55,110 @@ class AddContact extends Component {
     document.removeEventListener('keydown', this.handleKeyDown, false);
   }
 
-  handleClose = () => AddContactActionCreators.close();
+  handleClose() {
+    AddContactActionCreators.close();
+  }
 
-  handleQueryChange = (event) => {
+  handleQueryChange(event) {
     const query = event.target.value;
-    this.setState({query});
+    this.setState({ query });
     this.findUsers(query);
-  };
+  }
 
-  findUsers = debounce((query) => {
+  findUsers(query) {
     AddContactActionCreators.findUsers(query);
-  }, 300, {trailing: true});
+  }
 
-  addContact = () => AddContactActionCreators.findUsers(this.state.query);
+  addContact() {
+    AddContactActionCreators.findUsers(this.state.query)
+  }
 
-  handleKeyDown = (event) => {
-    if (event.keyCode === KeyCodes.ESC) {
-      event.preventDefault();
-      this.handleClose();
-    } else if (event.keyCode === KeyCodes.ENTER) {
+  handleKeyDown(event) {
+    if (event.keyCode === KeyCodes.ENTER) {
       event.preventDefault();
       this.addContact()
     }
-  };
+  }
 
-  handleSelect = (uid, isContact) => {
+  handleSelect(uid, isContact) {
     AddContactActionCreators.addToContacts(uid, isContact);
     this.handleClose();
-  };
+  }
 
-  render() {
-    const { isOpen, isSearching, query, results } = this.state;
-    const { intl } = this.context;
-    const isQueryEmpty = !query || query.length === '';
+  renderUserSearchInput() {
+    const { query } = this.state;
+    return (
+      <TextField
+        className="input__material--wide"
+        floatingLabel={<FormattedMessage id="modal.addContact.query"/>}
+        onChange={this.handleQueryChange}
+        ref="query"
+        value={query}/>
+    );
+  }
 
-    const resultContacts = map(results, (result, index) => <ContactItem key={index} {...result} onSelect={this.handleSelect}/>);
+  renderUserSearchResults() {
+    const { query, results } = this.state;
 
-    if (resultContacts.length === 0 && !isQueryEmpty) {
-      resultContacts.push(
-        <li className="add-contact__results__item add-contact__results__item--not-found" key="not-found">
-          {intl.messages['modal.addContact.notFound']}
+    if (!query || query.length === '') {
+      return (
+        <li className="add-contact__results__item add-contact__results__item--searching">
+          <FormattedMessage id="modal.addContact.empty"/>
         </li>
       );
     }
 
-    const modalStyle = {
-      content : {
-        position: null,
-        top: null,
-        left: null,
-        right: null,
-        bottom: null,
-        border: null,
-        background: null,
-        overflow: null,
-        outline: null,
-        padding: null,
-        borderRadius: null,
-        width: 360
-      }
-    };
+    // Disabled becouse searching is very fast and this message is blinking
+    // if (isSearching) {
+    //   return (
+    //     <li className="add-contact__results__item add-contact__results__item--searching">
+    //       <FormattedMessage id="modal.addContact.searching" values={{query}}/>
+    //     </li>
+    //   );
+    // }
 
+    if (results.length === 0) {
+      return (
+        <li className="add-contact__results__item add-contact__results__item--not-found">
+          <FormattedMessage id="modal.addContact.notFound"/>
+        </li>
+      );
+    }
+
+    return results.map((result, index) => {
+      return <ContactItem key={index} {...result} onSelect={this.handleSelect}/>
+    });
+  }
+
+  render() {
     return (
-      <Modal className="modal-new modal-new--add-contact add-contact"
-             closeTimeoutMS={150}
-             isOpen={isOpen}
-             style={modalStyle}>
+      <Modal
+        overlayClassName="modal-overlay"
+        className="modal"
+        onRequestClose={this.handleClose}
+        isOpen>
 
-        <header className="modal-new__header">
-          <h3 className="modal-new__header__title">{intl.messages['modal.addContact.title']}</h3>
-          <a className="modal-new__header__close modal-new__header__icon material-icons pull-right"
-             onClick={this.handleClose}>clear</a>
-        </header>
+        <div className="add-contact">
+          <div className="modal__content">
 
-        <div className="modal-new__body">
-          <TextField className="input__material--wide"
-                     floatingLabel={intl.messages['modal.addContact.query']}
-                     onChange={this.handleQueryChange}
-                     ref="query"
-                     value={query}/>
+            <header className="modal__header">
+              <FormattedMessage id="modal.addContact.title" tagName="h1"/>
+              <a className="modal__header__close material-icons"
+                 onClick={this.handleClose}>clear</a>
+            </header>
+
+            <div className="modal__body">
+              {this.renderUserSearchInput()}
+            </div>
+
+            <footer className="modal__footer">
+              <ul className="add-contact__results">
+                {this.renderUserSearchResults()}
+              </ul>
+            </footer>
+
+          </div>
         </div>
-
-        <footer className="modal-new__footer">
-          <ul className="add-contact__results">
-          {
-            isQueryEmpty
-              ? <li className="add-contact__results__item add-contact__results__item--searching">
-                  {intl.messages['modal.addContact.empty']}
-                </li>
-              : resultContacts
-
-              // Search is too fast for showing searching status.
-              //: isSearching
-              //  ? <li className="add-contact__results__item add-contact__results__item--searching">
-              //      <FormattedMessage id="modal.addContact.searching" values={{query}}/>
-              //    </li>
-              //  : resultContacts
-          }
-          </ul>
-        </footer>
 
       </Modal>
     );

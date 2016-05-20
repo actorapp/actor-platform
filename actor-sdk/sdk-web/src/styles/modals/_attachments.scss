@@ -1,0 +1,16 @@
+@import 'attachments/attachment';
+@import 'attachments/pagination';
+
+.attachments {
+  width: 640px;
+
+  .modal__footer {
+    padding-top: 0;
+    .pagination {
+      margin-top: 8px;
+    }
+    .button {
+      margin-left: 8px;
+    }
+  }
+}

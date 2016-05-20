@@ -10,7 +10,7 @@ import im.actor.core.api.ApiFileUrlDescription;
 import im.actor.core.api.rpc.RequestGetFileUrls;
 import im.actor.core.api.rpc.ResponseGetFileUrls;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.util.ModuleActor;
+import im.actor.core.modules.ModuleActor;
 import im.actor.runtime.Log;
 import im.actor.runtime.actors.Cancellable;
 import im.actor.runtime.actors.ask.AskMessage;
@@ -49,35 +49,29 @@ public class FileUrlLoader extends ModuleActor {
             Log.d("FileUrlLoader", "api: " + f.getFileId());
             locations.add(new ApiFileLocation(f.getFileId(), f.getAccessHash()));
         }
-        api(new RequestGetFileUrls(locations)).then(new Consumer<ResponseGetFileUrls>() {
-            @Override
-            public void apply(ResponseGetFileUrls responseGetFileUrls) {
+        api(new RequestGetFileUrls(locations)).then(responseGetFileUrls -> {
 
-                outer:
-                for (RequestedFile f : destFiles) {
-                    for (ApiFileUrlDescription urlDescription : responseGetFileUrls.getFileUrls()) {
-                        if (f.getFileId() == urlDescription.getFileId()) {
-                            Log.d("FileUrlLoader", "resp: " + f.getFileId());
-                            // TODO: Implement Timeouts
-                            f.getResolver().result(urlDescription.getUrl());
+            outer:
+            for (RequestedFile f : destFiles) {
+                for (ApiFileUrlDescription urlDescription : responseGetFileUrls.getFileUrls()) {
+                    if (f.getFileId() == urlDescription.getFileId()) {
+                        Log.d("FileUrlLoader", "resp: " + f.getFileId());
+                        // TODO: Implement Timeouts
+                        f.getResolver().result(urlDescription.getUrl());
 
-                            continue outer;
-                        }
+                        continue outer;
                     }
                 }
-                isExecuting = false;
-                scheduleCheck();
             }
-        }).failure(new Consumer<Exception>() {
-            @Override
-            public void apply(Exception e) {
-                for (RequestedFile f : destFiles) {
-                    f.getResolver().error(e);
-                }
-                isExecuting = false;
-                scheduleCheck();
+            isExecuting = false;
+            scheduleCheck();
+        }).failure(e -> {
+            for (RequestedFile f : destFiles) {
+                f.getResolver().error(e);
             }
-        }).done(self());
+            isExecuting = false;
+            scheduleCheck();
+        });
     }
 
     public Promise<String> askUrl(final long fileId, final long accessHash) {
@@ -85,12 +79,9 @@ public class FileUrlLoader extends ModuleActor {
         if (requestedFiles.containsKey(fileId)) {
             return requestedFiles.get(fileId);
         }
-        final Promise<String> res = new Promise<>(new PromiseFunc<String>() {
-            @Override
-            public void exec(@NotNull PromiseResolver<String> resolver) {
-                pendingFiles.add(new RequestedFile(fileId, accessHash, resolver));
-                scheduleCheck();
-            }
+        final Promise<String> res = new Promise<>((PromiseFunc<String>) resolver -> {
+            pendingFiles.add(new RequestedFile(fileId, accessHash, resolver));
+            scheduleCheck();
         });
         requestedFiles.put(fileId, res);
         return res;

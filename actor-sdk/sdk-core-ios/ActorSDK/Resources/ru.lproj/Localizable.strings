@@ -45,7 +45,7 @@
 
 "SettingsEditHeader" = "Ваше имя";
 
-"SettingsEditHint" = "Пожалуйста, укажите ваше реальное имя чтобы другие люди могли узнать вас.";
+"SettingsEditHint" = "Укажите ваше настоящее имя, чтобы другие люди могли узнать вас.";
 
 "SettingsEditFieldHint" = "Введите ваше имя";
 
@@ -54,7 +54,7 @@
 
 "SettingsWallpapers" = "Обои чата";
 
-"SettingsUsernameTitle" = "Измените свой ник";
+"SettingsUsernameTitle" = "Изменить ник";
 
 "SettingsNotifications" = "Оповещения и звуки";
 
@@ -103,9 +103,9 @@
  * Calls
  */
 
-"CallsStartAudio" = "Аудио звонок";
+"CallsStartAudio" = "Аудиозвонок";
 
-"CallsStartGroupAudio" = "Групповой аудио звонок";
+"CallsStartGroupAudio" = "Групповой аудиозвонок";
 
 "CallsAnswer" = "ответить";
 
@@ -239,9 +239,9 @@
 
 "GroupInviteLinkTitle" = "ССЫЛКА";
 
-"GroupInviteLinkHint" = "Вы можете пригласить людей в эту группу, отправляя им эту ссылку для приглашения.";
+"GroupInviteLinkHint" = "Вы можете пригласить людей в эту группу, отправляя им ссылку для приглашения.";
 
-"GroupInviteLinkRevokeMessage" = "Вы уверены, что хотите сбросить ссылку? Как только Вы это сделаете, никто не сможет по ней присоединиться к группе.";
+"GroupInviteLinkRevokeMessage" = "Вы уверены, что хотите сбросить ссылку? Как только Вы это сделаете, никто не сможет присоединиться к группе, пройдя по ней.";
 
 "GroupInviteLinkRevokeAction" = "Сбросить";
 
@@ -275,7 +275,7 @@
 
 "CreateGroupNamePlaceholder" = "Название группы";
 
-"CreateGroupHint" = "Пожалуйста, укажите название группы и фото, при желании";
+"CreateGroupHint" = "Укажите название группы и поставьте фотографию";
 
 "CreateGroupMembersTitle" = "Пригласить участников";
 
@@ -335,7 +335,7 @@
 
 "PrivacyTerminateAlertSingle" = "Удалить сессию";
 
-"PrivacyTerminateHint" = "Выход из всех устройств, кроме этого.";
+"PrivacyTerminateHint" = "Выйти из всех устройств, кроме этого.";
 
 /*
  * Wallpapers
@@ -373,7 +373,7 @@
 
 "FindHint" = "Для поиска введите номер телефона, адрес электронной почты или ник.";
 
-"FindNotFound" = "К сожалению, мы не смогли никого найти по этому поисковому запросу.";
+"FindNotFound" = "К сожалению, мы не смогли никого найти по этому запросу.";
 
 /*
  * Placeholders
@@ -432,7 +432,7 @@
 
 "AuthCountryTitle" = "Страна";
 
-"AuthUnsupported" = "Этот аккаунт не поддерживается текущей версией {app_name}. Пожалуйста, обновите приложение для работы с этим аккаунтом.";
+"AuthUnsupported" = "Этот аккаунт не поддерживается текущей версией {app_name}. Пожалуйста, обновите приложение.";
 
 "AuthLoginTitle" = "Вход в {app_name}";
 
@@ -440,27 +440,27 @@
 
 "AuthLoginEmail" = "Почта";
 
-"AuthLoginPhoneEmail" = "Телефон или Почта";
+"AuthLoginPhoneEmail" = "Телефон или e-mail";
 
-"AuthNameTitle" = "Привет! Как тебя зовут?";
+"AuthNameTitle" = "Привет! Как вас зовут?";
 
 "AuthNamePlaceholder" = "Ваше полное имя";
 
-"AuthPhoneTitle" = "Какой у Вас номер телефона?";
+"AuthPhoneTitle" = "Ваш номер телефона?";
 
-"AuthPhoneHint" = "Нам необходим Ваш номер телефона что бы защитить вашу персональную информацию.";
+"AuthPhoneHint" = "Нам необходим номер телефона, чтобы вас авторизовать и защитить вашу персональную информацию.";
 
 "AuthPhonePlaceholder" = "Ваш номер телефона";
 
-"AuthPhoneUseEmail" = "Взод через почту";
+"AuthPhoneUseEmail" = "Вход через e-mail";
 
-"AuthEmailTitle" = "Какая у вас почта?";
+"AuthEmailTitle" = "Ваш e-mail адрес?";
 
-"AuthEmailHint" = "Мы не нессылаем спам.";
+"AuthEmailHint" = "Мы не рассылаем спам.";
 
-"AuthEmailPlaceholder" = "Ваша почта";
+"AuthEmailPlaceholder" = "Ваш e-mail";
 
-"AuthEmailUsePhone" = "Вход через телефон";
+"AuthEmailUsePhone" = "Вход через телефонный номер";
 
 "AuthDisclaimer" = "Регистрируясь, вы соглашаетесь с Terms of Service и Privacy Policy.";
 
@@ -472,9 +472,9 @@
 
 "AuthDisclaimerPrivacy" = "Privacy Policy";
 
-"AuthOTPEmailTitle" = "Подтвердите почту";
+"AuthOTPEmailTitle" = "Подтвердите e-mail";
 
-"AuthOTPPhoneTitle" = "Подтвердите телефон";
+"AuthOTPPhoneTitle" = "Подтвердите номер телефона";
 
 "AuthOTPEmailHint" = "Мы отправили вам письмо с кодом активации.\nПожалуйста, введите их ниже.";
 

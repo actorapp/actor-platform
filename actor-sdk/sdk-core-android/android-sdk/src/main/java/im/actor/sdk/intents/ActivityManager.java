@@ -5,9 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import im.actor.sdk.ActorSDK;
-import im.actor.sdk.ActorSDKDelegate;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
-import im.actor.sdk.controllers.fragment.auth.AuthActivity;
+import im.actor.sdk.controllers.auth.AuthActivity;
 
 @Deprecated
 public class ActivityManager {

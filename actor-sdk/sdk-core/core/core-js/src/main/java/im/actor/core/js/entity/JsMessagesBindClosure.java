@@ -10,5 +10,10 @@ import org.timepedia.exporter.client.Exportable;
 @Export
 @ExportClosure
 public interface JsMessagesBindClosure extends Exportable {
-    void onBind(JsArray<JsMessage> array, JsArray<JavaScriptObject> overlays, boolean isLoaded);
+    void onBind(JsArray<JsMessage> array,
+                JsArray<JavaScriptObject> overlays,
+                boolean isLoaded,
+                double receiveDate,
+                double readDate,
+                double readByMeDate);
 }

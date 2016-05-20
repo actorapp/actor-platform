@@ -1,0 +1,49 @@
+/*
+ * Copyright (C) 2016 Actor LLC. <https://actor.im>
+ */
+
+@import 'rc-tooltip/assets/bootstrap';
+
+$tooltip-color: rgba(0,0,0,.8);
+$tooltip-fontsize: 13px;
+
+.rc-tooltip {
+  font-size: $tooltip-fontsize;
+  font-weight: 500;
+  .rc-tooltip-inner {
+    background-color: $tooltip-color;
+    box-shadow: none;
+    border: none;
+    min-height: 0;
+    border-radius: $default-border-radius;
+  }
+
+  &.rc-tooltip-placement-top,
+  &.rc-tooltip-placement-topLeft,
+  &.rc-tooltip-placement-topRight {
+    .rc-tooltip-arrow {
+      border-top-color: $tooltip-color;
+    }
+  }
+  &.rc-tooltip-placement-right,
+  &.rc-tooltip-placement-rightTop,
+  &.rc-tooltip-placement-rightBottom {
+    .rc-tooltip-arrow {
+      border-right-color: $tooltip-color;
+    }
+  }
+  &.rc-tooltip-placement-left,
+  &.rc-tooltip-placement-leftTop,
+  &.rc-tooltip-placement-leftBottom {
+    .rc-tooltip-arrow {
+     border-left-color: $tooltip-color;
+   }
+  }
+  &.rc-tooltip-placement-bottom,
+  &.rc-tooltip-placement-bottomLeft,
+  &.rc-tooltip-placement-bottomRight {
+   .rc-tooltip-arrow {
+     border-bottom-color: $tooltip-color;
+   }
+  }
+}

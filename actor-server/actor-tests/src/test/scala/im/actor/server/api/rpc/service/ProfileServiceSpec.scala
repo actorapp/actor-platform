@@ -67,7 +67,7 @@ final class ProfileServiceSpec
     val (user, authId, authSid, _) = createUser()
     val sessionId = createSessionId()
 
-    implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user.id, authSid)))
+    implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user.id, authSid, 42)))
 
     def e1() = {
       val validOrigFileModel = Await.result(db.run(fsAdapter.uploadFile(UnsafeFileName("/etc/passwd/avatar.jpg"), validOrigFile)), 5.seconds)
@@ -128,8 +128,8 @@ final class ProfileServiceSpec
       val (user2, authId2, authSid2, _) = createUser()
       val sessionId = createSessionId()
 
-      val clientData1 = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
-      val clientData2 = ClientData(authId2, sessionId, Some(AuthData(user2.id, authSid2)))
+      val clientData1 = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1, 42)))
+      val clientData2 = ClientData(authId2, sessionId, Some(AuthData(user2.id, authSid2, 42)))
 
       whenReady(service.handleCheckNickName("rockjam")(clientData1)) { resp ⇒
         resp shouldEqual Ok(ResponseBool(true))
@@ -184,7 +184,7 @@ final class ProfileServiceSpec
       val (user1, authId1, authSid1, _) = createUser()
       val sessionId = createSessionId()
 
-      val clientData1 = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
+      val clientData1 = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1, 42)))
 
       val about = Some("is' me")
       whenReady(service.handleEditAbout(about)(clientData1)) { resp ⇒
@@ -221,7 +221,7 @@ final class ProfileServiceSpec
     def timeZone() = {
       val (user, authId, authSid, _) = createUser()
 
-      implicit val clientData = ClientData(authId, 1, Some(AuthData(user.id, authSid)))
+      implicit val clientData = ClientData(authId, 1, Some(AuthData(user.id, authSid, 42)))
       whenReady(service.handleEditMyTimeZone("Africa/Addis_Ababa")) { resp ⇒
         resp should matchPattern {
           case Ok(_: ResponseSeq) ⇒
@@ -232,7 +232,7 @@ final class ProfileServiceSpec
     def invalidTimeZone() = {
       val (user, authId, authSid, _) = createUser()
 
-      implicit val clientData = ClientData(authId, 1, Some(AuthData(user.id, authSid)))
+      implicit val clientData = ClientData(authId, 1, Some(AuthData(user.id, authSid, 42)))
       whenReady(service.handleEditMyTimeZone("Africa/Addis_AbEba")) { resp ⇒
         inside(resp) {
           case Error(RpcError(400, "INVALID_TIME_ZONE", _, false, _)) ⇒
@@ -243,7 +243,7 @@ final class ProfileServiceSpec
     def sameTimeZone() = {
       val (user, authId, authSid, _) = createUser()
 
-      implicit val clientData = ClientData(authId, 1, Some(AuthData(user.id, authSid)))
+      implicit val clientData = ClientData(authId, 1, Some(AuthData(user.id, authSid, 42)))
       val tz = "Africa/Addis_Ababa"
 
       whenReady(service.handleEditMyTimeZone(tz)) { resp ⇒
@@ -261,7 +261,7 @@ final class ProfileServiceSpec
     def preferredLanguages() = {
       val (user, authId, authSid, _) = createUser()
 
-      implicit val clientData = ClientData(authId, 1, Some(AuthData(user.id, authSid)))
+      implicit val clientData = ClientData(authId, 1, Some(AuthData(user.id, authSid, 42)))
       whenReady(service.handleEditMyPreferredLanguages(Vector("pt-BR", "en-US", "ru"))) { resp ⇒
         resp should matchPattern {
           case Ok(_: ResponseSeq) ⇒
@@ -272,7 +272,7 @@ final class ProfileServiceSpec
     def invalidPreferredLanguages() = {
       val (user, authId, authSid, _) = createUser()
 
-      implicit val clientData = ClientData(authId, 1, Some(AuthData(user.id, authSid)))
+      implicit val clientData = ClientData(authId, 1, Some(AuthData(user.id, authSid, 42)))
       whenReady(service.handleEditMyPreferredLanguages(Vector("pt-br"))) { resp ⇒
         inside(resp) {
           case Error(RpcError(400, "INVALID_LOCALE", _, false, _)) ⇒
@@ -287,7 +287,7 @@ final class ProfileServiceSpec
     }
 
     def samePreferredLanguages() = {
-      implicit val clientData = ClientData(authId, 1, Some(AuthData(user.id, authSid)))
+      implicit val clientData = ClientData(authId, 1, Some(AuthData(user.id, authSid, 42)))
       val langs = Vector("pt-BR", "en-US", "ru")
 
       whenReady(service.handleEditMyPreferredLanguages(langs)) { resp ⇒

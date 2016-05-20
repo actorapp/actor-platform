@@ -4,7 +4,6 @@
 
 import React, { Component } from 'react';
 import { Container } from 'flux/utils';
-import classNames from 'classnames';
 
 import LoggerStore from '../../stores/LoggerStore';
 import { loggerToggle } from '../../actions/LoggerActionCreators';
@@ -21,7 +20,7 @@ class LoggerSection extends Component {
   static calculateState() {
     const isOpen = LoggerStore.isOpen();
     if (!isOpen) {
-      return {isOpen: false};
+      return { isOpen: false };
     }
 
     const logs = LoggerStore.getLogs();

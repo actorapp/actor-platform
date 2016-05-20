@@ -6,7 +6,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import im.actor.runtime.Log;
-import im.actor.runtime.actors.ActorRef;
 
 /**
  * Object for completing promises
@@ -16,11 +15,9 @@ import im.actor.runtime.actors.ActorRef;
 public class PromiseResolver<T> {
 
     private Promise<T> promise;
-    private PromiseDispatcher dispatcher;
 
-    PromiseResolver(Promise<T> promise, PromiseDispatcher dispatcher) {
+    PromiseResolver(Promise<T> promise) {
         this.promise = promise;
-        this.dispatcher = dispatcher;
     }
 
     /**
@@ -31,16 +28,6 @@ public class PromiseResolver<T> {
     @ObjectiveCName("getPromise")
     public Promise<T> getPromise() {
         return promise;
-    }
-
-    /**
-     * Get Resolver's dispatcher
-     *
-     * @return dispatcher actor
-     */
-    @ObjectiveCName("getDispatcher")
-    public PromiseDispatcher getDispatcher() {
-        return dispatcher;
     }
 
     /**

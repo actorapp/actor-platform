@@ -29,7 +29,10 @@ public class AndroidMediaStream implements WebRTCMediaStream {
             AndroidWebRTCRuntimeProvider.postToHandler(new Runnable() {
                 @Override
                 public void run() {
-                    AudioSource audioSource = AndroidWebRTCRuntimeProvider.FACTORY.createAudioSource(new MediaConstraints());
+                    MediaConstraints audioConstarints = new MediaConstraints();
+                    audioConstarints.mandatory.add(new MediaConstraints.KeyValuePair("googNoiseSuppression", "true"));
+                    audioConstarints.mandatory.add(new MediaConstraints.KeyValuePair("googEchoCancellation", "true"));
+                    AudioSource audioSource = AndroidWebRTCRuntimeProvider.FACTORY.createAudioSource(audioConstarints);
                     audioTrack = AndroidWebRTCRuntimeProvider.FACTORY.createAudioTrack("ARDAMSa0", audioSource);
                     stream.addTrack(audioTrack);
                 }

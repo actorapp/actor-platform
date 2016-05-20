@@ -1,0 +1,54 @@
+.create-group {
+  width: 400px;
+
+  .modal__body {
+    padding: 0;
+  }
+  .small-search {
+    margin: $modal-padding $modal-padding 0;
+  }
+
+  .group-name {
+    .modal__body {
+      padding: $modal-padding;
+    }
+
+    .input__material {
+      input {
+        color: rgb(77, 77, 77);
+      }
+    }
+  }
+
+
+  .count {
+    font-size: 12px;
+    line-height: 16px;
+
+    display: inline-block;
+
+    padding: 10px 0;
+
+    text-transform: uppercase;
+
+    color: rgba($dorado, .5);
+  }
+
+  .contacts__list {
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    min-height: 230px;
+    max-height: 364px;
+    margin: 0;
+    padding: ($modal-padding / 2) 0 0;
+
+    list-style: none;
+
+    color: $greyish-brown;
+  }
+
+  .modal__footer {
+    padding-bottom: $default-padding;
+  }
+}

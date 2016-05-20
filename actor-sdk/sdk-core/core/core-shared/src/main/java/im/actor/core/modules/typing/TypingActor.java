@@ -9,7 +9,7 @@ import java.util.HashSet;
 
 import im.actor.core.api.ApiTypingType;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.util.ModuleActor;
+import im.actor.core.modules.ModuleActor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;
@@ -21,12 +21,7 @@ import im.actor.runtime.annotations.Verified;
 public class TypingActor extends ModuleActor {
 
     public static ActorRef get(final ModuleContext messenger) {
-        return ActorSystem.system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public TypingActor create() {
-                return new TypingActor(messenger);
-            }
-        }), "actor/typing");
+        return ActorSystem.system().actorOf("actor/typing", () -> new TypingActor(messenger));
     }
 
     private static final int TYPING_TEXT_TIMEOUT = 7000;
@@ -118,7 +113,7 @@ public class TypingActor extends ModuleActor {
         }
 
         if (!groupCancellables.containsKey(gid)) {
-            groupCancellables.put(gid, new HashMap<Integer, Cancellable>());
+            groupCancellables.put(gid, new HashMap<>());
         }
 
         HashMap<Integer, Cancellable> cancellables = groupCancellables.get(gid);
@@ -166,7 +161,7 @@ public class TypingActor extends ModuleActor {
             StopGroupTyping typing = (StopGroupTyping) message;
             stopGroupTyping(typing.getGid(), typing.getUid());
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 

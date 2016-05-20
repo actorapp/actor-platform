@@ -8,7 +8,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ListView
+    <im.actor.sdk.view.adapters.RecyclerListView
         android:id="@+id/groupList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

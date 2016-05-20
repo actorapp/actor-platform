@@ -175,32 +175,34 @@ public class ActorPushService extends Service implements MqttCallback {
         isConnecting = true;
 
         Log.d(TAG, "Starting connecting...");
-        // Clearing mqttClient
-        if (mqttClient != null) {
-            try {
-                mqttClient.close();
-            } catch (MqttException e) {
-                e.printStackTrace();
-            }
-        }
-        mqttClient = null;
 
-        try {
-            Thread.sleep(exponentialBackoff.exponentialWait());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            return;
-        }
 
-        // Setting credentials
-        connectOptions.setUserName(mqttUsername);
-        connectOptions.setPassword(mqttPassword.toCharArray());
-
-        // Starting mqtt connection
-        final int attempt = ++attemptIndex;
         connectionExecutor.execute(new Runnable() {
             @Override
             public void run() {
+                // Clearing mqttClient
+                if (mqttClient != null) {
+                    try {
+                        mqttClient.close();
+                    } catch (MqttException e) {
+                        e.printStackTrace();
+                    }
+                }
+                mqttClient = null;
+
+                try {
+                    Thread.sleep(exponentialBackoff.exponentialWait());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    return;
+                }
+
+                // Setting credentials
+                connectOptions.setUserName(mqttUsername);
+                connectOptions.setPassword(mqttPassword.toCharArray());
+
+                // Starting mqtt connection
+                final int attempt = ++attemptIndex;
                 Log.d(TAG, "Connecting...");
                 MqttClient mqttClient;
                 try {

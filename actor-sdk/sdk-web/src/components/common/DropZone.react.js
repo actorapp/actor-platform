@@ -2,97 +2,176 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import { union, without } from 'lodash';
 import React, { Component, PropTypes } from 'react';
+import EventListener from 'fbjs/lib/EventListener';
 import classnames from 'classnames';
 
-let targetCollection = [];
-
-export default class DropZone extends Component {
+class DropZone extends Component {
   static propTypes = {
-    children: PropTypes.node,
-
-    onDropComplete: PropTypes.func.isRequired,
-
-    // Callbacks
-    onDragEnterCallback: PropTypes.func,
-    onDragLeaveCallback: PropTypes.func,
-    onDropCallback: PropTypes.func
+    children: PropTypes.node.isRequired,
+    onDropComplete: PropTypes.func.isRequired
   };
 
   constructor(props) {
     super(props);
+
+    this.windowDragging = false;
+    this.zoneDragging = false;
 
     this.state = {
       isActive: false,
       isHovered: false
     };
 
-    window.addEventListener('dragenter', this.onWindowDragEnter, false);
-    window.addEventListener('dragover', this.onWindowDragOver, false);
-    window.addEventListener('dragleave', this.onWindowDragLeave, false);
-    window.addEventListener('drop', this.onWindowDragLeave, false);
+    this.onWindowDrop = this.onWindowDrop.bind(this);
+    this.onWindowDragEnter = this.onWindowDragEnter.bind(this);
+    this.onWindowDragOver = this.onWindowDragOver.bind(this);
+    this.onWindowDragLeave = this.onWindowDragLeave.bind(this);
+
+    this.onDrop = this.onDrop.bind(this);
+    this.onDragEnter = this.onDragEnter.bind(this);
+    this.onDragOver = this.onDragOver.bind(this);
+    this.onDragLeave = this.onDragLeave.bind(this);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextState.isActive !== this.state.isActive ||
+           nextState.isHovered !== this.state.isHovered;
+  }
+
+  componentDidMount() {
+    this.listeners = [
+      EventListener.listen(window, 'drop', this.onWindowDrop),
+      EventListener.listen(window, 'dragenter', this.onWindowDragEnter),
+      EventListener.listen(window, 'dragover', this.onWindowDragOver),
+      EventListener.listen(window, 'dragleave', this.onWindowDragLeave)
+    ];
   }
 
   componentWillUnmount() {
-    window.removeEventListener('dragenter', this.onWindowDragEnter, false);
-    window.removeEventListener('dragover', this.onWindowDragOver, false);
-    window.removeEventListener('dragleave', this.onWindowDragLeave, false);
-    window.removeEventListener('drop', this.onWindowDragLeave, false);
+    this.listeners.forEach((listener) => {
+      listener.remove();
+    });
+
+    this.listeners = null;
   }
 
-  onWindowDragEnter = (event) => {
-    const { onDragEnterCallback } = this.props;
+  onWindowDrop(event) {
     event.preventDefault();
+    event.stopPropagation();
 
-    if (targetCollection.length === 0) {
-      this.setState({isActive: true});
-      onDragEnterCallback && onDragEnterCallback();
+    this.setState({ isActive: false, isHovered: false });
+  }
+
+  onWindowDragEnter() {
+    this.windowDragging = true;
+    clearTimeout(this.windowTimeout);
+
+    if (this.state.isActive) {
+      return;
     }
 
-    targetCollection = union(targetCollection, [event.target]);
-  };
-  onWindowDragOver = (event) => event.preventDefault();
-  onWindowDragLeave = (event) => {
-    const { onDragLeaveCallback } = this.props;
+    this.setState({ isActive: true });
+  }
+
+  onWindowDragOver(event) {
     event.preventDefault();
+    event.stopPropagation();
 
-    targetCollection = without(targetCollection, event.target);
+    this.windowDragging = true;
+    clearTimeout(this.windowTimeout);
+  }
 
-    if (targetCollection.length === 0) {
-      this.setState({isActive: false});
-      onDragLeaveCallback && onDragLeaveCallback();
-    }
-  };
+  onWindowDragLeave() {
+    this.windowDragging = false;
+    clearTimeout(this.windowTimeout);
 
-  onDragEnter = () => this.setState({isHovered: true});
-  onDragLeave = () => this.setState({isHovered: false});
-  onDrop = (event) => {
-    const { onDropCallback, onDropComplete } = this.props;
+    this.windowTimeout = setTimeout(() => {
+      if (!this.windowDragging) {
+        this.setState({ isActive: false });
+      }
+    }, 60);
+  }
+
+  onDrop(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
     this.onDragLeave();
-    this.onWindowDragLeave(event);
-    onDropCallback && onDropCallback();
-    onDropComplete(event.dataTransfer.files);
-  };
+    this.onWindowDragLeave();
+    this.props.onDropComplete(event.dataTransfer.files);
+  }
+
+  onDragEnter() {
+    this.zoneDragging = true;
+    this.windowDragging = true;
+    clearTimeout(this.zoneTimeout);
+    clearTimeout(this.windowTimeout);
+
+    if (this.state.isHovered) {
+      return;
+    }
+
+    this.setState({ isHovered: true });
+  }
+
+  onDragOver(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    this.zoneDragging = true;
+    this.windowDragging = true;
+    clearTimeout(this.zoneTimeout);
+    clearTimeout(this.windowTimeout);
+
+    // Makes it possible to drag files from chrome's download bar
+    // http://stackoverflow.com/questions/19526430/drag-and-drop-file-uploads-from-chrome-downloads-bar
+    try {
+      const effect = event.dataTransfer.effectAllowed;
+      if (effect === 'move' || effect === 'linkMove') {
+        event.dataTransfer.dropEffect = 'move';
+      } else {
+        event.dataTransfer.dropEffect = 'copy';
+      }
+    } catch (e) {
+      // do nothing
+    }
+  }
+
+  onDragLeave() {
+    this.zoneDragging = false;
+    clearTimeout(this.zoneTimeout);
+
+    this.zoneTimeout = setTimeout(() => {
+      if (!this.zoneDragging) {
+        this.setState({ isHovered: false });
+      }
+    }, 60);
+  }
 
   render() {
     const { isActive, isHovered } = this.state;
 
-    const dropzoneClassName = classnames('dropzone', {
+    if (!isActive) {
+      return null;
+    }
+
+    const className = classnames('dropzone', {
       'dropzone--hover': isHovered
     });
 
-    if (isActive) {
-      return (
-        <div className={dropzoneClassName}
-             onDragEnter={this.onDragEnter}
-             onDragLeave={this.onDragLeave}
-             onDrop={this.onDrop}>
-          {this.props.children || 'Drop here'}
-        </div>
-      );
-    } else {
-      return null;
-    }
+    return (
+      <div
+        className={className}
+        onDrop={this.onDrop}
+        onDragOver={this.onDragOver}
+        onDragEnter={this.onDragEnter}
+        onDragLeave={this.onDragLeave}
+      >
+        {this.props.children}
+      </div>
+    );
   }
 }
+
+export default DropZone;

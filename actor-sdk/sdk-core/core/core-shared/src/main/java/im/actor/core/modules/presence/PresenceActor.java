@@ -7,6 +7,7 @@ package im.actor.core.modules.presence;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 import im.actor.core.api.ApiGroupOutPeer;
 import im.actor.core.api.ApiUserOutPeer;
@@ -22,7 +23,7 @@ import im.actor.core.events.NewSessionCreated;
 import im.actor.core.events.PeerChatOpened;
 import im.actor.core.events.PeerInfoOpened;
 import im.actor.core.events.UserVisible;
-import im.actor.core.util.ModuleActor;
+import im.actor.core.modules.ModuleActor;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserPresence;
 import im.actor.core.viewmodel.UserVM;
@@ -43,17 +44,12 @@ import im.actor.runtime.promise.PromisesArray;
 public class PresenceActor extends ModuleActor implements BusSubscriber {
 
     public static ActorRef create(final ModuleContext messenger) {
-        return ActorSystem.system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public PresenceActor create() {
-                return new PresenceActor(messenger);
-            }
-        }), "actor/presence/users");
+        return ActorSystem.system().actorOf("actor/presence", () -> new PresenceActor(messenger));
     }
 
     private static final int ONLINE_TIMEOUT = 5 * 60 * 1000;
 
-    private static final String TAG = "PresenceActor";
+    // private static final String TAG = "PresenceActor";
 
     private HashMap<Integer, Long> lastUidState = new HashMap<>();
     private HashMap<Integer, Long> lastGidState = new HashMap<>();
@@ -78,13 +74,13 @@ public class PresenceActor extends ModuleActor implements BusSubscriber {
 
     @Verified
     private void onUserOnline(int uid, long updateDate) {
-        Log.d(TAG, "onUserOnline  #" + uid + " at " + updateDate);
+        // Log.d(TAG, "onUserOnline  #" + uid + " at " + updateDate);
         if (lastUidState.containsKey(uid) && lastUidState.get(uid) >= updateDate) {
-            Log.d(TAG, "onUserOnline:ignored - too old");
+            // Log.d(TAG, "onUserOnline:ignored - too old");
             return;
         }
         lastUidState.put(uid, updateDate);
-        Log.d(TAG, "onUserOnline:updated");
+        // Log.d(TAG, "onUserOnline:updated");
 
         UserVM vm = getUserVM(uid);
         if (vm != null) {
@@ -101,13 +97,13 @@ public class PresenceActor extends ModuleActor implements BusSubscriber {
 
     @Verified
     private void onUserOffline(int uid, long updateDate) {
-        Log.d(TAG, "onUserOffline  #" + uid + " at " + updateDate);
+        // Log.d(TAG, "onUserOffline  #" + uid + " at " + updateDate);
         if (lastUidState.containsKey(uid) && lastUidState.get(uid) >= updateDate) {
-            Log.d(TAG, "onUserOffline:ignored - too old");
+            // Log.d(TAG, "onUserOffline:ignored - too old");
             return;
         }
         lastUidState.put(uid, updateDate);
-        Log.d(TAG, "onUserOffline:updated");
+        // Log.d(TAG, "onUserOffline:updated");
 
         UserVM vm = getUserVM(uid);
         if (vm != null) {
@@ -122,13 +118,13 @@ public class PresenceActor extends ModuleActor implements BusSubscriber {
 
     @Verified
     private void onUserLastSeen(int uid, int date, long updateDate) {
-        Log.d(TAG, "onUserLastSeen  #" + uid + " at " + date + " at " + updateDate);
+        // Log.d(TAG, "onUserLastSeen  #" + uid + " at " + date + " at " + updateDate);
         if (lastUidState.containsKey(uid) && lastUidState.get(uid) >= updateDate) {
-            Log.d(TAG, "onUserLastSeen:ignored - too old");
+            // Log.d(TAG, "onUserLastSeen:ignored - too old");
             return;
         }
         lastUidState.put(uid, updateDate);
-        Log.d(TAG, "onUserLastSeen:updated");
+        // Log.d(TAG, "onUserLastSeen:updated");
 
         UserVM vm = getUserVM(uid);
         if (vm != null) {
@@ -142,13 +138,13 @@ public class PresenceActor extends ModuleActor implements BusSubscriber {
     }
 
     private void onUserGoesOffline(int uid, int date, long updateDate) {
-        Log.d(TAG, "onUserGoesOffline  #" + uid + " at " + date + " at " + updateDate);
+        // Log.d(TAG, "onUserGoesOffline  #" + uid + " at " + date + " at " + updateDate);
         if (lastUidState.containsKey(uid) && lastUidState.get(uid) >= updateDate) {
-            Log.d(TAG, "onUserGoesOffline:ignored - too old");
+            // Log.d(TAG, "onUserGoesOffline:ignored - too old");
             return;
         }
         lastUidState.put(uid, updateDate);
-        Log.d(TAG, "onUserGoesOffline:updated");
+        // Log.d(TAG, "onUserGoesOffline:updated");
 
         UserVM vm = getUserVM(uid);
         if (vm != null) {
@@ -163,13 +159,13 @@ public class PresenceActor extends ModuleActor implements BusSubscriber {
 
     @Verified
     private void onGroupOnline(int gid, int count, long updateDate) {
-        Log.d(TAG, "onGroupOnline  #" + gid + " " + count + " at " + updateDate);
+        // Log.d(TAG, "onGroupOnline  #" + gid + " " + count + " at " + updateDate);
         if (lastGidState.containsKey(gid) && lastGidState.get(gid) >= updateDate) {
-            Log.d(TAG, "onGroupOnline:ignored - too old");
+            // Log.d(TAG, "onGroupOnline:ignored - too old");
             return;
         }
         lastGidState.put(gid, updateDate);
-        Log.d(TAG, "onGroupOnline:updated");
+        // Log.d(TAG, "onGroupOnline:updated");
 
         GroupVM vm = getGroupVM(gid);
         if (vm != null) {
@@ -180,7 +176,7 @@ public class PresenceActor extends ModuleActor implements BusSubscriber {
     @Verified
     private void subscribe(Peer peer) {
 
-        Log.d(TAG, "subscribe:" + peer);
+        // Log.d(TAG, "subscribe:" + peer);
 
         if (peer.getPeerType() == PeerType.PRIVATE) {
             // Already subscribed
@@ -284,19 +280,13 @@ public class PresenceActor extends ModuleActor implements BusSubscriber {
 
         if (requests.size() > 0) {
             isRequesting = true;
-            PromisesArray.ofPromises(requests).zip().then(new Consumer<ResponseVoid[]>() {
-                @Override
-                public void apply(ResponseVoid[] responseVoids) {
-                    isRequesting = false;
-                    onCheckQueue();
-                }
-            }).failure(new Consumer<Exception>() {
-                @Override
-                public void apply(Exception e) {
-                    isRequesting = false;
-                    onCheckQueue();
-                }
-            }).done(self());
+            PromisesArray.ofPromises(requests).zip().then(responseVoids -> {
+                isRequesting = false;
+                onCheckQueue();
+            }).failure(e -> {
+                isRequesting = false;
+                onCheckQueue();
+            });
         }
     }
 

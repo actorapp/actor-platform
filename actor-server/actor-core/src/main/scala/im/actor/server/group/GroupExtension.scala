@@ -10,7 +10,7 @@ import scala.concurrent.duration._
 
 sealed trait GroupExtension extends Extension
 
-final class GroupExtensionImpl(system: ActorSystem) extends GroupExtension with GroupOperations {
+final class GroupExtensionImpl(val system: ActorSystem) extends GroupExtension with GroupOperations {
   GroupProcessor.register()
 
   HttpApi(system).registerRoute("groups") { implicit system ⇒

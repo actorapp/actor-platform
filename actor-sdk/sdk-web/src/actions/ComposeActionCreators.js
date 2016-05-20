@@ -36,7 +36,15 @@ export default {
     dispatch(ActionTypes.COMPOSE_TYPING, { peer, text, caretPosition });
   },
 
+  changeText(peer, text, caretPosition) {
+    dispatch(ActionTypes.COMPOSE_TYPING, { peer, text, caretPosition });
+  },
+
   toggleAutoFocus(isEnable) {
     dispatch(ActionTypes.COMPOSE_TOGGLE_AUTO_FOCUS, { isEnable });
+  },
+
+  cancelEdit() {
+    dispatch(ActionTypes.MESSAGES_EDIT_END);
   }
 };

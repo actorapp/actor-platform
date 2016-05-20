@@ -13,10 +13,10 @@ import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.api.rpc.users.ApiSex
 import im.actor.server.ApiConversions._
 import im.actor.server.acl.ACLUtils
-import im.actor.server.dialog.DialogExtension
-import im.actor.server.model.{ Group, Peer, AvatarData, PeerType }
+import im.actor.server.dialog.{ DialogExtension, UserAcl }
+import im.actor.server.model.{ AvatarData, Group, Peer, PeerType }
 import im.actor.server.persist._
-import im.actor.server.file.{ ImageUtils, Avatar }
+import im.actor.server.file.{ Avatar, ImageUtils }
 import im.actor.server.group.GroupErrors._
 import im.actor.server.office.PushTexts
 import im.actor.server.sequence.{ PushData, PushRules, SeqState, SeqStateDate }
@@ -24,12 +24,15 @@ import im.actor.util.ThreadLocalSecureRandom
 import ACLUtils._
 import im.actor.util.misc.IdUtils._
 import ImageUtils._
+import akka.http.scaladsl.util.FastFuture
+import im.actor.concurrent.FutureExt
+import im.actor.server.CommonErrors
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.Future
 
-private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupCommandHelpers {
+private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupCommandHelpers with UserAcl {
   this: GroupProcessor ⇒
 
   import GroupCommands._
@@ -47,7 +50,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
 
       // FIXME: invite other members
 
-      val update = UpdateGroupInvite(groupId, creatorUserId, date.toEpochMilli, rng.nextLong())
+      val update = UpdateGroupInviteObsolete(groupId, creatorUserId, date.toEpochMilli, rng.nextLong())
 
       db.run(for {
         _ ← createInDb(state, rng.nextLong())
@@ -64,10 +67,20 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
     val accessHash = genAccessHash()
 
     val rng = ThreadLocalSecureRandom.current()
-    userIds.filterNot(_ == creatorUserId) foreach { userId ⇒
-      val randomId = rng.nextLong()
-      context.parent ! Invite(groupId, userId, creatorUserId, randomId)
-    }
+
+    // exclude ids of users, who blocked group creator
+    val resolvedUserIds = FutureExt.ftraverse((userIds - creatorUserId).toSeq) { userId ⇒
+      withNonBlockedUser(creatorUserId, userId)(
+        default = FastFuture.successful(Some(userId)),
+        failed = FastFuture.successful(None)
+      )
+    } map (_.flatten)
+
+    // send invites to all users, that creator can invite
+    for {
+      userIds ← resolvedUserIds
+      _ = userIds foreach (u ⇒ context.parent ! Invite(groupId, u, creatorUserId, rng.nextLong()))
+    } yield ()
 
     val date = now()
 
@@ -77,9 +90,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
     persist(created) { _ ⇒
       context become working(state)
 
-      val serviceMessage = GroupServiceMessages.groupCreated
-
-      val update = UpdateGroupInvite(groupId = groupId, inviteUserId = creatorUserId, date = date.toEpochMilli, randomId = randomId)
+      val update = UpdateGroupInviteObsolete(groupId = groupId, inviteUserId = creatorUserId, date = date.toEpochMilli, randomId = randomId)
 
       db.run(
         for {
@@ -98,8 +109,16 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
             isHidden = false
           )
           _ ← GroupUserRepo.create(groupId, creatorUserId, creatorUserId, date, None, isAdmin = true)
-          _ ← DBIO.from(Future.sequence((userIds + creatorUserId) map { uid ⇒
-            dialogExt.writeMessageSelf(uid, ApiPeer(ApiPeerType.Group, state.id), creatorUserId, new DateTime(date.toEpochMilli), randomId, serviceMessage)
+          memeberIds ← DBIO.from(resolvedUserIds)
+          _ ← DBIO.from(Future.sequence((memeberIds :+ creatorUserId) map { uid ⇒
+            dialogExt.writeMessageSelf(
+              userId = uid,
+              peer = ApiPeer(ApiPeerType.Group, state.id),
+              senderUserId = creatorUserId,
+              date = new DateTime(date.toEpochMilli),
+              randomId = randomId,
+              message = GroupServiceMessages.groupCreated
+            )
           }))
           seqstate ← if (isBot(state, creatorUserId)) DBIO.successful(SeqState(0, ByteString.EMPTY))
           else DBIO.from(seqUpdExt.deliverSingleUpdate(
@@ -138,9 +157,9 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
     val dateMillis = date.toEpochMilli
     val memberIds = group.members.keySet
 
-    val inviteeUpdate = UpdateGroupInvite(groupId = groupId, randomId = randomId, inviteUserId = inviterUserId, date = dateMillis)
+    val inviteeUpdate = UpdateGroupInviteObsolete(groupId = groupId, randomId = randomId, inviteUserId = inviterUserId, date = dateMillis)
 
-    val userAddedUpdate = UpdateGroupUserInvited(groupId = groupId, userId = userId, inviterUserId = inviterUserId, date = dateMillis, randomId = randomId)
+    val userAddedUpdate = UpdateGroupUserInvitedObsolete(groupId = groupId, userId = userId, inviterUserId = inviterUserId, date = dateMillis, randomId = randomId)
     val serviceMessage = GroupServiceMessages.userInvited(userId)
 
     for {
@@ -162,7 +181,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
     }
   }
 
-  protected def setJoined(group: GroupState, joiningUserId: Int, joinintUserAuthSid: Int, invitingUserId: Int): Unit = {
+  protected def setJoined(group: GroupState, joiningUserId: Int, joiningUserAuthSid: Int, invitingUserId: Int): Unit = {
     if (!hasMember(group, joiningUserId) || isInvited(group, joiningUserId)) {
       val replyTo = sender()
 
@@ -182,7 +201,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
                 seqstatedate ← DBIO.from(DialogExtension(system).sendMessage(
                   peer = ApiPeer(ApiPeerType.Group, groupId),
                   senderUserId = joiningUserId,
-                  senderAuthSid = joinintUserAuthSid,
+                  senderAuthSid = joiningUserAuthSid,
                   senderAuthId = None,
                   randomId = randomId,
                   message = GroupServiceMessages.userJoined,
@@ -207,7 +226,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
     persist(GroupEvents.UserKicked(date, kickedUserId, kickerUserId)) { evt ⇒
       workWith(evt, group)
 
-      val update = UpdateGroupUserKick(groupId, kickedUserId, kickerUserId, date.toEpochMilli, randomId)
+      val update = UpdateGroupUserKickObsolete(groupId, kickedUserId, kickerUserId, date.toEpochMilli, randomId)
       val serviceMessage = GroupServiceMessages.userKicked(kickedUserId)
 
       db.run(removeUser(
@@ -229,7 +248,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
     persist(GroupEvents.UserLeft(now(), userId)) { evt ⇒
       workWith(evt, group)
 
-      val update = UpdateGroupUserLeave(groupId, userId, evt.ts.toEpochMilli, randomId)
+      val update = UpdateGroupUserLeaveObsolete(groupId, userId, evt.ts.toEpochMilli, randomId)
       val serviceMessage = GroupServiceMessages.userLeft(userId)
       db.run(removeUser(
         initiatorId = userId,
@@ -249,7 +268,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
       val date = evt.ts
       val avatarData = avatarOpt map (getAvatarData(AvatarData.OfGroup, groupId, _)) getOrElse AvatarData.empty(AvatarData.OfGroup, groupId.toLong)
 
-      val update = UpdateGroupAvatarChanged(groupId, clientUserId, avatarOpt, date.toEpochMilli, randomId)
+      val update = UpdateGroupAvatarChangedObsolete(groupId, clientUserId, avatarOpt, date.toEpochMilli, randomId)
       val serviceMessage = GroupServiceMessages.changedAvatar(avatarOpt)
 
       val memberIds = group.members.keySet
@@ -286,7 +305,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
     persistStashingReply(TitleUpdated(now(), title), group) { evt ⇒
       val date = evt.ts
 
-      val update = UpdateGroupTitleChanged(groupId = groupId, userId = clientUserId, title = title, date = date.toEpochMilli, randomId = randomId)
+      val update = UpdateGroupTitleChangedObsolete(groupId = groupId, userId = clientUserId, title = title, date = date.toEpochMilli, randomId = randomId)
       val serviceMessage = GroupServiceMessages.changedTitle(title)
 
       for {
@@ -311,12 +330,12 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
   protected def updateTopic(group: GroupState, clientUserId: Int, topic: Option[String], randomId: Long): Unit = {
     withGroupMember(group, clientUserId) { member ⇒
       val trimmed = topic.map(_.trim)
-      if (trimmed.map(s ⇒ s.nonEmpty & s.length < 255).getOrElse(true)) {
+      if (trimmed.forall(s ⇒ s.nonEmpty & s.length < 255)) {
         persistStashingReply(TopicUpdated(now(), trimmed), group) { evt ⇒
           val date = evt.ts
           val dateMillis = date.toEpochMilli
           val serviceMessage = GroupServiceMessages.changedTopic(trimmed)
-          val update = UpdateGroupTopicChanged(groupId = groupId, randomId = randomId, userId = clientUserId, topic = trimmed, date = dateMillis)
+          val update = UpdateGroupTopicChangedObsolete(groupId = groupId, randomId = randomId, userId = clientUserId, topic = trimmed, date = dateMillis)
           for {
             _ ← db.run(GroupRepo.updateTopic(groupId, trimmed))
             _ ← dialogExt.writeMessage(
@@ -343,7 +362,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
   protected def updateAbout(group: GroupState, clientUserId: Int, about: Option[String], randomId: Long): Unit = {
     withGroupAdmin(group, clientUserId) {
       val trimmed = about.map(_.trim)
-      if (trimmed.map(s ⇒ s.nonEmpty & s.length < 255).getOrElse(true)) {
+      if (trimmed.forall(s ⇒ s.nonEmpty & s.length < 255)) {
         persistStashingReply(AboutUpdated(now(), trimmed), group) { evt ⇒
           val date = evt.ts
           val dateMillis = date.toEpochMilli
@@ -387,9 +406,9 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
               (seqState, _) ← seqUpdExt.broadcastOwnSingleUpdate(
                 clientUserId,
                 group.members.keySet - clientUserId,
-                UpdateGroupMembersUpdate(groupId, members)
+                UpdateGroupMembersUpdateObsolete(groupId, members)
               )
-            } yield (members, seqState)
+            } yield (members, SeqStateDate(seqState.seq, seqState.state, date.toEpochMilli))
           } else {
             Future.failed(UserAlreadyAdmin)
           }
@@ -412,15 +431,30 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
     }
   }
 
+  protected def transferOwnership(group: GroupState, clientUserId: Int, clientAuthSid: Int, userId: Int): Unit = {
+    if (group.ownerUserId == clientUserId) {
+      persistReply(OwnerChanged(Instant.now, userId), group) { _ ⇒
+        for {
+          (reply, _) ← seqUpdExt.broadcastOwnSingleUpdate(
+            userId = clientUserId,
+            bcastUserIds = group.members.keySet.filterNot(_ == clientUserId),
+            update = UpdateGroupOwnerChanged(group.id, userId),
+            pushRules = PushRules().withExcludeAuthSids(Seq(clientAuthSid))
+          )
+        } yield reply
+      }
+    } else sender() ! Status.Failure(CommonErrors.Forbidden)
+  }
+
   private def removeUser(initiatorId: Int, userId: Int, memberIds: Set[Int], clientAuthSid: Int, serviceMessage: ApiServiceMessage, update: Update, date: Instant, randomId: Long): DBIO[SeqStateDate] = {
     val groupPeer = Peer(PeerType.Group, groupId)
     for {
       _ ← GroupUserRepo.delete(groupId, userId)
       _ ← GroupInviteTokenRepo.revoke(groupId, userId)
       (SeqState(seq, state), _) ← DBIO.from(userExt.broadcastClientAndUsersUpdate(
-        clientUserId = userId,
+        clientUserId = initiatorId,
         clientAuthSid = clientAuthSid,
-        userIds = memberIds - userId,
+        userIds = memberIds,
         update = update,
         pushText = Some(PushTexts.Left),
         isFat = false,

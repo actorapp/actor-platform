@@ -13,7 +13,8 @@ let cache = [];
  */
 class Voice extends Component {
   static propTypes = {
-    content: PropTypes.object.isRequired,
+    fileUrl: PropTypes.string,
+    duration: PropTypes.number.isRequired,
     className: PropTypes.string
   };
 
@@ -24,23 +25,23 @@ class Voice extends Component {
       isLoaded: this.isCached(),
       isPlaying: false,
       currentTime: 0,
-      duration: props.content.duration / 1000
+      duration: props.duration / 1000
     };
   }
 
   componentDidMount() {
-    const { content } = this.props;
+    const { fileUrl } = this.props;
 
-    if (content.fileUrl) {
-      this.createAudioElement(content.fileUrl);
+    if (fileUrl) {
+      this.createAudioElement(fileUrl);
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    const { content } = this.props;
+  componentDidUpdate() {
+    const { fileUrl } = this.props;
 
-    if (content.fileUrl && !this.isCached()) {
-      this.createAudioElement(content.fileUrl);
+    if (fileUrl && !this.isCached()) {
+      this.createAudioElement(fileUrl);
     }
   }
 
@@ -64,14 +65,14 @@ class Voice extends Component {
   }
 
   isCached() {
-    const { content } = this.props;
-    return cache[content.fileUrl] === true;
+    const { fileUrl } = this.props;
+    return cache[fileUrl] === true;
   }
 
   setCached() {
-    const { content } = this.props;
-    cache[content.fileUrl] = true;
-    this.setState({isLoaded: cache[content.fileUrl]});
+    const { fileUrl } = this.props;
+    cache[fileUrl] = true;
+    this.setState({ isLoaded: cache[fileUrl] });
   }
 
   humanTime = (millis) => {
@@ -81,7 +82,7 @@ class Voice extends Component {
     return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
   };
 
-  handleTimeUpdate = (event) => {
+  handleTimeUpdate = () => {
     this.setState({
       currentTime: this.audio.currentTime,
       duration: this.audio.duration
@@ -90,7 +91,7 @@ class Voice extends Component {
 
   handlePlayClick = () => {
     this.audio.play();
-    this.setState({isPlaying: true})
+    this.setState({ isPlaying: true })
   };
 
   handlePauseClick = () => {
@@ -99,7 +100,7 @@ class Voice extends Component {
   };
 
   handlePlayEnding = () => {
-    this.setState({isPlaying: false});
+    this.setState({ isPlaying: false });
   };
 
   handleRewind = (event) => {
@@ -126,7 +127,7 @@ class Voice extends Component {
           <div className="voice__controls">
             {
               !isLoaded
-                ? <i className="material-icons" style={{opacity: 0.3}}>play_circle_filled</i>
+                ? <i className="material-icons" style={{ opacity: 0.3 }}>play_circle_filled</i>
                 : isPlaying
                     ? <i className="material-icons" onClick={this.handlePauseClick}>pause_circle_filled</i>
                     : <i className="material-icons" onClick={this.handlePlayClick}>play_circle_filled</i>
@@ -144,7 +145,7 @@ class Voice extends Component {
             {
               isLoaded
                 ? <div className="voice__rewind" onClick={this.handleRewind} ref="rewind">
-                    <div className="played" style={{width: progress + '%'}}/>
+                    <div className="played" style={{ width: progress + '%' }}/>
                   </div>
                 : <div className="voice__rewind voice__rewind--loading"/>
             }

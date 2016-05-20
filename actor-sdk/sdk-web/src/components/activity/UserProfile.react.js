@@ -2,7 +2,6 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import { assign } from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
 import { FormattedMessage } from 'react-intl';
@@ -17,6 +16,7 @@ import ContactActionCreators from '../../actions/ContactActionCreators';
 import DialogActionCreators from '../../actions/DialogActionCreators';
 import NotificationsActionCreators from '../../actions/NotificationsActionCreators';
 import CallActionCreators from '../../actions/CallActionCreators';
+import BlockedUsersActionCreators from '../../actions/BlockedUsersActionCreators';
 
 import UserStore from '../../stores/UserStore';
 import NotificationsStore from '../../stores/NotificationsStore';
@@ -25,16 +25,6 @@ import OnlineStore from '../../stores/OnlineStore';
 import AvatarItem from '../common/AvatarItem.react';
 import ContactDetails from '../common/ContactDetails.react';
 import ToggleNotifications from '../common/ToggleNotifications.react';
-import Fold from '../common/Fold.react';
-
-const getStateFromStores = (uid) => {
-  const thisPeer = uid ? UserStore.getUser(uid) : null;
-  return {
-    thisPeer,
-    isNotificationsEnabled: thisPeer ? NotificationsStore.isNotificationsEnabled(thisPeer) : true,
-    message: OnlineStore.getMessage()
-  };
-};
 
 class UserProfile extends Component {
   static propTypes = {
@@ -46,84 +36,149 @@ class UserProfile extends Component {
   }
 
   static calculateState(prevState, nextProps) {
-    return getStateFromStores(nextProps.user.id);
-  }
+    const uid = nextProps.user.id;
+    const peer = uid ? UserStore.getUser(uid) : null;
 
-  static contextTypes = {
-    intl: PropTypes.object
-  };
+    return {
+      ...prevState,
+      peer,
+      isNotificationsEnabled: peer ? NotificationsStore.isNotificationsEnabled(peer) : true,
+      message: OnlineStore.getMessage()
+    };
+  }
 
   constructor(props) {
     super(props);
 
     this.state = {
-      isMoreDropdownOpen: false,
-    }
+      isMoreDropdownOpen: false
+    };
+
+    this.onClearChat = this.onClearChat.bind(this);
+    this.onDeleteChat = this.onDeleteChat.bind(this);
+    this.onBlockUser = this.onBlockUser.bind(this);
+    this.onRemoveFromContacts = this.onRemoveFromContacts.bind(this);
+    this.onAddToContacts = this.onAddToContacts.bind(this);
+    this.onNotificationChange = this.onNotificationChange.bind(this);
+    this.closeActionsDropdown = this.closeActionsDropdown.bind(this);
+    this.toggleActionsDropdown = this.toggleActionsDropdown.bind(this);
+    this.handleAvatarClick = this.handleAvatarClick.bind(this);
+    this.makeCall = this.makeCall.bind(this);
   }
 
-  addToContacts = () => ContactActionCreators.addContact(this.props.user.id);
+  onAddToContacts() {
+     ContactActionCreators.addContact(this.props.user.id);
+  }
 
-  removeFromContacts = () => {
-    const { user } = this.props;
-    confirm(<FormattedMessage id="modal.confirm.removeContact" values={{name: user.name}}/>).then(
-      () => ContactActionCreators.removeContact(user.id),
-      () => {}
-    );
-  };
+  onNotificationChange(event) {
+    const { peer } = this.state;
+    NotificationsActionCreators.changeNotificationsEnabled(peer, event.target.checked);
+  }
 
-  onNotificationChange = (event) => {
-    const { thisPeer } = this.state;
-    NotificationsActionCreators.changeNotificationsEnabled(thisPeer, event.target.checked);
-  };
-
-  toggleActionsDropdown = () => {
+  toggleActionsDropdown() {
     const { isActionsDropdownOpen } = this.state;
 
     if (!isActionsDropdownOpen) {
-      this.setState({isActionsDropdownOpen: true});
+      this.setState({ isActionsDropdownOpen: true });
       document.addEventListener('click', this.closeActionsDropdown, false);
     } else {
       this.closeActionsDropdown();
     }
-  };
+  }
 
-  closeActionsDropdown = () => {
-    this.setState({isActionsDropdownOpen: false});
+  closeActionsDropdown() {
+    this.setState({ isActionsDropdownOpen: false });
     document.removeEventListener('click', this.closeActionsDropdown, false);
-  };
+  }
 
-  clearChat = (uid) => {
-    const { intl } = this.context;
-    confirm(intl.messages['modal.confirm.clear']).then(
+  onClearChat() {
+    const { user } = this.props;
+    confirm(
+      <FormattedMessage id="modal.confirm.user.clear" values={{ name: user.name }} />
+    ).then(
       () => {
-        const peer = ActorClient.getUserPeer(uid);
+        const peer = ActorClient.getUserPeer(user.id);
         DialogActionCreators.clearChat(peer);
       },
       () => {}
     );
-  };
+  }
 
-  deleteChat = (uid) => {
-    const { intl } = this.context;
-    confirm(intl.messages['modal.confirm.delete']).then(
+  onRemoveFromContacts() {
+    const { user } = this.props;
+    confirm(
+      <FormattedMessage id="modal.confirm.user.removeContact" values={{ name: user.name }}/>
+    ).then(
+      () => ContactActionCreators.removeContact(user.id),
+      () => {}
+    );
+  }
+
+  onDeleteChat() {
+    const { user } = this.props;
+
+    confirm(
+      <FormattedMessage id="modal.confirm.user.delete" values={{ name: user.name }} />
+    ).then(
       () => {
-        const peer = ActorClient.getUserPeer(uid);
+        const peer = ActorClient.getUserPeer(user.id);
         DialogActionCreators.deleteChat(peer);
       },
       () => {}
     );
-  };
+  }
 
-  handleAvatarClick = () => lightbox.open(this.props.user.bigAvatar);
+  onBlockUser() {
+    const { user } = this.props;
 
-  makeCall = () => {
+    confirm(
+      <FormattedMessage id="modal.confirm.user.block" values={{ name: user.name }} />
+    ).then(
+      () => BlockedUsersActionCreators.blockUser(user.id),
+      () => {}
+    );
+  }
+
+  handleAvatarClick() {
+    lightbox.open(this.props.user.bigAvatar)
+  }
+
+  makeCall() {
     const { user } = this.props;
     CallActionCreators.makeCall(user.id);
-  };
+  }
+
+  renderAbout() {
+    const { about } = this.props.user;
+    if (!about) return null;
+
+    return (
+      <div
+        className="user_profile__meta__about"
+        dangerouslySetInnerHTML={{ __html: escapeWithEmoji(about).replace(/\n/g, '<br/>') }}/>
+    )
+  }
+
+  renderToggleContact() {
+    const { isContact } = this.props.user;
+
+    if (isContact) {
+      return (
+        <li className="dropdown__menu__item" onClick={this.onRemoveFromContacts}>
+          <FormattedMessage id="removeFromContacts"/>
+        </li>
+      );
+    }
+
+    return (
+      <li className="dropdown__menu__item" onClick={this.onAddToContacts}>
+        <FormattedMessage id="addToContacts"/>
+      </li>
+    );
+  }
 
   render() {
     const { user } = this.props;
-    const { intl } = this.context;
     const { isNotificationsEnabled, isActionsDropdownOpen, message } = this.state;
 
     const dropdownClassNames = classnames('dropdown', {
@@ -136,52 +191,45 @@ class UserProfile extends Component {
         <ul className="profile__list">
           <li className="profile__list__item user_profile__meta">
             <header>
-              <AvatarItem image={user.bigAvatar}
-                          placeholder={user.placeholder}
-                          size="large"
-                          title={user.name}
-                          onClick={this.handleAvatarClick}/>
+              <AvatarItem
+                className="profile__avatar"
+                size="large"
+                image={user.bigAvatar}
+                placeholder={user.placeholder}
+                title={user.name}
+                onClick={this.handleAvatarClick}
+              />
 
-              <h3 className="user_profile__meta__title" dangerouslySetInnerHTML={{__html: escapeWithEmoji(user.name)}}/>
+              <h3 className="user_profile__meta__title" dangerouslySetInnerHTML={{ __html: escapeWithEmoji(user.name) }}/>
               <div className="user_profile__meta__message">{message}</div>
             </header>
 
-            {
-              user.about
-                ? <div className="user_profile__meta__about"
-                       dangerouslySetInnerHTML={{__html: escapeWithEmoji(user.about).replace(/\n/g, '<br/>')}}/>
-                : null
-            }
+            {this.renderAbout()}
 
             <footer className="row">
               <div className="col-xs">
                 <button className="button button--green button--wide" onClick={this.makeCall}>
                   <i className="material-icons">phone</i>
-                  {intl.messages['button.call']}
+                  <FormattedMessage id="button.call"/>
                 </button>
               </div>
-              <div style={{width: 10}}/>
+              <div style={{ width: 10 }}/>
               <div className="col-xs">
                 <div className={dropdownClassNames}>
                   <button className="dropdown__button button button--flat button--wide" onClick={this.toggleActionsDropdown}>
                     <i className="material-icons">more_horiz</i>
-                    {intl.messages['actions']}
+                    <FormattedMessage id="actions"/>
                   </button>
                   <ul className="dropdown__menu dropdown__menu--right">
-                    {
-                      user.isContact
-                        ? <li className="dropdown__menu__item" onClick={this.removeFromContacts}>
-                            {intl.messages['removeFromContacts']}
-                          </li>
-                        : <li className="dropdown__menu__item" onClick={this.addToContacts}>
-                            {intl.messages['addToContacts']}
-                          </li>
-                    }
-                    <li className="dropdown__menu__item" onClick={() => this.clearChat(user.id)}>
-                      {intl.messages['clearConversation']}
+                    {this.renderToggleContact()}
+                    <li className="dropdown__menu__item" onClick={this.onBlockUser}>
+                      <FormattedMessage id="blockUser"/>
                     </li>
-                    <li className="dropdown__menu__item" onClick={() => this.deleteChat(user.id)}>
-                      {intl.messages['deleteConversation']}
+                    <li className="dropdown__menu__item" onClick={this.onClearChat}>
+                      <FormattedMessage id="clearConversation"/>
+                    </li>
+                    <li className="dropdown__menu__item" onClick={this.onDeleteChat}>
+                      <FormattedMessage id="deleteConversation"/>
                     </li>
                   </ul>
                 </div>
@@ -193,18 +241,10 @@ class UserProfile extends Component {
             <ContactDetails peerInfo={user}/>
           </li>
 
-          <li className="profile__list__item user_profile__media no-p hide">
-            <Fold icon="attach_file" iconClassName="icon--gray" title={intl.messages['sharedMedia']}>
-              <ul>
-                <li><a>230 Shared Photos and Videos</a></li>
-                <li><a>49 Shared Links</a></li>
-                <li><a>49 Shared Files</a></li>
-              </ul>
-            </Fold>
-          </li>
-
           <li className="profile__list__item user_profile__notifications no-p">
-            <ToggleNotifications isNotificationsEnabled={isNotificationsEnabled} onNotificationChange={this.onNotificationChange}/>
+            <ToggleNotifications
+              isNotificationsEnabled={isNotificationsEnabled}
+              onNotificationChange={this.onNotificationChange}/>
           </li>
 
         </ul>
@@ -213,4 +253,4 @@ class UserProfile extends Component {
   }
 }
 
-export default Container.create(UserProfile, {pure:false, withProps: true});
+export default Container.create(UserProfile, { pure:false, withProps: true });

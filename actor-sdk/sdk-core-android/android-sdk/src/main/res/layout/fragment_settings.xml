@@ -94,10 +94,14 @@
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
 
-                            <im.actor.sdk.view.TintImageView
+                            <ImageView
                                 android:id="@+id/recordIcon"
-                                android:layout_width="72dp"
-                                android:layout_height="72dp" />
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_marginBottom="24dp"
+                                android:layout_marginLeft="16dp"
+                                android:layout_marginRight="32dp"
+                                android:layout_marginTop="16dp" />
 
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -242,8 +246,10 @@
 
                         <im.actor.sdk.view.TintImageView
                             android:id="@+id/settings_notification_icon"
-                            android:layout_width="72dp"
+                            android:layout_width="24dp"
                             android:layout_height="match_parent"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginRight="32dp"
                             app:src="@drawable/ic_notifications_white_18dp" />
 
                         <TextView
@@ -271,8 +277,10 @@
 
                         <im.actor.sdk.view.TintImageView
                             android:id="@+id/settings_chat_icon"
-                            android:layout_width="72dp"
+                            android:layout_width="24dp"
                             android:layout_height="match_parent"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginRight="32dp"
                             app:src="@drawable/ic_chat_white_18dp" />
 
                         <TextView
@@ -300,8 +308,10 @@
 
                         <im.actor.sdk.view.TintImageView
                             android:id="@+id/settings_security_icon"
-                            android:layout_width="72dp"
+                            android:layout_width="24dp"
                             android:layout_height="match_parent"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginRight="32dp"
                             app:src="@drawable/ic_security_white_18dp" />
 
                         <TextView
@@ -310,6 +320,37 @@
                             android:layout_height="match_parent"
                             android:gravity="left|center_vertical"
                             android:text="@string/settings_security"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <View
+                        android:id="@+id/divider7"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/div_size"
+                        android:layout_marginLeft="72dp"
+                        android:layout_marginRight="16dp" />
+
+                    <LinearLayout
+                        android:id="@+id/blockedList"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:background="@drawable/selector"
+                        android:clickable="true">
+
+                        <im.actor.sdk.view.TintImageView
+                            android:id="@+id/settings_blocked_icon"
+                            android:layout_width="24dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginRight="32dp"
+                            app:src="@drawable/ic_block_white_18dp" />
+
+                        <TextView
+                            android:id="@+id/settings_blocked_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="left|center_vertical"
+                            android:text="@string/settings_blocked_list"
                             android:textSize="16sp" />
                     </LinearLayout>
 
@@ -329,8 +370,10 @@
 
                         <im.actor.sdk.view.TintImageView
                             android:id="@+id/settings_ask_icon"
-                            android:layout_width="72dp"
+                            android:layout_width="24dp"
                             android:layout_height="match_parent"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginRight="32dp"
                             app:src="@drawable/ic_help_white_18dp" />
 
                         <TextView
@@ -358,8 +401,10 @@
 
                         <im.actor.sdk.view.TintImageView
                             android:id="@+id/settings_twitter_icon"
-                            android:layout_width="72dp"
+                            android:layout_width="24dp"
                             android:layout_height="match_parent"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginRight="32dp"
                             app:src="@drawable/ic_twitterlogo_18dp" />
 
                         <TextView
@@ -387,8 +432,10 @@
 
                         <im.actor.sdk.view.TintImageView
                             android:id="@+id/settings_home_page_icon"
-                            android:layout_width="72dp"
+                            android:layout_width="24dp"
                             android:layout_height="match_parent"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginRight="32dp"
                             app:src="@drawable/ic_home_page_18dp" />
 
                         <TextView
@@ -419,8 +466,10 @@
 
                         <im.actor.sdk.view.TintImageView
                             android:id="@+id/settings_help_icon"
-                            android:layout_width="72dp"
+                            android:layout_width="24dp"
                             android:layout_height="match_parent"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginRight="32dp"
                             app:src="@drawable/ic_help_white_18dp" />
 
                         <TextView

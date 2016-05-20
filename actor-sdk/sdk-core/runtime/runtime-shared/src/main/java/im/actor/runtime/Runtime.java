@@ -13,8 +13,8 @@ import im.actor.runtime.threading.WeakReferenceCompat;
 
 public class Runtime {
 
-    private static final ThreadingRuntime threadingRuntime = new ThreadingRuntimeProvider();
     private static final DispatcherRuntime dispatcherRuntime = new DispatcherRuntimeProvider();
+    private static final ThreadingRuntime threadingRuntime = new ThreadingRuntimeProvider();
     private static final MainThreadRuntimeProvider mainThreadRuntime = new MainThreadRuntimeProvider();
     private static final LifecycleRuntime lifecycleRuntime = new LifecycleRuntimeProvider();
     private static final LocaleRuntime localeRuntime = new LocaleRuntimeProvider();
@@ -78,6 +78,10 @@ public class Runtime {
         if (!mainThreadRuntime.isMainThread()) {
             throw new RuntimeException("Unable to perform operation not from Main Thread");
         }
+    }
+
+    public static boolean isMainThread() {
+        return mainThreadRuntime.isSingleThread() || mainThreadRuntime.isMainThread();
     }
 
     @AutoreleasePool

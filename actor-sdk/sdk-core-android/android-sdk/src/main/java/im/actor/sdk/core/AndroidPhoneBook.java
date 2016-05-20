@@ -32,17 +32,22 @@ public class AndroidPhoneBook implements PhoneBookProvider {
     private static final int READ_ITEM_DELAY = 10;
     private static final boolean DISABLE_PHONE_BOOK = false;
     private static final String TAG = "PhoneBookLoader";
-    private static PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+    private static final Object initSync = new Object();
+    private static PhoneNumberUtil PHONE_UTIL;
+    private boolean useDelay = true;
 
     @Override
     public void loadPhoneBook(final Callback callback) {
         new Thread() {
             @Override
             public void run() {
-                try {
-                    Thread.sleep(PRELOAD_DELAY);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                if (useDelay) {
+                    try {
+                        Thread.sleep(PRELOAD_DELAY);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
                 }
                 ArrayList<PhoneBookContact> contacts = loadPhoneBook(AndroidContext.getContext(),
                         Devices.getDeviceCountry());
@@ -53,20 +58,20 @@ public class AndroidPhoneBook implements PhoneBookProvider {
 
     public static ArrayList<PhoneBookContact> loadPhoneBook(Context context, String isoCountry) {
         if (DISABLE_PHONE_BOOK) {
-            return new ArrayList<PhoneBookContact>();
+            return new ArrayList<>();
         }
 
         Log.d(TAG, "Loading phone book");
         long start = SystemClock.uptimeMillis();
 
-        HashSet<Long> addedPhones = new HashSet<Long>();
-        HashSet<String> addedEmails = new HashSet<String>();
-        ArrayList<PhoneBookContact> records = new ArrayList<PhoneBookContact>();
-        HashMap<Long, PhoneBookContact> recordsMap = new HashMap<Long, PhoneBookContact>();
+        HashSet<Long> addedPhones = new HashSet<>();
+        HashSet<String> addedEmails = new HashSet<>();
+        ArrayList<PhoneBookContact> records = new ArrayList<>();
+        HashMap<Long, PhoneBookContact> recordsMap = new HashMap<>();
 
         ContentResolver cr = context.getContentResolver();
         if (cr == null) {
-            return new ArrayList<PhoneBookContact>();
+            return new ArrayList<>();
         }
 
         // Loading records
@@ -75,7 +80,7 @@ public class AndroidPhoneBook implements PhoneBookProvider {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_CONTACTS) != PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             Log.d("Permissions", "contacts - no permission :c");
-            return new ArrayList<PhoneBookContact>();
+            return new ArrayList<>();
         }
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
                 new String[]
@@ -85,7 +90,7 @@ public class AndroidPhoneBook implements PhoneBookProvider {
                         }, null, null, ContactsContract.Contacts.SORT_KEY_PRIMARY
         );
         if (cur == null) {
-            return new ArrayList<PhoneBookContact>();
+            return new ArrayList<>();
         }
         int idIndex = cur.getColumnIndex(ContactsContract.Contacts._ID);
         int nameIndex = cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
@@ -108,8 +113,8 @@ public class AndroidPhoneBook implements PhoneBookProvider {
                 continue;
 
             PhoneBookContact record = new PhoneBookContact(id, name.trim(),
-                    new ArrayList<PhoneBookPhone>(),
-                    new ArrayList<PhoneBookEmail>());
+                    new ArrayList<>(),
+                    new ArrayList<>());
             records.add(record);
             recordsMap.put(id, record);
         }
@@ -128,7 +133,7 @@ public class AndroidPhoneBook implements PhoneBookProvider {
                 null, ContactsContract.CommonDataKinds.Phone._ID + " desc"
         );
         if (cur == null) {
-            return new ArrayList<PhoneBookContact>();
+            return new ArrayList<>();
         }
 
         final int idContactIndex = cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID);
@@ -155,8 +160,16 @@ public class AndroidPhoneBook implements PhoneBookProvider {
                 continue;
             }
 
+            if (PHONE_UTIL == null) {
+                synchronized (initSync) {
+                    if (PHONE_UTIL == null) {
+                        PHONE_UTIL = PhoneNumberUtil.getInstance();
+                    }
+                }
+            }
+
             try {
-                final Phonenumber.PhoneNumber phonenumber = phoneUtil.parse(rawPhone, isoCountry);
+                final Phonenumber.PhoneNumber phonenumber = PHONE_UTIL.parse(rawPhone, isoCountry);
                 rawPhone = phonenumber.getCountryCode() + "" + phonenumber.getNationalNumber();
             } catch (final NumberParseException e) {
                 rawPhone = rawPhone.replaceAll("[^\\d]", "");
@@ -234,7 +247,7 @@ public class AndroidPhoneBook implements PhoneBookProvider {
         cur.close();
 
         // Filtering records without contacts
-        ArrayList<PhoneBookContact> res = new ArrayList<PhoneBookContact>();
+        ArrayList<PhoneBookContact> res = new ArrayList<>();
         for (PhoneBookContact rec : records) {
             if (rec.getPhones().size() > 0 || rec.getEmails().size() > 0) {
                 res.add(rec);
@@ -242,5 +255,9 @@ public class AndroidPhoneBook implements PhoneBookProvider {
         }
         Log.d(TAG, "Phone book loaded in " + (SystemClock.uptimeMillis() - start) + " ms in " + (index) + " iterations");
         return res;
+    }
+
+    public void useDelay(boolean useDelay) {
+        this.useDelay = useDelay;
     }
 }

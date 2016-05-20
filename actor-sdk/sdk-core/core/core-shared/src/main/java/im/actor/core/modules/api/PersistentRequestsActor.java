@@ -4,7 +4,7 @@ import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.api.entity.CursorStoredRequest;
 import im.actor.core.modules.api.entity.PersistentStorage;
 import im.actor.core.modules.api.entity.StoredRequest;
-import im.actor.core.util.ModuleActor;
+import im.actor.core.modules.ModuleActor;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.network.parser.Request;
@@ -139,7 +139,7 @@ public class PersistentRequestsActor extends ModuleActor {
             onNewCursorRequest(cursorRequest.getName(), cursorRequest.getKey(),
                     cursorRequest.getRequest());
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 

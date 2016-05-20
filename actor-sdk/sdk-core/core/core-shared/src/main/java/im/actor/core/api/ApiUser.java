@@ -20,30 +20,22 @@ public class ApiUser extends BserObject {
     private long accessHash;
     private String name;
     private String localName;
+    private String nick;
     private ApiSex sex;
     private ApiAvatar avatar;
-    private List<ApiContactRecord> contactInfo;
     private Boolean isBot;
-    private String nick;
-    private String about;
-    private String external;
-    private List<String> preferredLanguages;
-    private String timeZone;
+    private ApiMapValue ext;
 
-    public ApiUser(int id, long accessHash, @NotNull String name, @Nullable String localName, @Nullable ApiSex sex, @Nullable ApiAvatar avatar, @NotNull List<ApiContactRecord> contactInfo, @Nullable Boolean isBot, @Nullable String nick, @Nullable String about, @Nullable String external, @NotNull List<String> preferredLanguages, @Nullable String timeZone) {
+    public ApiUser(int id, long accessHash, @NotNull String name, @Nullable String localName, @Nullable String nick, @Nullable ApiSex sex, @Nullable ApiAvatar avatar, @Nullable Boolean isBot, @Nullable ApiMapValue ext) {
         this.id = id;
         this.accessHash = accessHash;
         this.name = name;
         this.localName = localName;
+        this.nick = nick;
         this.sex = sex;
         this.avatar = avatar;
-        this.contactInfo = contactInfo;
         this.isBot = isBot;
-        this.nick = nick;
-        this.about = about;
-        this.external = external;
-        this.preferredLanguages = preferredLanguages;
-        this.timeZone = timeZone;
+        this.ext = ext;
     }
 
     public ApiUser() {
@@ -69,6 +61,11 @@ public class ApiUser extends BserObject {
     }
 
     @Nullable
+    public String getNick() {
+        return this.nick;
+    }
+
+    @Nullable
     public ApiSex getSex() {
         return this.sex;
     }
@@ -78,39 +75,14 @@ public class ApiUser extends BserObject {
         return this.avatar;
     }
 
-    @NotNull
-    public List<ApiContactRecord> getContactInfo() {
-        return this.contactInfo;
-    }
-
     @Nullable
     public Boolean isBot() {
         return this.isBot;
     }
 
     @Nullable
-    public String getNick() {
-        return this.nick;
-    }
-
-    @Nullable
-    public String getAbout() {
-        return this.about;
-    }
-
-    @Nullable
-    public String getExternal() {
-        return this.external;
-    }
-
-    @NotNull
-    public List<String> getPreferredLanguages() {
-        return this.preferredLanguages;
-    }
-
-    @Nullable
-    public String getTimeZone() {
-        return this.timeZone;
+    public ApiMapValue getExt() {
+        return this.ext;
     }
 
     @Override
@@ -119,22 +91,14 @@ public class ApiUser extends BserObject {
         this.accessHash = values.getLong(2);
         this.name = values.getString(3);
         this.localName = values.optString(4);
+        this.nick = values.optString(13);
         int val_sex = values.getInt(5, 0);
         if (val_sex != 0) {
             this.sex = ApiSex.parse(val_sex);
         }
         this.avatar = values.optObj(8, new ApiAvatar());
-        List<ApiContactRecord> _contactInfo = new ArrayList<ApiContactRecord>();
-        for (int i = 0; i < values.getRepeatedCount(12); i ++) {
-            _contactInfo.add(new ApiContactRecord());
-        }
-        this.contactInfo = values.getRepeatedObj(12, _contactInfo);
         this.isBot = values.optBool(11);
-        this.nick = values.optString(13);
-        this.about = values.optString(14);
-        this.external = values.optString(15);
-        this.preferredLanguages = values.getRepeatedString(16);
-        this.timeZone = values.optString(17);
+        this.ext = values.optObj(20, new ApiMapValue());
         if (values.hasRemaining()) {
             setUnmappedObjects(values.buildRemaining());
         }
@@ -151,28 +115,20 @@ public class ApiUser extends BserObject {
         if (this.localName != null) {
             writer.writeString(4, this.localName);
         }
+        if (this.nick != null) {
+            writer.writeString(13, this.nick);
+        }
         if (this.sex != null) {
             writer.writeInt(5, this.sex.getValue());
         }
         if (this.avatar != null) {
             writer.writeObject(8, this.avatar);
         }
-        writer.writeRepeatedObj(12, this.contactInfo);
         if (this.isBot != null) {
             writer.writeBool(11, this.isBot);
         }
-        if (this.nick != null) {
-            writer.writeString(13, this.nick);
-        }
-        if (this.about != null) {
-            writer.writeString(14, this.about);
-        }
-        if (this.external != null) {
-            writer.writeString(15, this.external);
-        }
-        writer.writeRepeatedString(16, this.preferredLanguages);
-        if (this.timeZone != null) {
-            writer.writeString(17, this.timeZone);
+        if (this.ext != null) {
+            writer.writeObject(20, this.ext);
         }
         if (this.getUnmappedObjects() != null) {
             SparseArray<Object> unmapped = this.getUnmappedObjects();
@@ -189,15 +145,11 @@ public class ApiUser extends BserObject {
         res += "id=" + this.id;
         res += ", name=" + this.name;
         res += ", localName=" + this.localName;
+        res += ", nick=" + this.nick;
         res += ", sex=" + this.sex;
         res += ", avatar=" + (this.avatar != null ? "set":"empty");
-        res += ", contactInfo=" + this.contactInfo.size();
         res += ", isBot=" + this.isBot;
-        res += ", nick=" + this.nick;
-        res += ", about=" + this.about;
-        res += ", external=" + this.external;
-        res += ", preferredLanguages=" + this.preferredLanguages;
-        res += ", timeZone=" + this.timeZone;
+        res += ", ext=" + this.ext;
         res += "}";
         return res;
     }

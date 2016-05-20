@@ -2,40 +2,28 @@ package im.actor.server.user
 
 import akka.actor.{ ActorRef, ActorSystem, Props }
 import akka.cluster.sharding.{ ClusterSharding, ClusterShardingSettings, ShardRegion }
-import akka.event.Logging
-import im.actor.server.dialog.DialogCommands.Envelope
-import im.actor.server.model.{ Peer, PeerType }
-
-import scala.util.{ Try, Success }
 
 object UserProcessorRegion {
   private def extractEntityId(system: ActorSystem): ShardRegion.ExtractEntityId = {
-    val log = Logging(system, getClass)
-
     {
       case c: UserCommand ⇒ (c.userId.toString, c)
       case q: UserQuery   ⇒ (q.userId.toString, q)
-      case e @ Envelope(peer, payload) ⇒ peer match {
-        case Peer(PeerType.Private, userId) ⇒
-          Try(e.getField(Envelope.descriptor.findFieldByNumber(payload.number))) match {
-            case Success(any) ⇒ (userId.toString, any)
-            case _ ⇒
-              val error = new RuntimeException(s"Payload not found for $e")
-              log.error(error, error.getMessage)
-              throw error
-          }
-        case Peer(peerType, _) ⇒ throw new RuntimeException(s"DialogCommand with peerType: $peerType passed in UserProcessor")
-      }
+      case e @ UserEnvelope(
+        userId,
+        dialogRootEnvelope,
+        dialogEnvelope
+        ) ⇒
+        (
+          userId.toString,
+          dialogRootEnvelope.getOrElse(dialogEnvelope.get)
+        )
     }
   }
 
-  private def extractShardId(system: ActorSystem): ShardRegion.ExtractShardId = msg ⇒ msg match {
-    case c: UserCommand ⇒ (c.userId % 100).toString // TODO: configurable
-    case q: UserQuery   ⇒ (q.userId % 100).toString
-    case Envelope(peer, payload) ⇒ peer match {
-      case Peer(PeerType.Private, userId) ⇒ (userId % 100).toString
-      case Peer(peerType, _)              ⇒ throw new RuntimeException(s"DialogCommand with peerType: $peerType passed in UserProcessor")
-    }
+  private def extractShardId(system: ActorSystem): ShardRegion.ExtractShardId = {
+    case c: UserCommand  ⇒ (c.userId % 100).toString // TODO: configurable
+    case q: UserQuery    ⇒ (q.userId % 100).toString
+    case e: UserEnvelope ⇒ (e.userId % 100).toString
   }
 
   val typeName = "UserProcessor"
@@ -61,4 +49,4 @@ object UserProcessorRegion {
     ))
 }
 
-case class UserProcessorRegion(val ref: ActorRef)
+final case class UserProcessorRegion(ref: ActorRef)

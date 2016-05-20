@@ -59,7 +59,7 @@ public class BounceFilterActor extends Actor {
         } else if (message instanceof Flush) {
             onFlush();
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 

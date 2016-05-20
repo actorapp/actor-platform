@@ -32,6 +32,11 @@
     <string name="toast_empty_nick">نام کاربری نمی‌تواند خالی باشد</string>
     <string name="toast_unable_change_nick">تغییر نام کاربری با شکست مواجه شد(آیا شما از کاراکترهای مجاز استفاده کردید؟)</string>
     <string name="toast_empty_about">معرفی نمی‌تواند خالی باشد </string>
+    <string name="toast_unable_open">برنامه ای برای باز کردن این فایل وجود ندارد</string>
+    <string name="toast_unable_leave">خروج از گروه با خطا مواجه شد</string>
+    <string name="toast_unable_create_group">ایجاد گروه با خطا مواجه شد</string>
+    <string name="toast_unable_delete_chat">حذف گپ با خطا مواجه شد</string>
+    <string name="toast_unable_clear_chat">پاک کردن گپ با خطا مواجه شد</string>
 
     <string name="menu_share">اشتراک</string>
     <string name="menu_save">ذخیره در تلفن</string>
@@ -86,7 +91,22 @@
     <string name="auth_email_edit_text_hint">ایمیل</string>
     <string name="auth_email_get_code">تایید ایمیل</string>
 
-    <!-- Sign In Fragment -->
+
+    <string name="auth_tos_privacy">برای ثبت نام شما شرایط استفاده و حریم خصوصی را تایید میکنید</string>
+    <string name="auth_tos">برای ثبت نام شما با شرایط استفاده موافقید</string>
+    <string name="auth_privacy">برای ثبت نام شما با سیاست حفظ حریم خصوصی موافقید</string>
+    <string name="auth_find_by_diclamer">افراد دیگر شما را با استفاده از شماره همراه شما شناسایی می‌کنند</string>
+
+    <string name="auth_tos_index">شرایط استفاده</string>
+    <string name="auth_privacy_index">سیاست حفظ حریم خصوصی</string>
+
+    <!-- Sign in Fragment-->
+    <string name="sign_in_title">ورود</string>
+    <string name="sign_in_hint">لطفن شماره همراه خودتان را وارد کنید</string>
+    <string name="sign_in_edit_text_hint">شماره همراه</string>
+    <string name="sign_in_get_code">ورود</string>
+
+    <!-- Validate code Fragment -->
     <string name="auth_code_phone_hint">ما کد فعال‌سازی شما را به شماره همراه‌تان پیامک زدیم {0}</string>
     <string name="auth_code_email_hint">ما کد فعال‌سازی شما را به ایمیل‌تان فرستادیم {0}</string>
     <string name="auth_code_title">کد پیامک شده را وارد کنید</string>
@@ -100,7 +120,7 @@
 
     <!-- Sign Up Fragment -->
     <string name="auth_profile_title">مشخصات نمایه</string>
-    <string name="auth_profile_hint">لطفن یک نام برای خودتان انتخاب کنید \nو یک تصویر نمایه اختیاری</string>
+    <string name="auth_profile_hint">لطفن یک نام برای خودتان انتخاب کنید </string>
     <string name="auth_profile_name_hint">نام شما</string>
     <string name="auth_profile_done">{appName} را شروع کنید</string>
 
@@ -233,6 +253,18 @@
     <string name="chat_unsupported">پیام پشتیبانی نمی‌شود</string>
     <string name="online">\u25CF بر خط</string>
 
+    <string name="messages_action_forward">باز ارسال</string>
+    <string name="messages_action_quote">نقل</string>
+    <string name="messages_action_delete">حذف</string>
+    <string name="messages_action_copy">رونوشت</string>
+    <string name="messages_action_like">پسند</string>
+    <string name="edit_message">ویرایش آخرین پیام</string>
+    <string name="edit_message_error_not_last">شما فقط آخرین پیام را ویرایش کنید</string>
+    <string name="edit_message_error_slowpoke">زمان زیادی از ارسال پیام گذشته</string>
+    <string name="message_forwarded">باز ارسال از: </string>
+    <string name="messages_forwarded">باز ارسال از: {0} و {1} نفر دیگر</string>
+    <string name="messages_quoted">نقل قول از </string>
+
     <!-- Share menu-->
     <string name="share_menu_gallery">نگارخانه</string>
     <string name="share_menu_video">ویدیو</string>
@@ -254,6 +286,12 @@
     <string name="profile_shared_media">رسانه</string>
     <string name="profile_settings_header">تنظیمات</string>
     <string name="profile_settings_notifications">اعلان‌ها</string>
+
+    <string name="profile_contacts_added">در لیست مخاطبین</string>
+    <string name="profile_contacts_available">افزودن به مخاطبین</string>
+    <string name="profile_call">تماس صوتی</string>
+    <string name="profile_compose">پیام جدید</string>
+
     <string name="settings_mobile_phone">تلفن همراه</string>
 
     <string name="profile_adding">در حال افزودن به مخاطبین…</string>
@@ -286,7 +324,7 @@
 
     <string name="group_menu_add">افزودن عضو</string>
     <string name="group_menu_leave">گروه را ترک کنید</string>
-    <string name="group_menu_change_theme">زمینه گروه را تغییر دهید</string>
+    <string name="group_menu_change_theme">نام گروه را تغییر دهید</string>
     <string name="group_menu_change_photo">تصویر گروه را عوض کنید</string>
     <string name="group_menu_integration_token">کد یک‌پارچه‌سازی</string>
 
@@ -299,8 +337,8 @@
 
     <string name="about_group">درباره گروه</string>
     <string name="about_group_empty">متن درباره گروه را بنویسید</string>
-    <string name="theme_group">زمینه گروه</string>
-    <string name="theme_group_empty">زمینه گروه را مشخص کنید</string>
+    <string name="theme_group">زمینه فعالیت گروه</string>
+    <string name="theme_group_empty">زمینه فعالیت گروه را مشخص کنید</string>
 
     <!-- Avatar -->
     <string name="avatar_title_your">نگاره شما</string>
@@ -312,7 +350,7 @@
 
     <!-- Add Contact -->
     <string name="add_contact_title">افزودن مخاطب</string>
-    <string name="add_contact_phone_hint">شماره همراه را وارد کنید</string>
+    <string name="add_contact_phone_hint">شماره همراه، ثابت یا ایمیل‌تان را وارد کنید</string>
     <string name="add_contact_bar_cancel">بی‌خیال</string>
     <string name="add_contact_bar_continue">ادامه بدهید</string>
 
@@ -322,7 +360,7 @@
     <!-- Create Group -->
     <string name="create_group_title">یک گروه ایجاد کنید</string>
     <string name="create_group_name_hint">نامی برای گروه برگزینید</string>
-    <string name="create_group_hint">زمینه گروه را مشخص کنید و یک نگاره برایش برگزینید</string>
+    <string name="create_group_hint">نام گروه را مشخص کنید و یک نگاره برایش برگزینید</string>
     <string name="create_group_search_hint">جستجو با نام</string>
     <string name="create_group_done">انجام رفت</string>
 
@@ -375,14 +413,14 @@
     <string name="edit_name_title_you">نام خود را بنویسید</string>
     <string name="edit_name_title_contact">مشخصه تماس خود را بنویسید</string>
     <string name="edit_name_title_group">نام گروه را وارد کنید</string>
-    <string name="edit_name_title_group_theme">زمینه گروه را مشخص کنید</string>
+    <string name="edit_name_title_group_theme">زمینه فعالیت گروه را مشخص کنید</string>
     <string name="edit_name_title_nick">نام کاربری خود را وارد کنید</string>
     <string name="edit_name_cancel">بی‌خیال</string>
     <string name="edit_name_save">ذخیره کنید</string>
     <string name="edit_name_process">در حال تغییر نام</string>
     <string name="edit_nick_process">در حال تغییر نام کاربری ...</string>
     <string name="edit_about_process">تغییر مشخصات</string>
-    <string name="edit_theme_process">تغییر زمینه</string>
+    <string name="edit_theme_process">تغییر زمینه فعالیت</string>
     <string name="edit_about_edittext_hint">می‌خواهید مردم در مورد شما چه بدانند؟</string>
 
 
@@ -413,6 +451,9 @@
     <string name="not_group_mentions_subtitle">اعلان‌های گروه را فقط هنگام نام‌بردن از من فعال کن</string>
     <string name="not_show_text">نام‌ها و پیام‌ها را نشان بده</string>
     <string name="not_show_text_subtitle">نام فرستنده و پیام را در پانل اعلان‌ها نشان بده</string>
+    <string name="notification_multiple_canversations_after_msg_count">" پیام در "</string>
+    <string name="notifications_multiple_canversations_after_coversations_count">" گپ‌"</string>
+    <string name="notifications_single_conversation_аfter_messages_count">" پیام"</string>
 
     <!-- Pick user -->
     <string name="pick_user_title">فردی را انتخاب کنید</string>
@@ -429,9 +470,13 @@
     <string name="security_title">امنیت</string>
     <string name="security_terminate_title">بستن همه جلسات باز</string>
     <string name="security_terminate_subtitle">خارج شدن از همه جلسات</string>
-    <string name="security_terminate_message">شما دل‌اسوارید که از همه دستگاه‌ها خارج می‌شود؟ تمامی داده‌هاتان پاک خواهد شد.</string>
+    <string name="security_terminate_message">دل‌استوارید که از همه جلسات باز خارج شوید؟ تمامی داده‌هاتان پاک خواهد شد</string>
+    <string name="security_terminate_this_message">دل‌استوارید که ازین جلسه خارج شوید؟ تمامی داده‌هاتان در  {device} پاک خواهد شد</string>
     <string name="security_authorized_header">دست‌گاه‌های شناسایی شده </string>
-    <string name="security_authorized_loading">بارگیری...</string>
+    <string name="security_authorized_loading">بارگذاری...</string>
+    <string name="security_toast_unable_remove_auth">خطا در پاک کردن دست‌گاه</string>
+    <string name="security_this_title">(همین) </string>
+    <string name="security_toast_unable_to_load">خطا! لطفن دوباره تلاش کنید</string>
 
     <!-- Alerts -->
     <string name="alert_delete_messages_text">آیا برای پاک کردن این {0} گپ‌ دل‌استوارید؟</string>
@@ -463,12 +508,18 @@
     <string name="call_incoming">تماس دریافتی</string>
     <string name="call_outgoing">در حال زنگ خوردن...</string>
     <string name="call_connecting">برقراری ارتباط...</string>
+    <string name="call_enable_speaker">بلندگو</string>
+    <string name="call_enable_mute">قطع صدا</string>
+    <string name="call_enable_video">ویدیو</string>
+    <string name="call_to_messages">پیام‌ها</string>
+    <string name="call_add_user">افزودن کاربر</string>
+    <string name="call_notification">برگشت به تماس</string>
 
     <!-- Dialogs -->
     <string name="alert_leave_group_message">آیا برای خروج از گروه "%1$s" دل‌استوارید؟</string>
     <string name="alert_leave_group_yes">خارج شوید</string>
 
-    <string name="alert_delete_group_title">"%1$s" را پاک می‌کنید؟</string>
+    <string name="alert_delete_group_title">گروه "%1$s" را پاک می‌کنید؟</string>
     <string name="alert_delete_group_yes">پاک کنید</string>
 
     <string name="alert_delete_chat_message">گپ‌های با  "%1$s" را پاک می‌کنید؟</string>
@@ -480,22 +531,12 @@
     <string name="alert_revoke_integration_token_message">کد را باطل می‌کنید؟</string>
     <string name="alert_revoke_integration_token_yes">باطل کنید</string>
 
+    <string name="confirm_share">با "%1$s" اشتراکش می‌گذارید؟</string>
+
     <!-- Errors -->
-    <string name="error_connection">مشکل در ارتباط وجود دارد. لطفن اتصال اینترنت‌تان را بررسی کنید.
-
-    </string>
-    <string name="error_unknown">مشکلی در انجام درخواست شما پیش آمده است.
-
-    </string>
+    <string name="error_connection">مشکل در ارتباط وجود دارد. لطفن اتصال اینترنت‌تان را بررسی کنید.</string>
+    <string name="error_unknown">مشکلی در انجام درخواست شما پیش آمده است.</string>
     <string name="error_view_url">آدرس ناشناخته است</string>
 
 
-    <string name="messages_action_forward">بازارسال</string>
-    <string name="messages_action_quote">نقل</string>
-    <string name="messages_action_delete">حذف</string>
-    <string name="messages_action_copy">رونوشت</string>
-    <string name="messages_action_like">پسند</string>
-    <string name="notification_multiple_canversations_after_msg_count">" پیام در "</string>
-    <string name="notifications_multiple_canversations_after_coversations_count">" گپ‌"</string>
-    <string name="notifications_single_conversation_аfter_messages_count">" پیام"</string>
 </resources>

@@ -1,6 +1,7 @@
 package im.actor.api
 
 import cats.data.Xor
+import im.actor.server.CommonErrors
 import im.actor.server.group.GroupErrors.GroupNotFound
 import im.actor.server.office.EntityNotFoundError
 import im.actor.server.user.UserErrors.UserNotFound
@@ -8,7 +9,7 @@ import im.actor.server.user.UserErrors.UserNotFound
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.reflect.ClassTag
 
-package object rpc extends PeersImplicits with HistoryImplicits {
+package object rpc extends PeersImplicits with HistoryImplicits with DialogConverters {
 
   object Implicits extends PeersImplicits with HistoryImplicits
 
@@ -23,13 +24,14 @@ package object rpc extends PeersImplicits with HistoryImplicits {
     val NotSupportedInOss = RpcError(400, "NOT_SUPPORTED_IN_OSS", "Feature is not supported in the Open-Source version.", canTryAgain = false, None)
     val IntenalError = RpcError(500, "INTERNAL_ERROR", "", false, None)
 
-    def forbidden(userMessage: String) = RpcError(403, "FORBIDDEN", userMessage, false, None)
+    def forbidden(userMessage: String = "You are not allowed to do this.") = RpcError(403, "FORBIDDEN", userMessage, false, None)
   }
 
   def recoverCommon: PartialFunction[Throwable, RpcError] = {
-    case UserNotFound(_)     ⇒ CommonRpcErrors.UserNotFound
-    case GroupNotFound(_)    ⇒ CommonRpcErrors.GroupNotFound
-    case EntityNotFoundError ⇒ CommonRpcErrors.EntityNotFound
+    case UserNotFound(_)                 ⇒ CommonRpcErrors.UserNotFound
+    case GroupNotFound(_)                ⇒ CommonRpcErrors.GroupNotFound
+    case EntityNotFoundError             ⇒ CommonRpcErrors.EntityNotFound
+    case CommonErrors.Forbidden(message) ⇒ CommonRpcErrors.forbidden(message)
   }
 
   type OkResp[+A] = A
@@ -61,8 +63,8 @@ package object rpc extends PeersImplicits with HistoryImplicits {
 
   private def requireAuth(implicit clientData: ClientData): MaybeAuthorized[AuthorizedClientData] =
     clientData.authData match {
-      case Some(AuthData(userId, authSid)) ⇒ Authorized(AuthorizedClientData(clientData.authId, clientData.sessionId, userId, authSid))
-      case None                            ⇒ NotAuthorized
+      case Some(AuthData(userId, authSid, appId)) ⇒ Authorized(AuthorizedClientData(clientData.authId, clientData.sessionId, userId, authSid, appId, clientData.remoteAddr))
+      case None                                   ⇒ NotAuthorized
     }
 
   private def toResult[R](authorizedFuture: MaybeAuthorized[Future[RpcError Xor R]])(implicit ec: ExecutionContext): Future[RpcError Xor R] =

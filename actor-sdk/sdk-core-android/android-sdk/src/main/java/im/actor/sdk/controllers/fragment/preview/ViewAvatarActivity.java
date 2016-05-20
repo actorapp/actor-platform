@@ -340,6 +340,9 @@ public class ViewAvatarActivity extends BaseActivity {
                     .asSquare()
                     .start(this);
         } else if (requestCode == Crop.REQUEST_CROP && resultCode == Activity.RESULT_OK) {
+            if (avatarPath == null) {
+                return;
+            }
             if (peer.getPeerType() == PeerType.PRIVATE) {
                 if (peer.getPeerId() == myUid()) {
                     messenger().changeMyAvatar(avatarPath);

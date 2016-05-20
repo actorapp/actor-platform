@@ -39,7 +39,7 @@ final class SequenceServiceSpec extends BaseAppSuite({
   def getState() = {
     val (user, authId, authSid, _) = createUser()
     val sessionId = createSessionId()
-    implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user.id, authSid)))
+    implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user.id, authSid, 42)))
 
     whenReady(service.handleGetState(Vector.empty)) { res ⇒
       res should matchPattern { case Ok(ResponseSeq(0, _)) ⇒ }
@@ -53,7 +53,7 @@ final class SequenceServiceSpec extends BaseAppSuite({
 
     val user2Peer = ApiPeer(ApiPeerType.Private, user2.id)
 
-    implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user.id, authSid)))
+    implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user.id, authSid, 42)))
 
     val message = ApiTextMessage("Hello mr President. Zzz", Vector.empty, None)
 
@@ -128,7 +128,7 @@ final class SequenceServiceSpec extends BaseAppSuite({
 
     val user2Peer = ApiPeer(ApiPeerType.Private, user2.id)
 
-    implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user.id, authSid)))
+    implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user.id, authSid, 42)))
 
     val maxSize = config.maxDifferenceSize
 

@@ -5,19 +5,20 @@ buildscript {
 
     dependencies {
         classpath 'com.android.tools.build:gradle:2.1.0'
+        classpath 'me.tatarka:gradle-retrolambda:3.2.5'
     }
 }
 
 apply plugin: 'com.android.library'
+apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '23.0.2'
+    buildToolsVersion '23.0.3'
 
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 23
-        multiDexEnabled true
     }
 }
 
@@ -30,7 +31,7 @@ android {
                            '../core-shared/src/main/java',
                            '../core-shared/src/ext/java']
             }
-            resources {
+            assets {
                 srcDirs = ['../core-shared/src/main/resources']
             }
         }
@@ -42,8 +43,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 

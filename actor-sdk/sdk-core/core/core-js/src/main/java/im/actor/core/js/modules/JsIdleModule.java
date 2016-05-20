@@ -1,10 +1,10 @@
 package im.actor.core.js.modules;
 
 import im.actor.core.js.JsMessenger;
+import im.actor.core.js.providers.electron.JsElectronApp;
 import im.actor.core.modules.AbsModule;
+import im.actor.core.modules.ModuleActor;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.util.ModuleActor;
-import im.actor.runtime.Log;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Cancellable;
@@ -26,12 +26,7 @@ public class JsIdleModule extends AbsModule {
 
         this.messenger.onAppVisible();
 
-        idleActor = system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public IdleActor create() {
-                return new IdleActor(messenger, context);
-            }
-        }), "js/idle_timer");
+        idleActor = system().actorOf("js/idle_timer", () -> new IdleActor(messenger, context));
     }
 
     public void onHidden() {
@@ -47,6 +42,7 @@ public class JsIdleModule extends AbsModule {
         private boolean isAppVisible = true;
         private JsMessenger messenger;
         private Cancellable flushCancellable;
+        private boolean isElectron = JsElectronApp.isElectron();
 
         public IdleActor(JsMessenger messenger, ModuleContext context) {
             super(context);
@@ -55,18 +51,20 @@ public class JsIdleModule extends AbsModule {
 
         @Override
         public void preStart() {
-            // Log.d("JsIdle", "preStart");
-            JsIdleDetection.subscribe(this);
-            scheduleFlush();
+            if (!isElectron) {
+                JsIdleDetection.subscribe(this);
+                scheduleFlush();
+            }
         }
 
         public void onActionDetected() {
-            // Log.d("JsIdle", "onActionDetected");
             if (!isAppVisible) {
                 isAppVisible = true;
                 messenger.onAppVisible();
             }
-            scheduleFlush();
+            if (!isElectron) {
+                scheduleFlush();
+            }
         }
 
         void scheduleFlush() {
@@ -78,7 +76,6 @@ public class JsIdleModule extends AbsModule {
         }
 
         public void onTimeoutDetected() {
-            // Log.d("JsIdle", "onTimeoutDetected");
             if (isAppVisible) {
                 isAppVisible = false;
                 messenger.onAppHidden();
@@ -86,12 +83,10 @@ public class JsIdleModule extends AbsModule {
         }
 
         public void onHidden() {
-            // Log.d("JsIdle", "onHidden");
             onTimeoutDetected();
         }
 
         public void onVisible() {
-            // Log.d("JsIdle", "onVisible");
             onActionDetected();
         }
 

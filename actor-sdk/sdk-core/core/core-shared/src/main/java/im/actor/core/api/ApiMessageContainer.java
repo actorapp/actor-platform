@@ -22,14 +22,18 @@ public class ApiMessageContainer extends BserObject {
     private ApiMessage message;
     private ApiMessageState state;
     private List<ApiMessageReaction> reactions;
+    private ApiMessageAttributes attribute;
+    private ApiQuotedMessage quotedMessage;
 
-    public ApiMessageContainer(int senderUid, long rid, long date, @NotNull ApiMessage message, @Nullable ApiMessageState state, @NotNull List<ApiMessageReaction> reactions) {
+    public ApiMessageContainer(int senderUid, long rid, long date, @NotNull ApiMessage message, @Nullable ApiMessageState state, @NotNull List<ApiMessageReaction> reactions, @Nullable ApiMessageAttributes attribute, @Nullable ApiQuotedMessage quotedMessage) {
         this.senderUid = senderUid;
         this.rid = rid;
         this.date = date;
         this.message = message;
         this.state = state;
         this.reactions = reactions;
+        this.attribute = attribute;
+        this.quotedMessage = quotedMessage;
     }
 
     public ApiMessageContainer() {
@@ -63,6 +67,16 @@ public class ApiMessageContainer extends BserObject {
         return this.reactions;
     }
 
+    @Nullable
+    public ApiMessageAttributes getAttribute() {
+        return this.attribute;
+    }
+
+    @Nullable
+    public ApiQuotedMessage getQuotedMessage() {
+        return this.quotedMessage;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.senderUid = values.getInt(1);
@@ -78,6 +92,8 @@ public class ApiMessageContainer extends BserObject {
             _reactions.add(new ApiMessageReaction());
         }
         this.reactions = values.getRepeatedObj(7, _reactions);
+        this.attribute = values.optObj(8, new ApiMessageAttributes());
+        this.quotedMessage = values.optObj(9, new ApiQuotedMessage());
     }
 
     @Override
@@ -94,6 +110,12 @@ public class ApiMessageContainer extends BserObject {
             writer.writeInt(6, this.state.getValue());
         }
         writer.writeRepeatedObj(7, this.reactions);
+        if (this.attribute != null) {
+            writer.writeObject(8, this.attribute);
+        }
+        if (this.quotedMessage != null) {
+            writer.writeObject(9, this.quotedMessage);
+        }
     }
 
     @Override
@@ -104,6 +126,8 @@ public class ApiMessageContainer extends BserObject {
         res += ", date=" + this.date;
         res += ", message=" + this.message;
         res += ", reactions=" + this.reactions;
+        res += ", attribute=" + this.attribute;
+        res += ", quotedMessage=" + this.quotedMessage;
         res += "}";
         return res;
     }

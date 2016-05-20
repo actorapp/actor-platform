@@ -3,18 +3,18 @@ package im.actor.server.webrtc
 import akka.actor._
 import akka.http.scaladsl.util.FastFuture
 import akka.pattern.pipe
-import com.relayrides.pushy.apns.util.{ ApnsPayloadBuilder, SimpleApnsPushNotification }
+import com.relayrides.pushy.apns.util.ApnsPayloadBuilder
 import im.actor.api.rpc._
 import im.actor.api.rpc.messaging.{ ApiServiceExPhoneCall, ApiServiceExPhoneMissed, ApiServiceMessage }
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.api.rpc.webrtc._
-import im.actor.concurrent.{ StashingActor, FutureExt }
-import im.actor.server.dialog.DialogExtension
+import im.actor.concurrent.{ FutureExt, StashingActor }
+import im.actor.server.dialog.{ DialogExtension, UserAcl }
 import im.actor.server.eventbus.{ EventBus, EventBusExtension }
 import im.actor.server.group.GroupExtension
 import im.actor.server.model.{ Peer, PeerType }
-import im.actor.server.push.actor.{ ActorPushMessage, ActorPush }
-import im.actor.server.sequence.{ GooglePushMessage, GooglePushExtension, ApplePushExtension, WeakUpdatesExtension }
+import im.actor.server.push.actor.{ ActorPush, ActorPushMessage }
+import im.actor.server.sequence._
 import im.actor.server.user.UserExtension
 import im.actor.server.values.ValuesExtension
 import im.actor.types._
@@ -31,6 +31,7 @@ object WebrtcCallErrors {
   object CallNotStarted extends WebrtcCallError("Call not started")
   object CallAlreadyStarted extends WebrtcCallError("Call already started")
   object NotJoinedToEventBus extends WebrtcCallError("Not joined to EventBus")
+  object CallForbidden extends WebrtcCallError("You are forbidden to call this user")
 }
 
 private[webrtc] sealed trait WebrtcCallMessage
@@ -139,22 +140,23 @@ private trait Members {
   }
 }
 
-private final class WebrtcCallActor extends StashingActor with ActorLogging with Members {
+private final class WebrtcCallActor extends StashingActor with ActorLogging with Members with APNSSend with UserAcl {
   import WebrtcCallMessages._
   import context.dispatcher
 
   private val id = self.path.name.toLong
+  protected implicit val system: ActorSystem = context.system
 
-  private val weakUpdExt = WeakUpdatesExtension(context.system)
-  private val dialogExt = DialogExtension(context.system)
-  private val eventBusExt = EventBusExtension(context.system)
-  private val userExt = UserExtension(context.system)
-  private val groupExt = GroupExtension(context.system)
-  private val valuesExt = ValuesExtension(context.system)
-  private val apnsExt = ApplePushExtension(context.system)
-  private val gcmExt = GooglePushExtension(context.system)
-  private val actorPush = ActorPush(context.system)
-  private val webrtcExt = WebrtcExtension(context.system)
+  private val weakUpdExt = WeakUpdatesExtension(system)
+  private val dialogExt = DialogExtension(system)
+  private val eventBusExt = EventBusExtension(system)
+  private val userExt = UserExtension(system)
+  private val groupExt = GroupExtension(system)
+  private val valuesExt = ValuesExtension(system)
+  private val apnsExt = ApplePushExtension(system)
+  private val gcmExt = GooglePushExtension(system)
+  private val actorPush = ActorPush(system)
+  private val webrtcExt = WebrtcExtension(system)
 
   case class Device(
     deviceId:     EventBus.DeviceId,
@@ -487,77 +489,72 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
       device
     }
 
-  private def fetchMembers(callerUserId: Int, peer: Peer) =
+  private def fetchMembers(callerUserId: Int, peer: Peer): Future[Seq[Int]] =
     peer match {
-      case Peer(PeerType.Private, userId) ⇒ FastFuture.successful(Seq(callerUserId, userId))
-      case Peer(PeerType.Group, groupId)  ⇒ groupExt.getMemberIds(groupId) map (_._1)
-      case _                              ⇒ FastFuture.failed(new RuntimeException(s"Unknown peer type: ${peer.`type`}"))
+      case Peer(PeerType.Private, userId) ⇒
+        withNonBlockedUser(callerUserId, userId)(
+          default = FastFuture.successful(Seq(callerUserId, userId)),
+          failed = FastFuture.failed(WebrtcCallErrors.CallForbidden)
+        )
+      case Peer(PeerType.Group, groupId) ⇒ groupExt.getMemberIds(groupId) map (_._1)
+      case _                             ⇒ FastFuture.failed(new RuntimeException(s"Unknown peer type: ${peer.`type`}"))
     }
 
   private def scheduleIncomingCallUpdates(callees: Seq[UserId]): Future[Unit] = {
-    for {
+    val pushCredsFu = for {
       authIdsMap ← userExt.getAuthIdsMap(callees.toSet)
-      membersMap = authIdsMap flatMap {
-        case (userId, authIds) ⇒ getMember(userId) map (_ → authIds)
+      acredsMap ← FutureExt.ftraverse(authIdsMap.toSeq) {
+        case (userId, authIds) ⇒
+          apnsExt.fetchVoipCreds(authIds.toSet) map (userId → _)
       }
-      acredsMap ← FutureExt.ftraverse(membersMap.toSeq) {
-        case (member, authIds) ⇒
-          apnsExt.fetchVoipCreds(authIds.toSet) map (member → _)
+      gcredsMap ← FutureExt.ftraverse(authIdsMap.toSeq) {
+        case (userId, authIds) ⇒
+          gcmExt.fetchCreds(authIds.toSet) map (userId → _)
       }
-      gcredsMap ← FutureExt.ftraverse(membersMap.toSeq) {
-        case (member, authIds) ⇒
-          gcmExt.fetchCreds(authIds.toSet) map (member → _)
+      actorCredsMap ← FutureExt.ftraverse(authIdsMap.toSeq) {
+        case (userId, authIds) ⇒
+          actorPush.fetchCreds(userId) map (userId → _)
       }
-      ourCredsMap ← FutureExt.ftraverse(membersMap.toSeq) {
-        case (member, authIds) ⇒
-          actorPush.fetchCreds(member.userId) map (member → _)
-      }
-    } yield {
-      for {
-        (member, creds) ← acredsMap
-        cred ← creds
-        instance ← apnsExt.getVoipInstance(cred.apnsKey)
-      } yield {
-        val payload =
-          (new ApnsPayloadBuilder)
+    } yield (acredsMap, gcredsMap, actorCredsMap)
+
+    pushCredsFu map {
+      case (appleCreds, googleCreds, actorCreds) ⇒
+        for {
+          (userId, credsList) ← appleCreds
+          creds ← credsList
+          credsId = extractCredsId(creds)
+          clientFu ← apnsExt.voipClient(credsId)
+          payload = (new ApnsPayloadBuilder)
             .addCustomProperty("callId", id)
-            .addCustomProperty("attemptIndex", member.callAttempts)
+            .addCustomProperty("attemptIndex", 1)
             .buildWithDefaultMaximumLength()
-        val notif = new SimpleApnsPushNotification(cred.token.toByteArray, payload)
-        instance.getQueue.add(notif)
-      }
+          _ = clientFu foreach { implicit c ⇒ sendNotification(payload, creds, userId) }
+        } yield ()
 
-      for {
-        (member, creds) ← gcredsMap
-        cred ← creds
-      } yield {
-        val message = new GooglePushMessage(
-          cred.regId,
-          None,
-          Some(Map("callId" → id.toString, "attemptIndex" → member.callAttempts.toString)),
-          time_to_live = Some(0)
-        )
-        gcmExt.send(cred.projectId, message)
-      }
-
-      for {
-        (member, creds) ← ourCredsMap
-        cred ← creds
-      } yield {
-        actorPush.deliver(ActorPushMessage(
-          "callId" → id.toString,
-          "attemptIndex" → member.callAttempts.toString
-        ), cred)
-      }
-
-      scheduledUpds =
-        callees.map { userId ⇒
-          (
-            userId,
-            context.system.scheduler.schedule(0.seconds, 5.seconds, self, SendIncomingCall(userId))
+        for {
+          (member, creds) ← googleCreds
+          cred ← creds
+          message = new GooglePushMessage(
+            cred.regId,
+            None,
+            Some(Map("callId" → id.toString, "attemptIndex" → "1")),
+            time_to_live = Some(0)
           )
-        }
-          .toMap
+          _ = gcmExt.send(cred.projectId, message)
+        } yield ()
+
+        for {
+          (member, creds) ← actorCreds
+          cred ← creds
+          _ = actorPush.deliver(ActorPushMessage(
+            "callId" → id.toString,
+            "attemptIndex" → "1"
+          ), cred)
+        } yield ()
+
+        scheduledUpds = (callees map { userId ⇒
+          userId → system.scheduler.schedule(0.seconds, 5.seconds, self, SendIncomingCall(userId))
+        }).toMap
     }
   }
 

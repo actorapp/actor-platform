@@ -2,6 +2,6 @@
 * Copyright (C) 2016 Actor LLC. <https://actor.im>
 */
 
-import { browserHistory, hashHistory } from 'react-router';
+import hashHistory from 'react-router/lib/hashHistory';
 
 export default hashHistory;

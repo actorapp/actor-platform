@@ -1,0 +1,185 @@
+{
+	"app": {
+		"name": "Actor"
+	},
+
+	"language": {
+
+		"code": "En",
+
+		"format": {
+			"time": {
+				"yesterday":{
+					"short": "Yest",
+					"full": "Yesterday"
+				},
+				"now": "Now",
+				"minutes": {
+					"short": "{minutes} min",
+					"full": "{minutes} minutes"
+				},
+				"hours": {
+					"short": "{hours} hrs",
+					"full": "{hours} hours"
+				}
+			}
+		},
+
+		"file_size": {
+			"bytes": "{bytes} B",
+			"kbytes": "{kbytes} KB",
+			"mbytes": "{mbytes} MB",
+			"gbytes": "{gbytes} GB"
+		},
+
+		"referencing": {
+			"you": "You",
+			"thee": "You"
+		},
+
+		"sequence": {
+			"or": ", ",
+			"and": " and "
+		}
+	},
+
+	"groups": {
+		"members": { 
+			"one": "{count} member",
+			"other": "{count} members"
+		}
+	},
+
+	"presence": {
+		"online": "online",
+		"offline": "offline",
+		"now": "last seen just now",
+		"today": "last seen today at {time}",
+		"yesterday": "last seen yesterday at {time}",
+		"at_day": "last seen {date}",
+		"at_day_time": "last seen {date} at {time}",
+		"members": "{count} online"
+	},
+
+	"typing": {
+		"simple": "typing...",
+		"user": "{user} is typing...",
+		"group": {
+			"sequenced": "{users} are typing...",
+			"many": "{count} people are typing..."
+		}
+	},
+
+	"content": {
+
+		"unknown": "Unsupported content",
+		"document": "Document",
+		"photo": "Photo",
+		"video": "Video",
+		"audio": "Audio",
+		"contact": "Contact",
+		"location": "Location",
+		"sticker": "Sticker",
+
+		"service": {
+			"registered": {
+				"full": "{name} joined {app_name}",
+				"compact": "Joined {app_name}"
+			},
+			"groups": {
+				"created": "{name} created the group",
+				"invited": "{name} invited {name_added}",
+				"joined": "{name} joined group",
+				"kicked": "{name} kicked {name_kicked}",
+				"left": "{name} left group",
+				"title_changed": {
+					"full":  "{name} changed the group name to \"{title}\"",
+					"compact": "{name} changed the group name"
+				},
+				"topic_changed": {
+					"full":  "{name} changed the group topic to \"{topic}\"",
+					"compact": "{name} changed the group topic"
+				},
+				"about_changed": {
+					"full":  "{name} changed the group about to \"{about}\"",
+					"compact": "{name} changed the group about"
+				},
+				"avatar_changed": "{name} changed the group photo",
+				"avatar_removed": "{name} removed the group photo"
+			},
+			"calls": {
+				"missed": "Missed call",
+				"ended": "Call ended"
+			}
+		}
+	},
+
+	"errors": {
+		"unknown": "Unknown error. Please, try again later.",
+		"internal": "Internal server error. Please, try again later.",
+		"phone": {
+			"empty": "Please, enter your phone number.",
+			"incorrect": "Entered phone number is invalid. Please, try again."
+		},
+		"code": {
+			"empty": "The code is invalid. Please try again.",
+			"incorrect": "Entered code is incorrect. Please, try again.",
+			"expired": "The code has expired. Please, start authentication again."
+		},
+		"groups": {
+			"already_joined": "You have already joined the group.",
+			"unable_to_join": "Unable to join the group."
+		}
+	},
+
+	"months": {
+		"january": { 
+			"compact": "jan",
+			"full":"january"
+		},
+		"february": { 
+			"compact": "feb",
+			"full":"february"
+		},
+		"march": { 
+			"compact": "mar",
+			"full":"march"
+		},
+		"april": { 
+			"compact": "apr",
+			"full":"april"
+		},
+		"may": { 
+			"compact": "may",
+			"full":"may"
+		},
+		"june": { 
+			"compact": "jun",
+			"full":"june"
+		},
+		"july": { 
+			"compact": "jul",
+			"full":"july"
+		},
+		"august": { 
+			"compact": "aug",
+			"full":"august"
+		},
+		"september": { 
+			"compact": "sep",
+			"full":"september"
+		},
+		"october": { 
+			"compact": "oct",
+			"full":"october"
+		},
+		"november": { 
+			"compact": "nov",
+			"full":"november"
+		},
+		"december": { 
+			"compact": "dec",
+			"full":"december"
+		}
+	}
+}

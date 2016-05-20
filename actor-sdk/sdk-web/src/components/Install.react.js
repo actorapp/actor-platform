@@ -24,7 +24,7 @@ class Install extends Component {
                src="assets/images/logo.png"
                srcSet="assets/images/logo@2x.png 2x"/>
 
-          <FormattedHTMLMessage id="main.install" values={{appName: this.appName}}/>
+          <FormattedHTMLMessage id="main.install" values={{ appName: this.appName }}/>
 
         </div>
       </section>

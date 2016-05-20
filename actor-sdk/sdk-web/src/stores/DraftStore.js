@@ -2,36 +2,27 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import { Store } from 'flux/utils';
+import { ReduceStore } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
 
-import DialogStore from './DialogStore';
-
-class DraftStore extends Store {
-  constructor(dispatcher) {
-    super(dispatcher);
-
-    this._draft = null;
+class DraftStore extends ReduceStore {
+  getInitialState() {
+    return null;
   }
 
   getDraft() {
-    return this._draft;
+    return this.getState();
   }
 
-  __onDispatch(action) {
+  reduce(state, action) {
     switch (action.type) {
       case ActionTypes.DRAFT_LOAD:
-        this._draft = action.draft;
-        this.__emitChange();
-        break;
-
       case ActionTypes.DRAFT_CHANGE:
-        this._draft = action.draft;
-        this.__emitChange();
-        break;
+        return action.draft;
 
       default:
+        return state;
     }
   }
 }

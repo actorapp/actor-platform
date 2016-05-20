@@ -3,9 +3,8 @@
  */
 
 import React, { Component } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import { shouldComponentUpdate } from 'react-addons-pure-render-mixin';
 import { Container } from 'flux/utils';
-import classnames from 'classnames';
 import { PeerTypes } from '../constants/ActorAppConstants';
 
 import ActivityStore from '../stores/ActivityStore';
@@ -16,10 +15,6 @@ import UserProfile from './activity/UserProfile.react';
 import GroupProfile from './activity/GroupProfile.react';
 
 class ActivitySection extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   static getStores() {
     return [DialogStore, DialogInfoStore, ActivityStore];
   }
@@ -27,17 +22,15 @@ class ActivitySection extends Component {
   static calculateState() {
     return {
       peer: DialogStore.getCurrentPeer(),
-      info: DialogInfoStore.getInfo(),
+      info: DialogInfoStore.getState(),
       isOpen: ActivityStore.isOpen()
     };
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if (!nextState.isOpen) {
-      return false;
-    }
+  constructor(props) {
+    super(props);
 
-    return shallowCompare(this, nextProps, nextState);
+    this.shouldComponentUpdate = shouldComponentUpdate.bind(this);
   }
 
   componentDidUpdate() {
@@ -53,14 +46,14 @@ class ActivitySection extends Component {
       case PeerTypes.USER:
         return <UserProfile user={info} />;
       case PeerTypes.GROUP:
-        return <GroupProfile group={info}/>;
+        return <GroupProfile group={info} />;
       default:
         return null;
     }
   }
 
   render() {
-    const { peer, info, isOpen } = this.state;
+    const { peer, isOpen } = this.state;
     if (!isOpen || !peer) {
       return <section className="activity" />;
     }

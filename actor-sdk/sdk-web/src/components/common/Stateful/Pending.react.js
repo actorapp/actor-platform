@@ -2,7 +2,7 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import React, { Component, PropTypes } from 'react';
+import { Component, PropTypes } from 'react';
 
 export default class Pending extends Component {
   constructor(props) {

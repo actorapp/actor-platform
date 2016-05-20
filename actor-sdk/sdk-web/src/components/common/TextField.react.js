@@ -10,10 +10,7 @@ import classnames from 'classnames';
 class TextField extends Component {
   static propTypes = {
     className: PropTypes.string,
-    floatingLabel: PropTypes.oneOfType([
-      PropTypes.node,
-      PropTypes.string
-    ]),
+    floatingLabel: PropTypes.node,
     type: PropTypes.string,
     value: PropTypes.string,
     ref: PropTypes.string,
@@ -74,7 +71,6 @@ class TextField extends Component {
   }
 
   focus = () => {
-    const { ref } = this.props;
     const input = this.props.ref || this.refs.input
     if (!input) {
       return;
@@ -92,13 +88,13 @@ class TextField extends Component {
 
   handleFocus = (event) => {
     const { onFocus } = this.props;
-    this.setState({isFocused: true});
+    this.setState({ isFocused: true });
     onFocus && onFocus(event);
   };
 
   handleBlur = (event) => {
     const { onBlur } = this.props;
-    this.setState({isFocused: false});
+    this.setState({ isFocused: false });
     onBlur && onBlur(event);
   };
 }

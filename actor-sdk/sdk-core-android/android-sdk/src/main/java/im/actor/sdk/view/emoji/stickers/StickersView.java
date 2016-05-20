@@ -15,6 +15,7 @@ import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 public class StickersView extends RecyclerView {
     boolean disableWhileFastScroll = false;
     EmojiKeyboard keyboard;
+    private StickersAdapter stickersAdapter;
 
     public StickersView(Context context, EmojiKeyboard keyboard) {
         super(context);
@@ -41,56 +42,30 @@ public class StickersView extends RecyclerView {
     }
 
     private void buildAdapter(Context context) {
-//        adapter = new StickerAdapter(context, keyboard, new StickerAdapter.ScrollTo() {
-//            @Override
-//            public void requestScroll(final int position) {
-//
-//                disableWhileFastScroll = true;
-//                post(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        scrollToPosition(position);
-////                        setSelection(position);
-//                        View v = getChildAt(position);
-//                        if (v != null) {
-//                            v.requestFocus();
-//                        }
-//                    }
-//                });
-//                postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        disableWhileFastScroll = false;
-//                    }
-//                }, 50);
-//            }
-//        });
 
-
-//        setHasFixedSize(true);
         GridLayoutManager layoutManager = new GridLayoutManager(context, Screen.getWidth() / Screen.dp(70));
         setLayoutManager(layoutManager);
 
 
-        StickersAdapter stickersAdapter = new StickersAdapter(keyboard, this);
+        stickersAdapter = new StickersAdapter(keyboard, this);
         setAdapter(stickersAdapter);
 
         RecyclerView packSwitch = new RecyclerView(context);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, HORIZONTAL, false);
         packSwitch.setLayoutManager(linearLayoutManager);
+        packSwitch.setItemAnimator(null);
+        packSwitch.setHasFixedSize(true);
         PacksAdapter packsAdapter = new PacksAdapter(context, stickersAdapter, keyboard.getStickerIndicatorContainer());
         packSwitch.setAdapter(packsAdapter);
         stickersAdapter.setPacksAdapter(packsAdapter);
         keyboard.getStickerIndicatorContainer().removeAllViews();
         keyboard.getStickerIndicatorContainer().addView(packSwitch, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-
     }
 
-    @Override
-    protected void onScrollChanged(int l, int t, int oldl, int oldt) {
-        super.onScrollChanged(l, t, oldl, oldt);
-//        if (adapter != null && !disableWhileFastScroll) {
-//            adapter.onScroll(getChildAt(0));
-//        }
+    public void relesase() {
+        if (stickersAdapter != null) {
+            stickersAdapter.release();
+        }
     }
+
 }

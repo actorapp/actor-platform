@@ -24,7 +24,7 @@ import im.actor.core.modules.encryption.entity.PrivateKey;
 import im.actor.core.modules.encryption.entity.UserKeys;
 import im.actor.core.modules.encryption.entity.UserKeysGroup;
 import im.actor.core.modules.encryption.entity.PublicKey;
-import im.actor.core.util.ModuleActor;
+import im.actor.core.modules.ModuleActor;
 import im.actor.core.util.RandomUtils;
 import im.actor.runtime.Crypto;
 import im.actor.runtime.Log;
@@ -39,9 +39,8 @@ import im.actor.runtime.promise.Promise;
 import im.actor.runtime.crypto.Curve25519;
 import im.actor.runtime.crypto.ratchet.RatchetKeySignature;
 import im.actor.runtime.function.Consumer;
-import im.actor.runtime.promise.Promises;
 import im.actor.runtime.promise.PromisesArray;
-import im.actor.runtime.promise.Tuple2;
+import im.actor.runtime.function.Tuple2;
 import im.actor.runtime.storage.KeyValueStorage;
 
 /**
@@ -137,7 +136,7 @@ public class KeyManagerActor extends ModuleActor {
 
                     // Just ignore
                 }
-            }).done(self());
+            });
         } else {
             onMainKeysReady();
         }
@@ -190,7 +189,7 @@ public class KeyManagerActor extends ModuleActor {
 
                             // Ignore. This will freeze all encryption operations.
                         }
-                    }).done(self());
+                    });
         } else {
             onAllKeysReady();
         }
@@ -215,7 +214,7 @@ public class KeyManagerActor extends ModuleActor {
      * Fetching Own Identity key and group id
      */
     private Promise<OwnIdentity> fetchOwnIdentity() {
-        return Promises.success(new OwnIdentity(ownKeys.getKeyGroupId(), ownKeys.getIdentityKey()));
+        return Promise.success(new OwnIdentity(ownKeys.getKeyGroupId(), ownKeys.getIdentityKey()));
     }
 
     /**
@@ -225,7 +224,7 @@ public class KeyManagerActor extends ModuleActor {
      */
     private Promise<PrivateKey> fetchPreKey(byte[] publicKey) {
         try {
-            return Promises.success(ManagedList.of(ownKeys.getPreKeys())
+            return Promise.success(ManagedList.of(ownKeys.getPreKeys())
                     .filter(PrivateKey.PRE_KEY_EQUALS(publicKey))
                     .first());
         } catch (Exception e) {
@@ -244,7 +243,7 @@ public class KeyManagerActor extends ModuleActor {
      */
     private Promise<PrivateKey> fetchPreKey(long keyId) {
         try {
-            return Promises.success(ManagedList.of(ownKeys.getPreKeys())
+            return Promise.success(ManagedList.of(ownKeys.getPreKeys())
                     .filter(PrivateKey.PRE_KEY_EQUALS_ID(keyId))
                     .first());
         } catch (Exception e) {
@@ -279,7 +278,7 @@ public class KeyManagerActor extends ModuleActor {
 
         final UserKeys userKeys = getCachedUserKeys(uid);
         if (userKeys != null) {
-            return Promises.success(userKeys);
+            return Promise.success(userKeys);
         }
 
         return api(new RequestLoadPublicKeyGroups(new ApiUserOutPeer(uid, user.getAccessHash())))
@@ -321,7 +320,7 @@ public class KeyManagerActor extends ModuleActor {
         }
 
         return pickUserGroup(uid, keyGroupId)
-                .mapPromise(new Function<Tuple2<UserKeysGroup, UserKeys>, Promise<PublicKey>>() {
+                .flatMap(new Function<Tuple2<UserKeysGroup, UserKeys>, Promise<PublicKey>>() {
                     @Override
                     public Promise<PublicKey> apply(final Tuple2<UserKeysGroup, UserKeys> keysGroup) {
 
@@ -331,7 +330,7 @@ public class KeyManagerActor extends ModuleActor {
 
                         for (PublicKey p : keysGroup.getT1().getEphemeralKeys()) {
                             if (p.getKeyId() == keyId) {
-                                return Promises.success(p);
+                                return Promise.success(p);
                             }
                         }
 
@@ -391,7 +390,7 @@ public class KeyManagerActor extends ModuleActor {
      */
     private Promise<PublicKey> fetchUserPreKey(final int uid, final int keyGroupId) {
         return pickUserGroup(uid, keyGroupId)
-                .mapPromise(new Function<Tuple2<UserKeysGroup, UserKeys>, Promise<PublicKey>>() {
+                .flatMap(new Function<Tuple2<UserKeysGroup, UserKeys>, Promise<PublicKey>>() {
                     @Override
                     public Promise<PublicKey> apply(final Tuple2<UserKeysGroup, UserKeys> keyGroups) {
                         return api(new RequestLoadPrePublicKeys(new ApiUserOutPeer(uid, getUser(uid).getAccessHash()), keyGroupId))
@@ -534,21 +533,19 @@ public class KeyManagerActor extends ModuleActor {
     }
 
     private Promise<Tuple2<UserKeysGroup, UserKeys>> pickUserGroup(int uid, final int keyGroupId) {
-        return ask(self(), new FetchUserKeys(uid))
-                .map(new Function<UserKeys, Tuple2<UserKeysGroup, UserKeys>>() {
-                    @Override
-                    public Tuple2<UserKeysGroup, UserKeys> apply(UserKeys userKeys) {
-                        UserKeysGroup keysGroup = null;
-                        for (UserKeysGroup g : userKeys.getUserKeysGroups()) {
-                            if (g.getKeyGroupId() == keyGroupId) {
-                                keysGroup = g;
-                            }
-                        }
-                        if (keysGroup == null) {
-                            throw new RuntimeException("Key Group #" + keyGroupId + " not found");
-                        }
-                        return new Tuple2<>(keysGroup, userKeys);
-                    }
+        return fetchUserGroups(uid)
+                .map(userKeys -> {
+                    UserKeysGroup keysGroup = null;
+//                    for (UserKeysGroup g : userKeys.getUserKeysGroups()) {
+//                        if (g.getKeyGroupId() == keyGroupId) {
+//                            keysGroup = g;
+//                        }
+//                    }
+//                    if (keysGroup == null) {
+//                        throw new RuntimeException("Key Group #" + keyGroupId + " not found");
+//                    }
+//                    return new Tuple2<>(keysGroup, userKeys);
+                    return null;
                 });
     }
 

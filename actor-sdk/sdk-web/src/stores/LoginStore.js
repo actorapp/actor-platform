@@ -150,7 +150,6 @@ class LoginStore extends Store {
       case ActionTypes.AUTH_SET_LOGGED_IN:
 
         myUid = ActorClient.getUid();
-        const user = ActorClient.getUser(myUid);
         this.__emitChange();
         break;
       case ActionTypes.AUTH_SET_LOGGED_OUT:
@@ -159,7 +158,7 @@ class LoginStore extends Store {
         break;
       default:
     }
-  };
+  }
 }
 
 export default new LoginStore(Dispatcher);

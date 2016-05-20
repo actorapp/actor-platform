@@ -1,0 +1,32 @@
+.result-list {
+  margin: 0;
+  padding: $modal-padding 0;
+  &__item {
+    padding: 8px 14px;
+
+    list-style: none;
+    .title {
+      line-height: 44px;
+    }
+
+    .avatar__image,
+    .avatar__placeholder {
+      margin-right: $modal-padding;
+    }
+
+    &--active {
+      font-weight: 500;
+
+      cursor: pointer;
+
+      color: white;
+      border-radius: $default-border-radius;
+      background-color: rgba($dark-sky-blue, 1);
+    }
+
+    &--empty {
+      text-align: center;
+      padding: ($modal-padding * 2) 0;
+    }
+  }
+}

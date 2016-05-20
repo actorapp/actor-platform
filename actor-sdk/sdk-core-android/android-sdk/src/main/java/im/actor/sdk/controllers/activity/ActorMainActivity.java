@@ -1,17 +1,17 @@
 package im.actor.sdk.controllers.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 
-
+import im.actor.core.entity.Contact;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.controllers.activity.base.ControllerActivity;
-import im.actor.sdk.controllers.activity.controllers.MainBaseController;
-import im.actor.sdk.controllers.activity.controllers.MainPhoneController;
+import im.actor.sdk.controllers.root.MainBaseController;
+import im.actor.sdk.controllers.root.MainPhoneController;
 import im.actor.core.entity.Dialog;
 
-import static im.actor.sdk.util.ActorSDKMessenger.messenger;
-
+/**
+ * Root Activity of Application. Do not move unless home screen buttons will stop working.
+ */
 public class ActorMainActivity extends ControllerActivity<MainBaseController> {
 
     @Override
@@ -24,24 +24,16 @@ public class ActorMainActivity extends ControllerActivity<MainBaseController> {
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
 
-
-        // getWindow().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.bg_main)));
+        // For faster keyboard opening
         getWindow().setBackgroundDrawable(null);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
     public void onDialogClicked(Dialog item) {
-        getController().onItemClicked(item);
+        getController().onDialogClicked(item);
     }
 
 
+    public void onContactClicked(Contact contact) {
+        getController().onContactClicked(contact);
+    }
 }

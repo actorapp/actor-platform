@@ -7,8 +7,6 @@ xcodeproj 'ActorApp.xcodeproj'
 
 inhibit_all_warnings!
 
-# link_with 'ActorApp'
-
 target 'ActorApp' do
     xcodeproj 'ActorApp.xcodeproj'
 

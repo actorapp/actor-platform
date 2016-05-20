@@ -3,17 +3,15 @@ package im.actor.sdk.controllers.conversation.messages;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
-import im.actor.core.viewmodel.CommandCallback;
-import im.actor.core.viewmodel.UserPresence;
-import im.actor.core.viewmodel.UserVM;
 import im.actor.sdk.ActorSDK;
+import im.actor.sdk.controllers.conversation.MessagesAdapter;
+import im.actor.sdk.controllers.conversation.messages.preprocessor.PreprocessedData;
 import im.actor.sdk.controllers.conversation.view.BubbleContainer;
-import im.actor.sdk.controllers.fragment.ActorBinder;
+import im.actor.sdk.controllers.conversation.view.ReactionSpan;
+import im.actor.sdk.util.DateFormatting;
 import im.actor.sdk.util.Strings;
 import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.core.entity.Message;
@@ -30,7 +28,6 @@ public abstract class MessageHolder extends BindedViewHolder
     protected BubbleContainer container;
     protected boolean isFullSize;
     protected Message currentMessage;
-    protected ActorBinder.Binding onlineBinding;
     protected Spannable reactions;
     protected boolean hasMyReaction;
 
@@ -62,14 +59,14 @@ public abstract class MessageHolder extends BindedViewHolder
         return adapter.getMessagesFragment().getPeer();
     }
 
-    public final void bindData(Message message, Message prev, Message next, PreprocessedData preprocessedData) {
+    public final void bindData(Message message, Message prev, Message next, long readDate, long receiveDate, PreprocessedData preprocessedData) {
         boolean isUpdated = currentMessage == null || currentMessage.getRid() != message.getRid();
         currentMessage = message;
 
         // Date div
         boolean useDiv;
         if (prev != null) {
-            useDiv = !Strings.areSameDays(prev.getDate(), message.getDate());
+            useDiv = !DateFormatting.areSameDays(prev.getDate(), message.getDate());
         } else {
             useDiv = true;
         }
@@ -99,20 +96,6 @@ public abstract class MessageHolder extends BindedViewHolder
         // Updating selection state
         container.setBubbleSelected(adapter.isSelected(currentMessage));
 
-        //online
-        if (onlineBinding != null) {
-            getAdapter().getBinder().unbind(onlineBinding);
-        }
-        final UserVM user = users().get(message.getSenderId());
-        onlineBinding = getAdapter().getBinder().bind(new ActorBinder.OnChangedListener<Boolean>() {
-            @Override
-            public void onChanged(Boolean online) {
-                setOnline(online, user.isBot());
-            }
-
-        }, user.getPresence());
-        setOnline(user.getPresence().get().getState().equals(UserPresence.State.ONLINE), user.isBot());
-
         hasMyReaction = false;
         if (preprocessedData != null) {
             reactions = preprocessedData.getReactionsSpannable();
@@ -125,11 +108,10 @@ public abstract class MessageHolder extends BindedViewHolder
             }
         }
         // Bind content
-        bindData(message, isUpdated, preprocessedData);
-        ActorSDK.sharedActor().getMessenger().onUserVisible(message.getSenderId());
+        bindData(message, readDate, receiveDate, isUpdated, preprocessedData);
     }
 
-    protected abstract void bindData(Message message, boolean isUpdated, PreprocessedData preprocessedData);
+    protected abstract void bindData(Message message, long readDate, long receiveDate, boolean isUpdated, PreprocessedData preprocessedData);
 
     @Override
     public void onAvatarClick(int uid) {
@@ -171,9 +153,9 @@ public abstract class MessageHolder extends BindedViewHolder
         Spannable timeWithReactions = null;
         if (reactions != null) {
             SpannableStringBuilder builder = new SpannableStringBuilder(reactions);
-            timeWithReactions = builder.append(Strings.formatTime(currentMessage.getDate()));
+            timeWithReactions = builder.append(DateFormatting.formatTime(currentMessage.getDate()));
         }
-        time.setText(timeWithReactions != null ? timeWithReactions : Strings.formatTime(currentMessage.getDate()));
+        time.setText(timeWithReactions != null ? timeWithReactions : DateFormatting.formatTime(currentMessage.getDate()));
         time.setMovementMethod(LinkMovementMethod.getInstance());
     }
 }

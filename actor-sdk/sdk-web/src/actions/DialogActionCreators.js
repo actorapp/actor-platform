@@ -8,6 +8,7 @@ import history from '../utils/history';
 import ActorClient from '../utils/ActorClient';
 import PeerUtils from '../utils/PeerUtils';
 
+import ActionCreators from './ActionCreators';
 import MessageActionCreators from './MessageActionCreators';
 import TypingActionCreators from './TypingActionCreators';
 import DialogInfoActionCreators from './DialogInfoActionCreators';
@@ -18,62 +19,10 @@ import DraftActionCreators from './DraftActionCreators';
 import DialogStore from '../stores/DialogStore';
 import MessageStore from '../stores/MessageStore';
 
-let messagesBinding = null;
-
-const DialogActionCreators = {
+class DialogActionCreators extends ActionCreators {
   setDialogs(dialogs) {
     dispatch(ActionTypes.DIALOGS_CHANGED, { dialogs });
-  },
-
-  selectDialogPeer(peer) {
-    const currentPeer = DialogStore.getCurrentPeer();
-
-    // Unbind from previous peer
-    if (currentPeer !== null) {
-      DraftActionCreators.saveDraft(currentPeer);
-      dispatch(ActionTypes.UNBIND_DIALOG_PEER, { peer: currentPeer });
-
-      this.onConversationClosed(currentPeer);
-      messagesBinding && messagesBinding.unbind();
-      ActorClient.unbindTyping(currentPeer, TypingActionCreators.setTyping);
-
-      switch (currentPeer.type) {
-        case PeerTypes.USER:
-          ActorClient.unbindUser(currentPeer.id, DialogInfoActionCreators.setDialogInfo);
-          ActorClient.unbindUserOnline(currentPeer.id, OnlineActionCreators.setUserOnline);
-          break;
-        case PeerTypes.GROUP:
-          ActorClient.unbindGroup(currentPeer.id, DialogInfoActionCreators.setDialogInfo);
-          ActorClient.unbindGroupOnline(currentPeer.id, OnlineActionCreators.setGroupOnline);
-          break;
-        default:
-      }
-    }
-
-    if (peer !== null) {
-      dispatch(ActionTypes.BIND_DIALOG_PEER, { peer });
-      DraftActionCreators.loadDraft(peer);
-
-      this.onConversationOpen(peer);
-      messagesBinding = ActorClient.bindMessages(peer, MessageActionCreators.setMessages);
-      ActorClient.bindTyping(peer, TypingActionCreators.setTyping);
-
-      switch(peer.type) {
-        case PeerTypes.USER:
-          ActorClient.bindUser(peer.id, DialogInfoActionCreators.setDialogInfo);
-          ActorClient.bindUserOnline(peer.id, OnlineActionCreators.setUserOnline);
-          break;
-        case PeerTypes.GROUP:
-          ActorClient.bindGroup(peer.id, DialogInfoActionCreators.setDialogInfo);
-          ActorClient.bindGroupOnline(peer.id, OnlineActionCreators.setGroupOnline);
-          GroupProfileActionCreators.getIntegrationToken(peer.id);
-          break;
-        default:
-      }
-
-      DialogActionCreators.loadMoreMessages(peer);
-    }
-  },
+  }
 
   selectDialogPeerUser(uid) {
     if (uid === ActorClient.getUid()) {
@@ -81,23 +30,58 @@ const DialogActionCreators = {
     } else {
       history.push(`/im/${PeerUtils.peerToString(ActorClient.getUserPeer(uid))}`);
     }
-  },
+  }
 
-  onConversationOpen(peer) {
+  selectDialogPeer(peer) {
+    const currentPeer = DialogStore.getCurrentPeer();
+
+    if (currentPeer) {
+      DraftActionCreators.saveDraft(currentPeer);
+      dispatch(ActionTypes.UNBIND_DIALOG_PEER, { peer: currentPeer });
+      ActorClient.onConversationClosed(currentPeer);
+
+      this.removeBindings('peer');
+    }
+
+    if (!peer) {
+      return;
+    }
+
+    DraftActionCreators.loadDraft(peer);
+    dispatch(ActionTypes.BIND_DIALOG_PEER, { peer });
     ActorClient.onConversationOpen(peer);
-  },
 
-  onConversationClosed(peer) {
-    ActorClient.onConversationClosed(peer);
-  },
+    const bindings = [
+      ActorClient.bindMessages(peer, MessageActionCreators.setMessages),
+      ActorClient.bindTyping(peer, TypingActionCreators.setTyping)
+    ];
+
+    switch (peer.type) {
+      case PeerTypes.USER:
+        bindings.push(
+          ActorClient.bindUser(peer.id, DialogInfoActionCreators.setDialogInfo),
+          ActorClient.bindUserOnline(peer.id, OnlineActionCreators.setUserOnline)
+        );
+        break;
+      case PeerTypes.GROUP:
+        bindings.push(
+          ActorClient.bindGroup(peer.id, DialogInfoActionCreators.setDialogInfo),
+          ActorClient.bindGroupOnline(peer.id, OnlineActionCreators.setGroupOnline)
+        );
+        GroupProfileActionCreators.getIntegrationToken(peer.id);
+        break;
+    }
+
+    this.setBindings('peer', bindings);
+  }
 
   onDialogsEnd() {
     ActorClient.onDialogsEnd();
-  },
+  }
 
   onChatEnd(peer) {
     ActorClient.onChatEnd(peer);
-  },
+  }
 
   leaveGroup(gid) {
     dispatchAsync(ActorClient.leaveGroup(gid), {
@@ -105,7 +89,7 @@ const DialogActionCreators = {
       success: ActionTypes.GROUP_LEAVE_SUCCESS,
       failure: ActionTypes.GROUP_LEAVE_ERROR
     }, { gid });
-  },
+  }
 
   deleteChat(peer) {
     const gid = peer.id;
@@ -130,7 +114,7 @@ const DialogActionCreators = {
         break;
       default:
     }
-  },
+  }
 
   clearChat(peer) {
     dispatchAsync(ActorClient.clearChat(peer), {
@@ -138,7 +122,7 @@ const DialogActionCreators = {
       success: ActionTypes.GROUP_CLEAR_SUCCESS,
       failure: ActionTypes.GROUP_CLEAR_ERROR
     }, { peer });
-  },
+  }
 
   hideChat(peer) {
     dispatchAsync(ActorClient.hideChat(peer), {
@@ -146,7 +130,11 @@ const DialogActionCreators = {
       success: ActionTypes.GROUP_HIDE_SUCCESS,
       failure: ActionTypes.GROUP_HIDE_ERROR
     }, { peer });
-  },
+  }
+
+  blockUser(id) {
+    console.debug('Block user %s', id);
+  }
 
   loadMoreMessages(peer) {
     if (MessageStore.isAllRendered()) {
@@ -155,6 +143,6 @@ const DialogActionCreators = {
       dispatch(ActionTypes.MESSAGES_LOAD_MORE);
     }
   }
-};
+}
 
-export default DialogActionCreators;
+export default new DialogActionCreators();

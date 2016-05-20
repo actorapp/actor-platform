@@ -8,8 +8,7 @@ import im.actor.server.JNDI
 import org.flywaydb.core.Flyway
 import slick.driver.PostgresDriver.api.Database
 import slick.jdbc.hikaricp.HikariCPJdbcDataSource
-import slick.jdbc.JdbcDataSource
-import slick.util.AsyncExecutor
+import slick.jdbc.{ DataSourceJdbcDataSource, JdbcDataSource }
 
 import scala.util.{ Failure, Success, Try }
 
@@ -18,8 +17,15 @@ trait DbExtension extends Extension {
   val db: Database
 }
 
-final class DbExtensionImpl(val ds: HikariCPJdbcDataSource, val db: Database) extends Extension with FlywayInit {
-  private lazy val flyway: Flyway = initFlyway(ds.ds)
+final class DbExtensionImpl(val db: Database) extends Extension with FlywayInit {
+  private lazy val flyway: Flyway = {
+    val ds = db.source match {
+      case s: HikariCPJdbcDataSource   ⇒ s.ds
+      case s: DataSourceJdbcDataSource ⇒ s.ds
+      case s                           ⇒ throw new IllegalArgumentException(s"Unknown DataSource: ${s.getClass.getName}")
+    }
+    initFlyway(ds)
+  }
 
   def clean(): Unit = flyway.clean()
 
@@ -27,23 +33,24 @@ final class DbExtensionImpl(val ds: HikariCPJdbcDataSource, val db: Database) ex
 }
 
 object DbExtension extends ExtensionId[DbExtensionImpl] with ExtensionIdProvider {
-  private val JndiPath = "DefaultDataSource"
+  private val JndiPath = "DefaultDatabase"
+
+  private var _system: ActorSystem = null
+  def system = _system
 
   override def lookup = DbExtension
 
   override def createExtension(system: ExtendedActorSystem): DbExtensionImpl = {
+    this._system = system
     val log = Logging(system, getClass)
 
-    val sqlConfig = system.settings.config.getConfig("services.postgresql")
-    val queueSize = sqlConfig.getInt("queueSize")
-    val ds = initDs(sqlConfig).get
-    val db = initDb(ds, queueSize)
+    val db = initDb(system.settings.config)
 
     system.registerOnTermination {
       db.close()
     }
 
-    val ext = new DbExtensionImpl(ds, db)
+    val ext = new DbExtensionImpl(db)
 
     Try(ext.migrate()) match {
       case Success(_) ⇒
@@ -68,8 +75,23 @@ object DbExtension extends ExtensionId[DbExtensionImpl] with ExtensionIdProvider
     )).resolve(), null, "main", getClass.getClassLoader)
   }
 
-  private def initDb(ds: HikariCPJdbcDataSource, queueSize: Int): Database = {
-    JNDI.initialContext.rebind(JndiPath, ds.ds)
-    Database.forSource(ds, executor = AsyncExecutor("AsyncExecutor.actor", 20, queueSize))
+  private def initDb(appConfig: Config): Database = {
+    val sqlConfig = appConfig.getConfig("services.postgresql")
+
+    val useConfig = for {
+      host ← sqlConfig.get[Try[String]]("host")
+      port ← sqlConfig.get[Try[Int]]("port")
+      db ← sqlConfig.get[Try[String]]("db")
+      _ ← sqlConfig.get[Try[String]]("user")
+      _ ← sqlConfig.get[Try[String]]("password")
+    } yield sqlConfig.withFallback(ConfigFactory.parseString(
+      s"""
+         |url: "jdbc:postgresql://"${host}":"${port}"/"${db}
+      """.stripMargin
+    ))
+
+    val db = Database.forConfig("", useConfig.get)
+    JNDI.initialContext.rebind(JndiPath, db)
+    db
   }
 }

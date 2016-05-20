@@ -42,7 +42,7 @@ public class JsFileSystemProvider implements FileSystemRuntime {
     public boolean isFsPersistent() {
         return false;
     }
-
+    
     @Override
     public FileSystemReference fileFromDescriptor(String descriptor) {
         if (files.containsKey(descriptor)) {

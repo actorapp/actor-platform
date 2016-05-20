@@ -51,6 +51,7 @@ public class EmojiKeyboard extends BaseKeyboard implements OnSmileClickListener,
     private Peer peer;
     private View stickerIndicatorContainer;
     private View stickerSwitchContainer;
+    private SmilePagerAdapter mEmojisAdapter;
 
 
     public EmojiKeyboard(Activity activity) {
@@ -108,7 +109,7 @@ public class EmojiKeyboard extends BaseKeyboard implements OnSmileClickListener,
             }
         }));
 
-        final SmilePagerAdapter mEmojisAdapter = new SmilePagerAdapter(this);
+        mEmojisAdapter = new SmilePagerAdapter(this);
         mEmojisAdapter.setTabs(emojiPagerIndicator);
         emojiPager.setAdapter(mEmojisAdapter);
         emojiPagerIndicator.setViewPager(emojiPager);
@@ -212,5 +213,10 @@ public class EmojiKeyboard extends BaseKeyboard implements OnSmileClickListener,
         return (LinearLayout) stickerSwitchContainer;
     }
 
+    public void release() {
+        if (mEmojisAdapter != null) {
+            mEmojisAdapter.release();
+        }
+    }
 
 }

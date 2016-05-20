@@ -36,21 +36,25 @@ public abstract class HolderAdapter<V> extends BaseAdapter {
             view = convertView;
         }
 
-        holder.bind(obj, position, context);
+        onBindViewHolder(holder, obj, position, context);
 
         return view;
     }
 
     public void onMovedToScrapHeap(View view) {
         if (view.getTag() instanceof ViewHolder) {
-            ((ViewHolder) view.getTag()).unbind();
+            ((ViewHolder) view.getTag()).unbind(false);
         }
     }
 
     public void dispose() {
         for (ViewHolder holder : holders) {
-            holder.dispose();
+            holder.unbind(true);
         }
+    }
+
+    protected void onBindViewHolder(ViewHolder<V> holder, V obj, int position, Context context) {
+        holder.bind(obj, position, context);
     }
 
     protected abstract ViewHolder<V> createHolder(V obj);

@@ -1,46 +1,22 @@
 package im.actor.server.sequence
 
-import java.util
+import java.io.File
+import java.util.concurrent.{ ExecutionException, TimeUnit, TimeoutException }
 
 import akka.actor.{ ActorSystem, ExtendedActorSystem, Extension, ExtensionId, ExtensionIdProvider }
 import akka.event.Logging
-import com.relayrides.pushy.apns._
-import com.relayrides.pushy.apns.util.{ SSLContextUtil, SimpleApnsPushNotification }
-import com.typesafe.config.Config
-import im.actor.server.db.ActorPostgresDriver.api._
+import com.relayrides.pushy.apns.ApnsClient
+import com.relayrides.pushy.apns.util.SimpleApnsPushNotification
 import im.actor.server.db.DbExtension
 import im.actor.server.model.push.ApplePushCredentials
 import im.actor.server.persist.push.ApplePushCredentialsRepo
+import im.actor.util.log.AnyRefLogSource
 
-import scala.collection.JavaConversions._
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.collection.concurrent.TrieMap
+import scala.concurrent.Future
+import scala.concurrent.blocking
 import scala.concurrent.duration._
 import scala.util.Try
-
-final case class ApplePushManagerConfig(certs: List[ApnsCert])
-
-object ApplePushManagerConfig {
-  def load(config: Config): ApplePushManagerConfig = {
-    ApplePushManagerConfig(
-      certs = config.getConfigList("certs").toList map ApnsCert.fromConfig
-    )
-
-  }
-}
-
-final case class ApnsCert(key: Int, path: String, password: String, isSandbox: Boolean, isVoip: Boolean)
-
-object ApnsCert {
-  def fromConfig(config: Config): ApnsCert = {
-    ApnsCert(
-      config.getInt("key"),
-      config.getString("path"),
-      config.getString("password"),
-      Try(config.getBoolean("voip")).getOrElse(false),
-      Try(config.getBoolean("sandbox")).getOrElse(false)
-    )
-  }
-}
 
 object ApplePushExtension extends ExtensionId[ApplePushExtension] with ExtensionIdProvider {
   override def createExtension(system: ExtendedActorSystem): ApplePushExtension = new ApplePushExtension(system)
@@ -48,96 +24,89 @@ object ApplePushExtension extends ExtensionId[ApplePushExtension] with Extension
   override def lookup(): ExtensionId[_ <: Extension] = ApplePushExtension
 }
 
-final class ApplePushExtension(system: ActorSystem) extends Extension {
+final class ApplePushExtension(system: ActorSystem) extends Extension with AnyRefLogSource {
+
+  private val log = Logging(system, this)
+
+  type Client = ApnsClient[SimpleApnsPushNotification]
+
   import system.dispatcher
 
   private lazy val db = DbExtension(system).db
 
-  private val config = ApplePushManagerConfig.load(
+  private val config = ApplePushConfig.load(
     Try(system.settings.config.getConfig("services.apple.push"))
       .getOrElse(system.settings.config.getConfig("push.apple"))
   )
 
-  private val (managers, voipManagers): (Map[Int, PushManager[SimpleApnsPushNotification]], Map[Int, PushManager[SimpleApnsPushNotification]]) = {
-    val (certs, voipCerts) = config.certs.partition(!_.isVoip)
+  // there are some apple push keys, that require topic(bundleId)
+  // to be included in apple push notification. We provide apns key -> bundle id
+  // mapping for them.
+  val apnsBundleId: Map[Int, String] = (config.certs collect {
+    case ApnsCert(Some(key), Some(bundleId), _, _, _, _) ⇒ key → bundleId
+  }).toMap
 
-    ((certs map createManager).toMap, (voipCerts map createManager).toMap)
+  private val (clients, voipClients): (TrieMap[String, Future[Client]], TrieMap[String, Future[Client]]) = {
+    val (certs, voipCerts) = config.certs.partition(!_.isVoip)
+    (createClients(certs), createClients(voipCerts))
   }
 
-  def getInstance(key: Int): Option[PushManager[SimpleApnsPushNotification]] = managers.get(key)
+  def client(id: String): Option[Future[Client]] = clients.get(id)
 
-  def getVoipInstance(key: Int): Option[PushManager[SimpleApnsPushNotification]] = voipManagers.get(key)
-
-  def findCreds(authId: Long): Future[Option[ApplePushCredentials]] = db.run(ApplePushCredentialsRepo.find(authId))
-
-  def fetchCreds(authIds: Set[Long]): Future[Seq[ApplePushCredentials]] = db.run(ApplePushCredentialsRepo.find(authIds))
+  def voipClient(id: String): Option[Future[Client]] = voipClients.get(id)
 
   def fetchVoipCreds(authIds: Set[Long]): Future[Seq[ApplePushCredentials]] = fetchCreds(authIds) map (_ filter (_.isVoip))
 
-  private def createManager(cert: ApnsCert) = {
-    val env = cert.isSandbox match {
-      case false ⇒ ApnsEnvironment.getProductionEnvironment
-      case true  ⇒ ApnsEnvironment.getSandboxEnvironment
+  private def fetchCreds(authIds: Set[Long]): Future[Seq[ApplePushCredentials]] = db.run(ApplePushCredentialsRepo.find(authIds))
+
+  private def createClient(cert: ApnsCert): Future[Client] = {
+    val host = cert.isSandbox match {
+      case false ⇒ ApnsClient.PRODUCTION_APNS_HOST
+      case true  ⇒ ApnsClient.DEVELOPMENT_APNS_HOST
     }
 
-    cert.isSandbox match {
-      case false ⇒ ApnsEnvironment.getProductionEnvironment
-      case true  ⇒ ApnsEnvironment.getSandboxEnvironment
+    val connectFuture: Future[Client] = Future {
+      blocking {
+        val client = new ApnsClient[SimpleApnsPushNotification](new File(cert.path), cert.password)
+        client.connect(host).get(20, TimeUnit.SECONDS)
+        log.debug("Established client connection for cert: {}, is voip: {}", extractCertKey(cert), cert.isVoip)
+        client
+      }
     }
 
-    val mgr = new PushManager[SimpleApnsPushNotification](
-      env,
-      SSLContextUtil.createDefaultSSLContext(cert.path, cert.password),
-      null,
-      null,
-      null,
-      new PushManagerConfiguration(),
-      s"ActorPushManager-${cert.key}"
-    )
-
-    mgr.registerRejectedNotificationListener(new LoggingRejectedNotificationListener(system))
-
-    mgr.registerExpiredTokenListener(new CleanExpiredTokenListener(system))
-
-    mgr.start()
-
-    system.scheduler.schedule(10.seconds, 1.hour) {
-      mgr.requestExpiredTokens()
+    connectFuture onFailure {
+      case err ⇒
+        err match {
+          case e: TimeoutException ⇒
+            log.warning("Timeout while waiting for client to connect: {}", e)
+          case e: ExecutionException ⇒
+            log.warning("Execution error on client connection: {}", e)
+          case e ⇒
+            log.warning("Error on client connection: {}", e)
+        }
+        system.scheduler.scheduleOnce(5.seconds) { recreateClient(cert) }
     }
 
-    (cert.key, mgr)
+    connectFuture
   }
-}
 
-private class LoggingRejectedNotificationListener(_system: ActorSystem) extends RejectedNotificationListener[SimpleApnsPushNotification] {
-  private implicit val system: ActorSystem = _system
-  private implicit val ec: ExecutionContext = _system.dispatcher
-  private lazy val seqUpdExt = SeqUpdatesExtension(system)
-  private val log = Logging(system, getClass)
-
-  override def handleRejectedNotification(pushManager: PushManager[_ <: SimpleApnsPushNotification], notification: SimpleApnsPushNotification, rejectionReason: RejectedNotificationReason): Unit = {
-    log.warning("APNS rejected notification with reason: {}", rejectionReason)
-
-    if (rejectionReason.getErrorCode == RejectedNotificationReason.INVALID_TOKEN.getErrorCode) {
-      log.warning("Deleting token")
-      log.error("Implement push token deletion")
-      seqUpdExt.deleteApplePushCredentials(notification.getToken)
-    }
+  // recreate and try to connect client, if client connection failed
+  // during previous creation
+  private def recreateClient(cert: ApnsCert): Unit = {
+    val certKey = extractCertKey(cert)
+    log.debug("Retry to create client for cert : {}, is voip: {}", certKey, cert.isVoip)
+    val targetMap = if (cert.isVoip) voipClients else clients
+    targetMap -= certKey
+    targetMap += certKey → createClient(cert)
   }
-}
 
-private class CleanExpiredTokenListener(_system: ActorSystem) extends ExpiredTokenListener[SimpleApnsPushNotification] {
-  private implicit val system: ActorSystem = _system
-  private val log = Logging(system, getClass)
-  implicit val db: Database = DbExtension(system).db
+  private def createClients(certs: List[ApnsCert]): TrieMap[String, Future[Client]] =
+    TrieMap(certs map (c ⇒ extractCertKey(c) → createClient(c)): _*)
 
-  override def handleExpiredTokens(
-    pushManager:   PushManager[_ <: SimpleApnsPushNotification],
-    expiredTokens: util.Collection[ExpiredToken]
-  ): Unit = {
-    expiredTokens foreach { t ⇒
-      log.warning("APNS reported expired token")
-      //UserExtension(system).logoutByAppleToken(t.getToken)
-    }
+  private def extractCertKey(cert: ApnsCert): String = (cert.key, cert.bundleId) match {
+    case (Some(key), _)      ⇒ key.toString
+    case (_, Some(bundleId)) ⇒ bundleId
+    case _                   ⇒ throw new RuntimeException("Wrong cert format, no apns key, no bundle id")
   }
+
 }

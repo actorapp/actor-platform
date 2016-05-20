@@ -87,7 +87,7 @@ import DZNWebViewController
     /// Terms of Service Text
     public var termsOfServiceText: String? = nil
     
-    /// App name in loc. strings
+    /// App name
     public var appName: String = "Actor"
     
     /// Use background on welcome screen
@@ -147,6 +147,15 @@ import DZNWebViewController
     
     // Reachability
     private var reachability: Reachability!
+    
+    
+    public override init() {
+        
+        // Auto Loading Application name
+        if let name = NSBundle.mainBundle().objectForInfoDictionaryKey(String(kCFBundleNameKey)) as? String {
+            self.appName = name
+        }
+    }
     
     public func createActor() {
         
@@ -213,7 +222,7 @@ import DZNWebViewController
         
         // Bind Messenger LifeCycle
         
-        binder.bind(messenger.getAppState().isSyncing, closure: { (value: JavaLangBoolean?) -> () in
+        binder.bind(messenger.getGlobalState().isSyncing, closure: { (value: JavaLangBoolean?) -> () in
             if value!.booleanValue() {
                 if self.syncTask == nil {
                     self.syncTask = UIApplication.sharedApplication().beginBackgroundTaskWithName("Background Sync", expirationHandler: { () -> Void in
@@ -234,8 +243,12 @@ import DZNWebViewController
         
         // Bind badge counter
         
-        binder.bind(Actor.getAppState().globalCounter, closure: { (value: JavaLangInteger?) -> () in
-            UIApplication.sharedApplication().applicationIconBadgeNumber = Int((value!).integerValue)
+        binder.bind(Actor.getGlobalState().globalCounter, closure: { (value: JavaLangInteger?) -> () in
+            if let v = value {
+                UIApplication.sharedApplication().applicationIconBadgeNumber = Int(v.integerValue)
+            } else {
+                UIApplication.sharedApplication().applicationIconBadgeNumber = 0
+            }
         })
         
         // Push registration
@@ -356,6 +369,8 @@ import DZNWebViewController
                 } else {
                     Actor.checkCall(jlong(callId)!, withAttempt: 0)
                 }
+            } else if let seq = aps["seq"] as? String {
+                Actor.onPushReceivedWithSeq(jint(seq)!)
             }
         }
     }
@@ -456,7 +471,7 @@ import DZNWebViewController
             }
             
             dispatchOnUi { () -> Void in
-                self.binder.bind(self.messenger.getAppState().isSyncing, valueModel2: self.messenger.getAppState().isConnecting) {
+                self.binder.bind(self.messenger.getGlobalState().isSyncing, valueModel2: self.messenger.getGlobalState().isConnecting) {
                     (isSyncing: JavaLangBoolean?, isConnecting: JavaLangBoolean?) -> () in
                     
                     if isSyncing!.booleanValue() || isConnecting!.booleanValue() {
@@ -487,6 +502,12 @@ import DZNWebViewController
     /// Handling URL Opening in application
     func openUrl(url: String) {
         if let u = NSURL(string: url) {
+            
+            // Handle phone call
+            if (u.scheme.lowercaseString == "telprompt") {
+                 UIApplication.sharedApplication().openURL(u)
+                return
+            }
             
             // Handle web invite url
             if (u.scheme.lowercaseString == "http" || u.scheme.lowercaseString == "https") &&  inviteUrlHost != nil {
@@ -519,28 +540,33 @@ import DZNWebViewController
                 return
             }
             
-            if let bindedController = bindedToWindow?.rootViewController {
-                // Dismiss Old Presented Controller to show new one
-                if let presented = bindedController.presentedViewController {
-                    presented.dismissViewControllerAnimated(true, completion: nil)
-                }
+            
+            
+            if (url.isValidUrl()){
                 
-                // Building Controller for Web preview
-                let controller: UIViewController
-                if #available(iOS 9.0, *) {
-                    controller = SFSafariViewController(URL: u)
+                if let bindedController = bindedToWindow?.rootViewController {
+                    // Dismiss Old Presented Controller to show new one
+                    if let presented = bindedController.presentedViewController {
+                        presented.dismissViewControllerAnimated(true, completion: nil)
+                    }
+                    
+                    // Building Controller for Web preview
+                    let controller: UIViewController
+                    if #available(iOS 9.0, *) {
+                        controller = SFSafariViewController(URL: u)
+                    } else {
+                        controller = AANavigationController(rootViewController: DZNWebViewController(URL: u))
+                    }
+                    if AADevice.isiPad {
+                        controller.modalPresentationStyle = .FullScreen
+                    }
+                    
+                    // Presenting controller
+                    bindedController.presentViewController(controller, animated: true, completion: nil)
                 } else {
-                    controller = AANavigationController(rootViewController: DZNWebViewController(URL: u))
+                    // Just Fallback. Might never happend
+                    UIApplication.sharedApplication().openURL(u)
                 }
-                if AADevice.isiPad {
-                    controller.modalPresentationStyle = .FullScreen
-                }
-                
-                // Presenting controller
-                bindedController.presentViewController(controller, animated: true, completion: nil)
-            } else {
-                // Just Fallback. Might never happend
-                UIApplication.sharedApplication().openURL(u)
             }
         }
     }
@@ -551,7 +577,7 @@ import DZNWebViewController
             let alert = UIAlertController(title: nil, message: AALocalized("GroupJoinMessage"), preferredStyle: .Alert)
             alert.addAction(UIAlertAction(title: AALocalized("AlertNo"), style: .Cancel, handler: nil))
             alert.addAction(UIAlertAction(title: AALocalized("GroupJoinAction"), style: .Default){ (action) -> Void in
-                AAExecutions.execute(Actor.joinGroupViaLinkCommandWithUrl(token)!, type: .Safe, ignore: [], successBlock: { (val) -> Void in
+                AAExecutions.execute(Actor.joinGroupViaLinkCommandWithToken(token)!, type: .Safe, ignore: [], successBlock: { (val) -> Void in
                     
                     // TODO: Fix for iPad
                     let groupId = val as! JavaLangInteger

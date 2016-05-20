@@ -2,9 +2,8 @@
 
 import minimist from 'minimist';
 
-import webpack from 'webpack';
-import webpackDevServer from 'webpack-dev-server';
-import webpackConfig from './webpack.config.js';
+import createDevServer from './webpack.server';
+import webpackConfig from './webpack.config';
 
 import gulp from 'gulp';
 import gutil from 'gulp-util';
@@ -16,19 +15,13 @@ import rename from 'gulp-rename';
 const argv = minimist(process.argv.slice(2));
 const isProduction = argv.release || false;
 
-gulp.task('webpack:dev', ['sdk'], () => {
-  new webpackDevServer(webpack(webpackConfig), {
-    publicPath: '/',
-    contentBase: './dist',
-    hot: true,
-    historyApiFallback: true,
-    stats: {
-      colors: true
-    }
-  }).listen(3000, '0.0.0.0', (err) => {
+gulp.task('webpack:dev', () => {
+  const server = createDevServer(webpackConfig);
+  server.listen(3000, '0.0.0.0', (err) => {
     if (err) {
       throw new gutil.PluginError('[webpack:dev]', err);
     }
+
     gutil.log('[webpack:dev]', 'http://0.0.0.0:3000');
   });
 });
@@ -75,7 +68,7 @@ gulp.task('sdk', shell.task('npm run build'));
 
 gulp.task('static', ['sdk', 'assets', 'workers']);
 
-gulp.task('dev', ['static', 'webpack:dev']);
+gulp.task('dev', ['webpack:dev']);
 
 gulp.task('dev:core', ['lib', 'dev']);
 

@@ -4,8 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.os.Handler;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -27,11 +30,13 @@ import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.Props;
+import im.actor.runtime.android.AndroidContext;
 import im.actor.runtime.files.FileSystemReference;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
+import im.actor.sdk.controllers.conversation.MessagesAdapter;
+import im.actor.sdk.controllers.conversation.messages.preprocessor.PreprocessedData;
 import im.actor.sdk.core.audio.AudioPlayerActor;
-import im.actor.sdk.util.Strings;
 import im.actor.sdk.view.TintImageView;
 
 import static im.actor.sdk.util.ActorSDKMessenger.myUid;
@@ -60,16 +65,17 @@ public class AudioHolder extends MessageHolder {
     protected String currentAudio;
     protected static String currentPlayingAudio;
     protected ImageView playBtn;
-    protected Activity activity;
     protected static ActorRef audioActor;
     protected FileVM downloadFileVM;
     protected UploadFileVM uploadFileVM;
     protected long currentDuration;
     protected boolean treckingTouch;
+    protected Handler mainThread;
 
     public AudioHolder(MessagesAdapter fragment, final View itemView) {
         super(fragment, itemView, false);
-        context = fragment.getMessagesFragment().getActivity();
+        context = fragment.getMessagesFragment().getContext();
+        mainThread = new Handler(context.getMainLooper());
         waitColor = ActorSDK.sharedActor().style.getConvStatePendingColor();
         sentColor = ActorSDK.sharedActor().style.getConvStateSentColor();
         deliveredColor = ActorSDK.sharedActor().style.getConvStateDeliveredColor();
@@ -127,11 +133,10 @@ public class AudioHolder extends MessageHolder {
         messageBubble = (FrameLayout) itemView.findViewById(R.id.fl_bubble);
         playBtn = (ImageView) itemView.findViewById(R.id.contact_avatar);
         playBtn.getBackground().setColorFilter(Color.parseColor("#4295e3"), PorterDuff.Mode.MULTIPLY);
-        activity = (Activity) playBtn.getContext();
         callback = new AudioPlayerActor.AudioPlayerCallback() {
             @Override
             public void onStart(final String fileName) {
-                activity.runOnUiThread(new Runnable() {
+                mainThread.post(new Runnable() {
                     @Override
                     public void run() {
                         play(fileName);
@@ -141,7 +146,7 @@ public class AudioHolder extends MessageHolder {
 
             @Override
             public void onStop(final String fileName) {
-                activity.runOnUiThread(new Runnable() {
+                mainThread.post(new Runnable() {
                     @Override
                     public void run() {
                         stop();
@@ -151,7 +156,7 @@ public class AudioHolder extends MessageHolder {
 
             @Override
             public void onPause(final String fileName, float progress) {
-                activity.runOnUiThread(new Runnable() {
+                mainThread.post(new Runnable() {
                     @Override
                     public void run() {
                         if (currentAudio != null && currentAudio.equals(fileName)) {
@@ -163,7 +168,7 @@ public class AudioHolder extends MessageHolder {
 
             @Override
             public void onProgress(final String fileName, final float progress) {
-                activity.runOnUiThread(new Runnable() {
+                mainThread.post(new Runnable() {
                     @Override
                     public void run() {
                         if (currentAudio != null && currentAudio.equals(fileName) && currentPlayingAudio.equals(currentAudio)) {
@@ -175,11 +180,12 @@ public class AudioHolder extends MessageHolder {
 
             @Override
             public void onError(final String fileName) {
-                activity.runOnUiThread(new Runnable() {
+                mainThread.post(new Runnable() {
                     @Override
                     public void run() {
                         if (currentAudio != null && currentAudio.equals(fileName)) {
-                            Toast.makeText(activity, "error playing this file", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "error playing this file", Toast.LENGTH_SHORT).show();
+                            keepScreenOn(false);
                         }
                     }
                 });
@@ -191,8 +197,9 @@ public class AudioHolder extends MessageHolder {
     }
 
     private void play(String fileName) {
-        if (currentAudio.equals(fileName)) {
+        if (currentAudio != null && currentAudio.equals(fileName)) {
             playBtn.setImageResource(R.drawable.ic_pause_white_24dp);
+            keepScreenOn(true);
         } else {
             stop();
         }
@@ -211,14 +218,16 @@ public class AudioHolder extends MessageHolder {
             duration.setText(ActorSDK.sharedActor().getMessenger().getFormatter().formatDuration((int) (currentDuration / 1000)));
         }
         treckingTouch = false;
+        keepScreenOn(false);
     }
 
     private void pause() {
         playBtn.setImageResource(R.drawable.ic_play_arrow_white_24dp);
+        keepScreenOn(false);
     }
 
     @Override
-    protected void bindData(final Message message, boolean isUpdated, PreprocessedData preprocessedData) {
+    protected void bindData(final Message message, long readDate, long receiveDate, boolean isUpdated, PreprocessedData preprocessedData) {
 
         VoiceContent audioMsg = (VoiceContent) message.getContent();
         if (message.getSenderId() == myUid()) {
@@ -242,17 +251,17 @@ public class AudioHolder extends MessageHolder {
                     stateIcon.setResource(R.drawable.msg_clock);
                     stateIcon.setTint(waitColor);
                     break;
-                case READ:
-                    stateIcon.setResource(R.drawable.msg_check_2);
-                    stateIcon.setTint(readColor);
-                    break;
-                case RECEIVED:
-                    stateIcon.setResource(R.drawable.msg_check_2);
-                    stateIcon.setTint(deliveredColor);
-                    break;
                 case SENT:
-                    stateIcon.setResource(R.drawable.msg_check_1);
-                    stateIcon.setTint(sentColor);
+                    if (message.getSortDate() <= readDate) {
+                        stateIcon.setResource(R.drawable.msg_check_2);
+                        stateIcon.setTint(readColor);
+                    } else if (message.getSortDate() <= receiveDate) {
+                        stateIcon.setResource(R.drawable.msg_check_2);
+                        stateIcon.setTint(deliveredColor);
+                    } else {
+                        stateIcon.setResource(R.drawable.msg_check_1);
+                        stateIcon.setTint(sentColor);
+                    }
                     break;
             }
         } else {
@@ -391,6 +400,17 @@ public class AudioHolder extends MessageHolder {
     public static void stopPlaying() {
         if (audioActor != null) {
             audioActor.send(new AudioPlayerActor.Stop());
+        }
+    }
+
+    private void keepScreenOn(boolean on) {
+        if (context != null) {
+            Window window =  ((FragmentActivity) context).getWindow();
+            if (on == true)
+                window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            else
+                window.clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
         }
     }
 }

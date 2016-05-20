@@ -9,4 +9,4 @@ export default function isInside(coords, rect) {
     coords.x < rect.left + rect.width &&
     coords.y < rect.top + rect.height
   )
-};
+}

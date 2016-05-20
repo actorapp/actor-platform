@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 
+import im.actor.core.util.StringUtil;
 import im.actor.runtime.bser.Bser;
 import im.actor.runtime.bser.BserCreator;
 import im.actor.runtime.bser.BserObject;
@@ -26,8 +27,8 @@ import im.actor.runtime.storage.ListEngineItem;
 
 public class Dialog extends BserObject implements ListEngineItem {
 
-    public static Dialog fromBytes(byte[] date) throws IOException {
-        return Bser.parse(new Dialog(), date);
+    public static Dialog fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new Dialog(), data);
     }
 
     public static BserCreator<Dialog> CREATOR = new BserCreator<Dialog>() {
@@ -51,6 +52,8 @@ public class Dialog extends BserObject implements ListEngineItem {
     private String dialogTitle;
     @Property("readonly, nonatomic")
     private int unreadCount;
+
+
     @Property("readonly, nonatomic")
     private long rid;
     @Property("readonly, nonatomic")
@@ -59,6 +62,14 @@ public class Dialog extends BserObject implements ListEngineItem {
     private int senderId;
     @Property("readonly, nonatomic")
     private long date;
+
+    @Nullable
+    @Property("readonly, nonatomic")
+    private Long knownReadDate;
+    @Nullable
+    @Property("readonly, nonatomic")
+    private Long knownReceiveDate;
+
     @NotNull
     @SuppressWarnings("NullableProblems")
     @Property("readonly, nonatomic")
@@ -67,15 +78,13 @@ public class Dialog extends BserObject implements ListEngineItem {
     @SuppressWarnings("NullableProblems")
     @Property("readonly, nonatomic")
     private String text;
-    @NotNull
-    @SuppressWarnings("NullableProblems")
     @Property("readonly, nonatomic")
-    private MessageState status;
+    private int relatedUid;
+
+
     @Nullable
     @Property("readonly, nonatomic")
     private Avatar dialogAvatar;
-    @Property("readonly, nonatomic")
-    private int relatedUid;
 
     public Dialog(@NotNull Peer peer,
                   long sortKey,
@@ -85,12 +94,15 @@ public class Dialog extends BserObject implements ListEngineItem {
                   long rid,
                   @NotNull ContentType messageType,
                   @NotNull String text,
-                  @NotNull MessageState status,
                   int senderId,
                   long date,
-                  int relatedUid) {
+                  int relatedUid,
+                  @Nullable
+                  Long knownReadDate,
+                  @Nullable
+                  Long knownReceiveDate) {
         this.peer = peer;
-        this.dialogTitle = dialogTitle;
+        this.dialogTitle = StringUtil.ellipsize(dialogTitle, MAX_LENGTH);
         this.dialogAvatar = dialogAvatar;
         this.unreadCount = unreadCount;
         this.rid = rid;
@@ -98,13 +110,10 @@ public class Dialog extends BserObject implements ListEngineItem {
         this.senderId = senderId;
         this.date = date;
         this.messageType = messageType;
-        if (text.length() > MAX_LENGTH) {
-            this.text = text.substring(0, MAX_LENGTH) + "...";
-        } else {
-            this.text = text;
-        }
-        this.status = status;
+        this.text = StringUtil.ellipsize(text, MAX_LENGTH);
         this.relatedUid = relatedUid;
+        this.knownReadDate = knownReadDate;
+        this.knownReceiveDate = knownReceiveDate;
     }
 
     private Dialog() {
@@ -151,11 +160,6 @@ public class Dialog extends BserObject implements ListEngineItem {
         return text;
     }
 
-    @NotNull
-    public MessageState getStatus() {
-        return status;
-    }
-
     public int getRelatedUid() {
         return relatedUid;
     }
@@ -165,16 +169,34 @@ public class Dialog extends BserObject implements ListEngineItem {
         return dialogAvatar;
     }
 
+    @Nullable
+    public Long getKnownReadDate() {
+        return knownReadDate;
+    }
+
+    @Nullable
+    public Long getKnownReceiveDate() {
+        return knownReceiveDate;
+    }
+
+    public boolean isRead() {
+        return knownReadDate != null && sortDate <= knownReadDate;
+    }
+
+    public boolean isReceived() {
+        return knownReceiveDate != null && sortDate <= knownReceiveDate;
+    }
+
     public Dialog editPeerInfo(String title, Avatar dialogAvatar) {
-        return new Dialog(peer, sortDate, title, dialogAvatar, unreadCount, rid, messageType, text, status, senderId,
-                date, relatedUid);
+        return new Dialog(peer, sortDate, StringUtil.ellipsize(title, MAX_LENGTH), dialogAvatar, unreadCount, rid, messageType, text, senderId,
+                date, relatedUid, knownReadDate, knownReceiveDate);
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         peer = Peer.fromBytes(values.getBytes(1));
 
-        dialogTitle = values.getString(2);
+        dialogTitle = StringUtil.ellipsize(values.getString(2), MAX_LENGTH);
         byte[] av = values.optBytes(3);
         if (av != null) {
             dialogAvatar = new Avatar(av);
@@ -187,13 +209,12 @@ public class Dialog extends BserObject implements ListEngineItem {
         senderId = values.getInt(7);
         date = values.getLong(8);
         messageType = ContentType.fromValue(values.getInt(9));
-        text = values.getString(10);
-        if (text.length() > MAX_LENGTH) {
-            text = text.substring(0, MAX_LENGTH) + "...";
-        }
+        text = StringUtil.ellipsize(values.getString(10), MAX_LENGTH);
 
-        status = MessageState.fromValue(values.getInt(11));
         relatedUid = values.getInt(12);
+
+        knownReceiveDate = values.optLong(13);
+        knownReadDate = values.optLong(14);
     }
 
     @Override
@@ -210,8 +231,14 @@ public class Dialog extends BserObject implements ListEngineItem {
         writer.writeLong(8, date);
         writer.writeInt(9, messageType.getValue());
         writer.writeString(10, text);
-        writer.writeInt(11, status.getValue());
         writer.writeInt(12, relatedUid);
+
+        if (knownReceiveDate != null) {
+            writer.writeLong(13, knownReceiveDate);
+        }
+        if (knownReadDate != null) {
+            writer.writeLong(14, knownReadDate);
+        }
     }
 
     @Override

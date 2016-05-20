@@ -3,99 +3,57 @@
  */
 
 import React, { Component, PropTypes } from 'react';
-import classnames from 'classnames';
-
 import { lightbox } from '../../../utils/ImageUtils';
 
-let cache = [];
+const MAX_WIDTH = 300;
+const MAX_HEIGHT = 400;
 
-/**
- * Class that represents a component for display photo message content
- * @todo move cache to store;
- */
 class Photo extends Component {
   static propTypes = {
-    content: PropTypes.object.isRequired,
-    className: PropTypes.string,
-    loadedClassName: PropTypes.string
+    fileUrl: PropTypes.string,
+    w: PropTypes.number.isRequired,
+    h: PropTypes.number.isRequired,
+    preview: PropTypes.string.isRequired,
+    isUploading: PropTypes.bool.isRequired
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      isImageLoaded: this.isCached()
-    };
+  onClick(event) {
+    event.preventDefault();
+    lightbox.open(event.target.src, 'message');
   }
 
-  openLightBox = () => lightbox.open(this.props.content.fileUrl, 'message');
-
-  onLoad = () => {
-    this.setCached();
-    if (!this.state.isImageLoaded) {
-      this.setState({isImageLoaded: true});
-    }
-  };
-
-  isCached = () => cache[this.props.content.fileUrl] === true;
-
-  setCached = () => {
-    cache[this.props.content.fileUrl] = true;
-  };
-
-  render() {
-    const { content, className, loadedClassName } = this.props;
-    const { isImageLoaded } = this.state;
-
-    const MAX_WIDTH = 300;
-    const MAX_HEIGHT = 400;
-    let width = content.w;
-    let height = content.h;
-
+  getDimentions() {
+    const { w: width, h: height } = this.props;
     if (width > height) {
       if (width > MAX_WIDTH) {
-        height *= MAX_WIDTH / width;
-        width = MAX_WIDTH;
+        return {
+          width: MAX_WIDTH,
+          height: height * (MAX_WIDTH / width)
+        };
       }
-    } else {
-      if (height > MAX_HEIGHT) {
-        width *= MAX_HEIGHT / height;
-        height = MAX_HEIGHT;
-      }
+    } else if (height > MAX_HEIGHT) {
+      return {
+        width: width * (MAX_HEIGHT / height),
+        height: MAX_HEIGHT
+      };
     }
 
-    let original = null,
-        preview = null,
-        preloader = null;
+    return { width, height };
+  }
 
-    if (content.fileUrl) {
-      original = (
-        <img className="photo photo--original"
-             height={content.h}
-             onClick={this.openLightBox}
-             onLoad={this.onLoad}
-             src={content.fileUrl}
-             width={content.w}/>
-      );
-    }
 
-    if (!this.isCached()) {
-      preview = <img className="photo photo--preview" src={content.preview}/>;
-
-      if (content.isUploading === true || isImageLoaded === false) {
-        preloader = <div className="preloader"><div/><div/><div/><div/><div/></div>;
-      }
-    }
-
-    const imageClassName = isImageLoaded ? classnames(className, loadedClassName) : className;
+  render() {
+    const { fileUrl, preview } = this.props;
+    const { width, height } = this.getDimentions();
 
     return (
-      <div className={imageClassName} style={{width, height}}>
-        {preview}
-        {original}
-        {preloader}
-        <svg dangerouslySetInnerHTML={{__html: '<filter id="blur-effect"><feGaussianBlur stdDeviation="3"/></filter>'}}/>
-      </div>
+      <img
+        className="message__photo"
+        src={fileUrl || preview}
+        width={width}
+        height={height}
+        onClick={this.onClick}
+      />
     );
   }
 }

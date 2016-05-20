@@ -20,7 +20,7 @@ public class JsManagedNotification {
             var n = new Notification(title, {
                 body: body,
                 tag: 'new-message',
-                icon: icon,
+                icon: icon
             });
             n.onclick = function() {
                 $wnd.focus();

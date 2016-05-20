@@ -13,9 +13,9 @@ public class JsImmediateDispatcher implements ImmediateDispatcher {
     private final LinkedList<Runnable> queue = new LinkedList<>();
     private boolean isInvalidated = false;
 
-    public JsImmediateDispatcher(String name) {
+    public JsImmediateDispatcher(boolean allowWebWorker, String name) {
         this.name = name;
-        this.secureInterval = JsSecureInterval.create(new Runnable() {
+        this.secureInterval = JsSecureInterval.create(allowWebWorker, new Runnable() {
             @Override
             public void run() {
                 isInvalidated = true;

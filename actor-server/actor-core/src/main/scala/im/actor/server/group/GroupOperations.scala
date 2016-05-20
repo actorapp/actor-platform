@@ -1,9 +1,12 @@
 package im.actor.server.group
 
+import akka.http.scaladsl.util.FastFuture
 import akka.pattern.ask
 import akka.util.Timeout
+import com.google.protobuf.ByteString
 import im.actor.api.rpc.AuthorizedClientData
-import im.actor.api.rpc.groups.{ ApiGroup, ApiMember }
+import im.actor.api.rpc.groups.{ ApiGroup, ApiGroupFull, ApiMember }
+import im.actor.server.dialog.UserAcl
 import im.actor.server.file.Avatar
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 
@@ -11,7 +14,7 @@ import scala.concurrent.{ ExecutionContext, Future }
 
 trait GroupOperations extends Commands with Queries
 
-private[group] sealed trait Commands {
+private[group] sealed trait Commands extends UserAcl {
   import GroupCommands._
 
   val processorRegion: GroupProcessorRegion
@@ -49,8 +52,19 @@ private[group] sealed trait Commands {
   def inviteToGroup(groupId: Int, inviteeUserId: Int, randomId: Long)(implicit client: AuthorizedClientData): Future[SeqStateDate] =
     inviteToGroup(client.userId, groupId, inviteeUserId, randomId)
 
-  def inviteToGroup(clientUserId: Int, groupId: Int, inviteeUserId: Int, randomId: Long): Future[SeqStateDate] =
-    (processorRegion.ref ? Invite(groupId, inviteeUserId, clientUserId, randomId)).mapTo[SeqStateDate]
+  /**
+   * The reason we make block check here is cause invite happens in two major places across server code:
+   * • when group is created. we check that only group creator adds only users, that didn't block him.
+   * • when user invites another user. We need to check if invitee blocked inviter.
+   *
+   * We don't need double check on both group creation and invite send. So we do this check here
+   */
+  def inviteToGroup(clientUserId: Int, groupId: Int, inviteeUserId: Int, randomId: Long): Future[SeqStateDate] = {
+    withNonBlockedUser(clientUserId, inviteeUserId)(
+      default = (processorRegion.ref ? Invite(groupId, inviteeUserId, clientUserId, randomId)).mapTo[SeqStateDate],
+      failed = FastFuture.failed(GroupErrors.BlockedByUser)
+    )
+  }
 
   def updateAvatar(groupId: Int, clientUserId: Int, avatarOpt: Option[Avatar], randomId: Long): Future[UpdateAvatarAck] =
     (processorRegion.ref ? UpdateAvatar(groupId, clientUserId, avatarOpt, randomId)).mapTo[UpdateAvatarAck]
@@ -64,11 +78,14 @@ private[group] sealed trait Commands {
   def updateAbout(groupId: Int, clientUserId: Int, about: Option[String], randomId: Long): Future[SeqStateDate] =
     (processorRegion.ref ? ChangeAbout(groupId, clientUserId, about, randomId)).mapTo[SeqStateDate]
 
-  def makeUserAdmin(groupId: Int, clientUserId: Int, candidateId: Int): Future[(Vector[ApiMember], SeqState)] =
-    (processorRegion.ref ? MakeUserAdmin(groupId, clientUserId, candidateId)).mapTo[(Vector[ApiMember], SeqState)]
+  def makeUserAdmin(groupId: Int, clientUserId: Int, candidateId: Int): Future[(Vector[ApiMember], SeqStateDate)] =
+    (processorRegion.ref ? MakeUserAdmin(groupId, clientUserId, candidateId)).mapTo[(Vector[ApiMember], SeqStateDate)]
 
   def revokeIntegrationToken(groupId: Int, clientUserId: Int): Future[String] =
     (processorRegion.ref ? RevokeIntegrationToken(groupId, clientUserId)).mapTo[RevokeIntegrationTokenAck] map (_.token)
+
+  def transferOwnership(groupId: Int, clientUserId: Int, userId: Int): Future[SeqState] =
+    (processorRegion.ref ? TransferOwnership(groupId, clientUserId, userId)).mapTo[SeqState]
 }
 
 private[group] sealed trait Queries {
@@ -89,6 +106,9 @@ private[group] sealed trait Queries {
   def getApiStruct(groupId: Int, clientUserId: Int): Future[ApiGroup] =
     (viewRegion.ref ? GetApiStruct(groupId, clientUserId)).mapTo[GetApiStructResponse] map (_.struct)
 
+  def getApiFullStruct(groupId: Int, clientUserId: Int): Future[ApiGroupFull] =
+    (viewRegion.ref ? GetApiFullStruct(groupId, clientUserId)).mapTo[GetApiFullStructResponse] map (_.struct)
+
   def isPublic(groupId: Int): Future[Boolean] =
     (viewRegion.ref ? IsPublic(groupId)).mapTo[IsPublicResponse] map (_.isPublic)
 
@@ -101,6 +121,15 @@ private[group] sealed trait Queries {
   def getMemberIds(groupId: Int): Future[(Seq[Int], Seq[Int], Option[Int])] =
     (viewRegion.ref ? GetMembers(groupId)).mapTo[GetMembersResponse] map (r ⇒ (r.memberIds, r.invitedUserIds, r.botId))
 
+  def isMember(groupId: Int, userId: Int): Future[Boolean] =
+    getMemberIds(groupId) map (_._1.contains(userId))
+
   def getAccessHash(groupId: Int): Future[Long] =
     (viewRegion.ref ? GetAccessHash(groupId)).mapTo[GetAccessHashResponse] map (_.accessHash)
+
+  def getTitle(groupId: Int): Future[String] =
+    (viewRegion.ref ? GetTitle(groupId)).mapTo[GetTitleResponse] map (_.title)
+
+  def loadMembers(groupId: Int, clientUserId: Int, limit: Int, offset: Option[Array[Byte]]) =
+    (viewRegion.ref ? LoadMembers(groupId, clientUserId, limit, offset map ByteString.copyFrom)).mapTo[LoadMembersResponse] map (r ⇒ r.userIds → r.offset.map(_.toByteArray))
 }

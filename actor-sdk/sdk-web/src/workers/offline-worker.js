@@ -1,6 +1,6 @@
 importScripts('serviceworker-cache-polyfill.js');
 
-const CACHE_NAME = `actor-cache`;
+const CACHE_NAME = 'actor-cache';
 const REQUIRED_FILES = [
   '/',
   '/index.html',

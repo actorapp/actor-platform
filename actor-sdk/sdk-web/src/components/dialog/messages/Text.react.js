@@ -3,8 +3,6 @@
  */
 
 import React, { Component, PropTypes } from 'react';
-import { findDOMNode } from 'react-dom';
-// import hljs from 'highlight.js';
 import ActorClient from '../../../utils/ActorClient';
 
 import { processEmojiText } from '../../../utils/EmojiUtils';
@@ -13,6 +11,7 @@ function processText(text) {
   let processedText = text;
   processedText = ActorClient.renderMarkdown(processedText);
   processedText = processEmojiText(processedText);
+  processedText = processedText.replace(/(@[0-9a-zA-Z_]{5,32})/ig, '<span class="message__mention">$1</span>');
 
   return processedText;
 }
@@ -23,25 +22,12 @@ class Text extends Component {
     className: PropTypes.string
   };
 
-  componentDidMount() {
-    /*
-    requestAnimationFrame(() => {
-      const node = findDOMNode(this);
-      const codeBlocks = node.getElementsByTagName('pre');
-      for (let i = 0; i < codeBlocks.length; i++) {
-        const codeBlock = codeBlocks[i];
-        hljs.highlightBlock(codeBlock.firstChild);
-      }
-    });
-    */
-  }
-
   render() {
     const { text, className } = this.props;
 
     return (
       <div className={className}>
-        <div className="text" dangerouslySetInnerHTML={{__html: processText(text)}}/>
+        <div className="text" dangerouslySetInnerHTML={{ __html: processText(text) }}/>
       </div>
     );
   }

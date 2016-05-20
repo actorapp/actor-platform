@@ -7,25 +7,25 @@ import 'setimmediate';
 import 'intl';
 
 import Actor from 'actor-js';
-import DelegateContainer from '../utils/DelegateContainer';
-import SharedContainer from '../utils/SharedContainer';
-import PeerUtils from '../utils/PeerUtils';
-import SDKDelegate from './actor-sdk-delegate';
-import { endpoints, rootElement, homePage, twitter, helpPhone, appName } from '../constants/ActorAppConstants'
-import Pace from 'pace';
-import { isFunction } from 'lodash';
-
 import React from 'react';
 import { render } from 'react-dom';
-import { Router, Route, IndexRoute, IndexRedirect } from 'react-router';
+import { Router, Route, IndexRoute, Redirect, IndexRedirect } from 'react-router';
+import Modal from 'react-modal';
+import Pace from 'pace';
+import crosstab from 'crosstab';
+import assignDeep from 'assign-deep';
+
+import DelegateContainer from '../utils/DelegateContainer';
+import SharedContainer from '../utils/SharedContainer';
+import SDKDelegate from './actor-sdk-delegate';
+import { endpoints, rootElement, helpPhone, appName } from '../constants/ActorAppConstants'
+
 import history from '../utils/history';
 import RouterHooks from '../utils/RouterHooks';
 import { IntlProvider } from 'react-intl';
-import crosstab from 'crosstab';
 import { lightbox } from '../utils/ImageUtils'
 
 import LoginActionCreators from '../actions/LoginActionCreators';
-import {loggerAppend} from '../actions/LoggerActionCreators';
 import defaultLogHandler from '../utils/defaultLogHandler';
 
 import LoginStore from '../stores/LoginStore';
@@ -39,7 +39,6 @@ import DefaultInstall from '../components/Install.react';
 import DefaultArchive from '../components/Archive.react';
 import DefaultDialog from '../components/Dialog.react';
 import DefaultEmpty from '../components/Empty.react';
-import Modal from 'react-modal';
 
 import { extendL18n, getIntlData } from '../l18n';
 
@@ -67,17 +66,32 @@ window.jsAppLoaded = () => window.isJsAppLoaded = true;
  * @param {object} options - Object contains custom components, actions and localisation strings.
  */
 class ActorSDK {
+  static defaultOptions = {
+    endpoints,
+    rootElement,
+    appName,
+    helpPhone,
+    homePage: null,
+    twitter: null,
+    facebook: null,
+    delegate: null,
+    forceLocale: null,
+    features: {
+      calls: true,
+      search: false,
+      editing: false
+    },
+    routes: null,
+    isExperimental: false,
+    logHandler: defaultLogHandler
+  };
+
   constructor(options = {}) {
-    this.endpoints = (options.endpoints && options.endpoints.length > 0) ? options.endpoints : endpoints;
-    this.logHandler = isFunction(options.logHandler) ? options.logHandler : this.createLogHandler();
-    this.isExperimental = options.isExperimental ? options.isExperimental : false;
-    this.forceLocale = options.forceLocale ? options.forceLocale : null;
-    this.rootElement = options.rootElement ? options.rootElement : rootElement;
-    this.homePage = options.homePage ? options.homePage : homePage;
-    this.twitter = options.twitter ? options.twitter : twitter;
-    this.helpPhone = options.helpPhone ? options.helpPhone : helpPhone;
-    this.appName = options.appName ? options.appName : appName;
-    this.delegate = options.delegate ? options.delegate : new SDKDelegate();
+    assignDeep(this, ActorSDK.defaultOptions, options);
+
+    if (!this.delegate) {
+      this.delegate = new SDKDelegate();
+    }
 
     DelegateContainer.set(this.delegate);
 
@@ -86,12 +100,36 @@ class ActorSDK {
     SharedContainer.set(this);
   }
 
-  createLogHandler() {
-    if (localStorage.debug) {
-      return loggerAppend;
+  getRoutes() {
+    if (this.routes) {
+      return this.routes;
     }
 
-    return defaultLogHandler;
+    const Login = (typeof this.delegate.components.login == 'function') ? this.delegate.components.login : DefaultLogin;
+    const Deactivated = (typeof this.delegate.components.deactivated == 'function') ? this.delegate.components.deactivated : DefaultDeactivated;
+    const Install = (typeof this.delegate.components.install == 'function') ? this.delegate.components.install : DefaultInstall;
+    const Archive = (typeof this.delegate.components.archive == 'function') ? this.delegate.components.archive : DefaultArchive; // TODO: Rename this component
+    const Join = (typeof this.delegate.components.join == 'function') ? this.delegate.components.join : DefaultJoin;
+    const Empty = (typeof this.delegate.components.empty == 'function') ? this.delegate.components.empty : DefaultEmpty;
+    const Dialog = (typeof this.delegate.components.dialog == 'function') ? this.delegate.components.dialog : DefaultDialog;
+
+    return (
+      <Route path="/" component={App}>
+        <Route path="auth" component={Login}/>
+        <Route path="deactivated" component={Deactivated}/>
+        <Route path="install" component={Install}/>
+
+        <Route path="im" component={Main} onEnter={RouterHooks.requireAuth}>
+          <Route path="history" component={Archive} />
+          <Route path="join/:token" component={Join} />
+          <Route path=":id" component={Dialog} />
+          <IndexRoute component={Empty} />
+        </Route>
+
+        <Redirect from="join/:token" to="im/join/:token" />
+        <IndexRedirect to="im"/>
+      </Route>
+    );
   }
 
   _starter = () => {
@@ -113,13 +151,6 @@ class ActorSDK {
       });
     }
 
-    const Login = (typeof this.delegate.components.login == 'function') ? this.delegate.components.login : DefaultLogin;
-    const Deactivated = (typeof this.delegate.components.deactivated == 'function') ? this.delegate.components.deactivated : DefaultDeactivated;
-    const Install = (typeof this.delegate.components.install == 'function') ? this.delegate.components.install : DefaultInstall;
-    const Archive = (typeof this.delegate.components.archive == 'function') ? this.delegate.components.archive : DefaultArchive;
-    const Join = (typeof this.delegate.components.join == 'function') ? this.delegate.components.join : DefaultJoin;
-    const Empty = (typeof this.delegate.components.empty == 'function') ? this.delegate.components.empty : DefaultEmpty;
-    const Dialog = (typeof this.delegate.components.dialog == 'function') ? this.delegate.components.dialog : DefaultDialog;
     const intlData = getIntlData(this.forceLocale);
 
     /**
@@ -136,25 +167,7 @@ class ActorSDK {
     const root = (
       <IntlProvider {...intlData}>
         <Router history={history} createElement={createElement}>
-          <Route path="/" component={App}>
-            <Route path="auth" component={Login}/>
-            <Route path="deactivated" component={Deactivated}/>
-            <Route path="install" component={Install}/>
-            <Route path="join/:token" component={Join} onEnter={RouterHooks.requireAuth}/>
-
-            <Route path="im" component={Main} onEnter={RouterHooks.requireAuth}>
-              <Route path="archive" component={Archive}/>
-              <Route
-                path=":id"
-                component={Dialog}
-                onEnter={RouterHooks.onDialogEnter}
-                onLeave={RouterHooks.onDialogLeave}
-              />
-              <IndexRoute component={Empty}/>
-            </Route>
-
-            <IndexRedirect to="im"/>
-          </Route>
+          {this.getRoutes()}
         </Router>
       </IntlProvider>
     );
@@ -165,7 +178,7 @@ class ActorSDK {
     Modal.setAppElement(appRootElemet);
 
     if (window.location.hash !== '#/deactivated') {
-      if (LoginStore.isLoggedIn()) LoginActionCreators.setLoggedIn({redirect: false});
+      if (LoginStore.isLoggedIn()) LoginActionCreators.setLoggedIn({ redirect: false });
     }
   };
 

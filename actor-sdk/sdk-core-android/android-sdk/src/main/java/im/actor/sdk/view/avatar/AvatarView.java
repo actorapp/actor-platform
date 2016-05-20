@@ -1,6 +1,9 @@
 package im.actor.sdk.view.avatar;
 
 import android.content.Context;
+import android.graphics.ColorFilter;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.net.Uri;
 import android.util.AttributeSet;
 
@@ -20,12 +23,14 @@ import im.actor.core.entity.Avatar;
 import im.actor.core.entity.AvatarImage;
 import im.actor.core.entity.Contact;
 import im.actor.core.entity.Dialog;
+import im.actor.core.entity.PhoneBookContact;
 import im.actor.core.entity.PublicGroup;
 import im.actor.core.viewmodel.FileVM;
 import im.actor.core.viewmodel.FileVMCallback;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.files.FileSystemReference;
+import im.actor.sdk.ActorSDK;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
@@ -64,7 +69,8 @@ public class AvatarView extends SimpleDraweeView {
                 .setRoundingParams(new RoundingParams()
                         .setRoundAsCircle(true)
                         .setRoundingMethod(RoundingParams.RoundingMethod.BITMAP_ONLY))
-                        // .setOverlay(new AvatarBorderDrawable())
+                        //.setActualImageColorFilter(new PorterDuffColorFilter(0x19000000, PorterDuff.Mode.MULTIPLY))
+                        //.setOverlay(new AvatarBorderDrawable())
                 .build();
         setHierarchy(hierarchy);
     }
@@ -75,6 +81,10 @@ public class AvatarView extends SimpleDraweeView {
 
     public void bind(Contact contact) {
         bind(contact.getAvatar(), contact.getName(), contact.getUid());
+    }
+
+    public void bind(PhoneBookContact contact) {
+        bind(null, contact.getName(), 0);
     }
 
     public void bind(UserVM user) {

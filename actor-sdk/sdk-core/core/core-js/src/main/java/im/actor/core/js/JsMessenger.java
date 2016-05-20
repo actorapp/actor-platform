@@ -20,6 +20,7 @@ import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.SearchEntity;
 import im.actor.core.entity.content.FastThumb;
+import im.actor.core.js.entity.JsBlockedUser;
 import im.actor.core.js.entity.JsCall;
 import im.actor.core.js.entity.JsCounter;
 import im.actor.core.js.entity.JsDialogGroup;
@@ -53,6 +54,7 @@ import im.actor.core.viewmodel.ConversationVM;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.Log;
+import im.actor.runtime.Runtime;
 import im.actor.runtime.Storage;
 import im.actor.runtime.crypto.Base64Utils;
 import im.actor.runtime.js.JsFileSystemProvider;
@@ -61,6 +63,7 @@ import im.actor.runtime.js.fs.JsFile;
 import im.actor.runtime.js.mvvm.JsDisplayList;
 import im.actor.runtime.mvvm.Value;
 import im.actor.runtime.mvvm.ValueChangedListener;
+import im.actor.runtime.threading.ThreadDispatcher;
 
 public class JsMessenger extends Messenger {
 
@@ -84,6 +87,8 @@ public class JsMessenger extends Messenger {
         jsBindingModule = new JsBindingModule(this, filesModule, modules);
         isElectron = JsElectronApp.isElectron();
 
+        ThreadDispatcher.pushDispatcher(Runtime::postToMainThread);
+
         jsIdleModule = new JsIdleModule(this, modules);
 
         if (isElectron()) {
@@ -100,7 +105,7 @@ public class JsMessenger extends Messenger {
         }
 
         if (isElectron) {
-            getAppState().getGlobalTempCounter().subscribe(new ValueChangedListener<Integer>() {
+            getGlobalState().getGlobalTempCounter().subscribe(new ValueChangedListener<Integer>() {
                 @Override
                 public void onChanged(Integer val, Value<Integer> valueModel) {
                     if (val == null || val == 0) {
@@ -176,6 +181,10 @@ public class JsMessenger extends Messenger {
         return jsBindingModule.getUserOnline(gid);
     }
 
+    public JsBindedValue<JsBlockedUser> getJsUserBlocked(int uid) {
+        return jsBindingModule.getUserBlocked(uid);
+    }
+
     public JsBindedValue<JsGroup> getJsGroup(int gid) {
         return jsBindingModule.getGroup(gid);
     }
@@ -212,7 +221,8 @@ public class JsMessenger extends Messenger {
                     userVM.getName().get(),
                     userVM.getNick().get(),
                     getSmallAvatarUrl(userVM.getAvatar().get()),
-                    Placeholders.getPlaceholder(peer.getPeerId()));
+                    Placeholders.getPlaceholder(peer.getPeerId()),
+                    userVM.getIsVerified().get());
         } else if (peer.getPeerType() == PeerType.GROUP) {
             GroupVM groupVM = getGroups().get(peer.getPeerId());
             return JsPeerInfo.create(
@@ -220,7 +230,8 @@ public class JsMessenger extends Messenger {
                     groupVM.getName().get(),
                     null,
                     getSmallAvatarUrl(groupVM.getAvatar().get()),
-                    Placeholders.getPlaceholder(peer.getPeerId()));
+                    Placeholders.getPlaceholder(peer.getPeerId()),
+                    false);
         } else {
             throw new RuntimeException();
         }

@@ -21,8 +21,6 @@ public class AppStateVM {
     @Property("nonatomic, readonly")
     private ModuleContext context;
     @Property("nonatomic, readonly")
-    private BooleanValueModel isAppVisible;
-    @Property("nonatomic, readonly")
     private BooleanValueModel isDialogsEmpty;
     @Property("nonatomic, readonly")
     private BooleanValueModel isContactsEmpty;
@@ -30,14 +28,6 @@ public class AppStateVM {
     private BooleanValueModel isAppEmpty;
     @Property("nonatomic, readonly")
     private BooleanValueModel isAppLoaded;
-    @Property("nonatomic, readonly")
-    private BooleanValueModel isConnecting;
-    @Property("nonatomic, readonly")
-    private BooleanValueModel isSyncing;
-    @Property("nonatomic, readonly")
-    private IntValueModel globalCounter;
-    @Property("nonatomic, readonly")
-    private IntValueModel globalTempCounter;
 
     private boolean isBookImported;
     private boolean isDialogsLoaded;
@@ -53,38 +43,12 @@ public class AppStateVM {
         this.isDialogsEmpty = new BooleanValueModel("app.dialogs.empty", context.getPreferences().getBool("app.dialogs.empty", true));
         this.isContactsEmpty = new BooleanValueModel("app.contacts.empty", context.getPreferences().getBool("app.contacts.empty", true));
         this.isAppEmpty = new BooleanValueModel("app.empty", context.getPreferences().getBool("app.empty", true));
-        this.globalCounter = new IntValueModel("app.counter", context.getPreferences().getInt("app.counter", 0));
-        this.globalTempCounter = new IntValueModel("app.temp_counter", 0);
-        this.isConnecting = new BooleanValueModel("app.connecting", false);
-        this.isSyncing = new BooleanValueModel("app.syncing", false);
-        this.isAppVisible = new BooleanValueModel("app.visible", false);
 
         this.isBookImported = context.getPreferences().getBool("app.contacts.imported", false);
         this.isDialogsLoaded = context.getPreferences().getBool("app.dialogs.loaded", false);
         this.isContactsLoaded = context.getPreferences().getBool("app.contacts.loaded", false);
 
         this.isAppLoaded = new BooleanValueModel("app.loaded", isBookImported && isDialogsLoaded && isContactsLoaded);
-
-        context.getEvents().subscribe(new BusSubscriber() {
-            @Override
-            public void onBusEvent(Event event) {
-                if (event instanceof AppVisibleChanged) {
-                    if (((AppVisibleChanged) event).isVisible()) {
-                        isAppVisible.change(true);
-                        globalTempCounter.change(0);
-                    } else {
-                        isAppVisible.change(false);
-                    }
-                }
-            }
-        }, AppVisibleChanged.EVENT);
-
-        context.getEvents().subscribe(new BusSubscriber() {
-            @Override
-            public void onBusEvent(Event event) {
-                isConnecting.change(((ConnectingStateChanged) event).isConnecting());
-            }
-        }, ConnectingStateChanged.EVENT);
     }
 
     private void updateLoaded() {
@@ -94,18 +58,6 @@ public class AppStateVM {
         }
     }
 
-    /**
-     * Notify from Modules about global counters changed
-     *
-     * @param value current value of global counter
-     */
-    public synchronized void onGlobalCounterChanged(int value) {
-        globalCounter.change(value);
-        context.getPreferences().putInt("app.counter", value);
-        if (!isAppVisible.get()) {
-            globalTempCounter.change(value);
-        }
-    }
 
     /**
      * Notify from Modules about dialogs state changed
@@ -212,49 +164,4 @@ public class AppStateVM {
         return isAppEmpty;
     }
 
-    /**
-     * Is syncing in progress
-     *
-     * @return View Model of Boolean
-     */
-    public BooleanValueModel getIsSyncing() {
-        return isSyncing;
-    }
-
-    /**
-     * Is Connecting in progress
-     *
-     * @return View Model of Boolean
-     */
-    public BooleanValueModel getIsConnecting() {
-        return isConnecting;
-    }
-
-
-    /**
-     * Gettting global unread counter
-     *
-     * @return View Model of Integer
-     */
-    public IntValueModel getGlobalCounter() {
-        return globalCounter;
-    }
-
-    /**
-     * Getting global unread counter that hiddes when app is opened
-     *
-     * @return View Model of Integer
-     */
-    public IntValueModel getGlobalTempCounter() {
-        return globalTempCounter;
-    }
-
-    /**
-     * Is App visible state
-     *
-     * @return View Model of Boolean
-     */
-    public BooleanValueModel getIsAppVisible() {
-        return isAppVisible;
-    }
 }

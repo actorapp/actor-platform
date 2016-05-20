@@ -25,7 +25,7 @@ class Fold extends Component {
     }
   }
 
-  onClick = () => this.setState({isOpen: !this.state.isOpen});
+  onClick = () => this.setState({ isOpen: !this.state.isOpen });
 
   render() {
     const { icon, iconClassName, title, iconElement } = this.props;

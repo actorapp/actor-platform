@@ -7,13 +7,13 @@ export default {
       'wrong': 'Ошиблись?',
       'phone': 'Номер телефона',
       'email': 'Email адрес',
-      'phone_or_email': 'Номер телефона или Email адрес',
+      'phone_or_email': 'Номер телефона или Email-адрес',
       'authCode': 'Код авторизации',
       'yourName': 'Ваше имя',
       'errors': {
-        'numberInvalid': 'Неправильный номер',
-        'nameInvalid': ' Неправильное имя',
-        'codeInvalid': 'Неправильный код',
+        'numberInvalid': 'Некорректный номер',
+        'nameInvalid': ' Некорректное имя',
+        'codeInvalid': 'Неверный код',
         'codeExpired': 'Время действия кода истекло',
         'codeWait': 'Попытайтесь запросить код позже'
       },
@@ -25,14 +25,16 @@ export default {
     // Menus
     'menu': {
       // Sidebar menu
-      'editProfile': 'Редактировать профиль',
-      'addToContacts': 'Добавить контакт',
-      'createGroup': 'Создать группу',
-      'helpAndFeedback': 'Помощь и обратная связь',
-      'twitter': 'Наш твиттер',
-      'preferences': 'Настройки',
-      'signOut': 'Выход',
-      'homePage': 'Домашняя страница'
+      editProfile: 'Редактировать профиль',
+      addToContacts: 'Добавить контакт',
+      createGroup: 'Создать группу',
+      blockedUsers: 'Заблокированные пользователи',
+      helpAndFeedback: 'Помощь и обратная связь',
+      twitter: 'Наш твиттер',
+      preferences: 'Настройки',
+      signOut: 'Выход',
+      homePage: 'Домашняя страница',
+      facebook: 'Ищите нас в Facebook'
     },
 
     // Buttons
@@ -66,10 +68,10 @@ export default {
       'quote': 'Цитировать',
       'uploading': 'Загрузка...',
       'welcome': {
-        'private': '<p>Это самое начало вашей приватной беседы с <strong>{name}</strong>.</p>' +
-                   '<p>Все сообщения здесь доступны только вам двоим.</p>',
+        'private': '<p>Это начало вашей приватной беседы с <strong>{name}</strong>.</p>' +
+                   '<p>Все сообщения доступны только вам двоим.</p>',
         'group': {
-          'main': '<p>Это самое начало групповой беседы <strong>{name}</strong> созданной {creator}.</p>',
+          'main': '<p>Это начало групповой беседы <strong>{name}</strong> созданной {creator}.</p>',
           'you': 'Вами',
           'actions': {
             'start': 'Вы можете ',
@@ -78,12 +80,13 @@ export default {
           }
         }
       },
-      'loading': 'Загрузка сообщений из истории'
+      'loading': 'Загрузка сообщений из истории',
+      'unread': 'Новые сообщения'
     },
 
     // Connection state
     'connectionState': {
-      'connecting': 'Упс! Похоже соединение с сервером потеряно. Пробуем пересоедениться...',
+      'connecting': 'Упс! Похоже соединение с сервером потеряно. Пробуем переподключиться…',
       'online': 'Вы снова онлайн!',
       'updating': 'Обновление соединения'
     },
@@ -94,12 +97,18 @@ export default {
       'sendFile': 'Документ',
       'sendPhoto': 'Изображение',
       'send': 'Отправить',
+      'edit': 'Сохранить',
+      'cancel': 'Отменить',
+      'editTitle': 'Редактирование сообщения:',
       'markdown': {
         'bold': 'жирный',
         'italic': 'курсив',
         'preformatted': 'форматированный'
       },
-      'dropzone': 'Для отправки отпустите здесь.'
+      'notMember': 'Вы не участник данной группы',
+      'unblock': 'Разблокировать пользователя',
+      'start': 'Начать',
+      'dropzone': 'Перетащите файлы сюда для отправки.'
     },
 
     // Modals
@@ -112,7 +121,13 @@ export default {
         'email': 'Email',
         'about': 'О себе',
         'avatarChange': 'Изменить аватар',
-        'avatarRemove': 'Удалить'
+        'avatarRemove': 'Удалить',
+        errors: {
+          nick: {
+            length: 'Никнейм должен содержать от 5 до 32 символов',
+            chars: 'Пожалуйста используйте латинские буквы, цифры или подчеркивание'
+          }
+        }
       },
       'group': {
         'title': 'Редактировать группу',
@@ -164,20 +179,28 @@ export default {
         'toClose': 'для отмены',
         'openDialog': 'Открыть диалог',
         'startDialog': 'Начать новый диалог',
-        'notFound': 'По запросу <strong>{query}</strong> ничего не найдено.<br/>Вы уверены в правильности набора?'
+        'notFound': 'По запросу <strong>{query}</strong> ничего не найдено.<br/>Вы уверены, что правильно составили запрос?'
       },
       'confirm': {
         'logout': 'Вы действительно хотите уйти?',
-        'leave': 'Вы действительно хотите покинуть этот диалог?',
-        'clear': 'Вы действительно хотите очистить этот диалог?',
-        'delete': 'Вы действительно хотите удалить этот диалог',
-        'removeContact': 'Удалить {name} из списка контактов?',
-        'kick': 'Вы действительно хотите исклчюить {name}',
+        'user': {
+          'clear': 'Вы действительно хотите очистить диалог с {name}?',
+          'delete': 'Вы действительно хотите удалить диалог с {name}?',
+          'block': 'Вы действительно хотите заблокировать {name}?',
+          'removeContact': 'Are you sure you want to remove {name} from your contacts?'
+        },
+        'group': {
+          'clear': 'Вы действительно хотите очистить диалог {name}?',
+          'delete': 'Вы действительно хотите удалить диалог {name}?',
+          'leave': 'Вы действительно хотите покинуть диалог {name}?',
+          'kick': 'Вы действительно хотите исключить {name}?'
+        },
         'nonContactHide': {
           'title': 'Вы действительно хотите скрыть этот диалог?',
           'body': '{name} не в списке ваших контактов.'
-        }
-
+        },
+        delete: 'Удалить эту группу?',
+        kick: 'Исключить этого пользователя?'
       }
     },
 
@@ -201,6 +224,8 @@ export default {
     'deleteGroup': 'Удалить группу',
     'clearConversation': 'Очистить диалог',
     'deleteConversation': 'Удалить диалог',
+    'blockUser': 'Заблокировать',
+    'unblockUser': 'Разблокировать',
     'leaveGroup': 'Покинуть группу',
     'sharedMedia': 'Вложения',
     'notifications': 'Уведомления',
@@ -213,40 +238,7 @@ export default {
     'kick': 'Исключить',
     'integrationToken': 'Интеграция',
     'integrationTokenHint': 'Вы можете использовать этот токен для настройки интеграции с вашими собственными системами.',
-    'integrationTokenHelp': 'Узнайте как пользоваться',
-
-    // Modals
-    'inviteModalTitle': 'Пригласить людей в группу',
-    'inviteModalSearch': 'Поиск по именам и никнеймам',
-    'inviteModalNotFound': 'Извините, ничего не найдено',
-    'inviteByLink': 'Ссылка для приглашения в группу',
-    'inviteByLinkModalTitle': 'Пригласить по ссылке',
-    'inviteByLinkModalDescription': 'Любой в интернете теперь может присоедениться к ”{groupName}”, открыв эту ссылку:',
-    'inviteByLinkModalCopyButton': 'Скопировать',
-    'inviteByLinkModalRevokeButton': 'Отменить',
-    'inviteLinkCopied': 'Ссылка скопирована.',
-
-    'preferencesModalTitle': 'Настройки',
-    'preferencesGeneralTab': 'Основные',
-    'preferencesNotificationsTab': 'Уведомления и Звуки',
-    'preferencesSecurityTab': 'Безопасность',
-    'preferencesSendMessageTitle': 'Отправка сообщений',
-    'preferencesSendMessage': 'отправить сообщение',
-    'preferencesNewLine': 'новая строка',
-    'preferencesEffectsTitle': 'Эффекты',
-    'preferencesEnableEffects': 'Включить звуковые эффекты',
-    'preferencesNotificationsTitle': 'Уведомления',
-    'preferencesNotificationsGroup': 'Включить уведомления для групп',
-    'preferencesNotificationsOnlyMention': 'Включить уведомления только для упоминаний',
-    'preferencesNotificationsOnlyMentionHint': 'Вы можете включить уведомления только для сообщений, в которых вы упомянуты.',
-    'preferencesPrivacyTitle': 'Конфиденциальность',
-    'preferencesMessagePreview': 'Предварительный просмотр сообщений',
-    'preferencesMessagePreviewHint': 'Удаляет текст сообщений из уведомлений.',
-    'preferencesSessionsTitle': 'Активные сессии',
-    'preferencesSessionsCurrentSession': 'Текущий сеанс',
-    'preferencesSessionsAuthTime': 'Авторизовано',
-    'preferencesSessionsTerminate': 'Завершить',
-    'preferencesSessionsTerminateAll': 'Завершить все сеансы',
+    'integrationTokenHelp': 'Узнайте, как пользоваться токенами',
 
     // Sidebar
     'sidebar': {
@@ -254,7 +246,7 @@ export default {
         'groups': 'Группы',
         'privates': 'Диалоги',
         'empty': {
-          'first': 'В данный момент у вас нет открытых диалогов.',
+          'first': 'У вас нет открытых диалогов.',
           'second': {
             'start': 'Вы можете ',
             'or': ' или ',
@@ -263,7 +255,8 @@ export default {
         },
         'newDialog': 'создать диалог',
         'favourites': 'Избранное',
-        'addPeople': 'добавить контакт'
+        'addPeople': 'добавить контакт',
+        history: 'История'
       },
       'group': {
         'empty': 'Создайте ваш первый групповой диалог'
@@ -272,13 +265,75 @@ export default {
         'empty': 'В вашей сети пока никого нет'
       }
     },
+
     'main': {
       'empty': 'Старайся быть лучше, чем был вчера!',
       'deactivated': {
         'header': 'Вкладка деактивирована',
-        'text': 'Упс, похоже что вы открыли еще одну вкладку с {appName}, поэтому мы вынуждены деактивировать эту вкладку чтобы избежать ошибок.'
+        'text': 'Упс, похоже что вы открыли еще одну вкладку с {appName}. Мы вынуждены деактивировать эту вкладку, чтобы избежать ошибок.'
       }
     },
+
+    preferences: {
+      title: 'Настройки',
+      general: {
+        title: 'Основные',
+        send: {
+          title: 'Отправка сообщений',
+          sendMessage: 'отправить сообщение',
+          newLine: 'новая строка'
+        }
+      },
+      notifications: {
+        title: 'Уведомления и Звуки',
+        effects: {
+          title: 'Эффекты',
+          enable: 'Включить звуковые эффекты'
+        },
+        notification: {
+          title: 'Уведомления',
+          enable: 'Включить уведомления для групп',
+          onlyMentionEnable: 'Включить уведомления только для упоминаний',
+          onlyMentionHint: 'Вы можете включить уведомления только для сообщений, в которых вы упомянуты.'
+        },
+        privacy: {
+          title: 'Конфиденциальность',
+          messagePreview: 'Предварительный просмотр сообщений',
+          messagePreviewHint: 'Удаляет текст сообщений из уведомлений.'
+        }
+      },
+      security: {
+        title: 'Безопасность',
+        sessions: {
+          title: 'Активные сессии',
+          current: 'Текущий сеанс',
+          authTime: 'Авторизовано',
+          terminate: 'Завершить',
+          terminateAll: 'Завершить все сеансы'
+        }
+      },
+      blocked: {
+        title: 'Заблокированные пользователи',
+        notExists: 'Вы никого не заблокировали.',
+        notFound: 'Извините, ничего не найдено',
+        search: 'Поиск по именам и никнеймам',
+        unblock: 'Помиловать'
+      }
+    },
+
+    invite: {
+      title: 'Пригласить людей в группу',
+      search: 'Поиск по именам и никнеймам',
+      notFound: 'Извините, ничего не найдено.',
+      inviteByLink: 'Ссылка для приглашения в группу',
+      byLink: {
+        title: 'Пригласить по ссылке',
+        description: 'Любой в интернете теперь может присоедениться к ”<b>{groupName}</b>”, открыв эту ссылку:',
+        copy: 'Скопировать',
+        revoke: 'Отменить'
+      }
+    },
+
     call: {
       outgoing: 'Исходящий вызов',
       incoming: 'Входящий вызов',
@@ -289,16 +344,43 @@ export default {
       end: 'Завершить вызов',
       addUser: 'Добавить пользователя',
       fullScreen: 'Полный экран',
-      video: 'Видео'
-    },
-
-    toolbar: {
-      callState: {
+      video: 'Видео',
+      state: {
         calling: 'звоню',
         connecting: 'соединение',
         in_progress: 'Звонок: {time}',
         ended: 'завершен'
       }
+    },
+
+    tooltip: {
+      toolbar: {
+        info: 'Информация о текущей беседе',
+        favorite: 'Добавить/удалить в избранное'
+      },
+      recent: {
+        groupsList: 'Список групповых диалогов',
+        privatesList: 'Список приватных диалогов',
+        groupsCreate: 'Создать группу',
+        privatesCreate: 'Добавить новый контакт'
+      },
+      quicksearch: 'Быстрый поиск по приложению.'
+    },
+
+    context: {
+      favorite: {
+        add: 'Добавить в избранное',
+        remove: 'Убрать из избранного'
+      },
+      archive: 'Отправить в архив',
+      delete: 'Удалить'
+    },
+
+    search: {
+      placeholder: 'Поиск',
+      emptyQuery: 'Начните печатать чтобы начать поиск',
+      searching: 'Поиск "{query}"',
+      notFound: 'По запросу "{query}" ничего не найдено<br/>Попробуйте поискать что-нибуь другое'
     }
   }
 };

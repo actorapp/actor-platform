@@ -2,6 +2,7 @@ package im.actor.runtime.android.webrtc;
 
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.support.annotation.NonNull;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -177,7 +178,7 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
     public Promise<WebRTCSessionDescription> setLocalDescription(@NotNull final WebRTCSessionDescription description) {
         return new Promise<>(new PromiseFunc<WebRTCSessionDescription>() {
             @Override
-            public void exec(@NotNull final PromiseResolver<WebRTCSessionDescription> resolver) {
+            public void exec(@NonNull @NotNull final PromiseResolver<WebRTCSessionDescription> resolver) {
                 AndroidWebRTCRuntimeProvider.postToHandler(new Runnable() {
                     @Override
                     public void run() {
@@ -215,7 +216,7 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
     public Promise<WebRTCSessionDescription> setRemoteDescription(@NotNull final WebRTCSessionDescription description) {
         return new Promise<>(new PromiseFunc<WebRTCSessionDescription>() {
             @Override
-            public void exec(@NotNull final PromiseResolver<WebRTCSessionDescription> resolver) {
+            public void exec(@NonNull @NotNull final PromiseResolver<WebRTCSessionDescription> resolver) {
                 AndroidWebRTCRuntimeProvider.postToHandler(new Runnable() {
                     @Override
                     public void run() {
@@ -253,7 +254,7 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
     public Promise<WebRTCSessionDescription> createOffer() {
         return new Promise<>(new PromiseFunc<WebRTCSessionDescription>() {
             @Override
-            public void exec(@NotNull final PromiseResolver<WebRTCSessionDescription> resolver) {
+            public void exec(@NonNull @NotNull final PromiseResolver<WebRTCSessionDescription> resolver) {
                 AndroidWebRTCRuntimeProvider.postToHandler(new Runnable() {
                     @Override
                     public void run() {
@@ -290,7 +291,7 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
     public Promise<WebRTCSessionDescription> createAnswer() {
         return new Promise<>(new PromiseFunc<WebRTCSessionDescription>() {
             @Override
-            public void exec(@NotNull final PromiseResolver<WebRTCSessionDescription> resolver) {
+            public void exec(@NonNull @NotNull final PromiseResolver<WebRTCSessionDescription> resolver) {
                 AndroidWebRTCRuntimeProvider.postToHandler(new Runnable() {
                     @Override
                     public void run() {

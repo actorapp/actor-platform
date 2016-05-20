@@ -22,7 +22,7 @@ import im.actor.core.events.PeerChatOpened;
 import im.actor.core.modules.notifications.entity.PendingNotification;
 import im.actor.core.modules.notifications.entity.PendingStorage;
 import im.actor.core.modules.notifications.entity.ReadState;
-import im.actor.core.util.ModuleActor;
+import im.actor.core.modules.ModuleActor;
 import im.actor.runtime.Storage;
 import im.actor.runtime.eventbus.Event;
 import im.actor.runtime.storage.SyncKeyValue;
@@ -574,7 +574,7 @@ public class NotificationsActor extends ModuleActor {
         } else if (message instanceof ResumeNotifications) {
             onNotificationsResumed();
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 

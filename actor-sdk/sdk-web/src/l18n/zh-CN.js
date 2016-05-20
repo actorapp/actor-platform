@@ -1,32 +1,6 @@
 export default {
   'locale': 'zh',
   'messages': {
-      // Login
-      'login': {
-          'signIn': '登录',
-          'wrong': 'Wrong?',
-          'phone': '手机号码',
-          'email': '邮箱地址',
-          'phone_or_email': 'Phone number or Email address',
-          'username':'用户名',
-          'authCode': 'Auth code',
-          'password':'密码',
-          'yourName': 'Your name',
-          'errors': {
-              'numberInvalid': 'Invalid number',
-              'nameInvalid': 'Invalid name',
-              'codeInvalid': 'Invalid code',
-              'codeExpired': 'Phone code is expired',
-              'codeWait': 'Try to request code later',
-              'passwordInvalid':'密码错误'
-          },
-          'welcome': {
-              'header': '欢迎使用<strong>易联</strong>',
-              'text': '<p>{appName} Messenger brings all your business network connections into one place, makes it easily accessible wherever you go.</p>' +
-              '<p>Our aim is to make your work easier, reduce your email amount, make the business world closer by reducing time to find right contacts.</p>',
-              'copyright': '{appName} Messenger  2015'
-          }
-      },
     // Menus
     'menu': {
       // Sidebar menu
@@ -35,8 +9,7 @@ export default {
       'createGroup': '创建群',
       'configureIntegrations': '配置集成',
       'preferences': '设置',
-      'signOut': '登出',
-      'homePage': '开发公司主页'
+      'signOut': '登出'
     },
 
     // Buttons
@@ -44,12 +17,7 @@ export default {
       'add': '添加',
       'send': '发送',
       'createGroup': '创建群',
-      'addMembers': '添加成员',
-      'quickSearch': '通讯录',
-      'checkCode': '提交',
-      'requestCode': '检查用户名',
-      'call': '通话'
-
+      'addMembers': '添加成员'
     },
 
     // Compose
@@ -61,30 +29,6 @@ export default {
 
     // Modals
     'modal': {
-      'profile': {
-          'title': '个人简介',
-          'name': '全名',
-          'nick': '昵称',
-          'phone': '电话号码',
-          'email': '邮箱',
-          'about': '关于',
-          'avatarChange': '修改头像',
-          'avatarRemove': '删除头像'
-      },
-      'group': {
-          'title': '建群',
-          'name': '群组主题',
-          'about': '群组介绍',
-          'avatarChange': '修改群组头像',
-          'avatarRemove': '删除'
-      },
-      'groups': {
-          'title': '群组',
-          'search': '群找群组',
-          'loading': '加载',
-          'notFound': '没有找到 <strong>{query}</strong>群组.'
-      },
-
       'addContact': {
         'title': '添加联系人',
         'phone': '手机号'
@@ -152,61 +96,8 @@ export default {
     'preferencesSessionsTerminate': '断开',
     'preferencesSessionsTerminateAll': '断开所有会话',
 
-      // Sidebar
-     'sidebar': {
-          'recents': {
-              'empty': {
-                  'first': 'You don\'t have any conversations at this moment.',
-                  'second': {
-                      'start': 'You can ',
-                      'or': ' or ',
-                      'end': '.'
-                  }
-              },
-              'newDialog': 'create new dialog',
-              'addPeople': 'add people',
-              'favourites': 'Favorites',
-              'groups': '群组',
-              'privates': '最近联系人',
-          },
-          'group': {
-              'empty': 'Create your first group conversation'
-          },
-          'private': {
-              'empty': 'There is no one in your network'
-          }
-    },
-    'main': {
-          'empty': 'Try to be better than yesterday!',
-          'install': '<h1>Web version of <b>{appName}</b> works only on desktop browsers at this time</h1>' +
-          '<h3>Please install our apps for using <b>{appName}</b> on your phone.</h3>' +
-          '<p><a href="//actor.im/ios">iPhone</a> | <a href="//actor.im/android">Android</a></p>',
-          'deactivated': {
-              'header': 'Tab deactivated',
-              'text': 'Oops, we have detected another tab with {appName}, so we had to deactivate this one to prevent some dangerous things happening.'
-          }
-      },
-  call: {
-  outgoing: 'Outgoing call',
-  incoming: 'Incoming call',
-  mute: 'Mute',
-  unmute: 'Unmute',
-  answer: 'Answer',
-  decline: 'Decline',
-  end: 'End call',
-  addUser: 'Add user',
-  fullScreen: 'Fullscreen',
-  video: 'Video'
-  },
-
-  toolbar: {
-  callState: {
-  calling: 'calling',
-  connecting: 'connecting',
-  in_progress: 'On call: {time}',
-  ended: 'ended'
-  }
-  }
-
+    'search': {
+      'placeholder': '搜索'
+    }
   }
 };

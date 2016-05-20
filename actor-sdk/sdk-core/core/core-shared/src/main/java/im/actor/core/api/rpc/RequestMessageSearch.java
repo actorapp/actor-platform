@@ -23,9 +23,11 @@ public class RequestMessageSearch extends Request<ResponseMessageSearchResponse>
     }
 
     private ApiSearchCondition query;
+    private List<ApiUpdateOptimization> optimizations;
 
-    public RequestMessageSearch(@NotNull ApiSearchCondition query) {
+    public RequestMessageSearch(@NotNull ApiSearchCondition query, @NotNull List<ApiUpdateOptimization> optimizations) {
         this.query = query;
+        this.optimizations = optimizations;
     }
 
     public RequestMessageSearch() {
@@ -37,9 +39,18 @@ public class RequestMessageSearch extends Request<ResponseMessageSearchResponse>
         return this.query;
     }
 
+    @NotNull
+    public List<ApiUpdateOptimization> getOptimizations() {
+        return this.optimizations;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.query = ApiSearchCondition.fromBytes(values.getBytes(1));
+        this.optimizations = new ArrayList<ApiUpdateOptimization>();
+        for (int b : values.getRepeatedInt(2)) {
+            optimizations.add(ApiUpdateOptimization.parse(b));
+        }
     }
 
     @Override
@@ -49,12 +60,16 @@ public class RequestMessageSearch extends Request<ResponseMessageSearchResponse>
         }
 
         writer.writeBytes(1, this.query.buildContainer());
+        for (ApiUpdateOptimization i : this.optimizations) {
+            writer.writeInt(2, i.getValue());
+        }
     }
 
     @Override
     public String toString() {
         String res = "rpc MessageSearch{";
         res += "query=" + this.query;
+        res += ", optimizations=" + this.optimizations;
         res += "}";
         return res;
     }

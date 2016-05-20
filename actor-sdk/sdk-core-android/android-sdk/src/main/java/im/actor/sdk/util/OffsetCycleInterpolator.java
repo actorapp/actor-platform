@@ -4,9 +4,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.animation.CycleInterpolator;
 
-/**
- * Created by root on 3/1/16.
- */
 public class OffsetCycleInterpolator extends CycleInterpolator {
     private float offset;
     public OffsetCycleInterpolator(float offset) {

@@ -3,6 +3,7 @@ syntax = 'proto3';
 option java_package = "im.actor.server.model";
 
 import "scalapb/scalapb.proto";
+import "google/protobuf/wrappers.proto";
 
 message GooglePushCredentials {
     option (scalapb.message).extends = "im.actor.server.model.push.PushCredentials";
@@ -16,9 +17,10 @@ message ApplePushCredentials {
     option (scalapb.message).extends = "im.actor.server.model.push.PushCredentials";
 
     int64 auth_id = 1;
-    int32 apns_key = 2;
+    google.protobuf.Int32Value apns_key = 2;
     bytes token = 3;
     bool is_voip = 4;
+    google.protobuf.StringValue bundle_id = 5;
 }
 
 message ActorPushCredentials {

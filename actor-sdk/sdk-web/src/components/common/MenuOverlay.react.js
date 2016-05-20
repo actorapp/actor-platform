@@ -2,7 +2,7 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { Container } from 'flux/utils';
 import classnames from 'classnames';
 
@@ -64,4 +64,4 @@ class MenuOverlay extends Component {
   }
 }
 
-export default Container.create(MenuOverlay, {pure: false});
+export default Container.create(MenuOverlay, { pure: false });

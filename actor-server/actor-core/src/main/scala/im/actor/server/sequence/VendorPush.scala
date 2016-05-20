@@ -10,9 +10,11 @@ import im.actor.server.persist.configs.ParameterRepo
 import im.actor.server.persist.push.{ ActorPushCredentialsRepo, ApplePushCredentialsRepo, GooglePushCredentialsRepo }
 import im.actor.server.push.actor.ActorPush
 import im.actor.server.sequence.UserSequenceCommands.ReloadSettings
+import im.actor.server.userconfig.SettingsKeys
 import slick.dbio.DBIO
 
 import scala.concurrent.Future
+import scala.util.control.NoStackTrace
 
 private[sequence] trait VendorPushCommand
 
@@ -31,29 +33,7 @@ private final case class NotificationSettings(
   peers:     Map[Peer, Boolean] = Map.empty
 )
 
-private object SettingsKeys {
-  private def wrap(deviceType: String, postfix: String): String = s"category.$deviceType.notification.$postfix"
-
-  private def wrapEnabled(deviceType: String): String = s"category.$deviceType.notification.enabled"
-
-  private def wrapEnabled(deviceType: String, postfix: String): String = s"category.$deviceType.notification.$postfix.enabled"
-
-  private def peerStr(peer: Peer) = peer match {
-    case Peer(PeerType.Private, id) ⇒ s"PRIVATE_$id"
-    case Peer(PeerType.Group, id)   ⇒ s"GROUP_$id"
-    case _                          ⇒ throw new RuntimeException(s"Unknown peer $peer")
-  }
-
-  def enabled(deviceType: String) = wrapEnabled(deviceType)
-
-  def soundEnabled(deviceType: String) = wrapEnabled(deviceType, "sound")
-
-  def vibrationEnabled(deviceType: String) = wrapEnabled(deviceType, "vibration")
-
-  def textEnabled(deviceType: String) = wrap(deviceType, "show_text")
-
-  def peerEnabled(deviceType: String, peer: Peer) = wrapEnabled(deviceType, s"chat.${peerStr(peer)}")
-}
+private case object FailedToUnregister extends RuntimeException("Failed to unregister push credentials")
 
 private[sequence] object VendorPush {
 
@@ -132,13 +112,11 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
 
   private val settingsControl = context.actorOf(SettingsControl.props(userId), "settings")
   private val googlePushProvider = new GooglePushProvider(userId, context.system)
-  private val applePushProvider = new ApplePushProvider(userId, context.system)
+  private val applePushProvider = new ApplePushProvider(userId)(context.system)
+  private val actorPushProvider = ActorPush(context.system)
 
   private var mapping: Map[PushCredentials, PushCredentialsInfo] = Map.empty
   private var notificationSettings = AllNotificationSettings()
-
-  private def remove(creds: PushCredentials): Unit =
-    mapping -= creds
 
   init()
 
@@ -158,14 +136,18 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
   def initialized = commands orElse internal
 
   def commands: Receive = {
+    case r: RegisterPushCredentials if r.creds.isActor ⇒
+      register(r.getActor)
     case r: RegisterPushCredentials if r.creds.isApple ⇒
       register(r.getApple)
     case r: RegisterPushCredentials if r.creds.isGoogle ⇒
       register(r.getGoogle)
-    case r: RegisterPushCredentials if r.creds.isActor ⇒
-      register(r.getActor)
-    case UnregisterPushCredentials(authId) ⇒
-      unregister(authId)
+    case u: UnregisterPushCredentials if u.creds.isActor ⇒
+      unregister(u.getActor)
+    case u: UnregisterPushCredentials if u.creds.isApple ⇒
+      unregister(u.getApple)
+    case u: UnregisterPushCredentials if u.creds.isGoogle ⇒
+      unregister(u.getGoogle)
     case DeliverPush(seq, rules) ⇒
       deliver(seq, rules.getOrElse(PushRules()))
     case r: ReloadSettings ⇒
@@ -186,7 +168,7 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
       appleCreds ← ApplePushCredentialsRepo.findByUser(userId)
       actorCreds ← ActorPushCredentialsRepo.findByUser(userId)
       google ← DBIO.sequence(googleCreds map withInfo) map (_.flatten)
-      apple ← DBIO.sequence(appleCreds map withInfo) map (_.flatten)
+      apple ← DBIO.sequence(appleCreds.filterNot(_.isVoip) map withInfo) map (_.flatten)
       actor ← DBIO.sequence(actorCreds map withInfo) map (_.flatten)
     } yield Initialized(apple ++ google ++ actor)) pipeTo self
   }
@@ -278,7 +260,7 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
       case c: ApplePushCredentials ⇒
         applePushProvider.deliverInvisible(seq, c)
       case c: ActorPushCredentials ⇒
-        ActorPush(context.system).deliver(seq = seq, c)
+        actorPushProvider.deliver(seq, c)
     }
   }
 
@@ -314,41 +296,40 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
           isVibrationEnabled = isVibrationEnabled
         )
       case c: ActorPushCredentials ⇒
-        ActorPush(context.system).deliver(seq = seq, c)
+        actorPushProvider.deliver(seq, c)
     }
   }
 
-  private def register(creds: PushCredentials): Unit = {
-    db.run(for {
-      _ ← creds match {
-        case c: GooglePushCredentials ⇒ GooglePushCredentialsRepo.createOrUpdate(c)
-        case c: ApplePushCredentials  ⇒ ApplePushCredentialsRepo.createOrUpdate(c)
-        case c: ActorPushCredentials  ⇒ ActorPushCredentialsRepo.createOrUpdate(c)
-      }
-      appIdCredsOpt ← withInfo(creds)
-    } yield {
-      appIdCredsOpt.getOrElse(throw new RuntimeException(s"Cannot find appId for $creds"))
-    }) pipeTo self
-  }
+  private def register(creds: PushCredentials): Unit =
+    db.run {
+      withInfo(creds) map (_.getOrElse(throw new RuntimeException(s"Cannot find appId for $creds")))
+    } pipeTo self
 
   private def withInfo(c: PushCredentials): DBIO[Option[(PushCredentials, PushCredentialsInfo)]] =
     for {
       authSessionOpt ← AuthSessionRepo.findByAuthId(c.authId)
     } yield authSessionOpt map (s ⇒ c → PushCredentialsInfo(s.appId, s.id))
 
-  private def unregister(authId: Long): Unit =
-    mapping.keys filter (_.authId == authId) foreach unregister
+  private def remove(creds: PushCredentials): Unit =
+    mapping -= creds
 
-  private def unregister(creds: PushCredentials): Unit =
+  private def unregister(creds: PushCredentials): Unit = {
+    val replyTo = sender()
     if (mapping.contains(creds)) {
       remove(creds)
+      val removeFu = db.run(creds match {
+        case c: GooglePushCredentials ⇒ GooglePushCredentialsRepo.deleteByToken(c.regId)
+        case c: ApplePushCredentials  ⇒ ApplePushCredentialsRepo.deleteByToken(c.token.toByteArray)
+        case c: ActorPushCredentials  ⇒ ActorPushCredentialsRepo.deleteByTopic(c.endpoint)
+      }) map (_ ⇒ UnregisterPushCredentialsAck()) pipeTo replyTo
 
-      db.run(creds match {
-        case c: GooglePushCredentials ⇒ GooglePushCredentialsRepo.delete(c.authId)
-        case c: ApplePushCredentials  ⇒ ApplePushCredentialsRepo.delete(c.authId)
-        case c: ActorPushCredentials  ⇒ ActorPushCredentialsRepo.delete(c.authId)
-      }) onFailure {
-        case e ⇒ log.error("Failed to unregister creds")
+      removeFu onFailure {
+        case e ⇒
+          log.error("Failed to unregister creds: {}", creds)
+          replyTo ! Status.Failure(FailedToUnregister)
       }
+    } else {
+      replyTo ! UnregisterPushCredentialsAck()
     }
+  }
 }

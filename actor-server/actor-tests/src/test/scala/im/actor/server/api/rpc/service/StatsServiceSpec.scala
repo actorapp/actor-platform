@@ -22,7 +22,7 @@ class StatsServiceSpec extends BaseAppSuite
 
   def storeEvents() = {
     val (user, userAuthId, userAuthSid, _) = createUser()
-    implicit val aliceClientData = ClientData(userAuthId, 1, Some(AuthData(user.id, userAuthSid)))
+    implicit val aliceClientData = ClientData(userAuthId, 1, Some(AuthData(user.id, userAuthSid, 42)))
 
     whenReady(service.handleStoreEvents(Vector(
       ApiAppVisibleChanged(visible = true),
@@ -41,7 +41,7 @@ class StatsServiceSpec extends BaseAppSuite
 
   def storeParamsAsJson() = {
     val (user, userAuthId, userAuthSid, _) = createUser()
-    implicit val aliceClientData = ClientData(userAuthId, 1, Some(AuthData(user.id, userAuthSid)))
+    implicit val aliceClientData = ClientData(userAuthId, 1, Some(AuthData(user.id, userAuthSid, 42)))
 
     whenReady(service.handleStoreEvents(Vector(
       ApiUntypedEvent("AppCrash", Some(ApiMapValue(Vector(

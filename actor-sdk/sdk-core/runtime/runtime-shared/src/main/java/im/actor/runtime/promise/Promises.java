@@ -2,70 +2,30 @@ package im.actor.runtime.promise;
 
 import com.google.j2objc.annotations.ObjectiveCName;
 
+import java.util.List;
+
 import im.actor.runtime.Log;
 import im.actor.runtime.function.Consumer;
-import im.actor.runtime.function.Function;
+import im.actor.runtime.function.Supplier;
+import im.actor.runtime.function.Tuple2;
+import im.actor.runtime.function.Tuple3;
+import im.actor.runtime.function.Tuple4;
 
 /**
  * Various methods for creating promises.
  */
 public class Promises {
 
-    /**
-     * Always success promise
-     *
-     * @param val success value
-     * @param <T> type of value
-     * @return promise
-     */
-    @ObjectiveCName("success:")
-    public static <T> Promise<T> success(final T val) {
-        return new Promise<T>() {
-            @Override
-            void exec(PromiseResolver resolver) {
-                resolver.result(val);
-            }
-        };
-    }
-
-    /**
-     * Always failed promise
-     *
-     * @param e   fail reason
-     * @param <T> type of promise
-     * @return promise
-     */
-    @ObjectiveCName("failure:")
-    public static <T> Promise<T> failure(final Exception e) {
-        return new Promise<T>() {
-            @Override
-            void exec(PromiseResolver<T> resolver) {
-                resolver.error(e);
-            }
-        };
-    }
-
     @ObjectiveCName("logWithTag:withResolver:withFunc:")
     public static <T> Promise<T> log(final String TAG, final PromiseResolver<T> resolver, final PromiseFunc<T> func) {
-        return new Promise<T>() {
-            @Override
-            void exec(PromiseResolver<T> resolver) {
-                func.exec(resolver);
-            }
-        }.then(new Consumer<T>() {
-            @Override
-            public void apply(T t) {
-                Log.d(TAG, "Result: " + t);
-                resolver.result(t);
-            }
-        }).failure(new Consumer<Exception>() {
-            @Override
-            public void apply(Exception e) {
-                Log.d(TAG, "Error: " + e);
-                Log.e(TAG, e);
-                e.printStackTrace();
-                resolver.error(e);
-            }
+        return new Promise<T>(r -> func.exec(r)).then(t -> {
+            Log.d(TAG, "Result: " + t);
+            resolver.result(t);
+        }).failure(e -> {
+            Log.d(TAG, "Error: " + e);
+            Log.e(TAG, e);
+            e.printStackTrace();
+            resolver.error(e);
         });
     }
 
@@ -81,14 +41,9 @@ public class Promises {
     @ObjectiveCName("tupleWithT1:withT2:")
     public static <T1, T2> Promise<Tuple2<T1, T2>> tuple(Promise<T1> t1, Promise<T2> t2) {
 
-        return PromisesArray.ofPromises(t1.cast(), t2.cast())
+        return PromisesArray.ofPromises((Promise<Object>) t1, (Promise<Object>) t2)
                 .zip()
-                .map(new Function<Object[], Tuple2<T1,T2>>() {
-                    @Override
-                    public Tuple2<T1, T2> apply(Object[] src) {
-                        return new Tuple2<>((T1) src[0], (T2) src[1]);
-                    }
-                });
+                .map(src -> new Tuple2<>((T1) src.get(0), (T2) src.get(1)));
     }
 
     /**
@@ -104,14 +59,9 @@ public class Promises {
      */
     @ObjectiveCName("tupleWithT1:withT2:withT3:")
     public static <T1, T2, T3> Promise<Tuple3<T1, T2, T3>> tuple(Promise<T1> t1, Promise<T2> t2, Promise<T3> t3) {
-        return PromisesArray.ofPromises(t1.cast(), t2.cast(), t3.cast())
+        return PromisesArray.ofPromises((Promise<Object>) t1, (Promise<Object>) t2, (Promise<Object>) t3)
                 .zip()
-                .map(new Function<Object[], Tuple3<T1, T2, T3>>() {
-                    @Override
-                    public Tuple3<T1, T2, T3> apply(Object[] src) {
-                        return new Tuple3<>((T1) src[0], (T2) src[1], (T3) src[2]);
-                    }
-                });
+                .map(src -> new Tuple3<>((T1) src.get(0), (T2) src.get(1), (T3) src.get(3)));
     }
 
     /**
@@ -133,13 +83,25 @@ public class Promises {
                                                                          Promise<T3> t3,
                                                                          Promise<T4> t4) {
 
-        return PromisesArray.ofPromises(t1.cast(), t2.cast(), t3.cast(), t4.cast())
+        return PromisesArray.ofPromises((Promise<Object>) t1, (Promise<Object>) t2, (Promise<Object>) t3, (Promise<Object>) t4)
                 .zip()
-                .map(new Function<Object[], Tuple4<T1,T2,T3,T4>>() {
-                    @Override
-                    public Tuple4<T1, T2, T3, T4> apply(Object[] src) {
-                        return new Tuple4<>((T1) src[0], (T2) src[1], (T3) src[2], (T4) src[3]);
-                    }
-                });
+                .map(src -> new Tuple4<>((T1) src.get(0), (T2) src.get(1), (T3) src.get(2), (T4) src.get(3)));
+    }
+
+    /**
+     * Execute promises step by step
+     *
+     * @param queue queue of promises
+     * @param <T>   type of promises
+     * @return promise
+     */
+    public static <T> Promise traverse(List<Supplier<Promise<T>>> queue) {
+
+        if (queue.size() == 0) {
+            return Promise.success(null);
+        }
+
+        return queue.remove(0).get()
+                .flatMap(v -> traverse(queue));
     }
 }

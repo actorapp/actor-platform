@@ -49,7 +49,7 @@ object FileUtils {
   def writeBytes(bytes: ByteString)(implicit system: ActorSystem, materializer: Materializer, ec: ExecutionContext): Future[(Path, Long)] = {
     for {
       file ← createTempFile
-      ioRes ← Source.single(bytes).runWith(FileIO.toFile(file.toFile))
+      ioRes ← Source.single(bytes).runWith(FileIO.toPath(file))
     } yield {
       ioRes.status match {
         case Success(_)     ⇒ (file, ioRes.count)

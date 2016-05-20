@@ -15,6 +15,7 @@ export const ActionTypes = keymirror({
   APP_HIDDEN: null,
   APP_VISIBLE: null,
 
+  AUTH_START: null,
   AUTH_CHANGE_LOGIN: null,
   AUTH_CHANGE_CODE: null,
   AUTH_CHANGE_NAME: null,
@@ -38,7 +39,6 @@ export const ActionTypes = keymirror({
   DIALOGS_CHANGED: null,
   DIALOG_INFO_CHANGED: null,
   TYPING_CHANGED: null,
-  MY_PROFILE_CHANGED: null,
   MESSAGES_CHANGED: null,
   CONNECTION_STATE_CHANGED: null,
 
@@ -53,6 +53,8 @@ export const ActionTypes = keymirror({
   EMOJI_SHOW: null,
   EMOJI_CLOSE: null,
 
+  STICKERS_SET: null,
+
   MESSAGE_SEND_TEXT: null,
   MESSAGE_SEND_FILE: null,
   MESSAGE_SEND_PHOTO: null,
@@ -61,29 +63,34 @@ export const ActionTypes = keymirror({
   MESSAGE_LIKE_ADD: null,
   MESSAGE_LIKE_REMOVE: null,
   MESSAGES_SET_SELECTED: null,
+  MESSAGES_TOGGLE_SELECTED: null,
   MESSAGES_LOAD_MORE: null,
+  MESSAGES_EDIT_START: null,
+  MESSAGES_EDIT_END: null,
 
   ACTIVITY_SHOW: null,
   ACTIVITY_HIDE: null,
 
   // Contact actions
-  CONTACT_ADD: null,
-  CONTACT_REMOVE: null,
   CONTACT_LIST_SHOW: null,
   CONTACT_LIST_HIDE: null,
   CONTACT_LIST_CHANGED: null,
   CONTACT_ADD_MODAL_SHOW: null,
   CONTACT_ADD_MODAL_HIDE: null,
+  CONTACT_ADD: null,
+  CONTACT_ADD_SUCCESS: null,
+  CONTACT_ADD_ERROR: null,
+  CONTACT_REMOVE: null,
+  CONTACT_REMOVE_SUCCESS: null,
+  CONTACT_REMOVE_ERROR: null,
   CONTACT_FIND: null,
   CONTACT_FIND_SUCCESS: null,
   CONTACT_FIND_ERROR: null,
-  CONTACT_LIST_SEARCH: null,
 
   // Group actions
-  GROUP_CREATE_MODAL_OPEN: null,
-  GROUP_CREATE_MODAL_CLOSE: null,
+  GROUP_CREATE_MODAL_SHOW: null,
+  GROUP_CREATE_MODAL_HIDE: null,
   GROUP_CREATE_SET_NAME: null,
-  //GROUP_CREATE_SET_AVATAR: null,
   GROUP_CREATE_SET_MEMBERS: null,
   GROUP_CREATE: null,
   GROUP_CREATE_SUCCESS: null,
@@ -93,7 +100,6 @@ export const ActionTypes = keymirror({
   GROUP_EDIT_TITLE: null,
   GROUP_EDIT_TITLE_SUCCESS: null,
   GROUP_EDIT_TITLE_ERROR: null,
-  GROUP_INFO_CHANGED: null,
   GROUP_EDIT_ABOUT: null,
   GROUP_EDIT_ABOUT_SUCCESS: null,
   GROUP_EDIT_ABOUT_ERROR: null,
@@ -115,13 +121,13 @@ export const ActionTypes = keymirror({
   GROUP_JOIN_VIA_LINK: null,
   GROUP_JOIN_VIA_LINK_SUCCESS: null,
   GROUP_JOIN_VIA_LINK_ERROR: null,
+  GROUP_INFO_CHANGED: null,
 
   GROUP_LIST_SHOW: null,
   GROUP_LIST_HIDE: null,
   GROUP_LIST_LOAD: null,
   GROUP_LIST_LOAD_SUCCESS: null,
   GROUP_LIST_LOAD_ERROR: null,
-  GROUP_LIST_SEARCH: null,
 
   NOTIFICATION_CHANGE: null,
 
@@ -143,9 +149,9 @@ export const ActionTypes = keymirror({
   INVITE_USER_SUCCESS: null,
   INVITE_USER_ERROR: null,
 
-  PREFERENCES_SAVE: null,
-  PREFERENCES_MODAL_HIDE: null,
   PREFERENCES_MODAL_SHOW: null,
+  PREFERENCES_MODAL_HIDE: null,
+  PREFERENCES_SAVE: null,
   PREFERENCES_CHANGE_TAB: null,
   PREFERENCES_SESSION_LOAD: null,
   PREFERENCES_SESSION_LOAD_SUCCESS: null,
@@ -157,20 +163,27 @@ export const ActionTypes = keymirror({
   PREFERENCES_SESSION_TERMINATE_ALL_SUCCESS: null,
   PREFERENCES_SESSION_TERMINATE_ALL_ERROR: null,
 
-  MY_PROFILE_MODAL_SHOW: null,
-  MY_PROFILE_MODAL_HIDE: null,
-  MY_PROFILE_SAVE_NAME: null,
-  MY_PROFILE_SAVE_NICKNAME: null,
-  MY_PROFILE_EDIT_ABOUT: null,
-  MY_PROFILE_EDIT_ABOUT_SUCCESS: null,
-  MY_PROFILE_EDIT_ABOUT_ERROR: null,
+  // Profile
+
+  PROFILE_SHOW: null,
+  PROFILE_HIDE: null,
+  PROFILE_CHANGED: null,
+  PROFILE_EDIT_NAME: null,
+  PROFILE_EDIT_NAME_SUCCESS: null,
+  PROFILE_EDIT_NAME_ERROR: null,
+  PROFILE_EDIT_NICK: null,
+  PROFILE_EDIT_NICK_SUCCESS: null,
+  PROFILE_EDIT_NICK_ERROR: null,
+  PROFILE_EDIT_ABOUT: null,
+  PROFILE_EDIT_ABOUT_SUCCESS: null,
+  PROFILE_EDIT_ABOUT_ERROR: null,
+
+  CROP_MODAL_SHOW: null,
+  CROP_MODAL_HIDE: null,
 
   KICK_USER: null,
   KICK_USER_SUCCESS: null,
   KICK_USER_ERROR: null,
-
-  CROP_AVATAR_MODAL_SHOW: null,
-  CROP_AVATAR_MODAL_HIDE: null,
 
   QUICK_SEARCH_SHOW: null,
   QUICK_SEARCH_HIDE: null,
@@ -197,6 +210,7 @@ export const ActionTypes = keymirror({
   CALL_SUCCESS: null,
   CALL_ERROR: null,
   CALL_CHANGED: null,
+  CALL_TIME_CHANGED: null,
   CALL_ANSWER: null,
   CALL_END: null,
   CALL_MUTE_TOGGLE: null,
@@ -223,7 +237,32 @@ export const ActionTypes = keymirror({
   RECENT_CONTEXT_MENU_HIDE: null,
 
   LOGGER_APPEND: null,
-  LOGGER_TOGGLE: null
+  LOGGER_TOGGLE: null,
+
+  SEARCH_SHOW: null,
+  SEARCH_HIDE: null,
+  SEARCH_TOGGLE_FOCUS: null,
+  SEARCH_TOGGLE_EXPAND: null,
+  SEARCH_TEXT: null,
+  SEARCH_TEXT_SUCCESS: null,
+  SEARCH_TEXT_ERROR: null,
+  SEARCH_DOCS: null,
+  SEARCH_DOCS_SUCCESS: null,
+  SEARCH_DOCS_ERROR: null,
+  SEARCH_LINKS: null,
+  SEARCH_LINKS_SUCCESS: null,
+  SEARCH_LINKS_ERROR: null,
+  SEARCH_PHOTO: null,
+  SEARCH_PHOTO_SUCCESS: null,
+  SEARCH_PHOTO_ERROR: null,
+
+  MESSAGE_ART_SHOW: null,
+  MESSAGE_ART_CLOSE: null,
+
+  BLOCKED_USERS_LOAD: null,
+  BLOCKED_USERS_SET: null,
+  BLOCKED_USERS_LOAD_FAILED: null,
+  BLOCKED_USERS_SET_QUERY: null
 });
 
 export const EventTypes = {
@@ -242,6 +281,11 @@ export const CallStates = {
   ENDED: 'ended'
 };
 
+export const MessageArtPopupState = {
+  EMOJI: 'emoji',
+  STICKER: 'sticker'
+};
+
 export const ConnectionStates = {
   ONLINE: 'online',
   CONNECTING: 'connecting',
@@ -255,6 +299,13 @@ export const MessageStates = {
   READ: 'read',
   ERROR: 'error',
   UNKNOWN: 'unknown'
+};
+
+export const MessageChangeReason = {
+  UNKNOWN: 'UNKNOWN',
+  PUSH: 'PUSH',
+  UNSHIFT: 'UNSHIFT',
+  UPDATE: 'UPDATE'
 };
 
 export const PeerTypes = {
@@ -317,6 +368,30 @@ export const LoggerTypes = {
   DEBUG: 'd'
 };
 
+export const ModalTypes = keymirror({
+  PROFILE: null,
+  CROP: null,
+  GROUP_LIST: null,
+  PEOPLE_LIST: null,
+  ADD_CONTACT: null,
+  CREATE_GROUP: null,
+  EDIT_GROUP: null,
+  PREFERENCES: null,
+  INVITE: null,
+  INVITE_BY_LINK: null,
+  QUICK_SEARCH: null,
+  ATTACHMENTS: null
+});
+
+export const PreferencesTabTypes = keymirror({
+  GENERAL: null,
+  NOTIFICATIONS: null,
+  SECURITY: null,
+  BLOCKED: null,
+  ABOUT: null
+});
+
+
 export const Path = {
   toImages: 'assets/images',
   toEmoji: 'assets/images/emoji'
@@ -329,11 +404,8 @@ export const endpoints = [
 
 export const appName = 'Actor';
 export const rootElement = 'actor-web-app';
-//export const homePage = 'https://actor.im';
 export const homePage = 'http://www.eaglesoft.cn';
-
-export const twitter = 'actorapp';
-export const helpPhone = '75551234567';
+export const twitter = 'actorapp';export const helpPhone = '75551234567';
 
 export default {
   AuthSteps,
@@ -341,6 +413,7 @@ export default {
   EventTypes,
   CallTypes,
   CallStates,
+  MessageArtPopupState,
   ConnectionStates,
   PeerTypes,
   ActivityTypes,
@@ -348,11 +421,11 @@ export default {
   MessageContentTypes,
   KeyCodes,
   AsyncActionStates,
+  ModalTypes,
+  PreferencesTabTypes,
   Path,
   endpoints,
   appName,
   rootElement,
-  homePage,
-  twitter,
   helpPhone
 };

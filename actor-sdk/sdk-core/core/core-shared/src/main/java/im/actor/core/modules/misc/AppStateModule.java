@@ -8,27 +8,27 @@ import im.actor.core.api.ApiAppCounters;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.viewmodel.AppStateVM;
+import im.actor.core.viewmodel.GlobalStateVM;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 
 import static im.actor.runtime.actors.ActorSystem.system;
 
 public class AppStateModule extends AbsModule {
+
     private AppStateVM appStateVM;
+    private GlobalStateVM globalStateVM;
     private ActorRef listStatesActor;
 
     public AppStateModule(ModuleContext context) {
         super(context);
-        this.appStateVM = new AppStateVM(context);
+
+        globalStateVM = new GlobalStateVM(context);
     }
 
     public void run() {
-        listStatesActor = system().actorOf("actor/app/state", new ActorCreator() {
-            @Override
-            public ListsStatesActor create() {
-                return new ListsStatesActor(context());
-            }
-        });
+        this.appStateVM = new AppStateVM(context());
+        listStatesActor = system().actorOf("actor/app/state", () -> new ListsStatesActor(context()));
     }
 
     public void onDialogsUpdate(boolean isEmpty) {
@@ -51,12 +51,12 @@ public class AppStateModule extends AbsModule {
         listStatesActor.send(new ListsStatesActor.OnDialogsLoaded());
     }
 
-    public void onCountersChanged(ApiAppCounters counters) {
-        listStatesActor.send(new ListsStatesActor.OnAppCounterChanged(counters));
-    }
-
     public AppStateVM getAppStateVM() {
         return appStateVM;
+    }
+
+    public GlobalStateVM getGlobalStateVM() {
+        return globalStateVM;
     }
 
     public void resetModule() {

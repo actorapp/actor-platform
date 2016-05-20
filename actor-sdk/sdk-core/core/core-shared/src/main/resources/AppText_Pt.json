@@ -1,0 +1,185 @@
+{
+	"app": {
+		"name": "Actor"
+	},
+
+	"language": {
+
+		"code": "Pt",
+
+		"format": {
+			"time": {
+				"yesterday":{
+					"short": "Ontem",
+					"full": "Ontem"
+				},
+				"now": "Agora",
+				"minutes": {
+					"short": "{minutes} min",
+					"full": "{minutes} min"
+				},
+				"hours": {
+					"short": "{hours} hs",
+					"full": "{hours} hs"
+				}
+			}
+		},
+
+		"file_size": {
+			"bytes": "{bytes} B",
+			"kbytes": "{kbytes} KB",
+			"mbytes": "{mbytes} MB",
+			"gbytes": "{gbytes} GB"
+		},
+
+		"referencing": {
+			"you": "Você",
+			"thee": "Você"
+		},
+
+		"sequence": {
+			"or": ", ",
+			"and": " and "
+		}
+	},
+
+	"groups": {
+		"members": {
+		  "other": "{count} membros",
+			"one": "{count} membro"
+		}
+	},
+
+	"presence": {
+		"online": "online",
+		"offline": "offline",
+		"now": "visto agora mesmo",
+		"today": "visto hoje às {time}",
+		"yesterday": "visto ontem às {time}",
+		"at_day": "visto {date}",
+		"at_day_time": "visto {date} às {time}",
+		"members": "{count} online"
+	},
+
+	"typing": {
+		"simple": "digitando...",
+		"user": "{user} está digitando...",
+		"group": {
+			"sequenced": "{users} estão digitando...",
+			"many": "{count} pessoas estão digitando..."
+		}
+	},
+
+	"content": {
+
+		"unknown": "Conteúdo não suportado",
+		"document": "Documento",
+		"photo": "Foto",
+		"video": "Vídeo",
+		"audio": "Audio",
+		"contact": "Contact",
+		"location": "Location",
+		"sticker": "Sticker",
+
+		"service": {
+			"registered": {
+				"full": "{name} entrou na Rede {app_name}",
+				"compact": "Entrou no {app_name}"
+			},
+			"groups": {
+				"created": "{name} criou o grupo",
+				"invited": "{name} convidado {name_added}",
+				"joined": "{name} entrou no grupo",
+				"kicked": "{name} removido {name_kicked}",
+				"left": "{name} saiu do grupo",
+				"title_changed": {
+					"full":  "{name} alterou o nome do grupo para \"{title}\"",
+					"compact": "{name} alterou o nome do grupo"
+				},
+				"topic_changed": {
+					"full":  "{name} changed the group topic to \"{topic}\"",
+					"compact": "{name} changed the group topic"
+				},
+				"about_changed": {
+					"full":  "{name} changed the group about to \"{about}\"",
+					"compact": "{name} changed the group about"
+				},
+				"avatar_changed": "{name} alterou a foto do grupo",
+				"avatar_removed": "{name} removeu a foto do grupo"
+			},
+			"calls": {
+				"missed": "Missed call",
+				"ended": "Call ended"
+			}
+		}
+	},
+
+	"errors": {
+		"unknown": "Unknown error. Please, try again later.",
+		"internal": "Internal server error. Please, try again later.",
+		"phone": {
+			"empty": "Please, enter your phone number.",
+			"incorrect": "Entered phone number is invalid. Please, try again."
+		},
+		"code": {
+			"empty": "The code is invalid. Please try again.",
+			"incorrect": "Entered code is incorrect. Please, try again.",
+			"expired": "The code has expired. Please, start authentication again."
+		},
+		"groups": {
+			"already_joined": "You have already joined the group.",
+			"unable_to_join": "Unable to join the group."
+		}
+	},
+
+	"months": {
+		"january": { 
+			"compact": "jan",
+			"full":"janeiro"
+		},
+		"february": { 
+			"compact": "fev",
+			"full":"fevereiro"
+		},
+		"march": { 
+			"compact": "mar",
+			"full":"março"
+		},
+		"april": { 
+			"compact": "abr",
+			"full":"abril"
+		},
+		"may": { 
+			"compact": "mai",
+			"full":"maio"
+		},
+		"june": { 
+			"compact": "jun",
+			"full":"junho"
+		},
+		"july": { 
+			"compact": "jul",
+			"full":"julho"
+		},
+		"august": { 
+			"compact": "ago",
+			"full":"agosto"
+		},
+		"september": { 
+			"compact": "set",
+			"full":"setembro"
+		},
+		"october": { 
+			"compact": "out",
+			"full":"outubro"
+		},
+		"november": { 
+			"compact": "nov",
+			"full":"novembro"
+		},
+		"december": { 
+			"compact": "dez",
+			"full":"dezembro"
+		}
+	}
+}

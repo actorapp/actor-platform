@@ -1,0 +1,136 @@
+{
+	"app": {
+		"name": "Actor"
+	},
+
+	"language": {
+		"code": "Fa",
+
+		"format": {
+			"time": {
+				"yesterday": "دیروز",
+				"now": "الآن",
+				"minutes": "{minutes} دقیقه",
+				"hours": "{hours} ساعت"
+			}
+		},
+
+		"file_size": {
+			"bytes": "{bytes} B",
+			"kbytes": "{kbytes} KB",
+			"mbytes": "{mbytes} MB",
+			"gbytes": "{gbytes} GB"
+		},
+
+		"referencing": {
+			"you": "شما",
+			"thee": "شما"
+		},
+
+		"sequence": {
+			"or": ",",
+			"and": ","
+		}
+	},
+
+	"groups": {
+		"members": "{count} نفر"
+	},
+
+	"presence": {
+		"online": "برخط",
+		"offline": "برون‌خط",
+		"now": "اخیرن اینجا بوده",
+		"today": "آخرین بار درساعت {time} دیده شده",
+		"yesterday": "آخرین بار دیروز ساعت {time} دیده شده",
+		"at_day": "آخرین بار در تاریخ {date} دیده شده:",
+		"at_day_time": "آخرین بار در تاریخ   {date} و ساعت {time} دیده شده",
+		"members": "{count} نفر"
+	},
+
+	"typing": {
+		"simple": "در حال نوشتن...",
+		"user": "{user} در حال نوشتن ...",
+		"group": {
+			"sequenced": "{users} نفر در حال نوشتن ...",
+			"many": "{count} نفر در حال نوشتن ..."
+		}
+	},
+
+	"content": {
+
+		"unknown": "محتوای نامشخص",
+		"document": "سند",
+		"photo": "تصویر",
+		"video": "ویدیو",
+		"audio": "صدا",
+		"contact": "مخاطب",
+		"location": "موقعیت",
+		"sticker": "استیکر",
+
+		"service": {
+			"registered": {
+				"full": "{name} به {app_name} پیوست",
+				"compact": "به {app_name} پیوست"
+			},
+			"groups": {
+				"created": "{name} گروه را ایجاد کرد",
+				"invited": "{name} {name_added} را دعوت کرد",
+				"joined": "{name} به گروه پیوست",
+				"kicked": "{name} {name_kicked} را از گروه حذف کرد",
+				"left": "{name} از گروه رفت",
+				"title_changed": {
+					"full":  "{name} نام گروه را با\"{title}\" جایگزین کرد",
+					"compact": "{name} نام گروه را جایگزین کرد"
+				},
+				"topic_changed": {
+					"full":  "جناب {name} موضوع گروه را با \"{topic}\" جای‌گزین کردید",
+					"compact": "موضوع گروه را عوض کرد {name}"
+				},
+				"about_changed": {
+					"full":  "جناب {name} متن درباره گروه را با \"{about}\" جای‌گزین کردید",
+					"compact": "متن درباره گروه را عوض کرد {name}"
+				},
+				"avatar_changed": "{name} تصویر گروه را عوض کرد",
+				"avatar_removed": "{name} تصویر گروه را عوض کرد"
+			},
+			"calls": {
+				"missed": "تماس از دست رفته",
+				"ended": "تماس تمام شد"
+			}
+		}
+	},
+
+	"errors": {
+		"unknown": "Unknown error. Please, try again later.",
+		"internal": "خطای داخلی کارگزار. لطفن بعدن دوباره تلاش کنید",
+		"phone": {
+			"empty": "لطفن شماره تلفن خودتان را وارد کنید",
+			"incorrect": "شماره تلفن وارد شده معتبر نیست. لطفن دوباره تلاش کنید."
+		},
+		"code": {
+			"empty": "کدتان معتبر نیست. لطفن دوباره تلاش کنید.",
+			"incorrect": "کد وارد شده معتبر نیست. لطفن دوباره تلاش کنید.",
+			"expired": "کدتان منقضی شده. لطفن دوباره از ابتدا شروع کنید."
+		},
+		"groups": {
+			"already_joined": "شما هم‌اکنون نیز عضو گروه هستید.",
+			"unable_to_join": "امکان عضویت در گروه نیست"
+		}
+	},
+
+	"months": {
+		"january": "ژانویه",
+		"february": "فوریه",
+		"march": "مارس",
+		"april": "آوریل",
+		"may": "می",
+		"june": "ژوئن",
+		"july": "جولای",
+		"august": "آگوست",
+		"september": "سپتامبر",
+		"october": "اکتبر",
+		"november": "نوامبر",
+		"december": "دسامبر"
+	}
+}

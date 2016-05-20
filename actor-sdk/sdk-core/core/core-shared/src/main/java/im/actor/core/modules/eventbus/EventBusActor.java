@@ -14,7 +14,7 @@ import im.actor.core.api.rpc.ResponseVoid;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
-import im.actor.core.util.ModuleActor;
+import im.actor.core.modules.ModuleActor;
 import im.actor.runtime.actors.Cancellable;
 import im.actor.runtime.actors.messages.PoisonPill;
 import im.actor.runtime.function.Consumer;
@@ -52,17 +52,9 @@ public class EventBusActor extends ModuleActor {
 
     public void joinBus(final String busId, final long timeout) {
         isProcessing = true;
-        api(new RequestJoinEventBus(busId, timeout)).then(new Consumer<ResponseJoinEventBus>() {
-            @Override
-            public void apply(ResponseJoinEventBus responseJoinEventBus) {
-                connectBus(busId, responseJoinEventBus.getDeviceId(), timeout, true);
-            }
-        }).failure(new Consumer<Exception>() {
-            @Override
-            public void apply(Exception e) {
-                dispose();
-            }
-        }).done(self());
+        api(new RequestJoinEventBus(busId, timeout)).then(responseJoinEventBus ->
+                connectBus(busId, responseJoinEventBus.getDeviceId(), timeout, true)
+        ).failure(e -> dispose());
     }
 
     public void createBus() {
@@ -71,17 +63,9 @@ public class EventBusActor extends ModuleActor {
 
     public void createBus(final long timeout) {
         isProcessing = true;
-        api(new RequestCreateNewEventBus(timeout, true)).then(new Consumer<ResponseCreateNewEventBus>() {
-            @Override
-            public void apply(ResponseCreateNewEventBus responseCreateNewEventBus) {
-                connectBus(responseCreateNewEventBus.getId(), responseCreateNewEventBus.getDeviceId(), timeout, false);
-            }
-        }).failure(new Consumer<Exception>() {
-            @Override
-            public void apply(Exception e) {
-                dispose();
-            }
-        }).done(self());
+        api(new RequestCreateNewEventBus(timeout, true)).then(responseCreateNewEventBus ->
+                connectBus(responseCreateNewEventBus.getId(), responseCreateNewEventBus.getDeviceId(), timeout, false)
+        ).failure(e -> dispose());
     }
 
     public void connectBus(String busId, long deviceId, boolean isJoined) {
@@ -148,7 +132,7 @@ public class EventBusActor extends ModuleActor {
     }
 
     public void sendMessage(byte[] data) {
-        request(new RequestPostToEventBus(busId, new ArrayList<Long>(), data));
+        request(new RequestPostToEventBus(busId, new ArrayList<>(), data));
     }
 
     public void sendMessage(ArrayList<Long> deviceIds, byte[] data) {

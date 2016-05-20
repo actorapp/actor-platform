@@ -1,6 +1,7 @@
 set -e
 
 pod install --no-repo-update
+pod update
 
 rm -fr build
 mkdir -p build/Output
@@ -9,7 +10,7 @@ xcodebuild \
   -workspace "ActorSDK.xcworkspace" \
   -scheme "ActorSDK" \
   -derivedDataPath build \
-  -arch armv7  -arch arm64 \
+  -arch armv7 -arch armv7s -arch arm64 \
   -sdk iphoneos \
   ONLY_ACTIVE_ARCH=NO \
   -configuration Release \

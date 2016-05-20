@@ -1,0 +1,105 @@
+$dark-text: rgb(171,178,191);
+$darker-text: rgb(91,99,112);
+$button-rised-background-color: #476384;
+$main-dark-color: rgb(30,33,40);
+$sidebar-dark-color: rgb(25,28,32);
+
+.dark-theme {
+  .main {
+    // background-color: darken($dusk, 30%);
+    background-color: $main-dark-color;
+  }
+
+  .sidebar,
+  .activity,
+  .compose__message {
+    // background-color: darken($dusk, 25);
+    background-color: $sidebar-dark-color;
+    color: $dark-text;
+  }
+
+  .message__timestamp,
+  .toolbar__peer__title,
+  .message__sender__name,
+  .message__sender__nick {
+    color: #C7C7C7 !important;
+  }
+
+  .message {
+    .text {
+      color: $dark-text;
+    }
+    .service {
+      color: $darker-text;
+    }
+
+    &--welcome {
+      p {
+        color: $darker-text;
+      }
+      a {
+        color: lighten($button-rised-background-color, 20);
+        border-color: lighten($button-rised-background-color, 20);
+      }
+      .welcome-avatar {
+        border-color: $darker-text;
+        .icon {
+          color: $darker-text;
+          fill: $darker-text;
+        }
+      }
+      .message__body {
+        border-bottom-color: $darker-text;
+      }
+    }
+
+    &__actions {
+      .icon {
+        color: $darker-text;
+        fill: $darker-text;
+      }
+    }
+  }
+
+  .button {
+    color: transparentize(#fff, 0.5);
+
+    &--icon {
+      color: transparentize(#fff, 0.25);
+    }
+    &--rised {
+      background-color: $button-rised-background-color;
+      color: rgba(white, .9)
+    }
+  }
+
+  .group_profile__meta__title {
+    color: invert(#575757);
+  }
+
+  .group_profile__meta__created {
+    color: transparentize(#fff, 0.3);
+  }
+
+  .profile__list__item {
+    color: invert(#4d4d4d);
+  }
+
+  .status--sent {
+    color: invert(rgba(57, 57, 57, 0.3));
+  }
+
+  .sidebar {
+    &__list {
+      &__item {
+        &--active {
+          background-color: rgb(37,41,49) !important;
+        }
+      }
+    }
+  }
+
+  .group_profile__members__list__item {
+    color: rgb(150,150,150);
+  }
+}

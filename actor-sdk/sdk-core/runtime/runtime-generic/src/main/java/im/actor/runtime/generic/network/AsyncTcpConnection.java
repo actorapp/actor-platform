@@ -52,37 +52,70 @@ public class AsyncTcpConnection extends AsyncConnection {
 
     @Override
     public void doConnect() {
-        connectExecutor.submit(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    ConnectionEndpoint endpoint = getEndpoint();
+        connectExecutor.submit((Runnable) () -> {
+            try {
+                ConnectionEndpoint endpoint1 = getEndpoint();
 
-                    Socket socket = new Socket();
+                // Trying to connect to known ip first
+                if (endpoint1.getKnownIp() != null) {
+                    try {
+                        Log.d(TAG, "Trying to connect to " + endpoint1.getHost() + " with Known IP " + endpoint1.getKnownIp());
+                        Socket socket1 = new Socket();
 
-                    // Configure socket
-                    socket.setKeepAlive(false);
-                    socket.setTcpNoDelay(true);
+                        // Configure socket
+                        socket1.setKeepAlive(false);
+                        socket1.setTcpNoDelay(true);
 
-                    // Connecting
-                    socket.connect(new InetSocketAddress(endpoint.getHost(), endpoint.getPort()), ManagedConnection.CONNECTION_TIMEOUT);
+                        // Connecting
+                        socket1.connect(new InetSocketAddress(endpoint1.getKnownIp(), endpoint1.getPort()), ManagedConnection.CONNECTION_TIMEOUT);
 
-                    // Converting SSL socket
-                    if (endpoint.getType() == ConnectionEndpoint.Type.TCP_TLS) {
-                        SSLSocketFactory socketFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
-                        socket = socketFactory.createSocket(socket,
-                                endpoint.getHost(), endpoint.getPort(), true);
+                        // Converting SSL socket
+                        if (endpoint1.getType() == ConnectionEndpoint.TYPE_TCP_TLS) {
+                            SSLSocketFactory socketFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+                            socket1 = socketFactory.createSocket(socket1,
+                                    endpoint1.getHost(), endpoint1.getPort(), true);
+                        }
+
+                        // Init streams
+                        socket1.getInputStream();
+                        socket1.getOutputStream();
+
+                        Log.d(TAG, "Connection successful");
+
+                        onSocketCreated(socket1);
+                        return;
+                    } catch (Throwable e) {
+                        e.printStackTrace();
                     }
-
-                    // Init streams
-                    socket.getInputStream();
-                    socket.getOutputStream();
-
-                    onSocketCreated(socket);
-                } catch (Throwable e) {
-                    e.printStackTrace();
-                    crashConnection();
                 }
+
+                Log.d(TAG, "Trying to connect to " + endpoint1.getHost());
+
+                // Trying to connect with DNS resolving
+                Socket socket1 = new Socket();
+
+                // Configure socket
+                socket1.setKeepAlive(false);
+                socket1.setTcpNoDelay(true);
+
+                // Connecting
+                socket1.connect(new InetSocketAddress(endpoint1.getHost(), endpoint1.getPort()), ManagedConnection.CONNECTION_TIMEOUT);
+
+                // Converting SSL socket
+                if (endpoint1.getType() == ConnectionEndpoint.TYPE_TCP_TLS) {
+                    SSLSocketFactory socketFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+                    socket1 = socketFactory.createSocket(socket1,
+                            endpoint1.getHost(), endpoint1.getPort(), true);
+                }
+
+                // Init streams
+                socket1.getInputStream();
+                socket1.getOutputStream();
+
+                onSocketCreated(socket1);
+            } catch (Throwable e) {
+                e.printStackTrace();
+                crashConnection();
             }
         });
     }
@@ -177,7 +210,8 @@ public class AsyncTcpConnection extends AsyncConnection {
 
 
     private class WriterThread extends Thread {
-        private final ConcurrentLinkedQueue<byte[]> packages = new ConcurrentLinkedQueue<byte[]>();
+
+        private final ConcurrentLinkedQueue<byte[]> packages = new ConcurrentLinkedQueue<>();
 
         public WriterThread() {
             setName(TAG + "#Writer");
@@ -220,7 +254,7 @@ public class AsyncTcpConnection extends AsyncConnection {
                     outputStream.write(p);
                     outputStream.flush();
                 }
-            } catch (IOException e) {
+            } catch (IOException | NullPointerException e) {
                 e.printStackTrace();
                 crashConnection();
             }

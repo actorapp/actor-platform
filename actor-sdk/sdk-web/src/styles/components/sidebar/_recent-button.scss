@@ -1,0 +1,47 @@
+.sidebar__button {
+  line-height: 24px;
+
+  display: block;
+
+  box-sizing: border-box;
+  padding: 6px 16px;
+
+  cursor: pointer;
+
+  color: rgba(white, .8);
+
+  @include no-select();
+
+  &__icon {
+    font-size: 20px;
+    line-height: 24px;
+
+    display: inline-block;
+
+    margin-right: 8px;
+
+    vertical-align: top;
+    .material-icons {
+      vertical-align: top;
+    }
+  }
+
+  &__title {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 24px;
+
+    display: inline-block;
+
+    vertical-align: top;
+    text-transform: uppercase;
+  }
+
+  &:hover {
+    background-color: $dusk;
+  }
+
+  &--active {
+    background-color: $dark-sky-blue !important;
+  }
+}

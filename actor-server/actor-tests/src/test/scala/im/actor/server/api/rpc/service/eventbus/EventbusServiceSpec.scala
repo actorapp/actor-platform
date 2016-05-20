@@ -28,8 +28,8 @@ final class EventbusServiceSpec
     val aliceSessionId = 1L
     val bobSessionId = 2L
 
-    val aliceClientData = ClientData(aliceAuthId, aliceSessionId, Some(AuthData(alice.id, aliceAuthSid)))
-    val bobClientData = ClientData(bobAuthId, bobSessionId, Some(AuthData(bob.id, bobAuthSid)))
+    val aliceClientData = ClientData(aliceAuthId, aliceSessionId, Some(AuthData(alice.id, aliceAuthSid, 42)))
+    val bobClientData = ClientData(bobAuthId, bobSessionId, Some(AuthData(bob.id, bobAuthSid, 42)))
 
     sendMessageBox(aliceAuthId, aliceSessionId, sessionRegion.ref, Random.nextLong(), SessionHello)(aliceProbe)
     ignoreNewSession()(aliceProbe)

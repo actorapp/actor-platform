@@ -8,11 +8,10 @@ import im.actor.core.api.rpc.RequestCommitFileUpload;
 import im.actor.core.api.rpc.RequestGetFileUploadPartUrl;
 import im.actor.core.api.rpc.RequestGetFileUploadUrl;
 import im.actor.core.api.rpc.ResponseCommitFileUpload;
-import im.actor.core.api.rpc.ResponseGetFileUploadPartUrl;
 import im.actor.core.api.rpc.ResponseGetFileUploadUrl;
 import im.actor.core.entity.FileReference;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.util.ModuleActor;
+import im.actor.core.modules.ModuleActor;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.runtime.HTTP;
@@ -21,13 +20,17 @@ import im.actor.runtime.Storage;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Cancellable;
 import im.actor.runtime.crypto.CRC32;
-import im.actor.runtime.files.FileReadCallback;
 import im.actor.runtime.files.FileSystemReference;
 import im.actor.runtime.files.InputFile;
 import im.actor.runtime.files.OutputFile;
-import im.actor.runtime.http.FileUploadCallback;
+import im.actor.runtime.http.HTTPError;
+import im.actor.runtime.http.HTTPResponse;
+import im.actor.runtime.promise.Promise;
 
 public class UploadTask extends ModuleActor {
+
+    // j2objc workaround
+    private static final HTTPResponse DUMB = null;
 
     private static final int SIM_BLOCKS_COUNT = 4;
     private static final int NOTIFY_THROTTLE = 1000;
@@ -63,6 +66,7 @@ public class UploadTask extends ModuleActor {
     private CRC32 crc32;
 
     private float currentProgress;
+    private boolean alreadyInTemp;
 
     public UploadTask(long rid, String descriptor, String fileName, ActorRef manager, ModuleContext context) {
         super(context);
@@ -76,7 +80,8 @@ public class UploadTask extends ModuleActor {
 
     @Override
     public void preStart() {
-        isWriteToDestProvider = Storage.isFsPersistent();
+        alreadyInTemp = false;//Storage.isAlreadyInTemp(descriptor);
+        isWriteToDestProvider = Storage.isFsPersistent() && !alreadyInTemp;
 
         srcReference = Storage.fileFromDescriptor(descriptor);
         if (srcReference == null) {
@@ -98,71 +103,44 @@ public class UploadTask extends ModuleActor {
             }
         }
 
-        inputFile = srcReference.openRead();
-        if (inputFile == null) {
-            if (LOG) {
-                Log.w(TAG, "Error during file open");
-            }
-            reportError();
-            return;
-        }
+        srcReference.openRead()
+                .flatMap(f -> {
+                    inputFile = f;
+                    if (isWriteToDestProvider) {
+                        return destReference.openWrite(srcReference.getSize());
+                    } else {
+                        return Promise.success(null);
+                    }
+                })
+                .flatMap(f -> {
+                    outputFile = f;
 
-        if (isWriteToDestProvider) {
-            outputFile = destReference.openWrite(srcReference.getSize());
-            if (outputFile == null) {
-                inputFile.close();
-                if (LOG) {
-                    Log.w(TAG, "Error during dest file open");
-                }
-                reportError();
-                return;
-            }
-        }
+                    crc32 = new CRC32();
 
-        crc32 = new CRC32();
-
-        startUpload();
-    }
-
-    @Override
-    public void onReceive(Object message) {
-        if (message instanceof Retry) {
-            Retry retry = (Retry) message;
-            retryPart(retry.getBlockIndex(), retry.getData(), retry.getAttempt());
-        } else {
-            super.onReceive(message);
-        }
-    }
-
-    private void startUpload() {
-        blocksCount = srcReference.getSize() / blockSize;
-        if (srcReference.getSize() % blockSize != 0) {
-            blocksCount++;
-        }
-
-        if (LOG) {
-            Log.d(TAG, "Starting uploading " + blocksCount + " blocks");
-            Log.d(TAG, "Requesting upload config...");
-        }
-
-        request(new RequestGetFileUploadUrl(srcReference.getSize()),
-                new RpcCallback<ResponseGetFileUploadUrl>() {
-                    @Override
-                    public void onResult(ResponseGetFileUploadUrl response) {
-                        if (LOG) {
-                            Log.d(TAG, "Upload config loaded");
-                        }
-                        uploadConfig = response.getUploadKey();
-                        checkQueue();
+                    blocksCount = srcReference.getSize() / blockSize;
+                    if (srcReference.getSize() % blockSize != 0) {
+                        blocksCount++;
                     }
 
-                    @Override
-                    public void onError(RpcException e) {
-                        if (LOG) {
-                            Log.w(TAG, "Upload config load error");
-                        }
-                        reportError();
+                    if (LOG) {
+                        Log.d(TAG, "Starting uploading " + blocksCount + " blocks");
+                        Log.d(TAG, "Requesting upload config...");
                     }
+
+                    return api(new RequestGetFileUploadUrl(srcReference.getSize()));
+                })
+                .then(r -> {
+                    if (LOG) {
+                        Log.d(TAG, "Upload config loaded");
+                    }
+                    uploadConfig = r.getUploadKey();
+                    checkQueue();
+                })
+                .failure(e -> {
+                    if (LOG) {
+                        Log.w(TAG, "Error during initialization of upload");
+                    }
+                    reportError();
                 });
     }
 
@@ -196,8 +174,8 @@ public class UploadTask extends ModuleActor {
                     FileReference location = new FileReference(response.getUploadedFileLocation(),
                             fileName, srcReference.getSize());
 
-                    if (isWriteToDestProvider) {
-                        FileSystemReference reference = Storage.commitTempFile(destReference, location.getFileId(),
+                    if (isWriteToDestProvider || alreadyInTemp) {
+                        FileSystemReference reference = Storage.commitTempFile(alreadyInTemp ? srcReference : destReference, location.getFileId(),
                                 location.getFileName());
                         reportComplete(location, reference);
                     } else {
@@ -227,61 +205,43 @@ public class UploadTask extends ModuleActor {
         if ((blockIndex + 1) * blockSize > srcReference.getSize()) {
             size = srcReference.getSize() - blockIndex * blockSize;
         }
-        byte[] data = new byte[size];
 
-        final int finalSize = size;
         // TODO: Validate file part load ordering
-        inputFile.read(fileOffset, data, 0, size, new FileReadCallback() {
-            @Override
-            public void onFileRead(final int fileOffset, final byte[] data, int offset, int len) {
-                self().send(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (isCompleted) {
-                            return;
-                        }
-                        if (LOG) {
-                            Log.d(TAG, "Block #" + blockIndex + " read");
-                        }
-
-                        if (isWriteToDestProvider) {
-                            if (!outputFile.write(fileOffset, data, 0, finalSize)) {
-                                if (LOG) {
-                                    Log.w(TAG, "write #" + blockIndex + " error");
-                                }
-                                reportError();
-                                return;
-                            }
-                        }
-
-                        crc32.update(data, 0, finalSize);
-
-                        if (LOG) {
-                            Log.d(TAG, "Starting block upload #" + blockIndex);
-                        }
-
-                        uploadCount++;
-                        uploadPart(blockIndex, data, 0);
-                        checkQueue();
-                    }
-                });
+        inputFile.read(fileOffset, size).then(filePart -> {
+            if (isCompleted) {
+                return;
+            }
+            if (LOG) {
+                Log.d(TAG, "Block #" + blockIndex + " read");
             }
 
-            @Override
-            public void onFileReadError() {
-                self().send(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (isCompleted) {
-                            return;
-                        }
-                        if (LOG) {
-                            Log.w(TAG, "Block #" + blockIndex + " read failure");
-                        }
-                        reportError();
+            if (isWriteToDestProvider) {
+                if (!outputFile.write(fileOffset, filePart.getContents(), 0, filePart.getPartLength())) {
+                    if (LOG) {
+                        Log.w(TAG, "write #" + blockIndex + " error");
                     }
-                });
+                    reportError();
+                    return;
+                }
             }
+
+            crc32.update(filePart.getContents(), 0, filePart.getPartLength());
+
+            if (LOG) {
+                Log.d(TAG, "Starting block upload #" + blockIndex);
+            }
+
+            uploadCount++;
+            uploadPart(blockIndex, filePart.getContents(), 0);
+            checkQueue();
+        }).failure(e -> {
+            if (isCompleted) {
+                return;
+            }
+            if (LOG) {
+                Log.w(TAG, "Block #" + blockIndex + " read failure");
+            }
+            reportError();
         });
     }
 
@@ -296,63 +256,39 @@ public class UploadTask extends ModuleActor {
     }
 
     private void uploadPart(final int blockIndex, final byte[] data, final int attempt) {
-        request(new RequestGetFileUploadPartUrl(blockIndex, blockSize, uploadConfig),
-                new RpcCallback<ResponseGetFileUploadPartUrl>() {
-                    @Override
-                    public void onResult(ResponseGetFileUploadPartUrl response) {
-                        HTTP.putMethod(response.getUrl(), data, new FileUploadCallback() {
-                            @Override
-                            public void onUploaded() {
-                                self().send(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        if (LOG) {
-                                            Log.d(TAG, "Block #" + blockIndex + " uploaded");
-                                        }
-                                        uploadCount--;
-                                        uploaded++;
+        api(new RequestGetFileUploadPartUrl(blockIndex, blockSize, uploadConfig))
+                .flatMap(r -> HTTP.putMethod(r.getUrl(), data))
+                .then(r -> {
 
-                                        reportProgress(uploaded / (float) blocksCount);
-
-                                        checkQueue();
-                                    }
-                                });
-                            }
-
-                            @Override
-                            public void onUploadFailure(int error, int retryInSecs) {
-                                if ((error >= 500 && error < 600) || error == 0) {
-                                    // Is Server Error or unknown error
-
-                                    if (retryInSecs <= 0) {
-                                        retryInSecs = DEFAULT_RETRY;
-                                    }
-
-                                    if (LOG) {
-                                        Log.w(TAG, "Block #" + blockIndex + " upload error #" + error + " trying again in " + retryInSecs + " sec, attempt #" + (attempt + 1));
-                                    }
-
-                                    schedule(new Retry(blockIndex, data, attempt + 1), retryInSecs * 1000L);
-                                } else {
-                                    // User Error
-                                    self().send(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            if (LOG) {
-                                                Log.w(TAG, "Block #" + blockIndex + " upload failure");
-                                            }
-                                            reportError();
-                                        }
-                                    });
-                                }
-                            }
-                        });
+                    if (LOG) {
+                        Log.d(TAG, "Block #" + blockIndex + " uploaded");
                     }
+                    uploadCount--;
+                    uploaded++;
 
-                    @Override
-                    public void onError(RpcException e) {
+                    reportProgress(uploaded / (float) blocksCount);
+
+                    checkQueue();
+
+                })
+                .failure(e -> {
+                    if (e instanceof HTTPError) {
+                        HTTPError httpError = (HTTPError) e;
+                        if ((httpError.getErrorCode() >= 500 && httpError.getErrorCode() < 600) || httpError.getErrorCode() == 0) {
+                            // Is Server Error or unknown error
+
+                            int retryInSecs = DEFAULT_RETRY;
+
+                            if (LOG) {
+                                Log.w(TAG, "Block #" + blockIndex + " upload error #" + httpError.getErrorCode() + " trying again in " + retryInSecs + " sec, attempt #" + (attempt + 1));
+                            }
+
+                            schedule(new Retry(blockIndex, data, attempt + 1), retryInSecs * 1000L);
+                            return;
+                        }
+
                         if (LOG) {
-                            Log.w(TAG, "Get Block #" + blockIndex + " url failure");
+                            Log.w(TAG, "Block #" + blockIndex + " upload failure");
                         }
                         reportError();
                     }
@@ -389,12 +325,7 @@ public class UploadTask extends ModuleActor {
             lastNotifyDate = im.actor.runtime.Runtime.getActorTime();
             performReportProgress();
         } else {
-            notifyCancellable = schedule(new Runnable() {
-                @Override
-                public void run() {
-                    performReportProgress();
-                }
-            }, delta);
+            notifyCancellable = schedule((Runnable) () -> performReportProgress(), delta);
         }
     }
 
@@ -411,6 +342,17 @@ public class UploadTask extends ModuleActor {
         }
         isCompleted = true;
         manager.send(new UploadManager.UploadTaskComplete(rid, location, reference));
+    }
+
+
+    @Override
+    public void onReceive(Object message) {
+        if (message instanceof Retry) {
+            Retry retry = (Retry) message;
+            retryPart(retry.getBlockIndex(), retry.getData(), retry.getAttempt());
+        } else {
+            super.onReceive(message);
+        }
     }
 
     private class Retry {

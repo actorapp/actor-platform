@@ -3,6 +3,7 @@ package im.actor.server.sequence
 import akka.actor._
 import akka.cluster.pubsub.{ DistributedPubSub, DistributedPubSubMediator }
 import akka.event.Logging
+import akka.http.scaladsl.util.FastFuture
 import akka.pattern.ask
 import akka.stream.ActorMaterializer
 import akka.util.Timeout
@@ -14,8 +15,9 @@ import im.actor.server.db.DbExtension
 import im.actor.server.model._
 import im.actor.server.model.push.{ PushCredentials, ActorPushCredentials ⇒ ActorPushCredentialsModel, ApplePushCredentials ⇒ ApplePushCredentialsModel, GooglePushCredentials ⇒ GooglePushCredentialsModel }
 import im.actor.server.persist.AuthSessionRepo
-import im.actor.server.persist.push.ApplePushCredentialsRepo
+import im.actor.server.persist.push.{ ActorPushCredentialsRepo, ApplePushCredentialsRepo, GooglePushCredentialsRepo }
 import im.actor.server.persist.sequence.UserSequenceRepo
+import scodec.bits.BitVector
 import slick.dbio.DBIO
 
 import scala.annotation.tailrec
@@ -212,40 +214,71 @@ final class SeqUpdatesExtension(_system: ActorSystem) extends Extension {
       deliveryId = deliveryId
     )
 
-  def registerGooglePushCredentials(creds: GooglePushCredentialsModel) = registerPushCredentials(creds)
+  def registerGooglePushCredentials(creds: GooglePushCredentialsModel) =
+    registerPushCredentials(creds.authId, RegisterPushCredentials().withGoogle(creds))
 
-  def registerApplePushCredentials(creds: ApplePushCredentialsModel) = registerPushCredentials(creds)
+  def registerApplePushCredentials(creds: ApplePushCredentialsModel) =
+    registerPushCredentials(creds.authId, RegisterPushCredentials().withApple(creds))
 
-  def registerActorPushCredentials(creds: ActorPushCredentialsModel) = registerPushCredentials(creds)
+  def registerActorPushCredentials(creds: ActorPushCredentialsModel) =
+    registerPushCredentials(creds.authId, RegisterPushCredentials().withActor(creds))
 
   // TODO: real future
-  def registerPushCredentials(creds: PushCredentials) =
-    withAuthSession(creds.authId) { session ⇒
-      val register = creds match {
-        case c: GooglePushCredentialsModel ⇒ RegisterPushCredentials().withGoogle(c)
-        case c: ApplePushCredentialsModel  ⇒ RegisterPushCredentials().withApple(c)
-        case c: ActorPushCredentialsModel  ⇒ RegisterPushCredentials().withActor(c)
-      }
+  private def registerPushCredentials(authId: Long, register: RegisterPushCredentials) =
+    withAuthSession(authId) { session ⇒
       region.ref ! Envelope(session.userId).withRegisterPushCredentials(register)
       Future.successful(())
     }
 
-  // TODO: real future
-  def deletePushCredentials(authId: Long): Future[Unit] =
-    withAuthSession(authId) { session ⇒
-      region.ref ! Envelope(session.userId).withUnregisterPushCredentials(UnregisterPushCredentials(authId))
-      Future.successful(())
+  def unregisterAllPushCredentials(authId: Long): Future[Unit] =
+    findAllPushCredentials(authId) map { creds ⇒
+      creds map (c ⇒ unregisterPushCredentials(c.authId, makeUnregister(c)))
     }
 
-  def deleteApplePushCredentials(token: Array[Byte]): Future[Unit] =
+  def unregisterActorPushCredentials(endpoint: String): Future[Unit] =
+    db.run(ActorPushCredentialsRepo.findByTopic(endpoint).headOption) flatMap {
+      case Some(creds) ⇒
+        unregisterPushCredentials(creds.authId, UnregisterPushCredentials().withActor(creds))
+      case None ⇒
+        log.warning("Actor push credentials not found for endpoint: {}", endpoint)
+        FastFuture.successful(())
+    }
+
+  def unregisterApplePushCredentials(token: Array[Byte]): Future[Unit] =
     db.run(ApplePushCredentialsRepo.findByToken(token).headOption) flatMap {
       case Some(creds) ⇒
-        deletePushCredentials(creds.authId)
+        unregisterPushCredentials(creds.authId, UnregisterPushCredentials().withApple(creds))
       case None ⇒
-        val err = new RuntimeException("Apple push credentials not found")
-        log.error(err, err.getMessage)
-        throw err
+        log.warning("Apple push credentials not found for token: {}", BitVector(token).toHex)
+        FastFuture.successful(())
     }
+
+  def unregisterGooglePushCredentials(token: String): Future[Unit] =
+    db.run(GooglePushCredentialsRepo.findByToken(token)) flatMap {
+      case Some(creds) ⇒
+        unregisterPushCredentials(creds.authId, UnregisterPushCredentials().withGoogle(creds))
+      case None ⇒
+        log.warning("Google push credentials not found for token: {}", token)
+        FastFuture.successful(())
+    }
+
+  private def unregisterPushCredentials(authId: Long, unregister: UnregisterPushCredentials): Future[Unit] =
+    withAuthSession(authId) { session ⇒
+      (region.ref ? Envelope(session.userId).withUnregisterPushCredentials(unregister)).mapTo[UnregisterPushCredentialsAck] map (_ ⇒ ())
+    }
+
+  private def makeUnregister: PartialFunction[PushCredentials, UnregisterPushCredentials] = {
+    case actor: ActorPushCredentialsModel   ⇒ UnregisterPushCredentials().withActor(actor)
+    case apple: ApplePushCredentialsModel   ⇒ UnregisterPushCredentials().withApple(apple)
+    case google: GooglePushCredentialsModel ⇒ UnregisterPushCredentials().withGoogle(google)
+  }
+
+  private def findAllPushCredentials(authId: Long): Future[Seq[PushCredentials]] =
+    db.run(for {
+      google ← GooglePushCredentialsRepo.find(authId)
+      apple ← ApplePushCredentialsRepo.find(authId)
+      actor ← ActorPushCredentialsRepo.find(authId)
+    } yield Seq(google, apple, actor).flatten)
 
   private def withAuthSession[A](authId: Long)(f: AuthSession ⇒ Future[A]): Future[A] = {
     db.run(AuthSessionRepo.findByAuthId(authId)) flatMap {

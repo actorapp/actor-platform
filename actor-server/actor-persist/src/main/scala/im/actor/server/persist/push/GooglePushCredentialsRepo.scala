@@ -20,13 +20,6 @@ final class GooglePushCredentialsTable(tag: Tag) extends Table[GooglePushCredent
 object GooglePushCredentialsRepo {
   val creds = TableQuery[GooglePushCredentialsTable]
 
-  def createOrUpdate(authId: Long, projectId: Long, regId: String)(implicit ec: ExecutionContext) = {
-    for {
-      _ ← creds.filterNot(_.authId === authId).filter(c ⇒ c.projectId === projectId && c.regId === regId).delete
-      r ← creds.insertOrUpdate(GooglePushCredentials(authId, projectId, regId))
-    } yield r
-  }
-
   def createOrUpdate(c: GooglePushCredentials) =
     creds.insertOrUpdate(c)
 
@@ -45,6 +38,9 @@ object GooglePushCredentialsRepo {
       authIds ← AuthIdRepo.activeByUserIdCompiled(userId).result
       creds ← find(authIds map (_.id) toSet)
     } yield creds
+
+  def findByToken(token: String): DBIO[Option[GooglePushCredentials]] =
+    creds.filter(_.regId === token).result.headOption
 
   def delete(authId: Long) =
     creds.filter(_.authId === authId).delete

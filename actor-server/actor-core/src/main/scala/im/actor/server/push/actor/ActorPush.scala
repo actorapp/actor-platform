@@ -1,21 +1,23 @@
 package im.actor.server.push.actor
 
+import akka.NotUsed
 import akka.actor._
 import akka.event.Logging
-import akka.http.scaladsl.Http
-import akka.http.scaladsl.model._
-import akka.parboiled2.ParserInput
 import akka.stream.{ ActorMaterializer, OverflowStrategy }
-import akka.stream.scaladsl.{ Sink, Source }
+import akka.stream.scaladsl.{ Flow, Sink, Source }
 import im.actor.server.db.DbExtension
 import im.actor.server.model.push.ActorPushCredentials
 import im.actor.server.persist.push.ActorPushCredentialsRepo
 import io.circe.{ Json, JsonObject }
 import io.circe.generic.auto._
 import io.circe.syntax._
+import spray.client.pipelining._
+import spray.http.HttpHeaders.Authorization
+import spray.http._
+import spray.http.parser.ParserInput
 
 import scala.concurrent.Future
-import scala.util.{ Failure, Success }
+import scala.util.{ Failure, Success, Try }
 
 final case class ActorPushMessage(data: JsonObject)
 
@@ -42,14 +44,28 @@ final class ActorPush(system: ActorSystem) extends Extension {
   private val sourceRef =
     Source
       .actorRef[(HttpRequest, ActorPushDelivery)](maxQueue, OverflowStrategy.dropHead)
-      .via(Http(system).superPool[ActorPushDelivery]())
+      .via(flow)
       .to(Sink foreach {
         case (Success(_), d) ⇒
         case (Failure(e), d) ⇒ log.error(e, "Failed to deliver, endpoint: {}", d.creds.endpoint)
       })
       .run()
 
-  private val pushHeaders = List(headers.Authorization(headers.OAuth2BearerToken(token)))
+  private val pushHeaders = List(Authorization(OAuth2BearerToken(token)))
+
+  private def flow: Flow[(HttpRequest, ActorPushDelivery), (Try[HttpResponse], ActorPushDelivery), NotUsed] = {
+    import system.dispatcher
+    val pipeline = sendReceive
+    Flow[(HttpRequest, ActorPushDelivery)].mapAsync(1) {
+      case (req, del) ⇒
+        pipeline(req) map { resp ⇒
+          if (resp.status.isSuccess)
+            Success(resp) → del
+          else
+            Failure(new RuntimeException(s"Failed to deliver message, StatusCode was not OK: ${resp.status}")) → del
+        }
+    }
+  }
 
   def deliver(seq: Int, creds: ActorPushCredentials): Unit =
     deliver(ActorPushMessage(JsonObject.singleton("seq", Json.int(seq))), creds)

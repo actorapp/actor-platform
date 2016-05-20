@@ -14,7 +14,7 @@ import im.actor.core.modules.calls.peers.messages.RTCMasterAdvertised;
 import im.actor.core.modules.calls.peers.messages.RTCNeedOffer;
 import im.actor.core.modules.calls.peers.messages.RTCOffer;
 import im.actor.core.modules.calls.peers.messages.RTCStart;
-import im.actor.core.util.ModuleActor;
+import im.actor.core.modules.ModuleActor;
 import im.actor.runtime.Log;
 import im.actor.runtime.WebRTC;
 import im.actor.runtime.actors.messages.PoisonPill;
@@ -90,22 +90,16 @@ public class PeerCallActor extends ModuleActor {
         }
         isOwnStarted = true;
 
-        WebRTC.getUserAudio().then(new Consumer<WebRTCMediaStream>() {
-            @Override
-            public void apply(WebRTCMediaStream webRTCMediaStream) {
-                PeerCallActor.this.webRTCMediaStream = webRTCMediaStream;
-                PeerCallActor.this.webRTCMediaStream.setEnabled(!isMuted);
-                for (PeerNodeInt node : refs.values()) {
-                    node.setOwnStream(webRTCMediaStream);
-                }
+        WebRTC.getUserAudio().then(webRTCMediaStream1 -> {
+            PeerCallActor.this.webRTCMediaStream = webRTCMediaStream1;
+            PeerCallActor.this.webRTCMediaStream.setEnabled(!isMuted);
+            for (PeerNodeInt node : refs.values()) {
+                node.setOwnStream(webRTCMediaStream1);
             }
-        }).failure(new Consumer<Exception>() {
-            @Override
-            public void apply(Exception e) {
-                Log.d(TAG, "Unable to load audio");
-                self().send(PoisonPill.INSTANCE);
-            }
-        }).done(self());
+        }).failure(e -> {
+            Log.d(TAG, "Unable to load audio");
+            self().send(PoisonPill.INSTANCE);
+        });
 //
 //        if (webRTCMediaStream != null) {
 //            webRTCMediaStream.setEnabled(!isMuted);

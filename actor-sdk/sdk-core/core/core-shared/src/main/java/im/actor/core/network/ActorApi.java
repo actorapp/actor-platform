@@ -45,8 +45,7 @@ public class ActorApi {
     public ActorApi(Endpoints endpoints, AuthKeyStorage keyStorage, ActorApiCallback callback,
                     boolean isEnableLog, int minDelay,
                     int maxDelay,
-                    int maxFailureCount,
-                    ApiParserConfig parserConfig) {
+                    int maxFailureCount) {
         this.endpoints = endpoints;
         this.keyStorage = keyStorage;
         this.callback = callback;
@@ -55,7 +54,25 @@ public class ActorApi {
         this.maxDelay = maxDelay;
         this.maxFailureCount = maxFailureCount;
         this.apiBroker = ApiBroker.get(endpoints, keyStorage, callback, isEnableLog,
-                NEXT_ID.get(), minDelay, maxDelay, maxFailureCount, parserConfig);
+                NEXT_ID.get(), minDelay, maxDelay, maxFailureCount);
+    }
+
+    /**
+     * Performing API request
+     *
+     * @param request  request body
+     * @param callback request callback
+     * @param <T>      type of response
+     * @param timeout   timeout of rpc
+     * @return rid of request
+     */
+    public synchronized <T extends Response> long request(Request<T> request, RpcCallback<T> callback, long timeout) {
+        if (request == null) {
+            throw new RuntimeException("Request can't be null");
+        }
+        long rid = NEXT_RPC_ID.incrementAndGet();
+        this.apiBroker.send(new ApiBroker.PerformRequest(rid, request, callback, timeout));
+        return rid;
     }
 
     /**
@@ -67,12 +84,7 @@ public class ActorApi {
      * @return rid of request
      */
     public synchronized <T extends Response> long request(Request<T> request, RpcCallback<T> callback) {
-        if (request == null) {
-            throw new RuntimeException("Request can't be null");
-        }
-        long rid = NEXT_RPC_ID.incrementAndGet();
-        this.apiBroker.send(new ApiBroker.PerformRequest(rid, request, callback));
-        return rid;
+        return request(request, callback, 0);
     }
 
     /**
@@ -83,6 +95,7 @@ public class ActorApi {
     public synchronized void cancelRequest(long rid) {
         this.apiBroker.send(new ApiBroker.CancelRequest(rid));
     }
+
 
     /**
      * Notification about network state change

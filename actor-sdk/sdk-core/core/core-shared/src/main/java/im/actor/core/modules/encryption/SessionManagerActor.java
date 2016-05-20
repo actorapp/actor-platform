@@ -11,27 +11,19 @@ import im.actor.core.modules.encryption.entity.PublicKey;
 import im.actor.core.modules.encryption.entity.UserKeys;
 import im.actor.core.modules.encryption.entity.UserKeysGroup;
 import im.actor.core.util.BaseKeyValueEngine;
-import im.actor.core.util.ModuleActor;
+import im.actor.core.modules.ModuleActor;
 import im.actor.core.util.RandomUtils;
-import im.actor.runtime.Log;
 import im.actor.runtime.Storage;
 import im.actor.runtime.actors.ask.AskMessage;
-import im.actor.runtime.actors.ask.AskResult;
 import im.actor.runtime.collections.ManagedList;
 import im.actor.runtime.crypto.ratchet.RatchetMasterSecret;
 import im.actor.runtime.crypto.ratchet.RatchetPrivateKey;
 import im.actor.runtime.crypto.ratchet.RatchetPublicKey;
-import im.actor.runtime.function.Consumer;
 import im.actor.runtime.function.Function;
 import im.actor.runtime.function.FunctionTupled4;
-import im.actor.runtime.function.Predicate;
 import im.actor.runtime.function.Supplier;
 import im.actor.runtime.promise.Promise;
-import im.actor.runtime.promise.PromiseResolver;
 import im.actor.runtime.promise.Promises;
-import im.actor.runtime.promise.PromisesArray;
-import im.actor.runtime.promise.Tuple3;
-import im.actor.runtime.promise.Tuple4;
 import im.actor.runtime.storage.KeyValueEngine;
 
 /**
@@ -81,54 +73,55 @@ public class SessionManagerActor extends ModuleActor {
     public Promise<PeerSession> pickSession(final int uid,
                                             final int keyGroupId) {
 
-        return pickCachedSession(uid, keyGroupId)
-                .fallback(new Function<Exception, Promise<PeerSession>>() {
-                    @Override
-                    public Promise<PeerSession> apply(Exception e) {
-                        return Promises.tuple(
-                                keyManager.getOwnIdentity(),
-                                keyManager.getOwnRandomPreKey(),
-                                keyManager.getUserKeyGroups(uid),
-                                keyManager.getUserRandomPreKey(uid, keyGroupId))
-                                .mapPromise(new FunctionTupled4<KeyManagerActor.OwnIdentity,
-                                        PrivateKey, UserKeys, PublicKey, Promise<PeerSession>>() {
-                                    @Override
-                                    public Promise<PeerSession> apply(KeyManagerActor.OwnIdentity ownIdentity,
-                                                                      PrivateKey ownPreKey, UserKeys userKeys,
-                                                                      PublicKey theirPreKey) {
-
-                                        UserKeysGroup keysGroup = ManagedList.of(userKeys.getUserKeysGroups())
-                                                .filter(UserKeysGroup.BY_KEY_GROUP(keyGroupId))
-                                                .first();
-
-                                        spawnSession(uid,
-                                                ownIdentity.getKeyGroup(),
-                                                keyGroupId,
-                                                ownIdentity.getIdentityKey(),
-                                                keysGroup.getIdentityKey(),
-                                                ownPreKey,
-                                                theirPreKey);
-
-                                        return Promises.success(null);
-                                    }
-                                });
-                    }
-                })
-                .afterVoid(new Supplier<Promise<PeerSession>>() {
-                    @Override
-                    public Promise<PeerSession> get() {
-                        return pickCachedSession(uid, keyGroupId);
-                    }
-                });
+//        return pickCachedSession(uid, keyGroupId)
+//                .fallback(new Function<Exception, Promise<PeerSession>>() {
+//                    @Override
+//                    public Promise<PeerSession> apply(Exception e) {
+//                        return Promises.tuple(
+//                                keyManager.getOwnIdentity(),
+//                                keyManager.getOwnRandomPreKey(),
+//                                keyManager.getUserKeyGroups(uid),
+//                                keyManager.getUserRandomPreKey(uid, keyGroupId))
+//                                .flatMap(new FunctionTupled4<KeyManagerActor.OwnIdentity,
+//                                        PrivateKey, UserKeys, PublicKey, Promise<PeerSession>>() {
+//                                    @Override
+//                                    public Promise<PeerSession> apply(KeyManagerActor.OwnIdentity ownIdentity,
+//                                                                      PrivateKey ownPreKey, UserKeys userKeys,
+//                                                                      PublicKey theirPreKey) {
+//
+//                                        UserKeysGroup keysGroup = ManagedList.of(userKeys.getUserKeysGroups())
+//                                                .filter(UserKeysGroup.BY_KEY_GROUP(keyGroupId))
+//                                                .first();
+//
+//                                        spawnSession(uid,
+//                                                ownIdentity.getKeyGroup(),
+//                                                keyGroupId,
+//                                                ownIdentity.getIdentityKey(),
+//                                                keysGroup.getIdentityKey(),
+//                                                ownPreKey,
+//                                                theirPreKey);
+//
+//                                        return Promise.success(null);
+//                                    }
+//                                });
+//                    }
+//                })
+//                .afterVoid(new Supplier<Promise<PeerSession>>() {
+//                    @Override
+//                    public Promise<PeerSession> get() {
+//                        return pickCachedSession(uid, keyGroupId);
+//                    }
+//                });
+        return null;
     }
 
     /**
      * Pick session for specific keys
      *
-     * @param uid         User's id
-     * @param keyGroupId  User's key group
-     * @param ownKeyId    Own Pre Key id
-     * @param theirKeyId  Their Pre Key id
+     * @param uid        User's id
+     * @param keyGroupId User's key group
+     * @param ownKeyId   Own Pre Key id
+     * @param theirKeyId Their Pre Key id
      */
     public Promise<PeerSession> pickSession(final int uid,
                                             final int keyGroupId,
@@ -162,8 +155,7 @@ public class SessionManagerActor extends ModuleActor {
                                     }
                                 });
                     }
-                })
-                .done(self());
+                });
     }
 
     /**

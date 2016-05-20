@@ -25,12 +25,16 @@ public class ResponseLoadArchived extends Response {
     private List<ApiGroup> groups;
     private List<ApiUser> users;
     private List<ApiDialog> dialogs;
+    private List<ApiUserOutPeer> userPeers;
+    private List<ApiGroupOutPeer> groupPeers;
     private byte[] nextOffset;
 
-    public ResponseLoadArchived(@NotNull List<ApiGroup> groups, @NotNull List<ApiUser> users, @NotNull List<ApiDialog> dialogs, @Nullable byte[] nextOffset) {
+    public ResponseLoadArchived(@NotNull List<ApiGroup> groups, @NotNull List<ApiUser> users, @NotNull List<ApiDialog> dialogs, @NotNull List<ApiUserOutPeer> userPeers, @NotNull List<ApiGroupOutPeer> groupPeers, @Nullable byte[] nextOffset) {
         this.groups = groups;
         this.users = users;
         this.dialogs = dialogs;
+        this.userPeers = userPeers;
+        this.groupPeers = groupPeers;
         this.nextOffset = nextOffset;
     }
 
@@ -51,6 +55,16 @@ public class ResponseLoadArchived extends Response {
     @NotNull
     public List<ApiDialog> getDialogs() {
         return this.dialogs;
+    }
+
+    @NotNull
+    public List<ApiUserOutPeer> getUserPeers() {
+        return this.userPeers;
+    }
+
+    @NotNull
+    public List<ApiGroupOutPeer> getGroupPeers() {
+        return this.groupPeers;
     }
 
     @Nullable
@@ -75,6 +89,16 @@ public class ResponseLoadArchived extends Response {
             _dialogs.add(new ApiDialog());
         }
         this.dialogs = values.getRepeatedObj(3, _dialogs);
+        List<ApiUserOutPeer> _userPeers = new ArrayList<ApiUserOutPeer>();
+        for (int i = 0; i < values.getRepeatedCount(5); i ++) {
+            _userPeers.add(new ApiUserOutPeer());
+        }
+        this.userPeers = values.getRepeatedObj(5, _userPeers);
+        List<ApiGroupOutPeer> _groupPeers = new ArrayList<ApiGroupOutPeer>();
+        for (int i = 0; i < values.getRepeatedCount(6); i ++) {
+            _groupPeers.add(new ApiGroupOutPeer());
+        }
+        this.groupPeers = values.getRepeatedObj(6, _groupPeers);
         this.nextOffset = values.optBytes(4);
     }
 
@@ -83,6 +107,8 @@ public class ResponseLoadArchived extends Response {
         writer.writeRepeatedObj(1, this.groups);
         writer.writeRepeatedObj(2, this.users);
         writer.writeRepeatedObj(3, this.dialogs);
+        writer.writeRepeatedObj(5, this.userPeers);
+        writer.writeRepeatedObj(6, this.groupPeers);
         if (this.nextOffset != null) {
             writer.writeBytes(4, this.nextOffset);
         }

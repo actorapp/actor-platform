@@ -27,13 +27,17 @@ public class UpdateMessage extends Update {
     private long date;
     private long rid;
     private ApiMessage message;
+    private ApiMessageAttributes attributes;
+    private ApiQuotedMessage quotedMessage;
 
-    public UpdateMessage(@NotNull ApiPeer peer, int senderUid, long date, long rid, @NotNull ApiMessage message) {
+    public UpdateMessage(@NotNull ApiPeer peer, int senderUid, long date, long rid, @NotNull ApiMessage message, @Nullable ApiMessageAttributes attributes, @Nullable ApiQuotedMessage quotedMessage) {
         this.peer = peer;
         this.senderUid = senderUid;
         this.date = date;
         this.rid = rid;
         this.message = message;
+        this.attributes = attributes;
+        this.quotedMessage = quotedMessage;
     }
 
     public UpdateMessage() {
@@ -62,6 +66,16 @@ public class UpdateMessage extends Update {
         return this.message;
     }
 
+    @Nullable
+    public ApiMessageAttributes getAttributes() {
+        return this.attributes;
+    }
+
+    @Nullable
+    public ApiQuotedMessage getQuotedMessage() {
+        return this.quotedMessage;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.peer = values.getObj(1, new ApiPeer());
@@ -69,6 +83,8 @@ public class UpdateMessage extends Update {
         this.date = values.getLong(3);
         this.rid = values.getLong(4);
         this.message = ApiMessage.fromBytes(values.getBytes(5));
+        this.attributes = values.optObj(6, new ApiMessageAttributes());
+        this.quotedMessage = values.optObj(7, new ApiQuotedMessage());
     }
 
     @Override
@@ -85,6 +101,12 @@ public class UpdateMessage extends Update {
         }
 
         writer.writeBytes(5, this.message.buildContainer());
+        if (this.attributes != null) {
+            writer.writeObject(6, this.attributes);
+        }
+        if (this.quotedMessage != null) {
+            writer.writeObject(7, this.quotedMessage);
+        }
     }
 
     @Override
@@ -95,6 +117,8 @@ public class UpdateMessage extends Update {
         res += ", date=" + this.date;
         res += ", rid=" + this.rid;
         res += ", message=" + this.message;
+        res += ", attributes=" + this.attributes;
+        res += ", quotedMessage=" + this.quotedMessage;
         res += "}";
         return res;
     }

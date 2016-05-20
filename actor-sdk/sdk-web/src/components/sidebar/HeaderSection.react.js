@@ -2,191 +2,262 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { Container } from 'flux/utils';
 import classnames from 'classnames';
 import ActorClient from '../../utils/ActorClient';
 import { escapeWithEmoji } from '../../utils/EmojiUtils'
 import confirm from '../../utils/confirm'
 import SharedContainer from '../../utils/SharedContainer';
-import { twitter, homePage } from '../../constants/ActorAppConstants';
+import { FormattedMessage } from 'react-intl';
 
-import MyProfileActions from '../../actions/MyProfileActionCreators';
+import ProfileActionCreators from '../../actions/ProfileActionCreators';
 import CreateGroupActionCreators from '../../actions/CreateGroupActionCreators';
 import LoginActionCreators from '../../actions/LoginActionCreators';
 import HelpActionCreators from '../../actions/HelpActionCreators';
 import AddContactActionCreators from '../../actions/AddContactActionCreators';
 import PreferencesActionCreators from '../../actions/PreferencesActionCreators';
 
-import MyProfileStore from '../../stores/MyProfileStore';
-import CreateGroupStore from '../../stores/CreateGroupStore';
-import AddContactStore from '../../stores/AddContactStore';
-import PreferencesStore from '../../stores/PreferencesStore';
+import ProfileStore from '../../stores/ProfileStore';
 
 import SvgIcon from '../common/SvgIcon.react';
 import AvatarItem from '../common/AvatarItem.react';
-import CreateGroupModal from '../modals/CreateGroup';
-import MyProfileModal from '../modals/MyProfile.react';
-import AddContactModal from '../modals/AddContact.react';
-import PreferencesModal from '../modals/Preferences.react';
 
 class HeaderSection extends Component {
   constructor(props) {
     super(props);
 
-    const SharedActor = SharedContainer.get();
-    this.twitter = SharedActor.twitter ? SharedActor.twitter : twitter;
-    this.homePage = SharedActor.homePage ? SharedActor.homePage : homePage;
+    this.state = {
+      isOpened: false
+    }
+
+    this.openHelp = this.openHelp.bind(this);
+    this.openTwitter = this.openTwitter.bind(this);
+    this.openFacebook = this.openFacebook.bind(this);
+    this.openHomePage = this.openHomePage.bind(this);
+    this.setLogout = this.setLogout.bind(this);
+    this.toggleHeaderMenu = this.toggleHeaderMenu.bind(this);
+    this.closeHeaderMenu = this.closeHeaderMenu.bind(this);
+    this.openMyProfile = this.openMyProfile.bind(this);
+    this.openCreateGroup = this.openCreateGroup.bind(this);
+    this.openAddContactModal = this.openAddContactModal.bind(this);
+    this.onSettingsOpen = this.onSettingsOpen.bind(this);
   }
 
   static getStores() {
-    return [MyProfileStore, CreateGroupStore, AddContactStore, PreferencesStore];
+    return [ProfileStore];
   }
 
   static calculateState() {
     return {
-      profile: MyProfileStore.getProfile(),
-      isMyProfileOpen: MyProfileStore.isModalOpen(),
-      isAddContactsOpen: AddContactStore.isOpen(),
-      isCreateGroupOpen: CreateGroupStore.isModalOpen(),
-      isPreferencesOpen: PreferencesStore.isOpen()
+      profile: ProfileStore.getProfile()
     }
   }
 
-  static contextTypes = {
-    intl: PropTypes.object
-  };
-
-  componentWillMount() {
-    this.setState({isOpened: false});
-  }
-
-  toggleHeaderMenu = () => {
+  toggleHeaderMenu() {
     const { isOpened } = this.state;
 
     if (!isOpened) {
-      this.setState({isOpened: true});
+      this.setState({ isOpened: true });
       document.addEventListener('click', this.closeHeaderMenu, false);
     } else {
       this.closeHeaderMenu();
     }
-  };
+  }
 
-  closeHeaderMenu = () => {
-    this.setState({isOpened: false});
+  closeHeaderMenu() {
+    this.setState({ isOpened: false });
     document.removeEventListener('click', this.closeHeaderMenu, false);
-  };
+  }
 
-  openMyProfile = () => MyProfileActions.show();
-  openCreateGroup = () => CreateGroupActionCreators.open();
-  openHelpDialog = () => HelpActionCreators.open();
-  openAddContactModal = () => AddContactActionCreators.open();
-  onSettingsOpen = () => PreferencesActionCreators.show();
-  openTwitter = (event) => {
+  openMyProfile() {
+    ProfileActionCreators.show();
+  }
+
+  openCreateGroup() {
+    CreateGroupActionCreators.open();
+  }
+
+  openAddContactModal() {
+    AddContactActionCreators.open();
+  }
+
+  onSettingsOpen() {
+    PreferencesActionCreators.show();
+  }
+
+  openHelp() {
+    HelpActionCreators.open()
+  }
+
+  openTwitter(event) {
+    const { twitter } = SharedContainer.get();
+
     event.preventDefault();
     if (ActorClient.isElectron()) {
       ActorClient.handleLinkClick(event);
     } else {
-      window.open(`https://twitter.com/${this.twitter}`, '_blank');
+      window.open(`https://twitter.com/${twitter}`, '_blank');
     }
-  };
-  openHomePage = (event) => {
+  }
+
+  openFacebook(event) {
+    const { facebook } = SharedContainer.get();
+
     event.preventDefault();
     if (ActorClient.isElectron()) {
       ActorClient.handleLinkClick(event);
     } else {
-      window.open(this.homePage, '_blank');
+      window.open(`https://facebook.com/${facebook}`, '_blank');
     }
-  };
-  setLogout = () => {
-    const { intl } = this.context;
-    confirm(intl.messages['modal.confirm.logout']).then(
+  }
+
+  openHomePage(event) {
+    const { homePage } = SharedContainer.get();
+
+    event.preventDefault();
+    if (ActorClient.isElectron()) {
+      ActorClient.handleLinkClick(event);
+    } else {
+      window.open(homePage, '_blank');
+    }
+  }
+
+  setLogout() {
+    confirm(<FormattedMessage id="modal.confirm.logout"/>).then(
       () => LoginActionCreators.setLoggedOut(),
       () => {}
     );
-  };
+  }
 
-  render() {
-    const { profile, isOpened, isMyProfileOpen, isCreateGroupOpen, isAddContactsOpen, isPreferencesOpen } = this.state;
-    const { intl } = this.context;
+  renderTwitterLink() {
+    const { twitter } = SharedContainer.get();
+    if (!twitter) return null;
 
-    if (profile) {
-      const headerClass = classnames('sidebar__header', 'sidebar__header--clickable', {
-        'sidebar__header--opened': isOpened
-      });
-      const menuClass = classnames('dropdown', {
-        'dropdown--opened': isOpened
-      });
+    return (
+      <li className="dropdown__menu__item">
+        <a href={`https://twitter.com/${twitter}`} onClick={this.openTwitter}>
+          <SvgIcon className="icon icon--dropdown sidebar__header__twitter" glyph="twitter" />
+          <FormattedMessage id="menu.twitter"/>
+        </a>
+      </li>
+    );
+  }
 
+  renderFacebookLink() {
+    const { facebook } = SharedContainer.get();
+    if (!facebook) return null;
+
+    return (
+      <li className="dropdown__menu__item">
+        <a href={`https://facebook.com/${facebook}`} onClick={this.openFacebook}>
+          <SvgIcon className="icon icon--dropdown sidebar__header__facebook" glyph="facebook" />
+          <FormattedMessage id="menu.facebook"/>
+        </a>
+      </li>
+    );
+  }
+
+  renderHomeLink() {
+    const { homePage } = SharedContainer.get();
+    if (!homePage) return null;
+
+    return (
+      <li className="dropdown__menu__item">
+        <a href={homePage} onClick={this.openHomePage}>
+          <i className="material-icons">public</i>
+          <FormattedMessage id="menu.homePage"/>
+        </a>
+      </li>
+    );
+  }
+
+  renderHelpLink() {
+    const { helpPhone } = SharedContainer.get();
+    if (!helpPhone) return null;
+
+    if (/@/.test(helpPhone)) {
       return (
-        <header className={headerClass}>
-          <div className="sidebar__header__user row" onClick={this.toggleHeaderMenu}>
-            <AvatarItem image={profile.avatar}
-                        placeholder={profile.placeholder}
-                        size="tiny"
-                        title={profile.name} />
-            <span className="sidebar__header__user__name col-xs"
-                  dangerouslySetInnerHTML={{__html: escapeWithEmoji(profile.name)}}/>
-            <div className={menuClass}>
-              <span className="dropdown__button">
-                <i className="material-icons">arrow_drop_down</i>
-              </span>
-              <ul className="dropdown__menu dropdown__menu--right">
-                <li className="dropdown__menu__item" onClick={this.openMyProfile}>
-                  <i className="material-icons">edit</i>
-                  {intl.messages['menu.editProfile']}
-                </li>
-                <li className="dropdown__menu__item" onClick={this.openAddContactModal}>
-                  <i className="material-icons">person_add</i>
-                  {intl.messages['menu.addToContacts']}
-                </li>
-                <li className="dropdown__menu__item" onClick={this.openCreateGroup}>
-                  <i className="material-icons">group_add</i>
-                  {intl.messages['menu.createGroup']}
-                </li>
-                <li className="dropdown__menu__separator"/>
-                <li className="dropdown__menu__item" onClick={this.onSettingsOpen}>
-                  <i className="material-icons">settings</i>
-                  {intl.messages['menu.preferences']}
-                </li>
-              
-              
-                <li className="dropdown__menu__item">
-                  <a href={this.homePage} onClick={this.openHomePage}>
-                    <i className="material-icons">public</i>
-                    {intl.messages['menu.homePage']}
-                  </a>
-                </li>
-                <li className="dropdown__menu__separator"/>
-                <li className="dropdown__menu__item" onClick={this.setLogout}>
-                  {intl.messages['menu.signOut']}
-                </li>
-              </ul>
-            </div>
-          </div>
-
-
-          {/* Modals */}
-          {isMyProfileOpen ? <MyProfileModal/> : null}
-          {isCreateGroupOpen ? <CreateGroupModal/> : null}
-          {isAddContactsOpen ? <AddContactModal/> : null}
-          {isPreferencesOpen ? <PreferencesModal/> : null}
-
-        </header>
+        <li className="dropdown__menu__item">
+          <a href={`mailto:${helpPhone}`}>
+            <i className="material-icons">help</i>
+            <FormattedMessage id="menu.helpAndFeedback"/>
+          </a>
+        </li>
       );
     } else {
-      return null;
+      return (
+        <li className="dropdown__menu__item" onClick={this.openHelp}>
+          <i className="material-icons">help</i>
+          <FormattedMessage id="menu.helpAndFeedback"/>
+        </li>
+      );
     }
   }
+
+  render() {
+    const { profile, isOpened } = this.state;
+
+    if (!profile) return null;
+
+    const headerClass = classnames('sidebar__header', 'sidebar__header--clickable', {
+      'sidebar__header--opened': isOpened
+    });
+    const menuClass = classnames('dropdown', {
+      'dropdown--opened': isOpened
+    });
+
+    return (
+      <header className={headerClass}>
+        <div className="sidebar__header__user row" onClick={this.toggleHeaderMenu}>
+          <AvatarItem
+            className="sidebar__avatar"
+            image={profile.avatar}
+            placeholder={profile.placeholder}
+            size="tiny"
+            title={profile.name}
+          />
+          <span className="sidebar__header__user__name col-xs"
+                dangerouslySetInnerHTML={{ __html: escapeWithEmoji(profile.name) }}/>
+          <div className={menuClass}>
+            <span className="dropdown__button">
+              <i className="material-icons">arrow_drop_down</i>
+            </span>
+            <ul className="dropdown__menu dropdown__menu--right">
+              <li className="dropdown__menu__item" onClick={this.openMyProfile}>
+                <i className="material-icons">edit</i>
+                <FormattedMessage id="menu.editProfile"/>
+              </li>
+              <li className="dropdown__menu__item" onClick={this.openAddContactModal}>
+                <i className="material-icons">person_add</i>
+                <FormattedMessage id="menu.addToContacts"/>
+              </li>
+              <li className="dropdown__menu__item" onClick={this.openCreateGroup}>
+                <i className="material-icons">group_add</i>
+                <FormattedMessage id="menu.createGroup"/>
+              </li>
+              <li className="dropdown__menu__separator"/>
+              <li className="dropdown__menu__item" onClick={this.onSettingsOpen}>
+                <i className="material-icons">settings</i>
+                <FormattedMessage id="menu.preferences"/>
+              </li>
+
+              {this.renderHelpLink()}
+              {this.renderTwitterLink()}
+              {this.renderFacebookLink()}
+              {this.renderHomeLink()}
+
+              <li className="dropdown__menu__separator"/>
+              <li className="dropdown__menu__item" onClick={this.setLogout}>
+                <FormattedMessage id="menu.signOut"/>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </header>
+    );
+
+  }
 }
-//                  <li className="dropdown__menu__item" onClick={this.openHelpDialog}>
-//                  <i className="material-icons">help</i>
-//                  {intl.messages['menu.helpAndFeedback']}
-//                  </li>
-//                  <li className="dropdown__menu__item">
-//                  <a href={`https://twitter.com/${this.twitter}`} onClick={this.openTwitter}>
-//                  <SvgIcon className="icon icon--dropdown sidebar__header__twitter" glyph="twitter" />
-//                  {intl.messages['menu.twitter']}
-//                  </a>
-//                  </li>
+
 export default Container.create(HeaderSection);

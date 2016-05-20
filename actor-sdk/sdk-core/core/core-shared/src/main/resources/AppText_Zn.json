@@ -1,0 +1,143 @@
+{
+	"app": {
+		"name": "优聆"
+	},
+
+	"language": {
+
+		"code": "Zn",
+
+		"format": {
+			"time": {
+				"yesterday": "昨天",
+				"now": "现在",
+				"minutes": {
+					"short": "{minutes} 分",
+					"full": "{minutes} 分"
+				},
+				"hours": {
+					"short": "{hours} 小时",
+					"full": "{hours} 小时"
+				}
+			}
+		},
+
+		"file_size": {
+			"bytes": "{bytes} B",
+			"kbytes": "{kbytes} KB",
+			"mbytes": "{mbytes} MB",
+			"gbytes": "{gbytes} GB"
+		},
+
+		"referencing": {
+			"you": "你",
+			"thee": "你"
+		},
+
+		"sequence": {
+			"or": ",",
+			"and": ","
+		}
+	},
+
+	"groups": {
+		"members": "{count}个成员"
+	},
+
+	"presence": {
+		"online": "在线",
+		"offline": "离线",
+		"now": "刚刚最后一次上线",
+		"today": "今天{time}最后一次上线",
+		"yesterday": "昨天{time}最后一次上线",
+		"at_day": "{date}最后一次上线",
+		"at_day_time": "{date} {time}最后一次上线",
+		"members": "{count}人在线"
+	},
+
+	"typing": {
+		"simple": "正在输入...",
+		"user": "{user}正在输入...",
+		"group": {
+			"sequenced": "{users}正在输入...",
+			"many": "{count}个人正在输入..."
+		}
+	},
+
+	"content": {
+
+		"unknown": "不支持的内容",
+		"document": "文档",
+		"photo": "照片",
+		"video": "图片",
+		"audio": "语音",
+		"contact": "通讯录",
+		"location": "位置",
+		"sticker": "贴纸",
+
+		"service": {
+			"registered": {
+				"full": "{name} 已加入 {app_name}",
+				"compact": "已加入 {app_name}"
+			},
+			"groups": {
+				"created": "{name}创建了这个群组",
+				"invited": "{name}邀请{name_added}",
+				"joined": "{name}加入群组",
+				"kicked": "{name}移出{name_kicked}",
+				"left": "{name}退出群组",
+				"title_changed": {
+					"full":  "{name}修改为名称为：\"{title}\"",
+					"compact": "{name}修改了群组名称"
+				},
+				"topic_changed": {
+					"full":  "{name} changed the group topic to \"{topic}\"",
+					"compact": "{name} changed the group topic"
+				},
+				"about_changed": {
+					"full":  "{name} changed the group about to \"{about}\"",
+					"compact": "{name} changed the group about"
+				},
+				"avatar_changed": "{name}修改了群组头像",
+				"avatar_removed": "{name}删除了群组头像"
+			},
+			"calls": {
+				"missed": "未接电话",
+				"ended": "拨号结束"
+			}
+		}
+	},
+
+	"errors": {
+		"unknown": "Unknown error. Please, try again later.",
+		"internal": "服务器内部错误，请稍候再试。",
+		"phone": {
+			"empty": "请输入你的手机号码",
+			"incorrect": "输入的手机号码不正确，请重新输入。"
+		},
+		"code": {
+			"empty": "请正确输入验证码。",
+			"incorrect": "输入的验证码不正确，请重试。",
+			"expired": "验证码过期，请重新验证。"
+		},
+		"groups": {
+			"already_joined": "你已经是群组成员。",
+			"unable_to_join": "无法加入群组"
+		}
+	},
+
+	"months": {
+		"january": "一月",
+		"february": "二月",
+		"march": "三月",
+		"april": "四月",
+		"may": "五月",
+		"june": "六月",
+		"july": "七月",
+		"august": "八月",
+		"september": "九月",
+		"october": "十月",
+		"november": "十一月",
+		"december": "十二月"
+	}
+}

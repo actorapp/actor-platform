@@ -1,13 +1,15 @@
 package im.actor.server.api.rpc.service
 
+import cats.data.Xor
 import im.actor.api.rpc._
-import im.actor.api.rpc.messaging.{ ApiDialogShort, ResponseLoadGroupedDialogs, ApiTextMessage }
-import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType, ApiOutPeer }
+import im.actor.api.rpc.messaging._
+import im.actor.api.rpc.misc.ResponseSeq
+import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeer, ApiPeerType }
 import im.actor.server.acl.ACLUtils
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
 import im.actor.server._
-import im.actor.server.dialog.DialogGroups
+import im.actor.server.dialog.{ DialogExtension, DialogGroupType }
 
 import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
@@ -21,16 +23,16 @@ final class GroupedDialogsSpec
   with MessagingSpecHelpers {
   "LoadGroupedDialogs" should "load groups and privates" in loadGrouped
 
-  "Dialogs" should "appear in bottom on new incoming message" in incomingGoBottom
-  it should "appear in bottom on new outgoing message" in outgoingGoBottom
-
   "Hidden dialogs" should "appear on new message" in appearHidden
   it should "appear when peer sends message to dialog" in appearHidden2
   it should "appear on show" in appearShown
 
   "Favourited dialogs" should "appear on favourite" in appearFavourite
+  it should "not be in grouped dialogs if no favourites left" in noGroupInFavAbsent
 
-  import DialogGroups._
+  "Archived dialogs" should "be loaded by desc order" in archived
+
+  "Deleted dialogs" should "not appear in dialog list, and should mark messages as deleted in db" in deleted
 
   private implicit lazy val groupsService = new GroupsServiceImpl(GroupInviteConfig(""))
   private implicit lazy val service = MessagingServiceImpl()
@@ -40,25 +42,25 @@ final class GroupedDialogsSpec
     val (user2, _, _, _) = createUser()
     val (user3, _, _, _) = createUser()
 
-    implicit val clientData = ClientData(authId1, 1, Some(AuthData(user1.id, authSid1)))
-
+    implicit val clientData = ClientData(authId1, 1, Some(AuthData(user1.id, authSid1, 42)))
     val group = createGroup("Some group", Set(user3.id))
 
     val user2Peer = Await.result(ACLUtils.getOutPeer(ApiPeer(ApiPeerType.Private, user2.id), authId1), 5.seconds)
     val groupPeer = ApiOutPeer(ApiPeerType.Group, group.groupPeer.groupId, group.groupPeer.accessHash)
 
     whenReady(Future.sequence(Seq(
-      service.handleSendMessage(user2Peer, Random.nextLong, ApiTextMessage("Hi there", Vector.empty, None), None),
-      service.handleSendMessage(groupPeer, Random.nextLong, ApiTextMessage("Hi all there", Vector.empty, None), None)
+      service.handleSendMessage(user2Peer, Random.nextLong, ApiTextMessage("Hi there", Vector.empty, None), None, None),
+      service.handleSendMessage(groupPeer, Random.nextLong, ApiTextMessage("Hi all there", Vector.empty, None), None, None)
     ))) { _ ⇒
-      whenReady(service.handleLoadGroupedDialogs()) { resp ⇒
+      whenReady(service.handleLoadGroupedDialogs(Vector.empty)) { resp ⇒
         inside(resp) {
-          case Ok(ResponseLoadGroupedDialogs(dgroups, users, groups, _, _)) ⇒
+          case Ok(ResponseLoadGroupedDialogs(dgroups, users, groups, _, _, _, _)) ⇒
             dgroups.length shouldBe 2
 
-            users.map(_.id).toSet shouldBe Set(user1.id, user2.id, user3.id)
-
-            groups.map(_.id).toSet shouldBe Set(group.groupPeer.groupId)
+            dgroups.map(_.key) should be(Seq(
+              DialogExtension.groupKey(DialogGroupType.Groups),
+              DialogExtension.groupKey(DialogGroupType.DirectMessages)
+            ))
 
             val (gs, ps) = dgroups.foldLeft(IndexedSeq.empty[ApiDialogShort], IndexedSeq.empty[ApiDialogShort]) {
               case ((gs, ps), dg) ⇒
@@ -76,72 +78,12 @@ final class GroupedDialogsSpec
             inside(ps) {
               case Vector(p) ⇒ p.peer.id shouldBe user2.id
             }
+
+            users.map(_.id).toSet shouldBe Set(user1.id, user2.id, user3.id)
+
+            groups.map(_.id).toSet shouldBe Set(group.groupPeer.groupId)
         }
       }
-    }
-  }
-
-  def incomingGoBottom() = {
-    val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
-    val (bob, bobAuthId, bobAuthSid, _) = createUser()
-    val (eve, eveAuthId, eveAuthSid, _) = createUser()
-
-    val aliceClient = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid)))
-    val bobClient = ClientData(bobAuthId, 1, Some(AuthData(bob.id, bobAuthSid)))
-    val eveClient = ClientData(eveAuthId, 1, Some(AuthData(eve.id, eveAuthSid)))
-
-    {
-      implicit val clientData = eveClient
-      sendMessageToUser(alice.id, ApiTextMessage("Hi, I am Eve", Vector.empty, None))
-    }
-
-    Thread.sleep(1)
-
-    {
-      implicit val clientData = bobClient
-      sendMessageToUser(alice.id, ApiTextMessage("Hi, I am Bob", Vector.empty, None))
-    }
-
-    {
-      implicit val clientData = aliceClient
-      val dgs = getDialogGroups()
-      val privates = dgs(Privates.key)
-      privates.size should equal(2)
-      privates.head.peer.id should equal(eve.id)
-      privates.last.peer.id should equal(bob.id)
-    }
-
-    {
-      implicit val clientData = eveClient
-      sendMessageToUser(alice.id, ApiTextMessage("Hi, I am Eve", Vector.empty, None))
-    }
-
-    {
-      implicit val clientData = aliceClient
-      val privates = getDialogGroups(Privates)
-      privates.head.peer.id should equal(eve.id)
-    }
-  }
-
-  def outgoingGoBottom() = {
-    val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
-    val (bob, _, _, _) = createUser()
-    val (eve, _, _, _) = createUser()
-
-    implicit val clientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid)))
-
-    prepareDialogs(bob, eve)
-
-    inside(getDialogGroups(Privates)) {
-      case privates ⇒
-        privates.head.peer.id should equal(bob.id)
-    }
-
-    sendMessageToUser(eve.id, textMessage("Grrr"))
-
-    inside(getDialogGroups(Privates)) {
-      case privates ⇒
-        privates.head.peer.id should equal(bob.id)
     }
   }
 
@@ -150,22 +92,18 @@ final class GroupedDialogsSpec
     val (bob, _, _, _) = createUser()
     val (eve, _, _, _) = createUser()
 
-    implicit val clientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid)))
+    implicit val clientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid, 42)))
     val bobPeer = getOutPeer(bob.id, aliceAuthId)
     //    sendMessageToUser(bob.id, textMessage("Hi Bob!"))
 
     prepareDialogs(bob, eve)
     whenReady(service.handleHideDialog(bobPeer))(identity)
-    inside(getDialogGroups(Privates)) {
+    inside(getDialogGroups(DialogGroupType.DirectMessages)) {
       case Vector(d) ⇒ d.peer.id should equal(eve.id)
     }
 
     sendMessageToUser(bob.id, textMessage("Hi Bob!"))
-    inside(getDialogGroups(Privates)) {
-      case Vector(d1, d2) ⇒
-        d1.peer.id should equal(eve.id)
-        d2.peer.id should equal(bob.id)
-    }
+    getDialogGroups(DialogGroupType.DirectMessages).map(_.peer.id).toSet should equal(Set(eve.id, bob.id))
   }
 
   def appearHidden2() = {
@@ -173,8 +111,8 @@ final class GroupedDialogsSpec
     val (bob, bobAuthId, bobAuthSid, _) = createUser()
     val (eve, _, _, _) = createUser()
 
-    val aliceCD = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid)))
-    val bobCD = ClientData(bobAuthId, 1, Some(AuthData(bob.id, bobAuthSid)))
+    val aliceCD = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid, 42)))
+    val bobCD = ClientData(bobAuthId, 1, Some(AuthData(bob.id, bobAuthSid, 42)))
 
     val bobPeer = getOutPeer(bob.id, aliceAuthId)
 
@@ -183,7 +121,7 @@ final class GroupedDialogsSpec
       prepareDialogs(bob, eve)
 
       whenReady(service.handleHideDialog(bobPeer))(identity)
-      inside(getDialogGroups(Privates)) {
+      inside(getDialogGroups(DialogGroupType.DirectMessages)) {
         case Vector(d) ⇒ d.peer.id should equal(eve.id)
       }
     }
@@ -195,11 +133,7 @@ final class GroupedDialogsSpec
 
     {
       implicit val cd = aliceCD
-      inside(getDialogGroups(Privates)) {
-        case Vector(d1, d2) ⇒
-          d1.peer.id should equal(eve.id)
-          d2.peer.id should equal(bob.id)
-      }
+      getDialogGroups(DialogGroupType.DirectMessages).map(_.peer.id).toSet should equal(Set(eve.id, bob.id))
     }
   }
 
@@ -208,36 +142,136 @@ final class GroupedDialogsSpec
     val (bob, _, _, _) = createUser()
     val (eve, _, _, _) = createUser()
 
-    implicit val clientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid)))
+    implicit val clientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid, 42)))
     val bobPeer = getOutPeer(bob.id, aliceAuthId)
 
     prepareDialogs(bob, eve)
 
     whenReady(service.handleHideDialog(bobPeer))(identity)
-    inside(getDialogGroups(Privates)) {
+    inside(getDialogGroups(DialogGroupType.DirectMessages)) {
       case Vector(d) ⇒ d.peer.id should equal(eve.id)
     }
 
     whenReady(service.handleShowDialog(bobPeer))(identity)
-    inside(getDialogGroups(Privates)) {
-      case Vector(d1, d2) ⇒
-        d1.peer.id should equal(eve.id)
-        d2.peer.id should equal(bob.id)
-    }
+    getDialogGroups(DialogGroupType.DirectMessages).map(_.peer.id).toSet should equal(Set(eve.id, bob.id))
   }
 
   def appearFavourite() = {
     val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
     val (bob, _, _, _) = createUser()
 
-    implicit val clientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid)))
+    implicit val clientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid, 42)))
     val bobPeer = getOutPeer(bob.id, aliceAuthId)
     sendMessageToUser(bob.id, textMessage("Hi Bob!"))
 
     prepareDialogs(bob)
     whenReady(service.handleFavouriteDialog(bobPeer))(identity)
-    inside(getDialogGroups(Favourites)) {
+
+    whenReady(service.handleLoadGroupedDialogs(Vector.empty)) { resp ⇒
+      resp.toOption.get.dialogs.map(_.key).head should be(DialogExtension.groupKey(DialogGroupType.Favourites))
+    }
+
+    inside(getDialogGroups(DialogGroupType.Favourites)) {
       case Vector(d) ⇒ d.peer.id should equal(bob.id)
     }
+  }
+
+  def noGroupInFavAbsent() = {
+    val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
+    val (bob, _, _, _) = createUser()
+
+    implicit val clientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid, 42)))
+    val bobPeer = getOutPeer(bob.id, aliceAuthId)
+    sendMessageToUser(bob.id, textMessage("Hi Bob!"))
+
+    prepareDialogs(bob)
+    whenReady(service.handleFavouriteDialog(bobPeer))(identity)
+
+    getDialogGroups().get(DialogExtension.groupKey(DialogGroupType.Favourites)) should not be empty
+
+    whenReady(service.handleUnfavouriteDialog(bobPeer))(identity)
+
+    getDialogGroups().get(DialogExtension.groupKey(DialogGroupType.Favourites)) shouldBe empty
+  }
+
+  def archived() = {
+    val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
+    val (bob, _, _, _) = createUser()
+    val (eve, _, _, _) = createUser()
+    val (kira, _, _, _) = createUser()
+
+    implicit val clientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid, 42)))
+    val bobPeer = getOutPeer(bob.id, aliceAuthId)
+    val evePeer = getOutPeer(eve.id, aliceAuthId)
+    val kiraPeer = getOutPeer(kira.id, aliceAuthId)
+
+    prepareDialogs(bob, eve, kira)
+    whenReady(service.handleArchiveChat(bobPeer))(identity)
+    whenReady(service.handleArchiveChat(evePeer))(identity)
+    whenReady(service.handleArchiveChat(kiraPeer))(identity)
+
+    val offset1 = whenReady(service.handleLoadArchived(None, 1, Vector.empty)) { resp ⇒
+      val okResp = resp.toOption.get
+      okResp.dialogs.size shouldBe 1
+      okResp.dialogs.head.peer.id shouldBe kiraPeer.id
+      okResp.nextOffset
+    }
+
+    val offset2 = whenReady(service.handleLoadArchived(offset1, 1, Vector.empty)) { resp ⇒
+      val okResp = resp.toOption.get
+      okResp.dialogs.size shouldBe 1
+      okResp.dialogs.head.peer.id shouldBe evePeer.id
+      okResp.nextOffset
+    }
+
+    whenReady(service.handleLoadArchived(offset2, 1, Vector.empty)) { resp ⇒
+      val okResp = resp.toOption.get
+      okResp.dialogs.size shouldBe 1
+      okResp.dialogs.head.peer.id shouldBe bobPeer.id
+      okResp.nextOffset
+    }
+  }
+
+  def deleted() = {
+    val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
+    val (bob, _, _, _) = createUser()
+    val (charlie, _, _, _) = createUser()
+
+    implicit val clientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid, 42)))
+    val bobPeer = getOutPeer(bob.id, aliceAuthId)
+    val charliePeer = getOutPeer(charlie.id, aliceAuthId)
+
+    prepareDialogs(bob, charlie)
+
+    val mobileBefore = loadDialogs()
+    mobileBefore should have length 2
+
+    val groupBefore = getDialogGroups()
+    groupBefore("privates") should have length 2
+
+    whenReady(service.handleLoadHistory(charliePeer, 0L, None, 100, Vector.empty)) { resp ⇒
+      inside(resp) {
+        case Xor.Right(histResp) ⇒ histResp.history should have length 1
+      }
+    }
+
+    whenReady(service.handleDeleteChat(charliePeer)) { resp ⇒
+      resp should matchPattern {
+        case Ok(ResponseSeq(_, _)) ⇒
+      }
+    }
+
+    whenReady(service.handleLoadHistory(charliePeer, 0L, None, 100, Vector.empty)) { resp ⇒
+      inside(resp) {
+        case Xor.Right(histResp) ⇒ histResp.history shouldBe empty
+      }
+    }
+
+    val mobileAfter = loadDialogs()
+    mobileAfter should have length 1
+    mobileAfter.head.peer.id shouldEqual bobPeer.id
+
+    val groupAfter = getDialogGroups()
+    groupAfter("privates") should have length 1
   }
 }

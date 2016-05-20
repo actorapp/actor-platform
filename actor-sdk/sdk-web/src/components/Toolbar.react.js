@@ -3,72 +3,90 @@
  */
 
 import React, { Component, PropTypes } from 'react';
+import { FormattedMessage } from 'react-intl';
 import { Container } from 'flux/utils';
 import classnames from 'classnames';
-import { FormattedMessage } from 'react-intl';
+import Tooltip from 'rc-tooltip';
+import { debounce } from 'lodash';
+
 import { escapeWithEmoji } from '../utils/EmojiUtils';
 import PeerUtils from '../utils/PeerUtils';
 
+import CallActionCreators from '../actions/CallActionCreators';
 import ActivityActionCreators from '../actions/ActivityActionCreators';
 import FavoriteActionCreators from '../actions/FavoriteActionCreators';
-import CallActionCreators from '../actions/CallActionCreators';
+import SearchMessagesActionCreators from '../actions/SearchMessagesActionCreators';
 
-import AvatarItem from './common/AvatarItem.react';
-import ToggleFavorite from './common/ToggleFavorite.react';
-
+import SearchMessagesStore from '../stores/SearchMessagesStore';
 import DialogInfoStore from '../stores/DialogInfoStore';
 import OnlineStore from '../stores/OnlineStore';
 import ActivityStore from '../stores/ActivityStore';
 import DialogStore from '../stores/DialogStore';
 import CallStore from '../stores/CallStore';
 
+import AvatarItem from './common/AvatarItem.react';
+import ToggleFavorite from './common/ToggleFavorite.react';
+import SearchInput from './search/SearchInput.react';
+
 class ToolbarSection extends Component {
+  static contextTypes = {
+    delegate: PropTypes.object.isRequired
+  };
+
   static getStores() {
-    return [DialogInfoStore, ActivityStore, OnlineStore, DialogStore, CallStore];
+    return [DialogInfoStore, ActivityStore, OnlineStore, DialogStore, CallStore, SearchMessagesStore];
   }
 
   static calculateState() {
-    const thisPeer = DialogStore.getCurrentPeer();
+    const peer = DialogStore.getCurrentPeer();
+    if (!peer) {
+      return {
+        dialogInfo: null
+      };
+    }
+
     return {
-      thisPeer,
-      dialogInfo: DialogInfoStore.getInfo(),
+      peer,
+      dialogInfo: DialogInfoStore.getState(),
       isActivityOpen: ActivityStore.isOpen(),
       message: OnlineStore.getMessage(),
-      isFavorite: DialogStore.isFavorite(thisPeer.id),
-      call: ToolbarSection.calculateCallState(thisPeer)
+      isFavorite: DialogStore.isFavorite(peer.id),
+      search: SearchMessagesStore.getState(),
+      call: ToolbarSection.calculateCallState(peer)
     };
   }
 
-  static calculateCallState(thisPeer) {
-    const isCalling = CallStore.isOpen();
-    if (!isCalling) {
-      return {isCalling};
-    }
-
-    const callPeer = CallStore.getPeer();
-    const isSamePeer = PeerUtils.equals(thisPeer, callPeer);
-    if (!isSamePeer) {
-      return {isCalling: false};
+  static calculateCallState(peer) {
+    const call = CallStore.getState();
+    if (!call.isOpen || !PeerUtils.equals(peer, call.peer)) {
+      return {
+        isCalling: false
+      };
     }
 
     return {
-      isCalling,
-      state: CallStore.getState(),
-      isFloating: CallStore.isFloating(),
-      time: '00:00'
+      isCalling: true,
+      time: call.time,
+      state: call.state,
+      isFloating: call.isFloating
     };
   }
 
-  static contextTypes = {
-    isExperimental: PropTypes.bool
-  };
+  constructor(props, context) {
+    super(props, context);
+
+    this.onSearch = debounce(this.onSearch.bind(this), 300);
+    this.onSearchChange = this.onSearchChange.bind(this);
+    this.onSearchToggleOpen = this.onSearchToggleOpen.bind(this);
+    this.onSearchToggleFocus = this.onSearchToggleFocus.bind(this);
+  }
 
   onFavoriteToggle = () => {
-    const { thisPeer, isFavorite } = this.state;
+    const { peer, isFavorite } = this.state;
     if (isFavorite) {
-      FavoriteActionCreators.unfavoriteChat(thisPeer);
+      FavoriteActionCreators.unfavoriteChat(peer);
     } else {
-      FavoriteActionCreators.favoriteChat(thisPeer);
+      FavoriteActionCreators.favoriteChat(peer);
     }
   };
 
@@ -82,15 +100,51 @@ class ToolbarSection extends Component {
 
   handleInCallClick = () => CallActionCreators.toggleFloating();
 
+  onSearch(query) {
+    SearchMessagesActionCreators.findAllText(query);
+  }
+
+  onSearchChange(query) {
+    SearchMessagesActionCreators.setQuery(query);
+    this.onSearch(query);
+  }
+
+  onSearchToggleOpen(isOpen) {
+    SearchMessagesActionCreators.toggleOpen(isOpen);
+  }
+
+  onSearchToggleFocus(isEnabled) {
+    SearchMessagesActionCreators.toggleFocus(isEnabled);
+  }
+
   getMessage() {
     const { call, message } = this.state;
     if (call.isCalling) {
       return (
-        <FormattedMessage id={`toolbar.callState.${call.state}`} values={{time: call.time}} />
+        <FormattedMessage id={`call.state.${call.state}`} values={{ time: call.time }} />
       );
     }
 
     return message;
+  }
+
+  renderSearch() {
+    if (!this.context.delegate.features.search) {
+      return;
+    }
+
+    const { search: { query, isOpen, isFocused } } = this.state;
+    return (
+      <SearchInput
+        className="toolbar__controls__search pull-left"
+        value={query}
+        isOpen={isOpen}
+        isFocused={isFocused}
+        onChange={this.onSearchChange}
+        onToggleOpen={this.onSearchToggleOpen}
+        onToggleFocus={this.onSearchToggleFocus}
+      />
+    );
   }
 
   renderInfoButton() {
@@ -102,21 +156,45 @@ class ToolbarSection extends Component {
 
     if (call.isCalling) {
       return (
-        <button className={activityButtonClassName} onClick={this.handleInCallClick}>
-          <i className="material-icons">info</i>
-        </button>
+        <Tooltip
+          placement="left"
+          mouseEnterDelay={0.15} mouseLeaveDelay={0}
+          overlay={<FormattedMessage id="tooltip.toolbar.info"/>}
+        >
+          <button className={activityButtonClassName} onClick={this.handleInCallClick}>
+            <i className="material-icons">info</i>
+          </button>
+        </Tooltip>
       )
     }
 
     return (
-      <button className={activityButtonClassName} onClick={this.onClick}>
-        <i className="material-icons">info</i>
-      </button>
+      <Tooltip
+        placement="left"
+        mouseEnterDelay={0.15} mouseLeaveDelay={0}
+        overlay={<FormattedMessage id="tooltip.toolbar.info"/>}
+      >
+        <button className={activityButtonClassName} onClick={this.onClick}>
+          <i className="material-icons">info</i>
+        </button>
+      </Tooltip>
     )
   }
 
+  renderVerified() {
+    if (!this.state.dialogInfo.isVerified) {
+      return null;
+    }
+
+    return (
+      <span className="toolbar__peer__verified">
+        <i className="material-icons">verified_user</i>
+      </span>
+    );
+  }
+
   render() {
-    const { dialogInfo, isActivityOpen, isFavorite, call } = this.state;
+    const { dialogInfo, isFavorite, call } = this.state;
 
     if (!dialogInfo) {
       return <header className="toolbar" />;
@@ -134,23 +212,32 @@ class ToolbarSection extends Component {
 
     return (
       <header className={headerClassName}>
-        <AvatarItem image={dialogInfo.avatar}
-                    placeholder={dialogInfo.placeholder}
-                    size="medium"
-                    title={dialogInfo.name}/>
-
-
+        <AvatarItem
+          className="toolbar__avatar"
+          size="medium"
+          image={dialogInfo.avatar}
+          placeholder={dialogInfo.placeholder}
+          title={dialogInfo.name}
+        />
         <div className="toolbar__peer col-xs">
           <header>
-            <span className="toolbar__peer__title" dangerouslySetInnerHTML={{__html: escapeWithEmoji(dialogInfo.name)}}/>
-            <span className={favoriteClassName}>
-              <ToggleFavorite value={isFavorite} onToggle={this.onFavoriteToggle} />
-            </span>
+            <span className="toolbar__peer__title" dangerouslySetInnerHTML={{ __html: escapeWithEmoji(dialogInfo.name) }}/>
+            {this.renderVerified()}
+            <Tooltip
+              placement="bottom"
+              mouseEnterDelay={0.15} mouseLeaveDelay={0}
+              overlay={<FormattedMessage id="tooltip.toolbar.favorite"/>}
+            >
+              <span className={favoriteClassName}>
+                <ToggleFavorite value={isFavorite} onToggle={this.onFavoriteToggle} />
+              </span>
+            </Tooltip>
           </header>
           <div className="toolbar__peer__message">{message}</div>
         </div>
 
         <div className="toolbar__controls">
+          {this.renderSearch()}
           <div className="toolbar__controls__buttons pull-right">
             {this.renderInfoButton()}
           </div>
@@ -160,4 +247,4 @@ class ToolbarSection extends Component {
   }
 }
 
-export default Container.create(ToolbarSection, {pure: false});
+export default Container.create(ToolbarSection, { pure: false });

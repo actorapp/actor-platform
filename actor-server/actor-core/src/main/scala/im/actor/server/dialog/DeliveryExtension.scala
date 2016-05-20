@@ -36,6 +36,6 @@ trait DeliveryExtension {
 
   def notifyRead(userId: Int, peer: Peer, date: Long, now: Long): Future[Unit]
 
-  def read(readerUserId: Int, readerAuthSid: Int, peer: Peer, date: Long, unreadCount: Option[Int]): Future[Unit]
+  def read(readerUserId: Int, readerAuthSid: Int, peer: Peer, date: Long, unreadCount: Int): Future[Unit]
 
 }

@@ -8,9 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import im.actor.core.entity.FileReference;
 import im.actor.core.entity.Sticker;
 import im.actor.core.entity.StickerPack;
 import im.actor.runtime.mvvm.Value;
@@ -31,7 +33,7 @@ public class PacksAdapter extends RecyclerView.Adapter<PacksAdapter.StickerViewH
         packsSwitchContainer = stickerIndicatorContainer;
         this.context = context;
         this.stickersAdapter = stickersAdapter;
-        messenger().getAvailableStickersVM().getOwnStickerPacks().subscribe(new ValueChangedListener<ArrayList<StickerPack>>() {
+        stickersAdapter.getBinder().bind(messenger().getAvailableStickersVM().getOwnStickerPacks(), new ValueChangedListener<ArrayList<StickerPack>>() {
             @Override
             public void onChanged(ArrayList<StickerPack> val, Value<ArrayList<StickerPack>> valueModel) {
                 stickers.clear();
@@ -82,10 +84,14 @@ public class PacksAdapter extends RecyclerView.Adapter<PacksAdapter.StickerViewH
             sv.setPadding(padding, padding, padding, padding);
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(packsSwitchContainer.getHeight(), packsSwitchContainer.getHeight(), Gravity.CENTER);
             fl.addView(sv, params);
+
             fl.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    int oldSelected = selectedPostion;
                     selectedPostion = position;
+                    notifyItemChanged(oldSelected);
+                    notifyItemChanged(selectedPostion);
                     stickersAdapter.scrollToSticker(s);
                 }
             });
@@ -111,12 +117,15 @@ public class PacksAdapter extends RecyclerView.Adapter<PacksAdapter.StickerViewH
     }
 
     public void selectPack(int localPackId) {
+        int oldSelected = selectedPostion;
         for (int i = 0; i < getItemCount(); i++) {
             Sticker p = stickers.get(i);
             Integer collectionId = p.getCollectionId();
             if (collectionId != null && collectionId == localPackId) {
                 selectedPostion = i;
-                notifyDataSetChanged();
+                notifyItemChanged(oldSelected);
+                notifyItemChanged(selectedPostion);
+//                notifyDataSetChanged();
                 break;
             }
         }

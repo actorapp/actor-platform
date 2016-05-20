@@ -1,4 +1,4 @@
-syntax = "proto2";
+syntax = "proto3";
 
 package im.actor.server;
 
@@ -8,38 +8,225 @@ option (scalapb.options) = {
 };
 
 import "scalapb/scalapb.proto";
+import "google/protobuf/wrappers.proto";
 import "model.proto";
 import "sequence.proto";
 
-message DialogCommands {
+enum DialogGroupType {
+    Favourites = 0;
+    DirectMessages = 1;
+    Groups = 2;
+}
 
-    message Envelope {
-        required Peer peer = 1;
-        oneof payload {
-            WriteMessage write_message = 2;
-            SendMessage send_message = 3;
-            MessageReceived message_received = 4;
-            MessageRead message_read = 5;
-            Show show = 6;
-        Archive archive = 15;
-            Delete delete = 8;
-            SetReaction set_reaction = 9;
-            RemoveReaction remove_reaction = 10;
-            WriteMessageSelf write_message_self = 11;
-            Favourite favourite = 12;
-            Unfavourite unfavourite = 13;
-            UpdateCounters update_counters = 14;
-        }
+message DialogInfo {
+    Peer peer = 3;
+    int32 counter = 1;
+    int64 date = 2 [(scalapb.field).type = "java.time.Instant"];
+    int64 last_message_date = 6 [(scalapb.field).type = "java.time.Instant"];
+    int64 last_received_date = 5 [(scalapb.field).type = "java.time.Instant"];
+    int64 last_read_date = 4 [(scalapb.field).type = "java.time.Instant"];
+}
+
+message DialogGroup {
+    DialogGroupType typ = 1;
+    repeated DialogInfo dialogs = 2;
+}
+
+message DialogRootStateSnapshot {
+    repeated DialogGroup dialog_groups = 1;
+    repeated DialogInfo archived = 2;
+    repeated DialogInfo mobile = 3;
+}
+
+message DialogRootEvents {
+    message Bumped {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogRootEvent";
+
+        int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];
+        Peer peer = 2;
     }
 
+    message Created {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogRootEvent";
+
+        int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];
+        Peer peer = 2;
+    }
+
+    message Archived {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogRootEvent";
+
+        int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];
+        Peer peer = 2;
+    }
+
+    message Unarchived {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogRootEvent";
+
+        int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];
+        Peer peer = 2;
+    }
+
+    message Favourited {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogRootEvent";
+
+        int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];
+        Peer peer = 2;
+    }
+
+    message Unfavourited {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogRootEvent";
+
+        int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];
+        Peer peer = 2;
+    }
+
+    message Deleted {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogRootEvent";
+
+        int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];
+        Peer peer = 2;
+    }
+
+    message Initialized {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogRootEvent";
+
+        int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];
+    }
+}
+
+message DialogRootCommands {
+    message Unarchive {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogRootCommand";
+
+        Peer dest = 1;
+        google.protobuf.Int32Value client_auth_sid = 2;
+    }
+
+    message CheckArchive {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogRootCommand";
+    }
+
+    message Archive {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogRootCommand";
+
+        Peer dest = 1;
+        google.protobuf.Int32Value client_auth_sid = 2;
+    }
+
+    message Favourite {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogRootCommand";
+
+        Peer dest = 1;
+        google.protobuf.Int32Value client_auth_sid = 2;
+    }
+
+    message Unfavourite {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogRootCommand";
+
+        Peer dest = 1;
+        google.protobuf.Int32Value client_auth_sid = 2;
+    }
+
+    message Delete {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogRootCommand";
+
+        Peer dest = 1;
+        google.protobuf.Int32Value client_auth_sid = 2;
+    }
+}
+
+message DialogRootQueries {
+    message GetCounter {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogRootQuery";
+    }
+
+    message GetCounterResponse {
+        int32 counter = 1;
+    }
+
+    message GetDialogGroups {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogRootQuery";
+    }
+
+    message GetDialogGroupsResponse {
+        repeated DialogGroup groups = 1;
+    }
+
+    message GetDialogs {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogRootQuery";
+        int64 end_date = 1 [(scalapb.field).type = "java.time.Instant"];
+        int32 limit = 2;
+    }
+
+    message GetDialogsResponse {
+        map<int64, DialogInfo> dialogs = 1;
+    }
+
+    message GetArchivedDialogs {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogRootQuery";
+        google.protobuf.Int64Value offset = 1;
+        int32 limit = 2;
+    }
+
+    message GetArchivedDialogsResponse {
+        map<int64, DialogInfo> dialogs = 1;
+        google.protobuf.Int64Value nextOffset = 2;
+    }
+}
+
+message DialogStateSnapshot {
+    int32 user_id = 1;
+    int64 last_message_date = 2 [(scalapb.field).type = "java.time.Instant"];
+    int64 last_owner_receive_date = 7 [(scalapb.field).type = "java.time.Instant"];
+    int64 last_receive_date = 3 [(scalapb.field).type = "java.time.Instant"];
+    int64 last_owner_read_date = 8 [(scalapb.field).type = "java.time.Instant"];
+    int64 last_read_date = 4 [(scalapb.field).type = "java.time.Instant"];
+    int32 counter = 5;
+    map<int64, int64> unread_messages = 6;
+}
+
+message DialogRootEnvelope {
+    oneof query {
+        DialogRootQueries.GetCounter get_counter = 2;
+        DialogRootQueries.GetDialogGroups get_dialog_groups = 3;
+        DialogRootQueries.GetDialogs get_dialogs = 10;
+        DialogRootQueries.GetArchivedDialogs get_archived_dialogs = 11;
+    }
+    oneof command {
+        DialogRootCommands.Archive archive = 6;
+        DialogRootCommands.Unarchive unarchive = 4;
+        DialogRootCommands.Favourite favourite = 7;
+        DialogRootCommands.Unfavourite unfavourite = 8;
+        DialogRootCommands.Delete delete = 9;
+    }
+}
+
+message DialogEnvelope {
+    oneof command {
+        DialogCommands.WriteMessage write_message = 2;
+        DialogCommands.SendMessage send_message = 3;
+        DialogCommands.MessageReceived message_received = 4;
+        DialogCommands.MessageRead message_read = 5;
+        DialogCommands.SetReaction set_reaction = 9;
+        DialogCommands.RemoveReaction remove_reaction = 10;
+        DialogCommands.WriteMessageSelf write_message_self = 11;
+    }
+    oneof query {
+        DialogQueries.GetCounter get_counter = 15;
+        DialogQueries.GetInfo get_info = 16;
+    }
+}
+
+message DialogCommands {
     message WriteMessage {
         option (scalapb.message).extends = "im.actor.server.dialog.DirectDialogCommand";
 
-        required Peer origin = 6;
-        required Peer dest = 7;
-        required int64 date = 3;
-        required int64 random_id = 4;
-        required bytes message = 5 [(scalapb.field).type = "im.actor.api.rpc.messaging.ApiMessage"];
+        Peer origin = 6;
+        Peer dest = 7;
+        int64 date = 3;
+        int64 random_id = 4;
+        bytes message = 5 [(scalapb.field).type = "im.actor.api.rpc.messaging.ApiMessage"];
     }
 
     message WriteMessageAck {}
@@ -47,11 +234,11 @@ message DialogCommands {
     message WriteMessageSelf {
         option (scalapb.message).extends = "im.actor.server.dialog.DialogCommand";
 
-        required Peer dest = 1;
-        required int32 senderUserId = 6;
-        required int64 date = 3;
-        required int64 random_id = 4;
-        required bytes message = 5 [(scalapb.field).type = "im.actor.api.rpc.messaging.ApiMessage"];
+        Peer dest = 1;
+        int32 senderUserId = 6;
+        int64 date = 3;
+        int64 random_id = 4;
+        bytes message = 5 [(scalapb.field).type = "im.actor.api.rpc.messaging.ApiMessage"];
     }
 
     message WriteMessageSelfAck {}
@@ -59,15 +246,16 @@ message DialogCommands {
     message SendMessage {
         option (scalapb.message).extends = "im.actor.server.dialog.DirectDialogCommand";
 
-        required Peer origin = 7;
-        required Peer dest = 8;
-        required int32 sender_auth_sid = 3;
-        optional int64 sender_auth_id = 11;
-        optional int64 date = 9;
-        required int64 random_id = 4;
-        required bytes message = 5 [(scalapb.field).type = "im.actor.api.rpc.messaging.ApiMessage"];
-        optional int64 access_hash = 10;
-        required bool is_fat = 6;
+        Peer origin = 7;
+        Peer dest = 8;
+        int32 sender_auth_sid = 3;
+        google.protobuf.Int64Value sender_auth_id = 11;
+        google.protobuf.Int64Value date = 9;
+        int64 random_id = 4;
+        bytes message = 5 [(scalapb.field).type = "im.actor.api.rpc.messaging.ApiMessage"];
+        google.protobuf.Int64Value access_hash = 10;
+        bool is_fat = 6;
+        google.protobuf.Int32Value for_user_id = 12;
     }
 
     message SendMessageAck {}
@@ -75,10 +263,10 @@ message DialogCommands {
     message MessageReceived {
         option (scalapb.message).extends = "im.actor.server.dialog.DirectDialogCommand";
 
-        required Peer origin = 4;
-        required Peer dest = 5;
-        required int64 date = 3;
-        required int64 now = 6;
+        Peer origin = 4;
+        Peer dest = 5;
+        int64 date = 3;
+        int64 now = 6;
     }
 
     message MessageReceivedAck {}
@@ -86,81 +274,98 @@ message DialogCommands {
     message MessageRead {
         option (scalapb.message).extends = "im.actor.server.dialog.DirectDialogCommand";
 
-        required Peer origin = 5;
-        required Peer dest = 6;
-        required int32 reader_auth_sid = 3;
-        required int64 date = 4;
-        required int64 now = 7;
+        Peer origin = 5;
+        Peer dest = 6;
+        int32 reader_auth_sid = 3;
+        int64 date = 4;
+        int64 now = 7;
     }
 
     message MessageReadAck {}
 
-    message Show {
-        option (scalapb.message).extends = "im.actor.server.dialog.DialogCommand";
-
-        required Peer dest = 1;
-    }
-
-    message Archive {
-        option (scalapb.message).extends = "im.actor.server.dialog.DialogCommand";
-
-        required Peer dest = 1;
-    }
-
-    message Favourite {
-        option (scalapb.message).extends = "im.actor.server.dialog.DialogCommand";
-
-        required Peer dest = 1;
-    }
-
-    message Unfavourite {
-        option (scalapb.message).extends = "im.actor.server.dialog.DialogCommand";
-
-        required Peer dest = 1;
-    }
-
-    message Delete {
-        option (scalapb.message).extends = "im.actor.server.dialog.DialogCommand";
-
-        required Peer dest = 1;
-    }
-
     message SetReaction {
         option (scalapb.message).extends = "im.actor.server.dialog.DirectDialogCommand";
 
-        required Peer origin = 1;
-        required Peer dest = 2;
-        required int32 client_auth_sid = 5;
-        required int64 random_id = 4;
-        required string code = 3;
+        Peer origin = 1;
+        Peer dest = 2;
+        int32 client_auth_sid = 5;
+        int64 random_id = 4;
+        string code = 3;
     }
 
     message SetReactionAck {
-        required SeqState seqstate = 1;
+        SeqState seqstate = 1;
         repeated MessageReaction reactions = 2;
     }
 
     message RemoveReaction {
         option (scalapb.message).extends = "im.actor.server.dialog.DirectDialogCommand";
 
-        required Peer origin = 1;
-        required Peer dest = 2;
-        required int32 client_auth_sid = 5;
-        required int64 random_id = 4;
-        required string code = 3;
+        Peer origin = 1;
+        Peer dest = 2;
+        int32 client_auth_sid = 5;
+        int64 random_id = 4;
+        string code = 3;
     }
 
     message RemoveReactionAck {
-        required SeqState seqstate = 1;
+        SeqState seqstate = 1;
         repeated MessageReaction reactions = 2;
     }
+}
 
-    message UpdateCounters {
-        option (scalapb.message).extends = "im.actor.server.dialog.DirectDialogCommand";
-
-        required Peer origin = 1;
-        required Peer dest = 2;
+message DialogQueries {
+    message GetCounter {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogQuery";
+        Peer dest = 1;
     }
 
-    message UpdateCountersAck {}
+    message GetCounterResponse {
+        int32 counter = 1;
+    }
+
+    message GetInfo {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogQuery";
+
+        Peer dest = 1;
+    }
+
+    message GetInfoResponse {
+        DialogInfo info = 1;
+    }
+}
+
+message DialogEvents {
+    message NewMessage {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogEvent";
+
+        int64 random_id = 2;
+        int64 date = 1 [(scalapb.field).type = "java.time.Instant"];
+        int32 sender_user_id = 3;
+        int32 message_header = 4;
+    }
+
+    message MessagesReceived {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogEvent";
+
+        int64 date = 1 [(scalapb.field).type = "java.time.Instant"];
+        int32 receiver_user_id = 2;
+    }
+
+    message MessagesRead {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogEvent";
+
+        int64 date = 1 [(scalapb.field).type = "java.time.Instant"];
+        int32 reader_user_id = 8;
+    }
+
+    message SetCounter {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogEvent";
+
+        int32 count = 1;
+    }
+
+    message Initialized {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogEvent";
+    }
 }

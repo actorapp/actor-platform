@@ -5,22 +5,19 @@
 package im.actor.core.js.modules;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashSet;
 
 import im.actor.core.api.ApiFileLocation;
 import im.actor.core.api.ApiFileUrlDescription;
-import im.actor.core.api.rpc.RequestGetFileUrl;
 import im.actor.core.api.rpc.RequestGetFileUrls;
-import im.actor.core.api.rpc.ResponseGetFileUrl;
 import im.actor.core.api.rpc.ResponseGetFileUrls;
 import im.actor.core.js.modules.entity.CachedFileUrl;
 import im.actor.core.modules.AbsModule;
+import im.actor.core.modules.ModuleActor;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.Modules;
 import im.actor.core.util.BaseKeyValueEngine;
-import im.actor.core.util.ModuleActor;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.runtime.Log;
@@ -41,18 +38,13 @@ public class JsFilesModule extends AbsModule {
 
     private ActorRef urlLoader;
     private BaseKeyValueEngine<CachedFileUrl> keyValueStorage;
-    private HashSet<Long> requestedFiles = new HashSet<Long>();
-    private ArrayList<JsFileLoadedListener> listeners = new ArrayList<JsFileLoadedListener>();
+    private HashSet<Long> requestedFiles = new HashSet<>();
+    private ArrayList<JsFileLoadedListener> listeners = new ArrayList<>();
 
     public JsFilesModule(final Modules modules) {
         super(modules);
 
-        urlLoader = system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public FileBinderActor create() {
-                return new FileBinderActor(JsFilesModule.this, modules);
-            }
-        }), "files/url_loader");
+        urlLoader = system().actorOf("files/url_loader", () -> new FileBinderActor(JsFilesModule.this, modules));
 
         keyValueStorage = new BaseKeyValueEngine<CachedFileUrl>(Storage.createKeyValue("file_url_cache")) {
 
@@ -122,8 +114,8 @@ public class JsFilesModule extends AbsModule {
     }
 
     private void onFileUrlLoaded(ArrayList<FileResponse> responses) {
-        HashSet<Long> ids = new HashSet<Long>();
-        ArrayList<CachedFileUrl> cachedFileUrls = new ArrayList<CachedFileUrl>();
+        HashSet<Long> ids = new HashSet<>();
+        ArrayList<CachedFileUrl> cachedFileUrls = new ArrayList<>();
         for (FileResponse r : responses) {
             ids.add(r.getId());
             requestedFiles.remove(r.getId());
@@ -144,7 +136,7 @@ public class JsFilesModule extends AbsModule {
 
         private boolean isLoading = false;
         private JsFilesModule filesModule;
-        private ArrayList<FileRequest> filesQueue = new ArrayList<FileRequest>();
+        private ArrayList<FileRequest> filesQueue = new ArrayList<>();
         private Cancellable performCancellable;
 
         public FileBinderActor(JsFilesModule filesModule, ModuleContext context) {
@@ -170,7 +162,7 @@ public class JsFilesModule extends AbsModule {
             if (isLoading) {
                 return;
             }
-            ArrayList<ApiFileLocation> fileLocations = new ArrayList<ApiFileLocation>();
+            ArrayList<ApiFileLocation> fileLocations = new ArrayList<>();
             for (int i = 0; i < MAX_FILE_SIZE && filesQueue.size() > 0; i++) {
                 FileRequest request = filesQueue.remove(0);
                 fileLocations.add(new ApiFileLocation(request.getId(),
@@ -187,7 +179,7 @@ public class JsFilesModule extends AbsModule {
 
                     // Converting result
                     long currentTime = im.actor.runtime.Runtime.getCurrentSyncedTime();
-                    ArrayList<FileResponse> responses = new ArrayList<FileResponse>();
+                    ArrayList<FileResponse> responses = new ArrayList<>();
                     for (ApiFileUrlDescription u : response.getFileUrls()) {
                         long urlTime = currentTime + u.getTimeout() * 1000L;
                         responses.add(new FileResponse(u.getFileId(), u.getUrl(),

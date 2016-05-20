@@ -1,5 +1,7 @@
 package im.actor.server.frontend
 
+import java.net.InetAddress
+
 import akka.actor._
 import akka.pattern.pipe
 import akka.stream.actor.ActorPublisher
@@ -41,7 +43,7 @@ private[frontend] object SessionClient {
   @SerialVersionUID(1L)
   private final case class IdsObtained(authId: Option[Either[Long, MasterKey]], sessionId: Long)
 
-  def props(sessionRegion: SessionRegion) = Props(classOf[SessionClient], sessionRegion)
+  def props(sessionRegion: SessionRegion, remoteAddr: InetAddress) = Props(classOf[SessionClient], sessionRegion, remoteAddr)
 }
 
 final class CryptoHelper(protoKeys: ActorProtoKey) {
@@ -126,7 +128,7 @@ final class CryptoHelper(protoKeys: ActorProtoKey) {
   }
 }
 
-private[frontend] final class SessionClient(sessionRegion: SessionRegion)
+private[frontend] final class SessionClient(sessionRegion: SessionRegion, remoteAddr: InetAddress)
   extends Actor
   with ActorLogging
   with ActorPublisher[T.MTProto]
@@ -211,7 +213,7 @@ private[frontend] final class SessionClient(sessionRegion: SessionRegion)
       } else {
         unpack(mbBits) match {
           case Success(rawBits) ⇒
-            sessionRegion.ref ! SessionEnvelope(authId, sessionId).withHandleMessageBox(HandleMessageBox(ByteString.copyFrom(rawBits.toByteBuffer)))
+            sessionRegion.ref ! SessionEnvelope(authId, sessionId).withHandleMessageBox(HandleMessageBox(ByteString.copyFrom(rawBits.toByteBuffer), Some(remoteAddr)))
           case Failure(EncryptedPackageDecodeError) ⇒
             enqueuePackage(Drop(0, 0, "Cannot parse EncryptedPackage"))
             onCompleteThenStop()

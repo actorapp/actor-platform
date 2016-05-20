@@ -2,32 +2,37 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import { Store } from 'flux/utils';
+import { ReduceStore } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
 
-let _isOpen = false;
-
-class EmojiStore extends Store {
-  constructor(dispatcher) {
-    super(dispatcher);
+class EmojiStore extends ReduceStore {
+  getInitialState() {
+    return {
+      isOpen: false,
+      stickers: []
+    };
   }
 
-  isOpen() {
-    return _isOpen;
-  }
-
-  __onDispatch(action) {
-    switch(action.type) {
+  reduce(state, action) {
+    switch (action.type) {
       case ActionTypes.EMOJI_SHOW:
-        _isOpen = true;
-        this.__emitChange();
-        break;
+        return {
+          ...state,
+          isOpen: true
+        };
       case ActionTypes.EMOJI_CLOSE:
-        _isOpen = false;
-        this.__emitChange();
-        break;
+        return {
+          ...state,
+          isOpen: false
+        };
+      case ActionTypes.STICKERS_SET:
+        return {
+          ...state,
+          stickers: action.stickers
+        };
       default:
+        return state;
     }
   }
 }

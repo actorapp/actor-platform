@@ -12,10 +12,7 @@ import SharedContainer from '../utils/SharedContainer';
 
 class Confirm extends Component {
   static propTypes = {
-    message: PropTypes.oneOfType([
-      PropTypes.arrayOf(PropTypes.node),
-      PropTypes.node
-    ]).isRequired,
+    message: PropTypes.node.isRequired,
     description: PropTypes.string,
     abortLabel: PropTypes.string,
     confirmLabel: PropTypes.string
@@ -44,28 +41,43 @@ class Confirm extends Component {
     document.removeEventListener('keydown', this.onKeyDown, false);
   }
 
+  renderDescription() {
+    const { description } = this.props;
+    if (!description) return null;
+
+    return (
+      <div className="modal__body">{description}</div>
+    );
+  }
+
   render() {
-    const { message, description, abortLabel, confirmLabel } = this.props;
+    const { message, abortLabel, confirmLabel } = this.props;
 
     return (
       <IntlProvider {...this.intlData}>
-        <div className="modal modal--confirm">
-          <header className="modal__header">
-            <h4 className="modal__header__title">{message}</h4>
-          </header>
-          {
-            description
-              ? <div className="modal__body">{description}</div>
-              : null
-          }
-          <footer className="modal__footer text-right">
-            <button className="button" onClick={this.reject}>
-              {abortLabel || <FormattedMessage id="button.cancel"/>}
-            </button>
-            <button className="button button--lightblue" onClick={this.resolve} ref="confirm">
-              {confirmLabel ||<FormattedMessage id="button.ok"/>}
-            </button>
-          </footer>
+        <div className="modal">
+
+          <div className="confirm">
+            <div className="modal__content">
+
+              <header className="modal__header">
+                <h1>{message}</h1>
+              </header>
+
+              {this.renderDescription()}
+
+              <footer className="modal__footer text-right">
+                <button className="button" onClick={this.reject}>
+                  {abortLabel || <FormattedMessage id="button.cancel"/>}
+                </button>
+                <button className="button button--lightblue" onClick={this.resolve} ref="confirm">
+                  {confirmLabel ||<FormattedMessage id="button.ok"/>}
+                </button>
+              </footer>
+
+            </div>
+          </div>
+
         </div>
       </IntlProvider>
     );
@@ -81,10 +93,10 @@ class Confirm extends Component {
 
 export default function confirm(message, options = {})  {
   let element = document.createElement('div');
-  element.className = 'modal-backdrop';
+  element.className = 'modal-overlay';
   const wrapper = document.body.appendChild(element);
 
-  const component = render(createElement(Confirm, {message, ...options}), wrapper);
+  const component = render(createElement(Confirm, { message, ...options }), wrapper);
 
   function cleanup() {
     unmountComponentAtNode(wrapper);

@@ -1,67 +1,52 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2016 Actor LLC. <https://actor.im>
  */
 
-import { Store } from 'flux/utils';
+import { ReduceStore } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
 import ActorClient from '../utils/ActorClient';
 
-let _isOpen = false,
-    _title = '',
-    _about = '',
-    _group = {};
-
-class EditGroupStore extends Store {
-  constructor(Dispatcher) {
-    super(Dispatcher);
+class EditGroupStore extends ReduceStore {
+  getInitialState() {
+    return {
+      group: null
+    };
   }
 
-  isOpen() {
-    return _isOpen;
+  reduce(state, action) {
+    switch (action.type) {
+      case ActionTypes.GROUP_EDIT_MODAL_SHOW:
+      case ActionTypes.GROUP_INFO_CHANGED:
+        return {
+          ...state,
+          group: action.group
+        }
+
+      case ActionTypes.GROUP_EDIT_MODAL_HIDE:
+        return this.getInitialState();
+
+      default:
+        return state;
+    }
   }
 
   getGroup() {
-    return _group;
+    return this.getState().group;
   }
 
   getAbout() {
-    return _about;
+    return this.getState().group.about;
   }
 
   getTitle() {
-    return _title;
+    return this.getState().group.name;
   }
 
   isAdmin() {
     const myID = ActorClient.getUid();
-    return _group.adminId === myID;
+    return this.getState().group.adminId === myID;
   }
 
-  setGroup(group) {
-    _group = group;
-    _title = _group.name;
-    _about = _group.about;
-  }
-
-  __onDispatch(action) {
-    switch (action.type) {
-      case ActionTypes.GROUP_EDIT_MODAL_SHOW:
-        _isOpen = true;
-        this.setGroup(action.group);
-        this.__emitChange();
-        break;
-
-      case ActionTypes.GROUP_INFO_CHANGED:
-        this.setGroup(action.group);
-        this.__emitChange();
-        break;
-
-      case ActionTypes.GROUP_EDIT_MODAL_HIDE:
-        _isOpen = false;
-        this.__emitChange();
-        break;
-    }
-  };
 }
 export default new EditGroupStore(Dispatcher);

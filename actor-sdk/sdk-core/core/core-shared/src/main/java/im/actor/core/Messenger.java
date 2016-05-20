@@ -27,10 +27,12 @@ import im.actor.core.entity.MessageSearchEntity;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerSearchEntity;
 import im.actor.core.entity.PeerSearchType;
+import im.actor.core.entity.PhoneBookContact;
 import im.actor.core.entity.PublicGroup;
 import im.actor.core.entity.Sex;
 import im.actor.core.entity.User;
 import im.actor.core.entity.WebActionDescriptor;
+import im.actor.core.entity.content.AbsContent;
 import im.actor.core.entity.content.FastThumb;
 import im.actor.core.entity.content.JsonContent;
 import im.actor.core.entity.Sticker;
@@ -53,12 +55,14 @@ import im.actor.core.util.Timing;
 import im.actor.core.viewmodel.AppStateVM;
 import im.actor.core.viewmodel.CallVM;
 import im.actor.core.viewmodel.Command;
+import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.ConversationVM;
 import im.actor.core.viewmodel.DialogGroupsVM;
 import im.actor.core.viewmodel.FileCallback;
 import im.actor.core.viewmodel.FileEventCallback;
 import im.actor.core.viewmodel.FileVM;
 import im.actor.core.viewmodel.FileVMCallback;
+import im.actor.core.viewmodel.GlobalStateVM;
 import im.actor.core.viewmodel.GroupAvatarVM;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.OwnAvatarVM;
@@ -67,17 +71,25 @@ import im.actor.core.viewmodel.UploadFileCallback;
 import im.actor.core.viewmodel.UploadFileVM;
 import im.actor.core.viewmodel.UploadFileVMCallback;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.ActorSystem;
+import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.function.Consumer;
 import im.actor.runtime.mvvm.MVVMCollection;
 import im.actor.runtime.mvvm.ValueModel;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.storage.PreferencesStorage;
+import im.actor.runtime.threading.SimpleDispatcher;
+import im.actor.runtime.threading.ThreadDispatcher;
 
 /**
  * Entry point to Actor Messaging
  * Before using Messenger you need to create Configuration object by using ConfigurationBuilder.
  */
 public class Messenger {
+
+    // Do Not Remove! WorkAround for missing j2objc translator include
+    private static final Void DUMB = null;
 
     protected Modules modules;
 
@@ -93,20 +105,28 @@ public class Messenger {
         // Must be implemented in Configuration object
 
         // Start Messenger initialization
-        Timing timing = new Timing("MESSENGER_INIT");
+        // Timing timing = new Timing("MESSENGER_INIT");
 
         // Actor system
-        timing.section("Actors");
+        // timing.section("Actors");
         ActorSystem.system().setTraceInterface(new ActorTrace());
-        ActorSystem.system().addDispatcher("network", 2);
         ActorSystem.system().addDispatcher("network_manager", 1);
         ActorSystem.system().addDispatcher("heavy", 2);
-        ActorSystem.system().addDispatcher("updates", 1);
 
-        timing.section("Modules:Create");
+        // Configure dispatcher
+        // timing.section("Dispatcher");
+//        if (!Runtime.isMainThread()) {
+//            throw new RuntimeException("Messenger need to be created on Main Thread!");
+//        }
+        // ThreadDispatcher.pushDispatcher(Runtime::postToMainThread);
+
+        // timing.section("Modules:Create");
         this.modules = new Modules(this, configuration);
 
-        timing.end();
+        // timing.section("Modules:Run");
+        this.modules.run();
+
+        // timing.end();
     }
 
     //////////////////////////////////////
@@ -471,6 +491,17 @@ public class Messenger {
     }
 
     /**
+     * Get ViewModel of global application state
+     *
+     * @return view model of application state
+     */
+    @NotNull
+    @ObjectiveCName("getGlobalState")
+    public GlobalStateVM getGlobalState() {
+        return modules.getAppStateModule().getGlobalStateVM();
+    }
+
+    /**
      * Get authenticated User Id
      *
      * @return current User Id
@@ -555,12 +586,9 @@ public class Messenger {
      * @param uid chat's User Id
      * @return ValueModel of Boolean for typing state
      */
-    @Nullable
+    @NotNull
     @ObjectiveCName("getTypingWithUid:")
     public ValueModel<Boolean> getTyping(int uid) {
-        if (modules.getTypingModule() == null) {
-            return null;
-        }
         return modules.getTypingModule().getTyping(uid).getTyping();
     }
 
@@ -570,12 +598,9 @@ public class Messenger {
      * @param gid chat's Group Id
      * @return ValueModel of int[] for typing state
      */
-    @Nullable
+    @NotNull
     @ObjectiveCName("getGroupTypingWithGid:")
     public ValueModel<int[]> getGroupTyping(int gid) {
-        if (modules.getTypingModule() == null) {
-            return null;
-        }
         return modules.getTypingModule().getGroupTyping(gid).getActive();
     }
 
@@ -798,8 +823,10 @@ public class Messenger {
      * @param rid  message rundom id
      */
     @ObjectiveCName("updateMessageWithPeer:withText:withRid:")
-    public Command<ResponseSeqDate> updateMessage(@NotNull Peer peer, @NotNull String text, long rid) {
-        return modules.getMessagesModule().updateMessage(peer, text, rid);
+    public Command<Void> updateMessage(@NotNull Peer peer, @NotNull String text, long rid) {
+        return callback -> modules.getMessagesModule().updateMessage(peer, text, rid)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
 
@@ -949,7 +976,7 @@ public class Messenger {
     public void sendLocation(@NotNull Peer peer,
                              @NotNull Double longitude, @NotNull Double latitude,
                              @Nullable String street, @Nullable String place) {
-        modules.getMessagesModule().sendLoacation(peer, longitude, latitude, street, place);
+        modules.getMessagesModule().sendLocation(peer, longitude, latitude, street, place);
     }
 
     /**
@@ -992,6 +1019,17 @@ public class Messenger {
     }
 
     /**
+     * Send DocumentContent - used for forwarding
+     *
+     * @param peer    destination peer
+     * @param content content to forward
+     */
+    @ObjectiveCName("forwardContentContentWithPeer:withContent:")
+    public void forwardContent(Peer peer, AbsContent content) {
+        modules.getMessagesModule().forwardContent(peer, content);
+    }
+
+    /**
      * Delete messages
      *
      * @param peer destination peer
@@ -1009,8 +1047,10 @@ public class Messenger {
      * @return Command for execution
      */
     @ObjectiveCName("deleteChatCommandWithPeer:")
-    public Command<Boolean> deleteChat(Peer peer) {
-        return modules.getMessagesModule().deleteChat(peer);
+    public Command<Void> deleteChat(Peer peer) {
+        return callback -> modules.getMessagesModule().deleteChat(peer)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1024,10 +1064,6 @@ public class Messenger {
         modules.getMessagesModule().sendSticker(peer, sticker);
     }
 
-    public void updateJsonMessageContentLocal(Peer peer, long rid, JsonContent json) {
-        modules.getMessagesModule().updateJson(peer, rid, json);
-    }
-
     /**
      * Clear chat
      *
@@ -1035,8 +1071,10 @@ public class Messenger {
      * @return Command for execution
      */
     @ObjectiveCName("clearChatCommandWithPeer:")
-    public Command<Boolean> clearChat(Peer peer) {
-        return modules.getMessagesModule().clearChat(peer);
+    public Command<Void> clearChat(Peer peer) {
+        return callback -> modules.getMessagesModule().clearChat(peer)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1046,8 +1084,10 @@ public class Messenger {
      * @return Command for execution
      */
     @ObjectiveCName("archiveChatCommandWithPeer:")
-    public Command<Boolean> archiveChat(Peer peer) {
-        return modules.getMessagesModule().archiveChat(peer);
+    public Command<Void> archiveChat(Peer peer) {
+        return callback -> modules.getMessagesModule().archiveChat(peer)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1057,8 +1097,10 @@ public class Messenger {
      * @return Command for execution
      */
     @ObjectiveCName("favouriteChatCommandWithPeer:")
-    public Command<Boolean> favouriteChat(Peer peer) {
-        return modules.getMessagesModule().favoriteChat(peer);
+    public Command<Void> favouriteChat(Peer peer) {
+        return callback -> modules.getMessagesModule().favoriteChat(peer)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1068,8 +1110,10 @@ public class Messenger {
      * @return Command for execution
      */
     @ObjectiveCName("unfavouriteChatCommandWithPeer:")
-    public Command<Boolean> unfavoriteChat(Peer peer) {
-        return modules.getMessagesModule().unfavoriteChat(peer);
+    public Command<Void> unfavoriteChat(Peer peer) {
+        return callback -> modules.getMessagesModule().unfavoriteChat(peer)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1081,8 +1125,10 @@ public class Messenger {
      * @return Command for execution
      */
     @ObjectiveCName("addReactionWithPeer:withRid:withCode:")
-    public Command<Boolean> addReaction(Peer peer, long rid, String code) {
-        return modules.getMessagesModule().addReaction(peer, rid, code);
+    public Command<Void> addReaction(Peer peer, long rid, String code) {
+        return callback -> modules.getMessagesModule().addReaction(peer, rid, code)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1094,8 +1140,10 @@ public class Messenger {
      * @return Command for execution
      */
     @ObjectiveCName("removeReactionWithPeer:withRid:withCode:")
-    public Command<Boolean> removeReaction(Peer peer, long rid, String code) {
-        return modules.getMessagesModule().removeReaction(peer, rid, code);
+    public Command<Void> removeReaction(Peer peer, long rid, String code) {
+        return callback -> modules.getMessagesModule().removeReaction(peer, rid, code)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1128,8 +1176,9 @@ public class Messenger {
      * @return rid of last read message
      */
     @ObjectiveCName("loadFirstUnread:")
+    @Deprecated
     public long loadFirstUnread(Peer peer) {
-        return modules.getMessagesModule().loadReadState(peer);
+        return getConversationVM(peer).getOwnReadDate().get();
     }
 
     /**
@@ -1152,7 +1201,9 @@ public class Messenger {
      */
     @ObjectiveCName("findPeersWithType:")
     public Command<List<PeerSearchEntity>> findPeers(PeerSearchType type) {
-        return modules.getSearchModule().findPeers(type);
+        return callback -> modules.getSearchModule().findPeers(type)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1164,7 +1215,9 @@ public class Messenger {
      */
     @ObjectiveCName("findTextMessagesWithPeer:withQuery:")
     public Command<List<MessageSearchEntity>> findTextMessages(Peer peer, String query) {
-        return modules.getSearchModule().findTextMessages(peer, query);
+        return callback -> modules.getSearchModule().findTextMessages(peer, query)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1175,7 +1228,9 @@ public class Messenger {
      */
     @ObjectiveCName("findAllDocsWithPeer:")
     public Command<List<MessageSearchEntity>> findAllDocs(Peer peer) {
-        return modules.getSearchModule().findAllDocs(peer);
+        return callback -> modules.getSearchModule().findAllDocs(peer)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1186,7 +1241,9 @@ public class Messenger {
      */
     @ObjectiveCName("findAllLinksWithPeer:")
     public Command<List<MessageSearchEntity>> findAllLinks(Peer peer) {
-        return modules.getSearchModule().findAllLinks(peer);
+        return callback -> modules.getSearchModule().findAllLinks(peer)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1197,7 +1254,9 @@ public class Messenger {
      */
     @ObjectiveCName("findAllPhotosWithPeer:")
     public Command<List<MessageSearchEntity>> findAllPhotos(Peer peer) {
-        return modules.getSearchModule().findAllPhotos(peer);
+        return callback -> modules.getSearchModule().findAllPhotos(peer)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     //////////////////////////////////////
@@ -1309,7 +1368,9 @@ public class Messenger {
     @Nullable
     @ObjectiveCName("editMyNameCommandWithName:")
     public Command<Boolean> editMyName(final String newName) {
-        return modules.getUsersModule().editMyName(newName);
+        return callback -> modules.getUsersModule().editMyName(newName)
+                .then(v -> callback.onResult(true))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1321,7 +1382,9 @@ public class Messenger {
     @Nullable
     @ObjectiveCName("editMyNickCommandWithNick:")
     public Command<Boolean> editMyNick(final String newNick) {
-        return modules.getUsersModule().editNick(newNick);
+        return callback -> modules.getUsersModule().editNick(newNick)
+                .then(v -> callback.onResult(true))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1333,7 +1396,9 @@ public class Messenger {
     @Nullable
     @ObjectiveCName("editMyAboutCommandWithNick:")
     public Command<Boolean> editMyAbout(final String newAbout) {
-        return modules.getUsersModule().editAbout(newAbout);
+        return callback -> modules.getUsersModule().editAbout(newAbout)
+                .then(v -> callback.onResult(true))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1364,7 +1429,9 @@ public class Messenger {
     @Nullable
     @ObjectiveCName("editNameCommandWithUid:withName:")
     public Command<Boolean> editName(final int uid, final String name) {
-        return modules.getUsersModule().editName(uid, name);
+        return callback -> modules.getUsersModule().editName(uid, name)
+                .then(v -> callback.onResult(true))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1376,8 +1443,10 @@ public class Messenger {
      */
     @Nullable
     @ObjectiveCName("editGroupTitleCommandWithGid:withTitle:")
-    public Command<Boolean> editGroupTitle(final int gid, final String title) {
-        return modules.getGroupsModule().editTitle(gid, title);
+    public Command<Void> editGroupTitle(final int gid, final String title) {
+        return callback -> modules.getGroupsModule().editTitle(gid, title)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1389,8 +1458,10 @@ public class Messenger {
      */
     @NotNull
     @ObjectiveCName("editGroupThemeCommandWithGid:withTheme:")
-    public Command<Boolean> editGroupTheme(final int gid, final String theme) {
-        return modules.getGroupsModule().editTheme(gid, theme);
+    public Command<Void> editGroupTheme(final int gid, final String theme) {
+        return callback -> modules.getGroupsModule().editTheme(gid, theme)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1402,8 +1473,10 @@ public class Messenger {
      */
     @NotNull
     @ObjectiveCName("editGroupAboutCommandWithGid:withAbout:")
-    public Command<Boolean> editGroupAbout(final int gid, final String about) {
-        return modules.getGroupsModule().editAbout(gid, about);
+    public Command<Void> editGroupAbout(final int gid, final String about) {
+        return callback -> modules.getGroupsModule().editAbout(gid, about)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1443,7 +1516,9 @@ public class Messenger {
     @Nullable
     @ObjectiveCName("createGroupCommandWithTitle:withAvatar:withUids:")
     public Command<Integer> createGroup(String title, String avatarDescriptor, int[] uids) {
-        return modules.getGroupsModule().createGroup(title, avatarDescriptor, uids);
+        return callback -> modules.getGroupsModule().createGroup(title, avatarDescriptor, uids)
+                .then(integer -> callback.onResult(integer))
+                .failure(e -> callback.onError(e));
     }
 
 
@@ -1455,8 +1530,10 @@ public class Messenger {
      */
     @Nullable
     @ObjectiveCName("leaveGroupCommandWithGid:")
-    public Command<Boolean> leaveGroup(final int gid) {
-        return modules.getGroupsModule().leaveGroup(gid);
+    public Command<Void> leaveGroup(final int gid) {
+        return callback -> modules.getGroupsModule().leaveGroup(gid)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1468,8 +1545,10 @@ public class Messenger {
      */
     @Nullable
     @ObjectiveCName("inviteMemberCommandWithGid:withUid:")
-    public Command<Boolean> inviteMember(int gid, int uid) {
-        return modules.getGroupsModule().addMemberToGroup(gid, uid);
+    public Command<Void> inviteMember(int gid, int uid) {
+        return callback -> modules.getGroupsModule().addMember(gid, uid)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1481,8 +1560,10 @@ public class Messenger {
      */
     @Nullable
     @ObjectiveCName("kickMemberCommandWithGid:withUid:")
-    public Command<Boolean> kickMember(int gid, int uid) {
-        return modules.getGroupsModule().kickMember(gid, uid);
+    public Command<Void> kickMember(int gid, int uid) {
+        return callback -> modules.getGroupsModule().kickMember(gid, uid)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1494,8 +1575,10 @@ public class Messenger {
      */
     @Nullable
     @ObjectiveCName("makeAdminCommandWithGid:withUid:")
-    public Command<Boolean> makeAdmin(final int gid, final int uid) {
-        return modules.getGroupsModule().makeAdmin(gid, uid);
+    public Command<Void> makeAdmin(final int gid, final int uid) {
+        return callback -> modules.getGroupsModule().makeAdmin(gid, uid)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1507,7 +1590,9 @@ public class Messenger {
     @Nullable
     @ObjectiveCName("requestInviteLinkCommandWithGid:")
     public Command<String> requestInviteLink(int gid) {
-        return modules.getGroupsModule().requestInviteLink(gid);
+        return callback -> modules.getGroupsModule().requestInviteLink(gid)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1519,45 +1604,24 @@ public class Messenger {
     @Nullable
     @ObjectiveCName("requestRevokeLinkCommandWithGid:")
     public Command<String> revokeInviteLink(int gid) {
-        return modules.getGroupsModule().requestRevokeLink(gid);
+        return callback -> modules.getGroupsModule().requestRevokeLink(gid)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
      * Join group using invite link
      *
-     * @param url invite link
+     * @param token invite token
      * @return Command for execution
      */
     @Nullable
-    @ObjectiveCName("joinGroupViaLinkCommandWithUrl:")
-    public Command<Integer> joinGroupViaLink(String url) {
-        return modules.getGroupsModule().joinGroupViaLink(url);
+    @ObjectiveCName("joinGroupViaLinkCommandWithToken:")
+    public Command<Integer> joinGroupViaToken(String token) {
+        return callback -> modules.getGroupsModule().joinGroupByToken(token)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
-
-    /**
-     * Join public group
-     *
-     * @param gid        group's id
-     * @param accessHash group's accessHash
-     * @return Command for execution
-     */
-    @Nullable
-    @ObjectiveCName("joinPublicGroupCommandWithGig:withAccessHash:")
-    public Command<Integer> joinPublicGroup(int gid, long accessHash) {
-        return modules.getGroupsModule().joinPublicGroup(gid, accessHash);
-    }
-
-    /**
-     * Listing public groups
-     *
-     * @return Command for execution
-     */
-    @Nullable
-    @ObjectiveCName("listPublicGroups")
-    public Command<List<PublicGroup>> listPublicGroups() {
-        return modules.getGroupsModule().listPublicGroups();
-    }
-
 
     /**
      * Request integration token for group
@@ -1568,7 +1632,9 @@ public class Messenger {
     @Nullable
     @ObjectiveCName("requestIntegrationTokenCommandWithGid:")
     public Command<String> requestIntegrationToken(int gid) {
-        return modules.getGroupsModule().requestIntegrationToken(gid);
+        return callback -> modules.getGroupsModule().requestIntegrationToken(gid)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1577,10 +1643,63 @@ public class Messenger {
      * @param gid group's id
      * @return Command for execution
      */
-    @Nullable
+    @NotNull
     @ObjectiveCName("revokeIntegrationTokenCommandWithGid:")
     public Command<String> revokeIntegrationToken(int gid) {
-        return modules.getGroupsModule().revokeIntegrationToken(gid);
+        return callback -> modules.getGroupsModule().revokeIntegrationToken(gid)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
+    }
+
+    /**
+     * Check if chat with bot is started
+     *
+     * @param uid bot user id
+     * @return is chat with bot started
+     */
+    @ObjectiveCName("isStartedWithUid:")
+    public Promise<Boolean> isStarted(int uid) {
+        return modules.getMessagesModule().chatIsEmpty(Peer.user(uid));
+    }
+
+
+    //////////////////////////////////////
+    //         Blocked List
+    //////////////////////////////////////
+
+    /**
+     * Load Blocked users list
+     *
+     * @return promise
+     */
+    @NotNull
+    @ObjectiveCName("loadBlockedUsers")
+    public Promise<List<User>> loadBlockedUsers() {
+        return modules.getUsersModule().loadBlockedUsers();
+    }
+
+    /**
+     * Block users
+     *
+     * @param uid user's id
+     * @return promise
+     */
+    @NotNull
+    @ObjectiveCName("blockUser:")
+    public Promise<Void> blockUser(int uid) {
+        return modules.getUsersModule().blockUser(uid);
+    }
+
+    /**
+     * Unblock users
+     *
+     * @param uid user's id
+     * @return promise
+     */
+    @NotNull
+    @ObjectiveCName("unblockUser:")
+    public Promise<Void> unblockUser(int uid) {
+        return modules.getUsersModule().unblockUser(uid);
     }
 
     //////////////////////////////////////
@@ -1620,9 +1739,14 @@ public class Messenger {
     @NotNull
     @ObjectiveCName("findUsersCommandWithQuery:")
     public Command<UserVM[]> findUsers(String query) {
-        return modules.getContactsModule().findUsers(query);
+        return callback -> modules.getContactsModule().findUsers(query)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
+    //////////////////////////////////////
+    //             Bindings
+    //////////////////////////////////////
 
     /**
      * Bind File View Model
@@ -2140,7 +2264,9 @@ public class Messenger {
     @NotNull
     @ObjectiveCName("loadSessionsCommand")
     public Command<List<ApiAuthSession>> loadSessions() {
-        return modules.getSecurityModule().loadSessions();
+        return callback -> modules.getSecurityModule().loadSessions()
+                .then(r -> callback.onResult(r))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -2150,8 +2276,10 @@ public class Messenger {
      */
     @NotNull
     @ObjectiveCName("terminateAllSessionsCommand")
-    public Command<Boolean> terminateAllSessions() {
-        return modules.getSecurityModule().terminateAllSessions();
+    public Command<Void> terminateAllSessions() {
+        return callback -> modules.getSecurityModule().terminateAllSessions()
+                .then(r -> callback.onResult(r))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -2162,8 +2290,10 @@ public class Messenger {
      */
     @NotNull
     @ObjectiveCName("terminateSessionCommandWithId:")
-    public Command<Boolean> terminateSession(int id) {
-        return modules.getSecurityModule().terminateSession(id);
+    public Command<Void> terminateSession(int id) {
+        return callback -> modules.getSecurityModule().terminateSession(id)
+                .then(r -> callback.onResult(r))
+                .failure(e -> callback.onError(e));
     }
 
     //////////////////////////////////////

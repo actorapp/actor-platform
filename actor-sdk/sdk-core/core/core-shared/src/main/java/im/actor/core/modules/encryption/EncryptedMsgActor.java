@@ -12,13 +12,12 @@ import im.actor.core.entity.Peer;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.encryption.entity.EncryptedBox;
 import im.actor.core.modules.encryption.entity.EncryptedBoxKey;
-import im.actor.core.util.ModuleActor;
+import im.actor.core.modules.ModuleActor;
 import im.actor.runtime.*;
 import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.ask.AskCallback;
 import im.actor.runtime.function.Function;
 import im.actor.runtime.promise.Promise;
-import im.actor.runtime.promise.PromiseResolver;
 
 public class EncryptedMsgActor extends ModuleActor {
 
@@ -31,22 +30,25 @@ public class EncryptedMsgActor extends ModuleActor {
     private Promise doEncrypt(int uid, ApiMessage message) throws IOException {
         Log.d(TAG, "doEncrypt");
 
-        return ask(context().getEncryption().getEncryptedChatManager(uid), new EncryptedPeerActor.EncryptBox(message.buildContainer()))
-                .map(new Function<EncryptedPeerActor.EncryptBoxResponse, EncryptedMessage>() {
-                    @Override
-                    public EncryptedMessage apply(EncryptedPeerActor.EncryptBoxResponse encryptBoxResponse) {
-                        Log.d(TAG, "doEncrypt:onResult");
-                        ArrayList<ApiEncyptedBoxKey> boxKeys = new ArrayList<ApiEncyptedBoxKey>();
-                        for (EncryptedBoxKey b : encryptBoxResponse.getBox().getKeys()) {
-                            boxKeys.add(new ApiEncyptedBoxKey(b.getUid(),
-                                    b.getKeyGroupId(), "curve25519", b.getEncryptedKey()));
-                        }
-                        ApiEncryptedBox apiEncryptedBox = new ApiEncryptedBox(0, boxKeys, "aes-kuznechik", encryptBoxResponse.getBox().getEncryptedPackage(),
-                                new ArrayList<ApiEncryptedBoxSignature>());
-                        ApiEncryptedMessage apiEncryptedMessage = new ApiEncryptedMessage(apiEncryptedBox);
-                        return new EncryptedMessage(apiEncryptedMessage);
-                    }
-                });
+//        return ask(context().getEncryption().getEncryptedChatManager(uid), new EncryptedPeerActor.EncryptBox(message.buildContainer()))
+//                .map(new Function<EncryptedPeerActor.EncryptBoxResponse, EncryptedMessage>() {
+//                    @Override
+//                    public EncryptedMessage apply(EncryptedPeerActor.EncryptBoxResponse encryptBoxResponse) {
+//                        Log.d(TAG, "doEncrypt:onResult");
+//                        ArrayList<ApiEncyptedBoxKey> boxKeys = new ArrayList<ApiEncyptedBoxKey>();
+//                        for (EncryptedBoxKey b : encryptBoxResponse.getBox().getKeys()) {
+//                            boxKeys.add(new ApiEncyptedBoxKey(b.getUid(),
+//                                    b.getKeyGroupId(), "curve25519", b.getEncryptedKey()));
+//                        }
+//                        ApiEncryptedBox apiEncryptedBox = new ApiEncryptedBox(0, boxKeys, "aes-kuznechik", encryptBoxResponse.getBox().getEncryptedPackage(),
+//                                new ArrayList<ApiEncryptedBoxSignature>());
+//                        ApiEncryptedMessage apiEncryptedMessage = new ApiEncryptedMessage(apiEncryptedBox);
+//                        return new EncryptedMessage(apiEncryptedMessage);
+//                    }
+//                });
+
+        // TODO: Implement
+        return null;
     }
 
     public void onDecrypt(int uid, ApiEncryptedMessage message) {
@@ -60,25 +62,27 @@ public class EncryptedMsgActor extends ModuleActor {
             }
         }
         final EncryptedBox encryptedBox = new EncryptedBox(encryptedBoxKeys.toArray(new EncryptedBoxKey[0]), message.getBox().getEncPackage());
-        ask(context().getEncryption().getEncryptedChatManager(uid), new EncryptedPeerActor.DecryptBox(encryptedBox), new AskCallback() {
-            @Override
-            public void onResult(Object obj) {
-                Log.d(TAG, "onDecrypt:onResult in " + (Runtime.getActorTime() - start) + " ms");
-                EncryptedPeerActor.DecryptBoxResponse re = (EncryptedPeerActor.DecryptBoxResponse) obj;
-                try {
-                    ApiMessage message = ApiMessage.fromBytes(re.getData());
-                    Log.d(TAG, "onDecrypt:onResult " + message);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
 
-            @Override
-            public void onError(Exception e) {
-                Log.d(TAG, "onDecrypt:onError");
-                e.printStackTrace();
-            }
-        });
+        // TODO: Implement
+//        ask(context().getEncryption().getEncryptedChatManager(uid), new EncryptedPeerActor.DecryptBox(encryptedBox), new AskCallback() {
+//            @Override
+//            public void onResult(Object obj) {
+//                Log.d(TAG, "onDecrypt:onResult in " + (Runtime.getActorTime() - start) + " ms");
+//                EncryptedPeerActor.DecryptBoxResponse re = (EncryptedPeerActor.DecryptBoxResponse) obj;
+//                try {
+//                    ApiMessage message = ApiMessage.fromBytes(re.getData());
+//                    Log.d(TAG, "onDecrypt:onResult " + message);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//            @Override
+//            public void onError(Exception e) {
+//                Log.d(TAG, "onDecrypt:onError");
+//                e.printStackTrace();
+//            }
+//        });
     }
 
     @Override

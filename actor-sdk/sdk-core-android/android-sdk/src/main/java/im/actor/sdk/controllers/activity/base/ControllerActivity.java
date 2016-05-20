@@ -8,10 +8,8 @@ import android.view.MenuItem;
 
 import im.actor.sdk.controllers.activity.BaseActivity;
 
-/**
- * Created by ex3ndr on 25.10.14.
- */
 public abstract class ControllerActivity<T extends Controller> extends BaseActivity {
+
     private T controller;
 
     public abstract T onCreateController();
@@ -57,6 +55,12 @@ public abstract class ControllerActivity<T extends Controller> extends BaseActiv
     protected void onResume() {
         super.onResume();
         controller.onResume();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        controller.onSaveInstanceState(outState);
+        super.onSaveInstanceState(outState);
     }
 
     @Override

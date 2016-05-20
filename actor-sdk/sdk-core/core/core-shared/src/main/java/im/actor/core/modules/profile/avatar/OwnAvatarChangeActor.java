@@ -15,7 +15,7 @@ import im.actor.core.entity.FileReference;
 import im.actor.core.modules.Modules;
 import im.actor.core.modules.file.UploadManager;
 import im.actor.core.modules.sequence.internal.ExecuteAfter;
-import im.actor.core.util.ModuleActor;
+import im.actor.core.modules.ModuleActor;
 import im.actor.core.util.RandomUtils;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
@@ -56,12 +56,7 @@ public class OwnAvatarChangeActor extends ModuleActor {
                         new UpdateUserAvatarChanged(myUid(), response.getAvatar()).toByteArray()));
 
                 // After update applied turn of uploading state
-                updates().onUpdateReceived(new ExecuteAfter(response.getSeq(), new Runnable() {
-                    @Override
-                    public void run() {
-                        self().send(new AvatarChanged(rid));
-                    }
-                }));
+                updates().onUpdateReceived(new ExecuteAfter(response.getSeq(), () -> self().send(new AvatarChanged(rid))));
             }
 
             @Override
@@ -108,12 +103,7 @@ public class OwnAvatarChangeActor extends ModuleActor {
                         new UpdateUserAvatarChanged(myUid(), null).toByteArray()));
 
                 // After update applied turn of uploading state
-                updates().onUpdateReceived(new ExecuteAfter(response.getSeq(), new Runnable() {
-                    @Override
-                    public void run() {
-                        self().send(new AvatarChanged(currentRid));
-                    }
-                }));
+                updates().onUpdateReceived(new ExecuteAfter(response.getSeq(), () -> self().send(new AvatarChanged(currentRid))));
             }
 
             @Override
@@ -145,7 +135,7 @@ public class OwnAvatarChangeActor extends ModuleActor {
         } else if (message instanceof AvatarChanged) {
             avatarChanged(((AvatarChanged) message).getRid());
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 

@@ -101,6 +101,17 @@ object HistoryMessageRepo {
   def findAfter(userId: Int, peer: Peer, date: DateTime, limit: Long) =
     afterC((userId, peer.typ.value, peer.id, date, limit)).result
 
+  private val metaAfterC = Compiled { (userId: Rep[Int], peerType: Rep[Int], peerId: Rep[Int], date: Rep[DateTime], limit: ConstColumn[Long]) ⇒
+    byUserIdPeer(userId, peerType, peerId)
+      .filter(_.date > date)
+      .sortBy(_.date.asc)
+      .take(limit)
+      .map(hm ⇒ (hm.randomId, hm.date, hm.senderUserId, hm.messageContentHeader))
+  }
+
+  def findMetaAfter(userId: Int, peer: Peer, date: DateTime, limit: Long) =
+    metaAfterC((userId, peer.typ.value, peer.id, date, limit)).result
+
   private val beforeC = Compiled { (userId: Rep[Int], peerId: Rep[Int], peerType: Rep[Int], date: Rep[DateTime], limit: ConstColumn[Long]) ⇒
     byUserIdPeer(userId, peerType, peerId)
       .filter(_.date <= date)
@@ -114,6 +125,13 @@ object HistoryMessageRepo {
       .sortBy(_.date.asc)
       .take(limit)
   }
+
+  private val byUserIdPeerRidC = Compiled { (userId: Rep[Int], peerType: Rep[Int], peerId: Rep[Int], randomId: Rep[Long]) ⇒
+    byUserIdPeer(userId, peerType, peerId).filter(_.randomId === randomId)
+  }
+
+  def existstWithRandomId(userId: Int, peer: Peer, randomId: Long): DBIO[Boolean] =
+    byUserIdPeerRidC.applied((userId, peer.typ.value, peer.id, randomId)).exists.result
 
   def findBefore(userId: Int, peer: Peer, date: DateTime, limit: Long) =
     beforeC((userId, peer.typ.value, peer.id, date, limit)).result
@@ -177,13 +195,6 @@ object HistoryMessageRepo {
       .map(m ⇒ (m.messageContentHeader, m.messageContentData))
       .update((messageContentHeader, messageContentData))
 
-  def getUnreadCount(historyOwner: Int, clientUserId: Int, peer: Peer, lastReadAt: DateTime, noServiceMessages: Boolean = false): FixedSqlAction[Int, PostgresDriver.api.NoStream, Read] =
-    (if (noServiceMessages) withoutServiceMessages else notDeletedMessages)
-      .filter(m ⇒ m.userId === historyOwner && m.peerType === peer.typ.value && m.peerId === peer.id)
-      .filter(m ⇒ m.date > lastReadAt && m.senderUserId =!= clientUserId)
-      .length
-      .result
-
   def uniqueAsc(fromTs: Long, limit: Int): SqlStreamingAction[Vector[HistoryMessage], HistoryMessage, Effect] = {
     implicit val getMessageResult: GetResult[HistoryMessage] = GetResult(r ⇒
       HistoryMessage(
@@ -208,26 +219,6 @@ object HistoryMessageRepo {
       .as[HistoryMessage]
   }
 
-  /**
-   * Fetch unread messages count
-   *
-   * @param userId user to fetch unread messages for
-   * @param historyOwner user owns history(user itself or SharedUserId in case of public groups)
-   * @return Unread messages count
-   */
-  private def unreadTotalOwner(userId: Rep[Int], historyOwner: Rep[Int]) =
-    (for {
-      ud ← DialogRepo.findUsersVisible(userId)
-      m ← notDeletedMessages.filter(_.senderUserId =!= userId)
-      if m.userId === historyOwner && m.peerType === ud.peerType && m.peerId === ud.peerId && m.date > ud.ownerLastReadAt
-    } yield m.date).length
-
-  private val unreadTotalC = Compiled { (userId: Rep[Int]) ⇒
-    unreadTotalOwner(userId, SharedUserId) + unreadTotalOwner(userId, userId)
-  }
-
-  def getUnreadTotal(userId: Int): DBIO[Int] = unreadTotalC(userId).result
-
   def haveMessagesBetween(userId: Int, peer: Peer, minDate: DateTime, maxDate: DateTime) =
     notDeletedMessages
       .filter(m ⇒ m.userId === userId && m.peerType === peer.typ.value && m.peerId === peer.id)
@@ -235,11 +226,20 @@ object HistoryMessageRepo {
       .exists
       .result
 
-  def deleteAll(userId: Int, peer: Peer): FixedSqlAction[Int, NoStream, Write] =
+  def getUnreadCount(historyOwner: Int, clientUserId: Int, peer: Peer, lastReadAt: DateTime, noServiceMessages: Boolean = false): FixedSqlAction[Int, PostgresDriver.api.NoStream, Read] =
+    (if (noServiceMessages) withoutServiceMessages else notDeletedMessages)
+      .filter(m ⇒ m.userId === historyOwner && m.peerType === peer.typ.value && m.peerId === peer.id)
+      .filter(m ⇒ m.date > lastReadAt && m.senderUserId =!= clientUserId)
+      .length
+      .result
+
+  def deleteAll(userId: Int, peer: Peer): FixedSqlAction[Int, NoStream, Write] = {
+    require(userId != SharedUserId, "Can't delete messages for shared user")
     notDeletedMessages
       .filter(m ⇒ m.userId === userId && m.peerType === peer.typ.value && m.peerId === peer.id)
       .map(_.deletedAt)
       .update(Some(new DateTime))
+  }
 
   def delete(userId: Int, peer: Peer, randomIds: Set[Long]) =
     notDeletedMessages

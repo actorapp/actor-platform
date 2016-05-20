@@ -10,28 +10,28 @@
 
     <FrameLayout
         android:id="@+id/home"
-        android:background="@drawable/selector_light"
         android:layout_width="?attr/actionBarSize"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@drawable/selector_light">
 
         <ImageView
 
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:src="@drawable/ic_action_navigation_arrow_back"
+            android:layout_gravity="center_vertical|center_horizontal"
             android:scaleType="center"
-            android:layout_gravity="center_vertical|center_horizontal" />
+            android:src="@drawable/ic_action_navigation_arrow_back" />
 
         <TextView
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_gravity="top|right"
             android:id="@+id/counter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="top|right"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
             android:paddingLeft="4dp"
             android:paddingRight="4dp"
-            android:gravity="center"
             android:textSize="12sp"
             android:visibility="invisible" />
 
@@ -60,9 +60,10 @@
 
             <TextView
                 android:id="@+id/title"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="-2dp"
+                android:drawablePadding="2dp"
                 android:ellipsize="end"
                 android:lines="1"
                 android:singleLine="true"
@@ -93,6 +94,9 @@
                         android:id="@+id/typing"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:lines="1"
+                        android:singleLine="true"
                         android:textColor="#ffffff"
                         android:textSize="13sp" />
                 </LinearLayout>
@@ -101,6 +105,9 @@
                     android:id="@+id/subtitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:singleLine="true"
                     android:textColor="#ffffff"
                     android:textSize="13sp" />
             </FrameLayout>

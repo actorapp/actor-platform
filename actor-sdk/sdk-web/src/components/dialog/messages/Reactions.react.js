@@ -9,6 +9,11 @@ import CSSTransitionGroup from 'react-addons-css-transition-group';
 import MessageActionCreators from '../../../actions/MessageActionCreators';
 
 class MessageReactions extends Component {
+  static propTypes = {
+    peer: PropTypes.object.isRequired,
+    message: PropTypes.object.isRequired
+  };
+
   constructor(props) {
     super(props);
 
@@ -17,29 +22,24 @@ class MessageReactions extends Component {
     };
   }
 
-  static propTypes = {
-    peer: PropTypes.object.isRequired,
-    message: PropTypes.object.isRequired
-  };
-
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps() {
     if (this.state.isThisMyReaction) {
       this.setState({
         canAnimateHeart: false,
         isThisMyReaction: false
       })
     } else {
-      this.setState({canAnimateHeart: true})
+      this.setState({ canAnimateHeart: true })
     }
   }
 
   handleAddLike = () => {
     MessageActionCreators.addLike(this.props.peer, this.props.message.rid);
-    this.setState({isThisMyReaction: true})
+    this.setState({ isThisMyReaction: true })
   };
   handleRemoveLike = () => {
     MessageActionCreators.removeLike(this.props.peer, this.props.message.rid);
-    this.setState({isThisMyReaction: true})
+    this.setState({ isThisMyReaction: true })
   };
 
   render() {

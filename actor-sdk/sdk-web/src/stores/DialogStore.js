@@ -3,35 +3,33 @@
  */
 
 import { find, some } from 'lodash';
-import { Store } from 'flux/utils';
+import { ReduceStore } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes, PeerTypes } from '../constants/ActorAppConstants';
 import ActorClient from '../utils/ActorClient';
 
-class DialogStore extends Store {
-  constructor(dispatcher) {
-    super(dispatcher);
-
-    this.dialogs = [];
-    this.currentPeer = null;
-    this.lastPeer = null;
+class DialogStore extends ReduceStore {
+  getInitialState() {
+    return {
+      peer: null,
+      dialogs: []
+    };
   }
 
   getDialogs() {
-    return this.dialogs;
+    const { dialogs } = this.getState();
+    return dialogs;
   }
 
   getCurrentPeer() {
-    return this.currentPeer;
-  }
-
-  getLastPeer() {
-    return this.lastPeer;
+    const { peer } = this.getState();
+    return peer;
   }
 
   isMember() {
-    if (this.currentPeer !== null && this.currentPeer.type === PeerTypes.GROUP) {
-      const group = ActorClient.getGroup(this.currentPeer.id);
+    const peer = this.getCurrentPeer();
+    if (peer && peer.type === PeerTypes.GROUP) {
+      const group = ActorClient.getGroup(peer.id);
       return group && group.members.length !== 0;
     }
 
@@ -39,28 +37,34 @@ class DialogStore extends Store {
   }
 
   isFavorite(id) {
-    const favoriteDialogs = find(this.dialogs, {key: 'favourites'});
+    const favoriteDialogs = find(this.getDialogs(), { key: 'favourites' });
     if (!favoriteDialogs) return false;
 
     return some(favoriteDialogs.shorts, (dialog) => dialog.peer.peer.id === id);
   }
 
-  __onDispatch(action) {
-    switch(action.type) {
+  reduce(state, action) {
+    switch (action.type) {
       case ActionTypes.DIALOGS_CHANGED:
-        this.dialogs = action.dialogs;
-        this.__emitChange();
-        break;
+        return {
+          ...state,
+          dialogs: action.dialogs
+        };
+
       case ActionTypes.BIND_DIALOG_PEER:
-        this.currentPeer = action.peer;
-        this.__emitChange();
-        break;
+        return {
+          ...state,
+          peer: action.peer
+        };
+
       case ActionTypes.UNBIND_DIALOG_PEER:
-        this.lastPeer = action.peer;
-        this.currentPeer = null;
-        this.__emitChange();
-        break;
+        return {
+          ...state,
+          peer: null
+        };
+
       default:
+        return state;
     }
   }
 }

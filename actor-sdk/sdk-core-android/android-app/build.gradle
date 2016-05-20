@@ -1,21 +1,30 @@
 buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:2.1.0'
+<<<<<<< HEAD
+=======
+        classpath 'me.tatarka:gradle-retrolambda:3.2.5'
+>>>>>>> 842b482abf4bfb1ee87cc24eae4e364b76c2938c
     }
 }
+
 apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'
+
+retrolambda {
+    defaultMethods true
+}
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    buildToolsVersion "23.0.3"
 
     defaultConfig {
-        applicationId "im.actor"
+        applicationId "im.actor.develop"
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
-        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -29,8 +38,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -38,5 +47,5 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':actor-sdk:sdk-core-android:android-sdk')
     compile project(':actor-sdk:sdk-core-android:android-google-push')
-
+    compile project(':actor-sdk:sdk-core-android:android-google-maps')
 }
