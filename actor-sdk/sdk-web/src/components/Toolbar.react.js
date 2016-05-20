@@ -3,6 +3,7 @@
  */
 
 import React, { Component, PropTypes } from 'react';
+import SharedContainer from '../utils/SharedContainer';
 import alert from '../utils/alert';
 
 import UserMenu from './common/UserMenu.react';
@@ -10,11 +11,14 @@ import ToolbarSearch from './search/ToolbarSearch.react';
 
 class AppHeader extends Component {
   static contextTypes = {
-    isExperimental: PropTypes.bool
+    delegate: PropTypes.object.isRequired
   }
 
   constructor(props) {
     super(props);
+
+    const { appName } = SharedContainer.get();
+    this.appName = appName;
   }
 
   handleWriteButtonClick() {
@@ -23,9 +27,9 @@ class AppHeader extends Component {
   }
 
   renderWriteButton() {
-    const { isExperimental } = this.context;
+    const { delegate } = this.context;
 
-    if (!isExperimental) {
+    if (!delegate.features.writeButton) {
       return null;
     }
 
@@ -38,9 +42,9 @@ class AppHeader extends Component {
 
   render() {
     return (
-      <header className={`toolbar row`}>
+      <header className="toolbar row">
         <div className="toolbar__aside">
-          <span>Actor</span>
+          <span>{this.appName}</span>
         </div>
         <div className="toolbar__controls col-xs">
           {this.renderWriteButton()}
