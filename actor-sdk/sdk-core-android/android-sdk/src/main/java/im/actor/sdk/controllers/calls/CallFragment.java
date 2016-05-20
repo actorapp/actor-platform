@@ -23,11 +23,14 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import org.webrtc.VideoRenderer;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -49,6 +52,9 @@ import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.Props;
 import im.actor.runtime.actors.messages.PoisonPill;
+import im.actor.runtime.android.AndroidWebRTCRuntimeProvider;
+import im.actor.runtime.android.webrtc.AndroidMediaStream;
+import im.actor.runtime.android.webrtc.AndroidPeerConnection;
 import im.actor.runtime.mvvm.Value;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.ValueModel;
@@ -77,7 +83,6 @@ public class CallFragment extends BaseFragment {
     long callId = -1;
     Peer peer;
 
-    boolean incoming;
     private Vibrator v;
     private View answerContainer;
     private Ringtone ringtone;
@@ -103,7 +108,7 @@ public class CallFragment extends BaseFragment {
         manager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
-    public CallFragment(long callId, boolean incoming) {
+    public CallFragment(long callId) {
         this.callId = callId;
         this.call = messenger().getCall(callId);
         if(call == null){
@@ -111,7 +116,6 @@ public class CallFragment extends BaseFragment {
         }else{
             this.peer = call.getPeer();
         }
-        this.incoming = incoming;
     }
 
 
@@ -435,6 +439,12 @@ public class CallFragment extends BaseFragment {
     }
 
     private void initIncoming() {
+
+        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
+                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
+                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+                WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+
         answerContainer.setVisibility(View.VISIBLE);
         endCallContainer.setVisibility(View.GONE);
 
@@ -552,7 +562,6 @@ public class CallFragment extends BaseFragment {
             Intent intent = new Intent(getActivity(), CallActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             intent.putExtra("callId", callId);
-            intent.putExtra("incoming", incoming);
 
             builder.setContentIntent(PendingIntent.getActivity(getActivity(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT));
             Notification n = builder.build();
