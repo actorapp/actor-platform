@@ -9,8 +9,8 @@ import Tooltip from 'rc-tooltip';
 import alert from '../../utils/alert';
 
 import { escapeWithEmoji } from '../../utils/EmojiUtils';
-import PeerUtils from '../../utils/PeerUtils';
 
+import CallActionCreators from '../../actions/CallActionCreators';
 import ActivityActionCreators from '../../actions/ActivityActionCreators';
 import FavoriteActionCreators from '../../actions/FavoriteActionCreators';
 import DialogSearchActionCreators from '../../actions/DialogSearchActionCreators';
@@ -19,6 +19,10 @@ import AvatarItem from '../common/AvatarItem.react';
 import ToggleFavorite from '../common/ToggleFavorite.react';
 
 class DialogHeader extends Component {
+  static contextTypes = {
+    delegate: PropTypes.object.isRequired
+  }
+
   static propTypes = {
     peer: PropTypes.object.isRequired,
     info: PropTypes.object.isRequired,
@@ -29,16 +33,11 @@ class DialogHeader extends Component {
     isDialogSearchOpen: PropTypes.bool.isRequired
   }
 
-  static contextTypes = {
-    isExperimental: PropTypes.bool
-  }
-
   constructor(props, context) {
     super(props, context);
 
     this.onFavoriteToggle = this.onFavoriteToggle.bind(this);
     this.handleInfoButtonClick = this.handleInfoButtonClick.bind(this);
-    this.handleInCallClick = this.handleInCallClick.bind(this);
     this.handleSearchButtonClick = this.handleSearchButtonClick.bind(this);
   }
 
@@ -53,17 +52,16 @@ class DialogHeader extends Component {
   }
 
   handleInfoButtonClick() {
-    const { isActivityOpen } = this.props;
-    if (!isActivityOpen) {
-      ActivityActionCreators.show();
-    } else {
+    const { call, isActivityOpen } = this.props;
+    if (call.isCalling) {
+      CallActionCreators.toggleFloating();
+    } else if (isActivityOpen) {
       ActivityActionCreators.hide();
+    } else {
+      ActivityActionCreators.show();
     }
   }
 
-  handleInCallClick() {
-    CallActionCreators.toggleFloating();
-  }
 
   handleCallButtonClick() {
     alert('callButtonClick')
@@ -97,24 +95,9 @@ class DialogHeader extends Component {
   renderInfoButton() {
     const { call, isActivityOpen } = this.props;
 
-    const activityButtonClassName = classnames('button button--icon', {
+    const className = classnames('button button--icon', {
       'active': isActivityOpen || (call.isCalling && !call.isFloating)
     });
-
-    if (call.isCalling) {
-      return (
-        <Tooltip
-          placement="left"
-          mouseEnterDelay={0}
-          mouseLeaveDelay={0}
-          overlay={<FormattedMessage id="tooltip.toolbar.info"/>}
-        >
-          <button className={activityButtonClassName} onClick={this.handleInCallClick}>
-            <i className="material-icons">info</i>
-          </button>
-        </Tooltip>
-      )
-    }
 
     return (
       <Tooltip
@@ -123,7 +106,7 @@ class DialogHeader extends Component {
         mouseLeaveDelay={0}
         overlay={<FormattedMessage id="tooltip.toolbar.info"/>}
       >
-        <button className={activityButtonClassName} onClick={this.handleInfoButtonClick}>
+        <button className={className} onClick={this.handleInfoButtonClick}>
           <i className="material-icons">info</i>
         </button>
       </Tooltip>
@@ -165,10 +148,10 @@ class DialogHeader extends Component {
   }
 
   renderSearchButton() {
-    const { isExperimental } = this.context;
+    const { delegate } = this.context;
     const { isDialogSearchOpen } = this.props;
 
-    if (!isExperimental) {
+    if (!delegate.features.search) {
       return null;
     }
 
@@ -200,7 +183,7 @@ class DialogHeader extends Component {
   }
 
   render() {
-    const { info, isFavorite } = this.props;
+    const { info } = this.props;
 
     if (!info) {
       return <header className="dialog__header" />;
