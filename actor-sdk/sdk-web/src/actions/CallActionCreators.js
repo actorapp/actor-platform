@@ -6,6 +6,7 @@ import { dispatch, dispatchAsync } from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes, CallTypes, CallStates } from '../constants/ActorAppConstants';
 import ActorClient from '../utils/ActorClient';
 import createTimer from '../utils/createTimer';
+import { isPeerUser } from '../utils/PeerUtils';
 
 import ActionCreators from './ActionCreators';
 
@@ -39,6 +40,14 @@ class CallActionCreators extends ActionCreators {
         this.removeBindings('call');
         dispatch(ActionTypes.CALL_MODAL_HIDE)
         break;
+    }
+  }
+
+  makePeerCall(peer) {
+    if (isPeerUser(peer)) {
+      this.makeCall(peer.id);
+    } else {
+      this.makeGroupCall(peer.id);
     }
   }
 
