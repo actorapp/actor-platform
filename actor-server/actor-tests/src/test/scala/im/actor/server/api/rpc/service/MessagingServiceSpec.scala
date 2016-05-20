@@ -9,7 +9,7 @@ import im.actor.api.rpc.counters.UpdateCountersChanged
 import im.actor.api.rpc.files.ApiFileLocation
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ResponseSeqDate
-import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType, ApiUserOutPeer }
+import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeer, ApiPeerType, ApiUserOutPeer }
 import im.actor.api.rpc.sequence.{ ApiUpdateContainer, ResponseGetDifference }
 import im.actor.server._
 import im.actor.server.acl.ACLUtils
@@ -42,6 +42,8 @@ class MessagingServiceSpec
   it should "publish messages in PubSub" in s.pubsub.publish
 
   it should "not repeat message sending with same authId and RandomId" in s.group.cached
+
+  it should "allow to edit last own message in public group" in s.group.editPublic
 
   "Any Messaging" should "keep original order of sent messages" in s.generic.rightOrder
 
@@ -286,6 +288,74 @@ class MessagingServiceSpec
           expectUpdate(classOf[UpdateMessage])(identity)
           expectUpdate(classOf[UpdateCountersChanged])(identity)
         }
+      }
+
+      def editPublic(): Unit = {
+        val sessionId = createSessionId()
+        val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
+        val (bob, bobAuthId, bobAuthSid, _) = createUser()
+        val aliceClient = ClientData(aliceAuthId, sessionId, Some(AuthData(alice.id, aliceAuthSid, 42)))
+        val bobClient = ClientData(bobAuthId, sessionId, Some(AuthData(bob.id, bobAuthSid, 42)))
+
+        val WrongText = "hello everrryoine"
+        val CorrectText = "Hello everyone!"
+
+        val groupPeer = {
+          implicit val cd = aliceClient
+          val peer = createPubGroup("Test public group", "Group to test message edit", Set(bob.id)).groupPeer
+          ApiOutPeer(ApiPeerType.Group, peer.groupId, peer.accessHash)
+        }
+
+        val messRandomId = {
+          implicit val cd = aliceClient
+          sendMessageToGroup(groupPeer.id, ApiTextMessage(WrongText, Vector.empty, None))
+        }
+
+        // Alice can edit her own message
+        {
+          implicit val cd = aliceClient
+          whenReady(service.handleUpdateMessage(groupPeer, messRandomId, ApiTextMessage(CorrectText, Vector.empty, None))) { resp ⇒
+            resp should matchPattern {
+              case Xor.Right(ResponseSeqDate(_, _, _)) ⇒
+            }
+          }
+          expectUpdate(classOf[UpdateMessageContentChanged]) { upd ⇒
+            upd.randomId shouldEqual messRandomId
+            upd.peer shouldEqual groupPeer.asPeer
+            inside(parseMessage(upd.message.toByteArray)) {
+              case Right(ApiTextMessage(CorrectText, _, _)) ⇒
+            }
+          }
+        }
+
+        {
+          implicit val cd = bobClient
+          expectUpdate(classOf[UpdateMessageContentChanged]) { upd ⇒
+            upd.randomId shouldEqual messRandomId
+            upd.peer shouldEqual groupPeer.asPeer
+            inside(parseMessage(upd.message.toByteArray)) {
+              case Right(ApiTextMessage(CorrectText, _, _)) ⇒
+            }
+          }
+        }
+
+        val aliceSeq = getCurrentSeq(aliceClient)
+        val bobSeq = getCurrentSeq(bobClient)
+
+        // Bob can't edit alice's message
+        {
+          implicit val cd = bobClient
+          whenReady(service.handleUpdateMessage(groupPeer, messRandomId, ApiTextMessage("Som other text for message", Vector.empty, None))) { resp ⇒
+            resp should matchForbidden
+          }
+          expectNoUpdate(bobSeq, classOf[UpdateMessageContentChanged])
+        }
+
+        {
+          implicit val cd = aliceClient
+          expectNoUpdate(aliceSeq, classOf[UpdateMessageContentChanged])
+        }
+
       }
     }
 
