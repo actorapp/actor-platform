@@ -24,7 +24,6 @@ private[sequence] final class ApplePushProvider(userId: Int)(implicit system: Ac
             new ApnsPayloadBuilder()
               .addCustomProperty("seq", seq)
               .setContentAvailable(true)
-              .setSoundFileName("")
               .setBadgeNumber(unreadTotal)
               .buildWithDefaultMaximumLength()
 
