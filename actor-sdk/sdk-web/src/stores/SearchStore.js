@@ -20,13 +20,12 @@ class SearchStore extends ReduceStore {
   reduce(state, action) {
     switch (action.type) {
       case ActionTypes.SEARCH:
-        console.debug(action);
         return {
           ...state,
           query: action.query,
           results: action.results
-        }
-        break;
+        };
+
       default:
         return state;
     }
