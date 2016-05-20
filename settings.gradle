@@ -26,7 +26,7 @@ include ":actor-sdk:sdk-api:api-codegen"
 //include ":actor-sdk:sdk-core-android:android-google-push"
 
 //Google maps for Android SDk
-include ":actor-sdk:sdk-core-android:android-google-maps"
+//include ":actor-sdk:sdk-core-android:android-google-maps"
 
 //
 // SDK iOS
@@ -38,4 +38,4 @@ include ":actor-sdk:sdk-core-ios"
 // SDK Command Line Client
 //
 
-include ":actor-sdk:sdk-core-clc:app-clc"
+//include ":actor-sdk:sdk-core-clc:app-clc"

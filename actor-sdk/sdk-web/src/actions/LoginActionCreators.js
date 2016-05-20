@@ -19,13 +19,12 @@ import QuickSearchActionCreators from './QuickSearchActionCreators';
 import FaviconActionCreators from './FaviconActionCreators';
 import EventBusActionCreators from './EventBusActionCreators';
 import StickersActionCreators from './StickersActionCreators';
-import Login_react from '../components/Login.react';
-
 var zhName="";
 var nickName="";
 var ip="";
 var password="";
 class LoginActionCreators extends ActionCreators {
+
   start() {
     dispatch(ActionTypes.AUTH_START);
   }
@@ -62,7 +61,7 @@ class LoginActionCreators extends ActionCreators {
       request: ActionTypes.AUTH_CODE_REQUEST,
       success: ActionTypes.AUTH_CODE_REQUEST_SUCCESS,
       failure: ActionTypes.AUTH_CODE_REQUEST_FAILURE
-    }, {phone});
+    }, { phone });
   }
 
   requestSms(phone) {
@@ -70,17 +69,40 @@ class LoginActionCreators extends ActionCreators {
       request: ActionTypes.AUTH_CODE_REQUEST,
       success: ActionTypes.AUTH_CODE_REQUEST_SUCCESS,
       failure: ActionTypes.AUTH_CODE_REQUEST_FAILURE
-    }, {phone});
+    }, { phone });
   }
+
+  sendCode(code) {
+    dispatchAsync(ActorClient.sendCode(code), {
+      request: ActionTypes.AUTH_CODE_SEND,
+      success: ActionTypes.AUTH_CODE_SEND_SUCCESS,
+      failure: ActionTypes.AUTH_CODE_SEND_FAILURE
+    }, {
+      code
+    }).then((state) => {
+      switch (state) {
+        case 'signup':
+          this.startSignup();
+          break;
+        case 'logged_in':
+          this.setLoggedIn({ redirect: true });
+          break;
+        default:
+          console.error('Unsupported state', state);
+      }
+    });
+  }
+
   requestUserName(userName) {
     dispatchAsync(ActorClient.requestUserName(userName), {
       request: ActionTypes.AUTH_CODE_REQUEST,
       success: ActionTypes.AUTH_CODE_REQUEST_SUCCESS,
       failure: ActionTypes.AUTH_CODE_REQUEST_FAILURE
     }, {userName});
-  },
+  }
+
   requestSignUp(nickName, name, ip){
-    const requestSignUp = () =>
+    const signUpPromise = () =>
       dispatchAsync(ActorClient.requestSignUp(nickName, name, ip), {
         request: ActionTypes.AUTH_CODE_REQUEST,
         success: ActionTypes.AUTH_CODE_REQUEST_SUCCESS,
@@ -91,7 +113,7 @@ class LoginActionCreators extends ActionCreators {
       {
         switch (state) {
           case 'start':
-            LoginActionCreators.requestWebSyncUser(ip,nickName);
+            this.requestWebSyncUser(ip,nickName);
             break;
           default:
             console.error('Unsupported state', state);
@@ -100,16 +122,27 @@ class LoginActionCreators extends ActionCreators {
       }
       ;
 
-    requestSignUp()
+    signUpPromise()
       .then(handleState);
-  },
+  }
 
+  sendSignup(name) {
+    const signUpPromise = () => dispatchAsync(ActorClient.signUp(name), {
+      request: ActionTypes.AUTH_SIGNUP,
+      success: ActionTypes.AUTH_SIGNUP_SUCCESS,
+      failure: ActionTypes.AUTH_SIGNUP_FAILURE
+    }, { name });
 
+    const setLoggedIn = () => this.setLoggedIn({ redirect: true });
+
+    signUpPromise()
+      .then(setLoggedIn)
+  }
   requestWebSignUp(ip,nickName){
     const methodName = "isUserNeedSignUp";
     this.nickName = nickName;
     this.ip = ip;
-    let json = "username="+nickName;//得到的JSON
+    let json = "username="+nickName;//寰楀埌鐨凧SON
     const requestWebSignUp = () =>
       dispatchAsync(ActorClient.requestWebSignUp(ip, methodName, json, nickName), {
         request: ActionTypes.AUTH_CODE_REQUEST,
@@ -125,10 +158,10 @@ class LoginActionCreators extends ActionCreators {
         switch (state) {
           case 'signup':
             // LoginActionCreators.requestSignUp(nickName, rename, ip);
-            LoginActionCreators.requestUserName(nickName);
+            this.requestUserName(nickName);
             break;
           case 'login':
-            LoginActionCreators.requestUserName(nickName);
+            this.requestUserName(nickName);
             break;
           default:
             console.error('Unsupported state', state);
@@ -139,10 +172,52 @@ class LoginActionCreators extends ActionCreators {
 
     requestWebSignUp()
       .then(handleState);
-  },
+  }
+
+  sendPassword(ip,json,password) {
+    const sendPasswordPromise = () =>
+      dispatchAsync(ActorClient.sendPassword(password), {
+        request: ActionTypes.AUTH_CODE_SEND,
+        success: ActionTypes.AUTH_CODE_SEND_SUCCESS,
+        failure: ActionTypes.AUTH_CODE_SEND_FAILURE
+      }, {password});
+    const handleState = (state) =>
+    {
+      switch (state) {
+        case 'signup':
+          // this.startSignup();
+          this.requestWebValidatePassword(ip,json,password);
+          break;
+        case 'logged_in':
+          this.setLoggedIn({redirect: true});
+          break;
+        default:
+          console.error('Unsupported state', state);
+      }
+    };
+    sendPasswordPromise()
+      .then(handleState);
+  }
+  sendSignupForPassword(name, password) {
+    const signUpPromise = () =>
+      dispatchAsync(ActorClient.signUp(name, password), {
+        request: ActionTypes.AUTH_CODE_SEND,
+        success: ActionTypes.AUTH_CODE_SEND_SUCCESS,
+        failure: ActionTypes.AUTH_CODE_SEND_FAILURE
+      }, {name, password});
+    const setLoggedIn = () =>
+    {
+      this.requestWebSyncUser(this.ip,this.nickName);
+    };
+    signUpPromise()
+      .then(setLoggedIn)
+  }
+  startSignup() {
+    dispatch(ActionTypes.AUTH_SIGNUP_START);
+  }
 
   requestWebSyncUser(ip,nickName){
-    let json = "oaUserName=" + nickName;//得到的JSON
+    let json = "oaUserName=" + nickName;//寰楀埌鐨凧SON
     const methodName="syncUser";
     const requestWebSyncUser = () =>
       dispatchAsync(ActorClient.requestWebSyncUser(ip, methodName, json), {
@@ -154,7 +229,7 @@ class LoginActionCreators extends ActionCreators {
     {
       var result = response.result;
       if(result){
-        LoginActionCreators.sendPassword("","",this.password);
+        this.sendPassword("","",this.password);
       }else{
         console.error('Unsupported state', response);
       }
@@ -162,7 +237,7 @@ class LoginActionCreators extends ActionCreators {
 
     requestWebSyncUser()
       .then(handleState);
-  },
+  }
 
   requestWebValidatePassword(ip,json,password){
     const methodName="validatePassword";
@@ -177,7 +252,7 @@ class LoginActionCreators extends ActionCreators {
       var result = response.result;
       if(result){
         this.password = password;
-        LoginActionCreators.sendSignupForPassword(zhName,"11111111");
+        this.sendSignupForPassword(zhName,"11111111");
         // LoginActionCreators.sendPassword(password);
       }else{
         console.error('Unsupported state', response);
@@ -186,65 +261,7 @@ class LoginActionCreators extends ActionCreators {
 
     requestWebValidatePassword()
       .then(handleState);
-  },
-
-  sendCode(code) {
-    dispatchAsync(ActorClient.sendCode(code), {
-      request: ActionTypes.AUTH_CODE_SEND,
-      success: ActionTypes.AUTH_CODE_SEND_SUCCESS,
-      failure: ActionTypes.AUTH_CODE_SEND_FAILURE
-    }, {
-      code
-    }).then((state) => {
-      switch (state) {
-        case 'signup':
-          // this.startSignup();
-          LoginActionCreators.requestWebValidatePassword(ip,json,password);
-          break;
-        case 'logged_in':
-          this.setLoggedIn({ redirect: true });
-          break;
-        default:
-          console.error('Unsupported state', state);
-      }
-    });
   }
-    sendPasswordPromise()
-      .then(handleState);
-  },
-
-  sendSignupForPassword(name, password) {
-    const signUpPromise = () =>
-      dispatchAsync(ActorClient.signUp(name, password), {
-        request: ActionTypes.AUTH_CODE_SEND,
-        success: ActionTypes.AUTH_CODE_SEND_SUCCESS,
-        failure: ActionTypes.AUTH_CODE_SEND_FAILURE
-      }, {name, password});
-    const setLoggedIn = () =>
-    {
-      LoginActionCreators.requestWebSyncUser(this.ip,this.nickName);
-    };
-    signUpPromise()
-      .then(setLoggedIn)
-  },
-  startSignup() {
-    dispatch(ActionTypes.AUTH_SIGNUP_START);
-  },
-
-  sendSignup(name) {
-    const signUpPromise = () =>
-      dispatchAsync(ActorClient.signUp(name), {
-        request: ActionTypes.AUTH_SIGNUP,
-        success: ActionTypes.AUTH_SIGNUP_SUCCESS,
-        failure: ActionTypes.AUTH_SIGNUP_FAILURE
-      }, {name,password});
-
-    const setLoggedIn = () => this.setLoggedIn({ redirect: true });
-
-    signUpPromise()
-      .then(setLoggedIn)
-  }
-
   setLoggedIn(opts = {}) {
     const delegate = DelegateContainer.get();
 
@@ -276,6 +293,7 @@ class LoginActionCreators extends ActionCreators {
 
   setLoggedOut() {
     const delegate = DelegateContainer.get();
+
     if (delegate.actions.setLoggedOut) {
       return delegate.actions.setLoggedOut();
     }
@@ -285,4 +303,5 @@ class LoginActionCreators extends ActionCreators {
     dispatch(ActionTypes.AUTH_SET_LOGGED_OUT);
   }
 }
+
 export default new LoginActionCreators();

@@ -56,13 +56,18 @@ public class Authentication {
     private static final String KEY_AUTH = "auth_yes";
     private static final String KEY_AUTH_UID = "auth_uid";
 
-    private static final String KEY_PHONE = "auth_phone";
-    private static final String KEY_EMAIL = "auth_email";
+     private static final String KEY_PHONE = "auth_phone";
+        private static final String KEY_EMAIL = "auth_email";
+        private static final String KEY_NICKNAME = "auth_nickname";
+        private static final String KEY_ZHNAME = "auth_zhname";
+
     private static final String KEY_SMS_HASH = "auth_sms_hash";
     private static final String KEY_SMS_CODE = "auth_sms_code";
     private static final String KEY_TRANSACTION_HASH = "auth_transaction_hash";
     //private static final String KEY_CODE = "auth_code";
     private static final String KEY_OAUTH_REDIRECT_URL = "oauth_redirect_url";
+
+    private static final String KEY_PASSWORD= "oauth_password";
 
     private Modules modules;
     private AuthState state;
@@ -195,6 +200,30 @@ public class Authentication {
             }
         }));
     }
+        public Promise<AuthStartRes> doStartUsernameAuth(final String username) {
+              return new Promise<>((PromiseFunc<AuthStartRes>) resolver -> request(new  RequestStartUsernameAuth(username,
+                            apiConfiguration.getAppId(),
+                            apiConfiguration.getAppKey(),
+                            deviceHash,
+                            apiConfiguration.getDeviceTitle(),
+                            modules.getConfiguration().getTimeZone(),
+                            langs), new RpcCallback<ResponseStartUsernameAuth>() {
+                        @Override
+                        public void onResult(ResponseStartUsernameAuth response) {
+                            resolver.result(new AuthStartRes(
+                                    response.getTransactionHash(),
+                                    AuthMode.fromApi(response.getActivationType()),
+                                    response.isRegistered()));
+                        }
+
+                        @Override
+                        public void onError(RpcException e) {
+                            resolver.error(e);
+                        }
+
+            }));
+        }
+
 
 
     //
@@ -216,6 +245,27 @@ public class Authentication {
                     resolver.error(e);
                 }
             }
+        }));
+    }
+
+
+    public Promise<AuthCodeRes> doValidatePassword(final String transactionHash, final String password) {
+          return new Promise<>((PromiseFunc<AuthCodeRes>) resolver -> request(new  RequestValidatePassword(transactionHash, password), new RpcCallback<ResponseAuth>() {
+                    @Override
+                    public void onResult(ResponseAuth response) {
+                        resolver.result(new AuthCodeRes(new AuthRes(response.toByteArray())));
+                    }
+
+                    @Override
+                    public void onError(RpcException e) {
+                        if ("PHONE_NUMBER_UNOCCUPIED".equals(e.getTag()) || "EMAIL_UNOCCUPIED".equals(e.getTag()) || "USERNAME_UNOCCUPIED".equals(e.getTag())) {
+                            resolver.result(new AuthCodeRes(transactionHash));
+                        } else {
+                            resolver.error(e);
+                        }
+                    }
+
+
         }));
     }
 
@@ -252,6 +302,22 @@ public class Authentication {
             }
         }));
     }
+        public Promise<AuthRes> doSignup(final String name, final Sex sex, final String transactionHash, final String password) {
+                 return new Promise<>((PromiseFunc<AuthRes>) resolver -> request(new RequestSignUp(transactionHash, name, sex.toApi(), password), new RpcCallback<ResponseAuth>() {
+
+                            @Override
+                            public void onResult(ResponseAuth response) {
+                                resolver.result(new AuthRes(response.toByteArray()));
+                            }
+
+                            @Override
+                            public void onError(RpcException e) {
+                                resolver.error(e);
+                            }
+
+
+                }));
+            }
 
 
     //
@@ -284,285 +350,22 @@ public class Authentication {
     // Deprecated
     //
 
-    @Deprecated
-    public Command<AuthState> requestStartAnonymousAuth(final String userName) {
-        return callback -> request(new RequestStartAnonymousAuth(userName,
-                apiConfiguration.getAppId(),
-                apiConfiguration.getAppKey(),
-                deviceHash,
-                apiConfiguration.getDeviceTitle(),
-                modules.getConfiguration().getTimeZone(),
-                langs), new RpcCallback<ResponseAuth>() {
-            @Override
-            public void onResult(ResponseAuth response) {
-                onLoggedIn(callback, response);
-            }
+    //
+        // Deprecated
+        //
 
-            @Override
-            public void onError(final RpcException e) {
-                Runtime.postToMainThread(() -> {
-                    Log.e(TAG, e);
-                    callback.onError(e);
-                });
-            }
-        });
-    }
-
-    @Deprecated
-    public AuthState getAuthState() {
-        return state;
-    }
-
-    @Deprecated
-    public long getPhone() {
-        return modules.getPreferences().getLong(KEY_PHONE, 0);
-    }
-
-    @Deprecated
-    public String getEmail() {
-        return modules.getPreferences().getString(KEY_EMAIL);
-    }
-
-    @Deprecated
-    public Command<AuthState> requestStartEmailAuth(final String email) {
-        return callback -> {
-            ArrayList<String> langs1 = new ArrayList<>();
-            for (String s : modules.getConfiguration().getPreferredLanguages()) {
-                langs1.add(s);
-            }
-            request(new RequestStartEmailAuth(email,
-                    apiConfiguration.getAppId(),
-                    apiConfiguration.getAppKey(),
-                    deviceHash,
-                    apiConfiguration.getDeviceTitle(),
-                    modules.getConfiguration().getTimeZone(),
-                    langs1
-            ), new RpcCallback<ResponseStartEmailAuth>() {
+        @Deprecated
+        public Command<AuthState> requestStartAnonymousAuth(final String userName) {
+            return new Command<AuthState>() {
                 @Override
-                public void onResult(ResponseStartEmailAuth response) {
-                    modules.getPreferences().putString(KEY_EMAIL, email);
-                    modules.getPreferences().putString(KEY_TRANSACTION_HASH, response.getTransactionHash());
-
-                    ApiEmailActivationType emailActivationType = response.getActivationType();
-                    if (emailActivationType.equals(ApiEmailActivationType.OAUTH2)) {
-                        state = AuthState.GET_OAUTH_PARAMS;
-                    } else if (emailActivationType.equals(ApiEmailActivationType.CODE)) {
-                        state = AuthState.CODE_VALIDATION_EMAIL;
-                    } else if (emailActivationType.equals(ApiEmailActivationType.PASSWORD)) {
-                        state = AuthState.PASSWORD_VALIDATION;
-                    } else {
-                        state = AuthState.CODE_VALIDATION_EMAIL;
-                    }
-
-                    Runtime.postToMainThread(() -> callback.onResult(state));
-                }
-
-                @Override
-                public void onError(final RpcException e) {
-                    Runtime.postToMainThread(() -> {
-                        Log.e(TAG, e);
-                        callback.onError(e);
-                    });
-                }
-            });
-        };
-    }
-
-    @Deprecated
-    public Command<AuthState> requestStartUserNameAuth(final String userName) {
-        return callback -> {
-            ArrayList<String> langs1 = new ArrayList<>();
-            for (String s : modules.getConfiguration().getPreferredLanguages()) {
-                langs1.add(s);
-            }
-            request(new RequestStartUsernameAuth(userName,
-                    apiConfiguration.getAppId(),
-                    apiConfiguration.getAppKey(),
-                    deviceHash,
-                    apiConfiguration.getDeviceTitle(),
-                    modules.getConfiguration().getTimeZone(),
-                    langs1), new RpcCallback<ResponseStartUsernameAuth>() {
-
-                @Override
-                public void onResult(ResponseStartUsernameAuth response) {
-                    modules.getPreferences().putString(KEY_TRANSACTION_HASH, response.getTransactionHash());
-
-                    state = AuthState.PASSWORD_VALIDATION;
-
-                    Runtime.postToMainThread(() -> callback.onResult(state));
-                }
-
-                @Override
-                public void onError(final RpcException e) {
-                    Runtime.postToMainThread(() -> {
-                        Log.e(TAG, e);
-                        callback.onError(e);
-                    });
-                }
-            });
-        };
-    }
-
-    @Deprecated
-    public Command<AuthState> requestStartPhoneAuth(final long phone) {
-        return callback -> {
-            ArrayList<String> langs1 = new ArrayList<>();
-            for (String s : modules.getConfiguration().getPreferredLanguages()) {
-                langs1.add(s);
-            }
-            request(new RequestStartPhoneAuth(phone,
-                    apiConfiguration.getAppId(),
-                    apiConfiguration.getAppKey(),
-                    deviceHash,
-                    apiConfiguration.getDeviceTitle(),
-                    modules.getConfiguration().getTimeZone(),
-                    langs1
-            ), new RpcCallback<ResponseStartPhoneAuth>() {
-                @Override
-                public void onResult(ResponseStartPhoneAuth response) {
-                    modules.getPreferences().putLong(KEY_PHONE, phone);
-                    modules.getPreferences().putString(KEY_TRANSACTION_HASH, response.getTransactionHash());
-
-                    if (response.getActivationType() == ApiPhoneActivationType.CODE) {
-                        state = AuthState.CODE_VALIDATION_PHONE;
-                    } else if (response.getActivationType() == ApiPhoneActivationType.PASSWORD) {
-                        state = AuthState.PASSWORD_VALIDATION;
-                    } else {
-                        state = AuthState.CODE_VALIDATION_PHONE;
-                    }
-
-                    Runtime.postToMainThread(() -> callback.onResult(state));
-                }
-
-                @Override
-                public void onError(final RpcException e) {
-                    Runtime.postToMainThread(() -> {
-                        Log.e(TAG, e);
-                        callback.onError(e);
-                    });
-                }
-            }, AbsModule.RPC_TIMEOUT);
-        };
-    }
-
-    @Deprecated
-    public Command<AuthState> requestGetOAuth2Params() {
-        return callback -> request(new RequestGetOAuth2Params(modules.getPreferences().getString(KEY_TRANSACTION_HASH),
-                        "https://actor.im/auth/oauth2callback"),
-                new RpcCallback<ResponseGetOAuth2Params>() {
-                    @Override
-                    public void onResult(final ResponseGetOAuth2Params response) {
-                        modules.getPreferences().putString(KEY_OAUTH_REDIRECT_URL, response.getAuthUrl());
-
-                        state = AuthState.COMPLETE_OAUTH;
-
-                        Runtime.postToMainThread(() -> callback.onResult(state));
-                    }
-
-                    @Override
-                    public void onError(final RpcException e) {
-                        Runtime.postToMainThread(() -> {
-                            Log.e(TAG, e);
-                            callback.onError(e);
-                        });
-                    }
-                });
-    }
-
-    @Deprecated
-    public Command<AuthState> requestCompleteOauth(final String code) {
-        return callback -> request(new RequestCompleteOAuth2(modules.getPreferences().getString(KEY_TRANSACTION_HASH), code), new RpcCallback<ResponseAuth>() {
-            @Override
-            public void onResult(ResponseAuth response) {
-                onLoggedIn(callback, response);
-            }
-
-            @Override
-            public void onError(final RpcException e) {
-                if ("EMAIL_EXPIRED".equals(e.getTag())) {
-                    resetAuth();
-                } else if ("EMAIL_UNOCCUPIED".equals(e.getTag())) {
-                    // modules.getPreferences().putString(KEY_CODE, code);
-                    state = AuthState.SIGN_UP;
-                    callback.onResult(AuthState.SIGN_UP);
-                    return;
-                }
-
-                Runtime.postToMainThread(() -> {
-                    Log.e(TAG, e);
-                    callback.onError(e);
-                });
-            }
-        });
-    }
-
-    @Deprecated
-    public Command<AuthState> signUp(final String name, final ApiSex sex, final String avatarPath) {
-        return callback -> request(new RequestSignUp(modules.getPreferences().getString(KEY_TRANSACTION_HASH), name, sex,
-                null), new RpcCallback<ResponseAuth>() {
-            @Override
-            public void onResult(ResponseAuth response) {
-                onLoggedIn(callback, response);
-                if (avatarPath != null) {
-                    modules.getProfileModule().changeAvatar(avatarPath);
-                }
-            }
-
-            @Override
-            public void onError(final RpcException e) {
-                if ("EMAIL_CODE_EXPIRED".equals(e.getTag())) {
-                    resetAuth();
-                }
-                Runtime.postToMainThread(() -> {
-                    Log.e(TAG, e);
-                    callback.onError(e);
-                });
-            }
-        });
-    }
-
-    @Deprecated
-    public Command<AuthState> requestValidateCode(final String code) {
-        if (code == null) {
-            throw new RuntimeException("Code couldn't be null!");
-        }
-        return callback -> {
-            String transactionHash = modules.getPreferences()
-                    .getString(KEY_TRANSACTION_HASH);
-
-            request(new RequestValidateCode(transactionHash, code), new RpcCallback<ResponseAuth>() {
-                @Override
-                public void onResult(ResponseAuth response) {
-                    onLoggedIn(callback, response);
-                }
-
-                @Override
-                public void onError(final RpcException e) {
-                    if ("PHONE_CODE_EXPIRED".equals(e.getTag()) || "EMAIL_CODE_EXPIRED".equals(e.getTag())) {
-                        resetAuth();
-                    } else if ("PHONE_NUMBER_UNOCCUPIED".equals(e.getTag()) || "EMAIL_UNOCCUPIED".equals(e.getTag())) {
-                        // modules.getPreferences().putString(KEY_CODE, code);
-                        state = AuthState.SIGN_UP;
-                        Runtime.postToMainThread(() -> callback.onResult(AuthState.SIGN_UP));
-                        return;
-                    }
-
-                    Runtime.postToMainThread(() -> {
-                        Log.e(TAG, e);
-                        callback.onError(e);
-                    });
-                }
-            });
-        };
-    }
-
-    @Deprecated
-    public Command<AuthState> requestValidatePassword(final String password) {
-        return callback -> {
-            String transactionHash = modules.getPreferences()
-                    .getString(KEY_TRANSACTION_HASH);
-            request(new RequestValidatePassword(transactionHash, password),
-                    new RpcCallback<ResponseAuth>() {
+                public void start(final CommandCallback<AuthState> callback) {
+                    request(new RequestStartAnonymousAuth(userName,
+                            apiConfiguration.getAppId(),
+                            apiConfiguration.getAppKey(),
+                            deviceHash,
+                            apiConfiguration.getDeviceTitle(),
+                            modules.getConfiguration().getTimeZone(),
+                            langs), new RpcCallback<ResponseAuth>() {
                         @Override
                         public void onResult(ResponseAuth response) {
                             onLoggedIn(callback, response);
@@ -570,67 +373,568 @@ public class Authentication {
 
                         @Override
                         public void onError(final RpcException e) {
-                            if ("PHONE_NUMBER_UNOCCUPIED".equals(e.getTag()) || "EMAIL_UNOCCUPIED".equals(e.getTag())) {
-                                state = AuthState.SIGN_UP;
-                                Runtime.postToMainThread(() -> callback.onResult(AuthState.SIGN_UP));
-                                return;
-                            }
-
-                            Runtime.postToMainThread(() -> {
-                                Log.e(TAG, e);
-                                callback.onError(e);
+                            im.actor.runtime.Runtime.postToMainThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.e(TAG, e);
+                                    callback.onError(e);
+                                }
                             });
                         }
                     });
-        };
-    }
-
-    @Deprecated
-    public Command<Boolean> requestCallActivation() {
-        return callback -> {
-            String transactionHash = modules.getPreferences().getString(KEY_TRANSACTION_HASH);
-
-            request(new RequestSendCodeByPhoneCall(transactionHash), new RpcCallback<ResponseVoid>() {
-                @Override
-                public void onResult(ResponseVoid response) {
-                    callback.onResult(true);
                 }
+            };
+        }
 
+        @Deprecated
+        public AuthState getAuthState() {
+            return state;
+        }
+
+        @Deprecated
+        public long getPhone() {
+            return modules.getPreferences().getLong(KEY_PHONE, 0);
+        }
+
+        @Deprecated
+        public String getEmail() {
+            return modules.getPreferences().getString(KEY_EMAIL);
+        }
+
+        @Deprecated
+        public String getNickName() {
+            return modules.getPreferences().getString(KEY_NICKNAME);
+        }
+
+        @Deprecated
+        public String getZHName() {
+            return modules.getPreferences().getString(KEY_ZHNAME);
+        }
+
+        @Deprecated
+        public String getAuthWebServiceIp() {
+            String ip  = modules.getPreferences().getString("webServiceIp");
+            if(ip == null || ip.length() ==0){
+                ip = "http://220.189.207.21:8405";
+            }
+            return ip;
+        }
+
+        @Deprecated
+        public void setAuthWebServiceIp(String ip) {
+             modules.getPreferences().putString("webServiceIp",ip);
+        }
+
+        @Deprecated
+        public String getAuthPassword() {
+           return  modules.getPreferences().getString(KEY_PASSWORD);
+        }
+
+        @Deprecated
+        public Command<AuthState> requestStartEmailAuth(final String email) {
+            return new Command<AuthState>() {
                 @Override
-                public void onError(RpcException e) {
-                    callback.onError(e);
+                public void start(final CommandCallback<AuthState> callback) {
+                    ArrayList<String> langs = new ArrayList<>();
+                    for (String s : modules.getConfiguration().getPreferredLanguages()) {
+                        langs.add(s);
+                    }
+                    request(new RequestStartEmailAuth(email,
+                            apiConfiguration.getAppId(),
+                            apiConfiguration.getAppKey(),
+                            deviceHash,
+                            apiConfiguration.getDeviceTitle(),
+                            modules.getConfiguration().getTimeZone(),
+                            langs
+                    ), new RpcCallback<ResponseStartEmailAuth>() {
+                        @Override
+                        public void onResult(ResponseStartEmailAuth response) {
+                            modules.getPreferences().putString(KEY_EMAIL, email);
+                            modules.getPreferences().putString(KEY_TRANSACTION_HASH, response.getTransactionHash());
+
+                            ApiEmailActivationType emailActivationType = response.getActivationType();
+                            if (emailActivationType.equals(ApiEmailActivationType.OAUTH2)) {
+                                state = AuthState.GET_OAUTH_PARAMS;
+                            } else if (emailActivationType.equals(ApiEmailActivationType.CODE)) {
+                                state = AuthState.CODE_VALIDATION_EMAIL;
+                            } else if (emailActivationType.equals(ApiEmailActivationType.PASSWORD)) {
+                                state = AuthState.PASSWORD_VALIDATION;
+                            } else {
+                                state = AuthState.CODE_VALIDATION_EMAIL;
+                            }
+
+                            im.actor.runtime.Runtime.postToMainThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    callback.onResult(state);
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onError(final RpcException e) {
+                            im.actor.runtime.Runtime.postToMainThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.e(TAG, e);
+                                    callback.onError(e);
+                                }
+                            });
+                        }
+                    });
                 }
-            });
-        };
-    }
+            };
+        }
 
-    @Deprecated
-    public void resetAuth() {
-        state = AuthState.AUTH_START;
-    }
+        @Deprecated
+        public Command<AuthState> requestStartUserNameAuth(final String userName) {
+            return new Command<AuthState>() {
+                @Override
+                public void start(final CommandCallback<AuthState> callback) {
+                    ArrayList<String> langs = new ArrayList<>();
+                    for (String s : modules.getConfiguration().getPreferredLanguages()) {
+                        langs.add(s);
+                    }
+                    request(new RequestStartUsernameAuth(userName,
+                            apiConfiguration.getAppId(),
+                            apiConfiguration.getAppKey(),
+                            deviceHash,
+                            apiConfiguration.getDeviceTitle(),
+                            modules.getConfiguration().getTimeZone(),
+                            langs), new RpcCallback<ResponseStartUsernameAuth>() {
 
-    @Deprecated
-    public void resetModule() {
-        // Clearing authentication
-        state = AuthState.AUTH_START;
-        myUid = 0;
-        modules.getPreferences().putBool(KEY_AUTH, false);
-        modules.getPreferences().putInt(KEY_AUTH_UID, 0);
-        modules.getPreferences().putLong(KEY_PHONE, 0);
-        modules.getPreferences().putString(KEY_SMS_HASH, null);
-        modules.getPreferences().putInt(KEY_SMS_CODE, 0);
-    }
+                        @Override
+                        public void onResult(ResponseStartUsernameAuth response) {
+                            modules.getPreferences().putString(KEY_NICKNAME, userName);
+                            modules.getPreferences().putString(KEY_TRANSACTION_HASH, response.getTransactionHash());
 
-    @Deprecated
-    private void onLoggedIn(final CommandCallback<AuthState> callback, ResponseAuth response) {
-        state = AuthState.LOGGED_IN;
-        myUid = response.getUser().getId();
-        modules.onLoggedIn(true);
-        modules.getUsersModule().getUsersStorage().addOrUpdateItem(new User(response.getUser(), null));
-        modules.getPreferences().putBool(KEY_AUTH, true);
-        modules.getPreferences().putInt(KEY_AUTH_UID, myUid);
-        callback.onResult(state);
-    }
+                            state = AuthState.PASSWORD_VALIDATION;
+
+                            im.actor.runtime.Runtime.postToMainThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    callback.onResult(state);
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onError(final RpcException e) {
+                            im.actor.runtime.Runtime.postToMainThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.e(TAG, e);
+                                    callback.onError(e);
+                                }
+                            });
+                        }
+                    });
+                }
+            };
+        }
+
+        @Deprecated
+        public Command<AuthState> requestStartPhoneAuth(final long phone) {
+            return new Command<AuthState>() {
+                @Override
+                public void start(final CommandCallback<AuthState> callback) {
+                    ArrayList<String> langs = new ArrayList<>();
+                    for (String s : modules.getConfiguration().getPreferredLanguages()) {
+                        langs.add(s);
+                    }
+                    request(new RequestStartPhoneAuth(phone,
+                            apiConfiguration.getAppId(),
+                            apiConfiguration.getAppKey(),
+                            deviceHash,
+                            apiConfiguration.getDeviceTitle(),
+                            modules.getConfiguration().getTimeZone(),
+                            langs
+                    ), new RpcCallback<ResponseStartPhoneAuth>() {
+                        @Override
+                        public void onResult(ResponseStartPhoneAuth response) {
+                            modules.getPreferences().putLong(KEY_PHONE, phone);
+                            modules.getPreferences().putString(KEY_TRANSACTION_HASH, response.getTransactionHash());
+
+                            if (response.getActivationType() == ApiPhoneActivationType.CODE) {
+                                state = AuthState.CODE_VALIDATION_PHONE;
+                            } else if (response.getActivationType() == ApiPhoneActivationType.PASSWORD) {
+                                state = AuthState.PASSWORD_VALIDATION;
+                            } else {
+                                state = AuthState.CODE_VALIDATION_PHONE;
+                            }
+
+                            im.actor.runtime.Runtime.postToMainThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    callback.onResult(state);
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onError(final RpcException e) {
+                            im.actor.runtime.Runtime.postToMainThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.e(TAG, e);
+                                    callback.onError(e);
+                                }
+                            });
+                        }
+                    });
+                }
+            };
+        }
+
+        @Deprecated
+        public Command<AuthState> requestGetOAuth2Params() {
+            return new Command<AuthState>() {
+                @Override
+                public void start(final CommandCallback<AuthState> callback) {
+                    request(new RequestGetOAuth2Params(modules.getPreferences().getString(KEY_TRANSACTION_HASH),
+                                    "https://actor.im/auth/oauth2callback"),
+                            new RpcCallback<ResponseGetOAuth2Params>() {
+                                @Override
+                                public void onResult(final ResponseGetOAuth2Params response) {
+                                    modules.getPreferences().putString(KEY_OAUTH_REDIRECT_URL, response.getAuthUrl());
+
+                                    state = AuthState.COMPLETE_OAUTH;
+
+                                    im.actor.runtime.Runtime.postToMainThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            callback.onResult(state);
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void onError(final RpcException e) {
+                                    im.actor.runtime.Runtime.postToMainThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Log.e(TAG, e);
+                                            callback.onError(e);
+                                        }
+                                    });
+                                }
+                            });
+                }
+            };
+        }
+
+        @Deprecated
+        public Command<AuthState> requestCompleteOauth(final String code) {
+            return new Command<AuthState>() {
+                @Override
+                public void start(final CommandCallback<AuthState> callback) {
+                    request(new RequestCompleteOAuth2(modules.getPreferences().getString(KEY_TRANSACTION_HASH), code), new RpcCallback<ResponseAuth>() {
+                        @Override
+                        public void onResult(ResponseAuth response) {
+                            onLoggedIn(callback, response);
+                        }
+
+                        @Override
+                        public void onError(final RpcException e) {
+                            if ("EMAIL_EXPIRED".equals(e.getTag())) {
+                                resetAuth();
+                            } else if ("EMAIL_UNOCCUPIED".equals(e.getTag())) {
+                                // modules.getPreferences().putString(KEY_CODE, code);
+                                state = AuthState.SIGN_UP;
+                                callback.onResult(AuthState.SIGN_UP);
+                                return;
+                            }
+
+                            Runtime.postToMainThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.e(TAG, e);
+                                    callback.onError(e);
+                                }
+                            });
+                        }
+                    });
+                }
+            };
+        }
+
+        @Deprecated
+        public Command<AuthState> signUp(final String name, final ApiSex sex, final String avatarPath) {
+            return signUp(name, sex, avatarPath, null);
+        }
+
+        @Deprecated
+        public Command<AuthState> signUp(final String name, final ApiSex sex, final String avatarPath, final String password) {
+            return new Command<AuthState>() {
+                @Override
+                public void start(final CommandCallback<AuthState> callback) {
+                    request(new RequestSignUp(modules.getPreferences().getString(KEY_TRANSACTION_HASH), name, sex,
+                            password), new RpcCallback<ResponseAuth>() {
+                        @Override
+                        public void onResult(ResponseAuth response) {
+                            onLoggedIn(callback, response);
+                            if (avatarPath != null) {
+                                modules.getProfileModule().changeAvatar(avatarPath);
+                            }
+                        }
+
+                        @Override
+                        public void onError(final RpcException e) {
+                            if ("EMAIL_CODE_EXPIRED".equals(e.getTag())) {
+                                resetAuth();
+                            }else if ("NICKNAME_BUSY".equals(e.getTag())) {
+                                state = AuthState.BATCHSIGNUP;
+                                Runtime.postToMainThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        callback.onResult(state);
+                                    }
+                                });
+                                return;
+                            }
+                            Runtime.postToMainThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.e(TAG, e);
+                                    callback.onError(e);
+                                }
+                            });
+                        }
+                    });
+                }
+            };
+        }
+
+        @Deprecated
+        public Command<AuthState> requestValidateCode(final String code) {
+            if (code == null) {
+                throw new RuntimeException("Code couldn't be null!");
+            }
+            return new Command<AuthState>() {
+                @Override
+                public void start(final CommandCallback<AuthState> callback) {
+                    String transactionHash = modules.getPreferences()
+                            .getString(KEY_TRANSACTION_HASH);
+
+                    request(new RequestValidateCode(transactionHash, code), new RpcCallback<ResponseAuth>() {
+                        @Override
+                        public void onResult(ResponseAuth response) {
+                            onLoggedIn(callback, response);
+                        }
+
+                        @Override
+                        public void onError(final RpcException e) {
+                            if ("PHONE_CODE_EXPIRED".equals(e.getTag()) || "EMAIL_CODE_EXPIRED".equals(e.getTag())) {
+                                resetAuth();
+                            } else if ("PHONE_NUMBER_UNOCCUPIED".equals(e.getTag()) || "EMAIL_UNOCCUPIED".equals(e.getTag())) {
+                                // modules.getPreferences().putString(KEY_CODE, code);
+                                state = AuthState.SIGN_UP;
+                                Runtime.postToMainThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        callback.onResult(AuthState.SIGN_UP);
+                                    }
+                                });
+                                return;
+                            }
+
+                            Runtime.postToMainThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.e(TAG, e);
+                                    callback.onError(e);
+                                }
+                            });
+                        }
+                    });
+                }
+            };
+        }
+
+        @Deprecated
+        public Command<AuthState> requestValidatePassword(final String password) {
+            return new Command<AuthState>() {
+                @Override
+                public void start(final CommandCallback<AuthState> callback) {
+                    String transactionHash = modules.getPreferences()
+                            .getString(KEY_TRANSACTION_HASH);
+                    request(new RequestValidatePassword(transactionHash, password),
+                            new RpcCallback<ResponseAuth>() {
+                                @Override
+                                public void onResult(ResponseAuth response) {
+                                    onLoggedIn(callback, response);
+                                }
+
+                                @Override
+                                public void onError(final RpcException e) {
+                                    if ("USERNAME_CODE_EXPIRED".equals(e.getTag()) || "PHONE_CODE_EXPIRED".equals(e.getTag()) || "EMAIL_CODE_EXPIRED".equals(e.getTag())) {
+                                        resetAuth();
+                                    } else if ("PHONE_NUMBER_UNOCCUPIED".equals(e.getTag()) || "EMAIL_UNOCCUPIED".equals(e.getTag()) || "USERNAME_UNOCCUPIED".equals(e.getTag())) {
+                                        modules.getPreferences().putString(KEY_PASSWORD, password);
+                                        state = AuthState.SIGN_UP;
+                                        Runtime.postToMainThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                RpcException e = new RpcException("SIGN_UP", 400, "检验密码", false, null);
+    //                                            callback.onError(e);
+                                                callback.onResult(AuthState.SIGN_UP);
+                                            }
+                                        });
+                                        return;
+                                    }
+
+                                    Runtime.postToMainThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Log.e(TAG, e);
+                                            callback.onError(e);
+                                        }
+                                    });
+                                }
+                            });
+                }
+            };
+        }
+
+
+        @Deprecated
+        public Command<AuthState> requestSignUp(final String nickName, final String name,final String ip) {
+            return new Command<AuthState>() {
+                @Override
+                public void start(final CommandCallback<AuthState> callback) {
+                    ArrayList<String> langs = new ArrayList<>();
+                    for (String s : modules.getConfiguration().getPreferredLanguages()) {
+                        langs.add(s);
+                    }
+                    System.out.println("requestSignUp" + nickName);
+                    request(new RequestStartUsernameAuth(nickName,
+                            apiConfiguration.getAppId(),
+                            apiConfiguration.getAppKey(),
+                            deviceHash,
+                            apiConfiguration.getDeviceTitle(),
+                            modules.getConfiguration().getTimeZone(),
+                            langs), new RpcCallback<ResponseStartUsernameAuth>() {
+
+                        @Override
+                        public void onResult(ResponseStartUsernameAuth response) {
+                            final String hash = response.getTransactionHash();
+                            System.out.println("onResult" + nickName);
+
+                            modules.getPreferences().putString(KEY_TRANSACTION_HASH, response.getTransactionHash());
+                            im.actor.runtime.Runtime.postToMainThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    request(new RequestSignUp(hash, name, ApiSex.UNKNOWN,
+                                            "11111111"), new RpcCallback<ResponseAuth>() {
+                                        @Override
+                                        public void onResult(ResponseAuth response) {
+                                            state = AuthState.BATCHSIGNUP;
+                                            modules.getPreferences().putString("webServiceIp", ip);
+                                            modules.getPreferences().putString(KEY_NICKNAME, nickName);
+
+                                            Runtime.postToMainThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    callback.onResult(state);
+                                                }
+                                            });
+                                        }
+
+                                        @Override
+                                        public void onError(final RpcException e) {
+                                            if ("NICKNAME_BUSY".equals(e.getTag())) {
+                                                state = AuthState.BATCHSIGNUP;
+                                                modules.getPreferences().putString("webServiceIp", ip);
+                                                modules.getPreferences().putString(KEY_NICKNAME, nickName);
+
+                                                Runtime.postToMainThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        callback.onResult(state);
+                                                    }
+                                                });
+                                                return;
+                                            }
+                                            Runtime.postToMainThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    Log.e(TAG, e);
+                                                    callback.onError(e);
+                                                }
+                                            });
+
+                                        }
+                                    });
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onError(final RpcException e) {
+                            im.actor.runtime.Runtime.postToMainThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.e(TAG, e);
+                                    callback.onError(e);
+                                }
+                            });
+                        }
+
+                    });
+                }
+            };
+        }
+
+        @Deprecated
+        public Command<Boolean> requestCallActivation() {
+            return new Command<Boolean>() {
+                @Override
+                public void start(final CommandCallback<Boolean> callback) {
+                    String transactionHash = modules.getPreferences().getString(KEY_TRANSACTION_HASH);
+
+                    request(new RequestSendCodeByPhoneCall(transactionHash), new RpcCallback<ResponseVoid>() {
+                        @Override
+                        public void onResult(ResponseVoid response) {
+                            callback.onResult(true);
+                        }
+
+                        @Override
+                        public void onError(RpcException e) {
+                            callback.onError(e);
+                        }
+                    });
+                }
+            };
+        }
+
+        @Deprecated
+        public void resetAuth() {
+            state = AuthState.AUTH_START;
+        }
+
+        @Deprecated
+        public void resetModule() {
+            // Clearing authentication
+            state = AuthState.AUTH_START;
+            myUid = 0;
+            modules.getPreferences().putBool(KEY_AUTH, false);
+            modules.getPreferences().putInt(KEY_AUTH_UID, 0);
+            modules.getPreferences().putLong(KEY_PHONE, 0);
+            modules.getPreferences().putString(KEY_SMS_HASH, null);
+            modules.getPreferences().putInt(KEY_SMS_CODE, 0);
+        }
+
+        @Deprecated
+        private void onLoggedIn(final CommandCallback<AuthState> callback, ResponseAuth response) {
+            state = AuthState.LOGGED_IN;
+            myUid = response.getUser().getId();
+            modules.onLoggedIn(true);
+            modules.getUsersModule().getUsersStorage().addOrUpdateItem(new User(response.getUser(),null));
+            modules.getPreferences().putBool(KEY_AUTH, true);
+            modules.getPreferences().putInt(KEY_AUTH_UID, myUid);
+            callback.onResult(state);
+
+        }
 
     private <T extends Response> void request(Request<T> request, RpcCallback<T> callback) {
         modules.getActorApi().request(request, callback);

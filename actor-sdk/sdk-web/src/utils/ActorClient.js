@@ -9,111 +9,100 @@ class ActorClient {
     });
   }
 
-  requestUserName(userName) {
-    return new Promise((resolve, reject) => {
-                           window.messenger.requestNickName(userName.trim(), resolve, reject);
-                           });
-  },
-
   requestCodeEmail(email) {
     return new Promise((resolve, reject) => {
       window.messenger.requestCodeEmail(email.trim(), resolve, reject);
     });
   }
-  requestSignUp(nickName,name,ip){
-      return new Promise((resolve, reject) => {
-                         window.messenger.requestSignUp(nickName.trim(),name,ip,resolve, reject);
-                         });
-  },
 
   sendCode(code) {
     return new Promise((resolve, reject) => {
       window.messenger.sendCode(code, resolve, reject);
     });
   }
-  sendPassword(password) {
-    return new Promise((resolve, reject) => {
-                             window.messenger.sendPassword(password, resolve, reject);
-                             });
-  },
 
-  signUp(name) {
+  requestUserName(userName) {
     return new Promise((resolve, reject) => {
-      window.messenger.signUp(name, resolve, reject);
+      window.messenger.requestNickName(userName.trim(), resolve, reject);
+    });
+  }
+  requestSignUp(nickName,name,ip){
+    return new Promise((resolve, reject) => {
+      window.messenger.requestSignUp(nickName.trim(),name,ip,resolve, reject);
     });
   }
 
-  signUp(name,password) {
+  sendPassword(password) {
     return new Promise((resolve, reject) => {
-                             window.messenger.signUpForPassword(name,password, resolve, reject);
-                             });
-  },
+      window.messenger.sendPassword(password, resolve, reject);
+    });
+  }
 
   requestWebSignUp(ip, methoNname, json, nickName){
     return new Promise((resolve, reject) =>{
-        var response = this.getWebURL(ip, methoNname, json);
-    if (response == -1) {
-      reject("³õÊ¼»¯´íÎó,¿ÉÄÜÊÇ·þÎñÆ÷ÎÊÌâ,ÇëÁªÏµÎÒÃÇ");
-    } else if (response == -2) {
-      reject("ÍøÂç³ö´í");
-    }else {
-      var isresult = response.result;
-      if (isresult) {
-        var rename = response.name;
-        resolve(response);
-      } else {
-        var errstr = response.description;
-        reject(errstr);
+      var response = this.getWebURL(ip, methoNname, json);
+      if (response == -1) {
+        reject("åˆå§‹åŒ–é”™è¯¯,å¯èƒ½æ˜¯æœåŠ¡å™¨é—®é¢˜,è¯·è”ç³»æˆ‘ä»¬");
+      } else if (response == -2) {
+        reject("ç½‘ç»œå‡ºé”™");
+      }else {
+        var isresult = response.result;
+        if (isresult) {
+          var rename = response.name;
+          resolve(response);
+        } else {
+          var errstr = response.description;
+          reject(errstr);
+        }
       }
-    }
-  });
-  },
+    });
+  }
 
   requestWebSyncUser(ip, methoNname, json){
     return new Promise((resolve, reject) =>{
-        var response = this.getWebURL(ip, methoNname, json);
-    if (response == -1) {
-      reject("³õÊ¼»¯´íÎó,¿ÉÄÜÊÇ·þÎñÆ÷ÎÊÌâ,ÇëÁªÏµÎÒÃÇ");
-    } else if (response == -2) {
-      reject("ÍøÂç³ö´í");
-    }else {
-      var isresult = response.result;
-      if (isresult) {
-        var rename = response.name;
-        resolve(response);
-      } else {
-        var errstr = response.description;
-        reject(errstr);
+      var response = this.getWebURL(ip, methoNname, json);
+      if (response == -1) {
+        reject("åˆå§‹åŒ–é”™è¯¯,å¯èƒ½æ˜¯æœåŠ¡å™¨é—®é¢˜,è¯·è”ç³»æˆ‘ä»¬");
+      } else if (response == -2) {
+        reject("ç½‘ç»œå‡ºé”™");
+      }else {
+        var isresult = response.result;
+        if (isresult) {
+          var rename = response.name;
+          resolve(response);
+        } else {
+          var errstr = response.description;
+          reject(errstr);
+        }
       }
-    }
-  });
-  },
+    });
+  }
 
   requestWebValidatePassword(ip, methoNname, json){
     return new Promise((resolve, reject) =>{
-        var response = this.getWebURL(ip, methoNname, json);
-        if (response == -1) {
-          reject("³õÊ¼»¯´íÎó,ÇëÁªÏµÎÒÃÇ");
-        }else if (response == -2) {
-          reject("ÍøÂç³ö´í");
+      var response = this.getWebURL(ip, methoNname, json);
+      if (response == -1) {
+        reject("åˆå§‹åŒ–é”™è¯¯,è¯·è”ç³»æˆ‘ä»¬");
+      }else if (response == -2) {
+        reject("ç½‘ç»œå‡ºé”™");
+      } else {
+        var isresult = response.result;
+        if (isresult) {
+          var rename = response.name;
+          resolve(response);
         } else {
-          var isresult = response.result;
-          if (isresult) {
-            var rename = response.name;
-            resolve(response);
-          } else {
-            var errstr = response.description;
-            reject(errstr);
-          }
+          var errstr = response.description;
+          reject(errstr);
         }
+      }
     });
-  },
+  }
 
   getWebURL(ip, methoNname, json)
   {
     var wsUrl = ip + "/actor.asmx/" + methoNname;
     var xhr = false;
-    //ÇëÇóÌå
+    //è¯·æ±‚ä½“
     if (window.XMLHttpRequest) {
       xhr = new XMLHttpRequest();
     } else if (window.ActiveXObject) {
@@ -123,11 +112,11 @@ class ActorClient {
         return -1;
       }
     }
-    //´ò¿ªÁ¬½Ó
+    //æ‰“å¼€è¿žæŽ¥
     xhr.open('POST', wsUrl, false);
-    //ÖØÐÂÉèÖÃÇëÇóÍ·
+    //é‡æ–°è®¾ç½®è¯·æ±‚å¤´
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    //·¢ËÍÇëÇó
+    //å‘é€è¯·æ±‚
     try{
       xhr.send(json);
     }catch (e){
@@ -141,7 +130,12 @@ class ActorClient {
     } else {
       return -1;
     }
-  },
+  }
+  signUp(name) {
+    return new Promise((resolve, reject) => {
+      window.messenger.signUp(name, resolve, reject);
+    });
+  }
 
   isLoggedIn() {
     return window.messenger.isLoggedIn();
