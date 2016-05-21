@@ -6,6 +6,7 @@ package im.actor.core.entity.content;
 
 import java.io.IOException;
 
+import im.actor.core.api.ApiDocumentExAnimation;
 import im.actor.core.api.ApiDocumentExPhoto;
 import im.actor.core.api.ApiDocumentExVideo;
 import im.actor.core.api.ApiDocumentExVoice;
@@ -32,6 +33,7 @@ import im.actor.core.entity.content.internal.AbsContentContainer;
 import im.actor.core.entity.content.internal.AbsLocalContent;
 import im.actor.core.entity.content.internal.ContentLocalContainer;
 import im.actor.core.entity.content.internal.ContentRemoteContainer;
+import im.actor.core.entity.content.internal.LocalAnimation;
 import im.actor.core.entity.content.internal.LocalDocument;
 import im.actor.core.entity.content.internal.LocalPhoto;
 import im.actor.core.entity.content.internal.LocalVideo;
@@ -90,6 +92,8 @@ public abstract class AbsContent {
                 return new VideoContent(localContainer);
             } else if (content instanceof LocalVoice) {
                 return new VoiceContent(localContainer);
+            } else if (content instanceof LocalAnimation) {
+                return new AnimationContent(localContainer);
             } else if (content instanceof LocalDocument) {
                 return new DocumentContent(localContainer);
             } else {
@@ -107,6 +111,8 @@ public abstract class AbsContent {
                         return new VideoContent(remoteContainer);
                     } else if (d.getExt() instanceof ApiDocumentExVoice) {
                         return new VoiceContent(remoteContainer);
+                    } else if (d.getExt() instanceof ApiDocumentExAnimation) {
+                        return new AnimationContent(remoteContainer);
                     } else {
                         return new DocumentContent(remoteContainer);
                     }
