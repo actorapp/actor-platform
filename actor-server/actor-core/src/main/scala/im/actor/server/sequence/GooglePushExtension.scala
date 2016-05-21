@@ -70,38 +70,41 @@ final class GooglePushExtension(system: ActorSystem) extends Extension {
   private val config = GooglePushManagerConfig.load(system.settings.config.getConfig("services.google.push")).get
   private val deliveryPublisher = system.actorOf(GooglePushDelivery.props, "google-push-delivery")
 
-  Source.fromPublisher(ActorPublisher[(HttpRequest, GooglePushDelivery.Delivery)](deliveryPublisher))
-    .via(GooglePushDelivery.flow)
-    .runForeach {
-      // TODO: flatten
-      case Xor.Right((body, delivery)) ⇒
-        parse(body) match {
-          case Xor.Right(json) ⇒
-            json.asObject match {
-              case Some(obj) ⇒
-                obj("error") flatMap (_.asString) match {
-                  case Some("InvalidRegistration") ⇒
-                    log.warning("Invalid registration, deleting")
-                    remove(delivery.m.to)
-                  case Some("NotRegistered") ⇒
-                    log.warning("Token is not registered, deleting")
-                    remove(delivery.m.to)
-                  case Some(other) ⇒
-                    log.warning("Error in GCM response: {}", other)
-                  case None ⇒
-                    log.debug("Successfully delivered: {}", delivery)
-                }
-              case None ⇒
-                log.error("Expected JSON Object but got: {}", json)
-            }
-          case Xor.Left(failure) ⇒ log.error(failure.underlying, "Failed to parse response")
-        }
-      case Xor.Left(e) ⇒
-        log.error(e, "Failed to make request")
-    } onComplete {
-      case Failure(e) ⇒ log.error(e, "Failure in stream")
-      case Success(_) ⇒ log.debug("Stream completed")
-    }
+  def initFlow(): Unit =
+    Source.fromPublisher(ActorPublisher[(HttpRequest, GooglePushDelivery.Delivery)](deliveryPublisher))
+      .via(GooglePushDelivery.flow)
+      .runForeach {
+        // TODO: flatten
+        case Xor.Right((body, delivery)) ⇒
+          parse(body) match {
+            case Xor.Right(json) ⇒
+              json.asObject match {
+                case Some(obj) ⇒
+                  obj("error") flatMap (_.asString) match {
+                    case Some("InvalidRegistration") ⇒
+                      log.warning("Invalid registration, deleting")
+                      remove(delivery.m.to)
+                    case Some("NotRegistered") ⇒
+                      log.warning("Token is not registered, deleting")
+                      remove(delivery.m.to)
+                    case Some(other) ⇒
+                      log.warning("Error in GCM response: {}", other)
+                    case None ⇒
+                      log.debug("Successfully delivered: {}", delivery)
+                  }
+                case None ⇒
+                  log.error("Expected JSON Object but got: {}", json)
+              }
+            case Xor.Left(failure) ⇒ log.error(failure.underlying, "Failed to parse response")
+          }
+        case Xor.Left(e) ⇒
+          log.error(e, "Failed to make request")
+      } onComplete {
+        case Failure(e) ⇒
+          log.error(e, "Failure in stream, restarting")
+          initFlow()
+        case Success(_) ⇒ log.debug("Stream completed")
+      }
 
   private def remove(regId: String): Future[Int] = db.run(GooglePushCredentialsRepo.deleteByToken(regId))
 
