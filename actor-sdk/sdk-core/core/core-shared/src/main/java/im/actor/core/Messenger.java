@@ -850,6 +850,23 @@ public class Messenger {
     }
 
     /**
+     * Send Animation message
+     *
+     * @param peer       destination peer
+     * @param fileName   File name (without path)
+     * @param w          photo width
+     * @param h          photo height
+     * @param fastThumb  Fast thumb of photo
+     * @param descriptor File Descriptor
+     */
+    @ObjectiveCName("sendAnimationWithPeer:withName:withW:withH:withThumb:withDescriptor:")
+    public void sendAnimation(@NotNull Peer peer, @NotNull String fileName,
+                              int w, int h, @Nullable FastThumb fastThumb,
+                              @NotNull String descriptor) {
+        modules.getMessagesModule().sendAnimation(peer, fileName, w, h, fastThumb, descriptor);
+    }
+
+    /**
      * Send Video message
      *
      * @param peer       destination peer

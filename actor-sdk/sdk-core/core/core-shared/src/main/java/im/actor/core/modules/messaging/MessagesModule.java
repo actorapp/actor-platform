@@ -239,6 +239,14 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
                 fileName, reference.getSize(), w, h));
     }
 
+    public void sendAnimation(@NotNull Peer peer, @NotNull String fileName, int w, int h, @Nullable FastThumb fastThumb,
+                              @NotNull String descriptor) {
+        FileSystemReference reference = Storage.fileFromDescriptor(descriptor);
+        sendMessageActor.send(new SenderActor.SendAnimation(peer, fastThumb,
+                descriptor,
+                fileName, reference.getSize(), w, h));
+    }
+
     public void sendVideo(Peer peer, String fileName, int w, int h, int duration,
                           FastThumb fastThumb, String descriptor) {
         FileSystemReference reference = Storage.fileFromDescriptor(descriptor);
