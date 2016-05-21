@@ -23,6 +23,8 @@ public abstract class ApiDocumentEx extends BserObject {
             case 1: return Bser.parse(new ApiDocumentExPhoto(), content);
             case 2: return Bser.parse(new ApiDocumentExVideo(), content);
             case 3: return Bser.parse(new ApiDocumentExVoice(), content);
+            case 6: return Bser.parse(new ApiDocumentExAnimation(), content);
+            case 7: return Bser.parse(new ApiDocumentExAnimationVid(), content);
             default: return new ApiDocumentExUnsupported(key, content);
         }
     }
