@@ -15,22 +15,22 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.core.api.*;
 
-public class UpdateGroupAboutChanged extends Update {
+public class UpdateGroupMembersUpdated extends Update {
 
-    public static final int HEADER = 0xa39;
-    public static UpdateGroupAboutChanged fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new UpdateGroupAboutChanged(), data);
+    public static final int HEADER = 0xa36;
+    public static UpdateGroupMembersUpdated fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new UpdateGroupMembersUpdated(), data);
     }
 
     private int groupId;
-    private String about;
+    private List<ApiMember> members;
 
-    public UpdateGroupAboutChanged(int groupId, @Nullable String about) {
+    public UpdateGroupMembersUpdated(int groupId, @NotNull List<ApiMember> members) {
         this.groupId = groupId;
-        this.about = about;
+        this.members = members;
     }
 
-    public UpdateGroupAboutChanged() {
+    public UpdateGroupMembersUpdated() {
 
     }
 
@@ -38,30 +38,32 @@ public class UpdateGroupAboutChanged extends Update {
         return this.groupId;
     }
 
-    @Nullable
-    public String getAbout() {
-        return this.about;
+    @NotNull
+    public List<ApiMember> getMembers() {
+        return this.members;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         this.groupId = values.getInt(1);
-        this.about = values.optString(2);
+        List<ApiMember> _members = new ArrayList<ApiMember>();
+        for (int i = 0; i < values.getRepeatedCount(2); i ++) {
+            _members.add(new ApiMember());
+        }
+        this.members = values.getRepeatedObj(2, _members);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeInt(1, this.groupId);
-        if (this.about != null) {
-            writer.writeString(2, this.about);
-        }
+        writer.writeRepeatedObj(2, this.members);
     }
 
     @Override
     public String toString() {
-        String res = "update GroupAboutChanged{";
+        String res = "update GroupMembersUpdated{";
         res += "groupId=" + this.groupId;
-        res += ", about=" + this.about;
+        res += ", members=" + this.members;
         res += "}";
         return res;
     }

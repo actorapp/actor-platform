@@ -15,22 +15,26 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.core.api.*;
 
-public class UpdateGroupAboutChanged extends Update {
+public class UpdateGroupUserLeaveObsolete extends Update {
 
-    public static final int HEADER = 0xa39;
-    public static UpdateGroupAboutChanged fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new UpdateGroupAboutChanged(), data);
+    public static final int HEADER = 0x17;
+    public static UpdateGroupUserLeaveObsolete fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new UpdateGroupUserLeaveObsolete(), data);
     }
 
     private int groupId;
-    private String about;
+    private long rid;
+    private int uid;
+    private long date;
 
-    public UpdateGroupAboutChanged(int groupId, @Nullable String about) {
+    public UpdateGroupUserLeaveObsolete(int groupId, long rid, int uid, long date) {
         this.groupId = groupId;
-        this.about = about;
+        this.rid = rid;
+        this.uid = uid;
+        this.date = date;
     }
 
-    public UpdateGroupAboutChanged() {
+    public UpdateGroupUserLeaveObsolete() {
 
     }
 
@@ -38,30 +42,41 @@ public class UpdateGroupAboutChanged extends Update {
         return this.groupId;
     }
 
-    @Nullable
-    public String getAbout() {
-        return this.about;
+    public long getRid() {
+        return this.rid;
+    }
+
+    public int getUid() {
+        return this.uid;
+    }
+
+    public long getDate() {
+        return this.date;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         this.groupId = values.getInt(1);
-        this.about = values.optString(2);
+        this.rid = values.getLong(4);
+        this.uid = values.getInt(2);
+        this.date = values.getLong(3);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeInt(1, this.groupId);
-        if (this.about != null) {
-            writer.writeString(2, this.about);
-        }
+        writer.writeLong(4, this.rid);
+        writer.writeInt(2, this.uid);
+        writer.writeLong(3, this.date);
     }
 
     @Override
     public String toString() {
-        String res = "update GroupAboutChanged{";
+        String res = "update GroupUserLeaveObsolete{";
         res += "groupId=" + this.groupId;
-        res += ", about=" + this.about;
+        res += ", rid=" + this.rid;
+        res += ", uid=" + this.uid;
+        res += ", date=" + this.date;
         res += "}";
         return res;
     }

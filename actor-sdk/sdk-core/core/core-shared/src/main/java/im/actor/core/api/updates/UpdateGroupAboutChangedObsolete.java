@@ -15,22 +15,22 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.core.api.*;
 
-public class UpdateGroupAboutChanged extends Update {
+public class UpdateGroupAboutChangedObsolete extends Update {
 
-    public static final int HEADER = 0xa39;
-    public static UpdateGroupAboutChanged fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new UpdateGroupAboutChanged(), data);
+    public static final int HEADER = 0xd6;
+    public static UpdateGroupAboutChangedObsolete fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new UpdateGroupAboutChangedObsolete(), data);
     }
 
     private int groupId;
     private String about;
 
-    public UpdateGroupAboutChanged(int groupId, @Nullable String about) {
+    public UpdateGroupAboutChangedObsolete(int groupId, @Nullable String about) {
         this.groupId = groupId;
         this.about = about;
     }
 
-    public UpdateGroupAboutChanged() {
+    public UpdateGroupAboutChangedObsolete() {
 
     }
 
@@ -59,7 +59,7 @@ public class UpdateGroupAboutChanged extends Update {
 
     @Override
     public String toString() {
-        String res = "update GroupAboutChanged{";
+        String res = "update GroupAboutChangedObsolete{";
         res += "groupId=" + this.groupId;
         res += ", about=" + this.about;
         res += "}";

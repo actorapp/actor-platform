@@ -15,22 +15,22 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.core.api.*;
 
-public class UpdateGroupAboutChanged extends Update {
+public class UpdateGroupCanSendMessagesChanged extends Update {
 
-    public static final int HEADER = 0xa39;
-    public static UpdateGroupAboutChanged fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new UpdateGroupAboutChanged(), data);
+    public static final int HEADER = 0xa40;
+    public static UpdateGroupCanSendMessagesChanged fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new UpdateGroupCanSendMessagesChanged(), data);
     }
 
     private int groupId;
-    private String about;
+    private boolean canSendMessages;
 
-    public UpdateGroupAboutChanged(int groupId, @Nullable String about) {
+    public UpdateGroupCanSendMessagesChanged(int groupId, boolean canSendMessages) {
         this.groupId = groupId;
-        this.about = about;
+        this.canSendMessages = canSendMessages;
     }
 
-    public UpdateGroupAboutChanged() {
+    public UpdateGroupCanSendMessagesChanged() {
 
     }
 
@@ -38,30 +38,27 @@ public class UpdateGroupAboutChanged extends Update {
         return this.groupId;
     }
 
-    @Nullable
-    public String getAbout() {
-        return this.about;
+    public boolean canSendMessages() {
+        return this.canSendMessages;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         this.groupId = values.getInt(1);
-        this.about = values.optString(2);
+        this.canSendMessages = values.getBool(2);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeInt(1, this.groupId);
-        if (this.about != null) {
-            writer.writeString(2, this.about);
-        }
+        writer.writeBool(2, this.canSendMessages);
     }
 
     @Override
     public String toString() {
-        String res = "update GroupAboutChanged{";
+        String res = "update GroupCanSendMessagesChanged{";
         res += "groupId=" + this.groupId;
-        res += ", about=" + this.about;
+        res += ", canSendMessages=" + this.canSendMessages;
         res += "}";
         return res;
     }

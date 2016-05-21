@@ -22,17 +22,34 @@ public class RequestLoadGroupedDialogs extends Request<ResponseLoadGroupedDialog
         return Bser.parse(new RequestLoadGroupedDialogs(), data);
     }
 
+    private List<ApiUpdateOptimization> optimizations;
+
+    public RequestLoadGroupedDialogs(@NotNull List<ApiUpdateOptimization> optimizations) {
+        this.optimizations = optimizations;
+    }
 
     public RequestLoadGroupedDialogs() {
 
     }
 
+    @NotNull
+    public List<ApiUpdateOptimization> getOptimizations() {
+        return this.optimizations;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
+        this.optimizations = new ArrayList<ApiUpdateOptimization>();
+        for (int b : values.getRepeatedInt(1)) {
+            optimizations.add(ApiUpdateOptimization.parse(b));
+        }
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
+        for (ApiUpdateOptimization i : this.optimizations) {
+            writer.writeInt(1, i.getValue());
+        }
     }
 
     @Override

@@ -15,22 +15,22 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.core.api.*;
 
-public class UpdateGroupAboutChanged extends Update {
+public class UpdateGroupMemberChanged extends Update {
 
-    public static final int HEADER = 0xa39;
-    public static UpdateGroupAboutChanged fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new UpdateGroupAboutChanged(), data);
+    public static final int HEADER = 0xa34;
+    public static UpdateGroupMemberChanged fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new UpdateGroupMemberChanged(), data);
     }
 
     private int groupId;
-    private String about;
+    private boolean isMember;
 
-    public UpdateGroupAboutChanged(int groupId, @Nullable String about) {
+    public UpdateGroupMemberChanged(int groupId, boolean isMember) {
         this.groupId = groupId;
-        this.about = about;
+        this.isMember = isMember;
     }
 
-    public UpdateGroupAboutChanged() {
+    public UpdateGroupMemberChanged() {
 
     }
 
@@ -38,30 +38,27 @@ public class UpdateGroupAboutChanged extends Update {
         return this.groupId;
     }
 
-    @Nullable
-    public String getAbout() {
-        return this.about;
+    public boolean isMember() {
+        return this.isMember;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         this.groupId = values.getInt(1);
-        this.about = values.optString(2);
+        this.isMember = values.getBool(2);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeInt(1, this.groupId);
-        if (this.about != null) {
-            writer.writeString(2, this.about);
-        }
+        writer.writeBool(2, this.isMember);
     }
 
     @Override
     public String toString() {
-        String res = "update GroupAboutChanged{";
+        String res = "update GroupMemberChanged{";
         res += "groupId=" + this.groupId;
-        res += ", about=" + this.about;
+        res += ", isMember=" + this.isMember;
         res += "}";
         return res;
     }
