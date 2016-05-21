@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
- */
-
 package im.actor.core.entity.content.internal;
 
 import java.io.IOException;
@@ -9,25 +5,23 @@ import java.io.IOException;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
 
-public class LocalVideo extends LocalDocument {
+public class LocalAnimation extends LocalDocument {
 
     private int w;
     private int h;
-    private int duration;
 
-    public LocalVideo(String fileName, String fileDescriptor, int fileSize, String mimeType,
-                      LocalFastThumb fastThumb, int w, int h, int duration) {
+    public LocalAnimation(String fileName, String fileDescriptor, int fileSize, String mimeType,
+                          LocalFastThumb fastThumb, int w, int h) {
         super(fileName, fileDescriptor, fileSize, mimeType, fastThumb);
         this.w = w;
         this.h = h;
-        this.duration = duration;
     }
 
-    public LocalVideo(byte[] data) throws IOException {
+    public LocalAnimation(byte[] data) throws IOException {
         super(data);
     }
 
-    public LocalVideo(BserValues values) throws IOException {
+    public LocalAnimation(BserValues values) throws IOException {
         super(values);
     }
 
@@ -39,16 +33,11 @@ public class LocalVideo extends LocalDocument {
         return h;
     }
 
-    public int getDuration() {
-        return duration;
-    }
-
     @Override
     public void parse(BserValues values) throws IOException {
         super.parse(values);
         w = values.getInt(10);
         h = values.getInt(11);
-        duration = values.getInt(12);
     }
 
     @Override
@@ -56,6 +45,5 @@ public class LocalVideo extends LocalDocument {
         super.serialize(writer);
         writer.writeInt(10, w);
         writer.writeInt(11, h);
-        writer.writeInt(12, duration);
     }
 }

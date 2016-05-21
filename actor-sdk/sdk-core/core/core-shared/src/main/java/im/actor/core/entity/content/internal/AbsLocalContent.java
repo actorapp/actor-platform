@@ -14,9 +14,12 @@ import im.actor.runtime.bser.DataInput;
 import im.actor.runtime.bser.DataOutput;
 
 public abstract class AbsLocalContent extends BserObject {
+
     private static final int CONTENT_DOC = 0;
     private static final int CONTENT_PHOTO = 1;
     private static final int CONTENT_VIDEO = 2;
+    private static final int CONTENT_VOICE = 3;
+    private static final int CONTENT_ANIMATION = 4;
 
     public static AbsLocalContent loadContainer(byte[] data) throws IOException {
         BserValues values = new BserValues(BserParser.deserialize(new DataInput(data)));
@@ -28,6 +31,10 @@ public abstract class AbsLocalContent extends BserObject {
             return new LocalPhoto(content);
         } else if (type == CONTENT_VIDEO) {
             return new LocalVideo(content);
+        } else if (type == CONTENT_VOICE) {
+            return new LocalVoice(content);
+        } else if (type == CONTENT_ANIMATION) {
+            return new LocalAnimation(content);
         } else {
             throw new IOException("Unknown type");
         }
@@ -42,6 +49,10 @@ public abstract class AbsLocalContent extends BserObject {
             writer.writeInt(1, CONTENT_VIDEO);
         } else if (this instanceof LocalDocument) {
             writer.writeInt(1, CONTENT_DOC);
+        } else if (this instanceof LocalVoice) {
+            writer.writeInt(1, CONTENT_VOICE);
+        } else if (this instanceof LocalAnimation) {
+            writer.writeInt(1, CONTENT_ANIMATION);
         } else {
             throw new IOException("Unknown type");
         }
