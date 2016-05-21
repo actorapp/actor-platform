@@ -27,13 +27,17 @@ public class ResponseLoadGroupedDialogs extends Response {
     private List<ApiGroup> groups;
     private Boolean showArchived;
     private Boolean showInvite;
+    private List<ApiUserOutPeer> userPeers;
+    private List<ApiGroupOutPeer> groupPeers;
 
-    public ResponseLoadGroupedDialogs(@NotNull List<ApiDialogGroup> dialogs, @NotNull List<ApiUser> users, @NotNull List<ApiGroup> groups, @Nullable Boolean showArchived, @Nullable Boolean showInvite) {
+    public ResponseLoadGroupedDialogs(@NotNull List<ApiDialogGroup> dialogs, @NotNull List<ApiUser> users, @NotNull List<ApiGroup> groups, @Nullable Boolean showArchived, @Nullable Boolean showInvite, @NotNull List<ApiUserOutPeer> userPeers, @NotNull List<ApiGroupOutPeer> groupPeers) {
         this.dialogs = dialogs;
         this.users = users;
         this.groups = groups;
         this.showArchived = showArchived;
         this.showInvite = showInvite;
+        this.userPeers = userPeers;
+        this.groupPeers = groupPeers;
     }
 
     public ResponseLoadGroupedDialogs() {
@@ -65,6 +69,16 @@ public class ResponseLoadGroupedDialogs extends Response {
         return this.showInvite;
     }
 
+    @NotNull
+    public List<ApiUserOutPeer> getUserPeers() {
+        return this.userPeers;
+    }
+
+    @NotNull
+    public List<ApiGroupOutPeer> getGroupPeers() {
+        return this.groupPeers;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         List<ApiDialogGroup> _dialogs = new ArrayList<ApiDialogGroup>();
@@ -84,6 +98,16 @@ public class ResponseLoadGroupedDialogs extends Response {
         this.groups = values.getRepeatedObj(3, _groups);
         this.showArchived = values.optBool(4);
         this.showInvite = values.optBool(5);
+        List<ApiUserOutPeer> _userPeers = new ArrayList<ApiUserOutPeer>();
+        for (int i = 0; i < values.getRepeatedCount(6); i ++) {
+            _userPeers.add(new ApiUserOutPeer());
+        }
+        this.userPeers = values.getRepeatedObj(6, _userPeers);
+        List<ApiGroupOutPeer> _groupPeers = new ArrayList<ApiGroupOutPeer>();
+        for (int i = 0; i < values.getRepeatedCount(7); i ++) {
+            _groupPeers.add(new ApiGroupOutPeer());
+        }
+        this.groupPeers = values.getRepeatedObj(7, _groupPeers);
     }
 
     @Override
@@ -97,6 +121,8 @@ public class ResponseLoadGroupedDialogs extends Response {
         if (this.showInvite != null) {
             writer.writeBool(5, this.showInvite);
         }
+        writer.writeRepeatedObj(6, this.userPeers);
+        writer.writeRepeatedObj(7, this.groupPeers);
     }
 
     @Override

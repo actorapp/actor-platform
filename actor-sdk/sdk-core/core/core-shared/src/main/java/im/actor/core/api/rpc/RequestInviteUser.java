@@ -25,11 +25,13 @@ public class RequestInviteUser extends Request<ResponseSeqDate> {
     private ApiGroupOutPeer groupPeer;
     private long rid;
     private ApiUserOutPeer user;
+    private List<ApiUpdateOptimization> optimizations;
 
-    public RequestInviteUser(@NotNull ApiGroupOutPeer groupPeer, long rid, @NotNull ApiUserOutPeer user) {
+    public RequestInviteUser(@NotNull ApiGroupOutPeer groupPeer, long rid, @NotNull ApiUserOutPeer user, @NotNull List<ApiUpdateOptimization> optimizations) {
         this.groupPeer = groupPeer;
         this.rid = rid;
         this.user = user;
+        this.optimizations = optimizations;
     }
 
     public RequestInviteUser() {
@@ -50,11 +52,20 @@ public class RequestInviteUser extends Request<ResponseSeqDate> {
         return this.user;
     }
 
+    @NotNull
+    public List<ApiUpdateOptimization> getOptimizations() {
+        return this.optimizations;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.groupPeer = values.getObj(1, new ApiGroupOutPeer());
         this.rid = values.getLong(4);
         this.user = values.getObj(3, new ApiUserOutPeer());
+        this.optimizations = new ArrayList<ApiUpdateOptimization>();
+        for (int b : values.getRepeatedInt(5)) {
+            optimizations.add(ApiUpdateOptimization.parse(b));
+        }
     }
 
     @Override
@@ -68,6 +79,9 @@ public class RequestInviteUser extends Request<ResponseSeqDate> {
             throw new IOException();
         }
         writer.writeObject(3, this.user);
+        for (ApiUpdateOptimization i : this.optimizations) {
+            writer.writeInt(5, i.getValue());
+        }
     }
 
     @Override
@@ -76,6 +90,7 @@ public class RequestInviteUser extends Request<ResponseSeqDate> {
         res += "groupPeer=" + this.groupPeer;
         res += ", rid=" + this.rid;
         res += ", user=" + this.user;
+        res += ", optimizations=" + this.optimizations;
         res += "}";
         return res;
     }

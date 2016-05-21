@@ -15,22 +15,22 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.core.api.*;
 
-public class UpdateGroupAboutChanged extends Update {
+public class UpdateGroupCanViewMembersChanged extends Update {
 
-    public static final int HEADER = 0xa39;
-    public static UpdateGroupAboutChanged fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new UpdateGroupAboutChanged(), data);
+    public static final int HEADER = 0xa41;
+    public static UpdateGroupCanViewMembersChanged fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new UpdateGroupCanViewMembersChanged(), data);
     }
 
     private int groupId;
-    private String about;
+    private boolean canViewMembers;
 
-    public UpdateGroupAboutChanged(int groupId, @Nullable String about) {
+    public UpdateGroupCanViewMembersChanged(int groupId, boolean canViewMembers) {
         this.groupId = groupId;
-        this.about = about;
+        this.canViewMembers = canViewMembers;
     }
 
-    public UpdateGroupAboutChanged() {
+    public UpdateGroupCanViewMembersChanged() {
 
     }
 
@@ -38,30 +38,27 @@ public class UpdateGroupAboutChanged extends Update {
         return this.groupId;
     }
 
-    @Nullable
-    public String getAbout() {
-        return this.about;
+    public boolean canViewMembers() {
+        return this.canViewMembers;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         this.groupId = values.getInt(1);
-        this.about = values.optString(2);
+        this.canViewMembers = values.getBool(2);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeInt(1, this.groupId);
-        if (this.about != null) {
-            writer.writeString(2, this.about);
-        }
+        writer.writeBool(2, this.canViewMembers);
     }
 
     @Override
     public String toString() {
-        String res = "update GroupAboutChanged{";
+        String res = "update GroupCanViewMembersChanged{";
         res += "groupId=" + this.groupId;
-        res += ", about=" + this.about;
+        res += ", canViewMembers=" + this.canViewMembers;
         res += "}";
         return res;
     }

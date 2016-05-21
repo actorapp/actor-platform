@@ -15,32 +15,30 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.core.api.*;
 
-public class ResponseJoinGroup extends Response {
+public class ResponseEnterGroupObsolete extends Response {
 
-    public static final int HEADER = 0xb5;
-    public static ResponseJoinGroup fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new ResponseJoinGroup(), data);
+    public static final int HEADER = 0xc8;
+    public static ResponseEnterGroupObsolete fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new ResponseEnterGroupObsolete(), data);
     }
 
     private ApiGroup group;
     private List<ApiUser> users;
-    private List<ApiUserOutPeer> userPeers;
     private long rid;
     private int seq;
     private byte[] state;
     private long date;
 
-    public ResponseJoinGroup(@NotNull ApiGroup group, @NotNull List<ApiUser> users, @NotNull List<ApiUserOutPeer> userPeers, long rid, int seq, @NotNull byte[] state, long date) {
+    public ResponseEnterGroupObsolete(@NotNull ApiGroup group, @NotNull List<ApiUser> users, long rid, int seq, @NotNull byte[] state, long date) {
         this.group = group;
         this.users = users;
-        this.userPeers = userPeers;
         this.rid = rid;
         this.seq = seq;
         this.state = state;
         this.date = date;
     }
 
-    public ResponseJoinGroup() {
+    public ResponseEnterGroupObsolete() {
 
     }
 
@@ -52,11 +50,6 @@ public class ResponseJoinGroup extends Response {
     @NotNull
     public List<ApiUser> getUsers() {
         return this.users;
-    }
-
-    @NotNull
-    public List<ApiUserOutPeer> getUserPeers() {
-        return this.userPeers;
     }
 
     public long getRid() {
@@ -80,19 +73,14 @@ public class ResponseJoinGroup extends Response {
     public void parse(BserValues values) throws IOException {
         this.group = values.getObj(1, new ApiGroup());
         List<ApiUser> _users = new ArrayList<ApiUser>();
-        for (int i = 0; i < values.getRepeatedCount(5); i ++) {
+        for (int i = 0; i < values.getRepeatedCount(2); i ++) {
             _users.add(new ApiUser());
         }
-        this.users = values.getRepeatedObj(5, _users);
-        List<ApiUserOutPeer> _userPeers = new ArrayList<ApiUserOutPeer>();
-        for (int i = 0; i < values.getRepeatedCount(7); i ++) {
-            _userPeers.add(new ApiUserOutPeer());
-        }
-        this.userPeers = values.getRepeatedObj(7, _userPeers);
-        this.rid = values.getLong(6);
-        this.seq = values.getInt(2);
-        this.state = values.getBytes(3);
-        this.date = values.getLong(4);
+        this.users = values.getRepeatedObj(2, _users);
+        this.rid = values.getLong(3);
+        this.seq = values.getInt(4);
+        this.state = values.getBytes(5);
+        this.date = values.getLong(6);
     }
 
     @Override
@@ -101,20 +89,19 @@ public class ResponseJoinGroup extends Response {
             throw new IOException();
         }
         writer.writeObject(1, this.group);
-        writer.writeRepeatedObj(5, this.users);
-        writer.writeRepeatedObj(7, this.userPeers);
-        writer.writeLong(6, this.rid);
-        writer.writeInt(2, this.seq);
+        writer.writeRepeatedObj(2, this.users);
+        writer.writeLong(3, this.rid);
+        writer.writeInt(4, this.seq);
         if (this.state == null) {
             throw new IOException();
         }
-        writer.writeBytes(3, this.state);
-        writer.writeLong(4, this.date);
+        writer.writeBytes(5, this.state);
+        writer.writeLong(6, this.date);
     }
 
     @Override
     public String toString() {
-        String res = "tuple JoinGroup{";
+        String res = "tuple EnterGroupObsolete{";
         res += "}";
         return res;
     }

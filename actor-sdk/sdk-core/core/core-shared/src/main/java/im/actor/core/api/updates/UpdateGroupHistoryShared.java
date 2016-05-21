@@ -15,22 +15,20 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.core.api.*;
 
-public class UpdateGroupAboutChanged extends Update {
+public class UpdateGroupHistoryShared extends Update {
 
-    public static final int HEADER = 0xa39;
-    public static UpdateGroupAboutChanged fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new UpdateGroupAboutChanged(), data);
+    public static final int HEADER = 0xa3c;
+    public static UpdateGroupHistoryShared fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new UpdateGroupHistoryShared(), data);
     }
 
     private int groupId;
-    private String about;
 
-    public UpdateGroupAboutChanged(int groupId, @Nullable String about) {
+    public UpdateGroupHistoryShared(int groupId) {
         this.groupId = groupId;
-        this.about = about;
     }
 
-    public UpdateGroupAboutChanged() {
+    public UpdateGroupHistoryShared() {
 
     }
 
@@ -38,30 +36,20 @@ public class UpdateGroupAboutChanged extends Update {
         return this.groupId;
     }
 
-    @Nullable
-    public String getAbout() {
-        return this.about;
-    }
-
     @Override
     public void parse(BserValues values) throws IOException {
         this.groupId = values.getInt(1);
-        this.about = values.optString(2);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeInt(1, this.groupId);
-        if (this.about != null) {
-            writer.writeString(2, this.about);
-        }
     }
 
     @Override
     public String toString() {
-        String res = "update GroupAboutChanged{";
+        String res = "update GroupHistoryShared{";
         res += "groupId=" + this.groupId;
-        res += ", about=" + this.about;
         res += "}";
         return res;
     }

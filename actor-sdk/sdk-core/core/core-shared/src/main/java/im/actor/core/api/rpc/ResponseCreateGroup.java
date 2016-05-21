@@ -26,12 +26,14 @@ public class ResponseCreateGroup extends Response {
     private byte[] state;
     private ApiGroup group;
     private List<ApiUser> users;
+    private List<ApiUserOutPeer> userPeers;
 
-    public ResponseCreateGroup(int seq, @NotNull byte[] state, @NotNull ApiGroup group, @NotNull List<ApiUser> users) {
+    public ResponseCreateGroup(int seq, @NotNull byte[] state, @NotNull ApiGroup group, @NotNull List<ApiUser> users, @NotNull List<ApiUserOutPeer> userPeers) {
         this.seq = seq;
         this.state = state;
         this.group = group;
         this.users = users;
+        this.userPeers = userPeers;
     }
 
     public ResponseCreateGroup() {
@@ -57,6 +59,11 @@ public class ResponseCreateGroup extends Response {
         return this.users;
     }
 
+    @NotNull
+    public List<ApiUserOutPeer> getUserPeers() {
+        return this.userPeers;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.seq = values.getInt(1);
@@ -67,6 +74,11 @@ public class ResponseCreateGroup extends Response {
             _users.add(new ApiUser());
         }
         this.users = values.getRepeatedObj(4, _users);
+        List<ApiUserOutPeer> _userPeers = new ArrayList<ApiUserOutPeer>();
+        for (int i = 0; i < values.getRepeatedCount(5); i ++) {
+            _userPeers.add(new ApiUserOutPeer());
+        }
+        this.userPeers = values.getRepeatedObj(5, _userPeers);
     }
 
     @Override
@@ -81,6 +93,7 @@ public class ResponseCreateGroup extends Response {
         }
         writer.writeObject(3, this.group);
         writer.writeRepeatedObj(4, this.users);
+        writer.writeRepeatedObj(5, this.userPeers);
     }
 
     @Override

@@ -15,22 +15,22 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.core.api.*;
 
-public class UpdateGroupAboutChanged extends Update {
+public class UpdateGroupOwnerChanged extends Update {
 
-    public static final int HEADER = 0xa39;
-    public static UpdateGroupAboutChanged fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new UpdateGroupAboutChanged(), data);
+    public static final int HEADER = 0xa3b;
+    public static UpdateGroupOwnerChanged fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new UpdateGroupOwnerChanged(), data);
     }
 
     private int groupId;
-    private String about;
+    private int userId;
 
-    public UpdateGroupAboutChanged(int groupId, @Nullable String about) {
+    public UpdateGroupOwnerChanged(int groupId, int userId) {
         this.groupId = groupId;
-        this.about = about;
+        this.userId = userId;
     }
 
-    public UpdateGroupAboutChanged() {
+    public UpdateGroupOwnerChanged() {
 
     }
 
@@ -38,30 +38,27 @@ public class UpdateGroupAboutChanged extends Update {
         return this.groupId;
     }
 
-    @Nullable
-    public String getAbout() {
-        return this.about;
+    public int getUserId() {
+        return this.userId;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         this.groupId = values.getInt(1);
-        this.about = values.optString(2);
+        this.userId = values.getInt(2);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeInt(1, this.groupId);
-        if (this.about != null) {
-            writer.writeString(2, this.about);
-        }
+        writer.writeInt(2, this.userId);
     }
 
     @Override
     public String toString() {
-        String res = "update GroupAboutChanged{";
+        String res = "update GroupOwnerChanged{";
         res += "groupId=" + this.groupId;
-        res += ", about=" + this.about;
+        res += ", userId=" + this.userId;
         res += "}";
         return res;
     }
