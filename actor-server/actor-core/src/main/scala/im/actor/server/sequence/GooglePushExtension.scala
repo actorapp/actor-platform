@@ -70,7 +70,9 @@ final class GooglePushExtension(system: ActorSystem) extends Extension {
   private val config = GooglePushManagerConfig.load(system.settings.config.getConfig("services.google.push")).get
   private val deliveryPublisher = system.actorOf(GooglePushDelivery.props, "google-push-delivery")
 
-  def initFlow(): Unit =
+  initFlow()
+
+  private def initFlow(): Unit =
     Source.fromPublisher(ActorPublisher[(HttpRequest, GooglePushDelivery.Delivery)](deliveryPublisher))
       .via(GooglePushDelivery.flow)
       .runForeach {
