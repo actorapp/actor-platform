@@ -15,22 +15,28 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.core.api.*;
 
-public class UpdateGroupTitleChanged extends Update {
+public class UpdateGroupTitleChangedObsolete extends Update {
 
-    public static final int HEADER = 0xa31;
-    public static UpdateGroupTitleChanged fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new UpdateGroupTitleChanged(), data);
+    public static final int HEADER = 0x26;
+    public static UpdateGroupTitleChangedObsolete fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new UpdateGroupTitleChangedObsolete(), data);
     }
 
     private int groupId;
+    private long rid;
+    private int uid;
     private String title;
+    private long date;
 
-    public UpdateGroupTitleChanged(int groupId, @NotNull String title) {
+    public UpdateGroupTitleChangedObsolete(int groupId, long rid, int uid, @NotNull String title, long date) {
         this.groupId = groupId;
+        this.rid = rid;
+        this.uid = uid;
         this.title = title;
+        this.date = date;
     }
 
-    public UpdateGroupTitleChanged() {
+    public UpdateGroupTitleChangedObsolete() {
 
     }
 
@@ -38,31 +44,52 @@ public class UpdateGroupTitleChanged extends Update {
         return this.groupId;
     }
 
+    public long getRid() {
+        return this.rid;
+    }
+
+    public int getUid() {
+        return this.uid;
+    }
+
     @NotNull
     public String getTitle() {
         return this.title;
     }
 
+    public long getDate() {
+        return this.date;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.groupId = values.getInt(1);
-        this.title = values.getString(2);
+        this.rid = values.getLong(5);
+        this.uid = values.getInt(2);
+        this.title = values.getString(3);
+        this.date = values.getLong(4);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeInt(1, this.groupId);
+        writer.writeLong(5, this.rid);
+        writer.writeInt(2, this.uid);
         if (this.title == null) {
             throw new IOException();
         }
-        writer.writeString(2, this.title);
+        writer.writeString(3, this.title);
+        writer.writeLong(4, this.date);
     }
 
     @Override
     public String toString() {
-        String res = "update GroupTitleChanged{";
+        String res = "update GroupTitleChangedObsolete{";
         res += "groupId=" + this.groupId;
+        res += ", rid=" + this.rid;
+        res += ", uid=" + this.uid;
         res += ", title=" + this.title;
+        res += ", date=" + this.date;
         res += "}";
         return res;
     }

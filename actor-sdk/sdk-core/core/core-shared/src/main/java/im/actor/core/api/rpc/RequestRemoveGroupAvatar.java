@@ -24,10 +24,12 @@ public class RequestRemoveGroupAvatar extends Request<ResponseSeqDate> {
 
     private ApiGroupOutPeer groupPeer;
     private long rid;
+    private List<ApiUpdateOptimization> optimizations;
 
-    public RequestRemoveGroupAvatar(@NotNull ApiGroupOutPeer groupPeer, long rid) {
+    public RequestRemoveGroupAvatar(@NotNull ApiGroupOutPeer groupPeer, long rid, @NotNull List<ApiUpdateOptimization> optimizations) {
         this.groupPeer = groupPeer;
         this.rid = rid;
+        this.optimizations = optimizations;
     }
 
     public RequestRemoveGroupAvatar() {
@@ -43,10 +45,19 @@ public class RequestRemoveGroupAvatar extends Request<ResponseSeqDate> {
         return this.rid;
     }
 
+    @NotNull
+    public List<ApiUpdateOptimization> getOptimizations() {
+        return this.optimizations;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.groupPeer = values.getObj(1, new ApiGroupOutPeer());
         this.rid = values.getLong(4);
+        this.optimizations = new ArrayList<ApiUpdateOptimization>();
+        for (int b : values.getRepeatedInt(5)) {
+            optimizations.add(ApiUpdateOptimization.parse(b));
+        }
     }
 
     @Override
@@ -56,6 +67,9 @@ public class RequestRemoveGroupAvatar extends Request<ResponseSeqDate> {
         }
         writer.writeObject(1, this.groupPeer);
         writer.writeLong(4, this.rid);
+        for (ApiUpdateOptimization i : this.optimizations) {
+            writer.writeInt(5, i.getValue());
+        }
     }
 
     @Override
@@ -63,6 +77,7 @@ public class RequestRemoveGroupAvatar extends Request<ResponseSeqDate> {
         String res = "rpc RemoveGroupAvatar{";
         res += "groupPeer=" + this.groupPeer;
         res += ", rid=" + this.rid;
+        res += ", optimizations=" + this.optimizations;
         res += "}";
         return res;
     }

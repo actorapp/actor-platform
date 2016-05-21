@@ -13,6 +13,7 @@ public enum ApiUpdateOptimization {
     FASTER_MESSAGES(4),
     STRIP_COUNTERS(5),
     COMPACT_USERS(6),
+    GROUPS_V2(7),
     UNSUPPORTED_VALUE(-1);
 
     private int value;
@@ -33,6 +34,7 @@ public enum ApiUpdateOptimization {
             case 4: return ApiUpdateOptimization.FASTER_MESSAGES;
             case 5: return ApiUpdateOptimization.STRIP_COUNTERS;
             case 6: return ApiUpdateOptimization.COMPACT_USERS;
+            case 7: return ApiUpdateOptimization.GROUPS_V2;
             default: return ApiUpdateOptimization.UNSUPPORTED_VALUE;
         }
     }

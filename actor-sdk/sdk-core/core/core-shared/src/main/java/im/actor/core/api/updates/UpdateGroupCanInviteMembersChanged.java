@@ -15,22 +15,22 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.core.api.*;
 
-public class UpdateGroupAboutChanged extends Update {
+public class UpdateGroupCanInviteMembersChanged extends Update {
 
-    public static final int HEADER = 0xa39;
-    public static UpdateGroupAboutChanged fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new UpdateGroupAboutChanged(), data);
+    public static final int HEADER = 0xa42;
+    public static UpdateGroupCanInviteMembersChanged fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new UpdateGroupCanInviteMembersChanged(), data);
     }
 
     private int groupId;
-    private String about;
+    private boolean canInviteMembers;
 
-    public UpdateGroupAboutChanged(int groupId, @Nullable String about) {
+    public UpdateGroupCanInviteMembersChanged(int groupId, boolean canInviteMembers) {
         this.groupId = groupId;
-        this.about = about;
+        this.canInviteMembers = canInviteMembers;
     }
 
-    public UpdateGroupAboutChanged() {
+    public UpdateGroupCanInviteMembersChanged() {
 
     }
 
@@ -38,30 +38,27 @@ public class UpdateGroupAboutChanged extends Update {
         return this.groupId;
     }
 
-    @Nullable
-    public String getAbout() {
-        return this.about;
+    public boolean canInviteMembers() {
+        return this.canInviteMembers;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         this.groupId = values.getInt(1);
-        this.about = values.optString(2);
+        this.canInviteMembers = values.getBool(2);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeInt(1, this.groupId);
-        if (this.about != null) {
-            writer.writeString(2, this.about);
-        }
+        writer.writeBool(2, this.canInviteMembers);
     }
 
     @Override
     public String toString() {
-        String res = "update GroupAboutChanged{";
+        String res = "update GroupCanInviteMembersChanged{";
         res += "groupId=" + this.groupId;
-        res += ", about=" + this.about;
+        res += ", canInviteMembers=" + this.canInviteMembers;
         res += "}";
         return res;
     }

@@ -25,15 +25,15 @@ public class RequestCreateGroup extends Request<ResponseCreateGroup> {
     private long rid;
     private String title;
     private List<ApiUserOutPeer> users;
-    private String groupType;
-    private ApiMapValue userData;
+    private ApiGroupType groupType;
+    private List<ApiUpdateOptimization> optimizations;
 
-    public RequestCreateGroup(long rid, @NotNull String title, @NotNull List<ApiUserOutPeer> users, @Nullable String groupType, @Nullable ApiMapValue userData) {
+    public RequestCreateGroup(long rid, @NotNull String title, @NotNull List<ApiUserOutPeer> users, @Nullable ApiGroupType groupType, @NotNull List<ApiUpdateOptimization> optimizations) {
         this.rid = rid;
         this.title = title;
         this.users = users;
         this.groupType = groupType;
-        this.userData = userData;
+        this.optimizations = optimizations;
     }
 
     public RequestCreateGroup() {
@@ -55,13 +55,13 @@ public class RequestCreateGroup extends Request<ResponseCreateGroup> {
     }
 
     @Nullable
-    public String getGroupType() {
+    public ApiGroupType getGroupType() {
         return this.groupType;
     }
 
-    @Nullable
-    public ApiMapValue getUserData() {
-        return this.userData;
+    @NotNull
+    public List<ApiUpdateOptimization> getOptimizations() {
+        return this.optimizations;
     }
 
     @Override
@@ -73,8 +73,14 @@ public class RequestCreateGroup extends Request<ResponseCreateGroup> {
             _users.add(new ApiUserOutPeer());
         }
         this.users = values.getRepeatedObj(3, _users);
-        this.groupType = values.optString(5);
-        this.userData = values.optObj(4, new ApiMapValue());
+        int val_groupType = values.getInt(6, 0);
+        if (val_groupType != 0) {
+            this.groupType = ApiGroupType.parse(val_groupType);
+        }
+        this.optimizations = new ArrayList<ApiUpdateOptimization>();
+        for (int b : values.getRepeatedInt(7)) {
+            optimizations.add(ApiUpdateOptimization.parse(b));
+        }
     }
 
     @Override
@@ -86,10 +92,10 @@ public class RequestCreateGroup extends Request<ResponseCreateGroup> {
         writer.writeString(2, this.title);
         writer.writeRepeatedObj(3, this.users);
         if (this.groupType != null) {
-            writer.writeString(5, this.groupType);
+            writer.writeInt(6, this.groupType.getValue());
         }
-        if (this.userData != null) {
-            writer.writeObject(4, this.userData);
+        for (ApiUpdateOptimization i : this.optimizations) {
+            writer.writeInt(7, i.getValue());
         }
     }
 
@@ -98,6 +104,8 @@ public class RequestCreateGroup extends Request<ResponseCreateGroup> {
         String res = "rpc CreateGroup{";
         res += "rid=" + this.rid;
         res += ", title=" + this.title;
+        res += ", groupType=" + this.groupType;
+        res += ", optimizations=" + this.optimizations;
         res += "}";
         return res;
     }

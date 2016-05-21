@@ -15,22 +15,22 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.core.api.*;
 
-public class UpdateGroupAboutChanged extends Update {
+public class UpdateGroupMembersCountChanged extends Update {
 
-    public static final int HEADER = 0xa39;
-    public static UpdateGroupAboutChanged fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new UpdateGroupAboutChanged(), data);
+    public static final int HEADER = 0xa3e;
+    public static UpdateGroupMembersCountChanged fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new UpdateGroupMembersCountChanged(), data);
     }
 
     private int groupId;
-    private String about;
+    private int membersCount;
 
-    public UpdateGroupAboutChanged(int groupId, @Nullable String about) {
+    public UpdateGroupMembersCountChanged(int groupId, int membersCount) {
         this.groupId = groupId;
-        this.about = about;
+        this.membersCount = membersCount;
     }
 
-    public UpdateGroupAboutChanged() {
+    public UpdateGroupMembersCountChanged() {
 
     }
 
@@ -38,30 +38,27 @@ public class UpdateGroupAboutChanged extends Update {
         return this.groupId;
     }
 
-    @Nullable
-    public String getAbout() {
-        return this.about;
+    public int getMembersCount() {
+        return this.membersCount;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         this.groupId = values.getInt(1);
-        this.about = values.optString(2);
+        this.membersCount = values.getInt(2);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeInt(1, this.groupId);
-        if (this.about != null) {
-            writer.writeString(2, this.about);
-        }
+        writer.writeInt(2, this.membersCount);
     }
 
     @Override
     public String toString() {
-        String res = "update GroupAboutChanged{";
+        String res = "update GroupMembersCountChanged{";
         res += "groupId=" + this.groupId;
-        res += ", about=" + this.about;
+        res += ", membersCount=" + this.membersCount;
         res += "}";
         return res;
     }
