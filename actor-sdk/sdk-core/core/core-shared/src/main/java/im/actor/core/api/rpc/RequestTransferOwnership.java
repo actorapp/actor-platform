@@ -15,22 +15,22 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.core.api.*;
 
-public class RequestMakeUserAdmin extends Request<ResponseSeqDate> {
+public class RequestTransferOwnership extends Request<ResponseSeqDate> {
 
-    public static final int HEADER = 0xae0;
-    public static RequestMakeUserAdmin fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new RequestMakeUserAdmin(), data);
+    public static final int HEADER = 0xae5;
+    public static RequestTransferOwnership fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new RequestTransferOwnership(), data);
     }
 
     private ApiGroupOutPeer groupPeer;
-    private ApiUserOutPeer userPeer;
+    private int newOwner;
 
-    public RequestMakeUserAdmin(@NotNull ApiGroupOutPeer groupPeer, @NotNull ApiUserOutPeer userPeer) {
+    public RequestTransferOwnership(@NotNull ApiGroupOutPeer groupPeer, int newOwner) {
         this.groupPeer = groupPeer;
-        this.userPeer = userPeer;
+        this.newOwner = newOwner;
     }
 
-    public RequestMakeUserAdmin() {
+    public RequestTransferOwnership() {
 
     }
 
@@ -39,15 +39,14 @@ public class RequestMakeUserAdmin extends Request<ResponseSeqDate> {
         return this.groupPeer;
     }
 
-    @NotNull
-    public ApiUserOutPeer getUserPeer() {
-        return this.userPeer;
+    public int getNewOwner() {
+        return this.newOwner;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         this.groupPeer = values.getObj(1, new ApiGroupOutPeer());
-        this.userPeer = values.getObj(2, new ApiUserOutPeer());
+        this.newOwner = values.getInt(2);
     }
 
     @Override
@@ -56,17 +55,14 @@ public class RequestMakeUserAdmin extends Request<ResponseSeqDate> {
             throw new IOException();
         }
         writer.writeObject(1, this.groupPeer);
-        if (this.userPeer == null) {
-            throw new IOException();
-        }
-        writer.writeObject(2, this.userPeer);
+        writer.writeInt(2, this.newOwner);
     }
 
     @Override
     public String toString() {
-        String res = "rpc MakeUserAdmin{";
+        String res = "rpc TransferOwnership{";
         res += "groupPeer=" + this.groupPeer;
-        res += ", userPeer=" + this.userPeer;
+        res += ", newOwner=" + this.newOwner;
         res += "}";
         return res;
     }

@@ -25,11 +25,13 @@ public class RequestEditGroupAvatar extends Request<ResponseEditGroupAvatar> {
     private ApiGroupOutPeer groupPeer;
     private long rid;
     private ApiFileLocation fileLocation;
+    private List<ApiUpdateOptimization> optimizations;
 
-    public RequestEditGroupAvatar(@NotNull ApiGroupOutPeer groupPeer, long rid, @NotNull ApiFileLocation fileLocation) {
+    public RequestEditGroupAvatar(@NotNull ApiGroupOutPeer groupPeer, long rid, @NotNull ApiFileLocation fileLocation, @NotNull List<ApiUpdateOptimization> optimizations) {
         this.groupPeer = groupPeer;
         this.rid = rid;
         this.fileLocation = fileLocation;
+        this.optimizations = optimizations;
     }
 
     public RequestEditGroupAvatar() {
@@ -50,11 +52,20 @@ public class RequestEditGroupAvatar extends Request<ResponseEditGroupAvatar> {
         return this.fileLocation;
     }
 
+    @NotNull
+    public List<ApiUpdateOptimization> getOptimizations() {
+        return this.optimizations;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.groupPeer = values.getObj(1, new ApiGroupOutPeer());
         this.rid = values.getLong(4);
         this.fileLocation = values.getObj(3, new ApiFileLocation());
+        this.optimizations = new ArrayList<ApiUpdateOptimization>();
+        for (int b : values.getRepeatedInt(5)) {
+            optimizations.add(ApiUpdateOptimization.parse(b));
+        }
     }
 
     @Override
@@ -68,6 +79,9 @@ public class RequestEditGroupAvatar extends Request<ResponseEditGroupAvatar> {
             throw new IOException();
         }
         writer.writeObject(3, this.fileLocation);
+        for (ApiUpdateOptimization i : this.optimizations) {
+            writer.writeInt(5, i.getValue());
+        }
     }
 
     @Override
@@ -76,6 +90,7 @@ public class RequestEditGroupAvatar extends Request<ResponseEditGroupAvatar> {
         res += "groupPeer=" + this.groupPeer;
         res += ", rid=" + this.rid;
         res += ", fileLocation=" + (this.fileLocation != null ? "set":"empty");
+        res += ", optimizations=" + this.optimizations;
         res += "}";
         return res;
     }

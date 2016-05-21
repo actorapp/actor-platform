@@ -23,9 +23,11 @@ public class RequestJoinGroup extends Request<ResponseJoinGroup> {
     }
 
     private String token;
+    private List<ApiUpdateOptimization> optimizations;
 
-    public RequestJoinGroup(@NotNull String token) {
+    public RequestJoinGroup(@NotNull String token, @NotNull List<ApiUpdateOptimization> optimizations) {
         this.token = token;
+        this.optimizations = optimizations;
     }
 
     public RequestJoinGroup() {
@@ -37,9 +39,18 @@ public class RequestJoinGroup extends Request<ResponseJoinGroup> {
         return this.token;
     }
 
+    @NotNull
+    public List<ApiUpdateOptimization> getOptimizations() {
+        return this.optimizations;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.token = values.getString(1);
+        this.optimizations = new ArrayList<ApiUpdateOptimization>();
+        for (int b : values.getRepeatedInt(2)) {
+            optimizations.add(ApiUpdateOptimization.parse(b));
+        }
     }
 
     @Override
@@ -48,6 +59,9 @@ public class RequestJoinGroup extends Request<ResponseJoinGroup> {
             throw new IOException();
         }
         writer.writeString(1, this.token);
+        for (ApiUpdateOptimization i : this.optimizations) {
+            writer.writeInt(2, i.getValue());
+        }
     }
 
     @Override

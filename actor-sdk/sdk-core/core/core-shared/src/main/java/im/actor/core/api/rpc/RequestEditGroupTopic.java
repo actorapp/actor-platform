@@ -25,11 +25,13 @@ public class RequestEditGroupTopic extends Request<ResponseSeqDate> {
     private ApiGroupOutPeer groupPeer;
     private long rid;
     private String topic;
+    private List<ApiUpdateOptimization> optimizations;
 
-    public RequestEditGroupTopic(@NotNull ApiGroupOutPeer groupPeer, long rid, @Nullable String topic) {
+    public RequestEditGroupTopic(@NotNull ApiGroupOutPeer groupPeer, long rid, @Nullable String topic, @NotNull List<ApiUpdateOptimization> optimizations) {
         this.groupPeer = groupPeer;
         this.rid = rid;
         this.topic = topic;
+        this.optimizations = optimizations;
     }
 
     public RequestEditGroupTopic() {
@@ -50,11 +52,20 @@ public class RequestEditGroupTopic extends Request<ResponseSeqDate> {
         return this.topic;
     }
 
+    @NotNull
+    public List<ApiUpdateOptimization> getOptimizations() {
+        return this.optimizations;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.groupPeer = values.getObj(1, new ApiGroupOutPeer());
         this.rid = values.getLong(2);
         this.topic = values.optString(3);
+        this.optimizations = new ArrayList<ApiUpdateOptimization>();
+        for (int b : values.getRepeatedInt(4)) {
+            optimizations.add(ApiUpdateOptimization.parse(b));
+        }
     }
 
     @Override
@@ -67,6 +78,9 @@ public class RequestEditGroupTopic extends Request<ResponseSeqDate> {
         if (this.topic != null) {
             writer.writeString(3, this.topic);
         }
+        for (ApiUpdateOptimization i : this.optimizations) {
+            writer.writeInt(4, i.getValue());
+        }
     }
 
     @Override
@@ -75,6 +89,7 @@ public class RequestEditGroupTopic extends Request<ResponseSeqDate> {
         res += "groupPeer=" + this.groupPeer;
         res += ", rid=" + this.rid;
         res += ", topic=" + this.topic;
+        res += ", optimizations=" + this.optimizations;
         res += "}";
         return res;
     }

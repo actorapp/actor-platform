@@ -25,11 +25,13 @@ public class RequestEditGroupAbout extends Request<ResponseSeqDate> {
     private ApiGroupOutPeer groupPeer;
     private long rid;
     private String about;
+    private List<ApiUpdateOptimization> optimizations;
 
-    public RequestEditGroupAbout(@NotNull ApiGroupOutPeer groupPeer, long rid, @Nullable String about) {
+    public RequestEditGroupAbout(@NotNull ApiGroupOutPeer groupPeer, long rid, @Nullable String about, @NotNull List<ApiUpdateOptimization> optimizations) {
         this.groupPeer = groupPeer;
         this.rid = rid;
         this.about = about;
+        this.optimizations = optimizations;
     }
 
     public RequestEditGroupAbout() {
@@ -50,11 +52,20 @@ public class RequestEditGroupAbout extends Request<ResponseSeqDate> {
         return this.about;
     }
 
+    @NotNull
+    public List<ApiUpdateOptimization> getOptimizations() {
+        return this.optimizations;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.groupPeer = values.getObj(1, new ApiGroupOutPeer());
         this.rid = values.getLong(2);
         this.about = values.optString(3);
+        this.optimizations = new ArrayList<ApiUpdateOptimization>();
+        for (int b : values.getRepeatedInt(5)) {
+            optimizations.add(ApiUpdateOptimization.parse(b));
+        }
     }
 
     @Override
@@ -67,6 +78,9 @@ public class RequestEditGroupAbout extends Request<ResponseSeqDate> {
         if (this.about != null) {
             writer.writeString(3, this.about);
         }
+        for (ApiUpdateOptimization i : this.optimizations) {
+            writer.writeInt(5, i.getValue());
+        }
     }
 
     @Override
@@ -74,6 +88,8 @@ public class RequestEditGroupAbout extends Request<ResponseSeqDate> {
         String res = "rpc EditGroupAbout{";
         res += "groupPeer=" + this.groupPeer;
         res += ", rid=" + this.rid;
+        res += ", about=" + this.about;
+        res += ", optimizations=" + this.optimizations;
         res += "}";
         return res;
     }

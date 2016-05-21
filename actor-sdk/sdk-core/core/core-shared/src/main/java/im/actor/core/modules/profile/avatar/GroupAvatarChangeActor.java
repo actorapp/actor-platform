@@ -14,9 +14,11 @@ import im.actor.core.api.rpc.RequestRemoveGroupAvatar;
 import im.actor.core.api.rpc.ResponseEditGroupAvatar;
 import im.actor.core.api.rpc.ResponseSeqDate;
 import im.actor.core.api.updates.UpdateGroupAvatarChanged;
+import im.actor.core.api.updates.UpdateGroupAvatarChangedObsolete;
 import im.actor.core.entity.FileReference;
 import im.actor.core.entity.Group;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.api.ApiSupportConfiguration;
 import im.actor.core.modules.file.UploadManager;
 import im.actor.core.modules.sequence.internal.ExecuteAfter;
 import im.actor.core.modules.ModuleActor;
@@ -65,12 +67,12 @@ public class GroupAvatarChangeActor extends ModuleActor {
         }
 
         api(new RequestEditGroupAvatar(new ApiGroupOutPeer(gid, accessHash), rid, new ApiFileLocation(fileReference.getFileId(),
-                fileReference.getAccessHash())))
+                fileReference.getAccessHash()), ApiSupportConfiguration.OPTIMIZATIONS))
                 .flatMap(responseEditGroupAvatar ->
                         updates().applyUpdate(
                                 responseEditGroupAvatar.getSeq(),
                                 responseEditGroupAvatar.getState(),
-                                new UpdateGroupAvatarChanged(
+                                new UpdateGroupAvatarChangedObsolete(
                                         gid, rid, myUid(),
                                         responseEditGroupAvatar.getAvatar(),
                                         responseEditGroupAvatar.getDate())
@@ -129,12 +131,12 @@ public class GroupAvatarChangeActor extends ModuleActor {
         ApiGroupOutPeer outPeer = new ApiGroupOutPeer(gid, group.getAccessHash());
 
         context().getProfileModule().getOwnAvatarVM().getUploadState().change(new AvatarUploadState(null, true));
-        api(new RequestRemoveGroupAvatar(outPeer, rid))
+        api(new RequestRemoveGroupAvatar(outPeer, rid, ApiSupportConfiguration.OPTIMIZATIONS))
                 .flatMap(responseSeqDate ->
                         updates().applyUpdate(
                                 responseSeqDate.getSeq(),
                                 responseSeqDate.getState(),
-                                new UpdateGroupAvatarChanged(
+                                new UpdateGroupAvatarChangedObsolete(
                                         gid,
                                         rid,
                                         myUid(),

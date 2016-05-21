@@ -24,10 +24,12 @@ public class RequestLeaveGroup extends Request<ResponseSeqDate> {
 
     private ApiGroupOutPeer groupPeer;
     private long rid;
+    private List<ApiUpdateOptimization> optimizations;
 
-    public RequestLeaveGroup(@NotNull ApiGroupOutPeer groupPeer, long rid) {
+    public RequestLeaveGroup(@NotNull ApiGroupOutPeer groupPeer, long rid, @NotNull List<ApiUpdateOptimization> optimizations) {
         this.groupPeer = groupPeer;
         this.rid = rid;
+        this.optimizations = optimizations;
     }
 
     public RequestLeaveGroup() {
@@ -43,10 +45,19 @@ public class RequestLeaveGroup extends Request<ResponseSeqDate> {
         return this.rid;
     }
 
+    @NotNull
+    public List<ApiUpdateOptimization> getOptimizations() {
+        return this.optimizations;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.groupPeer = values.getObj(1, new ApiGroupOutPeer());
         this.rid = values.getLong(2);
+        this.optimizations = new ArrayList<ApiUpdateOptimization>();
+        for (int b : values.getRepeatedInt(3)) {
+            optimizations.add(ApiUpdateOptimization.parse(b));
+        }
     }
 
     @Override
@@ -56,6 +67,9 @@ public class RequestLeaveGroup extends Request<ResponseSeqDate> {
         }
         writer.writeObject(1, this.groupPeer);
         writer.writeLong(2, this.rid);
+        for (ApiUpdateOptimization i : this.optimizations) {
+            writer.writeInt(3, i.getValue());
+        }
     }
 
     @Override
@@ -63,6 +77,7 @@ public class RequestLeaveGroup extends Request<ResponseSeqDate> {
         String res = "rpc LeaveGroup{";
         res += "groupPeer=" + this.groupPeer;
         res += ", rid=" + this.rid;
+        res += ", optimizations=" + this.optimizations;
         res += "}";
         return res;
     }

@@ -15,22 +15,22 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.core.api.*;
 
-public class RequestMakeUserAdmin extends Request<ResponseSeqDate> {
+public class RequestMakeUserAdminObsolete extends Request<ResponseMakeUserAdminObsolete> {
 
-    public static final int HEADER = 0xae0;
-    public static RequestMakeUserAdmin fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new RequestMakeUserAdmin(), data);
+    public static final int HEADER = 0xd6;
+    public static RequestMakeUserAdminObsolete fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new RequestMakeUserAdminObsolete(), data);
     }
 
     private ApiGroupOutPeer groupPeer;
     private ApiUserOutPeer userPeer;
 
-    public RequestMakeUserAdmin(@NotNull ApiGroupOutPeer groupPeer, @NotNull ApiUserOutPeer userPeer) {
+    public RequestMakeUserAdminObsolete(@NotNull ApiGroupOutPeer groupPeer, @NotNull ApiUserOutPeer userPeer) {
         this.groupPeer = groupPeer;
         this.userPeer = userPeer;
     }
 
-    public RequestMakeUserAdmin() {
+    public RequestMakeUserAdminObsolete() {
 
     }
 
@@ -64,7 +64,7 @@ public class RequestMakeUserAdmin extends Request<ResponseSeqDate> {
 
     @Override
     public String toString() {
-        String res = "rpc MakeUserAdmin{";
+        String res = "rpc MakeUserAdminObsolete{";
         res += "groupPeer=" + this.groupPeer;
         res += ", userPeer=" + this.userPeer;
         res += "}";

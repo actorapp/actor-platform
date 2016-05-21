@@ -15,22 +15,22 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.core.api.*;
 
-public class UpdateGroupAboutChanged extends Update {
+public class UpdateGroupExtChanged extends Update {
 
-    public static final int HEADER = 0xa39;
-    public static UpdateGroupAboutChanged fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new UpdateGroupAboutChanged(), data);
+    public static final int HEADER = 0xa35;
+    public static UpdateGroupExtChanged fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new UpdateGroupExtChanged(), data);
     }
 
     private int groupId;
-    private String about;
+    private ApiMapValue ext;
 
-    public UpdateGroupAboutChanged(int groupId, @Nullable String about) {
+    public UpdateGroupExtChanged(int groupId, @Nullable ApiMapValue ext) {
         this.groupId = groupId;
-        this.about = about;
+        this.ext = ext;
     }
 
-    public UpdateGroupAboutChanged() {
+    public UpdateGroupExtChanged() {
 
     }
 
@@ -39,29 +39,29 @@ public class UpdateGroupAboutChanged extends Update {
     }
 
     @Nullable
-    public String getAbout() {
-        return this.about;
+    public ApiMapValue getExt() {
+        return this.ext;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         this.groupId = values.getInt(1);
-        this.about = values.optString(2);
+        this.ext = values.optObj(2, new ApiMapValue());
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeInt(1, this.groupId);
-        if (this.about != null) {
-            writer.writeString(2, this.about);
+        if (this.ext != null) {
+            writer.writeObject(2, this.ext);
         }
     }
 
     @Override
     public String toString() {
-        String res = "update GroupAboutChanged{";
+        String res = "update GroupExtChanged{";
         res += "groupId=" + this.groupId;
-        res += ", about=" + this.about;
+        res += ", ext=" + this.ext;
         res += "}";
         return res;
     }

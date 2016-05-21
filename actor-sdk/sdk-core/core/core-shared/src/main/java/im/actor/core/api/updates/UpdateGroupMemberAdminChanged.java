@@ -15,22 +15,24 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.core.api.*;
 
-public class UpdateGroupAboutChanged extends Update {
+public class UpdateGroupMemberAdminChanged extends Update {
 
-    public static final int HEADER = 0xa39;
-    public static UpdateGroupAboutChanged fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new UpdateGroupAboutChanged(), data);
+    public static final int HEADER = 0xa43;
+    public static UpdateGroupMemberAdminChanged fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new UpdateGroupMemberAdminChanged(), data);
     }
 
     private int groupId;
-    private String about;
+    private int userId;
+    private boolean isAdmin;
 
-    public UpdateGroupAboutChanged(int groupId, @Nullable String about) {
+    public UpdateGroupMemberAdminChanged(int groupId, int userId, boolean isAdmin) {
         this.groupId = groupId;
-        this.about = about;
+        this.userId = userId;
+        this.isAdmin = isAdmin;
     }
 
-    public UpdateGroupAboutChanged() {
+    public UpdateGroupMemberAdminChanged() {
 
     }
 
@@ -38,30 +40,34 @@ public class UpdateGroupAboutChanged extends Update {
         return this.groupId;
     }
 
-    @Nullable
-    public String getAbout() {
-        return this.about;
+    public int getUserId() {
+        return this.userId;
+    }
+
+    public boolean isAdmin() {
+        return this.isAdmin;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         this.groupId = values.getInt(1);
-        this.about = values.optString(2);
+        this.userId = values.getInt(2);
+        this.isAdmin = values.getBool(3);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeInt(1, this.groupId);
-        if (this.about != null) {
-            writer.writeString(2, this.about);
-        }
+        writer.writeInt(2, this.userId);
+        writer.writeBool(3, this.isAdmin);
     }
 
     @Override
     public String toString() {
-        String res = "update GroupAboutChanged{";
+        String res = "update GroupMemberAdminChanged{";
         res += "groupId=" + this.groupId;
-        res += ", about=" + this.about;
+        res += ", userId=" + this.userId;
+        res += ", isAdmin=" + this.isAdmin;
         res += "}";
         return res;
     }
