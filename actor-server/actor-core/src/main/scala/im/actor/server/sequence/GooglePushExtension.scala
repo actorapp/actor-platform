@@ -140,7 +140,7 @@ private object GooglePushDelivery {
   def flow(implicit system: ActorSystem): Flow[(HttpRequest, Delivery), Xor[RuntimeException, (String, Delivery)], NotUsed] = {
     import system.dispatcher
     val pipeline = sendReceive
-    Flow[(HttpRequest, GooglePushDelivery.Delivery)].mapAsync(1) {
+    Flow[(HttpRequest, GooglePushDelivery.Delivery)].mapAsync(2) {
       case (req, del) ⇒
         pipeline(req) map { resp ⇒
           if (resp.status == StatusCodes.OK)
@@ -172,8 +172,8 @@ private final class GooglePushDelivery extends ActorPublisher[(HttpRequest, Goog
         this.buf :+= mkJob(d)
         deliverBuf()
       }
-    case Request(n) =>
-      log.debug("Trying to deliver google push. Queue size: {}, totalDemand: {}, subscriber requests {} elements", buf.size,totalDemand, n)
+    case Request(n) ⇒
+      log.debug("Trying to deliver google push. Queue size: {}, totalDemand: {}, subscriber requests {} elements", buf.size, totalDemand, n)
       deliverBuf()
   }
 
