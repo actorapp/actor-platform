@@ -4,7 +4,7 @@ import akka.NotUsed
 import akka.actor._
 import akka.event.Logging
 import akka.stream.ActorMaterializer
-import akka.stream.actor.ActorPublisher
+import akka.stream.actor.{ ActorPublisher, ActorPublisherMessage }
 import akka.stream.scaladsl.{ Flow, Source }
 import cats.data.Xor
 import com.github.kxbmap.configs.syntax._
@@ -155,6 +155,7 @@ private object GooglePushDelivery {
 private final class GooglePushDelivery extends ActorPublisher[(HttpRequest, GooglePushDelivery.Delivery)] with ActorLogging {
 
   import GooglePushDelivery._
+  import ActorPublisherMessage._
 
   private[this] var buf = Vector.empty[(HttpRequest, Delivery)]
   private val uri = Uri("https://gcm-http.googleapis.com/gcm/send")
@@ -171,6 +172,9 @@ private final class GooglePushDelivery extends ActorPublisher[(HttpRequest, Goog
         this.buf :+= mkJob(d)
         deliverBuf()
       }
+    case Request(n) =>
+      log.debug("Trying to deliver google push. Queue size: {}, totalDemand: {}, subscriber requests {} elements", buf.size,totalDemand, n)
+      deliverBuf()
   }
 
   @tailrec def deliverBuf(): Unit =
