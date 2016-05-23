@@ -1,19 +1,12 @@
 'use strict';
 
-import minimist from 'minimist';
-
 import createDevServer from './webpack.server';
 import webpackConfig from './webpack.config';
 
 import gulp from 'gulp';
 import gutil from 'gulp-util';
-import gulpif from 'gulp-if';
-import image from 'gulp-image';
 import shell from 'gulp-shell';
 import rename from 'gulp-rename';
-
-const argv = minimist(process.argv.slice(2));
-const isProduction = argv.release || false;
 
 gulp.task('webpack:dev', () => {
   const server = createDevServer(webpackConfig);
@@ -35,7 +28,6 @@ gulp.task('sounds', ['sdk'], () => {
 
 gulp.task('images', ['sdk'], () => {
   return gulp.src(['build/assets/images/**/*'])
-    .pipe(gulpif(isProduction, image({svgo: false})))
     .pipe(gulp.dest('./dist/assets/images'));
 });
 
@@ -56,7 +48,7 @@ gulp.task('workers', ['sdk'], () => {
     .pipe(gulp.dest('./dist/'));
 });
 
-gulp.task('lib:build', shell.task('./gradlew :actor-sdk:sdk-core:core:core-js:buildPackage', {cwd: '../..'}));
+gulp.task('lib:build', shell.task('./gradlew :actor-sdk:sdk-core:core:core-js:buildPackage', { cwd: '../..' }));
 gulp.task('lib:copy', ['lib:build'], () => {
   return gulp.src(['../sdk-core/core/core-js/build/package/actor.nocache.js'])
     .pipe(rename('actor.js'))
