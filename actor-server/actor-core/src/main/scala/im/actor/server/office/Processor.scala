@@ -87,7 +87,10 @@ trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorFuture
 
   private final def unstashing: Receive = {
     case BreakStashing(ts, evts, state) ⇒
-      log.error("Break stashing. Was in stashing since: {}, with events: {}", ts, (evts mkString "; "))
+      val strEvents = evts map { e ⇒
+        s"{ type: ${e.getClass.getName}, event: $e }"
+      }
+      log.error("Break stashing. Was in stashing since: {}, with events: {}", ts, strEvents mkString "; ")
       context become working(state)
       unstashAll()
     case UnstashAndWork(evt, s) ⇒
