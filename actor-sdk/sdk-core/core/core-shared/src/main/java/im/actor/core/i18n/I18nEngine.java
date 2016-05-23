@@ -79,7 +79,7 @@ public class I18nEngine extends IntlEngine {
 
     private final Modules modules;
 
-    @ObjectiveCName("initWithModules:")
+    @ObjectiveCName("initWithModules:withLocalization:withFallback:")
     public I18nEngine(Modules modules, String localization, String fallback) throws JSONException {
         super(localization, fallback);
         this.modules = modules;
