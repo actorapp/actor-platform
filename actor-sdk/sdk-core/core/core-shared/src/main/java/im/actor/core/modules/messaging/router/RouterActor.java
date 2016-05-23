@@ -35,6 +35,7 @@ import im.actor.core.entity.content.TextContent;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleActor;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.api.ApiSupportConfiguration;
 import im.actor.core.modules.messaging.actions.CursorReaderActor;
 import im.actor.core.modules.messaging.actions.CursorReceiverActor;
 import im.actor.core.modules.messaging.actions.SenderActor;
@@ -113,7 +114,7 @@ public class RouterActor extends ModuleActor {
             }
         }
         if (!activeDialogStorage.isLoaded()) {
-            api(new RequestLoadGroupedDialogs())
+            api(new RequestLoadGroupedDialogs(ApiSupportConfiguration.OPTIMIZATIONS))
                     .chain(r -> updates().applyRelatedData(r.getUsers(), r.getGroups()))
                     .then(r -> {
                         boolean showArchived = false;
