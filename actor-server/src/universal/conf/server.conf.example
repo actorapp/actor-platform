@@ -246,3 +246,11 @@ services {
     # }
   }
 }
+
+
+# Akka config
+# akka {
+    # Subscribe GelfLogger for SOC module
+    # loggers = ["akka.event.slf4j.Slf4jLogger", "im.actor.server.gelf.GelfLogger"]
+    # loglevel = "debug"
+# }

@@ -343,7 +343,8 @@ object Build extends sbt.Build with Versioning with Releasing {
     actorHttpApi,
     actorNotify,
     actorOAuth,
-    actorRpcApi
+    actorRpcApi,
+    actorSoc
   ).aggregate(
     actorActivation,
     actorBots,
@@ -363,7 +364,8 @@ object Build extends sbt.Build with Versioning with Releasing {
     actorRuntime,
     actorSession,
     actorSessionMessages,
-    actorSms
+    actorSms,
+    actorSoc
   )
 
   lazy val actorTests = Project(
@@ -401,4 +403,13 @@ object Build extends sbt.Build with Versioning with Releasing {
       actorRpcApi,
       actorSession
     )
+
+  lazy val actorSoc = Project(
+    id = "actor-soc",
+    base = file("actor-soc"),
+    settings = defaultSettingsServer ++ Seq(
+      libraryDependencies ++= Dependencies.soc
+    )
+  )
+    .dependsOn(actorSession)
 }

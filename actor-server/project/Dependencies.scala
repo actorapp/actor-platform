@@ -134,8 +134,7 @@ object Dependencies {
     scalaLogging,
     tyrex,
     kamonCore,
-    kamonDatadog,
-    gelf
+    kamonDatadog
   )
 
   val root = shared ++ Seq(
@@ -209,4 +208,6 @@ object Dependencies {
   val voximplant = shared ++ Seq(akkaActor, dispatch, playJson)
 
   val tests = shared ++ Seq(akkaClusterSharding, amazonaws, jfairy, scalacheck, scalatest, slickTestkit, akkaTestkit, akkaMultiNodeTestkit)
+
+  val soc = shared ++ Seq(gelf)
 }
