@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.display.DisplayManager;
 import android.media.MediaMetadataRetriever;
 import android.net.ConnectivityManager;
@@ -227,6 +228,24 @@ public class AndroidMessenger extends im.actor.core.Messenger {
         }
     }
 
+    public void sendAnimation(Peer peer, String fullFilePath) {
+        ImageHelper.BitmapSize size = ImageHelper.getImageSize(fullFilePath);
+        if (size == null) {
+            return;
+        }
+
+        Bitmap bmp = BitmapFactory.decodeFile(fullFilePath);
+        if (bmp == null) {
+            return;
+        }
+        Bitmap fastThumb = ImageHelper.scaleFit(bmp, 90, 90);
+
+        byte[] fastThumbData = ImageHelper.save(fastThumb);
+
+        sendAnimation(peer, fullFilePath, size.getWidth(), size.getHeight(),
+                new FastThumb(fastThumb.getWidth(), fastThumb.getHeight(), fastThumbData), fullFilePath);
+    }
+
     public void sendPhoto(Peer peer, String fullFilePath) {
         sendPhoto(peer, fullFilePath, new File(fullFilePath).getName());
     }
@@ -258,8 +277,7 @@ public class AndroidMessenger extends im.actor.core.Messenger {
         File f = new File(fullFilePath);
         sendAudio(peer, f.getName(), duration, fullFilePath);
     }
-
-
+    
     public void sendVideo(Peer peer, String fullFilePath) {
         sendVideo(peer, fullFilePath, new File(fullFilePath).getName());
     }
