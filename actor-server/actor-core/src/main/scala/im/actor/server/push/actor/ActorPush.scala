@@ -59,10 +59,12 @@ final class ActorPush(system: ActorSystem) extends Extension {
     Flow[(HttpRequest, ActorPushDelivery)].mapAsync(1) {
       case (req, del) ⇒
         pipeline(req) map { resp ⇒
-          if (resp.status.isSuccess)
+          if (resp.status.isSuccess) {
+            log.debug("Successfully delivered message: {}", del)
             Success(resp) → del
-          else
+          } else {
             Failure(new RuntimeException(s"Failed to deliver message, StatusCode was not OK: ${resp.status}")) → del
+          }
         }
     }
   }
