@@ -28,7 +28,9 @@ class ActorSDKDelegate {
     },
     features: {
       calls: true,
-      search: false
+      search: false,
+      editing: false,
+      blocking: false
     },
     actions: {
       setLoggedIn: null,
