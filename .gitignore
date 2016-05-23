@@ -1,9 +1,12 @@
 target/
 .ensime_cache
+actor-server/conf
+actor-server/logs
 actor-server/src/main/resources/application.conf
 actor-server/actor-tests/src/test/resources/application.conf
 actor-server/actor-testkit/src/test/resources/application.conf
 actor-server/actor-testkit/src/main/resources/application.conf
+actor-server/src/main/resources/rebel.xml
 actor-tests/journal
 actor-tests/snapshots
 actor-dashboard/logs
@@ -127,6 +130,8 @@ actor-sdk/sdk-core/build-tools/dist
 actor-sdk/sdk-core/sdk-android/build
 actor-sdk/sdk-core/app-android/build
 npm-debug.log
+actor-sdk/sdk-core-clc/classes
+actor-sdk/sdk-core-clc/build
 actor-deps/dist
 actor-sdk/sdk-core/core/core-js/build
 build
