@@ -27,6 +27,10 @@ import ContactDetails from '../common/ContactDetails.react';
 import ToggleNotifications from '../common/ToggleNotifications.react';
 
 class UserProfile extends Component {
+  static contextTypes = {
+    delegate: PropTypes.object.isRequired
+  };
+
   static propTypes = {
     user: PropTypes.object.isRequired
   };
@@ -177,6 +181,18 @@ class UserProfile extends Component {
     );
   }
 
+  renderBlockUser() {
+    if (!this.context.delegate.features.blocking) {
+      return null;
+    }
+
+    return (
+      <li className="dropdown__menu__item" onClick={this.onBlockUser}>
+        <FormattedMessage id="blockUser"/>
+      </li>
+    );
+  }
+
   render() {
     const { user } = this.props;
     const { isNotificationsEnabled, isActionsDropdownOpen, message } = this.state;
@@ -222,9 +238,7 @@ class UserProfile extends Component {
                   </button>
                   <ul className="dropdown__menu dropdown__menu--right">
                     {this.renderToggleContact()}
-                    <li className="dropdown__menu__item" onClick={this.onBlockUser}>
-                      <FormattedMessage id="blockUser"/>
-                    </li>
+                    {this.renderBlockUser()}
                     <li className="dropdown__menu__item" onClick={this.onClearChat}>
                       <FormattedMessage id="clearConversation"/>
                     </li>
