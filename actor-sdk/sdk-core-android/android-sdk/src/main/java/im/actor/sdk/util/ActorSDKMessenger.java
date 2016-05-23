@@ -15,6 +15,7 @@ public class ActorSDKMessenger {
     }
 
     public static MVVMCollection<User, UserVM> users() {
+        ActorSDK.sharedActor().waitForReady();
         return messenger().getUsers();
     }
 
@@ -23,6 +24,7 @@ public class ActorSDKMessenger {
     }
 
     public static int myUid() {
+        ActorSDK.sharedActor().waitForReady();
         return messenger().myUid();
     }
 }
