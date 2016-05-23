@@ -108,6 +108,7 @@ object Dependencies {
     val guava                   = "com.google.guava"              % "guava"                          % "19.0"
     val alpn                    = "org.eclipse.jetty.alpn"        % "alpn-api"                       % "1.1.2.v20150522" % "runtime"
     val tcnative                = "io.netty"                      % "netty-tcnative"                 % "1.1.33.Fork15" classifier "linux-x86_64"
+    val gelf                    = "org.graylog2"                  % "gelfclient"                     % "1.0.0" exclude("io.netty", "netty-all")
   }
 
   object Testing {
@@ -133,7 +134,8 @@ object Dependencies {
     scalaLogging,
     tyrex,
     kamonCore,
-    kamonDatadog
+    kamonDatadog,
+    gelf
   )
 
   val root = shared ++ Seq(
