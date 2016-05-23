@@ -317,7 +317,7 @@ public class ConfigurationBuilder {
      * @return this
      */
     @NotNull
-    @ObjectiveCName("addEndpoint:withKnownIp:")
+    @ObjectiveCName("addEndpoint:")
     public ConfigurationBuilder addEndpoint(@NotNull String url) {
 
         // Manual buggy parsing for GWT
