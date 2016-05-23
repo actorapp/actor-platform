@@ -44,7 +44,7 @@ class CocoaTcpConnection: ARAsyncConnection, GCDAsyncSocketDelegate {
         
         gcdSocket = GCDAsyncSocket(delegate: self, delegateQueue: CocoaTcpConnection.queue)
         do {
-            try self.gcdSocket!.connectToHost(endpoint.getHost()!, onPort: UInt16(endpoint.getPort()), withTimeout: Double(ARManagedConnection_CONNECTION_TIMEOUT) / 1000.0)
+            try self.gcdSocket!.connectToHost(endpoint.host!, onPort: UInt16(endpoint.port), withTimeout: Double(ARManagedConnection_CONNECTION_TIMEOUT) / 1000.0)
         } catch _ {
             
         }
@@ -52,7 +52,7 @@ class CocoaTcpConnection: ARAsyncConnection, GCDAsyncSocketDelegate {
     
     // Affer successful connection
     func socket(sock: GCDAsyncSocket!, didConnectToHost host: String!, port: UInt16) {
-        if (self.getEndpoint().getType().ordinal() == ARConnectionEndpoint_Type.TCP_TLS().ordinal()) {
+        if (self.getEndpoint().type == ARConnectionEndpoint.TYPE_TCP_TLS()) {
             //            NSLog("\(TAG) Starring TLS Session...")
             sock.startTLS(nil)
         } else {
