@@ -6,6 +6,7 @@ import React, { Component, PropTypes } from 'react';
 import { FormattedMessage } from 'react-intl';
 import classnames from 'classnames';
 import Tooltip from 'rc-tooltip';
+import { PeerTypes } from '../../constants/ActorAppConstants';
 
 import { escapeWithEmoji } from '../../utils/EmojiUtils';
 
@@ -16,6 +17,7 @@ import DialogSearchActionCreators from '../../actions/DialogSearchActionCreators
 
 import AvatarItem from '../common/AvatarItem.react';
 import ToggleFavorite from '../common/ToggleFavorite.react';
+import MoreDropdown from './header/MoreDropdown.react';
 
 class DialogHeader extends Component {
   static contextTypes = {
@@ -35,10 +37,15 @@ class DialogHeader extends Component {
   constructor(props, context) {
     super(props, context);
 
+    this.state = {
+      isMoreDropdownOpen: false
+    }
+
     this.onFavoriteToggle = this.onFavoriteToggle.bind(this);
     this.handleInfoButtonClick = this.handleInfoButtonClick.bind(this);
     this.handleCallButtonClick = this.handleCallButtonClick.bind(this);
     this.handleSearchButtonClick = this.handleSearchButtonClick.bind(this);
+    this.toggelMoreDropdownOpen = this.toggelMoreDropdownOpen.bind(this);
   }
 
   onFavoriteToggle() {
@@ -62,7 +69,6 @@ class DialogHeader extends Component {
     }
   }
 
-
   handleCallButtonClick() {
     CallActionCreators.makePeerCall(this.props.peer);
   }
@@ -74,6 +80,11 @@ class DialogHeader extends Component {
     } else {
       DialogSearchActionCreators.close();
     }
+  }
+
+  toggelMoreDropdownOpen() {
+    const { isMoreDropdownOpen } = this.state;
+    this.setState({ isMoreDropdownOpen: !isMoreDropdownOpen })
   }
 
   renderMessage() {
@@ -176,6 +187,41 @@ class DialogHeader extends Component {
     );
   }
 
+  renderMoreDropdown() {
+    const { isMoreDropdownOpen } = this.state;
+
+    if (!isMoreDropdownOpen) {
+      return null;
+
+    }
+    const { info, peer } = this.props;
+
+    return (
+      <MoreDropdown
+        onClose={this.toggelMoreDropdownOpen}
+        info={info}
+        peer={peer}
+      />
+    );
+  }
+
+  renderMoreButton() {
+    const { isMoreDropdownOpen } = this.state;
+
+    const dropdownButtonClassNames = classnames('button button--icon', {
+      'active': isMoreDropdownOpen
+    })
+
+    return (
+      <div className="dropdown dropdown--opened">
+        <button className={dropdownButtonClassNames} onClick={this.toggelMoreDropdownOpen}>
+          <i className="material-icons">more_vert</i>
+        </button>
+        {this.renderMoreDropdown()}
+      </div>
+    );
+  }
+
   render() {
     const { info } = this.props;
 
@@ -183,10 +229,8 @@ class DialogHeader extends Component {
       return <header className="dialog__header" />;
     }
 
-    const headerClassName = classnames('dialog__header row');
-
     return (
-      <header className={headerClassName}>
+      <header className="dialog__header row">
         <AvatarItem
           className="dialog__header__avatar"
           size="medium"
@@ -212,6 +256,7 @@ class DialogHeader extends Component {
           {this.renderSearchButton()}
           {this.renderCallButton()}
           {this.renderInfoButton()}
+          {this.renderMoreButton()}
         </div>
       </header>
     );
