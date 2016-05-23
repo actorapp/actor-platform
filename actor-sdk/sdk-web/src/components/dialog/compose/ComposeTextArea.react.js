@@ -15,7 +15,9 @@ class ComposeTextArea extends Component {
     onSubmit: PropTypes.func.isRequired,
     onTyping: PropTypes.func.isRequired,
     onPaste: PropTypes.func.isRequired,
-    onKeyDown: PropTypes.func.isRequired
+    onKeyDown: PropTypes.func.isRequired,
+
+    placholder: PropTypes.string
   };
 
   static defaultProps = {
@@ -100,13 +102,14 @@ class ComposeTextArea extends Component {
   }
 
   render() {
-    const { value } = this.props;
+    const { value, placeholder } = this.props;
 
     return (
       <textarea
         ref="area"
         className="compose__message"
         value={value}
+        placeholder={placeholder}
         onChange={this.onChange}
         onKeyDown={this.onKeyDown}
         onPaste={this.props.onPaste}
