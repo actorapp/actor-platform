@@ -20,7 +20,7 @@ import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
 import slick.driver.PostgresDriver.api._
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 
 trait UserEvent extends TaggedEvent {
