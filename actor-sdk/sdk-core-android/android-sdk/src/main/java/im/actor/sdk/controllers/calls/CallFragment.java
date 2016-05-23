@@ -108,9 +108,9 @@ public class CallFragment extends BaseFragment {
     private View layer2;
     private View layer3;
     private VideoSource source;
-    private boolean renderredAdded = false;
     private EglBase rootEglBase;
     private SurfaceViewRenderer localRender;
+    private SurfaceViewRenderer remoteRender;
 
     public CallFragment() {
 
@@ -158,10 +158,11 @@ public class CallFragment extends BaseFragment {
 //                cont.findViewById(R.id.layer4)
         };
 
-        showView(layer1);
-        showView(layer2);
-        showView(layer3);
-        wave(avatarLayers, 1.135f ,1900, -2f);
+        //TODO disabled while working on video, enable later!
+//        showView(layer1);
+//        showView(layer2);
+//        showView(layer3);
+//        wave(avatarLayers, 1.135f ,1900, -2f);
 
         for (int i = 0; i<avatarLayers.length; i++){
             View layer = avatarLayers[i];
@@ -310,27 +311,51 @@ public class CallFragment extends BaseFragment {
         addTv.setTextColor(getResources().getColor(R.color.picker_grey));
         add.setTint(getResources().getColor(R.color.picker_grey));
 
+        rootEglBase = EglBase.create();
+
         AndroidWebRTCRuntimeProvider.bindPeerConnection(new AndroidWebRTCRuntimeProvider.PeerConnectionCallback() {
             @Override
             public void onPeerConncetionAvailable(AndroidPeerConnection peerConnection) {
                 peerConnection.bind(new AndroidPeerConnection.OwnStreamCallback() {
                     @Override
-                    public void onAvailable(AndroidMediaStream stream) {
+                    public void onLocalStreamAvailable(AndroidMediaStream stream) {
                         if (stream.getVideoTrack() != null) {
-                            source = stream.getVideoSource();
-                            rootEglBase = EglBase.create();
-                            localRender = new SurfaceViewRenderer(getActivity());
-                            localRender.init(rootEglBase.getEglBaseContext(), null);
 
-                            stream.getVideoTrack().addRenderer(new VideoRenderer(localRender));
 
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    source = stream.getVideoSource();
+                                    localRender = new SurfaceViewRenderer(getActivity());
+                                    localRender.setZOrderMediaOverlay(true);
+                                    localRender.init(rootEglBase.getEglBaseContext(), null);
+
+                                    stream.getVideoTrack().addRenderer(new VideoRenderer(localRender));
                                     container.addView(localRender, Screen.dp(200), Screen.dp(200));
                                 }
                             });
                         }
+                    }
+
+                    @Override
+                    public void onRemoteStreamAdd(AndroidMediaStream stream) {
+                        if (stream.getVideoTrack() != null) {
+
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    remoteRender = new SurfaceViewRenderer(getActivity());
+                                    remoteRender.init(rootEglBase.getEglBaseContext(), null);
+                                    stream.getVideoTrack().addRenderer(new VideoRenderer(remoteRender));
+                                    container.addView(remoteRender, Screen.dp(400), Screen.dp(400));
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onRemoteStreamRemove(AndroidMediaStream stream) {
+
                     }
 
                     @Override
@@ -342,15 +367,15 @@ public class CallFragment extends BaseFragment {
         });
 
         if(call!=null){
-            call.getIsMuted().subscribe(new ValueChangedListener<Boolean>() {
+            bind(call.getIsMuted(), new ValueChangedListener<Boolean>() {
                 @Override
                 public void onChanged(Boolean val, Value<Boolean> valueModel) {
-                    if(getActivity()!=null){
-                        if(val){
+                    if (getActivity() != null) {
+                        if (val) {
 
                             muteCallTv.setTextColor(getResources().getColor(R.color.picker_grey));
                             muteCall.setTint(getResources().getColor(R.color.picker_grey));
-                        }else{
+                        } else {
                             muteCallTv.setTextColor(Color.WHITE);
                             muteCall.setTint(Color.WHITE);
                         }
@@ -358,17 +383,17 @@ public class CallFragment extends BaseFragment {
                 }
             });
 
-            call.getState().subscribe(new ValueChangedListener<CallState>() {
+            bind(call.getState(), new ValueChangedListener<CallState>() {
                 @Override
                 public void onChanged(CallState val, Value<CallState> valueModel) {
-                    if(currentState!=val){
+                    if (currentState != val) {
                         currentState = val;
-                        switch (val){
+                        switch (val) {
 
                             case RINGING:
-                                if(call.isOutgoing()){
+                                if (call.isOutgoing()) {
                                     statusTV.setText(R.string.call_outgoing);
-                                }else{
+                                } else {
                                     statusTV.setText(R.string.call_incoming);
                                     toggleSpeaker(speaker, speakerTV, true);
                                     initIncoming();
@@ -392,9 +417,9 @@ public class CallFragment extends BaseFragment {
 
                         }
                     }
-
                 }
-            }, true);
+            });
+
         }
 
 
