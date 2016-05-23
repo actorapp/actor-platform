@@ -132,7 +132,7 @@ public class ImageHelper {
         return scale;
     }
 
-    private static BitmapSize getImageSize(String fileName) {
+    public static BitmapSize getImageSize(String fileName) {
         BitmapFactory.Options o = new BitmapFactory.Options();
         o.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(fileName, o);
@@ -230,7 +230,7 @@ public class ImageHelper {
         canvas.setBitmap(null);
     }
 
-    private static class BitmapSize {
+    public static class BitmapSize {
         private int width;
         private int height;
 
