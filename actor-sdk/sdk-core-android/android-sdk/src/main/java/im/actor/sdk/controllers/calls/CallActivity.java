@@ -25,6 +25,9 @@ public class CallActivity extends BaseFragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Thread.setDefaultUncaughtExceptionHandler(
+                new UnhandledExceptionHandler(this));
+
         getSupportActionBar().setTitle("Call");
         getSupportActionBar().hide();
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

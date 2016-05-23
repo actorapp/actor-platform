@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.graphics.drawable.GradientDrawable;
 import android.media.AudioManager;
 import android.media.Ringtone;
@@ -31,7 +30,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import org.webrtc.EglBase;
 import org.webrtc.RendererCommon;
+import org.webrtc.SurfaceViewRenderer;
 import org.webrtc.VideoRenderer;
 import org.webrtc.VideoRendererGui;
 import org.webrtc.VideoSource;
@@ -64,7 +65,6 @@ import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.ValueModel;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
-import im.actor.sdk.controllers.calls.view.AppRTCGLView;
 import im.actor.sdk.controllers.calls.view.CallAvatarLayerAnimator;
 import im.actor.sdk.controllers.calls.view.TimerActor;
 import im.actor.sdk.controllers.fragment.BaseFragment;
@@ -108,7 +108,9 @@ public class CallFragment extends BaseFragment {
     private View layer2;
     private View layer3;
     private VideoSource source;
-    private GLSurfaceView vsv;
+    private boolean renderredAdded = false;
+    private EglBase rootEglBase;
+    private SurfaceViewRenderer localRender;
 
     public CallFragment() {
 
@@ -308,43 +310,36 @@ public class CallFragment extends BaseFragment {
         addTv.setTextColor(getResources().getColor(R.color.picker_grey));
         add.setTint(getResources().getColor(R.color.picker_grey));
 
-//        AndroidWebRTCRuntimeProvider.bindPeerConnection(new AndroidWebRTCRuntimeProvider.PeerConnectionCallback() {
-//            @Override
-//            public void onPeerConncetionAvailable(AndroidPeerConnection peerConnection) {
-//                peerConnection.bind(new AndroidPeerConnection.OwnStreamCallback() {
-//                    @Override
-//                    public void onAvailable(AndroidMediaStream stream) {
-//                        if (stream.getVideoTrack() != null) {
-//                            source = stream.getVideoSource();
-//                            vsv = new GLSurfaceView(getActivity());
-//                            VideoRendererGui.setView(vsv, () -> {
-////                                VideoRenderer.Callbacks remoteRender = VideoRendererGui.createGuiRenderer(0, 0, 100, 100, RendererCommon.ScalingType.SCALE_ASPECT_FIT, false);
-//                                VideoRenderer.Callbacks localRender = VideoRendererGui.create(0, 0, 100, 100, RendererCommon.ScalingType.SCALE_ASPECT_FIT, false);
-//
-//                                stream.getVideoTrack().addRenderer(new VideoRenderer(localRender));
-//
-//                                cont.post(new Runnable() {
-//                                    @Override
-//                                    public void run() {
-//                                        cont.addView(vsv, Screen.getWidth() / 2, Screen.getHeight() / 2);
-//
-//                                    }
-//                                });
-//
-//
-//                            });
-//
-//
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onRemoved() {
-//
-//                    }
-//                });
-//            }
-//        });
+        AndroidWebRTCRuntimeProvider.bindPeerConnection(new AndroidWebRTCRuntimeProvider.PeerConnectionCallback() {
+            @Override
+            public void onPeerConncetionAvailable(AndroidPeerConnection peerConnection) {
+                peerConnection.bind(new AndroidPeerConnection.OwnStreamCallback() {
+                    @Override
+                    public void onAvailable(AndroidMediaStream stream) {
+                        if (stream.getVideoTrack() != null) {
+                            source = stream.getVideoSource();
+                            rootEglBase = EglBase.create();
+                            localRender = new SurfaceViewRenderer(getActivity());
+                            localRender.init(rootEglBase.getEglBaseContext(), null);
+
+                            stream.getVideoTrack().addRenderer(new VideoRenderer(localRender));
+
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    container.addView(localRender, Screen.dp(200), Screen.dp(200));
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onRemoved() {
+
+                    }
+                });
+            }
+        });
 
         if(call!=null){
             call.getIsMuted().subscribe(new ValueChangedListener<Boolean>() {
@@ -597,9 +592,6 @@ public class CallFragment extends BaseFragment {
     @Override
     public void onPause() {
         super.onPause();
-//        if(vsv!=null){
-//            vsv.onPause();
-//        }
         if (source != null) {
             source.stop();
         }
