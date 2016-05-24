@@ -11,6 +11,7 @@ import im.actor.runtime.*;
 import im.actor.runtime.actors.ActorTime;
 import im.actor.runtime.mvvm.ValueModel;
 import im.actor.runtime.threading.CommonTimer;
+import im.actor.runtime.webrtc.WebRTCPeerConnection;
 
 public class CallVM {
 
@@ -20,6 +21,8 @@ public class CallVM {
     private final Peer peer;
     @Property("nonatomic, readonly")
     private final ValueModel<CallState> state;
+    @Property("nonatomic, readonly")
+    private final ValueModel<WebRTCPeerConnection> peerConnection;
     @Property("nonatomic, readonly")
     private final ValueModel<ArrayList<CallMember>> members;
     @Property("nonatomic, readonly")
@@ -38,6 +41,7 @@ public class CallVM {
         this.peer = peer;
         this.isOutgoing = isOutgoing;
         this.state = new ValueModel<>("calls." + callId + ".state", state);
+        this.peerConnection = new ValueModel<>("calls." + callId + ".peer_connection", null);
         this.members = new ValueModel<>("calls." + callId + ".members", new ArrayList<>(initialMembers));
         this.isMuted = new BooleanValueModel("calls." + callId + ".state", false);
         this.callStart = 0;
