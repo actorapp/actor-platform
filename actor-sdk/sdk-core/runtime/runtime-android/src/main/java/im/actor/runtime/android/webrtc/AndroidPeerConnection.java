@@ -113,7 +113,7 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
                         }
 
                         if (mediaStreamCallback != null) {
-                            mediaStreamCallback.onRemoteStreamAdd(stream1);
+                            mediaStreamCallback.onRemoteStreamRemove(stream1);
                         }
 
                         try {
@@ -186,7 +186,7 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
             @Override
             public void run() {
                 if (mediaStreamCallback != null) {
-                    mediaStreamCallback.onRemoved();
+                    mediaStreamCallback.onOwnRemoved();
                 }
                 peerConnection.removeStream(((AndroidMediaStream) stream).getStream());
             }
@@ -367,9 +367,15 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
             public void run() {
                 peerConnection.dispose();
 
+                if (mediaStreamCallback != null) {
+                    mediaStreamCallback.onDispose();
+                }
+
                 if (stream != null && stream.isLocal()) {
                     stream.disposeVideo();
                 }
+
+                stream = null;
             }
         });
 
@@ -394,6 +400,8 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
 
         void onRemoteStreamRemove(AndroidMediaStream stream);
 
-        void onRemoved();
+        void onOwnRemoved();
+
+        void onDispose();
     }
 }
