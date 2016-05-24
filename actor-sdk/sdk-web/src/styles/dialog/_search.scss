@@ -1,56 +1,49 @@
 .dialog__search {
+  flex: 0 0 auto;
   color: $toolbar-text-color;
   background-color: rgb(254, 254, 254);
   box-shadow: inset 0 -1px 0 0 rgba(0, 0, 0, .04);
 
-  flex: 0 0 auto;
+  &__container {
+    flex: 0 0 auto;
+  }
+
   &__input {
-    position: relative;
-
+    width: 100%;
+    flex-grow: 1;
+    flex-basis: 0;
+    font-size: 14px;
+    line-height: 26px;
     margin: 8px 16px;
-    input {
-      font-size: 14px;
-      line-height: 26px;
-
-      width: 100%;
-      padding: 3px 16px;
-
-      color: $dove_gray;
-      border: none;
-      border-radius: 32px;
-      outline: none;
-      box-shadow: 0 0 0 1px rgba(black, .05);
-    }
+    padding: 3px 16px;
+    color: $dove_gray;
+    border: none;
+    border-radius: 32px;
+    outline: none;
+    box-shadow: 0 0 0 1px rgba(black, .05);
   }
-  &__filter {
-    position: absolute;
-    top: 0;
-    right: 0;
 
-    display: none;
-
-    padding: 4px 8px;
-    .material-icons {
-      font-size: 18px;
-      line-height: 24px;
-
-      cursor: pointer;
-
-      color: rgb(190,190,190);
-      &:hover {
-        color: darken(rgb(190,190,190), 5);
-      }
-
-      &.active {
-        color: $dark-sky-blue;
-      }
-    }
-  }
   &__controls {
     padding: 8px 16px 8px 0;
-    a {
-      font-size: 15px;
-      line-height: 32px;
-    }
   }
+
+  &__cancel {
+    font-size: 15px;
+    line-height: 32px;
+  }
+}
+
+.dialog__search-enter,
+.dialog__search-leave.dialog__search-leave-active {
+  opacity: 0;
+  transform: translate(0, -50px);
+}
+
+.dialog__search-leave,
+.dialog__search-enter.dialog__search-enter-active {
+  opacity: 1;
+	transform: translate(0, 0);
+	transition-property: transform, opacity;
+	transition-duration: 100ms;
+	transition-timing-function: cubic-bezier(0.175, 0.665, 0.320, 1), linear;
 }

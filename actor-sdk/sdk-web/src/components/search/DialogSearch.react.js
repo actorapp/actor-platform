@@ -1,70 +1,104 @@
+/*
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
+ */
+
 import React, { Component, PropTypes } from 'react';
-import { findDOMNode } from 'react-dom';
-
-import DialogSearchStore from '../../stores/DialogSearchStore';
-
-import DialogSearchActionCreators from '../../actions/DialogSearchActionCreators';
+import CSSTransitionGroup from 'react-addons-css-transition-group';
+import { KeyCodes } from '../../constants/ActorAppConstants';
 
 class DialogSearch extends Component {
   static propTypes = {
     isOpen: PropTypes.bool.isRequired,
     query: PropTypes.string.isRequired,
-    results: PropTypes.array.isRequired,
-
     onCancel: PropTypes.func.isRequired,
     onChange: PropTypes.func.isRequired
   }
 
   constructor(props) {
     super(props);
-    console.debug(props);
 
-    this.handleCancelClick = this.handleCancelClick.bind(this);
+    this.handleCancel = this.handleCancel.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleQueryChange = this.handleQueryChange.bind(this);
   }
 
-  componentDidMount() {
-    findDOMNode(this.refs.search).focus();
+  shouldComponentUpdate(nextProps) {
+    return nextProps.isOpen !== this.props.isOpen ||
+           nextProps.query !== this.props.query;
   }
 
-  handleCancelClick() {
-    const { onCancel } = this.props;
+  componentDidUpdate(prevProps) {
+    if (this.props.isOpen && !prevProps.isOpen) {
+      this.setCaretToEnd();
+    }
+  }
 
-    onCancel();
+  handleCancel() {
+    this.props.onCancel();
+  }
+
+  handleKeyDown(event) {
+    if (event.keyCode === KeyCodes.ESC) {
+      event.preventDefault();
+      this.handleCancel();
+    }
   }
 
   handleQueryChange(event) {
-    const { onChange } = this.props;
-
-    onChange(event.target.value);
+    this.props.onChange(event.target.value);
   }
 
-  render() {
-    const { isOpen, query, results } = this.props;
+  renderContent() {
+    const { query } = this.props;
 
     return (
       <div className="dialog__search row">
-        <div className="dialog__search__input col-xs">
-          <input
-            type="search"
-            ref="search"
-            placeholder="Search messages in this dialog"
-            value={query}
-            onChange={this.handleQueryChange}
-          />
-          <div className="dialog__search__filter">
-            <i className="material-icons">message</i>
-            <i className="material-icons">photo</i>
-            <i className="material-icons">link</i>
-          </div>
-        </div>
+        <input
+          className="dialog__search__input"
+          type="search"
+          ref="input"
+          placeholder="Search messages in this dialog"
+          value={query}
+          onChange={this.handleQueryChange}
+          onKeyDown={this.handleKeyDown}
+        />
         <div className="dialog__search__controls">
-          <a className="link link--blue" onClick={this.handleCancelClick}>
+          <a className="dialog__search__cancel link link--blue" onClick={this.handleCancel}>
             Cancel
           </a>
         </div>
       </div>
     );
+  }
+
+  render() {
+    const { isOpen } = this.props;
+    return (
+      <CSSTransitionGroup
+        component="div"
+        className="dialog__search__container"
+        transitionName="dialog__search"
+        transitionEnterTimeout={100}
+        transitionLeaveTimeout={100}
+      >
+        {isOpen ? this.renderContent() : null}
+      </CSSTransitionGroup>
+    );
+  }
+
+  focus() {
+    const { input } = this.refs;
+    if (input) {
+      input.focus();
+    }
+  }
+
+  setCaretToEnd() {
+    const { input } = this.refs;
+    if (input) {
+      input.focus();
+      input.selectionStart = input.selectionEnd = input.value.length;
+    }
   }
 }
 
