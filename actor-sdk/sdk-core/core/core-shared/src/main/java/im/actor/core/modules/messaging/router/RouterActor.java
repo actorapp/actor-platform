@@ -116,6 +116,7 @@ public class RouterActor extends ModuleActor {
         if (!activeDialogStorage.isLoaded()) {
             api(new RequestLoadGroupedDialogs(ApiSupportConfiguration.OPTIMIZATIONS))
                     .chain(r -> updates().applyRelatedData(r.getUsers(), r.getGroups()))
+                    .chain(r -> updates().loadRequiredPeers(r.getUserPeers(), r.getGroupPeers()))
                     .then(r -> {
                         boolean showArchived = false;
                         boolean showInvite = false;
