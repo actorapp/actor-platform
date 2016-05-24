@@ -29,6 +29,12 @@ import im.actor.server.social.{ SocialExtension, SocialManager, SocialManagerReg
 import im.actor.server.user._
 import im.actor.util.misc.PhoneNumberUtils
 
+object ContactsRpcErrors {
+  val CantAddSelf = RpcError(401, "OWN_USER_ID", "User id cannot be equal to self.", false, None)
+  val ContactAlreadyExists = RpcError(400, "CONTACT_ALREADY_EXISTS", "Contact already exists.", false, None)
+  val ContactNotFound = RpcError(404, "CONTACT_NOT_FOUND", "Contact not found.", false, None)
+}
+
 class ContactsServiceImpl(implicit actorSystem: ActorSystem)
   extends ContactsService {
 
@@ -43,12 +49,6 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
   private val userExt = UserExtension(actorSystem)
   private implicit val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(actorSystem)
   private implicit val socialRegion: SocialManagerRegion = SocialExtension(actorSystem).region
-
-  object ContactsRpcErrors {
-    val CantAddSelf = RpcError(401, "OWN_USER_ID", "User id cannot be equal to self.", false, None)
-    val ContactAlreadyExists = RpcError(400, "CONTACT_ALREADY_EXISTS", "Contact already exists.", false, None)
-    val ContactNotFound = RpcError(404, "CONTACT_NOT_FOUND", "Contact not found.", false, None)
-  }
 
   case class EmailNameUser(email: String, name: Option[String], userId: Int)
 
@@ -127,27 +127,23 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
 
   override def doHandleAddContact(userId: Int, accessHash: Long, clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
     authorized(clientData) { implicit client ⇒
-      val action = (for {
-        optUser ← UserRepo.find(userId)
-        optNumber ← optUser.map(user ⇒ UserPhoneRepo.findByUserId(user.id).headOption).getOrElse(DBIO.successful(None))
-      } yield {
-        (optUser, optNumber map (_.number))
-      }) flatMap {
-        case (Some(user), optPhoneNumber) ⇒
-          if (accessHash == ACLUtils.userAccessHash(clientData.authId, user.id, user.accessSalt)) {
-            UserContactRepo.find(ownerUserId = client.userId, contactUserId = userId).flatMap {
-              case None ⇒
-                for {
-                  seqstate ← DBIO.from(userExt.addContact(client.userId, user.id, None, optPhoneNumber, None))
-                } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
-              case Some(contact) ⇒
-                DBIO.successful(Error(ContactsRpcErrors.ContactAlreadyExists))
-            }
-          } else DBIO.successful(Error(CommonRpcErrors.InvalidAccessHash))
-        case (None, _) ⇒ DBIO.successful(Error(CommonRpcErrors.UserNotFound))
-        case (_, None) ⇒ DBIO.successful(Error(CommonRpcErrors.UserPhoneNotFound))
-      }
-      db.run(action)
+      val action = for {
+        user ← fromDBIOOption(CommonRpcErrors.UserNotFound)(UserRepo.find(userId))
+        _ ← fromBoolean(ContactsRpcErrors.CantAddSelf)(userId != client.userId)
+        _ ← fromBoolean(CommonRpcErrors.InvalidAccessHash)(accessHash == ACLUtils.userAccessHash(clientData.authId, user.id, user.accessSalt))
+        exists ← fromDBIO(UserContactRepo.exists(ownerUserId = client.userId, contactUserId = userId))
+        _ ← fromBoolean(ContactsRpcErrors.ContactAlreadyExists)(!exists)
+        optPhone ← fromDBIO(UserPhoneRepo.findByUserId(user.id).headOption)
+        optEmail ← fromDBIO(UserEmailRepo.findByUserId(user.id).headOption)
+        seqstate ← fromFuture(userExt.addContact(
+          userId = client.userId,
+          contactUserId = user.id,
+          localName = None,
+          phone = optPhone map (_.number),
+          email = optEmail map (_.email)
+        ))
+      } yield ResponseSeq(seqstate.seq, seqstate.state.toByteArray)
+      db.run(action.value)
     }
 
   override def doHandleSearchContacts(query: String, optimizations: IndexedSeq[ApiUpdateOptimization.Value], clientData: ClientData): Future[HandlerResult[ResponseSearchContacts]] =
@@ -157,7 +153,7 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
         emailUsers ← findByEmail(query, client)
         phoneUsers ← findByNumber(query, client)
       } yield {
-        val users = nicknameUsers ++ phoneUsers ++ emailUsers
+        val users = (nicknameUsers ++ phoneUsers ++ emailUsers) filterNot (_.id == client.userId)
         users foreach (u ⇒ recordRelation(u.id, client.userId))
         ResponseSearchContacts(
           users = if (optimizations.contains(ApiUpdateOptimization.STRIP_ENTITIES)) Vector.empty else users,
@@ -264,7 +260,7 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
         actorSystem.log.debug("Phone numbers: {}, registered: {}", phoneNumbers, registeredPhoneNumbers)
 
         // TODO: #perf do less queries
-        val unregInsertActions = (phoneNumbers &~ registeredPhoneNumbers).toSeq map { phoneNumber ⇒
+        val unregInsertActions = (phoneNumbers diff registeredPhoneNumbers).toSeq map { phoneNumber ⇒
           UnregisteredPhoneContactRepo.createIfNotExists(phoneNumber, user.id, phonesMap.getOrElse(phoneNumber, None))
         }
 
