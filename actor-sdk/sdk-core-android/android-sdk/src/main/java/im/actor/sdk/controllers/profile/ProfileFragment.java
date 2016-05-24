@@ -88,7 +88,7 @@ public class ProfileFragment extends BaseFragment {
         //
 
         avatarView = (AvatarView) res.findViewById(R.id.avatar);
-        avatarView.init(Screen.dp(96), 48);
+        avatarView.init(Screen.dp(96), 44);
         avatarView.bind(user.getAvatar().get(), user.getName().get(), user.getId());
         avatarView.setOnClickListener(v -> {
             startActivity(ViewAvatarActivity.viewAvatar(user.getId(), getActivity()));

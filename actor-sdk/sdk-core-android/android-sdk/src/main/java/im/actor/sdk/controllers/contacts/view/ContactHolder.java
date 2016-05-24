@@ -70,7 +70,7 @@ public class ContactHolder extends BindedViewHolder {
         }
 
         avatar = new AvatarView(context);
-        avatar.init(Screen.dp(52), 24);
+        avatar.init(Screen.dp(52), 22);
         {
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(Screen.dp(52), Screen.dp(52));
             layoutParams.leftMargin = Screen.dp(6);
