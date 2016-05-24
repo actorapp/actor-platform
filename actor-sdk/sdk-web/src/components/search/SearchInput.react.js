@@ -3,9 +3,8 @@
  */
 
 import React, { Component, PropTypes } from 'react';
-// import { findDOMNode } from 'react-dom';
+import EventListener from 'fbjs/lib/EventListener';
 import classnames from 'classnames';
-
 import { KeyCodes } from '../../constants/ActorAppConstants';
 
 class SearchInput extends Component {
@@ -16,61 +15,61 @@ class SearchInput extends Component {
   static propTypes = {
     className: PropTypes.string,
     value: PropTypes.string.isRequired,
-    // isFocused: PropTypes.bool.isRequired,
+    onClear: PropTypes.func.isRequired,
     onChange: PropTypes.func.isRequired,
-    // onToggleOpen: PropTypes.func.isRequired,
     onToggleFocus: PropTypes.func.isRequired
   };
 
   constructor(props) {
     super(props);
 
-    this.handleInputChange = this.handleInputChange.bind(this);
-    this.handleInputBlur = this.handleInputBlur.bind(this);
-    this.handleInputFocus = this.handleInputFocus.bind(this);
-    this.handleClearClick = this.handleClearClick.bind(this);
-    // this.onKeyDown = this.onKeyDown.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleBlur = this.handleBlur.bind(this);
+    this.handleFocus = this.handleFocus.bind(this);
+    this.handleClear = this.handleClear.bind(this);
   }
 
   componentDidMount() {
-    // findDOMNode(this.refs.search).focus();
-    // document.addEventListener('keydown', this.onKeyDown, false);
+    this.listeners = [
+      EventListener.listen(document, 'keydown', this.handleKeyDown)
+    ];
   }
 
-  // componentWillUnmount() {
-  //   document.removeEventListener('keydown', this.onKeyDown, false);
-  // }
-
-  handleInputChange(event) {
-    this.props.onChange(event.target.value);
+  componentWillUnmount() {
+    this.listeners.forEach((listener) => listener.remove());
+    this.listeners = null;
   }
 
-  handleInputFocus() {
-    // if (this.props.value.length) {
-    //   this.props.onToggleOpen(true);
-    // }
+  handleBlur() {
+    this.props.onToggleFocus(false);
+  }
+
+  handleFocus() {
     this.props.onToggleFocus(true);
   }
 
-  handleInputBlur() {
-    // if (!this.props.value.length) {
-    //   this.props.onToggleOpen(false);
-    // }
-    this.props.onToggleFocus(false);
+  handleChange(event) {
+    this.props.onChange(event.target.value);
   }
 
-  handleClearClick() {
+  handleClear() {
+    this.props.onClear();
     this.props.onChange('');
-    // this.props.onToggleOpen(false);
     this.props.onToggleFocus(false);
   }
 
-  // onKeyDown(event) {
-  //   if (this.props.isOpen && event.keyCode === KeyCodes.ESC) {
-  //     event.preventDefault();
-  //     this.onClear();
-  //   }
-  // }
+  handleKeyDown(event) {
+    if (event.keyCode === KeyCodes.K && event.metaKey || event.ctrlKey) {
+      event.preventDefault();
+      this.focus();
+    }
+
+    if (event.keyCode === KeyCodes.ESC && this.isFocused()) {
+      event.preventDefault();
+      this.handleClear();
+    }
+  }
 
   renderInput() {
     const { value } = this.props;
@@ -84,9 +83,9 @@ class SearchInput extends Component {
         tabIndex="1"
         value={value}
         placeholder={intl.messages['search.placeholder']}
-        onChange={this.handleInputChange}
-        onFocus={this.handleInputFocus}
-        onBlur={this.handleInputBlur}
+        onBlur={this.handleBlur}
+        onFocus={this.handleFocus}
+        onChange={this.handleChange}
       />
     );
   }
@@ -99,7 +98,7 @@ class SearchInput extends Component {
     }
 
     return (
-      <i className="close-icon material-icons" onClick={this.handleClearClick}>close</i>
+      <i className="close-icon material-icons" onClick={this.handleClear}>close</i>
     );
   }
 
@@ -113,6 +112,16 @@ class SearchInput extends Component {
         {this.renderClear()}
       </div>
     );
+  }
+
+  focus() {
+    if (this.refs.search) {
+      this.refs.search.focus();
+    }
+  }
+
+  isFocused() {
+    return document.activeElement === this.refs.search;
   }
 }
 
