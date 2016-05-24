@@ -2,10 +2,12 @@ package im.actor.server.api.rpc.service
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.contacts.ApiPhoneToImport
+import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.api.rpc.users.ApiSex
 import im.actor.api.{ rpc ⇒ api }
 import im.actor.server._
 import im.actor.server.acl.ACLUtils
+import im.actor.server.api.rpc.service.contacts.ContactsRpcErrors
 import im.actor.server.user.UserExtension
 import im.actor.util.misc.IdUtils
 
@@ -26,6 +28,8 @@ final class ContactsServiceSpec
   it should "respond with isChanged = false for all non deleted contacts" in s.getcontacts.notChangedAfterRemove
 
   "AddContact handler" should "add contact" in s.addremove.add()
+
+  it should "not add self to contacts" in s.addremove.cantAddSelf()
 
   "RemoveContact handler" should "remove contact" in s.addremove.remove
 
@@ -102,26 +106,39 @@ final class ContactsServiceSpec
       val (user, authSid) = createUser(authId, phoneNumber)
 
       val (user2, _, _, _) = createUser()
-      val user2Model = getUserModel(user2.id)
-      val user2AccessHash = ACLUtils.userAccessHash(authId, user2.id, user2Model.accessSalt)
+      val user2AccessHash = ACLUtils.userAccessHash(authId, user2.id, getUserModel(user2.id).accessSalt)
 
       implicit val clientData = api.ClientData(authId, sessionId, Some(AuthData(user.id, authSid, 42)))
 
       def add(firstRun: Boolean = true, expectedUpdSeq: Int = 1) = {
         whenReady(service.handleAddContact(user2.id, user2AccessHash)) { resp ⇒
           resp should matchPattern {
-            case Ok(api.misc.ResponseSeq(seq, state)) if seq == expectedUpdSeq ⇒
+            case Ok(ResponseSeq(seq, state)) if seq == expectedUpdSeq ⇒
           }
         }
 
-        val expectedUsers = Vector(Await.result(
+        val ExpectedUsers = Vector(Await.result(
           UserExtension(system).getApiStruct(user2.id, user.id, authId),
           3.seconds
         ))
 
         whenReady(service.handleGetContacts(service.hashIds(Seq.empty), Vector.empty)) { resp ⇒
           resp should matchPattern {
-            case Ok(api.contacts.ResponseGetContacts(expectedUsers, false, _)) ⇒
+            case Ok(api.contacts.ResponseGetContacts(ExpectedUsers, false, _)) ⇒
+          }
+        }
+      }
+
+      def cantAddSelf() = {
+        val userAccessHash = ACLUtils.userAccessHash(authId, user.id, getUserModel(user.id).accessSalt)
+        whenReady(service.handleAddContact(user.id, userAccessHash)) { resp ⇒
+          inside(resp) {
+            case Error(ContactsRpcErrors.CantAddSelf) ⇒
+          }
+        }
+        whenReady(service.handleGetContacts(service.hashIds(Seq.empty), Vector.empty)) { resp ⇒
+          inside(resp) {
+            case Ok(api.contacts.ResponseGetContacts(users, false, _)) ⇒ users should not contain user
           }
         }
       }
@@ -132,7 +149,7 @@ final class ContactsServiceSpec
         whenReady(userExt.getAccessHash(userId, clientData.authId)) { accessSalt ⇒
           whenReady(service.handleAddContact(userId, accessSalt)) { rsp ⇒
             inside(rsp) {
-              case Ok(api.misc.ResponseSeq(_, _)) ⇒
+              case Ok(ResponseSeq(_, _)) ⇒
             }
           }
         }
@@ -141,7 +158,7 @@ final class ContactsServiceSpec
       def remove() = {
         whenReady(service.handleRemoveContact(user2.id, user2AccessHash)) { resp ⇒
           resp should matchPattern {
-            case Ok(api.misc.ResponseSeq(3, state)) ⇒
+            case Ok(ResponseSeq(3, state)) ⇒
           }
         }
 

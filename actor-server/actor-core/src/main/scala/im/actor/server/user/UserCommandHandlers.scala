@@ -370,25 +370,29 @@ private[user] trait UserCommandHandlers {
     user:          UserState,
     contactsToAdd: Seq[UserCommands.ContactToAdd]
   ): Unit = {
-    val (idsLocalNames, plains, phones, emails) = contactsToAdd.view.map {
-      case UserCommands.ContactToAdd(contactUserId, localNameOpt, phoneOpt, emailOpt) ⇒
-        val phone = phoneOpt map (UserPhoneContact(_, user.id, contactUserId, localNameOpt, isDeleted = false))
-        val email = emailOpt map (UserEmailContact(_, user.id, contactUserId, localNameOpt, isDeleted = false))
-        val plain =
-          if (phone.isDefined || email.isDefined)
-            None
-          else Some(UserContact(user.id, contactUserId, localNameOpt, isDeleted = false))
+    val (idsLocalNames, plains, phones, emails) =
+      contactsToAdd.view
+        .filterNot(_.contactUserId == user.id)
+        .map {
+          case UserCommands.ContactToAdd(contactUserId, localNameOpt, phoneOpt, emailOpt) ⇒
+            val phone = phoneOpt map (UserPhoneContact(_, user.id, contactUserId, localNameOpt, isDeleted = false))
+            val email = emailOpt map (UserEmailContact(_, user.id, contactUserId, localNameOpt, isDeleted = false))
+            val plain =
+              if (phone.isDefined || email.isDefined)
+                None
+              else Some(UserContact(user.id, contactUserId, localNameOpt, isDeleted = false))
 
-        ((contactUserId, localNameOpt), plain, phone, email)
-    }.foldLeft(Map.empty[Int, Option[String]], Seq.empty[UserContact], Seq.empty[UserPhoneContact], Seq.empty[UserEmailContact]) {
-      case ((idsLocalNames, plains, phones, emails), (idLocalName, plain, phone, email)) ⇒
-        (
-          idsLocalNames + idLocalName,
-          plain.map(plains :+ _).getOrElse(plains),
-          phone.map(phones :+ _).getOrElse(phones),
-          email.map(emails :+ _).getOrElse(emails)
-        )
-    }
+            ((contactUserId, localNameOpt), plain, phone, email)
+        }
+        .foldLeft(Map.empty[Int, Option[String]], Seq.empty[UserContact], Seq.empty[UserPhoneContact], Seq.empty[UserEmailContact]) {
+          case ((idsLocalNames, plains, phones, emails), (idLocalName, plain, phone, email)) ⇒
+            (
+              idsLocalNames + idLocalName,
+              plain.map(plains :+ _).getOrElse(plains),
+              phone.map(phones :+ _).getOrElse(phones),
+              email.map(emails :+ _).getOrElse(emails)
+            )
+        }
 
     (for {
       _ ← FutureExt.ftraverse(plains)(c ⇒ db.run(UserContactRepo.insertOrUpdate(c)))
