@@ -1,5 +1,6 @@
 package im.actor.sdk;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.provider.Settings;
@@ -182,6 +183,11 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
     @Override
     public MessageHolder getCustomMessageViewHolder(int dataTypeHash, MessagesAdapter messagesAdapter, ViewGroup viewGroup) {
         return null;
+    }
+
+    @Override
+    public boolean onAttachMenuClicked(Activity activity) {
+        return false;
     }
 
     /**

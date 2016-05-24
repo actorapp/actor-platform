@@ -1,5 +1,6 @@
 package im.actor.sdk;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.view.View;
@@ -126,6 +127,14 @@ public interface ActorSDKDelegate {
      * @return custom view holder
      */
     MessageHolder getCustomMessageViewHolder(int dataTypeHash, MessagesAdapter messagesAdapter, ViewGroup viewGroup);
+
+    /**
+     * Return True if custom share menu is clicked
+     *
+     * @param activity called from activity
+     * @return true if custom share menu shown
+     */
+    boolean onAttachMenuClicked(Activity activity);
 
     /**
      * Override for setting specific notification sound for peer
