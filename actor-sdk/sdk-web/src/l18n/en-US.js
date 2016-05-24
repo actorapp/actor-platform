@@ -186,16 +186,16 @@ export default {
       'confirm': {
         'logout': 'Are you sure you want to leave?',
         'user': {
-          'clear': 'Are you sure you want to clear the conversation with {name}?',
-          'delete': 'Are you sure you want to delete the conversation with {name}?',
-          'block': 'Are you sure you want to block {name}?',
-          'removeContact': 'Are you sure you want to remove {name} from your contacts?'
+          'clear': 'Are you sure you want to clear the conversation with <strong>{name}</strong>?',
+          'delete': 'Are you sure you want to delete the conversation with <strong>{name}</strong>?',
+          'block': 'Are you sure you want to block <strong>{name}</strong>?',
+          'removeContact': 'Are you sure you want to remove <strong>{name}</strong> from your contacts?'
         },
         'group': {
-          'clear': 'Are you sure you want to clear the conversation {name}?',
-          'delete': 'Are you sure you want to delete the conversation {name}?',
-          'leave': 'Are you sure you want to leave the conversation {name}?',
-          'kick': 'Are you sure you want to kick {name}?'
+          'clear': 'Are you sure you want to clear the conversation <strong>{name}</strong>?',
+          'delete': 'Are you sure you want to delete the conversation <strong>{name}</strong>?',
+          'leave': 'Are you sure you want to leave the conversation <strong>{name}</strong>?',
+          'kick': 'Are you sure you want to kick <strong>{name}</strong>?'
         },
         'nonContactHide': {
           'title': 'Are you sure you want to hide this conversation?',

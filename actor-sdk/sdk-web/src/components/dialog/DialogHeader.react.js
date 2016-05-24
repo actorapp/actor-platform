@@ -192,8 +192,8 @@ class DialogHeader extends Component {
 
     if (!isMoreDropdownOpen) {
       return null;
-
     }
+
     const { info, peer } = this.props;
 
     return (
