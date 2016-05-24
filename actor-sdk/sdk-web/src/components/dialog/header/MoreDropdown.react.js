@@ -4,7 +4,6 @@
 
 import React, { Component, PropTypes } from 'react';
 import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
-import classnames from 'classnames';
 import EventListener from 'fbjs/lib/EventListener';
 import { PeerTypes, KeyCodes } from '../../../constants/ActorAppConstants';
 import confirm from '../../../utils/confirm';
@@ -120,7 +119,7 @@ class MoreDropdown extends Component {
         () => DialogActionCreators.leaveGroup(peer.id),
         () => {}
       );
-  };
+  }
 
   handleRemoveFromContacts() {
     console.debug('handleRemoveFromContacts')

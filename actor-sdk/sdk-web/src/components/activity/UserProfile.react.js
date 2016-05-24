@@ -5,11 +5,8 @@
 import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
 import { FormattedMessage } from 'react-intl';
-import classnames from 'classnames';
 import { lightbox } from '../../utils/ImageUtils';
 
-import ActorClient from '../../utils/ActorClient';
-import confirm from '../../utils/confirm';
 import { escapeWithEmoji } from '../../utils/EmojiUtils';
 
 import NotificationsActionCreators from '../../actions/NotificationsActionCreators';
@@ -106,11 +103,7 @@ class UserProfile extends Component {
 
   render() {
     const { user } = this.props;
-    const { isNotificationsEnabled, isActionsDropdownOpen, message } = this.state;
-
-    const dropdownClassNames = classnames('dropdown', {
-      'dropdown--opened': isActionsDropdownOpen
-    });
+    const { isNotificationsEnabled, message } = this.state;
 
     return (
       <div className="activity__body user_profile">
