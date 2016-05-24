@@ -12,11 +12,7 @@ import ActorClient from '../../utils/ActorClient';
 import confirm from '../../utils/confirm';
 import { escapeWithEmoji } from '../../utils/EmojiUtils';
 
-import ContactActionCreators from '../../actions/ContactActionCreators';
-import DialogActionCreators from '../../actions/DialogActionCreators';
 import NotificationsActionCreators from '../../actions/NotificationsActionCreators';
-import CallActionCreators from '../../actions/CallActionCreators';
-import BlockedUsersActionCreators from '../../actions/BlockedUsersActionCreators';
 
 import UserStore from '../../stores/UserStore';
 import NotificationsStore from '../../stores/NotificationsStore';
@@ -54,24 +50,8 @@ class UserProfile extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      isMoreDropdownOpen: false
-    };
-
-    this.onClearChat = this.onClearChat.bind(this);
-    this.onDeleteChat = this.onDeleteChat.bind(this);
-    this.onBlockUser = this.onBlockUser.bind(this);
-    this.onRemoveFromContacts = this.onRemoveFromContacts.bind(this);
-    this.onAddToContacts = this.onAddToContacts.bind(this);
     this.onNotificationChange = this.onNotificationChange.bind(this);
-    this.closeActionsDropdown = this.closeActionsDropdown.bind(this);
-    this.toggleActionsDropdown = this.toggleActionsDropdown.bind(this);
     this.handleAvatarClick = this.handleAvatarClick.bind(this);
-    this.makeCall = this.makeCall.bind(this);
-  }
-
-  onAddToContacts() {
-     ContactActionCreators.addContact(this.props.user.id);
   }
 
   onNotificationChange(event) {
@@ -79,77 +59,8 @@ class UserProfile extends Component {
     NotificationsActionCreators.changeNotificationsEnabled(peer, event.target.checked);
   }
 
-  toggleActionsDropdown() {
-    const { isActionsDropdownOpen } = this.state;
-
-    if (!isActionsDropdownOpen) {
-      this.setState({ isActionsDropdownOpen: true });
-      document.addEventListener('click', this.closeActionsDropdown, false);
-    } else {
-      this.closeActionsDropdown();
-    }
-  }
-
-  closeActionsDropdown() {
-    this.setState({ isActionsDropdownOpen: false });
-    document.removeEventListener('click', this.closeActionsDropdown, false);
-  }
-
-  onClearChat() {
-    const { user } = this.props;
-    confirm(
-      <FormattedMessage id="modal.confirm.user.clear" values={{ name: user.name }} />
-    ).then(
-      () => {
-        const peer = ActorClient.getUserPeer(user.id);
-        DialogActionCreators.clearChat(peer);
-      },
-      () => {}
-    );
-  }
-
-  onRemoveFromContacts() {
-    const { user } = this.props;
-    confirm(
-      <FormattedMessage id="modal.confirm.user.removeContact" values={{ name: user.name }}/>
-    ).then(
-      () => ContactActionCreators.removeContact(user.id),
-      () => {}
-    );
-  }
-
-  onDeleteChat() {
-    const { user } = this.props;
-
-    confirm(
-      <FormattedMessage id="modal.confirm.user.delete" values={{ name: user.name }} />
-    ).then(
-      () => {
-        const peer = ActorClient.getUserPeer(user.id);
-        DialogActionCreators.deleteChat(peer);
-      },
-      () => {}
-    );
-  }
-
-  onBlockUser() {
-    const { user } = this.props;
-
-    confirm(
-      <FormattedMessage id="modal.confirm.user.block" values={{ name: user.name }} />
-    ).then(
-      () => BlockedUsersActionCreators.blockUser(user.id),
-      () => {}
-    );
-  }
-
   handleAvatarClick() {
     lightbox.open(this.props.user.bigAvatar)
-  }
-
-  makeCall() {
-    const { user } = this.props;
-    CallActionCreators.makeCall(user.id);
   }
 
   renderAbout() {
@@ -221,34 +132,6 @@ class UserProfile extends Component {
             </header>
 
             {this.renderAbout()}
-
-            <footer className="row">
-              <div className="col-xs">
-                <button className="button button--green button--wide" onClick={this.makeCall}>
-                  <i className="material-icons">phone</i>
-                  <FormattedMessage id="button.call"/>
-                </button>
-              </div>
-              <div style={{ width: 10 }}/>
-              <div className="col-xs">
-                <div className={dropdownClassNames}>
-                  <button className="dropdown__button button button--flat button--wide" onClick={this.toggleActionsDropdown}>
-                    <i className="material-icons">more_horiz</i>
-                    <FormattedMessage id="actions"/>
-                  </button>
-                  <ul className="dropdown__menu dropdown__menu--right">
-                    {this.renderToggleContact()}
-                    {this.renderBlockUser()}
-                    <li className="dropdown__menu__item" onClick={this.onClearChat}>
-                      <FormattedMessage id="clearConversation"/>
-                    </li>
-                    <li className="dropdown__menu__item" onClick={this.onDeleteChat}>
-                      <FormattedMessage id="deleteConversation"/>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </footer>
           </li>
 
           <li className="profile__list__item user_profile__contact_info no-p">
@@ -267,4 +150,4 @@ class UserProfile extends Component {
   }
 }
 
-export default Container.create(UserProfile, { pure:false, withProps: true });
+export default Container.create(UserProfile, { withProps: true, pure: false });
