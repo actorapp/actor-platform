@@ -94,7 +94,7 @@ public class AAGroupMemberCell: AATableViewCell {
     public override func layoutSubviews() {
         super.layoutSubviews()
         
-        let userAvatarViewFrameSize: CGFloat = CGFloat(40)
+        let userAvatarViewFrameSize: CGFloat = CGFloat(44)
         avatarView.frame = CGRect(x: 14.0, y: (contentView.bounds.size.height - userAvatarViewFrameSize) / 2.0, width: userAvatarViewFrameSize, height: userAvatarViewFrameSize)
         
         var w: CGFloat = contentView.bounds.size.width - 65.0 - 8.0
