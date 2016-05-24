@@ -96,7 +96,7 @@ public class AndroidWebRTCRuntimeProvider implements WebRTCRuntime {
         }
     }
 
-    public void unbindPeerConnection() {
+    public static void unbindPeerConnection() {
         if (currentPeerConnection != null) {
             currentPeerConnection.unbind();
         }
