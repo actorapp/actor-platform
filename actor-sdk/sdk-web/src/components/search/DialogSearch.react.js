@@ -3,7 +3,6 @@
  */
 
 import React, { Component, PropTypes } from 'react';
-import CSSTransitionGroup from 'react-addons-css-transition-group';
 import { KeyCodes } from '../../constants/ActorAppConstants';
 
 class DialogSearch extends Component {
@@ -73,16 +72,11 @@ class DialogSearch extends Component {
 
   render() {
     const { isOpen } = this.props;
+
     return (
-      <CSSTransitionGroup
-        component="div"
-        className="dialog__search__container"
-        transitionName="dialog__search"
-        transitionEnterTimeout={100}
-        transitionLeaveTimeout={100}
-      >
+      <div className="dialog__search__container">
         {isOpen ? this.renderContent() : null}
-      </CSSTransitionGroup>
+      </div>
     );
   }
 
