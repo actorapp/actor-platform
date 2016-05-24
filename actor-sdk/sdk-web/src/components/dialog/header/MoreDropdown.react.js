@@ -12,6 +12,8 @@ import confirm from '../../../utils/confirm';
 import ContactActionCreators from '../../../actions/ContactActionCreators';
 import DialogActionCreators from '../../../actions/DialogActionCreators';
 import BlockedUsersActionCreators from '../../../actions/BlockedUsersActionCreators';
+import EditGroupActionCreators from '../../../actions/EditGroupActionCreators';
+import InviteUserActions from '../../../actions/InviteUserActions';
 
 class MoreDropdown extends Component {
   static contextTypes = {
@@ -37,6 +39,8 @@ class MoreDropdown extends Component {
     this.handleAddToContacts = this.handleAddToContacts.bind(this);
     this.handleBlockUser = this.handleBlockUser.bind(this);
     this.handleUnlockUser = this.handleUnlockUser.bind(this);
+    this.handleEditGroup = this.handleEditGroup.bind(this);
+    this.handleAddPeople = this.handleAddPeople.bind(this);
   }
 
   componentDidMount() {
@@ -149,6 +153,16 @@ class MoreDropdown extends Component {
     BlockedUsersActionCreators.unblockUser(peer.id);
   }
 
+  handleEditGroup() {
+    const { peer } = this.props;
+    EditGroupActionCreators.show(peer.id);
+  }
+
+  handleAddPeople() {
+    const { info } = this.props;
+    InviteUserActions.show(info)
+  }
+
   renderToggleContact() {
     const { info: { isContact } } = this.props;
 
@@ -207,11 +221,11 @@ class MoreDropdown extends Component {
   renderGroupMenuItems() {
     return (
       <div>
-        <li className="dropdown__menu__item">
+        <li className="dropdown__menu__item" onClick={this.handleEditGroup}>
           <i className="material-icons">mode_edit</i>
           <FormattedMessage id="editGroup"/>
         </li>
-        <li className="dropdown__menu__item">
+        <li className="dropdown__menu__item" onClick={this.handleAddPeople}>
           <i className="material-icons">person_add</i>
           <FormattedMessage id="addPeople"/>
         </li>
