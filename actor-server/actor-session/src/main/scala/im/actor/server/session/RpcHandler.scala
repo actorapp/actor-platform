@@ -87,7 +87,7 @@ private[session] class RpcHandler(authId: Long, sessionId: Long, config: RpcConf
           val responseFuture =
             RequestCodec.decode(requestBytes) match {
               case Attempt.Successful(DecodeResult(request, _)) ⇒
-                gelfMdc(
+                aroundLog(
                   "client_address" → clientData.remoteAddr.getOrElse(""),
                   "type" → LogType.RequestReceived,
                   "request" → request
@@ -120,7 +120,7 @@ private[session] class RpcHandler(authId: Long, sessionId: Long, config: RpcConf
 
   def publisher: Receive = {
     case Response(messageId, rsp, clientData) ⇒
-      gelfMdc(
+      aroundLog(
         "client_address" → clientData.remoteAddr.getOrElse(""),
         "type" → LogType.SendResponse,
         "response" → rsp
@@ -138,7 +138,7 @@ private[session] class RpcHandler(authId: Long, sessionId: Long, config: RpcConf
       enqueue(Some(rsp), messageId)
     case ResponseFailure(messageId, request, failure, clientData) ⇒
       markFailure {
-        gelfMdc(
+        aroundLog(
           "client_address" → clientData.remoteAddr.getOrElse(""),
           "type" → LogType.BadRequest,
           "request" → request
@@ -213,10 +213,13 @@ private[session] class RpcHandler(authId: Long, sessionId: Long, config: RpcConf
     }
   }
 
-  def gelfMdc(mdc: (String, Any)*)(logger: ⇒ Unit): Unit = {
-    log.mdc(log.mdc ++ mdc)
-    logger
-    log.mdc(log.mdc -- mdc.map(_._1))
+  def aroundLog(mdc: (String, Any)*)(logger: ⇒ Unit): Unit = {
+    try {
+      log.mdc(log.mdc ++ mdc)
+      logger
+    } finally {
+      log.mdc(log.mdc -- mdc.map(_._1))
+    }
   }
 
   override def mdc(currentMessage: Any): MDC = {

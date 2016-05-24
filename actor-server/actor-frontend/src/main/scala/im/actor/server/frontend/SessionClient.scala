@@ -15,6 +15,7 @@ import im.actor.crypto.primitives.digest.SHA256
 import im.actor.crypto.primitives.util.ByteStrings
 import im.actor.crypto.ActorProtoKey
 import im.actor.server.db.DbExtension
+import im.actor.server.gelf.LogType
 import im.actor.server.model.MasterKey
 import im.actor.server.mtproto.codecs.protocol._
 import im.actor.server.mtproto.protocol._
@@ -130,7 +131,7 @@ final class CryptoHelper(protoKeys: ActorProtoKey) {
 
 private[frontend] final class SessionClient(sessionRegion: SessionRegion, remoteAddr: InetAddress)
   extends Actor
-  with ActorLogging
+  with DiagnosticActorLogging
   with ActorPublisher[T.MTProto]
   with Stash {
 
@@ -203,11 +204,25 @@ private[frontend] final class SessionClient(sessionRegion: SessionRegion, remote
   def working(authId: Long, sessionId: Long, pack: BitVector ⇒ T.MTProto, unpack: BitVector ⇒ Try[BitVector]): Receive = publisher orElse {
     case SendToSession(pAuthId, pSessionId, mbBits) ⇒
       if (pAuthId != authId) {
-        log.warning("authId has changed")
+        aroundLog(
+          "client_address" → remoteAddr.getHostAddress,
+          "type" → LogType.BadToken,
+          "authId" → authId,
+          "sessionId" → sessionId
+        ){
+          log.warning("authId has changed")
+        }
         enqueuePackage(Drop(0, 0, "authId has changed"))
         onCompleteThenStop()
       } else if (pSessionId != sessionId) {
-        log.warning("sessionId has changed")
+        aroundLog(
+          "client_address" → remoteAddr.getHostAddress,
+          "type" → LogType.BadToken,
+          "authId" → authId,
+          "sessionId" → sessionId
+        ){
+          log.warning("sessionId has changed")
+        }
         enqueuePackage(Drop(0, 0, "sessionId has changed"))
         onCompleteThenStop()
       } else {
@@ -271,5 +286,14 @@ private[frontend] final class SessionClient(sessionRegion: SessionRegion, remote
   override def unhandled(message: Any): Unit = {
     super.unhandled(message)
     log.error("Unhandled message: {}", message)
+  }
+
+  def aroundLog(mdc: (String, Any)*)(logger: ⇒ Unit): Unit = {
+    try {
+      log.mdc(log.mdc ++ mdc)
+      logger
+    } finally {
+      log.mdc(log.mdc -- mdc.map(_._1))
+    }
   }
 }
