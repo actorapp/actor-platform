@@ -6,7 +6,6 @@ import React, { Component, PropTypes } from 'react';
 import { FormattedMessage } from 'react-intl';
 import classnames from 'classnames';
 import Tooltip from 'rc-tooltip';
-import { PeerTypes } from '../../constants/ActorAppConstants';
 
 import { escapeWithEmoji } from '../../utils/EmojiUtils';
 

@@ -2,7 +2,8 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import React, { Component, PropTypes } from 'react';
+import { isFunction } from 'lodash';
+import React, { Component } from 'react';
 import { Container } from 'flux/utils';
 import DelegateContainer from '../utils/DelegateContainer';
 
