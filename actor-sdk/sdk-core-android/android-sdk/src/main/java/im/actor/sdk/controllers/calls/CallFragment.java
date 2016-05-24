@@ -359,8 +359,19 @@ public class CallFragment extends BaseFragment {
                     }
 
                     @Override
-                    public void onRemoved() {
+                    public void onOwnRemoved() {
 
+                    }
+
+                    @Override
+                    public void onDispose() {
+                        if (localRender != null) {
+                            localRender.release();
+                        }
+
+                        if (remoteRender != null) {
+                            remoteRender.release();
+                        }
                     }
                 });
             }
@@ -621,6 +632,7 @@ public class CallFragment extends BaseFragment {
             source.stop();
         }
 
+        AndroidWebRTCRuntimeProvider.unbindPeerConnection();
 
         if(call!=null && call.getState().get()!=CallState.ENDED){
             final NotificationCompat.Builder builder = new NotificationCompat.Builder(getActivity());
