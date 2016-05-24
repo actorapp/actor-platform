@@ -28,7 +28,7 @@ class CallDraggable extends Component {
 
     return (
       <Draggable>
-        <section className="call__draggable" style={{ position: 'absolute', top: 60, right: 60 }}>
+        <section className="call__draggable" style={{ position: 'absolute', top: 140, right: 32 }}>
           <CallBody peerInfo={peerInfo} callState={callState} small />
           <CallControls
             callState={callState}
