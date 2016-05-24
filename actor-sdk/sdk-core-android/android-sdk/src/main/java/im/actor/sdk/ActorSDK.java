@@ -624,7 +624,7 @@ public class ActorSDK {
     /**
      * Setting is is fast share enabled - experimental feature, disabled by default
      *
-     * @param fastShareEnabled
+     * @param fastShareEnabled is fast share enabled
      */
     public void setFastShareEnabled(boolean fastShareEnabled) {
         this.fastShareEnabled = fastShareEnabled;
