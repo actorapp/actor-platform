@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Debug;
 import android.view.ViewGroup;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -44,7 +43,6 @@ import im.actor.sdk.core.AndroidCallProvider;
 import im.actor.sdk.core.AndroidNotifications;
 import im.actor.sdk.core.AndroidPhoneBook;
 import im.actor.sdk.core.ActorPushManager;
-import im.actor.sdk.intents.ActivityManager;
 import im.actor.sdk.intents.ActorIntent;
 import im.actor.sdk.intents.ActorIntentActivity;
 import im.actor.sdk.intents.ActorIntentFragmentActivity;
@@ -178,10 +176,6 @@ public class ActorSDK {
      */
     @NotNull
     private ActorSDKDelegate delegate = new BaseActorSDKDelegate();
-    /**
-     * ActivityManager
-     */
-    private ActivityManager activityManager = new ActivityManager();
 
     /**
      * Call enabled
@@ -774,11 +768,6 @@ public class ActorSDK {
      */
     public void setDelegate(@NotNull ActorSDKDelegate delegate) {
         this.delegate = delegate;
-    }
-
-    @Deprecated
-    public ActivityManager getActivityManager() {
-        return activityManager;
     }
 
     /**
