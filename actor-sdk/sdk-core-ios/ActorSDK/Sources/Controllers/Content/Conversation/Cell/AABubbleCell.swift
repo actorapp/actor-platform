@@ -449,7 +449,7 @@ public class AABubbleCell: UICollectionViewCell {
     }
     
     func layoutAvatar() {
-        let avatarSize = CGFloat(39)
+        let avatarSize = CGFloat(42)
         avatarView.frame = CGRect(x: 5 + (AADevice.isiPad ? 16 : 0), y: self.contentView.frame.size.height - avatarSize - 2 - bubbleInsets.bottom, width: avatarSize, height: avatarSize)
     }
     
