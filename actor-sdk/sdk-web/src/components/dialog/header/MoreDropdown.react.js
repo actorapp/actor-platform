@@ -33,6 +33,10 @@ class MoreDropdown extends Component {
     this.handleChatClear = this.handleChatClear.bind(this);
     this.handleChatDelete = this.handleChatDelete.bind(this);
     this.handleChatLeave = this.handleChatLeave.bind(this);
+    this.handleRemoveFromContacts = this.handleRemoveFromContacts.bind(this);
+    this.handleAddToContacts = this.handleAddToContacts.bind(this);
+    this.handleBlockUser = this.handleBlockUser.bind(this);
+    this.handleUnlockUser = this.handleUnlockUser.bind(this);
   }
 
   componentDidMount() {
@@ -114,20 +118,50 @@ class MoreDropdown extends Component {
       );
   };
 
+  handleRemoveFromContacts() {
+    console.debug('handleRemoveFromContacts')
+    const { peer, info } = this.props;
+
+    confirm(<FormattedHTMLMessage id="modal.confirm.user.removeContact" values={{ name: info.name }}/>)
+      .then(
+        () => ContactActionCreators.removeContact(peer.id),
+        () => {}
+      );
+  }
+
+  handleAddToContacts() {
+    const { peer } = this.props;
+    ContactActionCreators.addContact(peer.id);
+  }
+
+  handleBlockUser() {
+    const { peer, info } = this.props;
+
+    confirm(<FormattedHTMLMessage id="modal.confirm.user.block" values={{ name: info.name }} />)
+      .then(
+        () => BlockedUsersActionCreators.blockUser(peer.id),
+        () => {}
+      );
+  }
+
+  handleUnlockUser() {
+    const { peer } = this.props;
+    BlockedUsersActionCreators.unblockUser(peer.id);
+  }
 
   renderToggleContact() {
     const { info: { isContact } } = this.props;
 
     if (isContact) {
       return (
-        <li className="dropdown__menu__item">
+        <li className="dropdown__menu__item" onClick={this.handleRemoveFromContacts}>
           <FormattedMessage id="removeFromContacts"/>
         </li>
       );
     }
 
     return (
-      <li className="dropdown__menu__item">
+      <li className="dropdown__menu__item" onClick={this.handleAddToContacts}>
         <FormattedMessage id="addToContacts"/>
       </li>
     );
@@ -138,8 +172,18 @@ class MoreDropdown extends Component {
       return null;
     }
 
+    const { info: { isBlocked } } = this.props;
+
+    if (isBlocked) {
+      return (
+        <li className="dropdown__menu__item" onClick={this.handleUnlockUser}>
+          <FormattedMessage id="compose.unblock" />
+        </li>
+      );
+    }
+
     return (
-      <li className="dropdown__menu__item">
+      <li className="dropdown__menu__item" onClick={this.handleBlockUser}>
         <FormattedMessage id="blockUser"/>
       </li>
     );
@@ -219,7 +263,7 @@ class MoreDropdown extends Component {
   render() {
     return (
       <ul className="dropdown__menu dropdown__menu--right" style={{ top: 42 }}>
-        {this.renderMediaMenuItems()}
+        {/*{this.renderMediaMenuItems()}*/}
         {this.renderPeerMenuItems()}
       </ul>
     );

@@ -19,10 +19,18 @@ class SearchStore extends ReduceStore {
 
   reduce(state, action) {
     switch (action.type) {
-      case ActionTypes.SEARCH:
+      case ActionTypes.SEARCH_CLEAR:
+        return this.getInitialState();
+
+      case ActionTypes.SEARCH_SET_QUERY:
         return {
           ...state,
-          query: action.query,
+          query: action.query
+        };
+
+      case ActionTypes.SEARCH_SET_RESULTS:
+        return {
+          ...state,
           results: action.results
         };
 

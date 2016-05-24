@@ -13,7 +13,7 @@ import { escapeWithEmoji } from '../../utils/EmojiUtils';
 import CallActionCreators from '../../actions/CallActionCreators';
 import ActivityActionCreators from '../../actions/ActivityActionCreators';
 import FavoriteActionCreators from '../../actions/FavoriteActionCreators';
-import DialogSearchActionCreators from '../../actions/DialogSearchActionCreators';
+import SearchMessagesActionCreators from '../../actions/SearchMessagesActionCreators';
 
 import AvatarItem from '../common/AvatarItem.react';
 import ToggleFavorite from '../common/ToggleFavorite.react';
@@ -76,9 +76,9 @@ class DialogHeader extends Component {
   handleSearchButtonClick() {
     const { isDialogSearchOpen } = this.props;
     if (!isDialogSearchOpen) {
-      DialogSearchActionCreators.open();
+      SearchMessagesActionCreators.open();
     } else {
-      DialogSearchActionCreators.close();
+      SearchMessagesActionCreators.close();
     }
   }
 

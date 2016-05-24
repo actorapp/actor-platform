@@ -31,13 +31,12 @@ class DialogSearchActionCreators {
   }
 
   changeSearchQuery(query, filter = {}) {
-    console.debug('DialogSearchActionCreators.changeSearchQuery'. query, filter)
     dispatch(ActionTypes.DIALOG_SEARCH_CHANGE_QUERY, { query });
 
-    if (filter.searchText) this.findAllText(query);
-    if (filter.searchDocs) this.findAllDocs();
-    if (filter.searchLinks) this.findAllLinks();
-    if (filter.searchPhotos) this.findAllPhotos();
+    if (filter.text) this.findAllText(query);
+    if (filter.docs) this.findAllDocs();
+    if (filter.links) this.findAllLinks();
+    if (filter.photos) this.findAllPhotos();
   }
 
   findAllText(query) {

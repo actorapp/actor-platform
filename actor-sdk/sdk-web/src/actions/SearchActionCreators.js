@@ -1,34 +1,39 @@
-import { dispatch, dispatchAsync } from '../dispatcher/ActorAppDispatcher';
-import { ActionTypes, PeerTypes } from '../constants/ActorAppConstants';
 import fuzzaldrin from 'fuzzaldrin';
+import { dispatch } from '../dispatcher/ActorAppDispatcher';
+import { isPeerUser, isPeerGroup } from '../utils/PeerUtils';
+import { ActionTypes } from '../constants/ActorAppConstants';
 import QuickSearchStore from '../stores/QuickSearchStore';
 
-class SearchActionCreators {
-  handleSearch(query) {
-    const list = QuickSearchStore.getState();
+const match = (value, query) => fuzzaldrin.score(value, query) > 0;
 
-    const filteredResults = list.filter((element) => {
-      return fuzzaldrin.score(element.peerInfo.title, query) > 0 ||
-             fuzzaldrin.score(element.peerInfo.userName, query) > 0;
+class SearchActionCreators {
+  clearSearch() {
+    dispatch(ActionTypes.SEARCH_CLEAR);
+  }
+
+  handleSearch(query) {
+    dispatch(ActionTypes.SEARCH_SET_QUERY, { query });
+    this.updateResults(query);
+  }
+
+  updateResults(query) {
+    const elements = QuickSearchStore.getState();
+    const results = { contacts: [], groups: [] };
+
+    elements.filter((element) => {
+      return match(element.peerInfo.title, query) ||
+             match(element.peerInfo.userName, query);
+    }).forEach((element) => {
+      if (isPeerUser(element.peerInfo.peer)) {
+        results.contacts.push(element);
+      } else if (isPeerGroup(element.peerInfo.peer)) {
+        results.groups.push(element);
+      } else {
+        console.error('Unexpected quick search element:', element);
+      }
     });
 
-    let groups = [];
-    let contacts = [];
-
-    filteredResults.forEach((result) => {
-      switch (result.peerInfo.peer.type) {
-        case PeerTypes.GROUP:
-          groups.push(result);
-          break;
-        case PeerTypes.USER:
-          contacts.push(result);
-          break;
-        default:
-          console.warn('Wrong peer type in results item');
-      }
-    })
-
-    dispatch(ActionTypes.SEARCH, { query, results: { groups, contacts }});
+    dispatch(ActionTypes.SEARCH_SET_RESULTS, { results });
   }
 }
 

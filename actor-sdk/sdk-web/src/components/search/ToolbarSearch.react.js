@@ -5,14 +5,13 @@
 import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
 import classnames from 'classnames';
-import { FormattedMessage } from 'react-intl';
 import history from '../../utils/history';
 
 import SearchStore from '../../stores/SearchStore';
 
 import SearchActionCreators from '../../actions/SearchActionCreators';
 import ComposeActionCreators from '../../actions/ComposeActionCreators';
-import DialogSearchActionCreators from '../../actions/DialogSearchActionCreators';
+import SearchMessagesActionCreators from '../../actions/SearchMessagesActionCreators';
 
 import SearchInput from './SearchInput.react';
 import ContactItem from '../common/ContactItem.react';
@@ -41,8 +40,9 @@ class ToolbarSearch extends Component {
   constructor(props) {
     super(props);
 
-    this.handleToolbarSearchClick = this.handleToolbarSearchClick.bind(this);
     this.handleSearchChange = this.handleSearchChange.bind(this);
+    this.handlerSearchClear = this.handlerSearchClear.bind(this);
+    this.handleToolbarSearchClick = this.handleToolbarSearchClick.bind(this);
     this.handleSearchToggleFocus = this.handleSearchToggleFocus.bind(this);
     this.handleMessagesSearch = this.handleMessagesSearch.bind(this);
     this.handleResultClick = this.handleResultClick.bind(this);
@@ -52,8 +52,11 @@ class ToolbarSearch extends Component {
     SearchActionCreators.handleSearch(query);
   }
 
+  handlerSearchClear() {
+    SearchActionCreators.clearSearch();
+  }
+
   handleSearchToggleFocus(isFocused) {
-    console.debug('handleSearchToggleFocus', isFocused);
     ComposeActionCreators.toggleAutoFocus(!isFocused);
     this.setState({ isSearchFocused: isFocused });
 
@@ -63,20 +66,20 @@ class ToolbarSearch extends Component {
   }
 
   handleToolbarSearchClick() {
-    console.debug('handleToolbarSearchClick');
     this.setState({ isSearchExpanded: true });
   }
 
   handleMessagesSearch() {
     const { query } = this.state;
-    DialogSearchActionCreators.open(query);
+    SearchMessagesActionCreators.open();
+    SearchMessagesActionCreators.setQuery(query);
+    this.handlerSearchClear();
     this.setState({ isResultsDropdownOpen: false })
   }
 
   handleResultClick(peer) {
-    console.debug('handleResultClick', peer)
     this.setState({ isResultsDropdownOpen: false });
-    this.handleSearchChange('');
+    this.handlerSearchClear();
     history.push(`/im/${peer.key}`);
   }
 
@@ -91,6 +94,7 @@ class ToolbarSearch extends Component {
       <SearchInput
         className="toolbar__search__input col-xs"
         value={query}
+        onClear={this.handlerSearchClear}
         onChange={this.handleSearchChange}
         onToggleFocus={this.handleSearchToggleFocus}
       />
@@ -154,11 +158,9 @@ class ToolbarSearch extends Component {
   }
 
   renderSearchResultsDropdown() {
-    const { query, isResultsDropdownOpen, isSearchFocused } = this.state;
+    const { query, isResultsDropdownOpen } = this.state;
 
-    // if (!query || query === '' || !isSearchFocused) {
-    if (!query || query === '' || !isResultsDropdownOpen) {
-    // if (!query || query === '') {
+    if (!query || !isResultsDropdownOpen) {
       return null;
     }
 

@@ -239,7 +239,14 @@ export const ActionTypes = keymirror({
   LOGGER_APPEND: null,
   LOGGER_TOGGLE: null,
 
-  SEARCH: null,
+  SEARCH_CLEAR: null,
+  SEARCH_SET_QUERY: null,
+  SEARCH_SET_RESULTS: null,
+
+  SEARCH_MESSAGES_SHOW: null,
+  SEARCH_MESSAGES_HIDE: null,
+  SEARCH_MESSAGES_CLEAR: null,
+  SEARCH_MESSAGES_SET_QUERY: null,
 
   DIALOG_SEARCH_SHOW: null,
   DIALOG_SEARCH_HIDE: null,

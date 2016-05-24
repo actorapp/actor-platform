@@ -11,7 +11,7 @@ const delegate = new ActorSDKDelegate({
     calls: true,
     search: true,
     editing: true,
-    blocking: false,
+    blocking: true,
     writeButton: true
   },
   actions: {},
