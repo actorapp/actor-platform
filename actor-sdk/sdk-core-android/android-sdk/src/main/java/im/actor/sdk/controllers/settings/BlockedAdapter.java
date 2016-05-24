@@ -97,7 +97,7 @@ public class BlockedAdapter extends RecyclerView.Adapter<BlockedAdapter.BlockedU
             res.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
             userName = (TextView) res.findViewById(R.id.name);
             avatarView = (AvatarView) res.findViewById(R.id.avatar);
-            avatarView.init(Screen.dp(42), 24);
+            avatarView.init(Screen.dp(42), 22);
             unblock = (TextView) res.findViewById(R.id.unblock);
             unblock.setTextColor(ActorSDK.sharedActor().style.getListActionColor());
 

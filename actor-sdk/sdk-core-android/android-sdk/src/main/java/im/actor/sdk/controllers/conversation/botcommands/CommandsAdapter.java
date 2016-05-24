@@ -102,7 +102,7 @@ public class CommandsAdapter extends HolderAdapter<BotCommand> {
             description = (TextView) res.findViewById(R.id.mentionHint);
             description.setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
             avatarView = (AvatarView) res.findViewById(R.id.avatar);
-            avatarView.init(Screen.dp(35), 18);
+            avatarView.init(Screen.dp(35), 16);
             this.data = data;
 
             return res;
