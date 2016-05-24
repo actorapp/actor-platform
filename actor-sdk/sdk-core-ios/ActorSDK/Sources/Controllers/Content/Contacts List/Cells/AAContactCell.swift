@@ -72,7 +72,7 @@ public class AAContactCell : AATableViewCell, AABindedCell, AABindedSearchCell {
         super.layoutSubviews()
         let width = self.contentView.frame.width;
         shortNameView.frame = CGRectMake(0, 8, 30, 40);
-        avatarView.frame = CGRectMake(30, 8, 40, 40);
+        avatarView.frame = CGRectMake(30, 8, 44, 44);
         titleView.frame = CGRectMake(80, 8, width - 80 - 14, 40);
     }
 }
