@@ -77,7 +77,7 @@ public class InviteContactHolder extends ViewHolder<PhoneBookContact> {
         }
 
         avatar = new AvatarView(context);
-        avatar.init(52, 24);
+        avatar.init(52, 22);
         {
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(Screen.dp(52), Screen.dp(52));
             layoutParams.leftMargin = Screen.dp(6);

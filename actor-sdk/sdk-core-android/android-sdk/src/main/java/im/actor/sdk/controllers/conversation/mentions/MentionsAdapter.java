@@ -93,7 +93,7 @@ public class MentionsAdapter extends HolderAdapter<MentionFilterResult> {
             mentionHint = (TextView) res.findViewById(R.id.mentionHint);
             mentionHint.setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
             avatarView = (AvatarView) res.findViewById(R.id.avatar);
-            avatarView.init(Screen.dp(35), 18);
+            avatarView.init(Screen.dp(35), 16);
             this.data = data;
 
             return res;

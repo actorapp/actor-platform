@@ -70,7 +70,7 @@ public class MembersAdapter extends HolderAdapter<GroupMember> {
             View res = ((Activity) context).getLayoutInflater().inflate(R.layout.fragment_group_item, viewGroup, false);
             userName = (TextView) res.findViewById(R.id.name);
             avatarView = (AvatarView) res.findViewById(R.id.avatar);
-            avatarView.init(Screen.dp(42), 24);
+            avatarView.init(Screen.dp(42), 18);
             admin = res.findViewById(R.id.adminFlag);
             online = (TextView) res.findViewById(R.id.online);
             ((TextView) admin).setTextColor(ActorSDK.sharedActor().style.getGroupAdminColor());
