@@ -11,6 +11,7 @@ import im.actor.api.rpc.codecs.RequestCodec
 import im.actor.api.rpc.{ ClientData, Error, Ok, RpcError, RpcInternalError, RpcOk, RpcResult }
 import im.actor.concurrent._
 import im.actor.server.api.rpc.RpcApiExtension
+import im.actor.server.gelf.LogType
 import im.actor.util.cache.CacheHelpers._
 import scodec.{ Attempt, DecodeResult }
 
@@ -86,7 +87,13 @@ private[session] class RpcHandler(authId: Long, sessionId: Long, config: RpcConf
           val responseFuture =
             RequestCodec.decode(requestBytes) match {
               case Attempt.Successful(DecodeResult(request, _)) ⇒
-                log.debug("Request messageId {}: {}, userId: {}", messageId, request, userIdOpt)
+                gelfMdc(
+                  "client_address" → clientData.remoteAddr.getOrElse(""),
+                  "type" → LogType.RequestReceived,
+                  "request" → request
+                ) {
+                    log.debug("Request messageId {}: {}, userId: {}", messageId, request, userIdOpt)
+                  }
 
                 val resultFuture = handleRequest(request, clientData) map Xor.right recover {
                   case e: Throwable ⇒ Xor.left(ResponseFailure(messageId, request, e, clientData))
@@ -113,7 +120,13 @@ private[session] class RpcHandler(authId: Long, sessionId: Long, config: RpcConf
 
   def publisher: Receive = {
     case Response(messageId, rsp, clientData) ⇒
-      log.debug("Response for messageId {}: {}", messageId, rsp)
+      gelfMdc(
+        "client_address" → clientData.remoteAddr.getOrElse(""),
+        "type" → LogType.SendResponse,
+        "response" → rsp
+      ) {
+          log.debug("Response for messageId {}: {}", messageId, rsp)
+        }
 
       if (!canCache(rsp))
         responseCache.invalidate(messageId)
@@ -125,7 +138,13 @@ private[session] class RpcHandler(authId: Long, sessionId: Long, config: RpcConf
       enqueue(Some(rsp), messageId)
     case ResponseFailure(messageId, request, failure, clientData) ⇒
       markFailure {
-        log.error(failure, "Failed to process request messageId: {}: {}", messageId, request)
+        gelfMdc(
+          "client_address" → clientData.remoteAddr.getOrElse(""),
+          "type" → LogType.BadRequest,
+          "request" → request
+        ) {
+            log.error(failure, "Failed to process request messageId: {}: {}", messageId, request)
+          }
         responseCache.invalidate(messageId)
         removeFromQueue(messageId)
         enqueue(Some(RpcErrors.InternalError), messageId)
@@ -192,6 +211,12 @@ private[session] class RpcHandler(authId: Long, sessionId: Long, config: RpcConf
       case Ok(result: RpcOk) ⇒ result
       case Error(error)      ⇒ error
     }
+  }
+
+  def gelfMdc(mdc: (String, Any)*)(logger: ⇒ Unit): Unit = {
+    log.mdc(log.mdc ++ mdc)
+    logger
+    log.mdc(log.mdc -- mdc.map(_._1))
   }
 
   override def mdc(currentMessage: Any): MDC = {
