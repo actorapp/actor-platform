@@ -209,9 +209,9 @@ private[frontend] final class SessionClient(sessionRegion: SessionRegion, remote
           "type" → LogType.BadToken,
           "authId" → authId,
           "sessionId" → sessionId
-        ){
-          log.warning("authId has changed")
-        }
+        ) {
+            log.warning("authId has changed")
+          }
         enqueuePackage(Drop(0, 0, "authId has changed"))
         onCompleteThenStop()
       } else if (pSessionId != sessionId) {
@@ -220,9 +220,9 @@ private[frontend] final class SessionClient(sessionRegion: SessionRegion, remote
           "type" → LogType.BadToken,
           "authId" → authId,
           "sessionId" → sessionId
-        ){
-          log.warning("sessionId has changed")
-        }
+        ) {
+            log.warning("sessionId has changed")
+          }
         enqueuePackage(Drop(0, 0, "sessionId has changed"))
         onCompleteThenStop()
       } else {
