@@ -210,7 +210,7 @@ public class ConversationViewController:
         //
         // Navigation Avatar
         //
-        avatarView.frame = CGRectMake(0, 0, 36, 36)
+        avatarView.frame = CGRectMake(0, 0, 40, 40)
         avatarView.viewDidTap = onAvatarTap
         
         let barItem = UIBarButtonItem(customView: avatarView)

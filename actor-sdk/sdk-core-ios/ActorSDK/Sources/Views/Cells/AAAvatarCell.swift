@@ -46,7 +46,7 @@ public class AAAvatarCell: AATableViewCell {
     public override func layoutSubviews() {
         super.layoutSubviews()
         
-        avatarView.frame = CGRect(x: 14, y: 14, width: 64, height: 64)
+        avatarView.frame = CGRect(x: 14, y: 14, width: 66, height: 66)
         progress.frame = avatarView.frame
 
         if subtitleLabel.hidden {

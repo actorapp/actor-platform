@@ -48,7 +48,7 @@ public class AADialogSearchCell: AATableViewCell, AABindedSearchCell {
         let leftPadding = CGFloat(76)
         let padding = CGFloat(14)
         
-        avatarView.frame = CGRectMake(padding, padding, 48, 48)
+        avatarView.frame = CGRectMake(padding, padding, 52, 52)
         titleView.frame = CGRectMake(leftPadding, 0, width - leftPadding - (padding + 50), contentView.bounds.size.height)
     }
 }
