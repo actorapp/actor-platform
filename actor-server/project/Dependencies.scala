@@ -209,5 +209,5 @@ object Dependencies {
 
   val tests = shared ++ Seq(akkaClusterSharding, amazonaws, jfairy, scalacheck, scalatest, slickTestkit, akkaTestkit, akkaMultiNodeTestkit)
 
-  val soc = shared ++ Seq(gelf)
+  val soc = shared ++ Seq(gelf, playJson)
 }

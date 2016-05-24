@@ -10,6 +10,7 @@ import org.graylog2.gelfclient._
 import collection.JavaConversions._
 import org.slf4j.{ LoggerFactory ⇒ SLFLoggerFactory }
 import com.typesafe.config.{ Config, ConfigFactory }
+import play.api.libs.json.{ JsObject, Json }
 
 object LogType extends Enumeration {
   type LogType = Value
@@ -74,6 +75,59 @@ class GelfLoggerInternal(actorConfig: Config = ActorConfig.load(ConfigFactory.em
     case i @ Info(logSource, logClass, message)         ⇒
     case d @ Debug(logSource, logClass, message)        ⇒
   }
+
+
+
+  def sendRPCLog(level: String, detail: Int, fields: Map[String, String], params: Map[String, String]): Unit = {
+    detail match {
+      case 0 ⇒
+      case 1 ⇒
+        sendMsg(level, fields) //TODO read name from params
+      case 2 ⇒ sendMsg(level, fields ++ params)
+      case _ ⇒ logger.warn("Out of range")
+    }
+  }
+
+  def sendMsg(level: String, additionalFields: Map[String, String]): Unit = {
+    val msg = builder
+      .level(GelfMessageLevel.valueOf(level))
+      .additionalFields(mapAsJavaMap(additionalFields))
+      .build()
+
+    if (!transport.trySend(msg)) {
+      logger.warn("There isn't enough room in the queue for sending gelf log message")
+    }
+
+    //Remove the last added fields because builder is shared between all log events
+    builder.removeFields(additionalFields.keySet)
+  }
+
+  //TODO make two method. 1: return map of params, 2: create gelf format from that map
+  def fetchPar(input: String): Map[String, String] = {
+    val jsonValue = try {
+      Some(Json.parse(input))
+    } catch {
+      case e: Exception ⇒
+        None
+    }
+    jsonValue match {
+      case Some(jsObj) ⇒
+        jsObj.asOpt[JsObject] match {
+          case Some(json) ⇒
+            var i = 0
+            val r = for ((k, v) ← json.fieldSet)
+              yield ("request_param" + {
+                i += 1
+                i
+              }, s"{$k : $v}")
+            r.toMap
+          case None ⇒ Map()
+        }
+      case None ⇒ Map()
+    }
+  }
+
+
 }
 
 class CGMessageBuilder(val message: String, val host: String) extends GelfMessageBuilder(message, host) {
