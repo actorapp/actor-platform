@@ -3,10 +3,15 @@
  */
 
 import React, { Component, PropTypes } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
 import classnames from 'classnames';
 import EventListener from 'fbjs/lib/EventListener';
 import { PeerTypes, KeyCodes } from '../../../constants/ActorAppConstants';
+import confirm from '../../../utils/confirm';
+
+import ContactActionCreators from '../../../actions/ContactActionCreators';
+import DialogActionCreators from '../../../actions/DialogActionCreators';
+import BlockedUsersActionCreators from '../../../actions/BlockedUsersActionCreators';
 
 class MoreDropdown extends Component {
   static contextTypes = {
@@ -25,6 +30,9 @@ class MoreDropdown extends Component {
 
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleDocumentClick = this.handleDocumentClick.bind(this);
+    this.handleChatClear = this.handleChatClear.bind(this);
+    this.handleChatDelete = this.handleChatDelete.bind(this);
+    this.handleChatLeave = this.handleChatLeave.bind(this);
   }
 
   componentDidMount() {
@@ -52,7 +60,7 @@ class MoreDropdown extends Component {
 
   handleDocumentClick(event) {
     const { onClose } = this.props;
-    onClose(event)
+    onClose(event);
   }
 
   handleKeyDown(event) {
@@ -64,6 +72,48 @@ class MoreDropdown extends Component {
       onClose(event)
     }
   }
+
+  handleChatClear() {
+    console.debug('handleChatClear');
+    const { info, peer } = this.props;
+
+    const message = peer.key === PeerTypes.USER
+      ? <FormattedHTMLMessage id="modal.confirm.user.clear" values={{ name: info.name }} />
+      : <FormattedHTMLMessage id="modal.confirm.group.clear" values={{ name: info.name }} />
+
+    confirm(message)
+      .then(
+        () => DialogActionCreators.clearChat(peer),
+        () => {}
+      );
+  }
+
+  handleChatDelete() {
+    console.debug('handleChatDelete');
+    const { info, peer } = this.props;
+
+    const message = peer.key === PeerTypes.USER
+      ? <FormattedHTMLMessage id="modal.confirm.user.delete" values={{ name: info.name }} />
+      : <FormattedHTMLMessage id="modal.confirm.group.delete" values={{ name: info.name }} />
+
+    confirm(message)
+      .then(
+        () => DialogActionCreators.deleteChat(peer),
+        () => {}
+      );
+  }
+
+  handleChatLeave() {
+    console.debug('handleChatLeave');
+    const { peer, info } = this.props;
+
+    confirm(<FormattedHTMLMessage id="modal.confirm.group.leave" values={{ name: info.name }} />)
+      .then(
+        () => DialogActionCreators.leaveGroup(peer.id),
+        () => {}
+      );
+  };
+
 
   renderToggleContact() {
     const { info: { isContact } } = this.props;
@@ -100,10 +150,10 @@ class MoreDropdown extends Component {
       <div>
         {this.renderToggleContact()}
         {this.renderBlockUser()}
-        <li className="dropdown__menu__item">
+        <li className="dropdown__menu__item" onClick={this.handleChatClear}>
           <FormattedMessage id="clearConversation"/>
         </li>
-        <li className="dropdown__menu__item">
+        <li className="dropdown__menu__item" onClick={this.handleChatDelete}>
           <FormattedMessage id="deleteConversation"/>
         </li>
       </div>
@@ -121,13 +171,13 @@ class MoreDropdown extends Component {
           <i className="material-icons">person_add</i>
           <FormattedMessage id="addPeople"/>
         </li>
-        <li className="dropdown__menu__item">
+        <li className="dropdown__menu__item" onClick={this.handleChatLeave}>
           <FormattedMessage id="leaveGroup"/>
         </li>
-        <li className="dropdown__menu__item">
+        <li className="dropdown__menu__item" onClick={this.handleChatClear}>
           <FormattedMessage id="clearGroup"/>
         </li>
-        <li className="dropdown__menu__item">
+        <li className="dropdown__menu__item" onClick={this.handleChatDelete}>
           <FormattedMessage id="deleteGroup"/>
         </li>
       </div>
