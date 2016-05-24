@@ -3,9 +3,8 @@
  */
 
 import React, { Component, PropTypes } from 'react';
-import { MessageContentTypes } from '../../constants/ActorAppConstants';
 import AvatarItem from '../common/AvatarItem.react';
-import Text from '../dialog/messages/Text.react';
+import MessageContent from '../dialog/messages/MessageContent.react';
 
 class SearchResultItem extends Component {
   static propTypes = {
@@ -14,19 +13,8 @@ class SearchResultItem extends Component {
     sender: PropTypes.object.isRequired
   };
 
-  renderContent() {
-    const { content } = this.props;
-    switch (content.content) {
-      case MessageContentTypes.TEXT:
-        return <Text {...content} className="text"/>;
-
-      default:
-        return null;
-    }
-  }
-
   render() {
-    const { date, sender } = this.props;
+    const { content, date, sender } = this.props;
 
     return (
       <li className="search__results__item search__results__item--message row">
@@ -43,7 +31,7 @@ class SearchResultItem extends Component {
             <h4 className="title">{sender.title}</h4>
           </header>
           <div className="content">
-            {this.renderContent()}
+            <MessageContent content={content} />
           </div>
         </div>
       </li>
