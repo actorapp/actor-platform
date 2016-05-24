@@ -44,6 +44,7 @@
     margin-right: 0 !important;
 
     transition: transform $default-transition-duration $default-transition-timing;
+    transform: rotate(-90deg);
   }
   &__content {
     //max-height: 0;
@@ -58,7 +59,7 @@
   &--open {
     .fold__indicator {
       transition: transform $default-transition-duration/2 $default-transition-timing;
-      transform: rotate(-90deg);
+      transform: rotate(0deg);
     }
     .fold__content {
       display: block;

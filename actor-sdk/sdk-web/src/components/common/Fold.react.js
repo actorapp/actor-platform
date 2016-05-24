@@ -14,7 +14,7 @@ class Fold extends Component {
     icon: PropTypes.string,
     iconClassName: PropTypes.string,
     iconElement: PropTypes.element,
-    title: PropTypes.string.isRequired
+    title: PropTypes.node.isRequired
   };
 
   constructor(props) {

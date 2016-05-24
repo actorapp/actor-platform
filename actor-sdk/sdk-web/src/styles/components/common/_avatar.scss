@@ -4,12 +4,14 @@
 
 .avatar {
   &__image {
+    line-height: 1px;
+
     display: inline-block;
 
     user-select: none;
-    box-shadow: 0 0 1px rgba(0, 0, 0, .1);
 
     border-radius: 100%;
+    box-shadow: 0 0 1px rgba(0, 0, 0, .1);
   }
   &__placeholder {
     display: inline-flex;

@@ -9,50 +9,49 @@ import { ActionTypes } from '../constants/ActorAppConstants';
 class SearchMessagesStore extends ReduceStore {
   getInitialState() {
     return {
-      isOpen: false,
-      isFocused: false,
-      isExpanded: false,
-      isSearching: false,
       query: '',
-      results: []
+      results: [],
+      error: null,
+      isOpen: false,
+      isSearching: false
     };
   }
 
   reduce(state, action) {
     switch (action.type) {
-      case ActionTypes.SEARCH_SHOW:
+      case ActionTypes.SEARCH_MESSAGES_SHOW:
         return {
           ...state,
-          isOpen: true,
-          isExpanded: false
+          isOpen: true
         };
-      case ActionTypes.SEARCH_HIDE:
+
+      case ActionTypes.BIND_DIALOG_PEER:
+      case ActionTypes.SEARCH_MESSAGES_HIDE:
         return this.getInitialState();
-      case ActionTypes.SEARCH_TOGGLE_FOCUS:
-        return {
-          ...state,
-          isFocused: action.isEnable
-        };
-      case ActionTypes.SEARCH_TOGGLE_EXPAND:
-        return {
-          ...state,
-          isExpanded: !state.isExpanded
-        };
-      case ActionTypes.SEARCH_TEXT:
+
+      case ActionTypes.SEARCH_MESSAGES_SET_QUERY:
         return {
           ...state,
           query: action.query,
+          isOpen: true,
           isSearching: true
         };
+
       case ActionTypes.SEARCH_TEXT_SUCCESS:
         return {
           ...state,
           results: action.query ? action.response : [],
+          error: null,
           isSearching: false
         };
+
       case ActionTypes.SEARCH_TEXT_ERROR:
-        console.log(action);
-        return state;
+        return {
+          ...state,
+          error: action.error,
+          isSearching: false
+        };
+
       default:
         return state;
     }

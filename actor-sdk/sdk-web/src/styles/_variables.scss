@@ -5,7 +5,7 @@
 // Defaults
 $default-padding: 16px;
 $default-border-radius: 3px;
-$default-transition-duration: 400ms;
+$default-transition-duration: 200ms;
 $default-transition-timing: cubic-bezier(.25, .8, .25, 1);
 $default-avatar-size: 36px;
 $default-stem-size: 14px;
@@ -50,15 +50,16 @@ $pale-grey: #f5f6f7;
 $ticklish: #e77979;
 
 // More colors
-// TODO: remove unused variables;
 $dark-mint: #48bb77;
 $dark-peach: #e77979;
 $dark-grey-blue: #29384b;
 $dark-sky-blue: #468ee5;
 $dusk: #3b5271;
 
+$dark-white: #f6f6f6;
+
 // Body
-$body-background-color: $bismark;
+$body-background-color: $dark-white;
 $body-base-color: $bismark;
 $body-min-height: 600px;
 $typing-height: 42px;

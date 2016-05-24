@@ -8,25 +8,16 @@ import { ActionTypes } from '../constants/ActorAppConstants';
 
 class QuickSearchStore extends ReduceStore {
   getInitialState() {
-    return {
-      list: []
-    }
+    return []
   }
 
   reduce(state, action) {
     switch (action.type) {
       case ActionTypes.QUICK_SEARCH_CHANGED:
-        return {
-          ...state,
-          list: action.list
-        }
+        return action.list
       default:
         return state;
     }
-  }
-
-  getList() {
-    return this.getState().list
   }
 }
 

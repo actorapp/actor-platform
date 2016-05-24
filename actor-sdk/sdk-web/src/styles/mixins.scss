@@ -77,18 +77,21 @@
   box-shadow: inset 1px 0 0 0 rgba(0, 0, 0, .04);
 }
 
-@mixin overlay() {
-  position: fixed;
-  z-index: 1000;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-}
-
 @mixin app-sizes() {
   width: 100%;
   min-width: 650px;
   height: 100%;
   min-height: 400px;
+}
+
+@mixin stem($stem-size) {
+  position: absolute;
+
+  width: $stem-size;
+  height: $stem-size;
+
+  content: '';
+  transform: rotate(45deg);
+
+  background-color: white;
 }
