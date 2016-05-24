@@ -27,26 +27,6 @@ import im.actor.sdk.intents.ActorIntentFragmentActivity;
  */
 public class BaseActorSDKDelegate implements ActorSDKDelegate {
 
-    //
-    // Authentication Activity
-    //
-
-    @Deprecated
-    @Override
-    public AuthState getAuthStartState() {
-        return AuthState.AUTH_START;
-    }
-
-    /**
-     * Return desired fragment extending BaseAuthFragment for signing
-     *
-     * @return BaseAuthFragment for signing
-     */
-    @Override
-    public BaseAuthFragment getSignFragment() {
-        return new SignPhoneFragment();
-    }
-
     /**
      * Return non-null to open specific Activity for starting auth.
      * If null is specified, result AuthActivity is used.
@@ -162,7 +142,7 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
      * @param uid    caller user id
      */
     @Override
-    public void onIncominCall(long callId, int uid) {
+    public void onIncomingCall(long callId, int uid) {
 
     }
 
@@ -194,9 +174,9 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
     /**
      * Override for hacking custom messages view holders
      *
-     * @param dataTypeHash                id in same order as added to AbsContent.registerConverter()
-     * @param messagesAdapter   adapter to pass to holder
-     * @param viewGroup         ViewGroup to pass to holder
+     * @param dataTypeHash    id in same order as added to AbsContent.registerConverter()
+     * @param messagesAdapter adapter to pass to holder
+     * @param viewGroup       ViewGroup to pass to holder
      * @return custom view holder
      */
     @Override
@@ -215,45 +195,8 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
     }
 
     //
-    // Hacking settings activity
-
+    // Notifications
     //
-
-    @Deprecated
-    @Override
-    public View getBeforeNickSettingsView(Context context) {
-        return null;
-    }
-
-    @Deprecated
-    @Override
-    public View getAfterPhoneSettingsView(Context context) {
-        return null;
-    }
-
-    @Deprecated
-    @Override
-    public View getSettingsTopView(Context context) {
-        return null;
-    }
-
-    @Deprecated
-    @Override
-    public View getSettingsBottomView(Context context) {
-        return null;
-    }
-
-    @Deprecated
-    @Override
-    public ActorSettingsCategory[] getBeforeSettingsCategories() {
-        return null;
-    }
-
-    @Deprecated
-    @Override
-    public ActorSettingsCategory[] getAfterSettingsCategories() {
-        return null;
-    }
 
     public Uri getNotificationSoundForPeer(Peer peer) {
         return getNotificationSound();
@@ -270,6 +213,4 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
     public int getNotificationColor() {
         return ActorSDK.sharedActor().style.getMainColor();
     }
-
-
 }

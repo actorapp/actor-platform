@@ -55,7 +55,7 @@ public interface ActorSDKDelegate {
     /**
      * If not null returned, overrides users profile activity intent
      *
-     * @param uid   user id
+     * @param uid user id
      * @return Actor Intent
      */
     BaseActorProfileActivity getProfileIntent(int uid);
@@ -84,9 +84,9 @@ public interface ActorSDKDelegate {
     /**
      * If not null returned, overrides chat activity intent
      *
+     * @param peer    chat peer
+     * @param compose pop up keyboard at start
      * @return Actor Intent
-     * @param peer      chat peer
-     * @param compose   pop up keyboard at start
      */
     ActorIntent getChatIntent(Peer peer, boolean compose);
 
@@ -96,7 +96,7 @@ public interface ActorSDKDelegate {
      * @param callId call id
      * @param uid    caller user id
      */
-    void onIncominCall(long callId, int uid);
+    void onIncomingCall(long callId, int uid);
 
     /**
      * Override for hacking default messages view holders
@@ -120,9 +120,9 @@ public interface ActorSDKDelegate {
     /**
      * Override for hacking custom messages view holders
      *
-     * @param dataTypeHash      json dataType hash
-     * @param messagesAdapter   adapter to pass to holder
-     * @param viewGroup         ViewGroup to pass to holder
+     * @param dataTypeHash    json dataType hash
+     * @param messagesAdapter adapter to pass to holder
+     * @param viewGroup       ViewGroup to pass to holder
      * @return custom view holder
      */
     MessageHolder getCustomMessageViewHolder(int dataTypeHash, MessagesAdapter messagesAdapter, ViewGroup viewGroup);
@@ -166,28 +166,4 @@ public interface ActorSDKDelegate {
      * @return is Actor push id used
      */
     boolean useActorPush();
-
-    @Deprecated
-    AuthState getAuthStartState();
-
-    @Deprecated
-    BaseAuthFragment getSignFragment();
-
-    @Deprecated
-    View getBeforeNickSettingsView(Context context);
-
-    @Deprecated
-    View getAfterPhoneSettingsView(Context context);
-
-    @Deprecated
-    View getSettingsTopView(Context context);
-
-    @Deprecated
-    View getSettingsBottomView(Context context);
-
-    @Deprecated
-    ActorSettingsCategory[] getBeforeSettingsCategories();
-
-    @Deprecated
-    ActorSettingsCategory[] getAfterSettingsCategories();
 }
