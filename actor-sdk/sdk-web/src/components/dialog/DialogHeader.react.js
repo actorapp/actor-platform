@@ -42,7 +42,8 @@ class DialogHeader extends Component {
 
     this.onFavoriteToggle = this.onFavoriteToggle.bind(this);
     this.handleInfoButtonClick = this.handleInfoButtonClick.bind(this);
-    this.handleCallButtonClick = this.handleCallButtonClick.bind(this);
+    this.handleMakeCallButtonClick = this.handleMakeCallButtonClick.bind(this);
+    this.handleEndCallButtonClick = this.handleEndCallButtonClick.bind(this);
     this.handleSearchButtonClick = this.handleSearchButtonClick.bind(this);
     this.toggelMoreDropdownOpen = this.toggelMoreDropdownOpen.bind(this);
   }
@@ -68,8 +69,14 @@ class DialogHeader extends Component {
     }
   }
 
-  handleCallButtonClick() {
-    CallActionCreators.makePeerCall(this.props.peer);
+  handleMakeCallButtonClick() {
+    const { peer } = this.props;
+    CallActionCreators.makePeerCall(peer);
+  }
+
+  handleEndCallButtonClick() {
+    const { call } = this.props;
+    CallActionCreators.endCall(call.id);
   }
 
   handleSearchButtonClick() {
@@ -179,8 +186,18 @@ class DialogHeader extends Component {
       return null;
     }
 
+    const { call } = this.props;
+
+    if (call.isCalling) {
+      return (
+        <button className="button button--icon" onClick={this.handleEndCallButtonClick}>
+          <i className="material-icons" style={{ fontSize: 22 }}>call_end</i>
+        </button>
+      );
+    }
+
     return (
-      <button className="button button--icon" onClick={this.handleCallButtonClick}>
+      <button className="button button--icon" onClick={this.handleMakeCallButtonClick}>
         <i className="material-icons" style={{ fontSize: 22 }}>call</i>
       </button>
     );
