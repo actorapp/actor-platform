@@ -74,7 +74,7 @@ class AAAutoCompleteCell: AATableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        avatarView.frame = CGRectMake(6, 6, 32, 32)
+        avatarView.frame = CGRectMake(6, 6, 38, 38)
         nickView.frame = CGRectMake(44, 6, 100, 32)
         nickView.sizeToFit()
         nickView.frame = CGRectMake(44, 6, nickView.frame.width, 32)

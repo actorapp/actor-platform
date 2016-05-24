@@ -9,12 +9,12 @@ import im.actor.runtime.threading.ImmediateDispatcher;
 
 public class GenericImmediateDispatcher implements ImmediateDispatcher {
 
-    private Executor executor;
+    private Executor EXECUTOR;
     private boolean isInited;
 
     public GenericImmediateDispatcher(String name, ThreadPriority priority) {
         Runtime.dispatch(() -> {
-            executor = Executors.newSingleThreadExecutor(r -> {
+            EXECUTOR = Executors.newSingleThreadExecutor(r -> {
                 Thread workingThread = new Thread(r);
                 switch (priority) {
                     case HIGH:
@@ -34,10 +34,13 @@ public class GenericImmediateDispatcher implements ImmediateDispatcher {
 
     @Override
     public synchronized void dispatchNow(Runnable runnable) {
+        if (EXECUTOR == null) {
+            EXECUTOR = Executors.newSingleThreadExecutor();
+        }
         if (isInited) {
-            executor.execute(runnable);
+            EXECUTOR.execute(runnable);
         } else {
-            Runtime.dispatch(() -> executor.execute(runnable));
+            Runtime.dispatch(() -> EXECUTOR.execute(runnable));
         }
     }
 }

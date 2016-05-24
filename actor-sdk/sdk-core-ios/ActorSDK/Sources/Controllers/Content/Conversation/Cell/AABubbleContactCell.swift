@@ -172,7 +172,7 @@ public class AABubbleContactCell: AABubbleCell, ABNewPersonViewControllerDelegat
         layoutBubble(200, contentHeight: CGFloat(height))
         
         if (isOut) {
-            avatar.frame = CGRectMake(contentWidth - insets.right - 200, insets.top, 44, 44)
+            avatar.frame = CGRectMake(contentWidth - insets.right - 200, insets.top, 46, 46)
             tapView.frame = CGRectMake(contentWidth - insets.left - 200, insets.top, 200, CGFloat(height))
         } else {
             avatar.frame = CGRectMake(insets.left, insets.top, 44, 44)
