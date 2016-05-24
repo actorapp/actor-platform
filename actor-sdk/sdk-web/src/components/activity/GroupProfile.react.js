@@ -3,14 +3,11 @@
  */
 
 import React, { Component, PropTypes } from 'react';
-import classnames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 import { lightbox } from '../../utils/ImageUtils';
 import { Container } from 'flux/utils';
 import Scrollbar from '../common/Scrollbar.react';
 
-import ActorClient from '../../utils/ActorClient';
-import confirm from '../../utils/confirm'
 import { escapeWithEmoji } from '../../utils/EmojiUtils'
 
 import NotificationsActionCreators from '../../actions/NotificationsActionCreators';
@@ -59,7 +56,7 @@ class GroupProfile extends Component {
   handleNotificationChange(event) {
     const { peer } = this.state;
     NotificationsActionCreators.changeNotificationsEnabled(peer, event.target.checked);
-  };
+  }
 
   handleTokenSelect(event) {
     event.target.select();
@@ -108,8 +105,8 @@ class GroupProfile extends Component {
     return (
       <div
         className="group_profile__meta__description"
-        dangerouslySetInnerHTML={{ __html: escapeWithEmoji(group.about).replace(/\n/g, '<br/>') }}
-       />
+        dangerouslySetInnerHTML={{ __html: escapeWithEmoji(about).replace(/\n/g, '<br/>') }}
+      />
     );
   }
 
