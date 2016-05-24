@@ -32,8 +32,8 @@ public class AAAvatarView: UIView, YYAsyncLayerDelegate, ACFileEventCallback {
     
     deinit {
         if Actor.isLoggedIn() {
-            //FIXME: crash on AvatarView 
-            //Actor.unsubscribeFromDownloads(self)
+            //FIXME:falling when try to unsubscribe on Contact info page.
+            //    Actor.unsubscribeFromDownloads(self)
         }
     }
     

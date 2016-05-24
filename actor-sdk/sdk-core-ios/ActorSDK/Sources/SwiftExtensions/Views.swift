@@ -402,3 +402,17 @@ extension AVAsset {
         return (orientation, device)
     }
 }
+
+extension UIImageView{
+    
+    func makeBlurImage(targetImageView:UIImageView?)
+    {
+        let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.Dark)
+        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+        blurEffectView.frame = targetImageView!.bounds
+        
+        blurEffectView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight] // for supporting device rotation
+        targetImageView?.addSubview(blurEffectView)
+    }
+    
+}

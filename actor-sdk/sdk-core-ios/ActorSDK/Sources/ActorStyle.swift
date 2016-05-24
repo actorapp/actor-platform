@@ -356,6 +356,7 @@ public class ActorStyle {
     public var chatMediaDateBgColor = UIColor(rgb: 0x2D394A, alpha: 0.54)
     
     // Bubble Colors
+    public var chatTextBubbleShadow = UIColor.darkGrayColor()
     
     public var chatTextBubbleOutColor = UIColor(rgb: 0xD2FEFD)
     

@@ -62,10 +62,13 @@ public class AABubbleCell: UICollectionViewCell {
     
     private static var cachedOutTextBg = UIImage.tinted("BubbleOutgoingFull", color: ActorSDK.sharedActor().style.chatTextBubbleOutColor)
     private static var cachedOutTextBgBorder = UIImage.tinted("BubbleOutgoingFullBorder", color: ActorSDK.sharedActor().style.chatTextBubbleOutBorderColor)
+    
     private static var cachedOutTextCompactBg = UIImage.tinted("BubbleOutgoingPartial", color: ActorSDK.sharedActor().style.chatTextBubbleOutColor)
     private static var cachedOutTextCompactSelectedBg = UIImage.tinted("BubbleOutgoingPartial", color: ActorSDK.sharedActor().style.chatTextBubbleOutSelectedColor)
     private static var cachedOutTextCompactBgBorder = UIImage.tinted("BubbleOutgoingPartialBorder", color: ActorSDK.sharedActor().style.chatTextBubbleOutBorderColor)
 
+    private static var cachedInShadow = UIImage.tinted("BubbleIncomingFullBorder", color: ActorSDK.sharedActor().style.chatTextBubbleShadow)
+    
     private static var cachedInTextBg = UIImage.tinted("BubbleIncomingFull", color: ActorSDK.sharedActor().style.chatTextBubbleInColor)
     private static var cachedInTextBgBorder = UIImage.tinted("BubbleIncomingFullBorder", color: ActorSDK.sharedActor().style.chatTextBubbleInBorderColor)
     private static var cachedInTextCompactBg = UIImage.tinted("BubbleIncomingPartial", color: ActorSDK.sharedActor().style.chatTextBubbleInColor)
@@ -100,9 +103,11 @@ public class AABubbleCell: UICollectionViewCell {
     public let avatarView = AAAvatarView()
     public var avatarAdded: Bool = false
     
+    public let bubbleShadow = UIImageView()
+    
     public let bubble = UIImageView()
     public let bubbleBorder = UIImageView()
-    
+
     private let dateText = UILabel()
     private let dateBg = UIImageView()
     
@@ -170,13 +175,15 @@ public class AABubbleCell: UICollectionViewCell {
         
         //"New Messages"
         
-        contentView.transform = CGAffineTransformMake(1, 0, 0, -1, 0, 0)
+       
         
+        contentView.transform = CGAffineTransformMake(1, 0, 0, -1, 0, 0)
         contentView.addSubview(bubble)
         contentView.addSubview(bubbleBorder)
         contentView.addSubview(newMessage)
         contentView.addSubview(dateBg)
         contentView.addSubview(dateText)
+        contentView.addSubview(bubbleShadow)
         
         avatarView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(AABubbleCell.avatarDidTap)))
         
@@ -293,13 +300,23 @@ public class AABubbleCell: UICollectionViewCell {
                 if (isCompact) {
                     bubble.image = AABubbleCell.cachedInTextCompactBg
                     bubbleBorder.image = AABubbleCell.cachedInTextCompactBgBorder
+                    bubbleBorder.makeBlurImage(bubbleBorder)
                     bubble.highlightedImage = AABubbleCell.cachedInTextCompactSelectedBg
                     bubbleBorder.highlightedImage = AABubbleCell.cachedInTextCompactBgBorder
+                    bubble.layer.shadowColor = UIColor.blackColor().CGColor
+                    bubble.layer.shadowOpacity = 0.2
+                    bubble.layer.shadowOffset = CGSizeMake(1, 1);
+                    bubble.layer.shadowRadius = 1
                 } else {
                     bubble.image = AABubbleCell.cachedInTextBg
                     bubbleBorder.image = AABubbleCell.cachedInTextBgBorder
+                    bubbleBorder.makeBlurImage(bubbleBorder)
                     bubble.highlightedImage = AABubbleCell.cachedInTextBg
                     bubbleBorder.highlightedImage = AABubbleCell.cachedInTextBgBorder
+                    bubble.layer.shadowColor = UIColor.blackColor().CGColor
+                    bubble.layer.shadowOpacity = 0.2
+                    bubble.layer.shadowOffset = CGSizeMake(1, 1);
+                    bubble.layer.shadowRadius = 1
                 }
             break
             case BubbleType.TextOut:
@@ -308,11 +325,19 @@ public class AABubbleCell: UICollectionViewCell {
                     bubbleBorder.image =  AABubbleCell.cachedOutTextCompactBgBorder
                     bubble.highlightedImage =  AABubbleCell.cachedOutTextCompactSelectedBg
                     bubbleBorder.highlightedImage =  AABubbleCell.cachedOutTextCompactBgBorder
+                    bubble.layer.shadowColor = UIColor.blackColor().CGColor
+                    bubble.layer.shadowOpacity = 0.2
+                    bubble.layer.shadowOffset = CGSizeMake(1, 1);
+                    bubble.layer.shadowRadius = 1
                 } else {
                     bubble.image =  AABubbleCell.cachedOutTextBg
                     bubbleBorder.image =  AABubbleCell.cachedOutTextBgBorder
                     bubble.highlightedImage =  AABubbleCell.cachedOutTextBg
                     bubbleBorder.highlightedImage =  AABubbleCell.cachedOutTextBgBorder
+                    bubble.layer.shadowColor = UIColor.blackColor().CGColor
+                    bubble.layer.shadowOpacity = 0.2
+                    bubble.layer.shadowOffset = CGSizeMake(1, 1);
+                    bubble.layer.shadowRadius = 1
                 }
             break
             case BubbleType.MediaIn:
@@ -343,7 +368,6 @@ public class AABubbleCell: UICollectionViewCell {
     }
     
     func updateView() {
-      print(self.highlighted)
         let type = self.bubbleType! as BubbleType
         switch (type) {
         case BubbleType.TextIn:
