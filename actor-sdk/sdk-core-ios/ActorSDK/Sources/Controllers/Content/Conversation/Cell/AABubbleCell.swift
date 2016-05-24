@@ -59,10 +59,10 @@ public class AABubbleCell: UICollectionViewCell {
     //
     // Cached text bubble images
     //
-    private static var cachedOutShadow = UIImage.tinted("BubbleOutgoingPartialBorder", color: ActorSDK.sharedActor().style.chatTextBubbleShadow)
     
     private static var cachedOutTextBg = UIImage.tinted("BubbleOutgoingFull", color: ActorSDK.sharedActor().style.chatTextBubbleOutColor)
     private static var cachedOutTextBgBorder = UIImage.tinted("BubbleOutgoingFullBorder", color: ActorSDK.sharedActor().style.chatTextBubbleOutBorderColor)
+    
     private static var cachedOutTextCompactBg = UIImage.tinted("BubbleOutgoingPartial", color: ActorSDK.sharedActor().style.chatTextBubbleOutColor)
     private static var cachedOutTextCompactSelectedBg = UIImage.tinted("BubbleOutgoingPartial", color: ActorSDK.sharedActor().style.chatTextBubbleOutSelectedColor)
     private static var cachedOutTextCompactBgBorder = UIImage.tinted("BubbleOutgoingPartialBorder", color: ActorSDK.sharedActor().style.chatTextBubbleOutBorderColor)
@@ -107,7 +107,7 @@ public class AABubbleCell: UICollectionViewCell {
     
     public let bubble = UIImageView()
     public let bubbleBorder = UIImageView()
-    
+
     private let dateText = UILabel()
     private let dateBg = UIImageView()
     
@@ -174,6 +174,8 @@ public class AABubbleCell: UICollectionViewCell {
         newMessage.text = AALocalized("ChatNewMessages")
         
         //"New Messages"
+        
+       
         
         contentView.transform = CGAffineTransformMake(1, 0, 0, -1, 0, 0)
         contentView.addSubview(bubble)
@@ -296,32 +298,46 @@ public class AABubbleCell: UICollectionViewCell {
         switch(type) {
             case BubbleType.TextIn:
                 if (isCompact) {
-                    bubbleShadow.image = AABubbleCell.cachedInShadow
                     bubble.image = AABubbleCell.cachedInTextCompactBg
                     bubbleBorder.image = AABubbleCell.cachedInTextCompactBgBorder
+                    bubbleBorder.makeBlurImage(bubbleBorder)
                     bubble.highlightedImage = AABubbleCell.cachedInTextCompactSelectedBg
                     bubbleBorder.highlightedImage = AABubbleCell.cachedInTextCompactBgBorder
+                    bubble.layer.shadowColor = UIColor.blackColor().CGColor
+                    bubble.layer.shadowOpacity = 0.2
+                    bubble.layer.shadowOffset = CGSizeMake(1, 1);
+                    bubble.layer.shadowRadius = 1
                 } else {
-                    bubbleShadow.image = AABubbleCell.cachedInShadow
                     bubble.image = AABubbleCell.cachedInTextBg
                     bubbleBorder.image = AABubbleCell.cachedInTextBgBorder
+                    bubbleBorder.makeBlurImage(bubbleBorder)
                     bubble.highlightedImage = AABubbleCell.cachedInTextBg
                     bubbleBorder.highlightedImage = AABubbleCell.cachedInTextBgBorder
+                    bubble.layer.shadowColor = UIColor.blackColor().CGColor
+                    bubble.layer.shadowOpacity = 0.2
+                    bubble.layer.shadowOffset = CGSizeMake(1, 1);
+                    bubble.layer.shadowRadius = 1
                 }
             break
             case BubbleType.TextOut:
                 if (isCompact) {
-                    bubbleShadow.image = AABubbleCell.cachedOutShadow
                     bubble.image =  AABubbleCell.cachedOutTextCompactBg
                     bubbleBorder.image =  AABubbleCell.cachedOutTextCompactBgBorder
                     bubble.highlightedImage =  AABubbleCell.cachedOutTextCompactSelectedBg
                     bubbleBorder.highlightedImage =  AABubbleCell.cachedOutTextCompactBgBorder
+                    bubble.layer.shadowColor = UIColor.blackColor().CGColor
+                    bubble.layer.shadowOpacity = 0.2
+                    bubble.layer.shadowOffset = CGSizeMake(1, 1);
+                    bubble.layer.shadowRadius = 1
                 } else {
-                    bubbleShadow.image = AABubbleCell.cachedOutShadow
                     bubble.image =  AABubbleCell.cachedOutTextBg
                     bubbleBorder.image =  AABubbleCell.cachedOutTextBgBorder
                     bubble.highlightedImage =  AABubbleCell.cachedOutTextBg
                     bubbleBorder.highlightedImage =  AABubbleCell.cachedOutTextBgBorder
+                    bubble.layer.shadowColor = UIColor.blackColor().CGColor
+                    bubble.layer.shadowOpacity = 0.2
+                    bubble.layer.shadowOffset = CGSizeMake(1, 1);
+                    bubble.layer.shadowRadius = 1
                 }
             break
             case BubbleType.MediaIn:
