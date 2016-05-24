@@ -69,10 +69,8 @@ class Dialog extends Component {
     }
 
     return {
-      isCalling: true,
-      time: call.time,
-      state: call.state,
-      isFloating: call.isFloating
+      ...call,
+      isCalling: true
     };
   }
 
