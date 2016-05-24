@@ -3,7 +3,10 @@ package im.actor.server.gelf
 import java.net.{ InetAddress, InetSocketAddress }
 
 import akka.actor.Actor
+import akka.event.Logging.Debug
+import akka.event.Logging.Error
 import akka.event.Logging._
+import im.actor.api.rpc.{ Request, RpcOk, RpcError, RpcResult, RpcInternalError }
 import im.actor.config.ActorConfig
 import org.graylog2.gelfclient.transport.GelfTransport
 import org.graylog2.gelfclient._
@@ -20,6 +23,12 @@ object LogType extends Enumeration {
   val BadRequest: LogType = Value(4)
   val BadToken: LogType = Value(5)
   val Exception: LogType = Value(6)
+}
+
+object RpcErrors {
+  private val DefaultErrorDelay = 5
+  val InternalError = RpcInternalError(canTryAgain = true, tryAgainDelay = DefaultErrorDelay)
+  val RequestNotSupported = RpcError(400, "REQUEST_NOT_SUPPORTED", "Request is not supported.", canTryAgain = true, data = None)
 }
 
 //use this in akka.logging configuration (akka logging does not accept class with default param in constructor)
@@ -71,12 +80,128 @@ class GelfLoggerInternal(actorConfig: Config = ActorConfig.load(ConfigFactory.em
       logger.info("GelfLogger started")
       sender() ! LoggerInitialized
     case e @ Error(cause, logSource, logClass, message) ⇒
-    case w @ Warning(logSource, logClass, message)      ⇒
-    case i @ Info(logSource, logClass, message)         ⇒
-    case d @ Debug(logSource, logClass, message)        ⇒
+      e.mdc.get("type") match {
+        case Some(LogType.BadRequest) ⇒
+          builder.message("Bad Request")
+
+          e.mdc.get("request").foreach(r ⇒ {
+            //TODO get name from params
+            val name = r.asInstanceOf[Request].body.getClass.getSimpleName
+            val body = r.asInstanceOf[Request].body.toString
+            val fields = Map("request_name" → name, "client_address" →
+              e.mdc.get("client_address").getOrElse("").toString,
+              "auth_id" → e.mdc.get("authId").getOrElse("").toString,
+              "session_id" → e.mdc.get("sessionId").getOrElse("").toString)
+            val params = fetchPar(body)
+            sendMsg(badRequestLevel, fields ++ params)
+          })
+
+        case _ ⇒
+          builder.message("Exception")
+
+          val name = try {
+            cause.getClass.getSimpleName
+          } catch {
+            case e: Throwable ⇒
+              logger.error(e.getMessage)
+              ""
+          }
+
+          val fields = Map("exception_name" → name)
+          val params = Map("stacktrace" → cause.getStackTrace.mkString(" , "))
+          //if customized exist then apply it else default setting will be applied
+          exceptionCustomized.get(name) match {
+            case Some(detail) ⇒ sendRPCLog(exceptionLevel, detail, fields, params)
+            case None         ⇒ sendRPCLog(exceptionLevel, exceptionDefault, fields, params)
+          }
+      }
+
+    case w @ Warning(logSource, logClass, message) ⇒
+      builder.message("Bad Token")
+      val fields = Map(
+        "client_address" → w.mdc.get("client_address").getOrElse("").toString,
+        "auth_id" → w.mdc.get("authId").getOrElse("").toString,
+        "session_id" → w.mdc.get("sessionId").getOrElse("").toString
+      )
+      sendMsg(badTokenLevel, fields)
+    case Info(logSource, logClass, message) ⇒
+    case d @ Debug(logSource, logClass, message) ⇒
+      d.mdc.get("type") match {
+        case Some(LogType.RequestReceived) ⇒
+          builder.message("Request Received")
+
+          d.mdc.get("request").foreach(r ⇒ {
+            val name = r.asInstanceOf[Request].body.getClass.getSimpleName
+            val body = r.asInstanceOf[Request].body.toString
+            val fields = Map(
+              "request_name" → name,
+              "client_address" → d.mdc.get("client_address").getOrElse("").toString,
+              "auth_id" → d.mdc.get("authId").getOrElse("").toString,
+              "session_id" → d.mdc.get("sessionId").getOrElse("").toString
+            )
+            val params = fetchPar(body)
+
+            //if customized exist then apply it else default setting will be applied
+            requestCustomized.get(name) match {
+              case Some(detail) ⇒ sendRPCLog(requestReceivedLevel, detail, fields, params)
+              case None         ⇒ sendRPCLog(requestReceivedLevel, requestDefault, fields, params)
+            }
+
+          })
+
+        case Some(LogType.SendResponse) ⇒
+          builder.message("Send Response")
+
+          d.mdc.get("response").foreach(i ⇒ {
+            val rsp = i.asInstanceOf[RpcResult]
+            rsp match {
+              case RpcOk(response) ⇒
+                val name = response.getClass.getSimpleName
+                val fields = Map(
+                  "response_name" → name,
+                  "client_address" → d.mdc.get("client_address").getOrElse("").toString,
+                  "auth_id" → d.mdc.get("authId").getOrElse("").toString,
+                  "session_id" → d.mdc.get("sessionId").getOrElse("").toString
+                )
+                val params = fetchPar(response.toString)
+
+                //if customized exist then apply it else default setting will be applied
+                responseCustomized.get(name) match {
+                  case Some(detail) ⇒ sendRPCLog(sendResponseLevel, detail, fields, params)
+                  case None         ⇒ sendRPCLog(sendResponseLevel, responseDefault, fields, params)
+                }
+
+              case RpcErrors.RequestNotSupported ⇒
+                builder.message("Bad Request")
+                sendMsg(badRequestLevel, Map(
+                  "request_name" → "",
+                  "client_address" → d.mdc.get("client_address").getOrElse("").toString,
+                  "auth_id" → d.mdc.get("authId").getOrElse("").toString,
+                  "session_id" → d.mdc.get("sessionId").getOrElse("").toString
+                ))
+              case RpcErrors.InternalError ⇒
+                builder.message("Error Response")
+                sendMsg(errorResponseLevel, Map(
+                  "response_name" → RpcErrors.InternalError.getClass.getSimpleName,
+                  "response" → RpcErrors.InternalError.toString,
+                  "client_address" → d.mdc.get("client_address").getOrElse("").toString,
+                  "auth_id" → d.mdc.get("authId").getOrElse("").toString,
+                  "session_id" → d.mdc.get("sessionId").getOrElse("").toString
+                ))
+              case e: RpcError ⇒
+                builder.message("Error Response")
+                sendMsg(errorResponseLevel, Map("response_name" → e.getClass.getSimpleName, "response" → e.toString,
+                  "client_address" → d.mdc.get("client_address").getOrElse("").toString,
+                  "auth_id" → d.mdc.get("authId").getOrElse("").toString,
+                  "session_id" → d.mdc.get("sessionId").getOrElse("").toString))
+
+              case _ ⇒
+            }
+          })
+        case _ ⇒
+      }
+
   }
-
-
 
   def sendRPCLog(level: String, detail: Int, fields: Map[String, String], params: Map[String, String]): Unit = {
     detail match {
@@ -117,16 +242,15 @@ class GelfLoggerInternal(actorConfig: Config = ActorConfig.load(ConfigFactory.em
             var i = 0
             val r = for ((k, v) ← json.fieldSet)
               yield ("request_param" + {
-                i += 1
-                i
-              }, s"{$k : $v}")
+              i += 1
+              i
+            }, s"{$k : $v}")
             r.toMap
           case None ⇒ Map()
         }
       case None ⇒ Map()
     }
   }
-
 
 }
 

@@ -411,5 +411,5 @@ object Build extends sbt.Build with Versioning with Releasing {
       libraryDependencies ++= Dependencies.soc
     )
   )
-    .dependsOn(actorRuntime)
+    .dependsOn(actorRuntime, actorCore)
 }
