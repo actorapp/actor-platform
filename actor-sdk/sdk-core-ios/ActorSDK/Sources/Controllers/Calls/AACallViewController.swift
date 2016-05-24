@@ -110,7 +110,7 @@ public class AACallViewController: AAViewController {
     public override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         
-        senderAvatar.frame = CGRectMake((self.view.width - 104) / 2, 60, 104, 104)
+        senderAvatar.frame = CGRectMake((self.view.width - 104) / 2, 60, 108, 108)
         peerTitle.frame = CGRectMake(22, senderAvatar.bottom + 22, view.width - 44, 42)
         callState.frame = CGRectMake(0, peerTitle.bottom + 8, view.width, 22)
         
