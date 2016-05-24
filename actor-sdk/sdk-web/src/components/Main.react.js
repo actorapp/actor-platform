@@ -1,13 +1,15 @@
 /*
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
-
+import { isFunction } from 'lodash';
 import React, { Component, PropTypes } from 'react';
-import { preloadEmojiSheet } from '../utils/EmojiUtils'
+import DelegateContainer from '../utils/DelegateContainer';
 
 import VisibilityActionCreators from '../actions/VisibilityActionCreators';
 
 import DefaultSidebar from './Sidebar.react';
+import DefaultToolbar from './Toolbar.react';
+import ConnectionState from './common/ConnectionState.react';
 import Favicon from './common/Favicon.react';
 
 import ModalsWrapper from './modals/ModalsWrapper.react';
@@ -23,16 +25,26 @@ class Main extends Component {
     ])
   };
 
-  static contextTypes = {
-    delegate: PropTypes.object
-  };
-
   constructor(props) {
     super(props);
 
-    // Preload emoji spritesheet
-    // TODO: Fix! Its not working properly.
-    preloadEmojiSheet();
+    this.components = this.getComponents();
+  }
+
+  getComponents() {
+    const { components } = DelegateContainer.get();
+
+    if (components) {
+      return {
+        Sidebar: isFunction(components.sidebar) ? components.sidebar : DefaultSidebar,
+        Toolbar: isFunction(components.toolbar) ? components.toolbar : DefaultToolbar
+      };
+    }
+
+    return {
+      Sidebar: DefaultSidebar,
+      Toolbar: DefaultToolbar
+    };
   }
 
   componentDidMount() {
@@ -53,8 +65,9 @@ class Main extends Component {
   };
 
   renderCall() {
-    const { delegate } = this.context;
-    if (!delegate.features.calls) {
+    const { features } = DelegateContainer.get();
+
+    if (!features.calls) {
       return null;
     }
 
@@ -62,16 +75,19 @@ class Main extends Component {
   }
 
   render() {
-    const { delegate } = this.context;
-
-    const Sidebar = (typeof delegate.components.sidebar == 'function') ? delegate.components.sidebar : DefaultSidebar;
+    const { Sidebar, Toolbar } = this.components;
 
     return (
       <div className="app">
+        <ConnectionState/>
         <Favicon/>
 
-        <Sidebar/>
-        {this.props.children}
+        <Toolbar/>
+        <section className="wrapper">
+          <Sidebar/>
+          {this.props.children}
+        </section>
+
 
         <ModalsWrapper/>
         <MenuOverlay/>
