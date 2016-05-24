@@ -64,6 +64,49 @@ modules {
     # Uncomment to customize max image preview size
     # max-preview-size = 2 M
   # }
+
+  # GelfLogger config example
+  # soc {
+  #   gelf:{
+  #     type:"TCP"  #UDP
+  #     host: "localhost"
+  #     port: 12201
+  #     rdelay: 5000 #reconnectDelay (millisecond)
+  #     additional-fields:{
+  #       type:"application"
+  #     }
+  #     level: {
+  #       BadToken: DEBUG
+  #       BadRequest: INFO
+  #       RequestReceived: NOTICE
+  #       ErrorResponse: WARNING
+  #       SendResponse: ERROR
+  #       Exception: ALERT #CRITICAL #EMERGENCY
+  #     }
+  #     request-detail: {
+  #       default: 1
+  #       customized:{
+  #         RequestSendMessage: 2
+  #         RequestTyping: 2
+  #         RequestStopTyping: 1
+  #       }
+  #     }
+  #     response-detail: {
+  #       default: 1
+  #       customized:{
+  #         ResponseVoid: 2
+  #       }
+  #     }
+  #     exception-detail:{
+  #       default: 1
+  #       customized:{
+  #         HookException: 0
+  #         IntegrityException: 2
+  #       }
+  #     }
+  #   }
+  # }
+
 }
 
 # Services that are used by the server.
