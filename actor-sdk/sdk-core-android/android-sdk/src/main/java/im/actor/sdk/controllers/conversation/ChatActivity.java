@@ -899,80 +899,17 @@ public class ChatActivity extends ActorEditTextActivity {
 
     @Override
     protected void onAttachButtonClicked() {
-//        Context wrapper = new ContextThemeWrapper(ChatActivity.this, R.style.AttachPopupTheme);
-//        PopupMenu popup = new PopupMenu(wrapper, findViewById(R.id.attachAnchor));
-//
-//        try {
-//            Field[] fields = popup.getClass().getDeclaredFields();
-//            for (Field field : fields) {
-//                if ("mPopup".equals(field.getName())) {
-//                    field.setAccessible(true);
-//                    Object menuPopupHelper = field.get(popup);
-//                    Class<?> classPopupHelper = Class.forName(menuPopupHelper
-//                            .getClass().getName());
-//                    Method setForceIcons = classPopupHelper.getMethod(
-//                            "setForceShowIcon", boolean.class);
-//                    setForceIcons.invoke(menuPopupHelper, true);
-//                    break;
-//                }
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        popup.getMenuInflater().inflate(R.menu.attach_popup, popup.getMenu());
-//
-//        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-//            @Override
-//            public boolean onMenuItemClick(MenuItem item) {
-//                if (item.getItemId() == R.id.gallery) {
-//                    Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//                    intent.setType("image/* video/*");
-//                    startActivityForResult(intent, REQUEST_GALLERY);
-//                    return true;
-//                } else if (item.getItemId() == R.id.takePhoto) {
-//                    File externalFile = getExternalFilesDir(null);
-//                    if (externalFile == null) {
-//                        Toast.makeText(ChatActivity.this, R.string.toast_no_sdcard, Toast.LENGTH_LONG).show();
-//                        return true;
-//                    }
-//                    String externalPath = externalFile.getAbsolutePath();
-//                    new File(externalPath + "/actor/").mkdirs();
-//
-//                    pending_fileName = externalPath + "/actor/capture_" + Randoms.randomId() + ".jpg";
-//                    startActivityForResult(
-//                            new Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-//                                    .putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(pending_fileName))),
-//                            REQUEST_PHOTO);
-//                } else if (item.getItemId() == R.id.takeVideo) {
-//
-//                    File externalFile = getExternalFilesDir(null);
-//                    if (externalFile == null) {
-//                        Toast.makeText(ChatActivity.this, R.string.toast_no_sdcard, Toast.LENGTH_LONG).show();
-//                        return true;
-//                    }
-//                    String externalPath = externalFile.getAbsolutePath();
-//                    new File(externalPath + "/actor/").mkdirs();
-//
-//                    pending_fileName = externalPath + "/actor/capture_" + Randoms.randomId() + ".mp4";
-//
-//                    Intent i = new Intent(MediaStore.ACTION_VIDEO_CAPTURE)
-//                            .putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(pending_fileName)));
-//                    startActivityForResult(i, REQUEST_VIDEO);
-//                    return true;
-//                } else if (item.getItemId() == R.id.file) {
-//                    startActivityForResult(Intents.pickFile(ChatActivity.this), REQUEST_DOC);
-//                } else if (item.getItemId() == R.id.contact) {
-//                    Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-//                    startActivityForResult(intent, REQUEST_CONTACT);
-//                }
-//                return false;
-//            }
-//        });
-//        popup.show();
+
         if (shareMenuMaxHeight == 0) {
             shareMenuMaxHeight = Screen.dp(245);
         }
+
+        // Trying to open custom share menu
+        if (ActorSDK.sharedActor().getDelegate().onAttachMenuClicked(this)) {
+            return;
+        }
+
+        // Opening default share menu
         if (shareMenu.getVisibility() == View.VISIBLE) {
             hideShare();
         } else {
