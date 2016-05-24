@@ -20,6 +20,7 @@
       font-size: 16px;
       font-weight: 500;
       line-height: 24px;
+
       height: 24px;
       span {
         display: inline-block;
@@ -62,8 +63,11 @@
       }
     }
     &__message {
-      display: inline-block;
       line-height: 20px;
+
+      display: inline-block;
+
+      color: rgb(150,150,150);
     }
   }
   &__controls {
