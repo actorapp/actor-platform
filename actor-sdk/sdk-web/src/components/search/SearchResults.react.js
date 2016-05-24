@@ -5,16 +5,14 @@
 import React, { Component, PropTypes } from 'react';
 import { shouldComponentUpdate } from 'react-addons-pure-render-mixin';
 import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
-
+import Scroller from '../common/Scroller.react';
 import SearchResultItem from './SearchResultItem.react';
 
 class SearchResults extends Component {
   static propTypes = {
     query: PropTypes.string.isRequired,
     results: PropTypes.array.isRequired,
-    isExpanded: PropTypes.bool.isRequired,
-    isSearching: PropTypes.bool.isRequired,
-    onToggleExpanded: PropTypes.func.isRequired
+    isSearching: PropTypes.bool.isRequired
   };
 
   constructor(props) {
@@ -56,25 +54,10 @@ class SearchResults extends Component {
   }
 
   render() {
-    const { isExpanded, onToggleExpanded } = this.props;
-
     return (
-      <div>
-        <div className="search__expand" onClick={onToggleExpanded}>
-          <i className="material-icons">{isExpanded ? 'chevron_right' : 'chevron_left'}</i>
-          <i className="material-icons">{isExpanded ? 'chevron_right' : 'chevron_left'}</i>
-        </div>
-        <header className="search__header">
-          <ul className="search__filter">
-            <li className="search__filter__item search__filter__item--active">Text</li>
-          </ul>
-        </header>
-        <div className="search__body">
-          <ul className="search__results">
-            {this.renderResults()}
-          </ul>
-        </div>
-      </div>
+      <Scroller className="search__body">
+        {this.renderResults()}
+      </Scroller>
     );
   }
 }

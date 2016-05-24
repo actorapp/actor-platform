@@ -1,0 +1,216 @@
+$toolbar-height: 48px;
+$stem-size: 10px;
+
+.toolbar {
+  height: $toolbar-height;
+
+  background-color: $dusky-blue;
+
+  flex: 0 0 auto;
+  &__aside {
+    box-sizing: border-box;
+    width: $sidebar-width;
+    padding: 0 16px;
+
+    cursor: default;
+    user-select: none;
+
+    span {
+      font-size: 20px;
+      font-weight: 500;
+      line-height: $toolbar-height;
+
+      color: $pale-grey;
+    }
+  }
+
+  &__search {
+    position: relative;
+    z-index: 100;
+
+    display: inline-block;
+
+    &__input {
+      .input {
+        font-size: 15px;
+        line-height: 24px;
+
+        display: inline-block;
+
+        box-sizing: border-box;
+        padding: 0;
+
+        color: white;
+        border: none;
+        outline: none;
+        background-color: transparent;
+
+        @include placeholder(white);
+      }
+    }
+    .search-icon {
+      line-height: 24px;
+
+      display: inline-block;
+
+      user-select: none;
+      pointer-events: none;
+
+      color: rgb(255, 255, 255);
+    }
+    .close-icon {
+      font-size: 16px;
+      line-height: 24px;
+
+      cursor: pointer;
+
+      color: rgba(white, .7);
+      &:hover {
+        transform: scale(1.1);
+
+        color: rgba(white, .9);
+      }
+      &:active {
+        transform: scale(.98);
+      }
+    }
+    &__results {
+      position: relative;
+      z-index: 110;
+
+      overflow: scroll;
+
+      box-sizing: border-box;
+      min-height: 152px;
+      max-height: 440px;
+      padding: 4px 0;
+      header {
+        font-size: 13px;
+        font-weight: 500;
+        // text-transform: uppercase;
+        line-height: 16px;
+
+        padding: 8px 16px;
+      }
+      .contact {
+        padding: 4px 16px;
+
+        cursor: pointer;
+        .material-icons {
+          display: none;
+        }
+        &:hover {
+          color: white;
+          background-color: $dark_sky_blue;
+          .material-icons {
+            display: block;
+          }
+        }
+      }
+    }
+    &__dropdown {
+      position: absolute;
+      top: 100%;
+      right: -4px;
+      left: -4px;
+
+      margin-top: -4px;
+
+      color: rgba($greyish-brown, .6);
+      border-radius: $default-border-radius;
+      background-color: white;
+      box-shadow: 0 1px 3px 1px rgba(0, 0, 0, .1);
+      &:before {
+        top: - $stem-size / 2;
+        left: 26px;
+
+        @include stem($stem-size);
+      }
+      &:after {
+        z-index: -1;
+        top: - $stem-size / 2;
+        left: 26px;
+
+        box-shadow: 0 1px 3px 1px rgba(0, 0, 0, .1);
+
+        @include stem($stem-size);
+      }
+    }
+    footer {
+      box-shadow: 0 -1px 0 0 rgba(0, 0, 0, .07);
+      a {
+        font-size: 13px;
+        line-height: 24px;
+
+        display: block;
+
+        margin-top: 4px;
+        padding: 10px 16px;
+
+        cursor: pointer;
+        text-decoration: none;
+
+        color: rgb(100, 100, 100);
+        background-color: rgba(black, .02);
+        span {
+          line-height: 24px;
+
+          display: inline-block;
+
+          vertical-align: top;
+        }
+        .material-icons {
+          font-size: 16px;
+          line-height: 24px;
+
+          margin-left: 4px;
+
+          vertical-align: top;
+        }
+
+        &:hover {
+          color: darken(rgb(100, 100, 100), 5);
+          background-color: rgba(black, .04);
+        }
+      }
+    }
+    &--expanded {
+      min-width: 300px;
+
+      cursor: default !important;
+
+      background-color: rgba($baby-blue, .12) !important;
+      .toolbar__search__input {
+        display: inline-flex;
+
+        margin-left: 10px;
+      }
+    }
+    &--focused {
+      background-color: rgba($baby-blue, .2) !important;
+    }
+  }
+
+  &__button {
+    padding: 12px 16px;
+
+    cursor: pointer;
+    user-select: none;
+    vertical-align: top;
+
+    color: white;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    &:hover {
+      background-color: rgba($baby-blue, .12);
+    }
+    &:active {
+      background-color: rgba($baby-blue, .2);
+    }
+
+    &.user-menu {
+      padding-right: 10px;
+    }
+  }
+}

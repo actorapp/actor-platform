@@ -2,13 +2,12 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import { isFunction, noop } from 'lodash';
+import { noop } from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
 import classnames from 'classnames';
 import { escapeWithEmoji } from '../../../utils/EmojiUtils';
 import PeerUtils from '../../../utils/PeerUtils';
-import { MessageContentTypes } from '../../../constants/ActorAppConstants';
 
 import DialogActionCreators from '../../../actions/DialogActionCreators';
 import ActivityActionCreators from '../../../actions/ActivityActionCreators';
@@ -21,17 +20,7 @@ import SvgIcon from '../../common/SvgIcon.react';
 import AvatarItem from '../../common/AvatarItem.react';
 import State from './State.react';
 import Reactions from './Reactions.react';
-
-// Default message content components
-import DefaultService from './Service.react';
-import DefaultText from './Text.react';
-import DefaultPhoto from './Photo.react';
-import DefaultDocument from './Document.react';
-import DefaultVoice from './Voice.react';
-import DefaultContact from './Contact.react';
-import DefaultLocation from './Location.react';
-import DefaultModern from './Modern.react';
-import DefaultSticker from './Sticker.react';
+import MessageContent from './MessageContent.react';
 
 class MessageItem extends Component {
   static contextTypes = {
@@ -68,35 +57,6 @@ class MessageItem extends Component {
     super(props, context);
 
     this.onClick = this.onClick.bind(this);
-  }
-
-  componentWillMount() {
-    const { dialog } = this.context.delegate.components;
-    if (dialog && dialog.messages) {
-      this.components = {
-        Service: isFunction(dialog.messages.service) ? dialog.messages.service : DefaultService,
-        Text: isFunction(dialog.messages.text) ? dialog.messages.text : DefaultText,
-        Modern: isFunction(dialog.messages.modern) ? dialog.messages.modern : DefaultModern,
-        Photo: isFunction(dialog.messages.photo) ? dialog.messages.photo : DefaultPhoto,
-        Document: isFunction(dialog.messages.document) ? dialog.messages.document : DefaultDocument,
-        Voice: isFunction(dialog.messages.voice) ? dialog.messages.voice : DefaultVoice,
-        Contact: isFunction(dialog.messages.contact) ? dialog.messages.contact : DefaultContact,
-        Location: isFunction(dialog.messages.location) ? dialog.messages.location : DefaultLocation,
-        Sticker:  isFunction(dialog.messages.sticker) ? dialog.messages.sticker : DefaultSticker
-      };
-    } else {
-      this.components = {
-        Service: DefaultService,
-        Text: DefaultText,
-        Modern: DefaultModern,
-        Photo: DefaultPhoto,
-        Document: DefaultDocument,
-        Voice: DefaultVoice,
-        Contact: DefaultContact,
-        Location: DefaultLocation,
-        Sticker: DefaultSticker
-      };
-    }
   }
 
   shouldComponentUpdate(nextProps) {
@@ -204,80 +164,6 @@ class MessageItem extends Component {
     }
   }
 
-  renderContent() {
-    const { message } = this.props;
-    const { Service, Text, Photo, Document, Voice, Contact, Location, Modern, Sticker } = this.components;
-
-    switch (message.content.content) {
-      case MessageContentTypes.SERVICE:
-        return (
-          <Service
-            {...message.content}
-            className="message__content message__content--service"
-          />
-        );
-      case MessageContentTypes.TEXT:
-        return (
-          <Text
-            {...message.content}
-            className="message__content message__content--text"
-          />
-        );
-      case MessageContentTypes.PHOTO:
-        return (
-          <Photo
-            {...message.content}
-            className="message__content message__content--photo"
-            loadedClassName="message__content--photo--loaded"
-          />
-        );
-      case MessageContentTypes.DOCUMENT:
-        return (
-          <Document
-            {...message.content}
-            className="message__content message__content--document"
-          />
-        );
-      case MessageContentTypes.VOICE:
-        return (
-          <Voice
-            {...message.content}
-            className="message__content message__content--voice"
-          />
-        );
-      case MessageContentTypes.CONTACT:
-        return (
-          <Contact
-            {...message.content}
-            className="message__content message__content--contact"
-          />
-        );
-      case MessageContentTypes.LOCATION:
-        return (
-          <Location
-            {...message.content}
-            className="message__content message__content--location"
-          />
-        );
-      case MessageContentTypes.TEXT_MODERN:
-        return (
-          <Modern
-            {...message.content}
-            className="message__content message__content--modern"
-          />
-        );
-      case MessageContentTypes.STICKER:
-        return (
-          <Sticker
-            {...message.content}
-            className="message__content message__content--sticker"
-          />
-        );
-      default:
-        return null;
-    }
-  }
-
   renderActions() {
     const { peer, message } = this.props;
     const { isHighlighted } = this.state;
@@ -307,7 +193,7 @@ class MessageItem extends Component {
   }
 
   render() {
-    const { isShort, isSelected, isEditing } = this.props;
+    const { message, isShort, isSelected, isEditing } = this.props;
     const { isHighlighted } = this.state;
 
     const messageClassName = classnames('message', {
@@ -322,7 +208,7 @@ class MessageItem extends Component {
         {this.renderLeftBlock()}
         <div className="message__body">
           {this.renderHeader()}
-          {this.renderContent()}
+          <MessageContent content={message.content} />
         </div>
         {this.renderActions()}
       </div>
