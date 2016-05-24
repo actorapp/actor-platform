@@ -17,6 +17,7 @@ import SearchMessagesActionCreators from '../../actions/SearchMessagesActionCrea
 import AvatarItem from '../common/AvatarItem.react';
 import ToggleFavorite from '../common/ToggleFavorite.react';
 import MoreDropdown from './header/MoreDropdown.react';
+import SmartCallButton from '../call/SmartCallButton.react';
 
 class DialogHeader extends Component {
   static contextTypes = {
@@ -94,13 +95,7 @@ class DialogHeader extends Component {
   }
 
   renderMessage() {
-    const { call, message } = this.props;
-
-    if (call.isCalling) {
-      return (
-        <FormattedMessage id={`call.state.${call.state}`} values={{ time: call.time }} />
-      );
-    }
+    const { message } = this.props;
 
     return message;
   }
@@ -187,19 +182,12 @@ class DialogHeader extends Component {
     }
 
     const { call } = this.props;
-
-    if (call.isCalling) {
-      return (
-        <button className="button button--icon" onClick={this.handleEndCallButtonClick}>
-          <i className="material-icons" style={{ fontSize: 22 }}>call_end</i>
-        </button>
-      );
-    }
-
     return (
-      <button className="button button--icon" onClick={this.handleMakeCallButtonClick}>
-        <i className="material-icons" style={{ fontSize: 22 }}>call</i>
-      </button>
+      <SmartCallButton
+        call={call}
+        onCallStart={this.handleMakeCallButtonClick}
+        onCallEnd={this.handleEndCallButtonClick}
+      />
     );
   }
 
