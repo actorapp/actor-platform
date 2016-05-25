@@ -358,7 +358,7 @@ public class ActorStyle {
     // Bubble Colors
     
     public var chatTextBubbleOutColor = UIColor(rgb: 0xD2FEFD)
-    
+
     public var chatTextBubbleOutSelectedColor = UIColor.lightGrayColor()
     
     public var chatTextBubbleOutBorderColor = UIColor(rgb: 0x99E4E3)
@@ -379,7 +379,13 @@ public class ActorStyle {
     public var chatUnreadBgColor = UIColor.alphaBlack(0.3)
     
     public var chatReadMediaColor = UIColor(red: 46.6/255.0, green: 211.3/255.0, blue: 253.6/255.0, alpha: 1.0)
-
+    
+    // Bubble Shadow
+    
+    public var bubbleShadowEnabled = false
+    
+    public var chatTextBubbleShadowColor = UIColor.alphaBlack(0.1)
+    
     // Status Colors
     
     public lazy var chatIconCheck1 = UIImage.templated("msg_check_1")
