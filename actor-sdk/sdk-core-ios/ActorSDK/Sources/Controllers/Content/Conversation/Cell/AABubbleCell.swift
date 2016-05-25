@@ -61,14 +61,19 @@ public class AABubbleCell: UICollectionViewCell {
     //
     
     private static var cachedOutTextBg = UIImage.tinted("BubbleOutgoingFull", color: ActorSDK.sharedActor().style.chatTextBubbleOutColor)
+    private static var cachedOutTextBgShadow = UIImage.tinted("BubbleOutgoingFull", color: ActorSDK.sharedActor().style.chatTextBubbleShadowColor)
+    
     private static var cachedOutTextBgBorder = UIImage.tinted("BubbleOutgoingFullBorder", color: ActorSDK.sharedActor().style.chatTextBubbleOutBorderColor)
     private static var cachedOutTextCompactBg = UIImage.tinted("BubbleOutgoingPartial", color: ActorSDK.sharedActor().style.chatTextBubbleOutColor)
+    private static var cachedOutTextCompactBgShadow = UIImage.tinted("BubbleOutgoingPartial", color: ActorSDK.sharedActor().style.chatTextBubbleShadowColor)
     private static var cachedOutTextCompactSelectedBg = UIImage.tinted("BubbleOutgoingPartial", color: ActorSDK.sharedActor().style.chatTextBubbleOutSelectedColor)
     private static var cachedOutTextCompactBgBorder = UIImage.tinted("BubbleOutgoingPartialBorder", color: ActorSDK.sharedActor().style.chatTextBubbleOutBorderColor)
 
     private static var cachedInTextBg = UIImage.tinted("BubbleIncomingFull", color: ActorSDK.sharedActor().style.chatTextBubbleInColor)
+    private static var cachedInTextBgShadow = UIImage.tinted("BubbleIncomingFull", color: ActorSDK.sharedActor().style.chatTextBubbleShadowColor)
     private static var cachedInTextBgBorder = UIImage.tinted("BubbleIncomingFullBorder", color: ActorSDK.sharedActor().style.chatTextBubbleInBorderColor)
     private static var cachedInTextCompactBg = UIImage.tinted("BubbleIncomingPartial", color: ActorSDK.sharedActor().style.chatTextBubbleInColor)
+    private static var cachedInTextCompactBgShadow = UIImage.tinted("BubbleIncomingPartial", color: ActorSDK.sharedActor().style.chatTextBubbleShadowColor)
     private static var cachedInTextCompactSelectedBg = UIImage.tinted("BubbleIncomingPartial", color: ActorSDK.sharedActor().style.chatTextBubbleInSelectedColor)
     private static var cachedInTextCompactBgBorder = UIImage.tinted("BubbleIncomingPartialBorder", color: ActorSDK.sharedActor().style.chatTextBubbleInBorderColor)
     
@@ -101,6 +106,7 @@ public class AABubbleCell: UICollectionViewCell {
     public var avatarAdded: Bool = false
     
     public let bubble = UIImageView()
+    public let bubbleShadow = UIImageView()
     public let bubbleBorder = UIImageView()
     
     private let dateText = UILabel()
@@ -171,7 +177,7 @@ public class AABubbleCell: UICollectionViewCell {
         //"New Messages"
         
         contentView.transform = CGAffineTransformMake(1, 0, 0, -1, 0, 0)
-        
+        contentView.addSubview(bubbleShadow)
         contentView.addSubview(bubble)
         contentView.addSubview(bubbleBorder)
         contentView.addSubview(newMessage)
@@ -291,11 +297,15 @@ public class AABubbleCell: UICollectionViewCell {
         switch(type) {
             case BubbleType.TextIn:
                 if (isCompact) {
+                    bubbleShadow.image = AABubbleCell.cachedInTextCompactBgShadow
+                    bubbleShadow.highlightedImage = AABubbleCell.cachedInTextCompactBgShadow
                     bubble.image = AABubbleCell.cachedInTextCompactBg
                     bubbleBorder.image = AABubbleCell.cachedInTextCompactBgBorder
                     bubble.highlightedImage = AABubbleCell.cachedInTextCompactSelectedBg
                     bubbleBorder.highlightedImage = AABubbleCell.cachedInTextCompactBgBorder
                 } else {
+                    bubbleShadow.image = AABubbleCell.cachedInTextBgShadow
+                    bubbleShadow.highlightedImage = AABubbleCell.cachedInTextBgShadow
                     bubble.image = AABubbleCell.cachedInTextBg
                     bubbleBorder.image = AABubbleCell.cachedInTextBgBorder
                     bubble.highlightedImage = AABubbleCell.cachedInTextBg
@@ -304,11 +314,15 @@ public class AABubbleCell: UICollectionViewCell {
             break
             case BubbleType.TextOut:
                 if (isCompact) {
+                    bubbleShadow.image = AABubbleCell.cachedOutTextCompactBgShadow
+                    bubbleShadow.highlightedImage = AABubbleCell.cachedOutTextCompactBgShadow
                     bubble.image =  AABubbleCell.cachedOutTextCompactBg
                     bubbleBorder.image =  AABubbleCell.cachedOutTextCompactBgBorder
                     bubble.highlightedImage =  AABubbleCell.cachedOutTextCompactSelectedBg
                     bubbleBorder.highlightedImage =  AABubbleCell.cachedOutTextCompactBgBorder
                 } else {
+                    bubbleShadow.image = AABubbleCell.cachedOutTextBgShadow
+                    bubbleShadow.highlightedImage = AABubbleCell.cachedOutTextBgShadow
                     bubble.image =  AABubbleCell.cachedOutTextBg
                     bubbleBorder.image =  AABubbleCell.cachedOutTextBgBorder
                     bubble.highlightedImage =  AABubbleCell.cachedOutTextBg
@@ -343,16 +357,19 @@ public class AABubbleCell: UICollectionViewCell {
     }
     
     func updateView() {
-      print(self.highlighted)
         let type = self.bubbleType! as BubbleType
         switch (type) {
         case BubbleType.TextIn:
             if (!isFullSize!) {
+                bubbleShadow.image = AABubbleCell.cachedInTextCompactBgShadow
+                bubbleShadow.highlightedImage = AABubbleCell.cachedInTextCompactBgShadow
                 bubble.image = AABubbleCell.cachedInTextCompactBg
                 bubbleBorder.image = AABubbleCell.cachedInTextCompactBgBorder
                 bubble.highlightedImage = AABubbleCell.cachedInTextCompactSelectedBg
                 bubbleBorder.highlightedImage = AABubbleCell.cachedInTextCompactBgBorder
             } else {
+                bubbleShadow.image = AABubbleCell.cachedInTextBgShadow
+                bubbleShadow.highlightedImage = AABubbleCell.cachedInTextBgShadow
                 bubble.image = AABubbleCell.cachedInTextBg
                 bubbleBorder.image = AABubbleCell.cachedInTextBgBorder
                 bubble.highlightedImage = AABubbleCell.cachedInTextBg
@@ -361,11 +378,15 @@ public class AABubbleCell: UICollectionViewCell {
             break
         case BubbleType.TextOut:
             if (!isFullSize!) {
+                bubbleShadow.image = AABubbleCell.cachedOutTextCompactBgShadow
+                bubbleShadow.highlightedImage = AABubbleCell.cachedOutTextCompactBgShadow
                 bubble.image =  AABubbleCell.cachedOutTextCompactBg
                 bubbleBorder.image =  AABubbleCell.cachedOutTextCompactBgBorder
                 bubble.highlightedImage =  AABubbleCell.cachedOutTextCompactSelectedBg
                 bubbleBorder.highlightedImage =  AABubbleCell.cachedOutTextCompactBgBorder
             } else {
+                bubbleShadow.image = AABubbleCell.cachedOutTextBgShadow
+                bubbleShadow.highlightedImage = AABubbleCell.cachedOutTextBgShadow
                 bubble.image =  AABubbleCell.cachedOutTextBg
                 bubbleBorder.image =  AABubbleCell.cachedOutTextBgBorder
                 bubble.highlightedImage =  AABubbleCell.cachedOutTextBg
@@ -491,11 +512,17 @@ public class AABubbleCell: UICollectionViewCell {
         }
         bubble.frame = bubbleFrame
         bubbleBorder.frame = bubbleFrame
+        bubbleShadow.frame = CGRect(
+            x: bubbleFrame.minX + 1,
+            y: bubbleFrame.minY + 1,
+            width: bubbleW,
+            height: bubbleH)
     }
     
     public func layoutBubble(frame: CGRect) {
         bubble.frame = frame
         bubbleBorder.frame = frame
+        bubbleShadow.frame = frame
     }
     
     public override func preferredLayoutAttributesFittingAttributes(layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
