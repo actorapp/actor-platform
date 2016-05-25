@@ -74,7 +74,7 @@ class Group extends Component {
         <div className="additional">
           <div className="members">
             <SvgIcon glyph="members" className="icon"/>
-            {group.membersCount}
+            <span>{group.membersCount}</span>
           </div>
         </div>
       </div>
