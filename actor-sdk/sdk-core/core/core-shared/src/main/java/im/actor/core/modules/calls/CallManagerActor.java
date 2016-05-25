@@ -255,6 +255,23 @@ public class CallManagerActor extends ModuleActor {
     }
 
     //
+    // Call video disable/enable
+    //
+    private void onCallVideoEnable(long callId) {
+        ActorRef ref = runningCalls.get(callId);
+        if (ref != null) {
+            ref.send(new AbsCallActor.VideoEnabled(true));
+        }
+    }
+
+    private void onCallVideoDisable(long callId) {
+        ActorRef ref = runningCalls.get(callId);
+        if (ref != null) {
+            ref.send(new AbsCallActor.VideoEnabled(false));
+        }
+    }
+
+    //
     // Ending call
     //
 
@@ -370,6 +387,10 @@ public class CallManagerActor extends ModuleActor {
             onCallMute(((MuteCall) message).getCallId());
         } else if (message instanceof UnmuteCall) {
             onCallUnmute(((UnmuteCall) message).getCallId());
+        } else if (message instanceof DisableVideo) {
+            onCallVideoDisable(((DisableVideo) message).getCallId());
+        } else if (message instanceof EnableVideo) {
+            onCallVideoEnable(((EnableVideo) message).getCallId());
         } else if (message instanceof ProbablyEndCall) {
             probablyEndCall();
         } else {
@@ -498,6 +519,30 @@ public class CallManagerActor extends ModuleActor {
         private long callId;
 
         public UnmuteCall(long callId) {
+            this.callId = callId;
+        }
+
+        public long getCallId() {
+            return callId;
+        }
+    }
+
+    public static class DisableVideo {
+        private long callId;
+
+        public DisableVideo(long callId) {
+            this.callId = callId;
+        }
+
+        public long getCallId() {
+            return callId;
+        }
+    }
+
+    public static class EnableVideo {
+        private long callId;
+
+        public EnableVideo(long callId) {
             this.callId = callId;
         }
 

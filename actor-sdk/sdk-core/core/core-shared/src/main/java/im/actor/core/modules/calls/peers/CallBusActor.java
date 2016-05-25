@@ -128,7 +128,7 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
 
     @Override
     public void onPeerConnectionCreated(WebRTCPeerConnection peerConnection) {
-
+        callBusCallback.onPeerConnectionCreated(peerConnection);
     }
 
 
@@ -138,6 +138,11 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
 
     public void onChangeMute(boolean isMuted) {
         peerCall.onMuteChanged(isMuted);
+    }
+
+
+    private void onChangeVideoEnabled(boolean enabled) {
+        peerCall.onVideoEnabledChanged(enabled);
     }
 
     public void onOwnAnswered() {
@@ -247,6 +252,8 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
             connectBus(joinMasterBus.getBusId(), joinMasterBus.getDeviceId(), TIMEOUT, true);
         } else if (message instanceof Mute) {
             onChangeMute(((Mute) message).isMuted());
+        } else if (message instanceof VideoEnabled) {
+            onChangeVideoEnabled(((VideoEnabled) message).isEnabled());
         } else if (message instanceof OnAnswered) {
             onOwnAnswered();
         } else {
@@ -299,6 +306,19 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
 
         public boolean isMuted() {
             return isMuted;
+        }
+    }
+
+    public static class VideoEnabled {
+
+        private boolean enabled;
+
+        public VideoEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
+
+        public boolean isEnabled() {
+            return enabled;
         }
     }
 

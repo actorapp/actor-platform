@@ -1,7 +1,5 @@
 package im.actor.runtime.android.webrtc;
 
-import android.media.MediaRecorder;
-
 import org.webrtc.AudioSource;
 import org.webrtc.AudioTrack;
 import org.webrtc.MediaConstraints;
@@ -19,7 +17,8 @@ public class AndroidMediaStream implements WebRTCMediaStream {
     private AudioTrack audioTrack;
     private VideoTrack videoTrack;
     private MediaStream stream;
-    private boolean isEnabled = false;
+    private boolean isAudioEnabled = false;
+    private boolean isVideoEnabled = true;
     private boolean local;
     private boolean diposed = false;
     private VideoSource videoSource;
@@ -55,19 +54,33 @@ public class AndroidMediaStream implements WebRTCMediaStream {
             });
 
         }
-        setEnabled(autoPlay);
+        setAudioEnabled(autoPlay);
     }
 
     @Override
-    public boolean isEnabled() {
-        return isEnabled;
+    public boolean isAudioEnabled() {
+        return isAudioEnabled;
     }
 
     @Override
-    public void setEnabled(boolean isEnabled) {
+    public void setAudioEnabled(boolean isEnabled) {
         if (audioTrack != null) {
             audioTrack.setEnabled(isEnabled);
-            this.isEnabled = isEnabled;
+            this.isAudioEnabled = isEnabled;
+        }
+
+    }
+
+    @Override
+    public boolean isVideoEnabled() {
+        return isVideoEnabled;
+    }
+
+    @Override
+    public void setVideoEnabled(boolean isEnabled) {
+        if (videoTrack != null) {
+            videoTrack.setEnabled(isEnabled);
+            this.isVideoEnabled = isEnabled;
         }
 
     }
