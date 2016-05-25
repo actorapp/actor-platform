@@ -23,6 +23,10 @@ public class CallBusInt extends ActorInterface {
         send(new CallBusActor.Mute(isMuted));
     }
 
+    public void changeVideoEnabled(boolean enabled) {
+        send(new CallBusActor.VideoEnabled(enabled));
+    }
+
     public void startOwn() {
         send(new CallBusActor.OnAnswered());
     }
