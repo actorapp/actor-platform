@@ -55,6 +55,7 @@ public class AuthActivity extends BaseFragmentActivity {
     private String currentName;
     private Sex currentSex;
     private ActorRef authActor;
+    private boolean codeValidated = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +74,7 @@ public class AuthActivity extends BaseFragmentActivity {
         currentEmail = preferences.getString("currentEmail");
         transactionHash = preferences.getString("transactionHash");
         isRegistered = preferences.getBool("isRegistered", false);
+        codeValidated = preferences.getBool("codeValidated", false);
         currentName = preferences.getString("currentName");
         signType = preferences.getInt("signType", signType);
         String savedState = preferences.getString("auth_state");
@@ -102,6 +104,7 @@ public class AuthActivity extends BaseFragmentActivity {
         preferences.putString("currentEmail", currentEmail);
         preferences.putString("transactionHash", transactionHash);
         preferences.putBool("isRegistered", isRegistered);
+        preferences.putBool("codeValidated", codeValidated);
         preferences.putString("currentName", currentName);
         preferences.putInt("signType", signType);
         preferences.putString("auth_state", state.toString());
@@ -164,15 +167,21 @@ public class AuthActivity extends BaseFragmentActivity {
         currentSex = Sex.UNKNOWN;
         availableAuthType = ActorSDK.sharedActor().getAuthType();
         AuthState authState;
-        if ((availableAuthType & AUTH_TYPE_PHONE) == AUTH_TYPE_PHONE) {
-            authState = AuthState.AUTH_PHONE;
-        } else if ((availableAuthType & AUTH_TYPE_EMAIL) == AUTH_TYPE_EMAIL) {
-            authState = AuthState.AUTH_EMAIL;
+        if (!codeValidated) {
+            if ((availableAuthType & AUTH_TYPE_PHONE) == AUTH_TYPE_PHONE) {
+                authState = AuthState.AUTH_PHONE;
+            } else if ((availableAuthType & AUTH_TYPE_EMAIL) == AUTH_TYPE_EMAIL) {
+                authState = AuthState.AUTH_EMAIL;
+            } else {
+                // none of valid auth types selected - force crash?
+                return;
+            }
+
+            updateState(authState);
+
         } else {
-            // none of valid auth types selected - force crash?
-            return;
+            signUp(messenger().doSignup(currentName, currentSex != null ? currentSex : Sex.UNKNOWN, transactionHash), currentName, currentSex);
         }
-        updateState(authState);
     }
 
     public void startPhoneAuth(Promise<AuthStartRes> promise, long phone) {
@@ -229,6 +238,7 @@ public class AuthActivity extends BaseFragmentActivity {
             @Override
             public void apply(AuthCodeRes authCodeRes) {
                 if (dismissProgress()) {
+                    codeValidated = true;
                     transactionHash = authCodeRes.getTransactionHash();
                     if (!authCodeRes.isNeedToSignup()) {
                         messenger().doCompleteAuth(authCodeRes.getResult()).then(new Consumer<Boolean>() {
@@ -243,7 +253,11 @@ public class AuthActivity extends BaseFragmentActivity {
                             }
                         });
                     } else {
-                        signUp(messenger().doSignup(currentName, currentSex!=null?currentSex:Sex.UNKNOWN, transactionHash), currentName, currentSex);
+                        if (currentName == null || currentName.isEmpty()) {
+                            updateState(AuthState.SIGN_UP, true);
+                        } else {
+                            signUp(messenger().doSignup(currentName, currentSex != null ? currentSex : Sex.UNKNOWN, transactionHash), currentName, currentSex);
+                        }
                     }
                 }
             }
