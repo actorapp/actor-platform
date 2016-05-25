@@ -13,6 +13,7 @@ import im.actor.core.api.ApiTextModernField;
 import im.actor.core.api.ApiTextModernMessage;
 import im.actor.core.entity.ImageLocation;
 import im.actor.core.entity.content.AbsContent;
+import im.actor.core.entity.content.AnimationContent;
 import im.actor.core.entity.content.ContactContent;
 import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.entity.content.FileLocalSource;
@@ -83,6 +84,11 @@ public abstract class JsContent extends JavaScriptObject {
                 content = JsContentPhoto.create(
                         fileName, fileExtension, fileSize,
                         photoContent.getW(), photoContent.getH(), thumb,
+                        fileUrl, isUploading);
+            } else if (src instanceof AnimationContent) {
+                AnimationContent animationContent = (AnimationContent) src;
+                content = JsContentAnimation.create(fileName, fileExtension, fileSize,
+                        animationContent.getW(), animationContent.getH(), thumb,
                         fileUrl, isUploading);
             } else if (src instanceof VoiceContent) {
                 VoiceContent voiceContent = (VoiceContent) src;
