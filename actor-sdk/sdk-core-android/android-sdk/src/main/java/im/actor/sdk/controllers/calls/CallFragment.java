@@ -400,8 +400,8 @@ public class CallFragment extends BaseFragment {
                                 remoteRender = new VideoRenderer(remoteVideoView);
                                 stream.getVideoTrack().addRenderer(remoteRender);
                                 remoteVideoView.setVisibility(View.VISIBLE);
-                                hideView(avatarView);
-                                hideView(nameTV);
+                                avatarView.setVisibility(View.INVISIBLE);
+                                nameTV.setVisibility(View.INVISIBLE);
                             }
                         });
                     }

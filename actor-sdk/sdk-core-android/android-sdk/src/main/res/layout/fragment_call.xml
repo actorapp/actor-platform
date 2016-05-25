@@ -42,6 +42,7 @@
             android:layout_weight="1">
 
             <View
+                android:visibility="invisible"
                 android:id="@+id/layer"
                 android:layout_width="82dp"
                 android:layout_height="82dp"
