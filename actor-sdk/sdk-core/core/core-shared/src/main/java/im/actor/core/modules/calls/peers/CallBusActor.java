@@ -23,6 +23,7 @@ import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
+import im.actor.runtime.webrtc.WebRTCPeerConnection;
 
 /*-[
 #pragma clang diagnostic ignored "-Wnullability-completeness"
@@ -122,6 +123,11 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
 
     @Override
     public void onStreamRemoved(long deviceId, @NotNull WebRTCMediaStream stream) {
+
+    }
+
+    @Override
+    public void onPeerConnectionCreated(WebRTCPeerConnection peerConnection) {
 
     }
 
@@ -342,6 +348,12 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
         @Override
         public void onStreamRemoved(final long deviceId, @NotNull final WebRTCMediaStream stream) {
             self().send((Runnable) () -> callCallback.onStreamRemoved(deviceId, stream));
+        }
+
+        @Override
+        public void onPeerConnectionCreated(WebRTCPeerConnection peerConnection) {
+            self().send((Runnable) () -> callCallback.onPeerConnectionCreated(peerConnection));
+
         }
     }
 }

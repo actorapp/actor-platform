@@ -18,6 +18,7 @@ import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorInterface;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
+import im.actor.runtime.webrtc.WebRTCPeerConnection;
 
 import static im.actor.runtime.actors.ActorSystem.system;
 
@@ -164,6 +165,11 @@ public class PeerNodeInt extends ActorInterface {
         @Override
         public void onStreamRemoved(final long deviceId, final WebRTCMediaStream stream) {
             callbackDest.send((Runnable) () -> callback.onStreamRemoved(deviceId, stream));
+        }
+
+        @Override
+        public void onPeerConnectionCreated(WebRTCPeerConnection peerConnection) {
+            callbackDest.send((Runnable) () -> callback.onPeerConnectionCreated(peerConnection));
         }
     }
 }

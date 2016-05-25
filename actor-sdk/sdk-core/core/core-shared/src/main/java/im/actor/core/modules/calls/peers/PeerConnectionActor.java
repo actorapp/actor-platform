@@ -104,6 +104,21 @@ public class PeerConnectionActor extends ModuleActor {
                 public void onRenegotiationNeeded() {
 
                 }
+
+                @Override
+                public void onOwnStreamAdded(WebRTCMediaStream stream) {
+
+                }
+
+                @Override
+                public void onOwnStreamRemoved(WebRTCMediaStream stream) {
+
+                }
+
+                @Override
+                public void onDisposed() {
+
+                }
             });
             state = PeerConnectionState.WAITING_HANDSHAKE;
             onReady();
