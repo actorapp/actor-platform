@@ -61,19 +61,20 @@ public class AABubbleCell: UICollectionViewCell {
     //
     
     private static var cachedOutTextBg = UIImage.tinted("BubbleOutgoingFull", color: ActorSDK.sharedActor().style.chatTextBubbleOutColor)
-    private static var cachedOutTextBgShadow = UIImage.tinted("BubbleOutgoingFull", color: ActorSDK.sharedActor().style.chatTextBubbleShadowColor)
+    
+    private static var cachedOutTextBgShadow = ActorSDK.sharedActor().style.bubbleShadowEnabled ? UIImage.tinted("BubbleOutgoingFull", color: ActorSDK.sharedActor().style.chatTextBubbleShadowColor) : UIImage()
     
     private static var cachedOutTextBgBorder = UIImage.tinted("BubbleOutgoingFullBorder", color: ActorSDK.sharedActor().style.chatTextBubbleOutBorderColor)
     private static var cachedOutTextCompactBg = UIImage.tinted("BubbleOutgoingPartial", color: ActorSDK.sharedActor().style.chatTextBubbleOutColor)
-    private static var cachedOutTextCompactBgShadow = UIImage.tinted("BubbleOutgoingPartial", color: ActorSDK.sharedActor().style.chatTextBubbleShadowColor)
+    private static var cachedOutTextCompactBgShadow = ActorSDK.sharedActor().style.bubbleShadowEnabled ? UIImage.tinted("BubbleOutgoingPartial", color: ActorSDK.sharedActor().style.chatTextBubbleShadowColor) : UIImage()
     private static var cachedOutTextCompactSelectedBg = UIImage.tinted("BubbleOutgoingPartial", color: ActorSDK.sharedActor().style.chatTextBubbleOutSelectedColor)
     private static var cachedOutTextCompactBgBorder = UIImage.tinted("BubbleOutgoingPartialBorder", color: ActorSDK.sharedActor().style.chatTextBubbleOutBorderColor)
 
     private static var cachedInTextBg = UIImage.tinted("BubbleIncomingFull", color: ActorSDK.sharedActor().style.chatTextBubbleInColor)
-    private static var cachedInTextBgShadow = UIImage.tinted("BubbleIncomingFull", color: ActorSDK.sharedActor().style.chatTextBubbleShadowColor)
+    private static var cachedInTextBgShadow = ActorSDK.sharedActor().style.bubbleShadowEnabled ? UIImage.tinted("BubbleIncomingFull", color: ActorSDK.sharedActor().style.chatTextBubbleShadowColor) : UIImage()
     private static var cachedInTextBgBorder = UIImage.tinted("BubbleIncomingFullBorder", color: ActorSDK.sharedActor().style.chatTextBubbleInBorderColor)
     private static var cachedInTextCompactBg = UIImage.tinted("BubbleIncomingPartial", color: ActorSDK.sharedActor().style.chatTextBubbleInColor)
-    private static var cachedInTextCompactBgShadow = UIImage.tinted("BubbleIncomingPartial", color: ActorSDK.sharedActor().style.chatTextBubbleShadowColor)
+    private static var cachedInTextCompactBgShadow = ActorSDK.sharedActor().style.bubbleShadowEnabled ?UIImage.tinted("BubbleIncomingPartial", color: ActorSDK.sharedActor().style.chatTextBubbleShadowColor) : UIImage()
     private static var cachedInTextCompactSelectedBg = UIImage.tinted("BubbleIncomingPartial", color: ActorSDK.sharedActor().style.chatTextBubbleInSelectedColor)
     private static var cachedInTextCompactBgBorder = UIImage.tinted("BubbleIncomingPartialBorder", color: ActorSDK.sharedActor().style.chatTextBubbleInBorderColor)
     
@@ -177,7 +178,9 @@ public class AABubbleCell: UICollectionViewCell {
         //"New Messages"
         
         contentView.transform = CGAffineTransformMake(1, 0, 0, -1, 0, 0)
-        contentView.addSubview(bubbleShadow)
+        
+        ActorSDK.sharedActor().style.bubbleShadowEnabled ? contentView.addSubview(bubbleShadow) : print("go to light!")
+            
         contentView.addSubview(bubble)
         contentView.addSubview(bubbleBorder)
         contentView.addSubview(newMessage)
