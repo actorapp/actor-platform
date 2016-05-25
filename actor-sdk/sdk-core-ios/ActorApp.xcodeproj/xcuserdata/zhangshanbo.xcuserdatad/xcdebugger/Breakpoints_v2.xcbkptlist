@@ -176,6 +176,38 @@
             endingLineNumber = "33"
             landmarkName = "putMethodWithUrl(_:withContents:withCallback:)"
             landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ActorSDK.CocoaHttpRuntime.getMethodWithUrl (Swift.ImplicitlyUnwrappedOptional&lt;Swift.String&gt;, withStartOffset : Swift.Int32, withSize : Swift.Int32, withTotalSize : Swift.Int32) -&gt; Swift.ImplicitlyUnwrappedOptional&lt;__ObjC.ARPromise&gt;"
+                  moduleName = "ActorSDK"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core-ios/ActorSDK/Sources/ActorCore/Providers/CocoaHttpRuntime.swift"
+                  timestampString = "485835544.412701"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "33"
+                  endingLineNumber = "33"
+                  offsetFromSymbolStart = "252">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ActorSDK.CocoaHttpRuntime.(getMethodWithUrl (Swift.ImplicitlyUnwrappedOptional&lt;Swift.String&gt;, withStartOffset : Swift.Int32, withSize : Swift.Int32, withTotalSize : Swift.Int32) -&gt; Swift.ImplicitlyUnwrappedOptional&lt;__ObjC.ARPromise&gt;).(closure #1)"
+                  moduleName = "ActorSDK"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core-ios/ActorSDK/Sources/ActorCore/Providers/CocoaHttpRuntime.swift"
+                  timestampString = "485835544.412876"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "33"
+                  endingLineNumber = "33"
+                  offsetFromSymbolStart = "1364">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -313,7 +345,7 @@
                   moduleName = "ActorSDK"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core-ios/ActorSDK/Sources/Controllers/Auth/AAAuthLogInViewController.swift"
-                  timestampString = "485247214.453304"
+                  timestampString = "485835544.415166"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "184"
@@ -328,7 +360,7 @@
                   moduleName = "ActorSDK"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core-ios/ActorSDK/Sources/Controllers/Auth/AAAuthLogInViewController.swift"
-                  timestampString = "485247214.453747"
+                  timestampString = "485835544.415277"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "185"
@@ -489,7 +521,7 @@
                   moduleName = "ActorSDK"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core-ios/ActorSDK/Sources/Controllers/Auth/AAAuthOTPViewController.swift"
-                  timestampString = "485247214.455618"
+                  timestampString = "485835544.415988"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "255"
@@ -504,7 +536,7 @@
                   moduleName = "ActorSDK"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core-ios/ActorSDK/Sources/Controllers/Auth/AAAuthOTPViewController.swift"
-                  timestampString = "485247214.455885"
+                  timestampString = "485835544.416087"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "255"
@@ -876,6 +908,291 @@
             endingLineNumber = "49"
             landmarkName = "application(_:didRegisterForRemoteNotificationsWithDeviceToken:)"
             landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ActorSDK/Sources/Controllers/Auth/AAAuthLogInViewController.swift"
+            timestampString = "485832455.241163"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "130"
+            endingLineNumber = "130"
+            landmarkName = "onServiceSuccess(_:)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../sdk-core/core/core-shared/src/main/java/im/actor/core/Messenger.java"
+            timestampString = "485833080.541361"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "177"
+            endingLineNumber = "177"
+            landmarkName = "doStartUsernameAuth(String username)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../sdk-core/core/core-shared/src/main/java/im/actor/core/modules/auth/Authentication.java"
+            timestampString = "485834242.268527"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "494"
+            endingLineNumber = "494"
+            landmarkName = "requestStartUserNameAuth(final String userName)"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "new_ImActorCoreModulesAuthAuthentication_$10_$1_initWithImActorCoreModulesAuthAuthentication_$10_withACCommandCallback_"
+                  moduleName = "ActorSDK"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core/core/core-shared/src/main/java/im/actor/core/modules/auth/Authentication.java"
+                  timestampString = "485835544.418628"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "494"
+                  endingLineNumber = "494"
+                  offsetFromSymbolStart = "84">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ImActorCoreModulesAuthAuthentication_$10_$1_$2_initWithImActorCoreModulesAuthAuthentication_$10_$1_withACRpcException_"
+                  moduleName = "ActorSDK"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core/core/core-shared/src/main/java/im/actor/core/modules/auth/Authentication.java"
+                  timestampString = "485835544.418733"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "494"
+                  endingLineNumber = "494"
+                  offsetFromSymbolStart = "188">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[ImActorCoreModulesAuthAuthentication_$11 startWithCallback:]"
+                  moduleName = "ActorSDK"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core/core/core-shared/src/main/java/im/actor/core/modules/auth/Authentication.java"
+                  timestampString = "485835544.418812"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "494"
+                  endingLineNumber = "494"
+                  offsetFromSymbolStart = "48">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../sdk-core/core/core-shared/src/main/java/im/actor/core/modules/auth/Authentication.java"
+            timestampString = "485834661.955596"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "491"
+            endingLineNumber = "491"
+            landmarkName = "requestStartUserNameAuth(final String userName)"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[ImActorCoreModulesAuthAuthentication requestStartUserNameAuthWithNSString:]"
+                  moduleName = "ActorSDK"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core/core/core-shared/src/main/java/im/actor/core/modules/auth/Authentication.java"
+                  timestampString = "485835544.419626"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "491"
+                  endingLineNumber = "491"
+                  offsetFromSymbolStart = "52">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ImActorCoreModulesAuthAuthentication_$10_$1_initWithImActorCoreModulesAuthAuthentication_$10_withACCommandCallback_"
+                  moduleName = "ActorSDK"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core/core/core-shared/src/main/java/im/actor/core/modules/auth/Authentication.java"
+                  timestampString = "485835544.41972"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "491"
+                  endingLineNumber = "491"
+                  offsetFromSymbolStart = "228">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ImActorCoreModulesAuthAuthentication_$10_$1_$2_initWithImActorCoreModulesAuthAuthentication_$10_$1_withACRpcException_"
+                  moduleName = "ActorSDK"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core/core/core-shared/src/main/java/im/actor/core/modules/auth/Authentication.java"
+                  timestampString = "485835544.419799"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "492"
+                  endingLineNumber = "492"
+                  offsetFromSymbolStart = "116">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../sdk-core/core/core-shared/src/main/java/im/actor/core/modules/auth/Authentication.java"
+            timestampString = "485835072.120971"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "204"
+            endingLineNumber = "204"
+            landmarkName = "doStartUsernameAuth(final String username)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../sdk-core/core/core-shared/src/main/java/im/actor/core/modules/auth/Authentication.java"
+            timestampString = "485835180.351325"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "214"
+            endingLineNumber = "214"
+            landmarkName = "doStartUsernameAuth(final String username)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../sdk-core/core/core-shared/src/main/java/im/actor/core/modules/auth/Authentication.java"
+            timestampString = "485835183.543588"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "213"
+            endingLineNumber = "213"
+            landmarkName = "doStartUsernameAuth(final String username)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../sdk-core/core/core-shared/src/main/java/im/actor/core/modules/auth/Authentication.java"
+            timestampString = "485835185.5633"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "221"
+            endingLineNumber = "221"
+            landmarkName = "doStartUsernameAuth(final String username)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../sdk-core/core/core-shared/src/main/java/im/actor/core/modules/auth/Authentication.java"
+            timestampString = "485835639.837795"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "82"
+            endingLineNumber = "82"
+            landmarkName = "Authentication(Modules modules)"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[ImActorCoreModulesAuthAuthentication initWithACModules:]"
+                  moduleName = "ActorSDK"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core/core/core-shared/src/main/java/im/actor/core/modules/auth/Authentication.java"
+                  timestampString = "485835639.845166"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "82"
+                  endingLineNumber = "82"
+                  offsetFromSymbolStart = "44">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ImActorCoreModulesAuthAuthentication_initWithACModules_"
+                  moduleName = "ActorSDK"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core/core/core-shared/src/main/java/im/actor/core/modules/auth/Authentication.java"
+                  timestampString = "485835639.845325"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "82"
+                  endingLineNumber = "82"
+                  offsetFromSymbolStart = "88">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "new_ImActorCoreModulesAuthAuthentication_initWithACModules_"
+                  moduleName = "ActorSDK"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core/core/core-shared/src/main/java/im/actor/core/modules/auth/Authentication.java"
+                  timestampString = "485835639.845418"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "82"
+                  endingLineNumber = "82"
+                  offsetFromSymbolStart = "56">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
