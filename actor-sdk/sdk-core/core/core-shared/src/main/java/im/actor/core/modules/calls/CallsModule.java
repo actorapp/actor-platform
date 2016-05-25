@@ -65,6 +65,14 @@ public class CallsModule extends AbsModule {
         callManager.send(new CallManagerActor.UnmuteCall(callId));
     }
 
+    public void disableVideo(long callId) {
+        callManager.send(new CallManagerActor.DisableVideo(callId));
+    }
+
+    public void enableVideo(long callId) {
+        callManager.send(new CallManagerActor.EnableVideo(callId));
+    }
+
     public void endCall(long callId) {
         callManager.send(new CallManagerActor.DoEndCall(callId));
     }

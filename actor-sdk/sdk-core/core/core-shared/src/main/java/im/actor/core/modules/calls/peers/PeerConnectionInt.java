@@ -7,6 +7,7 @@ import im.actor.core.modules.ModuleContext;
 import im.actor.runtime.actors.ActorInterface;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
+import im.actor.runtime.webrtc.WebRTCPeerConnection;
 
 import static im.actor.runtime.actors.ActorSystem.system;
 
@@ -126,6 +127,11 @@ public class PeerConnectionInt extends ActorInterface {
         @Override
         public void onStreamRemoved(final WebRTCMediaStream stream) {
             callbackDest.send((Runnable) () -> callback.onStreamRemoved(stream));
+        }
+
+        @Override
+        public void onPeerConnectionCreated(WebRTCPeerConnection peerConnection) {
+            callbackDest.send((Runnable) () -> callback.onPeerConnectionCreated(peerConnection));
         }
     }
 }

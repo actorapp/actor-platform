@@ -68,4 +68,8 @@ public class PeerCallInt extends ActorInterface {
     public void onMuteChanged(boolean isMuted) {
         send(new PeerCallActor.MuteChanged(isMuted));
     }
+
+    public void onVideoEnabledChanged(boolean enabled) {
+        send(new PeerCallActor.VideoEnabled(enabled));
+    }
 }

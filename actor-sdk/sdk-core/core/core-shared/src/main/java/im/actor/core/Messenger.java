@@ -1243,6 +1243,20 @@ public class Messenger {
     }
 
     /**
+     * Toggle video of call
+     *
+     * @param callId Call Id
+     */
+    @ObjectiveCName("toggleVideoEnabledWithCallId:")
+    public void toggleVideoEnabled(long callId) {
+        if (modules.getCallsModule().getCall(callId).getIsVideoEnabled().get()) {
+            modules.getCallsModule().disableVideo(callId);
+        } else {
+            modules.getCallsModule().enableVideo(callId);
+        }
+    }
+
+    /**
      * Answer call by call id
      *
      * @param callId Call id
