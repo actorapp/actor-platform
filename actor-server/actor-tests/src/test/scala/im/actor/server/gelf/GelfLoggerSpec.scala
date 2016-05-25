@@ -153,7 +153,9 @@ class GelfLoggerSpec extends ActorSuite {
   "Exception detail with default 1" should "send only exception name" in service.exceptionNoParam
   "Exception detail with default 2" should "send only exception name and stacktrace" in service.exceptionWithParam()
   "IllegalArgumentException with custom detail 0 and default 1" should "not send this exception but send other exception name" in service.illegalExceptionOff()
-  "RequestValidateCode with WARNING level" should "respond level 4" in service.requestValidateCode()
+  "RequestValidateCode detail with default 2 and WARNING level" should "send params and respond level 4" in service.requestValidateCode()
+  "RequestValidateCode with detail 0" should "not send this request but send the others" in service.requestValidateCodeOff()
+  "RequestSendMessage with detail 1" should "send only this request name without any params" in service.requestSendMessageNoParam()
   "Request detail with default 0" should "not send any logs" in service.requestOff()
   "Request with {type1:app1} additional fields" should "send app1" in service.additionalFields()
   "RequestNotSupported RpcError with level NOTICE" should "send BadRequest log with level 5 and empty request_name" in service.notSupportedError()
@@ -283,7 +285,8 @@ class GelfLoggerSpec extends ActorSuite {
         actorRef ! "RequestValidateCode"
 
         expectMsgPF() {
-          case GelfMessage("Request Received", 4, Some("RequestValidateCode"), _, _, _) ⇒
+          case GelfMessage("Request Received", 4, Some("RequestValidateCode"), _, _, fields) ⇒
+            fields.foreach(_.get("_param1") should not be (None))
         }
 
       }
@@ -338,7 +341,11 @@ class GelfLoggerSpec extends ActorSuite {
 
       gelfContext(settings) {
         actorRef ! "RequestSendMessage"
-        expectNoMsg()
+        expectMsgPF() {
+          case GelfMessage("Request Received", _, Some("RequestSendMessage"), _, _, fields) ⇒
+            fields.foreach(_.get("_param1") should be(None))
+        }
+
       }
     }
 

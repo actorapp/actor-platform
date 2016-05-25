@@ -241,7 +241,7 @@ class GelfLoggerInternal(actorConfig: Config = ActorConfig.load(ConfigFactory.em
           case Some(json) ⇒
             var i = 0
             val r = for ((k, v) ← json.fieldSet)
-              yield ("request_param" + {
+              yield ("param" + {
               i += 1
               i
             }, s"{$k : $v}")
