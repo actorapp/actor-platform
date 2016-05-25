@@ -1,20 +1,16 @@
 package im.actor.sdk;
 
 import android.app.Activity;
-import android.content.Context;
 import android.net.Uri;
-import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TableLayout;
 
-import im.actor.core.AuthState;
 import im.actor.core.entity.Peer;
 import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.controllers.root.MainPhoneController;
 import im.actor.sdk.controllers.conversation.messages.MessageHolder;
 import im.actor.sdk.controllers.conversation.MessagesAdapter;
-import im.actor.sdk.controllers.auth.BaseAuthFragment;
-import im.actor.sdk.controllers.settings.ActorSettingsCategory;
 import im.actor.sdk.controllers.settings.BaseActorProfileActivity;
 import im.actor.sdk.controllers.settings.BaseGroupInfoActivity;
 import im.actor.sdk.intents.ActorIntent;
@@ -175,4 +171,11 @@ public interface ActorSDKDelegate {
      * @return is Actor push id used
      */
     boolean useActorPush();
+
+    /**
+     * Method for hacking share menu in dialog
+     *
+     * @param shareMenu share menu
+     */
+    void onShareMenuCreated(TableLayout shareMenu);
 }
