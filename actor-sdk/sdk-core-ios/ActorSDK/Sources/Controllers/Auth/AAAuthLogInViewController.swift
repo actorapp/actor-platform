@@ -139,11 +139,14 @@ public class AAAuthLogInViewController: AAAuthViewController {
                     return
                 }
             }
-            if ActorSDK.sharedActor().authStrategy == .EmailOnly || ActorSDK.sharedActor().authStrategy == .PhoneEmail {
-                if (AATools.isValidEmail(value)) {
-                    Actor.doStartAuthWithEmail(value).startUserAction().then { (res: ACAuthStartRes!) -> () in
+            if ActorSDK.sharedActor().authStrategy == .PhoneOnly || ActorSDK.sharedActor().authStrategy == .PhoneEmail {
+                let numbersSet = NSCharacterSet(charactersInString: "0123456789").invertedSet
+                let stripped = value.strip(numbersSet)
+                if let parsed = Int64(stripped) {
+                    Actor.doStartAuthWithPhone(jlong(parsed)).startUserAction().then { (res: ACAuthStartRes!) -> () in
                         if res.authMode.toNSEnum() == .OTP {
-                            self.container.navigateNext(AAAuthOTPViewController(email: self.value, transactionHash: res.transactionHash))
+                            let formatted = RMPhoneFormat().format("\(parsed)")
+                            self.container.navigateNext(AAAuthOTPViewController(phone: formatted, transactionHash: res.transactionHash))
                         } else {
                             self.container.alertUser(AALocalized("AuthUnsupported").replace("{app_name}", dest: ActorSDK.sharedActor().appName))
                         }
