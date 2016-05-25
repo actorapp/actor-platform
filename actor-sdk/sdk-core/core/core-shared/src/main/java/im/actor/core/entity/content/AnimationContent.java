@@ -54,7 +54,7 @@ public class AnimationContent extends DocumentContent {
 
     public AnimationContent(ContentLocalContainer contentContainer) {
         super(contentContainer);
-        LocalVideo localVideo = (LocalVideo) contentContainer.getContent();
+        LocalAnimation localVideo = (LocalAnimation) contentContainer.getContent();
         w = localVideo.getW();
         h = localVideo.getH();
     }
