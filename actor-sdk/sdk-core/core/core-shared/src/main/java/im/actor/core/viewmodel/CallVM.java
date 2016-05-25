@@ -28,6 +28,8 @@ public class CallVM {
     @Property("nonatomic, readonly")
     private final BooleanValueModel isMuted;
     @Property("nonatomic, readonly")
+    private final BooleanValueModel isVideoEnabled;
+    @Property("nonatomic, readonly")
     private long callStart;
     @Property("nonatomic, readonly")
     private long callEnd;
@@ -43,7 +45,8 @@ public class CallVM {
         this.state = new ValueModel<>("calls." + callId + ".state", state);
         this.peerConnection = new ValueModel<>("calls." + callId + ".peer_connection", null);
         this.members = new ValueModel<>("calls." + callId + ".members", new ArrayList<>(initialMembers));
-        this.isMuted = new BooleanValueModel("calls." + callId + ".state", false);
+        this.isMuted = new BooleanValueModel("calls." + callId + ".muted", false);
+        this.isVideoEnabled = new BooleanValueModel("calls." + callId + ".video_enabled", true);
         this.callStart = 0;
     }
 
@@ -61,6 +64,10 @@ public class CallVM {
 
     public BooleanValueModel getIsMuted() {
         return isMuted;
+    }
+
+    public BooleanValueModel getIsVideoEnabled() {
+        return isVideoEnabled;
     }
 
     public ValueModel<CallState> getState() {

@@ -119,6 +119,13 @@ public class CallActor extends AbsCallActor {
         callVM.getIsMuted().change(isMuted);
     }
 
+    @Override
+    public void onVideoEnableChanged(boolean enabled) {
+        super.onVideoEnableChanged(enabled);
+        callVM.getIsVideoEnabled().change(enabled);
+    }
+
+
     public void onAnswerCall() {
         if (!isAnswered && !isRejected) {
             isAnswered = true;

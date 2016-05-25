@@ -147,7 +147,7 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
         }
 
         for (MediaStream mediaStream : streams.keySet()) {
-            callback.onOwnStreamAdded(streams.get(mediaStream));
+            callback.onStreamAdded(streams.get(mediaStream));
         }
     }
 

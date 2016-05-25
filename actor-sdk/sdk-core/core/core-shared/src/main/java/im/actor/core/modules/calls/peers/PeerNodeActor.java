@@ -16,6 +16,7 @@ import im.actor.core.modules.calls.peers.messages.RTCOffer;
 import im.actor.core.modules.calls.peers.messages.RTCStart;
 import im.actor.core.modules.ModuleActor;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
+import im.actor.runtime.webrtc.WebRTCPeerConnection;
 
 /**
  * Proxy Actor for simplifying state of PeerConnection by careful peer connection initialization
@@ -91,7 +92,7 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
             reconfigurePeerConnectionIfNeeded();
 
             for (WebRTCMediaStream mediaStream : theirMediaStreams) {
-                mediaStream.setEnabled(true);
+                mediaStream.setAudioEnabled(true);
             }
         }
     }
@@ -119,7 +120,6 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
             peerConnection = new PeerConnectionInt(
                     iceServers, ownSettings, theirSettings,
                     ownMediaStream, this, context(), self(), "connection");
-
             unstashAll();
         }
     }
@@ -165,7 +165,7 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
     @Override
     public void onStreamAdded(WebRTCMediaStream stream) {
         theirMediaStreams.add(stream);
-        stream.setEnabled(isEnabled);
+        stream.setAudioEnabled(isEnabled);
         if (isStarted) {
             callback.onStreamAdded(deviceId, stream);
         }
@@ -189,6 +189,11 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
         if (isStarted) {
             callback.onStreamRemoved(deviceId, stream);
         }
+    }
+
+    @Override
+    public void onPeerConnectionCreated(WebRTCPeerConnection peerConnection) {
+        callback.onPeerConnectionCreated(peerConnection);
     }
 
 
