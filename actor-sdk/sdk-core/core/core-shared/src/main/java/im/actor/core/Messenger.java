@@ -177,6 +177,7 @@ public class Messenger {
         return modules.getAuthModule().doStartUsernameAuth(username);
     }
 
+
     /**
      * Starting phone auth
      *
@@ -212,7 +213,7 @@ public class Messenger {
     @NotNull
     @ObjectiveCName("doValidatePassword:withTransaction:")
     public Promise<AuthCodeRes> doValidatePassword(String password, String transactionHash) {
-        return modules.getAuthModule().doValidateCode(transactionHash, password);
+        return modules.getAuthModule().doValidatePassword(transactionHash, password);
     }
 
 
@@ -227,7 +228,19 @@ public class Messenger {
     public Promise<Boolean> doSendCodeViaCall(String transactionHash) {
         return modules.getAuthModule().doSendCall(transactionHash);
     }
-
+    /**
+     * Signing Up
+     *
+     * @param name            name
+     * @param sex             sex of user
+     * @param transactionHash transaction hash
+     * @return promise of AuthRes
+     */
+    @NotNull
+    @ObjectiveCName("doSignupWithName:withSex:withTransaction:withPassword:")
+    public Promise<AuthRes> doSignup(String name, Sex sex, String transactionHash) {
+        return modules.getAuthModule().doSignup(name, sex, transactionHash);
+    }
     /**
      * Signing Up
      *
@@ -363,17 +376,6 @@ public class Messenger {
         return modules.getAuthModule().requestValidatePassword(password);
     }
 
-    /**
-     * Sending password
-     *
-     * @param password Account password
-     * @return Command for execution
-     */
-    @NotNull
-    @ObjectiveCName("requestSignUpCommandWithName:WithName:WithIp:")
-    public Command<AuthState> requestSignUp(String nickName,String name, final String ip) {
-        return modules.getAuthModule().requestSignUp(nickName, name,ip);
-    }
 
 
     /**
@@ -428,13 +430,6 @@ public class Messenger {
         return modules.getAuthModule().getEmail();
     }
 
-
-    @ObjectiveCName("getAuthUserName")
-    @Deprecated
-    public String getAuthNickName() {
-        return modules.getAuthModule().getNickName();
-    }
-
     @ObjectiveCName("getAuthZHName")
     @Deprecated
     public String getAuthZHName() {
@@ -453,11 +448,6 @@ public class Messenger {
         return modules.getAuthModule().getAuthWebServiceIp();
     }
 
-    @ObjectiveCName("getAuthPassword")
-    @Deprecated
-    public String getAuthPassword() {
-        return modules.getAuthModule().getAuthPassword();
-    }
 
     /**
      * Resetting authentication process

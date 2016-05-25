@@ -4,7 +4,7 @@
   -->
 
 <resources>
-    <string name="app_name">优聆</string>
+    <string name="app_name">易联</string>
     <string name="app_locale">Cn</string>
 
     <string name="dialog_ok">确定</string>
@@ -83,6 +83,8 @@
     <string name="auth_email_get_code">确认</string>
 
     <!-- Sign In Fragment -->
+    <string name="sign_in_nickname_hint">请输入您的用户名.</string>
+    <string name="sign_in_edit_text_hint">用户名</string>
     <string name="auth_code_phone_hint">已经发送验证码到您的手机： {0}</string>
     <string name="auth_password">请输入您的密码： {0}</string>
     <string name="auth_password_init">密码与您在OA上的密码相同.\n请在输入框中输入您的密码</string>
@@ -112,6 +114,7 @@
     <string name="auth_error_code_invalid">验证码不正确，请重试。</string>
     <string name="auth_error_failed_get_oauth2_token">验证服务器发送异常，请重试。</string>
     <string name="auth_error_password_invalid">密码不正确，请重试。</string>
+    <string name="auth_error_wrong_auth_id">请输入正确的用户名</string>
 
     <!-- Typing -->
     <string name="typing_private">正在输入…</string>

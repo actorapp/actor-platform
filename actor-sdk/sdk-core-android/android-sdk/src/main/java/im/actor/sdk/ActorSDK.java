@@ -113,7 +113,7 @@ public class ActorSDK {
     /**
      * Actor App Name
      */
-    private String appName = "Actor";
+    private String appName = "易联";
     /**
      * Push Registration Id
      */
@@ -189,30 +189,16 @@ public class ActorSDK {
     private boolean callsEnabled = false;
 
     private ActorSDK() {
-<<<<<<< HEAD
-
-        endpoints = new String[]{
-                "tcp://220.189.207.18:9070"
-=======
-        endpoints = new String[]{
-                "tls://front1-mtproto-api-rev2.actor.im@104.155.30.208",
-                "tls://front2-mtproto-api-rev2.actor.im@104.155.30.208",
-
-                "tcp://front1-mtproto-api-rev3.actor.im@104.155.30.208:443",
-                "tcp://front2-mtproto-api-rev3.actor.im@104.155.30.208:443",
-                "tcp://front3-mtproto-api-rev3.actor.im@104.155.30.208:443"
->>>>>>> 842b482abf4bfb1ee87cc24eae4e364b76c2938c
-        };
-        trustedKeys = new String[]{
-                "508D39F2BBDAB7776172478939362CD5127871B60151E9B86CD6D61AD1A75849"
-        };
-//        endpoints = new String[]{
-//                "tls://front1-mtproto-api-rev2.actor.im",
-//                "tls://front2-mtproto-api-rev2.actor.im",
+        endpoints = new String[]{"tcp://220.189.207.18:9070"};
+        trustedKeys = new String[]{"508D39F2BBDAB7776172478939362CD5127871B60151E9B86CD6D61AD1A75849"};
+    }
+    //        endpoints = new String[]{
+//                "tls://front1-mtproto-api-rev2.actor.im@104.155.30.208",
+//                "tls://front2-mtproto-api-rev2.actor.im@104.155.30.208",
 //
-//                "tcp://front1-mtproto-api-rev3.actor.im:443",
-//                "tcp://front2-mtproto-api-rev3.actor.im:443",
-//                "tcp://front3-mtproto-api-rev3.actor.im:443"
+//                "tcp://front1-mtproto-api-rev3.actor.im@104.155.30.208:443",
+//                "tcp://front2-mtproto-api-rev3.actor.im@104.155.30.208:443",
+//                "tcp://front3-mtproto-api-rev3.actor.im@104.155.30.208:443"
 //        };
 //        trustedKeys = new String[]{
 //                "d9d34ed487bd5b434eda2ef2c283db587c3ae7fb88405c3834d9d1a6d247145b",
@@ -222,7 +208,6 @@ public class ActorSDK {
 //                "fc49f2f2465f5b4e038ec7c070975858a8b5542aa6ec1f927a57c4f646e1c143",
 //                "6709b8b733a9f20a96b9091767ac19fd6a2a978ba0dccc85a9ac8f6b6560ac1a"
 //        };
-    }
 
     /**
      * Shared ActorSDK. Use this method to get instance of SDK for configuration and starting up
@@ -242,66 +227,7 @@ public class ActorSDK {
 
         this.application = application;
 
-<<<<<<< HEAD
-        //
-        // SDK Tools
-        //
-
-        ImagePipelineConfig config = ImagePipelineConfig.newBuilder(application)
-                .setDownsampleEnabled(true)
-                .build();
-        Fresco.initialize(application, config);
-        AndroidContext.setContext(application);
-        // TODO: Replace
-        new SmileProcessor(application).loadEmoji();
-
-        //
-        // SDK Configuration
-        //
-
-        ConfigurationBuilder builder = new ConfigurationBuilder();
-        for (String s : endpoints) {
-            builder.addEndpoint(s);
-        }
-        for (String t : trustedKeys) {
-            builder.addTrustedKey(t.toLowerCase());
-        }
-        builder.setPhoneBookProvider(new AndroidPhoneBook());
-        builder.setNotificationProvider(new AndroidNotifications(AndroidContext.getContext()));
-        builder.setDeviceCategory(DeviceCategory.MOBILE);
-        builder.setPlatformType(PlatformType.ANDROID);
-        builder.setIsEnabledGroupedChatList(false);
-        builder.setApiConfiguration(new ApiConfiguration(
-                appName,
-                apiAppId,
-                apiAppKey,
-                Devices.getDeviceName(),
-                AndroidContext.getContext().getPackageName() + ":" + Build.SERIAL));
-        //
-        // Adding Locales
-        //
-        Locale defaultLocale = Locale.getDefault();
-        Log.d(TAG, "Found Locale: " + defaultLocale.getLanguage() + "-" + defaultLocale.getCountry());
-        Log.d(TAG, "Found Locale: " + defaultLocale.getLanguage());
-        builder.addPreferredLanguage(defaultLocale.getLanguage() + "-" + defaultLocale.getCountry());
-        builder.addPreferredLanguage(defaultLocale.getLanguage());
-
-        //
-        // Adding TimeZone
-        //
-        String timeZone = TimeZone.getDefault().getID();
-        Log.d(TAG, "Found TimeZone: " + timeZone);
-        builder.setTimeZone(timeZone);
-
-        //
-        // App Name
-        //
-        if (customApplicationName != null) {
-            builder.setCustomAppName(customApplicationName);
-        }
-=======
         ThreadDispatcher.pushDispatcher(Runtime::postToMainThread);
->>>>>>> 842b482abf4bfb1ee87cc24eae4e364b76c2938c
 
         Runtime.dispatch(() -> {
 
@@ -324,7 +250,7 @@ public class ActorSDK {
                 builder.addEndpoint(s);
             }
             for (String t : trustedKeys) {
-                builder.addTrustedKey(t);
+                builder.addTrustedKey(t.toLowerCase());
             }
             builder.setPhoneBookProvider(new AndroidPhoneBook());
             builder.setNotificationProvider(new AndroidNotifications(application));

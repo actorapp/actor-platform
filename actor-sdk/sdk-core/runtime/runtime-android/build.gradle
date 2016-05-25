@@ -5,10 +5,7 @@ buildscript {
 
     dependencies {
         classpath 'com.android.tools.build:gradle:2.1.0'
-<<<<<<< HEAD
-=======
         classpath 'me.tatarka:gradle-retrolambda:3.2.5'
->>>>>>> 842b482abf4bfb1ee87cc24eae4e364b76c2938c
     }
 }
 

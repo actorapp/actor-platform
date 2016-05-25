@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.fragment.auth;
+package im.actor.sdk.controllers.auth;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -28,24 +28,20 @@ import im.actor.sdk.view.SelectorFactory;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
-public class SignInPasswordFragment extends BaseAuthFragment {
+public class ValidatePasswordFragment extends BaseAuthFragment {
 
     public static final String AUTH_TYPE_EMAIL = "auth_type_email";
     public static final String AUTH_TYPE_PHONE = "auth_type_phone";
-    public static final String AUTH_TYPE_CUSTOM = "auth_type_custom";
-    public static final String AUTH_TYPE_USERNAME = "auth_type_username";
+    public static final String AUTH_TYPE_SIGN = "auth_type_is_sign";
     String authType;
     private EditText codeEnterEditText;
     private KeyboardHelper keyboardHelper;
-    String avatarPath;
+    boolean isSign = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         authType = getArguments().getString("authType");
-
-        if (savedInstanceState != null) {
-            avatarPath = savedInstanceState.getString("avatarPath", null);
-        }
+        isSign = getArguments().getBoolean(AUTH_TYPE_SIGN);
         keyboardHelper = new KeyboardHelper(getActivity());
         View v = inflater.inflate(R.layout.fragment_sign_passwordin, container, false);
         v.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
@@ -59,8 +55,9 @@ public class SignInPasswordFragment extends BaseAuthFragment {
 
         TextView sendHint = (TextView) v.findViewById(R.id.sendHint);
         sendHint.setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
+        String authId = getArguments().getString("authId", "");
         if (authType.equals(AUTH_TYPE_PHONE)) {
-            String phoneNumber = "+" + messenger().getAuthPhone();
+            String phoneNumber = "+" + authId;
             try {
                 Phonenumber.PhoneNumber number = PhoneNumberUtil.getInstance().parse(phoneNumber, null);
                 phoneNumber = PhoneNumberUtil.getInstance().format(number, PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL);
@@ -72,24 +69,20 @@ public class SignInPasswordFragment extends BaseAuthFragment {
                     Html.fromHtml(getString(R.string.auth_code_phone_hint).replace("{0}", "<b>" + phoneNumber + "</b>"))
             );
         } else if (authType.equals(AUTH_TYPE_EMAIL)) {
-            String email = messenger().getAuthEmail();
             sendHint.setText(
-                    Html.fromHtml(getString(R.string.auth_code_email_hint).replace("{0}", "<b>" + email + "</b>"))
+                    Html.fromHtml(getString(R.string.auth_code_email_hint).replace("{0}", "<b>" + authId + "</b>"))
             );
-        } else if (authType.equals(AUTH_TYPE_USERNAME)) {
-            String userName = messenger().getAuthNickName();
+        } else {
             sendHint.setText(
-                    getString(R.string.auth_password_init).replace("{0}", "<b>" + userName + "</b>") );
+                    Html.fromHtml(getString(R.string.auth_password_init).replace("{0}", "<b>" + authId + "</b>"))
+            );
+
             TextView sendName = (TextView) v.findViewById(R.id.sendUserName);
             sendName.setText(messenger().getAuthZHName());
-        } else {
-            String authId = getArguments().getString("authId");
-            sendHint.setText(
-                    Html.fromHtml(getArguments().getString("authHint"))
-            );
         }
 
         codeEnterEditText = (EditText) v.findViewById(R.id.et_sms_code_enter);
+        codeEnterEditText.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
         codeEnterEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -119,6 +112,8 @@ public class SignInPasswordFragment extends BaseAuthFragment {
             }
         });
 
+        codeEnterEditText.setText(((AuthActivity) getActivity()).getCurrentCode());
+
         onClick(v, R.id.button_confirm_sms_code, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -134,12 +129,16 @@ public class SignInPasswordFragment extends BaseAuthFragment {
             @Override
             public void onClick(View v) {
                 new AlertDialog.Builder(getActivity())
-                        .setMessage(authType.equals(AUTH_TYPE_USERNAME) ? R.string.auth_code_username_change : R.string.auth_code_phone_change)
+                        .setMessage( R.string.auth_code_username_change)
                         .setPositiveButton(R.string.auth_code_change_yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                messenger().resetAuth();
-                                updateState();
+                                if (isSign) {
+                                    startSignIn();
+                                } else {
+                                    switchToNickName();
+                                }
+
                             }
                         })
                         .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
@@ -151,17 +150,17 @@ public class SignInPasswordFragment extends BaseAuthFragment {
                         .setCanceledOnTouchOutside(true);
             }
         });
+        v.findViewById(R.id.divider).setBackgroundColor(style.getDividerColor());
 
         return v;
     }
 
     private void sendCode() {
-        final String text = codeEnterEditText.getText().toString().trim();
+        String text = codeEnterEditText.getText().toString().trim();
         if (text.length() > 0) {
-            executeAuth(messenger().validatePassword(text),"Send Password");
+            validatePassword(text);
         }
     }
-
 
     @Override
     public void onResume() {

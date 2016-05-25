@@ -24,6 +24,7 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 23
+        multiDexEnabled true
     }
 
     sourceSets {
@@ -82,16 +83,6 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.5.0'
     compile 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.0.2'
     // Android Support
-<<<<<<< HEAD
-    compile 'com.android.support:support-v4:23.2.0'
-    compile 'com.android.support:support-v13:23.2.0'
-    compile 'com.android.support:appcompat-v7:23.2.0'
-    compile 'com.android.support:palette-v7:23.2.0'
-    compile 'com.android.support:recyclerview-v7:23.2.0'
-    compile 'com.android.support:design:23.2.0'
-    compile 'com.google.android.gms:play-services-maps:8.4.0'
-    compile files('libs/ksoap2-android-assembly-2.6.5-jar-with-dependencies.jar')
-=======
     compile 'com.android.support:support-v4:23.3.0'
     compile 'com.android.support:support-v13:23.3.0'
     compile 'com.android.support:appcompat-v7:23.3.0'
@@ -99,7 +90,6 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:23.3.0'
     compile 'com.android.support:design:23.3.0'
     compile 'com.android.support:customtabs:23.3.0'
->>>>>>> 842b482abf4bfb1ee87cc24eae4e364b76c2938c
 }
 
 //
