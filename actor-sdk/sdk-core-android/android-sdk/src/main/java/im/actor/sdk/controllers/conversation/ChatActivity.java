@@ -42,6 +42,7 @@ import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,8 +67,6 @@ import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.Props;
 import im.actor.runtime.actors.messages.PoisonPill;
 import im.actor.runtime.actors.messages.Void;
-import im.actor.runtime.function.BiFunction;
-import im.actor.runtime.function.Consumer;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.R;
@@ -207,7 +206,7 @@ public class ChatActivity extends ActorEditTextActivity {
     //Share menu
     //////////////////////////////////
     private View shareContainer;
-    private View shareMenu;
+    private View shareMenuCaontainer;
     private int shareMenuMaxHeight = 0;
     private FastShareAdapter fastShareAdapter;
 
@@ -325,10 +324,11 @@ public class ChatActivity extends ActorEditTextActivity {
         });
 
         //share menu
-        findViewById(R.id.share_menu).setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
+        TableLayout shareMenu = (TableLayout) findViewById(R.id.share_menu);
+        shareMenu.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         findViewById(R.id.fast_share).setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
-        shareMenu = findViewById(R.id.share_container);
-        shareMenu.setOnClickListener(new View.OnClickListener() {
+        shareMenuCaontainer = findViewById(R.id.share_container);
+        shareMenuCaontainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -414,6 +414,8 @@ public class ChatActivity extends ActorEditTextActivity {
         findViewById(R.id.share_hide).setOnClickListener(shareMenuOCL);
         View shareLocation = findViewById(R.id.share_location);
         shareLocation.setOnClickListener(shareMenuOCL);
+        ActorSDK.sharedActor().getDelegate().onShareMenuCreated(shareMenu);
+
         handleIntent();
 
         try {
@@ -910,7 +912,7 @@ public class ChatActivity extends ActorEditTextActivity {
         }
 
         // Opening default share menu
-        if (shareMenu.getVisibility() == View.VISIBLE) {
+        if (shareMenuCaontainer.getVisibility() == View.VISIBLE) {
             hideShare();
         } else {
             shareContainer.setVisibility(View.VISIBLE);
@@ -1576,10 +1578,10 @@ public class ChatActivity extends ActorEditTextActivity {
         TranslateAnimation animation = new TranslateAnimation(0, 0, Screen.getHeight(), 0);
         animation.setDuration(160);
         animation.setAnimationListener(animationListener);
-        shareMenu.clearAnimation();
-        shareMenu.setAnimation(animation);
-        shareMenu.animate();
-        shareMenu.setVisibility(View.VISIBLE);
+        shareMenuCaontainer.clearAnimation();
+        shareMenuCaontainer.setAnimation(animation);
+        shareMenuCaontainer.animate();
+        shareMenuCaontainer.setVisibility(View.VISIBLE);
         isShareVisible = true;
         if (ActorSDK.sharedActor().isFastShareEnabled()) {
             messenger().getGalleryScannerActor().send(new GalleryScannerActor.Show());
@@ -1595,10 +1597,10 @@ public class ChatActivity extends ActorEditTextActivity {
         animation.setDuration(160);
 
         animation.setAnimationListener(animationListener);
-        shareMenu.clearAnimation();
-        shareMenu.setAnimation(animation);
-        shareMenu.animate();
-        shareMenu.setVisibility(View.GONE);
+        shareMenuCaontainer.clearAnimation();
+        shareMenuCaontainer.setAnimation(animation);
+        shareMenuCaontainer.animate();
+        shareMenuCaontainer.setVisibility(View.GONE);
         shareContainer.setVisibility(View.GONE);
         if (ActorSDK.sharedActor().isFastShareEnabled()) {
             messenger().getGalleryScannerActor().send(new GalleryScannerActor.Hide());
