@@ -14,7 +14,6 @@ import android.media.AudioManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.Vibrator;
@@ -31,16 +30,18 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.webrtc.EglBase;
-import org.webrtc.RendererCommon;
+import org.webrtc.MediaStream;
 import org.webrtc.SurfaceViewRenderer;
 import org.webrtc.VideoRenderer;
-import org.webrtc.VideoRendererGui;
 import org.webrtc.VideoSource;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.TimeZone;
 
 import im.actor.core.entity.PeerType;
@@ -63,6 +64,9 @@ import im.actor.runtime.android.webrtc.AndroidPeerConnection;
 import im.actor.runtime.mvvm.Value;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.ValueModel;
+import im.actor.runtime.webrtc.WebRTCMediaStream;
+import im.actor.runtime.webrtc.WebRTCPeerConnection;
+import im.actor.runtime.webrtc.WebRTCPeerConnectionCallback;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.calls.view.CallAvatarLayerAnimator;
@@ -109,8 +113,19 @@ public class CallFragment extends BaseFragment {
     private View layer3;
     private VideoSource source;
     private EglBase rootEglBase;
-    private SurfaceViewRenderer localRender;
-    private SurfaceViewRenderer remoteRender;
+    private VideoRenderer localRender;
+    private VideoRenderer remoteRender;
+    private SurfaceViewRenderer localVideoView;
+    private SurfaceViewRenderer remoteVideoView;
+
+    private TextView muteCallTv;
+    private TextView videoTv;
+    private ViewGroup container;
+    private TintImageView speaker;
+    private TintImageView muteCall;
+    private TextView speakerTV;
+    private boolean sourceIsStopped = false;
+    private WebRTCPeerConnectionCallback webRTCPeerConnectionCallback;
 
     public CallFragment() {
 
@@ -132,7 +147,7 @@ public class CallFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
+        this.container = container;
         manager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
 
         FrameLayout cont = (FrameLayout) inflater.inflate(R.layout.fragment_call, container, false);
@@ -269,9 +284,9 @@ public class CallFragment extends BaseFragment {
 
 
         audioManager.getStreamVolume(AudioManager.STREAM_VOICE_CALL);
-        final TintImageView speaker = (TintImageView) cont.findViewById(R.id.speaker);
+        speaker = (TintImageView) cont.findViewById(R.id.speaker);
         speaker.setResource(R.drawable.ic_volume_up_white_24dp);
-        final TextView speakerTV = (TextView) cont.findViewById(R.id.speaker_tv);
+        speakerTV = (TextView) cont.findViewById(R.id.speaker_tv);
         cont.findViewById(R.id.speaker_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -280,8 +295,8 @@ public class CallFragment extends BaseFragment {
         });
         checkSpeaker(speaker, speakerTV);
 
-        final TintImageView muteCall = (TintImageView) cont.findViewById(R.id.mute);
-        final TextView muteCallTv = (TextView) cont.findViewById(R.id.mute_tv);
+        muteCall = (TintImageView) cont.findViewById(R.id.mute);
+        muteCallTv = (TextView) cont.findViewById(R.id.mute_tv);
         muteCall.setResource(R.drawable.ic_mic_off_white_24dp);
         cont.findViewById(R.id.mute_btn).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -292,7 +307,7 @@ public class CallFragment extends BaseFragment {
 
         final TintImageView video = (TintImageView) cont.findViewById(R.id.video);
         video.setResource(R.drawable.ic_videocam_white_24dp);
-        TextView videoTv = (TextView) cont.findViewById(R.id.video_tv);
+        videoTv = (TextView) cont.findViewById(R.id.video_tv);
         videoTv.setTextColor(getResources().getColor(R.color.picker_grey));
         video.setTint(getResources().getColor(R.color.picker_grey));
 
@@ -313,128 +328,81 @@ public class CallFragment extends BaseFragment {
 
         rootEglBase = EglBase.create();
 
-        AndroidWebRTCRuntimeProvider.bindPeerConnection(new AndroidWebRTCRuntimeProvider.PeerConnectionCallback() {
+        remoteVideoView = (SurfaceViewRenderer) cont.findViewById(R.id.remote_renderer);
+        remoteVideoView.init(rootEglBase.getEglBaseContext(), null);
+
+        localVideoView = (SurfaceViewRenderer) cont.findViewById(R.id.local_renderer);
+//        localVideoView.setZOrderMediaOverlay(true);
+        localVideoView.init(rootEglBase.getEglBaseContext(), null);
+
+
+        webRTCPeerConnectionCallback = new WebRTCPeerConnectionCallback() {
             @Override
-            public void onPeerConncetionAvailable(AndroidPeerConnection peerConnection) {
-                peerConnection.bind(new AndroidPeerConnection.OwnStreamCallback() {
-                    @Override
-                    public void onLocalStreamAvailable(AndroidMediaStream stream) {
-                        if (stream.getVideoTrack() != null) {
+            public void onCandidate(int label, String id, String candidate) {
 
-
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    source = stream.getVideoSource();
-                                    localRender = new SurfaceViewRenderer(getActivity());
-                                    localRender.setZOrderMediaOverlay(true);
-                                    localRender.init(rootEglBase.getEglBaseContext(), null);
-
-                                    stream.getVideoTrack().addRenderer(new VideoRenderer(localRender));
-                                    container.addView(localRender, Screen.dp(200), Screen.dp(200));
-                                }
-                            });
-                        }
-                    }
-
-                    @Override
-                    public void onRemoteStreamAdd(AndroidMediaStream stream) {
-                        if (stream.getVideoTrack() != null) {
-
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    remoteRender = new SurfaceViewRenderer(getActivity());
-                                    remoteRender.init(rootEglBase.getEglBaseContext(), null);
-                                    stream.getVideoTrack().addRenderer(new VideoRenderer(remoteRender));
-                                    container.addView(remoteRender, Screen.dp(400), Screen.dp(400));
-                                }
-                            });
-                        }
-                    }
-
-                    @Override
-                    public void onRemoteStreamRemove(AndroidMediaStream stream) {
-
-                    }
-
-                    @Override
-                    public void onOwnRemoved() {
-
-                    }
-
-                    @Override
-                    public void onDispose() {
-                        if (localRender != null) {
-                            localRender.release();
-                        }
-
-                        if (remoteRender != null) {
-                            remoteRender.release();
-                        }
-                    }
-                });
             }
-        });
 
-        if(call!=null){
-            bind(call.getIsMuted(), new ValueChangedListener<Boolean>() {
-                @Override
-                public void onChanged(Boolean val, Value<Boolean> valueModel) {
-                    if (getActivity() != null) {
-                        if (val) {
+            @Override
+            public void onStreamAdded(WebRTCMediaStream remoteStream) {
+                AndroidMediaStream stream = (AndroidMediaStream) remoteStream;
+                if (stream.getVideoTrack() != null) {
 
-                            muteCallTv.setTextColor(getResources().getColor(R.color.picker_grey));
-                            muteCall.setTint(getResources().getColor(R.color.picker_grey));
-                        } else {
-                            muteCallTv.setTextColor(Color.WHITE);
-                            muteCall.setTint(Color.WHITE);
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            remoteRender = new VideoRenderer(remoteVideoView);
+                            stream.getVideoTrack().addRenderer(remoteRender);
+                            remoteVideoView.setVisibility(View.VISIBLE);
                         }
-                    }
+                    });
                 }
-            });
+            }
 
-            bind(call.getState(), new ValueChangedListener<CallState>() {
-                @Override
-                public void onChanged(CallState val, Value<CallState> valueModel) {
-                    if (currentState != val) {
-                        currentState = val;
-                        switch (val) {
+            @Override
+            public void onStreamRemoved(WebRTCMediaStream stream) {
 
-                            case RINGING:
-                                if (call.isOutgoing()) {
-                                    statusTV.setText(R.string.call_outgoing);
-                                } else {
-                                    statusTV.setText(R.string.call_incoming);
-                                    toggleSpeaker(speaker, speakerTV, true);
-                                    initIncoming();
-                                }
-                                break;
+            }
 
-                            case CONNECTING:
-                                statusTV.setText(R.string.call_connecting);
-                                break;
+            @Override
+            public void onOwnStreamAdded(WebRTCMediaStream ownStream) {
+                AndroidMediaStream stream = (AndroidMediaStream) ownStream;
+                if (stream.getVideoTrack() != null) {
 
-                            case IN_PROGRESS:
-                                toggleSpeaker(speaker, speakerTV, false);
-                                onConnected();
-                                startTimer();
-                                break;
 
-                            case ENDED:
-                                statusTV.setText(R.string.call_ended);
-                                onCallEnd();
-                                break;
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            source = stream.getVideoSource();
 
+                            localRender = new VideoRenderer(localVideoView);
+                            stream.getVideoTrack().addRenderer(localRender);
+                            localVideoView.setVisibility(View.VISIBLE);
                         }
-                    }
+                    });
                 }
-            });
+            }
 
-        }
+            @Override
+            public void onOwnStreamRemoved(WebRTCMediaStream stream) {
 
+            }
 
+            @Override
+            public void onRenegotiationNeeded() {
 
+            }
+
+            @Override
+            public void onDisposed() {
+                if (localVideoView != null) {
+                    localVideoView.release();
+                }
+
+                if (remoteVideoView != null) {
+                    remoteVideoView.release();
+                }
+            }
+        };
 
         return cont;
     }
@@ -630,9 +598,8 @@ public class CallFragment extends BaseFragment {
         super.onPause();
         if (source != null) {
             source.stop();
+            sourceIsStopped = true;
         }
-
-        AndroidWebRTCRuntimeProvider.unbindPeerConnection();
 
         if(call!=null && call.getState().get()!=CallState.ENDED){
             final NotificationCompat.Builder builder = new NotificationCompat.Builder(getActivity());
@@ -654,6 +621,24 @@ public class CallFragment extends BaseFragment {
             manager.notify(NOTIFICATION_ID, n);
         }
 
+        if (call != null) {
+            AndroidPeerConnection webRTCPeerConnection = (AndroidPeerConnection) call.getPeerConnection().get();
+            if (webRTCPeerConnection != null) {
+                webRTCPeerConnection.removeCallback(webRTCPeerConnectionCallback);
+
+                HashMap<MediaStream, AndroidMediaStream> mediaStreams = ((AndroidPeerConnection) webRTCPeerConnection).getStreams();
+                for (MediaStream mediaStream : mediaStreams.keySet()) {
+                    mediaStreams.get(mediaStream).removeRenderer(remoteRender);
+                }
+
+                AndroidMediaStream stream = webRTCPeerConnection.getStream();
+                if (stream != null) {
+                    stream.removeRenderer(localRender);
+                }
+            }
+
+        }
+
         disableWakeLock();
 
     }
@@ -663,9 +648,78 @@ public class CallFragment extends BaseFragment {
         super.onResume();
         enableWakeLock();
 
+        if (source != null) {
+            source.restart();
+            sourceIsStopped = false;
+        }
+
         manager.cancel(NOTIFICATION_ID);
 //        animator.popAnimation(true);
+        if (call != null) {
 
+            bind(call.getPeerConnection(), new ValueChangedListener<WebRTCPeerConnection>() {
+                @Override
+                public void onChanged(WebRTCPeerConnection val, Value<WebRTCPeerConnection> valueModel) {
+                    if (val != null) {
+                        val.addCallback(webRTCPeerConnectionCallback);
+                    }
+                }
+            });
+
+            bind(call.getIsMuted(), new ValueChangedListener<Boolean>() {
+                @Override
+                public void onChanged(Boolean val, Value<Boolean> valueModel) {
+                    if (getActivity() != null) {
+                        if (val) {
+
+                            muteCallTv.setTextColor(getResources().getColor(R.color.picker_grey));
+                            muteCall.setTint(getResources().getColor(R.color.picker_grey));
+                        } else {
+                            muteCallTv.setTextColor(Color.WHITE);
+                            muteCall.setTint(Color.WHITE);
+                        }
+                    }
+                }
+            });
+
+            bind(call.getState(), new ValueChangedListener<CallState>() {
+                @Override
+                public void onChanged(CallState val, Value<CallState> valueModel) {
+                    if (currentState != val) {
+                        currentState = val;
+                        switch (val) {
+
+                            case RINGING:
+                                if (call.isOutgoing()) {
+                                    statusTV.setText(R.string.call_outgoing);
+                                } else {
+                                    statusTV.setText(R.string.call_incoming);
+                                    toggleSpeaker(speaker, speakerTV, true);
+                                    initIncoming();
+                                }
+                                break;
+
+                            case CONNECTING:
+                                statusTV.setText(R.string.call_connecting);
+                                break;
+
+                            case IN_PROGRESS:
+                                toggleSpeaker(speaker, speakerTV, false);
+                                onConnected();
+                                startTimer();
+                                break;
+
+                            case ENDED:
+                                statusTV.setText(R.string.call_ended);
+                                onCallEnd();
+                                break;
+
+                        }
+                    }
+                }
+            });
+
+        }
     }
 
     class CallMembersAdapter extends HolderAdapter<CallMember>{

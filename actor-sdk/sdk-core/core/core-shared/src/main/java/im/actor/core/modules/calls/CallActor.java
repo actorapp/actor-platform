@@ -1,5 +1,7 @@
 package im.actor.core.modules.calls;
 
+import org.jetbrains.annotations.NotNull;
+
 import im.actor.core.api.rpc.RequestDoCall;
 import im.actor.core.api.rpc.RequestGetCallInfo;
 import im.actor.core.api.rpc.RequestJoinCall;
@@ -16,6 +18,7 @@ import im.actor.core.viewmodel.CommandCallback;
 import im.actor.runtime.actors.messages.PoisonPill;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.power.WakeLock;
+import im.actor.runtime.webrtc.WebRTCPeerConnection;
 
 import static im.actor.core.entity.EntityConverter.convert;
 
@@ -85,6 +88,11 @@ public class CallActor extends AbsCallActor {
     @Override
     public void onCallConnected() {
         // callVM.getState().change()
+    }
+
+    @Override
+    public void onPeerConnectionCreated(@NotNull WebRTCPeerConnection peerConnection) {
+        callVM.getPeerConnection().change(peerConnection);
     }
 
     @Override

@@ -25,8 +25,6 @@ public class AndroidWebRTCRuntimeProvider implements WebRTCRuntime {
     public static final PeerConnectionFactory FACTORY;
     private static Object sVcLock = new Object();
     private static Handler sVcHandler = null;
-    private static PeerConnectionCallback connectionCallback;
-    private static AndroidPeerConnection currentPeerConnection;
 
     static {
         PeerConnectionFactory.initializeAndroidGlobals(AndroidContext.getContext(), true, true, true);
@@ -48,13 +46,7 @@ public class AndroidWebRTCRuntimeProvider implements WebRTCRuntime {
         return new Promise<>(new PromiseFunc<WebRTCPeerConnection>() {
             @Override
             public void exec(@NonNull @NotNull final PromiseResolver<WebRTCPeerConnection> resolver) {
-                currentPeerConnection = new AndroidPeerConnection(webRTCIceServers, settings);
-                resolver.result(currentPeerConnection);
-                if (connectionCallback != null) {
-                    connectionCallback.onPeerConncetionAvailable(currentPeerConnection);
-                    connectionCallback = null;
-                }
-
+                resolver.result(new AndroidPeerConnection(webRTCIceServers, settings));
             }
         });
     }
@@ -82,28 +74,5 @@ public class AndroidWebRTCRuntimeProvider implements WebRTCRuntime {
 
     public static void postToHandler(Runnable r) {
         sVcHandler.post(r);
-    }
-
-    public AndroidPeerConnection getCurrentPeerConnection() {
-        return currentPeerConnection;
-    }
-
-    public static void bindPeerConnection(PeerConnectionCallback callback) {
-        if (currentPeerConnection != null) {
-            callback.onPeerConncetionAvailable(currentPeerConnection);
-        } else {
-            connectionCallback = callback;
-        }
-    }
-
-    public static void unbindPeerConnection() {
-        if (currentPeerConnection != null) {
-            currentPeerConnection.unbind();
-        }
-        currentPeerConnection = null;
-    }
-
-    public interface PeerConnectionCallback {
-        void onPeerConncetionAvailable(AndroidPeerConnection peerConnection);
     }
 }

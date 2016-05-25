@@ -20,6 +20,7 @@ import im.actor.runtime.WebRTC;
 import im.actor.runtime.actors.messages.PoisonPill;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
+import im.actor.runtime.webrtc.WebRTCPeerConnection;
 
 public class PeerCallActor extends ModuleActor {
 
@@ -255,6 +256,11 @@ public class PeerCallActor extends ModuleActor {
         @Override
         public void onStreamRemoved(long deviceId, WebRTCMediaStream stream) {
             callback.onStreamRemoved(deviceId, stream);
+        }
+
+        @Override
+        public void onPeerConnectionCreated(WebRTCPeerConnection peerConnection) {
+            callback.onPeerConnectionCreated(peerConnection);
         }
     }
 }

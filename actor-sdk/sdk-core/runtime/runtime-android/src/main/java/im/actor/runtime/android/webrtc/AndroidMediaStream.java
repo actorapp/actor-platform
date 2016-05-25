@@ -7,6 +7,7 @@ import org.webrtc.AudioTrack;
 import org.webrtc.MediaConstraints;
 import org.webrtc.MediaStream;
 import org.webrtc.VideoCapturer;
+import org.webrtc.VideoRenderer;
 import org.webrtc.VideoSource;
 import org.webrtc.VideoTrack;
 
@@ -111,6 +112,12 @@ public class AndroidMediaStream implements WebRTCMediaStream {
 
     public VideoTrack getVideoTrack() {
         return videoTrack;
+    }
+
+    public void removeRenderer(VideoRenderer renderer) {
+        if (videoTrack != null) {
+            videoTrack.removeRenderer(renderer);
+        }
     }
 
     public VideoSource getVideoSource() {
