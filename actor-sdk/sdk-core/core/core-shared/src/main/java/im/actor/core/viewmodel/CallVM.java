@@ -86,4 +86,8 @@ public class CallVM {
     public void setCallEnd(long callEnd) {
         this.callEnd = callEnd;
     }
+
+    public ValueModel<WebRTCPeerConnection> getPeerConnection() {
+        return peerConnection;
+    }
 }

@@ -1,6 +1,7 @@
 package im.actor.core.modules.calls.peers;
 
 import im.actor.runtime.webrtc.WebRTCMediaStream;
+import im.actor.runtime.webrtc.WebRTCPeerConnection;
 
 /**
  * Peer Node callback
@@ -64,7 +65,9 @@ public interface PeerNodeCallback {
      * Called when stream removed
      *
      * @param deviceId Device Id
-     * @param stream   removed stream
+     * @param stream   removed strea
      */
     void onStreamRemoved(long deviceId, WebRTCMediaStream stream);
+
+    void onPeerConnectionCreated(WebRTCPeerConnection peerConnection);
 }

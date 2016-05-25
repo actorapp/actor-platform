@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
 
+import im.actor.core.AndroidMessenger;
 import im.actor.runtime.android.AndroidWebRTCRuntimeProvider;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseFunc;
@@ -33,7 +34,6 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
 
     private static final boolean LIBJINGLE_LOGS = true;
 
-    private OwnStreamCallback mediaStreamCallback;
     private AndroidMediaStream stream;
     private boolean videoCallEnabled = true;
 
@@ -95,9 +95,6 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
                     public void onAddStream(MediaStream stream) {
                         AndroidMediaStream stream1 = new AndroidMediaStream(stream);
                         streams.put(stream, stream1);
-                        if (mediaStreamCallback != null && !stream1.isLocal()) {
-                            mediaStreamCallback.onRemoteStreamAdd(stream1);
-                        }
                         for (WebRTCPeerConnectionCallback c : callbacks) {
                             c.onStreamAdded(stream1);
                         }
@@ -110,10 +107,6 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
                             for (WebRTCPeerConnectionCallback c : callbacks) {
                                 c.onStreamRemoved(stream1);
                             }
-                        }
-
-                        if (mediaStreamCallback != null) {
-                            mediaStreamCallback.onRemoteStreamRemove(stream1);
                         }
 
                         try {
@@ -149,6 +142,13 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
         if (!callbacks.contains(callback)) {
             callbacks.add(callback);
         }
+        if (stream != null) {
+            callback.onOwnStreamAdded(stream);
+        }
+
+        for (MediaStream mediaStream : streams.keySet()) {
+            callback.onOwnStreamAdded(streams.get(mediaStream));
+        }
     }
 
     @Override
@@ -172,8 +172,8 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
             @Override
             public void run() {
                 AndroidPeerConnection.this.stream = (AndroidMediaStream) stream;
-                if (mediaStreamCallback != null) {
-                    mediaStreamCallback.onLocalStreamAvailable((AndroidMediaStream) stream);
+                for (WebRTCPeerConnectionCallback c : callbacks) {
+                    c.onOwnStreamAdded(stream);
                 }
                 peerConnection.addStream(AndroidPeerConnection.this.stream.getStream());
             }
@@ -185,8 +185,8 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
         AndroidWebRTCRuntimeProvider.postToHandler(new Runnable() {
             @Override
             public void run() {
-                if (mediaStreamCallback != null) {
-                    mediaStreamCallback.onOwnRemoved();
+                for (WebRTCPeerConnectionCallback c : callbacks) {
+                    c.onOwnStreamRemoved(stream);
                 }
                 peerConnection.removeStream(((AndroidMediaStream) stream).getStream());
             }
@@ -367,8 +367,8 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
             public void run() {
                 peerConnection.dispose();
 
-                if (mediaStreamCallback != null) {
-                    mediaStreamCallback.onDispose();
+                for (WebRTCPeerConnectionCallback c : callbacks) {
+                    c.onDisposed();
                 }
 
                 if (stream != null && stream.isLocal()) {
@@ -382,26 +382,11 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
 
     }
 
-    public void bind(OwnStreamCallback callback) {
-        if (stream != null) {
-            callback.onLocalStreamAvailable(stream);
-        }
-        mediaStreamCallback = callback;
+    public HashMap<MediaStream, AndroidMediaStream> getStreams() {
+        return streams;
     }
 
-    public void unbind() {
-        mediaStreamCallback = null;
-    }
-
-    public interface OwnStreamCallback {
-        void onLocalStreamAvailable(AndroidMediaStream stream);
-
-        void onRemoteStreamAdd(AndroidMediaStream stream);
-
-        void onRemoteStreamRemove(AndroidMediaStream stream);
-
-        void onOwnRemoved();
-
-        void onDispose();
+    public AndroidMediaStream getStream() {
+        return stream;
     }
 }
