@@ -39,28 +39,28 @@ class GelfLoggerInternal(actorConfig: Config = ActorConfig.load(ConfigFactory.em
 
   val logger = SLFLoggerFactory getLogger this.getClass
 
-  val typ = actorConfig.getConfig("modules.logging.gelf").getString("type")
-  val host = actorConfig.getConfig("modules.logging.gelf").getString("host")
-  val port = actorConfig.getConfig("modules.logging.gelf").getInt("port")
-  val rdelay = actorConfig.getConfig("modules.logging.gelf").getInt("rdelay")
-  val badTokenLevel = actorConfig.getConfig("modules.logging.gelf.level").getString("BadToken")
-  val badRequestLevel = actorConfig.getConfig("modules.logging.gelf.level").getString("BadRequest")
-  val requestReceivedLevel = actorConfig.getConfig("modules.logging.gelf.level").getString("RequestReceived")
-  val sendResponseLevel = actorConfig.getConfig("modules.logging.gelf.level").getString("SendResponse")
-  val errorResponseLevel = actorConfig.getConfig("modules.logging.gelf.level").getString("ErrorResponse")
-  val exceptionLevel = actorConfig.getConfig("modules.logging.gelf.level").getString("Exception")
-  val addFields = actorConfig.getConfig("modules.logging.gelf.additional-fields").entrySet()
-  val requestDefault = actorConfig.getConfig("modules.logging.gelf.request-detail").getInt("default")
-  val responseDefault = actorConfig.getConfig("modules.logging.gelf.response-detail").getInt("default")
-  val exceptionDefault = actorConfig.getConfig("modules.logging.gelf.exception-detail").getInt("default")
+  val typ = actorConfig.getConfig("modules.soc.gelf").getString("type")
+  val host = actorConfig.getConfig("modules.soc.gelf").getString("host")
+  val port = actorConfig.getConfig("modules.soc.gelf").getInt("port")
+  val rdelay = actorConfig.getConfig("modules.soc.gelf").getInt("rdelay")
+  val badTokenLevel = actorConfig.getConfig("modules.soc.gelf.level").getString("BadToken")
+  val badRequestLevel = actorConfig.getConfig("modules.soc.gelf.level").getString("BadRequest")
+  val requestReceivedLevel = actorConfig.getConfig("modules.soc.gelf.level").getString("RequestReceived")
+  val sendResponseLevel = actorConfig.getConfig("modules.soc.gelf.level").getString("SendResponse")
+  val errorResponseLevel = actorConfig.getConfig("modules.soc.gelf.level").getString("ErrorResponse")
+  val exceptionLevel = actorConfig.getConfig("modules.soc.gelf.level").getString("Exception")
+  val addFields = actorConfig.getConfig("modules.soc.gelf.additional-fields").entrySet()
+  val requestDefault = actorConfig.getConfig("modules.soc.gelf.request-detail").getInt("default")
+  val responseDefault = actorConfig.getConfig("modules.soc.gelf.response-detail").getInt("default")
+  val exceptionDefault = actorConfig.getConfig("modules.soc.gelf.exception-detail").getInt("default")
 
-  val requestCustomized = actorConfig.getConfig("modules.logging.gelf.request-detail.customized").entrySet()
+  val requestCustomized = actorConfig.getConfig("modules.soc.gelf.request-detail.customized").entrySet()
     .map(m ⇒ (m.getKey, m.getValue.unwrapped().asInstanceOf[Int])).toMap
 
-  val responseCustomized = actorConfig.getConfig("modules.logging.gelf.response-detail.customized").entrySet()
+  val responseCustomized = actorConfig.getConfig("modules.soc.gelf.response-detail.customized").entrySet()
     .map(m ⇒ (m.getKey, m.getValue.unwrapped().asInstanceOf[Int])).toMap
 
-  val exceptionCustomized = actorConfig.getConfig("modules.logging.gelf.exception-detail.customized").entrySet()
+  val exceptionCustomized = actorConfig.getConfig("modules.soc.gelf.exception-detail.customized").entrySet()
     .map(m ⇒ (m.getKey, m.getValue.unwrapped().asInstanceOf[Int])).toMap
 
   val config: GelfConfiguration = new GelfConfiguration(new InetSocketAddress(host, port))
