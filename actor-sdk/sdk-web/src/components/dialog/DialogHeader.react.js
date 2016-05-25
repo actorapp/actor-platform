@@ -6,6 +6,7 @@ import React, { Component, PropTypes } from 'react';
 import { FormattedMessage } from 'react-intl';
 import classnames from 'classnames';
 import Tooltip from 'rc-tooltip';
+import { PeerTypes } from '../../constants/ActorAppConstants';
 
 import { escapeWithEmoji } from '../../utils/EmojiUtils';
 
@@ -18,6 +19,8 @@ import AvatarItem from '../common/AvatarItem.react';
 import ToggleFavorite from '../common/ToggleFavorite.react';
 import MoreDropdown from './header/MoreDropdown.react';
 import SmartCallButton from '../call/SmartCallButton.react';
+
+const MAX_GROUP_CALL_SIZE = 25;
 
 class DialogHeader extends Component {
   static contextTypes = {
@@ -176,8 +179,13 @@ class DialogHeader extends Component {
 
   renderCallButton() {
     const { delegate } = this.context;
+    const { peer, info } = this.props;
 
     if (!delegate.features.calls) {
+      return null;
+    }
+
+    if (peer.type === PeerTypes.GROUP && info.members.length > MAX_GROUP_CALL_SIZE) {
       return null;
     }
 
