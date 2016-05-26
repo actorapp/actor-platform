@@ -101,6 +101,7 @@ public class PeerCallActor extends ModuleActor {
         WebRTC.getUserMedia(config().isVideoCallsEnabled()).then(webRTCMediaStream1 -> {
             PeerCallActor.this.webRTCMediaStream = webRTCMediaStream1;
             PeerCallActor.this.webRTCMediaStream.setAudioEnabled(!isMuted);
+            PeerCallActor.this.webRTCMediaStream.setVideoEnabled(videoEnabled);
             for (PeerNodeInt node : refs.values()) {
                 node.setOwnStream(webRTCMediaStream1);
             }
