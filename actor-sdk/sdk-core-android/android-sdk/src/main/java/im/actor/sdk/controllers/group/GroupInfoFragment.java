@@ -216,7 +216,7 @@ public class GroupInfoFragment extends BaseFragment {
 
         //Members
         TextView memberCount = (TextView) header.findViewById(R.id.membersCount);
-        memberCount.setText(groupInfo.getMembersCount());
+        memberCount.setText(groupInfo.getMembersCount() + "");
         memberCount.setTextColor(style.getTextHintColor());
         listView.addHeaderView(header, null, false);
 
