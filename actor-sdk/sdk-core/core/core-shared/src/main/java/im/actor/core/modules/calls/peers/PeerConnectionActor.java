@@ -6,7 +6,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import im.actor.core.Configuration;
 import im.actor.core.api.ApiICEServer;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.ModuleActor;
@@ -23,7 +22,6 @@ import im.actor.runtime.webrtc.WebRTCPeerConnection;
 import im.actor.runtime.webrtc.WebRTCPeerConnectionCallback;
 import im.actor.runtime.webrtc.WebRTCSessionDescription;
 import im.actor.runtime.webrtc.WebRTCSettings;
-import im.actor.sdk.ActorSDK;
 
 /*-[
 #pragma clang diagnostic ignored "-Wnullability-completeness"
