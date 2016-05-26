@@ -19,7 +19,7 @@ public class WebRTCRuntimeProvider implements WebRTCRuntime {
 
     @NotNull
     @Override
-    public Promise<WebRTCMediaStream> getUserAudio() {
+    public Promise<WebRTCMediaStream> getUserMedia(boolean inVideoEnabled) {
         return null;
     }
 
