@@ -69,7 +69,7 @@ public class AndroidWebRTCRuntimeProvider implements WebRTCRuntime {
 
     @Override
     public boolean supportsPreConnections() {
-        return false;
+        return true;
     }
 
     public static void postToHandler(Runnable r) {

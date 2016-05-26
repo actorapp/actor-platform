@@ -127,6 +127,7 @@ public class CallFragment extends BaseFragment {
     private WebRTCPeerConnectionCallback webRTCPeerConnectionCallback;
     float dX, dY;
     private TintImageView videoIcon;
+    private boolean remoteRendererBinded = false;
 
     public CallFragment() {
 
@@ -397,11 +398,14 @@ public class CallFragment extends BaseFragment {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                remoteRender = new VideoRenderer(remoteVideoView);
-                                stream.getVideoTrack().addRenderer(remoteRender);
-                                remoteVideoView.setVisibility(View.VISIBLE);
-                                avatarView.setVisibility(View.INVISIBLE);
-                                nameTV.setVisibility(View.INVISIBLE);
+                                if (!remoteRendererBinded) {
+                                    remoteRender = new VideoRenderer(remoteVideoView);
+                                    stream.getVideoTrack().addRenderer(remoteRender);
+                                    remoteVideoView.setVisibility(View.VISIBLE);
+                                    avatarView.setVisibility(View.INVISIBLE);
+                                    nameTV.setVisibility(View.INVISIBLE);
+                                }
+
                             }
                         });
                     }
@@ -662,16 +666,19 @@ public class CallFragment extends BaseFragment {
 
 
             if (call != null) {
-                AndroidPeerConnection webRTCPeerConnection = (AndroidPeerConnection) call.getPeerConnection().get();
-                if (webRTCPeerConnection != null) {
+                ArrayList<WebRTCPeerConnection> webRTCPeerConnections = (ArrayList<WebRTCPeerConnection>) call.getPeerConnection().get();
+
+                for (WebRTCPeerConnection webRTCPeerConnection : webRTCPeerConnections) {
+
                     webRTCPeerConnection.removeCallback(webRTCPeerConnectionCallback);
 
                     HashMap<MediaStream, AndroidMediaStream> mediaStreams = ((AndroidPeerConnection) webRTCPeerConnection).getStreams();
                     for (MediaStream mediaStream : mediaStreams.keySet()) {
                         mediaStreams.get(mediaStream).removeRenderer(remoteRender);
                     }
+                    remoteRendererBinded = false;
 
-                    AndroidMediaStream stream = webRTCPeerConnection.getStream();
+                    AndroidMediaStream stream = ((AndroidPeerConnection) webRTCPeerConnection).getLocalStream();
                     if (stream != null) {
                         stream.removeRenderer(localRender);
                     }
@@ -721,11 +728,11 @@ public class CallFragment extends BaseFragment {
         if (call != null) {
 
             if (peer.getPeerType() == PeerType.PRIVATE && ActorSDK.sharedActor().isVideoCallsEnabled()) {
-                bind(call.getPeerConnection(), new ValueChangedListener<WebRTCPeerConnection>() {
+                bind(call.getPeerConnection(), new ValueChangedListener<ArrayList<WebRTCPeerConnection>>() {
                     @Override
-                    public void onChanged(WebRTCPeerConnection val, Value<WebRTCPeerConnection> valueModel) {
-                        if (val != null) {
-                            val.addCallback(webRTCPeerConnectionCallback);
+                    public void onChanged(ArrayList<WebRTCPeerConnection> val, Value<ArrayList<WebRTCPeerConnection>> valueModel) {
+                        for (WebRTCPeerConnection webRTCPeerConnection : val) {
+                            webRTCPeerConnection.addCallback(webRTCPeerConnectionCallback);
                         }
                     }
                 });
