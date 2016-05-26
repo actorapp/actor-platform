@@ -19,8 +19,8 @@ export default {
       },
       'welcome': {
         'header': 'Welcome to <strong>{appName}</strong>',
-        'text': '<p>{appName} Messenger brings all of your business network connections into one place, making it easier to access wherever you go.</p>' +
-                '<p>Our goal is to make your working process easier, reduce your email load and make the people in business world closer to each other by reducing time spent on finding the right contacts.</p>',
+        'text': '<p>{appName} Messenger brings all your business network connections into one place.</p>' +
+                '<p>Our goal is making your working process easier, reducing your email load and making the people in business world closer to each other.</p>',
         'copyright': '{appName} Messenger © 2016'
       }
     },
@@ -108,7 +108,7 @@ export default {
         'preformatted': 'preformatted'
       },
       'dropzone': 'Drop here to send.',
-      'notMember': 'You are not a member',
+      'notMember': 'You are not a member of this group',
       'start': 'Start',
       'unblock': 'Unblock user'
     },
@@ -126,7 +126,7 @@ export default {
         'avatarRemove': 'Remove',
         errors: {
           nick: {
-            length: 'Nick should contain from 5 to 32 characters',
+            length: 'Nickname should be longer than 5 and shorter than 32 characters',
             chars: 'Please use latin characters, numbers and underscores'
           }
         }
@@ -144,14 +144,14 @@ export default {
       'contacts': {
         'title': 'People',
         'search': 'Search contacts',
-        'notFound': 'Sorry, no users were found :(',
+        'notFound': 'Sorry, no such users were found :(',
         'loading': 'Loading'
       },
       'groups': {
         'title': 'Groups',
         'search': 'Search',
         'loading': 'Loading',
-        'notFound': 'No matches found for <strong>{query}</strong>.'
+        'notFound': 'No match found for <strong>{query}</strong>.'
       },
       'attachments': {
         'title': 'Send file',
@@ -270,12 +270,12 @@ export default {
 
     'main': {
       'empty': 'Try to be better than yesterday!',
-      'install': '<h1>The Web version of <b>{appName}</b> works only in desktop browsers at this time</h1>' +
-                 '<h3>Try installing our apps for using <b>{appName}</b> on your phone.</h3>' +
+      'install': '<h1>The Web version of <b>{appName}</b> only works in desktop browsers at this time</h1>' +
+                 '<h3>Try our apps for using <b>{appName}</b> on your phone!</h3>' +
                  '<p><a href="//actor.im/ios">iPhone</a> | <a href="//actor.im/android">Android</a></p>',
       'deactivated': {
         'header': 'Tab deactivated',
-        'text': 'Oops, we have detected another tab with {appName}, so we had to deactivate this one to prevent you from dangerous things happening.'
+        'text': 'Oops, we have detected another tab running {appName}! We had to deactivate it to prevent you from dangerous things happening.'
       }
     },
 
@@ -319,8 +319,8 @@ export default {
       },
       blocked: {
         title: 'Blocked Users',
-        notExists: 'You haven\'t block anyone.',
-        notFound: 'Sorry, no users were found.',
+        notExists: 'You haven\'t blocked anyone yet.',
+        notFound: 'Sorry, no such users were found.',
         search: 'Search for contacts or usernames',
         unblock: 'Unblock'
       },
@@ -332,7 +332,7 @@ export default {
     invite: {
       title: 'Add more people',
       search: 'Search for contacts or usernames',
-      notFound: 'Sorry, no users were found.',
+      notFound: 'Sorry, no such users were found.',
       inviteByLink: 'Invite to group by link',
       byLink: {
         title: 'Invite by link',
@@ -367,8 +367,8 @@ export default {
         favorite: 'Toggle favorite'
       },
       recent: {
-        groupsList: 'List of group conversations',
-        privatesList: 'List of private conversation',
+        groupsList: 'Group conversation list',
+        privatesList: 'Private conversation list',
         groupsCreate: 'Create group',
         privatesCreate: 'Add new contact'
       },
