@@ -60,7 +60,7 @@ class SearchInput extends Component {
   }
 
   handleKeyDown(event) {
-    if (event.keyCode === KeyCodes.K && event.metaKey || event.ctrlKey) {
+    if (event.keyCode === KeyCodes.K && (event.metaKey || event.ctrlKey)) {
       event.preventDefault();
       this.focus();
     }
