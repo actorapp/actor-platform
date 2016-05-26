@@ -62,11 +62,11 @@
 	},
 
 	"typing": {
-		"simple": "typing...",
-		"user": "{user} is typing...",
+		"simple": "typing…",
+		"user": "{user} is typing…",
 		"group": {
-			"sequenced": "{users} are typing...",
-			"many": "{count} people are typing..."
+			"sequenced": "{users} are typing…",
+			"many": "{count} people are typing…"
 		}
 	},
 
@@ -122,9 +122,9 @@
 			"incorrect": "Entered phone number is invalid. Please, try again."
 		},
 		"code": {
-			"empty": "The code is invalid. Please try again.",
-			"incorrect": "Entered code is incorrect. Please, try again.",
-			"expired": "The code has expired. Please, start authentication again."
+			"empty": "Seems like there's no code! Please, try again.",
+			"incorrect": "The entered code is incorrect. Please, try again.",
+			"expired": "The code we sent has expired. Please, start authentication again."
 		},
 		"groups": {
 			"already_joined": "You have already joined the group.",
