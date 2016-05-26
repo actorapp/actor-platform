@@ -196,7 +196,7 @@ public class UserRouter extends ModuleActor {
         return users().getValueAsync(uid)
                 .fallback(u -> null)
                 .flatMap(u -> {
-                    // Ignore if name not changed
+                    // Ignore if about not changed
                     if (u != null && u.isHaveExtension() && !equalsE(u.getAbout(), about)) {
 
                         // Changing about information
