@@ -22,7 +22,7 @@ public class CallVM {
     @Property("nonatomic, readonly")
     private final ValueModel<CallState> state;
     @Property("nonatomic, readonly")
-    private final ValueModel<WebRTCPeerConnection> peerConnection;
+    private final ValueModel<ArrayList<WebRTCPeerConnection>> peerConnection;
     @Property("nonatomic, readonly")
     private final ValueModel<ArrayList<CallMember>> members;
     @Property("nonatomic, readonly")
@@ -43,7 +43,7 @@ public class CallVM {
         this.peer = peer;
         this.isOutgoing = isOutgoing;
         this.state = new ValueModel<>("calls." + callId + ".state", state);
-        this.peerConnection = new ValueModel<>("calls." + callId + ".peer_connection", null);
+        this.peerConnection = new ValueModel<>("calls." + callId + ".peer_connection", new ArrayList<WebRTCPeerConnection>());
         this.members = new ValueModel<>("calls." + callId + ".members", new ArrayList<>(initialMembers));
         this.isMuted = new BooleanValueModel("calls." + callId + ".muted", false);
         this.isVideoEnabled = new BooleanValueModel("calls." + callId + ".video_enabled", true);
@@ -94,7 +94,7 @@ public class CallVM {
         this.callEnd = callEnd;
     }
 
-    public ValueModel<WebRTCPeerConnection> getPeerConnection() {
+    public ValueModel<ArrayList<WebRTCPeerConnection>> getPeerConnection() {
         return peerConnection;
     }
 }

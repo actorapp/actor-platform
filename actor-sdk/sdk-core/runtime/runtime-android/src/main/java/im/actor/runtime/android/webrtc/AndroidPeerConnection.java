@@ -33,7 +33,7 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
 
     private static final boolean LIBJINGLE_LOGS = false;
 
-    private AndroidMediaStream stream;
+    private AndroidMediaStream localStream;
     private boolean videoCallEnabled = true;
     private WebRTCSettings settings;
 
@@ -146,8 +146,8 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
         }
 
         if (settings.isVideoEnabled()) {
-            if (stream != null) {
-                callback.onOwnStreamAdded(stream);
+            if (localStream != null) {
+                callback.onOwnStreamAdded(localStream);
             }
 
             for (MediaStream mediaStream : streams.keySet()) {
@@ -177,11 +177,11 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
         AndroidWebRTCRuntimeProvider.postToHandler(new Runnable() {
             @Override
             public void run() {
-                AndroidPeerConnection.this.stream = (AndroidMediaStream) stream;
+                AndroidPeerConnection.this.localStream = (AndroidMediaStream) stream;
                 for (WebRTCPeerConnectionCallback c : callbacks) {
                     c.onOwnStreamAdded(stream);
                 }
-                peerConnection.addStream(AndroidPeerConnection.this.stream.getStream());
+                peerConnection.addStream(AndroidPeerConnection.this.localStream.getStream());
             }
         });
     }
@@ -378,11 +378,11 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
                         c.onDisposed();
                     }
 
-                    if (stream != null && stream.isLocal()) {
-                        stream.disposeVideo();
+                    if (localStream != null) {
+                        localStream.disposeVideo();
                     }
 
-                    stream = null;
+                    localStream = null;
                 }
 
             }
@@ -395,7 +395,7 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
         return streams;
     }
 
-    public AndroidMediaStream getStream() {
-        return stream;
+    public AndroidMediaStream getLocalStream() {
+        return localStream;
     }
 }

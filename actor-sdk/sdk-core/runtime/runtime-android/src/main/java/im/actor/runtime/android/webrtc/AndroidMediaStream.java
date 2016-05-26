@@ -142,9 +142,4 @@ public class AndroidMediaStream implements WebRTCMediaStream {
         return videoSource;
     }
 
-    public void disposeVideo() {
-        if (videoSource != null) {
-            videoSource.dispose();
-        }
-    }
 }
