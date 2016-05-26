@@ -33,6 +33,7 @@ public class ConfigurationBuilder {
     private PhoneBookProvider phoneBookProvider;
 
     private boolean voiceCallsEnabled = true;
+    private boolean videoCallsEnabled = false;
 
     private boolean enableContactsLogging = false;
     private boolean enableNetworkLogging = false;
@@ -82,6 +83,18 @@ public class ConfigurationBuilder {
     @ObjectiveCName("setVoiceCallsEnabled:")
     public ConfigurationBuilder setVoiceCallsEnabled(boolean voiceCallsEnabled) {
         this.voiceCallsEnabled = voiceCallsEnabled;
+        return this;
+    }
+
+    /**
+     * Setting If Video Calls enabled in App. By default is False.
+     *
+     * @param videoCallsEnabled if voice calls enabled
+     * @return this
+     */
+    @ObjectiveCName("setVideoCallsEnabled:")
+    public ConfigurationBuilder setVideoCallsEnabled(boolean videoCallsEnabled) {
+        this.videoCallsEnabled = videoCallsEnabled;
         return this;
     }
 
@@ -405,6 +418,7 @@ public class ConfigurationBuilder {
                 isPhoneBookImportEnabled,
                 callsProvider,
                 voiceCallsEnabled,
+                videoCallsEnabled,
                 isEnabledGroupedChatList);
     }
 }

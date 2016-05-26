@@ -15,8 +15,8 @@ public final class WebRTC {
         return rtcRuntime.createPeerConnection(iceServers, webRTCSettings);
     }
 
-    public static Promise<WebRTCMediaStream> getUserAudio() {
-        return rtcRuntime.getUserAudio();
+    public static Promise<WebRTCMediaStream> getUserMedia(boolean isVideoEnabled) {
+        return rtcRuntime.getUserMedia(isVideoEnabled);
     }
 
     public static boolean isSupportsPreConnections() {

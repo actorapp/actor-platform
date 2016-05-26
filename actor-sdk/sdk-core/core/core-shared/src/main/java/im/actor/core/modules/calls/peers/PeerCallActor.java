@@ -56,7 +56,7 @@ public class PeerCallActor extends ModuleActor {
 //
 //        }
 //
-//        WebRTC.getUserAudio().then(new Consumer<WebRTCMediaStream>() {
+//        WebRTC.getUserMedia().then(new Consumer<WebRTCMediaStream>() {
 //            @Override
 //            public void apply(WebRTCMediaStream webRTCMediaStream) {
 //                PeerCallActor.this.webRTCMediaStream = webRTCMediaStream;
@@ -98,7 +98,7 @@ public class PeerCallActor extends ModuleActor {
         }
         isOwnStarted = true;
 
-        WebRTC.getUserAudio().then(webRTCMediaStream1 -> {
+        WebRTC.getUserMedia(config().isVideoCallsEnabled()).then(webRTCMediaStream1 -> {
             PeerCallActor.this.webRTCMediaStream = webRTCMediaStream1;
             PeerCallActor.this.webRTCMediaStream.setAudioEnabled(!isMuted);
             for (PeerNodeInt node : refs.values()) {

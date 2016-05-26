@@ -53,14 +53,14 @@ public class AndroidWebRTCRuntimeProvider implements WebRTCRuntime {
 
     @Override
     @NotNull
-    public Promise<WebRTCMediaStream> getUserAudio() {
+    public Promise<WebRTCMediaStream> getUserMedia(boolean isVideoEnabled) {
         return new Promise<>(new PromiseFunc<WebRTCMediaStream>() {
             @Override
             public void exec(@NonNull @NotNull final PromiseResolver<WebRTCMediaStream> resolver) {
                 sVcHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        resolver.result(new AndroidMediaStream(FACTORY.createLocalMediaStream("ARDAMS"), true, true));
+                        resolver.result(new AndroidMediaStream(FACTORY.createLocalMediaStream("ARDAMS"), true, true, isVideoEnabled));
                     }
                 });
             }
@@ -69,7 +69,7 @@ public class AndroidWebRTCRuntimeProvider implements WebRTCRuntime {
 
     @Override
     public boolean supportsPreConnections() {
-        return true;
+        return false;
     }
 
     public static void postToHandler(Runnable r) {
