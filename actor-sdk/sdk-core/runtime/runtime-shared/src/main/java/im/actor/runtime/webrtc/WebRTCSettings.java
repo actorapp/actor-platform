@@ -8,10 +8,13 @@ public class WebRTCSettings {
     private boolean is3DESEnabled;
     @Property("nonatomic, readonly")
     private boolean isDataChannelsEnabled;
+    @Property("nonatomic, readonly")
+    private boolean isVideoEnabled;
 
-    public WebRTCSettings(boolean is3DESEnabled, boolean isDataChannelsEnabled) {
+    public WebRTCSettings(boolean is3DESEnabled, boolean isDataChannelsEnabled, boolean isVideoEnabled) {
         this.is3DESEnabled = is3DESEnabled;
         this.isDataChannelsEnabled = isDataChannelsEnabled;
+        this.isVideoEnabled = isVideoEnabled;
     }
 
     public boolean is3DESEnabled() {
@@ -20,5 +23,9 @@ public class WebRTCSettings {
 
     public boolean isDataChannelsEnabled() {
         return isDataChannelsEnabled;
+    }
+
+    public boolean isVideoEnabled() {
+        return isVideoEnabled;
     }
 }

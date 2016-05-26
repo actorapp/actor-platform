@@ -11,9 +11,11 @@ import org.webrtc.VideoTrack;
 
 import im.actor.runtime.android.AndroidWebRTCRuntimeProvider;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
+import im.actor.runtime.webrtc.WebRTCSettings;
 
 public class AndroidMediaStream implements WebRTCMediaStream {
 
+    private final boolean isVideoCallsEnabled;
     private AudioTrack audioTrack;
     private VideoTrack videoTrack;
     private MediaStream stream;
@@ -24,12 +26,13 @@ public class AndroidMediaStream implements WebRTCMediaStream {
     private VideoSource videoSource;
 
     public AndroidMediaStream(MediaStream stream) {
-        this(stream, true, false);
+        this(stream, true, false, false);
     }
 
-    public AndroidMediaStream(final MediaStream stream, boolean autoPlay, boolean local) {
+    public AndroidMediaStream(final MediaStream stream, boolean autoPlay, boolean local, boolean isVideoCallsEnabled) {
         this.local = local;
         this.stream = stream;
+        this.isVideoCallsEnabled = isVideoCallsEnabled;
         if (!local) {
             audioTrack = stream.audioTracks.get(0);
             try {
@@ -45,11 +48,13 @@ public class AndroidMediaStream implements WebRTCMediaStream {
                     audioConstarints.mandatory.add(new MediaConstraints.KeyValuePair("googNoiseSuppression", "true"));
                     audioConstarints.mandatory.add(new MediaConstraints.KeyValuePair("googEchoCancellation", "true"));
                     AudioSource audioSource = AndroidWebRTCRuntimeProvider.FACTORY.createAudioSource(audioConstarints);
-                    videoSource = AndroidWebRTCRuntimeProvider.FACTORY.createVideoSource(getVideoCapturer(), new MediaConstraints());
-                    videoTrack = AndroidWebRTCRuntimeProvider.FACTORY.createVideoTrack("ARDAMSv0", videoSource);
+                    if (isVideoCallsEnabled) {
+                        videoSource = AndroidWebRTCRuntimeProvider.FACTORY.createVideoSource(getVideoCapturer(), new MediaConstraints());
+                        videoTrack = AndroidWebRTCRuntimeProvider.FACTORY.createVideoTrack("ARDAMSv0", videoSource);
+                        stream.addTrack(videoTrack);
+                    }
                     audioTrack = AndroidWebRTCRuntimeProvider.FACTORY.createAudioTrack("ARDAMSa0", audioSource);
                     stream.addTrack(audioTrack);
-                    stream.addTrack(videoTrack);
                 }
             });
 

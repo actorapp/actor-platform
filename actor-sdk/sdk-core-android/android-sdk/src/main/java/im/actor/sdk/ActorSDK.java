@@ -181,6 +181,7 @@ public class ActorSDK {
      * Call enabled
      */
     private boolean callsEnabled = false;
+    private boolean videoCallsEnabled = false;
 
     private ActorSDK() {
         endpoints = new String[]{
@@ -245,6 +246,7 @@ public class ActorSDK {
                 builder.addTrustedKey(t);
             }
             builder.setPhoneBookProvider(new AndroidPhoneBook());
+            builder.setVideoCallsEnabled(videoCallsEnabled);
             builder.setNotificationProvider(new AndroidNotifications(application));
             builder.setDeviceCategory(DeviceCategory.MOBILE);
             builder.setPlatformType(PlatformType.ANDROID);
@@ -980,6 +982,14 @@ public class ActorSDK {
         } else {
             return callback.onNotDelegated();
         }
+    }
+
+    public boolean isVideoCallsEnabled() {
+        return videoCallsEnabled;
+    }
+
+    public void setVideoCallsEnabled(boolean videoCallsEnabled) {
+        this.videoCallsEnabled = videoCallsEnabled;
     }
 
     /**

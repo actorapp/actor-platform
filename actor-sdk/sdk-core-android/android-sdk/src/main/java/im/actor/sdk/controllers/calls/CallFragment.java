@@ -332,7 +332,7 @@ public class CallFragment extends BaseFragment {
         addTv.setTextColor(getResources().getColor(R.color.picker_grey));
         add.setTint(getResources().getColor(R.color.picker_grey));
 
-        if (peer.getPeerType() == PeerType.PRIVATE) {
+        if (peer.getPeerType() == PeerType.PRIVATE && ActorSDK.sharedActor().isVideoCallsEnabled()) {
             rootEglBase = EglBase.create();
 
             remoteVideoView = (SurfaceViewRenderer) cont.findViewById(R.id.remote_renderer);
@@ -654,7 +654,7 @@ public class CallFragment extends BaseFragment {
     public void onPause() {
         super.onPause();
 
-        if (peer.getPeerType() == PeerType.PRIVATE) {
+        if (peer.getPeerType() == PeerType.PRIVATE && ActorSDK.sharedActor().isVideoCallsEnabled()) {
             if (source != null) {
                 source.stop();
                 sourceIsStopped = true;
@@ -720,7 +720,7 @@ public class CallFragment extends BaseFragment {
 //        animator.popAnimation(true);
         if (call != null) {
 
-            if (peer.getPeerType() == PeerType.PRIVATE) {
+            if (peer.getPeerType() == PeerType.PRIVATE && ActorSDK.sharedActor().isVideoCallsEnabled()) {
                 bind(call.getPeerConnection(), new ValueChangedListener<WebRTCPeerConnection>() {
                     @Override
                     public void onChanged(WebRTCPeerConnection val, Value<WebRTCPeerConnection> valueModel) {
