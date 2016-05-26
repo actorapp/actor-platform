@@ -47,9 +47,9 @@ class DialogActionCreators extends ActionCreators {
       return;
     }
 
-    DraftActionCreators.loadDraft(peer);
     dispatch(ActionTypes.BIND_DIALOG_PEER, { peer });
     ActorClient.onConversationOpen(peer);
+    DraftActionCreators.loadDraft(peer);
 
     const bindings = [
       ActorClient.bindMessages(peer, MessageActionCreators.setMessages),
