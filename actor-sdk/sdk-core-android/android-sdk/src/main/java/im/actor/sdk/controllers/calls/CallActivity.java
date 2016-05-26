@@ -8,6 +8,7 @@ import android.view.WindowManager;
 
 import im.actor.core.entity.PeerType;
 import im.actor.core.viewmodel.CallVM;
+import im.actor.runtime.android.AndroidWebRTCRuntimeProvider;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.activity.BaseFragmentActivity;
@@ -27,6 +28,15 @@ public class CallActivity extends BaseFragmentActivity {
 
         Thread.setDefaultUncaughtExceptionHandler(
                 new UnhandledExceptionHandler(this));
+
+        AndroidWebRTCRuntimeProvider.postToHandler(new Runnable() {
+            @Override
+            public void run() {
+                Thread.setDefaultUncaughtExceptionHandler(
+                        new UnhandledExceptionHandler(CallActivity.this));
+
+            }
+        });
 
         getSupportActionBar().setTitle("Call");
         getSupportActionBar().hide();

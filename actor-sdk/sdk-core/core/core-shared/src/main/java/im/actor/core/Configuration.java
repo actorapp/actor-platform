@@ -27,6 +27,8 @@ public class Configuration {
     @Property("readonly, nonatomic")
     private final boolean voiceCallsEnabled;
     @Property("readonly, nonatomic")
+    private final boolean videoCallsEnabled;
+    @Property("readonly, nonatomic")
     private final boolean enableContactsLogging;
     @Property("readonly, nonatomic")
     private final boolean enableNetworkLogging;
@@ -78,6 +80,7 @@ public class Configuration {
                   boolean enablePhoneBookImport,
                   CallsProvider callsProvider,
                   boolean voiceCallsEnabled,
+                  boolean videoCallsEnabled,
                   boolean isEnabledGroupedChatList) {
         this.endpoints = endpoints;
         this.phoneBookProvider = phoneBookProvider;
@@ -98,6 +101,7 @@ public class Configuration {
         this.enablePhoneBookImport = enablePhoneBookImport;
         this.callsProvider = callsProvider;
         this.voiceCallsEnabled = voiceCallsEnabled;
+        this.videoCallsEnabled = videoCallsEnabled;
         this.isEnabledGroupedChatList = isEnabledGroupedChatList;
     }
 
@@ -108,6 +112,15 @@ public class Configuration {
      */
     public boolean isVoiceCallsEnabled() {
         return voiceCallsEnabled;
+    }
+
+    /**
+     * Getting If Video Calls Enabled
+     *
+     * @return video calls enabled
+     */
+    public boolean isVideoCallsEnabled() {
+        return videoCallsEnabled;
     }
 
     /**

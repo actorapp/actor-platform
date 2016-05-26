@@ -31,13 +31,14 @@ import im.actor.runtime.webrtc.WebRTCSettings;
 
 public class AndroidPeerConnection implements WebRTCPeerConnection {
 
-    private static final boolean LIBJINGLE_LOGS = true;
+    private static final boolean LIBJINGLE_LOGS = false;
 
     private AndroidMediaStream stream;
     private boolean videoCallEnabled = true;
+    private WebRTCSettings settings;
 
     public AndroidPeerConnection(WebRTCIceServer[] webRTCIceServers, WebRTCSettings settings) {
-
+        this.settings = settings;
         if (LIBJINGLE_LOGS) {
             Logging.enableTracing("logcat:",
                     EnumSet.of(Logging.TraceLevel.TRACE_ALL),
@@ -108,10 +109,12 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
                             }
                         }
 
-                        try {
-                            stream.videoTracks.get(0).dispose();
-                        } catch (Exception e) {
+                        if (settings.isVideoEnabled()) {
+                            try {
+                                stream.videoTracks.get(0).dispose();
+                            } catch (Exception e) {
 
+                            }
                         }
                     }
 
@@ -141,13 +144,17 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
         if (!callbacks.contains(callback)) {
             callbacks.add(callback);
         }
-        if (stream != null) {
-            callback.onOwnStreamAdded(stream);
+
+        if (settings.isVideoEnabled()) {
+            if (stream != null) {
+                callback.onOwnStreamAdded(stream);
+            }
+
+            for (MediaStream mediaStream : streams.keySet()) {
+                callback.onStreamAdded(streams.get(mediaStream));
+            }
         }
 
-        for (MediaStream mediaStream : streams.keySet()) {
-            callback.onStreamAdded(streams.get(mediaStream));
-        }
     }
 
     @Override
@@ -297,7 +304,7 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
                             public void onSetFailure(String s) {
                                 //we are just creating here
                             }
-                        }, getMediaConstraints());
+                        }, settings.isVideoEnabled() ? getMediaConstraints() : new MediaConstraints());
                     }
                 });
 
@@ -351,7 +358,7 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
                             public void onSetFailure(String s) {
                                 //we are just creating here
                             }
-                        }, getMediaConstraints());
+                        }, settings.isVideoEnabled() ? getMediaConstraints() : new MediaConstraints());
                     }
                 });
 
@@ -366,15 +373,18 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
             public void run() {
                 peerConnection.dispose();
 
-                for (WebRTCPeerConnectionCallback c : callbacks) {
-                    c.onDisposed();
+                if (settings.isVideoEnabled()) {
+                    for (WebRTCPeerConnectionCallback c : callbacks) {
+                        c.onDisposed();
+                    }
+
+                    if (stream != null && stream.isLocal()) {
+                        stream.disposeVideo();
+                    }
+
+                    stream = null;
                 }
 
-                if (stream != null && stream.isLocal()) {
-                    stream.disposeVideo();
-                }
-
-                stream = null;
             }
         });
 
