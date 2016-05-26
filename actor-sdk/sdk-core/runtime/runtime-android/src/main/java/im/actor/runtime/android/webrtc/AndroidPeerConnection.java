@@ -378,10 +378,6 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
                         c.onDisposed();
                     }
 
-                    if (localStream != null) {
-                        localStream.disposeVideo();
-                    }
-
                     localStream = null;
                 }
 
