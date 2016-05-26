@@ -45,7 +45,7 @@ public class JsWebRTCProvider implements WebRTCRuntime {
 
     @NotNull
     @Override
-    public Promise<WebRTCMediaStream> getUserAudio() {
+    public Promise<WebRTCMediaStream> getUserMedia(boolean isVideoEnabled) {
         return new Promise<>(new PromiseFunc<WebRTCMediaStream>() {
             @Override
             public void exec(@NotNull final PromiseResolver<WebRTCMediaStream> resolver) {
