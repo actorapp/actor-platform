@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import im.actor.core.Configuration;
 import im.actor.core.api.ApiICEServer;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.ModuleActor;
@@ -22,6 +23,7 @@ import im.actor.runtime.webrtc.WebRTCPeerConnection;
 import im.actor.runtime.webrtc.WebRTCPeerConnectionCallback;
 import im.actor.runtime.webrtc.WebRTCSessionDescription;
 import im.actor.runtime.webrtc.WebRTCSettings;
+import im.actor.sdk.ActorSDK;
 
 /*-[
 #pragma clang diagnostic ignored "-Wnullability-completeness"
@@ -76,7 +78,7 @@ public class PeerConnectionActor extends ModuleActor {
         isReady = false;
 
         WebRTCIceServer[] rtcIceServers = ManagedList.of(iceServers).map(apiICEServer -> new WebRTCIceServer(apiICEServer.getUrl(), apiICEServer.getUsername(), apiICEServer.getCredential())).toArray(new WebRTCIceServer[0]);
-        WebRTCSettings settings = new WebRTCSettings(false, false);
+        WebRTCSettings settings = new WebRTCSettings(false, false, config().isVideoCallsEnabled());
         WebRTC.createPeerConnection(rtcIceServers, settings).then(webRTCPeerConnection -> {
             PeerConnectionActor.this.peerConnection = webRTCPeerConnection;
             PeerConnectionActor.this.peerConnection.addOwnStream(stream);
