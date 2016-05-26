@@ -73,6 +73,7 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        messenger().onUserVisible(myUid());
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
         shp = getActivity().getSharedPreferences("wallpaper", Context.MODE_PRIVATE);
