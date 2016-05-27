@@ -48,6 +48,7 @@ import im.actor.core.events.PeerChatOpened;
 import im.actor.core.events.PeerInfoClosed;
 import im.actor.core.events.PeerInfoOpened;
 import im.actor.core.events.UserVisible;
+import im.actor.core.modules.api.entity.SignUpNameState;
 import im.actor.core.network.NetworkState;
 import im.actor.core.util.ActorTrace;
 import im.actor.core.util.Timing;
@@ -165,6 +166,19 @@ public class Messenger {
     }
 
     /**
+     * Starting username auth
+     *
+     * @param email email for authentication
+     * @return promise of AuthStartRes
+     */
+    @NotNull
+    @ObjectiveCName("doStartAuthWithUsername:")
+    public Promise<AuthStartRes> doStartUsernameAuth(String username) {
+        return modules.getAuthModule().doStartUsernameAuth(username);
+    }
+
+
+    /**
      * Starting phone auth
      *
      * @param phone phone for authentication
@@ -189,6 +203,19 @@ public class Messenger {
         return modules.getAuthModule().doValidateCode(transactionHash, code);
     }
 
+    /**
+     * Validating password
+     *
+     * @param password        password
+     * @param transactionHash transaction hash
+     * @return promise of AuthCodeRes
+     */
+    @NotNull
+    @ObjectiveCName("doValidatePassword:withTransaction:")
+    public Promise<AuthCodeRes> doValidatePassword(String password, String transactionHash) {
+        return modules.getAuthModule().doValidatePassword(transactionHash, password);
+    }
+
 
     /**
      * Sending activation code via voice
@@ -201,7 +228,6 @@ public class Messenger {
     public Promise<Boolean> doSendCodeViaCall(String transactionHash) {
         return modules.getAuthModule().doSendCall(transactionHash);
     }
-
     /**
      * Signing Up
      *
@@ -214,6 +240,19 @@ public class Messenger {
     @ObjectiveCName("doSignupWithName:withSex:withTransaction:")
     public Promise<AuthRes> doSignup(String name, Sex sex, String transactionHash) {
         return modules.getAuthModule().doSignup(name, sex, transactionHash);
+    }
+    /**
+     * Signing Up
+     *
+     * @param name            name
+     * @param sex             sex of user
+     * @param transactionHash transaction hash
+     * @return promise of AuthRes
+     */
+    @NotNull
+    @ObjectiveCName("doSignupWithName:withSex:withTransaction:withPassword:")
+    public Promise<AuthRes> doSignup(String name, Sex sex, String transactionHash,String password) {
+        return modules.getAuthModule().doSignup(name, sex, transactionHash ,password);
     }
 
     /**
@@ -337,6 +376,8 @@ public class Messenger {
         return modules.getAuthModule().requestValidatePassword(password);
     }
 
+
+
     /**
      * Perform signup
      *
@@ -349,6 +390,20 @@ public class Messenger {
     @ObjectiveCName("signUpCommandWithName:WithSex:withAvatar:")
     public Command<AuthState> signUp(String name, Sex sex, String avatarPath) {
         return modules.getAuthModule().signUp(name, ApiSex.UNKNOWN, avatarPath);
+    }
+
+    /**
+     * Perform signup
+     *
+     * @param name       Name of User
+     * @param sex        user sex
+     * @param avatarPath File descriptor of avatar (may be null if not set)
+     * @return Comand for execution
+     */
+    @NotNull
+    @ObjectiveCName("signUpCommandWithName:WithSex:withAvatar:withPassword:")
+    public Command<AuthState> signUp(String name, Sex sex, String avatarPath,String password) {
+        return modules.getAuthModule().signUp(name, ApiSex.UNKNOWN, avatarPath,password);
     }
 
     /**
@@ -374,6 +429,25 @@ public class Messenger {
     public String getAuthEmail() {
         return modules.getAuthModule().getEmail();
     }
+
+    @ObjectiveCName("getAuthZHName")
+    @Deprecated
+    public String getAuthZHName() {
+        return modules.getAuthModule().getZHName();
+    }
+
+    @ObjectiveCName("setAuthWebServiceIp")
+    @Deprecated
+    public void setAuthWebServiceIp(String ip) {
+        modules.getAuthModule().setAuthWebServiceIp(ip);
+    }
+
+    @ObjectiveCName("getAuthWebServiceIp")
+    @Deprecated
+    public String getAuthWebServiceIp() {
+        return modules.getAuthModule().getAuthWebServiceIp();
+    }
+
 
     /**
      * Resetting authentication process

@@ -5,29 +5,43 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.view.MenuItem;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
+
 import im.actor.core.AuthState;
+import im.actor.core.api.ApiPhoneActivationType;
 import im.actor.core.entity.AuthCodeRes;
+import im.actor.core.entity.AuthMode;
 import im.actor.core.entity.AuthRes;
 import im.actor.core.entity.AuthStartRes;
 import im.actor.core.entity.Sex;
 import im.actor.core.network.RpcException;
 import im.actor.core.network.RpcInternalException;
 import im.actor.core.network.RpcTimeoutException;
+import im.actor.core.viewmodel.CommandCallback;
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.Props;
 import im.actor.runtime.function.Consumer;
+import im.actor.runtime.json.JSONObject;
 import im.actor.runtime.promise.Promise;
+import im.actor.runtime.promise.PromiseFunc;
+import im.actor.runtime.promise.PromiseResolver;
 import im.actor.runtime.storage.PreferencesStorage;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.controllers.activity.BaseFragmentActivity;
+import im.actor.sdk.intents.WebServiceUtil;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
@@ -37,6 +51,7 @@ public class AuthActivity extends BaseFragmentActivity {
     public static final String SIGN_TYPE_KEY = "sign_type";
     public static final int AUTH_TYPE_PHONE = 1;
     public static final int AUTH_TYPE_EMAIL = 2;
+    public static final int AUTH_TYPE_NICKNAME = 5;
 
     public static final int SIGN_TYPE_IN = 3;
     public static final int SIGN_TYPE_UP = 4;
@@ -44,18 +59,18 @@ public class AuthActivity extends BaseFragmentActivity {
     private ProgressDialog progressDialog;
     private AlertDialog alertDialog;
     private AuthState state;
-    private int availableAuthType = AUTH_TYPE_PHONE;
-    private int currentAuthType = AUTH_TYPE_PHONE;
+    private int availableAuthType = AUTH_TYPE_NICKNAME;
+    private int currentAuthType = AUTH_TYPE_NICKNAME;
     private int signType;
     private long currentPhone;
     private String currentEmail;
+    private String currentNickName;
     private String transactionHash;
     private String currentCode;
     private boolean isRegistered = false;
     private String currentName;
     private Sex currentSex;
     private ActorRef authActor;
-    private boolean codeValidated = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,9 +87,9 @@ public class AuthActivity extends BaseFragmentActivity {
         PreferencesStorage preferences = messenger().getPreferences();
         currentPhone = preferences.getLong("currentPhone", 0);
         currentEmail = preferences.getString("currentEmail");
+        currentNickName = preferences.getString("currentNickName");
         transactionHash = preferences.getString("transactionHash");
         isRegistered = preferences.getBool("isRegistered", false);
-        codeValidated = preferences.getBool("codeValidated", false);
         currentName = preferences.getString("currentName");
         signType = preferences.getInt("signType", signType);
         String savedState = preferences.getString("auth_state");
@@ -102,9 +117,9 @@ public class AuthActivity extends BaseFragmentActivity {
         PreferencesStorage preferences = messenger().getPreferences();
         preferences.putLong("currentPhone", currentPhone);
         preferences.putString("currentEmail", currentEmail);
+        preferences.putString("currentNickName", currentNickName);
         preferences.putString("transactionHash", transactionHash);
         preferences.putBool("isRegistered", isRegistered);
-        preferences.putBool("codeValidated", codeValidated);
         preferences.putString("currentName", currentName);
         preferences.putInt("signType", signType);
         preferences.putString("auth_state", state.toString());
@@ -123,7 +138,7 @@ public class AuthActivity extends BaseFragmentActivity {
                 if (signType == SIGN_TYPE_UP) {
                     updateState(AuthState.SIGN_UP);
                 } else if (signType == SIGN_TYPE_IN) {
-                    showFragment(new SignInFragment(), false, false);
+                    showFragment(new SignInForNickNameFragment(), false, false);
                 }
 
                 break;
@@ -131,8 +146,13 @@ public class AuthActivity extends BaseFragmentActivity {
                 if (currentName != null && !currentName.isEmpty()) {
                     startAuth(currentName);
                 } else {
-                    showFragment(new SignUpFragment(), false, false);
+                    showFragment(new SignInForNickNameFragment(), false, false);
                 }
+                break;
+            case AUTH_CUSTOM:
+                currentAuthType = AUTH_TYPE_NICKNAME;
+                currentCode = "";
+                showFragment(ActorSDK.sharedActor().getDelegatedFragment(ActorSDK.sharedActor().getDelegate().getAuthStartIntent(), new SignInForNickNameFragment(), BaseAuthFragment.class), false, false);
                 break;
             case AUTH_PHONE:
                 currentAuthType = AUTH_TYPE_PHONE;
@@ -155,6 +175,16 @@ public class AuthActivity extends BaseFragmentActivity {
                 signInFragment.setArguments(args);
                 showFragment(signInFragment, false, false);
                 break;
+            case PASSWORD_VALIDATION:
+                Fragment signInPasswordFragment = new ValidatePasswordFragment();
+                Bundle args2 = new Bundle();
+
+                args2.putString("authType", "auth_type_nickname");
+                args2.putBoolean(ValidatePasswordFragment.AUTH_TYPE_SIGN, signType == SIGN_TYPE_IN);
+                args2.putString("authId", currentName);
+                signInPasswordFragment.setArguments(args2);
+                showFragment(signInPasswordFragment, false, false);
+                break;
             case LOGGED_IN:
                 finish();
                 startActivity(new Intent(this, ActorMainActivity.class));
@@ -166,22 +196,37 @@ public class AuthActivity extends BaseFragmentActivity {
         currentName = name;
         currentSex = Sex.UNKNOWN;
         availableAuthType = ActorSDK.sharedActor().getAuthType();
-        AuthState authState;
-        if (!codeValidated) {
-            if ((availableAuthType & AUTH_TYPE_PHONE) == AUTH_TYPE_PHONE) {
-                authState = AuthState.AUTH_PHONE;
-            } else if ((availableAuthType & AUTH_TYPE_EMAIL) == AUTH_TYPE_EMAIL) {
-                authState = AuthState.AUTH_EMAIL;
-            } else {
-                // none of valid auth types selected - force crash?
-                return;
+        AuthState authState = AuthState.AUTH_CUSTOM;
+//        if ((availableAuthType & AUTH_TYPE_PHONE) == AUTH_TYPE_PHONE) {
+//            authState = AuthState.AUTH_PHONE;
+//        } else if ((availableAuthType & AUTH_TYPE_EMAIL) == AUTH_TYPE_EMAIL) {
+//            authState = AuthState.AUTH_EMAIL;
+//        } else {
+//            // none of valid auth types selected - force crash?
+//            return;//        }
+
+        updateState(authState);
+    }
+
+    public void startNickNameAuth(Promise<AuthStartRes> promise, String nickName) {
+        currentAuthType = AUTH_TYPE_NICKNAME;
+        currentName = nickName;
+        currentNickName = nickName;
+        promise.then(new Consumer<AuthStartRes>() {
+            @Override
+            public void apply(AuthStartRes authStartRes) {
+                if (dismissProgress()) {
+                    transactionHash = authStartRes.getTransactionHash();
+                    isRegistered = authStartRes.isRegistered();
+                    updateState(AuthState.PASSWORD_VALIDATION);
+                }
             }
-
-            updateState(authState);
-
-        } else {
-            signUp(messenger().doSignup(currentName, currentSex != null ? currentSex : Sex.UNKNOWN, transactionHash), currentName, currentSex);
-        }
+        }).failure(new Consumer<Exception>() {
+            @Override
+            public void apply(Exception e) {
+                handleAuthError(e);
+            }
+        });
     }
 
     public void startPhoneAuth(Promise<AuthStartRes> promise, long phone) {
@@ -214,9 +259,15 @@ public class AuthActivity extends BaseFragmentActivity {
                                 case AUTH_TYPE_EMAIL:
                                     updateState(AuthState.CODE_VALIDATION_EMAIL);
                                     break;
+
                             }
                             break;
-
+                        case PASSWORD:
+                            switch (currentAuthType) {
+                                case AUTH_TYPE_NICKNAME:
+                                    updateState(AuthState.PASSWORD_VALIDATION);
+                                    break;
+                            }
                         default:
                             //not supported AuthMode - force crash?
                     }
@@ -238,7 +289,6 @@ public class AuthActivity extends BaseFragmentActivity {
             @Override
             public void apply(AuthCodeRes authCodeRes) {
                 if (dismissProgress()) {
-                    codeValidated = true;
                     transactionHash = authCodeRes.getTransactionHash();
                     if (!authCodeRes.isNeedToSignup()) {
                         messenger().doCompleteAuth(authCodeRes.getResult()).then(new Consumer<Boolean>() {
@@ -253,11 +303,7 @@ public class AuthActivity extends BaseFragmentActivity {
                             }
                         });
                     } else {
-                        if (currentName == null || currentName.isEmpty()) {
-                            updateState(AuthState.SIGN_UP, true);
-                        } else {
-                            signUp(messenger().doSignup(currentName, currentSex != null ? currentSex : Sex.UNKNOWN, transactionHash), currentName, currentSex);
-                        }
+                        signUp(messenger().doSignup(currentName, currentSex != null ? currentSex : Sex.UNKNOWN, transactionHash), currentName, currentSex);
                     }
                 }
             }
@@ -269,25 +315,158 @@ public class AuthActivity extends BaseFragmentActivity {
         });
     }
 
+    public void validatePassword(Promise<AuthCodeRes> promise, String password, int step) {
+        currentCode = password;
+        if (step == 1) {
+            showProgress();
+        }
+
+        promise.then(new Consumer<AuthCodeRes>() {
+            @Override
+            public void apply(AuthCodeRes authCodeRes) {
+
+                transactionHash = authCodeRes.getTransactionHash();
+                if (!authCodeRes.isNeedToSignup()) {
+                    messenger().doCompleteAuth(authCodeRes.getResult()).then(new Consumer<Boolean>() {
+                        @Override
+                        public void apply(Boolean aBoolean) {
+                            dismissProgress();
+                            updateState(AuthState.LOGGED_IN);
+                        }
+                    }).failure(new Consumer<Exception>() {
+                        @Override
+                        public void apply(Exception e) {
+                            dismissProgress();
+                            handleAuthError(e);
+                        }
+                    });
+                } else {
+                    webValidatePassword(password);
+//                        signUp(messenger().doSignup(currentName, currentSex != null ? currentSex : Sex.UNKNOWN, transactionHash), currentName, currentSex);
+                }
+            }
+        }).failure(new Consumer<Exception>() {
+            @Override
+            public void apply(Exception e) {
+                handleAuthError(e);
+            }
+        });
+    }
+
+    public void webValidatePassword(String password) {
+        Promise<AuthStartRes> promise = new Promise<>(new PromiseFunc<AuthStartRes>() {
+
+            @Override
+            public void exec(@NotNull PromiseResolver<AuthStartRes> resolver) {
+                HashMap<String, String> par = new HashMap<String, String>();
+                par.put("oaUserName", currentNickName);
+                par.put("password", password);
+                WebServiceUtil.webServiceRun(messenger().getAuthWebServiceIp(), par, "validatePassword", new WenHandler(resolver, "密码错误，请重新输入"));
+            }
+        });
+        promise.then(new Consumer<AuthStartRes>() {
+            @Override
+            public void apply(AuthStartRes authStartRes) {
+                switch (authStartRes.getAuthMode()) {
+                    case PASSWORD:
+                        signUp(messenger().doSignup(messenger().getAuthZHName(), currentSex != null ? currentSex : Sex.UNKNOWN, transactionHash, password), currentName, currentSex);
+                        break;
+                    default:
+                        //not supported AuthMode - force crash?
+                }
+            }
+        }).failure(new Consumer<Exception>() {
+            @Override
+            public void apply(Exception e) {
+                handleAuthError(e);
+            }
+        });
+    }
+
+    class WenHandler extends Handler {
+        PromiseResolver<AuthStartRes> resolver;
+        String errorInfo;
+
+        public WenHandler(PromiseResolver<AuthStartRes> resolver, String errorInfo) {
+            this.resolver = resolver;
+            this.errorInfo = errorInfo;
+        }
+
+        public WenHandler(Looper L) {
+            super(L);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Bundle b = msg.getData();
+            String datasource = b.getString("datasource");
+            try {
+                JSONObject jo = new JSONObject(datasource);
+                String result = jo.getString("result").trim();
+                if ("false".equals(result)) {
+                    RpcException e = new RpcException("Error", 400, errorInfo, false, null);
+                    resolver.error(e);
+                } else if ("true".equals(result)) {
+                    ApiPhoneActivationType activationType = ApiPhoneActivationType.PASSWORD;
+                    resolver.result(new AuthStartRes(
+                            "",
+                            AuthMode.fromApi(activationType),
+                            true));
+                }
+//
+            } catch (Exception e) {
+                e.printStackTrace();
+                RpcException e2 = new RpcException("Error", 400, errorInfo, false, null);
+                resolver.error(e2);
+            }
+        }
+    }
+
+
     public void signUp(Promise<AuthRes> promise, String name, Sex sex) {
         currentName = name;
         currentSex = sex;
         promise.then(new Consumer<AuthRes>() {
             @Override
             public void apply(AuthRes authRes) {
-                dismissProgress();
-                messenger().doCompleteAuth(authRes).then(new Consumer<Boolean>() {
-                    @Override
-                    public void apply(Boolean aBoolean) {
-                        updateState(AuthState.LOGGED_IN);
-                    }
-                }).failure(new Consumer<Exception>() {
-                    @Override
-                    public void apply(Exception e) {
-                        handleAuthError(e);
-                    }
-                });
+//                dismissProgress();
+                webSyncUser();
+//                messenger().doCompleteAuth(authRes).then(new Consumer<Boolean>() {
+//                    @Override
+//                    public void apply(Boolean aBoolean) {
+////                        updateState(AuthState.LOGGED_IN);
+//                    }
+//                }).failure(new Consumer<Exception>() {
+//                    @Override
+//                    public void apply(Exception e) {
+//                        handleAuthError(e);
+//                    }
+//                });
 
+            }
+        }).failure(new Consumer<Exception>() {
+            @Override
+            public void apply(Exception e) {
+                handleAuthError(e);
+            }
+        });
+    }
+
+    private void webSyncUser() {
+        Promise<AuthStartRes> promise = new Promise<>(new PromiseFunc<AuthStartRes>() {
+
+            @Override
+            public void exec(@NotNull PromiseResolver<AuthStartRes> resolver) {
+                HashMap<String, String> par = new HashMap<String, String>();
+                par.put("oaUserName", currentNickName);
+                WebServiceUtil.webServiceRun(messenger().getAuthWebServiceIp(), par, "syncUser", new WenHandler(resolver, "用户初始化出错，可能账号输错"));
+            }
+        });
+        promise.then(new Consumer<AuthStartRes>() {
+            @Override
+            public void apply(AuthStartRes authStartRes) {
+                validatePassword(messenger().doValidatePassword(currentCode, getTransactionHash()), currentCode, 2);
             }
         }).failure(new Consumer<Exception>() {
             @Override
@@ -345,16 +524,22 @@ public class AuthActivity extends BaseFragmentActivity {
                                             switch (state) {
                                                 case AUTH_EMAIL:
                                                 case AUTH_PHONE:
-                                                    switch (currentAuthType) {
-                                                        case AUTH_TYPE_PHONE:
-                                                            startAuth(messenger().doStartPhoneAuth(currentPhone));
-                                                            break;
+                                                    startAuth(messenger().doStartUsernameAuth(currentNickName));
 
-                                                        case AUTH_TYPE_EMAIL:
-                                                            startAuth(messenger().doStartEmailAuth(currentEmail));
-
-                                                            break;
-                                                    }
+//                                                    switch (currentAuthType) {
+//                                                        case AUTH_TYPE_PHONE:
+//                                                            startAuth(messenger().doStartPhoneAuth(currentPhone));
+//                                                            break;
+//
+//                                                        case AUTH_TYPE_EMAIL:
+//                                                            startAuth(messenger().doStartEmailAuth(currentEmail));
+//
+//                                                            break;
+//                                                        case AUTH_TYPE_NICKNAME:
+//                                                            startAuth(messenger().doStartUsernameAuth(currentNickName));
+//
+//                                                            break;
+//                                                    }
                                                     break;
                                                 case CODE_VALIDATION_EMAIL:
                                                 case CODE_VALIDATION_PHONE:
@@ -362,7 +547,7 @@ public class AuthActivity extends BaseFragmentActivity {
                                                     break;
 
                                                 case SIGN_UP:
-                                                    signUp(messenger().doSignup(currentName, currentSex!=null?currentSex:Sex.UNKNOWN, transactionHash), currentName, currentSex);
+                                                    signUp(messenger().doSignup(currentName, currentSex != null ? currentSex : Sex.UNKNOWN, transactionHash), currentName, currentSex);
                                                     break;
                                             }
 
@@ -389,9 +574,15 @@ public class AuthActivity extends BaseFragmentActivity {
                                                 updateState(state, true);
                                             } else if (signType == SIGN_TYPE_UP) {
                                                 if (currentAuthType == AUTH_TYPE_EMAIL) {
-                                                    switchToEmailAuth();
+//                                                    switchToEmailAuth();
+                                                    switchToNickNameAuth();
                                                 } else if (currentAuthType == AUTH_TYPE_PHONE) {
-                                                    switchToPhoneAuth();
+//                                                    switchToPhoneAuth();
+                                                    switchToNickNameAuth();
+                                                } else if (currentAuthType == AUTH_TYPE_NICKNAME) {
+                                                    if (currentCode == null || currentCode.length() == 0) {
+                                                        switchToNickNameAuth();
+                                                    }
                                                 } else {
                                                     updateState(AuthState.AUTH_START);
                                                 }
@@ -416,6 +607,10 @@ public class AuthActivity extends BaseFragmentActivity {
 
     }
 
+    public void switchToNickNameAuth() {
+        updateState(AuthState.AUTH_CUSTOM);
+    }
+
     public void switchToEmailAuth() {
         updateState(AuthState.AUTH_EMAIL);
     }
@@ -434,6 +629,11 @@ public class AuthActivity extends BaseFragmentActivity {
     public void startSignUp() {
         signType = SIGN_TYPE_UP;
         updateState(AuthState.AUTH_START, true);
+    }
+
+    public void showProgress(int i) {
+        currentAuthType = i;
+        showProgress();
     }
 
 

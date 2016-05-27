@@ -65,10 +65,19 @@ public abstract class BaseAuthFragment extends BaseFragment {
         messenger().getPreferences().putString("sign_in_auth_id", email);
         ((AuthActivity) getActivity()).startEmailAuth(messenger().doStartEmailAuth(email), email);
     }
+    protected void startNickNameAuth(String nickName) {
+        messenger().getPreferences().putString("sign_in_auth_id", nickName);
+        ((AuthActivity) getActivity()).startNickNameAuth(messenger().doStartUsernameAuth(nickName), nickName);
+    }
 
     protected void validateCode(String code) {
         AuthActivity activity = (AuthActivity) getActivity();
         activity.validateCode(messenger().doValidateCode(code, activity.getTransactionHash()), code);
+    }
+
+    protected void validatePassword(String password) {
+        AuthActivity activity = (AuthActivity) getActivity();
+        activity.validatePassword(messenger().doValidatePassword(password, activity.getTransactionHash()), password,1);
     }
 
     protected void signUp(String name, Sex sex) {
@@ -79,6 +88,9 @@ public abstract class BaseAuthFragment extends BaseFragment {
 
     protected void startAuth(String name) {
         ((AuthActivity) getActivity()).startAuth(name);
+    }
+    protected void switchToNickName() {
+        ((AuthActivity) getActivity()).switchToNickNameAuth();
     }
 
     protected void switchToEmail() {
