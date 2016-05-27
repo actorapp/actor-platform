@@ -10,6 +10,7 @@ import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
 
 public class LocalVideo extends LocalDocument {
+
     private int w;
     private int h;
     private int duration;

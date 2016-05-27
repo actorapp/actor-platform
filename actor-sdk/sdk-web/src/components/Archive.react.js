@@ -14,7 +14,6 @@ import ArchiveActionCreators from '../actions/ArchiveActionCreators';
 import ArchiveStore from '../stores/ArchiveStore';
 
 import AvatarItem from './common/AvatarItem.react';
-import ConnectionState from './common/ConnectionState.react';
 import Scrollbar from './common/Scrollbar.react';
 
 class Archive extends Component {
@@ -108,7 +107,6 @@ class Archive extends Component {
         <header className="toolbar row">
           <h3>Archive</h3>
         </header>
-        <ConnectionState/>
         <div className="flexrow">
           <section className={archiveClassname}>
             <Scrollbar ref="archiveScroll" onScroll={this.loadArchiveByScroll}>

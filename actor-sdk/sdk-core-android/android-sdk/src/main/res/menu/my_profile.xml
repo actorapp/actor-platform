@@ -16,6 +16,5 @@
         android:id="@+id/editProfile"
         android:icon="@drawable/ic_edit_white_24dp"
         android:title="@string/settings_menu_edit_profile"
-        app:showAsAction="always"
-        android:visible="false"/>
+        app:showAsAction="always" />
 </menu>

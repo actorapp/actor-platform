@@ -7,6 +7,7 @@ import im.actor.runtime.WebRTC;
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
+import im.actor.runtime.webrtc.WebRTCPeerConnection;
 
 public abstract class AbsCallActor extends ModuleActor implements CallBusCallback {
 
@@ -36,10 +37,17 @@ public abstract class AbsCallActor extends ModuleActor implements CallBusCallbac
         callBus.changeMute(isMuted);
     }
 
+
+    public void onVideoEnableChanged(boolean enabled) {
+        callBus.changeVideoEnabled(enabled);
+    }
+
     @Override
     public void onReceive(Object message) {
         if (message instanceof MuteChanged) {
             onMuteChanged(((MuteChanged) message).isMuted());
+        } else if (message instanceof VideoEnabled) {
+            onVideoEnableChanged(((VideoEnabled) message).isEnabled());
         } else {
             super.onReceive(message);
         }
@@ -55,6 +63,19 @@ public abstract class AbsCallActor extends ModuleActor implements CallBusCallbac
 
         public boolean isMuted() {
             return isMuted;
+        }
+    }
+
+    public static class VideoEnabled {
+
+        private boolean enabled;
+
+        public VideoEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
+
+        public boolean isEnabled() {
+            return enabled;
         }
     }
 
@@ -82,6 +103,11 @@ public abstract class AbsCallActor extends ModuleActor implements CallBusCallbac
         @Override
         public void onBusStopped() {
             self().send((Runnable) () -> AbsCallActor.this.onBusStopped());
+        }
+
+        @Override
+        public void onPeerConnectionCreated(WebRTCPeerConnection peerConnection) {
+            self().send((Runnable) () -> AbsCallActor.this.onPeerConnectionCreated(peerConnection));
         }
     }
 }

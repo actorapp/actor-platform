@@ -2,93 +2,46 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
+import { debounce } from 'lodash';
 import { dispatch, dispatchAsync } from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
 import ActorClient from '../utils/ActorClient';
-
-import ActivityActionCreators from './ActivityActionCreators';
-
 import DialogStore from '../stores/DialogStore';
-import ActivityStore from '../stores/ActivityStore';
 import SearchMessagesStore from '../stores/SearchMessagesStore';
+import ComposeActionCreators from './ComposeActionCreators';
 
 class SearchMessagesActionCreators {
   constructor() {
-    this.isActivityOpenBeforeSearch = false;
+    this.findText = debounce(this.findText.bind(this), 100, { maxWait: 300 });
   }
 
-  toggleOpen(isOpen) {
-    if (isOpen) {
-      dispatch(ActionTypes.SEARCH_SHOW);
-      // TODO: move this to store
-      this.isActivityOpenBeforeSearch = ActivityStore.isOpen();
-      if (this.isActivityOpenBeforeSearch) {
-        ActivityActionCreators.hide()
-      }
-    } else {
-      dispatch(ActionTypes.SEARCH_HIDE);
-      if (this.isActivityOpenBeforeSearch) {
-        ActivityActionCreators.show();
-      }
-    }
+  open() {
+    dispatch(ActionTypes.SEARCH_MESSAGES_SHOW);
+    ComposeActionCreators.toggleAutoFocus(false);
   }
 
-  toggleFocus(isEnable) {
-    dispatch(ActionTypes.SEARCH_TOGGLE_FOCUS, { isEnable });
-  }
-
-  toggleExpand() {
-    dispatch(ActionTypes.SEARCH_TOGGLE_EXPAND);
+  close() {
+    dispatch(ActionTypes.SEARCH_MESSAGES_HIDE);
+    ComposeActionCreators.toggleAutoFocus(true);
   }
 
   setQuery(query) {
-    dispatch(ActionTypes.SEARCH_TEXT, { query });
+    dispatch(ActionTypes.SEARCH_MESSAGES_SET_QUERY, { query });
+    this.findText();
   }
 
-  findAllText(query) {
+  findText() {
+    const { query } = SearchMessagesStore.getState();
     if (!query) {
       return;
     }
 
-    const isSearchOpen = SearchMessagesStore.isOpen();
     const peer = DialogStore.getCurrentPeer();
-
-    if (!isSearchOpen) {
-      this.toggleOpen(true);
-    }
-
     dispatchAsync(ActorClient.findAllText(peer, query), {
       request: ActionTypes.SEARCH_TEXT,
       success: ActionTypes.SEARCH_TEXT_SUCCESS,
       failure: ActionTypes.SEARCH_TEXT_ERROR
     }, { peer, query });
-  }
-
-  findAllDocs() {
-    const peer = DialogStore.getCurrentPeer();
-    dispatchAsync(ActorClient.findAllDocs(peer), {
-      request: ActionTypes.SEARCH_DOCS,
-      success: ActionTypes.SEARCH_DOCS_SUCCESS,
-      failure: ActionTypes.SEARCH_DOCS_ERROR
-    }, { peer });
-  }
-
-  findAllLinks() {
-    const peer = DialogStore.getCurrentPeer();
-    dispatchAsync(ActorClient.findAllLinks(peer), {
-      request: ActionTypes.SEARCH_LINKS,
-      success: ActionTypes.SEARCH_LINKS_SUCCESS,
-      failure: ActionTypes.SEARCH_LINKS_ERROR
-    }, { peer });
-  }
-
-  findAllPhotos() {
-    const peer = DialogStore.getCurrentPeer();
-    dispatchAsync(ActorClient.findAllPhotos(peer), {
-      request: ActionTypes.SEARCH_PHOTO,
-      success: ActionTypes.SEARCH_PHOTO_SUCCESS,
-      failure: ActionTypes.SEARCH_PHOTO_ERROR
-    }, { peer });
   }
 }
 

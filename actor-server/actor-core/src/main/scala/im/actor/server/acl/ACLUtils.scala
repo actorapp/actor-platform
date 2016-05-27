@@ -20,7 +20,7 @@ import slick.dbio.DBIO
 import scala.concurrent.{ ExecutionContext, Future }
 
 object ACLUtils extends ACLBase with ACLFiles {
-  val PasswordMinLength = 0
+  val PasswordMinLength = 8
   val PasswordMaxLength = 160
 
   type Hash = Array[Byte]
@@ -114,19 +114,13 @@ object ACLUtils extends ACLBase with ACLFiles {
    * @param password
    * @return (hash, salt)
    */
-  lazy private val md5handle = java.security.MessageDigest.getInstance("MD5")
-  def md5(password: String): Hash = {
-    md5handle.digest(password.getBytes)
-
-  }
-
   def hashPassword(password: String): (Hash, Salt) = {
     val seedBytes = 20
 
     val random = new SecureRandom()
     val salt = random.generateSeed(seedBytes)
 
-    (md5(password), salt)
+    (hashPassword(password, salt), salt)
   }
 
   def hashPassword(password: String, salt: Array[Byte]): Hash = {
@@ -135,8 +129,7 @@ object ACLUtils extends ACLBase with ACLFiles {
 
     val spec = new PBEKeySpec(password.toCharArray, salt, iterations, hashBytes * 8)
     val skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1")
-    /*skf.generateSecret(spec).getEncoded*/
-    md5(password)
+    skf.generateSecret(spec).getEncoded
   }
 
   def checkPassword(userId: Int, password: String)(implicit ec: ExecutionContext): DBIO[Boolean] =

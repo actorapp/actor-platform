@@ -73,6 +73,7 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        messenger().onUserVisible(myUid());
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
         shp = getActivity().getSharedPreferences("wallpaper", Context.MODE_PRIVATE);
@@ -131,7 +132,7 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
                 recordView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-//                        getActivity().startActivity(Intents.editUserNick(getActivity()));
+                        getActivity().startActivity(Intents.editUserNick(getActivity()));
                     }
                 });
             }
@@ -422,7 +423,6 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
 //        });
 
         View askQuestion = view.findViewById(R.id.askQuestion);
-        askQuestion.setVisibility(View.GONE);
 
         if (ActorSDK.sharedActor().getHelpPhone() == null || ActorSDK.sharedActor().getHelpPhone().isEmpty()) {
             askQuestion.setVisibility(View.GONE);
@@ -449,7 +449,7 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
 
         //Twitter
         View twitterView = view.findViewById(R.id.twitter);
-        twitterView.setVisibility(View.GONE);
+
         if (ActorSDK.sharedActor().getTwitterAcc() == null || ActorSDK.sharedActor().getTwitterAcc().isEmpty()) {
             twitterView.setVisibility(View.GONE);
             view.findViewById(R.id.divider5).setVisibility(View.GONE);
@@ -783,7 +783,6 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.my_profile, menu);
-
     }
 
     @Override

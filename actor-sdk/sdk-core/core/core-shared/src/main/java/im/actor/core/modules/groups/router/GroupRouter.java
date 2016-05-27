@@ -12,14 +12,23 @@ import im.actor.core.api.ApiMember;
 import im.actor.core.api.ApiUser;
 import im.actor.core.api.ApiUserOutPeer;
 import im.actor.core.api.updates.UpdateGroupAboutChanged;
+import im.actor.core.api.updates.UpdateGroupAboutChangedObsolete;
 import im.actor.core.api.updates.UpdateGroupAvatarChanged;
+import im.actor.core.api.updates.UpdateGroupAvatarChangedObsolete;
 import im.actor.core.api.updates.UpdateGroupInvite;
+import im.actor.core.api.updates.UpdateGroupInviteObsolete;
 import im.actor.core.api.updates.UpdateGroupMembersUpdate;
+import im.actor.core.api.updates.UpdateGroupMembersUpdateObsolete;
 import im.actor.core.api.updates.UpdateGroupTitleChanged;
+import im.actor.core.api.updates.UpdateGroupTitleChangedObsolete;
 import im.actor.core.api.updates.UpdateGroupTopicChanged;
+import im.actor.core.api.updates.UpdateGroupTopicChangedObsolete;
 import im.actor.core.api.updates.UpdateGroupUserInvited;
+import im.actor.core.api.updates.UpdateGroupUserInvitedObsolete;
 import im.actor.core.api.updates.UpdateGroupUserKick;
+import im.actor.core.api.updates.UpdateGroupUserKickObsolete;
 import im.actor.core.api.updates.UpdateGroupUserLeave;
+import im.actor.core.api.updates.UpdateGroupUserLeaveObsolete;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.MessageState;
@@ -320,44 +329,44 @@ public class GroupRouter extends ModuleActor {
     //
 
     private Promise<Void> onUpdate(Update update) {
-        if (update instanceof UpdateGroupTitleChanged) {
-            UpdateGroupTitleChanged titleChanged = (UpdateGroupTitleChanged) update;
+        if (update instanceof UpdateGroupTitleChangedObsolete) {
+            UpdateGroupTitleChangedObsolete titleChanged = (UpdateGroupTitleChangedObsolete) update;
             return onTitleChanged(titleChanged.getGroupId(), titleChanged.getRid(),
                     titleChanged.getUid(), titleChanged.getTitle(), titleChanged.getDate(),
                     false);
-        } else if (update instanceof UpdateGroupTopicChanged) {
-            UpdateGroupTopicChanged topicChanged = (UpdateGroupTopicChanged) update;
+        } else if (update instanceof UpdateGroupTopicChangedObsolete) {
+            UpdateGroupTopicChangedObsolete topicChanged = (UpdateGroupTopicChangedObsolete) update;
             return onTopicChanged(topicChanged.getGroupId(), topicChanged.getTopic());
-        } else if (update instanceof UpdateGroupAboutChanged) {
-            UpdateGroupAboutChanged aboutChanged = (UpdateGroupAboutChanged) update;
+        } else if (update instanceof UpdateGroupAboutChangedObsolete) {
+            UpdateGroupAboutChangedObsolete aboutChanged = (UpdateGroupAboutChangedObsolete) update;
             return onAboutChanged(aboutChanged.getGroupId(), aboutChanged.getAbout());
-        } else if (update instanceof UpdateGroupAvatarChanged) {
-            UpdateGroupAvatarChanged avatarChanged = (UpdateGroupAvatarChanged) update;
+        } else if (update instanceof UpdateGroupAvatarChangedObsolete) {
+            UpdateGroupAvatarChangedObsolete avatarChanged = (UpdateGroupAvatarChangedObsolete) update;
             return onAvatarChanged(avatarChanged.getGroupId(), avatarChanged.getRid(),
                     avatarChanged.getUid(), avatarChanged.getAvatar(),
                     avatarChanged.getDate(), false);
-        } else if (update instanceof UpdateGroupInvite) {
-            UpdateGroupInvite groupInvite = (UpdateGroupInvite) update;
+        } else if (update instanceof UpdateGroupInviteObsolete) {
+            UpdateGroupInviteObsolete groupInvite = (UpdateGroupInviteObsolete) update;
             return onGroupInvite(groupInvite.getGroupId(),
                     groupInvite.getRid(), groupInvite.getInviteUid(), groupInvite.getDate(),
                     false);
-        } else if (update instanceof UpdateGroupUserLeave) {
-            UpdateGroupUserLeave leave = (UpdateGroupUserLeave) update;
+        } else if (update instanceof UpdateGroupUserLeaveObsolete) {
+            UpdateGroupUserLeaveObsolete leave = (UpdateGroupUserLeaveObsolete) update;
             return onUserLeave(leave.getGroupId(), leave.getRid(), leave.getUid(),
                     leave.getDate(), false);
-        } else if (update instanceof UpdateGroupUserKick) {
-            UpdateGroupUserKick userKick = (UpdateGroupUserKick) update;
+        } else if (update instanceof UpdateGroupUserKickObsolete) {
+            UpdateGroupUserKickObsolete userKick = (UpdateGroupUserKickObsolete) update;
             return onUserKicked(userKick.getGroupId(),
                     userKick.getRid(), userKick.getUid(), userKick.getKickerUid(), userKick.getDate(),
                     false);
-        } else if (update instanceof UpdateGroupUserInvited) {
-            UpdateGroupUserInvited userInvited = (UpdateGroupUserInvited) update;
+        } else if (update instanceof UpdateGroupUserInvitedObsolete) {
+            UpdateGroupUserInvitedObsolete userInvited = (UpdateGroupUserInvitedObsolete) update;
             return onUserAdded(userInvited.getGroupId(),
                     userInvited.getRid(), userInvited.getUid(), userInvited.getInviterUid(), userInvited.getDate(),
                     false);
-        } else if (update instanceof UpdateGroupMembersUpdate) {
-            return onMembersUpdated(((UpdateGroupMembersUpdate) update).getGroupId(),
-                    ((UpdateGroupMembersUpdate) update).getMembers());
+        } else if (update instanceof UpdateGroupMembersUpdateObsolete) {
+            return onMembersUpdated(((UpdateGroupMembersUpdateObsolete) update).getGroupId(),
+                    ((UpdateGroupMembersUpdateObsolete) update).getMembers());
         }
         return Promise.success(null);
     }

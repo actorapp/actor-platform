@@ -10,7 +10,9 @@ const delegate = new ActorSDKDelegate({
   features: {
     calls: true,
     search: true,
-    editing: true
+    editing: true,
+    blocking: true,
+    writeButton: true
   },
   actions: {},
   l18n: {}
@@ -19,7 +21,8 @@ const delegate = new ActorSDKDelegate({
 const app = new ActorSDK({
   delegate,
   endpoints: [
-    'ws://220.189.207.18:9080'
+    'wss://front1-ws-mtproto-api-rev2.actor.im',
+    'wss://front2-ws-mtproto-api-rev2.actor.im'
   ],
   isExperimental: true,
   facebook: 'actorapp',
@@ -28,5 +31,3 @@ const app = new ActorSDK({
 });
 
 app.startApp();
-//    'wss://front1-ws-mtproto-api-rev2.actor.im',
-//    'wss://front2-ws-mtproto-api-rev2.actor.im'

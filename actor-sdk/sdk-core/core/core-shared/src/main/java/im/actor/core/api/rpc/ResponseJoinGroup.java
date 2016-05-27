@@ -24,14 +24,16 @@ public class ResponseJoinGroup extends Response {
 
     private ApiGroup group;
     private List<ApiUser> users;
+    private List<ApiUserOutPeer> userPeers;
     private long rid;
     private int seq;
     private byte[] state;
     private long date;
 
-    public ResponseJoinGroup(@NotNull ApiGroup group, @NotNull List<ApiUser> users, long rid, int seq, @NotNull byte[] state, long date) {
+    public ResponseJoinGroup(@NotNull ApiGroup group, @NotNull List<ApiUser> users, @NotNull List<ApiUserOutPeer> userPeers, long rid, int seq, @NotNull byte[] state, long date) {
         this.group = group;
         this.users = users;
+        this.userPeers = userPeers;
         this.rid = rid;
         this.seq = seq;
         this.state = state;
@@ -50,6 +52,11 @@ public class ResponseJoinGroup extends Response {
     @NotNull
     public List<ApiUser> getUsers() {
         return this.users;
+    }
+
+    @NotNull
+    public List<ApiUserOutPeer> getUserPeers() {
+        return this.userPeers;
     }
 
     public long getRid() {
@@ -77,6 +84,11 @@ public class ResponseJoinGroup extends Response {
             _users.add(new ApiUser());
         }
         this.users = values.getRepeatedObj(5, _users);
+        List<ApiUserOutPeer> _userPeers = new ArrayList<ApiUserOutPeer>();
+        for (int i = 0; i < values.getRepeatedCount(7); i ++) {
+            _userPeers.add(new ApiUserOutPeer());
+        }
+        this.userPeers = values.getRepeatedObj(7, _userPeers);
         this.rid = values.getLong(6);
         this.seq = values.getInt(2);
         this.state = values.getBytes(3);
@@ -90,6 +102,7 @@ public class ResponseJoinGroup extends Response {
         }
         writer.writeObject(1, this.group);
         writer.writeRepeatedObj(5, this.users);
+        writer.writeRepeatedObj(7, this.userPeers);
         writer.writeLong(6, this.rid);
         writer.writeInt(2, this.seq);
         if (this.state == null) {

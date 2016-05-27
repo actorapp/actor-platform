@@ -10,7 +10,7 @@ import im.actor.api.rpc.peers.ApiUserOutPeer
 import im.actor.api.rpc.users.{ ResponseLoadFullUsers, UsersService }
 import im.actor.server.acl.ACLUtils
 import im.actor.server.db.DbExtension
-import im.actor.server.persist.UserRepo
+import im.actor.server.persist.{ UserEmailRepo, UserPhoneRepo, UserRepo }
 import im.actor.server.persist.contact.UserContactRepo
 import im.actor.server.user.UserExtension
 import im.actor.util.misc.StringUtils
@@ -42,9 +42,18 @@ final class UsersServiceImpl(implicit actorSystem: ActorSystem) extends UsersSer
                   case Some(contact) ⇒
                     userExt.editLocalName(client.userId, userId, Some(validName))
                   case None ⇒
-                    userExt.addContact(client.userId, userId, Some(validName), None, None)
+                    for {
+                      optPhone ← db.run(UserPhoneRepo.findByUserId(userId).headOption)
+                      optEmail ← db.run(UserEmailRepo.findByUserId(userId).headOption)
+                      seqstate ← userExt.addContact(
+                        userId = client.userId,
+                        contactUserId = userId,
+                        localName = Some(validName),
+                        phone = optPhone map (_.number),
+                        email = optEmail map (_.email)
+                      )
+                    } yield seqstate
                 }
-
                 for {
                   seqstate ← seqstateF
                 } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))

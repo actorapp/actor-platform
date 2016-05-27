@@ -15,7 +15,6 @@ import java.util.List;
 
 import im.actor.core.api.ApiAvatar;
 import im.actor.core.api.ApiGroup;
-import im.actor.core.api.ApiMapValue;
 import im.actor.core.api.ApiMember;
 import im.actor.runtime.bser.BserCreator;
 import im.actor.runtime.bser.BserValues;
@@ -118,10 +117,12 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
                 w.getTitle(),
                 w.getAvatar(),
                 w.getMembersCount(),
+                w.isMember(),
                 w.isHidden(),
+                w.getGroupType(),
+                w.canSendMessage(),
                 w.getExt(),
 
-                w.isMember(),
                 w.isAdmin(),
                 w.getCreatorUid(),
                 new ArrayList<>(),
@@ -134,7 +135,7 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
 
     public Group removeMember(int uid) {
         ApiGroup w = getWrapped();
-        ArrayList<ApiMember> nMembers = new ArrayList<ApiMember>();
+        ArrayList<ApiMember> nMembers = new ArrayList<>();
         for (ApiMember member : w.getMembers()) {
             if (member.getUid() != uid) {
                 nMembers.add(member);
@@ -147,10 +148,12 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
                 w.getTitle(),
                 w.getAvatar(),
                 w.getMembersCount(),
+                w.isMember(),
                 w.isHidden(),
+                w.getGroupType(),
+                w.canSendMessage(),
                 w.getExt(),
 
-                w.isMember(),
                 w.isAdmin(),
                 w.getCreatorUid(),
                 nMembers,
@@ -163,7 +166,7 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
 
     public Group addMember(int uid, int inviterUid, long inviteDate) {
         ApiGroup w = getWrapped();
-        ArrayList<ApiMember> nMembers = new ArrayList<ApiMember>();
+        ArrayList<ApiMember> nMembers = new ArrayList<>();
         for (ApiMember member : w.getMembers()) {
             if (member.getUid() != uid) {
                 nMembers.add(member);
@@ -176,10 +179,12 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
                 w.getTitle(),
                 w.getAvatar(),
                 w.getMembersCount(),
+                w.isMember(),
                 w.isHidden(),
+                w.getGroupType(),
+                w.canSendMessage(),
                 w.getExt(),
 
-                w.isMember(),
                 w.isAdmin(),
                 w.getCreatorUid(),
                 nMembers,
@@ -198,10 +203,12 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
                 w.getTitle(),
                 w.getAvatar(),
                 w.getMembersCount(),
+                w.isMember(),
                 w.isHidden(),
+                w.getGroupType(),
+                w.canSendMessage(),
                 w.getExt(),
 
-                w.isMember(),
                 w.isAdmin(),
                 w.getCreatorUid(),
                 nMembers,
@@ -220,10 +227,12 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
                 title,
                 w.getAvatar(),
                 w.getMembersCount(),
+                w.isMember(),
                 w.isHidden(),
+                w.getGroupType(),
+                w.canSendMessage(),
                 w.getExt(),
 
-                w.isMember(),
                 w.isAdmin(),
                 w.getCreatorUid(),
                 w.getMembers(),
@@ -242,10 +251,12 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
                 w.getTitle(),
                 w.getAvatar(),
                 w.getMembersCount(),
+                w.isMember(),
                 w.isHidden(),
+                w.getGroupType(),
+                w.canSendMessage(),
                 w.getExt(),
 
-                w.isMember(),
                 w.isAdmin(),
                 w.getCreatorUid(),
                 w.getMembers(),
@@ -264,10 +275,12 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
                 w.getTitle(),
                 w.getAvatar(),
                 w.getMembersCount(),
+                w.isMember(),
                 w.isHidden(),
+                w.getGroupType(),
+                w.canSendMessage(),
                 w.getExt(),
 
-                w.isMember(),
                 w.isAdmin(),
                 w.getCreatorUid(),
                 w.getMembers(),
@@ -284,12 +297,14 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
                 w.getId(),
                 w.getAccessHash(),
                 w.getTitle(),
-                avatar,
+                w.getAvatar(),
                 w.getMembersCount(),
+                w.isMember(),
                 w.isHidden(),
+                w.getGroupType(),
+                w.canSendMessage(),
                 w.getExt(),
 
-                w.isMember(),
                 w.isAdmin(),
                 w.getCreatorUid(),
                 w.getMembers(),
@@ -307,7 +322,7 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
         this.title = wrapped.getTitle();
         this.avatar = wrapped.getAvatar() != null ? new Avatar(wrapped.getAvatar()) : null;
         this.creatorId = wrapped.getCreatorUid();
-        this.members = new ArrayList<GroupMember>();
+        this.members = new ArrayList<>();
         for (ApiMember m : wrapped.getMembers()) {
             this.members.add(new GroupMember(m.getUid(), m.getInviterUid(), m.getDate(), m.isAdmin() != null ? m.isAdmin() : m.getUid() == this.creatorId));
         }

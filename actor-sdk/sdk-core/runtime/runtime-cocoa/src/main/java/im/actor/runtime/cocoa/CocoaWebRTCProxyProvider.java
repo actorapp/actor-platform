@@ -32,11 +32,11 @@ public class CocoaWebRTCProxyProvider implements WebRTCRuntime {
 
     @NotNull
     @Override
-    public Promise<WebRTCMediaStream> getUserAudio() {
+    public Promise<WebRTCMediaStream> getUserMedia(boolean isVideoEnabled) {
         if (rtcRuntime == null) {
             return Promise.failure(new RuntimeException("WebRTC Runtime not set"));
         }
-        return rtcRuntime.getUserAudio();
+        return rtcRuntime.getUserMedia(isVideoEnabled);
     }
 
     @Override

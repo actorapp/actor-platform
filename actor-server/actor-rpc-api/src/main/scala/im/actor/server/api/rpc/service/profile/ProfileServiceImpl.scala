@@ -22,7 +22,7 @@ import scala.concurrent.{ ExecutionContext, Future }
 
 object ProfileRpcErrors {
   val NicknameInvalid = RpcError(400, "NICKNAME_INVALID",
-    "Invalid nickname. Valid nickname should contain from 3 to 32 characters, and may consist of latin characters, numbers and underscores", false, None)
+    "Invalid nickname. Valid nickname should contain from 5 to 32 characters, and may consist of latin characters, numbers and underscores", false, None)
   val NameInvalid = RpcError(400, "NAME_INVALID", "Invalid name. Valid name should not be empty or contain bad symbols", false, None)
   val NicknameBusy = RpcError(400, "NICKNAME_BUSY", "This nickname already belongs some other user, we are sorry!", false, None)
   val AboutTooLong = RpcError(400, "ABOUT_TOO_LONG",

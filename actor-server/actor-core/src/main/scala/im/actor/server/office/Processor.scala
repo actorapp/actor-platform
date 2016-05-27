@@ -3,7 +3,7 @@ package im.actor.server.office
 import java.time.Instant
 import java.util.concurrent.TimeUnit
 
-import akka.actor.{ ActorRef, Status }
+import akka.actor.{ ActorRef, Cancellable, Status }
 import akka.cluster.sharding.ShardRegion.Passivate
 import akka.pattern.pipe
 import akka.persistence.PersistentActor
@@ -23,6 +23,8 @@ case object StopOffice
 trait ProcessorState
 
 trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorFutures with AlertingActor {
+
+  case class BreakStashing(ts: Instant, evts: Seq[Event], state: State)
 
   case class UnstashAndWork(evt: Event, state: State)
 
@@ -65,23 +67,32 @@ trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorFuture
 
   final def receiveCommand = initializing
 
-  protected final def initializing: Receive = handleInitCommand orElse unstashing orElse {
-    case msg ⇒
-      log.debug("Entity not found while processing {}", msg)
-      sender() ! Status.Failure(notFoundError)
-  }
+  protected final def initializing: Receive =
+    handleInitCommand orElse unstashing orElse {
+      case msg ⇒
+        log.debug("Entity not found while processing {}", msg)
+        sender() ! Status.Failure(notFoundError)
+    }
 
   protected final def working(state: State): Receive = handleCommand(state) orElse handleQuery(state) orElse {
     case unmatched ⇒ log.warning("Unmatched message: {}, {}, sender: {}", unmatched.getClass.getName, unmatched, sender())
   }
 
-  protected final def stashingBehavior: Receive = unstashing orElse {
-    case msg ⇒
-      log.warning("Stashing: {}", msg)
-      stash()
-  }
+  protected final def stashingBehavior: Receive =
+    unstashing orElse {
+      case msg ⇒
+        log.warning("Stashing: {}", msg)
+        stash()
+    }
 
   private final def unstashing: Receive = {
+    case BreakStashing(ts, evts, state) ⇒
+      val strEvents = evts map { e ⇒
+        s"{ type: ${e.getClass.getName}, event: $e }"
+      }
+      log.error("Break stashing. Was in stashing since: {}, with events: {}", ts, strEvents mkString "; ")
+      context become working(state)
+      unstashAll()
     case UnstashAndWork(evt, s) ⇒
       context become working(updatedState(evt, s))
       unstashAll()
@@ -117,42 +128,22 @@ trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorFuture
     }
   }
 
-  final def persistStashing[R](e: Event, state: State)(f: Event ⇒ Future[R]): Unit = {
-    log.debug("[persistStashing], event {}", e)
-    context become stashing(state)
-
-    persistAsync(e) { evt ⇒
-      f(evt) andThen {
-        case Success(_) ⇒
-          unstashAndWork(e, state)
-        case Failure(f) ⇒
-          log.error(f, "Failure while processing event {}", e)
-          unstashAndWork(e, state)
-      }
-    }
-  }
-
-  final def persistStashing[R](es: immutable.Seq[Event], state: State)(f: Event ⇒ Unit): Unit = {
-    log.debug("[persistStashing], events {}", es)
-    context become stashing(state)
-    deferAsync(es) { _ ⇒
-      unstashAndWorkBatch(es, state)
-    }
-  }
-
   final def persistStashingReply[R](e: Event, state: State)(f: Event ⇒ Future[R]): Unit =
     persistStashingReply(e, state, sender())(f)
 
   final def persistStashingReply[R](e: Event, state: State, replyTo: ActorRef)(f: Event ⇒ Future[R]): Unit = {
     log.debug("[persistStashingReply], event {}", e)
+    val breakStashing = breakStashingTimeout(e, state)
     context become stashing(state)
 
     persistAsync(e) { evt ⇒
       f(evt) pipeTo replyTo onComplete {
         case Success(r) ⇒
+          breakStashing.cancel()
           unstashAndWork(e, state)
-        case Failure(f) ⇒
-          log.error(f, "Failure while processing event {}", e)
+        case Failure(exc) ⇒
+          log.error(exc, "Failure while processing event {}", e)
+          breakStashing.cancel()
           unstashAndWork(e, state)
       }
     }
@@ -162,6 +153,7 @@ trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorFuture
     val replyTo = sender()
 
     log.debug("[persistStashingReply], events {}", es)
+    val breakStashing = breakStashingTimeout(es, state)
     context become stashing(state)
 
     persistAllAsync(es)(_ ⇒ ())
@@ -169,9 +161,11 @@ trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorFuture
     deferAsync(()) { _ ⇒
       f(es) pipeTo replyTo onComplete {
         case Success(_) ⇒
+          breakStashing.cancel()
           unstashAndWorkBatch(es, state)
-        case Failure(e) ⇒
-          log.error(e, "Failure while processing event {}", e)
+        case Failure(exc) ⇒
+          log.error(exc, "Failure while processing events {}", es)
+          breakStashing.cancel()
           unstashAndWorkBatch(es, state)
       }
     }
@@ -181,16 +175,24 @@ trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorFuture
     val replyTo = sender()
 
     log.debug("[deferStashingReply], event {}", e)
+    val breakStashing = breakStashingTimeout(e, state)
     context become stashing(state)
 
     f(e) pipeTo replyTo onComplete {
       case Success(result) ⇒
+        breakStashing.cancel()
         unstashAndWork(e, state)
       case Failure(f) ⇒
         log.error(f, "Failure while processing event {}", e)
+        breakStashing.cancel()
         unstashAndWork(e, state)
     }
   }
+
+  private def breakStashingTimeout(e: Event, s: State): Cancellable = breakStashingTimeout(Seq(e), s)
+
+  private def breakStashingTimeout(es: Seq[Event], s: State): Cancellable =
+    context.system.scheduler.scheduleOnce(30.seconds, self, BreakStashing(now(), es, s))
 
   protected final def unstashAndWork(evt: Event, state: State): Unit = self ! UnstashAndWork(evt, state)
 

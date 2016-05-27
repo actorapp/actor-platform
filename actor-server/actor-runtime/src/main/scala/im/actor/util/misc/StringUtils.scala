@@ -12,7 +12,7 @@ object StringUtils {
 
   private val encoder = Charset.forName("US-ASCII").newEncoder()
 
-  private val usernamePattern = Pattern.compile("""^[0-9a-zA-Z_]{1,32}""", Pattern.UNICODE_CHARACTER_CLASS)
+  private val usernamePattern = Pattern.compile("""^[0-9a-zA-Z_]{5,32}""", Pattern.UNICODE_CHARACTER_CLASS)
 
   private val transliterator = Transliterator.getInstance("Latin; Latin-ASCII")
 
@@ -41,8 +41,8 @@ object StringUtils {
 
   def normalizeUsername(username: String): Option[String] = {
     val trimmed = username.trim
-    //if (usernamePattern.matcher(trimmed).matches())
-    Some(trimmed)
-    //else None
+    if (usernamePattern.matcher(trimmed).matches())
+      Some(trimmed)
+    else None
   }
 }

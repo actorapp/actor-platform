@@ -23,6 +23,7 @@ import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
+import im.actor.runtime.webrtc.WebRTCPeerConnection;
 
 /*-[
 #pragma clang diagnostic ignored "-Wnullability-completeness"
@@ -125,6 +126,11 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
 
     }
 
+    @Override
+    public void onPeerConnectionCreated(WebRTCPeerConnection peerConnection) {
+        callBusCallback.onPeerConnectionCreated(peerConnection);
+    }
+
 
     //
     // Actions
@@ -132,6 +138,11 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
 
     public void onChangeMute(boolean isMuted) {
         peerCall.onMuteChanged(isMuted);
+    }
+
+
+    private void onChangeVideoEnabled(boolean enabled) {
+        peerCall.onVideoEnabledChanged(enabled);
     }
 
     public void onOwnAnswered() {
@@ -241,6 +252,8 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
             connectBus(joinMasterBus.getBusId(), joinMasterBus.getDeviceId(), TIMEOUT, true);
         } else if (message instanceof Mute) {
             onChangeMute(((Mute) message).isMuted());
+        } else if (message instanceof VideoEnabled) {
+            onChangeVideoEnabled(((VideoEnabled) message).isEnabled());
         } else if (message instanceof OnAnswered) {
             onOwnAnswered();
         } else {
@@ -296,6 +309,19 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
         }
     }
 
+    public static class VideoEnabled {
+
+        private boolean enabled;
+
+        public VideoEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+    }
+
     public static class OnAnswered {
 
     }
@@ -342,6 +368,12 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
         @Override
         public void onStreamRemoved(final long deviceId, @NotNull final WebRTCMediaStream stream) {
             self().send((Runnable) () -> callCallback.onStreamRemoved(deviceId, stream));
+        }
+
+        @Override
+        public void onPeerConnectionCreated(WebRTCPeerConnection peerConnection) {
+            self().send((Runnable) () -> callCallback.onPeerConnectionCreated(peerConnection));
+
         }
     }
 }

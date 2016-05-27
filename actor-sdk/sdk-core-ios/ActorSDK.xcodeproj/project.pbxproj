@@ -370,9 +370,6 @@
 		BEE6EB041C4D9A4900A2280E /* AAWallpapersCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE6EB031C4D9A4900A2280E /* AAWallpapersCell.swift */; };
 		BEF11DB61C466D800076400A /* begin_record.caf in Resources */ = {isa = PBXBuildFile; fileRef = 153F6B3C1C2A9B1900C0B960 /* begin_record.caf */; };
 		BEFE68D51C4657360001F2D6 /* AAThumbnailCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEFE68D41C4657360001F2D6 /* AAThumbnailCollectionCell.swift */; };
-		EF1F2A281CACAF240000D859 /* AAAuthUsernameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF1F2A271CACAF240000D859 /* AAAuthUsernameViewController.swift */; };
-		EFB8AB311CD8BC3300DCF967 /* WebserviceCallback.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB8AB301CD8BC3300DCF967 /* WebserviceCallback.swift */; };
-		EFDD1CB81CD837D9001DFA6E /* CocoaWebserviceRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFDD1CB71CD837D9001DFA6E /* CocoaWebserviceRuntime.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -758,9 +755,6 @@
 		BEE6EB031C4D9A4900A2280E /* AAWallpapersCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAWallpapersCell.swift; sourceTree = "<group>"; };
 		BEFE68D41C4657360001F2D6 /* AAThumbnailCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAThumbnailCollectionCell.swift; sourceTree = "<group>"; };
 		E30822B631D108159E8B306B /* Pods-ActorSDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorSDK.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ActorSDK/Pods-ActorSDK.debug.xcconfig"; sourceTree = "<group>"; };
-		EF1F2A271CACAF240000D859 /* AAAuthUsernameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthUsernameViewController.swift; sourceTree = "<group>"; };
-		EFB8AB301CD8BC3300DCF967 /* WebserviceCallback.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WebserviceCallback.swift; path = Storage/WebserviceCallback.swift; sourceTree = "<group>"; };
-		EFDD1CB71CD837D9001DFA6E /* CocoaWebserviceRuntime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaWebserviceRuntime.swift; sourceTree = "<group>"; };
 		F076508E3899D309954904A3 /* Pods-ActorSDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorSDK.release.xcconfig"; path = "Pods/Target Support Files/Pods-ActorSDK/Pods-ActorSDK.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1020,8 +1014,6 @@
 				066A51871BC4C383000E606E /* iOSNotificationProvider.swift */,
 				066A51881BC4C383000E606E /* iOSPhoneBookProvider.swift */,
 				06E322C81C69344A00D66F53 /* iOSCallsProvider.swift */,
-				EFDD1CB71CD837D9001DFA6E /* CocoaWebserviceRuntime.swift */,
-				EFB8AB301CD8BC3300DCF967 /* WebserviceCallback.swift */,
 			);
 			path = Providers;
 			sourceTree = "<group>";
@@ -1127,7 +1119,6 @@
 				06D5C0561C8D6E20002D5045 /* AAAuthLogInViewController.swift */,
 				06C1D0761C8BC9FC00B73632 /* AAAuthNameViewController.swift */,
 				06C1D07A1C8BFE5C00B73632 /* AAAuthPhoneViewController.swift */,
-				EF1F2A271CACAF240000D859 /* AAAuthUsernameViewController.swift */,
 				066CBCDB1C8D419F004507E2 /* AAAuthEmailViewController.swift */,
 				06D5C05B1C8EA842002D5045 /* AAAuthOTPViewController.swift */,
 			);
@@ -1909,7 +1900,7 @@
 				TargetAttributes = {
 					066A50D11BC4AE63000E606E = {
 						CreatedOnToolsVersion = 7.0;
-						DevelopmentTeam = D94R58LQ65;
+						DevelopmentTeam = HVJR44Y5B6;
 					};
 				};
 			};
@@ -2082,7 +2073,6 @@
 				066A518D1BC4C383000E606E /* CocoaStorageRuntime.swift in Sources */,
 				066A52F01BC52B02000E606E /* AASettingsViewController.swift in Sources */,
 				060135081C95ED4C00A18C4E /* YYTransaction.m in Sources */,
-				EFDD1CB81CD837D9001DFA6E /* CocoaWebserviceRuntime.swift in Sources */,
 				066A52741BC5101A000E606E /* ABPhoneField.m in Sources */,
 				153F6B611C2BF8EC00C0B960 /* AAAuthWelcomeController.swift in Sources */,
 				152AA8A91C2989270030DEEE /* SLKTextInputbar.m in Sources */,
@@ -2167,7 +2157,6 @@
 				153F6B5B1C2B109400C0B960 /* AABubbleVoiceCell.swift in Sources */,
 				061851091C95CBF000C522D5 /* YYLabel.m in Sources */,
 				15D35F251C20186200E3717A /* bitwise.c in Sources */,
-				EF1F2A281CACAF240000D859 /* AAAuthUsernameViewController.swift in Sources */,
 				066A531A1BC533E7000E606E /* AAAutoCompleteCell.swift in Sources */,
 				065975051BC757A300B8C7DF /* ActorRuntime.swift in Sources */,
 				066A517B1BC4C373000E606E /* FMDatabase.m in Sources */,
@@ -2240,7 +2229,6 @@
 				BED5A1F11C48396A0045FDB0 /* NYTPhotoCaptionView.m in Sources */,
 				BED5A20F1C4839880045FDB0 /* NSBundle+NYTPhotoViewer.m in Sources */,
 				06129AA61C8359FB0099286B /* CocoaLifecycleRuntime.swift in Sources */,
-				EFB8AB311CD8BC3300DCF967 /* WebserviceCallback.swift in Sources */,
 				066A516D1BC4C366000E606E /* ActorCoreExt.swift in Sources */,
 				066A517E1BC4C373000E606E /* FMDatabaseAdditions.m in Sources */,
 				066A519A1BC4C390000E606E /* FMDBList.swift in Sources */,
@@ -2375,7 +2363,6 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;

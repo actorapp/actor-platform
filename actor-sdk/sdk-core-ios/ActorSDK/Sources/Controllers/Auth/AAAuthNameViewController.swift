@@ -78,39 +78,28 @@ public class AAAuthNameViewController: AAAuthViewController {
     }
     
     public  override func nextDidTap() {
-//        let name = field.text!.trim()
-//        if name.length > 0 {
-//            if transactionHash != nil {
-//                let promise = Actor.doSignupWithName(name, withSex: ACSex.UNKNOWN(), withTransaction: transactionHash!)
-//                promise.then { (r: ACAuthRes!) -> () in
-//                    let promise = Actor.doCompleteAuth(r).startUserAction()
-//                    promise.then { (r: JavaLangBoolean!) -> () in
-//                        self.onAuthenticated()
-//                    }
-//                }
-//                promise.startUserAction()
-//            } else {
-//                if ActorSDK.sharedActor().authStrategy == .PhoneOnly || ActorSDK.sharedActor().authStrategy == .PhoneEmail {
-//                    navigateNext(AAAuthPhoneViewController(name: name))
-//                }
-////                    else if(ActorSDK.sharedActor().authStrategy == .Username)
-////                {
-////                    Actor.doStartAuthWithUsername(name).startUserAction().then { (res: ACAuthStartRes!) -> () in
-////                        if res.authMode.toNSEnum() == .OTP {
-////                            self.navigateNext(AAAuthOTPViewController(email: name, name: name, transactionHash: res.transactionHash))
-////                        } else {
-////                            self.alertUser(AALocalized("AuthUnsupported").replace("{app_name}", dest: ActorSDK.sharedActor().appName))
-////                        }
-////                    }
-////                }
-//                else {
-//                    navigateNext(AAAuthEmailViewController(name: name))
-//                }
-//            }
-//        } else {
-//            shakeView(field, originalX: 20)
-//            shakeView(fieldLine, originalX: 10)
-//        }
+        let name = field.text!.trim()
+        if name.length > 0 {
+            if transactionHash != nil {
+                let promise = Actor.doSignupWithName(name, withSex: ACSex.UNKNOWN(), withTransaction: transactionHash!)
+                promise.then { (r: ACAuthRes!) -> () in
+                    let promise = Actor.doCompleteAuth(r).startUserAction()
+                    promise.then { (r: JavaLangBoolean!) -> () in
+                        self.onAuthenticated()
+                    }
+                }
+                promise.startUserAction()
+            } else {
+                if ActorSDK.sharedActor().authStrategy == .PhoneOnly || ActorSDK.sharedActor().authStrategy == .PhoneEmail {
+                    navigateNext(AAAuthPhoneViewController(name: name))
+                } else {
+                    navigateNext(AAAuthEmailViewController(name: name))
+                }
+            }
+        } else {
+            shakeView(field, originalX: 20)
+            shakeView(fieldLine, originalX: 10)
+        }
     }
     
     public override func viewWillAppear(animated: Bool) {

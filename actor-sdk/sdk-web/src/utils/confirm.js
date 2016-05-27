@@ -92,8 +92,10 @@ class Confirm extends Component {
 }
 
 export default function confirm(message, options = {})  {
-  let element = document.createElement('div');
+  const element = document.createElement('div');
   element.className = 'modal-overlay';
+
+
   const wrapper = document.body.appendChild(element);
 
   const component = render(createElement(Confirm, { message, ...options }), wrapper);

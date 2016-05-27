@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.core.api.*;
 
-public class RequestMakeUserAdmin extends Request<ResponseMakeUserAdmin> {
+public class RequestMakeUserAdmin extends Request<ResponseSeqDate> {
 
-    public static final int HEADER = 0xd6;
+    public static final int HEADER = 0xae0;
     public static RequestMakeUserAdmin fromBytes(byte[] data) throws IOException {
         return Bser.parse(new RequestMakeUserAdmin(), data);
     }

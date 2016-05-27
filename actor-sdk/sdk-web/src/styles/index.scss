@@ -16,7 +16,6 @@
 
 @import 'deactivated';
 @import 'login';
-@import 'toolbar';
 
 @import 'messages';
 @import 'status';
@@ -26,18 +25,19 @@
 @import 'typing';
 @import 'emoji';
 @import 'preloader';
-// @import 'modals';
+
 @import 'forms';
 @import 'lightbox';
-@import 'banner';
 @import 'icons';
 @import 'dropdown';
 @import 'voice-recorder';
 @import 'scrollbars';
 @import 'archive';
-@import 'call';
+@import 'call/index';
 @import 'tooltip';
 @import 'sticker';
+
+@import 'dialog/index';
 @import 'chat/index';
 @import 'modals/index';
 

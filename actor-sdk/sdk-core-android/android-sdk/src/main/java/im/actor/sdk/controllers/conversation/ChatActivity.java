@@ -42,6 +42,7 @@ import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,8 +67,6 @@ import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.Props;
 import im.actor.runtime.actors.messages.PoisonPill;
 import im.actor.runtime.actors.messages.Void;
-import im.actor.runtime.function.BiFunction;
-import im.actor.runtime.function.Consumer;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.R;
@@ -207,7 +206,7 @@ public class ChatActivity extends ActorEditTextActivity {
     //Share menu
     //////////////////////////////////
     private View shareContainer;
-    private View shareMenu;
+    private View shareMenuCaontainer;
     private int shareMenuMaxHeight = 0;
     private FastShareAdapter fastShareAdapter;
 
@@ -325,10 +324,11 @@ public class ChatActivity extends ActorEditTextActivity {
         });
 
         //share menu
-        findViewById(R.id.share_menu).setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
+        TableLayout shareMenu = (TableLayout) findViewById(R.id.share_menu);
+        shareMenu.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         findViewById(R.id.fast_share).setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
-        shareMenu = findViewById(R.id.share_container);
-        shareMenu.setOnClickListener(new View.OnClickListener() {
+        shareMenuCaontainer = findViewById(R.id.share_container);
+        shareMenuCaontainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -414,6 +414,8 @@ public class ChatActivity extends ActorEditTextActivity {
         findViewById(R.id.share_hide).setOnClickListener(shareMenuOCL);
         View shareLocation = findViewById(R.id.share_location);
         shareLocation.setOnClickListener(shareMenuOCL);
+        ActorSDK.sharedActor().getDelegate().onShareMenuCreated(shareMenu);
+
         handleIntent();
 
         try {
@@ -899,81 +901,18 @@ public class ChatActivity extends ActorEditTextActivity {
 
     @Override
     protected void onAttachButtonClicked() {
-//        Context wrapper = new ContextThemeWrapper(ChatActivity.this, R.style.AttachPopupTheme);
-//        PopupMenu popup = new PopupMenu(wrapper, findViewById(R.id.attachAnchor));
-//
-//        try {
-//            Field[] fields = popup.getClass().getDeclaredFields();
-//            for (Field field : fields) {
-//                if ("mPopup".equals(field.getName())) {
-//                    field.setAccessible(true);
-//                    Object menuPopupHelper = field.get(popup);
-//                    Class<?> classPopupHelper = Class.forName(menuPopupHelper
-//                            .getClass().getName());
-//                    Method setForceIcons = classPopupHelper.getMethod(
-//                            "setForceShowIcon", boolean.class);
-//                    setForceIcons.invoke(menuPopupHelper, true);
-//                    break;
-//                }
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        popup.getMenuInflater().inflate(R.menu.attach_popup, popup.getMenu());
-//
-//        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-//            @Override
-//            public boolean onMenuItemClick(MenuItem item) {
-//                if (item.getItemId() == R.id.gallery) {
-//                    Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//                    intent.setType("image/* video/*");
-//                    startActivityForResult(intent, REQUEST_GALLERY);
-//                    return true;
-//                } else if (item.getItemId() == R.id.takePhoto) {
-//                    File externalFile = getExternalFilesDir(null);
-//                    if (externalFile == null) {
-//                        Toast.makeText(ChatActivity.this, R.string.toast_no_sdcard, Toast.LENGTH_LONG).show();
-//                        return true;
-//                    }
-//                    String externalPath = externalFile.getAbsolutePath();
-//                    new File(externalPath + "/actor/").mkdirs();
-//
-//                    pending_fileName = externalPath + "/actor/capture_" + Randoms.randomId() + ".jpg";
-//                    startActivityForResult(
-//                            new Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-//                                    .putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(pending_fileName))),
-//                            REQUEST_PHOTO);
-//                } else if (item.getItemId() == R.id.takeVideo) {
-//
-//                    File externalFile = getExternalFilesDir(null);
-//                    if (externalFile == null) {
-//                        Toast.makeText(ChatActivity.this, R.string.toast_no_sdcard, Toast.LENGTH_LONG).show();
-//                        return true;
-//                    }
-//                    String externalPath = externalFile.getAbsolutePath();
-//                    new File(externalPath + "/actor/").mkdirs();
-//
-//                    pending_fileName = externalPath + "/actor/capture_" + Randoms.randomId() + ".mp4";
-//
-//                    Intent i = new Intent(MediaStore.ACTION_VIDEO_CAPTURE)
-//                            .putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(pending_fileName)));
-//                    startActivityForResult(i, REQUEST_VIDEO);
-//                    return true;
-//                } else if (item.getItemId() == R.id.file) {
-//                    startActivityForResult(Intents.pickFile(ChatActivity.this), REQUEST_DOC);
-//                } else if (item.getItemId() == R.id.contact) {
-//                    Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-//                    startActivityForResult(intent, REQUEST_CONTACT);
-//                }
-//                return false;
-//            }
-//        });
-//        popup.show();
+
         if (shareMenuMaxHeight == 0) {
             shareMenuMaxHeight = Screen.dp(245);
         }
-        if (shareMenu.getVisibility() == View.VISIBLE) {
+
+        // Trying to open custom share menu
+        if (ActorSDK.sharedActor().getDelegate().onAttachMenuClicked(this)) {
+            return;
+        }
+
+        // Opening default share menu
+        if (shareMenuCaontainer.getVisibility() == View.VISIBLE) {
             hideShare();
         } else {
             shareContainer.setVisibility(View.VISIBLE);
@@ -1342,11 +1281,12 @@ public class ChatActivity extends ActorEditTextActivity {
 
         if (ActorSDK.sharedActor().isCallsEnabled()) {
             if (item.getItemId() == R.id.call) {
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED ||
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+                        ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED ||
                         ContextCompat.checkSelfPermission(this, Manifest.permission.VIBRATE) != PackageManager.PERMISSION_GRANTED ||
                         ContextCompat.checkSelfPermission(this, Manifest.permission.WAKE_LOCK) != PackageManager.PERMISSION_GRANTED) {
                     Log.d("Permissions", "call - no permission :c");
-                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.VIBRATE, Manifest.permission.WAKE_LOCK},
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA, Manifest.permission.VIBRATE, Manifest.permission.WAKE_LOCK},
                             PERMISSIONS_REQUEST_FOR_CALL);
 
                 } else {
@@ -1639,10 +1579,10 @@ public class ChatActivity extends ActorEditTextActivity {
         TranslateAnimation animation = new TranslateAnimation(0, 0, Screen.getHeight(), 0);
         animation.setDuration(160);
         animation.setAnimationListener(animationListener);
-        shareMenu.clearAnimation();
-        shareMenu.setAnimation(animation);
-        shareMenu.animate();
-        shareMenu.setVisibility(View.VISIBLE);
+        shareMenuCaontainer.clearAnimation();
+        shareMenuCaontainer.setAnimation(animation);
+        shareMenuCaontainer.animate();
+        shareMenuCaontainer.setVisibility(View.VISIBLE);
         isShareVisible = true;
         if (ActorSDK.sharedActor().isFastShareEnabled()) {
             messenger().getGalleryScannerActor().send(new GalleryScannerActor.Show());
@@ -1658,10 +1598,10 @@ public class ChatActivity extends ActorEditTextActivity {
         animation.setDuration(160);
 
         animation.setAnimationListener(animationListener);
-        shareMenu.clearAnimation();
-        shareMenu.setAnimation(animation);
-        shareMenu.animate();
-        shareMenu.setVisibility(View.GONE);
+        shareMenuCaontainer.clearAnimation();
+        shareMenuCaontainer.setAnimation(animation);
+        shareMenuCaontainer.animate();
+        shareMenuCaontainer.setVisibility(View.GONE);
         shareContainer.setVisibility(View.GONE);
         if (ActorSDK.sharedActor().isFastShareEnabled()) {
             messenger().getGalleryScannerActor().send(new GalleryScannerActor.Hide());
@@ -1690,6 +1630,11 @@ public class ChatActivity extends ActorEditTextActivity {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 showShareChecked();
+            }
+        } else if (requestCode == PERMISSIONS_REQUEST_FOR_CALL) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startCall();
             }
         }
     }

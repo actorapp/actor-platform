@@ -19,12 +19,7 @@ import QuickSearchActionCreators from './QuickSearchActionCreators';
 import FaviconActionCreators from './FaviconActionCreators';
 import EventBusActionCreators from './EventBusActionCreators';
 import StickersActionCreators from './StickersActionCreators';
-import Login_react from '../components/Login.react';
 
-var zhName="";
-var nickName="";
-var ip="";
-var password="";
 class LoginActionCreators extends ActionCreators {
   start() {
     dispatch(ActionTypes.AUTH_START);
@@ -62,7 +57,7 @@ class LoginActionCreators extends ActionCreators {
       request: ActionTypes.AUTH_CODE_REQUEST,
       success: ActionTypes.AUTH_CODE_REQUEST_SUCCESS,
       failure: ActionTypes.AUTH_CODE_REQUEST_FAILURE
-    }, {phone});
+    }, { phone });
   }
 
   requestSms(phone) {
@@ -70,123 +65,8 @@ class LoginActionCreators extends ActionCreators {
       request: ActionTypes.AUTH_CODE_REQUEST,
       success: ActionTypes.AUTH_CODE_REQUEST_SUCCESS,
       failure: ActionTypes.AUTH_CODE_REQUEST_FAILURE
-    }, {phone});
+    }, { phone });
   }
-  requestUserName(userName) {
-    dispatchAsync(ActorClient.requestUserName(userName), {
-      request: ActionTypes.AUTH_CODE_REQUEST,
-      success: ActionTypes.AUTH_CODE_REQUEST_SUCCESS,
-      failure: ActionTypes.AUTH_CODE_REQUEST_FAILURE
-    }, {userName});
-  },
-  requestSignUp(nickName, name, ip){
-    const requestSignUp = () =>
-      dispatchAsync(ActorClient.requestSignUp(nickName, name, ip), {
-        request: ActionTypes.AUTH_CODE_REQUEST,
-        success: ActionTypes.AUTH_CODE_REQUEST_SUCCESS,
-        failure: ActionTypes.AUTH_CODE_REQUEST_FAILURE
-      }, {nickName, name, ip});
-
-    const handleState = (state) =>
-      {
-        switch (state) {
-          case 'start':
-            LoginActionCreators.requestWebSyncUser(ip,nickName);
-            break;
-          default:
-            console.error('Unsupported state', state);
-            break;
-        }
-      }
-      ;
-
-    requestSignUp()
-      .then(handleState);
-  },
-
-
-  requestWebSignUp(ip,nickName){
-    const methodName = "isUserNeedSignUp";
-    this.nickName = nickName;
-    this.ip = ip;
-    let json = "username="+nickName;//得到的JSON
-    const requestWebSignUp = () =>
-      dispatchAsync(ActorClient.requestWebSignUp(ip, methodName, json, nickName), {
-        request: ActionTypes.AUTH_CODE_REQUEST,
-        success: ActionTypes.AUTH_CODE_REQUEST_SUCCESS,
-        failure: ActionTypes.AUTH_CODE_REQUEST_FAILURE
-      }, {ip, methodName, json, nickName});
-    const handleState = (response) =>
-    {
-      if(response != null){
-        var state  = response.next;
-        var rename  = response.name;
-        zhName = rename;
-        switch (state) {
-          case 'signup':
-            // LoginActionCreators.requestSignUp(nickName, rename, ip);
-            LoginActionCreators.requestUserName(nickName);
-            break;
-          case 'login':
-            LoginActionCreators.requestUserName(nickName);
-            break;
-          default:
-            console.error('Unsupported state', state);
-            break;
-        }
-      }
-    };
-
-    requestWebSignUp()
-      .then(handleState);
-  },
-
-  requestWebSyncUser(ip,nickName){
-    let json = "oaUserName=" + nickName;//得到的JSON
-    const methodName="syncUser";
-    const requestWebSyncUser = () =>
-      dispatchAsync(ActorClient.requestWebSyncUser(ip, methodName, json), {
-        request: ActionTypes.AUTH_CODE_SEND,
-        success: ActionTypes.AUTH_CODE_SEND_SUCCESS,
-        failure: ActionTypes.AUTH_CODE_SEND_FAILURE
-      }, {ip, methodName, json});
-    const handleState = (response) =>
-    {
-      var result = response.result;
-      if(result){
-        LoginActionCreators.sendPassword("","",this.password);
-      }else{
-        console.error('Unsupported state', response);
-      }
-    };
-
-    requestWebSyncUser()
-      .then(handleState);
-  },
-
-  requestWebValidatePassword(ip,json,password){
-    const methodName="validatePassword";
-    const requestWebValidatePassword = () =>
-      dispatchAsync(ActorClient.requestWebValidatePassword(ip, methodName, json), {
-        request: ActionTypes.AUTH_CODE_SEND,
-        success: ActionTypes.AUTH_CODE_SEND_SUCCESS,
-        failure: ActionTypes.AUTH_CODE_SEND_FAILURE
-      }, {ip, methodName, json});
-    const handleState = (response) =>
-    {
-      var result = response.result;
-      if(result){
-        this.password = password;
-        LoginActionCreators.sendSignupForPassword(zhName,"11111111");
-        // LoginActionCreators.sendPassword(password);
-      }else{
-        console.error('Unsupported state', response);
-      }
-    };
-
-    requestWebValidatePassword()
-      .then(handleState);
-  },
 
   sendCode(code) {
     dispatchAsync(ActorClient.sendCode(code), {
@@ -198,8 +78,7 @@ class LoginActionCreators extends ActionCreators {
     }).then((state) => {
       switch (state) {
         case 'signup':
-          // this.startSignup();
-          LoginActionCreators.requestWebValidatePassword(ip,json,password);
+          this.startSignup();
           break;
         case 'logged_in':
           this.setLoggedIn({ redirect: true });
@@ -209,35 +88,13 @@ class LoginActionCreators extends ActionCreators {
       }
     });
   }
-    sendPasswordPromise()
-      .then(handleState);
-  },
-
-  sendSignupForPassword(name, password) {
-    const signUpPromise = () =>
-      dispatchAsync(ActorClient.signUp(name, password), {
-        request: ActionTypes.AUTH_CODE_SEND,
-        success: ActionTypes.AUTH_CODE_SEND_SUCCESS,
-        failure: ActionTypes.AUTH_CODE_SEND_FAILURE
-      }, {name, password});
-    const setLoggedIn = () =>
-    {
-      LoginActionCreators.requestWebSyncUser(this.ip,this.nickName);
-    };
-    signUpPromise()
-      .then(setLoggedIn)
-  },
-  startSignup() {
-    dispatch(ActionTypes.AUTH_SIGNUP_START);
-  },
 
   sendSignup(name) {
-    const signUpPromise = () =>
-      dispatchAsync(ActorClient.signUp(name), {
-        request: ActionTypes.AUTH_SIGNUP,
-        success: ActionTypes.AUTH_SIGNUP_SUCCESS,
-        failure: ActionTypes.AUTH_SIGNUP_FAILURE
-      }, {name,password});
+    const signUpPromise = () => dispatchAsync(ActorClient.signUp(name), {
+      request: ActionTypes.AUTH_SIGNUP,
+      success: ActionTypes.AUTH_SIGNUP_SUCCESS,
+      failure: ActionTypes.AUTH_SIGNUP_FAILURE
+    }, { name });
 
     const setLoggedIn = () => this.setLoggedIn({ redirect: true });
 
@@ -276,6 +133,7 @@ class LoginActionCreators extends ActionCreators {
 
   setLoggedOut() {
     const delegate = DelegateContainer.get();
+
     if (delegate.actions.setLoggedOut) {
       return delegate.actions.setLoggedOut();
     }
@@ -285,4 +143,5 @@ class LoginActionCreators extends ActionCreators {
     dispatch(ActionTypes.AUTH_SET_LOGGED_OUT);
   }
 }
+
 export default new LoginActionCreators();

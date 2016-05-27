@@ -6,18 +6,33 @@ package im.actor.runtime.webrtc;
 public interface WebRTCMediaStream {
 
     /**
-     * Is Track enabled
+     * Is Audio Track enabled
      *
      * @return is track enabled
      */
-    boolean isEnabled();
+    boolean isAudioEnabled();
 
     /**
-     * Enabling/Disabling track
+     * Enabling/Disabling audio track
      *
      * @param isEnabled is track enabled
      */
-    void setEnabled(boolean isEnabled);
+    void setAudioEnabled(boolean isEnabled);
+
+    /**
+     * Is Video Track enabled
+     *
+     * @return is track enabled
+     */
+    boolean isVideoEnabled();
+
+
+    /**
+     * Enabling/Disabling video track
+     *
+     * @param isEnabled is track enabled
+     */
+    void setVideoEnabled(boolean isEnabled);
 
     /**
      * Closing stream

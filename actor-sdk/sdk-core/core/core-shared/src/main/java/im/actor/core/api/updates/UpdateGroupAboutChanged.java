@@ -17,7 +17,7 @@ import im.actor.core.api.*;
 
 public class UpdateGroupAboutChanged extends Update {
 
-    public static final int HEADER = 0xd6;
+    public static final int HEADER = 0xa39;
     public static UpdateGroupAboutChanged fromBytes(byte[] data) throws IOException {
         return Bser.parse(new UpdateGroupAboutChanged(), data);
     }

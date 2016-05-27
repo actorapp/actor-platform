@@ -35,7 +35,6 @@ import im.actor.core.js.utils.HtmlMarkdownUtils;
 import im.actor.core.js.utils.IdentityUtils;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
-import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.Log;
@@ -51,8 +50,6 @@ import im.actor.runtime.js.mvvm.JsDisplayListCallback;
 import im.actor.runtime.js.utils.JsPromise;
 import im.actor.runtime.js.utils.JsPromiseDispatcher;
 import im.actor.runtime.js.utils.JsPromiseExecutor;
-import im.actor.runtime.json.JSONException;
-import im.actor.runtime.json.JSONObject;
 import im.actor.runtime.markdown.MarkdownParser;
 
 import org.timepedia.exporter.client.Export;
@@ -61,7 +58,6 @@ import org.timepedia.exporter.client.Exportable;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 @ExportPackage("actor")
@@ -207,42 +203,6 @@ public class JsFacade implements Exportable {
         }
     }
 
-    //userName
-    @UsedByApp
-    public void requestNickName(String nickName, final JsAuthSuccessClosure success,
-                                final JsAuthErrorClosure error) {
-        try {
-            messenger.requestStartUserNameAuth(nickName).start(new CommandCallback<AuthState>() {
-                @Override
-                public void onResult(AuthState res) {
-                    success.onResult(Enums.convert(res));
-                }
-
-                @Override
-                public void onError(Exception e) {
-                    String tag = "requestNickName_ERROR";
-                    String message = "UserName error";
-                    boolean canTryAgain = false;
-                    if (e instanceof RpcException) {
-                        tag = ((RpcException) e).getTag();
-                        message = e.getMessage();
-                        canTryAgain = ((RpcException) e).isCanTryAgain();
-                    }
-                    error.onError(tag, message, canTryAgain, getAuthState());
-                }
-            });
-        } catch (Exception e) {
-            Log.e(TAG, e);
-            im.actor.runtime.Runtime.postToMainThread(new Runnable() {
-                @Override
-                public void run() {
-                    error.onError("NickName_INVALID", "Invalid NickName", false,
-                            getAuthState());
-                }
-            });
-        }
-    }
-
     @UsedByApp
     public void requestCodeEmail(String email, final JsAuthSuccessClosure success,
                                  final JsAuthErrorClosure error) {
@@ -302,95 +262,10 @@ public class JsFacade implements Exportable {
         }
     }
 
-    //signIN for password
-    @UsedByApp
-    public void sendPassword(String password, final JsAuthSuccessClosure success,
-                             final JsAuthErrorClosure error) {
-        try {
-            messenger.validatePassword(password).start(new CommandCallback<AuthState>() {
-                @Override
-                public void onResult(AuthState res) {
-                    success.onResult(Enums.convert(res));
-                }
-
-                @Override
-                public void onError(Exception e) {
-                    String tag = "INTERNAL_ERROR";
-                    String message = "Internal error";
-                    boolean canTryAgain = false;
-                    if (e instanceof RpcException) {
-                        tag = ((RpcException) e).getTag();
-                        message = e.getMessage();
-                        canTryAgain = ((RpcException) e).isCanTryAgain();
-                    }
-                    error.onError(tag, message, canTryAgain, getAuthState());
-                }
-            });
-        } catch (Exception e) {
-            Log.e(TAG, e);
-            im.actor.runtime.Runtime.postToMainThread(new Runnable() {
-                @Override
-                public void run() {
-                    error.onError("USERNAME_PASSWORD_INVALID", "Invalid password number", false,
-                            getAuthState());
-                }
-            });
-        }
-    }
-
     @UsedByApp
     public void signUp(String name, final JsAuthSuccessClosure success,
                        final JsAuthErrorClosure error) {
         messenger.signUp(name, null, null).start(new CommandCallback<AuthState>() {
-            @Override
-            public void onResult(AuthState res) {
-                success.onResult(Enums.convert(res));
-            }
-
-            @Override
-            public void onError(Exception e) {
-                String tag = "INTERNAL_ERROR";
-                String message = "Internal error";
-                boolean canTryAgain = false;
-                if (e instanceof RpcException) {
-                    tag = ((RpcException) e).getTag();
-                    message = e.getMessage();
-                    canTryAgain = ((RpcException) e).isCanTryAgain();
-                }
-                error.onError(tag, message, canTryAgain, getAuthState());
-            }
-        });
-    }
-
-    @UsedByApp
-    public void requestSignUp(final String nickName, String name,final String ip, final JsAuthSuccessClosure success,
-                              final JsAuthErrorClosure error) {
-        messenger.requestSignUp(nickName,name, ip).start(new CommandCallback<AuthState>() {
-            @Override
-            public void onResult(AuthState res) {
-                success.onResult(Enums.convert(res));
-            }
-
-            @Override
-            public void onError(Exception e) {
-                String tag = "ERROR";
-                String message = "SIGN UP ERROR";
-                boolean canTryAgain = false;
-                if (e instanceof RpcException) {
-                    tag = ((RpcException) e).getTag();
-                    message = e.getMessage();
-                    canTryAgain = ((RpcException) e).isCanTryAgain();
-                }
-                error.onError(tag, message, canTryAgain, getAuthState());
-            }
-        });
-    }
-
-
-    @UsedByApp
-    public void signUpForPassword(String name, String password, final JsAuthSuccessClosure success,
-                                  final JsAuthErrorClosure error) {
-        messenger.signUp(name, null, null, password).start(new CommandCallback<AuthState>() {
             @Override
             public void onResult(AuthState res) {
                 success.onResult(Enums.convert(res));

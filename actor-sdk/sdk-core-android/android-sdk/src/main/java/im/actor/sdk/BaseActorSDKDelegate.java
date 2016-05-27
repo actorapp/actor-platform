@@ -1,10 +1,10 @@
 package im.actor.sdk;
 
-import android.content.Context;
+import android.app.Activity;
 import android.net.Uri;
 import android.provider.Settings;
-import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TableLayout;
 
 import im.actor.core.AuthState;
 import im.actor.core.entity.Peer;
@@ -13,9 +13,6 @@ import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.controllers.root.MainPhoneController;
 import im.actor.sdk.controllers.conversation.messages.MessageHolder;
 import im.actor.sdk.controllers.conversation.MessagesAdapter;
-import im.actor.sdk.controllers.auth.BaseAuthFragment;
-import im.actor.sdk.controllers.auth.SignPhoneFragment;
-import im.actor.sdk.controllers.settings.ActorSettingsCategory;
 import im.actor.sdk.controllers.settings.BaseActorProfileActivity;
 import im.actor.sdk.controllers.settings.BaseGroupInfoActivity;
 import im.actor.sdk.intents.ActorIntent;
@@ -26,26 +23,6 @@ import im.actor.sdk.intents.ActorIntentFragmentActivity;
  * of implementing ActorSDKDelegate
  */
 public class BaseActorSDKDelegate implements ActorSDKDelegate {
-
-    //
-    // Authentication Activity
-    //
-
-    @Deprecated
-    @Override
-    public AuthState getAuthStartState() {
-        return AuthState.AUTH_START;
-    }
-
-    /**
-     * Return desired fragment extending BaseAuthFragment for signing
-     *
-     * @return BaseAuthFragment for signing
-     */
-    @Override
-    public BaseAuthFragment getSignFragment() {
-        return new SignPhoneFragment();
-    }
 
     /**
      * Return non-null to open specific Activity for starting auth.
@@ -162,7 +139,7 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
      * @param uid    caller user id
      */
     @Override
-    public void onIncominCall(long callId, int uid) {
+    public void onIncomingCall(long callId, int uid) {
 
     }
 
@@ -194,14 +171,19 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
     /**
      * Override for hacking custom messages view holders
      *
-     * @param dataTypeHash                id in same order as added to AbsContent.registerConverter()
-     * @param messagesAdapter   adapter to pass to holder
-     * @param viewGroup         ViewGroup to pass to holder
+     * @param dataTypeHash    id in same order as added to AbsContent.registerConverter()
+     * @param messagesAdapter adapter to pass to holder
+     * @param viewGroup       ViewGroup to pass to holder
      * @return custom view holder
      */
     @Override
     public MessageHolder getCustomMessageViewHolder(int dataTypeHash, MessagesAdapter messagesAdapter, ViewGroup viewGroup) {
         return null;
+    }
+
+    @Override
+    public boolean onAttachMenuClicked(Activity activity) {
+        return false;
     }
 
     /**
@@ -214,46 +196,19 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
         return true;
     }
 
+    /**
+     * Method for hacking share menu in dialog
+     *
+     * @param shareMenu share menu
+     */
+    @Override
+    public void onShareMenuCreated(TableLayout shareMenu) {
+
+    }
+
     //
-    // Hacking settings activity
-
+    // Notifications
     //
-
-    @Deprecated
-    @Override
-    public View getBeforeNickSettingsView(Context context) {
-        return null;
-    }
-
-    @Deprecated
-    @Override
-    public View getAfterPhoneSettingsView(Context context) {
-        return null;
-    }
-
-    @Deprecated
-    @Override
-    public View getSettingsTopView(Context context) {
-        return null;
-    }
-
-    @Deprecated
-    @Override
-    public View getSettingsBottomView(Context context) {
-        return null;
-    }
-
-    @Deprecated
-    @Override
-    public ActorSettingsCategory[] getBeforeSettingsCategories() {
-        return null;
-    }
-
-    @Deprecated
-    @Override
-    public ActorSettingsCategory[] getAfterSettingsCategories() {
-        return null;
-    }
 
     public Uri getNotificationSoundForPeer(Peer peer) {
         return getNotificationSound();
@@ -270,6 +225,4 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
     public int getNotificationColor() {
         return ActorSDK.sharedActor().style.getMainColor();
     }
-
-
 }

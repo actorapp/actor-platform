@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Debug;
 import android.view.ViewGroup;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -44,7 +43,6 @@ import im.actor.sdk.core.AndroidCallProvider;
 import im.actor.sdk.core.AndroidNotifications;
 import im.actor.sdk.core.AndroidPhoneBook;
 import im.actor.sdk.core.ActorPushManager;
-import im.actor.sdk.intents.ActivityManager;
 import im.actor.sdk.intents.ActorIntent;
 import im.actor.sdk.intents.ActorIntentActivity;
 import im.actor.sdk.intents.ActorIntentFragmentActivity;
@@ -113,7 +111,7 @@ public class ActorSDK {
     /**
      * Actor App Name
      */
-    private String appName = "易联";
+    private String appName = "Actor";
     /**
      * Push Registration Id
      */
@@ -178,36 +176,31 @@ public class ActorSDK {
      */
     @NotNull
     private ActorSDKDelegate delegate = new BaseActorSDKDelegate();
-    /**
-     * ActivityManager
-     */
-    private ActivityManager activityManager = new ActivityManager();
 
     /**
      * Call enabled
      */
     private boolean callsEnabled = false;
+    private boolean videoCallsEnabled = false;
 
     private ActorSDK() {
-        endpoints = new String[]{"tcp://220.189.207.18:9070"};
-        trustedKeys = new String[]{"508D39F2BBDAB7776172478939362CD5127871B60151E9B86CD6D61AD1A75849"};
+        endpoints = new String[]{
+                "tls://front1-mtproto-api-rev2.actor.im@104.155.30.208",
+                "tls://front2-mtproto-api-rev2.actor.im@104.155.30.208",
+
+                "tcp://front1-mtproto-api-rev3.actor.im@104.155.30.208:443",
+                "tcp://front2-mtproto-api-rev3.actor.im@104.155.30.208:443",
+                "tcp://front3-mtproto-api-rev3.actor.im@104.155.30.208:443"
+        };
+        trustedKeys = new String[]{
+                "d9d34ed487bd5b434eda2ef2c283db587c3ae7fb88405c3834d9d1a6d247145b",
+                "4bd5422b50c585b5c8575d085e9fae01c126baa968dab56a396156759d5a7b46",
+                "ff61103913aed3a9a689b6d77473bc428d363a3421fdd48a8e307a08e404f02c",
+                "20613ab577f0891102b1f0a400ca53149e2dd05da0b77a728b62f5ebc8095878",
+                "fc49f2f2465f5b4e038ec7c070975858a8b5542aa6ec1f927a57c4f646e1c143",
+                "6709b8b733a9f20a96b9091767ac19fd6a2a978ba0dccc85a9ac8f6b6560ac1a"
+        };
     }
-    //        endpoints = new String[]{
-//                "tls://front1-mtproto-api-rev2.actor.im@104.155.30.208",
-//                "tls://front2-mtproto-api-rev2.actor.im@104.155.30.208",
-//
-//                "tcp://front1-mtproto-api-rev3.actor.im@104.155.30.208:443",
-//                "tcp://front2-mtproto-api-rev3.actor.im@104.155.30.208:443",
-//                "tcp://front3-mtproto-api-rev3.actor.im@104.155.30.208:443"
-//        };
-//        trustedKeys = new String[]{
-//                "d9d34ed487bd5b434eda2ef2c283db587c3ae7fb88405c3834d9d1a6d247145b",
-//                "4bd5422b50c585b5c8575d085e9fae01c126baa968dab56a396156759d5a7b46",
-//                "ff61103913aed3a9a689b6d77473bc428d363a3421fdd48a8e307a08e404f02c",
-//                "20613ab577f0891102b1f0a400ca53149e2dd05da0b77a728b62f5ebc8095878",
-//                "fc49f2f2465f5b4e038ec7c070975858a8b5542aa6ec1f927a57c4f646e1c143",
-//                "6709b8b733a9f20a96b9091767ac19fd6a2a978ba0dccc85a9ac8f6b6560ac1a"
-//        };
 
     /**
      * Shared ActorSDK. Use this method to get instance of SDK for configuration and starting up
@@ -250,9 +243,10 @@ public class ActorSDK {
                 builder.addEndpoint(s);
             }
             for (String t : trustedKeys) {
-                builder.addTrustedKey(t.toLowerCase());
+                builder.addTrustedKey(t);
             }
             builder.setPhoneBookProvider(new AndroidPhoneBook());
+            builder.setVideoCallsEnabled(videoCallsEnabled);
             builder.setNotificationProvider(new AndroidNotifications(application));
             builder.setDeviceCategory(DeviceCategory.MOBILE);
             builder.setPlatformType(PlatformType.ANDROID);
@@ -626,7 +620,7 @@ public class ActorSDK {
     /**
      * Setting is is fast share enabled - experimental feature, disabled by default
      *
-     * @param fastShareEnabled
+     * @param fastShareEnabled is fast share enabled
      */
     public void setFastShareEnabled(boolean fastShareEnabled) {
         this.fastShareEnabled = fastShareEnabled;
@@ -776,11 +770,6 @@ public class ActorSDK {
      */
     public void setDelegate(@NotNull ActorSDKDelegate delegate) {
         this.delegate = delegate;
-    }
-
-    @Deprecated
-    public ActivityManager getActivityManager() {
-        return activityManager;
     }
 
     /**
@@ -993,6 +982,14 @@ public class ActorSDK {
         } else {
             return callback.onNotDelegated();
         }
+    }
+
+    public boolean isVideoCallsEnabled() {
+        return videoCallsEnabled;
+    }
+
+    public void setVideoCallsEnabled(boolean videoCallsEnabled) {
+        this.videoCallsEnabled = videoCallsEnabled;
     }
 
     /**

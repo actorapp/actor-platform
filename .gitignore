@@ -144,6 +144,3 @@ dist
 actor-sdk/sdk-api/api-language/solutions/im.actor.api/source_gen
 actor-sdk/sdk-api/api-language/solutions/im.actor.api/source_gen.caches
 actor-sdk/sdk-api/api-language/solutions/im.actor.api/classes_gen
-settings.gradle
-*.gradle
-settings.gradle

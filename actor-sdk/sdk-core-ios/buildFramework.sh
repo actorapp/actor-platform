@@ -1,6 +1,6 @@
 set -e
 
-pod install --no-repo-update
+pod install
 pod update
 
 rm -fr build

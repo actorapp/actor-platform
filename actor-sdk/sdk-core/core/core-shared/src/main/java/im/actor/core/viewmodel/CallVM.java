@@ -11,6 +11,7 @@ import im.actor.runtime.*;
 import im.actor.runtime.actors.ActorTime;
 import im.actor.runtime.mvvm.ValueModel;
 import im.actor.runtime.threading.CommonTimer;
+import im.actor.runtime.webrtc.WebRTCPeerConnection;
 
 public class CallVM {
 
@@ -21,9 +22,13 @@ public class CallVM {
     @Property("nonatomic, readonly")
     private final ValueModel<CallState> state;
     @Property("nonatomic, readonly")
+    private final ValueModel<ArrayList<WebRTCPeerConnection>> peerConnection;
+    @Property("nonatomic, readonly")
     private final ValueModel<ArrayList<CallMember>> members;
     @Property("nonatomic, readonly")
     private final BooleanValueModel isMuted;
+    @Property("nonatomic, readonly")
+    private final BooleanValueModel isVideoEnabled;
     @Property("nonatomic, readonly")
     private long callStart;
     @Property("nonatomic, readonly")
@@ -38,8 +43,10 @@ public class CallVM {
         this.peer = peer;
         this.isOutgoing = isOutgoing;
         this.state = new ValueModel<>("calls." + callId + ".state", state);
+        this.peerConnection = new ValueModel<>("calls." + callId + ".peer_connection", new ArrayList<WebRTCPeerConnection>());
         this.members = new ValueModel<>("calls." + callId + ".members", new ArrayList<>(initialMembers));
-        this.isMuted = new BooleanValueModel("calls." + callId + ".state", false);
+        this.isMuted = new BooleanValueModel("calls." + callId + ".muted", false);
+        this.isVideoEnabled = new BooleanValueModel("calls." + callId + ".video_enabled", true);
         this.callStart = 0;
     }
 
@@ -57,6 +64,10 @@ public class CallVM {
 
     public BooleanValueModel getIsMuted() {
         return isMuted;
+    }
+
+    public BooleanValueModel getIsVideoEnabled() {
+        return isVideoEnabled;
     }
 
     public ValueModel<CallState> getState() {
@@ -81,5 +92,9 @@ public class CallVM {
 
     public void setCallEnd(long callEnd) {
         this.callEnd = callEnd;
+    }
+
+    public ValueModel<ArrayList<WebRTCPeerConnection>> getPeerConnection() {
+        return peerConnection;
     }
 }

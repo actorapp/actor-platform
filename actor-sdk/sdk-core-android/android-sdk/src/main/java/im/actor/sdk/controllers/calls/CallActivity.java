@@ -8,6 +8,7 @@ import android.view.WindowManager;
 
 import im.actor.core.entity.PeerType;
 import im.actor.core.viewmodel.CallVM;
+import im.actor.runtime.android.AndroidWebRTCRuntimeProvider;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.activity.BaseFragmentActivity;
@@ -25,20 +26,25 @@ public class CallActivity extends BaseFragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Thread.setDefaultUncaughtExceptionHandler(
+                new UnhandledExceptionHandler(this));
+
+        AndroidWebRTCRuntimeProvider.postToHandler(new Runnable() {
+            @Override
+            public void run() {
+                Thread.setDefaultUncaughtExceptionHandler(
+                        new UnhandledExceptionHandler(CallActivity.this));
+
+            }
+        });
+
         getSupportActionBar().setTitle("Call");
         getSupportActionBar().hide();
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         if (savedInstanceState == null) {
-            boolean incoming = getIntent().getBooleanExtra("incoming", false);
-            if (incoming) {
-                getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
-                        WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
-                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
-                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
-            }
             callId = getIntent().getLongExtra("callId", -1);
-            showFragment(new CallFragment(callId, incoming), false, false);
+            showFragment(new CallFragment(callId), false, false);
         }
     }
 

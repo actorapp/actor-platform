@@ -2,17 +2,17 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import React, { Component, PropTypes } from 'react';
+import { isFunction } from 'lodash';
+import React, { Component } from 'react';
 import { Container } from 'flux/utils';
+import DelegateContainer from '../utils/DelegateContainer';
 
-import DefaultHeaderSection from './sidebar/HeaderSection.react';
 import DefaultRecent from './sidebar/Recent.react';
-import QuickSearchButton from './sidebar/QuickSearchButton.react';
 
 import DialogStore from '../stores/DialogStore';
 import ArchiveStore from '../stores/ArchiveStore';
 
-class SidebarSection extends Component {
+class Sidebar extends Component {
   static getStores() {
     return [DialogStore, ArchiveStore];
   }
@@ -25,33 +25,42 @@ class SidebarSection extends Component {
     };
   }
 
-  static contextTypes = {
-    delegate: PropTypes.object
-  };
+  constructor(props) {
+    super(props);
+
+    this.components = this.getComponents();
+  }
+
+  getComponents() {
+    const { components } = DelegateContainer.get();
+    const sidebar = components.sidebar;
+
+    if (sidebar) {
+      return {
+        Recent: isFunction(sidebar.recent) ? sidebar.recent : DefaultRecent
+      };
+    }
+
+    return {
+      Recent: DefaultRecent
+    };
+  }
+
 
   render() {
-    const { delegate } = this.context;
     const { currentPeer, dialogs, archive } = this.state;
-
-    let HeaderSection, Recent, FooterSection;
-    if (delegate.components.sidebar !== null && typeof delegate.components.sidebar !== 'function') {
-      HeaderSection = delegate.components.sidebar.header || DefaultHeaderSection;
-      Recent = delegate.components.sidebar.recent || DefaultRecent;
-      FooterSection = delegate.components.sidebar.footer || QuickSearchButton;
-    } else {
-      HeaderSection = DefaultHeaderSection;
-      Recent = DefaultRecent;
-      FooterSection = QuickSearchButton;
-    }
+    const { Recent } = this.components;
 
     return (
       <aside className="sidebar">
-        <HeaderSection/>
-        <Recent currentPeer={currentPeer} dialogs={dialogs} archive={archive} />
-        <FooterSection/>
+        <Recent
+          currentPeer={currentPeer}
+          dialogs={dialogs}
+          archive={archive}
+        />
       </aside>
     );
   }
 }
 
-export default Container.create(SidebarSection, { pure: false });
+export default Container.create(Sidebar, { pure: false });

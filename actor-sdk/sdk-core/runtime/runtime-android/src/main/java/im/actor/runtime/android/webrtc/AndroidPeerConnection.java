@@ -1,7 +1,5 @@
 package im.actor.runtime.android.webrtc;
 
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 
 import org.jetbrains.annotations.NotNull;
@@ -13,7 +11,6 @@ import org.webrtc.Logging;
 import org.webrtc.MediaConstraints;
 import org.webrtc.MediaStream;
 import org.webrtc.PeerConnection;
-import org.webrtc.PeerConnectionFactory;
 import org.webrtc.SdpObserver;
 import org.webrtc.SessionDescription;
 
@@ -21,7 +18,6 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
 
-import im.actor.runtime.android.AndroidContext;
 import im.actor.runtime.android.AndroidWebRTCRuntimeProvider;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseFunc;
@@ -37,8 +33,12 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
 
     private static final boolean LIBJINGLE_LOGS = false;
 
-    public AndroidPeerConnection(WebRTCIceServer[] webRTCIceServers, WebRTCSettings settings) {
+    private AndroidMediaStream localStream;
+    private boolean videoCallEnabled = true;
+    private WebRTCSettings settings;
 
+    public AndroidPeerConnection(WebRTCIceServer[] webRTCIceServers, WebRTCSettings settings) {
+        this.settings = settings;
         if (LIBJINGLE_LOGS) {
             Logging.enableTracing("logcat:",
                     EnumSet.of(Logging.TraceLevel.TRACE_ALL),
@@ -63,7 +63,7 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
         AndroidWebRTCRuntimeProvider.postToHandler(new Runnable() {
             @Override
             public void run() {
-                AndroidPeerConnection.this.peerConnection = AndroidWebRTCRuntimeProvider.FACTORY.createPeerConnection(servers, new MediaConstraints(), new PeerConnection.Observer() {
+                AndroidPeerConnection.this.peerConnection = AndroidWebRTCRuntimeProvider.FACTORY.createPeerConnection(servers, getMediaConstraints(), new PeerConnection.Observer() {
                     @Override
                     public void onSignalingChange(PeerConnection.SignalingState signalingState) {
 
@@ -108,6 +108,14 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
                                 c.onStreamRemoved(stream1);
                             }
                         }
+
+                        if (settings.isVideoEnabled()) {
+                            try {
+                                stream.videoTracks.get(0).dispose();
+                            } catch (Exception e) {
+
+                            }
+                        }
                     }
 
                     @Override
@@ -136,6 +144,17 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
         if (!callbacks.contains(callback)) {
             callbacks.add(callback);
         }
+
+        if (settings.isVideoEnabled()) {
+            if (localStream != null) {
+                callback.onOwnStreamAdded(localStream);
+            }
+
+            for (MediaStream mediaStream : streams.keySet()) {
+                callback.onStreamAdded(streams.get(mediaStream));
+            }
+        }
+
     }
 
     @Override
@@ -158,7 +177,11 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
         AndroidWebRTCRuntimeProvider.postToHandler(new Runnable() {
             @Override
             public void run() {
-                peerConnection.addStream(((AndroidMediaStream) stream).getStream());
+                AndroidPeerConnection.this.localStream = (AndroidMediaStream) stream;
+                for (WebRTCPeerConnectionCallback c : callbacks) {
+                    c.onOwnStreamAdded(stream);
+                }
+                peerConnection.addStream(AndroidPeerConnection.this.localStream.getStream());
             }
         });
     }
@@ -168,6 +191,9 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
         AndroidWebRTCRuntimeProvider.postToHandler(new Runnable() {
             @Override
             public void run() {
+                for (WebRTCPeerConnectionCallback c : callbacks) {
+                    c.onOwnStreamRemoved(stream);
+                }
                 peerConnection.removeStream(((AndroidMediaStream) stream).getStream());
             }
         });
@@ -278,12 +304,29 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
                             public void onSetFailure(String s) {
                                 //we are just creating here
                             }
-                        }, new MediaConstraints());
+                        }, settings.isVideoEnabled() ? getMediaConstraints() : new MediaConstraints());
                     }
                 });
 
             }
         });
+    }
+
+    @NonNull
+    public MediaConstraints getMediaConstraints() {
+        MediaConstraints constraints = new MediaConstraints();
+
+        constraints.mandatory.add(new MediaConstraints.KeyValuePair(
+                "OfferToReceiveAudio", "true"));
+        if (videoCallEnabled) {
+            constraints.mandatory.add(new MediaConstraints.KeyValuePair(
+                    "OfferToReceiveVideo", "true"));
+        } else {
+            constraints.mandatory.add(new MediaConstraints.KeyValuePair(
+                    "OfferToReceiveVideo", "false"));
+        }
+
+        return constraints;
     }
 
     @NotNull
@@ -315,7 +358,7 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
                             public void onSetFailure(String s) {
                                 //we are just creating here
                             }
-                        }, new MediaConstraints());
+                        }, settings.isVideoEnabled() ? getMediaConstraints() : new MediaConstraints());
                     }
                 });
 
@@ -329,9 +372,26 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
             @Override
             public void run() {
                 peerConnection.dispose();
+
+                if (settings.isVideoEnabled()) {
+                    for (WebRTCPeerConnectionCallback c : callbacks) {
+                        c.onDisposed();
+                    }
+
+                    localStream = null;
+                }
+
             }
         });
 
 
+    }
+
+    public HashMap<MediaStream, AndroidMediaStream> getStreams() {
+        return streams;
+    }
+
+    public AndroidMediaStream getLocalStream() {
+        return localStream;
     }
 }

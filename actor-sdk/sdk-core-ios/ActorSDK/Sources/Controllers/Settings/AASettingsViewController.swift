@@ -11,7 +11,7 @@ public class AASettingsViewController: AAContentTableController {
     private var emailCells: AAManagedArrayRows<ACUserEmail, AATitledCell>!
     
     private var headerCell: AAAvatarRow!
-    //private var nicknameCell: AATitledRow!
+    private var nicknameCell: AATitledRow!
     private var aboutCell: AATitledRow!
     
     public init() {
@@ -113,33 +113,33 @@ public class AASettingsViewController: AAContentTableController {
             }
             
             // Profile: Set Name
-//            s.action("SettingsChangeName") { [unowned self] (r) -> () in
-//                r.selectAction = { [unowned self] () -> Bool in
-//                    
-//                    self.startEditField { (c) -> () in
-//                        c.title = "SettingsEditHeader"
-//                        c.hint = "SettingsEditHint"
-//                        
-//                        c.initialText = self.user.getNameModel().get()
-//                        
-//                        c.fieldAutocapitalizationType = .Words
-//                        c.fieldHint = "SettingsEditFieldHint"
-//                        
-//                        c.didDoneTap = { (t, c) -> () in
-//
-//                            if t.length == 0 {
-//                                return
-//                            }
-//                            
-//                            c.executeSafeOnlySuccess(Actor.editMyNameCommandWithName(t)!) { (val) -> Void in
-//                                c.dismiss()
-//                            }
-//                        }
-//                    }
-//                    
-//                    return true
-//                }
-//            }
+            s.action("SettingsChangeName") { [unowned self] (r) -> () in
+                r.selectAction = { [unowned self] () -> Bool in
+                    
+                    self.startEditField { (c) -> () in
+                        c.title = "SettingsEditHeader"
+                        c.hint = "SettingsEditHint"
+                        
+                        c.initialText = self.user.getNameModel().get()
+                        
+                        c.fieldAutocapitalizationType = .Words
+                        c.fieldHint = "SettingsEditFieldHint"
+                        
+                        c.didDoneTap = { (t, c) -> () in
+
+                            if t.length == 0 {
+                                return
+                            }
+                            
+                            c.executeSafeOnlySuccess(Actor.editMyNameCommandWithName(t)!) { (val) -> Void in
+                                c.dismiss()
+                            }
+                        }
+                    }
+                    
+                    return true
+                }
+            }
             
             ActorSDK.sharedActor().delegate.actorSettingsHeaderDidCreated(self, section: s)
         }
@@ -181,50 +181,50 @@ public class AASettingsViewController: AAContentTableController {
         section { [unowned self] (s) -> () in
 
             // Contacts: Nicknames
-//            self.nicknameCell = s.titled("ProfileUsername") { [unowned self] (r) -> () in
-//                
-//                r.accessoryType = .DisclosureIndicator
-//
-//                r.bindAction = { [unowned self] (r) -> () in
-//                    if let nick = self.user.getNickModel().get() {
-//                        r.subtitle = "@\(nick)"
-//                        r.isAction = false
-//                    } else {
-//                        r.subtitle = AALocalized("SettingsUsernameNotSet")
-//                        r.isAction = true
-//                    }
-//                }
-//                
-//                r.selectAction = { [unowned self] () -> Bool in
-//                    
-//                    self.startEditField { (c) -> () in
-//                        
-//                        c.title = "SettingsUsernameTitle"
-//                        c.actionTitle = "AlertSave"
-//                        
-//                        if let nick = self.user.getNickModel().get() {
-//                            c.initialText = nick
-//                        }
-//                        
-//                        c.fieldHint = "SettingsUsernameHintField"
-//                        c.fieldAutocorrectionType = .No
-//                        c.fieldAutocapitalizationType = .None
-//                        c.hint = "SettingsUsernameHint"
-//                        
-//                        c.didDoneTap = { (t, c) -> () in
-//                            var nNick: String? = t.trim()
-//                            if nNick?.length == 0 {
-//                                nNick = nil
-//                            }
-//                            c.executeSafeOnlySuccess(Actor.editMyNickCommandWithNick(nNick)!, successBlock: { (val) -> Void in
-//                                c.dismiss()
-//                            })
-//                        }
-//                    }
-//                    
-//                    return AADevice.isiPad
-//                }
-//            }
+            self.nicknameCell = s.titled("ProfileUsername") { [unowned self] (r) -> () in
+                
+                r.accessoryType = .DisclosureIndicator
+
+                r.bindAction = { [unowned self] (r) -> () in
+                    if let nick = self.user.getNickModel().get() {
+                        r.subtitle = "@\(nick)"
+                        r.isAction = false
+                    } else {
+                        r.subtitle = AALocalized("SettingsUsernameNotSet")
+                        r.isAction = true
+                    }
+                }
+                
+                r.selectAction = { [unowned self] () -> Bool in
+                    
+                    self.startEditField { (c) -> () in
+                        
+                        c.title = "SettingsUsernameTitle"
+                        c.actionTitle = "AlertSave"
+                        
+                        if let nick = self.user.getNickModel().get() {
+                            c.initialText = nick
+                        }
+                        
+                        c.fieldHint = "SettingsUsernameHintField"
+                        c.fieldAutocorrectionType = .No
+                        c.fieldAutocapitalizationType = .None
+                        c.hint = "SettingsUsernameHint"
+                        
+                        c.didDoneTap = { (t, c) -> () in
+                            var nNick: String? = t.trim()
+                            if nNick?.length == 0 {
+                                nNick = nil
+                            }
+                            c.executeSafeOnlySuccess(Actor.editMyNickCommandWithNick(nNick)!, successBlock: { (val) -> Void in
+                                c.dismiss()
+                            })
+                        }
+                    }
+                    
+                    return AADevice.isiPad
+                }
+            }
             
             // Contacts: About
             self.aboutCell = s.titled("ProfileAbout") { [unowned self] (r) -> () in
@@ -347,9 +347,9 @@ public class AASettingsViewController: AAContentTableController {
             }
 
             // Support: Twitter
-//            if let twitter = ActorSDK.sharedActor().supportTwitter {
-//                s.url("SettingsTwitter", url: "https://twitter.com/\(twitter)")
-//            }
+            if let twitter = ActorSDK.sharedActor().supportTwitter {
+                s.url("SettingsTwitter", url: "https://twitter.com/\(twitter)")
+            }
 
             // Support: Home page
             if let homePage = ActorSDK.sharedActor().supportHomepage {
@@ -386,9 +386,9 @@ public class AASettingsViewController: AAContentTableController {
         
         // Bind nick
         
-//        binder.bind(user.getNickModel()) { [unowned self] (value: String?) -> () in
-//            self.nicknameCell.reload()
-//        }
+        binder.bind(user.getNickModel()) { [unowned self] (value: String?) -> () in
+            self.nicknameCell.reload()
+        }
         
         // Bind about
         

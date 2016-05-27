@@ -107,7 +107,6 @@ object Dependencies {
 
     val guava                   = "com.google.guava"              % "guava"                          % "19.0"
     val alpn                    = "org.eclipse.jetty.alpn"        % "alpn-api"                       % "1.1.2.v20150522" % "runtime"
-    val tcnativefedora                = "io.netty"                      % "netty-tcnative"                 % "1.1.33.Fork15" classifier "linux-x86_64-fedora"
     val tcnative                = "io.netty"                      % "netty-tcnative"                 % "1.1.33.Fork15" classifier "linux-x86_64"
   }
 
@@ -191,7 +190,7 @@ object Dependencies {
   val sms = shared ++ Seq(akkaActor, akkaHttp, dispatch)
 
   val codecs = shared ++ Seq(scodecBits, scodecCore)
-
+  
   val models = shared ++ Seq(scodecBits, scodecCore, jodaTime, jodaConvert, slickPg)
 
   val fileAdapter = shared ++ Seq(amazonaws, apacheCommonsCodec, apacheCommonsIo, awsWrap, betterFiles)

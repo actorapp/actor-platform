@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import im.actor.core.ApiConfiguration;
+import im.actor.core.api.ApiConfig;
 import im.actor.core.api.ApiGroupOutPeer;
 import im.actor.core.api.ApiMessageAttributes;
 import im.actor.core.api.ApiOutPeer;
@@ -27,22 +29,31 @@ import im.actor.core.api.rpc.RequestJoinGroup;
 import im.actor.core.api.rpc.RequestKickUser;
 import im.actor.core.api.rpc.RequestLeaveGroup;
 import im.actor.core.api.rpc.RequestMakeUserAdmin;
+import im.actor.core.api.rpc.RequestMakeUserAdminObsolete;
 import im.actor.core.api.rpc.RequestRevokeIntegrationToken;
 import im.actor.core.api.rpc.RequestRevokeInviteUrl;
 import im.actor.core.api.rpc.ResponseIntegrationToken;
 import im.actor.core.api.rpc.ResponseInviteUrl;
 import im.actor.core.api.updates.UpdateGroupAboutChanged;
+import im.actor.core.api.updates.UpdateGroupAboutChangedObsolete;
 import im.actor.core.api.updates.UpdateGroupMembersUpdate;
+import im.actor.core.api.updates.UpdateGroupMembersUpdateObsolete;
 import im.actor.core.api.updates.UpdateGroupTitleChanged;
+import im.actor.core.api.updates.UpdateGroupTitleChangedObsolete;
 import im.actor.core.api.updates.UpdateGroupTopicChanged;
+import im.actor.core.api.updates.UpdateGroupTopicChangedObsolete;
 import im.actor.core.api.updates.UpdateGroupUserInvited;
+import im.actor.core.api.updates.UpdateGroupUserInvitedObsolete;
 import im.actor.core.api.updates.UpdateGroupUserKick;
+import im.actor.core.api.updates.UpdateGroupUserKickObsolete;
 import im.actor.core.api.updates.UpdateGroupUserLeave;
+import im.actor.core.api.updates.UpdateGroupUserLeaveObsolete;
 import im.actor.core.api.updates.UpdateMessage;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.User;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.api.ApiSupportConfiguration;
 import im.actor.core.modules.groups.router.GroupRouterInt;
 import im.actor.core.modules.profile.avatar.GroupAvatarChangeActor;
 import im.actor.core.util.RandomUtils;
@@ -122,7 +133,7 @@ public class GroupsModule extends AbsModule {
                     return peers;
                 })
                 .flatMap(apiUserOutPeers ->
-                        api(new RequestCreateGroup(RandomUtils.nextRid(), title, apiUserOutPeers, null, null)))
+                        api(new RequestCreateGroup(RandomUtils.nextRid(), title, apiUserOutPeers, null, ApiSupportConfiguration.OPTIMIZATIONS)))
                 .chain(response -> updates().applyRelatedData(response.getUsers(), response.getGroup()))
                 .map(responseCreateGroup -> responseCreateGroup.getGroup().getId())
                 .then(integer -> {
@@ -139,12 +150,13 @@ public class GroupsModule extends AbsModule {
                         api(new RequestInviteUser(
                                 new ApiGroupOutPeer(gid, groupUserTuple2.getT1().getAccessHash()),
                                 rid,
-                                new ApiUserOutPeer(uid, groupUserTuple2.getT2().getAccessHash()))))
+                                new ApiUserOutPeer(uid, groupUserTuple2.getT2().getAccessHash()),
+                                ApiSupportConfiguration.OPTIMIZATIONS)))
                 .flatMap(responseSeqDate ->
                         updates().applyUpdate(
                                 responseSeqDate.getSeq(),
                                 responseSeqDate.getState(),
-                                new UpdateGroupUserInvited(
+                                new UpdateGroupUserInvitedObsolete(
                                         gid, rid,
                                         uid, myUid(),
                                         responseSeqDate.getDate())
@@ -158,12 +170,13 @@ public class GroupsModule extends AbsModule {
                         api(new RequestKickUser(
                                 new ApiGroupOutPeer(gid, groupUserTuple2.getT1().getAccessHash()),
                                 rid,
-                                new ApiUserOutPeer(uid, groupUserTuple2.getT2().getAccessHash()))))
+                                new ApiUserOutPeer(uid, groupUserTuple2.getT2().getAccessHash()),
+                                ApiSupportConfiguration.OPTIMIZATIONS)))
                 .flatMap(responseSeqDate ->
                         updates().applyUpdate(
                                 responseSeqDate.getSeq(),
                                 responseSeqDate.getState(),
-                                new UpdateGroupUserKick(
+                                new UpdateGroupUserKickObsolete(
                                         gid,
                                         rid,
                                         uid,
@@ -178,12 +191,13 @@ public class GroupsModule extends AbsModule {
                 .flatMap(group ->
                         api(new RequestLeaveGroup(
                                 new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()),
-                                rid)))
+                                rid,
+                                ApiSupportConfiguration.OPTIMIZATIONS)))
                 .flatMap(responseSeqDate ->
                         updates().applyUpdate(
                                 responseSeqDate.getSeq(),
                                 responseSeqDate.getState(),
-                                new UpdateGroupUserLeave(
+                                new UpdateGroupUserLeaveObsolete(
                                         gid,
                                         rid,
                                         myUid(),
@@ -194,14 +208,14 @@ public class GroupsModule extends AbsModule {
 
     public Promise<Void> makeAdmin(final int gid, final int uid) {
         return Promises.tuple(getGroups().getValueAsync(gid), users().getValueAsync(uid))
-                .flatMap(groupUserTuple2 -> api(new RequestMakeUserAdmin(
+                .flatMap(groupUserTuple2 -> api(new RequestMakeUserAdminObsolete(
                         new ApiGroupOutPeer(gid, groupUserTuple2.getT1().getAccessHash()),
                         new ApiUserOutPeer(uid, groupUserTuple2.getT2().getAccessHash()))))
                 .flatMap(responseMakeUserAdmin ->
                         updates().applyUpdate(
                                 responseMakeUserAdmin.getSeq(),
                                 responseMakeUserAdmin.getState(),
-                                new UpdateGroupMembersUpdate(gid, responseMakeUserAdmin.getMembers())
+                                new UpdateGroupMembersUpdateObsolete(gid, responseMakeUserAdmin.getMembers())
                         ));
     }
 
@@ -212,11 +226,12 @@ public class GroupsModule extends AbsModule {
                 .flatMap(group ->
                         api(new RequestEditGroupTitle(
                                 new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()),
-                                rid, name)))
+                                rid, name,
+                                ApiSupportConfiguration.OPTIMIZATIONS)))
                 .flatMap(responseSeqDate -> updates().applyUpdate(
                         responseSeqDate.getSeq(),
                         responseSeqDate.getState(),
-                        new UpdateGroupTitleChanged(
+                        new UpdateGroupTitleChangedObsolete(
                                 gid, rid,
                                 myUid(), name,
                                 responseSeqDate.getDate()))
@@ -229,11 +244,12 @@ public class GroupsModule extends AbsModule {
                 .flatMap(group ->
                         api(new RequestEditGroupTopic(
                                 new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()),
-                                rid, theme)))
+                                rid, theme,
+                                ApiSupportConfiguration.OPTIMIZATIONS)))
                 .flatMap(responseSeqDate -> updates().applyUpdate(
                         responseSeqDate.getSeq(),
                         responseSeqDate.getState(),
-                        new UpdateGroupTopicChanged(
+                        new UpdateGroupTopicChangedObsolete(
                                 gid, rid,
                                 myUid(), theme,
                                 responseSeqDate.getDate())
@@ -246,11 +262,11 @@ public class GroupsModule extends AbsModule {
                 .flatMap(group ->
                         api(new RequestEditGroupAbout(
                                 new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()),
-                                rid, about)))
+                                rid, about, ApiSupportConfiguration.OPTIMIZATIONS)))
                 .flatMap(responseSeqDate -> updates().applyUpdate(
                         responseSeqDate.getSeq(),
                         responseSeqDate.getState(),
-                        new UpdateGroupAboutChanged(
+                        new UpdateGroupAboutChangedObsolete(
                                 gid, about)
                 ));
     }
@@ -285,7 +301,7 @@ public class GroupsModule extends AbsModule {
     }
 
     public Promise<Integer> joinGroupByToken(final String token) {
-        return api(new RequestJoinGroup(token))
+        return api(new RequestJoinGroup(token, ApiSupportConfiguration.OPTIMIZATIONS))
                 .chain(responseJoinGroup ->
                         updates().applyUpdate(
                                 responseJoinGroup.getSeq(),

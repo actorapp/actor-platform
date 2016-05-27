@@ -20,9 +20,9 @@ import ActorSDK
         ActorSDK.sharedActor().enableExperimentalFeatures = true
         
         // Setting Development Push Id
-        ActorSDK.sharedActor().apiPushId = 1
+        ActorSDK.sharedActor().apiPushId = 868547
         
-        ActorSDK.sharedActor().authStrategy = .Username
+        ActorSDK.sharedActor().authStrategy = .PhoneEmail
         
         // Creating Actor
         ActorSDK.sharedActor().createActor()

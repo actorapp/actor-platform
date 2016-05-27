@@ -1,5 +1,7 @@
-.confirm {
-  max-width: 360px;
+.confirm,
+.alert {
+  min-width: 360px;
+  max-width: 420px;
   margin-top: 100px;
   .modal__header {
     height: auto;

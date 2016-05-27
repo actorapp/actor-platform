@@ -1,19 +1,16 @@
 package im.actor.sdk;
 
-import android.content.Context;
+import android.app.Activity;
 import android.net.Uri;
-import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TableLayout;
 
-import im.actor.core.AuthState;
 import im.actor.core.entity.Peer;
 import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.controllers.root.MainPhoneController;
 import im.actor.sdk.controllers.conversation.messages.MessageHolder;
 import im.actor.sdk.controllers.conversation.MessagesAdapter;
-import im.actor.sdk.controllers.auth.BaseAuthFragment;
-import im.actor.sdk.controllers.settings.ActorSettingsCategory;
 import im.actor.sdk.controllers.settings.BaseActorProfileActivity;
 import im.actor.sdk.controllers.settings.BaseGroupInfoActivity;
 import im.actor.sdk.intents.ActorIntent;
@@ -55,7 +52,7 @@ public interface ActorSDKDelegate {
     /**
      * If not null returned, overrides users profile activity intent
      *
-     * @param uid   user id
+     * @param uid user id
      * @return Actor Intent
      */
     BaseActorProfileActivity getProfileIntent(int uid);
@@ -84,9 +81,9 @@ public interface ActorSDKDelegate {
     /**
      * If not null returned, overrides chat activity intent
      *
+     * @param peer    chat peer
+     * @param compose pop up keyboard at start
      * @return Actor Intent
-     * @param peer      chat peer
-     * @param compose   pop up keyboard at start
      */
     ActorIntent getChatIntent(Peer peer, boolean compose);
 
@@ -96,7 +93,7 @@ public interface ActorSDKDelegate {
      * @param callId call id
      * @param uid    caller user id
      */
-    void onIncominCall(long callId, int uid);
+    void onIncomingCall(long callId, int uid);
 
     /**
      * Override for hacking default messages view holders
@@ -120,12 +117,20 @@ public interface ActorSDKDelegate {
     /**
      * Override for hacking custom messages view holders
      *
-     * @param dataTypeHash      json dataType hash
-     * @param messagesAdapter   adapter to pass to holder
-     * @param viewGroup         ViewGroup to pass to holder
+     * @param dataTypeHash    json dataType hash
+     * @param messagesAdapter adapter to pass to holder
+     * @param viewGroup       ViewGroup to pass to holder
      * @return custom view holder
      */
     MessageHolder getCustomMessageViewHolder(int dataTypeHash, MessagesAdapter messagesAdapter, ViewGroup viewGroup);
+
+    /**
+     * Return True if custom share menu is clicked
+     *
+     * @param activity called from activity
+     * @return true if custom share menu shown
+     */
+    boolean onAttachMenuClicked(Activity activity);
 
     /**
      * Override for setting specific notification sound for peer
@@ -167,27 +172,10 @@ public interface ActorSDKDelegate {
      */
     boolean useActorPush();
 
-    @Deprecated
-    AuthState getAuthStartState();
-
-    @Deprecated
-    BaseAuthFragment getSignFragment();
-
-    @Deprecated
-    View getBeforeNickSettingsView(Context context);
-
-    @Deprecated
-    View getAfterPhoneSettingsView(Context context);
-
-    @Deprecated
-    View getSettingsTopView(Context context);
-
-    @Deprecated
-    View getSettingsBottomView(Context context);
-
-    @Deprecated
-    ActorSettingsCategory[] getBeforeSettingsCategories();
-
-    @Deprecated
-    ActorSettingsCategory[] getAfterSettingsCategories();
+    /**
+     * Method for hacking share menu in dialog
+     *
+     * @param shareMenu share menu
+     */
+    void onShareMenuCreated(TableLayout shareMenu);
 }

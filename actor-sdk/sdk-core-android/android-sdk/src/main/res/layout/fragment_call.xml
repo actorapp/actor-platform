@@ -10,6 +10,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <org.webrtc.SurfaceViewRenderer
+        android:visibility="invisible"
+        android:id="@+id/remote_renderer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -36,6 +42,7 @@
             android:layout_weight="1">
 
             <View
+                android:visibility="invisible"
                 android:id="@+id/layer"
                 android:layout_width="82dp"
                 android:layout_height="82dp"

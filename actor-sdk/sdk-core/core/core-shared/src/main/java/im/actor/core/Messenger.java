@@ -48,7 +48,6 @@ import im.actor.core.events.PeerChatOpened;
 import im.actor.core.events.PeerInfoClosed;
 import im.actor.core.events.PeerInfoOpened;
 import im.actor.core.events.UserVisible;
-import im.actor.core.modules.api.entity.SignUpNameState;
 import im.actor.core.network.NetworkState;
 import im.actor.core.util.ActorTrace;
 import im.actor.core.util.Timing;
@@ -166,19 +165,6 @@ public class Messenger {
     }
 
     /**
-     * Starting username auth
-     *
-     * @param email email for authentication
-     * @return promise of AuthStartRes
-     */
-    @NotNull
-    @ObjectiveCName("doStartAuthWithUsername:")
-    public Promise<AuthStartRes> doStartUsernameAuth(String username) {
-        return modules.getAuthModule().doStartUsernameAuth(username);
-    }
-
-
-    /**
      * Starting phone auth
      *
      * @param phone phone for authentication
@@ -203,19 +189,6 @@ public class Messenger {
         return modules.getAuthModule().doValidateCode(transactionHash, code);
     }
 
-    /**
-     * Validating password
-     *
-     * @param password        password
-     * @param transactionHash transaction hash
-     * @return promise of AuthCodeRes
-     */
-    @NotNull
-    @ObjectiveCName("doValidatePassword:withTransaction:")
-    public Promise<AuthCodeRes> doValidatePassword(String password, String transactionHash) {
-        return modules.getAuthModule().doValidatePassword(transactionHash, password);
-    }
-
 
     /**
      * Sending activation code via voice
@@ -228,6 +201,7 @@ public class Messenger {
     public Promise<Boolean> doSendCodeViaCall(String transactionHash) {
         return modules.getAuthModule().doSendCall(transactionHash);
     }
+
     /**
      * Signing Up
      *
@@ -237,22 +211,9 @@ public class Messenger {
      * @return promise of AuthRes
      */
     @NotNull
-    @ObjectiveCName("doSignupWithName:withSex:withTransaction:withPassword:")
+    @ObjectiveCName("doSignupWithName:withSex:withTransaction:")
     public Promise<AuthRes> doSignup(String name, Sex sex, String transactionHash) {
         return modules.getAuthModule().doSignup(name, sex, transactionHash);
-    }
-    /**
-     * Signing Up
-     *
-     * @param name            name
-     * @param sex             sex of user
-     * @param transactionHash transaction hash
-     * @return promise of AuthRes
-     */
-    @NotNull
-    @ObjectiveCName("doSignupWithName:withSex:withTransaction:withPassword:")
-    public Promise<AuthRes> doSignup(String name, Sex sex, String transactionHash,String password) {
-        return modules.getAuthModule().doSignup(name, sex, transactionHash ,password);
     }
 
     /**
@@ -376,8 +337,6 @@ public class Messenger {
         return modules.getAuthModule().requestValidatePassword(password);
     }
 
-
-
     /**
      * Perform signup
      *
@@ -390,20 +349,6 @@ public class Messenger {
     @ObjectiveCName("signUpCommandWithName:WithSex:withAvatar:")
     public Command<AuthState> signUp(String name, Sex sex, String avatarPath) {
         return modules.getAuthModule().signUp(name, ApiSex.UNKNOWN, avatarPath);
-    }
-
-    /**
-     * Perform signup
-     *
-     * @param name       Name of User
-     * @param sex        user sex
-     * @param avatarPath File descriptor of avatar (may be null if not set)
-     * @return Comand for execution
-     */
-    @NotNull
-    @ObjectiveCName("signUpCommandWithName:WithSex:withAvatar:withPassword:")
-    public Command<AuthState> signUp(String name, Sex sex, String avatarPath,String password) {
-        return modules.getAuthModule().signUp(name, ApiSex.UNKNOWN, avatarPath,password);
     }
 
     /**
@@ -429,25 +374,6 @@ public class Messenger {
     public String getAuthEmail() {
         return modules.getAuthModule().getEmail();
     }
-
-    @ObjectiveCName("getAuthZHName")
-    @Deprecated
-    public String getAuthZHName() {
-        return modules.getAuthModule().getZHName();
-    }
-
-    @ObjectiveCName("setAuthWebServiceIp")
-    @Deprecated
-    public void setAuthWebServiceIp(String ip) {
-         modules.getAuthModule().setAuthWebServiceIp(ip);
-    }
-
-    @ObjectiveCName("getAuthWebServiceIp")
-    @Deprecated
-    public String getAuthWebServiceIp() {
-        return modules.getAuthModule().getAuthWebServiceIp();
-    }
-
 
     /**
      * Resetting authentication process
@@ -924,6 +850,23 @@ public class Messenger {
     }
 
     /**
+     * Send Animation message
+     *
+     * @param peer       destination peer
+     * @param fileName   File name (without path)
+     * @param w          photo width
+     * @param h          photo height
+     * @param fastThumb  Fast thumb of photo
+     * @param descriptor File Descriptor
+     */
+    @ObjectiveCName("sendAnimationWithPeer:withName:withW:withH:withThumb:withDescriptor:")
+    public void sendAnimation(@NotNull Peer peer, @NotNull String fileName,
+                              int w, int h, @Nullable FastThumb fastThumb,
+                              @NotNull String descriptor) {
+        modules.getMessagesModule().sendAnimation(peer, fileName, w, h, fastThumb, descriptor);
+    }
+
+    /**
      * Send Video message
      *
      * @param peer       destination peer
@@ -1296,6 +1239,20 @@ public class Messenger {
             modules.getCallsModule().unmuteCall(callId);
         } else {
             modules.getCallsModule().muteCall(callId);
+        }
+    }
+
+    /**
+     * Toggle video of call
+     *
+     * @param callId Call Id
+     */
+    @ObjectiveCName("toggleVideoEnabledWithCallId:")
+    public void toggleVideoEnabled(long callId) {
+        if (modules.getCallsModule().getCall(callId).getIsVideoEnabled().get()) {
+            modules.getCallsModule().disableVideo(callId);
+        } else {
+            modules.getCallsModule().enableVideo(callId);
         }
     }
 

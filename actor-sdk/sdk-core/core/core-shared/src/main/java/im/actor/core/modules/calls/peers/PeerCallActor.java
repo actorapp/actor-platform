@@ -18,8 +18,8 @@ import im.actor.core.modules.ModuleActor;
 import im.actor.runtime.Log;
 import im.actor.runtime.WebRTC;
 import im.actor.runtime.actors.messages.PoisonPill;
-import im.actor.runtime.function.Consumer;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
+import im.actor.runtime.webrtc.WebRTCPeerConnection;
 
 public class PeerCallActor extends ModuleActor {
 
@@ -40,6 +40,7 @@ public class PeerCallActor extends ModuleActor {
     private boolean isOwnStarted = false;
     private boolean isMuted = false;
     private boolean isOwnMediaStarted = false;
+    private boolean videoEnabled = true;
 
     public PeerCallActor(PeerCallCallback callback, PeerSettings selfSettings, ModuleContext context) {
         super(context);
@@ -55,7 +56,7 @@ public class PeerCallActor extends ModuleActor {
 //
 //        }
 //
-//        WebRTC.getUserAudio().then(new Consumer<WebRTCMediaStream>() {
+//        WebRTC.getUserMedia().then(new Consumer<WebRTCMediaStream>() {
 //            @Override
 //            public void apply(WebRTCMediaStream webRTCMediaStream) {
 //                PeerCallActor.this.webRTCMediaStream = webRTCMediaStream;
@@ -80,7 +81,14 @@ public class PeerCallActor extends ModuleActor {
     public void onMuteChanged(boolean isMuted) {
         this.isMuted = isMuted;
         if (webRTCMediaStream != null) {
-            webRTCMediaStream.setEnabled(isOwnStarted && !this.isMuted);
+            webRTCMediaStream.setAudioEnabled(isOwnStarted && !this.isMuted);
+        }
+    }
+
+    public void onVideoEnabled(boolean enabled) {
+        this.videoEnabled = enabled;
+        if (webRTCMediaStream != null) {
+            webRTCMediaStream.setVideoEnabled(isOwnStarted && this.videoEnabled);
         }
     }
 
@@ -90,9 +98,10 @@ public class PeerCallActor extends ModuleActor {
         }
         isOwnStarted = true;
 
-        WebRTC.getUserAudio().then(webRTCMediaStream1 -> {
+        WebRTC.getUserMedia(config().isVideoCallsEnabled()).then(webRTCMediaStream1 -> {
             PeerCallActor.this.webRTCMediaStream = webRTCMediaStream1;
-            PeerCallActor.this.webRTCMediaStream.setEnabled(!isMuted);
+            PeerCallActor.this.webRTCMediaStream.setAudioEnabled(!isMuted);
+            PeerCallActor.this.webRTCMediaStream.setVideoEnabled(videoEnabled);
             for (PeerNodeInt node : refs.values()) {
                 node.setOwnStream(webRTCMediaStream1);
             }
@@ -155,7 +164,7 @@ public class PeerCallActor extends ModuleActor {
         }
         refs.clear();
         if (webRTCMediaStream != null) {
-            webRTCMediaStream.setEnabled(false);
+            webRTCMediaStream.setAudioEnabled(false);
             webRTCMediaStream.close();
         }
     }
@@ -193,6 +202,9 @@ public class PeerCallActor extends ModuleActor {
         } else if (message instanceof MuteChanged) {
             MuteChanged muteChanged = (MuteChanged) message;
             onMuteChanged(muteChanged.isMuted());
+        } else if (message instanceof VideoEnabled) {
+            VideoEnabled videoEnabled = (VideoEnabled) message;
+            onVideoEnabled(videoEnabled.isEnabled());
         } else if (message instanceof OwnStarted) {
             onOwnStarted();
         } else {
@@ -209,6 +221,19 @@ public class PeerCallActor extends ModuleActor {
 
         public boolean isMuted() {
             return isMuted;
+        }
+    }
+
+    public static class VideoEnabled {
+
+        private boolean enabled;
+
+        public VideoEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
+
+        public boolean isEnabled() {
+            return enabled;
         }
     }
 
@@ -255,6 +280,11 @@ public class PeerCallActor extends ModuleActor {
         @Override
         public void onStreamRemoved(long deviceId, WebRTCMediaStream stream) {
             callback.onStreamRemoved(deviceId, stream);
+        }
+
+        @Override
+        public void onPeerConnectionCreated(WebRTCPeerConnection peerConnection) {
+            callback.onPeerConnectionCreated(peerConnection);
         }
     }
 }

@@ -15,8 +15,6 @@ import LoginStore from '../stores/LoginStore';
 
 import TextField from './common/TextField.react';
 
-
-
 class Login extends Component {
   constructor(props) {
     super(props);
@@ -61,8 +59,6 @@ class Login extends Component {
     event.preventDefault();
     LoginActionCreators.changeLogin(event.target.value);
   };
-
-
   onCodeChange = event => {
     event.preventDefault();
     LoginActionCreators.changeCode(event.target.value);
@@ -84,22 +80,6 @@ class Login extends Component {
   onSignupRequested = event => {
     event.preventDefault();
     LoginActionCreators.sendSignup(this.state.name);
-  };
-
-  onRequestUserName =  event => {
-    event.preventDefault();
-    LoginActionCreators.requestWebSignUp("http://220.189.207.21:8405", this.state.login);
-  };
-
-  onSendPassword = event => {
-    event.preventDefault();
-    let strJSON = "oaUserName="+this.state.login+"&&password="+this.state.code;//得到的JSON
-    LoginActionCreators.sendPassword("http://220.189.207.21:8405",strJSON,this.state.code);
-    // LoginActionCreators.requestWebValidatePassword("http://220.189.207.21:8405",strJSON,this.state.code);
-  };
-  onSignupForPwdRequested = event => {
-    event.preventDefault();
-    LoginActionCreators.sendSignup(this.state.login,this.state.code);
   };
 
   handleRestartAuthClick = event => {
@@ -177,12 +157,12 @@ class Login extends Component {
           <div>
             <h1 className="login-new__heading"><FormattedMessage id="login.signIn"/></h1>
 
-            <form className={requestFormClassName} onSubmit={this.onRequestUserName}>
+            <form className={requestFormClassName} onSubmit={this.onRequestCode}>
               <a className="wrong" onClick={this.handleRestartAuthClick}><FormattedMessage id="login.wrong"/></a>
               <TextField className="login-new__forms__form__input input__material--wide"
                          disabled={isCodeRequested || step !== AuthSteps.LOGIN_WAIT}
                          errorText={errors.login}
-                         floatingLabel={intl.messages['login.username']}
+                         floatingLabel={intl.messages['login.phone_or_email']}
                          onChange={this.onLoginChange}
                          ref="login"
                          value={login}/>
@@ -196,11 +176,11 @@ class Login extends Component {
               </footer>
             </form>
 
-            <form className={checkFormClassName} onSubmit={this.onSendPassword}>
+            <form className={checkFormClassName} onSubmit={this.onSendCode}>
               <TextField className="login-new__forms__form__input input__material--wide"
                          disabled={isCodeSended || step !== AuthSteps.CODE_WAIT}
                          errorText={errors.code}
-                         floatingLabel={intl.messages['login.password']}
+                         floatingLabel={intl.messages['login.authCode']}
                          onChange={this.onCodeChange}
                          ref="code"
                          type="text"

@@ -11,7 +11,6 @@ import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.ModuleActor;
 import im.actor.runtime.Log;
 import im.actor.runtime.WebRTC;
-import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.collections.ManagedList;
 import im.actor.runtime.function.Consumer;
@@ -77,10 +76,11 @@ public class PeerConnectionActor extends ModuleActor {
         isReady = false;
 
         WebRTCIceServer[] rtcIceServers = ManagedList.of(iceServers).map(apiICEServer -> new WebRTCIceServer(apiICEServer.getUrl(), apiICEServer.getUsername(), apiICEServer.getCredential())).toArray(new WebRTCIceServer[0]);
-        WebRTCSettings settings = new WebRTCSettings(false, false);
+        WebRTCSettings settings = new WebRTCSettings(false, false, config().isVideoCallsEnabled());
         WebRTC.createPeerConnection(rtcIceServers, settings).then(webRTCPeerConnection -> {
             PeerConnectionActor.this.peerConnection = webRTCPeerConnection;
             PeerConnectionActor.this.peerConnection.addOwnStream(stream);
+            callback.onPeerConnectionCreated(webRTCPeerConnection);
             PeerConnectionActor.this.peerConnection.addCallback(new WebRTCPeerConnectionCallback() {
                 @Override
                 public void onCandidate(int label, String id, String candidate) {
@@ -91,7 +91,7 @@ public class PeerConnectionActor extends ModuleActor {
                 public void onStreamAdded(WebRTCMediaStream stream1) {
                     // Making stream as muted and make it needed to be explicitly enabled
                     // by parent actor
-                    stream1.setEnabled(false);
+                    stream1.setAudioEnabled(false);
                     callback.onStreamAdded(stream1);
                 }
 
@@ -102,6 +102,21 @@ public class PeerConnectionActor extends ModuleActor {
 
                 @Override
                 public void onRenegotiationNeeded() {
+
+                }
+
+                @Override
+                public void onOwnStreamAdded(WebRTCMediaStream stream) {
+
+                }
+
+                @Override
+                public void onOwnStreamRemoved(WebRTCMediaStream stream) {
+
+                }
+
+                @Override
+                public void onDisposed() {
 
                 }
             });

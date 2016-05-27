@@ -74,6 +74,9 @@ public class StickersAdapter extends RecyclerView.Adapter<StickersAdapter.Sticke
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 int firstVisiblePosition = layoutManager.findFirstCompletelyVisibleItemPosition();
+                if (firstVisiblePosition == -1) {
+                    return;
+                }
                 s = stickers.get(firstVisiblePosition);
                 Integer newTopPack = s.getCollectionId();
                 if (newTopPack != null && newTopPack != topPack) {

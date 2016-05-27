@@ -1,5 +1,9 @@
 package im.actor.core.modules.calls;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+
 import im.actor.core.api.rpc.RequestDoCall;
 import im.actor.core.api.rpc.RequestGetCallInfo;
 import im.actor.core.api.rpc.RequestJoinCall;
@@ -16,6 +20,7 @@ import im.actor.core.viewmodel.CommandCallback;
 import im.actor.runtime.actors.messages.PoisonPill;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.power.WakeLock;
+import im.actor.runtime.webrtc.WebRTCPeerConnection;
 
 import static im.actor.core.entity.EntityConverter.convert;
 
@@ -88,6 +93,13 @@ public class CallActor extends AbsCallActor {
     }
 
     @Override
+    public void onPeerConnectionCreated(@NotNull WebRTCPeerConnection peerConnection) {
+        ArrayList<WebRTCPeerConnection> webRTCPeerConnections = new ArrayList<WebRTCPeerConnection>(callVM.getPeerConnection().get());
+        webRTCPeerConnections.add(peerConnection);
+        callVM.getPeerConnection().change(webRTCPeerConnections);
+    }
+
+    @Override
     public void onCallEnabled() {
         isActive = true;
         if (isAnswered) {
@@ -110,6 +122,13 @@ public class CallActor extends AbsCallActor {
         super.onMuteChanged(isMuted);
         callVM.getIsMuted().change(isMuted);
     }
+
+    @Override
+    public void onVideoEnableChanged(boolean enabled) {
+        super.onVideoEnableChanged(enabled);
+        callVM.getIsVideoEnabled().change(enabled);
+    }
+
 
     public void onAnswerCall() {
         if (!isAnswered && !isRejected) {

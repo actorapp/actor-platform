@@ -4441,7 +4441,7 @@
         <property role="tsOgz" value="true" />
         <ref role="w4$XZ" node="55bmeIQ9FSf" resolve="DocumentEx" />
         <node concept="NXeRC" id="EUEXKTmCyv" role="NXodf">
-          <property role="NXePf" value="File photo extension" />
+          <property role="NXePf" value="File photo extension. Can be set ONLY for JPEG." />
         </node>
         <node concept="NX1gA" id="EUEXKTmCy_" role="NXodf">
           <property role="NX6R2" value="image width" />
@@ -4529,6 +4529,83 @@
         </node>
         <node concept="Nu42z" id="55bmeIQgsCV" role="3BtCOu">
           <property role="Nu42W" value="03" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="79MOG7nodCk" role="2m5mJr">
+        <property role="TrG5h" value="DocumentExAnimation" />
+        <property role="tsOgz" value="true" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="55bmeIQ9FSf" resolve="DocumentEx" />
+        <node concept="2m7Kf5" id="79MOG7nodQO" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="w" />
+          <node concept="2m5ndE" id="79MOG7nodQS" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="79MOG7nodQV" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="h" />
+          <node concept="2m5ndE" id="79MOG7nodR1" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="79MOG7nodQM" role="3BtCOu">
+          <property role="Nu42W" value="06" />
+        </node>
+        <node concept="NXeRC" id="79MOG7nodRt" role="NXodf">
+          <property role="NXePf" value="Animation extension. Can be set ONLY for GIF." />
+        </node>
+        <node concept="NX1gA" id="79MOG7nogWt" role="NXodf">
+          <property role="NX6R2" value="Animation width" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="79MOG7nodQO" resolve="w" />
+        </node>
+        <node concept="NX1gA" id="79MOG7nogW_" role="NXodf">
+          <property role="NX6R2" value="Animation height" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="79MOG7nodQV" resolve="h" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="79MOG7noe5Z" role="2m5mJr">
+        <property role="TrG5h" value="DocumentExAnimationVid" />
+        <property role="tsOgz" value="true" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="55bmeIQ9FSf" resolve="DocumentEx" />
+        <node concept="2m7Kf5" id="79MOG7nofEn" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="w" />
+          <node concept="2m5ndE" id="79MOG7nofEr" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="79MOG7nofEu" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="h" />
+          <node concept="2m5ndE" id="79MOG7nofE$" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="79MOG7nofEB" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="duration" />
+          <node concept="2m5ndE" id="79MOG7nofEJ" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="79MOG7noekw" role="3BtCOu">
+          <property role="Nu42W" value="07" />
+        </node>
+        <node concept="NXeRC" id="79MOG7nofEM" role="NXodf">
+          <property role="NXePf" value="Animation video extension. More compact version of Animation with video codec instead of GIF. " />
+        </node>
+        <node concept="NXeRC" id="79MOG7noiel" role="NXodf">
+          <property role="NXePf" value="Can be set ONLY for MP4." />
+        </node>
+        <node concept="NX1gA" id="79MOG7noiet" role="NXodf">
+          <property role="NX6R2" value="Animation width" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="79MOG7nofEn" resolve="w" />
+        </node>
+        <node concept="NX1gA" id="79MOG7noieB" role="NXodf">
+          <property role="NX6R2" value="Animation height" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="79MOG7nofEu" resolve="h" />
+        </node>
+        <node concept="NX1gA" id="79MOG7noieN" role="NXodf">
+          <property role="NX6R2" value="Animation duration" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="79MOG7nofEB" resolve="duration" />
         </node>
       </node>
       <node concept="2m5naR" id="2tyCW$U5XZ6" role="2m5mJr">
@@ -7003,7 +7080,7 @@
         <node concept="2m7Kf5" id="3zYHvadTSnl" role="2m0hLx">
           <property role="2m7DUN" value="16" />
           <property role="TrG5h" value="isAdmin" />
-          <property role="toYog" value="true" />
+          <property role="toYog" value="false" />
           <node concept="2m5nlT" id="3zYHvadTSnL" role="2m7DVh">
             <node concept="2m5ndN" id="3zYHvadTSnR" role="3GH5xg" />
           </node>
@@ -7011,7 +7088,7 @@
         <node concept="2m7Kf5" id="GBscvBB6su" role="2m0hLx">
           <property role="2m7DUN" value="8" />
           <property role="TrG5h" value="creatorUid" />
-          <property role="toYog" value="true" />
+          <property role="toYog" value="false" />
           <node concept="wb0Ql" id="5qm50Y0efts" role="2m7DVh">
             <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
           </node>
@@ -7019,7 +7096,7 @@
         <node concept="2m7Kf5" id="3zc4oYAo8yQ" role="2m0hLx">
           <property role="2m7DUN" value="9" />
           <property role="TrG5h" value="members" />
-          <property role="toYog" value="true" />
+          <property role="toYog" value="false" />
           <node concept="2m5nlk" id="3zc4oYAo8_s" role="2m7DVh">
             <node concept="2m5mGg" id="7d$A0Kt1YyH" role="3GJlyp">
               <ref role="2m5mJy" node="7d$A0Kt1Y2M" resolve="Member" />
@@ -7029,7 +7106,7 @@
         <node concept="2m7Kf5" id="2vxDjotnRx9" role="2m0hLx">
           <property role="2m7DUN" value="10" />
           <property role="TrG5h" value="createDate" />
-          <property role="toYog" value="true" />
+          <property role="toYog" value="false" />
           <node concept="wb0Ql" id="2vxDjotnRxt" role="2m7DVh">
             <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
           </node>
@@ -7037,7 +7114,7 @@
         <node concept="2m7Kf5" id="6WYZhOUZ2wi" role="2m0hLx">
           <property role="2m7DUN" value="17" />
           <property role="TrG5h" value="theme" />
-          <property role="toYog" value="true" />
+          <property role="toYog" value="false" />
           <node concept="2m5nlT" id="6WYZhOUZ2wU" role="2m7DVh">
             <node concept="2m5ndX" id="6WYZhOUZ2x0" role="3GH5xg" />
           </node>
@@ -7045,7 +7122,7 @@
         <node concept="2m7Kf5" id="6WYZhOUZ45X" role="2m0hLx">
           <property role="2m7DUN" value="18" />
           <property role="TrG5h" value="about" />
-          <property role="toYog" value="true" />
+          <property role="toYog" value="false" />
           <node concept="2m5nlT" id="6WYZhOUZ46C" role="2m7DVh">
             <node concept="2m5ndX" id="6WYZhOUZ46I" role="3GH5xg" />
           </node>

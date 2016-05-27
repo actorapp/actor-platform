@@ -18,11 +18,6 @@ export default {
     app: [
       './devapp/index.js',
       './src/styles/index.scss'
-    ],
-    ws:[
-      'webpack-dev-server/client?http://localhost:3000',
-      'webpack/hot/dev-server',
-      './devapp/ws.js'
     ]
   },
   output: {
