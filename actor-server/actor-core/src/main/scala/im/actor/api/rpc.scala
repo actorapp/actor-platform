@@ -1,5 +1,6 @@
 package im.actor.api
 
+import akka.http.scaladsl.util.FastFuture
 import cats.data.Xor
 import im.actor.server.CommonErrors
 import im.actor.server.group.GroupErrors.GroupNotFound
@@ -68,7 +69,7 @@ package object rpc extends PeersImplicits with HistoryImplicits with DialogConve
     }
 
   private def toResult[R](authorizedFuture: MaybeAuthorized[Future[RpcError Xor R]])(implicit ec: ExecutionContext): Future[RpcError Xor R] =
-    recover(authorizedFuture.getOrElse(Future.successful(Error(CommonRpcErrors.UserNotAuthorized))))
+    recover(authorizedFuture.getOrElse(FastFuture.successful(Error(CommonRpcErrors.UserNotAuthorized))))
 
   private def recover[A](f: Future[RpcError Xor A])(implicit ec: ExecutionContext): Future[RpcError Xor A] = f recover (recoverCommon andThen { e ⇒ Error(e) })
 
