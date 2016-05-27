@@ -242,33 +242,35 @@ class DialogHeader extends Component {
     }
 
     return (
-      <header className="dialog__header row">
-        <AvatarItem
-          className="dialog__header__avatar"
-          size="medium"
-          image={info.avatar}
-          placeholder={info.placeholder}
-          title={info.name}
-        />
+      <header className="dialog__header">
+        <div className="row">
+          <AvatarItem
+            className="dialog__header__avatar"
+            size="medium"
+            image={info.avatar}
+            placeholder={info.placeholder}
+            title={info.name}
+          />
 
-        <div className="dialog__header__peer">
-          <header className="dialog__header__peer__title" >
-            <span dangerouslySetInnerHTML={{ __html: escapeWithEmoji(info.name) }}/>
-            {this.renderVerified()}
-            {this.renderFavorite()}
-          </header>
-          <div className="dialog__header__peer__message">
-            {this.renderMessage()}
+          <div className="dialog__header__peer">
+            <header className="dialog__header__peer__title" >
+              <span dangerouslySetInnerHTML={{ __html: escapeWithEmoji(info.name) }}/>
+              {this.renderVerified()}
+              {this.renderFavorite()}
+            </header>
+            <div className="dialog__header__peer__message">
+              {this.renderMessage()}
+            </div>
           </div>
-        </div>
 
-        <div className="col-xs"/>
+          <div className="col-xs"/>
 
-        <div className="dialog__header__controls">
-          {this.renderSearchButton()}
-          {this.renderCallButton()}
-          {this.renderInfoButton()}
-          {this.renderMoreButton()}
+          <div className="dialog__header__controls">
+            {this.renderSearchButton()}
+            {this.renderCallButton()}
+            {this.renderInfoButton()}
+            {this.renderMoreButton()}
+          </div>
         </div>
       </header>
     );
