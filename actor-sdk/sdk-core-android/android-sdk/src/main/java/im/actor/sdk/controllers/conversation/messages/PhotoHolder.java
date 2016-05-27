@@ -25,6 +25,7 @@ import java.io.File;
 
 import im.actor.core.entity.FileReference;
 import im.actor.core.entity.Message;
+import im.actor.core.entity.content.AnimationContent;
 import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.entity.content.FileLocalSource;
 import im.actor.core.entity.content.FileRemoteSource;
@@ -184,6 +185,11 @@ public class PhotoHolder extends MessageHolder {
             if (message.getContent() instanceof PhotoContent) {
                 w = ((PhotoContent) message.getContent()).getW();
                 h = ((PhotoContent) message.getContent()).getH();
+                isPhoto = true;
+                duration.setVisibility(View.GONE);
+            } else if (message.getContent() instanceof AnimationContent) {
+                w = ((AnimationContent) message.getContent()).getW();
+                h = ((AnimationContent) message.getContent()).getH();
                 isPhoto = true;
                 duration.setVisibility(View.GONE);
             } else if (message.getContent() instanceof VideoContent) {
