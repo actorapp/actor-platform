@@ -9,6 +9,7 @@ import java.util.HashMap;
 
 import im.actor.core.entity.Message;
 import im.actor.core.entity.content.AbsContent;
+import im.actor.core.entity.content.AnimationContent;
 import im.actor.core.entity.content.ContactContent;
 import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.entity.content.JsonContent;
@@ -157,6 +158,8 @@ public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
         } else if (content instanceof ServiceContent) {
             return 1;
         } else if (content instanceof PhotoContent) {
+            return 2;
+        } else if (content instanceof AnimationContent) {
             return 2;
         } else if (content instanceof VideoContent) {
             return 2;

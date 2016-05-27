@@ -472,6 +472,7 @@ public class PhotoHolder extends MessageHolder {
                 PipelineDraweeController controller = (PipelineDraweeController) Fresco.newDraweeControllerBuilder()
                         .setOldController(previewView.getController())
                         .setImageRequest(request)
+                        .setAutoPlayAnimations(true)
                         .build();
                 previewView.setController(controller);
                 // previewView.setImageURI(Uri.fromFile(new File(reference.getDescriptor())));
