@@ -841,4 +841,17 @@ object BotMessages {
   @key("Voice")
   final case class DocumentExVoice(@beanGetter duration: Int) extends DocumentEx
 
+  @key("Animation")
+  final case class DocumentExAnimation(
+    @beanGetter width:  Int,
+    @beanGetter height: Int
+  ) extends DocumentEx
+
+  @key("AnimationVid")
+  final case class DocumentExAnimationVid(
+    @beanGetter width:  Int,
+    @beanGetter height: Int,
+    @beanGetter duration: Int
+  ) extends DocumentEx
+
 }
