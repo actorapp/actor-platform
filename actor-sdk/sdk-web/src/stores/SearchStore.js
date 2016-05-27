@@ -29,6 +29,11 @@ class SearchStore extends ReduceStore {
           isFocused: true
         };
 
+      case ActionTypes.SEARCH_BLUR:
+        return {
+          ...state,
+          isFocused: false
+        };
       case ActionTypes.SEARCH_SET_QUERY:
         return {
           ...state,

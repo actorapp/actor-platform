@@ -240,6 +240,7 @@ export const ActionTypes = keymirror({
   LOGGER_TOGGLE: null,
 
   SEARCH_FOCUS: null,
+  SEARCH_BLUR: null,
   SEARCH_CLEAR: null,
   SEARCH_SET_QUERY: null,
   SEARCH_SET_RESULTS: null,

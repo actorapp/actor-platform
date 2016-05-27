@@ -14,6 +14,7 @@ class SearchInput extends Component {
   static propTypes = {
     value: PropTypes.string.isRequired,
     onFocus: PropTypes.func.isRequired,
+    onBlur: PropTypes.func.isRequired,
     onClear: PropTypes.func.isRequired,
     onChange: PropTypes.func.isRequired
   };
@@ -76,6 +77,7 @@ class SearchInput extends Component {
           value={value}
           placeholder={intl.messages['search.placeholder']}
           onFocus={this.props.onFocus}
+          onBlur={this.props.onBlur}
           onChange={this.handleChange}
         />
         {this.renderClear()}
