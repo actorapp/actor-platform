@@ -272,8 +272,9 @@ public class PhotoHolder extends MessageHolder {
             } else if (fileMessage.getSource() instanceof FileLocalSource) {
                 uploadFileVM = messenger().bindUpload(message.getRid(), new UploadVMCallback());
                 if (isPhoto) {
-                    previewView.setImageURI(Uri.fromFile(
-                            new File(((FileLocalSource) fileMessage.getSource()).getFileDescriptor())));
+                    Uri uri = Uri.fromFile(
+                            new File(((FileLocalSource) fileMessage.getSource()).getFileDescriptor()));
+                    bindImage(uri);
                 } else {
                     if (!updated) {
                         previewView.setImageURI(null);
@@ -471,16 +472,8 @@ public class PhotoHolder extends MessageHolder {
                         previewView.getHierarchy().setPlaceholderImage(new FastBitmapDrawable(drawingCache));
                     }
                 }
-                ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.fromFile(new File(reference.getDescriptor())))
-                        .setResizeOptions(new ResizeOptions(previewView.getLayoutParams().width,
-                                previewView.getLayoutParams().height))
-                        .build();
-                PipelineDraweeController controller = (PipelineDraweeController) Fresco.newDraweeControllerBuilder()
-                        .setOldController(previewView.getController())
-                        .setImageRequest(request)
-                        .setAutoPlayAnimations(true)
-                        .build();
-                previewView.setController(controller);
+                Uri uri = Uri.fromFile(new File(reference.getDescriptor()));
+                bindImage(uri);
                 // previewView.setImageURI(Uri.fromFile(new File(reference.getDescriptor())));
             } else {
                 if (!updated) {
@@ -499,5 +492,18 @@ public class PhotoHolder extends MessageHolder {
             goneView(progressView);
             goneView(progressValue);
         }
+    }
+
+    public void bindImage(Uri uri) {
+        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
+                .setResizeOptions(new ResizeOptions(previewView.getLayoutParams().width,
+                        previewView.getLayoutParams().height))
+                .build();
+        PipelineDraweeController controller = (PipelineDraweeController) Fresco.newDraweeControllerBuilder()
+                .setOldController(previewView.getController())
+                .setImageRequest(request)
+                .setAutoPlayAnimations(true)
+                .build();
+        previewView.setController(controller);
     }
 }
