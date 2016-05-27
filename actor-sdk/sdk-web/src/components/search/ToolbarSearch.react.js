@@ -61,7 +61,11 @@ class ToolbarSearch extends Component {
   }
 
   renderSearchResultsDropdown() {
-    const { results: { contacts, groups } } = this.state;
+    const { isFocused, results: { contacts, groups } } = this.state;
+
+    if (!isFocused) {
+      return null
+    }
 
     return (
       <SelectList className="toolbar__search__dropdown" max={contacts.length + groups.length} onSelect={this.onResultSelect}>
@@ -76,6 +80,18 @@ class ToolbarSearch extends Component {
         </SelectListItem>
       </SelectList>
     );
+  }
+
+  renderSearchDropdownHint() {
+    // FIXME!!!
+    return null
+
+    // return (
+    //   <div className="toolbar__search__dropdown">
+    //     <h4>Search hint</h4>
+    //     <p>Some text about search hint</p>
+    //   </div>
+    // );
   }
 
   render() {
@@ -96,7 +112,8 @@ class ToolbarSearch extends Component {
             onChange={this.handleSearchChange}
           />
         </div>
-        {isFocused && this.renderSearchResultsDropdown()}
+        {this.renderSearchDropdownHint()}
+        {this.renderSearchResultsDropdown()}
       </div>
     );
   }
