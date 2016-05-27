@@ -30,7 +30,16 @@ $stem-size: 10px;
 
     display: inline-block;
 
+    min-width: 200px;
+    margin: 8px 0;
+    padding: 4px 12px;
+
+    border-radius: 32px;
+    background-color: rgb(255, 255, 255) !important;
     &__input {
+      display: inline-flex;
+
+      margin-left: 10px;
       .input {
         font-size: 15px;
         line-height: 24px;
@@ -40,12 +49,12 @@ $stem-size: 10px;
         box-sizing: border-box;
         padding: 0;
 
-        color: white;
+        color: $dorado;
         border: none;
         outline: none;
         background-color: transparent;
 
-        @include placeholder(white);
+        @include placeholder($dorado);
       }
     }
     .search-icon {
@@ -56,7 +65,7 @@ $stem-size: 10px;
       user-select: none;
       pointer-events: none;
 
-      color: rgb(255, 255, 255);
+      color: $dark-sky-blue;
     }
     .close-icon {
       font-size: 16px;
@@ -114,27 +123,27 @@ $stem-size: 10px;
       right: -4px;
       left: -4px;
 
-      margin-top: -4px;
+      margin-top: 4px;
 
       color: rgba($greyish-brown, .6);
       border-radius: $default-border-radius;
       background-color: white;
       box-shadow: 0 1px 3px 1px rgba(0, 0, 0, .1);
-      &:before {
-        top: - $stem-size / 2;
-        left: 26px;
-
-        @include stem($stem-size);
-      }
-      &:after {
-        z-index: -1;
-        top: - $stem-size / 2;
-        left: 26px;
-
-        box-shadow: 0 1px 3px 1px rgba(0, 0, 0, .1);
-
-        @include stem($stem-size);
-      }
+      // &:before {
+      //   top: - $stem-size / 2;
+      //   left: 26px;
+      //
+      //   @include stem($stem-size);
+      // }
+      // &:after {
+      //   z-index: -1;
+      //   top: - $stem-size / 2;
+      //   left: 26px;
+      //
+      //   box-shadow: 0 1px 3px 1px rgba(0, 0, 0, .1);
+      //
+      //   @include stem($stem-size);
+      // }
     }
     footer {
       box-shadow: 0 -1px 0 0 rgba(0, 0, 0, .07);
@@ -174,20 +183,12 @@ $stem-size: 10px;
         }
       }
     }
+
     &--expanded {
       min-width: 300px;
-
-      cursor: default !important;
-
-      background-color: rgba($baby-blue, .12) !important;
-      .toolbar__search__input {
-        display: inline-flex;
-
-        margin-left: 10px;
-      }
     }
     &--focused {
-      background-color: rgba($baby-blue, .2) !important;
+      // background-color: rgba($baby-blue, .2) !important;
     }
   }
 

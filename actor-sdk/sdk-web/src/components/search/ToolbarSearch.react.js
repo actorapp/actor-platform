@@ -31,7 +31,7 @@ class ToolbarSearch extends Component {
     return {
       ...prevState,
       ...searchState,
-      isSearchExpanded: prevState ? prevState.isSearchExpanded : true,
+      isSearchExpanded: prevState ? prevState.isSearchExpanded : false,
       isSearchFocused: prevState ? prevState.isSearchFocused : false,
       isResultsDropdownOpen: prevState ? prevState.isResultsDropdownOpen : false
     }
@@ -84,11 +84,7 @@ class ToolbarSearch extends Component {
   }
 
   renderSearchInput() {
-    const { query, isSearchExpanded } = this.state;
-
-    if (!isSearchExpanded) {
-      return null;
-    }
+    const { query } = this.state;
 
     return (
       <SearchInput
@@ -183,7 +179,7 @@ class ToolbarSearch extends Component {
     const { className } = this.props;
     const { isSearchExpanded, isSearchFocused } = this.state;
 
-    const toolbarSearchClassName = classnames('toolbar__search row', className, {
+    const toolbarSearchClassName = classnames('toolbar__search', className, {
       'toolbar__search--expanded': isSearchExpanded,
       'toolbar__search--focused': isSearchFocused
     });
