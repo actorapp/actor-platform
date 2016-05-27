@@ -47,7 +47,7 @@ private[dialog] object DialogState {
 
 private[dialog] final case class DialogState(
   userId:               Int,
-  lastMessageDate:      Instant, //we don't use it now anywhere. should we remove it?
+  lastMessageDate:      Instant,
   lastOwnerReceiveDate: Instant,
   lastReceiveDate:      Instant,
   lastOwnerReadDate:    Instant,
@@ -85,13 +85,13 @@ private[dialog] final case class DialogState(
         lastOwnerReadDate = date
       )
     case MessagesRead(date, readerUserId) if readerUserId != userId ⇒
-      if (date.isBefore(Instant.now().plusMillis(1)) && (date.isAfter(lastReadDate) || date == lastReadDate))
+      if (date.isBefore(Instant.now().plusMillis(1)) && (date.isAfter(lastReadDate) || date == lastReadDate)) // what's a point of creating state with same lastReadDate(last condition)
         this.copy(lastReadDate = date)
       else this
     case MessagesReceived(date, receiverUserId) if receiverUserId == userId ⇒
       this.copy(lastOwnerReceiveDate = date)
     case MessagesReceived(date, receiverUserId) if receiverUserId != userId ⇒
-      if (date.isBefore(Instant.now().plusMillis(1)) && (date.isAfter(lastReceiveDate) || date == lastReceiveDate))
+      if (date.isBefore(Instant.now().plusMillis(1)) && (date.isAfter(lastReceiveDate) || date == lastReceiveDate)) // what's a point of creating state with same lastReadDate(last condition)
         this.copy(lastReceiveDate = date)
       else this
     case SetCounter(newCounter) ⇒

@@ -33,9 +33,7 @@ final class IntegrationsServiceSpec
 
     implicit val ec = system.dispatcher
 
-    val groupInviteConfig = GroupInviteConfig("https://actor.im")
-
-    implicit val groupsService = new GroupsServiceImpl(groupInviteConfig)
+    implicit val groupsService = new GroupsServiceImpl(GroupInviteConfig("https://actor.im"))
 
     private val config = HttpApiConfig("localhost", 9000, "http://actor.im", "/dev/null", None)
     val service = new IntegrationsServiceImpl(config.baseUri)
