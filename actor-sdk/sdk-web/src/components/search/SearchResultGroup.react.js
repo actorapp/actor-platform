@@ -17,9 +17,12 @@ class SearchResultGroup extends Component {
 
   renderResults() {
     const { id, items, offset, onSelect } = this.props;
+
     if (!items.length) {
       return (
-        <FormattedMessage id={`toolbar.search.${id}.notFound`} />
+        <div className="not-found">
+          <FormattedMessage id={`toolbar.search.${id}.notFound`} />
+        </div>
       );
     }
 
