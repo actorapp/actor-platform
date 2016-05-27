@@ -389,6 +389,19 @@ export default {
       'emptyQuery': 'Start typing to find anything',
       'searching': 'Search for "{query}"',
       'notFound': 'Nothing found for "{query}"<br/>Maybe you\'ll get luckier with another request'
+    },
+
+    toolbar: {
+      search: {
+        contacts: {
+          title: 'Contacts',
+          notFound: 'Sorry, no such users were found =('
+        },
+        groups: {
+          title: 'Groups',
+          notFound: 'Sorry, no such groups were found =('
+        }
+      }
     }
   }
 };

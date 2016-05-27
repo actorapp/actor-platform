@@ -10,6 +10,7 @@ class SearchStore extends ReduceStore {
   getInitialState() {
     return {
       query: '',
+      isFocused: false,
       results: {
         contacts: [],
         groups: []
@@ -21,6 +22,12 @@ class SearchStore extends ReduceStore {
     switch (action.type) {
       case ActionTypes.SEARCH_CLEAR:
         return this.getInitialState();
+
+      case ActionTypes.SEARCH_FOCUS:
+        return {
+          ...state,
+          isFocused: true
+        };
 
       case ActionTypes.SEARCH_SET_QUERY:
         return {

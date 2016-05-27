@@ -29,6 +29,9 @@ $stem-size: 10px;
     z-index: 100;
 
     display: inline-block;
+    min-width: 300px;
+    cursor: default !important;
+    background-color: rgba($baby-blue, .12) !important;
 
     min-width: 200px;
     margin: 8px 0;
@@ -101,19 +104,23 @@ $stem-size: 10px;
 
         padding: 8px 16px;
       }
+
+      .selected {
+        .contact {
+          color: white;
+          background-color: $dark_sky_blue;
+          .material-icons {
+            display: block;
+          }
+        }
+      }
+
       .contact {
         padding: 4px 16px;
 
         cursor: pointer;
         .material-icons {
           display: none;
-        }
-        &:hover {
-          color: white;
-          background-color: $dark_sky_blue;
-          .material-icons {
-            display: block;
-          }
         }
       }
     }
@@ -129,66 +136,47 @@ $stem-size: 10px;
       border-radius: $default-border-radius;
       background-color: white;
       box-shadow: 0 1px 3px 1px rgba(0, 0, 0, .1);
-      // &:before {
-      //   top: - $stem-size / 2;
-      //   left: 26px;
-      //
-      //   @include stem($stem-size);
-      // }
-      // &:after {
-      //   z-index: -1;
-      //   top: - $stem-size / 2;
-      //   left: 26px;
-      //
-      //   box-shadow: 0 1px 3px 1px rgba(0, 0, 0, .1);
-      //
-      //   @include stem($stem-size);
-      // }
     }
-    footer {
-      box-shadow: 0 -1px 0 0 rgba(0, 0, 0, .07);
-      a {
-        font-size: 13px;
-        line-height: 24px;
 
-        display: block;
-
-        margin-top: 4px;
-        padding: 10px 16px;
-
-        cursor: pointer;
-        text-decoration: none;
-
-        color: rgb(100, 100, 100);
-        background-color: rgba(black, .02);
-        span {
-          line-height: 24px;
-
-          display: inline-block;
-
-          vertical-align: top;
-        }
-        .material-icons {
-          font-size: 16px;
-          line-height: 24px;
-
-          margin-left: 4px;
-
-          vertical-align: top;
-        }
-
-        &:hover {
-          color: darken(rgb(100, 100, 100), 5);
-          background-color: rgba(black, .04);
-        }
+    .selected {
+      .toolbar__search__footer {
+        color: white;
+        background-color: $dark_sky_blue;
       }
     }
 
-    &--expanded {
-      min-width: 300px;
+    &__footer {
+      box-shadow: 0 -1px 0 0 rgba(0, 0, 0, .07);
+      font-size: 13px;
+      line-height: 24px;
+
+      display: block;
+
+      margin-top: 4px;
+      padding: 10px 16px;
+
+      cursor: pointer;
+      text-decoration: none;
+
+      color: rgb(100, 100, 100);
+      background-color: rgba(black, .02);
+      span {
+        line-height: 24px;
+
+        display: inline-block;
+
+        vertical-align: top;
+      }
     }
-    &--focused {
-      // background-color: rgba($baby-blue, .2) !important;
+
+    min-width: 300px;
+    .material-icons {
+      font-size: 16px;
+      line-height: 24px;
+
+      margin-left: 4px;
+
+      vertical-align: top;
     }
   }
 
