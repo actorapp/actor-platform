@@ -73,11 +73,11 @@ $stem-size: 10px;
 
       cursor: pointer;
 
-      color: rgba(white, .7);
+      color: rgba($dusky-blue, .7);
       &:hover {
         transform: scale(1.1);
 
-        color: rgba(white, .9);
+        color: rgba($dusky-blue, .9);
       }
       &:active {
         transform: scale(.98);
