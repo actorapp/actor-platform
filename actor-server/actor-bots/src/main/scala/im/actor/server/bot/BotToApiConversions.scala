@@ -20,6 +20,8 @@ trait BotToApiConversions {
       case DocumentExPhoto(width, height)           ⇒ ApiDocumentExPhoto(width, height)
       case DocumentExVideo(width, height, duration) ⇒ ApiDocumentExVideo(width, height, duration)
       case DocumentExVoice(duration)                ⇒ ApiDocumentExVoice(duration)
+      case DocumentExAnimation(w, h)                ⇒ ApiDocumentExAnimation(w, h)
+      case DocumentExAnimationVid(w, h, duration)   ⇒ ApiDocumentExAnimationVid(w, h, duration)
     }
 
   implicit def toDocumentExt(ex: Option[DocumentEx]): Option[ApiDocumentEx] = ex map toDocumentExt

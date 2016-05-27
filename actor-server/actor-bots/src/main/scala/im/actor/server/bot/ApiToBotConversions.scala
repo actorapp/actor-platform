@@ -27,9 +27,11 @@ trait ApiToBotConversions {
 
   implicit def toDocumentEx(ex: ApiDocumentEx): DocumentEx =
     ex match {
-      case ApiDocumentExPhoto(w, h)           ⇒ DocumentExPhoto(w, h)
-      case ApiDocumentExVideo(w, h, duration) ⇒ DocumentExVideo(w, h, duration)
-      case ApiDocumentExVoice(duration)       ⇒ DocumentExVoice(duration)
+      case ApiDocumentExPhoto(w, h)                  ⇒ DocumentExPhoto(w, h)
+      case ApiDocumentExVideo(w, h, duration)        ⇒ DocumentExVideo(w, h, duration)
+      case ApiDocumentExVoice(duration)              ⇒ DocumentExVoice(duration)
+      case ApiDocumentExAnimation(w, h)              ⇒ DocumentExAnimation(w, h)
+      case ApiDocumentExAnimationVid(w, h, duration) ⇒ DocumentExAnimationVid(w, h, duration)
     }
 
   implicit def toDocumentEx(ex: Option[ApiDocumentEx]): Option[DocumentEx] =
