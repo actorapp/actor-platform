@@ -39,20 +39,3 @@
     line-height: 32px;
   }
 }
-
-.dialog__search-enter,
-.dialog__search-leave.dialog__search-leave-active {
-  transform: translate(0, -50px);
-
-  opacity: 0;
-}
-
-.dialog__search-leave,
-.dialog__search-enter.dialog__search-enter-active {
-  transition-timing-function: cubic-bezier(.175, .665, .320, 1), linear;
-  transition-duration: 100ms;
-  transition-property: transform, opacity;
-  transform: translate(0, 0);
-
-  opacity: 1;
-}

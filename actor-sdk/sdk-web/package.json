@@ -64,7 +64,7 @@
     "intl": "1.2.3",
     "jsonlylightbox": "github:actorapp/jsOnlyLightbox#develop",
     "keymirror": "0.1.1",
-    "lodash": "4.13.0",
+    "lodash": "4.13.1",
     "normalize.css": "4.1.1",
     "object-assign": "4.1.0",
     "opus-recorder": "github:actorapp/Recorderjs",
