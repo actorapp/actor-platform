@@ -1,26 +1,33 @@
 .dialog__search {
-  flex: 0 0 auto;
   color: $toolbar-text-color;
   background-color: rgb(254, 254, 254);
   box-shadow: inset 0 -1px 0 0 rgba(0, 0, 0, .04);
+
+  flex: 0 0 auto;
 
   &__container {
     flex: 0 0 auto;
   }
 
   &__input {
-    width: 100%;
-    flex-grow: 1;
-    flex-basis: 0;
     font-size: 14px;
     line-height: 26px;
+
+    width: 100%;
     margin: 8px 16px;
     padding: 3px 16px;
+
     color: $dove_gray;
     border: none;
     border-radius: 32px;
     outline: none;
     box-shadow: 0 0 0 1px rgba(black, .05);
+
+    flex-grow: 1;
+    flex-basis: 0;
+    &:focus {
+      box-shadow: 0 0 0 1px rgba(black, .07);
+    }
   }
 
   &__controls {
@@ -35,15 +42,17 @@
 
 .dialog__search-enter,
 .dialog__search-leave.dialog__search-leave-active {
-  opacity: 0;
   transform: translate(0, -50px);
+
+  opacity: 0;
 }
 
 .dialog__search-leave,
 .dialog__search-enter.dialog__search-enter-active {
+  transition-timing-function: cubic-bezier(.175, .665, .320, 1), linear;
+  transition-duration: 100ms;
+  transition-property: transform, opacity;
+  transform: translate(0, 0);
+
   opacity: 1;
-	transform: translate(0, 0);
-	transition-property: transform, opacity;
-	transition-duration: 100ms;
-	transition-timing-function: cubic-bezier(0.175, 0.665, 0.320, 1), linear;
 }
