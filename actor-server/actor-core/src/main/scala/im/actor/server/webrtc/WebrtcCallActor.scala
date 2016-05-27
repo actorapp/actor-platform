@@ -32,6 +32,7 @@ object WebrtcCallErrors {
   object CallAlreadyStarted extends WebrtcCallError("Call already started")
   object NotJoinedToEventBus extends WebrtcCallError("Not joined to EventBus")
   object CallForbidden extends WebrtcCallError("You are forbidden to call this user")
+  object GroupTooBig extends WebrtcCallError("Group is too big for group call")
 }
 
 private[webrtc] sealed trait WebrtcCallMessage
@@ -496,8 +497,12 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
           default = FastFuture.successful(Seq(callerUserId, userId)),
           failed = FastFuture.failed(WebrtcCallErrors.CallForbidden)
         )
-      case Peer(PeerType.Group, groupId) ⇒ groupExt.getMemberIds(groupId) map (_._1)
-      case _                             ⇒ FastFuture.failed(new RuntimeException(s"Unknown peer type: ${peer.`type`}"))
+      case Peer(PeerType.Group, groupId) ⇒
+        groupExt.getMemberIds(groupId) flatMap {
+          case (memberIds, _, _) if memberIds.length <= 25 ⇒ FastFuture.successful(memberIds)
+          case _ ⇒ FastFuture.failed(WebrtcCallErrors.GroupTooBig)
+        }
+      case _ ⇒ FastFuture.failed(new RuntimeException(s"Unknown peer type: ${peer.`type`}"))
     }
 
   private def scheduleIncomingCallUpdates(callees: Seq[UserId]): Future[Unit] = {
