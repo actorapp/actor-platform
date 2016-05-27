@@ -378,13 +378,13 @@ public class SenderActor extends ModuleActor {
         } else if (msg.getContent() instanceof VoiceContent) {
             VoiceContent baseVoiceContent = (VoiceContent) msg.getContent();
             nContent = VoiceContent.createRemoteAudio(fileReference, baseVoiceContent.getDuration());
-        } else if (msg.getContent() instanceof DocumentContent) {
-            DocumentContent baseDocContent = (DocumentContent) msg.getContent();
-            nContent = DocumentContent.createRemoteDocument(fileReference, baseDocContent.getFastThumb());
         } else if (msg.getContent() instanceof AnimationContent) {
             AnimationContent baseAnimcationContent = (AnimationContent) msg.getContent();
             nContent = AnimationContent.createRemoteAnimation(fileReference, baseAnimcationContent.getW(),
                     baseAnimcationContent.getH(), baseAnimcationContent.getFastThumb());
+        } else if (msg.getContent() instanceof DocumentContent) {
+            DocumentContent baseDocContent = (DocumentContent) msg.getContent();
+            nContent = DocumentContent.createRemoteDocument(fileReference, baseDocContent.getFastThumb());
         } else {
             return;
         }
