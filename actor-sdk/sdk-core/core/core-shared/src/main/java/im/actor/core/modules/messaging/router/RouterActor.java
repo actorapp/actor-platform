@@ -416,6 +416,9 @@ public class RouterActor extends ModuleActor {
             conversationStates.addOrUpdateItem(state);
         }
 
+        // Reading messages if needed
+        markAsReadIfNeeded(peer);
+
         return Promise.success(null);
     }
 
@@ -612,7 +615,7 @@ public class RouterActor extends ModuleActor {
     private void markAsReadIfNeeded(Peer peer) {
         if (isConversationVisible(peer)) {
             ConversationState state = conversationStates.getValue(peer.getUnuqueId());
-            if (state.getUnreadCount() != 0 || state.getInReadDate() < state.getInMaxMessageDate()) {
+            if (state.getInReadDate() < state.getInMaxMessageDate()) {
                 state = state
                         .changeCounter(0)
                         .changeInReadDate(state.getInMaxMessageDate());
