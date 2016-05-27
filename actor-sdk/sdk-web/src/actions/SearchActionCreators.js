@@ -14,6 +14,11 @@ class SearchActionCreators {
     dispatch(ActionTypes.SEARCH_FOCUS);
   }
 
+  blur() {
+    ComposeActionCreators.toggleAutoFocus(true);
+    dispatch(ActionTypes.SEARCH_BLUR);
+  }
+
   clear() {
     dispatch(ActionTypes.SEARCH_CLEAR);
     ComposeActionCreators.toggleAutoFocus(true);

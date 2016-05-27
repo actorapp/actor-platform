@@ -6,8 +6,10 @@ import React, { Component } from 'react';
 import { Container } from 'flux/utils';
 import classnames from 'classnames';
 import history from '../../utils/history';
+
 import SearchStore from '../../stores/SearchStore';
 import SearchActionCreators from '../../actions/SearchActionCreators';
+
 import SearchInput from './SearchInput.react';
 import SelectList from '../common/SelectList.react';
 import SelectListItem from '../common/SelectListItem.react';
@@ -28,6 +30,7 @@ class ToolbarSearch extends Component {
     this.handleSearchChange = this.handleSearchChange.bind(this);
     this.handlerSearchClear = this.handlerSearchClear.bind(this);
     this.handleSearchFocus = this.handleSearchFocus.bind(this);
+    this.handleSearchBlur = this.handleSearchBlur.bind(this);
     this.onResultSelect = this.onResultSelect.bind(this);
   }
 
@@ -37,6 +40,10 @@ class ToolbarSearch extends Component {
 
   handleSearchFocus() {
     SearchActionCreators.focus();
+  }
+
+  handleSearchBlur() {
+    SearchActionCreators.blur();
   }
 
   handleSearchChange(query) {
@@ -73,7 +80,7 @@ class ToolbarSearch extends Component {
 
   render() {
     const { query, isFocused } = this.state;
-    const toolbarSearchClassName = classnames('toolbar__search row toolbar__button', {
+    const toolbarSearchClassName = classnames('toolbar__search row', {
       'toolbar__search--focused': isFocused
     });
 
@@ -84,6 +91,7 @@ class ToolbarSearch extends Component {
           <SearchInput
             value={query}
             onFocus={this.handleSearchFocus}
+            onBlur={this.handleSearchBlur}
             onClear={this.handlerSearchClear}
             onChange={this.handleSearchChange}
           />
