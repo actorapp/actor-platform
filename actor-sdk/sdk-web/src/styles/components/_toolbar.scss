@@ -123,6 +123,16 @@ $stem-size: 10px;
           display: none;
         }
       }
+
+      .not-found {
+        font-size: 14px;
+        line-height: 20px;
+
+        margin-bottom: 8px;
+        padding: 4px 16px;
+
+        color: rgba(black, .4);
+      }
     }
     &__dropdown {
       position: absolute;
@@ -149,6 +159,7 @@ $stem-size: 10px;
 
     &__footer {
       font-size: 13px;
+      font-weight: 500;
       line-height: 24px;
 
       display: block;
