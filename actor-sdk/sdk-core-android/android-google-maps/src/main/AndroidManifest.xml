@@ -6,6 +6,27 @@
         android:allowBackup="true"
         android:supportsRtl="true">
 
+        <activity
+            android:name="im.actor.map.MapPickerActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:theme="@style/CommonActivityTheme">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="im.actor.pickLocation_${applicationId}" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="im.actor.map.MapActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:theme="@style/CommonActivityTheme"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="im.actor.locationPreview_${applicationId}" />
+            </intent-filter>
+        </activity>
+
 
     </application>
 
