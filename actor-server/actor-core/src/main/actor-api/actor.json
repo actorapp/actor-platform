@@ -4856,7 +4856,7 @@
           "content": {
             "name": "DocumentExPhoto",
             "doc": [
-              "File photo extension",
+              "File photo extension. Can be set ONLY for JPEG.",
               {
                 "type": "reference",
                 "argument": "w",
@@ -4960,6 +4960,94 @@
               {
                 "type": "int32",
                 "id": 1,
+                "name": "duration"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "DocumentExAnimation",
+            "doc": [
+              "Animation extension. Can be set ONLY for GIF.",
+              {
+                "type": "reference",
+                "argument": "w",
+                "category": "full",
+                "description": "  Animation width"
+              },
+              {
+                "type": "reference",
+                "argument": "h",
+                "category": "full",
+                "description": "  Animation height"
+              }
+            ],
+            "trait": {
+              "name": "DocumentEx",
+              "key": 6
+            },
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "w"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "h"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "DocumentExAnimationVid",
+            "doc": [
+              "Animation video extension. More compact version of Animation with video codec instead of GIF.",
+              "Can be set ONLY for MP4.",
+              {
+                "type": "reference",
+                "argument": "w",
+                "category": "full",
+                "description": "  Animation width"
+              },
+              {
+                "type": "reference",
+                "argument": "h",
+                "category": "full",
+                "description": "  Animation height"
+              },
+              {
+                "type": "reference",
+                "argument": "duration",
+                "category": "full",
+                "description": "  Animation duration"
+              }
+            ],
+            "trait": {
+              "name": "DocumentEx",
+              "key": 7
+            },
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "w"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "h"
+              },
+              {
+                "type": "int32",
+                "id": 3,
                 "name": "duration"
               }
             ]
@@ -7982,8 +8070,7 @@
                   "childType": "bool"
                 },
                 "id": 16,
-                "name": "isAdmin",
-                "deprecated": "true"
+                "name": "isAdmin"
               },
               {
                 "type": {
@@ -7991,8 +8078,7 @@
                   "childType": "userId"
                 },
                 "id": 8,
-                "name": "creatorUid",
-                "deprecated": "true"
+                "name": "creatorUid"
               },
               {
                 "type": {
@@ -8003,8 +8089,7 @@
                   }
                 },
                 "id": 9,
-                "name": "members",
-                "deprecated": "true"
+                "name": "members"
               },
               {
                 "type": {
@@ -8012,8 +8097,7 @@
                   "childType": "date"
                 },
                 "id": 10,
-                "name": "createDate",
-                "deprecated": "true"
+                "name": "createDate"
               },
               {
                 "type": {
@@ -8021,8 +8105,7 @@
                   "childType": "string"
                 },
                 "id": 17,
-                "name": "theme",
-                "deprecated": "true"
+                "name": "theme"
               },
               {
                 "type": {
@@ -8030,8 +8113,7 @@
                   "childType": "string"
                 },
                 "id": 18,
-                "name": "about",
-                "deprecated": "true"
+                "name": "about"
               }
             ]
           }

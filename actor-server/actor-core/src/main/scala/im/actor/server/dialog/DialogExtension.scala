@@ -67,7 +67,7 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
     isFat:         Boolean        = false,
     forUserId:     Option[UserId] = None
   ): Future[SeqStateDate] =
-    withValidPeer(peer.asModel, senderUserId, Future.successful(SeqStateDate())) {
+    withValidPeer(peer.asModel, senderUserId, failed = FastFuture.successful(SeqStateDate())) {
       // we don't set date here, cause actual date set inside dialog processor
       val sendMessage = SendMessage(
         origin = Some(Peer.privat(senderUserId)),
@@ -94,7 +94,7 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
     randomId:     Long,
     message:      ApiMessage
   ): Future[Unit] =
-    withValidPeer(peer.asModel, senderUserId, Future.successful(())) {
+    withValidPeer(peer.asModel, senderUserId, failed = FastFuture.successful(())) {
       for {
         memberIds ← fetchMemberIds(DialogId(peer.asModel, senderUserId))
         _ ← Future.sequence(memberIds map (writeMessageSelf(_, peer, senderUserId, new DateTime(date.toEpochMilli), randomId, message)))
@@ -109,7 +109,7 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
     randomId:     Long,
     message:      ApiMessage
   ): Future[Unit] =
-    withValidPeer(Peer.privat(userId), peer.id, Future.successful(())) {
+    withValidPeer(Peer.privat(userId), peer.id, failed = FastFuture.successful(())) {
       (userExt.processorRegion.ref ?
         envelope(Peer.privat(userId), DialogEnvelope().withWriteMessageSelf(WriteMessageSelf(
           dest = Some(peer.asModel),
@@ -121,7 +121,7 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
     }
 
   def messageReceived(peer: ApiPeer, receiverUserId: Int, date: Long): Future[Unit] =
-    withValidPeer(peer.asModel, receiverUserId, Future.successful(())) {
+    withValidPeer(peer.asModel, receiverUserId, failed = FastFuture.successful(())) {
       val now = Instant.now().toEpochMilli
       val receiver = Peer.privat(receiverUserId)
       val messageReceived = MessageReceived(Some(receiver), Some(peer.asModel), date, now)
@@ -134,7 +134,7 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
       .mapTo[MessageReceivedAck] map (_ ⇒ ())
 
   def messageRead(peer: ApiPeer, readerUserId: Int, readerAuthSid: Int, date: Long): Future[Unit] =
-    withValidPeer(peer.asModel, readerUserId, Future.successful(())) {
+    withValidPeer(peer.asModel, readerUserId, failed = FastFuture.successful(())) {
       val now = Instant.now().toEpochMilli
       val reader = Peer.privat(readerUserId)
       val messageRead = MessageRead(Some(reader), Some(peer.asModel), readerAuthSid, date, now)
@@ -147,28 +147,28 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
       .mapTo[MessageReadAck] map (_ ⇒ ())
 
   def unarchive(userId: Int, peer: Peer, clientAuthSid: Option[Int] = None): Future[SeqState] =
-    withValidPeer(peer, userId, Future.failed[SeqState](DialogErrors.MessageToSelf)) {
+    withValidPeer(peer, userId, failed = Future.failed[SeqState](DialogErrors.MessageToSelf)) {
       (userExt.processorRegion.ref ?
         UserEnvelope(userId).withDialogRootEnvelope(DialogRootEnvelope().withUnarchive(DialogRootCommands.Unarchive(Some(peer), clientAuthSid map (Int32Value(_))))))
         .mapTo[SeqState]
     }
 
   def archive(userId: Int, peer: Peer, clientAuthSid: Option[Int] = None): Future[SeqState] =
-    withValidPeer(peer, userId, Future.failed[SeqState](DialogErrors.MessageToSelf)) {
+    withValidPeer(peer, userId, failed = Future.failed[SeqState](DialogErrors.MessageToSelf)) {
       (userExt.processorRegion.ref ?
         UserEnvelope(userId).withDialogRootEnvelope(DialogRootEnvelope().withArchive(DialogRootCommands.Archive(Some(peer), clientAuthSid map (Int32Value(_))))))
         .mapTo[SeqState]
     }
 
   def favourite(userId: Int, peer: Peer): Future[SeqState] =
-    withValidPeer(peer, userId, Future.failed[SeqState](DialogErrors.MessageToSelf)) {
+    withValidPeer(peer, userId, failed = Future.failed[SeqState](DialogErrors.MessageToSelf)) {
       (userExt.processorRegion.ref ?
         UserEnvelope(userId).withDialogRootEnvelope(DialogRootEnvelope().withFavourite(DialogRootCommands.Favourite(Some(peer)))))
         .mapTo[SeqState]
     }
 
   def unfavourite(userId: Int, peer: Peer): Future[SeqState] =
-    withValidPeer(peer, userId, Future.failed[SeqState](DialogErrors.MessageToSelf)) {
+    withValidPeer(peer, userId, failed = Future.failed[SeqState](DialogErrors.MessageToSelf)) {
       (userExt.processorRegion.ref ?
         UserEnvelope(userId).withDialogRootEnvelope(DialogRootEnvelope().withUnfavourite(DialogRootCommands.Unfavourite(Some(peer)))))
         .mapTo[SeqState]

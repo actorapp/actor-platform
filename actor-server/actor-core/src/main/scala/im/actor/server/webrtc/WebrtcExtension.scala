@@ -8,12 +8,12 @@ import akka.util.Timeout
 import com.github.kxbmap.configs.syntax._
 import com.typesafe.config.Config
 import im.actor.config.ActorConfig
+import im.actor.server.acl.ACLUtils
 import im.actor.server.eventbus.EventBus
 import im.actor.server.model.Peer
 import im.actor.types._
 
 import scala.concurrent.Future
-import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.util.Try
 
 object Webrtc {
@@ -50,7 +50,7 @@ final class WebrtcExtension(system: ActorSystem) extends Extension {
   private[webrtc] val config = WebrtcConfig.load(system.settings.config).get
 
   def doCall(callerUserId: UserId, callerAuthId: AuthId, peer: Peer, timeout: Option[Long]): Future[(Long, String, EventBus.DeviceId)] = {
-    val callId = ThreadLocalRandom.current().nextLong()
+    val callId = ACLUtils.randomLong()
 
     (region ? WebrtcCallEnvelope(
       callId,
