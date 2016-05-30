@@ -1,5 +1,6 @@
 import fuzzaldrin from 'fuzzaldrin';
 import { dispatch } from '../dispatcher/ActorAppDispatcher';
+import history from '../utils/history';
 import { isPeerUser, isPeerGroup } from '../utils/PeerUtils';
 import { ActionTypes } from '../constants/ActorAppConstants';
 import QuickSearchStore from '../stores/QuickSearchStore';
@@ -28,6 +29,11 @@ class SearchActionCreators {
     SearchMessagesActionCreators.open();
     SearchMessagesActionCreators.setQuery(query);
     dispatch(ActionTypes.SEARCH_CLEAR);
+  }
+
+  goToContact(contact) {
+    dispatch(ActionTypes.SEARCH_CLEAR);
+    history.push(`/im/${contact.peerInfo.peer.key}`);
   }
 
   handleSearch(query) {

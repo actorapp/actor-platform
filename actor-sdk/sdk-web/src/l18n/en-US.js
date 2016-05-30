@@ -393,6 +393,8 @@ export default {
 
     toolbar: {
       search: {
+        hint: 'Type anything to start searhing',
+        messages: 'Search messages in current dialog',
         contacts: {
           title: 'Contacts',
           notFound: 'Sorry, no such users were found =('

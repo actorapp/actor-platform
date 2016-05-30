@@ -58,7 +58,7 @@ class SelectList extends Component {
   }
 
   handleSelect() {
-    this.props.onSelect(this.state.index);
+    this.props.onSelect(this.state.current);
   }
 
   handleNext() {
