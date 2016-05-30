@@ -3,7 +3,6 @@ package im.actor.server.enrich
 import akka.actor._
 import akka.cluster.pubsub.DistributedPubSubMediator.{ Subscribe, SubscribeAck }
 import akka.event.Logging
-import akka.http.scaladsl.model.Uri
 import akka.util.Timeout
 import com.sksamuel.scrimage.Image
 import com.sksamuel.scrimage.nio.JpegWriter
@@ -14,6 +13,7 @@ import im.actor.server.messaging.MessageUpdating
 import im.actor.server.pubsub.{ PeerMessage, PubSubExtension }
 import im.actor.util.log.AnyRefLogSource
 import org.joda.time.DateTime
+import spray.http.Uri
 
 import scala.concurrent.duration._
 import scala.util.{ Failure, Success, Try }
@@ -67,7 +67,7 @@ final class RichMessageWorker(config: RichMessageConfig) extends Actor with Acto
     case PeerMessage(fromPeer, toPeer, randomId, _, message) ⇒
       message match {
         case ApiTextMessage(text, _, _) ⇒
-          Try(Uri(text.trim)) match {
+          Try(Uri.parseAbsolute(text.trim)) match {
             case Success(uri) ⇒
               log.debug("TextMessage with uri: {}", uri)
               previewMaker ! GetPreview(uri.toString(), fromPeer.id, toPeer, randomId)

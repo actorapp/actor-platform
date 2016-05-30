@@ -19,6 +19,7 @@ object WebrtcErrors {
   val NotAParticipant = RpcError(403, "NOT_A_PARTICIPANT", "Not a participant.", canTryAgain = false, None)
   val NotJoinedToEventBus = RpcError(400, "NOT_JOINED_TO_EVENT_BUS", "Not joined to event bus.", canTryAgain = false, None)
   val CallForbidden = RpcError(403, "CALL_FORBIDDEN", "You are forbidden to call this user", canTryAgain = false, None)
+  val GroupTooBig = RpcError(400, "GROUP_TOO_BIG", "Group is too big for group call", canTryAgain = false, None)
 }
 
 final class WebrtcServiceImpl(implicit system: ActorSystem, sessionRegion: SessionRegion) extends WebrtcService {
@@ -121,5 +122,6 @@ final class WebrtcServiceImpl(implicit system: ActorSystem, sessionRegion: Sessi
     case WebrtcCallErrors.NotAParticipant     ⇒ WebrtcErrors.NotAParticipant
     case WebrtcCallErrors.NotJoinedToEventBus ⇒ WebrtcErrors.NotJoinedToEventBus
     case WebrtcCallErrors.CallForbidden       ⇒ WebrtcErrors.CallForbidden
+    case WebrtcCallErrors.GroupTooBig         ⇒ WebrtcErrors.GroupTooBig
   }
 }
