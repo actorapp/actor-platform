@@ -145,11 +145,11 @@ $stem-size: 10px;
     &__dropdown {
       position: absolute;
       top: 100%;
-      right: -4px;
       left: -4px;
 
       overflow: hidden;
 
+      width: 308px;
       margin-top: 4px;
 
       color: rgba($greyish-brown, .6);
