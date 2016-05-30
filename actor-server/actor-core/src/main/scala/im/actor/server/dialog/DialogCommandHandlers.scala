@@ -139,14 +139,16 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
     log.debug(s"mustRead is ${mustRead}")
 
     if (mustRead) {
-      persistAsync(MessagesRead(Instant.ofEpochMilli(mr.date), mr.getOrigin.id)) { e ⇒
+      // can't use persistAsync here, cause more reads can occur,
+      // and state will be inconsistent by the time handler is excuted.
+      persist(MessagesRead(Instant.ofEpochMilli(mr.date), mr.getOrigin.id)) { e ⇒
         log.debug(s"persisted MessagesRead, origin=${mr.getOrigin.id}, date=${Instant.ofEpochMilli(mr.date)}, counter=${state.counter}, unreadMessages=${state.unreadMessages}")
-        commit(e)
-        log.debug(s"after commit: counter=${state.counter}, unreadMessages=${state.unreadMessages}")
+        val newState = commit(e)
+        log.debug(s"after commit: counter=${newState.counter}, unreadMessages=${newState.unreadMessages}")
 
         (for {
           _ ← dialogExt.ackMessageRead(peer, mr)
-          _ ← deliveryExt.read(userId, mr.readerAuthSid, peer, mr.date, state.counter)
+          _ ← deliveryExt.read(userId, mr.readerAuthSid, peer, mr.date, newState.counter)
           _ = deliveryExt.sendCountersUpdate(userId)
         } yield MessageReadAck()) pipeTo sender()
       }
