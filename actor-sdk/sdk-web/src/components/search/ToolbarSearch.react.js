@@ -4,8 +4,8 @@
 
 import React, { Component } from 'react';
 import { Container } from 'flux/utils';
-import { FormattedMessage } from 'react-intl';
 import classnames from 'classnames';
+import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
 
 import SearchStore from '../../stores/SearchStore';
 import SearchActionCreators from '../../actions/SearchActionCreators';
@@ -63,19 +63,17 @@ class ToolbarSearch extends Component {
   }
 
   renderSearchResultsDropdown() {
-    const { query, isFocused, results: { contacts, groups } } = this.state;
+    const { isFocused, query, results: { contacts, groups } } = this.state;
 
     if (!isFocused) {
       return null
     }
 
-    if (!query) {
+    if (!query.length) {
       return (
         <div className="toolbar__search__dropdown">
-          <div className="toolbar__search__results">
-            <div className="not-found">
-              <FormattedMessage id="toolbar.search.hint" />
-            </div>
+          <div className="hint">
+            <FormattedHTMLMessage id="search.hint"/>
           </div>
         </div>
       );
@@ -91,8 +89,7 @@ class ToolbarSearch extends Component {
         </div>
         <SelectListItem index={max}>
           <footer className="toolbar__search__footer">
-            <FormattedMessage id="toolbar.search.messages" />
-            <i className="material-icons">arrow_forward</i>
+            <FormattedMessage id="search.inChat"/> <i className="material-icons">arrow_forward</i>
           </footer>
         </SelectListItem>
       </SelectList>
