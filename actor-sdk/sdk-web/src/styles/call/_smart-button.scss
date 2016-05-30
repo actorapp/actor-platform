@@ -1,7 +1,9 @@
 .call__smart-button {
+  transition: background ($default-transition-duration * 2) $default-transition-duration $default-transition-timing;
+
   border-radius: 32px;
   .material-icons {
-    transition: transform ($default-transition-duration * 2) $default-transition-timing;
+    transition: transform ($default-transition-duration * 2) $default-transition-duration $default-transition-timing;
   }
   span {
     font-size: 12px;
@@ -21,6 +23,7 @@
     color: white !important;
     background-color: $dark-mint !important;
     &:hover {
+      background-color: $ticklish !important;
       .material-icons {
         transform: rotate(135deg);
       }

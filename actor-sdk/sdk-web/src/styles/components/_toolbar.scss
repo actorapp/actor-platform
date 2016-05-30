@@ -35,14 +35,44 @@ $stem-size: 10px;
     padding: 4px 12px;
 
     cursor: default !important;
+    transition: width 100ms ease-in;
 
     border-radius: 32px;
     background-color: rgb(255, 255, 255);
 
-    transition: width 100ms ease-in;
+    .search-icon {
+      font-size: 22px;
+      line-height: 24px;
+
+      display: inline-block;
+
+      user-select: none;
+      pointer-events: none;
+
+      color: rgb(180, 180, 180);
+    }
+    .close-icon {
+      font-size: 16px;
+      line-height: 24px;
+
+      cursor: pointer;
+
+      color: rgba($dusky-blue, .7);
+      &:hover {
+        transform: scale(1.1);
+
+        color: rgba($dusky-blue, .9);
+      }
+      &:active {
+        transform: scale(.98);
+      }
+    }
 
     &--focused {
       width: 300px;
+      .search-icon {
+        color: $dark-sky-blue !important;
+      }
     }
 
     &__input {
@@ -66,33 +96,6 @@ $stem-size: 10px;
         @include placeholder($dorado);
       }
     }
-    .search-icon {
-      font-size: 22px;
-      line-height: 24px;
-
-      display: inline-block;
-
-      user-select: none;
-      pointer-events: none;
-
-      color: $dark-sky-blue;
-    }
-    .close-icon {
-      font-size: 16px;
-      line-height: 24px;
-
-      cursor: pointer;
-
-      color: rgba($dusky-blue, .7);
-      &:hover {
-        transform: scale(1.1);
-
-        color: rgba($dusky-blue, .9);
-      }
-      &:active {
-        transform: scale(.98);
-      }
-    }
 
     &__results {
       position: relative;
@@ -101,7 +104,6 @@ $stem-size: 10px;
       overflow: scroll;
 
       box-sizing: border-box;
-      min-height: 152px;
       max-height: 440px;
       padding: 4px 0;
       header {
@@ -135,7 +137,6 @@ $stem-size: 10px;
         font-size: 14px;
         line-height: 20px;
 
-        margin-bottom: 8px;
         padding: 4px 16px;
 
         color: rgba(black, .4);
@@ -155,6 +156,22 @@ $stem-size: 10px;
       border-radius: $default-border-radius;
       background-color: white;
       box-shadow: 0 1px 3px 1px rgba(0, 0, 0, .1);
+    }
+
+    .hint {
+      padding: 16px;
+      h4 {
+        font-size: 15px;
+        line-height: 20px;
+
+        margin: 0 0 8px;
+      }
+      p {
+        font-size: 14px;
+        line-height: 20px;
+
+        margin: 0;
+      }
     }
 
     .selected {
@@ -177,7 +194,7 @@ $stem-size: 10px;
       cursor: pointer;
       text-decoration: none;
 
-      color: rgb(100, 100, 100);
+      color: rgb(150, 150, 150);
       background-color: rgba(black, .01);
       box-shadow: 0 -1px 0 0 rgba(0, 0, 0, .07);
       span {
