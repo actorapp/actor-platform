@@ -699,7 +699,7 @@ public class Authentication {
 
                         @Override
                         public void onError(final RpcException e) {
-                            if ("PHONE_NUMBER_UNOCCUPIED".equals(e.getTag()) || "EMAIL_UNOCCUPIED".equals(e.getTag())) {
+                            if ("USERNAME_UNOCCUPIED".equals(e.getTag())||"PHONE_NUMBER_UNOCCUPIED".equals(e.getTag()) || "EMAIL_UNOCCUPIED".equals(e.getTag())) {
                                 state = AuthState.SIGN_UP;
                                 Runtime.postToMainThread(() -> callback.onResult(AuthState.SIGN_UP));
                                 return;

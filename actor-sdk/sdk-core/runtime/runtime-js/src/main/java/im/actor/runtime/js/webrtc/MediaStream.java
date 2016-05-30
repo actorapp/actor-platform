@@ -7,7 +7,7 @@ public class MediaStream implements WebRTCMediaStream {
 
     private JsMediaStream stream;
     private JsAudio audio;
-    private boolean isEnabled = true;
+    private boolean isAudioEnabled = true;
 
     public MediaStream(JsMediaStream stream) {
         this(stream, true);
@@ -31,12 +31,12 @@ public class MediaStream implements WebRTCMediaStream {
     }
 
     @Override
-    public boolean isEnabled() {
-        return isEnabled;
+    public boolean isAudioEnabled() {
+        return isAudioEnabled;
     }
 
     @Override
-    public void setEnabled(boolean isEnabled) {
+    public void setAudioEnabled(boolean isEnabled) {
         if (audio != null) {
             if (isEnabled) {
                 audio.play();
@@ -49,6 +49,17 @@ public class MediaStream implements WebRTCMediaStream {
         } else {
             stream.startAll();
         }
+    }
+
+    @Override
+    public boolean isVideoEnabled() {
+        //TODO implement
+        return false;
+    }
+
+    @Override
+    public void setVideoEnabled(boolean isEnabled) {
+        //TODO implement
     }
 
     @Override

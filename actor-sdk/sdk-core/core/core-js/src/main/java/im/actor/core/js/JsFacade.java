@@ -1759,4 +1759,102 @@ public class JsFacade implements Exportable {
             }
         }
     }
+
+
+    //userName
+    @UsedByApp
+    public void requestNickName(String nickName, final JsAuthSuccessClosure success,
+                                final JsAuthErrorClosure error) {
+        try {
+            messenger.requestStartUserNameAuth(nickName).start(new CommandCallback<AuthState>() {
+                @Override
+                public void onResult(AuthState res) {
+                    success.onResult(Enums.convert(res));
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    String tag = "requestNickName_ERROR";
+                    String message = "UserName error";
+                    boolean canTryAgain = false;
+                    if (e instanceof RpcException) {
+                        tag = ((RpcException) e).getTag();
+                        message = e.getMessage();
+                        canTryAgain = ((RpcException) e).isCanTryAgain();
+                    }
+                    error.onError(tag, message, canTryAgain, getAuthState());
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, e);
+            im.actor.runtime.Runtime.postToMainThread(new Runnable() {
+                @Override
+                public void run() {
+                    error.onError("NickName_INVALID", "Invalid NickName", false,
+                            getAuthState());
+                }
+            });
+        }
+    }
+
+    //signIN for password
+    @UsedByApp
+    public void sendPassword(String password, final JsAuthSuccessClosure success,
+                             final JsAuthErrorClosure error) {
+        try {
+            messenger.validatePassword(password).start(new CommandCallback<AuthState>() {
+                @Override
+                public void onResult(AuthState res) {
+                    success.onResult(Enums.convert(res));
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    String tag = "INTERNAL_ERROR";
+                    String message = "Internal error";
+                    boolean canTryAgain = false;
+                    if (e instanceof RpcException) {
+                        tag = ((RpcException) e).getTag();
+                        message = e.getMessage();
+                        canTryAgain = ((RpcException) e).isCanTryAgain();
+                    }
+                    error.onError(tag, message, canTryAgain, getAuthState());
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, e);
+            im.actor.runtime.Runtime.postToMainThread(new Runnable() {
+                @Override
+                public void run() {
+                    error.onError("USERNAME_PASSWORD_INVALID", "Invalid password number", false,
+                            getAuthState());
+                }
+            });
+        }
+    }
+
+    @UsedByApp
+    public void signUpForPassword(String name, String password, final JsAuthSuccessClosure success,
+                                  final JsAuthErrorClosure error) {
+        messenger.signUp(name, null, null, password).start(new CommandCallback<AuthState>() {
+            @Override
+            public void onResult(AuthState res) {
+                success.onResult(Enums.convert(res));
+            }
+
+            @Override
+            public void onError(Exception e) {
+                String tag = "INTERNAL_ERROR";
+                String message = "Internal error";
+                boolean canTryAgain = false;
+                if (e instanceof RpcException) {
+                    tag = ((RpcException) e).getTag();
+                    message = e.getMessage();
+                    canTryAgain = ((RpcException) e).isCanTryAgain();
+                }
+                error.onError(tag, message, canTryAgain, getAuthState());
+            }
+        });
+    }
+
 }
