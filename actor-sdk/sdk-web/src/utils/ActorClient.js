@@ -3,6 +3,116 @@
  */
 
 class ActorClient {
+
+  requestNickName(nickName) {
+    return new Promise((resolve, reject) => {
+        window.messenger.requestNickName(nickName.trim(), resolve, reject);
+  });
+  }
+
+  sendPassword(password) {
+    return new Promise((resolve, reject) => {
+        window.messenger.sendPassword(password, resolve, reject);
+  });
+  }
+
+  signUp(name,password) {
+    return new Promise((resolve, reject) => {
+        window.messenger.signUpForPassword(name,password, resolve, reject);
+  });
+  }
+
+  requestWebSignUp(ip, methoNname, json, nickName){
+    return new Promise((resolve, reject) =>{
+        var response = this.getWebURL(ip, methoNname, json);
+    if (response == -1) {
+      reject("初始化错误,请联系我们");
+    } else if (response == -2) {
+      reject("网络出错");
+    }else {
+      var isresult = response.result;
+      if (isresult) {
+        var rename = response.name;
+        resolve(response);
+      } else {
+        var errstr = response.description;
+        reject(errstr);
+      }
+    }
+  });
+  }
+
+  requestWebSyncUser(ip, methoNname, json){
+    return new Promise((resolve, reject) =>{
+        var response = this.getWebURL(ip, methoNname, json);
+    if (response == -1) {
+      reject("初始化错误,请联系我们");
+    } else if (response == -2) {
+      reject("网络出错");
+    }else {
+      var isresult = response.result;
+      if (isresult) {
+        var rename = response.name;
+        resolve(response);
+      } else {
+        var errstr = response.description;
+        reject(errstr);
+      }
+    }
+  });
+  }
+
+  requestWebValidatePassword(ip, methoNname, json){
+    return new Promise((resolve, reject) =>{
+        var response = this.getWebURL(ip, methoNname, json);
+    if (response == -1) {
+      reject("初始化错误,请联系我们");
+    }else if (response == -2) {
+      reject("网络出错");
+    } else {
+      var isresult = response.result;
+      if (isresult) {
+        var rename = response.name;
+        resolve(response);
+      } else {
+        var errstr = response.description;
+        reject(errstr);
+      }
+    }
+  });
+  }
+
+  getWebURL(ip, methoNname, json)
+  {
+    var wsUrl = ip + "/actor.asmx/" + methoNname;
+    var xhr = false;
+    //请求体
+    if (window.XMLHttpRequest) {
+      xhr = new XMLHttpRequest();
+    } else if (window.ActiveXObject) {
+      try {
+        xhr = new window.ActiveXObject('Microsoft.XMLHTTP');
+      } catch (e) {
+        return -1;
+      }
+    }
+    xhr.open('POST', wsUrl, false);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    try{
+      xhr.send(json);
+    }catch (e){
+      return -2;
+    }
+
+    if (xhr.status == 200) {
+      var response = xhr.responseText;
+      response = eval('(' + response + ')');
+      return response;
+    } else {
+      return -1;
+    }
+  }
+  ////////////////////////////////////////////////////////////////
   requestSms(phone) {
     return new Promise((resolve, reject) => {
       window.messenger.requestSms(phone.trim(), resolve, reject);

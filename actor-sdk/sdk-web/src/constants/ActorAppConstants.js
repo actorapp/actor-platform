@@ -22,6 +22,7 @@ export const ActionTypes = keymirror({
   AUTH_RESTART: null,
   AUTH_CODE_REQUEST: null,
   AUTH_CODE_REQUEST_SUCCESS: null,
+  AUTH_NICKNAME_REQUEST_SUCCESS: null,
   AUTH_CODE_REQUEST_FAILURE: null,
   AUTH_CODE_SEND: null,
   AUTH_CODE_SEND_SUCCESS: null,

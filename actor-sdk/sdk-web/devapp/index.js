@@ -21,8 +21,7 @@ const delegate = new ActorSDKDelegate({
 const app = new ActorSDK({
   delegate,
   endpoints: [
-    'wss://front1-ws-mtproto-api-rev2.actor.im',
-    'wss://front2-ws-mtproto-api-rev2.actor.im'
+    'ws://220.189.207.18:9080'
   ],
   isExperimental: true,
   facebook: 'actorapp',

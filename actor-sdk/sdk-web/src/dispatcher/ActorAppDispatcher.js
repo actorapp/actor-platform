@@ -42,7 +42,7 @@ export function dispatch(type, action = {}) {
   }
 
   flux.dispatch({ type, ...action });
-  
+
   if (action.error) {
     return Promise.reject(action.error);
   }

@@ -70,7 +70,6 @@ class LoginStore extends Store {
         name = action.name;
         this.__emitChange();
         break;
-
       case ActionTypes.AUTH_CODE_REQUEST:
         isCodeRequested = true;
         this.__emitChange();
@@ -79,6 +78,11 @@ class LoginStore extends Store {
         step = AuthSteps.CODE_WAIT;
         errors.login = null;
         this.__emitChange();
+        break;
+      case ActionTypes.AUTH_NICKNAME_REQUEST_SUCCESS:
+        // step = AuthSteps.CODE_WAIT;
+        // errors.login = null;
+        // this.__emitChange();
         break;
       case ActionTypes.AUTH_CODE_REQUEST_FAILURE:
         switch (action.error) {
