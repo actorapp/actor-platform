@@ -11,12 +11,11 @@ class SearchResultGroup extends Component {
   static propTypes = {
     id: PropTypes.string.isRequired,
     items: PropTypes.array.isRequired,
-    offset: PropTypes.number.isRequired,
-    onSelect: PropTypes.func.isRequired
+    offset: PropTypes.number.isRequired
   };
 
   renderResults() {
-    const { id, items, offset, onSelect } = this.props;
+    const { id, items, offset } = this.props;
 
     if (!items.length) {
       return (
@@ -28,7 +27,7 @@ class SearchResultGroup extends Component {
 
     return items.map((item, index) => {
       return (
-        <SelectListItem index={index + offset} key={item.peerInfo.peer.key} onSelect={onSelect}>
+        <SelectListItem index={index + offset} key={item.peerInfo.peer.key}>
           <ContactItem
             uid={item.peerInfo.peer.id}
             name={item.peerInfo.title}

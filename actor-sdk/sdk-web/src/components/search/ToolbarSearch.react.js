@@ -4,8 +4,8 @@
 
 import React, { Component } from 'react';
 import { Container } from 'flux/utils';
+import { FormattedMessage } from 'react-intl';
 import classnames from 'classnames';
-import history from '../../utils/history';
 
 import SearchStore from '../../stores/SearchStore';
 import SearchActionCreators from '../../actions/SearchActionCreators';
@@ -42,8 +42,10 @@ class ToolbarSearch extends Component {
     SearchActionCreators.focus();
   }
 
-  handleSearchBlur() {
-    SearchActionCreators.blur();
+  handleSearchBlur(event) {
+    console.debug(event);
+    // tricky workaround for click on search result
+    setTimeout(() => SearchActionCreators.blur(), 50);
   }
 
   handleSearchChange(query) {
@@ -56,42 +58,45 @@ class ToolbarSearch extends Component {
       SearchActionCreators.goToMessagesSearch(this.state.query);
     } else {
       const contact = [...contacts, ...groups][index];
-      history.push(`/im/${contact.peerInfo.peer.id}`);
+      SearchActionCreators.goToContact(contact);
     }
   }
 
   renderSearchResultsDropdown() {
-    const { isFocused, results: { contacts, groups } } = this.state;
+    const { query, isFocused, results: { contacts, groups } } = this.state;
 
     if (!isFocused) {
       return null
     }
 
+    if (!query) {
+      return (
+        <div className="toolbar__search__dropdown">
+          <div className="toolbar__search__results">
+            <div className="not-found">
+              <FormattedMessage id="toolbar.search.hint" />
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    const max = contacts.length + groups.length;
+
     return (
-      <SelectList className="toolbar__search__dropdown" max={contacts.length + groups.length} onSelect={this.onResultSelect}>
+      <SelectList className="toolbar__search__dropdown" max={max} onSelect={this.onResultSelect}>
         <div className="toolbar__search__results">
           <SearchResultGroup id="contacts" offset={0} items={contacts} />
           <SearchResultGroup id="groups" offset={contacts.length} items={groups} />
         </div>
-        <SelectListItem index={contacts.length + groups.length}>
+        <SelectListItem index={max}>
           <footer className="toolbar__search__footer">
-            Search messages in current dialog <i className="material-icons">arrow_forward</i>
+            <FormattedMessage id="toolbar.search.messages" />
+            <i className="material-icons">arrow_forward</i>
           </footer>
         </SelectListItem>
       </SelectList>
     );
-  }
-
-  renderSearchDropdownHint() {
-    // FIXME!!!
-    return null
-
-    // return (
-    //   <div className="toolbar__search__dropdown">
-    //     <h4>Search hint</h4>
-    //     <p>Some text about search hint</p>
-    //   </div>
-    // );
   }
 
   render() {
@@ -112,7 +117,6 @@ class ToolbarSearch extends Component {
             onChange={this.handleSearchChange}
           />
         </div>
-        {this.renderSearchDropdownHint()}
         {this.renderSearchResultsDropdown()}
       </div>
     );
