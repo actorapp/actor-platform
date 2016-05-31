@@ -3,31 +3,30 @@
  */
 
 import React, { Component, PropTypes } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedHTMLMessage } from 'react-intl';
 import ContactItem from '../common/ContactItem.react';
 import SelectListItem from '../common/SelectListItem.react';
 
-class SearchResultGroup extends Component {
+class ToolbarSearchResults extends Component {
   static propTypes = {
-    id: PropTypes.string.isRequired,
-    items: PropTypes.array.isRequired,
-    offset: PropTypes.number.isRequired
+    query: PropTypes.string.isRequired,
+    results: PropTypes.array.isRequired
   };
 
   renderResults() {
-    const { id, items, offset } = this.props;
+    const { query, results } = this.props;
 
-    if (!items.length) {
+    if (!results.length) {
       return (
         <div className="not-found">
-          <FormattedMessage id={`toolbar.search.${id}.notFound`} />
+          <FormattedHTMLMessage id="search.notFound" values={{ query }} />
         </div>
       );
     }
 
-    return items.map((item, index) => {
+    return results.map((item, index) => {
       return (
-        <SelectListItem index={index + offset} key={item.peerInfo.peer.key}>
+        <SelectListItem index={index} key={item.peerInfo.peer.key}>
           <ContactItem
             uid={item.peerInfo.peer.id}
             name={item.peerInfo.title}
@@ -40,17 +39,12 @@ class SearchResultGroup extends Component {
   }
 
   render() {
-    const { id } = this.props;
-
     return (
-      <div>
-        <header>
-          <FormattedMessage id={`toolbar.search.${id}.title`}/>
-        </header>
+      <div className="toolbar__search__results">
         {this.renderResults()}
       </div>
     );
   }
 }
 
-export default SearchResultGroup;
+export default ToolbarSearchResults;

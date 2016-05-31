@@ -10,11 +10,8 @@ class SearchStore extends ReduceStore {
   getInitialState() {
     return {
       query: '',
-      isFocused: false,
-      results: {
-        contacts: [],
-        groups: []
-      }
+      results: [],
+      isFocused: false
     };
   }
 
