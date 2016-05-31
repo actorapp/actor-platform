@@ -665,7 +665,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "73"
             endingLineNumber = "73"
-            landmarkName = "then(final Consumer&lt;T&gt; then)"
+            landmarkName = "Promise(PromiseFunc&lt;T&gt; executor)"
             landmarkType = "5">
             <Locations>
                <Location
@@ -792,7 +792,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "144"
             endingLineNumber = "144"
-            landmarkName = "complete(final PromiseCallback&lt;T&gt; callback)"
+            landmarkName = "failure(final Consumer&lt;Exception&gt; failure)"
             landmarkType = "5">
             <Locations>
                <Location
@@ -840,7 +840,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "143"
             endingLineNumber = "143"
-            landmarkName = "complete(final PromiseCallback&lt;T&gt; callback)"
+            landmarkName = "failure(final Consumer&lt;Exception&gt; failure)"
             landmarkType = "5">
             <Locations>
                <Location
@@ -888,7 +888,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "115"
             endingLineNumber = "115"
-            landmarkName = "failure(final Consumer&lt;Exception&gt; failure)"
+            landmarkName = "then(final Consumer&lt;T&gt; then)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -904,8 +904,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "149"
             endingLineNumber = "149"
-            landmarkName = "class Promise&lt;T&gt;"
-            landmarkType = "3">
+            landmarkName = "failure(final Consumer&lt;Exception&gt; failure)"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -920,7 +920,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "116"
             endingLineNumber = "116"
-            landmarkName = "failure(final Consumer&lt;Exception&gt; failure)"
+            landmarkName = "then(final Consumer&lt;T&gt; then)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -936,7 +936,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "120"
             endingLineNumber = "120"
-            landmarkName = "failure(final Consumer&lt;Exception&gt; failure)"
+            landmarkName = "then(final Consumer&lt;T&gt; then)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
