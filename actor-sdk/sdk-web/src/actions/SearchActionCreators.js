@@ -13,8 +13,8 @@ class SearchActionCreators {
   }
 
   blur() {
-    ComposeActionCreators.toggleAutoFocus(true);
     dispatch(ActionTypes.SEARCH_BLUR);
+    ComposeActionCreators.toggleAutoFocus(true);
   }
 
   clear() {
