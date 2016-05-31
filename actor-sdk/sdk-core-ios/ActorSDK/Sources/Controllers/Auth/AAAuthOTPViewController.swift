@@ -4,9 +4,10 @@
 
 import Foundation
 import MessageUI
+import SwiftyJSON
 
 public class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewControllerDelegate {
-
+    
     private static let DIAL_SECONDS: Int = 60
     
     let scrollView = UIScrollView()
@@ -16,13 +17,16 @@ public class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewCon
     
     let codeField = UITextField()
     let codeFieldLine = UIView()
+    let ws=CocoaWebServiceRuntime()
     
     let haventReceivedCode = UIButton()
     
     let transactionHash: String
+    let username:String!
     let name: String!
     let email: String!
     let phone: String!
+    let needSignUp:Bool
     
     private var counterTimer: NSTimer!
     private var dialed: Bool = false
@@ -33,6 +37,8 @@ public class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewCon
         self.name = nil
         self.email = email
         self.phone = nil
+        self.needSignUp = false
+        self.username = nil
         super.init()
     }
     
@@ -41,6 +47,18 @@ public class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewCon
         self.name = name
         self.email = email
         self.phone = nil
+        self.needSignUp = false
+        self.username = nil
+        super.init()
+    }
+    
+    public init(username: String, name: String, needSignUp:Bool,transactionHash: String) {
+        self.transactionHash = transactionHash
+        self.name = name
+        self.username = username
+        self.phone = nil
+        self.email = nil
+        self.needSignUp = needSignUp
         super.init()
     }
     
@@ -49,6 +67,8 @@ public class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewCon
         self.name = nil
         self.email = nil
         self.phone = phone
+        self.needSignUp = false
+        self.username = nil
         super.init()
     }
     
@@ -57,6 +77,8 @@ public class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewCon
         self.name = name
         self.email = nil
         self.phone = phone
+        self.needSignUp = false
+        self.username = nil
         super.init()
     }
     
@@ -83,7 +105,7 @@ public class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewCon
         
         validateLabel.font = UIFont.systemFontOfSize(14)
         if email != nil {
-            validateLabel.text = email
+            validateLabel.text = name
         } else {
             validateLabel.text = phone
         }
@@ -101,10 +123,11 @@ public class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewCon
         hintLabel.numberOfLines = 2
         hintLabel.lineBreakMode = .ByWordWrapping
         
+        codeField.secureTextEntry = true;
         codeField.font = UIFont.systemFontOfSize(17)
         codeField.textColor = ActorSDK.sharedActor().style.authTextColor
         codeField.placeholder = AALocalized("AuthOTPPlaceholder")
-        codeField.keyboardType = .NumberPad
+        
         codeField.autocapitalizationType = .None
         codeField.autocorrectionType = .No
         
@@ -180,7 +203,25 @@ public class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewCon
             return
         }
         
-        let promise = Actor.doValidateCode(code, withTransaction: self.transactionHash)
+        let dic = NSMutableDictionary()
+        dic.setValue(code, forKey: "password")
+        dic.setValue(email, forKey: "oaUserName")
+        
+        if(self.needSignUp)
+        {
+            ws.asyncPostRequest("http://220.189.207.21:8405/actor.asmx",method:"validatePassword", withParams: dic,withCallback: passwordValidateCallback(code:code,container:self))
+        }
+        else
+        {
+            
+            doActorPasswordValidate(code)
+        }
+        
+    }
+    
+    public func doActorPasswordValidate(code:String)
+    {
+        let promise = Actor.doValidatePassword(code, withTransaction: self.transactionHash)
             .startUserAction(["EMAIL_CODE_INVALID", "PHONE_CODE_INVALID", "EMAIL_CODE_EXPIRED", "PHONE_CODE_EXPIRED"])
         
         promise.then { (r: ACAuthCodeRes!) -> () in
@@ -188,21 +229,41 @@ public class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewCon
                 if self.name == nil {
                     self.navigateNext(AAAuthNameViewController(transactionHash: r.transactionHash))
                 } else {
-                    let promise = Actor.doSignupWithName(self.name, withSex: ACSex.UNKNOWN(), withTransaction: r.transactionHash)
-                    promise.then { (r: ACAuthRes!) -> () in
+                    let promise2 = Actor.doSignupWithName(self.name, withSex: ACSex.UNKNOWN(), withTransaction: r.transactionHash,withPassword:code).startUserAction(["NICKNAME_BUSY"])
+                    promise2.then { (r: ACAuthRes!) -> () in
                         Actor.doCompleteAuth(r).startUserAction().then { (r: JavaLangBoolean!) -> () in
                             self.codeField.resignFirstResponder()
                             self.onAuthenticated()
                         }
                     }
-                    promise.startUserAction()
+                    
+                    promise2.failure { (e: JavaLangException!) -> () in
+                        if let rpc = e as? ACRpcException {
+                            
+                            if rpc.tag == "NICKNAME_BUSY"
+                            {
+                                let dic = NSMutableDictionary();                             dic.setValue(self.email, forKey: "oaUserName")
+                                self.ws.asyncPostRequest("http://220.189.207.21:8405/actor.asmx",method:"syncUser", withParams: dic,withCallback: syncUserCallback(code:code,container:self))
+                            } else
+                            {
+                                AAExecutions.errorWithTag(rpc.tag, rep: nil, cancel: { () -> () in
+                                    self.navigateBack()
+                                })
+                            }
+                        }
+                    }
+                    
                 }
-            } else {
+            }
+            else
+            {
+                
                 Actor.doCompleteAuth(r.result).startUserAction().then { (r: JavaLangBoolean!) -> () in
                     self.codeField.resignFirstResponder()
                     self.onAuthenticated()
                 }
             }
+            
         }
         
         promise.failure { (e: JavaLangException!) -> () in
@@ -227,9 +288,9 @@ public class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewCon
         super.viewWillAppear(animated)
         
         if self.phone != nil {
-        
+            
             updateTimerText()
-        
+            
             if !dialed {
                 counterTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(AAAuthOTPViewController.updateTimer), userInfo: nil, repeats: true)
             }
@@ -247,7 +308,7 @@ public class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewCon
                 counterTimer = nil
             }
             
-            Actor.doSendCodeViaCall(self.transactionHash)
+            //Actor.doSendCodeViaCall(self.transactionHash).done()
         }
         
         updateTimerText()
@@ -288,6 +349,70 @@ public class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewCon
         
         self.codeField.resignFirstResponder()
     }
+    
+    class passwordValidateCallback:WebserviceCallback
+    {
+        var container:AAViewController;
+        var code:String
+        init(code:String,container:AAViewController)
+        {
+            self.code=code
+            self.container=container;
+        }
+        
+        func setContainer(container:AAViewController)
+        {
+            self.container=container;
+        }
+        func onNetworkProblem() {
+            print("network error")
+        }
+        func onServiceSuccess(result: JSON) {
+            let k = container as! AAAuthOTPViewController
+            k.doActorPasswordValidate(code)
+            
+            print("success")
+        }
+        func onServiceFail(result: JSON) {
+            AAExecutions.errorWithMessage(result["description"].stringValue, rep: nil, cancel: nil)
+            print("fail")
+        }
+        func onServiceError(result: String) {
+            AAExecutions.errorWithMessage("网络错误", rep: nil, cancel: nil)
+            print("error")
+        }
+    }
+    
+    class syncUserCallback:WebserviceCallback
+    {
+        var container:AAViewController;
+        var code:String
+        init(code:String,container:AAViewController)
+        {
+            self.code=code
+            self.container=container;
+        }
+        
+        func setContainer(container:AAViewController)
+        {
+            self.container=container;
+        }
+        func onNetworkProblem() {
+            print("network error")
+        }
+        func onServiceSuccess(result: JSON) {
+            let k = container as! AAAuthOTPViewController
+            k.doActorPasswordValidate(code)
+            
+            print("success")
+        }
+        func onServiceFail(result: JSON) {
+            AAExecutions.errorWithMessage(result["description"].stringValue, rep: nil, cancel: nil)
+            print("fail")
+        }
+        func onServiceError(result: String) {
+            AAExecutions.errorWithMessage("网络错误", rep: nil, cancel: nil)
+            print("error")
+        }
+    }
 }
-
-

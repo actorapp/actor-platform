@@ -35,6 +35,21 @@ class CocoaWebRTCRuntime: NSObject, ARWebRTCRuntime {
         return ARPromise.success(MediaStream(stream: mediaStream))
     }
     
+    func getUserMediaWithIsVideoEnabled(isVideoEnabled: jboolean) -> ARPromise {
+        initRTC()
+        
+        var streamName = "ARDAMSa0"
+        
+        if(isVideoEnabled)
+        {
+            streamName = "ARDAMSv0"
+        }
+        let audio = peerConnectionFactory.audioTrackWithID("audio0")
+        let mediaStream = peerConnectionFactory.mediaStreamWithLabel(streamName)
+        mediaStream.addAudioTrack(audio)
+        return ARPromise.success(MediaStream(stream: mediaStream))
+    }
+    
     func initRTC() {
         if !isInited {
             isInited = true
@@ -58,17 +73,26 @@ class MediaStream: NSObject, ARWebRTCMediaStream {
         self.stream = stream
     }
     
-    func isEnabled() -> jboolean {
+  
+    func isAudioEnabled() -> jboolean {
         return true
     }
     
-    func setEnabledWithBoolean(isEnabled: jboolean) {
+    func isVideoEnabled() -> jboolean {
+        return true
+    }
+    
+    func setAudioEnabledWithBoolean(isEnabled: jboolean) {
         for i in stream.audioTracks {
             (i as? RTCMediaStreamTrack)?.setEnabled(isEnabled)
         }
+    }
+    
+    func setVideoEnabledWithBoolean(isEnabled: jboolean) {
         for i in stream.videoTracks {
             (i as? RTCMediaStreamTrack)?.setEnabled(isEnabled)
         }
+
     }
     
     func close() {

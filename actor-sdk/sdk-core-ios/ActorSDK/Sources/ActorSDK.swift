@@ -73,7 +73,7 @@ import DZNWebViewController
     public var apiPushId: Int? = nil
     
     /// Strategy about authentication
-    public var authStrategy = AAAuthStrategy.PhoneOnly
+    public var authStrategy = AAAuthStrategy.Username
     
     /// Enable phone book import
     public var enablePhoneBookImport = true
@@ -823,4 +823,5 @@ public enum AAAuthStrategy {
     case PhoneOnly
     case EmailOnly
     case PhoneEmail
+    case Username
 }

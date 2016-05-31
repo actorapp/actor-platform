@@ -6,22 +6,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ActorSDK/Sources/Controllers/Auth/AAAuthLogInViewController.swift"
-            timestampString = "484026028.285065"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "31"
-            endingLineNumber = "31"
-            landmarkName = "viewDidLoad()"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
@@ -41,38 +25,6 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ActorSDK/Sources/Controllers/Auth/AAAuthOTPViewController.swift"
-            timestampString = "484138182.708068"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "186"
-            endingLineNumber = "186"
-            landmarkName = "nextDidTap()"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ActorSDK/Sources/Controllers/Auth/AAAuthLogInViewController.swift"
-            timestampString = "484026028.285065"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "82"
-            endingLineNumber = "82"
-            landmarkName = "nextDidTap()"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "ActorSDK/Sources/Controllers/Auth/AAAuthNameViewController.swift"
             timestampString = "483933184.204433"
             startingColumnNumber = "9223372036854775807"
@@ -80,22 +32,6 @@
             startingLineNumber = "21"
             endingLineNumber = "21"
             landmarkName = "init(transactionHash:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ActorSDK/Sources/Controllers/Auth/AAAuthOTPViewController.swift"
-            timestampString = "484818223.877095"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "204"
-            endingLineNumber = "204"
-            landmarkName = "nextDidTap()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -176,38 +112,6 @@
             endingLineNumber = "33"
             landmarkName = "putMethodWithUrl(_:withContents:withCallback:)"
             landmarkType = "5">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "ActorSDK.CocoaHttpRuntime.getMethodWithUrl (Swift.ImplicitlyUnwrappedOptional&lt;Swift.String&gt;, withStartOffset : Swift.Int32, withSize : Swift.Int32, withTotalSize : Swift.Int32) -&gt; Swift.ImplicitlyUnwrappedOptional&lt;__ObjC.ARPromise&gt;"
-                  moduleName = "ActorSDK"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core-ios/ActorSDK/Sources/ActorCore/Providers/CocoaHttpRuntime.swift"
-                  timestampString = "485854317.825263"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "33"
-                  endingLineNumber = "33"
-                  offsetFromSymbolStart = "252">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "ActorSDK.CocoaHttpRuntime.(getMethodWithUrl (Swift.ImplicitlyUnwrappedOptional&lt;Swift.String&gt;, withStartOffset : Swift.Int32, withSize : Swift.Int32, withTotalSize : Swift.Int32) -&gt; Swift.ImplicitlyUnwrappedOptional&lt;__ObjC.ARPromise&gt;).(closure #1)"
-                  moduleName = "ActorSDK"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core-ios/ActorSDK/Sources/ActorCore/Providers/CocoaHttpRuntime.swift"
-                  timestampString = "485854317.825555"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "33"
-                  endingLineNumber = "33"
-                  offsetFromSymbolStart = "1364">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -293,177 +197,17 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ActorSDK/Sources/Controllers/Auth/AAAuthLogInViewController.swift"
-            timestampString = "485853667.837846"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "116"
-            endingLineNumber = "116"
-            landmarkName = "init(name:container:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ActorSDK/Sources/Controllers/Auth/AAAuthLogInViewController.swift"
-            timestampString = "485854317.385571"
+            timestampString = "486292338.745302"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "190"
-            endingLineNumber = "190"
-            landmarkName = "onServiceError(_:)"
-            landmarkType = "5">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "ActorSDK.AAAuthLogInViewController.usernameValidateCallback.onServiceError (Swift.String) -&gt; ()"
-                  moduleName = "ActorSDK"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core-ios/ActorSDK/Sources/Controllers/Auth/AAAuthLogInViewController.swift"
-                  timestampString = "485854317.826874"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "190"
-                  endingLineNumber = "190"
-                  offsetFromSymbolStart = "28">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "ActorSDK.AAAuthLogInViewController.usernameValidateCallback.(onServiceError (Swift.String) -&gt; ()).(closure #1)"
-                  moduleName = "ActorSDK"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core-ios/ActorSDK/Sources/Controllers/Auth/AAAuthLogInViewController.swift"
-                  timestampString = "485854317.826984"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "191"
-                  endingLineNumber = "191"
-                  offsetFromSymbolStart = "16">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ActorSDK/Sources/Controllers/Auth/AAAuthOTPViewController.swift"
-            timestampString = "484138182.708068"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "35"
-            endingLineNumber = "35"
-            landmarkName = "init(email:transactionHash:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ActorSDK/Sources/Controllers/Auth/AAAuthOTPViewController.swift"
-            timestampString = "484138182.708068"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "44"
-            endingLineNumber = "44"
-            landmarkName = "init(email:name:needSignUp:transactionHash:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ActorSDK/Sources/Controllers/Auth/AAAuthOTPViewController.swift"
-            timestampString = "484818223.877095"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "215"
-            endingLineNumber = "215"
-            landmarkName = "doActorPasswordValidate(_:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ActorSDK/Sources/Controllers/Auth/AAAuthOTPViewController.swift"
-            timestampString = "484818223.877095"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "214"
-            endingLineNumber = "214"
-            landmarkName = "doActorPasswordValidate(_:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ActorSDK/Sources/Controllers/Auth/AAAuthOTPViewController.swift"
-            timestampString = "484818223.877095"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "219"
-            endingLineNumber = "219"
-            landmarkName = "doActorPasswordValidate(_:)"
-            landmarkType = "5">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "ActorSDK.AAAuthOTPViewController.(doActorPasswordValidate (Swift.String) -&gt; ()).(closure #1).(closure #1)"
-                  moduleName = "ActorSDK"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core-ios/ActorSDK/Sources/Controllers/Auth/AAAuthOTPViewController.swift"
-                  timestampString = "484817592.948396"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "214"
-                  endingLineNumber = "214"
-                  offsetFromSymbolStart = "20">
-               </Location>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "ActorSDK.AAAuthOTPViewController.(doActorPasswordValidate (Swift.String) -&gt; ()).(closure #1).(closure #1).(closure #1)"
-                  moduleName = "ActorSDK"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core-ios/ActorSDK/Sources/Controllers/Auth/AAAuthOTPViewController.swift"
-                  timestampString = "484817592.94857"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "215"
-                  endingLineNumber = "215"
-                  offsetFromSymbolStart = "28">
-               </Location>
-            </Locations>
+            startingLineNumber = "248"
+            endingLineNumber = "248"
+            landmarkName = "AAAuthLogInViewController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -480,54 +224,6 @@
             endingLineNumber = "17"
             landmarkName = "startUserAction(_:)"
             landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ActorSDK/Sources/Controllers/Auth/AAAuthOTPViewController.swift"
-            timestampString = "484818223.877095"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "255"
-            endingLineNumber = "255"
-            landmarkName = "doActorPasswordValidate(_:)"
-            landmarkType = "5">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "ActorSDK.AAAuthOTPViewController.(doActorPasswordValidate (Swift.String) -&gt; ()).(closure #2)"
-                  moduleName = "ActorSDK"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core-ios/ActorSDK/Sources/Controllers/Auth/AAAuthOTPViewController.swift"
-                  timestampString = "485854317.827731"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "255"
-                  endingLineNumber = "255"
-                  offsetFromSymbolStart = "24">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "ActorSDK.AAAuthOTPViewController.(doActorPasswordValidate (Swift.String) -&gt; ()).(closure #2)"
-                  moduleName = "ActorSDK"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core-ios/ActorSDK/Sources/Controllers/Auth/AAAuthOTPViewController.swift"
-                  timestampString = "485854317.82783"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "255"
-                  endingLineNumber = "255"
-                  offsetFromSymbolStart = "180">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -606,7 +302,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "43"
             endingLineNumber = "43"
-            landmarkName = "then(_:)"
+            landmarkName = "failure(withClosure:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -622,8 +318,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "48"
             endingLineNumber = "48"
-            landmarkName = "failure(withClosure:)"
-            landmarkType = "5">
+            landmarkName = "PromiseConsumer"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -661,7 +357,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ActorSDK/Sources/ActorSDK.swift"
-            timestampString = "484535530.047986"
+            timestampString = "486355892.258669"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "184"
@@ -677,7 +373,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ActorSDK/Sources/ActorSDK.swift"
-            timestampString = "484631427.588643"
+            timestampString = "486355892.258669"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "411"
@@ -693,7 +389,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ActorSDK/Sources/ActorSDK.swift"
-            timestampString = "484635214.262022"
+            timestampString = "486355892.258669"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "477"
@@ -725,13 +421,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ActorSDK/Sources/Controllers/Auth/AAAuthLogInViewController.swift"
-            timestampString = "485854317.385571"
+            timestampString = "486292338.745302"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "170"
-            endingLineNumber = "170"
-            landmarkName = "onServiceSuccess(_:)"
-            landmarkType = "5">
+            startingLineNumber = "228"
+            endingLineNumber = "228"
+            landmarkName = "AAAuthLogInViewController"
+            landmarkType = "3">
             <Locations>
                <Location
                   shouldBeEnabled = "No"
@@ -764,54 +460,6 @@
                   offsetFromSymbolStart = "144">
                </Location>
             </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ActorSDK/Sources/Controllers/Auth/AAAuthOTPViewController.swift"
-            timestampString = "484818223.877095"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "227"
-            endingLineNumber = "227"
-            landmarkName = "doActorPasswordValidate(_:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ActorSDK/Sources/Controllers/Auth/AAAuthOTPViewController.swift"
-            timestampString = "484818223.877095"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "213"
-            endingLineNumber = "213"
-            landmarkName = "doActorPasswordValidate(_:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ActorSDK/Sources/Controllers/Auth/AAAuthOTPViewController.swift"
-            timestampString = "484819239.197001"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "197"
-            endingLineNumber = "197"
-            landmarkName = "nextDidTap()"
-            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -901,19 +549,19 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ActorSDK/Sources/Controllers/Auth/AAAuthLogInViewController.swift"
-            timestampString = "485853667.837846"
+            timestampString = "486292338.745302"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "133"
-            endingLineNumber = "133"
-            landmarkName = "onServiceSuccess(_:)"
-            landmarkType = "5">
+            startingLineNumber = "191"
+            endingLineNumber = "191"
+            landmarkName = "AAAuthLogInViewController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../sdk-core/core/core-shared/src/main/java/im/actor/core/Messenger.java"
@@ -940,38 +588,6 @@
             endingLineNumber = "494"
             landmarkName = "requestStartUserNameAuth(final String userName)"
             landmarkType = "5">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[ImActorCoreModulesAuthAuthentication requestStartUserNameAuthWithNSString:]"
-                  moduleName = "ActorSDK"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core/core/core-shared/src/main/java/im/actor/core/modules/auth/Authentication.java"
-                  timestampString = "485854317.830697"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "494"
-                  endingLineNumber = "494"
-                  offsetFromSymbolStart = "64">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "ImActorCoreModulesAuthAuthentication_$10_$1_$2_initWithImActorCoreModulesAuthAuthentication_$10_$1_withACRpcException_"
-                  moduleName = "ActorSDK"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core/core/core-shared/src/main/java/im/actor/core/modules/auth/Authentication.java"
-                  timestampString = "485854317.830787"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "494"
-                  endingLineNumber = "494"
-                  offsetFromSymbolStart = "116">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -986,14 +602,14 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "491"
             endingLineNumber = "491"
-            landmarkName = "class Authentication"
-            landmarkType = "3">
+            landmarkName = "requestStartUserNameAuth(final String userName)"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../sdk-core/core/core-shared/src/main/java/im/actor/core/modules/auth/Authentication.java"
@@ -1002,7 +618,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "204"
             endingLineNumber = "204"
-            landmarkName = "doStartUsernameAuth(final String username)"
+            landmarkName = "doStartPhoneAuth(final long phone)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1066,8 +682,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "82"
             endingLineNumber = "82"
-            landmarkName = "Authentication(Modules modules)"
-            landmarkType = "5">
+            landmarkName = "class Authentication"
+            landmarkType = "3">
             <Locations>
                <Location
                   shouldBeEnabled = "No"
@@ -1140,12 +756,12 @@
                   moduleName = "ActorSDK"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core/runtime/runtime-shared/src/main/java/im/actor/runtime/promise/Promise.java"
-                  timestampString = "485854317.832349"
+                  timestampString = "486355653.402305"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "73"
                   endingLineNumber = "73"
-                  offsetFromSymbolStart = "56">
+                  offsetFromSymbolStart = "52">
                </Location>
                <Location
                   shouldBeEnabled = "Yes"
@@ -1155,12 +771,12 @@
                   moduleName = "ActorSDK"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core/runtime/runtime-shared/src/main/java/im/actor/runtime/promise/Promise.java"
-                  timestampString = "485854317.832517"
+                  timestampString = "486355653.402669"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "73"
                   endingLineNumber = "73"
-                  offsetFromSymbolStart = "120">
+                  offsetFromSymbolStart = "104">
                </Location>
                <Location
                   shouldBeEnabled = "Yes"
@@ -1170,12 +786,60 @@
                   moduleName = "ActorSDK"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core/runtime/runtime-shared/src/main/java/im/actor/runtime/promise/Promise.java"
-                  timestampString = "485854317.832618"
+                  timestampString = "486355653.402904"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "73"
                   endingLineNumber = "73"
-                  offsetFromSymbolStart = "76">
+                  offsetFromSymbolStart = "62">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../sdk-core/core/core-shared/src/main/java/im/actor/core/modules/auth/Authentication.java"
+            timestampString = "485852580.268251"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "226"
+            endingLineNumber = "226"
+            landmarkName = "doStartUsernameAuth(final String username)"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ImActorCoreModulesAuthAuthentication_$3_initWithImActorCoreModulesAuthAuthentication_withNSString_"
+                  moduleName = "ActorSDK"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core/core/core-shared/src/main/java/im/actor/core/modules/auth/Authentication.java"
+                  timestampString = "486354488.929467"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "227"
+                  endingLineNumber = "227"
+                  offsetFromSymbolStart = "101">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[ImActorCoreModulesAuthAuthentication_$3_$1 onResult:]"
+                  moduleName = "ActorSDK"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core/core/core-shared/src/main/java/im/actor/core/modules/auth/Authentication.java"
+                  timestampString = "486354488.929579"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "226"
+                  endingLineNumber = "226"
+                  offsetFromSymbolStart = "287">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -1186,13 +850,285 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../sdk-core/core/core-shared/src/main/java/im/actor/core/modules/auth/Authentication.java"
-            timestampString = "485852580.268251"
+            filePath = "ActorSDK/Sources/Controllers/Auth/AAAuthLogInViewController.swift"
+            timestampString = "486353977.816704"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "226"
-            endingLineNumber = "226"
-            landmarkName = "doStartUsernameAuth(final String username)"
+            startingLineNumber = "130"
+            endingLineNumber = "130"
+            landmarkName = "onServiceSuccess(_:)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ActorSDK/Sources/Controllers/Auth/AAAuthLogInViewController.swift"
+            timestampString = "486354055.45333"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "155"
+            endingLineNumber = "155"
+            landmarkName = "onServiceSuccess(_:)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ActorSDK/Sources/ActorCore/Providers/CocoaNetworkRuntime.swift"
+            timestampString = "486354270.829154"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "21"
+            endingLineNumber = "21"
+            landmarkName = "createConnectionWithConnectionId(_:withEndpoint:withInterface:)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ActorSDK/Sources/Controllers/Auth/AAAuthLogInViewController.swift"
+            timestampString = "486354466.524987"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "164"
+            endingLineNumber = "164"
+            landmarkName = "onServiceSuccess(_:)"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ActorSDK.AAAuthLogInViewController.usernameValidateCallback.onServiceSuccess (SwiftyJSON.JSON) -&gt; ()"
+                  moduleName = "ActorSDK"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core-ios/ActorSDK/Sources/Controllers/Auth/AAAuthLogInViewController.swift"
+                  timestampString = "486355653.410633"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "164"
+                  endingLineNumber = "164"
+                  offsetFromSymbolStart = "2596">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "function signature specialization &lt;Arg[3] = Value Promoted from Box&gt; of ActorSDK.AAAuthLogInViewController.usernameValidateCallback.(onServiceSuccess (SwiftyJSON.JSON) -&gt; ()).(closure #3)"
+                  moduleName = "ActorSDK"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core-ios/ActorSDK/Sources/Controllers/Auth/AAAuthLogInViewController.swift"
+                  timestampString = "486355653.41086"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "165"
+                  endingLineNumber = "165"
+                  offsetFromSymbolStart = "115">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ActorSDK/Sources/Controllers/Auth/AAAuthLogInViewController.swift"
+            timestampString = "486354798.174233"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "166"
+            endingLineNumber = "166"
+            landmarkName = "onServiceSuccess(_:)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ActorSDK/Sources/Controllers/Auth/AAAuthLogInViewController.swift"
+            timestampString = "486355122.431307"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "168"
+            endingLineNumber = "168"
+            landmarkName = "onServiceSuccess(_:)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../sdk-core/runtime/runtime-shared/src/main/java/im/actor/runtime/promise/Promise.java"
+            timestampString = "486355180.448859"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "144"
+            endingLineNumber = "144"
+            landmarkName = "failure(final Consumer&lt;Exception&gt; failure)"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "new_ARPromise_$1_initWithARConsumer_"
+                  moduleName = "ActorSDK"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core/runtime/runtime-shared/src/main/java/im/actor/runtime/promise/Promise.java"
+                  timestampString = "486355653.416334"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "144"
+                  endingLineNumber = "144"
+                  offsetFromSymbolStart = "62">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[ARPromise failure:]"
+                  moduleName = "ActorSDK"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core/runtime/runtime-shared/src/main/java/im/actor/runtime/promise/Promise.java"
+                  timestampString = "486355653.416594"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "144"
+                  endingLineNumber = "144"
+                  offsetFromSymbolStart = "126">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../sdk-core/runtime/runtime-shared/src/main/java/im/actor/runtime/promise/Promise.java"
+            timestampString = "486355181.593957"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "143"
+            endingLineNumber = "143"
+            landmarkName = "failure(final Consumer&lt;Exception&gt; failure)"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "new_ARPromise_$1_initWithARConsumer_"
+                  moduleName = "ActorSDK"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core/runtime/runtime-shared/src/main/java/im/actor/runtime/promise/Promise.java"
+                  timestampString = "486355653.42198"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "143"
+                  endingLineNumber = "143"
+                  offsetFromSymbolStart = "36">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[ARPromise failure:]"
+                  moduleName = "ActorSDK"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/zhangshanbo/Documents/actor-platform-eg/actor-sdk/sdk-core/runtime/runtime-shared/src/main/java/im/actor/runtime/promise/Promise.java"
+                  timestampString = "486355653.422265"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "143"
+                  endingLineNumber = "143"
+                  offsetFromSymbolStart = "39">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../sdk-core/runtime/runtime-shared/src/main/java/im/actor/runtime/promise/Promise.java"
+            timestampString = "486355183.701874"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "115"
+            endingLineNumber = "115"
+            landmarkName = "then(final Consumer&lt;T&gt; then)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../sdk-core/runtime/runtime-shared/src/main/java/im/actor/runtime/promise/Promise.java"
+            timestampString = "486355229.230299"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "149"
+            endingLineNumber = "149"
+            landmarkName = "failure(final Consumer&lt;Exception&gt; failure)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../sdk-core/runtime/runtime-shared/src/main/java/im/actor/runtime/promise/Promise.java"
+            timestampString = "486355276.156238"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "116"
+            endingLineNumber = "116"
+            landmarkName = "then(final Consumer&lt;T&gt; then)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../sdk-core/runtime/runtime-shared/src/main/java/im/actor/runtime/promise/Promise.java"
+            timestampString = "486355278.498659"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "120"
+            endingLineNumber = "120"
+            landmarkName = "then(final Consumer&lt;T&gt; then)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

@@ -370,6 +370,8 @@
 		BEE6EB041C4D9A4900A2280E /* AAWallpapersCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE6EB031C4D9A4900A2280E /* AAWallpapersCell.swift */; };
 		BEF11DB61C466D800076400A /* begin_record.caf in Resources */ = {isa = PBXBuildFile; fileRef = 153F6B3C1C2A9B1900C0B960 /* begin_record.caf */; };
 		BEFE68D51C4657360001F2D6 /* AAThumbnailCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEFE68D41C4657360001F2D6 /* AAThumbnailCollectionCell.swift */; };
+		EF0C11131CFC386F0021B392 /* CocoaWebserviceRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0C11121CFC386F0021B392 /* CocoaWebserviceRuntime.swift */; };
+		EF0C11151CFC387C0021B392 /* WebserviceCallback.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0C11141CFC387C0021B392 /* WebserviceCallback.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -755,6 +757,8 @@
 		BEE6EB031C4D9A4900A2280E /* AAWallpapersCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAWallpapersCell.swift; sourceTree = "<group>"; };
 		BEFE68D41C4657360001F2D6 /* AAThumbnailCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAThumbnailCollectionCell.swift; sourceTree = "<group>"; };
 		E30822B631D108159E8B306B /* Pods-ActorSDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorSDK.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ActorSDK/Pods-ActorSDK.debug.xcconfig"; sourceTree = "<group>"; };
+		EF0C11121CFC386F0021B392 /* CocoaWebserviceRuntime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaWebserviceRuntime.swift; sourceTree = "<group>"; };
+		EF0C11141CFC387C0021B392 /* WebserviceCallback.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WebserviceCallback.swift; path = Storage/WebserviceCallback.swift; sourceTree = "<group>"; };
 		F076508E3899D309954904A3 /* Pods-ActorSDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorSDK.release.xcconfig"; path = "Pods/Target Support Files/Pods-ActorSDK/Pods-ActorSDK.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1001,19 +1005,21 @@
 		066A51851BC4C377000E606E /* Providers */ = {
 			isa = PBXGroup;
 			children = (
-				066A51941BC4C385000E606E /* Storage */,
 				065975531BC7DF5100B8C7DF /* CocoaAssetsRuntime.swift */,
+				06E1648E1C96D99F005AFB94 /* CocoaCrypto.swift */,
+				0618509F1C95CA2600C522D5 /* CocoaDispatcher.swift */,
 				066A518B1BC4C383000E606E /* CocoaFileSystemRuntime.swift */,
 				066A518A1BC4C383000E606E /* CocoaHttpRuntime.swift */,
+				06129AA51C8359FB0099286B /* CocoaLifecycleRuntime.swift */,
 				066A51891BC4C383000E606E /* CocoaNetworkRuntime.swift */,
 				066A51861BC4C383000E606E /* CocoaStorageRuntime.swift */,
 				065A06B51C6CEFE00012EA09 /* CocoaWebRTCRuntime.swift */,
-				06129AA51C8359FB0099286B /* CocoaLifecycleRuntime.swift */,
-				0618509F1C95CA2600C522D5 /* CocoaDispatcher.swift */,
-				06E1648E1C96D99F005AFB94 /* CocoaCrypto.swift */,
+				EF0C11121CFC386F0021B392 /* CocoaWebserviceRuntime.swift */,
+				06E322C81C69344A00D66F53 /* iOSCallsProvider.swift */,
 				066A51871BC4C383000E606E /* iOSNotificationProvider.swift */,
 				066A51881BC4C383000E606E /* iOSPhoneBookProvider.swift */,
-				06E322C81C69344A00D66F53 /* iOSCallsProvider.swift */,
+				EF0C11141CFC387C0021B392 /* WebserviceCallback.swift */,
+				066A51941BC4C385000E606E /* Storage */,
 			);
 			path = Providers;
 			sourceTree = "<group>";
@@ -2145,6 +2151,7 @@
 				061851071C95CBF000C522D5 /* YYDispatchQueuePool.m in Sources */,
 				066A52F31BC52B02000E606E /* AASettingsWallpapper.swift in Sources */,
 				066A53041BC53177000E606E /* AAContactsViewController.swift in Sources */,
+				EF0C11151CFC387C0021B392 /* WebserviceCallback.swift in Sources */,
 				066A51801BC4C373000E606E /* FMDatabasePool.m in Sources */,
 				061850F51C95CBF000C522D5 /* YYTextRunDelegate.m in Sources */,
 				06129AA91C8394700099286B /* AAAudioManager.swift in Sources */,
@@ -2169,6 +2176,7 @@
 				15D35F351C20187200E3717A /* stream.c in Sources */,
 				BED5A1F71C48396A0045FDB0 /* NYTPhotosOverlayView.m in Sources */,
 				066A519E1BC4C390000E606E /* FMDBExtensions.swift in Sources */,
+				EF0C11131CFC386F0021B392 /* CocoaWebserviceRuntime.swift in Sources */,
 				066A52E61BC52A20000E606E /* AAAddParticipantViewController.swift in Sources */,
 				066A52C81BC521EA000E606E /* AAEditFieldController.swift in Sources */,
 				066A532C1BC53406000E606E /* AABubbleTextCell.swift in Sources */,

@@ -111,6 +111,10 @@ public class AAExecutions {
         error(Actor.getFormatter().formatErrorTextWithTag(tag), rep: rep, cancel: cancel)
     }
     
+    public class func errorWithMessage(message: String, rep:(()->())? = nil, cancel:(()->())? = nil) {
+        error(message, rep: rep, cancel: cancel)
+    }
+    
     public class func error(message: String, rep:(()->())? = nil, cancel:(()->())? = nil) {
         if rep != nil {
             let d = UIAlertViewBlock(clickedClosure: { (index) -> () in
