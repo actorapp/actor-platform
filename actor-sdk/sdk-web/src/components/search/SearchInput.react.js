@@ -13,6 +13,8 @@ class SearchInput extends Component {
 
   static propTypes = {
     value: PropTypes.string.isRequired,
+    isFocused: PropTypes.bool.isRequired,
+    onBlur: PropTypes.func.isRequired,
     onFocus: PropTypes.func.isRequired,
     onClear: PropTypes.func.isRequired,
     onChange: PropTypes.func.isRequired
@@ -40,10 +42,10 @@ class SearchInput extends Component {
   }
 
   handleGlobalClick(event) {
-    if (event.target !== this.refs.search) {
-      this.props.onClear();
-    }
-  }
+   if (this.props.isFocused && event.target !== this.refs.search) {
+     this.props.onBlur();
+   }
+ }
 
   handleFocus(event) {
     event.preventDefault();
@@ -91,8 +93,7 @@ class SearchInput extends Component {
           tabIndex="1"
           value={value}
           placeholder={intl.messages['search.placeholder']}
-          onClick={this.handleFocus}
-          onFocus={this.handleFocus}
+          onFocus={this.props.onFocus}
           onChange={this.handleChange}
         />
         {this.renderClear()}

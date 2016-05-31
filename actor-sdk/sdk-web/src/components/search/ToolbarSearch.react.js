@@ -29,12 +29,17 @@ class ToolbarSearch extends Component {
 
     this.handleSearchChange = this.handleSearchChange.bind(this);
     this.handlerSearchClear = this.handlerSearchClear.bind(this);
+    this.handleSearchBlur = this.handleSearchBlur.bind(this);
     this.handleSearchFocus = this.handleSearchFocus.bind(this);
     this.onResultSelect = this.onResultSelect.bind(this);
   }
 
   handlerSearchClear() {
     SearchActionCreators.clear();
+  }
+
+  handleSearchBlur() {
+    SearchActionCreators.blur();
   }
 
   handleSearchFocus() {
@@ -96,6 +101,8 @@ class ToolbarSearch extends Component {
           <i className="search-icon material-icons">search</i>
           <SearchInput
             value={query}
+            isFocused={isFocused}
+            onBlur={this.handleSearchBlur}
             onFocus={this.handleSearchFocus}
             onClear={this.handlerSearchClear}
             onChange={this.handleSearchChange}
