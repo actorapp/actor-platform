@@ -1,7 +1,7 @@
 .call__smart-button {
   transition: background ($default-transition-duration * 2) $default-transition-duration $default-transition-timing;
 
-  border-radius: 32px;
+  border-radius: 100px !important;
   .material-icons {
     transition: transform ($default-transition-duration * 2) $default-transition-duration $default-transition-timing;
   }
