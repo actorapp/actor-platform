@@ -1,13 +1,10 @@
-import fuzzaldrin from 'fuzzaldrin';
 import { dispatch } from '../dispatcher/ActorAppDispatcher';
 import history from '../utils/history';
-import { isPeerUser, isPeerGroup } from '../utils/PeerUtils';
+import { search } from '../utils/SearchUtils';
 import { ActionTypes } from '../constants/ActorAppConstants';
 import QuickSearchStore from '../stores/QuickSearchStore';
 import ComposeActionCreators from './ComposeActionCreators';
 import SearchMessagesActionCreators from './SearchMessagesActionCreators';
-
-const match = (value, query) => fuzzaldrin.score(value, query) > 0;
 
 class SearchActionCreators {
   focus() {
@@ -43,19 +40,11 @@ class SearchActionCreators {
 
   updateResults(query) {
     const elements = QuickSearchStore.getState();
-    const results = { contacts: [], groups: [] };
-
-    elements.filter((element) => {
-      return match(element.peerInfo.title, query) ||
-             match(element.peerInfo.userName, query);
-    }).forEach((element) => {
-      if (isPeerUser(element.peerInfo.peer)) {
-        results.contacts.push(element);
-      } else if (isPeerGroup(element.peerInfo.peer)) {
-        results.groups.push(element);
-      } else {
-        console.error('Unexpected quick search element:', element);
-      }
+    const results = search(query, elements, (element) => {
+      return [
+        element.peerInfo.title,
+        element.peerInfo.userName
+      ];
     });
 
     dispatch(ActionTypes.SEARCH_SET_RESULTS, { results });

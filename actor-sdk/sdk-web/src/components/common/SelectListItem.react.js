@@ -18,6 +18,7 @@ class SelectListItem extends Component {
   constructor(props, context) {
     super(props, context);
 
+    this.handleClick = this.handleClick.bind(this);
     this.handleMouseOver = this.handleMouseOver.bind(this);
   }
 
@@ -25,6 +26,13 @@ class SelectListItem extends Component {
     return nextContext.select.current !== this.context.select.current ||
            nextProps.index !== this.props.index ||
            nextProps.children !== this.props.children;
+  }
+
+  handleClick(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    this.context.select.pick();
   }
 
   handleMouseOver() {
@@ -37,7 +45,7 @@ class SelectListItem extends Component {
     const className = isSelected && 'selected';
 
     return (
-      <div className={className} onMouseOver={this.handleMouseOver}>
+      <div className={className} onClick={this.handleClick} onMouseOver={this.handleMouseOver}>
         {children}
       </div>
     );
