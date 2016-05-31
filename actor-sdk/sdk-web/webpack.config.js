@@ -1,10 +1,8 @@
 import path from 'path';
 import webpack from 'webpack';
-import autoprefixer from 'autoprefixer';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 
 const sassLoaders = [
-  // 'css?sourceMap&modules',
   'css?sourceMap',
   'postcss',
   'sass?sourceMap&outputStyle=expanded&includePaths[]=' + path.resolve(__dirname, 'node_modules')
@@ -41,13 +39,15 @@ export default {
       /languages\/autoit\.js/
     ],
     loaders: [{
+      test: /\.css$/,
+      loader: 'style!css?modules&localIdentName=[name]__[local]!postcss',
+      include: path.join(__dirname, 'src/components')
+    }, {
       test: /\.(scss|css)$/,
       loader: ExtractTextPlugin.extract('style', sassLoaders.join('!'))
     }, {
       test: /\.js$/,
-      loaders: [
-        'babel?cacheDirectory'
-      ],
+      loader: 'babel?cacheDirectory',
       exclude: /(node_modules|vendor)/
     }, {
       test: /\.json$/,
@@ -77,7 +77,14 @@ export default {
     ], ['context']),
     new webpack.NoErrorsPlugin()
   ],
-  postcss: [
-    autoprefixer({ browsers: ['last 3 versions'] })
-  ]
+  postcss(webpack) {
+    return [
+      require('postcss-import')({ addDependencyTo: webpack }),
+      require('postcss-cssnext')(),
+      require('postcss-nested')(),
+      require('postcss-font-magician')(),
+      require('postcss-browser-reporter')(),
+      require('postcss-reporter')()
+    ];
+  }
 };
