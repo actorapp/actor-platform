@@ -25,6 +25,7 @@ import java.io.File;
 
 import im.actor.core.entity.FileReference;
 import im.actor.core.entity.Message;
+import im.actor.core.entity.content.AnimationContent;
 import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.entity.content.FileLocalSource;
 import im.actor.core.entity.content.FileRemoteSource;
@@ -186,6 +187,11 @@ public class PhotoHolder extends MessageHolder {
                 h = ((PhotoContent) message.getContent()).getH();
                 isPhoto = true;
                 duration.setVisibility(View.GONE);
+            } else if (message.getContent() instanceof AnimationContent) {
+                w = ((AnimationContent) message.getContent()).getW();
+                h = ((AnimationContent) message.getContent()).getH();
+                isPhoto = true;
+                duration.setVisibility(View.GONE);
             } else if (message.getContent() instanceof VideoContent) {
                 w = ((VideoContent) message.getContent()).getW();
                 h = ((VideoContent) message.getContent()).getH();
@@ -266,8 +272,9 @@ public class PhotoHolder extends MessageHolder {
             } else if (fileMessage.getSource() instanceof FileLocalSource) {
                 uploadFileVM = messenger().bindUpload(message.getRid(), new UploadVMCallback());
                 if (isPhoto) {
-                    previewView.setImageURI(Uri.fromFile(
-                            new File(((FileLocalSource) fileMessage.getSource()).getFileDescriptor())));
+                    Uri uri = Uri.fromFile(
+                            new File(((FileLocalSource) fileMessage.getSource()).getFileDescriptor()));
+                    bindImage(uri);
                 } else {
                     if (!updated) {
                         previewView.setImageURI(null);
@@ -465,15 +472,8 @@ public class PhotoHolder extends MessageHolder {
                         previewView.getHierarchy().setPlaceholderImage(new FastBitmapDrawable(drawingCache));
                     }
                 }
-                ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.fromFile(new File(reference.getDescriptor())))
-                        .setResizeOptions(new ResizeOptions(previewView.getLayoutParams().width,
-                                previewView.getLayoutParams().height))
-                        .build();
-                PipelineDraweeController controller = (PipelineDraweeController) Fresco.newDraweeControllerBuilder()
-                        .setOldController(previewView.getController())
-                        .setImageRequest(request)
-                        .build();
-                previewView.setController(controller);
+                Uri uri = Uri.fromFile(new File(reference.getDescriptor()));
+                bindImage(uri);
                 // previewView.setImageURI(Uri.fromFile(new File(reference.getDescriptor())));
             } else {
                 if (!updated) {
@@ -492,5 +492,18 @@ public class PhotoHolder extends MessageHolder {
             goneView(progressView);
             goneView(progressValue);
         }
+    }
+
+    public void bindImage(Uri uri) {
+        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
+                .setResizeOptions(new ResizeOptions(previewView.getLayoutParams().width,
+                        previewView.getLayoutParams().height))
+                .build();
+        PipelineDraweeController controller = (PipelineDraweeController) Fresco.newDraweeControllerBuilder()
+                .setOldController(previewView.getController())
+                .setImageRequest(request)
+                .setAutoPlayAnimations(true)
+                .build();
+        previewView.setController(controller);
     }
 }

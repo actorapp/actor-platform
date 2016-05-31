@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import im.actor.core.api.ApiDocumentExAnimation;
 import im.actor.core.api.ApiDocumentExVoice;
 import im.actor.core.api.ApiFastThumb;
 import im.actor.core.api.ApiJsonMessage;
@@ -339,13 +340,13 @@ public class SenderActor extends ModuleActor {
         long rid = RandomUtils.nextRid();
         long date = createPendingDate();
         long sortDate = date + 365 * 24 * 60 * 60 * 1000L;
-        AnimationContent videoContent = AnimationContent.createLocalAnimation(descriptor,
+        AnimationContent animationContent = AnimationContent.createLocalAnimation(descriptor,
                 fileName, fileSize, w, h, fastThumb);
 
-        Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, videoContent);
+        Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, animationContent);
         context().getMessagesModule().getRouter().onOutgoingMessage(peer, message);
 
-        pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, videoContent));
+        pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, animationContent));
         savePending();
 
         performUploadFile(rid, descriptor, fileName);
@@ -377,13 +378,13 @@ public class SenderActor extends ModuleActor {
         } else if (msg.getContent() instanceof VoiceContent) {
             VoiceContent baseVoiceContent = (VoiceContent) msg.getContent();
             nContent = VoiceContent.createRemoteAudio(fileReference, baseVoiceContent.getDuration());
-        } else if (msg.getContent() instanceof DocumentContent) {
-            DocumentContent baseDocContent = (DocumentContent) msg.getContent();
-            nContent = DocumentContent.createRemoteDocument(fileReference, baseDocContent.getFastThumb());
         } else if (msg.getContent() instanceof AnimationContent) {
             AnimationContent baseAnimcationContent = (AnimationContent) msg.getContent();
             nContent = AnimationContent.createRemoteAnimation(fileReference, baseAnimcationContent.getW(),
                     baseAnimcationContent.getH(), baseAnimcationContent.getFastThumb());
+        } else if (msg.getContent() instanceof DocumentContent) {
+            DocumentContent baseDocContent = (DocumentContent) msg.getContent();
+            nContent = DocumentContent.createRemoteDocument(fileReference, baseDocContent.getFastThumb());
         } else {
             return;
         }
@@ -425,6 +426,9 @@ public class SenderActor extends ModuleActor {
             } else if (content instanceof VideoContent) {
                 VideoContent videoContent = (VideoContent) content;
                 documentEx = new ApiDocumentExVideo(videoContent.getW(), videoContent.getH(), videoContent.getDuration());
+            } else if (content instanceof AnimationContent) {
+                AnimationContent animationContent = (AnimationContent) content;
+                documentEx = new ApiDocumentExAnimation(animationContent.getW(), animationContent.getH());
             } else if (content instanceof VoiceContent) {
                 VoiceContent voiceContent = (VoiceContent) content;
                 documentEx = new ApiDocumentExVoice(voiceContent.getDuration());

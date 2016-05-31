@@ -1,14 +1,39 @@
 import fuzzaldrin from 'fuzzaldrin';
 import { dispatch } from '../dispatcher/ActorAppDispatcher';
+import history from '../utils/history';
 import { isPeerUser, isPeerGroup } from '../utils/PeerUtils';
 import { ActionTypes } from '../constants/ActorAppConstants';
 import QuickSearchStore from '../stores/QuickSearchStore';
+import ComposeActionCreators from './ComposeActionCreators';
+import SearchMessagesActionCreators from './SearchMessagesActionCreators';
 
 const match = (value, query) => fuzzaldrin.score(value, query) > 0;
 
 class SearchActionCreators {
-  clearSearch() {
+  focus() {
+    ComposeActionCreators.toggleAutoFocus(false);
+    dispatch(ActionTypes.SEARCH_FOCUS);
+  }
+
+  blur() {
+    ComposeActionCreators.toggleAutoFocus(true);
+    dispatch(ActionTypes.SEARCH_BLUR);
+  }
+
+  clear() {
     dispatch(ActionTypes.SEARCH_CLEAR);
+    ComposeActionCreators.toggleAutoFocus(true);
+  }
+
+  goToMessagesSearch(query) {
+    SearchMessagesActionCreators.open();
+    SearchMessagesActionCreators.setQuery(query);
+    dispatch(ActionTypes.SEARCH_CLEAR);
+  }
+
+  goToContact(contact) {
+    dispatch(ActionTypes.SEARCH_CLEAR);
+    history.push(`/im/${contact.peerInfo.peer.key}`);
   }
 
   handleSearch(query) {

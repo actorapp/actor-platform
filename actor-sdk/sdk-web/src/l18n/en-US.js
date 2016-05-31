@@ -388,7 +388,24 @@ export default {
       'placeholder': 'Search',
       'emptyQuery': 'Start typing to find anything',
       'searching': 'Search for "{query}"',
-      'notFound': 'Nothing found for "{query}"<br/>Maybe you\'ll get luckier with another request'
+      'notFound': 'Nothing found for "{query}"<br/>Maybe you\'ll get luckier with another request',
+      hint: '<h4>Fast search</h4><p>You can search for contacts, dialogs, or messages from the current dialog here.</p>',
+      inDialog: 'Search messages in current dialog'
+    },
+
+    toolbar: {
+      search: {
+        hint: 'Type anything to start searhing',
+        messages: 'Search messages in current dialog',
+        contacts: {
+          title: 'Contacts',
+          notFound: 'Sorry, no such users were found =('
+        },
+        groups: {
+          title: 'Groups',
+          notFound: 'Sorry, no such groups were found =('
+        }
+      }
     }
   }
 };
