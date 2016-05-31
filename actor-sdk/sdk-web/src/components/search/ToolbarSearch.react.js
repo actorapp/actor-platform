@@ -89,7 +89,7 @@ class ToolbarSearch extends Component {
         </div>
         <SelectListItem index={max}>
           <footer className="toolbar__search__footer">
-            <FormattedMessage id="search.inChat"/> <i className="material-icons">arrow_forward</i>
+            <FormattedMessage id="search.inDialog"/> <i className="material-icons">arrow_forward</i>
           </footer>
         </SelectListItem>
       </SelectList>
