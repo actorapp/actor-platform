@@ -30,6 +30,7 @@ class SelectList extends Component {
     };
 
     this.setCurrent = this.setCurrent.bind(this);
+    this.handleSelect = this.handleSelect.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
@@ -43,6 +44,7 @@ class SelectList extends Component {
   getChildContext() {
     return {
       select: {
+        pick: this.handleSelect,
         current: this.state.current,
         setCurrent: this.setCurrent
       }
@@ -95,7 +97,6 @@ class SelectList extends Component {
   }
 
   render() {
-    console.debug(this.state);
     return (
       <div className={this.props.className}>
         {this.props.children}

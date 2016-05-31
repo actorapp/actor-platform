@@ -13,7 +13,7 @@ import SearchActionCreators from '../../actions/SearchActionCreators';
 import SearchInput from './SearchInput.react';
 import SelectList from '../common/SelectList.react';
 import SelectListItem from '../common/SelectListItem.react';
-import SearchResultGroup from './SearchResultGroup.react';
+import ToolbarSearchResults from './ToolbarSearchResults.react';
 
 class ToolbarSearch extends Component {
   static getStores() {
@@ -30,7 +30,6 @@ class ToolbarSearch extends Component {
     this.handleSearchChange = this.handleSearchChange.bind(this);
     this.handlerSearchClear = this.handlerSearchClear.bind(this);
     this.handleSearchFocus = this.handleSearchFocus.bind(this);
-    this.handleSearchBlur = this.handleSearchBlur.bind(this);
     this.onResultSelect = this.onResultSelect.bind(this);
   }
 
@@ -42,28 +41,22 @@ class ToolbarSearch extends Component {
     SearchActionCreators.focus();
   }
 
-  handleSearchBlur(event) {
-    console.debug(event);
-    // tricky workaround for click on search result
-    setTimeout(() => SearchActionCreators.blur(), 50);
-  }
-
   handleSearchChange(query) {
     SearchActionCreators.handleSearch(query);
   }
 
   onResultSelect(index) {
-    const { results: { contacts, groups } } = this.state;
-    if (index === contacts.length + groups.length) {
+    const { results } = this.state;
+    if (index === results.length) {
       SearchActionCreators.goToMessagesSearch(this.state.query);
     } else {
-      const contact = [...contacts, ...groups][index];
+      const contact = results[index];
       SearchActionCreators.goToContact(contact);
     }
   }
 
   renderSearchResultsDropdown() {
-    const { isFocused, query, results: { contacts, groups } } = this.state;
+    const { isFocused, query, results } = this.state;
 
     if (!isFocused) {
       return null
@@ -79,15 +72,10 @@ class ToolbarSearch extends Component {
       );
     }
 
-    const max = contacts.length + groups.length;
-
     return (
-      <SelectList className="toolbar__search__dropdown" max={max} onSelect={this.onResultSelect}>
-        <div className="toolbar__search__results">
-          <SearchResultGroup id="contacts" offset={0} items={contacts} />
-          <SearchResultGroup id="groups" offset={contacts.length} items={groups} />
-        </div>
-        <SelectListItem index={max}>
+      <SelectList className="toolbar__search__dropdown" max={results.length} onSelect={this.onResultSelect}>
+        <ToolbarSearchResults query={query}results={results} />
+        <SelectListItem index={results.length}>
           <footer className="toolbar__search__footer">
             <FormattedMessage id="search.inDialog"/> <i className="material-icons">arrow_forward</i>
           </footer>
@@ -109,7 +97,6 @@ class ToolbarSearch extends Component {
           <SearchInput
             value={query}
             onFocus={this.handleSearchFocus}
-            onBlur={this.handleSearchBlur}
             onClear={this.handlerSearchClear}
             onChange={this.handleSearchChange}
           />

@@ -14,7 +14,6 @@ class SearchInput extends Component {
   static propTypes = {
     value: PropTypes.string.isRequired,
     onFocus: PropTypes.func.isRequired,
-    onBlur: PropTypes.func.isRequired,
     onClear: PropTypes.func.isRequired,
     onChange: PropTypes.func.isRequired
   };
@@ -22,19 +21,35 @@ class SearchInput extends Component {
   constructor(props) {
     super(props);
 
+    this.handleFocus = this.handleFocus.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.handleGlobalClick = this.handleGlobalClick.bind(this);
   }
 
   componentDidMount() {
     this.listeners = [
-      EventListener.listen(document, 'keydown', this.handleKeyDown)
+      EventListener.listen(document, 'keydown', this.handleKeyDown),
+      EventListener.listen(document, 'click', this.handleGlobalClick)
     ];
   }
 
   componentWillUnmount() {
     this.listeners.forEach((listener) => listener.remove());
     this.listeners = null;
+  }
+
+  handleGlobalClick(event) {
+    if (event.target !== this.refs.search) {
+      this.props.onClear();
+    }
+  }
+
+  handleFocus(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    this.props.onFocus();
   }
 
   handleChange(event) {
@@ -76,8 +91,8 @@ class SearchInput extends Component {
           tabIndex="1"
           value={value}
           placeholder={intl.messages['search.placeholder']}
-          onFocus={this.props.onFocus}
-          onBlur={this.props.onBlur}
+          onClick={this.handleFocus}
+          onFocus={this.handleFocus}
           onChange={this.handleChange}
         />
         {this.renderClear()}
