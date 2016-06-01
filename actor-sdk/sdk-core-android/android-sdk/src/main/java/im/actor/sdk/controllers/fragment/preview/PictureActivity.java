@@ -14,6 +14,7 @@ import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -291,11 +292,15 @@ public class PictureActivity extends BaseActivity {
             attacher.setOnDoubleTapListener(new DefaultOnDoubleTapListener(attacher) {
                 @Override
                 public boolean onSingleTapConfirmed(MotionEvent e) {
-                    if (!uiIsHidden) {
-                        hideSystemUi();
-                    } else {
-                        showSystemUi();
+                    Activity activity = getActivity();
+                    if (activity instanceof PictureActivity) {
+                        activity.onBackPressed();
                     }
+//                    if (!uiIsHidden) {
+//                        hideSystemUi();
+//                    } else {
+//                        showSystemUi();
+//                    }
                     return super.onSingleTapConfirmed(e);
                 }
 
@@ -309,6 +314,18 @@ public class PictureActivity extends BaseActivity {
                 @Override
                 public boolean onDoubleTapEvent(MotionEvent e) {
                     return super.onDoubleTapEvent(e);
+                }
+            });
+
+            attacher.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if (!uiIsHidden) {
+                        hideSystemUi();
+                    } else {
+                        showSystemUi();
+                    }
+                    return false;
                 }
             });
 
