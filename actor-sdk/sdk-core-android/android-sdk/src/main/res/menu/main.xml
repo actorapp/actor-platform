@@ -16,11 +16,11 @@
 
     <item
         android:id="@+id/contacts"
-        android:title="Contacts"
+        android:title="@string/contacts_title"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/profile"
-        android:title="Profile"
+        android:title="@string/profile_title"
         app:showAsAction="never" />
 </menu>

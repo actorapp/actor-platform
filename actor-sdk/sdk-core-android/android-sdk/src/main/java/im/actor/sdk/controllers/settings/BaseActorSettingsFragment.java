@@ -132,7 +132,7 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
                 recordView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        getActivity().startActivity(Intents.editUserNick(getActivity()));
+//                        getActivity().startActivity(Intents.editUserNick(getActivity()));
                     }
                 });
             }

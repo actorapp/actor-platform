@@ -359,14 +359,16 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/div_size"
                         android:layout_marginLeft="72dp"
-                        android:layout_marginRight="16dp" />
+                        android:layout_marginRight="16dp"
+                        android:visibility="gone"/>
 
                     <LinearLayout
                         android:id="@+id/askQuestion"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
                         android:background="@drawable/selector"
-                        android:clickable="true">
+                        android:clickable="true"
+                        android:visibility="gone">
 
                         <im.actor.sdk.view.TintImageView
                             android:id="@+id/settings_ask_icon"
@@ -390,14 +392,16 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/div_size"
                         android:layout_marginLeft="72dp"
-                        android:layout_marginRight="16dp" />
+                        android:layout_marginRight="16dp"
+                        android:visibility="gone"/>
 
                     <LinearLayout
                         android:id="@+id/twitter"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
                         android:background="@drawable/selector"
-                        android:clickable="true">
+                        android:clickable="true"
+                        android:visibility="gone">
 
                         <im.actor.sdk.view.TintImageView
                             android:id="@+id/settings_twitter_icon"
@@ -524,7 +528,7 @@
         </LinearLayout>
     </ScrollView>
 
-    <View
+     <View
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_gravity="top"

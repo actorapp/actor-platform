@@ -111,7 +111,7 @@ public class ActorSDK {
     /**
      * Actor App Name
      */
-    private String appName = "Actor";
+    private String appName = "易联";
     /**
      * Push Registration Id
      */
@@ -140,7 +140,8 @@ public class ActorSDK {
     /**
      * Home page
      */
-    private String homePage = "https://actor.im";
+//    private String homePage = "https://actor.im";
+    private String homePage = "http://www.eaglesoft.cn/";
     /**
      * Twitter
      */
@@ -184,22 +185,8 @@ public class ActorSDK {
     private boolean videoCallsEnabled = false;
 
     private ActorSDK() {
-        endpoints = new String[]{
-                "tls://front1-mtproto-api-rev2.actor.im@104.155.30.208",
-                "tls://front2-mtproto-api-rev2.actor.im@104.155.30.208",
-
-                "tcp://front1-mtproto-api-rev3.actor.im@104.155.30.208:443",
-                "tcp://front2-mtproto-api-rev3.actor.im@104.155.30.208:443",
-                "tcp://front3-mtproto-api-rev3.actor.im@104.155.30.208:443"
-        };
-        trustedKeys = new String[]{
-                "d9d34ed487bd5b434eda2ef2c283db587c3ae7fb88405c3834d9d1a6d247145b",
-                "4bd5422b50c585b5c8575d085e9fae01c126baa968dab56a396156759d5a7b46",
-                "ff61103913aed3a9a689b6d77473bc428d363a3421fdd48a8e307a08e404f02c",
-                "20613ab577f0891102b1f0a400ca53149e2dd05da0b77a728b62f5ebc8095878",
-                "fc49f2f2465f5b4e038ec7c070975858a8b5542aa6ec1f927a57c4f646e1c143",
-                "6709b8b733a9f20a96b9091767ac19fd6a2a978ba0dccc85a9ac8f6b6560ac1a"
-        };
+        endpoints = new String[]{"tcp://220.189.207.18:9070"};
+        trustedKeys = new String[]{"508D39F2BBDAB7776172478939362CD5127871B60151E9B86CD6D61AD1A75849"};
     }
 
     /**
@@ -243,7 +230,7 @@ public class ActorSDK {
                 builder.addEndpoint(s);
             }
             for (String t : trustedKeys) {
-                builder.addTrustedKey(t);
+                builder.addTrustedKey(t.toLowerCase());
             }
             builder.setPhoneBookProvider(new AndroidPhoneBook());
             builder.setVideoCallsEnabled(videoCallsEnabled);

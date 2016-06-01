@@ -152,6 +152,7 @@
     <string name="settings_header">设置</string>
     <string name="settings_help">帮助</string>
     <string name="settings_ask">提问</string>
+    <string name="settings_blocked_list">黑名单</string>
     <string name="settings_notifications">推送通知</string>
     <string name="settings_chat">聊天设置</string>
     <string name="settings_security">安全</string>
@@ -419,6 +420,12 @@
     <string name="security_terminate_message">确定要要退出其它所有设备吗？</string>
     <string name="security_authorized_header">授权的设备和服务</string>
     <string name="security_authorized_loading">正在载入…</string>
+
+    <!-- Blocked list -->
+    <string name="blocked_title">黑名单</string>
+    <string name="blocked_empty_list">You haven\'t blocked anyone</string>
+    <string name="blocked_loading">Loading blocked list…</string>
+    <string name="blocked_unblock">UNBLOCK</string>
 
     <!-- Alerts -->
     <string name="alert_delete_messages_text">是否要删除这{0}条信息?</string>
