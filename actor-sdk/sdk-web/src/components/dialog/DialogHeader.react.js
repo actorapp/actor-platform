@@ -14,6 +14,7 @@ import CallActionCreators from '../../actions/CallActionCreators';
 import ActivityActionCreators from '../../actions/ActivityActionCreators';
 import FavoriteActionCreators from '../../actions/FavoriteActionCreators';
 import SearchMessagesActionCreators from '../../actions/SearchMessagesActionCreators';
+import InviteUserActions from '../../actions/InviteUserActions';
 
 import AvatarItem from '../common/AvatarItem.react';
 import ToggleFavorite from '../common/ToggleFavorite.react';
@@ -50,6 +51,7 @@ class DialogHeader extends Component {
     this.handleEndCallButtonClick = this.handleEndCallButtonClick.bind(this);
     this.handleSearchButtonClick = this.handleSearchButtonClick.bind(this);
     this.toggelMoreDropdownOpen = this.toggelMoreDropdownOpen.bind(this);
+    this.handleAddPeople = this.handleAddPeople.bind(this);
   }
 
   onFavoriteToggle() {
@@ -90,6 +92,11 @@ class DialogHeader extends Component {
     } else {
       SearchMessagesActionCreators.close();
     }
+  }
+
+  handleAddPeople() {
+    const { info } = this.props;
+    InviteUserActions.show(info)
   }
 
   toggelMoreDropdownOpen() {
@@ -234,6 +241,19 @@ class DialogHeader extends Component {
     );
   }
 
+  renderAddUsersButton() {
+    const { peer } = this.props;
+    if (peer.type === PeerTypes.USER) {
+      return null;
+    }
+
+    return (
+      <button className="button button--icon" onClick={this.handleAddPeople}>
+        <i className="material-icons">group_add</i>
+      </button>
+    );
+  }
+
   render() {
     const { info } = this.props;
 
@@ -268,6 +288,7 @@ class DialogHeader extends Component {
           <div className="dialog__header__controls">
             {this.renderSearchButton()}
             {this.renderCallButton()}
+            {this.renderAddUsersButton()}
             {this.renderInfoButton()}
             {this.renderMoreButton()}
           </div>
