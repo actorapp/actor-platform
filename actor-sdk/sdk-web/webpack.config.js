@@ -40,7 +40,7 @@ export default {
     ],
     loaders: [{
       test: /\.css$/,
-      loader: 'style!css?modules&localIdentName=[name]__[local]!postcss',
+      loader: 'style!css?modules&localIdentName=[name]__[local]!postcss?pack=cssnext',
       include: path.join(__dirname, 'src/components')
     }, {
       test: /\.(scss|css)$/,
@@ -78,13 +78,16 @@ export default {
     new webpack.NoErrorsPlugin()
   ],
   postcss(webpack) {
-    return [
-      require('postcss-import')({ addDependencyTo: webpack }),
-      require('postcss-cssnext')(),
-      require('postcss-nested')(),
-      require('postcss-font-magician')(),
-      require('postcss-browser-reporter')(),
-      require('postcss-reporter')()
-    ];
+    return {
+      defaults: [
+        require('autoprefixer')
+      ],
+      cssnext: [
+        require('postcss-import')({ addDependencyTo: webpack }),
+        require('postcss-cssnext')(),
+        require('postcss-browser-reporter')(),
+        require('postcss-reporter')()
+      ]
+    };
   }
 };
