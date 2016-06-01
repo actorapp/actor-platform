@@ -122,7 +122,6 @@ class MoreDropdown extends Component {
   }
 
   handleRemoveFromContacts() {
-    console.debug('handleRemoveFromContacts')
     const { peer, info } = this.props;
 
     confirm(<FormattedHTMLMessage id="modal.confirm.user.removeContact" values={{ name: info.name }}/>)
@@ -224,10 +223,10 @@ class MoreDropdown extends Component {
           <i className="material-icons">mode_edit</i>
           <FormattedMessage id="editGroup"/>
         </li>
-        <li className="dropdown__menu__item" onClick={this.handleAddPeople}>
-          <i className="material-icons">person_add</i>
+        {/*<li className="dropdown__menu__item" onClick={this.handleAddPeople}>
+          <i className="material-icons">group_add</i>
           <FormattedMessage id="addPeople"/>
-        </li>
+        </li>*/}
         <li className="dropdown__menu__item" onClick={this.handleChatLeave}>
           <FormattedMessage id="leaveGroup"/>
         </li>
