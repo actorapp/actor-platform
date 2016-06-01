@@ -81,11 +81,11 @@ class MessageContent extends Component {
           />
         );
       case MessageContentTypes.PHOTO:
+      case MessageContentTypes.ANIMATION:
         return (
           <Photo
             {...content}
             className="message__content message__content--photo"
-            loadedClassName="message__content--photo--loaded"
           />
         );
       case MessageContentTypes.DOCUMENT:
