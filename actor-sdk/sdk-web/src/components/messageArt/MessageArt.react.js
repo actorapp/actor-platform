@@ -74,16 +74,14 @@ class MessageArt extends Component {
 
     return (
       <div className="message-art">
-
         <Trigger
           onMouseEnter={this.onMouseEnter}
           onMouseLeave={this.onMouseLeave}
           isActive={isActive}
-          isDotVisible
+          isDotVisible={false}
         >
           <i className="material-icons">insert_emoticon</i>
         </Trigger>
-
         {this.renderPopup()}
       </div>
     )
