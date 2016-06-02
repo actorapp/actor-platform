@@ -47,6 +47,10 @@ class MessageActionCreators {
     dispatch(ActionTypes.MESSAGE_SEND_PHOTO, { peer, photo });
   }
 
+  sendAnimationMessage(peer, file) {
+    ActorClient.sendAnimationMessage(peer, file);
+  }
+
   // Deprecated
   sendClipboardPhotoMessage(peer, photo) {
     ActorClient.sendClipboardPhotoMessage(peer, photo);
