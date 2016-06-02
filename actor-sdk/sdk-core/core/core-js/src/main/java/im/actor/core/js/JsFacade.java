@@ -833,6 +833,11 @@ public class JsFacade implements Exportable {
     }
 
     @UsedByApp
+    public void sendAnimation(final JsPeer peer, final JsFile file) {
+        messenger.sendAnimation(peer.convert(), file);
+    }
+
+    @UsedByApp
     public void sendClipboardPhoto(final JsPeer peer, final JsBlob blob) {
         messenger.sendClipboardPhoto(peer.convert(), blob);
     }
