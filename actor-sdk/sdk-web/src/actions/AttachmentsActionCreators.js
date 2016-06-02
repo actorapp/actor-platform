@@ -12,6 +12,16 @@ import ComposeActionCreators from '../actions/ComposeActionCreators';
 import DialogStore from '../stores/DialogStore';
 import AttachmentsStore from '../stores/AttachmentsStore';
 
+function sendAttachment(currentPeer, attachment) {
+  if (attachment.isAnimation && attachment.sendAsPicture) {
+    MessageActionCreators.sendAnimationMessage(currentPeer, attachment.file);
+  } else if (attachment.isImage && attachment.sendAsPicture) {
+    MessageActionCreators.sendPhotoMessage(currentPeer, attachment.file);
+  } else {
+    MessageActionCreators.sendFileMessage(currentPeer, attachment.file);
+  }
+}
+
 export default {
   show(attachments) {
     const normalizedAttachments = attachments.map((file) => {
@@ -20,7 +30,8 @@ export default {
       }
 
       return {
-        isImage: file.type.includes('image') && file.type !== 'image/gif',
+        isImage: file.type.includes('image'),
+        isAnimation: file.type === 'image/gif',
         sendAsPicture: true,
         file
       }
@@ -54,11 +65,7 @@ export default {
     const currentPeer = DialogStore.getCurrentPeer();
     const attachment = AttachmentsStore.getAttachment();
 
-    if (attachment.isImage && attachment.sendAsPicture) {
-      MessageActionCreators.sendPhotoMessage(currentPeer, attachment.file);
-    } else {
-      MessageActionCreators.sendFileMessage(currentPeer, attachment.file);
-    }
+    sendAttachment(currentPeer, attachment);
 
     dispatch(ActionTypes.ATTACHMENT_SEND);
 
@@ -73,11 +80,7 @@ export default {
     const currentPeer = DialogStore.getCurrentPeer();
 
     attachments.forEach((attachment) => {
-      if (attachment.isImage && attachment.sendAsPicture) {
-        MessageActionCreators.sendPhotoMessage(currentPeer, attachment.file);
-      } else {
-        MessageActionCreators.sendFileMessage(currentPeer, attachment.file);
-      }
+      sendAttachment(currentPeer, attachment);
     });
 
     dispatch(ActionTypes.ATTACHMENT_SEND_ALL, { attachments });
