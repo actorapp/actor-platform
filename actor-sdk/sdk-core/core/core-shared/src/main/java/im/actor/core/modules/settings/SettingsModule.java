@@ -42,6 +42,8 @@ public class SettingsModule extends AbsModule {
     private final String KEY_PRIVACY;
     private final String KEY_CHAT_TEXT_SIZE;
 
+    private final String KEY_ANIMATION_AUTO_PLAY;
+
     private ActorRef settingsSync;
 
     public SettingsModule(ModuleContext context) {
@@ -97,6 +99,8 @@ public class SettingsModule extends AbsModule {
         KEY_NOTIFICATION_IN_APP_SOUND = "category." + deviceType + ".in_app.sound.enabled";
         KEY_NOTIFICATION_IN_APP_VIBRATION = "category." + deviceType + ".in_app.vibration.enabled";
 
+        KEY_ANIMATION_AUTO_PLAY = "category." + deviceType + ".auto_play.enabled";
+
         // Account-wide notification settings
         KEY_NOTIFICATION_SOUND = "account.notification.sound";
         KEY_NOTIFICATION_GROUP_ENABLED = "account.notifications.group.enabled";
@@ -107,6 +111,7 @@ public class SettingsModule extends AbsModule {
 
         KEY_WALLPAPPER = "wallpaper.uri";
         KEY_PRIVACY = "privacy.last_seen";
+
     }
 
     public void run() {
@@ -283,6 +288,16 @@ public class SettingsModule extends AbsModule {
 
     public void setPrivacy(String privacy) {
         changeValue(KEY_PRIVACY, privacy);
+    }
+
+    //Animation
+
+    public boolean isAnimationAutoPlayEnabled() {
+        return getBooleanValue(KEY_ANIMATION_AUTO_PLAY, true);
+    }
+
+    public void setAnimationAutoPlayEnabled(boolean val) {
+        setBooleanValue(KEY_ANIMATION_AUTO_PLAY, val);
     }
 
     // Common

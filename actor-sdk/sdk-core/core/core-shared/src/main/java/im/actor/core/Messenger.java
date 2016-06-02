@@ -16,7 +16,6 @@ import im.actor.core.api.ApiRawValue;
 import im.actor.core.api.ApiSex;
 import im.actor.core.api.ApiAuthSession;
 import im.actor.core.api.rpc.ResponseRawRequest;
-import im.actor.core.api.rpc.ResponseSeqDate;
 import im.actor.core.entity.AuthCodeRes;
 import im.actor.core.entity.AuthRes;
 import im.actor.core.entity.AuthStartRes;
@@ -27,8 +26,6 @@ import im.actor.core.entity.MessageSearchEntity;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerSearchEntity;
 import im.actor.core.entity.PeerSearchType;
-import im.actor.core.entity.PhoneBookContact;
-import im.actor.core.entity.PublicGroup;
 import im.actor.core.entity.Sex;
 import im.actor.core.entity.User;
 import im.actor.core.entity.WebActionDescriptor;
@@ -50,11 +47,9 @@ import im.actor.core.events.PeerInfoOpened;
 import im.actor.core.events.UserVisible;
 import im.actor.core.network.NetworkState;
 import im.actor.core.util.ActorTrace;
-import im.actor.core.util.Timing;
 import im.actor.core.viewmodel.AppStateVM;
 import im.actor.core.viewmodel.CallVM;
 import im.actor.core.viewmodel.Command;
-import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.ConversationVM;
 import im.actor.core.viewmodel.DialogGroupsVM;
 import im.actor.core.viewmodel.FileCallback;
@@ -70,16 +65,12 @@ import im.actor.core.viewmodel.UploadFileCallback;
 import im.actor.core.viewmodel.UploadFileVM;
 import im.actor.core.viewmodel.UploadFileVMCallback;
 import im.actor.core.viewmodel.UserVM;
-import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.messages.Void;
-import im.actor.runtime.function.Consumer;
 import im.actor.runtime.mvvm.MVVMCollection;
 import im.actor.runtime.mvvm.ValueModel;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.storage.PreferencesStorage;
-import im.actor.runtime.threading.SimpleDispatcher;
-import im.actor.runtime.threading.ThreadDispatcher;
 
 /**
  * Entry point to Actor Messaging
@@ -2198,6 +2189,27 @@ public class Messenger {
     public boolean isRenameHintShown() {
         return modules.getSettingsModule().isRenameHintShown();
     }
+
+    /**
+     * Is animation content auto play enabled
+     *
+     * @return is auto play enabled
+     */
+    @ObjectiveCName("isAnimationAutoPlayEnabled")
+    public boolean isAnimationAutoPlayEnabled() {
+        return modules.getSettingsModule().isAnimationAutoPlayEnabled();
+    }
+
+    /**
+     * Change animation auto play enabled
+     *
+     * @param val is auto play enabled
+     */
+    @ObjectiveCName("changeAnimationAutoPlayEnabled:")
+    public void changeAnimationAutoPlayEnabled(boolean val) {
+        modules.getSettingsModule().setAnimationAutoPlayEnabled(val);
+    }
+
 
     //////////////////////////////////////
     //            Security
