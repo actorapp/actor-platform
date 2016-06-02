@@ -46,6 +46,7 @@ target 'ActorSDK' do
     pod 'RegexKitLite'
     pod 'CocoaAsyncSocket'
     pod 'zipzap'
+    pod 'SwiftyJSON'
 
     # Main UI
     pod 'TTTAttributedLabel'
