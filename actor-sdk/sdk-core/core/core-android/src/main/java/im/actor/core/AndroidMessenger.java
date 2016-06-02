@@ -258,16 +258,25 @@ public class AndroidMessenger extends im.actor.core.Messenger {
             }
             Bitmap fastThumb = ImageHelper.scaleFit(bmp, 90, 90);
 
-            String resultFileName = getExternalUploadTempFile("image", "jpg");
+            byte[] fastThumbData = ImageHelper.save(fastThumb);
+
+            boolean isGif = fullFilePath.endsWith(".gif");
+
+            String resultFileName = getExternalUploadTempFile("image", isGif ? "gif" : "jpg");
             if (resultFileName == null) {
                 return;
             }
-            ImageHelper.save(bmp, resultFileName);
 
-            byte[] fastThumbData = ImageHelper.save(fastThumb);
+            if (isGif) {
+                IOUtils.copy(new File(fullFilePath), new File(resultFileName));
+                sendAnimation(peer, fileName, bmp.getWidth(), bmp.getHeight(), new FastThumb(fastThumb.getWidth(), fastThumb.getHeight(),
+                        fastThumbData), resultFileName);
+            } else {
+                ImageHelper.save(bmp, resultFileName);
+                sendPhoto(peer, fileName, bmp.getWidth(), bmp.getHeight(), new FastThumb(fastThumb.getWidth(), fastThumb.getHeight(),
+                        fastThumbData), resultFileName);
+            }
 
-            sendPhoto(peer, fileName, bmp.getWidth(), bmp.getHeight(), new FastThumb(fastThumb.getWidth(), fastThumb.getHeight(),
-                    fastThumbData), resultFileName);
         } catch (Throwable t) {
             t.printStackTrace();
         }
@@ -341,7 +350,8 @@ public class AndroidMessenger extends im.actor.core.Messenger {
                 File dest = new File(externalPath + "/Actor/");
                 dest.mkdirs();
 
-                File outputFile = new File(dest, "upload_" + random.nextLong() + ".jpg");
+                boolean isGif = picturePath != null && picturePath.endsWith(".gif");
+                File outputFile = new File(dest, "upload_" + random.nextLong() + (isGif ? ".gif" : ".jpg"));
                 picturePath = outputFile.getAbsolutePath();
 
                 try {
