@@ -26,11 +26,12 @@ private final case class AllNotificationSettings(
 )
 
 private final case class NotificationSettings(
-  enabled:   Boolean            = true,
-  sound:     Boolean            = true,
-  vibration: Boolean            = true,
-  text:      Boolean            = true,
-  peers:     Map[Peer, Boolean] = Map.empty
+  enabled:      Boolean            = true,
+  sound:        Boolean            = true,
+  vibration:    Boolean            = true,
+  text:         Boolean            = true,
+  customSounds: Map[Peer, String]  = Map.empty,
+  peers:        Map[Peer, Boolean] = Map.empty
 )
 
 private case object FailedToUnregister extends RuntimeException("Failed to unregister push credentials")
@@ -98,7 +99,8 @@ private final class SettingsControl(userId: Int) extends Actor with ActorLogging
       vibration ← ParameterRepo.findBooleanValue(userId, SettingsKeys.vibrationEnabled(deviceType), true)
       text ← ParameterRepo.findBooleanValue(userId, SettingsKeys.textEnabled(deviceType), true)
       peers ← ParameterRepo.findPeerNotifications(userId, deviceType)
-    } yield NotificationSettings(enabled, sound, vibration, text, peers.toMap)
+      customSounds ← ParameterRepo.findPeerRingtone(userId)
+    } yield NotificationSettings(enabled, sound, vibration, text, customSounds.toMap, peers.toMap)
   }
 }
 
@@ -225,20 +227,18 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
                 false
             }
 
-          if (isVisible) {
-            val isSoundEnabled = settings.sound
-            val isTextEnabled = settings.text
-            val isVibrationEnabled = settings.vibration
-
+          if (isVisible)
             deliverVisible(
               seq = seq,
               creds = creds,
               data = data,
-              isTextEnabled = isTextEnabled,
-              isSoundEnabled = isSoundEnabled,
-              isVibrationEnabled = isVibrationEnabled
+              isTextEnabled = settings.text,
+              isSoundEnabled = settings.sound,
+              customSound = data.peer flatMap (p ⇒ settings.customSounds.get(p)),
+              isVibrationEnabled = settings.vibration
             )
-          } else deliverInvisible(seq, creds)
+          else
+            deliverInvisible(seq, creds)
 
         case _ ⇒
           log.debug("No text, delivering simple seq")
@@ -275,7 +275,15 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
    * @param isVibrationEnabled
    * @return
    */
-  private def deliverVisible(seq: Int, creds: PushCredentials, data: PushData, isTextEnabled: Boolean, isSoundEnabled: Boolean, isVibrationEnabled: Boolean) = {
+  private def deliverVisible(
+    seq:                Int,
+    creds:              PushCredentials,
+    data:               PushData,
+    isTextEnabled:      Boolean,
+    isSoundEnabled:     Boolean,
+    customSound:        Option[String],
+    isVibrationEnabled: Boolean
+  ) = {
     creds match {
       case c: GooglePushCredentials ⇒
         googlePushProvider.deliverVisible(
@@ -293,6 +301,7 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
           data = data,
           isTextEnabled = isTextEnabled,
           isSoundEnabled = isSoundEnabled,
+          customSound = customSound,
           isVibrationEnabled = isVibrationEnabled
         )
       case c: ActorPushCredentials ⇒
