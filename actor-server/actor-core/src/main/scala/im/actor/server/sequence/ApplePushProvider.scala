@@ -39,6 +39,7 @@ private[sequence] final class ApplePushProvider(userId: Int)(implicit system: Ac
     data:               PushData,
     isTextEnabled:      Boolean,
     isSoundEnabled:     Boolean,
+    customSound:        Option[String],
     isVibrationEnabled: Boolean
   ): Unit = {
     withClient(creds) { implicit client ⇒
@@ -54,7 +55,7 @@ private[sequence] final class ApplePushProvider(userId: Int)(implicit system: Ac
           builder.setAlertBody(data.censoredText)
 
         if (isSoundEnabled)
-          builder.setSoundFileName("iapetus.caf")
+          builder.setSoundFileName(customSound getOrElse "iapetus.caf")
 
         val payload = builder.buildWithDefaultMaximumLength()
         sendNotification(payload, creds, userId)
