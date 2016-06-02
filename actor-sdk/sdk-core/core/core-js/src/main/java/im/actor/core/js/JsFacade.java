@@ -1693,7 +1693,7 @@ public class JsFacade implements Exportable {
 
     @UsedByApp
     public boolean isAnimationAutoPlayEnabled() {
-        return messenger.isInAppNotificationsEnabled();
+        return messenger.isAnimationAutoPlayEnabled();
     }
 
     @UsedByApp

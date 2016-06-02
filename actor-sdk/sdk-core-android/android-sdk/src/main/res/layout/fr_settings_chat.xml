@@ -66,6 +66,52 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/div_size" />
 
+            <LinearLayout
+                android:id="@+id/animationAutoPlayCont"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector"
+                android:gravity="center_vertical"
+                android:paddingBottom="@dimen/settings_content_padding"
+                android:paddingLeft="@dimen/settings_content_padding"
+                android:paddingRight="@dimen/settings_content_padding"
+                android:paddingTop="@dimen/settings_content_padding">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/settings_animation_auto_play_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/settings_animation_auto_play_title"
+                        android:textSize="@dimen/text_primary" />
+
+                    <TextView
+                        android:id="@+id/settings_animation_auto_play_hint"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/settings_animation_auto_play_subtitle"
+                        android:textSize="@dimen/text_secondary" />
+                </LinearLayout>
+
+                <CheckBox
+                    android:id="@+id/animationAutoPlay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/settings_content_padding"
+                    android:layout_marginRight="@dimen/settings_content_padding"
+                    android:gravity="center_vertical" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/dividerBot"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/div_size" />
+
         </LinearLayout>
 
 
