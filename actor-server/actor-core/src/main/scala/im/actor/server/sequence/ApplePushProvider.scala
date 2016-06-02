@@ -19,16 +19,13 @@ private[sequence] final class ApplePushProvider(userId: Int)(implicit system: Ac
     withClient(creds) { implicit client ⇒
       if (isLegacyCreds(creds)) {
         log.debug("Delivering invisible(seq:{}) to apnsKey: {}", seq, creds.apnsKey)
-        dialogExt.getUnreadTotal(userId) foreach { unreadTotal ⇒
-          val payload =
-            new ApnsPayloadBuilder()
-              .addCustomProperty("seq", seq)
-              .setContentAvailable(true)
-              .setBadgeNumber(unreadTotal)
-              .buildWithDefaultMaximumLength()
-
-          sendNotification(payload, creds, userId)
-        }
+        // according to https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/TheNotificationPayload.html#//apple_ref/doc/uid/TP40008194-CH107-SW6
+        // silent notification should not contain `alert`, `sound`, or `badge` payload.
+        val payload = new ApnsPayloadBuilder()
+          .addCustomProperty("seq", seq)
+          .setContentAvailable(true)
+          .buildWithDefaultMaximumLength()
+        sendNotification(payload, creds, userId)
       } else {
         log.debug("Delivering invisible(seq:{}) to bundleId: {}", seq, creds.bundleId)
         sendNotification(payload = seqOnly(seq), creds, userId)
