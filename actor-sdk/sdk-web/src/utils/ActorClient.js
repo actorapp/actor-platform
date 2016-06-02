@@ -194,6 +194,10 @@ class ActorClient {
     window.messenger.sendPhoto(peer, photo);
   }
 
+  sendAnimationMessage(peer, file) {
+    window.messenger.sendAnimation(peer, file);
+  }
+
   sendClipboardPhotoMessage(peer, photo) {
     window.messenger.sendClipboardPhoto(peer, photo);
   }
