@@ -468,6 +468,9 @@
     <string name="settings_chat_send_enter">Отправка по вводу</string>
     <string name="settings_chat_send_enter_subtitle">Отправление сообщения по клавише Enter</string>
 
+    <string name="settings_animation_auto_play_title">Автозавпуск анимаций</string>
+    <string name="settings_animation_auto_play_subtitle">Автоматическое проигрывание анимаций после загрузки</string>
+
     <string name="settings_chat_markdown">Markdown</string>
     <string name="settings_chat_markdown_subtitle">Использование разметки markdown</string>
 
