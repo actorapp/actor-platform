@@ -524,6 +524,9 @@ public class PhotoHolder extends MessageHolder {
                 }
                 Uri uri = Uri.fromFile(new File(reference.getDescriptor()));
                 bindImage(uri);
+                if (isAnimation && !updated) {
+                    checkFastThumb();
+                }
                 // previewView.setImageURI(Uri.fromFile(new File(reference.getDescriptor())));
             } else {
                 if (!updated) {
