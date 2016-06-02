@@ -1687,6 +1687,16 @@ public class JsFacade implements Exportable {
     }
 
     @UsedByApp
+    public void changeAnimationAutoPlayEnabled(boolean isEnabled) {
+        messenger.changeAnimationAutoPlayEnabled(isEnabled);
+    }
+
+    @UsedByApp
+    public boolean isAnimationAutoPlayEnabled() {
+        return messenger.isInAppNotificationsEnabled();
+    }
+
+    @UsedByApp
     public boolean isSendByEnterEnabled() {
         return messenger.isSendByEnterEnabled();
     }
