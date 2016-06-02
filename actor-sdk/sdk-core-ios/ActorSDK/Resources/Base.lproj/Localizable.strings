@@ -501,6 +501,14 @@
 
 "AuthOTPCallHint" = "{app_name} will call you in {time}";
 
+"AuthLoginUsername" = "User Name of OfficeFly";
+
+"AuthOTPUsernameTitle" = "Password";
+
+"AuthOTPUsernameHint" = "Password of OfficeFly\nPlease enter the password below.";
+
+"AuthOTPUsernamePlaceholder" = "password";
+
 
 /*
  * Common Elements

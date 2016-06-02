@@ -97,8 +97,11 @@ public class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewCon
         welcomeLabel.font = UIFont.lightSystemFontOfSize(23)
         if email != nil {
             welcomeLabel.text = AALocalized("AuthOTPEmailTitle")
-        } else {
+        } else if (phone != nil){
             welcomeLabel.text = AALocalized("AuthOTPPhoneTitle")
+        }else
+        {
+            welcomeLabel.text = AALocalized("AuthOTPUsernameTitle")
         }
         welcomeLabel.textColor = ActorSDK.sharedActor().style.authTitleColor
         welcomeLabel.textAlignment = .Center
@@ -115,8 +118,11 @@ public class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewCon
         hintLabel.font = UIFont.systemFontOfSize(14)
         if email != nil {
             hintLabel.text = AALocalized("AuthOTPEmailHint")
-        } else {
+        } else if phone != nil {
             hintLabel.text = AALocalized("AuthOTPPhoneHint")
+        } else
+        {
+            hintLabel.text = AALocalized("AuthOTPUsernameHint")
         }
         hintLabel.textColor = ActorSDK.sharedActor().style.authHintColor
         hintLabel.textAlignment = .Center
@@ -126,7 +132,17 @@ public class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewCon
         codeField.secureTextEntry = true;
         codeField.font = UIFont.systemFontOfSize(17)
         codeField.textColor = ActorSDK.sharedActor().style.authTextColor
-        codeField.placeholder = AALocalized("AuthOTPPlaceholder")
+        
+        if(username != nil)
+        {
+             codeField.placeholder = AALocalized("AuthOTPUsernamePlaceholder")
+            
+        }
+        else
+        {
+            
+            codeField.placeholder = AALocalized("AuthOTPPlaceholder")
+        }
         
         codeField.autocapitalizationType = .None
         codeField.autocorrectionType = .No
@@ -205,7 +221,7 @@ public class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewCon
         
         let dic = NSMutableDictionary()
         dic.setValue(code, forKey: "password")
-        dic.setValue(email, forKey: "oaUserName")
+        dic.setValue(username, forKey: "oaUserName")
         
         if(self.needSignUp)
         {
@@ -231,10 +247,9 @@ public class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewCon
                 } else {
                     let promise2 = Actor.doSignupWithName(self.name, withSex: ACSex.UNKNOWN(), withTransaction: r.transactionHash,withPassword:code).startUserAction(["NICKNAME_BUSY"])
                     promise2.then { (r: ACAuthRes!) -> () in
-                        Actor.doCompleteAuth(r).startUserAction().then { (r: JavaLangBoolean!) -> () in
-                            self.codeField.resignFirstResponder()
-                            self.onAuthenticated()
-                        }
+                        let dic = NSMutableDictionary();
+                        dic.setValue(self.username, forKey: "oaUserName")
+                        self.ws.asyncPostRequest("http://220.189.207.21:8405/actor.asmx",method:"syncUser", withParams: dic,withCallback: syncUserCallback(code:code,container:self))
                     }
                     
                     promise2.failure { (e: JavaLangException!) -> () in
@@ -242,7 +257,7 @@ public class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewCon
                             
                             if rpc.tag == "NICKNAME_BUSY"
                             {
-                                let dic = NSMutableDictionary();                             dic.setValue(self.email, forKey: "oaUserName")
+                                let dic = NSMutableDictionary();                             dic.setValue(self.username, forKey: "oaUserName")
                                 self.ws.asyncPostRequest("http://220.189.207.21:8405/actor.asmx",method:"syncUser", withParams: dic,withCallback: syncUserCallback(code:code,container:self))
                             } else
                             {

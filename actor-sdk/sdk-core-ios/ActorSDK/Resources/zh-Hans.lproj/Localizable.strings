@@ -496,6 +496,15 @@
 
 "AuthOTPCallHint" = "{app_name}将在{time}秒后拨打手机告知验证码";
 
+"AuthLoginUsername" = "账号(与您OfficeFly的账号一致)";
+
+"AuthOTPUsernameTitle" = "输入密码";
+
+"AuthOTPUsernameHint" = "密码与您的OfficeFly密码一致\n请输入";
+
+"AuthOTPUsernamePlaceholder" = "密码";
+
+
 /*
  * Common Elements
  */

@@ -49,7 +49,7 @@ public class AAAuthLogInViewController: AAAuthViewController {
             field.placeholder = AALocalized("AuthLoginPhoneEmail")
             field.keyboardType = .Default
         } else if ActorSDK.sharedActor().authStrategy == .Username {
-            field.placeholder = AALocalized("AuthLoginPhoneEmail")
+            field.placeholder = AALocalized("AuthLoginUsername")
             field.keyboardType = .Default
         }
         field.autocapitalizationType = .None
