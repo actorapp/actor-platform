@@ -478,13 +478,14 @@ public class PictureActivity extends BaseActivity {
                 if (externalFile == null) {
                     Toast.makeText(getActivity(), R.string.toast_no_sdcard, Toast.LENGTH_LONG).show();
                 }else{
+                    boolean isGif = path.endsWith(".gif");
                     String externalPath = externalFile.getAbsolutePath();
                     String exportPathBase = externalPath + "/" + ActorSDK.sharedActor().getAppName() + "/" + ActorSDK.sharedActor().getAppName() + " images" + "/";
                     new File(exportPathBase).mkdirs();
                     try {
-                        String exportPath = exportPathBase + (fileName != null ? fileName : "exported") + "_" + Randoms.randomId() + ".jpg";
+                        String exportPath = exportPathBase + (fileName != null ? fileName : "exported") + "_" + Randoms.randomId() + (isGif ? ".gif" : ".jpg");
                         Files.copy(new File(this.path), new File(exportPath));
-                        MediaScannerConnection.scanFile(getActivity(), new String[]{exportPath}, new String[]{"image/jpeg"}, null);
+                        MediaScannerConnection.scanFile(getActivity(), new String[]{exportPath}, new String[]{"image/" + (isGif ? "gif" : "jpeg")}, null);
                         Toast.makeText(getActivity(), getString(R.string.file_saved)+ " " + exportPath, Toast.LENGTH_LONG).show();
                         item.setEnabled(false);
                         item.setTitle(R.string.menu_saved);

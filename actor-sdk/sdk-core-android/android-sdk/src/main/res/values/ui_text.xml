@@ -460,6 +460,9 @@
     <string name="settings_chat_send_enter">Send by enter</string>
     <string name="settings_chat_send_enter_subtitle">Is enter key will send your message</string>
 
+    <string name="settings_animation_auto_play_title">Animation auto play</string>
+    <string name="settings_animation_auto_play_subtitle">Is animations playing automatically after downloaded</string>
+
     <string name="settings_chat_markdown">Markdown</string>
     <string name="settings_chat_markdown_subtitle">Is markdown enabled</string>
 
