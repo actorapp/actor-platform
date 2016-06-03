@@ -154,15 +154,16 @@ public class AAGroupViewController: AAContentTableController {
                         r.selectAction = {() -> Bool in
                             // Sound: Choose sound
                             let setRingtoneController = AARingtonesViewController()
+                            setRingtoneController.selectedRingtone = Actor.getNotificationsSoundWithPeer(groupPeer)
+                            setRingtoneController.completion = {(selectedSound:String) in
+                                Actor.changeNotificationsSoundPeer(groupPeer, withValue: selectedSound)
+                            }
                             let navigationController = AANavigationController(rootViewController: setRingtoneController)
                             if (AADevice.isiPad) {
                                 navigationController.modalInPopover = true
                                 navigationController.modalPresentationStyle = UIModalPresentationStyle.CurrentContext
                             }
                             self.presentViewController(navigationController, animated: true, completion: {
-                                print(setRingtoneController.selectedRingtone)
-                                //TODO: add - (void)changeNotificationSoundWithACPeer:(ACPeer *)peer
-                                //withNSString:(NSString *)sound into Messenger.h
                                 }
                             )
                             

@@ -176,14 +176,16 @@ class AAUserViewController: AAContentTableController {
                         r.selectAction = {() -> Bool in
                             // Sound: Choose sound
                             let setRingtoneController = AARingtonesViewController()
+                            setRingtoneController.selectedRingtone = Actor.getNotificationsSoundWithPeer(peer)
+                            setRingtoneController.completion = {(selectedSound:String) in
+                                Actor.changeNotificationsSoundPeer(peer, withValue: selectedSound)
+                            }
                             let navigationController = AANavigationController(rootViewController: setRingtoneController)
                             if (AADevice.isiPad) {
                                 navigationController.modalInPopover = true
                                 navigationController.modalPresentationStyle = UIModalPresentationStyle.CurrentContext
                             }
                             self.presentViewController(navigationController, animated: true, completion: {
-                                print(setRingtoneController.selectedRingtone)
-                                //TODO: implement method to setSond with peer in Messendger.m
                                 }
                             )
                             return false
