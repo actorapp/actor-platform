@@ -14,6 +14,11 @@ public class AARingtonesViewController: AATableViewController {
     
     var audioPlayer: AVAudioPlayer!
     var selectedRingtone: String = ""
+    var completion: ((String) -> ())!
+    
+    let rootSoundDirectories: [String] = ["/Library/Ringtones"/*,"/System/Library/Audio/UISounds"*/]
+    var directories: [String] = []
+    var soundFiles: [(directory: String, files: [String])] = []
    
     init() {
         super.init(style: UITableViewStyle.Plain)
@@ -30,13 +35,6 @@ public class AARingtonesViewController: AATableViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override public func viewWillDisappear(animated: Bool) {
-        super.viewWillDisappear(true)
-        if(audioPlayer != nil && audioPlayer.playing){
-        audioPlayer.stop()
-        }
-    }
-    
     override public func viewDidLoad() {
         super.viewDidLoad()
         for directory in rootSoundDirectories {
@@ -45,18 +43,24 @@ public class AARingtonesViewController: AATableViewController {
             let newSoundFile: (directory: String, files: [String]) = (directory, [])
             soundFiles.append(newSoundFile)
         }
+        
         getDirectories()
         loadSoundFiles()
         tableView.rowHeight = 44.0
         tableView.sectionIndexBackgroundColor = UIColor.clearColor()
     }
-
-    let rootSoundDirectories: [String] = ["/Library/Ringtones"/*,"/System/Library/Audio/UISounds"*/]
     
-    var directories: [String] = []
-
-    var soundFiles: [(directory: String, files: [String])] = []
+    override public func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(true)
+        if(audioPlayer != nil && audioPlayer.playing){
+            audioPlayer.stop()
+        }
+    }
     
+    public override func viewDidDisappear(animated: Bool) {
+        completion(selectedRingtone)
+    }
+
     override public func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
@@ -156,14 +160,10 @@ public class AARingtonesViewController: AATableViewController {
             audioPlayer.play()
         } catch {
             debugPrint("\(error)")
+            selectedRingtone = ""
         }
         let cell = tableView.cellForRowAtIndexPath(indexPath) as! AACommonCell
         selectedRingtone = soundFiles[indexPath.section].files[indexPath.row]
         cell.style = .Checkmark
     }
-    
-//    func dismissAndSave() {
-//        delegate?.ringtonesController(self, currentRingtone:selectedRingtone)
-//        dismiss()
-//    }
 }
