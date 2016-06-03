@@ -170,10 +170,29 @@ class AAUserViewController: AAContentTableController {
                     }
                     Actor.changeNotificationsEnabledWithPeer(peer, withValue: on)
                 }
+                
+                if(ActorSDK.sharedActor().enableChatGroupSound) {
+                    if(Actor.isNotificationsEnabledWithPeer(peer)){
+                        r.selectAction = {() -> Bool in
+                            // Sound: Choose sound
+                            let setRingtoneController = AARingtonesViewController()
+                            let navigationController = AANavigationController(rootViewController: setRingtoneController)
+                            if (AADevice.isiPad) {
+                                navigationController.modalInPopover = true
+                                navigationController.modalPresentationStyle = UIModalPresentationStyle.CurrentContext
+                            }
+                            self.presentViewController(navigationController, animated: true, completion: {
+                                print(setRingtoneController.selectedRingtone)
+                                //TODO: implement method to setSond with peer in Messendger.m
+                                }
+                            )
+                            return false
+                        }
+                    }
+                }
             }
         }
-        
-        
+    
         // Edit contact
         section { (s) -> () in
             

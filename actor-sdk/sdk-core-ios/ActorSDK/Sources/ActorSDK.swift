@@ -123,6 +123,8 @@ import DZNWebViewController
     /// Enable voice calls feature
     public var enableCalls: Bool = true
     
+    /// Enable custom sound on Groups and Chats
+    public var enableChatGroupSound: Bool = false
     
     /// Enable experimental features
     public var enableExperimentalFeatures: Bool = false
