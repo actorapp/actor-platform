@@ -2060,6 +2060,28 @@ public class Messenger {
     }
 
     /**
+     * Notifications sound enabled for peer
+     *
+     * @param peer destination peer
+     * @return notification sound custom uri or null for default sound
+     */
+    @ObjectiveCName("getNotificationsSoundWithPeer:")
+    public String getNotificationsSound(Peer peer) {
+        return modules.getSettingsModule().getNotificationPeerSound(peer);
+    }
+
+    /**
+     * Change notifications sound for peer
+     *
+     * @param peer destination peer
+     * @param val  notification sound custom uri or null for default sound
+     */
+    @ObjectiveCName("changeNotificationsSoundPeer:withValue:")
+    public void changeNotificationsSound(Peer peer, String val) {
+        modules.getSettingsModule().changeNotificationPeerSound(peer, val);
+    }
+
+    /**
      * Is in-app notifications enabled
      *
      * @return is notifications enabled
