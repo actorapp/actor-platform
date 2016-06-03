@@ -2,7 +2,7 @@ html,
 body {
   box-sizing: border-box;
 
-  background-color: $body-background-color;
+  background-color: $bismark;;
 
   @include app-sizes();
 }
