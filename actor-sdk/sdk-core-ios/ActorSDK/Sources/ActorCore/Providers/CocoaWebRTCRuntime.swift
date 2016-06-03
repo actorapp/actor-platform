@@ -13,6 +13,12 @@ class CocoaWebRTCRuntime: NSObject, ARWebRTCRuntime {
 
     }
     
+    func getUserMediaWithIsVideoEnabled(isVideoEnabled: jboolean) -> ARPromise {
+        return ARPromise { (resolver) -> () in
+            resolver.result(true) //TODO:implement call to ACTOR settings configurator.
+        }
+    }
+    
     func createPeerConnectionWithServers(webRTCIceServers: IOSObjectArray!, withSettings settings: ARWebRTCSettings!) -> ARPromise {
         
         initRTC()
@@ -56,6 +62,22 @@ class MediaStream: NSObject, ARWebRTCMediaStream {
     
     init(stream: RTCMediaStream){
         self.stream = stream
+    }
+    
+    func isAudioEnabled() -> jboolean {
+        return true //TODO:implement call to ACTOR settings configurator.
+    }
+    
+    func setAudioEnabledWithBoolean(isEnabled: jboolean) {
+        //TODO:implement call to ACTOR settings configurator.
+    }
+    
+    func isVideoEnabled() -> jboolean {
+        return true//TODO:implement call to ACTOR settings configurator.
+    }
+    
+    func setVideoEnabledWithBoolean(isEnabled: jboolean) {
+        //TODO:implement call to ACTOR settings configurator.
     }
     
     func isEnabled() -> jboolean {

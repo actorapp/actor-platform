@@ -17,10 +17,16 @@ import AudioToolbox.AudioServices
         super.init()
     }
     
-    func loadSound(){
+    func loadSound(soundFile:String? = ""){
         if !isLoaded {
             isLoaded = true
-            let path = NSBundle.framework.URLForResource("notification", withExtension: "caf");
+            
+            var path = NSBundle.framework.URLForResource("notification", withExtension: "caf")
+            
+            if let fileURL: NSURL = NSURL(fileURLWithPath: "/Library/Ringtones/\(soundFile)") {
+                   path = fileURL
+            }
+            
             AudioServicesCreateSystemSoundID(path!, &internalMessage)
         }
     }
@@ -28,11 +34,14 @@ import AudioToolbox.AudioServices
     func onMessageArriveInAppWithMessenger(messenger: ACMessenger!) {
         let currentTime = NSDate().timeIntervalSinceReferenceDate
         if (currentTime - lastSoundPlay > 0.2) {
-            loadSound()
+            let peer = ACPeer.userWithInt(jint(messenger.myUid()))
+            let soundFileSting = messenger.getNotificationsSoundWithPeer(peer)
+            loadSound(soundFileSting)
             AudioServicesPlaySystemSound(internalMessage)
             lastSoundPlay = currentTime
         }
     }
+    
     
     func onNotificationWithMessenger(messenger: ACMessenger!, withTopNotifications topNotifications: JavaUtilList!, withMessagesCount messagesCount: jint, withConversationsCount conversationsCount: jint) {
         // Not Supported
