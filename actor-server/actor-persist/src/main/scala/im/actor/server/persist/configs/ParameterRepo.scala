@@ -51,7 +51,7 @@ object ParameterRepo {
     }
 
   def findPeerRingtone(userId: Int)(implicit ec: ExecutionContext): DBIO[Seq[(Peer, String)]] =
-    extractPeerParams[(Peer, String)](userId, prefix = s"category.mobile.ios.ringtone.chat.") {
+    extractPeerParams[(Peer, String)](userId, prefix = "app.ios.mobile.notification.chat.sound.") {
       case (key, optValue) ⇒
         key.split("_").toList match {
           case "GROUP" :: id :: Nil ⇒
@@ -68,7 +68,7 @@ object ParameterRepo {
       case _             ⇒ true
     }
 
-    extractPeerParams[(Peer, Boolean)](userId, s"category.$deviceType.notification.chat.") {
+    extractPeerParams[(Peer, Boolean)](userId, prefix = s"category.$deviceType.notification.chat.") {
       case (key, value) ⇒
         key.split("\\.").toList match {
           case peerStr :: "enabled" :: Nil ⇒
