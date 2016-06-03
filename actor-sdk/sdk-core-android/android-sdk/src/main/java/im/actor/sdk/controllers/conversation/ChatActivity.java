@@ -1589,7 +1589,7 @@ public class ChatActivity extends ActorEditTextActivity {
         }
     }
 
-    private void hideShare() {
+    public void hideShare() {
         if (!isShareVisible || animationInProgress) {
             return;
         }
