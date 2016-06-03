@@ -8,11 +8,8 @@ import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.settings.SettingsSyncActor;
-import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;
-import im.actor.runtime.actors.Props;
 
 public class SettingsModule extends AbsModule {
 
@@ -43,6 +40,8 @@ public class SettingsModule extends AbsModule {
     private final String KEY_CHAT_TEXT_SIZE;
 
     private final String KEY_ANIMATION_AUTO_PLAY;
+
+    private final String KEY_NOTIFICATION_PEER_SOUND;
 
     private ActorRef settingsSync;
 
@@ -87,6 +86,8 @@ public class SettingsModule extends AbsModule {
         KEY_CHAT_SEND_BY_ENTER = "app." + platformType + "" + deviceType + ".send_by_enter";
         KEY_MARKDOWN_ENABLED = "app." + platformType + "" + deviceType + ".use_markdown";
         KEY_CHAT_TEXT_SIZE = "app." + platformType + "." + deviceType + ".text_size";
+
+        KEY_NOTIFICATION_PEER_SOUND = "category." + deviceType + "." + platformType + ".ringtone.chat.";
 
         // Device-type notification settings
         KEY_NOTIFICATION_ENABLED = "category." + deviceType + ".notification.enabled";
@@ -153,6 +154,14 @@ public class SettingsModule extends AbsModule {
 
     public void changeNotificationSound(String sound) {
         setStringValue(KEY_NOTIFICATION_SOUND, sound);
+    }
+
+    public String getNotificationPeerSound(Peer peer) {
+        return readValue(KEY_NOTIFICATION_PEER_SOUND + getChatKey(peer));
+    }
+
+    public void changeNotificationPeerSound(Peer peer, String sound) {
+        setStringValue(KEY_NOTIFICATION_PEER_SOUND + getChatKey(peer), sound);
     }
 
     public boolean isVibrationEnabled() {
