@@ -6,10 +6,12 @@ package im.actor.core.modules.settings;
 
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
+import im.actor.core.events.SettingsChanged;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;
+import im.actor.runtime.eventbus.EventBus;
 
 public class SettingsModule extends AbsModule {
 
@@ -45,8 +47,12 @@ public class SettingsModule extends AbsModule {
 
     private ActorRef settingsSync;
 
+    private EventBus eventBus;
+
     public SettingsModule(ModuleContext context) {
         super(context);
+
+        eventBus = context.getEvents();
 
         String platformType;
         switch (context.getConfiguration().getPlatformType()) {
@@ -394,6 +400,7 @@ public class SettingsModule extends AbsModule {
 
     public void onUpdatedSetting(String key, String value) {
         preferences().putString(STORAGE_PREFIX + key, value);
+        eventBus.post(new SettingsChanged());
     }
 
     private String getChatKey(Peer peer) {
