@@ -1123,3 +1123,16 @@ $sticker-max-size: 180px;
 .message__photo {
   cursor: pointer;
 }
+
+.message__animation {
+  cursor: pointer;
+  position: relative;
+}
+
+.message__animation__state {
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  color: #fff;
+  text-shadow: 0 0 1px #000;
+}
