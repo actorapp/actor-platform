@@ -3,8 +3,9 @@
  */
 
 import React, { Component, PropTypes } from 'react';
+import classNames from 'classnames';
 import PreferencesStore from '../../../stores/PreferencesStore';
-import { getDimentions, lightbox, renderImageToCanvas } from '../../../utils/ImageUtils';
+import { getDimentions, renderImageToCanvas } from '../../../utils/ImageUtils';
 
 class Animation extends Component {
   static propTypes = {
@@ -17,15 +18,11 @@ class Animation extends Component {
   constructor(props) {
     super(props);
 
-    if (!PreferencesStore.isAnimationAutoPlayEnabled()) {
-      this.state = {
-        playing: false
-      };
-    }
+    this.state = {
+      playing: PreferencesStore.isAnimationAutoPlayEnabled()
+    };
 
     this.onClick = this.onClick.bind(this);
-    this.onMouseEnter = this.onMouseEnter.bind(this);
-    this.onMouseLeave = this.onMouseLeave.bind(this);
   }
 
   componentDidMount() {
@@ -38,15 +35,7 @@ class Animation extends Component {
 
   onClick(event) {
     event.preventDefault();
-    lightbox.open(this.props.fileUrl, 'message');
-  }
-
-  onMouseEnter() {
-    this.setState({ playing: true });
-  }
-
-  onMouseLeave() {
-    this.setState({ playing: false });
+    this.setState({ playing: !this.state.playing });
   }
 
   getDimentions() {
@@ -65,8 +54,6 @@ class Animation extends Component {
         width={width}
         height={height}
         onClick={this.onClick}
-        onMouseEnter={this.onMouseEnter}
-        onMouseLeave={this.onMouseLeave}
       />
     );
   }
@@ -82,37 +69,27 @@ class Animation extends Component {
       <canvas
         ref="canvas"
         style={style}
-        onMouseEnter={this.onMouseEnter}
-        onMouseLeave={this.onMouseLeave}
+        onClick={this.onClick}
       />
     );
   }
 
   renderState(playing) {
-    const glyph = playing ? 'play_circle_outline' : 'pause_circle_outline';
+    const glyph = playing ? 'pause_circle_outline' : 'play_circle_outline';
+
+    const className = classNames('material-icons message__animation__state', {
+      'message__animation__state--playing': playing
+    });
 
     return (
-      <i className="material-icons message__animation__state">{glyph}</i>
+      <i className={className} onClick={this.onClick}>{glyph}</i>
     );
   }
 
   render() {
+    const { playing } = this.state;
     const { width, height } = this.getDimentions();
     const source = this.props.fileUrl || this.props.preview;
-
-    if (!this.state) {
-      return (
-        <img
-          className="message__photo"
-          src={source}
-          width={width}
-          height={height}
-          onClick={this.onClick}
-        />
-      );
-    }
-
-    const { playing } = this.state;
 
     return (
       <div className="message__animation" style={{ width, height }}>
