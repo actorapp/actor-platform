@@ -284,6 +284,12 @@ export default {
           newLine: 'новая строка'
         }
       },
+      interface: {
+        title: 'Интерфейс',
+        animation: {
+          title: 'Сразу запускать анимацию'
+        }
+      },
       notifications: {
         title: 'Уведомления и Звуки',
         effects: {

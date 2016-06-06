@@ -25,7 +25,8 @@ export default {
       isSoundEffectsEnabled,
       isGroupsNotificationsEnabled,
       isOnlyMentionNotifications,
-      isShowNotificationsTextEnabled
+      isShowNotificationsTextEnabled,
+      isAnimationAutoPlayEnabled
     } = preferences;
 
     ActorClient.changeSendByEnter(isSendByEnterEnabled);
@@ -33,6 +34,7 @@ export default {
     ActorClient.changeGroupNotificationsEnabled(isGroupsNotificationsEnabled);
     ActorClient.changeIsOnlyMentionNotifications(isOnlyMentionNotifications);
     ActorClient.changeIsShowNotificationTextEnabled(isShowNotificationsTextEnabled);
+    ActorClient.changeAnimationAutoPlayEnabled(isAnimationAutoPlayEnabled);
 
     dispatch(ActionTypes.PREFERENCES_SAVE, { preferences });
   },
