@@ -10,6 +10,7 @@ import { MessageContentTypes } from '../../../constants/ActorAppConstants';
 import DefaultService from './Service.react';
 import DefaultText from './Text.react';
 import DefaultPhoto from './Photo.react';
+import DefaultAnimation from './Animation.react';
 import DefaultDocument from './Document.react';
 import DefaultVoice from './Voice.react';
 import DefaultContact from './Contact.react';
@@ -36,6 +37,7 @@ class MessageContent extends Component {
         Text: isFunction(dialog.messages.text) ? dialog.messages.text : DefaultText,
         Modern: isFunction(dialog.messages.modern) ? dialog.messages.modern : DefaultModern,
         Photo: isFunction(dialog.messages.photo) ? dialog.messages.photo : DefaultPhoto,
+        Animation: isFunction(dialog.messages.animation) ? dialog.messages.animation : DefaultAnimation,
         Document: isFunction(dialog.messages.document) ? dialog.messages.document : DefaultDocument,
         Voice: isFunction(dialog.messages.voice) ? dialog.messages.voice : DefaultVoice,
         Contact: isFunction(dialog.messages.contact) ? dialog.messages.contact : DefaultContact,
@@ -48,6 +50,7 @@ class MessageContent extends Component {
         Text: DefaultText,
         Modern: DefaultModern,
         Photo: DefaultPhoto,
+        Animation: DefaultAnimation,
         Document: DefaultDocument,
         Voice: DefaultVoice,
         Contact: DefaultContact,
@@ -63,7 +66,7 @@ class MessageContent extends Component {
 
   render() {
     const { content } = this.props;
-    const { Service, Text, Photo, Document, Voice, Contact, Location, Modern, Sticker } = this.components;
+    const { Service, Text, Photo, Animation, Document, Voice, Contact, Location, Modern, Sticker } = this.components;
 
     switch (content.content) {
       case MessageContentTypes.SERVICE:
@@ -81,9 +84,15 @@ class MessageContent extends Component {
           />
         );
       case MessageContentTypes.PHOTO:
-      case MessageContentTypes.ANIMATION:
         return (
           <Photo
+            {...content}
+            className="message__content message__content--photo"
+          />
+        );
+      case MessageContentTypes.ANIMATION:
+        return (
+          <Animation
             {...content}
             className="message__content message__content--photo"
           />

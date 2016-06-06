@@ -22,3 +22,45 @@ export {
   lightbox,
   dataURItoBlob
 };
+
+export function loadImage(source) {
+  return new Promise((resolve, reject) => {
+    const image = document.createElement('img')
+    image.onerror = reject;
+    image.onload = () => {
+      image.onerror = null;
+      image.onload = null;
+      resolve(image);
+    };
+
+    image.src = source;
+  });
+}
+
+export function renderImageToCanvas(source, canvas) {
+  return loadImage(source).then((image) => {
+    const width = canvas.width = image.width;
+    const height = canvas.height = image.height;
+
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(image, 0, 0, width, height);
+  });
+}
+
+export function getDimentions(width, height, maxWidth = 300, maxHeight = 400) {
+  if (width > height) {
+    if (width > maxWidth) {
+      return {
+        width: maxWidth,
+        height: height * (maxWidth / width)
+      };
+    }
+  } else if (height > maxHeight) {
+    return {
+      width: width * (maxHeight / height),
+      height: maxHeight
+    };
+  }
+
+  return { width, height };
+}

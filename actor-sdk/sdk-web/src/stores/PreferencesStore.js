@@ -68,6 +68,10 @@ class PreferencesStore extends ReduceStore {
     return ActorClient.isShowNotificationsTextEnabled();
   }
 
+  isAnimationAutoPlayEnabled() {
+    return ActorClient.isAnimationAutoPlayEnabled();
+  }
+
   getSessions() {
     return this.getState().sessions;
   }
