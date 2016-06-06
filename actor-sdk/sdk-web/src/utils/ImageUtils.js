@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
+import '../vendor/canvasBlurRect';
 import Lightbox from 'jsonlylightbox';
 
 const lightbox = new Lightbox();
@@ -33,6 +34,7 @@ export function loadImage(source) {
       resolve(image);
     };
 
+    image.setAttribute('crossOrigin', 'anonymous');
     image.src = source;
   });
 }
@@ -44,6 +46,7 @@ export function renderImageToCanvas(source, canvas) {
 
     const ctx = canvas.getContext('2d');
     ctx.drawImage(image, 0, 0, width, height);
+    ctx._blurRect(0, 0, width, height, 4, 1);
   });
 }
 
