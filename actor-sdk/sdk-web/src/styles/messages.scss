@@ -1131,8 +1131,25 @@ $sticker-max-size: 180px;
 
 .message__animation__state {
   position: absolute;
-  bottom: 4px;
-  left: 4px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 36px;
   color: #fff;
   text-shadow: 0 0 1px #000;
+}
+
+.message__animation:hover {
+  .message__animation__state--playing {
+    opacity: 0.6;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+.message__animation__state--playing {
+  opacity: 0;
+  transition: opacity 100ms ease-in;
 }
