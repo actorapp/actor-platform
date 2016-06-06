@@ -36,14 +36,12 @@ public class CallVM {
     @Property("nonatomic, readonly")
     private final boolean isOutgoing;
 
-    private CommonTimer presenceTimer;
-
     public CallVM(long callId, Peer peer, boolean isOutgoing, ArrayList<CallMember> initialMembers, CallState state) {
         this.callId = callId;
         this.peer = peer;
         this.isOutgoing = isOutgoing;
         this.state = new ValueModel<>("calls." + callId + ".state", state);
-        this.peerConnection = new ValueModel<>("calls." + callId + ".peer_connection", new ArrayList<WebRTCPeerConnection>());
+        this.peerConnection = new ValueModel<>("calls." + callId + ".peer_connection", new ArrayList<>());
         this.members = new ValueModel<>("calls." + callId + ".members", new ArrayList<>(initialMembers));
         this.isMuted = new BooleanValueModel("calls." + callId + ".muted", false);
         this.isVideoEnabled = new BooleanValueModel("calls." + callId + ".video_enabled", true);
