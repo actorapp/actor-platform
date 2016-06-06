@@ -13,10 +13,10 @@ import DelegateContainer from '../../utils/DelegateContainer';
 import { appName, PreferencesTabTypes, AsyncActionStates } from '../../constants/ActorAppConstants';
 
 import PreferencesActionCreators from '../../actions/PreferencesActionCreators';
-import { loggerToggle } from '../../actions/LoggerActionCreators';
 
 import PreferencesStore from '../../stores/PreferencesStore';
 
+import Checkbox from '../common/Checkbox.react';
 import Session from './preferences/Session.react';
 import BlockedUsers from './preferences/BlockedUsers.react';
 
@@ -32,6 +32,7 @@ class PreferencesModal extends Component {
       isGroupsNotificationsEnabled: prevState ? prevState.isGroupsNotificationsEnabled : PreferencesStore.isGroupsNotificationsEnabled(),
       isOnlyMentionNotifications: prevState ? prevState.isOnlyMentionNotifications : PreferencesStore.isOnlyMentionNotifications(),
       isShowNotificationsTextEnabled: prevState ? prevState.isShowNotificationsTextEnabled : PreferencesStore.isShowNotificationsTextEnabled(),
+      isAnimationAutoPlayEnabled: prevState ? prevState.isAnimationAutoPlayEnabled : PreferencesStore.isAnimationAutoPlayEnabled(),
       sessions: PreferencesStore.getSessions(),
       activeTab: PreferencesStore.getCurrentTab(),
       terminateState: PreferencesStore.getTerminateState()
@@ -43,17 +44,16 @@ class PreferencesModal extends Component {
 
     const SharedActor = SharedContainer.get();
     this.appName = SharedActor.appName ? SharedActor.appName : appName;
-    this.loggerToggleCount = 0;
 
     this.handleClose = this.handleClose.bind(this);
     this.handleSave = this.handleSave.bind(this);
     this.handleChangeTab = this.handleChangeTab.bind(this);
-    this.handleAppDetailClick = this.handleAppDetailClick.bind(this);
     this.toggleSendByEnter = this.toggleSendByEnter.bind(this);
     this.changeSoundEffectsEnabled = this.changeSoundEffectsEnabled.bind(this);
     this.changeGroupsNotificationsEnabled = this.changeGroupsNotificationsEnabled.bind(this);
     this.changeMentionNotifications = this.changeMentionNotifications.bind(this);
     this.changeIsShowNotificationTextEnabled = this.changeIsShowNotificationTextEnabled.bind(this);
+    this.changeIsAnimationAutoPlayEnabled = this.changeIsAnimationAutoPlayEnabled.bind(this);
     this.handleTerminateAllSessionsClick = this.handleTerminateAllSessionsClick.bind(this);
 
     this.components = this.getComponents();
@@ -73,14 +73,6 @@ class PreferencesModal extends Component {
     };
   }
 
-  handleAppDetailClick() {
-    this.loggerToggleCount++;
-    if (this.loggerToggleCount >= 4) {
-      loggerToggle();
-      this.loggerToggleCount = 0;
-    }
-  }
-
   handleClose() {
     PreferencesActionCreators.hide();
   }
@@ -91,7 +83,8 @@ class PreferencesModal extends Component {
       isSoundEffectsEnabled,
       isGroupsNotificationsEnabled,
       isOnlyMentionNotifications,
-      isShowNotificationsTextEnabled
+      isShowNotificationsTextEnabled,
+      isAnimationAutoPlayEnabled
     } = this.state;
 
     PreferencesActionCreators.save({
@@ -99,7 +92,8 @@ class PreferencesModal extends Component {
       isSoundEffectsEnabled,
       isGroupsNotificationsEnabled,
       isOnlyMentionNotifications,
-      isShowNotificationsTextEnabled
+      isShowNotificationsTextEnabled,
+      isAnimationAutoPlayEnabled
     });
     this.handleClose();
   }
@@ -122,6 +116,10 @@ class PreferencesModal extends Component {
 
   changeIsShowNotificationTextEnabled(event) {
     this.setState({ isShowNotificationsTextEnabled: event.target.checked });
+  }
+
+  changeIsAnimationAutoPlayEnabled(event) {
+    this.setState({ isAnimationAutoPlayEnabled: event.target.checked });
   }
 
   handleTerminateAllSessionsClick() {
@@ -187,7 +185,7 @@ class PreferencesModal extends Component {
 
   renderGeneralTab() {
     // FIXME: Sometimes radio buttons doesnt checked after changing tab;
-    const { isSendByEnterEnabled } = this.state;
+    const { isSendByEnterEnabled, isAnimationAutoPlayEnabled } = this.state;
 
     return (
       <div className="preferences__tabs__content">
@@ -201,7 +199,7 @@ class PreferencesModal extends Component {
                 name="sendByEnter"
                 id="sendByEnterEnabled"
                 value="true"
-                defaultChecked={isSendByEnterEnabled}
+                checked={isSendByEnterEnabled}
                 onChange={this.toggleSendByEnter}/>
               <label htmlFor="sendByEnterEnabled">
                 <b>Enter</b> – <FormattedMessage id="preferences.general.send.sendMessage"/>,&nbsp;
@@ -214,13 +212,25 @@ class PreferencesModal extends Component {
                 name="sendByEnter"
                 id="sendByEnterDisabled"
                 value="false"
-                defaultChecked={!isSendByEnterEnabled}
+                checked={!isSendByEnterEnabled}
                 onChange={this.toggleSendByEnter}/>
               <label htmlFor="sendByEnterDisabled">
                 <b>Cmd + Enter</b> – <FormattedMessage id="preferences.general.send.sendMessage"/>,&nbsp;
                 <b>Enter</b> – <FormattedMessage id="preferences.general.send.newLine"/>
               </label>
             </div>
+          </li>
+
+          <li>
+            <i className="icon material-icons">wallpaper</i>
+            <FormattedMessage id="preferences.interface.title" tagName="h4"/>
+            <Checkbox
+              id="animationAutoPlayEnabled"
+              name="animationAutoPlayEnabled"
+              value={isAnimationAutoPlayEnabled}
+              label={<FormattedMessage id="preferences.interface.animation.title" />}
+              onChange={this.changeIsAnimationAutoPlayEnabled}
+            />
           </li>
         </ul>
       </div>
@@ -246,7 +256,7 @@ class PreferencesModal extends Component {
               <input
                 type="checkbox"
                 id="soundEffects"
-                defaultChecked={isSoundEffectsEnabled}
+                checked={isSoundEffectsEnabled}
                 onChange={this.changeSoundEffectsEnabled}/>
               <label htmlFor="soundEffects">
                 <FormattedMessage id="preferences.notifications.effects.enable"/>
@@ -260,7 +270,7 @@ class PreferencesModal extends Component {
               <input
                 type="checkbox"
                 id="groupNotifications"
-                defaultChecked={isGroupsNotificationsEnabled}
+                checked={isGroupsNotificationsEnabled}
                 onChange={this.changeGroupsNotificationsEnabled}/>
               <label htmlFor="groupNotifications">
                 <FormattedMessage id="preferences.notifications.notification.enable"/>
@@ -270,7 +280,7 @@ class PreferencesModal extends Component {
               <input
                 type="checkbox"
                 id="mentionsNotifications"
-                defaultChecked={isOnlyMentionNotifications}
+                checked={isOnlyMentionNotifications}
                 onChange={this.changeMentionNotifications}/>
               <label htmlFor="mentionsNotifications">
                 <FormattedMessage id="preferences.notifications.notification.onlyMentionEnable"/>
@@ -285,7 +295,7 @@ class PreferencesModal extends Component {
               <input
                 type="checkbox"
                 id="notificationTextPreview"
-                defaultChecked={isShowNotificationsTextEnabled}
+                checked={isShowNotificationsTextEnabled}
                 onChange={this.changeIsShowNotificationTextEnabled}/>
               <label htmlFor="notificationTextPreview">
                 <FormattedMessage id="preferences.notifications.privacy.messagePreview"/>
@@ -360,7 +370,6 @@ class PreferencesModal extends Component {
   }
 
   render() {
-    console.debug(this.state);
     return (
       <Modal
         overlayClassName="modal-overlay"

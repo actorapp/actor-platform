@@ -3,10 +3,7 @@
  */
 
 import React, { Component, PropTypes } from 'react';
-import { lightbox } from '../../../utils/ImageUtils';
-
-const MAX_WIDTH = 300;
-const MAX_HEIGHT = 400;
+import { getDimentions, lightbox } from '../../../utils/ImageUtils';
 
 class Photo extends Component {
   static propTypes = {
@@ -24,23 +21,8 @@ class Photo extends Component {
 
   getDimentions() {
     const { w: width, h: height } = this.props;
-    if (width > height) {
-      if (width > MAX_WIDTH) {
-        return {
-          width: MAX_WIDTH,
-          height: height * (MAX_WIDTH / width)
-        };
-      }
-    } else if (height > MAX_HEIGHT) {
-      return {
-        width: width * (MAX_HEIGHT / height),
-        height: MAX_HEIGHT
-      };
-    }
-
-    return { width, height };
+    return getDimentions(width, height);
   }
-
 
   render() {
     const { fileUrl, preview } = this.props;
