@@ -615,18 +615,22 @@ public class RouterActor extends ModuleActor {
     private void markAsReadIfNeeded(Peer peer) {
         if (isConversationVisible(peer)) {
             ConversationState state = conversationStates.getValue(peer.getUnuqueId());
-            if (state.getInReadDate() < state.getInMaxMessageDate()) {
+            long inMaxMessageDate = state.getInMaxMessageDate();
+            //check UnreadCount for zero, because it can be loaded from server (after login)
+            if (state.getUnreadCount() != 0 || state.getInReadDate() < inMaxMessageDate) {
                 state = state
                         .changeCounter(0)
-                        .changeInReadDate(state.getInMaxMessageDate());
+                        .changeInReadDate(inMaxMessageDate);
                 conversationStates.addOrUpdateItem(state);
 
                 context().getMessagesModule().getPlainReadActor()
-                        .send(new CursorReaderActor.MarkRead(peer, state.getInMaxMessageDate()));
+                        .send(new CursorReaderActor.MarkRead(peer, inMaxMessageDate));
 
                 notifyActiveDialogsVM();
 
                 getDialogsRouter().onCounterChanged(peer, 0);
+
+                context().getNotificationsModule().onOwnRead(peer, inMaxMessageDate);
             }
         }
     }
