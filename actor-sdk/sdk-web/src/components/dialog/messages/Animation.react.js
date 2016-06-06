@@ -30,14 +30,14 @@ class Animation extends Component {
 
   componentDidMount() {
     renderImageToCanvas(this.props.preview, this.refs.canvas);
-    this.updateFrameUrl(this.props);
+    this.updateFrame(this.props);
   }
 
   componentWillReceiveProps(nextProps) {
-    this.updateFrameUrl(nextProps);
+    this.updateFrame(nextProps);
   }
 
-  updateFrameUrl({ fileUrl }) {
+  updateFrame({ fileUrl }) {
     if (!fileUrl || !this.state) {
       return;
     }
@@ -65,6 +65,48 @@ class Animation extends Component {
     return getDimentions(width, height);
   }
 
+  renderImage(source, width, height, playing) {
+    if (!playing) {
+      return null;
+    }
+
+    return (
+      <img
+        src={source}
+        width={width}
+        height={height}
+        onClick={this.onClick}
+        onMouseEnter={this.onMouseEnter}
+        onMouseLeave={this.onMouseLeave}
+      />
+    );
+  }
+
+  renderCanvas(width, height, playing) {
+    const style = { width, height };
+    if (playing) {
+      // Hide using style because DOM node required by renderImageToCanvas
+      style.display = 'none';
+    }
+
+    return (
+      <canvas
+        ref="canvas"
+        style={style}
+        onMouseEnter={this.onMouseEnter}
+        onMouseLeave={this.onMouseLeave}
+      />
+    );
+  }
+
+  renderState(playing) {
+    const glyph = playing ? 'play_circle_outline' : 'pause_circle_outline';
+
+    return (
+      <i className="material-icons message__animation__state">{glyph}</i>
+    );
+  }
+
   render() {
     const { width, height } = this.getDimentions();
     const source = this.props.fileUrl || this.props.preview;
@@ -82,32 +124,12 @@ class Animation extends Component {
     }
 
     const { playing } = this.state;
-    const canvasStyle = { width, height };
-    if (playing) {
-      canvasStyle.display = 'none';
-    }
 
     return (
-      <div>
-        <img
-          className="message__photo"
-          src={source}
-          width={width}
-          height={height}
-          style={playing ? {} : { display: 'none' }}
-          onClick={this.onClick}
-          onMouseEnter={this.onMouseEnter}
-          onMouseLeave={this.onMouseLeave}
-        />
-        <canvas
-          className="message__photo"
-          ref="canvas"
-          width={width}
-          height={height}
-          style={canvasStyle}
-          onMouseEnter={this.onMouseEnter}
-          onMouseLeave={this.onMouseLeave}
-        />
+      <div className="message__animation" style={{ width, height }}>
+        {this.renderState(playing)}
+        {this.renderImage(source, width, height, playing)}
+        {this.renderCanvas(width, height, playing)}
       </div>
     );
   }
