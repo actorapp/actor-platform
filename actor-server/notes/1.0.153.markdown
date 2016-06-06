@@ -1,0 +1,5 @@
+* :shipit: bot's slash commands
+* :bug: improved integration with Apple Push Notifcation Service(aka apple push). This change added additional system requirements; instalation described here: https://developer.actor.im/docs/prerequisites#section-updating-openssl-and-installing-libapr1
+* :bug: improved GCM(aka google push) integration
+* :rocket: overhaul of internal dialog representation 
+* :bug: various fixes in call, file and activation modules
