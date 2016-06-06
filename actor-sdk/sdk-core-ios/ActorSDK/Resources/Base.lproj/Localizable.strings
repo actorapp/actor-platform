@@ -191,6 +191,8 @@
 
 "GroupSetTitle" = "Set Group Title";
 
+"GroupSetSound" = "Set Group Sound";
+
 "GroupEditConfirm" = "Are you sure you want to change the group title?";
 
 "GroupEditConfirmAction" = "Change Theme";
