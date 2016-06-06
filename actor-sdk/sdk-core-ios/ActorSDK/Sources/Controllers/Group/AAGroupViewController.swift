@@ -23,17 +23,17 @@ public class AAGroupViewController: AAContentTableController {
         
         self.title = AALocalized("ProfileTitle")
     }
-
+    
     public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     
     public override func tableDidLoad() {
-
+        
         // Header
         section { (s) -> () in
-        
+            
             // Header: Avatar
             self.headerRow = s.avatar { (r) -> () in
                 
@@ -73,7 +73,7 @@ public class AAGroupViewController: AAContentTableController {
                                     action: "PhotoRemove",
                                     tapYes: { () -> () in
                                         Actor.removeGroupAvatarWithGid(jint(self.gid))
-                                }, tapNo: nil)
+                                    }, tapNo: nil)
                             } else if (index >= 0) {
                                 let takePhoto: Bool = (index == 0) && hasCamera
                                 self.pickAvatar(takePhoto, closure: { (image) -> () in
@@ -104,7 +104,7 @@ public class AAGroupViewController: AAContentTableController {
                             if t.length == 0 {
                                 return
                             }
-
+                            
                             c.executeSafeOnlySuccess(Actor.editGroupTitleCommandWithGid(jint(self.gid), withTitle: t)!, successBlock: { (val) -> Void in
                                 c.dismiss()
                             })
@@ -114,6 +114,7 @@ public class AAGroupViewController: AAContentTableController {
                     return true
                 }
             }
+            
         }
         
         // Calls
@@ -133,8 +134,10 @@ public class AAGroupViewController: AAContentTableController {
         
         // Notifications
         section { (s) -> () in
+            
+            let groupPeer: ACPeer! = ACPeer.groupWithInt(jint(self.gid))
+            
             s.common { (r) -> () in
-                let groupPeer: ACPeer! = ACPeer.groupWithInt(jint(self.gid))
                 
                 r.style = .Switch
                 r.content = AALocalized("GroupNotifications")
@@ -145,6 +148,28 @@ public class AAGroupViewController: AAContentTableController {
                 
                 r.switchAction = { (on: Bool) -> () in
                     Actor.changeNotificationsEnabledWithPeer(groupPeer, withValue: on)
+                }
+                if(ActorSDK.sharedActor().enableChatGroupSound) {
+                    if(Actor.isNotificationsEnabledWithPeer(groupPeer)){
+                        r.selectAction = {() -> Bool in
+                            // Sound: Choose sound
+                            let setRingtoneController = AARingtonesViewController()
+                            setRingtoneController.selectedRingtone = Actor.getNotificationsSoundWithPeer(groupPeer)
+                            setRingtoneController.completion = {(selectedSound:String) in
+                                Actor.changeNotificationsSoundPeer(groupPeer, withValue: selectedSound)
+                            }
+                            let navigationController = AANavigationController(rootViewController: setRingtoneController)
+                            if (AADevice.isiPad) {
+                                navigationController.modalInPopover = true
+                                navigationController.modalPresentationStyle = UIModalPresentationStyle.CurrentContext
+                            }
+                            self.presentViewController(navigationController, animated: true, completion: {
+                                }
+                            )
+                            
+                            return false
+                        }
+                    }
                 }
             }
         }
@@ -185,7 +210,7 @@ public class AAGroupViewController: AAContentTableController {
                 r.bindData = { (c, d) -> () in
                     let user = Actor.getUserWithUid(d.uid)
                     c.bind(user, isAdmin: d.isAdministrator)
-                        
+                    
                     // Notify to request onlines
                     Actor.onUserVisibleWithUid(d.uid)
                 }
@@ -195,13 +220,13 @@ public class AAGroupViewController: AAContentTableController {
                     if (user.getId() == Actor.myUid()) {
                         return true
                     }
-                        
+                    
                     let name = user.getNameModel().get()
-                        
+                    
                     self.alertSheet { (a: AAAlertSetting) -> () in
-                            
+                        
                         a.cancel = "AlertCancel"
-                            
+                        
                         a.action("GroupMemberInfo") { () -> () in
                             var controller: AAViewController! = ActorSDK.sharedActor().delegate.actorControllerForUser(Int(user.getId()))
                             if controller == nil {
@@ -209,16 +234,16 @@ public class AAGroupViewController: AAContentTableController {
                             }
                             self.navigateNext(controller, removeCurrent: false)
                         }
-                         
+                        
                         a.action("GroupMemberWrite") { () -> () in
                             if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(ACPeer.userWithInt(user.getId())) {
                                 self.navigateDetail(customController)
                             } else {
                                 self.navigateDetail(ConversationViewController(peer: ACPeer.userWithInt(user.getId())))
-                            }                            
+                            }
                             self.popover?.dismissPopoverAnimated(true)
                         }
-                            
+                        
                         a.action("GroupMemberCall", closure: { () -> () in
                             let phones = user.getPhonesModel().get()
                             if phones.size() == 0 {
@@ -227,7 +252,7 @@ public class AAGroupViewController: AAContentTableController {
                                 let number = phones.getWithInt(0)
                                 ActorSDK.sharedActor().openUrl("telprompt://+\(number.phone)")
                             } else {
-                                    
+                                
                                 var numbers = [String]()
                                 for i in 0..<phones.size() {
                                     let p = phones.getWithInt(i)
@@ -243,47 +268,47 @@ public class AAGroupViewController: AAContentTableController {
                                             let number = phones.getWithInt(jint(index))
                                             ActorSDK.sharedActor().openUrl("telprompt://+\(number.phone)")
                                         }
-                                    })
-                                }
-                            })
-
-                            // Detect if we are admin
-                            let members: [ACGroupMember] = self.group.members.get().toArray().toSwiftArray()
-                            var isAdmin = self.group.creatorId == Actor.myUid()
-                            if !isAdmin {
-                                for m in members {
-                                    if m.uid == Actor.myUid() {
-                                        isAdmin = m.isAdministrator
-                                    }
-                                }
+                                })
                             }
-                            
-                            // Can mark as admin
-                            let canMarkAdmin = isAdmin && !d.isAdministrator
-                            
-                            if canMarkAdmin {
-                                a.action("GroupMemberMakeAdmin") { () -> () in
-                                    
-                                    self.confirmDestructive(AALocalized("GroupMemberMakeMessage").replace("{name}", dest: name), action: AALocalized("GroupMemberMakeAction")) {
-
-                                        self.executeSafe(Actor.makeAdminCommandWithGid(jint(self.gid), withUid: jint(user.getId()))!)
-                                    }
-                                }
-                            }
-                            
-                            // Can kick user
-                            let canKick = isAdmin || d.inviterUid == Actor.myUid()
-                            
-                            if canKick {
-                                a.destructive("GroupMemberKick") { () -> () in       
-                                    self.confirmDestructive(AALocalized("GroupMemberKickMessage")
-                                        .replace("{name}", dest: name), action: AALocalized("GroupMemberKickAction")) {
-
-                                        self.executeSafe(Actor.kickMemberCommandWithGid(jint(self.gid), withUid: user.getId())!)
-                                    }
+                        })
+                        
+                        // Detect if we are admin
+                        let members: [ACGroupMember] = self.group.members.get().toArray().toSwiftArray()
+                        var isAdmin = self.group.creatorId == Actor.myUid()
+                        if !isAdmin {
+                            for m in members {
+                                if m.uid == Actor.myUid() {
+                                    isAdmin = m.isAdministrator
                                 }
                             }
                         }
+                        
+                        // Can mark as admin
+                        let canMarkAdmin = isAdmin && !d.isAdministrator
+                        
+                        if canMarkAdmin {
+                            a.action("GroupMemberMakeAdmin") { () -> () in
+                                
+                                self.confirmDestructive(AALocalized("GroupMemberMakeMessage").replace("{name}", dest: name), action: AALocalized("GroupMemberMakeAction")) {
+                                    
+                                    self.executeSafe(Actor.makeAdminCommandWithGid(jint(self.gid), withUid: jint(user.getId()))!)
+                                }
+                            }
+                        }
+                        
+                        // Can kick user
+                        let canKick = isAdmin || d.inviterUid == Actor.myUid()
+                        
+                        if canKick {
+                            a.destructive("GroupMemberKick") { () -> () in
+                                self.confirmDestructive(AALocalized("GroupMemberKickMessage")
+                                    .replace("{name}", dest: name), action: AALocalized("GroupMemberKickAction")) {
+                                        
+                                        self.executeSafe(Actor.kickMemberCommandWithGid(jint(self.gid), withUid: user.getId())!)
+                                }
+                            }
+                        }
+                    }
                     
                     return true
                 }
@@ -326,7 +351,6 @@ public class AAGroupViewController: AAContentTableController {
                 self.memberRows.data = v.toArray().toSwiftArray()
                 self.memberRows.data.sortInPlace(self.membersSort)
                 self.memberRows.reload()
-                
             }
         }
         

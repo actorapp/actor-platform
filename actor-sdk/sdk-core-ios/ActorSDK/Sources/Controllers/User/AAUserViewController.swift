@@ -170,10 +170,31 @@ class AAUserViewController: AAContentTableController {
                     }
                     Actor.changeNotificationsEnabledWithPeer(peer, withValue: on)
                 }
+                
+                if(ActorSDK.sharedActor().enableChatGroupSound) {
+                    if(Actor.isNotificationsEnabledWithPeer(peer)){
+                        r.selectAction = {() -> Bool in
+                            // Sound: Choose sound
+                            let setRingtoneController = AARingtonesViewController()
+                            setRingtoneController.selectedRingtone = Actor.getNotificationsSoundWithPeer(peer)
+                            setRingtoneController.completion = {(selectedSound:String) in
+                                Actor.changeNotificationsSoundPeer(peer, withValue: selectedSound)
+                            }
+                            let navigationController = AANavigationController(rootViewController: setRingtoneController)
+                            if (AADevice.isiPad) {
+                                navigationController.modalInPopover = true
+                                navigationController.modalPresentationStyle = UIModalPresentationStyle.CurrentContext
+                            }
+                            self.presentViewController(navigationController, animated: true, completion: {
+                                }
+                            )
+                            return false
+                        }
+                    }
+                }
             }
         }
-        
-        
+    
         // Edit contact
         section { (s) -> () in
             
