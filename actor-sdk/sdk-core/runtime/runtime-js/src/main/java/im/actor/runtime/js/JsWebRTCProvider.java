@@ -27,41 +27,29 @@ public class JsWebRTCProvider implements WebRTCRuntime {
     @NotNull
     @Override
     public Promise<WebRTCPeerConnection> createPeerConnection(final WebRTCIceServer[] webRTCIceServers, WebRTCSettings settings) {
-        return new Promise<>(new PromiseFunc<WebRTCPeerConnection>() {
-            @Override
-            public void exec(@NotNull PromiseResolver<WebRTCPeerConnection> resolver) {
-                JsArray<JsIceServer> servers = JsArray.createArray().cast();
-                for (WebRTCIceServer s : webRTCIceServers) {
-                    if (s.getUsername() != null || s.getCredential() != null) {
-                        servers.push(JsIceServer.create(s.getUrl(), s.getUsername(), s.getCredential()));
-                    } else {
-                        servers.push(JsIceServer.create(s.getUrl()));
-                    }
+        return new Promise<>((PromiseFunc<WebRTCPeerConnection>) resolver -> {
+            JsArray<JsIceServer> servers = JsArray.createArray().cast();
+            for (WebRTCIceServer s : webRTCIceServers) {
+                if (s.getUsername() != null || s.getCredential() != null) {
+                    servers.push(JsIceServer.create(s.getUrl(), s.getUsername(), s.getCredential()));
+                } else {
+                    servers.push(JsIceServer.create(s.getUrl()));
                 }
-                resolver.result(new PeerConnection(JsPeerConnection.create(JsPeerConnectionConfig.create(servers))));
             }
+            resolver.result(new PeerConnection(JsPeerConnection.create(JsPeerConnectionConfig.create(servers))));
         });
     }
 
     @NotNull
     @Override
     public Promise<WebRTCMediaStream> getUserMedia(boolean isVideoEnabled) {
-        return new Promise<>(new PromiseFunc<WebRTCMediaStream>() {
-            @Override
-            public void exec(@NotNull final PromiseResolver<WebRTCMediaStream> resolver) {
-                JsStreaming.getUserAudio().then(new Consumer<JsMediaStream>() {
-                    @Override
-                    public void apply(JsMediaStream jsMediaStream) {
-                        resolver.result(new MediaStream(jsMediaStream, false));
-                    }
-                }).failure(new Consumer<Exception>() {
-                    @Override
-                    public void apply(Exception e) {
-                        resolver.error(e);
-                    }
-                });
-            }
-        });
+        if (isVideoEnabled) {
+            return JsStreaming.getUserAudioVideo()
+                    .map((jsMediaStream -> new MediaStream(jsMediaStream, false)));
+        } else {
+            return JsStreaming.getUserAudio()
+                    .map((jsMediaStream -> new MediaStream(jsMediaStream, false)));
+        }
     }
 
     @Override
