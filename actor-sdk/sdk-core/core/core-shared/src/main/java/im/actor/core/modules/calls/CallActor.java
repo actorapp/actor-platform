@@ -94,7 +94,7 @@ public class CallActor extends AbsCallActor {
 
     @Override
     public void onPeerConnectionCreated(@NotNull WebRTCPeerConnection peerConnection) {
-        ArrayList<WebRTCPeerConnection> webRTCPeerConnections = new ArrayList<WebRTCPeerConnection>(callVM.getPeerConnection().get());
+        ArrayList<WebRTCPeerConnection> webRTCPeerConnections = new ArrayList<>(callVM.getPeerConnection().get());
         webRTCPeerConnections.add(peerConnection);
         callVM.getPeerConnection().change(webRTCPeerConnections);
     }
