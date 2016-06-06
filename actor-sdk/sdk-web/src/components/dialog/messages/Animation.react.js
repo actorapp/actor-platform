@@ -29,22 +29,11 @@ class Animation extends Component {
   }
 
   componentDidMount() {
-    renderImageToCanvas(this.props.preview, this.refs.canvas);
-    this.updateFrame(this.props);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.updateFrame(nextProps);
-  }
-
-  updateFrame({ fileUrl }) {
-    if (!fileUrl || !this.state) {
-      return;
+    if (this.state) {
+      renderImageToCanvas(this.props.preview, this.refs.canvas).catch((e) => {
+        console.error(e);
+      });
     }
-
-    renderImageToCanvas(fileUrl, this.refs.canvas).catch((e) => {
-      console.error(e);
-    });
   }
 
   onClick(event) {
