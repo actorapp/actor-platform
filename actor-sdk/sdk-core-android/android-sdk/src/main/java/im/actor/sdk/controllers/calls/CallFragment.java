@@ -26,7 +26,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -42,6 +41,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.TimeZone;
 
 import im.actor.core.entity.PeerType;
@@ -52,8 +53,6 @@ import im.actor.core.viewmodel.CallVM;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.Log;
-import im.actor.runtime.actors.Actor;
-import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.Props;
@@ -125,10 +124,12 @@ public class CallFragment extends BaseFragment {
     private TintImageView muteCall;
     private TextView speakerTV;
     private boolean sourceIsStopped = false;
-    private WebRTCPeerConnectionCallback webRTCPeerConnectionCallback;
     float dX, dY;
     private TintImageView videoIcon;
     private boolean remoteRendererBinded = false;
+    private TextView nameTV;
+    private HashSet<AndroidMediaStream> mediaStreams = new HashSet<>();
+    private AndroidMediaStream ownStream;
 
     public CallFragment() {
 
@@ -203,7 +204,7 @@ public class CallFragment extends BaseFragment {
         avatarView = (AvatarView) cont.findViewById(R.id.avatar);
         avatarView.init(Screen.dp(130), 50);
 
-        TextView nameTV = (TextView) cont.findViewById(R.id.name);
+        nameTV = (TextView) cont.findViewById(R.id.name);
         nameTV.setTextColor(ActorSDK.sharedActor().style.getProfileTitleColor());
         if(peer.getPeerType() == PeerType.PRIVATE){
             UserVM user = users().get(peer.getPeerId());
@@ -338,81 +339,6 @@ public class CallFragment extends BaseFragment {
             params.setMargins(margin, margin + statusBarHeight, 0, 0);
             cont.addView(localVideoView, params);
 
-
-            webRTCPeerConnectionCallback = new WebRTCPeerConnectionCallback() {
-                @Override
-                public void onCandidate(int label, String id, String candidate) {
-
-                }
-
-                @Override
-                public void onStreamAdded(WebRTCMediaStream remoteStream) {
-                    AndroidMediaStream stream = (AndroidMediaStream) remoteStream;
-                    if (stream.getVideoTrack() != null) {
-
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (!remoteRendererBinded) {
-                                    try {
-                                        remoteVideoView.init(rootEglBase.getEglBaseContext(), null);
-                                    } catch (IllegalStateException e) {
-                                        //Already inited, it's ok here
-                                    }
-
-                                    remoteRender = new VideoRenderer(remoteVideoView);
-                                    stream.getVideoTrack().addRenderer(remoteRender);
-                                    remoteVideoView.setVisibility(View.VISIBLE);
-                                    avatarView.setVisibility(View.INVISIBLE);
-                                    nameTV.setVisibility(View.INVISIBLE);
-                                }
-
-                            }
-                        });
-                    }
-                }
-
-                @Override
-                public void onStreamRemoved(WebRTCMediaStream stream) {
-
-                }
-
-                @Override
-                public void onOwnStreamAdded(WebRTCMediaStream ownStream) {
-                    AndroidMediaStream stream = (AndroidMediaStream) ownStream;
-                    if (stream.getVideoTrack() != null) {
-
-
-                        getActivity().runOnUiThread(() -> {
-                            try {
-                                localVideoView.init(rootEglBase.getEglBaseContext(), null);
-                            } catch (IllegalStateException e) {
-                                //Already inited, it's ok here
-                            }
-                            source = stream.getVideoSource();
-                            localRender = new VideoRenderer(localVideoView);
-                            stream.getVideoTrack().addRenderer(localRender);
-                            localVideoView.setVisibility(View.VISIBLE);
-
-                        });
-                    }
-                }
-
-                @Override
-                public void onOwnStreamRemoved(WebRTCMediaStream stream) {
-
-                }
-
-                @Override
-                public void onRenegotiationNeeded() {
-
-                }
-
-                @Override
-                public void onDisposed() {
-
-                }
-            };
         } else {
             if (call != null) {
                 if (call.getIsVideoEnabled().get()) {
@@ -528,6 +454,53 @@ public class CallFragment extends BaseFragment {
         messenger().answerCall(callId);
     }
 
+    public void onStreamAdded(WebRTCMediaStream remoteStream) {
+        AndroidMediaStream stream = (AndroidMediaStream) remoteStream;
+        if (stream.getVideoTrack() != null) {
+
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (!remoteRendererBinded) {
+                        try {
+                            remoteVideoView.init(rootEglBase.getEglBaseContext(), null);
+                        } catch (IllegalStateException e) {
+                            //Already inited, it's ok here
+                        }
+
+                        remoteRender = new VideoRenderer(remoteVideoView);
+                        stream.getVideoTrack().addRenderer(remoteRender);
+                        remoteVideoView.setVisibility(View.VISIBLE);
+                        avatarView.setVisibility(View.INVISIBLE);
+                        nameTV.setVisibility(View.INVISIBLE);
+                    }
+
+                }
+            });
+        }
+    }
+
+    public void onOwnStreamAdded(WebRTCMediaStream ownStream) {
+        AndroidMediaStream stream = (AndroidMediaStream) ownStream;
+        if (stream.getVideoTrack() != null) {
+
+
+            getActivity().runOnUiThread(() -> {
+                try {
+                    localVideoView.init(rootEglBase.getEglBaseContext(), null);
+                } catch (IllegalStateException e) {
+                    //Already inited, it's ok here
+                }
+                CallFragment.this.ownStream = (AndroidMediaStream) ownStream;
+                source = stream.getVideoSource();
+                localRender = new VideoRenderer(localVideoView);
+                stream.getVideoTrack().addRenderer(localRender);
+                localVideoView.setVisibility(View.VISIBLE);
+
+            });
+        }
+    }
+
     private void doEndCall() {
         messenger().endCall(callId);
         onCallEnd();
@@ -618,22 +591,16 @@ public class CallFragment extends BaseFragment {
 
 
             if (call != null) {
-                ArrayList<WebRTCPeerConnection> webRTCPeerConnections = call.getPeerConnection().get();
 
-                for (WebRTCPeerConnection webRTCPeerConnection : webRTCPeerConnections) {
-
-                    webRTCPeerConnection.removeCallback(webRTCPeerConnectionCallback);
-
-                    HashMap<MediaStream, AndroidMediaStream> mediaStreams = ((AndroidPeerConnection) webRTCPeerConnection).getStreams();
-                    for (MediaStream mediaStream : mediaStreams.keySet()) {
-                        mediaStreams.get(mediaStream).removeRenderer(remoteRender);
-                    }
+                for (AndroidMediaStream s : mediaStreams) {
+                    s.removeRenderer(remoteRender);
                     remoteRendererBinded = false;
+                }
+                mediaStreams.clear();
 
-                    AndroidMediaStream stream = ((AndroidPeerConnection) webRTCPeerConnection).getLocalStream();
-                    if (stream != null) {
-                        stream.removeRenderer(localRender);
-                    }
+                if (ownStream != null) {
+                    ownStream.removeRenderer(localRender);
+                    ownStream = null;
                 }
 
             }
@@ -680,9 +647,22 @@ public class CallFragment extends BaseFragment {
         if (call != null) {
 
             if (peer.getPeerType() == PeerType.PRIVATE && ActorSDK.sharedActor().isVideoCallsEnabled()) {
-                bind(call.getPeerConnection(), (val, valueModel) -> {
-                    for (WebRTCPeerConnection webRTCPeerConnection : val) {
-                        webRTCPeerConnection.addCallback(webRTCPeerConnectionCallback);
+                bind(call.getMediaStreams(), (val, valueModel) -> {
+                    mediaStreams.retainAll(val);
+                    for (WebRTCMediaStream s : val) {
+                        if (!mediaStreams.contains(s)) {
+                            onStreamAdded(s);
+                            mediaStreams.add((AndroidMediaStream) s);
+                        }
+                    }
+                });
+
+                bind(call.getOwnMediaStream(), new ValueChangedListener<WebRTCMediaStream>() {
+                    @Override
+                    public void onChanged(WebRTCMediaStream val, Value<WebRTCMediaStream> valueModel) {
+                        if (val != null) {
+                            onOwnStreamAdded(val);
+                        }
                     }
                 });
 

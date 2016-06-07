@@ -8,8 +8,6 @@ import im.actor.core.api.rpc.RequestDoCall;
 import im.actor.core.api.rpc.RequestGetCallInfo;
 import im.actor.core.api.rpc.RequestJoinCall;
 import im.actor.core.api.rpc.RequestRejectCall;
-import im.actor.core.api.rpc.ResponseDoCall;
-import im.actor.core.api.rpc.ResponseGetCallInfo;
 import im.actor.core.entity.Peer;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.calls.peers.AbsCallActor;
@@ -18,8 +16,8 @@ import im.actor.core.viewmodel.CallState;
 import im.actor.core.viewmodel.CallVM;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.runtime.actors.messages.PoisonPill;
-import im.actor.runtime.function.Consumer;
 import im.actor.runtime.power.WakeLock;
+import im.actor.runtime.webrtc.WebRTCMediaStream;
 import im.actor.runtime.webrtc.WebRTCPeerConnection;
 
 import static im.actor.core.entity.EntityConverter.convert;
@@ -94,9 +92,34 @@ public class CallActor extends AbsCallActor {
 
     @Override
     public void onPeerConnectionCreated(@NotNull WebRTCPeerConnection peerConnection) {
-        ArrayList<WebRTCPeerConnection> webRTCPeerConnections = new ArrayList<>(callVM.getPeerConnection().get());
+        ArrayList<WebRTCPeerConnection> webRTCPeerConnections = new ArrayList<>(callVM.getPeerConnections().get());
         webRTCPeerConnections.add(peerConnection);
-        callVM.getPeerConnection().change(webRTCPeerConnections);
+        callVM.getPeerConnections().change(webRTCPeerConnections);
+    }
+
+    @Override
+    public void onStreamAdded(WebRTCMediaStream stream) {
+        ArrayList<WebRTCMediaStream> mediaStreams = new ArrayList<>(callVM.getMediaStreams().get());
+        mediaStreams.add(stream);
+        callVM.getMediaStreams().change(mediaStreams);
+    }
+
+    @Override
+    public void onStreamRemoved(WebRTCMediaStream stream) {
+        ArrayList<WebRTCMediaStream> mediaStreams = new ArrayList<>(callVM.getMediaStreams().get());
+        if (mediaStreams.remove(stream)) {
+            callVM.getMediaStreams().change(mediaStreams);
+        }
+    }
+
+    @Override
+    public void onOwnStreamAdded(WebRTCMediaStream stream) {
+        callVM.getOwnMediaStream().change(stream);
+    }
+
+    @Override
+    public void onOwnStreamRemoved(WebRTCMediaStream stream) {
+        callVM.getOwnMediaStream().change(null);
     }
 
     @Override

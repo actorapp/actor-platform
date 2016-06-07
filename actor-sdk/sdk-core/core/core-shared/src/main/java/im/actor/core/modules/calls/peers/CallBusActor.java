@@ -19,8 +19,6 @@ import im.actor.core.api.ApiWebRTCSignaling;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.eventbus.EventBusActor;
 import im.actor.runtime.Log;
-import im.actor.runtime.actors.Actor;
-import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
 import im.actor.runtime.webrtc.WebRTCPeerConnection;
@@ -118,17 +116,28 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
 
     @Override
     public void onStreamAdded(long deviceId, @NotNull WebRTCMediaStream stream) {
-
+        callBusCallback.onStreamAdded(stream);
     }
 
     @Override
     public void onStreamRemoved(long deviceId, @NotNull WebRTCMediaStream stream) {
+        callBusCallback.onStreamRemoved(stream);
 
     }
 
     @Override
     public void onPeerConnectionCreated(WebRTCPeerConnection peerConnection) {
         callBusCallback.onPeerConnectionCreated(peerConnection);
+    }
+
+    @Override
+    public void onOwnStreamAdded(WebRTCMediaStream stream) {
+        callBusCallback.onOwnStreamAdded(stream);
+    }
+
+    @Override
+    public void onOwnStreamRemoved(WebRTCMediaStream stream) {
+        callBusCallback.onOwnStreamRemoved(stream);
     }
 
 
@@ -374,6 +383,16 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
         public void onPeerConnectionCreated(WebRTCPeerConnection peerConnection) {
             self().send((Runnable) () -> callCallback.onPeerConnectionCreated(peerConnection));
 
+        }
+
+        @Override
+        public void onOwnStreamAdded(WebRTCMediaStream stream) {
+            self().send((Runnable) () -> callCallback.onOwnStreamAdded(stream));
+        }
+
+        @Override
+        public void onOwnStreamRemoved(WebRTCMediaStream stream) {
+            self().send((Runnable) () -> callCallback.onOwnStreamRemoved(stream));
         }
     }
 }
