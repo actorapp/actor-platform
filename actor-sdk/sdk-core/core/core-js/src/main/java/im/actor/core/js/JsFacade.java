@@ -967,6 +967,7 @@ public class JsFacade implements Exportable {
         Log.d(TAG, "onConversationOpen | " + peer);
         lastVisiblePeer = peer.convert();
         messenger.onConversationOpen(lastVisiblePeer);
+        onUserVisible(peer);
     }
 
     @UsedByApp
@@ -977,6 +978,13 @@ public class JsFacade implements Exportable {
             Log.d(TAG, "onConversationClosed | Closing");
         }
         messenger.onConversationClosed(peer.convert());
+    }
+
+    @UsedByApp
+    public void onUserVisible(JsPeer peer) {
+        if (peer.convert().getPeerType() == PeerType.PRIVATE) {
+            messenger.onUserVisible(peer.getPeerId());
+        }
     }
 
     @UsedByApp
