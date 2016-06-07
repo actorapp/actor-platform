@@ -107,12 +107,12 @@ public class PeerConnectionActor extends ModuleActor {
 
                 @Override
                 public void onOwnStreamAdded(WebRTCMediaStream stream) {
-
+                    callback.onOwnStreamAdded(stream);
                 }
 
                 @Override
                 public void onOwnStreamRemoved(WebRTCMediaStream stream) {
-
+                    callback.onOwnStreamRemoved(stream);
                 }
 
                 @Override

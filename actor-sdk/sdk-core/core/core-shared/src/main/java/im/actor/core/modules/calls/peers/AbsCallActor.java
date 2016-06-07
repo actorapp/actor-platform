@@ -7,6 +7,7 @@ import im.actor.runtime.WebRTC;
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
+import im.actor.runtime.webrtc.WebRTCMediaStream;
 import im.actor.runtime.webrtc.WebRTCPeerConnection;
 
 public abstract class AbsCallActor extends ModuleActor implements CallBusCallback {
@@ -108,6 +109,26 @@ public abstract class AbsCallActor extends ModuleActor implements CallBusCallbac
         @Override
         public void onPeerConnectionCreated(WebRTCPeerConnection peerConnection) {
             self().send((Runnable) () -> AbsCallActor.this.onPeerConnectionCreated(peerConnection));
+        }
+
+        @Override
+        public void onStreamAdded(WebRTCMediaStream stream) {
+            self().send((Runnable) () -> AbsCallActor.this.onStreamAdded(stream));
+        }
+
+        @Override
+        public void onStreamRemoved(WebRTCMediaStream stream) {
+            self().send((Runnable) () -> AbsCallActor.this.onStreamRemoved(stream));
+        }
+
+        @Override
+        public void onOwnStreamAdded(WebRTCMediaStream stream) {
+            self().send((Runnable) () -> AbsCallActor.this.onOwnStreamAdded(stream));
+        }
+
+        @Override
+        public void onOwnStreamRemoved(WebRTCMediaStream stream) {
+            self().send((Runnable) () -> AbsCallActor.this.onOwnStreamRemoved(stream));
         }
     }
 }

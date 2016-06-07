@@ -196,6 +196,16 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
         callback.onPeerConnectionCreated(peerConnection);
     }
 
+    @Override
+    public void onOwnStreamAdded(WebRTCMediaStream stream) {
+        callback.onOwnStreamAdded(stream);
+    }
+
+    @Override
+    public void onOwnStreamRemoved(WebRTCMediaStream stream) {
+        callback.onOwnStreamRemoved(stream);
+    }
+
 
     public void onCloseSession(long sessionId) {
         if (!closedSessions.contains(sessionId)) {

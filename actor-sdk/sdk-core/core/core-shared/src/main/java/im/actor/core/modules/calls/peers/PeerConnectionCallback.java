@@ -51,4 +51,8 @@ public interface PeerConnectionCallback {
     void onStreamRemoved(WebRTCMediaStream stream);
 
     void onPeerConnectionCreated(WebRTCPeerConnection peerConnection);
+
+    void onOwnStreamAdded(WebRTCMediaStream stream);
+
+    void onOwnStreamRemoved(WebRTCMediaStream stream);
 }

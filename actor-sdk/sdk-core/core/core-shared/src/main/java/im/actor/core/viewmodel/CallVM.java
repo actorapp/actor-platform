@@ -6,11 +6,8 @@ import java.util.ArrayList;
 
 import im.actor.core.entity.Peer;
 import im.actor.core.viewmodel.generics.BooleanValueModel;
-import im.actor.core.viewmodel.generics.IntValueModel;
-import im.actor.runtime.*;
-import im.actor.runtime.actors.ActorTime;
 import im.actor.runtime.mvvm.ValueModel;
-import im.actor.runtime.threading.CommonTimer;
+import im.actor.runtime.webrtc.WebRTCMediaStream;
 import im.actor.runtime.webrtc.WebRTCPeerConnection;
 
 public class CallVM {
@@ -22,7 +19,11 @@ public class CallVM {
     @Property("nonatomic, readonly")
     private final ValueModel<CallState> state;
     @Property("nonatomic, readonly")
-    private final ValueModel<ArrayList<WebRTCPeerConnection>> peerConnection;
+    private final ValueModel<ArrayList<WebRTCPeerConnection>> peerConnections;
+    @Property("nonatomic, readonly")
+    private final ValueModel<ArrayList<WebRTCMediaStream>> mediaStreams;
+    @Property("nonatomic, readonly")
+    private final ValueModel<WebRTCMediaStream> ownMediaStream;
     @Property("nonatomic, readonly")
     private final ValueModel<ArrayList<CallMember>> members;
     @Property("nonatomic, readonly")
@@ -41,7 +42,9 @@ public class CallVM {
         this.peer = peer;
         this.isOutgoing = isOutgoing;
         this.state = new ValueModel<>("calls." + callId + ".state", state);
-        this.peerConnection = new ValueModel<>("calls." + callId + ".peer_connection", new ArrayList<>());
+        this.peerConnections = new ValueModel<>("calls." + callId + ".peer_connection", new ArrayList<>());
+        this.mediaStreams = new ValueModel<>("calls." + callId + ".media_stram", new ArrayList<>());
+        this.ownMediaStream = new ValueModel<>("calls." + callId + ".own_media_stream", null);
         this.members = new ValueModel<>("calls." + callId + ".members", new ArrayList<>(initialMembers));
         this.isMuted = new BooleanValueModel("calls." + callId + ".muted", false);
         this.isVideoEnabled = new BooleanValueModel("calls." + callId + ".video_enabled", true);
@@ -92,7 +95,15 @@ public class CallVM {
         this.callEnd = callEnd;
     }
 
-    public ValueModel<ArrayList<WebRTCPeerConnection>> getPeerConnection() {
-        return peerConnection;
+    public ValueModel<ArrayList<WebRTCPeerConnection>> getPeerConnections() {
+        return peerConnections;
+    }
+
+    public ValueModel<ArrayList<WebRTCMediaStream>> getMediaStreams() {
+        return mediaStreams;
+    }
+
+    public ValueModel<WebRTCMediaStream> getOwnMediaStream() {
+        return ownMediaStream;
     }
 }
