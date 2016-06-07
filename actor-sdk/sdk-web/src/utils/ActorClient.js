@@ -16,23 +16,22 @@ class ActorClient {
   });
   }
 
-  signUp(name,password) {
+  signUpForPassword(name,password) {
     return new Promise((resolve, reject) => {
         window.messenger.signUpForPassword(name,password, resolve, reject);
   });
   }
 
-  requestWebSignUp(ip, methoNname, json, nickName){
+  requestWebSignUp(ip, methoNname, json){
     return new Promise((resolve, reject) =>{
         var response = this.getWebURL(ip, methoNname, json);
     if (response == -1) {
-      reject("初始化错误,请联系我们");
+      reject('初始化错误,请联系我们');
     } else if (response == -2) {
-      reject("网络出错");
+      reject('网络出错');
     }else {
       var isresult = response.result;
       if (isresult) {
-        var rename = response.name;
         resolve(response);
       } else {
         var errstr = response.description;
@@ -46,13 +45,12 @@ class ActorClient {
     return new Promise((resolve, reject) =>{
         var response = this.getWebURL(ip, methoNname, json);
     if (response == -1) {
-      reject("初始化错误,请联系我们");
+      reject('初始化错误,请联系我们');
     } else if (response == -2) {
-      reject("网络出错");
+      reject('网络出错');
     }else {
       var isresult = response.result;
       if (isresult) {
-        var rename = response.name;
         resolve(response);
       } else {
         var errstr = response.description;
@@ -66,13 +64,12 @@ class ActorClient {
     return new Promise((resolve, reject) =>{
         var response = this.getWebURL(ip, methoNname, json);
     if (response == -1) {
-      reject("初始化错误,请联系我们");
+      reject('初始化错误,请联系我们');
     }else if (response == -2) {
-      reject("网络出错");
+      reject('网络出错');
     } else {
       var isresult = response.result;
       if (isresult) {
-        var rename = response.name;
         resolve(response);
       } else {
         var errstr = response.description;
@@ -84,7 +81,7 @@ class ActorClient {
 
   getWebURL(ip, methoNname, json)
   {
-    var wsUrl = ip + "/actor.asmx/" + methoNname;
+    var wsUrl = ip + '/actor.asmx/' + methoNname;
     var xhr = false;
     //请求体
     if (window.XMLHttpRequest) {
@@ -97,7 +94,7 @@ class ActorClient {
       }
     }
     xhr.open('POST', wsUrl, false);
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     try{
       xhr.send(json);
     }catch (e){

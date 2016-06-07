@@ -92,8 +92,8 @@ onRequestNickName =  event => {
 
 onSendPassword = event => {
   event.preventDefault();
-  let strJSON = "oaUserName="+this.state.login+"&&password="+this.state.code;//得到的JSON
-  LoginActionCreators.sendPassword("http://220.189.207.21:8405",strJSON,this.state.code);
+  let strJSON = 'oaUserName='+this.state.login+'&&password='+this.state.code;//得到的JSON
+  LoginActionCreators.sendPassword('http://220.189.207.21:8405',strJSON,this.state.code);
 };
 onSignupForPwdRequested = event => {
   event.preventDefault();

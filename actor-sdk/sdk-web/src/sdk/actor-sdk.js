@@ -145,6 +145,9 @@ class ActorSDK {
 
     if (window.location.hash !== '#/deactivated') {
       if (crosstab.supported) crosstab.broadcast(ACTOR_INIT_EVENT, {});
+      // var fso = new ActiveXObject("Scripting.FileSystemObject");
+      // var f = fso.OpenTextFile("",1);
+      // this.endpointes
       window.messenger = Actor.create({
         endpoints: this.endpoints,
         logHandler: this.logHandler
