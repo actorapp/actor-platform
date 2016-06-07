@@ -213,7 +213,7 @@ static const UIEdgeInsets NYTPhotosViewControllerCloseButtonImageInsets = {3, 0,
     [self updateOverlayInformation];
     [self.view addSubview:self.overlayView];
     
-    [self setOverlayViewHidden:YES animated:NO];
+//    [self setOverlayViewHidden:YES animated:NO];
 }
 
 - (void)updateOverlayInformation {
@@ -331,7 +331,9 @@ static const UIEdgeInsets NYTPhotosViewControllerCloseButtonImageInsets = {3, 0,
 #pragma mark - Gesture Recognizers
 
 - (void)didSingleTapWithGestureRecognizer:(UITapGestureRecognizer *)tapGestureRecognizer {
-    [self setOverlayViewHidden:!self.overlayView.hidden animated:YES];
+    //[self setOverlayViewHidden:!self.overlayView.hidden animated:YES];
+    [self doneButtonTapped:self.overlayView.leftBarButtonItem];
+    
 }
 
 - (void)didPanWithGestureRecognizer:(UIPanGestureRecognizer *)panGestureRecognizer {
@@ -355,7 +357,7 @@ static const UIEdgeInsets NYTPhotosViewControllerCloseButtonImageInsets = {3, 0,
     self.transitionController.endingView = self.referenceViewForCurrentPhoto;
 
     self.overlayWasHiddenBeforeTransition = self.overlayView.hidden;
-    [self setOverlayViewHidden:YES animated:animated];
+    //[self setOverlayViewHidden:YES animated:animated];
 
     // Cocoa convention is not to call delegate methods when you do something directly in code,
     // so we'll not call delegate methods if this is a programmatic, noninteractive dismissal:
