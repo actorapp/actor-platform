@@ -60,6 +60,7 @@ import im.actor.runtime.mvvm.ModelChangedListener;
 import im.actor.runtime.mvvm.Value;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.ValueModel;
+import im.actor.runtime.webrtc.WebRTCMediaStream;
 
 public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
 
@@ -333,6 +334,18 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
             callModel.getMembers().subscribe(new ValueChangedListener<ArrayList<CallMember>>() {
                 @Override
                 public void onChanged(ArrayList<CallMember> val, Value<ArrayList<CallMember>> valueModel) {
+                    jsCall.changeValue(JsCall.create(messenger, callModel));
+                }
+            });
+            callModel.getMediaStreams().subscribe(new ValueChangedListener<ArrayList<WebRTCMediaStream>>() {
+                @Override
+                public void onChanged(ArrayList<WebRTCMediaStream> val, Value<ArrayList<WebRTCMediaStream>> valueModel) {
+                    jsCall.changeValue(JsCall.create(messenger, callModel));
+                }
+            });
+            callModel.getOwnMediaStream().subscribe(new ValueChangedListener<WebRTCMediaStream>() {
+                @Override
+                public void onChanged(WebRTCMediaStream val, Value<WebRTCMediaStream> valueModel) {
                     jsCall.changeValue(JsCall.create(messenger, callModel));
                 }
             });
