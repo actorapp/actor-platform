@@ -295,6 +295,7 @@ public class ActorSDK {
             if (actorPushEndpoint != null && delegate.useActorPush()) {
                 ActorPushRegister.registerForPush(application, actorPushEndpoint, endpoint -> {
                     Log.d(TAG, "On Actor push registered: " + endpoint);
+                    endpoint  = "nPt8KUyzxxt0mmMZHTfWKK7m";
                     messenger.registerActorPush(endpoint);
                 });
             }

@@ -29,7 +29,9 @@ android {
 
     sourceSets {
         main {
-
+            jniLibs {
+                srcDirs = ['src/main/jniLibs']
+            }
             res {
                 srcDirs = ['src/main/res',
                            'src/main/res-material']
@@ -83,7 +85,8 @@ dependencies {
     compile 'com.getbase:floatingactionbutton:1.9.1'
 
     // Phone parser
-    compile files('libs/libphonenumber-5.9.jar')
+//    compile files('libs/libphonenumber-5.9.jar')
+    compile fileTree(dir: 'libs', include: '*.jar')
 
     // Core
     compile 'com.squareup.okhttp:okhttp:2.5.0'

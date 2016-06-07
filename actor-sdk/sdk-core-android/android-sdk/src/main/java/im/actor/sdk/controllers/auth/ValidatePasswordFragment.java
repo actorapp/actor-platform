@@ -157,9 +157,9 @@ public class ValidatePasswordFragment extends BaseAuthFragment {
 
     private void sendCode() {
         String text = codeEnterEditText.getText().toString().trim();
-        if (text.length() > 0) {
+//        if (text.length() > 0) {
             validatePassword(text);
-        }
+//        }
     }
 
     @Override
