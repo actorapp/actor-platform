@@ -7,6 +7,9 @@ import im.actor.core.entity.Peer;
 import im.actor.core.js.JsMessenger;
 import im.actor.core.viewmodel.CallMember;
 import im.actor.core.viewmodel.CallVM;
+import im.actor.runtime.js.webrtc.JsMediaStream;
+import im.actor.runtime.js.webrtc.MediaStream;
+import im.actor.runtime.webrtc.WebRTCMediaStream;
 
 public class JsCall extends JavaScriptObject {
 
@@ -31,11 +34,15 @@ public class JsCall extends JavaScriptObject {
                 state = "ended";
                 break;
         }
-        return create(JsPeer.create(model.getPeer()), model.isOutgoing(), members, state, model.getIsMuted().get());
+        JsArray<JsMediaStream> streams = JsArray.createArray().cast();
+        for (WebRTCMediaStream stream : model.getMediaStreams().get()) {
+            streams.push(((MediaStream) stream).getStream());
+        }
+        return create(JsPeer.create(model.getPeer()), model.isOutgoing(), members, state, model.getIsMuted().get(), ((MediaStream) model.getOwnMediaStream().get()).getStream(), streams);
     }
 
-    public static native JsCall create(JsPeer peer, boolean isOutgoing, JsArray<JsPeerInfo> members, String state, boolean isMuted)/*-{
-        return {peer: peer, isOutgoing: isOutgoing, members: members, state: state, isMuted: isMuted};
+    public static native JsCall create(JsPeer peer, boolean isOutgoing, JsArray<JsPeerInfo> members, String state, boolean isMuted, JsMediaStream ownStream, JsArray<JsMediaStream> streams)/*-{
+        return {peer: peer, isOutgoing: isOutgoing, members: members, state: state, isMuted: isMuted, ownStream: ownStream, streams: streams};
     }-*/;
 
     protected JsCall() {
