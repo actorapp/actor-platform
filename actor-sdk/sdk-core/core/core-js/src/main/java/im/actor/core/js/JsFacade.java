@@ -950,9 +950,9 @@ public class JsFacade implements Exportable {
     @UsedByApp
     public void onAppHidden() {
         // Ignore for electron runtime
-        if (isElectron()) {
-            return;
-        }
+        //if (isElectron()) {
+        //    return;
+        //}
 
         messenger.getJsIdleModule().onHidden();
     }
