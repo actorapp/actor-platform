@@ -176,7 +176,8 @@ class AAUserViewController: AAContentTableController {
                         r.selectAction = {() -> Bool in
                             // Sound: Choose sound
                             let setRingtoneController = AARingtonesViewController()
-                            setRingtoneController.selectedRingtone = Actor.getNotificationsSoundWithPeer(peer)
+                            let sound = Actor.getNotificationsSoundWithPeer(peer)
+                            setRingtoneController.selectedRingtone = (sound != nil) ? sound : ""
                             setRingtoneController.completion = {(selectedSound:String) in
                                 Actor.changeNotificationsSoundPeer(peer, withValue: selectedSound)
                             }
@@ -194,7 +195,7 @@ class AAUserViewController: AAContentTableController {
                 }
             }
         }
-    
+        
         // Edit contact
         section { (s) -> () in
             
