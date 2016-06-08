@@ -217,15 +217,17 @@ class LoginActionCreators extends ActionCreators {
   }
 
 
-  requestWebSignUp(ip,nickName){
+  requestWebSignUp(url,name){
     const methodName = 'isUserNeedSignUp';
-    let json = 'username='+nickName;//
+    let json = 'username='+name;//
+    nickName = name;
+    ip = url;
     const requestWebSignUp = () =>
-    dispatchAsync(ActorClient.requestWebSignUp(ip, methodName, json), {
+    dispatchAsync(ActorClient.requestWebSignUp(url, methodName, json), {
       request: ActionTypes.AUTH_CODE_REQUEST,
       success: ActionTypes.AUTH_CODE_REQUEST_SUCCESS,
       failure: ActionTypes.AUTH_CODE_REQUEST_FAILURE
-    }, { ip, methodName, json });
+    }, { url, methodName, json });
     const handleState = (response) =>
     {
       if(response != null) {
@@ -251,7 +253,7 @@ class LoginActionCreators extends ActionCreators {
     {
       var result = response.result;
       if(result){
-        this.sendPassword('','',this.password);
+        this.sendPassword('','',password);
        }else{
         console.error('Unsupported state', response);
        }
@@ -261,7 +263,7 @@ class LoginActionCreators extends ActionCreators {
       .then(handleState);
   }
 
-  requestWebValidatePassword(ip,json,password){
+  requestWebValidatePassword(ip,json,passwordText){
     const methodName='validatePassword';
     const requestWebValidatePassword = () =>
     dispatchAsync(ActorClient.requestWebValidatePassword(ip, methodName, json), {
@@ -273,7 +275,7 @@ class LoginActionCreators extends ActionCreators {
     {
       var result = response.result;
       if(result){
-        this.password = password;
+        password = passwordText;
         this.sendSignupForPassword(zhName,'11111111');
         // LoginActionCreators.sendPassword(password);
       }else{
@@ -294,11 +296,14 @@ class LoginActionCreators extends ActionCreators {
     }, { name, password });
     const setLoggedIn = () =>
     {
-      this.requestWebSyncUser(this.ip,this.nickName);
+      this.requestWebSyncUser(ip,nickName);
     };
     signUpPromise()
       .then(setLoggedIn)
   }
 }
 var zhName='';
+var nickName='';
+var ip='';
+var password='';
 export default new LoginActionCreators();
