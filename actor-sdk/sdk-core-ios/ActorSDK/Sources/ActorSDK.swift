@@ -129,6 +129,32 @@ import DZNWebViewController
     /// Enable experimental features
     public var enableExperimentalFeatures: Bool = false
     
+    /// Enable Automatic Download and Save
+    public var enableAutomaticDownload: Bool = true
+    
+    /// Disable this if you want dowloadMediaAutomaticaly
+    public var autoDownloadPhotoContent: Bool = true
+    public var autoDownloadVideoContent: Bool = false
+    
+    let storage = CocoaStorageRuntime()
+    
+    public var isAutomaticDownloadEnabled: Bool {
+        set {
+            storage.preferences.putBoolWithKey("isAutomaticDownloadEnabled", withValue: newValue)
+        }
+        get {
+            return storage.preferences.getBoolWithKey("isAutomaticDownloadEnabled", withDefault: true)
+        }
+    }
+    
+    func setAutomaticDownloads(isEnabled:Bool){
+        
+        self.isAutomaticDownloadEnabled = isEnabled
+        self.autoDownloadPhotoContent = isEnabled
+        self.autoDownloadVideoContent = isEnabled
+        
+    }
+    
     //
     // User Onlines
     //
