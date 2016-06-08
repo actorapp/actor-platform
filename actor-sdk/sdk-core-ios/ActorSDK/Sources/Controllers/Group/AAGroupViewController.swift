@@ -149,12 +149,14 @@ public class AAGroupViewController: AAContentTableController {
                 r.switchAction = { (on: Bool) -> () in
                     Actor.changeNotificationsEnabledWithPeer(groupPeer, withValue: on)
                 }
+                
                 if(ActorSDK.sharedActor().enableChatGroupSound) {
                     if(Actor.isNotificationsEnabledWithPeer(groupPeer)){
                         r.selectAction = {() -> Bool in
                             // Sound: Choose sound
                             let setRingtoneController = AARingtonesViewController()
-                            setRingtoneController.selectedRingtone = Actor.getNotificationsSoundWithPeer(groupPeer)
+                            let soundForGroupe = Actor.getNotificationsSoundWithPeer(groupPeer)
+                            setRingtoneController.selectedRingtone = (soundForGroupe != nil) ? soundForGroupe : ""
                             setRingtoneController.completion = {(selectedSound:String) in
                                 Actor.changeNotificationsSoundPeer(groupPeer, withValue: selectedSound)
                             }

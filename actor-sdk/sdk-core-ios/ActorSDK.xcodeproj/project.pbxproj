@@ -336,6 +336,7 @@
 		15F89F091C211FED00776ACD /* opus_types.h in Headers */ = {isa = PBXBuildFile; fileRef = 15F89F051C211FED00776ACD /* opus_types.h */; };
 		15F89F0A1C211FED00776ACD /* opus.h in Headers */ = {isa = PBXBuildFile; fileRef = 15F89F061C211FED00776ACD /* opus.h */; };
 		9A680E1B1CC3A34800E3CF59 /* AAUnblockActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A680E1A1CC3A34800E3CF59 /* AAUnblockActionSheet.swift */; };
+		9AA6A41F1D08568A00957A7F /* AASettingsMediaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA6A41E1D08568A00957A7F /* AASettingsMediaViewController.swift */; };
 		9AAE96481CF81F140092E366 /* AARingtonesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AAE96471CF81F140092E366 /* AARingtonesViewController.swift */; };
 		BDF21708B376E212CEAEC43D /* Pods_ActorSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 354C3EFA48FBFAEAD0DEEE17 /* Pods_ActorSDK.framework */; };
 		BE237C9D1C422FFA00060648 /* AAStickersKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE237C9C1C422FFA00060648 /* AAStickersKeyboard.swift */; };
@@ -716,6 +717,7 @@
 		15F89F0F1C21317400776ACD /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		354C3EFA48FBFAEAD0DEEE17 /* Pods_ActorSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ActorSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9A680E1A1CC3A34800E3CF59 /* AAUnblockActionSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAUnblockActionSheet.swift; sourceTree = "<group>"; };
+		9AA6A41E1D08568A00957A7F /* AASettingsMediaViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AASettingsMediaViewController.swift; sourceTree = "<group>"; };
 		9AAE96471CF81F140092E366 /* AARingtonesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AARingtonesViewController.swift; sourceTree = "<group>"; };
 		BE237C9C1C422FFA00060648 /* AAStickersKeyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAStickersKeyboard.swift; sourceTree = "<group>"; };
 		BE2621561C4656D700A817AB /* AAConvActionSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAConvActionSheet.swift; sourceTree = "<group>"; };
@@ -1252,6 +1254,7 @@
 				066A52F41BC52B09000E606E /* Cells */,
 				152AA8BE1C298C4B0030DEEE /* AASettingsLastSeenController.swift */,
 				066A52ED1BC52B02000E606E /* AASettingsNotificationsViewController.swift */,
+				9AA6A41E1D08568A00957A7F /* AASettingsMediaViewController.swift */,
 				066A52EE1BC52B02000E606E /* AASettingsPrivacyViewController.swift */,
 				152AA8BC1C298BF00030DEEE /* AASettingsSessionsController.swift */,
 				066A52EC1BC52B02000E606E /* AASettingsViewController.swift */,
@@ -2030,6 +2033,7 @@
 				BED5A1FB1C48396A0045FDB0 /* NYTPhotoTransitionAnimator.m in Sources */,
 				15D35F161C20185500E3717A /* diag_range.c in Sources */,
 				061850E11C95CBF000C522D5 /* YYTextInput.m in Sources */,
+				9AA6A41F1D08568A00957A7F /* AASettingsMediaViewController.swift in Sources */,
 				066A525E1BC503BB000E606E /* ActorApplicationDelegate.swift in Sources */,
 				061850F31C95CBF000C522D5 /* YYTextRubyAnnotation.m in Sources */,
 				BED5A1F91C48396A0045FDB0 /* NYTPhotosViewController.m in Sources */,
