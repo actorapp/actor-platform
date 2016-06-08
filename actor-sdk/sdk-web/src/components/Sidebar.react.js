@@ -6,7 +6,7 @@ import { isFunction } from 'lodash';
 import React, { Component } from 'react';
 import { Container } from 'flux/utils';
 import DelegateContainer from '../utils/DelegateContainer';
-
+import QuickSearchButton from './sidebar/QuickSearchButton.react'
 import DefaultRecent from './sidebar/Recent.react';
 
 import DialogStore from '../stores/DialogStore';
@@ -50,6 +50,9 @@ class Sidebar extends Component {
   render() {
     const { currentPeer, dialogs, archive } = this.state;
     const { Recent } = this.components;
+    let FooterSection = QuickSearchButton;
+
+
 
     return (
       <aside className="sidebar">
@@ -58,6 +61,7 @@ class Sidebar extends Component {
           dialogs={dialogs}
           archive={archive}
         />
+        <FooterSection/>
       </aside>
     );
   }
