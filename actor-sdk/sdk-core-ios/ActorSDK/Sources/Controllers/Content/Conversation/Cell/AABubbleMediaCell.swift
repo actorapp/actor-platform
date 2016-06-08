@@ -213,7 +213,7 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
         contentLoaded = true
         
         var loadedContent : UIImage!
-        if CocoaFiles.pathFromDescriptor(reference).pathExtension! == "gif" {
+        if bindedMessage!.content is ACAnimationContent {
             loadedContent = YYImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))
 
         } else if CocoaFiles.pathFromDescriptor(reference).pathExtension! == "webp" {
