@@ -492,7 +492,6 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
             
         } else {
             
-            
             if (position == 0.0  || position == 0) {
                 
                 self.voicePlayer = AAModernConversationAudioPlayer(filePath:path)

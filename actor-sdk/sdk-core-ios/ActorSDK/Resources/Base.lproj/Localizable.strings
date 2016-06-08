@@ -71,6 +71,7 @@
 
 "SettingsWallpapers" = "Wallpapers";
 
+"SettingsMedia" = "Media";
 
 "SettingsNotifications" = "Notifications and Sounds";
 
@@ -97,6 +98,8 @@
 "SettingsLastSeenNone"    = "Nobody";
 
 "SettingsMobilePhone"    = "Mobile Phone";
+
+"SettingsAutomaticDownloadAndSave" = "Automatic Download Media";
 
 /*
  * Calls

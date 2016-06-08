@@ -174,6 +174,11 @@ public class AASettingsViewController: AAContentTableController {
 
             })
             
+            if(ActorSDK.sharedActor().enableAutomaticDownload) {
+                // Settings: Media
+                s.navigate("SettingsMedia", controller: AASettingsMediaViewController.self)
+            }
+            
             ActorSDK.sharedActor().delegate.actorSettingsConfigurationDidCreated(self, section: s)
         }
         
