@@ -96,7 +96,8 @@ public class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionCo
             })
             
             // Bind file
-            fileBind(message, autoDownload: document.getSource().getSize() < 1024 * 1025 * 1024)
+            fileBind(message, autoDownload: ActorSDK.sharedActor().isAutomaticDownloadEnabled &&
+                document.getSource().getSize() < 1024 * 1025 * 1024)
         }
         
         // Always update date and state
