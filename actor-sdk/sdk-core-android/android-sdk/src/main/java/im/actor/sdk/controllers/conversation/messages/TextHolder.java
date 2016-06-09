@@ -43,7 +43,6 @@ public class TextHolder extends MessageHolder {
         text.setTypeface(Fonts.regular());
 
         time = (TextView) itemView.findViewById(R.id.tv_time);
-        ActorSDK.sharedActor().style.getConvTimeColor();
         time.setTypeface(Fonts.regular());
         time.setTextColor(ActorSDK.sharedActor().style.getConvTimeColor());
         status = (TintImageView) itemView.findViewById(R.id.stateIcon);
