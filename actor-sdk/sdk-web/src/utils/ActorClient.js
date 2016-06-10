@@ -259,8 +259,7 @@ class ActorClient {
   // Groups
 
   joinGroupViaToken(token) {
-    const link = `https://quit.email/join/${token}`;
-    return window.messenger.joinGroupViaLink(link);
+    return window.messenger.joinGroupViaLink(token);
   }
 
   joinGroupViaLink (url) {
