@@ -218,8 +218,8 @@ public class RouterActor extends ModuleActor {
             if (m.getSenderId() != myUid()) {
                 if (m.getSortDate() > state.getInReadDate()) {
                     unreadCount++;
+                    maxInDate = Math.max(maxInDate, m.getSortDate());
                 }
-                maxInDate = Math.max(maxInDate, m.getSortDate());
             }
         }
 
