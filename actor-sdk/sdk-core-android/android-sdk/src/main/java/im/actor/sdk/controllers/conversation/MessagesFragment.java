@@ -118,32 +118,26 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
             wallpaperPrefs = getContext().getSharedPreferences("wallpaper", Context.MODE_PRIVATE);
         }
         Drawable background;
-        if (messenger().getSelectedWallpaper() == null) {
-            background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[0]);
-        } else if (messenger().getSelectedWallpaper().equals("local:bg_1")) {
-            if (ActorSDK.sharedActor().style.getDefaultBackgrouds().length > 1) {
-                background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[1]);
-            } else {
-                background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[0]);
+
+        int [] backgrounds = ActorSDK.sharedActor().style.getDefaultBackgrouds();
+        String selectedWallpaper = messenger().getSelectedWallpaper();
+
+        if (selectedWallpaper != null) {
+            if (backgrounds.length > 0) {
+                background = getResources().getDrawable(backgrounds[0]);
+                if (selectedWallpaper.startsWith("local")) {
+                    for (int i = 1; i < backgrounds.length; i++) {
+                        if (getResources().getResourceEntryName(backgrounds[i]).equals(selectedWallpaper.replaceAll("local:", ""))) {
+                            background = getResources().getDrawable(backgrounds[i]);
+                        }
+                    }
+                } else {
+                    background = Drawable.createFromPath(BaseActorSettingsFragment.getWallpaperFile());
+                }
+                ((ImageView) res.findViewById(R.id.chatBackgroundView)).setImageDrawable(background);
             }
-        } else if (messenger().getSelectedWallpaper().equals("local:bg_2")) {
-            if (ActorSDK.sharedActor().style.getDefaultBackgrouds().length > 2) {
-                background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[2]);
-            } else {
-                background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[0]);
-            }
-        } else if (messenger().getSelectedWallpaper().equals("local:bg_3")) {
-            if (ActorSDK.sharedActor().style.getDefaultBackgrouds().length > 3) {
-                background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[3]);
-            } else {
-                background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[0]);
-            }
-        } else if (messenger().getSelectedWallpaper().startsWith("local:")) {
-            background = getResources().getDrawable(ActorSDK.sharedActor().style.getDefaultBackgrouds()[0]);
-        } else {
-            background = Drawable.createFromPath(BaseActorSettingsFragment.getWallpaperFile());
         }
-        ((ImageView) res.findViewById(R.id.chatBackgroundView)).setImageDrawable(background);
+
 
         View footer = new View(getActivity());
         footer.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(8)));
