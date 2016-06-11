@@ -125,7 +125,7 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
         if (selectedWallpaper != null) {
             if (backgrounds.length > 0) {
                 background = getResources().getDrawable(backgrounds[0]);
-                if (selectedWallpaper.startsWith("local")) {
+                if (selectedWallpaper.startsWith("local:")) {
                     for (int i = 1; i < backgrounds.length; i++) {
                         if (getResources().getResourceEntryName(backgrounds[i]).equals(selectedWallpaper.replaceAll("local:", ""))) {
                             background = getResources().getDrawable(backgrounds[i]);
