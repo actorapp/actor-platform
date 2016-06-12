@@ -21,7 +21,9 @@ public class ActorStyle {
     }
 
     public void setDefaultBackgrouds(int[] defaultBackgrouds) {
-        this.defaultBackgrouds = defaultBackgrouds;
+        if (defaultBackgrouds.length > 0) {
+            this.defaultBackgrouds = defaultBackgrouds;
+        }
     }
 
     //////////////////////////
