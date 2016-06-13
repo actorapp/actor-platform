@@ -57,12 +57,10 @@ public class ContactHolder extends MessageHolder {
 
         stateIcon = (TintImageView) itemView.findViewById(R.id.stateIcon);
         time = (TextView) itemView.findViewById(R.id.time);
-        time.setTextColor(ActorSDK.sharedActor().style.getConvTimeColor());
 
         mainContainer = (ViewGroup) itemView.findViewById(R.id.mainContainer);
         messageBubble = (FrameLayout) itemView.findViewById(R.id.fl_bubble);
         text = (TextView) itemView.findViewById(R.id.tv_text);
-        text.setTextColor(ActorSDK.sharedActor().style.getConvTextColor());
         contactAvatar = (ImageView) itemView.findViewById(R.id.contact_avatar);
 
         onConfigureViewHolder();
@@ -72,6 +70,8 @@ public class ContactHolder extends MessageHolder {
     protected void bindData(final Message message, long readDate, long receiveDate, boolean isUpdated, PreprocessedData preprocessedData) {
         ContactContent contact = (ContactContent) message.getContent();
 
+        time.setTextColor(ActorSDK.sharedActor().style.getConvTimeColor(message.getSenderId()));
+        text.setTextColor(ActorSDK.sharedActor().style.getConvTextColor(message.getSenderId()));
         // Update state
         if (message.getSenderId() == myUid()) {
             stateIcon.setVisibility(View.VISIBLE);

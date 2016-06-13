@@ -123,7 +123,7 @@ public class ChatListProcessor implements ListProcessor<Message> {
                             break;
                         }
                     }
-                    s.setSpan(new ReactionSpan(r.getCode(), hasMyReaction, peer, msg.getRid(), isImage ? Color.WHITE : ActorSDK.sharedActor().style.getConvTimeColor()), 0, s.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    s.setSpan(new ReactionSpan(r.getCode(), hasMyReaction, peer, msg.getRid(), isImage ? Color.WHITE : ActorSDK.sharedActor().style.getConvTimeColor(msg.getSenderId())), 0, s.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     reactions = builder.append(s);
 
                 }

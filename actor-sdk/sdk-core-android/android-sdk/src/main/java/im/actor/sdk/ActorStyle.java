@@ -1,8 +1,11 @@
 package im.actor.sdk;
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 
+import im.actor.sdk.util.Fonts;
 import im.actor.sdk.util.Screen;
+import static im.actor.sdk.util.ActorSDKMessenger.myUid;
 
 /**
  * Actor Styling class
@@ -27,6 +30,28 @@ public class ActorStyle {
     }
 
     //////////////////////////
+    //        BUUBLES       //
+    //////////////////////////
+
+    private int bubble_in = R.drawable.bubble_text_in;
+    private int bubble_out = R.drawable.bubble_text_out;
+
+    public int getDefaultBubble(int senderId) {
+        if (senderId == myUid()) {
+            return bubble_out;
+        } else {
+            return bubble_in;
+        }
+    }
+
+    public void setDefaultBubbleIn(int bubble_in) {
+        this.bubble_in = bubble_in;
+    }
+    public void setDefaultBubbleOut(int bubble_out) {
+        this.bubble_out = bubble_out;
+    }
+
+        //////////////////////////
     //        COLORS        //
     //////////////////////////
 
@@ -715,25 +740,64 @@ public class ActorStyle {
         this.convDateBgColor = convDateBgColor;
     }
 
-    private int convTextColor = 0;
 
-    public int getConvTextColor() {
-        return getColorWithFallback(convTextColor, getTextPrimaryColor());
+    private Typeface convOutTimeFace = Fonts.regular();
+    private Typeface convInTimeFace = Fonts.regular();
+
+    public Typeface getConvTimeFace(int senderId) {
+        if (senderId == myUid()) {
+            return convOutTimeFace;
+        } else {
+            return convInTimeFace;
+        }
     }
 
-    public void setConvTextColor(int convTextColor) {
-        this.convTextColor = convTextColor;
+    public void setConvOutTimeFace(Typeface convOutTimeFace) {
+        this.convOutTimeFace = convOutTimeFace;
     }
 
-    private int convTimeColor = 0x60000000;
-
-    public int getConvTimeColor() {
-        return convTimeColor;
+    public void setConvInTimeFace(Typeface convInTimeFace) {
+        this.convInTimeFace = convInTimeFace;
     }
 
-    public void setConvTimeColor(int convTimeColor) {
-        this.convTimeColor = convTimeColor;
+    private int convOutTimeColor = 0x60000000;
+    private int convInTimeColor = 0x60000000;
+
+    public int getConvTimeColor(int senderId) {
+        if (senderId == myUid()) {
+            return convOutTimeColor;
+        } else {
+            return convInTimeColor;
+        }
     }
+
+    public void setConvOutTimeColor(int convOutTimeColor) {
+        this.convOutTimeColor = convOutTimeColor;
+    }
+
+    public void setConvInTimeColor(int convInTimeColor) {
+        this.convInTimeColor = convInTimeColor;
+    }
+
+    private int convOutTextColor = 0;
+    private int convInTextColor = 0;
+
+    public int getConvTextColor(int senderId) {
+        if (senderId == myUid()) {
+            return convOutTextColor;
+        } else {
+            return convOutTextColor;
+        }
+    }
+
+    public void setConvOutTextColor(int convOutTextColor) {
+        this.convOutTextColor = convOutTextColor;
+    }
+
+    public void setConvInTextColor(int convInTextColor) {
+        this.convInTextColor = convInTextColor;
+    }
+
 
     private int convStatePendingColor = 0x40000000;
 

@@ -82,7 +82,6 @@ public class DocHolder extends MessageHolder {
 
         stateIcon = (TintImageView) itemView.findViewById(R.id.stateIcon);
         time = (TextView) itemView.findViewById(R.id.time);
-        time.setTextColor(ActorSDK.sharedActor().style.getConvTimeColor());
 
         // Basic bubble
         View bubbleView = itemView.findViewById(R.id.bubbleContainer);
@@ -151,6 +150,7 @@ public class DocHolder extends MessageHolder {
     protected void bindData(Message message, long readDate, long receiveDate, boolean isUpdated, PreprocessedData preprocessedData) {
         document = (DocumentContent) message.getContent();
 
+        time.setTextColor(ActorSDK.sharedActor().style.getConvTimeColor(message.getSenderId()));
         // Update state
         if (message.getSenderId() == myUid()) {
             stateIcon.setVisibility(View.VISIBLE);

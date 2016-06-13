@@ -94,9 +94,9 @@ public class AudioHolder extends MessageHolder {
 
         stateIcon = (TintImageView) itemView.findViewById(R.id.stateIcon);
         time = (TextView) itemView.findViewById(R.id.time);
-        time.setTextColor(ActorSDK.sharedActor().style.getConvTimeColor());
+
         duration = (TextView) itemView.findViewById(R.id.duration);
-        duration.setTextColor(ActorSDK.sharedActor().style.getConvTimeColor());
+        duration.setTextColor(ActorSDK.sharedActor().style.getConvTimeColor(0));
         seekBar = (SeekBar) itemView.findViewById(R.id.audioSlide);
         progressView = (CircularView) itemView.findViewById(R.id.progressView);
         progressView.setColor(context.getResources().getColor(R.color.primary));
@@ -230,6 +230,7 @@ public class AudioHolder extends MessageHolder {
     protected void bindData(final Message message, long readDate, long receiveDate, boolean isUpdated, PreprocessedData preprocessedData) {
 
         VoiceContent audioMsg = (VoiceContent) message.getContent();
+        time.setTextColor(ActorSDK.sharedActor().style.getConvTimeColor(message.getSenderId()));
         if (message.getSenderId() == myUid()) {
 //            messageBubble.getBackground().setColorFilter(messageBubble.getContext().getResources().getColor(R.color.conv_bubble), PorterDuff.Mode.MULTIPLY);
             messageBubble.setBackgroundResource(R.drawable.conv_bubble_media_out);

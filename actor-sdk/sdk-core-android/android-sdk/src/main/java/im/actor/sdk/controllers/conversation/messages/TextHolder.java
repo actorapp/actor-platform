@@ -1,5 +1,7 @@
 package im.actor.sdk.controllers.conversation.messages;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.text.Spannable;
 import android.text.method.LinkMovementMethod;
 import android.view.MotionEvent;
@@ -39,12 +41,10 @@ public class TextHolder extends MessageHolder {
         mainContainer = (ViewGroup) itemView.findViewById(R.id.mainContainer);
         messageBubble = (FrameLayout) itemView.findViewById(R.id.fl_bubble);
         text = (TextView) itemView.findViewById(R.id.tv_text);
-        text.setTextColor(ActorSDK.sharedActor().style.getConvTextColor());
-        text.setTypeface(Fonts.regular());
+        // text.setTypeface(Fonts.regular());
 
         time = (TextView) itemView.findViewById(R.id.tv_time);
-        time.setTypeface(Fonts.regular());
-        time.setTextColor(ActorSDK.sharedActor().style.getConvTimeColor());
+
         status = (TintImageView) itemView.findViewById(R.id.stateIcon);
 
         waitColor = ActorSDK.sharedActor().style.getConvStatePendingColor();
@@ -70,12 +70,11 @@ public class TextHolder extends MessageHolder {
     }
 
     public void bindRawText(CharSequence rawText, long readDate, long receiveDate, Spannable reactions, Message message, boolean isItalic) {
-        if (message.getSenderId() == myUid()) {
-            messageBubble.setBackgroundResource(R.drawable.bubble_text_out);
-        } else {
-            messageBubble.setBackgroundResource(R.drawable.bubble_text_in);
-        }
-
+        messageBubble.setBackgroundResource(ActorSDK.sharedActor().style.getDefaultBubble(message.getSenderId()));
+        text.setTextColor(ActorSDK.sharedActor().style.getConvTextColor(message.getSenderId()));
+        time.setTypeface(ActorSDK.sharedActor().style.getConvTimeFace(message.getSenderId()));
+        time.setTextColor(ActorSDK.sharedActor().style.getConvTimeColor(message.getSenderId()));
+        
         if (isItalic) {
             text.setTypeface(Fonts.italic());
         } else {
