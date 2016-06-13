@@ -29,9 +29,11 @@ public class AACellLayout {
     let key: String
     var height: CGFloat
     let date: String
+    let anchorDate: String
     
     public init(height: CGFloat, date: Int64, key: String, layouter: AABubbleLayouter) {
         self.date = AACellLayout.formatDate(date)
+        self.anchorDate = Actor.getFormatter().formatDate(date)
         self.key = key
         self.height = height
         self.layouter = layouter
@@ -39,6 +41,8 @@ public class AACellLayout {
     
     public class func formatDate(date: Int64) -> String {
         return dateFormatter.stringFromDate(NSDate(timeIntervalSince1970: NSTimeInterval(Double(date) / 1000.0)))
+        
+        
     }
 }
 
