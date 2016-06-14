@@ -276,7 +276,7 @@ public class AABubbleCell: UICollectionViewCell {
         
         self.isShowDate = setting.showDate
         if (isShowDate) {
-            self.dateText.text = layout.date
+            self.dateText.text = layout.anchorDate
         }
         
         self.bindedSetting = setting
