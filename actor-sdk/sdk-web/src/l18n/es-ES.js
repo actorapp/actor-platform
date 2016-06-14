@@ -228,7 +228,7 @@ export default {
     'sidebar': {
       'recents': {
         'groups': 'Grupos',
-        'privates': 'Mensajes directos'
+        'privates': 'Mensajes directos',
         'history': 'Historial'
       },
       'group': {
@@ -343,9 +343,9 @@ export default {
       archive: 'Enviar a archivar',
       delete: 'Eliminar'
     }
+  },
+  search: {
+    'placeholder': 'Buscar',
+    'hint': '<h4>Búsqueda rápida</h4><p>Puede buscar contactos, diálogos, o mensajes de los actuales diálogos aquí.</p>'
   }
-   search: {
-      'placeholder': 'Buscar',
-       hint: '<h4>Búsqueda rápida</h4><p>Puede buscar contactos, diálogos, o mensajes de los actuales diálogos aquí.</p>',
-      }
 };
