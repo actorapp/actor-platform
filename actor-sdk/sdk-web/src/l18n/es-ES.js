@@ -228,7 +228,8 @@ export default {
     'sidebar': {
       'recents': {
         'groups': 'Grupos',
-        'privates': 'Mensajes directos'
+        'privates': 'Mensajes directos',
+        'history': 'Historial'
       },
       'group': {
         'empty': 'Crea tu primer grupo de conversación'
@@ -327,7 +328,7 @@ export default {
 
     toolbar: {
       callState: {
-        calling: 'Llamando',
+        calling: 'Llamada',
         connecting: 'Conectando',
         in_progress: 'Llamada activa: {time}',
         ended: 'Llamada finalizada'
@@ -342,5 +343,9 @@ export default {
       archive: 'Enviar a archivar',
       delete: 'Eliminar'
     }
+  },
+  search: {
+    'placeholder': 'Buscar',
+    'hint': '<h4>Búsqueda rápida</h4><p>Puede buscar contactos, diálogos, o mensajes de los actuales diálogos aquí.</p>'
   }
 };

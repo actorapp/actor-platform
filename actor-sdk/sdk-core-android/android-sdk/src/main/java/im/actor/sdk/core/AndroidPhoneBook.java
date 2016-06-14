@@ -156,7 +156,7 @@ public class AndroidPhoneBook implements PhoneBookProvider {
             long phoneId = cur.getLong(idPhoneIndex);
             String rawPhone = cur.getString(idNumberIndex);
             PhoneBookContact record = recordsMap.get(contactId);
-            if (record == null) {
+            if (record == null || rawPhone == null) {
                 continue;
             }
 

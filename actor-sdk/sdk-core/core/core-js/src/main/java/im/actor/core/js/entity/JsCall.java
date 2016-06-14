@@ -36,9 +36,13 @@ public class JsCall extends JavaScriptObject {
         }
         JsArray<JsMediaStream> streams = JsArray.createArray().cast();
         for (WebRTCMediaStream stream : model.getMediaStreams().get()) {
-            streams.push(((MediaStream) stream).getStream());
+            JsMediaStream stream1 = ((MediaStream) stream).getStream();
+            if (stream1 != null) {
+                streams.push(stream1);
+            }
         }
-        return create(JsPeer.create(model.getPeer()), model.isOutgoing(), members, state, model.getIsMuted().get(), ((MediaStream) model.getOwnMediaStream().get()).getStream(), streams);
+        MediaStream ownMediaStream = (MediaStream) model.getOwnMediaStream().get();
+        return create(JsPeer.create(model.getPeer()), model.isOutgoing(), members, state, model.getIsMuted().get(), ownMediaStream == null ? null : ownMediaStream.getStream(), streams);
     }
 
     public static native JsCall create(JsPeer peer, boolean isOutgoing, JsArray<JsPeerInfo> members, String state, boolean isMuted, JsMediaStream ownStream, JsArray<JsMediaStream> streams)/*-{
