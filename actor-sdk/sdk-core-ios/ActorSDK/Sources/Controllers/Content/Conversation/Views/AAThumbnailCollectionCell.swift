@@ -9,6 +9,7 @@ class AAThumbnailCollectionCell: UICollectionViewCell {
     let imgThumbnails       : UIImageView!
     let imgSelected         : UIImageView!
     
+    var animated            : Bool!
     var indexPath           : NSIndexPath!
     var isCheckSelected     : Bool!
     weak var bindedThumbView : AAThumbnailView!
@@ -25,6 +26,7 @@ class AAThumbnailCollectionCell: UICollectionViewCell {
         self.imgSelected.contentMode = UIViewContentMode.ScaleAspectFill
         
         self.isCheckSelected = false
+        self.animated        = false
         
         super.init(frame: frame)
         
@@ -55,8 +57,8 @@ class AAThumbnailCollectionCell: UICollectionViewCell {
                 }, completion: nil)
             
             self.isCheckSelected = true
-            
-            self.bindedThumbView.addSelectedModel(self.bindedPhotoModel)
+            print(animated)
+            self.bindedThumbView.addSelectedModel(self.bindedPhotoModel,animated:self.animated)
             
         } else {
             
@@ -71,7 +73,7 @@ class AAThumbnailCollectionCell: UICollectionViewCell {
             
             self.isCheckSelected = false
             
-            self.bindedThumbView.removeSelectedModel(self.bindedPhotoModel)
+            self.bindedThumbView.removeSelectedModel(self.bindedPhotoModel,animated:self.animated)
             
         }
         

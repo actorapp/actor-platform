@@ -641,11 +641,12 @@ public class ConversationViewController:
         self.presentViewController(AANavigationController(rootViewController:pickerController), animated: true, completion: nil)
     }
     
-    public func actionSheetPickedImages(images: [UIImage]) {
-        for i in images {
-            Actor.sendUIImage(i, peer: peer)
+    public func actionSheetPickedImages(images:[(NSData,Bool)]) {
+        for (i,j) in images {
+            Actor.sendUIImage(i, peer: peer, animated:j)
         }
     }
+    
     
     public func actionSheetPickDocument() {
         let documentPicker = UIDocumentMenuViewController(documentTypes: UTTAll as! [String], inMode: UIDocumentPickerMode.Import)
@@ -716,14 +717,17 @@ public class ConversationViewController:
     
     public func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
         picker.dismissViewControllerAnimated(true, completion: nil)
-        Actor.sendUIImage(image, peer: peer)
+         let imageData = UIImageJPEGRepresentation(image, 0.8)
+         Actor.sendUIImage(imageData!, peer: peer, animated:false)
     }
     
     public func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         picker.dismissViewControllerAnimated(true, completion: nil)
-        
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
-            Actor.sendUIImage(image, peer: peer)
+            let imageData = UIImageJPEGRepresentation(image, 0.8)
+            
+            //TODO: Need implement assert fetching here to get images
+            Actor.sendUIImage(imageData!, peer: peer, animated:false)
             
         } else {
             Actor.sendVideo(info[UIImagePickerControllerMediaURL] as! NSURL, peer: peer)
