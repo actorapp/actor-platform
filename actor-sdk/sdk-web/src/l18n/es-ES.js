@@ -323,11 +323,8 @@ export default {
       end: 'Llamada finalizada',
       addUser: 'Añadir usury',
       fullScreen: 'Pantalla completa',
-      video: 'Vídeo'
-    },
-
-    toolbar: {
-      callState: {
+      video: 'Vídeo',
+      state: {
         calling: 'Llamada',
         connecting: 'Conectando',
         in_progress: 'Llamada activa: {time}',
@@ -342,10 +339,10 @@ export default {
       },
       archive: 'Enviar a archivar',
       delete: 'Eliminar'
+    },
+    search: {
+      'placeholder': 'Buscar',
+      'hint': '<h4>Búsqueda rápida</h4><p>Puede buscar contactos, diálogos, o mensajes de los actuales diálogos aquí.</p>'
     }
-  },
-  search: {
-    'placeholder': 'Buscar',
-    'hint': '<h4>Búsqueda rápida</h4><p>Puede buscar contactos, diálogos, o mensajes de los actuales diálogos aquí.</p>'
   }
 };
