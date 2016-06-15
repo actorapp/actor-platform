@@ -64,6 +64,7 @@
 
 "SettingsWallpapers" = "聊天背景";
 
+"SettingsMedia" = "媒体文件";
 
 "SettingsNotifications" = "通知和声音";
 
@@ -89,8 +90,9 @@
 
 "SettingsLastSeenNone"    = "没人";
 
-
 "SettingsMobilePhone"    = "手机";
+
+"SettingsAutomaticDownloadAndSave" = "自动下载媒体文件";
 
 /*
  * Calls
