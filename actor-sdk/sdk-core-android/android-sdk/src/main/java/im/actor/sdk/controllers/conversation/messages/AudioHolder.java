@@ -1,6 +1,5 @@
 package im.actor.sdk.controllers.conversation.messages;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -30,7 +29,6 @@ import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.Props;
-import im.actor.runtime.android.AndroidContext;
 import im.actor.runtime.files.FileSystemReference;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
@@ -94,9 +92,7 @@ public class AudioHolder extends MessageHolder {
 
         stateIcon = (TintImageView) itemView.findViewById(R.id.stateIcon);
         time = (TextView) itemView.findViewById(R.id.time);
-        time.setTextColor(ActorSDK.sharedActor().style.getConvTimeColor());
         duration = (TextView) itemView.findViewById(R.id.duration);
-        duration.setTextColor(ActorSDK.sharedActor().style.getConvTimeColor());
         seekBar = (SeekBar) itemView.findViewById(R.id.audioSlide);
         progressView = (CircularView) itemView.findViewById(R.id.progressView);
         progressView.setColor(context.getResources().getColor(R.color.primary));
@@ -237,6 +233,9 @@ public class AudioHolder extends MessageHolder {
             messageBubble.setBackgroundResource(R.drawable.conv_bubble_media_in);
             messageBubble.getBackground().setColorFilter(null);
         }
+
+        time.setTextColor(ActorSDK.sharedActor().style.getConvTimeColor(message.getSenderId()));
+        duration.setTextColor(ActorSDK.sharedActor().style.getConvTimeColor(message.getSenderId()));
 
         // Update state
         if (message.getSenderId() == myUid()) {
