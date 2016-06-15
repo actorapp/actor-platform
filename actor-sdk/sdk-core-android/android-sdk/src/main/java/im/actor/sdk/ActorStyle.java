@@ -740,7 +740,6 @@ public class ActorStyle {
 
     // Different colors for incoming and outgoing messages
     // Text color
-
     private int convTextInColor = 0;
     private int convTextOutColor = 0;
 
