@@ -12,7 +12,7 @@ public enum ImagePickerMediaType {
 }
 
 public protocol AAThumbnailViewDelegate {
-    func thumbnailSelectedUpdated(selectedAssets: [PHAsset])
+    func thumbnailSelectedUpdated(selectedAssets: [(PHAsset,Bool)])
 }
 
 public class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDataSource {
@@ -22,8 +22,8 @@ public class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionView
     private var collectionView:UICollectionView!
     private let mediaType: ImagePickerMediaType = ImagePickerMediaType.Image
     
-    private var assets = [PHAsset]()
-    private var selectedAssets = [PHAsset]()
+    private var assets = [(PHAsset,Bool)]()
+    private var selectedAssets = [(PHAsset, Bool)]()
     private var imageManager : PHCachingImageManager!
     
     private let minimumPreviewHeight: CGFloat = 90
@@ -82,7 +82,7 @@ public class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionView
     }
     
     private func fetchAssets() {
-        self.assets = [PHAsset]()
+        self.assets = [(PHAsset,Bool)]()
         
         let options = PHFetchOptions()
         options.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
@@ -96,8 +96,8 @@ public class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionView
 //            options.predicate = NSPredicate(format: "mediaType = %d OR mediaType = %d", PHAssetMediaType.Image.rawValue, PHAssetMediaType.Video.rawValue)
 //        }
         
-        options.predicate = NSPredicate(format: "mediaType = %d", PHAssetMediaType.Image.rawValue)
-        
+          options.predicate = NSPredicate(format: "mediaType = %d", PHAssetMediaType.Image.rawValue)
+       
         let fetchLimit = 100
         if #available(iOS 9, *) {
             options.fetchLimit = fetchLimit
@@ -105,27 +105,29 @@ public class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionView
         
         let result = PHAsset.fetchAssetsWithOptions(options)
         let requestOptions = PHImageRequestOptions()
-        requestOptions.synchronous = false
+        requestOptions.synchronous = true
         requestOptions.deliveryMode = .FastFormat
         
         result.enumerateObjectsUsingBlock { asset, _, stop in
-            //defer {
-                if self.assets.count > fetchLimit {
-                    stop.initialize(true)
-                }
-            //}
+            
+            if self.assets.count > fetchLimit {
+                stop.initialize(true)
+            }
             
             if let asset = asset as? PHAsset {
-                self.assets.append(asset)
+                var isGIF = false
                 self.imageManager.requestImageDataForAsset(asset, options: requestOptions) { data, _, _, info in
                     if data != nil {
+                        let gifMarker = info!["PHImageFileURLKey"] as! NSURL
+                        print(gifMarker.pathExtension)
+                        isGIF = (gifMarker.pathExtension == "GIF") ? true : false
+                        print(isGIF)
                         self.prefetchImagesForAsset(asset)
                     }
+                    self.assets.append((asset,isGIF))
                 }
             }
         }
-        
-        
     }
     
     private func prefetchImagesForAsset(asset: PHAsset) {
@@ -180,7 +182,8 @@ public class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionView
         
         cell.bindedThumbView = self
         
-        let photoModel = self.assets[indexPath.row]
+        let photoModel = self.assets[indexPath.row].0
+        let animated = self.assets[indexPath.row].1
         
         cell.bindedPhotoModel = photoModel
         
@@ -196,7 +199,7 @@ public class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionView
         
         cell.backgroundColor = UIColor.whiteColor()
         
-        let asset = assets[indexPath.row]
+        let asset = assets[indexPath.row].0
         
         requestImageForAsset(asset) { image in
             
@@ -209,7 +212,7 @@ public class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionView
             }
             
             cell.imgThumbnails.image = complitedImage
-            
+            cell.animated = animated
             
         }
         
@@ -256,28 +259,33 @@ public class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionView
         return cropped
     }
     
-    public func addSelectedModel(model:PHAsset) {
-        self.selectedAssets.append(model)
+    public func addSelectedModel(model:PHAsset, animated:Bool) {
+        self.selectedAssets.append((model,animated))
         self.delegate?.thumbnailSelectedUpdated(self.selectedAssets)
     }
     
-    public func removeSelectedModel(model:PHAsset) {
-        if let index = self.selectedAssets.indexOf(model) {
-            self.selectedAssets.removeAtIndex(index)
-            self.delegate?.thumbnailSelectedUpdated(self.selectedAssets)
+    public func removeSelectedModel(model:PHAsset,animated:Bool) {
+        for (index, element) in self.selectedAssets.enumerate() {
+            if element.0 == model {
+                self.selectedAssets.removeAtIndex(index)
+            }
         }
+        self.delegate?.thumbnailSelectedUpdated(self.selectedAssets)
     }
    
-    public func getSelectedAsImages(completion: (images: [UIImage]) -> ()) {
+    public func getSelectedAsImages(completion: (images:[(NSData,Bool)]) -> ()) {
         
         let arrayModelsForSend = self.selectedAssets
         
-        var compliedArray = [UIImage]()
-
+        var compliedArray = [(NSData,Bool)]()
+        var isGif = false
         for (_,model) in arrayModelsForSend.enumerate() {
-            self.imageManager.requestImageDataForAsset(model, options: requestOptions, resultHandler: { (data, _, _, _) -> Void in
+            self.imageManager.requestImageDataForAsset(model.0, options: requestOptions, resultHandler: { (data, _, _, info) -> Void in
                 if data != nil {
-                    compliedArray.append(UIImage(data: data!)!)
+                    let gifMarker = info!["PHImageFileURLKey"] as! NSURL
+                    isGif = (gifMarker.pathExtension == "GIF") ? true : false
+                    print(isGif)
+                    compliedArray.append((data!,isGif))
                     if compliedArray.count == arrayModelsForSend.count {
                         completion(images: compliedArray)
                     }

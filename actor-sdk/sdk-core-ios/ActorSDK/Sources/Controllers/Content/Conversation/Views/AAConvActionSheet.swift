@@ -6,7 +6,8 @@ import UIKit
 import Photos
 
 public protocol AAConvActionSheetDelegate {
-    func actionSheetPickedImages(images: [UIImage])
+    
+    func actionSheetPickedImages(images:[(NSData,Bool)])
     func actionSheetPickCamera()
     func actionSheetPickGallery()
     func actionSheetPickDocument()
@@ -198,7 +199,7 @@ public class AAConvActionSheet: UIView, AAThumbnailViewDelegate {
         self.btnCancel.addTarget(self, action: #selector(AAConvActionSheet.btnCloseAction), forControlEvents: UIControlEvents.TouchUpInside)
     }
     
-    public func thumbnailSelectedUpdated(selectedAssets: [PHAsset]) {
+    public func thumbnailSelectedUpdated(selectedAssets: [(PHAsset,Bool)]) {
         if selectedAssets.count > 0 {
             
             var sendString:String
@@ -216,8 +217,9 @@ public class AAConvActionSheet: UIView, AAThumbnailViewDelegate {
             //
             // add new target
             //
+    
             self.btnCamera.setTitle(sendString, forState: UIControlState.Normal)
-            self.btnCamera.addTarget(self, action: #selector(AAConvActionSheet.sendPhotos), forControlEvents: UIControlEvents.TouchUpInside)
+            self.btnCamera.addTarget(self, action:#selector(AAConvActionSheet.sendPhotos), forControlEvents: UIControlEvents.TouchUpInside)
             self.btnCamera.titleLabel?.font = UIFont(name: "HelveticaNeue-Medium", size: 17)
             
             
@@ -243,12 +245,12 @@ public class AAConvActionSheet: UIView, AAThumbnailViewDelegate {
     //
     
     func sendPhotos() {
-        self.thumbnailView.getSelectedAsImages { (images) -> () in
+        self.thumbnailView.getSelectedAsImages { (images:[(NSData,Bool)]) -> () in
             self.delegate?.actionSheetPickedImages(images)
         }
         dismiss()
     }
-
+    
     func btnCameraAction() {
         delegate?.actionSheetPickCamera()
         dismiss()
