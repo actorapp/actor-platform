@@ -5,6 +5,7 @@
 import Foundation
 import VBFPopFlatButton
 import YYImage
+import YYWebImage
 import YYCategories
 
 public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate {
@@ -184,24 +185,11 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
             
             let preloadedThumb:YYImage = YYImage(data: bindedLayout.fastThumb!)!
             
-            let loadedThumb:UIImage!
-            if (preloadedThumb.animatedImageType == YYImageType.GIF) {
-                loadedThumb = preloadedThumb.roundCorners(bindedLayout.screenSize.width,
-                                                          h: bindedLayout.screenSize.height,
-                                                          roundSize: 14)
-               
-            } else if (preloadedThumb.animatedImageType == YYImageType.WebP) {
-                loadedThumb = preloadedThumb.roundCorners(bindedLayout.screenSize.width,
-                                    h: bindedLayout.screenSize.height,
-                                    roundSize: 14)
-            } else {
-                loadedThumb = preloadedThumb.imageByBlurLight()!.roundCorners(bindedLayout.screenSize.width,
-                    h: bindedLayout.screenSize.height,
-                    roundSize: 14)
-            }
+            let loadedThumb = preloadedThumb.imageByBlurLight()!
+                .roundCorners(bindedLayout.screenSize.width, h: bindedLayout.screenSize.height, roundSize: 14)
             
             runOnUiThread(selfGeneration,closure: { ()->() in
-                self.setPreviewImage(loadedThumb!, fast: true)
+                self.setPreviewImage(loadedThumb, fast: true)
             });
         }
     }
@@ -215,11 +203,9 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
         var loadedContent : UIImage!
         if bindedMessage!.content is ACAnimationContent {
             loadedContent = YYImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))
-
-        } else if CocoaFiles.pathFromDescriptor(reference).pathExtension! == "webp" {
-            loadedContent = YYImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))
         } else {
-            loadedContent = YYImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))?.roundCorners(self.bindedLayout.screenSize.width, h: self.bindedLayout.screenSize.height, roundSize: 14)
+            loadedContent = YYImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))?
+                .roundCorners(self.bindedLayout.screenSize.width, h: self.bindedLayout.screenSize.height, roundSize: 14)
         }
         if (loadedContent == nil) {
             return
@@ -232,7 +218,7 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
     
     public func setPreviewImage(img: UIImage, fast: Bool){
         if ((fast && self.preview.image == nil) || !fast) {
-            self.preview.image = img;
+            self.preview.image = img
             self.preview.showView()
         }
     }
