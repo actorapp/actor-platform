@@ -6,14 +6,10 @@ import UIKit
 import Photos
 
 public protocol AAConvActionSheetDelegate {
-    
     func actionSheetPickedImages(images:[(NSData,Bool)])
     func actionSheetPickCamera()
     func actionSheetPickGallery()
-    func actionSheetPickDocument()
-    func actionSheetPickLocation()
-    func actionSheetPickContact()
-    func actionSheetUnblockContact()
+    func actionSheetCustomButton(index: Int)
 }
 
 public class AAConvActionSheet: UIView, AAThumbnailViewDelegate {
@@ -22,16 +18,18 @@ public class AAConvActionSheet: UIView, AAThumbnailViewDelegate {
     
     private let sheetView = UIView()
     private let backgroundView = UIView()
+    private var sheetViewHeight: CGFloat = 0
     
     private var thumbnailView: AAThumbnailView!
-    private var btnCamera = UIButton(type: UIButtonType.System)
-    private var btnLibrary = UIButton(type: UIButtonType.System)
-    private var btnDocuments = UIButton(type: UIButtonType.System)
-    private var btnLocation = UIButton(type: UIButtonType.System)
-    private var btnContact = UIButton(type: UIButtonType.System)
-    private var btnCancel = UIButton(type: UIButtonType.System)
+    private var buttons = [UIButton]()
+    private var btnCamera: UIButton!
+    private var btnLibrary: UIButton!
+    private var btnCancel: UIButton!
     
     private weak var presentedInController: UIViewController! = nil
+    
+    public var enablePhotoPicker: Bool = true
+    private var customActions = [String]()
     
     public init() {
         super.init(frame: CGRectZero)
@@ -41,6 +39,10 @@ public class AAConvActionSheet: UIView, AAThumbnailViewDelegate {
     
     public required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func addCustomButton(title: String){
+        customActions.append(title)
     }
     
     public func presentInController(controller: UIViewController) {
@@ -62,12 +64,12 @@ public class AAConvActionSheet: UIView, AAThumbnailViewDelegate {
         
         setupAllViews()
         
-        self.sheetView.frame = CGRectMake(0, self.frame.height, self.frame.width, 400)
+        self.sheetView.frame = CGRectMake(0, self.frame.height, self.frame.width, sheetViewHeight)
         self.backgroundView.alpha = 0
         dispatchOnUi { () -> Void in
             UIView.animateWithDuration(0.4, delay: 0.0, usingSpringWithDamping: 0.7,
                 initialSpringVelocity: 0.6, options: .CurveEaseInOut, animations: {
-                    self.sheetView.frame = CGRectMake(0, self.frame.height - 400, self.frame.width, 400)
+                    self.sheetView.frame = CGRectMake(0, self.frame.height - self.sheetViewHeight, self.frame.width, self.sheetViewHeight)
                     self.backgroundView.alpha = 1
                 }, completion: nil)
         }
@@ -87,8 +89,10 @@ public class AAConvActionSheet: UIView, AAThumbnailViewDelegate {
             self.sheetView.frame = nextFrame
             self.backgroundView.alpha = 0}) { (bool) -> Void in
                 self.delegate = nil
-                self.thumbnailView.dismiss()
-                self.thumbnailView = nil
+                if self.thumbnailView != nil {
+                    self.thumbnailView.dismiss()
+                    self.thumbnailView = nil
+                }
                 self.removeFromSuperview()
         }
     }
@@ -96,7 +100,9 @@ public class AAConvActionSheet: UIView, AAThumbnailViewDelegate {
     private func setupAllViews() {
         
         
-        // sheet view
+        //
+        // Root Views
+        //
         
         let superWidth = presentedInController.view.width
         let superHeight = presentedInController.view.height
@@ -106,97 +112,105 @@ public class AAConvActionSheet: UIView, AAThumbnailViewDelegate {
         self.backgroundView.alpha = 0
         self.addSubview(self.backgroundView)
         
-        self.sheetView.frame = CGRectMake(0, superHeight - 400, superWidth, 400)
+        
+        //
+        // Init Action Views
+        //
+        
+        self.sheetViewHeight = 10
+        
+        self.buttons.removeAll()
+        
+        if enablePhotoPicker {
+            
+            self.thumbnailView = AAThumbnailView(frame: CGRectMake(0, 5, superWidth, 90))
+            self.thumbnailView.delegate = self
+            self.thumbnailView.open()
+            
+            self.btnCamera = {
+                let button = UIButton(type: UIButtonType.System)
+                button.tintColor = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
+                button.titleLabel?.font = UIFont.systemFontOfSize(17)
+                button.setTitle(AALocalized("PhotoCamera"), forState: UIControlState.Normal)
+                button.addTarget(self, action: #selector(AAConvActionSheet.btnCameraAction), forControlEvents: UIControlEvents.TouchUpInside)
+                return button
+            }()
+            self.buttons.append(self.btnCamera)
+            
+            self.btnLibrary = {
+                let button = UIButton(type: UIButtonType.System)
+                button.tintColor = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
+                button.titleLabel?.font = UIFont.systemFontOfSize(17)
+                button.setTitle(AALocalized("PhotoLibrary"), forState: UIControlState.Normal)
+                button.addTarget(self, action: #selector(AAConvActionSheet.btnLibraryAction), forControlEvents: UIControlEvents.TouchUpInside)
+                return button
+            }()
+            self.buttons.append(self.btnLibrary)
+            
+            sheetViewHeight = 100
+        }
+        
+        for i in 0..<customActions.count {
+            let b = customActions[i]
+            self.buttons.append({
+                let button = UIButton(type: UIButtonType.System)
+                button.tintColor = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
+                button.titleLabel?.font = UIFont.systemFontOfSize(17)
+                button.setTitle(AALocalized(b), forState: UIControlState.Normal)
+                button.tag = i
+                button.addTarget(self, action: #selector(AAConvActionSheet.btnCustomAction(_:)), forControlEvents: UIControlEvents.TouchUpInside)
+                return button
+            }())
+        }
+        
+        self.btnCancel = {
+            let button = UIButton(type: UIButtonType.System)
+            button.tintColor = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
+            button.titleLabel?.font = UIFont.systemFontOfSize(17)
+            button.setTitle(AALocalized("AlertCancel"), forState: UIControlState.Normal)
+            button.addTarget(self, action: #selector(AAConvActionSheet.btnCloseAction), forControlEvents: UIControlEvents.TouchUpInside)
+            return button
+        }()
+        self.buttons.append(self.btnCancel)
+        
+        sheetViewHeight += CGFloat(self.buttons.count * 50)
+        
+        
+        //
+        // Adding Elements
+        //
+        
+        for b in self.buttons {
+            self.sheetView.addSubview(b)
+        }
+        if self.thumbnailView != nil {
+            self.sheetView.addSubview(self.thumbnailView)
+        }
+        
+        
+        //
+        // Layouting
+        //
+        
+        self.sheetView.frame = CGRectMake(0, superHeight - sheetViewHeight, superWidth, sheetViewHeight)
         self.sheetView.backgroundColor = UIColor.whiteColor()
         self.addSubview(self.sheetView)
         
-        self.thumbnailView = AAThumbnailView(frame: CGRectMake(0, 5, superWidth, 90))
-        self.thumbnailView.delegate = self
-        self.thumbnailView.open()
-        self.btnCamera      = UIButton(type: UIButtonType.System)
-        self.btnLibrary     = UIButton(type: UIButtonType.System)
-        self.btnDocuments   = UIButton(type: UIButtonType.System)
-        self.btnLocation    = UIButton(type: UIButtonType.System)
-        self.btnContact     = UIButton(type: UIButtonType.System)
-        self.btnCancel      = UIButton(type: UIButtonType.System)
-        
-        // color
-        
-        self.btnCamera.tintColor        = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
-        self.btnLibrary.tintColor       = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
-        self.btnDocuments.tintColor     = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
-        self.btnLocation.tintColor      = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
-        self.btnContact.tintColor       = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
-        self.btnCancel.tintColor        = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
-        
-        // font size
-        
-        self.btnCamera.titleLabel?.font         = UIFont.systemFontOfSize(17)
-        self.btnLibrary.titleLabel?.font        = UIFont.systemFontOfSize(17)
-        self.btnDocuments.titleLabel?.font      = UIFont.systemFontOfSize(17)
-        self.btnLocation.titleLabel?.font       = UIFont.systemFontOfSize(17)
-        self.btnContact.titleLabel?.font        = UIFont.systemFontOfSize(17)
-        self.btnCancel.titleLabel?.font         = UIFont.systemFontOfSize(17)
-        
-        // add buttons as subivews
-        
-        self.sheetView.addSubview(self.btnCamera)
-        self.sheetView.addSubview(self.btnLibrary)
-        self.sheetView.addSubview(self.btnDocuments)
-        self.sheetView.addSubview(self.btnLocation)
-        self.sheetView.addSubview(self.btnContact)
-        self.sheetView.addSubview(self.btnCancel)
-        self.sheetView.addSubview(self.thumbnailView)
-        
-        self.thumbnailView.frame    = CGRectMake(0, 5, superWidth, 90)
-        self.btnCamera.frame        = CGRectMake(0, 100, superWidth, 50)
-        self.btnLibrary.frame       = CGRectMake(0, 150, superWidth, 50)
-        self.btnDocuments.frame     = CGRectMake(0, 200, superWidth, 50)
-        self.btnLocation.frame      = CGRectMake(0, 250, superWidth, 50)
-        self.btnContact.frame       = CGRectMake(0, 300, superWidth, 50)
-        self.btnCancel.frame        = CGRectMake(0, 350, superWidth, 50)
-        
-        // separators
-        
-        let spearator1 = UIView(frame: CGRectMake(0, 99, superWidth, 1))
-        spearator1.backgroundColor = UIColor(red: 223.9/255.0, green: 223.9/255.0, blue: 223.9/255.0, alpha: 0.6)
-        let spearator2 = UIView(frame: CGRectMake(10, 149, superWidth - 20, 1))
-        spearator2.backgroundColor = UIColor(red: 230.0/255.0, green: 230.0/255.0, blue: 230.0/255.0, alpha: 0.6)
-        let spearator3 = UIView(frame: CGRectMake(10, 199, superWidth - 20, 1))
-        spearator3.backgroundColor = UIColor(red: 230.0/255.0, green: 230.0/255.0, blue: 230.0/255.0, alpha: 0.6)
-        let spearator4 = UIView(frame: CGRectMake(10, 249, superWidth - 20, 1))
-        spearator4.backgroundColor = UIColor(red: 230.0/255.0, green: 230.0/255.0, blue: 230.0/255.0, alpha: 0.6)
-        let spearator5 = UIView(frame: CGRectMake(10, 299, superWidth - 20, 1))
-        spearator5.backgroundColor = UIColor(red: 230.0/255.0, green: 230.0/255.0, blue: 230.0/255.0, alpha: 0.6)
-        let spearator6 = UIView(frame: CGRectMake(10, 349, superWidth - 20, 1))
-        spearator6.backgroundColor = UIColor(red: 230.0/255.0, green: 230.0/255.0, blue: 230.0/255.0, alpha: 0.6)
-        
-        // add separatos as subview
-        
-        self.sheetView.addSubview(spearator1)
-        self.sheetView.addSubview(spearator2)
-        self.sheetView.addSubview(spearator3)
-        self.sheetView.addSubview(spearator4)
-        self.sheetView.addSubview(spearator5)
-        self.sheetView.addSubview(spearator6)
-        
-        // set title for buttons
-        
-        self.btnCamera.setTitle(AALocalized("PhotoCamera"), forState: UIControlState.Normal)
-        self.btnLibrary.setTitle(AALocalized("PhotoLibrary"), forState: UIControlState.Normal)
-        self.btnDocuments.setTitle(AALocalized("SendDocument"), forState: UIControlState.Normal)
-        self.btnLocation.setTitle(AALocalized("ShareLocation"), forState: UIControlState.Normal)
-        self.btnContact.setTitle(AALocalized("ShareContact"), forState: UIControlState.Normal)
-        self.btnCancel.setTitle(AALocalized("AlertCancel"), forState: UIControlState.Normal)
-        
-        // add actins
-        
-        self.btnCamera.addTarget(self, action: #selector(AAConvActionSheet.btnCameraAction), forControlEvents: UIControlEvents.TouchUpInside)
-        self.btnLibrary.addTarget(self, action: #selector(AAConvActionSheet.btnLibraryAction), forControlEvents: UIControlEvents.TouchUpInside)
-        self.btnDocuments.addTarget(self, action: #selector(AAConvActionSheet.btnDocumentAction), forControlEvents: UIControlEvents.TouchUpInside)
-        self.btnLocation.addTarget(self, action: #selector(AAConvActionSheet.btnLocationAction), forControlEvents: UIControlEvents.TouchUpInside)
-        self.btnContact.addTarget(self, action: #selector(AAConvActionSheet.btnContactAction), forControlEvents: UIControlEvents.TouchUpInside)
-        self.btnCancel.addTarget(self, action: #selector(AAConvActionSheet.btnCloseAction), forControlEvents: UIControlEvents.TouchUpInside)
+        var topOffset: CGFloat = 10
+        if self.thumbnailView != nil {
+            self.thumbnailView.frame = CGRectMake(0, 5, superWidth, 90)
+            topOffset += 90
+        }
+        for b in self.buttons {
+            
+            b.frame = CGRectMake(0, topOffset, superWidth, 50)
+            
+            let spearator = UIView(frame: CGRectMake(0, topOffset - 1, superWidth, 1))
+            spearator.backgroundColor = UIColor(red: 223.9/255.0, green: 223.9/255.0, blue: 223.9/255.0, alpha: 0.6)
+            self.sheetView.addSubview(spearator)
+            
+            topOffset += 50
+        }
     }
     
     public func thumbnailSelectedUpdated(selectedAssets: [(PHAsset,Bool)]) {
@@ -245,8 +259,10 @@ public class AAConvActionSheet: UIView, AAThumbnailViewDelegate {
     //
     
     func sendPhotos() {
-        self.thumbnailView.getSelectedAsImages { (images:[(NSData,Bool)]) -> () in
-            self.delegate?.actionSheetPickedImages(images)
+        if self.thumbnailView != nil {
+            self.thumbnailView.getSelectedAsImages { (images:[(NSData,Bool)]) -> () in
+                self.delegate?.actionSheetPickedImages(images)
+            }
         }
         dismiss()
     }
@@ -261,18 +277,8 @@ public class AAConvActionSheet: UIView, AAThumbnailViewDelegate {
         dismiss()
     }
     
-    func btnDocumentAction() {
-        delegate?.actionSheetPickDocument()
-        dismiss()
-    }
-    
-    func btnLocationAction() {
-        delegate?.actionSheetPickLocation()
-        dismiss()
-    }
-    
-    func btnContactAction() {
-        delegate?.actionSheetPickContact()
+    func btnCustomAction(sender: UIButton) {
+        delegate?.actionSheetCustomButton(sender.tag)
         dismiss()
     }
     
