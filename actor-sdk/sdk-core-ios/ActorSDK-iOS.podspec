@@ -29,6 +29,7 @@ Pod::Spec.new do |s|
   s.dependency 'YYImage'
   s.dependency 'YYImage/WebP'
   s.dependency 'YYCategories'
+  s.dependency 'YYWebImage'
   s.dependency 'DZNWebViewController'
 
   s.dependency 'TTTAttributedLabel'
