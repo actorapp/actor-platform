@@ -45,7 +45,11 @@ object ActorConfig {
         |  }
         |}
         |
-        |akka-persistence-jdbc {
+        |jdbc-journal {
+        |  slick {
+        |    driver: "slick.driver.PostgresDriver$$"
+        |    jndiDbName: "DefaultDatabase"
+        |  }
         |  tables {
         |    journal {
         |      tableName = "persistence_journal"
@@ -53,6 +57,15 @@ object ActorConfig {
         |    deletedTo {
         |      tableName = "persistence_deleted_to"
         |    }
+        |  }
+        |}
+        |
+        |jdbc-snapshot-store {
+        |  slick {
+        |    driver: "slick.driver.PostgresDriver$$"
+        |    jndiDbName: "DefaultDatabase"
+        |  }
+        |  tables {
         |    snapshot {
         |      tableName = "persistence_snapshot"
         |    }
