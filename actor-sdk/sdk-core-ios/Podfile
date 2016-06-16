@@ -19,7 +19,8 @@ target 'ActorApp' do
     pod 'TTTAttributedLabel'
     pod 'RSKImageCropper'
     pod 'JDStatusBarNotification'
-    pod 'YYImage', '0.9.3'
+    pod 'YYImage'
+    pod 'YYImage/WebP'
     pod 'YYCategories'
     pod 'DZNWebViewController'
 
@@ -50,7 +51,8 @@ target 'ActorSDK' do
     pod 'TTTAttributedLabel'
     pod 'RSKImageCropper'
     pod 'JDStatusBarNotification'
-    pod 'YYImage', '0.9.3'
+    pod 'YYImage'
+    pod 'YYImage/WebP'
     pod 'YYCategories'
     pod 'DZNWebViewController'
 
