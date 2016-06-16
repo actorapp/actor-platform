@@ -289,24 +289,12 @@ public class RouterActor extends ModuleActor {
                             hasCurrentMention = true;
                         }
                     }
-                    int messagesCount = 0;
-                    int dialogsCount = 0;
-                    for (Peer activePeer : activeDialogStorage.getAllPeers()) {
-                        int activeDialogueUnreadCount = conversationStates.getValue(activePeer.getUnuqueId()).getUnreadCount();
-                        if (activeDialogueUnreadCount > 0) {
-                            dialogsCount++;
-                            messagesCount += activeDialogueUnreadCount;
-                        }
-                    }
-
                     context().getNotificationsModule().onInMessage(
                             peer,
                             m.getSenderId(),
                             m.getSortDate(),
                             ContentDescription.fromContent(m.getContent()),
-                            hasCurrentMention,
-                            messagesCount,
-                            dialogsCount);
+                            hasCurrentMention);
                 }
             }
         }

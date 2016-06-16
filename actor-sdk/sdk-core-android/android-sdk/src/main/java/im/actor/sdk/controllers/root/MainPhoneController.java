@@ -46,7 +46,6 @@ import im.actor.sdk.controllers.contacts.ContactsFragment;
 import im.actor.sdk.controllers.dialogs.DialogsFragment;
 import im.actor.sdk.controllers.fragment.help.HelpActivity;
 import im.actor.sdk.controllers.fragment.main.SearchAdapter;
-import im.actor.sdk.discover.DiscoverActivity;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.util.Fonts;
 import im.actor.sdk.view.adapters.FragmentNoMenuStatePagerAdapter;
@@ -545,9 +544,6 @@ public class MainPhoneController extends MainBaseController {
             return true;
         } else if (i == R.id.contacts) {
             startActivity(new Intent(getActivity(), ContactsActivity.class));
-            return true;
-        } else if (i == R.id.discover) {
-            startActivity(new Intent(getActivity(), DiscoverActivity.class));
             return true;
         }
 
