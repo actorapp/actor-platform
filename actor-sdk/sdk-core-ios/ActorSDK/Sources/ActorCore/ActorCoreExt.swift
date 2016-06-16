@@ -148,8 +148,8 @@ public extension IOSObjectArray {
     }
 }
 
-extension NSData {
-    func toJavaBytes() -> IOSByteArray {
+public extension NSData {
+    public func toJavaBytes() -> IOSByteArray {
         return IOSByteArray(bytes: UnsafePointer<jbyte>(self.bytes), count: UInt(self.length))
     }
 }
