@@ -106,7 +106,7 @@ object ImageUtils {
     val fsAdapter = FileStorageExtension(system).fsAdapter
     FileRepo.find(fullFileId) flatMap {
       case Some(fullFileModel) ⇒
-        fsAdapter.downloadFile(fullFileId) flatMap {
+        DBIO.from(fsAdapter.downloadAsArray(fullFileId)) flatMap {
           case Some(fullFileData) ⇒
             val action = for {
               fullAimg ← Future.fromTry(Try(Image(fullFileData).toPar))

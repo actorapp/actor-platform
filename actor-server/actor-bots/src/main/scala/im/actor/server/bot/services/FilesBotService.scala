@@ -40,7 +40,7 @@ private[bot] final class FilesBotService(_system: ActorSystem) extends BotServic
           f ← fromFutureOption(LocationInvalid)(db.run(FileRepo.find(location.fileId)))
           _ ← fromBoolean(Forbidden)(location.accessHash == ACLUtils.fileAccessHash(f.id, f.accessSalt))
           _ ← fromBoolean(FileTooBig)(f.size <= MaxSize)
-          data ← fromFutureOption(DownloadFailed)(fsAdapter.downloadFileF(f.id))
+          data ← fromFutureOption(DownloadFailed)(fsAdapter.downloadAsArray(f.id))
         } yield ResponseDownloadFile(data)).value
       }
   }

@@ -3,7 +3,7 @@ package im.actor.server.file.s3
 import java.io.ByteArrayInputStream
 
 import akka.actor._
-import akka.stream.scaladsl.FileIO
+import akka.stream.scaladsl.{ FileIO, Source }
 import akka.stream.{ ActorMaterializer, Materializer }
 import akka.util.ByteString
 import com.amazonaws.HttpMethod
@@ -53,7 +53,7 @@ final class S3StorageAdapter(_system: ActorSystem) extends FileStorageAdapter {
   override def uploadFileF(name: UnsafeFileName, data: Array[Byte]): Future[FileLocation] =
     db.run(uploadFile(name, data))
 
-  override def downloadFile(id: Long): DBIO[Option[Array[Byte]]] = {
+  override def downloadFile(id: Long): DBIO[Option[Source[ByteString, Any]]] = {
     FileRepo.find(id) flatMap {
       case Some(file) ⇒
         downloadFile(bucketName, file.id, file.name) map (Some(_))
@@ -61,7 +61,7 @@ final class S3StorageAdapter(_system: ActorSystem) extends FileStorageAdapter {
     }
   }
 
-  override def downloadFileF(id: Long): Future[Option[Array[Byte]]] =
+  override def downloadFileF(id: Long): Future[Option[Source[ByteString, Any]]] =
     db.run(downloadFile(id))
 
   override def getFileDownloadUrl(file: FileModel, accessHash: Long): Future[Option[String]] = {
@@ -84,8 +84,8 @@ final class S3StorageAdapter(_system: ActorSystem) extends FileStorageAdapter {
       dirFile ← DBIO.from(FileUtils.createTempDir())
       path = dirFile.toPath.resolve("file")
       _ ← DBIO.from(FutureTransfer.listenFor(transferManager.download(bucketName, s3Key(id, name), path.toFile)) map (_.waitForCompletion()))
-      data ← DBIO.from(FileIO.fromPath(path).runFold(ByteString.empty)(_ ++ _))
-    } yield data.toArray
+      data = FileIO.fromPath(path)
+    } yield data
   }
 
   private def uploadFile(bucketName: String, name: UnsafeFileName, data: Array[Byte]): DBIO[FileLocation] = {

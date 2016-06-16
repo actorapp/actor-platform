@@ -4,15 +4,17 @@ import java.time.{ Duration, Instant }
 
 import akka.actor.ActorSystem
 import akka.event.Logging
-import akka.http.scaladsl.model.{ HttpResponse, StatusCodes }
+import akka.http.scaladsl.settings.RoutingSettings
+import akka.http.scaladsl.marshalling.ToResponseMarshallable
 import akka.http.scaladsl.model.StatusCodes.OK
+import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.ContentDispositionTypes.attachment
 import akka.http.scaladsl.model.headers.`Content-Disposition`
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server._
 import akka.stream.ActorMaterializer
-import im.actor.server.api.http.HttpHandler
 import im.actor.server.api.http.HttpApiHelpers._
+import im.actor.server.api.http.{ HttpApiHelpers, HttpHandler }
 import im.actor.server.file.local.{ FileStorageOperations, LocalFileStorageConfig, RequestSigning }
 import im.actor.util.log.AnyRefLogSource
 
@@ -68,7 +70,17 @@ private[local] final class FilesHttpHandler(storageConfig: LocalFileStorageConfi
                     respondWithDefaultHeader(
                       `Content-Disposition`(attachment, Map("filename" -> file.name))
                     ) {
-                      getFromFile(file.toJava)
+                      withRangeSupport {
+                        complete {
+                          getFileData(fileId).map[ToResponseMarshallable] {
+                            case Some(source) ⇒ HttpEntity.Default(
+                              contentType = ContentTypes.NoContentType,
+                              contentLength = file.size,
+                              data = source)
+                            case None ⇒ HttpResponse(404)
+                          }
+                        }
+                      }
                     }
                   case Success(None) =>
                     complete(HttpResponse(StatusCodes.NotFound))
