@@ -3,7 +3,6 @@ package im.actor.core.modules.messaging.router.entity;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import im.actor.core.entity.Peer;
 import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
@@ -49,14 +48,6 @@ public class ActiveDialogStorage extends BserObject {
 
     public ArrayList<ActiveDialogGroup> getGroups() {
         return groups;
-    }
-
-    public ArrayList<Peer> getAllPeers() {
-        ArrayList<Peer> peers = new ArrayList<>();
-        for (ActiveDialogGroup group : groups) {
-            peers.addAll(group.getPeers());
-        }
-        return peers;
     }
 
     @Override
