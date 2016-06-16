@@ -297,6 +297,8 @@
             android:showOnLockScreen="true"
             android:theme="@style/CallTheme" />
 
+        <activity android:name=".discover.DiscoverActivity" />
+
         <service
             android:name="im.actor.sdk.services.KeepAliveService"
             android:enabled="true"
