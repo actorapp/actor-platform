@@ -41,7 +41,7 @@ public class AAConvActionSheet: UIView, AAThumbnailViewDelegate {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func addCustomButton(title: String){
+    public func addCustomButton(title: String){
         customActions.append(title)
     }
     
