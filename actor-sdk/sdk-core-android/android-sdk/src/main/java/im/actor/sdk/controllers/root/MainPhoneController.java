@@ -546,7 +546,6 @@ public class MainPhoneController extends MainBaseController {
             startActivity(new Intent(getActivity(), ContactsActivity.class));
             return true;
         }
-
         return false;
     }
 
