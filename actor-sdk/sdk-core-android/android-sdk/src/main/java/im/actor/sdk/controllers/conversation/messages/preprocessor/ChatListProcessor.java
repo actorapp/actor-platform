@@ -115,15 +115,17 @@ public class ChatListProcessor implements ListProcessor<Message> {
                 SpannableStringBuilder builder = new SpannableStringBuilder();
                 SpannableString s;
                 boolean hasMyReaction = false;
+                int cUid = 0;
                 for (Reaction r : msg.getReactions()) {
                     s = new SpannableString(Integer.toString(r.getUids().size()).concat(r.getCode()).concat("  "));
                     for (Integer uid : r.getUids()) {
+                        cUid = uid;
                         if (uid == myUid()) {
                             hasMyReaction = true;
                             break;
                         }
                     }
-                    s.setSpan(new ReactionSpan(r.getCode(), hasMyReaction, peer, msg.getRid(), isImage ? Color.WHITE : ActorSDK.sharedActor().style.getConvTimeColor()), 0, s.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    s.setSpan(new ReactionSpan(r.getCode(), hasMyReaction, peer, msg.getRid(), isImage ? Color.WHITE : ActorSDK.sharedActor().style.getConvTimeColor(cUid)), 0, s.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     reactions = builder.append(s);
 
                 }

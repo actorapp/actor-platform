@@ -39,13 +39,10 @@ public class TextHolder extends MessageHolder {
         mainContainer = (ViewGroup) itemView.findViewById(R.id.mainContainer);
         messageBubble = (FrameLayout) itemView.findViewById(R.id.fl_bubble);
         text = (TextView) itemView.findViewById(R.id.tv_text);
-        text.setTextColor(ActorSDK.sharedActor().style.getConvTextColor());
         text.setTypeface(Fonts.regular());
 
         time = (TextView) itemView.findViewById(R.id.tv_time);
-        ActorSDK.sharedActor().style.getConvTimeColor();
         time.setTypeface(Fonts.regular());
-        time.setTextColor(ActorSDK.sharedActor().style.getConvTimeColor());
         status = (TintImageView) itemView.findViewById(R.id.stateIcon);
 
         waitColor = ActorSDK.sharedActor().style.getConvStatePendingColor();
@@ -71,11 +68,9 @@ public class TextHolder extends MessageHolder {
     }
 
     public void bindRawText(CharSequence rawText, long readDate, long receiveDate, Spannable reactions, Message message, boolean isItalic) {
-        if (message.getSenderId() == myUid()) {
-            messageBubble.setBackgroundResource(R.drawable.bubble_text_out);
-        } else {
-            messageBubble.setBackgroundResource(R.drawable.bubble_text_in);
-        }
+        messageBubble.setBackgroundResource(ActorSDK.sharedActor().style.getDefaultBubble(message.getSenderId()));
+        text.setTextColor(ActorSDK.sharedActor().style.getConvTextColor(message.getSenderId()));
+        time.setTextColor(ActorSDK.sharedActor().style.getConvTimeColor(message.getSenderId()));
 
         if (isItalic) {
             text.setTypeface(Fonts.italic());
