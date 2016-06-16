@@ -7,8 +7,8 @@ import Foundation
 private let documentsFolder = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0].asNS.stringByDeletingLastPathComponent
 
 // Public methods for working with files
-class CocoaFiles {
-    class func pathFromDescriptor(path: String) -> String {
+public class CocoaFiles {
+    public class func pathFromDescriptor(path: String) -> String {
         return documentsFolder + path
     }
 }
