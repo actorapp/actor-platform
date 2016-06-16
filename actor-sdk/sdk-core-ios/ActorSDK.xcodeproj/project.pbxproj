@@ -1882,13 +1882,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 066A50DA1BC4AE63000E606E /* Build configuration list for PBXNativeTarget "ActorSDK" */;
 			buildPhases = (
-				5B00FFD27DD7E01F43B31D13 /* 📦 Check Pods Manifest.lock */,
+				5B00FFD27DD7E01F43B31D13 /* [CP] Check Pods Manifest.lock */,
 				066A52091BC4EA95000E606E /* Build and Install Actor Core */,
 				066A50CD1BC4AE63000E606E /* Sources */,
 				066A50CF1BC4AE63000E606E /* Headers */,
 				066A50CE1BC4AE63000E606E /* Frameworks */,
 				066A50D01BC4AE63000E606E /* Resources */,
-				A2ED258362D73946D3AE7FB4 /* 📦 Copy Pods Resources */,
+				A2ED258362D73946D3AE7FB4 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1984,14 +1984,14 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\ncd ActorSDK/Sources/ActorCore\nmake translate\nmake build -j3\n\ncd \"${CONFIGURATION_TEMP_DIR}/j2objc/\"\npython \"${PROJECT_DIR}/ActorSDK/Sources/ActorCore/convert.py\" \"${PROJECT_DIR}/ActorSDK/Sources/ActorCore/ActorCore.h\"\n\ncp -af \"${PODS_ROOT}/libjingle_peerconnection/libjingle_peerconnection/Headers/\" \"${CONFIGURATION_BUILD_DIR}/ActorSDK.framework/Headers/\"\n\ncp -a \"${CONFIGURATION_TEMP_DIR}/j2objc/Public/\" \"${CONFIGURATION_BUILD_DIR}/ActorSDK.framework/Headers/\"\n\n\ncp -a \"${PROJECT_DIR}/../sdk-core/core/core-shared/src/main/resources/\" \"${CONFIGURATION_BUILD_DIR}/ActorSDK.framework/\"";
 		};
-		5B00FFD27DD7E01F43B31D13 /* 📦 Check Pods Manifest.lock */ = {
+		5B00FFD27DD7E01F43B31D13 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Check Pods Manifest.lock";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1999,14 +1999,14 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		A2ED258362D73946D3AE7FB4 /* 📦 Copy Pods Resources */ = {
+		A2ED258362D73946D3AE7FB4 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Copy Pods Resources";
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -174,14 +174,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 58731A67470ABB64477A86D26A0C38CA /* Build configuration list for PBXNativeTarget "ActorApp" */;
 			buildPhases = (
-				712B269FC35BFB6C85DF769C /* 📦 Check Pods Manifest.lock */,
+				712B269FC35BFB6C85DF769C /* [CP] Check Pods Manifest.lock */,
 				50CB7471D350DF82230B74B5952FA7BD /* Sources */,
 				4533F91FE5E247335BA76B35E6FC28C1 /* Frameworks */,
 				B094A1F03E91E4354C789DE8702D2FB4 /* Resources */,
 				06FC5E741BAB2DCC0071F153 /* Configure Crashlytics */,
 				06230F0D1BC7FF3500A4807B /* Embed Frameworks */,
-				AAA022A9BD9362E00B0F9BDE /* 📦 Embed Pods Frameworks */,
-				EFFD470B63C1BB419D199F19 /* 📦 Copy Pods Resources */,
+				AAA022A9BD9362E00B0F9BDE /* [CP] Embed Pods Frameworks */,
+				EFFD470B63C1BB419D199F19 /* [CP] Copy Pods Resources */,
 				851EE1A34619AE6677649A27 /* Embed Pods Frameworks */,
 			);
 			buildRules = (
@@ -288,14 +288,14 @@
 			shellPath = /bin/sh;
 			shellScript = "# Initialization of Crashlytics\n\n# Getting build secret\nBUILD_SECRET=$FABRIC_BUILD_SECRET\n\n# Getting api key from Info.plist\nAPI_KEY=$(/usr/libexec/PlistBuddy \"${PRODUCT_SETTINGS_PATH}\" -c \"Print :Fabric:APIKey\")\n\nif [ -n \"$BUILD_SECRET\" ]; then\n    if [[ $? -ne 0 ]]; then\n        echo \"Crashlytics not installed, skipping\"\n    else\n        if [ -n \"$API_KEY\" ]; then\n            echo \"Uploading symbols to crashlytics\" \"$API_KEY\" \"$BUILD_SECRET\"\n            \"${PODS_ROOT}/Fabric/Fabric.framework/run\" \"$API_KEY\" \"$BUILD_SECRET\"\n        else\n            echo \"Crashlytics not installed, skipping\"\n        fi\n    fi\nelse\n    echo \"Crashlytics build secret not set, skipping\"\nfi";
 		};
-		712B269FC35BFB6C85DF769C /* 📦 Check Pods Manifest.lock */ = {
+		712B269FC35BFB6C85DF769C /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Check Pods Manifest.lock";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -318,14 +318,14 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		AAA022A9BD9362E00B0F9BDE /* 📦 Embed Pods Frameworks */ = {
+		AAA022A9BD9362E00B0F9BDE /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Embed Pods Frameworks";
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -333,14 +333,14 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		EFFD470B63C1BB419D199F19 /* 📦 Copy Pods Resources */ = {
+		EFFD470B63C1BB419D199F19 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Copy Pods Resources";
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;

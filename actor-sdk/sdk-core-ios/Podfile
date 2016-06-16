@@ -21,6 +21,7 @@ target 'ActorApp' do
     pod 'JDStatusBarNotification'
     pod 'YYImage'
     pod 'YYImage/WebP'
+    pod 'YYWebImage'
     pod 'YYCategories'
     pod 'DZNWebViewController'
 
@@ -53,6 +54,7 @@ target 'ActorSDK' do
     pod 'JDStatusBarNotification'
     pod 'YYImage'
     pod 'YYImage/WebP'
+    pod 'YYWebImage'
     pod 'YYCategories'
     pod 'DZNWebViewController'
 
