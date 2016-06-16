@@ -305,16 +305,15 @@ public class ConversationViewController:
                 }
             })
             
+            
             //
-            //Unblock User
+            // Unblock User
             //
             
-            if(blockStatus){
-                
-                let unblockActionSheet = AAUnblockActionSheet()
-                unblockActionSheet.delegate = self
-                unblockActionSheet.presentInController(self)
-            
+            if(blockStatus) {
+                confirmAlertUser("AlertUnblock", action: "AlertUnblock", tapYes: {
+                    self.executePromise(Actor.unblockUser(Actor.getUserWithUid(self.peer.peerId).getId()))
+                })
             }
         
         } else if (peer.peerType.ordinal() == ACPeerType.GROUP().ordinal()) {
@@ -544,9 +543,14 @@ public class ConversationViewController:
         
         self.rightButton.layoutIfNeeded()
         
-        let actionSheet = AAConvActionSheet()
-        actionSheet.delegate = self
-        actionSheet.presentInController(self)
+        if !ActorSDK.sharedActor().delegate.actorConversationCustomAttachMenu(self) {
+            let actionSheet = AAConvActionSheet()
+            actionSheet.addCustomButton("SendDocument")
+            actionSheet.addCustomButton("ShareLocation")
+            actionSheet.addCustomButton("ShareContact")
+            actionSheet.delegate = self
+            actionSheet.presentInController(self)
+        }
     }
  
     ////////////////////////////////////////////////////////////
@@ -621,6 +625,12 @@ public class ConversationViewController:
     // MARK: - Picker
     ////////////////////////////////////////////////////////////
     
+    public func actionSheetPickedImages(images:[(NSData,Bool)]) {
+        for (i,j) in images {
+            Actor.sendUIImage(i, peer: peer, animated:j)
+        }
+    }
+    
     public func actionSheetPickCamera() {
         pickImage(.Camera)
     }
@@ -629,34 +639,33 @@ public class ConversationViewController:
         pickImage(.PhotoLibrary)
     }
     
-    public func actionSheetPickContact() {
+    public func actionSheetCustomButton(index: Int) {
+        if index == 0 {
+            pickDocument()
+        } else if index == 1 {
+            pickLocation()
+        } else if index == 2 {
+            pickContact()
+        }
+    }
+    
+    public func pickContact() {
         let pickerController = ABPeoplePickerNavigationController()
         pickerController.peoplePickerDelegate = self
         self.presentViewController(pickerController, animated: true, completion: nil)
     }
-    
-    public func actionSheetPickLocation() {
+
+    public func pickLocation() {
         let pickerController = AALocationPickerController()
         pickerController.delegate = self
         self.presentViewController(AANavigationController(rootViewController:pickerController), animated: true, completion: nil)
     }
     
-    public func actionSheetPickedImages(images:[(NSData,Bool)]) {
-        for (i,j) in images {
-            Actor.sendUIImage(i, peer: peer, animated:j)
-        }
-    }
-    
-    
-    public func actionSheetPickDocument() {
+    public func pickDocument() {
         let documentPicker = UIDocumentMenuViewController(documentTypes: UTTAll as! [String], inMode: UIDocumentPickerMode.Import)
         documentPicker.view.backgroundColor = UIColor.clearColor()
         documentPicker.delegate = self
         self.presentViewController(documentPicker, animated: true, completion: nil)
-    }
-    
-    public func actionSheetUnblockContact() {
-        self.executePromise(Actor.unblockUser(Actor.getUserWithUid(peer.peerId).getId()))
     }
     
     ////////////////////////////////////////////////////////////

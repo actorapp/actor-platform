@@ -37,6 +37,9 @@ public protocol ActorSDKDelegate {
     /// Configuration of bubble cells
     func actorConfigureBubbleLayouters(builtIn: [AABubbleLayouter]) -> [AABubbleLayouter]
     
+    /// Conversation custom attach menu
+    func actorConversationCustomAttachMenu(controller: UIViewController) -> Bool
+    
     /// Called after header is created in settings page
     func actorSettingsHeaderDidCreated(controller: AASettingsViewController, section: AAManagedSection)
 
@@ -94,6 +97,10 @@ public class ActorSDKDelegateDefault: NSObject, ActorSDKDelegate {
     
     public func actorControllerAfterLogIn() -> UIViewController? {
         return nil
+    }
+    
+    public func actorConversationCustomAttachMenu(controller: UIViewController) -> Bool {
+        return false
     }
     
     public func actorSettingsHeaderDidCreated(controller: AASettingsViewController, section: AAManagedSection) {
