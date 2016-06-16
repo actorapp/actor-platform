@@ -218,7 +218,7 @@
 		066A532C1BC53406000E606E /* AABubbleTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53261BC53406000E606E /* AABubbleTextCell.swift */; };
 		066A532D1BC53406000E606E /* AABubbleServiceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53271BC53406000E606E /* AABubbleServiceCell.swift */; };
 		066A532E1BC53406000E606E /* AABubbleBaseFileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53281BC53406000E606E /* AABubbleBaseFileCell.swift */; };
-		066A532F1BC53406000E606E /* AABubbleMediaCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53291BC53406000E606E /* AABubbleMediaCell.swift */; };
+		066A532F1BC53406000E606E /* AABubblePhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53291BC53406000E606E /* AABubblePhotoCell.swift */; };
 		066A53301BC53406000E606E /* AABubbleDocumentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A532A1BC53406000E606E /* AABubbleDocumentCell.swift */; };
 		066A53331BC534F5000E606E /* AAFileTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53311BC534F5000E606E /* AAFileTypes.swift */; };
 		066A53371BC537CA000E606E /* ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53361BC537CA000E606E /* ConversationViewController.swift */; };
@@ -591,7 +591,7 @@
 		066A53261BC53406000E606E /* AABubbleTextCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleTextCell.swift; sourceTree = "<group>"; };
 		066A53271BC53406000E606E /* AABubbleServiceCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleServiceCell.swift; sourceTree = "<group>"; };
 		066A53281BC53406000E606E /* AABubbleBaseFileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleBaseFileCell.swift; sourceTree = "<group>"; };
-		066A53291BC53406000E606E /* AABubbleMediaCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleMediaCell.swift; sourceTree = "<group>"; };
+		066A53291BC53406000E606E /* AABubblePhotoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubblePhotoCell.swift; sourceTree = "<group>"; };
 		066A532A1BC53406000E606E /* AABubbleDocumentCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleDocumentCell.swift; sourceTree = "<group>"; };
 		066A53311BC534F5000E606E /* AAFileTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAFileTypes.swift; sourceTree = "<group>"; };
 		066A53361BC537CA000E606E /* ConversationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationViewController.swift; sourceTree = "<group>"; };
@@ -1359,7 +1359,7 @@
 				06E7B2491C0F92140090660C /* AABubbleLocationCell.swift */,
 				066A53281BC53406000E606E /* AABubbleBaseFileCell.swift */,
 				066A532A1BC53406000E606E /* AABubbleDocumentCell.swift */,
-				066A53291BC53406000E606E /* AABubbleMediaCell.swift */,
+				066A53291BC53406000E606E /* AABubblePhotoCell.swift */,
 				BED5A2141C49504B0045FDB0 /* AABubbleVideoCell.swift */,
 			);
 			path = Cell;
@@ -2075,7 +2075,7 @@
 				066A52CC1BC521FA000E606E /* AADialogsListContentController.swift in Sources */,
 				061850E31C95CBF000C522D5 /* YYTextKeyboardManager.m in Sources */,
 				066A52571BC4EF61000E606E /* AACollectionViewController.swift in Sources */,
-				066A532F1BC53406000E606E /* AABubbleMediaCell.swift in Sources */,
+				066A532F1BC53406000E606E /* AABubblePhotoCell.swift in Sources */,
 				15D35F631C20187E00E3717A /* AAModernConversationAudioPlayer.m in Sources */,
 				066A527F1BC51ED0000E606E /* AARootSplitViewController.swift in Sources */,
 				066A52481BC4EED5000E606E /* AAProgressView.swift in Sources */,

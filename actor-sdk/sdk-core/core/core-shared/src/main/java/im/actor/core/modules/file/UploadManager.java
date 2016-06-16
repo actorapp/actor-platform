@@ -5,6 +5,7 @@
 package im.actor.core.modules.file;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import im.actor.core.entity.FileReference;
 import im.actor.core.modules.ModuleContext;
@@ -13,7 +14,6 @@ import im.actor.core.modules.ModuleActor;
 import im.actor.core.util.RandomUtils;
 import im.actor.core.viewmodel.UploadFileCallback;
 import im.actor.runtime.Log;
-import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Props;
 import im.actor.runtime.actors.messages.PoisonPill;
@@ -28,6 +28,7 @@ public class UploadManager extends ModuleActor {
     private final boolean LOG;
 
     private ArrayList<QueueItem> queue = new ArrayList<>();
+    private HashMap<Long, ArrayList<UploadFileCallback>> callbacks = new HashMap<>();
 
     public UploadManager(ModuleContext context) {
         super(context);
@@ -48,7 +49,7 @@ public class UploadManager extends ModuleActor {
 
     public void stopUpload(long rid) {
         if (LOG) {
-            Log.d(TAG, "Stopping download #" + rid);
+            Log.d(TAG, "Stopping upload #" + rid);
         }
         QueueItem queueItem = findItem(rid);
         if (queueItem == null) {
@@ -65,14 +66,20 @@ public class UploadManager extends ModuleActor {
                 queueItem.isStarted = false;
             }
             queue.remove(queueItem);
-            for (final UploadFileCallback callback : queueItem.callbacks) {
-                im.actor.runtime.Runtime.dispatch(() -> callback.onNotUploading());
+            ArrayList<UploadFileCallback> clist = callbacks.get(queueItem.rid);
+            if (clist != null) {
+                for (final UploadFileCallback callback : clist) {
+                    im.actor.runtime.Runtime.dispatch(() -> callback.onNotUploading());
+                }
             }
         }
         checkQueue();
     }
 
     public void bindUpload(long rid, final UploadFileCallback callback) {
+        if (LOG) {
+            Log.d(TAG, "Bind upload #" + rid);
+        }
         QueueItem queueItem = findItem(rid);
         if (queueItem == null) {
             im.actor.runtime.Runtime.dispatch(() -> callback.onNotUploading());
@@ -83,14 +90,20 @@ public class UploadManager extends ModuleActor {
                 final float progress = queueItem.progress;
                 im.actor.runtime.Runtime.dispatch(() -> callback.onUploading(progress));
             }
-            queueItem.callbacks.add(callback);
         }
+
+        ArrayList<UploadFileCallback> clist = callbacks.get(rid);
+        if (clist == null) {
+            clist = new ArrayList<>();
+            callbacks.put(rid, clist);
+        }
+        clist.add(callback);
     }
 
     public void unbindUpload(long rid, UploadFileCallback callback) {
-        QueueItem queueItem = findItem(rid);
-        if (queueItem != null) {
-            queueItem.callbacks.remove(callback);
+        ArrayList<UploadFileCallback> clist = callbacks.get(rid);
+        if (clist != null) {
+            clist.remove(callback);
         }
     }
 
@@ -118,9 +131,14 @@ public class UploadManager extends ModuleActor {
                 queueItem.isStopped = false;
             }
             queueItem.progress = 0;
-            for (final UploadFileCallback callback : queueItem.callbacks) {
-                im.actor.runtime.Runtime.dispatch(() -> callback.onUploading(0));
+
+            ArrayList<UploadFileCallback> clist = callbacks.get(rid);
+            if (clist != null) {
+                for (final UploadFileCallback callback : clist) {
+                    im.actor.runtime.Runtime.dispatch(() -> callback.onUploading(0));
+                }
             }
+
             checkQueue();
         }
     }
@@ -134,8 +152,12 @@ public class UploadManager extends ModuleActor {
                 queueItem.isStarted = false;
             }
             queueItem.isStopped = true;
-            for (final UploadFileCallback callback : queueItem.callbacks) {
-                im.actor.runtime.Runtime.dispatch(() -> callback.onNotUploading());
+
+            ArrayList<UploadFileCallback> clist = callbacks.get(rid);
+            if (clist != null) {
+                for (final UploadFileCallback callback : clist) {
+                    im.actor.runtime.Runtime.dispatch(() -> callback.onNotUploading());
+                }
             }
         }
     }
@@ -162,8 +184,11 @@ public class UploadManager extends ModuleActor {
         queueItem.isStopped = true;
         queueItem.isStarted = false;
 
-        for (final UploadFileCallback callback : queueItem.callbacks) {
-            im.actor.runtime.Runtime.dispatch(() -> callback.onNotUploading());
+        ArrayList<UploadFileCallback> clist = callbacks.get(rid);
+        if (clist != null) {
+            for (final UploadFileCallback callback : clist) {
+                im.actor.runtime.Runtime.dispatch(() -> callback.onNotUploading());
+            }
         }
 
         queueItem.requestActor.send(new UploadError(rid));
@@ -187,8 +212,11 @@ public class UploadManager extends ModuleActor {
 
         queueItem.progress = progress;
 
-        for (final UploadFileCallback fileCallback : queueItem.callbacks) {
-            im.actor.runtime.Runtime.dispatch(() -> fileCallback.onUploading(progress));
+        ArrayList<UploadFileCallback> clist = callbacks.get(rid);
+        if (clist != null) {
+            for (final UploadFileCallback callback : clist) {
+                im.actor.runtime.Runtime.dispatch(() -> callback.onUploading(progress));
+            }
         }
     }
 
@@ -213,8 +241,11 @@ public class UploadManager extends ModuleActor {
         context().getFilesModule().getDownloadedEngine().addOrUpdateItem(new Downloaded(fileReference.getFileId(),
                 fileReference.getFileSize(), reference.getDescriptor()));
 
-        for (final UploadFileCallback fileCallback : queueItem.callbacks) {
-            im.actor.runtime.Runtime.dispatch(() -> fileCallback.onUploaded());
+        ArrayList<UploadFileCallback> clist = callbacks.get(rid);
+        if (clist != null) {
+            for (final UploadFileCallback callback : clist) {
+                im.actor.runtime.Runtime.dispatch(() -> callback.onUploaded());
+            }
         }
 
         queueItem.requestActor.send(new UploadCompleted(rid, fileReference));
@@ -250,7 +281,7 @@ public class UploadManager extends ModuleActor {
         }
         if (pendingQueue == null) {
             if (LOG) {
-                Log.d(TAG, "- No work for downloading");
+                Log.d(TAG, "- No work for uploading");
             }
             return;
         }
@@ -284,7 +315,6 @@ public class UploadManager extends ModuleActor {
         private ActorRef taskRef;
         private ActorRef requestActor;
         private String fileName;
-        private ArrayList<UploadFileCallback> callbacks = new ArrayList<>();
 
         private QueueItem(long rid, String fileDescriptor, String fileName, ActorRef requestActor) {
             this.rid = rid;
