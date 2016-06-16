@@ -23,9 +23,4 @@
         android:id="@+id/profile"
         android:title="Profile"
         app:showAsAction="never" />
-
-    <item
-        android:id="@+id/discover"
-        android:title="Discover"
-        app:showAsAction="never" />
 </menu>
