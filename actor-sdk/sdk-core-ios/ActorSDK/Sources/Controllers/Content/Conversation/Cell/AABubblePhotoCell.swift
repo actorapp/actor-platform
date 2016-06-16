@@ -129,7 +129,7 @@ public class AABubblePhotoCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
     // File state binding
     
     public override func fileUploadPaused(reference: String, selfGeneration: Int) {
-        print("paused \(selfGeneration)")
+        bgLoadThumb(selfGeneration)
         bgLoadReference(reference, selfGeneration: selfGeneration)
         
         runOnUiThread(selfGeneration) { () -> () in
@@ -140,7 +140,7 @@ public class AABubblePhotoCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
     }
     
     public override func fileUploading(reference: String, progress: Double, selfGeneration: Int) {
-        print("uploading \(selfGeneration)")
+        bgLoadThumb(selfGeneration)
         bgLoadReference(reference, selfGeneration: selfGeneration)
         
         runOnUiThread(selfGeneration) { () -> () in
@@ -171,7 +171,6 @@ public class AABubblePhotoCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
     }
     
     public override func fileReady(reference: String, selfGeneration: Int) {
-        print("ready \(selfGeneration)")
         bgLoadReference(reference, selfGeneration: selfGeneration)
         
         runOnUiThread(selfGeneration) { () -> () in
@@ -226,7 +225,7 @@ public class AABubblePhotoCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
             previewShown = true
             preview.yy_setImageWithURL(NSURL.fileURLWithPath(path),
                 placeholder: nil,
-                options: YYWebImageOptions(),
+                options: YYWebImageOptions.SetImageWithFadeAnimation,
                 progress: nil,
                 transform: { (img, url) -> UIImage? in
                     return img.roundCorners(self.bindedLayout.screenSize.width, h: self.bindedLayout.screenSize.height, roundSize: 14)
