@@ -7,7 +7,7 @@ import Foundation
 class AABubbles {
     
     static let textLayouter = AABubbleTextCellLayouter()
-    static let mediaLayouter = AABubbleMediaCellLayouter()
+    static let photoLayouter = AABubblePhotoCellLayouter()
     static let documentLayouter = AABubbleDocumentCellLayout()
     static let serviceLayouter = AABubbleServiceCellLayouter()
     static let locationLayouter = AABubbleLocationCellLayouter()
@@ -19,7 +19,7 @@ class AABubbles {
     static let builtInLayouters: [AABubbleLayouter] = [
         serviceLayouter,
         videoLayouter,
-        mediaLayouter,
+        photoLayouter,
         voiceLayouter,
         stickerLayouter,
         documentLayouter,

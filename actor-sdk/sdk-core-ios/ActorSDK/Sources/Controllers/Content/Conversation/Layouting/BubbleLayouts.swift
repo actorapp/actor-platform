@@ -41,8 +41,13 @@ public class AACellLayout {
     
     public class func formatDate(date: Int64) -> String {
         return dateFormatter.stringFromDate(NSDate(timeIntervalSince1970: NSTimeInterval(Double(date) / 1000.0)))
-        
-        
+    }
+    
+    public class func pickApproriateSize(width: CGFloat, height: CGFloat) -> CGSize {
+        let scaleW = 240 / width
+        let scaleH = 340 / height
+        let scale = min(scaleW, scaleH)
+        return CGSize(width: scale * width, height: scale * height)
     }
 }
 
