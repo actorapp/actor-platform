@@ -23,11 +23,11 @@ Pod::Spec.new do |s|
   # UI
   s.dependency 'VBFPopFlatButton'
   s.dependency 'MBProgressHUD'
-  s.dependency 'PSTAlertController'
   s.dependency 'SZTextView'
   s.dependency 'RSKImageCropper'
   s.dependency 'JDStatusBarNotification'
-  s.dependency 'YYImage', '0.9.3'
+  s.dependency 'YYImage'
+  s.dependency 'YYImage/WebP'
   s.dependency 'YYCategories'
   s.dependency 'DZNWebViewController'
 
