@@ -353,7 +353,7 @@ public class ActorStyle {
     public var chatTextDateInColor = UIColor(rgb: 0x979797)
 
     public var chatMediaDateColor = UIColor.whiteColor()
-    public var chatMediaDateBgColor = UIColor(rgb: 0x2D394A, alpha: 0.54)
+    public var chatMediaDateBgColor = UIColor.blackColor().alpha(0.4)
     
     // Bubble Colors
     
