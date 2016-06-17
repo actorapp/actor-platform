@@ -131,9 +131,9 @@ final class AuthServiceImpl(
           latitude = None,
           longitude = None
         )
-        _ ← fromDBIO(refreshAuthSession(transaction.deviceHash, authSession))
-        _ ← fromDBIO(AuthTransactionRepo.delete(transactionHash))
-        ack ← fromFuture(authorize(user.id, authSession.id, clientData))
+        //        _ ← fromDBIO(refreshAuthSession(transaction.deviceHash, authSession))
+        //        _ ← fromDBIO(AuthTransactionRepo.delete(transactionHash))
+        //        ack ← fromFuture(authorize(user.id, authSession.id, clientData))
       } yield ResponseAuth(userStruct, misc.ApiConfig(maxGroupSize))
     db.run(action.value)
   }

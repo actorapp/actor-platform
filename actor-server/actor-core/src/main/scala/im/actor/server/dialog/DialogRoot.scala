@@ -51,7 +51,7 @@ private trait DialogRootQueryHandlers {
 
   private implicit val timeout = Timeout(ActorConfig.defaultTimeout)
 
-  def getDialogs(endDate: Instant, limit: Int): Future[GetDialogsResponse] = {
+  protected def getDialogs(endDate: Instant, limit: Int): Future[GetDialogsResponse] = {
     val dialogs =
       endDateTimeFrom(endDate) match {
         case Some(_) ⇒ state.mobile.view.filter(sd ⇒ sd.ts.isBefore(endDate) || sd.ts == endDate).take(limit)
@@ -63,7 +63,7 @@ private trait DialogRootQueryHandlers {
     } yield GetDialogsResponse(infos.toMap)
   }
 
-  def getArchivedDialogs(offsetOpt: Option[Int64Value], limit: Int): Future[GetArchivedDialogsResponse] = {
+  protected def getArchivedDialogs(offsetOpt: Option[Int64Value], limit: Int): Future[GetArchivedDialogsResponse] = {
     val dialogs = (offsetOpt.map(offset ⇒ Instant.ofEpochMilli(offset.value)) match {
       case None         ⇒ state.archived
       case Some(offset) ⇒ state.archived.dropWhile(sd ⇒ sd.ts.isAfter(offset) || sd.ts == offset)
@@ -77,10 +77,10 @@ private trait DialogRootQueryHandlers {
     )
   }
 
-  def getDialogGroups(): Future[GetDialogGroupsResponse] =
+  protected def getDialogGroups(): Future[GetDialogGroupsResponse] =
     fetchDialogGroups() map (GetDialogGroupsResponse(_))
 
-  def getCounter(): Future[GetCounterResponse] = {
+  protected def getCounter(): Future[GetCounterResponse] = {
     for {
       counters ← FutureExt.ftraverse(state.active.map(identity).toSeq) { peer ⇒
         (context.parent ? DialogQueries.GetCounter(Some(peer))).mapTo[DialogQueries.GetCounterResponse] map (_.counter)
@@ -155,16 +155,16 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
 
           deferAsync(()) { _ ⇒
             if (!isCreated || !isShown)
-              sendChatGroupsChanged()
+              sendChatGroupsChanged(0L)
           }
         case None ⇒
       }
-    case CheckArchive()                         ⇒ checkArchive()
-    case Archive(Some(peer), clientAuthSid)     ⇒ archive(peer, clientAuthSid map (_.value))
-    case Unarchive(Some(peer), clientAuthSid)   ⇒ unarchive(peer, clientAuthSid map (_.value))
-    case Favourite(Some(peer), clientAuthSid)   ⇒ favourite(peer, clientAuthSid map (_.value))
-    case Unfavourite(Some(peer), clientAuthSid) ⇒ unfavourite(peer, clientAuthSid map (_.value))
-    case Delete(Some(peer), clientAuthSid)      ⇒ delete(peer, clientAuthSid map (_.value))
+    case CheckArchive()                        ⇒ checkArchive()
+    case Archive(Some(peer), clientAuthId)     ⇒ archive(peer, clientAuthId)
+    case Unarchive(Some(peer), clientAuthId)   ⇒ unarchive(peer, clientAuthId)
+    case Favourite(Some(peer), clientAuthId)   ⇒ favourite(peer, clientAuthId)
+    case Unfavourite(Some(peer), clientAuthId) ⇒ unfavourite(peer, clientAuthId)
+    case Delete(Some(peer), clientAuthId)      ⇒ delete(peer, clientAuthId)
   }
 
   private def checkArchive(): Unit =
@@ -176,50 +176,50 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
 
       toArchive foreach { d ⇒
         log.debug("Archiving dialog {} due to inactivity. Last message date: {}", d.peer, d.lastMessageDate)
-        self ! Archive(d.peer, None)
+        self ! Archive(d.peer, clientAuthId = 0L)
       }
     }
 
-  private def archive(peer: Peer, clientAuthSid: Option[Int]) = {
-    if (isArchived(peer)) sendChatGroupsChanged(clientAuthSid) pipeTo sender()
+  private def archive(peer: Peer, clientAuthId: Long) = {
+    if (isArchived(peer)) sendChatGroupsChanged(clientAuthId) pipeTo sender()
     else persist(Archived(Instant.now(), Some(peer))) { e ⇒
       commit(e)
-      sendChatGroupsChanged(clientAuthSid) pipeTo sender()
+      sendChatGroupsChanged(clientAuthId) pipeTo sender()
     }
   }
 
-  private def unarchive(peer: Peer, clientAuthSid: Option[Int]) = {
-    if (!isArchived(peer)) sendChatGroupsChanged(clientAuthSid) pipeTo sender()
+  private def unarchive(peer: Peer, clientAuthId: Long) = {
+    if (!isArchived(peer)) sendChatGroupsChanged(clientAuthId) pipeTo sender()
     else persist(Unarchived(Instant.now(), Some(peer))) { e ⇒
       commit(e)
-      sendChatGroupsChanged(clientAuthSid) pipeTo sender()
+      sendChatGroupsChanged(clientAuthId) pipeTo sender()
     }
   }
 
-  private def favourite(peer: Peer, clientAuthSid: Option[Int]) = {
-    if (isFavourited(peer)) sendChatGroupsChanged(clientAuthSid) pipeTo sender()
+  private def favourite(peer: Peer, clientAuthId: Long) = {
+    if (isFavourited(peer)) sendChatGroupsChanged(clientAuthId) pipeTo sender()
     else persist(Favourited(Instant.now(), Some(peer))) { e ⇒
       commit(e)
-      sendChatGroupsChanged(clientAuthSid) pipeTo sender()
+      sendChatGroupsChanged(clientAuthId) pipeTo sender()
     }
   }
 
-  private def unfavourite(peer: Peer, clientAuthSid: Option[Int]) = {
-    if (!isFavourited(peer)) sendChatGroupsChanged(clientAuthSid) pipeTo sender()
+  private def unfavourite(peer: Peer, clientAuthId: Long) = {
+    if (!isFavourited(peer)) sendChatGroupsChanged(clientAuthId) pipeTo sender()
     else persist(Unfavourited(Instant.now(), Some(peer))) { e ⇒
       commit(e)
-      sendChatGroupsChanged(clientAuthSid) pipeTo sender()
+      sendChatGroupsChanged(clientAuthId) pipeTo sender()
     }
   }
 
-  private def delete(peer: Peer, clientAuthSid: Option[Int]) = {
-    if (!dialogExists(peer)) sendChatGroupsChanged(clientAuthSid) pipeTo sender()
+  private def delete(peer: Peer, clientAuthId: Long) = {
+    if (!dialogExists(peer)) sendChatGroupsChanged(clientAuthId) pipeTo sender()
     else persist(Deleted(Instant.now(), Some(peer))) { e ⇒
       commit(e)
       (for {
         _ ← db.run(HistoryMessageRepo.deleteAll(userId, peer))
-        _ ← SeqUpdatesExtension(system).deliverSingleUpdate(userId, UpdateChatDelete(peer.asStruct))
-        seqState ← sendChatGroupsChanged(clientAuthSid)
+        _ ← SeqUpdatesExtension(system).deliverUserUpdate(userId, UpdateChatDelete(peer.asStruct))
+        seqState ← sendChatGroupsChanged(clientAuthId)
         //        _ = thatDialog ! PoisonPill // kill that dialog would be good
       } yield seqState) pipeTo sender()
     }
@@ -268,13 +268,14 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
     }
   }
 
-  private def sendChatGroupsChanged(ignoreAuthSid: Option[Int] = None): Future[SeqState] = {
+  private def sendChatGroupsChanged(authId: Long): Future[SeqState] = {
+    val pushRules = if (authId == 0L) PushRules() else PushRules().withExcludeAuthIds(Seq(authId))
     for {
       groups ← DialogExtension(system).fetchApiGroupedDialogs(userId)
       update = UpdateChatGroupsChanged(groups)
-      seqstate ← SeqUpdatesExtension(system).
-        deliverSingleUpdate(userId, update, PushRules().withExcludeAuthSids(ignoreAuthSid.toSeq))
-    } yield seqstate
+      seqState ← SeqUpdatesExtension(system)
+        .deliverClientUpdate(userId, authId, update, pushRules)
+    } yield seqState
   }
 
   protected def getInfo(peer: Peer): Future[DialogQueries.GetInfoResponse] =

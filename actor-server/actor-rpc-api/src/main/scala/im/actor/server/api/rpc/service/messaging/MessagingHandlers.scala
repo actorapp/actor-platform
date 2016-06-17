@@ -50,11 +50,10 @@ private[messaging] trait MessagingHandlers extends PeersImplicits
         s ← fromFuture(dialogExt.sendMessage(
           peer = outPeer.asPeer,
           senderUserId = client.userId,
-          senderAuthSid = client.authSid,
-          senderAuthId = Some(client.authId),
+          senderAuthId = client.authId,
           randomId = randomId,
           message = message,
-          accessHash = Some(outPeer.accessHash),
+          accessHash = outPeer.accessHash,
           forUserId = isOnlyForUser
         ))
       ) yield ResponseSeqDate(s.seq, s.state.toByteArray, s.date)).value
@@ -76,9 +75,9 @@ private[messaging] trait MessagingHandlers extends PeersImplicits
             case _: ApiTextMessage ⇒ true
             case _                 ⇒ false
           })
-          result ← fromFuture(updateMessageContent(client.userId, peer, randomId, updatedMessage))
+          s ← fromFuture(updateMessageContent(client.userId, client.authId, peer, randomId, updatedMessage))
           date = System.currentTimeMillis
-        } yield ResponseSeqDate(result.seq, result.state.toByteArray, date)).value
+        } yield ResponseSeqDate(s.seq, s.state.toByteArray, date)).value
       }
     }
   }

@@ -10,10 +10,10 @@ import im.actor.api.rpc.users.UpdateUserLocalNameChanged
 import im.actor.server.cqrs.{ Event, Processor, ProcessorState }
 import im.actor.server.db.DbExtension
 import im.actor.server.persist.contact.UserContactRepo
-import im.actor.server.sequence.SeqState
+import im.actor.server.sequence.{ SeqState, SeqUpdatesExtension }
 import im.actor.server.user.UserCommands.EditLocalName
 
-import scala.concurrent.Future
+import scala.concurrent.{ ExecutionContext, Future }
 
 private final case class UserContactsState(localNames: Map[Int, String] = Map.empty) extends ProcessorState[UserContactsState] {
   import UserEvents._
@@ -33,8 +33,12 @@ private final case class UserContactsState(localNames: Map[Int, String] = Map.em
 private[user] final class UserContacts(userId: Int)(implicit factory: ActorRefFactory) {
   val ref = factory.actorOf(Props(new UserContactsActor(userId)))
 
-  def editLocalName(contactUserId: Int, nameOpt: Option[String], supressUpdate: Boolean = false)(implicit timeout: Timeout): Future[SeqState] =
-    (ref ? EditLocalName(userId, contactUserId, nameOpt, supressUpdate)).mapTo[SeqState]
+  def editLocalNameSilently(authId: Long, contactUserId: Int, nameOpt: Option[String])(
+    implicit
+    timeout: Timeout,
+    ec:      ExecutionContext
+  ): Future[Unit] =
+    (ref ? EditLocalName(userId, authId, contactUserId, nameOpt, supressUpdate = true)).mapTo[SeqState] map (_ ⇒ ())
 }
 
 private[user] final class UserContactsActor(userId: Int) extends Processor[UserContactsState] {
@@ -46,12 +50,12 @@ private[user] final class UserContactsActor(userId: Int) extends Processor[UserC
 
   override def getInitialState: UserContactsState = UserContactsState()
 
-  private val userExt = UserExtension(context.system)
+  private val seqUpdExt = SeqUpdatesExtension(context.system)
   private val db = DbExtension(context.system).db
 
   override protected def handleCommand: Receive = {
-    case EditLocalName(_, contactUserId, nameOpt, supressUpdate) ⇒
-      editLocalName(contactUserId, nameOpt, supressUpdate)
+    case EditLocalName(_, authId, contactUserId, nameOpt, supressUpdate) ⇒
+      editLocalName(authId, contactUserId, nameOpt, supressUpdate)
   }
 
   override protected def handleQuery: QueryHandler = {
@@ -59,7 +63,7 @@ private[user] final class UserContactsActor(userId: Int) extends Processor[UserC
       Future.successful(GetLocalNameResponse(state.localNames.get(contactUserId)))
   }
 
-  private def editLocalName(contactUserId: Int, nameOpt: Option[String], supressUpdate: Boolean): Unit = {
+  private def editLocalName(authId: Long, contactUserId: Int, nameOpt: Option[String], supressUpdate: Boolean): Unit = {
     persist(LocalNameChanged(Instant.now(), contactUserId, nameOpt)) { e ⇒
       commit(e)
 
@@ -68,13 +72,11 @@ private[user] final class UserContactsActor(userId: Int) extends Processor[UserC
       if (supressUpdate)
         reply(SeqState())
       else
-        replyFuture(userExt.broadcastUserUpdate(
+        replyFuture(seqUpdExt.deliverClientUpdate(
           userId,
+          authId,
           UpdateUserLocalNameChanged(contactUserId, nameOpt),
-          pushText = None,
-          isFat = false,
-          reduceKey = None,
-          deliveryId = None
+          pushRules = seqUpdExt.pushRules(isFat = false, None)
         ))
     }
   }

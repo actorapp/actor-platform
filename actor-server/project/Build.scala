@@ -96,6 +96,7 @@ object Build extends sbt.Build with Versioning with Releasing {
           mainClass in Compile := Some("im.actor.server.Main"),
           autoCompilerPlugins := true,
           scalacOptions in(Compile, doc) ++= Seq(
+            "-Ywarn-unused-import",
             "-groups",
             "-implicits",
             "-diagrams"

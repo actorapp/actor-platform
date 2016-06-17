@@ -52,7 +52,7 @@ final class ProfileServiceImpl()(implicit system: ActorSystem) extends ProfileSe
         scaleAvatar(fileLocation.fileId, ThreadLocalSecureRandom.current()) flatMap {
           case Right(avatar) ⇒
             for {
-              UserCommands.UpdateAvatarAck(avatar, SeqState(seq, state)) ← DBIO.from(userExt.updateAvatar(client.userId, Some(avatar)))
+              UserCommands.UpdateAvatarAck(avatar, SeqState(seq, state)) ← DBIO.from(userExt.updateAvatar(client.userId, client.authId, Some(avatar)))
             } yield Ok(ResponseEditAvatar(
               avatar.get,
               seq,
@@ -68,7 +68,7 @@ final class ProfileServiceImpl()(implicit system: ActorSystem) extends ProfileSe
   override def doHandleRemoveAvatar(clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
     authorized(clientData) { implicit client ⇒
       val action = for {
-        UserCommands.UpdateAvatarAck(_, SeqState(seq, state)) ← DBIO.from(userExt.updateAvatar(client.userId, None))
+        UserCommands.UpdateAvatarAck(_, SeqState(seq, state)) ← DBIO.from(userExt.updateAvatar(client.userId, client.authId, None))
       } yield Ok(ResponseSeq(seq, state.toByteArray))
       db.run(action)
     }
@@ -76,14 +76,14 @@ final class ProfileServiceImpl()(implicit system: ActorSystem) extends ProfileSe
   override def doHandleEditName(name: String, clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
     authorized(clientData) { implicit client ⇒
       for {
-        SeqState(seq, state) ← userExt.changeName(client.userId, name)
+        SeqState(seq, state) ← userExt.changeName(client.userId, client.authId, name)
       } yield Ok(ResponseSeq(seq, state.toByteArray))
     }
 
   override def doHandleEditNickName(nickname: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
     authorized(clientData) { implicit client ⇒
       for {
-        SeqState(seq, state) ← userExt.changeNickname(client.userId, nickname)
+        SeqState(seq, state) ← userExt.changeNickname(client.userId, client.authId, nickname)
       } yield Ok(ResponseSeq(seq, state.toByteArray))
     }
 
@@ -101,22 +101,22 @@ final class ProfileServiceImpl()(implicit system: ActorSystem) extends ProfileSe
       (for {
         trimmed ← point(about.map(_.trim))
         _ ← fromBoolean(ProfileRpcErrors.AboutTooLong)(trimmed.map(s ⇒ s.nonEmpty & s.length < 255).getOrElse(true))
-        s ← fromFuture(userExt.changeAbout(client.userId, trimmed))
+        s ← fromFuture(userExt.changeAbout(client.userId, client.authId, trimmed))
       } yield ResponseSeq(s.seq, s.state.toByteArray)).value
     }
   }
 
   override def doHandleEditMyTimeZone(tz: String, clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
-    authorized(clientData) { implicit client ⇒
+    authorized(clientData) { client ⇒
       (for {
-        s ← fromFuture(produceError)(userExt.changeTimeZone(client.userId, tz))
+        s ← fromFuture(produceError)(userExt.changeTimeZone(client.userId, client.authId, tz))
       } yield ResponseSeq(s.seq, s.state.toByteArray)).value
     }
 
   override def doHandleEditMyPreferredLanguages(preferredLanguages: IndexedSeq[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
-    authorized(clientData) { implicit client ⇒
+    authorized(clientData) { client ⇒
       (for {
-        s ← fromFuture(produceError)(userExt.changePreferredLanguages(client.userId, preferredLanguages))
+        s ← fromFuture(produceError)(userExt.changePreferredLanguages(client.userId, client.authId, preferredLanguages))
       } yield ResponseSeq(s.seq, s.state.toByteArray)).value
     }
 

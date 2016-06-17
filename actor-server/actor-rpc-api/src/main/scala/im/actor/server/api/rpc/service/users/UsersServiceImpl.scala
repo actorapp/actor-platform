@@ -40,23 +40,24 @@ final class UsersServiceImpl(implicit actorSystem: ActorSystem) extends UsersSer
               if (accessHash == ACLUtils.userAccessHash(client.authId, user)) {
                 val seqstateF = db.run(UserContactRepo.find(client.userId, userId)) flatMap {
                   case Some(contact) ⇒
-                    userExt.editLocalName(client.userId, userId, Some(validName))
+                    userExt.editLocalName(client.userId, client.authId, userId, Some(validName))
                   case None ⇒
                     for {
                       optPhone ← db.run(UserPhoneRepo.findByUserId(userId).headOption)
                       optEmail ← db.run(UserEmailRepo.findByUserId(userId).headOption)
-                      seqstate ← userExt.addContact(
+                      seqState ← userExt.addContact(
                         userId = client.userId,
+                        authId = client.authId,
                         contactUserId = userId,
                         localName = Some(validName),
                         phone = optPhone map (_.number),
                         email = optEmail map (_.email)
                       )
-                    } yield seqstate
+                    } yield seqState
                 }
                 for {
-                  seqstate ← seqstateF
-                } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
+                  seqState ← seqstateF
+                } yield Ok(ResponseSeq(seqState.seq, seqState.state.toByteArray))
               } else {
                 Future.successful(Error(CommonRpcErrors.InvalidAccessHash))
               }

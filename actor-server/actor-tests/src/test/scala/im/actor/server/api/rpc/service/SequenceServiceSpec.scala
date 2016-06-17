@@ -3,16 +3,17 @@ package im.actor.server.api.rpc.service
 import com.google.protobuf.CodedInputStream
 import com.typesafe.config.ConfigFactory
 import im.actor.api.rpc._
+import im.actor.api.rpc.contacts.UpdateContactsAdded
+import im.actor.api.rpc.counters.{ ApiAppCounters, UpdateCountersChanged }
 import im.actor.api.rpc.messaging.{ ApiTextMessage, UpdateMessageContentChanged }
 import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
-import im.actor.api.rpc.sequence.{ ApiUpdateContainer, ResponseGetDifference }
+import im.actor.api.rpc.sequence.{ ApiUpdateContainer, ApiUpdateOptimization, ResponseGetDifference, UpdateEmptyUpdate }
 import im.actor.server._
 import im.actor.server.api.rpc.service.sequence.SequenceServiceConfig
-import im.actor.server.sequence.SeqUpdatesExtension
 
 import scala.concurrent.duration._
-import scala.concurrent.{ Future, Await }
+import scala.concurrent.{ Await, Future }
 
 final class SequenceServiceSpec extends BaseAppSuite({
   ActorSpecification.createSystem(
@@ -22,16 +23,20 @@ final class SequenceServiceSpec extends BaseAppSuite({
       """
     )
   )
-}) with ImplicitSessionRegion with ImplicitAuthService {
+}) with ImplicitSessionRegion
+  with ImplicitAuthService
+  with SeqUpdateMatchers
+  with ImplicitSequenceService {
 
   behavior of "Sequence service"
 
   it should "get state" in getState
   it should "get difference" in getDifference
   it should "not produce empty difference if there is one update bigger than difference size limit" in bigUpdate
+  it should "map updates correctly" in mapUpdates
+  it should "exclude optimized updates from sequence" in optimizedUpdates
 
   private val config = SequenceServiceConfig.load().get
-  private lazy val seqUpdExt = SeqUpdatesExtension(system)
 
   implicit lazy val service = new sequence.SequenceServiceImpl(config)
   implicit lazy val msgService = messaging.MessagingServiceImpl()
@@ -66,7 +71,7 @@ final class SequenceServiceSpec extends BaseAppSuite({
     // with max update size of 60 KiB 3840 updates should split into three parts
     Await.result(Future.sequence((0L to 3840) map { i ⇒
       val update = UpdateMessageContentChanged(user2Peer, i, message)
-      seqUpdExt.deliverSingleUpdate(user.id, update)
+      seqUpdExt.deliverUserUpdate(user.id, update)
     }), 10.seconds)
 
     var totalUpdates: Seq[ApiUpdateContainer] = Seq.empty
@@ -135,9 +140,9 @@ final class SequenceServiceSpec extends BaseAppSuite({
     val smallUpdate = UpdateMessageContentChanged(user2Peer, 1L, ApiTextMessage("Hello", Vector.empty, None))
     val bigUpdate = UpdateMessageContentChanged(user2Peer, 2L, ApiTextMessage((for (_ ← 1L to maxSize * 10) yield "b").mkString(""), Vector.empty, None))
 
-    whenReady(seqUpdExt.deliverSingleUpdate(user.id, smallUpdate))(identity)
-    whenReady(seqUpdExt.deliverSingleUpdate(user.id, bigUpdate))(identity)
-    whenReady(seqUpdExt.deliverSingleUpdate(user.id, bigUpdate))(identity)
+    whenReady(seqUpdExt.deliverUserUpdate(user.id, smallUpdate))(identity)
+    whenReady(seqUpdExt.deliverUserUpdate(user.id, bigUpdate))(identity)
+    whenReady(seqUpdExt.deliverUserUpdate(user.id, bigUpdate))(identity)
 
     // expect first small update and needMore == true
     val (seq1, state1) = whenReady(service.handleGetDifference(0, Array.empty, Vector.empty)) { res ⇒
@@ -166,6 +171,88 @@ final class SequenceServiceSpec extends BaseAppSuite({
       inside(res) {
         case Ok(ResponseGetDifference(_, _, _, updates, false, _, _, _, _)) ⇒
           updates.size shouldEqual 1
+      }
+    }
+  }
+
+  def mapUpdates() = {
+    val (user, authId1, authSid1, _) = createUser()
+    val (authId2, authSid2) = createAuthId(user.id)
+
+    val clientData1 = ClientData(authId1, 1L, Some(AuthData(user.id, authSid1, 42)))
+    val clientData2 = ClientData(authId2, 2L, Some(AuthData(user.id, authSid2, 42)))
+
+    // when we deliver empty update as default, it won't show up in user's sequence
+    whenReady(seqUpdExt.deliverCustomUpdate(
+      userId = user.id,
+      authId = authId1,
+      default = Some(UpdateEmptyUpdate),
+      custom = Map(authId2 → UpdateContactsAdded(Vector(1)))
+    ))(identity)
+
+    {
+      implicit val clientData = clientData1
+
+      expectNoUpdate(emptyState, classOf[UpdateEmptyUpdate])
+      whenReady(service.handleGetDifference(0, Array.empty, Vector.empty)) { res ⇒
+        inside(res) {
+          case Ok(rsp: ResponseGetDifference) ⇒
+            rsp.updates shouldBe empty
+        }
+      }
+    }
+
+    {
+      implicit val clientData = clientData2
+
+      expectUpdate(classOf[UpdateContactsAdded])(identity)
+      whenReady(service.handleGetDifference(0, Array.empty, Vector.empty)) { res ⇒
+        inside(res) {
+          case Ok(rsp: ResponseGetDifference) ⇒
+            rsp.updates should have length 1
+            rsp.updates.head.updateHeader should be(UpdateContactsAdded.header)
+        }
+      }
+    }
+  }
+
+  def optimizedUpdates() = {
+    val (user, authId1, authSid1, _) = createUser()
+    val (authId2, authSid2) = createAuthId(user.id)
+
+    val clientData1 = ClientData(authId1, 1L, Some(AuthData(user.id, authSid1, 42))) // this one will come with counters optimization
+    val clientData2 = ClientData(authId2, 2L, Some(AuthData(user.id, authSid2, 42))) // this will be without optimizations at all
+
+    {
+      implicit val cd = clientData1
+      whenReady(sequenceService.handleGetState(Vector(ApiUpdateOptimization.STRIP_COUNTERS)))(identity)
+    }
+
+    val toBeOptimized = UpdateCountersChanged(ApiAppCounters(Some(22)))
+    whenReady(seqUpdExt.deliverUserUpdate(user.id, toBeOptimized))(identity)
+
+    {
+      implicit val cd = clientData1
+
+      expectNoUpdate(emptyState, classOf[UpdateCountersChanged])
+      whenReady(service.handleGetDifference(0, Array.empty, Vector.empty)) { res ⇒
+        inside(res) {
+          case Ok(rsp: ResponseGetDifference) ⇒
+            rsp.updates shouldBe empty
+        }
+      }
+    }
+
+    {
+      implicit val clientData = clientData2
+
+      expectUpdate(classOf[UpdateCountersChanged])(identity)
+      whenReady(service.handleGetDifference(0, Array.empty, Vector.empty)) { res ⇒
+        inside(res) {
+          case Ok(rsp: ResponseGetDifference) ⇒
+            rsp.updates should have length 1
+            rsp.updates.head.updateHeader should be(UpdateCountersChanged.header)
+        }
       }
     }
   }

@@ -57,27 +57,53 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
     }
 
   def sendMessage(
-    peer:          ApiPeer,
-    senderUserId:  UserId,
-    senderAuthSid: Int,
-    senderAuthId:  Option[Long], // required only in case of access hash check for private peer
-    randomId:      RandomId,
-    message:       ApiMessage,
-    accessHash:    Option[Long]   = None,
-    isFat:         Boolean        = false,
-    forUserId:     Option[UserId] = None
+    peer:         ApiPeer,
+    senderUserId: UserId,
+    senderAuthId: Long,
+    randomId:     RandomId,
+    message:      ApiMessage,
+    accessHash:   Long,
+    isFat:        Boolean        = false,
+    forUserId:    Option[UserId] = None
   ): Future[SeqStateDate] =
     withValidPeer(peer.asModel, senderUserId, failed = FastFuture.successful(SeqStateDate())) {
       // we don't set date here, cause actual date set inside dialog processor
       val sendMessage = SendMessage(
         origin = Some(Peer.privat(senderUserId)),
         dest = Some(peer.asModel),
-        senderAuthSid = senderAuthSid,
-        senderAuthId = senderAuthId map (Int64Value(_)),
+        senderAuthId = Some(Int64Value(senderAuthId)),
         date = None,
         randomId = randomId,
         message = message,
-        accessHash = accessHash map (Int64Value(_)),
+        accessHash = Some(Int64Value(accessHash)),
+        isFat = isFat,
+        forUserId = forUserId map (Int32Value(_))
+      )
+      (userExt.processorRegion.ref ? UserEnvelope(senderUserId).withDialogEnvelope(DialogEnvelope().withSendMessage(sendMessage))).mapTo[SeqStateDate]
+    }
+
+  /**
+   * Method used to send messages from bots, or on behalf of user.
+   * This method may not used from rpc calls, or anywhere else, where we need to approve user's input
+   */
+  def sendMessageInternal(
+    peer:         ApiPeer,
+    senderUserId: UserId,
+    randomId:     RandomId,
+    message:      ApiMessage,
+    isFat:        Boolean        = false,
+    forUserId:    Option[UserId] = None
+  ): Future[SeqStateDate] =
+    withValidPeer(peer.asModel, senderUserId, failed = FastFuture.successful(SeqStateDate())) {
+      // we don't set date here, cause actual date set inside dialog processor
+      val sendMessage = SendMessage(
+        origin = Some(Peer.privat(senderUserId)),
+        dest = Some(peer.asModel),
+        senderAuthId = None,
+        date = None,
+        randomId = randomId,
+        message = message,
+        accessHash = None,
         isFat = isFat,
         forUserId = forUserId map (Int32Value(_))
       )
@@ -133,11 +159,11 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
     (processorRegion(peer) ? envelope(peer, DialogEnvelope().withMessageReceived(mr)))
       .mapTo[MessageReceivedAck] map (_ ⇒ ())
 
-  def messageRead(peer: ApiPeer, readerUserId: Int, readerAuthSid: Int, date: Long): Future[Unit] =
+  def messageRead(peer: ApiPeer, readerUserId: Int, readerAuthId: Long, date: Long): Future[Unit] =
     withValidPeer(peer.asModel, readerUserId, failed = FastFuture.successful(())) {
       val now = Instant.now().toEpochMilli
       val reader = Peer.privat(readerUserId)
-      val messageRead = MessageRead(Some(reader), Some(peer.asModel), readerAuthSid, date, now)
+      val messageRead = MessageRead(Some(reader), Some(peer.asModel), readerAuthId, date, now)
       (userExt.processorRegion.ref ? envelope(reader, DialogEnvelope().withMessageRead(messageRead)))
         .mapTo[MessageReadAck] map (_ ⇒ ())
     }
@@ -146,58 +172,69 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
     (processorRegion(peer) ? envelope(peer, DialogEnvelope().withMessageRead(mr)))
       .mapTo[MessageReadAck] map (_ ⇒ ())
 
-  def unarchive(userId: Int, peer: Peer, clientAuthSid: Option[Int] = None): Future[SeqState] =
+  // DialogRootOperations
+  def unarchive(userId: Int, clientAuthId: Long, peer: Peer): Future[SeqState] =
     withValidPeer(peer, userId, failed = Future.failed[SeqState](DialogErrors.MessageToSelf)) {
       (userExt.processorRegion.ref ?
-        UserEnvelope(userId).withDialogRootEnvelope(DialogRootEnvelope().withUnarchive(DialogRootCommands.Unarchive(Some(peer), clientAuthSid map (Int32Value(_))))))
+        UserEnvelope(userId)
+        .withDialogRootEnvelope(
+          DialogRootEnvelope().withUnarchive(DialogRootCommands.Unarchive(Some(peer), clientAuthId))
+        ))
         .mapTo[SeqState]
     }
 
-  def archive(userId: Int, peer: Peer, clientAuthSid: Option[Int] = None): Future[SeqState] =
+  def archive(userId: Int, clientAuthId: Long, peer: Peer): Future[SeqState] =
     withValidPeer(peer, userId, failed = Future.failed[SeqState](DialogErrors.MessageToSelf)) {
       (userExt.processorRegion.ref ?
-        UserEnvelope(userId).withDialogRootEnvelope(DialogRootEnvelope().withArchive(DialogRootCommands.Archive(Some(peer), clientAuthSid map (Int32Value(_))))))
+        UserEnvelope(userId)
+        .withDialogRootEnvelope(
+          DialogRootEnvelope().withArchive(DialogRootCommands.Archive(Some(peer), clientAuthId))
+        ))
         .mapTo[SeqState]
     }
 
-  def favourite(userId: Int, peer: Peer): Future[SeqState] =
+  def favourite(userId: Int, clientAuthId: Long, peer: Peer): Future[SeqState] =
     withValidPeer(peer, userId, failed = Future.failed[SeqState](DialogErrors.MessageToSelf)) {
       (userExt.processorRegion.ref ?
-        UserEnvelope(userId).withDialogRootEnvelope(DialogRootEnvelope().withFavourite(DialogRootCommands.Favourite(Some(peer)))))
+        UserEnvelope(userId)
+        .withDialogRootEnvelope(
+          DialogRootEnvelope().withFavourite(DialogRootCommands.Favourite(Some(peer), clientAuthId))
+        ))
         .mapTo[SeqState]
     }
 
-  def unfavourite(userId: Int, peer: Peer): Future[SeqState] =
+  def unfavourite(userId: Int, clientAuthId: Long, peer: Peer): Future[SeqState] =
     withValidPeer(peer, userId, failed = Future.failed[SeqState](DialogErrors.MessageToSelf)) {
       (userExt.processorRegion.ref ?
-        UserEnvelope(userId).withDialogRootEnvelope(DialogRootEnvelope().withUnfavourite(DialogRootCommands.Unfavourite(Some(peer)))))
+        UserEnvelope(userId)
+        .withDialogRootEnvelope(DialogRootEnvelope().withUnfavourite(DialogRootCommands.Unfavourite(Some(peer), clientAuthId))))
         .mapTo[SeqState]
     }
 
-  def delete(userId: Int, peer: Peer): Future[SeqState] =
+  def delete(userId: Int, clientAuthId: Long, peer: Peer): Future[SeqState] =
     withValidPeer(peer, userId) {
       (userExt.processorRegion.ref ?
-        UserEnvelope(userId).withDialogRootEnvelope(DialogRootEnvelope().withDelete(DialogRootCommands.Delete(Some(peer)))))
+        UserEnvelope(userId).withDialogRootEnvelope(DialogRootEnvelope().withDelete(DialogRootCommands.Delete(Some(peer), clientAuthId))))
         .mapTo[SeqState]
     }
 
-  def setReaction(userId: Int, authSid: Int, peer: Peer, randomId: Long, code: String): Future[SetReactionAck] =
+  def setReaction(userId: Int, authId: Long, peer: Peer, randomId: Long, code: String): Future[SetReactionAck] =
     withValidPeer(peer, userId) {
       (userExt.processorRegion.ref ? UserEnvelope(userId).withDialogEnvelope(DialogEnvelope().withSetReaction(SetReaction(
         origin = Some(Peer.privat(userId)),
         dest = Some(peer),
-        clientAuthSid = authSid,
+        clientAuthId = authId,
         randomId = randomId,
         code = code
       )))).mapTo[SetReactionAck]
     }
 
-  def removeReaction(userId: Int, authSid: Int, peer: Peer, randomId: Long, code: String): Future[RemoveReactionAck] =
+  def removeReaction(userId: Int, authId: Long, peer: Peer, randomId: Long, code: String): Future[RemoveReactionAck] =
     withValidPeer(peer, userId) {
       (userExt.processorRegion.ref ? UserEnvelope(userId).withDialogEnvelope(DialogEnvelope().withRemoveReaction(RemoveReaction(
         origin = Some(Peer.privat(userId)),
         dest = Some(peer),
-        clientAuthSid = authSid,
+        clientAuthId = authId,
         randomId = randomId,
         code = code
       )))).mapTo[RemoveReactionAck]

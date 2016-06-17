@@ -25,7 +25,7 @@ import scodec.bits.BitVector
 import slick.driver.PostgresDriver.api._
 
 import scala.collection.immutable
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 import scala.util.{ Success, Try }
 
@@ -230,7 +230,7 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
 
     this.authData = Some(AuthData(userId, authSid, appId))
 
-    updatesHandler ! UpdatesHandler.Authorize(userId, authSid)
+    updatesHandler ! UpdatesHandler.Authorize(userId)
 
     ackTo foreach (_ ! AuthorizeUserAck())
   }

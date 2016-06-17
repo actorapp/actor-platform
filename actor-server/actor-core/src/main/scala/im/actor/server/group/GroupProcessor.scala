@@ -166,18 +166,24 @@ private[group] final class GroupProcessor
         state.copy(bot = Some(Bot(userId, token)))
       case GroupEvents.UserInvited(ts, userId, inviterUserId) ⇒
         state.copy(
-          members = state.members + (userId → Member(userId, inviterUserId, ts, isAdmin = userId == state.creatorUserId)),
+          members = state.members + (userId → Member(userId, inviterUserId, ts, isAdmin = (userId == state.creatorUserId))),
           invitedUserIds = state.invitedUserIds + userId
         )
       case GroupEvents.UserJoined(ts, userId, inviterUserId) ⇒
         state.copy(
-          members = state.members + (userId → Member(userId, inviterUserId, ts, isAdmin = userId == state.creatorUserId)),
+          members = state.members + (userId → Member(userId, inviterUserId, ts, isAdmin = (userId == state.creatorUserId))),
           invitedUserIds = state.invitedUserIds - userId
         )
       case GroupEvents.UserKicked(_, userId, kickerUserId) ⇒
-        state.copy(members = state.members - userId)
+        state.copy(
+          members = state.members - userId,
+          invitedUserIds = state.invitedUserIds - userId
+        )
       case GroupEvents.UserLeft(_, userId) ⇒
-        state.copy(members = state.members - userId)
+        state.copy(
+          members = state.members - userId,
+          invitedUserIds = state.invitedUserIds - userId
+        )
       case GroupEvents.AvatarUpdated(_, avatar) ⇒
         state.copy(avatar = avatar)
       case GroupEvents.TitleUpdated(_, title) ⇒
@@ -212,21 +218,21 @@ private[group] final class GroupProcessor
   }
 
   override def handleInitCommand: Receive = {
-    case Create(_, typ, creatorUserId, creatorAuthSid, title, randomId, userIds) ⇒
-      create(groupId, typ, creatorUserId, creatorAuthSid, title, randomId, userIds.toSet)
+    case Create(_, typ, creatorUserId, creatorAuthId, title, randomId, userIds) ⇒
+      create(groupId, typ, creatorUserId, creatorAuthId, title, randomId, userIds.toSet)
     case CreateInternal(_, typ, creatorUserId, title, userIds, isHidden, isHistoryShared, extensions) ⇒
       createInternal(typ, creatorUserId, title, userIds, isHidden, isHistoryShared, extensions)
   }
 
   override def handleCommand(state: GroupState): Receive = {
-    case Invite(_, inviteeUserId, inviterUserId, randomId) ⇒
+    case Invite(_, inviteeUserId, inviterUserId, inviterAuthId, randomId) ⇒
       if (!hasMember(state, inviteeUserId)) {
         persist(GroupEvents.UserInvited(now(), inviteeUserId, inviterUserId)) { evt ⇒
           context become working(updatedState(evt, state))
 
           val replyTo = sender()
 
-          invite(state, inviteeUserId, inviterUserId, randomId, evt.ts) pipeTo replyTo
+          invite(state, inviteeUserId, inviterUserId, inviterAuthId, randomId, evt.ts) pipeTo replyTo
         }
       } else {
         sender() ! Status.Failure(GroupErrors.UserAlreadyInvited)
@@ -240,22 +246,22 @@ private[group] final class GroupProcessor
       kick(state, kickedUserId, kickerUserId, kickerAuthId, randomId)
     case Leave(_, userId, authId, randomId) ⇒
       leave(state, userId, authId, randomId)
-    case UpdateAvatar(_, clientUserId, avatarOpt, randomId) ⇒
-      updateAvatar(state, clientUserId, avatarOpt, randomId)
-    case UpdateTitle(_, clientUserId, title, randomId) ⇒
-      updateTitle(state, clientUserId, title, randomId)
+    case UpdateAvatar(_, clientUserId, clientAuthId, avatarOpt, randomId) ⇒
+      updateAvatar(state, clientUserId, clientAuthId, avatarOpt, randomId)
+    case UpdateTitle(_, clientUserId, clientAuthId, title, randomId) ⇒
+      updateTitle(state, clientUserId, clientAuthId, title, randomId)
     case MakePublic(_, description) ⇒
       makePublic(state, description.getOrElse(""))
-    case ChangeTopic(_, clientUserId, topic, randomId) ⇒
-      updateTopic(state, clientUserId, topic, randomId)
-    case ChangeAbout(_, clientUserId, about, randomId) ⇒
-      updateAbout(state, clientUserId, about, randomId)
-    case MakeUserAdmin(_, clientUserId, candidateId) ⇒
-      makeUserAdmin(state, clientUserId, candidateId)
+    case ChangeTopic(_, clientUserId, clientAuthId, topic, randomId) ⇒
+      updateTopic(state, clientUserId, clientAuthId, topic, randomId)
+    case ChangeAbout(_, clientUserId, clientAuthId, about, randomId) ⇒
+      updateAbout(state, clientUserId, clientAuthId, about, randomId)
+    case MakeUserAdmin(_, clientUserId, clientAuthId, candidateId) ⇒
+      makeUserAdmin(state, clientUserId, clientAuthId, candidateId)
     case RevokeIntegrationToken(_, userId) ⇒
       revokeIntegrationToken(state, userId)
-    case TransferOwnership(_, clientUserId, clientAuthSid, userId) ⇒
-      transferOwnership(state, clientUserId, clientAuthSid, userId)
+    case TransferOwnership(_, clientUserId, clientAuthId, userId) ⇒
+      transferOwnership(state, clientUserId, clientAuthId, userId)
     case StopOffice     ⇒ context stop self
     case ReceiveTimeout ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
     case de: DialogEnvelope ⇒

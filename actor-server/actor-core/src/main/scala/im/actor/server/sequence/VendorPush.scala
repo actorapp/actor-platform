@@ -18,7 +18,7 @@ import scala.util.control.NoStackTrace
 
 private[sequence] trait VendorPushCommand
 
-private final case class PushCredentialsInfo(appId: Int, authSid: Int)
+private final case class PushCredentialsInfo(appId: Int, authId: Long)
 
 private final case class AllNotificationSettings(
   generic:  NotificationSettings              = NotificationSettings(),
@@ -150,8 +150,8 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
       unregister(u.getApple)
     case u: UnregisterPushCredentials if u.creds.isGoogle ⇒
       unregister(u.getGoogle)
-    case DeliverPush(seq, rules) ⇒
-      deliver(seq, rules.getOrElse(PushRules()))
+    case DeliverPush(authId, seq, rules) ⇒
+      deliver(authId, seq, rules.getOrElse(PushRules()))
     case r: ReloadSettings ⇒
       settingsControl forward r
   }
@@ -176,14 +176,15 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
   }
 
   /**
-   * Delivers a push to all credentials according to push rules
+   * Delivers a push to credentials associated with given `authId` according to push `rules``
    *
-   * @param seq
-   * @param rules
    */
-  private def deliver(seq: Int, rules: PushRules): Unit = {
+  private def deliver(authId: Long, seq: Int, rules: PushRules): Unit = {
     mapping foreach {
-      case (creds, info) ⇒ deliver(seq, rules, creds, info)
+      case (creds, info) ⇒
+        if (creds.authId == authId) {
+          deliver(seq, rules, creds, info)
+        }
     }
   }
 
@@ -198,7 +199,7 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
   private def deliver(seq: Int, rules: PushRules, creds: PushCredentials, info: PushCredentialsInfo): Unit = {
     val deviceType = DeviceType(info.appId)
 
-    if (rules.excludeAuthSids.contains(info.authSid)) {
+    if (rules.excludeAuthIds.contains(info.authId)) {
       log.debug("AuthSid is excluded, not pushing")
     } else {
       rules.data match {
@@ -317,7 +318,7 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
   private def withInfo(c: PushCredentials): DBIO[Option[(PushCredentials, PushCredentialsInfo)]] =
     for {
       authSessionOpt ← AuthSessionRepo.findByAuthId(c.authId)
-    } yield authSessionOpt map (s ⇒ c → PushCredentialsInfo(s.appId, s.id))
+    } yield authSessionOpt map (s ⇒ c → PushCredentialsInfo(s.appId, c.authId))
 
   private def remove(creds: PushCredentials): Unit =
     mapping -= creds

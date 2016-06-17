@@ -4,7 +4,7 @@ import sbt._
 
 object Dependencies {
   object V {
-    val actorCommons = "0.0.15"
+    val actorCommons = "0.0.17-SNAPSHOT"
     val actorBotkit = "1.0.109"
     val akka = "2.4.7"
     val akkaHttpJson = "1.5.0"
@@ -12,7 +12,7 @@ object Dependencies {
     val circe = "0.2.1"
     val kamon = "0.5.2"
     val slick = "3.1.1"
-    val slickPg = "0.10.2"
+    val slickPg = "0.13.0"
     val scalatest = "2.2.4"
     val shardakka = "0.1.24"
     val scalapbSer = "0.1.14"
@@ -22,6 +22,7 @@ object Dependencies {
     val actorConcurrent         = "im.actor"                      %% "actor-concurrent"              % V.actorCommons
     val actorUtil               = "im.actor"                      %% "actor-util"                    % V.actorCommons
     val actorCatsSlick          = "im.actor"                      %% "actor-cats-slick"              % V.actorCommons
+    val actorStorageSlick       = "im.actor"                      %% "actor-storage-slick"           % V.actorCommons
     val actorBotkit             = "im.actor"                      %  "actor-botkit"                  % V.actorBotkit
     val shardakka               = "im.actor"                      %% "shardakka"                     % V.shardakka
     val scalapbSer              = "im.actor"                      %% "akka-scalapb-serialization"    % V.scalapbSer
@@ -183,7 +184,7 @@ object Dependencies {
 
   val sessionMessages = Seq(akkaActor)
 
-  val persist = shared ++ Seq(akkaActor, akkaStream, actorCatsSlick, apacheCommonsCodec, guava, postgresJdbc, slick, slickHikaricp, slickJoda, slickPg, slickPgDate2, slickTestkit, flywayCore, hikariCP, jodaTime, jodaConvert)
+  val persist = shared ++ Seq(akkaActor, akkaStream, actorCatsSlick, actorStorageSlick, apacheCommonsCodec, guava, postgresJdbc, slick, slickHikaricp, slickJoda, slickPg, slickPgDate2, slickTestkit, flywayCore, hikariCP, jodaTime, jodaConvert)
 
   val presences = shared :+ akkaClusterSharding
 

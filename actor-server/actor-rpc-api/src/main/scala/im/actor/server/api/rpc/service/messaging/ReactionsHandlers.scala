@@ -13,7 +13,7 @@ trait ReactionsHandlers {
   override def doHandleMessageSetReaction(peer: ApiOutPeer, randomId: Long, code: String, clientData: ClientData): Future[HandlerResult[RequestMessageSetReaction.Response]] = {
     authorized(clientData) { implicit client ⇒
       for {
-        res ← dialogExt.setReaction(client.userId, client.authSid, peer.asModel, randomId, code)
+        res ← dialogExt.setReaction(client.userId, client.authId, peer.asModel, randomId, code)
       } yield Ok(ResponseReactionsResponse(
         res.getSeqstate.seq,
         res.getSeqstate.state.toByteArray,
@@ -25,7 +25,7 @@ trait ReactionsHandlers {
   override def doHandleMessageRemoveReaction(peer: ApiOutPeer, randomId: Long, code: String, clientData: ClientData): Future[HandlerResult[RequestMessageRemoveReaction.Response]] = {
     authorized(clientData) { implicit client ⇒
       for {
-        res ← dialogExt.removeReaction(client.userId, client.authSid, peer.asModel, randomId, code)
+        res ← dialogExt.removeReaction(client.userId, client.authId, peer.asModel, randomId, code)
       } yield Ok(ResponseReactionsResponse(
         res.getSeqstate.seq,
         res.getSeqstate.state.toByteArray,

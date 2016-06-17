@@ -2,12 +2,10 @@ package im.actor.server
 
 import akka.actor.ActorSystem
 import akka.event.Logging
-import com.google.protobuf.CodedInputStream
+import com.google.protobuf.{ ByteString, CodedInputStream }
 import im.actor.api.rpc.{ ClientData, Update }
-import im.actor.server.db.DbExtension
-import im.actor.server.model.{ SeqUpdate, SerializedUpdate }
-import im.actor.server.persist.sequence.UserSequenceRepo
-import im.actor.server.sequence.SeqUpdatesExtension
+import im.actor.server.model.SerializedUpdate
+import im.actor.server.sequence.{ SeqState, SeqUpdatesExtension }
 import im.actor.util.log.AnyRefLogSource
 import org.scalatest.Matchers
 import org.scalatest.concurrent.ScalaFutures
@@ -20,24 +18,27 @@ import scala.util.{ Failure, Success, Try }
 
 trait SeqUpdateMatchers extends Matchers with ScalaFutures with AnyRefLogSource {
   protected implicit val system: ActorSystem
-  import system.dispatcher
 
   private val DefaultRetryCount = 5
   private val DefaultRetryInterval: Long = 800
 
   private val log = Logging(system, this)
 
-  type UpdateClass = Class[_ <: Update]
+  private type UpdateClass = Class[_ <: Update]
 
-  def getCurrentSeq(implicit clientData: ClientData): Int =
-    whenReady(SeqUpdatesExtension(system).getSeqState(clientData.optUserId.get) map (_.seq))(identity)
+  val emptyState: SeqState = SeqState(0, ByteString.EMPTY)
 
-  def expectUpdate[Upd <: Update: ClassTag](clazz: Class[Upd])(check: Upd ⇒ Any)(implicit client: ClientData): Int =
-    expectUpdate(seq = 0, clazz)(check)
+  def mkSeqState(seq: Int, commonState: Array[Byte]): SeqState = SeqState(seq, ByteString.copyFrom(commonState))
 
-  def expectUpdate[Upd <: Update: ClassTag](seq: Int, clazz: Class[Upd])(check: Upd ⇒ Any)(implicit client: ClientData): Int = {
-    matchUpdates(seq) { dbUpdates ⇒
-      val optUpdate = dbUpdates find (_.header == extractHeader(clazz))
+  def getCurrentState(implicit clientData: ClientData): SeqState =
+    whenReady(SeqUpdatesExtension(system).getSeqState(clientData.optUserId.get, clientData.authId))(identity)
+
+  def expectUpdate[Upd <: Update: ClassTag](clazz: Class[Upd])(check: Upd ⇒ Any)(implicit client: ClientData): SeqState =
+    expectUpdate(emptyState, clazz)(check)
+
+  def expectUpdate[Upd <: Update: ClassTag](state: SeqState, clazz: Class[Upd])(check: Upd ⇒ Any)(implicit client: ClientData): SeqState = {
+    matchUpdates(state) { updates ⇒
+      val optUpdate = updates find (_.header == extractHeader(clazz))
       withClue(s"There was no update of type ${clazz.getSimpleName} in difference") {
         optUpdate shouldBe defined
       }
@@ -45,11 +46,11 @@ trait SeqUpdateMatchers extends Matchers with ScalaFutures with AnyRefLogSource 
     }
   }
 
-  def expectUpdates(updates: UpdateClass*)(check: PartialFunction[Seq[Update], Any])(implicit client: ClientData): Int =
-    expectUpdates(seq = 0, updates: _*)(check)
+  def expectUpdates(updates: UpdateClass*)(check: PartialFunction[Seq[Update], Any])(implicit client: ClientData): SeqState =
+    expectUpdates(emptyState, updates: _*)(check)
 
-  def expectUpdates(seq: Int, updates: UpdateClass*)(check: PartialFunction[Seq[Update], Any])(implicit client: ClientData): Int =
-    expectUpdatesAbstract(seq, updates)(check)(
+  def expectUpdates(state: SeqState, updates: UpdateClass*)(check: PartialFunction[Seq[Update], Any])(implicit client: ClientData): SeqState =
+    expectUpdatesAbstract(state, updates)(check)(
       { (dbUpdatesHeaders, updatesHeaders) ⇒ dbUpdatesHeaders containsSlice updatesHeaders },
       { (dbUpdatesNames, updatesNames) ⇒
         s"""Error: did not get expected updates in given order.
@@ -59,11 +60,11 @@ trait SeqUpdateMatchers extends Matchers with ScalaFutures with AnyRefLogSource 
       }
     )
 
-  def expectUpdatesUnordered(updates: UpdateClass*)(check: PartialFunction[Seq[Update], Any])(implicit client: ClientData): Int =
-    expectUpdatesUnordered(seq = 0, updates: _*)(check)
+  def expectUpdatesUnordered(updates: UpdateClass*)(check: PartialFunction[Seq[Update], Any])(implicit client: ClientData): SeqState =
+    expectUpdatesUnordered(emptyState, updates: _*)(check)
 
-  def expectUpdatesUnordered(seq: Int, updates: UpdateClass*)(check: PartialFunction[Seq[Update], Any])(implicit client: ClientData): Int =
-    expectUpdatesAbstract(seq, updates)(check)(
+  def expectUpdatesUnordered(state: SeqState, updates: UpdateClass*)(check: PartialFunction[Seq[Update], Any])(implicit client: ClientData): SeqState =
+    expectUpdatesAbstract(state, updates)(check)(
       { (dbUpdatesHeaders, updatesHeaders) ⇒ updatesHeaders.toSet subsetOf dbUpdatesHeaders.toSet },
       { (dbUpdatesNames, updatesNames) ⇒
         s"""Error: did not get expected updates.
@@ -73,11 +74,11 @@ trait SeqUpdateMatchers extends Matchers with ScalaFutures with AnyRefLogSource 
       }
     )
 
-  def expectUpdatesOnly(updates: UpdateClass*)(check: PartialFunction[Seq[Update], Any])(implicit client: ClientData): Int =
-    expectUpdatesOnly(seq = 0, updates: _*)(check)
+  def expectUpdatesOnly(updates: UpdateClass*)(check: PartialFunction[Seq[Update], Any])(implicit client: ClientData): SeqState =
+    expectUpdatesOnly(emptyState, updates: _*)(check)
 
-  def expectUpdatesOnly(seq: Int, updates: UpdateClass*)(check: PartialFunction[Seq[Update], Any])(implicit client: ClientData): Int =
-    expectUpdatesAbstract(seq, updates)(check)(
+  def expectUpdatesOnly(state: SeqState, updates: UpdateClass*)(check: PartialFunction[Seq[Update], Any])(implicit client: ClientData): SeqState =
+    expectUpdatesAbstract(state, updates)(check)(
       { (dbUpdatesHeaders, updatesHeaders) ⇒ dbUpdatesHeaders == updatesHeaders },
       { (dbUpdatesNames, updatesNames) ⇒
         s"""Error: did not get expected updates ONLY in given order.
@@ -88,13 +89,12 @@ trait SeqUpdateMatchers extends Matchers with ScalaFutures with AnyRefLogSource 
     )
 
   //todo: make timeout configurable
-  def expectNoUpdate[Upd <: Update: ClassTag](seq: Int, update: Class[Upd])(implicit client: ClientData): Unit = {
+  def expectNoUpdate[Upd <: Update: ClassTag](state: SeqState, update: Class[Upd])(implicit client: ClientData): Unit = {
     Thread.sleep(4000)
     val updateHeader = extractHeader(update)
-    whenReady(findSeqUpdateAfter(seq)) { updates ⇒
-      val authSid = client.authData.get.authSid
-      if (updates.map(u ⇒ u.getMapping.custom.getOrElse(authSid, u.getMapping.getDefault).header)
-        .contains(updateHeader)) fail(s"There should be no update of type: ${update.getSimpleName}")
+    whenReady(findSeqUpdateAfter(state)) {
+      case (updates, _) ⇒
+        if (updates.exists(_.header == updateHeader)) fail(s"There should be no update of type: ${update.getSimpleName}")
     }
   }
 
@@ -102,8 +102,8 @@ trait SeqUpdateMatchers extends Matchers with ScalaFutures with AnyRefLogSource 
     case _ ⇒
   }
 
-  private def expectUpdatesAbstract[Upd <: Update: ClassTag](seq: Int, updates: Seq[UpdateClass])(check: PartialFunction[Seq[Update], Any])(containsCheck: (Seq[Int], Seq[Int]) ⇒ Boolean, errorMessage: (String, String) ⇒ String)(implicit client: ClientData): Int = {
-    matchUpdates(seq) { dbUpdates ⇒
+  private def expectUpdatesAbstract[Upd <: Update: ClassTag](state: SeqState, updates: Seq[UpdateClass])(check: PartialFunction[Seq[Update], Any])(containsCheck: (Seq[Int], Seq[Int]) ⇒ Boolean, errorMessage: (String, String) ⇒ String)(implicit client: ClientData): SeqState = {
+    matchUpdates(state) { dbUpdates ⇒
       val headersToUpdates = updates map (u ⇒ extractHeader(u) → u)
       val updatesMap: Map[Int, UpdateClass] = headersToUpdates.toMap
       val updatesHeaders = headersToUpdates map (_._1)
@@ -162,24 +162,28 @@ trait SeqUpdateMatchers extends Matchers with ScalaFutures with AnyRefLogSource 
     objectMirror.reflectMethod(method).apply(args).asInstanceOf[Result]
   }
 
-  private def matchUpdates(seq: Int)(check: Seq[SerializedUpdate] ⇒ Any)(implicit client: ClientData): Int =
+  private def matchUpdates(state: SeqState)(check: Seq[SerializedUpdate] ⇒ Any)(implicit client: ClientData): SeqState =
     repeatAfterSleep(DefaultRetryCount) {
-      whenReady(findSeqUpdateAfter(seq)) { updates ⇒
-        val authSid = client.authData.get.authSid
-
-        val serUpdates = updates map { update ⇒
-          update.getMapping.custom.getOrElse(authSid, update.getMapping.getDefault)
-        }
-
-        check(serUpdates)
-        updates.lastOption map (_.seq) getOrElse fail("Retrieved empty sequence")
+      whenReady(findSeqUpdateAfter(state)) {
+        case (updates, newState) ⇒
+          check(updates)
+          newState
       }
     }
 
-  private def findSeqUpdateAfter(seq: Int)(implicit client: ClientData): Future[Seq[SeqUpdate]] =
+  private def findSeqUpdateAfter(seqState: SeqState)(implicit client: ClientData): Future[(Seq[SerializedUpdate], SeqState)] =
     SeqUpdatesExtension(system)
-      .getDifference(client.authData.get.userId, seq, client.authData.get.authSid, Long.MaxValue)
-      .map(_._1)(system.dispatcher)
+      .getDifference(
+        client.authData.get.userId,
+        seqState.seq,
+        seqState.state.toByteArray,
+        client.authId,
+        client.authData.get.authSid,
+        Long.MaxValue
+      )
+      .map { diff ⇒
+        diff.updates → mkSeqState(diff.seq, diff.commonState)
+      }(system.dispatcher)
 
   @tailrec
   private def repeatAfterSleep[T](times: Int)(f: ⇒ T): T = {

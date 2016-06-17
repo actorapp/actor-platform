@@ -19,7 +19,7 @@ import im.actor.server.api.http.HttpHandler
 import im.actor.server.api.http.json.{ ContentUnmarshaller, JsValueUnmarshaller, JsonFormatters, Status }
 import im.actor.server.bot.{ BotExtension, BotServerBlueprint }
 import im.actor.server.model.AuthSession
-import im.actor.server.user.UserExtension
+import im.actor.server.sequence.SeqUpdatesExtension
 import play.api.libs.json.{ JsNull, JsObject, JsString }
 import upickle.default._
 
@@ -39,7 +39,7 @@ private[bot] final class BotsHttpHandler(botExt: BotExtension)(implicit system: 
 
   implicit val materializer: Materializer = ActorMaterializer()
 
-  private val userExt = UserExtension(system)
+  private val seqUpdExt = SeqUpdatesExtension(system)
 
   override def routes: Route =
     defaultVersion {
@@ -117,7 +117,7 @@ private[bot] final class BotsHttpHandler(botExt: BotExtension)(implicit system: 
   private def sendMessage(method: HttpMethod, queryString: Option[String], headers: Seq[(String, String)], data: ByteString, token: String): Future[Either[StatusCode, Unit]] = {
     (for {
       hook ← OptionT(botExt.findWebHook(token))
-      _ ← OptionT.pure(userExt.broadcastUserUpdate(
+      _ ← OptionT.pure(seqUpdExt.deliverUserUpdate(
         userId = hook.userId,
         update = UpdateRawUpdate(
           `type` = Some("HookData"),
@@ -132,10 +132,7 @@ private[bot] final class BotsHttpHandler(botExt: BotExtension)(implicit system: 
             ))
           )).toString().getBytes("UTF-8")
         ),
-        pushText = None,
-        isFat = false,
-        reduceKey = None,
-        deliveryId = None
+        pushRules = seqUpdExt.pushRules(isFat = false, None)
       ))
     } yield Right(())).value map {
       case Some(r) ⇒ r

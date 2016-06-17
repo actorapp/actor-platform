@@ -5,29 +5,26 @@ import im.actor.api.rpc.groups.ApiGroup
 import im.actor.api.rpc.users.ApiUser
 import im.actor.api.rpc.sequence._
 import im.actor.server.acl.ACLUtils
-import im.actor.server.model.SeqUpdate
+import im.actor.server.model.SerializedUpdate
 
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.Success
-
 import akka.actor.ActorSystem
-import akka.stream.Materializer
-
+import akka.http.scaladsl.util.FastFuture
 import im.actor.api.rpc._
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
-import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType, ApiGroupOutPeer, ApiUserOutPeer }
+import im.actor.api.rpc.peers.{ ApiGroupOutPeer, ApiUserOutPeer }
 import im.actor.server.db.DbExtension
-import im.actor.server.group.{ GroupUtils, GroupExtension }
-import im.actor.server.sequence.SeqUpdatesExtension
+import im.actor.server.group.{ GroupExtension, GroupUtils }
+import im.actor.server.sequence.{ Difference, SeqUpdatesExtension }
 import im.actor.server.session._
-import im.actor.server.user.{ UserExtension, UserUtils }
+import im.actor.server.user.UserUtils
 import im.actor.server.db.ActorPostgresDriver.api._
 
 final class SequenceServiceImpl(config: SequenceServiceConfig)(
   implicit
   sessionRegion: SessionRegion,
-  actorSystem:   ActorSystem,
-  materializer:  Materializer
+  actorSystem:   ActorSystem
 ) extends SequenceService {
   import FutureResultRpc._
 
@@ -40,47 +37,43 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
   private val maxDifferenceSize: Long = config.maxDifferenceSize
 
   private def subscribeToSeq(opts: Seq[ApiUpdateOptimization.Value])(implicit client: AuthorizedClientData): Unit = {
+    val optsIds = opts map (_.id)
+    seqUpdExt.addOptimizations(client.userId, client.authId, optsIds)
     sessionRegion.ref ! SessionEnvelope(client.authId, client.sessionId)
-      .withSubscribeToSeq(SubscribeToSeq(opts map (_.id)))
+      .withSubscribeToSeq(SubscribeToSeq(optsIds))
   }
 
   override def doHandleGetState(optimizations: IndexedSeq[ApiUpdateOptimization.ApiUpdateOptimization], clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
     authorized(clientData) { implicit client ⇒
       subscribeToSeq(optimizations)
       val action = for {
-        seqstate ← DBIO.from(seqUpdExt.getSeqState(client.userId))
-      } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
+        seqState ← DBIO.from(seqUpdExt.getSeqState(client.userId, clientData.authId))
+      } yield Ok(ResponseSeq(seqState.seq, seqState.state.toByteArray))
       db.run(action)
     }
 
-  override def doHandleGetDifference(seq: Int, state: Array[Byte], optimizations: IndexedSeq[ApiUpdateOptimization.ApiUpdateOptimization], clientData: ClientData): Future[HandlerResult[ResponseGetDifference]] = {
+  override def doHandleGetDifference(
+    seq:           Int,
+    commonState:   Array[Byte],
+    optimizations: IndexedSeq[ApiUpdateOptimization.ApiUpdateOptimization],
+    clientData:    ClientData
+  ): Future[HandlerResult[ResponseGetDifference]] = {
     authorized(clientData) { implicit client ⇒
       subscribeToSeq(optimizations)
 
-      val seqDeltaFuture =
-        if (state.nonEmpty) {
-          getDelta(client.userId, client.authId) andThen {
-            case Success(delta) ⇒ log.debug("Delta for client: {} is: {}", client, delta)
-          }
-        } else Future.successful(0)
-
       for {
-        seqDelta ← seqDeltaFuture
         // FIXME: would new updates between getSeqState and getDifference break client state?
-        (updates, needMore) ← seqUpdExt.getDifference(client.userId, seq + seqDelta, client.authSid, maxDifferenceSize)
+        Difference(updates, cleintSeq, newCommonState, needMore) ← seqUpdExt.getDifference(
+          client.userId, seq, commonState, client.authId, client.authSid, maxDifferenceSize
+        )
         (diffUpdates, userIds, groupIds) = extractDiff(updates)
         (users, groups) ← getUsersGroups(userIds + client.userId, groupIds, optimizations)
 
         (userRefs, groupRefs) ← getRefs(userIds, groupIds, optimizations, client)
       } yield {
-        val newSeq = updates.lastOption match {
-          case Some(upd) ⇒ upd.seq
-          case None      ⇒ seq + seqDelta
-        }
-
         Ok(ResponseGetDifference(
-          seq = newSeq,
-          state = Array.empty,
+          seq = cleintSeq,
+          state = newCommonState,
           updates = diffUpdates,
           needMore = needMore,
           users = users,
@@ -113,7 +106,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
     }
 
   override def doHandleSubscribeToOnline(users: IndexedSeq[ApiUserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
-    val authorizedAction = authorized(clientData) { client ⇒ Future.successful(Ok(ResponseVoid)) }
+    val authorizedAction = authorized(clientData) { client ⇒ FastFuture.successful(Ok(ResponseVoid)) }
 
     authorizedAction andThen {
       case Success(_) ⇒
@@ -126,7 +119,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
   }
 
   override def doHandleSubscribeFromOnline(users: IndexedSeq[ApiUserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
-    val authorizedAction = authorized(clientData) { client ⇒ Future.successful(Ok(ResponseVoid)) }
+    val authorizedAction = authorized(clientData) { client ⇒ FastFuture.successful(Ok(ResponseVoid)) }
 
     authorizedAction andThen {
       case Success(_) ⇒
@@ -139,7 +132,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
   }
 
   override def doHandleSubscribeToGroupOnline(groups: IndexedSeq[ApiGroupOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
-    Future.successful(Ok(ResponseVoid)) andThen {
+    FastFuture.successful(Ok(ResponseVoid)) andThen {
       case _ ⇒
         // FIXME: #security check access hashes
         sessionRegion.ref ! SessionEnvelope(clientData.authId, clientData.sessionId)
@@ -148,7 +141,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
   }
 
   override def doHandleSubscribeFromGroupOnline(groups: IndexedSeq[ApiGroupOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
-    Future.successful(Ok(ResponseVoid)) andThen {
+    FastFuture.successful(Ok(ResponseVoid)) andThen {
       case _ ⇒
         // FIXME: #security check access hashes
         sessionRegion.ref ! SessionEnvelope(clientData.authId, clientData.sessionId)
@@ -156,6 +149,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
     }
   }
 
+  //TODO: remove
   private def getDelta(userId: Int, authId: Long): Future[Int] =
     db.run(for {
       maxSeq ← getMaxSeq(userId)
@@ -168,17 +162,15 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
 
   private def getSeq(authId: Long)(implicit ec: ExecutionContext) =
     sql"""SELECT seq FROM seq_updates_ngen WHERE auth_id = $authId ORDER BY timestamp DESC LIMIT 1""".as[Int].headOption map (_ getOrElse 0)
+  //
 
-  private def extractDiff(updates: IndexedSeq[SeqUpdate])(implicit client: AuthorizedClientData): (IndexedSeq[ApiUpdateContainer], Set[Int], Set[Int]) = {
+  private def extractDiff(updates: IndexedSeq[SerializedUpdate]): (IndexedSeq[ApiUpdateContainer], Set[Int], Set[Int]) =
     updates.foldLeft[(Vector[ApiUpdateContainer], Set[Int], Set[Int])](Vector.empty, Set.empty, Set.empty) {
-      case ((updates, userIds, groupIds), update) ⇒
-        val upd = update.getMapping.custom.getOrElse(client.authSid, update.getMapping.getDefault)
-
-        (updates :+ ApiUpdateContainer(upd.header, upd.body.toByteArray),
-          userIds ++ upd.userIds,
-          groupIds ++ upd.groupIds)
+      case ((updatesAcc, userIds, groupIds), update) ⇒
+        (updatesAcc :+ ApiUpdateContainer(update.header, update.body.toByteArray),
+          userIds ++ update.userIds,
+          groupIds ++ update.groupIds)
     }
-  }
 
   private def getUsersGroups(
     userIds:       Set[Int],
@@ -186,7 +178,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
     optimizations: Seq[ApiUpdateOptimization.Value]
   )(implicit client: AuthorizedClientData): Future[(Vector[ApiUser], Vector[ApiGroup])] = {
     if (optimizations.contains(ApiUpdateOptimization.STRIP_ENTITIES))
-      Future.successful((Vector.empty, Vector.empty))
+      FastFuture.successful((Vector.empty, Vector.empty))
     else
       for {
         groups ← Future.sequence(groupIds.toVector map (GroupExtension(actorSystem).getApiStruct(_, client.userId)))
@@ -212,6 +204,6 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
         )
       } yield (us, gs)
     else
-      Future.successful((Vector.empty, Vector.empty))
+      FastFuture.successful((Vector.empty, Vector.empty))
   }
 }

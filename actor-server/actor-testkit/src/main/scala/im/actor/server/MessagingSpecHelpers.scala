@@ -1,16 +1,17 @@
 package im.actor.server
 
 import akka.actor.ActorSystem
+import cats.data.Xor
 import com.google.protobuf.ByteString
 import im.actor.api.rpc.{ ClientData, PeersImplicits }
 import im.actor.api.rpc.messaging.{ ApiDialogGroup, ApiDialogShort, ApiMessage, ApiTextMessage, _ }
+import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.api.rpc.users.ApiUser
 import im.actor.server.acl.ACLUtils
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog.{ DialogExtension, DialogGroupType, DialogInfo }
 import im.actor.server.model.{ DialogObsolete, Peer }
-import im.actor.server.persist.dialog.DialogRepo
 import im.actor.server.sequence.SeqStateDate
 import org.scalatest.Matchers
 import org.scalatest.concurrent.ScalaFutures
@@ -28,18 +29,18 @@ trait MessagingSpecHelpers extends ScalaFutures with PeersImplicits with Matcher
     implicit
     clientData: ClientData,
     msgService: MessagingService
-  ): Long = sendMessageToUser(userId, ApiTextMessage(text, Vector.empty, None))
+  ): (Long, ResponseSeqDate) = sendMessageToUser(userId, ApiTextMessage(text, Vector.empty, None))
 
   def sendMessageToUser(userId: Int, message: ApiMessage)(
     implicit
     clientData: ClientData,
     msgService: MessagingService
-  ): Long = {
+  ): (Long, ResponseSeqDate) = {
     val randomId = Random.nextLong
-    whenReady(ACLUtils.getOutPeer(ApiPeer(ApiPeerType.Private, userId), clientData.authId)) { peer ⇒
+    val resp = whenReady(ACLUtils.getOutPeer(ApiPeer(ApiPeerType.Private, userId), clientData.authId)) { peer ⇒
       whenReady(msgService.handleSendMessage(peer, randomId, message, None, None))(identity)
     }
-    randomId
+    randomId → resp.toOption.get
   }
 
   //the only difference with previous method - this one returns SeqStateDate
@@ -67,12 +68,12 @@ trait MessagingSpecHelpers extends ScalaFutures with PeersImplicits with Matcher
     implicit
     clientData: ClientData,
     msgService: MessagingService
-  ): Long = {
+  ): (Long, ResponseSeqDate) = {
     val randomId = Random.nextLong
-    whenReady(ACLUtils.getOutPeer(ApiPeer(ApiPeerType.Group, groupId), clientData.authId)) { peer ⇒
+    val resp = whenReady(ACLUtils.getOutPeer(ApiPeer(ApiPeerType.Group, groupId), clientData.authId)) { peer ⇒
       whenReady(msgService.handleSendMessage(peer, randomId, message, None, None))(identity)
     }
-    randomId
+    randomId → resp.toOption.get
   }
 
   def textMessage(text: String) = ApiTextMessage(text, Vector.empty, None)

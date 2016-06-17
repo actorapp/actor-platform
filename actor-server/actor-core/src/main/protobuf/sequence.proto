@@ -12,6 +12,15 @@ import "google/protobuf/wrappers.proto";
 import "model/push.proto";
 import "model.proto";
 
+enum CommonStateVersion {
+    V1 = 0;
+}
+
+message CommonState {
+    CommonStateVersion version = 1;
+    int32 seq = 2;
+}
+
 message PushData {
     string text = 1;
     string censoredText = 3;
@@ -19,17 +28,18 @@ message PushData {
 }
 
 message PushRules {
-    repeated int32 exclude_auth_sids = 1;
+    repeated int64 exclude_auth_ids = 1;
     bool is_fat = 3;
     PushData data = 2;
 }
 
 message UserSequenceEvents {
     message NewUpdate {
-        SeqUpdate seq_update = 1;
+        SerializedUpdate update = 5;
+        int32 seq = 6;
+        bytes state = 3;
         PushRules push_rules = 2;
         google.protobuf.StringValue reduce_key = 4;
-        bytes state = 3;
     }
 }
 
@@ -43,10 +53,19 @@ message UserSequenceCommands {
             UnregisterPushCredentials unregisterPushCredentials = 5;
             DeliverPush deliverPush = 6;
             ReloadSettings reloadSettings = 7;
+            RegisterAuthId registerAuthId = 8;
+            UnregisterAuthId unregisterAuthId = 9;
+            AddOptimizations addOptimizations = 10;
         }
     }
 
+    message AddOptimizations {
+        int64 auth_id = 1;
+        repeated int32 optimizations = 2;
+    }
+
     message DeliverUpdate {
+        int64 auth_id = 6;
         UpdateMapping mapping = 1;
         PushRules push_rules = 2;
         google.protobuf.StringValue reduce_key = 5;
@@ -58,7 +77,9 @@ message UserSequenceCommands {
         string delivery_id = 2;
     }
 
-    message GetSeqState {}
+    message GetSeqState {
+        int64 auth_id = 1;
+    }
 
     message RegisterPushCredentials {
         option (scalapb.message).extends = "im.actor.server.sequence.VendorPushCommand";
@@ -82,9 +103,20 @@ message UserSequenceCommands {
 
     message UnregisterPushCredentialsAck {}
 
+    message RegisterAuthId {
+        int64 auth_id = 1;
+    }
+
+    message UnregisterAuthId {
+        int64 auth_id = 1;
+    }
+
+    message UnregisterAuthIdAck {}
+
     message DeliverPush {
         option (scalapb.message).extends = "im.actor.server.sequence.VendorPushCommand";
 
+        int64 authId = 3;
         int32 seq = 1;
         PushRules push_rules = 2;
     }

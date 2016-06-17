@@ -19,10 +19,8 @@ final class ActorDelivery()(implicit val system: ActorSystem)
   with PushText
   with PeersImplicits {
 
-  implicit val ec: ExecutionContext = system.dispatcher
-  implicit val seqUpdatesExt: SeqUpdatesExtension = SeqUpdatesExtension(system)
-  private val userExt = UserExtension(system)
-  private val dialogExt = DialogExtension(system)
+  private implicit val ec: ExecutionContext = system.dispatcher
+  private val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(system)
 
   override def receiverDelivery(
     receiverUserId: Int,
@@ -44,9 +42,9 @@ final class ActorDelivery()(implicit val system: ActorSystem)
     )
 
     for {
-      senderName ← userExt.getName(senderUserId, receiverUserId)
+      senderName ← UserExtension(system).getName(senderUserId, receiverUserId)
       (pushText, censoredPushText) ← getPushText(peer, receiverUserId, senderName, message)
-      _ ← seqUpdatesExt.deliverSingleUpdate(
+      _ ← seqUpdExt.deliverUserUpdate(
         receiverUserId,
         receiverUpdate,
         PushRules(isFat = isFat).withData(
@@ -62,23 +60,23 @@ final class ActorDelivery()(implicit val system: ActorSystem)
 
   override def sendCountersUpdate(userId: Int): Future[Unit] =
     for {
-      counter ← dialogExt.getUnreadTotal(userId)
+      counter ← DialogExtension(system).getUnreadTotal(userId)
       _ ← sendCountersUpdate(userId, counter)
     } yield ()
 
   override def sendCountersUpdate(userId: Int, counter: Int): Future[Unit] = {
     val counterUpdate = UpdateCountersChanged(ApiAppCounters(Some(counter)))
-    seqUpdatesExt.deliverSingleUpdate(userId, counterUpdate, reduceKey = Some("counters_changed")) map (_ ⇒ ())
+    seqUpdExt.deliverUserUpdate(userId, counterUpdate, reduceKey = Some("counters_changed")) map (_ ⇒ ())
   }
 
   override def senderDelivery(
-    senderUserId:  Int,
-    senderAuthSid: Int,
-    peer:          Peer,
-    randomId:      Long,
-    timestamp:     Long,
-    message:       ApiMessage,
-    isFat:         Boolean
+    senderUserId: Int,
+    senderAuthId: Option[Long],
+    peer:         Peer,
+    randomId:     Long,
+    timestamp:    Long,
+    message:      ApiMessage,
+    isFat:        Boolean
   ): Future[SeqState] = {
     val apiPeer = peer.asStruct
     val senderUpdate = UpdateMessage(
@@ -93,42 +91,42 @@ final class ActorDelivery()(implicit val system: ActorSystem)
 
     val senderClientUpdate = UpdateMessageSent(apiPeer, randomId, timestamp)
 
-    seqUpdatesExt.deliverMappedUpdate(
+    seqUpdExt.deliverCustomUpdate(
       userId = senderUserId,
+      authId = senderAuthId getOrElse 0L,
       default = Some(senderUpdate),
-      custom = Map(senderAuthSid → senderClientUpdate),
-      pushRules = PushRules(isFat = isFat, excludeAuthSids = Seq(senderAuthSid)),
+      custom = senderAuthId map (authId ⇒ Map(authId → senderClientUpdate)) getOrElse Map.empty,
+      pushRules = PushRules(isFat = isFat, excludeAuthIds = senderAuthId.toSeq),
       deliveryId = s"msg_${peer.toString}_$randomId"
     )
   }
 
   override def notifyReceive(userId: Int, peer: Peer, date: Long, now: Long): Future[Unit] = {
     val update = UpdateMessageReceived(peer.asStruct, date, now)
-    userExt.broadcastUserUpdate(
+    seqUpdExt.deliverUserUpdate(
       userId,
       update,
-      pushText = None,
-      isFat = false,
-      reduceKey = Some(s"receive_${peer.toString}"),
-      deliveryId = None
+      pushRules = seqUpdExt.pushRules(isFat = false, None),
+      reduceKey = Some(seqUpdExt.reduceKey("receive", peer))
     ) map (_ ⇒ ())
   }
 
   override def notifyRead(userId: Int, peer: Peer, date: Long, now: Long): Future[Unit] = {
     val update = UpdateMessageRead(peer.asStruct, date, now)
-    seqUpdatesExt.deliverSingleUpdate(
+    seqUpdExt.deliverUserUpdate(
       userId = userId,
       update = update,
-      reduceKey = Some(s"read_${peer.toString}")
+      reduceKey = Some(seqUpdExt.reduceKey("read", peer))
     ) map (_ ⇒ ())
   }
 
-  override def read(readerUserId: Int, readerAuthSid: Int, peer: Peer, date: Long, unreadCount: Int): Future[Unit] =
+  override def read(readerUserId: Int, readerAuthId: Long, peer: Peer, date: Long, unreadCount: Int): Future[Unit] =
     for {
-      _ ← seqUpdatesExt.deliverSingleUpdate(
+      _ ← seqUpdExt.deliverClientUpdate(
         userId = readerUserId,
+        authId = readerAuthId,
         update = UpdateMessageReadByMe(peer.asStruct, date, Some(unreadCount)),
-        reduceKey = Some(s"read_by_me_${peer.toString}")
+        reduceKey = Some(seqUpdExt.reduceKey("read_by_me", peer))
       )
     } yield ()
 

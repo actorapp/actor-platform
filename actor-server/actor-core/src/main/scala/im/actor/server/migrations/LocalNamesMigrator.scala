@@ -1,9 +1,10 @@
 package im.actor.server.migrations
 
 import akka.actor._
+import akka.http.scaladsl.util.FastFuture
 import akka.util.Timeout
 import im.actor.server.persist.UserRepo
-import im.actor.server.persist.contact.{ UserContactRepo, UserPhoneContactRepo, UserEmailContactRepo }
+import im.actor.server.persist.contact.{ UserContactRepo, UserEmailContactRepo, UserPhoneContactRepo }
 import im.actor.server.user.UserExtension
 import slick.driver.PostgresDriver.api._
 
@@ -60,7 +61,7 @@ private final class LocalNamesMigrator(promise: Promise[Unit], ownerUserId: Int,
       (if (contact.name.contains(user.name)) {
         db.run(UserContactRepo.updateName(ownerUserId, contactUserId, None))
       } else {
-        contact.name map (_ ⇒ userExt.editLocalName(ownerUserId, contactUserId, contact.name, supressUpdate = true)) getOrElse Future.successful(())
+        contact.name map (_ ⇒ userExt.editLocalNameSilently(ownerUserId, contactUserId, contact.name)) getOrElse FastFuture.successful(())
       }) onComplete {
         case Success(_) ⇒
           log.debug(s"Migrated contact with ownerUserId: $ownerUserId, contactUserId: $contactUserId")

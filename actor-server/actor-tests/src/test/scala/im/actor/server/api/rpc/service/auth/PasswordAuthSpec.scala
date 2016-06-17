@@ -21,7 +21,7 @@ final class PasswordAuthSpec extends BaseAppSuite with ImplicitSessionRegion {
 
   def authByPassword() = {
     val (user, authId, _, _) = createUser()
-    whenReady(userExt.changeNickname(user.id, Some("manickname")))(identity)
+    whenReady(userExt.changeNickname(user.id, authId, Some("manickname")))(identity)
     val (hash, salt) = ACLUtils.hashPassword("ma password")
     whenReady(db.run(UserPasswordRepo.createOrReplace(user.id, hash, salt)))(identity)
 

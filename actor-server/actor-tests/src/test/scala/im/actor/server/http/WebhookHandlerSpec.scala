@@ -67,8 +67,8 @@ class WebhookHandlerSpec
 
       val groupResponse = createGroup("Bot test group", Set(user2.id))
       val groupOutPeer = groupResponse.groupPeer
-      val initSeq = groupResponse.seq
-      val initState = groupResponse.state
+
+      val initState = mkSeqState(groupResponse.seq, groupResponse.state)
 
       Thread.sleep(1000)
 
@@ -79,23 +79,20 @@ class WebhookHandlerSpec
 
       val firstMessage = Text("Alert! All tests are failed!")
       whenReady(handler.send(firstMessage, token)) { _ ⇒
-        expectUpdate(initSeq, classOf[UpdateMessage]) { upd ⇒
+        expectUpdate(initState, classOf[UpdateMessage]) { upd ⇒
           upd.message shouldEqual ApiTextMessage(firstMessage.text, Vector.empty, None)
         }
-        expectUpdate(initSeq, classOf[UpdateCountersChanged])(identity)
+        expectUpdate(initState, classOf[UpdateCountersChanged])(identity)
       }
 
-      val (seq1, state1) = whenReady(sequenceService.handleGetState(Vector.empty)) { resp ⇒
-        val ResponseSeq(seq, state) = resp.toOption.get
-        (seq, state)
-      }
+      val state1 = getCurrentState
 
       val secondMessage = Text("It's ok now!")
       whenReady(handler.send(secondMessage, token)) { _ ⇒
-        expectUpdate(seq1, classOf[UpdateMessage]) { upd ⇒
+        expectUpdate(state1, classOf[UpdateMessage]) { upd ⇒
           upd.message shouldEqual ApiTextMessage(secondMessage.text, Vector.empty, None)
         }
-        expectUpdate(seq1, classOf[UpdateCountersChanged])(identity)
+        expectUpdate(state1, classOf[UpdateCountersChanged])(identity)
       }
     }
 

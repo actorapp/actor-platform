@@ -51,11 +51,11 @@ object UpdatesConsumerMessage {
 }
 
 object UpdatesConsumer {
-  def props(userId: Int, authId: Long, authSid: Int, session: ActorRef) =
-    Props(classOf[UpdatesConsumer], userId, authId, authSid, session)
+  def props(userId: Int, authId: Long, session: ActorRef) =
+    Props(classOf[UpdatesConsumer], userId, authId, session)
 }
 
-private[sequence] class UpdatesConsumer(userId: Int, authId: Long, authSid: Int, subscriber: ActorRef) extends Actor with ActorLogging with Stash {
+private[sequence] class UpdatesConsumer(userId: Int, authId: Long, subscriber: ActorRef) extends Actor with ActorLogging with Stash {
 
   import Presences._
   import UpdatesConsumerMessage._
@@ -92,7 +92,7 @@ private[sequence] class UpdatesConsumer(userId: Int, authId: Long, authSid: Int,
           case msg ⇒ stash()
         }
 
-        seqUpdExt.subscribe(userId, self) pipeTo self
+        seqUpdExt.subscribe(authId, self) pipeTo self
       }
     case SubscribeToWeak(None) ⇒
       weakUpdatesExt.subscribe(authId, self, None) onFailure {
@@ -138,27 +138,26 @@ private[sequence] class UpdatesConsumer(userId: Int, authId: Long, authSid: Int,
             log.error(e, "Failed to unsubscribe from group presences")
         }
       }
-    case UserSequenceEvents.NewUpdate(Some(seqUpd), pushRulesOpt, reduceKey, state) ⇒
+
+    case UserSequenceEvents.NewUpdate(Some(upd), seq, state, pushRulesOpt, reduceKey) ⇒
       val pushRules = pushRulesOpt.getOrElse(PushRules())
 
-      if (!pushRules.excludeAuthSids.contains(authSid)) {
-        val upd = seqUpd.getMapping.custom.getOrElse(authSid, seqUpd.getMapping.getDefault)
-
+      if (!pushRules.excludeAuthIds.contains(authId)) {
         val boxFuture =
           if (pushRules.isFat) {
             for {
               (users, groups) ← getFatData(userId, upd.userIds, upd.groupIds)
-            } yield FatSeqUpdate(seqUpd.seq, state.toByteArray, upd.header, upd.body.toByteArray, users.toVector, groups.toVector)
-          } else Future.successful(SeqUpdate(seqUpd.seq, state.toByteArray, upd.header, upd.body.toByteArray))
+            } yield FatSeqUpdate(seq, state.toByteArray, upd.header, upd.body.toByteArray, users.toVector, groups.toVector)
+          } else FastFuture.successful(SeqUpdate(seq, state.toByteArray, upd.header, upd.body.toByteArray))
 
         val msgBase = "Pushing SeqUpdate, seq: {}, header: {}"
 
         // TODO: unify for all UpdateBoxes
         boxFuture foreach {
-          case FatSeqUpdate(seq, _, _, _, users, groups) ⇒
-            log.debug(s"$msgBase, users: {}, groups: {}", seqUpd.seq, upd.header, users, groups)
-          case SeqUpdate(seq, _, _, _) ⇒
-            log.debug(msgBase, seqUpd.seq, upd)
+          case FatSeqUpdate(s, _, _, _, users, groups) ⇒
+            log.debug(s"$msgBase, users: {}, groups: {}", s, upd.header, users, groups)
+          case SeqUpdate(s, _, _, _) ⇒
+            log.debug(msgBase, s, upd)
           case _ ⇒ // should never happen
             log.error("Improper seq update box")
         }

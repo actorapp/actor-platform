@@ -21,10 +21,10 @@ final class AuthIdTable(tag: Tag) extends Table[AuthId](tag, "auth_ids") {
 }
 
 object AuthIdRepo {
-  val authIds = TableQuery[AuthIdTable]
+  private val authIds = TableQuery[AuthIdTable]
 
-  val activeAuthIds = authIds.filter(_.deletedAt.isEmpty)
-  val activeAuthIdsCompiled = Compiled(activeAuthIds)
+  private val activeAuthIds = authIds.filter(_.deletedAt.isEmpty)
+  private val activeAuthIdsCompiled = Compiled(activeAuthIds)
 
   def create(authId: Long, userId: Option[Int], publicKeyHash: Option[Long]) =
     authIds += AuthId(authId, userId, publicKeyHash)
@@ -50,7 +50,7 @@ object AuthIdRepo {
   def activeIdByUserIds(userIds: Set[Int]) = activeAuthIds.filter(_.userId inSetBind userIds).map(_.id)
 
   def setUserData(authId: Long, userId: Int) =
-    sql"UPDATE auth_ids SET user_id = $userId WHERE id = $authId AND deleted_at IS NULL".as[Int].head
+    sqlu"UPDATE auth_ids SET user_id = $userId WHERE id = $authId AND deleted_at IS NULL"
 
   def find(authId: Long) =
     byAuthIdNotDeletedCompiled(authId).result.headOption

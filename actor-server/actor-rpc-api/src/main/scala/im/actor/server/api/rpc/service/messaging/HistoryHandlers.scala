@@ -39,7 +39,7 @@ trait HistoryHandlers {
 
   override def doHandleMessageRead(peer: ApiOutPeer, date: Long, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     authorized(clientData) { client ⇒
-      dialogExt.messageRead(peer.asPeer, client.userId, client.authSid, date) map (_ ⇒ Ok(ResponseVoid))
+      dialogExt.messageRead(peer.asPeer, client.userId, client.authId, date) map (_ ⇒ Ok(ResponseVoid))
     }
   }
 
@@ -56,15 +56,20 @@ trait HistoryHandlers {
           }
         }
         _ ← fromDBIO(HistoryMessageRepo.deleteAll(client.userId, peer.asModel))
-        seqstate ← fromFuture(userExt.broadcastClientUpdate(update, None, isFat = false))
-      } yield ResponseSeq(seqstate.seq, seqstate.state.toByteArray)).value
+        seqState ← fromFuture(seqUpdExt.deliverClientUpdate(
+          client.userId,
+          client.authId,
+          update,
+          pushRules = seqUpdExt.pushRules(isFat = false, None)
+        ))
+      } yield ResponseSeq(seqState.seq, seqState.state.toByteArray)).value
       db.run(action)
     }
 
   override def doHandleDeleteChat(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     authorized(clientData) { implicit client ⇒
       for {
-        SeqState(seq, state) ← dialogExt.delete(client.userId, peer.asModel)
+        SeqState(seq, state) ← dialogExt.delete(client.userId, client.authId, peer.asModel)
       } yield Ok(ResponseSeq(seq, state.toByteArray))
     }
   }
@@ -150,17 +155,17 @@ trait HistoryHandlers {
   override def doHandleHideDialog(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseDialogsOrder]] =
     authorized(clientData) { implicit client ⇒
       for {
-        seqstate ← dialogExt.archive(client.userId, peer.asModel, Some(client.authSid))
+        seqState ← dialogExt.archive(client.userId, client.authId, peer.asModel)
         groups ← dialogExt.fetchApiGroupedDialogs(client.userId)
-      } yield Ok(ResponseDialogsOrder(seqstate.seq, seqstate.state.toByteArray, groups = groups))
+      } yield Ok(ResponseDialogsOrder(seqState.seq, seqState.state.toByteArray, groups = groups))
     }
 
   override def doHandleShowDialog(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseDialogsOrder]] =
     authorized(clientData) { implicit client ⇒
       for {
-        seqstate ← dialogExt.unarchive(client.userId, peer.asModel)
+        seqState ← dialogExt.unarchive(client.userId, client.authId, peer.asModel)
         groups ← dialogExt.fetchApiGroupedDialogs(client.userId)
-      } yield Ok(ResponseDialogsOrder(seqstate.seq, seqstate.toByteArray, groups = groups))
+      } yield Ok(ResponseDialogsOrder(seqState.seq, seqState.toByteArray, groups = groups))
     }
 
   override def doHandleArchiveChat(
@@ -169,8 +174,8 @@ trait HistoryHandlers {
   ): Future[HandlerResult[ResponseSeq]] =
     authorized(clientData) { implicit client ⇒
       withOutPeer(peer) {
-        for (seqstate ← dialogExt.archive(client.userId, peer.asModel, Some(client.authSid)))
-          yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
+        for (seqState ← dialogExt.archive(client.userId, client.authId, peer.asModel))
+          yield Ok(ResponseSeq(seqState.seq, seqState.state.toByteArray))
       }
     }
 
@@ -241,21 +246,29 @@ trait HistoryHandlers {
               if (messages.exists(_.senderUserId != client.userId)) {
                 DBIO.successful(Error(CommonRpcErrors.forbidden("You can only delete your own messages")))
               } else {
-                val update = UpdateMessageDelete(outPeer.asPeer, randomIds)
-
                 for {
                   _ ← HistoryMessageRepo.delete(historyOwner, peer, randomIds.toSet)
                   groupUserIds ← GroupUserRepo.findUserIds(peer.id) map (_.toSet)
-                  (seqstate, _) ← DBIO.from(userExt.broadcastClientAndUsersUpdate(groupUserIds, update, None, false))
-                } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
+                  SeqState(seq, state) ← DBIO.from(seqUpdExt.broadcastClientUpdate(
+                    client.userId,
+                    client.authId,
+                    bcastUserIds = groupUserIds,
+                    update = UpdateMessageDelete(outPeer.asPeer, randomIds),
+                    pushRules = seqUpdExt.pushRules(isFat = false, None, Seq(client.authId))
+                  ))
+                } yield Ok(ResponseSeq(seq, state.toByteArray))
               }
             }
           } else {
-            val update = UpdateMessageDelete(outPeer.asPeer, randomIds)
             for {
               _ ← HistoryMessageRepo.delete(client.userId, peer, randomIds.toSet)
-              seqstate ← DBIO.from(userExt.broadcastClientUpdate(update, None, isFat = false))
-            } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
+              SeqState(seq, state) ← DBIO.from(seqUpdExt.deliverClientUpdate(
+                client.userId,
+                client.authId,
+                update = UpdateMessageDelete(outPeer.asPeer, randomIds),
+                pushRules = seqUpdExt.pushRules(isFat = false, None)
+              ))
+            } yield Ok(ResponseSeq(seq, state.toByteArray))
           }
         }
       }

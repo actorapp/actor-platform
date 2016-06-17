@@ -194,7 +194,7 @@ final class SessionSpec extends BaseSessionSpec with BeforeAndAfterEach {
       val update = UpdateRawUpdate(None, payload)
 
       for (_ ← 1 to updatesCount) {
-        whenReady(seqUpdExt.deliverSingleUpdate(user.id, update))(identity)
+        whenReady(seqUpdExt.deliverUserUpdate(user.id, update))(identity)
       }
 
       // expect 30Kb of updates to be pushed, then SeqUpdateTooLong (no ack)
@@ -254,7 +254,7 @@ final class SessionSpec extends BaseSessionSpec with BeforeAndAfterEach {
       }
 
       val update = UpdateContactRegistered(1, true, 1L, 2L)
-      seqUpdExt.deliverSingleUpdate(user.id, update)
+      seqUpdExt.deliverUserUpdate(user.id, update)
       expectSeqUpdate(authId, sessionId).update should ===(update.toByteArray)
     }
 
@@ -275,7 +275,11 @@ final class SessionSpec extends BaseSessionSpec with BeforeAndAfterEach {
       }
 
       val update = UpdateContactRegistered(user.id, true, 1L, 2L)
-      whenReady(UserExtension(system).broadcastUserUpdate(user.id, update, pushText = Some("text"), isFat = true, reduceKey = None, deliveryId = None))(identity)
+      whenReady(seqUpdExt.deliverUserUpdate(
+        user.id,
+        update,
+        pushRules = seqUpdExt.pushRules(isFat = true, Some("text"))
+      ))(identity)
 
       val fat = expectFatSeqUpdate(authId, sessionId)
 

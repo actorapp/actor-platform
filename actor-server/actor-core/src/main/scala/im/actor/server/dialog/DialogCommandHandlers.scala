@@ -44,8 +44,9 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
         unstashAll()
     }: Receive) orElse reactions, discardOld = true)
 
-    withValidAccessHash(sm.getDest, sm.senderAuthId map (_.value), sm.accessHash map (_.value)) {
-      withCachedFuture[AuthSidRandomId, SeqStateDate](sm.senderAuthSid → sm.randomId) {
+    val optClientAuthId = sm.senderAuthId map (_.value)
+    withValidAccessHash(sm.getDest, optClientAuthId, sm.accessHash map (_.value)) {
+      withCachedFuture[AuthIdRandomId, SeqStateDate](optClientAuthId.getOrElse(0L) → sm.randomId) {
         val sendDate = calcSendDate()
         val message = sm.message
         PubSubExtension(system).publish(PeerMessage(sm.getOrigin, sm.getDest, sm.randomId, sendDate, message))
@@ -60,11 +61,11 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
               _ ← dialogExt.ackSendMessage(peer, sm.copy(date = Some(Int64Value(sendDate))))
               _ ← db.run(writeHistoryMessage(selfPeer, peer, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray))
               //_ = dialogExt.updateCounters(peer, userId)
-              SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sendDate, message, sm.isFat)
+              SeqState(seq, state) ← deliveryExt.senderDelivery(userId, optClientAuthId, peer, sm.randomId, sendDate, message, sm.isFat)
             } yield SeqStateDate(seq, state, sendDate),
               failed = for {
               _ ← db.run(writeHistoryMessageSelf(userId, peer, userId, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray))
-              SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sendDate, message, sm.isFat)
+              SeqState(seq, state) ← deliveryExt.senderDelivery(userId, optClientAuthId, peer, sm.randomId, sendDate, message, sm.isFat)
             } yield SeqStateDate(seq, state, sendDate)
             )
           }
@@ -148,7 +149,7 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
 
         (for {
           _ ← dialogExt.ackMessageRead(peer, mr)
-          _ ← deliveryExt.read(userId, mr.readerAuthSid, peer, mr.date, newState.counter)
+          _ ← deliveryExt.read(userId, mr.readerAuthId, peer, mr.date, newState.counter)
           _ = deliveryExt.sendCountersUpdate(userId)
         } yield MessageReadAck()) pipeTo sender()
       }
@@ -174,18 +175,19 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
         ReactionEventRepo.create(DialogId(peer, userId), sr.randomId, sr.code, userId)
           .andThen(dialogExt.fetchReactions(peer, userId, sr.randomId))
       }
-      seqstate ← seqUpdExt.deliverSingleUpdate(
-        userId,
-        UpdateReactionsUpdate(peer.asStruct, sr.randomId, reactions.toVector)
+      seqState ← seqUpdExt.deliverClientUpdate(
+        userId = userId,
+        authId = sr.clientAuthId,
+        update = UpdateReactionsUpdate(peer.asStruct, sr.randomId, reactions.toVector)
       )
       _ ← dialogExt.ackSetReaction(peer, sr)
-    } yield SetReactionAck(Some(seqstate), reactions)) pipeTo sender()
+    } yield SetReactionAck(Some(seqState), reactions)) pipeTo sender()
   }
 
   protected def ackSetReaction(sr: SetReaction): Unit = {
     (for {
       reactions ← db.run(dialogExt.fetchReactions(peer, userId, sr.randomId))
-      _ ← seqUpdExt.deliverSingleUpdate(
+      _ ← seqUpdExt.deliverUserUpdate(
         userId,
         UpdateReactionsUpdate(peer.asStruct, sr.randomId, reactions.toVector)
       )
@@ -198,19 +200,20 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
         ReactionEventRepo.delete(DialogId(peer, userId), rr.randomId, rr.code, userId)
           .andThen(dialogExt.fetchReactions(peer, userId, rr.randomId))
       }
-      seqstate ← seqUpdExt.deliverSingleUpdate(
-        userId,
-        UpdateReactionsUpdate(peer.asStruct, rr.randomId, reactions.toVector)
+      seqState ← seqUpdExt.deliverClientUpdate(
+        userId = userId,
+        authId = rr.clientAuthId,
+        update = UpdateReactionsUpdate(peer.asStruct, rr.randomId, reactions.toVector)
       )
       _ ← dialogExt.ackRemoveReaction(peer, rr)
       _ ← dialogExt.ackRemoveReaction(peer, rr)
-    } yield RemoveReactionAck(Some(seqstate), reactions)) pipeTo sender()
+    } yield RemoveReactionAck(Some(seqState), reactions)) pipeTo sender()
   }
 
   protected def ackRemoveReaction(rr: RemoveReaction): Unit = {
     (for {
       reactions ← db.run(dialogExt.fetchReactions(peer, userId, rr.randomId))
-      _ ← seqUpdExt.deliverSingleUpdate(
+      _ ← seqUpdExt.deliverUserUpdate(
         userId,
         UpdateReactionsUpdate(peer.asStruct, rr.randomId, reactions.toVector)
       )
