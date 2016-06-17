@@ -45,7 +45,8 @@ public class NotificationsActor extends ModuleActor {
     /**
      * KeyValue storage name for actor state
      */
-    private static final String STORAGE_NOTIFICATIONS = "notifications";
+    private static final String STORAGE_NOTIFICATIONS_DEPRECATED = "notifications";
+    private static final String STORAGE_NOTIFICATIONS = "limited_notifications";
 
 
     /**
@@ -56,6 +57,10 @@ public class NotificationsActor extends ModuleActor {
      * BSer object for pending notifications storage
      */
     private PendingStorage pendingStorage;
+    /**
+     * in memory not limited pending storage
+     */
+    private ArrayList<PendingNotification> allPendingNotifications = new ArrayList<PendingNotification>();
     /**
      * Cached read states
      */
@@ -106,11 +111,11 @@ public class NotificationsActor extends ModuleActor {
         storage = new SyncKeyValue(Storage.createKeyValue(STORAGE_NOTIFICATIONS));
 
         // Loading pending messages
-        pendingStorage = new PendingStorage();
+        pendingStorage = new PendingStorage(MAX_NOTIFICATION_COUNT);
         byte[] storage = this.storage.get(0);
         if (storage != null) {
             try {
-                pendingStorage = PendingStorage.fromBytes(storage);
+                pendingStorage = PendingStorage.fromBytes(storage, MAX_NOTIFICATION_COUNT);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -131,7 +136,7 @@ public class NotificationsActor extends ModuleActor {
      * @param hasCurrentUserMention does message have user mention
      */
     public void onNewMessage(Peer peer, int sender, long date, ContentDescription description,
-                             boolean hasCurrentUserMention) {
+                             boolean hasCurrentUserMention, int messagesCount, int dialogsCount) {
 
         // Check if message already read to avoid incorrect notifications
         // for already read messages
@@ -144,8 +149,12 @@ public class NotificationsActor extends ModuleActor {
 
         // Save to pending storage
         if (isEnabled) {
-            List<PendingNotification> allPending = getNotifications();
-            allPending.add(new PendingNotification(peer, sender, date, description));
+            List<PendingNotification> pendingNotifications = getNotifications();
+            PendingNotification pendingNotification = new PendingNotification(peer, sender, date, description);
+            pendingNotifications.add(pendingNotification);
+            pendingStorage.setMessagesCount(messagesCount);
+            pendingStorage.setDialogsCount(dialogsCount);
+            allPendingNotifications.add(pendingNotification);
             saveStorage();
         }
 
@@ -235,21 +244,12 @@ public class NotificationsActor extends ModuleActor {
         }
 
         // Removing read messages from pending storage
-        boolean isChanged = false;
-        List<PendingNotification> notifications = pendingStorage.getNotifications();
-        for (PendingNotification p : notifications.toArray(new PendingNotification[notifications.size()])) {
-            if (p.getPeer().equals(peer) && p.getDate() <= fromDate) {
-                pendingStorage.getNotifications().remove(p);
-                isChanged = true;
-            }
-        }
-
-        // If there are some messages
-        // Save pending and update notification
-        if (isChanged) {
-            saveStorage();
-            updateNotification();
-        }
+        getNotifications().clear();
+        pendingStorage.setMessagesCount(0);
+        pendingStorage.setDialogsCount(0);
+        allPendingNotifications.clear();
+        saveStorage();
+        updateNotification();
 
         // Setting last read date
         setLastReadDate(peer, fromDate);
@@ -398,15 +398,11 @@ public class NotificationsActor extends ModuleActor {
      */
     private void performNotificationImp(boolean performUpdate) {
         // Getting pending notifications list
-        List<PendingNotification> allPending = getNotifications();
-        int messagesCount = allPending.size();
-        if (messagesCount == 0) {
+        List<PendingNotification> destNotifications = getNotifications();
+        if (destNotifications.size() == 0) {
             hideNotification();
             return;
         }
-
-        // Destination notifications list
-        List<PendingNotification> destNotifications = last(allPending, MAX_NOTIFICATION_COUNT);
 
         // Converting to PendingNotifications
         List<Notification> res = new ArrayList<>();
@@ -414,20 +410,13 @@ public class NotificationsActor extends ModuleActor {
             res.add(new Notification(p.getPeer(), p.getSender(), p.getContent()));
         }
 
-        // Getting count of unique peers
-        HashSet<Peer> peers = new HashSet<>();
-        for (PendingNotification p : allPending) {
-            peers.add(p.getPeer());
-        }
-        int chatsCount = peers.size();
-
         // Performing notifications
         if (performUpdate) {
             config().getNotificationProvider().onUpdateNotification(context().getMessenger(), res,
-                    messagesCount, chatsCount);
+                    pendingStorage.getMessagesCount(), pendingStorage.getDialogsCount());
         } else {
             config().getNotificationProvider().onNotification(context().getMessenger(), res,
-                    messagesCount, chatsCount);
+                    pendingStorage.getMessagesCount(), pendingStorage.getDialogsCount());
         }
     }
 
@@ -565,7 +554,8 @@ public class NotificationsActor extends ModuleActor {
         if (message instanceof NewMessage) {
             NewMessage newMessage = (NewMessage) message;
             onNewMessage(newMessage.getPeer(), newMessage.getSender(), newMessage.getSortDate(),
-                    newMessage.getContentDescription(), newMessage.getHasCurrentUserMention());
+                    newMessage.getContentDescription(), newMessage.getHasCurrentUserMention(),
+                    newMessage.getUnreadMessagesCount(), newMessage.getUnreadDialogsCount());
         } else if (message instanceof MessagesRead) {
             MessagesRead read = (MessagesRead) message;
             onMessagesRead(read.getPeer(), read.getFromDate());
@@ -605,14 +595,18 @@ public class NotificationsActor extends ModuleActor {
         private long sortDate;
         private ContentDescription contentDescription;
         private boolean hasCurrentUserMention;
+        private int unreadMessagesCount;
+        private int unreadDialogsCount;
 
         public NewMessage(Peer peer, int sender, long sortDate, ContentDescription contentDescription,
-                          boolean hasCurrentUserMention) {
+                          boolean hasCurrentUserMention, int unreadMessagesCount, int unreadDialogsCount) {
             this.peer = peer;
             this.sender = sender;
             this.sortDate = sortDate;
             this.contentDescription = contentDescription;
             this.hasCurrentUserMention = hasCurrentUserMention;
+            this.unreadMessagesCount = unreadMessagesCount;
+            this.unreadDialogsCount = unreadDialogsCount;
         }
 
         public Peer getPeer() {
@@ -633,6 +627,14 @@ public class NotificationsActor extends ModuleActor {
 
         public boolean getHasCurrentUserMention() {
             return hasCurrentUserMention;
+        }
+
+        public int getUnreadMessagesCount() {
+            return unreadMessagesCount;
+        }
+
+        public int getUnreadDialogsCount() {
+            return unreadDialogsCount;
         }
     }
 
