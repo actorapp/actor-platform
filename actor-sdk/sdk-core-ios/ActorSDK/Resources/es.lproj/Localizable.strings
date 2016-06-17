@@ -67,10 +67,11 @@
 "SettingsChangeAboutHint" = "Modifica tu estado";
 
 
-"SettingsSecurity" = "Seguridad";
+"SettingsSecurity" = "Privacy and Security";
 
 "SettingsWallpapers" = "Fondos de chats";
 
+"SettingsMedia" = "Media";
 
 "SettingsNotifications" = "Notificaciones y Sonidos";
 
@@ -82,19 +83,101 @@
 
 "SettingsVersion" = "Version {version}";
 
-"SettingsAllSessions" = "Todas las sesiones";
-
-"SettingsLastSeen" = "Ultima vez visto";
-
-"SettingsLastSeenHint" = "Elige quién puede ver tu última conexión";
-
-"SettingsLastSeenEverybody" = "Todos";
-
-"SettingsLastSeenContacts"  = "Mis contactos";
-
-"SettingsLastSeenNone"    = "Nadie";
-
 "SettingsMobilePhone"    = "Móvil";
+
+"SettingsGroupChats" = "Groups";
+
+"SettingsPrivateChats" = "Private Chats";
+
+/*
+ * Notifications
+ */
+
+"NotificationsTitle" = "Notificaciones y Sonidos";
+
+"NotificationsEffectsTitle" = "Efectos";
+
+"NotificationsMobileTitle" = "Notificaciones móviles";
+
+"NotificationsInAppTitle" = "In-App notifications";
+
+"NotificationsNotificationHint" = "Puedes desactivar las notificaciones para determinados usuarios o grupos en sus páginas de información.";
+
+"NotificationsPrivacyTitle" = "Privacidad";
+
+"NotificationsSoundEffects" = "Efectos de sonido";
+
+"NotificationsEnable" = "Habilitar";
+
+"NotificationsSound" = "Sonidos";
+
+"NotificationsVibration" = "Vibraciones";
+
+"NotificationsPreview" = "Vista previa mensaje";
+
+"NotificationsPreviewHint" = "Eliminar notificaciones de los textos";
+
+"NotificationSecretMessage" = "Nuevo mensaje";
+
+"NotificationsGroups" = "Notificaciones de grupo";
+
+"NotificationsOnlyMentions" = "Sólo Menciones";
+
+"NotificationsOnlyMentionsHint" = "Puedes activar las notificaciones sólo para mensajes que contiene la mención";
+
+/*
+ * Media
+ */
+
+"MediaTitle" = "Media Settings";
+
+"MediaPhotoDownloadHeader"= "Automatic Photo Download";
+
+"MediaAudioDownloadHeader"= "Automatic Audio Download";
+
+"MediaOtherHeader"= "Other";
+
+"MediaAutoplayGif"= "Autoplay GIFs";
+
+/*
+ * Privacy
+ */
+
+"PrivacyTitle" = "Privacy and Security";
+
+
+"PrivacyHeader" = "Privacy";
+
+"PrivacyLastSeen" = "Ultima vez visto";
+
+"PrivacyLastSeenHint" = "Elige quién puede ver tu última conexión";
+
+"PrivacyLastSeenEverybody" = "Todos";
+
+"PrivacyLastSeenContacts"  = "Mis contactos";
+
+"PrivacyLastSeenNone"    = "Nadie";
+
+
+"PrivacySecurityHeader" = "Security";
+
+"PrivacyAllSessions" = "Active Sessions";
+
+"PrivacyTerminate" = "Terminar todas las demás sesiones";
+
+"PrivacyTerminateAlert" = "Terminar todas las sesiones";
+
+"PrivacyTerminateAlertSingle" = "Terminar sesión";
+
+"PrivacyTerminateHint" = "Registrar todos los dispositivos excepto para éste.";
+
+/*
+ * Wallpapers
+ */
+
+"WallpapersTitle" = "Fondos de chats";
+
+"WallpapersPhoto" = "Carrete de fotos";
 
 /*
  * Calls
@@ -280,63 +363,6 @@
 
 "LocationTitle" = "Ubicación";
 
-/*
- * Notifications
- */
-
-"NotificationsTitle" = "Notificaciones y Sonidos";
-
-"NotificationsEffectsTitle" = "Efectos";
-
-"NotificationsMobileTitle" = "Notificaciones móviles";
-
-"NotificationsInAppTitle" = "In-App notifications";
-
-"NotificationsNotificationHint" = "Puedes desactivar las notificaciones para determinados usuarios o grupos en sus páginas de información.";
-
-"NotificationsPrivacyTitle" = "Privacidad";
-
-"NotificationsSoundEffects" = "Efectos de sonido";
-
-"NotificationsEnable" = "Habilitar";
-
-"NotificationsSound" = "Sonidos";
-
-"NotificationsVibration" = "Vibraciones";
-
-"NotificationsPreview" = "Vista previa mensaje";
-
-"NotificationsPreviewHint" = "Eliminar notificaciones de los textos";
-
-"NotificationSecretMessage" = "Nuevo mensaje";
-
-"NotificationsGroups" = "Notificaciones de grupo";
-
-"NotificationsOnlyMentions" = "Sólo Menciones";
-
-"NotificationsOnlyMentionsHint" = "Puedes activar las notificaciones sólo para mensajes que contiene la mención";
-
-/*
- * Privacy
- */
-
-"SecurityTitle" = "Seguridad";
-
-"PrivacyTerminate" = "Terminar todas las demás sesiones";
-
-"PrivacyTerminateAlert" = "Terminar todas las sesiones";
-
-"PrivacyTerminateAlertSingle" = "Terminar sesión";
-
-"PrivacyTerminateHint" = "Registrar todos los dispositivos excepto para éste.";
-
-/*
- * Wallpapers
- */
-
-"WallpapersTitle" = "Fondos de chats";
-
-"WallpapersPhoto" = "Carrete de fotos";
 
 /*
  * Chat

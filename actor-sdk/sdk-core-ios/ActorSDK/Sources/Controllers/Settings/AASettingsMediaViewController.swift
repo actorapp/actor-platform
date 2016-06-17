@@ -12,8 +12,6 @@ public class AASettingsMediaViewController: AAContentTableController {
         super.init(style: AAContentTableStyle.SettingsGrouped)
         
         navigationItem.title = AALocalized("MediaTitle")
-        
-        //content = ACAllEvents_Settings.PRIVACY()
     }
     
     public required init(coder aDecoder: NSCoder) {
@@ -24,19 +22,72 @@ public class AASettingsMediaViewController: AAContentTableController {
         
         section { (s) -> () in
     
-                s.common { (r) -> () in
-                    
-                    r.style = .Switch
-                    r.content = AALocalized("SettingsAutomaticDownloadAndSave")
-                    
-                    r.bindAction = { (r) -> () in
-                        r.switchOn = ActorSDK.sharedActor().storage.preferences.getBoolWithKey("isAutomaticDownloadEnabled", withDefault: true)
-                    }
-                    
-                    r.switchAction = { (on: Bool) -> () in
-                        ActorSDK.sharedActor().setAutomaticDownloads(on)
-                    }
+            s.headerText = AALocalized("MediaPhotoDownloadHeader")
+            
+            s.common { (r) -> () in
+                r.style = .Switch
+                r.content = AALocalized("SettingsPrivateChats")
+                
+                r.switchOn = ActorSDK.sharedActor().isPhotoAutoDownloadPrivate
+                
+                r.switchAction = { (v) -> () in
+                    ActorSDK.sharedActor().isPhotoAutoDownloadPrivate = v
+                }
+            }
+            
+            s.common { (r) -> () in
+                r.style = .Switch
+                r.content = AALocalized("SettingsGroupChats")
+                
+                r.switchOn = ActorSDK.sharedActor().isPhotoAutoDownloadGroup
+                
+                r.switchAction = { (v) -> () in
+                    ActorSDK.sharedActor().isPhotoAutoDownloadGroup = v
                 }
             }
         }
+        
+        section { (s) -> () in
+            
+            s.headerText = AALocalized("MediaAudioDownloadHeader")
+            
+            s.common { (r) -> () in
+                r.style = .Switch
+                r.content = AALocalized("SettingsPrivateChats")
+                
+                r.switchOn = ActorSDK.sharedActor().isAudioAutoDownloadPrivate
+                
+                r.switchAction = { (v) -> () in
+                    ActorSDK.sharedActor().isAudioAutoDownloadPrivate = v
+                }
+            }
+            
+            s.common { (r) -> () in
+                r.style = .Switch
+                r.content = AALocalized("SettingsGroupChats")
+                
+                r.switchOn = ActorSDK.sharedActor().isAudioAutoDownloadGroup
+                
+                r.switchAction = { (v) -> () in
+                    ActorSDK.sharedActor().isAudioAutoDownloadGroup = v
+                }
+            }
+        }
+        
+        section { (s) -> () in
+            
+            s.headerText = AALocalized("MediaOtherHeader")
+            
+            s.common { (r) -> () in
+                r.style = .Switch
+                r.content = AALocalized("MediaAutoplayGif")
+                
+                r.switchOn = ActorSDK.sharedActor().isGIFAutoplayEnabled
+                
+                r.switchAction = { (v) -> () in
+                    ActorSDK.sharedActor().isGIFAutoplayEnabled = v
+                }
+            }
+        }
+    }
 }
