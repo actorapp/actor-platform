@@ -241,6 +241,10 @@
 
 "ProfileUsername" = "Nombre de usuario";
 
+"ProfileBlockContact" = "Block User";
+
+"ProfileUnblockContact" = "Unblock User";
+
 "ProfileTitle" = "Info";
 
 "CallNumber" = "Llamar al número";

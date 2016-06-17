@@ -230,9 +230,9 @@
 
 "ProfileRemoveFromContacts" = "Remove from Contacts";
 
-"ProfileBlockContact" = "Block Contact";
+"ProfileBlockContact" = "Block User";
 
-"ProfileUnblockContact" = "Unblock Contact";
+"ProfileUnblockContact" = "Unblock User";
 
 "ProfileRename" = "Rename Contact";
 
