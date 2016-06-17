@@ -16,7 +16,7 @@ public class AASettingsLastSeenController: AATableViewController {
     public init() {
         super.init(style: UITableViewStyle.Grouped)
         
-        title = AALocalized("SettingsLastSeen")
+        title = AALocalized("PrivacyLastSeen")
         
         content = ACAllEvents_Settings.NOTIFICATIONS()
     }
@@ -61,7 +61,7 @@ public class AASettingsLastSeenController: AATableViewController {
         
         if indexPath.row == 0 {
             
-            cell.setContent(AALocalized("SettingsLastSeenEverybody"))
+            cell.setContent(AALocalized("PrivacyLastSeenEverybody"))
             
             if (self.privacy == "always") {
                 cell.style = .Checkmark
@@ -71,7 +71,7 @@ public class AASettingsLastSeenController: AATableViewController {
             
         } else if indexPath.row == 1 {
             
-            cell.setContent(AALocalized("SettingsLastSeenContacts"))
+            cell.setContent(AALocalized("PrivacyLastSeenContacts"))
             
             if (self.privacy == "contacts") {
                 cell.style = .Checkmark
@@ -81,7 +81,7 @@ public class AASettingsLastSeenController: AATableViewController {
             
         } else if indexPath.row == 2 {
             
-            cell.setContent(AALocalized("SettingsLastSeenNone"))
+            cell.setContent(AALocalized("PrivacyLastSeenNone"))
             
             if (self.privacy == "none") {
                 cell.style = .Checkmark

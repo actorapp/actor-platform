@@ -42,7 +42,7 @@ public class AABubbleStickerCell: AABubbleBaseFileCell {
         contentView.addSubview(timeLabel)
         contentView.addSubview(statusView)
         
-        preview.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "mediaDidTap"))
+        preview.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(AABubbleStickerCell.mediaDidTap)))
         preview.userInteractionEnabled = true
         
         contentInsets = UIEdgeInsets(top: 1, left: 1, bottom: 1, right: 1)
@@ -112,22 +112,23 @@ public class AABubbleStickerCell: AABubbleBaseFileCell {
     
     // File state binding
     
-    public override func fileReady(reference: String, selfGeneration: Int) {
-        
-        if (contentLoaded) {
-            return
+    public override func fileStateChanged(reference: String?, progress: Int?, isPaused: Bool, isUploading: Bool, selfGeneration: Int) {
+        if let r = reference {
+            if (contentLoaded) {
+                return
+            }
+            contentLoaded = true
+            
+            let filePath = CocoaFiles.pathFromDescriptor(r)
+            let loadedContent = YYImage(contentsOfFile: filePath)
+            if (loadedContent == nil) {
+                return
+            }
+            
+            runOnUiThread(selfGeneration, closure: { () -> () in
+                self.preview.image = loadedContent!
+            })
         }
-        contentLoaded = true
-        
-        let filePath = CocoaFiles.pathFromDescriptor(reference)
-        let loadedContent = YYImage(contentsOfFile: filePath)
-        if (loadedContent == nil) {
-            return
-        }
-        
-        runOnUiThread(selfGeneration, closure: { () -> () in
-            self.preview.image = loadedContent!
-        })
     }
 
     // Media Action

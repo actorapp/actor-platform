@@ -218,7 +218,7 @@
 		066A532C1BC53406000E606E /* AABubbleTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53261BC53406000E606E /* AABubbleTextCell.swift */; };
 		066A532D1BC53406000E606E /* AABubbleServiceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53271BC53406000E606E /* AABubbleServiceCell.swift */; };
 		066A532E1BC53406000E606E /* AABubbleBaseFileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53281BC53406000E606E /* AABubbleBaseFileCell.swift */; };
-		066A532F1BC53406000E606E /* AABubblePhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53291BC53406000E606E /* AABubblePhotoCell.swift */; };
+		066A532F1BC53406000E606E /* AABubbleMediaCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53291BC53406000E606E /* AABubbleMediaCell.swift */; };
 		066A53301BC53406000E606E /* AABubbleDocumentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A532A1BC53406000E606E /* AABubbleDocumentCell.swift */; };
 		066A53331BC534F5000E606E /* AAFileTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53311BC534F5000E606E /* AAFileTypes.swift */; };
 		066A53371BC537CA000E606E /* ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53361BC537CA000E606E /* ConversationViewController.swift */; };
@@ -366,7 +366,6 @@
 		BED5A2111C48413C0045FDB0 /* NYTPhotoCaptionViewLayoutWidthHinting.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A2041C4839790045FDB0 /* NYTPhotoCaptionViewLayoutWidthHinting.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BED5A2121C48413C0045FDB0 /* NYTPhotoContainer.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A2051C4839790045FDB0 /* NYTPhotoContainer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BED5A2131C48413C0045FDB0 /* NYTPhotosViewControllerDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A2061C4839790045FDB0 /* NYTPhotosViewControllerDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		BED5A2151C49504B0045FDB0 /* AABubbleVideoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED5A2141C49504B0045FDB0 /* AABubbleVideoCell.swift */; };
 		BEE6EB011C4D7B7500A2280E /* AASettingsWallpapersController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE6EB001C4D7B7500A2280E /* AASettingsWallpapersController.swift */; };
 		BEE6EB041C4D9A4900A2280E /* AAWallpapersCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE6EB031C4D9A4900A2280E /* AAWallpapersCell.swift */; };
 		BEF11DB61C466D800076400A /* begin_record.caf in Resources */ = {isa = PBXBuildFile; fileRef = 153F6B3C1C2A9B1900C0B960 /* begin_record.caf */; };
@@ -591,7 +590,7 @@
 		066A53261BC53406000E606E /* AABubbleTextCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleTextCell.swift; sourceTree = "<group>"; };
 		066A53271BC53406000E606E /* AABubbleServiceCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleServiceCell.swift; sourceTree = "<group>"; };
 		066A53281BC53406000E606E /* AABubbleBaseFileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleBaseFileCell.swift; sourceTree = "<group>"; };
-		066A53291BC53406000E606E /* AABubblePhotoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubblePhotoCell.swift; sourceTree = "<group>"; };
+		066A53291BC53406000E606E /* AABubbleMediaCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleMediaCell.swift; sourceTree = "<group>"; };
 		066A532A1BC53406000E606E /* AABubbleDocumentCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleDocumentCell.swift; sourceTree = "<group>"; };
 		066A53311BC534F5000E606E /* AAFileTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAFileTypes.swift; sourceTree = "<group>"; };
 		066A53361BC537CA000E606E /* ConversationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationViewController.swift; sourceTree = "<group>"; };
@@ -752,7 +751,6 @@
 		BED5A2061C4839790045FDB0 /* NYTPhotosViewControllerDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYTPhotosViewControllerDataSource.h; sourceTree = "<group>"; };
 		BED5A20C1C4839880045FDB0 /* NSBundle+NYTPhotoViewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSBundle+NYTPhotoViewer.h"; sourceTree = "<group>"; };
 		BED5A20D1C4839880045FDB0 /* NSBundle+NYTPhotoViewer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSBundle+NYTPhotoViewer.m"; sourceTree = "<group>"; };
-		BED5A2141C49504B0045FDB0 /* AABubbleVideoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleVideoCell.swift; sourceTree = "<group>"; };
 		BEE6EB001C4D7B7500A2280E /* AASettingsWallpapersController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AASettingsWallpapersController.swift; sourceTree = "<group>"; };
 		BEE6EB031C4D9A4900A2280E /* AAWallpapersCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAWallpapersCell.swift; sourceTree = "<group>"; };
 		BEFE68D41C4657360001F2D6 /* AAThumbnailCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAThumbnailCollectionCell.swift; sourceTree = "<group>"; };
@@ -1250,12 +1248,12 @@
 			children = (
 				BEE6EAFF1C4D7B5600A2280E /* Wallpapers */,
 				066A52F41BC52B09000E606E /* Cells */,
-				152AA8BE1C298C4B0030DEEE /* AASettingsLastSeenController.swift */,
-				066A52ED1BC52B02000E606E /* AASettingsNotificationsViewController.swift */,
-				9AA6A41E1D08568A00957A7F /* AASettingsMediaViewController.swift */,
-				066A52EE1BC52B02000E606E /* AASettingsPrivacyViewController.swift */,
-				152AA8BC1C298BF00030DEEE /* AASettingsSessionsController.swift */,
 				066A52EC1BC52B02000E606E /* AASettingsViewController.swift */,
+				066A52ED1BC52B02000E606E /* AASettingsNotificationsViewController.swift */,
+				066A52EE1BC52B02000E606E /* AASettingsPrivacyViewController.swift */,
+				152AA8BE1C298C4B0030DEEE /* AASettingsLastSeenController.swift */,
+				152AA8BC1C298BF00030DEEE /* AASettingsSessionsController.swift */,
+				9AA6A41E1D08568A00957A7F /* AASettingsMediaViewController.swift */,
 				066A52EF1BC52B02000E606E /* AASettingsWallpapper.swift */,
 			);
 			path = Settings;
@@ -1352,15 +1350,14 @@
 			children = (
 				066A53251BC53406000E606E /* AABubbleCell.swift */,
 				066A53261BC53406000E606E /* AABubbleTextCell.swift */,
-				153F6B5C1C2B3AC500C0B960 /* AABubbleStickerCell.swift */,
-				066A53271BC53406000E606E /* AABubbleServiceCell.swift */,
-				153F6B5A1C2B109400C0B960 /* AABubbleVoiceCell.swift */,
-				06E7B2531C139B6F0090660C /* AABubbleContactCell.swift */,
-				06E7B2491C0F92140090660C /* AABubbleLocationCell.swift */,
 				066A53281BC53406000E606E /* AABubbleBaseFileCell.swift */,
+				153F6B5C1C2B3AC500C0B960 /* AABubbleStickerCell.swift */,
 				066A532A1BC53406000E606E /* AABubbleDocumentCell.swift */,
-				066A53291BC53406000E606E /* AABubblePhotoCell.swift */,
-				BED5A2141C49504B0045FDB0 /* AABubbleVideoCell.swift */,
+				066A53291BC53406000E606E /* AABubbleMediaCell.swift */,
+				153F6B5A1C2B109400C0B960 /* AABubbleVoiceCell.swift */,
+				066A53271BC53406000E606E /* AABubbleServiceCell.swift */,
+				06E7B2491C0F92140090660C /* AABubbleLocationCell.swift */,
+				06E7B2531C139B6F0090660C /* AABubbleContactCell.swift */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -2075,7 +2072,7 @@
 				066A52CC1BC521FA000E606E /* AADialogsListContentController.swift in Sources */,
 				061850E31C95CBF000C522D5 /* YYTextKeyboardManager.m in Sources */,
 				066A52571BC4EF61000E606E /* AACollectionViewController.swift in Sources */,
-				066A532F1BC53406000E606E /* AABubblePhotoCell.swift in Sources */,
+				066A532F1BC53406000E606E /* AABubbleMediaCell.swift in Sources */,
 				15D35F631C20187E00E3717A /* AAModernConversationAudioPlayer.m in Sources */,
 				066A527F1BC51ED0000E606E /* AARootSplitViewController.swift in Sources */,
 				066A52481BC4EED5000E606E /* AAProgressView.swift in Sources */,
@@ -2231,7 +2228,6 @@
 				066A52E71BC52A20000E606E /* AAInviteLinkViewController.swift in Sources */,
 				152AA8AD1C2989270030DEEE /* SLKTextView+SLKAdditions.m in Sources */,
 				152AA8B71C2989270030DEEE /* UIScrollView+SLKAdditions.m in Sources */,
-				BED5A2151C49504B0045FDB0 /* AABubbleVideoCell.swift in Sources */,
 				066A52241BC4EEAC000E606E /* AAManagedRange.swift in Sources */,
 				061850ED1C95CBF000C522D5 /* YYTextArchiver.m in Sources */,
 				066A50E21BC4AF9F000E606E /* ActorSDK.swift in Sources */,
