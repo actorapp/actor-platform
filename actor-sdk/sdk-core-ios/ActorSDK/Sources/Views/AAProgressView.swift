@@ -28,6 +28,7 @@ public class AAProgressView: UIView {
         circlePathLayer.frame = bounds
         circlePathLayer.path = circlePath.CGPath
         circlePathLayer.lineWidth = 3
+        circlePathLayer.lineCap = kCALineCapRound
         circlePathLayer.fillColor = UIColor.clearColor().CGColor
         circlePathLayer.strokeColor = UIColor.whiteColor().CGColor
         circlePathLayer.strokeStart = 0
