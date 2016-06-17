@@ -32,7 +32,7 @@ public class AABubbleBaseFileCell: AABubbleCell {
                     if (self.bindGeneration != selfGeneration) {
                         return
                     }
-                    self.fileStateChanged(nil, progress: Int(progress), isPaused: false, isUploading: false, selfGeneration: selfGeneration)
+                    self.fileStateChanged(nil, progress: Int(progress * 100), isPaused: false, isUploading: false, selfGeneration: selfGeneration)
                 }, onDownloaded: { (reference) -> () in
                     if (self.bindGeneration != selfGeneration) {
                         return
@@ -54,7 +54,7 @@ public class AABubbleBaseFileCell: AABubbleCell {
                     if (self.bindGeneration != selfGeneration) {
                         return
                     }
-                    self.fileStateChanged(fileReference, progress: Int(progress), isPaused: false, isUploading: true, selfGeneration: selfGeneration)
+                    self.fileStateChanged(fileReference, progress: Int(progress * 100), isPaused: false, isUploading: true, selfGeneration: selfGeneration)
                 }, onUploadedClosure: { () -> () in
                     if (self.bindGeneration != selfGeneration) {
                         return
@@ -82,7 +82,7 @@ public class AABubbleBaseFileCell: AABubbleCell {
                 if (self.bindGeneration != selfGeneration) {
                     return
                 }
-                self.fileStateChanged(nil, progress: Int(progress), isPaused: false, isUploading: false, selfGeneration: selfGeneration)
+                self.fileStateChanged(nil, progress: Int(progress * 100), isPaused: false, isUploading: false, selfGeneration: selfGeneration)
             }, onDownloaded: { (reference) -> () in
                 if (self.bindGeneration != selfGeneration) {
                     return
@@ -110,7 +110,7 @@ public class AABubbleBaseFileCell: AABubbleCell {
             if (self.bindGeneration != selfGeneration) {
                 return
             }
-            self.fileStateChanged(nil, progress: Int(progress), isPaused: false, isUploading: false, selfGeneration: selfGeneration)
+            self.fileStateChanged(nil, progress: Int(progress * 100), isPaused: false, isUploading: false, selfGeneration: selfGeneration)
         }, onDownloaded: { (reference) -> () in
             if (self.bindGeneration != selfGeneration) {
                 return
