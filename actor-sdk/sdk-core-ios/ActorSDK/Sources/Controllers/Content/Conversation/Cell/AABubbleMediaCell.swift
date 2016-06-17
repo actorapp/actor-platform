@@ -91,9 +91,10 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
             thumb = nil
             
             // Reset progress
+            self.progress.alpha = 0
+            self.progress.setProgress(0)
             self.progress.hideButton()
-            self.progress.hidden = true
-            self.preview.hidden = true
+            self.preview.alpha = 0
             
             // Show/Hide play button
             self.playView.hidden = true
@@ -192,7 +193,7 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
                     if !self.thumbShown {
                         self.thumbShown = true
                         self.preview.image = t
-                        self.preview.hidden = false
+                        self.preview.showViewAnimated()
                     }
                 }
             } else if (self.bindedMessage?.content is ACPhotoContent) {
@@ -206,13 +207,13 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
                                                         transform: { (img, url) -> UIImage? in
                                                             return img.roundCorners(self.bindedLayout.screenSize.width, h: self.bindedLayout.screenSize.height, roundSize: 14)
                             },completion: nil)
-                        self.preview.hidden = false
+                        self.preview.showViewAnimated()
                     }
                 } else if let t = self.thumb {
                     if !self.thumbShown {
                         self.thumbShown = true
                         self.preview.image = t
-                        self.preview.hidden = false
+                        self.preview.showViewAnimated()
                     }
                 }
             } else if (self.bindedMessage?.content is ACAnimationContent) {
@@ -222,13 +223,13 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
                         self.preview.yy_setImageWithURL(NSURL.fileURLWithPath(CocoaFiles.pathFromDescriptor(r)),
                                                         placeholder: self.thumb, options: YYWebImageOptions.SetImageWithFadeAnimation,
                                                         progress: nil, transform: nil,completion: nil)
-                        self.preview.hidden = false
+                        self.preview.showViewAnimated()
                     }
                 } else if let t = self.thumb {
                     if !self.thumbShown {
                         self.thumbShown = true
                         self.preview.image = t
-                        self.preview.hidden = false
+                        self.preview.showViewAnimated()
                     }
                 }
             }
@@ -237,18 +238,18 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
             
             if isUploading {
                 if isPaused {
-                    self.progress.showView()
+                    self.progress.showViewAnimated()
                     self.progress.setButtonType(FlatButtonType.buttonUpBasicType, animated: false)
                     self.progress.hideProgress()
                 } else {
-                    self.progress.showView()
+                    self.progress.showViewAnimated()
                     self.progress.setButtonType(FlatButtonType.buttonPausedType, animated: false)
                     self.progress.setProgress(Double(progress!)/100.0)
                 }
             } else {
                 if reference != nil {
                     self.progress.setProgress(1)
-                    self.progress.hideView()
+                    self.progress.hideViewAnimated()
                     
                     // Play Button
                     if self.bindedMessage?.content is ACAnimationContent {
@@ -262,11 +263,11 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
                     }
                 } else {
                     if isPaused {
-                        self.progress.showView()
+                        self.progress.showViewAnimated()
                         self.progress.setButtonType(FlatButtonType.buttonDownloadType, animated: false)
                         self.progress.hideProgress()
                     } else {
-                        self.progress.showView()
+                        self.progress.showViewAnimated()
                         self.progress.setButtonType(FlatButtonType.buttonPausedType, animated: false)
                         self.progress.setProgress(Double(progress!)/100.0)
                     }
