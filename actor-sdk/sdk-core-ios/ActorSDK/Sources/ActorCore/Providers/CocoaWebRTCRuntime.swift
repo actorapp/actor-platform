@@ -8,18 +8,22 @@ import AVFoundation
 class CocoaWebRTCRuntime: NSObject, ARWebRTCRuntime {
     
     private var isInited: Bool = false
+    private var isLocalTrackInited: Bool = false
     private var peerConnectionFactory: RTCPeerConnectionFactory!
     
-    private var videoCapturer: RTCVideoCapturer?
-    private var videoSource: RTCVideoSource?
-    private var localVideoTrack: RTCVideoTrack?
+    private var videoCapturer: RTCVideoCapturer!
+    private var videoSource: RTCVideoSource!
+    private var localVideoTrack: RTCVideoTrack!
     private var mediaStream: MediaStream!
     
     override init() {
         
     }
     
-    func initLocalVideoTrack() {
+    func initLocalVideoTrack()  {
+        if !isLocalTrackInited{
+            isLocalTrackInited = true
+
         var cameraID: String?
         for captureDevice in AVCaptureDevice.devicesWithMediaType(AVMediaTypeVideo) {
             
@@ -29,13 +33,14 @@ class CocoaWebRTCRuntime: NSObject, ARWebRTCRuntime {
         }
         if(cameraID != nil){
             self.videoCapturer = RTCVideoCapturer(deviceName: cameraID)
+         
             self.videoSource = self.peerConnectionFactory.videoSourceWithCapturer(
                 self.videoCapturer,
-                constraints: RTCMediaConstraints()
-            )
+                constraints: RTCMediaConstraints())
             
-            self.localVideoTrack = self.peerConnectionFactory
+                self.localVideoTrack = self.peerConnectionFactory
                 .videoTrackWithID("ARDAMSv0", source: self.videoSource)}
+        }
     }
     
     func getUserMediaWithIsVideoEnabled(isVideoEnabled: jboolean) -> ARPromise {
@@ -61,7 +66,7 @@ class CocoaWebRTCRuntime: NSObject, ARWebRTCRuntime {
     func createPeerConnectionWithServers(webRTCIceServers: IOSObjectArray!, withSettings settings: ARWebRTCSettings!) -> ARPromise {
         
         initRTC()
-        
+      
         let servers: [ARWebRTCIceServer] = webRTCIceServers.toSwiftArray()
         return ARPromise { (resolver) -> () in
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) { () -> Void in
@@ -98,7 +103,7 @@ class MediaStream: NSObject, ARWebRTCMediaStream {
     }
     
     func setAudioEnabledWithBoolean(isEnabled: jboolean) {
-        setEnabledWithBoolean(isEnabled)
+        setEnabledAudioWithBoolean(isEnabled)
     }
     
     func isVideoEnabled() -> jboolean {
@@ -106,17 +111,20 @@ class MediaStream: NSObject, ARWebRTCMediaStream {
     }
     
     func setVideoEnabledWithBoolean(isEnabled: jboolean) {
-        setEnabledWithBoolean(isEnabled)
+        setEnabledVideoWithBoolean(isEnabled)
     }
     
     func isEnabled() -> jboolean {
         return true
     }
     
-    func setEnabledWithBoolean(isEnabled: jboolean) {
+    func setEnabledAudioWithBoolean(isEnabled: jboolean) {
         for i in stream.audioTracks {
             (i as? RTCMediaStreamTrack)?.setEnabled(isEnabled)
         }
+    }
+    
+    func setEnabledVideoWithBoolean(isEnabled: jboolean) {
         for i in stream.videoTracks {
             (i as? RTCMediaStreamTrack)?.setEnabled(isEnabled)
         }
