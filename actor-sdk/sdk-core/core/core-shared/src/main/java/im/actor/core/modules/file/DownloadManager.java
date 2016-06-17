@@ -5,6 +5,7 @@
 package im.actor.core.modules.file;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import im.actor.core.entity.FileReference;
 import im.actor.core.modules.ModuleContext;
@@ -14,7 +15,6 @@ import im.actor.core.util.RandomUtils;
 import im.actor.core.viewmodel.FileCallback;
 import im.actor.core.viewmodel.FileEventCallback;
 import im.actor.runtime.*;
-import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Props;
 import im.actor.runtime.actors.messages.PoisonPill;
@@ -29,11 +29,11 @@ public class DownloadManager extends ModuleActor {
 
     private boolean LOG;
 
-    private ArrayList<WeakCallbackHolder> callbacks = new ArrayList<>();
+    private KeyValueEngine<Downloaded> downloaded;
 
     private ArrayList<QueueItem> queue = new ArrayList<>();
-
-    private KeyValueEngine<Downloaded> downloaded;
+    private HashMap<Long, ArrayList<FileCallback>> callbacks = new HashMap<>();
+    private ArrayList<WeakCallbackHolder> globalCallbacks = new ArrayList<>();
 
     public DownloadManager(ModuleContext context) {
         super(context);
@@ -132,7 +132,6 @@ public class DownloadManager extends ModuleActor {
             }
 
             queueItem = new QueueItem(fileReference);
-            queueItem.callbacks.add(callback);
 
             if (autoStart) {
                 queueItem.isStopped = false;
@@ -148,10 +147,6 @@ public class DownloadManager extends ModuleActor {
 
             promote(fileReference.getFileId());
 
-            if (!queueItem.callbacks.contains(callback)) {
-                queueItem.callbacks.add(callback);
-            }
-
             if (queueItem.isStopped) {
                 im.actor.runtime.Runtime.dispatch(() -> callback.onNotDownloaded());
             } else {
@@ -163,6 +158,8 @@ public class DownloadManager extends ModuleActor {
                 }
             }
         }
+
+        getSubscribers(fileReference.getFileId()).add(callback);
 
         checkQueue();
     }
@@ -192,7 +189,7 @@ public class DownloadManager extends ModuleActor {
             }
             if (queueItem.isStopped) {
                 queueItem.isStopped = false;
-                for (final FileCallback callback : queueItem.callbacks) {
+                for (final FileCallback callback : getSubscribers(fileReference.getFileId())) {
                     im.actor.runtime.Runtime.dispatch(() -> callback.onDownloading(0));
                 }
             }
@@ -225,7 +222,7 @@ public class DownloadManager extends ModuleActor {
             }
             queueItem.isStopped = true;
 
-            for (final FileCallback callback : queueItem.callbacks) {
+            for (final FileCallback callback : getSubscribers(fileId)) {
                 im.actor.runtime.Runtime.dispatch(() -> callback.onNotDownloaded());
             }
         }
@@ -259,7 +256,7 @@ public class DownloadManager extends ModuleActor {
                     }
                     queueItem.isStopped = true;
 
-                    for (final FileCallback c : queueItem.callbacks) {
+                    for (final FileCallback c : getSubscribers(fileId)) {
                         if (c != callback) {
                             im.actor.runtime.Runtime.dispatch(() -> c.onNotDownloaded());
                         }
@@ -270,7 +267,8 @@ public class DownloadManager extends ModuleActor {
                 if (LOG) {
                     Log.d(TAG, "- Removing callback");
                 }
-                queueItem.callbacks.remove(callback);
+
+                getSubscribers(fileId).remove(callback);
             }
         }
 
@@ -280,14 +278,14 @@ public class DownloadManager extends ModuleActor {
     // Callback
 
     private void subscribe(FileEventCallback callback) {
-        callbacks.add(new WeakCallbackHolder(callback));
+        globalCallbacks.add(new WeakCallbackHolder(callback));
         cleanWeakSubscribers();
     }
 
     private void unsubscribe(FileEventCallback callback) {
-        for (WeakCallbackHolder callbackHolder : callbacks) {
+        for (WeakCallbackHolder callbackHolder : globalCallbacks) {
             if (callbackHolder.getCallbackWeakReference() == callback) {
-                callbacks.remove(callbackHolder);
+                globalCallbacks.remove(callbackHolder);
                 break;
             }
         }
@@ -296,12 +294,12 @@ public class DownloadManager extends ModuleActor {
 
     private void cleanWeakSubscribers() {
         ArrayList<WeakCallbackHolder> toRemove = new ArrayList<>();
-        for (WeakCallbackHolder callbackHolder : callbacks) {
+        for (WeakCallbackHolder callbackHolder : globalCallbacks) {
             if (callbackHolder.getCallbackWeakReference() == null) {
                 toRemove.add(callbackHolder);
             }
         }
-        callbacks.removeAll(toRemove);
+        globalCallbacks.removeAll(toRemove);
     }
 
     // Queue processing
@@ -363,7 +361,7 @@ public class DownloadManager extends ModuleActor {
 
         queueItem.progress = progress;
 
-        for (final FileCallback fileCallback : queueItem.callbacks) {
+        for (final FileCallback fileCallback : getSubscribers(fileId)) {
             im.actor.runtime.Runtime.dispatch(() -> fileCallback.onDownloading(progress));
         }
     }
@@ -387,14 +385,14 @@ public class DownloadManager extends ModuleActor {
         queue.remove(queueItem);
         queueItem.taskRef.send(PoisonPill.INSTANCE);
 
-        for (final WeakCallbackHolder weakReference : callbacks) {
+        for (final WeakCallbackHolder weakReference : globalCallbacks) {
             final FileEventCallback callback = weakReference.getCallbackWeakReference().get();
             if (callback != null) {
                 im.actor.runtime.Runtime.dispatch(() -> callback.onDownloaded(fileId));
             }
         }
 
-        for (final FileCallback fileCallback : queueItem.callbacks) {
+        for (final FileCallback fileCallback : getSubscribers(fileId)) {
             im.actor.runtime.Runtime.dispatch(() -> fileCallback.onDownloaded(reference));
         }
 
@@ -418,7 +416,7 @@ public class DownloadManager extends ModuleActor {
         queueItem.isStopped = true;
         queueItem.isStarted = false;
 
-        for (final FileCallback fileCallback : queueItem.callbacks) {
+        for (final FileCallback fileCallback : getSubscribers(fileId)) {
             im.actor.runtime.Runtime.dispatch(() -> fileCallback.onNotDownloaded());
         }
 
@@ -446,11 +444,18 @@ public class DownloadManager extends ModuleActor {
         }
     }
 
+    private ArrayList<FileCallback> getSubscribers(long fileId) {
+        ArrayList<FileCallback> res = callbacks.get(fileId);
+        if (res == null) {
+            res = new ArrayList<>();
+            callbacks.put(fileId, res);
+        }
+        return res;
+    }
+
     private class QueueItem {
         private FileReference fileReference;
         private boolean isStopped;
-
-        private ArrayList<FileCallback> callbacks = new ArrayList<>();
 
         private boolean isStarted;
         private float progress;
