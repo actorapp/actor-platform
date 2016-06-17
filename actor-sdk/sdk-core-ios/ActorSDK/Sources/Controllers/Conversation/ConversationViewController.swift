@@ -304,18 +304,6 @@ public class ConversationViewController:
                     }
                 }
             })
-            
-            
-            //
-            // Unblock User
-            //
-            
-            if(blockStatus) {
-                confirmAlertUser("AlertUnblock", action: "AlertUnblock", tapYes: {
-                    self.executePromise(Actor.unblockUser(Actor.getUserWithUid(self.peer.peerId).getId()))
-                })
-            }
-        
         } else if (peer.peerType.ordinal() == ACPeerType.GROUP().ordinal()) {
             let group = Actor.getGroupWithGid(peer.peerId)
             let nameModel = group.getNameModel()
