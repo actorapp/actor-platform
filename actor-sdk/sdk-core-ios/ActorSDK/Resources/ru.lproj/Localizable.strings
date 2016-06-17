@@ -244,6 +244,10 @@
 
 "ProfileTitle" = "Информация";
 
+"ProfileBlockContact" = "Заблокировать Пользователя";
+
+"ProfileUnblockContact" = "Разблокировать пользователя";
+
 "CallNumber" = "Позвонить";
 
 "ShareNumber" = "Переслать номер";

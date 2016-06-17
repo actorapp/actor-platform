@@ -222,6 +222,10 @@
 
 "ProfileTitle" = "详细资料";
 
+"ProfileBlockContact" = "Block User";
+
+"ProfileUnblockContact" = "Unblock User";
+
 "CallNumber" = "拨打电话";
 
 "CopyNumber" = "复制号码";

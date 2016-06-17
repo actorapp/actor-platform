@@ -258,40 +258,36 @@ class AAUserViewController: AAContentTableController {
             }
         }
         
-        if !self.isBot {
-            // Block Contact
-            section { (s) -> () in
-                s.common { (r) -> () in
-                    r.bindAction = { (r) -> () in
-                        if !self.user.isBlockedModel().get().booleanValue() {
-                            r.content = AALocalized("ProfileBlockContact")
-                        } else {
-                            r.content = AALocalized("ProfileUnblockContact")
-                        }
-                        r.style = .Action
+        // Block Contact
+        section { (s) -> () in
+            s.common { (r) -> () in
+                r.bindAction = { (r) -> () in
+                    if !self.user.isBlockedModel().get().booleanValue() {
+                        r.content = AALocalized("ProfileBlockContact")
+                    } else {
+                        r.content = AALocalized("ProfileUnblockContact")
                     }
-        
-                    r.selectAction = { () -> Bool in
-                        if !self.user.isBlockedModel().get().booleanValue() {
-                            self.executePromise(Actor.blockUser(jint(self.uid)),
-                                successBlock: { success in
-                                    dispatch_async(dispatch_get_main_queue(),{
-                                        let peer = ACPeer.userWithInt(jint(self.uid))
-                                        self.execute(Actor.deleteChatCommandWithPeer(peer))
-                                        r.reload()
-                                    })
-                                } ,failureBlock:nil)
-                        } else {
-                            self.executePromise(Actor.unblockUser(jint(self.uid)),
-                                successBlock: { success in
-                                    dispatch_async(dispatch_get_main_queue(),{
-                                        r.reload()
-                                    })
-                                } ,failureBlock:nil)
-                        }
-                        r.reload()
-                        return true
+                    r.style = .Destructive
+                }
+                
+                r.selectAction = { () -> Bool in
+                    if !self.user.isBlockedModel().get().booleanValue() {
+                        self.executePromise(Actor.blockUser(jint(self.uid)),
+                            successBlock: { success in
+                                dispatch_async(dispatch_get_main_queue(),{
+                                    r.reload()
+                                })
+                            } ,failureBlock:nil)
+                    } else {
+                        self.executePromise(Actor.unblockUser(jint(self.uid)),
+                            successBlock: { success in
+                                dispatch_async(dispatch_get_main_queue(),{
+                                    r.reload()
+                                })
+                            } ,failureBlock:nil)
                     }
+                    r.reload()
+                    return true
                 }
             }
         }

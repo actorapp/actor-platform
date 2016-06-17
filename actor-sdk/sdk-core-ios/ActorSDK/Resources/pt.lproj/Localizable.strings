@@ -235,6 +235,10 @@
 
 "ProfileTitle" = "Info";
 
+"ProfileBlockContact" = "Block User";
+
+"ProfileUnblockContact" = "Unblock User";
+
 "CallNumber" = "Chamar número";
 
 "CopyNumber" = "Copiar número";
