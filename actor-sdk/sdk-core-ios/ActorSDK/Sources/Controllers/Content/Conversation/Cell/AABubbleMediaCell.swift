@@ -35,6 +35,7 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
         super.init(frame: frame, isFullSize: false)
         
         preview.autoPlayAnimatedImage = true
+        preview.runloopMode = NSDefaultRunLoopMode
         
         timeBg.image = Imaging.roundedImage(ActorSDK.sharedActor().style.chatMediaDateBgColor, radius: 10)
         
