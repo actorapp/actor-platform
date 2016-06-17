@@ -36,7 +36,7 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
         
         preview.autoPlayAnimatedImage = true
         
-        timeBg.image = ActorSDK.sharedActor().style.statusBackgroundImage
+        timeBg.image = Imaging.roundedImage(ActorSDK.sharedActor().style.chatMediaDateBgColor, radius: 10)
         
         timeLabel.font = UIFont.italicSystemFontOfSize(11)
         timeLabel.textColor = appStyle.chatMediaDateColor
@@ -53,7 +53,7 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
         
         preview.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(AABubbleMediaCell.mediaDidTap)))
         preview.userInteractionEnabled = true
-        contentInsets = UIEdgeInsets(top: 1, left: 1, bottom: 1, right: 1)
+        contentInsets = UIEdgeInsets(top: 2, left: 2, bottom: 2, right: 2)
         
         playView.userInteractionEnabled = false
     }
@@ -368,13 +368,13 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
         let timeWidth = (isOut ? 23 : 0) + timeLabel.bounds.width
         let timeHeight: CGFloat = 20
         
-        timeLabel.frame = CGRectMake(preview.frame.maxX - timeWidth - 18, preview.frame.maxY - timeHeight - 6, timeLabel.frame.width, timeHeight)
+        timeLabel.frame = CGRectMake(preview.frame.maxX - timeWidth - 8, preview.frame.maxY - timeHeight - 4, timeLabel.frame.width, timeHeight)
         
         if (isOut) {
             statusView.frame = CGRectMake(timeLabel.frame.maxX, timeLabel.frame.minY, 23, timeHeight)
         }
         
-        timeBg.frame = CGRectMake(timeLabel.frame.minX - 4, timeLabel.frame.minY - 1, timeWidth + 8, timeHeight + 2)
+        timeBg.frame = CGRectMake(timeLabel.frame.minX - 6, timeLabel.frame.minY, timeWidth + 10, timeHeight)
     }
     
     // Photo preview
@@ -421,7 +421,7 @@ public class MediaCellLayout: AACellLayout {
         self.fastThumb = fastThumb?.getImage().toNSData()
         
         // Creating layout
-        super.init(height: self.screenSize.height + 2, date: date, key: "media", layouter: layouter)
+        super.init(height: self.screenSize.height + 4, date: date, key: "media", layouter: layouter)
     }
     
     /**
