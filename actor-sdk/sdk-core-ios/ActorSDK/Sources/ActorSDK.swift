@@ -256,6 +256,7 @@ import DZNWebViewController
         // Config
         builder.setPhoneBookImportEnabled(jboolean(enablePhoneBookImport))
         builder.setVoiceCallsEnabled(jboolean(enableCalls))
+        builder.setVideoCallsEnabled(jboolean(enableCalls))
         builder.setIsEnabledGroupedChatList(false)
         // builder.setEnableFilesLogging(true)
         
