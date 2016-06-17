@@ -34,6 +34,7 @@ import im.actor.core.api.rpc.RequestRevokeIntegrationToken;
 import im.actor.core.api.rpc.RequestRevokeInviteUrl;
 import im.actor.core.api.rpc.ResponseIntegrationToken;
 import im.actor.core.api.rpc.ResponseInviteUrl;
+import im.actor.core.api.updates.UpdateContactsAdded;
 import im.actor.core.api.updates.UpdateGroupAboutChanged;
 import im.actor.core.api.updates.UpdateGroupAboutChangedObsolete;
 import im.actor.core.api.updates.UpdateGroupMembersUpdate;
@@ -302,6 +303,7 @@ public class GroupsModule extends AbsModule {
 
     public Promise<Integer> joinGroupByToken(final String token) {
         return api(new RequestJoinGroup(token, ApiSupportConfiguration.OPTIMIZATIONS))
+                .chain(responseJoinGroup -> updates().loadRequiredPeers(responseJoinGroup.getUserPeers(), new ArrayList<>()))
                 .chain(responseJoinGroup ->
                         updates().applyUpdate(
                                 responseJoinGroup.getSeq(),
