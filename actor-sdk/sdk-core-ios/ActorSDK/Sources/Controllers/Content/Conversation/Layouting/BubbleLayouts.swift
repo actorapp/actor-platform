@@ -44,8 +44,22 @@ public class AACellLayout {
     }
     
     public class func pickApproriateSize(width: CGFloat, height: CGFloat) -> CGSize {
-        let scaleW = 240 / width
-        let scaleH = 340 / height
+        let maxW: CGFloat
+        let maxH: CGFloat
+        if AADevice.isiPad {
+            maxW = 240
+            maxH = 340
+        } else {
+            if AADevice.isiPhone5 || AADevice.isiPhone4 {
+                maxW = 220
+                maxH = 260
+            } else {
+                maxW = 240
+                maxH = 340
+            }
+        }
+        let scaleW = maxW / width
+        let scaleH = maxH / height
         let scale = min(scaleW, scaleH)
         return CGSize(width: scale * width, height: scale * height)
     }
