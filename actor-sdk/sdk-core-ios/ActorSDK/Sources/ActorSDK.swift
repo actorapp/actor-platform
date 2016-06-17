@@ -129,31 +129,6 @@ import DZNWebViewController
     /// Enable experimental features
     public var enableExperimentalFeatures: Bool = false
     
-    /// Enable Automatic Download and Save
-    public var enableAutomaticDownload: Bool = true
-    
-    /// Disable this if you want dowloadMediaAutomaticaly
-    public var autoDownloadPhotoContent: Bool = true
-    public var autoDownloadVideoContent: Bool = false
-    
-    let storage = CocoaStorageRuntime()
-    
-    public var isAutomaticDownloadEnabled: Bool {
-        set {
-            storage.preferences.putBoolWithKey("isAutomaticDownloadEnabled", withValue: newValue)
-        }
-        get {
-            return storage.preferences.getBoolWithKey("isAutomaticDownloadEnabled", withDefault: true)
-        }
-    }
-    
-    func setAutomaticDownloads(isEnabled:Bool){
-        
-        self.isAutomaticDownloadEnabled = isEnabled
-        self.autoDownloadPhotoContent = isEnabled
-        self.autoDownloadVideoContent = isEnabled
-        
-    }
     
     //
     // User Onlines
@@ -164,6 +139,45 @@ import DZNWebViewController
     
     /// Disable this if you want manually handle online states
     public var automaticOnlineHandling = true
+    
+    
+    //
+    // Local Settings
+    //
+    
+    // Local Shared Settings
+    private static var udStorage = UDPreferencesStorage()
+    
+    public var isPhotoAutoDownloadGroup: Bool = udStorage.getBoolWithKey("local.photo_download.group", withDefault: true) {
+        willSet(v) {
+            ActorSDK.udStorage.putBoolWithKey("local.photo_download.group", withValue: v)
+        }
+    }
+    
+    public var isPhotoAutoDownloadPrivate: Bool = udStorage.getBoolWithKey("local.photo_download.private", withDefault: true) {
+        willSet(v) {
+            ActorSDK.udStorage.putBoolWithKey("local.photo_download.private", withValue: v)
+        }
+    }
+    
+    public var isAudioAutoDownloadGroup: Bool = udStorage.getBoolWithKey("local.audio_download.group", withDefault: true) {
+        willSet(v) {
+            ActorSDK.udStorage.putBoolWithKey("local.audio_download.group", withValue: v)
+        }
+    }
+
+    public var isAudioAutoDownloadPrivate: Bool = udStorage.getBoolWithKey("local.audio_download.private", withDefault: true) {
+        willSet(v) {
+            ActorSDK.udStorage.putBoolWithKey("local.audio_download.private", withValue: v)
+        }
+    }
+    
+    public var isGIFAutoplayEnabled: Bool = udStorage.getBoolWithKey("local.autoplay_gif", withDefault: true) {
+        willSet(v) {
+            ActorSDK.udStorage.putBoolWithKey("local.autoplay_gif", withValue: v)
+        }
+    }
+    
     
     //
     // Internal State
@@ -181,7 +195,6 @@ import DZNWebViewController
     
     // Reachability
     private var reachability: Reachability!
-    
     
     public override init() {
         

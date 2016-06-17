@@ -60,7 +60,7 @@
 "SettingsChangeAboutHint" = "简单介绍一下你自己";
 
 
-"SettingsSecurity" = "安全";
+"SettingsSecurity" = "Privacy and Security";
 
 "SettingsWallpapers" = "聊天背景";
 
@@ -76,13 +76,60 @@
 
 "SettingsVersion" = "版本 {version}";
 
+"SettingsMobilePhone"    = "手机";
 
-"SettingsAllSessions" = "所有会话";
+"SettingsGroupChats" = "Groups";
 
-"SettingsLastSeen" = "最后一次露面";
+"SettingsPrivateChats" = "Private Chats";
 
-"SettingsLastSeenHint" = "更改谁可以看到您最后一次露面时间。";
+/*
+ * Notifications
+ */
 
+"NotificationsTitle" = "通知和声音";
+
+"NotificationsEffectsTitle" = "效果";
+
+"NotificationsMobileTitle" = "手机推送通知";
+
+"NotificationsInAppTitle" = "In-App通知";
+
+"NotificationsNotificationHint" = "在好友或群组的信息页面，可以屏蔽指定好友或群组的推送通知。";
+
+"NotificationsPrivacyTitle" = "隐私";
+
+"NotificationsSoundEffects" = "声音效果";
+
+"NotificationsEnable" = "打开";
+
+"NotificationsSound" = "声音";
+
+"NotificationsVibration" = "震动";
+
+"NotificationsPreview" = "消息预览";
+
+"NotificationsPreviewHint" = "在通知中不显示消息文本。";
+
+"NotificationSecretMessage" = "新消息";
+
+"NotificationsGroups" = "群组通知";
+
+"NotificationsOnlyMentions" = "仅当被@提到时";
+
+"NotificationsOnlyMentionsHint" = "只有当消息中提到你时才通知";
+
+/*
+ * Privacy
+ */
+
+"PrivacyTitle" = "安全";
+
+
+"PrivacyHeader" = "Privacy";
+
+"PrivacyLastSeen" = "最后一次露面";
+
+"PrivacyLastSeenHint" = "更改谁可以看到您最后一次露面时间。";
 
 "SettingsLastSeenEverybody" = "每个人都可见";
 
@@ -90,9 +137,26 @@
 
 "SettingsLastSeenNone"    = "没人";
 
-"SettingsMobilePhone"    = "手机";
 
-"SettingsAutomaticDownloadAndSave" = "自动下载媒体文件";
+"PrivacySecurityHeader" = "Security";
+
+"PrivacyAllSessions" = "Active Sessions";
+
+"PrivacyTerminate" = "下线所有其它登录";
+
+"PrivacyTerminateAlert" = "下线所有其它登录";
+
+"PrivacyTerminateAlertSingle" = "下线";
+
+"PrivacyTerminateHint" = "下线所有其它登录。";
+
+/*
+ * Wallpapers
+ */
+
+"WallpapersTitle" = "聊天背景";
+
+"WallpapersPhoto" = "手机相册";
 
 /*
  * Calls
@@ -285,64 +349,6 @@
  */
 
 "LocationTitle" = "位置";
-
-/*
- * Notifications
- */
-
-"NotificationsTitle" = "通知和声音";
-
-"NotificationsEffectsTitle" = "效果";
-
-"NotificationsMobileTitle" = "手机推送通知";
-
-"NotificationsInAppTitle" = "In-App通知";
-
-"NotificationsNotificationHint" = "在好友或群组的信息页面，可以屏蔽指定好友或群组的推送通知。";
-
-"NotificationsPrivacyTitle" = "隐私";
-
-"NotificationsSoundEffects" = "声音效果";
-
-"NotificationsEnable" = "打开";
-
-"NotificationsSound" = "声音";
-
-"NotificationsVibration" = "震动";
-
-"NotificationsPreview" = "消息预览";
-
-"NotificationsPreviewHint" = "在通知中不显示消息文本。";
-
-"NotificationSecretMessage" = "新消息";
-
-"NotificationsGroups" = "群组通知";
-
-"NotificationsOnlyMentions" = "仅当被@提到时";
-
-"NotificationsOnlyMentionsHint" = "只有当消息中提到你时才通知";
-
-/*
- * Privacy
- */
-
-"SecurityTitle" = "安全";
-
-"PrivacyTerminate" = "下线所有其它登录";
-
-"PrivacyTerminateAlert" = "下线所有其它登录";
-
-"PrivacyTerminateAlertSingle" = "下线";
-
-"PrivacyTerminateHint" = "下线所有其它登录。";
-
-/*
- * Wallpapers
- */
-
-"WallpapersTitle" = "聊天背景";
-
-"WallpapersPhoto" = "手机相册";
 
 /*
  * Chat

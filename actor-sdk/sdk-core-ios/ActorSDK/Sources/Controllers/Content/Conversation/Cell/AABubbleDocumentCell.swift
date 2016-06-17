@@ -96,8 +96,17 @@ public class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionCo
             })
             
             // Bind file
-            fileBind(message, autoDownload: ActorSDK.sharedActor().isAutomaticDownloadEnabled &&
-                document.getSource().getSize() < 1024 * 1025 * 1024)
+            
+            // Respecting Photo Dowload settings for small documents
+            let autoDownload: Bool
+            if self.peer.isGroup {
+                autoDownload = ActorSDK.sharedActor().isPhotoAutoDownloadGroup
+            } else if self.peer.isPrivate {
+                autoDownload = ActorSDK.sharedActor().isPhotoAutoDownloadPrivate
+            } else {
+                autoDownload = false
+            }
+            fileBind(message, autoDownload: autoDownload && (document.getSource().getSize() < 1024 * 1024 * 1024))
         }
         
         // Always update date and state
@@ -146,15 +155,6 @@ public class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionCo
                     if (docController.presentPreviewAnimated(true)) {
                         return
                     }
-                   
-                    if (content.getName().hasSuffix(".ogg")) {
-                        
-                        print("paaaaath ==== \(CocoaFiles.pathFromDescriptor(reference))")
-                        //self.controller.playVoiceFromPath(CocoaFiles.pathFromDescriptor(reference))
-                        
-                        return
-                    }
-                    
             }))
             
         } else if let fileSource = content.getSource() as? ACFileLocalSource {
@@ -171,68 +171,51 @@ public class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionCo
                     if (docController.presentPreviewAnimated(true)) {
                         return
                     }
-                    
-                    
-                    if (content.getName().hasSuffix(".ogg")) {
-                        
-                        print("paaaaath2 ==== \(CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))")
-                        //self.controller.playVoiceFromPath(CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))
-                        
-                        return
-                    }
-                    
             }))
         }
     }
     
-    public override func fileUploadPaused(reference: String, selfGeneration: Int) {
+    public override func fileStateChanged(reference: String?, progress: Int?, isPaused: Bool, isUploading: Bool, selfGeneration: Int) {
         self.runOnUiThread(selfGeneration) { () -> () in
-            self.fileIcon.hideView()
-            
-            self.progress.showView()
-            self.progress.hideProgress()
-            self.progress.setButtonType(FlatButtonType.buttonUpBasicType, animated: true)
-        }
-    }
-    
-    public override func fileUploading(reference: String, progress: Double, selfGeneration: Int) {
-        self.runOnUiThread(selfGeneration) { () -> () in
-            self.fileIcon.hideView()
-            
-            self.progress.showView()
-            self.progress.setProgress(progress)
-            self.progress.setButtonType(FlatButtonType.buttonPausedType, animated: true)
-        }
-    }
-    
-    public override func fileDownloadPaused(selfGeneration: Int) {
-        self.runOnUiThread(selfGeneration) { () -> () in
-            self.fileIcon.hideView()
-            
-            self.progress.showView()
-            self.progress.hideProgress()
-            self.progress.setButtonType(FlatButtonType.buttonDownloadType, animated: true)
-        }
-    }
-    
-    public override func fileDownloading(progress: Double, selfGeneration: Int) {
-        self.runOnUiThread(selfGeneration) { () -> () in
-            self.fileIcon.hideView()
-            
-            self.progress.showView()
-            self.progress.setProgress(progress)
-            self.progress.setButtonType(FlatButtonType.buttonPausedType, animated: true)
-        }
-    }
-    
-    public override func fileReady(reference: String, selfGeneration: Int) {
-        self.runOnUiThread(selfGeneration) { () -> () in
-            
-            self.fileIcon.image = self.bindedLayout.icon
-            self.fileIcon.showView()
-            
-            self.progress.hideView()
-            self.progress.setProgress(1)
+            if isUploading {
+                if isPaused {
+                    self.fileIcon.hideView()
+                    
+                    self.progress.showView()
+                    self.progress.hideProgress()
+                    self.progress.setButtonType(FlatButtonType.buttonUpBasicType, animated: true)
+                    
+                } else {
+                    self.fileIcon.hideView()
+                    
+                    self.progress.showView()
+                    self.progress.setProgress(Double(progress!)/100.0)
+                    self.progress.setButtonType(FlatButtonType.buttonPausedType, animated: true)
+                }
+            } else {
+                if reference != nil {
+                    self.fileIcon.image = self.bindedLayout.icon
+                    self.fileIcon.showView()
+                    
+                    self.progress.hideView()
+                    self.progress.setProgress(1)
+                } else {
+                    if isPaused {
+                        self.fileIcon.hideView()
+                        
+                        self.progress.showView()
+                        self.progress.hideProgress()
+                        self.progress.setButtonType(FlatButtonType.buttonDownloadType, animated: true)
+                    } else {
+                        
+                        self.fileIcon.hideView()
+                        
+                        self.progress.showView()
+                        self.progress.setProgress(Double(progress!)/100.0)
+                        self.progress.setButtonType(FlatButtonType.buttonPausedType, animated: true)
+                    }
+                }
+            }
         }
     }
     

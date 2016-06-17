@@ -11,7 +11,7 @@ public class AASettingsPrivacyViewController: AAContentTableController {
     public init() {
         super.init(style: AAContentTableStyle.SettingsGrouped)
         
-        navigationItem.title = AALocalized("SecurityTitle")
+        navigationItem.title = AALocalized("PrivacyTitle")
         
         content = ACAllEvents_Settings.PRIVACY()
     }
@@ -23,17 +23,22 @@ public class AASettingsPrivacyViewController: AAContentTableController {
     public override func tableDidLoad() {
         
         section { (s) -> () in
-        
-            // Settings: All sessions
-            s.navigate("SettingsAllSessions", controller: AASettingsSessionsController.self)
+            
+            s.headerText = AALocalized("PrivacyHeader")
             
             // Settings: Last seen
-            s.navigate("SettingsLastSeen", controller: AASettingsLastSeenController.self)
+            s.navigate("PrivacyLastSeen", controller: AASettingsLastSeenController.self)
             
-            s.footerText = AALocalized("SettingsLastSeenHint")
-            
+            s.footerText = AALocalized("PrivacyLastSeenHint")
         }
         
+        section { (s) -> () in
+            
+            s.headerText = AALocalized("PrivacySecurityHeader")
+            
+            // Settings: All sessions
+            s.navigate("PrivacyAllSessions", controller: AASettingsSessionsController.self)
+        }
     }
     
 }

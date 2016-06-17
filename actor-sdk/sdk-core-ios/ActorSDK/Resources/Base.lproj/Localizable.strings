@@ -67,11 +67,11 @@
 "SettingsChangeAboutHint" = "Tell people who you are.";
 
 
-"SettingsSecurity" = "Security";
+"SettingsSecurity" = "Privacy and Security";
 
 "SettingsWallpapers" = "Wallpapers";
 
-"SettingsMedia" = "Media";
+"SettingsMedia" = "Media Settings";
 
 "SettingsNotifications" = "Notifications and Sounds";
 
@@ -83,23 +83,101 @@
 
 "SettingsVersion" = "Version {version}";
 
-
-"SettingsAllSessions" = "All sessions";
-
-"SettingsLastSeen" = "Last seen";
-
-"SettingsLastSeenHint" = "Change who can see your Last Seen time.";
-
-
-"SettingsLastSeenEverybody" = "Everybody";
-
-"SettingsLastSeenContacts"  = "My Contacts";
-
-"SettingsLastSeenNone"    = "Nobody";
-
 "SettingsMobilePhone"    = "Mobile Phone";
 
-"SettingsAutomaticDownloadAndSave" = "Automatic Download Media";
+"SettingsGroupChats" = "Groups";
+
+"SettingsPrivateChats" = "Private Chats";
+
+/*
+ * Notifications
+ */
+
+"NotificationsTitle" = "Notifications and Sounds";
+
+"NotificationsEffectsTitle" = "Effects";
+
+"NotificationsMobileTitle" = "Mobile notifications";
+
+"NotificationsInAppTitle" = "In-App notifications";
+
+"NotificationsNotificationHint" = "You can disable notifications for specific users or groups on their info pages.";
+
+"NotificationsPrivacyTitle" = "Privacy";
+
+"NotificationsSoundEffects" = "Sound Effects";
+
+"NotificationsEnable" = "Enable";
+
+"NotificationsSound" = "Sound";
+
+"NotificationsVibration" = "Vibration";
+
+"NotificationsPreview" = "Message Preview";
+
+"NotificationsPreviewHint" = "Remove message text from notifications.";
+
+"NotificationSecretMessage" = "New Message";
+
+"NotificationsGroups" = "Group Notifications";
+
+"NotificationsOnlyMentions" = "Only Mentions";
+
+"NotificationsOnlyMentionsHint" = "You can enable notifications only for messages that mention you";
+
+/*
+ * Media
+ */
+
+"MediaTitle" = "Media Settings";
+
+"MediaPhotoDownloadHeader"= "Automatic Photo Download";
+
+"MediaAudioDownloadHeader"= "Automatic Audio Download";
+
+"MediaOtherHeader"= "Other";
+
+"MediaAutoplayGif"= "Autoplay GIFs";
+
+/*
+ * Privacy
+ */
+
+"PrivacyTitle" = "Security";
+
+
+"PrivacyHeader" = "Privacy";
+
+"PrivacyLastSeen" = "Last seen";
+
+"PrivacyLastSeenHint" = "Change who can see your Last Seen time.";
+
+"PrivacyLastSeenEverybody" = "Everybody";
+
+"PrivacyLastSeenContacts"  = "My Contacts";
+
+"PrivacyLastSeenNone"    = "Nobody";
+
+
+"PrivacySecurityHeader" = "Security";
+
+"PrivacyAllSessions" = "Active sessions";
+
+"PrivacyTerminate" = "Terminate all other sessions";
+
+"PrivacyTerminateAlert" = "Terminate all sessions";
+
+"PrivacyTerminateAlertSingle" = "Terminate session";
+
+"PrivacyTerminateHint" = "Log out all devices except for this one.";
+
+/*
+ * Wallpapers
+ */
+
+"WallpapersTitle" = "Wallpapers";
+
+"WallpapersPhoto" = "Photo Library";
 
 /*
  * Calls
@@ -293,64 +371,6 @@
  */
 
 "LocationTitle" = "Location";
-
-/*
- * Notifications
- */
-
-"NotificationsTitle" = "Notifications and Sounds";
-
-"NotificationsEffectsTitle" = "Effects";
-
-"NotificationsMobileTitle" = "Mobile notifications";
-
-"NotificationsInAppTitle" = "In-App notifications";
-
-"NotificationsNotificationHint" = "You can disable notifications for specific users or groups on their info pages.";
-
-"NotificationsPrivacyTitle" = "Privacy";
-
-"NotificationsSoundEffects" = "Sound Effects";
-
-"NotificationsEnable" = "Enable";
-
-"NotificationsSound" = "Sound";
-
-"NotificationsVibration" = "Vibration";
-
-"NotificationsPreview" = "Message Preview";
-
-"NotificationsPreviewHint" = "Remove message text from notifications.";
-
-"NotificationSecretMessage" = "New Message";
-
-"NotificationsGroups" = "Group Notifications";
-
-"NotificationsOnlyMentions" = "Only Mentions";
-
-"NotificationsOnlyMentionsHint" = "You can enable notifications only for messages that mention you";
-
-/*
- * Privacy
- */
-
-"SecurityTitle" = "Security";
-
-"PrivacyTerminate" = "Terminate all other sessions";
-
-"PrivacyTerminateAlert" = "Terminate all sessions";
-
-"PrivacyTerminateAlertSingle" = "Terminate session";
-
-"PrivacyTerminateHint" = "Log out all devices except for this one.";
-
-/*
- * Wallpapers
- */
-
-"WallpapersTitle" = "Wallpapers";
-
-"WallpapersPhoto" = "Photo Library";
 
 /*
  * Chat
