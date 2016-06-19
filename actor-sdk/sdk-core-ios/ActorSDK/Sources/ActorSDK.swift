@@ -121,10 +121,10 @@ import DZNWebViewController
     public var inviteUrlHost: String? = nil
 
     /// Enable voice calls feature
-    public var enableCalls: Bool = true
+    public var enableCalls: Bool = false
     
     /// Enable video calls feature
-    public var enableVideoCalls: Bool = true
+    public var enableVideoCalls: Bool = false
     
     /// Enable custom sound on Groups and Chats
     public var enableChatGroupSound: Bool = false

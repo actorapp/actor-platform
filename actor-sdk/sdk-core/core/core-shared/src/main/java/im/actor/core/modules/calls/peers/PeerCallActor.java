@@ -39,7 +39,6 @@ public class PeerCallActor extends ModuleActor {
     // State objects
     private boolean isOwnStarted = false;
     private boolean isMuted = false;
-    private boolean isOwnMediaStarted = false;
     private boolean videoEnabled = true;
 
     public PeerCallActor(PeerCallCallback callback, PeerSettings selfSettings, ModuleContext context) {
@@ -48,31 +47,6 @@ public class PeerCallActor extends ModuleActor {
         this.selfSettings = selfSettings;
     }
 
-    @Override
-    public void preStart() {
-        super.preStart();
-
-//        if (selfSettings.isPreConnectionEnabled()) {
-//
-//        }
-//
-//        WebRTC.getUserMedia().then(new Consumer<WebRTCMediaStream>() {
-//            @Override
-//            public void apply(WebRTCMediaStream webRTCMediaStream) {
-//                PeerCallActor.this.webRTCMediaStream = webRTCMediaStream;
-//                PeerCallActor.this.webRTCMediaStream.setEnabled(isOwnStarted && !isMuted);
-//                for (PeerNodeInt node : refs.values()) {
-//                    node.setOwnStream(webRTCMediaStream);
-//                }
-//            }
-//        }).failure(new Consumer<Exception>() {
-//            @Override
-//            public void apply(Exception e) {
-//                Log.d(TAG, "Unable to load audio");
-//                self().send(PoisonPill.INSTANCE);
-//            }
-//        }).done(self());
-    }
 
     //
     // Media Settings
@@ -105,14 +79,11 @@ public class PeerCallActor extends ModuleActor {
             for (PeerNodeInt node : refs.values()) {
                 node.setOwnStream(webRTCMediaStream1);
             }
+            callback.onOwnStreamAdded(webRTCMediaStream1);
         }).failure(e -> {
             Log.d(TAG, "Unable to load audio");
             self().send(PoisonPill.INSTANCE);
         });
-//
-//        if (webRTCMediaStream != null) {
-//            webRTCMediaStream.setEnabled(!isMuted);
-//        }
     }
 
     public void onMasterAdvertised(List<ApiICEServer> iceServers) {
@@ -164,6 +135,7 @@ public class PeerCallActor extends ModuleActor {
         }
         refs.clear();
         if (webRTCMediaStream != null) {
+            callback.onOwnStreamRemoved(webRTCMediaStream);
             webRTCMediaStream.setAudioEnabled(false);
             webRTCMediaStream.close();
         }
@@ -241,10 +213,6 @@ public class PeerCallActor extends ModuleActor {
 
     }
 
-    public static class MasterAdvertised {
-
-    }
-
     private class NodeCallback implements PeerNodeCallback {
 
         @Override
@@ -280,21 +248,6 @@ public class PeerCallActor extends ModuleActor {
         @Override
         public void onStreamRemoved(long deviceId, WebRTCMediaStream stream) {
             callback.onStreamRemoved(deviceId, stream);
-        }
-
-        @Override
-        public void onPeerConnectionCreated(WebRTCPeerConnection peerConnection) {
-            callback.onPeerConnectionCreated(peerConnection);
-        }
-
-        @Override
-        public void onOwnStreamAdded(WebRTCMediaStream stream) {
-            callback.onOwnStreamAdded(stream);
-        }
-
-        @Override
-        public void onOwnStreamRemoved(WebRTCMediaStream stream) {
-            callback.onOwnStreamRemoved(stream);
         }
     }
 }

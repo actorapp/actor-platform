@@ -19,6 +19,10 @@ import ActorSDK
         // Enabling experimental features
         ActorSDK.sharedActor().enableExperimentalFeatures = true
         
+        ActorSDK.sharedActor().enableCalls = true
+        
+        ActorSDK.sharedActor().enableVideoCalls = true
+        
         // Setting Development Push Id
         ActorSDK.sharedActor().apiPushId = 868547
         
