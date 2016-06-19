@@ -13,6 +13,12 @@ public class AACallViewController: AAViewController {
     public let peerTitle = UILabel()
     public let callState = UILabel()
     
+    var remoteView = RTCEAGLVideoView()
+    var localView = RTCEAGLVideoView()
+    
+    var localVideoTrack: RTCVideoTrack!
+    var remoteVideoTrack: RTCVideoTrack!
+    
     public let answerCallButton = UIButton()
     public let answerCallButtonText = UILabel()
     public let declineCallButton = UIButton()
@@ -28,9 +34,10 @@ public class AACallViewController: AAViewController {
     public init(callId: jlong) {
         self.callId = callId
         self.call = ActorSDK.sharedActor().messenger.getCallWithCallId(callId)
+        
         super.init()
     }
-
+    
     public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -41,6 +48,7 @@ public class AACallViewController: AAViewController {
         //
         // Buttons
         //
+        
         answerCallButton.setImage(UIImage.bundled("ic_call_answer_44")!.tintImage(UIColor.whiteColor()), forState: .Normal)
         answerCallButton.setBackgroundImage(Imaging.roundedImage(UIColor(red: 61/255.0, green: 217/255.0, blue: 90/255.0, alpha: 1.0), size: CGSizeMake(74, 74), radius: 37), forState: .Normal)
         answerCallButton.viewDidTap = {
@@ -74,10 +82,16 @@ public class AACallViewController: AAViewController {
         speakerButton.image = UIImage.bundled("ic_speaker_44")
         speakerButton.title = AALocalized("CallsSpeaker")
         speakerButton.enabled = false
+ 
+        localView.hidden = true
+        remoteView.hidden = true
         
         videoButton.image = UIImage.bundled("ic_video_44")
         videoButton.title = AALocalized("CallsVideo")
-        videoButton.enabled = false
+        
+        videoButton.button.viewDidTap = {
+            Actor.toggleVideoEnabledWithCallId(self.callId)
+        }
         
         //
         // Peer Info
@@ -96,6 +110,7 @@ public class AACallViewController: AAViewController {
         
         self.view.addSubview(senderAvatar)
         self.view.addSubview(peerTitle)
+        self.view.addSubview(remoteView)
         self.view.addSubview(callState)
         
         self.view.addSubview(answerCallButton)
@@ -105,6 +120,8 @@ public class AACallViewController: AAViewController {
         self.view.addSubview(muteButton)
         self.view.addSubview(speakerButton)
         self.view.addSubview(videoButton)
+        
+        self.view.addSubview(localView)
     }
     
     public override func viewWillLayoutSubviews() {
@@ -117,7 +134,12 @@ public class AACallViewController: AAViewController {
         layoutButtons()
     }
     
+    
     private func layoutButtons() {
+        
+        localView.frame = CGRectMake(self.view.width - self.view.width / 3, 0 , self.view.width/3, self.view.height/4)
+        remoteView.frame = CGRectMake(0, 0, self.view.width, self.view.height)
+        
         muteButton.frame = CGRectMake((self.view.width / 3 - 72) / 2, self.view.height - 270, 84, 72 + 5 + 44)
         speakerButton.frame = CGRectMake( self.view.width / 3 +  (self.view.width / 3 - 72) / 2, self.view.height - 270, 84, 72 + 5 + 44)
         videoButton.frame = CGRectMake( 2 * self.view.width / 3 +  (self.view.width / 3 - 72) / 2, self.view.height - 270, 84, 72 + 5 + 44)
@@ -147,15 +169,27 @@ public class AACallViewController: AAViewController {
         //
         // Binding State
         //
+        
+        binder.bind(call.isMuted) { (value: JavaLangBoolean!) -> () in
+            self.muteButton.filled = value.booleanValue()
+        }
+        
+        binder.bind(call.isVideoEnabled) { (value: JavaLangBoolean!) -> () in
+            self.localView.hidden   = !value.booleanValue()
+            self.videoButton.filled = !value.booleanValue()
+        }
+        
         binder.bind(call.state) { (value: ACCallState!) -> () in
             if (ACCallState_Enum.RINGING == value.toNSEnum()) {
                 if (self.call.isOutgoing) {
+                    self.localView.hidden = true
                     self.answerCallButton.hidden = true
                     self.answerCallButtonText.hidden = true
                     self.declineCallButton.hidden = false
                     self.declineCallButtonText.hidden = true
                     self.callState.text = AALocalized("CallStateRinging")
                 } else {
+                    self.localView.hidden = true
                     self.answerCallButton.hidden = false
                     self.answerCallButtonText.hidden = false
                     self.declineCallButton.hidden = false
@@ -164,6 +198,7 @@ public class AACallViewController: AAViewController {
                 }
                 self.layoutButtons()
             } else if (ACCallState_Enum.CONNECTING == value.toNSEnum()) {
+                self.localView.hidden = true
                 self.answerCallButton.hidden = true
                 self.answerCallButtonText.hidden = true
                 self.declineCallButton.hidden = false
@@ -171,14 +206,19 @@ public class AACallViewController: AAViewController {
                 self.callState.text = AALocalized("CallStateConnecting")
                 self.layoutButtons()
             } else if (ACCallState_Enum.IN_PROGRESS == value.toNSEnum()) {
+                self.localView.hidden = false
+                self.remoteView.hidden = false
                 self.answerCallButton.hidden = true
                 self.answerCallButtonText.hidden = true
                 self.declineCallButton.hidden = false
                 self.declineCallButtonText.hidden = true
                 self.startTimer()
                 self.layoutButtons()
+                
             } else if (ACCallState_Enum.ENDED == value.toNSEnum()) {
                 self.stopTimer()
+                self.localView.hidden = true
+                self.remoteView.hidden = true
                 self.muteButton.hidden = true
                 self.speakerButton.hidden = true
                 self.videoButton.hidden = true
@@ -194,6 +234,8 @@ public class AACallViewController: AAViewController {
                     }
                 }
             } else {
+                self.localView.hidden = true
+                self.remoteView.hidden = true
                 self.answerCallButton.hidden = true
                 self.answerCallButtonText.hidden = true
                 self.declineCallButton.hidden = true
@@ -201,10 +243,6 @@ public class AACallViewController: AAViewController {
                 self.callState.text = ""
                 self.layoutButtons()
             }
-        }
-        
-        binder.bind(call.isMuted) { (value: JavaLangBoolean!) -> () in
-            self.muteButton.filled = value.booleanValue()
         }
         
         //
@@ -228,9 +266,41 @@ public class AACallViewController: AAViewController {
             })
         }
         
+        //
+        // Binding Video
+        //
+        
+        self.bindVideo()
+        
         UIApplication.sharedApplication().setStatusBarStyle(UIStatusBarStyle.LightContent, animated: true)
         
         UIDevice.currentDevice().proximityMonitoringEnabled = true
+    }
+    
+    func bindVideo() {
+        
+        binder.bind(call.mediaStreams) { (value:JavaUtilArrayList?) -> () in
+            if(value != nil){
+                for stream in value! {
+                    let firstStream = stream as! MediaStream
+                    for track in firstStream.stream.videoTracks {
+                        self.remoteVideoTrack = track as! RTCVideoTrack
+                        self.remoteVideoTrack?.addRenderer(self.remoteView)
+                       
+                    }
+                }
+                
+            }
+        }
+        
+        binder.bind(call.ownMediaStream) { (value:MediaStream?) -> () in
+            if(value != nil){
+                for track in value!.stream.videoTracks {
+                    self.localVideoTrack = track as! RTCVideoTrack
+                    self.localVideoTrack?.addRenderer(self.localView)
+                }
+            }
+        }
     }
     
     func startTimer() {
@@ -257,7 +327,7 @@ public class AACallViewController: AAViewController {
         timer?.invalidate()
         timer = nil
         updateTimer()
-//        self.callState.text = "Call Ended"
+        //        self.callState.text = "Call Ended"
     }
     
     public override func viewWillDisappear(animated: Bool) {
