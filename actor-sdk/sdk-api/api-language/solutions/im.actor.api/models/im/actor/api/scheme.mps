@@ -13909,6 +13909,42 @@
           <ref role="NX6Kv" node="3Tolai5NNXM" resolve="sdp" />
         </node>
       </node>
+      <node concept="2m5naR" id="44q72NsFWV0" role="2m5mJr">
+        <property role="TrG5h" value="MediaStreamsUpdated" />
+        <property role="tsOgz" value="false" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="3Tolai5NMKi" resolve="WebRTCSignaling" />
+        <node concept="2m7Kf5" id="44q72NsFWZW" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="isAudioEnabled" />
+          <node concept="2m5nlT" id="44q72NsFX00" role="2m7DVh">
+            <node concept="2m5ndN" id="44q72NsFX06" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="44q72NsFX09" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="isVideoEnabled" />
+          <node concept="2m5nlT" id="44q72NsFX0g" role="2m7DVh">
+            <node concept="2m5ndN" id="44q72NsFX0m" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="44q72NsFWZU" role="3BtCOu">
+          <property role="Nu42W" value="019" />
+        </node>
+        <node concept="NXeRC" id="44q72NsFX0p" role="NXodf">
+          <property role="NXePf" value="Update about media stream settings updated. Can be sent before offer/answer." />
+        </node>
+        <node concept="NX1gA" id="44q72NsFYij" role="NXodf">
+          <property role="NX6R2" value="Is Audio Enabled in current connection. True by default." />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="44q72NsFWZW" resolve="isAudioEnabled" />
+        </node>
+        <node concept="NX1gA" id="44q72NsFYir" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Is Video Enabled in current connection. False by default." />
+          <ref role="NX6Kv" node="44q72NsFX09" resolve="isVideoEnabled" />
+        </node>
+      </node>
       <node concept="NvWBy" id="YOvM6E6crf" role="2m5mJr">
         <property role="NvWrd" value="Call Controlling events" />
       </node>

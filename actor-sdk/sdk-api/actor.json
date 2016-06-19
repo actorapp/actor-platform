@@ -16327,6 +16327,49 @@
           }
         },
         {
+          "type": "struct",
+          "content": {
+            "name": "MediaStreamsUpdated",
+            "doc": [
+              "Update about media stream settings updated. Can be sent before offer/answer.",
+              {
+                "type": "reference",
+                "argument": "isAudioEnabled",
+                "category": "full",
+                "description": "  Is Audio Enabled in current connection. True by default."
+              },
+              {
+                "type": "reference",
+                "argument": "isVideoEnabled",
+                "category": "full",
+                "description": "  Is Video Enabled in current connection. False by default."
+              }
+            ],
+            "trait": {
+              "name": "WebRTCSignaling",
+              "key": 25
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 1,
+                "name": "isAudioEnabled"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 2,
+                "name": "isVideoEnabled"
+              }
+            ]
+          }
+        },
+        {
           "type": "comment",
           "content": "Call Controlling events"
         },
