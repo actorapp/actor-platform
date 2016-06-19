@@ -454,49 +454,49 @@ public class CallFragment extends BaseFragment {
 
     public void onStreamAdded(WebRTCMediaStream remoteStream) {
         AndroidMediaStream stream = (AndroidMediaStream) remoteStream;
-        if (stream.getVideoTrack() != null) {
-
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (!remoteRendererBinded) {
-                        try {
-                            remoteVideoView.init(rootEglBase.getEglBaseContext(), null);
-                        } catch (IllegalStateException e) {
-                            //Already inited, it's ok here
-                        }
-
-                        remoteRender = new VideoRenderer(remoteVideoView);
-                        stream.getVideoTrack().addRenderer(remoteRender);
-                        remoteVideoView.setVisibility(View.VISIBLE);
-                        avatarView.setVisibility(View.INVISIBLE);
-                        nameTV.setVisibility(View.INVISIBLE);
-                    }
-
-                }
-            });
-        }
+//        if (stream.getVideoTrack() != null) {
+//
+//            getActivity().runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    if (!remoteRendererBinded) {
+//                        try {
+//                            remoteVideoView.init(rootEglBase.getEglBaseContext(), null);
+//                        } catch (IllegalStateException e) {
+//                            //Already inited, it's ok here
+//                        }
+//
+//                        remoteRender = new VideoRenderer(remoteVideoView);
+//                        stream.getVideoTrack().addRenderer(remoteRender);
+//                        remoteVideoView.setVisibility(View.VISIBLE);
+//                        avatarView.setVisibility(View.INVISIBLE);
+//                        nameTV.setVisibility(View.INVISIBLE);
+//                    }
+//
+//                }
+//            });
+//        }
     }
 
     public void onOwnStreamAdded(WebRTCMediaStream ownStream) {
         AndroidMediaStream stream = (AndroidMediaStream) ownStream;
-        if (stream.getVideoTrack() != null) {
-
-
-            getActivity().runOnUiThread(() -> {
-                try {
-                    localVideoView.init(rootEglBase.getEglBaseContext(), null);
-                } catch (IllegalStateException e) {
-                    //Already inited, it's ok here
-                }
-                CallFragment.this.ownStream = (AndroidMediaStream) ownStream;
-                source = stream.getVideoSource();
-                localRender = new VideoRenderer(localVideoView);
-                stream.getVideoTrack().addRenderer(localRender);
-                localVideoView.setVisibility(View.VISIBLE);
-
-            });
-        }
+//        if (stream.getVideoTrack() != null) {
+//
+//
+//            getActivity().runOnUiThread(() -> {
+//                try {
+//                    localVideoView.init(rootEglBase.getEglBaseContext(), null);
+//                } catch (IllegalStateException e) {
+//                    //Already inited, it's ok here
+//                }
+//                CallFragment.this.ownStream = (AndroidMediaStream) ownStream;
+//                source = stream.getVideoSource();
+//                localRender = new VideoRenderer(localVideoView);
+//                stream.getVideoTrack().addRenderer(localRender);
+//                localVideoView.setVisibility(View.VISIBLE);
+//
+//            });
+//        }
     }
 
     private void doEndCall() {
@@ -588,20 +588,20 @@ public class CallFragment extends BaseFragment {
 //            }
 
 
-            if (call != null) {
-
-                for (AndroidMediaStream s : mediaStreams) {
-                    s.removeRenderer(remoteRender);
-                    remoteRendererBinded = false;
-                }
-                mediaStreams.clear();
-
-                if (ownStream != null) {
-                    ownStream.removeRenderer(localRender);
-                    ownStream = null;
-                }
-
-            }
+//            if (call != null) {
+//
+//                for (AndroidMediaStream s : mediaStreams) {
+//                    s.removeRenderer(remoteRender);
+//                    remoteRendererBinded = false;
+//                }
+//                mediaStreams.clear();
+//
+//                if (ownStream != null) {
+//                    ownStream.removeRenderer(localRender);
+//                    ownStream = null;
+//                }
+//
+//            }
 
         }
 

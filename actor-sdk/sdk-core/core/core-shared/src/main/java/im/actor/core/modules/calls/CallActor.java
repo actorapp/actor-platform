@@ -219,9 +219,9 @@ public class CallActor extends AbsCallActor {
     }
 
     @Override
-    public void onMuteChanged(boolean isMuted) {
-        super.onMuteChanged(isMuted);
-        callVM.getIsMuted().change(isMuted);
+    public void onAudioEnableChanged(boolean enabled) {
+        super.onAudioEnableChanged(enabled);
+        callVM.getIsMuted().change(!enabled);
     }
 
     @Override

@@ -16,22 +16,25 @@ class CocoaWebRTCRuntime: NSObject, ARWebRTCRuntime {
         
     }
     
-    func getUserMediaWithIsVideoEnabled(isVideoEnabled: jboolean) -> ARPromise {
+    func getUserMediaWithIsAudioEnabled(isAudioEnabled: jboolean, withIsVideoEnabled isVideoEnabled: jboolean) -> ARPromise {
+        
         initRTC()
-
+        
         let stream = self.peerConnectionFactory.mediaStreamWithLabel("ARDAMSv0")
         
         //
         // Audio
         //
-        let audio = self.peerConnectionFactory.audioTrackWithID("audio0")
-        stream.addAudioTrack(audio)
+        if isAudioEnabled {
+            let audio = self.peerConnectionFactory.audioTrackWithID("audio0")
+            stream.addAudioTrack(audio)
+        }
         
         //
         // Video
         //
         var videoCapturer: RTCVideoCapturer! = nil
-        if(isVideoEnabled) {
+        if isVideoEnabled {
             if !videoSourceLoaded {
                 videoSourceLoaded = true
                 
@@ -83,39 +86,27 @@ class MediaStream: NSObject, ARWebRTCMediaStream {
     
     let stream: RTCMediaStream
     
-    init(stream: RTCMediaStream){
+    init(stream: RTCMediaStream) {
         self.stream = stream
     }
     
     func isAudioEnabled() -> jboolean {
-        return ActorSDK.sharedActor().enableVideoCalls
-    }
-    
-    func setAudioEnabledWithBoolean(isEnabled: jboolean) {
-        setEnabledAudioWithBoolean(isEnabled)
+        return false
     }
     
     func isVideoEnabled() -> jboolean {
-        return ActorSDK.sharedActor().enableVideoCalls
+        return false
     }
     
     func setVideoEnabledWithBoolean(isEnabled: jboolean) {
-        setEnabledVideoWithBoolean(isEnabled)
-    }
-    
-    func isEnabled() -> jboolean {
-        return true
-    }
-    
-    func setEnabledAudioWithBoolean(isEnabled: jboolean) {
-        for i in stream.audioTracks {
-            (i as? RTCMediaStreamTrack)?.setEnabled(isEnabled)
+        for i in stream.videoTracks {
+            (i as! RTCMediaStreamTrack).setEnabled(isEnabled)
         }
     }
     
-    func setEnabledVideoWithBoolean(isEnabled: jboolean) {
-        for i in stream.videoTracks {
-            (i as? RTCMediaStreamTrack)?.setEnabled(isEnabled)
+    func setAudioEnabledWithBoolean(isEnabled: jboolean) {
+        for i in stream.audioTracks {
+            (i as! RTCMediaStreamTrack).setEnabled(isEnabled)
         }
     }
     

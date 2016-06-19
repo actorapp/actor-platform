@@ -16,13 +16,13 @@ import im.actor.core.api.ApiNeedDisconnect;
 import im.actor.core.api.ApiNeedOffer;
 import im.actor.core.api.ApiNegotinationSuccessful;
 import im.actor.core.api.ApiOffer;
+import im.actor.core.api.ApiOnRenegotiationNeeded;
 import im.actor.core.api.ApiWebRTCSignaling;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.eventbus.EventBusActor;
 import im.actor.runtime.Log;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
-import im.actor.runtime.webrtc.WebRTCPeerConnection;
 
 /*-[
 #pragma clang diagnostic ignored "-Wnullability-completeness"
@@ -49,9 +49,9 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
     private boolean isEnabled = false;
 
     public CallBusActor(@NotNull final CallBusCallback callBusCallback,
-                        @NotNull PeerSettings selfSettings, @NotNull ModuleContext context) {
+                        @NotNull PeerSettings selfSettings,
+                        @NotNull ModuleContext context) {
         super(context);
-
         this.selfSettings = selfSettings;
         this.callBusCallback = callBusCallback;
         this.peerCallback = new CallbackWrapper(this);
@@ -90,14 +90,23 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
     }
 
     @Override
-    public void onCandidate(long deviceId, int mdpIndex, @NotNull String id, @NotNull String sdp) {
-        sendSignal(deviceId, new ApiCandidate(0, mdpIndex, id, sdp));
+    public void onCandidate(long deviceId, long sessionId, int mdpIndex, @NotNull String id, @NotNull String sdp) {
+        sendSignal(deviceId, new ApiCandidate(sessionId, mdpIndex, id, sdp));
     }
 
     @Override
     public void onNegotiationSuccessful(final long deviceId, final long sessionId) {
         if (isMasterReady) {
             sendSignal(masterDeviceId, new ApiNegotinationSuccessful(deviceId, sessionId));
+        } else {
+            stash(STASH);
+        }
+    }
+
+    @Override
+    public void onNegotiationNeeded(long deviceId, long sessionId) {
+        if (isMasterReady) {
+            sendSignal(masterDeviceId, new ApiOnRenegotiationNeeded(deviceId, sessionId));
         } else {
             stash(STASH);
         }
@@ -140,13 +149,12 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
     // Actions
     //
 
-    public void onChangeMute(boolean isMuted) {
-        peerCall.onMuteChanged(isMuted);
+    public void onChangeAudioEnabled(boolean isEnabled) {
+        peerCall.onAudioEnabledChanged(isEnabled);
     }
 
-
-    private void onChangeVideoEnabled(boolean enabled) {
-        peerCall.onVideoEnabledChanged(enabled);
+    public void onChangeVideoEnabled(boolean isEnabled) {
+        peerCall.onVideoEnabledChanged(isEnabled);
     }
 
     public void onOwnAnswered() {
@@ -192,7 +200,7 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
             peerCall.onOffer(senderDeviceId, offer.getSessionId(), offer.getSdp());
         } else if (signal instanceof ApiCandidate) {
             ApiCandidate candidate = (ApiCandidate) signal;
-            peerCall.onCandidate(senderDeviceId, candidate.getIndex(), candidate.getId(), candidate.getSdp());
+            peerCall.onCandidate(senderDeviceId, candidate.getSessionId(), candidate.getIndex(), candidate.getId(), candidate.getSdp());
         } else if (signal instanceof ApiNeedOffer) {
             ApiNeedOffer needOffer = (ApiNeedOffer) signal;
             peerCall.onAdvertised(needOffer.getDevice(), new PeerSettings(needOffer.getPeerSettings()));
@@ -267,8 +275,8 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
         } else if (message instanceof JoinMasterBus) {
             JoinMasterBus joinMasterBus = (JoinMasterBus) message;
             connectBus(joinMasterBus.getBusId(), joinMasterBus.getDeviceId(), TIMEOUT, true);
-        } else if (message instanceof Mute) {
-            onChangeMute(((Mute) message).isMuted());
+        } else if (message instanceof AudioEnabled) {
+            onChangeAudioEnabled(((AudioEnabled) message).isEnabled());
         } else if (message instanceof VideoEnabled) {
             onChangeVideoEnabled(((VideoEnabled) message).isEnabled());
         } else if (message instanceof OnAnswered) {
@@ -314,15 +322,15 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
         }
     }
 
-    public static class Mute {
-        private boolean isMuted;
+    public static class AudioEnabled {
+        private boolean enabled;
 
-        public Mute(boolean isMuted) {
-            this.isMuted = isMuted;
+        public AudioEnabled(boolean enabled) {
+            this.enabled = enabled;
         }
 
-        public boolean isMuted() {
-            return isMuted;
+        public boolean isEnabled() {
+            return enabled;
         }
     }
 
@@ -354,47 +362,52 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
 
         @Override
         public void onOffer(final long deviceId, final long sessionId, @NotNull final String sdp) {
-            self().send((Runnable) () -> callCallback.onOffer(deviceId, sessionId, sdp));
+            self().post(() -> callCallback.onOffer(deviceId, sessionId, sdp));
         }
 
         @Override
         public void onAnswer(final long deviceId, final long sessionId, @NotNull final String sdp) {
-            self().send((Runnable) () -> callCallback.onAnswer(deviceId, sessionId, sdp));
+            self().post(() -> callCallback.onAnswer(deviceId, sessionId, sdp));
         }
 
         @Override
-        public void onCandidate(final long deviceId, final int mdpIndex, @NotNull final String id, @NotNull final String sdp) {
-            self().send((Runnable) () -> callCallback.onCandidate(deviceId, mdpIndex, id, sdp));
+        public void onCandidate(final long deviceId, final long sessionId, final int mdpIndex, @NotNull final String id, @NotNull final String sdp) {
+            self().post(() -> callCallback.onCandidate(deviceId, sessionId, mdpIndex, id, sdp));
         }
 
         @Override
         public void onNegotiationSuccessful(final long deviceId, final long sessionId) {
-            self().send((Runnable) () -> callCallback.onNegotiationSuccessful(deviceId, sessionId));
+            self().post(() -> callCallback.onNegotiationSuccessful(deviceId, sessionId));
+        }
+
+        @Override
+        public void onNegotiationNeeded(long deviceId, long sessionId) {
+            self().post(() -> callCallback.onNegotiationNeeded(deviceId, sessionId));
         }
 
         @Override
         public void onPeerStateChanged(final long deviceId, @NotNull final PeerState state) {
-            self().send((Runnable) () -> callCallback.onPeerStateChanged(deviceId, state));
+            self().post(() -> callCallback.onPeerStateChanged(deviceId, state));
         }
 
         @Override
         public void onStreamAdded(final long deviceId, @NotNull final WebRTCMediaStream stream) {
-            self().send((Runnable) () -> callCallback.onStreamAdded(deviceId, stream));
+            self().post(() -> callCallback.onStreamAdded(deviceId, stream));
         }
 
         @Override
         public void onStreamRemoved(final long deviceId, @NotNull final WebRTCMediaStream stream) {
-            self().send((Runnable) () -> callCallback.onStreamRemoved(deviceId, stream));
+            self().post(() -> callCallback.onStreamRemoved(deviceId, stream));
         }
 
         @Override
         public void onOwnStreamAdded(WebRTCMediaStream stream) {
-            self().send((Runnable) () -> callCallback.onOwnStreamAdded(stream));
+            self().post(() -> callCallback.onOwnStreamAdded(stream));
         }
 
         @Override
         public void onOwnStreamRemoved(WebRTCMediaStream stream) {
-            self().send((Runnable) () -> callCallback.onOwnStreamRemoved(stream));
+            self().post(() -> callCallback.onOwnStreamRemoved(stream));
         }
     }
 }

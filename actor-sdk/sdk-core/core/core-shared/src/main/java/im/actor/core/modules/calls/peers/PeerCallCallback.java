@@ -9,9 +9,11 @@ public interface PeerCallCallback {
 
     void onAnswer(long deviceId, long sessionId, String sdp);
 
-    void onCandidate(long deviceId, int mdpIndex, String id, String sdp);
+    void onCandidate(long deviceId, long sessionId, int mdpIndex, String id, String sdp);
 
     void onNegotiationSuccessful(long deviceId, long sessionId);
+
+    void onNegotiationNeeded(long deviceId, long sessionId);
 
     void onPeerStateChanged(long deviceId, PeerState state);
 

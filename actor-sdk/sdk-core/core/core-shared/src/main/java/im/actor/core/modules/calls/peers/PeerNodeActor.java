@@ -16,7 +16,6 @@ import im.actor.core.modules.calls.peers.messages.RTCOffer;
 import im.actor.core.modules.calls.peers.messages.RTCStart;
 import im.actor.core.modules.ModuleActor;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
-import im.actor.runtime.webrtc.WebRTCPeerConnection;
 
 /**
  * Proxy Actor for simplifying state of PeerConnection by careful peer connection initialization
@@ -101,6 +100,11 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
         if (this.ownMediaStream == null) {
             this.ownMediaStream = mediaStream;
             reconfigurePeerConnectionIfNeeded();
+        } else {
+            this.ownMediaStream = mediaStream;
+            if (peerConnection != null) {
+                peerConnection.replaceStream(mediaStream);
+            }
         }
     }
 
@@ -153,13 +157,18 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
     }
 
     @Override
-    public void onCandidate(int mdpIndex, String id, String sdp) {
-        callback.onCandidate(deviceId, mdpIndex, id, sdp);
+    public void onCandidate(long sessionId, int mdpIndex, String id, String sdp) {
+        callback.onCandidate(deviceId, sessionId, mdpIndex, id, sdp);
     }
 
     @Override
     public void onNegotiationSuccessful(long sessionId) {
         callback.onNegotiationSuccessful(deviceId, sessionId);
+    }
+
+    @Override
+    public void onNegotiationNeeded(long sessionId) {
+        callback.onNegotiationNeeded(deviceId, sessionId);
     }
 
     @Override
@@ -278,7 +287,7 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
         } else if (message instanceof RTCCandidate) {
             RTCCandidate candidate = (RTCCandidate) message;
             if (peerConnection != null) {
-                peerConnection.onCandidate(candidate.getMdpIndex(), candidate.getId(), candidate.getSdp());
+                peerConnection.onCandidate(candidate.getSessionId(), candidate.getMdpIndex(), candidate.getId(), candidate.getSdp());
             } else {
                 stash();
             }
