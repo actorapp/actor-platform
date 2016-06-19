@@ -1,5 +1,7 @@
 package im.actor.core.modules.calls.peers;
 
+import org.jetbrains.annotations.NotNull;
+
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.calls.CallViewModels;
 import im.actor.core.modules.ModuleActor;
@@ -87,48 +89,54 @@ public abstract class AbsCallActor extends ModuleActor implements CallBusCallbac
     private class CallBusCallbackWrapper implements CallBusCallback {
 
         @Override
-        public void onBusStarted(final String busId) {
-            self().send((Runnable) () -> AbsCallActor.this.onBusStarted(busId));
+        public void onBusStarted(@NotNull final String busId) {
+            self().post(() -> AbsCallActor.this.onBusStarted(busId));
         }
 
         @Override
         public void onCallConnected() {
-            self().send((Runnable) () -> AbsCallActor.this.onCallConnected());
+            self().post(() -> AbsCallActor.this.onCallConnected());
         }
 
         @Override
         public void onCallEnabled() {
-            self().send((Runnable) () -> AbsCallActor.this.onCallEnabled());
+            self().post(() -> AbsCallActor.this.onCallEnabled());
         }
 
         @Override
         public void onBusStopped() {
-            self().send((Runnable) () -> AbsCallActor.this.onBusStopped());
+            self().post(() -> AbsCallActor.this.onBusStopped());
         }
 
         @Override
-        public void onPeerConnectionCreated(WebRTCPeerConnection peerConnection) {
-            self().send((Runnable) () -> AbsCallActor.this.onPeerConnectionCreated(peerConnection));
+        public void onPeerConnectionStateChanged(long deviceId, boolean isAudioEnabled, boolean isVideoEnabled) {
+            self().post(() -> AbsCallActor.this.onPeerConnectionStateChanged(deviceId, isAudioEnabled, isVideoEnabled));
         }
 
         @Override
-        public void onStreamAdded(WebRTCMediaStream stream) {
-            self().send((Runnable) () -> AbsCallActor.this.onStreamAdded(stream));
+        public void onStreamAdded(long deviceId, WebRTCMediaStream stream) {
+            self().post(() -> AbsCallActor.this.onStreamAdded(deviceId, stream));
         }
 
         @Override
-        public void onStreamRemoved(WebRTCMediaStream stream) {
-            self().send((Runnable) () -> AbsCallActor.this.onStreamRemoved(stream));
+        public void onStreamRemoved(long deviceId, WebRTCMediaStream stream) {
+            self().post(() -> AbsCallActor.this.onStreamRemoved(deviceId, stream));
         }
+
+        @Override
+        public void onPeerConnectionDisposed(long deviceId) {
+            self().post(() -> AbsCallActor.this.onPeerConnectionDisposed(deviceId));
+        }
+
 
         @Override
         public void onOwnStreamAdded(WebRTCMediaStream stream) {
-            self().send((Runnable) () -> AbsCallActor.this.onOwnStreamAdded(stream));
+            self().post(() -> AbsCallActor.this.onOwnStreamAdded(stream));
         }
 
         @Override
         public void onOwnStreamRemoved(WebRTCMediaStream stream) {
-            self().send((Runnable) () -> AbsCallActor.this.onOwnStreamRemoved(stream));
+            self().post(() -> AbsCallActor.this.onOwnStreamRemoved(stream));
         }
     }
 }

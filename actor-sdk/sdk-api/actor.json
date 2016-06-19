@@ -16347,7 +16347,7 @@
             ],
             "trait": {
               "name": "WebRTCSignaling",
-              "key": 25
+              "key": 28
             },
             "attributes": [
               {

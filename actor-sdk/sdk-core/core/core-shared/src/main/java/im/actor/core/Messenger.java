@@ -1195,7 +1195,18 @@ public class Messenger {
      */
     @ObjectiveCName("doCallWithUid:")
     public Command<Long> doCall(int uid) {
-        return modules.getCallsModule().makeCall(Peer.user(uid));
+        return modules.getCallsModule().makeCall(Peer.user(uid), false);
+    }
+
+    /**
+     * Video Calling to user
+     *
+     * @param uid user you want to call
+     * @return command to execute
+     */
+    @ObjectiveCName("doVideoCallWithUid:")
+    public Command<Long> doVideoCall(int uid) {
+        return modules.getCallsModule().makeCall(Peer.user(uid), true);
     }
 
     /**
@@ -1206,7 +1217,7 @@ public class Messenger {
      */
     @ObjectiveCName("doCallWithGid:")
     public Command<Long> doGroupCall(int gid) {
-        return modules.getCallsModule().makeCall(Peer.group(gid));
+        return modules.getCallsModule().makeCall(Peer.group(gid), false);
     }
 
     /**

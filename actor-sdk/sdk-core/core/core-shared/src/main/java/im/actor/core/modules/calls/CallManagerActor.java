@@ -51,7 +51,7 @@ public class CallManagerActor extends ModuleActor {
     // Outgoing call
     //
 
-    private void doCall(final Peer peer, final CommandCallback<Long> callback) {
+    private void doCall(final Peer peer, final CommandCallback<Long> callback, boolean isVideoEnabled) {
         Log.d(TAG, "doCall (" + peer + ")");
 
         //
@@ -67,7 +67,7 @@ public class CallManagerActor extends ModuleActor {
         //
         final WakeLock wakeLock = Runtime.makeWakeLock();
         system().actorOf("actor/master/" + RandomUtils.nextRid(), () -> {
-            return new CallActor(peer, callback, wakeLock, context());
+            return new CallActor(peer, callback, wakeLock, isVideoEnabled, context());
         });
     }
 
@@ -373,7 +373,7 @@ public class CallManagerActor extends ModuleActor {
             onCallEnded(((OnCallEnded) message).getCallId());
         } else if (message instanceof DoCall) {
             DoCall doCall = (DoCall) message;
-            doCall(doCall.getPeer(), doCall.getCallback());
+            doCall(doCall.getPeer(), doCall.getCallback(), doCall.isEnableVideoCall());
         } else if (message instanceof DoCallComplete) {
             DoCallComplete callCreated = (DoCallComplete) message;
             onCallCreated(callCreated.getCallId(), sender());
@@ -559,10 +559,12 @@ public class CallManagerActor extends ModuleActor {
 
         private Peer peer;
         private CommandCallback<Long> callback;
+        private boolean enableVideoCall;
 
-        public DoCall(Peer peer, CommandCallback<Long> callback) {
+        public DoCall(Peer peer, CommandCallback<Long> callback, boolean enableVideoCall) {
             this.peer = peer;
             this.callback = callback;
+            this.enableVideoCall = enableVideoCall;
         }
 
         public CommandCallback<Long> getCallback() {
@@ -571,6 +573,10 @@ public class CallManagerActor extends ModuleActor {
 
         public Peer getPeer() {
             return peer;
+        }
+
+        public boolean isEnableVideoCall() {
+            return enableVideoCall;
         }
     }
 

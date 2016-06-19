@@ -29,7 +29,7 @@ public class ApiMediaStreamsUpdated extends ApiWebRTCSignaling {
     }
 
     public int getHeader() {
-        return 25;
+        return 28;
     }
 
     @Nullable

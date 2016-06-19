@@ -8,70 +8,60 @@ import AVFoundation
 class CocoaWebRTCRuntime: NSObject, ARWebRTCRuntime {
     
     private var isInited: Bool = false
-    private var isLocalTrackInited: Bool = false
     private var peerConnectionFactory: RTCPeerConnectionFactory!
-    
-    private var videoCapturer: RTCVideoCapturer!
     private var videoSource: RTCVideoSource!
-    private var localVideoTrack: RTCVideoTrack!
-    private var mediaStream: MediaStream!
+    private var videoSourceLoaded = false
     
     override init() {
         
     }
     
-    func initLocalVideoTrack()  {
-        if !isLocalTrackInited{
-            isLocalTrackInited = true
-
-        var cameraID: String?
-        for captureDevice in AVCaptureDevice.devicesWithMediaType(AVMediaTypeVideo) {
-            
-            if captureDevice.position == AVCaptureDevicePosition.Front {
-                cameraID = captureDevice.localizedName
-            }
-        }
-        if(cameraID != nil){
-            self.videoCapturer = RTCVideoCapturer(deviceName: cameraID)
-         
-            self.videoSource = self.peerConnectionFactory.videoSourceWithCapturer(
-                self.videoCapturer,
-                constraints: RTCMediaConstraints())
-            
-                self.localVideoTrack = self.peerConnectionFactory
-                .videoTrackWithID("ARDAMSv0", source: self.videoSource)}
-        }
-    }
-    
     func getUserMediaWithIsVideoEnabled(isVideoEnabled: jboolean) -> ARPromise {
-        
         initRTC()
-        initLocalVideoTrack()
+
+        let stream = self.peerConnectionFactory.mediaStreamWithLabel("ARDAMSv0")
         
-        let stream = peerConnectionFactory.mediaStreamWithLabel("ARDAMSv0")
-        let audio = peerConnectionFactory.audioTrackWithID("audio0")
+        //
+        // Audio
+        //
+        let audio = self.peerConnectionFactory.audioTrackWithID("audio0")
+        stream.addAudioTrack(audio)
         
-        if(isVideoEnabled){
-            
-            if(localVideoTrack != nil){
+        //
+        // Video
+        //
+        var videoCapturer: RTCVideoCapturer! = nil
+        if(isVideoEnabled) {
+            if !videoSourceLoaded {
+                videoSourceLoaded = true
+                
+                var cameraID: String?
+                for captureDevice in AVCaptureDevice.devicesWithMediaType(AVMediaTypeVideo) {
+                    if captureDevice.position == AVCaptureDevicePosition.Front {
+                        cameraID = captureDevice.localizedName
+                    }
+                }
+                
+                if(cameraID != nil) {
+                    videoCapturer = RTCVideoCapturer(deviceName: cameraID)
+                    videoSource = self.peerConnectionFactory.videoSourceWithCapturer(videoCapturer, constraints: RTCMediaConstraints())
+                }
+            }
+            if videoSource != nil {
+                let localVideoTrack = self.peerConnectionFactory.videoTrackWithID("video0", source: videoSource)
                 stream.addVideoTrack(localVideoTrack)
             }
         }
-        stream.addAudioTrack(audio)
         
-        self.mediaStream = MediaStream(stream:stream)
-        return ARPromise.success(self.mediaStream)
+        return ARPromise.success(MediaStream(stream:stream))
     }
     
     func createPeerConnectionWithServers(webRTCIceServers: IOSObjectArray!, withSettings settings: ARWebRTCSettings!) -> ARPromise {
-        
         initRTC()
-      
         let servers: [ARWebRTCIceServer] = webRTCIceServers.toSwiftArray()
         return ARPromise { (resolver) -> () in
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) { () -> Void in
-                resolver.result(CocoaWebRTCPeerConnection(servers: servers, peerConnectionFactory: self.peerConnectionFactory, mediaStrim:self.mediaStream))
-                
+                resolver.result(CocoaWebRTCPeerConnection(servers: servers, peerConnectionFactory: self.peerConnectionFactory))
             }
         }
     }
@@ -79,7 +69,6 @@ class CocoaWebRTCRuntime: NSObject, ARWebRTCRuntime {
     func initRTC() {
         if !isInited {
             isInited = true
-            
             RTCPeerConnectionFactory.initializeSSL()
             peerConnectionFactory = RTCPeerConnectionFactory()
         }
@@ -135,7 +124,8 @@ class MediaStream: NSObject, ARWebRTCMediaStream {
             (i as? RTCMediaStreamTrack)?.setEnabled(false)
         }
         for i in stream.videoTracks {
-            (i as? RTCMediaStreamTrack)?.setEnabled(false)
+            (i as! RTCVideoTrack).setEnabled(false)
+            stream.removeVideoTrack(i as! RTCVideoTrack)
         }
     }
 }
@@ -145,11 +135,9 @@ class CocoaWebRTCPeerConnection: NSObject, ARWebRTCPeerConnection, RTCPeerConnec
     private var peerConnection: RTCPeerConnection!
     private var callbacks = [ARWebRTCPeerConnectionCallback]()
     private let peerConnectionFactory: RTCPeerConnectionFactory
-    private var localMediastreem:MediaStream!
     
-    init(servers: [ARWebRTCIceServer], peerConnectionFactory: RTCPeerConnectionFactory , mediaStrim:MediaStream) {
+    init(servers: [ARWebRTCIceServer], peerConnectionFactory: RTCPeerConnectionFactory) {
         self.peerConnectionFactory = peerConnectionFactory
-        self.localMediastreem = mediaStrim
         super.init()
         
         let iceServers = servers.map { (src) -> RTCICEServer in
@@ -182,7 +170,6 @@ class CocoaWebRTCPeerConnection: NSObject, ARWebRTCPeerConnection, RTCPeerConnec
     
     func addOwnStream(stream: ARWebRTCMediaStream) {
         if let str = stream as? MediaStream {
-            
             peerConnection.addStream(str.stream)
         }
     }
@@ -257,10 +244,7 @@ class CocoaWebRTCPeerConnection: NSObject, ARWebRTCPeerConnection, RTCPeerConnec
     
     func peerConnection(peerConnection: RTCPeerConnection!, addedStream stream: RTCMediaStream!) {
         for c in callbacks {
-            print(stream.label)
-            
             c.onStreamAdded(MediaStream(stream: stream!))
-            c.onOwnStreamAdded(localMediastreem)
         }
     }
     

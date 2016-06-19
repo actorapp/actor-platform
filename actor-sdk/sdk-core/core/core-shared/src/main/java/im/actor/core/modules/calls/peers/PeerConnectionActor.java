@@ -80,7 +80,6 @@ public class PeerConnectionActor extends ModuleActor {
         WebRTC.createPeerConnection(rtcIceServers, settings).then(webRTCPeerConnection -> {
             PeerConnectionActor.this.peerConnection = webRTCPeerConnection;
             PeerConnectionActor.this.peerConnection.addOwnStream(stream);
-            callback.onPeerConnectionCreated(webRTCPeerConnection);
             PeerConnectionActor.this.peerConnection.addCallback(new WebRTCPeerConnectionCallback() {
                 @Override
                 public void onCandidate(int label, String id, String candidate) {
@@ -103,16 +102,6 @@ public class PeerConnectionActor extends ModuleActor {
                 @Override
                 public void onRenegotiationNeeded() {
 
-                }
-
-                @Override
-                public void onOwnStreamAdded(WebRTCMediaStream stream) {
-                    callback.onOwnStreamAdded(stream);
-                }
-
-                @Override
-                public void onOwnStreamRemoved(WebRTCMediaStream stream) {
-                    callback.onOwnStreamRemoved(stream);
                 }
 
                 @Override
