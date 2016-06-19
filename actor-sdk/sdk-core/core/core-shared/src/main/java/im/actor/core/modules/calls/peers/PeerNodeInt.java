@@ -116,8 +116,8 @@ public class PeerNodeInt extends ActorInterface {
      * @param id    candidate id
      * @param sdp   candidate sdp
      */
-    public void onCandidate(int index, String id, String sdp) {
-        send(new RTCCandidate(deviceId, index, id, sdp));
+    public void onCandidate(long sessionId, int index, String id, String sdp) {
+        send(new RTCCandidate(deviceId, sessionId, index, id, sdp));
     }
 
     /**
@@ -133,38 +133,43 @@ public class PeerNodeInt extends ActorInterface {
     private class WrappedCallback implements PeerNodeCallback {
 
         @Override
-        public void onOffer(final long deviceId, final long sessionId, final String sdp) {
-            callbackDest.send((Runnable) () -> callback.onOffer(deviceId, sessionId, sdp));
+        public void onOffer(long deviceId, long sessionId, String sdp) {
+            callbackDest.post(() -> callback.onOffer(deviceId, sessionId, sdp));
         }
 
         @Override
-        public void onAnswer(final long deviceId, final long sessionId, final String sdp) {
-            callbackDest.send((Runnable) () -> callback.onAnswer(deviceId, sessionId, sdp));
+        public void onAnswer(long deviceId, long sessionId, String sdp) {
+            callbackDest.post(() -> callback.onAnswer(deviceId, sessionId, sdp));
         }
 
         @Override
-        public void onNegotiationSuccessful(final long deviceId, final long sessionId) {
-            callbackDest.send((Runnable) () -> callback.onNegotiationSuccessful(deviceId, sessionId));
+        public void onNegotiationSuccessful(long deviceId, long sessionId) {
+            callbackDest.post(() -> callback.onNegotiationSuccessful(deviceId, sessionId));
         }
 
         @Override
-        public void onCandidate(final long deviceId, final int mdpIndex, final String id, final String sdp) {
-            callbackDest.send((Runnable) () -> callback.onCandidate(deviceId, mdpIndex, id, sdp));
+        public void onNegotiationNeeded(long deviceId, long sessionId) {
+            callbackDest.post(() -> callback.onNegotiationNeeded(deviceId, sessionId));
         }
 
         @Override
-        public void onPeerStateChanged(final long deviceId, final PeerState state) {
-            callbackDest.send((Runnable) () -> callback.onPeerStateChanged(deviceId, state));
+        public void onCandidate(long deviceId, long sessionId, int mdpIndex, String id, String sdp) {
+            callbackDest.post(() -> callback.onCandidate(deviceId, sessionId, mdpIndex, id, sdp));
         }
 
         @Override
-        public void onStreamAdded(final long deviceId, final WebRTCMediaStream stream) {
-            callbackDest.send((Runnable) () -> callback.onStreamAdded(deviceId, stream));
+        public void onPeerStateChanged(long deviceId, PeerState state) {
+            callbackDest.post(() -> callback.onPeerStateChanged(deviceId, state));
         }
 
         @Override
-        public void onStreamRemoved(final long deviceId, final WebRTCMediaStream stream) {
-            callbackDest.send((Runnable) () -> callback.onStreamRemoved(deviceId, stream));
+        public void onStreamAdded(long deviceId, WebRTCMediaStream stream) {
+            callbackDest.post(() -> callback.onStreamAdded(deviceId, stream));
+        }
+
+        @Override
+        public void onStreamRemoved(long deviceId, WebRTCMediaStream stream) {
+            callbackDest.post(() -> callback.onStreamRemoved(deviceId, stream));
         }
     }
 }
