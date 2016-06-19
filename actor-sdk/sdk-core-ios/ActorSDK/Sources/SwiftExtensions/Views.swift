@@ -73,6 +73,22 @@ public extension UIView {
         })
     }
     
+    public func showViewPop() {
+        UIView.animateWithDuration(1, delay: 0, usingSpringWithDamping: 0.7,
+                                   initialSpringVelocity: 0.6, options: .CurveEaseOut, animations: { () -> Void in
+            self.transform = CGAffineTransformIdentity;
+            self.alpha = 1
+        }, completion: nil)
+    }
+    
+    public func hideViewPop() {
+        UIView.animateWithDuration(1, delay: 0, usingSpringWithDamping: 0.7,
+                                   initialSpringVelocity: 1.0,options: .CurveEaseOut,animations: { () -> Void in
+            self.transform = CGAffineTransformMakeScale(0.01, 0.01)
+            self.alpha = 0
+        }, completion: nil)
+    }
+    
 //    public var height: CGFloat { get { return bounds.height } }
 //    public var width: CGFloat { get { return bounds.width } }
 //    

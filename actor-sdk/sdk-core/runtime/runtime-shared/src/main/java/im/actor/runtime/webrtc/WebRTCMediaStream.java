@@ -26,7 +26,6 @@ public interface WebRTCMediaStream {
      */
     boolean isVideoEnabled();
 
-
     /**
      * Enabling/Disabling video track
      *

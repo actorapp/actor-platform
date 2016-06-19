@@ -46,6 +46,7 @@ import java.util.Iterator;
 import java.util.TimeZone;
 
 import im.actor.core.entity.PeerType;
+import im.actor.core.viewmodel.CallMediaSource;
 import im.actor.core.viewmodel.CallMember;
 import im.actor.core.viewmodel.CallState;
 import im.actor.core.entity.Peer;
@@ -139,9 +140,9 @@ public class CallFragment extends BaseFragment {
     public CallFragment(long callId) {
         this.callId = callId;
         this.call = messenger().getCall(callId);
-        if(call == null){
+        if (call == null) {
             this.peer = Peer.user(myUid());
-        }else{
+        } else {
             this.peer = call.getPeer();
         }
     }
@@ -183,10 +184,10 @@ public class CallFragment extends BaseFragment {
 //        showView(layer3);
 //        wave(avatarLayers, 1.135f ,1900, -2f);
 
-        for (int i = 0; i<avatarLayers.length; i++){
+        for (int i = 0; i < avatarLayers.length; i++) {
             View layer = avatarLayers[i];
-            ((GradientDrawable)layer.getBackground()).setColor(Color.WHITE);
-            ((GradientDrawable)layer.getBackground()).setAlpha(50);
+            ((GradientDrawable) layer.getBackground()).setColor(Color.WHITE);
+            ((GradientDrawable) layer.getBackground()).setAlpha(50);
         }
 
         endCallContainer = cont.findViewById(R.id.end_call_container);
@@ -206,12 +207,12 @@ public class CallFragment extends BaseFragment {
 
         nameTV = (TextView) cont.findViewById(R.id.name);
         nameTV.setTextColor(ActorSDK.sharedActor().style.getProfileTitleColor());
-        if(peer.getPeerType() == PeerType.PRIVATE){
+        if (peer.getPeerType() == PeerType.PRIVATE) {
             UserVM user = users().get(peer.getPeerId());
             avatarView.bind(user);
             backgroundAvatarView.bind(user);
             bind(nameTV, user.getName());
-        }else if(peer.getPeerType() == PeerType.GROUP){
+        } else if (peer.getPeerType() == PeerType.GROUP) {
             GroupVM g = groups().get(peer.getPeerId());
             avatarView.bind(g);
             backgroundAvatarView.bind(g);
@@ -224,7 +225,7 @@ public class CallFragment extends BaseFragment {
         // Members list
         //
         membersList = (RecyclerListView) cont.findViewById(R.id.members_list);
-        if(call!=null){
+        if (call != null) {
             CallMembersAdapter membersAdapter = new CallMembersAdapter(getActivity(), call.getMembers());
             membersList.setAdapter(membersAdapter);
         }
@@ -237,7 +238,6 @@ public class CallFragment extends BaseFragment {
 //        cont.findViewById(R.id.background).setOnClickListener(listener);
 
         membersList.setOnItemClickListener((parent, view, position, id) -> switchAvatarMembers());
-
 
 
         statusTV = (TextView) cont.findViewById(R.id.status);
@@ -257,8 +257,6 @@ public class CallFragment extends BaseFragment {
         }
 
         audioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
-
-
 
 
         audioManager.getStreamVolume(AudioManager.STREAM_VOICE_CALL);
@@ -372,11 +370,11 @@ public class CallFragment extends BaseFragment {
     }
 
     public void switchAvatarMembers() {
-        if(peer.getPeerType() == PeerType.GROUP){
-            if(avatarView.getVisibility() == View.VISIBLE){
+        if (peer.getPeerType() == PeerType.GROUP) {
+            if (avatarView.getVisibility() == View.VISIBLE) {
                 hideView(avatarView);
                 showView(membersList);
-            }else{
+            } else {
                 hideView(membersList);
                 showView(avatarView);
             }
@@ -387,7 +385,7 @@ public class CallFragment extends BaseFragment {
 
         final DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
         formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-        if(timer == null){
+        if (timer == null) {
             timer = ActorSystem.system().actorOf(Props.create(() -> new TimerActor(300)), "calls/timer");
 
             timer.send(new TimerActor.Register((currentTime, timeFromRegister) -> {
@@ -542,12 +540,12 @@ public class CallFragment extends BaseFragment {
             v.cancel();
         }
 
-        if(timer!=null){
+        if (timer != null) {
             timer.send(PoisonPill.INSTANCE);
         }
 
         manager.cancel(NOTIFICATION_ID);
-        if(getActivity()!=null){
+        if (getActivity() != null) {
             getActivity().finish();
         }
 
@@ -563,7 +561,7 @@ public class CallFragment extends BaseFragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.members){
+        if (item.getItemId() == R.id.members) {
             switchAvatarMembers();
         }
         return super.onOptionsItemSelected(item);
@@ -607,7 +605,7 @@ public class CallFragment extends BaseFragment {
 
         }
 
-        if(call!=null && call.getState().get()!=CallState.ENDED){
+        if (call != null && call.getState().get() != CallState.ENDED) {
             final NotificationCompat.Builder builder = new NotificationCompat.Builder(getActivity());
             builder.setAutoCancel(true);
             builder.setSmallIcon(R.drawable.ic_app_notify);
@@ -649,11 +647,13 @@ public class CallFragment extends BaseFragment {
             if (peer.getPeerType() == PeerType.PRIVATE && ActorSDK.sharedActor().isVideoCallsEnabled()) {
                 bind(call.getMediaStreams(), (val, valueModel) -> {
                     mediaStreams.retainAll(val);
-                    for (WebRTCMediaStream s : val) {
-                        if (!mediaStreams.contains(s)) {
-                            onStreamAdded(s);
-                            mediaStreams.add((AndroidMediaStream) s);
+                    for (CallMediaSource s : val) {
+                        // if (s.isVideoEnabled()) {
+                        if (!mediaStreams.contains(s.getStream())) {
+                            onStreamAdded(s.getStream());
+                            mediaStreams.add((AndroidMediaStream) s.getStream());
                         }
+                        // }
                     }
                 });
 
@@ -735,7 +735,7 @@ public class CallFragment extends BaseFragment {
         }
     }
 
-    class CallMembersAdapter extends HolderAdapter<CallMember>{
+    class CallMembersAdapter extends HolderAdapter<CallMember> {
 
 
         private ArrayList<CallMember> members;
@@ -770,7 +770,7 @@ public class CallFragment extends BaseFragment {
             return new MemberHolder();
         }
 
-        private class MemberHolder extends ViewHolder<CallMember>{
+        private class MemberHolder extends ViewHolder<CallMember> {
 
             CallMember data;
             private TextView userName;

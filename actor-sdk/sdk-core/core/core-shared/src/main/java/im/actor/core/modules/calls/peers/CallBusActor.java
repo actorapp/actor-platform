@@ -11,6 +11,7 @@ import im.actor.core.api.ApiAnswer;
 import im.actor.core.api.ApiCandidate;
 import im.actor.core.api.ApiCloseSession;
 import im.actor.core.api.ApiEnableConnection;
+import im.actor.core.api.ApiMediaStreamsUpdated;
 import im.actor.core.api.ApiNeedDisconnect;
 import im.actor.core.api.ApiNeedOffer;
 import im.actor.core.api.ApiNegotinationSuccessful;
@@ -116,18 +117,12 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
 
     @Override
     public void onStreamAdded(long deviceId, @NotNull WebRTCMediaStream stream) {
-        callBusCallback.onStreamAdded(stream);
+        callBusCallback.onStreamAdded(deviceId, stream);
     }
 
     @Override
     public void onStreamRemoved(long deviceId, @NotNull WebRTCMediaStream stream) {
-        callBusCallback.onStreamRemoved(stream);
-
-    }
-
-    @Override
-    public void onPeerConnectionCreated(WebRTCPeerConnection peerConnection) {
-        callBusCallback.onPeerConnectionCreated(peerConnection);
+        callBusCallback.onStreamRemoved(deviceId, stream);
     }
 
     @Override
@@ -230,6 +225,19 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
             // Sending Configuration to Peer Call
             //
             peerCall.onConfigurationReady(advertiseMaster.getServer());
+        } else if (signal instanceof ApiMediaStreamsUpdated) {
+            ApiMediaStreamsUpdated streamsUpdated = (ApiMediaStreamsUpdated) signal;
+            Boolean isAudioEnabled = streamsUpdated.isAudioEnabled();
+            if (isAudioEnabled == null) {
+                isAudioEnabled = true;
+            }
+            Boolean isVideoEnabled = streamsUpdated.isVideoEnabled();
+            if (isVideoEnabled == null) {
+                isVideoEnabled = true;
+            }
+
+            // Notify About Media State Changes
+            callBusCallback.onPeerConnectionStateChanged(senderDeviceId, isAudioEnabled, isVideoEnabled);
         }
     }
 
@@ -377,12 +385,6 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
         @Override
         public void onStreamRemoved(final long deviceId, @NotNull final WebRTCMediaStream stream) {
             self().send((Runnable) () -> callCallback.onStreamRemoved(deviceId, stream));
-        }
-
-        @Override
-        public void onPeerConnectionCreated(WebRTCPeerConnection peerConnection) {
-            self().send((Runnable) () -> callCallback.onPeerConnectionCreated(peerConnection));
-
         }
 
         @Override

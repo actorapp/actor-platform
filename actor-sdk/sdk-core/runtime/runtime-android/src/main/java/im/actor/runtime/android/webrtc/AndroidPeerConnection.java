@@ -145,16 +145,12 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
             callbacks.add(callback);
         }
 
+        // TODO: WTF? Why only when video enabled??
         if (settings.isVideoEnabled()) {
-            if (localStream != null) {
-                callback.onOwnStreamAdded(localStream);
-            }
-
             for (MediaStream mediaStream : streams.keySet()) {
                 callback.onStreamAdded(streams.get(mediaStream));
             }
         }
-
     }
 
     @Override
@@ -178,9 +174,6 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
             @Override
             public void run() {
                 AndroidPeerConnection.this.localStream = (AndroidMediaStream) stream;
-                for (WebRTCPeerConnectionCallback c : callbacks) {
-                    c.onOwnStreamAdded(stream);
-                }
                 peerConnection.addStream(AndroidPeerConnection.this.localStream.getStream());
             }
         });
@@ -191,9 +184,6 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
         AndroidWebRTCRuntimeProvider.postToHandler(new Runnable() {
             @Override
             public void run() {
-                for (WebRTCPeerConnectionCallback c : callbacks) {
-                    c.onOwnStreamRemoved(stream);
-                }
                 peerConnection.removeStream(((AndroidMediaStream) stream).getStream());
             }
         });

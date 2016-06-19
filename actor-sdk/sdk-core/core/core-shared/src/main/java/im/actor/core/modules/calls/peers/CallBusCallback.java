@@ -15,11 +15,23 @@ public interface CallBusCallback {
 
     void onBusStopped();
 
-    void onPeerConnectionCreated(@NotNull WebRTCPeerConnection peerConnection);
 
-    void onStreamAdded(WebRTCMediaStream stream);
+    //
+    // Peer Connection Callbacks
+    //
 
-    void onStreamRemoved(WebRTCMediaStream stream);
+    void onPeerConnectionStateChanged(long deviceId, boolean isAudioEnabled, boolean isVideoEnabled);
+
+    void onStreamAdded(long deviceId, WebRTCMediaStream stream);
+
+    void onStreamRemoved(long deviceId, WebRTCMediaStream stream);
+
+    void onPeerConnectionDisposed(long deviceId);
+
+
+    //
+    // Own Streams
+    //
 
     void onOwnStreamAdded(WebRTCMediaStream stream);
 

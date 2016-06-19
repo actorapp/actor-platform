@@ -128,20 +128,5 @@ public class PeerConnectionInt extends ActorInterface {
         public void onStreamRemoved(final WebRTCMediaStream stream) {
             callbackDest.send((Runnable) () -> callback.onStreamRemoved(stream));
         }
-
-        @Override
-        public void onPeerConnectionCreated(WebRTCPeerConnection peerConnection) {
-            callbackDest.send((Runnable) () -> callback.onPeerConnectionCreated(peerConnection));
-        }
-
-        @Override
-        public void onOwnStreamAdded(WebRTCMediaStream stream) {
-            callbackDest.send((Runnable) () -> callback.onOwnStreamAdded(stream));
-        }
-
-        @Override
-        public void onOwnStreamRemoved(WebRTCMediaStream stream) {
-            callbackDest.send((Runnable) () -> callback.onOwnStreamRemoved(stream));
-        }
     }
 }

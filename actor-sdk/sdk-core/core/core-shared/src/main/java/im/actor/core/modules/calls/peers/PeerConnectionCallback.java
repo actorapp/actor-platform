@@ -49,10 +49,4 @@ public interface PeerConnectionCallback {
      * @param stream removed stream
      */
     void onStreamRemoved(WebRTCMediaStream stream);
-
-    void onPeerConnectionCreated(WebRTCPeerConnection peerConnection);
-
-    void onOwnStreamAdded(WebRTCMediaStream stream);
-
-    void onOwnStreamRemoved(WebRTCMediaStream stream);
 }

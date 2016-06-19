@@ -18,18 +18,23 @@ public class CallVM {
     private final Peer peer;
     @Property("nonatomic, readonly")
     private final ValueModel<CallState> state;
+
+    // Incoming Streams
+
     @Property("nonatomic, readonly")
-    private final ValueModel<ArrayList<WebRTCPeerConnection>> peerConnections;
-    @Property("nonatomic, readonly")
-    private final ValueModel<ArrayList<WebRTCMediaStream>> mediaStreams;
+    private final ValueModel<ArrayList<CallMediaSource>> mediaStreams;
+
+    // Own Stream
+
     @Property("nonatomic, readonly")
     private final ValueModel<WebRTCMediaStream> ownMediaStream;
-    @Property("nonatomic, readonly")
-    private final ValueModel<ArrayList<CallMember>> members;
     @Property("nonatomic, readonly")
     private final BooleanValueModel isMuted;
     @Property("nonatomic, readonly")
     private final BooleanValueModel isVideoEnabled;
+
+    @Property("nonatomic, readonly")
+    private final ValueModel<ArrayList<CallMember>> members;
     @Property("nonatomic, readonly")
     private long callStart;
     @Property("nonatomic, readonly")
@@ -42,8 +47,7 @@ public class CallVM {
         this.peer = peer;
         this.isOutgoing = isOutgoing;
         this.state = new ValueModel<>("calls." + callId + ".state", state);
-        this.peerConnections = new ValueModel<>("calls." + callId + ".peer_connection", new ArrayList<>());
-        this.mediaStreams = new ValueModel<>("calls." + callId + ".media_stram", new ArrayList<>());
+        this.mediaStreams = new ValueModel<>("calls." + callId + ".media_stream", new ArrayList<>());
         this.ownMediaStream = new ValueModel<>("calls." + callId + ".own_media_stream", null);
         this.members = new ValueModel<>("calls." + callId + ".members", new ArrayList<>(initialMembers));
         this.isMuted = new BooleanValueModel("calls." + callId + ".muted", false);
@@ -95,11 +99,7 @@ public class CallVM {
         this.callEnd = callEnd;
     }
 
-    public ValueModel<ArrayList<WebRTCPeerConnection>> getPeerConnections() {
-        return peerConnections;
-    }
-
-    public ValueModel<ArrayList<WebRTCMediaStream>> getMediaStreams() {
+    public ValueModel<ArrayList<CallMediaSource>> getMediaStreams() {
         return mediaStreams;
     }
 

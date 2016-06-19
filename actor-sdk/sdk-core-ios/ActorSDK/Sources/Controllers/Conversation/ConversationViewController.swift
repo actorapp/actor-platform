@@ -221,10 +221,22 @@ public class ConversationViewController:
             isBot = false
         }
         if (ActorSDK.sharedActor().enableCalls && !isBot && peer.isPrivate) {
-            let callButtonView = AACallButton(image: UIImage.bundled("ic_call_outline_22")?.tintImage(ActorSDK.sharedActor().style.navigationTintColor))
-            callButtonView.viewDidTap = onCallTap
-            let callButtonItem = UIBarButtonItem(customView: callButtonView)
-            self.navigationItem.rightBarButtonItems = [barItem, callButtonItem]
+            if ActorSDK.sharedActor().enableVideoCalls {
+                let callButtonView = AACallButton(image: UIImage.bundled("ic_call_outline_22")?.tintImage(ActorSDK.sharedActor().style.navigationTintColor))
+                callButtonView.viewDidTap = onCallTap
+                let callButtonItem = UIBarButtonItem(customView: callButtonView)
+                
+                let videoCallButtonView = AACallButton(image: UIImage.bundled("ic_video_outline_22")?.tintImage(ActorSDK.sharedActor().style.navigationTintColor))
+                videoCallButtonView.viewDidTap = onVideoCallTap
+                let callVideoButtonItem = UIBarButtonItem(customView: videoCallButtonView)
+                
+                self.navigationItem.rightBarButtonItems = [barItem, callVideoButtonItem, callButtonItem]
+            } else {
+                let callButtonView = AACallButton(image: UIImage.bundled("ic_call_outline_22")?.tintImage(ActorSDK.sharedActor().style.navigationTintColor))
+                callButtonView.viewDidTap = onCallTap
+                let callButtonItem = UIBarButtonItem(customView: callButtonView)
+                self.navigationItem.rightBarButtonItems = [barItem, callButtonItem]
+            }
         } else {
             self.navigationItem.rightBarButtonItems = [barItem]
         }
@@ -449,6 +461,12 @@ public class ConversationViewController:
             execute(ActorSDK.sharedActor().messenger.doCallWithGid(self.peer.peerId))
         } else if (self.peer.isPrivate) {
             execute(ActorSDK.sharedActor().messenger.doCallWithUid(self.peer.peerId))
+        }
+    }
+    
+    func onVideoCallTap() {
+        if (self.peer.isPrivate) {
+            execute(ActorSDK.sharedActor().messenger.doVideoCallWithUid(self.peer.peerId))
         }
     }
     
