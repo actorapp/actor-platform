@@ -36,8 +36,8 @@ public abstract class AbsCallActor extends ModuleActor implements CallBusCallbac
         }));
     }
 
-    public void onMuteChanged(boolean isMuted) {
-        callBus.changeMute(isMuted);
+    public void onAudioEnableChanged(boolean enabled) {
+        callBus.changeAudioEnabled(enabled);
     }
 
 
@@ -47,8 +47,8 @@ public abstract class AbsCallActor extends ModuleActor implements CallBusCallbac
 
     @Override
     public void onReceive(Object message) {
-        if (message instanceof MuteChanged) {
-            onMuteChanged(((MuteChanged) message).isMuted());
+        if (message instanceof AudioEnabled) {
+            onAudioEnableChanged(((AudioEnabled) message).isEnabled());
         } else if (message instanceof VideoEnabled) {
             onVideoEnableChanged(((VideoEnabled) message).isEnabled());
         } else {
@@ -56,16 +56,16 @@ public abstract class AbsCallActor extends ModuleActor implements CallBusCallbac
         }
     }
 
-    public static class MuteChanged {
+    public static class AudioEnabled {
 
-        private boolean isMuted;
+        private boolean enabled;
 
-        public MuteChanged(boolean isMuted) {
-            this.isMuted = isMuted;
+        public AudioEnabled(boolean enabled) {
+            this.enabled = enabled;
         }
 
-        public boolean isMuted() {
-            return isMuted;
+        public boolean isEnabled() {
+            return enabled;
         }
     }
 

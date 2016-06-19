@@ -67,6 +67,7 @@ public class ApiNeedOffer extends ApiWebRTCSignaling {
     public String toString() {
         String res = "struct NeedOffer{";
         res += "device=" + this.device;
+        res += ", sessionId=" + this.sessionId;
         res += ", peerSettings=" + this.peerSettings;
         res += "}";
         return res;

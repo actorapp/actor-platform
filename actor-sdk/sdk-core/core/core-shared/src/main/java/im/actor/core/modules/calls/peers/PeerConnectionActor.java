@@ -48,7 +48,7 @@ public class PeerConnectionActor extends ModuleActor {
     @NotNull
     private final PeerConnectionCallback callback;
     @NotNull
-    private final WebRTCMediaStream stream;
+    private WebRTCMediaStream stream;
 
     @NotNull
     private WebRTCPeerConnection peerConnection;
@@ -56,6 +56,8 @@ public class PeerConnectionActor extends ModuleActor {
     private boolean isReadyForCandidates = false;
     @NotNull
     private PeerConnectionState state = PeerConnectionState.INITIALIZATION;
+
+    private long sessionId = -1;
 
     public PeerConnectionActor(@NotNull List<ApiICEServer> iceServers,
                                @NotNull PeerSettings selfSettings,
@@ -81,27 +83,32 @@ public class PeerConnectionActor extends ModuleActor {
             PeerConnectionActor.this.peerConnection = webRTCPeerConnection;
             PeerConnectionActor.this.peerConnection.addOwnStream(stream);
             PeerConnectionActor.this.peerConnection.addCallback(new WebRTCPeerConnectionCallback() {
+
                 @Override
                 public void onCandidate(int label, String id, String candidate) {
-                    callback.onCandidate(label, id, candidate);
+                    if (sessionId != -1) {
+                        callback.onCandidate(sessionId, label, id, candidate);
+                    }
+                }
+
+                @Override
+                public void onRenegotiationNeeded() {
+                    if (sessionId != -1) {
+                        callback.onNegotiationNeeded(sessionId);
+                    }
                 }
 
                 @Override
                 public void onStreamAdded(WebRTCMediaStream stream1) {
                     // Making stream as muted and make it needed to be explicitly enabled
                     // by parent actor
-                    stream1.setAudioEnabled(false);
+                    // stream1.setAudioEnabled(false);
                     callback.onStreamAdded(stream1);
                 }
 
                 @Override
                 public void onStreamRemoved(WebRTCMediaStream stream1) {
                     callback.onStreamRemoved(stream1);
-                }
-
-                @Override
-                public void onRenegotiationNeeded() {
-
                 }
 
                 @Override
@@ -126,9 +133,23 @@ public class PeerConnectionActor extends ModuleActor {
         state = PeerConnectionState.WAITING_HANDSHAKE;
     }
 
+    public void onReplaceStream(WebRTCMediaStream newStream) {
+        peerConnection.removeOwnStream(stream);
+        peerConnection.addOwnStream(newStream);
+        this.stream = newStream;
+    }
+
     public void onOfferNeeded(final long sessionId) {
+
+        Log.d(TAG, "onOfferNeeded(" + sessionId + ")");
+
         // Ignore if we are not waiting for handshake
         if (state != PeerConnectionState.WAITING_HANDSHAKE) {
+            return;
+        }
+
+        // Ignore if we already have session id
+        if (this.sessionId != -1) {
             return;
         }
 
@@ -150,8 +171,10 @@ public class PeerConnectionActor extends ModuleActor {
                 .then(new Consumer<WebRTCSessionDescription>() {
                     @Override
                     public void apply(WebRTCSessionDescription webRTCSessionDescription) {
+                        // Save Session Id and switch to next state
+                        PeerConnectionActor.this.sessionId = sessionId;
+                        PeerConnectionActor.this.state = PeerConnectionState.WAITING_ANSWER;
                         callback.onOffer(sessionId, webRTCSessionDescription.getSdp());
-                        state = PeerConnectionState.WAITING_ANSWER;
                         onReady();
                     }
                 })
@@ -165,8 +188,16 @@ public class PeerConnectionActor extends ModuleActor {
     }
 
     public void onOffer(final long sessionId, @NotNull String sdp) {
+
+        Log.d(TAG, "onOffer(" + sessionId + ")");
+
         // Ignore if we are not waiting for handshake
         if (state != PeerConnectionState.WAITING_HANDSHAKE) {
+            return;
+        }
+
+        // Ignore if we already have session id
+        if (this.sessionId != -1) {
             return;
         }
 
@@ -194,6 +225,7 @@ public class PeerConnectionActor extends ModuleActor {
             @Override
             public void apply(WebRTCSessionDescription webRTCSessionDescription) {
                 callback.onAnswer(sessionId, webRTCSessionDescription.getSdp());
+                PeerConnectionActor.this.sessionId = sessionId;
                 onHandShakeCompleted(sessionId);
                 onReady();
             }
@@ -306,6 +338,12 @@ public class PeerConnectionActor extends ModuleActor {
                 return;
             }
             onResetState();
+        } else if (message instanceof ReplaceStream) {
+            if (!isReady) {
+                stash();
+                return;
+            }
+            onReplaceStream(((ReplaceStream) message).getStream());
         } else {
             super.onReceive(message);
         }
@@ -380,6 +418,8 @@ public class PeerConnectionActor extends ModuleActor {
     public static class OnCandidate {
 
         @Property("nonatomic, readonly")
+        private final long sessionId;
+        @Property("nonatomic, readonly")
         private final int index;
         @NotNull
         @Property("nonatomic, readonly")
@@ -388,10 +428,15 @@ public class PeerConnectionActor extends ModuleActor {
         @Property("nonatomic, readonly")
         private final String id;
 
-        public OnCandidate(int index, @NotNull String id, @NotNull String sdp) {
+        public OnCandidate(long sessionId, int index, @NotNull String id, @NotNull String sdp) {
+            this.sessionId = sessionId;
             this.index = index;
             this.id = id;
             this.sdp = sdp;
+        }
+
+        public long getSessionId() {
+            return sessionId;
         }
 
         public int getIndex() {
@@ -411,6 +456,19 @@ public class PeerConnectionActor extends ModuleActor {
 
     public static class ResetState {
 
+    }
+
+    public static class ReplaceStream {
+
+        private WebRTCMediaStream stream;
+
+        public ReplaceStream(WebRTCMediaStream stream) {
+            this.stream = stream;
+        }
+
+        public WebRTCMediaStream getStream() {
+            return stream;
+        }
     }
 
     private enum PeerConnectionState {

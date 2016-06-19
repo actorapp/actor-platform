@@ -32,19 +32,29 @@ public interface PeerNodeCallback {
     /**
      * Called when negotiation finished successfully
      *
-     * @param sessionId Session If
+     * @param deviceId  Device Id
+     * @param sessionId Session Id
      */
     void onNegotiationSuccessful(long deviceId, long sessionId);
 
     /**
+     * Called when negotiation needed
+     *
+     * @param deviceId  Device Id
+     * @param sessionId Session Id
+     */
+    void onNegotiationNeeded(long deviceId, long sessionId);
+
+    /**
      * Called when candidate arrived
      *
-     * @param deviceId Device Id
-     * @param mdpIndex index of candidate
-     * @param id       id of candidate
-     * @param sdp      sdp of the answer
+     * @param deviceId  Device Id
+     * @param sessionId Session Id
+     * @param mdpIndex  index of candidate
+     * @param id        id of candidate
+     * @param sdp       sdp of the answer
      */
-    void onCandidate(long deviceId, int mdpIndex, String id, String sdp);
+    void onCandidate(long deviceId, long sessionId, int mdpIndex, String id, String sdp);
 
     /**
      * Called when peer state changed

@@ -16387,6 +16387,12 @@
               },
               {
                 "type": "reference",
+                "argument": "sessionId",
+                "category": "full",
+                "description": "  Session Id"
+              },
+              {
+                "type": "reference",
                 "argument": "peerSettings",
                 "category": "full",
                 "description": "  Optional peer settings"
@@ -16481,6 +16487,12 @@
                 "argument": "device",
                 "category": "full",
                 "description": "  Device Id"
+              },
+              {
+                "type": "reference",
+                "argument": "sessionId",
+                "category": "full",
+                "description": "  Session Id"
               }
             ],
             "trait": {
@@ -16512,7 +16524,19 @@
           "content": {
             "name": "OnRenegotiationNeeded",
             "doc": [
-              "Need renegotiate session. For example when streams are changed."
+              "Need renegotiate session. For example when streams are changed.",
+              {
+                "type": "reference",
+                "argument": "device",
+                "category": "full",
+                "description": "  Device Id"
+              },
+              {
+                "type": "reference",
+                "argument": "sessionId",
+                "category": "full",
+                "description": "  Session Id"
+              }
             ],
             "trait": {
               "name": "WebRTCSignaling",
@@ -16544,6 +16568,12 @@
             "name": "CloseSession",
             "doc": [
               "Close this session and be ready to",
+              {
+                "type": "reference",
+                "argument": "device",
+                "category": "hidden",
+                "description": "  Device Id"
+              },
               {
                 "type": "reference",
                 "argument": "sessionId",

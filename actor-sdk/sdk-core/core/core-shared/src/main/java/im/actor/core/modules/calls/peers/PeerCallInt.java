@@ -49,8 +49,8 @@ public class PeerCallInt extends ActorInterface {
         send(new RTCAnswer(deviceId, sessionId, sdp));
     }
 
-    public void onCandidate(long deviceId, int mdpIndex, String id, String sdp) {
-        send(new RTCCandidate(deviceId, mdpIndex, id, sdp));
+    public void onCandidate(long deviceId, long sessionId, int mdpIndex, String id, String sdp) {
+        send(new RTCCandidate(deviceId, sessionId, mdpIndex, id, sdp));
     }
 
     public void onOfferNeeded(long deviceId, long sessionId) {
@@ -65,8 +65,8 @@ public class PeerCallInt extends ActorInterface {
         send(new RTCDispose(deviceId));
     }
 
-    public void onMuteChanged(boolean isMuted) {
-        send(new PeerCallActor.MuteChanged(isMuted));
+    public void onAudioEnabledChanged(boolean enabled) {
+        send(new PeerCallActor.AudioEnabled(enabled));
     }
 
     public void onVideoEnabledChanged(boolean enabled) {
