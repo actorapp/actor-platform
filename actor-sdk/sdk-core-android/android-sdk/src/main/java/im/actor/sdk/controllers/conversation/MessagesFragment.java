@@ -171,7 +171,7 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
     }
 
     protected void bindDisplayListLoad(boolean notify) {
-        firstUnread = messenger().loadFirstUnread(peer);
+        firstUnread = messenger().loadLastMessageDate(peer);
 
         Log.d("DIAPLAY_LIST", "bindDisplayListLoad: " + notify);
         final BindedDisplayList<Message> list = getDisplayList();
@@ -327,7 +327,7 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
             }
             return true;
         } else {
-            if (message.getContent() instanceof TextContent && message.getSenderId() == myUid() && message.getSortDate() >= messenger().loadFirstUnread(peer)) {
+            if (message.getContent() instanceof TextContent && message.getSenderId() == myUid() && message.getSortDate() >= messenger().loadLastMessageDate(peer)) {
                 ((ChatActivity) getActivity()).onEditTextMessage(message.getRid(), ((TextContent) message.getContent()).getText());
                 return true;
             }

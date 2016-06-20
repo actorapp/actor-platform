@@ -335,6 +335,9 @@ public class RouterActor extends ModuleActor {
                     .changeState(MessageState.SENT);
             conversation(peer).addOrUpdateItem(updatedMsg);
 
+            ConversationState state = conversationStates.getValue(peer.getUnuqueId());
+            conversationStates.addOrUpdateItem(state.changeOutSendDate(date));
+
             // Notify dialogs
             return getDialogsRouter().onMessage(peer, updatedMsg, -1);
         } else {

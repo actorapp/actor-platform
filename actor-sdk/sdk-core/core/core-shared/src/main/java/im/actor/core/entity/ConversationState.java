@@ -19,7 +19,7 @@ public class ConversationState extends BserObject implements KeyValueItem {
     public static BserCreator<ConversationState> CREATOR = ConversationState::new;
 
     public static ValueDefaultCreator<ConversationState> DEFAULT_CREATOR = id ->
-            new ConversationState(Peer.fromUniqueId(id), false, 0, 0, 0, 0, 0);
+            new ConversationState(Peer.fromUniqueId(id), false, 0, 0, 0, 0, 0, 0);
 
     public static final String ENTITY_NAME = "ConversationState";
 
@@ -27,6 +27,7 @@ public class ConversationState extends BserObject implements KeyValueItem {
     private boolean isLoaded;
     private int unreadCount;
     private long inMaxMessageDate;
+    private long outSendDate;
     private long inReadDate;
     private long outReadDate;
     private long outReceiveDate;
@@ -36,7 +37,8 @@ public class ConversationState extends BserObject implements KeyValueItem {
                              long inMaxMessageDate,
                              long inReadDate,
                              long outReadDate,
-                             long outReceiveDate) {
+                             long outReceiveDate,
+                             long outSendDate) {
         this.peer = peer;
         this.isLoaded = isLoaded;
         this.unreadCount = unreadCount;
@@ -44,6 +46,7 @@ public class ConversationState extends BserObject implements KeyValueItem {
         this.inReadDate = inReadDate;
         this.outReadDate = outReadDate;
         this.outReceiveDate = outReceiveDate;
+        this.outSendDate = outSendDate;
     }
 
     private ConversationState() {
@@ -66,6 +69,10 @@ public class ConversationState extends BserObject implements KeyValueItem {
         return inReadDate;
     }
 
+    public long getOutSendDate() {
+        return outSendDate;
+    }
+
     public long getOutReadDate() {
         return outReadDate;
     }
@@ -79,28 +86,34 @@ public class ConversationState extends BserObject implements KeyValueItem {
     }
 
     public ConversationState changeIsLoaded(boolean isLoaded) {
-        return new ConversationState(peer, isLoaded, unreadCount, inMaxMessageDate, inReadDate, outReadDate, outReceiveDate);
+        return new ConversationState(peer, isLoaded, unreadCount, inMaxMessageDate, inReadDate, outReadDate, outReceiveDate, outSendDate);
     }
 
     public ConversationState changeInReadDate(long inReadDate) {
-        return new ConversationState(peer, isLoaded, unreadCount, inMaxMessageDate, inReadDate, outReadDate, outReceiveDate);
+        return new ConversationState(peer, isLoaded, unreadCount, inMaxMessageDate, inReadDate, outReadDate, outReceiveDate, outSendDate);
     }
 
     public ConversationState changeInMaxDate(long inMaxMessageDate) {
-        return new ConversationState(peer, isLoaded, unreadCount, inMaxMessageDate, inReadDate, outReadDate, outReceiveDate);
+        return new ConversationState(peer, isLoaded, unreadCount, inMaxMessageDate, inReadDate, outReadDate, outReceiveDate, outSendDate);
     }
 
     public ConversationState changeOutReceiveDate(long outReceiveDate) {
-        return new ConversationState(peer, isLoaded, unreadCount, inMaxMessageDate, inReadDate, outReadDate, outReceiveDate);
+        return new ConversationState(peer, isLoaded, unreadCount, inMaxMessageDate, inReadDate, outReadDate, outReceiveDate, outSendDate);
     }
 
     public ConversationState changeOutReadDate(long outReadDate) {
-        return new ConversationState(peer, isLoaded, unreadCount, inMaxMessageDate, inReadDate, outReadDate, outReceiveDate);
+        return new ConversationState(peer, isLoaded, unreadCount, inMaxMessageDate, inReadDate, outReadDate, outReceiveDate, outSendDate);
     }
 
     public ConversationState changeCounter(int unreadCount) {
-        return new ConversationState(peer, isLoaded, unreadCount, inMaxMessageDate, inReadDate, outReadDate, outReceiveDate);
+        return new ConversationState(peer, isLoaded, unreadCount, inMaxMessageDate, inReadDate, outReadDate, outReceiveDate, outSendDate);
     }
+
+
+    public ConversationState changeOutSendDate(long outSendDate) {
+        return new ConversationState(peer, isLoaded, unreadCount, inMaxMessageDate, inReadDate, outReadDate, outReceiveDate, outSendDate);
+    }
+
 
     @Override
     public void parse(BserValues values) throws IOException {
@@ -110,6 +123,7 @@ public class ConversationState extends BserObject implements KeyValueItem {
         outReceiveDate = values.getLong(4, 0);
         outReadDate = values.getLong(5, 0);
         unreadCount = values.getInt(6);
+        outSendDate = values.getLong(7, 0);
     }
 
     @Override
@@ -120,6 +134,7 @@ public class ConversationState extends BserObject implements KeyValueItem {
         writer.writeLong(4, outReceiveDate);
         writer.writeLong(5, outReadDate);
         writer.writeInt(6, unreadCount);
+        writer.writeLong(7, outSendDate);
     }
 
     @Override
