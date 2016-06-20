@@ -75,7 +75,7 @@ public interface PeerNodeCallback {
      * Called when stream removed
      *
      * @param deviceId Device Id
-     * @param stream   removed strea
+     * @param stream   removed stream
      */
     void onStreamRemoved(long deviceId, WebRTCMediaStream stream);
 }

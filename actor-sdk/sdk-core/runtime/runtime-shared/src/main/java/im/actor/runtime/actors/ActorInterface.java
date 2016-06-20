@@ -48,6 +48,4 @@ public abstract class ActorInterface {
     public void kill() {
         dest.send(PoisonPill.INSTANCE);
     }
-
-
 }

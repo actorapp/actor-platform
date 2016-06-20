@@ -4,7 +4,7 @@
 
 import Foundation
 
-public class AACallViewController: AAViewController {
+public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
     
     public let binder = AABinder()
     public let callId: jlong
@@ -14,6 +14,7 @@ public class AACallViewController: AAViewController {
     public let callState = UILabel()
     
     var remoteView = RTCEAGLVideoView()
+    var remoteVideoSize: CGSize!
     var localView = RTCEAGLVideoView()
     
     var localVideoTrack: RTCVideoTrack!
@@ -109,6 +110,7 @@ public class AACallViewController: AAViewController {
         
         remoteView.alpha = 0
         remoteView.backgroundColor = UIColor.blackColor()
+        remoteView.delegate = self
         
         
         //
@@ -146,14 +148,18 @@ public class AACallViewController: AAViewController {
         callState.frame = CGRectMake(0, peerTitle.bottom + 8, view.width, 22)
         
         layoutButtons()
+        layoutVideo()
     }
     
+    public func videoView(videoView: RTCEAGLVideoView!, didChangeVideoSize size: CGSize) {
+        self.remoteVideoSize = size
+        
+        layoutVideo()
+    }
     
     private func layoutButtons() {
         
         localView.frame = CGRectMake(self.view.width - self.view.width / 3, 0 , self.view.width/3, self.view.height/4)
-        remoteView.frame = CGRectMake(0, 0, self.view.width, self.view.height)
-        remoteView.setSize(CGSizeMake(self.view.width, self.view.height))
         
         muteButton.frame = CGRectMake((self.view.width / 3 - 84) / 2, self.view.height - 72 - 49, 84, 72 + 5 + 44)
         videoButton.frame = CGRectMake(2 * self.view.width / 3 +  (self.view.width / 3 - 84) / 2, self.view.height - 72 - 49, 84, 72 + 5 + 44)
@@ -174,6 +180,14 @@ public class AACallViewController: AAViewController {
                     declineCallButtonText.under(declineCallButton.frame, offset: 5)
                 }
             }
+        }
+    }
+    
+    private func layoutVideo() {
+        if self.remoteVideoSize == nil {
+            remoteView.frame = CGRectMake(0, 0, self.view.width, self.view.height)
+        } else {
+            remoteView.frame = CGRectMake(0, 0, self.view.width, self.view.height)
         }
     }
     
@@ -341,7 +355,7 @@ public class AACallViewController: AAViewController {
                 for source in value! {
                     let casted = source as! ACCallMediaSource
                     let stream = (casted.stream as! MediaStream).stream
-                    if casted.isVideoEnabled && stream.videoTracks.count > 0 {
+                    if /*casted.isVideoEnabled &&*/ stream.videoTracks.count > 0 {
                         let t = stream.videoTracks[0] as! RTCVideoTrack
                         if self.remoteVideoTrack != t {
                             if self.remoteVideoTrack != nil {
