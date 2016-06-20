@@ -1099,10 +1099,10 @@ public class Messenger {
      * @param peer destination peer
      * @return rid of last read message
      */
-    @ObjectiveCName("loadFirstUnread:")
+    @ObjectiveCName("loadLastMessageDate:")
     @Deprecated
-    public long loadFirstUnread(Peer peer) {
-        return getConversationVM(peer).getOwnReadDate().get();
+    public long loadLastMessageDate(Peer peer) {
+        return Math.max(getConversationVM(peer).getOwnReadDate().get(), getConversationVM(peer).getOwnSendDate().get());
     }
 
     /**
