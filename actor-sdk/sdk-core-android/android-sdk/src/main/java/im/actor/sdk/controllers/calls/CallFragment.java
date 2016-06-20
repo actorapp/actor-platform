@@ -35,6 +35,7 @@ import org.webrtc.MediaStream;
 import org.webrtc.SurfaceViewRenderer;
 import org.webrtc.VideoRenderer;
 import org.webrtc.VideoSource;
+import org.webrtc.VideoTrack;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -62,6 +63,7 @@ import im.actor.runtime.android.webrtc.AndroidMediaStream;
 import im.actor.runtime.android.webrtc.AndroidPeerConnection;
 import im.actor.runtime.mvvm.Value;
 import im.actor.runtime.mvvm.ValueChangedListener;
+import im.actor.runtime.mvvm.ValueDoubleChangedListener;
 import im.actor.runtime.mvvm.ValueModel;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
 import im.actor.runtime.webrtc.WebRTCPeerConnection;
@@ -71,6 +73,7 @@ import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.calls.view.CallAvatarLayerAnimator;
 import im.actor.sdk.controllers.calls.view.TimerActor;
+import im.actor.sdk.controllers.fragment.ActorBinder;
 import im.actor.sdk.controllers.fragment.BaseFragment;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.TintImageView;
@@ -86,54 +89,78 @@ import static im.actor.sdk.util.ActorSDKMessenger.myUid;
 import static im.actor.sdk.util.ActorSDKMessenger.users;
 
 public class CallFragment extends BaseFragment {
+
     private static final int PERMISSIONS_REQUEST_FOR_CALL = 147;
     private static final int NOTIFICATION_ID = 2;
     private static final int TIMER_ID = 1;
-    long callId = -1;
-    Peer peer;
+
+    private final ActorBinder ACTIVITY_BINDER = new ActorBinder();
+
+    private long callId = -1;
+    private Peer peer;
 
     private Vibrator v;
     private View answerContainer;
     private Ringtone ringtone;
     private CallVM call;
+
+    private AvatarView avatarView;
+    private TextView nameTV;
     private ActorRef timer;
     private TextView statusTV;
+    private View[] avatarLayers;
+    private View layer1;
+    private View layer2;
+    private View layer3;
+
     private NotificationManager manager;
     private CallState currentState;
     private ImageButton endCall;
     private View endCallContainer;
     private boolean speakerOn = false;
     private AudioManager audioManager;
-    private AvatarView avatarView;
-    private RecyclerListView membersList;
-    private CallAvatarLayerAnimator animator;
-    private View[] avatarLayers;
-    private View layer1;
-    private View layer2;
-    private View layer3;
-    private VideoSource source;
-    private EglBase rootEglBase;
-    private VideoRenderer localRender;
-    private VideoRenderer remoteRender;
-    private SurfaceViewRenderer localVideoView;
-    private SurfaceViewRenderer remoteVideoView;
 
-    private TextView muteCallTv;
-    private TextView videoTv;
-    private ViewGroup container;
-    private TintImageView speaker;
+    private RecyclerListView membersList;
+
+    private float dX, dY;
+
     private TintImageView muteCall;
+    private TextView muteCallTv;
+    private TintImageView speaker;
     private TextView speakerTV;
-    private boolean sourceIsStopped = false;
-    float dX, dY;
     private TintImageView videoIcon;
-    private boolean remoteRendererBinded = false;
-    private TextView nameTV;
-    private HashSet<AndroidMediaStream> mediaStreams = new HashSet<>();
-    private AndroidMediaStream ownStream;
+    private TextView videoTv;
+
+    //
+    // Video References
+    //
+    private EglBase eglContext;
+
+    private SurfaceViewRenderer localVideoView;
+    private VideoRenderer localRender;
+    private boolean isLocalViewConfigured;
+    private VideoTrack localTrack;
+
+    private SurfaceViewRenderer remoteVideoView;
+    private VideoRenderer remoteRender;
+    private boolean isRemoteViewConfigured;
+    private VideoTrack remoteTrack;
+
+
+    //
+    // Vibrate/tone/wakelock
+    //
+    boolean vibrate = true;
+    private PowerManager powerManager;
+    private PowerManager.WakeLock wakeLock;
+    private int field = 0x00000020;
+
+
+    //
+    // Constructor
+    //
 
     public CallFragment() {
-
         manager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
@@ -147,12 +174,10 @@ public class CallFragment extends BaseFragment {
         }
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        this.container = container;
         manager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
 
         FrameLayout cont = (FrameLayout) inflater.inflate(R.layout.fragment_call, container, false);
@@ -287,41 +312,39 @@ public class CallFragment extends BaseFragment {
         addTv.setTextColor(getResources().getColor(R.color.picker_grey));
         add.setTint(getResources().getColor(R.color.picker_grey));
 
-        if (peer.getPeerType() == PeerType.PRIVATE && ActorSDK.sharedActor().isVideoCallsEnabled()) {
-            rootEglBase = EglBase.create();
+        if (peer.getPeerType() == PeerType.PRIVATE) {
+
+            eglContext = EglBase.create();
 
             remoteVideoView = (SurfaceViewRenderer) cont.findViewById(R.id.remote_renderer);
-            remoteVideoView.init(rootEglBase.getEglBaseContext(), null);
+            remoteRender = new VideoRenderer(remoteVideoView);
 
             localVideoView = new SurfaceViewRenderer(getActivity());
             localVideoView.setVisibility(View.INVISIBLE);
             localVideoView.setZOrderMediaOverlay(true);
-            localVideoView.init(rootEglBase.getEglBaseContext(), null);
+            localRender = new VideoRenderer(localVideoView);
 
-            localVideoView.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
+            localVideoView.setOnTouchListener((v1, event) -> {
 
-                    switch (event.getAction()) {
+                switch (event.getAction()) {
 
-                        case MotionEvent.ACTION_DOWN:
-                            dX = localVideoView.getX() - event.getRawX();
-                            dY = localVideoView.getY() - event.getRawY();
-                            break;
+                    case MotionEvent.ACTION_DOWN:
+                        dX = localVideoView.getX() - event.getRawX();
+                        dY = localVideoView.getY() - event.getRawY();
+                        break;
 
-                        case MotionEvent.ACTION_MOVE:
-                            localVideoView.animate()
-                                    .x(event.getRawX() + dX)
-                                    .y(event.getRawY() + dY)
-                                    .setDuration(0)
-                                    .start();
+                    case MotionEvent.ACTION_MOVE:
+                        localVideoView.animate()
+                                .x(event.getRawX() + dX)
+                                .y(event.getRawY() + dY)
+                                .setDuration(0)
+                                .start();
 
-                        default:
-                            return false;
+                    default:
+                        return false;
 
-                    }
-                    return true;
                 }
+                return true;
             });
 
             int margin = Screen.dp(20);
@@ -452,65 +475,10 @@ public class CallFragment extends BaseFragment {
         messenger().answerCall(callId);
     }
 
-    public void onStreamAdded(WebRTCMediaStream remoteStream) {
-        AndroidMediaStream stream = (AndroidMediaStream) remoteStream;
-//        if (stream.getVideoTrack() != null) {
-//
-//            getActivity().runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    if (!remoteRendererBinded) {
-//                        try {
-//                            remoteVideoView.init(rootEglBase.getEglBaseContext(), null);
-//                        } catch (IllegalStateException e) {
-//                            //Already inited, it's ok here
-//                        }
-//
-//                        remoteRender = new VideoRenderer(remoteVideoView);
-//                        stream.getVideoTrack().addRenderer(remoteRender);
-//                        remoteVideoView.setVisibility(View.VISIBLE);
-//                        avatarView.setVisibility(View.INVISIBLE);
-//                        nameTV.setVisibility(View.INVISIBLE);
-//                    }
-//
-//                }
-//            });
-//        }
-    }
-
-    public void onOwnStreamAdded(WebRTCMediaStream ownStream) {
-        AndroidMediaStream stream = (AndroidMediaStream) ownStream;
-//        if (stream.getVideoTrack() != null) {
-//
-//
-//            getActivity().runOnUiThread(() -> {
-//                try {
-//                    localVideoView.init(rootEglBase.getEglBaseContext(), null);
-//                } catch (IllegalStateException e) {
-//                    //Already inited, it's ok here
-//                }
-//                CallFragment.this.ownStream = (AndroidMediaStream) ownStream;
-//                source = stream.getVideoSource();
-//                localRender = new VideoRenderer(localVideoView);
-//                stream.getVideoTrack().addRenderer(localRender);
-//                localVideoView.setVisibility(View.VISIBLE);
-//
-//            });
-//        }
-    }
-
     private void doEndCall() {
         messenger().endCall(callId);
         onCallEnd();
     }
-
-    //
-    // Vibrate/tone/wakelock
-    //
-    boolean vibrate = true;
-    private PowerManager powerManager;
-    private PowerManager.WakeLock wakeLock;
-    private int field = 0x00000020;
 
 
     public void enableWakeLock() {
@@ -559,6 +527,207 @@ public class CallFragment extends BaseFragment {
         }
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        enableWakeLock();
+
+
+        //
+        // Bind State
+        //
+        bind(call.getState(), (val, valueModel) -> {
+            if (currentState != val) {
+                currentState = val;
+                switch (val) {
+
+                    case RINGING:
+                        if (call.isOutgoing()) {
+                            statusTV.setText(R.string.call_outgoing);
+                        } else {
+                            statusTV.setText(R.string.call_incoming);
+                            toggleSpeaker(speaker, speakerTV, true);
+                            initIncoming();
+                        }
+                        break;
+
+                    case CONNECTING:
+                        statusTV.setText(R.string.call_connecting);
+                        break;
+
+                    case IN_PROGRESS:
+                        toggleSpeaker(speaker, speakerTV, false);
+                        onConnected();
+                        startTimer();
+                        break;
+
+                    case ENDED:
+                        statusTV.setText(R.string.call_ended);
+                        onCallEnd();
+                        break;
+
+                }
+            }
+        });
+
+
+        //
+        // Is Muted
+        //
+        bind(call.getIsMuted(), (val, valueModel) -> {
+            if (getActivity() != null) {
+                if (val) {
+
+                    muteCallTv.setTextColor(getResources().getColor(R.color.picker_grey));
+                    muteCall.setTint(getResources().getColor(R.color.picker_grey));
+                } else {
+                    muteCallTv.setTextColor(Color.WHITE);
+                    muteCall.setTint(Color.WHITE);
+                }
+            }
+        });
+
+        //
+        // Bind Video Streams
+        //
+        if (peer.getPeerType() == PeerType.PRIVATE) {
+
+            //
+            // Video Button
+            //
+            bind(call.getIsVideoEnabled(), (val, valueModel) -> {
+                if (val) {
+                    videoTv.setTextColor(Color.WHITE);
+                    videoIcon.setTint(Color.WHITE);
+                } else {
+                    videoTv.setTextColor(getResources().getColor(R.color.picker_grey));
+                    videoIcon.setTint(getResources().getColor(R.color.picker_grey));
+                }
+            });
+
+
+            //
+            // Bind Own Stream
+            //
+
+            ACTIVITY_BINDER.bind(call.getIsVideoEnabled(), call.getOwnMediaStream(), (isVideoEnabled, isVideoEnabledModel, ownStream, ownStreamModel) -> {
+                boolean isNeedUnbind = true;
+                if (isVideoEnabled) {
+                    if (ownStream != null) {
+                        MediaStream stream = ((AndroidMediaStream) ownStream).getStream();
+                        if (stream.videoTracks.size() > 0 || stream.preservedVideoTracks.size() > 0) {
+
+                            if (!isLocalViewConfigured) {
+                                localVideoView.init(eglContext.getEglBaseContext(), null);
+                                isLocalViewConfigured = true;
+                            }
+
+                            VideoTrack videoTrack;
+                            if (stream.videoTracks.size() > 0) {
+                                videoTrack = stream.videoTracks.get(0);
+                            } else if (stream.preservedVideoTracks.size() > 0) {
+                                videoTrack = stream.preservedVideoTracks.get(0);
+                            } else {
+                                throw new RuntimeException("Impossible");
+                            }
+
+                            if (videoTrack != localTrack) {
+                                if (localTrack != null) {
+                                    localTrack.removeRenderer(localRender);
+                                }
+
+                                localTrack = videoTrack;
+                                localTrack.addRenderer(localRender);
+                                localVideoView.setVisibility(View.VISIBLE);
+                            }
+                            isNeedUnbind = false;
+                        }
+                    }
+                }
+
+                if (isNeedUnbind) {
+                    if (localTrack != null) {
+                        localTrack.removeRenderer(localRender);
+                        localTrack = null;
+                    }
+                    if (isLocalViewConfigured) {
+                        localVideoView.release();
+                        isLocalViewConfigured = false;
+                    }
+                    localVideoView.setVisibility(View.INVISIBLE);
+                }
+            });
+
+            //
+            // Bind Their Stream
+            //
+            ACTIVITY_BINDER.bind(call.getMediaStreams(), (theirStream, streamModel) -> {
+                boolean isNeedUnbind = true;
+                if (theirStream != null) {
+                    for (CallMediaSource mediaSource : theirStream) {
+                        MediaStream stream = ((AndroidMediaStream) mediaSource.getStream()).getStream();
+                        if (stream.videoTracks.size() > 0 || stream.preservedVideoTracks.size() > 0) {
+
+                            if (!isRemoteViewConfigured) {
+                                remoteVideoView.init(eglContext.getEglBaseContext(), null);
+                                isRemoteViewConfigured = true;
+                            }
+
+                            VideoTrack videoTrack;
+                            if (stream.videoTracks.size() > 0) {
+                                videoTrack = stream.videoTracks.get(0);
+                            } else if (stream.preservedVideoTracks.size() > 0) {
+                                videoTrack = stream.preservedVideoTracks.get(0);
+                            } else {
+                                throw new RuntimeException("Impossible");
+                            }
+
+                            if (videoTrack != remoteTrack) {
+                                if (remoteTrack != null) {
+                                    remoteTrack.removeRenderer(remoteRender);
+                                }
+
+                                remoteTrack = videoTrack;
+                                remoteTrack.addRenderer(remoteRender);
+                                remoteVideoView.setVisibility(View.VISIBLE);
+                                avatarView.setVisibility(View.INVISIBLE);
+                                nameTV.setVisibility(View.INVISIBLE);
+                            }
+                            isNeedUnbind = false;
+                            break;
+                        }
+                    }
+
+                }
+
+                if (isNeedUnbind) {
+                    if (remoteTrack != null) {
+                        remoteTrack.removeRenderer(remoteRender);
+                        remoteTrack = null;
+                    }
+                    if (isRemoteViewConfigured) {
+                        remoteVideoView.release();
+                        isRemoteViewConfigured = false;
+                    }
+                    remoteVideoView.setVisibility(View.INVISIBLE);
+                    avatarView.setVisibility(View.VISIBLE);
+                    nameTV.setVisibility(View.VISIBLE);
+                }
+            });
+        } else {
+            videoTv.setTextColor(getResources().getColor(R.color.picker_grey));
+            videoIcon.setTint(getResources().getColor(R.color.picker_grey));
+        }
+
+
+        //
+        // Hide "in progress" notification
+        //
+        manager.cancel(NOTIFICATION_ID);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.members) {
@@ -567,44 +736,47 @@ public class CallFragment extends BaseFragment {
         return super.onOptionsItemSelected(item);
     }
 
-
     @Override
     public void onPause() {
         super.onPause();
 
-        if (peer.getPeerType() == PeerType.PRIVATE && ActorSDK.sharedActor().isVideoCallsEnabled()) {
-            if (source != null) {
-                source.stop();
-                sourceIsStopped = true;
+        disableWakeLock();
+
+        if (peer.getPeerType() == PeerType.PRIVATE) {
+
+            // Release Local Viewport
+
+            if (localTrack != null) {
+                localTrack.removeRenderer(localRender);
+                localTrack = null;
+            }
+            if (isLocalViewConfigured) {
+                localVideoView.release();
+                isLocalViewConfigured = false;
             }
 
+            // Release Remote Viewport
 
-//            if (localVideoView != null) {
-//                localVideoView.release();
-//            }
-//
-//            if (remoteVideoView != null) {
-//                remoteVideoView.release();
-//            }
-
-
-//            if (call != null) {
-//
-//                for (AndroidMediaStream s : mediaStreams) {
-//                    s.removeRenderer(remoteRender);
-//                    remoteRendererBinded = false;
-//                }
-//                mediaStreams.clear();
-//
-//                if (ownStream != null) {
-//                    ownStream.removeRenderer(localRender);
-//                    ownStream = null;
-//                }
-//
-//            }
-
+            if (remoteTrack != null) {
+                remoteTrack.removeRenderer(remoteRender);
+                remoteTrack = null;
+            }
+            if (isRemoteViewConfigured) {
+                remoteVideoView.release();
+                isRemoteViewConfigured = false;
+            }
         }
 
+
+        //
+        // Unbind call streams
+        //
+        ACTIVITY_BINDER.unbindAll();
+
+
+        //
+        // Show In Progress
+        //
         if (call != null && call.getState().get() != CallState.ENDED) {
             final NotificationCompat.Builder builder = new NotificationCompat.Builder(getActivity());
             builder.setAutoCancel(true);
@@ -624,116 +796,8 @@ public class CallFragment extends BaseFragment {
 
             manager.notify(NOTIFICATION_ID, n);
         }
-
-
-        disableWakeLock();
-
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        enableWakeLock();
-
-        if (source != null) {
-            source.restart();
-            sourceIsStopped = false;
-        }
-
-        manager.cancel(NOTIFICATION_ID);
-//        animator.popAnimation(true);
-        if (call != null) {
-
-            if (peer.getPeerType() == PeerType.PRIVATE && ActorSDK.sharedActor().isVideoCallsEnabled()) {
-                bind(call.getMediaStreams(), (val, valueModel) -> {
-                    mediaStreams.retainAll(val);
-                    for (CallMediaSource s : val) {
-                        // if (s.isVideoEnabled()) {
-                        if (!mediaStreams.contains(s.getStream())) {
-                            onStreamAdded(s.getStream());
-                            mediaStreams.add((AndroidMediaStream) s.getStream());
-                        }
-                        // }
-                    }
-                });
-
-                bind(call.getOwnMediaStream(), new ValueChangedListener<WebRTCMediaStream>() {
-                    @Override
-                    public void onChanged(WebRTCMediaStream val, Value<WebRTCMediaStream> valueModel) {
-                        if (val != null) {
-                            onOwnStreamAdded(val);
-                        }
-                    }
-                });
-
-                bind(call.getIsVideoEnabled(), (val, valueModel) -> {
-                    if (getActivity() != null) {
-                        if (val) {
-                            videoTv.setTextColor(Color.WHITE);
-                            videoIcon.setTint(Color.WHITE);
-                            if (localRender != null) {
-                                localVideoView.setVisibility(View.VISIBLE);
-                            }
-                        } else {
-                            videoTv.setTextColor(getResources().getColor(R.color.picker_grey));
-                            videoIcon.setTint(getResources().getColor(R.color.picker_grey));
-                            localVideoView.setVisibility(View.INVISIBLE);
-                        }
-                    }
-                });
-
-            }
-
-            bind(call.getIsMuted(), (val, valueModel) -> {
-                if (getActivity() != null) {
-                    if (val) {
-
-                        muteCallTv.setTextColor(getResources().getColor(R.color.picker_grey));
-                        muteCall.setTint(getResources().getColor(R.color.picker_grey));
-                    } else {
-                        muteCallTv.setTextColor(Color.WHITE);
-                        muteCall.setTint(Color.WHITE);
-                    }
-                }
-            });
-
-
-            bind(call.getState(), (val, valueModel) -> {
-                if (currentState != val) {
-                    currentState = val;
-                    switch (val) {
-
-                        case RINGING:
-                            if (call.isOutgoing()) {
-                                statusTV.setText(R.string.call_outgoing);
-                            } else {
-                                statusTV.setText(R.string.call_incoming);
-                                toggleSpeaker(speaker, speakerTV, true);
-                                initIncoming();
-                            }
-                            break;
-
-                        case CONNECTING:
-                            statusTV.setText(R.string.call_connecting);
-                            break;
-
-                        case IN_PROGRESS:
-                            toggleSpeaker(speaker, speakerTV, false);
-                            onConnected();
-                            startTimer();
-                            break;
-
-                        case ENDED:
-                            statusTV.setText(R.string.call_ended);
-                            onCallEnd();
-                            break;
-
-                    }
-                }
-            });
-
-        }
-    }
 
     class CallMembersAdapter extends HolderAdapter<CallMember> {
 

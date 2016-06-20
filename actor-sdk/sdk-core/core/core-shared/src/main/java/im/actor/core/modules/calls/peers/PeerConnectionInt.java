@@ -6,6 +6,9 @@ import im.actor.core.api.ApiICEServer;
 import im.actor.core.modules.ModuleContext;
 import im.actor.runtime.actors.ActorInterface;
 import im.actor.runtime.actors.ActorRef;
+import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.function.CountedReference;
+import im.actor.runtime.promise.Promise;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
 import im.actor.runtime.webrtc.WebRTCPeerConnection;
 
@@ -34,14 +37,14 @@ public class PeerConnectionInt extends ActorInterface {
     public PeerConnectionInt(List<ApiICEServer> iceServers,
                              PeerSettings ownSettings,
                              PeerSettings theirSettings,
-                             WebRTCMediaStream mediaStream,
+                             CountedReference<WebRTCMediaStream> mediaStream,
                              PeerConnectionCallback callback,
                              ModuleContext context,
                              ActorRef dest, String path) {
         this.callbackDest = dest;
         this.callback = callback;
         ActorRef ref = system().actorOf(dest.getPath() + "/" + path,
-                PeerConnectionActor.CONSTRUCTOR(iceServers, ownSettings, theirSettings, mediaStream,
+                PeerConnectionActor.CONSTRUCTOR(iceServers, ownSettings, theirSettings, mediaStream.acquire(),
                         new WrappedCallback(), context));
         setDest(ref);
     }
@@ -51,8 +54,8 @@ public class PeerConnectionInt extends ActorInterface {
      *
      * @param mediaStream media stream
      */
-    public void replaceStream(WebRTCMediaStream mediaStream) {
-        send(new PeerConnectionActor.ReplaceStream(mediaStream));
+    public Promise<Void> replaceStream(CountedReference<WebRTCMediaStream> mediaStream) {
+        return ask(new PeerConnectionActor.ReplaceStream(mediaStream.acquire()));
     }
 
     /**
