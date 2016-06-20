@@ -13,12 +13,12 @@ import im.actor.core.modules.calls.peers.messages.RTCNeedOffer;
 import im.actor.core.modules.calls.peers.messages.RTCOffer;
 import im.actor.core.modules.calls.peers.messages.RTCCloseSession;
 import im.actor.core.modules.calls.peers.messages.RTCStart;
-import im.actor.runtime.actors.Actor;
-import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorInterface;
 import im.actor.runtime.actors.ActorRef;
+import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.function.CountedReference;
+import im.actor.runtime.promise.Promise;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
-import im.actor.runtime.webrtc.WebRTCPeerConnection;
 
 import static im.actor.runtime.actors.ActorSystem.system;
 
@@ -50,8 +50,8 @@ public class PeerNodeInt extends ActorInterface {
      *
      * @param stream own stream
      */
-    public void setOwnStream(WebRTCMediaStream stream) {
-        send(new PeerNodeActor.AddOwnStream(stream));
+    public Promise<Void> replaceOwnStream(CountedReference<WebRTCMediaStream> stream) {
+        return ask(new PeerNodeActor.ReplaceOwnStream(stream.acquire()));
     }
 
     /**

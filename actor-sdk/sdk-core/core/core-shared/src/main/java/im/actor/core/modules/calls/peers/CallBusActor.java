@@ -144,13 +144,13 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
         callBusCallback.onOwnStreamRemoved(stream);
     }
 
-
     //
     // Actions
     //
 
     public void onChangeAudioEnabled(boolean isEnabled) {
         peerCall.onAudioEnabledChanged(isEnabled);
+
     }
 
     public void onChangeVideoEnabled(boolean isEnabled) {

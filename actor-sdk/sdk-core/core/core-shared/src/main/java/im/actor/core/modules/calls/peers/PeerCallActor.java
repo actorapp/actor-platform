@@ -1,5 +1,6 @@
 package im.actor.core.modules.calls.peers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import im.actor.core.modules.ModuleActor;
 import im.actor.runtime.Log;
 import im.actor.runtime.WebRTC;
 import im.actor.runtime.actors.messages.PoisonPill;
+import im.actor.runtime.function.CountedReference;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
 
 public class PeerCallActor extends ModuleActor {
@@ -34,7 +36,7 @@ public class PeerCallActor extends ModuleActor {
     private List<ApiICEServer> iceServers;
     private HashMap<Long, PeerNodeInt> refs = new HashMap<>();
 
-    private WebRTCMediaStream currentMediaStream;
+    private CountedReference<WebRTCMediaStream> currentMediaStream;
     private boolean isCurrentStreamAudioEnabled;
     private boolean isCurrentStreamVideoEnabled;
 
@@ -86,15 +88,18 @@ public class PeerCallActor extends ModuleActor {
                     return;
                 }
 
-                if (PeerCallActor.this.currentMediaStream != null) {
-                    callback.onOwnStreamRemoved(PeerCallActor.this.currentMediaStream);
-                }
-                PeerCallActor.this.currentMediaStream = mediaStream;
-                callback.onOwnStreamAdded(mediaStream);
+                CountedReference<WebRTCMediaStream> oldStream = currentMediaStream;
+                currentMediaStream = new VerboseReference(mediaStream);
 
                 for (PeerNodeInt node : refs.values()) {
-                    node.setOwnStream(mediaStream);
+                    node.replaceOwnStream(currentMediaStream);
                 }
+
+                if (oldStream != null) {
+                    callback.onOwnStreamRemoved(oldStream.get());
+                    oldStream.release();
+                }
+                callback.onOwnStreamAdded(mediaStream);
             }).failure(e -> {
                 Log.d(TAG, "Unable to load stream");
                 self().send(PoisonPill.INSTANCE);
@@ -126,7 +131,7 @@ public class PeerCallActor extends ModuleActor {
         PeerNodeInt peerNodeInt = new PeerNodeInt(deviceId, new NodeCallback(),
                 selfSettings, self(), context());
         if (currentMediaStream != null) {
-            peerNodeInt.setOwnStream(currentMediaStream);
+            peerNodeInt.replaceOwnStream(currentMediaStream);
         }
         if (this.iceServers != null) {
             peerNodeInt.onAdvertisedMaster(iceServers);
@@ -153,8 +158,9 @@ public class PeerCallActor extends ModuleActor {
         refs.clear();
 
         if (currentMediaStream != null) {
-            callback.onOwnStreamRemoved(currentMediaStream);
-            currentMediaStream.close();
+            callback.onOwnStreamRemoved(currentMediaStream.get());
+            currentMediaStream.release();
+            currentMediaStream = null;
         }
     }
 
@@ -270,6 +276,27 @@ public class PeerCallActor extends ModuleActor {
         @Override
         public void onStreamRemoved(long deviceId, WebRTCMediaStream stream) {
             callback.onStreamRemoved(deviceId, stream);
+        }
+    }
+
+    private static int referenceId = 0;
+
+    private static class VerboseReference extends CountedReference<WebRTCMediaStream> {
+
+        private int id = referenceId++;
+
+        public VerboseReference(WebRTCMediaStream value) {
+            super(value);
+        }
+
+        @Override
+        public synchronized void acquire(int counter) {
+            Log.d("CountedReference(" + id + ")", "acquire(" + counter + ")");
+        }
+
+        @Override
+        public synchronized void release(int counter) {
+            Log.d("CountedReference(" + id + ")", "release(" + counter + ")");
         }
     }
 }

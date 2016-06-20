@@ -17,6 +17,8 @@ import im.actor.core.viewmodel.CallMediaSource;
 import im.actor.core.viewmodel.CallState;
 import im.actor.core.viewmodel.CallVM;
 import im.actor.core.viewmodel.CommandCallback;
+import im.actor.runtime.Log;
+import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.messages.PoisonPill;
 import im.actor.runtime.power.WakeLock;
 import im.actor.runtime.webrtc.WebRTCMediaStream;

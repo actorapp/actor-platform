@@ -82,7 +82,7 @@ class CocoaWebRTCRuntime: NSObject, ARWebRTCRuntime {
     }
 }
 
-class MediaStream: NSObject, ARWebRTCMediaStream {
+@objc class MediaStream: NSObject, ARWebRTCMediaStream {
     
     let stream: RTCMediaStream
     
@@ -90,33 +90,14 @@ class MediaStream: NSObject, ARWebRTCMediaStream {
         self.stream = stream
     }
     
-    func isAudioEnabled() -> jboolean {
-        return false
-    }
-    
-    func isVideoEnabled() -> jboolean {
-        return false
-    }
-    
-    func setVideoEnabledWithBoolean(isEnabled: jboolean) {
-        for i in stream.videoTracks {
-            (i as! RTCMediaStreamTrack).setEnabled(isEnabled)
-        }
-    }
-    
-    func setAudioEnabledWithBoolean(isEnabled: jboolean) {
-        for i in stream.audioTracks {
-            (i as! RTCMediaStreamTrack).setEnabled(isEnabled)
-        }
-    }
-    
     func close() {
         for i in stream.audioTracks {
-            (i as? RTCMediaStreamTrack)?.setEnabled(false)
+            (i as! RTCAudioTrack).setEnabled(false)
+            // stream.removeAudioTrack(i as! RTCAudioTrack)
         }
         for i in stream.videoTracks {
             (i as! RTCVideoTrack).setEnabled(false)
-            stream.removeVideoTrack(i as! RTCVideoTrack)
+            // stream.removeVideoTrack(i as! RTCVideoTrack)
         }
     }
 }
@@ -138,6 +119,7 @@ class CocoaWebRTCPeerConnection: NSObject, ARWebRTCPeerConnection, RTCPeerConnec
                 return RTCICEServer(URI: NSURL(string: src.url), username: src.username, password: src.credential)
             }
         }
+        
         peerConnection = peerConnectionFactory.peerConnectionWithICEServers(iceServers, constraints: RTCMediaConstraints(), delegate: self)
         AAAudioManager.sharedAudio().peerConnectionStarted()
     }
@@ -159,21 +141,32 @@ class CocoaWebRTCPeerConnection: NSObject, ARWebRTCPeerConnection, RTCPeerConnec
         peerConnection.addICECandidate(RTCICECandidate(mid: id_, index: Int(index), sdp: sdp))
     }
     
-    func addOwnStream(stream: ARWebRTCMediaStream) {
-        if let str = stream as? MediaStream {
-            peerConnection.addStream(str.stream)
-        }
+//    func addOwnStream(stream: ARWebRTCMediaStream) {
+//        if let str = stream as? MediaStream {
+//            peerConnection.addStream(str.stream)
+//        }
+//    }
+//    
+    func addOwnStream(stream: ARCountedReference) {
+        peerConnection.addStream((stream.get() as! MediaStream).stream)
     }
     
-    func removeOwnStream(stream: ARWebRTCMediaStream) {
-        if let str = stream as? MediaStream {
-            peerConnection.removeStream(str.stream)
-        }
+    func removeOwnStream(stream: ARCountedReference) {
+        peerConnection.addStream((stream.get() as! MediaStream).stream)
     }
+    
+//    func removeOwnStream(stream: ARWebRTCMediaStream) {
+//        if let str = stream as? MediaStream {
+//            peerConnection.removeStream(str.stream)
+//        }
+//    }
     
     func createAnswer() -> ARPromise {
         return ARPromise(closure: { (resolver) -> () in
-            self.peerConnection.createAnswer(RTCMediaConstraints(), didCreate: { (desc, error) -> () in
+//            let constraints = RTCMediaConstraints(mandatoryConstraints: [RTCPair(key: "OfferToReceiveAudio", value: "true"),
+//                RTCPair(key: "OfferToReceiveVideo", value: "true")], optionalConstraints: [])
+            let constraints = RTCMediaConstraints()
+            self.peerConnection.createAnswer(constraints, didCreate: { (desc, error) -> () in
                 if error == nil {
                     resolver.result(ARWebRTCSessionDescription(type: "answer", withSDP: desc.description))
                 } else {
@@ -185,7 +178,10 @@ class CocoaWebRTCPeerConnection: NSObject, ARWebRTCPeerConnection, RTCPeerConnec
     
     func creteOffer() -> ARPromise {
         return ARPromise(closure: { (resolver) -> () in
-            self.peerConnection.createOffer(RTCMediaConstraints(), didCreate: { (desc, error) -> () in
+            let constraints = RTCMediaConstraints()
+//            let constraints = RTCMediaConstraints(mandatoryConstraints: [RTCPair(key: "OfferToReceiveAudio", value: "true"),
+//                RTCPair(key: "OfferToReceiveVideo", value: "true")], optionalConstraints: [])
+            self.peerConnection.createOffer(constraints, didCreate: { (desc, error) -> () in
                 if error == nil {
                     resolver.result(ARWebRTCSessionDescription(type: "offer", withSDP: desc.description))
                 } else {
@@ -229,9 +225,6 @@ class CocoaWebRTCPeerConnection: NSObject, ARWebRTCPeerConnection, RTCPeerConnec
     // RTCPeerConnectionDelegate
     //
     
-    func peerConnection(peerConnection: RTCPeerConnection!, signalingStateChanged stateChanged: RTCSignalingState) {
-        
-    }
     
     func peerConnection(peerConnection: RTCPeerConnection!, addedStream stream: RTCMediaStream!) {
         for c in callbacks {
@@ -246,6 +239,18 @@ class CocoaWebRTCPeerConnection: NSObject, ARWebRTCPeerConnection, RTCPeerConnec
     }
     
     func peerConnectionOnRenegotiationNeeded(peerConnection: RTCPeerConnection!) {
+        for c in callbacks {
+            c.onRenegotiationNeeded()
+        }
+    }
+    
+    func peerConnection(peerConnection: RTCPeerConnection!, gotICECandidate candidate: RTCICECandidate!) {
+        for c in callbacks {
+            c.onCandidateWithLabel(jint(candidate.sdpMLineIndex), withId: candidate.sdpMid, withCandidate: candidate.sdp)
+        }
+    }
+    
+    func peerConnection(peerConnection: RTCPeerConnection!, signalingStateChanged stateChanged: RTCSignalingState) {
         
     }
     
@@ -256,13 +261,7 @@ class CocoaWebRTCPeerConnection: NSObject, ARWebRTCPeerConnection, RTCPeerConnec
     func peerConnection(peerConnection: RTCPeerConnection!, iceGatheringChanged newState: RTCICEGatheringState) {
         
     }
-    
-    func peerConnection(peerConnection: RTCPeerConnection!, gotICECandidate candidate: RTCICECandidate!) {
-        for c in callbacks {
-            c.onCandidateWithLabel(jint(candidate.sdpMLineIndex), withId: candidate.sdpMid, withCandidate: candidate.sdp)
-        }
-    }
-    
+
     func peerConnection(peerConnection: RTCPeerConnection!, didOpenDataChannel dataChannel: RTCDataChannel!) {
         
     }

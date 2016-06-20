@@ -4,6 +4,9 @@ import com.google.j2objc.annotations.ObjectiveCName;
 
 import org.jetbrains.annotations.NotNull;
 
+import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.function.Closable;
+import im.actor.runtime.function.CountedReference;
 import im.actor.runtime.promise.Promise;
 
 /**
@@ -43,7 +46,7 @@ public interface WebRTCPeerConnection {
      * @param stream added stream
      */
     @ObjectiveCName("addOwnStream:")
-    void addOwnStream(@NotNull WebRTCMediaStream stream);
+    void addOwnStream(@NotNull CountedReference<WebRTCMediaStream> stream);
 
 
     /**
@@ -52,7 +55,7 @@ public interface WebRTCPeerConnection {
      * @param stream removed stream
      */
     @ObjectiveCName("removeOwnStream:")
-    void removeOwnStream(@NotNull WebRTCMediaStream stream);
+    void removeOwnStream(@NotNull CountedReference<WebRTCMediaStream> stream);
 
     /**
      * Setting Local Description

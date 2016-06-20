@@ -15,6 +15,11 @@ import im.actor.core.modules.calls.peers.messages.RTCNeedOffer;
 import im.actor.core.modules.calls.peers.messages.RTCOffer;
 import im.actor.core.modules.calls.peers.messages.RTCStart;
 import im.actor.core.modules.ModuleActor;
+import im.actor.runtime.Log;
+import im.actor.runtime.actors.ask.AskMessage;
+import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.function.CountedReference;
+import im.actor.runtime.promise.Promise;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
 
 /**
@@ -31,12 +36,14 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
     private final HashSet<Long> closedSessions = new HashSet<>();
     private final ArrayList<PendingSession> pendingSessions = new ArrayList<>();
 
+    private int CHILD_NEXT_ID = 0;
+
     private long currentSession = 0;
     private PeerState state = PeerState.PENDING;
     private PeerConnectionInt peerConnection;
     private PeerSettings theirSettings;
     private List<ApiICEServer> iceServers;
-    private WebRTCMediaStream ownMediaStream;
+    private CountedReference<WebRTCMediaStream> ownMediaStream;
     private boolean isEnabled = false;
     private boolean isConnected = false;
     private boolean isStarted = false;
@@ -89,23 +96,22 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
             isEnabled = true;
 
             reconfigurePeerConnectionIfNeeded();
-
-            for (WebRTCMediaStream mediaStream : theirMediaStreams) {
-                mediaStream.setAudioEnabled(true);
-            }
         }
     }
 
-    public void addOwnStream(WebRTCMediaStream mediaStream) {
+    public Promise<Void> replaceOwnStream(CountedReference<WebRTCMediaStream> mediaStream) {
         if (this.ownMediaStream == null) {
             this.ownMediaStream = mediaStream;
             reconfigurePeerConnectionIfNeeded();
         } else {
+            this.ownMediaStream.release();
             this.ownMediaStream = mediaStream;
             if (peerConnection != null) {
-                peerConnection.replaceStream(mediaStream);
+                return peerConnection.replaceStream(mediaStream);
             }
         }
+
+        return Promise.success(null);
     }
 
     private void reconfigurePeerConnectionIfNeeded() {
@@ -123,7 +129,7 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
             callback.onPeerStateChanged(deviceId, state);
             peerConnection = new PeerConnectionInt(
                     iceServers, ownSettings, theirSettings,
-                    ownMediaStream, this, context(), self(), "connection");
+                    ownMediaStream, this, context(), self(), "connection/" + (CHILD_NEXT_ID++));
             unstashAll();
         }
     }
@@ -174,7 +180,8 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
     @Override
     public void onStreamAdded(WebRTCMediaStream stream) {
         theirMediaStreams.add(stream);
-        stream.setAudioEnabled(isEnabled);
+        // stream.setAudioEnabled(isEnabled);
+
         if (isStarted) {
             callback.onStreamAdded(deviceId, stream);
         }
@@ -206,14 +213,26 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
 
             currentSession = 0;
 
+            // Searching for pending sessions and closing it
             for (PendingSession p : pendingSessions) {
                 if (p.getSessionId() == sessionId) {
                     pendingSessions.remove(p);
                     break;
                 }
             }
-            peerConnection.onResetState();
 
+            // Killing Peer Connection
+            if (peerConnection != null) {
+                peerConnection.kill();
+                peerConnection = null;
+            }
+
+            // Creating new peer connection
+            peerConnection = new PeerConnectionInt(
+                    iceServers, ownSettings, theirSettings,
+                    ownMediaStream, this, context(), self(), "connection/" + (CHILD_NEXT_ID++));
+
+            // Pick first pending session if available
             if (pendingSessions.size() > 0) {
                 PendingSession p = pendingSessions.remove(0);
                 if (p != null) {
@@ -235,6 +254,10 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
             peerConnection.kill();
             peerConnection = null;
         }
+        if (ownMediaStream != null) {
+            ownMediaStream.release();
+            ownMediaStream = null;
+        }
         state = PeerState.DISPOSED;
         callback.onPeerStateChanged(deviceId, state);
     }
@@ -251,9 +274,9 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
         } else if (message instanceof RTCAdvertised) {
             RTCAdvertised advertised = (RTCAdvertised) message;
             onAdvertised(advertised.getSettings());
-        } else if (message instanceof AddOwnStream) {
-            AddOwnStream ownStream = (AddOwnStream) message;
-            addOwnStream(ownStream.getMediaStream());
+        } else if (message instanceof ReplaceOwnStream) {
+            ReplaceOwnStream ownStream = (ReplaceOwnStream) message;
+            replaceOwnStream(ownStream.getMediaStream());
         } else if (message instanceof RTCMasterAdvertised) {
             RTCMasterAdvertised advertisedMaster = (RTCMasterAdvertised) message;
             onMasterAdvertised(advertisedMaster.getIceServers());
@@ -303,6 +326,16 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
         }
     }
 
+    @Override
+    public Promise onAsk(Object message) throws Exception {
+        if (message instanceof ReplaceOwnStream) {
+            ReplaceOwnStream ownStream = (ReplaceOwnStream) message;
+            return replaceOwnStream(ownStream.getMediaStream());
+        } else {
+            return super.onAsk(message);
+        }
+    }
+
     private boolean receiveSessionMessage(long sessionId, Object msg) {
         if (currentSession == sessionId || currentSession == 0) {
             currentSession = sessionId;
@@ -326,15 +359,15 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
         }
     }
 
-    public static class AddOwnStream {
+    public static class ReplaceOwnStream implements AskMessage<Void> {
 
-        private WebRTCMediaStream mediaStream;
+        private CountedReference<WebRTCMediaStream> mediaStream;
 
-        public AddOwnStream(WebRTCMediaStream mediaStream) {
+        public ReplaceOwnStream(CountedReference<WebRTCMediaStream> mediaStream) {
             this.mediaStream = mediaStream;
         }
 
-        public WebRTCMediaStream getMediaStream() {
+        public CountedReference<WebRTCMediaStream> getMediaStream() {
             return mediaStream;
         }
     }
