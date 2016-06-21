@@ -49,12 +49,28 @@ final class WebrtcExtension(system: ActorSystem) extends Extension {
 
   private[webrtc] val config = WebrtcConfig.load(system.settings.config).get
 
-  def doCall(callerUserId: UserId, callerAuthId: AuthId, peer: Peer, timeout: Option[Long]): Future[(Long, String, EventBus.DeviceId)] = {
+  def doCall(
+    callerUserId:     UserId,
+    callerAuthId:     AuthId,
+    peer:             Peer,
+    isAudioOnlyCall:  Option[Boolean],
+    isVideoOnlyCall:  Option[Boolean],
+    isVideoPreferred: Option[Boolean],
+    timeout:          Option[Long]
+  ): Future[(Long, String, EventBus.DeviceId)] = {
     val callId = ACLUtils.randomLong()
 
     (region ? WebrtcCallEnvelope(
       callId,
-      StartCall(callerUserId, callerAuthId, peer, timeout)
+      StartCall(
+        callerUserId,
+        callerAuthId,
+        peer,
+        isAudioOnlyCall,
+        isVideoOnlyCall,
+        isVideoPreferred,
+        timeout
+      )
     )).mapTo[StartCallAck] map (ack ⇒ (callId, ack.eventBusId, ack.callerDeviceId))
   }
 
@@ -64,7 +80,7 @@ final class WebrtcExtension(system: ActorSystem) extends Extension {
   def rejectCall(calleeUserId: Int, calleeAuthId: Long, callId: Long): Future[Unit] =
     region ? WebrtcCallEnvelope(callId, RejectCall(calleeUserId, calleeAuthId)) map (_ ⇒ ())
 
-  def getInfo(callId: Long): Future[(String, Peer, Seq[UserId])] =
+  def getInfo(callId: Long): Future[(String, Peer, Seq[UserId], Option[Boolean], Option[Boolean], Option[Boolean])] =
     (region ? WebrtcCallEnvelope(callId, GetInfo)).mapTo[GetInfoAck] map (_.tupled)
 }
 
