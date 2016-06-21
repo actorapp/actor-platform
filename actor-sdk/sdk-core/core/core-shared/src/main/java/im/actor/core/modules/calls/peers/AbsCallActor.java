@@ -10,6 +10,7 @@ import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
+import im.actor.runtime.webrtc.WebRTCMediaTrack;
 import im.actor.runtime.webrtc.WebRTCPeerConnection;
 
 public abstract class AbsCallActor extends ModuleActor implements CallBusCallback {
@@ -36,19 +37,23 @@ public abstract class AbsCallActor extends ModuleActor implements CallBusCallbac
         }));
     }
 
-    public void onMuteChanged(boolean isMuted) {
-        callBus.changeMute(isMuted);
+    public void onAudioEnableChanged(boolean enabled) {
+        callBus.changeAudioEnabled(enabled);
     }
-
 
     public void onVideoEnableChanged(boolean enabled) {
         callBus.changeVideoEnabled(enabled);
     }
 
+
+    //
+    // Messages
+    //
+
     @Override
     public void onReceive(Object message) {
-        if (message instanceof MuteChanged) {
-            onMuteChanged(((MuteChanged) message).isMuted());
+        if (message instanceof AudioEnabled) {
+            onAudioEnableChanged(((AudioEnabled) message).isEnabled());
         } else if (message instanceof VideoEnabled) {
             onVideoEnableChanged(((VideoEnabled) message).isEnabled());
         } else {
@@ -56,16 +61,16 @@ public abstract class AbsCallActor extends ModuleActor implements CallBusCallbac
         }
     }
 
-    public static class MuteChanged {
+    public static class AudioEnabled {
 
-        private boolean isMuted;
+        private boolean enabled;
 
-        public MuteChanged(boolean isMuted) {
-            this.isMuted = isMuted;
+        public AudioEnabled(boolean enabled) {
+            this.enabled = enabled;
         }
 
-        public boolean isMuted() {
-            return isMuted;
+        public boolean isEnabled() {
+            return enabled;
         }
     }
 
@@ -82,6 +87,7 @@ public abstract class AbsCallActor extends ModuleActor implements CallBusCallbac
         }
     }
 
+
     //
     // Wrapper
     //
@@ -94,6 +100,12 @@ public abstract class AbsCallActor extends ModuleActor implements CallBusCallbac
         }
 
         @Override
+        public void onBusStopped() {
+            self().post(() -> AbsCallActor.this.onBusStopped());
+        }
+
+
+        @Override
         public void onCallConnected() {
             self().post(() -> AbsCallActor.this.onCallConnected());
         }
@@ -103,40 +115,25 @@ public abstract class AbsCallActor extends ModuleActor implements CallBusCallbac
             self().post(() -> AbsCallActor.this.onCallEnabled());
         }
 
+
         @Override
-        public void onBusStopped() {
-            self().post(() -> AbsCallActor.this.onBusStopped());
+        public void onTrackAdded(long deviceId, WebRTCMediaTrack track) {
+            self().post(() -> AbsCallActor.this.onTrackAdded(deviceId, track));
         }
 
         @Override
-        public void onPeerConnectionStateChanged(long deviceId, boolean isAudioEnabled, boolean isVideoEnabled) {
-            self().post(() -> AbsCallActor.this.onPeerConnectionStateChanged(deviceId, isAudioEnabled, isVideoEnabled));
+        public void onTrackRemoved(long deviceId, WebRTCMediaTrack track) {
+            self().post(() -> AbsCallActor.this.onTrackRemoved(deviceId, track));
         }
 
         @Override
-        public void onStreamAdded(long deviceId, WebRTCMediaStream stream) {
-            self().post(() -> AbsCallActor.this.onStreamAdded(deviceId, stream));
+        public void onOwnTrackAdded(WebRTCMediaTrack track) {
+            self().post(() -> AbsCallActor.this.onOwnTrackAdded(track));
         }
 
         @Override
-        public void onStreamRemoved(long deviceId, WebRTCMediaStream stream) {
-            self().post(() -> AbsCallActor.this.onStreamRemoved(deviceId, stream));
-        }
-
-        @Override
-        public void onPeerConnectionDisposed(long deviceId) {
-            self().post(() -> AbsCallActor.this.onPeerConnectionDisposed(deviceId));
-        }
-
-
-        @Override
-        public void onOwnStreamAdded(WebRTCMediaStream stream) {
-            self().post(() -> AbsCallActor.this.onOwnStreamAdded(stream));
-        }
-
-        @Override
-        public void onOwnStreamRemoved(WebRTCMediaStream stream) {
-            self().post(() -> AbsCallActor.this.onOwnStreamRemoved(stream));
+        public void onOwnTrackRemoved(WebRTCMediaTrack track) {
+            self().post(() -> AbsCallActor.this.onOwnTrackRemoved(track));
         }
     }
 }

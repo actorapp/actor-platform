@@ -5,13 +5,11 @@ import android.widget.TextView;
 
 import im.actor.core.entity.Avatar;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.runtime.mvvm.ValueDoubleChangedListener;
 import im.actor.sdk.view.avatar.CoverAvatarView;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.ValueModel;
 
-/**
- * Created by ex3ndr on 17.09.14.
- */
 public class BinderCompatFragment extends android.support.v4.app.Fragment {
 
     private final ActorBinder BINDER = new ActorBinder();
@@ -22,6 +20,10 @@ public class BinderCompatFragment extends android.support.v4.app.Fragment {
 
     public <T> void bind(ValueModel<T> value, ValueChangedListener<T> listener) {
         BINDER.bind(value, listener);
+    }
+
+    public <T1, T2> void bind(ValueModel<T1> value1, ValueModel<T2> value2, ValueDoubleChangedListener<T1, T2> listener) {
+        BINDER.bind(value1, value2, listener);
     }
 
     public void bind(final CoverAvatarView avatarView, final ValueModel<Avatar> avatar) {

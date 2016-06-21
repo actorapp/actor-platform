@@ -1,6 +1,7 @@
 package im.actor.core.modules.calls.peers;
 
 import im.actor.runtime.webrtc.WebRTCMediaStream;
+import im.actor.runtime.webrtc.WebRTCMediaTrack;
 import im.actor.runtime.webrtc.WebRTCPeerConnection;
 
 /**
@@ -32,19 +33,29 @@ public interface PeerNodeCallback {
     /**
      * Called when negotiation finished successfully
      *
-     * @param sessionId Session If
+     * @param deviceId  Device Id
+     * @param sessionId Session Id
      */
     void onNegotiationSuccessful(long deviceId, long sessionId);
 
     /**
+     * Called when negotiation needed
+     *
+     * @param deviceId  Device Id
+     * @param sessionId Session Id
+     */
+    void onNegotiationNeeded(long deviceId, long sessionId);
+
+    /**
      * Called when candidate arrived
      *
-     * @param deviceId Device Id
-     * @param mdpIndex index of candidate
-     * @param id       id of candidate
-     * @param sdp      sdp of the answer
+     * @param deviceId  Device Id
+     * @param sessionId Session Id
+     * @param mdpIndex  index of candidate
+     * @param id        id of candidate
+     * @param sdp       sdp of the answer
      */
-    void onCandidate(long deviceId, int mdpIndex, String id, String sdp);
+    void onCandidate(long deviceId, long sessionId, int mdpIndex, String id, String sdp);
 
     /**
      * Called when peer state changed
@@ -54,18 +65,18 @@ public interface PeerNodeCallback {
     void onPeerStateChanged(long deviceId, PeerState state);
 
     /**
-     * Called when stream added
+     * Called when track added
      *
      * @param deviceId Device Id
-     * @param stream   added stream
+     * @param track    added track
      */
-    void onStreamAdded(long deviceId, WebRTCMediaStream stream);
+    void onTrackAdded(long deviceId, WebRTCMediaTrack track);
 
     /**
-     * Called when stream removed
+     * Called when track removed
      *
      * @param deviceId Device Id
-     * @param stream   removed strea
+     * @param track    removed track
      */
-    void onStreamRemoved(long deviceId, WebRTCMediaStream stream);
+    void onTrackRemoved(long deviceId, WebRTCMediaTrack track);
 }

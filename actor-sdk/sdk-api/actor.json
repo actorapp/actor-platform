@@ -15687,6 +15687,24 @@
                   "argument": "eventBusId",
                   "category": "full",
                   "description": "  Event Bus Id"
+                },
+                {
+                  "type": "reference",
+                  "argument": "isAudioOnlyCall",
+                  "category": "full",
+                  "description": "  Is Audio Only Call. Default is true"
+                },
+                {
+                  "type": "reference",
+                  "argument": "isVideoOnlyCall",
+                  "category": "full",
+                  "description": "  Is Video Only Call. Default is false."
+                },
+                {
+                  "type": "reference",
+                  "argument": "isVideoPreferred",
+                  "category": "full",
+                  "description": "  Is Video preferred"
                 }
               ],
               "attributes": [
@@ -15727,6 +15745,30 @@
                   },
                   "id": 4,
                   "name": "eventBusId"
+                },
+                {
+                  "type": {
+                    "type": "opt",
+                    "childType": "bool"
+                  },
+                  "id": 5,
+                  "name": "isAudioOnlyCall"
+                },
+                {
+                  "type": {
+                    "type": "opt",
+                    "childType": "bool"
+                  },
+                  "id": 6,
+                  "name": "isVideoOnlyCall"
+                },
+                {
+                  "type": {
+                    "type": "opt",
+                    "childType": "bool"
+                  },
+                  "id": 7,
+                  "name": "isVideoPreferred"
                 }
               ]
             },
@@ -15801,6 +15843,30 @@
                 "argument": "peer",
                 "category": "full",
                 "description": "destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "timeout",
+                "category": "full",
+                "description": "Initial timeout"
+              },
+              {
+                "type": "reference",
+                "argument": "isAudioOnlyCall",
+                "category": "full",
+                "description": "Is Audio only call. Default is true."
+              },
+              {
+                "type": "reference",
+                "argument": "isVideoOnlyCall",
+                "category": "full",
+                "description": "Is Video Only call. Default is false."
+              },
+              {
+                "type": "reference",
+                "argument": "isVideoPreferred",
+                "category": "full",
+                "description": "Is Video preferred"
               }
             ],
             "attributes": [
@@ -15822,6 +15888,30 @@
                 },
                 "id": 2,
                 "name": "timeout"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 3,
+                "name": "isAudioOnlyCall"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 4,
+                "name": "isVideoOnlyCall"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 6,
+                "name": "isVideoPreferred"
               }
             ]
           }
@@ -16387,6 +16477,12 @@
               },
               {
                 "type": "reference",
+                "argument": "sessionId",
+                "category": "full",
+                "description": "  Session Id"
+              },
+              {
+                "type": "reference",
                 "argument": "peerSettings",
                 "category": "full",
                 "description": "  Optional peer settings"
@@ -16481,6 +16577,12 @@
                 "argument": "device",
                 "category": "full",
                 "description": "  Device Id"
+              },
+              {
+                "type": "reference",
+                "argument": "sessionId",
+                "category": "full",
+                "description": "  Session Id"
               }
             ],
             "trait": {
@@ -16512,7 +16614,19 @@
           "content": {
             "name": "OnRenegotiationNeeded",
             "doc": [
-              "Need renegotiate session. For example when streams are changed."
+              "Need renegotiate session. For example when streams are changed.",
+              {
+                "type": "reference",
+                "argument": "device",
+                "category": "full",
+                "description": "  Device Id"
+              },
+              {
+                "type": "reference",
+                "argument": "sessionId",
+                "category": "full",
+                "description": "  Session Id"
+              }
             ],
             "trait": {
               "name": "WebRTCSignaling",
@@ -16544,6 +16658,12 @@
             "name": "CloseSession",
             "doc": [
               "Close this session and be ready to",
+              {
+                "type": "reference",
+                "argument": "device",
+                "category": "hidden",
+                "description": "  Device Id"
+              },
               {
                 "type": "reference",
                 "argument": "sessionId",
