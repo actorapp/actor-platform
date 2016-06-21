@@ -6,10 +6,13 @@ package im.actor.runtime;
 
 import com.google.j2objc.annotations.ObjectiveCName;
 
+import im.actor.runtime.os.OSType;
+
 /**
  * Provider for dispatching on Main application Thread
  */
 public interface MainThreadRuntime {
+
     /**
      * Post Runnable to main thread.
      * Implementation is recommended to always post to main thread
@@ -35,4 +38,12 @@ public interface MainThreadRuntime {
      */
     @ObjectiveCName("isSingleThread")
     boolean isSingleThread();
+
+    /**
+     * Return Current OS
+     *
+     * @return OS
+     */
+    @ObjectiveCName("getOSType")
+    OSType getOSType();
 }

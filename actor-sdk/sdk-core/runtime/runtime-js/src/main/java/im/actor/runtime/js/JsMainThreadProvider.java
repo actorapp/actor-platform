@@ -7,6 +7,7 @@ package im.actor.runtime.js;
 import com.google.gwt.core.client.Scheduler;
 
 import im.actor.runtime.MainThreadRuntime;
+import im.actor.runtime.os.OSType;
 
 public class JsMainThreadProvider implements MainThreadRuntime {
 
@@ -28,5 +29,10 @@ public class JsMainThreadProvider implements MainThreadRuntime {
     @Override
     public boolean isSingleThread() {
         return true;
+    }
+
+    @Override
+    public OSType getOSType() {
+        return OSType.WEB;
     }
 }

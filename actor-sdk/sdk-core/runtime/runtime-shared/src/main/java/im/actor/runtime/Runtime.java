@@ -3,6 +3,7 @@ package im.actor.runtime;
 import com.google.j2objc.annotations.AutoreleasePool;
 
 import im.actor.runtime.actors.ThreadPriority;
+import im.actor.runtime.os.OSType;
 import im.actor.runtime.power.WakeLock;
 import im.actor.runtime.threading.Dispatcher;
 import im.actor.runtime.threading.AtomicIntegerCompat;
@@ -18,6 +19,10 @@ public class Runtime {
     private static final MainThreadRuntimeProvider mainThreadRuntime = new MainThreadRuntimeProvider();
     private static final LifecycleRuntime lifecycleRuntime = new LifecycleRuntimeProvider();
     private static final LocaleRuntime localeRuntime = new LocaleRuntimeProvider();
+
+    public static OSType getSystemType() {
+        return mainThreadRuntime.getOSType();
+    }
 
     public static LocaleRuntime getLocaleRuntime() {
         return localeRuntime;
