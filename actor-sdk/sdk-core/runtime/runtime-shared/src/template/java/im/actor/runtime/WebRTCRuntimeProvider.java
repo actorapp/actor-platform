@@ -19,7 +19,7 @@ public class WebRTCRuntimeProvider implements WebRTCRuntime {
 
     @NotNull
     @Override
-    public Promise<WebRTCMediaStream> getUserMedia(boolean isVideoEnabled) {
+    public Promise<WebRTCMediaStream> getUserMedia(boolean isAudioEnabled, boolean isVideoEnabled) {
         return Promise.failure(new RuntimeException("Dumb"));
     }
 
