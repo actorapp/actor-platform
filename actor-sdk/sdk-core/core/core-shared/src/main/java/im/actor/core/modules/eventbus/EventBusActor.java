@@ -3,6 +3,7 @@ package im.actor.core.modules.eventbus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import im.actor.core.api.rpc.RequestCreateNewEventBus;
 import im.actor.core.api.rpc.RequestJoinEventBus;
@@ -135,8 +136,8 @@ public class EventBusActor extends ModuleActor {
         request(new RequestPostToEventBus(busId, new ArrayList<>(), data));
     }
 
-    public void sendMessage(ArrayList<Long> deviceIds, byte[] data) {
-        request(new RequestPostToEventBus(busId, deviceIds, data));
+    public void sendMessage(Collection<Long> deviceIds, byte[] data) {
+        request(new RequestPostToEventBus(busId, new ArrayList<>(deviceIds), data));
     }
 
     public void sendMessage(long deviceId, byte[] data) {

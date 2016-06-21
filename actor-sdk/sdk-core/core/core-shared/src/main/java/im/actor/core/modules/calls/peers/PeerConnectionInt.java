@@ -6,6 +6,9 @@ import im.actor.core.api.ApiICEServer;
 import im.actor.core.modules.ModuleContext;
 import im.actor.runtime.actors.ActorInterface;
 import im.actor.runtime.actors.ActorRef;
+import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.function.CountedReference;
+import im.actor.runtime.promise.Promise;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
 import im.actor.runtime.webrtc.WebRTCPeerConnection;
 
@@ -34,16 +37,25 @@ public class PeerConnectionInt extends ActorInterface {
     public PeerConnectionInt(List<ApiICEServer> iceServers,
                              PeerSettings ownSettings,
                              PeerSettings theirSettings,
-                             WebRTCMediaStream mediaStream,
+                             CountedReference<WebRTCMediaStream> mediaStream,
                              PeerConnectionCallback callback,
                              ModuleContext context,
                              ActorRef dest, String path) {
         this.callbackDest = dest;
         this.callback = callback;
         ActorRef ref = system().actorOf(dest.getPath() + "/" + path,
-                PeerConnectionActor.CONSTRUCTOR(iceServers, ownSettings, theirSettings, mediaStream,
+                PeerConnectionActor.CONSTRUCTOR(iceServers, ownSettings, theirSettings, mediaStream.acquire(),
                         new WrappedCallback(), context));
         setDest(ref);
+    }
+
+    /**
+     * Replace Current outgoing stream
+     *
+     * @param mediaStream media stream
+     */
+    public Promise<Void> replaceStream(CountedReference<WebRTCMediaStream> mediaStream) {
+        return ask(new PeerConnectionActor.ReplaceStream(mediaStream.acquire()));
     }
 
     /**
@@ -89,8 +101,8 @@ public class PeerConnectionInt extends ActorInterface {
      * @param id    id of candidate
      * @param sdp   sdp of candidate
      */
-    public void onCandidate(int index, String id, String sdp) {
-        send(new PeerConnectionActor.OnCandidate(index, id, sdp));
+    public void onCandidate(long sessionId, int index, String id, String sdp) {
+        send(new PeerConnectionActor.OnCandidate(sessionId, index, id, sdp));
     }
 
 
@@ -100,33 +112,38 @@ public class PeerConnectionInt extends ActorInterface {
     private class WrappedCallback implements PeerConnectionCallback {
 
         @Override
-        public void onOffer(final long sessionId, final String sdp) {
-            callbackDest.send((Runnable) () -> callback.onOffer(sessionId, sdp));
+        public void onOffer(long sessionId, String sdp) {
+            callbackDest.post(() -> callback.onOffer(sessionId, sdp));
         }
 
         @Override
-        public void onAnswer(final long sessionId, final String sdp) {
-            callbackDest.send((Runnable) () -> callback.onAnswer(sessionId, sdp));
+        public void onAnswer(long sessionId, String sdp) {
+            callbackDest.post(() -> callback.onAnswer(sessionId, sdp));
         }
 
         @Override
-        public void onCandidate(final int mdpIndex, final String id, final String sdp) {
-            callbackDest.send((Runnable) () -> callback.onCandidate(mdpIndex, id, sdp));
+        public void onCandidate(long sessionId, int mdpIndex, String id, String sdp) {
+            callbackDest.post(() -> callback.onCandidate(sessionId, mdpIndex, id, sdp));
         }
 
         @Override
-        public void onNegotiationSuccessful(final long sessionId) {
-            callbackDest.send((Runnable) () -> callback.onNegotiationSuccessful(sessionId));
+        public void onNegotiationSuccessful(long sessionId) {
+            callbackDest.post(() -> callback.onNegotiationSuccessful(sessionId));
         }
 
         @Override
-        public void onStreamAdded(final WebRTCMediaStream stream) {
-            callbackDest.send((Runnable) () -> callback.onStreamAdded(stream));
+        public void onNegotiationNeeded(long sessionId) {
+            callbackDest.post(() -> callback.onNegotiationNeeded(sessionId));
         }
 
         @Override
-        public void onStreamRemoved(final WebRTCMediaStream stream) {
-            callbackDest.send((Runnable) () -> callback.onStreamRemoved(stream));
+        public void onStreamAdded(WebRTCMediaStream stream) {
+            callbackDest.post(() -> callback.onStreamAdded(stream));
+        }
+
+        @Override
+        public void onStreamRemoved(WebRTCMediaStream stream) {
+            callbackDest.post(() -> callback.onStreamRemoved(stream));
         }
     }
 }

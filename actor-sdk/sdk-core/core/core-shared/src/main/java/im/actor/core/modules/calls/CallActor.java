@@ -17,10 +17,15 @@ import im.actor.core.viewmodel.CallMediaSource;
 import im.actor.core.viewmodel.CallState;
 import im.actor.core.viewmodel.CallVM;
 import im.actor.core.viewmodel.CommandCallback;
+import im.actor.core.viewmodel.generics.ArrayListMediaTrack;
+import im.actor.runtime.Log;
+import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.messages.PoisonPill;
 import im.actor.runtime.power.WakeLock;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
+import im.actor.runtime.webrtc.WebRTCMediaTrack;
 import im.actor.runtime.webrtc.WebRTCPeerConnection;
+import im.actor.runtime.webrtc.WebRTCTrackType;
 
 import static im.actor.core.entity.EntityConverter.convert;
 
@@ -30,8 +35,6 @@ public class CallActor extends AbsCallActor {
     private final WakeLock wakeLock;
     private long callId;
     private Peer peer;
-
-    private HashMap<Long, PeerConnectionHolder> mediaSources = new HashMap<>();
 
     private CallVM callVM;
     private CommandCallback<Long> callback;
@@ -71,15 +74,14 @@ public class CallActor extends AbsCallActor {
                 callBus.joinMasterBus(responseDoCall.getEventBusId(), responseDoCall.getDeviceId());
                 callBus.changeVideoEnabled(isVideoInitiallyEnabled);
                 callBus.startOwn();
-                callVM = callViewModels.spawnNewOutgoingVM(responseDoCall.getCallId(), peer);
-                callVM.getIsVideoEnabled().change(isVideoInitiallyEnabled);
+                callVM = callViewModels.spawnNewOutgoingVM(responseDoCall.getCallId(), peer, isVideoInitiallyEnabled);
             }).failure(e -> self().send(PoisonPill.INSTANCE));
         } else {
             api(new RequestGetCallInfo(callId)).then(responseGetCallInfo -> {
                 peer = convert(responseGetCallInfo.getPeer());
                 callBus.joinBus(responseGetCallInfo.getEventBusId());
-                callVM = callViewModels.spawnNewIncomingVM(callId, peer, CallState.RINGING);
-                callVM.getIsVideoEnabled().change(isVideoInitiallyEnabled);
+                callBus.changeVideoEnabled(isVideoInitiallyEnabled);
+                callVM = callViewModels.spawnNewIncomingVM(callId, peer, isVideoInitiallyEnabled, CallState.RINGING);
             }).failure(e -> self().send(PoisonPill.INSTANCE));
         }
     }
@@ -148,80 +150,72 @@ public class CallActor extends AbsCallActor {
 
 
     //
-    // Incoming Connections
+    // Track Events
     //
-
     @Override
-    public void onPeerConnectionStateChanged(long deviceId, boolean isAudioEnabled, boolean isVideoEnabled) {
-        PeerConnectionHolder holder = getHolder(deviceId);
-        if (holder.isVideoEnabled != isVideoEnabled || holder.isAudioEnabled != isAudioEnabled) {
-            holder.setAudioEnabled(isAudioEnabled);
-            holder.setVideoEnabled(isVideoEnabled);
-
-            ArrayList<CallMediaSource> mediaSources = new ArrayList<>(callVM.getMediaStreams().get());
-            for (int i = 0; i < mediaSources.size(); i++) {
-                CallMediaSource mediaSource = mediaSources.get(i);
-                if (mediaSource.getDeviceId() == deviceId) {
-                    mediaSources.remove(i);
-                    mediaSources.add(i, new CallMediaSource(deviceId,
-                            isAudioEnabled, isAudioEnabled, mediaSource.getStream()));
-                }
-            }
-            callVM.getMediaStreams().change(mediaSources);
+    public void onTrackAdded(long deviceId, WebRTCMediaTrack track) {
+        if (track.getTrackType() == WebRTCTrackType.AUDIO) {
+            ArrayListMediaTrack tracks = new ArrayListMediaTrack(callVM.getTheirAudioTracks().get());
+            tracks.add(track);
+            callVM.getTheirAudioTracks().change(tracks);
+        } else if (track.getTrackType() == WebRTCTrackType.VIDEO) {
+            ArrayListMediaTrack tracks = new ArrayListMediaTrack(callVM.getTheirVideoTracks().get());
+            tracks.add(track);
+            callVM.getTheirVideoTracks().change(tracks);
+        } else {
+            // Unknown track type
         }
     }
 
     @Override
-    public void onStreamAdded(long deviceId, WebRTCMediaStream stream) {
-        PeerConnectionHolder holder = getHolder(deviceId);
-        ArrayList<CallMediaSource> mediaSources = new ArrayList<>(callVM.getMediaStreams().get());
-        mediaSources.add(new CallMediaSource(deviceId, holder.isAudioEnabled(), holder.isVideoEnabled(), stream));
-        callVM.getMediaStreams().change(mediaSources);
-    }
-
-    @Override
-    public void onStreamRemoved(long deviceId, WebRTCMediaStream stream) {
-        ArrayList<CallMediaSource> mediaSources = new ArrayList<>(callVM.getMediaStreams().get());
-        for (int i = 0; i < mediaSources.size(); i++) {
-            CallMediaSource mediaSource = mediaSources.get(i);
-            if (mediaSource.getDeviceId() == deviceId && mediaSource.getStream() == stream) {
-                mediaSources.remove(i);
-                break;
-            }
+    public void onTrackRemoved(long deviceId, WebRTCMediaTrack track) {
+        if (track.getTrackType() == WebRTCTrackType.AUDIO) {
+            ArrayListMediaTrack tracks = new ArrayListMediaTrack(callVM.getTheirAudioTracks().get());
+            tracks.remove(track);
+            callVM.getTheirAudioTracks().change(tracks);
+        } else if (track.getTrackType() == WebRTCTrackType.VIDEO) {
+            ArrayListMediaTrack tracks = new ArrayListMediaTrack(callVM.getTheirVideoTracks().get());
+            tracks.remove(track);
+            callVM.getTheirVideoTracks().change(tracks);
+        } else {
+            // Unknown track type
         }
-        callVM.getMediaStreams().change(mediaSources);
     }
 
     @Override
-    public void onPeerConnectionDisposed(long deviceId) {
-
-    }
-
-    private PeerConnectionHolder getHolder(long deviceId) {
-        if (!mediaSources.containsKey(deviceId)) {
-            mediaSources.put(deviceId, new PeerConnectionHolder());
+    public void onOwnTrackAdded(WebRTCMediaTrack track) {
+        if (track.getTrackType() == WebRTCTrackType.AUDIO) {
+            ArrayListMediaTrack tracks = new ArrayListMediaTrack(callVM.getOwnAudioTracks().get());
+            tracks.add(track);
+            callVM.getOwnAudioTracks().change(tracks);
+        } else if (track.getTrackType() == WebRTCTrackType.VIDEO) {
+            ArrayListMediaTrack tracks = new ArrayListMediaTrack(callVM.getOwnVideoTracks().get());
+            tracks.add(track);
+            callVM.getOwnVideoTracks().change(tracks);
+        } else {
+            // Unknown track type
         }
-        return mediaSources.get(deviceId);
-    }
-
-    //
-    // Outgoing Stream
-    //
-
-    @Override
-    public void onOwnStreamAdded(WebRTCMediaStream stream) {
-        callVM.getOwnMediaStream().change(stream);
     }
 
     @Override
-    public void onOwnStreamRemoved(WebRTCMediaStream stream) {
-        callVM.getOwnMediaStream().change(null);
+    public void onOwnTrackRemoved(WebRTCMediaTrack track) {
+        if (track.getTrackType() == WebRTCTrackType.AUDIO) {
+            ArrayListMediaTrack tracks = new ArrayListMediaTrack(callVM.getOwnAudioTracks().get());
+            tracks.remove(track);
+            callVM.getOwnAudioTracks().change(tracks);
+        } else if (track.getTrackType() == WebRTCTrackType.VIDEO) {
+            ArrayListMediaTrack tracks = new ArrayListMediaTrack(callVM.getOwnVideoTracks().get());
+            tracks.remove(track);
+            callVM.getOwnVideoTracks().change(tracks);
+        } else {
+            // Unknown track type
+        }
     }
 
     @Override
-    public void onMuteChanged(boolean isMuted) {
-        super.onMuteChanged(isMuted);
-        callVM.getIsMuted().change(isMuted);
+    public void onAudioEnableChanged(boolean enabled) {
+        super.onAudioEnableChanged(enabled);
+        callVM.getIsAudioEnabled().change(enabled);
     }
 
     @Override
@@ -270,48 +264,5 @@ public class CallActor extends AbsCallActor {
 
     public static class RejectCall {
 
-    }
-
-    private static class PeerConnectionHolder {
-
-        private boolean isAudioEnabled;
-        private boolean isVideoEnabled;
-        private boolean isEnabled;
-        private ArrayList<WebRTCMediaStream> streams;
-
-        public PeerConnectionHolder() {
-            this.isEnabled = false;
-            this.isAudioEnabled = true;
-            this.isVideoEnabled = false;
-            this.streams = new ArrayList<>();
-        }
-
-        public boolean isEnabled() {
-            return isEnabled;
-        }
-
-        public void setEnabled(boolean enabled) {
-            isEnabled = enabled;
-        }
-
-        public boolean isAudioEnabled() {
-            return isAudioEnabled;
-        }
-
-        public void setAudioEnabled(boolean audioEnabled) {
-            isAudioEnabled = audioEnabled;
-        }
-
-        public ArrayList<WebRTCMediaStream> getStreams() {
-            return streams;
-        }
-
-        public boolean isVideoEnabled() {
-            return isVideoEnabled;
-        }
-
-        public void setVideoEnabled(boolean videoEnabled) {
-            isVideoEnabled = videoEnabled;
-        }
     }
 }

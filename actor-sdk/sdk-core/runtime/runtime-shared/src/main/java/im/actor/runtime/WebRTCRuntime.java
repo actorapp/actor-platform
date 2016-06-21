@@ -33,8 +33,8 @@ public interface WebRTCRuntime {
      * @return promise of audio stream
      */
     @NotNull
-    @ObjectiveCName("getUserMediaWithIsVideoEnabled:")
-    Promise<WebRTCMediaStream> getUserMedia(boolean isVideoEnabled);
+    @ObjectiveCName("getUserMediaWithIsAudioEnabled:withIsVideoEnabled:")
+    Promise<WebRTCMediaStream> getUserMedia(boolean isAudioEnabled, boolean isVideoEnabled);
 
     /**
      * Return if implementation supports pre-connection technique

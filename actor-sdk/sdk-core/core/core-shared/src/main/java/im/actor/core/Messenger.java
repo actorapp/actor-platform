@@ -1237,10 +1237,10 @@ public class Messenger {
      */
     @ObjectiveCName("toggleCallMuteWithCallId:")
     public void toggleCallMute(long callId) {
-        if (modules.getCallsModule().getCall(callId).getIsMuted().get()) {
-            modules.getCallsModule().unmuteCall(callId);
-        } else {
+        if (modules.getCallsModule().getCall(callId).getIsAudioEnabled().get()) {
             modules.getCallsModule().muteCall(callId);
+        } else {
+            modules.getCallsModule().unmuteCall(callId);
         }
     }
 
