@@ -416,7 +416,7 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
             isLoaded = true
             isLoadedAfter = true
             
-            let readState = Actor.loadFirstUnread(peer)
+            let readState = Actor.loadLastMessageDate(peer)
            
             if readState > 0 {
                 for i in 0..<getCount() {
