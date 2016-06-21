@@ -392,7 +392,7 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
             participantUserIds = memberUserIds.toSeq,
             isAudioOnlyCall = isAudioOnlyCall,
             isVideoOnlyCall = isVideoOnlyCall,
-            isVideoPreferred = isVideoOnlyCall
+            isVideoPreferred = isVideoPreferred
           )
         } else {
           sender() ! GetInfoAck(
@@ -401,7 +401,7 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
             participantUserIds = memberUserIds.toSeq,
             isAudioOnlyCall = isAudioOnlyCall,
             isVideoOnlyCall = isVideoOnlyCall,
-            isVideoPreferred = isVideoOnlyCall
+            isVideoPreferred = isVideoPreferred
           )
         }
       case EventBus.Joined(_, client, deviceId) ⇒
