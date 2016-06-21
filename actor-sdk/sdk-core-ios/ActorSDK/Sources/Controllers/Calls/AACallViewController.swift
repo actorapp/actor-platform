@@ -204,8 +204,8 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
         // Binding State
         //
         
-        binder.bind(call.isMuted) { (value: JavaLangBoolean!) -> () in
-            self.muteButton.filled = value.booleanValue()
+        binder.bind(call.isAudioEnabled) { (value: JavaLangBoolean!) -> () in
+            self.muteButton.filled = !value.booleanValue()
         }
         
         binder.bind(call.state) { (value: ACCallState!) -> () in
@@ -321,23 +321,47 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
             }
             
             // Local Video can be only one, so we can just keep active track reference and handle changes
-            binder.bind(call.ownMediaStream, valueModel2: call.isVideoEnabled) { (stream: MediaStream!, value2: JavaLangBoolean!) in
+//            binder.bind(call.ownMediaStream, valueModel2: call.isVideoEnabled) { (stream: MediaStream!, value2: JavaLangBoolean!) in
+//                var needUnbind = true
+//                if value2.booleanValue() {
+//                    if let s = stream {
+//                        if s.stream.videoTracks.count > 0 {
+//                            let t = s.stream.videoTracks[0] as! RTCVideoTrack
+//                            if self.localVideoTrack != t {
+//                                if self.localVideoTrack != nil {
+//                                    self.localVideoTrack.removeRenderer(self.localView)
+//                                }
+//                                self.localVideoTrack = t
+//                                self.localView.showViewAnimated()
+//                                t.addRenderer(self.localView)
+//                            }
+//                            needUnbind = false
+//                        }
+//                    }
+//                }
+//                if needUnbind {
+//                    if self.localVideoTrack != nil {
+//                        self.localVideoTrack.removeRenderer(self.localView)
+//                        self.localVideoTrack = nil
+//                    }
+//                    self.localView.hideViewAnimated()
+//                }
+//            }
+            
+            binder.bind(call.ownVideoTracks, closure: { (videoTracks: ACArrayListMediaTrack!) in
                 var needUnbind = true
-                if value2.booleanValue() {
-                    if let s = stream {
-                        if s.stream.videoTracks.count > 0 {
-                            let t = s.stream.videoTracks[0] as! RTCVideoTrack
-                            if self.localVideoTrack != t {
-                                if self.localVideoTrack != nil {
-                                    self.localVideoTrack.removeRenderer(self.localView)
-                                }
-                                self.localVideoTrack = t
-                                self.localView.showViewAnimated()
-                                t.addRenderer(self.localView)
-                            }
-                            needUnbind = false
+                if videoTracks.size() > 0 {
+                    
+                   let track = (videoTracks.getWithInt(0) as! CocoaVideoTrack).videoTrack
+                    if self.localVideoTrack != track {
+                        if self.localVideoTrack != nil {
+                            self.localVideoTrack.removeRenderer(self.localView)
                         }
+                        self.localVideoTrack = track
+                        self.localView.showViewAnimated()
+                        track.addRenderer(self.localView)
                     }
+                    needUnbind = false
                 }
                 if needUnbind {
                     if self.localVideoTrack != nil {
@@ -346,28 +370,25 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
                     }
                     self.localView.hideViewAnimated()
                 }
-            }
-            
+            })
+
             // In Private Calls we can have only one video stream from other side
             // We will assume only one active peer connection
-            binder.bind(call.mediaStreams) { (value: JavaUtilArrayList!) -> () in
+            
+            binder.bind(call.theirVideoTracks, closure: { (videoTracks: ACArrayListMediaTrack!) in
                 var needUnbind = true
-                for source in value! {
-                    let casted = source as! ACCallMediaSource
-                    let stream = (casted.stream as! MediaStream).stream
-                    if /*casted.isVideoEnabled &&*/ stream.videoTracks.count > 0 {
-                        let t = stream.videoTracks[0] as! RTCVideoTrack
-                        if self.remoteVideoTrack != t {
-                            if self.remoteVideoTrack != nil {
-                                self.remoteVideoTrack.removeRenderer(self.remoteView)
-                            }
-                            self.remoteVideoTrack = t
-                            self.remoteView.showViewAnimated()
-                            t.addRenderer(self.remoteView)
+                if videoTracks.size() > 0 {
+                    
+                    let track = (videoTracks.getWithInt(0) as! CocoaVideoTrack).videoTrack
+                    if self.remoteVideoTrack != track {
+                        if self.remoteVideoTrack != nil {
+                            self.remoteVideoTrack.removeRenderer(self.remoteView)
                         }
-                        needUnbind = false
-                        break
+                        self.remoteVideoTrack = track
+                        self.remoteView.showViewAnimated()
+                        track.addRenderer(self.remoteView)
                     }
+                    needUnbind = false
                 }
                 if needUnbind {
                     if self.remoteVideoTrack != nil {
@@ -376,7 +397,36 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
                     }
                     self.remoteView.hideViewAnimated()
                 }
-            }
+            })
+
+            
+//            binder.bind(call.mediaStreams) { (value: JavaUtilArrayList!) -> () in
+//                var needUnbind = true
+//                for source in value! {
+//                    let casted = source as! ACCallMediaSource
+//                    let stream = (casted.stream as! MediaStream).stream
+//                    if /*casted.isVideoEnabled &&*/ stream.videoTracks.count > 0 {
+//                        let t = stream.videoTracks[0] as! RTCVideoTrack
+//                        if self.remoteVideoTrack != t {
+//                            if self.remoteVideoTrack != nil {
+//                                self.remoteVideoTrack.removeRenderer(self.remoteView)
+//                            }
+//                            self.remoteVideoTrack = t
+//                            self.remoteView.showViewAnimated()
+//                            t.addRenderer(self.remoteView)
+//                        }
+//                        needUnbind = false
+//                        break
+//                    }
+//                }
+//                if needUnbind {
+//                    if self.remoteVideoTrack != nil {
+//                        self.remoteVideoTrack.removeRenderer(self.remoteView)
+//                        self.remoteVideoTrack = nil
+//                    }
+//                    self.remoteView.hideViewAnimated()
+//                }
+//            }
         } else {
             self.videoButton.filled = false
             self.videoButton.enabled = false

@@ -5,6 +5,7 @@ import com.google.j2objc.annotations.Property;
 import java.util.ArrayList;
 
 import im.actor.core.entity.Peer;
+import im.actor.core.viewmodel.generics.ArrayListMediaTrack;
 import im.actor.core.viewmodel.generics.BooleanValueModel;
 import im.actor.runtime.mvvm.ValueModel;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
@@ -23,14 +24,14 @@ public class CallVM {
     // Own Stream
 
     @Property("nonatomic, readonly")
-    private final ValueModel<ArrayList<WebRTCMediaTrack>> ownVideoTracks;
+    private final ValueModel<ArrayListMediaTrack> ownVideoTracks;
     @Property("nonatomic, readonly")
-    private final ValueModel<ArrayList<WebRTCMediaTrack>> ownAudioTracks;
+    private final ValueModel<ArrayListMediaTrack> ownAudioTracks;
 
     @Property("nonatomic, readonly")
-    private final ValueModel<ArrayList<WebRTCMediaTrack>> theirVideoTracks;
+    private final ValueModel<ArrayListMediaTrack> theirVideoTracks;
     @Property("nonatomic, readonly")
-    private final ValueModel<ArrayList<WebRTCMediaTrack>> theirAudioTracks;
+    private final ValueModel<ArrayListMediaTrack> theirAudioTracks;
 
 
     @Property("nonatomic, readonly")
@@ -52,10 +53,10 @@ public class CallVM {
         this.peer = peer;
         this.isOutgoing = isOutgoing;
         this.state = new ValueModel<>("calls." + callId + ".state", state);
-        this.ownVideoTracks = new ValueModel<>("calls." + callId + ".own_video", new ArrayList<>());
-        this.ownAudioTracks = new ValueModel<>("calls." + callId + ".own_audio", new ArrayList<>());
-        this.theirVideoTracks = new ValueModel<>("calls." + callId + ".their_video", new ArrayList<>());
-        this.theirAudioTracks = new ValueModel<>("calls." + callId + ".their_audio", new ArrayList<>());
+        this.ownVideoTracks = new ValueModel<>("calls." + callId + ".own_video", new ArrayListMediaTrack());
+        this.ownAudioTracks = new ValueModel<>("calls." + callId + ".own_audio", new ArrayListMediaTrack());
+        this.theirVideoTracks = new ValueModel<>("calls." + callId + ".their_video", new ArrayListMediaTrack());
+        this.theirAudioTracks = new ValueModel<>("calls." + callId + ".their_audio", new ArrayListMediaTrack());
         this.members = new ValueModel<>("calls." + callId + ".members", new ArrayList<>(initialMembers));
         this.isAudioEnabled = new BooleanValueModel("calls." + callId + ".audio_enabled", true);
         this.isVideoEnabled = new BooleanValueModel("calls." + callId + ".video_enabled", isVideoEnabled);
@@ -106,19 +107,19 @@ public class CallVM {
         this.callEnd = callEnd;
     }
 
-    public ValueModel<ArrayList<WebRTCMediaTrack>> getOwnVideoTracks() {
+    public ValueModel<ArrayListMediaTrack> getOwnVideoTracks() {
         return ownVideoTracks;
     }
 
-    public ValueModel<ArrayList<WebRTCMediaTrack>> getOwnAudioTracks() {
+    public ValueModel<ArrayListMediaTrack> getOwnAudioTracks() {
         return ownAudioTracks;
     }
 
-    public ValueModel<ArrayList<WebRTCMediaTrack>> getTheirVideoTracks() {
+    public ValueModel<ArrayListMediaTrack> getTheirVideoTracks() {
         return theirVideoTracks;
     }
 
-    public ValueModel<ArrayList<WebRTCMediaTrack>> getTheirAudioTracks() {
+    public ValueModel<ArrayListMediaTrack> getTheirAudioTracks() {
         return theirAudioTracks;
     }
 }

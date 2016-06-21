@@ -85,9 +85,39 @@ class CocoaWebRTCRuntime: NSObject, ARWebRTCRuntime {
 @objc class MediaStream: NSObject, ARWebRTCMediaStream {
     
     let stream: RTCMediaStream
+    let audioTracks: IOSObjectArray
+    let videoTracks: IOSObjectArray
+    let allTracks: IOSObjectArray
     
     init(stream: RTCMediaStream) {
         self.stream = stream
+        
+        self.audioTracks = IOSObjectArray(length: UInt(stream.audioTracks.count), type: ARWebRTCMediaTrack_class_())
+        self.videoTracks = IOSObjectArray(length: UInt(stream.videoTracks.count), type: ARWebRTCMediaTrack_class_())
+        self.allTracks = IOSObjectArray(length: UInt(stream.audioTracks.count + stream.videoTracks.count), type: ARWebRTCMediaTrack_class_())
+        
+        for i in 0..<stream.audioTracks.count {
+            let track = CocoaAudioTrack(audioTrack: stream.audioTracks[i] as! RTCAudioTrack)
+            audioTracks.replaceObjectAtIndex(UInt(i), withObject: track)
+            allTracks.replaceObjectAtIndex(UInt(i), withObject: track)
+        }
+        for i in 0..<stream.videoTracks.count {
+            let track = CocoaVideoTrack(videoTrack: stream.videoTracks[i] as! RTCVideoTrack)
+            videoTracks.replaceObjectAtIndex(UInt(i), withObject: track)
+            allTracks.replaceObjectAtIndex(UInt(i + audioTracks.length()), withObject: track)
+        }
+    }
+    
+    func getAudioTracks() -> IOSObjectArray! {
+        return audioTracks
+    }
+    
+    func getVideoTracks() -> IOSObjectArray! {
+        return videoTracks
+    }
+    
+    func getTracks() -> IOSObjectArray! {
+        return allTracks
     }
     
     func close() {
@@ -99,6 +129,48 @@ class CocoaWebRTCRuntime: NSObject, ARWebRTCRuntime {
             (i as! RTCVideoTrack).setEnabled(false)
             // stream.removeVideoTrack(i as! RTCVideoTrack)
         }
+    }
+}
+
+public class CocoaAudioTrack: NSObject, ARWebRTCMediaTrack {
+    
+    public let audioTrack: RTCAudioTrack
+    
+    public init(let audioTrack: RTCAudioTrack) {
+        self.audioTrack = audioTrack
+    }
+    
+    public func getTrackType() -> jint {
+        return ARWebRTCTrackType_AUDIO
+    }
+    
+    public func setEnabledWithBoolean(isEnabled: jboolean) {
+        audioTrack.setEnabled(isEnabled)
+    }
+    
+    public func isEnabled() -> jboolean {
+        return audioTrack.isEnabled()
+    }
+}
+
+public class CocoaVideoTrack: NSObject, ARWebRTCMediaTrack {
+    
+    public let videoTrack: RTCVideoTrack
+    
+    public init(let videoTrack: RTCVideoTrack) {
+        self.videoTrack = videoTrack
+    }
+    
+    public func getTrackType() -> jint {
+        return ARWebRTCTrackType_VIDEO
+    }
+    
+    public func setEnabledWithBoolean(isEnabled: jboolean) {
+        videoTrack.setEnabled(isEnabled)
+    }
+    
+    public func isEnabled() -> jboolean {
+        return videoTrack.isEnabled()
     }
 }
 

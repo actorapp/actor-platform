@@ -17,6 +17,7 @@ import im.actor.core.viewmodel.CallMediaSource;
 import im.actor.core.viewmodel.CallState;
 import im.actor.core.viewmodel.CallVM;
 import im.actor.core.viewmodel.CommandCallback;
+import im.actor.core.viewmodel.generics.ArrayListMediaTrack;
 import im.actor.runtime.Log;
 import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.messages.PoisonPill;
@@ -154,11 +155,11 @@ public class CallActor extends AbsCallActor {
     @Override
     public void onTrackAdded(long deviceId, WebRTCMediaTrack track) {
         if (track.getTrackType() == WebRTCTrackType.AUDIO) {
-            ArrayList<WebRTCMediaTrack> tracks = new ArrayList<>(callVM.getTheirAudioTracks().get());
+            ArrayListMediaTrack tracks = new ArrayListMediaTrack(callVM.getTheirAudioTracks().get());
             tracks.add(track);
             callVM.getTheirAudioTracks().change(tracks);
         } else if (track.getTrackType() == WebRTCTrackType.VIDEO) {
-            ArrayList<WebRTCMediaTrack> tracks = new ArrayList<>(callVM.getTheirVideoTracks().get());
+            ArrayListMediaTrack tracks = new ArrayListMediaTrack(callVM.getTheirVideoTracks().get());
             tracks.add(track);
             callVM.getTheirVideoTracks().change(tracks);
         } else {
@@ -169,11 +170,11 @@ public class CallActor extends AbsCallActor {
     @Override
     public void onTrackRemoved(long deviceId, WebRTCMediaTrack track) {
         if (track.getTrackType() == WebRTCTrackType.AUDIO) {
-            ArrayList<WebRTCMediaTrack> tracks = new ArrayList<>(callVM.getTheirAudioTracks().get());
+            ArrayListMediaTrack tracks = new ArrayListMediaTrack(callVM.getTheirAudioTracks().get());
             tracks.remove(track);
             callVM.getTheirAudioTracks().change(tracks);
         } else if (track.getTrackType() == WebRTCTrackType.VIDEO) {
-            ArrayList<WebRTCMediaTrack> tracks = new ArrayList<>(callVM.getTheirVideoTracks().get());
+            ArrayListMediaTrack tracks = new ArrayListMediaTrack(callVM.getTheirVideoTracks().get());
             tracks.remove(track);
             callVM.getTheirVideoTracks().change(tracks);
         } else {
@@ -184,11 +185,11 @@ public class CallActor extends AbsCallActor {
     @Override
     public void onOwnTrackAdded(WebRTCMediaTrack track) {
         if (track.getTrackType() == WebRTCTrackType.AUDIO) {
-            ArrayList<WebRTCMediaTrack> tracks = new ArrayList<>(callVM.getOwnAudioTracks().get());
+            ArrayListMediaTrack tracks = new ArrayListMediaTrack(callVM.getOwnAudioTracks().get());
             tracks.add(track);
             callVM.getOwnAudioTracks().change(tracks);
         } else if (track.getTrackType() == WebRTCTrackType.VIDEO) {
-            ArrayList<WebRTCMediaTrack> tracks = new ArrayList<>(callVM.getOwnVideoTracks().get());
+            ArrayListMediaTrack tracks = new ArrayListMediaTrack(callVM.getOwnVideoTracks().get());
             tracks.add(track);
             callVM.getOwnVideoTracks().change(tracks);
         } else {
@@ -199,11 +200,11 @@ public class CallActor extends AbsCallActor {
     @Override
     public void onOwnTrackRemoved(WebRTCMediaTrack track) {
         if (track.getTrackType() == WebRTCTrackType.AUDIO) {
-            ArrayList<WebRTCMediaTrack> tracks = new ArrayList<>(callVM.getOwnAudioTracks().get());
+            ArrayListMediaTrack tracks = new ArrayListMediaTrack(callVM.getOwnAudioTracks().get());
             tracks.remove(track);
             callVM.getOwnAudioTracks().change(tracks);
         } else if (track.getTrackType() == WebRTCTrackType.VIDEO) {
-            ArrayList<WebRTCMediaTrack> tracks = new ArrayList<>(callVM.getOwnVideoTracks().get());
+            ArrayListMediaTrack tracks = new ArrayListMediaTrack(callVM.getOwnVideoTracks().get());
             tracks.remove(track);
             callVM.getOwnVideoTracks().change(tracks);
         } else {
