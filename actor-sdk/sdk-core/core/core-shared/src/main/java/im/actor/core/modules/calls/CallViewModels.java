@@ -27,23 +27,23 @@ public class CallViewModels {
         return callModels.get(id);
     }
 
-    public synchronized CallVM spawnNewVM(long callId, Peer peer, boolean isOutgoing, ArrayList<CallMember> members, CallState callState) {
-        CallVM callVM = new CallVM(callId, peer, isOutgoing, members, callState);
+    public synchronized CallVM spawnNewVM(long callId, Peer peer, boolean isOutgoing, boolean isVideoEnabled, ArrayList<CallMember> members, CallState callState) {
+        CallVM callVM = new CallVM(callId, peer, isOutgoing, isVideoEnabled, members, callState);
         synchronized (callModels) {
             callModels.put(callId, callVM);
         }
         return callVM;
     }
 
-    public synchronized CallVM spawnNewIncomingVM(long callId, Peer peer, CallState callState) {
-        CallVM callVM = new CallVM(callId, peer, false, new ArrayList<>(), callState);
+    public synchronized CallVM spawnNewIncomingVM(long callId, Peer peer, boolean isVideoEnabled, CallState callState) {
+        CallVM callVM = new CallVM(callId, peer, false, isVideoEnabled, new ArrayList<>(), callState);
         synchronized (callModels) {
             callModels.put(callId, callVM);
         }
         return callVM;
     }
 
-    public synchronized CallVM spawnNewOutgoingVM(long callId, Peer peer) {
+    public synchronized CallVM spawnNewOutgoingVM(long callId, Peer peer, boolean isVideoEnabled) {
         ArrayList<CallMember> members = new ArrayList<>();
         if (peer.getPeerType() == PeerType.PRIVATE ||
                 peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
@@ -56,6 +56,6 @@ public class CallViewModels {
                 }
             }
         }
-        return spawnNewVM(callId, peer, true, members, CallState.RINGING);
+        return spawnNewVM(callId, peer, true, isVideoEnabled, members, CallState.RINGING);
     }
 }

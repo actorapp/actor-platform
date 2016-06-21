@@ -8,6 +8,7 @@ import im.actor.core.entity.Peer;
 import im.actor.core.viewmodel.generics.BooleanValueModel;
 import im.actor.runtime.mvvm.ValueModel;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
+import im.actor.runtime.webrtc.WebRTCMediaTrack;
 import im.actor.runtime.webrtc.WebRTCPeerConnection;
 
 public class CallVM {
@@ -19,17 +20,21 @@ public class CallVM {
     @Property("nonatomic, readonly")
     private final ValueModel<CallState> state;
 
-    // Incoming Streams
-
-    @Property("nonatomic, readonly")
-    private final ValueModel<ArrayList<CallMediaSource>> mediaStreams;
-
     // Own Stream
 
     @Property("nonatomic, readonly")
-    private final ValueModel<WebRTCMediaStream> ownMediaStream;
+    private final ValueModel<ArrayList<WebRTCMediaTrack>> ownVideoTracks;
     @Property("nonatomic, readonly")
-    private final BooleanValueModel isMuted;
+    private final ValueModel<ArrayList<WebRTCMediaTrack>> ownAudioTracks;
+
+    @Property("nonatomic, readonly")
+    private final ValueModel<ArrayList<WebRTCMediaTrack>> theirVideoTracks;
+    @Property("nonatomic, readonly")
+    private final ValueModel<ArrayList<WebRTCMediaTrack>> theirAudioTracks;
+
+
+    @Property("nonatomic, readonly")
+    private final BooleanValueModel isAudioEnabled;
     @Property("nonatomic, readonly")
     private final BooleanValueModel isVideoEnabled;
 
@@ -42,16 +47,18 @@ public class CallVM {
     @Property("nonatomic, readonly")
     private final boolean isOutgoing;
 
-    public CallVM(long callId, Peer peer, boolean isOutgoing, ArrayList<CallMember> initialMembers, CallState state) {
+    public CallVM(long callId, Peer peer, boolean isOutgoing, boolean isVideoEnabled, ArrayList<CallMember> initialMembers, CallState state) {
         this.callId = callId;
         this.peer = peer;
         this.isOutgoing = isOutgoing;
         this.state = new ValueModel<>("calls." + callId + ".state", state);
-        this.mediaStreams = new ValueModel<>("calls." + callId + ".media_stream", new ArrayList<>());
-        this.ownMediaStream = new ValueModel<>("calls." + callId + ".own_media_stream", null);
+        this.ownVideoTracks = new ValueModel<>("calls." + callId + ".own_video", new ArrayList<>());
+        this.ownAudioTracks = new ValueModel<>("calls." + callId + ".own_audio", new ArrayList<>());
+        this.theirVideoTracks = new ValueModel<>("calls." + callId + ".their_video", new ArrayList<>());
+        this.theirAudioTracks = new ValueModel<>("calls." + callId + ".their_audio", new ArrayList<>());
         this.members = new ValueModel<>("calls." + callId + ".members", new ArrayList<>(initialMembers));
-        this.isMuted = new BooleanValueModel("calls." + callId + ".muted", false);
-        this.isVideoEnabled = new BooleanValueModel("calls." + callId + ".video_enabled", true);
+        this.isAudioEnabled = new BooleanValueModel("calls." + callId + ".audio_enabled", true);
+        this.isVideoEnabled = new BooleanValueModel("calls." + callId + ".video_enabled", isVideoEnabled);
         this.callStart = 0;
     }
 
@@ -67,8 +74,8 @@ public class CallVM {
         return callId;
     }
 
-    public BooleanValueModel getIsMuted() {
-        return isMuted;
+    public BooleanValueModel getIsAudioEnabled() {
+        return isAudioEnabled;
     }
 
     public BooleanValueModel getIsVideoEnabled() {
@@ -99,11 +106,19 @@ public class CallVM {
         this.callEnd = callEnd;
     }
 
-    public ValueModel<ArrayList<CallMediaSource>> getMediaStreams() {
-        return mediaStreams;
+    public ValueModel<ArrayList<WebRTCMediaTrack>> getOwnVideoTracks() {
+        return ownVideoTracks;
     }
 
-    public ValueModel<WebRTCMediaStream> getOwnMediaStream() {
-        return ownMediaStream;
+    public ValueModel<ArrayList<WebRTCMediaTrack>> getOwnAudioTracks() {
+        return ownAudioTracks;
+    }
+
+    public ValueModel<ArrayList<WebRTCMediaTrack>> getTheirVideoTracks() {
+        return theirVideoTracks;
+    }
+
+    public ValueModel<ArrayList<WebRTCMediaTrack>> getTheirAudioTracks() {
+        return theirAudioTracks;
     }
 }

@@ -4,6 +4,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 
 import im.actor.core.api.ApiAdvertiseMaster;
 import im.actor.core.api.ApiAdvertiseSelf;
@@ -23,6 +27,7 @@ import im.actor.core.modules.eventbus.EventBusActor;
 import im.actor.runtime.Log;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
+import im.actor.runtime.webrtc.WebRTCMediaTrack;
 
 /*-[
 #pragma clang diagnostic ignored "-Wnullability-completeness"
@@ -113,6 +118,11 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
     }
 
     @Override
+    public void onMediaStreamsChanged(long deviceId, boolean isAudioEnabled, boolean isVideoEnabled) {
+        sendSignal(deviceId, new ApiMediaStreamsUpdated(isAudioEnabled, isVideoEnabled));
+    }
+
+    @Override
     public void onPeerStateChanged(long deviceId, @NotNull PeerState state) {
         if (state == PeerState.CONNECTED && !isConnected && !isEnabled) {
             isConnected = true;
@@ -125,23 +135,23 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
     }
 
     @Override
-    public void onStreamAdded(long deviceId, @NotNull WebRTCMediaStream stream) {
-        callBusCallback.onStreamAdded(deviceId, stream);
+    public void onTrackAdded(long deviceId, WebRTCMediaTrack track) {
+        callBusCallback.onTrackAdded(deviceId, track);
     }
 
     @Override
-    public void onStreamRemoved(long deviceId, @NotNull WebRTCMediaStream stream) {
-        callBusCallback.onStreamRemoved(deviceId, stream);
+    public void onTrackRemoved(long deviceId, WebRTCMediaTrack track) {
+        callBusCallback.onTrackRemoved(deviceId, track);
     }
 
     @Override
-    public void onOwnStreamAdded(WebRTCMediaStream stream) {
-        callBusCallback.onOwnStreamAdded(stream);
+    public void onOwnTrackAdded(WebRTCMediaTrack track) {
+        callBusCallback.onOwnTrackAdded(track);
     }
 
     @Override
-    public void onOwnStreamRemoved(WebRTCMediaStream stream) {
-        callBusCallback.onOwnStreamRemoved(stream);
+    public void onOwnTrackRemoved(WebRTCMediaTrack track) {
+        callBusCallback.onOwnTrackRemoved(track);
     }
 
     //
@@ -150,7 +160,6 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
 
     public void onChangeAudioEnabled(boolean isEnabled) {
         peerCall.onAudioEnabledChanged(isEnabled);
-
     }
 
     public void onChangeVideoEnabled(boolean isEnabled) {
@@ -245,7 +254,7 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
             }
 
             // Notify About Media State Changes
-            callBusCallback.onPeerConnectionStateChanged(senderDeviceId, isAudioEnabled, isVideoEnabled);
+            peerCall.onMediaStateChanged(senderDeviceId, isAudioEnabled, isVideoEnabled);
         }
     }
 
@@ -386,28 +395,33 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
         }
 
         @Override
+        public void onMediaStreamsChanged(long deviceId, boolean isAudioEnabled, boolean isVideoEnabled) {
+            self().post(() -> callCallback.onMediaStreamsChanged(deviceId, isAudioEnabled, isVideoEnabled));
+        }
+
+        @Override
         public void onPeerStateChanged(final long deviceId, @NotNull final PeerState state) {
             self().post(() -> callCallback.onPeerStateChanged(deviceId, state));
         }
 
         @Override
-        public void onStreamAdded(final long deviceId, @NotNull final WebRTCMediaStream stream) {
-            self().post(() -> callCallback.onStreamAdded(deviceId, stream));
+        public void onTrackAdded(long deviceId, WebRTCMediaTrack track) {
+            self().post(() -> callCallback.onTrackAdded(deviceId, track));
         }
 
         @Override
-        public void onStreamRemoved(final long deviceId, @NotNull final WebRTCMediaStream stream) {
-            self().post(() -> callCallback.onStreamRemoved(deviceId, stream));
+        public void onTrackRemoved(long deviceId, WebRTCMediaTrack track) {
+            self().post(() -> callCallback.onTrackRemoved(deviceId, track));
         }
 
         @Override
-        public void onOwnStreamAdded(WebRTCMediaStream stream) {
-            self().post(() -> callCallback.onOwnStreamAdded(stream));
+        public void onOwnTrackAdded(WebRTCMediaTrack track) {
+            self().post(() -> callCallback.onOwnTrackAdded(track));
         }
 
         @Override
-        public void onOwnStreamRemoved(WebRTCMediaStream stream) {
-            self().post(() -> callCallback.onOwnStreamRemoved(stream));
+        public void onOwnTrackRemoved(WebRTCMediaTrack track) {
+            self().post(() -> callCallback.onOwnTrackRemoved(track));
         }
     }
 }

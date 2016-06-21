@@ -12,6 +12,7 @@ import im.actor.core.modules.calls.peers.messages.RTCCandidate;
 import im.actor.core.modules.calls.peers.messages.RTCCloseSession;
 import im.actor.core.modules.calls.peers.messages.RTCDispose;
 import im.actor.core.modules.calls.peers.messages.RTCMasterAdvertised;
+import im.actor.core.modules.calls.peers.messages.RTCMediaStateUpdated;
 import im.actor.core.modules.calls.peers.messages.RTCNeedOffer;
 import im.actor.core.modules.calls.peers.messages.RTCOffer;
 import im.actor.core.modules.calls.peers.messages.RTCStart;
@@ -55,6 +56,10 @@ public class PeerCallInt extends ActorInterface {
 
     public void onOfferNeeded(long deviceId, long sessionId) {
         send(new RTCNeedOffer(deviceId, sessionId));
+    }
+
+    public void onMediaStateChanged(long deviceId, boolean isAudioEnabled, boolean isVideoEnabled) {
+        send(new RTCMediaStateUpdated(deviceId, isAudioEnabled, isVideoEnabled));
     }
 
     public void closeSession(long deviceId, long sessionId) {
