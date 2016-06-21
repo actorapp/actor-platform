@@ -1,6 +1,5 @@
 package im.actor.core.modules.calls.peers;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -12,6 +11,7 @@ import im.actor.core.modules.calls.peers.messages.RTCCandidate;
 import im.actor.core.modules.calls.peers.messages.RTCCloseSession;
 import im.actor.core.modules.calls.peers.messages.RTCDispose;
 import im.actor.core.modules.calls.peers.messages.RTCMasterAdvertised;
+import im.actor.core.modules.calls.peers.messages.RTCMediaStateUpdated;
 import im.actor.core.modules.calls.peers.messages.RTCNeedOffer;
 import im.actor.core.modules.calls.peers.messages.RTCOffer;
 import im.actor.core.modules.calls.peers.messages.RTCStart;
@@ -21,7 +21,11 @@ import im.actor.runtime.WebRTC;
 import im.actor.runtime.actors.messages.PoisonPill;
 import im.actor.runtime.function.CountedReference;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
+import im.actor.runtime.webrtc.WebRTCMediaTrack;
 
+/**
+ * Manages Connections to all Nodes
+ */
 public class PeerCallActor extends ModuleActor {
 
     private static final String TAG = "PeerCallActor";
@@ -37,8 +41,10 @@ public class PeerCallActor extends ModuleActor {
     private HashMap<Long, PeerNodeInt> refs = new HashMap<>();
 
     private CountedReference<WebRTCMediaStream> currentMediaStream;
-    private boolean isCurrentStreamAudioEnabled;
-    private boolean isCurrentStreamVideoEnabled;
+    private boolean isCurrentStreamAudioRequired;
+    private boolean isCurrentStreamVideoRequired;
+    private boolean isAudioRequired;
+    private boolean isVideoRequired;
 
     // State objects
     private boolean isOwnStarted = false;
@@ -50,6 +56,8 @@ public class PeerCallActor extends ModuleActor {
         super(context);
         this.callback = callback;
         this.selfSettings = selfSettings;
+        this.isAudioRequired = true;
+        this.isVideoRequired = false;
     }
 
     //
@@ -57,13 +65,51 @@ public class PeerCallActor extends ModuleActor {
     //
 
     public void onAudioEnabled(boolean isAudioEnabled) {
-        this.isAudioEnabled = isAudioEnabled;
-        requestStream();
+        if (this.isAudioEnabled != isAudioEnabled) {
+            this.isAudioEnabled = isAudioEnabled;
+            if (!isAudioRequired) {
+                isAudioRequired = true;
+            }
+            if (currentMediaStream != null) {
+                for (WebRTCMediaTrack audio : currentMediaStream.get().getAudioTracks()) {
+                    audio.setEnabled(isAudioEnabled);
+                    if (isAudioEnabled) {
+                        callback.onOwnTrackAdded(audio);
+                    } else {
+                        callback.onOwnTrackRemoved(audio);
+                    }
+                }
+            }
+            requestStreamIfNeeded();
+
+            for (Long deviceId : refs.keySet()) {
+                callback.onMediaStreamsChanged(deviceId, isAudioEnabled, isVideoEnabled);
+            }
+        }
     }
 
     public void onVideoEnabled(boolean isVideoEnabled) {
-        this.isVideoEnabled = isVideoEnabled;
-        requestStream();
+        if (this.isVideoEnabled != isVideoEnabled) {
+            this.isVideoEnabled = isVideoEnabled;
+            if (!isVideoRequired) {
+                isVideoRequired = true;
+            }
+            if (currentMediaStream != null) {
+                for (WebRTCMediaTrack video : currentMediaStream.get().getVideoTracks()) {
+                    video.setEnabled(isVideoEnabled);
+                    if (isVideoEnabled) {
+                        callback.onOwnTrackAdded(video);
+                    } else {
+                        callback.onOwnTrackRemoved(video);
+                    }
+                }
+            }
+            requestStreamIfNeeded();
+
+            for (Long deviceId : refs.keySet()) {
+                callback.onMediaStreamsChanged(deviceId, isAudioEnabled, isVideoEnabled);
+            }
+        }
     }
 
     public void onOwnStarted() {
@@ -72,34 +118,67 @@ public class PeerCallActor extends ModuleActor {
         }
         isOwnStarted = true;
 
-        requestStream();
+        requestStreamIfNeeded();
     }
 
-    private void requestStream() {
-        if (!isBuildingStream && isOwnStarted) {
+    private void requestStreamIfNeeded() {
+        if (!isBuildingStream && isOwnStarted
+                && ((currentMediaStream == null)
+                || (isCurrentStreamAudioRequired != isAudioRequired)
+                || (isCurrentStreamVideoRequired != isVideoRequired))) {
+
             isBuildingStream = true;
-            isCurrentStreamAudioEnabled = isAudioEnabled;
-            isCurrentStreamVideoEnabled = isVideoEnabled;
-            WebRTC.getUserMedia(isAudioEnabled, isVideoEnabled).then(mediaStream -> {
+            isCurrentStreamAudioRequired = isAudioRequired;
+            isCurrentStreamVideoRequired = isVideoRequired;
+            WebRTC.getUserMedia(isAudioRequired, isVideoRequired).then(mediaStream -> {
                 isBuildingStream = false;
 
-                if (isCurrentStreamAudioEnabled != isAudioEnabled || isCurrentStreamVideoEnabled != isVideoEnabled) {
-                    requestStream();
+                // Checking if required types are not changed
+                if (isCurrentStreamAudioRequired != isAudioRequired || isCurrentStreamVideoRequired != isVideoRequired) {
+                    // Closing unwanted media stream
+                    mediaStream.close();
+                    requestStreamIfNeeded();
                     return;
                 }
 
+                // Update Stream Locally
+                CountedReference<WebRTCMediaStream> newStream = new VerboseReference(mediaStream);
                 CountedReference<WebRTCMediaStream> oldStream = currentMediaStream;
-                currentMediaStream = new VerboseReference(mediaStream);
+                currentMediaStream = newStream;
 
-                for (PeerNodeInt node : refs.values()) {
-                    node.replaceOwnStream(currentMediaStream);
-                }
-
+                // Releasing old stream
                 if (oldStream != null) {
-                    callback.onOwnStreamRemoved(oldStream.get());
+                    if (isAudioEnabled) {
+                        for (WebRTCMediaTrack track : oldStream.get().getAudioTracks()) {
+                            callback.onOwnTrackRemoved(track);
+                        }
+                    }
+                    if (isVideoEnabled) {
+                        for (WebRTCMediaTrack track : oldStream.get().getVideoTracks()) {
+                            callback.onOwnTrackRemoved(track);
+                        }
+                    }
                     oldStream.release();
                 }
-                callback.onOwnStreamAdded(mediaStream);
+
+                // Connecting to a new stream
+                for (WebRTCMediaTrack audio : mediaStream.getAudioTracks()) {
+                    audio.setEnabled(isAudioEnabled);
+                    if (isAudioEnabled) {
+                        callback.onOwnTrackAdded(audio);
+                    }
+                }
+                for (WebRTCMediaTrack video : mediaStream.getVideoTracks()) {
+                    video.setEnabled(isVideoEnabled);
+                    if (isVideoEnabled) {
+                        callback.onOwnTrackAdded(video);
+                    }
+                }
+
+                // Update references in all active nodes
+                for (PeerNodeInt node : refs.values()) {
+                    node.replaceOwnStream(newStream);
+                }
             }).failure(e -> {
                 Log.d(TAG, "Unable to load stream");
                 self().send(PoisonPill.INSTANCE);
@@ -128,14 +207,20 @@ public class PeerCallActor extends ModuleActor {
     }
 
     public PeerNodeInt createNewPeer(final long deviceId) {
-        PeerNodeInt peerNodeInt = new PeerNodeInt(deviceId, new NodeCallback(),
-                selfSettings, self(), context());
+        // Creating Peer Node
+        PeerNodeInt peerNodeInt = new PeerNodeInt(deviceId, new NodeCallback(), selfSettings, self(), context());
+        // Setting Own Stream if available
         if (currentMediaStream != null) {
             peerNodeInt.replaceOwnStream(currentMediaStream);
         }
+        // Set advertise info if available
         if (this.iceServers != null) {
             peerNodeInt.onAdvertisedMaster(iceServers);
         }
+
+        // Notify new node about current streams configuration
+        callback.onMediaStreamsChanged(deviceId, isAudioEnabled, isVideoEnabled);
+
         refs.put(deviceId, peerNodeInt);
         return peerNodeInt;
     }
@@ -158,7 +243,16 @@ public class PeerCallActor extends ModuleActor {
         refs.clear();
 
         if (currentMediaStream != null) {
-            callback.onOwnStreamRemoved(currentMediaStream.get());
+            if (isAudioEnabled) {
+                for (WebRTCMediaTrack track : currentMediaStream.get().getAudioTracks()) {
+                    callback.onOwnTrackRemoved(track);
+                }
+            }
+            if (isVideoEnabled) {
+                for (WebRTCMediaTrack track : currentMediaStream.get().getVideoTracks()) {
+                    callback.onOwnTrackRemoved(track);
+                }
+            }
             currentMediaStream.release();
             currentMediaStream = null;
         }
@@ -191,6 +285,10 @@ public class PeerCallActor extends ModuleActor {
         } else if (message instanceof RTCCloseSession) {
             RTCCloseSession closeSession = (RTCCloseSession) message;
             getPeer(closeSession.getDeviceId()).closeSession(closeSession.getSessionId());
+        } else if (message instanceof RTCMediaStateUpdated) {
+            RTCMediaStateUpdated mediaStateUpdated = (RTCMediaStateUpdated) message;
+            getPeer(mediaStateUpdated.getDeviceId()).onMediaStateChanged(mediaStateUpdated.isAudioEnabled(),
+                    mediaStateUpdated.isVideoEnabled());
         } else if (message instanceof RTCMasterAdvertised) {
             RTCMasterAdvertised masterAdvertised = (RTCMasterAdvertised) message;
             onMasterAdvertised(masterAdvertised.getIceServers());
@@ -269,13 +367,13 @@ public class PeerCallActor extends ModuleActor {
         }
 
         @Override
-        public void onStreamAdded(long deviceId, WebRTCMediaStream stream) {
-            callback.onStreamAdded(deviceId, stream);
+        public void onTrackAdded(long deviceId, WebRTCMediaTrack track) {
+            callback.onTrackAdded(deviceId, track);
         }
 
         @Override
-        public void onStreamRemoved(long deviceId, WebRTCMediaStream stream) {
-            callback.onStreamRemoved(deviceId, stream);
+        public void onTrackRemoved(long deviceId, WebRTCMediaTrack track) {
+            callback.onTrackRemoved(deviceId, track);
         }
     }
 

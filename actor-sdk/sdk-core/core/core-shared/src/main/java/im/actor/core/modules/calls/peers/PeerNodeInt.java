@@ -9,6 +9,7 @@ import im.actor.core.modules.calls.peers.messages.RTCAdvertised;
 import im.actor.core.modules.calls.peers.messages.RTCAnswer;
 import im.actor.core.modules.calls.peers.messages.RTCCandidate;
 import im.actor.core.modules.calls.peers.messages.RTCMasterAdvertised;
+import im.actor.core.modules.calls.peers.messages.RTCMediaStateUpdated;
 import im.actor.core.modules.calls.peers.messages.RTCNeedOffer;
 import im.actor.core.modules.calls.peers.messages.RTCOffer;
 import im.actor.core.modules.calls.peers.messages.RTCCloseSession;
@@ -19,6 +20,7 @@ import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.function.CountedReference;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
+import im.actor.runtime.webrtc.WebRTCMediaTrack;
 
 import static im.actor.runtime.actors.ActorSystem.system;
 
@@ -79,7 +81,6 @@ public class PeerNodeInt extends ActorInterface {
         send(new RTCStart(deviceId));
     }
 
-
     /**
      * Call this method when new offer is needed
      *
@@ -118,6 +119,16 @@ public class PeerNodeInt extends ActorInterface {
      */
     public void onCandidate(long sessionId, int index, String id, String sdp) {
         send(new RTCCandidate(deviceId, sessionId, index, id, sdp));
+    }
+
+    /**
+     * Call this method when new media state is received
+     *
+     * @param isAudioEnabled is audio streams enabled
+     * @param isVideoEnabled is video streams enabled
+     */
+    public void onMediaStateChanged(boolean isAudioEnabled, boolean isVideoEnabled) {
+        send(new RTCMediaStateUpdated(deviceId, isAudioEnabled, isVideoEnabled));
     }
 
     /**
@@ -163,13 +174,13 @@ public class PeerNodeInt extends ActorInterface {
         }
 
         @Override
-        public void onStreamAdded(long deviceId, WebRTCMediaStream stream) {
-            callbackDest.post(() -> callback.onStreamAdded(deviceId, stream));
+        public void onTrackAdded(long deviceId, WebRTCMediaTrack track) {
+            callbackDest.post(() -> callback.onTrackAdded(deviceId, track));
         }
 
         @Override
-        public void onStreamRemoved(long deviceId, WebRTCMediaStream stream) {
-            callbackDest.post(() -> callback.onStreamRemoved(deviceId, stream));
+        public void onTrackRemoved(long deviceId, WebRTCMediaTrack track) {
+            callbackDest.post(() -> callback.onTrackRemoved(deviceId, track));
         }
     }
 }

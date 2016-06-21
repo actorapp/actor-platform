@@ -20,6 +20,7 @@ import im.actor.runtime.function.CountedReference;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.webrtc.WebRTCIceServer;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
+import im.actor.runtime.webrtc.WebRTCMediaTrack;
 import im.actor.runtime.webrtc.WebRTCPeerConnection;
 import im.actor.runtime.webrtc.WebRTCPeerConnectionCallback;
 import im.actor.runtime.webrtc.WebRTCSessionDescription;
@@ -100,9 +101,14 @@ public class PeerConnectionActor extends ModuleActor {
 
                 @Override
                 public void onStreamAdded(WebRTCMediaStream addedStream) {
-                    // Making stream as muted and make it needed to be explicitly enabled
+                    // Disabling all tracks and make it needed to be explicitly enabled
                     // by parent actor
-                    // stream1.setAudioEnabled(false);
+                    for (WebRTCMediaTrack track : addedStream.getAudioTracks()) {
+                        track.setEnabled(false);
+                    }
+                    for (WebRTCMediaTrack track : addedStream.getVideoTracks()) {
+                        track.setEnabled(false);
+                    }
                     callback.onStreamAdded(addedStream);
                 }
 

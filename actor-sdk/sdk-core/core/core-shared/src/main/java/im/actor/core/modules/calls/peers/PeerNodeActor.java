@@ -21,6 +21,7 @@ import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.function.CountedReference;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
+import im.actor.runtime.webrtc.WebRTCMediaTrack;
 
 /**
  * Proxy Actor for simplifying state of PeerConnection by careful peer connection initialization
@@ -28,25 +29,83 @@ import im.actor.runtime.webrtc.WebRTCMediaStream;
  */
 public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback {
 
+    //
+    // Node Configuration
+    //
+
+    /**
+     * Current Node's DeviceId
+     */
     private final long deviceId;
+    /**
+     * Callback for a Node events
+     */
     private final PeerNodeCallback callback;
+
+
+    //
+    // Connection Configuration
+    //
     private final PeerSettings ownSettings;
-    private final ArrayList<WebRTCMediaStream> theirMediaStreams = new ArrayList<>();
-
-    private final HashSet<Long> closedSessions = new HashSet<>();
-    private final ArrayList<PendingSession> pendingSessions = new ArrayList<>();
-
-    private int CHILD_NEXT_ID = 0;
-
-    private long currentSession = 0;
-    private PeerState state = PeerState.PENDING;
-    private PeerConnectionInt peerConnection;
     private PeerSettings theirSettings;
     private List<ApiICEServer> iceServers;
     private CountedReference<WebRTCMediaStream> ownMediaStream;
+
+
+    //
+    // Signaling State
+    //
+
+    /**
+     * Current Session Id
+     */
+    private long currentSession = 0;
+    /**
+     * All closed sessions. Used to filter out old signaling messages
+     */
+    private final HashSet<Long> closedSessions = new HashSet<>();
+    /**
+     * All pending sessions
+     */
+    private final ArrayList<PendingSession> pendingSessions = new ArrayList<>();
+
+
+    //
+    // Current peer connection
+    //
+    private int CHILD_NEXT_ID = 0;
+    private PeerConnectionInt peerConnection;
+    private final ArrayList<WebRTCMediaStream> theirMediaStreams = new ArrayList<>();
+
+    //
+    // Node State Values
+    //
+
+    /**
+     * Mean that if it can produce media tracks
+     */
     private boolean isEnabled = false;
+    /**
+     * State if node is connected to other peer
+     */
     private boolean isConnected = false;
+    /**
+     * State if node is connected, enabled and notified about all streams
+     */
     private boolean isStarted = false;
+    /**
+     * External node state value
+     */
+    private PeerState state = PeerState.PENDING;
+    /**
+     * Is Node's audio enabled
+     */
+    private boolean isAudioEnabled = true;
+    /**
+     * Is Node's video enabled
+     */
+    private boolean isVideoEnabled = true;
+
 
     public PeerNodeActor(long deviceId,
                          PeerSettings ownSettings,
@@ -142,7 +201,18 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
             callback.onPeerStateChanged(deviceId, state);
 
             for (WebRTCMediaStream mediaStream : theirMediaStreams) {
-                callback.onStreamAdded(deviceId, mediaStream);
+                for (WebRTCMediaTrack track : mediaStream.getAudioTracks()) {
+                    track.setEnabled(isAudioEnabled);
+                    if (isAudioEnabled) {
+                        callback.onTrackAdded(deviceId, track);
+                    }
+                }
+                for (WebRTCMediaTrack track : mediaStream.getVideoTracks()) {
+                    track.setEnabled(isVideoEnabled);
+                    if (isVideoEnabled) {
+                        callback.onTrackAdded(deviceId, track);
+                    }
+                }
             }
         }
     }
@@ -180,10 +250,23 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
     @Override
     public void onStreamAdded(WebRTCMediaStream stream) {
         theirMediaStreams.add(stream);
-        // stream.setAudioEnabled(isEnabled);
 
+        //
+        // Enable Tracks if needed
+        //
         if (isStarted) {
-            callback.onStreamAdded(deviceId, stream);
+            for (WebRTCMediaTrack track : stream.getAudioTracks()) {
+                track.setEnabled(isAudioEnabled);
+                if (isAudioEnabled) {
+                    callback.onTrackAdded(deviceId, track);
+                }
+            }
+            for (WebRTCMediaTrack track : stream.getVideoTracks()) {
+                track.setEnabled(isVideoEnabled);
+                if (isVideoEnabled) {
+                    callback.onTrackAdded(deviceId, track);
+                }
+            }
         }
 
         if (!isConnected) {
@@ -202,8 +285,21 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
     @Override
     public void onStreamRemoved(WebRTCMediaStream stream) {
         theirMediaStreams.remove(stream);
+
+        //
+        // Remove Tracks if needed
+        //
         if (isStarted) {
-            callback.onStreamRemoved(deviceId, stream);
+            for (WebRTCMediaTrack track : stream.getAudioTracks()) {
+                if (isAudioEnabled) {
+                    callback.onTrackRemoved(deviceId, track);
+                }
+            }
+            for (WebRTCMediaTrack track : stream.getVideoTracks()) {
+                if (isVideoEnabled) {
+                    callback.onTrackRemoved(deviceId, track);
+                }
+            }
         }
     }
 

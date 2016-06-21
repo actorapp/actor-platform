@@ -6,20 +6,35 @@ import org.webrtc.VideoTrack;
 
 import im.actor.runtime.android.AndroidWebRTCRuntimeProvider;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
+import im.actor.runtime.webrtc.WebRTCMediaTrack;
 
 public class AndroidMediaStream implements WebRTCMediaStream {
 
-    private MediaStream stream;
+    private final MediaStream stream;
 
-    private boolean isLocal;
+    private final boolean isLocal;
     private AndroidVideoSource videoSource;
-    private VideoTrack videoTrack;
     private AndroidAudioSource audioSource;
-    private AudioTrack audioTrack;
+    private AudioTrack localAudioTrack;
+    private VideoTrack localVideoTrack;
+    private final WebRTCMediaTrack[] videoTracks;
+    private final WebRTCMediaTrack[] audioTracks;
+    private final WebRTCMediaTrack[] allTracks;
 
     public AndroidMediaStream(MediaStream stream) {
         this.isLocal = false;
         this.stream = stream;
+        this.allTracks = new WebRTCMediaTrack[stream.audioTracks.size() + stream.videoTracks.size()];
+        this.audioTracks = new WebRTCMediaTrack[stream.audioTracks.size()];
+        for (int i = 0; i < this.audioTracks.length; i++) {
+            audioTracks[i] = new AndroidAudioTrack(stream.audioTracks.get(i));
+            allTracks[i] = audioTracks[i];
+        }
+        this.videoTracks = new WebRTCMediaTrack[stream.videoTracks.size()];
+        for (int i = 0; i < this.videoTracks.length; i++) {
+            videoTracks[i] = new AndroidVideoTrack(stream.videoTracks.get(i));
+            allTracks[audioTracks.length + i] = videoTracks[i];
+        }
     }
 
     public AndroidMediaStream(AndroidAudioSource audioSource, AndroidVideoSource videoSource) {
@@ -28,29 +43,61 @@ public class AndroidMediaStream implements WebRTCMediaStream {
         this.audioSource = audioSource;
         this.stream = AndroidWebRTCRuntimeProvider.FACTORY.createLocalMediaStream("ARDAMSv0");
         if (audioSource != null) {
-            this.audioTrack = AndroidWebRTCRuntimeProvider.FACTORY.createAudioTrack("audio0", audioSource.getAudioSource());
-            this.stream.addTrack(audioTrack);
+            localAudioTrack = AndroidWebRTCRuntimeProvider.FACTORY.createAudioTrack("audio0", audioSource.getAudioSource());
+            stream.addTrack(localAudioTrack);
+            audioTracks = new WebRTCMediaTrack[]{new AndroidAudioTrack(localAudioTrack)};
+        } else {
+            audioTracks = new WebRTCMediaTrack[0];
         }
         if (videoSource != null) {
-            this.videoTrack = AndroidWebRTCRuntimeProvider.FACTORY.createVideoTrack("video0", videoSource.getVideoSource());
-            this.stream.addPreservedTrack(videoTrack);
+            localVideoTrack = AndroidWebRTCRuntimeProvider.FACTORY.createVideoTrack("video0", videoSource.getVideoSource());
+            stream.addPreservedTrack(localVideoTrack);
+            videoTracks = new WebRTCMediaTrack[]{new AndroidVideoTrack(localVideoTrack)};
+        } else {
+            videoTracks = new WebRTCMediaTrack[0];
         }
+        this.allTracks = new WebRTCMediaTrack[audioTracks.length + videoTracks.length];
+        for (int i = 0; i < audioTracks.length; i++) {
+            allTracks[i] = audioTracks[i];
+        }
+        for (int i = 0; i < videoTracks.length; i++) {
+            allTracks[audioTracks.length + i] = videoTracks[i];
+        }
+    }
+
+    public MediaStream getStream() {
+        return stream;
+    }
+
+    @Override
+    public WebRTCMediaTrack[] getAudioTracks() {
+        return audioTracks;
+    }
+
+    @Override
+    public WebRTCMediaTrack[] getVideoTracks() {
+        return videoTracks;
+    }
+
+    @Override
+    public WebRTCMediaTrack[] getTracks() {
+        return allTracks;
     }
 
     @Override
     public void close() {
 
         if (isLocal) {
-            if (audioTrack != null) {
-                stream.removeTrack(audioTrack);
-                audioTrack.dispose();
-                audioTrack = null;
+            if (localAudioTrack != null) {
+                stream.removeTrack(localAudioTrack);
+                localAudioTrack.dispose();
+                localAudioTrack = null;
             }
 
-            if (videoTrack != null) {
-                stream.removeTrack(videoTrack);
-                videoTrack.dispose();
-                videoTrack = null;
+            if (localVideoTrack != null) {
+                stream.removeTrack(localVideoTrack);
+                localVideoTrack.dispose();
+                localVideoTrack = null;
             }
 
             //
@@ -70,9 +117,5 @@ public class AndroidMediaStream implements WebRTCMediaStream {
         }
 
         stream.dispose();
-    }
-
-    public MediaStream getStream() {
-        return stream;
     }
 }
