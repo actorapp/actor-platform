@@ -72,7 +72,7 @@ public class CoverAvatarView extends SimpleDraweeView {
 
         if (ActorSDK.sharedActor().style.getAvatarBackgroundResourse() != 0) {
             builder.setPlaceholderImage(getResources()
-                    .getDrawable(ActorSDK.sharedActor().style.getAvatarBackgroundResourse()));
+                    .getDrawable(ActorSDK.sharedActor().style.getAvatarBackgroundResourse()), ScalingUtils.ScaleType.CENTER_CROP);
         } else {
             builder.setPlaceholderImage(new ColorDrawable(
                     ActorSDK.sharedActor().style.getAvatarBackgroundColor()));
