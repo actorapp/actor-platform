@@ -11,6 +11,7 @@ import im.actor.core.modules.calls.peers.messages.RTCAnswer;
 import im.actor.core.modules.calls.peers.messages.RTCCandidate;
 import im.actor.core.modules.calls.peers.messages.RTCCloseSession;
 import im.actor.core.modules.calls.peers.messages.RTCMasterAdvertised;
+import im.actor.core.modules.calls.peers.messages.RTCMediaStateUpdated;
 import im.actor.core.modules.calls.peers.messages.RTCNeedOffer;
 import im.actor.core.modules.calls.peers.messages.RTCOffer;
 import im.actor.core.modules.calls.peers.messages.RTCStart;
@@ -303,6 +304,39 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
         }
     }
 
+    public void onStreamStateChanged(boolean isAudioEnabled, boolean isVideoEnabled) {
+        if (this.isAudioEnabled != isAudioEnabled) {
+            this.isAudioEnabled = isAudioEnabled;
+            if (isStarted) {
+                for (WebRTCMediaStream streams : theirMediaStreams) {
+                    for (WebRTCMediaTrack track : streams.getAudioTracks()) {
+                        track.setEnabled(isAudioEnabled);
+                        if (isAudioEnabled) {
+                            callback.onTrackAdded(deviceId, track);
+                        } else {
+                            callback.onTrackRemoved(deviceId, track);
+                        }
+                    }
+                }
+            }
+        }
+        if (this.isVideoEnabled != isVideoEnabled) {
+            this.isVideoEnabled = isVideoEnabled;
+            if (isStarted) {
+                for (WebRTCMediaStream streams : theirMediaStreams) {
+                    for (WebRTCMediaTrack track : streams.getVideoTracks()) {
+                        track.setEnabled(isVideoEnabled);
+                        if (isVideoEnabled) {
+                            callback.onTrackAdded(deviceId, track);
+                        } else {
+                            callback.onTrackRemoved(deviceId, track);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public void onCloseSession(long sessionId) {
         if (!closedSessions.contains(sessionId)) {
             closedSessions.add(sessionId);
@@ -417,6 +451,9 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
             } else {
                 stash();
             }
+        } else if (message instanceof RTCMediaStateUpdated) {
+            RTCMediaStateUpdated stateUpdated = (RTCMediaStateUpdated) message;
+            onStreamStateChanged(stateUpdated.isAudioEnabled(), stateUpdated.isVideoEnabled());
         } else {
             super.onReceive(message);
         }

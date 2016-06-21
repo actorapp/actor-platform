@@ -657,59 +657,49 @@ public class CallFragment extends BaseFragment {
             //
             // Bind Their Stream
             //
-//            ACTIVITY_BINDER.bind(call.getMediaStreams(), (theirStream, streamModel) -> {
-//                boolean isNeedUnbind = true;
-//                if (theirStream != null) {
-//                    for (CallMediaSource mediaSource : theirStream) {
-//                        MediaStream stream = ((AndroidMediaStream) mediaSource.getStream()).getStream();
-//                        if (stream.videoTracks.size() > 0 || stream.preservedVideoTracks.size() > 0) {
-//
-//                            if (!isRemoteViewConfigured) {
-//                                remoteVideoView.init(eglContext.getEglBaseContext(), null);
-//                                isRemoteViewConfigured = true;
-//                            }
-//
-//                            VideoTrack videoTrack;
-//                            if (stream.videoTracks.size() > 0) {
-//                                videoTrack = stream.videoTracks.get(0);
-//                            } else if (stream.preservedVideoTracks.size() > 0) {
-//                                videoTrack = stream.preservedVideoTracks.get(0);
-//                            } else {
-//                                throw new RuntimeException("Impossible");
-//                            }
-//
-//                            if (videoTrack != remoteTrack) {
-//                                if (remoteTrack != null) {
-//                                    remoteTrack.removeRenderer(remoteRender);
-//                                }
-//
-//                                remoteTrack = videoTrack;
-//                                remoteTrack.addRenderer(remoteRender);
-//                                remoteVideoView.setVisibility(View.VISIBLE);
-//                                avatarView.setVisibility(View.INVISIBLE);
-//                                nameTV.setVisibility(View.INVISIBLE);
-//                            }
-//                            isNeedUnbind = false;
-//                            break;
-//                        }
-//                    }
-//
-//                }
-//
-//                if (isNeedUnbind) {
-//                    if (remoteTrack != null) {
-//                        remoteTrack.removeRenderer(remoteRender);
-//                        remoteTrack = null;
-//                    }
-//                    if (isRemoteViewConfigured) {
-//                        remoteVideoView.release();
-//                        isRemoteViewConfigured = false;
-//                    }
-//                    remoteVideoView.setVisibility(View.INVISIBLE);
-//                    avatarView.setVisibility(View.VISIBLE);
-//                    nameTV.setVisibility(View.VISIBLE);
-//                }
-//            });
+
+            ACTIVITY_BINDER.bind(call.getTheirVideoTracks(), (videoTracks, valueModel) -> {
+                boolean isNeedUnbind = true;
+
+                if (videoTracks.size() > 0) {
+
+                    if (!isRemoteViewConfigured) {
+                        remoteVideoView.init(eglContext.getEglBaseContext(), null);
+                        isRemoteViewConfigured = true;
+                    }
+
+                    VideoTrack videoTrack = ((AndroidVideoTrack) videoTracks.get(0)).getVideoTrack();
+
+                    if (videoTrack != remoteTrack) {
+                        if (remoteTrack != null) {
+                            remoteTrack.removeRenderer(remoteRender);
+                        }
+
+                        remoteTrack = videoTrack;
+                        remoteTrack.addRenderer(remoteRender);
+                        remoteVideoView.setVisibility(View.VISIBLE);
+                        avatarView.setVisibility(View.INVISIBLE);
+                        nameTV.setVisibility(View.INVISIBLE);
+                    }
+                    isNeedUnbind = false;
+
+                }
+
+                if (isNeedUnbind) {
+                    if (remoteTrack != null) {
+                        remoteTrack.removeRenderer(remoteRender);
+                        remoteTrack = null;
+                    }
+                    if (isRemoteViewConfigured) {
+                        remoteVideoView.release();
+                        isRemoteViewConfigured = false;
+                    }
+                    remoteVideoView.setVisibility(View.INVISIBLE);
+                    avatarView.setVisibility(View.VISIBLE);
+                    nameTV.setVisibility(View.VISIBLE);
+                }
+            });
+
         } else {
             videoTv.setTextColor(getResources().getColor(R.color.picker_grey));
             videoIcon.setTint(getResources().getColor(R.color.picker_grey));
