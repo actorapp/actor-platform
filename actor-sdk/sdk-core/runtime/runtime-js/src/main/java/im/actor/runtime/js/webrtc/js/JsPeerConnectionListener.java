@@ -1,4 +1,4 @@
-package im.actor.runtime.js.webrtc;
+package im.actor.runtime.js.webrtc.js;
 
 public interface JsPeerConnectionListener {
     void onIceCandidate(JsRTCIceCandidate candidate);

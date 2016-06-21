@@ -1,4 +1,4 @@
-package im.actor.runtime.js.webrtc;
+package im.actor.runtime.js.webrtc.js;
 
 import com.google.gwt.core.client.JavaScriptObject;
 
@@ -38,16 +38,15 @@ public class JsPeerConnection extends JavaScriptObject {
         var sdpConstraints = {
             'mandatory': {
                 'OfferToReceiveAudio': true,
-                'OfferToReceiveVideo': false
+                'OfferToReceiveVideo': true
             }
         };
 
-
         this.peerConnection.createOffer(function(offer) {
-            callback.@im.actor.runtime.js.webrtc.JsSessionDescriptionCallback::onOfferCreated(*)(offer);
+            callback.@im.actor.runtime.js.webrtc.js.JsSessionDescriptionCallback::onOfferCreated(*)(offer);
         }, function(error) {
         $wnd.console.warn(error);
-            callback.@im.actor.runtime.js.webrtc.JsSessionDescriptionCallback::onOfferFailure(*)();
+            callback.@im.actor.runtime.js.webrtc.js.JsSessionDescriptionCallback::onOfferFailure(*)();
         }, sdpConstraints);
     }-*/;
 
@@ -56,15 +55,15 @@ public class JsPeerConnection extends JavaScriptObject {
         var sdpConstraints = {
             'mandatory': {
                 'OfferToReceiveAudio': true,
-                'OfferToReceiveVideo': false
+                'OfferToReceiveVideo': true
             }
         };
 
         this.peerConnection.createAnswer(function(offer) {
-            callback.@im.actor.runtime.js.webrtc.JsSessionDescriptionCallback::onOfferCreated(*)(offer);
+            callback.@im.actor.runtime.js.webrtc.js.JsSessionDescriptionCallback::onOfferCreated(*)(offer);
         }, function(error) {
             $wnd.console.warn(error);
-            callback.@im.actor.runtime.js.webrtc.JsSessionDescriptionCallback::onOfferFailure(*)();
+            callback.@im.actor.runtime.js.webrtc.js.JsSessionDescriptionCallback::onOfferFailure(*)();
         }, sdpConstraints);
     }-*/;
 
@@ -89,17 +88,17 @@ public class JsPeerConnection extends JavaScriptObject {
     public final native void setListener(JsPeerConnectionListener listener)/*-{
         this.peerConnection.onicecandidate = function(candidate) {
             if (candidate.candidate != null) {
-                listener.@im.actor.runtime.js.webrtc.JsPeerConnectionListener::onIceCandidate(*)(candidate.candidate);
+                listener.@im.actor.runtime.js.webrtc.js.JsPeerConnectionListener::onIceCandidate(*)(candidate.candidate);
             }
         };
         this.peerConnection.onaddstream = function(event) {
-            listener.@im.actor.runtime.js.webrtc.JsPeerConnectionListener::onStreamAdded(*)(event.stream);
+            listener.@im.actor.runtime.js.webrtc.js.JsPeerConnectionListener::onStreamAdded(*)(event.stream);
         }
         this.peerConnection.onremovestream = function(event) {
-            listener.@im.actor.runtime.js.webrtc.JsPeerConnectionListener::onStreamRemoved(*)(event.stream);
+            listener.@im.actor.runtime.js.webrtc.js.JsPeerConnectionListener::onStreamRemoved(*)(event.stream);
         }
         this.peerConnection.onnegotiationneeded = function(event) {
-            listener.@im.actor.runtime.js.webrtc.JsPeerConnectionListener::onRenegotiationNeeded(*)();
+            listener.@im.actor.runtime.js.webrtc.js.JsPeerConnectionListener::onRenegotiationNeeded(*)();
         }
     }-*/;
 

@@ -54,6 +54,7 @@ import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserPresence;
 import im.actor.core.viewmodel.UserTypingVM;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.core.viewmodel.generics.ArrayListMediaTrack;
 import im.actor.runtime.js.mvvm.JsDisplayList;
 import im.actor.runtime.js.mvvm.JsDisplayListBind;
 import im.actor.runtime.mvvm.ModelChangedListener;
@@ -337,15 +338,15 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
                     jsCall.changeValue(JsCall.create(messenger, callModel));
                 }
             });
-            callModel.getMediaStreams().subscribe(new ValueChangedListener<ArrayList<WebRTCMediaStream>>() {
+            callModel.getOwnVideoTracks().subscribe(new ValueChangedListener<ArrayListMediaTrack>() {
                 @Override
-                public void onChanged(ArrayList<WebRTCMediaStream> val, Value<ArrayList<WebRTCMediaStream>> valueModel) {
+                public void onChanged(ArrayListMediaTrack val, Value<ArrayListMediaTrack> valueModel) {
                     jsCall.changeValue(JsCall.create(messenger, callModel));
                 }
             });
-            callModel.getOwnMediaStream().subscribe(new ValueChangedListener<WebRTCMediaStream>() {
+            callModel.getTheirVideoTracks().subscribe(new ValueChangedListener<ArrayListMediaTrack>() {
                 @Override
-                public void onChanged(WebRTCMediaStream val, Value<WebRTCMediaStream> valueModel) {
+                public void onChanged(ArrayListMediaTrack val, Value<ArrayListMediaTrack> valueModel) {
                     jsCall.changeValue(JsCall.create(messenger, callModel));
                 }
             });

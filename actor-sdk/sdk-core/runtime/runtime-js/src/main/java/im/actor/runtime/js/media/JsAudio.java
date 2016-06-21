@@ -1,9 +1,8 @@
 package im.actor.runtime.js.media;
 
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.JsArray;
 
-import im.actor.runtime.js.webrtc.JsMediaStream;
+import im.actor.runtime.js.webrtc.js.JsMediaStream;
 
 public class JsAudio extends JavaScriptObject {
 

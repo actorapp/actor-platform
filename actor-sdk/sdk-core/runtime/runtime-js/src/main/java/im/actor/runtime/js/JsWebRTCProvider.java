@@ -5,18 +5,14 @@ import com.google.gwt.core.client.JsArray;
 import org.jetbrains.annotations.NotNull;
 
 import im.actor.runtime.WebRTCRuntime;
-import im.actor.runtime.function.Consumer;
-import im.actor.runtime.js.threading.JsScheduller;
-import im.actor.runtime.js.webrtc.JsIceServer;
-import im.actor.runtime.js.webrtc.JsMediaStream;
-import im.actor.runtime.js.webrtc.JsPeerConnection;
-import im.actor.runtime.js.webrtc.JsPeerConnectionConfig;
-import im.actor.runtime.js.webrtc.JsStreaming;
+import im.actor.runtime.js.webrtc.js.JsIceServer;
+import im.actor.runtime.js.webrtc.js.JsPeerConnection;
+import im.actor.runtime.js.webrtc.js.JsPeerConnectionConfig;
+import im.actor.runtime.js.webrtc.js.JsStreaming;
 import im.actor.runtime.js.webrtc.MediaStream;
 import im.actor.runtime.js.webrtc.PeerConnection;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseFunc;
-import im.actor.runtime.promise.PromiseResolver;
 import im.actor.runtime.webrtc.WebRTCIceServer;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
 import im.actor.runtime.webrtc.WebRTCPeerConnection;
@@ -42,14 +38,9 @@ public class JsWebRTCProvider implements WebRTCRuntime {
 
     @NotNull
     @Override
-    public Promise<WebRTCMediaStream> getUserMedia(boolean isVideoEnabled) {
-        if (isVideoEnabled) {
-            return JsStreaming.getUserAudioVideo()
-                    .map((jsMediaStream -> new MediaStream(jsMediaStream, false)));
-        } else {
-            return JsStreaming.getUserAudio()
-                    .map((jsMediaStream -> new MediaStream(jsMediaStream, false)));
-        }
+    public Promise<WebRTCMediaStream> getUserMedia(boolean isAudioEnabled, boolean isVideoEnabled) {
+        return JsStreaming.getUserMedia(isAudioEnabled, isVideoEnabled)
+                .map((jsMediaStream -> new MediaStream(jsMediaStream, false)));
     }
 
     @Override

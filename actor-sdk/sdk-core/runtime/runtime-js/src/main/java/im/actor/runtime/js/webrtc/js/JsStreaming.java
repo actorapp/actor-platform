@@ -1,5 +1,6 @@
-package im.actor.runtime.js.webrtc;
+package im.actor.runtime.js.webrtc.js;
 
+import im.actor.runtime.js.webrtc.MediaException;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseFunc;
 import im.actor.runtime.promise.PromiseResolver;
@@ -16,6 +17,10 @@ public class JsStreaming {
 
     public static Promise<JsMediaStream> getUserAudioVideo() {
         return getUserMedia(JsUserMediaConstraint.audioVideo());
+    }
+
+    public static Promise<JsMediaStream> getUserMedia(boolean enableAudio, boolean enableVideo) {
+        return getUserMedia(JsUserMediaConstraint.create(enableAudio, enableVideo));
     }
 
     public static Promise<JsMediaStream> getUserMedia(final JsUserMediaConstraint constraint) {
@@ -39,9 +44,9 @@ public class JsStreaming {
 
     protected static native void getUserMediaJs(JsUserMediaConstraint constraint, JsMediaCallback callback)/*-{
         $wnd.navigator.getUserMedia(constraint, function(stream) {
-            callback.@im.actor.runtime.js.webrtc.JsMediaCallback::onCreated(*)(stream);
+            callback.@im.actor.runtime.js.webrtc.js.JsMediaCallback::onCreated(*)(stream);
         }, function(error) {
-            callback.@im.actor.runtime.js.webrtc.JsMediaCallback::onError(*)(error);
+            callback.@im.actor.runtime.js.webrtc.js.JsMediaCallback::onError(*)(error);
         });
     }-*/;
 }
