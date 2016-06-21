@@ -94,9 +94,9 @@ public class PeerConnectionActor extends ModuleActor {
 
                 @Override
                 public void onRenegotiationNeeded() {
-                    if (sessionId != -1) {
-                        callback.onNegotiationNeeded(sessionId);
-                    }
+//                    if (sessionId != -1) {
+//                        callback.onNegotiationNeeded(sessionId);
+//                    }
                 }
 
                 @Override
@@ -147,6 +147,9 @@ public class PeerConnectionActor extends ModuleActor {
         }
         peerConnection.addOwnStream(newStream);
         userMedia = newStream;
+        if (sessionId != -1) {
+            callback.onNegotiationNeeded(sessionId);
+        }
     }
 
     public void onOfferNeeded(final long sessionId) {
