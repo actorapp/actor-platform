@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.*;
 
+import im.actor.runtime.os.OSType;
+
 /**
  * Created by ex3ndr on 07.08.15.
  */
@@ -50,5 +52,10 @@ public class MainThreadRuntimeProvider implements MainThreadRuntime {
     @Override
     public boolean isSingleThread() {
         return false;
+    }
+
+    @Override
+    public OSType getOSType() {
+        return OSType.OTHER;
     }
 }
