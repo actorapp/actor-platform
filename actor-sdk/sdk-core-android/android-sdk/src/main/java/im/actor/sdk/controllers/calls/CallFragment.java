@@ -628,9 +628,11 @@ public class CallFragment extends BaseFragment {
                     if (videoTrack != localTrack) {
                         if (localTrack != null) {
                             localTrack.removeRenderer(localRender);
+                            localRender.dispose();
                         }
 
                         localTrack = videoTrack;
+                        localRender = new VideoRenderer(localVideoView);
                         localTrack.addRenderer(localRender);
                         localVideoView.setVisibility(View.VISIBLE);
                     }
@@ -641,6 +643,7 @@ public class CallFragment extends BaseFragment {
                 if (isNeedUnbind) {
                     if (localTrack != null) {
                         localTrack.removeRenderer(localRender);
+                        localRender.dispose();
                         localTrack = null;
                     }
                     if (isLocalViewConfigured) {
