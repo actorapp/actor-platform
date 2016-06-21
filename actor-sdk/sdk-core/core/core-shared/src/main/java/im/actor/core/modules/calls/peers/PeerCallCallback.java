@@ -1,9 +1,9 @@
 package im.actor.core.modules.calls.peers;
 
-import im.actor.runtime.webrtc.WebRTCMediaStream;
-import im.actor.runtime.webrtc.WebRTCPeerConnection;
+import im.actor.runtime.webrtc.WebRTCMediaTrack;
 
 public interface PeerCallCallback {
+
 
     void onOffer(long deviceId, long sessionId, String sdp);
 
@@ -15,13 +15,16 @@ public interface PeerCallCallback {
 
     void onNegotiationNeeded(long deviceId, long sessionId);
 
+    void onMediaStreamsChanged(long deviceId, boolean isAudioEnabled, boolean isVideoEnabled);
+
+    void onTrackAdded(long deviceId, WebRTCMediaTrack track);
+
+    void onTrackRemoved(long deviceId, WebRTCMediaTrack track);
+
+    void onOwnTrackAdded(WebRTCMediaTrack track);
+
+    void onOwnTrackRemoved(WebRTCMediaTrack track);
+
+
     void onPeerStateChanged(long deviceId, PeerState state);
-
-    void onStreamAdded(long deviceId, WebRTCMediaStream stream);
-
-    void onStreamRemoved(long deviceId, WebRTCMediaStream stream);
-
-    void onOwnStreamAdded(WebRTCMediaStream stream);
-
-    void onOwnStreamRemoved(WebRTCMediaStream stream);
 }
