@@ -5,7 +5,11 @@
 import Foundation
 import AVFoundation
 
+let queue = dispatch_queue_create("My Queue", DISPATCH_QUEUE_SERIAL);
+
 class CocoaWebRTCRuntime: NSObject, ARWebRTCRuntime {
+    
+    
     
     private var isInited: Bool = false
     private var peerConnectionFactory: RTCPeerConnectionFactory!
@@ -18,52 +22,44 @@ class CocoaWebRTCRuntime: NSObject, ARWebRTCRuntime {
     
     func getUserMediaWithIsAudioEnabled(isAudioEnabled: jboolean, withIsVideoEnabled isVideoEnabled: jboolean) -> ARPromise {
         
-        initRTC()
-        
-        let stream = self.peerConnectionFactory.mediaStreamWithLabel("ARDAMSv0")
-        
-        //
-        // Audio
-        //
-        if isAudioEnabled {
-            let audio = self.peerConnectionFactory.audioTrackWithID("audio0")
-            stream.addAudioTrack(audio)
-        }
-        
-        //
-        // Video
-        //
-        var videoCapturer: RTCVideoCapturer! = nil
-        if isVideoEnabled {
-            if !videoSourceLoaded {
-                videoSourceLoaded = true
+        return ARPromise { (resolver) -> () in
+            dispatch_async(queue) {
                 
-                var cameraID: String?
-                for captureDevice in AVCaptureDevice.devicesWithMediaType(AVMediaTypeVideo) {
-                    if captureDevice.position == AVCaptureDevicePosition.Front {
-                        cameraID = captureDevice.localizedName
+                self.initRTC()
+                
+                // Unfortinatelly building capture source "on demand" causes some weird internal crashes
+                self.initVideo()
+                
+                let stream = self.peerConnectionFactory.mediaStreamWithLabel("ARDAMSv0")
+                
+                //
+                // Audio
+                //
+                if isAudioEnabled {
+                    let audio = self.peerConnectionFactory.audioTrackWithID("audio0")
+                    stream.addAudioTrack(audio)
+                }
+                
+                //
+                // Video
+                //
+                if isVideoEnabled {
+                    if self.videoSource != nil {
+                        let localVideoTrack = self.peerConnectionFactory.videoTrackWithID("video0", source: self.videoSource)
+                        stream.addVideoTrack(localVideoTrack)
                     }
                 }
                 
-                if(cameraID != nil) {
-                    videoCapturer = RTCVideoCapturer(deviceName: cameraID)
-                    videoSource = self.peerConnectionFactory.videoSourceWithCapturer(videoCapturer, constraints: RTCMediaConstraints())
-                }
-            }
-            if videoSource != nil {
-                let localVideoTrack = self.peerConnectionFactory.videoTrackWithID("video0", source: videoSource)
-                stream.addVideoTrack(localVideoTrack)
+                resolver.result(MediaStream(stream:stream))
             }
         }
-        
-        return ARPromise.success(MediaStream(stream:stream))
     }
     
     func createPeerConnectionWithServers(webRTCIceServers: IOSObjectArray!, withSettings settings: ARWebRTCSettings!) -> ARPromise {
-        initRTC()
         let servers: [ARWebRTCIceServer] = webRTCIceServers.toSwiftArray()
         return ARPromise { (resolver) -> () in
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) { () -> Void in
+            dispatch_async(queue) {
+                self.initRTC()
                 resolver.result(CocoaWebRTCPeerConnection(servers: servers, peerConnectionFactory: self.peerConnectionFactory))
             }
         }
@@ -74,6 +70,24 @@ class CocoaWebRTCRuntime: NSObject, ARWebRTCRuntime {
             isInited = true
             RTCPeerConnectionFactory.initializeSSL()
             peerConnectionFactory = RTCPeerConnectionFactory()
+        }
+    }
+    
+    func initVideo() {
+        if !self.videoSourceLoaded {
+            self.videoSourceLoaded = true
+            
+            var cameraID: String?
+            for captureDevice in AVCaptureDevice.devicesWithMediaType(AVMediaTypeVideo) {
+                if captureDevice.position == AVCaptureDevicePosition.Front {
+                    cameraID = captureDevice.localizedName
+                }
+            }
+            
+            if(cameraID != nil) {
+                let videoCapturer = RTCVideoCapturer(deviceName: cameraID)
+                self.videoSource = self.peerConnectionFactory.videoSourceWithCapturer(videoCapturer, constraints: RTCMediaConstraints())
+            }
         }
     }
     
@@ -123,11 +137,11 @@ class CocoaWebRTCRuntime: NSObject, ARWebRTCRuntime {
     func close() {
         for i in stream.audioTracks {
             (i as! RTCAudioTrack).setEnabled(false)
-            // stream.removeAudioTrack(i as! RTCAudioTrack)
+            stream.removeAudioTrack(i as! RTCAudioTrack)
         }
         for i in stream.videoTracks {
             (i as! RTCVideoTrack).setEnabled(false)
-            // stream.removeVideoTrack(i as! RTCVideoTrack)
+            stream.removeVideoTrack(i as! RTCVideoTrack)
         }
     }
 }
