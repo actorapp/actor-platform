@@ -319,12 +319,10 @@ public class CallFragment extends BaseFragment {
             eglContext = EglBase.create();
 
             remoteVideoView = (SurfaceViewRenderer) cont.findViewById(R.id.remote_renderer);
-            remoteRender = new VideoRenderer(remoteVideoView);
 
             localVideoView = new SurfaceViewRenderer(getActivity());
             localVideoView.setVisibility(View.INVISIBLE);
             localVideoView.setZOrderMediaOverlay(true);
-            localRender = new VideoRenderer(localVideoView);
 
             localVideoView.setOnTouchListener((v1, event) -> {
 
@@ -643,8 +641,9 @@ public class CallFragment extends BaseFragment {
                 if (isNeedUnbind) {
                     if (localTrack != null) {
                         localTrack.removeRenderer(localRender);
-                        localRender.dispose();
                         localTrack = null;
+                        localRender.dispose();
+                        localRender = null;
                     }
                     if (isLocalViewConfigured) {
                         localVideoView.release();
@@ -673,9 +672,11 @@ public class CallFragment extends BaseFragment {
                     if (videoTrack != remoteTrack) {
                         if (remoteTrack != null) {
                             remoteTrack.removeRenderer(remoteRender);
+                            remoteRender.dispose();
                         }
 
                         remoteTrack = videoTrack;
+                        remoteRender = new VideoRenderer(remoteVideoView);
                         remoteTrack.addRenderer(remoteRender);
                         remoteVideoView.setVisibility(View.VISIBLE);
                         avatarView.setVisibility(View.INVISIBLE);
@@ -689,6 +690,8 @@ public class CallFragment extends BaseFragment {
                     if (remoteTrack != null) {
                         remoteTrack.removeRenderer(remoteRender);
                         remoteTrack = null;
+                        remoteRender.dispose();
+                        remoteRender = null;
                     }
                     if (isRemoteViewConfigured) {
                         remoteVideoView.release();
@@ -732,6 +735,8 @@ public class CallFragment extends BaseFragment {
 
             if (localTrack != null) {
                 localTrack.removeRenderer(localRender);
+                localRender.dispose();
+                localRender = null;
                 localTrack = null;
             }
             if (isLocalViewConfigured) {
@@ -743,6 +748,8 @@ public class CallFragment extends BaseFragment {
 
             if (remoteTrack != null) {
                 remoteTrack.removeRenderer(remoteRender);
+                remoteRender.dispose();
+                remoteRender = null;
                 remoteTrack = null;
             }
             if (isRemoteViewConfigured) {
