@@ -1,4 +1,4 @@
-package im.actor.runtime.js.webrtc;
+package im.actor.runtime.js.webrtc.js;
 
 import com.google.gwt.core.client.JavaScriptObject;
 

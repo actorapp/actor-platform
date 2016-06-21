@@ -8,8 +8,15 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import im.actor.runtime.function.CountedReference;
 import im.actor.runtime.js.entity.JsClosure;
 import im.actor.runtime.js.entity.JsClosureError;
+import im.actor.runtime.js.webrtc.js.JsMediaStream;
+import im.actor.runtime.js.webrtc.js.JsPeerConnection;
+import im.actor.runtime.js.webrtc.js.JsPeerConnectionListener;
+import im.actor.runtime.js.webrtc.js.JsRTCIceCandidate;
+import im.actor.runtime.js.webrtc.js.JsSessionDescription;
+import im.actor.runtime.js.webrtc.js.JsSessionDescriptionCallback;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseFunc;
 import im.actor.runtime.promise.PromiseResolver;
@@ -81,17 +88,13 @@ public class PeerConnection implements WebRTCPeerConnection {
     }
 
     @Override
-    public void addOwnStream(@NotNull WebRTCMediaStream stream) {
-        if (stream instanceof MediaStream) {
-            peerConnection.addStream(((MediaStream) stream).getStream());
-        }
+    public void addOwnStream(@NotNull CountedReference<WebRTCMediaStream> stream) {
+        peerConnection.addStream(((MediaStream) stream.get()).getStream());
     }
 
     @Override
-    public void removeOwnStream(@NotNull WebRTCMediaStream stream) {
-        if (stream instanceof MediaStream) {
-            peerConnection.removeStream(((MediaStream) stream).getStream());
-        }
+    public void removeOwnStream(@NotNull CountedReference<WebRTCMediaStream> stream) {
+        peerConnection.removeStream(((MediaStream) stream.get()).getStream());
     }
 
     @NotNull
@@ -100,20 +103,13 @@ public class PeerConnection implements WebRTCPeerConnection {
         return new Promise<>(new PromiseFunc<WebRTCSessionDescription>() {
             @Override
             public void exec(@NotNull final PromiseResolver<WebRTCSessionDescription> resolver) {
-                peerConnection.setLocalDescription(JsSessionDescription.create(description.getType(),
-                        description.getSdp()), new JsClosure() {
-                    @Override
-                    public void callback() {
-                        resolver.result(description);
-                    }
-                }, new JsClosureError() {
-                    @Override
-                    public void onError(JavaScriptObject error) {
-                        resolver.error(new JavaScriptException(error));
-                    }
-                });
+                peerConnection.setLocalDescription(JsSessionDescription.create(description.getType(), description.getSdp()), () -> {
+                    resolver.result(description);
+                }, error -> resolver.error(new JavaScriptException(error)));
             }
-        });
+        }
+
+        );
     }
 
     @NotNull
