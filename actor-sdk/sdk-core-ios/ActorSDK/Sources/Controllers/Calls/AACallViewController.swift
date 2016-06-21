@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import AVFoundation
 
 public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
     
@@ -16,6 +17,7 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
     var remoteView = RTCEAGLVideoView()
     var remoteVideoSize: CGSize!
     var localView = RTCEAGLVideoView()
+    var localVideoSize: CGSize!
     
     var localVideoTrack: RTCVideoTrack!
     var remoteVideoTrack: RTCVideoTrack!
@@ -107,10 +109,12 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
         localView.layer.borderColor = UIColor.grayColor().CGColor
         localView.layer.shadowRadius = 1
         localView.clipsToBounds = true
+        localView.contentMode = .ScaleAspectFit
         
         remoteView.alpha = 0
         remoteView.backgroundColor = UIColor.blackColor()
         remoteView.delegate = self
+        remoteView.contentMode = .ScaleAspectFit
         
         
         //
@@ -152,14 +156,16 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
     }
     
     public func videoView(videoView: RTCEAGLVideoView!, didChangeVideoSize size: CGSize) {
-        self.remoteVideoSize = size
+        if videoView == remoteView {
+            self.remoteVideoSize = size
+        } else if videoView == localView {
+            self.localVideoSize = size
+        }
         
         layoutVideo()
     }
     
     private func layoutButtons() {
-        
-        localView.frame = CGRectMake(self.view.width - self.view.width / 3, 0 , self.view.width/3, self.view.height/4)
         
         muteButton.frame = CGRectMake((self.view.width / 3 - 84) / 2, self.view.height - 72 - 49, 84, 72 + 5 + 44)
         videoButton.frame = CGRectMake(2 * self.view.width / 3 +  (self.view.width / 3 - 84) / 2, self.view.height - 72 - 49, 84, 72 + 5 + 44)
@@ -187,8 +193,45 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
         if self.remoteVideoSize == nil {
             remoteView.frame = CGRectMake(0, 0, self.view.width, self.view.height)
         } else {
-            remoteView.frame = CGRectMake(0, 0, self.view.width, self.view.height)
+            remoteView.frame = AVMakeRectWithAspectRatioInsideRect(remoteVideoSize, view.bounds)
         }
+        
+        if self.localVideoSize == nil {
+            localView.frame = CGRectMake(self.view.width - 100 - 10, 10, 100, 120)
+        } else {
+            let rect = AVMakeRectWithAspectRatioInsideRect(localVideoSize, CGRectMake(0, 0, 120, 120))
+            localView.frame = CGRectMake(self.view.width - rect.width - 10, 10, rect.width, rect.height)
+        }
+    }
+    
+    private func CGSizeAspectFit(aspectRatio:CGSize, boundingSize:CGSize) -> CGSize {
+        var aspectFitSize = boundingSize
+        let mW = boundingSize.width / aspectRatio.width
+        let mH = boundingSize.height / aspectRatio.height
+        if( mH < mW )
+        {
+            aspectFitSize.width = mH * aspectRatio.width
+        }
+        else if( mW < mH )
+        {
+            aspectFitSize.height = mW * aspectRatio.height
+        }
+        return aspectFitSize
+    }
+    
+    private func CGSizeAspectFill(aspectRatio:CGSize, minimumSize:CGSize) -> CGSize {
+        var aspectFillSize = minimumSize
+        let mW = minimumSize.width / aspectRatio.width
+        let mH = minimumSize.height / aspectRatio.height
+        if( mH > mW )
+        {
+            aspectFillSize.width = mH * aspectRatio.width
+        }
+        else if( mW > mH )
+        {
+            aspectFillSize.height = mW * aspectRatio.height
+        }
+        return aspectFillSize
     }
     
     public override func viewWillAppear(animated: Bool) {
@@ -321,33 +364,6 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
             }
             
             // Local Video can be only one, so we can just keep active track reference and handle changes
-//            binder.bind(call.ownMediaStream, valueModel2: call.isVideoEnabled) { (stream: MediaStream!, value2: JavaLangBoolean!) in
-//                var needUnbind = true
-//                if value2.booleanValue() {
-//                    if let s = stream {
-//                        if s.stream.videoTracks.count > 0 {
-//                            let t = s.stream.videoTracks[0] as! RTCVideoTrack
-//                            if self.localVideoTrack != t {
-//                                if self.localVideoTrack != nil {
-//                                    self.localVideoTrack.removeRenderer(self.localView)
-//                                }
-//                                self.localVideoTrack = t
-//                                self.localView.showViewAnimated()
-//                                t.addRenderer(self.localView)
-//                            }
-//                            needUnbind = false
-//                        }
-//                    }
-//                }
-//                if needUnbind {
-//                    if self.localVideoTrack != nil {
-//                        self.localVideoTrack.removeRenderer(self.localView)
-//                        self.localVideoTrack = nil
-//                    }
-//                    self.localView.hideViewAnimated()
-//                }
-//            }
-            
             binder.bind(call.ownVideoTracks, closure: { (videoTracks: ACArrayListMediaTrack!) in
                 var needUnbind = true
                 if videoTracks.size() > 0 {
@@ -374,7 +390,6 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
 
             // In Private Calls we can have only one video stream from other side
             // We will assume only one active peer connection
-            
             binder.bind(call.theirVideoTracks, closure: { (videoTracks: ACArrayListMediaTrack!) in
                 var needUnbind = true
                 if videoTracks.size() > 0 {
@@ -399,34 +414,6 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
                 }
             })
 
-            
-//            binder.bind(call.mediaStreams) { (value: JavaUtilArrayList!) -> () in
-//                var needUnbind = true
-//                for source in value! {
-//                    let casted = source as! ACCallMediaSource
-//                    let stream = (casted.stream as! MediaStream).stream
-//                    if /*casted.isVideoEnabled &&*/ stream.videoTracks.count > 0 {
-//                        let t = stream.videoTracks[0] as! RTCVideoTrack
-//                        if self.remoteVideoTrack != t {
-//                            if self.remoteVideoTrack != nil {
-//                                self.remoteVideoTrack.removeRenderer(self.remoteView)
-//                            }
-//                            self.remoteVideoTrack = t
-//                            self.remoteView.showViewAnimated()
-//                            t.addRenderer(self.remoteView)
-//                        }
-//                        needUnbind = false
-//                        break
-//                    }
-//                }
-//                if needUnbind {
-//                    if self.remoteVideoTrack != nil {
-//                        self.remoteVideoTrack.removeRenderer(self.remoteView)
-//                        self.remoteVideoTrack = nil
-//                    }
-//                    self.remoteView.hideViewAnimated()
-//                }
-//            }
         } else {
             self.videoButton.filled = false
             self.videoButton.enabled = false
