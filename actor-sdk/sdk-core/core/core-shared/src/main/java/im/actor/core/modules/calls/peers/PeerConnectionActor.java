@@ -188,8 +188,6 @@ public class PeerConnectionActor extends ModuleActor {
 
     public void onOffer(final long sessionId, @NotNull String sdp) {
 
-        Log.d(TAG, "onOffer(" + sessionId + ")");
-
         // Ignore if we are not waiting for handshake
         if (state != PeerConnectionState.WAITING_HANDSHAKE) {
             return;

@@ -249,9 +249,8 @@ class CocoaWebRTCPeerConnection: NSObject, ARWebRTCPeerConnection, RTCPeerConnec
     
     func createAnswer() -> ARPromise {
         return ARPromise(closure: { (resolver) -> () in
-//            let constraints = RTCMediaConstraints(mandatoryConstraints: [RTCPair(key: "OfferToReceiveAudio", value: "true"),
-//                RTCPair(key: "OfferToReceiveVideo", value: "true")], optionalConstraints: [])
-            let constraints = RTCMediaConstraints()
+            let constraints = RTCMediaConstraints(mandatoryConstraints: [RTCPair(key: "OfferToReceiveAudio", value: "true"),
+                RTCPair(key: "OfferToReceiveVideo", value: "true")], optionalConstraints: [])
             self.peerConnection.createAnswer(constraints, didCreate: { (desc, error) -> () in
                 if error == nil {
                     resolver.result(ARWebRTCSessionDescription(type: "answer", withSDP: desc.description))
@@ -264,9 +263,8 @@ class CocoaWebRTCPeerConnection: NSObject, ARWebRTCPeerConnection, RTCPeerConnec
     
     func creteOffer() -> ARPromise {
         return ARPromise(closure: { (resolver) -> () in
-            let constraints = RTCMediaConstraints()
-//            let constraints = RTCMediaConstraints(mandatoryConstraints: [RTCPair(key: "OfferToReceiveAudio", value: "true"),
-//                RTCPair(key: "OfferToReceiveVideo", value: "true")], optionalConstraints: [])
+            let constraints = RTCMediaConstraints(mandatoryConstraints: [RTCPair(key: "OfferToReceiveAudio", value: "true"),
+                RTCPair(key: "OfferToReceiveVideo", value: "true")], optionalConstraints: [])
             self.peerConnection.createOffer(constraints, didCreate: { (desc, error) -> () in
                 if error == nil {
                     resolver.result(ARWebRTCSessionDescription(type: "offer", withSDP: desc.description))
