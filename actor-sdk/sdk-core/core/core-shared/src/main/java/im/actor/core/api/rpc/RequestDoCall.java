@@ -24,10 +24,16 @@ public class RequestDoCall extends Request<ResponseDoCall> {
 
     private ApiOutPeer peer;
     private Long timeout;
+    private Boolean isAudioOnlyCall;
+    private Boolean isVideoOnlyCall;
+    private Boolean isVideoPreferred;
 
-    public RequestDoCall(@NotNull ApiOutPeer peer, @Nullable Long timeout) {
+    public RequestDoCall(@NotNull ApiOutPeer peer, @Nullable Long timeout, @Nullable Boolean isAudioOnlyCall, @Nullable Boolean isVideoOnlyCall, @Nullable Boolean isVideoPreferred) {
         this.peer = peer;
         this.timeout = timeout;
+        this.isAudioOnlyCall = isAudioOnlyCall;
+        this.isVideoOnlyCall = isVideoOnlyCall;
+        this.isVideoPreferred = isVideoPreferred;
     }
 
     public RequestDoCall() {
@@ -44,10 +50,28 @@ public class RequestDoCall extends Request<ResponseDoCall> {
         return this.timeout;
     }
 
+    @Nullable
+    public Boolean isAudioOnlyCall() {
+        return this.isAudioOnlyCall;
+    }
+
+    @Nullable
+    public Boolean isVideoOnlyCall() {
+        return this.isVideoOnlyCall;
+    }
+
+    @Nullable
+    public Boolean isVideoPreferred() {
+        return this.isVideoPreferred;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.peer = values.getObj(1, new ApiOutPeer());
         this.timeout = values.optLong(2);
+        this.isAudioOnlyCall = values.optBool(3);
+        this.isVideoOnlyCall = values.optBool(4);
+        this.isVideoPreferred = values.optBool(6);
     }
 
     @Override
@@ -59,12 +83,25 @@ public class RequestDoCall extends Request<ResponseDoCall> {
         if (this.timeout != null) {
             writer.writeLong(2, this.timeout);
         }
+        if (this.isAudioOnlyCall != null) {
+            writer.writeBool(3, this.isAudioOnlyCall);
+        }
+        if (this.isVideoOnlyCall != null) {
+            writer.writeBool(4, this.isVideoOnlyCall);
+        }
+        if (this.isVideoPreferred != null) {
+            writer.writeBool(6, this.isVideoPreferred);
+        }
     }
 
     @Override
     public String toString() {
         String res = "rpc DoCall{";
         res += "peer=" + this.peer;
+        res += ", timeout=" + this.timeout;
+        res += ", isAudioOnlyCall=" + this.isAudioOnlyCall;
+        res += ", isVideoOnlyCall=" + this.isVideoOnlyCall;
+        res += ", isVideoPreferred=" + this.isVideoPreferred;
         res += "}";
         return res;
     }
