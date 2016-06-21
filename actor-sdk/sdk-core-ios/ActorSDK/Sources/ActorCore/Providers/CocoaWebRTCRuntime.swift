@@ -193,6 +193,7 @@ class CocoaWebRTCPeerConnection: NSObject, ARWebRTCPeerConnection, RTCPeerConnec
     private var peerConnection: RTCPeerConnection!
     private var callbacks = [ARWebRTCPeerConnectionCallback]()
     private let peerConnectionFactory: RTCPeerConnectionFactory
+    private var ownStreams = [ARCountedReference]()
     
     init(servers: [ARWebRTCIceServer], peerConnectionFactory: RTCPeerConnectionFactory) {
         self.peerConnectionFactory = peerConnectionFactory
@@ -227,25 +228,20 @@ class CocoaWebRTCPeerConnection: NSObject, ARWebRTCPeerConnection, RTCPeerConnec
         peerConnection.addICECandidate(RTCICECandidate(mid: id_, index: Int(index), sdp: sdp))
     }
     
-//    func addOwnStream(stream: ARWebRTCMediaStream) {
-//        if let str = stream as? MediaStream {
-//            peerConnection.addStream(str.stream)
-//        }
-//    }
-//    
     func addOwnStream(stream: ARCountedReference) {
-        peerConnection.addStream((stream.get() as! MediaStream).stream)
+        stream.acquire()
+        let ms = (stream.get() as! MediaStream)
+        ownStreams.append(stream)
+        peerConnection.addStream(ms.stream)
     }
     
     func removeOwnStream(stream: ARCountedReference) {
-        peerConnection.addStream((stream.get() as! MediaStream).stream)
+        if ownStreams.contains(stream) {
+            let ms = (stream.get() as! MediaStream)
+            peerConnection.removeStream(ms.stream)
+            stream.release__()
+        }
     }
-    
-//    func removeOwnStream(stream: ARWebRTCMediaStream) {
-//        if let str = stream as? MediaStream {
-//            peerConnection.removeStream(str.stream)
-//        }
-//    }
     
     func createAnswer() -> ARPromise {
         return ARPromise(closure: { (resolver) -> () in
@@ -301,6 +297,12 @@ class CocoaWebRTCPeerConnection: NSObject, ARWebRTCPeerConnection, RTCPeerConnec
     }
     
     func close() {
+        for s in ownStreams {
+            let ms = s.get() as! MediaStream
+            peerConnection.removeStream(ms.stream)
+            s.release__()
+        }
+        ownStreams.removeAll()
         peerConnection.close()
         AAAudioManager.sharedAudio().peerConnectionEnded()
     }
