@@ -173,7 +173,7 @@ public class PeerConnectionActor extends ModuleActor {
 
         isReady = false;
         peerConnection.createOffer().flatMap(webRTCSessionDescription -> {
-            return peerConnection.setLocalDescription(webRTCSessionDescription);
+            return peerConnection.setLocalDescription(SDPOptimizer.optimize(webRTCSessionDescription));
         }).then(webRTCSessionDescription -> {
             // Save Session Id and switch to next state
             PeerConnectionActor.this.sessionId = sessionId;
@@ -211,7 +211,7 @@ public class PeerConnectionActor extends ModuleActor {
         peerConnection.setRemoteDescription(new WebRTCSessionDescription("offer", sdp)).flatMap(description -> {
             return peerConnection.createAnswer();
         }).flatMap(webRTCSessionDescription -> {
-            return peerConnection.setLocalDescription(webRTCSessionDescription);
+            return peerConnection.setLocalDescription(SDPOptimizer.optimize(webRTCSessionDescription));
         }).then(webRTCSessionDescription -> {
             callback.onAnswer(sessionId, webRTCSessionDescription.getSdp());
             PeerConnectionActor.this.sessionId = sessionId;
