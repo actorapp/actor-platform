@@ -401,6 +401,8 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
                         }
                         self.remoteVideoTrack = track
                         self.remoteView.showViewAnimated()
+                        self.senderAvatar.hideViewAnimated()
+                        self.peerTitle.hideViewAnimated()
                         track.addRenderer(self.remoteView)
                     }
                     needUnbind = false
@@ -411,6 +413,8 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
                         self.remoteVideoTrack = nil
                     }
                     self.remoteView.hideViewAnimated()
+                    self.senderAvatar.showViewAnimated()
+                    self.peerTitle.showViewAnimated()
                 }
             })
 
