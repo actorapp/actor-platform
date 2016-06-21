@@ -7,10 +7,8 @@ import im.actor.runtime.webrtc.WebRTCPeerConnection;
 import im.actor.runtime.webrtc.WebRTCSettings;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Created by elenoon on 3/1/16.
- */
 public class WebRTCRuntimeProvider implements WebRTCRuntime {
+
     @NotNull
     @Override
     public Promise<WebRTCPeerConnection> createPeerConnection(WebRTCIceServer[] webRTCIceServers, WebRTCSettings settings) {
@@ -19,7 +17,7 @@ public class WebRTCRuntimeProvider implements WebRTCRuntime {
 
     @NotNull
     @Override
-    public Promise<WebRTCMediaStream> getUserMedia(boolean inVideoEnabled) {
+    public Promise<WebRTCMediaStream> getUserMedia(boolean isAudioEnabled, boolean isVideoEnabled) {
         return null;
     }
 
