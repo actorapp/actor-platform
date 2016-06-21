@@ -19,8 +19,8 @@ public class CallBusInt extends ActorInterface {
         send(new CallBusActor.JoinMasterBus(busId, deviceId));
     }
 
-    public void changeMute(boolean isMuted) {
-        send(new CallBusActor.Mute(isMuted));
+    public void changeAudioEnabled(boolean enabled) {
+        send(new CallBusActor.AudioEnabled(enabled));
     }
 
     public void changeVideoEnabled(boolean enabled) {

@@ -55,6 +55,8 @@ public class ApiOnRenegotiationNeeded extends ApiWebRTCSignaling {
     @Override
     public String toString() {
         String res = "struct OnRenegotiationNeeded{";
+        res += "device=" + this.device;
+        res += ", sessionId=" + this.sessionId;
         res += "}";
         return res;
     }

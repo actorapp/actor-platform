@@ -3,37 +3,40 @@ package im.actor.core.modules.calls.peers;
 import org.jetbrains.annotations.NotNull;
 
 import im.actor.runtime.webrtc.WebRTCMediaStream;
+import im.actor.runtime.webrtc.WebRTCMediaTrack;
 import im.actor.runtime.webrtc.WebRTCPeerConnection;
 
 public interface CallBusCallback {
 
+    //
+    // Event Bus
+    //
+
     void onBusStarted(@NotNull String busId);
+
+    void onBusStopped();
+
+    //
+    // Call Events
+    //
 
     void onCallConnected();
 
     void onCallEnabled();
 
-    void onBusStopped();
-
-
     //
     // Peer Connection Callbacks
     //
 
-    void onPeerConnectionStateChanged(long deviceId, boolean isAudioEnabled, boolean isVideoEnabled);
+    void onTrackAdded(long deviceId, WebRTCMediaTrack track);
 
-    void onStreamAdded(long deviceId, WebRTCMediaStream stream);
-
-    void onStreamRemoved(long deviceId, WebRTCMediaStream stream);
-
-    void onPeerConnectionDisposed(long deviceId);
-
+    void onTrackRemoved(long deviceId, WebRTCMediaTrack track);
 
     //
     // Own Streams
     //
 
-    void onOwnStreamAdded(WebRTCMediaStream stream);
+    void onOwnTrackAdded(WebRTCMediaTrack track);
 
-    void onOwnStreamRemoved(WebRTCMediaStream stream);
+    void onOwnTrackRemoved(WebRTCMediaTrack track);
 }

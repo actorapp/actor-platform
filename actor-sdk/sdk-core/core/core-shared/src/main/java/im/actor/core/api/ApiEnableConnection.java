@@ -56,6 +56,7 @@ public class ApiEnableConnection extends ApiWebRTCSignaling {
     public String toString() {
         String res = "struct EnableConnection{";
         res += "device=" + this.device;
+        res += ", sessionId=" + this.sessionId;
         res += "}";
         return res;
     }

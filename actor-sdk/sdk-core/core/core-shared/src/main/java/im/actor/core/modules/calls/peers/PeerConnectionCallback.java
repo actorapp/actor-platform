@@ -29,12 +29,17 @@ public interface PeerConnectionCallback {
      * @param id       id of candidate
      * @param sdp      sdp of candidate
      */
-    void onCandidate(int mdpIndex, String id, String sdp);
+    void onCandidate(long sessionId, int mdpIndex, String id, String sdp);
 
     /**
      * Called when negotiation finished successfully
      */
     void onNegotiationSuccessful(long sessionId);
+
+    /**
+     * Called when negotiation needed
+     */
+    void onNegotiationNeeded(long sessionId);
 
     /**
      * Called when peer stream was added
