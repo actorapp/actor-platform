@@ -52,6 +52,10 @@ public class ConversationVM extends BaseValueModel<ConversationState> {
         return receiveDate;
     }
 
+    public long getLastMessageDate() {
+        return Math.max(ownReadDate.get(), ownSendDate.get());
+    }
+
     @Override
     protected void updateValues(ConversationState rawObj) {
         isLoaded.change(rawObj.isLoaded());
