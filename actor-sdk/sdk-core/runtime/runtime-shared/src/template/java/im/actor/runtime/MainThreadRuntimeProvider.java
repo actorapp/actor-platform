@@ -1,5 +1,7 @@
 package im.actor.runtime;
 
+import im.actor.runtime.os.OSType;
+
 public class MainThreadRuntimeProvider implements MainThreadRuntime {
     @Override
     public void postToMainThread(Runnable runnable) {
@@ -13,6 +15,11 @@ public class MainThreadRuntimeProvider implements MainThreadRuntime {
 
     @Override
     public boolean isSingleThread() {
+        throw new RuntimeException("Dumb");
+    }
+
+    @Override
+    public OSType getOSType() {
         throw new RuntimeException("Dumb");
     }
 }

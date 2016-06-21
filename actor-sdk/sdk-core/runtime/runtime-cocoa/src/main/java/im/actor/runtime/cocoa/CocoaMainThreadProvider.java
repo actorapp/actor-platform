@@ -1,6 +1,7 @@
 package im.actor.runtime.cocoa;
 
 import im.actor.runtime.MainThreadRuntime;
+import im.actor.runtime.os.OSType;
 
 public class CocoaMainThreadProvider implements MainThreadRuntime {
 
@@ -20,5 +21,10 @@ public class CocoaMainThreadProvider implements MainThreadRuntime {
     @Override
     public boolean isSingleThread() {
         return false;
+    }
+
+    @Override
+    public OSType getOSType() {
+        return OSType.IOS;
     }
 }
