@@ -44,6 +44,10 @@ public class BaseFragmentActivity extends BaseActivity {
         getWindow().setBackgroundDrawable(new ColorDrawable(STYLE.getMainBackgroundColor()));
     }
 
+    public void showFragment(final Fragment fragment, final boolean addToBackStack) {
+        showFragment(fragment, addToBackStack, false);
+    }
+
     public void showFragment(final Fragment fragment, final boolean addToBackStack, final boolean isAnimated) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.content_frame, fragment);

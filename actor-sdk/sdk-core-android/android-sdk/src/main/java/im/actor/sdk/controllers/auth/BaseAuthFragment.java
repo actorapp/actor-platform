@@ -36,17 +36,18 @@ public abstract class BaseAuthFragment extends BaseFragment {
     private static final int PERMISSIONS_REQUEST_ACCOUNT = 1;
     public static final boolean USE_SUGGESTED_EMAIL = false;
     private EditText edittextToFill;
+
     public BaseAuthFragment() {
-
+        setRootFragment(true);
     }
 
-    protected void setTitle(int resId) {
-        ((BaseFragmentActivity) getActivity()).getSupportActionBar().setTitle(resId);
-    }
-
-    protected void setTitle(String title) {
-        ((BaseFragmentActivity) getActivity()).getSupportActionBar().setTitle(title);
-    }
+//    protected void setTitle(int resId) {
+//        ((BaseFragmentActivity) getActivity()).getSupportActionBar().setTitle(resId);
+//    }
+//
+//    protected void setTitle(String title) {
+//        ((BaseFragmentActivity) getActivity()).getSupportActionBar().setTitle(title);
+//    }
 
     protected void startSignIn() {
         ((AuthActivity) getActivity()).startSignIn();

@@ -14,6 +14,16 @@ public class BinderCompatFragment extends android.support.v4.app.Fragment {
 
     private final ActorBinder BINDER = new ActorBinder();
 
+    private boolean unbindOnPause = false;
+
+    public boolean isUnbindOnPause() {
+        return unbindOnPause;
+    }
+
+    public void setUnbindOnPause(boolean unbindOnPause) {
+        this.unbindOnPause = unbindOnPause;
+    }
+
     public void bind(final TextView textView, ValueModel<String> value) {
         BINDER.bind(textView, value);
     }
@@ -47,9 +57,19 @@ public class BinderCompatFragment extends android.support.v4.app.Fragment {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        if (unbindOnPause) {
+            BINDER.unbindAll();
+        }
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
-        BINDER.unbindAll();
+        if (!unbindOnPause) {
+            BINDER.unbindAll();
+        }
     }
 
     public void unbind(ActorBinder.Binding b) {

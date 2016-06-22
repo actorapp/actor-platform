@@ -47,6 +47,7 @@ import im.actor.runtime.Log;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
+import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.controllers.shortcuts.ShortcutActivity;
 import im.actor.sdk.controllers.conversation.messages.preprocessor.ChatListProcessor;
@@ -477,12 +478,12 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
                                 String name = (nick != null && !nick.isEmpty()) ? "@".concat(nick) : user.getName().get();
                                 String text = ((TextContent) m.getContent()).getText();
                                 String forward = name.concat(": ").concat(text).concat("\n");
-                                i.putExtra("forward_text", forward);
-                                i.putExtra("forward_text_raw", forward);
+                                i.putExtra(Intents.EXTRA_FORWARD_TEXT, forward);
+                                i.putExtra(Intents.EXTRA_FORWARD_TEXT_RAW, forward);
                             } else if (!(m.getContent() instanceof UnsupportedContent)) {
                                 AbsContent fileMessage = m.getContent();
                                 try {
-                                    i.putExtra("forward_content", AbsContent.serialize(fileMessage));
+                                    i.putExtra(Intents.EXTRA_FORWARD_CONTENT, AbsContent.serialize(fileMessage));
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
@@ -506,8 +507,8 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
                                     }
                                 }
                             }
-                            i.putExtra("forward_text", quote);
-                            i.putExtra("forward_text_raw", rawQuote);
+                            i.putExtra(Intents.EXTRA_FORWARD_TEXT, quote);
+                            i.putExtra(Intents.EXTRA_FORWARD_TEXT_RAW, rawQuote);
                         }
                         actionMode.finish();
                         startActivity(i);

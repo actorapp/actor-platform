@@ -1,16 +1,10 @@
 package im.actor.sdk.controllers.root;
 
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.ChatLinearLayoutManager;
@@ -42,16 +36,13 @@ import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.contacts.AddContactActivity;
 import im.actor.sdk.controllers.compose.ComposeActivity;
 import im.actor.sdk.controllers.contacts.ContactsActivity;
-import im.actor.sdk.controllers.contacts.ContactsFragment;
 import im.actor.sdk.controllers.dialogs.DialogsFragment;
 import im.actor.sdk.controllers.fragment.help.HelpActivity;
 import im.actor.sdk.controllers.fragment.main.SearchAdapter;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.util.Fonts;
-import im.actor.sdk.view.adapters.FragmentNoMenuStatePagerAdapter;
 import im.actor.sdk.view.adapters.HeaderViewRecyclerAdapter;
 import im.actor.sdk.view.adapters.OnItemClickedListener;
-import im.actor.sdk.view.PagerSlidingTabStrip;
 
 import static im.actor.sdk.util.ViewUtils.goneView;
 import static im.actor.sdk.util.ViewUtils.showView;
@@ -85,12 +76,14 @@ public class MainPhoneController extends MainBaseController {
     private byte[] docContent = null;
     private String joinGroupUrl;
 
+
     public MainPhoneController(ActorMainActivity mainActivity) {
         super(mainActivity);
     }
 
     @Override
     public void onDialogClicked(final Dialog item) {
+
         if ((sendUriMultiple != null && !sendUriMultiple.isEmpty()) || docContent != null || (sendUriString != null && !sendUriString.isEmpty())) {
             new AlertDialog.Builder(getActivity())
                     .setMessage(getActivity().getString(R.string.confirm_share) + " " + item.getDialogTitle() + "?")
@@ -253,11 +246,6 @@ public class MainPhoneController extends MainBaseController {
         });
     }
 
-    @NonNull
-    public HomePagerAdapter getHomePagerAdapter() {
-        return new HomePagerAdapter(getFragmentManager());
-    }
-
     @Override
     public void onNewIntent(Intent intent) {
         handleIntent(intent);
@@ -342,28 +330,27 @@ public class MainPhoneController extends MainBaseController {
         emptyContactsView.setVisibility(View.GONE);
         syncInProgressView.setVisibility(View.GONE);
 
-        getActivity().bind(messenger().getAppState().getIsAppLoaded(),
-                messenger().getAppState().getIsAppEmpty(),
-                (isAppLoaded, Value, isAppEmpty, Value2) -> {
-                    if (isAppEmpty) {
-                        if (isAppLoaded) {
-                            onHideToolbarCustomView();
-                            emptyContactsView.setVisibility(View.VISIBLE);
-                            syncInProgressView.setVisibility(View.GONE);
-                            getActivity().invalidateOptionsMenu();
-                        } else {
-                            onHideToolbarCustomView();
-                            emptyContactsView.setVisibility(View.GONE);
-                            syncInProgressView.setVisibility(View.VISIBLE);
-                            getActivity().invalidateOptionsMenu();
-                        }
-                    } else {
-                        onShowToolbarCustomView();
-                        emptyContactsView.setVisibility(View.GONE);
-                        syncInProgressView.setVisibility(View.GONE);
-                        getActivity().invalidateOptionsMenu();
-                    }
-                });
+        getActivity().bind(messenger().getAppState().getIsAppLoaded(), messenger().getAppState().getIsAppEmpty(), (isAppLoaded, Value, isAppEmpty, Value2) -> {
+            if (isAppEmpty) {
+                if (isAppLoaded) {
+                    onHideToolbarCustomView();
+                    emptyContactsView.setVisibility(View.VISIBLE);
+                    syncInProgressView.setVisibility(View.GONE);
+
+                    getActivity().invalidateOptionsMenu();
+                } else {
+                    onHideToolbarCustomView();
+                    emptyContactsView.setVisibility(View.GONE);
+                    syncInProgressView.setVisibility(View.VISIBLE);
+                    getActivity().invalidateOptionsMenu();
+                }
+            } else {
+                onShowToolbarCustomView();
+                emptyContactsView.setVisibility(View.GONE);
+                syncInProgressView.setVisibility(View.GONE);
+                getActivity().invalidateOptionsMenu();
+            }
+        });
     }
 
     protected void onShowToolbarCustomView() {
@@ -547,59 +534,5 @@ public class MainPhoneController extends MainBaseController {
             return true;
         }
         return false;
-    }
-
-    public class HomePagerAdapter extends FragmentNoMenuStatePagerAdapter implements PagerSlidingTabStrip.IconTabProvider {
-
-        public HomePagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public int getCount() {
-            return 2;
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            switch (position) {
-                default:
-                case 0:
-                    return getDialogsFragment(new DialogsFragment());
-                case 1:
-                    return getContactsFragment(new ContactsFragment());
-
-            }
-        }
-
-        @NonNull
-        public ContactsFragment getContactsFragment(ContactsFragment res2) {
-            res2.setHasOptionsMenu(false);
-            return res2;
-        }
-
-        @NonNull
-        public DialogsFragment getDialogsFragment(DialogsFragment res1) {
-            Bundle arguments = new Bundle();
-            res1.setArguments(arguments);
-            res1.setHasOptionsMenu(false);
-            return res1;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position) {
-                default:
-                case 0:
-                    return getActivity().getString(R.string.main_bar_chats);
-                case 1:
-                    return getActivity().getString(R.string.main_bar_contacts);
-            }
-        }
-
-        @Override
-        public int getPageIconResId(int position, Context context) {
-            return -1;
-        }
     }
 }
