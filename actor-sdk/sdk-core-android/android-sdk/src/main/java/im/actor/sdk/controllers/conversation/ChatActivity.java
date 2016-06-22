@@ -12,6 +12,8 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
@@ -24,6 +26,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.view.ActionMode;
+import android.support.v7.view.menu.ActionMenuItemView;
+import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -1187,7 +1191,12 @@ public class ChatActivity extends ActorEditTextActivity {
                 callsEnabled = groups().get(peer.getPeerId()).getMembersCount() <= MAX_USERS_FOR_CALLS;
             }
         }
-        menu.findItem(R.id.call).setVisible(callsEnabled);
+        MenuItem v = menu.findItem(R.id.call);
+        Drawable callIcon = v.getIcon();
+        if (callIcon != null) {
+            callIcon.setColorFilter(new PorterDuffColorFilter(0xffffffff, PorterDuff.Mode.MULTIPLY));
+        }
+        v.setVisible(callsEnabled);
 
         if (peer.getPeerType() == PeerType.PRIVATE) {
             bind(users().get(peer.getPeerId()).isContact(), new ValueChangedListener<Boolean>() {
