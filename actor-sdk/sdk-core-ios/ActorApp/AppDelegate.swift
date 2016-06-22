@@ -40,4 +40,12 @@ import ActorSDK
         
         return true;
     }
+    
+    public override func actorRootControllers() -> [UIViewController]? {
+        return [AAContactsViewController(), AARecentViewController(), AASettingsViewController()]
+    }
+    
+    public override func actorRootInitialControllerIndex() -> Int? {
+        return 0
+    }
 }

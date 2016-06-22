@@ -509,9 +509,17 @@ import DZNWebViewController
             if controller == nil {
                 let tab = AARootTabViewController()
                 tab.viewControllers = self.getMainNavigations()
-                tab.selectedIndex = 0
-                tab.selectedIndex = 1
                 
+                if let index = self.delegate.actorRootInitialControllerIndex() {
+                    if index != 0 {
+                        tab.selectedIndex = 0
+                        tab.selectedIndex = index
+                    }
+                } else {
+                    tab.selectedIndex = 0
+                    tab.selectedIndex = 1
+                }
+
                 if (AADevice.isiPad) {
                     let splitController = AARootSplitViewController()
                     splitController.viewControllers = [tab, AANoSelectionViewController()]
