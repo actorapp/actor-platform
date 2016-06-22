@@ -37,6 +37,9 @@ public protocol ActorSDKDelegate {
     /// Root controllers
     func actorRootControllers() -> [UIViewController]?
     
+    /// Root Intial controller
+    func actorRootInitialControllerIndex() -> Int?
+    
     /// Configuration of bubble cells
     func actorConfigureBubbleLayouters(builtIn: [AABubbleLayouter]) -> [AABubbleLayouter]
     
@@ -95,6 +98,10 @@ public class ActorSDKDelegateDefault: NSObject, ActorSDKDelegate {
     }
     
     public func actorRootControllers() -> [UIViewController]? {
+        return nil
+    }
+    
+    public func actorRootInitialControllerIndex() -> Int? {
         return nil
     }
     
