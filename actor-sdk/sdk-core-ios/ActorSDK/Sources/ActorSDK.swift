@@ -346,15 +346,8 @@ import DZNWebViewController
             tab.viewControllers = self.getMainNavigations()
             
             if let index = self.delegate.actorRootInitialControllerIndex() {
-                if index != 0 {
-                    tab.selectedIndex = 0
-                    tab.selectedIndex = index
-                } else {
-                    tab.selectedIndex = 1
-                    tab.selectedIndex = 0
-                }
+                tab.selectedIndex = index
             } else {
-                tab.selectedIndex = 0
                 tab.selectedIndex = 1
             }
             
@@ -514,15 +507,8 @@ import DZNWebViewController
                 tab.viewControllers = self.getMainNavigations()
                 
                 if let index = self.delegate.actorRootInitialControllerIndex() {
-                    if index != 0 {
-                        tab.selectedIndex = 0
-                        tab.selectedIndex = index
-                    } else {
-                        tab.selectedIndex = 1
-                        tab.selectedIndex = 0
-                    }
+                    tab.selectedIndex = index
                 } else {
-                    tab.selectedIndex = 0
                     tab.selectedIndex = 1
                 }
 
