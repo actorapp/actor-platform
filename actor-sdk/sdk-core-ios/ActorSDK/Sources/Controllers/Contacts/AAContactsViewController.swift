@@ -8,7 +8,7 @@ import Social
 import AddressBookUI
 import ContactsUI
 
-class AAContactsViewController: AAContactsListContentController, AAContactsListContentControllerDelegate, UIAlertViewDelegate, MFMessageComposeViewControllerDelegate, MFMailComposeViewControllerDelegate {
+public class AAContactsViewController: AAContactsListContentController, AAContactsListContentControllerDelegate, UIAlertViewDelegate, MFMessageComposeViewControllerDelegate, MFMailComposeViewControllerDelegate {
     
     var inviteText: String {
         get {
@@ -16,7 +16,7 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
         }
     }
     
-    override init() {
+    public override init() {
         super.init()
         
         content = ACAllEvents_Main.CONTACTS()
@@ -29,11 +29,11 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
         delegate = self
     }
 
-    required init(coder aDecoder: NSCoder) {
+    public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func contactDidTap(controller: AAContactsListContentController, contact: ACContact) -> Bool {
+    public func contactDidTap(controller: AAContactsListContentController, contact: ACContact) -> Bool {
         
         if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(ACPeer_userWithInt_(contact.uid)) {
             navigateDetail(customController)
@@ -44,7 +44,7 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
         return true
     }
     
-    func willAddContacts(controller: AAContactsListContentController, section: AAManagedSection) {
+    public func willAddContacts(controller: AAContactsListContentController, section: AAManagedSection) {
         
         section.custom { (r: AACustomRow<AAContactActionCell>) -> () in
             
@@ -127,7 +127,7 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
  
     // Searching for contact
     
-    func findContact() {
+    public func findContact() {
         
         startEditField { (c) -> () in
             c.title = "FindTitle"
@@ -180,7 +180,7 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
         }
     }
     
-    func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
+    public func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
         if buttonIndex == 1 {
             let textField = alertView.textFieldAtIndex(0)!
             if textField.text?.length > 0 {
@@ -218,7 +218,7 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
     
     // Email Invitation
     
-    func showEmailInvitation(recipients: [String]?) {
+    public func showEmailInvitation(recipients: [String]?) {
         if MFMailComposeViewController.canSendMail() {
             
             let messageComposeController = MFMailComposeViewController()
@@ -234,16 +234,16 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
         }
     }
     
-    func mailComposeController(controller: MFMailComposeViewController, didFinishWithResult result: MFMailComposeResult, error: NSError?) {
+    public func mailComposeController(controller: MFMailComposeViewController, didFinishWithResult result: MFMailComposeResult, error: NSError?) {
         controller.dismissViewControllerAnimated(true, completion: nil)
     }
     
     // SMS Invitation
-    func showSmsInvitation() {
+    public func showSmsInvitation() {
         self.showSmsInvitation(nil)
     }
     
-    func showSmsInvitation(recipients: [String]?) {
+    public func showSmsInvitation(recipients: [String]?) {
         if MFMessageComposeViewController.canSendText() {
             let messageComposeController = MFMessageComposeViewController()
             messageComposeController.messageComposeDelegate = self
@@ -253,7 +253,7 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
         }
     }
     
-    @objc func messageComposeViewController(controller: MFMessageComposeViewController, didFinishWithResult result: MessageComposeResult) {
+    @objc public func messageComposeViewController(controller: MFMessageComposeViewController, didFinishWithResult result: MessageComposeResult) {
         controller.dismissViewControllerAnimated(true, completion: nil)
     }
 }

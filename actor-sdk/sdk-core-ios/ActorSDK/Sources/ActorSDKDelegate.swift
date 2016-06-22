@@ -26,13 +26,16 @@ public protocol ActorSDKDelegate {
     func actorControllerForConversation(peer: ACPeer) -> UIViewController?
     
     /// Contacts controller
-    func actorControllerForContacts() -> AAViewController?
+    func actorControllerForContacts() -> UIViewController?
     
     /// Dialogs controller
-    func actorControllerForDialogs() -> AAViewController?
+    func actorControllerForDialogs() -> UIViewController?
     
     /// Settings controller
-    func actorControllerForSettings() -> AAViewController?
+    func actorControllerForSettings() -> UIViewController?
+    
+    /// Root controllers
+    func actorRootControllers() -> [UIViewController]?
     
     /// Configuration of bubble cells
     func actorConfigureBubbleLayouters(builtIn: [AABubbleLayouter]) -> [AABubbleLayouter]
@@ -79,15 +82,19 @@ public class ActorSDKDelegateDefault: NSObject, ActorSDKDelegate {
         return nil
     }
     
-    public func actorControllerForContacts() -> AAViewController? {
+    public func actorControllerForContacts() -> UIViewController? {
         return nil
     }
     
-    public func actorControllerForDialogs() -> AAViewController? {
+    public func actorControllerForDialogs() -> UIViewController? {
         return nil
     }
     
-    public func actorControllerForSettings() -> AAViewController? {
+    public func actorControllerForSettings() -> UIViewController? {
+        return nil
+    }
+    
+    public func actorRootControllers() -> [UIViewController]? {
         return nil
     }
     
