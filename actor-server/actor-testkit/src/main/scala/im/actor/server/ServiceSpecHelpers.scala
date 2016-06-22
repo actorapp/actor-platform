@@ -126,7 +126,7 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions wi
         deviceTitle = "Specs Has You",
         timeZone = None,
         preferredLanguages = Vector.empty
-      ))(_.toOption.get.transactionHash)
+      ))(_.fold(x ⇒ throw new Exception(x.toString), identity).transactionHash)
 
       val code = whenReady(db.run(AuthCodeRepo.findByTransactionHash(txHash)))(_.get.code)
       whenReady(service.handleValidateCode(txHash, code))(_ ⇒ ())

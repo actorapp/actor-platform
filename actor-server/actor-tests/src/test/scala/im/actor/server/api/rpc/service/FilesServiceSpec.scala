@@ -41,7 +41,7 @@ final class FilesServiceSpec
   var expectedContents: Option[String] = None
 
   def generateUploadUrl() = {
-    val size = 20
+    val size = 1024 * 32 + 5
 
     whenReady(service.handleGetFileUploadUrl(size)) { resp ⇒
       resp should matchPattern {
@@ -121,8 +121,9 @@ final class FilesServiceSpec
       val connection = url.openConnection().asInstanceOf[HttpURLConnection]
       connection.setDoOutput(true)
       connection.setRequestMethod("GET")
-      connection.getResponseMessage should ===("OK")
-      IOUtils.toString(connection.getInputStream) should ===(expectedContents.get)
+      connection.getResponseCode shouldEqual 200
+      val result = IOUtils.toString(connection.getInputStream)
+      result shouldEqual expectedContents.get
     }
 
     checkRanged(urlStr, s"${expectedContents.get.length - 10}-", expectedContents.get.drop(expectedContents.get.length - 10))

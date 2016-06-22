@@ -6,7 +6,9 @@ import java.time.{ Duration, Instant }
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.model.{ HttpMethods, Uri }
+import akka.stream.scaladsl.Source
 import akka.stream.{ ActorMaterializer, Materializer }
+import akka.util.ByteString
 import better.files._
 import im.actor.acl.ACLFiles
 import im.actor.server.api.http.{ HttpApi, HttpApiConfig }
@@ -112,15 +114,15 @@ final class LocalFileStorageAdapter(_system: ActorSystem)
     val fileDir = fileDirectory(fileId)
     for {
       isComplete ← haveAllParts(fileDir, partNames, fileSize)
-      result ← concatFiles(fileDir, partNames, fileName.safe, fileSize)
-      _ ← if (isComplete) deleteUploadedParts(fileDir, partNames) else Future.successful(())
+      //      result ← concatFiles(fileDir, partNames, fileName.safe, fileSize)
+      //      _ ← if (isComplete) deleteUploadedParts(fileDir, partNames) else Future.successful(())
       _ ← db.run(FileRepo.setUploaded(fileId, fileName.safe))
     } yield ()
   }
 
-  override def downloadFile(id: Long): DBIO[Option[Array[Byte]]] = DBIO.from(downloadFileF(id))
+  override def downloadFile(id: Long): DBIO[Option[Source[ByteString, Any]]] = DBIO.from(downloadFileF(id))
 
-  override def downloadFileF(id: Long): Future[Option[Array[Byte]]] = getFileData(id) map (_ map (_.toArray))
+  override def downloadFileF(id: Long): Future[Option[Source[ByteString, Any]]] = getFileData(id)
 
   /**
    * Generates download uri similar to:

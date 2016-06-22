@@ -82,22 +82,22 @@ final class ProfileServiceSpec
         r.avatar.fullImage.get.width should ===(validOrigDimensions._1)
         r.avatar.fullImage.get.height should ===(validOrigDimensions._2)
         r.avatar.fullImage.get.fileSize should ===(validOrigBytes.length)
-        whenReady(db.run(fsAdapter.downloadFile(r.avatar.fullImage.get.fileLocation.fileId))) { fileOpt ⇒
-          fileOpt.get should ===(validOrigBytes)
+        whenReady(fsAdapter.downloadAsArray(r.avatar.fullImage.get.fileLocation.fileId)) { fileOpt ⇒
+          fileOpt.get === validOrigBytes
         }
 
         r.avatar.smallImage.get.width should ===(validSmallDimensions._1)
         r.avatar.smallImage.get.height should ===(validSmallDimensions._2)
         r.avatar.smallImage.get.fileSize should ===(validSmallBytes.length)
-        whenReady(db.run(fsAdapter.downloadFile(r.avatar.smallImage.get.fileLocation.fileId))) { fileOpt ⇒
-          fileOpt.get should ===(validSmallBytes)
+        whenReady(fsAdapter.downloadAsArray(r.avatar.smallImage.get.fileLocation.fileId)) { fileOpt ⇒
+          fileOpt.get === validSmallBytes
         }
 
         r.avatar.largeImage.get.width should ===(validLargeDimensions._1)
         r.avatar.largeImage.get.height should ===(validLargeDimensions._2)
         r.avatar.largeImage.get.fileSize should ===(validLargeBytes.length)
-        whenReady(db.run(fsAdapter.downloadFile(r.avatar.largeImage.get.fileLocation.fileId))) { fileOpt ⇒
-          fileOpt.get should ===(validLargeBytes)
+        whenReady(fsAdapter.downloadAsArray(r.avatar.largeImage.get.fileLocation.fileId)) { fileOpt ⇒
+          fileOpt.get === validLargeBytes
         }
 
       }

@@ -1,5 +1,6 @@
 package im.actor.server.file.local
 
+import java.nio.file.Path
 import java.util.concurrent.Executors
 
 import akka.actor.ActorSystem
@@ -8,9 +9,10 @@ import akka.http.scaladsl.util.FastFuture
 import akka.stream.Materializer
 import akka.stream.scaladsl.{ FileIO, Source }
 import akka.util.ByteString
-import better.files.{ File, _ }
+import better.files._
 import im.actor.server.db.DbExtension
-import im.actor.server.persist.files.FileRepo
+import im.actor.server.model.FilePart
+import im.actor.server.persist.files.{ FilePartRepo, FileRepo }
 
 import scala.concurrent.{ ExecutionContext, Future, blocking }
 import scala.util.{ Failure, Success }
@@ -55,8 +57,7 @@ trait FileStorageOperations extends LocalUploadKeyImplicits {
       dir ← getOrCreateFileDir(fileId)
       partFile ← Future { blocking { dir.createChild(LocalUploadKey.partKey(fileId, partNumber).key) } }
       _ = log.debug("Appending bytes to part number: {}, fileId: {}, target file: {}", partNumber, fileId, partFile)
-      bytes ← bs.runFold(ByteString.empty)(_ ++ _)
-      _ ← Future({ partFile.write(bytes.toArray) })(ecPool)
+      _ ← bs.runWith(FileIO.toPath(partFile.path))
     } yield ()
   }
 
@@ -73,52 +74,40 @@ trait FileStorageOperations extends LocalUploadKeyImplicits {
     result
   }
 
-  protected def concatFiles(dir: File, partNames: Seq[String], fileName: String, fileSize: Long): Future[File] = {
-    Future {
-      blocking {
-        log.debug("Concatenating file: {}, parts number: {}", fileName, partNames.length)
-        val concatFile = dir.createChild(getFileName(fileName))
-        val groupedPartNames = partNames.grouped(100)
-        for {
-          out ← concatFile.outputStream
-          _ = groupedPartNames foreach { names ⇒
-            for {
-              iss ← names map { name ⇒
-                log.debug("Concatenating part: {}", name)
-                (dir / name).inputStream
-              }
-            } yield iss.foreach(_.pipeTo(out, closeOutputStream = false))
-          }
-        } yield ()
-        concatFile
+  //TODO Delete uploaded file parts. ??
+  /*protected def deleteUploadedParts(dir: File, partNames: Seq[String]): Future[Unit] =
+      Future.sequence(partNames map { part ⇒ Future((dir / part).delete()) }) map (_ ⇒ ())*/
+
+  protected def getFileData(fileId: Long): Future[Option[Source[ByteString, Any]]] =
+    for {
+      parts ← db.run(FilePartRepo.findByFileId(fileId))
+      file ← getFile(fileId)
+      data = file.filter(_.isUploaded).map { f ⇒
+        fileStream((fileDirectory(fileId) / f.name).path).getOrElse {
+          filePartsStream(parts)
+        }
       }
-    }
+    } yield data
+
+  protected def getFile(fileId: Long): Future[Option[im.actor.server.model.File]] =
+    db.run(FileRepo.find(fileId))
+
+  private def fileStream(path: Path): Option[Source[ByteString, Any]] =
+    if (path.exists) Some(FileIO.fromPath(path)) else None
+
+  protected def filePartsStream(parts: Seq[FilePart]): Source[ByteString, Any] = {
+    val paths: List[Path] = parts.map(partFilePath)(collection.breakOut)
+
+    Source.unfold[List[Path], Source[ByteString, Any]](paths) { xs ⇒
+      xs.headOption.map { path ⇒
+        xs.tail → FileIO.fromPath(path)
+      }
+    }.flatMapConcat(identity)
   }
 
-  protected def deleteUploadedParts(dir: File, partNames: Seq[String]): Future[Unit] =
-    Future.sequence(partNames map { part ⇒ Future((dir / part).delete()) }) map (_ ⇒ ())
+  protected def fileDirectory(fileId: Long): File = file"$storageLocation/file_$fileId"
 
-  protected def getFileData(fileId: Long): Future[Option[ByteString]] =
-    for {
-      fileOpt ← getFile(fileId)
-      dataOpt ← fileOpt match {
-        case Some(file) ⇒ getFileData(file) map (Some(_))
-        case None       ⇒ FastFuture.successful(None)
-      }
-    } yield dataOpt
-
-  protected def getFile(fileId: Long): Future[Option[File]] =
-    db.run(FileRepo.find(fileId)) map {
-      case Some(model) ⇒ Some(fileDirectory(fileId) / getFileName(model.name))
-      case None        ⇒ None
-    }
-
-  protected def getFileData(file: File): Future[ByteString] =
-    FileIO.fromPath(file.path).runFold(ByteString.empty)(_ ++ _)
-
-  protected def getFileName(name: String) = if (name.trim.isEmpty) "file" else name
-
-  protected def fileDirectory(fileId: Long): File = file"$storageLocation/file_${fileId}"
+  private def partFilePath(filePart: FilePart): Path = (fileDirectory(filePart.fileId) / filePart.uploadKey).path
 
   private def getOrCreateFileDir(fileId: Long) = Future {
     blocking {

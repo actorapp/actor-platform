@@ -2,11 +2,16 @@ package im.actor.server.file
 
 import java.io.File
 
+import akka.actor.ActorSystem
+import akka.stream.{ ActorMaterializer, Materializer }
+import akka.stream.scaladsl.Source
+import akka.util.ByteString
 import im.actor.server.model.{ File ⇒ FileModel }
 import im.actor.server.db.ActorPostgresDriver.api._
-import im.actor.util.misc.StringUtils.{ isAsciiString, transliterate, toAsciiString }
+import im.actor.util.misc.StringUtils.{ isAsciiString, toAsciiString, transliterate }
 
-import scala.concurrent._, duration._
+import scala.concurrent._
+import duration._
 
 object FileStorageAdapter {
   val UrlExpirationTimeout = 1.day
@@ -42,8 +47,21 @@ private[file] trait UploadKeyParsing {
 private[file] trait DownloadActions {
   def getFileDownloadUrl(file: FileModel, accessHash: Long): Future[Option[String]]
 
-  def downloadFile(id: Long): DBIO[Option[Array[Byte]]]
+  def downloadFile(id: Long): DBIO[Option[Source[ByteString, Any]]]
 
-  def downloadFileF(id: Long): Future[Option[Array[Byte]]]
+  def downloadFileF(id: Long): Future[Option[Source[ByteString, Any]]]
+
+  def downloadAsArray(id: Long)(implicit ec: ExecutionContext, as: ActorSystem): Future[Option[Array[Byte]]] = downloadFileF(id).flatMap { opt ⇒
+    val promise = Promise[Option[Array[Byte]]]
+    implicit val mat = ActorMaterializer()
+
+    opt match {
+      case Some(source) ⇒
+        val bs = source.runFold(ByteString.empty)(_ ++ _).map(_.toArray)
+        bs.onComplete(x ⇒ promise.tryComplete(x.map(Some.apply)))
+      case None ⇒ promise.trySuccess(None)
+    }
+    promise.future
+  }
 }
 
