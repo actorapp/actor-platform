@@ -5,11 +5,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorSDKApplication;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.BaseActorSDKDelegate;
+import im.actor.sdk.controllers.conversation.ShareMenuField;
 import im.actor.sdk.controllers.group.GroupInfoFragment;
 import im.actor.sdk.controllers.profile.ProfileFragment;
 import im.actor.sdk.controllers.settings.ActorSettingsCategory;
@@ -24,7 +28,7 @@ public class Application extends ActorSDKApplication {
 
     @Override
     public void onConfigureActorSDK() {
-//        ActorSDK.sharedActor().setDelegate(new ActorSDKDelegate());
+        ActorSDK.sharedActor().setDelegate(new ActorSDKDelegate());
         ActorSDK.sharedActor().setPushId(209133700967L);
 
         ActorStyle style = ActorSDK.sharedActor().style;
@@ -70,6 +74,19 @@ public class Application extends ActorSDKApplication {
 //            }
 //            return null;
 //        }
+
+
+        @Override
+        public ArrayList<ShareMenuField> addCustomShareMenuFields() {
+            ArrayList<ShareMenuField> shareMenuFields = new ArrayList<>();
+            shareMenuFields.add(new ShareMenuField(R.drawable.conv_location_icon, ActorSDK.sharedActor().style.getMainColor(), "lol", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(v.getContext(), "Hey", Toast.LENGTH_LONG).show();
+                }
+            }));
+            return shareMenuFields;
+        }
 
         @Override
         public BaseActorProfileActivity getProfileIntent(int uid) {
