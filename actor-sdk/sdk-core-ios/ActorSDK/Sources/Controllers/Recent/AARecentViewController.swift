@@ -6,6 +6,8 @@ import UIKit
 
 public class AARecentViewController: AADialogsListContentController, AADialogsListContentControllerDelegate {
 
+    private var isBinded = true
+    
     public override init() {
         
         super.init()
@@ -17,14 +19,6 @@ public class AARecentViewController: AADialogsListContentController, AADialogsLi
         // Setting delegate
         
         self.delegate = self
-    }
-
-    public required init(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    public override func viewDidLoad() {
-        super.viewDidLoad()
         
         // Setting UITabBarItem
         
@@ -36,6 +30,12 @@ public class AARecentViewController: AADialogsListContentController, AADialogsLi
         navigationItem.leftBarButtonItem = editButtonItem()
         navigationItem.leftBarButtonItem!.title = AALocalized("NavigationEdit")
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Compose, target: self, action: #selector(AARecentViewController.compose))
+    
+        bindCounter()
+    }
+
+    public required init(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     // Implemention of editing
@@ -76,18 +76,31 @@ public class AARecentViewController: AADialogsListContentController, AADialogsLi
     
     public override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        
-        binder.bind(Actor.getGlobalState().globalCounter, closure: { (value: JavaLangInteger?) -> () in
-            if value != nil {
-                if value!.integerValue > 0 {
-                    self.tabBarItem.badgeValue = "\(value!.integerValue)"
+        bindCounter()
+    }
+    
+    func bindCounter() {
+        if !isBinded {
+            isBinded = true
+            binder.bind(Actor.getGlobalState().globalCounter, closure: { (value: JavaLangInteger?) -> () in
+                if value != nil {
+                    if value!.integerValue > 0 {
+                        self.tabBarItem.badgeValue = "\(value!.integerValue)"
+                    } else {
+                        self.tabBarItem.badgeValue = nil
+                    }
                 } else {
                     self.tabBarItem.badgeValue = nil
                 }
-            } else {
-                self.tabBarItem.badgeValue = nil
-            }
-        })
+            })
+            
+        }
+
+    }
+    
+    public override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        isBinded = false
     }
     
     public override func viewDidAppear(animated: Bool) {
