@@ -92,9 +92,11 @@ public class JsMessenger extends Messenger {
         jsIdleModule = new JsIdleModule(this, modules);
 
         if (isElectron()) {
+            Log.d(TAG, "Init Electron IPC");
             JsElectronApp.subscribe("window", new JsElectronListener() {
                 @Override
                 public void onEvent(String content) {
+                    Log.d(TAG, "On Window " + content);
                     if ("focus".equals(content)) {
                         jsIdleModule.onVisible();
                     } else if ("blur".equals(content)) {
