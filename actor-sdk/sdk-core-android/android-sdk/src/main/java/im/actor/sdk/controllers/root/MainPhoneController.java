@@ -21,17 +21,23 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 import im.actor.core.entity.Contact;
 import im.actor.core.entity.Dialog;
+import im.actor.core.entity.Peer;
 import im.actor.core.entity.SearchEntity;
 import im.actor.core.viewmodel.CommandCallback;
+import im.actor.core.viewmodel.UserVM;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
@@ -46,6 +52,7 @@ import im.actor.sdk.controllers.contacts.ContactsFragment;
 import im.actor.sdk.controllers.dialogs.DialogsFragment;
 import im.actor.sdk.controllers.fragment.help.HelpActivity;
 import im.actor.sdk.controllers.fragment.main.SearchAdapter;
+import im.actor.sdk.controllers.fragment.main.SearchHolder;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.util.Fonts;
 import im.actor.sdk.view.adapters.FragmentNoMenuStatePagerAdapter;
@@ -84,6 +91,10 @@ public class MainPhoneController extends MainBaseController {
     private String forwardTextRaw = "";
     private byte[] docContent = null;
     private String joinGroupUrl;
+
+    SearchHolder footerSearchHolder;
+    private String searchQuery;
+    private LinearLayout footer;
 
     public MainPhoneController(ActorMainActivity mainActivity) {
         super(mainActivity);
@@ -433,12 +444,40 @@ public class MainPhoneController extends MainBaseController {
 
             @Override
             public boolean onQueryTextChange(String s) {
+                searchQuery = s.trim();
+
                 if (isSearchVisible) {
                     if (s.trim().length() > 0) {
+                        String activeSearchQuery = searchQuery;
                         searchDisplay.initSearch(s.trim().toLowerCase(), false);
                         searchAdapter.setQuery(s.trim().toLowerCase());
+                        messenger().findUsers(s).start(new CommandCallback<UserVM[]>() {
+                            @Override
+                            public void onResult(UserVM[] res) {
+                                int footerVisability = footer.getVisibility();
+                                if (searchQuery.equals(activeSearchQuery)) {
+                                    if (res.length > 0) {
+                                        UserVM u = res[0];
+                                        footerSearchHolder.bind(new SearchEntity(Peer.user(u.getId()), 0, u.getAvatar().get(), u.getName().get()), activeSearchQuery, true);
+                                        showView(footer);
+                                    } else {
+                                        goneView(footer);
+                                    }
+                                }
+                                if (footerVisability != footer.getVisibility()) {
+                                    onSearchChanged();
+                                }
+                            }
+
+                            @Override
+                            public void onError(Exception e) {
+
+                            }
+                        });
                     } else {
                         searchDisplay.initEmpty();
+                        goneView(footer);
+
                     }
                 }
                 return false;
@@ -488,6 +527,51 @@ public class MainPhoneController extends MainBaseController {
         header.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         recyclerAdapter.addHeaderView(header);
 
+        TextView footerTitle = new TextView(getActivity());
+        footerTitle.setText(R.string.main_search_global_header);
+        footerTitle.setTextSize(16);
+        footerTitle.setPadding(Screen.dp(12), Screen.dp(8), 0, Screen.dp(8));
+        footerTitle.setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackgroundColor());
+        footerTitle.setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
+
+        footerSearchHolder = new SearchHolder(getActivity(), new OnItemClickedListener<SearchEntity>() {
+            @Override
+            public void onClicked(SearchEntity item) {
+                int peerId = item.getPeer().getPeerId();
+                getActivity().execute(messenger().addContact(peerId), R.string.progress_common, new CommandCallback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean res2) {
+                        startActivity(Intents.openPrivateDialog(peerId,
+                                true,
+                                getActivity()));
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        startActivity(Intents.openPrivateDialog(peerId,
+                                true,
+                                getActivity()));
+                    }
+                });
+            }
+
+            @Override
+            public boolean onLongClicked(SearchEntity item) {
+                return false;
+            }
+        });
+        View footerGlobalSearchView = footerSearchHolder.itemView;
+
+        footer = new LinearLayout(getActivity());
+        footer.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        footer.addView(footerTitle, params);
+        footer.addView(footerGlobalSearchView, params);
+
+        footer.setVisibility(View.GONE);
+
+        recyclerAdapter.addFooterView(footer);
+
         searchList.setAdapter(recyclerAdapter);
         searchDisplay.addListener(searchListener);
         onHideToolbarCustomView();
@@ -503,7 +587,7 @@ public class MainPhoneController extends MainBaseController {
             goneView(searchEmptyView);
         } else {
             goneView(searchHintView);
-            if (searchDisplay.getSize() == 0) {
+            if (searchDisplay.getSize() == 0 && footer.getVisibility() != View.VISIBLE) {
                 showView(searchEmptyView);
             } else {
                 goneView(searchEmptyView);
