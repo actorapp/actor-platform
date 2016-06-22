@@ -349,6 +349,9 @@ import DZNWebViewController
                 if index != 0 {
                     tab.selectedIndex = 0
                     tab.selectedIndex = index
+                } else {
+                    tab.selectedIndex = 1
+                    tab.selectedIndex = 0
                 }
             } else {
                 tab.selectedIndex = 0
@@ -514,6 +517,9 @@ import DZNWebViewController
                     if index != 0 {
                         tab.selectedIndex = 0
                         tab.selectedIndex = index
+                    } else {
+                        tab.selectedIndex = 1
+                        tab.selectedIndex = 0
                     }
                 } else {
                     tab.selectedIndex = 0
