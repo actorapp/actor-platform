@@ -427,45 +427,56 @@ import DZNWebViewController
     }
     
     /// Get main navigations with check in delegate for customize from SDK
-    
     private func getMainNavigations() -> [AANavigationController] {
     
+        let allControllers = self.delegate.actorRootControllers()
         
-        var mainNavigations = [AANavigationController]()
-        
-        ////////////////////////////////////
-        // contacts
-        ////////////////////////////////////
-        
-        if let contactsController = self.delegate.actorControllerForContacts() {
-            mainNavigations.append(AANavigationController(rootViewController: contactsController))
+        if let all = allControllers {
+            
+            var mainNavigations = [AANavigationController]()
+            
+            for controller in all {
+                mainNavigations.append(AANavigationController(rootViewController: controller))
+            }
+            
+            return mainNavigations
         } else {
-            mainNavigations.append(AANavigationController(rootViewController: AAContactsViewController()))
-        }
+
+            var mainNavigations = [AANavigationController]()
         
-        ////////////////////////////////////
-        // recent dialogs
-        ////////////////////////////////////
+            ////////////////////////////////////
+            // Contacts
+            ////////////////////////////////////
         
-        if let recentDialogs = self.delegate.actorControllerForDialogs() {
-            mainNavigations.append(AANavigationController(rootViewController: recentDialogs))
-        } else {
-            mainNavigations.append(AANavigationController(rootViewController: AARecentViewController()))
-        }
+            if let contactsController = self.delegate.actorControllerForContacts() {
+                mainNavigations.append(AANavigationController(rootViewController: contactsController))
+            } else {
+                mainNavigations.append(AANavigationController(rootViewController: AAContactsViewController()))
+            }
         
-        ////////////////////////////////////
-        // settings
-        ////////////////////////////////////
+            ////////////////////////////////////
+            // Recent dialogs
+            ////////////////////////////////////
         
-        if let settingsController = self.delegate.actorControllerForSettings() {
-            mainNavigations.append(AANavigationController(rootViewController: settingsController))
-        } else {
-            mainNavigations.append(AANavigationController(rootViewController: AASettingsViewController()))
-        }
+            if let recentDialogs = self.delegate.actorControllerForDialogs() {
+                mainNavigations.append(AANavigationController(rootViewController: recentDialogs))
+            } else {
+                mainNavigations.append(AANavigationController(rootViewController: AARecentViewController()))
+            }
+        
+            ////////////////////////////////////
+            // Settings
+            ////////////////////////////////////
+        
+            if let settingsController = self.delegate.actorControllerForSettings() {
+                mainNavigations.append(AANavigationController(rootViewController: settingsController))
+            } else {
+                mainNavigations.append(AANavigationController(rootViewController: AASettingsViewController()))
+            }
         
     
-        return mainNavigations;
-        
+            return mainNavigations
+        }
     }
 
     
