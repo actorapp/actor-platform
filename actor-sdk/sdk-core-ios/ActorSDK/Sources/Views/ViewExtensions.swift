@@ -4,9 +4,9 @@
 
 import Foundation
 
-extension UITabBarItem {
+public extension UITabBarItem {
     
-    convenience init(title: String, img: String, selImage: String) {
+    public  convenience init(title: String, img: String, selImage: String) {
         
         let unselectedIcon = ActorSDK.sharedActor().style.tabUnselectedIconColor
         let unselectedText = ActorSDK.sharedActor().style.tabUnselectedTextColor
