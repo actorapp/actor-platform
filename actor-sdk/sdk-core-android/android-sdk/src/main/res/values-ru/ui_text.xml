@@ -145,6 +145,7 @@
 
     <!-- Main -->
     <string name="main_search_hint">Начните набирать для поиска</string>
+    <string name="main_search_global_header">Общий поиск</string>
     <string name="main_search_empty">Ничего не найдено</string>
     <string name="main_menu_help">Помощь</string>
     <string name="main_menu_search">Поиск</string>
