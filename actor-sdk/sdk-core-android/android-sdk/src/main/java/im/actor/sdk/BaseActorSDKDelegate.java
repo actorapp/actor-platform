@@ -6,10 +6,13 @@ import android.provider.Settings;
 import android.view.ViewGroup;
 import android.widget.TableLayout;
 
+import java.util.ArrayList;
+
 import im.actor.core.AuthState;
 import im.actor.core.entity.Peer;
 import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
+import im.actor.sdk.controllers.conversation.ShareMenuField;
 import im.actor.sdk.controllers.root.MainPhoneController;
 import im.actor.sdk.controllers.conversation.messages.MessageHolder;
 import im.actor.sdk.controllers.conversation.MessagesAdapter;
@@ -204,6 +207,11 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
     @Override
     public void onShareMenuCreated(TableLayout shareMenu) {
 
+    }
+
+    @Override
+    public ArrayList<ShareMenuField> addCustomShareMenuFields() {
+        return null;
     }
 
     //
