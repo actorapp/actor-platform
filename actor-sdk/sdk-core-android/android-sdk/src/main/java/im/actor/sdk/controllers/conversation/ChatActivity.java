@@ -359,6 +359,8 @@ public class ChatActivity extends ActorEditTextActivity {
 
         final TextView contactText = (TextView) findViewById(R.id.contact_text);
         final ImageView shareContact = (ImageView) findViewById(R.id.share_contact);
+        shareContact.setBackgroundDrawable(ShareMenuButtonFactory.get(0xff3ec2fa, this));
+        ;
         findViewById(R.id.share_hide).setVisibility(View.GONE);
 
         View.OnClickListener shareMenuOCL = new View.OnClickListener() {
@@ -489,14 +491,11 @@ public class ChatActivity extends ActorEditTextActivity {
                 first = !first;
             }
 
-            if (menuIconToChange instanceof ImageView) {
-                menuIconToChange.setTag(R.id.icon, ((ImageView) menuIconToChange).getDrawable());
-            }
-            menuIconToChange.setTag(R.id.background, menuIconToChange.getBackground());
-            menuTitleToChange.setTag(menuTitleToChange.getText().toString());
         }
 
-
+        menuIconToChange.setTag(R.id.icon, ((ImageView) menuIconToChange).getDrawable());
+        menuIconToChange.setTag(R.id.background, menuIconToChange.getBackground());
+        menuTitleToChange.setTag(menuTitleToChange.getText().toString());
 
         handleIntent();
 

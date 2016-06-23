@@ -151,14 +151,16 @@
 
                 <FrameLayout
                     android:layout_width="@dimen/share_btn_size"
-                    android:layout_height="@dimen/share_btn_size">
+                    android:layout_height="@dimen/share_btn_size"
+                    android:padding="5dp">
 
                     <ImageView
+                        android:scaleType="centerInside"
                         android:clickable="true"
-                        android:layout_width="@dimen/share_btn_size"
-                        android:layout_height="@dimen/share_btn_size"
-                        android:id="@+id/share_contact"
-                        android:background="@drawable/share_contact_selector" />
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_person_white_36dp"
+                        android:id="@+id/share_contact" />
 
 
                 </FrameLayout>
