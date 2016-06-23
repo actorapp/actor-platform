@@ -60,8 +60,8 @@ object Build extends sbt.Build with Versioning with Releasing {
           ActorHouseRules.PublishType.PublishToSonatype,
           pomExtraXml) ++
       PB.protobufSettings ++ Seq(
-      //PB.javaConversions in PB.protobufConfig := true,
-      libraryDependencies += "com.trueaccord.scalapb" %% "scalapb-runtime" % "0.5.21" % PB.protobufConfig,
+      PB.singleLineToString in PB.protobufConfig := true,
+      libraryDependencies += "com.trueaccord.scalapb" %% "scalapb-runtime" % "0.5.32" % PB.protobufConfig,
       dependencyOverrides ~= { overrides =>
         overrides + "com.google.protobuf" % "protobuf-java" % "3.0.0-beta-2"
       },
