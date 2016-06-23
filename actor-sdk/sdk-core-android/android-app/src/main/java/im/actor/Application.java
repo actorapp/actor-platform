@@ -79,23 +79,13 @@ public class Application extends ActorSDKApplication {
         @Override
         public ArrayList<ShareMenuField> addCustomShareMenuFields() {
             ArrayList<ShareMenuField> shareMenuFields = new ArrayList<>();
-            shareMenuFields.add(new ShareMenuField(R.drawable.conv_location_icon, ActorSDK.sharedActor().style.getMainColor(), "lol", new View.OnClickListener() {
+            shareMenuFields.add(new ShareMenuField(R.drawable.conv_location_icon, ActorSDK.sharedActor().style.getAccentColor(), "lol", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Toast.makeText(v.getContext(), "Hey", Toast.LENGTH_LONG).show();
                 }
             }));
             return shareMenuFields;
-        }
-
-        @Override
-        public BaseActorProfileActivity getProfileIntent(int uid) {
-            return new BaseActorProfileActivity() {
-                @Override
-                public ProfileFragment getProfileFragment(int uid) {
-                    return ProfileFragmentEx.create(uid);
-                }
-            };
         }
 
 //        @Override
@@ -203,43 +193,4 @@ public class Application extends ActorSDKApplication {
 //        }
     }
 
-    public static class ProfileFragmentEx extends ProfileFragment {
-
-        public static ProfileFragment create(int uid) {
-            Bundle bundle = new Bundle();
-            bundle.putInt(EXTRA_UID, uid);
-            ProfileFragment res = new ProfileFragmentEx();
-            res.setArguments(bundle);
-            return res;
-        }
-
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View view = super.onCreateView(inflater, container, savedInstanceState);
-            view.findViewById(R.id.docsContainer).setVisibility(View.VISIBLE);
-            view.findViewById(R.id.sharedContainer).setVisibility(View.VISIBLE);
-            return view;
-        }
-    }
-
-//    public static class GroupInfoEx extends GroupInfoFragment {
-//
-//        public static GroupInfoFragment create(int chatId) {
-//            Bundle bundle = new Bundle();
-//            bundle.putInt(EXTRA_CHAT_ID, chatId);
-//            GroupInfoFragment res = new GroupInfoEx();
-//            res.setArguments(bundle);
-//            return res;
-//        }
-//
-//
-//        @Override
-//        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-//            View view = super.onCreateView(inflater, container, savedInstanceState);
-//            header.findViewById(R.id.docsContainer).setVisibility(View.VISIBLE);
-//            header.findViewById(R.id.sharedContainer).setVisibility(View.VISIBLE);
-//            return view;
-//        }
-//    }
 }
