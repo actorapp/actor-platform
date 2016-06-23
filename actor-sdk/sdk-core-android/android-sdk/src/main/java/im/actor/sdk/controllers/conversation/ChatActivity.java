@@ -1276,10 +1276,6 @@ public class ChatActivity extends ActorEditTextActivity {
             }
         }
         MenuItem v = menu.findItem(R.id.call);
-        Drawable callIcon = v.getIcon();
-        if (callIcon != null) {
-            callIcon.setColorFilter(new PorterDuffColorFilter(0xffffffff, PorterDuff.Mode.MULTIPLY));
-        }
         v.setVisible(callsEnabled);
 
         if (peer.getPeerType() == PeerType.PRIVATE) {

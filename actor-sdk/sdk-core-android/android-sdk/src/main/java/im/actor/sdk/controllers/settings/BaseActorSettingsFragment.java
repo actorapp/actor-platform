@@ -182,6 +182,7 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
                         ImageView tintImageView = (ImageView) recordView.findViewById(R.id.recordIcon);
                         if (i == 0) {
                             Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_phone_white_24dp));
+                            drawable = drawable.mutate();
                             DrawableCompat.setTint(drawable, style.getSettingsCategoryTextColor());
                             tintImageView.setImageDrawable(drawable);
                         } else {
