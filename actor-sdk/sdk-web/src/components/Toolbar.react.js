@@ -34,7 +34,7 @@ class AppHeader extends Component {
     }
 
     return (
-      <button className="toolbar__button" onClick={this.handleWriteButtonClick}>
+      <button className="toolbar__button" >
         <i className="material-icons">edit</i>
       </button>
     );
