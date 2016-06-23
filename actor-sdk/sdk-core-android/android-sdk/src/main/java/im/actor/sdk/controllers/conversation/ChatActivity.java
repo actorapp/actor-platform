@@ -89,6 +89,7 @@ import im.actor.sdk.intents.ActorIntent;
 import im.actor.sdk.util.Randoms;
 import im.actor.sdk.util.Screen;
 import im.actor.core.utils.GalleryScannerActor;
+import im.actor.sdk.view.SelectorFactory;
 import im.actor.sdk.view.ShareMenuButtonFactory;
 import im.actor.sdk.view.TintDrawable;
 import im.actor.sdk.view.adapters.HolderAdapter;
@@ -438,8 +439,7 @@ public class ChatActivity extends ActorEditTextActivity {
         if (customFields != null && customFields.size() > 0) {
             if (customFields.size() % 2 != 0) {
                 customFields.add(new ShareMenuField(R.drawable.attach_hide2,
-//                        ActorSDK.sharedActor().style.getBackyardBackgroundColor(),
-                        Color.RED,
+                        ActorSDK.sharedActor().style.getBackyardBackgroundColor(),
                         "",
                         new View.OnClickListener() {
                             @Override
@@ -465,11 +465,8 @@ public class ChatActivity extends ActorEditTextActivity {
 
                 ImageView icon = (ImageView) shareItem.findViewById(R.id.icon);
                 icon.setClickable(true);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    icon.setBackground(ShareMenuButtonFactory.get(f.getColor(), this));
-                } else {
-                    icon.setBackgroundDrawable(ShareMenuButtonFactory.get(f.getColor(), this));
-                }
+                icon.setBackgroundDrawable(ShareMenuButtonFactory.get(f.getColor(), this));
+
                 icon.setImageResource(f.getIcon());
 
                 View.OnClickListener l = new View.OnClickListener() {
@@ -530,7 +527,7 @@ public class ChatActivity extends ActorEditTextActivity {
             LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
             fastShare.setAdapter(fastShareAdapter);
             fastShare.setLayoutManager(layoutManager);
-            StateListDrawable background = ShareMenuButtonFactory.get(ActorSDK.sharedActor().style.getBackyardBackgroundColor(), ChatActivity.this);
+            StateListDrawable background = ShareMenuButtonFactory.get(ActorSDK.sharedActor().style.getMainColor(), ChatActivity.this);
 
             fastShareAdapter.getSelectedVM().subscribe(new ValueChangedListener<Set<String>>() {
                 @Override
@@ -538,9 +535,10 @@ public class ChatActivity extends ActorEditTextActivity {
                     if (val.size() > 0) {
                         menuIconToChange.setBackgroundDrawable(background);
                         menuIconToChange.setImageResource(R.drawable.conv_send);
-                        menuIconToChange.setColorFilter(0xffffffff, PorterDuff.Mode.MULTIPLY);
+                        menuIconToChange.setColorFilter(0xffffffff, PorterDuff.Mode.SRC_IN);
                         menuTitleToChange.setText(getString(R.string.chat_doc_send) + "(" + val.size() + ")");
                         menuIconToChange.setOnClickListener(shareSendOcl);
+                        menuIconToChange.setPadding(Screen.dp(10), 0, Screen.dp(5), 0);
                     } else {
 
                         menuIconToChange.setBackgroundDrawable((Drawable) menuIconToChange.getTag(R.id.background));
@@ -548,6 +546,7 @@ public class ChatActivity extends ActorEditTextActivity {
                         menuIconToChange.setColorFilter(null);
                         menuIconToChange.setOnClickListener(defaultSendOcl);
                         menuTitleToChange.setText((String) menuTitleToChange.getTag());
+                        menuIconToChange.setPadding(0, 0, 0, 0);
                     }
                 }
             });
