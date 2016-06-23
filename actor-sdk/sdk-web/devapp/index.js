@@ -21,12 +21,12 @@ const delegate = new ActorSDKDelegate({
 const app = new ActorSDK({
   delegate,
   endpoints: [
-    'ws://220.189.207.18:9080'
+    'ws://172.16.18.29:9080'
   ],
   isExperimental: true,
-  facebook: 'actorapp',
-  twitter: 'actorapp',
-  homePage: 'https://actor.im'
+  //facebook: 'actorapp',
+  //twitter: 'actorapp',
+  homePage: 'http://www.eaglesoft.cn'
 });
 
 app.startApp();

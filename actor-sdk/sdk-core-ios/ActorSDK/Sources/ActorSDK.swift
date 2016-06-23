@@ -42,7 +42,7 @@ import DZNWebViewController
 
     /// Server Endpoints
     public var endpoints = [
-        "tcp://172.16.18.29:9070"
+        "tcp://220.189.207.18:9070"
         ] {
         didSet {
             trustedKeys = []
