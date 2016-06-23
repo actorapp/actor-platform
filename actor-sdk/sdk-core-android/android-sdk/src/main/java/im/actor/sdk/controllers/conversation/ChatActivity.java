@@ -1644,6 +1644,7 @@ public class ChatActivity extends ActorEditTextActivity {
         } else {
             showShareChecked();
         }
+        menuIconToChange.invalidateDrawable(menuIconToChange.getDrawable());
     }
 
     private void showShareChecked() {
