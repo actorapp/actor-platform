@@ -179,7 +179,7 @@ onSignupForPwdRequested = event => {
               <TextField className="login-new__forms__form__input input__material--wide"
                          disabled={isCodeRequested || step !== AuthSteps.LOGIN_WAIT}
                          errorText={errors.login}
-                         floatingLabel={intl.messages['login.phone_or_email']}
+                         floatingLabel={intl.messages['login.user']}
                          onChange={this.onLoginChange}
                          ref="login"
                          value={login}/>
@@ -187,7 +187,7 @@ onSignupForPwdRequested = event => {
                 <button className="button button--rised button--wide"
                         type="submit"
                         disabled={isCodeRequested}>
-                  <FormattedMessage id="button.requestCode"/>
+                  <FormattedMessage id="button.validateUsername"/>
                   {isCodeRequested ? spinner : null}
                 </button>
               </footer>
@@ -197,16 +197,16 @@ onSignupForPwdRequested = event => {
               <TextField className="login-new__forms__form__input input__material--wide"
                          disabled={isCodeSended || step !== AuthSteps.CODE_WAIT}
                          errorText={errors.code}
-                         floatingLabel={intl.messages['login.authCode']}
+                         floatingLabel={intl.messages['login.authPassword']}
                          onChange={this.onCodeChange}
                          ref="code"
-                         type="text"
+                         type="password"
                          value={code}/>
               <footer className="text-center">
                 <button className="button button--rised button--wide"
                         type="submit"
                         disabled={isCodeSended}>
-                  <FormattedMessage id="button.checkCode"/>
+                  <FormattedMessage id="button.checkPassword"/>
                   {isCodeSended ? spinner : null}
                 </button>
               </footer>
