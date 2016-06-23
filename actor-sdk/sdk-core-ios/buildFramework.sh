@@ -1,7 +1,6 @@
 set -e
 
-pod install
-pod update
+pod install --no-repo-update
 
 rm -fr build
 mkdir -p build/Output
