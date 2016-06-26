@@ -66,6 +66,11 @@ public class DialogsActor extends ModuleActor {
             return Promise.success(null);
         }
 
+        if (message != null && message.getSortDate() > Runtime.getCurrentSyncedTime()) {
+            Log.d("DialogsActor", "ignoring message from future");
+            return;
+        }
+
         if (message == null) {
             // Ignore empty message if not forcing write
             if (!forceWrite) {
@@ -96,7 +101,8 @@ public class DialogsActor extends ModuleActor {
 
             if (dialog != null) {
                 // Ignore old messages if no force
-                if (!forceWrite && dialog.getSortDate() > message.getSortDate()) {
+                // fix sort date if it is in future
+                if (!forceWrite && dialog.getSortDate() > message.getSortDate() && dialog.getSortDate() <= Runtime.getCurrentSyncedTime()) {
                     Log.d("DialogsActor", "too old");
                     return Promise.success(null);
                 }
