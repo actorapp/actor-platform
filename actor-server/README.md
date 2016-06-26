@@ -1,4 +1,3 @@
-Actor Server
-=======================
+# Actor Open Source Server
 
-[Read the docs](https://github.com/actorapp/actor-bootstrap/tree/master/docs/server)
+Actor Platform's Server, for installation instructions visit https://developer.actor.im/
