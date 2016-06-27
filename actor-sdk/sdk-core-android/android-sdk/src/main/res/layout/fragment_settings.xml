@@ -223,6 +223,12 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical" />
 
+                    <im.actor.sdk.view.DividerView
+                        android:layout_marginTop="8dp"
+                        android:layout_marginLeft="72dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="1px" />
+
                     <TextView
                         android:id="@+id/settings_header_text"
                         android:layout_width="match_parent"
@@ -240,7 +246,7 @@
                     <LinearLayout
                         android:id="@+id/notifications"
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
+                        android:layout_height="56dp"
                         android:background="@drawable/selector"
                         android:clickable="true">
 
@@ -250,7 +256,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginLeft="16dp"
                             android:layout_marginRight="32dp"
-                            app:src="@drawable/ic_notifications_white_18dp" />
+                            app:src="@drawable/ic_notifications_white_24dp" />
 
                         <TextView
                             android:id="@+id/settings_notifications_title"
@@ -261,17 +267,10 @@
                             android:textSize="16sp" />
                     </LinearLayout>
 
-                    <View
-                        android:id="@+id/divider1"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/div_size"
-                        android:layout_marginLeft="72dp"
-                        android:layout_marginRight="16dp" />
-
                     <LinearLayout
                         android:id="@+id/chatSettings"
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
+                        android:layout_height="56dp"
                         android:background="@drawable/selector"
                         android:clickable="true">
 
@@ -281,7 +280,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginLeft="16dp"
                             android:layout_marginRight="32dp"
-                            app:src="@drawable/ic_chat_white_18dp" />
+                            app:src="@drawable/ic_chat_white_24dp" />
 
                         <TextView
                             android:id="@+id/settings_chat_title"
@@ -292,17 +291,10 @@
                             android:textSize="16sp" />
                     </LinearLayout>
 
-                    <View
-                        android:id="@+id/divider2"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/div_size"
-                        android:layout_marginLeft="72dp"
-                        android:layout_marginRight="16dp" />
-
                     <LinearLayout
                         android:id="@+id/encryption"
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
+                        android:layout_height="56dp"
                         android:background="@drawable/selector"
                         android:clickable="true">
 
@@ -312,7 +304,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginLeft="16dp"
                             android:layout_marginRight="32dp"
-                            app:src="@drawable/ic_security_white_18dp" />
+                            app:src="@drawable/ic_security_white_24dp" />
 
                         <TextView
                             android:id="@+id/settings_security_title"
@@ -323,17 +315,10 @@
                             android:textSize="16sp" />
                     </LinearLayout>
 
-                    <View
-                        android:id="@+id/divider7"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/div_size"
-                        android:layout_marginLeft="72dp"
-                        android:layout_marginRight="16dp" />
-
                     <LinearLayout
                         android:id="@+id/blockedList"
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
+                        android:layout_height="56dp"
                         android:background="@drawable/selector"
                         android:clickable="true">
 
@@ -343,7 +328,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginLeft="16dp"
                             android:layout_marginRight="32dp"
-                            app:src="@drawable/ic_block_white_18dp" />
+                            app:src="@drawable/ic_block_white_24dp" />
 
                         <TextView
                             android:id="@+id/settings_blocked_title"
@@ -354,17 +339,10 @@
                             android:textSize="16sp" />
                     </LinearLayout>
 
-                    <View
-                        android:id="@+id/divider3"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/div_size"
-                        android:layout_marginLeft="72dp"
-                        android:layout_marginRight="16dp" />
-
                     <LinearLayout
                         android:id="@+id/askQuestion"
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
+                        android:layout_height="56dp"
                         android:background="@drawable/selector"
                         android:clickable="true">
 
@@ -374,7 +352,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginLeft="16dp"
                             android:layout_marginRight="32dp"
-                            app:src="@drawable/ic_help_white_18dp" />
+                            app:src="@drawable/ic_live_help_white_24dp" />
 
                         <TextView
                             android:id="@+id/settings_ask_title"
@@ -385,17 +363,10 @@
                             android:textSize="16sp" />
                     </LinearLayout>
 
-                    <View
-                        android:id="@+id/divider5"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/div_size"
-                        android:layout_marginLeft="72dp"
-                        android:layout_marginRight="16dp" />
-
                     <LinearLayout
                         android:id="@+id/twitter"
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
+                        android:layout_height="56dp"
                         android:background="@drawable/selector"
                         android:clickable="true">
 
@@ -405,7 +376,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginLeft="16dp"
                             android:layout_marginRight="32dp"
-                            app:src="@drawable/ic_twitterlogo_18dp" />
+                            app:src="@drawable/ic_twitterlogo_white_24dp" />
 
                         <TextView
                             android:id="@+id/settings_twitter"
@@ -416,17 +387,10 @@
                             android:textSize="16sp" />
                     </LinearLayout>
 
-                    <View
-                        android:id="@+id/divider6"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/div_size"
-                        android:layout_marginLeft="72dp"
-                        android:layout_marginRight="16dp" />
-
                     <LinearLayout
                         android:id="@+id/home_page"
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
+                        android:layout_height="56dp"
                         android:background="@drawable/selector"
                         android:clickable="true">
 
@@ -436,7 +400,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginLeft="16dp"
                             android:layout_marginRight="32dp"
-                            app:src="@drawable/ic_home_page_18dp" />
+                            app:src="@drawable/ic_public_white_24dp" />
 
                         <TextView
                             android:id="@+id/settings_home_page"
@@ -447,19 +411,10 @@
                             android:textSize="16sp" />
                     </LinearLayout>
 
-
-                    <View
-                        android:id="@+id/divider4"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/div_size"
-                        android:layout_marginLeft="72dp"
-                        android:layout_marginRight="16dp"
-                        android:visibility="gone" />
-
                     <LinearLayout
                         android:id="@+id/helpSettings"
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
+                        android:layout_height="56dp"
                         android:background="@drawable/selector"
                         android:clickable="true"
                         android:visibility="gone">
@@ -470,7 +425,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginLeft="16dp"
                             android:layout_marginRight="32dp"
-                            app:src="@drawable/ic_help_white_18dp" />
+                            app:src="@drawable/ic_help_white_24dp" />
 
                         <TextView
                             android:id="@+id/settings_help_title"

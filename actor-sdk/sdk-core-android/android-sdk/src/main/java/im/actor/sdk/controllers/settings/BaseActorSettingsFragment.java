@@ -113,7 +113,7 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
                 recordView.findViewById(R.id.divider).setBackgroundColor(style.getDividerColor());
                 ImageView nickIcon = (ImageView) recordView.findViewById(R.id.recordIcon);
                 Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_star_white_24dp));
-                DrawableCompat.setTint(drawable, style.getSettingsCategoryTextColor());
+                DrawableCompat.setTint(drawable, style.getSettingsIconColor());
                 nickIcon.setImageDrawable(drawable);
 
                 String value = (val != null && !val.isEmpty()) ? val : getString(R.string.nickname_empty);
@@ -141,7 +141,7 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
         final TextView aboutTitle = (TextView) about.findViewById(R.id.value);
         ImageView nickIcon = (ImageView) about.findViewById(R.id.recordIcon);
         Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_format_quote_white_24dp));
-        DrawableCompat.setTint(drawable, style.getSettingsCategoryTextColor());
+        DrawableCompat.setTint(drawable, style.getSettingsIconColor());
         nickIcon.setImageDrawable(drawable);
         TextView aboutValue = (TextView) about.findViewById(R.id.title);
         aboutTitle.setTextColor(style.getTextPrimaryColor());
@@ -183,7 +183,7 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
                         if (i == 0) {
                             Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_phone_white_24dp));
                             drawable = drawable.mutate();
-                            DrawableCompat.setTint(drawable, style.getSettingsCategoryTextColor());
+                            DrawableCompat.setTint(drawable, style.getSettingsIconColor());
                             tintImageView.setImageDrawable(drawable);
                         } else {
                             tintImageView.setVisibility(View.INVISIBLE);
@@ -282,7 +282,7 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
                         ImageView tintImageView = (ImageView) recordView.findViewById(R.id.recordIcon);
                         if (i == 0) {
                             Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_email_white_24dp));
-                            DrawableCompat.setTint(drawable, style.getSettingsCategoryTextColor());
+                            DrawableCompat.setTint(drawable, style.getSettingsIconColor());
                             tintImageView.setImageDrawable(drawable);
                         } else {
                             tintImageView.setVisibility(View.INVISIBLE);
@@ -453,7 +453,6 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
 
         if (ActorSDK.sharedActor().getTwitterAcc() == null || ActorSDK.sharedActor().getTwitterAcc().isEmpty()) {
             twitterView.setVisibility(View.GONE);
-            view.findViewById(R.id.divider5).setVisibility(View.GONE);
         }
         twitterView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -474,7 +473,6 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
 
         if (ActorSDK.sharedActor().getHomePage() == null || ActorSDK.sharedActor().getHomePage().isEmpty()) {
             homePageView.setVisibility(View.GONE);
-            view.findViewById(R.id.divider6).setVisibility(View.GONE);
         }
         homePageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -532,14 +530,6 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
 
         view.findViewById(R.id.after_phone_divider).setBackgroundColor(style.getBackyardBackgroundColor());
         view.findViewById(R.id.bottom_divider).setBackgroundColor(style.getBackyardBackgroundColor());
-
-        view.findViewById(R.id.divider1).setBackgroundColor(style.getDividerColor());
-        view.findViewById(R.id.divider2).setBackgroundColor(style.getDividerColor());
-        view.findViewById(R.id.divider3).setBackgroundColor(style.getDividerColor());
-        view.findViewById(R.id.divider4).setBackgroundColor(style.getDividerColor());
-        view.findViewById(R.id.divider5).setBackgroundColor(style.getDividerColor());
-        view.findViewById(R.id.divider6).setBackgroundColor(style.getDividerColor());
-        view.findViewById(R.id.divider7).setBackgroundColor(style.getDividerColor());
 
         if (getBeforeNickSettingsView() != null) {
             FrameLayout beforeNick = (FrameLayout) view.findViewById(R.id.before_nick_container);
@@ -655,7 +645,6 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
             FrameLayout settingsContainer = (FrameLayout) categoryContainer.findViewById(R.id.settings_container);
             categoryContainer.findViewById(R.id.divider).setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackgroundColor());
             TextView categoryName = (TextView) categoryContainer.findViewById(R.id.category_name);
-            categoryName.setTextColor(ActorSDK.sharedActor().style.getSettingsMainTitleColor());
             categoryName.setTextColor(ActorSDK.sharedActor().style.getSettingsCategoryTextColor());
 
             //Icon
