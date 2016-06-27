@@ -1,4 +1,5 @@
-# Active Major Contributors
-* Steve Kite (@ex3ndr)
+# Contributors
+* Andrey Kouznetsov (inactive)
 * Gleb Putintsev (@kor-ka)
 * Nikolay Tatarinov (@rockjam)
+* Steve Kite (@ex3ndr)
