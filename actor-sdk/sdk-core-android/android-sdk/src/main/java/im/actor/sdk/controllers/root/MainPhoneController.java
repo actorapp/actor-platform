@@ -456,8 +456,18 @@ public class MainPhoneController extends MainBaseController {
                             public void onResult(UserVM[] res) {
                                 int footerVisability = footer.getVisibility();
                                 if (searchQuery.equals(activeSearchQuery)) {
+                                    boolean showResult = false;
+                                    UserVM u = null;
                                     if (res.length > 0) {
-                                        UserVM u = res[0];
+                                        u = res[0];
+                                        showResult = true;
+                                        for (int i = 0; i < searchDisplay.getSize(); i++) {
+                                            if (searchDisplay.getItem(i).getPeer().equals(Peer.user(u.getId())))
+                                                showResult = false;
+                                            break;
+                                        }
+                                    }
+                                    if (showResult) {
                                         footerSearchHolder.bind(new SearchEntity(Peer.user(u.getId()), 0, u.getAvatar().get(), u.getName().get()), activeSearchQuery, true);
                                         showView(footer);
                                     } else {
