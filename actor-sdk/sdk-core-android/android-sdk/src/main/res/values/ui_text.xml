@@ -149,6 +149,7 @@
 
     <!-- Main -->
     <string name="main_search_hint">Type something to search</string>
+    <string name="main_search_global_header">Global search</string>
     <string name="main_search_empty">Nothing found</string>
     <string name="main_menu_help">Help</string>
     <string name="main_menu_search">Search</string>

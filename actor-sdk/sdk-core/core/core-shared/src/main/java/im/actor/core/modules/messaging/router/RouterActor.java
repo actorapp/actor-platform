@@ -240,8 +240,10 @@ public class RouterActor extends ModuleActor {
                 if (maxInDate > 0) {
                     state = state
                             .changeInReadDate(maxInDate)
-                            .changeInMaxDate(maxInDate)
                             .changeCounter(0);
+                    if (state.getInMaxMessageDate() < maxInDate) {
+                        state.changeInMaxDate(maxInDate);
+                    }
                     context().getMessagesModule().getPlainReadActor()
                             .send(new CursorReaderActor.MarkRead(peer, maxInDate));
                     context().getNotificationsModule().onOwnRead(peer, maxInDate);
@@ -251,7 +253,7 @@ public class RouterActor extends ModuleActor {
             } else {
                 // Updating counter
                 state = state.changeCounter(state.getUnreadCount() + unreadCount);
-                if (maxInDate > 0) {
+                if (maxInDate > state.getInMaxMessageDate()) {
                     state = state
                             .changeInMaxDate(maxInDate);
                 }

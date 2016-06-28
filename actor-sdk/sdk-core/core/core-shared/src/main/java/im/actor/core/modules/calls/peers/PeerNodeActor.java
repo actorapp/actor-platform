@@ -16,7 +16,6 @@ import im.actor.core.modules.calls.peers.messages.RTCNeedOffer;
 import im.actor.core.modules.calls.peers.messages.RTCOffer;
 import im.actor.core.modules.calls.peers.messages.RTCStart;
 import im.actor.core.modules.ModuleActor;
-import im.actor.runtime.Log;
 import im.actor.runtime.actors.ask.AskMessage;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.function.CountedReference;
@@ -308,9 +307,9 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
         if (this.isAudioEnabled != isAudioEnabled) {
             this.isAudioEnabled = isAudioEnabled;
             if (isStarted) {
-                for (WebRTCMediaStream streams : theirMediaStreams) {
-                    for (WebRTCMediaTrack track : streams.getAudioTracks()) {
-                        track.setEnabled(isAudioEnabled);
+                for (WebRTCMediaStream stream : theirMediaStreams) {
+                    stream.setAudioTracksEnabled(isAudioEnabled);
+                    for (WebRTCMediaTrack track : stream.getAudioTracks()) {
                         if (isAudioEnabled) {
                             callback.onTrackAdded(deviceId, track);
                         } else {
@@ -323,9 +322,9 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
         if (this.isVideoEnabled != isVideoEnabled) {
             this.isVideoEnabled = isVideoEnabled;
             if (isStarted) {
-                for (WebRTCMediaStream streams : theirMediaStreams) {
-                    for (WebRTCMediaTrack track : streams.getVideoTracks()) {
-                        track.setEnabled(isVideoEnabled);
+                for (WebRTCMediaStream stream : theirMediaStreams) {
+                    stream.setVideoTracksEnabled(isVideoEnabled);
+                    for (WebRTCMediaTrack track : stream.getVideoTracks()) {
                         if (isVideoEnabled) {
                             callback.onTrackAdded(deviceId, track);
                         } else {

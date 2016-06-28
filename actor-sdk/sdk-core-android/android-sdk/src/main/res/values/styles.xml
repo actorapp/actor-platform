@@ -12,7 +12,7 @@
 
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_hovered</item>
-        <item name="colorAccent">@color/primary</item>
+        <item name="colorAccent">@color/primary_hovered</item>
 
         <item name="android:colorPrimary">@color/primary</item>
         <item name="android:colorPrimaryDark">@color/primary_hovered</item>

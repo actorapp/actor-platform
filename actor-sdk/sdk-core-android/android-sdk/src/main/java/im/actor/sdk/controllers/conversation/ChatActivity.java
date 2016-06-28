@@ -14,6 +14,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.StateListDrawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
@@ -39,6 +40,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
@@ -46,7 +48,9 @@ import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -85,6 +89,8 @@ import im.actor.sdk.intents.ActorIntent;
 import im.actor.sdk.util.Randoms;
 import im.actor.sdk.util.Screen;
 import im.actor.core.utils.GalleryScannerActor;
+import im.actor.sdk.view.SelectorFactory;
+import im.actor.sdk.view.ShareMenuButtonFactory;
 import im.actor.sdk.view.TintDrawable;
 import im.actor.sdk.view.adapters.HolderAdapter;
 import im.actor.sdk.view.adapters.RecyclerListView;
@@ -125,6 +131,7 @@ public class ChatActivity extends ActorEditTextActivity {
     private static final int PERMISSIONS_REQUEST_CAMERA = 6;
     private static final int PERMISSION_REQUEST_RECORD_AUDIO = 7;
     private static final int PERMISSIONS_REQUEST_FOR_CALL = 8;
+    private static final int PERMISSIONS_REQUEST_FOR_VIDEO_CALL = 12;
     private static final int PERMISSION_REQ_MEDIA = 11;
     public static final int MAX_USERS_FOR_CALLS = 5;
     // Peer of current chat
@@ -226,6 +233,10 @@ public class ChatActivity extends ActorEditTextActivity {
     private boolean isBot = false;
     private View emptyBotSend;
     private TextView emptyBotHint;
+    private ImageView menuIconToChange;
+    private TextView menuTitleToChange;
+    private View.OnClickListener shareSendOcl;
+    private View.OnClickListener defaultSendOcl;
 
     public static Intent build(Peer peer, boolean compose, Context context) {
         final Intent intent = new Intent(context, ChatActivity.class);
@@ -329,7 +340,9 @@ public class ChatActivity extends ActorEditTextActivity {
         });
 
         final TextView contactText = (TextView) findViewById(R.id.contact_text);
-        final View shareContact = findViewById(R.id.share_contact);
+        final ImageView shareContact = (ImageView) findViewById(R.id.share_contact);
+        shareContact.setBackgroundDrawable(ShareMenuButtonFactory.get(0xff3ec2fa, this));
+        ;
         findViewById(R.id.share_hide).setVisibility(View.GONE);
 
         View.OnClickListener shareMenuOCL = item -> {
@@ -387,6 +400,7 @@ public class ChatActivity extends ActorEditTextActivity {
             //hide it
             hideShare();
         };
+        defaultSendOcl = shareMenuOCL;
 
         findViewById(R.id.share_gallery).setOnClickListener(shareMenuOCL);
         findViewById(R.id.share_video).setOnClickListener(shareMenuOCL);
@@ -398,6 +412,70 @@ public class ChatActivity extends ActorEditTextActivity {
         shareLocation.setOnClickListener(shareMenuOCL);
         ActorSDK.sharedActor().getDelegate().onShareMenuCreated(shareMenu);
 
+        menuIconToChange = shareContact;
+        menuTitleToChange = contactText;
+
+        ArrayList<ShareMenuField> customFields = ActorSDK.sharedActor().getDelegate().addCustomShareMenuFields();
+
+        if (customFields != null && customFields.size() > 0) {
+            if (customFields.size() % 2 != 0) {
+                customFields.add(new ShareMenuField(R.drawable.attach_hide2,
+                        ActorSDK.sharedActor().style.getBackyardBackgroundColor(),
+                        "",
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                            }
+                        }));
+            }
+            TableRow rowOne = (TableRow) shareMenu.findViewById(R.id.share_row_one);
+            TableRow rowTwo = (TableRow) shareMenu.findViewById(R.id.share_row_two);
+            boolean first = true;
+            TableRow row;
+            TableRow.LayoutParams params = new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
+
+            for (int i = 0; i < customFields.size(); i++) {
+                ShareMenuField f = customFields.get(i);
+                row = first ? rowOne : rowTwo;
+
+                View shareItem = getLayoutInflater().inflate(R.layout.share_menu_item, null);
+
+                TextView title = (TextView) shareItem.findViewById(R.id.title);
+                title.setText(f.getTitle());
+
+                ImageView icon = (ImageView) shareItem.findViewById(R.id.icon);
+                icon.setClickable(true);
+                icon.setBackgroundDrawable(ShareMenuButtonFactory.get(f.getColor(), this));
+
+                icon.setImageResource(f.getIcon());
+
+                View.OnClickListener l = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        hideShare();
+                        f.getOnClickListener().onClick(shareItem);
+                    }
+                };
+                icon.setOnClickListener(l);
+
+                if (i == customFields.size() - 1) {
+                    menuIconToChange = icon;
+                    menuTitleToChange = title;
+                    defaultSendOcl = l;
+                }
+
+                row.addView(shareItem, params);
+
+                first = !first;
+            }
+
+        }
+
+        menuIconToChange.setTag(R.id.icon, ((ImageView) menuIconToChange).getDrawable());
+        menuIconToChange.setTag(R.id.background, menuIconToChange.getBackground());
+        menuTitleToChange.setTag(menuTitleToChange.getText().toString());
+
         handleIntent();
 
         try {
@@ -408,17 +486,17 @@ public class ChatActivity extends ActorEditTextActivity {
             findViewById(R.id.location_text).setVisibility(View.INVISIBLE);
         }
 
-
-        final ImageButton shareMenuSend = (ImageButton) findViewById(R.id.share_send);
-        shareMenuSend.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
-        shareMenuSend.setOnClickListener(v -> {
-            Set<String> strings = fastShareAdapter.getSelectedVM().get();
-            for (String s : strings.toArray(new String[strings.size()])) {
-                execute(messenger().sendUri(peer, Uri.fromFile(new File(s))));
+        shareSendOcl = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Set<String> strings = fastShareAdapter.getSelectedVM().get();
+                for (String s : strings.toArray(new String[strings.size()])) {
+                    execute(messenger().sendUri(peer, Uri.fromFile(new File(s))));
+                }
+                fastShareAdapter.clearSelected();
+                hideShare();
             }
-            fastShareAdapter.clearSelected();
-            hideShare();
-        });
+        };
 
         RecyclerView fastShare = (RecyclerView) findViewById(R.id.fast_share);
         if (ActorSDK.sharedActor().isFastShareEnabled()) {
@@ -426,16 +504,27 @@ public class ChatActivity extends ActorEditTextActivity {
             LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
             fastShare.setAdapter(fastShareAdapter);
             fastShare.setLayoutManager(layoutManager);
+            StateListDrawable background = ShareMenuButtonFactory.get(ActorSDK.sharedActor().style.getMainColor(), ChatActivity.this);
 
-            fastShareAdapter.getSelectedVM().subscribe((val, valueModel) -> {
-                if (val.size() > 0) {
-                    shareContact.setVisibility(View.INVISIBLE);
-                    shareMenuSend.setVisibility(View.VISIBLE);
-                    contactText.setText(getString(R.string.chat_doc_send) + "(" + val.size() + ")");
-                } else {
-                    shareContact.setVisibility(View.VISIBLE);
-                    shareMenuSend.setVisibility(View.INVISIBLE);
-                    contactText.setText(getString(R.string.share_menu_contact));
+            fastShareAdapter.getSelectedVM().subscribe(new ValueChangedListener<Set<String>>() {
+                @Override
+                public void onChanged(Set<String> val, Value<Set<String>> valueModel) {
+                    if (val.size() > 0) {
+                        menuIconToChange.setBackgroundDrawable(background);
+                        menuIconToChange.setImageResource(R.drawable.conv_send);
+                        menuIconToChange.setColorFilter(0xffffffff, PorterDuff.Mode.SRC_IN);
+                        menuTitleToChange.setText(getString(R.string.chat_doc_send) + "(" + val.size() + ")");
+                        menuIconToChange.setOnClickListener(shareSendOcl);
+                        menuIconToChange.setPadding(Screen.dp(10), 0, Screen.dp(5), 0);
+                    } else {
+
+                        menuIconToChange.setBackgroundDrawable((Drawable) menuIconToChange.getTag(R.id.background));
+                        menuIconToChange.setImageDrawable((Drawable) menuIconToChange.getTag(R.id.icon));
+                        menuIconToChange.setColorFilter(null);
+                        menuIconToChange.setOnClickListener(defaultSendOcl);
+                        menuTitleToChange.setText((String) menuTitleToChange.getTag());
+                        menuIconToChange.setPadding(0, 0, 0, 0);
+                    }
                 }
             });
         } else {
@@ -1075,12 +1164,8 @@ public class ChatActivity extends ActorEditTextActivity {
                 callsEnabled = groups().get(peer.getPeerId()).getMembersCount() <= MAX_USERS_FOR_CALLS;
             }
         }
-        MenuItem v = menu.findItem(R.id.call);
-        Drawable callIcon = v.getIcon();
-        if (callIcon != null) {
-            callIcon.setColorFilter(new PorterDuffColorFilter(0xffffffff, PorterDuff.Mode.MULTIPLY));
-        }
-        v.setVisible(callsEnabled);
+        menu.findItem(R.id.call).setVisible(callsEnabled);
+        menu.findItem(R.id.video_call).setVisible(callsEnabled);
 
         if (peer.getPeerType() == PeerType.PRIVATE) {
             bind(users().get(peer.getPeerId()).isContact(), (val, valueModel) -> {
@@ -1161,17 +1246,18 @@ public class ChatActivity extends ActorEditTextActivity {
         }
 
         if (ActorSDK.sharedActor().isCallsEnabled()) {
-            if (item.getItemId() == R.id.call) {
+            if (item.getItemId() == R.id.call || item.getItemId() == R.id.video_call) {
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
                         ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED ||
+                        ContextCompat.checkSelfPermission(this, Manifest.permission.MODIFY_AUDIO_SETTINGS) != PackageManager.PERMISSION_GRANTED ||
                         ContextCompat.checkSelfPermission(this, Manifest.permission.VIBRATE) != PackageManager.PERMISSION_GRANTED ||
                         ContextCompat.checkSelfPermission(this, Manifest.permission.WAKE_LOCK) != PackageManager.PERMISSION_GRANTED) {
                     Log.d("Permissions", "call - no permission :c");
-                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA, Manifest.permission.VIBRATE, Manifest.permission.WAKE_LOCK},
-                            PERMISSIONS_REQUEST_FOR_CALL);
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.MODIFY_AUDIO_SETTINGS, Manifest.permission.CAMERA, Manifest.permission.VIBRATE, Manifest.permission.WAKE_LOCK},
+                            item.getItemId() == R.id.video_call ? PERMISSIONS_REQUEST_FOR_VIDEO_CALL : PERMISSIONS_REQUEST_FOR_CALL);
 
                 } else {
-                    startCall();
+                    startCall(item.getItemId() == R.id.video_call);
                 }
             }
 
@@ -1186,10 +1272,10 @@ public class ChatActivity extends ActorEditTextActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void startCall() {
+    private void startCall(boolean video) {
         Command<Long> cmd;
         if (peer.getPeerType() == PeerType.PRIVATE) {
-            cmd = messenger().doCall(peer.getPeerId());
+            cmd = video ? messenger().doVideoCall(peer.getPeerId()) : messenger().doCall(peer.getPeerId());
 
         } else {
             cmd = messenger().doGroupCall(peer.getPeerId());
@@ -1432,6 +1518,7 @@ public class ChatActivity extends ActorEditTextActivity {
         } else {
             showShareChecked();
         }
+        menuIconToChange.invalidateDrawable(menuIconToChange.getDrawable());
     }
 
     private void showShareChecked() {
@@ -1512,10 +1599,10 @@ public class ChatActivity extends ActorEditTextActivity {
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 showShareChecked();
             }
-        } else if (requestCode == PERMISSIONS_REQUEST_FOR_CALL) {
+        } else if (requestCode == PERMISSIONS_REQUEST_FOR_CALL || requestCode == PERMISSIONS_REQUEST_FOR_VIDEO_CALL) {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startCall();
+                startCall(requestCode == PERMISSIONS_REQUEST_FOR_VIDEO_CALL);
             }
         }
     }

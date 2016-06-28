@@ -26,17 +26,17 @@ public class CallActivity extends BaseFragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Thread.setDefaultUncaughtExceptionHandler(
-                new UnhandledExceptionHandler(this));
-
-        AndroidWebRTCRuntimeProvider.postToHandler(new Runnable() {
-            @Override
-            public void run() {
-                Thread.setDefaultUncaughtExceptionHandler(
-                        new UnhandledExceptionHandler(CallActivity.this));
-
-            }
-        });
+//        Thread.setDefaultUncaughtExceptionHandler(
+//                new UnhandledExceptionHandler(this));
+////
+//        AndroidWebRTCRuntimeProvider.postToHandler(new Runnable() {
+//            @Override
+//            public void run() {
+//                Thread.setDefaultUncaughtExceptionHandler(
+//                        new UnhandledExceptionHandler(CallActivity.this));
+//
+//            }
+//        });
 
         getSupportActionBar().setTitle("Call");
         getSupportActionBar().hide();

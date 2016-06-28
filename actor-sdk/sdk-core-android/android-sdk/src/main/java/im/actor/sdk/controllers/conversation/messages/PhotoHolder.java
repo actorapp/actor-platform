@@ -287,7 +287,7 @@ public class PhotoHolder extends MessageHolder {
             progressIcon.setVisibility(View.GONE);
 
             if (fileMessage.getSource() instanceof FileRemoteSource) {
-                boolean autoDownload = fileMessage instanceof PhotoContent;
+                boolean autoDownload = (fileMessage instanceof PhotoContent) || (fileMessage instanceof AnimationContent);
                 if (!updated) {
                     previewView.setImageURI(null);
                 }

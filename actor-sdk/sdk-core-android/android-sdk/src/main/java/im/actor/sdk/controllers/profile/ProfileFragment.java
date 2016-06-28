@@ -171,6 +171,7 @@ public class ProfileFragment extends BaseFragment {
             TextView voiceViewTitle = (TextView) voiceCallView.findViewById(R.id.actionText);
             if (!user.isBot()) {
                 Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_phone_white_24dp));
+                drawable = drawable.mutate();
                 DrawableCompat.setTint(drawable, style.getListActionColor());
                 voiceViewIcon.setImageDrawable(drawable);
                 voiceViewTitle.setTextColor(style.getListActionColor());
@@ -180,6 +181,7 @@ public class ProfileFragment extends BaseFragment {
                 });
             } else {
                 Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_phone_white_24dp));
+                drawable = drawable.mutate();
                 DrawableCompat.setTint(drawable, style.getTextHintColor());
                 voiceViewIcon.setImageDrawable(drawable);
                 voiceViewTitle.setTextColor(style.getTextHintColor());
