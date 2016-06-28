@@ -20,6 +20,12 @@
         android:title=""
         app:showAsAction="always" />
 
+    <item
+        android:id="@+id/video_call"
+        android:icon="@drawable/ic_videocam_white_24dp"
+        android:title=""
+        app:showAsAction="always" />
+
 
     <item
         android:id="@+id/groupInfo"

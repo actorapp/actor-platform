@@ -131,6 +131,7 @@ public class ChatActivity extends ActorEditTextActivity {
     private static final int PERMISSIONS_REQUEST_CAMERA = 6;
     private static final int PERMISSION_REQUEST_RECORD_AUDIO = 7;
     private static final int PERMISSIONS_REQUEST_FOR_CALL = 8;
+    private static final int PERMISSIONS_REQUEST_FOR_VIDEO_CALL = 12;
     private static final int PERMISSION_REQ_MEDIA = 11;
     public static final int MAX_USERS_FOR_CALLS = 5;
     // Peer of current chat
@@ -1274,8 +1275,8 @@ public class ChatActivity extends ActorEditTextActivity {
                 callsEnabled = groups().get(peer.getPeerId()).getMembersCount() <= MAX_USERS_FOR_CALLS;
             }
         }
-        MenuItem v = menu.findItem(R.id.call);
-        v.setVisible(callsEnabled);
+        menu.findItem(R.id.call).setVisible(callsEnabled);
+        menu.findItem(R.id.video_call).setVisible(callsEnabled);
 
         if (peer.getPeerType() == PeerType.PRIVATE) {
             bind(users().get(peer.getPeerId()).isContact(), new ValueChangedListener<Boolean>() {
@@ -1368,17 +1369,18 @@ public class ChatActivity extends ActorEditTextActivity {
         }
 
         if (ActorSDK.sharedActor().isCallsEnabled()) {
-            if (item.getItemId() == R.id.call) {
+            if (item.getItemId() == R.id.call || item.getItemId() == R.id.video_call) {
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
                         ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED ||
+                        ContextCompat.checkSelfPermission(this, Manifest.permission.MODIFY_AUDIO_SETTINGS) != PackageManager.PERMISSION_GRANTED ||
                         ContextCompat.checkSelfPermission(this, Manifest.permission.VIBRATE) != PackageManager.PERMISSION_GRANTED ||
                         ContextCompat.checkSelfPermission(this, Manifest.permission.WAKE_LOCK) != PackageManager.PERMISSION_GRANTED) {
                     Log.d("Permissions", "call - no permission :c");
-                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA, Manifest.permission.VIBRATE, Manifest.permission.WAKE_LOCK},
-                            PERMISSIONS_REQUEST_FOR_CALL);
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.MODIFY_AUDIO_SETTINGS, Manifest.permission.CAMERA, Manifest.permission.VIBRATE, Manifest.permission.WAKE_LOCK},
+                            item.getItemId() == R.id.video_call ? PERMISSIONS_REQUEST_FOR_VIDEO_CALL : PERMISSIONS_REQUEST_FOR_CALL);
 
                 } else {
-                    startCall();
+                    startCall(item.getItemId() == R.id.video_call);
                 }
             }
 
@@ -1393,10 +1395,10 @@ public class ChatActivity extends ActorEditTextActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void startCall() {
+    private void startCall(boolean video) {
         Command<Long> cmd;
         if (peer.getPeerType() == PeerType.PRIVATE) {
-            cmd = messenger().doCall(peer.getPeerId());
+            cmd = video ? messenger().doVideoCall(peer.getPeerId()) : messenger().doCall(peer.getPeerId());
 
         } else {
             cmd = messenger().doGroupCall(peer.getPeerId());
@@ -1720,10 +1722,10 @@ public class ChatActivity extends ActorEditTextActivity {
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 showShareChecked();
             }
-        } else if (requestCode == PERMISSIONS_REQUEST_FOR_CALL) {
+        } else if (requestCode == PERMISSIONS_REQUEST_FOR_CALL || requestCode == PERMISSIONS_REQUEST_FOR_VIDEO_CALL) {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startCall();
+                startCall(requestCode == PERMISSIONS_REQUEST_FOR_VIDEO_CALL);
             }
         }
     }
