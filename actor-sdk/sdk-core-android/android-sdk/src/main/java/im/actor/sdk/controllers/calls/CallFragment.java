@@ -668,7 +668,7 @@ public class CallFragment extends BaseFragment {
                         isRemoteViewConfigured = true;
                     }
 
-                    VideoTrack videoTrack = ((AndroidVideoTrack) videoTracks.get(0)).getVideoTrack();
+                    VideoTrack videoTrack = ((AndroidVideoTrack) videoTracks.get(videoTracks.size() - 1)).getVideoTrack();
 
                     if (videoTrack != remoteTrack) {
                         if (remoteTrack != null) {

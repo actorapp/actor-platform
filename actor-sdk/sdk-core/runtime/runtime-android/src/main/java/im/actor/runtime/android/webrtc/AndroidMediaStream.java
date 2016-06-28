@@ -85,6 +85,20 @@ public class AndroidMediaStream implements WebRTCMediaStream {
     }
 
     @Override
+    public void setAudioTracksEnabled(boolean enabled) {
+        for (AudioTrack track : stream.audioTracks) {
+            track.setEnabled(enabled);
+        }
+    }
+
+    @Override
+    public void setVideoTracksEnabled(boolean enabled) {
+        for (VideoTrack track : stream.videoTracks) {
+            track.setEnabled(enabled);
+        }
+    }
+
+    @Override
     public void close() {
 
         if (isLocal) {
