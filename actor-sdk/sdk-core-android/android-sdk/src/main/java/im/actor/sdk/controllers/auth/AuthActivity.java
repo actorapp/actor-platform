@@ -26,7 +26,7 @@ import im.actor.runtime.promise.Promise;
 import im.actor.runtime.storage.PreferencesStorage;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
-import im.actor.sdk.controllers.activity.ActorMainActivity;
+import im.actor.sdk.controllers.root.RootActivity;
 import im.actor.sdk.controllers.activity.BaseFragmentActivity;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
@@ -157,7 +157,7 @@ public class AuthActivity extends BaseFragmentActivity {
                 break;
             case LOGGED_IN:
                 finish();
-                startActivity(new Intent(this, ActorMainActivity.class));
+                startActivity(new Intent(this, RootActivity.class));
                 break;
         }
     }

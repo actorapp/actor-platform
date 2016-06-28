@@ -8,10 +8,9 @@ import android.widget.TableLayout;
 
 import java.util.ArrayList;
 
-import im.actor.core.AuthState;
 import im.actor.core.entity.Peer;
 import im.actor.runtime.android.view.BindedViewHolder;
-import im.actor.sdk.controllers.activity.ActorMainActivity;
+import im.actor.sdk.controllers.root.RootActivity;
 import im.actor.sdk.controllers.conversation.ShareMenuField;
 import im.actor.sdk.controllers.root.MainPhoneController;
 import im.actor.sdk.controllers.conversation.messages.MessageHolder;
@@ -167,7 +166,7 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
      * @return hacked MainPhoneController
      */
     @Override
-    public MainPhoneController getMainPhoneController(ActorMainActivity mainActivity) {
+    public MainPhoneController getMainPhoneController(RootActivity mainActivity) {
         return null;
     }
 

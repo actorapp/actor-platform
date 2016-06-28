@@ -48,7 +48,8 @@ import im.actor.runtime.actors.messages.Void;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
-import im.actor.sdk.controllers.activity.ActorMainActivity;
+import im.actor.sdk.controllers.root.RootActivity;
+import im.actor.sdk.controllers.share.ShareActivity;
 import im.actor.sdk.controllers.shortcuts.ShortcutActivity;
 import im.actor.sdk.controllers.conversation.messages.preprocessor.ChatListProcessor;
 import im.actor.sdk.controllers.conversation.messages.MessageHolder;
@@ -468,7 +469,7 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
                         return true;
 
                     } else if (menuItem.getItemId() == R.id.forward) {
-                        Intent i = new Intent(getActivity(), ActorMainActivity.class);
+                        Intent i = new Intent(getActivity(), ShareActivity.class);
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         if (messagesAdapter.getSelected().length == 1) {
                             Message m = messagesAdapter.getSelected()[0];

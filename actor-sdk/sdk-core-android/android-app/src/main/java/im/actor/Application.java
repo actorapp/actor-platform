@@ -186,11 +186,6 @@ public class Application extends ActorSDKApplication {
                 }
             };
         }
-
-//        @Override
-//        public MainPhoneController getMainPhoneController(ActorMainActivity mainActivity) {
-//            return new MainPhoneControllerEx(mainActivity);
-//        }
     }
 
 }

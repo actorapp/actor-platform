@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 import im.actor.core.entity.Peer;
 import im.actor.runtime.android.view.BindedViewHolder;
-import im.actor.sdk.controllers.activity.ActorMainActivity;
+import im.actor.sdk.controllers.root.RootActivity;
 import im.actor.sdk.controllers.conversation.ShareMenuField;
 import im.actor.sdk.controllers.root.MainPhoneController;
 import im.actor.sdk.controllers.conversation.messages.MessageHolder;
@@ -115,7 +115,7 @@ public interface ActorSDKDelegate {
      * @param mainActivity main activity
      * @return hacked MainPhoneController
      */
-    MainPhoneController getMainPhoneController(ActorMainActivity mainActivity);
+    MainPhoneController getMainPhoneController(RootActivity mainActivity);
 
     /**
      * Override for hacking custom messages view holders

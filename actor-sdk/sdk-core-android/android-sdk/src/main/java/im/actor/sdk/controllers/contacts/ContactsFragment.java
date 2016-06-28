@@ -2,7 +2,6 @@ package im.actor.sdk.controllers.contacts;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,12 +9,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import im.actor.core.entity.Contact;
-import im.actor.core.entity.Dialog;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
-import im.actor.sdk.controllers.activity.ActorMainActivity;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 

@@ -15,15 +15,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 import im.actor.core.entity.Contact;
@@ -34,7 +31,6 @@ import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorStyle;
-import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.runtime.generic.mvvm.DisplayList;
 import im.actor.sdk.R;
@@ -87,7 +83,7 @@ public class MainPhoneController extends MainBaseController {
     private String searchQuery;
     private LinearLayout footer;
 
-    public MainPhoneController(ActorMainActivity mainActivity) {
+    public MainPhoneController(RootActivity mainActivity) {
         super(mainActivity);
     }
 

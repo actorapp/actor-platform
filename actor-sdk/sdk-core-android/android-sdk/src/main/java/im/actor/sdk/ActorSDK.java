@@ -30,7 +30,7 @@ import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.runtime.threading.ThreadDispatcher;
 import im.actor.sdk.controllers.Intents;
-import im.actor.sdk.controllers.activity.ActorMainActivity;
+import im.actor.sdk.controllers.root.RootActivity;
 import im.actor.sdk.controllers.conversation.ChatActivity;
 import im.actor.sdk.controllers.conversation.messages.MessageHolder;
 import im.actor.sdk.controllers.conversation.MessagesAdapter;
@@ -831,7 +831,7 @@ public class ActorSDK {
      */
     public void startMessagingActivity(Context context, Bundle extras) {
         if (!startDelegateActivity(context, delegate.getStartIntent(), extras)) {
-            startActivity(context, extras, ActorMainActivity.class);
+            startActivity(context, extras, RootActivity.class);
         }
     }
 

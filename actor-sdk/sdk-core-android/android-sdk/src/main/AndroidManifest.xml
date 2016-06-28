@@ -62,10 +62,17 @@
         <!-- Chat -->
 
         <activity
-            android:name="im.actor.sdk.controllers.activity.ActorMainActivity"
+            android:name=".controllers.root.RootActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:label="@string/app_name"
             android:launchMode="singleTop"
+            android:theme="@style/MainActivityTheme"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".controllers.share.ShareActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:label="@string/app_name"
             android:theme="@style/MainActivityTheme"
             android:windowSoftInputMode="adjustResize">
 
