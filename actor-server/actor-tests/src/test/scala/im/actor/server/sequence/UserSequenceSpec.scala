@@ -35,10 +35,11 @@ final class UserSequenceSpec extends BaseAppSuite(
   val probe = TestProbe()
 
   def e1() = {
-    val (user, _, _, _) = createUser()
+    val (user, authId, _, _) = createUser()
     val update = UpdateContactsAdded(Vector(1, 2, 3))
     val deliverEnv = Envelope(user.id).withDeliverUpdate(
       DeliverUpdate(
+        authId = authId,
         mapping = Some(UpdateMapping(Some(SerializedUpdate(
           header = update.header,
           body = ByteString.copyFrom(update.toByteArray),
@@ -82,10 +83,11 @@ final class UserSequenceSpec extends BaseAppSuite(
   }
 
   def e2() = {
-    val (user, _, _, _) = createUser()
+    val (user, authId, _, _) = createUser()
     val update = UpdateContactsAdded(Vector(1, 2, 3))
     val deliverEnv = Envelope(user.id).withDeliverUpdate(
       DeliverUpdate(
+        authId = authId,
         mapping = Some(UpdateMapping(Some(SerializedUpdate(
           header = update.header,
           body = ByteString.copyFrom(update.toByteArray),
