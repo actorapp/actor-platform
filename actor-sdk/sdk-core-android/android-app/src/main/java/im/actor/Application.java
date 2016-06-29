@@ -76,17 +76,35 @@ public class Application extends ActorSDKApplication {
 //        }
 
 //
-//        @Override
-//        public ArrayList<ShareMenuField> addCustomShareMenuFields() {
-//            ArrayList<ShareMenuField> shareMenuFields = new ArrayList<>();
-//            shareMenuFields.add(new ShareMenuField(R.drawable.conv_location_icon, ActorSDK.sharedActor().style.getAccentColor(), "lol", new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Toast.makeText(v.getContext(), "Hey", Toast.LENGTH_LONG).show();
-//                }
-//            }));
-//            return shareMenuFields;
-//        }
+@Override
+public ArrayList<ShareMenuField> addCustomShareMenuFields() {
+    ArrayList<ShareMenuField> shareMenuFields = new ArrayList<>();
+    shareMenuFields.add(new ShareMenuField(R.drawable.conv_location_icon, ActorSDK.sharedActor().style.getAccentColor(), "lol", new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Toast.makeText(v.getContext(), "Hey", Toast.LENGTH_LONG).show();
+        }
+    }));
+    shareMenuFields.add(new ShareMenuField(R.drawable.conv_location_icon, ActorSDK.sharedActor().style.getMainColor(), "lol", new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Toast.makeText(v.getContext(), "Hey", Toast.LENGTH_LONG).show();
+        }
+    }));
+    shareMenuFields.add(new ShareMenuField(R.drawable.conv_location_icon, ActorSDK.sharedActor().style.getDividerColor(), "lol", new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Toast.makeText(v.getContext(), "Hey", Toast.LENGTH_LONG).show();
+        }
+    }));
+    shareMenuFields.add(new ShareMenuField(R.drawable.conv_location_icon, ActorSDK.sharedActor().style.getConvLikeColor(), "lol", new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Toast.makeText(v.getContext(), "Hey", Toast.LENGTH_LONG).show();
+        }
+    }));
+    return shareMenuFields;
+}
 
 //        @Override
 //        public BaseGroupInfoActivity getGroupInfoIntent(int gid) {

@@ -5,6 +5,8 @@ import android.view.View;
 public class ShareMenuField {
     int icon;
     int color;
+    int selector;
+    int id;
     String title;
     View.OnClickListener onClickListener;
 
@@ -13,6 +15,13 @@ public class ShareMenuField {
         this.color = color;
         this.title = title;
         this.onClickListener = onClickListener;
+    }
+
+    public ShareMenuField(String title, int id, int selector, View.OnClickListener onClickListener) {
+        this.title = title;
+        this.selector = selector;
+        this.onClickListener = onClickListener;
+        this.id = id;
     }
 
     public int getIcon() {
@@ -25,6 +34,14 @@ public class ShareMenuField {
 
     public String getTitle() {
         return title;
+    }
+
+    public int getSelector() {
+        return selector;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public View.OnClickListener getOnClickListener() {

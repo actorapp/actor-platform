@@ -35,6 +35,7 @@ import android.text.Editable;
 import android.text.Spannable;
 import android.text.TextWatcher;
 import android.util.Base64;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -339,10 +340,8 @@ public class ChatActivity extends ActorEditTextActivity {
         });
 
         //share menu
-        TableLayout shareMenu = (TableLayout) findViewById(R.id.share_menu);
-        shareMenu.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         findViewById(R.id.fast_share).setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
-        shareMenuCaontainer = findViewById(R.id.share_container);
+        shareMenuCaontainer = findViewById(R.id.share_menu_container);
         shareMenuCaontainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -358,11 +357,6 @@ public class ChatActivity extends ActorEditTextActivity {
             }
         });
 
-        final TextView contactText = (TextView) findViewById(R.id.contact_text);
-        final ImageView shareContact = (ImageView) findViewById(R.id.share_contact);
-        shareContact.setBackgroundDrawable(ShareMenuButtonFactory.get(0xff3ec2fa, this));
-        ;
-        findViewById(R.id.share_hide).setVisibility(View.GONE);
 
         View.OnClickListener shareMenuOCL = new View.OnClickListener() {
             @Override
@@ -424,74 +418,98 @@ public class ChatActivity extends ActorEditTextActivity {
         };
         defaultSendOcl = shareMenuOCL;
 
-        findViewById(R.id.share_gallery).setOnClickListener(shareMenuOCL);
-        findViewById(R.id.share_video).setOnClickListener(shareMenuOCL);
-        findViewById(R.id.share_camera).setOnClickListener(shareMenuOCL);
-        shareContact.setOnClickListener(shareMenuOCL);
-        findViewById(R.id.share_file).setOnClickListener(shareMenuOCL);
-        findViewById(R.id.share_hide).setOnClickListener(shareMenuOCL);
-        View shareLocation = findViewById(R.id.share_location);
-        shareLocation.setOnClickListener(shareMenuOCL);
-        ActorSDK.sharedActor().getDelegate().onShareMenuCreated(shareMenu);
+        ArrayList<ShareMenuField> menuFields = new ArrayList<>();
 
-        menuIconToChange = shareContact;
-        menuTitleToChange = contactText;
+        menuFields.add(new ShareMenuField(getString(R.string.share_menu_camera), R.id.share_camera, R.drawable.share_camera_selector, shareMenuOCL));
+        menuFields.add(new ShareMenuField(getString(R.string.share_menu_file), R.id.share_file, R.drawable.share_file_selector, shareMenuOCL));
+        menuFields.add(new ShareMenuField(getString(R.string.share_menu_gallery), R.id.share_gallery, R.drawable.share_gallery_selector, shareMenuOCL));
+        try {
+            Class.forName("com.google.android.gms.maps.GoogleMap");
+            menuFields.add(new ShareMenuField(getString(R.string.share_menu_location), R.id.share_location, R.drawable.share_location_selector, shareMenuOCL));
+        } catch (ClassNotFoundException e) {
+            //ignore
+        }
+        menuFields.add(new ShareMenuField(getString(R.string.share_menu_video), R.id.share_video, R.drawable.share_video_selector, shareMenuOCL));
+        menuFields.add(new ShareMenuField(getString(R.string.share_menu_contact), R.id.share_contact, R.drawable.share_contact_selector, shareMenuOCL));
 
-        ArrayList<ShareMenuField> customFields = ActorSDK.sharedActor().getDelegate().addCustomShareMenuFields();
+        ArrayList<ShareMenuField> customMenuFields = ActorSDK.sharedActor().getDelegate().addCustomShareMenuFields();
+        if (customMenuFields != null) {
+            menuFields.addAll(customMenuFields);
+        }
 
-        if (customFields != null && customFields.size() > 0) {
-            if (customFields.size() % 2 != 0) {
-                customFields.add(new ShareMenuField(R.drawable.attach_hide2,
-                        ActorSDK.sharedActor().style.getBackyardBackgroundColor(),
-                        "",
-                        new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
+        if (menuFields.size() % 2 != 0) {
+            menuFields.add(new ShareMenuField(R.drawable.attach_hide2,
+                    ActorSDK.sharedActor().style.getBackyardBackgroundColor(),
+                    "",
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
 
-                            }
-                        }));
-            }
-            TableRow rowOne = (TableRow) shareMenu.findViewById(R.id.share_row_one);
-            TableRow rowTwo = (TableRow) shareMenu.findViewById(R.id.share_row_two);
-            boolean first = true;
-            TableRow row;
-            TableRow.LayoutParams params = new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
+                        }
+                    }));
+        }
+        FrameLayout row = (FrameLayout) findViewById(R.id.share_row_one);
+        findViewById(R.id.share_menu_container).setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
+        boolean first = true;
+        int menuItemSize = Screen.dp(80);
+        int screenWidth = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT ? Screen.getWidth() : Screen.getHeight();
+        int distance = screenWidth / (menuFields.size() / 2 + menuFields.size() % 2);
+        int initialMargin = distance / 2 - menuItemSize / 2;
+        int marginFromStart = initialMargin;
+        int secondRowTopMargin = Screen.dp(80);
+        int shareIconSize = Screen.dp(60);
 
-            for (int i = 0; i < customFields.size(); i++) {
-                ShareMenuField f = customFields.get(i);
-                row = first ? rowOne : rowTwo;
+        for (int i = 0; i < menuFields.size(); i++) {
+            ShareMenuField f = menuFields.get(i);
 
-                View shareItem = getLayoutInflater().inflate(R.layout.share_menu_item, null);
+            LinearLayout shareItem = new LinearLayout(this);
+            shareItem.setOrientation(LinearLayout.VERTICAL);
+            shareItem.setGravity(Gravity.CENTER_HORIZONTAL);
 
-                TextView title = (TextView) shareItem.findViewById(R.id.title);
-                title.setText(f.getTitle());
+            TextView title = new TextView(this);
+            title.setGravity(Gravity.CENTER);
+            title.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
+            title.setText(f.getTitle());
 
-                ImageView icon = (ImageView) shareItem.findViewById(R.id.icon);
-                icon.setClickable(true);
+            ImageView icon = new ImageView(this);
+            icon.setClickable(true);
+            if (f.getSelector() != 0) {
+                icon.setBackgroundResource(f.getSelector());
+            } else {
                 icon.setBackgroundDrawable(ShareMenuButtonFactory.get(f.getColor(), this));
-
+                icon.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                 icon.setImageResource(f.getIcon());
-
-                View.OnClickListener l = new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        hideShare();
-                        f.getOnClickListener().onClick(shareItem);
-                    }
-                };
-                icon.setOnClickListener(l);
-
-                if (i == customFields.size() - 1) {
-                    menuIconToChange = icon;
-                    menuTitleToChange = title;
-                    defaultSendOcl = l;
-                }
-
-                row.addView(shareItem, params);
-
-                first = !first;
             }
 
+            shareItem.addView(icon, shareIconSize, shareIconSize);
+            shareItem.addView(title);
+
+            View.OnClickListener l = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    hideShare();
+                    f.getOnClickListener().onClick(icon);
+                }
+            };
+            icon.setId(f.getId());
+            icon.setOnClickListener(l);
+
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(menuItemSize, menuItemSize);
+            params.setMargins(marginFromStart, first ? 0 : secondRowTopMargin, initialMargin, 0);
+
+            if (i == menuFields.size() - 1) {
+                menuIconToChange = icon;
+                menuTitleToChange = title;
+                defaultSendOcl = l;
+
+                params.setMargins(marginFromStart, first ? 0 : secondRowTopMargin, 0, 0);
+
+            }
+            row.addView(shareItem, params);
+            if (!first) {
+                marginFromStart += distance;
+            }
+            first = !first;
         }
 
         menuIconToChange.setTag(R.id.icon, ((ImageView) menuIconToChange).getDrawable());
@@ -503,9 +521,9 @@ public class ChatActivity extends ActorEditTextActivity {
         try {
             Class.forName("com.google.android.gms.maps.GoogleMap");
         } catch (ClassNotFoundException e) {
-            shareLocation.setVisibility(View.GONE);
-            findViewById(R.id.share_hide).setVisibility(View.VISIBLE);
-            findViewById(R.id.location_text).setVisibility(View.INVISIBLE);
+//            shareLocation.setVisibility(View.GONE);
+//            findViewById(R.id.share_hide).setVisibility(View.VISIBLE);
+//            findViewById(R.id.location_text).setVisibility(View.INVISIBLE);
         }
 
 
