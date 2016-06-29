@@ -24,12 +24,13 @@ public class DialogsAdapter extends BindedListAdapter<Dialog, DialogHolder> {
 
     @Override
     public DialogHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        return ActorSDK.sharedActor().getDelegatedViewHolder(DialogHolder.class, new ActorSDK.OnDelegateViewHolder<DialogHolder>() {
-            @Override
-            public DialogHolder onNotDelegated() {
-                return new DialogHolder(context, new FrameLayout(context), onItemClicked);
-            }
-        }, context, new FrameLayout(context), onItemClicked);
+//        return ActorSDK.sharedActor().getDelegatedViewHolder(DialogHolder.class, new ActorSDK.OnDelegateViewHolder<DialogHolder>() {
+//            @Override
+//            public DialogHolder onNotDelegated() {
+//                return new DialogHolder(context, new FrameLayout(context), onItemClicked);
+//            }
+//        }, context, new FrameLayout(context), onItemClicked);
+        return new DialogHolder(context, new DialogView(context), onItemClicked);
     }
 
     @Override

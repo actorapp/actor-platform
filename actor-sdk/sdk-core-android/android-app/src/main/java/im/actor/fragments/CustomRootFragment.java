@@ -86,6 +86,7 @@ public class CustomRootFragment extends BaseFragment implements GlobalSearchStat
     private DialogsDefaultFragment buildDialogsFragment() {
         DialogsDefaultFragment res = new DialogsDefaultFragment();
         res.setRootFragment(true);
+        res.setHasOptionsMenu(false);
         res.setTitle(im.actor.sdk.R.string.app_name);
         return res;
     }

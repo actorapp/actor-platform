@@ -11,9 +11,15 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+
 import im.actor.core.entity.Dialog;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.core.viewmodel.CommandCallback;
+import im.actor.runtime.generic.mvvm.ListProcessor;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
@@ -28,6 +34,7 @@ import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.Value;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
+import static im.actor.sdk.util.ActorSDKMessenger.users;
 
 public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, DialogHolder> {
 
@@ -40,7 +47,19 @@ public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, Dia
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View res = inflate(inflater, container, R.layout.fragment_dialogs, messenger().getDialogsDisplayList());
+        BindedDisplayList<Dialog> displayList = messenger().getDialogsDisplayList();
+        if (displayList.getListProcessor() == null) {
+            displayList.setListProcessor((items, previous) -> {
+                for (Dialog d : items) {
+                    if (d.getSenderId() != 0) {
+                        users().get(d.getSenderId());
+                    }
+                }
+                return null;
+            });
+        }
+
+        View res = inflate(inflater, container, R.layout.fragment_dialogs, displayList);
         res.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
 
         // Footer
@@ -59,14 +78,11 @@ public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, Dia
 
         // Empty View
         emptyDialogs = res.findViewById(R.id.emptyDialogs);
-        bind(messenger().getAppState().getIsDialogsEmpty(), new ValueChangedListener<Boolean>() {
-            @Override
-            public void onChanged(Boolean val, Value<Boolean> Value) {
-                if (val) {
-                    emptyDialogs.setVisibility(View.VISIBLE);
-                } else {
-                    emptyDialogs.setVisibility(View.GONE);
-                }
+        bind(messenger().getAppState().getIsDialogsEmpty(), (val, Value) -> {
+            if (val) {
+                emptyDialogs.setVisibility(View.VISIBLE);
+            } else {
+                emptyDialogs.setVisibility(View.GONE);
             }
         });
         ((TextView) res.findViewById(R.id.add_contact_hint_text)).setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.support.v7.widget.ChatLinearLayoutManager;
 import android.support.v7.widget.CustomItemAnimator;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -70,8 +71,9 @@ public abstract class DisplayListFragment<T extends BserObject & ListEngineItem,
 
     protected void configureRecyclerView(RecyclerView recyclerView) {
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(
-                new ChatLinearLayoutManager(getActivity(), ChatLinearLayoutManager.VERTICAL, false));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setHorizontalScrollBarEnabled(false);
+        recyclerView.setVerticalScrollBarEnabled(false);
     }
 
     protected void addHeaderView(View header) {
