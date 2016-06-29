@@ -27,12 +27,12 @@ public class AndroidMediaStream implements WebRTCMediaStream {
         this.allTracks = new WebRTCMediaTrack[stream.audioTracks.size() + stream.videoTracks.size()];
         this.audioTracks = new WebRTCMediaTrack[stream.audioTracks.size()];
         for (int i = 0; i < this.audioTracks.length; i++) {
-            audioTracks[i] = new AndroidAudioTrack(stream.audioTracks.get(i));
+            audioTracks[i] = new AndroidAudioTrack(stream.audioTracks.get(i), this);
             allTracks[i] = audioTracks[i];
         }
         this.videoTracks = new WebRTCMediaTrack[stream.videoTracks.size()];
         for (int i = 0; i < this.videoTracks.length; i++) {
-            videoTracks[i] = new AndroidVideoTrack(stream.videoTracks.get(i));
+            videoTracks[i] = new AndroidVideoTrack(stream.videoTracks.get(i), this);
             allTracks[audioTracks.length + i] = videoTracks[i];
         }
     }
@@ -45,14 +45,14 @@ public class AndroidMediaStream implements WebRTCMediaStream {
         if (audioSource != null) {
             localAudioTrack = AndroidWebRTCRuntimeProvider.FACTORY.createAudioTrack("audio0", audioSource.getAudioSource());
             stream.addTrack(localAudioTrack);
-            audioTracks = new WebRTCMediaTrack[]{new AndroidAudioTrack(localAudioTrack)};
+            audioTracks = new WebRTCMediaTrack[]{new AndroidAudioTrack(localAudioTrack, this)};
         } else {
             audioTracks = new WebRTCMediaTrack[0];
         }
         if (videoSource != null) {
             localVideoTrack = AndroidWebRTCRuntimeProvider.FACTORY.createVideoTrack("video0", videoSource.getVideoSource());
             stream.addPreservedTrack(localVideoTrack);
-            videoTracks = new WebRTCMediaTrack[]{new AndroidVideoTrack(localVideoTrack)};
+            videoTracks = new WebRTCMediaTrack[]{new AndroidVideoTrack(localVideoTrack, this)};
         } else {
             videoTracks = new WebRTCMediaTrack[0];
         }
@@ -82,20 +82,6 @@ public class AndroidMediaStream implements WebRTCMediaStream {
     @Override
     public WebRTCMediaTrack[] getTracks() {
         return allTracks;
-    }
-
-    @Override
-    public void setAudioTracksEnabled(boolean enabled) {
-        for (AudioTrack track : stream.audioTracks) {
-            track.setEnabled(enabled);
-        }
-    }
-
-    @Override
-    public void setVideoTracksEnabled(boolean enabled) {
-        for (VideoTrack track : stream.videoTracks) {
-            track.setEnabled(enabled);
-        }
     }
 
     @Override

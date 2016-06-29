@@ -8,9 +8,11 @@ import im.actor.runtime.webrtc.WebRTCTrackType;
 public class AndroidVideoTrack implements WebRTCMediaTrack {
 
     private VideoTrack videoTrack;
+    private AndroidMediaStream stream;
 
-    public AndroidVideoTrack(VideoTrack videoTrack) {
+    public AndroidVideoTrack(VideoTrack videoTrack, AndroidMediaStream stream) {
         this.videoTrack = videoTrack;
+        this.stream = stream;
     }
 
     public VideoTrack getVideoTrack() {
@@ -29,6 +31,8 @@ public class AndroidVideoTrack implements WebRTCMediaTrack {
 
     @Override
     public void setEnabled(boolean isEnabled) {
-        videoTrack.setEnabled(isEnabled);
+        if (stream.getStream().videoTracks.contains(videoTrack)) {
+            videoTrack.setEnabled(isEnabled);
+        }
     }
 }

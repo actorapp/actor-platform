@@ -308,8 +308,8 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
             this.isAudioEnabled = isAudioEnabled;
             if (isStarted) {
                 for (WebRTCMediaStream stream : theirMediaStreams) {
-                    stream.setAudioTracksEnabled(isAudioEnabled);
                     for (WebRTCMediaTrack track : stream.getAudioTracks()) {
+                        track.setEnabled(isAudioEnabled);
                         if (isAudioEnabled) {
                             callback.onTrackAdded(deviceId, track);
                         } else {
@@ -323,8 +323,8 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
             this.isVideoEnabled = isVideoEnabled;
             if (isStarted) {
                 for (WebRTCMediaStream stream : theirMediaStreams) {
-                    stream.setVideoTracksEnabled(isVideoEnabled);
                     for (WebRTCMediaTrack track : stream.getVideoTracks()) {
+                        track.setEnabled(isVideoEnabled);
                         if (isVideoEnabled) {
                             callback.onTrackAdded(deviceId, track);
                         } else {

@@ -1268,15 +1268,17 @@ public class ChatActivity extends ActorEditTextActivity {
         }
 
         boolean callsEnabled = ActorSDK.sharedActor().isCallsEnabled();
+        boolean videoCallsEnabled = ActorSDK.sharedActor().isVideoCallsEnabled();
         if (callsEnabled) {
             if (peer.getPeerType() == PeerType.PRIVATE) {
                 callsEnabled = !users().get(peer.getPeerId()).isBot();
             } else if (peer.getPeerType() == PeerType.GROUP) {
                 callsEnabled = groups().get(peer.getPeerId()).getMembersCount() <= MAX_USERS_FOR_CALLS;
+                videoCallsEnabled = false;
             }
         }
         menu.findItem(R.id.call).setVisible(callsEnabled);
-        menu.findItem(R.id.video_call).setVisible(callsEnabled);
+        menu.findItem(R.id.video_call).setVisible(callsEnabled && videoCallsEnabled);
 
         if (peer.getPeerType() == PeerType.PRIVATE) {
             bind(users().get(peer.getPeerId()).isContact(), new ValueChangedListener<Boolean>() {
