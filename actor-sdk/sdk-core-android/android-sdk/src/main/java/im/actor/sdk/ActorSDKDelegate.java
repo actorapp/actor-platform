@@ -2,8 +2,11 @@ package im.actor.sdk;
 
 import android.app.Activity;
 import android.net.Uri;
+import android.support.v4.app.Fragment;
 import android.view.ViewGroup;
 import android.widget.TableLayout;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
@@ -44,6 +47,14 @@ public interface ActorSDKDelegate {
      * @return Actor Intent
      */
     ActorIntent getStartIntent();
+
+    /**
+     * Optional Root Fragment
+     *
+     * @return Customized Fragment for root screen
+     */
+    @Nullable
+    Fragment fragmentForRoot();
 
     /**
      * If not null returned, overrides settings activity intent

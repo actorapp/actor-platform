@@ -36,10 +36,14 @@ public class AvatarPlaceholderDrawable extends Drawable {
         } else if (title.length() == 0) {
             title = "?";
         } else {
-            String[] parts = title.split(" ", 2);
-            title = parts[0].substring(0, 1).toUpperCase();
-            if (parts.length == 2 && parts[1].length() > 0) {
-                title += parts[1].substring(0, 1).toUpperCase();
+            String[] parts = title.trim().split(" ", 2);
+            if (parts.length == 0 || parts[0].length() == 0) {
+                title = "?";
+            } else {
+                title = parts[0].substring(0, 1).toUpperCase();
+                if (parts.length == 2 && parts[1].length() > 0) {
+                    title += parts[1].substring(0, 1).toUpperCase();
+                }
             }
         }
 

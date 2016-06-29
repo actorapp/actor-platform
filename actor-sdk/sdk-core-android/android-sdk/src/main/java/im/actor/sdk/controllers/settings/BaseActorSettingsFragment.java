@@ -737,27 +737,32 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
     }
 
     private void updateActionBar(int offset) {
+        if (getActivity() != null) {
+            if (avatarView != null) {
+                avatarView.setOffset(offset);
+            }
 
-        avatarView.setOffset(offset);
+            ActionBar bar = ((BaseActivity) getActivity()).getSupportActionBar();
+            if (bar != null) {
+                int fullColor = baseColor;
+                ActorStyle style = ActorSDK.sharedActor().style;
+                if (style.getToolBarColor() != 0) {
+                    fullColor = style.getToolBarColor();
+                }
 
-        ActionBar bar = ((BaseActivity) getActivity()).getSupportActionBar();
-        int fullColor = baseColor;
-        ActorStyle style = ActorSDK.sharedActor().style;
-        if (style.getToolBarColor() != 0) {
-            fullColor = style.getToolBarColor();
-        }
+                if (Math.abs(offset) > Screen.dp(248 - 56)) {
+                    bar.setBackgroundDrawable(new ColorDrawable(fullColor));
+                } else {
+                    float alpha = Math.abs(offset) / (float) Screen.dp(248 - 56);
 
-        if (Math.abs(offset) > Screen.dp(248 - 56)) {
-            bar.setBackgroundDrawable(new ColorDrawable(fullColor));
-        } else {
-            float alpha = Math.abs(offset) / (float) Screen.dp(248 - 56);
-
-            bar.setBackgroundDrawable(new ColorDrawable(Color.argb(
-                    (int) (255 * alpha),
-                    Color.red(fullColor),
-                    Color.green(fullColor),
-                    Color.blue(fullColor)
-            )));
+                    bar.setBackgroundDrawable(new ColorDrawable(Color.argb(
+                            (int) (255 * alpha),
+                            Color.red(fullColor),
+                            Color.green(fullColor),
+                            Color.blue(fullColor)
+                    )));
+                }
+            }
         }
     }
 

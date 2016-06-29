@@ -1,14 +1,18 @@
 package im.actor;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 
+import im.actor.fragments.CustomRootFragment;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorSDKApplication;
 import im.actor.sdk.ActorStyle;
@@ -67,7 +71,13 @@ public class Application extends ActorSDKApplication {
 
     private class ActorSDKDelegate extends BaseActorSDKDelegate {
 
-//        @Override
+        @Nullable
+        @Override
+        public Fragment fragmentForRoot() {
+            return new CustomRootFragment();
+        }
+
+        //        @Override
 //        public BaseJsonHolder getCustomMessageViewHolder(int dataTypeHash, MessagesAdapter messagesAdapter, ViewGroup viewGroup) {
 //            if(dataTypeHash == "tcmessage".hashCode()){
 //                return new TCMessageHolder(messagesAdapter, viewGroup, R.layout.tc_holder, false);
@@ -98,94 +108,94 @@ public class Application extends ActorSDKApplication {
 //            };
 //        }
 
-        @Override
-        public ActorIntentFragmentActivity getSettingsIntent() {
-            return new BaseActorSettingsActivity() {
-                @Override
-                public BaseActorSettingsFragment getSettingsFragment() {
-                    return new BaseActorSettingsFragment() {
-
-                        @Override
-                        public View getBeforeNickSettingsView() {
-                            return null;
-                        }
-
-                        @Override
-                        public View getAfterPhoneSettingsView() {
-                            return null;
-                        }
-
-                        @Override
-                        public View getSettingsTopView() {
-                            return null;
-                        }
-
-                        @Override
-                        public View getSettingsBottomView() {
-                            return null;
-                        }
-
-                        @Override
-                        public boolean showWallpaperCategory() {
-                            return true;
-                        }
-
-                        @Override
-                        public boolean showAskQuestion() {
-                            return true;
-                        }
-
-                        @Override
-                        public ActorSettingsCategory[] getBeforeSettingsCategories() {
-                            return new ActorSettingsCategory[]{
-                                    new ActorSettingsCategory() {
-
+//        @Override
+//        public ActorIntentFragmentActivity getSettingsIntent() {
+//            return new BaseActorSettingsActivity() {
+//                @Override
+//                public BaseActorSettingsFragment getSettingsFragment() {
+//                    return new BaseActorSettingsFragment() {
+//
+//                        @Override
+//                        public View getBeforeNickSettingsView() {
+//                            return null;
+//                        }
+//
+//                        @Override
+//                        public View getAfterPhoneSettingsView() {
+//                            return null;
+//                        }
+//
+//                        @Override
+//                        public View getSettingsTopView() {
+//                            return null;
+//                        }
+//
+//                        @Override
+//                        public View getSettingsBottomView() {
+//                            return null;
+//                        }
+//
+//                        @Override
+//                        public boolean showWallpaperCategory() {
+//                            return true;
+//                        }
+//
+//                        @Override
+//                        public boolean showAskQuestion() {
+//                            return true;
+//                        }
+//
+//                        @Override
+//                        public ActorSettingsCategory[] getBeforeSettingsCategories() {
+//                            return new ActorSettingsCategory[]{
+//                                    new ActorSettingsCategory() {
+//
+////                                        @Override
+////                                        public int getIconResourceId() {
+////                                            return R.drawable.ic_notifications_white_18dp;
+////                                        }
+//
 //                                        @Override
-//                                        public int getIconResourceId() {
-//                                            return R.drawable.ic_notifications_white_18dp;
+//                                        public String getCategoryName() {
+//                                            return "test";
 //                                        }
-
-                                        @Override
-                                        public String getCategoryName() {
-                                            return "test";
-                                        }
-
-                                        @Override
-                                        public ActorSettingsField[] getFields() {
-                                            final CheckBox chb = new CheckBox(getContext());
-                                            ActorSettingsField field = new ActorSettingsField() {
-                                                @Override
-                                                public View getRightView() {
-                                                    return chb;
-                                                }
-
-                                                @Override
-                                                public String getName() {
-                                                    return "azazaz";
-                                                }
-                                            };
-                                            field.setOnClickListener(new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View v) {
-                                                    chb.setChecked(!chb.isChecked());
-                                                }
-                                            });
-                                            return new ActorSettingsField[]{
-                                                    field
-                                            };
-                                        }
-                                    }
-                            };
-                        }
-
-                        @Override
-                        public ActorSettingsCategory[] getAfterSettingsCategories() {
-                            return new ActorSettingsCategory[0];
-                        }
-                    };
-                }
-            };
-        }
+//
+//                                        @Override
+//                                        public ActorSettingsField[] getFields() {
+//                                            final CheckBox chb = new CheckBox(getContext());
+//                                            ActorSettingsField field = new ActorSettingsField() {
+//                                                @Override
+//                                                public View getRightView() {
+//                                                    return chb;
+//                                                }
+//
+//                                                @Override
+//                                                public String getName() {
+//                                                    return "azazaz";
+//                                                }
+//                                            };
+//                                            field.setOnClickListener(new View.OnClickListener() {
+//                                                @Override
+//                                                public void onClick(View v) {
+//                                                    chb.setChecked(!chb.isChecked());
+//                                                }
+//                                            });
+//                                            return new ActorSettingsField[]{
+//                                                    field
+//                                            };
+//                                        }
+//                                    }
+//                            };
+//                        }
+//
+//                        @Override
+//                        public ActorSettingsCategory[] getAfterSettingsCategories() {
+//                            return new ActorSettingsCategory[0];
+//                        }
+//                    };
+//                }
+//            };
+//        }
     }
 
 }

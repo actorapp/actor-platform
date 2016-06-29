@@ -3,8 +3,11 @@ package im.actor.sdk;
 import android.app.Activity;
 import android.net.Uri;
 import android.provider.Settings;
+import android.support.v4.app.Fragment;
 import android.view.ViewGroup;
 import android.widget.TableLayout;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
@@ -60,6 +63,12 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
      */
     @Override
     public ActorIntent getStartIntent() {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public Fragment fragmentForRoot() {
         return null;
     }
 

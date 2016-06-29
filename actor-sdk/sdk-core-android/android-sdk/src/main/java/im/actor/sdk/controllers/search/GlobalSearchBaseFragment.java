@@ -34,6 +34,7 @@ import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 public abstract class GlobalSearchBaseFragment extends BaseFragment {
 
     private MenuItem searchMenu;
+    private SearchView searchView;
 
     private boolean isSearchVisible = false;
     private RecyclerView searchList;
@@ -59,6 +60,21 @@ public abstract class GlobalSearchBaseFragment extends BaseFragment {
 
         searchList = (RecyclerView) res.findViewById(R.id.searchList);
         searchList.setLayoutManager(new ChatLinearLayoutManager(getActivity()));
+        searchList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING && isSearchVisible) {
+                    if (searchView != null) {
+                        searchView.clearFocus();
+                    }
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+
+            }
+        });
 
         searchContainer = res.findViewById(R.id.searchCont);
         searchContainer.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
@@ -97,7 +113,7 @@ public abstract class GlobalSearchBaseFragment extends BaseFragment {
             searchMenu.setVisible(true);
         }
 
-        SearchView searchView = (SearchView) searchMenu.getActionView();
+        searchView = (SearchView) searchMenu.getActionView();
         searchView.setIconifiedByDefault(true);
 
         MenuItemCompat.setOnActionExpandListener(searchMenu, new MenuItemCompat.OnActionExpandListener() {
@@ -180,10 +196,13 @@ public abstract class GlobalSearchBaseFragment extends BaseFragment {
         showView(searchHintView, false);
         goneView(searchEmptyView, false);
 
-        showView(searchContainer);
-    }
+        showView(searchContainer, false);
 
-    protected abstract void onPeerPicked(Peer peer);
+        Fragment parent = getParentFragment();
+        if (parent != null && parent instanceof GlobalSearchStateDelegate) {
+            ((GlobalSearchStateDelegate) parent).onGlobalSearchStarted();
+        }
+    }
 
     private void hideSearch() {
         if (!isSearchVisible) {
@@ -198,11 +217,18 @@ public abstract class GlobalSearchBaseFragment extends BaseFragment {
         searchAdapter = null;
         searchList.setAdapter(null);
 
-        goneView(searchContainer);
+        goneView(searchContainer, false);
         if (searchMenu != null) {
             if (searchMenu.isActionViewExpanded()) {
                 searchMenu.collapseActionView();
             }
         }
+
+        Fragment parent = getParentFragment();
+        if (parent != null && parent instanceof GlobalSearchStateDelegate) {
+            ((GlobalSearchStateDelegate) parent).onGlobalSearchEnded();
+        }
     }
+
+    protected abstract void onPeerPicked(Peer peer);
 }

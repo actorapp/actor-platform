@@ -67,7 +67,7 @@
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:theme="@style/MainActivityTheme"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustPan" />
 
         <activity
             android:name=".controllers.share.ShareActivity"
