@@ -39,6 +39,7 @@ public class CustomRootFragment extends BaseFragment implements GlobalSearchStat
 
         bottomBar = BottomBar.attach(getActivity(), savedInstanceState);
         bottomBar.setItems(
+                new BottomBarTab(R.drawable.ic_home_black_24dp, "Home"),
                 new BottomBarTab(R.drawable.ic_message_black_24dp, "Recent"),
                 new BottomBarTab(R.drawable.ic_contacts_black_24dp, "Contacts"),
                 new BottomBarTab(R.drawable.ic_settings_black_24dp, "Settings"));
@@ -56,13 +57,17 @@ public class CustomRootFragment extends BaseFragment implements GlobalSearchStat
             public void onTabSelected(int position) {
                 if (position == 0) {
                     getChildFragmentManager().beginTransaction()
-                            .replace(im.actor.sdk.R.id.content, buildDialogsFragment())
+                            .replace(im.actor.sdk.R.id.content, new EmptyFragment())
                             .commit();
                 } else if (position == 1) {
                     getChildFragmentManager().beginTransaction()
-                            .replace(im.actor.sdk.R.id.content, new ContactsFragment())
+                            .replace(im.actor.sdk.R.id.content, buildDialogsFragment())
                             .commit();
                 } else if (position == 2) {
+                    getChildFragmentManager().beginTransaction()
+                            .replace(im.actor.sdk.R.id.content, new ContactsFragment())
+                            .commit();
+                } else if (position == 3) {
                     getChildFragmentManager().beginTransaction()
                             .replace(im.actor.sdk.R.id.content, new ActorSettingsFragment())
                             .commit();
