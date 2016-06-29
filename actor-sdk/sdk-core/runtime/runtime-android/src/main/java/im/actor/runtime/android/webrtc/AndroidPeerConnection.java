@@ -331,6 +331,14 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
                 peerConnection.removeStream(((AndroidMediaStream) stream.get()).getStream());
                 stream.release();
             }
+            for (MediaStream stream : streams.keySet()) {
+                AndroidMediaStream stream1 = streams.get(stream);
+                if (stream1 != null) {
+                    for (WebRTCPeerConnectionCallback c : callbacks) {
+                        c.onStreamRemoved(stream1);
+                    }
+                }
+            }
             peerConnection.dispose();
         });
     }
