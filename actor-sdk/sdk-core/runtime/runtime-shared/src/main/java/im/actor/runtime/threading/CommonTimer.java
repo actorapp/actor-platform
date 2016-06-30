@@ -3,7 +3,7 @@ package im.actor.runtime.threading;
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
-import im.actor.runtime.actors.Cancellable;
+import im.actor.runtime.actors.ActorCancellable;
 import im.actor.runtime.actors.Scheduler;
 
 import static im.actor.runtime.actors.ActorSystem.system;
@@ -19,7 +19,7 @@ public class CommonTimer {
     private static final Scheduler COMMON_SCHEDULER = new Scheduler(COMMON_TIMER_ACTOR);
 
     private final Runnable runnable;
-    private Cancellable lastSchedule;
+    private ActorCancellable lastSchedule;
     private boolean isDisposed;
 
     public CommonTimer(Runnable runnable) {

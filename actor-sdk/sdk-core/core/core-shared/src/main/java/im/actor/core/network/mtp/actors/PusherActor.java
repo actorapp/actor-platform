@@ -12,7 +12,7 @@ import java.util.List;
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;
-import im.actor.runtime.actors.Cancellable;
+import im.actor.runtime.actors.ActorCancellable;
 import im.actor.runtime.actors.Props;
 import im.actor.runtime.Log;
 import im.actor.core.network.mtp.MTProto;
@@ -45,7 +45,7 @@ public class PusherActor extends Actor {
 
     private HashSet<Long> pendingConfirm;
 
-    private Cancellable askCancellable;
+    private ActorCancellable askCancellable;
 
     public PusherActor(MTProto proto) {
         this.proto = proto;

@@ -15,7 +15,7 @@ import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.ActorTime;
-import im.actor.runtime.actors.Cancellable;
+import im.actor.runtime.actors.ActorCancellable;
 import im.actor.runtime.actors.Props;
 import im.actor.runtime.annotations.Verified;
 
@@ -33,7 +33,7 @@ public class OwnTypingActor extends ModuleActor {
 
     private long prevRid = 0;
 
-    private Cancellable typingCancellable;
+    private ActorCancellable typingCancellable;
 
     @Verified
     public OwnTypingActor(ModuleContext messenger) {

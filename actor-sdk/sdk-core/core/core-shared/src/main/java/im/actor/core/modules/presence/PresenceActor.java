@@ -31,7 +31,7 @@ import im.actor.runtime.Log;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;
-import im.actor.runtime.actors.Cancellable;
+import im.actor.runtime.actors.ActorCancellable;
 import im.actor.runtime.actors.Props;
 import im.actor.runtime.annotations.Verified;
 import im.actor.runtime.eventbus.BusSubscriber;
@@ -53,7 +53,7 @@ public class PresenceActor extends ModuleActor implements BusSubscriber {
 
     private HashMap<Integer, Long> lastUidState = new HashMap<>();
     private HashMap<Integer, Long> lastGidState = new HashMap<>();
-    private HashMap<Integer, Cancellable> uidCancellables = new HashMap<>();
+    private HashMap<Integer, ActorCancellable> uidCancellables = new HashMap<>();
     private HashSet<Integer> uids = new HashSet<>();
     private HashSet<Integer> gids = new HashSet<>();
 

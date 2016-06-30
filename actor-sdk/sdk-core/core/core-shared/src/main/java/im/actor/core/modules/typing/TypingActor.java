@@ -13,7 +13,7 @@ import im.actor.core.modules.ModuleActor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;
-import im.actor.runtime.actors.Cancellable;
+import im.actor.runtime.actors.ActorCancellable;
 import im.actor.runtime.actors.Props;
 import im.actor.runtime.annotations.Verified;
 
@@ -26,10 +26,10 @@ public class TypingActor extends ModuleActor {
 
     private static final int TYPING_TEXT_TIMEOUT = 7000;
 
-    private HashMap<Integer, Cancellable> typingsCancellables = new HashMap<>();
+    private HashMap<Integer, ActorCancellable> typingsCancellables = new HashMap<>();
     private HashSet<Integer> typings = new HashSet<>();
     private HashMap<Integer, HashSet<Integer>> groupTypings = new HashMap<>();
-    private HashMap<Integer, HashMap<Integer, Cancellable>> groupCancellables = new HashMap<>();
+    private HashMap<Integer, HashMap<Integer, ActorCancellable>> groupCancellables = new HashMap<>();
 
     public TypingActor(ModuleContext messenger) {
         super(messenger);
@@ -116,7 +116,7 @@ public class TypingActor extends ModuleActor {
             groupCancellables.put(gid, new HashMap<>());
         }
 
-        HashMap<Integer, Cancellable> cancellables = groupCancellables.get(gid);
+        HashMap<Integer, ActorCancellable> cancellables = groupCancellables.get(gid);
         if (cancellables.containsKey(uid)) {
             cancellables.remove(uid).cancel();
         }

@@ -27,7 +27,7 @@ import im.actor.core.network.parser.Update;
 import im.actor.runtime.*;
 import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.ActorCreator;
-import im.actor.runtime.actors.Cancellable;
+import im.actor.runtime.actors.ActorCancellable;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.power.WakeLock;
 
@@ -57,7 +57,7 @@ public class SequenceActor extends ModuleActor {
     private int finishedSeq;
     private byte[] finishedState;
 
-    private Cancellable forceInvalidateCancellable;
+    private ActorCancellable forceInvalidateCancellable;
 
     private UpdateValidator validator;
 

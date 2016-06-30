@@ -1,5 +1,6 @@
 package im.actor.runtime.actors;
 
-public interface Cancellable {
+public interface ActorCancellable {
+
     void cancel();
 }

@@ -307,7 +307,7 @@ public class Actor {
 //        }).done(self());
 //    }
 
-    public Cancellable schedule(final Object obj, long delay) {
+    public ActorCancellable schedule(final Object obj, long delay) {
         if (scheduler == null) {
             scheduler = new Scheduler(self());
         }

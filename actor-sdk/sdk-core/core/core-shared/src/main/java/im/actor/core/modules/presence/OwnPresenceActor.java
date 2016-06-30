@@ -11,7 +11,7 @@ import im.actor.core.events.AppVisibleChanged;
 import im.actor.core.modules.ModuleActor;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
-import im.actor.runtime.actors.Cancellable;
+import im.actor.runtime.actors.ActorCancellable;
 import im.actor.runtime.eventbus.BusSubscriber;
 import im.actor.runtime.eventbus.Event;
 
@@ -27,7 +27,7 @@ public class OwnPresenceActor extends ModuleActor implements BusSubscriber {
     private boolean isAlwaysOnline = false;
     private boolean isVisible = false;
     private long prevRid = 0;
-    private Cancellable performCancellable;
+    private ActorCancellable performCancellable;
 
     public OwnPresenceActor(Modules messenger) {
         super(messenger);

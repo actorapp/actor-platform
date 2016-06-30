@@ -18,7 +18,7 @@ import im.actor.runtime.HTTP;
 import im.actor.runtime.Log;
 import im.actor.runtime.Storage;
 import im.actor.runtime.actors.ActorRef;
-import im.actor.runtime.actors.Cancellable;
+import im.actor.runtime.actors.ActorCancellable;
 import im.actor.runtime.crypto.CRC32;
 import im.actor.runtime.files.FileSystemReference;
 import im.actor.runtime.files.InputFile;
@@ -60,7 +60,7 @@ public class UploadTask extends ModuleActor {
     private int uploaded;
     private int uploadCount;
     private long lastNotifyDate;
-    private Cancellable notifyCancellable;
+    private ActorCancellable notifyCancellable;
 
     private byte[] uploadConfig;
     private CRC32 crc32;
