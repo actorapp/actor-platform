@@ -1237,7 +1237,7 @@ public class Messenger {
      */
     @ObjectiveCName("toggleCallMuteWithCallId:")
     public void toggleCallMute(long callId) {
-        if (modules.getCallsModule().getCall(callId).getIsOwnAudioEnabled().get()) {
+        if (modules.getCallsModule().getCall(callId).getIsAudioEnabled().get()) {
             modules.getCallsModule().muteCall(callId);
         } else {
             modules.getCallsModule().unmuteCall(callId);
@@ -1251,7 +1251,7 @@ public class Messenger {
      */
     @ObjectiveCName("toggleVideoEnabledWithCallId:")
     public void toggleVideoEnabled(long callId) {
-        if (modules.getCallsModule().getCall(callId).getIsOwnVideoEnabled().get()) {
+        if (modules.getCallsModule().getCall(callId).getIsVideoEnabled().get()) {
             modules.getCallsModule().disableVideo(callId);
         } else {
             modules.getCallsModule().enableVideo(callId);

@@ -347,7 +347,7 @@ public class CallFragment extends BaseFragment {
 
         } else {
             if (call != null) {
-                if (call.getIsOwnVideoEnabled().get()) {
+                if (call.getIsVideoEnabled().get()) {
                     messenger().toggleVideoEnabled(callId);
                 }
             }
@@ -561,7 +561,7 @@ public class CallFragment extends BaseFragment {
         //
         // Is Muted
         //
-        bind(call.getIsOwnAudioEnabled(), (val, valueModel) -> {
+        bind(call.getIsAudioEnabled(), (val, valueModel) -> {
             if (getActivity() != null) {
                 if (!val) {
                     muteCallTv.setTextColor(getResources().getColor(R.color.picker_grey));
@@ -581,7 +581,7 @@ public class CallFragment extends BaseFragment {
             //
             // Video Button
             //
-            bind(call.getIsOwnVideoEnabled(), (val, valueModel) -> {
+            bind(call.getIsVideoEnabled(), (val, valueModel) -> {
                 if (val) {
                     videoTv.setTextColor(Color.WHITE);
                     videoIcon.setTint(Color.WHITE);

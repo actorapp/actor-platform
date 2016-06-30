@@ -210,13 +210,13 @@ public class CallActor extends AbsCallActor {
     @Override
     public void onAudioEnableChanged(boolean enabled) {
         super.onAudioEnableChanged(enabled);
-        callVM.getIsOwnAudioEnabled().change(enabled);
+        callVM.getIsAudioEnabled().change(enabled);
     }
 
     @Override
     public void onVideoEnableChanged(boolean enabled) {
         super.onVideoEnableChanged(enabled);
-        callVM.getIsOwnVideoEnabled().change(enabled);
+        callVM.getIsVideoEnabled().change(enabled);
     }
 
 

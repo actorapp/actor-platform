@@ -32,9 +32,9 @@ public class CallVM {
 
 
     @Property("nonatomic, readonly")
-    private final BooleanValueModel isOwnAudioEnabled;
+    private final BooleanValueModel isAudioEnabled;
     @Property("nonatomic, readonly")
-    private final BooleanValueModel isOwnVideoEnabled;
+    private final BooleanValueModel isVideoEnabled;
 
     @Property("nonatomic, readonly")
     private final ValueModel<ArrayList<CallMember>> members;
@@ -55,8 +55,8 @@ public class CallVM {
         this.theirVideoTracks = new ValueModel<>("calls." + callId + ".their_video", new ArrayListMediaTrack());
         this.theirAudioTracks = new ValueModel<>("calls." + callId + ".their_audio", new ArrayListMediaTrack());
         this.members = new ValueModel<>("calls." + callId + ".members", new ArrayList<>(initialMembers));
-        this.isOwnAudioEnabled = new BooleanValueModel("calls." + callId + ".audio_enabled", true);
-        this.isOwnVideoEnabled = new BooleanValueModel("calls." + callId + ".video_enabled", isVideoEnabled);
+        this.isAudioEnabled = new BooleanValueModel("calls." + callId + ".audio_enabled", true);
+        this.isVideoEnabled = new BooleanValueModel("calls." + callId + ".video_enabled", isVideoEnabled);
         this.callStart = 0;
     }
 
@@ -72,12 +72,12 @@ public class CallVM {
         return callId;
     }
 
-    public BooleanValueModel getIsOwnAudioEnabled() {
-        return isOwnAudioEnabled;
+    public BooleanValueModel getIsAudioEnabled() {
+        return isAudioEnabled;
     }
 
-    public BooleanValueModel getIsOwnVideoEnabled() {
-        return isOwnVideoEnabled;
+    public BooleanValueModel getIsVideoEnabled() {
+        return isVideoEnabled;
     }
 
     public ValueModel<CallState> getState() {
