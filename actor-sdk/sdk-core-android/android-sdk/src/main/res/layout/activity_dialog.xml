@@ -95,13 +95,6 @@
         layout="@layout/share_menu"
         android:id="@+id/share_menu_container" />
 
-    <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="2dp"
-        android:scaleType="fitXY"
-        android:layout_above="@id/share_menu_container"
-        android:src="@drawable/conv_field_shadow" />
-
     <FrameLayout
         android:id="@+id/fl_send_panel"
         android:layout_width="match_parent"

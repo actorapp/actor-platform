@@ -10,6 +10,12 @@
     android:background="@android:color/transparent"
     tools:showIn="@layout/activity_dialog">
 
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/conv_field_shadow" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/fast_share"
         android:layout_width="match_parent"

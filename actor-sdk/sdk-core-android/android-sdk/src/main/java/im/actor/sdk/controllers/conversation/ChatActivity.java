@@ -13,7 +13,9 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.InsetDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
@@ -340,8 +342,8 @@ public class ChatActivity extends ActorEditTextActivity {
         });
 
         //share menu
-        findViewById(R.id.fast_share).setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
-        shareMenuCaontainer = findViewById(R.id.share_menu_container);
+        View shareMenu = findViewById(R.id.share_menu_container);
+        shareMenuCaontainer = shareMenu;
         shareMenuCaontainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -449,7 +451,8 @@ public class ChatActivity extends ActorEditTextActivity {
                     }));
         }
         FrameLayout row = (FrameLayout) findViewById(R.id.share_row_one);
-        findViewById(R.id.share_menu_container).setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
+        shareMenu.setBackgroundDrawable(new InsetDrawable(new ColorDrawable(ActorSDK.sharedActor().style.getMainBackgroundColor()), 0, Screen.dp(2), 0, 0));
+        shareMenu.setPadding(0, 0, 0, 0);
         boolean first = true;
         int menuItemSize = Screen.dp(80);
         int screenWidth = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT ? Screen.getWidth() : Screen.getHeight();
