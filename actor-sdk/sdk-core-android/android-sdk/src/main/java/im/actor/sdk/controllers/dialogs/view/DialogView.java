@@ -34,7 +34,6 @@ import im.actor.core.entity.ContentType;
 import im.actor.core.entity.Dialog;
 import im.actor.core.entity.PeerType;
 import im.actor.core.viewmodel.FileCallback;
-import im.actor.runtime.android.AndroidContext;
 import im.actor.runtime.files.FileSystemReference;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.sdk.ActorSDK;
@@ -65,6 +64,7 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
     private static Paint avatarBorder;
     private static Paint fillPaint;
     private static TextPaint avatarTextColor;
+    private static String typingText;
 
     private long bindedId;
     private DraweeHolder<GenericDraweeHierarchy> draweeHolder;
@@ -73,6 +73,7 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
     private int bindedGid;
     private ValueChangedListener<Boolean> privateTypingListener;
     private ValueChangedListener<int[]> groupTypingListener;
+    private boolean isPrivateTyping;
 
     public DialogView(Context context) {
         super(context);
@@ -158,24 +159,29 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
             // Content
             //
 
-            if (layout.getTextLayout() != null) {
-                canvas.save();
-                canvas.translate(Screen.dp(72), Screen.dp(42));
-                layout.getTextLayout().draw(canvas);
-                canvas.restore();
-            }
-
-            if (layout.getCounter() != null) {
-                int left = getWidth() - Screen.sp(12) - layout.getCounterWidth();
-                int top = Screen.dp(39);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    canvas.drawRoundRect(left, top, left + layout.getCounterWidth(), top + Screen.dp(22), Screen.dp(11), Screen.dp(11),
-                            counterBgPaint);
-                } else {
-                    tmpRect.set(left, top, left + layout.getCounterWidth(), top + Screen.dp(22));
-                    canvas.drawRoundRect(tmpRect, Screen.dp(11), Screen.dp(11), counterBgPaint);
+            // TODO: Implement Group Typing
+            if (isPrivateTyping) {
+                canvas.drawText(typingText, Screen.dp(72), Screen.dp(60), textActivePaint);
+            } else {
+                if (layout.getTextLayout() != null) {
+                    canvas.save();
+                    canvas.translate(Screen.dp(72), Screen.dp(42));
+                    layout.getTextLayout().draw(canvas);
+                    canvas.restore();
                 }
-                canvas.drawText(layout.getCounter(), left + layout.getCounterWidth() / 2, top + Screen.dp(16), counterTextPaint);
+
+                if (layout.getCounter() != null) {
+                    int left = getWidth() - Screen.sp(12) - layout.getCounterWidth();
+                    int top = Screen.dp(39);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        canvas.drawRoundRect(left, top, left + layout.getCounterWidth(), top + Screen.dp(22), Screen.dp(11), Screen.dp(11),
+                                counterBgPaint);
+                    } else {
+                        tmpRect.set(left, top, left + layout.getCounterWidth(), top + Screen.dp(22));
+                        canvas.drawRoundRect(tmpRect, Screen.dp(11), Screen.dp(11), counterBgPaint);
+                    }
+                    canvas.drawText(layout.getCounter(), left + layout.getCounterWidth() / 2, top + Screen.dp(16), counterTextPaint);
+                }
             }
         }
     }
@@ -201,32 +207,21 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
 
         if (dialog.getPeer().getPeerType() == PeerType.PRIVATE) {
             bindedUid = dialog.getPeer().getPeerId();
+
             privateTypingListener = (val, Value) -> {
-//                if (val) {
-//                    text.setText(messenger().getFormatter().formatTyping());
-//                    text.setTextColor(ActorSDK.sharedActor().style.getDialogsTypingColor());
-//                } else {
-//                    text.setText(bindedText);
-//                    text.setTextColor(textColor);
-//                }
+                isPrivateTyping = val;
+                invalidate();
             };
             messenger().getTyping(bindedUid).subscribe(privateTypingListener);
         } else if (dialog.getPeer().getPeerType() == PeerType.GROUP) {
             bindedGid = dialog.getPeer().getPeerId();
+            isPrivateTyping = false;
             groupTypingListener = (val, Value) -> {
-//                if (val.length != 0) {
-//                    if (val.length == 1) {
-//                        text.setText(messenger().getFormatter().formatTyping(messenger().getUsers().get(val[0]).getName().get()));
-//                    } else {
-//                        text.setText(messenger().getFormatter().formatTyping(val.length));
-//                    }
-//                    text.setTextColor(ActorSDK.sharedActor().style.getDialogsTypingColor());
-//                } else {
-//                    text.setText(bindedText);
-//                    text.setTextColor(textColor);
-//                }
+                // TODO: Implement Group Typing
             };
             messenger().getGroupTyping(bindedGid).subscribe(groupTypingListener);
+        } else {
+            isPrivateTyping = false;
         }
     }
 
@@ -235,7 +230,7 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
         if (!isStylesLoaded) {
             isStylesLoaded = true;
             ActorStyle style = ActorSDK.sharedActor().style;
-            Context context = AndroidContext.getContext();
+            Context context = getContext();
             titlePaint = createTextPaint(Fonts.medium(), 16, style.getDialogsTitleColor());
             datePaint = createTextPaint(Fonts.regular(), 14, style.getDialogsTimeColor());
             textPaint = createTextPaint(Fonts.regular(), 16, style.getDialogsTimeColor());
@@ -263,6 +258,7 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
             avatarBorder.setStrokeWidth(1);
             avatarTextColor = createTextPaint(Fonts.regular(), 20, Color.WHITE);
             avatarTextColor.setTextAlign(Paint.Align.CENTER);
+            typingText = context.getResources().getString(R.string.typing_private);
         }
 
         DialogLayout res = new DialogLayout();
@@ -428,6 +424,7 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
 
         if (privateTypingListener != null) {
             messenger().getTyping(bindedUid).unsubscribe(privateTypingListener);
+            isPrivateTyping = false;
             privateTypingListener = null;
         }
 
