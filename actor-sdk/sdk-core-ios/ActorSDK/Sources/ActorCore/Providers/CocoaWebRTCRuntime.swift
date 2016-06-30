@@ -3,60 +3,91 @@
 //
 
 import Foundation
+import AVFoundation
+
+let queue = dispatch_queue_create("My Queue", DISPATCH_QUEUE_SERIAL);
 
 class CocoaWebRTCRuntime: NSObject, ARWebRTCRuntime {
     
+    
+    
     private var isInited: Bool = false
     private var peerConnectionFactory: RTCPeerConnectionFactory!
+    private var videoSource: RTCVideoSource!
+    private var videoSourceLoaded = false
     
     override init() {
-
+        
+    }
+    
+    func getUserMediaWithIsAudioEnabled(isAudioEnabled: jboolean, withIsVideoEnabled isVideoEnabled: jboolean) -> ARPromise {
+        
+        return ARPromise { (resolver) -> () in
+            dispatch_async(queue) {
+                
+                self.initRTC()
+                
+                // Unfortinatelly building capture source "on demand" causes some weird internal crashes
+                self.initVideo()
+                
+                let stream = self.peerConnectionFactory.mediaStreamWithLabel("ARDAMSv0")
+                
+                //
+                // Audio
+                //
+                if isAudioEnabled {
+                    let audio = self.peerConnectionFactory.audioTrackWithID("audio0")
+                    stream.addAudioTrack(audio)
+                }
+                
+                //
+                // Video
+                //
+                if isVideoEnabled {
+                    if self.videoSource != nil {
+                        let localVideoTrack = self.peerConnectionFactory.videoTrackWithID("video0", source: self.videoSource)
+                        stream.addVideoTrack(localVideoTrack)
+                    }
+                }
+                
+                resolver.result(MediaStream(stream:stream))
+            }
+        }
     }
     
     func createPeerConnectionWithServers(webRTCIceServers: IOSObjectArray!, withSettings settings: ARWebRTCSettings!) -> ARPromise {
-        
-        initRTC()
-        
         let servers: [ARWebRTCIceServer] = webRTCIceServers.toSwiftArray()
         return ARPromise { (resolver) -> () in
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) { () -> Void in
+            dispatch_async(queue) {
+                self.initRTC()
                 resolver.result(CocoaWebRTCPeerConnection(servers: servers, peerConnectionFactory: self.peerConnectionFactory))
             }
         }
     }
     
-    func getUserAudio() -> ARPromise {
-        
-        initRTC()
-        
-        let audio = peerConnectionFactory.audioTrackWithID("audio0")
-        let mediaStream = peerConnectionFactory.mediaStreamWithLabel("ARDAMSa0")
-        mediaStream.addAudioTrack(audio)
-        return ARPromise.success(MediaStream(stream: mediaStream))
-    }
-    
-    func getUserMediaWithIsVideoEnabled(isVideoEnabled: jboolean) -> ARPromise {
-        initRTC()
-        
-        var streamName = "ARDAMSa0"
-        
-        if(isVideoEnabled)
-        {
-            streamName = "ARDAMSv0"
-        }
-        let audio = peerConnectionFactory.audioTrackWithID("audio0")
-        let mediaStream = peerConnectionFactory.mediaStreamWithLabel(streamName)
-        mediaStream.addAudioTrack(audio)
-        return ARPromise.success(MediaStream(stream: mediaStream))
-    }
-    
     func initRTC() {
         if !isInited {
             isInited = true
-            
             RTCPeerConnectionFactory.initializeSSL()
-            
             peerConnectionFactory = RTCPeerConnectionFactory()
+        }
+    }
+    
+    func initVideo() {
+        if !self.videoSourceLoaded {
+            self.videoSourceLoaded = true
+            
+            var cameraID: String?
+            for captureDevice in AVCaptureDevice.devicesWithMediaType(AVMediaTypeVideo) {
+                if captureDevice.position == AVCaptureDevicePosition.Front {
+                    cameraID = captureDevice.localizedName
+                }
+            }
+            
+            if(cameraID != nil) {
+                let videoCapturer = RTCVideoCapturer(deviceName: cameraID)
+                self.videoSource = self.peerConnectionFactory.videoSourceWithCapturer(videoCapturer, constraints: RTCMediaConstraints())
+            }
         }
     }
     
@@ -65,43 +96,103 @@ class CocoaWebRTCRuntime: NSObject, ARWebRTCRuntime {
     }
 }
 
-class MediaStream: NSObject, ARWebRTCMediaStream {
+@objc class MediaStream: NSObject, ARWebRTCMediaStream {
     
     let stream: RTCMediaStream
+    let audioTracks: IOSObjectArray
+    let videoTracks: IOSObjectArray
+    let allTracks: IOSObjectArray
     
-    init(stream: RTCMediaStream){
+    init(stream: RTCMediaStream) {
         self.stream = stream
-    }
-    
-  
-    func isAudioEnabled() -> jboolean {
-        return true
-    }
-    
-    func isVideoEnabled() -> jboolean {
-        return true
-    }
-    
-    func setAudioEnabledWithBoolean(isEnabled: jboolean) {
-        for i in stream.audioTracks {
-            (i as? RTCMediaStreamTrack)?.setEnabled(isEnabled)
+        
+        self.audioTracks = IOSObjectArray(length: UInt(stream.audioTracks.count), type: ARWebRTCMediaTrack_class_())
+        self.videoTracks = IOSObjectArray(length: UInt(stream.videoTracks.count), type: ARWebRTCMediaTrack_class_())
+        self.allTracks = IOSObjectArray(length: UInt(stream.audioTracks.count + stream.videoTracks.count), type: ARWebRTCMediaTrack_class_())
+        
+        for i in 0..<stream.audioTracks.count {
+            let track = CocoaAudioTrack(audioTrack: stream.audioTracks[i] as! RTCAudioTrack)
+            audioTracks.replaceObjectAtIndex(UInt(i), withObject: track)
+            allTracks.replaceObjectAtIndex(UInt(i), withObject: track)
+        }
+        for i in 0..<stream.videoTracks.count {
+            let track = CocoaVideoTrack(videoTrack: stream.videoTracks[i] as! RTCVideoTrack)
+            videoTracks.replaceObjectAtIndex(UInt(i), withObject: track)
+            allTracks.replaceObjectAtIndex(UInt(i + audioTracks.length()), withObject: track)
         }
     }
     
-    func setVideoEnabledWithBoolean(isEnabled: jboolean) {
-        for i in stream.videoTracks {
-            (i as? RTCMediaStreamTrack)?.setEnabled(isEnabled)
-        }
-
+    func getAudioTracks() -> IOSObjectArray! {
+        return audioTracks
+    }
+    
+    func getVideoTracks() -> IOSObjectArray! {
+        return videoTracks
+    }
+    
+    func getTracks() -> IOSObjectArray! {
+        return allTracks
+    }
+    
+    func setAudioTracksEnabledWithBoolean(enable: jboolean) {
+        
+    }
+    
+    func setVideoTracksEnabledWithBoolean(enable: jboolean) {
+        
     }
     
     func close() {
         for i in stream.audioTracks {
-            (i as? RTCMediaStreamTrack)?.setEnabled(false)
+            (i as! RTCAudioTrack).setEnabled(false)
+            stream.removeAudioTrack(i as! RTCAudioTrack)
         }
         for i in stream.videoTracks {
-            (i as? RTCMediaStreamTrack)?.setEnabled(false)
+            (i as! RTCVideoTrack).setEnabled(false)
+            stream.removeVideoTrack(i as! RTCVideoTrack)
         }
+    }
+}
+
+public class CocoaAudioTrack: NSObject, ARWebRTCMediaTrack {
+    
+    public let audioTrack: RTCAudioTrack
+    
+    public init(let audioTrack: RTCAudioTrack) {
+        self.audioTrack = audioTrack
+    }
+    
+    public func getTrackType() -> jint {
+        return ARWebRTCTrackType_AUDIO
+    }
+    
+    public func setEnabledWithBoolean(isEnabled: jboolean) {
+        audioTrack.setEnabled(isEnabled)
+    }
+    
+    public func isEnabled() -> jboolean {
+        return audioTrack.isEnabled()
+    }
+}
+
+public class CocoaVideoTrack: NSObject, ARWebRTCMediaTrack {
+    
+    public let videoTrack: RTCVideoTrack
+    
+    public init(let videoTrack: RTCVideoTrack) {
+        self.videoTrack = videoTrack
+    }
+    
+    public func getTrackType() -> jint {
+        return ARWebRTCTrackType_VIDEO
+    }
+    
+    public func setEnabledWithBoolean(isEnabled: jboolean) {
+        videoTrack.setEnabled(isEnabled)
+    }
+    
+    public func isEnabled() -> jboolean {
+        return videoTrack.isEnabled()
     }
 }
 
@@ -110,6 +201,8 @@ class CocoaWebRTCPeerConnection: NSObject, ARWebRTCPeerConnection, RTCPeerConnec
     private var peerConnection: RTCPeerConnection!
     private var callbacks = [ARWebRTCPeerConnectionCallback]()
     private let peerConnectionFactory: RTCPeerConnectionFactory
+    private var ownStreams = [ARCountedReference]()
+    
     init(servers: [ARWebRTCIceServer], peerConnectionFactory: RTCPeerConnectionFactory) {
         self.peerConnectionFactory = peerConnectionFactory
         super.init()
@@ -121,11 +214,13 @@ class CocoaWebRTCPeerConnection: NSObject, ARWebRTCPeerConnection, RTCPeerConnec
                 return RTCICEServer(URI: NSURL(string: src.url), username: src.username, password: src.credential)
             }
         }
+        
         peerConnection = peerConnectionFactory.peerConnectionWithICEServers(iceServers, constraints: RTCMediaConstraints(), delegate: self)
         AAAudioManager.sharedAudio().peerConnectionStarted()
     }
     
     func addCallback(callback: ARWebRTCPeerConnectionCallback) {
+        
         if !callbacks.contains({ callback.isEqual($0) }) {
             callbacks.append(callback)
         }
@@ -141,21 +236,26 @@ class CocoaWebRTCPeerConnection: NSObject, ARWebRTCPeerConnection, RTCPeerConnec
         peerConnection.addICECandidate(RTCICECandidate(mid: id_, index: Int(index), sdp: sdp))
     }
     
-    func addOwnStream(stream: ARWebRTCMediaStream) {
-        if let str = stream as? MediaStream {
-            peerConnection.addStream(str.stream)
-        }
+    func addOwnStream(stream: ARCountedReference) {
+        stream.acquire()
+        let ms = (stream.get() as! MediaStream)
+        ownStreams.append(stream)
+        peerConnection.addStream(ms.stream)
     }
     
-    func removeOwnStream(stream: ARWebRTCMediaStream) {
-        if let str = stream as? MediaStream {
-            peerConnection.removeStream(str.stream)
+    func removeOwnStream(stream: ARCountedReference) {
+        if ownStreams.contains(stream) {
+            let ms = (stream.get() as! MediaStream)
+            peerConnection.removeStream(ms.stream)
+            stream.release__()
         }
     }
     
     func createAnswer() -> ARPromise {
         return ARPromise(closure: { (resolver) -> () in
-            self.peerConnection.createAnswer(RTCMediaConstraints(), didCreate: { (desc, error) -> () in
+            let constraints = RTCMediaConstraints(mandatoryConstraints: [RTCPair(key: "OfferToReceiveAudio", value: "true"),
+                RTCPair(key: "OfferToReceiveVideo", value: "true")], optionalConstraints: [])
+            self.peerConnection.createAnswer(constraints, didCreate: { (desc, error) -> () in
                 if error == nil {
                     resolver.result(ARWebRTCSessionDescription(type: "answer", withSDP: desc.description))
                 } else {
@@ -167,7 +267,9 @@ class CocoaWebRTCPeerConnection: NSObject, ARWebRTCPeerConnection, RTCPeerConnec
     
     func creteOffer() -> ARPromise {
         return ARPromise(closure: { (resolver) -> () in
-            self.peerConnection.createOffer(RTCMediaConstraints(), didCreate: { (desc, error) -> () in
+            let constraints = RTCMediaConstraints(mandatoryConstraints: [RTCPair(key: "OfferToReceiveAudio", value: "true"),
+                RTCPair(key: "OfferToReceiveVideo", value: "true")], optionalConstraints: [])
+            self.peerConnection.createOffer(constraints, didCreate: { (desc, error) -> () in
                 if error == nil {
                     resolver.result(ARWebRTCSessionDescription(type: "offer", withSDP: desc.description))
                 } else {
@@ -199,22 +301,24 @@ class CocoaWebRTCPeerConnection: NSObject, ARWebRTCPeerConnection, RTCPeerConnec
                 }
             })
         }))
-
+        
     }
     
     func close() {
+        for s in ownStreams {
+            let ms = s.get() as! MediaStream
+            peerConnection.removeStream(ms.stream)
+            s.release__()
+        }
+        ownStreams.removeAll()
         peerConnection.close()
         AAAudioManager.sharedAudio().peerConnectionEnded()
     }
-    
     
     //
     // RTCPeerConnectionDelegate
     //
     
-    func peerConnection(peerConnection: RTCPeerConnection!, signalingStateChanged stateChanged: RTCSignalingState) {
-
-    }
     
     func peerConnection(peerConnection: RTCPeerConnection!, addedStream stream: RTCMediaStream!) {
         for c in callbacks {
@@ -229,6 +333,18 @@ class CocoaWebRTCPeerConnection: NSObject, ARWebRTCPeerConnection, RTCPeerConnec
     }
     
     func peerConnectionOnRenegotiationNeeded(peerConnection: RTCPeerConnection!) {
+        for c in callbacks {
+            c.onRenegotiationNeeded()
+        }
+    }
+    
+    func peerConnection(peerConnection: RTCPeerConnection!, gotICECandidate candidate: RTCICECandidate!) {
+        for c in callbacks {
+            c.onCandidateWithLabel(jint(candidate.sdpMLineIndex), withId: candidate.sdpMid, withCandidate: candidate.sdp)
+        }
+    }
+    
+    func peerConnection(peerConnection: RTCPeerConnection!, signalingStateChanged stateChanged: RTCSignalingState) {
         
     }
     
@@ -238,12 +354,6 @@ class CocoaWebRTCPeerConnection: NSObject, ARWebRTCPeerConnection, RTCPeerConnec
     
     func peerConnection(peerConnection: RTCPeerConnection!, iceGatheringChanged newState: RTCICEGatheringState) {
         
-    }
-    
-    func peerConnection(peerConnection: RTCPeerConnection!, gotICECandidate candidate: RTCICECandidate!) {
-        for c in callbacks {
-            c.onCandidateWithLabel(jint(candidate.sdpMLineIndex), withId: candidate.sdpMid, withCandidate: candidate.sdp)
-        }
     }
     
     func peerConnection(peerConnection: RTCPeerConnection!, didOpenDataChannel dataChannel: RTCDataChannel!) {

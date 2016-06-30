@@ -26,12 +26,18 @@ public class ResponseGetCallInfo extends Response {
     private List<ApiGroupOutPeer> groups;
     private List<ApiUserOutPeer> users;
     private String eventBusId;
+    private Boolean isAudioOnlyCall;
+    private Boolean isVideoOnlyCall;
+    private Boolean isVideoPreferred;
 
-    public ResponseGetCallInfo(@NotNull ApiPeer peer, @NotNull List<ApiGroupOutPeer> groups, @NotNull List<ApiUserOutPeer> users, @NotNull String eventBusId) {
+    public ResponseGetCallInfo(@NotNull ApiPeer peer, @NotNull List<ApiGroupOutPeer> groups, @NotNull List<ApiUserOutPeer> users, @NotNull String eventBusId, @Nullable Boolean isAudioOnlyCall, @Nullable Boolean isVideoOnlyCall, @Nullable Boolean isVideoPreferred) {
         this.peer = peer;
         this.groups = groups;
         this.users = users;
         this.eventBusId = eventBusId;
+        this.isAudioOnlyCall = isAudioOnlyCall;
+        this.isVideoOnlyCall = isVideoOnlyCall;
+        this.isVideoPreferred = isVideoPreferred;
     }
 
     public ResponseGetCallInfo() {
@@ -58,6 +64,21 @@ public class ResponseGetCallInfo extends Response {
         return this.eventBusId;
     }
 
+    @Nullable
+    public Boolean isAudioOnlyCall() {
+        return this.isAudioOnlyCall;
+    }
+
+    @Nullable
+    public Boolean isVideoOnlyCall() {
+        return this.isVideoOnlyCall;
+    }
+
+    @Nullable
+    public Boolean isVideoPreferred() {
+        return this.isVideoPreferred;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.peer = values.getObj(1, new ApiPeer());
@@ -72,6 +93,9 @@ public class ResponseGetCallInfo extends Response {
         }
         this.users = values.getRepeatedObj(3, _users);
         this.eventBusId = values.getString(4);
+        this.isAudioOnlyCall = values.optBool(5);
+        this.isVideoOnlyCall = values.optBool(6);
+        this.isVideoPreferred = values.optBool(7);
     }
 
     @Override
@@ -86,6 +110,15 @@ public class ResponseGetCallInfo extends Response {
             throw new IOException();
         }
         writer.writeString(4, this.eventBusId);
+        if (this.isAudioOnlyCall != null) {
+            writer.writeBool(5, this.isAudioOnlyCall);
+        }
+        if (this.isVideoOnlyCall != null) {
+            writer.writeBool(6, this.isVideoOnlyCall);
+        }
+        if (this.isVideoPreferred != null) {
+            writer.writeBool(7, this.isVideoPreferred);
+        }
     }
 
     @Override

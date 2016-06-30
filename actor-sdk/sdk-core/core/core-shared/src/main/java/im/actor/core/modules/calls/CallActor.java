@@ -3,24 +3,29 @@ package im.actor.core.modules.calls;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import im.actor.core.api.rpc.RequestDoCall;
 import im.actor.core.api.rpc.RequestGetCallInfo;
 import im.actor.core.api.rpc.RequestJoinCall;
 import im.actor.core.api.rpc.RequestRejectCall;
-import im.actor.core.api.rpc.ResponseDoCall;
-import im.actor.core.api.rpc.ResponseGetCallInfo;
 import im.actor.core.entity.Peer;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.calls.peers.AbsCallActor;
 import im.actor.core.modules.calls.peers.CallBusActor;
+import im.actor.core.viewmodel.CallMediaSource;
 import im.actor.core.viewmodel.CallState;
 import im.actor.core.viewmodel.CallVM;
 import im.actor.core.viewmodel.CommandCallback;
+import im.actor.core.viewmodel.generics.ArrayListMediaTrack;
+import im.actor.runtime.Log;
+import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.messages.PoisonPill;
-import im.actor.runtime.function.Consumer;
 import im.actor.runtime.power.WakeLock;
+import im.actor.runtime.webrtc.WebRTCMediaStream;
+import im.actor.runtime.webrtc.WebRTCMediaTrack;
 import im.actor.runtime.webrtc.WebRTCPeerConnection;
+import im.actor.runtime.webrtc.WebRTCTrackType;
 
 import static im.actor.core.entity.EntityConverter.convert;
 
@@ -30,12 +35,15 @@ public class CallActor extends AbsCallActor {
     private final WakeLock wakeLock;
     private long callId;
     private Peer peer;
+
     private CallVM callVM;
     private CommandCallback<Long> callback;
 
     private boolean isActive;
     private boolean isAnswered;
     private boolean isRejected;
+
+    private boolean isVideoInitiallyEnabled;
 
     public CallActor(long callId, WakeLock wakeLock, ModuleContext context) {
         super(context);
@@ -46,7 +54,7 @@ public class CallActor extends AbsCallActor {
         this.isActive = false;
     }
 
-    public CallActor(Peer peer, CommandCallback<Long> callback, WakeLock wakeLock, ModuleContext context) {
+    public CallActor(Peer peer, CommandCallback<Long> callback, WakeLock wakeLock, boolean isVideoInitiallyEnabled, ModuleContext context) {
         super(context);
         this.wakeLock = wakeLock;
         this.isMaster = true;
@@ -54,29 +62,40 @@ public class CallActor extends AbsCallActor {
         this.peer = peer;
         this.isAnswered = true;
         this.isActive = false;
+        this.isVideoInitiallyEnabled = isVideoInitiallyEnabled;
     }
 
     @Override
     public void preStart() {
         super.preStart();
         if (isMaster) {
-            api(new RequestDoCall(buidOutPeer(peer), CallBusActor.TIMEOUT)).then(responseDoCall -> {
+            api(new RequestDoCall(buidOutPeer(peer), CallBusActor.TIMEOUT, false, false, isVideoInitiallyEnabled)).then(responseDoCall -> {
                 callId = responseDoCall.getCallId();
                 callBus.joinMasterBus(responseDoCall.getEventBusId(), responseDoCall.getDeviceId());
+                callBus.changeVideoEnabled(isVideoInitiallyEnabled);
                 callBus.startOwn();
-                callVM = callViewModels.spawnNewOutgoingVM(responseDoCall.getCallId(), peer);
+                callVM = callViewModels.spawnNewOutgoingVM(responseDoCall.getCallId(), peer, isVideoInitiallyEnabled);
             }).failure(e -> self().send(PoisonPill.INSTANCE));
         } else {
             api(new RequestGetCallInfo(callId)).then(responseGetCallInfo -> {
                 peer = convert(responseGetCallInfo.getPeer());
                 callBus.joinBus(responseGetCallInfo.getEventBusId());
-                callVM = callViewModels.spawnNewIncomingVM(callId, peer, CallState.RINGING);
+                if (responseGetCallInfo.isVideoPreferred() != null) {
+                    isVideoInitiallyEnabled = responseGetCallInfo.isVideoPreferred();
+                    callBus.changeVideoEnabled(isVideoInitiallyEnabled);
+                }
+                callVM = callViewModels.spawnNewIncomingVM(callId, peer, isVideoInitiallyEnabled, CallState.RINGING);
             }).failure(e -> self().send(PoisonPill.INSTANCE));
         }
     }
 
+
+    //
+    // Call lifecycle
+    //
+
     @Override
-    public void onBusStarted(String busId) {
+    public void onBusStarted(@NotNull String busId) {
         if (isMaster) {
             callManager.send(new CallManagerActor.DoCallComplete(callId), self());
 
@@ -93,13 +112,6 @@ public class CallActor extends AbsCallActor {
     }
 
     @Override
-    public void onPeerConnectionCreated(@NotNull WebRTCPeerConnection peerConnection) {
-        ArrayList<WebRTCPeerConnection> webRTCPeerConnections = new ArrayList<WebRTCPeerConnection>(callVM.getPeerConnection().get());
-        webRTCPeerConnections.add(peerConnection);
-        callVM.getPeerConnection().change(webRTCPeerConnections);
-    }
-
-    @Override
     public void onCallEnabled() {
         isActive = true;
         if (isAnswered) {
@@ -110,25 +122,6 @@ public class CallActor extends AbsCallActor {
             callManager.send(new CallManagerActor.OnCallAnswered(callId), self());
         }
     }
-
-    @Override
-    public void onBusStopped() {
-        self().send(PoisonPill.INSTANCE);
-    }
-
-
-    @Override
-    public void onMuteChanged(boolean isMuted) {
-        super.onMuteChanged(isMuted);
-        callVM.getIsMuted().change(isMuted);
-    }
-
-    @Override
-    public void onVideoEnableChanged(boolean enabled) {
-        super.onVideoEnableChanged(enabled);
-        callVM.getIsVideoEnabled().change(enabled);
-    }
-
 
     public void onAnswerCall() {
         if (!isAnswered && !isRejected) {
@@ -152,6 +145,92 @@ public class CallActor extends AbsCallActor {
             self().send(PoisonPill.INSTANCE);
         }
     }
+
+    @Override
+    public void onBusStopped() {
+        self().send(PoisonPill.INSTANCE);
+    }
+
+
+    //
+    // Track Events
+    //
+    @Override
+    public void onTrackAdded(long deviceId, WebRTCMediaTrack track) {
+        if (track.getTrackType() == WebRTCTrackType.AUDIO) {
+            ArrayListMediaTrack tracks = new ArrayListMediaTrack(callVM.getTheirAudioTracks().get());
+            tracks.add(track);
+            callVM.getTheirAudioTracks().change(tracks);
+        } else if (track.getTrackType() == WebRTCTrackType.VIDEO) {
+            ArrayListMediaTrack tracks = new ArrayListMediaTrack(callVM.getTheirVideoTracks().get());
+            tracks.add(track);
+            callVM.getTheirVideoTracks().change(tracks);
+        } else {
+            // Unknown track type
+        }
+    }
+
+    @Override
+    public void onTrackRemoved(long deviceId, WebRTCMediaTrack track) {
+        if (track.getTrackType() == WebRTCTrackType.AUDIO) {
+            ArrayListMediaTrack tracks = new ArrayListMediaTrack(callVM.getTheirAudioTracks().get());
+            tracks.remove(track);
+            callVM.getTheirAudioTracks().change(tracks);
+        } else if (track.getTrackType() == WebRTCTrackType.VIDEO) {
+            ArrayListMediaTrack tracks = new ArrayListMediaTrack(callVM.getTheirVideoTracks().get());
+            tracks.remove(track);
+            callVM.getTheirVideoTracks().change(tracks);
+        } else {
+            // Unknown track type
+        }
+    }
+
+    @Override
+    public void onOwnTrackAdded(WebRTCMediaTrack track) {
+        if (track.getTrackType() == WebRTCTrackType.AUDIO) {
+            ArrayListMediaTrack tracks = new ArrayListMediaTrack(callVM.getOwnAudioTracks().get());
+            tracks.add(track);
+            callVM.getOwnAudioTracks().change(tracks);
+        } else if (track.getTrackType() == WebRTCTrackType.VIDEO) {
+            ArrayListMediaTrack tracks = new ArrayListMediaTrack(callVM.getOwnVideoTracks().get());
+            tracks.add(track);
+            callVM.getOwnVideoTracks().change(tracks);
+        } else {
+            // Unknown track type
+        }
+    }
+
+    @Override
+    public void onOwnTrackRemoved(WebRTCMediaTrack track) {
+        if (track.getTrackType() == WebRTCTrackType.AUDIO) {
+            ArrayListMediaTrack tracks = new ArrayListMediaTrack(callVM.getOwnAudioTracks().get());
+            tracks.remove(track);
+            callVM.getOwnAudioTracks().change(tracks);
+        } else if (track.getTrackType() == WebRTCTrackType.VIDEO) {
+            ArrayListMediaTrack tracks = new ArrayListMediaTrack(callVM.getOwnVideoTracks().get());
+            tracks.remove(track);
+            callVM.getOwnVideoTracks().change(tracks);
+        } else {
+            // Unknown track type
+        }
+    }
+
+    @Override
+    public void onAudioEnableChanged(boolean enabled) {
+        super.onAudioEnableChanged(enabled);
+        callVM.getIsAudioEnabled().change(enabled);
+    }
+
+    @Override
+    public void onVideoEnableChanged(boolean enabled) {
+        super.onVideoEnableChanged(enabled);
+        callVM.getIsVideoEnabled().change(enabled);
+    }
+
+
+    //
+    // Cleanup
+    //
 
     @Override
     public void postStop() {

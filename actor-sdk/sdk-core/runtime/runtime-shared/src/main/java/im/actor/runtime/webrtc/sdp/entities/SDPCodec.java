@@ -52,6 +52,14 @@ public class SDPCodec {
         this.codecFeedback = codecFeedback;
     }
 
+    public void setArgs(String args) {
+        this.args = args;
+    }
+
+    public void setClockRate(int clockRate) {
+        this.clockRate = clockRate;
+    }
+
     public String toSDP() {
         String res = "a=rtpmap:" + index + " " + name + "/" + clockRate;
         if (args != null) {
