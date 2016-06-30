@@ -89,7 +89,9 @@ public abstract class MessageHolder extends BindedViewHolder
                 container.makeOutboundBubble();
             } else {
                 boolean isGroupBot = getPeer().getPeerType().equals(PeerType.GROUP) && users().get(message.getSenderId()).getName().get().equals("Bot");
-                container.makeInboundBubble(getPeer().getPeerType() == PeerType.GROUP, message.getSenderId(), isGroupBot ? getPeer().getPeerId() : 0);
+                container.makeInboundBubble(
+                        getPeer().getPeerType() == PeerType.GROUP || !ActorSDK.sharedActor().style.isShowAvatarInTitle(),
+                        message.getSenderId(), isGroupBot ? getPeer().getPeerId() : 0);
             }
         }
 

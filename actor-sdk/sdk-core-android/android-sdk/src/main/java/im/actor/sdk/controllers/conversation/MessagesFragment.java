@@ -121,7 +121,7 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
         }
         Drawable background;
 
-        int [] backgrounds = ActorSDK.sharedActor().style.getDefaultBackgrouds();
+        int[] backgrounds = ActorSDK.sharedActor().style.getDefaultBackgrouds();
         String selectedWallpaper = messenger().getSelectedWallpaper();
 
         if (selectedWallpaper != null) {

@@ -107,7 +107,7 @@
 
     <!--<color name="conv_date_line">#14000000</color>-->
     <!--<color name="conv_date_text">#ffffff</color>-->
-    <color name="conv_date_bg">#99000000</color>
+    <color name="conv_date_bg">#64000000</color>
 
     <!--<color name="conv_text">@color/text_primary</color>-->
     <!--<color name="conv_time">#60000000</color>-->

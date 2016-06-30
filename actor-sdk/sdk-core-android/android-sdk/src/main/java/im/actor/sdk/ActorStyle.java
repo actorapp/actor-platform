@@ -14,7 +14,7 @@ public class ActorStyle {
     //     BACKGROUNDS      //
     //////////////////////////
 
-    private int[] defaultBackgrouds = new int[]{R.drawable.img_chat_background_default, R.drawable.bg_1, R.drawable.bg_2, R.drawable.bg_3};
+    private int[] defaultBackgrouds = new int[]{R.drawable.bg_default_pattern, R.drawable.bg_1, R.drawable.bg_2, R.drawable.bg_3};
 
     public int[] getDefaultBackgrouds() {
         return defaultBackgrouds;
@@ -928,4 +928,13 @@ public class ActorStyle {
         this.contactsMainPaddingTop = contactsMainPaddingTop;
     }
 
+    private boolean showAvatarInTitle = true;
+
+    public boolean isShowAvatarInTitle() {
+        return showAvatarInTitle;
+    }
+
+    public void setShowAvatarInTitle(boolean showAvatarInTitle) {
+        this.showAvatarInTitle = showAvatarInTitle;
+    }
 }

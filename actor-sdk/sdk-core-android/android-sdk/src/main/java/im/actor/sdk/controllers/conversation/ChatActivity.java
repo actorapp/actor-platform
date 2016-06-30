@@ -665,6 +665,9 @@ public class ChatActivity extends ActorEditTextActivity {
         barTypingContainer.setVisibility(View.INVISIBLE);
         barAvatar = (AvatarView) barView.findViewById(R.id.avatarPreview);
         barAvatar.init(Screen.dp(32), 18);
+        if (!style.isShowAvatarInTitle()) {
+            barAvatar.setVisibility(View.GONE);
+        }
         barView.findViewById(R.id.titleContainer).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
