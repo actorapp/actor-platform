@@ -18,22 +18,6 @@ public class DialogHolder extends BindedViewHolder {
         super(dialogView);
 
         this.dialogView = dialogView;
-//
-//        pendingColor = style.getDialogsStatePendingColor();
-//        sentColor = style.getDialogsStateSentColor();
-//        receivedColor = style.getDialogsStateDeliveredColor();
-//        readColor = style.getDialogsStateReadColor();
-//        errorColor = style.getDialogsStateErrorColor();
-
-//        state = new TintImageView(context);
-//        {
-//            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(Screen.dp(28), Screen.dp(12), Gravity.BOTTOM | Gravity.RIGHT);
-//            params.bottomMargin = Screen.dp(16);
-//            params.rightMargin = Screen.dp(9);
-//            state.setLayoutParams(params);
-//            fl.addView(state);
-//        }
-
 
         dialogView.setOnClickListener(v -> {
             if (bindedItem != null) {
@@ -52,22 +36,6 @@ public class DialogHolder extends BindedViewHolder {
         this.bindedItem = data;
         this.dialogView.bind(data);
         this.dialogView.setDividerVisible(!isLast);
-
-//        if (data.getSenderId() != myUid() || data.getUnreadCount() > 0) {
-//            state.setVisibility(View.GONE);
-//        } else {
-//            if (data.isRead()) {
-//                state.setResource(R.drawable.msg_check_2);
-//                state.setTint(readColor);
-//            } else if (data.isReceived()) {
-//                state.setResource(R.drawable.msg_check_2);
-//                state.setTint(receivedColor);
-//            } else {
-//                state.setResource(R.drawable.msg_check_1);
-//                state.setTint(sentColor);
-//            }
-//            state.setVisibility(View.VISIBLE);
-//        }
     }
 
     public void unbind() {
