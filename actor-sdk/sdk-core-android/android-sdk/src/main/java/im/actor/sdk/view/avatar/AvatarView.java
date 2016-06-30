@@ -69,8 +69,8 @@ public class AvatarView extends SimpleDraweeView {
                 .setRoundingParams(new RoundingParams()
                         .setRoundAsCircle(true)
                         .setRoundingMethod(RoundingParams.RoundingMethod.BITMAP_ONLY))
-                        //.setActualImageColorFilter(new PorterDuffColorFilter(0x19000000, PorterDuff.Mode.MULTIPLY))
-                        //.setOverlay(new AvatarBorderDrawable())
+                //.setActualImageColorFilter(new PorterDuffColorFilter(0x19000000, PorterDuff.Mode.MULTIPLY))
+                //.setOverlay(new AvatarBorderDrawable())
                 .build();
         setHierarchy(hierarchy);
     }
@@ -151,7 +151,7 @@ public class AvatarView extends SimpleDraweeView {
 
     public AvatarImage getImage(Avatar avatar) {
 
-        return size>=100?avatar.getLargeImage():avatar.getSmallImage();
+        return size >= 100 ? avatar.getLargeImage() : avatar.getSmallImage();
     }
 
     public void bindRaw(String fileName) {

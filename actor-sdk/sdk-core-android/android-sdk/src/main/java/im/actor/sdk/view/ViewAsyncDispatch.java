@@ -1,46 +1,37 @@
 package im.actor.sdk.view;
 
 import im.actor.runtime.Runtime;
-import im.actor.runtime.actors.Cancellable;
+import im.actor.runtime.function.Cancellable;
+import im.actor.runtime.function.CancellableSimple;
 
 public class ViewAsyncDispatch {
 
-    private ThreadLocal<CancellableRes> currentCancellable = new ThreadLocal<>();
+    private ThreadLocal<Cancellable> currentCancellable = new ThreadLocal<>();
 
     public Cancellable dispatch(Runnable runnable) {
-        CancellableRes res = new CancellableRes();
-        Runtime.dispatch(() -> {
-            if (res.isCanceled()) {
-                return;
-            }
-            currentCancellable.set(res);
-            runnable.run();
-            currentCancellable.set(null);
-        });
+        CancellableSimple res = new CancellableSimple();
+        dispatch(res, runnable);
         return res;
     }
 
+    public void dispatch(Cancellable cancellable, Runnable runnable) {
+        Runtime.dispatch(() -> {
+            if (cancellable.isCancelled()) {
+                return;
+            }
+            currentCancellable.set(cancellable);
+            runnable.run();
+            currentCancellable.set(null);
+        });
+    }
+
     public void complete(Runnable runnable) {
-        CancellableRes res = currentCancellable.get();
+        Cancellable res = currentCancellable.get();
         Runtime.postToMainThread(() -> {
-            if (res.isCanceled()) {
+            if (res.isCancelled()) {
                 return;
             }
             runnable.run();
         });
-    }
-
-    private static class CancellableRes implements Cancellable {
-
-        private boolean isCanceled = false;
-
-        public boolean isCanceled() {
-            return isCanceled;
-        }
-
-        @Override
-        public void cancel() {
-            isCanceled = true;
-        }
     }
 }

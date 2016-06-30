@@ -73,7 +73,7 @@ public abstract class DisplayListFragment<T extends BserObject & ListEngineItem,
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHorizontalScrollBarEnabled(false);
-        recyclerView.setVerticalScrollBarEnabled(false);
+        recyclerView.setVerticalScrollBarEnabled(true);
     }
 
     protected void addHeaderView(View header) {

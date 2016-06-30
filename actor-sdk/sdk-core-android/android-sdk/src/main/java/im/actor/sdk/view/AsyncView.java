@@ -12,19 +12,19 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 
-import im.actor.runtime.actors.Cancellable;
-import im.actor.sdk.ActorSDK;
+import im.actor.runtime.function.CancellableSimple;
 import im.actor.sdk.util.Screen;
 
 public class AsyncView<T, L> extends View {
 
+    private ThreadLocal<InvalidationContext> contexts = new ThreadLocal<>();
     private ViewAsyncDispatch asyncDispatch = new ViewAsyncDispatch();
     private int currentWidth;
     private int currentHeight;
     private boolean isMeasured;
     private boolean isRequested;
     private T currentObject;
-    private Cancellable currentLayouting;
+    private InvalidationContext currentLayoutingContext;
     private L currentLayout;
 
     public AsyncView(Context context) {
@@ -59,11 +59,18 @@ public class AsyncView<T, L> extends View {
     }
 
     public void requestLayout(T arg) {
+        requestLayout(arg, true);
+    }
+
+    public void requestLayout(T arg, boolean clearOld) {
+        if (clearOld) {
+            this.currentLayout = null;
+        }
         this.currentObject = arg;
-        this.currentLayout = null;
-        if (currentLayouting != null) {
-            currentLayouting.cancel();
-            currentLayouting = null;
+
+        if (currentLayoutingContext != null) {
+            currentLayoutingContext.cancel();
+            currentLayoutingContext = null;
         }
 
         invalidate();
@@ -75,9 +82,9 @@ public class AsyncView<T, L> extends View {
 
     public void cancelLayout() {
         this.currentObject = null;
-        if (currentLayouting != null) {
-            currentLayouting.cancel();
-            currentLayouting = null;
+        if (currentLayoutingContext != null) {
+            currentLayoutingContext.cancel();
+            currentLayoutingContext = null;
         }
     }
 
@@ -86,19 +93,29 @@ public class AsyncView<T, L> extends View {
         isRequested = true;
         int w = currentWidth;
         int h = currentHeight;
-        if (currentLayouting != null) {
-            currentLayouting.cancel();
-            currentLayouting = null;
+        if (currentLayoutingContext != null) {
+            currentLayoutingContext.cancel();
+            currentLayoutingContext = null;
         }
-        currentLayouting = asyncDispatch.dispatch(() -> {
+
+        currentLayoutingContext = new InvalidationContext(arg);
+        InvalidationContext context = currentLayoutingContext;
+        contexts.set(context);
+        asyncDispatch.dispatch(currentLayoutingContext, () -> {
+            contexts.set(currentLayoutingContext);
+            contexts.set(context);
             L res = buildLayout(arg, w, h);
+            contexts.set(null);
             asyncDispatch.complete(() -> {
-                currentLayouting = null;
                 currentLayout = res;
                 layoutReady(res);
                 invalidate();
             });
         });
+    }
+
+    public InvalidationContext getCurrentLayoutContext() {
+        return contexts.get();
     }
 
     public L getLayout() {
@@ -122,10 +139,42 @@ public class AsyncView<T, L> extends View {
         return res;
     }
 
+    public Paint createFilledPaint(int color) {
+        Paint res = new Paint(Paint.ANTI_ALIAS_FLAG);
+        res.setColor(color);
+        res.setStyle(Paint.Style.FILL);
+        return res;
+    }
+
     public StaticLayout singleLineText(CharSequence sequence, TextPaint paint, int maxWidth) {
         CharSequence ellipsizedTitle = TextUtils.ellipsize(sequence, paint, maxWidth - Screen.dp(2),
                 TextUtils.TruncateAt.END);
         return new StaticLayout(ellipsizedTitle, paint, maxWidth, Layout.Alignment.ALIGN_NORMAL,
                 1.0f, 0.0f, false);
+    }
+
+    public class InvalidationContext extends CancellableSimple {
+
+        private T arg;
+        private boolean isInvalidated = false;
+
+        private InvalidationContext(T arg) {
+            this.arg = arg;
+        }
+
+        public void invalidate() {
+            if (isCancelled()) {
+                return;
+            }
+            if (isInvalidated) {
+                return;
+            }
+            isInvalidated = true;
+            post(() -> {
+                if (currentLayoutingContext == this) {
+                    requestLayout(arg, false);
+                }
+            });
+        }
     }
 }
