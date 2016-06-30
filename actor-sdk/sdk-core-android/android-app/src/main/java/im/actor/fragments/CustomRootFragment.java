@@ -57,18 +57,22 @@ public class CustomRootFragment extends BaseFragment implements GlobalSearchStat
             public void onTabSelected(int position) {
                 if (position == 0) {
                     getChildFragmentManager().beginTransaction()
+                            .setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out)
                             .replace(im.actor.sdk.R.id.content, new EmptyFragment())
                             .commit();
                 } else if (position == 1) {
                     getChildFragmentManager().beginTransaction()
+                            .setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out)
                             .replace(im.actor.sdk.R.id.content, buildDialogsFragment())
                             .commit();
                 } else if (position == 2) {
                     getChildFragmentManager().beginTransaction()
+                            .setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out)
                             .replace(im.actor.sdk.R.id.content, new ContactsFragment())
                             .commit();
                 } else if (position == 3) {
                     getChildFragmentManager().beginTransaction()
+                            .setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out)
                             .replace(im.actor.sdk.R.id.content, new ActorSettingsFragment())
                             .commit();
                 }
