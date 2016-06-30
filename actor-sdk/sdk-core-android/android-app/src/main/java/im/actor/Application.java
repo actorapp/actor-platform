@@ -71,11 +71,11 @@ public class Application extends ActorSDKApplication {
 
     private class ActorSDKDelegate extends BaseActorSDKDelegate {
 
-        @Nullable
-        @Override
-        public Fragment fragmentForRoot() {
-            return new CustomRootFragment();
-        }
+//        @Nullable
+//        @Override
+//        public Fragment fragmentForRoot() {
+//            return new CustomRootFragment();
+//        }
 
         //        @Override
 //        public BaseJsonHolder getCustomMessageViewHolder(int dataTypeHash, MessagesAdapter messagesAdapter, ViewGroup viewGroup) {

@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
+import im.actor.sdk.controllers.compose.ComposeFabFragment;
 import im.actor.sdk.controllers.contacts.ContactsActivity;
 import im.actor.sdk.controllers.dialogs.DialogsDefaultFragment;
 import im.actor.sdk.controllers.fragment.BaseFragment;
@@ -36,6 +37,7 @@ public class RootFragment extends BaseFragment {
         if (savedInstanceState == null) {
             getChildFragmentManager().beginTransaction()
                     .add(R.id.content, new DialogsDefaultFragment())
+                    .add(R.id.fab, new ComposeFabFragment())
                     .add(R.id.search, new GlobalSearchDefaultFragment())
                     .add(R.id.placeholder, new GlobalPlaceholderFragment())
                     .commit();
