@@ -46,8 +46,6 @@ import im.actor.sdk.view.TintDrawable;
 import im.actor.sdk.view.emoji.SmileProcessor;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
-import static im.actor.sdk.util.ActorSDKMessenger.myUid;
-import static im.actor.sdk.util.ActorSDKMessenger.users;
 import static im.actor.sdk.view.emoji.SmileProcessor.emoji;
 
 public class DialogView extends ListItemBackgroundView<Dialog, DialogView.DialogLayout> {
@@ -141,27 +139,27 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
             //
 
             if (layout.getTitleIcon() != null) {
-                layout.getTitleIcon().setBounds(Screen.sp(72), Screen.sp(16), Screen.dp(72 + 16), Screen.dp(16 + 10));
+                layout.getTitleIcon().setBounds(Screen.sp(72), Screen.sp(16 + 3), Screen.dp(72 + 16), Screen.dp(16 + 3 + 10));
                 layout.getTitleIcon().draw(canvas);
             }
 
             canvas.save();
             if (layout.getTitleIcon() == null) {
-                canvas.translate(Screen.dp(72), Screen.dp(12));
+                canvas.translate(Screen.dp(72), Screen.dp(14));
             } else {
-                canvas.translate(Screen.dp(72 + 16 + 4), Screen.dp(12));
+                canvas.translate(Screen.dp(72 + 16 + 4), Screen.dp(14));
             }
             layout.getTitleLayout().draw(canvas);
             canvas.restore();
 
             if (layout.getState() != null) {
-                int left = getWidth() - Screen.dp(34) - layout.getDateWidth();
+                int left = getWidth() - Screen.dp(38) - layout.getDateWidth();
                 layout.getState().setBounds(left, Screen.dp(18), left + Screen.dp(16), Screen.dp(18 + 9));
                 layout.getState().draw(canvas);
             }
 
             if (layout.getDate() != null) {
-                canvas.drawText(layout.getDate(), getWidth() - Screen.dp(16) - layout.getDateWidth(), Screen.dp(26), datePaint);
+                canvas.drawText(layout.getDate(), getWidth() - Screen.dp(16) - layout.getDateWidth(), Screen.dp(28), datePaint);
             }
 
 
@@ -171,18 +169,18 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
 
             // TODO: Implement Group Typing
             if (isPrivateTyping) {
-                canvas.drawText(typingText, Screen.dp(72), Screen.dp(60), textActivePaint);
+                canvas.drawText(typingText, Screen.dp(72), Screen.dp(54), textActivePaint);
             } else {
                 if (layout.getTextLayout() != null) {
                     canvas.save();
-                    canvas.translate(Screen.dp(72), Screen.dp(42));
+                    canvas.translate(Screen.dp(72), Screen.dp(40));
                     layout.getTextLayout().draw(canvas);
                     canvas.restore();
                 }
 
                 if (layout.getCounter() != null) {
                     int left = getWidth() - Screen.sp(12) - layout.getCounterWidth();
-                    int top = Screen.dp(39);
+                    int top = Screen.dp(37);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         canvas.drawRoundRect(left, top, left + layout.getCounterWidth(), top + Screen.dp(22), Screen.dp(11), Screen.dp(11),
                                 counterBgPaint);
