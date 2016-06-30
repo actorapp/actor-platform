@@ -31,23 +31,17 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.webrtc.EglBase;
-import org.webrtc.MediaStream;
 import org.webrtc.SurfaceViewRenderer;
 import org.webrtc.VideoRenderer;
-import org.webrtc.VideoSource;
 import org.webrtc.VideoTrack;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.TimeZone;
 
 import im.actor.core.entity.PeerType;
-import im.actor.core.viewmodel.CallMediaSource;
 import im.actor.core.viewmodel.CallMember;
 import im.actor.core.viewmodel.CallState;
 import im.actor.core.entity.Peer;
@@ -59,21 +53,11 @@ import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.Props;
 import im.actor.runtime.actors.messages.PoisonPill;
-import im.actor.runtime.android.webrtc.AndroidMediaStream;
-import im.actor.runtime.android.webrtc.AndroidPeerConnection;
 import im.actor.runtime.android.webrtc.AndroidVideoTrack;
-import im.actor.runtime.mvvm.Value;
-import im.actor.runtime.mvvm.ValueChangedListener;
-import im.actor.runtime.mvvm.ValueDoubleChangedListener;
 import im.actor.runtime.mvvm.ValueModel;
-import im.actor.runtime.webrtc.WebRTCMediaStream;
-import im.actor.runtime.webrtc.WebRTCMediaTrack;
-import im.actor.runtime.webrtc.WebRTCPeerConnection;
-import im.actor.runtime.webrtc.WebRTCPeerConnectionCallback;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
-import im.actor.sdk.controllers.calls.view.CallAvatarLayerAnimator;
 import im.actor.sdk.controllers.calls.view.TimerActor;
 import im.actor.sdk.controllers.fragment.ActorBinder;
 import im.actor.sdk.controllers.fragment.BaseFragment;
@@ -363,7 +347,7 @@ public class CallFragment extends BaseFragment {
 
         } else {
             if (call != null) {
-                if (call.getIsVideoEnabled().get()) {
+                if (call.getIsOwnVideoEnabled().get()) {
                     messenger().toggleVideoEnabled(callId);
                 }
             }
@@ -577,7 +561,7 @@ public class CallFragment extends BaseFragment {
         //
         // Is Muted
         //
-        bind(call.getIsAudioEnabled(), (val, valueModel) -> {
+        bind(call.getIsOwnAudioEnabled(), (val, valueModel) -> {
             if (getActivity() != null) {
                 if (!val) {
                     muteCallTv.setTextColor(getResources().getColor(R.color.picker_grey));
@@ -597,7 +581,7 @@ public class CallFragment extends BaseFragment {
             //
             // Video Button
             //
-            bind(call.getIsVideoEnabled(), (val, valueModel) -> {
+            bind(call.getIsOwnVideoEnabled(), (val, valueModel) -> {
                 if (val) {
                     videoTv.setTextColor(Color.WHITE);
                     videoIcon.setTint(Color.WHITE);

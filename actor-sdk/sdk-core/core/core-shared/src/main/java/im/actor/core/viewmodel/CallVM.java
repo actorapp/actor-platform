@@ -8,9 +8,6 @@ import im.actor.core.entity.Peer;
 import im.actor.core.viewmodel.generics.ArrayListMediaTrack;
 import im.actor.core.viewmodel.generics.BooleanValueModel;
 import im.actor.runtime.mvvm.ValueModel;
-import im.actor.runtime.webrtc.WebRTCMediaStream;
-import im.actor.runtime.webrtc.WebRTCMediaTrack;
-import im.actor.runtime.webrtc.WebRTCPeerConnection;
 
 public class CallVM {
 
@@ -35,9 +32,9 @@ public class CallVM {
 
 
     @Property("nonatomic, readonly")
-    private final BooleanValueModel isAudioEnabled;
+    private final BooleanValueModel isOwnAudioEnabled;
     @Property("nonatomic, readonly")
-    private final BooleanValueModel isVideoEnabled;
+    private final BooleanValueModel isOwnVideoEnabled;
 
     @Property("nonatomic, readonly")
     private final ValueModel<ArrayList<CallMember>> members;
@@ -58,8 +55,8 @@ public class CallVM {
         this.theirVideoTracks = new ValueModel<>("calls." + callId + ".their_video", new ArrayListMediaTrack());
         this.theirAudioTracks = new ValueModel<>("calls." + callId + ".their_audio", new ArrayListMediaTrack());
         this.members = new ValueModel<>("calls." + callId + ".members", new ArrayList<>(initialMembers));
-        this.isAudioEnabled = new BooleanValueModel("calls." + callId + ".audio_enabled", true);
-        this.isVideoEnabled = new BooleanValueModel("calls." + callId + ".video_enabled", isVideoEnabled);
+        this.isOwnAudioEnabled = new BooleanValueModel("calls." + callId + ".audio_enabled", true);
+        this.isOwnVideoEnabled = new BooleanValueModel("calls." + callId + ".video_enabled", isVideoEnabled);
         this.callStart = 0;
     }
 
@@ -75,12 +72,12 @@ public class CallVM {
         return callId;
     }
 
-    public BooleanValueModel getIsAudioEnabled() {
-        return isAudioEnabled;
+    public BooleanValueModel getIsOwnAudioEnabled() {
+        return isOwnAudioEnabled;
     }
 
-    public BooleanValueModel getIsVideoEnabled() {
-        return isVideoEnabled;
+    public BooleanValueModel getIsOwnVideoEnabled() {
+        return isOwnVideoEnabled;
     }
 
     public ValueModel<CallState> getState() {
