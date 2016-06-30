@@ -1,38 +1,32 @@
 package im.actor.runtime.webrtc;
 
+import im.actor.runtime.function.Closable;
+
 /**
  * WebRTC media stream
  */
-public interface WebRTCMediaStream {
+public interface WebRTCMediaStream extends Closable {
 
     /**
-     * Is Audio Track enabled
+     * Get Audio tracks of a stream
      *
-     * @return is track enabled
+     * @return Get Audio tracks of a stream
      */
-    boolean isAudioEnabled();
+    WebRTCMediaTrack[] getAudioTracks();
 
     /**
-     * Enabling/Disabling audio track
+     * Get Video tracks of a stream
      *
-     * @param isEnabled is track enabled
+     * @return Get Video tracks of a stream
      */
-    void setAudioEnabled(boolean isEnabled);
+    WebRTCMediaTrack[] getVideoTracks();
 
     /**
-     * Is Video Track enabled
+     * Get tracks of a stream
      *
-     * @return is track enabled
+     * @return Get tracks of a stream
      */
-    boolean isVideoEnabled();
-
-
-    /**
-     * Enabling/Disabling video track
-     *
-     * @param isEnabled is track enabled
-     */
-    void setVideoEnabled(boolean isEnabled);
+    WebRTCMediaTrack[] getTracks();
 
     /**
      * Closing stream

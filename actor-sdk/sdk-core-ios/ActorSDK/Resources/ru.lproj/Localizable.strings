@@ -50,9 +50,11 @@
 "SettingsEditFieldHint" = "Введите ваше имя";
 
 
-"SettingsSecurity" = "Безопасность";
+"SettingsSecurity" = "Приватность и Безопасность";
 
 "SettingsWallpapers" = "Обои чата";
+
+"SettingsMedia" = "Настойки медиа";
 
 "SettingsUsernameTitle" = "Изменить ник";
 
@@ -82,22 +84,101 @@
 
 "SettingsVersion" = "Версия {version}";
 
+"SettingsMobilePhone" = "Мобильный телефон";
 
-"SettingsAllSessions" = "Все сессии";
+"SettingsGroupChats" = "Группы";
 
-"SettingsLastSeen" = "Последняя активность";
+"SettingsPrivateChats" = "Приватные чаты";
 
-"SettingsLastSeenHint" = "Укажите, кто может видеть вашу последнюю активность.";
+/*
+ * Notifications
+ */
+
+"NotificationsTitle" = "Оповещения и звуки";
+
+"NotificationsEffectsTitle" = "Эффекты";
+
+"NotificationsMobileTitle" = "Мобильные оповещения";
+
+"NotificationsInAppTitle" = "Оповещения в приложении";
+
+"NotificationsNotificationHint" = "Вы можете выключить оповещения от конкретных людей или групп на страницах их профилей.";
+
+"NotificationsPrivacyTitle" = "Приватность";
+
+"NotificationsSoundEffects" = "Звуковые эффекты";
+
+"NotificationsEnable" = "Включить";
+
+"NotificationsSound" = "Звук";
+
+"NotificationsVibration" = "Вибрация";
+
+"NotificationsPreview" = "Предпросмотр сообщений";
+
+"NotificationsPreviewHint" = "Убрать текст сообщений из оповещений.";
+
+"NotificationSecretMessage" = "Новое сообщение";
+
+"NotificationsGroups" = "Групповые оповещения";
+
+"NotificationsOnlyMentions" = "Только с упоминанием";
+
+"NotificationsOnlyMentionsHint" = "Вы можете включить оповещения в группе только для сообщений, в которых упоминается ваш ник";
+
+/*
+ * Media
+ */
+
+"MediaTitle" = "Настройки медиа";
+
+"MediaPhotoDownloadHeader"= "Автоматичкская загрузка фото";
+
+"MediaAudioDownloadHeader"= "Автоматическая загрузка аудио";
+
+"MediaOtherHeader"= "Другие";
+
+"MediaAutoplayGif"= "Автопроигрывать GIF";
+
+/*
+ * Privacy
+ */
+
+"PrivacyTitle" = "Приватность и Безопасность";
 
 
-"SettingsLastSeenEverybody" = "Все";
+"PrivacyHeader" = "Приватность";
 
-"SettingsLastSeenContacts"  = "Контакты";
+"PrivacyLastSeen" = "Последняя активность";
 
-"SettingsLastSeenNone"    = "Никто";
+"PrivacyLastSeenHint" = "Укажите, кто может видеть вашу последнюю активность.";
+
+"PrivacyLastSeenEverybody" = "Все";
+
+"PrivacyLastSeenContacts" = "Контакты";
+
+"PrivacyLastSeenNone" = "Никто";
 
 
-"SettingsMobilePhone"  = "Мобильный телефон";
+"PrivacySecurityHeader" = "Безопасность";
+
+"PrivacyAllSessions" = "Активные сессии";
+
+"PrivacyTerminate" = "Удалить все другие сессии";
+
+"PrivacyTerminateAlert" = "Удалить другие сессии";
+
+"PrivacyTerminateAlertSingle" = "Удалить сессию";
+
+"PrivacyTerminateHint" = "Выйти из всех устройств, кроме этого.";
+
+/*
+ * Wallpapers
+ */
+
+"WallpapersTitle" = "Обои чата";
+
+"WallpapersPhoto" = "Выбрать из галереи";
 
 /*
  * Calls
@@ -162,6 +243,10 @@
 "ProfileUsername" = "Ник";
 
 "ProfileTitle" = "Информация";
+
+"ProfileBlockContact" = "Заблокировать Пользователя";
+
+"ProfileUnblockContact" = "Разблокировать пользователя";
 
 "CallNumber" = "Позвонить";
 
@@ -287,63 +372,6 @@
 
 "LocationTitle" = "Местоположение";
 
-/*
- * Notifications
- */
-
-"NotificationsTitle" = "Оповещения и звуки";
-
-"NotificationsEffectsTitle" = "Эффекты";
-
-"NotificationsMobileTitle" = "Мобильные оповещения";
-
-"NotificationsInAppTitle" = "Оповещения в приложении";
-
-"NotificationsNotificationHint" = "Вы можете выключить оповещения от конкретных людей или групп на страницах их профилей.";
-
-"NotificationsPrivacyTitle" = "Приватность";
-
-"NotificationsSoundEffects" = "Звуковые эффекты";
-
-"NotificationsEnable" = "Включить";
-
-"NotificationsSound" = "Звук";
-
-"NotificationsVibration" = "Вибрация";
-
-"NotificationsPreview" = "Предпросмотр сообщений";
-
-"NotificationsPreviewHint" = "Убрать текст сообщений из оповещений.";
-
-"NotificationSecretMessage" = "Новое сообщение";
-
-"NotificationsGroups" = "Групповые оповещения";
-
-"NotificationsOnlyMentions" = "Только с упоминанием";
-
-"NotificationsOnlyMentionsHint" = "Вы можете включить оповещения в группе только для сообщений, в которых упоминается ваш ник";
-
-/*
- * Privacy
- */
-
-"SecurityTitle" = "Безопасность";
-
-"PrivacyTerminate" = "Удалить все другие сессии";
-
-"PrivacyTerminateAlert" = "Удалить другие сессии";
-
-"PrivacyTerminateAlertSingle" = "Удалить сессию";
-
-"PrivacyTerminateHint" = "Выйти из всех устройств, кроме этого.";
-
-/*
- * Wallpapers
- */
-
-"WallpapersTitle" = "Обои чата";
-
-"WallpapersPhoto" = "Выбрать из галереи";
 
 /*
  * Chat

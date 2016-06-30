@@ -25,6 +25,7 @@ public abstract class ApiWebRTCSignaling extends BserObject {
             case 3: return Bser.parse(new ApiCandidate(), content);
             case 4: return Bser.parse(new ApiOffer(), content);
             case 5: return Bser.parse(new ApiAnswer(), content);
+            case 28: return Bser.parse(new ApiMediaStreamsUpdated(), content);
             case 8: return Bser.parse(new ApiNeedOffer(), content);
             case 24: return Bser.parse(new ApiNegotinationSuccessful(), content);
             case 22: return Bser.parse(new ApiEnableConnection(), content);

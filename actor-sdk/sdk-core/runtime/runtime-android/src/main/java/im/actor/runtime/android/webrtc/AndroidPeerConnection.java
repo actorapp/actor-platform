@@ -11,6 +11,7 @@ import org.webrtc.Logging;
 import org.webrtc.MediaConstraints;
 import org.webrtc.MediaStream;
 import org.webrtc.PeerConnection;
+import org.webrtc.RtpSender;
 import org.webrtc.SdpObserver;
 import org.webrtc.SessionDescription;
 
@@ -18,7 +19,9 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
 
+import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.android.AndroidWebRTCRuntimeProvider;
+import im.actor.runtime.function.CountedReference;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseFunc;
 import im.actor.runtime.promise.PromiseResolver;
@@ -33,9 +36,12 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
 
     private static final boolean LIBJINGLE_LOGS = false;
 
-    private AndroidMediaStream localStream;
-    private boolean videoCallEnabled = true;
     private WebRTCSettings settings;
+
+    private PeerConnection peerConnection;
+    private ArrayList<WebRTCPeerConnectionCallback> callbacks = new ArrayList<>();
+    private HashMap<MediaStream, AndroidMediaStream> streams = new HashMap<>();
+    private ArrayList<CountedReference<WebRTCMediaStream>> ownStreams = new ArrayList<>();
 
     public AndroidPeerConnection(WebRTCIceServer[] webRTCIceServers, WebRTCSettings settings) {
         this.settings = settings;
@@ -43,7 +49,6 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
             Logging.enableTracing("logcat:",
                     EnumSet.of(Logging.TraceLevel.TRACE_ALL),
                     Logging.Severity.LS_SENSITIVE);
-
         }
 
         final ArrayList<PeerConnection.IceServer> servers = new ArrayList<>();
@@ -60,101 +65,74 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
             servers.add(ice);
 
         }
-        AndroidWebRTCRuntimeProvider.postToHandler(new Runnable() {
-            @Override
-            public void run() {
-                AndroidPeerConnection.this.peerConnection = AndroidWebRTCRuntimeProvider.FACTORY.createPeerConnection(servers, getMediaConstraints(), new PeerConnection.Observer() {
-                    @Override
-                    public void onSignalingChange(PeerConnection.SignalingState signalingState) {
+        AndroidWebRTCRuntimeProvider.postToHandler(() -> {
+            AndroidPeerConnection.this.peerConnection = AndroidWebRTCRuntimeProvider.FACTORY.createPeerConnection(servers, getMediaConstraints(), new PeerConnection.Observer() {
+                @Override
+                public void onSignalingChange(PeerConnection.SignalingState signalingState) {
 
+                }
+
+                @Override
+                public void onIceConnectionChange(PeerConnection.IceConnectionState iceConnectionState) {
+
+                }
+
+                @Override
+                public void onIceConnectionReceivingChange(boolean b) {
+
+                }
+
+                @Override
+                public void onIceGatheringChange(PeerConnection.IceGatheringState iceGatheringState) {
+
+                }
+
+                @Override
+                public void onIceCandidate(IceCandidate candidate) {
+                    for (WebRTCPeerConnectionCallback c : callbacks) {
+                        c.onCandidate(candidate.sdpMLineIndex, candidate.sdpMid, candidate.sdp);
                     }
+                }
 
-                    @Override
-                    public void onIceConnectionChange(PeerConnection.IceConnectionState iceConnectionState) {
-
+                @Override
+                public void onAddStream(MediaStream stream) {
+                    AndroidMediaStream stream1 = new AndroidMediaStream(stream);
+                    streams.put(stream, stream1);
+                    for (WebRTCPeerConnectionCallback c : callbacks) {
+                        c.onStreamAdded(stream1);
                     }
+                }
 
-                    @Override
-                    public void onIceConnectionReceivingChange(boolean b) {
-
-                    }
-
-                    @Override
-                    public void onIceGatheringChange(PeerConnection.IceGatheringState iceGatheringState) {
-
-                    }
-
-                    @Override
-                    public void onIceCandidate(IceCandidate candidate) {
+                @Override
+                public void onRemoveStream(MediaStream stream) {
+                    AndroidMediaStream stream1 = streams.get(stream);
+                    if (stream1 != null) {
                         for (WebRTCPeerConnectionCallback c : callbacks) {
-                            c.onCandidate(candidate.sdpMLineIndex, candidate.sdpMid, candidate.sdp);
+                            c.onStreamRemoved(stream1);
                         }
                     }
+                }
 
-                    @Override
-                    public void onAddStream(MediaStream stream) {
-                        AndroidMediaStream stream1 = new AndroidMediaStream(stream);
-                        streams.put(stream, stream1);
-                        for (WebRTCPeerConnectionCallback c : callbacks) {
-                            c.onStreamAdded(stream1);
-                        }
+                @Override
+                public void onDataChannel(DataChannel dataChannel) {
+
+                }
+
+                @Override
+                public void onRenegotiationNeeded() {
+                    for (WebRTCPeerConnectionCallback c : callbacks) {
+                        c.onRenegotiationNeeded();
                     }
-
-                    @Override
-                    public void onRemoveStream(MediaStream stream) {
-                        AndroidMediaStream stream1 = streams.get(stream);
-                        if (stream1 != null) {
-                            for (WebRTCPeerConnectionCallback c : callbacks) {
-                                c.onStreamRemoved(stream1);
-                            }
-                        }
-
-                        if (settings.isVideoEnabled()) {
-                            try {
-                                stream.videoTracks.get(0).dispose();
-                            } catch (Exception e) {
-
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onDataChannel(DataChannel dataChannel) {
-
-                    }
-
-                    @Override
-                    public void onRenegotiationNeeded() {
-                        for (WebRTCPeerConnectionCallback c : callbacks) {
-                            c.onRenegotiationNeeded();
-                        }
-                    }
-                });
-            }
+                }
+            });
         });
     }
-
-    private PeerConnection peerConnection;
-    private ArrayList<WebRTCPeerConnectionCallback> callbacks = new ArrayList<>();
-    private HashMap<MediaStream, AndroidMediaStream> streams = new HashMap<>();
-
 
     @Override
     public void addCallback(@NotNull WebRTCPeerConnectionCallback callback) {
         if (!callbacks.contains(callback)) {
             callbacks.add(callback);
         }
-
-        if (settings.isVideoEnabled()) {
-            if (localStream != null) {
-                callback.onOwnStreamAdded(localStream);
-            }
-
-            for (MediaStream mediaStream : streams.keySet()) {
-                callback.onStreamAdded(streams.get(mediaStream));
-            }
-        }
-
     }
 
     @Override
@@ -164,76 +142,60 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
 
     @Override
     public void addCandidate(final int index, @NotNull final String id, @NotNull final String sdp) {
-        AndroidWebRTCRuntimeProvider.postToHandler(new Runnable() {
-            @Override
-            public void run() {
-                peerConnection.addIceCandidate(new IceCandidate(id, index, sdp));
-            }
+        AndroidWebRTCRuntimeProvider.postToHandler(() -> {
+            peerConnection.addIceCandidate(new IceCandidate(id, index, sdp));
         });
     }
 
     @Override
-    public void addOwnStream(@NotNull final WebRTCMediaStream stream) {
-        AndroidWebRTCRuntimeProvider.postToHandler(new Runnable() {
-            @Override
-            public void run() {
-                AndroidPeerConnection.this.localStream = (AndroidMediaStream) stream;
-                for (WebRTCPeerConnectionCallback c : callbacks) {
-                    c.onOwnStreamAdded(stream);
-                }
-                peerConnection.addStream(AndroidPeerConnection.this.localStream.getStream());
-            }
-        });
+    public void addOwnStream(@NotNull final CountedReference<WebRTCMediaStream> stream) {
+        if (!ownStreams.contains(stream)) {
+            stream.acquire();
+            ownStreams.add(stream);
+            AndroidWebRTCRuntimeProvider.postToHandler(() -> {
+                peerConnection.addStream(((AndroidMediaStream) stream.get()).getStream());
+            });
+        }
     }
 
     @Override
-    public void removeOwnStream(@NotNull final WebRTCMediaStream stream) {
-        AndroidWebRTCRuntimeProvider.postToHandler(new Runnable() {
-            @Override
-            public void run() {
-                for (WebRTCPeerConnectionCallback c : callbacks) {
-                    c.onOwnStreamRemoved(stream);
-                }
-                peerConnection.removeStream(((AndroidMediaStream) stream).getStream());
-            }
-        });
+    public void removeOwnStream(@NotNull final CountedReference<WebRTCMediaStream> stream) {
+        if (ownStreams.remove(stream)) {
+            AndroidWebRTCRuntimeProvider.postToHandler(() -> {
+                peerConnection.removeStream(((AndroidMediaStream) stream.get()).getStream());
+                stream.release();
+            });
+        }
     }
 
     @NotNull
     @Override
     public Promise<WebRTCSessionDescription> setLocalDescription(@NotNull final WebRTCSessionDescription description) {
-        return new Promise<>(new PromiseFunc<WebRTCSessionDescription>() {
-            @Override
-            public void exec(@NonNull @NotNull final PromiseResolver<WebRTCSessionDescription> resolver) {
-                AndroidWebRTCRuntimeProvider.postToHandler(new Runnable() {
+        return new Promise<>((PromiseFunc<WebRTCSessionDescription>) resolver -> {
+            AndroidWebRTCRuntimeProvider.postToHandler(() -> {
+                peerConnection.setLocalDescription(new SdpObserver() {
                     @Override
-                    public void run() {
-                        peerConnection.setLocalDescription(new SdpObserver() {
-                            @Override
-                            public void onCreateSuccess(SessionDescription sessionDescription) {
-                                //we are just setting here
-                            }
-
-                            @Override
-                            public void onSetSuccess() {
-                                resolver.result(description);
-                            }
-
-                            @Override
-                            public void onCreateFailure(String s) {
-                                //we are just setting here
-                            }
-
-                            @Override
-                            public void onSetFailure(String s) {
-                                resolver.error(new Exception("setLocalDescription:onSetFailure"));
-
-                            }
-                        }, new SessionDescription(description.getType().equals("offer") ? SessionDescription.Type.OFFER : SessionDescription.Type.ANSWER, description.getSdp()));
+                    public void onCreateSuccess(SessionDescription sessionDescription) {
+                        //we are just setting here
                     }
-                });
 
-            }
+                    @Override
+                    public void onSetSuccess() {
+                        resolver.result(description);
+                    }
+
+                    @Override
+                    public void onCreateFailure(String s) {
+                        //we are just setting here
+                    }
+
+                    @Override
+                    public void onSetFailure(String s) {
+                        resolver.error(new Exception("setLocalDescription:onSetFailure"));
+
+                    }
+                }, new SessionDescription(description.getType().equals("offer") ? SessionDescription.Type.OFFER : SessionDescription.Type.ANSWER, description.getSdp()));
+            });
         });
     }
 
@@ -304,7 +266,7 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
                             public void onSetFailure(String s) {
                                 //we are just creating here
                             }
-                        }, settings.isVideoEnabled() ? getMediaConstraints() : new MediaConstraints());
+                        }, getMediaConstraints());
                     }
                 });
 
@@ -318,13 +280,8 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
 
         constraints.mandatory.add(new MediaConstraints.KeyValuePair(
                 "OfferToReceiveAudio", "true"));
-        if (videoCallEnabled) {
-            constraints.mandatory.add(new MediaConstraints.KeyValuePair(
-                    "OfferToReceiveVideo", "true"));
-        } else {
-            constraints.mandatory.add(new MediaConstraints.KeyValuePair(
-                    "OfferToReceiveVideo", "false"));
-        }
+        constraints.mandatory.add(new MediaConstraints.KeyValuePair(
+                "OfferToReceiveVideo", "true"));
 
         return constraints;
     }
@@ -358,7 +315,7 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
                             public void onSetFailure(String s) {
                                 //we are just creating here
                             }
-                        }, settings.isVideoEnabled() ? getMediaConstraints() : new MediaConstraints());
+                        }, getMediaConstraints());
                     }
                 });
 
@@ -368,30 +325,21 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
 
     @Override
     public void close() {
-        AndroidWebRTCRuntimeProvider.postToHandler(new Runnable() {
-            @Override
-            public void run() {
-                peerConnection.dispose();
-
-                if (settings.isVideoEnabled()) {
-                    for (WebRTCPeerConnectionCallback c : callbacks) {
-                        c.onDisposed();
-                    }
-
-                    localStream = null;
-                }
-
+        AndroidWebRTCRuntimeProvider.postToHandler(() -> {
+            while (!ownStreams.isEmpty()) {
+                CountedReference<WebRTCMediaStream> stream = ownStreams.remove(0);
+                peerConnection.removeStream(((AndroidMediaStream) stream.get()).getStream());
+                stream.release();
             }
+            for (MediaStream stream : streams.keySet()) {
+                AndroidMediaStream stream1 = streams.get(stream);
+                if (stream1 != null) {
+                    for (WebRTCPeerConnectionCallback c : callbacks) {
+                        c.onStreamRemoved(stream1);
+                    }
+                }
+            }
+            peerConnection.dispose();
         });
-
-
-    }
-
-    public HashMap<MediaStream, AndroidMediaStream> getStreams() {
-        return streams;
-    }
-
-    public AndroidMediaStream getLocalStream() {
-        return localStream;
     }
 }

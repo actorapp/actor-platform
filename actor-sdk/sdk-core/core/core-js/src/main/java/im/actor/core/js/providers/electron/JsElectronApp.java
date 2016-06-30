@@ -24,7 +24,7 @@ public class JsElectronApp {
 
     public static native void subscribe(String topic, JsElectronListener listener)/*-{
         var ipc = $wnd.require("electron").ipcRenderer;
-        ipc.on(topic, function(message) {
+        ipc.on(topic, function(event, message) {
             listener.@im.actor.core.js.providers.electron.JsElectronListener::onEvent(*)(message);
         });
     }-*/;

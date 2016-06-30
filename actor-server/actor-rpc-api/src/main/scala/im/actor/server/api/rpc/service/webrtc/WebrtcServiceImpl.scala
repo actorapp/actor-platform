@@ -32,16 +32,44 @@ final class WebrtcServiceImpl(implicit system: ActorSystem, sessionRegion: Sessi
   override def doHandleGetCallInfo(callId: Long, clientData: ClientData): Future[HandlerResult[ResponseGetCallInfo]] =
     authorized(clientData) { client ⇒
       for {
-        (eventBusId, peer, participants) ← webrtcExt.getInfo(callId)
+        (eventBusId,
+          peer,
+          participants,
+          isAudioOnlyCall,
+          isVideoOnlyCall,
+          isVideoPreferred) ← webrtcExt.getInfo(callId)
         users ← FutureExt.ftraverse(participants)(ACLUtils.getUserOutPeer(_, client.authId))
-      } yield Ok(ResponseGetCallInfo(peer.asStruct, Vector.empty, users.toVector, eventBusId))
+      } yield Ok(ResponseGetCallInfo(
+        peer = peer.asStruct,
+        groups = Vector.empty,
+        users = users.toVector,
+        eventBusId = eventBusId,
+        isAudioOnlyCall = isAudioOnlyCall,
+        isVideoOnlyCall = isVideoOnlyCall,
+        isVideoPreferred = isVideoPreferred
+      ))
     }
 
-  override def doHandleDoCall(peer: ApiOutPeer, timeout: Option[Long], clientData: ClientData): Future[HandlerResult[ResponseDoCall]] =
+  protected def doHandleDoCall(
+    peer:             ApiOutPeer,
+    timeout:          Option[Long],
+    isAudioOnlyCall:  Option[Boolean],
+    isVideoOnlyCall:  Option[Boolean],
+    isVideoPreferred: Option[Boolean],
+    clientData:       ClientData
+  ): Future[HandlerResult[ResponseDoCall]] =
     authorized(clientData) { implicit client ⇒
       withOutPeer(peer) {
         for {
-          (callId, eventBusId, callerDeviceId) ← webrtcExt.doCall(client.userId, client.authId, peer.asModel, timeout)
+          (callId, eventBusId, callerDeviceId) ← webrtcExt.doCall(
+            callerUserId = client.userId,
+            callerAuthId = client.authId,
+            peer = peer.asModel,
+            isAudioOnlyCall = isAudioOnlyCall,
+            isVideoOnlyCall = isVideoOnlyCall,
+            isVideoPreferred = isVideoPreferred,
+            timeout = timeout
+          )
         } yield Ok(ResponseDoCall(callId, eventBusId, callerDeviceId))
       }
     }

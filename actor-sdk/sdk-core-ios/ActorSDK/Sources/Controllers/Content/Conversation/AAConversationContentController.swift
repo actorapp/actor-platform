@@ -416,7 +416,7 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
             isLoaded = true
             isLoadedAfter = true
             
-            let readState = Actor.loadFirstUnread(peer)
+            let readState = Actor.loadLastMessageDate(peer)
            
             if readState > 0 {
                 for i in 0..<getCount() {
@@ -491,7 +491,6 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
             self.currentAudioFileId = fileId
             
         } else {
-            
             
             if (position == 0.0  || position == 0) {
                 

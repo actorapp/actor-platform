@@ -67,10 +67,11 @@
 "SettingsUsernameHint" = "You can choose a username in {appname}. If you do, other people will be able to find you by this username and contact you without sharing your phone number.\n\nYou can use a-z, 0-9 and underscores. Minumum length is 5 characters.";
 
 
-"SettingsSecurity" = "Segurança";
+"SettingsSecurity" = "Privacy and Security";
 
 "SettingsWallpapers" = "Wallpapers";
 
+"SettingsMedia" = "Media Settings";
 
 "SettingsNotifications" = "Alertas e Sons";
 
@@ -82,22 +83,93 @@
 
 "SettingsVersion" = "Versão {version}";
 
-
-"SettingsAllSessions" = "Todas as sessões";
-
-"SettingsLastSeen" = "Visto pela ultima vez";
-
-"SettingsLastSeenHint" = "Alterar quem pode ver o seu tempo Última atividade.";
-
-
-"SettingsLastSeenEverybody" = "Todo mundo";
-
-"SettingsLastSeenContacts"  = "Meus contatos";
-
-"SettingsLastSeenNone"    = "Ninguém";
-
-
 "SettingsMobilePhone"  = "Telefone Móvel";
+
+"SettingsGroupChats" = "Groups";
+
+"SettingsPrivateChats" = "Private Chats";
+
+/*
+ * Notifications
+ */
+
+"NotificationsTitle" = "Alertas e Sons";
+
+"NotificationsEffectsTitle" = "Efeitos";
+
+"NotificationsMobileTitle" = "Notificações do Aparelho";
+
+"NotificationsInAppTitle" = "Notificações do Aplicativo";
+
+"NotificationsNotificationHint" = "Você pode desativar as notificações para usuários e grupos nas suas páginas específicas de informação.";
+
+"NotificationsPrivacyTitle" = "Privacidade";
+
+"NotificationsSoundEffects" = "Efeitos Sonoros";
+
+"NotificationsEnable" = "Ativar";
+
+"NotificationsSound" = "Som";
+
+"NotificationsVibration" = "vibrar";
+
+"NotificationsPreview" = "Visualizar Mensagem";
+
+"NotificationsPreviewHint" = "Remover texto da mensagem da notificação.";
+
+"NotificationSecretMessage" = "Nova Mensagem";
+
+"NotificationsGroups" = "Group Notifications";
+
+"NotificationsOnlyMentions" = "Only Mentions";
+
+"NotificationsOnlyMentionsHint" = "You can enable notifications only for messages that contains your mention";
+
+/*
+ * Media
+ */
+
+"MediaTitle" = "Media Settings";
+
+"MediaPhotoDownloadHeader"= "Automatic Photo Download";
+
+"MediaAudioDownloadHeader"= "Automatic Audio Download";
+
+"MediaOtherHeader"= "Other";
+
+"MediaAutoplayGif"= "Autoplay GIFs";
+
+/*
+ * Privacy
+ */
+
+"PrivacyTitle" = "Privacy and Security";
+
+
+"PrivacyHeader" = "Privacy";
+
+"PrivacyLastSeen" = "Visto pela ultima vez";
+
+"PrivacyLastSeenHint" = "Alterar quem pode ver o seu tempo Última atividade.";
+
+"PrivacyLastSeenEverybody" = "Todo mundo";
+
+"PrivacyLastSeenContacts"  = "Meus contatos";
+
+"PrivacyLastSeenNone"    = "Ninguém";
+
+
+"PrivacySecurityHeader" = "Security";
+
+"PrivacyAllSessions" = "Active Sessions";
+
+"PrivacyTerminate" = "Encerrar todas as sessões";
+
+"PrivacyTerminateAlert" = "Terminate all sessions";
+
+"PrivacyTerminateAlertSingle" = "Terminate session";
+
+"PrivacyTerminateHint" = "Descredencia todos os demais dispositivos menos este.";
 
 /*
  * Calls
@@ -162,6 +234,10 @@
 "ProfileUsername" = "username";
 
 "ProfileTitle" = "Info";
+
+"ProfileBlockContact" = "Block User";
+
+"ProfileUnblockContact" = "Unblock User";
 
 "CallNumber" = "Chamar número";
 
@@ -281,55 +357,7 @@
 
 "LocationTitle" = "Localização";
 
-/*
- * Notifications
- */
 
-"NotificationsTitle" = "Alertas e Sons";
-
-"NotificationsEffectsTitle" = "Efeitos";
-
-"NotificationsMobileTitle" = "Notificações do Aparelho";
-
-"NotificationsInAppTitle" = "Notificações do Aplicativo";
-
-"NotificationsNotificationHint" = "Você pode desativar as notificações para usuários e grupos nas suas páginas específicas de informação.";
-
-"NotificationsPrivacyTitle" = "Privacidade";
-
-"NotificationsSoundEffects" = "Efeitos Sonoros";
-
-"NotificationsEnable" = "Ativar";
-
-"NotificationsSound" = "Som";
-
-"NotificationsVibration" = "vibrar";
-
-"NotificationsPreview" = "Visualizar Mensagem";
-
-"NotificationsPreviewHint" = "Remover texto da mensagem da notificação.";
-
-"NotificationSecretMessage" = "Nova Mensagem";
-
-"NotificationsGroups" = "Group Notifications";
-
-"NotificationsOnlyMentions" = "Only Mentions";
-
-"NotificationsOnlyMentionsHint" = "You can enable notifications only for messages that contains your mention";
-
-/*
- * Privacy
- */
-
-"SecurityTitle" = "Segurança";
-
-"PrivacyTerminate" = "Encerrar todas as sessões";
-
-"PrivacyTerminateAlert" = "Terminate all sessions";
-
-"PrivacyTerminateAlertSingle" = "Terminate session";
-
-"PrivacyTerminateHint" = "Descredencia todos os demais dispositivos menos este.";
 
 /*
  * Wallpapers

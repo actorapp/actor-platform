@@ -61,20 +61,6 @@ object DbExtension extends ExtensionId[DbExtensionImpl] with ExtensionIdProvider
     ext
   }
 
-  private def initDs(sqlConfig: Config): Try[HikariCPJdbcDataSource] = {
-    for {
-      host ← sqlConfig.get[Try[String]]("host")
-      port ← sqlConfig.get[Try[Int]]("port")
-      db ← sqlConfig.get[Try[String]]("db")
-      _ ← sqlConfig.get[Try[String]]("user")
-      _ ← sqlConfig.get[Try[String]]("password")
-    } yield HikariCPJdbcDataSource.forConfig(sqlConfig.withFallback(ConfigFactory.parseString(
-      s"""
-        |url: "jdbc:postgresql://"${host}":"${port}"/"${db}
-      """.stripMargin
-    )).resolve(), null, "main", getClass.getClassLoader)
-  }
-
   private def initDb(appConfig: Config): Database = {
     val sqlConfig = appConfig.getConfig("services.postgresql")
 

@@ -17,7 +17,7 @@ public class ActorStyle {
     /// Tint Color. Star button
     public var vcStarButton = UIColor(red: 75/255.0, green: 110/255.0, blue: 152/255.0, alpha: 1)
     /// Tint Color. Used for "Actions". Default is sytem blue.
-    public var vcTintColor = UIColor(rgb: 0x5085CB)
+    public var vcTintColor = UIColor(rgb: 0x247dc7)
     /// Color of desctructive actions. Default is red
     public var vcDestructiveColor = UIColor.redColor()
     /// Default background color
@@ -29,7 +29,7 @@ public class ActorStyle {
     /// App's main status bar style. Default is light content.
     public var vcStatusBarStyle = UIStatusBarStyle.Default
     /// UITableView separator color. Also used for other separators or borders.
-    public var vcSeparatorColor = UIColor(rgb: 0xd4d4d4)
+    public var vcSeparatorColor = UIColor(rgb: 0xdededf)
     /// Cell Selected color
     public var vcSelectedColor = UIColor(rgb: 0xd9d9d9)
     /// Header/Footer text color
@@ -43,7 +43,7 @@ public class ActorStyle {
     /// View Controller background color
     public var vcBgColor = UIColor.whiteColor()
     /// View Controller background color for settings
-    public var vcBackyardColor = UIColor(red: 238/255.0, green: 238/255.0, blue: 238/255.0, alpha: 1)
+    public var vcBackyardColor = UIColor(rgb: 0xf0eff5)
     
     //
     // UINavigationBar
@@ -353,7 +353,7 @@ public class ActorStyle {
     public var chatTextDateInColor = UIColor(rgb: 0x979797)
 
     public var chatMediaDateColor = UIColor.whiteColor()
-    public var chatMediaDateBgColor = UIColor(rgb: 0x2D394A, alpha: 0.54)
+    public var chatMediaDateBgColor = UIColor.blackColor().alpha(0.4)
     
     // Bubble Colors
     

@@ -38,7 +38,15 @@ object WebrtcCallErrors {
 private[webrtc] sealed trait WebrtcCallMessage
 
 private[webrtc] object WebrtcCallMessages {
-  final case class StartCall(callerUserId: UserId, callerAuthId: AuthId, peer: Peer, timeout: Option[Long]) extends WebrtcCallMessage
+  final case class StartCall(
+    callerUserId:     UserId,
+    callerAuthId:     AuthId,
+    peer:             Peer,
+    isAudioOnlyCall:  Option[Boolean],
+    isVideoOnlyCall:  Option[Boolean],
+    isVideoPreferred: Option[Boolean],
+    timeout:          Option[Long]
+  ) extends WebrtcCallMessage
   final case class StartCallAck(eventBusId: String, callerDeviceId: EventBus.DeviceId)
 
   final case class JoinCall(calleeUserId: UserId, authId: AuthId) extends WebrtcCallMessage
@@ -48,8 +56,15 @@ private[webrtc] object WebrtcCallMessages {
   case object RejectCallAck
 
   case object GetInfo extends WebrtcCallMessage
-  final case class GetInfoAck(eventBusId: String, peer: Peer, participantUserIds: Seq[UserId]) {
-    val tupled = (eventBusId, peer, participantUserIds)
+  final case class GetInfoAck(
+    eventBusId:         String,
+    peer:               Peer,
+    participantUserIds: Seq[UserId],
+    isAudioOnlyCall:    Option[Boolean],
+    isVideoOnlyCall:    Option[Boolean],
+    isVideoPreferred:   Option[Boolean]
+  ) {
+    val tupled = (eventBusId, peer, participantUserIds, isAudioOnlyCall, isVideoOnlyCall, isVideoPreferred)
   }
 
   private[webrtc] case class SendIncomingCall(userId: UserId)
@@ -200,6 +215,10 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
   private var peer = Peer()
   private var callerUserId: Int = _
 
+  private var isAudioOnlyCall: Option[Boolean] = None
+  private var isVideoOnlyCall: Option[Boolean] = None
+  private var isVideoPreferred: Option[Boolean] = None
+
   def receive = waitForStart
 
   // FIXME: set receive timeout
@@ -209,6 +228,9 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
       case class Res(eventBusId: String, callees: Seq[Int], callerDeviceId: EventBus.DeviceId)
       this.peer = s.peer
       this.callerUserId = s.callerUserId
+      this.isAudioOnlyCall = s.isAudioOnlyCall
+      this.isVideoOnlyCall = s.isVideoOnlyCall
+      this.isVideoPreferred = s.isVideoPreferred
 
       (for {
         callees ← fetchMembers(callerUserId, peer) map (_ filterNot (_ == callerUserId))
@@ -364,60 +386,77 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
         }
       case GetInfo ⇒
         if (peer.typ.isPrivate) {
-          sender() ! GetInfoAck(eventBusId, Peer(PeerType.Private, memberUserIds.filterNot(_ == peer.id).head), memberUserIds.toSeq)
+          sender() ! GetInfoAck(
+            eventBusId = eventBusId,
+            peer = Peer(PeerType.Private, memberUserIds.filterNot(_ == peer.id).head),
+            participantUserIds = memberUserIds.toSeq,
+            isAudioOnlyCall = isAudioOnlyCall,
+            isVideoOnlyCall = isVideoOnlyCall,
+            isVideoPreferred = isVideoPreferred
+          )
         } else {
-          sender() ! GetInfoAck(eventBusId, peer, memberUserIds.toSeq)
+          sender() ! GetInfoAck(
+            eventBusId = eventBusId,
+            peer = peer,
+            participantUserIds = memberUserIds.toSeq,
+            isAudioOnlyCall = isAudioOnlyCall,
+            isVideoOnlyCall = isVideoOnlyCall,
+            isVideoPreferred = isVideoPreferred
+          )
         }
       case EventBus.Joined(_, client, deviceId) ⇒
         if (client.isExternal)
           advertiseMaster(eventBusId, deviceId)
       case ebMessage: EventBus.Message ⇒
-        ApiWebRTCSignaling.parseFrom(ebMessage.message).right foreach {
-          case msg: ApiAdvertiseSelf ⇒
-            log.debug("AdvertiseSelf {}", msg)
-            for (deviceId ← ebMessage.deviceId) yield {
-              val newDevice = Device(deviceId, ebMessage.client, msg.peerSettings, isJoined = deviceId == callerDeviceId)
-              log.debug(s"newDevice ${newDevice.deviceId} ${newDevice.peerSettings}")
-              devices.values.view filterNot (_.deviceId == newDevice.deviceId) foreach { pairDevice ⇒
-                if (pairDevice.canPreConnect(newDevice)) {
-                  log.debug(s"canPreConnect is true for device ${pairDevice.deviceId} ${pairDevice.peerSettings}")
-                  connect(newDevice, pairDevice)
+        ApiWebRTCSignaling.parseFrom(ebMessage.message) match {
+          case Left(e) ⇒ log.warning("Failed to parse message from event bus: {}", e)
+          case Right(m) ⇒ m match {
+            case msg: ApiAdvertiseSelf ⇒
+              log.debug("AdvertiseSelf {}", msg)
+              for (deviceId ← ebMessage.deviceId) yield {
+                val newDevice = Device(deviceId, ebMessage.client, msg.peerSettings, isJoined = deviceId == callerDeviceId)
+                log.debug(s"newDevice ${newDevice.deviceId} ${newDevice.peerSettings}")
+                devices.values.view filterNot (_.deviceId == newDevice.deviceId) foreach { pairDevice ⇒
+                  if (pairDevice.canPreConnect(newDevice)) {
+                    log.debug(s"canPreConnect is true for device ${pairDevice.deviceId} ${pairDevice.peerSettings}")
+                    connect(newDevice, pairDevice)
+                  }
+                }
+                putDevice(deviceId, ebMessage.client, newDevice)
+
+                for {
+                  userId ← ebMessage.client.externalUserId
+                  member ← getMember(userId)
+                } yield {
+                  if (member.state == MemberStates.Ringing)
+                    setMemberState(userId, MemberStates.RingingReached)
                 }
               }
-              putDevice(deviceId, ebMessage.client, newDevice)
-
+            case msg: ApiNegotinationSuccessful ⇒
+              ebMessage.client.externalUserId foreach { userId ⇒
+                setMemberState(userId, MemberStates.Connected)
+                broadcastSyncedSet()
+              }
+            case msg: ApiOnRenegotiationNeeded ⇒
+              // TODO: #perf remove sessions.find and sessions.filterNot
               for {
-                userId ← ebMessage.client.externalUserId
-                member ← getMember(userId)
+                deviceId ← ebMessage.deviceId
+                (pair, sessionId) ← sessions find (_._2 == msg.sessionId)
+                leftDevice ← devices get pair.left
+                rightDevice ← devices get pair.right
               } yield {
-                if (member.state == MemberStates.Ringing)
-                  setMemberState(userId, MemberStates.RingingReached)
+                if (deviceId != msg.device) {
+                  val chkPair = Pair.buildUnsafe(deviceId, msg.device)
+                  if (pair.left == chkPair.left && pair.right == chkPair.right) {
+                    sessions = sessions filterNot (_ == sessionId)
+                    eventBusExt.post(EventBus.InternalClient(self), eventBusId, Seq(pair.left), ApiCloseSession(pair.right, sessionId).toByteArray)
+                    eventBusExt.post(EventBus.InternalClient(self), eventBusId, Seq(pair.right), ApiCloseSession(pair.left, sessionId).toByteArray)
+                    connect(leftDevice, rightDevice)
+                  } else log.warning("Received OnRenegotiationNeeded for a wrong deviceId")
+                }
               }
-            }
-          case msg: ApiNegotinationSuccessful ⇒
-            ebMessage.client.externalUserId foreach { userId ⇒
-              setMemberState(userId, MemberStates.Connected)
-              broadcastSyncedSet()
-            }
-          case msg: ApiOnRenegotiationNeeded ⇒
-            // TODO: #perf remove sessions.find and sessions.filterNot
-            for {
-              deviceId ← ebMessage.deviceId
-              (pair, sessionId) ← sessions find (_._2 == msg.sessionId)
-              leftDevice ← devices get pair.left
-              rightDevice ← devices get pair.right
-            } yield {
-              if (deviceId != msg.device) {
-                val chkPair = Pair.buildUnsafe(deviceId, msg.device)
-                if (pair.left == chkPair.left && pair.right == chkPair.right) {
-                  sessions = sessions filterNot (_ == sessionId)
-                  eventBusExt.post(EventBus.InternalClient(self), eventBusId, Seq(pair.left), ApiCloseSession(pair.right, sessionId).toByteArray)
-                  eventBusExt.post(EventBus.InternalClient(self), eventBusId, Seq(pair.right), ApiCloseSession(pair.left, sessionId).toByteArray)
-                  connect(leftDevice, rightDevice)
-                } else log.warning("Received OnRenegotiationNeeded for a wrong deviceId")
-              }
-            }
-          case _ ⇒
+            case _ ⇒
+          }
         }
       case EventBus.Disconnected(_, client, deviceId) ⇒
         removeDevice(deviceId)

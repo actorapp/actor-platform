@@ -13404,6 +13404,27 @@
               <ref role="wb18D" node="3Tolai5MCV$" resolve="busId" />
             </node>
           </node>
+          <node concept="2m7Kf5" id="44q72NsGnbe" role="2m0hLx">
+            <property role="2m7DUN" value="5" />
+            <property role="TrG5h" value="isAudioOnlyCall" />
+            <node concept="2m5nlT" id="44q72NsGnbs" role="2m7DVh">
+              <node concept="2m5ndN" id="44q72NsGnby" role="3GH5xg" />
+            </node>
+          </node>
+          <node concept="2m7Kf5" id="44q72NsGnb_" role="2m0hLx">
+            <property role="2m7DUN" value="6" />
+            <property role="TrG5h" value="isVideoOnlyCall" />
+            <node concept="2m5nlT" id="44q72NsGnbQ" role="2m7DVh">
+              <node concept="2m5ndN" id="44q72NsGnbW" role="3GH5xg" />
+            </node>
+          </node>
+          <node concept="2m7Kf5" id="2s8nJehSa9v" role="2m0hLx">
+            <property role="2m7DUN" value="7" />
+            <property role="TrG5h" value="isVideoPreferred" />
+            <node concept="2m5nlT" id="2s8nJehSbsU" role="2m7DVh">
+              <node concept="2m5ndN" id="2s8nJehSbt0" role="3GH5xg" />
+            </node>
+          </node>
           <node concept="Nu42z" id="3Tolai5NjxR" role="NuuwV">
             <property role="Nu42W" value="A2E" />
           </node>
@@ -13426,6 +13447,21 @@
             <property role="NX6R2" value="Event Bus Id" />
             <property role="1GSvIU" value="full" />
             <ref role="NX6Kv" node="3Tolai5NzMu" resolve="eventBusId" />
+          </node>
+          <node concept="NX1gA" id="44q72NsGnc5" role="1y2DgH">
+            <property role="NX6R2" value="Is Audio Only Call. Default is true" />
+            <property role="1GSvIU" value="full" />
+            <ref role="NX6Kv" node="44q72NsGnbe" resolve="isAudioOnlyCall" />
+          </node>
+          <node concept="NX1gA" id="44q72NsGncj" role="1y2DgH">
+            <property role="1GSvIU" value="full" />
+            <property role="NX6R2" value="Is Video Only Call. Default is false." />
+            <ref role="NX6Kv" node="44q72NsGnb_" resolve="isVideoOnlyCall" />
+          </node>
+          <node concept="NX1gA" id="2s8nJehSenw" role="1y2DgH">
+            <property role="NX6R2" value="Is Video preferred" />
+            <property role="1GSvIU" value="full" />
+            <ref role="NX6Kv" node="2s8nJehSa9v" resolve="isVideoPreferred" />
           </node>
         </node>
         <node concept="NXeRC" id="3Tolai5Nmz5" role="1GBnQ6">
@@ -13453,6 +13489,27 @@
             <node concept="wb0Ql" id="56r0npHixaf" role="3GH5xg">
               <ref role="wb18D" node="6u8Nlnzqdrd" resolve="msec" />
             </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="44q72NsGjkt" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="isAudioOnlyCall" />
+          <node concept="2m5nlT" id="44q72NsGjkD" role="2m7DVh">
+            <node concept="2m5ndN" id="44q72NsGjkJ" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="44q72NsGi1H" role="2m0hLx">
+          <property role="TrG5h" value="isVideoOnlyCall" />
+          <property role="2m7DUN" value="4" />
+          <node concept="2m5nlT" id="44q72NsGi1Q" role="2m7DVh">
+            <node concept="2m5ndN" id="44q72NsGi1W" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="2s8nJehSfDU" role="2m0hLx">
+          <property role="2m7DUN" value="6" />
+          <property role="TrG5h" value="isVideoPreferred" />
+          <node concept="2m5nlT" id="2s8nJehSfE9" role="2m7DVh">
+            <node concept="2m5ndN" id="2s8nJehSfEf" role="3GH5xg" />
           </node>
         </node>
         <node concept="Nu42z" id="201xLeQvfQP" role="NuuwV">
@@ -13499,6 +13556,26 @@
           <property role="NX6R2" value="destination peer" />
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="201xLeQvfRW" resolve="peer" />
+        </node>
+        <node concept="NX1gA" id="44q72NsGi23" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Initial timeout" />
+          <ref role="NX6Kv" node="56r0npHiuXf" resolve="timeout" />
+        </node>
+        <node concept="NX1gA" id="44q72NsGjkS" role="1GBnQ6">
+          <property role="NX6R2" value="Is Audio only call. Default is true." />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="44q72NsGjkt" resolve="isAudioOnlyCall" />
+        </node>
+        <node concept="NX1gA" id="44q72NsGjkd" role="1GBnQ6">
+          <property role="NX6R2" value="Is Video Only call. Default is false." />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="44q72NsGi1H" resolve="isVideoOnlyCall" />
+        </node>
+        <node concept="NX1gA" id="2s8nJehSfEp" role="1GBnQ6">
+          <property role="NX6R2" value="Is Video preferred" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="2s8nJehSfDU" resolve="isVideoPreferred" />
         </node>
       </node>
       <node concept="2m6fVq" id="YOvM6E4ZSf" role="2m5mJr">
@@ -13909,6 +13986,42 @@
           <ref role="NX6Kv" node="3Tolai5NNXM" resolve="sdp" />
         </node>
       </node>
+      <node concept="2m5naR" id="44q72NsFWV0" role="2m5mJr">
+        <property role="TrG5h" value="MediaStreamsUpdated" />
+        <property role="tsOgz" value="false" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="3Tolai5NMKi" resolve="WebRTCSignaling" />
+        <node concept="2m7Kf5" id="44q72NsFWZW" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="isAudioEnabled" />
+          <node concept="2m5nlT" id="44q72NsFX00" role="2m7DVh">
+            <node concept="2m5ndN" id="44q72NsFX06" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="44q72NsFX09" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="isVideoEnabled" />
+          <node concept="2m5nlT" id="44q72NsFX0g" role="2m7DVh">
+            <node concept="2m5ndN" id="44q72NsFX0m" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="44q72NsFWZU" role="3BtCOu">
+          <property role="Nu42W" value="01C" />
+        </node>
+        <node concept="NXeRC" id="44q72NsFX0p" role="NXodf">
+          <property role="NXePf" value="Update about media stream settings updated. Can be sent before offer/answer." />
+        </node>
+        <node concept="NX1gA" id="44q72NsFYij" role="NXodf">
+          <property role="NX6R2" value="Is Audio Enabled in current connection. True by default." />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="44q72NsFWZW" resolve="isAudioEnabled" />
+        </node>
+        <node concept="NX1gA" id="44q72NsFYir" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Is Video Enabled in current connection. False by default." />
+          <ref role="NX6Kv" node="44q72NsFX09" resolve="isVideoEnabled" />
+        </node>
+      </node>
       <node concept="NvWBy" id="YOvM6E6crf" role="2m5mJr">
         <property role="NvWrd" value="Call Controlling events" />
       </node>
@@ -13949,6 +14062,11 @@
           <property role="1GSvIU" value="full" />
           <property role="NX6R2" value="Destination Device Id" />
           <ref role="NX6Kv" node="3Tolai5NVBR" resolve="device" />
+        </node>
+        <node concept="NX1gA" id="44q72NsGebp" role="NXodf">
+          <property role="NX6R2" value="Session Id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="YOvM6E5VPI" resolve="sessionId" />
         </node>
         <node concept="NX1gA" id="3xEfKBqKwZl" role="NXodf">
           <property role="1GSvIU" value="full" />
@@ -14017,6 +14135,11 @@
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="3xEfKBqKKZn" resolve="device" />
         </node>
+        <node concept="NX1gA" id="44q72NsGalf" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Session Id" />
+          <ref role="NX6Kv" node="YOvM6E6aci" resolve="sessionId" />
+        </node>
         <node concept="Nu42z" id="3xEfKBqKO9a" role="3BtCOu">
           <property role="Nu42W" value="16" />
         </node>
@@ -14045,6 +14168,16 @@
         <node concept="NXeRC" id="YOvM6E66WJ" role="NXodf">
           <property role="NXePf" value="Need renegotiate session. For example when streams are changed." />
         </node>
+        <node concept="NX1gA" id="44q72NsGakY" role="NXodf">
+          <property role="NX6R2" value="Device Id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="YOvM6E5X47" resolve="device" />
+        </node>
+        <node concept="NX1gA" id="44q72NsGal6" role="NXodf">
+          <property role="NX6R2" value="Session Id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="YOvM6E6971" resolve="sessionId" />
+        </node>
       </node>
       <node concept="2m5naR" id="3Tolai5NNZp" role="2m5mJr">
         <property role="TrG5h" value="CloseSession" />
@@ -14069,6 +14202,10 @@
         </node>
         <node concept="NXeRC" id="3Tolai5NP1B" role="NXodf">
           <property role="NXePf" value="Close this session and be ready to " />
+        </node>
+        <node concept="NX1gA" id="44q72NsGalu" role="NXodf">
+          <property role="NX6R2" value="Device Id" />
+          <ref role="NX6Kv" node="YOvM6E6bhF" resolve="device" />
         </node>
         <node concept="NX1gA" id="3Tolai5NR9V" role="NXodf">
           <property role="NX6R2" value="Session Id for renegotiation" />

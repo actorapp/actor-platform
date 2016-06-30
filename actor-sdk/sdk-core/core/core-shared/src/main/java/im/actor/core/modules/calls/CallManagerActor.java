@@ -51,7 +51,7 @@ public class CallManagerActor extends ModuleActor {
     // Outgoing call
     //
 
-    private void doCall(final Peer peer, final CommandCallback<Long> callback) {
+    private void doCall(final Peer peer, final CommandCallback<Long> callback, boolean isVideoEnabled) {
         Log.d(TAG, "doCall (" + peer + ")");
 
         //
@@ -67,7 +67,7 @@ public class CallManagerActor extends ModuleActor {
         //
         final WakeLock wakeLock = Runtime.makeWakeLock();
         system().actorOf("actor/master/" + RandomUtils.nextRid(), () -> {
-            return new CallActor(peer, callback, wakeLock, context());
+            return new CallActor(peer, callback, wakeLock, isVideoEnabled, context());
         });
     }
 
@@ -238,19 +238,19 @@ public class CallManagerActor extends ModuleActor {
     }
 
     //
-    // Call Mute/Unmute
+    // Call AudioEnabled/Unmute
     //
-    private void onCallMute(long callId) {
+    private void onCallAudioEnable(long callId) {
         ActorRef ref = runningCalls.get(callId);
         if (ref != null) {
-            ref.send(new AbsCallActor.MuteChanged(true));
+            ref.send(new AbsCallActor.AudioEnabled(true));
         }
     }
 
-    private void onCallUnmute(long callId) {
+    private void onCallAudioDisable(long callId) {
         ActorRef ref = runningCalls.get(callId);
         if (ref != null) {
-            ref.send(new AbsCallActor.MuteChanged(false));
+            ref.send(new AbsCallActor.AudioEnabled(false));
         }
     }
 
@@ -373,7 +373,7 @@ public class CallManagerActor extends ModuleActor {
             onCallEnded(((OnCallEnded) message).getCallId());
         } else if (message instanceof DoCall) {
             DoCall doCall = (DoCall) message;
-            doCall(doCall.getPeer(), doCall.getCallback());
+            doCall(doCall.getPeer(), doCall.getCallback(), doCall.isEnableVideoCall());
         } else if (message instanceof DoCallComplete) {
             DoCallComplete callCreated = (DoCallComplete) message;
             onCallCreated(callCreated.getCallId(), sender());
@@ -383,10 +383,10 @@ public class CallManagerActor extends ModuleActor {
         } else if (message instanceof OnCallAnswered) {
             OnCallAnswered answered = (OnCallAnswered) message;
             onCallAnswered(answered.getCallId());
-        } else if (message instanceof MuteCall) {
-            onCallMute(((MuteCall) message).getCallId());
-        } else if (message instanceof UnmuteCall) {
-            onCallUnmute(((UnmuteCall) message).getCallId());
+        } else if (message instanceof AudioDisable) {
+            onCallAudioDisable(((AudioDisable) message).getCallId());
+        } else if (message instanceof AudioEnable) {
+            onCallAudioEnable(((AudioEnable) message).getCallId());
         } else if (message instanceof DisableVideo) {
             onCallVideoDisable(((DisableVideo) message).getCallId());
         } else if (message instanceof EnableVideo) {
@@ -503,10 +503,10 @@ public class CallManagerActor extends ModuleActor {
     // Call State
     //
 
-    public static class MuteCall {
+    public static class AudioEnable {
         private long callId;
 
-        public MuteCall(long callId) {
+        public AudioEnable(long callId) {
             this.callId = callId;
         }
 
@@ -515,10 +515,10 @@ public class CallManagerActor extends ModuleActor {
         }
     }
 
-    public static class UnmuteCall {
+    public static class AudioDisable {
         private long callId;
 
-        public UnmuteCall(long callId) {
+        public AudioDisable(long callId) {
             this.callId = callId;
         }
 
@@ -559,10 +559,12 @@ public class CallManagerActor extends ModuleActor {
 
         private Peer peer;
         private CommandCallback<Long> callback;
+        private boolean enableVideoCall;
 
-        public DoCall(Peer peer, CommandCallback<Long> callback) {
+        public DoCall(Peer peer, CommandCallback<Long> callback, boolean enableVideoCall) {
             this.peer = peer;
             this.callback = callback;
+            this.enableVideoCall = enableVideoCall;
         }
 
         public CommandCallback<Long> getCallback() {
@@ -571,6 +573,10 @@ public class CallManagerActor extends ModuleActor {
 
         public Peer getPeer() {
             return peer;
+        }
+
+        public boolean isEnableVideoCall() {
+            return enableVideoCall;
         }
     }
 

@@ -199,7 +199,7 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         // Avatar View
         //
         
-        avatarView.frame = CGRectMake(padding, padding, 58, 58)
+        avatarView.frame = CGRectMake(padding, padding, 50, 50)
         
         
         //

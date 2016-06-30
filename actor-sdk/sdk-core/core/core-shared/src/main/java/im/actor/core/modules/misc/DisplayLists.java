@@ -14,7 +14,6 @@ import im.actor.core.entity.SearchEntity;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.runtime.Storage;
-import im.actor.runtime.bser.BserCreator;
 import im.actor.runtime.mvvm.PlatformDisplayList;
 
 public class DisplayLists extends AbsModule {
@@ -96,7 +95,7 @@ public class DisplayLists extends AbsModule {
         PlatformDisplayList<Message> res = Storage.createDisplayList(context().getMessagesModule().getConversationEngine(peer),
                 isShared, Message.ENTITY_NAME);
 
-        long lastRead = context().getMessagesModule().getConversationVM(peer).getOwnReadDate().get();
+        long lastRead = context().getMessagesModule().getConversationVM(peer).getLastMessageDate();
 
         if (lastRead != 0) {
             res.initCenter(lastRead);

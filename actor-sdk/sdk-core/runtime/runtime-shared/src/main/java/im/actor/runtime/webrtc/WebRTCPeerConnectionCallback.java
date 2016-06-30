@@ -40,23 +40,6 @@ public interface WebRTCPeerConnectionCallback {
     void onRenegotiationNeeded();
 
     /**
-     * On Own Stream Added
-     *
-     * @param stream stream
-     */
-    @ObjectiveCName("onOwnStreamAdded:")
-    void onOwnStreamAdded(WebRTCMediaStream stream);
-
-    /**
-     * On Own Stream Removed
-     *
-     * @param stream removed stream. References can be different from that passed in onStreamAdded
-     */
-    @ObjectiveCName("onOwnStreamRemoved:")
-    void onOwnStreamRemoved(WebRTCMediaStream stream);
-
-
-    /**
      * Peer connection disposed
      */
     @ObjectiveCName("onDisposed")

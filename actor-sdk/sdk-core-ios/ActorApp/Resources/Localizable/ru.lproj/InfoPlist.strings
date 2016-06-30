@@ -2,5 +2,5 @@
 //  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
-"CFBundleDisplayName" = "Актор";
-"CFBundleName" = "Актор";
+"CFBundleDisplayName" = "Actor SDK";
+"CFBundleName" = "Actor SDK";

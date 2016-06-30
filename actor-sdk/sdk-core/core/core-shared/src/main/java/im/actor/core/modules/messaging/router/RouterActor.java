@@ -218,8 +218,8 @@ public class RouterActor extends ModuleActor {
             if (m.getSenderId() != myUid()) {
                 if (m.getSortDate() > state.getInReadDate()) {
                     unreadCount++;
+                    maxInDate = Math.max(maxInDate, m.getSortDate());
                 }
-                maxInDate = Math.max(maxInDate, m.getSortDate());
             }
         }
 
@@ -240,8 +240,10 @@ public class RouterActor extends ModuleActor {
                 if (maxInDate > 0) {
                     state = state
                             .changeInReadDate(maxInDate)
-                            .changeInMaxDate(maxInDate)
                             .changeCounter(0);
+                    if (state.getInMaxMessageDate() < maxInDate) {
+                        state.changeInMaxDate(maxInDate);
+                    }
                     context().getMessagesModule().getPlainReadActor()
                             .send(new CursorReaderActor.MarkRead(peer, maxInDate));
                     context().getNotificationsModule().onOwnRead(peer, maxInDate);
@@ -251,7 +253,7 @@ public class RouterActor extends ModuleActor {
             } else {
                 // Updating counter
                 state = state.changeCounter(state.getUnreadCount() + unreadCount);
-                if (maxInDate > 0) {
+                if (maxInDate > state.getInMaxMessageDate()) {
                     state = state
                             .changeInMaxDate(maxInDate);
                 }
@@ -289,12 +291,24 @@ public class RouterActor extends ModuleActor {
                             hasCurrentMention = true;
                         }
                     }
+                    int messagesCount = 0;
+                    int dialogsCount = 0;
+                    for (Peer activePeer : activeDialogStorage.getAllPeers()) {
+                        int activeDialogueUnreadCount = conversationStates.getValue(activePeer.getUnuqueId()).getUnreadCount();
+                        if (activeDialogueUnreadCount > 0) {
+                            dialogsCount++;
+                            messagesCount += activeDialogueUnreadCount;
+                        }
+                    }
+
                     context().getNotificationsModule().onInMessage(
                             peer,
                             m.getSenderId(),
                             m.getSortDate(),
                             ContentDescription.fromContent(m.getContent()),
-                            hasCurrentMention);
+                            hasCurrentMention,
+                            messagesCount,
+                            dialogsCount);
                 }
             }
         }
@@ -322,6 +336,9 @@ public class RouterActor extends ModuleActor {
                     .changeAllDate(date)
                     .changeState(MessageState.SENT);
             conversation(peer).addOrUpdateItem(updatedMsg);
+
+            ConversationState state = conversationStates.getValue(peer.getUnuqueId());
+            conversationStates.addOrUpdateItem(state.changeOutSendDate(date));
 
             // Notify dialogs
             return getDialogsRouter().onMessage(peer, updatedMsg, -1);
@@ -615,18 +632,22 @@ public class RouterActor extends ModuleActor {
     private void markAsReadIfNeeded(Peer peer) {
         if (isConversationVisible(peer)) {
             ConversationState state = conversationStates.getValue(peer.getUnuqueId());
-            if (state.getInReadDate() < state.getInMaxMessageDate()) {
+            long inMaxMessageDate = state.getInMaxMessageDate();
+            //check UnreadCount for zero, because it can be loaded from server (after login)
+            if (state.getUnreadCount() != 0 || state.getInReadDate() < inMaxMessageDate) {
                 state = state
                         .changeCounter(0)
-                        .changeInReadDate(state.getInMaxMessageDate());
+                        .changeInReadDate(inMaxMessageDate);
                 conversationStates.addOrUpdateItem(state);
 
                 context().getMessagesModule().getPlainReadActor()
-                        .send(new CursorReaderActor.MarkRead(peer, state.getInMaxMessageDate()));
+                        .send(new CursorReaderActor.MarkRead(peer, inMaxMessageDate));
 
                 notifyActiveDialogsVM();
 
                 getDialogsRouter().onCounterChanged(peer, 0);
+
+                context().getNotificationsModule().onOwnRead(peer, inMaxMessageDate);
             }
         }
     }

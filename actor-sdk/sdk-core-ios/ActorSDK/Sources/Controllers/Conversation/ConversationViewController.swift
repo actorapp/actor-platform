@@ -221,10 +221,22 @@ public class ConversationViewController:
             isBot = false
         }
         if (ActorSDK.sharedActor().enableCalls && !isBot && peer.isPrivate) {
-            let callButtonView = AACallButton(image: UIImage.bundled("ic_call_outline_22")?.tintImage(ActorSDK.sharedActor().style.navigationTintColor))
-            callButtonView.viewDidTap = onCallTap
-            let callButtonItem = UIBarButtonItem(customView: callButtonView)
-            self.navigationItem.rightBarButtonItems = [barItem, callButtonItem]
+            if ActorSDK.sharedActor().enableVideoCalls {
+                let callButtonView = AACallButton(image: UIImage.bundled("ic_call_outline_22")?.tintImage(ActorSDK.sharedActor().style.navigationTintColor))
+                callButtonView.viewDidTap = onCallTap
+                let callButtonItem = UIBarButtonItem(customView: callButtonView)
+                
+                let videoCallButtonView = AACallButton(image: UIImage.bundled("ic_video_outline_22")?.tintImage(ActorSDK.sharedActor().style.navigationTintColor))
+                videoCallButtonView.viewDidTap = onVideoCallTap
+                let callVideoButtonItem = UIBarButtonItem(customView: videoCallButtonView)
+                
+                self.navigationItem.rightBarButtonItems = [barItem, callVideoButtonItem, callButtonItem]
+            } else {
+                let callButtonView = AACallButton(image: UIImage.bundled("ic_call_outline_22")?.tintImage(ActorSDK.sharedActor().style.navigationTintColor))
+                callButtonView.viewDidTap = onCallTap
+                let callButtonItem = UIBarButtonItem(customView: callButtonView)
+                self.navigationItem.rightBarButtonItems = [barItem, callButtonItem]
+            }
         } else {
             self.navigationItem.rightBarButtonItems = [barItem]
         }
@@ -304,19 +316,6 @@ public class ConversationViewController:
                     }
                 }
             })
-            
-            //
-            //Unblock User
-            //
-            
-            if(blockStatus){
-                
-                let unblockActionSheet = AAUnblockActionSheet()
-                unblockActionSheet.delegate = self
-                unblockActionSheet.presentInController(self)
-            
-            }
-        
         } else if (peer.peerType.ordinal() == ACPeerType.GROUP().ordinal()) {
             let group = Actor.getGroupWithGid(peer.peerId)
             let nameModel = group.getNameModel()
@@ -465,6 +464,12 @@ public class ConversationViewController:
         }
     }
     
+    func onVideoCallTap() {
+        if (self.peer.isPrivate) {
+            execute(ActorSDK.sharedActor().messenger.doVideoCallWithUid(self.peer.peerId))
+        }
+    }
+    
     ////////////////////////////////////////////////////////////
     // MARK: - Text bar actions
     ////////////////////////////////////////////////////////////
@@ -544,9 +549,14 @@ public class ConversationViewController:
         
         self.rightButton.layoutIfNeeded()
         
-        let actionSheet = AAConvActionSheet()
-        actionSheet.delegate = self
-        actionSheet.presentInController(self)
+        if !ActorSDK.sharedActor().delegate.actorConversationCustomAttachMenu(self) {
+            let actionSheet = AAConvActionSheet()
+            actionSheet.addCustomButton("SendDocument")
+            actionSheet.addCustomButton("ShareLocation")
+            actionSheet.addCustomButton("ShareContact")
+            actionSheet.delegate = self
+            actionSheet.presentInController(self)
+        }
     }
  
     ////////////////////////////////////////////////////////////
@@ -621,6 +631,12 @@ public class ConversationViewController:
     // MARK: - Picker
     ////////////////////////////////////////////////////////////
     
+    public func actionSheetPickedImages(images:[(NSData,Bool)]) {
+        for (i,j) in images {
+            Actor.sendUIImage(i, peer: peer, animated:j)
+        }
+    }
+    
     public func actionSheetPickCamera() {
         pickImage(.Camera)
     }
@@ -629,33 +645,33 @@ public class ConversationViewController:
         pickImage(.PhotoLibrary)
     }
     
-    public func actionSheetPickContact() {
+    public func actionSheetCustomButton(index: Int) {
+        if index == 0 {
+            pickDocument()
+        } else if index == 1 {
+            pickLocation()
+        } else if index == 2 {
+            pickContact()
+        }
+    }
+    
+    public func pickContact() {
         let pickerController = ABPeoplePickerNavigationController()
         pickerController.peoplePickerDelegate = self
         self.presentViewController(pickerController, animated: true, completion: nil)
     }
-    
-    public func actionSheetPickLocation() {
+
+    public func pickLocation() {
         let pickerController = AALocationPickerController()
         pickerController.delegate = self
         self.presentViewController(AANavigationController(rootViewController:pickerController), animated: true, completion: nil)
     }
     
-    public func actionSheetPickedImages(images: [UIImage]) {
-        for i in images {
-            Actor.sendUIImage(i, peer: peer)
-        }
-    }
-    
-    public func actionSheetPickDocument() {
+    public func pickDocument() {
         let documentPicker = UIDocumentMenuViewController(documentTypes: UTTAll as! [String], inMode: UIDocumentPickerMode.Import)
         documentPicker.view.backgroundColor = UIColor.clearColor()
         documentPicker.delegate = self
         self.presentViewController(documentPicker, animated: true, completion: nil)
-    }
-    
-    public func actionSheetUnblockContact() {
-        self.executePromise(Actor.unblockUser(Actor.getUserWithUid(peer.peerId).getId()))
     }
     
     ////////////////////////////////////////////////////////////
@@ -716,14 +732,17 @@ public class ConversationViewController:
     
     public func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
         picker.dismissViewControllerAnimated(true, completion: nil)
-        Actor.sendUIImage(image, peer: peer)
+         let imageData = UIImageJPEGRepresentation(image, 0.8)
+         Actor.sendUIImage(imageData!, peer: peer, animated:false)
     }
     
     public func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         picker.dismissViewControllerAnimated(true, completion: nil)
-        
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
-            Actor.sendUIImage(image, peer: peer)
+            let imageData = UIImageJPEGRepresentation(image, 0.8)
+            
+            //TODO: Need implement assert fetching here to get images
+            Actor.sendUIImage(imageData!, peer: peer, animated:false)
             
         } else {
             Actor.sendVideo(info[UIImagePickerControllerMediaURL] as! NSURL, peer: peer)

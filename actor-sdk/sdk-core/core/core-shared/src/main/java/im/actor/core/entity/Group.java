@@ -297,7 +297,7 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
                 w.getId(),
                 w.getAccessHash(),
                 w.getTitle(),
-                w.getAvatar(),
+                avatar,
                 w.getMembersCount(),
                 w.isMember(),
                 w.isHidden(),

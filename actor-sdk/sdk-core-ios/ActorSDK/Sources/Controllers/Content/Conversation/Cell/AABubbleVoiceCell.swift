@@ -141,8 +141,15 @@ public class AABubbleVoiceCell: AABubbleBaseFileCell,AAModernConversationAudioPl
             })
             
             // Bind file
-            fileBind(message, autoDownload: document.getSource().getSize() < 1024 * 1025 * 1024)
-        
+            let autoDownload: Bool
+            if self.peer.isGroup {
+                autoDownload = ActorSDK.sharedActor().isAudioAutoDownloadGroup
+            } else if self.peer.isPrivate {
+                autoDownload = ActorSDK.sharedActor().isAudioAutoDownloadPrivate
+            } else {
+                autoDownload = false
+            }
+            fileBind(message, autoDownload: autoDownload)
         }
         
         dispatchOnUi { () -> Void in
@@ -215,60 +222,44 @@ public class AABubbleVoiceCell: AABubbleBaseFileCell,AAModernConversationAudioPl
     
     //MARK: - File state binding
     
-    public override func fileUploadPaused(reference: String, selfGeneration: Int) {
-        
+    public override func fileStateChanged(reference: String?, progress: Int?, isPaused: Bool, isUploading: Bool, selfGeneration: Int) {
         runOnUiThread(selfGeneration) { () -> () in
-            self.playPauseButton.hideView()
-            
-            self.progress.showView()
-            self.progress.setButtonType(FlatButtonType.buttonUpBasicType, animated: true)
-            self.progress.hideProgress()
+            if isUploading {
+                if isPaused {
+                    self.playPauseButton.hideView()
+                    
+                    self.progress.showView()
+                    self.progress.setButtonType(FlatButtonType.buttonUpBasicType, animated: true)
+                    self.progress.hideProgress()
+                } else {
+                    self.playPauseButton.hideView()
+                    
+                    self.progress.showView()
+                    self.progress.setButtonType(FlatButtonType.buttonPausedType, animated: true)
+                    self.progress.setProgress(Double(progress!)/100.0)
+                }
+            } else {
+                if (reference != nil) {
+                    self.playPauseButton.showView()
+                    
+                    self.progress.setProgress(1)
+                    self.progress.hideView()
+                } else if isPaused {
+                    self.playPauseButton.hideView()
+                    
+                    self.progress.showView()
+                    self.progress.setButtonType(FlatButtonType.buttonDownloadType, animated: true)
+                    self.progress.hideProgress()
+                } else {
+                    self.playPauseButton.hideView()
+                    
+                    self.progress.showView()
+                    self.progress.setButtonType(FlatButtonType.buttonPausedType, animated: true)
+                    self.progress.setProgress(Double(progress!)/100.0)
+                }
+            }
         }
-    }
-    
-    public override func fileUploading(reference: String, progress: Double, selfGeneration: Int) {
-        
-        runOnUiThread(selfGeneration) { () -> () in
-            self.playPauseButton.hideView()
-            
-            self.progress.showView()
-            self.progress.setButtonType(FlatButtonType.buttonPausedType, animated: true)
-            self.progress.setProgress(progress)
-        }
-    }
-    
-    public override func fileDownloadPaused(selfGeneration: Int) {
-        
-        runOnUiThread(selfGeneration) { () -> () in
-            self.playPauseButton.hideView()
-            
-            self.progress.showView()
-            self.progress.setButtonType(FlatButtonType.buttonDownloadType, animated: true)
-            self.progress.hideProgress()
-        }
-    }
-    
-    public override func fileDownloading(progress: Double, selfGeneration: Int) {
-        
-        runOnUiThread(selfGeneration) { () -> () in
-            self.playPauseButton.hideView()
-            
-            self.progress.showView()
-            self.progress.setButtonType(FlatButtonType.buttonPausedType, animated: true)
-            self.progress.setProgress(progress)
-        }
-    }
-    
-    public override func fileReady(reference: String, selfGeneration: Int) {
-        
-        runOnUiThread(selfGeneration) { () -> () in
-            self.playPauseButton.showView()
-            
-            self.progress.setProgress(1)
-            self.progress.hideView()
-        }
-    }
-    
+    } 
     
     //MARK: - Media Action
     

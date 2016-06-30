@@ -3,6 +3,7 @@ package im.actor.core.modules.calls.peers;
 import com.google.j2objc.annotations.Property;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -12,12 +13,14 @@ import im.actor.core.modules.ModuleActor;
 import im.actor.runtime.Log;
 import im.actor.runtime.WebRTC;
 import im.actor.runtime.actors.ActorCreator;
+import im.actor.runtime.actors.ask.AskMessage;
+import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.collections.ManagedList;
-import im.actor.runtime.function.Consumer;
-import im.actor.runtime.function.Function;
+import im.actor.runtime.function.CountedReference;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.webrtc.WebRTCIceServer;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
+import im.actor.runtime.webrtc.WebRTCMediaTrack;
 import im.actor.runtime.webrtc.WebRTCPeerConnection;
 import im.actor.runtime.webrtc.WebRTCPeerConnectionCallback;
 import im.actor.runtime.webrtc.WebRTCSessionDescription;
@@ -33,11 +36,10 @@ public class PeerConnectionActor extends ModuleActor {
     public static ActorCreator CONSTRUCTOR(@NotNull final List<ApiICEServer> iceServers,
                                            @NotNull final PeerSettings selfSettings,
                                            @NotNull final PeerSettings theirSettings,
-                                           @NotNull final WebRTCMediaStream mediaStream,
+                                           @NotNull final CountedReference<WebRTCMediaStream> userMedia,
                                            @NotNull final PeerConnectionCallback callback,
                                            @NotNull final ModuleContext context) {
-        return () -> new PeerConnectionActor(iceServers, selfSettings, theirSettings, mediaStream,
-                callback, context);
+        return () -> new PeerConnectionActor(iceServers, selfSettings, theirSettings, userMedia, callback, context);
     }
 
 
@@ -47,8 +49,8 @@ public class PeerConnectionActor extends ModuleActor {
     private final List<ApiICEServer> iceServers;
     @NotNull
     private final PeerConnectionCallback callback;
-    @NotNull
-    private final WebRTCMediaStream stream;
+    @Nullable
+    private CountedReference<WebRTCMediaStream> userMedia;
 
     @NotNull
     private WebRTCPeerConnection peerConnection;
@@ -57,16 +59,18 @@ public class PeerConnectionActor extends ModuleActor {
     @NotNull
     private PeerConnectionState state = PeerConnectionState.INITIALIZATION;
 
+    private long sessionId = -1;
+
     public PeerConnectionActor(@NotNull List<ApiICEServer> iceServers,
                                @NotNull PeerSettings selfSettings,
                                @NotNull PeerSettings theirSettings,
-                               @NotNull WebRTCMediaStream mediaStream,
+                               @NotNull CountedReference<WebRTCMediaStream> userMedia,
                                @NotNull PeerConnectionCallback callback,
                                @NotNull ModuleContext context) {
         super(context);
         this.TAG = "PeerConnection";
         this.callback = callback;
-        this.stream = mediaStream;
+        this.userMedia = userMedia;
         this.iceServers = iceServers;
     }
 
@@ -74,45 +78,43 @@ public class PeerConnectionActor extends ModuleActor {
     public void preStart() {
 
         isReady = false;
-
         WebRTCIceServer[] rtcIceServers = ManagedList.of(iceServers).map(apiICEServer -> new WebRTCIceServer(apiICEServer.getUrl(), apiICEServer.getUsername(), apiICEServer.getCredential())).toArray(new WebRTCIceServer[0]);
         WebRTCSettings settings = new WebRTCSettings(false, false, config().isVideoCallsEnabled());
         WebRTC.createPeerConnection(rtcIceServers, settings).then(webRTCPeerConnection -> {
             PeerConnectionActor.this.peerConnection = webRTCPeerConnection;
-            PeerConnectionActor.this.peerConnection.addOwnStream(stream);
-            callback.onPeerConnectionCreated(webRTCPeerConnection);
+            PeerConnectionActor.this.peerConnection.addOwnStream(userMedia);
             PeerConnectionActor.this.peerConnection.addCallback(new WebRTCPeerConnectionCallback() {
+
                 @Override
                 public void onCandidate(int label, String id, String candidate) {
-                    callback.onCandidate(label, id, candidate);
-                }
-
-                @Override
-                public void onStreamAdded(WebRTCMediaStream stream1) {
-                    // Making stream as muted and make it needed to be explicitly enabled
-                    // by parent actor
-                    stream1.setAudioEnabled(false);
-                    callback.onStreamAdded(stream1);
-                }
-
-                @Override
-                public void onStreamRemoved(WebRTCMediaStream stream1) {
-                    callback.onStreamRemoved(stream1);
+                    if (sessionId != -1) {
+                        callback.onCandidate(sessionId, label, id, candidate);
+                    }
                 }
 
                 @Override
                 public void onRenegotiationNeeded() {
-
+//                    if (sessionId != -1) {
+//                        callback.onNegotiationNeeded(sessionId);
+//                    }
                 }
 
                 @Override
-                public void onOwnStreamAdded(WebRTCMediaStream stream) {
-
+                public void onStreamAdded(WebRTCMediaStream addedStream) {
+                    // Disabling all tracks and make it needed to be explicitly enabled
+                    // by parent actor
+                    for (WebRTCMediaTrack track : addedStream.getAudioTracks()) {
+                        track.setEnabled(false);
+                    }
+                    for (WebRTCMediaTrack track : addedStream.getVideoTracks()) {
+                        track.setEnabled(false);
+                    }
+                    callback.onStreamAdded(addedStream);
                 }
 
                 @Override
-                public void onOwnStreamRemoved(WebRTCMediaStream stream) {
-
+                public void onStreamRemoved(WebRTCMediaStream removedStream) {
+                    callback.onStreamRemoved(removedStream);
                 }
 
                 @Override
@@ -135,11 +137,30 @@ public class PeerConnectionActor extends ModuleActor {
         // Just Reset current state
         //
         state = PeerConnectionState.WAITING_HANDSHAKE;
+        sessionId = -1;
+    }
+
+    public void onReplaceStream(CountedReference<WebRTCMediaStream> newStream) {
+        if (userMedia != null) {
+            peerConnection.removeOwnStream(userMedia);
+            userMedia.release();
+        }
+        peerConnection.addOwnStream(newStream);
+        userMedia = newStream;
+        if (sessionId != -1) {
+            callback.onNegotiationNeeded(sessionId);
+        }
     }
 
     public void onOfferNeeded(final long sessionId) {
+
         // Ignore if we are not waiting for handshake
         if (state != PeerConnectionState.WAITING_HANDSHAKE) {
+            return;
+        }
+
+        // Ignore if we already have session id
+        if (this.sessionId != -1) {
             return;
         }
 
@@ -151,33 +172,29 @@ public class PeerConnectionActor extends ModuleActor {
         //
 
         isReady = false;
-        peerConnection.createOffer()
-                .flatMap(new Function<WebRTCSessionDescription, Promise<WebRTCSessionDescription>>() {
-                    @Override
-                    public Promise<WebRTCSessionDescription> apply(WebRTCSessionDescription webRTCSessionDescription) {
-                        return peerConnection.setLocalDescription(webRTCSessionDescription);
-                    }
-                })
-                .then(new Consumer<WebRTCSessionDescription>() {
-                    @Override
-                    public void apply(WebRTCSessionDescription webRTCSessionDescription) {
-                        callback.onOffer(sessionId, webRTCSessionDescription.getSdp());
-                        state = PeerConnectionState.WAITING_ANSWER;
-                        onReady();
-                    }
-                })
-                .failure(new Consumer<Exception>() {
-                    @Override
-                    public void apply(Exception e) {
-                        e.printStackTrace();
-                        onHandshakeFailure();
-                    }
-                });
+        peerConnection.createOffer().flatMap(webRTCSessionDescription -> {
+            return peerConnection.setLocalDescription(SDPOptimizer.optimize(webRTCSessionDescription));
+        }).then(webRTCSessionDescription -> {
+            // Save Session Id and switch to next state
+            PeerConnectionActor.this.sessionId = sessionId;
+            PeerConnectionActor.this.state = PeerConnectionState.WAITING_ANSWER;
+            callback.onOffer(sessionId, webRTCSessionDescription.getSdp());
+            onReady();
+        }).failure(e -> {
+            e.printStackTrace();
+            onHandshakeFailure();
+        });
     }
 
     public void onOffer(final long sessionId, @NotNull String sdp) {
+
         // Ignore if we are not waiting for handshake
         if (state != PeerConnectionState.WAITING_HANDSHAKE) {
+            return;
+        }
+
+        // Ignore if we already have session id
+        if (this.sessionId != -1) {
             return;
         }
 
@@ -191,29 +208,18 @@ public class PeerConnectionActor extends ModuleActor {
         //
 
         isReady = false;
-        peerConnection.setRemoteDescription(new WebRTCSessionDescription("offer", sdp)).flatMap(new Function<WebRTCSessionDescription, Promise<WebRTCSessionDescription>>() {
-            @Override
-            public Promise<WebRTCSessionDescription> apply(WebRTCSessionDescription description) {
-                return peerConnection.createAnswer();
-            }
-        }).flatMap(new Function<WebRTCSessionDescription, Promise<WebRTCSessionDescription>>() {
-            @Override
-            public Promise<WebRTCSessionDescription> apply(WebRTCSessionDescription webRTCSessionDescription) {
-                return peerConnection.setLocalDescription(webRTCSessionDescription);
-            }
-        }).then(new Consumer<WebRTCSessionDescription>() {
-            @Override
-            public void apply(WebRTCSessionDescription webRTCSessionDescription) {
-                callback.onAnswer(sessionId, webRTCSessionDescription.getSdp());
-                onHandShakeCompleted(sessionId);
-                onReady();
-            }
-        }).failure(new Consumer<Exception>() {
-            @Override
-            public void apply(Exception e) {
-                e.printStackTrace();
-                onHandshakeFailure();
-            }
+        peerConnection.setRemoteDescription(new WebRTCSessionDescription("offer", sdp)).flatMap(description -> {
+            return peerConnection.createAnswer();
+        }).flatMap(webRTCSessionDescription -> {
+            return peerConnection.setLocalDescription(SDPOptimizer.optimize(webRTCSessionDescription));
+        }).then(webRTCSessionDescription -> {
+            callback.onAnswer(sessionId, webRTCSessionDescription.getSdp());
+            PeerConnectionActor.this.sessionId = sessionId;
+            onHandShakeCompleted(sessionId);
+            onReady();
+        }).failure(e -> {
+            e.printStackTrace();
+            onHandshakeFailure();
         });
     }
 
@@ -251,6 +257,10 @@ public class PeerConnectionActor extends ModuleActor {
             peerConnection.close();
             peerConnection = null;
         }
+        if (userMedia != null) {
+            userMedia.release();
+            userMedia = null;
+        }
     }
 
     private void onHandShakeCompleted(long sessionId) {
@@ -269,10 +279,14 @@ public class PeerConnectionActor extends ModuleActor {
         super.postStop();
 
         if (peerConnection != null) {
-            peerConnection.removeOwnStream(stream);
             peerConnection.close();
             peerConnection = null;
         }
+        if (userMedia != null) {
+            userMedia.release();
+            userMedia = null;
+        }
+
         isReady = false;
         state = PeerConnectionState.CLOSED;
     }
@@ -319,6 +333,20 @@ public class PeerConnectionActor extends ModuleActor {
             onResetState();
         } else {
             super.onReceive(message);
+        }
+    }
+
+    @Override
+    public Promise onAsk(Object message) throws Exception {
+        if (message instanceof ReplaceStream) {
+            if (!isReady) {
+                stash();
+                return null;
+            }
+            onReplaceStream(((ReplaceStream) message).getStream());
+            return Promise.success(null);
+        } else {
+            return super.onAsk(message);
         }
     }
 
@@ -391,6 +419,8 @@ public class PeerConnectionActor extends ModuleActor {
     public static class OnCandidate {
 
         @Property("nonatomic, readonly")
+        private final long sessionId;
+        @Property("nonatomic, readonly")
         private final int index;
         @NotNull
         @Property("nonatomic, readonly")
@@ -399,10 +429,15 @@ public class PeerConnectionActor extends ModuleActor {
         @Property("nonatomic, readonly")
         private final String id;
 
-        public OnCandidate(int index, @NotNull String id, @NotNull String sdp) {
+        public OnCandidate(long sessionId, int index, @NotNull String id, @NotNull String sdp) {
+            this.sessionId = sessionId;
             this.index = index;
             this.id = id;
             this.sdp = sdp;
+        }
+
+        public long getSessionId() {
+            return sessionId;
         }
 
         public int getIndex() {
@@ -422,6 +457,19 @@ public class PeerConnectionActor extends ModuleActor {
 
     public static class ResetState {
 
+    }
+
+    public static class ReplaceStream implements AskMessage<Void> {
+
+        private CountedReference<WebRTCMediaStream> stream;
+
+        public ReplaceStream(CountedReference<WebRTCMediaStream> stream) {
+            this.stream = stream;
+        }
+
+        public CountedReference<WebRTCMediaStream> getStream() {
+            return stream;
+        }
     }
 
     private enum PeerConnectionState {

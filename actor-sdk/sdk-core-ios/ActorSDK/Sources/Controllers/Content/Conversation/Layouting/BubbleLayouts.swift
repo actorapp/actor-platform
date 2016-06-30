@@ -29,9 +29,11 @@ public class AACellLayout {
     let key: String
     var height: CGFloat
     let date: String
+    let anchorDate: String
     
     public init(height: CGFloat, date: Int64, key: String, layouter: AABubbleLayouter) {
         self.date = AACellLayout.formatDate(date)
+        self.anchorDate = Actor.getFormatter().formatDate(date)
         self.key = key
         self.height = height
         self.layouter = layouter
@@ -39,6 +41,27 @@ public class AACellLayout {
     
     public class func formatDate(date: Int64) -> String {
         return dateFormatter.stringFromDate(NSDate(timeIntervalSince1970: NSTimeInterval(Double(date) / 1000.0)))
+    }
+    
+    public class func pickApproriateSize(width: CGFloat, height: CGFloat) -> CGSize {
+        let maxW: CGFloat
+        let maxH: CGFloat
+        if AADevice.isiPad {
+            maxW = 240
+            maxH = 340
+        } else {
+            if AADevice.isiPhone5 || AADevice.isiPhone4 {
+                maxW = 220
+                maxH = 260
+            } else {
+                maxW = 240
+                maxH = 340
+            }
+        }
+        let scaleW = maxW / width
+        let scaleH = maxH / height
+        let scale = min(scaleW, scaleH)
+        return CGSize(width: scale * width, height: scale * height)
     }
 }
 

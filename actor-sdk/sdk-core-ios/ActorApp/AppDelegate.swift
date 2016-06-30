@@ -36,4 +36,19 @@ import ActorSDK
         
         return true;
     }
+   public override func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
+        super.application(application, didFinishLaunchingWithOptions: launchOptions)
+        
+        ActorSDK.sharedActor().presentMessengerInNewWindow()
+        
+        return true;
+    }
+    
+    public override func actorRootControllers() -> [UIViewController]? {
+        return [AAContactsViewController(), AARecentViewController(), AASettingsViewController()]
+    }
+    
+    public override func actorRootInitialControllerIndex() -> Int? {
+        return 0
+    }
 }

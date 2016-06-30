@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 import im.actor.runtime.MainThreadRuntime;
+import im.actor.runtime.os.OSType;
 
 public class AndroidMainThreadProvider implements MainThreadRuntime {
 
@@ -26,5 +27,10 @@ public class AndroidMainThreadProvider implements MainThreadRuntime {
     @Override
     public boolean isSingleThread() {
         return false;
+    }
+
+    @Override
+    public OSType getOSType() {
+        return OSType.ANDROID;
     }
 }

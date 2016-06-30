@@ -6,13 +6,12 @@ package im.actor.core.modules.settings;
 
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
+import im.actor.core.events.SettingsChanged;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.settings.SettingsSyncActor;
-import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;
-import im.actor.runtime.actors.Props;
+import im.actor.runtime.eventbus.EventBus;
 
 public class SettingsModule extends AbsModule {
 
@@ -42,10 +41,18 @@ public class SettingsModule extends AbsModule {
     private final String KEY_PRIVACY;
     private final String KEY_CHAT_TEXT_SIZE;
 
+    private final String KEY_ANIMATION_AUTO_PLAY;
+
+    private final String KEY_NOTIFICATION_PEER_SOUND;
+
     private ActorRef settingsSync;
+
+    private EventBus eventBus;
 
     public SettingsModule(ModuleContext context) {
         super(context);
+
+        eventBus = context.getEvents();
 
         String platformType;
         switch (context.getConfiguration().getPlatformType()) {
@@ -85,6 +92,7 @@ public class SettingsModule extends AbsModule {
         KEY_CHAT_SEND_BY_ENTER = "app." + platformType + "" + deviceType + ".send_by_enter";
         KEY_MARKDOWN_ENABLED = "app." + platformType + "" + deviceType + ".use_markdown";
         KEY_CHAT_TEXT_SIZE = "app." + platformType + "." + deviceType + ".text_size";
+        KEY_NOTIFICATION_PEER_SOUND = "app." + platformType + "." + deviceType + ".notification.chat.sound.";
 
         // Device-type notification settings
         KEY_NOTIFICATION_ENABLED = "category." + deviceType + ".notification.enabled";
@@ -97,6 +105,8 @@ public class SettingsModule extends AbsModule {
         KEY_NOTIFICATION_IN_APP_SOUND = "category." + deviceType + ".in_app.sound.enabled";
         KEY_NOTIFICATION_IN_APP_VIBRATION = "category." + deviceType + ".in_app.vibration.enabled";
 
+        KEY_ANIMATION_AUTO_PLAY = "category." + deviceType + ".auto_play.enabled";
+
         // Account-wide notification settings
         KEY_NOTIFICATION_SOUND = "account.notification.sound";
         KEY_NOTIFICATION_GROUP_ENABLED = "account.notifications.group.enabled";
@@ -107,6 +117,7 @@ public class SettingsModule extends AbsModule {
 
         KEY_WALLPAPPER = "wallpaper.uri";
         KEY_PRIVACY = "privacy.last_seen";
+
     }
 
     public void run() {
@@ -148,6 +159,14 @@ public class SettingsModule extends AbsModule {
 
     public void changeNotificationSound(String sound) {
         setStringValue(KEY_NOTIFICATION_SOUND, sound);
+    }
+
+    public String getNotificationPeerSound(Peer peer) {
+        return readValue(KEY_NOTIFICATION_PEER_SOUND + getChatKey(peer));
+    }
+
+    public void changeNotificationPeerSound(Peer peer, String sound) {
+        setStringValue(KEY_NOTIFICATION_PEER_SOUND + getChatKey(peer), sound);
     }
 
     public boolean isVibrationEnabled() {
@@ -285,6 +304,16 @@ public class SettingsModule extends AbsModule {
         changeValue(KEY_PRIVACY, privacy);
     }
 
+    //Animation
+
+    public boolean isAnimationAutoPlayEnabled() {
+        return getBooleanValue(KEY_ANIMATION_AUTO_PLAY, true);
+    }
+
+    public void setAnimationAutoPlayEnabled(boolean val) {
+        setBooleanValue(KEY_ANIMATION_AUTO_PLAY, val);
+    }
+
     // Common
 
     public boolean getBooleanValue(String key, boolean defaultVal) {
@@ -371,6 +400,7 @@ public class SettingsModule extends AbsModule {
 
     public void onUpdatedSetting(String key, String value) {
         preferences().putString(STORAGE_PREFIX + key, value);
+        eventBus.post(new SettingsChanged());
     }
 
     private String getChatKey(Peer peer) {

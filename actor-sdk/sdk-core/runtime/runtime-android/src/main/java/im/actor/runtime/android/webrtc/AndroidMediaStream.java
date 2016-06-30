@@ -1,145 +1,121 @@
 package im.actor.runtime.android.webrtc;
 
-import org.webrtc.AudioSource;
 import org.webrtc.AudioTrack;
-import org.webrtc.MediaConstraints;
 import org.webrtc.MediaStream;
-import org.webrtc.VideoCapturer;
-import org.webrtc.VideoRenderer;
-import org.webrtc.VideoSource;
 import org.webrtc.VideoTrack;
 
 import im.actor.runtime.android.AndroidWebRTCRuntimeProvider;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
-import im.actor.runtime.webrtc.WebRTCSettings;
+import im.actor.runtime.webrtc.WebRTCMediaTrack;
 
 public class AndroidMediaStream implements WebRTCMediaStream {
 
-    private final boolean isVideoCallsEnabled;
-    private AudioTrack audioTrack;
-    private VideoTrack videoTrack;
-    private MediaStream stream;
-    private boolean isAudioEnabled = false;
-    private boolean isVideoEnabled = true;
-    private boolean local;
-    private boolean diposed = false;
-    private VideoSource videoSource;
+    private final MediaStream stream;
+
+    private final boolean isLocal;
+    private AndroidVideoSource videoSource;
+    private AndroidAudioSource audioSource;
+    private AudioTrack localAudioTrack;
+    private VideoTrack localVideoTrack;
+    private final WebRTCMediaTrack[] videoTracks;
+    private final WebRTCMediaTrack[] audioTracks;
+    private final WebRTCMediaTrack[] allTracks;
 
     public AndroidMediaStream(MediaStream stream) {
-        this(stream, true, false, false);
-    }
-
-    public AndroidMediaStream(final MediaStream stream, boolean autoPlay, boolean local, boolean isVideoCallsEnabled) {
-        this.local = local;
+        this.isLocal = false;
         this.stream = stream;
-        this.isVideoCallsEnabled = isVideoCallsEnabled;
-        if (!local) {
-            audioTrack = stream.audioTracks.get(0);
-            try {
-                videoTrack = stream.videoTracks.get(0);
-            } catch (Exception e) {
-                //Ignore
-            }
+        this.allTracks = new WebRTCMediaTrack[stream.audioTracks.size() + stream.videoTracks.size()];
+        this.audioTracks = new WebRTCMediaTrack[stream.audioTracks.size()];
+        for (int i = 0; i < this.audioTracks.length; i++) {
+            audioTracks[i] = new AndroidAudioTrack(stream.audioTracks.get(i), this);
+            allTracks[i] = audioTracks[i];
+        }
+        this.videoTracks = new WebRTCMediaTrack[stream.videoTracks.size()];
+        for (int i = 0; i < this.videoTracks.length; i++) {
+            videoTracks[i] = new AndroidVideoTrack(stream.videoTracks.get(i), this);
+            allTracks[audioTracks.length + i] = videoTracks[i];
+        }
+    }
+
+    public AndroidMediaStream(AndroidAudioSource audioSource, AndroidVideoSource videoSource) {
+        this.isLocal = true;
+        this.videoSource = videoSource;
+        this.audioSource = audioSource;
+        this.stream = AndroidWebRTCRuntimeProvider.FACTORY.createLocalMediaStream("ARDAMSv0");
+        if (audioSource != null) {
+            localAudioTrack = AndroidWebRTCRuntimeProvider.FACTORY.createAudioTrack("audio0", audioSource.getAudioSource());
+            stream.addTrack(localAudioTrack);
+            audioTracks = new WebRTCMediaTrack[]{new AndroidAudioTrack(localAudioTrack, this)};
         } else {
-            AndroidWebRTCRuntimeProvider.postToHandler(new Runnable() {
-                @Override
-                public void run() {
-                    MediaConstraints audioConstarints = new MediaConstraints();
-                    audioConstarints.mandatory.add(new MediaConstraints.KeyValuePair("googNoiseSuppression", "true"));
-                    audioConstarints.mandatory.add(new MediaConstraints.KeyValuePair("googEchoCancellation", "true"));
-                    AudioSource audioSource = AndroidWebRTCRuntimeProvider.FACTORY.createAudioSource(audioConstarints);
-                    if (isVideoCallsEnabled) {
-                        videoSource = AndroidWebRTCRuntimeProvider.FACTORY.createVideoSource(getVideoCapturer(), new MediaConstraints());
-                        videoTrack = AndroidWebRTCRuntimeProvider.FACTORY.createVideoTrack("ARDAMSv0", videoSource);
-                        stream.addTrack(videoTrack);
-                    }
-                    audioTrack = AndroidWebRTCRuntimeProvider.FACTORY.createAudioTrack("ARDAMSa0", audioSource);
-                    stream.addTrack(audioTrack);
-                }
-            });
-
+            audioTracks = new WebRTCMediaTrack[0];
         }
-        setAudioEnabled(autoPlay);
-    }
-
-    @Override
-    public boolean isAudioEnabled() {
-        return isAudioEnabled;
-    }
-
-    @Override
-    public void setAudioEnabled(boolean isEnabled) {
-        if (audioTrack != null) {
-            audioTrack.setEnabled(isEnabled);
-            this.isAudioEnabled = isEnabled;
+        if (videoSource != null) {
+            localVideoTrack = AndroidWebRTCRuntimeProvider.FACTORY.createVideoTrack("video0", videoSource.getVideoSource());
+            stream.addPreservedTrack(localVideoTrack);
+            videoTracks = new WebRTCMediaTrack[]{new AndroidVideoTrack(localVideoTrack, this)};
+        } else {
+            videoTracks = new WebRTCMediaTrack[0];
         }
-
-    }
-
-    @Override
-    public boolean isVideoEnabled() {
-        return isVideoEnabled;
-    }
-
-    @Override
-    public void setVideoEnabled(boolean isEnabled) {
-        if (videoTrack != null) {
-            videoTrack.setEnabled(isEnabled);
-            this.isVideoEnabled = isEnabled;
+        this.allTracks = new WebRTCMediaTrack[audioTracks.length + videoTracks.length];
+        for (int i = 0; i < audioTracks.length; i++) {
+            allTracks[i] = audioTracks[i];
         }
-
-    }
-
-    @Override
-    public void close() {
-        stream.dispose();
+        for (int i = 0; i < videoTracks.length; i++) {
+            allTracks[audioTracks.length + i] = videoTracks[i];
+        }
     }
 
     public MediaStream getStream() {
         return stream;
     }
 
-    public boolean isLocal() {
-        return local;
+    @Override
+    public WebRTCMediaTrack[] getAudioTracks() {
+        return audioTracks;
     }
 
-    // Cycle through likely device names for the camera and return the first
-    // capturer that works, or crash if none do.
-    private VideoCapturer getVideoCapturer() {
-        String[] cameraFacing = {"front", "back"};
-        int[] cameraIndex = {0, 1};
-        int[] cameraOrientation = {0, 90, 180, 270};
-        for (String facing : cameraFacing) {
-            for (int index : cameraIndex) {
-                for (int orientation : cameraOrientation) {
-                    String name = "Camera " + index + ", Facing " + facing +
-                            ", Orientation " + orientation;
-                    VideoCapturer capturer = VideoCapturer.create(name);
-                    if (capturer != null) {
-                        return capturer;
-                    }
-                }
+    @Override
+    public WebRTCMediaTrack[] getVideoTracks() {
+        return videoTracks;
+    }
+
+    @Override
+    public WebRTCMediaTrack[] getTracks() {
+        return allTracks;
+    }
+
+    @Override
+    public void close() {
+
+        if (isLocal) {
+            if (localAudioTrack != null) {
+                stream.removeTrack(localAudioTrack);
+                localAudioTrack.dispose();
+                localAudioTrack = null;
+            }
+
+            if (localVideoTrack != null) {
+                stream.removeTrack(localVideoTrack);
+                localVideoTrack.dispose();
+                localVideoTrack = null;
+            }
+
+            //
+            // I Have No idea why releasing of video/audio sources need to be here
+            // It is looks almost like "stream.dispose();" implementation, but
+            // before freeing stream we are releasing sources. But we already removed any track?
+            // Unlinking before track removing also produce crashes.
+            //
+            if (audioSource != null) {
+                audioSource.unlink();
+                audioSource = null;
+            }
+            if (videoSource != null) {
+                videoSource.unlink();
+                videoSource = null;
             }
         }
-        throw new RuntimeException("Failed to open capturer");
-    }
 
-    public AudioTrack getAudioTrack() {
-        return audioTrack;
+        stream.dispose();
     }
-
-    public VideoTrack getVideoTrack() {
-        return videoTrack;
-    }
-
-    public void removeRenderer(VideoRenderer renderer) {
-        if (videoTrack != null) {
-            videoTrack.removeRenderer(renderer);
-        }
-    }
-
-    public VideoSource getVideoSource() {
-        return videoSource;
-    }
-
 }

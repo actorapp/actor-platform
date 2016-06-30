@@ -13,9 +13,11 @@ public var Actor : ACCocoaMessenger {
 
 public extension ACCocoaMessenger {
     
-    public func sendUIImage(image: UIImage, peer: ACPeer) {
-        let thumb = image.resizeSquare(90, maxH: 90);
-        let resized = image.resizeOptimize(1200 * 1200);
+    public func sendUIImage(image: NSData, peer: ACPeer, animated:Bool) {
+        
+        let imageFromData = UIImage(data:image)
+        let thumb = imageFromData!.resizeSquare(90, maxH: 90);
+        let resized = imageFromData!.resizeOptimize(1200 * 1200);
         
         let thumbData = UIImageJPEGRepresentation(thumb, 0.55);
         let fastThumb = ACFastThumb(int: jint(thumb.size.width), withInt: jint(thumb.size.height), withByteArray: thumbData!.toJavaBytes())
@@ -23,11 +25,10 @@ public extension ACCocoaMessenger {
         let descriptor = "/tmp/"+NSUUID().UUIDString
         let path = CocoaFiles.pathFromDescriptor(descriptor);
         
-        UIImageJPEGRepresentation(resized, 0.80)!.writeToFile(path, atomically: true)
+        animated ? image.writeToFile(path, atomically: true) : UIImageJPEGRepresentation(resized, 0.80)!.writeToFile(path, atomically: true)
         
-        sendPhotoWithPeer(peer, withName: "image.jpg", withW: jint(resized.size.width), withH: jint(resized.size.height), withThumb: fastThumb, withDescriptor: descriptor)
+        animated ? sendAnimationWithPeer(peer, withName: "image.gif", withW: jint(resized.size.width), withH:jint(resized.size.height), withThumb: fastThumb, withDescriptor: descriptor) : sendPhotoWithPeer(peer, withName: "image.jpg", withW: jint(resized.size.width), withH: jint(resized.size.height), withThumb: fastThumb, withDescriptor: descriptor)
     }
-    
     
     public func sendVideo(url: NSURL, peer: ACPeer) {
         
@@ -147,8 +148,8 @@ public extension IOSObjectArray {
     }
 }
 
-extension NSData {
-    func toJavaBytes() -> IOSByteArray {
+public extension NSData {
+    public func toJavaBytes() -> IOSByteArray {
         return IOSByteArray(bytes: UnsafePointer<jbyte>(self.bytes), count: UInt(self.length))
     }
 }

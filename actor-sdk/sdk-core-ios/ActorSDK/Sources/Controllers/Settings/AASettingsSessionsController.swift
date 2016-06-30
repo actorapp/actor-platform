@@ -11,7 +11,7 @@ public class AASettingsSessionsController: AAContentTableController {
     public init() {
         super.init(style: AAContentTableStyle.SettingsGrouped)
         
-        navigationItem.title = AALocalized("SettingsAllSessions")
+        navigationItem.title = AALocalized("PrivacyAllSessions")
         
         content = ACAllEvents_Settings.PRIVACY()
     }

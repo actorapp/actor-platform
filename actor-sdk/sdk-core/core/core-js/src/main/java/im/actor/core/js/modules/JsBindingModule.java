@@ -54,12 +54,14 @@ import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserPresence;
 import im.actor.core.viewmodel.UserTypingVM;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.core.viewmodel.generics.ArrayListMediaTrack;
 import im.actor.runtime.js.mvvm.JsDisplayList;
 import im.actor.runtime.js.mvvm.JsDisplayListBind;
 import im.actor.runtime.mvvm.ModelChangedListener;
 import im.actor.runtime.mvvm.Value;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.ValueModel;
+import im.actor.runtime.webrtc.WebRTCMediaStream;
 
 public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
 
@@ -333,6 +335,18 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
             callModel.getMembers().subscribe(new ValueChangedListener<ArrayList<CallMember>>() {
                 @Override
                 public void onChanged(ArrayList<CallMember> val, Value<ArrayList<CallMember>> valueModel) {
+                    jsCall.changeValue(JsCall.create(messenger, callModel));
+                }
+            });
+            callModel.getOwnVideoTracks().subscribe(new ValueChangedListener<ArrayListMediaTrack>() {
+                @Override
+                public void onChanged(ArrayListMediaTrack val, Value<ArrayListMediaTrack> valueModel) {
+                    jsCall.changeValue(JsCall.create(messenger, callModel));
+                }
+            });
+            callModel.getTheirVideoTracks().subscribe(new ValueChangedListener<ArrayListMediaTrack>() {
+                @Override
+                public void onChanged(ArrayListMediaTrack val, Value<ArrayListMediaTrack> valueModel) {
                     jsCall.changeValue(JsCall.create(messenger, callModel));
                 }
             });

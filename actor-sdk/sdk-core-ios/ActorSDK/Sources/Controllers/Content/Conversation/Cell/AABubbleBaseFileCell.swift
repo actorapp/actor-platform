@@ -27,17 +27,17 @@ public class AABubbleBaseFileCell: AABubbleCell {
                     if (self.bindGeneration != selfGeneration) {
                         return
                     }
-                    self.fileDownloadPaused(selfGeneration)
-                    }, onDownloading: { (progress) -> () in
-                        if (self.bindGeneration != selfGeneration) {
-                            return
-                        }
-                        self.fileDownloading(progress, selfGeneration: selfGeneration)
-                    }, onDownloaded: { (reference) -> () in
-                        if (self.bindGeneration != selfGeneration) {
-                            return
-                        }
-                        self.fileReady(reference, selfGeneration: selfGeneration)
+                    self.fileStateChanged(nil, progress: nil, isPaused: true, isUploading: false, selfGeneration: selfGeneration)
+                }, onDownloading: { (progress) -> () in
+                    if (self.bindGeneration != selfGeneration) {
+                        return
+                    }
+                    self.fileStateChanged(nil, progress: Int(progress * 100), isPaused: false, isUploading: false, selfGeneration: selfGeneration)
+                }, onDownloaded: { (reference) -> () in
+                    if (self.bindGeneration != selfGeneration) {
+                        return
+                    }
+                    self.fileStateChanged(reference, progress: nil, isPaused: false, isUploading: false, selfGeneration: selfGeneration)
                 })
                 
                 Actor.bindRawFileWithReference(fileReference, autoStart: autoDownload, withCallback: bindedDownloadCallback)
@@ -49,17 +49,17 @@ public class AABubbleBaseFileCell: AABubbleCell {
                     if (self.bindGeneration != selfGeneration) {
                         return
                     }
-                    self.fileUploadPaused(fileReference, selfGeneration: selfGeneration)
-                    }, onUploading: { (progress) -> () in
-                        if (self.bindGeneration != selfGeneration) {
-                            return
-                        }
-                        self.fileUploading(fileReference, progress: progress, selfGeneration: selfGeneration)
-                    }, onUploadedClosure: { () -> () in
-                        if (self.bindGeneration != selfGeneration) {
-                            return
-                        }
-                        self.fileReady(fileReference, selfGeneration: selfGeneration)
+                    self.fileStateChanged(fileReference, progress: nil, isPaused: true, isUploading: true, selfGeneration: selfGeneration)
+                }, onUploading: { (progress) -> () in
+                    if (self.bindGeneration != selfGeneration) {
+                        return
+                    }
+                    self.fileStateChanged(fileReference, progress: Int(progress * 100), isPaused: false, isUploading: true, selfGeneration: selfGeneration)
+                }, onUploadedClosure: { () -> () in
+                    if (self.bindGeneration != selfGeneration) {
+                        return
+                    }
+                    self.fileStateChanged(fileReference, progress: nil, isPaused: false, isUploading: false, selfGeneration: selfGeneration)
                 });
                 
                 Actor.bindRawUploadFileWithRid(message.rid, withCallback: bindedUploadCallback)
@@ -77,17 +77,17 @@ public class AABubbleBaseFileCell: AABubbleCell {
                 if (self.bindGeneration != selfGeneration) {
                     return
                 }
-                self.fileDownloadPaused(selfGeneration)
-                }, onDownloading: { (progress) -> () in
-                    if (self.bindGeneration != selfGeneration) {
-                        return
-                    }
-                    self.fileDownloading(progress, selfGeneration: selfGeneration)
-                }, onDownloaded: { (reference) -> () in
-                    if (self.bindGeneration != selfGeneration) {
-                        return
-                    }
-                    self.fileReady(reference, selfGeneration: selfGeneration)
+                self.fileStateChanged(nil, progress: nil, isPaused: true, isUploading: false, selfGeneration: selfGeneration)
+            }, onDownloading: { (progress) -> () in
+                if (self.bindGeneration != selfGeneration) {
+                    return
+                }
+                self.fileStateChanged(nil, progress: Int(progress * 100), isPaused: false, isUploading: false, selfGeneration: selfGeneration)
+            }, onDownloaded: { (reference) -> () in
+                if (self.bindGeneration != selfGeneration) {
+                    return
+                }
+                self.fileStateChanged(reference, progress: nil, isPaused: false, isUploading: false, selfGeneration: selfGeneration)
             })
             
             Actor.bindRawFileWithReference(ACFileReference(ARApiFileLocation: file.reference.getFileLocation(), withNSString: file.reference.fileName, withInt: file.reference.fileSize), autoStart: autoDownload, withCallback: bindedDownloadCallback)
@@ -105,17 +105,17 @@ public class AABubbleBaseFileCell: AABubbleCell {
             if (self.bindGeneration != selfGeneration) {
                 return
             }
-            self.fileDownloadPaused(selfGeneration)
-            }, onDownloading: { (progress) -> () in
-                if (self.bindGeneration != selfGeneration) {
-                    return
-                }
-                self.fileDownloading(progress, selfGeneration: selfGeneration)
-            }, onDownloaded: { (reference) -> () in
-                if (self.bindGeneration != selfGeneration) {
-                    return
-                }
-                self.fileReady(reference, selfGeneration: selfGeneration)
+            self.fileStateChanged(nil, progress: nil, isPaused: true, isUploading: false, selfGeneration: selfGeneration)
+        }, onDownloading: { (progress) -> () in
+            if (self.bindGeneration != selfGeneration) {
+                return
+            }
+            self.fileStateChanged(nil, progress: Int(progress * 100), isPaused: false, isUploading: false, selfGeneration: selfGeneration)
+        }, onDownloaded: { (reference) -> () in
+            if (self.bindGeneration != selfGeneration) {
+                return
+            }
+            self.fileStateChanged(reference, progress: nil, isPaused: false, isUploading: false, selfGeneration: selfGeneration)
         })
         
         Actor.bindRawFileWithReference(fileReference, autoStart: autoDownload, withCallback: bindedDownloadCallback)
@@ -134,37 +134,27 @@ public class AABubbleBaseFileCell: AABubbleCell {
         return selfGeneration
     }
     
-    public func fileUploadPaused(reference: String, selfGeneration: Int) {
+    public func fileStateChanged(reference: String?, progress: Int?, isPaused: Bool, isUploading: Bool, selfGeneration: Int) {
         
     }
     
-    public func fileUploading(reference: String, progress: Double, selfGeneration: Int) {
-        
-    }
-    
-    public func fileDownloadPaused(selfGeneration: Int) {
-        
-    }
-    
-    public func fileDownloading(progress: Double, selfGeneration: Int) {
-        
-    }
-    
-    public func fileReady(reference: String, selfGeneration: Int) {
-        
-    }
-    
-    public func runOnUiThread(selfGeneration: Int, closure: ()->()){
+    public func runOnUiThread(selfGeneration: Int, closure: (()->())?) -> Bool {
         if (selfGeneration != self.bindGeneration) {
-            return
+            return false
         }
-        dispatchOnUi {
+        
+        var res = false
+        dispatchOnUiSync {
             if (selfGeneration != self.bindGeneration) {
                 return
             }
             
-            closure()
+            res = true
+            
+            closure?()
         }
+        
+        return res
     }
     
     public func fileUnbind() {

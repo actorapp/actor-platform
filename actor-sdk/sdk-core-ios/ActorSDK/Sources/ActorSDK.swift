@@ -40,7 +40,7 @@ import DZNWebViewController
     //  Configuration
     //
 
-    /// Server Endpoints
+        /// Server Endpoints
     public var endpoints = [
         "tcp://220.189.207.18:9070"
         ] {
@@ -53,6 +53,7 @@ import DZNWebViewController
     public var trustedKeys = [
         "508D39F2BBDAB7776172478939362CD5127871B60151E9B86CD6D61AD1A75849".lowercaseString,
         ]
+    
     /// API ID
     public var apiId = 2
     
@@ -60,13 +61,13 @@ import DZNWebViewController
     public var apiKey = "2ccdc3699149eac0a13926c77ca84e504afd68b4f399602e06d68002ace965a3"
     
     /// Push registration mode
-    public var autoPushMode = AAAutoPush.AfterLogin
+    public var autoPushMode = AAAutoPush.Username
     
     /// Push token registration id. Required for sending push tokens
     public var apiPushId: Int? = nil
     
     /// Strategy about authentication
-    public var authStrategy = AAAuthStrategy.Username
+    public var authStrategy = AAAuthStrategy.PhoneOnly
     
     /// Enable phone book import
     public var enablePhoneBookImport = true
@@ -114,11 +115,17 @@ import DZNWebViewController
     public var inviteUrlHost: String? = nil
 
     /// Enable voice calls feature
-    public var enableCalls: Bool = true
+    public var enableCalls: Bool = false
     
+    /// Enable video calls feature
+    public var enableVideoCalls: Bool = false
+    
+    /// Enable custom sound on Groups and Chats
+    public var enableChatGroupSound: Bool = false
     
     /// Enable experimental features
     public var enableExperimentalFeatures: Bool = false
+    
     
     //
     // User Onlines
@@ -129,6 +136,45 @@ import DZNWebViewController
     
     /// Disable this if you want manually handle online states
     public var automaticOnlineHandling = true
+    
+    
+    //
+    // Local Settings
+    //
+    
+    // Local Shared Settings
+    private static var udStorage = UDPreferencesStorage()
+    
+    public var isPhotoAutoDownloadGroup: Bool = udStorage.getBoolWithKey("local.photo_download.group", withDefault: true) {
+        willSet(v) {
+            ActorSDK.udStorage.putBoolWithKey("local.photo_download.group", withValue: v)
+        }
+    }
+    
+    public var isPhotoAutoDownloadPrivate: Bool = udStorage.getBoolWithKey("local.photo_download.private", withDefault: true) {
+        willSet(v) {
+            ActorSDK.udStorage.putBoolWithKey("local.photo_download.private", withValue: v)
+        }
+    }
+    
+    public var isAudioAutoDownloadGroup: Bool = udStorage.getBoolWithKey("local.audio_download.group", withDefault: true) {
+        willSet(v) {
+            ActorSDK.udStorage.putBoolWithKey("local.audio_download.group", withValue: v)
+        }
+    }
+
+    public var isAudioAutoDownloadPrivate: Bool = udStorage.getBoolWithKey("local.audio_download.private", withDefault: true) {
+        willSet(v) {
+            ActorSDK.udStorage.putBoolWithKey("local.audio_download.private", withValue: v)
+        }
+    }
+    
+    public var isGIFAutoplayEnabled: Bool = udStorage.getBoolWithKey("local.autoplay_gif", withDefault: true) {
+        willSet(v) {
+            ActorSDK.udStorage.putBoolWithKey("local.autoplay_gif", withValue: v)
+        }
+    }
+    
     
     //
     // Internal State
@@ -146,7 +192,6 @@ import DZNWebViewController
     
     // Reachability
     private var reachability: Reachability!
-    
     
     public override init() {
         
@@ -208,6 +253,7 @@ import DZNWebViewController
         // Config
         builder.setPhoneBookImportEnabled(jboolean(enablePhoneBookImport))
         builder.setVoiceCallsEnabled(jboolean(enableCalls))
+        builder.setVideoCallsEnabled(jboolean(enableCalls))
         builder.setIsEnabledGroupedChatList(false)
         // builder.setEnableFilesLogging(true)
         
@@ -292,8 +338,12 @@ import DZNWebViewController
             let tab = AARootTabViewController()
             
             tab.viewControllers = self.getMainNavigations()
-            tab.selectedIndex = 0
-            tab.selectedIndex = 1
+            
+            if let index = self.delegate.actorRootInitialControllerIndex() {
+                tab.selectedIndex = index
+            } else {
+                tab.selectedIndex = 1
+            }
             
             if (AADevice.isiPad) {
                 let splitController = AARootSplitViewController()
@@ -375,45 +425,56 @@ import DZNWebViewController
     }
     
     /// Get main navigations with check in delegate for customize from SDK
-    
     private func getMainNavigations() -> [AANavigationController] {
     
+        let allControllers = self.delegate.actorRootControllers()
         
-        var mainNavigations = [AANavigationController]()
-        
-        ////////////////////////////////////
-        // contacts
-        ////////////////////////////////////
-        
-        if let contactsController = self.delegate.actorControllerForContacts() {
-            mainNavigations.append(AANavigationController(rootViewController: contactsController))
+        if let all = allControllers {
+            
+            var mainNavigations = [AANavigationController]()
+            
+            for controller in all {
+                mainNavigations.append(AANavigationController(rootViewController: controller))
+            }
+            
+            return mainNavigations
         } else {
-            mainNavigations.append(AANavigationController(rootViewController: AAContactsViewController()))
-        }
+
+            var mainNavigations = [AANavigationController]()
         
-        ////////////////////////////////////
-        // recent dialogs
-        ////////////////////////////////////
+            ////////////////////////////////////
+            // Contacts
+            ////////////////////////////////////
         
-        if let recentDialogs = self.delegate.actorControllerForDialogs() {
-            mainNavigations.append(AANavigationController(rootViewController: recentDialogs))
-        } else {
-            mainNavigations.append(AANavigationController(rootViewController: AARecentViewController()))
-        }
+            if let contactsController = self.delegate.actorControllerForContacts() {
+                mainNavigations.append(AANavigationController(rootViewController: contactsController))
+            } else {
+                mainNavigations.append(AANavigationController(rootViewController: AAContactsViewController()))
+            }
         
-        ////////////////////////////////////
-        // settings
-        ////////////////////////////////////
+            ////////////////////////////////////
+            // Recent dialogs
+            ////////////////////////////////////
         
-        if let settingsController = self.delegate.actorControllerForSettings() {
-            mainNavigations.append(AANavigationController(rootViewController: settingsController))
-        } else {
-            mainNavigations.append(AANavigationController(rootViewController: AASettingsViewController()))
-        }
+            if let recentDialogs = self.delegate.actorControllerForDialogs() {
+                mainNavigations.append(AANavigationController(rootViewController: recentDialogs))
+            } else {
+                mainNavigations.append(AANavigationController(rootViewController: AARecentViewController()))
+            }
+        
+            ////////////////////////////////////
+            // Settings
+            ////////////////////////////////////
+        
+            if let settingsController = self.delegate.actorControllerForSettings() {
+                mainNavigations.append(AANavigationController(rootViewController: settingsController))
+            } else {
+                mainNavigations.append(AANavigationController(rootViewController: AASettingsViewController()))
+            }
         
     
-        return mainNavigations;
-        
+            return mainNavigations
+        }
     }
 
     
@@ -438,9 +499,13 @@ import DZNWebViewController
             if controller == nil {
                 let tab = AARootTabViewController()
                 tab.viewControllers = self.getMainNavigations()
-                tab.selectedIndex = 0
-                tab.selectedIndex = 1
                 
+                if let index = self.delegate.actorRootInitialControllerIndex() {
+                    tab.selectedIndex = index
+                } else {
+                    tab.selectedIndex = 1
+                }
+
                 if (AADevice.isiPad) {
                     let splitController = AARootSplitViewController()
                     splitController.viewControllers = [tab, AANoSelectionViewController()]

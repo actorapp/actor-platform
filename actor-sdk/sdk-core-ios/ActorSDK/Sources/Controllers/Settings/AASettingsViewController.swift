@@ -154,6 +154,9 @@ public class AASettingsViewController: AAContentTableController {
             // Settings: Notifications
             s.navigate("SettingsNotifications", controller: AASettingsNotificationsViewController.self)
             
+            // Settings: Media Settings
+            s.navigate("SettingsMedia", controller: AASettingsMediaViewController.self)
+            
             // Settings: Security
             s.navigate("SettingsSecurity", controller: AASettingsPrivacyViewController.self)
             
