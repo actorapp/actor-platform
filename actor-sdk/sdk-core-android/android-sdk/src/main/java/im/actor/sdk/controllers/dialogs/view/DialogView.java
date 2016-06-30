@@ -46,6 +46,7 @@ import im.actor.sdk.view.TintDrawable;
 import im.actor.sdk.view.emoji.SmileProcessor;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
+import static im.actor.sdk.util.ActorSDKMessenger.myUid;
 import static im.actor.sdk.util.ActorSDKMessenger.users;
 import static im.actor.sdk.view.emoji.SmileProcessor.emoji;
 
@@ -65,6 +66,9 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
     private static Paint fillPaint;
     private static TextPaint avatarTextColor;
     private static String typingText;
+    private static Drawable stateSent;
+    private static Drawable stateReceived;
+    private static Drawable stateRead;
 
     private long bindedId;
     private DraweeHolder<GenericDraweeHierarchy> draweeHolder;
@@ -149,6 +153,12 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
             }
             layout.getTitleLayout().draw(canvas);
             canvas.restore();
+
+            if (layout.getState() != null) {
+                int left = getWidth() - Screen.dp(34) - layout.getDateWidth();
+                layout.getState().setBounds(left, Screen.dp(18), left + Screen.dp(16), Screen.dp(18 + 9));
+                layout.getState().draw(canvas);
+            }
 
             if (layout.getDate() != null) {
                 canvas.drawText(layout.getDate(), getWidth() - Screen.dp(16) - layout.getDateWidth(), Screen.dp(26), datePaint);
@@ -258,7 +268,14 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
             avatarBorder.setStrokeWidth(1);
             avatarTextColor = createTextPaint(Fonts.regular(), 20, Color.WHITE);
             avatarTextColor.setTextAlign(Paint.Align.CENTER);
-            typingText = context.getResources().getString(R.string.typing_private);
+            typingText = messenger().getFormatter().formatTyping();
+
+            stateSent = new TintDrawable(context.getResources().getDrawable(R.drawable.msg_check_1),
+                    style.getDialogsStateSentColor());
+            stateReceived = new TintDrawable(context.getResources().getDrawable(R.drawable.msg_check_2),
+                    style.getDialogsStateDeliveredColor());
+            stateRead = new TintDrawable(context.getResources().getDrawable(R.drawable.msg_check_2),
+                    style.getDialogsStateReadColor());
         }
 
         DialogLayout res = new DialogLayout();
@@ -316,6 +333,17 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
             maxTitleWidth -= Screen.dp(16/*icon width*/ + 4/*padding*/);
         }
 
+        if (arg.getSenderId() == messenger().myUid()) {
+            if (arg.isRead()) {
+                res.setState(stateRead);
+            } else if (arg.isReceived()) {
+                res.setState(stateReceived);
+            } else {
+                res.setState(stateSent);
+            }
+            maxTitleWidth -= Screen.dp(20);
+        }
+
         res.setTitleLayout(singleLineText(arg.getDialogTitle(), titlePaint, maxTitleWidth));
 
         // Second Row
@@ -337,7 +365,7 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
                 if (messenger().getFormatter().isLargeDialogMessage(arg.getMessageType())) {
                     res.setTextLayout(singleLineText(handleEmoji(contentText), textActivePaint, maxWidth));
                 } else {
-                    String senderName = users().get(arg.getSenderId()).getName().get() + ": ";
+                    String senderName = messenger().getFormatter().formatPerformerName(arg.getSenderId()) + ": ";
                     if (arg.getMessageType() == ContentType.TEXT) {
                         SpannableStringBuilder builder = new SpannableStringBuilder();
                         builder.append(senderName);
@@ -483,6 +511,15 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
         private Layout textLayout;
         private String counter;
         private int counterWidth;
+        private Drawable state;
+
+        public Drawable getState() {
+            return state;
+        }
+
+        public void setState(Drawable state) {
+            this.state = state;
+        }
 
         public ImageRequest getImageRequest() {
             return imageRequest;
