@@ -665,7 +665,7 @@ public class ChatActivity extends ActorEditTextActivity {
         barTypingContainer.setVisibility(View.INVISIBLE);
         barAvatar = (AvatarView) barView.findViewById(R.id.avatarPreview);
         barAvatar.init(Screen.dp(32), 18);
-        if (!style.isShowAvatarInTitle()) {
+        if (!style.isShowAvatarInTitle() || (peer.getPeerType() == PeerType.PRIVATE && !style.isShowAvatarPrivateInTitle())) {
             barAvatar.setVisibility(View.GONE);
         }
         barView.findViewById(R.id.titleContainer).setOnClickListener(new View.OnClickListener() {

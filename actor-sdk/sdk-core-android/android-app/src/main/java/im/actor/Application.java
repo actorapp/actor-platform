@@ -46,7 +46,7 @@ public class Application extends ActorSDKApplication {
         ActorSDK.sharedActor().setPrivacyText("bla bla bla");
 
         ActorSDK.sharedActor().setVideoCallsEnabled(true);
-        ActorSDK.sharedActor().style.setShowAvatarInTitle(false);
+        ActorSDK.sharedActor().style.setShowAvatarPrivateInTitle(false);
 
 //        ActorSDK.sharedActor().setTwitter("");
 //        ActorSDK.sharedActor().setHomePage("http://www.foo.com");

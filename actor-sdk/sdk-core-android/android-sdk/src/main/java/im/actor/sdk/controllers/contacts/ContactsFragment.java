@@ -21,6 +21,7 @@ public class ContactsFragment extends BaseContactFragment {
     public ContactsFragment() {
         super(false, false, false);
         setRootFragment(true);
+        setHomeAsUp(true);
         setTitle(R.string.contacts_title);
     }
 

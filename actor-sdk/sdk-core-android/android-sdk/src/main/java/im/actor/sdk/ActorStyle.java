@@ -929,6 +929,7 @@ public class ActorStyle {
     }
 
     private boolean showAvatarInTitle = true;
+    private boolean showAvatarPrivateInTitle = true;
 
     public boolean isShowAvatarInTitle() {
         return showAvatarInTitle;
@@ -936,5 +937,13 @@ public class ActorStyle {
 
     public void setShowAvatarInTitle(boolean showAvatarInTitle) {
         this.showAvatarInTitle = showAvatarInTitle;
+    }
+
+    public boolean isShowAvatarPrivateInTitle() {
+        return showAvatarPrivateInTitle;
+    }
+
+    public void setShowAvatarPrivateInTitle(boolean showAvatarPrivateInTitle) {
+        this.showAvatarPrivateInTitle = showAvatarPrivateInTitle;
     }
 }
