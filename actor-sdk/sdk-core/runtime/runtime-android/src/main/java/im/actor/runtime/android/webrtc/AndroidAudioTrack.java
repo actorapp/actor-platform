@@ -8,9 +8,11 @@ import im.actor.runtime.webrtc.WebRTCTrackType;
 public class AndroidAudioTrack implements WebRTCMediaTrack {
 
     private AudioTrack audioTrack;
+    private AndroidMediaStream stream;
 
-    public AndroidAudioTrack(AudioTrack audioTrack) {
+    public AndroidAudioTrack(AudioTrack audioTrack, AndroidMediaStream stream) {
         this.audioTrack = audioTrack;
+        this.stream = stream;
     }
 
     public AudioTrack getAudioTrack() {
@@ -29,6 +31,8 @@ public class AndroidAudioTrack implements WebRTCMediaTrack {
 
     @Override
     public void setEnabled(boolean isEnabled) {
-        audioTrack.setEnabled(isEnabled);
+        if (stream.getStream().audioTracks.contains(audioTrack)) {
+            audioTrack.setEnabled(isEnabled);
+        }
     }
 }

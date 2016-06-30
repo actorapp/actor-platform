@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
+import im.actor.develop.R;
 import im.actor.fragments.CustomRootFragment;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorSDKApplication;
@@ -56,17 +57,6 @@ public class Application extends ActorSDKApplication {
 //        ActorStyle style = ActorSDK.sharedActor().style;
 //        style.setMainColor(Color.parseColor("#529a88"));
 //        style.setAvatarBackgroundResource(R.drawable.img_profile_avatar_default);
-//        AbsContent.registerConverter(new ContentConverter() {
-//            @Override
-//            public AbsContent convert(AbsContentContainer container) {
-//                return JsonContent.convert(container, new TCBotMesaage());
-//            }
-//
-//            @Override
-//            public boolean validate(AbsContent content) {
-//                return content instanceof TCBotMesaage;
-//            }
-//        });
     }
 
     private class ActorSDKDelegate extends BaseActorSDKDelegate {
@@ -77,125 +67,35 @@ public class Application extends ActorSDKApplication {
 //            return new CustomRootFragment();
 //        }
 
-        //        @Override
-//        public BaseJsonHolder getCustomMessageViewHolder(int dataTypeHash, MessagesAdapter messagesAdapter, ViewGroup viewGroup) {
-//            if(dataTypeHash == "tcmessage".hashCode()){
-//                return new TCMessageHolder(messagesAdapter, viewGroup, R.layout.tc_holder, false);
-//            }
-//            return null;
-//        }
-
-//
-//        @Override
-//        public ArrayList<ShareMenuField> addCustomShareMenuFields() {
-//            ArrayList<ShareMenuField> shareMenuFields = new ArrayList<>();
-//            shareMenuFields.add(new ShareMenuField(R.drawable.conv_location_icon, ActorSDK.sharedActor().style.getAccentColor(), "lol", new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Toast.makeText(v.getContext(), "Hey", Toast.LENGTH_LONG).show();
-//                }
-//            }));
-//            return shareMenuFields;
-//        }
-
-//        @Override
-//        public BaseGroupInfoActivity getGroupInfoIntent(int gid) {
-//            return new BaseGroupInfoActivity() {
-//                @Override
-//                public GroupInfoFragment getGroupInfoFragment(int chatId) {
-//                    return GroupInfoEx.create(chatId);
-//                }
-//            };
-//        }
-
-//        @Override
-//        public ActorIntentFragmentActivity getSettingsIntent() {
-//            return new BaseActorSettingsActivity() {
-//                @Override
-//                public BaseActorSettingsFragment getSettingsFragment() {
-//                    return new BaseActorSettingsFragment() {
-//
-//                        @Override
-//                        public View getBeforeNickSettingsView() {
-//                            return null;
-//                        }
-//
-//                        @Override
-//                        public View getAfterPhoneSettingsView() {
-//                            return null;
-//                        }
-//
-//                        @Override
-//                        public View getSettingsTopView() {
-//                            return null;
-//                        }
-//
-//                        @Override
-//                        public View getSettingsBottomView() {
-//                            return null;
-//                        }
-//
-//                        @Override
-//                        public boolean showWallpaperCategory() {
-//                            return true;
-//                        }
-//
-//                        @Override
-//                        public boolean showAskQuestion() {
-//                            return true;
-//                        }
-//
-//                        @Override
-//                        public ActorSettingsCategory[] getBeforeSettingsCategories() {
-//                            return new ActorSettingsCategory[]{
-//                                    new ActorSettingsCategory() {
-//
-////                                        @Override
-////                                        public int getIconResourceId() {
-////                                            return R.drawable.ic_notifications_white_18dp;
-////                                        }
-//
-//                                        @Override
-//                                        public String getCategoryName() {
-//                                            return "test";
-//                                        }
-//
-//                                        @Override
-//                                        public ActorSettingsField[] getFields() {
-//                                            final CheckBox chb = new CheckBox(getContext());
-//                                            ActorSettingsField field = new ActorSettingsField() {
-//                                                @Override
-//                                                public View getRightView() {
-//                                                    return chb;
-//                                                }
-//
-//                                                @Override
-//                                                public String getName() {
-//                                                    return "azazaz";
-//                                                }
-//                                            };
-//                                            field.setOnClickListener(new View.OnClickListener() {
-//                                                @Override
-//                                                public void onClick(View v) {
-//                                                    chb.setChecked(!chb.isChecked());
-//                                                }
-//                                            });
-//                                            return new ActorSettingsField[]{
-//                                                    field
-//                                            };
-//                                        }
-//                                    }
-//                            };
-//                        }
-//
-//                        @Override
-//                        public ActorSettingsCategory[] getAfterSettingsCategories() {
-//                            return new ActorSettingsCategory[0];
-//                        }
-//                    };
-//                }
-//            };
-//        }
+        //
+        @Override
+        public ArrayList<ShareMenuField> addCustomShareMenuFields() {
+            ArrayList<ShareMenuField> shareMenuFields = new ArrayList<>();
+            shareMenuFields.add(new ShareMenuField(R.drawable.conv_location_icon, ActorSDK.sharedActor().style.getAccentColor(), "lol", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(v.getContext(), "Hey", Toast.LENGTH_LONG).show();
+                }
+            }));
+            shareMenuFields.add(new ShareMenuField(R.drawable.conv_location_icon, ActorSDK.sharedActor().style.getMainColor(), "lol", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(v.getContext(), "Hey", Toast.LENGTH_LONG).show();
+                }
+            }));
+            shareMenuFields.add(new ShareMenuField(R.drawable.conv_location_icon, ActorSDK.sharedActor().style.getDividerColor(), "lol", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(v.getContext(), "Hey", Toast.LENGTH_LONG).show();
+                }
+            }));
+            shareMenuFields.add(new ShareMenuField(R.drawable.conv_location_icon, ActorSDK.sharedActor().style.getConvLikeColor(), "lol", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(v.getContext(), "Hey", Toast.LENGTH_LONG).show();
+                }
+            }));
+            return shareMenuFields;
+        }
     }
-
 }

@@ -91,7 +91,9 @@
         android:layout_height="match_parent"
         android:visibility="gone" />
 
-    <include layout="@layout/share_menu" />
+    <include
+        layout="@layout/share_menu"
+        android:id="@+id/share_menu_container" />
 
     <FrameLayout
         android:id="@+id/fl_send_panel"

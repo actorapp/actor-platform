@@ -29,20 +29,6 @@ public interface WebRTCMediaStream extends Closable {
     WebRTCMediaTrack[] getTracks();
 
     /**
-     * Enable/disable audio tracks of a stream
-     *
-     * @param enable true to enable tracks
-     */
-    void setAudioTracksEnabled(boolean enable);
-
-    /**
-     * Enable/disable video tracks of a stream
-     *
-     * @param enable true to enable tracks
-     */
-    void setVideoTracksEnabled(boolean enable);
-
-    /**
      * Closing stream
      */
     void close();

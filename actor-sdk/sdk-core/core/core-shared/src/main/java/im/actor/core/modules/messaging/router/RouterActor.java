@@ -238,9 +238,10 @@ public class RouterActor extends ModuleActor {
             if (isConversationVisible) {
                 // Auto Reading message
                 if (maxInDate > 0) {
-                    state = state
-                            .changeInReadDate(maxInDate)
-                            .changeCounter(0);
+                    if (state.getInReadDate() < maxInDate) {
+                        state = state.changeInReadDate(maxInDate);
+                    }
+                    state = state.changeCounter(0);
                     if (state.getInMaxMessageDate() < maxInDate) {
                         state.changeInMaxDate(maxInDate);
                     }

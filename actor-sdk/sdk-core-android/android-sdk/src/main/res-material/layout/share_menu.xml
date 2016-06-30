@@ -2,12 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="245dp"
+    android:layout_height="232dp"
     android:layout_above="@+id/fl_send_panel"
-    android:id="@+id/share_container"
     android:visibility="invisible"
     android:orientation="vertical"
-    android:gravity="bottom"
+    android:gravity="bottom|center_horizontal"
     android:background="@android:color/transparent"
     tools:showIn="@layout/activity_dialog">
 
@@ -22,151 +21,9 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/fast_share_size" />
 
-    <TableLayout
-        android:id="@+id/share_menu"
-        android:paddingTop="5dp"
-        android:layout_gravity="bottom"
+    <FrameLayout
+        android:id="@+id/share_row_one"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:stretchColumns="*">
-
-        <TableRow android:id="@+id/share_row_one">
-
-            <LinearLayout
-                android:gravity="center_horizontal"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <Button
-                    android:layout_width="@dimen/share_btn_size"
-                    android:layout_height="@dimen/share_btn_size"
-                    android:id="@+id/share_camera"
-                    android:background="@drawable/share_camera_selector" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/share_menu_camera" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:gravity="center_horizontal"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <Button
-                    android:layout_width="@dimen/share_btn_size"
-                    android:layout_height="@dimen/share_btn_size"
-                    android:id="@+id/share_gallery"
-                    android:background="@drawable/share_gallery_selector" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/share_menu_gallery" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <Button
-                    android:layout_width="@dimen/share_btn_size"
-                    android:layout_height="@dimen/share_btn_size"
-                    android:id="@+id/share_video"
-                    android:background="@drawable/share_video_selector" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/share_menu_video" />
-            </LinearLayout>
-
-        </TableRow>
-
-        <TableRow android:id="@+id/share_row_two">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <Button
-                    android:layout_width="@dimen/share_btn_size"
-                    android:layout_height="@dimen/share_btn_size"
-                    android:id="@+id/share_file"
-                    android:background="@drawable/share_file_selector" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/share_menu_file" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:gravity="center_horizontal"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <Button
-                    android:layout_width="@dimen/share_btn_size"
-                    android:layout_height="@dimen/share_btn_size"
-                    android:id="@+id/share_location"
-                    android:background="@drawable/share_location_selector" />
-
-                <ImageButton
-                    android:layout_width="@dimen/share_btn_size"
-                    android:layout_height="@dimen/share_btn_size"
-                    android:id="@+id/share_hide"
-                    android:background="@drawable/share_hide_selector"
-                    android:src="@drawable/attach_hide2" />
-
-                <TextView
-                    android:id="@+id/location_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/share_menu_location" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-
-                <ImageView
-                    android:scaleType="centerInside"
-                    android:clickable="true"
-                    android:layout_width="@dimen/share_btn_size"
-                    android:layout_height="@dimen/share_btn_size"
-                    android:src="@drawable/ic_person_white_36dp"
-                    android:id="@+id/share_contact" />
-
-                <TextView
-                    android:id="@+id/contact_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/share_menu_contact" />
-
-            </LinearLayout>
-
-        </TableRow>
-    </TableLayout>
+        android:layout_height="fill_parent" />
 
 </LinearLayout>

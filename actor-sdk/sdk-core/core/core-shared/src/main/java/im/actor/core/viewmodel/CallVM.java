@@ -8,9 +8,6 @@ import im.actor.core.entity.Peer;
 import im.actor.core.viewmodel.generics.ArrayListMediaTrack;
 import im.actor.core.viewmodel.generics.BooleanValueModel;
 import im.actor.runtime.mvvm.ValueModel;
-import im.actor.runtime.webrtc.WebRTCMediaStream;
-import im.actor.runtime.webrtc.WebRTCMediaTrack;
-import im.actor.runtime.webrtc.WebRTCPeerConnection;
 
 public class CallVM {
 

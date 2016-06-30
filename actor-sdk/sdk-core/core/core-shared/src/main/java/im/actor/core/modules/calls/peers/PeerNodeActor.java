@@ -75,7 +75,7 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
     //
     private int CHILD_NEXT_ID = 0;
     private PeerConnectionInt peerConnection;
-    private final ArrayList<WebRTCMediaStream> theirMediaStreams = new ArrayList<>();
+    private WebRTCMediaStream theirStream;
 
     //
     // Node State Values
@@ -200,14 +200,14 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
             state = PeerState.ACTIVE;
             callback.onPeerStateChanged(deviceId, state);
 
-            for (WebRTCMediaStream mediaStream : theirMediaStreams) {
-                for (WebRTCMediaTrack track : mediaStream.getAudioTracks()) {
+            if (theirStream != null) {
+                for (WebRTCMediaTrack track : theirStream.getAudioTracks()) {
                     track.setEnabled(isAudioEnabled);
                     if (isAudioEnabled) {
                         callback.onTrackAdded(deviceId, track);
                     }
                 }
-                for (WebRTCMediaTrack track : mediaStream.getVideoTracks()) {
+                for (WebRTCMediaTrack track : theirStream.getVideoTracks()) {
                     track.setEnabled(isVideoEnabled);
                     if (isVideoEnabled) {
                         callback.onTrackAdded(deviceId, track);
@@ -249,7 +249,8 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
 
     @Override
     public void onStreamAdded(WebRTCMediaStream stream) {
-        theirMediaStreams.add(stream);
+        WebRTCMediaStream oldStream = theirStream;
+        theirStream = stream;
 
         //
         // Enable Tracks if needed
@@ -265,6 +266,15 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
                 track.setEnabled(isVideoEnabled);
                 if (isVideoEnabled) {
                     callback.onTrackAdded(deviceId, track);
+                }
+            }
+
+            if (oldStream != null) {
+                for (WebRTCMediaTrack track : oldStream.getVideoTracks()) {
+                    callback.onTrackRemoved(deviceId, track);
+                }
+                for (WebRTCMediaTrack track : oldStream.getAudioTracks()) {
+                    callback.onTrackRemoved(deviceId, track);
                 }
             }
         }
@@ -283,22 +293,20 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
     }
 
     @Override
-    public void onStreamRemoved(WebRTCMediaStream stream) {
-        theirMediaStreams.remove(stream);
 
+    public void onStreamRemoved(WebRTCMediaStream stream) {
+        if (isAudioEnabled || isVideoEnabled) {
+            return;
+        }
         //
         // Remove Tracks if needed
         //
-        if (isStarted) {
+        if (isStarted && theirStream != null) {
             for (WebRTCMediaTrack track : stream.getAudioTracks()) {
-                if (isAudioEnabled) {
-                    callback.onTrackRemoved(deviceId, track);
-                }
+                callback.onTrackRemoved(deviceId, track);
             }
             for (WebRTCMediaTrack track : stream.getVideoTracks()) {
-                if (isVideoEnabled) {
-                    callback.onTrackRemoved(deviceId, track);
-                }
+                callback.onTrackRemoved(deviceId, track);
             }
         }
     }
@@ -307,14 +315,12 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
         if (this.isAudioEnabled != isAudioEnabled) {
             this.isAudioEnabled = isAudioEnabled;
             if (isStarted) {
-                for (WebRTCMediaStream stream : theirMediaStreams) {
-                    stream.setAudioTracksEnabled(isAudioEnabled);
-                    for (WebRTCMediaTrack track : stream.getAudioTracks()) {
-                        if (isAudioEnabled) {
-                            callback.onTrackAdded(deviceId, track);
-                        } else {
-                            callback.onTrackRemoved(deviceId, track);
-                        }
+                for (WebRTCMediaTrack track : theirStream.getAudioTracks()) {
+                    track.setEnabled(isAudioEnabled);
+                    if (isAudioEnabled) {
+                        callback.onTrackAdded(deviceId, track);
+                    } else {
+                        callback.onTrackRemoved(deviceId, track);
                     }
                 }
             }
@@ -322,14 +328,12 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
         if (this.isVideoEnabled != isVideoEnabled) {
             this.isVideoEnabled = isVideoEnabled;
             if (isStarted) {
-                for (WebRTCMediaStream stream : theirMediaStreams) {
-                    stream.setVideoTracksEnabled(isVideoEnabled);
-                    for (WebRTCMediaTrack track : stream.getVideoTracks()) {
-                        if (isVideoEnabled) {
-                            callback.onTrackAdded(deviceId, track);
-                        } else {
-                            callback.onTrackRemoved(deviceId, track);
-                        }
+                for (WebRTCMediaTrack track : theirStream.getVideoTracks()) {
+                    track.setEnabled(isVideoEnabled);
+                    if (isVideoEnabled) {
+                        callback.onTrackAdded(deviceId, track);
+                    } else {
+                        callback.onTrackRemoved(deviceId, track);
                     }
                 }
             }

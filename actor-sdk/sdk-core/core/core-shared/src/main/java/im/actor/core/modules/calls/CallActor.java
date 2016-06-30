@@ -2,9 +2,6 @@ package im.actor.core.modules.calls;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import im.actor.core.api.rpc.RequestDoCall;
 import im.actor.core.api.rpc.RequestGetCallInfo;
 import im.actor.core.api.rpc.RequestJoinCall;
@@ -13,18 +10,13 @@ import im.actor.core.entity.Peer;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.calls.peers.AbsCallActor;
 import im.actor.core.modules.calls.peers.CallBusActor;
-import im.actor.core.viewmodel.CallMediaSource;
 import im.actor.core.viewmodel.CallState;
 import im.actor.core.viewmodel.CallVM;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.generics.ArrayListMediaTrack;
-import im.actor.runtime.Log;
-import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.messages.PoisonPill;
 import im.actor.runtime.power.WakeLock;
-import im.actor.runtime.webrtc.WebRTCMediaStream;
 import im.actor.runtime.webrtc.WebRTCMediaTrack;
-import im.actor.runtime.webrtc.WebRTCPeerConnection;
 import im.actor.runtime.webrtc.WebRTCTrackType;
 
 import static im.actor.core.entity.EntityConverter.convert;
