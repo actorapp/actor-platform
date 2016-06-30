@@ -186,7 +186,7 @@ trait SeqUpdateMatchers extends Matchers with ScalaFutures with AnyRefLogSource 
       }(system.dispatcher)
 
   @tailrec
-  private def repeatAfterSleep[T](times: Int)(f: ⇒ T): T = {
+  final def repeatAfterSleep[T](times: Int)(f: ⇒ T): T = {
     Try(f) match {
       case Success(result) ⇒
         log.debug("Update successfully matched")

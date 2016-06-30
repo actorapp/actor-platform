@@ -58,7 +58,7 @@ final class SeqUpdatesExtension(_system: ActorSystem)
   def subscribe(authId: Long, ref: ActorRef): Future[Unit] =
     (mediator ? DistributedPubSubMediator.Subscribe(UserSequence.topic(authId), ref)) map (_ ⇒ ())
 
-  def commonState(seq: Int): CommonState = CommonState(CommonStateVersion.V1, seq)
+  def commonState(commonSeq: Int): CommonState = CommonState(CommonStateVersion.V1, commonSeq)
 
   def persistUpdate(update: SeqUpdate): Future[Unit] = {
     val promise = Promise[Unit]()

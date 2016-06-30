@@ -95,6 +95,11 @@ private[sequence] final class UserSequence
     case msg ⇒ stash()
   }
 
+  /**
+   * On actor failure we are trying to persist
+   * all non-empty `seq`s for every authId.
+   * This method may never been called.
+   */
   override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
     log.error(reason, "Failure while processing {}", message)
     authIdsOptFu.keys foreach { authId ⇒
@@ -127,13 +132,21 @@ private[sequence] final class UserSequence
       this.authIdsOptFu += authId → Optimization(optimizations)
   }
 
+  /**
+   * Initialize user sequence.
+   * `commonSeq` is primary key for UserSequenceRepo, or 0 if UserSequence is empty.
+   * `seq`-s for every authId retrieved and associated with empty optimization function.
+   * If `authId` sequence is empty - return 0, otherwise return `seq` + 1000.
+   */
   private def init(): Unit =
     (for {
       authIds ← db.run(AuthIdRepo.findByUserId(userId))
       _ = this.authIdsOptFu = authIds.map(_.id → Optimization.EmptyFunc).toMap
       authIdsSeqs ← Future.traverse(authIds) {
-        case AuthId(id, _, _) ⇒
-          connector.run(SeqStorage.getSeq(id)) map (v ⇒ id → (v map (Int32Value.parseFrom(_).value) getOrElse 0))
+        case AuthId(authId, _, _) ⇒
+          connector.run(SeqStorage.getSeq(authId)) map { seqBytes ⇒
+            authId → (seqBytes map (Int32Value.parseFrom(_).value + 1000) getOrElse 0)
+          }
       }
       commonSeq ← db.run(UserSequenceRepo.fetchSeq(userId)) map (_ getOrElse 0)
     } yield Initialized(commonSeq, authIdsSeqs.toMap)) pipeTo self
@@ -163,12 +176,11 @@ private[sequence] final class UserSequence
 
         authIdsOptFu.keys foreach { authId ⇒
           val update = optimizedMapping.custom.getOrElse(authId, optimizedMapping.getDefault)
-          // empty update indicates that we don't need to push it.
-          // this update won't affect sequence, and will not appear in difference.
+          // UpdateEmptyUpdate indicates that we don't need to push it.
+          // This update won't affect sequence, and will not appear in difference.
           if (update.header != UpdateEmptyUpdate.header) {
             val seq = nextSeq(authId)
-            // it it ok to persist this way?
-            if (seq % 50 == 0) {
+            if (seq % 500 == 0) {
               connector.run(SeqStorage.putSeq(authId, seq))
             }
             pubSubExt.publish(
