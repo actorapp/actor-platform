@@ -91,9 +91,11 @@ final class HttpApiFrontendSpec
     val publicGroup = createPubGroup("public group", "PG", Set(user2.id)).groupPeer
 
     val resourcesPath = Paths.get(getClass.getResource("/files").toURI).toFile.getCanonicalPath
-    val port = scala.util.Random.nextInt(10000) + 1000
-    val config = HttpApiConfig("127.0.0.1", port, s"http://localhost:$port", resourcesPath, None)
-    HttpApiFrontend.start(config)
+    val config = {
+      val port = NetworkHelpers.randomPort()
+      HttpApiConfig("127.0.0.1", port, s"http://localhost:$port", resourcesPath, None)
+    }
+    HttpApi(system).start(config)
 
     def textMessage() = {
       val token = extractToken(groupOutPeer.groupId)

@@ -62,6 +62,9 @@ final class HttpApi(_system: ActorSystem) extends Extension {
   val adminAuthenticator: AsyncAuthenticator[Unit] =
     authenticator andThen (_ map (isAdminOpt ⇒ if (isAdminOpt.isDefined) Some(()) else None))
 
+  def start(config: HttpApiConfig): Unit =
+    HttpApiFrontend.start(config)
+
   def start(): Unit =
     HttpApiFrontend.start(system.settings.config)
 }
