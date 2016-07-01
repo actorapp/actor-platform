@@ -9,8 +9,9 @@ import im.actor.api.rpc.webactions.{ ResponseCompleteWebaction, ResponseInitWeba
 import im.actor.server.acl.ACLUtils
 import im.actor.server.db.DbExtension
 import im.actor.server.webactions.Webaction
+import im.actor.storage.SimpleStorage
+import im.actor.storage.api.PutAction
 import shardakka.ShardakkaExtension
-import slick.dbio.DBIO
 
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
@@ -23,8 +24,8 @@ object WebactionsErrors {
   def actionFailed(message: String) = RpcError(500, "WEBACTION_FAILED", message, false, None)
 }
 
-private[rpc] object WebactionsKeyValues {
-  def actionHashUserKV()(implicit system: ActorSystem) = ShardakkaExtension(system).simpleKeyValue("WebactionHashUserId")
+private[rpc] object WebactionStorage extends SimpleStorage("webactions") {
+  def putWebaction(hash: String, name: String): PutAction = put(hash, name.getBytes)
 }
 
 final class WebactionsServiceImpl(implicit actorSystem: ActorSystem) extends WebactionsService {
@@ -33,8 +34,10 @@ final class WebactionsServiceImpl(implicit actorSystem: ActorSystem) extends Web
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
   private implicit val timeout: Timeout = Timeout(5.seconds)
-  private val actionHashUserKV = WebactionsKeyValues.actionHashUserKV()
-  private val db = DbExtension(actorSystem).db
+  private val (db, conn) = {
+    val dbExt = DbExtension(actorSystem)
+    (dbExt.db, dbExt.connector)
+  }
 
   override def doHandleInitWebaction(actionName: String, params: ApiMapValue, clientData: ClientData): Future[HandlerResult[ResponseInitWebaction]] =
     authorized(clientData) { implicit client ⇒
@@ -42,19 +45,19 @@ final class WebactionsServiceImpl(implicit actorSystem: ActorSystem) extends Web
         fqn ← fromOption(WebactionNotFound)(Webaction.list.get(actionName))
         webAction ← fromXor(createWebaction(fqn))
         actionHash = generateActionHash()
-        _ ← fromFuture(actionHashUserKV.upsert(actionHash, actionName))
+        _ ← fromFuture(conn.run(WebactionStorage.putWebaction(actionHash, actionName)))
       } yield ResponseInitWebaction(webAction.uri(params), webAction.regex, actionHash)).value
     }
 
   override def doHandleCompleteWebaction(actionHash: String, completeUri: String, clientData: ClientData): Future[HandlerResult[ResponseCompleteWebaction]] =
     authorized(clientData) { implicit client ⇒
       (for {
-        actionName ← fromFutureOption(WrongActionHash)(actionHashUserKV.get(actionHash))
+        actionName ← fromFutureOption(WrongActionHash)(conn.run(WebactionStorage.get(actionHash))) map (new String(_))
         fqn ← fromOption(WebactionNotFound)(Webaction.list.get(actionName))
         webAction ← fromXor(createWebaction(fqn))
         response ← fromFuture(webAction.complete(client.userId, completeUri))
         _ ← fromBoolean(actionFailed(response.content.toString))(response.isSuccess)
-        _ ← fromFuture(actionHashUserKV.delete(actionHash))
+        _ ← fromFuture(conn.run(WebactionStorage.delete(actionHash)))
       } yield ResponseCompleteWebaction(response.content)).value
     }
 

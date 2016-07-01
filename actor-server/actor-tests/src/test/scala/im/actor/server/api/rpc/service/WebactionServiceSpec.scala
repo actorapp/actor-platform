@@ -3,10 +3,10 @@ package im.actor.server.api.rpc.service
 import im.actor.api.rpc.collections.{ ApiInt32Value, ApiMapValue, ApiMapValueItem, ApiStringValue }
 import im.actor.api.rpc.webactions.{ ResponseCompleteWebaction, ResponseInitWebaction }
 import im.actor.api.rpc.{ AuthData, ClientData, Error, Ok }
-import im.actor.server.api.rpc.service.webactions.{ WebactionsErrors, WebactionsKeyValues, WebactionsServiceImpl }
+import im.actor.server.api.rpc.service.webactions.{ WebactionStorage, WebactionsErrors, WebactionsServiceImpl }
+import im.actor.server.db.DbExtension
 import im.actor.server.webactions.CorrectWebaction
 import im.actor.server.{ BaseAppSuite, ImplicitAuthService, ImplicitSessionRegion }
-import org.scalatest.Inside._
 
 class WebactionServiceSpec
   extends BaseAppSuite
@@ -31,7 +31,7 @@ class WebactionServiceSpec
     val (user, userAuthId, userAuthSid, _) = createUser()
     val sessionId = createSessionId()
     implicit val clientData = ClientData(userAuthId, sessionId, Some(AuthData(user.id, userAuthSid, 42)))
-    private val kv = WebactionsKeyValues.actionHashUserKV()
+    val conn = DbExtension(system).connector
 
     def e1(): Unit = {
       whenReady(service.handleInitWebaction("foo", emptyParams)) { resp ⇒
@@ -56,10 +56,9 @@ class WebactionServiceSpec
           case Ok(ResponseInitWebaction(uri, reg, hash)) ⇒
             uri shouldEqual CorrectWebaction.uri
             reg shouldEqual CorrectWebaction.regex
-            whenReady(kv.get(hash)) { optAction ⇒
+            whenReady(conn.run(WebactionStorage.get(hash))) { optAction ⇒
               optAction shouldBe defined
-              val action = optAction.get
-              actionName shouldEqual action
+              actionName shouldEqual new String(optAction.get)
             }
         }
       }
@@ -92,7 +91,7 @@ class WebactionServiceSpec
             )
         }
       }
-      whenReady(kv.get(actionHash)) { optAction ⇒
+      whenReady(conn.run(WebactionStorage.get(actionHash))) { optAction ⇒
         optAction should not be defined
       }
     }
