@@ -67,7 +67,7 @@
 "SettingsChangeAboutHint" = "Modifica tu estado";
 
 
-"SettingsSecurity" = "Privacy and Security";
+"SettingsSecurity" = "Privacidad y Seguridad";
 
 "SettingsWallpapers" = "Fondos de chats";
 
@@ -85,9 +85,9 @@
 
 "SettingsMobilePhone"    = "Móvil";
 
-"SettingsGroupChats" = "Groups";
+"SettingsGroupChats" = "Grupos";
 
-"SettingsPrivateChats" = "Private Chats";
+"SettingsPrivateChats" = "Chats privados";
 
 /*
  * Notifications
@@ -131,22 +131,22 @@
 
 "MediaTitle" = "Media Settings";
 
-"MediaPhotoDownloadHeader"= "Automatic Photo Download";
+"MediaPhotoDownloadHeader"= "Descarga automatica de foto";
 
-"MediaAudioDownloadHeader"= "Automatic Audio Download";
+"MediaAudioDownloadHeader"= "Descarga automatica de audio";
 
-"MediaOtherHeader"= "Other";
+"MediaOtherHeader"= "Otros";
 
-"MediaAutoplayGif"= "Autoplay GIFs";
+"MediaAutoplayGif"= "Reproducir automaticamente Gifs";
 
 /*
  * Privacy
  */
 
-"PrivacyTitle" = "Privacy and Security";
+"PrivacyTitle" = "Privacidad y Seguridad";
 
 
-"PrivacyHeader" = "Privacy";
+"PrivacyHeader" = "Privacidad";
 
 "PrivacyLastSeen" = "Ultima vez visto";
 
@@ -159,9 +159,9 @@
 "PrivacyLastSeenNone"    = "Nadie";
 
 
-"PrivacySecurityHeader" = "Security";
+"PrivacySecurityHeader" = "Seguridad";
 
-"PrivacyAllSessions" = "Active Sessions";
+"PrivacyAllSessions" = "Sesiones Activadas";
 
 "PrivacyTerminate" = "Terminar todas las demás sesiones";
 
