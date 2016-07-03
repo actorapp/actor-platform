@@ -37,7 +37,7 @@ object MigrationTsActions {
   def insertTimestamp(migrationName: String, ts: Long)(implicit conn: Connector): Unit = {
     val alreadyRun = conn.runSync(MigrationTsStorage.get(migrationName)).isDefined
     if (alreadyRun) {
-      log.info("Migration {} already run at {}, skipping", migrationName, Instant.ofEpochMilli(ts))
+      log.info(s"Migration $migrationName already run at ${Instant.ofEpochMilli(ts)}, skipping.")
     } else {
       conn.runSync(
         MigrationTsStorage.upsert(
@@ -45,7 +45,7 @@ object MigrationTsActions {
           Int64Value(ts).toByteArray
         )
       )
-      log.info("Wrote migration timestamp for: {}, date: {}", migrationName, Instant.ofEpochMilli(ts))
+      log.info(s"Wrote migration timestamp for: $migrationName, date: ${Instant.ofEpochMilli(ts)}")
     }
   }
 }
