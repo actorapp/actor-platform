@@ -10,8 +10,7 @@ import im.actor.server.acl.ACLUtils
 import im.actor.server.db.DbExtension
 import im.actor.server.webactions.Webaction
 import im.actor.storage.SimpleStorage
-import im.actor.storage.api.PutAction
-import shardakka.ShardakkaExtension
+import im.actor.storage.api.UpsertAction
 
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
@@ -25,7 +24,7 @@ object WebactionsErrors {
 }
 
 private[rpc] object WebactionStorage extends SimpleStorage("webactions") {
-  def putWebaction(hash: String, name: String): PutAction = put(hash, name.getBytes)
+  def insertWebaction(hash: String, name: String): UpsertAction = upsert(hash, name.getBytes)
 }
 
 final class WebactionsServiceImpl(implicit actorSystem: ActorSystem) extends WebactionsService {
@@ -35,8 +34,8 @@ final class WebactionsServiceImpl(implicit actorSystem: ActorSystem) extends Web
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
   private implicit val timeout: Timeout = Timeout(5.seconds)
   private val (db, conn) = {
-    val dbExt = DbExtension(actorSystem)
-    (dbExt.db, dbExt.connector)
+    val ext = DbExtension(actorSystem)
+    (ext.db, ext.connector)
   }
 
   override def doHandleInitWebaction(actionName: String, params: ApiMapValue, clientData: ClientData): Future[HandlerResult[ResponseInitWebaction]] =
@@ -45,7 +44,7 @@ final class WebactionsServiceImpl(implicit actorSystem: ActorSystem) extends Web
         fqn ← fromOption(WebactionNotFound)(Webaction.list.get(actionName))
         webAction ← fromXor(createWebaction(fqn))
         actionHash = generateActionHash()
-        _ ← fromFuture(conn.run(WebactionStorage.putWebaction(actionHash, actionName)))
+        _ ← fromFuture(conn.run(WebactionStorage.insertWebaction(actionHash, actionName)))
       } yield ResponseInitWebaction(webAction.uri(params), webAction.regex, actionHash)).value
     }
 
