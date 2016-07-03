@@ -20,12 +20,12 @@ import spray.http.HttpHeaders.Authorization
 import spray.http._
 
 import scala.annotation.tailrec
-import scala.concurrent.Future
+import scala.concurrent.{ Future, TimeoutException }
 import scala.util.{ Failure, Success, Try }
 
-case class GooglePushKey(projectId: Long, key: String)
+private final case class GooglePushKey(projectId: Long, key: String)
 
-object GooglePushKey {
+private object GooglePushKey {
   def load(config: Config): Try[GooglePushKey] = {
     for {
       projectId ← config.get[Try[Long]]("project-id")
@@ -34,9 +34,9 @@ object GooglePushKey {
   }
 }
 
-case class GooglePushManagerConfig(keys: List[GooglePushKey])
+private final case class GooglePushManagerConfig(keys: List[GooglePushKey])
 
-object GooglePushManagerConfig {
+private object GooglePushManagerConfig {
   def load(googlePushConfig: Config): Try[GooglePushManagerConfig] =
     for {
       keyConfigs ← googlePushConfig.get[Try[List[Config]]]("keys")
@@ -62,15 +62,21 @@ final class GooglePushExtension(system: ActorSystem) extends Extension {
   import system.dispatcher
 
   private implicit val _system = system
-
-  private val streamDecider: Supervision.Decider = {
-    case _: RuntimeException ⇒ Supervision.Resume
-    case _                   ⇒ Supervision.Stop
-  }
-  private implicit val mat = ActorMaterializer(ActorMaterializerSettings(system).withSupervisionStrategy(streamDecider))
-
   private val log = Logging(system, getClass)
   private val db = DbExtension(system).db
+
+  private val streamDecider: Supervision.Decider = {
+    case e: TimeoutException ⇒
+      log.warning("Got timeout exception in stream, RESUME {}", e)
+      Supervision.Resume
+    case e: RuntimeException ⇒
+      log.warning("Got runtime exception in stream, RESUME {}", e)
+      Supervision.Resume
+    case e ⇒
+      log.error(e, "Got exception in stream, STOP")
+      Supervision.Stop
+  }
+  private implicit val mat = ActorMaterializer(ActorMaterializerSettings(system).withSupervisionStrategy(streamDecider))
 
   private val config = GooglePushManagerConfig.load(system.settings.config.getConfig("services.google.push")).get
   private val deliveryPublisher = system.actorOf(GooglePushDelivery.props, "google-push-delivery")
