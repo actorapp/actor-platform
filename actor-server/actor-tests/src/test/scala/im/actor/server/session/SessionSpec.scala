@@ -61,7 +61,7 @@ final class SessionSpec extends BaseSessionSpec with BeforeAndAfterEach {
     def wrongMessageBox() = {
       val authId = createAuthId()
       val sessionId = Random.nextLong()
-      val session = system.actorOf(Session.props, s"${authId}_$sessionId")
+      val session = system.actorOf(Session.props(sessionConfig), s"${authId}_$sessionId")
 
       probe.send(session, HandleMessageBox(ByteString.copyFrom(BitVector.empty.toByteBuffer)))
 

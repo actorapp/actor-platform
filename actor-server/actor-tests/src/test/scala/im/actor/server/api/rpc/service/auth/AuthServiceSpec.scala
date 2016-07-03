@@ -13,12 +13,10 @@ import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.users.{ ApiContactRecord, ApiContactType, ApiSex }
 import im.actor.concurrent.FutureExt
 import im.actor.server._
-import im.actor.server.activation.common.ActivationConfig
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.model.contact.UserContact
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol.{ MessageBox, SessionHello }
-import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.persist.auth.AuthTransactionRepo
 import im.actor.server.session.{ HandleMessageBox, Session, SessionConfig, SessionEnvelope }
 import im.actor.server.user.UserExtension
@@ -28,6 +26,7 @@ import scala.util.Random
 
 final class AuthServiceSpec
   extends BaseAppSuite
+  with ImplicitAuthService
   with ImplicitSequenceService
   with ImplicitSessionRegion
   with SeqUpdateMatchers {
@@ -108,14 +107,10 @@ final class AuthServiceSpec
   object s {
     implicit val ec = system.dispatcher
 
-    implicit val sessionConfig = SessionConfig.load(system.settings.config.getConfig("session"))
-    Session.startRegion(Session.props)
+    private val sessionConfig = SessionConfig.load(system.settings.config.getConfig("session"))
+    Session.startRegion(sessionConfig)
     implicit val sessionRegion = Session.startRegionProxy()
 
-    val oauthGoogleConfig = DummyOAuth2Server.config
-    implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-    val activationConfig = ActivationConfig.load.get
-    implicit val service = new AuthServiceImpl
     implicit val contactService = new ContactsServiceImpl
 
     val correctUri = "https://actor.im/registration"
@@ -162,7 +157,7 @@ final class AuthServiceSpec
 
       val deviceHash = Random.nextLong().toBinaryString.getBytes
 
-      def q() = service.handleStartPhoneAuth(
+      def q() = authService.handleStartPhoneAuth(
         phoneNumber = phoneNumber,
         appId = 42,
         apiKey = "apiKey",
@@ -194,7 +189,7 @@ final class AuthServiceSpec
       val phoneNumber = buildPhone()
       implicit val clientData = ClientData(createAuthId(), createSessionId(), None)
 
-      val transactionHash1 = whenReady(service.handleStartPhoneAuth(
+      val transactionHash1 = whenReady(authService.handleStartPhoneAuth(
         phoneNumber = phoneNumber,
         appId = 42,
         apiKey = "apiKey",
@@ -207,7 +202,7 @@ final class AuthServiceSpec
         resp.toOption.get.transactionHash
       }
 
-      val transactionHash2 = whenReady(service.handleStartPhoneAuth(
+      val transactionHash2 = whenReady(authService.handleStartPhoneAuth(
         phoneNumber = phoneNumber,
         appId = 3,
         apiKey = "someKey",
@@ -245,7 +240,7 @@ final class AuthServiceSpec
         resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false, Some(ApiPhoneActivationType.CODE))) ⇒ }
       }
 
-      whenReady(service.handleValidateCode("wrongHash123123", correctAuthCode)) { resp ⇒
+      whenReady(authService.handleValidateCode("wrongHash123123", correctAuthCode)) { resp ⇒
         inside(resp) {
           case Error(AuthErrors.PhoneCodeExpired) ⇒
         }
@@ -263,7 +258,7 @@ final class AuthServiceSpec
           resp.toOption.get.transactionHash
         }
 
-      whenReady(service.handleValidateCode(transactionHash, wrongCode)) { resp ⇒
+      whenReady(authService.handleValidateCode(transactionHash, wrongCode)) { resp ⇒
         inside(resp) {
           case Error(AuthErrors.PhoneCodeInvalid) ⇒
         }
@@ -289,7 +284,7 @@ final class AuthServiceSpec
           .update(LocalDateTime.now(ZoneOffset.UTC).minusHours(25))
       whenReady(db.run(dateUpdate))(_ ⇒ ())
 
-      whenReady(service.handleValidateCode(transactionHash, correctAuthCode)) { resp ⇒
+      whenReady(authService.handleValidateCode(transactionHash, correctAuthCode)) { resp ⇒
         inside(resp) {
           case Error(AuthErrors.PhoneCodeExpired) ⇒
         }
@@ -313,7 +308,7 @@ final class AuthServiceSpec
           resp.toOption.get.transactionHash
         }
 
-      whenReady(service.handleValidateCode(transactionHash, correctAuthCode)) { resp ⇒
+      whenReady(authService.handleValidateCode(transactionHash, correctAuthCode)) { resp ⇒
         inside(resp) {
           case Error(AuthErrors.PhoneNumberUnoccupied) ⇒
         }
@@ -338,7 +333,7 @@ final class AuthServiceSpec
           resp.toOption.get.transactionHash
         }
 
-      whenReady(service.handleValidateCode(transactionHash, correctAuthCode)) { resp ⇒
+      whenReady(authService.handleValidateCode(transactionHash, correctAuthCode)) { resp ⇒
         inside(resp) {
           case Ok(ResponseAuth(respUser, _)) ⇒
             respUser.name shouldEqual user.name
@@ -358,23 +353,23 @@ final class AuthServiceSpec
           resp.toOption.get.transactionHash
         }
 
-      whenReady(service.handleValidateCode(transactionHash, wrongCode)) { resp ⇒
+      whenReady(authService.handleValidateCode(transactionHash, wrongCode)) { resp ⇒
         inside(resp) {
           case Error(AuthErrors.PhoneCodeInvalid) ⇒
         }
       }
-      whenReady(service.handleValidateCode(transactionHash, wrongCode)) { resp ⇒
+      whenReady(authService.handleValidateCode(transactionHash, wrongCode)) { resp ⇒
         inside(resp) {
           case Error(AuthErrors.PhoneCodeInvalid) ⇒
         }
       }
-      whenReady(service.handleValidateCode(transactionHash, wrongCode)) { resp ⇒
+      whenReady(authService.handleValidateCode(transactionHash, wrongCode)) { resp ⇒
         inside(resp) {
           case Error(AuthErrors.PhoneCodeExpired) ⇒
         }
       }
       //after code invalidation we remove authCode and AuthTransaction, thus we got InvalidAuthTransaction error
-      whenReady(service.handleValidateCode(transactionHash, correctAuthCode)) { resp ⇒
+      whenReady(authService.handleValidateCode(transactionHash, correctAuthCode)) { resp ⇒
         inside(resp) {
           case Error(AuthErrors.PhoneCodeExpired) ⇒
         }
@@ -401,7 +396,7 @@ final class AuthServiceSpec
           resp.toOption.get.transactionHash
         }
 
-      whenReady(service.handleSignUp(transactionHash, userName, userSex, None)) { resp ⇒
+      whenReady(authService.handleSignUp(transactionHash, userName, userSex, None)) { resp ⇒
         inside(resp) {
           case Error(AuthErrors.NotValidated) ⇒
         }
@@ -429,13 +424,13 @@ final class AuthServiceSpec
           resp.toOption.get.transactionHash
         }
 
-      whenReady(service.handleValidateCode(transactionHash, correctAuthCode)) { resp ⇒
+      whenReady(authService.handleValidateCode(transactionHash, correctAuthCode)) { resp ⇒
         inside(resp) {
           case Error(AuthErrors.PhoneNumberUnoccupied) ⇒
         }
       }
 
-      whenReady(service.handleSignUp(transactionHash, userName, userSex, None)) { resp ⇒
+      whenReady(authService.handleSignUp(transactionHash, userName, userSex, None)) { resp ⇒
         inside(resp) {
           case Ok(ResponseAuth(user, _)) ⇒
             user.name shouldEqual userName
@@ -470,8 +465,8 @@ final class AuthServiceSpec
             resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false, Some(ApiPhoneActivationType.CODE))) ⇒ }
             resp.toOption.get.transactionHash
           }
-        whenReady(service.handleValidateCode(transactionHash, correctAuthCode))(_ ⇒ ())
-        whenReady(service.handleSignUp(transactionHash, userName, userSex, None))(_.toOption.get.user)
+        whenReady(authService.handleValidateCode(transactionHash, correctAuthCode))(_ ⇒ ())
+        whenReady(authService.handleSignUp(transactionHash, userName, userSex, None))(_.toOption.get.user)
       }
 
       {
@@ -518,8 +513,8 @@ final class AuthServiceSpec
             resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false, Some(ApiPhoneActivationType.CODE))) ⇒ }
             resp.toOption.get.transactionHash
           }
-        whenReady(service.handleValidateCode(transactionHash, correctAuthCode))(_ ⇒ ())
-        whenReady(service.handleSignUp(transactionHash, userName, userSex, None))(_.toOption.get.user)
+        whenReady(authService.handleValidateCode(transactionHash, correctAuthCode))(_ ⇒ ())
+        whenReady(authService.handleSignUp(transactionHash, userName, userSex, None))(_.toOption.get.user)
       }
 
       {
@@ -555,7 +550,7 @@ final class AuthServiceSpec
           resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, true, Some(ApiPhoneActivationType.CODE))) ⇒ }
           resp.toOption.get.transactionHash
         }
-      whenReady(service.handleValidateCode(transactionHash, correctAuthCode)) { resp ⇒
+      whenReady(authService.handleValidateCode(transactionHash, correctAuthCode)) { resp ⇒
         inside(resp) { case Ok(ResponseAuth(respUser, _)) ⇒ }
       }
 
@@ -583,11 +578,11 @@ final class AuthServiceSpec
           resp.toOption.get.transactionHash
         }
 
-      whenReady(service.handleValidateCode(transactionHash, correctAuthCode)) { resp ⇒
+      whenReady(authService.handleValidateCode(transactionHash, correctAuthCode)) { resp ⇒
         inside(resp) { case Error(AuthErrors.PhoneNumberUnoccupied) ⇒ }
       }
 
-      whenReady(service.handleSignUp(transactionHash, userName, userSex, None)) { resp ⇒
+      whenReady(authService.handleSignUp(transactionHash, userName, userSex, None)) { resp ⇒
         inside(resp) { case Ok(ResponseAuth(user, _)) ⇒ }
       }
 
@@ -631,7 +626,7 @@ final class AuthServiceSpec
       val deviceHash = Random.nextLong().toBinaryString.getBytes
       def q() = {
         Thread.sleep(100)
-        service.handleStartEmailAuth(
+        authService.handleStartEmailAuth(
           email = email,
           appId = 42,
           apiKey = "apiKey",
@@ -664,7 +659,7 @@ final class AuthServiceSpec
       val email = buildEmail(gmail)
       implicit val clientData = ClientData(createAuthId(), createSessionId(), None)
 
-      val transactionHash1 = whenReady(service.handleStartEmailAuth(
+      val transactionHash1 = whenReady(authService.handleStartEmailAuth(
         email = email,
         appId = 42,
         apiKey = "apiKey",
@@ -677,7 +672,7 @@ final class AuthServiceSpec
         resp.toOption.get.transactionHash
       }
 
-      val transactionHash2 = whenReady(service.handleStartEmailAuth(
+      val transactionHash2 = whenReady(authService.handleStartEmailAuth(
         email = email,
         appId = 3,
         apiKey = "someKey",
@@ -720,7 +715,7 @@ final class AuthServiceSpec
           resp.toOption.get.transactionHash
         }
 
-      whenReady(service.handleGetOAuth2Params(transactionHash, malformedUri)) { resp ⇒
+      whenReady(authService.handleGetOAuth2Params(transactionHash, malformedUri)) { resp ⇒
         inside(resp) { case Error(AuthErrors.RedirectUrlInvalid) ⇒ }
       }
     }
@@ -733,7 +728,7 @@ final class AuthServiceSpec
         resp should matchPattern { case Ok(ResponseStartEmailAuth(hash, false, ApiEmailActivationType.OAUTH2)) ⇒ }
       }
 
-      whenReady(service.handleGetOAuth2Params("wrongHash22aksdl320d3", correctUri)) { resp ⇒
+      whenReady(authService.handleGetOAuth2Params("wrongHash22aksdl320d3", correctUri)) { resp ⇒
         inside(resp) { case Error(AuthErrors.EmailCodeExpired) ⇒ }
       }
     }
@@ -748,11 +743,11 @@ final class AuthServiceSpec
           resp.toOption.get.transactionHash
         }
 
-      whenReady(service.handleGetOAuth2Params(transactionHash, correctUri)) { resp ⇒
+      whenReady(authService.handleGetOAuth2Params(transactionHash, correctUri)) { resp ⇒
         inside(resp) {
           case Ok(ResponseGetOAuth2Params(url)) ⇒
             url should not be empty
-            url should include(oauthGoogleConfig.authUri)
+            url should include(oauthConfig.authUri)
             url should include(URLEncoder.encode(correctUri, "utf-8"))
         }
       }
@@ -773,10 +768,10 @@ final class AuthServiceSpec
           resp should matchPattern { case Ok(ResponseStartEmailAuth(hash, false, ApiEmailActivationType.OAUTH2)) ⇒ }
           resp.toOption.get.transactionHash
         }
-      whenReady(service.handleGetOAuth2Params(transactionHash, correctUri)) { resp ⇒
+      whenReady(authService.handleGetOAuth2Params(transactionHash, correctUri)) { resp ⇒
         inside(resp) { case Ok(ResponseGetOAuth2Params(url)) ⇒ }
       }
-      whenReady(service.handleCompleteOAuth2("wrongTransactionHash29191djlksa", "4/YUlNIa55xSZRA4JcQkLzAh749bHAcv96aA-oVMHTQRU")) { resp ⇒
+      whenReady(authService.handleCompleteOAuth2("wrongTransactionHash29191djlksa", "4/YUlNIa55xSZRA4JcQkLzAh749bHAcv96aA-oVMHTQRU")) { resp ⇒
         inside(resp) {
           case Error(AuthErrors.EmailCodeExpired) ⇒
         }
@@ -793,10 +788,10 @@ final class AuthServiceSpec
           resp should matchPattern { case Ok(ResponseStartEmailAuth(hash, false, ApiEmailActivationType.OAUTH2)) ⇒ }
           resp.toOption.get.transactionHash
         }
-      whenReady(service.handleGetOAuth2Params(transactionHash, correctUri)) { resp ⇒
+      whenReady(authService.handleGetOAuth2Params(transactionHash, correctUri)) { resp ⇒
         inside(resp) { case Ok(ResponseGetOAuth2Params(url)) ⇒ }
       }
-      whenReady(service.handleCompleteOAuth2(transactionHash, "code")) { resp ⇒
+      whenReady(authService.handleCompleteOAuth2(transactionHash, "code")) { resp ⇒
         inside(resp) {
           case Error(AuthErrors.EmailUnoccupied) ⇒
         }
@@ -825,10 +820,10 @@ final class AuthServiceSpec
           resp should matchPattern { case Ok(ResponseStartEmailAuth(hash, false, ApiEmailActivationType.OAUTH2)) ⇒ }
           resp.toOption.get.transactionHash
         }
-      whenReady(service.handleGetOAuth2Params(transactionHash, correctUri)) { resp ⇒
+      whenReady(authService.handleGetOAuth2Params(transactionHash, correctUri)) { resp ⇒
         inside(resp) { case Ok(ResponseGetOAuth2Params(url)) ⇒ }
       }
-      whenReady(service.handleCompleteOAuth2(transactionHash, "wrongCode")) { resp ⇒
+      whenReady(authService.handleCompleteOAuth2(transactionHash, "wrongCode")) { resp ⇒
         inside(resp) {
           case Error(AuthErrors.EmailCodeExpired) ⇒
         }
@@ -853,7 +848,7 @@ final class AuthServiceSpec
           resp should matchPattern { case Ok(ResponseStartEmailAuth(hash, false, ApiEmailActivationType.OAUTH2)) ⇒ }
           resp.toOption.get.transactionHash
         }
-      whenReady(service.handleSignUp(transactionHash, userName, userSex, None)) { resp ⇒
+      whenReady(authService.handleSignUp(transactionHash, userName, userSex, None)) { resp ⇒
         inside(resp) {
           case Error(AuthErrors.NotValidated) ⇒
         }
@@ -882,16 +877,16 @@ final class AuthServiceSpec
           resp.toOption.get.transactionHash
         }
 
-      whenReady(service.handleGetOAuth2Params(transactionHash, correctUri)) { resp ⇒
+      whenReady(authService.handleGetOAuth2Params(transactionHash, correctUri)) { resp ⇒
         inside(resp) { case Ok(ResponseGetOAuth2Params(url)) ⇒ }
       }
-      whenReady(service.handleCompleteOAuth2(transactionHash, "code")) { resp ⇒
+      whenReady(authService.handleCompleteOAuth2(transactionHash, "code")) { resp ⇒
         inside(resp) {
           case Error(AuthErrors.EmailUnoccupied) ⇒
         }
       }
       val user =
-        whenReady(service.handleSignUp(transactionHash, userName, userSex, None)) { resp ⇒
+        whenReady(authService.handleSignUp(transactionHash, userName, userSex, None)) { resp ⇒
           inside(resp) {
             case Ok(ResponseAuth(u, _)) ⇒
               u.name shouldEqual userName
@@ -941,9 +936,9 @@ final class AuthServiceSpec
             resp.toOption.get.transactionHash
           }
 
-        whenReady(service.handleGetOAuth2Params(transactionHash, correctUri))(_ ⇒ ())
-        whenReady(service.handleCompleteOAuth2(transactionHash, "code"))(_ ⇒ ())
-        whenReady(service.handleSignUp(transactionHash, userName, userSex, None))(_.toOption.get.user)
+        whenReady(authService.handleGetOAuth2Params(transactionHash, correctUri))(_ ⇒ ())
+        whenReady(authService.handleCompleteOAuth2(transactionHash, "code"))(_ ⇒ ())
+        whenReady(authService.handleSignUp(transactionHash, userName, userSex, None))(_.toOption.get.user)
       }
 
       {
@@ -982,7 +977,7 @@ final class AuthServiceSpec
         appleCreds shouldBe defined
       }
 
-      whenReady(service.handleSignOut()) { resp ⇒
+      whenReady(authService.handleSignOut()) { resp ⇒
         resp should matchPattern {
           case Ok(ResponseVoid) ⇒
         }
@@ -1003,7 +998,7 @@ final class AuthServiceSpec
     }
 
     private def startPhoneAuth(phoneNumber: Long)(implicit clientData: ClientData): Future[RpcError Xor ResponseStartPhoneAuth] = {
-      service.handleStartPhoneAuth(
+      authService.handleStartPhoneAuth(
         phoneNumber = phoneNumber,
         appId = 42,
         apiKey = "apiKey",
@@ -1015,7 +1010,7 @@ final class AuthServiceSpec
     }
 
     private def startEmailAuth(email: String)(implicit clientData: ClientData): Future[RpcError Xor ResponseStartEmailAuth] = {
-      service.handleStartEmailAuth(
+      authService.handleStartEmailAuth(
         email = email,
         appId = 42,
         apiKey = "apiKey",
@@ -1044,15 +1039,6 @@ object DummyOAuth2Server {
   import akka.http.scaladsl.unmarshalling.PredefinedFromEntityUnmarshallers._
   import akka.stream.Materializer
   import org.apache.commons.codec.digest.DigestUtils
-
-  val config = OAuth2GoogleConfig(
-    "http://localhost:3000/o/oauth2/auth",
-    "http://localhost:3000",
-    "http://localhost:3000",
-    "actor",
-    "AA1865139A1CACEABFA45E6635AA7761",
-    "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile"
-  )
 
   var email: String = ""
 

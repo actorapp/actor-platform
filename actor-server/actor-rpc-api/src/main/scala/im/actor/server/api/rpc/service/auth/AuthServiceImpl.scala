@@ -40,11 +40,10 @@ import scala.concurrent._
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-final class AuthServiceImpl(
+final class AuthServiceImpl(val oauth2Service: GoogleProvider)(
   implicit
-  val sessionRegion: SessionRegion,
   val actorSystem:   ActorSystem,
-  val oauth2Service: GoogleProvider
+  val sessionRegion: SessionRegion
 ) extends AuthService
   with AuthHelpers
   with Helpers

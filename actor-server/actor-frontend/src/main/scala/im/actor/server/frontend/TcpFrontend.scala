@@ -1,10 +1,8 @@
 package im.actor.server.frontend
 
-import java.net.InetAddress
-
 import akka.actor._
 import akka.event.Logging
-import akka.stream.Materializer
+import akka.stream.{ ActorMaterializer, Materializer }
 import akka.stream.scaladsl._
 import im.actor.server.session.SessionRegion
 
@@ -16,10 +14,10 @@ object TcpFrontend extends Frontend("tcp") {
   def start(host: String, port: Int, serverKeys: Seq[ServerKey])(
     implicit
     sessionRegion: SessionRegion,
-    system:        ActorSystem,
-    mat:           Materializer
+    system:        ActorSystem
   ): Unit = {
     val log = Logging.getLogger(system, this)
+    implicit val materializer: Materializer = ActorMaterializer()
 
     Tcp().bind(host, port, idleTimeout = IdleTimeout)
       .to(Sink.foreach {

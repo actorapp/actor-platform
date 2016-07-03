@@ -9,7 +9,6 @@ import im.actor.server.persist.OAuth2TokenRepo
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.Try
-
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.marshalling.Marshal
@@ -17,18 +16,14 @@ import akka.http.scaladsl.model.HttpMethods._
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.{ Authorization, OAuth2BearerToken }
 import akka.http.scaladsl.unmarshalling._
-import akka.stream.Materializer
+import akka.stream.{ ActorMaterializer, Materializer }
 import slick.dbio.DBIO
-
 import im.actor.server.model.OAuth2Token
 
-class GoogleProvider(googleConfig: OAuth2GoogleConfig)(
-  implicit
-  system:           ActorSystem,
-  val materializer: Materializer
-) extends OAuth2Provider with Implicits {
+class GoogleProvider(googleConfig: OAuth2GoogleConfig)(implicit system: ActorSystem) extends OAuth2Provider with Implicits {
+  import system.dispatcher
 
-  implicit val ec: ExecutionContext = system.dispatcher
+  implicit val materializer: Materializer = ActorMaterializer()
 
   private val Utf8Encoding = "UTF-8"
 

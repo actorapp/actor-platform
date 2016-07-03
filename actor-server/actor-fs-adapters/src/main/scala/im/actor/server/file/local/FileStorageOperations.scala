@@ -32,7 +32,7 @@ trait FileStorageOperations extends LocalUploadKeyImplicits {
     for {
       dir ← getOrCreateFileDir(fileId)
       file = dir / name
-      _ ← Future { blocking { file.createIfNotExists() } }
+      _ ← Future { blocking { file.createIfNotExists() } } // TODO: remove it. FileIO creates file(should at least)
       ioRes ← Source(List(ByteString(data))).runWith(FileIO.toPath(file.path))
     } yield ioRes.status match {
       case Success(_)     ⇒ ()

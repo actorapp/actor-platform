@@ -32,7 +32,7 @@ final class SessionResendOverflowSpec extends BaseSessionSpec(
 
       val authId = createAuthId()
       val sessionId = Random.nextLong()
-      val session = system.actorOf(Session.props, s"${authId}_$sessionId")
+      val session = system.actorOf(Session.props(sessionConfig), s"${authId}_$sessionId")
       watchProbe watch session
 
       val encodedRequest = RequestCodec.encode(Request(RequestStartPhoneAuth(

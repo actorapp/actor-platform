@@ -4,19 +4,14 @@ import im.actor.server.group.GroupUtils
 import im.actor.server.persist.GroupRepo
 
 import scala.concurrent.{ ExecutionContext, Future }
-
 import akka.actor.ActorSystem
 import slick.driver.PostgresDriver.api._
-
 import im.actor.api.rpc._
 import im.actor.api.rpc.pubgroups.{ PubgroupsService, ResponseGetPublicGroups }
 import GroupUtils.getPubgroupStructUnsafe
+import im.actor.server.db.DbExtension
 
-class PubgroupsServiceImpl(
-  implicit
-  db:          Database,
-  actorSystem: ActorSystem
-) extends PubgroupsService {
+class PubgroupsServiceImpl(implicit actorSystem: ActorSystem) extends PubgroupsService {
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
   override def doHandleGetPublicGroups(clientData: ClientData): Future[HandlerResult[ResponseGetPublicGroups]] = {
@@ -26,7 +21,7 @@ class PubgroupsServiceImpl(
         pubGroupStructs ← DBIO.sequence(groups.view map getPubgroupStructUnsafe)
         sorted = pubGroupStructs.sortWith((g1, g2) ⇒ g1.friendsCount >= g2.friendsCount && g1.membersCount >= g2.membersCount)
       } yield Ok(ResponseGetPublicGroups(sorted.toVector))
-      db.run(action)
+      DbExtension(actorSystem).db.run(action)
     }
   }
 }

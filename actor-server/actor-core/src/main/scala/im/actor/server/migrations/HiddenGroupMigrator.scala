@@ -2,12 +2,11 @@ package im.actor.server.migrations
 
 import akka.actor.{ ActorLogging, ActorSystem, PoisonPill, Props }
 import akka.persistence.{ PersistentActor, RecoveryCompleted }
-import im.actor.concurrent.FutureExt._
+import im.actor.concurrent.FutureExt
 import im.actor.server.db.DbExtension
 import im.actor.server.event.TSEvent
 import im.actor.server.group.GroupOffice
-import im.actor.server.{ persist ⇒ p }
-import slick.driver.PostgresDriver
+import im.actor.server.persist.GroupRepo
 
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future, Promise }
@@ -21,10 +20,11 @@ object HiddenGroupMigrator extends Migration {
 
   override protected def migrationTimeout: Duration = 15.minutes
 
-  override protected def startMigration()(implicit system: ActorSystem, db: PostgresDriver.api.Database, ec: ExecutionContext): Future[Unit] = {
+  override protected def startMigration()(implicit system: ActorSystem): Future[Unit] = {
+    import system.dispatcher
     for {
-      ids ← db.run(p.GroupRepo.findAllIds)
-      _ ← ftraverse(ids)(migrateGroup)
+      ids ← DbExtension(system).db.run(GroupRepo.findAllIds)
+      _ ← FutureExt.ftraverse(ids)(migrateGroup)
     } yield ()
   }
 
@@ -52,7 +52,7 @@ private final class HiddenGroupMigrator(promise: Promise[Unit], groupId: Int) ex
 
   private def migrate(): Unit = {
     if (isHidden) {
-      db.run(p.GroupRepo.makeHidden(groupId)) onComplete {
+      db.run(GroupRepo.makeHidden(groupId)) onComplete {
         case Failure(e) ⇒
           promise.failure(e)
           self ! PoisonPill
