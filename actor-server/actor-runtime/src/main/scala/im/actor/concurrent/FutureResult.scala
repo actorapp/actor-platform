@@ -1,5 +1,6 @@
 package im.actor.concurrent
 
+import akka.http.scaladsl.util.FastFuture
 import cats.data.Xor._
 import cats.data.{ Xor, XorT }
 import cats.std.{ EitherInstances, FutureInstances }
@@ -12,15 +13,15 @@ trait FutureResult[ErrorCase] extends FutureInstances with EitherInstances {
   type Result[A] = XorT[Future, ErrorCase, A]
   def Result[A] = XorT.apply[Future, ErrorCase, A] _
 
-  def point[A](a: A): Result[A] = Result[A](Future.successful(a.right))
+  def point[A](a: A): Result[A] = Result[A](FastFuture.successful(a.right))
 
-  def fromXor[A](va: ErrorCase Xor A): Result[A] = Result[A](Future.successful(va))
+  def fromXor[A](va: ErrorCase Xor A): Result[A] = Result[A](FastFuture.successful(va))
 
-  def fromXor[A, B](errorHandle: B ⇒ ErrorCase)(va: B Xor A): Result[A] = Result[A](Future.successful(va leftMap errorHandle))
+  def fromXor[A, B](errorHandle: B ⇒ ErrorCase)(va: B Xor A): Result[A] = Result[A](FastFuture.successful(va leftMap errorHandle))
 
-  def fromOption[A](failure: ErrorCase)(oa: Option[A]): Result[A] = Result[A](Future.successful(oa toRightXor failure))
+  def fromOption[A](failure: ErrorCase)(oa: Option[A]): Result[A] = Result[A](FastFuture.successful(oa toRightXor failure))
 
-  def fromBoolean[A](failure: ErrorCase)(oa: Boolean): Result[Unit] = Result[Unit](Future.successful(if (oa) ().right else failure.left))
+  def fromBoolean[A](failure: ErrorCase)(oa: Boolean): Result[Unit] = Result[Unit](FastFuture.successful(if (oa) ().right else failure.left))
 
   def fromFuture[A](fa: Future[A])(implicit ec: ExecutionContext): Result[A] = Result[A](fa map right)
 

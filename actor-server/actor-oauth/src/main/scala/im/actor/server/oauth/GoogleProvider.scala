@@ -16,6 +16,7 @@ import akka.http.scaladsl.model.HttpMethods._
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.{ Authorization, OAuth2BearerToken }
 import akka.http.scaladsl.unmarshalling._
+import akka.http.scaladsl.util.FastFuture
 import akka.stream.{ ActorMaterializer, Materializer }
 import slick.dbio.DBIO
 import im.actor.server.model.OAuth2Token
@@ -88,7 +89,7 @@ class GoogleProvider(googleConfig: OAuth2GoogleConfig)(implicit system: ActorSys
   private def fetchToken(form: FormData, userId: String): Future[Option[OAuth2Token]] =
     for {
       optToken ← requestToken(form)
-      result ← Future.successful(optToken.map(makeModel(_, userId)))
+      result ← FastFuture.successful(optToken.map(makeModel(_, userId)))
     } yield result
 
   private def requestToken(form: FormData): Future[Option[Token]] = for {

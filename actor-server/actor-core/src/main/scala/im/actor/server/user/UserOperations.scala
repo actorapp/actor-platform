@@ -2,6 +2,7 @@ package im.actor.server.user
 
 import akka.actor.ActorSystem
 import akka.event.LoggingAdapter
+import akka.http.scaladsl.util.FastFuture
 import akka.pattern.ask
 import akka.util.Timeout
 import im.actor.api.rpc.misc.ApiExtension
@@ -58,7 +59,7 @@ private[user] sealed trait Commands extends AuthCommands {
     (processorRegion.ref ? UpdateIsAdmin(userId, Some(isAdmin))).mapTo[UpdateIsAdminAck]
 
   // FIXME: check existence and reserve generated ids
-  def nextId(): Future[Int] = Future.successful(IdUtils.nextIntId())
+  def nextId(): Future[Int] = FastFuture.successful(IdUtils.nextIntId())
 
   def addPhone(userId: Int, phone: Long): Future[Unit] =
     (processorRegion.ref ? AddPhone(userId, phone)).mapTo[AddPhoneAck] map (_ ⇒ ())

@@ -1,6 +1,7 @@
 package im.actor.server.api.rpc.service.search
 
 import akka.actor.ActorSystem
+import akka.http.scaladsl.util.FastFuture
 import im.actor.api.rpc._
 import im.actor.api.rpc.groups.ApiGroup
 import im.actor.api.rpc.peers.{ ApiGroupOutPeer, ApiPeer, ApiPeerType, ApiUserOutPeer }
@@ -39,7 +40,7 @@ class SearchServiceImpl(implicit system: ActorSystem) extends SearchService {
       texts.toList match {
         case text :: Nil ⇒ searchResult(peerTypes.toVector, Some(text), optimizations)
         case Nil         ⇒ searchResult(peerTypes.toVector, None, optimizations)
-        case _           ⇒ Future.successful(Error(RpcError(400, "INVALID_QUERY", "Invalid query.", canTryAgain = false, None)))
+        case _           ⇒ FastFuture.successful(Error(RpcError(400, "INVALID_QUERY", "Invalid query.", canTryAgain = false, None)))
       }
     }
   }
@@ -49,14 +50,14 @@ class SearchServiceImpl(implicit system: ActorSystem) extends SearchService {
     optimizations: IndexedSeq[ApiUpdateOptimization.Value],
     clientData:    ClientData
   ): Future[HandlerResult[ResponseMessageSearchResponse]] =
-    Future.successful(Error(CommonRpcErrors.NotSupportedInOss))
+    FastFuture.successful(Error(CommonRpcErrors.NotSupportedInOss))
 
   override def doHandleMessageSearchMore(
     loadMoreState: Array[Byte],
     optimizations: IndexedSeq[ApiUpdateOptimization.Value],
     clientData:    ClientData
   ): Future[HandlerResult[ResponseMessageSearchResponse]] =
-    Future.successful(Error(CommonRpcErrors.NotSupportedInOss))
+    FastFuture.successful(Error(CommonRpcErrors.NotSupportedInOss))
 
   private def searchResult(
     pts:           IndexedSeq[ApiSearchPeerType.Value],
@@ -150,7 +151,7 @@ class SearchServiceImpl(implicit system: ActorSystem) extends SearchService {
       ids ← DialogExtension(system).fetchGroupedDialogs(client.userId) map (_.filter(_.typ.isGroups).flatMap(_.dialogs.map(_.getPeer.id)))
       groupOpts ← FutureExt.ftraverse(ids) { id ⇒
         groupExt.isPublic(id) flatMap { isPublic ⇒
-          if (isPublic) Future.successful(None)
+          if (isPublic) FastFuture.successful(None)
           else groupExt.getApiStruct(id, client.userId).map(Some(_))
         }
       }

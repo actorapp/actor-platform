@@ -1,6 +1,7 @@
 package im.actor.server.api.rpc.service.weak
 
 import akka.actor.ActorSystem
+import akka.http.scaladsl.util.FastFuture
 import im.actor.api.rpc._
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeer, ApiPeerType }
@@ -41,7 +42,7 @@ class WeakServiceImpl(implicit actorSystem: ActorSystem) extends WeakService {
           } yield ()
       }
 
-      Future.successful(Ok(ResponseVoid))
+      FastFuture.successful(Ok(ResponseVoid))
     }
   }
 
@@ -60,7 +61,7 @@ class WeakServiceImpl(implicit actorSystem: ActorSystem) extends WeakService {
         presenceExt.presenceSetOffline(client.userId, client.authId, timeout)
       }
 
-      Future.successful(Ok(ResponseVoid))
+      FastFuture.successful(Ok(ResponseVoid))
     }
 
   override def doHandlePauseNotifications(timeout: Int, clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
@@ -87,7 +88,7 @@ class WeakServiceImpl(implicit actorSystem: ActorSystem) extends WeakService {
           } yield ()
       }
 
-      Future.successful(Ok(ResponseVoid))
+      FastFuture.successful(Ok(ResponseVoid))
     }
   }
 

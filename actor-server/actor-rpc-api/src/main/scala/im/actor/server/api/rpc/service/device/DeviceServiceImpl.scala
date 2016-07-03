@@ -1,6 +1,7 @@
 package im.actor.server.api.rpc.service.device
 
 import akka.actor.ActorSystem
+import akka.http.scaladsl.util.FastFuture
 import im.actor.api.rpc.{ ClientData, _ }
 import im.actor.api.rpc.device.DeviceService
 import im.actor.api.rpc.misc.ResponseVoid
@@ -17,7 +18,7 @@ final class DeviceServiceImpl(implicit system: ActorSystem) extends DeviceServic
   override def doHandleNotifyAboutDeviceInfo(preferredLanguages: IndexedSeq[String], timeZone: Option[String], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     authorized(clientData) { client ⇒
       userExt.setDeviceInfo(client.userId, client.authId, DeviceInfo(timeZone.getOrElse(""), preferredLanguages))
-      Future.successful(Ok(ResponseVoid))
+      FastFuture.successful(Ok(ResponseVoid))
     }
   }
 }

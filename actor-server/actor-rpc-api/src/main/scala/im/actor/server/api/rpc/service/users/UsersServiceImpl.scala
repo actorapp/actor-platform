@@ -1,6 +1,7 @@
 package im.actor.server.api.rpc.service.users
 
 import akka.actor._
+import akka.http.scaladsl.util.FastFuture
 import akka.util.Timeout
 import cats.data.Xor
 import im.actor.api.rpc._
@@ -59,11 +60,11 @@ final class UsersServiceImpl(implicit actorSystem: ActorSystem) extends UsersSer
                   seqState ← seqstateF
                 } yield Ok(ResponseSeq(seqState.seq, seqState.state.toByteArray))
               } else {
-                Future.successful(Error(CommonRpcErrors.InvalidAccessHash))
+                FastFuture.successful(Error(CommonRpcErrors.InvalidAccessHash))
               }
-            case None ⇒ Future.successful(Error(CommonRpcErrors.UserNotFound))
+            case None ⇒ FastFuture.successful(Error(CommonRpcErrors.UserNotFound))
           }
-        case Xor.Left(err) ⇒ Future.successful(Error(UserErrors.NameInvalid))
+        case Xor.Left(err) ⇒ FastFuture.successful(Error(UserErrors.NameInvalid))
       }
     }
   }

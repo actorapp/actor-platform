@@ -1,6 +1,7 @@
 package im.actor.server.api.rpc.service.push
 
 import akka.actor.ActorSystem
+import akka.http.scaladsl.util.FastFuture
 import com.google.protobuf.ByteString
 import com.google.protobuf.wrappers.{ Int32Value, StringValue }
 import im.actor.api.rpc._
@@ -58,7 +59,7 @@ final class PushServiceImpl(
         } yield OkVoid
         db.run(action)
       case None ⇒
-        Future.successful(ErrWrongToken)
+        FastFuture.successful(ErrWrongToken)
     }
 
   override def doHandleRegisterActorPush(
@@ -94,7 +95,7 @@ final class PushServiceImpl(
           _ ← ApplePushCredentialsRepo.createOrUpdate(creds)
         } yield OkVoid
         db.run(action)
-      case None ⇒ Future.successful(ErrWrongToken)
+      case None ⇒ FastFuture.successful(ErrWrongToken)
     }
 
   override protected def doHandleRegisterApplePushToken(
@@ -118,7 +119,7 @@ final class PushServiceImpl(
         } yield OkVoid
         db.run(action)
       case None ⇒
-        Future.successful(ErrWrongToken)
+        FastFuture.successful(ErrWrongToken)
     }
 
   // TODO: figure out, should user be authorized?
@@ -143,7 +144,7 @@ final class PushServiceImpl(
       case Some(tokenBits) ⇒
         val tokenBytes = tokenBits.toByteArray
         db.run(ApplePushCredentialsRepo.deleteByToken(tokenBytes)) map (_ ⇒ OkVoid)
-      case None ⇒ Future.successful(ErrWrongToken)
+      case None ⇒ FastFuture.successful(ErrWrongToken)
     }
 
   private def unregisterApple(token: String) =
@@ -152,7 +153,7 @@ final class PushServiceImpl(
         val tokenBytes = tokenBits.toByteArray
         seqUpdExt.unregisterApplePushCredentials(tokenBytes) map (_ ⇒ OkVoid)
       case None ⇒
-        Future.successful(ErrWrongToken)
+        FastFuture.successful(ErrWrongToken)
     }
 
 }

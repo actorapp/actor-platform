@@ -2,6 +2,7 @@ package im.actor.server.bot
 
 import akka.actor.ActorSystem
 import akka.event.Logging
+import akka.http.scaladsl.util.FastFuture
 import akka.stream.FlowShape
 import akka.stream.scaladsl._
 import im.actor.api.rpc.Update
@@ -74,8 +75,8 @@ final class BotServerBlueprint(system: ActorSystem) {
           for {
             response ← handlers(body).handle(botUserId, botAuthId, botAuthSid)
           } yield response
-        } else Future.successful(BotError(400, "REQUEST_NOT_SUPPORTED", Js.Obj(), None))
-      } else Future.successful(BotError(400, "SERVICE_NOT_REGISTERED", Js.Obj(), None))
+        } else FastFuture.successful(BotError(400, "REQUEST_NOT_SUPPORTED", Js.Obj(), None))
+      } else FastFuture.successful(BotError(400, "SERVICE_NOT_REGISTERED", Js.Obj(), None))
 
     resultFuture map (BotResponse(id, _))
   }

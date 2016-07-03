@@ -278,12 +278,12 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
     val validateHash = optAccessHash map { hash ⇒
       peer.`type` match {
         case PeerType.Private ⇒
-          optSenderAuthId map { authId ⇒ userExt.checkAccessHash(peer.id, authId, hash) } getOrElse Future.successful(false)
+          optSenderAuthId map { authId ⇒ userExt.checkAccessHash(peer.id, authId, hash) } getOrElse FastFuture.successful(false)
         case PeerType.Group ⇒
           groupExt.checkAccessHash(peer.id, hash)
         case unknown ⇒ throw new RuntimeException(s"Unknown peer type $unknown")
       }
-    } getOrElse Future.successful(true)
+    } getOrElse FastFuture.successful(true)
 
     (for {
       isValid ← validateHash

@@ -1,6 +1,7 @@
 package im.actor.server.group
 
 import akka.actor.Status
+import akka.http.scaladsl.util.FastFuture
 import akka.pattern.pipe
 import im.actor.api.rpc.PeersImplicits
 import im.actor.server.dialog.DialogCommands._
@@ -31,7 +32,7 @@ trait GroupPeerCommandHandlers extends PeersImplicits {
           self ! LastSenderIdChanged(senderUserId)
           SendMessageAck()
         }
-      } else Future.successful(Status.Failure(NotAMember))
+      } else FastFuture.successful(Status.Failure(NotAMember))
     } recover {
       case e ⇒
         log.error(e, "Failed to send message")
@@ -48,7 +49,7 @@ trait GroupPeerCommandHandlers extends PeersImplicits {
           dialogExt.ackMessageReceived(Peer.privat(memberId), mr)
         }
       } map (_ ⇒ MessageReceivedAck())
-    } else Future.successful(MessageReceivedAck())) recover {
+    } else FastFuture.successful(MessageReceivedAck())) recover {
       case e ⇒
         log.error(e, "Failed to mark messages received")
         throw e

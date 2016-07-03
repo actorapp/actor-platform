@@ -75,7 +75,7 @@ private[messaging] final class ReverseHooksWorker(groupId: Int, token: String)
 
       val optNickname = from match {
         case model.Peer(Group, _) ⇒
-          Future.successful(None)
+          FastFuture.successful(None)
         case model.Peer(Private, id) ⇒
           UserExtension(system).getApiStruct(id, 0, 0L) map (_.nick)
       }

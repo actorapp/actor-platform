@@ -209,7 +209,7 @@ private[user] trait UserCommandHandlers {
 
   protected def addSocialContact(user: UserState, contact: SocialContact): Unit =
     persistReply(UserEvents.SocialContactAdded(now(), contact), user) { _ ⇒
-      Future.successful(AddSocialContactAck())
+      FastFuture.successful(AddSocialContactAck())
     }
 
   protected def changeNickname(user: UserState, authId: Long, nicknameOpt: Option[String]): Unit = {
@@ -430,7 +430,7 @@ private[user] trait UserCommandHandlers {
   private def checkNicknameExists(nicknameOpt: Option[String]): Future[Boolean] = {
     nicknameOpt match {
       case Some(nickname) ⇒ db.run(UserRepo.nicknameExists(nickname))
-      case None           ⇒ Future.successful(false)
+      case None           ⇒ FastFuture.successful(false)
     }
   }
 

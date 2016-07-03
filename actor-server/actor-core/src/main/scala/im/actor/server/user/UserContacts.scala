@@ -3,6 +3,7 @@ package im.actor.server.user
 import java.time.Instant
 
 import akka.actor.{ ActorRefFactory, Props }
+import akka.http.scaladsl.util.FastFuture
 import akka.pattern.ask
 import akka.persistence.SnapshotMetadata
 import akka.util.Timeout
@@ -60,7 +61,7 @@ private[user] final class UserContactsActor(userId: Int) extends Processor[UserC
 
   override protected def handleQuery: QueryHandler = {
     case GetLocalName(_, contactUserId) ⇒
-      Future.successful(GetLocalNameResponse(state.localNames.get(contactUserId)))
+      FastFuture.successful(GetLocalNameResponse(state.localNames.get(contactUserId)))
   }
 
   private def editLocalName(authId: Long, contactUserId: Int, nameOpt: Option[String], supressUpdate: Boolean): Unit = {
