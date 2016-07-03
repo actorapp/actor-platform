@@ -8,24 +8,36 @@ import akka.stream.ActorMaterializer
 import akka.util.Timeout
 import com.google.protobuf.wrappers.Int32Value
 import im.actor.server.db.DbExtension
+import im.actor.server.migrations.v2.{ MigrationNameList, MigrationTsActions }
 import im.actor.server.model._
 import im.actor.server.sequence.operations.{ DeliveryOperations, DifferenceOperations, PushOperations }
 import im.actor.storage.SimpleStorage
-import im.actor.storage.api.{ GetAction, PutAction }
+import im.actor.storage.api.{ GetAction, UpsertAction }
 
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future, Promise }
 
-case class Difference(updates: IndexedSeq[SerializedUpdate], seq: Int, commonState: Array[Byte], needMore: Boolean)
+final case class Difference(
+  updates:     IndexedSeq[SerializedUpdate],
+  clientSeq:   Int,
+  commonState: Array[Byte],
+  needMore:    Boolean
+)
 
-object SeqStorage extends SimpleStorage("seqs") {
+/**
+ * Stores mapping `authId` -> `seq` for
+ * authId: Long
+ * seq: Int
+ */
+object SequenceStorage extends SimpleStorage("sequence") {
   def getSeq(authId: Long): GetAction = {
     get(authId.toString)
   }
-  def putSeq(authId: Long, seq: Int): PutAction = {
-    put(authId.toString, Int32Value(seq).toByteArray)
+  def upsertSeq(authId: Long, seq: Int): UpsertAction = {
+    upsert(authId.toString, Int32Value(seq).toByteArray)
   }
 }
+
 final class SeqUpdatesExtension(_system: ActorSystem)
   extends Extension
   with DeliveryOperations
@@ -38,10 +50,18 @@ final class SeqUpdatesExtension(_system: ActorSystem)
   protected implicit val OperationTimeout: Timeout = Timeout(20.seconds)
   private implicit val system: ActorSystem = _system
   protected implicit val ec: ExecutionContext = system.dispatcher
-  protected implicit lazy val db = DbExtension(system).db
+  protected lazy val (db, conn) = {
+    val ext = DbExtension(system)
+    (ext.db, ext.connector)
+  }
   lazy val region: SeqUpdatesManagerRegion = SeqUpdatesManagerRegion.start()(system)
   private val writer = system.actorOf(BatchUpdatesWriter.props, "batch-updates-writer")
   private val mediator = DistributedPubSub(system).mediator
+
+  val MultiSequenceMigrationTs: Long = {
+    val optTs = MigrationTsActions.getTimestamp(MigrationNameList.MultiSequence)(conn)
+    optTs.getOrElse(throw new RuntimeException(s"No Migration timestamp found for ${MigrationNameList.MultiSequence}"))
+  }
 
   def getSeqState(userId: Int, authId: Long): Future[SeqState] =
     (region.ref ? Envelope(userId).withGetSeqState(GetSeqState(authId))).mapTo[SeqState]
@@ -58,7 +78,7 @@ final class SeqUpdatesExtension(_system: ActorSystem)
   def subscribe(authId: Long, ref: ActorRef): Future[Unit] =
     (mediator ? DistributedPubSubMediator.Subscribe(UserSequence.topic(authId), ref)) map (_ ⇒ ())
 
-  def commonState(commonSeq: Int): CommonState = CommonState(CommonStateVersion.V1, commonSeq)
+  def buildCommonState(commonSeq: Int): CommonState = CommonState(CommonStateVersion.V1, commonSeq)
 
   def persistUpdate(update: SeqUpdate): Future[Unit] = {
     val promise = Promise[Unit]()

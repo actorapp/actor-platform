@@ -1,5 +1,6 @@
 package im.actor.server.sequence.operations
 
+import akka.http.scaladsl.util.FastFuture
 import im.actor.api.rpc.sequence.UpdateEmptyUpdate
 import im.actor.server.model.{ SeqUpdate, SerializedUpdate, UpdateMapping }
 import im.actor.server.persist.sequence.UserSequenceRepo
@@ -47,7 +48,7 @@ trait DifferenceOperations { this: SeqUpdatesExtension ⇒
   def getDifference(
     userId:         Int,
     clientSeq:      Int,
-    state:          Array[Byte],
+    commonState:    Array[Byte],
     authId:         Long,
     authSid:        Int,
     maxSizeInBytes: Long
@@ -66,7 +67,7 @@ trait DifferenceOperations { this: SeqUpdatesExtension ⇒
       }
     }
 
-    val commonSeq = CommonState.validate(state) match {
+    val commonSeq = CommonState.validate(commonState) match {
       case Success(CommonState(_, 0)) ⇒
         log.debug("Got old client with seq: {}", clientSeq)
         clientSeq
@@ -78,10 +79,15 @@ trait DifferenceOperations { this: SeqUpdatesExtension ⇒
 
     for {
       (acc, needMore) ← db.run(run(commonSeq, DiffAcc.empty(commonSeq), 0L))
+      newClientSeq ← if (!needMore) {
+        getSeqState(userId, authId) map (_.seq)
+      } else {
+        FastFuture.successful(clientSeq + acc.seqDelta)
+      }
     } yield Difference(
       updates = acc.toVector,
-      seq = clientSeq + acc.seqDelta,
-      commonState = commonState(acc.commonSeq).toByteArray,
+      clientSeq = newClientSeq,
+      commonState = buildCommonState(acc.commonSeq).toByteArray,
       needMore = needMore
     )
   }

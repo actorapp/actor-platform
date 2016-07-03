@@ -16,7 +16,7 @@ import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.peers.{ ApiGroupOutPeer, ApiUserOutPeer }
 import im.actor.server.db.DbExtension
 import im.actor.server.group.{ GroupExtension, GroupUtils }
-import im.actor.server.sequence.{ Difference, SeqUpdatesExtension }
+import im.actor.server.sequence.{ Difference, SeqState, SeqUpdatesExtension }
 import im.actor.server.session._
 import im.actor.server.user.UserUtils
 import im.actor.server.db.ActorPostgresDriver.api._
@@ -46,14 +46,13 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
   override def doHandleGetState(optimizations: IndexedSeq[ApiUpdateOptimization.ApiUpdateOptimization], clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
     authorized(clientData) { implicit client ⇒
       subscribeToSeq(optimizations)
-      val action = for {
-        seqState ← DBIO.from(seqUpdExt.getSeqState(client.userId, clientData.authId))
-      } yield Ok(ResponseSeq(seqState.seq, seqState.state.toByteArray))
-      db.run(action)
+      for {
+        SeqState(seq, state) ← seqUpdExt.getSeqState(client.userId, clientData.authId)
+      } yield Ok(ResponseSeq(seq, state.toByteArray))
     }
 
   override def doHandleGetDifference(
-    seq:           Int,
+    clientSeq:     Int,
     commonState:   Array[Byte],
     optimizations: IndexedSeq[ApiUpdateOptimization.ApiUpdateOptimization],
     clientData:    ClientData
@@ -63,10 +62,10 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
 
       for {
         // FIXME: would new updates between getSeqState and getDifference break client state?
-        Difference(updates, clientSeq, newCommonState, needMore) ← seqUpdExt.getDifference(
+        Difference(updates, newClientSeq, newCommonState, needMore) ← seqUpdExt.getDifference(
           userId = client.userId,
-          clientSeq = seq,
-          state = commonState,
+          clientSeq = clientSeq,
+          commonState = commonState,
           authId = client.authId,
           authSid = client.authSid,
           maxSizeInBytes = maxDifferenceSize
@@ -77,7 +76,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
         (userRefs, groupRefs) ← getRefs(userIds, groupIds, optimizations, client)
       } yield {
         Ok(ResponseGetDifference(
-          seq = clientSeq,
+          seq = newClientSeq,
           state = newCommonState,
           updates = diffUpdates,
           needMore = needMore,

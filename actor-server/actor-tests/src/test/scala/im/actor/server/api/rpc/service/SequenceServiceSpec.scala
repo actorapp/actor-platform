@@ -1,6 +1,5 @@
 package im.actor.server.api.rpc.service
 
-import com.google.protobuf.CodedInputStream
 import com.typesafe.config.ConfigFactory
 import im.actor.api.rpc._
 import im.actor.api.rpc.contacts.UpdateContactsAdded
@@ -11,7 +10,7 @@ import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.api.rpc.sequence.{ ApiUpdateContainer, ApiUpdateOptimization, ResponseGetDifference, UpdateEmptyUpdate }
 import im.actor.server._
 import im.actor.server.api.rpc.service.sequence.SequenceServiceConfig
-import im.actor.server.sequence.{ CommonState, CommonStateVersion }
+import im.actor.server.sequence.{ CommonState, CommonStateVersion, UserSequence }
 
 import scala.concurrent.Future
 
@@ -47,7 +46,7 @@ final class SequenceServiceSpec extends BaseAppSuite({
     implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user.id, authSid, 42)))
 
     whenReady(service.handleGetState(Vector.empty)) { res ⇒
-      res should matchPattern { case Ok(ResponseSeq(0, _)) ⇒ }
+      res should matchPattern { case Ok(ResponseSeq(1, _)) ⇒ }
     }
   }
 
@@ -119,11 +118,11 @@ final class SequenceServiceSpec extends BaseAppSuite({
             (updates.map(_.toByteArray.length).sum <= withError(config.maxDifferenceSize)) shouldEqual true
             needMore shouldEqual false
             totalUpdates ++= updates
-            diff.seq shouldEqual seq2 + updates.length
+            diff.seq shouldEqual seq2 + updates.length + UserSequence.Const.SeqStart // this is real user's seq
         }
         val commonState = CommonState.parseFrom(diff.state)
         commonState.version shouldEqual CommonStateVersion.V1
-        commonState.seq shouldEqual diff.seq
+        commonState.seq shouldEqual diff.seq - UserSequence.Const.SeqStart // user's seq starts from `UserSequence.Const.SeqStart` - take away difference
         (diff.seq, diff.state)
       }
     }
@@ -137,8 +136,9 @@ final class SequenceServiceSpec extends BaseAppSuite({
     }
 
     totalUpdates.length shouldEqual 3841
-    finalSeq shouldEqual 3841
-    CommonState.parseFrom(finalState).seq shouldEqual 3841
+    val current = getCurrentState
+    finalSeq shouldEqual current.seq
+    CommonState.parseFrom(finalState).seq shouldEqual CommonState.parseFrom(current.state.toByteArray).seq
   }
 
   def bigUpdate() = {

@@ -52,13 +52,13 @@ final class UserSequenceSpec extends BaseAppSuite(
     {
       probe.send(region.ref, deliverEnv)
       val msg = probe.receiveOne(5.seconds).asInstanceOf[SeqState]
-      msg.seq should ===(1)
+      msg.seq shouldEqual 2
     }
 
     {
       probe.send(region.ref, deliverEnv)
       val msg = probe.receiveOne(1.second).asInstanceOf[SeqState]
-      msg.seq should ===(2)
+      msg.seq shouldEqual 3
     }
 
     probe.expectNoMsg(3.seconds)
@@ -66,19 +66,19 @@ final class UserSequenceSpec extends BaseAppSuite(
     {
       probe.send(region.ref, deliverEnv)
       val msg = probe.receiveOne(1.second).asInstanceOf[SeqState]
-      msg.seq should ===(3)
+      msg.seq shouldEqual 4
     }
 
     for (a ← 1 to 600)
       probe.send(region.ref, deliverEnv)
 
-    probe.receiveN(600, 5.seconds) // seq = 603
+    probe.receiveN(600, 5.seconds) // seq = 604
     probe.expectNoMsg(4.seconds)
 
     {
       probe.send(region.ref, deliverEnv)
       val msg = probe.receiveOne(5.seconds).asInstanceOf[SeqState]
-      msg.seq should ===(604)
+      msg.seq shouldEqual 605
     }
   }
 
@@ -97,7 +97,7 @@ final class UserSequenceSpec extends BaseAppSuite(
       )
     )
 
-    val futures = for (i ← 1 to 500) yield {
+    val futures = for (i ← 2 to 501) yield {
       val f = (region.ref ? deliverEnv)
         .mapTo[SeqState]
 

@@ -182,9 +182,10 @@ trait SeqUpdateMatchers extends Matchers with ScalaFutures with AnyRefLogSource 
         Long.MaxValue
       )
       .map { diff ⇒
-        diff.updates → mkSeqState(diff.seq, diff.commonState)
+        diff.updates → mkSeqState(diff.clientSeq, diff.commonState)
       }(system.dispatcher)
 
+  //TODO: move it to separate. decouple from updates.
   @tailrec
   final def repeatAfterSleep[T](times: Int)(f: ⇒ T): T = {
     Try(f) match {
