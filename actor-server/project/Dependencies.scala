@@ -63,8 +63,8 @@ object Dependencies {
     val upickle                 = "com.lihaoyi"                   %% "upickle"                       % "0.3.6"
 
     val postgresJdbc            = "org.postgresql"                %  "postgresql"                    % "9.4.1208" exclude("org.slf4j", "slf4j-simple")
-    val slick                   = "com.typesafe.slick"            %% "slick"                         % V.slick
-    val slickHikaricp           = "com.typesafe.slick"            %% "slick-hikaricp"                % V.slick exclude("com.zaxxer", "HikariCP-java6")
+    val slick                   = "com.typesafe.slick"            %% "slick"                         % "3.1.1.2" //V.slick FIXME: remove after slick/slick#1274 released
+    val slickHikaricp           = "com.typesafe.slick"            %% "slick-hikaricp"                % "3.1.1.2" exclude("com.zaxxer", "HikariCP-java6") //V.slick FIXME: remove after slick/slick#1274 released
     val slickJoda               = "com.github.tototoshi"          %% "slick-joda-mapper"             % "2.0.0"
     val slickPg                 = "com.github.tminglei"           %% "slick-pg"                      % V.slickPg
     val slickPgDate2            = "com.github.tminglei"           %% "slick-pg_date2"                % V.slickPg
