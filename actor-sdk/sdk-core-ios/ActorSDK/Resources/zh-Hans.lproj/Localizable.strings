@@ -26,11 +26,15 @@
 
 "ContactsActionAdd" = "添加好友";
 
+"ContactsBack" = "联系人";
+
 /*
  * Dialogs
  */
 
 "DialogsHint" = "向左滑动查看更多选项";
+
+"DialogsBack" = "Chats";
 
 /*
  * Settings

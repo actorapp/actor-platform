@@ -29,8 +29,9 @@ public class AARecentViewController: AADialogsListContentController, AADialogsLi
         navigationItem.title = AALocalized("TabMessages")
         navigationItem.leftBarButtonItem = editButtonItem()
         navigationItem.leftBarButtonItem!.title = AALocalized("NavigationEdit")
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: AALocalized("DialogsBack"), style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Compose, target: self, action: #selector(AARecentViewController.compose))
-    
+        
         bindCounter()
     }
 

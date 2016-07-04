@@ -26,11 +26,15 @@
 
 "ContactsActionAdd" = "Añadir amigo";
 
+"ContactsBack" = "Contactos";
+
 /*
  * Dialogs
  */
 
 "DialogsHint" = "Tocar para más opciones";
+
+"DialogsBack" = "Chats";
 
 /*
  * Settings
