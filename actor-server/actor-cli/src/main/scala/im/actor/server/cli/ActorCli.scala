@@ -2,15 +2,15 @@ package im.actor.server.cli
 
 import java.net.InetAddress
 
-import akka.actor.{ActorPath, ActorSystem}
-import akka.cluster.client.{ClusterClient, ClusterClientSettings}
+import akka.actor.{ ActorPath, ActorSystem }
+import akka.cluster.client.{ ClusterClient, ClusterClientSettings }
 import akka.http.scaladsl.util.FastFuture
 import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.config.ConfigFactory
 import kamon.Kamon
 
-import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.concurrent.{ Await, ExecutionContext, Future }
 import scala.concurrent.duration._
 import scala.reflect.ClassTag
 
