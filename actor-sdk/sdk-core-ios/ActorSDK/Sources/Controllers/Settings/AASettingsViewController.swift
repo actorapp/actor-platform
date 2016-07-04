@@ -167,7 +167,7 @@ public class AASettingsViewController: AAContentTableController {
                     cell.wallpapperDidTap = { [unowned self] (name) -> () in
                         self.presentViewController(AAWallpapperPreviewController(imageName: name), animated: true, completion: nil)
                     }
-                    
+                    cell.bind()
                 }
                 
                 r.selectAction = { () -> Bool in
