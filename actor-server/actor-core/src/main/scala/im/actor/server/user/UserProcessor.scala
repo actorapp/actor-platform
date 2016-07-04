@@ -4,7 +4,7 @@ import java.time.Instant
 
 import akka.actor._
 import akka.cluster.sharding.ShardRegion
-import akka.pattern.{ ask, pipe }
+import akka.pattern.{ Backoff, BackoffSupervisor, ask, pipe }
 import akka.persistence.RecoveryCompleted
 import akka.util.Timeout
 import im.actor.api.rpc.collections._
@@ -327,12 +327,39 @@ private[user] final class UserProcessor
     dialogRef(state, peer)
   }
 
-  private def dialogRef(state: UserState, peer: Peer): ActorRef =
-    context.child(dialogName(peer)) getOrElse context.actorOf(DialogProcessor.props(userId, peer, state.internalExtensions), dialogName(peer))
+  private def dialogRef(state: UserState, peer: Peer): ActorRef = {
+    val actorName = dialogName(peer)
+    val supervisorName = s"${actorName}_supervisor"
+    context.child(supervisorName) getOrElse {
+      val props = DialogProcessor.props(userId, peer, state.internalExtensions)
+      val supervisor = BackoffSupervisor.props(
+        Backoff.onStop(
+          props,
+          childName = dialogName(peer),
+          minBackoff = 5.seconds,
+          maxBackoff = 60.seconds,
+          randomFactor = 0.2 // adds 20% "noise" to vary the intervals slightly
+        )
+      )
+      context.actorOf(supervisor, name = supervisorName)
+    }
+  }
 
   private def dialogRoot(extensions: Seq[ApiExtension]): ActorRef = {
-    val name = "DialogRoot"
-    context.child(name).getOrElse(context.actorOf(DialogRoot.props(userId, extensions), name))
+    val supervisorName = "DialogRootSupervisor"
+    context.child(supervisorName) getOrElse {
+      val props = DialogRoot.props(userId, extensions)
+      val supervisor = BackoffSupervisor.props(
+        Backoff.onStop(
+          props,
+          childName = "DialogRoot",
+          minBackoff = 5.seconds,
+          maxBackoff = 60.seconds,
+          randomFactor = 0.2 // adds 20% "noise" to vary the intervals slightly
+        )
+      )
+      context.actorOf(supervisor, name = supervisorName)
+    }
   }
 
   private def dialogName(peer: Peer): String = peer.typ match {

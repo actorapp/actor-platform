@@ -83,7 +83,8 @@ private trait DialogRootQueryHandlers {
   protected def getCounter(): Future[GetCounterResponse] = {
     for {
       counters ← FutureExt.ftraverse(state.active.map(identity).toSeq) { peer ⇒
-        (context.parent ? DialogQueries.GetCounter(Some(peer))).mapTo[DialogQueries.GetCounterResponse] map (_.counter)
+        val userProcessor = context.actorSelection(context.parent.path.parent)
+        (userProcessor ? DialogQueries.GetCounter(Some(peer))).mapTo[DialogQueries.GetCounterResponse] map (_.counter)
       }
     } yield GetCounterResponse(counters.sum)
   }
@@ -278,8 +279,10 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
     } yield seqState
   }
 
-  protected def getInfo(peer: Peer): Future[DialogQueries.GetInfoResponse] =
-    (context.parent ? DialogQueries.GetInfo(Some(peer))).mapTo[GetInfoResponse]
+  protected def getInfo(peer: Peer): Future[DialogQueries.GetInfoResponse] = {
+    val userProcessor = context.actorSelection(context.parent.path.parent)
+    (userProcessor ? DialogQueries.GetInfo(Some(peer))).mapTo[GetInfoResponse]
+  }
 
   private def sortActiveGroup(infos: Seq[DialogInfo]): Future[Seq[DialogInfo]] = {
     for {
