@@ -6,8 +6,10 @@ import spray.revolver.RevolverPlugin._
 import com.trueaccord.scalapb.{ScalaPbPlugin => PB}
 import com.typesafe.sbt.SbtMultiJvm
 import com.typesafe.sbt.SbtMultiJvm.MultiJvmKeys.MultiJvm
+import com.typesafe.sbt.packager.archetypes.JavaServerAppPackaging
+import com.typesafe.sbt.packager.debian.JDebPackaging
 
-object Build extends sbt.Build with Versioning with Releasing {
+object Build extends sbt.Build with Versioning with Releasing with Packaging {
   val ScalaVersion = "2.11.8"
   val BotKitVersion = getVersion
 
@@ -87,22 +89,24 @@ object Build extends sbt.Build with Versioning with Releasing {
     "actor",
     file("."),
     settings =
+      packagingSettings ++
       defaultSettingsServer ++
-        Revolver.settings ++
-        Seq(
-          libraryDependencies ++= Dependencies.root,
-          //Revolver.reStartArgs := Seq("im.actor.server.Main"),
-          mainClass in Revolver.reStart := Some("im.actor.server.Main"),
-          mainClass in Compile := Some("im.actor.server.Main"),
-          autoCompilerPlugins := true,
-          scalacOptions in(Compile, doc) ++= Seq(
-            "-Ywarn-unused-import",
-            "-groups",
-            "-implicits",
-            "-diagrams"
-          )
+      Revolver.settings ++
+      Seq(
+        libraryDependencies ++= Dependencies.root,
+        //Revolver.reStartArgs := Seq("im.actor.server.Main"),
+        mainClass in Revolver.reStart := Some("im.actor.server.Main"),
+        mainClass in Compile := Some("im.actor.server.Main"),
+        autoCompilerPlugins := true,
+        scalacOptions in(Compile, doc) ++= Seq(
+          "-Ywarn-unused-import",
+          "-groups",
+          "-implicits",
+          "-diagrams"
         )
-  ).settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
+      )
+  )
+    .settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
     .settings(releaseSettings)
     .dependsOn(actorServerSdk)
     .aggregate(
@@ -110,9 +114,8 @@ object Build extends sbt.Build with Versioning with Releasing {
       actorTestkit,
       actorTests
     )
-    .settings(
-    aggregate in Revolver.reStart := false
-  )
+    .settings(aggregate in Revolver.reStart := false)
+    .enablePlugins(JavaServerAppPackaging, JDebPackaging)
 
   lazy val actorActivation = Project(
     id = "actor-activation",
