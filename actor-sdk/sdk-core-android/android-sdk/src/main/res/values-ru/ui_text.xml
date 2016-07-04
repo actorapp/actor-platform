@@ -173,6 +173,7 @@
     <string name="settings_menu_edit_profile">Изменить профиль</string>
     <string name="settings_menu_change_photo">Изменить фотографию</string>
     <string name="settings_header">Настройки</string>
+    <string name="about_header">Об Акторе</string>
     <string name="settings_help">Помощь</string>
     <string name="settings_ask">Задать вопрос</string>
     <string name="settings_notifications">Оповещения</string>

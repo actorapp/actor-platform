@@ -1,10 +1,12 @@
 package im.actor;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -16,6 +18,7 @@ import im.actor.sdk.BaseActorSDKDelegate;
 import im.actor.sdk.controllers.conversation.ShareMenuField;
 import im.actor.sdk.controllers.group.GroupInfoFragment;
 import im.actor.sdk.controllers.profile.ProfileFragment;
+import im.actor.sdk.controllers.settings.ActorSettingsCategories;
 import im.actor.sdk.controllers.settings.ActorSettingsCategory;
 import im.actor.sdk.controllers.settings.ActorSettingsField;
 import im.actor.sdk.controllers.settings.BaseActorProfileActivity;
@@ -23,6 +26,7 @@ import im.actor.sdk.controllers.settings.BaseActorSettingsActivity;
 import im.actor.sdk.controllers.settings.BaseActorSettingsFragment;
 import im.actor.sdk.controllers.settings.BaseGroupInfoActivity;
 import im.actor.sdk.intents.ActorIntentFragmentActivity;
+import im.actor.sdk.util.Screen;
 
 public class Application extends ActorSDKApplication {
 
@@ -122,84 +126,41 @@ public ArrayList<ShareMenuField> addCustomShareMenuFields() {
                 @Override
                 public BaseActorSettingsFragment getSettingsFragment() {
                     return new BaseActorSettingsFragment() {
+                        CheckBox blablaCheckBox;
 
                         @Override
-                        public View getBeforeNickSettingsView() {
-                            return null;
+                        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+                            blablaCheckBox = new CheckBox(getContext());
+                            return super.onCreateView(inflater, container, savedInstanceState);
                         }
 
                         @Override
-                        public View getAfterPhoneSettingsView() {
-                            return null;
+                        public ActorSettingsCategories getBeforeSettingsCategories() {
+                            return new ActorSettingsCategories()
+                                    .addCategory(new ActorSettingsCategory("azaza")
+                                                    .addField(new ActorSettingsField(R.id.terminateSessions)
+                                                                    .setName("blabla")
+                                                                    .setIconResourceId(R.drawable.ic_edit_black_24dp)
+                                                                    .setRightView(blablaCheckBox)
+                                                    )
+                                    );
                         }
 
                         @Override
-                        public View getSettingsTopView() {
-                            return null;
-                        }
-
-                        @Override
-                        public View getSettingsBottomView() {
-                            return null;
-                        }
-
-                        @Override
-                        public boolean showWallpaperCategory() {
-                            return true;
-                        }
-
-                        @Override
-                        public boolean showAskQuestion() {
-                            return true;
-                        }
-
-                        @Override
-                        public ActorSettingsCategory[] getBeforeSettingsCategories() {
-                            return new ActorSettingsCategory[]{
-                                    new ActorSettingsCategory() {
-
-//                                        @Override
-//                                        public int getIconResourceId() {
-//                                            return R.drawable.ic_notifications_white_18dp;
-//                                        }
-
-                                        @Override
-                                        public String getCategoryName() {
-                                            return "test";
-                                        }
-
-                                        @Override
-                                        public ActorSettingsField[] getFields() {
-                                            final CheckBox chb = new CheckBox(getContext());
-                                            ActorSettingsField field = new ActorSettingsField() {
-                                                @Override
-                                                public View getRightView() {
-                                                    return chb;
-                                                }
-
-                                                @Override
-                                                public String getName() {
-                                                    return "azazaz";
-                                                }
-                                            };
-                                            field.setOnClickListener(new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View v) {
-                                                    chb.setChecked(!chb.isChecked());
-                                                }
-                                            });
-                                            return new ActorSettingsField[]{
-                                                    field
-                                            };
-                                        }
+                        public View.OnClickListener getMenuFieldOnClickListener() {
+                            return new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    switch (v.getId()) {
+                                        case R.id.terminateSessions:
+                                            Toast.makeText(v.getContext(), "hey", Toast.LENGTH_LONG).show();
+                                            blablaCheckBox.toggle();
+                                            break;
                                     }
+                                }
                             };
                         }
 
-                        @Override
-                        public ActorSettingsCategory[] getAfterSettingsCategories() {
-                            return new ActorSettingsCategory[0];
-                        }
                     };
                 }
             };
