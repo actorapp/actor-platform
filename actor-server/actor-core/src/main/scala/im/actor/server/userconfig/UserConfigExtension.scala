@@ -32,17 +32,17 @@ final class UserConfigExtension(system: ActorSystem) extends Extension {
     } yield params.map(p ⇒ p.key → p.value)
   }
 
-  def editParameter(userId: Int, rawKey: String, value: Option[String]): Future[SeqState] = {
+  def editParameter(userId: Int, authId: Long, rawKey: String, value: Option[String]): Future[SeqState] = {
     val key = rawKey.trim
 
     val update = UpdateParameterChanged(key, value)
 
     for {
       _ ← db.run(ParameterRepo.createOrUpdate(Parameter(userId, key, value)))
-      seqstate ← seqUpdExt.deliverSingleUpdate(userId, update)
+      seqState ← seqUpdExt.deliverClientUpdate(userId, authId, update)
     } yield {
       seqUpdExt.reloadSettings(userId)
-      seqstate
+      seqState
     }
   }
 }

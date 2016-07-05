@@ -8,40 +8,37 @@ import im.actor.server.db.DbExtension
 import im.actor.server.group.GroupExtension
 import im.actor.server.model.{ Peer, PeerType }
 import im.actor.server.persist.HistoryMessageRepo
-import im.actor.server.sequence.SeqState
-import im.actor.server.user.UserExtension
+import im.actor.server.sequence.{ SeqState, SeqUpdatesExtension }
 
 import scala.concurrent.Future
 
 trait MessageUpdating extends PeersImplicits {
 
-  def updateMessageContent(clientUserId: Int, peer: Peer, randomId: Long, updatedMessage: ApiMessage, date: Long = System.currentTimeMillis)(implicit system: ActorSystem): Future[SeqState] = {
+  def updateMessageContent(clientUserId: Int, clientAuthId: Long, peer: Peer, randomId: Long, updatedMessage: ApiMessage, date: Long = System.currentTimeMillis)(implicit system: ActorSystem): Future[SeqState] = {
     peer match {
-      case Peer(PeerType.Private, _) ⇒ updateContentPrivate(clientUserId, peer, randomId, updatedMessage, date)
-      case Peer(PeerType.Group, _)   ⇒ updateContentGroup(clientUserId, peer, randomId, updatedMessage, date)
+      case Peer(PeerType.Private, _) ⇒ updateContentPrivate(clientUserId, clientAuthId, peer, randomId, updatedMessage, date)
+      case Peer(PeerType.Group, _)   ⇒ updateContentGroup(clientUserId, clientAuthId, peer, randomId, updatedMessage, date)
     }
   }
 
-  private def updateContentPrivate(userId: Int, peer: Peer, randomId: Long, updatedMessage: ApiMessage, date: Long)(implicit system: ActorSystem): Future[SeqState] = {
+  private def updateContentPrivate(userId: Int, clientAuthId: Long, peer: Peer, randomId: Long, updatedMessage: ApiMessage, date: Long)(implicit system: ActorSystem): Future[SeqState] = {
     import system.dispatcher
+    val seqUpdExt = SeqUpdatesExtension(system)
     for {
       // update for client himself
-      seqState ← UserExtension(system).broadcastUserUpdate(
+      seqState ← seqUpdExt.deliverClientUpdate(
         userId = userId,
+        authId = clientAuthId,
         update = UpdateMessageContentChanged(peer.asStruct, randomId, updatedMessage),
-        pushText = None,
-        isFat = false,
-        reduceKey = None,
-        deliveryId = Some(s"msgcontent_${randomId}_${date}")
+        pushRules = seqUpdExt.pushRules(isFat = false, None),
+        deliveryId = s"msgcontent_${randomId}_${date}"
       )
       // update for peer user
-      _ ← UserExtension(system).broadcastUserUpdate(
+      _ ← seqUpdExt.deliverUserUpdate(
         userId = peer.id,
         update = UpdateMessageContentChanged(ApiPeer(ApiPeerType.Private, userId), randomId, updatedMessage),
-        pushText = None,
-        isFat = false,
-        reduceKey = None,
-        deliveryId = Some(s"msgcontent_${randomId}_${date}")
+        pushRules = seqUpdExt.pushRules(isFat = false, None),
+        deliveryId = s"msgcontent_${randomId}_${date}"
       )
       _ ← DbExtension(system).db.run(HistoryMessageRepo.updateContentAll(
         userIds = Set(userId, peer.id),
@@ -54,28 +51,27 @@ trait MessageUpdating extends PeersImplicits {
     } yield seqState
   }
 
-  private def updateContentGroup(userId: Int, peer: Peer, randomId: Long, updatedMessage: ApiMessage, date: Long)(implicit system: ActorSystem): Future[SeqState] = {
+  private def updateContentGroup(userId: Int, clientAuthId: Long, peer: Peer, randomId: Long, updatedMessage: ApiMessage, date: Long)(implicit system: ActorSystem): Future[SeqState] = {
     import system.dispatcher
-    val upd = UpdateMessageContentChanged(peer.asStruct, randomId, updatedMessage)
+    val seqUpdExt = SeqUpdatesExtension(system)
+    val update = UpdateMessageContentChanged(peer.asStruct, randomId, updatedMessage)
     for {
       // update for client user
-      seqState ← UserExtension(system).broadcastUserUpdate(
-        userId = userId,
-        update = upd,
-        pushText = None,
-        isFat = false,
-        reduceKey = None,
-        deliveryId = Some(s"msgcontent_${randomId}_${date}")
+      seqState ← seqUpdExt.deliverClientUpdate(
+        userId,
+        clientAuthId,
+        update,
+        pushRules = seqUpdExt.pushRules(isFat = false, None),
+        deliveryId = s"msgcontent_${randomId}_${date}"
       )
       (memberIds, _, _) ← GroupExtension(system).getMemberIds(peer.id)
       membersSet = memberIds.toSet
       // update for other group members
-      _ ← UserExtension(system).broadcastUsersUpdate(
-        userIds = membersSet - userId,
-        update = upd,
-        pushText = None,
-        isFat = false,
-        deliveryId = Some(s"msgcontent_${randomId}_${date}")
+      _ ← seqUpdExt.broadcastPeopleUpdate(
+        membersSet - userId,
+        update,
+        pushRules = seqUpdExt.pushRules(isFat = false, None),
+        deliveryId = s"msgcontent_${randomId}_${date}"
       )
       _ ← DbExtension(system).db.run(HistoryMessageRepo.updateContentAll(
         userIds = membersSet + userId,

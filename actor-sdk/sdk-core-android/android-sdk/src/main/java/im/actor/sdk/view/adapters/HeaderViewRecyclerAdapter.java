@@ -238,7 +238,7 @@ public class HeaderViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
         }
         FrameLayout frameLayout = new FrameLayout(src.getContext());
         frameLayout.setLayoutParams(
-                new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                new RecyclerView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         frameLayout.addView(src);
         return frameLayout;
     }

@@ -9,7 +9,7 @@ import scala.annotation.tailrec
 import scala.collection.immutable
 
 private[session] object UpdatesHandler {
-  final case class Authorize(userId: Int, authSid: Int)
+  final case class Authorize(userId: Int)
 
   def props(authId: Long): Props =
     Props(classOf[UpdatesHandler], authId)
@@ -22,8 +22,8 @@ private[session] class UpdatesHandler(authId: Long)
   import ActorSubscriberMessage._
 
   def receive = {
-    case UpdatesHandler.Authorize(userId, authSid) ⇒
-      val updatesConsumer = context.actorOf(UpdatesConsumer.props(userId, authId, authSid, self), "updates-consumer")
+    case UpdatesHandler.Authorize(userId) ⇒
+      val updatesConsumer = context.actorOf(UpdatesConsumer.props(userId, authId, self), "updates-consumer")
 
       context become authorized(updatesConsumer)
     case msg ⇒ stash()
@@ -46,7 +46,7 @@ private[session] class UpdatesHandler(authId: Long)
           consumer ! UpdatesConsumerMessage.SubscribeToGroupPresences(groupIds.toSet)
         case SubscribeFromGroupOnline(groupIds) ⇒
           consumer ! UpdatesConsumerMessage.UnsubscribeFromGroupPresences(groupIds.toSet)
-        case SubscribeToSeq(optimizations) ⇒
+        case SubscribeToSeq(_) ⇒
           consumer ! UpdatesConsumerMessage.SubscribeToSeq
         case SubscribeToWeak(Some(group)) ⇒
           consumer ! UpdatesConsumerMessage.SubscribeToWeak(Some(group))

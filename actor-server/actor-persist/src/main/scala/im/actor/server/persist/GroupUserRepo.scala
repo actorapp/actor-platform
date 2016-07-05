@@ -43,7 +43,7 @@ object GroupUserRepo {
   val userIdByGroupIdC = Compiled(userIdByGroupId _)
   val joinedAtByPKC = Compiled(joinedAtByPK _)
 
-  def create(groupId: Int, userId: Int, inviterUserId: Int, invitedAt: Instant, joinedAt: Option[LocalDateTime], isAdmin: Boolean) =
+  def create(groupId: Int, userId: Int, inviterUserId: Int, invitedAt: Instant, joinedAt: Option[LocalDateTime], isAdmin: Boolean): DBIO[Int] =
     groupUsersC += GroupUser(groupId, userId, inviterUserId, invitedAt, joinedAt, isAdmin)
 
   def create(groupId: Int, userIds: Set[Int], inviterUserId: Int, invitedAt: Instant, joinedAt: Option[LocalDateTime]) =

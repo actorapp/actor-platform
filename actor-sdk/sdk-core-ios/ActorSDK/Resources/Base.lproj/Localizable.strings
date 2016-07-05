@@ -26,11 +26,15 @@
 
 "ContactsActionAdd" = "Add Friend";
 
+"ContactsBack" = "People";
+
 /*
  * Dialogs
  */
 
 "DialogsHint" = "Swipe for more options";
+
+"DialogsBack" = "Chats";
 
 /*
  * Settings

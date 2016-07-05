@@ -5,6 +5,7 @@ import akka.http.scaladsl.model.{ StatusCode, StatusCodes }
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.PathMatchers.Segment
 import akka.http.scaladsl.server.Route
+import akka.http.scaladsl.util.FastFuture
 import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
 import im.actor.api.rpc.messaging.{ ApiMessage, ApiTextMessage }
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
@@ -51,10 +52,15 @@ trait IngoingHooks extends ContentUnmarshaller with PlayJsonSupport {
         for {
           (_, _, optBot) ← GroupExtension(system).getMemberIds(groupId)
           _ ← optBot map { botId ⇒
-            DialogExtension(system).sendMessage(ApiPeer(ApiPeerType.Group, groupId), botId, 0, None, ThreadLocalRandom.current().nextLong(), message)
-          } getOrElse Future.successful(Left(StatusCodes.NotAcceptable))
+            DialogExtension(system).sendMessageInternal(
+              peer = ApiPeer(ApiPeerType.Group, groupId),
+              senderUserId = botId,
+              randomId = ThreadLocalRandom.current().nextLong(),
+              message = message
+            )
+          } getOrElse FastFuture.successful(Left(StatusCodes.NotAcceptable))
         } yield Right(())
-      } getOrElse Future.successful(Left(StatusCodes.BadRequest))
+      } getOrElse FastFuture.successful(Left(StatusCodes.BadRequest))
     } yield result
   }
 

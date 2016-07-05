@@ -14,8 +14,8 @@ private[sequence] final class UserSequenceTable(tag: Tag) extends Table[SeqUpdat
   def * = (userId, seq, timestamp, reduceKey, mapping) <> (applySeqUpdate.tupled, unapplySeqUpdate)
 
   private def applySeqUpdate: (Int, Int, Long, Option[StringValue], Array[Byte]) ⇒ SeqUpdate = {
-    (userId, seq, timestamp, reduceKey, mapping) ⇒
-      SeqUpdate(userId, seq, timestamp, reduceKey, Some(UpdateMapping.parseFrom(mapping)))
+    (userId, commonSeq, timestamp, reduceKey, mapping) ⇒
+      SeqUpdate(userId, commonSeq, timestamp, reduceKey, Some(UpdateMapping.parseFrom(mapping)))
   }
 
   private def unapplySeqUpdate: SeqUpdate ⇒ Option[(Int, Int, Long, Option[StringValue], Array[Byte])] = {
@@ -23,7 +23,7 @@ private[sequence] final class UserSequenceTable(tag: Tag) extends Table[SeqUpdat
       Some(
         (
           seqUpdate.userId,
-          seqUpdate.seq,
+          seqUpdate.commonSeq,
           seqUpdate.timestamp,
           seqUpdate.reduceKey,
           seqUpdate.mapping.map(_.toByteArray).getOrElse(Array.empty)

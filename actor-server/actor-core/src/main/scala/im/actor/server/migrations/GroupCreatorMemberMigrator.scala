@@ -2,14 +2,14 @@ package im.actor.server.migrations
 
 import java.time.Instant
 
-import akka.actor.{ Props, ActorSystem }
+import akka.actor.{ ActorSystem, Props }
 import akka.persistence.RecoveryCompleted
+import im.actor.server.db.DbExtension
 import im.actor.server.event.TSEvent
 import im.actor.server.group.{ GroupEvents, GroupOffice }
 import im.actor.server.persist.GroupRepo
-import slick.driver.PostgresDriver.api._
 
-import scala.concurrent.{ Promise, Future, ExecutionContext }
+import scala.concurrent.{ Future, Promise }
 import scala.concurrent.duration._
 
 object GroupCreatorMemberMigrator extends Migration {
@@ -19,8 +19,10 @@ object GroupCreatorMemberMigrator extends Migration {
 
   protected override def migrationTimeout = 1.hour
 
-  protected override def startMigration()(implicit system: ActorSystem, db: Database, ec: ExecutionContext): Future[Unit] = {
-    db.run(GroupRepo.findAllIds) flatMap { groupIds ⇒
+  protected override def startMigration()(implicit system: ActorSystem): Future[Unit] = {
+    import system.dispatcher
+
+    DbExtension(system).db.run(GroupRepo.findAllIds) flatMap { groupIds ⇒
       Future.sequence(groupIds map { groupId ⇒
         val promise = Promise[Unit]()
 

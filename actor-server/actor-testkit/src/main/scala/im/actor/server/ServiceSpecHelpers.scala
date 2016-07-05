@@ -140,20 +140,6 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions wi
   def buildRpcApiService(services: Seq[im.actor.api.rpc.Service])(implicit system: ActorSystem, db: Database) =
     RpcApiExtension(system).register(services)
 
-  def buildSessionRegion()(implicit system: ActorSystem, materializer: Materializer) = {
-    implicit val sessionConfig = SessionConfig.load(system.settings.config.getConfig("session"))
-    Session.startRegion(Session.props)
-  }
-
-  def buildSessionRegionProxy()(implicit system: ActorSystem) = Session.startRegionProxy()
-
-  def buildAuthService()(
-    implicit
-    sessionRegion: SessionRegion,
-    oauth2Service: GoogleProvider,
-    system:        ActorSystem
-  ) = new AuthServiceImpl
-
   protected def withoutLogs[A](f: ⇒ A)(implicit system: ActorSystem): A = {
     val logger = org.slf4j.LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME).asInstanceOf[ch.qos.logback.classic.Logger]
 

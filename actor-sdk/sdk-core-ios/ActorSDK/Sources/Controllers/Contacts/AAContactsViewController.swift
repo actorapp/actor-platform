@@ -24,6 +24,7 @@ public class AAContactsViewController: AAContactsListContentController, AAContac
         tabBarItem = UITabBarItem(title: "TabPeople", img: "TabIconContacts", selImage: "TabIconContactsHighlighted")
         
         navigationItem.title = AALocalized("TabPeople")
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: AALocalized("ContactsBack"), style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: #selector(AAContactsViewController.findContact))
         
         delegate = self

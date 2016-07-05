@@ -3,6 +3,7 @@ package im.actor.server.activation.common
 import java.time.temporal.ChronoUnit._
 import java.time.{ LocalDateTime, ZoneOffset }
 
+import akka.http.scaladsl.util.FastFuture
 import cats.data.Xor
 import im.actor.server.db.ActorPostgresDriver.api._
 import im.actor.server.model.AuthCode
@@ -38,7 +39,7 @@ trait CommonAuthCodes {
   protected def deleteAuthCode(txHash: String): Future[Unit] = db.run(AuthCodeRepo.deleteByTransactionHash(txHash).map(_ ⇒ ()))
 
   protected def createAuthCodeIfNeeded(resp: CodeFailure Xor Unit, txHash: String, code: String): Future[Int] = resp match {
-    case Xor.Left(_)  ⇒ Future.successful(0)
+    case Xor.Left(_)  ⇒ FastFuture.successful(0)
     case Xor.Right(_) ⇒ db.run(AuthCodeRepo.createOrUpdate(txHash, code))
   }
 

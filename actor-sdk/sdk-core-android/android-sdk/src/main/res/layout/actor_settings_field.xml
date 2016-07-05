@@ -6,7 +6,7 @@
     android:layout_height="48dp"
     android:background="@drawable/selector"
     android:gravity="center_vertical"
-    android:minHeight="48dp"
+    android:minHeight="56dp"
     android:orientation="horizontal"
     android:paddingRight="8dp">
 

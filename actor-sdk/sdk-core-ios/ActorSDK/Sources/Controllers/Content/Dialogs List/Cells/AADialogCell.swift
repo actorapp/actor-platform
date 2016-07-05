@@ -30,6 +30,7 @@ public class AADialogCell: AATableViewCell, AABindedCell {
     private lazy var dialogStatusReceived = ActorSDK.sharedActor().style.dialogStatusReceived
     private lazy var dialogStatusSent = ActorSDK.sharedActor().style.dialogStatusSent
     private lazy var dialogStatusError = ActorSDK.sharedActor().style.dialogStatusError
+    private lazy var dialogAvatarSize = ActorSDK.sharedActor().style.dialogAvatarSize
     private lazy var chatIconClock = ActorSDK.sharedActor().style.chatIconClock
     private lazy var chatIconCheck2 = ActorSDK.sharedActor().style.chatIconCheck2
     private lazy var chatIconCheck1 = ActorSDK.sharedActor().style.chatIconCheck1
@@ -198,14 +199,13 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         //
         // Avatar View
         //
-        
-        avatarView.frame = CGRectMake(padding, padding, 50, 50)
+        let avatarPadding = padding + (50 - dialogAvatarSize) / 2
+        avatarView.frame = CGRectMake(avatarPadding, avatarPadding, dialogAvatarSize, dialogAvatarSize)
         
         
         //
         // Title
         //
-        
         let titleFrame = CGRectMake(leftPadding, 16, width - leftPadding - /*paddingRight*/(padding + 50), 21)
         UIView.performWithoutAnimation {
             self.titleView.frame = titleFrame

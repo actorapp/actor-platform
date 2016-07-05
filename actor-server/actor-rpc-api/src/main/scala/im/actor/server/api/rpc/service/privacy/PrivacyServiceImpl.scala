@@ -42,7 +42,7 @@ final class PrivacyServiceImpl(implicit system: ActorSystem) extends PrivacyServ
             val newRelation = Relation(client.userId, peer.userId, RelationStatus.Blocked)
             fromFuture(db.run(RelationRepo.create(newRelation)))
         }
-        s ← fromFuture(seqUpdExt.deliverSingleUpdate(client.userId, UpdateUserBlocked(peer.userId)))
+        s ← fromFuture(seqUpdExt.deliverClientUpdate(client.userId, client.authId, UpdateUserBlocked(peer.userId)))
       } yield ResponseSeq(s.seq, s.state.toByteArray)).value
     }
 
@@ -60,7 +60,7 @@ final class PrivacyServiceImpl(implicit system: ActorSystem) extends PrivacyServ
             val newRelation = Relation(client.userId, peer.userId, RelationStatus.Approved)
             fromFuture(db.run(RelationRepo.create(newRelation)))
         }
-        s ← fromFuture(seqUpdExt.deliverSingleUpdate(client.userId, UpdateUserUnblocked(peer.userId)))
+        s ← fromFuture(seqUpdExt.deliverClientUpdate(client.userId, client.authId, UpdateUserUnblocked(peer.userId)))
       } yield ResponseSeq(s.seq, s.state.toByteArray)).value
     }
 

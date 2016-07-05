@@ -1,5 +1,7 @@
 package im.actor.server.session
 
+import java.time.Instant
+
 import akka.actor._
 import im.actor.server
 import im.actor.server._
@@ -10,6 +12,7 @@ import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
 import im.actor.server.api.rpc.service.raw.RawServiceImpl
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import im.actor.server.db.DbExtension
+import im.actor.server.migrations.v2.{ MigrationNameList, MigrationTsActions }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{ Seconds, Span }
@@ -43,15 +46,21 @@ abstract class BaseSessionSpec(_system: ActorSystem = {
     DbExtension(_system).db
   }
 
-  protected implicit val sessionConfig = SessionConfig.load(system.settings.config.getConfig("session"))
+  MigrationTsActions.insertTimestamp(
+    MigrationNameList.MultiSequence,
+    Instant.now.toEpochMilli
+  )(DbExtension(system).connector)
 
-  Session.startRegion(Session.props)
+  protected val sessionConfig = SessionConfig.load(system.settings.config.getConfig("session"))
+  Session.startRegion(sessionConfig)
 
   implicit val sessionRegion = Session.startRegionProxy()
 
-  protected lazy val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
-  protected implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-  protected implicit val authService = new AuthServiceImpl
+  protected implicit val authService = {
+    val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
+    val oauth2Service = new GoogleProvider(oauthGoogleConfig)
+    new AuthServiceImpl(oauth2Service)
+  }
   protected lazy val sequenceConfig = SequenceServiceConfig.load().toOption.get
   protected lazy val sequenceService = new SequenceServiceImpl(sequenceConfig)
   protected lazy val messagingService = MessagingServiceImpl()

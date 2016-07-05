@@ -609,6 +609,8 @@ public class ActorStyle {
         set(v) { _dialogStatusError = v }
     }
     
+    public var dialogAvatarSize: CGFloat = 50
+    
     private var _statusBackgroundIcon: UIImage?
     public var statusBackgroundImage:UIImage {
         get {

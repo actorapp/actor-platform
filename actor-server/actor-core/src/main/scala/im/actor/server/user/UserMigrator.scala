@@ -6,13 +6,13 @@ import akka.actor.{ ActorSystem, Props }
 import akka.pattern.pipe
 import akka.persistence.RecoveryCompleted
 import im.actor.api.rpc.users.ApiSex
+import im.actor.server.db.DbExtension
 import im.actor.server.event.TSEvent
 import im.actor.server.file.{ Avatar, AvatarImage, FileLocation }
-import im.actor.server.migrations.{ PersistentMigrator, Migration }
-import im.actor.server.{ model, persist ⇒ p }
+import im.actor.server.migrations.{ Migration, PersistentMigrator }
+import im.actor.server.model.{ AvatarData, Sex, UserEmail, UserPhone }
+import im.actor.server.persist.{ AuthIdRepo, AvatarDataRepo, UserEmailRepo, UserPhoneRepo, UserRepo }
 import org.joda.time.DateTime
-import slick.driver.PostgresDriver
-import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future, Promise }
@@ -21,13 +21,13 @@ private final case class Migrate(
   accessSalt:  String,
   name:        String,
   countryCode: String,
-  sex:         model.Sex,
+  sex:         Sex,
   isBot:       Boolean,
   createdAt:   Instant,
   authIds:     Seq[Long],
-  phones:      Seq[model.UserPhone],
-  emails:      Seq[model.UserEmail],
-  avatarOpt:   Option[model.AvatarData]
+  phones:      Seq[UserPhone],
+  emails:      Seq[UserEmail],
+  avatarOpt:   Option[AvatarData]
 )
 
 object UserMigrator extends Migration {
@@ -36,36 +36,38 @@ object UserMigrator extends Migration {
 
   protected override def migrationTimeout: Duration = 1.hour
 
-  protected override def startMigration()(implicit system: ActorSystem, db: PostgresDriver.api.Database, ec: ExecutionContext): Future[Unit] = {
-    db.run(p.UserRepo.allIds) flatMap (ids ⇒ Future.sequence(ids map migrateSingle)) map (_ ⇒ ())
+  protected override def startMigration()(implicit system: ActorSystem): Future[Unit] = {
+    import system.dispatcher
+    DbExtension(system).db.run(UserRepo.allIds) flatMap (ids ⇒ Future.sequence(ids map migrateSingle)) map (_ ⇒ ())
   }
 
-  private def migrateSingle(userId: Int)(implicit system: ActorSystem, db: Database): Future[Unit] = {
+  private def migrateSingle(userId: Int)(implicit system: ActorSystem): Future[Unit] = {
     val promise = Promise[Unit]()
 
     system.actorOf(props(promise, userId), name = s"migrate_user_${userId}")
     promise.future
   }
 
-  private def props(promise: Promise[Unit], userId: Int)(implicit db: Database) = Props(classOf[UserMigrator], promise, userId, db)
+  private def props(promise: Promise[Unit], userId: Int) = Props(classOf[UserMigrator], promise, userId)
 }
 
-private final class UserMigrator(promise: Promise[Unit], userId: Int, db: Database) extends PersistentMigrator(promise) {
+private final class UserMigrator(promise: Promise[Unit], userId: Int) extends PersistentMigrator(promise) {
 
   import UserEvents._
 
   private implicit val ec: ExecutionContext = context.dispatcher
+  private val db = DbExtension(context.system).db
 
   override def persistenceId = UserOffice.persistenceIdFor(userId)
 
   def migrate(): Unit = {
-    db.run(p.UserRepo.find(userId)) foreach {
+    db.run(UserRepo.find(userId)) foreach {
       case Some(user) ⇒
         db.run(for {
-          avatarOpt ← p.AvatarDataRepo.findByUserId(userId).headOption
-          authIds ← p.AuthIdRepo.findIdByUserId(userId)
-          phones ← p.UserPhoneRepo.findByUserId(userId)
-          emails ← p.UserEmailRepo.findByUserId(userId)
+          avatarOpt ← AvatarDataRepo.findByUserId(userId).headOption
+          authIds ← AuthIdRepo.findIdByUserId(userId)
+          phones ← UserPhoneRepo.findByUserId(userId)
+          emails ← UserEmailRepo.findByUserId(userId)
         } yield Migrate(
           user.accessSalt,
           user.name,
@@ -100,7 +102,7 @@ private final class UserMigrator(promise: Promise[Unit], userId: Int, db: Databa
       val phoneAdded = phones map (p ⇒ PhoneAdded(createdAt, p.number))
       val emailAdded = emails map (e ⇒ EmailAdded(createdAt, e.email))
       val avatarUpdated = avatarOpt match {
-        case Some(model.AvatarData(_, _,
+        case Some(AvatarData(_, _,
           Some(smallFileId), Some(smallFileHash), Some(smallFileSize),
           Some(largeFileId), Some(largeFileHash), Some(largeFileSize),
           Some(fullFileId), Some(fullFileHash), Some(fullFileSize),

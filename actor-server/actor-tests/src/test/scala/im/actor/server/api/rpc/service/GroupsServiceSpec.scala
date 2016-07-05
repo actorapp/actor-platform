@@ -5,7 +5,7 @@ import im.actor.api.rpc.counters.UpdateCountersChanged
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ResponseSeqDate
-import im.actor.api.rpc.peers.{ ApiPeer, ApiOutPeer, ApiPeerType, ApiUserOutPeer }
+import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeer, ApiPeerType, ApiUserOutPeer }
 import im.actor.server._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupRpcErrors, GroupsServiceImpl }
@@ -78,13 +78,13 @@ final class GroupsServiceSpec
 
   it should "set topic to empty when None comes" in e24
 
-  "Leave group" should "mark messages read in left user dialog" in e25
+  "Left user" should "have zero counter in given group" in e25
 
-  "Kick user" should "mark messages read in kicked user dialog" in e26
+  "Kicked user" should "have zero counter in given group" in e26
 
-  "Kick user" should "mark messages read in public group" in markReadOnKickInPublic
+  it should "have zero counter in given public group" in markReadOnKickInPublic
 
-  "Kicked user" should "not be able to write to group" in e27
+  it should "not be able to write to group" in kickedCantWrite
 
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
@@ -128,7 +128,7 @@ final class GroupsServiceSpec
 
       whenReady(service.handleInviteUser(groupOutPeer, Random.nextLong(), user2OutPeer, Vector.empty)) { resp ⇒
         resp should matchPattern {
-          case Ok(ResponseSeqDate(3, _, _)) ⇒
+          case Ok(ResponseSeqDate(4, _, _)) ⇒
         }
       }
       expectUpdate(classOf[UpdateGroupUserInvitedObsolete])(identity)
@@ -159,7 +159,7 @@ final class GroupsServiceSpec
 
       whenReady(service.handleEditGroupTitle(groupOutPeer, Random.nextLong(), "Very fun group", Vector.empty)) { resp ⇒
         resp should matchPattern {
-          case Ok(ResponseSeqDate(4, _, _)) ⇒
+          case Ok(ResponseSeqDate(5, _, _)) ⇒
         }
       }
       expectUpdate(classOf[UpdateChatGroupsChanged])(identity)
@@ -485,10 +485,11 @@ final class GroupsServiceSpec
 
           whenReady(service.handleJoinGroup(url, Vector.empty)(clientData2))(_ ⇒ ())
 
-          expectUpdate(createGroupResponse.seq, classOf[UpdateMessage]) { upd ⇒
+          val state = mkSeqState(createGroupResponse.seq, createGroupResponse.state)
+          expectUpdate(state, classOf[UpdateMessage]) { upd ⇒
             upd.message shouldEqual GroupServiceMessages.userJoined
           }
-          expectUpdate(createGroupResponse.seq, classOf[UpdateCountersChanged])(identity)
+          expectUpdate(state, classOf[UpdateCountersChanged])(identity)
       }
     }
     whenReady(db.run(persist.GroupUserRepo.findUserIds(groupOutPeer.groupId))) { userIds ⇒
@@ -850,18 +851,18 @@ final class GroupsServiceSpec
       implicit val clientData = clientData1
       createGroup("Fun group", Set(user2.id)).groupPeer
     }
-    val outPeer = ApiOutPeer(ApiPeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
 
     for (_ ← 1 to 6) {
-      implicit val clientData = clientData1
-      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("hello", Vector.empty, None), None, None)) { _ ⇒ }
+      implicit val cd = clientData1
+      sendMessageToGroup(groupOutPeer.groupId, textMessage("hello"))
     }
 
     {
-      implicit val clientData = clientData2
+      implicit val cd = clientData2
 
       whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100, Vector.empty)) { resp ⇒
         val dialog = resp.toOption.get.dialogs.head
+        dialog.peer.id shouldEqual groupOutPeer.groupId
         dialog.unreadCount should be > 6
       }
 
@@ -871,20 +872,22 @@ final class GroupsServiceSpec
 
       whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100, Vector.empty)) { resp ⇒
         val dialog = resp.toOption.get.dialogs.head
+        dialog.peer.id shouldEqual groupOutPeer.groupId
         dialog.unreadCount shouldEqual 0
       }
     }
 
     for (_ ← 1 to 6) {
-      implicit val clientData = clientData1
-      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("bye left user", Vector.empty, None), None, None)) { _ ⇒ }
+      implicit val cd = clientData1
+      sendMessageToGroup(groupOutPeer.groupId, textMessage("bye left user"))
     }
 
     {
-      implicit val clientData = clientData2
+      implicit val cd = clientData2
 
       whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100, Vector.empty)) { resp ⇒
         val dialog = resp.toOption.get.dialogs.head
+        dialog.peer.id shouldEqual groupOutPeer.groupId
         dialog.unreadCount shouldEqual 0
       }
     }
@@ -1029,7 +1032,7 @@ final class GroupsServiceSpec
 
   }
 
-  def e27() = {
+  def kickedCantWrite() = {
     val (user1, authId1, authSid1, _) = createUser()
     val (user2, authId2, authSid2, _) = createUser()
 
@@ -1060,8 +1063,8 @@ final class GroupsServiceSpec
       }
     }
 
-    val user1Seq = whenReady(sequenceService.handleGetState(Vector.empty)(clientData1))(_.toOption.get.seq)
-    val user2Seq = whenReady(sequenceService.handleGetState(Vector.empty)(clientData2))(_.toOption.get.seq)
+    val user1State = getCurrentState(clientData1)
+    val user2State = getCurrentState(clientData2)
 
     {
       implicit val clientData = clientData2
@@ -1072,7 +1075,7 @@ final class GroupsServiceSpec
           case Error(err) ⇒ err.code shouldEqual 403
         }
 
-        expectNoUpdate(user2Seq, classOf[UpdateMessageSent])
+        expectNoUpdate(user2State, classOf[UpdateMessageSent])
 
         whenReady(db.run(HistoryMessageRepo.find(user2.id, outPeer.asModel, Set(randomId)))) { ms ⇒
           ms shouldBe empty
@@ -1086,8 +1089,8 @@ final class GroupsServiceSpec
     {
       implicit val clientData = clientData1
 
-      expectNoUpdate(user1Seq, classOf[UpdateMessage])
-      expectNoUpdate(user1Seq, classOf[UpdateCountersChanged])
+      expectNoUpdate(user1State, classOf[UpdateMessage])
+      expectNoUpdate(user1State, classOf[UpdateCountersChanged])
     }
   }
 }

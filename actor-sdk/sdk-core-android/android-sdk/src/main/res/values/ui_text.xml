@@ -177,6 +177,7 @@
     <string name="settings_menu_edit_profile">Edit profile</string>
     <string name="settings_menu_change_photo">Change photo</string>
     <string name="settings_header">Settings</string>
+    <string name="about_header">About Actor</string>
     <string name="settings_help">Help</string>
     <string name="settings_ask">Ask a Question</string>
     <string name="settings_twitter">Twitter</string>

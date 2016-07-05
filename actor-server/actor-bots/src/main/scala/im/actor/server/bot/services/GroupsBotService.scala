@@ -28,7 +28,7 @@ private[bot] final class GroupsBotService(system: ActorSystem) extends BotServic
         ack ← groupExt.create(
           groupId = groupId,
           clientUserId = botUserId,
-          clientAuthSid = 0,
+          clientAuthId = 0L,
           title = title,
           randomId = randomId,
           userIds = Set.empty
@@ -44,7 +44,7 @@ private[bot] final class GroupsBotService(system: ActorSystem) extends BotServic
       val randomId = ThreadLocalRandom.current().nextLong()
 
       for {
-        ack ← groupExt.inviteToGroup(botUserId, groupPeer.id, userPeer.id, randomId)
+        ack ← groupExt.inviteToGroup(botUserId, 0L, groupPeer.id, userPeer.id, randomId)
       } yield Right(Void)
     }
   )

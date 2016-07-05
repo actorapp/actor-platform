@@ -3,6 +3,7 @@ package im.actor.server.bot
 import java.util.Base64
 
 import akka.actor.ActorSystem
+import akka.http.scaladsl.util.FastFuture
 import im.actor.api.rpc.Update
 import im.actor.api.rpc.messaging.UpdateMessage
 import im.actor.api.rpc.sequence.UpdateRawUpdate
@@ -37,13 +38,13 @@ final class BotUpdateBuilder(botUserId: Int, botAuthId: Long, system: ActorSyste
             message = update.message
           ))
         } else
-          Future.successful(None)
+          FastFuture.successful(None)
       case update: UpdateRawUpdate ⇒
-        Future.successful(Some(RawUpdate(
+        FastFuture.successful(Some(RawUpdate(
           `type` = update.`type`,
           data = Base64.getEncoder.encodeToString(update.bytes)
         )))
-      case _ ⇒ Future.successful(None)
+      case _ ⇒ FastFuture.successful(None)
     }
 
     updateOptFuture flatMap {
@@ -57,7 +58,7 @@ final class BotUpdateBuilder(botUserId: Int, botAuthId: Long, system: ActorSyste
           users = buildUsers(apiUsers),
           groups = buildGroups(apiGroups)
         ))
-      case None ⇒ Future.successful(None)
+      case None ⇒ FastFuture.successful(None)
     }
   }
 }

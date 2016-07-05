@@ -70,15 +70,13 @@ class MessagingReadsSpec
       dialog.lastReadDate shouldEqual Instant.ofEpochMilli(0)
       // dialog.ownerLastReadAt shouldEqual Instant.ofEpochMilli(0)
 
-      val seq = whenReady(sequenceService.handleGetState(Vector.empty)) {
-        _.toOption.get.seq
-      }
+      val state = getCurrentState
 
       // read dialog
       whenReady(service.handleMessageRead(user1OutPeer, lastDate))(identity)
 
-      expectUpdate(seq, classOf[UpdateMessageReadByMe])(identity)
-      expectUpdate(seq, classOf[UpdateCountersChanged]) { upd ⇒
+      expectUpdate(state, classOf[UpdateMessageReadByMe])(identity)
+      expectUpdate(state, classOf[UpdateCountersChanged]) { upd ⇒
         upd.counters.globalCounter shouldBe defined
         val counter = upd.counters.globalCounter.get
         counter shouldEqual 0
@@ -128,12 +126,12 @@ class MessagingReadsSpec
       dialog.lastReadDate shouldEqual Instant.ofEpochMilli(0)
       //dialog.ownerLastReadAt shouldEqual new DateTime(0)
 
-      val currentSeq = whenReady(sequenceService.handleGetState(Vector.empty)) { _.toOption.get.seq }
+      val currentState = getCurrentState
 
       whenReady(service.handleMessageRead(user2OutPeer, messageDate))(identity)
 
-      expectUpdate(currentSeq, classOf[UpdateMessageReadByMe])(identity)
-      expectUpdate(currentSeq, classOf[UpdateCountersChanged]) { upd ⇒
+      expectUpdate(currentState, classOf[UpdateMessageReadByMe])(identity)
+      expectUpdate(currentState, classOf[UpdateCountersChanged]) { upd ⇒
         upd.counters.globalCounter shouldBe defined
         val counter = upd.counters.globalCounter.get
         counter shouldEqual 0

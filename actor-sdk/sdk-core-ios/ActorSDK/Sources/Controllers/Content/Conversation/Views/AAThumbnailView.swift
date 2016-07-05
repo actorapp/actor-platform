@@ -194,7 +194,6 @@ public class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionView
         } else {
             cell.isCheckSelected = false
             cell.imgSelected.image = UIImage.bundled("ImageSelectedOff")
-            
         }
         
         cell.backgroundColor = UIColor.whiteColor()

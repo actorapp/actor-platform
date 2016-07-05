@@ -77,7 +77,7 @@ public class ActorStyle {
     }
 
     // accent colors
-    private int accentColor = 0xffd94335;
+    private int accentColor = 0xff009949;
 
     public int getAccentColor() {
         return accentColor;
@@ -564,7 +564,7 @@ public class ActorStyle {
     private int settingsCategoryTextColor = 0;
 
     public int getSettingsCategoryTextColor() {
-        return getColorWithFallback(settingsCategoryTextColor, getMainColor());
+        return getColorWithFallback(settingsCategoryTextColor, getAccentColor());
     }
 
     public void setSettingsCategoryTextColor(int settingsCategoryTextColor) {

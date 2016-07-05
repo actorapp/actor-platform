@@ -276,19 +276,16 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
       log.debug("Senfing smsg {} {}", smsg, memberUserIds)
 
       (for {
-        _ ← if (peer.`type`.isPrivate) FutureExt.ftraverse(memberUserIds.toSeq)(userId ⇒ dialogExt.sendMessage(
-          peer = ApiPeer(ApiPeerType.Private, (memberUserIds - userId).head),
-          senderUserId = callerUserId,
-          senderAuthId = None,
-          senderAuthSid = 0,
-          randomId = randomId,
-          message = smsg
-        ))
-        else dialogExt.sendMessage(
+        _ ← if (peer.`type`.isPrivate) FutureExt.ftraverse(memberUserIds.toSeq)(userId ⇒
+          dialogExt.sendMessageInternal(
+            peer = ApiPeer(ApiPeerType.Private, (memberUserIds - userId).head),
+            senderUserId = callerUserId,
+            randomId = randomId,
+            message = smsg
+          ))
+        else dialogExt.sendMessageInternal(
           peer = peer.asStruct,
           senderUserId = callerUserId,
-          senderAuthId = None,
-          senderAuthSid = 0,
           randomId = randomId,
           message = smsg
         )

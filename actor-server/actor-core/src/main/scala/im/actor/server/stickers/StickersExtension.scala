@@ -60,7 +60,7 @@ final class StickersExtensionImpl(_system: ActorSystem)
       _ ← StickerPackRepo.create(StickerPack(packId, accessSalt, creatorUserId, isDefault))
       _ ← OwnStickerPackRepo.create(creatorUserId, packId)
       collections ← getOwnApiStickerPacks(creatorUserId)
-      _ ← DBIO.from(seqExt.deliverSingleUpdate(creatorUserId, UpdateOwnStickersChanged(collections)))
+      _ ← DBIO.from(seqExt.deliverUserUpdate(creatorUserId, UpdateOwnStickersChanged(collections)))
     } yield packId)
   }
 
@@ -156,7 +156,7 @@ final class StickersExtensionImpl(_system: ActorSystem)
     allUsersIds ← db.run(UserRepo.activeUsersIds)
     _ ← FutureExt.ftraverse(allUsersIds) { uid ⇒
       db.run(getOwnApiStickerPacks(uid)) flatMap { packs ⇒
-        seqExt.deliverSingleUpdate(uid, UpdateOwnStickersChanged(packs))
+        seqExt.deliverUserUpdate(uid, UpdateOwnStickersChanged(packs))
       }
     }
   } yield ()
@@ -171,7 +171,7 @@ final class StickersExtensionImpl(_system: ActorSystem)
     packUserIds ← db.run(getPackUserIds(pack))
     apiPack ← db.run(getApiStickerPack(pack))
     _ ← FutureExt.ftraverse(packUserIds) { uid ⇒
-      seqExt.deliverSingleUpdate(uid, UpdateStickerCollectionsChanged(Vector(apiPack)))
+      seqExt.deliverUserUpdate(uid, UpdateStickerCollectionsChanged(Vector(apiPack)))
     }
   } yield ()
 

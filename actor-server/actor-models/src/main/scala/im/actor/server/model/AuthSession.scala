@@ -23,8 +23,17 @@ object AppId {
 
 @SerialVersionUID(1L)
 final case class AuthSession(
-  userId: Int, id: Int, authId: Long, appId: Int, appTitle: String, deviceTitle: String, deviceHash: Array[Byte],
-  authTime: DateTime, authLocation: String, latitude: Option[Double], longitude: Option[Double]
+  userId:       Int,
+  id:           Int,
+  authId:       Long,
+  appId:        Int,
+  appTitle:     String,
+  deviceTitle:  String,
+  deviceHash:   Array[Byte],
+  authTime:     DateTime,
+  authLocation: String,
+  latitude:     Option[Double],
+  longitude:    Option[Double]
 )
 
 object AuthSession {

@@ -4,6 +4,7 @@ import java.net.InetAddress
 
 import akka.actor.{ ActorPath, ActorSystem }
 import akka.cluster.client.{ ClusterClient, ClusterClientSettings }
+import akka.http.scaladsl.util.FastFuture
 import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.config.ConfigFactory
@@ -131,7 +132,7 @@ object ActorCli extends App {
 
     config.command match {
       case Commands.Help ⇒
-        cmd(Future.successful(parser.showUsage))
+        cmd(FastFuture.successful(parser.showUsage))
       case Commands.CreateBot ⇒
         cmd(handlers.createBot(config.createBot))
       case Commands.AdminGrant | Commands.AdminRevoke ⇒

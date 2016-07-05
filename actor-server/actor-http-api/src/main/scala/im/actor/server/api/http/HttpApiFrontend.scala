@@ -6,6 +6,7 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.{ RejectionHandler, Route }
 import akka.http.scaladsl.server.directives.Credentials
 import akka.http.scaladsl.settings.ServerSettings
+import akka.http.scaladsl.util.FastFuture
 import akka.stream.ActorMaterializer
 import com.typesafe.config.Config
 import im.actor.server.api.http.app.AppFilesHttpHandler
@@ -56,11 +57,14 @@ final class HttpApi(_system: ActorSystem) extends Extension {
       for {
         tokens ← DbExtension(system).db.run(HttpApiTokenRepo.fetchAll)
       } yield tokens.find(t ⇒ p.verify(t.token)).map(_.isAdmin)
-    case Credentials.Missing ⇒ Future.successful(None)
+    case Credentials.Missing ⇒ FastFuture.successful(None)
   }
 
   val adminAuthenticator: AsyncAuthenticator[Unit] =
     authenticator andThen (_ map (isAdminOpt ⇒ if (isAdminOpt.isDefined) Some(()) else None))
+
+  def start(config: HttpApiConfig): Unit =
+    HttpApiFrontend.start(config)
 
   def start(): Unit =
     HttpApiFrontend.start(system.settings.config)

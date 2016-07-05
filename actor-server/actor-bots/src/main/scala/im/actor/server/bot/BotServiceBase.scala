@@ -1,6 +1,7 @@
 package im.actor.server.bot
 
 import akka.actor.ActorSystem
+import akka.http.scaladsl.util.FastFuture
 import im.actor.bots.BotMessages
 import im.actor.concurrent.XorEitherConversions
 import im.actor.server.user.UserExtension
@@ -55,7 +56,7 @@ abstract class BotServiceBase(system: ActorSystem) extends BotServiceTypes with 
       if (isAdmin)
         f
       else
-        Future.successful(Left(BotError(403, "FORBIDDEN")))
+        FastFuture.successful(Left(BotError(403, "FORBIDDEN")))
     }
   }
 }

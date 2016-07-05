@@ -1,12 +1,13 @@
 package im.actor.server.bot.services
 
 import akka.actor.ActorSystem
-import akka.stream.{ Materializer, ActorMaterializer }
+import akka.http.scaladsl.util.FastFuture
+import akka.stream.{ ActorMaterializer, Materializer }
 import akka.util.ByteString
 import im.actor.bots.BotMessages._
 import im.actor.concurrent.FutureResult
 import im.actor.server.bot.{ ApiToBotConversions, BotServiceBase }
-import im.actor.server.file.{ UnsafeFileName, FileStorageAdapter, FileStorageExtension, FileUtils }
+import im.actor.server.file.{ FileStorageAdapter, FileStorageExtension, FileUtils, UnsafeFileName }
 import im.actor.server.sticker.{ Sticker, StickerImage }
 import im.actor.server.stickers.{ StickerErrors, StickersExtension }
 
@@ -142,6 +143,6 @@ private[bot] final class StickersBotService(_system: ActorSystem) extends BotSer
   private def uploadSticker(name: String, bytes: Array[Byte], w: Int, h: Int): Future[Option[StickerImage]] =
     Try(for {
       fileLocation ← fsAdapter.uploadFileF(UnsafeFileName(name), bytes)
-    } yield Some(StickerImage(fileLocation, w, h, bytes.length.toLong))).toOption getOrElse Future.successful(None)
+    } yield Some(StickerImage(fileLocation, w, h, bytes.length.toLong))).toOption getOrElse FastFuture.successful(None)
 
 }

@@ -6,6 +6,7 @@ import java.time.{ Duration, Instant }
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.model.{ HttpMethods, Uri }
+import akka.http.scaladsl.util.FastFuture
 import akka.stream.{ ActorMaterializer, Materializer }
 import better.files._
 import im.actor.acl.ACLFiles
@@ -105,7 +106,7 @@ final class LocalFileStorageAdapter(_system: ActorSystem)
     val query = baseUri
       .withPath(Uri.Path(s"/v1/files/$fileId"))
       .withQuery(Uri.Query("expires" → expiresAt().toString))
-    Future.successful(LocalUploadKey.fileKey(fileId) → signRequest(HttpMethods.PUT, query, ACLFiles.secretKey()).toString)
+    FastFuture.successful(LocalUploadKey.fileKey(fileId) → signRequest(HttpMethods.PUT, query, ACLFiles.secretKey()).toString)
   }
 
   override def completeFileUpload(fileId: Long, fileSize: Long, fileName: UnsafeFileName, partNames: Seq[String]): Future[Unit] = {
@@ -139,8 +140,8 @@ final class LocalFileStorageAdapter(_system: ActorSystem)
         .withPath(Uri.Path(s"/v1/files/${file.id}" + filePart))
         .withQuery(Uri.Query("expires" → expiresAt().toString))
       val signedRequest = signRequest(HttpMethods.GET, query, ACLFiles.secretKey()).toString
-      Future.successful(Some(signedRequest))
-    } else Future.successful(None)
+      FastFuture.successful(Some(signedRequest))
+    } else FastFuture.successful(None)
   }
 
   /**
@@ -156,7 +157,7 @@ final class LocalFileStorageAdapter(_system: ActorSystem)
       baseUri
         .withPath(Uri.Path(s"/v1/files/$fileId/$partNumber"))
         .withQuery(Uri.Query("expires" → expiresAt().toString))
-    Future.successful(LocalUploadKey.partKey(fileId, partNumber) → signRequest(HttpMethods.PUT, query, ACLFiles.secretKey()).toString)
+    FastFuture.successful(LocalUploadKey.partKey(fileId, partNumber) → signRequest(HttpMethods.PUT, query, ACLFiles.secretKey()).toString)
   }
 
   def parseKey(bytes: Array[Byte]): UploadKey = LocalUploadKey.parseFrom(bytes)

@@ -3,6 +3,7 @@ package im.actor.server.file.s3
 import java.io.ByteArrayInputStream
 
 import akka.actor._
+import akka.http.scaladsl.util.FastFuture
 import akka.stream.scaladsl.FileIO
 import akka.stream.{ ActorMaterializer, Materializer }
 import akka.util.ByteString
@@ -76,7 +77,7 @@ final class S3StorageAdapter(_system: ActorSystem) extends FileStorageAdapter {
       presignedRequest.setMethod(HttpMethod.GET)
 
       s3Client.generatePresignedUrlRequest(presignedRequest).map(_.toString).map(Some(_))
-    } else Future.successful(None)
+    } else FastFuture.successful(None)
   }
 
   private def downloadFile(bucketName: String, id: Long, name: String) = {

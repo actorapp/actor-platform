@@ -14,7 +14,7 @@ addSbtPlugin("io.spray" % "sbt-revolver" % "0.7.2")
 
 addSbtPlugin("im.actor" %% "sbt-actor-api" % "0.7.18")
 
-addSbtPlugin("com.trueaccord.scalapb" % "sbt-scalapb" % "0.5.21")
+addSbtPlugin("com.trueaccord.scalapb" % "sbt-scalapb" % "0.5.32")
 
 addSbtPlugin("com.jsuereth" % "sbt-pgp" % "1.0.0")
 

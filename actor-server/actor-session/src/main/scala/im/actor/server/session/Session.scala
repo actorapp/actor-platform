@@ -7,7 +7,7 @@ import akka.cluster.pubsub.DistributedPubSubMediator.{ Subscribe, SubscribeAck }
 import akka.cluster.sharding.ShardRegion.Passivate
 import akka.cluster.sharding.{ ClusterSharding, ClusterShardingSettings, ShardRegion }
 import akka.pattern.pipe
-import akka.stream.{ ClosedShape, Materializer }
+import akka.stream.{ ActorMaterializer, ClosedShape, Materializer }
 import akka.stream.actor._
 import akka.stream.scaladsl._
 import com.typesafe.config.Config
@@ -25,7 +25,7 @@ import scodec.bits.BitVector
 import slick.driver.PostgresDriver.api._
 
 import scala.collection.immutable
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 import scala.util.{ Success, Try }
 
@@ -57,7 +57,10 @@ object Session {
 
   private val typeName = "Session"
 
-  def startRegion(props: Props)(implicit system: ActorSystem): SessionRegion =
+  def startRegion(config: SessionConfig)(implicit system: ActorSystem): SessionRegion =
+    startRegion(Session.props(config))
+
+  private def startRegion(props: Props)(implicit system: ActorSystem): SessionRegion =
     SessionRegion(
       ClusterSharding(system).start(
         typeName = typeName,
@@ -77,19 +80,19 @@ object Session {
     )
   )
 
-  def props(implicit config: SessionConfig, materializer: Materializer): Props =
-    Props(classOf[Session], config, materializer)
+  def props(config: SessionConfig): Props = Props(classOf[Session], config)
 
   private final case class Initialized(authDataOpt: Option[AuthData])
   private case object AuthIdInvalid
 }
 
-final private class Session(implicit config: SessionConfig, materializer: Materializer)
+final private class Session(config: SessionConfig)
   extends Actor
   with ActorLogging
   with MessageIdHelper
   with Stash {
 
+  implicit val materializer: Materializer = ActorMaterializer()
   implicit val ec: ExecutionContext = context.dispatcher
 
   private val pubSubExt = PubSubExtension(context.system)
@@ -230,7 +233,7 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
 
     this.authData = Some(AuthData(userId, authSid, appId))
 
-    updatesHandler ! UpdatesHandler.Authorize(userId, authSid)
+    updatesHandler ! UpdatesHandler.Authorize(userId)
 
     ackTo foreach (_ ! AuthorizeUserAck())
   }

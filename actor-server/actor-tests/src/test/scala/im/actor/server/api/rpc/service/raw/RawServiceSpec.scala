@@ -1,6 +1,7 @@
 package im.actor.server.api.rpc.service.raw
 
 import akka.actor.ActorSystem
+import akka.http.scaladsl.util.FastFuture
 import cats.data.Xor
 import im.actor.api.rpc._
 import im.actor.api.rpc.collections._
@@ -190,7 +191,7 @@ class EchoService(val system: ActorSystem) extends RawApiService(system) {
     onEcho()
     val resp =
       params map (Xor.right(_)) getOrElse (Xor.left(InvalidParams))
-    Future.successful(resp)
+    FastFuture.successful(resp)
   }
 
   def onEcho(): Unit = {}
@@ -332,6 +333,6 @@ private final class ArrayStyleDictionaryService(system: ActorSystem) extends Arr
 
   def putWord(word: String, meaning: String)(implicit client: ClientData): Future[Response] = {
     kv.put(word, meaning)
-    Future.successful(Xor.right(ApiStringValue("true")))
+    FastFuture.successful(Xor.right(ApiStringValue("true")))
   }
 }

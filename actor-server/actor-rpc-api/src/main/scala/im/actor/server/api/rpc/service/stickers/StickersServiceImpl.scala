@@ -48,9 +48,8 @@ class StickersServiceImpl(implicit actorSystem: ActorSystem) extends StickersSer
         _ ← fromFutureBoolean(AlreadyRemoved)(db.run(OwnStickerPackRepo.exists(client.userId, pack.id) map !=))
         _ ← fromFuture(db.run(OwnStickerPackRepo.delete(client.userId, pack.id)))
         stickers ← fromFuture(db.run(stickersExt.getOwnApiStickerPacks(client.userId)))
-        seqState ← fromFuture(seqUpdExt.deliverSingleUpdate(client.userId, UpdateOwnStickersChanged(stickers)))
-        SeqState(seq, state) = seqState
-      } yield ResponseStickersReponse(stickers, seq, state.toByteArray)).value
+        seqState ← fromFuture(seqUpdExt.deliverClientUpdate(client.userId, client.authId, UpdateOwnStickersChanged(stickers)))
+      } yield ResponseStickersReponse(stickers, seqState.seq, seqState.state.toByteArray)).value
     }
 
   override def doHandleAddStickerCollection(id: Int, accessHash: Long, clientData: ClientData): Future[HandlerResult[ResponseStickersReponse]] =
@@ -62,9 +61,8 @@ class StickersServiceImpl(implicit actorSystem: ActorSystem) extends StickersSer
         _ ← fromFutureBoolean(AlreadyAdded)(db.run(OwnStickerPackRepo.exists(client.userId, pack.id)))
         _ ← fromFuture(db.run(OwnStickerPackRepo.create(client.userId, pack.id)))
         stickers ← fromFuture(db.run(stickersExt.getOwnApiStickerPacks(client.userId)))
-        seqState ← fromFuture(seqUpdExt.deliverSingleUpdate(client.userId, UpdateOwnStickersChanged(stickers)))
-        SeqState(seq, state) = seqState
-      } yield ResponseStickersReponse(stickers, seq, state.toByteArray)).value
+        seqState ← fromFuture(seqUpdExt.deliverClientUpdate(client.userId, client.authId, UpdateOwnStickersChanged(stickers)))
+      } yield ResponseStickersReponse(stickers, seqState.seq, seqState.state.toByteArray)).value
     }
 
   override def doHandleLoadOwnStickers(clientData: ClientData): Future[HandlerResult[ResponseLoadOwnStickers]] = {

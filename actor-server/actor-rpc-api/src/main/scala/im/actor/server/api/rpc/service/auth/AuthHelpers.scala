@@ -76,7 +76,7 @@ trait AuthHelpers extends Helpers {
     } yield result
   }
 
-  protected def handleUserCreate(user: User, transaction: AuthTransactionBase, clientData: ClientData): Result[Unit] = {
+  protected def handleUserCreate(user: User, transaction: AuthTransactionBase, client: ClientData): Result[Unit] = {
     for {
       _ ← fromFuture(userExt.create(user.id, user.accessSalt, user.nickname, user.name, user.countryCode, im.actor.api.rpc.users.ApiSex(user.sex.toInt), isBot = false))
       _ ← fromDBIO(AvatarDataRepo.create(AvatarData.empty(AvatarData.OfUser, user.id.toLong)))
@@ -93,9 +93,9 @@ trait AuthHelpers extends Helpers {
             _ ← fromFuture(userExt.addEmail(user.id, e.email))
           } yield ()
         case u: AuthUsernameTransaction ⇒
-          fromFuture(userExt.changeNickname(user.id, Some(u.username)))
+          fromFuture(userExt.changeNickname(user.id, client.authId, Some(u.username)))
         case u: AuthAnonymousTransaction ⇒
-          fromFuture(userExt.changeNickname(user.id, Some(u.username)))
+          fromFuture(userExt.changeNickname(user.id, client.authId, Some(u.username)))
       }
     } yield ()
   }
@@ -188,32 +188,31 @@ trait AuthHelpers extends Helpers {
       _ ← AuthSessionRepo.create(newSession)
     } yield ()
 
-  protected def authorize(userId: Int, authSid: Int, clientData: ClientData)(implicit sessionRegion: SessionRegion): Future[AuthorizeUserAck] = {
+  protected def authorize(userId: Int, authSid: Int, clientData: ClientData)(implicit sessionRegion: SessionRegion): Future[Unit] =
     for {
       _ ← userExt.auth(userId, clientData.authId)
-      ack ← sessionRegion.ref
+      _ ← sessionRegion.ref
         .ask(SessionEnvelope(clientData.authId, clientData.sessionId).withAuthorizeUser(AuthorizeUser(userId, authSid)))
         .mapTo[AuthorizeUserAck]
-    } yield ack
-  }
+    } yield ()
 
   //TODO: what country to use in case of email auth
   protected def authorizeT(
     userId:      Int,
     countryCode: String,
     transaction: AuthTransactionBase,
-    clientData:  ClientData
+    client:      ClientData
   ): Result[ApiUser] = {
     for {
       _ ← fromFuture(if (countryCode.nonEmpty) userExt.changeCountryCode(userId, countryCode) else Future.successful(()))
-      _ ← fromFuture(userExt.setDeviceInfo(userId, DeviceInfo.parseFrom(transaction.deviceInfo)) recover { case _ ⇒ () })
-      _ ← fromDBIO(AuthIdRepo.setUserData(clientData.authId, userId))
-      userStruct ← fromFuture(userExt.getApiStruct(userId, userId, clientData.authId))
+      _ ← fromFuture(userExt.setDeviceInfo(userId, client.authId, DeviceInfo.parseFrom(transaction.deviceInfo)) recover { case _ ⇒ () })
+      _ ← fromDBIO(AuthIdRepo.setUserData(client.authId, userId))
+      userStruct ← fromFuture(userExt.getApiStruct(userId, userId, client.authId))
       //refresh session data
       authSession = AuthSession(
         userId = userId,
         id = nextIntId(),
-        authId = clientData.authId,
+        authId = client.authId,
         appId = transaction.appId,
         appTitle = AuthSession.appTitleOf(transaction.appId),
         deviceHash = transaction.deviceHash,
@@ -225,7 +224,7 @@ trait AuthHelpers extends Helpers {
       )
       _ ← fromDBIO(refreshAuthSession(transaction.deviceHash, authSession))
       _ ← fromDBIO(AuthTransactionRepo.delete(transaction.transactionHash))
-      _ ← fromFuture(authorize(userId, authSession.id, clientData))
+      _ ← fromFuture(authorize(userId, authSession.id, client))
     } yield userStruct
   }
 

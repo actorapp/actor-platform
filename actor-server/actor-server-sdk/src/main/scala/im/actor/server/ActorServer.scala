@@ -1,10 +1,10 @@
 package im.actor.server
 
 import java.nio.file.Files
+import java.time.Instant
 
 import akka.actor._
 import akka.cluster.Cluster
-import akka.stream.ActorMaterializer
 import com.typesafe.config.{ Config, ConfigException, ConfigFactory }
 import im.actor.config.ActorConfig
 import im.actor.env.ActorEnv
@@ -34,11 +34,12 @@ import im.actor.server.api.rpc.service.webrtc.WebrtcServiceImpl
 import im.actor.server.bot.{ ActorBot, BotExtension }
 import im.actor.server.cli.ActorCliService
 import im.actor.server.db.DbExtension
-import im.actor.server.dialog.{ DialogExtension, DialogProcessor }
+import im.actor.server.dialog.DialogExtension
 import im.actor.server.enrich.{ RichMessageConfig, RichMessageWorker }
 import im.actor.server.frontend.Frontend
 import im.actor.server.group._
 import im.actor.server.migrations._
+import im.actor.server.migrations.v2.{ MigrationNameList, MigrationTsActions }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.{ GroupPresenceExtension, PresenceExtension }
 import im.actor.server.sequence._
@@ -50,7 +51,7 @@ import im.actor.server.webhooks.WebhooksExtension
 import kamon.Kamon
 
 import scala.concurrent.Await
-import scala.concurrent.duration.Duration
+import scala.concurrent.duration._
 import scala.language.existentials
 
 final case class ActorServer(system: ActorSystem)
@@ -105,7 +106,7 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
       val oauth2GoogleConfig = OAuth2GoogleConfig.load(serverConfig.getConfig("services.google.oauth"))
       val richMessageConfig = RichMessageConfig.load(serverConfig.getConfig("modules.enricher")).get
       val sequenceConfig = SequenceServiceConfig.load().get
-      implicit val sessionConfig = SessionConfig.load(serverConfig.getConfig("session"))
+      val sessionConfig = SessionConfig.load(serverConfig.getConfig("session"))
 
       if (system.settings.config.getList("akka.cluster.seed-nodes").isEmpty) {
         system.log.info("Going to a single-node cluster mode")
@@ -113,10 +114,8 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
         Cluster(system).join(Cluster(system).selfAddress)
       }
 
-      implicit val executor = system.dispatcher
-      implicit val materializer = ActorMaterializer()
-
-      implicit val db = DbExtension(system).db
+      system.log.debug("Starting DbExtension")
+      val conn = DbExtension(system).connector
 
       UserMigrator.migrate()
       GroupMigrator.migrate()
@@ -127,37 +126,43 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
       FillUserSequenceMigrator.migrate()
       FixUserSequenceMigrator.migrate()
 
+      system.log.debug("Writing migration timestamps")
+      MigrationTsActions.insertTimestamp(
+        MigrationNameList.MultiSequence,
+        Instant.now.toEpochMilli
+      )(conn)
+
       system.log.debug("Starting SeqUpdatesExtension")
-      val seqUpdatesExt = SeqUpdatesExtension(system)
+      SeqUpdatesExtension(system)
 
       system.log.debug("Starting WeakUpdatesExtension")
-      val weakUpdatesExt = WeakUpdatesExtension(system)
+      WeakUpdatesExtension(system)
 
       system.log.debug("Starting PresenceExtension")
-      val presenceExt = PresenceExtension(system)
+      PresenceExtension(system)
 
       system.log.debug("Starting GroupPresenceExtension")
-      val groupPresenceExt = GroupPresenceExtension(system)
+      GroupPresenceExtension(system)
 
       system.log.debug("Starting DialogExtension")
-      val dialogExt = DialogExtension(system)
+      DialogExtension(system)
 
       system.log.debug("Starting SocialExtension")
-      implicit val socialManagerRegion = SocialExtension(system).region
+      SocialExtension(system).region
 
       system.log.debug("Starting UserExtension")
-      implicit val userProcessorRegion = UserExtension(system).processorRegion
-      implicit val userViewRegion = UserExtension(system).viewRegion
+      UserExtension(system).processorRegion
+      UserExtension(system).viewRegion
 
       system.log.debug("Starting GroupExtension")
-      implicit val groupProcessorRegion = GroupExtension(system).processorRegion
-      implicit val groupViewRegion = GroupExtension(system).viewRegion
+      GroupExtension(system).processorRegion
+      GroupExtension(system).viewRegion
 
       system.log.debug("Starting IntegrationTokenMigrator")
       IntegrationTokenMigrator.migrate()
 
       system.log.warning("Starting session region")
-      implicit val sessionRegion = Session.startRegion(Session.props)
+      implicit val sessionRegion = Session.startRegion(sessionConfig)
 
       system.log.debug("Starting RichMessageWorker")
       RichMessageWorker.startWorker(richMessageConfig)
@@ -165,14 +170,15 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
       // ReverseHooksListener.startSingleton()
 
       system.log.debug("Starting WebhooksExtension")
-      val webhooksExt = WebhooksExtension(system)
-
-      implicit val oauth2Service = new GoogleProvider(oauth2GoogleConfig)
+      WebhooksExtension(system)
 
       system.log.debug("Starting Services")
 
       system.log.debug("Starting AuthService")
-      val authService = new AuthServiceImpl
+      val authService = {
+        val oauth2Service = new GoogleProvider(oauth2GoogleConfig)
+        new AuthServiceImpl(oauth2Service)
+      }
 
       system.log.debug("Staring ContactsService")
       val contactsService = new ContactsServiceImpl

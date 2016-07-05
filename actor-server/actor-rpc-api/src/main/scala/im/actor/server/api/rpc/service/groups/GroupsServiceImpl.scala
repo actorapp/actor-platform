@@ -68,7 +68,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     authorized(clientData) { implicit client ⇒
       withGroupOutPeerF(groupPeer) { _ ⇒
         for {
-          (_, SeqStateDate(seq, state, date)) ← groupExt.makeUserAdmin(groupPeer.groupId, client.userId, userPeer.userId)
+          (_, SeqStateDate(seq, state, date)) ← groupExt.makeUserAdmin(groupPeer.groupId, client.userId, client.authId, userPeer.userId)
         } yield Ok(ResponseSeqDate(seq, state.toByteArray, date))
       }
     }
@@ -107,7 +107,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     authorized(clientData) { implicit client ⇒
       withGroupOutPeerF(groupPeer) { _ ⇒
         for {
-          SeqState(seq, state) ← groupExt.transferOwnership(groupPeer.groupId, client.userId, newOwner)
+          SeqState(seq, state) ← groupExt.transferOwnership(groupPeer.groupId, client.userId, client.authId, newOwner)
         } yield Ok(ResponseSeqDate(seq, state.toByteArray, 0))
       }
     }
@@ -125,7 +125,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
           scaleAvatar(fileLocation.fileId, ThreadLocalSecureRandom.current()) flatMap {
             case Right(avatar) ⇒
               for {
-                UpdateAvatarAck(avatar, SeqStateDate(seq, state, date)) ← DBIO.from(groupExt.updateAvatar(fullGroup.id, client.userId, Some(avatar), randomId))
+                UpdateAvatarAck(avatar, SeqStateDate(seq, state, date)) ← DBIO.from(groupExt.updateAvatar(fullGroup.id, client.userId, client.authId, Some(avatar), randomId))
               } yield Ok(ResponseEditGroupAvatar(
                 avatar.get,
                 seq,
@@ -149,7 +149,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     authorized(clientData) { implicit client ⇒
       val action = withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
         for {
-          UpdateAvatarAck(avatar, SeqStateDate(seq, state, date)) ← DBIO.from(groupExt.updateAvatar(fullGroup.id, client.userId, None, randomId))
+          UpdateAvatarAck(avatar, SeqStateDate(seq, state, date)) ← DBIO.from(groupExt.updateAvatar(fullGroup.id, client.userId, client.authId, None, randomId))
         } yield Ok(ResponseSeqDate(
           seq,
           state.toByteArray,
@@ -220,7 +220,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
               res ← groupExt.create(
                 groupId,
                 client.userId,
-                client.authSid,
+                client.authId,
                 validTitle,
                 randomId,
                 userIds.toSet,
@@ -276,7 +276,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     authorized(clientData) { implicit client ⇒
       val action = withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
         for {
-          SeqStateDate(seq, state, date) ← DBIO.from(groupExt.updateTitle(fullGroup.id, client.userId, title, randomId))
+          SeqStateDate(seq, state, date) ← DBIO.from(groupExt.updateTitle(fullGroup.id, client.userId, client.authId, title, randomId))
         } yield Ok(ResponseSeqDate(seq, state.toByteArray, date))
       }
       db.run(action)
@@ -310,7 +310,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
         val join = groupExt.joinGroup(
           groupId = group.id,
           joiningUserId = client.userId,
-          joiningUserAuthSid = client.authSid,
+          joiningUserAuthId = client.authId,
           invitingUserId = token.creatorId
         )
         for {
@@ -360,7 +360,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
   ): Future[HandlerResult[ResponseSeqDate]] = {
     authorized(clientData) { implicit client ⇒
       for {
-        SeqStateDate(seq, state, date) ← groupExt.updateTopic(groupPeer.groupId, client.userId, topic, randomId)
+        SeqStateDate(seq, state, date) ← groupExt.updateTopic(groupPeer.groupId, client.userId, client.authId, topic, randomId)
       } yield Ok(ResponseSeqDate(seq, state.toByteArray, date))
     }
   }
@@ -377,7 +377,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
   ): Future[HandlerResult[ResponseSeqDate]] = {
     authorized(clientData) { implicit client ⇒
       for {
-        SeqStateDate(seq, state, date) ← groupExt.updateAbout(groupPeer.groupId, client.userId, about, randomId)
+        SeqStateDate(seq, state, date) ← groupExt.updateAbout(groupPeer.groupId, client.userId, client.authId, about, randomId)
       } yield Ok(ResponseSeqDate(seq, state.toByteArray, date))
     }
   }
@@ -411,7 +411,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
           case None ⇒
             val group = Group.fromFull(fullGroup)
             for {
-              (seqstatedate, userIds, randomId) ← DBIO.from(groupExt.joinGroup(group.id, client.userId, client.authSid, fullGroup.creatorUserId))
+              (seqstatedate, userIds, randomId) ← DBIO.from(groupExt.joinGroup(group.id, client.userId, client.authId, fullGroup.creatorUserId))
               userStructs ← DBIO.from(Future.sequence(userIds.map(userExt.getApiStruct(_, client.userId, client.authId))))
               groupStruct ← DBIO.from(groupExt.getApiStruct(group.id, client.userId))
             } yield Ok(ResponseEnterGroupObsolete(groupStruct, userStructs, randomId, seqstatedate.seq, seqstatedate.state.toByteArray, seqstatedate.date))
@@ -432,7 +432,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
   ): Future[HandlerResult[ResponseMakeUserAdminObsolete]] = {
     authorized(clientData) { implicit client ⇒
       for {
-        (members, SeqStateDate(seq, state, _)) ← groupExt.makeUserAdmin(groupPeer.groupId, client.userId, userPeer.userId)
+        (members, SeqStateDate(seq, state, _)) ← groupExt.makeUserAdmin(groupPeer.groupId, client.userId, client.authId, userPeer.userId)
       } yield Ok(ResponseMakeUserAdminObsolete(members, seq, state.toByteArray))
     }
   }

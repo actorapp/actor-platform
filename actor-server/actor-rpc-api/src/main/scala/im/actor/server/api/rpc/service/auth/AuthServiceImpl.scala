@@ -40,11 +40,10 @@ import scala.concurrent._
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-final class AuthServiceImpl(
+final class AuthServiceImpl(val oauth2Service: GoogleProvider)(
   implicit
-  val sessionRegion: SessionRegion,
   val actorSystem:   ActorSystem,
-  val oauth2Service: GoogleProvider
+  val sessionRegion: SessionRegion
 ) extends AuthService
   with AuthHelpers
   with Helpers
@@ -131,9 +130,9 @@ final class AuthServiceImpl(
           latitude = None,
           longitude = None
         )
-        _ ← fromDBIO(refreshAuthSession(transaction.deviceHash, authSession))
-        _ ← fromDBIO(AuthTransactionRepo.delete(transactionHash))
-        ack ← fromFuture(authorize(user.id, authSession.id, clientData))
+        //        _ ← fromDBIO(refreshAuthSession(transaction.deviceHash, authSession))
+        //        _ ← fromDBIO(AuthTransactionRepo.delete(transactionHash))
+        //        ack ← fromFuture(authorize(user.id, authSession.id, clientData))
       } yield ResponseAuth(userStruct, misc.ApiConfig(maxGroupSize))
     db.run(action.value)
   }

@@ -3,29 +3,56 @@ package im.actor.sdk.controllers.settings;
 import android.content.Context;
 import android.view.View;
 
-public abstract class ActorSettingsCategory implements IActorSettingsCategory {
+import java.util.ArrayList;
+
+public class ActorSettingsCategory {
 
     private int iconResourceId = 0;
     private int iconColor = -1;
+    private String text;
+    private ArrayList<ActorSettingsField> fields = new ArrayList();
 
-
-    @Override
-    public View getView(Context context) {
-        return null;
+    public ActorSettingsCategory(String text) {
+        this.text = text;
     }
 
-    @Override
-    public ActorSettingsField[] getFields() {
-        return null;
-    }
-
-    @Override
     public int getIconResourceId() {
         return iconResourceId;
     }
 
-    @Override
+    public ActorSettingsCategory setIconResourceId(int iconResourceId) {
+        this.iconResourceId = iconResourceId;
+        return this;
+    }
+
     public int getIconColor() {
         return iconColor;
+    }
+
+    public ActorSettingsCategory setIconColor(int iconColor) {
+        this.iconColor = iconColor;
+        return this;
+    }
+
+    public ArrayList<ActorSettingsField> getFields() {
+        return fields;
+    }
+
+    public ActorSettingsCategory setFields(ArrayList<ActorSettingsField> fields) {
+        this.fields = fields;
+        return this;
+    }
+
+    public ActorSettingsCategory addField(ActorSettingsField field) {
+        fields.add(field);
+        return this;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 }

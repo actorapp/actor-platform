@@ -3,6 +3,7 @@ package im.actor.server.bot
 import java.net.URLEncoder
 
 import akka.actor._
+import akka.http.scaladsl.util.FastFuture
 import akka.util.Timeout
 import com.google.protobuf.ByteString
 import im.actor.api.rpc.users.ApiSex
@@ -193,7 +194,7 @@ private[bot] final class BotExtension(_system: ActorSystem) extends Extension {
 
   private def getOrCreateAuthSession(userId: Int): Future[AuthSession] = {
     db.run(AuthSessionRepo.findFirstByUserId(userId)) flatMap {
-      case Some(session) ⇒ Future.successful(session)
+      case Some(session) ⇒ FastFuture.successful(session)
       case None ⇒
         for {
           authId ← db.run(getOrCreateAuthId(userId))

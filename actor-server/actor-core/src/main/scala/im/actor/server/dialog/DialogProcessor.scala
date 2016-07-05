@@ -69,8 +69,8 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
 
   protected val selfPeer: Peer = Peer.privat(userId)
 
-  protected implicit val sendResponseCache: Cache[AuthSidRandomId, Future[SeqStateDate]] =
-    createCache[AuthSidRandomId, Future[SeqStateDate]](MaxCacheSize)
+  protected implicit val sendResponseCache: Cache[AuthIdRandomId, Future[SeqStateDate]] =
+    createCache[AuthIdRandomId, Future[SeqStateDate]](MaxCacheSize)
 
   override def persistenceId: String = DialogProcessor.persistenceId(userId, peer)
 

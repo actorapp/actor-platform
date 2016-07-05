@@ -1,17 +1,12 @@
 package im.actor.server.enrich
 
-import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc.files.ApiFastThumb
-import im.actor.api.rpc.messaging.{ ApiDocumentExPhoto, ApiDocumentMessage, ApiTextMessage, UpdateMessageContentChanged }
-import im.actor.api.rpc.peers.ApiPeerType
-import im.actor.api.rpc.{ AuthData, ClientData, peers }
+import im.actor.api.rpc.messaging._
+import im.actor.api.rpc.{ AuthData, ClientData }
 import im.actor.server._
-import im.actor.server.acl.ACLUtils
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.messaging
 import im.actor.server.social.SocialManager
-
-import scala.util.Random
 
 class RichMessageWorkerSpec
   extends BaseAppSuite
@@ -52,20 +47,26 @@ class RichMessageWorkerSpec
       implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user1.id, authSid, 42)))
 
       val (user2, _, _, _) = createUser()
-      val user2Model = getUserModel(user2.id)
-      val user2AccessHash = ACLUtils.userAccessHash(authId, user2.id, user2Model.accessSalt)
-      val user2Peer = peers.ApiOutPeer(ApiPeerType.Private, user2.id, user2AccessHash)
 
       def dontChangePrivate() = {
 
-        val resp1 = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage(NonImages.mixedText, Vector.empty, None), None, None))(_.toOption.get)
-        expectNoUpdate(resp1.seq, classOf[UpdateMessageContentChanged])
+        val state1 = {
+          val resp = sendMessageToUser(user2.id, NonImages.mixedText)._2
+          mkSeqState(resp.seq, resp.state)
+        }
+        expectNoUpdate(state1, classOf[UpdateMessageContentChanged])
 
-        val resp2 = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage(NonImages.plainText, Vector.empty, None), None, None))(_.toOption.get)
-        expectNoUpdate(resp2.seq, classOf[UpdateMessageContentChanged])
+        val state2 = {
+          val resp = sendMessageToUser(user2.id, NonImages.plainText)._2
+          mkSeqState(resp.seq, resp.state)
+        }
+        expectNoUpdate(state2, classOf[UpdateMessageContentChanged])
 
-        val resp3 = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage(NonImages.nonImageUrl, Vector.empty, None), None, None))(_.toOption.get)
-        expectNoUpdate(resp2.seq, classOf[UpdateMessageContentChanged])
+        val state3 = {
+          val resp = sendMessageToUser(user2.id, NonImages.nonImageUrl)._2
+          mkSeqState(resp.seq, resp.state)
+        }
+        expectNoUpdate(state3, classOf[UpdateMessageContentChanged])
 
       }
 
@@ -74,9 +75,13 @@ class RichMessageWorkerSpec
         {
           val image = Images.noNameHttp
           val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
-          val resp = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage(image.url, Vector.empty, None), None, None))(_.toOption.get)
 
-          expectUpdate(resp.seq, classOf[UpdateMessageContentChanged]) { update ⇒
+          val state = {
+            val resp = sendMessageToUser(user2.id, image.url)._2
+            mkSeqState(resp.seq, resp.state)
+          }
+
+          expectUpdate(state, classOf[UpdateMessageContentChanged]) { update ⇒
             update.message should matchPattern {
               case ApiDocumentMessage(_, _, image.contentLength, _, image.mimeType, Some(ApiFastThumb(`thumbW`, `thumbH`, _)), Some(ApiDocumentExPhoto(image.w, image.h))) ⇒
             }
@@ -87,9 +92,13 @@ class RichMessageWorkerSpec
           val image = Images.withNameHttp
           val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
           val imageName = image.fileName.get
-          val resp = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage(image.url, Vector.empty, None), None, None))(_.toOption.get)
 
-          expectUpdate(resp.seq, classOf[UpdateMessageContentChanged]) { update ⇒
+          val state = {
+            val resp = sendMessageToUser(user2.id, image.url)._2
+            mkSeqState(resp.seq, resp.state)
+          }
+
+          expectUpdate(state, classOf[UpdateMessageContentChanged]) { update ⇒
             update.message should matchPattern {
               case ApiDocumentMessage(_, _, image.contentLength, `imageName`, image.mimeType, Some(ApiFastThumb(`thumbW`, `thumbH`, _)), Some(ApiDocumentExPhoto(image.w, image.h))) ⇒
             }
@@ -99,9 +108,13 @@ class RichMessageWorkerSpec
         {
           val image = Images.noNameHttps
           val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
-          val resp = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage(image.url, Vector.empty, None), None, None))(_.toOption.get)
 
-          expectUpdate(resp.seq, classOf[UpdateMessageContentChanged]) { update ⇒
+          val state = {
+            val resp = sendMessageToUser(user2.id, image.url)._2
+            mkSeqState(resp.seq, resp.state)
+          }
+
+          expectUpdate(state, classOf[UpdateMessageContentChanged]) { update ⇒
             update.message should matchPattern {
               case ApiDocumentMessage(_, _, image.contentLength, _, image.mimeType, Some(ApiFastThumb(`thumbW`, `thumbH`, _)), Some(ApiDocumentExPhoto(image.w, image.h))) ⇒
             }
@@ -118,18 +131,27 @@ class RichMessageWorkerSpec
       val sessionId = createSessionId()
       implicit val clientData = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1, 42)))
 
-      val groupOutPeer = createGroup("Test group", Set(user2.id, user3.id)).groupPeer
+      val groupId = createGroup("Test group", Set(user2.id, user3.id)).groupPeer.groupId
 
       def dontChangeGroup() = {
 
-        val resp1 = whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage(NonImages.mixedText, Vector.empty, None), None, None))(_.toOption.get)
-        expectNoUpdate(resp1.seq, classOf[UpdateMessageContentChanged])
+        val state1 = {
+          val resp = sendMessageToGroup(groupId, textMessage(NonImages.mixedText))._2
+          mkSeqState(resp.seq, resp.state)
+        }
+        expectNoUpdate(state1, classOf[UpdateMessageContentChanged])
 
-        val resp2 = whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage(NonImages.plainText, Vector.empty, None), None, None))(_.toOption.get)
-        expectNoUpdate(resp2.seq, classOf[UpdateMessageContentChanged])
+        val state2 = {
+          val resp = sendMessageToGroup(groupId, textMessage(NonImages.plainText))._2
+          mkSeqState(resp.seq, resp.state)
+        }
+        expectNoUpdate(state2, classOf[UpdateMessageContentChanged])
 
-        val resp3 = whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage(NonImages.nonImageUrl, Vector.empty, None), None, None))(_.toOption.get)
-        expectNoUpdate(resp3.seq, classOf[UpdateMessageContentChanged])
+        val state3 = {
+          val resp = sendMessageToGroup(groupId, textMessage(NonImages.nonImageUrl))._2
+          mkSeqState(resp.seq, resp.state)
+        }
+        expectNoUpdate(state3, classOf[UpdateMessageContentChanged])
       }
 
       def changeMessageGroup() = {
@@ -137,9 +159,13 @@ class RichMessageWorkerSpec
         {
           val image = Images.noNameHttp
           val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
-          val resp = whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage(image.url, Vector.empty, None), None, None))(_.toOption.get)
 
-          expectUpdate(resp.seq, classOf[UpdateMessageContentChanged]) { update ⇒
+          val state = {
+            val resp = sendMessageToGroup(groupId, textMessage(image.url))._2
+            mkSeqState(resp.seq, resp.state)
+          }
+
+          expectUpdate(state, classOf[UpdateMessageContentChanged]) { update ⇒
             update.message should matchPattern {
               case ApiDocumentMessage(_, _, image.contentLength, _, image.mimeType, Some(ApiFastThumb(`thumbW`, `thumbH`, _)), Some(ApiDocumentExPhoto(image.w, image.h))) ⇒
             }
@@ -150,9 +176,13 @@ class RichMessageWorkerSpec
           val image = Images.withNameHttp
           val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
           val imageName = image.fileName.get
-          val resp = whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage(image.url, Vector.empty, None), None, None))(_.toOption.get)
 
-          expectUpdate(resp.seq, classOf[UpdateMessageContentChanged]) { update ⇒
+          val state = {
+            val resp = sendMessageToGroup(groupId, textMessage(image.url))._2
+            mkSeqState(resp.seq, resp.state)
+          }
+
+          expectUpdate(state, classOf[UpdateMessageContentChanged]) { update ⇒
             update.message should matchPattern {
               case ApiDocumentMessage(_, _, image.contentLength, `imageName`, image.mimeType, Some(ApiFastThumb(`thumbW`, `thumbH`, _)), Some(ApiDocumentExPhoto(image.w, image.h))) ⇒
             }
@@ -162,9 +192,13 @@ class RichMessageWorkerSpec
         {
           val image = Images.noNameHttps
           val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
-          val resp = whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage(image.url, Vector.empty, None), None, None))(_.toOption.get)
 
-          expectUpdate(resp.seq, classOf[UpdateMessageContentChanged]) { update ⇒
+          val state = {
+            val resp = sendMessageToGroup(groupId, textMessage(image.url))._2
+            mkSeqState(resp.seq, resp.state)
+          }
+
+          expectUpdate(state, classOf[UpdateMessageContentChanged]) { update ⇒
             update.message should matchPattern {
               case ApiDocumentMessage(_, _, image.contentLength, _, image.mimeType, Some(ApiFastThumb(`thumbW`, `thumbH`, _)), Some(ApiDocumentExPhoto(image.w, image.h))) ⇒
             }

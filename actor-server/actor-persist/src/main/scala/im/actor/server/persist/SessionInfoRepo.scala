@@ -14,7 +14,7 @@ final class SessionInfoTable(tag: Tag) extends Table[SessionInfo](tag, "session_
 }
 
 object SessionInfoRepo {
-  val infos = TableQuery[SessionInfoTable]
+  private val infos = TableQuery[SessionInfoTable]
 
   def create(authId: Long, sessionId: Long, optUserId: Option[Int]) =
     infos += SessionInfo(authId, sessionId, optUserId)

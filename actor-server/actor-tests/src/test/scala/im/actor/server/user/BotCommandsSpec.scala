@@ -113,13 +113,13 @@ class BotCommandsSpec extends BaseAppSuite
       }
     }
 
-    val SeqState(seq, _) = whenReady(SeqUpdatesExtension(system).getSeqState(alice.id))(identity)
+    val state = whenReady(SeqUpdatesExtension(system).getSeqState(alice.id, aliceAuthId))(identity)
 
     whenReady(removeCommand(botUser.id, runCommand.slashCommand))(identity)
 
     {
       implicit val cd = clientData
-      expectUpdate(seq, classOf[UpdateUserBotCommandsChanged]) { upd ⇒
+      expectUpdate(state, classOf[UpdateUserBotCommandsChanged]) { upd ⇒
         upd.userId shouldEqual botUser.id
         upd.commands shouldBe empty
       }

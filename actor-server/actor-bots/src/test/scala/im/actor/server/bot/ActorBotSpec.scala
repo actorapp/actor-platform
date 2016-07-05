@@ -34,14 +34,11 @@ final class ActorBotSpec
 
     Thread.sleep(1000)
 
-    whenReady(dialogExt.sendMessage(
+    whenReady(dialogExt.sendMessageInternal(
       peer = ActorBot.ApiPeer,
       senderUserId = user.id,
-      senderAuthSid = authSid,
-      senderAuthId = None,
       randomId = Random.nextLong(),
-      message = ApiTextMessage("/bot new mybot MyBotName", Vector.empty, None),
-      isFat = false
+      message = ApiTextMessage("/bot new mybot MyBotName", Vector.empty, None)
     ))(identity)
 
     Thread.sleep(2000)
@@ -65,14 +62,11 @@ final class ActorBotSpec
 
     Thread.sleep(1000)
 
-    whenReady(dialogExt.sendMessage(
+    whenReady(dialogExt.sendMessageInternal(
       peer = ActorBot.ApiPeer,
       senderUserId = user.id,
-      senderAuthSid = authSid,
-      senderAuthId = None,
       randomId = Random.nextLong(),
-      message = ApiTextMessage("/bot new mybot MyBotName", Vector.empty, None),
-      isFat = false
+      message = ApiTextMessage("/bot new mybot MyBotName", Vector.empty, None)
     ))(identity)
 
     Thread.sleep(1000)

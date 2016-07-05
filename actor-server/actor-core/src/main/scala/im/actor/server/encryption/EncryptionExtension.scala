@@ -92,7 +92,7 @@ final class EncryptionExtension(system: ActorSystem) extends Extension {
       apiKeyGroup ← XorT.fromXor[DBIO](toApi(keyGroup))
       relatedUserIds ← XorT.right[DBIO, Exception, Set[Int]](DBIO.from(socialExt.getRelations(userId)))
       _ ← XorT.right[DBIO, Exception, Int](EncryptionKeyGroupRepo.create(keyGroup))
-      _ ← XorT.right[DBIO, Exception, Any](DBIO.from(seqUpdExt.broadcastSingleUpdate(
+      _ ← XorT.right[DBIO, Exception, Any](DBIO.from(seqUpdExt.broadcastPeopleUpdate(
         userIds = relatedUserIds,
         update = UpdatePublicKeyGroupAdded(
           userId,
@@ -129,7 +129,7 @@ final class EncryptionExtension(system: ActorSystem) extends Extension {
       for {
         _ ← EncryptionKeyGroupRepo.delete(userId, id)
         relatedUserIds ← DBIO.from(socialExt.getRelations(userId))
-        _ ← DBIO.from(seqUpdExt.broadcastSingleUpdate(relatedUserIds, update))
+        _ ← DBIO.from(seqUpdExt.broadcastPeopleUpdate(relatedUserIds, update))
       } yield ()
 
     db.run(action.transactionally)

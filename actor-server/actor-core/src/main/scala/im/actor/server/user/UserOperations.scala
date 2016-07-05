@@ -1,22 +1,19 @@
 package im.actor.server.user
 
-import akka.actor.{ ActorRef, ActorSystem }
-import akka.cluster.pubsub.DistributedPubSub
-import akka.event.{ Logging, LoggingAdapter }
+import akka.actor.ActorSystem
+import akka.event.LoggingAdapter
+import akka.http.scaladsl.util.FastFuture
 import akka.pattern.ask
 import akka.util.Timeout
-import com.google.protobuf.ByteString
 import im.actor.api.rpc.misc.ApiExtension
-import im.actor.api.rpc.{ AuthorizedClientData, Update }
 import im.actor.api.rpc.users.{ ApiFullUser, ApiSex, ApiUser }
 import im.actor.server.auth.DeviceInfo
 import im.actor.server.bots.BotCommand
 import im.actor.server.db.DbExtension
 import im.actor.server.file.Avatar
-import im.actor.server.model.{ Peer, SerializedUpdate, UpdateMapping }
 import im.actor.server.persist.UserRepo
 import im.actor.server.pubsub.PubSubExtension
-import im.actor.server.sequence.{ PushData, PushRules, SeqState, SeqUpdatesExtension }
+import im.actor.server.sequence.{ SeqState, SeqUpdatesExtension }
 import im.actor.server.{ model, persist ⇒ p }
 import im.actor.types._
 import im.actor.util.misc.IdUtils
@@ -62,7 +59,7 @@ private[user] sealed trait Commands extends AuthCommands {
     (processorRegion.ref ? UpdateIsAdmin(userId, Some(isAdmin))).mapTo[UpdateIsAdminAck]
 
   // FIXME: check existence and reserve generated ids
-  def nextId(): Future[Int] = Future.successful(IdUtils.nextIntId())
+  def nextId(): Future[Int] = FastFuture.successful(IdUtils.nextIntId())
 
   def addPhone(userId: Int, phone: Long): Future[Unit] =
     (processorRegion.ref ? AddPhone(userId, phone)).mapTo[AddPhoneAck] map (_ ⇒ ())
@@ -80,44 +77,50 @@ private[user] sealed trait Commands extends AuthCommands {
   def changeCountryCode(userId: Int, countryCode: String): Future[Unit] =
     (processorRegion.ref ? ChangeCountryCode(userId, countryCode)).mapTo[ChangeCountryCodeAck] map (_ ⇒ ())
 
-  def changeName(userId: Int, name: String): Future[SeqState] =
-    (processorRegion.ref ? ChangeName(userId, name)).mapTo[SeqState]
+  def changeName(userId: Int, authId: Long, name: String): Future[SeqState] =
+    (processorRegion.ref ? ChangeName(userId, authId, name)).mapTo[SeqState]
 
-  def changeNickname(userId: Int, nickname: Option[String]): Future[SeqState] =
-    (processorRegion.ref ? ChangeNickname(userId, nickname)).mapTo[SeqState]
+  def changeNickname(userId: Int, authId: Long, nickname: Option[String]): Future[SeqState] =
+    (processorRegion.ref ? ChangeNickname(userId, authId, nickname)).mapTo[SeqState]
 
-  def changeAbout(userId: Int, about: Option[String]): Future[SeqState] =
-    (processorRegion.ref ? ChangeAbout(userId, about)).mapTo[SeqState]
+  def changeAbout(userId: Int, authId: Long, about: Option[String]): Future[SeqState] =
+    (processorRegion.ref ? ChangeAbout(userId, authId, about)).mapTo[SeqState]
 
-  def changeTimeZone(userId: Int, timeZone: String): Future[SeqState] =
-    (processorRegion.ref ? ChangeTimeZone(userId, timeZone)).mapTo[SeqState]
+  def changeTimeZone(userId: Int, authId: Long, timeZone: String): Future[SeqState] =
+    (processorRegion.ref ? ChangeTimeZone(userId, authId, timeZone)).mapTo[SeqState]
 
-  def setDeviceInfo(userId: Int, data: DeviceInfo): Future[Unit] =
+  def changePreferredLanguages(userId: Int, authId: Long, preferredLanguages: Seq[String]): Future[SeqState] =
+    (processorRegion.ref ? ChangePreferredLanguages(userId, authId, preferredLanguages)).mapTo[SeqState]
+
+  def setDeviceInfo(userId: Int, authId: Long, data: DeviceInfo): Future[Unit] =
     for {
-      _ ← changeTimeZone(userId, data.timeZone)
-      _ ← changePreferredLanguages(userId, data.preferredLanguages)
+      _ ← changeTimeZone(userId, authId, data.timeZone)
+      _ ← changePreferredLanguages(userId, authId, data.preferredLanguages)
     } yield ()
 
-  def changePreferredLanguages(userId: Int, preferredLanguages: Seq[String]): Future[SeqState] =
-    (processorRegion.ref ? ChangePreferredLanguages(userId, preferredLanguages)).mapTo[SeqState]
+  def updateAvatar(userId: Int, authId: Long, avatarOpt: Option[Avatar]): Future[UpdateAvatarAck] =
+    (processorRegion.ref ? UpdateAvatar(userId, authId, avatarOpt)).mapTo[UpdateAvatarAck]
 
-  def updateAvatar(userId: Int, avatarOpt: Option[Avatar]): Future[UpdateAvatarAck] =
-    (processorRegion.ref ? UpdateAvatar(userId, avatarOpt)).mapTo[UpdateAvatarAck]
+  def addContact(userId: Int, authId: Long, contactUserId: Int, localName: Option[String], phone: Option[Long], email: Option[String]): Future[SeqState] =
+    (processorRegion.ref ? AddContacts(userId, authId, Seq(ContactToAdd(contactUserId, localName, phone, email)))).mapTo[SeqState]
 
-  def addContact(userId: Int, contactUserId: Int, localName: Option[String], phone: Option[Long], email: Option[String]): Future[SeqState] =
-    (processorRegion.ref ? AddContacts(userId, Seq(ContactToAdd(contactUserId, localName, phone, email)))).mapTo[SeqState]
+  def addContact(userId: Int, contactUserId: Int, localName: Option[String], phone: Option[Long], email: Option[String]): Future[Unit] =
+    addContact(userId, 0L, contactUserId, localName, phone, email) map (_ ⇒ ())
 
-  def addContacts(userId: Int, contactsToAdd: Seq[ContactToAdd]): Future[SeqState] =
+  def addContacts(userId: Int, authId: Long, contactsToAdd: Seq[ContactToAdd]): Future[SeqState] =
     if (contactsToAdd.nonEmpty)
-      (processorRegion.ref ? AddContacts(userId, contactsToAdd)).mapTo[SeqState]
+      (processorRegion.ref ? AddContacts(userId, authId, contactsToAdd)).mapTo[SeqState]
     else
-      seqUpdExt.getSeqState(userId)
+      seqUpdExt.getSeqState(userId, authId)
 
-  def removeContact(userId: Int, contactUserId: Int): Future[SeqState] =
-    (processorRegion.ref ? RemoveContact(userId, contactUserId)).mapTo[SeqState]
+  def removeContact(userId: Int, authId: Long, contactUserId: Int): Future[SeqState] =
+    (processorRegion.ref ? RemoveContact(userId, authId, contactUserId)).mapTo[SeqState]
 
-  def editLocalName(userId: Int, contactUserId: Int, localName: Option[String], supressUpdate: Boolean = false): Future[SeqState] =
-    (processorRegion.ref ? EditLocalName(userId, contactUserId, localName, supressUpdate)).mapTo[SeqState]
+  def editLocalName(userId: Int, authId: Long, contactUserId: Int, localName: Option[String]): Future[SeqState] =
+    (processorRegion.ref ? EditLocalName(userId, authId, contactUserId, localName, supressUpdate = false)).mapTo[SeqState]
+
+  def editLocalNameSilently(userId: Int, contactUserId: Int, localName: Option[String]): Future[Unit] =
+    (processorRegion.ref ? EditLocalName(userId, 0L, contactUserId, localName, supressUpdate = true)).mapTo[SeqState] map (_ ⇒ ())
 
   def addBotCommand(userId: Int, command: BotCommand): Future[AddBotCommandAck] =
     (processorRegion.ref ? AddBotCommand(userId, command)).mapTo[AddBotCommandAck]
@@ -131,114 +134,6 @@ private[user] sealed trait Commands extends AuthCommands {
   def removeExt(userId: Int, key: String): Future[Unit] =
     (processorRegion.ref ? RemoveExt(userId, key)) map (_ ⇒ ())
 
-  def broadcastUserUpdate(
-    userId:     Int,
-    update:     Update,
-    pushText:   Option[String],
-    isFat:      Boolean,
-    reduceKey:  Option[String],
-    deliveryId: Option[String]
-  ): Future[SeqState] = {
-    val header = update.header
-    val serializedData = update.toByteArray
-
-    val originPeer = seqUpdExt.getOriginPeer(update)
-
-    broadcastUserUpdate(userId, header, serializedData, update._relatedUserIds, update._relatedGroupIds, pushText, originPeer, isFat, reduceKey, deliveryId)
-  }
-
-  def broadcastUserUpdate(
-    userId:         Int,
-    header:         Int,
-    serializedData: Array[Byte],
-    userIds:        Seq[Int],
-    groupIds:       Seq[Int],
-    pushText:       Option[String],
-    originPeer:     Option[Peer],
-    isFat:          Boolean,
-    reduceKey:      Option[String],
-    deliveryId:     Option[String]
-  ): Future[SeqState] =
-    seqUpdExt.deliverUpdate(
-      userId = userId,
-      mapping = UpdateMapping(default = Some(SerializedUpdate(header, ByteString.copyFrom(serializedData), userIds = userIds, groupIds = groupIds))),
-      pushRules = PushRules(isFat = isFat).withData(PushData().withText(pushText.getOrElse(""))),
-      reduceKey = reduceKey,
-      deliveryId = deliveryId.getOrElse("")
-    )
-
-  def broadcastUsersUpdate(
-    userIds:    Set[Int],
-    update:     Update,
-    pushText:   Option[String],
-    isFat:      Boolean,
-    deliveryId: Option[String]
-  ): Future[Seq[SeqState]] =
-    seqUpdExt.broadcastSingleUpdate(
-      userIds = userIds,
-      update = update,
-      pushRules = PushRules(isFat = isFat).withData(PushData().withText(pushText.getOrElse(""))),
-      deliveryId = deliveryId.getOrElse("")
-    )
-
-  def broadcastClientUpdate(
-    update:     Update,
-    pushText:   Option[String],
-    isFat:      Boolean        = false,
-    deliveryId: Option[String] = None
-  )(implicit client: AuthorizedClientData): Future[SeqState] = broadcastClientUpdate(client.userId, client.authSid, update, pushText, isFat, deliveryId)
-
-  def broadcastClientUpdate(
-    clientUserId:  Int,
-    clientAuthSid: Int,
-    update:        Update,
-    pushText:      Option[String],
-    isFat:         Boolean,
-    deliveryId:    Option[String]
-  ): Future[SeqState] =
-    seqUpdExt.deliverSingleUpdate(
-      userId = clientUserId,
-      update = update,
-      pushRules = PushRules(isFat = isFat, excludeAuthSids = Seq(clientAuthSid)).withData(PushData().withText(pushText.getOrElse(""))),
-      deliveryId = deliveryId.getOrElse("")
-    )
-
-  def broadcastClientAndUsersUpdate(
-    userIds:    Set[Int],
-    update:     Update,
-    pushText:   Option[String],
-    isFat:      Boolean        = false,
-    deliveryId: Option[String] = None
-  )(implicit client: AuthorizedClientData): Future[(SeqState, Seq[SeqState])] =
-    broadcastClientAndUsersUpdate(client.userId, client.authSid, userIds, update, pushText, isFat, deliveryId)
-
-  def broadcastClientAndUsersUpdate(
-    clientUserId:  Int,
-    clientAuthSid: Int,
-    userIds:       Set[Int],
-    update:        Update,
-    pushText:      Option[String],
-    isFat:         Boolean,
-    deliveryId:    Option[String]
-  ): Future[(SeqState, Seq[SeqState])] = {
-    val pushRules = PushRules(isFat = isFat).withData(PushData().withText(pushText.getOrElse("")))
-    val deliveryIdStr = deliveryId.getOrElse("")
-
-    for {
-      seqstates ← seqUpdExt.broadcastSingleUpdate(
-        userIds = userIds filterNot (_ == clientUserId),
-        update = update,
-        pushRules = pushRules,
-        deliveryId = deliveryIdStr
-      )
-      seqstate ← seqUpdExt.deliverSingleUpdate(
-        userId = clientUserId,
-        update = update,
-        pushRules = pushRules,
-        deliveryId = deliveryIdStr
-      )
-    } yield (seqstate, seqstates)
-  }
 }
 
 private[user] sealed trait Queries {

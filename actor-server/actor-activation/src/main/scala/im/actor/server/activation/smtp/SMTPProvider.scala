@@ -3,6 +3,7 @@ package im.actor.server.activation.smtp
 import java.nio.file.{ Files, Paths }
 
 import akka.actor.ActorSystem
+import akka.http.scaladsl.util.FastFuture
 import akka.pattern.ask
 import akka.util.Timeout
 import cats.data.Xor
@@ -49,7 +50,7 @@ private[activation] final class SMTPProvider(system: ActorSystem) extends Activa
   override def send(txHash: String, code: Code): Future[CodeFailure Xor Unit] = code match {
     case code: EmailCode ⇒
       if (isTestEmail(code.email)) {
-        Future.successful(Xor.right(()))
+        FastFuture.successful(Xor.right(()))
       } else {
         for {
           resp ← (smtpStateActor ? Send(code)).mapTo[SendAck].map(_.result)

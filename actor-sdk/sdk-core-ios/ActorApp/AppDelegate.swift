@@ -28,6 +28,8 @@ import ActorSDK
         
         ActorSDK.sharedActor().authStrategy = .PhoneEmail
         
+        ActorSDK.sharedActor().style.dialogAvatarSize = 58
+        
         // Creating Actor
         ActorSDK.sharedActor().createActor()
         

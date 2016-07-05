@@ -2,6 +2,8 @@ package im.actor.sdk.controllers.settings;
 
 import android.view.View;
 
+import java.util.ArrayList;
+
 public class ActorSettingsFragment extends BaseActorSettingsFragment {
     @Override
     public View getBeforeNickSettingsView() {
@@ -34,12 +36,17 @@ public class ActorSettingsFragment extends BaseActorSettingsFragment {
     }
 
     @Override
-    public ActorSettingsCategory[] getBeforeSettingsCategories() {
+    public View.OnClickListener getMenuFieldOnClickListener() {
         return null;
     }
 
     @Override
-    public ActorSettingsCategory[] getAfterSettingsCategories() {
+    public ActorSettingsCategories getBeforeSettingsCategories() {
+        return null;
+    }
+
+    @Override
+    public ActorSettingsCategories getAfterSettingsCategories() {
         return null;
     }
 }

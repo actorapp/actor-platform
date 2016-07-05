@@ -1,9 +1,11 @@
 package im.actor.server.migrations
 
 import akka.actor._
+import akka.http.scaladsl.util.FastFuture
 import akka.util.Timeout
+import im.actor.server.db.DbExtension
 import im.actor.server.persist.UserRepo
-import im.actor.server.persist.contact.{ UserContactRepo, UserPhoneContactRepo, UserEmailContactRepo }
+import im.actor.server.persist.contact.{ UserContactRepo, UserEmailContactRepo, UserPhoneContactRepo }
 import im.actor.server.user.UserExtension
 import slick.driver.PostgresDriver.api._
 
@@ -20,7 +22,9 @@ object LocalNamesMigrator extends Migration {
 
   protected override def migrationTimeout = 1.hour
 
-  protected override def startMigration()(implicit system: ActorSystem, db: Database, ec: ExecutionContext) = {
+  protected override def startMigration()(implicit system: ActorSystem) = {
+    import system.dispatcher
+
     system.log.warning("Migrating local names")
 
     val actions = DBIO.sequence(Seq(
@@ -28,25 +32,26 @@ object LocalNamesMigrator extends Migration {
       UserPhoneContactRepo.pcontacts.filter(!_.isDeleted).map(c ⇒ (c.ownerUserId, c.contactUserId, Phone)).result
     ))
 
-    db.run(actions) flatMap (contacts ⇒ Future.sequence(contacts.flatten map migrateSingle)) map (_ ⇒ ())
+    DbExtension(system).db.run(actions) flatMap (contacts ⇒ Future.sequence(contacts.flatten map migrateSingle)) map (_ ⇒ ())
   }
 
-  private def migrateSingle(ownerAndContactAndType: (Int, Int, String))(implicit system: ActorSystem, db: Database): Future[Unit] = {
+  private def migrateSingle(ownerAndContactAndType: (Int, Int, String))(implicit system: ActorSystem): Future[Unit] = {
     val promise = Promise[Unit]()
     val (ownerUserId, contactUserId, typ) = ownerAndContactAndType
     system.actorOf(props(promise, ownerUserId, contactUserId), name = s"migrate_local_name_${ownerUserId}_${contactUserId}_${typ}")
     promise.future
   }
 
-  private def props(promise: Promise[Unit], ownerUserId: Int, contactUserId: Int)(implicit db: Database) =
-    Props(classOf[LocalNamesMigrator], promise, ownerUserId, contactUserId, db)
+  private def props(promise: Promise[Unit], ownerUserId: Int, contactUserId: Int) =
+    Props(classOf[LocalNamesMigrator], promise, ownerUserId, contactUserId)
 }
 
-private final class LocalNamesMigrator(promise: Promise[Unit], ownerUserId: Int, contactUserId: Int, db: Database) extends Migrator(promise) {
+private final class LocalNamesMigrator(promise: Promise[Unit], ownerUserId: Int, contactUserId: Int) extends Migrator(promise) {
 
   private implicit val system: ActorSystem = context.system
   private implicit val ec: ExecutionContext = context.dispatcher
   private implicit val timeout: Timeout = Timeout(40.seconds)
+  private val db = DbExtension(system).db
 
   private val userExt = UserExtension(context.system)
 
@@ -60,7 +65,7 @@ private final class LocalNamesMigrator(promise: Promise[Unit], ownerUserId: Int,
       (if (contact.name.contains(user.name)) {
         db.run(UserContactRepo.updateName(ownerUserId, contactUserId, None))
       } else {
-        contact.name map (_ ⇒ userExt.editLocalName(ownerUserId, contactUserId, contact.name, supressUpdate = true)) getOrElse Future.successful(())
+        contact.name map (_ ⇒ userExt.editLocalNameSilently(ownerUserId, contactUserId, contact.name)) getOrElse FastFuture.successful(())
       }) onComplete {
         case Success(_) ⇒
           log.debug(s"Migrated contact with ownerUserId: $ownerUserId, contactUserId: $contactUserId")

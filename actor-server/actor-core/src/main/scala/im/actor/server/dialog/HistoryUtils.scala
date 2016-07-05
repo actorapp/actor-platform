@@ -1,13 +1,14 @@
 package im.actor.server.dialog
 
 import akka.actor.ActorSystem
+import akka.http.scaladsl.util.FastFuture
 import im.actor.server.group.{ GroupExtension, GroupUtils }
-import im.actor.server.model.{ HistoryMessage, PeerType, Peer }
+import im.actor.server.model.{ HistoryMessage, Peer, PeerType }
 import im.actor.server.persist.HistoryMessageRepo
 import org.joda.time.DateTime
 import slick.dbio.DBIO
 
-import scala.concurrent.{ Future, ExecutionContext }
+import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.control.NoStackTrace
 
 object HistoryUtils {
@@ -117,7 +118,7 @@ object HistoryUtils {
   def getHistoryOwner(peer: Peer, clientUserId: Int)(implicit system: ActorSystem): Future[Int] = {
     import system.dispatcher
     peer.typ match {
-      case PeerType.Private ⇒ Future.successful(clientUserId)
+      case PeerType.Private ⇒ FastFuture.successful(clientUserId)
       case PeerType.Group ⇒
         for {
           isHistoryShared ← GroupExtension(system).isHistoryShared(peer.id)

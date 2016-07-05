@@ -8,6 +8,6 @@ trait ImplicitSessionRegion {
   protected implicit val system: ActorSystem
   protected implicit val materializer: Materializer
 
-  private implicit lazy val config = SessionConfig.load(system.settings.config.getConfig("session"))
-  implicit lazy val sessionRegion: SessionRegion = Session.startRegion(Session.props)
+  private val config = SessionConfig.load(system.settings.config.getConfig("session"))
+  implicit lazy val sessionRegion: SessionRegion = Session.startRegion(config)
 }

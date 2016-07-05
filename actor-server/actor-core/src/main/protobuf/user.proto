@@ -138,6 +138,7 @@ message UserCommands {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";
 
         required int32 user_id = 3;
+        required int64 auth_id = 4;
         required string name = 1;
     }
 
@@ -154,6 +155,7 @@ message UserCommands {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";
 
         required int32 user_id = 1;
+        required int64 auth_id = 4;
         required string time_zone = 3;
     }
 
@@ -161,6 +163,7 @@ message UserCommands {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";
 
         required int32 user_id = 1;
+        required int64 auth_id = 4;
         repeated string preferred_languages = 3;
     }
 
@@ -168,6 +171,7 @@ message UserCommands {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";
 
         required int32 user_id = 1;
+        required int64 auth_id = 6;
         required int32 contact_user_id = 3;
         optional string name = 4;
         required bool supress_update = 5;
@@ -177,6 +181,7 @@ message UserCommands {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";
 
         required int32 user_id = 3;
+        required int64 auth_id = 5;
         optional Avatar avatar = 4;
     }
 
@@ -189,6 +194,7 @@ message UserCommands {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";
 
         required int32 user_id = 1;
+        required int64 auth_id = 4;
         optional string nickname = 3;
     }
 
@@ -196,6 +202,7 @@ message UserCommands {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";
 
         required int32 user_id = 1;
+        required int64 auth_id = 4;
         optional string about = 3;
     }
 
@@ -210,6 +217,7 @@ message UserCommands {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";
 
         required int32 user_id = 1;
+        required int64 auth_id = 4;
         repeated ContactToAdd contacts_to_add = 3;
     }
 
@@ -217,6 +225,7 @@ message UserCommands {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";
 
         required int32 user_id = 1;
+        required int64 auth_id = 3;
         required int32 contact_user_id = 2;
     }
 

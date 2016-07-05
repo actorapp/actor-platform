@@ -1,6 +1,7 @@
 package im.actor.server.activation.common
 
 import akka.actor.{ Actor, ActorLogging, Props }
+import akka.http.scaladsl.util.FastFuture
 import akka.pattern.pipe
 import cats.data.Xor
 
@@ -62,7 +63,7 @@ private[activation] final class ActivationStateActor[Id, CodeType <: Code](repea
       }
     } else {
       log.debug(s"Ignoring send $code")
-      Future.successful(Xor.left(BadRequest("Too frequent code requests")))
+      FastFuture.successful(Xor.left(BadRequest("Too frequent code requests")))
     }
   }
 

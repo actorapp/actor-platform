@@ -31,7 +31,7 @@ message GroupCommands {
         required int32 group_id = 6;
         required GroupType typ = 7;
         required int32 creator_user_id = 1;
-        required int32 creator_auth_sid = 8;
+        required int64 creator_auth_id = 8;
         required string title = 3;
         required int64 random_id = 4;
         repeated int32 user_ids = 5;
@@ -65,7 +65,7 @@ message GroupCommands {
 
         required int32 group_id = 4;
         required int32 joining_user_id = 1;
-        required int32 joining_user_auth_sid = 2;
+        required int64 joining_user_auth_id = 2;
         required int32 inviting_user_id = 3;
     }
 
@@ -75,6 +75,7 @@ message GroupCommands {
         required int32 group_id = 5;
         required int32 invitee_user_id = 1;
         required int32 inviter_user_id = 2;
+        required int64 inviter_auth_id = 6;
         required int64 random_id = 4;
     }
 
@@ -84,7 +85,7 @@ message GroupCommands {
         required int32 group_id = 6;
         required int32 kicked_user_id = 1;
         required int32 kicker_user_id = 2;
-        required int32 kicker_auth_sid = 3;
+        required int64 kicker_auth_id = 3;
         required int64 random_id = 4;
     }
 
@@ -93,7 +94,7 @@ message GroupCommands {
 
         required int32 group_id = 4;
         required int32 user_id = 1;
-        required int32 auth_sid = 2;
+        required int64 auth_id = 2;
         required int64 random_id = 3;
     }
 
@@ -102,6 +103,7 @@ message GroupCommands {
 
         required int32 group_id = 3;
         required int32 client_user_id = 1;
+        required int64 client_auth_id = 6;
         optional Avatar avatar = 4;
         required int64 random_id = 5;
     }
@@ -116,6 +118,7 @@ message GroupCommands {
 
         required int32 group_id = 1;
         required int32 client_user_id = 2;
+        required int64 client_auth_id = 6;
         required string title = 4;
         required int64 random_id = 5;
     }
@@ -134,6 +137,7 @@ message GroupCommands {
 
         required int32 group_id = 1;
         required int32 client_user_id = 2;
+        required int64 client_auth_id = 6;
         optional string topic = 4;
         required int64 random_id = 5;
     }
@@ -143,6 +147,7 @@ message GroupCommands {
 
         required int32 group_id = 1;
         required int32 client_user_id = 2;
+        required int64 client_auth_id = 6;
         optional string about = 4;
         required int64 random_id = 5;
     }
@@ -152,6 +157,7 @@ message GroupCommands {
 
         required int32 group_id = 1;
         required int32 client_user_id = 2;
+        required int64 client_auth_id = 5;
         required int32 candidate_user_id = 4;
     }
 
@@ -171,7 +177,7 @@ message GroupCommands {
 
         required int32 group_id = 1;
         required int32 joining_user_id = 2;
-        required int32 joining_user_auth_sid = 3;
+        required int64 joining_user_auth_id = 3;
     }
 
     message TransferOwnership {
@@ -179,7 +185,7 @@ message GroupCommands {
 
         required int32 group_id = 1;
         required int32 client_user_id = 2;
-        required int32 client_auth_sid = 4;
+        required int64 client_auth_id = 4;
         required int32 user_id = 3;
     }
 }

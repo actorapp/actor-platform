@@ -26,11 +26,15 @@
 
 "ContactsActionAdd" = "Добавить друга";
 
+"ContactsBack" = "Люди";
+
 /*
  * Dialogs
  */
 
 "DialogsHint" = "Проведите для удаления";
+
+"DialogsBack" = "Чаты";
 
 /*
  * Settings

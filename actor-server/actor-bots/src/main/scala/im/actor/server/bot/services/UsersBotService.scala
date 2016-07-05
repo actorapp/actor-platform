@@ -38,7 +38,7 @@ private[bot] final class UsersBotService(system: ActorSystem) extends BotService
     (botUserId: BotUserId, botAuthId: BotAuthId, botAuthSid: BotAuthSid) ⇒
       ifIsAdmin(botUserId) {
         (for {
-          _ ← fromFuture(userExt.changeName(userId, name))
+          _ ← fromFuture(userExt.changeName(userId, 0L, name))
         } yield Void).value
       }
   }
@@ -47,7 +47,7 @@ private[bot] final class UsersBotService(system: ActorSystem) extends BotService
     (botUserId: BotUserId, botAuthId: BotAuthId, botAuthSid: BotAuthSid) ⇒
       ifIsAdmin(botUserId) {
         (for {
-          _ ← fromFuture(userExt.changeNickname(userId, nickname))
+          _ ← fromFuture(userExt.changeNickname(userId, 0L, nickname))
         } yield Void).value recover {
           case UserErrors.InvalidNickname ⇒ Xor.left(BotError(400, "INVALID_USERNAME"))
           case UserErrors.NicknameTaken   ⇒ Xor.left(BotError(400, "USERNAME_TAKEN"))
@@ -59,7 +59,7 @@ private[bot] final class UsersBotService(system: ActorSystem) extends BotService
     (botUserId: BotUserId, botAuthId: BotAuthId, botAuthSid: BotAuthSid) ⇒
       ifIsAdmin(botUserId) {
         (for {
-          _ ← fromFuture(userExt.changeAbout(userId, about))
+          _ ← fromFuture(userExt.changeAbout(userId, 0L, about))
         } yield Void).value
       }
   }
@@ -69,7 +69,7 @@ private[bot] final class UsersBotService(system: ActorSystem) extends BotService
       ifIsAdmin(botUserId) {
         (for {
           avatar ← fromFutureXor(_ ⇒ BotError(400, "LOCATION_INVALID"))(db.run(scaleAvatar(fileLocation.fileId)) map Xor.fromEither)
-          _ ← fromFuture(userExt.updateAvatar(userId, Some(avatar)))
+          _ ← fromFuture(userExt.updateAvatar(userId, 0L, Some(avatar)))
         } yield Void).value
       }
   }
