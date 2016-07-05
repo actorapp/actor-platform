@@ -247,7 +247,6 @@
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize" />
 
-
         <!-- Actions -->
         <activity
             android:name=".controllers.settings.EditNameActivity"

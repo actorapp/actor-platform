@@ -811,6 +811,9 @@ public class ChatActivity extends ActorEditTextActivity {
             checkEmptyBot();
         }
 
+        if (isShareVisible) {
+            messenger().getGalleryScannerActor().send(new GalleryScannerActor.Show());
+        }
 
     }
 
@@ -949,7 +952,7 @@ public class ChatActivity extends ActorEditTextActivity {
         AudioHolder.stopPlaying();
         // Saving draft
         messenger().saveDraft(peer, messageEditText.getText().toString());
-
+        messenger().getGalleryScannerActor().send(new GalleryScannerActor.Hide());
     }
 
     // Message send
