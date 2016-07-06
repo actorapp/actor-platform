@@ -218,8 +218,7 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
     }
 
     @Override
-    public ArrayList<ShareMenuField> addCustomShareMenuFields() {
-        return null;
+    public void addCustomShareMenuFields(ArrayList<ShareMenuField> menuFields) {
     }
 
     //

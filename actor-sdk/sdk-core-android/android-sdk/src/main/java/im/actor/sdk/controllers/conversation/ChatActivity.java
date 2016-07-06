@@ -434,10 +434,7 @@ public class ChatActivity extends ActorEditTextActivity {
         menuFields.add(new ShareMenuField(getString(R.string.share_menu_video), R.id.share_video, R.drawable.share_video_selector, shareMenuOCL));
         menuFields.add(new ShareMenuField(getString(R.string.share_menu_contact), R.id.share_contact, R.drawable.share_contact_selector, shareMenuOCL));
 
-        ArrayList<ShareMenuField> customMenuFields = ActorSDK.sharedActor().getDelegate().addCustomShareMenuFields();
-        if (customMenuFields != null) {
-            menuFields.addAll(customMenuFields);
-        }
+        ActorSDK.sharedActor().getDelegate().addCustomShareMenuFields(menuFields);
 
         if (menuFields.size() % 2 != 0) {
             menuFields.add(new ShareMenuField(R.drawable.attach_hide2,

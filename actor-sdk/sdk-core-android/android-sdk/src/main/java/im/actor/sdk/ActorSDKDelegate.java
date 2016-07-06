@@ -193,5 +193,5 @@ public interface ActorSDKDelegate {
      */
     void onShareMenuCreated(TableLayout shareMenu);
 
-    ArrayList<ShareMenuField> addCustomShareMenuFields();
+    void addCustomShareMenuFields(ArrayList<ShareMenuField> menuFields);
 }

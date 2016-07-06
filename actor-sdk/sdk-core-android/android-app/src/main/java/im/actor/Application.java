@@ -1,12 +1,10 @@
 package im.actor;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -17,17 +15,12 @@ import im.actor.sdk.ActorSDKApplication;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.BaseActorSDKDelegate;
 import im.actor.sdk.controllers.conversation.ShareMenuField;
-import im.actor.sdk.controllers.group.GroupInfoFragment;
-import im.actor.sdk.controllers.profile.ProfileFragment;
 import im.actor.sdk.controllers.settings.ActorSettingsCategories;
 import im.actor.sdk.controllers.settings.ActorSettingsCategory;
 import im.actor.sdk.controllers.settings.ActorSettingsField;
-import im.actor.sdk.controllers.settings.BaseActorProfileActivity;
 import im.actor.sdk.controllers.settings.BaseActorSettingsActivity;
 import im.actor.sdk.controllers.settings.BaseActorSettingsFragment;
-import im.actor.sdk.controllers.settings.BaseGroupInfoActivity;
 import im.actor.sdk.intents.ActorIntentFragmentActivity;
-import im.actor.sdk.util.Screen;
 
 public class Application extends ActorSDKApplication {
 
@@ -82,8 +75,7 @@ public class Application extends ActorSDKApplication {
 
 //
 @Override
-public ArrayList<ShareMenuField> addCustomShareMenuFields() {
-    ArrayList<ShareMenuField> shareMenuFields = new ArrayList<>();
+public void addCustomShareMenuFields(ArrayList<ShareMenuField> shareMenuFields) {
     shareMenuFields.add(new ShareMenuField(R.drawable.conv_location_icon, ActorSDK.sharedActor().style.getAccentColor(), "lol", new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -108,7 +100,6 @@ public ArrayList<ShareMenuField> addCustomShareMenuFields() {
             Toast.makeText(v.getContext(), "Hey", Toast.LENGTH_LONG).show();
         }
     }));
-    return shareMenuFields;
 }
 
 //        @Override
