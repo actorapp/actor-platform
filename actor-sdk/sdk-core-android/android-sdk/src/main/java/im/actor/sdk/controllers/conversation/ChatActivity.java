@@ -79,6 +79,7 @@ import im.actor.runtime.actors.Props;
 import im.actor.runtime.actors.messages.PoisonPill;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.sdk.ActorSDK;
+import im.actor.sdk.ActorSDKLauncher;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
@@ -669,7 +670,7 @@ public class ChatActivity extends ActorEditTextActivity {
             @Override
             public void onClick(View v) {
                 if (peer.getPeerType() == PeerType.PRIVATE) {
-                    ActorSDK.sharedActor().startProfileActivity(ChatActivity.this, peer.getPeerId());
+                    ActorSDKLauncher.startProfileActivity(ChatActivity.this, peer.getPeerId());
                 } else if (peer.getPeerType() == PeerType.GROUP) {
                     ActorSDK.sharedActor().startGroupInfoActivity(ChatActivity.this, peer.getPeerId());
                 } else {
@@ -1383,7 +1384,7 @@ public class ChatActivity extends ActorEditTextActivity {
                     .setCanceledOnTouchOutside(true);
 
         } else if (i == R.id.contact) {
-            ActorSDK.sharedActor().startProfileActivity(ChatActivity.this, peer.getPeerId());
+            ActorSDKLauncher.startProfileActivity(ChatActivity.this, peer.getPeerId());
 
         } else if (i == R.id.groupInfo) {
             ActorSDK.sharedActor().startGroupInfoActivity(ChatActivity.this, peer.getPeerId());

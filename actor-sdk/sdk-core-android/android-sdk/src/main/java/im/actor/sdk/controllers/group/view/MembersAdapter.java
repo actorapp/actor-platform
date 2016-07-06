@@ -10,8 +10,7 @@ import java.util.Collection;
 
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
-import im.actor.sdk.controllers.fragment.ActorBinder;
-import im.actor.sdk.controllers.group.GroupInfoFragment;
+import im.actor.sdk.controllers.ActorBinder;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.avatar.AvatarView;
 import im.actor.sdk.view.adapters.HolderAdapter;

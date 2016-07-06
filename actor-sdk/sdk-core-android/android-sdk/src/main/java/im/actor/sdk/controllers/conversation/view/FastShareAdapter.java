@@ -26,8 +26,7 @@ import im.actor.runtime.mvvm.Value;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.ValueModel;
 import im.actor.sdk.R;
-import im.actor.sdk.controllers.fragment.ActorBinder;
-import im.actor.sdk.util.Screen;
+import im.actor.sdk.controllers.ActorBinder;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 

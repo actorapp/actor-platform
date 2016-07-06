@@ -70,6 +70,12 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
         return null;
     }
 
+    @Nullable
+    @Override
+    public Fragment fragmentForProfile(int uid) {
+        return null;
+    }
+
     /**
      * Return non-null to open specific setting Activity. If null, SDK will launch
      * standard Settings activity
@@ -78,18 +84,6 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
      */
     @Override
     public ActorIntentFragmentActivity getSettingsIntent() {
-        return null;
-    }
-
-    /**
-     * Return non-null to open specific user profile Activity. If null, SDK will launch
-     * standard profile activity
-     *
-     * @param uid user id
-     * @return ActorIntent for profile activity
-     */
-    @Override
-    public BaseActorProfileActivity getProfileIntent(int uid) {
         return null;
     }
 
@@ -139,17 +133,6 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
     @Override
     public ActorIntent getChatIntent(Peer peer, boolean compose) {
         return null;
-    }
-
-    /**
-     * Override for handling incoming call
-     *
-     * @param callId call id
-     * @param uid    caller user id
-     */
-    @Override
-    public void onIncomingCall(long callId, int uid) {
-
     }
 
     /**

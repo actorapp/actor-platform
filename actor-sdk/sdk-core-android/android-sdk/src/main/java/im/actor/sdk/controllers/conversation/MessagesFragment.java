@@ -46,14 +46,14 @@ import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.Log;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.sdk.ActorSDK;
+import im.actor.sdk.ActorSDKLauncher;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
-import im.actor.sdk.controllers.root.RootActivity;
 import im.actor.sdk.controllers.share.ShareActivity;
 import im.actor.sdk.controllers.shortcuts.ShortcutActivity;
 import im.actor.sdk.controllers.conversation.messages.preprocessor.ChatListProcessor;
 import im.actor.sdk.controllers.conversation.messages.MessageHolder;
-import im.actor.sdk.controllers.fragment.DisplayListFragment;
+import im.actor.sdk.controllers.DisplayListFragment;
 import im.actor.sdk.controllers.settings.BaseActorSettingsFragment;
 import im.actor.sdk.util.Screen;
 import im.actor.runtime.android.view.BindedListAdapter;
@@ -306,7 +306,7 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
     }
 
     public void onAvatarClick(int uid) {
-        ActorSDK.sharedActor().startProfileActivity(getActivity(), uid);
+        ActorSDKLauncher.startProfileActivity(getActivity(), uid);
     }
 
     public void onAvatarLongClick(int uid) {

@@ -55,19 +55,20 @@ public interface ActorSDKDelegate {
     Fragment fragmentForRoot();
 
     /**
+     * If not null returned, overrides users profile fragment
+     *
+     * @param uid user id
+     * @return Actor Intent
+     */
+    @Nullable
+    Fragment fragmentForProfile(int uid);
+
+    /**
      * If not null returned, overrides settings activity intent
      *
      * @return Actor Intent
      */
     ActorIntentFragmentActivity getSettingsIntent();
-
-    /**
-     * If not null returned, overrides users profile activity intent
-     *
-     * @param uid user id
-     * @return Actor Intent
-     */
-    BaseActorProfileActivity getProfileIntent(int uid);
 
     /**
      * If not null returned, overrides group info activity intent
@@ -98,14 +99,6 @@ public interface ActorSDKDelegate {
      * @return Actor Intent
      */
     ActorIntent getChatIntent(Peer peer, boolean compose);
-
-    /**
-     * Override for handling incoming call
-     *
-     * @param callId call id
-     * @param uid    caller user id
-     */
-    void onIncomingCall(long callId, int uid);
 
     /**
      * Override for hacking default messages view holders

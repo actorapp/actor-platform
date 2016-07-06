@@ -11,7 +11,7 @@ import android.widget.TextView;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.contacts.AddContactActivity;
-import im.actor.sdk.controllers.fragment.BaseFragment;
+import im.actor.sdk.controllers.BaseFragment;
 import im.actor.sdk.util.Fonts;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;

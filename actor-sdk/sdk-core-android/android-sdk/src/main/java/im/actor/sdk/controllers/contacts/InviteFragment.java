@@ -20,7 +20,7 @@ import java.util.List;
 import im.actor.core.entity.PhoneBookContact;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
-import im.actor.sdk.controllers.fragment.BaseFragment;
+import im.actor.sdk.controllers.BaseFragment;
 import im.actor.sdk.core.AndroidPhoneBook;
 import im.actor.sdk.view.adapters.OnItemClickedListener;
 import im.actor.sdk.view.adapters.RecyclerListView;

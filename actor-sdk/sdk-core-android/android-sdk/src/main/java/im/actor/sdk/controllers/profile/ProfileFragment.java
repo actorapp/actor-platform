@@ -3,7 +3,6 @@ package im.actor.sdk.controllers.profile;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -17,10 +16,11 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -39,7 +39,7 @@ import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.fragment.preview.ViewAvatarActivity;
-import im.actor.sdk.controllers.fragment.BaseFragment;
+import im.actor.sdk.controllers.BaseFragment;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.avatar.AvatarView;
 import im.actor.core.entity.Peer;
@@ -62,11 +62,26 @@ public class ProfileFragment extends BaseFragment {
     }
 
     private AvatarView avatarView;
+    private int uid;
+
+    public ProfileFragment() {
+        setRootFragment(true);
+        setHomeAsUp(true);
+        setTitle(null);
+    }
+
+    @Override
+    public void onConfigureActionBar(ActionBar actionBar) {
+        super.onConfigureActionBar(actionBar);
+        actionBar.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+    }
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        final UserVM user = users().get(getArguments().getInt(EXTRA_UID));
+        uid = getArguments().getInt(EXTRA_UID);
+
+        final UserVM user = users().get(uid);
         ArrayList<UserPhone> phones = user.getPhones().get();
         ArrayList<UserEmail> emails = user.getEmails().get();
         String about = user.getAbout().get();
@@ -443,6 +458,32 @@ public class ProfileFragment extends BaseFragment {
         return res;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        messenger().onProfileOpen(uid);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        inflater.inflate(R.menu.profile_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            getActivity().finish();
+            return true;
+        } else if (item.getItemId() == R.id.edit) {
+            startActivity(Intents.editUserName(uid, getActivity()));
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
     private void updateBar(int offset) {
         ActionBar bar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         if (bar != null) {
@@ -459,6 +500,12 @@ public class ProfileFragment extends BaseFragment {
                 )));
             }
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        messenger().onProfileClosed(uid);
     }
 
     @Override

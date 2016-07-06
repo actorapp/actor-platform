@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
-import im.actor.sdk.controllers.fragment.BaseFragment;
+import im.actor.sdk.controllers.BaseFragment;
 
 public class ComposeFabFragment extends BaseFragment {
 

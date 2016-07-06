@@ -20,7 +20,7 @@ import im.actor.runtime.promise.Promise;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.R;
-import im.actor.sdk.controllers.fragment.ActorBinder;
+import im.actor.sdk.controllers.ActorBinder;
 import im.actor.sdk.view.avatar.AvatarView;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.ValueDoubleChangedListener;

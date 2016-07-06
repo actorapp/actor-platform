@@ -1,9 +1,7 @@
-package im.actor.sdk.controllers.fragment;
+package im.actor.sdk.controllers;
 
 import android.app.Activity;
-import android.support.v7.widget.ChatLinearLayoutManager;
 import android.support.v7.widget.CustomItemAnimator;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

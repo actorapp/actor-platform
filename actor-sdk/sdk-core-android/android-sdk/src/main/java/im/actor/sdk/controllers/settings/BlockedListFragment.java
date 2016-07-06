@@ -17,7 +17,7 @@ import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.function.Consumer;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
-import im.actor.sdk.controllers.fragment.BaseFragment;
+import im.actor.sdk.controllers.BaseFragment;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 

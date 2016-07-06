@@ -10,6 +10,7 @@ import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.sdk.ActorSDK;
+import im.actor.sdk.ActorSDKLauncher;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 
@@ -37,7 +38,7 @@ public class DialogsDefaultFragment extends BaseDialogFragment {
                     }, (d, which) -> {
                         if (which == 0) {
                             // View profile
-                            ActorSDK.sharedActor().startProfileActivity(getActivity(), dialog.getPeer().getPeerId());
+                            ActorSDKLauncher.startProfileActivity(getActivity(), dialog.getPeer().getPeerId());
                         } else if (which == 1) {
                             // Rename user
                             startActivity(Intents.editUserName(dialog.getPeer().getPeerId(), getActivity()));

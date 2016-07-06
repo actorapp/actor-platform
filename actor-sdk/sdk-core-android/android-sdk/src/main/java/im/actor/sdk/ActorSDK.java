@@ -856,19 +856,7 @@ public class ActorSDK {
         }
     }
 
-    /**
-     * Method is used internally for starting default activity or activity added in delegate
-     *
-     * @param context current context
-     * @param uid     user id
-     */
-    public void startProfileActivity(Context context, int uid) {
-        Bundle b = new Bundle();
-        b.putInt(Intents.EXTRA_UID, uid);
-        if (!startDelegateActivity(context, delegate.getProfileIntent(uid), b)) {
-            startActivity(context, b, ProfileActivity.class);
-        }
-    }
+
 
     /**
      * Method is used internally for starting default activity or activity added in delegate

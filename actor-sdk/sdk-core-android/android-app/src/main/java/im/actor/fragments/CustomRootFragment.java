@@ -6,20 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.roughike.bottombar.BottomBar;
-import com.roughike.bottombar.BottomBarTab;
-import com.roughike.bottombar.OnTabClickListener;
-
-import im.actor.develop.R;
-import im.actor.sdk.controllers.contacts.ContactsFragment;
 import im.actor.sdk.controllers.dialogs.DialogsDefaultFragment;
-import im.actor.sdk.controllers.fragment.BaseFragment;
+import im.actor.sdk.controllers.BaseFragment;
 import im.actor.sdk.controllers.placeholder.GlobalPlaceholderFragment;
 import im.actor.sdk.controllers.search.GlobalSearchDefaultFragment;
 import im.actor.sdk.controllers.search.GlobalSearchStateDelegate;
-import im.actor.sdk.controllers.settings.ActorSettingsFragment;
-
-import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
 public class CustomRootFragment extends BaseFragment implements GlobalSearchStateDelegate {
 

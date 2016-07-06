@@ -40,7 +40,7 @@ import im.actor.sdk.controllers.conversation.messages.ServiceHolder;
 import im.actor.sdk.controllers.conversation.messages.StickerHolder;
 import im.actor.sdk.controllers.conversation.messages.TextHolder;
 import im.actor.sdk.controllers.conversation.messages.UnsupportedHolder;
-import im.actor.sdk.controllers.fragment.ActorBinder;
+import im.actor.sdk.controllers.ActorBinder;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 

@@ -35,12 +35,13 @@ import im.actor.core.viewmodel.UserPhone;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.sdk.ActorSDK;
+import im.actor.sdk.ActorSDKLauncher;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.activity.BaseActivity;
-import im.actor.sdk.controllers.fragment.ActorBinder;
-import im.actor.sdk.controllers.fragment.BaseFragment;
+import im.actor.sdk.controllers.ActorBinder;
+import im.actor.sdk.controllers.BaseFragment;
 import im.actor.sdk.controllers.group.view.MembersAdapter;
 import im.actor.sdk.controllers.fragment.media.DocumentsActivity;
 import im.actor.sdk.controllers.fragment.preview.ViewAvatarActivity;
@@ -299,7 +300,7 @@ public class GroupInfoFragment extends BaseFragment {
                                                     .setCanceledOnTouchOutside(true);
                                         }
                                     } else if (which == 2) {
-                                        ActorSDK.sharedActor().startProfileActivity(getActivity(), userVM.getId());
+                                        ActorSDKLauncher.startProfileActivity(getActivity(), userVM.getId());
                                     } else if (which == 3) {
                                         new AlertDialog.Builder(getActivity())
                                                 .setMessage(getString(R.string.alert_group_remove_text).replace("{0}", userVM.getName().get()))

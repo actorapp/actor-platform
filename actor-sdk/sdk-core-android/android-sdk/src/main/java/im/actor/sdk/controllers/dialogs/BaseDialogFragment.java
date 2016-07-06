@@ -3,35 +3,22 @@ package im.actor.sdk.controllers.dialogs;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 import im.actor.core.entity.Dialog;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
-import im.actor.core.viewmodel.CommandCallback;
-import im.actor.runtime.generic.mvvm.ListProcessor;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
-import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.dialogs.view.DialogHolder;
 import im.actor.sdk.controllers.dialogs.view.DialogsAdapter;
-import im.actor.sdk.controllers.fragment.DisplayListFragment;
+import im.actor.sdk.controllers.DisplayListFragment;
 import im.actor.sdk.util.Screen;
-import im.actor.sdk.util.Fonts;
 import im.actor.sdk.view.adapters.OnItemClickedListener;
 import im.actor.runtime.android.view.BindedListAdapter;
-import im.actor.runtime.mvvm.ValueChangedListener;
-import im.actor.runtime.mvvm.Value;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 import static im.actor.sdk.util.ActorSDKMessenger.users;

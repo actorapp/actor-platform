@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.fragment;
+package im.actor.sdk.controllers;
 
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;

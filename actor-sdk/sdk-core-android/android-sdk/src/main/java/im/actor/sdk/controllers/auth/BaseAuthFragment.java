@@ -24,8 +24,7 @@ import im.actor.core.entity.Sex;
 import im.actor.runtime.promise.Promise;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
-import im.actor.sdk.controllers.activity.BaseFragmentActivity;
-import im.actor.sdk.controllers.fragment.BaseFragment;
+import im.actor.sdk.controllers.BaseFragment;
 import im.actor.sdk.view.BaseUrlSpan;
 import im.actor.sdk.view.CustomClicableSpan;
 

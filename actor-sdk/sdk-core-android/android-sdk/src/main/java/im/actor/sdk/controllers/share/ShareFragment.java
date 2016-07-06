@@ -18,7 +18,7 @@ import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.dialogs.DialogsFragment;
 import im.actor.sdk.controllers.dialogs.DialogsFragmentDelegate;
-import im.actor.sdk.controllers.fragment.BaseFragment;
+import im.actor.sdk.controllers.BaseFragment;
 import im.actor.sdk.controllers.placeholder.GlobalPlaceholderFragment;
 import im.actor.sdk.controllers.search.GlobalSearchDelegate;
 import im.actor.sdk.controllers.search.GlobalSearchFragment;

@@ -6,6 +6,7 @@ import android.text.TextPaint;
 import android.view.View;
 
 import im.actor.sdk.ActorSDK;
+import im.actor.sdk.ActorSDKLauncher;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.runtime.android.AndroidContext;
@@ -59,7 +60,7 @@ public class MentionSpan extends BaseUrlSpan {
         if (hideUrlStyle) {
             //Do nothing
         } else {
-            ActorSDK.sharedActor().startProfileActivity(widget.getContext(), userId);
+            ActorSDKLauncher.startProfileActivity(widget.getContext(), userId);
         }
     }
 }

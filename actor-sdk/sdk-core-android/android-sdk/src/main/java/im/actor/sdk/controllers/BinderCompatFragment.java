@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.fragment;
+package im.actor.sdk.controllers;
 
 import android.view.View;
 import android.widget.TextView;

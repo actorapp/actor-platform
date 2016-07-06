@@ -15,7 +15,7 @@ import im.actor.sdk.R;
 import im.actor.sdk.controllers.compose.ComposeFabFragment;
 import im.actor.sdk.controllers.contacts.ContactsActivity;
 import im.actor.sdk.controllers.dialogs.DialogsDefaultFragment;
-import im.actor.sdk.controllers.fragment.BaseFragment;
+import im.actor.sdk.controllers.BaseFragment;
 import im.actor.sdk.controllers.fragment.help.HelpActivity;
 import im.actor.sdk.controllers.placeholder.GlobalPlaceholderFragment;
 import im.actor.sdk.controllers.search.GlobalSearchDefaultFragment;
