@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.fragment.main;
+package im.actor.sdk.controllers.search;
 
 import android.content.Context;
 import android.view.ViewGroup;
