@@ -51,7 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <im.actor.sdk.controllers.pickers.map.view.MediumTextView
+            <TextView
                 android:textSize="@dimen/picker_map_controllers_title"
                 android:text="@string/picker_map_pick_my"
                 android:layout_width="wrap_content"
