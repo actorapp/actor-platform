@@ -27,6 +27,7 @@ import im.actor.runtime.generic.mvvm.DisplayList;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.BaseFragment;
+import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.adapters.HeaderViewRecyclerAdapter;
 import im.actor.sdk.view.adapters.OnItemClickedListener;

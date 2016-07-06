@@ -357,7 +357,9 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
                     isLoadMoreForwardRequested = false;
                 } else {
                     window.onForwardSliceLoaded(bottomSortKey);
-                    if (linearLayoutCallback != null) linearLayoutCallback.setStackFromEnd(false);
+                    if (linearLayoutCallback != null) {
+                        linearLayoutCallback.setStackFromEnd(false);
+                    }
                     editList(Modifications.addLoadMore(items), new Runnable() {
                         @Override
                         public void run() {

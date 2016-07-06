@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.conversation.messages;
+package im.actor.sdk.controllers.conversation.messages.content;
 
 import android.content.Context;
 import android.content.Intent;
@@ -35,8 +35,8 @@ import im.actor.core.viewmodel.UploadFileVM;
 import im.actor.sdk.ActorSDK;
 
 import im.actor.sdk.R;
-import im.actor.sdk.controllers.conversation.MessagesAdapter;
-import im.actor.sdk.controllers.conversation.messages.preprocessor.PreprocessedData;
+import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
+import im.actor.sdk.controllers.conversation.messages.content.preprocessor.PreprocessedData;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.TintImageView;
 

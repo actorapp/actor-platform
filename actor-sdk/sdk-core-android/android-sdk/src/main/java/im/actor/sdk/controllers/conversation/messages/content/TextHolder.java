@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.conversation.messages;
+package im.actor.sdk.controllers.conversation.messages.content;
 
 import android.text.Spannable;
 import android.text.method.LinkMovementMethod;
@@ -11,9 +11,9 @@ import android.widget.TextView;
 import im.actor.core.entity.Message;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
-import im.actor.sdk.controllers.conversation.MessagesAdapter;
-import im.actor.sdk.controllers.conversation.messages.preprocessor.PreprocessedData;
-import im.actor.sdk.controllers.conversation.messages.preprocessor.PreprocessedTextData;
+import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
+import im.actor.sdk.controllers.conversation.messages.content.preprocessor.PreprocessedData;
+import im.actor.sdk.controllers.conversation.messages.content.preprocessor.PreprocessedTextData;
 import im.actor.sdk.util.Fonts;
 import im.actor.sdk.view.TintImageView;
 

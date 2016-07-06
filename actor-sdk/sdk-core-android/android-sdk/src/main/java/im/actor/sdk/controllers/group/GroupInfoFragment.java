@@ -43,7 +43,6 @@ import im.actor.sdk.controllers.activity.BaseActivity;
 import im.actor.sdk.controllers.ActorBinder;
 import im.actor.sdk.controllers.BaseFragment;
 import im.actor.sdk.controllers.group.view.MembersAdapter;
-import im.actor.sdk.controllers.fragment.media.DocumentsActivity;
 import im.actor.sdk.controllers.fragment.preview.ViewAvatarActivity;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.TintImageView;
@@ -204,17 +203,6 @@ public class GroupInfoFragment extends BaseFragment {
             }
         });
 
-
-        header.findViewById(R.id.docsContainer).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(DocumentsActivity.build(Peer.group(chatId), getActivity()));
-            }
-        });
-
-
-        header.findViewById(R.id.mediaContainer).setVisibility(View.GONE);
-
         //Members
         TextView memberCount = (TextView) header.findViewById(R.id.membersCount);
         memberCount.setText(groupInfo.getMembersCount() + "");
@@ -366,18 +354,18 @@ public class GroupInfoFragment extends BaseFragment {
         notificationSettingIcon.setTint(style.getSettingsIconColor());
         ((TextView) res.findViewById(R.id.settings_notifications_title)).setTextColor(style.getTextPrimaryColor());
 
-        TintImageView shareMediaIcon = (TintImageView) res.findViewById(R.id.share_media_icon);
-        shareMediaIcon.setTint(style.getSettingsIconColor());
-        ((TextView) res.findViewById(R.id.settings_media_title)).setTextColor(style.getTextPrimaryColor());
-        ((TextView) res.findViewById(R.id.mediaCount)).setTextColor(style.getTextHintColor());
+//        TintImageView shareMediaIcon = (TintImageView) res.findViewById(R.id.share_media_icon);
+//        shareMediaIcon.setTint(style.getSettingsIconColor());
+//        ((TextView) res.findViewById(R.id.settings_media_title)).setTextColor(style.getTextPrimaryColor());
+//        ((TextView) res.findViewById(R.id.mediaCount)).setTextColor(style.getTextHintColor());
+//
+//        TintImageView shareDocsIcon = (TintImageView) res.findViewById(R.id.share_docs_icon);
+//        shareDocsIcon.setTint(style.getSettingsIconColor());
+//        ((TextView) res.findViewById(R.id.share_docs_title)).setTextColor(style.getTextPrimaryColor());
+//        ((TextView) res.findViewById(R.id.docCount)).setTextColor(style.getTextHintColor());
 
-        TintImageView shareDocsIcon = (TintImageView) res.findViewById(R.id.share_docs_icon);
-        shareDocsIcon.setTint(style.getSettingsIconColor());
-        ((TextView) res.findViewById(R.id.share_docs_title)).setTextColor(style.getTextPrimaryColor());
-        ((TextView) res.findViewById(R.id.docCount)).setTextColor(style.getTextHintColor());
-
-        TextView sharedHeaderText = (TextView) res.findViewById(R.id.shared_header_text);
-        sharedHeaderText.setTextColor(style.getSettingsCategoryTextColor());
+//        TextView sharedHeaderText = (TextView) res.findViewById(R.id.shared_header_text);
+//        sharedHeaderText.setTextColor(style.getSettingsCategoryTextColor());
 
         TextView membersHeaderText = (TextView) res.findViewById(R.id.membersTitle);
         membersHeaderText.setTextColor(style.getSettingsCategoryTextColor());

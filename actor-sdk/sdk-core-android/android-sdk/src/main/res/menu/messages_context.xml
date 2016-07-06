@@ -6,6 +6,7 @@
 
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+
     <item
         android:id="@+id/forward"
         android:icon="@drawable/ic_forward_white_36dp"
@@ -27,17 +28,8 @@
         android:title="@string/messages_action_copy" />
 
     <item
-        android:icon="@drawable/ic_favorite_white_36dp"
         android:id="@+id/like"
+        android:icon="@drawable/ic_favorite_white_36dp"
         android:title="@string/messages_action_like" />
-
-    <item
-        android:id="@+id/shortcut"
-        android:title="Create shortcut" />
-
-    <!--<item-->
-    <!--android:id="@+id/forward"-->
-    <!--android:icon="@drawable/ic_forward_white_36dp"-->
-    <!--android:title="Forward" />-->
 
 </menu>

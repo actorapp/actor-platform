@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.conversation.messages;
+package im.actor.sdk.controllers.conversation.messages.content;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -21,9 +21,9 @@ import im.actor.core.entity.Message;
 import im.actor.core.entity.content.ContactContent;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
-import im.actor.sdk.controllers.conversation.MessagesAdapter;
-import im.actor.sdk.controllers.conversation.messages.preprocessor.PreprocessedData;
-import im.actor.sdk.controllers.conversation.messages.preprocessor.PreprocessedTextData;
+import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
+import im.actor.sdk.controllers.conversation.messages.content.preprocessor.PreprocessedData;
+import im.actor.sdk.controllers.conversation.messages.content.preprocessor.PreprocessedTextData;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.TintImageView;
 import im.actor.sdk.view.avatar.AvatarPlaceholderDrawable;

@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.conversation;
+package im.actor.sdk.controllers.conversation.messages;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -29,17 +29,17 @@ import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.runtime.android.view.BindedListAdapter;
-import im.actor.sdk.controllers.conversation.messages.AudioHolder;
-import im.actor.sdk.controllers.conversation.messages.ContactHolder;
-import im.actor.sdk.controllers.conversation.messages.DocHolder;
-import im.actor.sdk.controllers.conversation.messages.LocationHolder;
-import im.actor.sdk.controllers.conversation.messages.MessageHolder;
-import im.actor.sdk.controllers.conversation.messages.PhotoHolder;
-import im.actor.sdk.controllers.conversation.messages.preprocessor.PreprocessedList;
-import im.actor.sdk.controllers.conversation.messages.ServiceHolder;
-import im.actor.sdk.controllers.conversation.messages.StickerHolder;
-import im.actor.sdk.controllers.conversation.messages.TextHolder;
-import im.actor.sdk.controllers.conversation.messages.UnsupportedHolder;
+import im.actor.sdk.controllers.conversation.messages.content.AudioHolder;
+import im.actor.sdk.controllers.conversation.messages.content.ContactHolder;
+import im.actor.sdk.controllers.conversation.messages.content.DocHolder;
+import im.actor.sdk.controllers.conversation.messages.content.LocationHolder;
+import im.actor.sdk.controllers.conversation.messages.content.MessageHolder;
+import im.actor.sdk.controllers.conversation.messages.content.PhotoHolder;
+import im.actor.sdk.controllers.conversation.messages.content.preprocessor.PreprocessedList;
+import im.actor.sdk.controllers.conversation.messages.content.ServiceHolder;
+import im.actor.sdk.controllers.conversation.messages.content.StickerHolder;
+import im.actor.sdk.controllers.conversation.messages.content.TextHolder;
+import im.actor.sdk.controllers.conversation.messages.content.UnsupportedHolder;
 import im.actor.sdk.controllers.ActorBinder;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;

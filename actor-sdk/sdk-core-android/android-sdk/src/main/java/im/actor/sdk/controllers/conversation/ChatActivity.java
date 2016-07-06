@@ -10,9 +10,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
@@ -29,8 +27,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.view.ActionMode;
-import android.support.v7.view.menu.ActionMenuItemView;
-import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -43,17 +39,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -85,7 +77,8 @@ import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.conversation.botcommands.CommandsAdapter;
 import im.actor.sdk.controllers.conversation.mentions.MentionsAdapter;
-import im.actor.sdk.controllers.conversation.messages.AudioHolder;
+import im.actor.sdk.controllers.conversation.messages.MessagesDefaultFragment;
+import im.actor.sdk.controllers.conversation.messages.content.AudioHolder;
 import im.actor.sdk.controllers.conversation.view.FastShareAdapter;
 import im.actor.sdk.controllers.settings.BaseActorChatActivity;
 import im.actor.sdk.core.audio.VoiceCaptureActor;
@@ -93,7 +86,6 @@ import im.actor.sdk.intents.ActorIntent;
 import im.actor.sdk.util.Randoms;
 import im.actor.sdk.util.Screen;
 import im.actor.core.utils.GalleryScannerActor;
-import im.actor.sdk.view.SelectorFactory;
 import im.actor.sdk.view.ShareMenuButtonFactory;
 import im.actor.sdk.view.TintDrawable;
 import im.actor.sdk.view.adapters.HolderAdapter;
@@ -246,10 +238,9 @@ public class ChatActivity extends ActorEditTextActivity {
     private View.OnClickListener shareSendOcl;
     private View.OnClickListener defaultSendOcl;
 
-    public static Intent build(Peer peer, boolean compose, Context context) {
+    public static Intent build(Peer peer, Context context) {
         final Intent intent = new Intent(context, ChatActivity.class);
         intent.putExtra(EXTRA_CHAT_PEER, peer.getUnuqueId());
-        intent.putExtra(EXTRA_CHAT_COMPOSE, compose);
         return intent;
     }
 
@@ -259,10 +250,7 @@ public class ChatActivity extends ActorEditTextActivity {
         intent = getIntent();
         peer = Peer.fromUniqueId(intent.getExtras().getLong(EXTRA_CHAT_PEER));
         checkIsBot();
-        if (saveInstance == null) {
-            // Set compose state for auto-showing menu
-            isCompose = intent.getExtras().getBoolean(EXTRA_CHAT_COMPOSE, false);
-        } else {
+        if (saveInstance != null) {
             // Activity restore
             pending_fileName = saveInstance.getString(STATE_FILE_NAME, null);
         }
@@ -612,7 +600,6 @@ public class ChatActivity extends ActorEditTextActivity {
         peer = Peer.fromUniqueId(intent.getExtras().getLong(EXTRA_CHAT_PEER));
         setFragment(null);
 
-
         onPerformBind();
         this.intent = intent;
         handleIntent();
@@ -621,16 +608,15 @@ public class ChatActivity extends ActorEditTextActivity {
 
     @Override
     protected Fragment onCreateFragment() {
-        MessagesFragment fragment;
         if (ActorSDK.sharedActor().getDelegate().getChatIntent(peer, false) != null) {
             ActorIntent chatIntent = ActorSDK.sharedActor().getDelegate().getChatIntent(peer, false);
             if (chatIntent instanceof BaseActorChatActivity) {
                 return ((BaseActorChatActivity) chatIntent).getChatFragment(peer);
             } else {
-                return MessagesFragment.create(peer);
+                return MessagesDefaultFragment.create(peer);
             }
         } else {
-            return MessagesFragment.create(peer);
+            return MessagesDefaultFragment.create(peer);
         }
     }
 

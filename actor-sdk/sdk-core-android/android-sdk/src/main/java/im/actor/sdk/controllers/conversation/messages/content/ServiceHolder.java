@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.conversation.messages;
+package im.actor.sdk.controllers.conversation.messages.content;
 
 import android.view.View;
 import android.widget.TextView;
@@ -7,8 +7,8 @@ import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.content.ServiceContent;
-import im.actor.sdk.controllers.conversation.MessagesAdapter;
-import im.actor.sdk.controllers.conversation.messages.preprocessor.PreprocessedData;
+import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
+import im.actor.sdk.controllers.conversation.messages.content.preprocessor.PreprocessedData;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 

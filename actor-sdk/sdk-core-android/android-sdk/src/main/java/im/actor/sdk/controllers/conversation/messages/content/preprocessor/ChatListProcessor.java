@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.conversation.messages.preprocessor;
+package im.actor.sdk.controllers.conversation.messages.content.preprocessor;
 
 import android.content.Context;
 import android.graphics.Color;

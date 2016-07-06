@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.conversation.messages;
+package im.actor.sdk.controllers.conversation.messages.content;
 
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -7,12 +7,11 @@ import android.view.View;
 import android.widget.TextView;
 
 import im.actor.sdk.ActorSDK;
-import im.actor.sdk.controllers.conversation.MessagesAdapter;
-import im.actor.sdk.controllers.conversation.messages.preprocessor.PreprocessedData;
+import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
+import im.actor.sdk.controllers.conversation.messages.content.preprocessor.PreprocessedData;
 import im.actor.sdk.controllers.conversation.view.BubbleContainer;
 import im.actor.sdk.controllers.conversation.view.ReactionSpan;
 import im.actor.sdk.util.DateFormatting;
-import im.actor.sdk.util.Strings;
 import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;

@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.conversation.messages;
+package im.actor.sdk.controllers.conversation.messages.content;
 
 import android.content.Context;
 import android.view.View;
@@ -11,11 +11,10 @@ import im.actor.core.entity.Message;
 import im.actor.core.entity.content.StickerContent;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
-import im.actor.sdk.controllers.conversation.MessagesAdapter;
-import im.actor.sdk.controllers.conversation.messages.preprocessor.PreprocessedData;
+import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
+import im.actor.sdk.controllers.conversation.messages.content.preprocessor.PreprocessedData;
 import im.actor.sdk.util.DateFormatting;
 import im.actor.sdk.util.Screen;
-import im.actor.sdk.util.Strings;
 import im.actor.sdk.view.TintImageView;
 import im.actor.sdk.view.emoji.stickers.StickerView;
 
