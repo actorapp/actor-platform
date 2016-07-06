@@ -40,12 +40,14 @@ trait IncrementalSnapshots[S <: ProcessorState[S]] extends ProcessorStateControl
 
   override protected def afterCommit(e: Event): Unit = {
     super.afterCommit(e)
-    _commitsNum += 1
-    if (_commitsNum >= SnapshotCommitsThreshold && _savingSequenceNr != snapshotSequenceNr) {
-      log.debug("Saving snapshot due to threshold hit")
-      _commitsNum = 0
-      _savingSequenceNr = snapshotSequenceNr
-      saveSnapshot(state.snapshot)
+    if(recoveryFinished) {
+      _commitsNum += 1
+      if (_commitsNum >= SnapshotCommitsThreshold && _savingSequenceNr != snapshotSequenceNr) {
+        log.debug("Saving snapshot due to threshold hit")
+        _commitsNum = 0
+        _savingSequenceNr = snapshotSequenceNr
+        saveSnapshot(state.snapshot)
+      }
     }
   }
 }
