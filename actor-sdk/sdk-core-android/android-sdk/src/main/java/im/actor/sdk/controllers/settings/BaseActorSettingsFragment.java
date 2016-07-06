@@ -345,10 +345,6 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
             }
         });
 
-        if (noEmails && noPhones) {
-            contactsContainer.setVisibility(View.GONE);
-            about.findViewById(R.id.divider).setVisibility(View.INVISIBLE);
-        }
 
         view.findViewById(R.id.chatSettings).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -601,7 +597,7 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
             }
         });
 
-        updateActionBar(scrollView.getScrollY());
+//        updateActionBar(scrollView.getScrollY());
 
         return view;
     }
@@ -726,24 +722,6 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
         }
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.my_profile, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.editProfile) {
-            startActivity(Intents.editMyName(getActivity()));
-            return true;
-        } else if (item.getItemId() == R.id.changePhoto) {
-            startActivity(ViewAvatarActivity.viewAvatar(myUid(), getActivity()));
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     @Override
     public View getBeforeNickSettingsView() {

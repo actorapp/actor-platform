@@ -15,10 +15,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.SearchEntity;
+import im.actor.core.viewmodel.CommandCallback;
+import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.runtime.generic.mvvm.DisplayList;
 import im.actor.sdk.ActorSDK;
@@ -44,6 +47,10 @@ public abstract class GlobalSearchBaseFragment extends BaseFragment {
     private SearchAdapter searchAdapter;
     private BindedDisplayList<SearchEntity> searchDisplay;
     private final DisplayList.Listener searchListener = () -> onSearchChanged();
+
+    SearchHolder footerSearchHolder;
+    private String searchQuery;
+    private LinearLayout footer;
 
     public GlobalSearchBaseFragment() {
         setHasOptionsMenu(true);
@@ -137,12 +144,50 @@ public abstract class GlobalSearchBaseFragment extends BaseFragment {
 
             @Override
             public boolean onQueryTextChange(String s) {
+                searchQuery = s.trim();
+
                 if (isSearchVisible) {
                     if (s.trim().length() > 0) {
+                        String activeSearchQuery = searchQuery;
                         searchDisplay.initSearch(s.trim().toLowerCase(), false);
                         searchAdapter.setQuery(s.trim().toLowerCase());
+                        messenger().findUsers(s).start(new CommandCallback<UserVM[]>() {
+                            @Override
+                            public void onResult(UserVM[] res) {
+                                int footerVisability = footer.getVisibility();
+                                if (searchQuery.equals(activeSearchQuery)) {
+                                    boolean showResult = false;
+                                    UserVM u = null;
+                                    if (res.length > 0) {
+                                        u = res[0];
+                                        showResult = true;
+                                        for (int i = 0; i < searchDisplay.getSize(); i++) {
+                                            if (searchDisplay.getItem(i).getPeer().equals(Peer.user(u.getId())))
+                                                showResult = false;
+                                            break;
+                                        }
+                                    }
+                                    if (showResult) {
+                                        footerSearchHolder.bind(new SearchEntity(Peer.user(u.getId()), 0, u.getAvatar().get(), u.getName().get()), activeSearchQuery, true);
+                                        showView(footer);
+                                    } else {
+                                        goneView(footer);
+                                    }
+                                }
+                                if (footerVisability != footer.getVisibility()) {
+                                    onSearchChanged();
+                                }
+                            }
+
+                            @Override
+                            public void onError(Exception e) {
+
+                            }
+                        });
                     } else {
                         searchDisplay.initEmpty();
+                        goneView(footer);
+
                     }
                 }
                 return false;
@@ -156,7 +201,7 @@ public abstract class GlobalSearchBaseFragment extends BaseFragment {
             goneView(searchEmptyView);
         } else {
             goneView(searchHintView);
-            if (searchDisplay.getSize() == 0) {
+            if (searchDisplay.getSize() == 0 && footer.getVisibility() != View.VISIBLE) {
                 showView(searchEmptyView);
             } else {
                 goneView(searchEmptyView);
@@ -189,6 +234,51 @@ public abstract class GlobalSearchBaseFragment extends BaseFragment {
         header.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(0)));
         header.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         recyclerAdapter.addHeaderView(header);
+
+        TextView footerTitle = new TextView(getActivity());
+        footerTitle.setText(R.string.main_search_global_header);
+        footerTitle.setTextSize(16);
+        footerTitle.setPadding(Screen.dp(12), Screen.dp(8), 0, Screen.dp(8));
+        footerTitle.setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackgroundColor());
+        footerTitle.setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
+
+        footerSearchHolder = new SearchHolder(getActivity(), new OnItemClickedListener<SearchEntity>() {
+            @Override
+            public void onClicked(SearchEntity item) {
+                int peerId = item.getPeer().getPeerId();
+                execute(messenger().addContact(peerId), R.string.progress_common, new CommandCallback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean res2) {
+                        startActivity(Intents.openPrivateDialog(peerId,
+                                true,
+                                getActivity()));
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        startActivity(Intents.openPrivateDialog(peerId,
+                                true,
+                                getActivity()));
+                    }
+                });
+            }
+
+            @Override
+            public boolean onLongClicked(SearchEntity item) {
+                return false;
+            }
+        });
+        View footerGlobalSearchView = footerSearchHolder.itemView;
+
+        footer = new LinearLayout(getActivity());
+        footer.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(Screen.getWidth(), ViewGroup.LayoutParams.WRAP_CONTENT);
+        footer.addView(footerTitle, params);
+        footer.addView(footerGlobalSearchView, params);
+
+        footer.setVisibility(View.GONE);
+
+        recyclerAdapter.addFooterView(footer);
 
         searchList.setAdapter(recyclerAdapter);
         searchDisplay.addListener(searchListener);

@@ -168,16 +168,6 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
     }
 
     /**
-     * Is Actor pushes used for this app - added for testing
-     *
-     * @return is Actor push id used
-     */
-    @Override
-    public boolean useActorPush() {
-        return true;
-    }
-
-    /**
      * Method for hacking share menu in dialog
      *
      * @param shareMenu share menu

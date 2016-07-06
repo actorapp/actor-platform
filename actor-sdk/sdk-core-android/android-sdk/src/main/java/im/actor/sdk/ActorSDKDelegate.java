@@ -163,13 +163,6 @@ public interface ActorSDKDelegate {
 
 
     /**
-     * Is Actor pushes used for this app - added for testing
-     *
-     * @return is Actor push id used
-     */
-    boolean useActorPush();
-
-    /**
      * Method for hacking share menu in dialog
      *
      * @param shareMenu share menu
