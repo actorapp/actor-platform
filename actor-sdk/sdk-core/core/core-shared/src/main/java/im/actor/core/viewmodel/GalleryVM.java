@@ -1,8 +1,6 @@
 package im.actor.core.viewmodel;
 
 import java.util.ArrayList;
-
-import im.actor.core.entity.StickerPack;
 import im.actor.runtime.mvvm.ValueModel;
 
 public class GalleryVM {

@@ -47,4 +47,28 @@ public class ShareMenuField {
     public View.OnClickListener getOnClickListener() {
         return onClickListener;
     }
+
+    public void setIcon(int icon) {
+        this.icon = icon;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
+    }
+
+    public void setSelector(int selector) {
+        this.selector = selector;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setOnClickListener(View.OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
+    }
 }

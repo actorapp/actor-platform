@@ -1,6 +1,6 @@
 <h3 align="center">
   <a href="https://github.com/actorapp/actor-platform">
-    <img src="docs/assets/Actor_Logo.png" width="150" />
+    <img src="docs/assets/Actor_Logo_New.png" width="150" />
     <br />
     Actor
   </a>
