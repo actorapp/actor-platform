@@ -347,10 +347,6 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
             }
         });
 
-        if (noEmails && noPhones) {
-            contactsContainer.setVisibility(View.GONE);
-            about.findViewById(R.id.divider).setVisibility(View.INVISIBLE);
-        }
 
         view.findViewById(R.id.chatSettings).setOnClickListener(new View.OnClickListener() {
             @Override
