@@ -79,6 +79,7 @@ import im.actor.sdk.controllers.conversation.botcommands.CommandsAdapter;
 import im.actor.sdk.controllers.conversation.mentions.MentionsAdapter;
 import im.actor.sdk.controllers.conversation.messages.MessagesDefaultFragment;
 import im.actor.sdk.controllers.conversation.messages.content.AudioHolder;
+import im.actor.sdk.controllers.conversation.toolbar.ChatToolbarFragment;
 import im.actor.sdk.controllers.conversation.view.FastShareAdapter;
 import im.actor.sdk.controllers.settings.BaseActorChatActivity;
 import im.actor.sdk.core.audio.VoiceCaptureActor;
@@ -116,7 +117,6 @@ public class ChatActivity extends ActorEditTextActivity {
     //////////////////////////////////
     // Activity keys
     //////////////////////////////////
-    public static final String EXTRA_CHAT_COMPOSE = "compose";
     public static final String STATE_FILE_NAME = "pending_file_name";
     private static final int REQUEST_GALLERY = 0;
     private static final int REQUEST_PHOTO = 1;
@@ -126,10 +126,8 @@ public class ChatActivity extends ActorEditTextActivity {
     private static final int REQUEST_CONTACT = 5;
     private static final int PERMISSIONS_REQUEST_CAMERA = 6;
     private static final int PERMISSION_REQUEST_RECORD_AUDIO = 7;
-    private static final int PERMISSIONS_REQUEST_FOR_CALL = 8;
-    private static final int PERMISSIONS_REQUEST_FOR_VIDEO_CALL = 12;
     private static final int PERMISSION_REQ_MEDIA = 11;
-    public static final int MAX_USERS_FOR_CALLS = 5;
+
     // Peer of current chat
     private Peer peer;
 
@@ -137,31 +135,6 @@ public class ChatActivity extends ActorEditTextActivity {
     // Configuration
     //////////////////////////////////
 
-    //////////////////////////////////
-    // Model
-    //////////////////////////////////
-    // Toolbar title root view
-    private View barView;
-
-    //////////////////////////////////
-    // Toolbar views
-    //////////////////////////////////
-    // Toolbar unread counter
-    private TextView counter;
-    // Toolbar Avatar view
-    private AvatarView barAvatar;
-    // Toolbar title view
-    private TextView barTitle;
-    // Toolbar subtitle view container
-    private View barSubtitleContainer;
-    // Toolbar subtitle text view
-    private TextView barSubtitle;
-    // Toolbar typing container
-    private View barTypingContainer;
-    // Toolbar typing icon
-    private ImageView barTypingIcon;
-    // Toolbar typing text
-    private TextView barTyping;
     private boolean isAutocompleteVisible = false;
 
     //////////////////////////////////
@@ -195,13 +168,10 @@ public class ChatActivity extends ActorEditTextActivity {
     private TextView quoteText;
     private FrameLayout quoteContainer;
     private String currentQuote = "";
-    private String sendUri;
 
     //////////////////////////////////
     // Forwarding
     //////////////////////////////////
-    private ArrayList<String> sendUriMultiple;
-    private int shareUser;
     private String forwardText;
     private String forwardTextRaw;
     private String sendText;
@@ -229,7 +199,6 @@ public class ChatActivity extends ActorEditTextActivity {
     private boolean textEditing = false;
     private long currentEditRid;
     private Animation.AnimationListener animationListener;
-    private Menu menu;
     private boolean isBot = false;
     private View emptyBotSend;
     private TextView emptyBotHint;
@@ -257,7 +226,11 @@ public class ChatActivity extends ActorEditTextActivity {
 
         super.onCreate(saveInstance);
 
-        onCreateToolbar();
+        if (saveInstance == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(ChatToolbarFragment.create(peer), "toolbar")
+                    .commit();
+        }
 
         messageEditText.addTextChangedListener(new TextWatcherImp());
         messageEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -473,12 +446,9 @@ public class ChatActivity extends ActorEditTextActivity {
             shareItem.addView(icon, shareIconSize, shareIconSize);
             shareItem.addView(title);
 
-            View.OnClickListener l = new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    hideShare();
-                    f.getOnClickListener().onClick(icon);
-                }
+            View.OnClickListener l = v -> {
+                hideShare();
+                f.getOnClickListener().onClick(icon);
             };
             icon.setId(f.getId());
             icon.setOnClickListener(l);
@@ -507,25 +477,13 @@ public class ChatActivity extends ActorEditTextActivity {
 
         handleIntent();
 
-        try {
-            Class.forName("com.google.android.gms.maps.GoogleMap");
-        } catch (ClassNotFoundException e) {
-//            shareLocation.setVisibility(View.GONE);
-//            findViewById(R.id.share_hide).setVisibility(View.VISIBLE);
-//            findViewById(R.id.location_text).setVisibility(View.INVISIBLE);
-        }
-
-
-        shareSendOcl = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Set<String> strings = fastShareAdapter.getSelectedVM().get();
-                for (String s : strings.toArray(new String[strings.size()])) {
-                    execute(messenger().sendUri(peer, Uri.fromFile(new File(s))));
-                }
-                fastShareAdapter.clearSelected();
-                hideShare();
+        shareSendOcl = v -> {
+            Set<String> strings = fastShareAdapter.getSelectedVM().get();
+            for (String s : strings.toArray(new String[strings.size()])) {
+                execute(messenger().sendUri(peer, Uri.fromFile(new File(s))));
             }
+            fastShareAdapter.clearSelected();
+            hideShare();
         };
 
         RecyclerView fastShare = (RecyclerView) findViewById(R.id.fast_share);
@@ -536,25 +494,22 @@ public class ChatActivity extends ActorEditTextActivity {
             fastShare.setLayoutManager(layoutManager);
             StateListDrawable background = ShareMenuButtonFactory.get(ActorSDK.sharedActor().style.getMainColor(), ChatActivity.this);
 
-            fastShareAdapter.getSelectedVM().subscribe(new ValueChangedListener<Set<String>>() {
-                @Override
-                public void onChanged(Set<String> val, Value<Set<String>> valueModel) {
-                    if (val.size() > 0) {
-                        menuIconToChange.setBackgroundDrawable(background);
-                        menuIconToChange.setImageResource(R.drawable.conv_send);
-                        menuIconToChange.setColorFilter(0xffffffff, PorterDuff.Mode.SRC_IN);
-                        menuTitleToChange.setText(getString(R.string.chat_doc_send) + "(" + val.size() + ")");
-                        menuIconToChange.setOnClickListener(shareSendOcl);
-                        menuIconToChange.setPadding(Screen.dp(10), 0, Screen.dp(5), 0);
-                    } else {
+            fastShareAdapter.getSelectedVM().subscribe((val, valueModel) -> {
+                if (val.size() > 0) {
+                    menuIconToChange.setBackgroundDrawable(background);
+                    menuIconToChange.setImageResource(R.drawable.conv_send);
+                    menuIconToChange.setColorFilter(0xffffffff, PorterDuff.Mode.SRC_IN);
+                    menuTitleToChange.setText(getString(R.string.chat_doc_send) + "(" + val.size() + ")");
+                    menuIconToChange.setOnClickListener(shareSendOcl);
+                    menuIconToChange.setPadding(Screen.dp(10), 0, Screen.dp(5), 0);
+                } else {
 
-                        menuIconToChange.setBackgroundDrawable((Drawable) menuIconToChange.getTag(R.id.background));
-                        menuIconToChange.setImageDrawable((Drawable) menuIconToChange.getTag(R.id.icon));
-                        menuIconToChange.setColorFilter(null);
-                        menuIconToChange.setOnClickListener(defaultSendOcl);
-                        menuTitleToChange.setText((String) menuTitleToChange.getTag());
-                        menuIconToChange.setPadding(0, 0, 0, 0);
-                    }
+                    menuIconToChange.setBackgroundDrawable((Drawable) menuIconToChange.getTag(R.id.background));
+                    menuIconToChange.setImageDrawable((Drawable) menuIconToChange.getTag(R.id.icon));
+                    menuIconToChange.setColorFilter(null);
+                    menuIconToChange.setOnClickListener(defaultSendOcl);
+                    menuTitleToChange.setText((String) menuTitleToChange.getTag());
+                    menuIconToChange.setPadding(0, 0, 0, 0);
                 }
             });
         } else {
@@ -575,10 +530,6 @@ public class ChatActivity extends ActorEditTextActivity {
     }
 
     private void handleIntent() {
-        // Sharing
-        sendUri = intent.getStringExtra("send_uri");
-        sendUriMultiple = intent.getStringArrayListExtra("send_uri_multiple");
-        shareUser = intent.getIntExtra("share_user", 0);
 
         //Forwarding
         forwardText = intent.getStringExtra("forward_text");
@@ -620,63 +571,12 @@ public class ChatActivity extends ActorEditTextActivity {
         }
     }
 
-    protected void onCreateToolbar() {
-        // Loading Toolbar header views
-        // Binding to real data is performed in onResume method
-        ActorStyle style = ActorSDK.sharedActor().style;
-        barView = LayoutInflater.from(this).inflate(R.layout.bar_conversation, null);
-        ActionBar.LayoutParams layout = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT);
-        setToolbar(barView, layout, false);
-        findViewById(R.id.home).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-
-        counter = (TextView) barView.findViewById(R.id.counter);
-
-        counter.setTextColor(style.getDialogsCounterTextColor());
-        counter.setBackgroundResource(R.drawable.ic_counter_circle);
-        counter.getBackground().setColorFilter(style.getDialogsCounterBackgroundColor(), PorterDuff.Mode.MULTIPLY);
-        barTitle = (TextView) barView.findViewById(R.id.title);
-        barSubtitleContainer = barView.findViewById(R.id.subtitleContainer);
-        barTypingIcon = (ImageView) barView.findViewById(R.id.typingImage);
-        barTypingIcon.setImageDrawable(new TypingDrawable());
-        barTyping = (TextView) barView.findViewById(R.id.typing);
-        barSubtitle = (TextView) barView.findViewById(R.id.subtitle);
-        barTypingContainer = barView.findViewById(R.id.typingContainer);
-        barTypingContainer.setVisibility(View.INVISIBLE);
-        barAvatar = (AvatarView) barView.findViewById(R.id.avatarPreview);
-        barAvatar.init(Screen.dp(32), 18);
-        if (!style.isShowAvatarInTitle() || (peer.getPeerType() == PeerType.PRIVATE && !style.isShowAvatarPrivateInTitle())) {
-            barAvatar.setVisibility(View.GONE);
-        }
-        barView.findViewById(R.id.titleContainer).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (peer.getPeerType() == PeerType.PRIVATE) {
-                    ActorSDKLauncher.startProfileActivity(ChatActivity.this, peer.getPeerId());
-                } else if (peer.getPeerType() == PeerType.GROUP) {
-                    ActorSDK.sharedActor().startGroupInfoActivity(ChatActivity.this, peer.getPeerId());
-                } else {
-                    // Nothing to do
-                }
-            }
-        });
-    }
-
     // Activity lifecycle
 
     @Override
     public void onResume() {
         checkIsBot();
         super.onResume();
-
-        if (peer.getPeerType() == PeerType.PRIVATE && menu != null) {
-            menu.findItem(R.id.add_to_contacts).setVisible(users().get(peer.getPeerId()).isContact().get());
-            invalidateOptionsMenu();
-        }
 
         emojiKeyboard.setPeer(peer);
 
@@ -740,33 +640,9 @@ public class ChatActivity extends ActorEditTextActivity {
         messageEditText.setSelection(messageEditText.getText().length());
         isTypingDisabled = false;
 
-        // TODO: Remove from ChatActivity
-        // Performing actions
-
-        if (sendUri != null && !sendUri.isEmpty()) {
-            execute(messenger().sendUri(peer, Uri.parse(sendUri)));
-            sendUri = "";
-        }
-
-        if (sendUriMultiple != null && sendUriMultiple.size() > 0) {
-            for (String sendUri : sendUriMultiple) {
-                execute(messenger().sendUri(peer, Uri.parse(sendUri)));
-            }
-            sendUriMultiple.clear();
-        }
-
         if (sendText != null && !sendText.isEmpty()) {
             messageEditText.setText(sendText);
             sendText = "";
-        }
-
-        if (shareUser != 0) {
-            String userName = users().get(shareUser).getName().get();
-            String mentionTitle = "@".concat(userName);
-            ArrayList<Integer> mention = new ArrayList<Integer>();
-            mention.add(shareUser);
-            messenger().sendMessage(peer, mentionTitle, "[".concat(mentionTitle).concat("](people://".concat(Integer.toString(shareUser)).concat(")")), mention);
-            shareUser = 0;
         }
 
         if (forwardTextRaw != null && !forwardTextRaw.isEmpty()) {
@@ -836,33 +712,6 @@ public class ChatActivity extends ActorEditTextActivity {
                 return;
             }
 
-            // Binding User Avatar to Toolbar
-            bind(barAvatar, user.getId(), user.getAvatar(), user.getName());
-
-            // Binding User name to Toolbar
-            bind(barTitle, user.getName());
-
-            bind(user.getIsVerified(), new ValueChangedListener<Boolean>() {
-                @Override
-                public void onChanged(Boolean val, Value<Boolean> valueModel) {
-
-                    barTitle.setCompoundDrawablesWithIntrinsicBounds(
-                            null,
-                            null,
-                            val ? new TintDrawable(
-                                    getResources().getDrawable(R.drawable.ic_verified_user_black_18dp),
-                                    ActorSDK.sharedActor().style.getVerifiedColor()) : null,
-                            null);
-                }
-            });
-
-
-            // Binding User presence to Toolbar
-            bind(barSubtitle, user);
-
-            // Binding User typing to Toolbar
-            bindPrivateTyping(barTyping, barTypingContainer, barSubtitle, messenger().getTyping(user.getId()));
-
             // Bind user blocked
             inputBlockedText.setText(R.string.profile_settings_unblock);
             bind(users().get(peer.getPeerId()).getIsBlocked(), (val, valueModel) -> {
@@ -891,41 +740,11 @@ public class ChatActivity extends ActorEditTextActivity {
                 return;
             }
 
-            // Binding Group avatar to Toolbar
-            bind(barAvatar, group.getId(), group.getAvatar(), group.getName());
-
-            // Binding Group title to Toolbar
-            bind(barTitle, group.getName());
-
-            // Subtitle is always visible for Groups
-            barSubtitleContainer.setVisibility(View.VISIBLE);
-
-            // Binding group members
-            bind(barSubtitle, barSubtitleContainer, group);
-
-            // Binding group typing
-            bindGroupTyping(barTyping, barTypingContainer, barSubtitle, messenger().getGroupTyping(group.getId()));
-
             // Binding membership flag to inputBlockContainer panel
-            bind(messenger().getGroups().get(peer.getPeerId()).isMember(), new ValueChangedListener<Boolean>() {
-                @Override
-                public void onChanged(Boolean val, Value<Boolean> Value) {
-                    inputBlockContainer.setVisibility(val ? View.GONE : View.VISIBLE);
-                }
+            bind(group.isMember(), (val, Value) -> {
+                inputBlockContainer.setVisibility(val ? View.GONE : View.VISIBLE);
             });
         }
-
-        bindGlobalCounter(new ValueChangedListener<Integer>() {
-            @Override
-            public void onChanged(Integer val, Value<Integer> valueModel) {
-                if (val != null && val > 0) {
-                    counter.setText(Integer.toString(val));
-                    showView(counter);
-                } else {
-                    hideView(counter);
-                }
-            }
-        });
     }
 
     @Override
@@ -975,18 +794,17 @@ public class ChatActivity extends ActorEditTextActivity {
 
                 @Override
                 public void onError(final Exception e) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            RpcException re = (RpcException) e;
-                            String error = "";
-                            if (re.getTag().equals("NOT_IN_TIME_WINDOW")) {
-                                error = getString(R.string.edit_message_error_slowpoke);
-                            } else if (re.getTag().equals("NOT_LAST_MESSAGE")) {
-                                error = getString(R.string.edit_message_error_not_last);
-                            }
-                            Toast.makeText(ChatActivity.this, error, Toast.LENGTH_LONG).show();
+                    runOnUiThread(() -> {
+                        RpcException re = (RpcException) e;
+                        String error;
+                        if (re.getTag().equals("NOT_IN_TIME_WINDOW")) {
+                            error = getString(R.string.edit_message_error_slowpoke);
+                        } else if (re.getTag().equals("NOT_LAST_MESSAGE")) {
+                            error = getString(R.string.edit_message_error_not_last);
+                        } else {
+                            error = re.getMessage();
                         }
+                        Toast.makeText(ChatActivity.this, error, Toast.LENGTH_LONG).show();
                     });
                 }
             });
@@ -1248,176 +1066,12 @@ public class ChatActivity extends ActorEditTextActivity {
         }
     }
 
-    // Options Menu
-
-    @Override
-    public boolean onCreateOptionsMenu(final Menu menu) {
-        this.menu = menu;
-
-        // Inflating menu
-        getMenuInflater().inflate(R.menu.chat_menu, menu);
-
-        // Show menu for opening chat contact
-        if (peer.getPeerType() == PeerType.PRIVATE) {
-            menu.findItem(R.id.contact).setVisible(true);
-        } else {
-            menu.findItem(R.id.contact).setVisible(false);
-        }
-
-        // Show menus for leave group and group info view
-        if (peer.getPeerType() == PeerType.GROUP) {
-            if (groups().get(peer.getPeerId()).isMember().get()) {
-                menu.findItem(R.id.leaveGroup).setVisible(true);
-                menu.findItem(R.id.groupInfo).setVisible(true);
-            } else {
-                menu.findItem(R.id.leaveGroup).setVisible(false);
-                menu.findItem(R.id.groupInfo).setVisible(false);
-            }
-        } else {
-            menu.findItem(R.id.groupInfo).setVisible(false);
-            menu.findItem(R.id.leaveGroup).setVisible(false);
-        }
-
-        boolean callsEnabled = ActorSDK.sharedActor().isCallsEnabled();
-        boolean videoCallsEnabled = ActorSDK.sharedActor().isVideoCallsEnabled();
-        if (callsEnabled) {
-            if (peer.getPeerType() == PeerType.PRIVATE) {
-                callsEnabled = !users().get(peer.getPeerId()).isBot();
-            } else if (peer.getPeerType() == PeerType.GROUP) {
-                callsEnabled = groups().get(peer.getPeerId()).getMembersCount() <= MAX_USERS_FOR_CALLS;
-                videoCallsEnabled = false;
-            }
-        }
-        menu.findItem(R.id.call).setVisible(callsEnabled);
-        menu.findItem(R.id.video_call).setVisible(callsEnabled && videoCallsEnabled);
-
-        if (peer.getPeerType() == PeerType.PRIVATE) {
-            bind(users().get(peer.getPeerId()).isContact(), new ValueChangedListener<Boolean>() {
-                @Override
-                public void onChanged(Boolean val, Value<Boolean> valueModel) {
-                    menu.findItem(R.id.add_to_contacts).setVisible(!val);
-                    invalidateOptionsMenu();
-                }
-            });
-        }
-
-        // Hide unsupported files menu
-        menu.findItem(R.id.files).setVisible(false);
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        // Small Hack to a
         keyboardUtils.setImeVisibility(messageEditText, false);
         messageEditText.clearFocus();
-        int i = item.getItemId();
-        if (i == android.R.id.home) {
-            finish();
-
-        } else if (i == R.id.clear) {
-            new AlertDialog.Builder(this)
-                    .setMessage(R.string.alert_delete_all_messages_text)
-                    .setPositiveButton(R.string.alert_delete_all_messages_yes, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            execute(messenger().clearChat(peer), R.string.progress_common,
-                                    new CommandCallback<Void>() {
-                                        @Override
-                                        public void onResult(Void res) {
-
-                                        }
-
-                                        @Override
-                                        public void onError(Exception e) {
-                                            Toast.makeText(getApplicationContext(), R.string.toast_unable_clear_chat, Toast.LENGTH_LONG).show();
-                                        }
-                                    });
-                        }
-                    })
-                    .setNegativeButton(R.string.dialog_cancel, null)
-                    .show()
-                    .setCanceledOnTouchOutside(true);
-
-        } else if (i == R.id.leaveGroup) {
-            new AlertDialog.Builder(this)
-                    .setMessage(getString(R.string.alert_leave_group_message)
-                            .replace("%1$s", groups().get(peer.getPeerId()).getName().get()))
-                    .setPositiveButton(R.string.alert_leave_group_yes, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog2, int which) {
-                            execute(messenger().leaveGroup(peer.getPeerId()), R.string.progress_common, new CommandCallback<Void>() {
-                                @Override
-                                public void onResult(Void res) {
-
-                                }
-
-                                @Override
-                                public void onError(final Exception e) {
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            Toast.makeText(getApplicationContext(), R.string.toast_unable_leave, Toast.LENGTH_LONG).show();
-                                        }
-                                    });
-                                }
-                            });
-                            finish();
-                        }
-                    })
-                    .setNegativeButton(R.string.dialog_cancel, null)
-                    .show()
-                    .setCanceledOnTouchOutside(true);
-
-        } else if (i == R.id.contact) {
-            ActorSDKLauncher.startProfileActivity(ChatActivity.this, peer.getPeerId());
-
-        } else if (i == R.id.groupInfo) {
-            ActorSDK.sharedActor().startGroupInfoActivity(ChatActivity.this, peer.getPeerId());
-
-        } else if (i == R.id.files) {// startActivity(Intents.openDocs(chatType, chatId, ChatActivity.this));
-
-        } else if (i == R.id.add_to_contacts) {
-            execute(messenger().addContact(peer.getPeerId()));
-        }
-
-        if (ActorSDK.sharedActor().isCallsEnabled()) {
-            if (item.getItemId() == R.id.call || item.getItemId() == R.id.video_call) {
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
-                        ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED ||
-                        ContextCompat.checkSelfPermission(this, Manifest.permission.MODIFY_AUDIO_SETTINGS) != PackageManager.PERMISSION_GRANTED ||
-                        ContextCompat.checkSelfPermission(this, Manifest.permission.VIBRATE) != PackageManager.PERMISSION_GRANTED ||
-                        ContextCompat.checkSelfPermission(this, Manifest.permission.WAKE_LOCK) != PackageManager.PERMISSION_GRANTED) {
-                    Log.d("Permissions", "call - no permission :c");
-                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.MODIFY_AUDIO_SETTINGS, Manifest.permission.CAMERA, Manifest.permission.VIBRATE, Manifest.permission.WAKE_LOCK},
-                            item.getItemId() == R.id.video_call ? PERMISSIONS_REQUEST_FOR_VIDEO_CALL : PERMISSIONS_REQUEST_FOR_CALL);
-
-                } else {
-                    startCall(item.getItemId() == R.id.video_call);
-                }
-            }
-
-//            Context context = ActorSDK.sharedActor().getMessenger().getContext();
-//            Intent callIntent = new Intent(context, CallActivity.class);
-//            callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK | Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
-//            callIntent.putExtra("callId", 0);
-//            context.startActivity(callIntent);
-//            context.startActivity(callIntent);
-        }
-
         return super.onOptionsItemSelected(item);
-    }
-
-    private void startCall(boolean video) {
-        Command<Long> cmd;
-        if (peer.getPeerType() == PeerType.PRIVATE) {
-            cmd = video ? messenger().doVideoCall(peer.getPeerId()) : messenger().doCall(peer.getPeerId());
-
-        } else {
-            cmd = messenger().doGroupCall(peer.getPeerId());
-        }
-        execute(cmd, R.string.progress_common);
-
     }
 
     @Override
@@ -1607,10 +1261,6 @@ public class ChatActivity extends ActorEditTextActivity {
             fastShareAdapter.release();
             fastShareAdapter = null;
         }
-
-        if (barAvatar != null) {
-            barAvatar.unbind();
-        }
     }
 
     private void hideAudio(boolean cancel) {
@@ -1734,11 +1384,6 @@ public class ChatActivity extends ActorEditTextActivity {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 showShareChecked();
-            }
-        } else if (requestCode == PERMISSIONS_REQUEST_FOR_CALL || requestCode == PERMISSIONS_REQUEST_FOR_VIDEO_CALL) {
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startCall(requestCode == PERMISSIONS_REQUEST_FOR_VIDEO_CALL);
             }
         }
     }

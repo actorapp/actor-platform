@@ -8,10 +8,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:visible="false"
         android:id="@+id/add_to_contacts"
         android:icon="@drawable/ic_person_add_white_24dp"
         android:title="@string/add_contact_title"
+        android:visible="false"
         app:showAsAction="always" />
 
     <item
@@ -26,16 +26,12 @@
         android:title=""
         app:showAsAction="always" />
 
-
     <item
         android:id="@+id/groupInfo"
         android:title="@string/chat_menu_group_info" />
     <item
         android:id="@+id/contact"
         android:title="@string/chat_menu_view_contact" />
-    <item
-        android:id="@+id/files"
-        android:title="@string/chat_menu_files" />
     <item
         android:id="@+id/clear"
         android:title="@string/chat_menu_clear_chat" />
