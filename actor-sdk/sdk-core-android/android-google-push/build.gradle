@@ -43,7 +43,7 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:23.3.0'
+    compile 'com.android.support:appcompat-v7:24.0.0'
 
     //compile 'im.actor:android-sdk:0.1.30'
     compile project(':actor-sdk:sdk-core-android:android-sdk')

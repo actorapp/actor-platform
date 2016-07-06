@@ -13,12 +13,12 @@ apply plugin: 'com.android.library'
 apply plugin: 'me.tatarka.retrolambda'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion '23.0.3'
+    compileSdkVersion 24
+    buildToolsVersion '24.0.0'
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 23
+        targetSdkVersion 24
     }
 }
 
@@ -48,7 +48,7 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:recyclerview-v7:23+'
+    compile 'com.android.support:recyclerview-v7:24.0.0'
     compile 'com.squareup.okhttp:okhttp:2+'
     compile 'io.pristine:libjingle:11139@aar'
 }
