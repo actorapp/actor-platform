@@ -12,9 +12,7 @@ import java.util.ArrayList;
 
 import im.actor.core.entity.Peer;
 import im.actor.runtime.android.view.BindedViewHolder;
-import im.actor.sdk.controllers.root.RootActivity;
 import im.actor.sdk.controllers.conversation.ShareMenuField;
-import im.actor.sdk.controllers.root.MainPhoneController;
 import im.actor.sdk.controllers.conversation.messages.MessageHolder;
 import im.actor.sdk.controllers.conversation.MessagesAdapter;
 import im.actor.sdk.controllers.settings.BaseActorProfileActivity;
@@ -119,14 +117,6 @@ public interface ActorSDKDelegate {
      * @return hacked view holder
      */
     <T extends BindedViewHolder, J extends T> J getViewHolder(Class<T> base, Object... args);
-
-    /**
-     * Override for hacking MainPhoneController - activity with chats/contacts
-     *
-     * @param mainActivity main activity
-     * @return hacked MainPhoneController
-     */
-    MainPhoneController getMainPhoneController(RootActivity mainActivity);
 
     /**
      * Override for hacking custom messages view holders

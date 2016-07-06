@@ -157,11 +157,6 @@ public void addCustomShareMenuFields(ArrayList<ShareMenuField> shareMenuFields) 
                 }
             };
         }
-
-//        @Override
-//        public MainPhoneController getMainPhoneController(ActorMainActivity mainActivity) {
-//            return new MainPhoneControllerEx(mainActivity);
-//        }
     }
 
 }
