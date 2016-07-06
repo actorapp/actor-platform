@@ -82,6 +82,12 @@ public class GroupInfoFragment extends BaseFragment {
     private boolean isAdmin;
 
     @Override
+    public void onCreate(Bundle saveInstance) {
+        super.onCreate(saveInstance);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         chatId = getArguments().getInt(EXTRA_CHAT_ID);
@@ -421,6 +427,42 @@ public class GroupInfoFragment extends BaseFragment {
             ((BaseActivity) getActivity()).getSupportActionBar().setBackgroundDrawable(
                     new ColorDrawable(color));
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
+        super.onCreateOptionsMenu(menu, menuInflater);
+        if (groupInfo.isMember().get()) {
+            menuInflater.inflate(R.menu.group_info, menu);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.leaveGroup) {
+            new AlertDialog.Builder(getActivity())
+                    .setMessage(getString(R.string.alert_leave_group_message).replace("%1$s",
+                            groupInfo.getName().get()))
+                    .setPositiveButton(R.string.alert_leave_group_yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog2, int which) {
+                            execute(messenger().leaveGroup(chatId));
+                        }
+                    })
+                    .setNegativeButton(R.string.dialog_cancel, null)
+                    .show()
+                    .setCanceledOnTouchOutside(true);
+
+            return true;
+        } else if (item.getItemId() == R.id.addMember) {
+            startActivity(new Intent(getActivity(), AddMemberActivity.class)
+                    .putExtra("GROUP_ID", chatId));
+        } else if (item.getItemId() == R.id.editTitle) {
+            startActivity(Intents.editGroupTitle(chatId, getActivity()));
+        } else if (item.getItemId() == R.id.changePhoto) {
+            startActivity(ViewAvatarActivity.viewGroupAvatar(chatId, getActivity()));
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
