@@ -3,6 +3,7 @@ package im.actor.server.api.rpc.service.auth
 import java.time.{ LocalDateTime, ZoneOffset }
 
 import akka.actor.ActorSystem
+import akka.http.scaladsl.util.FastFuture
 import akka.pattern.ask
 import cats.data.Xor
 import im.actor.api.rpc._
@@ -204,7 +205,7 @@ trait AuthHelpers extends Helpers {
     client:      ClientData
   ): Result[ApiUser] = {
     for {
-      _ ← fromFuture(if (countryCode.nonEmpty) userExt.changeCountryCode(userId, countryCode) else Future.successful(()))
+      _ ← fromFuture(if (countryCode.nonEmpty) userExt.changeCountryCode(userId, countryCode) else FastFuture.successful(()))
       _ ← fromFuture(userExt.setDeviceInfo(userId, client.authId, DeviceInfo.parseFrom(transaction.deviceInfo)) recover { case _ ⇒ () })
       _ ← fromDBIO(AuthIdRepo.setUserData(client.authId, userId))
       userStruct ← fromFuture(userExt.getApiStruct(userId, userId, client.authId))

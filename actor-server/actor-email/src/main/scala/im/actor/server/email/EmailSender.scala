@@ -1,5 +1,6 @@
 package im.actor.server.email
 
+import akka.http.scaladsl.util.FastFuture
 import im.actor.config.ActorConfig
 import org.apache.commons.mail.{ DefaultAuthenticator, HtmlEmail }
 
@@ -27,7 +28,7 @@ trait EmailSender {
 }
 
 object DummyEmailSender extends EmailSender {
-  override def send(message: Message): Future[Unit] = Future.successful(())
+  override def send(message: Message): Future[Unit] = FastFuture.successful(())
 }
 
 final class SmtpEmailSender(config: EmailConfig)(implicit ec: ExecutionContext) extends EmailSender {

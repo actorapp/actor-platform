@@ -101,5 +101,5 @@ final class ActivationContext(implicit system: ActorSystem) extends CodeGen {
     }
 
   private def tryCleanup(optProvider: Option[ActivationProvider], txHash: String): Future[Unit] =
-    optProvider map (_.cleanup(txHash)) getOrElse Future.successful(())
+    optProvider map (_.cleanup(txHash)) getOrElse FastFuture.successful(())
 }
