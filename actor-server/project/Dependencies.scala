@@ -7,9 +7,9 @@ object Dependencies {
     val actorCommons = "0.0.18"
     val actorBotkit = "1.0.109"
     val akka = "2.4.7"
-    val akkaHttpJson = "1.5.0"
-    val cats = "0.3.0"
-    val circe = "0.2.1"
+    val akkaHttpJson = "1.7.0"
+    val cats = "0.6.0"
+    val circe = "0.4.1"
     val kamon = "0.5.2"
     val slick = "3.1.1"
     val slickPg = "0.13.0"
@@ -48,18 +48,18 @@ object Dependencies {
 
     val caffeine                = "com.github.ben-manes.caffeine" %  "caffeine"                      % "2.2.7"
 
-    val cats                    = "org.spire-math"                %% "cats"                          % V.cats
+    val cats                    = "org.typelevel"                 %% "cats"                          % V.cats
 
     val circeCore               = "io.circe"                      %% "circe-core"                    % V.circe
     val circeGeneric            = "io.circe"                      %% "circe-generic"                 % V.circe
-    val circeParse              = "io.circe"                      %% "circe-parse"                   % V.circe
+    val circeParse              = "io.circe"                      %% "circe-parser"                  % V.circe
 
     val configs                 = "com.github.kxbmap"             %% "configs"                       % "0.3.0"
 
     val dispatch                = "net.databinder.dispatch"       %% "dispatch-core"                 % "0.11.3"
     val javaCompat              = "org.scala-lang.modules"        %% "scala-java8-compat"            % "0.7.0"
 
-    val playJson                = "com.typesafe.play"             %% "play-json"                     % "2.4.2"
+    val playJson                = "com.typesafe.play"             %% "play-json"                     % "2.5.3"
     val upickle                 = "com.lihaoyi"                   %% "upickle"                       % "0.3.6"
 
     val postgresJdbc            = "org.postgresql"                %  "postgresql"                    % "9.4.1208" exclude("org.slf4j", "slf4j-simple")

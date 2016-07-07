@@ -1,6 +1,7 @@
 package im.actor.server.api.http.info
 
 import akka.actor.ActorSystem
+import akka.http.scaladsl.model.HttpEntity
 import akka.http.scaladsl.model.StatusCodes.OK
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
@@ -15,7 +16,7 @@ private[http] final class AboutHttpHandler()(implicit system: ActorSystem) exten
   with CirceSupport
   with JsonEncoders {
 
-  private lazy val about = getServerInfo
+  private lazy val about: ServerInfo = getServerInfo
 
   def routes: Route = path("about") {
     get {

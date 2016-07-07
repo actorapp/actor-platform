@@ -16,7 +16,7 @@ private[auth] trait Helpers extends PublicKeyHelpers {
 
   private implicit val listMonadCombine = new cats.MonadCombine[List] {
     def pure[A](x: A): List[A] = List(x)
-    def combine[A](x: List[A], y: List[A]): List[A] = x ::: y
+    def combineK[A](x: List[A], y: List[A]): List[A] = x ::: y
     def flatMap[A, B](fa: List[A])(f: (A) ⇒ List[B]): List[B] = fa flatMap f
     def empty[A]: List[A] = List.empty[A]
   }

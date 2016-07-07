@@ -9,6 +9,7 @@ import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.config.ConfigFactory
 import kamon.Kamon
+import org.slf4j.{ Logger, LoggerFactory }
 
 import scala.concurrent.{ Await, ExecutionContext, Future }
 import scala.concurrent.duration._
@@ -168,6 +169,7 @@ final class CliHandlers extends BotHandlers with UsersHandlers with HttpHandlers
     Kamon.start()
     ActorSystem("actor-cli", config)
   }
+  system.eventStream.setLogLevel(akka.event.Logging.WarningLevel)
 
   protected lazy val remoteHost = InetAddress.getLocalHost.getHostAddress
 
