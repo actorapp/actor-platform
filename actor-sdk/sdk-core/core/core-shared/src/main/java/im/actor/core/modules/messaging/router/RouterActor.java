@@ -504,6 +504,12 @@ public class RouterActor extends ModuleActor {
 
         conversation(peer).clear();
 
+        ConversationState state = conversationStates.getValue(peer.getUnuqueId());
+        if (!state.isLoaded()) {
+            state = state.changeIsLoaded(true);
+            conversationStates.addOrUpdateItem(state);
+        }
+
         updateChatState(peer);
 
         return getDialogsRouter().onChatClear(peer);
@@ -512,6 +518,12 @@ public class RouterActor extends ModuleActor {
     private Promise<Void> onChatDelete(Peer peer) {
 
         conversation(peer).clear();
+
+        ConversationState state = conversationStates.getValue(peer.getUnuqueId());
+        if (!state.isLoaded()) {
+            state = state.changeIsLoaded(true);
+            conversationStates.addOrUpdateItem(state);
+        }
 
         updateChatState(peer);
 

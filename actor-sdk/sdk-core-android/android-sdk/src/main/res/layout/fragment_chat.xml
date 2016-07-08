@@ -10,6 +10,12 @@
         android:layout_above="@+id/sendContainer" />
 
     <FrameLayout
+        android:id="@+id/emptyPlaceholder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/sendContainer" />
+
+    <FrameLayout
         android:id="@+id/quoteFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -45,8 +51,8 @@
                 android:id="@+id/overlayText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:clickable="true"
                 android:background="@drawable/selector"
+                android:clickable="true"
                 android:gravity="center"
                 android:textAllCaps="true"
                 android:textSize="18sp" />

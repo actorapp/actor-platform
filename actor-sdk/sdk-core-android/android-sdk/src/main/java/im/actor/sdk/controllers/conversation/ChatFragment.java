@@ -14,8 +14,12 @@ import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.Sticker;
 import im.actor.core.network.RpcException;
+import im.actor.core.viewmodel.ConversationVM;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.runtime.mvvm.Value;
+import im.actor.runtime.mvvm.ValueChangedListener;
+import im.actor.runtime.mvvm.ValueDoubleChangedListener;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorSDKLauncher;
 import im.actor.sdk.R;
@@ -25,6 +29,7 @@ import im.actor.sdk.controllers.conversation.inputbar.InputBarCallback;
 import im.actor.sdk.controllers.conversation.inputbar.InputBarFragment;
 import im.actor.sdk.controllers.conversation.messages.MessagesDefaultFragment;
 import im.actor.sdk.controllers.conversation.messages.MessagesFragmentCallback;
+import im.actor.sdk.controllers.conversation.placeholder.EmptyChatPlaceholder;
 import im.actor.sdk.controllers.conversation.quote.QuoteCallback;
 import im.actor.sdk.controllers.conversation.quote.QuoteFragment;
 import im.actor.sdk.controllers.conversation.attach.AttachFragment;
@@ -47,6 +52,7 @@ public class ChatFragment extends BaseFragment implements InputBarCallback, Mess
     private View quoteContainer;
     private View inputContainer;
     private View inputOverlayContainer;
+    private View emptyContainer;
     private TextView inputOverlayText;
     private Peer peer;
     private long editRid;
@@ -78,6 +84,8 @@ public class ChatFragment extends BaseFragment implements InputBarCallback, Mess
         inputOverlayText = (TextView) res.findViewById(R.id.overlayText);
         inputOverlayText.setOnClickListener(view -> onOverlayPressed());
         inputOverlayContainer.setVisibility(View.GONE);
+        emptyContainer = res.findViewById(R.id.emptyPlaceholder);
+        emptyContainer.setVisibility(View.GONE);
 
         if (savedInstanceState == null) {
             Fragment toolbarFragment = ActorSDK.sharedActor().getDelegate().fragmentForToolbar(peer);
@@ -89,6 +97,7 @@ public class ChatFragment extends BaseFragment implements InputBarCallback, Mess
                     .add(R.id.messagesFragment, MessagesDefaultFragment.create(peer))
                     .add(R.id.sendFragment, new InputBarFragment())
                     .add(R.id.quoteFragment, new QuoteFragment())
+                    .add(R.id.emptyPlaceholder, new EmptyChatPlaceholder())
                     .commitNow();
 
             AbsAttachFragment fragment = ActorSDK.sharedActor().getDelegate().fragmentForAttachMenu(peer);
@@ -112,16 +121,30 @@ public class ChatFragment extends BaseFragment implements InputBarCallback, Mess
             UserVM userVM = users().get(peer.getPeerId());
 
             if (userVM.isBot()) {
-                bind(messenger().getConversationVM(peer).getIsEmpty(), (val, valueModel) -> {
-                    if (val) {
+                ConversationVM conversationVM = messenger().getConversationVM(peer);
+                bind(conversationVM.getIsEmpty(), conversationVM.getIsLoaded(), (isEmpty, valueModel, isLoaded, valueModel2) -> {
+                    if (isEmpty) {
                         inputOverlayText.setText(R.string.chat_empty_bot);
                         inputOverlayText.setTextColor(style.getListActionColor());
                         inputOverlayText.setClickable(true);
-                        showView(inputOverlayContainer);
-                        goneView(inputContainer);
+                        showView(inputOverlayContainer, false);
+                        goneView(inputContainer, false);
                     } else {
-                        goneView(inputOverlayContainer);
-                        showView(inputContainer);
+                        goneView(inputOverlayContainer, false);
+                        showView(inputContainer, false);
+                    }
+
+                    if (isEmpty && isLoaded) {
+                        showView(emptyContainer, false);
+                    } else {
+                        hideView(emptyContainer, false);
+                    }
+                });
+                bind(userVM.getAbout(), (val, valueModel) -> {
+                    if (val == null) {
+                        findEmptyPlaceholder().setText(getString(R.string.chat_empty_bot_about));
+                    } else {
+                        findEmptyPlaceholder().setText(val);
                     }
                 });
             } else {
@@ -130,11 +153,11 @@ public class ChatFragment extends BaseFragment implements InputBarCallback, Mess
                         inputOverlayText.setText(R.string.blocked_unblock);
                         inputOverlayText.setTextColor(style.getListActionColor());
                         inputOverlayText.setClickable(true);
-                        showView(inputOverlayContainer);
-                        goneView(inputContainer);
+                        showView(inputOverlayContainer, false);
+                        goneView(inputContainer, false);
                     } else {
-                        goneView(inputOverlayContainer);
-                        showView(inputContainer);
+                        goneView(inputOverlayContainer, false);
+                        showView(inputContainer, false);
                     }
                 });
             }
@@ -143,14 +166,14 @@ public class ChatFragment extends BaseFragment implements InputBarCallback, Mess
 
             bind(groupVM.isMember(), (val, valueModel) -> {
                 if (val) {
-                    goneView(inputOverlayContainer);
-                    showView(inputContainer);
+                    goneView(inputOverlayContainer, false);
+                    showView(inputContainer, false);
                 } else {
                     inputOverlayText.setText(R.string.chat_not_member);
                     inputOverlayText.setTextColor(style.getListActionColor());
                     inputOverlayText.setClickable(false);
-                    showView(inputOverlayContainer);
-                    goneView(inputContainer);
+                    showView(inputOverlayContainer, false);
+                    goneView(inputContainer, false);
                 }
             });
         }
@@ -351,6 +374,10 @@ public class ChatFragment extends BaseFragment implements InputBarCallback, Mess
 
     private AbsAttachFragment findShareFragment() {
         return ((AbsAttachFragment) getFragmentManager().findFragmentById(R.id.overlay));
+    }
+
+    private EmptyChatPlaceholder findEmptyPlaceholder() {
+        return ((EmptyChatPlaceholder) getChildFragmentManager().findFragmentById(R.id.emptyPlaceholder));
     }
 
     private void hideQuote() {
