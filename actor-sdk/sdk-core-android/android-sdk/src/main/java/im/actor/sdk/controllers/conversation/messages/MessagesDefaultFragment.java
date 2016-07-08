@@ -50,12 +50,18 @@ public class MessagesDefaultFragment extends MessagesFragment {
 
     @Override
     public void onAvatarClick(int uid) {
-        ActorSDKLauncher.startProfileActivity(getActivity(), uid);
+        Fragment fragment = getParentFragment();
+        if (fragment instanceof MessagesFragmentCallback) {
+            ((MessagesFragmentCallback) fragment).onAvatarClick(uid);
+        }
     }
 
     @Override
     public void onAvatarLongClick(int uid) {
-        // ((ChatActivity) getActivity()).insertMention(uid);
+        Fragment fragment = getParentFragment();
+        if (fragment instanceof MessagesFragmentCallback) {
+            ((MessagesFragmentCallback) fragment).onAvatarLongClick(uid);
+        }
     }
 
     @Override

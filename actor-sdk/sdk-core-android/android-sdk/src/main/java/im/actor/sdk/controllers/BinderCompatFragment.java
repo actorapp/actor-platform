@@ -35,6 +35,10 @@ public class BinderCompatFragment extends android.support.v4.app.Fragment {
         BINDER.bind(value, listener);
     }
 
+    public <T> void bind(ValueModel<T> value, boolean notify, ValueChangedListener<T> listener) {
+        BINDER.bind(value, listener, notify);
+    }
+
     public <T1, T2> void bind(ValueModel<T1> value1, ValueModel<T2> value2, ValueDoubleChangedListener<T1, T2> listener) {
         BINDER.bind(value1, value2, listener);
     }

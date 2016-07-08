@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.conversation;
+package im.actor.sdk.controllers.conversation.attach;
 
 public class ShareMenuField {
 

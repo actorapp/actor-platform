@@ -14,9 +14,13 @@ import android.widget.ImageView;
 
 import java.io.IOException;
 
+import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 import im.actor.core.viewmodel.ConversationVM;
+import im.actor.runtime.mvvm.Value;
+import im.actor.runtime.mvvm.ValueChangedListener;
+import im.actor.runtime.mvvm.ValueDoubleChangedListener;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.conversation.ChatActivity;
@@ -40,6 +44,7 @@ public abstract class MessagesFragment extends DisplayListFragment<Message, Mess
 
     protected ChatLinearLayoutManager layoutManager;
     protected MessagesAdapter messagesAdapter;
+    protected CircularProgressBar progressView;
     private long firstUnread = -1;
     private boolean isUnreadLoaded = false;
 
@@ -49,6 +54,7 @@ public abstract class MessagesFragment extends DisplayListFragment<Message, Mess
     //
     public MessagesFragment(boolean isPrimaryMode) {
         this.isPrimaryMode = isPrimaryMode;
+        setUnbindOnPause(true);
     }
 
     public Peer getPeer() {
@@ -92,7 +98,9 @@ public abstract class MessagesFragment extends DisplayListFragment<Message, Mess
         // Main View
         //
         View res = inflate(inflater, container, R.layout.fragment_messages, displayList);
-
+        progressView = (CircularProgressBar) res.findViewById(R.id.loadingProgress);
+        progressView.setIndeterminate(true);
+        progressView.setVisibility(View.INVISIBLE);
 
         //
         // Loading background
@@ -262,6 +270,15 @@ public abstract class MessagesFragment extends DisplayListFragment<Message, Mess
         if (isPrimaryMode) {
             messenger().onConversationOpen(peer);
         }
+
+        // Bind Progress
+        bind(conversationVM.getIsLoaded(), conversationVM.getIsEmpty(), (isLoaded, valueModel, isEmpty, valueModel2) -> {
+            if (isEmpty && !isLoaded) {
+                showView(progressView);
+            } else {
+                hideView(progressView);
+            }
+        });
     }
 
     @Override

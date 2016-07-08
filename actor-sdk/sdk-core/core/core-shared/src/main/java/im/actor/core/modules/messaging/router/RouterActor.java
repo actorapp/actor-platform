@@ -231,6 +231,11 @@ public class RouterActor extends ModuleActor {
 
 
         //
+        // Update Chat State
+        //
+        updateChatState(peer);
+
+        //
         // Updating Counter
         //
         boolean isRead = false;
@@ -324,6 +329,7 @@ public class RouterActor extends ModuleActor {
 
     private Promise<Void> onOutgoingMessage(Peer peer, Message message) {
         conversation(peer).addOrUpdateItem(message);
+        updateChatState(peer);
         return Promise.success(null);
     }
 
@@ -341,6 +347,8 @@ public class RouterActor extends ModuleActor {
             ConversationState state = conversationStates.getValue(peer.getUnuqueId());
             conversationStates.addOrUpdateItem(state.changeOutSendDate(date));
 
+            updateChatState(peer);
+
             // Notify dialogs
             return getDialogsRouter().onMessage(peer, updatedMsg, -1);
         } else {
@@ -357,6 +365,8 @@ public class RouterActor extends ModuleActor {
             Message updatedMsg = msg
                     .changeState(MessageState.ERROR);
             conversation(peer).addOrUpdateItem(updatedMsg);
+
+            updateChatState(peer);
         }
         return Promise.success(null);
     }
@@ -430,6 +440,11 @@ public class RouterActor extends ModuleActor {
             state = state.changeIsLoaded(isEnded);
             isChanged = true;
         }
+        boolean isEmpty = conversation(peer).isEmpty();
+        if (state.isEmpty() != isEmpty) {
+            state = state.changeIsEmpty(isEmpty);
+            isChanged = true;
+        }
         if (isChanged) {
             conversationStates.addOrUpdateItem(state);
         }
@@ -478,6 +493,8 @@ public class RouterActor extends ModuleActor {
         // Delete Messages
         conversation(peer).removeItems(JavaUtil.unbox(rids));
 
+        updateChatState(peer);
+
         Message head = conversation(peer).getHeadValue();
 
         return getDialogsRouter().onMessageDeleted(peer, head.getMessageState() == MessageState.PENDING ? null : head);
@@ -487,12 +504,16 @@ public class RouterActor extends ModuleActor {
 
         conversation(peer).clear();
 
+        updateChatState(peer);
+
         return getDialogsRouter().onChatClear(peer);
     }
 
     private Promise<Void> onChatDelete(Peer peer) {
 
         conversation(peer).clear();
+
+        updateChatState(peer);
 
         return getDialogsRouter().onChatDelete(peer);
     }
@@ -608,6 +629,8 @@ public class RouterActor extends ModuleActor {
         visiblePeers.add(peer);
 
         markAsReadIfNeeded(peer);
+
+        updateChatState(peer);
     }
 
     private void onConversationHidden(Peer peer) {
@@ -653,6 +676,14 @@ public class RouterActor extends ModuleActor {
         }
     }
 
+    private void updateChatState(Peer peer) {
+        boolean isEmpty = conversation(peer).isEmpty();
+        ConversationState state = conversationStates.getValue(peer.getUnuqueId());
+        if (state.isEmpty() != isEmpty) {
+            state = state.changeIsEmpty(isEmpty);
+            conversationStates.addOrUpdateItem(state);
+        }
+    }
 
     //
     // Difference Handling

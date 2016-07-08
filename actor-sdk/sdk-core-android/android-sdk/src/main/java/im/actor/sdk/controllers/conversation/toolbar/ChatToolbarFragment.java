@@ -267,9 +267,6 @@ public class ChatToolbarFragment extends BaseFragment {
         // Add to contacts
         if (peer.getPeerType() == PeerType.PRIVATE) {
             menu.findItem(R.id.add_to_contacts).setVisible(!users().get(peer.getPeerId()).isContact().get());
-            bind(users().get(peer.getPeerId()).isContact(), (val, valueModel) -> {
-                getActivity().invalidateOptionsMenu();
-            });
         }
     }
 

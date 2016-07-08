@@ -9,7 +9,6 @@ import android.widget.Toast;
 
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.core.entity.Peer;
@@ -18,7 +17,7 @@ import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorSDKApplication;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.BaseActorSDKDelegate;
-import im.actor.sdk.controllers.conversation.ShareMenuField;
+import im.actor.sdk.controllers.conversation.attach.ShareMenuField;
 import im.actor.sdk.controllers.conversation.attach.AbsAttachFragment;
 import im.actor.sdk.controllers.conversation.attach.AttachFragment;
 import im.actor.sdk.controllers.settings.ActorSettingsCategories;

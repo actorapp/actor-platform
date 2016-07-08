@@ -1,18 +1,13 @@
 package im.actor.sdk;
 
-import android.app.Activity;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.view.ViewGroup;
-import android.widget.TableLayout;
 
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-
 import im.actor.core.entity.Peer;
 import im.actor.runtime.android.view.BindedViewHolder;
-import im.actor.sdk.controllers.conversation.ShareMenuField;
 import im.actor.sdk.controllers.conversation.attach.AbsAttachFragment;
 import im.actor.sdk.controllers.conversation.messages.content.MessageHolder;
 import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;

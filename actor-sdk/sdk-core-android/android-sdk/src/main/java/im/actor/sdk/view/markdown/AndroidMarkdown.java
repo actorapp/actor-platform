@@ -121,9 +121,9 @@ public class AndroidMarkdown {
                         Context ctx = view.getContext();
                         if (url.getUrl().startsWith("send:")) {
                             ctx = extractContext(ctx);
-                            if (ctx instanceof ChatActivity) {
-                                ActorSDK.sharedActor().getMessenger().sendMessage(((ChatActivity) ctx).getPeer(), url.getUrl().replace("send:", ""));
-                            }
+//                            if (ctx instanceof ChatActivity) {
+//                                ActorSDK.sharedActor().getMessenger().sendMessage(((ChatActivity) ctx).getPeer(), url.getUrl().replace("send:", ""));
+//                            }
                         } else {
                             Intent intent = buildChromeIntent().intent;
                             intent.setData(Uri.parse(url.getUrl()));
