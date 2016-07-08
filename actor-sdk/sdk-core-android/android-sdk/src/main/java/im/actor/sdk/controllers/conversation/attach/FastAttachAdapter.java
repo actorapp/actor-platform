@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.conversation.view;
+package im.actor.sdk.controllers.conversation.attach;
 
 import android.content.Context;
 import android.net.Uri;
@@ -22,15 +22,14 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import im.actor.runtime.mvvm.Value;
-import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.ValueModel;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.ActorBinder;
+import im.actor.sdk.util.Screen;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
-public class FastShareAdapter extends RecyclerView.Adapter<FastShareAdapter.FastShareVH> {
+public class FastAttachAdapter extends RecyclerView.Adapter<FastAttachAdapter.FastShareVH> {
 
     private ArrayList<String> imagesPath = new ArrayList<>();
     private Set<String> selected = new HashSet<>();
@@ -39,18 +38,15 @@ public class FastShareAdapter extends RecyclerView.Adapter<FastShareAdapter.Fast
 
     private ActorBinder binder;
 
-    public FastShareAdapter(Context context) {
+    public FastAttachAdapter(Context context) {
         this.context = context;
         binder = new ActorBinder();
-        binder.bind(messenger().getGalleryVM().getGalleryMediaPath(), new ValueChangedListener<ArrayList<String>>() {
-            @Override
-            public void onChanged(ArrayList<String> val, Value<ArrayList<String>> valueModel) {
-                imagesPath.clear();
-                imagesPath.addAll(val);
-                notifyDataSetChanged();
-            }
+        binder.bind(messenger().getGalleryVM().getGalleryMediaPath(), (val, valueModel) -> {
+            imagesPath.clear();
+            imagesPath.addAll(val);
+            notifyDataSetChanged();
         });
-        selectedVM = new ValueModel<Set<String>>("fast_share.selected", new HashSet<String>());
+        selectedVM = new ValueModel<>("fast_share.selected", new HashSet<>());
     }
 
     protected View inflate(int id, ViewGroup viewGroup) {
@@ -88,19 +84,16 @@ public class FastShareAdapter extends RecyclerView.Adapter<FastShareAdapter.Fast
             super(itemView);
             v = (SimpleDraweeView) itemView.findViewById(R.id.image);
             chb = (CheckBox) itemView.findViewById(R.id.check);
-            int size = context.getResources().getDimensionPixelSize(R.dimen.share_btn_size);
+            int size = Screen.dp(80);
             v.setLayoutParams(new FrameLayout.LayoutParams(size, size));
-            chb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (isChecked && data != null) {
-                        selected.add(data);
-                        notifyVm();
-                    } else {
-                        selected.remove(data);
-                        notifyVm();
+            chb.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (isChecked && data != null) {
+                    selected.add(data);
+                    notifyVm();
+                } else {
+                    selected.remove(data);
+                    notifyVm();
 
-                    }
                 }
             });
         }

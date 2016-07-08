@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import android.widget.Toast;
+
 import im.actor.core.entity.Contact;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.sdk.ActorSDK;
@@ -37,6 +38,10 @@ public class GroupUsersFragment extends BaseContactFragment {
 
     public GroupUsersFragment() {
         super(true, false, true);
+
+        setRootFragment(true);
+        setHomeAsUp(true);
+        setTitle(R.string.create_group_title);
     }
 
     public static GroupUsersFragment create(String title, String avatarPath) {

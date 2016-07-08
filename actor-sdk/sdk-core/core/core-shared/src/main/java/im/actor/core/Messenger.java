@@ -730,10 +730,8 @@ public class Messenger {
      * @param rid  message rundom id
      */
     @ObjectiveCName("updateMessageWithPeer:withText:withRid:")
-    public Command<Void> updateMessage(@NotNull Peer peer, @NotNull String text, long rid) {
-        return callback -> modules.getMessagesModule().updateMessage(peer, text, rid)
-                .then(v -> callback.onResult(v))
-                .failure(e -> callback.onError(e));
+    public Promise<Void> updateMessage(@NotNull Peer peer, @NotNull String text, long rid) {
+        return modules.getMessagesModule().updateMessage(peer, text, rid);
     }
 
 

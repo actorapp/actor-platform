@@ -1,27 +1,24 @@
 package im.actor.sdk.controllers.conversation;
 
-import android.view.View;
-
 public class ShareMenuField {
-    int icon;
-    int color;
-    int selector;
-    int id;
-    String title;
-    View.OnClickListener onClickListener;
 
-    public ShareMenuField(int icon, int color, String title, View.OnClickListener onClickListener) {
+    private int icon;
+    private int color;
+    private int selector;
+    private int id;
+    private String title;
+
+    public ShareMenuField(int id, int icon, int color, String title) {
+        this.id = id;
         this.icon = icon;
         this.color = color;
         this.title = title;
-        this.onClickListener = onClickListener;
     }
 
-    public ShareMenuField(String title, int id, int selector, View.OnClickListener onClickListener) {
+    public ShareMenuField(int id, String title, int selector) {
+        this.id = id;
         this.title = title;
         this.selector = selector;
-        this.onClickListener = onClickListener;
-        this.id = id;
     }
 
     public int getIcon() {
@@ -44,10 +41,6 @@ public class ShareMenuField {
         return id;
     }
 
-    public View.OnClickListener getOnClickListener() {
-        return onClickListener;
-    }
-
     public void setIcon(int icon) {
         this.icon = icon;
     }
@@ -66,9 +59,5 @@ public class ShareMenuField {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public void setOnClickListener(View.OnClickListener onClickListener) {
-        this.onClickListener = onClickListener;
     }
 }

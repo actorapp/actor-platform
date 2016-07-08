@@ -20,6 +20,7 @@ import im.actor.core.viewmodel.ConversationVM;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.conversation.ChatActivity;
+import im.actor.sdk.controllers.conversation.messages.content.AudioHolder;
 import im.actor.sdk.controllers.conversation.messages.content.preprocessor.ChatListProcessor;
 import im.actor.sdk.controllers.conversation.messages.content.MessageHolder;
 import im.actor.sdk.controllers.DisplayListFragment;
@@ -215,8 +216,6 @@ public abstract class MessagesFragment extends DisplayListFragment<Message, Mess
         } else {
             scrollToUnread(0, 0);
         }
-
-        checkBotEmptyView();
     }
 
     private void scrollToUnread(long unreadId, final int index) {
@@ -263,24 +262,13 @@ public abstract class MessagesFragment extends DisplayListFragment<Message, Mess
         if (isPrimaryMode) {
             messenger().onConversationOpen(peer);
         }
-        checkBotEmptyView();
     }
 
     @Override
     public void onCollectionChanged() {
         super.onCollectionChanged();
-        checkBotEmptyView();
         recalculateUnreadMessageIfNeeded();
     }
-
-    @Deprecated
-    public void checkBotEmptyView() {
-        if (getActivity() == null) {
-            return;
-        }
-        ((ChatActivity) getActivity()).checkEmptyBot();
-    }
-
 
     @Override
     public void onPause() {
@@ -289,6 +277,7 @@ public abstract class MessagesFragment extends DisplayListFragment<Message, Mess
         if (isPrimaryMode) {
             messenger().onConversationClosed(peer);
         }
+        AudioHolder.stopPlaying();
     }
 
     @Override

@@ -37,7 +37,12 @@
     </style>
 
     <style name="ChatActivityTheme" parent="AppToolbarTheme">
+        <item name="android:windowBackground">@android:color/white</item>
 
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
     </style>
 
     <style name="CommonActivityTheme" parent="AppToolbarTheme">

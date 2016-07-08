@@ -3,7 +3,6 @@ package im.actor.sdk.controllers.conversation.toolbar;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -28,8 +27,6 @@ import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.Log;
 import im.actor.runtime.actors.messages.Void;
-import im.actor.runtime.mvvm.Value;
-import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorSDKLauncher;
 import im.actor.sdk.ActorStyle;
@@ -51,11 +48,7 @@ public class ChatToolbarFragment extends BaseFragment {
     private static final int PERMISSIONS_REQUEST_FOR_VIDEO_CALL = 12;
 
     public static ChatToolbarFragment create(Peer peer) {
-        ChatToolbarFragment res = new ChatToolbarFragment();
-        Bundle args = new Bundle();
-        args.putLong("peer", peer.getUnuqueId());
-        res.setArguments(args);
-        return res;
+        return new ChatToolbarFragment(peer);
     }
 
     private Peer peer;
@@ -82,6 +75,13 @@ public class ChatToolbarFragment extends BaseFragment {
     public ChatToolbarFragment() {
         setRootFragment(true);
         setUnbindOnPause(true);
+    }
+
+    public ChatToolbarFragment(Peer peer) {
+        this();
+        Bundle args = new Bundle();
+        args.putLong("peer", peer.getUnuqueId());
+        setArguments(args);
     }
 
     @Override
@@ -303,22 +303,19 @@ public class ChatToolbarFragment extends BaseFragment {
             new AlertDialog.Builder(getActivity())
                     .setMessage(getString(R.string.alert_leave_group_message)
                             .replace("%1$s", groups().get(peer.getPeerId()).getName().get()))
-                    .setPositiveButton(R.string.alert_leave_group_yes, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog2, int which) {
-                            execute(messenger().leaveGroup(peer.getPeerId()), R.string.progress_common, new CommandCallback<Void>() {
-                                @Override
-                                public void onResult(Void res) {
+                    .setPositiveButton(R.string.alert_leave_group_yes, (dialog2, which) -> {
+                        execute(messenger().leaveGroup(peer.getPeerId()), R.string.progress_common, new CommandCallback<Void>() {
+                            @Override
+                            public void onResult(Void res) {
 
-                                }
+                            }
 
-                                @Override
-                                public void onError(final Exception e) {
-                                    Toast.makeText(getActivity(), R.string.toast_unable_leave, Toast.LENGTH_LONG).show();
-                                }
-                            });
-                            getActivity().finish();
-                        }
+                            @Override
+                            public void onError(final Exception e) {
+                                Toast.makeText(getActivity(), R.string.toast_unable_leave, Toast.LENGTH_LONG).show();
+                            }
+                        });
+                        getActivity().finish();
                     })
                     .setNegativeButton(R.string.dialog_cancel, null)
                     .show()

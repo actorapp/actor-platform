@@ -45,6 +45,8 @@
 
     <!-- Selector & divider colors -->
 
+    <color name="dialog_overlay">#33000000</color>
+
     <color name="selector_selected">#66999999</color>
     <color name="selector_hover">#33999999</color>
 

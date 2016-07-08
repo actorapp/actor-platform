@@ -7,14 +7,20 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
-import java.util.ArrayList;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import im.actor.core.entity.Peer;
 import im.actor.develop.R;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorSDKApplication;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.BaseActorSDKDelegate;
 import im.actor.sdk.controllers.conversation.ShareMenuField;
+import im.actor.sdk.controllers.conversation.attach.AbsAttachFragment;
+import im.actor.sdk.controllers.conversation.attach.AttachFragment;
 import im.actor.sdk.controllers.settings.ActorSettingsCategories;
 import im.actor.sdk.controllers.settings.ActorSettingsCategory;
 import im.actor.sdk.controllers.settings.ActorSettingsField;
@@ -64,43 +70,28 @@ public class Application extends ActorSDKApplication {
     }
 
     private class ActorSDKDelegate extends BaseActorSDKDelegate {
+        
+        @Nullable
+        @Override
+        public AbsAttachFragment fragmentForAttachMenu(Peer peer) {
+            return new AttachFragment(peer) {
 
-//        @Override
-//        public BaseJsonHolder getCustomMessageViewHolder(int dataTypeHash, MessagesAdapter messagesAdapter, ViewGroup viewGroup) {
-//            if(dataTypeHash == "tcmessage".hashCode()){
-//                return new TCMessageHolder(messagesAdapter, viewGroup, R.layout.tc_holder, false);
-//            }
-//            return null;
-//        }
+                @Override
+                protected List<ShareMenuField> onCreateFields() {
+                    List<ShareMenuField> res = super.onCreateFields();
+                    res.add(new ShareMenuField(R.id.share_test, R.drawable.ic_edit_white_24dp, ActorSDK.sharedActor().style.getAccentColor(), "lol"));
+                    return res;
+                }
 
-//
-@Override
-public void addCustomShareMenuFields(ArrayList<ShareMenuField> shareMenuFields) {
-    shareMenuFields.add(new ShareMenuField(R.drawable.conv_location_icon, ActorSDK.sharedActor().style.getAccentColor(), "lol", new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Toast.makeText(v.getContext(), "Hey", Toast.LENGTH_LONG).show();
+                @Override
+                protected void onItemClicked(int id) {
+                    super.onItemClicked(id);
+                    if (id == R.id.share_test) {
+                        Toast.makeText(getContext(), "Hey", Toast.LENGTH_LONG).show();
+                    }
+                }
+            };
         }
-    }));
-    shareMenuFields.add(new ShareMenuField(R.drawable.conv_location_icon, ActorSDK.sharedActor().style.getMainColor(), "lol", new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Toast.makeText(v.getContext(), "Hey", Toast.LENGTH_LONG).show();
-        }
-    }));
-    shareMenuFields.add(new ShareMenuField(R.drawable.conv_location_icon, ActorSDK.sharedActor().style.getDividerColor(), "lol", new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Toast.makeText(v.getContext(), "Hey", Toast.LENGTH_LONG).show();
-        }
-    }));
-    shareMenuFields.add(new ShareMenuField(R.drawable.conv_location_icon, ActorSDK.sharedActor().style.getConvLikeColor(), "lol", new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Toast.makeText(v.getContext(), "Hey", Toast.LENGTH_LONG).show();
-        }
-    }));
-}
 
 //        @Override
 //        public BaseGroupInfoActivity getGroupInfoIntent(int gid) {
@@ -130,11 +121,11 @@ public void addCustomShareMenuFields(ArrayList<ShareMenuField> shareMenuFields) 
                         public ActorSettingsCategories getBeforeSettingsCategories() {
                             return new ActorSettingsCategories()
                                     .addCategory(new ActorSettingsCategory("azaza")
-                                                    .addField(new ActorSettingsField(R.id.terminateSessions)
-                                                                    .setName("blabla")
-                                                                    .setIconResourceId(R.drawable.ic_edit_black_24dp)
-                                                                    .setRightView(blablaCheckBox)
-                                                    )
+                                            .addField(new ActorSettingsField(R.id.terminateSessions)
+                                                    .setName("blabla")
+                                                    .setIconResourceId(R.drawable.ic_edit_black_24dp)
+                                                    .setRightView(blablaCheckBox)
+                                            )
                                     );
                         }
 

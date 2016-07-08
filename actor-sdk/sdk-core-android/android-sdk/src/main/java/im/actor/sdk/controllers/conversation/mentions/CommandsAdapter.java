@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.conversation.botcommands;
+package im.actor.sdk.controllers.conversation.mentions;
 
 import android.app.Activity;
 import android.content.Context;

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import im.actor.core.entity.Peer;
 import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.sdk.controllers.conversation.ShareMenuField;
+import im.actor.sdk.controllers.conversation.attach.AbsAttachFragment;
 import im.actor.sdk.controllers.conversation.messages.content.MessageHolder;
 import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
 import im.actor.sdk.controllers.settings.BaseGroupInfoActivity;
@@ -57,10 +58,60 @@ public interface ActorSDKDelegate {
      * If not null returned, overrides users profile fragment
      *
      * @param uid user id
-     * @return Actor Intent
+     * @return Fragment
      */
     @Nullable
     Fragment fragmentForProfile(int uid);
+
+
+    //
+    // Chat
+    //
+
+    /**
+     * If Not null returned, overrides attachment menu
+     *
+     * @param peer peer
+     * @return Subclass from AbsAttachFragment
+     */
+    @Nullable
+    AbsAttachFragment fragmentForAttachMenu(Peer peer);
+
+    /**
+     * If Not null returned, overrides default toolbar (no-ui) fragment
+     *
+     * @param peer peer
+     * @return Custom Toolbar fragment
+     */
+    @Nullable
+    Fragment fragmentForToolbar(Peer peer);
+
+
+    /**
+     * Override for hacking default messages view holders
+     *
+     * @param base base view holder class
+     * @param args args passed to view holder
+     * @param <T>  base view holder class
+     * @param <J>  return class
+     * @return hacked view holder
+     */
+    <T extends BindedViewHolder, J extends T> J getViewHolder(Class<T> base, Object... args);
+
+    /**
+     * Override for hacking custom messages view holders
+     *
+     * @param dataTypeHash    json dataType hash
+     * @param messagesAdapter adapter to pass to holder
+     * @param viewGroup       ViewGroup to pass to holder
+     * @return custom view holder
+     */
+    MessageHolder getCustomMessageViewHolder(int dataTypeHash, MessagesAdapter messagesAdapter, ViewGroup viewGroup);
+
+
+    //
+    // Settings
+    //
 
     /**
      * If not null returned, overrides settings activity intent
@@ -99,34 +150,10 @@ public interface ActorSDKDelegate {
      */
     ActorIntent getChatIntent(Peer peer, boolean compose);
 
-    /**
-     * Override for hacking default messages view holders
-     *
-     * @param base base view holder class
-     * @param args args passed to view holder
-     * @param <T>  base view holder class
-     * @param <J>  return class
-     * @return hacked view holder
-     */
-    <T extends BindedViewHolder, J extends T> J getViewHolder(Class<T> base, Object... args);
 
-    /**
-     * Override for hacking custom messages view holders
-     *
-     * @param dataTypeHash    json dataType hash
-     * @param messagesAdapter adapter to pass to holder
-     * @param viewGroup       ViewGroup to pass to holder
-     * @return custom view holder
-     */
-    MessageHolder getCustomMessageViewHolder(int dataTypeHash, MessagesAdapter messagesAdapter, ViewGroup viewGroup);
-
-    /**
-     * Return True if custom share menu is clicked
-     *
-     * @param activity called from activity
-     * @return true if custom share menu shown
-     */
-    boolean onAttachMenuClicked(Activity activity);
+    //
+    // Custom Notifications
+    //
 
     /**
      * Override for setting specific notification sound for peer
@@ -159,14 +186,4 @@ public interface ActorSDKDelegate {
      * @return notification sound color
      */
     int getNotificationColor();
-
-
-    /**
-     * Method for hacking share menu in dialog
-     *
-     * @param shareMenu share menu
-     */
-    void onShareMenuCreated(TableLayout shareMenu);
-
-    void addCustomShareMenuFields(ArrayList<ShareMenuField> menuFields);
 }

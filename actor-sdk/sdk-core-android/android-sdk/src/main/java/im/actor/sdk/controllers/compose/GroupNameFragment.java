@@ -36,6 +36,12 @@ public class GroupNameFragment extends BaseFragment {
 
     private KeyboardHelper helper;
 
+    public GroupNameFragment() {
+        setRootFragment(true);
+        setTitle(R.string.create_group_title);
+        setHomeAsUp(true);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         helper = new KeyboardHelper(getActivity());

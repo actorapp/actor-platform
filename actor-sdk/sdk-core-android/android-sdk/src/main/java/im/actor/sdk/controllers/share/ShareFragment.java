@@ -10,10 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
+import im.actor.core.entity.content.AbsContent;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.dialogs.DialogsFragment;
@@ -132,20 +134,25 @@ public class ShareFragment extends BaseFragment implements DialogsFragmentDelega
                         intent.putExtra(Intents.EXTRA_FORWARD_CONTENT, shareAction.getForwardTextRaw());
                     }
 
+
                     if (shareAction.getText() != null) {
                         messenger().sendMessage(peer, shareAction.getText());
-                        startActivity(Intents.openDialog(peer, false, activity));
                     } else if (shareAction.getUris().size() > 0) {
                         for (String sendUri : shareAction.getUris()) {
                             executeSilent(messenger().sendUri(peer, Uri.parse(sendUri)));
                         }
-                        startActivity(Intents.openDialog(peer, false, activity));
                     } else if (shareAction.getUserId() != null) {
                         String userName = users().get(shareAction.getUserId()).getName().get();
                         String mentionTitle = "@".concat(userName);
                         ArrayList<Integer> mention = new ArrayList<>();
                         mention.add(shareAction.getUserId());
                         messenger().sendMessage(peer, mentionTitle, "[".concat(mentionTitle).concat("](people://".concat(Integer.toString(shareAction.getUserId())).concat(")")), mention);
+                    } else if (shareAction.getDocContent() != null) {
+                        try {
+                            messenger().forwardContent(peer, AbsContent.parse(shareAction.getDocContent()));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
 
                     startActivity(intent);

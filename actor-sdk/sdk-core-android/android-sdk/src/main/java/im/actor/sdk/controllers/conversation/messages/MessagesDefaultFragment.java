@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.view.Menu;
@@ -54,7 +55,7 @@ public class MessagesDefaultFragment extends MessagesFragment {
 
     @Override
     public void onAvatarLongClick(int uid) {
-        ((ChatActivity) getActivity()).insertMention(uid);
+        // ((ChatActivity) getActivity()).insertMention(uid);
     }
 
     @Override
@@ -74,8 +75,11 @@ public class MessagesDefaultFragment extends MessagesFragment {
             }
             return true;
         } else {
-            if (message.getContent() instanceof TextContent && message.getSenderId() == myUid() && message.getSortDate() >= messenger().loadLastMessageDate(peer)) {
-                ((ChatActivity) getActivity()).onEditTextMessage(message.getRid(), ((TextContent) message.getContent()).getText());
+            if (message.getContent() instanceof TextContent && message.getSenderId() == myUid()) {
+                Fragment fragment = getParentFragment();
+                if (fragment instanceof MessagesFragmentCallback) {
+                    ((MessagesFragmentCallback) fragment).onMessageEdit(message.getRid(), ((TextContent) message.getContent()).getText());
+                }
                 return true;
             }
         }
@@ -179,25 +183,24 @@ public class MessagesDefaultFragment extends MessagesFragment {
                         return true;
 
                     } else if (menuItem.getItemId() == R.id.quote) {
-                        String quote = "";
+
                         String rawQuote = "";
                         int i = 0;
                         for (Message m : messagesAdapter.getSelected()) {
                             if (m.getContent() instanceof TextContent) {
                                 UserVM user = users().get(m.getSenderId());
                                 String nick = user.getNick().get();
-                                String name = (nick != null && !nick.isEmpty()) ? "@".concat(nick) : user.getName().get();
+                                String name = (nick != null && !nick.isEmpty()) ? "@" + nick : user.getName().get();
                                 String text = ((TextContent) m.getContent()).getText();
-                                quote = quote.concat(name).concat(": ").concat(text);
-                                rawQuote = rawQuote.concat(name).concat(": ").concat(text).concat("\n");
-                                if (i++ != messagesAdapter.getSelectedCount() - 1) {
-                                    quote += ";\n";
-                                } else {
-                                    quote += "\n";
-                                }
+                                rawQuote = rawQuote + name + ": " + text + "\n";
                             }
                         }
-                        ((ChatActivity) getActivity()).addQuote(quote, rawQuote);
+
+                        Fragment fragment = getParentFragment();
+                        if (fragment instanceof MessagesFragmentCallback) {
+                            ((MessagesFragmentCallback) fragment).onMessageQuote(rawQuote);
+                        }
+
                         actionMode.finish();
                         return true;
 

@@ -42,13 +42,13 @@ import im.actor.sdk.view.emoji.smiles.SmilesPack;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
-public class EmojiKeyboard extends BaseKeyboard implements OnSmileClickListener, OnStickerClickListener,
+public class EmojiKeyboard extends BaseKeyboard implements OnSmileClickListener,
         OnBackspaceClickListener {
 
     private static final String TAG = "EmojiKeyboard";
 
     private static final long BINDING_DELAY = 150;
-    private Peer peer;
+    private OnStickerClickListener onStickerClickListener;
     private View stickerIndicatorContainer;
     private View stickerSwitchContainer;
     private SmilePagerAdapter mEmojisAdapter;
@@ -200,13 +200,19 @@ public class EmojiKeyboard extends BaseKeyboard implements OnSmileClickListener,
                 .start();
     }
 
-    public void setPeer(Peer peer) {
-        this.peer = peer;
+
+    public void onStickerClicked(Sticker sticker) {
+        if (onStickerClickListener != null) {
+            onStickerClickListener.onStickerClicked(sticker);
+        }
     }
 
-    @Override
-    public void onStickerClicked(Sticker sticker) {
-        messenger().sendSticker(peer, sticker);
+    public OnStickerClickListener getOnStickerClickListener() {
+        return onStickerClickListener;
+    }
+
+    public void setOnStickerClickListener(OnStickerClickListener onStickerClickListener) {
+        this.onStickerClickListener = onStickerClickListener;
     }
 
     public LinearLayout getStickerIndicatorContainer() {
