@@ -43,6 +43,7 @@
         <item name="windowNoTitle">true</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
+        <item name="windowActionModeOverlay">true</item>
     </style>
 
     <style name="CommonActivityTheme" parent="AppToolbarTheme">

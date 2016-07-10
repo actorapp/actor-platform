@@ -36,6 +36,8 @@ public class Application extends ActorSDKApplication {
 
         ActorStyle style = ActorSDK.sharedActor().style;
         style.setDialogsActiveTextColor(0xff5882ac);
+        style.setShowAvatarPrivateInTitle(false);
+
         ActorSDK.sharedActor().setFastShareEnabled(true);
 
         ActorSDK.sharedActor().setCallsEnabled(true);
@@ -44,6 +46,7 @@ public class Application extends ActorSDKApplication {
         ActorSDK.sharedActor().setPrivacyText("bla bla bla");
 
         ActorSDK.sharedActor().setVideoCallsEnabled(true);
+
 
 //        ActorSDK.sharedActor().setTwitter("");
 //        ActorSDK.sharedActor().setHomePage("http://www.foo.com");
@@ -69,7 +72,7 @@ public class Application extends ActorSDKApplication {
     }
 
     private class ActorSDKDelegate extends BaseActorSDKDelegate {
-        
+
         @Nullable
         @Override
         public AbsAttachFragment fragmentForAttachMenu(Peer peer) {

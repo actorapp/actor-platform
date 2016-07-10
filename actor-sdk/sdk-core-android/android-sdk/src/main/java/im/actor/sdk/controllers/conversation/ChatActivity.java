@@ -62,11 +62,6 @@ public class ChatActivity extends BaseActivity {
 //        autocompleteList = (RecyclerListView) findViewById(R.id.mentionsList);
 //        autocompleteList.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
 
-
-//        emptyBotSend = findViewById(R.id.botEmptyTextBlock);
-//        emptyBotHint = (TextView) findViewById(R.id.botEmptyHint);
-
-//        checkEmptyBot();
     }
 
 
@@ -92,19 +87,6 @@ public class ChatActivity extends BaseActivity {
         return mode;
     }
 
-//    @Override
-//    protected void onPerformBind() {
-//        super.onPerformBind();
-//            // Bind empty bot about
-////            if (isBot) {
-////                bind(users().get(peer.getPeerId()).getAbout(), (about, valueModel) -> {
-////                    emptyBotHint.setText((about != null && !about.isEmpty()) ? about : getString(R.string.chat_empty_bot_about));
-////                });
-////            }
-//    }
-
-    // Mentions
-    // Bot commands
 
 //    private void showAutoComplete(boolean initEmpty, boolean isMentions) {
 //        if (isAutocompleteVisible) {
