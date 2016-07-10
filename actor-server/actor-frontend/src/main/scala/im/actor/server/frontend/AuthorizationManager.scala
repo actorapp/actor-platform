@@ -3,6 +3,7 @@ package im.actor.server.frontend
 import java.security.{ MessageDigest, SecureRandom }
 
 import akka.actor._
+import akka.http.scaladsl.util.FastFuture
 import akka.pattern.pipe
 import akka.stream.actor.ActorPublisher
 import better.files.File
@@ -130,7 +131,7 @@ final class AuthorizationManager(serverKeys: Seq[ServerKey], sessionClient: Acto
         if (authId == 0L) {
           authId = IdUtils.nextAuthId(ThreadLocalSecureRandom.current())
           db.run(AuthIdRepo.create(authId, None, None))
-        } else Future.successful(())
+        } else FastFuture.successful(())
 
       f onComplete {
         case Success(_) ⇒

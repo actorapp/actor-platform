@@ -1,6 +1,7 @@
 package im.actor.server.messaging
 
 import akka.actor.ActorSystem
+import akka.http.scaladsl.util.FastFuture
 import im.actor.api.rpc.messaging._
 import im.actor.server.group.GroupExtension
 import im.actor.server.model.{ Peer, PeerType }
@@ -30,7 +31,7 @@ trait PushText {
           case _ ⇒
             formatAuthored(peer, outUser, clientName, dm.name)
         }
-      case unsupported ⇒ Future.successful(("", ""))
+      case unsupported ⇒ FastFuture.successful(("", ""))
     }
   }
 
@@ -40,7 +41,7 @@ trait PushText {
         for {
           group ← GroupExtension(system).getApiStruct(groupId, userId)
         } yield (s"$authorName@${group.title}: $message", s"$authorName@${group.title}: $CensoredText")
-      case Peer(PeerType.Private, _) ⇒ Future.successful((s"$authorName: $message", s"$authorName: $CensoredText"))
+      case Peer(PeerType.Private, _) ⇒ FastFuture.successful((s"$authorName: $message", s"$authorName: $CensoredText"))
     }
   }
 

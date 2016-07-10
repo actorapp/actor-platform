@@ -25,7 +25,7 @@ public class RootFragment extends BaseFragment {
     public RootFragment() {
         setRootFragment(true);
         setUnbindOnPause(true);
-        setTitle(R.string.app_name);
+        setTitle(ActorSDK.sharedActor().getAppName());
     }
 
     @Nullable

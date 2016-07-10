@@ -59,10 +59,12 @@ object Frontend {
     val serverKeys = ServerKey.loadKeysFromConfig(serverConfig).get
     require(
       serverKeys.nonEmpty,
-      """==========================================================================
+      """
+        |===========================================================================
         |NO SERVER KEYS FOUND. CONFIGURE SERVER KEYS AND RESTART SERVER!
-        |CONFIGURATION INSTRUCTION: https://developer.actor.im/docs/securing-server
-        |==========================================================================
+        |CONFIGURATION INSTRUCTION:
+        |https://developer.actor.im/v1.0/docs/securing-server#generating-server-keys
+        |===========================================================================
       """.stripMargin
     )
     serverConfig.getConfigList("endpoints") map Endpoint.fromConfig foreach {

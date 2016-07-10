@@ -32,6 +32,13 @@ This repository contains all of the source code you need to start your own serve
 * [iPhone/iPad 7.0+](https://actor.im/ios)
 * [Web](https://app.actor.im/)
 
+# Lastest SDK versions
+ Platform   | Link 
+----------- | ------
+Server      | [![Maven Central](https://img.shields.io/maven-central/v/im.actor.server/actor-server-sdk.svg)](https://maven-badges.herokuapp.com/maven-central/im.actor.server/actor-server-sdk)
+Android     | [![Maven Central](https://img.shields.io/maven-central/v/im.actor/android-sdk.svg)](https://maven-badges.herokuapp.com/maven-central/im.actor/android-sdk)
+iOS         | [![CocoaPods](https://img.shields.io/cocoapods/v/ActorSDK-iOS.svg)](https://cocoapods.org/pods/ActorSDK-iOS)
+
 # Documentation
 
 Documentation is available at our [Actor Developer Hub](https://developer.actor.im/)

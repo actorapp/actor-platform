@@ -66,7 +66,7 @@ trait GroupPeerCommandHandlers extends PeersImplicits {
     withMembers { (_, invitedUserIds, _) ⇒
       if (invitedUserIds contains readerUserId) {
         groupExt.joinAfterFirstRead(groupId, readerUserId, mr.readerAuthId)
-      } else Future.successful(())
+      } else FastFuture.successful(())
     }
 
     val canRead = canMakeRead(state, mr)
@@ -76,9 +76,9 @@ trait GroupPeerCommandHandlers extends PeersImplicits {
           Future.traverse(memberIds - readerUserId) { memberId ⇒
             dialogExt.ackMessageRead(Peer.privat(memberId), mr)
           } map (_ ⇒ ())
-        } else Future.successful(())
+        } else FastFuture.successful(())
       }
-    } else Future.successful(())) map { _ ⇒ MessageReadAck() } pipeTo sender() recover {
+    } else FastFuture.successful(())) map { _ ⇒ MessageReadAck() } pipeTo sender() recover {
       case e ⇒
         log.error(e, "Failed to mark messages read")
         throw e

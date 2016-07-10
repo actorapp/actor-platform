@@ -171,7 +171,7 @@ private[user] sealed trait Queries {
   def getName(userId: Int, clientUserId: Int): Future[String] =
     for {
       localNameOpt ← getLocalName(clientUserId, userId)
-      name ← localNameOpt map Future.successful getOrElse getName(userId)
+      name ← localNameOpt map FastFuture.successful getOrElse getName(userId)
     } yield name
 
   def getUser(userId: Int): Future[UserState] =

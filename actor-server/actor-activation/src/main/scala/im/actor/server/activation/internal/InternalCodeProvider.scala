@@ -1,6 +1,7 @@
 package im.actor.server.activation.internal
 
 import akka.actor.ActorSystem
+import akka.http.scaladsl.util.FastFuture
 import cats.data.{ Xor, XorT }
 import im.actor.api.rpc.messaging.ApiTextMessage
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
@@ -37,7 +38,7 @@ private[activation] final class InternalCodeProvider(system: ActorSystem)
       _ ← fromFuture(
         if (wasOnlineRecently(lastSeen.getMillis))
           sendCode(userId, code.code)
-        else Future.successful(())
+        else FastFuture.successful(())
       )
     } yield ()).fold(
       failure ⇒ {

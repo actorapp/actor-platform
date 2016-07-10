@@ -28,6 +28,8 @@ final class ApplePushExtension(system: ActorSystem) extends Extension with AnyRe
 
   private val log = Logging(system, this)
 
+  private val MaxCreateAttempts = 50
+
   type Client = ApnsClient[SimpleApnsPushNotification]
 
   import system.dispatcher
@@ -59,7 +61,8 @@ final class ApplePushExtension(system: ActorSystem) extends Extension with AnyRe
 
   private def fetchCreds(authIds: Set[Long]): Future[Seq[ApplePushCredentials]] = db.run(ApplePushCredentialsRepo.find(authIds))
 
-  private def createClient(cert: ApnsCert): Future[Client] = {
+  private def createClient(cert: ApnsCert, attemptsLeft: Int): Future[Client] = {
+    val certKey = extractCertKey(cert)
     val host = cert.isSandbox match {
       case false ⇒ ApnsClient.PRODUCTION_APNS_HOST
       case true  ⇒ ApnsClient.DEVELOPMENT_APNS_HOST
@@ -69,7 +72,7 @@ final class ApplePushExtension(system: ActorSystem) extends Extension with AnyRe
       blocking {
         val client = new ApnsClient[SimpleApnsPushNotification](new File(cert.path), cert.password)
         client.connect(host).get(20, TimeUnit.SECONDS)
-        log.debug("Established client connection for cert: {}, is voip: {}", extractCertKey(cert), cert.isVoip)
+        log.debug("Established client connection for cert: {}, is voip: {}", certKey, cert.isVoip)
         client
       }
     }
@@ -84,7 +87,12 @@ final class ApplePushExtension(system: ActorSystem) extends Extension with AnyRe
           case e ⇒
             log.warning("Error on client connection: {}", e)
         }
-        system.scheduler.scheduleOnce(5.seconds) { recreateClient(cert) }
+        targetMap(cert) -= certKey
+        if (attemptsLeft > 0) {
+          system.scheduler.scheduleOnce(10.seconds) { recreateClient(cert, attemptsLeft - 1) }
+        } else {
+          log.error("Failed to create client for cert: {}, {} attempts exceeded!", certKey, MaxCreateAttempts)
+        }
     }
 
     connectFuture
@@ -92,16 +100,16 @@ final class ApplePushExtension(system: ActorSystem) extends Extension with AnyRe
 
   // recreate and try to connect client, if client connection failed
   // during previous creation
-  private def recreateClient(cert: ApnsCert): Unit = {
+  private def recreateClient(cert: ApnsCert, attemptLeft: Int): Unit = {
     val certKey = extractCertKey(cert)
-    log.debug("Retry to create client for cert : {}, is voip: {}", certKey, cert.isVoip)
-    val targetMap = if (cert.isVoip) voipClients else clients
-    targetMap -= certKey
-    targetMap += certKey → createClient(cert)
+    log.debug("Retry to create client for cert : {}, is voip: {}, {} attempts left", certKey, cert.isVoip, attemptLeft)
+    targetMap(cert) += certKey → createClient(cert, attemptLeft)
   }
 
+  private def targetMap(cert: ApnsCert) = if (cert.isVoip) voipClients else clients
+
   private def createClients(certs: List[ApnsCert]): TrieMap[String, Future[Client]] =
-    TrieMap(certs map (c ⇒ extractCertKey(c) → createClient(c)): _*)
+    TrieMap(certs map (c ⇒ extractCertKey(c) → createClient(c, MaxCreateAttempts)): _*)
 
   private def extractCertKey(cert: ApnsCert): String = (cert.key, cert.bundleId) match {
     case (Some(key), _)      ⇒ key.toString

@@ -1,6 +1,7 @@
 package im.actor.server.migrations
 
 import akka.actor.ActorSystem
+import akka.http.scaladsl.util.FastFuture
 import akka.util.Timeout
 import im.actor.server.db.DbExtension
 import im.actor.server.group.GroupErrors.NoBotFound
@@ -45,7 +46,7 @@ object IntegrationTokenMigrator extends Migration {
       optToken ← GroupExtension(system).getIntegrationToken(groupId)
       _ ← optToken map { token ⇒ kv.upsert(token, groupId) } getOrElse {
         system.log.warning("Could not find integration token in group {}", groupId)
-        Future.successful(())
+        FastFuture.successful(())
       }
     } yield {
       system.log.info("Integration token migrated for group {}", groupId)

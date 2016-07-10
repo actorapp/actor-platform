@@ -114,7 +114,7 @@ final class LocalFileStorageAdapter(_system: ActorSystem)
     for {
       isComplete ← haveAllParts(fileDir, partNames, fileSize)
       result ← concatFiles(fileDir, partNames, fileName.safe, fileSize)
-      _ ← if (isComplete) deleteUploadedParts(fileDir, partNames) else Future.successful(())
+      _ ← if (isComplete) deleteUploadedParts(fileDir, partNames) else FastFuture.successful(())
       _ ← db.run(FileRepo.setUploaded(fileId, fileName.safe))
     } yield ()
   }
