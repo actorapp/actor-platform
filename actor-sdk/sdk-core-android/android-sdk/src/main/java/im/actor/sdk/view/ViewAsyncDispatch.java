@@ -1,10 +1,21 @@
 package im.actor.sdk.view;
 
+import android.os.Handler;
+import android.os.HandlerThread;
+
 import im.actor.runtime.Runtime;
 import im.actor.runtime.function.Cancellable;
 import im.actor.runtime.function.CancellableSimple;
 
 public class ViewAsyncDispatch {
+
+    private static final HandlerThread THREAD = new HandlerThread("async_view");
+    private static final Handler HANDLER;
+
+    static {
+        THREAD.start();
+        HANDLER = new Handler(THREAD.getLooper());
+    }
 
     private ThreadLocal<Cancellable> currentCancellable = new ThreadLocal<>();
 
@@ -15,7 +26,7 @@ public class ViewAsyncDispatch {
     }
 
     public void dispatch(Cancellable cancellable, Runnable runnable) {
-        Runtime.dispatch(() -> {
+        HANDLER.post(() -> {
             if (cancellable.isCancelled()) {
                 return;
             }

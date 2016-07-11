@@ -4,14 +4,13 @@
 
 package im.actor.runtime.android;
 
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-
 import im.actor.runtime.DispatcherRuntime;
+import im.actor.runtime.actors.ThreadPriority;
+import im.actor.runtime.android.threading.AndroidImmediateDispatcher;
 
 public class AndroidDispatcherProvider implements DispatcherRuntime {
 
-    private Executor EXECUTOR;
+    private AndroidImmediateDispatcher dispatcher;
 
     public AndroidDispatcherProvider() {
 
@@ -19,9 +18,9 @@ public class AndroidDispatcherProvider implements DispatcherRuntime {
 
     @Override
     public synchronized void dispatch(Runnable runnable) {
-        if (EXECUTOR == null) {
-            EXECUTOR = Executors.newSingleThreadExecutor();
+        if (dispatcher == null) {
+            dispatcher = new AndroidImmediateDispatcher("callback_dispatcher", ThreadPriority.LOW);
         }
-        EXECUTOR.execute(runnable);
+        dispatcher.dispatchNow(runnable);
     }
 }

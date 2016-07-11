@@ -102,12 +102,16 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
                 .setFadeDuration(0)
                 .setRoundingParams(new RoundingParams()
                         .setRoundAsCircle(true)
-                        .setRoundingMethod(RoundingParams.RoundingMethod.BITMAP_ONLY))
+                        .setRoundingMethod(RoundingParams.RoundingMethod.OVERLAY_COLOR)
+                        .setOverlayColor(ActorSDK.sharedActor().style.getMainBackgroundColor()))
                 .build();
         draweeHolder = DraweeHolder.create(hierarchy, getContext());
         draweeHolder.getTopLevelDrawable().setCallback(this);
+
         setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(72)));
         setDividerPaddingLeft(Screen.dp(72));
+
+//        setLayerType(LAYER_TYPE_HARDWARE, null);
     }
 
     @Override

@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.ThreadPriority;
 import im.actor.runtime.android.threading.AndroidDispatcher;
+import im.actor.runtime.android.threading.AndroidImmediateDispatcher;
 import im.actor.runtime.android.time.SntpClient;
 import im.actor.runtime.generic.GenericThreadingProvider;
 import im.actor.runtime.Log;
@@ -74,5 +75,10 @@ public class AndroidThreadingProvider extends GenericThreadingProvider {
     @Override
     public Dispatcher createDispatcher(String name) {
         return new AndroidDispatcher(name);
+    }
+
+    @Override
+    public ImmediateDispatcher createImmediateDispatcher(String name, ThreadPriority priority) {
+        return new AndroidImmediateDispatcher(name, priority);
     }
 }

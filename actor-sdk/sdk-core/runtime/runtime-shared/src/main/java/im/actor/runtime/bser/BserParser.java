@@ -18,7 +18,7 @@ import im.actor.runtime.collections.SparseArray;
 
 public final class BserParser {
     public static SparseArray<Object> deserialize(DataInput is) throws IOException {
-        SparseArray<Object> hashMap = new SparseArray<Object>();
+        SparseArray<Object> hashMap = new SparseArray<>();
         while (!is.isEOF()) {
             long currentTag = is.readVarInt();
 
@@ -46,7 +46,7 @@ public final class BserParser {
             if (hashMap.get(id) instanceof List) {
                 ((List) hashMap.get(id)).add(res);
             } else {
-                ArrayList<Object> list = new ArrayList<Object>();
+                ArrayList<Object> list = new ArrayList<>();
                 list.add(hashMap.get(id));
                 list.add(res);
                 hashMap.put(id, list);

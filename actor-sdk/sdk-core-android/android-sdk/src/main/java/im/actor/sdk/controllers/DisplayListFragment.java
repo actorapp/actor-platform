@@ -69,7 +69,10 @@ public abstract class DisplayListFragment<T extends BserObject & ListEngineItem,
 
     protected void configureRecyclerView(RecyclerView recyclerView) {
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setRecycleChildrenOnDetach(false);
+        linearLayoutManager.setSmoothScrollbarEnabled(false);
+        recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHorizontalScrollBarEnabled(false);
         recyclerView.setVerticalScrollBarEnabled(true);
     }
