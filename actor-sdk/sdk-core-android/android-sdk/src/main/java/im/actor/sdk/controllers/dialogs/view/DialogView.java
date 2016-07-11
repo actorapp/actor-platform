@@ -36,6 +36,7 @@ import im.actor.core.entity.PeerType;
 import im.actor.core.viewmodel.FileCallback;
 import im.actor.runtime.files.FileSystemReference;
 import im.actor.runtime.mvvm.ValueChangedListener;
+import im.actor.runtime.mvvm.ValueModel;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.R;
@@ -220,18 +221,21 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
         if (dialog.getPeer().getPeerType() == PeerType.PRIVATE) {
             bindedUid = dialog.getPeer().getPeerId();
 
+            ValueModel<Boolean> typingModel = messenger().getTyping(bindedUid);
+
             privateTypingListener = (val, Value) -> {
                 isPrivateTyping = val;
                 invalidate();
             };
-            messenger().getTyping(bindedUid).subscribe(privateTypingListener);
+            typingModel.subscribe(privateTypingListener, false);
+            isPrivateTyping = typingModel.get();
         } else if (dialog.getPeer().getPeerType() == PeerType.GROUP) {
             bindedGid = dialog.getPeer().getPeerId();
             isPrivateTyping = false;
-            groupTypingListener = (val, Value) -> {
-                // TODO: Implement Group Typing
-            };
-            messenger().getGroupTyping(bindedGid).subscribe(groupTypingListener);
+//            groupTypingListener = (val, Value) -> {
+//                // TODO: Implement Group Typing
+//            };
+//            messenger().getGroupTyping(bindedGid).subscribe(groupTypingListener);
         } else {
             isPrivateTyping = false;
         }
@@ -396,6 +400,7 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
     public void layoutReady(DialogLayout res) {
         super.layoutReady(res);
 
+        draweeHolder.onAttach();
         if (res.getImageRequest() != null) {
             draweeHolder.setController(Fresco.newDraweeControllerBuilder()
                     .setImageRequest(res.getImageRequest())
@@ -463,35 +468,37 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
             messenger().getGroupTyping(bindedGid).unsubscribe(groupTypingListener);
             groupTypingListener = null;
         }
+
+        draweeHolder.onDetach();
     }
 
     //
     // Drawee
     //
 
-    @Override
-    public void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        draweeHolder.onDetach();
-    }
-
-    @Override
-    public void onStartTemporaryDetach() {
-        super.onStartTemporaryDetach();
-        draweeHolder.onDetach();
-    }
-
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        draweeHolder.onAttach();
-    }
-
-    @Override
-    public void onFinishTemporaryDetach() {
-        super.onFinishTemporaryDetach();
-        draweeHolder.onAttach();
-    }
+//    @Override
+//    public void onDetachedFromWindow() {
+//        super.onDetachedFromWindow();
+//        draweeHolder.onDetach();
+//    }
+//
+//    @Override
+//    public void onStartTemporaryDetach() {
+//        super.onStartTemporaryDetach();
+//        draweeHolder.onDetach();
+//    }
+//
+//    @Override
+//    public void onAttachedToWindow() {
+//        super.onAttachedToWindow();
+//        draweeHolder.onAttach();
+//    }
+//
+//    @Override
+//    public void onFinishTemporaryDetach() {
+//        super.onFinishTemporaryDetach();
+//        draweeHolder.onAttach();
+//    }
 
     @Override
     protected boolean verifyDrawable(Drawable who) {
