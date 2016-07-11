@@ -23,23 +23,25 @@ import static im.actor.sdk.util.ActorSDKMessenger.users;
 public class CommandsAdapter extends HolderAdapter<BotCommand> {
 
     private final int uid;
-    int oldRowsCount = 0;
     private List<BotCommand> commands;
     private List<BotCommand> commandsToShow = new ArrayList<BotCommand>();
-    private CommandsUpdatedCallback updatedCallback;
     private int highlightColor;
     private UserVM botUser;
-    private String query = "";
+    private String query = null;
 
-    public CommandsAdapter(int uid, Context context, CommandsUpdatedCallback updatedCallback) {
+    public CommandsAdapter(int uid, Context context) {
         super(context);
         botUser = users().get(uid);
         highlightColor = context.getResources().getColor(R.color.primary);
         commands = users().get(uid).getBotCommands().get();
         commandsToShow = new ArrayList<>(commands);
         this.uid = uid;
-        this.updatedCallback = updatedCallback;
+    }
 
+    public void clearQuery() {
+        query = null;
+        commandsToShow = new ArrayList<>();
+        notifyDataSetChanged();
     }
 
     public void setQuery(String q) {
@@ -55,9 +57,6 @@ public class CommandsAdapter extends HolderAdapter<BotCommand> {
         }
         commandsToShow.clear();
         commandsToShow.addAll(filterd);
-        int newRowsCount = commandsToShow.size();
-        updatedCallback.onMentionsUpdated(oldRowsCount, newRowsCount);
-        oldRowsCount = newRowsCount;
         notifyDataSetChanged();
     }
 
@@ -79,10 +78,6 @@ public class CommandsAdapter extends HolderAdapter<BotCommand> {
     @Override
     protected ViewHolder<BotCommand> createHolder(BotCommand obj) {
         return new CommandHolder();
-    }
-
-    public interface CommandsUpdatedCallback {
-        void onMentionsUpdated(int oldRowsCount, int newRowsCount);
     }
 
     public class CommandHolder extends ViewHolder<BotCommand> {

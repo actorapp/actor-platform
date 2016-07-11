@@ -20,11 +20,11 @@ import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import im.actor.runtime.Log;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.Props;
@@ -51,21 +51,27 @@ public class InputBarFragment extends BaseFragment {
     private static final int SLIDE_LIMIT = Screen.dp(180);
     private static final int PERMISSION_REQUEST_RECORD_AUDIO = 1;
 
+
+    //
+    // Configuration
+    //
+
     private boolean isAudioEnabled = true;
     private boolean isAttachEnabled = true;
     private boolean isDisableOnEmptyText = true;
 
-    // Message edit text
+    //
+    // Texting
+    //
     private boolean isTypingDisabled = false;
-    protected EditText messageEditText;
-    // Send message button
+    protected BarEditText messageEditText;
     protected TintImageView sendButton;
-    // Attach button
     protected ImageButton attachButton;
+    protected String lastWord = "";
 
-    //////////////////////////////////
-    // Voice messages
-    //////////////////////////////////
+    //
+    // Voice
+    //
     private View audioContainer;
     private View recordPoint;
     private View audioSlide;
@@ -105,7 +111,7 @@ public class InputBarFragment extends BaseFragment {
         //
         // Message Body
         //
-        messageEditText = (EditText) res.findViewById(R.id.et_message);
+        messageEditText = (BarEditText) res.findViewById(R.id.et_message);
         messageEditText.setTextColor(style.getTextPrimaryColor());
         messageEditText.setHintTextColor(style.getTextHintColor());
         // Hardware keyboard events
@@ -151,6 +157,9 @@ public class InputBarFragment extends BaseFragment {
             public void afterTextChanged(Editable editable) {
                 onAfterTextChanged(editable);
             }
+        });
+        messageEditText.addSelectionListener((start, length) -> {
+            InputBarFragment.this.onSelectionChanged(start, length);
         });
         messageEditText.setOnFocusChangeListener((v, hasFocus) -> {
             Fragment parent = getParentFragment();
@@ -300,6 +309,48 @@ public class InputBarFragment extends BaseFragment {
         isTypingDisabled = false;
     }
 
+    public void replaceCurrentWord(String word) {
+        isTypingDisabled = true;
+
+        Editable sequence = messageEditText.getText();
+
+        // Initial Word End - symbol right after current selection
+        int wordEnd = messageEditText.getSelectionEnd();
+        // Initial Word Start - symbol before end
+        int wordStart = messageEditText.getSelectionStart() - 1;
+
+        // Searching for first space or new line
+        for (; wordStart >= 0; wordStart--) {
+            if (sequence.charAt(wordStart) == ' ' || sequence.charAt(wordStart) == '\n') {
+                break;
+            }
+        }
+        wordStart++;
+
+        // Searching for first space or new line at the tail
+        for (; wordEnd < sequence.length(); wordEnd++) {
+            if (sequence.charAt(wordEnd) == ' ' || sequence.charAt(wordEnd) == '\n') {
+                break;
+            }
+        }
+
+        // Reading word
+        if (0 <= wordStart && wordStart < wordEnd && wordEnd <= sequence.length()) {
+            boolean wasLast = wordEnd == sequence.length();
+            sequence = sequence.replace(wordStart, wordEnd, word);
+            if (wasLast) {
+                sequence = sequence.append(' ');
+            }
+            messageEditText.setText(sequence);
+            if (wasLast) {
+                messageEditText.setSelection(sequence.length());
+            } else {
+                messageEditText.setSelection(wordStart + word.length() + 1);
+            }
+        }
+        isTypingDisabled = false;
+    }
+
     public String getText() {
         return messageEditText.getText().toString();
     }
@@ -367,7 +418,48 @@ public class InputBarFragment extends BaseFragment {
     protected void onTextChanged(CharSequence s, int start, int before, int count) {
         Fragment parent = getParentFragment();
         if (parent instanceof InputBarCallback) {
-            ((InputBarCallback) parent).onTextChanged(s, start, before, count);
+            ((InputBarCallback) parent).onTextChanged(s.toString());
+        }
+        recalculateCurrentWord();
+    }
+
+    protected void onSelectionChanged(int start, int length) {
+        recalculateCurrentWord();
+    }
+
+    protected void recalculateCurrentWord() {
+
+        CharSequence sequence = messageEditText.getText();
+
+        // Initial Word End - symbol right after current selection
+        int wordEnd = messageEditText.getSelectionStart();
+        // Initial Word Start - symbol before end
+        int wordStart = wordEnd - 1;
+
+        // Searching for first space or new line
+        for (; wordStart >= 0; wordStart--) {
+            if (sequence.charAt(wordStart) == ' ' || sequence.charAt(wordStart) == '\n') {
+                break;
+            }
+        }
+        wordStart++;
+
+        // Reading word
+        String foundWord;
+        if (wordStart >= 0 && wordStart < wordEnd && wordStart < sequence.length()) {
+            foundWord = sequence.subSequence(wordStart, wordEnd).toString();
+        } else {
+            foundWord = "";
+        }
+
+        // Update last word
+        if (!lastWord.equals(foundWord)) {
+            lastWord = foundWord;
+            Log.d("InputBarFragment", "word: " + foundWord);
+            Fragment parent = getParentFragment();
+            if (parent instanceof InputBarCallback) {
+                ((InputBarCallback) parent).onAutoCompleteWordChanged(lastWord);
+            }
         }
     }
 

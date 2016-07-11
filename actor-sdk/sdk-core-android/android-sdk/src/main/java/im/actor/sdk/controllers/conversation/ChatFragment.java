@@ -27,6 +27,8 @@ import im.actor.sdk.controllers.BaseFragment;
 import im.actor.sdk.controllers.conversation.attach.AbsAttachFragment;
 import im.actor.sdk.controllers.conversation.inputbar.InputBarCallback;
 import im.actor.sdk.controllers.conversation.inputbar.InputBarFragment;
+import im.actor.sdk.controllers.conversation.mentions.AutocompleteCallback;
+import im.actor.sdk.controllers.conversation.mentions.AutocompleteFragment;
 import im.actor.sdk.controllers.conversation.messages.MessagesDefaultFragment;
 import im.actor.sdk.controllers.conversation.messages.MessagesFragmentCallback;
 import im.actor.sdk.controllers.conversation.placeholder.EmptyChatPlaceholder;
@@ -39,7 +41,8 @@ import static im.actor.sdk.util.ActorSDKMessenger.groups;
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 import static im.actor.sdk.util.ActorSDKMessenger.users;
 
-public class ChatFragment extends BaseFragment implements InputBarCallback, MessagesFragmentCallback, QuoteCallback {
+public class ChatFragment extends BaseFragment implements InputBarCallback, MessagesFragmentCallback, QuoteCallback,
+        AutocompleteCallback {
 
     public static ChatFragment create(Peer peer) {
         ChatFragment res = new ChatFragment();
@@ -98,6 +101,7 @@ public class ChatFragment extends BaseFragment implements InputBarCallback, Mess
                     .add(R.id.sendFragment, new InputBarFragment())
                     .add(R.id.quoteFragment, new QuoteFragment())
                     .add(R.id.emptyPlaceholder, new EmptyChatPlaceholder())
+                    .add(R.id.autocompleteContainer, new AutocompleteFragment(peer))
                     .commitNow();
 
             AbsAttachFragment fragment = ActorSDK.sharedActor().getDelegate().fragmentForAttachMenu(peer);
@@ -231,8 +235,13 @@ public class ChatFragment extends BaseFragment implements InputBarCallback, Mess
     }
 
     @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
+    public void onTextChanged(String text) {
 
+    }
+
+    @Override
+    public void onAutoCompleteWordChanged(String text) {
+        findAutocomplete().onCurrentWordChanged(text);
     }
 
     @Override
@@ -297,6 +306,18 @@ public class ChatFragment extends BaseFragment implements InputBarCallback, Mess
     @Override
     public void onAvatarLongClick(int uid) {
         insertMention(uid);
+    }
+
+    @Override
+    public void onMentionPicked(String name) {
+        findInputBar().replaceCurrentWord(name);
+    }
+
+    @Override
+    public void onCommandPicked(String command) {
+        messenger().sendMessage(peer, "/" + command);
+        findInputBar().setText("");
+        findAutocomplete().onCurrentWordChanged("");
     }
 
     public void insertMention(int uid) {
@@ -378,6 +399,10 @@ public class ChatFragment extends BaseFragment implements InputBarCallback, Mess
 
     private EmptyChatPlaceholder findEmptyPlaceholder() {
         return ((EmptyChatPlaceholder) getChildFragmentManager().findFragmentById(R.id.emptyPlaceholder));
+    }
+
+    private AutocompleteFragment findAutocomplete() {
+        return ((AutocompleteFragment) getChildFragmentManager().findFragmentById(R.id.autocompleteContainer));
     }
 
     private void hideQuote() {

@@ -288,6 +288,7 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
                     ImageRequest request = ImageRequestBuilder.newBuilderWithSource(
                             Uri.fromFile(new File(desc)))
                             .setResizeOptions(new ResizeOptions(Screen.dp(52), Screen.dp(52)))
+                            .setImageType(ImageRequest.ImageType.SMALL)
                             .build();
                     res.setImageRequest(request);
                 } else {

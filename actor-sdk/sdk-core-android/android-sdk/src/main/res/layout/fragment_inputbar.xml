@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:minHeight="56dp">
 
-    <EditText
+    <im.actor.sdk.controllers.conversation.inputbar.BarEditText
         android:id="@+id/et_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

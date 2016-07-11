@@ -8,9 +8,11 @@ public interface InputBarCallback {
 
     void onTyping();
 
-    void onTextChanged(CharSequence s, int start, int before, int count);
+    void onTextChanged(String text);
 
-    void onTextSent(String sequence);
+    void onAutoCompleteWordChanged(String text);
+
+    void onTextSent(String text);
 
     void onAudioSent(int duration, String descriptor);
 

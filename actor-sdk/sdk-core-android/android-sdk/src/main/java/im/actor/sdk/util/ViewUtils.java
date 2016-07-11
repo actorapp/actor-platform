@@ -128,26 +128,6 @@ public class ViewUtils {
         }
     }
 
-    public static void expandMentions(final View v, final int oldRowsCount, final int newRowsCount) {
-        if (newRowsCount == oldRowsCount) {
-            return;
-        }
-
-        v.measure(AbsListView.LayoutParams.MATCH_PARENT, AbsListView.LayoutParams.WRAP_CONTENT);
-        int newRowsHeight = Screen.dp(48) * newRowsCount + newRowsCount;
-
-        final int targetHeight = (newRowsHeight) > Screen.dp(96 + 2) ? Screen.dp(122) : newRowsHeight;
-        final int initialHeight = new Integer(v.getLayoutParams().height);
-
-        v.getLayoutParams().height = initialHeight;
-        v.setVisibility(View.VISIBLE);
-        Animation a = new ExpandAnimation(v, targetHeight, initialHeight);
-
-        a.setDuration((newRowsCount > oldRowsCount ? targetHeight : initialHeight / Screen.dp(1)));
-        a.setInterpolator(MaterialInterpolator.getInstance());
-        v.startAnimation(a);
-    }
-
     public static int blendColors(int color1, int color2, float amount, boolean inverse) {
         final byte ALPHA_CHANNEL = 24;
         final byte RED_CHANNEL = 16;
@@ -171,43 +151,6 @@ public class ViewUtils {
         return a << ALPHA_CHANNEL | r << RED_CHANNEL | g << GREEN_CHANNEL | b << BLUE_CHANNEL;
     }
 
-
-    private static class ExpandAnimation extends Animation {
-        private final View v;
-        private final int targetHeight;
-        private final int initialHeight;
-        private int currentHeight;
-
-        public ExpandAnimation(View v, int targetHeight, int initialHeight) {
-            this.v = v;
-            this.targetHeight = targetHeight;
-            this.initialHeight = initialHeight;
-            this.currentHeight = initialHeight;
-
-        }
-
-        @Override
-        protected void applyTransformation(float interpolatedTime, Transformation t) {
-            if (targetHeight > initialHeight) {
-                currentHeight =
-                        (int) ((targetHeight * interpolatedTime) - initialHeight * interpolatedTime + initialHeight);
-            } else {
-                currentHeight =
-                        (int) (initialHeight - (initialHeight * interpolatedTime) - targetHeight * (1f - interpolatedTime) + targetHeight);
-            }
-
-            v.getLayoutParams().height = currentHeight;
-            v.requestLayout();
-        }
-
-        @Override
-        public boolean willChangeBounds() {
-            return true;
-        }
-
-
-    }
-
     public static void elevateView(final View view) {
         elevateView(view, true);
     }
@@ -219,6 +162,7 @@ public class ViewUtils {
     public static void elevateView(final View view, boolean isAnimated) {
         elevateView(view, isAnimated, 1.1f);
     }
+
     public static void elevateView(final View view, boolean isAnimated, float scale) {
         if (view == null) {
             return;
@@ -253,35 +197,35 @@ public class ViewUtils {
         }
     }
 
-    public static void expand(final View v, int targetHeight) {
+//    public static void expand(final View v, int targetHeight) {
+//
+//        v.measure(AbsListView.LayoutParams.MATCH_PARENT, AbsListView.LayoutParams.WRAP_CONTENT);
+//
+//        final int initialHeight = new Integer(v.getLayoutParams().height);
+//
+//        v.getLayoutParams().height = initialHeight;
+//        Animation a = new ExpandAnimation(v, targetHeight, initialHeight);
+//
+//        a.setDuration(/*(targetHeight > 0 ? targetHeight : initialHeight / Screen.dp(1))*/150);
+//        a.setInterpolator(MaterialInterpolator.getInstance());
+//        v.startAnimation(a);
+//        if (targetHeight == 0) {
+//            v.setVisibility(View.INVISIBLE);
+//        } else {
+//            v.setVisibility(View.VISIBLE);
+//        }
+//    }
 
-        v.measure(AbsListView.LayoutParams.MATCH_PARENT, AbsListView.LayoutParams.WRAP_CONTENT);
-
-        final int initialHeight = new Integer(v.getLayoutParams().height);
-
-        v.getLayoutParams().height = initialHeight;
-        Animation a = new ExpandAnimation(v, targetHeight, initialHeight);
-
-        a.setDuration(/*(targetHeight > 0 ? targetHeight : initialHeight / Screen.dp(1))*/150);
-        a.setInterpolator(MaterialInterpolator.getInstance());
-        v.startAnimation(a);
-        if (targetHeight == 0) {
-            v.setVisibility(View.INVISIBLE);
-        } else {
-            v.setVisibility(View.VISIBLE);
-        }
-    }
-
-    public static void wave(View[] layers, float scale, int duration, float offset){
+    public static void wave(View[] layers, float scale, int duration, float offset) {
         int step = 0;
 
-        for (View l:layers) {
-            wave(l, scale, duration, ((float)1/layers.length) * step * offset);
+        for (View l : layers) {
+            wave(l, scale, duration, ((float) 1 / layers.length) * step * offset);
             step++;
         }
     }
 
-    public static void wave(final View layer, float scale, int duration, float stepOffset){
+    public static void wave(final View layer, float scale, int duration, float stepOffset) {
         final ScaleAnimation scaleAnimation = new ScaleAnimation(1.0f, scale, 1.0f, scale, Animation.RELATIVE_TO_SELF, (float) 0.5, Animation.RELATIVE_TO_SELF, (float) 0.5);
         scaleAnimation.setDuration(duration);
 
@@ -290,8 +234,6 @@ public class ViewUtils {
         layer.clearAnimation();
         layer.startAnimation(scaleAnimation);
     }
-
-
 
 
 }

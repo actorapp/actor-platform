@@ -9,14 +9,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
-
+    <!-- To Avoid auto-focus on edit text and automatic opening of keyboard -->
     <LinearLayout
         android:layout_width="0px"
         android:layout_height="0px"
@@ -29,16 +22,13 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/toolbar" />
 
-
-    <im.actor.sdk.view.adapters.RecyclerListView
-        android:id="@+id/mentionsList"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_above="@+id/sendFragment"
-        android:layout_gravity="bottom"
-        android:divider="@null"
-        android:dividerHeight="0dp"
-        android:listSelector="@drawable/selector" />
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <FrameLayout
         android:id="@+id/overlay"

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<im.actor.sdk.view.adapters.RecyclerListView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mentionsList"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_gravity="bottom"
+    android:divider="@null"
+    android:dividerHeight="0dp"
+    android:listSelector="@drawable/selector" />

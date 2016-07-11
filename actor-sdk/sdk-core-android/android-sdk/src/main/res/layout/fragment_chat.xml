@@ -16,6 +16,12 @@
         android:layout_above="@+id/sendContainer" />
 
     <FrameLayout
+        android:id="@+id/autocompleteContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/sendContainer" />
+
+    <FrameLayout
         android:id="@+id/quoteFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -58,11 +64,5 @@
                 android:textSize="18sp" />
         </FrameLayout>
     </FrameLayout>
-
-
-    <FrameLayout
-        android:id="@+id/attachFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 
 </RelativeLayout>
