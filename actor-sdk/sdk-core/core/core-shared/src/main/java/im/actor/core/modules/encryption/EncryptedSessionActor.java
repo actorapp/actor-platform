@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import im.actor.core.entity.encryption.PeerSession;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.encryption.entity.PublicKey;
 import im.actor.core.modules.encryption.session.EncryptedSessionChain;
 import im.actor.core.modules.ModuleActor;
 import im.actor.runtime.*;
@@ -11,6 +12,7 @@ import im.actor.runtime.actors.ask.AskMessage;
 import im.actor.runtime.actors.ask.AskResult;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.function.Function;
+import im.actor.runtime.function.Supplier;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.crypto.Curve25519;
 import im.actor.runtime.crypto.IntegrityException;
@@ -26,7 +28,7 @@ import static im.actor.runtime.promise.Promise.success;
  * 3) Own Pre Key Id
  * 4) Their Key Group Id
  * 5) Their Pre Key Id
- * <p/>
+ * <p>
  * During actor starting it downloads all required key from Key Manager.
  * To encrypt/decrypt messages this actor spawns encryption chains.
  */
@@ -76,7 +78,7 @@ public class EncryptedSessionActor extends ModuleActor {
     @Override
     public void preStart() {
         super.preStart();
-        keyManager = context().getEncryption().getKeyManagerInt();
+        keyManager = context().getEncryption().getKeyManager();
     }
 
     private Promise<EncryptedPackageRes> onEncrypt(final byte[] data) {
@@ -88,19 +90,11 @@ public class EncryptedSessionActor extends ModuleActor {
         //
 
         return success(latestTheirEphemeralKey)
-                .mapIfNullPromise(keyManager.supplyUserPreKey(uid, session.getTheirKeyGroupId()))
-                .map(new Function<byte[], EncryptedSessionChain>() {
-                    @Override
-                    public EncryptedSessionChain apply(byte[] publicKey) {
-                        return pickEncryptChain(publicKey);
-                    }
-                })
-                .map(new Function<EncryptedSessionChain, EncryptedPackageRes>() {
-                    @Override
-                    public EncryptedPackageRes apply(EncryptedSessionChain encryptedSessionChain) {
-                        return encrypt(encryptedSessionChain, data);
-                    }
-                });
+                .mapIfNullPromise(() ->
+                        keyManager.getUserRandomPreKey(uid, session.getTheirKeyGroupId())
+                                .map(PublicKey::getPublicKey))
+                .map(publicKey -> pickEncryptChain(publicKey))
+                .map(encryptedSessionChain -> encrypt(encryptedSessionChain, data));
     }
 
     private Promise<DecryptedPackage> onDecrypt(final byte[] data) {

@@ -16,66 +16,48 @@ import static im.actor.runtime.actors.ActorSystem.system;
 
 public class EncryptionModule extends AbsModule {
 
-    private ActorRef keyManager;
     private KeyManagerInt keyManagerInt;
-    private ActorRef sessionManager;
     private SessionManagerInt sessionManagerInt;
 
     private ActorRef messageEncryptor;
-    private HashMap<Integer, ActorRef> encryptedStates = new HashMap<Integer, ActorRef>();
+    private final HashMap<Integer, ActorRef> encryptedStates = new HashMap<>();
 
     public EncryptionModule(ModuleContext context) {
         super(context);
     }
 
     public void run() {
-        keyManager = system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public KeyManagerActor create() {
-                return new KeyManagerActor(context());
-            }
-        }), "encryption/keys");
-        keyManagerInt = new KeyManagerInt(keyManager);
-        sessionManager = system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public SessionManagerActor create() {
-                return new SessionManagerActor(context());
-            }
-        }), "encryption/sessions");
+
+        keyManagerInt = new KeyManagerInt(context());
+
+        // Session Manager
+        ActorRef sessionManager = system().actorOf("encryption/sessions",
+                () -> new SessionManagerActor(context()));
         sessionManagerInt = new SessionManagerInt(sessionManager);
-        messageEncryptor = system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public EncryptedMsgActor create() {
-                return new EncryptedMsgActor(context());
-            }
-        }), "encryption/messaging");
+
+
+        messageEncryptor = system().actorOf("encryption/messaging",
+                () -> new EncryptedMsgActor(context()));
     }
 
-    public SessionManagerInt getSessionManagerInt() {
+    public SessionManagerInt getSessionManager() {
         return sessionManagerInt;
     }
+
+    public KeyManagerInt getKeyManager() {
+        return keyManagerInt;
+    }
+
 
     public ActorRef getMessageEncryptor() {
         return messageEncryptor;
     }
 
-    public ActorRef getKeyManager() {
-        return keyManager;
-    }
-
-    public KeyManagerInt getKeyManagerInt() {
-        return keyManagerInt;
-    }
-
     public ActorRef getEncryptedChatManager(final int uid) {
         synchronized (encryptedStates) {
             if (!encryptedStates.containsKey(uid)) {
-                encryptedStates.put(uid, system().actorOf(Props.create(new ActorCreator() {
-                    @Override
-                    public EncryptedPeerActor create() {
-                        return new EncryptedPeerActor(uid, context());
-                    }
-                }), "encryption/uid_" + uid));
+                encryptedStates.put(uid, system().actorOf("encryption/uid_" + uid,
+                        () -> new EncryptedPeerActor(uid, context())));
             }
             return encryptedStates.get(uid);
         }

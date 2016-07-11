@@ -163,8 +163,8 @@ public class Modules implements ModuleContext {
         profile = new ProfileModule(this);
         timing.section("Mentions");
         mentions = new MentionsModule(this);
-//        timing.section("Encryption");
-//        encryptionModule = new EncryptionModule(this);
+        timing.section("Encryption");
+        encryptionModule = new EncryptionModule(this);
         timing.section("DisplayLists");
         displayLists = new DisplayLists(this);
         timing.section("DeviceInfo");
@@ -188,8 +188,8 @@ public class Modules implements ModuleContext {
         notifications.run();
         timing.section("AppState");
         appStateModule.run();
-//        timing.section("Encryption");
-//        encryptionModule.run();
+        timing.section("Encryption");
+        encryptionModule.run();
         timing.section("Contacts");
         contacts.run();
         timing.section("Messages");

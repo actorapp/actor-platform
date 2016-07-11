@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import im.actor.core.entity.encryption.PeerSession;
 import im.actor.core.entity.encryption.PeerSessionsStorage;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.encryption.entity.OwnIdentity;
 import im.actor.core.modules.encryption.entity.PrivateKey;
 import im.actor.core.modules.encryption.entity.PublicKey;
 import im.actor.core.modules.encryption.entity.UserKeys;
@@ -21,7 +22,6 @@ import im.actor.runtime.crypto.ratchet.RatchetPrivateKey;
 import im.actor.runtime.crypto.ratchet.RatchetPublicKey;
 import im.actor.runtime.function.Function;
 import im.actor.runtime.function.FunctionTupled4;
-import im.actor.runtime.function.Supplier;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.Promises;
 import im.actor.runtime.storage.KeyValueEngine;
@@ -44,7 +44,7 @@ public class SessionManagerActor extends ModuleActor {
     @Override
     public void preStart() {
         super.preStart();
-        keyManager = context().getEncryption().getKeyManagerInt();
+        keyManager = context().getEncryption().getKeyManager();
         peerSessions = new BaseKeyValueEngine<PeerSessionsStorage>(Storage.createKeyValue("encryption_sessions")) {
 
             @Override
@@ -137,9 +137,9 @@ public class SessionManagerActor extends ModuleActor {
                                 keyManager.getOwnPreKey(ownKeyId),
                                 keyManager.getUserKeyGroups(uid),
                                 keyManager.getUserPreKey(uid, keyGroupId, theirKeyId))
-                                .map(new FunctionTupled4<KeyManagerActor.OwnIdentity, PrivateKey, UserKeys, PublicKey, PeerSession>() {
+                                .map(new FunctionTupled4<OwnIdentity, PrivateKey, UserKeys, PublicKey, PeerSession>() {
                                     @Override
-                                    public PeerSession apply(KeyManagerActor.OwnIdentity ownIdentity, PrivateKey ownPreKey, UserKeys userKeys, PublicKey theirPreKey) {
+                                    public PeerSession apply(OwnIdentity ownIdentity, PrivateKey ownPreKey, UserKeys userKeys, PublicKey theirPreKey) {
 
                                         UserKeysGroup keysGroup = ManagedList.of(userKeys.getUserKeysGroups())
                                                 .filter(UserKeysGroup.BY_KEY_GROUP(keyGroupId))
