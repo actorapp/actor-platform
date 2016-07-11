@@ -10,6 +10,7 @@ import im.actor.core.entity.encryption.PeerSession;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.encryption.entity.EncryptedBox;
 import im.actor.core.modules.encryption.entity.EncryptedBoxKey;
+import im.actor.core.modules.encryption.entity.OwnIdentity;
 import im.actor.core.modules.encryption.entity.UserKeys;
 import im.actor.core.modules.encryption.entity.UserKeysGroup;
 import im.actor.core.modules.ModuleActor;
@@ -64,14 +65,14 @@ public class EncryptedPeerActor extends ModuleActor {
     public void preStart() {
         super.preStart();
 
-        keyManager = context().getEncryption().getKeyManagerInt();
+        keyManager = context().getEncryption().getKeyManager();
 
         Promises.tuple(
                 keyManager.getOwnIdentity(),
                 keyManager.getUserKeyGroups(uid))
-                .then(new Consumer<Tuple2<KeyManagerActor.OwnIdentity, UserKeys>>() {
+                .then(new Consumer<Tuple2<OwnIdentity, UserKeys>>() {
                     @Override
-                    public void apply(Tuple2<KeyManagerActor.OwnIdentity, UserKeys> res) {
+                    public void apply(Tuple2<OwnIdentity, UserKeys> res) {
                         Log.d(TAG, "then");
                         ownKeyGroupId = res.getT1().getKeyGroup();
                         theirKeys = res.getT2();
@@ -118,7 +119,7 @@ public class EncryptedPeerActor extends ModuleActor {
                         if (activeSessions.containsKey(keysGroup.getKeyGroupId())) {
                             return success(activeSessions.get(keysGroup.getKeyGroupId()).getSessions().get(0));
                         }
-                        return context().getEncryption().getSessionManagerInt()
+                        return context().getEncryption().getSessionManager()
                                 .pickSession(uid, keysGroup.getKeyGroupId())
                                 .failure(new Consumer<Exception>() {
                                     @Override
@@ -204,7 +205,7 @@ public class EncryptedPeerActor extends ModuleActor {
                                 }
                             }
                         }
-                        return context().getEncryption().getSessionManagerInt()
+                        return context().getEncryption().getSessionManager()
                                 .pickSession(uid, senderKeyGroup, receiverPreKeyId, senderPreKeyId)
                                 .map(new Function<PeerSession, Tuple2<SessionActor, EncryptedBoxKey>>() {
                                     @Override

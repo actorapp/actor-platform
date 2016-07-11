@@ -13,12 +13,9 @@ import im.actor.core.api.rpc.RequestLoadPrePublicKeys;
 import im.actor.core.api.rpc.RequestLoadPublicKey;
 import im.actor.core.api.rpc.RequestLoadPublicKeyGroups;
 import im.actor.core.api.rpc.RequestUploadPreKey;
-import im.actor.core.api.rpc.ResponseCreateNewKeyGroup;
-import im.actor.core.api.rpc.ResponsePublicKeyGroups;
-import im.actor.core.api.rpc.ResponsePublicKeys;
-import im.actor.core.api.rpc.ResponseVoid;
 import im.actor.core.entity.User;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.encryption.entity.OwnIdentity;
 import im.actor.core.modules.encryption.entity.PrivateKeyStorage;
 import im.actor.core.modules.encryption.entity.PrivateKey;
 import im.actor.core.modules.encryption.entity.UserKeys;
@@ -29,16 +26,13 @@ import im.actor.core.util.RandomUtils;
 import im.actor.runtime.Crypto;
 import im.actor.runtime.Log;
 import im.actor.runtime.Storage;
-import im.actor.runtime.actors.ask.AskIntRequest;
 import im.actor.runtime.actors.ask.AskMessage;
-import im.actor.runtime.actors.ask.AskResult;
+import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.collections.ManagedList;
 import im.actor.runtime.crypto.Curve25519KeyPair;
-import im.actor.runtime.function.Function;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.crypto.Curve25519;
 import im.actor.runtime.crypto.ratchet.RatchetKeySignature;
-import im.actor.runtime.function.Consumer;
 import im.actor.runtime.promise.PromisesArray;
 import im.actor.runtime.function.Tuple2;
 import im.actor.runtime.storage.KeyValueStorage;
@@ -53,7 +47,7 @@ public class KeyManagerActor extends ModuleActor {
     private static final String TAG = "KeyManagerActor";
 
     private KeyValueStorage encryptionKeysStorage;
-    private HashMap<Integer, UserKeys> cachedUserKeys = new HashMap<Integer, UserKeys>();
+    private HashMap<Integer, UserKeys> cachedUserKeys = new HashMap<>();
     private PrivateKeyStorage ownKeys;
 
     private boolean isReady = false;
@@ -121,21 +115,15 @@ public class KeyManagerActor extends ModuleActor {
                     .map(PrivateKey.SIGN(ownKeys.getIdentityKey()));
 
             Log.d(TAG, "Creation of new key group");
-            api(new RequestCreateNewKeyGroup(identityKey, Configuration.SUPPORTED, keys, signatures)).then(new Consumer<ResponseCreateNewKeyGroup>() {
-                @Override
-                public void apply(ResponseCreateNewKeyGroup response) {
-                    ownKeys = ownKeys.setGroupId(response.getKeyGroupId());
-                    encryptionKeysStorage.addOrUpdateItem(0, ownKeys.toByteArray());
-                    onMainKeysReady();
-                }
-            }).failure(new Consumer<Exception>() {
-                @Override
-                public void apply(Exception e) {
-                    Log.w(TAG, "Keys upload error");
-                    Log.e(TAG, e);
+            api(new RequestCreateNewKeyGroup(identityKey, Configuration.SUPPORTED, keys, signatures)).then(response -> {
+                ownKeys = ownKeys.setGroupId(response.getKeyGroupId());
+                encryptionKeysStorage.addOrUpdateItem(0, ownKeys.toByteArray());
+                onMainKeysReady();
+            }).failure(e -> {
+                Log.w(TAG, "Keys upload error");
+                Log.e(TAG, e);
 
-                    // Just ignore
-                }
+                // Just ignore
             });
         } else {
             onMainKeysReady();
@@ -173,22 +161,16 @@ public class KeyManagerActor extends ModuleActor {
                     pendingEphermalKeys.map(PrivateKey.SIGN(ownKeys.getIdentityKey()));
 
             api(new RequestUploadPreKey(ownKeys.getKeyGroupId(), uploadingKeys, uploadingSignatures))
-                    .then(new Consumer<ResponseVoid>() {
-                        @Override
-                        public void apply(ResponseVoid responseVoid) {
-                            ownKeys = ownKeys.markAsUploaded(pendingEphermalKeys.toArray(new PrivateKey[pendingEphermalKeys.size()]));
-                            encryptionKeysStorage.addOrUpdateItem(0, ownKeys.toByteArray());
-                            onAllKeysReady();
-                        }
+                    .then(responseVoid -> {
+                        ownKeys = ownKeys.markAsUploaded(pendingEphermalKeys.toArray(new PrivateKey[pendingEphermalKeys.size()]));
+                        encryptionKeysStorage.addOrUpdateItem(0, ownKeys.toByteArray());
+                        onAllKeysReady();
                     })
-                    .failure(new Consumer<Exception>() {
-                        @Override
-                        public void apply(Exception e) {
-                            Log.w(TAG, "Ephemeral keys upload error");
-                            Log.e(TAG, e);
+                    .failure(e -> {
+                        Log.w(TAG, "Ephemeral keys upload error");
+                        Log.e(TAG, e);
 
-                            // Ignore. This will freeze all encryption operations.
-                        }
+                        // Ignore. This will freeze all encryption operations.
                     });
         } else {
             onAllKeysReady();
@@ -282,26 +264,20 @@ public class KeyManagerActor extends ModuleActor {
         }
 
         return api(new RequestLoadPublicKeyGroups(new ApiUserOutPeer(uid, user.getAccessHash())))
-                .map(new Function<ResponsePublicKeyGroups, ArrayList<UserKeysGroup>>() {
-                    @Override
-                    public ArrayList<UserKeysGroup> apply(ResponsePublicKeyGroups response) {
-                        ArrayList<UserKeysGroup> keysGroups = new ArrayList<>();
-                        for (ApiEncryptionKeyGroup keyGroup : response.getPublicKeyGroups()) {
-                            UserKeysGroup validatedKeysGroup = validateUserKeysGroup(uid, keyGroup);
-                            if (validatedKeysGroup != null) {
-                                keysGroups.add(validatedKeysGroup);
-                            }
+                .map(response -> {
+                    ArrayList<UserKeysGroup> keysGroups = new ArrayList<>();
+                    for (ApiEncryptionKeyGroup keyGroup : response.getPublicKeyGroups()) {
+                        UserKeysGroup validatedKeysGroup = validateUserKeysGroup(uid, keyGroup);
+                        if (validatedKeysGroup != null) {
+                            keysGroups.add(validatedKeysGroup);
                         }
-                        return keysGroups;
                     }
+                    return keysGroups;
                 })
-                .map(new Function<ArrayList<UserKeysGroup>, UserKeys>() {
-                    @Override
-                    public UserKeys apply(ArrayList<UserKeysGroup> userKeysGroups) {
-                        UserKeys userKeys = new UserKeys(uid, userKeysGroups.toArray(new UserKeysGroup[userKeysGroups.size()]));
-                        cacheUserKeys(userKeys);
-                        return userKeys;
-                    }
+                .map(userKeysGroups -> {
+                    UserKeys userKeys1 = new UserKeys(uid, userKeysGroups.toArray(new UserKeysGroup[userKeysGroups.size()]));
+                    cacheUserKeys(userKeys1);
+                    return userKeys1;
                 });
     }
 
@@ -320,65 +296,62 @@ public class KeyManagerActor extends ModuleActor {
         }
 
         return pickUserGroup(uid, keyGroupId)
-                .flatMap(new Function<Tuple2<UserKeysGroup, UserKeys>, Promise<PublicKey>>() {
-                    @Override
-                    public Promise<PublicKey> apply(final Tuple2<UserKeysGroup, UserKeys> keysGroup) {
+                .flatMap(keysGroup -> {
 
-                        //
-                        // Searching in cache
-                        //
+                    //
+                    // Searching in cache
+                    //
 
-                        for (PublicKey p : keysGroup.getT1().getEphemeralKeys()) {
-                            if (p.getKeyId() == keyId) {
-                                return Promise.success(p);
-                            }
+                    for (PublicKey p : keysGroup.getT1().getEphemeralKeys()) {
+                        if (p.getKeyId() == keyId) {
+                            return Promise.success(p);
                         }
-
-                        //
-                        // Downloading pre key
-                        //
-
-                        ArrayList<Long> ids = new ArrayList<Long>();
-                        ids.add(keyId);
-                        final UserKeysGroup finalKeysGroup = keysGroup.getT1();
-
-                        return api(new RequestLoadPublicKey(new ApiUserOutPeer(uid, getUser(uid).getAccessHash()), keyGroupId, ids))
-                                .map(new Function<ResponsePublicKeys, PublicKey>() {
-                                    @Override
-                                    public PublicKey apply(ResponsePublicKeys responsePublicKeys) {
-                                        if (responsePublicKeys.getPublicKey().size() == 0) {
-                                            throw new RuntimeException("Unable to find public key on server");
-                                        }
-                                        ApiEncryptionKeySignature sig = null;
-                                        for (ApiEncryptionKeySignature s : responsePublicKeys.getSignatures()) {
-                                            if (s.getKeyId() == keyId && "Ed25519".equals(s.getSignatureAlg())) {
-                                                sig = s;
-                                                break;
-                                            }
-                                        }
-                                        if (sig == null) {
-                                            throw new RuntimeException("Unable to find public key on server");
-                                        }
-
-                                        ApiEncryptionKey key = responsePublicKeys.getPublicKey().get(0);
-
-                                        byte[] keyHash = RatchetKeySignature.hashForSignature(key.getKeyId(), key.getKeyAlg(),
-                                                key.getKeyMaterial());
-
-                                        if (!Curve25519.verifySignature(keysGroup.getT1().getIdentityKey().getPublicKey(),
-                                                keyHash, sig.getSignature())) {
-                                            throw new RuntimeException("Key signature does not match");
-                                        }
-
-                                        PublicKey pkey = new PublicKey(keyId, key.getKeyAlg(), key.getKeyMaterial());
-                                        UserKeysGroup userKeysGroup = finalKeysGroup.addPublicKey(pkey);
-                                        cacheUserKeys(keysGroup.getT2().removeUserKeyGroup(userKeysGroup.getKeyGroupId())
-                                                .addUserKeyGroup(userKeysGroup));
-
-                                        return pkey;
-                                    }
-                                });
                     }
+
+                    //
+                    // Downloading pre key
+                    //
+
+                    ArrayList<Long> ids = new ArrayList<>();
+                    ids.add(keyId);
+                    final UserKeysGroup finalKeysGroup = keysGroup.getT1();
+                    RequestLoadPublicKey request = new RequestLoadPublicKey(
+                            new ApiUserOutPeer(uid, getUser(uid).getAccessHash()),
+                            keyGroupId, ids);
+
+                    return api(request)
+                            .map(responsePublicKeys -> {
+                                if (responsePublicKeys.getPublicKey().size() == 0) {
+                                    throw new RuntimeException("Unable to find public key on server");
+                                }
+                                ApiEncryptionKeySignature sig = null;
+                                for (ApiEncryptionKeySignature s : responsePublicKeys.getSignatures()) {
+                                    if (s.getKeyId() == keyId && "Ed25519".equals(s.getSignatureAlg())) {
+                                        sig = s;
+                                        break;
+                                    }
+                                }
+                                if (sig == null) {
+                                    throw new RuntimeException("Unable to find public key on server");
+                                }
+
+                                ApiEncryptionKey key = responsePublicKeys.getPublicKey().get(0);
+
+                                byte[] keyHash = RatchetKeySignature.hashForSignature(key.getKeyId(), key.getKeyAlg(),
+                                        key.getKeyMaterial());
+
+                                if (!Curve25519.verifySignature(keysGroup.getT1().getIdentityKey().getPublicKey(),
+                                        keyHash, sig.getSignature())) {
+                                    throw new RuntimeException("Key signature does not match");
+                                }
+
+                                PublicKey pkey = new PublicKey(keyId, key.getKeyAlg(), key.getKeyMaterial());
+                                UserKeysGroup userKeysGroup = finalKeysGroup.addPublicKey(pkey);
+                                cacheUserKeys(keysGroup.getT2().removeUserKeyGroup(userKeysGroup.getKeyGroupId())
+                                        .addUserKeyGroup(userKeysGroup));
+
+                                return pkey;
+                            });
                 });
     }
 
@@ -390,40 +363,34 @@ public class KeyManagerActor extends ModuleActor {
      */
     private Promise<PublicKey> fetchUserPreKey(final int uid, final int keyGroupId) {
         return pickUserGroup(uid, keyGroupId)
-                .flatMap(new Function<Tuple2<UserKeysGroup, UserKeys>, Promise<PublicKey>>() {
-                    @Override
-                    public Promise<PublicKey> apply(final Tuple2<UserKeysGroup, UserKeys> keyGroups) {
-                        return api(new RequestLoadPrePublicKeys(new ApiUserOutPeer(uid, getUser(uid).getAccessHash()), keyGroupId))
-                                .map(new Function<ResponsePublicKeys, PublicKey>() {
-                                    @Override
-                                    public PublicKey apply(ResponsePublicKeys response) {
-                                        if (response.getPublicKey().size() == 0) {
-                                            throw new RuntimeException("User doesn't have pre keys");
-                                        }
-                                        ApiEncryptionKey key = response.getPublicKey().get(0);
-                                        ApiEncryptionKeySignature sig = null;
-                                        for (ApiEncryptionKeySignature s : response.getSignatures()) {
-                                            if (s.getKeyId() == key.getKeyId() && "Ed25519".equals(s.getSignatureAlg())) {
-                                                sig = s;
-                                                break;
-                                            }
-                                        }
-                                        if (sig == null) {
-                                            throw new RuntimeException("Unable to find public key on server");
-                                        }
-
-                                        byte[] keyHash = RatchetKeySignature.hashForSignature(key.getKeyId(), key.getKeyAlg(),
-                                                key.getKeyMaterial());
-
-                                        if (!Curve25519.verifySignature(keyGroups.getT1().getIdentityKey().getPublicKey(),
-                                                keyHash, sig.getSignature())) {
-                                            throw new RuntimeException("Key signature does not match");
-                                        }
-
-                                        return new PublicKey(key.getKeyId(), key.getKeyAlg(), key.getKeyMaterial());
+                .flatMap(keyGroups -> {
+                    return api(new RequestLoadPrePublicKeys(new ApiUserOutPeer(uid, getUser(uid).getAccessHash()), keyGroupId))
+                            .map(response -> {
+                                if (response.getPublicKey().size() == 0) {
+                                    throw new RuntimeException("User doesn't have pre keys");
+                                }
+                                ApiEncryptionKey key = response.getPublicKey().get(0);
+                                ApiEncryptionKeySignature sig = null;
+                                for (ApiEncryptionKeySignature s : response.getSignatures()) {
+                                    if (s.getKeyId() == key.getKeyId() && "Ed25519".equals(s.getSignatureAlg())) {
+                                        sig = s;
+                                        break;
                                     }
-                                });
-                    }
+                                }
+                                if (sig == null) {
+                                    throw new RuntimeException("Unable to find public key on server");
+                                }
+
+                                byte[] keyHash = RatchetKeySignature.hashForSignature(key.getKeyId(), key.getKeyAlg(),
+                                        key.getKeyMaterial());
+
+                                if (!Curve25519.verifySignature(keyGroups.getT1().getIdentityKey().getPublicKey(),
+                                        keyHash, sig.getSignature())) {
+                                    throw new RuntimeException("Key signature does not match");
+                                }
+
+                                return new PublicKey(key.getKeyId(), key.getKeyAlg(), key.getKeyMaterial());
+                            });
                 });
     }
 
@@ -437,10 +404,10 @@ public class KeyManagerActor extends ModuleActor {
      * @param uid      User's id
      * @param keyGroup Added key group
      */
-    private void onPublicKeysGroupAdded(int uid, ApiEncryptionKeyGroup keyGroup) {
+    private Promise<Void> onPublicKeysGroupAdded(int uid, ApiEncryptionKeyGroup keyGroup) {
         UserKeys userKeys = getCachedUserKeys(uid);
         if (userKeys == null) {
-            return;
+            return Promise.success(null);
         }
         UserKeysGroup validatedKeysGroup = validateUserKeysGroup(uid, keyGroup);
         if (validatedKeysGroup != null) {
@@ -449,6 +416,7 @@ public class KeyManagerActor extends ModuleActor {
             context().getEncryption().getEncryptedChatManager(uid)
                     .send(new EncryptedPeerActor.KeyGroupUpdated(userKeys));
         }
+        return Promise.success(null);
     }
 
     /**
@@ -457,16 +425,17 @@ public class KeyManagerActor extends ModuleActor {
      * @param uid        User's id
      * @param keyGroupId Removed key group id
      */
-    private void onPublicKeysGroupRemoved(int uid, int keyGroupId) {
+    private Promise<Void> onPublicKeysGroupRemoved(int uid, int keyGroupId) {
         UserKeys userKeys = getCachedUserKeys(uid);
         if (userKeys == null) {
-            return;
+            return Promise.success(null);
         }
 
         UserKeys updatedUserKeys = userKeys.removeUserKeyGroup(keyGroupId);
         cacheUserKeys(updatedUserKeys);
         context().getEncryption().getEncryptedChatManager(uid)
                 .send(new EncryptedPeerActor.KeyGroupUpdated(userKeys));
+        return Promise.success(null);
     }
 
     //
@@ -485,7 +454,7 @@ public class KeyManagerActor extends ModuleActor {
                 keyGroup.getIdentityKey().getKeyAlg(),
                 keyGroup.getIdentityKey().getKeyMaterial());
 
-        ArrayList<PublicKey> keys = new ArrayList<PublicKey>();
+        ArrayList<PublicKey> keys = new ArrayList<>();
 
         key_loop:
         for (ApiEncryptionKey key : keyGroup.getKeys()) {
@@ -536,16 +505,15 @@ public class KeyManagerActor extends ModuleActor {
         return fetchUserGroups(uid)
                 .map(userKeys -> {
                     UserKeysGroup keysGroup = null;
-//                    for (UserKeysGroup g : userKeys.getUserKeysGroups()) {
-//                        if (g.getKeyGroupId() == keyGroupId) {
-//                            keysGroup = g;
-//                        }
-//                    }
-//                    if (keysGroup == null) {
-//                        throw new RuntimeException("Key Group #" + keyGroupId + " not found");
-//                    }
-//                    return new Tuple2<>(keysGroup, userKeys);
-                    return null;
+                    for (UserKeysGroup g : userKeys.getUserKeysGroups()) {
+                        if (g.getKeyGroupId() == keyGroupId) {
+                            keysGroup = g;
+                        }
+                    }
+                    if (keysGroup == null) {
+                        throw new RuntimeException("Key Group #" + keyGroupId + " not found");
+                    }
+                    return new Tuple2<>(keysGroup, userKeys);
                 });
     }
 
@@ -574,27 +542,12 @@ public class KeyManagerActor extends ModuleActor {
     //
 
     @Override
-    public void onReceive(Object message) {
-        if (!isReady
-                && (message instanceof AskIntRequest
-                || message instanceof PublicKeysGroupAdded
-                || message instanceof PublicKeysGroupRemoved)) {
-            stash();
-            return;
-        }
-        if (message instanceof PublicKeysGroupAdded) {
-            PublicKeysGroupAdded publicKeysGroupAdded = (PublicKeysGroupAdded) message;
-            onPublicKeysGroupAdded(publicKeysGroupAdded.getUid(), publicKeysGroupAdded.getPublicKeyGroup());
-        } else if (message instanceof PublicKeysGroupRemoved) {
-            PublicKeysGroupRemoved publicKeysGroupRemoved = (PublicKeysGroupRemoved) message;
-            onPublicKeysGroupRemoved(publicKeysGroupRemoved.getUid(), publicKeysGroupRemoved.getKeyGroupId());
-        } else {
-            super.onReceive(message);
-        }
-    }
-
-    @Override
     public Promise onAsk(Object message) throws Exception {
+        if (!isReady) {
+            stash();
+            return null;
+        }
+
         if (message instanceof FetchOwnKey) {
             return fetchOwnIdentity();
         } else if (message instanceof FetchOwnPreKeyByPublic) {
@@ -609,6 +562,12 @@ public class KeyManagerActor extends ModuleActor {
             return fetchUserPreKey(((FetchUserPreKeyRandom) message).getUid(), ((FetchUserPreKeyRandom) message).getKeyGroup());
         } else if (message instanceof FetchOwnRandomPreKey) {
             return fetchPreKey();
+        } else if (message instanceof PublicKeysGroupAdded) {
+            PublicKeysGroupAdded publicKeysGroupAdded = (PublicKeysGroupAdded) message;
+            return onPublicKeysGroupAdded(publicKeysGroupAdded.getUid(), publicKeysGroupAdded.getPublicKeyGroup());
+        } else if (message instanceof PublicKeysGroupRemoved) {
+            PublicKeysGroupRemoved publicKeysGroupRemoved = (PublicKeysGroupRemoved) message;
+            return onPublicKeysGroupRemoved(publicKeysGroupRemoved.getUid(), publicKeysGroupRemoved.getKeyGroupId());
         } else {
             return super.onAsk(message);
         }
@@ -620,25 +579,6 @@ public class KeyManagerActor extends ModuleActor {
 
     public static class FetchOwnKey implements AskMessage<OwnIdentity> {
 
-    }
-
-    public static class OwnIdentity extends AskResult {
-
-        private int keyGroup;
-        private PrivateKey identityKey;
-
-        public OwnIdentity(int keyGroup, PrivateKey identityKey) {
-            this.keyGroup = keyGroup;
-            this.identityKey = identityKey;
-        }
-
-        public int getKeyGroup() {
-            return keyGroup;
-        }
-
-        public PrivateKey getIdentityKey() {
-            return identityKey;
-        }
     }
 
     public static class FetchOwnRandomPreKey implements AskMessage<PrivateKey> {
@@ -735,7 +675,7 @@ public class KeyManagerActor extends ModuleActor {
     // Updates handling
     //
 
-    public static class PublicKeysGroupAdded {
+    public static class PublicKeysGroupAdded implements AskMessage<Void> {
 
         private int uid;
         private ApiEncryptionKeyGroup publicKeyGroup;
@@ -754,7 +694,7 @@ public class KeyManagerActor extends ModuleActor {
         }
     }
 
-    public static class PublicKeysGroupRemoved {
+    public static class PublicKeysGroupRemoved implements AskMessage<Void> {
 
         private int uid;
         private int keyGroupId;
