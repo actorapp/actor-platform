@@ -49,7 +49,7 @@ final class ProfileServiceImpl()(implicit system: ActorSystem) extends ProfileSe
   override def doHandleEditAvatar(fileLocation: ApiFileLocation, clientData: ClientData): Future[HandlerResult[ResponseEditAvatar]] =
     authorized(clientData) { implicit client ⇒
       val action = withFileLocation(fileLocation, AvatarSizeLimit) {
-        scaleAvatar(fileLocation.fileId, ThreadLocalSecureRandom.current()) flatMap {
+        scaleAvatar(fileLocation.fileId) flatMap {
           case Right(avatar) ⇒
             for {
               UserCommands.UpdateAvatarAck(avatar, SeqState(seq, state)) ← DBIO.from(userExt.updateAvatar(client.userId, client.authId, Some(avatar)))

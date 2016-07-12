@@ -6,9 +6,8 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.stream.{ ActorMaterializer, Materializer }
 import akka.util.Timeout
-import im.actor.server.KeyValueMappings
 import im.actor.server.api.http.HttpHandler
-import shardakka.{ IntCodec, ShardakkaExtension }
+import im.actor.server.group.IntegrationTokensReadCompat
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
@@ -25,7 +24,7 @@ final class WebhooksHttpHandler()(implicit val system: ActorSystem)
   implicit val timeout: Timeout = Timeout(5.seconds)
 
   protected val log = Logging(system, getClass)
-  protected val integrationTokensKv = ShardakkaExtension(system).simpleKeyValue[Int](KeyValueMappings.IntegrationTokens, IntCodec)
+  protected val integrationTokensKV = new IntegrationTokensReadCompat
 
   override def routes: Route =
     defaultVersion {

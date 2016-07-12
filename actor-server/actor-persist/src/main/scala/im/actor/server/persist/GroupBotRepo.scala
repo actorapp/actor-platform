@@ -16,20 +16,17 @@ final class GroupBotTable(tag: Tag) extends Table[GroupBot](tag, "groups_bots") 
 }
 
 object GroupBotRepo {
-  val groupBots = TableQuery[GroupBotTable]
+  private val groupBots = TableQuery[GroupBotTable]
 
+  @deprecated("Duplication of event-sourced groups logic", "2016-06-05")
   def create(groupId: Int, userId: Int, token: String): FixedSqlAction[Int, NoStream, Write] =
     groupBots += GroupBot(groupId, userId, token)
 
-  def findByToken(token: String): SqlAction[Option[GroupBot], NoStream, Read] =
-    groupBots.filter(_.token === token).result.headOption
-
+  @deprecated("Used for migrations only", "2016-06-05")
   def findByGroup(groupId: Int): SqlAction[Option[GroupBot], NoStream, Read] =
     groupBots.filter(b ⇒ b.groupId === groupId).result.headOption
 
-  def find(groupId: Int, botId: Int): SqlAction[Option[GroupBot], NoStream, Read] =
-    groupBots.filter(b ⇒ b.groupId === groupId && b.userId === botId).result.headOption
-
+  @deprecated("Duplication of event-sourced groups logic", "2016-06-05")
   def updateToken(groupId: Int, newToken: String): FixedSqlAction[Int, NoStream, Write] =
     groupBots.filter(b ⇒ b.groupId === groupId).map(_.token).update(newToken)
 

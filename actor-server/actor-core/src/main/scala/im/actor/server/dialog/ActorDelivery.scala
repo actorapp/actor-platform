@@ -29,7 +29,8 @@ final class ActorDelivery()(implicit val system: ActorSystem)
     randomId:       Long,
     timestamp:      Long,
     message:        ApiMessage,
-    isFat:          Boolean
+    isFat:          Boolean,
+    deliveryTag:    Option[String]
   ): Future[Unit] = {
     val receiverUpdate = UpdateMessage(
       peer = peer.asStruct,
@@ -53,7 +54,8 @@ final class ActorDelivery()(implicit val system: ActorSystem)
             .withCensoredText(censoredPushText)
             .withPeer(peer)
         ),
-        deliveryId = s"msg_${peer.toString}_$randomId"
+        deliveryId = deliveryId(peer, randomId),
+        deliveryTag = deliveryTag
       )
     } yield ()
   }
@@ -76,7 +78,8 @@ final class ActorDelivery()(implicit val system: ActorSystem)
     randomId:     Long,
     timestamp:    Long,
     message:      ApiMessage,
-    isFat:        Boolean
+    isFat:        Boolean,
+    deliveryTag:  Option[String]
   ): Future[SeqState] = {
     val apiPeer = peer.asStruct
     val senderUpdate = UpdateMessage(
@@ -97,7 +100,8 @@ final class ActorDelivery()(implicit val system: ActorSystem)
       default = Some(senderUpdate),
       custom = senderAuthId map (authId ⇒ Map(authId → senderClientUpdate)) getOrElse Map.empty,
       pushRules = PushRules(isFat = isFat, excludeAuthIds = senderAuthId.toSeq),
-      deliveryId = s"msg_${peer.toString}_$randomId"
+      deliveryId = deliveryId(peer, randomId),
+      deliveryTag = deliveryTag
     )
   }
 
@@ -107,7 +111,7 @@ final class ActorDelivery()(implicit val system: ActorSystem)
       userId,
       update,
       pushRules = seqUpdExt.pushRules(isFat = false, None),
-      reduceKey = Some(seqUpdExt.reduceKey("receive", peer))
+      reduceKey = Some(reduceKey("receive", peer))
     ) map (_ ⇒ ())
   }
 
@@ -116,7 +120,7 @@ final class ActorDelivery()(implicit val system: ActorSystem)
     seqUpdExt.deliverUserUpdate(
       userId = userId,
       update = update,
-      reduceKey = Some(seqUpdExt.reduceKey("read", peer))
+      reduceKey = Some(reduceKey("read", peer))
     ) map (_ ⇒ ())
   }
 
@@ -126,8 +130,14 @@ final class ActorDelivery()(implicit val system: ActorSystem)
         userId = readerUserId,
         authId = readerAuthId,
         update = UpdateMessageReadByMe(peer.asStruct, date, Some(unreadCount)),
-        reduceKey = Some(seqUpdExt.reduceKey("read_by_me", peer))
+        reduceKey = Some(reduceKey("read_by_me", peer))
       )
     } yield ()
+
+  private def deliveryId(peer: Peer, randomId: Long) =
+    s"msg_${peer.`type`.value}_${peer.id}_${randomId}"
+
+  private def reduceKey(prefix: String, peer: Peer): String =
+    s"${prefix}_${peer.`type`.value}_${peer.id}"
 
 }

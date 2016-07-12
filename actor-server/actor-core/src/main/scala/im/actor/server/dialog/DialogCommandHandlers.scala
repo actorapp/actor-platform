@@ -44,8 +44,8 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
         unstashAll()
     }: Receive) orElse reactions, discardOld = true)
 
-    val optClientAuthId = sm.senderAuthId map (_.value)
-    withValidAccessHash(sm.getDest, optClientAuthId, sm.accessHash map (_.value)) {
+    val optClientAuthId = sm.senderAuthId
+    withValidAccessHash(sm.getDest, optClientAuthId, sm.accessHash) {
       withCachedFuture[AuthIdRandomId, SeqStateDate](optClientAuthId.getOrElse(0L) → sm.randomId) {
         val sendDate = calcSendDate()
         val message = sm.message
@@ -53,23 +53,23 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
 
         for {
           exists ← db.run(HistoryMessageRepo.existstWithRandomId(userId, peer, sm.randomId))
-          seqState ← if (exists) {
-            FastFuture.failed(NotUniqueRandomId)
-          } else {
-            withNonBlockedPeer[SeqStateDate](userId, sm.getDest)(
-              default = for {
-              _ ← dialogExt.ackSendMessage(peer, sm.copy(date = Some(Int64Value(sendDate))))
-              _ ← db.run(writeHistoryMessage(selfPeer, peer, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray))
-              //_ = dialogExt.updateCounters(peer, userId)
-              SeqState(seq, state) ← deliveryExt.senderDelivery(userId, optClientAuthId, peer, sm.randomId, sendDate, message, sm.isFat)
-            } yield SeqStateDate(seq, state, sendDate),
-              failed = for {
-              _ ← db.run(writeHistoryMessageSelf(userId, peer, userId, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray))
-              SeqState(seq, state) ← deliveryExt.senderDelivery(userId, optClientAuthId, peer, sm.randomId, sendDate, message, sm.isFat)
-            } yield SeqStateDate(seq, state, sendDate)
-            )
+          seqStateDate ← exists match {
+            case true ⇒ FastFuture.failed(NotUniqueRandomId)
+            case false ⇒
+              withNonBlockedPeer[SeqStateDate](userId, sm.getDest)(
+                default = for {
+                _ ← dialogExt.ackSendMessage(peer, sm.copy(date = Some(sendDate)))
+                _ ← db.run(writeHistoryMessage(selfPeer, peer, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray))
+                //_ = dialogExt.updateCounters(peer, userId)
+                SeqState(seq, state) ← deliveryExt.senderDelivery(userId, optClientAuthId, peer, sm.randomId, sendDate, message, sm.isFat, sm.deliveryTag)
+              } yield SeqStateDate(seq, state, sendDate),
+                failed = for {
+                _ ← db.run(writeHistoryMessageSelf(userId, peer, userId, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray))
+                SeqState(seq, state) ← deliveryExt.senderDelivery(userId, optClientAuthId, peer, sm.randomId, sendDate, message, sm.isFat, sm.deliveryTag)
+              } yield SeqStateDate(seq, state, sendDate)
+              )
           }
-        } yield seqState
+        } yield seqStateDate
       }
     }
   }
@@ -79,7 +79,7 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
       throw new RuntimeException("No message date found in SendMessage")
     }
 
-    persistAsync(NewMessage(sm.randomId, Instant.ofEpochMilli(messageDate.value), sm.getOrigin.id, sm.message.header)) { e ⇒
+    persistAsync(NewMessage(sm.randomId, Instant.ofEpochMilli(messageDate), sm.getOrigin.id, sm.message.header)) { e ⇒
       commit(e)
 
       if (peer.typ == PeerType.Private) {
@@ -88,7 +88,7 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
       }
 
       deliveryExt
-        .receiverDelivery(userId, sm.getOrigin.id, peer, sm.randomId, messageDate.value, sm.message, sm.isFat)
+        .receiverDelivery(userId, sm.getOrigin.id, peer, sm.randomId, messageDate, sm.message, sm.isFat, sm.deliveryTag)
         .map(_ ⇒ SendMessageAck())
         .pipeTo(sender())
 
@@ -222,7 +222,7 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
 
   /**
    * Yields unique message date in current dialog.
-   * When `candidate` date is same as last message date, we increment `candidate` value by 1,
+   * When `candidate` date is same as last message date, we increment `candidate` value by 1(ms),
    * thus resulting date can possibly be in future
    *
    * @return unique message date in current dialog

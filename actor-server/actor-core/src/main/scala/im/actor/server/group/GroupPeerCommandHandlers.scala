@@ -20,8 +20,8 @@ trait GroupPeerCommandHandlers extends PeersImplicits {
     (withMemberIds(groupId) { (memberIds, _, optBot) ⇒
       if (canSend(memberIds, optBot, senderUserId)) {
         val receiverIds = sm.forUserId match {
-          case Some(id) if memberIds.contains(id.value) ⇒ Seq(id.value)
-          case _                                        ⇒ memberIds - senderUserId
+          case Some(id) if memberIds.contains(id) ⇒ Seq(id)
+          case _                                  ⇒ memberIds - senderUserId
         }
 
         for {
@@ -64,9 +64,7 @@ trait GroupPeerCommandHandlers extends PeersImplicits {
     val readerUserId = mr.getOrigin.id
 
     withMembers { (_, invitedUserIds, _) ⇒
-      if (invitedUserIds contains readerUserId) {
-        groupExt.joinAfterFirstRead(groupId, readerUserId, mr.readerAuthId)
-      } else FastFuture.successful(())
+      joinAfterFirstRead(invitedUserIds, readerUserId, mr.readerAuthId)
     }
 
     val canRead = canMakeRead(state, mr)
@@ -90,6 +88,12 @@ trait GroupPeerCommandHandlers extends PeersImplicits {
     if (canRead) {
       updateReadDate(state, mr.date)
     }
+  }
+
+  private def joinAfterFirstRead(invitedUserIds: Set[Int], readerUserId: Int, readerAuthId: Long): Future[Unit] = {
+    if (invitedUserIds contains readerUserId) {
+      groupExt.joinGroup(groupId, readerUserId, readerAuthId, None) map (_ ⇒ ())
+    } else FastFuture.successful(())
   }
 
   protected def setReaction(state: GroupPeerState, sr: SetReaction): Unit = {

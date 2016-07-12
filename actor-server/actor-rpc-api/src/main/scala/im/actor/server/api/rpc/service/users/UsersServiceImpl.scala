@@ -79,7 +79,7 @@ final class UsersServiceImpl(implicit actorSystem: ActorSystem) extends UsersSer
     clientData: ClientData
   ): Future[HandlerResult[ResponseLoadFullUsers]] =
     authorized(clientData) { implicit client ⇒
-      withUserOutPeersF(userPeers) {
+      withUserOutPeers(userPeers) {
         for {
           fullUsers ← Future.sequence(userPeers map (u ⇒ userExt.getApiFullStruct(u.userId, client.userId, client.authId)))
         } yield Ok(ResponseLoadFullUsers(fullUsers.toVector))

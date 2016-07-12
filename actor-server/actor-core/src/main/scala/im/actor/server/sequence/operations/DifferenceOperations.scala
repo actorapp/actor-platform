@@ -113,7 +113,7 @@ trait DifferenceOperations { this: SeqUpdatesExtension ⇒
             val newAcc = if (upd.header == UpdateEmptyUpdate.header) {
               acc.copy(commonSeq = h.commonSeq)
             } else {
-              h.reduceKey map (_.value) match {
+              h.reduceKey match {
                 case None ⇒ acc.copy(
                   seqDelta = acc.seqDelta + 1,
                   commonSeq = h.commonSeq,

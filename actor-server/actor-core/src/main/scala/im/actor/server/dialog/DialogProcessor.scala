@@ -78,7 +78,6 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
 
   override protected def saveSnapshotIfNeeded(): Unit = {
     super.saveSnapshotIfNeeded()
-
   }
 
   override protected def handleQuery: PartialFunction[Any, Future[Any]] = {

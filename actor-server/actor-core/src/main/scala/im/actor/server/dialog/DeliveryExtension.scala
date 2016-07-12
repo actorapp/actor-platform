@@ -15,7 +15,8 @@ trait DeliveryExtension {
     randomId:       Long,
     timestamp:      Long,
     message:        ApiMessage,
-    isFat:          Boolean
+    isFat:          Boolean,
+    deliveryTag:    Option[String]
   ): Future[Unit]
 
   def senderDelivery(
@@ -25,7 +26,8 @@ trait DeliveryExtension {
     randomId:     Long,
     timestamp:    Long,
     message:      ApiMessage,
-    isFat:        Boolean
+    isFat:        Boolean,
+    deliveryTag:  Option[String]
   ): Future[SeqState]
 
   def sendCountersUpdate(userId: Int): Future[Unit]

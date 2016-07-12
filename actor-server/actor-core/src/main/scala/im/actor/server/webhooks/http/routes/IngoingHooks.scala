@@ -47,7 +47,7 @@ trait IngoingHooks extends ContentUnmarshaller with PlayJsonSupport {
     }
 
     for {
-      optGroupId ← integrationTokensKv.get(token)
+      optGroupId ← integrationTokensKV.getGroupId(token)
       result ← optGroupId map { groupId ⇒
         for {
           (_, _, optBot) ← GroupExtension(system).getMemberIds(groupId)

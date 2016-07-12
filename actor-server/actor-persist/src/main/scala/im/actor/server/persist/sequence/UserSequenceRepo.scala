@@ -8,17 +8,17 @@ private[sequence] final class UserSequenceTable(tag: Tag) extends Table[SeqUpdat
   def userId = column[Int]("user_id", O.PrimaryKey)
   def seq = column[Int]("seq", O.PrimaryKey)
   def timestamp = column[Long]("timestamp")
-  def reduceKey = column[Option[StringValue]]("reduce_key")
+  def reduceKey = column[Option[String]]("reduce_key")
   def mapping = column[Array[Byte]]("mapping")
 
   def * = (userId, seq, timestamp, reduceKey, mapping) <> (applySeqUpdate.tupled, unapplySeqUpdate)
 
-  private def applySeqUpdate: (Int, Int, Long, Option[StringValue], Array[Byte]) ⇒ SeqUpdate = {
+  private def applySeqUpdate: (Int, Int, Long, Option[String], Array[Byte]) ⇒ SeqUpdate = {
     (userId, commonSeq, timestamp, reduceKey, mapping) ⇒
       SeqUpdate(userId, commonSeq, timestamp, reduceKey, Some(UpdateMapping.parseFrom(mapping)))
   }
 
-  private def unapplySeqUpdate: SeqUpdate ⇒ Option[(Int, Int, Long, Option[StringValue], Array[Byte])] = {
+  private def unapplySeqUpdate: SeqUpdate ⇒ Option[(Int, Int, Long, Option[String], Array[Byte])] = {
     seqUpdate ⇒
       Some(
         (

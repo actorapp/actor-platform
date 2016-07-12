@@ -46,7 +46,7 @@ private final class GroupMigrator(promise: Promise[Unit], groupId: Int) extends 
   private implicit val ec: ExecutionContext = context.dispatcher
   private val db = DbExtension(context.system).db
 
-  override def persistenceId = GroupOffice.persistenceIdFor(groupId)
+  override def persistenceId = GroupProcessor.persistenceIdFor(groupId)
 
   private def migrate(): Unit = {
     db.run(GroupRepo.findFull(groupId)) foreach {

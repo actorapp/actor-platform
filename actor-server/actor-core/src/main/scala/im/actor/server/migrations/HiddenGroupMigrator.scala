@@ -5,7 +5,7 @@ import akka.persistence.{ PersistentActor, RecoveryCompleted }
 import im.actor.concurrent.FutureExt
 import im.actor.server.db.DbExtension
 import im.actor.server.event.TSEvent
-import im.actor.server.group.GroupOffice
+import im.actor.server.group.GroupProcessor
 import im.actor.server.persist.GroupRepo
 
 import scala.concurrent.duration._
@@ -46,7 +46,7 @@ private final class HiddenGroupMigrator(promise: Promise[Unit], groupId: Int) ex
 
   val db = DbExtension(context.system).db
 
-  override def persistenceId = GroupOffice.persistenceIdFor(groupId)
+  override def persistenceId = GroupProcessor.persistenceIdFor(groupId)
 
   var isHidden = false
 

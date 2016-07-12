@@ -1,5 +1,7 @@
 package im.actor.server.api.rpc.service
 
+import java.nio.file.{ Files, Paths }
+
 import akka.cluster.pubsub.{ DistributedPubSub, DistributedPubSubMediator }
 import akka.testkit.TestProbe
 import cats.data.Xor
@@ -15,6 +17,7 @@ import im.actor.server._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.messaging.MessagingRpcErors
+import im.actor.server.file.{ FileStorageExtension, UnsafeFileName }
 import im.actor.server.persist.HistoryMessageRepo
 import im.actor.server.pubsub.PeerMessage
 
@@ -43,7 +46,7 @@ class MessagingServiceSpec
 
   it should "not repeat message sending with same authId and RandomId" in s.group.cached
 
-  it should "allow to edit last own message in public group" in s.group.editPublic
+  it should "allow to edit last own message in public group" in pendingUntilFixed(s.group.editPublic)
 
   "Any Messaging" should "keep original order of sent messages" in s.generic.rightOrder
 
@@ -218,24 +221,31 @@ class MessagingServiceSpec
       def restrictAlienUser() = {
         val (alien, authIdAlien, authSidAlien, _) = createUser()
 
-        val alienClientData = ClientData(user1AuthId1, sessionId, Some(AuthData(alien.id, authSidAlien, 42)))
+        val alienClientData = ClientData(authIdAlien, sessionId, Some(AuthData(alien.id, authSidAlien, 42)))
 
         whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage("Hi again", Vector.empty, None), None, None)(alienClientData)) { resp ⇒
           resp should matchForbidden
         }
 
+        //TODO: move to GroupServiceSpec - not actually related to messaging
         whenReady(groupsService.handleEditGroupTitle(groupOutPeer, 4L, "Loosers", Vector.empty)(alienClientData)) { resp ⇒
           resp should matchForbidden
         }
 
         val (user3, authId3, _, _) = createUser()
-        val user3OutPeer = ApiUserOutPeer(user3.id, 11)
+        val user3OutPeer = getUserOutPeer(user3.id, authIdAlien)
 
         whenReady(groupsService.handleInviteUser(groupOutPeer, 4L, user3OutPeer, Vector.empty)(alienClientData)) { resp ⇒
           resp should matchForbidden
         }
 
-        val fileLocation = ApiFileLocation(1L, 1L)
+        val fileLocation = {
+          val fsAdapter = FileStorageExtension(system).fsAdapter
+          val avatar = Files.readAllBytes(Paths.get(getClass.getResource("/valid-avatar.jpg").toURI))
+          val fl = fsAdapter.uploadFileF(UnsafeFileName("avatar.jpg"), avatar).futureValue
+          ApiFileLocation(fl.fileId, fl.accessHash)
+        }
+
         whenReady(groupsService.handleEditGroupAvatar(groupOutPeer, 5L, fileLocation, Vector.empty)(alienClientData)) { resp ⇒
           resp should matchForbidden
         }
@@ -522,8 +532,7 @@ class MessagingServiceSpec
         val alicePeer = ApiPeer(ApiPeerType.Private, alice.id)
         val bobPeer = ApiPeer(ApiPeerType.Private, bob.id)
 
-        val aliceOutPeer = whenReady(ACLUtils.getOutPeer(alicePeer, bobAuthId))(identity)
-        val bobOutPeer = whenReady(ACLUtils.getOutPeer(bobPeer, aliceAuthId))(identity)
+        val bobOutPeer = ACLUtils.getOutPeer(bobPeer, aliceAuthId).futureValue
 
         val messRandomId = {
           implicit val cd = aliceCD

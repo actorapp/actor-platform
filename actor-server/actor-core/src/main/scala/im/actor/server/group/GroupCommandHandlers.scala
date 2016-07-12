@@ -3,519 +3,907 @@ package im.actor.server.group
 import java.time.{ Instant, LocalDateTime, ZoneOffset }
 
 import akka.actor.Status
-import akka.pattern.pipe
-import com.google.protobuf.ByteString
-import im.actor.api.rpc.Update
-import im.actor.api.rpc.groups._
-import im.actor.api.rpc.messaging.ApiServiceMessage
-import im.actor.api.rpc.misc.ApiExtension
-import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
-import im.actor.api.rpc.users.ApiSex
-import im.actor.server.ApiConversions._
-import im.actor.server.acl.ACLUtils
-import im.actor.server.dialog.{ DialogExtension, UserAcl }
-import im.actor.server.model.{ AvatarData, Group, Peer, PeerType }
-import im.actor.server.persist._
-import im.actor.server.file.{ Avatar, ImageUtils }
-import im.actor.server.group.GroupErrors._
-import im.actor.server.office.PushTexts
-import im.actor.server.sequence.{ PushData, PushRules, SeqState, SeqStateDate }
-import im.actor.util.ThreadLocalSecureRandom
-import ACLUtils._
-import im.actor.util.misc.IdUtils._
-import ImageUtils._
 import akka.http.scaladsl.util.FastFuture
+import akka.pattern.pipe
+import im.actor.api.rpc.Update
+import im.actor.api.rpc.files.ApiAvatar
+import im.actor.api.rpc.groups._
+import im.actor.api.rpc.users.ApiSex
 import im.actor.concurrent.FutureExt
 import im.actor.server.CommonErrors
-import org.joda.time.DateTime
-import slick.driver.PostgresDriver.api._
+import im.actor.server.acl.ACLUtils
+import im.actor.server.dialog.UserAcl
+import im.actor.server.file.{ Avatar, ImageUtils }
+import im.actor.server.group.GroupErrors._
+import im.actor.server.group.GroupEvents.{ AboutUpdated, AvatarUpdated, BotAdded, Created, IntegrationTokenRevoked, OwnerChanged, TitleUpdated, TopicUpdated, UserBecameAdmin, UserInvited, UserJoined, UserKicked, UserLeft }
+import im.actor.server.group.GroupCommands._
+import im.actor.server.model.{ AvatarData, Group }
+import im.actor.server.office.PushTexts
+import im.actor.server.persist.{ AvatarDataRepo, GroupBotRepo, GroupInviteTokenRepo, GroupRepo, GroupUserRepo }
+import im.actor.server.sequence.{ Optimization, SeqState, SeqStateDate }
+import im.actor.util.ThreadLocalSecureRandom
+import im.actor.util.misc.IdUtils
 
 import scala.concurrent.Future
 
-private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupCommandHelpers with UserAcl {
-  this: GroupProcessor ⇒
+private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
+  self: GroupProcessor ⇒
 
-  import GroupCommands._
-  import GroupEvents._
+  import im.actor.server.ApiConversions._
 
-  protected def createInternal(typ: GroupType, creatorUserId: Int, title: String, userIds: Seq[Int], isHidden: Option[Boolean], isHistoryShared: Option[Boolean], extensions: Seq[ApiExtension] = Seq.empty): Unit = {
-    val accessHash = genAccessHash()
+  private val notMember = Status.Failure(NotAMember)
+  private val notAdmin = Status.Failure(NotAdmin)
 
-    val date = now()
-    val created = GroupEvents.Created(date, groupId, Some(typ), creatorUserId, accessHash, title, (userIds.toSet + creatorUserId).toSeq, isHidden, isHistoryShared, extensions)
-    val state = initState(created)
+  protected def create(cmd: Create): Unit = {
+    if (!isValidTitle(cmd.title)) {
+      sender() ! Status.Failure(InvalidTitle)
+    } else {
+      val rng = ThreadLocalSecureRandom.current()
+      val accessHash = ACLUtils.randomLong(rng)
+      val createdAt = Instant.now
 
-    persist(created) { _ ⇒
-      context become working(state)
+      // exclude ids of users, who blocked group creator
+      val resolvedUserIds = FutureExt.ftraverse(cmd.userIds.filterNot(_ == cmd.creatorUserId)) { userId ⇒
+        withNonBlockedUser(cmd.creatorUserId, userId)(
+          default = FastFuture.successful(Some(userId)),
+          failed = FastFuture.successful(None)
+        )
+      } map (_.flatten)
 
-      // FIXME: invite other members
+      // send invites to all users, that creator can invite
+      for {
+        userIds ← resolvedUserIds
+        _ = userIds foreach (u ⇒ context.parent !
+          GroupEnvelope(groupId)
+          .withInvite(Invite(u, cmd.creatorUserId, cmd.creatorAuthId, rng.nextLong())))
+      } yield ()
 
-      val update = UpdateGroupInviteObsolete(groupId, creatorUserId, date.toEpochMilli, rng.nextLong())
+      integrationStorage = new IntegrationTokensKeyValueStorage
 
-      db.run(for {
-        _ ← createInDb(state, rng.nextLong())
-        _ ← GroupUserRepo.create(groupId, creatorUserId, creatorUserId, date, None, isAdmin = true)
-        _ ← DBIO.from(seqUpdExt.deliverUserUpdate(
-          creatorUserId,
-          update,
-          pushRules = seqUpdExt.pushRules(isFat = true, None),
-          deliveryId = s"creategroup_${groupId}_${update.randomId}"
-        ))
-      } yield CreateInternalAck(accessHash)) pipeTo sender() onFailure {
-        case e ⇒
-          log.error(e, "Failed to create group internally")
-      }
-    }
-  }
+      // Group creation
+      persist(Created(
+        ts = createdAt,
+        groupId,
+        typ = Some(GroupType.fromValue(cmd.typ)), //FIXME: make it normal enum
+        creatorUserId = cmd.creatorUserId,
+        accessHash = accessHash,
+        title = cmd.title,
+        userIds = Seq(cmd.creatorUserId), // only creator user becomes group member. all other users are invited via Invite message
+        isHidden = Some(false),
+        isHistoryShared = Some(false),
+        extensions = Seq.empty
+      )) { evt ⇒
+        val newState = commit(evt)
 
-  protected def create(groupId: Int, typ: GroupType, creatorUserId: Int, creatorAuthId: Long, title: String, randomId: Long, userIds: Set[Int]): Unit = {
-    val accessHash = genAccessHash()
+        val dateMillis = createdAt.toEpochMilli
 
-    val rng = ThreadLocalSecureRandom.current()
+        val updateObsolete = UpdateGroupInviteObsolete(
+          groupId,
+          inviteUserId = cmd.creatorUserId,
+          date = dateMillis,
+          randomId = cmd.randomId
+        )
 
-    // exclude ids of users, who blocked group creator
-    val resolvedUserIds = FutureExt.ftraverse((userIds - creatorUserId).toSeq) { userId ⇒
-      withNonBlockedUser(creatorUserId, userId)(
-        default = FastFuture.successful(Some(userId)),
-        failed = FastFuture.successful(None)
-      )
-    } map (_.flatten)
+        val creatorUpdatesNew = refreshGroupUpdates(newState)
 
-    // send invites to all users, that creator can invite
-    for {
-      userIds ← resolvedUserIds
-      _ = userIds foreach (u ⇒ context.parent ! Invite(groupId, u, creatorUserId, rng.nextLong()))
-    } yield ()
+        val serviceMessage = GroupServiceMessages.groupCreated
 
-    val date = now()
-
-    val created = GroupEvents.Created(date, groupId, Some(typ), creatorUserId, accessHash, title, Seq(creatorUserId), isHidden = Some(false), isHistoryShared = Some(false))
-    val state = initState(created)
-
-    persist(created) { _ ⇒
-      context become working(state)
-
-      val update = UpdateGroupInviteObsolete(groupId = groupId, inviteUserId = creatorUserId, date = date.toEpochMilli, randomId = randomId)
-
-      db.run(
-        for {
-          _ ← GroupRepo.create(
-            Group(
-              id = groupId,
-              creatorUserId = state.creatorUserId,
-              accessHash = state.accessHash,
-              title = state.title,
-              isPublic = state.typ == GroupType.Public,
-              createdAt = state.createdAt,
-              about = None,
-              topic = None
-            ),
-            randomId,
-            isHidden = false
-          )
-          _ ← GroupUserRepo.create(groupId, creatorUserId, creatorUserId, date, None, isAdmin = true)
-          memeberIds ← DBIO.from(resolvedUserIds)
-          _ ← DBIO.from(Future.sequence((memeberIds :+ creatorUserId) map { uid ⇒
-            dialogExt.writeMessageSelf(
-              userId = uid,
-              peer = ApiPeer(ApiPeerType.Group, state.id),
-              senderUserId = creatorUserId,
-              date = new DateTime(date.toEpochMilli),
-              randomId = randomId,
-              message = GroupServiceMessages.groupCreated
+        //TODO: remove deprecated
+        db.run(
+          for {
+            _ ← GroupRepo.create(
+              Group(
+                id = groupId,
+                creatorUserId = newState.creatorUserId,
+                accessHash = newState.accessHash,
+                title = newState.title,
+                isPublic = newState.typ == GroupType.Public,
+                createdAt = evt.ts,
+                about = None,
+                topic = None
+              ),
+              cmd.randomId,
+              isHidden = false
             )
-          }))
-          seqState ← if (isBot(state, creatorUserId)) DBIO.successful(SeqState(0, ByteString.EMPTY))
-          else DBIO.from(seqUpdExt.deliverClientUpdate(
-            userId = creatorUserId,
-            authId = creatorAuthId,
-            update = update,
-            pushRules = PushRules(isFat = true, excludeAuthIds = Seq(creatorAuthId)),
+            _ ← GroupUserRepo.create(groupId, cmd.creatorUserId, cmd.creatorUserId, createdAt, None, isAdmin = true)
+          } yield ()
+        )
+
+        val result: Future[CreateAck] = for {
+          ///////////////////////////
+          // old group api updates //
+          ///////////////////////////
+
+          _ ← seqUpdExt.deliverUserUpdate(
+            userId = cmd.creatorUserId,
+            update = updateObsolete,
+            pushRules = seqUpdExt.pushRules(isFat = true, None, excludeAuthIds = Seq(cmd.creatorAuthId)), //do we really need to remove self auth id here?
             reduceKey = None,
-            deliveryId = s"creategroup_${groupId}_$randomId"
-          ))
-        } yield CreateAck(state.accessHash, seqState, date.toEpochMilli)
-      ) pipeTo sender() onFailure {
+            deliveryId = s"creategroup_${groupId}_${cmd.randomId}"
+          )
+
+          ///////////////////////////
+          // new group api updates //
+          ///////////////////////////
+
+          // send update about group info to group creator
+          _ ← FutureExt.ftraverse(creatorUpdatesNew) { update ⇒
+            seqUpdExt.deliverUserUpdate(userId = cmd.creatorUserId, update)
+          }
+
+          // send service message to group
+          seqStateDate ← dialogExt.sendServerMessage(
+            apiGroupPeer,
+            senderUserId = cmd.creatorUserId,
+            senderAuthId = cmd.creatorAuthId,
+            randomId = cmd.randomId,
+            message = serviceMessage,
+            deliveryTag = Some(Optimization.GroupV2)
+          )
+
+        } yield CreateAck(newState.accessHash).withSeqStateDate(seqStateDate)
+
+        result pipeTo sender() onFailure {
           case e ⇒
             log.error(e, "Failed to create a group")
         }
-    }
-
-    val botUserId = nextIntId(rng)
-    val botToken = accessToken(rng)
-    val botAdded = GroupEvents.BotAdded(now(), botUserId, botToken)
-
-    persist(botAdded) { tsEvt ⇒
-      context become working(updatedState(tsEvt, state))
-
-      (for {
-        _ ← userExt.create(botUserId, nextAccessSalt(ThreadLocalSecureRandom.current()), None, "Bot", "US", ApiSex.Unknown, isBot = true)
-        _ ← db.run(GroupBotRepo.create(groupId, botUserId, botToken))
-        _ ← integrationTokensKv.upsert(botToken, groupId)
-      } yield ()) onFailure {
-        case e ⇒
-          log.error(e, "Failed to create group bot")
       }
-    }
-  }
 
-  protected def invite(group: GroupState, userId: Int, inviterUserId: Int, inviterAuthId: Long, randomId: Long, date: Instant): Future[SeqStateDate] = {
-    val dateMillis = date.toEpochMilli
-    val memberIds = group.members.keySet
+      //Adding bot to group
+      val botUserId = IdUtils.nextIntId(rng)
+      val botToken = ACLUtils.accessToken(rng)
 
-    val inviteeUpdate = UpdateGroupInviteObsolete(groupId = groupId, randomId = randomId, inviteUserId = inviterUserId, date = dateMillis)
+      persist(BotAdded(Instant.now, botUserId, botToken)) { evt ⇒
+        val newState = commit(evt)
 
-    val userAddedUpdate = UpdateGroupUserInvitedObsolete(groupId = groupId, userId = userId, inviterUserId = inviterUserId, date = dateMillis, randomId = randomId)
-    val serviceMessage = GroupServiceMessages.userInvited(userId)
+        //TODO: remove deprecated
+        db.run(GroupBotRepo.create(groupId, botUserId, botToken))
 
-    for {
-      _ ← db.run(GroupUserRepo.create(groupId, userId, inviterUserId, date, None, isAdmin = false))
-
-      // push "Invited" to invitee
-      _ ← seqUpdExt.deliverUserUpdate(
-        userId,
-        inviteeUpdate,
-        pushRules = seqUpdExt.pushRules(isFat = true, Some(PushTexts.Invited)),
-        deliveryId = s"invite_${groupId}_${randomId}"
-      )
-
-      // push "User added" to all group members except `inviterUserId`
-      _ ← seqUpdExt.broadcastPeopleUpdate(
-        memberIds - inviterUserId,
-        userAddedUpdate,
-        pushRules = seqUpdExt.pushRules(isFat = true, Some(PushTexts.Added)),
-        deliveryId = s"useradded_${groupId}_${randomId}"
-      )
-
-      // push "User added" to `inviterUserId` and return SeqState
-      SeqState(seq, state) ← seqUpdExt.deliverClientUpdate(
-        inviterUserId,
-        inviterAuthId,
-        userAddedUpdate,
-        pushRules = PushRules(isFat = true),
-        deliveryId = s"useradded_${groupId}_$randomId"
-      )
-      _ ← dialogExt.writeMessage(
-        ApiPeer(ApiPeerType.Group, groupId),
-        inviterUserId,
-        date,
-        randomId,
-        serviceMessage
-      )
-    } yield SeqStateDate(seq, state, dateMillis)
-  }
-
-  protected def setJoined(group: GroupState, joiningUserId: Int, joiningUserAuthId: Long, invitingUserId: Int): Unit = {
-    if (!hasMember(group, joiningUserId) || isInvited(group, joiningUserId)) {
-      val replyTo = sender()
-
-      persist(GroupEvents.UserJoined(now(), joiningUserId, invitingUserId)) { evt ⇒
-        workWith(evt, group)
-
-        val memberIds = group.members.keySet
-
-        val action: DBIO[(SeqStateDate, Vector[Int], Long)] = {
-          for {
-            updates ← {
-              val date = evt.ts
-              val randomId = ThreadLocalSecureRandom.current().nextLong()
-              for {
-                exists ← GroupUserRepo.exists(groupId, joiningUserId)
-                _ ← if (exists)
-                  DBIO.successful(())
-                else GroupUserRepo.create(groupId, joiningUserId, invitingUserId, date, Some(LocalDateTime.now(ZoneOffset.UTC)), isAdmin = false)
-                seqStateDate ← DBIO.from(DialogExtension(system).sendMessage(
-                  peer = ApiPeer(ApiPeerType.Group, groupId),
-                  senderUserId = joiningUserId,
-                  senderAuthId = joiningUserAuthId,
-                  randomId = randomId,
-                  message = GroupServiceMessages.userJoined,
-                  accessHash = group.accessHash,
-                  isFat = true
-                ))
-              } yield (seqStateDate, memberIds.toVector :+ invitingUserId, randomId)
-            }
-          } yield updates
+        (for {
+          _ ← userExt.create(botUserId, ACLUtils.nextAccessSalt(), None, "Bot", "US", ApiSex.Unknown, isBot = true)
+          _ ← integrationStorage.upsertToken(botToken, groupId)
+        } yield ()) onFailure {
+          case e ⇒
+            log.error(e, "Failed to create group bot")
         }
-
-        db.run(action) pipeTo replyTo
       }
-    } else {
+    }
+  }
+
+  protected def invite(cmd: Invite): Unit = {
+    if (state.isInvited(cmd.inviteeUserId)) {
       sender() ! Status.Failure(GroupErrors.UserAlreadyInvited)
-    }
-  }
+    } else if (state.isMember(cmd.inviteeUserId)) {
+      sender() ! Status.Failure(GroupErrors.UserAlreadyJoined)
+    } else {
+      val inviteeIsExUser = state.isExUser(cmd.inviteeUserId)
 
-  protected def kick(group: GroupState, kickedUserId: Int, kickerUserId: Int, kickerAuthId: Long, randomId: Long): Unit = {
-    val replyTo = sender()
-    val date = Instant.now()
+      persist(UserInvited(Instant.now, cmd.inviteeUserId, cmd.inviterUserId)) { evt ⇒
+        val newState = commit(evt)
 
-    persist(GroupEvents.UserKicked(date, kickedUserId, kickerUserId)) { evt ⇒
-      workWith(evt, group)
-      db.run(removeUser(
-        initiatorId = kickerUserId,
-        userId = kickedUserId,
-        group.members.keySet,
-        kickerAuthId,
-        serviceMessage = GroupServiceMessages.userKicked(kickedUserId),
-        update = UpdateGroupUserKickObsolete(groupId, kickedUserId, kickerUserId, date.toEpochMilli, randomId),
-        date,
-        randomId
-      )) pipeTo replyTo
-    }
-  }
+        val dateMillis = evt.ts.toEpochMilli
+        val memberIds = newState.memberIds
+        val members = newState.members.values.map(_.asStruct).toVector
 
-  protected def leave(group: GroupState, userId: Int, authId: Long, randomId: Long): Unit = {
-    val replyTo = sender()
+        // if user ever been in this group - we should push these updates,
+        // but don't push them if user is first time in group. in this case we should push FatSeqUpdate
+        val inviteeUpdatesNew: List[Update] = refreshGroupUpdates(newState)
 
-    persist(GroupEvents.UserLeft(now(), userId)) { evt ⇒
-      workWith(evt, group)
+        // send everyone in group, including invitee.
+        // send `FatSeqUpdate` if this user invited to group for first time.
+        val membersUpdateNew = UpdateGroupMembersUpdated(groupId, members)
 
-      db.run(removeUser(
-        initiatorId = userId,
-        userId = userId,
-        group.members.keySet,
-        authId,
-        serviceMessage = GroupServiceMessages.userLeft(userId),
-        update = UpdateGroupUserLeaveObsolete(groupId, userId, evt.ts.toEpochMilli, randomId),
-        evt.ts,
-        randomId
-      )) pipeTo replyTo
-    }
-  }
-
-  protected def updateAvatar(group: GroupState, clientUserId: Int, clientAuthId: Long, avatarOpt: Option[Avatar], randomId: Long): Unit = {
-    persistStashingReply(AvatarUpdated(now(), avatarOpt), group) { evt ⇒
-      val date = evt.ts
-      val avatarData = avatarOpt map (getAvatarData(AvatarData.OfGroup, groupId, _)) getOrElse AvatarData.empty(AvatarData.OfGroup, groupId.toLong)
-
-      val update = UpdateGroupAvatarChangedObsolete(groupId, clientUserId, avatarOpt, date.toEpochMilli, randomId)
-      val serviceMessage = GroupServiceMessages.changedAvatar(avatarOpt)
-
-      val memberIds = group.members.keySet
-
-      for {
-        _ ← db.run(AvatarDataRepo.createOrUpdate(avatarData))
-        SeqState(seq, state) ← seqUpdExt.broadcastClientUpdate(clientUserId, clientAuthId, memberIds, update)
-      } yield {
-        dialogExt.writeMessage(
-          ApiPeer(ApiPeerType.Group, groupId),
-          clientUserId,
-          date,
-          randomId,
-          serviceMessage
+        val inviteeUpdateObsolete = UpdateGroupInviteObsolete(
+          groupId,
+          inviteUserId = cmd.inviterUserId,
+          date = dateMillis,
+          randomId = cmd.randomId
         )
 
-        UpdateAvatarAck(avatarOpt, SeqStateDate(seq, state, date.toEpochMilli))
-      }
-    }
-  }
-
-  protected def makePublic(group: GroupState, description: String): Unit = {
-    persistStashingReply(Vector(BecamePublic(now()), AboutUpdated(now(), Some(description))), group) { _ ⇒
-      db.run(DBIO.sequence(Seq(
-        GroupRepo.makePublic(groupId),
-        GroupRepo.updateAbout(groupId, Some(description))
-      ))) map (_ ⇒ MakePublicAck())
-    }
-  }
-
-  protected def updateTitle(group: GroupState, clientUserId: Int, clientAuthId: Long, title: String, randomId: Long): Unit = {
-    val memberIds = group.members.keySet
-
-    persistStashingReply(TitleUpdated(now(), title), group) { evt ⇒
-      val date = evt.ts
-
-      val update = UpdateGroupTitleChangedObsolete(groupId = groupId, userId = clientUserId, title = title, date = date.toEpochMilli, randomId = randomId)
-      val serviceMessage = GroupServiceMessages.changedTitle(title)
-
-      for {
-        _ ← db.run(GroupRepo.updateTitle(groupId, title, clientUserId, randomId, date))
-        _ ← dialogExt.writeMessage(
-          ApiPeer(ApiPeerType.Group, groupId),
-          clientUserId,
-          date,
-          randomId,
-          serviceMessage
+        val membersUpdateObsolete = UpdateGroupUserInvitedObsolete(
+          groupId,
+          userId = cmd.inviteeUserId,
+          inviterUserId = cmd.inviterUserId,
+          date = dateMillis,
+          randomId = cmd.randomId
         )
-        SeqState(seq, state) ← seqUpdExt.broadcastClientUpdate(
-          clientUserId,
-          clientAuthId,
-          memberIds,
-          update,
-          PushRules().withData(PushData().withText(PushTexts.TitleChanged))
-        )
-      } yield SeqStateDate(seq, state, date.toEpochMilli)
-    }
-  }
+        val serviceMessage = GroupServiceMessages.userInvited(cmd.inviteeUserId)
 
-  protected def updateTopic(group: GroupState, clientUserId: Int, clientAuthId: Long, topic: Option[String], randomId: Long): Unit = {
-    withGroupMember(group, clientUserId) { member ⇒
-      val trimmed = topic.map(_.trim)
-      if (trimmed.forall(s ⇒ s.nonEmpty & s.length < 255)) {
-        persistStashingReply(TopicUpdated(now(), trimmed), group) { evt ⇒
-          val date = evt.ts
-          val dateMillis = date.toEpochMilli
-          val serviceMessage = GroupServiceMessages.changedTopic(trimmed)
-          val update = UpdateGroupTopicChangedObsolete(groupId = groupId, randomId = randomId, userId = clientUserId, topic = trimmed, date = dateMillis)
-          for {
-            _ ← db.run(GroupRepo.updateTopic(groupId, trimmed))
-            _ ← dialogExt.writeMessage(
-              ApiPeer(ApiPeerType.Group, groupId),
-              clientUserId,
-              date,
-              randomId,
-              serviceMessage
-            )
-            SeqState(seq, state) ← seqUpdExt.broadcastClientUpdate(
-              clientUserId,
-              clientAuthId,
-              group.members.keySet - clientUserId,
-              update,
-              PushRules().withData(PushData().withText(PushTexts.TopicChanged))
-            )
-          } yield SeqStateDate(seq, state, dateMillis)
-        }
-      } else {
-        sender() ! Status.Failure(TopicTooLong)
-      }
-    }
-  }
+        //TODO: remove deprecated
+        db.run(GroupUserRepo.create(groupId, cmd.inviteeUserId, cmd.inviterUserId, evt.ts, None, isAdmin = false))
 
-  protected def updateAbout(group: GroupState, clientUserId: Int, clientAuthId: Long, about: Option[String], randomId: Long): Unit = {
-    withGroupAdmin(group, clientUserId) {
-      val trimmed = about.map(_.trim)
-      if (trimmed.forall(s ⇒ s.nonEmpty & s.length < 255)) {
-        persistStashingReply(AboutUpdated(now(), trimmed), group) { evt ⇒
-          val date = evt.ts
-          val dateMillis = date.toEpochMilli
-          val update = UpdateGroupAboutChanged(groupId, trimmed)
-          val serviceMessage = GroupServiceMessages.changedAbout(trimmed)
-          db.run(for {
-            _ ← GroupRepo.updateAbout(groupId, trimmed)
-            _ ← DBIO.from(dialogExt.writeMessage(
-              ApiPeer(ApiPeerType.Group, groupId),
-              clientUserId,
-              date,
-              randomId,
-              serviceMessage
-            ))
-            SeqState(seq, state) ← DBIO.from(seqUpdExt.broadcastClientUpdate(
-              clientUserId,
-              clientAuthId,
-              group.members.keySet - clientUserId,
-              update,
-              PushRules().withData(PushData().withText(PushTexts.AboutChanged))
-            ))
-          } yield SeqStateDate(seq, state, dateMillis))
-        }
-      } else {
-        sender() ! Status.Failure(AboutTooLong)
-      }
-    }
-  }
+        val result: Future[SeqStateDate] = for {
+          ///////////////////////////
+          // old group api updates //
+          ///////////////////////////
 
-  protected def makeUserAdmin(group: GroupState, clientUserId: Int, clientAuthId: Long, candidateId: Int): Unit = {
-    withGroupAdmin(group, clientUserId) {
-      withGroupMember(group, candidateId) { member ⇒
-        persistStashingReply(UserBecameAdmin(now(), candidateId, clientUserId), group) { e ⇒
-          val date = e.ts
+          // push "Invited" to invitee
+          _ ← seqUpdExt.deliverUserUpdate(
+            userId = cmd.inviteeUserId,
+            inviteeUpdateObsolete,
+            pushRules = seqUpdExt.pushRules(isFat = true, Some(PushTexts.Invited)),
+            deliveryId = s"invite_${groupId}_${cmd.randomId}"
+          )
 
-          if (!member.isAdmin) {
-            //we have current state, that does not updated by UserBecameAdmin event. That's why we update it manually
-            val updated = group.members.updated(candidateId, group.members(candidateId).copy(isAdmin = true))
-            val members = updated.values.map(_.asStruct).toVector
-            for {
-              _ ← db.run(GroupUserRepo.makeAdmin(groupId, candidateId))
-              SeqState(seq, state) ← seqUpdExt.broadcastClientUpdate(
-                clientUserId,
-                clientAuthId,
-                group.members.keySet - clientUserId,
-                UpdateGroupMembersUpdateObsolete(groupId, members)
-              )
-            } yield (members, SeqStateDate(seq, state, date.toEpochMilli))
-          } else {
-            Future.failed(UserAlreadyAdmin)
+          // push "User added" to all group members except for `inviterUserId`
+          _ ← seqUpdExt.broadcastPeopleUpdate(
+            (memberIds - cmd.inviteeUserId) - cmd.inviterUserId, // is it right?
+            membersUpdateObsolete,
+            pushRules = seqUpdExt.pushRules(isFat = true, Some(PushTexts.Added)),
+            deliveryId = s"useradded_${groupId}_${cmd.randomId}"
+          )
+
+          // push "User added" to `inviterUserId`
+          _ ← seqUpdExt.deliverClientUpdate(
+            cmd.inviterUserId,
+            cmd.inviterAuthId,
+            membersUpdateObsolete,
+            pushRules = seqUpdExt.pushRules(isFat = true, None),
+            deliveryId = s"useradded_${groupId}_${cmd.randomId}"
+          )
+
+          ///////////////////////////
+          // new group api updates //
+          ///////////////////////////
+
+          // push updated members list to inviteeUserId,
+          _ ← seqUpdExt.deliverUserUpdate(
+            userId = cmd.inviteeUserId,
+            membersUpdateNew,
+            pushRules = seqUpdExt.pushRules(isFat = !inviteeIsExUser, Some(PushTexts.Invited)),
+            deliveryId = s"invite_${groupId}_${cmd.randomId}"
+          )
+
+          // push all group updates to inviteeUserId
+          _ ← FutureExt.ftraverse(inviteeUpdatesNew) { update ⇒
+            seqUpdExt.deliverUserUpdate(userId = cmd.inviteeUserId, update)
           }
-        }
+
+          // push updated members list to all group members except inviteeUserId
+          _ ← seqUpdExt.broadcastPeopleUpdate(
+            (memberIds + cmd.inviterUserId) - cmd.inviteeUserId,
+            membersUpdateNew,
+            deliveryId = s"useradded_${groupId}_${cmd.randomId}"
+          )
+
+          // explicitly send service message
+          seqStateDate ← dialogExt.sendServerMessage(
+            apiGroupPeer,
+            cmd.inviterUserId,
+            cmd.inviterAuthId,
+            cmd.randomId,
+            serviceMessage,
+            deliveryTag = Some(Optimization.GroupV2)
+          )
+        } yield seqStateDate
+
+        result pipeTo sender()
       }
     }
   }
 
-  protected def revokeIntegrationToken(group: GroupState, userId: Int): Unit = {
-    withGroupAdmin(group, userId) {
-      val oldToken = group.bot.map(_.token)
-      val newToken = accessToken(ThreadLocalSecureRandom.current())
-      persistStashingReply(IntegrationTokenRevoked(now(), newToken), group) { _ ⇒
-        for {
-          _ ← db.run(GroupBotRepo.updateToken(groupId, newToken))
-          _ ← integrationTokensKv.delete(oldToken.getOrElse(""))
-          _ ← integrationTokensKv.upsert(newToken, groupId)
+  /**
+   * User can join
+   * • after invite(was invited by other user previously). In this case he already have group on devices
+   * • via invite ling. In this case he doesn't have group, and we need to deliver it.
+   */
+  protected def join(cmd: Join): Unit = {
+    // user is already a member, and should not complete invitation process
+    if (state.isMember(cmd.joiningUserId) && !state.isInvited(cmd.joiningUserId)) {
+      sender() ! Status.Failure(GroupErrors.UserAlreadyJoined)
+    } else {
+      // user was invited in group by other group user
+      val wasInvited = state.isInvited(cmd.joiningUserId)
+
+      val optMember = state.members.get(cmd.joiningUserId)
+      val inviterUserId = cmd.invitingUserId
+        .orElse(optMember.map(_.inviterUserId))
+        .getOrElse(state.creatorUserId)
+
+      persist(UserJoined(Instant.now, cmd.joiningUserId, inviterUserId)) { evt ⇒
+        val newState = commit(evt)
+
+        val date = evt.ts
+        val memberIds = newState.memberIds
+        val members = newState.members.values.map(_.asStruct).toVector
+        val randomId = ACLUtils.randomLong()
+
+        // If user was never invited to group - he don't have group on devices,
+        // that means we need to push all group-info related updates
+        //
+        // If user was invited to group by other member - we don't need to push group updates,
+        // cause they we pushed already on invite step
+        val joiningUserUpdatesNew: List[Update] =
+          if (wasInvited) List.empty[Update] else refreshGroupUpdates(newState)
+
+        // нужно отправить ему апдейт о членах в группе.
+        // всем нужно отправить апдейт о изменившихся членах в группе. можно в любом случае отправить
+
+        // push to everyone, including joining user.
+        // if joining user wasn't invited - send update as FatSeqUpdate
+        // update date when member got into group
+        val membersUpdateNew = UpdateGroupMembersUpdated(groupId, members)
+
+        val membersUpdateObsolete = UpdateGroupMembersUpdateObsolete(groupId, members)
+
+        val serviceMessage = GroupServiceMessages.userJoined
+
+        //TODO: remove deprecated
+        db.run(GroupUserRepo.create(
+          groupId,
+          userId = cmd.joiningUserId,
+          inviterUserId = inviterUserId,
+          invitedAt = optMember.map(_.invitedAt).getOrElse(date),
+          joinedAt = Some(LocalDateTime.now(ZoneOffset.UTC)),
+          isAdmin = false
+        ))
+
+        val result: Future[(SeqStateDate, Vector[Int], Long)] =
+          for {
+            ///////////////////////////
+            // old group api updates //
+            ///////////////////////////
+
+            // push update about members to all users, except joining user
+            _ ← seqUpdExt.broadcastPeopleUpdate(
+              memberIds - cmd.joiningUserId,
+              membersUpdateObsolete,
+              pushRules = seqUpdExt.pushRules(isFat = true, None),
+              deliveryId = s"userjoined_${groupId}_${randomId}"
+            )
+
+            ///////////////////////////
+            // new group api updates //
+            ///////////////////////////
+
+            // push updated members list to joining user,
+            // TODO???: isFat = !wasInvited - is it correct?
+            _ ← seqUpdExt.deliverUserUpdate(
+              userId = cmd.joiningUserId,
+              membersUpdateNew,
+              pushRules = seqUpdExt.pushRules(isFat = !wasInvited, None), //!wasInvited means that user came for first time here
+              deliveryId = s"userjoined_${groupId}_${randomId}"
+            )
+
+            // push all group updates to inviteeUserId
+            _ ← FutureExt.ftraverse(joiningUserUpdatesNew) { update ⇒
+              seqUpdExt.deliverUserUpdate(userId = cmd.joiningUserId, update)
+            }
+
+            // push updated members list to all group members except joiningUserId
+            _ ← seqUpdExt.broadcastPeopleUpdate(
+              memberIds - cmd.joiningUserId,
+              membersUpdateNew,
+              deliveryId = s"join_${groupId}_${randomId}"
+            )
+
+            seqStateDate ← dialogExt.sendServerMessage(
+              apiGroupPeer,
+              senderUserId = cmd.joiningUserId,
+              senderAuthId = cmd.joiningUserAuthId,
+              randomId = randomId,
+              serviceMessage // no delivery tag. This updated handled this way in Groups V1
+            )
+          } yield (seqStateDate, memberIds.toVector :+ inviterUserId, randomId)
+
+        result pipeTo sender()
+      }
+    }
+  }
+
+  /**
+   * This case handled in other manner, so we change state in the end
+   * cause user that left, should send service message. And we don't allow non-members
+   * to send message. So we keep him as member until message sent, and remove him from members
+   */
+  protected def leave(cmd: Leave): Unit = {
+    if (state.nonMember(cmd.userId)) {
+      sender() ! notMember
+    } else {
+      persist(UserLeft(Instant.now, cmd.userId)) { evt ⇒
+        // no commit here. it will be after service message sent
+
+        val dateMillis = evt.ts.toEpochMilli
+        val members = state.members.filterNot(_._1 == cmd.userId).values.map(_.asStruct).toVector
+
+        val updateObsolete = UpdateGroupUserLeaveObsolete(groupId, cmd.userId, dateMillis, cmd.randomId)
+
+        val userUpdatesNew: List[Update] = List(
+          UpdateGroupMemberChanged(groupId, isMember = false),
+          UpdateGroupMembersUpdated(groupId, members = Vector.empty)
+        )
+
+        val membersUpdateNew = UpdateGroupMembersUpdated(groupId, members)
+
+        val serviceMessage = GroupServiceMessages.userLeft
+
+        //TODO: remove deprecated. GroupInviteTokenRepo don't have replacement yet.
+        db.run(
+          for {
+            _ ← GroupUserRepo.delete(groupId, cmd.userId)
+            _ ← GroupInviteTokenRepo.revoke(groupId, cmd.userId)
+          } yield ()
+        )
+
+        val result: Future[SeqStateDate] = for {
+          // read this dialog by user that leaves group
+          _ ← dialogExt.messageRead(apiGroupPeer, cmd.userId, 0L, dateMillis)
+
+          ///////////////////////////
+          // old group api updates //
+          ///////////////////////////
+
+          _ ← seqUpdExt.broadcastClientUpdate(
+            userId = cmd.userId,
+            authId = cmd.authId,
+            bcastUserIds = state.memberIds + cmd.userId, // push this to other user's devices too. actually cmd.userId is still in state.memberIds
+            update = updateObsolete,
+            pushRules = seqUpdExt.pushRules(isFat = false, Some(PushTexts.Left), Seq(cmd.authId))
+          )
+
+          ///////////////////////////
+          // new group api updates //
+          ///////////////////////////
+
+          _ ← FutureExt.ftraverse(userUpdatesNew) { update ⇒
+            seqUpdExt.deliverUserUpdate(userId = cmd.userId, update)
+          }
+
+          // push updated members list to all group members
+          _ ← seqUpdExt.broadcastPeopleUpdate(
+            state.memberIds - cmd.userId,
+            membersUpdateNew
+          )
+
+          seqStateDate ← dialogExt.sendServerMessage(
+            apiGroupPeer,
+            senderUserId = cmd.userId,
+            senderAuthId = cmd.authId,
+            randomId = cmd.randomId,
+            message = serviceMessage,
+            deliveryTag = Some(Optimization.GroupV2)
+          )
+        } yield seqStateDate
+
+        result andThen { case _ ⇒ commit(evt) } pipeTo sender()
+      }
+    }
+  }
+
+  protected def kick(cmd: Kick): Unit = {
+    if (state.nonMember(cmd.kickerUserId) || state.nonMember(cmd.kickedUserId)) {
+      sender() ! notMember
+    } else {
+      persist(UserKicked(Instant.now, cmd.kickedUserId, cmd.kickerUserId)) { evt ⇒
+        val newState = commit(evt)
+
+        val dateMillis = evt.ts.toEpochMilli
+        val members = newState.members.values.map(_.asStruct).toVector
+
+        val updateObsolete = UpdateGroupUserKickObsolete(groupId, cmd.kickedUserId, cmd.kickerUserId, dateMillis, cmd.randomId)
+
+        val kickedUserUpdatesNew: List[Update] = List(
+          UpdateGroupMemberChanged(groupId, isMember = false),
+          UpdateGroupMembersUpdated(groupId, members = Vector.empty)
+        )
+
+        val membersUpdateNew = UpdateGroupMembersUpdated(groupId, members)
+
+        val serviceMessage = GroupServiceMessages.userKicked(cmd.kickedUserId)
+
+        //TODO: remove deprecated. GroupInviteTokenRepo don't have replacement yet.
+        db.run(
+          for {
+            _ ← GroupUserRepo.delete(groupId, cmd.kickedUserId)
+            _ ← GroupInviteTokenRepo.revoke(groupId, cmd.kickedUserId)
+          } yield ()
+        )
+
+        val result: Future[SeqStateDate] = for {
+          _ ← dialogExt.messageRead(apiGroupPeer, cmd.kickedUserId, 0L, dateMillis)
+
+          ///////////////////////////
+          // old group api updates //
+          ///////////////////////////
+
+          _ ← seqUpdExt.broadcastClientUpdate(
+            userId = cmd.kickerUserId,
+            authId = cmd.kickerAuthId,
+            bcastUserIds = newState.memberIds,
+            update = updateObsolete,
+            pushRules = seqUpdExt.pushRules(isFat = false, Some(PushTexts.Kicked), Seq(cmd.kickerAuthId))
+          )
+
+          ///////////////////////////
+          // new group api updates //
+          ///////////////////////////
+
+          _ ← FutureExt.ftraverse(kickedUserUpdatesNew) { update ⇒
+            seqUpdExt.deliverUserUpdate(userId = cmd.kickedUserId, update)
+          }
+
+          // push updated members list to all group members. Don't push to kicked user!
+          _ ← seqUpdExt.broadcastPeopleUpdate(
+            newState.memberIds,
+            membersUpdateNew
+          )
+
+          seqStateDate ← dialogExt.sendServerMessage(
+            apiGroupPeer,
+            senderUserId = cmd.kickerUserId,
+            senderAuthId = cmd.kickerAuthId,
+            randomId = cmd.randomId,
+            message = serviceMessage,
+            deliveryTag = Some(Optimization.GroupV2)
+          )
+        } yield seqStateDate
+
+        result pipeTo sender()
+      }
+    }
+  }
+
+  protected def updateAvatar(cmd: UpdateAvatar): Unit = {
+    if (state.nonMember(cmd.clientUserId)) {
+      sender() ! notMember
+    } else {
+      persist(AvatarUpdated(Instant.now, cmd.avatar)) { evt ⇒
+        val newState = commit(evt)
+
+        val dateMillis = evt.ts.toEpochMilli
+        val apiAvatar: Option[ApiAvatar] = cmd.avatar
+        val memberIds = newState.memberIds
+
+        val updateNew = UpdateGroupAvatarChanged(groupId, apiAvatar)
+        val updateObsolete = UpdateGroupAvatarChangedObsolete(groupId, cmd.clientUserId, apiAvatar, dateMillis, cmd.randomId)
+        val serviceMessage = GroupServiceMessages.changedAvatar(apiAvatar)
+
+        db.run(AvatarDataRepo.createOrUpdate(getAvatarData(cmd.avatar)))
+        val result: Future[UpdateAvatarAck] = for {
+          ///////////////////////////
+          // old group api updates //
+          ///////////////////////////
+
+          _ ← seqUpdExt.broadcastClientUpdate(cmd.clientUserId, cmd.clientAuthId, memberIds, updateObsolete)
+
+          ///////////////////////////
+          // new group api updates //
+          ///////////////////////////
+
+          _ ← seqUpdExt.broadcastPeopleUpdate(userIds = memberIds + cmd.clientUserId, updateNew)
+          seqStateDate ← dialogExt.sendServerMessage(
+            apiGroupPeer,
+            senderUserId = cmd.clientUserId,
+            senderAuthId = cmd.clientAuthId,
+            randomId = cmd.randomId,
+            message = serviceMessage,
+            deliveryTag = Some(Optimization.GroupV2)
+          )
+        } yield UpdateAvatarAck(apiAvatar).withSeqStateDate(seqStateDate)
+
+        result pipeTo sender()
+      }
+    }
+  }
+
+  protected def updateTitle(cmd: UpdateTitle): Unit = {
+    val title = cmd.title
+    if (state.nonMember(cmd.clientUserId)) {
+      sender() ! notMember
+    } else if (!isValidTitle(title)) {
+      sender() ! Status.Failure(InvalidTitle)
+    } else {
+      persist(TitleUpdated(Instant.now(), title)) { evt ⇒
+        val newState = commit(evt)
+
+        val dateMillis = evt.ts.toEpochMilli
+        val memberIds = newState.memberIds
+
+        val updateNew = UpdateGroupTitleChanged(groupId, title)
+        val updateObsolete = UpdateGroupTitleChangedObsolete(
+          groupId,
+          userId = cmd.clientUserId,
+          title = title,
+          date = dateMillis,
+          randomId = cmd.randomId
+        )
+        val serviceMessage = GroupServiceMessages.changedTitle(title)
+        val pushRules = seqUpdExt.pushRules(isFat = false, Some(PushTexts.TitleChanged))
+
+        //TODO: remove deprecated
+        db.run(GroupRepo.updateTitle(groupId, title, cmd.clientUserId, cmd.randomId, date = evt.ts))
+
+        val result: Future[SeqStateDate] = for {
+
+          ///////////////////////////
+          // old group api updates //
+          ///////////////////////////
+
+          _ ← seqUpdExt.broadcastClientUpdate(
+            cmd.clientUserId,
+            cmd.clientAuthId,
+            memberIds - cmd.clientUserId,
+            updateObsolete,
+            pushRules
+          )
+
+          ///////////////////////////
+          // new group api updates //
+          ///////////////////////////
+
+          _ ← seqUpdExt.broadcastPeopleUpdate(
+            userIds = memberIds + cmd.clientUserId,
+            updateNew,
+            pushRules
+          )
+          seqStateDate ← dialogExt.sendServerMessage(
+            apiGroupPeer,
+            senderUserId = cmd.clientUserId,
+            senderAuthId = cmd.clientAuthId,
+            randomId = cmd.randomId,
+            message = serviceMessage,
+            deliveryTag = Some(Optimization.GroupV2)
+          )
+        } yield seqStateDate
+
+        result pipeTo sender()
+      }
+
+    }
+  }
+
+  protected def updateTopic(cmd: UpdateTopic): Unit = {
+    def isValidTopic(topic: Option[String]) = topic.forall(t ⇒ t.nonEmpty && t.length < 255)
+
+    val topic = cmd.topic map (_.trim)
+
+    if (state.nonMember(cmd.clientUserId)) {
+      sender() ! notMember
+    } else if (!isValidTopic(topic)) {
+      sender() ! Status.Failure(TopicTooLong)
+    } else {
+      persist(TopicUpdated(Instant.now, topic)) { evt ⇒
+        val newState = commit(evt)
+
+        val dateMillis = evt.ts.toEpochMilli
+        val memberIds = newState.memberIds
+
+        val updateNew = UpdateGroupTopicChanged(groupId, topic)
+        val updateObsolete = UpdateGroupTopicChangedObsolete(
+          groupId,
+          randomId = cmd.randomId,
+          userId = cmd.clientUserId,
+          topic = topic,
+          date = dateMillis
+        )
+        val serviceMessage = GroupServiceMessages.changedTopic(topic)
+        val pushRules = seqUpdExt.pushRules(isFat = false, Some(PushTexts.TopicChanged))
+
+        //TODO: remove deprecated
+        db.run(GroupRepo.updateTopic(groupId, topic))
+
+        val result: Future[SeqStateDate] = for {
+
+          ///////////////////////////
+          // old group api updates //
+          ///////////////////////////
+
+          _ ← seqUpdExt.broadcastClientUpdate(
+            cmd.clientUserId,
+            cmd.clientAuthId,
+            memberIds - cmd.clientUserId,
+            updateObsolete,
+            pushRules
+          )
+
+          ///////////////////////////
+          // new group api updates //
+          ///////////////////////////
+
+          _ ← seqUpdExt.broadcastPeopleUpdate(
+            userIds = memberIds + cmd.clientUserId,
+            updateNew,
+            pushRules
+          )
+          seqStateDate ← dialogExt.sendServerMessage(
+            apiGroupPeer,
+            senderUserId = cmd.clientUserId,
+            senderAuthId = cmd.clientAuthId,
+            randomId = cmd.randomId,
+            message = serviceMessage,
+            deliveryTag = Some(Optimization.GroupV2)
+          )
+        } yield seqStateDate
+
+        result pipeTo sender()
+      }
+    }
+  }
+
+  protected def updateAbout(cmd: UpdateAbout): Unit = {
+    def isValidAbout(about: Option[String]) = about.forall(a ⇒ a.nonEmpty && a.length < 255)
+
+    val about = cmd.about map (_.trim)
+
+    if (!state.isAdmin(cmd.clientUserId)) {
+      sender() ! notAdmin
+    } else if (!isValidAbout(about)) {
+      sender() ! Status.Failure(AboutTooLong)
+    } else {
+
+      persist(AboutUpdated(Instant.now, about)) { evt ⇒
+        val newState = commit(evt)
+
+        val memberIds = newState.memberIds
+
+        val updateNew = UpdateGroupAboutChanged(groupId, about)
+        val updateObsolete = UpdateGroupAboutChangedObsolete(groupId, about)
+        val serviceMessage = GroupServiceMessages.changedAbout(about)
+        val pushRules = seqUpdExt.pushRules(isFat = false, Some(PushTexts.TopicChanged))
+
+        //TODO: remove deprecated
+        db.run(GroupRepo.updateAbout(groupId, about))
+
+        val result: Future[SeqStateDate] = for {
+
+          ///////////////////////////
+          // old group api updates //
+          ///////////////////////////
+
+          _ ← seqUpdExt.broadcastClientUpdate(
+            cmd.clientUserId,
+            cmd.clientAuthId,
+            memberIds - cmd.clientUserId,
+            updateObsolete,
+            pushRules
+          )
+
+          ///////////////////////////
+          // new group api updates //
+          ///////////////////////////
+
+          _ ← seqUpdExt.broadcastPeopleUpdate(
+            userIds = memberIds + cmd.clientUserId,
+            updateNew,
+            pushRules
+          )
+          seqStateDate ← dialogExt.sendServerMessage(
+            apiGroupPeer,
+            senderUserId = cmd.clientUserId,
+            senderAuthId = cmd.clientAuthId,
+            randomId = cmd.randomId,
+            message = serviceMessage,
+            deliveryTag = Some(Optimization.GroupV2)
+          )
+        } yield seqStateDate
+
+        result pipeTo sender()
+      }
+    }
+  }
+
+  protected def revokeIntegrationToken(cmd: RevokeIntegrationToken): Unit = {
+    if (!state.isAdmin(cmd.clientUserId)) {
+      sender() ! notAdmin
+    } else {
+      val oldToken = state.bot.map(_.token)
+      val newToken = ACLUtils.accessToken()
+
+      persist(IntegrationTokenRevoked(Instant.now, newToken)) { evt ⇒
+        val newState = commit(evt)
+
+        //TODO: remove deprecated
+        db.run(GroupBotRepo.updateToken(groupId, newToken))
+
+        val result: Future[RevokeIntegrationTokenAck] = for {
+          _ ← oldToken match {
+            case Some(token) ⇒ integrationStorage.deleteToken(token)
+            case None        ⇒ FastFuture.successful(())
+          }
+          _ ← integrationStorage.upsertToken(newToken, groupId)
         } yield RevokeIntegrationTokenAck(newToken)
+
+        result pipeTo sender()
       }
     }
   }
 
-  protected def transferOwnership(group: GroupState, clientUserId: Int, clientAuthId: Long, userId: Int): Unit = {
-    if (group.ownerUserId == clientUserId) {
-      persistReply(OwnerChanged(Instant.now, userId), group) { _ ⇒
-        for {
-          seqState ← seqUpdExt.broadcastClientUpdate(
-            userId = clientUserId,
-            authId = clientAuthId,
-            bcastUserIds = group.members.keySet.filterNot(_ == clientUserId),
-            update = UpdateGroupOwnerChanged(group.id, userId),
-            pushRules = PushRules().withExcludeAuthIds(Seq(clientAuthId))
+  protected def makeUserAdmin(cmd: MakeUserAdmin): Unit = {
+    if (!state.isAdmin(cmd.clientUserId) || state.nonMember(cmd.candidateUserId)) {
+      sender() ! Status.Failure(NotAdmin)
+    } else if (state.isAdmin(cmd.candidateUserId)) {
+      sender() ! Status.Failure(UserAlreadyAdmin)
+    } else {
+      persist(UserBecameAdmin(Instant.now, cmd.candidateUserId, cmd.clientUserId)) { evt ⇒
+        val newState = commit(evt)
+
+        val dateMillis = evt.ts.toEpochMilli
+        val memberIds = newState.memberIds
+        val members = newState.members.values.map(_.asStruct).toVector
+
+        val updateAdmin = UpdateGroupMemberAdminChanged(groupId, cmd.candidateUserId, isAdmin = true)
+        val updateMembers = UpdateGroupMembersUpdated(groupId, members)
+
+        val updateObsolete = UpdateGroupMembersUpdateObsolete(groupId, members)
+
+        //TODO: remove deprecated
+        db.run(GroupUserRepo.makeAdmin(groupId, cmd.candidateUserId))
+
+        val result: Future[(Vector[ApiMember], SeqStateDate)] = for {
+
+          ///////////////////////////
+          // old group api updates //
+          ///////////////////////////
+
+          _ ← seqUpdExt.broadcastClientUpdate(
+            cmd.clientUserId,
+            cmd.clientAuthId,
+            memberIds - cmd.clientUserId,
+            updateObsolete
           )
-        } yield seqState
+
+          ///////////////////////////
+          // new group api updates //
+          ///////////////////////////
+
+          _ ← seqUpdExt.broadcastPeopleUpdate(
+            userIds = memberIds + cmd.clientUserId,
+            updateAdmin
+          )
+          SeqState(seq, state) ← seqUpdExt.broadcastClientUpdate(
+            cmd.clientUserId,
+            cmd.clientAuthId,
+            memberIds - cmd.clientUserId,
+            updateMembers
+          )
+        } yield (members, SeqStateDate(seq, state, dateMillis))
+
+        result pipeTo sender()
       }
-    } else sender() ! Status.Failure(CommonErrors.Forbidden)
+    }
   }
 
-  private def removeUser(initiatorId: Int, userId: Int, memberIds: Set[Int], clientAuthId: Long, serviceMessage: ApiServiceMessage, update: Update, date: Instant, randomId: Long): DBIO[SeqStateDate] = {
-    val groupPeer = ApiPeer(ApiPeerType.Group, groupId)
-    for {
-      _ ← GroupUserRepo.delete(groupId, userId)
-      _ ← GroupInviteTokenRepo.revoke(groupId, userId)
-      SeqState(seq, state) ← DBIO.from(
-        for {
+  protected def transferOwnership(cmd: TransferOwnership): Unit = {
+    if (!state.isOwner(cmd.clientUserId)) {
+      sender() ! Status.Failure(CommonErrors.Forbidden)
+    } else {
+      persist(OwnerChanged(Instant.now, cmd.newOwnerId)) { evt ⇒
+        val newState = commit(evt)
+        val memberIds = newState.memberIds
+
+        val result: Future[SeqState] = for {
           seqState ← seqUpdExt.broadcastClientUpdate(
-            userId = initiatorId,
-            authId = clientAuthId,
-            bcastUserIds = memberIds,
-            update = update,
-            pushRules = seqUpdExt.pushRules(isFat = false, Some(PushTexts.Left), Seq(clientAuthId))
-          )
-          _ ← dialogExt.messageRead(groupPeer, userId, 0L, date.toEpochMilli)
-          _ ← dialogExt.writeMessage(
-            groupPeer,
-            initiatorId,
-            date,
-            randomId,
-            serviceMessage
+            userId = cmd.clientUserId,
+            authId = cmd.clientAuthId,
+            bcastUserIds = memberIds - cmd.clientUserId,
+            update = UpdateGroupOwnerChanged(groupId, cmd.newOwnerId),
+            pushRules = seqUpdExt.pushRules(isFat = false, None, Seq(cmd.clientAuthId))
           )
         } yield seqState
-      )
-    } yield SeqStateDate(seq, state, date.toEpochMilli)
+
+        result pipeTo sender()
+      }
+    }
   }
 
-  private def genAccessHash(): Long =
-    ThreadLocalSecureRandom.current().nextLong()
+  private def getAvatarData(avatar: Option[Avatar]): AvatarData =
+    avatar
+      .map(ImageUtils.getAvatarData(AvatarData.OfGroup, groupId, _))
+      .getOrElse(AvatarData.empty(AvatarData.OfGroup, groupId.toLong))
 
-  private def createInDb(state: GroupState, randomId: Long) =
-    GroupRepo.create(
-      Group(
-        id = groupId,
-        creatorUserId = state.creatorUserId,
-        accessHash = state.accessHash,
-        title = state.title,
-        isPublic = state.typ == GroupType.Public,
-        createdAt = state.createdAt,
-        about = None,
-        topic = None
-      ),
-      randomId,
-      state.isHidden
-    )
+  private def isValidTitle(title: String) = title.nonEmpty && title.length < 255
 
-  private def rng = ThreadLocalSecureRandom.current()
+  // Updates that will be sent to user, when he enters group.
+  // Helps clients that have this group to refresh it's data.
+  private def refreshGroupUpdates(newState: GroupState): List[Update] = List(
+    UpdateGroupMemberChanged(groupId, isMember = true),
+    UpdateGroupAboutChanged(groupId, newState.about),
+    UpdateGroupAvatarChanged(groupId, newState.avatar),
+    UpdateGroupTopicChanged(groupId, newState.topic),
+    UpdateGroupTitleChanged(groupId, newState.title),
+    UpdateGroupOwnerChanged(groupId, newState.ownerUserId)
+  //    UpdateGroupExtChanged(groupId, newState.extension) //TODO: figure out and fix
+  //          if(bigGroup) UpdateGroupMembersCountChanged(groupId, newState.extension)
+  )
+
 }

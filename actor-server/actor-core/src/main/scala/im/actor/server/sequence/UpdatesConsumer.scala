@@ -162,7 +162,7 @@ private[sequence] class UpdatesConsumer(userId: Int, authId: Long, subscriber: A
             log.error("Improper seq update box")
         }
 
-        boxFuture foreach (sendUpdateBox(_, reduceKey map (_.value)))
+        boxFuture foreach (sendUpdateBox(_, reduceKey))
 
         boxFuture onFailure {
           case e: Throwable ⇒ log.error(e, "Failed to push update")

@@ -14,20 +14,24 @@ final class GroupInviteTokenTable(tag: Tag) extends Table[GroupInviteToken](tag,
   def * = (groupId, creatorId, token, revokedAt) <> (GroupInviteToken.tupled, GroupInviteToken.unapply)
 }
 
+//TODO: replace with key-value
 object GroupInviteTokenRepo {
-  val groupInviteTokens = TableQuery[GroupInviteTokenTable]
+  private val groupInviteTokens = TableQuery[GroupInviteTokenTable]
+  private val activeTokens = groupInviteTokens.filter(_.revokedAt.isEmpty)
 
+  @deprecated("use key-value style", "2016-07-07")
   def create(token: GroupInviteToken) =
     groupInviteTokens += token
 
-  val activeTokens = groupInviteTokens.filter(_.revokedAt.isEmpty)
-
+  @deprecated("use key-value style", "2016-07-07")
   def find(groupId: Int, userId: Int) =
     activeTokens.filter(t ⇒ t.groupId === groupId && t.creatorId === userId).result
 
+  @deprecated("use key-value style", "2016-07-07")
   def findByToken(token: String) =
     activeTokens.filter(_.token === token).result.headOption
 
+  @deprecated("use key-value style", "2016-07-07")
   def revoke(groupId: Int, userId: Int) =
     activeTokens.filter(t ⇒ t.groupId === groupId && t.creatorId === userId).map(_.revokedAt).update(Some(DateTime.now))
 

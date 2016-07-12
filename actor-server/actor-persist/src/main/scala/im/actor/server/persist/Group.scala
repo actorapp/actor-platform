@@ -72,6 +72,7 @@ object GroupRepo {
 
   val allIds = groups.map(_.id)
 
+  @deprecated("Duplication of event-sourced groups logic", "2016-06-05")
   def create(group: Group, randomId: Long, isHidden: Boolean) = {
     groups += FullGroup(
       id = group.id,
@@ -92,32 +93,38 @@ object GroupRepo {
     )
   }
 
+  //???
   def findPublic =
     groups.filter(_.isPublic === true).map(_.asGroup).result
 
+  @deprecated("Replace with some sort of key-value maybe?", "2016-06-05")
   def findAllIds = allIds.result
 
+  @deprecated("Remove, only used in tests", "2016-06-05")
   def find(id: Int) =
     groupByIdC(id).result.headOption
 
-  def findTitle(id: Int) =
-    titleByIdC(id).result.headOption
-
+  @deprecated("Compatibility with old group API", "2016-06-05")
   def findFull(id: Int) =
     byIdC(id).result.headOption
 
+  @deprecated("Duplication of event-sourced groups logic", "2016-06-05")
   def updateTitle(id: Int, title: String, changerUserId: Int, randomId: Long, date: Instant) =
     byIdC.applied(id)
       .map(g ⇒ (g.title, g.titleChangerUserId, g.titleChangedAt, g.titleChangeRandomId))
       .update((title, changerUserId, date, randomId))
 
+  @deprecated("Duplication of event-sourced groups logic", "2016-06-05")
   def updateTopic(id: Int, topic: Option[String]) =
     byIdC.applied(id).map(_.topic).update(topic)
 
+  @deprecated("Duplication of event-sourced groups logic", "2016-06-05")
   def updateAbout(id: Int, about: Option[String]) =
     byIdC.applied(id).map(_.about).update(about)
 
+  //???
   def makePublic(id: Int) = byIdC.applied(id).map(_.isPublic).update(true)
 
+  @deprecated("Migrations only", "2016-06-05")
   def makeHidden(id: Int) = byIdC.applied(id).map(_.isHidden).update(true)
 }

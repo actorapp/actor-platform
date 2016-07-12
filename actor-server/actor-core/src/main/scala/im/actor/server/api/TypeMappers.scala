@@ -5,7 +5,7 @@ import java.time.Instant
 
 import akka.actor.{ ActorRef, ActorSystem, ExtendedActorSystem }
 import akka.serialization.Serialization
-import com.google.protobuf.wrappers.Int64Value
+import com.google.protobuf.wrappers.{ BytesValue, Int64Value }
 import com.google.protobuf.{ ByteString, CodedInputStream }
 import com.trueaccord.scalapb.TypeMapper
 import im.actor.api.rpc.files.ApiAvatar
@@ -135,6 +135,12 @@ private[api] trait MessageMapper {
   private def unapplyAvatar(avatar: ApiAvatar): ByteString =
     ByteString.copyFrom(avatar.toByteArray)
 
+  private def applyBytesAvatar(buf: BytesValue): ApiAvatar =
+    applyAvatar(buf.value)
+
+  private def unapplyBytesAvatar(avatar: ApiAvatar): BytesValue =
+    BytesValue(unapplyAvatar(avatar))
+
   private def applySex(i: Int): ApiSex = i match {
     case 2 ⇒ S.Male
     case 3 ⇒ S.Female
@@ -203,6 +209,8 @@ private[api] trait MessageMapper {
   implicit val instantOptMapper: TypeMapper[Int64Value, Instant] = TypeMapper(applyInstantOpt)(unapplyInstantOpt)
 
   implicit val avatarMapper: TypeMapper[ByteString, ApiAvatar] = TypeMapper(applyAvatar)(unapplyAvatar)
+
+  implicit val avatarBytesMapper: TypeMapper[BytesValue, ApiAvatar] = TypeMapper(applyBytesAvatar)(unapplyBytesAvatar)
 
   implicit val sexMapper: TypeMapper[Int, ApiSex] = TypeMapper(applySex)(unapplySex)
 

@@ -11,6 +11,7 @@ import scala.language.postfixOps
 
 object MigrationNameList {
   val MultiSequence = "multi-sequence-2016-07-01"
+  val GroupsV2 = "groups-v2-2016-07-10"
 }
 
 /**

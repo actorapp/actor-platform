@@ -183,8 +183,8 @@ private[user] sealed trait Queries {
   def getContactRecordsSet(userId: Int): Future[(Set[Long], Set[String])] =
     for ((phones, emails) ← getContactRecords(userId)) yield (phones.toSet, emails.toSet)
 
-  def checkAccessHash(userId: Int, senderAuthId: Long, accessHash: Long): Future[Boolean] =
-    (viewRegion.ref ? CheckAccessHash(userId, senderAuthId, accessHash)).mapTo[CheckAccessHashResponse] map (_.isCorrect)
+  def checkAccessHash(userId: Int, clientAuthId: Long, accessHash: Long): Future[Boolean] =
+    (viewRegion.ref ? CheckAccessHash(userId, clientAuthId, accessHash)).mapTo[CheckAccessHashResponse] map (_.isCorrect)
 
   def getAccessHash(userId: Int, clientAuthId: Long): Future[Long] =
     (viewRegion.ref ? GetAccessHash(userId, clientAuthId)).mapTo[GetAccessHashResponse] map (_.accessHash)

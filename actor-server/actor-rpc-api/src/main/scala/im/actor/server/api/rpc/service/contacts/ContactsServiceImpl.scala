@@ -119,7 +119,7 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
 
   override def doHandleRemoveContact(userId: Int, accessHash: Long, clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
     authorized(clientData) { implicit client ⇒
-      withUserOutPeerF(ApiUserOutPeer(userId, accessHash)) {
+      withUserOutPeer(ApiUserOutPeer(userId, accessHash)) {
         for (seqState ← userExt.removeContact(client.userId, client.authId, userId))
           yield Ok(ResponseSeq(seqState.seq, seqState.state.toByteArray))
       }

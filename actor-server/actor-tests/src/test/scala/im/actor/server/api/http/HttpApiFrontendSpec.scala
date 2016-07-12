@@ -10,6 +10,7 @@ import im.actor.server.api.http.json.{ AvatarUrls, _ }
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.messaging
 import im.actor.server.file.{ FileStorageExtension, ImageUtils, UnsafeFileName }
+import im.actor.server.group.GroupExtension
 import im.actor.server.webhooks.WebhooksExtension
 import im.actor.server.webhooks.http.routes.OutgoingHooksErrors
 import im.actor.util.ThreadLocalSecureRandom
@@ -31,7 +32,7 @@ final class HttpApiFrontendSpec
 
   "Webhooks handler" should "respond with OK to webhooks text message" in t.textMessage()
 
-  //  it should "respond with Forbidden in public groups" in t.publicGroups()
+  it should "respond with Forbidden in public groups" in pendingUntilFixed(t.publicGroups())
 
   it should "respond with BadRequest to non existing groups" in t.nonExistingBot()
 
@@ -75,6 +76,7 @@ final class HttpApiFrontendSpec
   implicit lazy val groupsService = new GroupsServiceImpl(groupInviteConfig)
 
   private val fsAdapter = FileStorageExtension(system).fsAdapter
+  val groupExt = GroupExtension(system)
 
   WebhooksExtension(system) //initialize webhooks routes
 
@@ -88,7 +90,7 @@ final class HttpApiFrontendSpec
 
     val groupName = "Test group"
     val groupOutPeer = createGroup(groupName, Set(user2.id)).groupPeer
-    val publicGroup = createPubGroup("public group", "PG", Set(user2.id)).groupPeer
+    //    val publicGroup = createPubGroup("public group", "PG", Set(user2.id)).groupPeer
 
     val resourcesPath = Paths.get(getClass.getResource("/files").toURI).toFile.getCanonicalPath
     val config = {
@@ -110,15 +112,16 @@ final class HttpApiFrontendSpec
     }
 
     def publicGroups() = {
-      val token = extractToken(publicGroup.groupId)
-      val request = HttpRequest(
-        method = POST,
-        uri = s"${config.baseUri}/v1/webhooks/$token",
-        entity = """{"text":"FLOOD FLOOD FLOOD"}"""
-      )
-      whenReady(singleRequest(request)) { resp ⇒
-        resp.status shouldEqual StatusCodes.Forbidden
-      }
+      fail("Public groups are not implemented")
+      //      val token = extractToken(publicGroup.groupId)
+      //      val request = HttpRequest(
+      //        method = POST,
+      //        uri = s"${config.baseUri}/v1/webhooks/$token",
+      //        entity = """{"text":"FLOOD FLOOD FLOOD"}"""
+      //      )
+      //      whenReady(singleRequest(request)) { resp ⇒
+      //        resp.status shouldEqual StatusCodes.Forbidden
+      //      }
     }
 
     def nonExistingBot() = {
@@ -315,13 +318,14 @@ final class HttpApiFrontendSpec
 
     def groupInvitesAvatars1() = {
       val avatarData = Files.readAllBytes(Paths.get(getClass.getResource("/valid-avatar.jpg").toURI))
-      val fileLocation = whenReady(db.run(fsAdapter.uploadFile(UnsafeFileName("avatar"), avatarData)))(identity)
+      val fileLocation = db.run(fsAdapter.uploadFile(UnsafeFileName("avatar"), avatarData)).futureValue
 
-      whenReady(db.run(ImageUtils.scaleAvatar(fileLocation.fileId, ThreadLocalSecureRandom.current()))) { result ⇒
-        result should matchPattern { case Right(_) ⇒ }
-        val avatar = ImageUtils.getAvatarData(im.actor.server.model.AvatarData.OfGroup, groupOutPeer.groupId, result.right.toOption.get)
-        whenReady(db.run(persist.AvatarDataRepo.createOrUpdate(avatar)))(_ ⇒ ())
+      val avatar = {
+        val scaleResult = db.run(ImageUtils.scaleAvatar(fileLocation.fileId)).futureValue
+        scaleResult should matchPattern { case Right(_) ⇒ }
+        scaleResult.right.toOption.get
       }
+      whenReady(groupExt.updateAvatar(groupOutPeer.groupId, user1.id, authId1, Some(avatar), 432L))(identity)
 
       val token = ACLUtils.accessToken(ThreadLocalSecureRandom.current())
       val inviteToken = im.actor.server.model.GroupInviteToken(groupOutPeer.groupId, user1.id, token)
@@ -354,14 +358,14 @@ final class HttpApiFrontendSpec
 
     def groupInvitesAvatars2() = {
       val avatarData = Files.readAllBytes(Paths.get(getClass.getResource("/valid-avatar.jpg").toURI))
-      val fileLocation = whenReady(db.run(fsAdapter.uploadFile(UnsafeFileName("avatar"), avatarData)))(identity)
-      whenReady(db.run(ImageUtils.scaleAvatar(fileLocation.fileId, ThreadLocalSecureRandom.current()))) { result ⇒
-        result should matchPattern { case Right(_) ⇒ }
-        val avatar =
-          ImageUtils.getAvatarData(im.actor.server.model.AvatarData.OfGroup, groupOutPeer.groupId, result.right.toOption.get)
-            .copy(smallAvatarFileId = None, smallAvatarFileHash = None, smallAvatarFileSize = None)
-        whenReady(db.run(persist.AvatarDataRepo.createOrUpdate(avatar)))(_ ⇒ ())
+      val fileLocation = db.run(fsAdapter.uploadFile(UnsafeFileName("avatar"), avatarData)).futureValue
+
+      val avatar = {
+        val scaleResult = db.run(ImageUtils.scaleAvatar(fileLocation.fileId)).futureValue
+        scaleResult should matchPattern { case Right(_) ⇒ }
+        scaleResult.right.toOption.get
       }
+      whenReady(groupExt.updateAvatar(groupOutPeer.groupId, user1.id, authId1, Some(avatar), 433L))(identity)
 
       val token = ACLUtils.accessToken(ThreadLocalSecureRandom.current())
       val inviteToken = im.actor.server.model.GroupInviteToken(groupOutPeer.groupId, user1.id, token)
@@ -378,8 +382,8 @@ final class HttpApiFrontendSpec
         (response \ "inviter" \ "name").as[String] shouldEqual user1.name
         val avatarUrls = (response \ "group" \ "avatars").as[AvatarUrls]
         inside(avatarUrls) {
-          case AvatarUrls(None, Some(large), Some(full)) ⇒
-            List(large, full) foreach (_ should startWith("http://"))
+          case AvatarUrls(Some(small), Some(large), Some(full)) ⇒
+            List(small, large, full) foreach (_ should startWith("http://"))
         }
         (response \ "inviter" \ "avatars").as[AvatarUrls] should matchPattern {
           case AvatarUrls(None, None, None) ⇒

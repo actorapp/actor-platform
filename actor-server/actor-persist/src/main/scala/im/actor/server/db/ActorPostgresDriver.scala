@@ -17,6 +17,7 @@ trait ByteStringImplicits {
 trait ProtoWrappersImplicits {
   import slick.driver.PostgresDriver.api._
 
+  //TODO: check if it used anywhere
   implicit val stringValueColumnType = MappedColumnType.base[StringValue, String](
     { sv ⇒ sv.value },
     { s ⇒ StringValue(s) }

@@ -5,7 +5,7 @@ import akka.http.scaladsl.util.FastFuture
 import akka.pattern.pipe
 import com.github.benmanes.caffeine.cache.{ Cache, Caffeine }
 import com.google.protobuf.ByteString
-import com.google.protobuf.wrappers.{ Int32Value, StringValue }
+import com.google.protobuf.wrappers.Int32Value
 import im.actor.api.rpc.sequence.UpdateEmptyUpdate
 import im.actor.server.db.DbExtension
 import im.actor.server.model.{ SeqUpdate, UpdateMapping }
@@ -131,9 +131,9 @@ private[sequence] final class UserSequence
 
   private def initialized: Receive = {
     case cmd: VendorPushCommand ⇒ vendorPush forward cmd
-    case DeliverUpdate(authId, mappingOpt, pushRules, reduceKey, deliveryId) ⇒
+    case DeliverUpdate(authId, mappingOpt, pushRules, reduceKey, deliveryId, deliveryTag) ⇒
       mappingOpt match {
-        case Some(mapping) ⇒ deliver(authId, mapping, pushRules, reduceKey, deliveryId)
+        case Some(mapping) ⇒ deliver(authId, mapping, pushRules, reduceKey, deliveryId, deliveryTag)
         case None          ⇒ log.error("Empty mapping")
       }
     case GetSeqState(authId) ⇒
@@ -159,21 +159,22 @@ private[sequence] final class UserSequence
       userSeq ← db.run(UserSequenceRepo.fetchSeq(userId)) map (_ getOrElse Const.UserSeqStart)
       authIdsModels ← db.run(AuthIdRepo.findByUserId(userId))
       authIds = authIdsModels map (_.id)
-      _ = this.authIdsOptFu = authIds.map(_ → Optimization.EmptyFunc).toMap
+      _ = this.authIdsOptFu = authIds.map(_ → Optimization.Default).toMap
       authIdsSeqs ← initializeSeqs(userSeq, authIds)
     } yield Initialized(userSeq, authIdsSeqs.toMap)) pipeTo self
 
   private def deliver(
-    authId:     Long,
-    mapping:    UpdateMapping,
-    pushRules:  Option[PushRules],
-    reduceKey:  Option[StringValue],
-    deliveryId: String
+    authId:      Long,
+    mapping:     UpdateMapping,
+    pushRules:   Option[PushRules],
+    reduceKey:   Option[String],
+    deliveryId:  String,
+    deliveryTag: Option[String]
   ): Unit = {
     cached(authId, deliveryId) {
       nextCommonSeq()
 
-      val optimizedMapping = applyOptimizations(mapping)
+      val optimizedMapping = applyOptimizations(deliveryTag, mapping)
 
       val seqUpdate = SeqUpdate(
         userId = userId,
@@ -272,11 +273,11 @@ private[sequence] final class UserSequence
     }
   }
 
-  private def applyOptimizations(mapping: UpdateMapping): UpdateMapping = {
+  private def applyOptimizations(deliveryTag: Option[String], mapping: UpdateMapping): UpdateMapping = {
     val default = mapping.getDefault
     val customOptimized = authIdsOptFu flatMap {
       case (authId, optFunc) ⇒
-        val optimized = optFunc(default)
+        val optimized = optFunc(deliveryTag.getOrElse(""))(default)
         if (optimized == default) None else Some(authId → optimized)
     }
     mapping.copy(custom = mapping.custom ++ customOptimized)
@@ -284,7 +285,7 @@ private[sequence] final class UserSequence
 
   private def addAuthId(authId: Long) = {
     if (!this.authIdsOptFu.contains(authId)) {
-      this.authIdsOptFu += authId → Optimization.EmptyFunc
+      this.authIdsOptFu += authId → Optimization.Default
     }
     if (!this.seqMap.contains(authId)) {
       for {
