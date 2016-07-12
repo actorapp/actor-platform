@@ -21,7 +21,17 @@ public class EncryptedSession extends ActorInterface {
      * @param data for encryption
      * @return promise of encrypted package
      */
-    public Promise<EncryptedSessionActor.EncryptedPackageRes> encrypt(byte[] data) {
+    public Promise<byte[]> encrypt(byte[] data) {
         return ask(new EncryptedSessionActor.EncryptPackage(data));
+    }
+
+    /**
+     * Decrypt data for session
+     *
+     * @param data for decryption
+     * @return promise of decrypted package
+     */
+    public Promise<byte[]> decrypt(byte[] data) {
+        return ask(new EncryptedSessionActor.DecryptPackage(data));
     }
 }

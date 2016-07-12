@@ -105,7 +105,8 @@ public class EncryptedUserActor extends ModuleActor {
                             })
                             .map(src -> spawnSession(src));
                 })
-                .mapOptional(sessionActor -> sessionActor.getEncryptedSession().encrypt(encKeyExtended))
+                .mapOptional(sessionActor -> sessionActor.getEncryptedSession().encrypt(encKeyExtended)
+                        .map(r -> new Tuple2<>(r, sessionActor.getSession().getTheirKeyGroupId())))
                 .zip()
                 .map(src -> {
 
@@ -116,9 +117,9 @@ public class EncryptedUserActor extends ModuleActor {
                     Log.d(TAG, "Keys Encrypted in " + (Runtime.getActorTime() - start) + " ms");
 
                     ArrayList<EncryptedBoxKey> encryptedKeys = new ArrayList<>();
-                    for (EncryptedSessionActor.EncryptedPackageRes r : src) {
-                        Log.d(TAG, "Keys: " + r.getKeyGroupId());
-                        encryptedKeys.add(new EncryptedBoxKey(uid, r.getKeyGroupId(), "curve25519", r.getData()));
+                    for (Tuple2<byte[], Integer> r : src) {
+                        Log.d(TAG, "Keys: " + r.getT2());
+                        encryptedKeys.add(new EncryptedBoxKey(uid, r.getT2(), "curve25519", r.getT1()));
                     }
 
                     byte[] encData;
