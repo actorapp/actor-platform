@@ -72,9 +72,14 @@ public class ModuleActor extends AskcableActor implements BusSubscriber {
                 return null;
             }
             return new ApiOutPeer(ApiPeerType.GROUP, group.getGroupId(), group.getAccessHash());
+        } else if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
+            User user = getUser(peer.getPeerId());
+            if (user == null) {
+                return null;
+            }
+            return new ApiOutPeer(ApiPeerType.ENCRYPTEDPRIVATE, user.getUid(), user.getAccessHash());
         } else {
-            //throw new RuntimeException("Unknown peer: " + peer);
-            return null;
+            throw new RuntimeException("Unknown peer: " + peer);
         }
     }
 
@@ -83,6 +88,8 @@ public class ModuleActor extends AskcableActor implements BusSubscriber {
             return new ApiPeer(ApiPeerType.PRIVATE, peer.getPeerId());
         } else if (peer.getPeerType() == PeerType.GROUP) {
             return new ApiPeer(ApiPeerType.GROUP, peer.getPeerId());
+        } else if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
+            return new ApiPeer(ApiPeerType.ENCRYPTEDPRIVATE, peer.getPeerId());
         } else {
             return null;
         }

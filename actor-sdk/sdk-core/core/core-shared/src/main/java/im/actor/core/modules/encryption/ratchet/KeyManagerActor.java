@@ -1,4 +1,4 @@
-package im.actor.core.modules.encryption;
+package im.actor.core.modules.encryption.ratchet;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,6 +15,7 @@ import im.actor.core.api.rpc.RequestLoadPublicKeyGroups;
 import im.actor.core.api.rpc.RequestUploadPreKey;
 import im.actor.core.entity.User;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.encryption.Configuration;
 import im.actor.core.modules.encryption.entity.OwnIdentity;
 import im.actor.core.modules.encryption.entity.PrivateKeyStorage;
 import im.actor.core.modules.encryption.entity.PrivateKey;
@@ -22,6 +23,7 @@ import im.actor.core.modules.encryption.entity.UserKeys;
 import im.actor.core.modules.encryption.entity.UserKeysGroup;
 import im.actor.core.modules.encryption.entity.PublicKey;
 import im.actor.core.modules.ModuleActor;
+import im.actor.core.modules.encryption.ratchet.EncryptedUserActor;
 import im.actor.core.util.RandomUtils;
 import im.actor.runtime.Crypto;
 import im.actor.runtime.Log;
@@ -413,8 +415,9 @@ public class KeyManagerActor extends ModuleActor {
         if (validatedKeysGroup != null) {
             UserKeys updatedUserKeys = userKeys.addUserKeyGroup(validatedKeysGroup);
             cacheUserKeys(updatedUserKeys);
-            context().getEncryption().getEncryptedChatManager(uid)
-                    .send(new EncryptedPeerActor.KeyGroupUpdated(userKeys));
+            context().getEncryption()
+                    .getEncryptedUser(uid)
+                    .onUserKeysChanged(updatedUserKeys);
         }
         return Promise.success(null);
     }
@@ -433,8 +436,9 @@ public class KeyManagerActor extends ModuleActor {
 
         UserKeys updatedUserKeys = userKeys.removeUserKeyGroup(keyGroupId);
         cacheUserKeys(updatedUserKeys);
-        context().getEncryption().getEncryptedChatManager(uid)
-                .send(new EncryptedPeerActor.KeyGroupUpdated(userKeys));
+        context().getEncryption()
+                .getEncryptedUser(uid)
+                .onUserKeysChanged(updatedUserKeys);
         return Promise.success(null);
     }
 
