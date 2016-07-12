@@ -78,7 +78,7 @@ public class EncryptedSessionActor extends ModuleActor {
         keyManager = context().getEncryption().getKeyManager();
     }
 
-    private Promise<EncryptedPackageRes> onEncrypt(final byte[] data) {
+    private Promise<byte[]> onEncrypt(final byte[] data) {
 
         //
         // Stage 1: Pick Their Ephemeral key. Use already received or pick random pre key.
@@ -99,7 +99,7 @@ public class EncryptedSessionActor extends ModuleActor {
                 .map(encryptedSessionChain -> encrypt(encryptedSessionChain, data));
     }
 
-    private Promise<DecryptedPackage> onDecrypt(final byte[] data) {
+    private Promise<byte[]> onDecrypt(final byte[] data) {
 
         //
         // Stage 1: Parsing message header
@@ -139,7 +139,7 @@ public class EncryptedSessionActor extends ModuleActor {
         return chain;
     }
 
-    private EncryptedPackageRes encrypt(EncryptedSessionChain chain, byte[] data) {
+    private byte[] encrypt(EncryptedSessionChain chain, byte[] data) {
 
         byte[] encrypted;
         try {
@@ -152,7 +152,7 @@ public class EncryptedSessionActor extends ModuleActor {
         Log.d(TAG, "!Sender Ephemeral " + Crypto.keyHash(Curve25519.keyGenPublic(chain.getOwnPrivateKey())));
         Log.d(TAG, "!Receiver Ephemeral " + Crypto.keyHash(chain.getTheirPublicKey()));
 
-        return new EncryptedPackageRes(encrypted, session.getTheirKeyGroupId());
+        return encrypted;
     }
 
     private Promise<EncryptedSessionChain> pickDecryptChain(final byte[] theirEphemeralKey, final byte[] ephemeralKey) {
@@ -182,7 +182,7 @@ public class EncryptedSessionActor extends ModuleActor {
                 });
     }
 
-    private DecryptedPackage decrypt(EncryptedSessionChain chain, byte[] data) {
+    private byte[] decrypt(EncryptedSessionChain chain, byte[] data) {
         byte[] decrypted;
         try {
             decrypted = chain.decrypt(data);
@@ -190,7 +190,7 @@ public class EncryptedSessionActor extends ModuleActor {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-        return new DecryptedPackage(decrypted);
+        return decrypted;
     }
 
     //
@@ -209,7 +209,7 @@ public class EncryptedSessionActor extends ModuleActor {
         }
     }
 
-    public static class EncryptPackage implements AskMessage<EncryptedPackageRes> {
+    public static class EncryptPackage implements AskMessage<byte[]> {
         private byte[] data;
 
         public EncryptPackage(byte[] data) {
@@ -221,43 +221,11 @@ public class EncryptedSessionActor extends ModuleActor {
         }
     }
 
-    public static class EncryptedPackageRes extends AskResult {
-
-        private byte[] data;
-        private int keyGroupId;
-
-        public EncryptedPackageRes(byte[] data, int keyGroupId) {
-            this.data = data;
-            this.keyGroupId = keyGroupId;
-        }
-
-        public byte[] getData() {
-            return data;
-        }
-
-        public int getKeyGroupId() {
-            return keyGroupId;
-        }
-    }
-
-    public static class DecryptPackage implements AskMessage<DecryptedPackage> {
+    public static class DecryptPackage implements AskMessage<byte[]> {
 
         private byte[] data;
 
         public DecryptPackage(byte[] data) {
-            this.data = data;
-        }
-
-        public byte[] getData() {
-            return data;
-        }
-    }
-
-    public static class DecryptedPackage extends AskResult {
-
-        private byte[] data;
-
-        public DecryptedPackage(byte[] data) {
             this.data = data;
         }
 
