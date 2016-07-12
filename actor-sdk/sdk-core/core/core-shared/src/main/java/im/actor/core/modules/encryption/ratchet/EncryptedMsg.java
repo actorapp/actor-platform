@@ -2,7 +2,7 @@ package im.actor.core.modules.encryption.ratchet;
 
 import org.jetbrains.annotations.NotNull;
 
-import im.actor.core.api.ApiEncryptedMessage;
+import im.actor.core.api.ApiEncryptedBox;
 import im.actor.core.api.ApiMessage;
 import im.actor.runtime.actors.ActorInterface;
 import im.actor.runtime.actors.ActorRef;
@@ -24,7 +24,7 @@ public class EncryptedMsg extends ActorInterface {
      * @param message message content
      * @return promise of encrypted message
      */
-    public Promise<ApiEncryptedMessage> encrypt(int uid, ApiMessage message) {
+    public Promise<ApiEncryptedBox> encrypt(int uid, ApiMessage message) {
         return ask(new EncryptedMsgActor.EncryptMessage(uid, message));
     }
 }

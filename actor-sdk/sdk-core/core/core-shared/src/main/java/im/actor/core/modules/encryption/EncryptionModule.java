@@ -2,6 +2,7 @@ package im.actor.core.modules.encryption;
 
 import java.util.HashMap;
 
+import im.actor.core.api.ApiEncryptedBox;
 import im.actor.core.api.ApiEncryptedMessage;
 import im.actor.core.api.ApiMessage;
 import im.actor.core.modules.AbsModule;
@@ -61,7 +62,7 @@ public class EncryptionModule extends AbsModule {
         }
     }
 
-    public Promise<ApiEncryptedMessage> encrypt(int uid, ApiMessage message) {
+    public Promise<ApiEncryptedBox> encrypt(int uid, ApiMessage message) {
         return getEncryption().encrypt(uid, message);
     }
 }

@@ -102,6 +102,11 @@ public class User extends WrapperExtEntity<ApiFullUser, ApiUser> implements KeyV
         return new Peer(PeerType.PRIVATE, uid);
     }
 
+    @NotNull
+    public Peer secretPeer() {
+        return new Peer(PeerType.PRIVATE_ENCRYPTED, uid);
+    }
+
     public int getUid() {
         return uid;
     }

@@ -26,10 +26,13 @@ import im.actor.core.api.ApiDocumentExPhoto;
 import im.actor.core.api.ApiDocumentExVideo;
 import im.actor.core.api.ApiDocumentMessage;
 import im.actor.core.api.ApiOutPeer;
+import im.actor.core.api.ApiPeerType;
 import im.actor.core.api.ApiTextMessage;
+import im.actor.core.api.ApiUserOutPeer;
 import im.actor.core.api.base.SeqUpdate;
 import im.actor.core.api.rpc.RequestSendEncryptedPackage;
 import im.actor.core.api.rpc.RequestSendMessage;
+import im.actor.core.api.rpc.ResponseSendEncryptedPackage;
 import im.actor.core.api.rpc.ResponseSeqDate;
 import im.actor.core.api.updates.UpdateMessageSent;
 import im.actor.core.entity.FileReference;
@@ -495,12 +498,32 @@ public class SenderActor extends ModuleActor {
             Log.d("SenderActor", "Pending encrypted message: " + message);
             context().getEncryption().encrypt(peer.getPeerId(), message).then(apiEncryptedMessage -> {
                 Log.d("SenderActor", "Encrypted: " + apiEncryptedMessage);
-                // TODO: Implement sending
-                final ApiOutPeer outPeer = buidOutPeer(peer);
-                ArrayList<ApiOutPeer> peers = new ArrayList<>();
-                peers.add(outPeer);
-                // api(new RequestSendEncryptedPackage(rid, peers,new ArrayList<>(), new ApiEncryptedBox()));
-                wakeLock.releaseLock();
+
+                long accessHash = getUser(peer.getPeerId()).getAccessHash();
+                ArrayList<ApiUserOutPeer> peers = new ArrayList<>();
+                peers.add(new ApiUserOutPeer(peer.getPeerId(), accessHash));
+                RequestSendEncryptedPackage request = new RequestSendEncryptedPackage(rid, peers,
+                        new ArrayList<>(), apiEncryptedMessage);
+
+                api(request).then(response -> {
+
+                    self().send(new MessageSent(peer, rid));
+
+                    // TODO: Replace
+                    context().getMessagesModule().getRouter().onOutgoingSent(peer,
+                            rid, response.getDate());
+//                    updates().onUpdateReceived(new SeqUpdate(response.getSeq(),
+//                            response.getState(),
+//                            UpdateMessageSent.HEADER,
+//                            new UpdateMessageSent(new ApiPeer(ApiPeerType.PRIVATE, peer.getPeerId()),
+//                                    rid, response.getDate()).toByteArray()));
+
+                    wakeLock.releaseLock();
+                }).failure(e -> {
+                    self().send(new MessageError(peer, rid));
+                    wakeLock.releaseLock();
+                });
+
             }).failure(e -> {
                 self().send(new MessageError(peer, rid));
                 wakeLock.releaseLock();
