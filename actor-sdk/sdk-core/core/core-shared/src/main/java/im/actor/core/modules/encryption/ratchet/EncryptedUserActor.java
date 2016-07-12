@@ -175,7 +175,7 @@ public class EncryptedUserActor extends ModuleActor {
                                 }
                             });
                 })
-                .flatMap((Function<Tuple2<SessionActor, EncryptedBoxKey>, Promise<EncryptedSessionActor.DecryptedPackage>>) src -> {
+                .flatMap((Function<Tuple2<SessionActor, EncryptedBoxKey>, Promise<byte[]>>) src -> {
                     Log.d(TAG, "Key size:" + src.getT2().getEncryptedKey().length);
                     // return ask(src.getT1().getActorRef(), new EncryptedSessionActor.DecryptPackage(src.getT2().getEncryptedKey()));
                     // TODO: Implement
@@ -184,9 +184,9 @@ public class EncryptedUserActor extends ModuleActor {
                 .map(decryptedPackage -> {
                     byte[] encData;
                     try {
-                        byte[] encKeyExtended = decryptedPackage.getData().length >= 128
-                                ? decryptedPackage.getData()
-                                : keyPrf.calculate(decryptedPackage.getData(), "ActorPackage", 128);
+                        byte[] encKeyExtended = decryptedPackage.length >= 128
+                                ? decryptedPackage
+                                : keyPrf.calculate(decryptedPackage, "ActorPackage", 128);
                         encData = ActorBox.openBox(ByteStrings.intToBytes(senderKeyGroup), encPackage, new ActorBoxKey(encKeyExtended));
                         Log.d(TAG, "Box size: " + encData.length);
                     } catch (IOException e) {
