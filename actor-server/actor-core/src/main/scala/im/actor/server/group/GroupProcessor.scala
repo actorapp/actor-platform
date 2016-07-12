@@ -102,7 +102,7 @@ private[group] final class GroupProcessor
 
   context.setReceiveTimeout(5.hours)
 
-  protected def handleCommand: Receive = logReceive orElse {
+  protected def handleCommand: Receive = {
     // creation actions
     case c: Create if state.isNotCreated       ⇒ create(c)
     case _: Create                             ⇒ sender() ! Status.Failure(GroupIdAlreadyExists(groupId))
