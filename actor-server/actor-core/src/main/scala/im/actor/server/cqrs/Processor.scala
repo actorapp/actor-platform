@@ -137,5 +137,6 @@ abstract class Processor[S <: ProcessorState[S]]
 
   protected def replyFuture(msgFuture: Future[Any]): Unit = msgFuture pipeTo sender()
 
+  // TODO: do we really need this?
   protected def saveSnapshotIfNeeded(): Unit = {}
 }

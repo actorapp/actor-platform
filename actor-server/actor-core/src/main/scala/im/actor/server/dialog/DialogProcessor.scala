@@ -75,6 +75,7 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
 
   override protected def getInitialState: DialogState = DialogState.initial(userId)
 
+  // TODO: do we really need this?
   override protected def saveSnapshotIfNeeded(): Unit = {
     super.saveSnapshotIfNeeded()
   }

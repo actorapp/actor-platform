@@ -18,6 +18,44 @@ import "file.proto";
 import "sequence.proto";
 import "dialog.proto";
 
+enum GroupTypeV2 {
+    UnrecognizedV2 = 0;
+    GeneralV2 = 1;
+    PublicV2 = 2;
+    ChannelV2 = 3;
+}
+
+message MemberSnapshot {
+    int32 user_id = 1;
+    int32 inviter_user_id = 2;
+    int64 invited_at = 3;
+    bool is_admin = 4;
+}
+
+message BotSnapshot {
+    int32 user_id = 1;
+    string token = 2;
+}
+message GroupStateSnapshot {
+    int32 id = 1;
+    int64 created_at = 2;
+    int32 creator_user_id = 3;
+    int32 owner_user_id = 4;
+    repeated int32 ex_user_ids = 5;
+    string title = 6;
+    google.protobuf.StringValue about = 7;
+    Avatar avatar = 8;
+    google.protobuf.StringValue topic = 9;
+    GroupTypeV2 typ = 10;
+    bool is_hidden = 11;
+    bool is_history_shared = 12;
+    map<int32, MemberSnapshot> members = 13;
+    repeated int32 invited_user_ids = 14;
+    int64 access_hash = 15;
+    BotSnapshot bot = 16;
+    map<int32, bytes> exts = 17;
+}
+
 message GroupEnvelope {
     int32 group_id = 1;
     oneof command {
