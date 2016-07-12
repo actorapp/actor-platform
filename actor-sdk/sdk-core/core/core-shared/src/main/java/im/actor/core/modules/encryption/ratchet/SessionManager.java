@@ -1,19 +1,20 @@
-package im.actor.core.modules.encryption;
+package im.actor.core.modules.encryption.ratchet;
 
 import im.actor.core.entity.encryption.PeerSession;
 import im.actor.core.modules.ModuleContext;
 import im.actor.runtime.actors.ActorInterface;
-import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.promise.Promise;
 
 import static im.actor.runtime.actors.ActorSystem.system;
 
 /**
- * Session Manager for encrypted chats
+ * Session Manager for encrypted chats.
+ * Stores and manages encrypted sessions between users.
+ * Can be asked to pick session parameters for specific users.
  */
-public class SessionManagerInt extends ActorInterface {
+public class SessionManager extends ActorInterface {
 
-    public SessionManagerInt(ModuleContext context) {
+    public SessionManager(ModuleContext context) {
         super(system().actorOf("encryption/sessions", () -> new SessionManagerActor(context)));
     }
 
@@ -35,7 +36,7 @@ public class SessionManagerInt extends ActorInterface {
      * @param keyGroup   key group id
      * @param ownKeyId   own identity prekey id
      * @param theirKeyId their identity prekey id
-     * @return
+     * @return promise of session
      */
     public Promise<PeerSession> pickSession(int uid, int keyGroup, long ownKeyId, long theirKeyId) {
         return ask(new SessionManagerActor.PickSessionForDecrypt(uid, keyGroup, theirKeyId, ownKeyId));

@@ -10,9 +10,9 @@ import im.actor.core.network.parser.Update;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.promise.Promise;
 
-public class EncryptedProcessor extends AbsModule implements SequenceProcessor {
+public class EncryptionProcessor extends AbsModule implements SequenceProcessor {
 
-    public EncryptedProcessor(ModuleContext context) {
+    public EncryptionProcessor(ModuleContext context) {
         super(context);
     }
 

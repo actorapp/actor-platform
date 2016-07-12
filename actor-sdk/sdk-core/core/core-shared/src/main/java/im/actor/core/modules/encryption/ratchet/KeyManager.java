@@ -1,4 +1,4 @@
-package im.actor.core.modules.encryption;
+package im.actor.core.modules.encryption.ratchet;
 
 import im.actor.core.api.ApiEncryptionKeyGroup;
 import im.actor.core.modules.ModuleContext;
@@ -7,7 +7,6 @@ import im.actor.core.modules.encryption.entity.PrivateKey;
 import im.actor.core.modules.encryption.entity.PublicKey;
 import im.actor.core.modules.encryption.entity.UserKeys;
 import im.actor.runtime.actors.ActorInterface;
-import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.promise.Promise;
 
@@ -16,14 +15,14 @@ import static im.actor.runtime.actors.ActorSystem.system;
 /**
  * Encryption Key Manager. Used for loading user's keys for encryption/decryption.
  */
-public class KeyManagerInt extends ActorInterface {
+public class KeyManager extends ActorInterface {
 
     /**
      * Default Constructor
      *
      * @param context actor context
      */
-    public KeyManagerInt(ModuleContext context) {
+    public KeyManager(ModuleContext context) {
         super(system().actorOf("encryption/keys", () -> new KeyManagerActor(context)));
     }
 

@@ -2,25 +2,28 @@ package im.actor.core.modules.encryption;
 
 import java.util.HashMap;
 
+import im.actor.core.api.ApiEncryptedMessage;
+import im.actor.core.api.ApiMessage;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.encryption.EncryptedPeerActor;
-import im.actor.core.modules.encryption.KeyManagerActor;
-import im.actor.core.modules.encryption.EncryptedMsgActor;
-import im.actor.core.modules.encryption.KeyManagerInt;
-import im.actor.runtime.actors.ActorCreator;
-import im.actor.runtime.actors.ActorRef;
-import im.actor.runtime.actors.Props;
+import im.actor.core.modules.encryption.ratchet.EncryptedMsg;
+import im.actor.core.modules.encryption.ratchet.EncryptedMsgActor;
+import im.actor.core.modules.encryption.ratchet.EncryptedUser;
+import im.actor.core.modules.encryption.ratchet.EncryptedUserActor;
+import im.actor.core.modules.encryption.ratchet.KeyManager;
+import im.actor.core.modules.encryption.ratchet.SessionManager;
+import im.actor.core.network.mtp.entity.EncryptedPackage;
+import im.actor.runtime.promise.Promise;
 
 import static im.actor.runtime.actors.ActorSystem.system;
 
 public class EncryptionModule extends AbsModule {
 
-    private KeyManagerInt keyManager;
-    private SessionManagerInt sessionManager;
+    private KeyManager keyManager;
+    private SessionManager sessionManager;
+    private EncryptedMsg encryption;
 
-    private ActorRef messageEncryptor;
-    private final HashMap<Integer, ActorRef> encryptedStates = new HashMap<>();
+    private final HashMap<Integer, EncryptedUser> users = new HashMap<>();
 
     public EncryptionModule(ModuleContext context) {
         super(context);
@@ -28,34 +31,37 @@ public class EncryptionModule extends AbsModule {
 
     public void run() {
 
-        keyManager = new KeyManagerInt(context());
+        keyManager = new KeyManager(context());
 
-        sessionManager = new SessionManagerInt(context());
+        sessionManager = new SessionManager(context());
 
-        messageEncryptor = system().actorOf("encryption/messaging",
-                () -> new EncryptedMsgActor(context()));
+        encryption = new EncryptedMsg(system().actorOf("encryption/messaging",
+                () -> new EncryptedMsgActor(context())));
     }
 
-    public KeyManagerInt getKeyManager() {
+    public KeyManager getKeyManager() {
         return keyManager;
     }
 
-    public SessionManagerInt getSessionManager() {
+    public SessionManager getSessionManager() {
         return sessionManager;
     }
 
-
-    public ActorRef getMessageEncryptor() {
-        return messageEncryptor;
+    public EncryptedMsg getEncryption() {
+        return encryption;
     }
 
-    public ActorRef getEncryptedChatManager(final int uid) {
-        synchronized (encryptedStates) {
-            if (!encryptedStates.containsKey(uid)) {
-                encryptedStates.put(uid, system().actorOf("encryption/uid_" + uid,
-                        () -> new EncryptedPeerActor(uid, context())));
+    public EncryptedUser getEncryptedUser(int uid) {
+        synchronized (users) {
+            if (!users.containsKey(uid)) {
+                users.put(uid, new EncryptedUser(system().actorOf("encryption/uid_" + uid,
+                        () -> new EncryptedUserActor(uid, context()))));
             }
-            return encryptedStates.get(uid);
+            return users.get(uid);
         }
+    }
+
+    public Promise<ApiEncryptedMessage> encrypt(int uid, ApiMessage message) {
+        return getEncryption().encrypt(uid, message);
     }
 }

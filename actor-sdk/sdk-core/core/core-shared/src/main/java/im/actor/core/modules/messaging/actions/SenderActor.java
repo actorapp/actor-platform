@@ -14,8 +14,11 @@ import java.util.List;
 
 import im.actor.core.api.ApiDocumentExAnimation;
 import im.actor.core.api.ApiDocumentExVoice;
+import im.actor.core.api.ApiEncryptedBox;
+import im.actor.core.api.ApiEncryptedMessage;
 import im.actor.core.api.ApiFastThumb;
 import im.actor.core.api.ApiJsonMessage;
+import im.actor.core.api.ApiKeyGroupId;
 import im.actor.core.api.ApiMessage;
 import im.actor.core.api.ApiPeer;
 import im.actor.core.api.ApiDocumentEx;
@@ -25,6 +28,7 @@ import im.actor.core.api.ApiDocumentMessage;
 import im.actor.core.api.ApiOutPeer;
 import im.actor.core.api.ApiTextMessage;
 import im.actor.core.api.base.SeqUpdate;
+import im.actor.core.api.rpc.RequestSendEncryptedPackage;
 import im.actor.core.api.rpc.RequestSendMessage;
 import im.actor.core.api.rpc.ResponseSeqDate;
 import im.actor.core.api.updates.UpdateMessageSent;
@@ -62,6 +66,7 @@ import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.runtime.*;
 import im.actor.runtime.Runtime;
+import im.actor.runtime.function.Consumer;
 import im.actor.runtime.power.WakeLock;
 
 /*-[
@@ -467,29 +472,42 @@ public class SenderActor extends ModuleActor {
     }
 
     private void performSendApiContent(final Peer peer, final long rid, ApiMessage message, final WakeLock wakeLock) {
-        final ApiOutPeer outPeer = buidOutPeer(peer);
-        final ApiPeer apiPeer = buildApiPeer(peer);
-        if (outPeer == null || apiPeer == null) {
-            return;
-        }
-        request(new RequestSendMessage(outPeer, rid, message, null, null),
-                new RpcCallback<ResponseSeqDate>() {
-                    @Override
-                    public void onResult(ResponseSeqDate response) {
-                        self().send(new MessageSent(peer, rid));
-                        updates().onUpdateReceived(new SeqUpdate(response.getSeq(),
-                                response.getState(),
-                                UpdateMessageSent.HEADER,
-                                new UpdateMessageSent(apiPeer, rid, response.getDate()).toByteArray()));
-                        wakeLock.releaseLock();
-                    }
+        if (peer.getPeerType() == PeerType.PRIVATE || peer.getPeerType() == PeerType.GROUP) {
+            final ApiOutPeer outPeer = buidOutPeer(peer);
+            final ApiPeer apiPeer = buildApiPeer(peer);
+            request(new RequestSendMessage(outPeer, rid, message, null, null),
+                    new RpcCallback<ResponseSeqDate>() {
+                        @Override
+                        public void onResult(ResponseSeqDate response) {
+                            self().send(new MessageSent(peer, rid));
+                            updates().onUpdateReceived(new SeqUpdate(response.getSeq(),
+                                    response.getState(),
+                                    UpdateMessageSent.HEADER,
+                                    new UpdateMessageSent(apiPeer, rid, response.getDate()).toByteArray()));
+                            wakeLock.releaseLock();
+                        }
 
-                    @Override
-                    public void onError(RpcException e) {
-                        self().send(new MessageError(peer, rid));
-                        wakeLock.releaseLock();
-                    }
-                });
+                        @Override
+                        public void onError(RpcException e) {
+                            self().send(new MessageError(peer, rid));
+                            wakeLock.releaseLock();
+                        }
+                    });
+        } else if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
+            Log.d("SenderActor", "Pending encrypted message: " + message);
+            context().getEncryption().encrypt(peer.getPeerId(), message).then(apiEncryptedMessage -> {
+                Log.d("SenderActor", "Encrypted: " + apiEncryptedMessage);
+                // TODO: Implement sending
+                final ApiOutPeer outPeer = buidOutPeer(peer);
+                ArrayList<ApiOutPeer> peers = new ArrayList<>();
+                peers.add(outPeer);
+                // api(new RequestSendEncryptedPackage(rid, peers,new ArrayList<>(), new ApiEncryptedBox()));
+                wakeLock.releaseLock();
+            }).failure(e -> {
+                self().send(new MessageError(peer, rid));
+                wakeLock.releaseLock();
+            });
+        }
     }
 
     private void onSent(Peer peer, long rid) {

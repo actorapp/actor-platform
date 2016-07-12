@@ -1,19 +1,15 @@
-package im.actor.core.modules.encryption;
+package im.actor.core.modules.encryption.ratchet;
 
 import java.util.ArrayList;
 
 import im.actor.core.entity.encryption.PeerSession;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.encryption.entity.PrivateKey;
 import im.actor.core.modules.encryption.entity.PublicKey;
 import im.actor.core.modules.encryption.session.EncryptedSessionChain;
 import im.actor.core.modules.ModuleActor;
 import im.actor.runtime.*;
 import im.actor.runtime.actors.ask.AskMessage;
 import im.actor.runtime.actors.ask.AskResult;
-import im.actor.runtime.function.Consumer;
-import im.actor.runtime.function.Function;
-import im.actor.runtime.function.Supplier;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.crypto.Curve25519;
 import im.actor.runtime.crypto.IntegrityException;
@@ -55,7 +51,7 @@ public class EncryptedSessionActor extends ModuleActor {
     // Key Manager reference
     //
 
-    private KeyManagerInt keyManager;
+    private KeyManager keyManager;
 
     //
     // Temp encryption chains
@@ -90,10 +86,15 @@ public class EncryptedSessionActor extends ModuleActor {
         // Stage 3: Decrypt
         //
 
-        return success(latestTheirEphemeralKey)
-                .mapIfNullPromise(() ->
-                        keyManager.getUserRandomPreKey(uid, session.getTheirKeyGroupId())
-                                .map(PublicKey::getPublicKey))
+        Promise<byte[]> ephemeralKey;
+        if (latestTheirEphemeralKey != null) {
+            ephemeralKey = success(latestTheirEphemeralKey);
+        } else {
+            ephemeralKey = keyManager.getUserRandomPreKey(uid, session.getTheirKeyGroupId())
+                    .map(PublicKey::getPublicKey);
+        }
+
+        return ephemeralKey
                 .map(publicKey -> pickEncryptChain(publicKey))
                 .map(encryptedSessionChain -> encrypt(encryptedSessionChain, data));
     }
@@ -130,8 +131,9 @@ public class EncryptedSessionActor extends ModuleActor {
             return encryptionChains.get(0);
         }
 
+        EncryptedSessionChain chain = new EncryptedSessionChain(session,
+                Curve25519.keyGenPrivate(Crypto.randomBytes(32)), ephemeralKey);
 
-        EncryptedSessionChain chain = new EncryptedSessionChain(session, Curve25519.keyGenPrivate(Crypto.randomBytes(32)), ephemeralKey);
         encryptionChains.add(0, chain);
 
         return chain;
