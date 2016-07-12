@@ -3,6 +3,7 @@ package im.actor.server.group
 import java.time.Instant
 
 import akka.persistence.SnapshotMetadata
+import com.google.protobuf.ByteString
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.server.cqrs.{ Event, ProcessorState }
 import im.actor.server.file.Avatar
@@ -69,12 +70,12 @@ private[group] final case class GroupState(
   //security and etc.
   accessHash: Long,
   bot:        Option[Bot],
-  extensions: Map[Int, Array[Byte]] //or should it be sequence???
+  extensions: Map[Int, Array[Byte]]
 ) extends ProcessorState[GroupState] {
 
-  def memberIds = members.keySet //TODO: Maybe lazy val. immutable anyway
+  lazy val memberIds = members.keySet
 
-  def membersCount = members.size //TODO: Maybe lazy val. immutable anyway
+  lazy val membersCount = members.size
 
   def isMember(userId: Int): Boolean = members.contains(userId)
 
@@ -98,9 +99,9 @@ private[group] final case class GroupState(
   def canViewMembers(group: GroupState, userId: Int) =
     (group.typ.isGeneral || group.typ.isPublic) && isMember(userId)
 
-  def isNotCreated = createdAt.isEmpty //TODO: Maybe val. immutable anyway
+  val isNotCreated = createdAt.isEmpty
 
-  def isCreated = createdAt.nonEmpty //TODO: Maybe val. immutable anyway
+  val isCreated = createdAt.nonEmpty
 
   override def updated(e: Event): GroupState = e match {
     case evt: Created ⇒
@@ -130,7 +131,7 @@ private[group] final case class GroupState(
         invitedUserIds = evt.userIds.filterNot(_ == evt.creatorUserId).toSet,
         accessHash = evt.accessHash,
         bot = None,
-        extensions = (evt.extensions map { //TODO: validate is it right?
+        extensions = (evt.extensions map {
           case ApiExtension(extId, data) ⇒
             extId → data
         }).toMap
@@ -200,6 +201,56 @@ private[group] final case class GroupState(
       this.copy(ownerUserId = userId)
   }
 
-  // TODO: real snapshot
-  def withSnapshot(metadata: SnapshotMetadata, snapshot: Any): GroupState = this
+  //TODO: write state spec
+  override def withSnapshot(metadata: SnapshotMetadata, snapshot: Any): GroupState = snapshot match {
+    case snap: GroupStateSnapshot ⇒
+      this.copy(
+        id = snap.id,
+        createdAt = Some(Instant.ofEpochMilli(snap.createdAt)),
+        creatorUserId = snap.creatorUserId,
+        ownerUserId = snap.ownerUserId,
+        exUserIds = snap.exUserIds.toSet,
+        title = snap.title,
+        about = snap.about,
+        avatar = snap.avatar,
+        topic = snap.topic,
+        typ = GroupType.fromValue(snap.typ.value), // TODO: unify
+        isHidden = snap.isHidden,
+        isHistoryShared = snap.isHistoryShared,
+        members = snap.members mapValues {
+          case MemberSnapshot(userId, inviterUserId, invitedAt, isAdmin) ⇒
+            Member(userId, inviterUserId, Instant.ofEpochMilli(invitedAt), isAdmin)
+        },
+        invitedUserIds = snap.invitedUserIds.toSet,
+        accessHash = snap.accessHash,
+        bot = snap.bot map (b ⇒ Bot(b.userId, b.token)),
+        extensions = snap.exts mapValues (_.toByteArray)
+      )
+  }
+
+  //TODO: write state spec
+  override lazy val snapshot =
+    GroupStateSnapshot(
+      id = id,
+      createdAt = createdAt.map(_.toEpochMilli).getOrElse(0L),
+      creatorUserId = creatorUserId,
+      ownerUserId = ownerUserId,
+      exUserIds = exUserIds.toSeq,
+      title = title,
+      about = about,
+      avatar = avatar,
+      topic = topic,
+      typ = GroupTypeV2.fromValue(typ.value), // TODO: unify
+      isHidden = isHidden,
+      isHistoryShared = isHistoryShared,
+      members = members mapValues {
+        case Member(userId, inviterUserId, invitedAt, isAdmin) ⇒
+          MemberSnapshot(userId, inviterUserId, invitedAt.toEpochMilli, isAdmin)
+      },
+      invitedUserIds = invitedUserIds.toSeq,
+      accessHash = accessHash,
+      bot = bot map (b ⇒ BotSnapshot(b.userId, b.token)),
+      exts = extensions mapValues ByteString.copyFrom
+    )
+
 }
