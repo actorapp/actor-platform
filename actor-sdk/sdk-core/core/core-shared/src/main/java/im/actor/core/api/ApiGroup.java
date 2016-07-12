@@ -26,14 +26,8 @@ public class ApiGroup extends BserObject {
     private ApiGroupType groupType;
     private Boolean canSendMessage;
     private ApiMapValue ext;
-    private Boolean isAdmin;
-    private int creatorUid;
-    private List<ApiMember> members;
-    private long createDate;
-    private String theme;
-    private String about;
 
-    public ApiGroup(int id, long accessHash, @NotNull String title, @Nullable ApiAvatar avatar, @Nullable Integer membersCount, @Nullable Boolean isMember, @Nullable Boolean isHidden, @Nullable ApiGroupType groupType, @Nullable Boolean canSendMessage, @Nullable ApiMapValue ext, @Nullable Boolean isAdmin, int creatorUid, @NotNull List<ApiMember> members, long createDate, @Nullable String theme, @Nullable String about) {
+    public ApiGroup(int id, long accessHash, @NotNull String title, @Nullable ApiAvatar avatar, @Nullable Integer membersCount, @Nullable Boolean isMember, @Nullable Boolean isHidden, @Nullable ApiGroupType groupType, @Nullable Boolean canSendMessage, @Nullable ApiMapValue ext) {
         this.id = id;
         this.accessHash = accessHash;
         this.title = title;
@@ -44,12 +38,6 @@ public class ApiGroup extends BserObject {
         this.groupType = groupType;
         this.canSendMessage = canSendMessage;
         this.ext = ext;
-        this.isAdmin = isAdmin;
-        this.creatorUid = creatorUid;
-        this.members = members;
-        this.createDate = createDate;
-        this.theme = theme;
-        this.about = about;
     }
 
     public ApiGroup() {
@@ -104,34 +92,6 @@ public class ApiGroup extends BserObject {
         return this.ext;
     }
 
-    @Nullable
-    public Boolean isAdmin() {
-        return this.isAdmin;
-    }
-
-    public int getCreatorUid() {
-        return this.creatorUid;
-    }
-
-    @NotNull
-    public List<ApiMember> getMembers() {
-        return this.members;
-    }
-
-    public long getCreateDate() {
-        return this.createDate;
-    }
-
-    @Nullable
-    public String getTheme() {
-        return this.theme;
-    }
-
-    @Nullable
-    public String getAbout() {
-        return this.about;
-    }
-
     @Override
     public void parse(BserValues values) throws IOException {
         this.id = values.getInt(1);
@@ -147,16 +107,6 @@ public class ApiGroup extends BserObject {
         }
         this.canSendMessage = values.optBool(26);
         this.ext = values.optObj(22, new ApiMapValue());
-        this.isAdmin = values.optBool(16);
-        this.creatorUid = values.getInt(8);
-        List<ApiMember> _members = new ArrayList<ApiMember>();
-        for (int i = 0; i < values.getRepeatedCount(9); i ++) {
-            _members.add(new ApiMember());
-        }
-        this.members = values.getRepeatedObj(9, _members);
-        this.createDate = values.getLong(10);
-        this.theme = values.optString(17);
-        this.about = values.optString(18);
         if (values.hasRemaining()) {
             setUnmappedObjects(values.buildRemaining());
         }
@@ -191,18 +141,6 @@ public class ApiGroup extends BserObject {
         if (this.ext != null) {
             writer.writeObject(22, this.ext);
         }
-        if (this.isAdmin != null) {
-            writer.writeBool(16, this.isAdmin);
-        }
-        writer.writeInt(8, this.creatorUid);
-        writer.writeRepeatedObj(9, this.members);
-        writer.writeLong(10, this.createDate);
-        if (this.theme != null) {
-            writer.writeString(17, this.theme);
-        }
-        if (this.about != null) {
-            writer.writeString(18, this.about);
-        }
         if (this.getUnmappedObjects() != null) {
             SparseArray<Object> unmapped = this.getUnmappedObjects();
             for (int i = 0; i < unmapped.size(); i++) {
@@ -224,9 +162,6 @@ public class ApiGroup extends BserObject {
         res += ", groupType=" + this.groupType;
         res += ", canSendMessage=" + this.canSendMessage;
         res += ", ext=" + this.ext;
-        res += ", isAdmin=" + this.isAdmin;
-        res += ", members=" + this.members.size();
-        res += ", createDate=" + this.createDate;
         res += "}";
         return res;
     }

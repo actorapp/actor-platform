@@ -32,7 +32,7 @@ public class EntityConverter {
     }
 
     public static Group convert(ApiGroup group) {
-        return new Group(group);
+        return new Group(group, null);
     }
 
     public static PeerType convert(ApiPeerType peerType) {

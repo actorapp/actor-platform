@@ -257,7 +257,7 @@ public class ChatToolbarFragment extends BaseFragment {
             if (peer.getPeerType() == PeerType.PRIVATE) {
                 callsEnabled = !users().get(peer.getPeerId()).isBot();
             } else if (peer.getPeerType() == PeerType.GROUP) {
-                callsEnabled = groups().get(peer.getPeerId()).getMembersCount() <= MAX_USERS_FOR_CALLS;
+                callsEnabled = groups().get(peer.getPeerId()).getMembersCount().get() <= MAX_USERS_FOR_CALLS;
                 videoCallsEnabled = false;
             }
         }

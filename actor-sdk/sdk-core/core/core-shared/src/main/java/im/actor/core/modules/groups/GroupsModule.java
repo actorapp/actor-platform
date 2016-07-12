@@ -82,7 +82,7 @@ public class GroupsModule extends AbsModule {
     public GroupsModule(final ModuleContext context) {
         super(context);
 
-        collection = Storage.createKeyValue(STORAGE_GROUPS, GroupVM.CREATOR(context.getAuthModule().myUid()), Group.CREATOR);
+        collection = Storage.createKeyValue(STORAGE_GROUPS, GroupVM.CREATOR, Group.CREATOR);
         groups = collection.getEngine();
 
         groupRouterInt = new GroupRouterInt(context);

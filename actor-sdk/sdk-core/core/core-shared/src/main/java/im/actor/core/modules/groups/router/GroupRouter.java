@@ -296,7 +296,7 @@ public class GroupRouter extends ModuleActor {
                 .then(x -> {
                     List<Group> res = new ArrayList<>();
                     for (Tuple2<ApiGroup, Boolean> u : x) {
-                        res.add(new Group(u.getT1()));
+                        res.add(new Group(u.getT1(), null));
                     }
                     if (res.size() > 0) {
                         groups().addOrUpdateItems(res);
