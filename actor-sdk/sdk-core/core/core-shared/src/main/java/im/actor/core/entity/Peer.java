@@ -150,4 +150,11 @@ public class Peer extends BserObject {
     public String toIdString() {
         return peerType + "_" + peerId;
     }
+
+    public Peer toUnencryptedCompat() {
+        if (peerType == PeerType.PRIVATE_ENCRYPTED) {
+            return new Peer(PeerType.PRIVATE, peerId);
+        }
+        return this;
+    }
 }

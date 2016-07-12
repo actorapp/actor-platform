@@ -323,9 +323,9 @@ public class PresenceActor extends ModuleActor implements BusSubscriber {
         if (event instanceof NewSessionCreated) {
             self().send(new SessionCreated());
         } else if (event instanceof PeerChatOpened) {
-            self().send(new Subscribe(((PeerChatOpened) event).getPeer()));
+            self().send(new Subscribe(((PeerChatOpened) event).getPeer().toUnencryptedCompat()));
         } else if (event instanceof PeerInfoOpened) {
-            self().send(new Subscribe(((PeerInfoOpened) event).getPeer()));
+            self().send(new Subscribe(((PeerInfoOpened) event).getPeer().toUnencryptedCompat()));
         } else if (event instanceof UserVisible) {
             self().send(new Subscribe(Peer.user(((UserVisible) event).getUid())));
         }
