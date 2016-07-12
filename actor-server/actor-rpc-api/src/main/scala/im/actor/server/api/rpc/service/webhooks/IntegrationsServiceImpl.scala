@@ -1,11 +1,12 @@
 package im.actor.server.api.rpc.service.webhooks
 
 import akka.actor.ActorSystem
+import akka.http.scaladsl.util.FastFuture
 import akka.util.Timeout
 import im.actor.api.rpc.PeerHelpers._
 import im.actor.api.rpc._
-import im.actor.api.rpc.integrations.{ ResponseIntegrationToken, IntegrationsService }
-import im.actor.api.rpc.peers.ApiOutPeer
+import im.actor.api.rpc.integrations.{ IntegrationsService, ResponseIntegrationToken }
+import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeerType }
 import im.actor.server.api.rpc.service.webhooks.IntegrationServiceHelpers._
 import im.actor.server.db.DbExtension
 import im.actor.server.group.GroupErrors.{ NotAMember, NotAdmin }
@@ -22,27 +23,35 @@ class IntegrationsServiceImpl(baseUri: String)(implicit actorSystem: ActorSystem
   private val db: Database = DbExtension(actorSystem).db
   private val groupExt = GroupExtension(actorSystem)
 
-  override def doHandleGetIntegrationToken(groupPeer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseIntegrationToken]] =
+  private val PeerIsNotGroup = RpcError(403, "PEER_IS_NOT_GROUP", "", false, None)
+
+  override def doHandleGetIntegrationToken(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseIntegrationToken]] =
     authorized(clientData) { implicit client ⇒
-      val action = withOutPeerAsGroupPeer(groupPeer) { groupOutPeer ⇒
-        for {
-          optToken ← DBIO.from(groupExt.getIntegrationToken(groupOutPeer.groupId, client.userId))
-        } yield {
-          val (token, url) = optToken map (t ⇒ t → makeUrl(baseUri, t)) getOrElse ("" → "")
-          Ok(ResponseIntegrationToken(token, url))
+      if (peer.`type` != ApiPeerType.Group) {
+        FastFuture.successful(Error(PeerIsNotGroup))
+      } else {
+        withOutPeer(peer) {
+          for {
+            optToken ← groupExt.getIntegrationToken(peer.id, client.userId)
+            (token, url) = optToken map (t ⇒ t → makeUrl(baseUri, t)) getOrElse ("" → "")
+          } yield {
+            Ok(ResponseIntegrationToken(token, url))
+          }
         }
       }
-      db.run(action)
     }
 
-  override def doHandleRevokeIntegrationToken(groupPeer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseIntegrationToken]] =
+  override def doHandleRevokeIntegrationToken(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseIntegrationToken]] =
     authorized(clientData) { implicit client ⇒
-      val action = withOutPeerAsGroupPeer(groupPeer) { groupOutPeer ⇒
-        for {
-          token ← DBIO.from(groupExt.revokeIntegrationToken(groupOutPeer.groupId, client.userId))
-        } yield Ok(ResponseIntegrationToken(token, makeUrl(baseUri, token)))
+      if (peer.`type` != ApiPeerType.Group) {
+        FastFuture.successful(Error(PeerIsNotGroup))
+      } else {
+        withOutPeer(peer) {
+          for {
+            token ← groupExt.revokeIntegrationToken(peer.id, client.userId)
+          } yield Ok(ResponseIntegrationToken(token, makeUrl(baseUri, token)))
+        }
       }
-      db.run(action)
     }
 
   override def onFailure: PartialFunction[Throwable, RpcError] = {

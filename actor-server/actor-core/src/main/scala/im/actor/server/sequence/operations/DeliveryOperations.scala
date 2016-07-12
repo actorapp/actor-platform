@@ -17,8 +17,6 @@ trait DeliveryOperations { this: SeqUpdatesExtension ⇒
       .withData(PushData().withText(pushText.getOrElse("")))
       .withExcludeAuthIds(excludeAuthIds)
 
-  def reduceKey(prefix: String, peer: Peer): String = s"${prefix}_${peer.`type`.value}_${peer.id}"
-
   /**
    * Send update to all devices of user and return `SeqState` associated with `authId`
    */
@@ -46,11 +44,12 @@ trait DeliveryOperations { this: SeqUpdatesExtension ⇒
    * of user, so it doesn't make any sense to return it.
    */
   def deliverUserUpdate(
-    userId:     Int,
-    update:     Update,
-    pushRules:  PushRules      = PushRules(),
-    reduceKey:  Option[String] = None,
-    deliveryId: String         = ""
+    userId:      Int,
+    update:      Update,
+    pushRules:   PushRules      = PushRules(),
+    reduceKey:   Option[String] = None,
+    deliveryId:  String         = "",
+    deliveryTag: Option[String] = None
   ): Future[Unit] =
     deliverUpdate(
       userId,
@@ -58,7 +57,8 @@ trait DeliveryOperations { this: SeqUpdatesExtension ⇒
       UpdateMapping(default = Some(serializedUpdate(update))),
       pushRules,
       reduceKey,
-      deliveryId
+      deliveryId,
+      deliveryTag
     ) map (_ ⇒ ())
 
   /**
@@ -70,12 +70,13 @@ trait DeliveryOperations { this: SeqUpdatesExtension ⇒
    * Returned `SeqState` is associated with `authId`
    */
   def deliverCustomUpdate(
-    userId:     Int,
-    authId:     Long,
-    default:    Option[Update],
-    custom:     Map[Long, Update],
-    pushRules:  PushRules         = PushRules(),
-    deliveryId: String            = ""
+    userId:      Int,
+    authId:      Long,
+    default:     Option[Update],
+    custom:      Map[Long, Update],
+    pushRules:   PushRules         = PushRules(),
+    deliveryId:  String            = "",
+    deliveryTag: Option[String]    = None
   ): Future[SeqState] = deliverUpdate(
     userId,
     authId,
@@ -84,7 +85,8 @@ trait DeliveryOperations { this: SeqUpdatesExtension ⇒
       custom = custom mapValues serializedUpdate
     ),
     pushRules = pushRules,
-    deliveryId = deliveryId
+    deliveryId = deliveryId,
+    deliveryTag = deliveryTag
   )
 
   /**
@@ -98,7 +100,7 @@ trait DeliveryOperations { this: SeqUpdatesExtension ⇒
     deliveryId: String         = ""
   ): Future[Unit] = {
     val mapping = UpdateMapping(default = Some(serializedUpdate(update)))
-    val deliver = buildDeliver(0L, mapping, pushRules, reduceKey, deliveryId)
+    val deliver = buildDeliver(0L, mapping, pushRules, reduceKey, deliveryId, deliveryTag = None) // TODO: add deliveryTag when needed
     broadcastUpdate(userIds, deliver)
   }
 
@@ -107,6 +109,7 @@ trait DeliveryOperations { this: SeqUpdatesExtension ⇒
    * send update to all devices of user with id `userId` and
    * return `SeqState` associated with `authId`
    */
+  //TODO: maybe automatically remove `userId` from `bcastUserIds`
   def broadcastClientUpdate(
     userId:       Int,
     authId:       Long,
@@ -117,7 +120,7 @@ trait DeliveryOperations { this: SeqUpdatesExtension ⇒
     deliveryId:   String         = ""
   ): Future[SeqState] = {
     val mapping = UpdateMapping(default = Some(serializedUpdate(update)))
-    val deliver = buildDeliver(authId, mapping, pushRules, reduceKey, deliveryId)
+    val deliver = buildDeliver(authId, mapping, pushRules, reduceKey, deliveryId, deliveryTag = None) // TODO: add deliveryTag when needed
     for {
       seqState ← deliverUpdate(userId, deliver)
       _ ← broadcastUpdate(bcastUserIds, deliver)
@@ -125,14 +128,15 @@ trait DeliveryOperations { this: SeqUpdatesExtension ⇒
   }
 
   private def deliverUpdate(
-    userId:     Int,
-    authId:     Long,
-    mapping:    UpdateMapping,
-    pushRules:  PushRules      = PushRules(),
-    reduceKey:  Option[String] = None,
-    deliveryId: String         = ""
+    userId:      Int,
+    authId:      Long,
+    mapping:     UpdateMapping,
+    pushRules:   PushRules      = PushRules(),
+    reduceKey:   Option[String] = None,
+    deliveryId:  String         = "",
+    deliveryTag: Option[String] = None
   ): Future[SeqState] =
-    deliverUpdate(userId, buildDeliver(authId, mapping, pushRules, reduceKey, deliveryId))
+    deliverUpdate(userId, buildDeliver(authId, mapping, pushRules, reduceKey, deliveryId, deliveryTag))
 
   private def broadcastUpdate(
     userIds: Set[Int],
@@ -150,13 +154,21 @@ trait DeliveryOperations { this: SeqUpdatesExtension ⇒
   private def serializedUpdate(u: Update): SerializedUpdate =
     SerializedUpdate(u.header, ByteString.copyFrom(u.toByteArray), u._relatedUserIds, u._relatedGroupIds)
 
-  private def buildDeliver(authId: Long, mapping: UpdateMapping, pushRules: PushRules, reduceKey: Option[String], deliveryId: String): DeliverUpdate =
+  private def buildDeliver(
+    authId:      Long,
+    mapping:     UpdateMapping,
+    pushRules:   PushRules,
+    reduceKey:   Option[String],
+    deliveryId:  String,
+    deliveryTag: Option[String]
+  ): DeliverUpdate =
     DeliverUpdate(
-      authId = authId,
+      authId = authId, // this is clientAuthId, not the auth id we should deliver to
       mapping = Some(mapping),
       pushRules = Some(pushRules),
-      reduceKey map (StringValue(_)),
-      deliveryId = deliveryId
+      reduceKey = reduceKey,
+      deliveryId = deliveryId,
+      deliveryTag = deliveryTag
     )
 
 }

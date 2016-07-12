@@ -9,7 +9,7 @@ import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeer, ApiPeerType, ApiUserOutPeer
 import im.actor.server._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupRpcErrors, GroupsServiceImpl }
-import im.actor.server.group.GroupServiceMessages
+import im.actor.server.group.{ GroupExtension, GroupServiceMessages }
 import im.actor.server.model.PeerType
 import im.actor.server.persist.HistoryMessageRepo
 import slick.dbio.DBIO
@@ -23,9 +23,11 @@ final class GroupsServiceSpec
   with MessagingSpecHelpers
   with ImplicitSequenceService
   with ImplicitAuthService
+  with ImplicitMessagingService
   with ImplicitSessionRegion
   with SeqUpdateMatchers
   with PeersImplicits {
+
   behavior of "GroupsService"
 
   it should "send invites on group creation" in sendInvitesOnCreate
@@ -56,7 +58,7 @@ final class GroupsServiceSpec
 
   it should "send UpdateChatGroupsChanged to all group members on group creation" in updateChatGroupsChanged
 
-  "Creator of group" should "be groupAdminColor" in e14
+  "Creator of group" should "be group admin" in e14
 
   "MakeUserAdmin" should "allow group member to become admin" in e15
 
@@ -82,13 +84,11 @@ final class GroupsServiceSpec
 
   "Kicked user" should "have zero counter in given group" in e26
 
-  it should "have zero counter in given public group" in markReadOnKickInPublic
-
   it should "not be able to write to group" in kickedCantWrite
 
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
+  val groupExt = GroupExtension(system)
 
-  implicit val messagingService = messaging.MessagingServiceImpl()
   implicit val service = new GroupsServiceImpl(groupInviteConfig)
 
   def sendInvitesOnCreate() = {
@@ -105,9 +105,9 @@ final class GroupsServiceSpec
     expectUpdate(classOf[UpdateGroupUserInvitedObsolete])(identity)
     expectUpdate(classOf[UpdateGroupInviteObsolete])(identity)
 
-    whenReady(db.run(persist.GroupUserRepo.findUserIds(groupOutPeer.groupId))) { userIds ⇒
-      userIds.toSet shouldEqual Set(user1.id, user2.id)
-    }
+    val groupId = groupOutPeer.groupId
+    groupExt.isMember(groupId, user1.id).futureValue shouldEqual true
+    groupExt.isMember(groupId, user2.id).futureValue shouldEqual true
   }
 
   def sendUpdatesOnInvite() = {
@@ -134,6 +134,20 @@ final class GroupsServiceSpec
       expectUpdate(classOf[UpdateGroupUserInvitedObsolete])(identity)
       expectUpdate(classOf[UpdateGroupInviteObsolete])(identity)
       expectUpdate(classOf[UpdateChatGroupsChanged])(identity)
+
+      // produced by create in group v2
+      expectNoUpdate(emptyState, classOf[UpdateGroupMemberChanged])
+      expectNoUpdate(emptyState, classOf[UpdateGroupAboutChanged])
+      expectNoUpdate(emptyState, classOf[UpdateGroupAvatarChanged])
+      expectNoUpdate(emptyState, classOf[UpdateGroupTopicChanged])
+      expectNoUpdate(emptyState, classOf[UpdateGroupTitleChanged])
+      expectNoUpdate(emptyState, classOf[UpdateGroupOwnerChanged])
+
+      // produced by invite in group v2
+      expectNoUpdate(emptyState, classOf[UpdateGroupMembersUpdated])
+
+      // service messages from create/invite in group v2
+      expectNoUpdate(emptyState, classOf[UpdateMessage])
     }
 
     {
@@ -166,6 +180,21 @@ final class GroupsServiceSpec
       expectUpdate(classOf[UpdateGroupUserInvitedObsolete])(identity)
       expectUpdate(classOf[UpdateGroupInviteObsolete])(identity)
       expectUpdate(classOf[UpdateGroupTitleChangedObsolete])(identity)
+
+      // produced by create in group v2
+      expectNoUpdate(emptyState, classOf[UpdateGroupMemberChanged])
+      expectNoUpdate(emptyState, classOf[UpdateGroupAboutChanged])
+      expectNoUpdate(emptyState, classOf[UpdateGroupAvatarChanged])
+      expectNoUpdate(emptyState, classOf[UpdateGroupTopicChanged])
+      expectNoUpdate(emptyState, classOf[UpdateGroupTitleChanged])
+      expectNoUpdate(emptyState, classOf[UpdateGroupOwnerChanged])
+
+      // produced by chnage group title group v2
+      //TODO: it won't work this way
+      expectNoUpdate(emptyState, classOf[UpdateGroupTitleChanged])
+
+      // service messages from create/change title in group v2
+      expectNoUpdate(emptyState, classOf[UpdateMessage])
     }
 
     {
@@ -177,98 +206,115 @@ final class GroupsServiceSpec
 
   }
 
+  //TODO: write this spec in more readable way
   def e4() = {
     val (user1, authId1, authSid1, _) = createUser()
     val (user2, authId2, authSid2, _) = createUser()
 
     val sessionId = createSessionId()
-    implicit val clientData = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1, 42)))
+    val clientDataUser1 = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1, 42)))
 
     val user2Model = getUserModel(user2.id)
-    val user2AccessHash = ACLUtils.userAccessHash(clientData.authId, user2.id, user2Model.accessSalt)
+    val user2AccessHash = ACLUtils.userAccessHash(clientDataUser1.authId, user2.id, user2Model.accessSalt)
     val user2OutPeer = ApiUserOutPeer(user2.id, user2AccessHash)
 
-    val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
-
-    whenReady(db.run(persist.HistoryMessageRepo.find(user1.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { serviceMessages ⇒
-      serviceMessages should have length 1
-      serviceMessages
-        .map { e ⇒ parseMessage(e.messageContentData) } shouldEqual
-        Vector(Right(GroupServiceMessages.groupCreated))
-
+    val groupOutPeer = {
+      implicit val cd = clientDataUser1
+      createGroup("Fun group", Set.empty).groupPeer
     }
 
-    whenReady(service.handleInviteUser(groupOutPeer, Random.nextLong(), user2OutPeer, Vector.empty)) { resp ⇒
-      resp should matchPattern { case Ok(_) ⇒ }
+    {
+      implicit val cd = clientDataUser1
+
       whenReady(db.run(persist.HistoryMessageRepo.find(user1.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { serviceMessages ⇒
-        serviceMessages should have length 2
-        serviceMessages.map { e ⇒ parseMessage(e.messageContentData) } shouldEqual
-          Vector(
-            Right(GroupServiceMessages.userInvited(user2.id)),
-            Right(GroupServiceMessages.groupCreated)
-          )
-      }
-      whenReady(db.run(persist.HistoryMessageRepo.find(user2.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { serviceMessages ⇒
         serviceMessages should have length 1
-        serviceMessages.map { e ⇒ parseMessage(e.messageContentData) } shouldEqual
-          Vector(Right(GroupServiceMessages.userInvited(user2.id)))
+        serviceMessages
+          .map { e ⇒ parseMessage(e.messageContentData) } shouldEqual
+          Vector(Right(GroupServiceMessages.groupCreated))
+
+      }
+
+      whenReady(service.handleInviteUser(groupOutPeer, Random.nextLong(), user2OutPeer, Vector.empty)) { resp ⇒
+        resp should matchPattern { case Ok(_) ⇒ }
+        whenReady(db.run(persist.HistoryMessageRepo.find(user1.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { serviceMessages ⇒
+          serviceMessages should have length 2
+          serviceMessages.map { e ⇒ parseMessage(e.messageContentData) } shouldEqual
+            Vector(
+              Right(GroupServiceMessages.userInvited(user2.id)),
+              Right(GroupServiceMessages.groupCreated)
+            )
+        }
+        whenReady(db.run(persist.HistoryMessageRepo.find(user2.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { serviceMessages ⇒
+          serviceMessages should have length 1
+          serviceMessages.map { e ⇒ parseMessage(e.messageContentData) } shouldEqual
+            Vector(Right(GroupServiceMessages.userInvited(user2.id)))
+        }
+      }
+
+      //TODO: is it ok to remove avatar of group without avatar
+      whenReady(service.handleRemoveGroupAvatar(groupOutPeer, Random.nextLong(), Vector.empty)) { resp ⇒
+        resp should matchPattern { case Ok(_) ⇒ }
+
+        Thread.sleep(500)
+
+        whenReady(db.run(persist.HistoryMessageRepo.find(user1.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { serviceMessages ⇒
+          serviceMessages should have length 3
+          serviceMessages.map { e ⇒ parseMessage(e.messageContentData) } shouldEqual
+            Vector(
+              Right(GroupServiceMessages.changedAvatar(None)),
+              Right(GroupServiceMessages.userInvited(user2.id)),
+              Right(GroupServiceMessages.groupCreated)
+            )
+        }
+        whenReady(db.run(persist.HistoryMessageRepo.find(user2.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { serviceMessages ⇒
+          serviceMessages should have length 2
+          serviceMessages.map { e ⇒ parseMessage(e.messageContentData) } shouldEqual
+            Vector(
+              Right(GroupServiceMessages.changedAvatar(None)),
+              Right(GroupServiceMessages.userInvited(user2.id))
+            )
+        }
+      }
+
+      whenReady(service.handleEditGroupTitle(groupOutPeer, Random.nextLong(), "Not fun group", Vector.empty)) { resp ⇒
+        resp should matchPattern { case Ok(_) ⇒ }
+        whenReady(db.run(persist.HistoryMessageRepo.find(user1.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { serviceMessages ⇒
+          serviceMessages should have length 4
+          serviceMessages.map { e ⇒ parseMessage(e.messageContentData) }.head shouldEqual Right(GroupServiceMessages.changedTitle("Not fun group"))
+        }
+      }
+
+    }
+
+    {
+      implicit val cd = ClientData(authId2, sessionId, Some(AuthData(user2.id, authSid2, 42)))
+      whenReady(service.handleLeaveGroup(groupOutPeer, Random.nextLong(), Vector.empty)) { resp ⇒
+        resp should matchPattern { case Ok(_) ⇒ }
+        whenReady(db.run(persist.HistoryMessageRepo.find(user1.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { serviceMessages ⇒
+          serviceMessages should have length 6
+          val msgs = serviceMessages.map(e ⇒ parseMessage(e.messageContentData))
+          msgs(0) shouldEqual Right(GroupServiceMessages.userLeft)
+          msgs(1) shouldEqual Right(GroupServiceMessages.userJoined)
+        }
       }
     }
 
-    //TODO: is it ok to remove avatar of group without avatar
-    whenReady(service.handleRemoveGroupAvatar(groupOutPeer, Random.nextLong(), Vector.empty)) { resp ⇒
-      resp should matchPattern { case Ok(_) ⇒ }
-
-      Thread.sleep(500)
-
-      whenReady(db.run(persist.HistoryMessageRepo.find(user1.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { serviceMessages ⇒
-        serviceMessages should have length 3
-        serviceMessages.map { e ⇒ parseMessage(e.messageContentData) } shouldEqual
-          Vector(
-            Right(GroupServiceMessages.changedAvatar(None)),
-            Right(GroupServiceMessages.userInvited(user2.id)),
-            Right(GroupServiceMessages.groupCreated)
-          )
+    {
+      implicit val cd = clientDataUser1
+      whenReady(service.handleInviteUser(groupOutPeer, Random.nextLong(), user2OutPeer, Vector.empty)) { resp ⇒
+        resp should matchPattern { case Ok(_) ⇒ }
+        whenReady(db.run(persist.HistoryMessageRepo.find(user1.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { serviceMessages ⇒
+          serviceMessages should have length 7
+          serviceMessages.map { e ⇒ parseMessage(e.messageContentData) }.head shouldEqual Right(GroupServiceMessages.userInvited(user2.id))
+        }
       }
-      whenReady(db.run(persist.HistoryMessageRepo.find(user2.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { serviceMessages ⇒
-        serviceMessages should have length 2
-        serviceMessages.map { e ⇒ parseMessage(e.messageContentData) } shouldEqual
-          Vector(
-            Right(GroupServiceMessages.changedAvatar(None)),
-            Right(GroupServiceMessages.userInvited(user2.id))
-          )
-      }
-    }
 
-    whenReady(service.handleEditGroupTitle(groupOutPeer, Random.nextLong(), "Not fun group", Vector.empty)) { resp ⇒
-      resp should matchPattern { case Ok(_) ⇒ }
-      whenReady(db.run(persist.HistoryMessageRepo.find(user1.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { serviceMessages ⇒
-        serviceMessages should have length 4
-        serviceMessages.map { e ⇒ parseMessage(e.messageContentData) }.head shouldEqual Right(GroupServiceMessages.changedTitle("Not fun group"))
-      }
-    }
-
-    whenReady(service.handleLeaveGroup(groupOutPeer, Random.nextLong(), Vector.empty)(ClientData(authId2, sessionId, Some(AuthData(user2.id, authSid2, 42))))) { resp ⇒
-      resp should matchPattern { case Ok(_) ⇒ }
-      whenReady(db.run(persist.HistoryMessageRepo.find(user1.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { serviceMessages ⇒
-        serviceMessages should have length 5
-        serviceMessages.map { e ⇒ parseMessage(e.messageContentData) }.head shouldEqual Right(GroupServiceMessages.userLeft(user2.id))
-      }
-    }
-
-    whenReady(service.handleInviteUser(groupOutPeer, Random.nextLong(), user2OutPeer, Vector.empty)) { resp ⇒
-      resp should matchPattern { case Ok(_) ⇒ }
-      whenReady(db.run(persist.HistoryMessageRepo.find(user1.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { serviceMessages ⇒
-        serviceMessages should have length 6
-        serviceMessages.map { e ⇒ parseMessage(e.messageContentData) }.head shouldEqual Right(GroupServiceMessages.userInvited(user2.id))
-      }
-    }
-
-    whenReady(service.handleKickUser(groupOutPeer, Random.nextLong(), user2OutPeer, Vector.empty)) { resp ⇒
-      resp should matchPattern { case Ok(_) ⇒ }
-      whenReady(db.run(persist.HistoryMessageRepo.find(user1.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { serviceMessages ⇒
-        serviceMessages should have length 7
-        serviceMessages.map { e ⇒ parseMessage(e.messageContentData) }.head shouldEqual Right(GroupServiceMessages.userKicked(user2.id))
+      whenReady(service.handleKickUser(groupOutPeer, Random.nextLong(), user2OutPeer, Vector.empty)) { resp ⇒
+        resp should matchPattern { case Ok(_) ⇒ }
+        whenReady(db.run(persist.HistoryMessageRepo.find(user1.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { serviceMessages ⇒
+          serviceMessages should have length 8
+          serviceMessages.map { e ⇒ parseMessage(e.messageContentData) }.head shouldEqual Right(GroupServiceMessages.userKicked(user2.id))
+        }
       }
     }
 
@@ -424,10 +470,9 @@ final class GroupsServiceSpec
           }
       }
     }
-    whenReady(db.run(persist.GroupUserRepo.findUserIds(groupOutPeer.groupId))) { userIds ⇒
-      userIds should have length 2
-      userIds should contain allOf (user1.id, user2.id)
-    }
+    val memberIds = groupExt.getMemberIds(groupOutPeer.groupId).futureValue._1
+    memberIds should have length 2
+    memberIds should contain allOf (user1.id, user2.id)
   }
 
   def e9() = {
@@ -436,28 +481,24 @@ final class GroupsServiceSpec
 
     implicit val clientData = ClientData(authId1, createSessionId(), Some(AuthData(user1.id, authSid1, 42)))
 
-    val user2Model = getUserModel(user2.id)
-    val user2AccessHash = ACLUtils.userAccessHash(clientData.authId, user2.id, user2Model.accessSalt)
-    val user2OutPeer = ApiUserOutPeer(user2.id, user2AccessHash)
-
     val groupOutPeer = createGroup("Fun group", Set(user2.id)).groupPeer
 
-    whenReady(service.handleGetGroupInviteUrl(groupOutPeer)) { resp ⇒
+    val url = whenReady(service.handleGetGroupInviteUrl(groupOutPeer)) { resp ⇒
       inside(resp) {
         case Ok(ResponseInviteUrl(url)) ⇒
           url should startWith(groupInviteConfig.baseUrl)
+      }
+      resp.toOption.get.url
+    }
 
-          {
-            implicit val clientData = ClientData(authId2, createSessionId(), Some(AuthData(user2.id, authSid2, 42)))
-            val outPeer = ApiOutPeer(ApiPeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
-            whenReady(messagingService.handleMessageRead(outPeer, System.currentTimeMillis()))(_ ⇒ ())
+    {
+      implicit val clientData = ClientData(authId2, createSessionId(), Some(AuthData(user2.id, authSid2, 42)))
+      whenReady(msgService.handleMessageRead(groupOutPeer.asOutPeer, System.currentTimeMillis()))(identity)
 
-            whenReady(service.handleJoinGroup(url, Vector.empty)) { resp ⇒
-              inside(resp) {
-                case Error(err) ⇒ err shouldEqual GroupRpcErrors.YouAlreadyAMember
-              }
-            }
-          }
+      whenReady(service.handleJoinGroup(url, Vector.empty)) { resp ⇒
+        inside(resp) {
+          case Error(err) ⇒ err shouldEqual GroupRpcErrors.AlreadyJoined
+        }
       }
     }
   }
@@ -492,10 +533,9 @@ final class GroupsServiceSpec
           expectUpdate(state, classOf[UpdateCountersChanged])(identity)
       }
     }
-    whenReady(db.run(persist.GroupUserRepo.findUserIds(groupOutPeer.groupId))) { userIds ⇒
-      userIds should have length 2
-      userIds should contain allOf (user1.id, user2.id)
-    }
+    val memberIds = groupExt.getMemberIds(groupOutPeer.groupId).futureValue._1
+    memberIds should have length 2
+    memberIds should contain allOf (user1.id, user2.id)
   }
 
   def e11() = {
@@ -524,8 +564,8 @@ final class GroupsServiceSpec
     {
       implicit val clientData = clientData2
       // send it twice to ensure that ServiceMessage isn't sent twice
-      whenReady(messagingService.handleMessageRead(ApiOutPeer(ApiPeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash), System.currentTimeMillis))(identity)
-      whenReady(messagingService.handleMessageRead(ApiOutPeer(ApiPeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash), System.currentTimeMillis))(identity)
+      whenReady(msgService.handleMessageRead(ApiOutPeer(ApiPeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash), System.currentTimeMillis))(identity)
+      whenReady(msgService.handleMessageRead(ApiOutPeer(ApiPeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash), System.currentTimeMillis))(identity)
     }
 
     {
@@ -561,9 +601,9 @@ final class GroupsServiceSpec
 
     val peer = ApiOutPeer(ApiPeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
 
-    whenReady(messagingService.handleSendMessage(peer, 22324L, ApiTextMessage("hello", Vector.empty, None), None, None)(clientData1)) { _ ⇒ }
+    whenReady(msgService.handleSendMessage(peer, 22324L, ApiTextMessage("hello", Vector.empty, None), None, None)(clientData1)) { _ ⇒ }
 
-    whenReady(messagingService.handleMessageRead(peer, System.currentTimeMillis)(clientData2)) { _ ⇒ }
+    whenReady(msgService.handleMessageRead(peer, System.currentTimeMillis)(clientData2)) { _ ⇒ }
 
     {
       implicit val clientData = clientData1
@@ -583,7 +623,7 @@ final class GroupsServiceSpec
 
     whenReady(service.handleCreateGroupObsolete(1L, "", Vector.empty)) { resp ⇒
       inside(resp) {
-        case Error(GroupRpcErrors.WrongGroupTitle) ⇒
+        case Error(GroupRpcErrors.InvalidTitle) ⇒
       }
     }
   }
@@ -619,10 +659,10 @@ final class GroupsServiceSpec
 
     val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
 
-    whenReady(db.run(persist.GroupUserRepo.find(groupOutPeer.groupId, user1.id))) { groupUser ⇒
-      groupUser shouldBe defined
-      groupUser.get.isAdmin shouldEqual true
-    }
+    val members = groupExt.getApiFullStruct(groupOutPeer.groupId, user1.id).futureValue.members
+    val optCreator = members.find(_.userId == user1.id)
+    optCreator shouldBe defined
+    optCreator.get.isAdmin shouldEqual Some(true)
   }
 
   def e15() = {
@@ -691,9 +731,9 @@ final class GroupsServiceSpec
   }
 
   def e18() = {
-    val (user1, authId1, authSid1, _) = createUser()
+    val (user, authId, authSid, _) = createUser()
 
-    implicit val clientData1 = ClientData(authId1, createSessionId(), Some(AuthData(user1.id, authSid1, 42)))
+    implicit val cd = ClientData(authId, createSessionId(), Some(AuthData(user.id, authSid, 42)))
 
     val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
 
@@ -704,9 +744,8 @@ final class GroupsServiceSpec
       }
     }
 
-    whenReady(db.run(persist.GroupRepo.find(groupOutPeer.groupId))) { group ⇒
-      group.get.about shouldEqual about
-    }
+    val groupAbout = groupExt.getApiFullStruct(groupOutPeer.groupId, user.id).futureValue.about
+    groupAbout shouldEqual about
   }
 
   def e19() = {
@@ -727,9 +766,9 @@ final class GroupsServiceSpec
   }
 
   def e20() = {
-    val (user1, authId1, authSid1, _) = createUser()
+    val (user, authId, authSid, _) = createUser()
 
-    implicit val clientData1 = ClientData(authId1, createSessionId(), Some(AuthData(user1.id, authSid1, 42)))
+    implicit val cd = ClientData(authId, createSessionId(), Some(AuthData(user.id, authSid, 42)))
 
     val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
 
@@ -739,15 +778,14 @@ final class GroupsServiceSpec
       }
     }
 
-    whenReady(db.run(persist.GroupRepo.find(groupOutPeer.groupId))) { group ⇒
-      group.get.about shouldEqual None
-    }
+    val groupAbout = groupExt.getApiFullStruct(groupOutPeer.groupId, user.id).futureValue.about
+    groupAbout shouldEqual None
   }
 
   def e21() = {
-    val (user1, authId1, authSid1, _) = createUser()
+    val (user, authId, authSid, _) = createUser()
 
-    implicit val clientData1 = ClientData(authId1, createSessionId(), Some(AuthData(user1.id, authSid1, 42)))
+    implicit val clientData1 = ClientData(authId, createSessionId(), Some(AuthData(user.id, authSid, 42)))
 
     val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
 
@@ -761,9 +799,8 @@ final class GroupsServiceSpec
       resp shouldEqual Error(GroupRpcErrors.AboutTooLong)
     }
 
-    whenReady(db.run(persist.GroupRepo.find(groupOutPeer.groupId))) { group ⇒
-      group.get.about shouldEqual None
-    }
+    val groupAbout = groupExt.getApiFullStruct(groupOutPeer.groupId, user.id).futureValue.about
+    groupAbout shouldEqual None
   }
 
   def e22() = {
@@ -792,16 +829,14 @@ final class GroupsServiceSpec
       }
     }
 
-    whenReady(db.run(persist.GroupRepo.find(groupOutPeer.groupId))) { group ⇒
-      group.get.topic shouldEqual topic2
-    }
-
+    val groupTopic = groupExt.getApiStruct(groupOutPeer.groupId, user1.id).futureValue.theme
+    groupTopic shouldEqual topic2
   }
 
   def e23() = {
-    val (user1, authId1, authSid1, _) = createUser()
+    val (user, authId, authSid, _) = createUser()
 
-    implicit val clientData1 = ClientData(authId1, createSessionId(), Some(AuthData(user1.id, authSid1, 42)))
+    implicit val clientData1 = ClientData(authId, createSessionId(), Some(AuthData(user.id, authSid, 42)))
 
     val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
 
@@ -815,16 +850,14 @@ final class GroupsServiceSpec
       resp shouldEqual Error(GroupRpcErrors.TopicTooLong)
     }
 
-    whenReady(db.run(persist.GroupRepo.find(groupOutPeer.groupId))) { group ⇒
-      group.get.topic shouldEqual None
-    }
-
+    val groupTopic = groupExt.getApiFullStruct(groupOutPeer.groupId, user.id).futureValue.theme
+    groupTopic shouldEqual None
   }
 
   def e24() = {
-    val (user1, authId1, authSid1, _) = createUser()
+    val (user, authId, authSid, _) = createUser()
 
-    implicit val clientData1 = ClientData(authId1, createSessionId(), Some(AuthData(user1.id, authSid1, 42)))
+    implicit val clientData1 = ClientData(authId, createSessionId(), Some(AuthData(user.id, authSid, 42)))
 
     val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
 
@@ -834,10 +867,8 @@ final class GroupsServiceSpec
       }
     }
 
-    whenReady(db.run(persist.GroupRepo.find(groupOutPeer.groupId))) { group ⇒
-      group.get.topic shouldEqual None
-    }
-
+    val groupTopic = groupExt.getApiFullStruct(groupOutPeer.groupId, user.id).futureValue.theme
+    groupTopic shouldEqual None
   }
 
   def e25() = {
@@ -860,7 +891,7 @@ final class GroupsServiceSpec
     {
       implicit val cd = clientData2
 
-      whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100, Vector.empty)) { resp ⇒
+      whenReady(msgService.handleLoadDialogs(Long.MaxValue, 100, Vector.empty)) { resp ⇒
         val dialog = resp.toOption.get.dialogs.head
         dialog.peer.id shouldEqual groupOutPeer.groupId
         dialog.unreadCount should be > 6
@@ -870,7 +901,7 @@ final class GroupsServiceSpec
         resp should matchPattern { case Ok(_) ⇒ }
       }
 
-      whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100, Vector.empty)) { resp ⇒
+      whenReady(msgService.handleLoadDialogs(Long.MaxValue, 100, Vector.empty)) { resp ⇒
         val dialog = resp.toOption.get.dialogs.head
         dialog.peer.id shouldEqual groupOutPeer.groupId
         dialog.unreadCount shouldEqual 0
@@ -885,7 +916,7 @@ final class GroupsServiceSpec
     {
       implicit val cd = clientData2
 
-      whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100, Vector.empty)) { resp ⇒
+      whenReady(msgService.handleLoadDialogs(Long.MaxValue, 100, Vector.empty)) { resp ⇒
         val dialog = resp.toOption.get.dialogs.head
         dialog.peer.id shouldEqual groupOutPeer.groupId
         dialog.unreadCount shouldEqual 0
@@ -915,12 +946,12 @@ final class GroupsServiceSpec
 
     for (_ ← 1 to 6) {
       implicit val clientData = clientData1
-      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("hello", Vector.empty, None), None, None)) { _ ⇒ }
+      whenReady(msgService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("hello", Vector.empty, None), None, None)) { _ ⇒ }
     }
 
     {
       implicit val clientData = clientData2
-      whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100, Vector.empty)) { resp ⇒
+      whenReady(msgService.handleLoadDialogs(Long.MaxValue, 100, Vector.empty)) { resp ⇒
         val dialog = resp.toOption.get.dialogs.head
         dialog.unreadCount > 6 shouldEqual true
       }
@@ -935,7 +966,7 @@ final class GroupsServiceSpec
 
     {
       implicit val clientData = clientData2
-      whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100, Vector.empty)) { resp ⇒
+      whenReady(msgService.handleLoadDialogs(Long.MaxValue, 100, Vector.empty)) { resp ⇒
         val dialog = resp.toOption.get.dialogs.head
         dialog.unreadCount shouldEqual 0
       }
@@ -943,88 +974,13 @@ final class GroupsServiceSpec
 
     for (_ ← 1 to 6) {
       implicit val clientData = clientData1
-      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("bye kicked user", Vector.empty, None), None, None)) { _ ⇒ }
+      whenReady(msgService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("bye kicked user", Vector.empty, None), None, None)) { _ ⇒ }
     }
 
     {
       implicit val clientData = clientData2
 
-      whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100, Vector.empty)) { resp ⇒
-        val dialog = resp.toOption.get.dialogs.head
-        dialog.unreadCount shouldEqual 0
-      }
-    }
-
-  }
-
-  def markReadOnKickInPublic() = {
-    val (user1, authId1, authSid1, _) = createUser()
-    val (user2, authId2, authSid2, _) = createUser()
-
-    val sessionId = createSessionId()
-
-    val clientData1 = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1, 42)))
-    val clientData2 = ClientData(authId2, sessionId, Some(AuthData(user2.id, authSid2, 42)))
-
-    val user2Model = getUserModel(user2.id)
-    val user2AccessHash = ACLUtils.userAccessHash(authId1, user2.id, user2Model.accessSalt)
-    val user2OutPeer = ApiUserOutPeer(user2.id, user2AccessHash)
-
-    val groupOutPeer = {
-      implicit val clientData = clientData1
-      createPubGroup("Public group", "desc", Set(user2.id)).groupPeer
-    }
-    val outPeer = ApiOutPeer(ApiPeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
-
-    Thread.sleep(500)
-
-    {
-      implicit val clientData = clientData2
-      whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100, Vector.empty)) { resp ⇒
-        val dialog = resp.toOption.get.dialogs.head
-        dialog.unreadCount shouldBe 2
-      }
-    }
-
-    for (_ ← 1 to 6) {
-      implicit val clientData = clientData1
-      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("hello public", Vector.empty, None), None, None)) { _ ⇒ }
-    }
-
-    Thread.sleep(2000)
-
-    {
-      implicit val clientData = clientData2
-      whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100, Vector.empty)) { resp ⇒
-        val dialog = resp.toOption.get.dialogs.head
-        dialog.unreadCount shouldBe 8
-      }
-    }
-
-    {
-      implicit val clientData = clientData1
-      whenReady(service.handleKickUser(groupOutPeer, Random.nextLong(), user2OutPeer, Vector.empty)) { resp ⇒
-        resp should matchPattern { case Ok(_) ⇒ }
-      }
-    }
-
-    {
-      implicit val clientData = clientData2
-      whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100, Vector.empty)) { resp ⇒
-        val dialog = resp.toOption.get.dialogs.head
-        dialog.unreadCount shouldEqual 0
-      }
-    }
-
-    for (_ ← 1 to 6) {
-      implicit val clientData = clientData1
-      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("bye kicked user", Vector.empty, None), None, None)) { _ ⇒ }
-    }
-
-    {
-      implicit val clientData = clientData2
-
-      whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100, Vector.empty)) { resp ⇒
+      whenReady(msgService.handleLoadDialogs(Long.MaxValue, 100, Vector.empty)) { resp ⇒
         val dialog = resp.toOption.get.dialogs.head
         dialog.unreadCount shouldEqual 0
       }
@@ -1070,7 +1026,7 @@ final class GroupsServiceSpec
       implicit val clientData = clientData2
 
       val randomId = Random.nextLong()
-      whenReady(messagingService.handleSendMessage(outPeer, randomId, ApiTextMessage("WTF? am i kicked?!!?!?!?!?!?!?!?!??!?!?!", Vector.empty, None), None, None)) { resp ⇒
+      whenReady(msgService.handleSendMessage(outPeer, randomId, ApiTextMessage("WTF? am i kicked?!!?!?!?!?!?!?!?!??!?!?!", Vector.empty, None), None, None)) { resp ⇒
         inside(resp) {
           case Error(err) ⇒ err.code shouldEqual 403
         }

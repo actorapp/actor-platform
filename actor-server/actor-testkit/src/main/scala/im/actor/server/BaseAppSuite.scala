@@ -40,6 +40,10 @@ abstract class BaseAppSuite(_system: ActorSystem = {
     MigrationNameList.MultiSequence,
     Instant.now.toEpochMilli
   )(conn)
+  MigrationTsActions.insertTimestamp(
+    MigrationNameList.GroupsV2,
+    Instant.now.toEpochMilli
+  )(conn)
 
   override implicit def patienceConfig: PatienceConfig =
     new PatienceConfig(timeout = Span(15, Seconds))

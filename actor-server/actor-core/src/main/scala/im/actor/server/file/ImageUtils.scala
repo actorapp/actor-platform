@@ -77,24 +77,15 @@ object ImageUtils {
   ): Future[Either[Throwable, Avatar]] =
     DbExtension(system).db.run(scaleAvatar(fullFileId))
 
-  def scaleAvatar(fullFileId: Long)(
-    implicit
-    fsAdapter: FileStorageAdapter,
-    ec:        ExecutionContext,
-    system:    ActorSystem
-  ): DBIO[Either[Throwable, Avatar]] =
-    scaleAvatar(fullFileId, ThreadLocalSecureRandom.current())
-
-  def scaleAvatar(
-    fullFileId: Long,
-    rng:        ThreadLocalSecureRandom
-  )(implicit system: ActorSystem): DBIO[Either[Throwable, Avatar]] =
+  def scaleAvatar(fullFileId: Long)(implicit system: ActorSystem): DBIO[Either[Throwable, Avatar]] = {
+    val rng = ThreadLocalSecureRandom.current()
     scaleAvatar(
       fullFileId,
       rng,
       ThumbDescriptor("small-avatar.jpg", SmallSize, JpegWriter()),
       ThumbDescriptor("large-avatar.jpg", LargeSize, JpegWriter())
     )
+  }
 
   def scaleAvatar(
     fullFileId: Long,

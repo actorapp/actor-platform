@@ -63,8 +63,8 @@ private trait DialogRootQueryHandlers {
     } yield GetDialogsResponse(infos.toMap)
   }
 
-  protected def getArchivedDialogs(offsetOpt: Option[Int64Value], limit: Int): Future[GetArchivedDialogsResponse] = {
-    val dialogs = (offsetOpt.map(offset ⇒ Instant.ofEpochMilli(offset.value)) match {
+  protected def getArchivedDialogs(offsetOpt: Option[Long], limit: Int): Future[GetArchivedDialogsResponse] = {
+    val dialogs = ((offsetOpt map Instant.ofEpochMilli) match {
       case None         ⇒ state.archived
       case Some(offset) ⇒ state.archived.dropWhile(sd ⇒ sd.ts.isAfter(offset) || sd.ts == offset)
     }).take(limit)
@@ -73,7 +73,7 @@ private trait DialogRootQueryHandlers {
       infos ← Future.sequence(dialogs map (sd ⇒ getInfo(sd.peer) map (sd.ts.toEpochMilli → _.getInfo)))
     } yield GetArchivedDialogsResponse(
       dialogs = infos.toMap,
-      nextOffset = infos.lastOption map (tup ⇒ Int64Value(tup._1))
+      nextOffset = infos.lastOption map (_._1)
     )
   }
 

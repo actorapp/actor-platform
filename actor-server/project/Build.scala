@@ -174,7 +174,8 @@ object Build extends sbt.Build with Versioning with Releasing with Packaging {
     id = "actor-core",
     base = file("actor-core"),
     settings = defaultSettingsServer ++ SbtActorApi.settings ++ Seq(
-      libraryDependencies ++= Dependencies.core
+      libraryDependencies ++= Dependencies.core,
+      scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Xfatal-warnings")
     )
   )
     .dependsOn(actorCodecs, actorFileAdapter, actorModels, actorPersist, actorRuntime)
@@ -246,7 +247,8 @@ object Build extends sbt.Build with Versioning with Releasing with Packaging {
     id = "actor-rpc-api",
     base = file("actor-rpc-api"),
     settings = defaultSettingsServer ++ Seq(
-      libraryDependencies ++= Dependencies.rpcApi
+      libraryDependencies ++= Dependencies.rpcApi,
+      scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Xfatal-warnings")
     )
   )
     .dependsOn(
@@ -376,6 +378,7 @@ object Build extends sbt.Build with Versioning with Releasing with Packaging {
     settings = defaultSettingsServer ++ Testing.settings ++ Seq(
       libraryDependencies ++= Dependencies.tests,
       compile in MultiJvm <<= (compile in MultiJvm) triggeredBy (compile in Test),
+      scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Xfatal-warnings"),
       executeTests in Test <<= (executeTests in Test, executeTests in MultiJvm) map {
         case (testResults, multiNodeResults)  =>
           val overall =

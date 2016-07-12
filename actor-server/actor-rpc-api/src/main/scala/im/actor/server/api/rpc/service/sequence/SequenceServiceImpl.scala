@@ -97,8 +97,8 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
   ): Future[HandlerResult[ResponseGetReferencedEntitites]] =
     authorized(clientData) { client ⇒
       (for {
-        _ ← fromFutureBoolean(CommonRpcErrors.InvalidAccessHash)(ACLUtils.checkOutPeers(users, client.authId))
-        _ ← fromFutureBoolean(CommonRpcErrors.InvalidAccessHash)(ACLUtils.checkOutPeers(groups))
+        _ ← fromFutureBoolean(CommonRpcErrors.InvalidAccessHash)(ACLUtils.checkUserOutPeers(users, client.authId))
+        _ ← fromFutureBoolean(CommonRpcErrors.InvalidAccessHash)(ACLUtils.checkGroupOutPeers(groups))
         res ← fromFuture(GroupUtils.getGroupsUsers(
           groups map (_.groupId),
           users map (_.userId), client.userId, client.authId

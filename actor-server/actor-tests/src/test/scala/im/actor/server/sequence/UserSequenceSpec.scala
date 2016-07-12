@@ -127,7 +127,7 @@ final class UserSequenceSpec extends BaseAppSuite(
 
     val updateSame = UpdateContactRegistered(1, isSilent = false, 0L, 0L)
     val deliverUpdSame = DeliverUpdate(
-      reduceKey = Some(StringValue("same")),
+      reduceKey = Some("same"),
       mapping = Some(UpdateMapping(Some(SerializedUpdate(
         header = updateSame.header,
         body = ByteString.copyFrom(updateSame.toByteArray),

@@ -6,7 +6,7 @@ import akka.actor.{ ActorSystem, Props }
 import akka.persistence.RecoveryCompleted
 import im.actor.server.db.DbExtension
 import im.actor.server.event.TSEvent
-import im.actor.server.group.{ GroupEvents, GroupOffice }
+import im.actor.server.group.{ GroupEvents, GroupProcessor }
 import im.actor.server.persist.GroupRepo
 
 import scala.concurrent.{ Future, Promise }
@@ -41,7 +41,7 @@ private final class GroupCreatorMemberMigrator(promise: Promise[Unit], groupId: 
   import GroupCreatorMemberMigrator._
   import GroupEvents._
 
-  override def persistenceId = GroupOffice.persistenceIdFor(groupId)
+  override def persistenceId = GroupProcessor.persistenceIdFor(groupId)
 
   def receiveCommand = {
     case Migrate ⇒ migrate()

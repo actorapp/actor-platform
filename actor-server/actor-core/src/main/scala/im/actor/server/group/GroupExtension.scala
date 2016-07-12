@@ -3,7 +3,9 @@ package im.actor.server.group
 import akka.actor._
 import akka.util.Timeout
 import im.actor.server.api.http.HttpApi
+import im.actor.server.db.DbExtension
 import im.actor.server.group.http.GroupsHttpHandler
+import im.actor.server.migrations.v2.{ MigrationNameList, MigrationTsActions }
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
@@ -15,6 +17,11 @@ final class GroupExtensionImpl(val system: ActorSystem) extends GroupExtension w
 
   HttpApi(system).registerRoute("groups") { implicit system ⇒
     new GroupsHttpHandler().routes
+  }
+
+  val GroupV2MigrationTs: Long = {
+    val optTs = MigrationTsActions.getTimestamp(MigrationNameList.GroupsV2)(DbExtension(system).connector)
+    optTs.getOrElse(throw new RuntimeException(s"No Migration timestamp found for ${MigrationNameList.GroupsV2}"))
   }
 
   lazy val processorRegion: GroupProcessorRegion = GroupProcessorRegion.start()(system)

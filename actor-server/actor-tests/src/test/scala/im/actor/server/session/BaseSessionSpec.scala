@@ -46,10 +46,15 @@ abstract class BaseSessionSpec(_system: ActorSystem = {
     DbExtension(_system).db
   }
 
+  val conn = DbExtension(system).connector
   MigrationTsActions.insertTimestamp(
     MigrationNameList.MultiSequence,
     Instant.now.toEpochMilli
-  )(DbExtension(system).connector)
+  )(conn)
+  MigrationTsActions.insertTimestamp(
+    MigrationNameList.GroupsV2,
+    Instant.now.toEpochMilli
+  )(conn)
 
   protected val sessionConfig = SessionConfig.load(system.settings.config.getConfig("session"))
   Session.startRegion(sessionConfig)

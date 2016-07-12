@@ -98,6 +98,7 @@ object UserRepo {
   def find(id: Int) =
     byIdC(id).result.headOption
 
+  @deprecated("Duplicates ", "2016-07-07")
   def findName(id: Int) =
     nameById(id).result.headOption
 

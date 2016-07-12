@@ -60,10 +60,15 @@ final class SimpleServerE2eSpec extends ActorSuite(
     DbExtension(system).clean()
     DbExtension(system).migrate()
 
+    val conn = DbExtension(system).connector
     MigrationTsActions.insertTimestamp(
       MigrationNameList.MultiSequence,
       Instant.now.toEpochMilli
-    )(DbExtension(system).connector)
+    )(conn)
+    MigrationTsActions.insertTimestamp(
+      MigrationNameList.GroupsV2,
+      Instant.now.toEpochMilli
+    )(conn)
 
     val serverConfig = system.settings.config
 

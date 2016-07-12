@@ -28,7 +28,7 @@ final class EncryptionServiceImpl(implicit system: ActorSystem) extends Encrypti
     clientData: ClientData
   ): Future[HandlerResult[ResponsePublicKeyGroups]] =
     authorized(clientData) { implicit client ⇒
-      withUserOutPeerF(userPeer) {
+      withUserOutPeer(userPeer) {
         for {
           keyGroups ← encExt.fetchApiKeyGroups(userPeer.userId)
         } yield Ok(ResponsePublicKeyGroups(keyGroups))
@@ -65,7 +65,7 @@ final class EncryptionServiceImpl(implicit system: ActorSystem) extends Encrypti
     clientData: ClientData
   ): Future[HandlerResult[ResponsePublicKeys]] =
     authorized(clientData) { implicit client ⇒
-      withUserOutPeerF(userPeer) {
+      withUserOutPeer(userPeer) {
         val keyIdsSet = keyIds.toSet
 
         for {
@@ -93,7 +93,7 @@ final class EncryptionServiceImpl(implicit system: ActorSystem) extends Encrypti
     clientData: ClientData
   ): Future[HandlerResult[ResponsePublicKeys]] =
     authorized(clientData) { implicit client ⇒
-      withUserOutPeerF(userPeer) {
+      withUserOutPeer(userPeer) {
         for {
           (keys, signs) ← encExt.fetchApiEphermalKeys(userPeer.userId, keyGroupId)
         } yield {
@@ -117,58 +117,54 @@ final class EncryptionServiceImpl(implicit system: ActorSystem) extends Encrypti
     clientData:       ClientData
   ): Future[HandlerResult[ResponseSendEncryptedPackage]] =
     authorized(clientData) { implicit client ⇒
-      db.run {
-        withUserOutPeers(destPeers) {
-          DBIO.from {
-            encExt.checkBox(encryptedBox, ignoredKeyGroups.groupBy(_.userId).mapValues(_.map(_.keyGroupId).toSet)) flatMap {
-              case Left((missing, obs)) ⇒
-                FastFuture.successful(Ok(ResponseSendEncryptedPackage(
-                  seq = None,
-                  state = None,
-                  date = None,
-                  obsoleteKeyGroups = obs,
-                  missedKeyGroups = missing
-                )))
-              case Right(mappedBoxes) ⇒
-                val date = System.currentTimeMillis()
-                val mappings = mappedBoxes
-                  .map {
-                    case (userId, authIdsBoxes) ⇒
-                      (
-                        userId,
-                        authIdsBoxes.map {
-                          case (authId, box) ⇒ (authId, UpdateEncryptedPackage(randomId, date, client.userId, box))
-                        }.toMap
-                      )
-                  }
+      withUserOutPeers(destPeers) {
+        encExt.checkBox(encryptedBox, ignoredKeyGroups.groupBy(_.userId).mapValues(_.map(_.keyGroupId).toSet)) flatMap {
+          case Left((missing, obs)) ⇒
+            FastFuture.successful(Ok(ResponseSendEncryptedPackage(
+              seq = None,
+              state = None,
+              date = None,
+              obsoleteKeyGroups = obs,
+              missedKeyGroups = missing
+            )))
+          case Right(mappedBoxes) ⇒
+            val date = System.currentTimeMillis()
+            val mappings = mappedBoxes
+              .map {
+                case (userId, authIdsBoxes) ⇒
+                  (
+                    userId,
+                    authIdsBoxes.map {
+                      case (authId, box) ⇒ (authId, UpdateEncryptedPackage(randomId, date, client.userId, box))
+                    }.toMap
+                  )
+              }
 
-                val (owns, peers) = mappings.partition(_._1 == client.userId)
-                val ownOpt = owns.headOption map (_._2)
+            val (owns, peers) = mappings.partition(_._1 == client.userId)
+            val ownOpt = owns.headOption map (_._2)
 
-                val peersFu =
-                  Future.sequence(peers map {
-                    case (userId, mapping) ⇒
-                      // TODO: does this actually works?
-                      updExt.deliverCustomUpdate(userId, 0L, Some(UpdateEmptyUpdate), mapping)
-                  })
+            val peersFu =
+              Future.sequence(peers map {
+                case (userId, mapping) ⇒
+                  // TODO: does this actually works?
+                  updExt.deliverCustomUpdate(userId, 0L, Some(UpdateEmptyUpdate), mapping)
+              })
 
-                for {
-                  _ ← peersFu
-                  seqState ← ownOpt match {
-                    case Some(own) ⇒
-                      // TODO: does this actually works?
-                      updExt.deliverCustomUpdate(client.userId, client.authId, Some(UpdateEmptyUpdate), own)
-                    case None ⇒ updExt.deliverClientUpdate(client.userId, client.authId, UpdateEmptyUpdate)
-                  }
-                } yield Ok(ResponseSendEncryptedPackage(
-                  seq = Some(seqState.seq),
-                  state = Some(seqState.state.toByteArray),
-                  date = Some(date),
-                  Vector.empty,
-                  Vector.empty
-                ))
-            }
-          }
+            for {
+              _ ← peersFu
+              seqState ← ownOpt match {
+                case Some(own) ⇒
+                  // TODO: does this actually works?
+                  updExt.deliverCustomUpdate(client.userId, client.authId, Some(UpdateEmptyUpdate), own)
+                case None ⇒ updExt.deliverClientUpdate(client.userId, client.authId, UpdateEmptyUpdate)
+              }
+            } yield Ok(ResponseSendEncryptedPackage(
+              seq = Some(seqState.seq),
+              state = Some(seqState.state.toByteArray),
+              date = Some(date),
+              Vector.empty,
+              Vector.empty
+            ))
         }
       }
     }
