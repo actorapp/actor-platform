@@ -122,6 +122,10 @@ public class Intents {
         return openDialog(Peer.user(uid), compose, context);
     }
 
+    public static Intent openPrivateSecretDialog(int uid, boolean compose, Context context) {
+        return openDialog(Peer.secret(uid), compose, context);
+    }
+
     public static Intent openGroupDialog(int chatId, boolean compose, Context context) {
         return openDialog(Peer.group(chatId), compose, context);
     }

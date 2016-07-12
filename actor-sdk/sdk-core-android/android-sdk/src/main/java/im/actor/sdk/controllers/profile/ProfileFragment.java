@@ -177,6 +177,24 @@ public class ProfileFragment extends BaseFragment {
 
 
         //
+        // New Encrypted Message
+        //
+
+        View newEncryptedMessageView = res.findViewById(R.id.newEncryptedMessage);
+        ImageView newEncryptedMessageIcon = (ImageView) newEncryptedMessageView.findViewById(R.id.newEncryptedMessageIcon);
+        TextView newEncryptedMessageTitle = (TextView) newEncryptedMessageView.findViewById(R.id.newEncryptedMessageText);
+        {
+            Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_chat_black_24dp));
+            DrawableCompat.setTint(drawable, style.getListActionColor());
+            newEncryptedMessageIcon.setImageDrawable(drawable);
+            newEncryptedMessageTitle.setTextColor(style.getListActionColor());
+        }
+        newEncryptedMessageView.setOnClickListener(v -> {
+            startActivity(Intents.openPrivateSecretDialog(user.getId(), true, getActivity()));
+        });
+
+
+        //
         // Voice Call
         //
 

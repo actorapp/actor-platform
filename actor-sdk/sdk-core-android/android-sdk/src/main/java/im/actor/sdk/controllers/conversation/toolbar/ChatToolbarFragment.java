@@ -4,7 +4,9 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -99,6 +101,13 @@ public class ChatToolbarFragment extends BaseFragment {
         actionBar.setDisplayShowHomeEnabled(false);
         actionBar.setDisplayShowCustomEnabled(true);
 
+        // Coloring Toolbar
+        if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
+            actionBar.setBackgroundDrawable(new ColorDrawable(ActorSDK.sharedActor().style.getAccentColor()));
+        } else {
+            actionBar.setBackgroundDrawable(new ColorDrawable(ActorSDK.sharedActor().style.getToolBarColor()));
+        }
+
         // Loading Toolbar header views
         ActorStyle style = ActorSDK.sharedActor().style;
         barView = LayoutInflater.from(getActivity()).inflate(R.layout.bar_conversation, null);
@@ -130,7 +139,7 @@ public class ChatToolbarFragment extends BaseFragment {
         barAvatar.init(Screen.dp(32), 18);
 
         barView.findViewById(R.id.titleContainer).setOnClickListener(v -> {
-            if (peer.getPeerType() == PeerType.PRIVATE) {
+            if (peer.getPeerType() == PeerType.PRIVATE || peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
                 ActorSDKLauncher.startProfileActivity(getActivity(), peer.getPeerId());
             } else if (peer.getPeerType() == PeerType.GROUP) {
                 ActorSDK.sharedActor().startGroupInfoActivity(getActivity(), peer.getPeerId());
@@ -147,7 +156,7 @@ public class ChatToolbarFragment extends BaseFragment {
 
         // Performing all required Data Binding here
 
-        if (peer.getPeerType() == PeerType.PRIVATE) {
+        if (peer.getPeerType() == PeerType.PRIVATE || peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
 
             // Loading user
             final UserVM user = users().get(peer.getPeerId());
@@ -161,7 +170,6 @@ public class ChatToolbarFragment extends BaseFragment {
 
             // Binding User name to Toolbar
             bind(barTitle, user.getName());
-
             bind(user.getIsVerified(), (val, valueModel) -> {
                 barTitle.setCompoundDrawablesWithIntrinsicBounds(null, null,
                         val ? new TintDrawable(
@@ -175,7 +183,11 @@ public class ChatToolbarFragment extends BaseFragment {
             bind(barSubtitle, user);
 
             // Binding User typing to Toolbar
-            bindPrivateTyping(barTyping, barTypingContainer, barSubtitle, messenger().getTyping(user.getId()));
+            if (peer.getPeerType() != PeerType.PRIVATE_ENCRYPTED) {
+                bindPrivateTyping(barTyping, barTypingContainer, barSubtitle, messenger().getTyping(user.getId()));
+            } else {
+                // TODO: Implement
+            }
 
             // Refresh menu on contact state change
             bind(user.isContact(), (val, valueModel) -> {
@@ -207,7 +219,9 @@ public class ChatToolbarFragment extends BaseFragment {
         }
 
         // Show/Hide Avatar
-        if (!style.isShowAvatarInTitle() || (peer.getPeerType() == PeerType.PRIVATE && !style.isShowAvatarPrivateInTitle())) {
+        if (!style.isShowAvatarInTitle() ||
+                ((peer.getPeerType() == PeerType.PRIVATE || peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED)
+                        && !style.isShowAvatarPrivateInTitle())) {
             barAvatar.setVisibility(View.GONE);
         }
 
@@ -358,7 +372,7 @@ public class ChatToolbarFragment extends BaseFragment {
 
     private void startCall(boolean video) {
         Command<Long> cmd;
-        if (peer.getPeerType() == PeerType.PRIVATE) {
+        if (peer.getPeerType() == PeerType.PRIVATE || peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
             cmd = video ? messenger().doVideoCall(peer.getPeerId()) : messenger().doCall(peer.getPeerId());
         } else {
             cmd = messenger().doGroupCall(peer.getPeerId());

@@ -16,6 +16,7 @@ import im.actor.core.entity.EntityConverter;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.MessageState;
 import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerType;
 import im.actor.core.entity.Reaction;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.modules.api.ApiSupportConfiguration;
@@ -52,10 +53,15 @@ public class ConversationHistoryActor extends ModuleActor {
     @Override
     public void preStart() {
         super.preStart();
-        historyMaxDate = preferences().getLong(KEY_LOADED_DATE, Long.MAX_VALUE);
-        historyLoaded = preferences().getBool(KEY_LOADED, false);
-        if (!preferences().getBool(KEY_LOADED_INIT, false)) {
-            self().send(new LoadMore());
+        if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
+            historyMaxDate = 0;
+            historyLoaded = true;
+        } else {
+            historyMaxDate = preferences().getLong(KEY_LOADED_DATE, Long.MAX_VALUE);
+            historyLoaded = preferences().getBool(KEY_LOADED, false);
+            if (!preferences().getBool(KEY_LOADED_INIT, false)) {
+                self().send(new LoadMore());
+            }
         }
     }
 

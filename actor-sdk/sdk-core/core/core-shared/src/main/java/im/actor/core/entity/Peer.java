@@ -16,12 +16,7 @@ import im.actor.runtime.bser.BserWriter;
 
 public class Peer extends BserObject {
 
-    public static final BserCreator<Peer> CREATOR = new BserCreator<Peer>() {
-        @Override
-        public Peer createInstance() {
-            return new Peer();
-        }
-    };
+    public static final BserCreator<Peer> CREATOR = Peer::new;
 
     public static Peer fromBytes(byte[] data) throws IOException {
         return Bser.parse(new Peer(), data);
@@ -37,6 +32,8 @@ public class Peer extends BserObject {
                 return new Peer(PeerType.PRIVATE, id);
             case 1:
                 return new Peer(PeerType.GROUP, id);
+            case 2:
+                return new Peer(PeerType.PRIVATE_ENCRYPTED, id);
         }
     }
 
@@ -46,6 +43,10 @@ public class Peer extends BserObject {
 
     public static Peer group(int gid) {
         return new Peer(PeerType.GROUP, gid);
+    }
+
+    public static Peer secret(int uid) {
+        return new Peer(PeerType.PRIVATE_ENCRYPTED, uid);
     }
 
     @Property("readonly, nonatomic")
@@ -71,6 +72,9 @@ public class Peer extends BserObject {
                 break;
             case GROUP:
                 type = 1;
+                break;
+            case PRIVATE_ENCRYPTED:
+                type = 2;
                 break;
         }
         return ((long) peerId & 0xFFFFFFFFL) + (((long) type & 0xFFFFFFFFL) << 32);
