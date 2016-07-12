@@ -114,6 +114,33 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/newEncryptedMessage"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/selector"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/newEncryptedMessageIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="4dp" />
+
+                <TextView
+                    android:id="@+id/newEncryptedMessageText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:singleLine="true"
+                    android:text="@string/profile_compose_encrypted"
+                    android:textColor="@color/action" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/voiceCall"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"

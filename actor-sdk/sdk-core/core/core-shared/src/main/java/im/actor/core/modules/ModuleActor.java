@@ -73,7 +73,8 @@ public class ModuleActor extends AskcableActor implements BusSubscriber {
             }
             return new ApiOutPeer(ApiPeerType.GROUP, group.getGroupId(), group.getAccessHash());
         } else {
-            throw new RuntimeException("Unknown peer: " + peer);
+            //throw new RuntimeException("Unknown peer: " + peer);
+            return null;
         }
     }
 

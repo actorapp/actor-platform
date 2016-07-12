@@ -17,6 +17,7 @@ import java.io.IOException;
 import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerType;
 import im.actor.core.viewmodel.ConversationVM;
 import im.actor.runtime.mvvm.Value;
 import im.actor.runtime.mvvm.ValueChangedListener;
@@ -275,13 +276,17 @@ public abstract class MessagesFragment extends DisplayListFragment<Message, Mess
         }
 
         // Bind Progress
-        bind(conversationVM.getIsLoaded(), conversationVM.getIsEmpty(), (isLoaded, valueModel, isEmpty, valueModel2) -> {
-            if (isEmpty && !isLoaded) {
-                showView(progressView);
-            } else {
-                hideView(progressView);
-            }
-        });
+        if (peer.getPeerType() != PeerType.PRIVATE_ENCRYPTED) {
+            bind(conversationVM.getIsLoaded(), conversationVM.getIsEmpty(), (isLoaded, valueModel, isEmpty, valueModel2) -> {
+                if (isEmpty && !isLoaded) {
+                    showView(progressView);
+                } else {
+                    hideView(progressView);
+                }
+            });
+        } else {
+            hideView(progressView);
+        }
     }
 
     @Override

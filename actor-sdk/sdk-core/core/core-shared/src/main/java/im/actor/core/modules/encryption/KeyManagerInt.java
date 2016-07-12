@@ -76,6 +76,16 @@ public class KeyManagerInt extends ActorInterface {
     }
 
     /**
+     * Load own pre key by public key
+     *
+     * @param publicKey public key
+     * @return promise of private key
+     */
+    public Promise<PrivateKey> getOwnPreKey(byte[] publicKey) {
+        return ask(new KeyManagerActor.FetchOwnPreKeyByPublic(publicKey));
+    }
+
+    /**
      * Loading random user's pre key from key group
      *
      * @param uid        user's id

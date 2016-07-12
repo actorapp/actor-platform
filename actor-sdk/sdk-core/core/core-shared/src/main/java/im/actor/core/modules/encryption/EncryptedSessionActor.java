@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import im.actor.core.entity.encryption.PeerSession;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.encryption.entity.PrivateKey;
 import im.actor.core.modules.encryption.entity.PublicKey;
 import im.actor.core.modules.encryption.session.EncryptedSessionChain;
 import im.actor.core.modules.ModuleActor;
@@ -21,7 +22,7 @@ import im.actor.runtime.crypto.primitives.util.ByteStrings;
 import static im.actor.runtime.promise.Promise.success;
 
 /**
- * Axolotl Ratchet encryption session
+ * Double Ratchet encryption session
  * Session is identified by:
  * 1) Destination User's Id
  * 2) Own Key Group Id
@@ -115,25 +116,8 @@ public class EncryptedSessionActor extends ModuleActor {
         Log.d(TAG, "Receiver Ephemeral " + Crypto.keyHash(receiverEphemeralKey));
 
         return pickDecryptChain(senderEphemeralKey, receiverEphemeralKey)
-                .map(new Function<EncryptedSessionChain, DecryptedPackage>() {
-                    @Override
-                    public DecryptedPackage apply(EncryptedSessionChain encryptedSessionChain) {
-                        return decrypt(encryptedSessionChain, data);
-                    }
-                })
-                .then(new Consumer<DecryptedPackage>() {
-                    @Override
-                    public void apply(DecryptedPackage decryptedPackage) {
-                        Log.d(TAG, "onDecrypted");
-                        latestTheirEphemeralKey = senderEphemeralKey;
-                    }
-                })
-                .failure(new Consumer<Exception>() {
-                    @Override
-                    public void apply(Exception e) {
-                        Log.d(TAG, "onError");
-                    }
-                });
+                .map(encryptedSessionChain -> decrypt(encryptedSessionChain, data))
+                .then(decryptedPackage -> latestTheirEphemeralKey = senderEphemeralKey);
     }
 
     private EncryptedSessionChain pickEncryptChain(byte[] ephemeralKey) {
@@ -170,6 +154,7 @@ public class EncryptedSessionActor extends ModuleActor {
     }
 
     private Promise<EncryptedSessionChain> pickDecryptChain(final byte[] theirEphemeralKey, final byte[] ephemeralKey) {
+
         EncryptedSessionChain pickedChain = null;
         for (EncryptedSessionChain c : decryptionChains) {
             if (ByteStrings.isEquals(Curve25519.keyGenPublic(c.getOwnPrivateKey()), ephemeralKey)) {
@@ -177,30 +162,21 @@ public class EncryptedSessionActor extends ModuleActor {
                 break;
             }
         }
-        return success(pickedChain)
-                .flatMap(new Function<EncryptedSessionChain, Promise<EncryptedSessionChain>>() {
-                    @Override
-                    public Promise<EncryptedSessionChain> apply(EncryptedSessionChain src) {
-                        if (src != null) {
-                            return success(src);
-                        }
+        if (pickedChain != null) {
+            return Promise.success(pickedChain);
+        }
 
-                        // TODO: Implement!
-                        return null;
-//                        return ask(context().getEncryption().getKeyManager(), new FetchOwnPreKeyByPublic(ephemeralKey))
-//                                .map(new Function<PrivateKey, EncryptedSessionChain>() {
-//                                    @Override
-//                                    public EncryptedSessionChain apply(PrivateKey src) {
-//                                        EncryptedSessionChain chain = new EncryptedSessionChain(session, src.getKey(), theirEphemeralKey);
-//                                        decryptionChains.add(0, chain);
-//                                        if (decryptionChains.size() > MAX_DECRYPT_CHAINS) {
-//                                            decryptionChains.remove(MAX_DECRYPT_CHAINS)
-//                                                    .safeErase();
-//                                        }
-//                                        return chain;
-//                                    }
-//                                });
+
+        return context().getEncryption().getKeyManager().getOwnPreKey(ephemeralKey)
+                .map(src1 -> {
+                    EncryptedSessionChain chain = new EncryptedSessionChain(session,
+                            src1.getKey(), theirEphemeralKey);
+                    decryptionChains.add(0, chain);
+                    if (decryptionChains.size() > MAX_DECRYPT_CHAINS) {
+                        decryptionChains.remove(MAX_DECRYPT_CHAINS)
+                                .safeErase();
                     }
+                    return chain;
                 });
     }
 

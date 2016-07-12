@@ -16,8 +16,8 @@ import static im.actor.runtime.actors.ActorSystem.system;
 
 public class EncryptionModule extends AbsModule {
 
-    private KeyManagerInt keyManagerInt;
-    private SessionManagerInt sessionManagerInt;
+    private KeyManagerInt keyManager;
+    private SessionManagerInt sessionManager;
 
     private ActorRef messageEncryptor;
     private final HashMap<Integer, ActorRef> encryptedStates = new HashMap<>();
@@ -28,24 +28,20 @@ public class EncryptionModule extends AbsModule {
 
     public void run() {
 
-        keyManagerInt = new KeyManagerInt(context());
+        keyManager = new KeyManagerInt(context());
 
-        // Session Manager
-        ActorRef sessionManager = system().actorOf("encryption/sessions",
-                () -> new SessionManagerActor(context()));
-        sessionManagerInt = new SessionManagerInt(sessionManager);
-
+        sessionManager = new SessionManagerInt(context());
 
         messageEncryptor = system().actorOf("encryption/messaging",
                 () -> new EncryptedMsgActor(context()));
     }
 
-    public SessionManagerInt getSessionManager() {
-        return sessionManagerInt;
+    public KeyManagerInt getKeyManager() {
+        return keyManager;
     }
 
-    public KeyManagerInt getKeyManager() {
-        return keyManagerInt;
+    public SessionManagerInt getSessionManager() {
+        return sessionManager;
     }
 
 

@@ -12,31 +12,17 @@ import im.actor.runtime.function.Predicate;
 public class PeerSession extends BserObject {
 
     public static Predicate<PeerSession> BY_THEIR_GROUP(final int theirKeyGroupId) {
-        return new Predicate<PeerSession>() {
-            @Override
-            public boolean apply(PeerSession session) {
-                return session.getTheirKeyGroupId() == theirKeyGroupId;
-            }
-        };
+        return session -> session.getTheirKeyGroupId() == theirKeyGroupId;
     }
 
     public static Predicate<PeerSession> BY_IDS(final int theirKeyGroupId, final long ownPreKeyId, final long theirPreKeyId) {
-        return new Predicate<PeerSession>() {
-            @Override
-            public boolean apply(PeerSession session) {
-                return session.getTheirKeyGroupId() == theirKeyGroupId &&
-                        session.getOwnPreKeyId() == ownPreKeyId &&
-                        session.getTheirPreKeyId() == theirPreKeyId;
-            }
-        };
+        return session -> session.getTheirKeyGroupId() == theirKeyGroupId &&
+                session.getOwnPreKeyId() == ownPreKeyId &&
+                session.getTheirPreKeyId() == theirPreKeyId;
     }
 
-    public static final Comparator<PeerSession> COMPARATOR = new Comparator<PeerSession>() {
-        @Override
-        public int compare(PeerSession lhs, PeerSession rhs) {
-            return ByteStrings.compare(lhs.getMasterKey(), rhs.getMasterKey());
-        }
-    };
+    public static final Comparator<PeerSession> COMPARATOR = (lhs, rhs) ->
+            ByteStrings.compare(lhs.getMasterKey(), rhs.getMasterKey());
 
     private long sid;
     private int uid;
