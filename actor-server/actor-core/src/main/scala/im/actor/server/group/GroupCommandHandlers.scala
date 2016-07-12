@@ -433,7 +433,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
           // old group api updates //
           ///////////////////////////
 
-          obsoleteSeqState ← seqUpdExt.broadcastClientUpdate(
+          _ ← seqUpdExt.broadcastClientUpdate(
             userId = cmd.userId,
             authId = cmd.authId,
             bcastUserIds = state.memberIds + cmd.userId, // push this to other user's devices too. actually cmd.userId is still in state.memberIds
