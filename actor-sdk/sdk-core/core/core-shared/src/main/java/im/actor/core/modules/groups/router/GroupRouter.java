@@ -3,39 +3,36 @@ package im.actor.core.modules.groups.router;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import im.actor.core.api.ApiAvatar;
 import im.actor.core.api.ApiGroup;
 import im.actor.core.api.ApiGroupOutPeer;
+import im.actor.core.api.ApiMapValue;
 import im.actor.core.api.ApiMember;
-import im.actor.core.api.ApiUser;
-import im.actor.core.api.ApiUserOutPeer;
-import im.actor.core.api.updates.UpdateGroupAboutChanged;
+import im.actor.core.api.rpc.RequestLoadFullGroups;
 import im.actor.core.api.updates.UpdateGroupAboutChangedObsolete;
 import im.actor.core.api.updates.UpdateGroupAvatarChanged;
-import im.actor.core.api.updates.UpdateGroupAvatarChangedObsolete;
-import im.actor.core.api.updates.UpdateGroupInvite;
+import im.actor.core.api.updates.UpdateGroupCanSendMessagesChanged;
+import im.actor.core.api.updates.UpdateGroupExtChanged;
 import im.actor.core.api.updates.UpdateGroupInviteObsolete;
+import im.actor.core.api.updates.UpdateGroupMemberAdminChanged;
+import im.actor.core.api.updates.UpdateGroupMemberChanged;
+import im.actor.core.api.updates.UpdateGroupMemberDiff;
+import im.actor.core.api.updates.UpdateGroupMembersBecameAsync;
+import im.actor.core.api.updates.UpdateGroupMembersCountChanged;
 import im.actor.core.api.updates.UpdateGroupMembersUpdate;
 import im.actor.core.api.updates.UpdateGroupMembersUpdateObsolete;
 import im.actor.core.api.updates.UpdateGroupTitleChanged;
-import im.actor.core.api.updates.UpdateGroupTitleChangedObsolete;
-import im.actor.core.api.updates.UpdateGroupTopicChanged;
 import im.actor.core.api.updates.UpdateGroupTopicChangedObsolete;
-import im.actor.core.api.updates.UpdateGroupUserInvited;
 import im.actor.core.api.updates.UpdateGroupUserInvitedObsolete;
-import im.actor.core.api.updates.UpdateGroupUserKick;
 import im.actor.core.api.updates.UpdateGroupUserKickObsolete;
-import im.actor.core.api.updates.UpdateGroupUserLeave;
 import im.actor.core.api.updates.UpdateGroupUserLeaveObsolete;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.MessageState;
-import im.actor.core.entity.User;
-import im.actor.core.entity.content.ServiceGroupAvatarChanged;
 import im.actor.core.entity.content.ServiceGroupCreated;
-import im.actor.core.entity.content.ServiceGroupTitleChanged;
 import im.actor.core.entity.content.ServiceGroupUserInvited;
 import im.actor.core.entity.content.ServiceGroupUserKicked;
 import im.actor.core.entity.content.ServiceGroupUserLeave;
@@ -44,6 +41,7 @@ import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.groups.router.entity.RouterApplyGroups;
 import im.actor.core.modules.groups.router.entity.RouterFetchMissingGroups;
 import im.actor.core.modules.groups.router.entity.RouterGroupUpdate;
+import im.actor.core.modules.groups.router.entity.RouterLoadFullGroup;
 import im.actor.core.modules.messaging.router.RouterInt;
 import im.actor.core.network.parser.Update;
 import im.actor.runtime.actors.messages.Void;
@@ -58,15 +56,69 @@ public class GroupRouter extends ModuleActor {
     // j2objc workaround
     private static final Void DUMB = null;
 
+    private final HashSet<Integer> requestedFullGroups = new HashSet<>();
     private boolean isFreezed = false;
 
     public GroupRouter(ModuleContext context) {
         super(context);
     }
 
+    //
+    // Updates Main
+    //
+
+    @Verified
+    public Promise<Void> onAvatarChanged(int groupId, @Nullable ApiAvatar avatar) {
+        return forGroup(groupId, group -> {
+            Group upd = group.editAvatar(avatar);
+            groups().addOrUpdateItem(upd);
+            return onGroupDescChanged(upd);
+        });
+    }
+
+    @Verified
+    public Promise<Void> onTitleChanged(int groupId, String title) {
+        return forGroup(groupId, group -> {
+            Group upd = group.editTitle(title);
+            groups().addOrUpdateItem(upd);
+            return onGroupDescChanged(upd);
+        });
+    }
+
+    @Verified
+    public Promise<Void> onCanWriteMessagesChanged(int groupId, boolean canWrite) {
+        return forGroup(groupId, group -> {
+            Group upd = group.editCanWrite(canWrite);
+            groups().addOrUpdateItem(upd);
+            return Promise.success(null);
+        });
+    }
+
+    @Verified
+    public Promise<Void> onIsMemberChanged(int groupId, boolean isMember) {
+        return forGroup(groupId, group -> {
+            Group upd = group.editIsMember(isMember);
+            groups().addOrUpdateItem(upd);
+            return Promise.success(null);
+        });
+    }
+
+    @Verified
+    public Promise<Void> onExtChanged(int groupId, ApiMapValue ext) {
+        return forGroup(groupId, group -> {
+            Group upd = group.editExt(ext);
+            groups().addOrUpdateItem(upd);
+            return Promise.success(null);
+        });
+    }
 
     //
-    // Updates
+    // Members Updates
+    //
+
+
+    //
+    // Updates Ext
     //
 
     @Verified
@@ -164,31 +216,6 @@ public class GroupRouter extends ModuleActor {
     }
 
     @Verified
-    public Promise<Void> onTitleChanged(int groupId, long rid, int uid, String title, long date,
-                                        boolean isSilent) {
-        return forGroup(groupId, group -> {
-
-            // Change group title
-            Group upd = group.editTitle(title);
-
-            // Update group
-            groups().addOrUpdateItem(upd);
-
-            // Notify about group change
-            Promise<Void> src = onGroupDescChanged(upd);
-
-            // Create message if needed
-            if (!isSilent) {
-                Message message = new Message(rid, date, date, uid,
-                        uid == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
-                        ServiceGroupTitleChanged.create(title));
-                src = src.chain(v -> getRouter().onNewMessage(group.peer(), message));
-            }
-            return Promise.success(null);
-        });
-    }
-
-    @Verified
     public Promise<Void> onTopicChanged(int groupId, String topic) {
         return forGroup(groupId, group -> {
 
@@ -213,32 +240,6 @@ public class GroupRouter extends ModuleActor {
         });
     }
 
-    @Verified
-    public Promise<Void> onAvatarChanged(int groupId, long rid, int uid, @Nullable ApiAvatar avatar, long date,
-                                         boolean isSilent) {
-
-        return forGroup(groupId, group -> {
-
-            // Change group avatar
-            Group upd = group.editAvatar(avatar);
-
-            // Update group
-            groups().addOrUpdateItem(upd);
-
-            // Notify about group change
-            Promise<Void> src = onGroupDescChanged(upd);
-
-            // Create message if needed
-            if (!isSilent) {
-                Message message = new Message(rid, date, date, uid,
-                        uid == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
-                        ServiceGroupAvatarChanged.create(avatar));
-                src.chain(v -> getRouter().onNewMessage(group.peer(), message));
-            }
-            return src;
-        });
-    }
-
 
     @Verified
     public Promise<Void> onMembersUpdated(int groupId, List<ApiMember> members) {
@@ -251,7 +252,7 @@ public class GroupRouter extends ModuleActor {
     }
 
     private Promise<Void> forGroup(int groupId, Function<Group, Promise<Void>> func) {
-        isFreezed = true;
+        freeze();
         return groups().getValueAsync(groupId)
                 .fallback(e -> null)
                 .flatMap(g -> {
@@ -260,9 +261,8 @@ public class GroupRouter extends ModuleActor {
                     }
                     return Promise.success(null);
                 })
-                .then(v -> {
-                    isFreezed = false;
-                    unstashAll();
+                .after((v, e) -> {
+                    unfreeze();
                 });
     }
 
@@ -273,21 +273,20 @@ public class GroupRouter extends ModuleActor {
 
     @Verified
     private Promise<List<ApiGroupOutPeer>> fetchMissingGroups(List<ApiGroupOutPeer> groups) {
-        isFreezed = true;
+        freeze();
         return PromisesArray.of(groups)
                 .map((Function<ApiGroupOutPeer, Promise<ApiGroupOutPeer>>) u -> groups().containsAsync(u.getGroupId())
                         .map(v -> v ? null : u))
                 .filterNull()
                 .zip()
                 .after((r, e) -> {
-                    isFreezed = false;
-                    unstashAll();
+                    unfreeze();
                 });
     }
 
     @Verified
     private Promise<Void> applyGroups(List<ApiGroup> groups) {
-        isFreezed = true;
+        freeze();
         return PromisesArray.of(groups)
                 .map((Function<ApiGroup, Promise<Tuple2<ApiGroup, Boolean>>>) u -> groups().containsAsync(u.getId())
                         .map(v -> new Tuple2<>(u, v)))
@@ -303,10 +302,29 @@ public class GroupRouter extends ModuleActor {
                     }
                 })
                 .map(x -> (Void) null)
-                .after((r, e) -> {
-                    isFreezed = false;
-                    unstashAll();
-                });
+                .after((r, e) -> unfreeze());
+    }
+
+    private void onRequestLoadFullGroup(int gid) {
+        if (requestedFullGroups.contains(gid)) {
+            return;
+        }
+        requestedFullGroups.add(gid);
+
+        freeze();
+        groups().getValueAsync(gid)
+                .flatMap(group -> {
+                    if (!group.isHaveExtension()) {
+                        ArrayList<ApiGroupOutPeer> groups = new ArrayList<>();
+                        groups.add(new ApiGroupOutPeer(gid, group.getAccessHash()));
+                        return api(new RequestLoadFullGroups(groups))
+                                .map(r -> group.updateExt(r.getGroups().get(0)));
+                    } else {
+                        return Promise.failure(new RuntimeException("Already loaded"));
+                    }
+                })
+                .then(r -> groups().addOrUpdateItem(r))
+                .after((r, e) -> unfreeze());
     }
 
 
@@ -323,28 +341,71 @@ public class GroupRouter extends ModuleActor {
         return context().getMessagesModule().getRouter();
     }
 
+    private void freeze() {
+        isFreezed = true;
+    }
+
+    private void unfreeze() {
+        isFreezed = false;
+        unstashAll();
+    }
 
     //
     // Messages
     //
 
     private Promise<Void> onUpdate(Update update) {
-        if (update instanceof UpdateGroupTitleChangedObsolete) {
-            UpdateGroupTitleChangedObsolete titleChanged = (UpdateGroupTitleChangedObsolete) update;
-            return onTitleChanged(titleChanged.getGroupId(), titleChanged.getRid(),
-                    titleChanged.getUid(), titleChanged.getTitle(), titleChanged.getDate(),
-                    false);
-        } else if (update instanceof UpdateGroupTopicChangedObsolete) {
+
+        //
+        // Main
+        //
+        if (update instanceof UpdateGroupTitleChanged) {
+            UpdateGroupTitleChanged titleChanged = (UpdateGroupTitleChanged) update;
+            return onTitleChanged(titleChanged.getGroupId(), titleChanged.getTitle());
+        } else if (update instanceof UpdateGroupAvatarChanged) {
+            UpdateGroupAvatarChanged avatarChanged = (UpdateGroupAvatarChanged) update;
+            return onAvatarChanged(avatarChanged.getGroupId(), avatarChanged.getAvatar());
+        } else if (update instanceof UpdateGroupCanSendMessagesChanged) {
+            UpdateGroupCanSendMessagesChanged messagesChanged = (UpdateGroupCanSendMessagesChanged) update;
+            return onCanWriteMessagesChanged(messagesChanged.getGroupId(), messagesChanged.canSendMessages());
+        } else if (update instanceof UpdateGroupMemberChanged) {
+            UpdateGroupMemberChanged memberChanged = (UpdateGroupMemberChanged) update;
+            return onIsMemberChanged(memberChanged.getGroupId(), memberChanged.isMember());
+        } else if (update instanceof UpdateGroupExtChanged) {
+            UpdateGroupExtChanged extChanged = (UpdateGroupExtChanged) update;
+            return onExtChanged(extChanged.getGroupId(), extChanged.getExt());
+        }
+
+        //
+        // Members
+        //
+        else if (update instanceof UpdateGroupMembersUpdate) {
+            UpdateGroupMembersUpdate membersUpdate = (UpdateGroupMembersUpdate) update;
+
+        } else if (update instanceof UpdateGroupMemberAdminChanged) {
+            UpdateGroupMemberAdminChanged adminChanged = (UpdateGroupMemberAdminChanged) update;
+
+        } else if (update instanceof UpdateGroupMemberDiff) {
+            UpdateGroupMemberDiff memberDiff = (UpdateGroupMemberDiff) update;
+
+        } else if (update instanceof UpdateGroupMembersBecameAsync) {
+            UpdateGroupMembersBecameAsync becameAsync = (UpdateGroupMembersBecameAsync) update;
+
+        } else if (update instanceof UpdateGroupMembersCountChanged) {
+            UpdateGroupMembersCountChanged membersCountChanged = (UpdateGroupMembersCountChanged) update;
+
+        }
+
+        //
+        // Ext
+        //
+
+        else if (update instanceof UpdateGroupTopicChangedObsolete) {
             UpdateGroupTopicChangedObsolete topicChanged = (UpdateGroupTopicChangedObsolete) update;
             return onTopicChanged(topicChanged.getGroupId(), topicChanged.getTopic());
         } else if (update instanceof UpdateGroupAboutChangedObsolete) {
             UpdateGroupAboutChangedObsolete aboutChanged = (UpdateGroupAboutChangedObsolete) update;
             return onAboutChanged(aboutChanged.getGroupId(), aboutChanged.getAbout());
-        } else if (update instanceof UpdateGroupAvatarChangedObsolete) {
-            UpdateGroupAvatarChangedObsolete avatarChanged = (UpdateGroupAvatarChangedObsolete) update;
-            return onAvatarChanged(avatarChanged.getGroupId(), avatarChanged.getRid(),
-                    avatarChanged.getUid(), avatarChanged.getAvatar(),
-                    avatarChanged.getDate(), false);
         } else if (update instanceof UpdateGroupInviteObsolete) {
             UpdateGroupInviteObsolete groupInvite = (UpdateGroupInviteObsolete) update;
             return onGroupInvite(groupInvite.getGroupId(),
@@ -393,6 +454,20 @@ public class GroupRouter extends ModuleActor {
             return fetchMissingGroups(((RouterFetchMissingGroups) message).getGroups());
         } else {
             return super.onAsk(message);
+        }
+    }
+
+    @Override
+    public void onReceive(Object message) {
+
+        if (message instanceof RouterLoadFullGroup) {
+            if (isFreezed) {
+                stash();
+                return;
+            }
+            onRequestLoadFullGroup(((RouterLoadFullGroup) message).getGid());
+        } else {
+            super.onReceive(message);
         }
     }
 }

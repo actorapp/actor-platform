@@ -51,7 +51,12 @@ import im.actor.core.api.updates.UpdateGroupUserLeave;
 import im.actor.core.api.updates.UpdateGroupUserLeaveObsolete;
 import im.actor.core.api.updates.UpdateMessage;
 import im.actor.core.entity.Group;
+import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerType;
 import im.actor.core.entity.User;
+import im.actor.core.events.PeerChatOpened;
+import im.actor.core.events.PeerInfoOpened;
+import im.actor.core.events.UserVisible;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.api.ApiSupportConfiguration;
@@ -63,6 +68,8 @@ import im.actor.core.viewmodel.GroupVM;
 import im.actor.runtime.Storage;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.eventbus.BusSubscriber;
+import im.actor.runtime.eventbus.Event;
 import im.actor.runtime.function.Function;
 import im.actor.runtime.mvvm.MVVMCollection;
 import im.actor.runtime.promise.Promise;
@@ -71,7 +78,7 @@ import im.actor.runtime.storage.KeyValueEngine;
 
 import static im.actor.runtime.actors.ActorSystem.system;
 
-public class GroupsModule extends AbsModule {
+public class GroupsModule extends AbsModule implements BusSubscriber {
 
     private final KeyValueEngine<Group> groups;
     private final MVVMCollection<Group, GroupVM> collection;
@@ -91,6 +98,10 @@ public class GroupsModule extends AbsModule {
         avatarChangeActor = system().actorOf("actor/avatar/group", () -> new GroupAvatarChangeActor(context));
     }
 
+    public void run() {
+        context().getEvents().subscribe(this, PeerChatOpened.EVENT);
+        context().getEvents().subscribe(this, PeerInfoOpened.EVENT);
+    }
 
     //
     // Storage
@@ -232,11 +243,7 @@ public class GroupsModule extends AbsModule {
                 .flatMap(responseSeqDate -> updates().applyUpdate(
                         responseSeqDate.getSeq(),
                         responseSeqDate.getState(),
-                        new UpdateGroupTitleChangedObsolete(
-                                gid, rid,
-                                myUid(), name,
-                                responseSeqDate.getDate()))
-                );
+                        new UpdateGroupTitleChanged(gid, name)));
     }
 
     public Promise<Void> editTheme(final int gid, final String theme) {
@@ -354,5 +361,20 @@ public class GroupsModule extends AbsModule {
 
     public void resetModule() {
         groups.clear();
+    }
+
+    @Override
+    public void onBusEvent(Event event) {
+        if (event instanceof PeerChatOpened) {
+            Peer peer = ((PeerChatOpened) event).getPeer();
+            if (peer.getPeerType() == PeerType.GROUP) {
+                getRouter().onFullGroupNeeded(peer.getPeerId());
+            }
+        } else if (event instanceof PeerInfoOpened) {
+            Peer peer = ((PeerInfoOpened) event).getPeer();
+            if (peer.getPeerType() == PeerType.GROUP) {
+                getRouter().onFullGroupNeeded(peer.getPeerId());
+            }
+        }
     }
 }

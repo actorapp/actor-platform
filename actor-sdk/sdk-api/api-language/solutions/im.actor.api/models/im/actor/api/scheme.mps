@@ -6969,7 +6969,7 @@
         </node>
         <node concept="NX1gA" id="1kct6f0ur5B" role="NXodf">
           <property role="1GSvIU" value="full" />
-          <property role="NX6R2" value="Can user send messages. Default is equals isMember for Group and false for channels." />
+          <property role="NX6R2" value="Can user send messages. Default is equals isMember for Group and false for others." />
           <ref role="NX6Kv" node="1kct6f0ucAy" resolve="canSendMessage" />
         </node>
         <node concept="NX1gA" id="5qm50Y0edzr" role="NXodf">

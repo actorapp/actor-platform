@@ -48,6 +48,9 @@ public class GroupVM extends BaseValueModel<Group> {
     @NotNull
     @Property("nonatomic, readonly")
     private IntValueModel membersCount;
+    @NotNull
+    @Property("nonatomic, readonly")
+    private BooleanValueModel isCanWriteMessage;
 
     @NotNull
     @Property("nonatomic, readonly")
@@ -82,6 +85,7 @@ public class GroupVM extends BaseValueModel<Group> {
         this.avatar = new AvatarValueModel("group." + groupId + ".avatar", rawObj.getAvatar());
         this.isMember = new BooleanValueModel("group." + groupId + ".isMember", rawObj.isMember());
         this.membersCount = new IntValueModel("group." + groupId + ".membersCount", rawObj.getMembersCount());
+        this.isCanWriteMessage = new BooleanValueModel("group." + groupId + ".can_write", rawObj.isCanWrite());
 
         this.members = new ValueModel<>("group." + groupId + ".members", new HashSet<>());
         this.presence = new ValueModel<>("group." + groupId + ".presence", 0);
@@ -143,7 +147,16 @@ public class GroupVM extends BaseValueModel<Group> {
         return membersCount;
     }
 
-
+    /**
+     * Can current user write message to a group
+     *
+     * @return can write message model
+     */
+    @NotNull
+    @ObjectiveCName("isCanWriteMessageModel")
+    public BooleanValueModel getIsCanWriteMessage() {
+        return isCanWriteMessage;
+    }
 
     /**
      * Get Group creator user id

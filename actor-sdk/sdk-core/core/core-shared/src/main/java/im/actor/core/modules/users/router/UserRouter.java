@@ -386,8 +386,7 @@ public class UserRouter extends ModuleActor {
     private Promise<List<ApiUserOutPeer>> fetchMissingUsers(List<ApiUserOutPeer> users) {
         freeze();
         return PromisesArray.of(users)
-                .map((Function<ApiUserOutPeer, Promise<ApiUserOutPeer>>) u -> users().containsAsync(u.getUid())
-                        .map(v -> v ? null : u))
+                .map(u -> users().containsAsync(u.getUid()).map(v -> v ? null : u))
                 .filterNull()
                 .zip()
                 .after((r, e) -> unfreeze());
@@ -398,8 +397,7 @@ public class UserRouter extends ModuleActor {
     private Promise<Void> applyUsers(List<ApiUser> users) {
         freeze();
         return PromisesArray.of(users)
-                .map((Function<ApiUser, Promise<Tuple2<ApiUser, Boolean>>>) u -> users().containsAsync(u.getId())
-                        .map(v -> new Tuple2<>(u, v)))
+                .map(u -> users().containsAsync(u.getId()).map(v -> new Tuple2<>(u, v)))
                 .filter(t -> !t.getT2())
                 .zip()
                 .then(x -> {

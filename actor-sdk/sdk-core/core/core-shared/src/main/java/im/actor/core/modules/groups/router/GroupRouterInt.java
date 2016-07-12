@@ -8,6 +8,7 @@ import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.groups.router.entity.RouterApplyGroups;
 import im.actor.core.modules.groups.router.entity.RouterFetchMissingGroups;
 import im.actor.core.modules.groups.router.entity.RouterGroupUpdate;
+import im.actor.core.modules.groups.router.entity.RouterLoadFullGroup;
 import im.actor.core.network.parser.Update;
 import im.actor.runtime.actors.ActorInterface;
 import im.actor.runtime.actors.messages.Void;
@@ -31,5 +32,9 @@ public class GroupRouterInt extends ActorInterface {
 
     public Promise<Void> onUpdate(Update update) {
         return ask(new RouterGroupUpdate(update));
+    }
+
+    public void onFullGroupNeeded(int gid) {
+        send(new RouterLoadFullGroup(gid));
     }
 }

@@ -136,13 +136,13 @@ public class GroupInfoFragment extends BaseFragment {
             createdBy.setText(R.string.group_created_by_you);
             isAdmin = true;
         } else {
-            UserVM admin = users().get(groupInfo.getCreatorId());
-            bind(admin.getName(), new ValueChangedListener<String>() {
-                @Override
-                public void onChanged(String val, Value<String> Value) {
-                    createdBy.setText(getString(R.string.group_created_by).replace("{0}", val));
-                }
-            });
+//            UserVM admin = users().get(groupInfo.getCreatorId());
+//            bind(admin.getName(), new ValueChangedListener<String>() {
+//                @Override
+//                public void onChanged(String val, Value<String> Value) {
+//                    createdBy.setText(getString(R.string.group_created_by).replace("{0}", val));
+//                }
+//            });
         }
 
         //Description

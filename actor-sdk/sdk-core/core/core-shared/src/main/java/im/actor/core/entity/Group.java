@@ -14,8 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.core.api.ApiAvatar;
+import im.actor.core.api.ApiFullUser;
 import im.actor.core.api.ApiGroup;
 import im.actor.core.api.ApiGroupFull;
+import im.actor.core.api.ApiMapValue;
 import im.actor.core.api.ApiMember;
 import im.actor.runtime.bser.BserCreator;
 import im.actor.runtime.bser.BserValues;
@@ -49,6 +51,12 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
     private int membersCount;
     @Property("readonly, nonatomic")
     private boolean isMember;
+    @Property("readonly, nonatomic")
+    private boolean canWrite;
+    @NotNull
+    @Property("readonly, nonatomic")
+    private GroupType groupType;
+
     //
     // Ext
     //
@@ -66,6 +74,13 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
     @SuppressWarnings("NullableProblems")
     private List<GroupMember> members;
 
+    @Property("readonly, nonatomic")
+    private boolean haveExtension;
+
+    //
+    // Constructors
+    //
+
     public Group(@NotNull ApiGroup group, @Nullable ApiGroupFull ext) {
         super(RECORD_ID, RECORD_EXT_ID, group, ext);
     }
@@ -78,9 +93,9 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
         super(RECORD_ID, RECORD_EXT_ID);
     }
 
-    public Peer peer() {
-        return new Peer(PeerType.GROUP, groupId);
-    }
+    //
+    // Getters
+    //
 
     public int getGroupId() {
         return groupId;
@@ -112,6 +127,19 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
         return isMember;
     }
 
+    public boolean isCanWrite() {
+        return canWrite;
+    }
+
+    @NotNull
+    public GroupType getGroupType() {
+        return groupType;
+    }
+
+    //
+    // Ext
+    //
+
     @NotNull
     public List<GroupMember> getMembers() {
         return members;
@@ -131,6 +159,17 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
         return creatorId;
     }
 
+    public boolean isHaveExtension() {
+        return haveExtension;
+    }
+
+    public Group updateExt(@Nullable ApiGroupFull ext) {
+        return new Group(getWrapped(), ext);
+    }
+
+    //
+    // Editing Main
+    //
 
     public Group editTitle(String title) {
         ApiGroup w = getWrapped();
@@ -165,6 +204,78 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res, getWrappedExt());
     }
+
+    public Group editIsMember(boolean isMember) {
+        ApiGroup w = getWrapped();
+        ApiGroup res = new ApiGroup(
+                w.getId(),
+                w.getAccessHash(),
+                w.getTitle(),
+                w.getAvatar(),
+                w.getMembersCount(),
+                isMember,
+                w.isHidden(),
+                w.getGroupType(),
+                w.canSendMessage(),
+                w.getExt());
+        res.setUnmappedObjects(w.getUnmappedObjects());
+        return new Group(res, getWrappedExt());
+    }
+
+    public Group editExt(ApiMapValue ext) {
+        ApiGroup w = getWrapped();
+        ApiGroup res = new ApiGroup(
+                w.getId(),
+                w.getAccessHash(),
+                w.getTitle(),
+                w.getAvatar(),
+                w.getMembersCount(),
+                w.isMember(),
+                w.isHidden(),
+                w.getGroupType(),
+                w.canSendMessage(),
+                ext);
+        res.setUnmappedObjects(w.getUnmappedObjects());
+        return new Group(res, getWrappedExt());
+    }
+
+    public Group editCanWrite(boolean canWrite) {
+        ApiGroup w = getWrapped();
+        ApiGroup res = new ApiGroup(
+                w.getId(),
+                w.getAccessHash(),
+                w.getTitle(),
+                w.getAvatar(),
+                w.getMembersCount(),
+                w.isMember(),
+                w.isHidden(),
+                w.getGroupType(),
+                canWrite,
+                w.getExt());
+        res.setUnmappedObjects(w.getUnmappedObjects());
+        return new Group(res, getWrappedExt());
+    }
+
+    public Group editMembersCount(int membersCount) {
+        ApiGroup w = getWrapped();
+        ApiGroup res = new ApiGroup(
+                w.getId(),
+                w.getAccessHash(),
+                w.getTitle(),
+                w.getAvatar(),
+                membersCount,
+                w.isMember(),
+                w.isHidden(),
+                w.getGroupType(),
+                w.canSendMessage(),
+                w.getExt());
+        res.setUnmappedObjects(w.getUnmappedObjects());
+        return new Group(res, getWrappedExt());
+    }
+
+    //
+    // Editing Ext
+    //
 
     public Group editTheme(String theme) {
 //        ApiGroup w = getWrapped();
@@ -333,13 +444,49 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
 
     @Override
     protected void applyWrapped(@NotNull ApiGroup wrapped, @Nullable ApiGroupFull ext) {
+
         this.groupId = wrapped.getId();
         this.accessHash = wrapped.getAccessHash();
         this.title = wrapped.getTitle();
         this.avatar = wrapped.getAvatar() != null ? new Avatar(wrapped.getAvatar()) : null;
         this.isHidden = wrapped.isHidden() != null ? wrapped.isHidden() : false;
         this.membersCount = wrapped.getMembersCount();
-        this.isMember = wrapped.isMember();
+        this.isMember = wrapped.isMember() != null ? wrapped.isMember() : true;
+
+        if (wrapped.getGroupType() == null) {
+            this.groupType = GroupType.GROUP;
+        } else {
+            switch (wrapped.getGroupType()) {
+                case CHANNEL:
+                    this.groupType = GroupType.CHANNEL;
+                    break;
+                case GROUP:
+                    this.groupType = GroupType.GROUP;
+                    break;
+                default:
+                case UNSUPPORTED_VALUE:
+                    this.groupType = GroupType.OTHER;
+                    break;
+            }
+        }
+
+        if (wrapped.canSendMessage() != null) {
+            this.canWrite = wrapped.canSendMessage();
+        } else {
+            // True is default for groups and false otherwise
+            this.canWrite = this.groupType == GroupType.GROUP;
+        }
+
+
+        //
+        // Ext
+        //
+
+        if (ext != null) {
+            haveExtension = true;
+        } else {
+            haveExtension = false;
+        }
 
         // this.creatorId = wrapped.getCreatorUid();
         // this.members = new ArrayList<>();
@@ -351,29 +498,12 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
     }
 
     @Override
-    public void parse(BserValues values) throws IOException {
-        // Is Wrapper Layout
-        if (values.getBool(9, false)) {
-            // Parse wrapper layout
-            super.parse(values);
-        } else {
-            // Convert old layout
-            throw new IOException("Unsupported obsolete format");
-        }
-    }
-
-    @Override
-    public void serialize(BserWriter writer) throws IOException {
-        // Mark as wrapper layout
-        writer.writeBool(9, true);
-        // Serialize wrapper layout
-        super.serialize(writer);
-    }
-
-
-    @Override
     public long getEngineId() {
         return groupId;
+    }
+
+    public Peer peer() {
+        return new Peer(PeerType.GROUP, groupId);
     }
 
     @Override
