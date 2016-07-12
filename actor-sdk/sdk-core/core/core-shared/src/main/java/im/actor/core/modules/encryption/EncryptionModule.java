@@ -3,7 +3,7 @@ package im.actor.core.modules.encryption;
 import java.util.HashMap;
 
 import im.actor.core.api.ApiEncryptedBox;
-import im.actor.core.api.ApiEncryptedMessage;
+import im.actor.core.api.ApiEncryptedContent;
 import im.actor.core.api.ApiMessage;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
@@ -13,7 +13,6 @@ import im.actor.core.modules.encryption.ratchet.EncryptedUser;
 import im.actor.core.modules.encryption.ratchet.EncryptedUserActor;
 import im.actor.core.modules.encryption.ratchet.KeyManager;
 import im.actor.core.modules.encryption.ratchet.SessionManager;
-import im.actor.core.network.mtp.entity.EncryptedPackage;
 import im.actor.runtime.promise.Promise;
 
 import static im.actor.runtime.actors.ActorSystem.system;
@@ -62,11 +61,11 @@ public class EncryptionModule extends AbsModule {
         }
     }
 
-    public Promise<ApiEncryptedBox> encrypt(int uid, ApiMessage message) {
+    public Promise<ApiEncryptedBox> encrypt(int uid, ApiEncryptedContent message) {
         return getEncryption().encrypt(uid, message);
     }
 
-    public Promise<ApiMessage> decrypt(int uid, ApiEncryptedBox encryptedBox) {
+    public Promise<ApiEncryptedContent> decrypt(int uid, ApiEncryptedBox encryptedBox) {
         return getEncryption().decrypt(uid, encryptedBox);
     }
 }

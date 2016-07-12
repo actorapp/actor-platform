@@ -1,5 +1,9 @@
 package im.actor.core.modules.encryption;
 
+import im.actor.core.api.ApiEncryptedContent;
+import im.actor.core.api.ApiEncryptedDeleteContent;
+import im.actor.core.api.ApiEncryptedEditContent;
+import im.actor.core.api.ApiEncryptedMessageContent;
 import im.actor.core.api.updates.UpdateEncryptedPackage;
 import im.actor.core.api.updates.UpdatePublicKeyGroupAdded;
 import im.actor.core.api.updates.UpdatePublicKeyGroupRemoved;
@@ -37,14 +41,34 @@ public class EncryptionProcessor extends AbsModule implements SequenceProcessor 
             return context().getEncryption()
                     .decrypt(encryptedPackage.getSenderId(), encryptedPackage.getEncryptedBox())
                     .flatMap(message -> {
-                        Message msg = new Message(encryptedPackage.getRandomId(),
-                                encryptedPackage.getDate(), encryptedPackage.getDate(),
-                                encryptedPackage.getSenderId(), MessageState.UNKNOWN,
-                                AbsContent.fromMessage(message));
-                        return context().getMessagesModule().getRouter()
-                                .onNewMessage(Peer.secret(encryptedPackage.getSenderId()), msg);
+                        return process(encryptedPackage.getSenderId(), encryptedPackage.getDate(), message);
                     });
         }
         return null;
+    }
+
+    public Promise<Void> process(int senderId, long date, ApiEncryptedContent update) {
+        if (update instanceof ApiEncryptedMessageContent) {
+            ApiEncryptedMessageContent content = (ApiEncryptedMessageContent) update;
+
+            Message msg = new Message(content.getRid(), date, date, senderId,
+                    MessageState.UNKNOWN, AbsContent.fromMessage(content.getMessage()));
+
+            int destId = senderId;
+            if (senderId == myUid()) {
+                destId = content.getReceiverId();
+            }
+
+            return context().getMessagesModule().getRouter()
+                    .onNewMessage(Peer.secret(destId), msg);
+        } else if (update instanceof ApiEncryptedDeleteContent) {
+            // TODO: Implement
+            return Promise.success(null);
+        } else if (update instanceof ApiEncryptedEditContent) {
+            // TODO: Implement
+            return Promise.success(null);
+        } else {
+            return Promise.success(null);
+        }
     }
 }

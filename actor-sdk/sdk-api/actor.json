@@ -5242,36 +5242,6 @@
         {
           "type": "struct",
           "content": {
-            "name": "EncryptedMessage",
-            "doc": [
-              "Encrypted Message",
-              {
-                "type": "reference",
-                "argument": "box",
-                "category": "full",
-                "description": "  Encrypted box"
-              }
-            ],
-            "trait": {
-              "name": "Message",
-              "key": 8
-            },
-            "expandable": "true",
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "EncryptedBox"
-                },
-                "id": 1,
-                "name": "box"
-              }
-            ]
-          }
-        },
-        {
-          "type": "struct",
-          "content": {
             "name": "EmptyMessage",
             "doc": [
               "Empty Message"
@@ -19278,6 +19248,246 @@
                 },
                 "id": 4,
                 "name": "encryptedBox"
+              }
+            ]
+          }
+        },
+        {
+          "type": "comment",
+          "content": "Encrypted Content Container"
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "EncryptedData",
+            "doc": [
+              "Encrypted Content",
+              {
+                "type": "reference",
+                "argument": "version",
+                "category": "full",
+                "description": "  Version of data"
+              },
+              {
+                "type": "reference",
+                "argument": "data",
+                "category": "full",
+                "description": "  Data"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "version"
+              },
+              {
+                "type": "bytes",
+                "id": 2,
+                "name": "data"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "EncryptedGroup",
+            "doc": [
+              "Encrypted Group information",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Random Id"
+              },
+              {
+                "type": "reference",
+                "argument": "title",
+                "category": "full",
+                "description": "  Group Title"
+              },
+              {
+                "type": "reference",
+                "argument": "members",
+                "category": "compact",
+                "description": "  Group Members"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "title"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "int32"
+                },
+                "id": 3,
+                "name": "members"
+              }
+            ]
+          }
+        },
+        {
+          "type": "trait",
+          "content": {
+            "isContainer": "true",
+            "name": "EncryptedContent",
+            "attributes": []
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "EncryptedMessageContent",
+            "doc": [
+              "New incoming encrypted message",
+              {
+                "type": "reference",
+                "argument": "receiverId",
+                "category": "full",
+                "description": "  Receiver User Id"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "  Random id of message"
+              },
+              {
+                "type": "reference",
+                "argument": "message",
+                "category": "full",
+                "description": "  Content of message"
+              }
+            ],
+            "trait": {
+              "name": "EncryptedContent",
+              "key": 1
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "receiverId"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "rid"
+              },
+              {
+                "type": {
+                  "type": "trait",
+                  "childType": "Message"
+                },
+                "id": 3,
+                "name": "message"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "EncryptedEditContent",
+            "doc": [
+              "Encrypted message edit",
+              {
+                "type": "reference",
+                "argument": "receiverId",
+                "category": "full",
+                "description": "  Receiver User Id"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "  Random id of message"
+              },
+              {
+                "type": "reference",
+                "argument": "message",
+                "category": "full",
+                "description": "  Updated content of message"
+              }
+            ],
+            "trait": {
+              "name": "EncryptedContent",
+              "key": 2
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "receiverId"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "rid"
+              },
+              {
+                "type": {
+                  "type": "trait",
+                  "childType": "Message"
+                },
+                "id": 3,
+                "name": "message"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "EncryptedDeleteContent",
+            "doc": [
+              "Encrypted message delete",
+              {
+                "type": "reference",
+                "argument": "receiverId",
+                "category": "full",
+                "description": "  Receiver User Id"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "  Random id of message"
+              }
+            ],
+            "trait": {
+              "name": "EncryptedContent",
+              "key": 3
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "receiverId"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "rid"
               }
             ]
           }

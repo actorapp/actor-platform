@@ -31,7 +31,7 @@ import static im.actor.core.util.JavaUtil.last;
 
 /**
  * Actor that controls all notifications in application
- * <p/>
+ * <p>
  * NotificationsActor keeps all unread messages for showing last unread messages in notifications
  * Actor also control sound effects playing logic
  */
@@ -480,7 +480,7 @@ public class NotificationsActor extends ModuleActor {
                 // All group notifications are disabled
                 return false;
             }
-        } else if (peer.getPeerType() == PeerType.PRIVATE) {
+        } else if (peer.getPeerType() == PeerType.PRIVATE || peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
 
             // For private conversations only check if peer notifications enabled
             return context().getSettingsModule().isNotificationsEnabled(peer);

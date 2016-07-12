@@ -9,8 +9,10 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
+import android.view.WindowManager;
 
 import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerType;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.activity.BaseActivity;
 
@@ -31,6 +33,13 @@ public class ChatActivity extends BaseActivity {
         // For faster keyboard open/close
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
+        // Secure Window from screenshoting
+        Peer peer = Peer.fromUniqueId(getIntent().getExtras().getLong(EXTRA_CHAT_PEER));
+        if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,
+                    WindowManager.LayoutParams.FLAG_SECURE);
+        }
+
         //
         // Loading Layout
         //
@@ -41,7 +50,7 @@ public class ChatActivity extends BaseActivity {
         // Loading Fragments if needed
         //
         if (saveInstance == null) {
-            Peer peer = Peer.fromUniqueId(getIntent().getExtras().getLong(EXTRA_CHAT_PEER));
+
             ChatFragment chatFragment = ChatFragment.create(peer);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.chatFragment, chatFragment)
