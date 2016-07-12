@@ -570,8 +570,13 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
           // new group api updates //
           ///////////////////////////
 
-          _ ← seqUpdExt.broadcastPeopleUpdate(userIds = memberIds + cmd.clientUserId, updateNew)
-          seqStateDate ← dialogExt.sendServerMessage(
+          SeqState(seq, state) ← seqUpdExt.broadcastClientUpdate(
+            userId = cmd.clientUserId,
+            authId = cmd.clientAuthId,
+            bcastUserIds = memberIds - cmd.clientUserId,
+            update = updateNew
+          )
+          SeqStateDate(_, _, date) ← dialogExt.sendServerMessage(
             apiGroupPeer,
             senderUserId = cmd.clientUserId,
             senderAuthId = cmd.clientAuthId,
@@ -579,7 +584,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
             message = serviceMessage,
             deliveryTag = Some(Optimization.GroupV2)
           )
-        } yield UpdateAvatarAck(apiAvatar).withSeqStateDate(seqStateDate)
+        } yield UpdateAvatarAck(apiAvatar).withSeqStateDate(SeqStateDate(seq, state, date))
 
         result pipeTo sender()
       }
@@ -631,12 +636,14 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
           // new group api updates //
           ///////////////////////////
 
-          _ ← seqUpdExt.broadcastPeopleUpdate(
-            userIds = memberIds + cmd.clientUserId,
-            updateNew,
-            pushRules
+          SeqState(seq, state) ← seqUpdExt.broadcastClientUpdate(
+            userId = cmd.clientUserId,
+            authId = cmd.clientAuthId,
+            bcastUserIds = memberIds - cmd.clientUserId,
+            update = updateNew,
+            pushRules = pushRules
           )
-          seqStateDate ← dialogExt.sendServerMessage(
+          SeqStateDate(_, _, date) ← dialogExt.sendServerMessage(
             apiGroupPeer,
             senderUserId = cmd.clientUserId,
             senderAuthId = cmd.clientAuthId,
@@ -644,7 +651,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
             message = serviceMessage,
             deliveryTag = Some(Optimization.GroupV2)
           )
-        } yield seqStateDate
+        } yield SeqStateDate(seq, state, date)
 
         result pipeTo sender()
       }
@@ -700,12 +707,14 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
           // new group api updates //
           ///////////////////////////
 
-          _ ← seqUpdExt.broadcastPeopleUpdate(
-            userIds = memberIds + cmd.clientUserId,
-            updateNew,
-            pushRules
+          SeqState(seq, state) ← seqUpdExt.broadcastClientUpdate(
+            userId = cmd.clientUserId,
+            authId = cmd.clientAuthId,
+            bcastUserIds = memberIds - cmd.clientUserId,
+            update = updateNew,
+            pushRules = pushRules
           )
-          seqStateDate ← dialogExt.sendServerMessage(
+          SeqStateDate(_, _, date) ← dialogExt.sendServerMessage(
             apiGroupPeer,
             senderUserId = cmd.clientUserId,
             senderAuthId = cmd.clientAuthId,
@@ -713,7 +722,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
             message = serviceMessage,
             deliveryTag = Some(Optimization.GroupV2)
           )
-        } yield seqStateDate
+        } yield SeqStateDate(seq, state, date)
 
         result pipeTo sender()
       }
@@ -762,12 +771,14 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
           // new group api updates //
           ///////////////////////////
 
-          _ ← seqUpdExt.broadcastPeopleUpdate(
-            userIds = memberIds + cmd.clientUserId,
-            updateNew,
-            pushRules
+          SeqState(seq, state) ← seqUpdExt.broadcastClientUpdate(
+            userId = cmd.clientUserId,
+            authId = cmd.clientAuthId,
+            bcastUserIds = memberIds - cmd.clientUserId,
+            update = updateNew,
+            pushRules = pushRules
           )
-          seqStateDate ← dialogExt.sendServerMessage(
+          SeqStateDate(_, _, date) ← dialogExt.sendServerMessage(
             apiGroupPeer,
             senderUserId = cmd.clientUserId,
             senderAuthId = cmd.clientAuthId,
@@ -775,7 +786,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
             message = serviceMessage,
             deliveryTag = Some(Optimization.GroupV2)
           )
-        } yield seqStateDate
+        } yield SeqStateDate(seq, state, date)
 
         result pipeTo sender()
       }
