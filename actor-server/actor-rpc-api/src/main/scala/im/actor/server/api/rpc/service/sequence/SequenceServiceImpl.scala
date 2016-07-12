@@ -153,21 +153,6 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
     }
   }
 
-  //TODO: remove
-  private def getDelta(userId: Int, authId: Long): Future[Int] =
-    db.run(for {
-      maxSeq ← getMaxSeq(userId)
-      seq ← getSeq(authId)
-    } yield maxSeq - seq)
-
-  private def getMaxSeq(userId: Int): DBIO[Int] = {
-    sql"""SELECT seq FROM user_sequence WHERE user_id = $userId ORDER BY seq DESC LIMIT 1""".as[Int].headOption map (_ getOrElse 0)
-  }
-
-  private def getSeq(authId: Long)(implicit ec: ExecutionContext) =
-    sql"""SELECT seq FROM seq_updates_ngen WHERE auth_id = $authId ORDER BY timestamp DESC LIMIT 1""".as[Int].headOption map (_ getOrElse 0)
-  //
-
   private def extractDiff(updates: IndexedSeq[SerializedUpdate]): (IndexedSeq[ApiUpdateContainer], Set[Int], Set[Int]) =
     updates.foldLeft[(Vector[ApiUpdateContainer], Set[Int], Set[Int])](Vector.empty, Set.empty, Set.empty) {
       case ((updatesAcc, userIds, groupIds), update) ⇒
