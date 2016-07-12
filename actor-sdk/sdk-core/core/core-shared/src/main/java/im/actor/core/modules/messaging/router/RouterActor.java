@@ -783,7 +783,7 @@ public class RouterActor extends ModuleActor {
     }
 
     public boolean isValidPeer(Peer peer) {
-        if (peer.getPeerType() == PeerType.PRIVATE) {
+        if (peer.getPeerType() == PeerType.PRIVATE || peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
             return users().getValue(peer.getPeerId()) != null;
         } else if (peer.getPeerType() == PeerType.GROUP) {
             return groups().getValue(peer.getPeerId()) != null;

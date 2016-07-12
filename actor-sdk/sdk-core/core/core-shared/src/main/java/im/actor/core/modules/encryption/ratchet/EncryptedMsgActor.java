@@ -24,7 +24,7 @@ public class EncryptedMsgActor extends ModuleActor {
         super(context);
     }
 
-    private Promise<ApiEncryptedMessage> doEncrypt(int uid, ApiMessage message) throws IOException {
+    private Promise<ApiEncryptedBox> doEncrypt(int uid, ApiMessage message) throws IOException {
         Log.d(TAG, "doEncrypt");
 
         return context().getEncryption().getEncryptedUser(uid).encrypt(message.buildContainer())
@@ -39,7 +39,7 @@ public class EncryptedMsgActor extends ModuleActor {
                             boxKeys, "aes-kuznechik",
                             encryptBoxResponse.getEncryptedPackage(),
                             new ArrayList<>());
-                    return new ApiEncryptedMessage(apiEncryptedBox);
+                    return apiEncryptedBox;
                 });
     }
 
@@ -114,7 +114,7 @@ public class EncryptedMsgActor extends ModuleActor {
         }
     }
 
-    public static class EncryptMessage implements AskMessage<ApiEncryptedMessage> {
+    public static class EncryptMessage implements AskMessage<ApiEncryptedBox> {
 
         private int uid;
         private ApiMessage message;
