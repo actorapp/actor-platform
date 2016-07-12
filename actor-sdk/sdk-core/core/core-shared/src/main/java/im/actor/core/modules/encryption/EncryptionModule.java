@@ -65,4 +65,8 @@ public class EncryptionModule extends AbsModule {
     public Promise<ApiEncryptedBox> encrypt(int uid, ApiMessage message) {
         return getEncryption().encrypt(uid, message);
     }
+
+    public Promise<ApiMessage> decrypt(int uid, ApiEncryptedBox encryptedBox) {
+        return getEncryption().decrypt(uid, encryptedBox);
+    }
 }

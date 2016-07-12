@@ -27,4 +27,15 @@ public class EncryptedMsg extends ActorInterface {
     public Promise<ApiEncryptedBox> encrypt(int uid, ApiMessage message) {
         return ask(new EncryptedMsgActor.EncryptMessage(uid, message));
     }
+
+    /**
+     * Decrypt Message from private secret chat
+     *
+     * @param uid          user's id
+     * @param encryptedBox encrypted message
+     * @return promise of decrypted message
+     */
+    public Promise<ApiMessage> decrypt(int uid, ApiEncryptedBox encryptedBox) {
+        return ask(new EncryptedMsgActor.DecryptMessage(uid, encryptedBox));
+    }
 }

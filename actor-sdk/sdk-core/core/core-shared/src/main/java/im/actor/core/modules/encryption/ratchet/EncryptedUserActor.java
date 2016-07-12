@@ -175,11 +175,9 @@ public class EncryptedUserActor extends ModuleActor {
                                 }
                             });
                 })
-                .flatMap((Function<Tuple2<SessionActor, EncryptedBoxKey>, Promise<byte[]>>) src -> {
+                .flatMap(src -> {
                     Log.d(TAG, "Key size:" + src.getT2().getEncryptedKey().length);
-                    // return ask(src.getT1().getActorRef(), new EncryptedSessionActor.DecryptPackage(src.getT2().getEncryptedKey()));
-                    // TODO: Implement
-                    return null;
+                    return src.getT1().getEncryptedSession().decrypt(src.getT2().getEncryptedKey());
                 })
                 .map(decryptedPackage -> {
                     byte[] encData;
