@@ -2,6 +2,7 @@ package im.actor.core.modules.encryption.ratchet;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import im.actor.core.entity.encryption.PeerSession;
 import im.actor.core.entity.encryption.PeerSessionsStorage;
@@ -37,6 +38,7 @@ public class SessionManagerActor extends ModuleActor {
 
     private KeyValueEngine<PeerSessionsStorage> peerSessions;
     private KeyManager keyManager;
+    private final HashSet<Integer> locked = new HashSet<>();
 
     public SessionManagerActor(ModuleContext context) {
         super(context);
@@ -78,6 +80,13 @@ public class SessionManagerActor extends ModuleActor {
         if (cached != null) {
             return Promise.success(cached);
         }
+
+        if (locked.contains(uid)) {
+            stash();
+            return null;
+        }
+        locked.add(uid);
+
         return Promises.tuple(
                 keyManager.getOwnIdentity(),
                 keyManager.getOwnRandomPreKey(),
@@ -94,15 +103,16 @@ public class SessionManagerActor extends ModuleActor {
                             .filter(UserKeysGroup.BY_KEY_GROUP(keyGroupId))
                             .first();
 
-                    spawnSession(uid,
+                    return spawnSession(uid,
                             ownIdentity.getKeyGroup(),
                             keyGroupId,
                             ownIdentity.getIdentityKey(),
                             keysGroup.getIdentityKey(),
                             ownPreKey,
                             theirPreKey);
-
-                    return pickCachedSession(uid, keyGroupId);
+                }).after((r, e) -> {
+                    locked.remove(uid);
+                    unstashAll();
                 });
     }
 
@@ -123,6 +133,12 @@ public class SessionManagerActor extends ModuleActor {
         if (cached != null) {
             return Promise.success(cached);
         }
+
+        if (locked.contains(uid)) {
+            stash();
+            return null;
+        }
+        locked.add(uid);
 
         return Promises.tuple(
                 keyManager.getOwnIdentity(),
@@ -146,6 +162,9 @@ public class SessionManagerActor extends ModuleActor {
                             keysGroup.getIdentityKey(),
                             ownPreKey,
                             theirPreKey);
+                }).after((r, e) -> {
+                    locked.remove(uid);
+                    unstashAll();
                 });
     }
 
