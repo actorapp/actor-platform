@@ -4,15 +4,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import im.actor.core.api.ApiEncryptedBox;
-import im.actor.core.api.ApiEncryptedMessage;
 import im.actor.core.api.ApiEncyptedBoxKey;
 import im.actor.core.api.ApiMessage;
-import im.actor.core.entity.Peer;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.encryption.entity.EncryptedBox;
 import im.actor.core.modules.encryption.entity.EncryptedBoxKey;
 import im.actor.core.modules.ModuleActor;
-import im.actor.runtime.*;
 import im.actor.runtime.actors.ask.AskMessage;
 import im.actor.runtime.promise.Promise;
 
@@ -25,92 +22,49 @@ public class EncryptedMsgActor extends ModuleActor {
     }
 
     private Promise<ApiEncryptedBox> doEncrypt(int uid, ApiMessage message) throws IOException {
-        Log.d(TAG, "doEncrypt");
-
         return context().getEncryption().getEncryptedUser(uid).encrypt(message.buildContainer())
                 .map(encryptBoxResponse -> {
-                    Log.d(TAG, "doEncrypt:onResult");
                     ArrayList<ApiEncyptedBoxKey> boxKeys = new ArrayList<>();
                     for (EncryptedBoxKey b : encryptBoxResponse.getKeys()) {
                         boxKeys.add(new ApiEncyptedBoxKey(b.getUid(),
                                 b.getKeyGroupId(), "curve25519", b.getEncryptedKey()));
                     }
-                    ApiEncryptedBox apiEncryptedBox = new ApiEncryptedBox(0,
+                    return new ApiEncryptedBox(0,
                             boxKeys, "aes-kuznechik",
                             encryptBoxResponse.getEncryptedPackage(),
                             new ArrayList<>());
-                    return apiEncryptedBox;
                 });
     }
 
-    public void onDecrypt(int uid, ApiEncryptedMessage message) {
-        Log.d(TAG, "onDecrypt:" + uid);
-        final long start = im.actor.runtime.Runtime.getActorTime();
-        ArrayList<EncryptedBoxKey> encryptedBoxKeys = new ArrayList<EncryptedBoxKey>();
-        for (ApiEncyptedBoxKey key : message.getBox().getKeys()) {
+    public Promise<ApiMessage> doDecrypt(int uid, ApiEncryptedBox box) {
+        ArrayList<EncryptedBoxKey> encryptedBoxKeys = new ArrayList<>();
+        for (ApiEncyptedBoxKey key : box.getKeys()) {
             if (key.getUsersId() == myUid()) {
                 encryptedBoxKeys.add(new EncryptedBoxKey(key.getUsersId(), key.getKeyGroupId(),
                         key.getAlgType(), key.getEncryptedKey()));
             }
         }
-        final EncryptedBox encryptedBox = new EncryptedBox(encryptedBoxKeys.toArray(new EncryptedBoxKey[0]), message.getBox().getEncPackage());
+        EncryptedBox encryptedBox = new EncryptedBox(
+                encryptedBoxKeys.toArray(new EncryptedBoxKey[encryptedBoxKeys.size()]),
+                box.getEncPackage());
 
-        // TODO: Implement
-//        ask(context().getEncryption().getEncryptedChatManager(uid), new EncryptedUserActor.DecryptBox(encryptedBox), new AskCallback() {
-//            @Override
-//            public void onResult(Object obj) {
-//                Log.d(TAG, "onDecrypt:onResult in " + (Runtime.getActorTime() - start) + " ms");
-//                EncryptedUserActor.DecryptBoxResponse re = (EncryptedUserActor.DecryptBoxResponse) obj;
-//                try {
-//                    ApiMessage message = ApiMessage.fromBytes(re.getData());
-//                    Log.d(TAG, "onDecrypt:onResult " + message);
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            @Override
-//            public void onError(Exception e) {
-//                Log.d(TAG, "onDecrypt:onError");
-//                e.printStackTrace();
-//            }
-//        });
+        return context().getEncryption().getEncryptedUser(uid).decrypt(encryptedBox).map(bytes -> {
+            try {
+                return ApiMessage.fromBytes(bytes);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     @Override
     public Promise onAsk(Object message) throws Exception {
         if (message instanceof EncryptMessage) {
             return doEncrypt(((EncryptMessage) message).getUid(), ((EncryptMessage) message).getMessage());
+        } else if (message instanceof DecryptMessage) {
+            return doDecrypt(((DecryptMessage) message).getUid(), ((DecryptMessage) message).getEncryptedBox());
         } else {
             return super.onAsk(message);
-        }
-    }
-
-    @Override
-    public void onReceive(Object message) {
-        Log.d(TAG, "msg: " + message);
-        if (message instanceof InMessage) {
-            InMessage inMessage = (InMessage) message;
-            onDecrypt(inMessage.senderUid, inMessage.encryptedMessage);
-        } else {
-            super.onReceive(message);
-        }
-    }
-
-    public static class InMessage {
-
-        private Peer peer;
-        private long date;
-        private int senderUid;
-        private long rid;
-        private ApiEncryptedMessage encryptedMessage;
-
-        public InMessage(Peer peer, long date, int senderUid, long rid, ApiEncryptedMessage encryptedMessage) {
-            this.peer = peer;
-            this.date = date;
-            this.senderUid = senderUid;
-            this.rid = rid;
-            this.encryptedMessage = encryptedMessage;
         }
     }
 
@@ -133,16 +87,22 @@ public class EncryptedMsgActor extends ModuleActor {
         }
     }
 
-    public static class DecryptMessage {
+    public static class DecryptMessage implements AskMessage<ApiMessage> {
 
-        private ApiEncryptedMessage encryptedMessage;
+        private int uid;
+        private ApiEncryptedBox encryptedBox;
 
-        public DecryptMessage(ApiEncryptedMessage encryptedMessage) {
-            this.encryptedMessage = encryptedMessage;
+        public DecryptMessage(int uid, ApiEncryptedBox encryptedBox) {
+            this.uid = uid;
+            this.encryptedBox = encryptedBox;
         }
 
-        public ApiEncryptedMessage getEncryptedMessage() {
-            return encryptedMessage;
+        public int getUid() {
+            return uid;
+        }
+
+        public ApiEncryptedBox getEncryptedBox() {
+            return encryptedBox;
         }
     }
 }
