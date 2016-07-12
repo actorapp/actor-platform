@@ -1322,12 +1322,6 @@
   <node concept="24kQdi" id="4ASKzdDBzDk">
     <ref role="1XX52x" to="tsp6:4ASKzdDBfFg" resolve="Trait" />
     <node concept="3EZMnI" id="4ASKzdDBzDm" role="2wV5jI">
-      <node concept="3F0ifn" id="55bmeIQ7HZz" role="3EZMnx">
-        <property role="3F0ifm" value="" />
-        <node concept="ljvvj" id="55bmeIQ7HZI" role="3F10Kt">
-          <property role="VOm3f" value="true" />
-        </node>
-      </node>
       <node concept="3F0ifn" id="4ASKzdDBzLZ" role="3EZMnx">
         <property role="3F0ifm" value="trait" />
         <node concept="VechU" id="55bmeIQ9tMq" role="3F10Kt">
@@ -1388,6 +1382,9 @@
         <node concept="ljvvj" id="55bmeIQ7I6E" role="3F10Kt">
           <property role="VOm3f" value="true" />
         </node>
+      </node>
+      <node concept="3F0ifn" id="47c0HGpSNh" role="3EZMnx">
+        <property role="3F0ifm" value="" />
       </node>
       <node concept="l2Vlx" id="4ASKzdDBzDp" role="2iSdaV" />
     </node>

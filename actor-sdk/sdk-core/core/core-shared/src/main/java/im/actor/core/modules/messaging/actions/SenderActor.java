@@ -14,11 +14,10 @@ import java.util.List;
 
 import im.actor.core.api.ApiDocumentExAnimation;
 import im.actor.core.api.ApiDocumentExVoice;
-import im.actor.core.api.ApiEncryptedBox;
-import im.actor.core.api.ApiEncryptedMessage;
+import im.actor.core.api.ApiEncryptedContent;
+import im.actor.core.api.ApiEncryptedMessageContent;
 import im.actor.core.api.ApiFastThumb;
 import im.actor.core.api.ApiJsonMessage;
-import im.actor.core.api.ApiKeyGroupId;
 import im.actor.core.api.ApiMessage;
 import im.actor.core.api.ApiPeer;
 import im.actor.core.api.ApiDocumentEx;
@@ -26,13 +25,11 @@ import im.actor.core.api.ApiDocumentExPhoto;
 import im.actor.core.api.ApiDocumentExVideo;
 import im.actor.core.api.ApiDocumentMessage;
 import im.actor.core.api.ApiOutPeer;
-import im.actor.core.api.ApiPeerType;
 import im.actor.core.api.ApiTextMessage;
 import im.actor.core.api.ApiUserOutPeer;
 import im.actor.core.api.base.SeqUpdate;
 import im.actor.core.api.rpc.RequestSendEncryptedPackage;
 import im.actor.core.api.rpc.RequestSendMessage;
-import im.actor.core.api.rpc.ResponseSendEncryptedPackage;
 import im.actor.core.api.rpc.ResponseSeqDate;
 import im.actor.core.api.updates.UpdateMessageSent;
 import im.actor.core.entity.FileReference;
@@ -69,7 +66,6 @@ import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.runtime.*;
 import im.actor.runtime.Runtime;
-import im.actor.runtime.function.Consumer;
 import im.actor.runtime.power.WakeLock;
 
 /*-[
@@ -498,7 +494,9 @@ public class SenderActor extends ModuleActor {
                     });
         } else if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
             Log.d("SenderActor", "Pending encrypted message: " + message);
-            context().getEncryption().encrypt(peer.getPeerId(), message).then(apiEncryptedMessage -> {
+            ApiEncryptedContent content = new ApiEncryptedMessageContent(peer.getPeerId(),
+                    rid, message);
+            context().getEncryption().encrypt(peer.getPeerId(), content).then(apiEncryptedMessage -> {
                 Log.d("SenderActor", "Encrypted: " + apiEncryptedMessage);
 
                 long accessHash = getUser(peer.getPeerId()).getAccessHash();

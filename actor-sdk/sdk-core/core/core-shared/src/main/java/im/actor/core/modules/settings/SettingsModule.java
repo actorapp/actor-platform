@@ -404,7 +404,7 @@ public class SettingsModule extends AbsModule {
     }
 
     private String getChatKey(Peer peer) {
-        if (peer.getPeerType() == PeerType.PRIVATE) {
+        if (peer.getPeerType() == PeerType.PRIVATE || peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
             return "PRIVATE_" + peer.getPeerId();
         } else if (peer.getPeerType() == PeerType.GROUP) {
             return "GROUP_" + peer.getPeerId();

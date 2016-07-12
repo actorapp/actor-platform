@@ -14,21 +14,16 @@ import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 
-public abstract class ApiMessage extends BserObject {
-    public static ApiMessage fromBytes(byte[] src) throws IOException {
+public abstract class ApiEncryptedContent extends BserObject {
+    public static ApiEncryptedContent fromBytes(byte[] src) throws IOException {
         BserValues values = new BserValues(BserParser.deserialize(new DataInput(src, 0, src.length)));
         int key = values.getInt(1);
         byte[] content = values.getBytes(2);
         switch(key) { 
-            case 1: return Bser.parse(new ApiTextMessage(), content);
-            case 2: return Bser.parse(new ApiServiceMessage(), content);
-            case 3: return Bser.parse(new ApiDocumentMessage(), content);
-            case 4: return Bser.parse(new ApiJsonMessage(), content);
-            case 5: return Bser.parse(new ApiUnsupportedMessage(), content);
-            case 6: return Bser.parse(new ApiStickerMessage(), content);
-            case 7: return Bser.parse(new ApiBinaryMessage(), content);
-            case 9: return Bser.parse(new ApiEmptyMessage(), content);
-            default: return new ApiMessageUnsupported(key, content);
+            case 1: return Bser.parse(new ApiEncryptedMessageContent(), content);
+            case 2: return Bser.parse(new ApiEncryptedEditContent(), content);
+            case 3: return Bser.parse(new ApiEncryptedDeleteContent(), content);
+            default: return new ApiEncryptedContentUnsupported(key, content);
         }
     }
     public abstract int getHeader();

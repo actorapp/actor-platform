@@ -20,6 +20,9 @@ import android.widget.RelativeLayout;
 
 import im.actor.core.entity.Peer;
 import im.actor.sdk.ActorSDK;
+
+import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerType;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.activity.BaseActivity;
 import im.actor.sdk.util.Screen;
@@ -48,6 +51,13 @@ public class ChatActivity extends BaseActivity {
         //
 
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        // Secure Window from screenshoting
+        Peer peer = Peer.fromUniqueId(getIntent().getExtras().getLong(EXTRA_CHAT_PEER));
+        if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,
+                    WindowManager.LayoutParams.FLAG_SECURE);
+        }
 
         //
         // Loading Layout
@@ -95,8 +105,7 @@ public class ChatActivity extends BaseActivity {
         //
 
         if (saveInstance == null) {
-            Peer peer = Peer.fromUniqueId(getIntent().getExtras().getLong(EXTRA_CHAT_PEER));
-            chatFragment = ChatFragment.create(peer);
+            ChatFragment chatFragment = ChatFragment.create(peer);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.chatFragment, chatFragment)
                     .commitNow();

@@ -485,7 +485,7 @@ public class NotificationsActor extends ModuleActor {
                 // All group notifications are disabled
                 return false;
             }
-        } else if (peer.getPeerType() == PeerType.PRIVATE) {
+        } else if (peer.getPeerType() == PeerType.PRIVATE || peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
 
             // For private conversations only check if peer notifications enabled
             return context().getSettingsModule().isNotificationsEnabled(peer);

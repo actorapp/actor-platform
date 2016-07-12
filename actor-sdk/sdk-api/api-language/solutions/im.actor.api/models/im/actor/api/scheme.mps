@@ -4762,30 +4762,6 @@
           <ref role="NX6Kv" node="5_CDdZ2rsIM" resolve="msg" />
         </node>
       </node>
-      <node concept="2m5naR" id="5_CDdZ2rtNF" role="2m5mJr">
-        <property role="TrG5h" value="EncryptedMessage" />
-        <property role="tsOgz" value="true" />
-        <property role="w4tQU" value="true" />
-        <ref role="w4$XZ" node="55bmeIQey3W" resolve="Message" />
-        <node concept="2m7Kf5" id="5_CDdZ2rA8j" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="box" />
-          <node concept="2m5mGg" id="5_CDdZ2rA8n" role="2m7DVh">
-            <ref role="2m5mJy" node="5_CDdZ2r0S4" resolve="EncryptedBox" />
-          </node>
-        </node>
-        <node concept="Nu42z" id="5_CDdZ2rtYm" role="3BtCOu">
-          <property role="Nu42W" value="08" />
-        </node>
-        <node concept="NXeRC" id="5_CDdZ2rtYq" role="NXodf">
-          <property role="NXePf" value="Encrypted Message" />
-        </node>
-        <node concept="NX1gA" id="5_CDdZ2rB2r" role="NXodf">
-          <property role="NX6R2" value="Encrypted box" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="5_CDdZ2rA8j" resolve="box" />
-        </node>
-      </node>
       <node concept="2m5naR" id="7EMmOqgXU6c" role="2m5mJr">
         <property role="TrG5h" value="EmptyMessage" />
         <property role="tsOgz" value="true" />
@@ -16842,6 +16818,201 @@
           <property role="1GSvIU" value="full" />
           <property role="NX6R2" value="Encrypted box" />
           <ref role="NX6Kv" node="1HaN6CbG8Ea" resolve="encryptedBox" />
+        </node>
+      </node>
+      <node concept="NvWBy" id="47c0HGoXHu" role="2m5mJr">
+        <property role="NvWrd" value="Encrypted Content Container" />
+      </node>
+      <node concept="2m5naR" id="47c0HGp4XB" role="2m5mJr">
+        <property role="TrG5h" value="EncryptedData" />
+        <node concept="2m7Kf5" id="47c0HGp52$" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="version" />
+          <node concept="2m5ndE" id="47c0HGp52C" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="47c0HGp52F" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="data" />
+          <node concept="2m61tm" id="47c0HGp52L" role="2m7DVh" />
+        </node>
+        <node concept="NXeRC" id="47c0HGp52O" role="NXodf">
+          <property role="NXePf" value="Encrypted Content" />
+        </node>
+        <node concept="NX1gA" id="47c0HGp52T" role="NXodf">
+          <property role="NX6R2" value="Version of data" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="47c0HGp52$" resolve="version" />
+        </node>
+        <node concept="NX1gA" id="47c0HGp531" role="NXodf">
+          <property role="NX6R2" value="Data" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="47c0HGp52F" resolve="data" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="47c0HGp9oa" role="2m5mJr">
+        <property role="TrG5h" value="EncryptedGroup" />
+        <node concept="2m7Kf5" id="47c0HGp9tg" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupId" />
+          <node concept="2m5ndQ" id="47c0HGp9tk" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="47c0HGp9tn" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="title" />
+          <node concept="2m5ndX" id="47c0HGp9tt" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="47c0HGp9tw" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="members" />
+          <node concept="2m5nlk" id="47c0HGp9tC" role="2m7DVh">
+            <node concept="2m5ndE" id="47c0HGp9tI" role="3GJlyp" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="47c0HGp9tL" role="NXodf">
+          <property role="NXePf" value="Encrypted Group information" />
+        </node>
+        <node concept="NX1gA" id="47c0HGpaKo" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Group Random Id" />
+          <ref role="NX6Kv" node="47c0HGp9tg" resolve="groupId" />
+        </node>
+        <node concept="NX1gA" id="47c0HGpaKw" role="NXodf">
+          <property role="NX6R2" value="Group Title" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="47c0HGp9tn" resolve="title" />
+        </node>
+        <node concept="NX1gA" id="47c0HGpaKE" role="NXodf">
+          <property role="NX6R2" value="Group Members" />
+          <property role="1GSvIU" value="compact" />
+          <ref role="NX6Kv" node="47c0HGp9tw" resolve="members" />
+        </node>
+      </node>
+      <node concept="w93zz" id="47c0HGpc8A" role="2m5mJr">
+        <property role="TrG5h" value="EncryptedContent" />
+        <property role="1FaRnq" value="true" />
+      </node>
+      <node concept="2m5naR" id="47c0HGp7VB" role="2m5mJr">
+        <property role="TrG5h" value="EncryptedMessageContent" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="47c0HGpc8A" resolve="EncryptedContent" />
+        <node concept="2m7Kf5" id="47c0HGsQVO" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="receiverId" />
+          <node concept="wb0Ql" id="47c0HGsQVY" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="47c0HGpcoK" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="rid" />
+          <node concept="2m5ndQ" id="47c0HGpcoR" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="47c0HGpdFS" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="message" />
+          <node concept="3BlaRf" id="47c0HGpdG1" role="2m7DVh">
+            <ref role="3BrLez" node="55bmeIQey3W" resolve="Message" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="47c0HGpcdS" role="3BtCOu">
+          <property role="Nu42W" value="01" />
+        </node>
+        <node concept="NXeRC" id="47c0HGpcoq" role="NXodf">
+          <property role="NXePf" value="New incoming encrypted message" />
+        </node>
+        <node concept="NX1gA" id="47c0HGsYJH" role="NXodf">
+          <property role="NX6R2" value="Receiver User Id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="47c0HGsQVO" resolve="receiverId" />
+        </node>
+        <node concept="NX1gA" id="47c0HGpcov" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Random id of message" />
+          <ref role="NX6Kv" node="47c0HGpcoK" resolve="rid" />
+        </node>
+        <node concept="NX1gA" id="47c0HGsByg" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Content of message" />
+          <ref role="NX6Kv" node="47c0HGpdFS" resolve="message" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="47c0HGsEdb" role="2m5mJr">
+        <property role="TrG5h" value="EncryptedEditContent" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="47c0HGpc8A" resolve="EncryptedContent" />
+        <node concept="2m7Kf5" id="47c0HGsSfd" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="receiverId" />
+          <node concept="wb0Ql" id="47c0HGsSfn" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="47c0HGsEiC" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="rid" />
+          <node concept="2m5ndQ" id="47c0HGsEiG" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="47c0HGsEiJ" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="message" />
+          <node concept="3BlaRf" id="47c0HGsEiP" role="2m7DVh">
+            <ref role="3BrLez" node="55bmeIQey3W" resolve="Message" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="47c0HGsEiA" role="3BtCOu">
+          <property role="Nu42W" value="02" />
+        </node>
+        <node concept="NXeRC" id="47c0HGsEiS" role="NXodf">
+          <property role="NXePf" value="Encrypted message edit" />
+        </node>
+        <node concept="NX1gA" id="47c0HGsYJS" role="NXodf">
+          <property role="NX6R2" value="Receiver User Id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="47c0HGsSfd" resolve="receiverId" />
+        </node>
+        <node concept="NX1gA" id="47c0HGsEiX" role="NXodf">
+          <property role="NX6R2" value="Random id of message" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="47c0HGsEiC" resolve="rid" />
+        </node>
+        <node concept="NX1gA" id="47c0HGsEj5" role="NXodf">
+          <property role="NX6R2" value="Updated content of message" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="47c0HGsEiJ" resolve="message" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="47c0HGsFF$" role="2m5mJr">
+        <property role="TrG5h" value="EncryptedDeleteContent" />
+        <property role="tsOgz" value="false" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="47c0HGpc8A" resolve="EncryptedContent" />
+        <node concept="2m7Kf5" id="47c0HGsTyC" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="receiverId" />
+          <node concept="wb0Ql" id="47c0HGsTyK" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="47c0HGsFLa" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="rid" />
+          <node concept="2m5ndQ" id="47c0HGsFLe" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="47c0HGsFL8" role="3BtCOu">
+          <property role="Nu42W" value="03" />
+        </node>
+        <node concept="NXeRC" id="47c0HGsFLh" role="NXodf">
+          <property role="NXePf" value="Encrypted message delete" />
+        </node>
+        <node concept="NX1gA" id="47c0HGsYK2" role="NXodf">
+          <property role="NX6R2" value="Receiver User Id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="47c0HGsTyC" resolve="receiverId" />
+        </node>
+        <node concept="NX1gA" id="47c0HGsFLm" role="NXodf">
+          <property role="NX6R2" value="Random id of message" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="47c0HGsFLa" resolve="rid" />
         </node>
       </node>
       <node concept="1Dx9M1" id="7ZzLuuoIXYH" role="1Dx9rD">
