@@ -20,7 +20,8 @@ final class GooglePushCredentialsTable(tag: Tag) extends Table[GooglePushCredent
 object GooglePushCredentialsRepo {
   private val creds = TableQuery[GooglePushCredentialsTable]
 
-  def create(c: GooglePushCredentials) = creds += c
+  def createOrUpdate(c: GooglePushCredentials) =
+    creds.insertOrUpdate(c)
 
   private def byAuthId(authId: Rep[Long]) = creds.filter(_.authId === authId)
 
