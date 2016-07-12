@@ -18,14 +18,13 @@ final class GooglePushCredentialsTable(tag: Tag) extends Table[GooglePushCredent
 }
 
 object GooglePushCredentialsRepo {
-  val creds = TableQuery[GooglePushCredentialsTable]
+  private val creds = TableQuery[GooglePushCredentialsTable]
 
-  def createOrUpdate(c: GooglePushCredentials) =
-    creds.insertOrUpdate(c)
+  def create(c: GooglePushCredentials) = creds += c
 
-  def byAuthId(authId: Rep[Long]) = creds.filter(_.authId === authId)
+  private def byAuthId(authId: Rep[Long]) = creds.filter(_.authId === authId)
 
-  val byAuthIdC = Compiled(byAuthId _)
+  private val byAuthIdC = Compiled(byAuthId _)
 
   def find(authId: Long) =
     byAuthIdC(authId).result.headOption

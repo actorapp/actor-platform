@@ -35,11 +35,14 @@ final class PushServiceImpl(
 
   override def doHandleRegisterGooglePush(projectId: Long, token: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val creds = GooglePushCredentials(clientData.authId, projectId, token)
-    for {
-      _ ← db.run(GooglePushCredentialsRepo.deleteByToken(token))
-      _ ← db.run(GooglePushCredentialsRepo.createOrUpdate(creds))
+    val action: DBIO[HandlerResult[ResponseVoid]] = for {
+      _ ← GooglePushCredentialsRepo.deleteByToken(token)
+      _ ← GooglePushCredentialsRepo.delete(clientData.authId)
+      _ ← GooglePushCredentialsRepo.create(creds)
       _ = seqUpdExt.registerGooglePushCredentials(creds)
     } yield OkVoid
+
+    db.run(action)
   }
 
   override def doHandleRegisterApplePush(apnsKey: Int, token: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
