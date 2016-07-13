@@ -232,9 +232,9 @@ public class GroupInfoFragment extends BaseFragment {
         // Members
         //
 
-        groupUserAdapter = new MembersAdapter(groupVM.getMembers().get(), getActivity());
+        groupUserAdapter = new MembersAdapter(getActivity());
         bind(groupVM.getMembers(), members -> {
-            groupUserAdapter.updateUid(members);
+            groupUserAdapter.setMembers(members);
         });
         listView.setAdapter(groupUserAdapter);
 

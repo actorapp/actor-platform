@@ -6,7 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
@@ -21,17 +23,27 @@ import im.actor.core.viewmodel.UserVM;
 import static im.actor.sdk.util.ActorSDKMessenger.users;
 
 public class MembersAdapter extends HolderAdapter<GroupMember> {
-    private GroupMember[] members;
+
+    private GroupMember[] members = new GroupMember[0];
     private ActorBinder BINDER = new ActorBinder();
 
-
-    public MembersAdapter(Collection<GroupMember> members, Context context) {
+    public MembersAdapter(Context context) {
         super(context);
-        this.members = members.toArray(new GroupMember[0]);
     }
 
-    public void updateUid(Collection<GroupMember> members) {
-        this.members = members.toArray(new GroupMember[0]);
+    public void setMembers(Collection<GroupMember> members) {
+        this.members = members.toArray(new GroupMember[members.size()]);
+        Arrays.sort(this.members, (a, b) -> {
+            if (a.isAdministrator() && !b.isAdministrator()) {
+                return -1;
+            }
+            if (b.isAdministrator() && !a.isAdministrator()) {
+                return 1;
+            }
+            String an = users().get(a.getInviterUid()).getName().get();
+            String bn = users().get(b.getInviterUid()).getName().get();
+            return an.compareTo(bn);
+        });
         notifyDataSetChanged();
     }
 
