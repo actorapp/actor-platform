@@ -15,6 +15,8 @@ final class DialogStateSpec extends ActorSuite with PeersImplicits {
 
   it should "recalculate counter on read" in recalculate
 
+  it should "set counter and lastOwnerReadDate to values from UnreadsUpdated" in unreadsUpdated
+
   import im.actor.server.dialog.DialogEvents._
 
   def counter() = {
@@ -66,6 +68,29 @@ final class DialogStateSpec extends ActorSuite with PeersImplicits {
     checkSnapshot(userId)
 
     probe.commit(MessagesRead(date1, userId))
+    probe.state.counter should be(0)
+    checkSnapshot(userId)
+  }
+
+  def unreadsUpdated() = {
+    val userId = 1
+    implicit val probe = ProcessorStateProbe(DialogState.initial(1))
+
+    val alice = Peer.privat(2)
+
+    probe.commit(SetCounter(1000))
+
+    val date = Instant.now.toEpochMilli
+    probe.commit(NewMessage(Random.nextLong(), date, alice.id))
+    probe.state.counter should be(1001)
+    checkSnapshot(userId)
+
+    probe.commit(UnreadsUpdated(newReadDate = date - 30000, newCounter = 300))
+    probe.state.lastOwnerReadDate should be(date - 30000)
+    probe.state.counter should be(300)
+    checkSnapshot(userId)
+
+    probe.commit(MessagesRead(date, userId))
     probe.state.counter should be(0)
     checkSnapshot(userId)
   }
