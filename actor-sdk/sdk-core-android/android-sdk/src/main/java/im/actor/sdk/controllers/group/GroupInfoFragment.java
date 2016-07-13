@@ -72,9 +72,7 @@ public class GroupInfoFragment extends BaseFragment {
     private MembersAdapter groupUserAdapter;
     private View notMemberView;
 
-    @Override
-    public void onCreate(Bundle saveInstance) {
-        super.onCreate(saveInstance);
+    public GroupInfoFragment() {
         setRootFragment(true);
         setHomeAsUp(true);
         setShowHome(true);
