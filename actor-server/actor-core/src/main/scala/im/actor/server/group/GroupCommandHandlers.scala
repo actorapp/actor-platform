@@ -117,7 +117,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
             update = updateObsolete,
             pushRules = seqUpdExt.pushRules(isFat = true, None, excludeAuthIds = Seq(cmd.creatorAuthId)), //do we really need to remove self auth id here?
             reduceKey = None,
-            deliveryId = s"creategroup_${groupId}_${cmd.randomId}"
+            deliveryId = s"creategroup_obsolete_${groupId}_${cmd.randomId}"
           )
 
           ///////////////////////////
@@ -215,7 +215,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
             userId = cmd.inviteeUserId,
             inviteeUpdateObsolete,
             pushRules = seqUpdExt.pushRules(isFat = true, Some(PushTexts.Invited)),
-            deliveryId = s"invite_${groupId}_${cmd.randomId}"
+            deliveryId = s"invite_obsolete_${groupId}_${cmd.randomId}"
           )
 
           // push "User added" to all group members except for `inviterUserId`
@@ -223,7 +223,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
             (memberIds - cmd.inviteeUserId) - cmd.inviterUserId, // is it right?
             membersUpdateObsolete,
             pushRules = seqUpdExt.pushRules(isFat = true, Some(PushTexts.Added)),
-            deliveryId = s"useradded_${groupId}_${cmd.randomId}"
+            deliveryId = s"useradded_obsolete_${groupId}_${cmd.randomId}"
           )
 
           // push "User added" to `inviterUserId`
@@ -232,7 +232,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
             cmd.inviterAuthId,
             membersUpdateObsolete,
             pushRules = seqUpdExt.pushRules(isFat = true, None),
-            deliveryId = s"useradded_${groupId}_${cmd.randomId}"
+            deliveryId = s"useradded_obsolete_${groupId}_${cmd.randomId}"
           )
 
           ///////////////////////////
@@ -344,7 +344,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
               memberIds - cmd.joiningUserId,
               membersUpdateObsolete,
               pushRules = seqUpdExt.pushRules(isFat = true, None),
-              deliveryId = s"userjoined_${groupId}_${randomId}"
+              deliveryId = s"userjoined_obsolete_${groupId}_${randomId}"
             )
 
             ///////////////////////////
@@ -493,9 +493,9 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
 
         val kickedUserUpdatesNew: List[Update] = List(
           UpdateGroupMembersUpdated(groupId, members = Vector.empty),
-          UpdateGroupMemberChanged(groupId, isMember = false),
           UpdateGroupCanViewMembersChanged(groupId, canViewMembers = false),
-          UpdateGroupCanInviteMembersChanged(groupId, canInviteMembers = false)
+          UpdateGroupCanInviteMembersChanged(groupId, canInviteMembers = false),
+          UpdateGroupMemberChanged(groupId, isMember = false)
         )
 
         val membersUpdateNew = UpdateGroupMembersUpdated(groupId, members)
@@ -906,7 +906,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
             authId = cmd.clientAuthId,
             bcastUserIds = memberIds - cmd.clientUserId,
             update = UpdateGroupOwnerChanged(groupId, cmd.newOwnerId),
-            pushRules = seqUpdExt.pushRules(isFat = false, None, Seq(cmd.clientAuthId))
+            pushRules = seqUpdExt.pushRules(isFat = false, None)
           )
         } yield seqState
 
