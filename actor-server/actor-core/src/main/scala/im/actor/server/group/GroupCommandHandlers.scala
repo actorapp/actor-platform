@@ -84,8 +84,6 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
           randomId = cmd.randomId
         )
 
-        val creatorUpdatesNew = refreshGroupUpdates(newState)
-
         val serviceMessage = GroupServiceMessages.groupCreated
 
         //TODO: remove deprecated
@@ -125,11 +123,6 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
           ///////////////////////////
           // new group api updates //
           ///////////////////////////
-
-          // send update about group info to group creator
-          _ ← FutureExt.ftraverse(creatorUpdatesNew) { update ⇒
-            seqUpdExt.deliverUserUpdate(userId = cmd.creatorUserId, update)
-          }
 
           // send service message to group
           seqStateDate ← dialogExt.sendServerMessage(
@@ -412,6 +405,12 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
 
         val updateObsolete = UpdateGroupUserLeaveObsolete(groupId, cmd.userId, dateMillis, cmd.randomId)
 
+        val leftUserUpdatesNew = List(
+          UpdateGroupMembersUpdated(groupId, members = Vector.empty),
+          UpdateGroupCanViewMembersChanged(groupId, canViewMembers = false),
+          UpdateGroupCanInviteMembersChanged(groupId, canInviteMembers = false)
+        )
+
         val membersUpdateNew = UpdateGroupMembersUpdated(groupId, members)
 
         val serviceMessage = GroupServiceMessages.userLeft
@@ -459,11 +458,13 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
             deliveryTag = Some(Optimization.GroupV2)
           )
 
-          // push empty group members list to left user
-          _ ← seqUpdExt.deliverUserUpdate(
-            userId = cmd.userId,
-            update = UpdateGroupMembersUpdated(groupId, members = Vector.empty)
-          )
+          // push left user updates
+          // • with empty group members
+          // • that he can't view and invite members
+          _ ← FutureExt.ftraverse(leftUserUpdatesNew) { update ⇒
+            seqUpdExt.deliverUserUpdate(userId = cmd.userId, update)
+          }
+
           // push left user that he is no longer a member
           SeqState(seq, state) ← seqUpdExt.deliverClientUpdate(
             userId = cmd.userId,
@@ -492,7 +493,9 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
 
         val kickedUserUpdatesNew: List[Update] = List(
           UpdateGroupMembersUpdated(groupId, members = Vector.empty),
-          UpdateGroupMemberChanged(groupId, isMember = false)
+          UpdateGroupMemberChanged(groupId, isMember = false),
+          UpdateGroupCanViewMembersChanged(groupId, canViewMembers = false),
+          UpdateGroupCanInviteMembersChanged(groupId, canInviteMembers = false)
         )
 
         val membersUpdateNew = UpdateGroupMembersUpdated(groupId, members)
@@ -546,6 +549,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
           // push kicked user updates
           // • with empty group members
           // • that he is no longer a member of group
+          // • that he can't view and invite members
           _ ← FutureExt.ftraverse(kickedUserUpdatesNew) { update ⇒
             seqUpdExt.deliverUserUpdate(userId = cmd.kickedUserId, update)
           }
@@ -920,13 +924,16 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
 
   // Updates that will be sent to user, when he enters group.
   // Helps clients that have this group to refresh it's data.
+  // TODO: review when chanels will be added
   private def refreshGroupUpdates(newState: GroupState): List[Update] = List(
     UpdateGroupMemberChanged(groupId, isMember = true),
     UpdateGroupAboutChanged(groupId, newState.about),
     UpdateGroupAvatarChanged(groupId, newState.avatar),
     UpdateGroupTopicChanged(groupId, newState.topic),
     UpdateGroupTitleChanged(groupId, newState.title),
-    UpdateGroupOwnerChanged(groupId, newState.ownerUserId)
+    UpdateGroupOwnerChanged(groupId, newState.ownerUserId),
+    UpdateGroupCanViewMembersChanged(groupId, canViewMembers = true),
+    UpdateGroupCanInviteMembersChanged(groupId, canInviteMembers = true)
   //    UpdateGroupExtChanged(groupId, newState.extension) //TODO: figure out and fix
   //          if(bigGroup) UpdateGroupMembersCountChanged(groupId, newState.extension)
   )

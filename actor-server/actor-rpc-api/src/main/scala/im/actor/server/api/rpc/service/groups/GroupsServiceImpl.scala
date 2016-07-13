@@ -236,7 +236,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
             userIds = users.map(_.userId).toSet,
             typ
           )
-          SeqStateDate(seq, state, _) = seqStateDate.getOrElse(throw NoSeqStateDate)
+          SeqStateDate(seq, state, date) = seqStateDate.getOrElse(throw NoSeqStateDate)
           group ← groupExt.getApiStruct(groupId, client.userId)
           memberIds = GroupUtils.getUserIds(group)
           (apiUsers, apiPeers) ← usersOrPeers(memberIds.toVector, stripEntities)
@@ -245,7 +245,8 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
           state = state.toByteArray,
           group = group,
           users = apiUsers,
-          userPeers = apiPeers
+          userPeers = apiPeers,
+          date = date
         ))
 
       }
