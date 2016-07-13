@@ -8697,8 +8697,8 @@
         <node concept="2m7Kf5" id="1kct6f0wRsO" role="2m0hLx">
           <property role="2m7DUN" value="2" />
           <property role="TrG5h" value="newOwner" />
-          <node concept="wb0Ql" id="1kct6f0wRsU" role="2m7DVh">
-            <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
+          <node concept="2m5mGg" id="47c0HGtEL2" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6ia" resolve="UserOutPeer" />
           </node>
         </node>
         <node concept="Nu42z" id="1kct6f0wRfP" role="NuuwV">
