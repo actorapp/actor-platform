@@ -8011,6 +8011,13 @@
               <ref role="wb18D" node="55bmeIQ7$gx" resolve="seq_state" />
             </node>
           </node>
+          <node concept="2m7Kf5" id="47c0HGtx95" role="2m0hLx">
+            <property role="2m7DUN" value="6" />
+            <property role="TrG5h" value="date" />
+            <node concept="wb0Ql" id="47c0HGtx9l" role="2m7DVh">
+              <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
+            </node>
+          </node>
           <node concept="2m7Kf5" id="5qm50Y0e9N_" role="2m0hLx">
             <property role="2m7DUN" value="3" />
             <property role="TrG5h" value="group" />
@@ -8066,6 +8073,11 @@
             <property role="NX6R2" value="Referenced users" />
             <property role="1GSvIU" value="full" />
             <ref role="NX6Kv" node="1kct6f0wbDV" resolve="userPeers" />
+          </node>
+          <node concept="NX1gA" id="47c0HGtx9w" role="1y2DgH">
+            <property role="NX6R2" value="Group creation date" />
+            <property role="1GSvIU" value="full" />
+            <ref role="NX6Kv" node="47c0HGtx95" resolve="date" />
           </node>
         </node>
         <node concept="NXeRC" id="5qm50Y0e2Q7" role="1GBnQ6">
