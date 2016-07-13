@@ -256,6 +256,11 @@ public class ApiBroker extends Actor {
                 response = (Response) parserConfig.parseRpc(ok.responseType, ok.payload);
             } catch (IOException e) {
                 e.printStackTrace();
+                requests.remove(rid);
+                if (holder.protoId != 0) {
+                    idMap.remove(holder.protoId);
+                }
+                holder.callback.onError(new RpcInternalException());
                 return;
             }
 
