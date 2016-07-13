@@ -7,24 +7,20 @@
     <FrameLayout
         android:id="@+id/content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical" />
+        android:layout_height="match_parent" />
 
     <FrameLayout
         android:id="@+id/fab"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical" />
+        android:layout_height="match_parent" />
 
     <FrameLayout
         android:id="@+id/search"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical" />
+        android:layout_height="match_parent" />
 
     <FrameLayout
         android:id="@+id/placeholder"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical" />
+        android:layout_height="match_parent" />
 </FrameLayout>
