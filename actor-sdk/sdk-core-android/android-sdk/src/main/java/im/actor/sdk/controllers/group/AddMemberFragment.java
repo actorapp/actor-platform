@@ -22,16 +22,19 @@ import static im.actor.sdk.util.ActorSDKMessenger.users;
 
 public class AddMemberFragment extends BaseContactFragment {
 
-    public AddMemberFragment() {
-        super(true, true, false);
-    }
-
     public static AddMemberFragment create(int gid) {
         AddMemberFragment res = new AddMemberFragment();
         Bundle arguments = new Bundle();
         arguments.putInt("GROUP_ID", gid);
         res.setArguments(arguments);
         return res;
+    }
+
+    public AddMemberFragment() {
+        super(true, true, false);
+        setRootFragment(true);
+        setTitle(R.string.group_add_title);
+        setHomeAsUp(true);
     }
 
     @Override
