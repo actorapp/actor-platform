@@ -23,11 +23,11 @@ final class DialogStateSpec extends ActorSuite with PeersImplicits {
 
     val alice = Peer.privat(2)
 
-    val date1 = Instant.now()
+    val date1 = Instant.now.toEpochMilli
     probe.commit(NewMessage(Random.nextLong(), date1, alice.id))
     probe.state.counter should be(1)
 
-    val date2 = date1.plusMillis(1)
+    val date2 = date1 + 1
     probe.commit(NewMessage(Random.nextLong(), date2, alice.id))
     probe.commit(NewMessage(Random.nextLong(), date2, userId))
     probe.state.counter should be(2)
@@ -40,9 +40,9 @@ final class DialogStateSpec extends ActorSuite with PeersImplicits {
     probe.commit(MessagesRead(date1, userId))
     probe.state.counter should be(1)
 
-    probe.commit(NewMessage(Random.nextLong(), Instant.now(), alice.id))
-    probe.commit(NewMessage(Random.nextLong(), Instant.now().plusMillis(1), alice.id))
-    val lastDate = Instant.now().plusMillis(2)
+    probe.commit(NewMessage(Random.nextLong(), Instant.now.toEpochMilli, alice.id))
+    probe.commit(NewMessage(Random.nextLong(), Instant.now.plusMillis(1).toEpochMilli, alice.id))
+    val lastDate = Instant.now.plusMillis(2).toEpochMilli
     probe.commit(NewMessage(Random.nextLong(), lastDate, alice.id))
     probe.state.counter should be(4)
 
@@ -60,7 +60,7 @@ final class DialogStateSpec extends ActorSuite with PeersImplicits {
 
     probe.commit(SetCounter(10))
 
-    val date1 = Instant.now()
+    val date1 = Instant.now.toEpochMilli
     probe.commit(NewMessage(Random.nextLong(), date1, alice.id))
     probe.state.counter should be(11)
     checkSnapshot(userId)
