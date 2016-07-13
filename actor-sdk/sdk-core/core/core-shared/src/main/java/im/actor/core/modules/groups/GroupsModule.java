@@ -15,6 +15,7 @@ import im.actor.core.api.ApiMessageAttributes;
 import im.actor.core.api.ApiOutPeer;
 import im.actor.core.api.ApiPeer;
 import im.actor.core.api.ApiPeerType;
+import im.actor.core.api.ApiServiceExGroupCreated;
 import im.actor.core.api.ApiServiceExUserJoined;
 import im.actor.core.api.ApiServiceMessage;
 import im.actor.core.api.ApiUserOutPeer;
@@ -133,6 +134,7 @@ public class GroupsModule extends AbsModule implements BusSubscriber {
     //
 
     public Promise<Integer> createGroup(final String title, final String avatarDescriptor, final int[] uids) {
+        long rid = RandomUtils.nextRid();
         return Promise.success(uids)
                 .map((Function<int[], List<ApiUserOutPeer>>) ints -> {
                     ArrayList<ApiUserOutPeer> peers = new ArrayList<>();
@@ -145,9 +147,15 @@ public class GroupsModule extends AbsModule implements BusSubscriber {
                     return peers;
                 })
                 .flatMap(apiUserOutPeers ->
-                        api(new RequestCreateGroup(RandomUtils.nextRid(), title, apiUserOutPeers, null, ApiSupportConfiguration.OPTIMIZATIONS)))
-                .chain(response -> updates().applyRelatedData(response.getUsers(), response.getGroup()))
-                .map(responseCreateGroup -> responseCreateGroup.getGroup().getId())
+                        api(new RequestCreateGroup(rid, title, apiUserOutPeers,
+                                null, ApiSupportConfiguration.OPTIMIZATIONS)))
+                .chain(r -> updates().applyRelatedData(r.getUsers(), r.getGroup()))
+                .chain(r -> updates().applyUpdate(r.getSeq(), r.getState(),
+                        new UpdateMessage(
+                                new ApiPeer(ApiPeerType.GROUP, r.getGroup().getId()), myUid(), 0, rid,
+                                new ApiServiceMessage("Group created", new ApiServiceExGroupCreated()),
+                                null, null)))
+                .map(r -> r.getGroup().getId())
                 .then(integer -> {
                     if (avatarDescriptor != null) {
                         changeAvatar(integer, avatarDescriptor);
