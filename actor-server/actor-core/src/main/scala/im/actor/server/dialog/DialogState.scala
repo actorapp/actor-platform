@@ -2,13 +2,10 @@ package im.actor.server.dialog
 
 import java.time.Instant
 
-import akka.event.{ Logging, LoggingAdapter }
 import akka.persistence.SnapshotMetadata
 import im.actor.server.cqrs.{ Event, ProcessorState, TaggedEvent }
 import im.actor.server.model.Peer
 import org.slf4j.LoggerFactory
-
-import scala.collection.SortedSet
 
 private[dialog] trait DialogEvent extends TaggedEvent {
   override def tags: Set[String] = Set("dialog")
@@ -20,79 +17,85 @@ trait DialogQuery {
   def getDest: Peer
 }
 
-private object UnreadMessage {
-  val OrderingAsc = new Ordering[UnreadMessage] {
-    override def compare(x: UnreadMessage, y: UnreadMessage): Int =
-      if (x.date.isBefore(y.date)) -1
-      else if (x.date.isAfter(y.date)) 1
-      else 0
-  }
-}
-
-private case class UnreadMessage(date: Instant, randomId: Long)
-
 private[dialog] object DialogState {
   def initial(userId: Int) = DialogState(
     userId = userId,
-    lastMessageDate = Instant.ofEpochMilli(0),
-    lastOwnerReceiveDate = Instant.ofEpochMilli(0),
-    lastReceiveDate = Instant.ofEpochMilli(0),
-    lastOwnerReadDate = Instant.ofEpochMilli(0),
-    lastReadDate = Instant.ofEpochMilli(0),
+    lastMessageDate = 0L,
+    lastOwnerReceiveDate = 0L,
+    lastReceiveDate = 0L,
+    lastOwnerReadDate = 0L,
+    lastReadDate = 0L,
     counter = 0,
-    unreadMessages = SortedSet.empty(UnreadMessage.OrderingAsc),
-    unreadMessagesMap = Map.empty
+    unreadTimestamps = Vector.empty
   )
 }
 
 private[dialog] final case class DialogState(
   userId:               Int,
-  lastMessageDate:      Instant,
-  lastOwnerReceiveDate: Instant,
-  lastReceiveDate:      Instant,
-  lastOwnerReadDate:    Instant,
-  lastReadDate:         Instant,
+  lastMessageDate:      Long,
+  lastOwnerReceiveDate: Long,
+  lastReceiveDate:      Long,
+  lastOwnerReadDate:    Long,
+  lastReadDate:         Long,
   counter:              Int,
-  unreadMessages:       SortedSet[UnreadMessage],
-  unreadMessagesMap:    Map[Long, Long]
+  //TODO: не держать  количество непрочитанных в счетчике;
+  // если коллекция unreadMessages становится
+  // слишком большой, то нужно дропать старые элементы. если придет прочитка с старой датой - мы лезем
+  // в базу за тем сообщением, читаем, и считаем сколько осталось непрочитанных
+  // TODO: maybe we should use bounded(!) Vector/Queue/Stack and sort it manually?
+  //TODO: сделать ограничение
+  unreadTimestamps: Vector[Long]
 ) extends ProcessorState[DialogState] {
   import DialogEvents._
 
   val log = LoggerFactory.getLogger(s"$userId/DialogRoot")
 
   override def updated(e: Event): DialogState = e match {
-    case NewMessage(randomId, date, senderUserId, messageHeader) ⇒
+    case NewMessage(randomId, dateMillis, senderUserId, messageHeader) ⇒
+      // new message from peer
       if (senderUserId != userId) {
         this.copy(
           counter = counter + 1,
-          unreadMessages = unreadMessages + UnreadMessage(date, randomId),
-          unreadMessagesMap = unreadMessagesMap + (randomId → date.toEpochMilli),
-          lastMessageDate = date
+          unreadTimestamps =
+          (if (unreadTimestamps.length >= DialogProcessor.MaxUnreadInState) unreadTimestamps.tail
+          else unreadTimestamps) :+ dateMillis,
+          lastMessageDate = dateMillis
         )
-      } else this.copy(lastMessageDate = date)
-    case MessagesRead(date, readerUserId) if readerUserId == userId ⇒
-      log.debug(s"unreadMessages (fromState) ${unreadMessages}")
-      val readMessages = unreadMessages.takeWhile(um ⇒ um.date.isBefore(date) || um.date == date)
-      log.debug(s"readMessages ${readMessages}")
-      log.debug(s"readMessages date ${unreadMessages.headOption map (um ⇒ um.date.isBefore(date) || um.date == date)}")
-      val newUnreadMessages = unreadMessages.drop(readMessages.size)
-      val newUnreadMessagesMap = unreadMessagesMap -- readMessages.map(_.randomId)
+      } else {
+        // new own message
+        this.copy(lastMessageDate = dateMillis)
+      }
 
+    // все прочитки у нас за пределами unreadMessagesTimestamp, значит менять его не нужно?
+    case UnreadsUpdated(newReadDate, newCounter) ⇒
       this.copy(
-        counter = newUnreadMessages.size,
-        unreadMessages = newUnreadMessages,
-        unreadMessagesMap = newUnreadMessagesMap,
-        lastOwnerReadDate = date
+        counter = newCounter,
+        lastOwnerReadDate = newReadDate
       )
-    case MessagesRead(date, readerUserId) if readerUserId != userId ⇒
-      if (date.isBefore(Instant.now().plusMillis(1)) && (date.isAfter(lastReadDate) || date == lastReadDate)) // what's a point of creating state with same lastReadDate(last condition)
-        this.copy(lastReadDate = date)
+    // user reads dialog with somebody. need to change
+    case MessagesRead(dateMillis, readerUserId) if readerUserId == userId ⇒
+      log.debug(s"unreadMessages (fromState) ${unreadTimestamps}")
+      val newUnreadTimestamps = {
+        val unreadsSorted = unreadTimestamps.sorted
+        val readMessages = unreadsSorted.takeWhile(messDate ⇒ messDate <= dateMillis)
+        log.debug(s"readMessages ${readMessages}")
+        unreadsSorted.drop(readMessages.length)
+      }
+      this.copy(
+        counter = newUnreadTimestamps.length,
+        unreadTimestamps = newUnreadTimestamps,
+        lastOwnerReadDate = dateMillis
+      )
+    // peer reads dialog with user. we need to update lastReadDate if it is newer than it was
+    case MessagesRead(dateMillis, readerUserId) if readerUserId != userId ⇒
+      if (dateMillis <= Instant.now.toEpochMilli && dateMillis > lastReadDate)
+        this.copy(lastReadDate = dateMillis)
       else this
-    case MessagesReceived(date, receiverUserId) if receiverUserId == userId ⇒
-      this.copy(lastOwnerReceiveDate = date)
-    case MessagesReceived(date, receiverUserId) if receiverUserId != userId ⇒
-      if (date.isBefore(Instant.now().plusMillis(1)) && (date.isAfter(lastReceiveDate) || date == lastReceiveDate)) // what's a point of creating state with same lastReadDate(last condition)
-        this.copy(lastReceiveDate = date)
+    case MessagesReceived(dateMillis, receiverUserId) if receiverUserId == userId ⇒
+      this.copy(lastOwnerReceiveDate = dateMillis)
+    case MessagesReceived(dateMillis, receiverUserId) if receiverUserId != userId ⇒
+      if (dateMillis <= Instant.now.toEpochMilli && dateMillis > lastReceiveDate)
+        this.copy(lastReceiveDate = dateMillis)
       else this
     case SetCounter(newCounter) ⇒
       this.copy(counter = newCounter)
@@ -101,6 +104,12 @@ private[dialog] final case class DialogState(
 
   override def withSnapshot(metadata: SnapshotMetadata, snapshot: Any): DialogState = snapshot match {
     case s: DialogStateSnapshot ⇒
+      // compat with old snapshots
+      //TODO: Vector
+      val unreadTs: Seq[Long] =
+        if (s.unreadMessagesObsolete.nonEmpty)
+          s.unreadMessagesObsolete.keys.toSeq
+        else s.unreadMessagesTimestamp
       copy(
         userId = s.userId,
         lastMessageDate = s.lastMessageDate,
@@ -109,12 +118,7 @@ private[dialog] final case class DialogState(
         lastOwnerReadDate = s.lastOwnerReadDate,
         lastReadDate = s.lastReadDate,
         counter = s.counter,
-        unreadMessages = SortedSet(
-          (s.unreadMessages.toSeq map {
-            case (randomId, ts) ⇒ UnreadMessage(Instant.ofEpochMilli(ts), randomId)
-          }): _*
-        )(UnreadMessage.OrderingAsc),
-        unreadMessagesMap = s.unreadMessages
+        unreadTimestamps = unreadTs.toVector.sorted
       )
   }
 
@@ -126,12 +130,16 @@ private[dialog] final case class DialogState(
     lastOwnerReadDate = lastOwnerReadDate,
     lastReadDate = lastReadDate,
     counter = counter,
-    unreadMessages = unreadMessagesMap
+    unreadMessagesTimestamp = unreadTimestamps,
+
+    //compat with old snapshots
+    unreadMessagesObsolete = Map.empty
   )
 
-  private[dialog] def nextDate: Instant = {
-    val now = Instant.now()
-    if (unreadMessages.lastOption.exists(_.date == now)) now.plusMillis(1L)
+  // I guess we can remove this step completely, if we use Vector[Int] for unreadMessages
+  private[dialog] def nextDate: Long = {
+    val now = Instant.now.toEpochMilli
+    if (unreadTimestamps.lastOption.contains(now)) now + 1L
     else now
   }
 }

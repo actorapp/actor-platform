@@ -57,12 +57,10 @@ final class HistoryMessageTable(tag: Tag) extends Table[HistoryMessage](tag, "hi
 object HistoryMessageRepo {
   private val SharedUserId = 0
 
-  val messages = TableQuery[HistoryMessageTable]
-  val messagesC = Compiled(messages)
+  private val messages = TableQuery[HistoryMessageTable]
+  private val messagesC = Compiled(messages)
 
-  val notDeletedMessages = messages.filter(_.deletedAt.isEmpty)
-
-  val withoutServiceMessages = notDeletedMessages.filter(_.messageContentHeader =!= 2)
+  private val notDeletedMessages = messages.filter(_.deletedAt.isEmpty)
 
   def byUserIdPeer(userId: Rep[Int], peerType: Rep[Int], peerId: Rep[Int]) =
     notDeletedMessages
@@ -100,17 +98,6 @@ object HistoryMessageRepo {
 
   def findAfter(userId: Int, peer: Peer, date: DateTime, limit: Long) =
     afterC((userId, peer.typ.value, peer.id, date, limit)).result
-
-  private val metaAfterC = Compiled { (userId: Rep[Int], peerType: Rep[Int], peerId: Rep[Int], date: Rep[DateTime], limit: ConstColumn[Long]) ⇒
-    byUserIdPeer(userId, peerType, peerId)
-      .filter(_.date > date)
-      .sortBy(_.date.asc)
-      .take(limit)
-      .map(hm ⇒ (hm.randomId, hm.date, hm.senderUserId, hm.messageContentHeader))
-  }
-
-  def findMetaAfter(userId: Int, peer: Peer, date: DateTime, limit: Long) =
-    metaAfterC((userId, peer.typ.value, peer.id, date, limit)).result
 
   private val beforeC = Compiled { (userId: Rep[Int], peerId: Rep[Int], peerType: Rep[Int], date: Rep[DateTime], limit: ConstColumn[Long]) ⇒
     byUserIdPeer(userId, peerType, peerId)
@@ -218,15 +205,23 @@ object HistoryMessageRepo {
       .as[HistoryMessage]
   }
 
-  def haveMessagesBetween(userId: Int, peer: Peer, minDate: DateTime, maxDate: DateTime) =
+  private val countBetweenC = Compiled { (userId: Rep[Int],
+    peerType: Rep[Int],
+    peerId: Rep[Int],
+    minDate: Rep[DateTime],
+    maxDate: Rep[DateTime]) ⇒
     notDeletedMessages
-      .filter(m ⇒ m.userId === userId && m.peerType === peer.typ.value && m.peerId === peer.id)
+      .filter(m ⇒ m.userId === userId && m.peerType === peerType && m.peerId === peerId)
       .filter(m ⇒ m.date > minDate && m.date < maxDate && m.senderUserId =!= userId)
-      .exists
-      .result
+      .length
+  }
 
-  def getUnreadCount(historyOwner: Int, clientUserId: Int, peer: Peer, lastReadAt: DateTime, noServiceMessages: Boolean = false): FixedSqlAction[Int, PostgresDriver.api.NoStream, Read] =
-    (if (noServiceMessages) withoutServiceMessages else notDeletedMessages)
+  def countBetween(userId: Int, peer: Peer, minDate: DateTime, maxDate: DateTime): DBIO[Int] =
+    countBetweenC.applied((userId, peer.typ.value, peer.id, minDate, maxDate)).result
+
+  @deprecated("Used only in migration", "2016-07-13")
+  def getUnreadCount(historyOwner: Int, clientUserId: Int, peer: Peer, lastReadAt: DateTime): FixedSqlAction[Int, PostgresDriver.api.NoStream, Read] =
+    notDeletedMessages
       .filter(m ⇒ m.userId === historyOwner && m.peerType === peer.typ.value && m.peerId === peer.id)
       .filter(m ⇒ m.date > lastReadAt && m.senderUserId =!= clientUserId)
       .length
@@ -240,6 +235,7 @@ object HistoryMessageRepo {
       .update(Some(new DateTime))
   }
 
+  //TODO: check that it does not delete messages in open groups
   def delete(userId: Int, peer: Peer, randomIds: Set[Long]) =
     notDeletedMessages
       .filter(m ⇒ m.userId === userId && m.peerType === peer.typ.value && m.peerId === peer.id)

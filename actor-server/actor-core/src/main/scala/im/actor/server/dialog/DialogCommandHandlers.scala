@@ -5,7 +5,6 @@ import java.time.Instant
 import akka.actor.Status
 import akka.http.scaladsl.util.FastFuture
 import akka.pattern.pipe
-import com.google.protobuf.wrappers.Int64Value
 import im.actor.api.rpc.PeersImplicits
 import im.actor.api.rpc.messaging._
 import im.actor.server.ApiConversions._
@@ -29,9 +28,10 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
   import DialogEvents._
 
   protected def sendMessage(sm: SendMessage): Unit = {
+    //TODO: add stashing timeout
     becomeStashing(replyTo ⇒ ({
       case seq: SeqStateDate ⇒
-        persist(NewMessage(sm.randomId, Instant.ofEpochMilli(seq.date), sm.getOrigin.id, sm.message.header)) { e ⇒
+        persist(NewMessage(sm.randomId, seq.date, sm.getOrigin.id, sm.message.header)) { e ⇒
           commit(e)
           replyTo ! seq
           unstashAll()
@@ -79,7 +79,7 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
       throw new RuntimeException("No message date found in SendMessage")
     }
 
-    persistAsync(NewMessage(sm.randomId, Instant.ofEpochMilli(messageDate), sm.getOrigin.id, sm.message.header)) { e ⇒
+    persistAsync(NewMessage(sm.randomId, messageDate, sm.getOrigin.id, sm.message.header)) { e ⇒
       commit(e)
 
       if (peer.typ == PeerType.Private) {
@@ -105,7 +105,7 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
     if (peer.`type` == PeerType.Private && peer.id != senderUserId && userId != senderUserId) {
       sender() ! Status.Failure(new RuntimeException(s"writeMessageSelf with senderUserId $senderUserId in dialog of user $userId with user ${peer.id}"))
     } else {
-      persist(NewMessage(randomId, Instant.ofEpochMilli(dateMillis), senderUserId, message.header)) { e ⇒
+      persist(NewMessage(randomId, dateMillis, senderUserId, message.header)) { e ⇒
         commit(e)
         db.run(writeHistoryMessageSelf(userId, peer, senderUserId, new DateTime(dateMillis), randomId, message.header, message.toByteArray))
           .map(_ ⇒ WriteMessageSelfAck()) pipeTo sender()
@@ -126,7 +126,7 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
   }
 
   protected def ackMessageReceived(mr: MessageReceived): Unit = {
-    persistAsync(MessagesReceived(Instant.ofEpochMilli(mr.date))) { e ⇒
+    persistAsync(MessagesReceived(mr.date)) { e ⇒
       commit(e)
 
       (deliveryExt.notifyReceive(userId, peer, mr.date, mr.now) map { _ ⇒ MessageReceivedAck() }) pipeTo sender() andThen {
@@ -135,32 +135,93 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
     }
   }
 
+  // я читаю
   protected def messageRead(mr: MessageRead): Unit = {
     val mustRead = mustMakeRead(mr)
     log.debug(s"mustRead is ${mustRead}")
 
     if (mustRead) {
-      // can't use persistAsync here, cause more reads can occur,
-      // and state will be inconsistent by the time handler is excuted.
-      persist(MessagesRead(Instant.ofEpochMilli(mr.date), mr.getOrigin.id)) { e ⇒
-        log.debug(s"persisted MessagesRead, origin=${mr.getOrigin.id}, date=${Instant.ofEpochMilli(mr.date)}, counter=${state.counter}, unreadMessages=${state.unreadMessages}")
-        val newState = commit(e)
-        log.debug(s"after commit: counter=${newState.counter}, unreadMessages=${newState.unreadMessages}")
+      // смотрим что в стейте есть даты сообщений до даты прочитки, значит мы можем их прочитать!
+      // if Vector - make sort
+      // read date is still in unreadMessagesTimestamp cache. we can count them
+      // TODO: нужно делать проверку на не пустую коллекцию. иначе будем проваливаться
+      if (state.unreadTimestamps.isEmpty || state.unreadTimestamps.exists(_ <= mr.date)) { // зачем сортировать, если мы все равно этим не пользуемся, так ведь?
+        // can't use persistAsync here, cause more reads can occur,
+        // and state will be inconsistent by the time handler is executed.
+        persist(MessagesRead(mr.date, mr.getOrigin.id)) { e ⇒
+          log.debug(s"persisted MessagesRead, origin=${mr.getOrigin.id}, date=${Instant.ofEpochMilli(mr.date)}, counter=${state.counter}, unreadMessages=${state.unreadTimestamps}")
+          val newState = commit(e)
+          log.debug(s"after commit: counter=${newState.counter}, unreadMessages=${newState.unreadTimestamps}")
 
-        (for {
-          _ ← dialogExt.ackMessageRead(peer, mr)
-          _ ← deliveryExt.read(userId, mr.readerAuthId, peer, mr.date, newState.counter)
-          _ = deliveryExt.sendCountersUpdate(userId)
-        } yield MessageReadAck()) pipeTo sender()
+          ///////////// move to method maybe
+          (for {
+            _ ← dialogExt.ackMessageRead(peer, mr)
+            _ ← deliveryExt.read(userId, mr.readerAuthId, peer, mr.date, newState.counter)
+            _ = deliveryExt.sendCountersUpdate(userId)
+          } yield MessageReadAck()) pipeTo sender()
+          ///////////// move to method
+        }
+      } else {
+        // эти случаи должны происходить оооочень редко, поскольку у нас либа прочитывает весь список сразу
+        // но если они происходят, то нужно найти количество сообщений начиная
+
+        // переходим в стешинг, waiting to read from database
+        //TODO: add stashing timeout
+        becomeStashing(replyTo ⇒ ({
+          case evt: UnreadsUpdated ⇒
+            persist(evt) { e ⇒
+              val newState = commit(e)
+              ///////////// move to method maybe
+              (for {
+                _ ← dialogExt.ackMessageRead(peer, mr)
+                _ ← deliveryExt.read(userId, mr.readerAuthId, peer, mr.date, newState.counter)
+                _ = deliveryExt.sendCountersUpdate(userId)
+              } yield MessageReadAck()) pipeTo replyTo
+              /////////////
+              context.become(receiveCommand)
+              unstashAll()
+            }
+          case fail: Status.Failure ⇒
+            log.error(fail.cause, "Failed to read message")
+            replyTo forward fail
+            context.become(receiveCommand)
+            unstashAll()
+        }: Receive) orElse reactions, discardOld = true)
+
+        val sortedUnreads = state.unreadTimestamps
+        val earliestStateUnreadDate = sortedUnreads.head
+        val unreadCountDb = db.run(
+          HistoryMessageRepo.countBetween(
+            userId,
+            peer,
+            new DateTime(mr.date),
+            new DateTime(earliestStateUnreadDate)
+          )
+        )
+
+        //                    [------------------------------------------] - новый список непрочитанных. Нам нужен только count
+        // ---------------------------------------[======================]
+        //                    ^                   ^                      ^
+        //               "Read Date"        "State first date"     "State last date"
+        // нужна выборка с "Read Date" по "State first date" - это будут db-unread
+        // newCounter = db-unread + state.length
+        val result: Future[UnreadsUpdated] = unreadCountDb map { count ⇒
+          UnreadsUpdated(
+            newReadDate = mr.date,
+            newCounter = state.unreadTimestamps.length + count
+          )
+        }
+        result pipeTo self
       }
     } else {
       sender() ! MessageReadAck()
     }
   }
 
+  // меня читают
   protected def ackMessageRead(mr: MessageRead): Unit = {
     require(mr.getOrigin.typ.isPrivate)
-    persistAsync(MessagesRead(Instant.ofEpochMilli(mr.date), mr.getOrigin.id)) { e ⇒
+    persistAsync(MessagesRead(mr.date, mr.getOrigin.id)) { e ⇒
       commit(e)
       log.debug(s"=== new lastReadDate is ${state.lastReadDate}")
       (deliveryExt.notifyRead(userId, peer, mr.date, mr.now) map { _ ⇒ MessageReadAck() }) pipeTo sender() andThen {
@@ -228,8 +289,8 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
    * @return unique message date in current dialog
    */
   private def calcSendDate(): Long = {
-    val candidate = state.nextDate.toEpochMilli
-    if (state.lastMessageDate.toEpochMilli == candidate) state.lastMessageDate.toEpochMilli + 1
+    val candidate = state.nextDate // don't we do it twice?
+    if (state.lastMessageDate == candidate) state.lastMessageDate + 1
     else candidate
   }
 
@@ -247,9 +308,8 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
    * @return `true` if we must process message received request and `false` otherwise
    */
   private def mustMakeReceive(mr: MessageReceived): Boolean =
-    Instant.ofEpochMilli(mr.date).isAfter(state.lastOwnerReceiveDate) &&
-      (mr.date <= mr.now ||
-        Instant.ofEpochMilli(mr.date).compareTo(state.lastMessageDate) <= 0)
+    (mr.date > state.lastOwnerReceiveDate) &&
+      (mr.date <= mr.now || mr.date <= state.lastMessageDate)
 
   /**
    *
@@ -265,9 +325,8 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
    * @return `true` if we must process message received request and `false` otherwise
    */
   private def mustMakeRead(mr: MessageRead): Boolean =
-    Instant.ofEpochMilli(mr.date).isAfter(state.lastOwnerReadDate) &&
-      (mr.date <= mr.now ||
-        Instant.ofEpochMilli(mr.date).compareTo(state.lastMessageDate) <= 0)
+    (mr.date > state.lastOwnerReadDate) &&
+      (mr.date <= mr.now || mr.date <= state.lastMessageDate)
 
   /**
    * check access hash and execute `f`, if access hash is valid
