@@ -7934,7 +7934,7 @@
                 "type": "reference",
                 "argument": "canSendMessage",
                 "category": "full",
-                "description": "  Can user send messages. Default is equals isMember for Group and false for channels."
+                "description": "  Can user send messages. Default is equals isMember for Group and false for others."
               },
               {
                 "type": "reference",
@@ -8999,13 +8999,21 @@
             "attributes": [
               {
                 "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": {
                   "type": "list",
                   "childType": {
                     "type": "alias",
                     "childType": "userId"
                   }
                 },
-                "id": 1,
+                "id": 2,
                 "name": "removedUsers"
               },
               {
@@ -9016,12 +9024,12 @@
                     "childType": "Member"
                   }
                 },
-                "id": 2,
+                "id": 3,
                 "name": "addedMembers"
               },
               {
                 "type": "int32",
-                "id": 3,
+                "id": 4,
                 "name": "membersCount"
               }
             ]

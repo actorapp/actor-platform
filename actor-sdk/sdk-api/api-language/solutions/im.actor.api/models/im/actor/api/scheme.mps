@@ -7825,8 +7825,15 @@
       </node>
       <node concept="NpBTk" id="1kct6f0vpRv" role="2m5mJr">
         <property role="TrG5h" value="GroupMemberDiff" />
-        <node concept="2m7Kf5" id="1kct6f0vq2r" role="2m0hLx">
+        <node concept="2m7Kf5" id="47c0HGtgpY" role="2m0hLx">
           <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupId" />
+          <node concept="wb0Ql" id="47c0HGtgpZ" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uO" resolve="groupId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="1kct6f0vq2r" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
           <property role="TrG5h" value="removedUsers" />
           <node concept="2m5nlk" id="1kct6f0vq2v" role="2m7DVh">
             <node concept="wb0Ql" id="1kct6f0vq2_" role="3GJlyp">
@@ -7835,7 +7842,7 @@
           </node>
         </node>
         <node concept="2m7Kf5" id="1kct6f0vq2C" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
+          <property role="2m7DUN" value="3" />
           <property role="TrG5h" value="addedMembers" />
           <node concept="2m5nlk" id="1kct6f0vq2J" role="2m7DVh">
             <node concept="2m5mGg" id="1kct6f0vq2P" role="3GJlyp">
@@ -7844,7 +7851,7 @@
           </node>
         </node>
         <node concept="2m7Kf5" id="1kct6f0vwZR" role="2m0hLx">
-          <property role="2m7DUN" value="3" />
+          <property role="2m7DUN" value="4" />
           <property role="TrG5h" value="membersCount" />
           <node concept="2m5ndE" id="1kct6f0vx01" role="2m7DVh" />
         </node>
