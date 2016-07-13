@@ -678,9 +678,9 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
   }
 
   protected def updateTopic(cmd: UpdateTopic): Unit = {
-    def isValidTopic(topic: Option[String]) = topic.forall(t ⇒ t.nonEmpty && t.length < 255)
+    def isValidTopic(topic: Option[String]) = topic.forall(_.length < 255)
 
-    val topic = cmd.topic map (_.trim)
+    val topic = trimToEmpty(cmd.topic)
 
     if (state.nonMember(cmd.clientUserId)) {
       sender() ! notMember
@@ -748,9 +748,9 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
   }
 
   protected def updateAbout(cmd: UpdateAbout): Unit = {
-    def isValidAbout(about: Option[String]) = about.forall(a ⇒ a.nonEmpty && a.length < 255)
+    def isValidAbout(about: Option[String]) = about.forall(_.length < 255)
 
-    val about = cmd.about map (_.trim)
+    val about = trimToEmpty(cmd.about)
 
     if (!state.isAdmin(cmd.clientUserId)) {
       sender() ! notAdmin
@@ -914,6 +914,9 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
       }
     }
   }
+
+  private def trimToEmpty(s: Option[String]): Option[String] =
+    s map (_.trim) filter (_.nonEmpty)
 
   private def getAvatarData(avatar: Option[Avatar]): AvatarData =
     avatar
