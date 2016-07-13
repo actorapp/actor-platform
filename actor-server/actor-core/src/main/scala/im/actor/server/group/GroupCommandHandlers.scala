@@ -406,8 +406,8 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
         val updateObsolete = UpdateGroupUserLeaveObsolete(groupId, cmd.userId, dateMillis, cmd.randomId)
 
         val leftUserUpdatesNew = List(
-          UpdateGroupMembersUpdated(groupId, members = Vector.empty),
           UpdateGroupCanViewMembersChanged(groupId, canViewMembers = false),
+          UpdateGroupMembersUpdated(groupId, members = Vector.empty),
           UpdateGroupCanInviteMembersChanged(groupId, canInviteMembers = false)
         )
 
@@ -423,9 +423,9 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
           } yield ()
         )
 
+        // read this dialog by user that leaves group. don't wait for ack
+        dialogExt.messageRead(apiGroupPeer, cmd.userId, 0L, dateMillis)
         val result: Future[SeqStateDate] = for {
-          // read this dialog by user that leaves group
-          _ ← dialogExt.messageRead(apiGroupPeer, cmd.userId, 0L, dateMillis)
 
           ///////////////////////////
           // old group api updates //
@@ -458,19 +458,19 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
             deliveryTag = Some(Optimization.GroupV2)
           )
 
-          // push left user updates
-          // • with empty group members
-          // • that he can't view and invite members
-          _ ← FutureExt.ftraverse(leftUserUpdatesNew) { update ⇒
-            seqUpdExt.deliverUserUpdate(userId = cmd.userId, update)
-          }
-
           // push left user that he is no longer a member
           SeqState(seq, state) ← seqUpdExt.deliverClientUpdate(
             userId = cmd.userId,
             authId = cmd.authId,
             update = UpdateGroupMemberChanged(groupId, isMember = false)
           )
+
+          // push left user updates
+          // • with empty group members
+          // • that he can't view and invite members
+          _ ← FutureExt.ftraverse(leftUserUpdatesNew) { update ⇒
+            seqUpdExt.deliverUserUpdate(userId = cmd.userId, update)
+          }
 
         } yield SeqStateDate(seq, state, date)
 
@@ -492,8 +492,8 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
         val updateObsolete = UpdateGroupUserKickObsolete(groupId, cmd.kickedUserId, cmd.kickerUserId, dateMillis, cmd.randomId)
 
         val kickedUserUpdatesNew: List[Update] = List(
-          UpdateGroupMembersUpdated(groupId, members = Vector.empty),
           UpdateGroupCanViewMembersChanged(groupId, canViewMembers = false),
+          UpdateGroupMembersUpdated(groupId, members = Vector.empty),
           UpdateGroupCanInviteMembersChanged(groupId, canInviteMembers = false),
           UpdateGroupMemberChanged(groupId, isMember = false)
         )
@@ -510,9 +510,9 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
           } yield ()
         )
 
+        // read this dialog by kicked user. don't wait for ack
+        dialogExt.messageRead(apiGroupPeer, cmd.kickedUserId, 0L, dateMillis)
         val result: Future[SeqStateDate] = for {
-          _ ← dialogExt.messageRead(apiGroupPeer, cmd.kickedUserId, 0L, dateMillis)
-
           ///////////////////////////
           // old group api updates //
           ///////////////////////////

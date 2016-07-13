@@ -1,5 +1,7 @@
 package im.actor.server.api.rpc.service.groups
 
+import java.time.Instant
+
 import akka.actor.ActorSystem
 import akka.http.scaladsl.util.FastFuture
 import im.actor.api.rpc.PeerHelpers._
@@ -111,7 +113,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
       withGroupOutPeer(groupPeer) {
         for {
           SeqState(seq, state) ← groupExt.transferOwnership(groupPeer.groupId, client.userId, client.authId, newOwner)
-        } yield Ok(ResponseSeqDate(seq, state.toByteArray, 0))
+        } yield Ok(ResponseSeqDate(seq, state.toByteArray, Instant.now.toEpochMilli))
       }
     }
 
