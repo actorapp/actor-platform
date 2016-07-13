@@ -1,7 +1,8 @@
 package im.actor.server.dialog
 
+import java.time.Instant
+
 import akka.actor._
-import akka.event.Logging
 import akka.http.scaladsl.util.FastFuture
 import akka.util.Timeout
 import com.github.benmanes.caffeine.cache.Cache
@@ -30,11 +31,15 @@ object DialogProcessor {
       40012 → classOf[DialogEvents.NewMessage],
       40013 → classOf[DialogEvents.SetCounter],
       40015 → classOf[DialogEvents.Initialized],
-      40014 → classOf[DialogStateSnapshot]
+      40014 → classOf[DialogStateSnapshot],
+
+      40016 → classOf[DialogEvents.UnreadsUpdated]
     )
   }
 
   val MaxCacheSize = 100L
+
+  val MaxUnreadInState = 250
 
   def props(userId: Int, peer: Peer, extensions: Seq[ApiExtension]): Props =
     Props(classOf[DialogProcessor], userId, peer, extensions)
@@ -86,10 +91,10 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
       GetInfoResponse(Some(DialogInfo(
         peer = Some(peer),
         counter = counter,
-        date = state.lastMessageDate,
-        lastMessageDate = state.lastMessageDate,
-        lastReceivedDate = state.lastReceiveDate,
-        lastReadDate = state.lastReadDate
+        date = Instant.ofEpochMilli(state.lastMessageDate),
+        lastMessageDate = Instant.ofEpochMilli(state.lastMessageDate),
+        lastReceivedDate = Instant.ofEpochMilli(state.lastReceiveDate),
+        lastReadDate = Instant.ofEpochMilli(state.lastReadDate)
       )))
     }
   }

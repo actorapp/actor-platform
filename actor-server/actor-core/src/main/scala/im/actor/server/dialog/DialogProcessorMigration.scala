@@ -1,7 +1,5 @@
 package im.actor.server.dialog
 
-import java.time.Instant
-
 import akka.actor.Status
 import akka.pattern.pipe
 import akka.persistence.SnapshotMetadata
@@ -54,8 +52,8 @@ trait DialogProcessorMigration extends Processor[DialogState] {
         List(
           Initialized(),
           SetCounter(unreadCount),
-          MessagesRead(Instant.ofEpochMilli(d.ownerLastReadAt.getMillis), readerUserId = userId),
-          MessagesRead(Instant.ofEpochMilli(d.lastReadAt.getMillis))
+          MessagesRead(d.ownerLastReadAt.getMillis, readerUserId = userId),
+          MessagesRead(d.lastReadAt.getMillis)
         )
       )) pipeTo self
     case PersistEvents(events) ⇒

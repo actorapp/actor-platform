@@ -178,13 +178,15 @@ message DialogRootQueries {
 
 message DialogStateSnapshot {
     int32 user_id = 1;
-    int64 last_message_date = 2 [(scalapb.field).type = "java.time.Instant"];
-    int64 last_owner_receive_date = 7 [(scalapb.field).type = "java.time.Instant"];
-    int64 last_receive_date = 3 [(scalapb.field).type = "java.time.Instant"];
-    int64 last_owner_read_date = 8 [(scalapb.field).type = "java.time.Instant"];
-    int64 last_read_date = 4 [(scalapb.field).type = "java.time.Instant"];
+    int64 last_message_date = 2;
+    int64 last_owner_receive_date = 7;
+    int64 last_receive_date = 3;
+    int64 last_owner_read_date = 8;
+    int64 last_read_date = 4;
     int32 counter = 5;
-    map<int64, int64> unread_messages = 6;
+    repeated int64 unread_messages_timestamp = 9;
+
+    map<int64, int64> unread_messages_obsolete = 6;
 }
 
 message DialogRootEnvelope {
@@ -341,7 +343,7 @@ message DialogEvents {
         option (scalapb.message).extends = "im.actor.server.dialog.DialogEvent";
 
         int64 random_id = 2;
-        int64 date = 1 [(scalapb.field).type = "java.time.Instant"];
+        int64 date = 1;
         int32 sender_user_id = 3;
         int32 message_header = 4;
     }
@@ -349,15 +351,22 @@ message DialogEvents {
     message MessagesReceived {
         option (scalapb.message).extends = "im.actor.server.dialog.DialogEvent";
 
-        int64 date = 1 [(scalapb.field).type = "java.time.Instant"];
+        int64 date = 1;
         int32 receiver_user_id = 2;
     }
 
     message MessagesRead {
         option (scalapb.message).extends = "im.actor.server.dialog.DialogEvent";
 
-        int64 date = 1 [(scalapb.field).type = "java.time.Instant"];
+        int64 date = 1;
         int32 reader_user_id = 8;
+    }
+
+    message UnreadsUpdated {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogEvent";
+
+        int64 new_read_date = 1;
+        int32 new_counter = 2;
     }
 
     message SetCounter {
