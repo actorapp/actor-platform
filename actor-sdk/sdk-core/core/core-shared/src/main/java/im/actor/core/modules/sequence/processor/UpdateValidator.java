@@ -13,16 +13,12 @@ import im.actor.core.api.updates.UpdateContactsAdded;
 import im.actor.core.api.updates.UpdateContactsRemoved;
 import im.actor.core.api.updates.UpdateGroupExtChanged;
 import im.actor.core.api.updates.UpdateGroupFullExtChanged;
-import im.actor.core.api.updates.UpdateGroupInvite;
 import im.actor.core.api.updates.UpdateGroupMemberAdminChanged;
 import im.actor.core.api.updates.UpdateGroupMemberChanged;
 import im.actor.core.api.updates.UpdateGroupMemberDiff;
 import im.actor.core.api.updates.UpdateGroupMembersCountChanged;
-import im.actor.core.api.updates.UpdateGroupMembersUpdate;
+import im.actor.core.api.updates.UpdateGroupMembersUpdated;
 import im.actor.core.api.updates.UpdateGroupOwnerChanged;
-import im.actor.core.api.updates.UpdateGroupUserInvited;
-import im.actor.core.api.updates.UpdateGroupUserKick;
-import im.actor.core.api.updates.UpdateGroupUserLeave;
 import im.actor.core.api.updates.UpdateMessage;
 import im.actor.core.api.updates.UpdateUserLocalNameChanged;
 import im.actor.core.modules.AbsModule;
@@ -53,24 +49,6 @@ public class UpdateValidator extends AbsModule {
         } else if (update instanceof UpdateContactRegistered) {
             UpdateContactRegistered contactRegistered = (UpdateContactRegistered) update;
             users.add(contactRegistered.getUid());
-        } else if (update instanceof UpdateGroupInvite) {
-            UpdateGroupInvite groupInvite = (UpdateGroupInvite) update;
-            users.add(groupInvite.getInviteUid());
-            groups.add(groupInvite.getGroupId());
-        } else if (update instanceof UpdateGroupUserInvited) {
-            UpdateGroupUserInvited invited = (UpdateGroupUserInvited) update;
-            users.add(invited.getInviterUid());
-            users.add(invited.getUid());
-            groups.add(invited.getGroupId());
-        } else if (update instanceof UpdateGroupUserKick) {
-            UpdateGroupUserKick kick = (UpdateGroupUserKick) update;
-            users.add(kick.getKickerUid());
-            users.add(kick.getUid());
-            groups.add(kick.getGroupId());
-        } else if (update instanceof UpdateGroupUserLeave) {
-            UpdateGroupUserLeave leave = (UpdateGroupUserLeave) update;
-            users.add(leave.getUid());
-            groups.add(leave.getGroupId());
         } else if (update instanceof UpdateContactsAdded) {
             users.addAll(((UpdateContactsAdded) update).getUids());
         } else if (update instanceof UpdateContactsRemoved) {
@@ -102,8 +80,8 @@ public class UpdateValidator extends AbsModule {
                 users.add(m.getInviterUid());
                 users.add(m.getUid());
             }
-        } else if (update instanceof UpdateGroupMembersUpdate) {
-            UpdateGroupMembersUpdate u = (UpdateGroupMembersUpdate) update;
+        } else if (update instanceof UpdateGroupMembersUpdated) {
+            UpdateGroupMembersUpdated u = (UpdateGroupMembersUpdated) update;
             groups.add(u.getGroupId());
             for (ApiMember m : u.getMembers()) {
                 users.add(m.getInviterUid());

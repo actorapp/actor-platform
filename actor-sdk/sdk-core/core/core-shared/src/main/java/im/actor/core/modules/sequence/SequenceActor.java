@@ -43,6 +43,7 @@ public class SequenceActor extends ModuleActor {
     private static final String TAG = "Updates";
     private static final int INVALIDATE_GAP = 2000;// 2 Secs
     private static final int INVALIDATE_MAX_SEC_HOLE = 10;
+    private static final boolean PROCESS_EXTERNAL_PUSH_SEQ = false;
 
     private static final String KEY_SEQ = "updates_seq";
     private static final String KEY_STATE = "updates_state";
@@ -101,11 +102,13 @@ public class SequenceActor extends ModuleActor {
     }
 
     private void onPushSeqReceived(int seq) {
-        if (seq <= this.seq) {
-            Log.d(TAG, "Ignored PushSeq {seq:" + seq + "}");
-        } else {
-            Log.w(TAG, "External Out of sequence: starting timer for invalidation");
-            startInvalidationTimer();
+        if (PROCESS_EXTERNAL_PUSH_SEQ) {
+            if (seq <= this.seq) {
+                Log.d(TAG, "Ignored PushSeq {seq:" + seq + "}");
+            } else {
+                Log.w(TAG, "External Out of sequence: starting timer for invalidation");
+                startInvalidationTimer();
+            }
         }
     }
 

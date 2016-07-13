@@ -8,16 +8,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import im.actor.core.ApiConfiguration;
-import im.actor.core.api.ApiConfig;
 import im.actor.core.api.ApiGroupOutPeer;
-import im.actor.core.api.ApiMessageAttributes;
 import im.actor.core.api.ApiOutPeer;
-import im.actor.core.api.ApiPeer;
 import im.actor.core.api.ApiPeerType;
-import im.actor.core.api.ApiServiceExGroupCreated;
-import im.actor.core.api.ApiServiceExUserJoined;
-import im.actor.core.api.ApiServiceMessage;
 import im.actor.core.api.ApiUserOutPeer;
 import im.actor.core.api.rpc.RequestCreateGroup;
 import im.actor.core.api.rpc.RequestEditGroupAbout;
@@ -29,35 +22,17 @@ import im.actor.core.api.rpc.RequestInviteUser;
 import im.actor.core.api.rpc.RequestJoinGroup;
 import im.actor.core.api.rpc.RequestKickUser;
 import im.actor.core.api.rpc.RequestLeaveGroup;
-import im.actor.core.api.rpc.RequestMakeUserAdmin;
 import im.actor.core.api.rpc.RequestMakeUserAdminObsolete;
 import im.actor.core.api.rpc.RequestRevokeIntegrationToken;
 import im.actor.core.api.rpc.RequestRevokeInviteUrl;
 import im.actor.core.api.rpc.ResponseIntegrationToken;
 import im.actor.core.api.rpc.ResponseInviteUrl;
-import im.actor.core.api.updates.UpdateContactsAdded;
-import im.actor.core.api.updates.UpdateGroupAboutChanged;
-import im.actor.core.api.updates.UpdateGroupAboutChangedObsolete;
-import im.actor.core.api.updates.UpdateGroupMembersUpdate;
-import im.actor.core.api.updates.UpdateGroupMembersUpdateObsolete;
-import im.actor.core.api.updates.UpdateGroupTitleChanged;
-import im.actor.core.api.updates.UpdateGroupTitleChangedObsolete;
-import im.actor.core.api.updates.UpdateGroupTopicChanged;
-import im.actor.core.api.updates.UpdateGroupTopicChangedObsolete;
-import im.actor.core.api.updates.UpdateGroupUserInvited;
-import im.actor.core.api.updates.UpdateGroupUserInvitedObsolete;
-import im.actor.core.api.updates.UpdateGroupUserKick;
-import im.actor.core.api.updates.UpdateGroupUserKickObsolete;
-import im.actor.core.api.updates.UpdateGroupUserLeave;
-import im.actor.core.api.updates.UpdateGroupUserLeaveObsolete;
-import im.actor.core.api.updates.UpdateMessage;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.User;
 import im.actor.core.events.PeerChatOpened;
 import im.actor.core.events.PeerInfoOpened;
-import im.actor.core.events.UserVisible;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.api.ApiSupportConfiguration;
@@ -150,11 +125,7 @@ public class GroupsModule extends AbsModule implements BusSubscriber {
                         api(new RequestCreateGroup(rid, title, apiUserOutPeers,
                                 null, ApiSupportConfiguration.OPTIMIZATIONS)))
                 .chain(r -> updates().applyRelatedData(r.getUsers(), r.getGroup()))
-                .chain(r -> updates().applyUpdate(r.getSeq(), r.getState(),
-                        new UpdateMessage(
-                                new ApiPeer(ApiPeerType.GROUP, r.getGroup().getId()), myUid(), 0, rid,
-                                new ApiServiceMessage("Group created", new ApiServiceExGroupCreated()),
-                                null, null)))
+                .chain(r -> updates().waitForUpdate(r.getSeq()))
                 .map(r -> r.getGroup().getId())
                 .then(integer -> {
                     if (avatarDescriptor != null) {
@@ -172,15 +143,7 @@ public class GroupsModule extends AbsModule implements BusSubscriber {
                                 rid,
                                 new ApiUserOutPeer(uid, groupUserTuple2.getT2().getAccessHash()),
                                 ApiSupportConfiguration.OPTIMIZATIONS)))
-                .flatMap(responseSeqDate ->
-                        updates().applyUpdate(
-                                responseSeqDate.getSeq(),
-                                responseSeqDate.getState(),
-                                new UpdateGroupUserInvitedObsolete(
-                                        gid, rid,
-                                        uid, myUid(),
-                                        responseSeqDate.getDate())
-                        ));
+                .flatMap(r -> updates().waitForUpdate(r.getSeq()));
     }
 
     public Promise<Void> kickMember(final int gid, final int uid) {
@@ -192,17 +155,7 @@ public class GroupsModule extends AbsModule implements BusSubscriber {
                                 rid,
                                 new ApiUserOutPeer(uid, groupUserTuple2.getT2().getAccessHash()),
                                 ApiSupportConfiguration.OPTIMIZATIONS)))
-                .flatMap(responseSeqDate ->
-                        updates().applyUpdate(
-                                responseSeqDate.getSeq(),
-                                responseSeqDate.getState(),
-                                new UpdateGroupUserKickObsolete(
-                                        gid,
-                                        rid,
-                                        uid,
-                                        myUid(),
-                                        responseSeqDate.getDate())
-                        ));
+                .flatMap(r -> updates().waitForUpdate(r.getSeq()));
     }
 
     public Promise<Void> leaveGroup(final int gid) {
@@ -213,32 +166,16 @@ public class GroupsModule extends AbsModule implements BusSubscriber {
                                 new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()),
                                 rid,
                                 ApiSupportConfiguration.OPTIMIZATIONS)))
-                .flatMap(responseSeqDate ->
-                        updates().applyUpdate(
-                                responseSeqDate.getSeq(),
-                                responseSeqDate.getState(),
-                                new UpdateGroupUserLeaveObsolete(
-                                        gid,
-                                        rid,
-                                        myUid(),
-                                        responseSeqDate.getDate())
-                        ));
+                .flatMap(r -> updates().waitForUpdate(r.getSeq()));
     }
-
 
     public Promise<Void> makeAdmin(final int gid, final int uid) {
         return Promises.tuple(getGroups().getValueAsync(gid), users().getValueAsync(uid))
                 .flatMap(groupUserTuple2 -> api(new RequestMakeUserAdminObsolete(
                         new ApiGroupOutPeer(gid, groupUserTuple2.getT1().getAccessHash()),
                         new ApiUserOutPeer(uid, groupUserTuple2.getT2().getAccessHash()))))
-                .flatMap(responseMakeUserAdmin ->
-                        updates().applyUpdate(
-                                responseMakeUserAdmin.getSeq(),
-                                responseMakeUserAdmin.getState(),
-                                new UpdateGroupMembersUpdateObsolete(gid, responseMakeUserAdmin.getMembers())
-                        ));
+                .flatMap(r -> updates().waitForUpdate(r.getSeq()));
     }
-
 
     public Promise<Void> editTitle(final int gid, final String name) {
         final long rid = RandomUtils.nextRid();
@@ -248,10 +185,7 @@ public class GroupsModule extends AbsModule implements BusSubscriber {
                                 new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()),
                                 rid, name,
                                 ApiSupportConfiguration.OPTIMIZATIONS)))
-                .flatMap(responseSeqDate -> updates().applyUpdate(
-                        responseSeqDate.getSeq(),
-                        responseSeqDate.getState(),
-                        new UpdateGroupTitleChanged(gid, name)));
+                .flatMap(r -> updates().waitForUpdate(r.getSeq()));
     }
 
     public Promise<Void> editTheme(final int gid, final String theme) {
@@ -262,14 +196,7 @@ public class GroupsModule extends AbsModule implements BusSubscriber {
                                 new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()),
                                 rid, theme,
                                 ApiSupportConfiguration.OPTIMIZATIONS)))
-                .flatMap(responseSeqDate -> updates().applyUpdate(
-                        responseSeqDate.getSeq(),
-                        responseSeqDate.getState(),
-                        new UpdateGroupTopicChangedObsolete(
-                                gid, rid,
-                                myUid(), theme,
-                                responseSeqDate.getDate())
-                ));
+                .flatMap(r -> updates().waitForUpdate(r.getSeq()));
     }
 
     public Promise<Void> editAbout(final int gid, final String about) {
@@ -279,12 +206,7 @@ public class GroupsModule extends AbsModule implements BusSubscriber {
                         api(new RequestEditGroupAbout(
                                 new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()),
                                 rid, about, ApiSupportConfiguration.OPTIMIZATIONS)))
-                .flatMap(responseSeqDate -> updates().applyUpdate(
-                        responseSeqDate.getSeq(),
-                        responseSeqDate.getState(),
-                        new UpdateGroupAboutChangedObsolete(
-                                gid, about)
-                ));
+                .flatMap(r -> updates().waitForUpdate(r.getSeq()));
     }
 
     public void changeAvatar(int gid, String descriptor) {
@@ -319,23 +241,7 @@ public class GroupsModule extends AbsModule implements BusSubscriber {
     public Promise<Integer> joinGroupByToken(final String token) {
         return api(new RequestJoinGroup(token, ApiSupportConfiguration.OPTIMIZATIONS))
                 .chain(responseJoinGroup -> updates().loadRequiredPeers(responseJoinGroup.getUserPeers(), new ArrayList<>()))
-                .chain(responseJoinGroup ->
-                        updates().applyUpdate(
-                                responseJoinGroup.getSeq(),
-                                responseJoinGroup.getState(),
-                                new UpdateMessage(
-                                        new ApiPeer(ApiPeerType.GROUP, responseJoinGroup.getGroup().getId()),
-                                        myUid(),
-                                        responseJoinGroup.getDate(),
-                                        responseJoinGroup.getRid(),
-                                        new ApiServiceMessage("Joined chat",
-                                                new ApiServiceExUserJoined()),
-                                        new ApiMessageAttributes(),
-                                        null),
-                                responseJoinGroup.getUsers(),
-                                responseJoinGroup.getGroup()
-                        )
-                )
+                .chain(r -> updates().waitForUpdate(r.getSeq()))
                 .map(responseJoinGroup -> responseJoinGroup.getGroup().getId());
     }
 

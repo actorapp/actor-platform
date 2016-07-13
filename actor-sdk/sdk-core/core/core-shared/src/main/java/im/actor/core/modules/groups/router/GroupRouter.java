@@ -25,7 +25,7 @@ import im.actor.core.api.updates.UpdateGroupMemberChanged;
 import im.actor.core.api.updates.UpdateGroupMemberDiff;
 import im.actor.core.api.updates.UpdateGroupMembersBecameAsync;
 import im.actor.core.api.updates.UpdateGroupMembersCountChanged;
-import im.actor.core.api.updates.UpdateGroupMembersUpdate;
+import im.actor.core.api.updates.UpdateGroupMembersUpdated;
 import im.actor.core.api.updates.UpdateGroupOwnerChanged;
 import im.actor.core.api.updates.UpdateGroupTitleChanged;
 import im.actor.core.api.updates.UpdateGroupTopicChanged;
@@ -302,8 +302,8 @@ public class GroupRouter extends ModuleActor {
         // Members
         //
 
-        else if (update instanceof UpdateGroupMembersUpdate) {
-            UpdateGroupMembersUpdate membersUpdate = (UpdateGroupMembersUpdate) update;
+        else if (update instanceof UpdateGroupMembersUpdated) {
+            UpdateGroupMembersUpdated membersUpdate = (UpdateGroupMembersUpdated) update;
             return onMembersChanged(membersUpdate.getGroupId(), membersUpdate.getMembers());
         } else if (update instanceof UpdateGroupMemberAdminChanged) {
             UpdateGroupMemberAdminChanged adminChanged = (UpdateGroupMemberAdminChanged) update;
