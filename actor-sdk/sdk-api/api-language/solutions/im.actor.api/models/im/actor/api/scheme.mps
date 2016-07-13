@@ -7245,7 +7245,7 @@
           <ref role="NX6Kv" node="2_$5TdnXrwN" resolve="about" />
         </node>
         <node concept="NX1gA" id="1kct6f0uHgj" role="NXodf">
-          <property role="NX6R2" value="Is Members need to be loaded asynchronous." />
+          <property role="NX6R2" value="Is Members need to be loaded asynchronous. Default is false." />
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="1kct6f0uuGS" resolve="isAsyncMembers" />
         </node>
@@ -7260,7 +7260,7 @@
           <ref role="NX6Kv" node="1kct6f0ujOq" resolve="canInvitePeople" />
         </node>
         <node concept="NX1gA" id="1kct6f0uoEg" role="NXodf">
-          <property role="NX6R2" value="Is history shared among all users." />
+          <property role="NX6R2" value="Is history shared among all users. Default is false." />
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="1kct6f0ul1$" resolve="isSharedHistory" />
         </node>

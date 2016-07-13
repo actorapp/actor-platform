@@ -12,30 +12,24 @@ import im.actor.core.api.ApiGroupOutPeer;
 import im.actor.core.api.ApiMapValue;
 import im.actor.core.api.ApiMember;
 import im.actor.core.api.rpc.RequestLoadFullGroups;
-import im.actor.core.api.updates.UpdateGroupAboutChangedObsolete;
+import im.actor.core.api.updates.UpdateGroupAboutChanged;
 import im.actor.core.api.updates.UpdateGroupAvatarChanged;
+import im.actor.core.api.updates.UpdateGroupCanInviteMembersChanged;
 import im.actor.core.api.updates.UpdateGroupCanSendMessagesChanged;
+import im.actor.core.api.updates.UpdateGroupCanViewMembersChanged;
 import im.actor.core.api.updates.UpdateGroupExtChanged;
-import im.actor.core.api.updates.UpdateGroupInviteObsolete;
+import im.actor.core.api.updates.UpdateGroupFullExtChanged;
+import im.actor.core.api.updates.UpdateGroupHistoryShared;
 import im.actor.core.api.updates.UpdateGroupMemberAdminChanged;
 import im.actor.core.api.updates.UpdateGroupMemberChanged;
 import im.actor.core.api.updates.UpdateGroupMemberDiff;
 import im.actor.core.api.updates.UpdateGroupMembersBecameAsync;
 import im.actor.core.api.updates.UpdateGroupMembersCountChanged;
 import im.actor.core.api.updates.UpdateGroupMembersUpdate;
-import im.actor.core.api.updates.UpdateGroupMembersUpdateObsolete;
+import im.actor.core.api.updates.UpdateGroupOwnerChanged;
 import im.actor.core.api.updates.UpdateGroupTitleChanged;
-import im.actor.core.api.updates.UpdateGroupTopicChangedObsolete;
-import im.actor.core.api.updates.UpdateGroupUserInvitedObsolete;
-import im.actor.core.api.updates.UpdateGroupUserKickObsolete;
-import im.actor.core.api.updates.UpdateGroupUserLeaveObsolete;
+import im.actor.core.api.updates.UpdateGroupTopicChanged;
 import im.actor.core.entity.Group;
-import im.actor.core.entity.Message;
-import im.actor.core.entity.MessageState;
-import im.actor.core.entity.content.ServiceGroupCreated;
-import im.actor.core.entity.content.ServiceGroupUserInvited;
-import im.actor.core.entity.content.ServiceGroupUserKicked;
-import im.actor.core.entity.content.ServiceGroupUserLeave;
 import im.actor.core.modules.ModuleActor;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.groups.router.entity.RouterApplyGroups;
@@ -69,187 +63,100 @@ public class GroupRouter extends ModuleActor {
 
     @Verified
     public Promise<Void> onAvatarChanged(int groupId, @Nullable ApiAvatar avatar) {
-        return forGroup(groupId, group -> {
-            Group upd = group.editAvatar(avatar);
-            groups().addOrUpdateItem(upd);
-            return onGroupDescChanged(upd);
-        });
+        return editDescGroup(groupId, group -> group.editAvatar(avatar));
     }
 
     @Verified
     public Promise<Void> onTitleChanged(int groupId, String title) {
-        return forGroup(groupId, group -> {
-            Group upd = group.editTitle(title);
-            groups().addOrUpdateItem(upd);
-            return onGroupDescChanged(upd);
-        });
+        return editDescGroup(groupId, group -> group.editTitle(title));
     }
 
     @Verified
     public Promise<Void> onCanWriteMessagesChanged(int groupId, boolean canWrite) {
-        return forGroup(groupId, group -> {
-            Group upd = group.editCanWrite(canWrite);
-            groups().addOrUpdateItem(upd);
-            return Promise.success(null);
-        });
+        return editGroup(groupId, group -> group.editCanWrite(canWrite));
     }
 
     @Verified
     public Promise<Void> onIsMemberChanged(int groupId, boolean isMember) {
-        return forGroup(groupId, group -> {
-            Group upd = group.editIsMember(isMember);
-            groups().addOrUpdateItem(upd);
-            return Promise.success(null);
-        });
+        return editGroup(groupId, group -> group.editIsMember(isMember));
     }
 
     @Verified
     public Promise<Void> onExtChanged(int groupId, ApiMapValue ext) {
-        return forGroup(groupId, group -> {
-            Group upd = group.editExt(ext);
-            groups().addOrUpdateItem(upd);
-            return Promise.success(null);
-        });
+        return editGroup(groupId, group -> group.editExt(ext));
     }
 
     //
     // Members Updates
     //
 
+    @Verified
+    public Promise<Void> onMembersChanged(int groupId, List<ApiMember> members) {
+        return editGroup(groupId, group -> group.editMembers(members));
+    }
+
+    @Verified
+    public Promise<Void> onMembersChanged(int groupId, List<ApiMember> added, List<Integer> removed, int count) {
+        return editGroup(groupId, group -> group.editMembers(added, removed, count));
+    }
+
+    @Verified
+    public Promise<Void> onMembersChanged(int groupId, int membersCount) {
+        return editGroup(groupId, group -> group.editMembersCount(membersCount));
+    }
+
+    @Verified
+    public Promise<Void> onMembersBecameAsync(int groupId) {
+        return editGroup(groupId, group -> group.editMembersBecameAsync());
+    }
+
+    @Verified
+    public Promise<Void> onMemberChangedAdmin(int groupId, int uid, Boolean isAdmin) {
+        return editGroup(groupId, group -> group.editMemberChangedAdmin(uid, isAdmin));
+    }
 
     //
     // Updates Ext
     //
 
     @Verified
-    public Promise<Void> onGroupInvite(int groupId, long rid, int inviterId, long date, boolean isSilent) {
-        return forGroup(groupId, group -> {
-
-            groups().addOrUpdateItem(group
-                    .addMember(myUid(), inviterId, date));
-
-            if (!isSilent) {
-                if (inviterId == myUid()) {
-                    // If current user invite himself, add create group message
-                    Message message = new Message(rid, date, date, inviterId,
-                            MessageState.UNKNOWN, ServiceGroupCreated.create());
-                    return getRouter().onNewMessage(group.peer(), message);
-                } else {
-                    // else add invite message
-                    Message message = new Message(rid, date, date, inviterId,
-                            MessageState.SENT, ServiceGroupUserInvited.create(myUid()));
-                    return getRouter().onNewMessage(group.peer(), message);
-                }
-            }
-
-            return Promise.success(null);
-        });
-    }
-
-    @Verified
-    public Promise<Void> onUserLeave(int groupId, long rid, int uid, long date, boolean isSilent) {
-        return forGroup(groupId, group -> {
-
-            if (uid == myUid()) {
-                // If current user leave, clear members and change member state
-                groups().addOrUpdateItem(group
-                        .clearMembers());
-            } else {
-                // else remove leaved user
-                groups().addOrUpdateItem(group
-                        .removeMember(uid));
-            }
-
-            // Create message if needed
-            if (!isSilent) {
-                Message message = new Message(rid, date, date, uid,
-                        uid == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
-                        ServiceGroupUserLeave.create());
-                return getRouter().onNewMessage(group.peer(), message);
-            }
-
-            return Promise.success(null);
-        });
-    }
-
-    @Verified
-    public Promise<Void> onUserKicked(int groupId, long rid, int uid, int kicker, long date, boolean isSilent) {
-        return forGroup(groupId, group -> {
-
-            if (uid == myUid()) {
-                // If kicked me, clear members and change member state
-                groups().addOrUpdateItem(group
-                        .clearMembers());
-            } else {
-                // else remove kicked user
-                groups().addOrUpdateItem(group
-                        .removeMember(uid));
-            }
-
-            // Create message if needed
-            if (!isSilent) {
-                Message message = new Message(rid, date, date, kicker,
-                        kicker == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
-                        ServiceGroupUserKicked.create(uid));
-                return getRouter().onNewMessage(group.peer(), message);
-            }
-
-            return Promise.success(null);
-        });
-    }
-
-    @Verified
-    public Promise<Void> onUserAdded(int groupId, long rid, int uid, int adder, long date, boolean isSilent) {
-        return forGroup(groupId, group -> {
-
-            groups().addOrUpdateItem(group.addMember(uid, adder, date));
-
-            // Create message if needed
-            if (!isSilent) {
-                Message message = new Message(rid, date, date, adder,
-                        adder == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
-                        ServiceGroupUserInvited.create(uid));
-                return getRouter().onNewMessage(group.peer(), message);
-            }
-            return Promise.success(null);
-        });
-    }
-
-    @Verified
     public Promise<Void> onTopicChanged(int groupId, String topic) {
-        return forGroup(groupId, group -> {
-
-            // Change group title
-            Group upd = group.editTheme(topic);
-
-            // Update group
-            groups().addOrUpdateItem(upd);
-
-            // Notify about group change
-            return onGroupDescChanged(upd);
-        });
+        return editGroup(groupId, group -> group.editTopic(topic));
     }
 
     @Verified
     public Promise<Void> onAboutChanged(int groupId, String about) {
-        return forGroup(groupId, group -> {
-
-            groups().addOrUpdateItem(group.editAbout(about));
-
-            return Promise.success(null);
-        });
+        return editGroup(groupId, group -> group.editAbout(about));
     }
-
 
     @Verified
-    public Promise<Void> onMembersUpdated(int groupId, List<ApiMember> members) {
-        return forGroup(groupId, group -> {
-
-            groups().addOrUpdateItem(group.updateMembers(members));
-
-            return Promise.success(null);
-        });
+    public Promise<Void> onFullExtChanged(int groupId, ApiMapValue ext) {
+        return editGroup(groupId, group -> group.editFullExt(ext));
     }
+
+    @Verified
+    public Promise<Void> onEditCanViewMembers(int groupId, boolean canViewMembers) {
+        return editGroup(groupId, group -> group.editCanViewMembers(canViewMembers));
+    }
+
+    @Verified
+    public Promise<Void> onEditCanInviteMembers(int groupId, boolean canViewMembers) {
+        return editGroup(groupId, group -> group.editCanInviteMembers(canViewMembers));
+    }
+
+    @Verified
+    public Promise<Void> onOwnerChanged(int groupId, int updatedOwner) {
+        return editGroup(groupId, group -> group.editOwner(updatedOwner));
+    }
+
+    @Verified
+    public Promise<Void> onHistoryShared(int groupId) {
+        return editGroup(groupId, group -> group.editHistoryShared());
+    }
+
+    //
+    // Wrapper
+    //
 
     private Promise<Void> forGroup(int groupId, Function<Group, Promise<Void>> func) {
         freeze();
@@ -266,6 +173,20 @@ public class GroupRouter extends ModuleActor {
                 });
     }
 
+    private Promise<Void> editGroup(int groupId, Function<Group, Group> func) {
+        return forGroup(groupId, group -> {
+            groups().addOrUpdateItem(func.apply(group));
+            return Promise.success(null);
+        });
+    }
+
+    private Promise<Void> editDescGroup(int groupId, Function<Group, Group> func) {
+        return forGroup(groupId, group -> {
+            Group g = func.apply(group);
+            groups().addOrUpdateItem(g);
+            return onGroupDescChanged(g);
+        });
+    }
 
     //
     // Entities
@@ -327,7 +248,6 @@ public class GroupRouter extends ModuleActor {
                 .after((r, e) -> unfreeze());
     }
 
-
     //
     // Tools
     //
@@ -350,6 +270,7 @@ public class GroupRouter extends ModuleActor {
         unstashAll();
     }
 
+
     //
     // Messages
     //
@@ -359,6 +280,7 @@ public class GroupRouter extends ModuleActor {
         //
         // Main
         //
+
         if (update instanceof UpdateGroupTitleChanged) {
             UpdateGroupTitleChanged titleChanged = (UpdateGroupTitleChanged) update;
             return onTitleChanged(titleChanged.getGroupId(), titleChanged.getTitle());
@@ -379,56 +301,53 @@ public class GroupRouter extends ModuleActor {
         //
         // Members
         //
+
         else if (update instanceof UpdateGroupMembersUpdate) {
             UpdateGroupMembersUpdate membersUpdate = (UpdateGroupMembersUpdate) update;
-
+            return onMembersChanged(membersUpdate.getGroupId(), membersUpdate.getMembers());
         } else if (update instanceof UpdateGroupMemberAdminChanged) {
             UpdateGroupMemberAdminChanged adminChanged = (UpdateGroupMemberAdminChanged) update;
-
+            return onMemberChangedAdmin(adminChanged.getGroupId(), adminChanged.getUserId(),
+                    adminChanged.isAdmin());
         } else if (update instanceof UpdateGroupMemberDiff) {
             UpdateGroupMemberDiff memberDiff = (UpdateGroupMemberDiff) update;
-
+            return onMembersChanged(memberDiff.getGroupId(), memberDiff.getAddedMembers(),
+                    memberDiff.getRemovedUsers(), memberDiff.getMembersCount());
         } else if (update instanceof UpdateGroupMembersBecameAsync) {
             UpdateGroupMembersBecameAsync becameAsync = (UpdateGroupMembersBecameAsync) update;
-
+            return onMembersBecameAsync(becameAsync.getGroupId());
         } else if (update instanceof UpdateGroupMembersCountChanged) {
             UpdateGroupMembersCountChanged membersCountChanged = (UpdateGroupMembersCountChanged) update;
-
+            return onMembersChanged(membersCountChanged.getGroupId(), membersCountChanged.getMembersCount());
         }
 
         //
         // Ext
         //
 
-        else if (update instanceof UpdateGroupTopicChangedObsolete) {
-            UpdateGroupTopicChangedObsolete topicChanged = (UpdateGroupTopicChangedObsolete) update;
+        else if (update instanceof UpdateGroupTopicChanged) {
+            UpdateGroupTopicChanged topicChanged = (UpdateGroupTopicChanged) update;
             return onTopicChanged(topicChanged.getGroupId(), topicChanged.getTopic());
-        } else if (update instanceof UpdateGroupAboutChangedObsolete) {
-            UpdateGroupAboutChangedObsolete aboutChanged = (UpdateGroupAboutChangedObsolete) update;
+        } else if (update instanceof UpdateGroupAboutChanged) {
+            UpdateGroupAboutChanged aboutChanged = (UpdateGroupAboutChanged) update;
             return onAboutChanged(aboutChanged.getGroupId(), aboutChanged.getAbout());
-        } else if (update instanceof UpdateGroupInviteObsolete) {
-            UpdateGroupInviteObsolete groupInvite = (UpdateGroupInviteObsolete) update;
-            return onGroupInvite(groupInvite.getGroupId(),
-                    groupInvite.getRid(), groupInvite.getInviteUid(), groupInvite.getDate(),
-                    false);
-        } else if (update instanceof UpdateGroupUserLeaveObsolete) {
-            UpdateGroupUserLeaveObsolete leave = (UpdateGroupUserLeaveObsolete) update;
-            return onUserLeave(leave.getGroupId(), leave.getRid(), leave.getUid(),
-                    leave.getDate(), false);
-        } else if (update instanceof UpdateGroupUserKickObsolete) {
-            UpdateGroupUserKickObsolete userKick = (UpdateGroupUserKickObsolete) update;
-            return onUserKicked(userKick.getGroupId(),
-                    userKick.getRid(), userKick.getUid(), userKick.getKickerUid(), userKick.getDate(),
-                    false);
-        } else if (update instanceof UpdateGroupUserInvitedObsolete) {
-            UpdateGroupUserInvitedObsolete userInvited = (UpdateGroupUserInvitedObsolete) update;
-            return onUserAdded(userInvited.getGroupId(),
-                    userInvited.getRid(), userInvited.getUid(), userInvited.getInviterUid(), userInvited.getDate(),
-                    false);
-        } else if (update instanceof UpdateGroupMembersUpdateObsolete) {
-            return onMembersUpdated(((UpdateGroupMembersUpdateObsolete) update).getGroupId(),
-                    ((UpdateGroupMembersUpdateObsolete) update).getMembers());
+        } else if (update instanceof UpdateGroupHistoryShared) {
+            UpdateGroupHistoryShared historyShared = (UpdateGroupHistoryShared) update;
+            return onHistoryShared(historyShared.getGroupId());
+        } else if (update instanceof UpdateGroupOwnerChanged) {
+            UpdateGroupOwnerChanged ownerChanged = (UpdateGroupOwnerChanged) update;
+            return onOwnerChanged(ownerChanged.getGroupId(), ownerChanged.getUserId());
+        } else if (update instanceof UpdateGroupCanViewMembersChanged) {
+            UpdateGroupCanViewMembersChanged membersChanged = (UpdateGroupCanViewMembersChanged) update;
+            return onEditCanViewMembers(membersChanged.getGroupId(), membersChanged.canViewMembers());
+        } else if (update instanceof UpdateGroupCanInviteMembersChanged) {
+            UpdateGroupCanInviteMembersChanged changed = (UpdateGroupCanInviteMembersChanged) update;
+            return onEditCanInviteMembers(changed.getGroupId(), changed.canInviteMembers());
+        } else if (update instanceof UpdateGroupFullExtChanged) {
+            UpdateGroupFullExtChanged extChanged = (UpdateGroupFullExtChanged) update;
+            return onFullExtChanged(extChanged.getGroupId(), extChanged.getExt());
         }
+
         return Promise.success(null);
     }
 

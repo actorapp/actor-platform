@@ -22,11 +22,13 @@ public class UpdateGroupMemberDiff extends Update {
         return Bser.parse(new UpdateGroupMemberDiff(), data);
     }
 
+    private int groupId;
     private List<Integer> removedUsers;
     private List<ApiMember> addedMembers;
     private int membersCount;
 
-    public UpdateGroupMemberDiff(@NotNull List<Integer> removedUsers, @NotNull List<ApiMember> addedMembers, int membersCount) {
+    public UpdateGroupMemberDiff(int groupId, @NotNull List<Integer> removedUsers, @NotNull List<ApiMember> addedMembers, int membersCount) {
+        this.groupId = groupId;
         this.removedUsers = removedUsers;
         this.addedMembers = addedMembers;
         this.membersCount = membersCount;
@@ -34,6 +36,10 @@ public class UpdateGroupMemberDiff extends Update {
 
     public UpdateGroupMemberDiff() {
 
+    }
+
+    public int getGroupId() {
+        return this.groupId;
     }
 
     @NotNull
@@ -52,20 +58,22 @@ public class UpdateGroupMemberDiff extends Update {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.removedUsers = values.getRepeatedInt(1);
+        this.groupId = values.getInt(1);
+        this.removedUsers = values.getRepeatedInt(2);
         List<ApiMember> _addedMembers = new ArrayList<ApiMember>();
-        for (int i = 0; i < values.getRepeatedCount(2); i ++) {
+        for (int i = 0; i < values.getRepeatedCount(3); i ++) {
             _addedMembers.add(new ApiMember());
         }
-        this.addedMembers = values.getRepeatedObj(2, _addedMembers);
-        this.membersCount = values.getInt(3);
+        this.addedMembers = values.getRepeatedObj(3, _addedMembers);
+        this.membersCount = values.getInt(4);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeRepeatedInt(1, this.removedUsers);
-        writer.writeRepeatedObj(2, this.addedMembers);
-        writer.writeInt(3, this.membersCount);
+        writer.writeInt(1, this.groupId);
+        writer.writeRepeatedInt(2, this.removedUsers);
+        writer.writeRepeatedObj(3, this.addedMembers);
+        writer.writeInt(4, this.membersCount);
     }
 
     @Override

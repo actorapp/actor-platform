@@ -55,6 +55,7 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
     private boolean canWrite;
     @NotNull
     @Property("readonly, nonatomic")
+    @SuppressWarnings("NullableProblems")
     private GroupType groupType;
 
     //
@@ -62,10 +63,10 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
     //
 
     @Property("readonly, nonatomic")
-    private int creatorId;
+    private int ownerId;
     @Nullable
     @Property("readonly, nonatomic")
-    private String theme;
+    private String topic;
     @Nullable
     @Property("readonly, nonatomic")
     private String about;
@@ -73,6 +74,14 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
     @Property("readonly, nonatomic")
     @SuppressWarnings("NullableProblems")
     private List<GroupMember> members;
+    @Property("readonly, nonatomic")
+    private boolean isAsyncMembers;
+    @Property("readonly, nonatomic")
+    private boolean isCanInviteMembers;
+    @Property("readonly, nonatomic")
+    private boolean isCanViewMembers;
+    @Property("readonly, nonatomic")
+    private boolean isSharedHistory;
 
     @Property("readonly, nonatomic")
     private boolean haveExtension;
@@ -146,8 +155,8 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
     }
 
     @Nullable
-    public String getTheme() {
-        return theme;
+    public String getTopic() {
+        return topic;
     }
 
     @Nullable
@@ -155,8 +164,24 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
         return about;
     }
 
-    public int getCreatorId() {
-        return creatorId;
+    public int getOwnerId() {
+        return ownerId;
+    }
+
+    public boolean isAsyncMembers() {
+        return isAsyncMembers;
+    }
+
+    public boolean isCanInviteMembers() {
+        return isCanInviteMembers;
+    }
+
+    public boolean isCanViewMembers() {
+        return isCanViewMembers;
+    }
+
+    public boolean isSharedHistory() {
+        return isSharedHistory;
     }
 
     public boolean isHaveExtension() {
@@ -256,6 +281,102 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
         return new Group(res, getWrappedExt());
     }
 
+    //
+    // Members
+    //
+
+    public Group editMembers(List<ApiMember> members) {
+        ApiGroupFull fullExt = null;
+        if (getWrappedExt() != null) {
+            ApiGroupFull e = getWrappedExt();
+            fullExt = new ApiGroupFull(e.getId(),
+                    e.getCreateDate(),
+                    e.getOwnerUid(),
+                    members,
+                    e.getTheme(),
+                    e.getAbout(),
+                    e.getExt(),
+                    e.isAsyncMembers(),
+                    e.canViewMembers(),
+                    e.canInvitePeople(),
+                    e.isSharedHistory());
+            fullExt.setUnmappedObjects(e.getUnmappedObjects());
+        }
+
+        ApiGroup w = getWrapped();
+        ApiGroup res = new ApiGroup(
+                w.getId(),
+                w.getAccessHash(),
+                w.getTitle(),
+                w.getAvatar(),
+                members.size(),
+                w.isMember(),
+                w.isHidden(),
+                w.getGroupType(),
+                w.canSendMessage(),
+                w.getExt());
+
+        return new Group(res, fullExt);
+    }
+
+    public Group editMembers(List<ApiMember> added, List<Integer> removed, int count) {
+        ApiGroupFull fullExt = null;
+        if (getWrappedExt() != null) {
+            ApiGroupFull e = getWrappedExt();
+
+            ArrayList<ApiMember> nMembers = new ArrayList<>(e.getMembers());
+
+            // Remove members
+            for (Integer i : removed) {
+                for (ApiMember m : nMembers) {
+                    if (m.getUid() == i) {
+                        nMembers.remove(m);
+                        break;
+                    }
+                }
+            }
+            // Adding members
+            outer:
+            for (ApiMember a : added) {
+                for (ApiMember m : nMembers) {
+                    if (m.getUid() == a.getUid()) {
+                        nMembers.remove(m);
+                        continue outer;
+                    }
+                }
+                nMembers.add(a);
+            }
+
+            fullExt = new ApiGroupFull(e.getId(),
+                    e.getCreateDate(),
+                    e.getOwnerUid(),
+                    nMembers,
+                    e.getTheme(),
+                    e.getAbout(),
+                    e.getExt(),
+                    e.isAsyncMembers(),
+                    e.canViewMembers(),
+                    e.canInvitePeople(),
+                    e.isSharedHistory());
+            fullExt.setUnmappedObjects(e.getUnmappedObjects());
+        }
+
+        ApiGroup w = getWrapped();
+        ApiGroup res = new ApiGroup(
+                w.getId(),
+                w.getAccessHash(),
+                w.getTitle(),
+                w.getAvatar(),
+                count,
+                w.isMember(),
+                w.isHidden(),
+                w.getGroupType(),
+                w.canSendMessage(),
+                w.getExt());
+
+        return new Group(res, fullExt);
+    }
+
     public Group editMembersCount(int membersCount) {
         ApiGroup w = getWrapped();
         ApiGroup res = new ApiGroup(
@@ -273,174 +394,213 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
         return new Group(res, getWrappedExt());
     }
 
+    public Group editMembersBecameAsync() {
+        if (getWrappedExt() != null) {
+            ApiGroupFull e = getWrappedExt();
+            ApiGroupFull fullExt = new ApiGroupFull(e.getId(),
+                    e.getCreateDate(),
+                    e.getOwnerUid(),
+                    new ArrayList<>(),
+                    e.getTheme(),
+                    e.getAbout(),
+                    e.getExt(),
+                    true,
+                    e.canViewMembers(),
+                    e.canInvitePeople(),
+                    e.isSharedHistory());
+            fullExt.setUnmappedObjects(e.getUnmappedObjects());
+
+            return new Group(getWrapped(), fullExt);
+        } else {
+            return this;
+        }
+    }
+
+    public Group editMemberChangedAdmin(int uid, Boolean isAdmin) {
+        if (getWrappedExt() != null) {
+            ApiGroupFull e = getWrappedExt();
+
+            ArrayList<ApiMember> nMembers = new ArrayList<>(e.getMembers());
+            for (int i = 0; i < nMembers.size(); i++) {
+                ApiMember m = nMembers.get(i);
+                if (m.getUid() == uid) {
+                    nMembers.remove(m);
+                    nMembers.add(i, new ApiMember(m.getUid(), m.getInviterUid(),
+                            m.getDate(), isAdmin));
+                    break;
+                }
+            }
+
+            ApiGroupFull fullExt = new ApiGroupFull(e.getId(),
+                    e.getCreateDate(),
+                    e.getOwnerUid(),
+                    nMembers,
+                    e.getTheme(),
+                    e.getAbout(),
+                    e.getExt(),
+                    e.isAsyncMembers(),
+                    e.canViewMembers(),
+                    e.canInvitePeople(),
+                    e.isSharedHistory());
+            fullExt.setUnmappedObjects(e.getUnmappedObjects());
+
+            return new Group(getWrapped(), fullExt);
+        } else {
+            return this;
+        }
+    }
+
     //
     // Editing Ext
     //
 
-    public Group editTheme(String theme) {
-//        ApiGroup w = getWrapped();
-//        ApiGroup res = new ApiGroup(
-//                w.getId(),
-//                w.getAccessHash(),
-//                w.getTitle(),
-//                w.getAvatar(),
-//                w.getMembersCount(),
-//                w.isMember(),
-//                w.isHidden(),
-//                w.getGroupType(),
-//                w.canSendMessage(),
-//                w.getExt(),
-//
-//                w.isAdmin(),
-//                w.getCreatorUid(),
-//                w.getMembers(),
-//                w.getCreateDate(),
-//                theme,
-//                w.getAbout());
-//        res.setUnmappedObjects(w.getUnmappedObjects());
-//        return new Group(res);
-        return this;
+    public Group editTopic(String topic) {
+        if (getWrappedExt() != null) {
+            ApiGroupFull e = getWrappedExt();
+            ApiGroupFull fullExt = new ApiGroupFull(e.getId(),
+                    e.getCreateDate(),
+                    e.getOwnerUid(),
+                    e.getMembers(),
+                    topic,
+                    e.getAbout(),
+                    e.getExt(),
+                    e.isAsyncMembers(),
+                    e.canViewMembers(),
+                    e.canInvitePeople(),
+                    e.isSharedHistory());
+            fullExt.setUnmappedObjects(e.getUnmappedObjects());
+            return new Group(getWrapped(), fullExt);
+        } else {
+            return this;
+        }
     }
 
     public Group editAbout(String about) {
-//        ApiGroup w = getWrapped();
-//        ApiGroup res = new ApiGroup(
-//                w.getId(),
-//                w.getAccessHash(),
-//                w.getTitle(),
-//                w.getAvatar(),
-//                w.getMembersCount(),
-//                w.isMember(),
-//                w.isHidden(),
-//                w.getGroupType(),
-//                w.canSendMessage(),
-//                w.getExt(),
-//
-//                w.isAdmin(),
-//                w.getCreatorUid(),
-//                w.getMembers(),
-//                w.getCreateDate(),
-//                w.getTheme(),
-//                about);
-//        res.setUnmappedObjects(w.getUnmappedObjects());
-//        return new Group(res);
-        return this;
+        if (getWrappedExt() != null) {
+            ApiGroupFull e = getWrappedExt();
+            ApiGroupFull fullExt = new ApiGroupFull(e.getId(),
+                    e.getCreateDate(),
+                    e.getOwnerUid(),
+                    e.getMembers(),
+                    e.getTheme(),
+                    about,
+                    e.getExt(),
+                    e.isAsyncMembers(),
+                    e.canViewMembers(),
+                    e.canInvitePeople(),
+                    e.isSharedHistory());
+            fullExt.setUnmappedObjects(e.getUnmappedObjects());
+            return new Group(getWrapped(), fullExt);
+        } else {
+            return this;
+        }
     }
 
-
-    public Group clearMembers() {
-//        ApiGroup w = getWrapped();
-//        ApiGroup res = new ApiGroup(
-//                w.getId(),
-//                w.getAccessHash(),
-//                w.getTitle(),
-//                w.getAvatar(),
-//                w.getMembersCount(),
-//                w.isMember(),
-//                w.isHidden(),
-//                w.getGroupType(),
-//                w.canSendMessage(),
-//                w.getExt(),
-//
-//                w.isAdmin(),
-//                w.getCreatorUid(),
-//                new ArrayList<>(),
-//                w.getCreateDate(),
-//                w.getTheme(),
-//                w.getAbout());
-//        res.setUnmappedObjects(w.getUnmappedObjects());
-//        return new Group(res);
-        return this;
+    public Group editFullExt(ApiMapValue ext) {
+        if (getWrappedExt() != null) {
+            ApiGroupFull e = getWrappedExt();
+            ApiGroupFull fullExt = new ApiGroupFull(e.getId(),
+                    e.getCreateDate(),
+                    e.getOwnerUid(),
+                    e.getMembers(),
+                    e.getTheme(),
+                    e.getAbout(),
+                    ext,
+                    e.isAsyncMembers(),
+                    e.canViewMembers(),
+                    e.canInvitePeople(),
+                    e.isSharedHistory());
+            fullExt.setUnmappedObjects(e.getUnmappedObjects());
+            return new Group(getWrapped(), fullExt);
+        } else {
+            return this;
+        }
     }
 
-    public Group removeMember(int uid) {
-//        ApiGroup w = getWrapped();
-//        ArrayList<ApiMember> nMembers = new ArrayList<>();
-//        for (ApiMember member : w.getMembers()) {
-//            if (member.getUid() != uid) {
-//                nMembers.add(member);
-//            }
-//        }
-//
-//        ApiGroup res = new ApiGroup(
-//                w.getId(),
-//                w.getAccessHash(),
-//                w.getTitle(),
-//                w.getAvatar(),
-//                w.getMembersCount(),
-//                w.isMember(),
-//                w.isHidden(),
-//                w.getGroupType(),
-//                w.canSendMessage(),
-//                w.getExt(),
-//
-//                w.isAdmin(),
-//                w.getCreatorUid(),
-//                nMembers,
-//                w.getCreateDate(),
-//                w.getTheme(),
-//                w.getAbout());
-//        res.setUnmappedObjects(w.getUnmappedObjects());
-//        return new Group(res);
-        return this;
+    public Group editCanViewMembers(boolean canViewMembers) {
+        if (getWrappedExt() != null) {
+            ApiGroupFull e = getWrappedExt();
+            ApiGroupFull fullExt = new ApiGroupFull(e.getId(),
+                    e.getCreateDate(),
+                    e.getOwnerUid(),
+                    e.getMembers(),
+                    e.getTheme(),
+                    e.getAbout(),
+                    e.getExt(),
+                    e.isAsyncMembers(),
+                    canViewMembers,
+                    e.canInvitePeople(),
+                    e.isSharedHistory());
+            fullExt.setUnmappedObjects(e.getUnmappedObjects());
+            return new Group(getWrapped(), fullExt);
+        } else {
+            return this;
+        }
     }
 
-    public Group addMember(int uid, int inviterUid, long inviteDate) {
-//        ApiGroup w = getWrapped();
-//        ArrayList<ApiMember> nMembers = new ArrayList<>();
-//        for (ApiMember member : w.getMembers()) {
-//            if (member.getUid() != uid) {
-//                nMembers.add(member);
-//            }
-//        }
-//        nMembers.add(new ApiMember(uid, inviterUid, inviteDate, null));
-//        ApiGroup res = new ApiGroup(
-//                w.getId(),
-//                w.getAccessHash(),
-//                w.getTitle(),
-//                w.getAvatar(),
-//                w.getMembersCount(),
-//                w.isMember(),
-//                w.isHidden(),
-//                w.getGroupType(),
-//                w.canSendMessage(),
-//                w.getExt(),
-//
-//                w.isAdmin(),
-//                w.getCreatorUid(),
-//                nMembers,
-//                w.getCreateDate(),
-//                w.getTheme(),
-//                w.getAbout());
-//        res.setUnmappedObjects(w.getUnmappedObjects());
-//        return new Group(res);
-        return this;
+    public Group editCanInviteMembers(boolean canInviteMembers) {
+        if (getWrappedExt() != null) {
+            ApiGroupFull e = getWrappedExt();
+            ApiGroupFull fullExt = new ApiGroupFull(e.getId(),
+                    e.getCreateDate(),
+                    e.getOwnerUid(),
+                    e.getMembers(),
+                    e.getTheme(),
+                    e.getAbout(),
+                    e.getExt(),
+                    e.isAsyncMembers(),
+                    e.canViewMembers(),
+                    canInviteMembers,
+                    e.isSharedHistory());
+            fullExt.setUnmappedObjects(e.getUnmappedObjects());
+            return new Group(getWrapped(), fullExt);
+        } else {
+            return this;
+        }
     }
 
-    public Group updateMembers(List<ApiMember> nMembers) {
-//        ApiGroup w = getWrapped();
-//        ApiGroup res = new ApiGroup(
-//                w.getId(),
-//                w.getAccessHash(),
-//                w.getTitle(),
-//                w.getAvatar(),
-//                w.getMembersCount(),
-//                w.isMember(),
-//                w.isHidden(),
-//                w.getGroupType(),
-//                w.canSendMessage(),
-//                w.getExt(),
-//
-//                w.isAdmin(),
-//                w.getCreatorUid(),
-//                nMembers,
-//                w.getCreateDate(),
-//                w.getTheme(),
-//                w.getAbout());
-//        res.setUnmappedObjects(w.getUnmappedObjects());
-//        return new Group(res);
-        return this;
+    public Group editOwner(int uid) {
+        if (getWrappedExt() != null) {
+            ApiGroupFull e = getWrappedExt();
+            ApiGroupFull fullExt = new ApiGroupFull(e.getId(),
+                    e.getCreateDate(),
+                    uid,
+                    e.getMembers(),
+                    e.getTheme(),
+                    e.getAbout(),
+                    e.getExt(),
+                    e.isAsyncMembers(),
+                    e.canViewMembers(),
+                    e.canInvitePeople(),
+                    e.isSharedHistory());
+            fullExt.setUnmappedObjects(e.getUnmappedObjects());
+            return new Group(getWrapped(), fullExt);
+        } else {
+            return this;
+        }
     }
+
+    public Group editHistoryShared() {
+        if (getWrappedExt() != null) {
+            ApiGroupFull e = getWrappedExt();
+            ApiGroupFull fullExt = new ApiGroupFull(e.getId(),
+                    e.getCreateDate(),
+                    e.getOwnerUid(),
+                    e.getMembers(),
+                    e.getTheme(),
+                    e.getAbout(),
+                    e.getExt(),
+                    e.isAsyncMembers(),
+                    e.canViewMembers(),
+                    e.canInvitePeople(),
+                    true);
+            fullExt.setUnmappedObjects(e.getUnmappedObjects());
+            return new Group(getWrapped(), fullExt);
+        } else {
+            return this;
+        }
+    }
+
 
     @Override
     protected void applyWrapped(@NotNull ApiGroup wrapped, @Nullable ApiGroupFull ext) {
@@ -477,24 +637,35 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
             this.canWrite = this.groupType == GroupType.GROUP;
         }
 
-
         //
         // Ext
         //
 
         if (ext != null) {
-            haveExtension = true;
+            this.haveExtension = true;
+            this.ownerId = ext.getOwnerUid();
+            this.about = ext.getAbout();
+            this.topic = ext.getTheme();
+            this.isAsyncMembers = ext.isAsyncMembers() != null ? ext.isAsyncMembers() : false;
+            this.isCanViewMembers = ext.canViewMembers() != null ? ext.canViewMembers() : true;
+            this.isCanInviteMembers = ext.canViewMembers() != null ? ext.canViewMembers() : true;
+            this.isSharedHistory = ext.isSharedHistory() != null ? ext.isSharedHistory() : false;
+            this.members = new ArrayList<>();
+            for (ApiMember m : ext.getMembers()) {
+                this.members.add(new GroupMember(m.getUid(), m.getInviterUid(), m.getDate(),
+                        m.isAdmin() != null ? m.isAdmin() : false));
+            }
         } else {
-            haveExtension = false;
+            this.haveExtension = false;
+            this.ownerId = 0;
+            this.about = null;
+            this.topic = null;
+            this.isAsyncMembers = false;
+            this.isCanViewMembers = false;
+            this.isCanInviteMembers = false;
+            this.isSharedHistory = false;
+            this.members = new ArrayList<>();
         }
-
-        // this.creatorId = wrapped.getCreatorUid();
-        // this.members = new ArrayList<>();
-        // for (ApiMember m : wrapped.getMembers()) {
-        //this.members.add(new GroupMember(m.getUid(), m.getInviterUid(), m.getDate(), m.isAdmin() != null ? m.isAdmin() : m.getUid() == this.creatorId));
-        // }
-        // this.about = wrapped.getAbout();
-        // this.theme = wrapped.getTheme();
     }
 
     @Override

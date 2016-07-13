@@ -80,16 +80,16 @@ public class GroupVM extends BaseValueModel<Group> {
     public GroupVM(@NotNull Group rawObj) {
         super(rawObj);
         this.groupId = rawObj.getGroupId();
-        this.creatorId = rawObj.getCreatorId();
+        this.creatorId = rawObj.getOwnerId();
         this.name = new StringValueModel("group." + groupId + ".title", rawObj.getTitle());
         this.avatar = new AvatarValueModel("group." + groupId + ".avatar", rawObj.getAvatar());
         this.isMember = new BooleanValueModel("group." + groupId + ".isMember", rawObj.isMember());
         this.membersCount = new IntValueModel("group." + groupId + ".membersCount", rawObj.getMembersCount());
         this.isCanWriteMessage = new BooleanValueModel("group." + groupId + ".can_write", rawObj.isCanWrite());
 
-        this.members = new ValueModel<>("group." + groupId + ".members", new HashSet<>());
+        this.members = new ValueModel<>("group." + groupId + ".members", new HashSet<>(rawObj.getMembers()));
         this.presence = new ValueModel<>("group." + groupId + ".presence", 0);
-        this.theme = new StringValueModel("group." + groupId + ".theme", rawObj.getTheme());
+        this.theme = new StringValueModel("group." + groupId + ".theme", rawObj.getTopic());
         this.about = new StringValueModel("group." + groupId + ".about", rawObj.getAbout());
     }
 
@@ -197,9 +197,9 @@ public class GroupVM extends BaseValueModel<Group> {
         isChanged |= membersCount.change(rawObj.getMembersCount());
         isChanged |= isMember.change(rawObj.isMember());
 
-        isChanged |= theme.change(rawObj.getTheme());
+        isChanged |= theme.change(rawObj.getTopic());
         isChanged |= about.change(rawObj.getAbout());
-        isChanged |= members.change(new HashSet<>());
+        isChanged |= members.change(new HashSet<>(rawObj.getMembers()));
 
         if (isChanged) {
             notifyChange();
