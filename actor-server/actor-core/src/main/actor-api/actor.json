@@ -10011,8 +10011,8 @@
               },
               {
                 "type": {
-                  "type": "alias",
-                  "childType": "userId"
+                  "type": "struct",
+                  "childType": "UserOutPeer"
                 },
                 "id": 2,
                 "name": "newOwner"
