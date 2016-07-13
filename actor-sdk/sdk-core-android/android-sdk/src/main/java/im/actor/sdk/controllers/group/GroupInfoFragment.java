@@ -76,6 +76,8 @@ public class GroupInfoFragment extends BaseFragment {
     public void onCreate(Bundle saveInstance) {
         super.onCreate(saveInstance);
         setRootFragment(true);
+        setHomeAsUp(true);
+        setShowHome(true);
     }
 
     @Override
