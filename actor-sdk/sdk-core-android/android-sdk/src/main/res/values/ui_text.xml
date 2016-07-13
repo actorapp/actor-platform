@@ -333,8 +333,8 @@
 
     <string name="group_admin">admin</string>
 
-    <string name="group_created_by">Created by {0}</string>
-    <string name="group_created_by_you">Created by You</string>
+    <string name="group_created_by">Owned by {0}</string>
+    <string name="group_created_by_you">Owned by You</string>
 
     <string name="group_adding">Adding to group…</string>
     <string name="group_removing">Removing from group…</string>

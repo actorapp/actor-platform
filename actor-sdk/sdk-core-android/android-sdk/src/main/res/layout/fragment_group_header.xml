@@ -125,14 +125,14 @@
                 android:id="@+id/about"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/about_hint"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/about_group"
-                android:textSize="16sp" />
+                android:textSize="14sp" />
 
         </LinearLayout>
 

@@ -323,8 +323,8 @@
 
     <string name="group_admin">админ.</string>
 
-    <string name="group_created_by">Создан {0}</string>
-    <string name="group_created_by_you">Создан Вами</string>
+    <string name="group_created_by">Владелец {0}</string>
+    <string name="group_created_by_you">Вы владелец</string>
 
     <string name="group_adding">Добавление в группу…</string>
     <string name="group_removing">Исключение из группы…</string>

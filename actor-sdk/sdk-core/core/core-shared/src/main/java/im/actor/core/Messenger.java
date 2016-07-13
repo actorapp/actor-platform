@@ -1529,6 +1529,19 @@ public class Messenger {
     }
 
     /**
+     * Transfer ownership of group
+     *
+     * @param gid group's id
+     * @param uid user's id
+     * @return Promise of void
+     */
+    @Nullable
+    @ObjectiveCName("transferOwnershipWithGid:withUid:")
+    public Promise<Void> transferOwnership(int gid, int uid) {
+        return modules.getGroupsModule().transferOwnership(gid, uid);
+    }
+
+    /**
      * Request invite link for group
      *
      * @param gid group's id

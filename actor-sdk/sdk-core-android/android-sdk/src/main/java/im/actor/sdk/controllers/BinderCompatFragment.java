@@ -8,6 +8,7 @@ import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.mvvm.Value;
 import im.actor.runtime.mvvm.ValueDoubleChangedListener;
+import im.actor.runtime.mvvm.ValueListener;
 import im.actor.sdk.view.avatar.AvatarView;
 import im.actor.sdk.view.avatar.CoverAvatarView;
 import im.actor.runtime.mvvm.ValueChangedListener;
@@ -32,6 +33,10 @@ public class BinderCompatFragment extends android.support.v4.app.Fragment {
     }
 
     public <T> void bind(ValueModel<T> value, ValueChangedListener<T> listener) {
+        BINDER.bind(value, listener);
+    }
+
+    public <T> void bind(ValueModel<T> value, ValueListener<T> listener) {
         BINDER.bind(value, listener);
     }
 

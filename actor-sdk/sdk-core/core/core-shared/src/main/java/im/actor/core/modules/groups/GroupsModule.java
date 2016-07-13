@@ -25,6 +25,7 @@ import im.actor.core.api.rpc.RequestLeaveGroup;
 import im.actor.core.api.rpc.RequestMakeUserAdminObsolete;
 import im.actor.core.api.rpc.RequestRevokeIntegrationToken;
 import im.actor.core.api.rpc.RequestRevokeInviteUrl;
+import im.actor.core.api.rpc.RequestTransferOwnership;
 import im.actor.core.api.rpc.ResponseIntegrationToken;
 import im.actor.core.api.rpc.ResponseInviteUrl;
 import im.actor.core.entity.Group;
@@ -174,6 +175,14 @@ public class GroupsModule extends AbsModule implements BusSubscriber {
                 .flatMap(groupUserTuple2 -> api(new RequestMakeUserAdminObsolete(
                         new ApiGroupOutPeer(gid, groupUserTuple2.getT1().getAccessHash()),
                         new ApiUserOutPeer(uid, groupUserTuple2.getT2().getAccessHash()))))
+                .flatMap(r -> updates().waitForUpdate(r.getSeq()));
+    }
+
+    public Promise<Void> transferOwnership(final int gid, final int uid) {
+        return Promises.tuple(getGroups().getValueAsync(gid), users().getValueAsync(uid))
+                .flatMap(groupUserTuple2 -> api(new RequestTransferOwnership(
+                        new ApiGroupOutPeer(gid, groupUserTuple2.getT1().getAccessHash()),
+                        uid)))
                 .flatMap(r -> updates().waitForUpdate(r.getSeq()));
     }
 

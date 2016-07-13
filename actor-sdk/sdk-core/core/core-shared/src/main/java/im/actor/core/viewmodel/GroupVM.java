@@ -8,12 +8,10 @@ import com.google.j2objc.annotations.ObjectiveCName;
 import com.google.j2objc.annotations.Property;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import im.actor.core.entity.Group;
 import im.actor.core.entity.GroupMember;
@@ -57,7 +55,7 @@ public class GroupVM extends BaseValueModel<Group> {
     private ValueModel<HashSet<GroupMember>> members;
 
     @Property("nonatomic, readonly")
-    private int creatorId;
+    private IntValueModel ownerId;
     @NotNull
     @Property("nonatomic, readonly")
     private ValueModel<Integer> presence;
@@ -69,7 +67,7 @@ public class GroupVM extends BaseValueModel<Group> {
     private StringValueModel about;
 
     @NotNull
-    private CopyOnWriteArrayList<ModelChangedListener<GroupVM>> listeners = new CopyOnWriteArrayList<>();
+    private ArrayList<ModelChangedListener<GroupVM>> listeners = new ArrayList<>();
 
     /**
      * <p>INTERNAL API</p>
@@ -80,13 +78,13 @@ public class GroupVM extends BaseValueModel<Group> {
     public GroupVM(@NotNull Group rawObj) {
         super(rawObj);
         this.groupId = rawObj.getGroupId();
-        this.creatorId = rawObj.getOwnerId();
         this.name = new StringValueModel("group." + groupId + ".title", rawObj.getTitle());
         this.avatar = new AvatarValueModel("group." + groupId + ".avatar", rawObj.getAvatar());
         this.isMember = new BooleanValueModel("group." + groupId + ".isMember", rawObj.isMember());
         this.membersCount = new IntValueModel("group." + groupId + ".membersCount", rawObj.getMembersCount());
         this.isCanWriteMessage = new BooleanValueModel("group." + groupId + ".can_write", rawObj.isCanWrite());
 
+        this.ownerId = new IntValueModel("group." + groupId + ".membersCount", rawObj.getOwnerId());
         this.members = new ValueModel<>("group." + groupId + ".members", new HashSet<>(rawObj.getMembers()));
         this.presence = new ValueModel<>("group." + groupId + ".presence", 0);
         this.theme = new StringValueModel("group." + groupId + ".theme", rawObj.getTopic());
@@ -159,13 +157,13 @@ public class GroupVM extends BaseValueModel<Group> {
     }
 
     /**
-     * Get Group creator user id
+     * Get Group owner user id model
      *
-     * @return creator user id
+     * @return creator owner id model
      */
-    @ObjectiveCName("getCreatorId")
-    public int getCreatorId() {
-        return creatorId;
+    @ObjectiveCName("getCreatorIdModel")
+    public IntValueModel getOwnerId() {
+        return ownerId;
     }
 
     /**
@@ -200,6 +198,7 @@ public class GroupVM extends BaseValueModel<Group> {
         isChanged |= theme.change(rawObj.getTopic());
         isChanged |= about.change(rawObj.getAbout());
         isChanged |= members.change(new HashSet<>(rawObj.getMembers()));
+        isChanged |= ownerId.change(rawObj.getOwnerId());
 
         if (isChanged) {
             notifyChange();
