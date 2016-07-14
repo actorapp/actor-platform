@@ -1,32 +1,39 @@
 package im.actor.core.modules.encryption.ratchet;
 
-import org.jetbrains.annotations.NotNull;
+import java.util.List;
 
 import im.actor.core.api.ApiEncryptedBox;
 import im.actor.core.api.ApiEncryptedContent;
-import im.actor.core.api.ApiMessage;
+import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.encryption.ratchet.entity.EncryptedMessage;
 import im.actor.runtime.actors.ActorInterface;
-import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.promise.Promise;
+
+import static im.actor.runtime.actors.ActorSystem.system;
 
 /**
  * Entry point for message encryption
  */
 public class EncryptedMsg extends ActorInterface {
 
-    public EncryptedMsg(@NotNull ActorRef dest) {
-        super(dest);
+    /**
+     * Constructor of encrypted messaging interface
+     *
+     * @param context context
+     */
+    public EncryptedMsg(ModuleContext context) {
+        super(system().actorOf("encryption/messaging", () -> new EncryptedMsgActor(context)));
     }
 
     /**
-     * Encrypt Message for private secret chat
+     * Encrypt Message for secret chats
      *
-     * @param uid     user's id
+     * @param uids    User's ids. Add own UID for sending to other devices
      * @param message message content
      * @return promise of encrypted message
      */
-    public Promise<ApiEncryptedBox> encrypt(int uid, ApiEncryptedContent message) {
-        return ask(new EncryptedMsgActor.EncryptMessage(uid, message));
+    public Promise<EncryptedMessage> encrypt(List<Integer> uids, ApiEncryptedContent message) {
+        return ask(new EncryptedMsgActor.EncryptMessage(message, uids));
     }
 
     /**

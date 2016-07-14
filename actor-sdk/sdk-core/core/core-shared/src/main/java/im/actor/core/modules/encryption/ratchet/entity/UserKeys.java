@@ -1,4 +1,4 @@
-package im.actor.core.modules.encryption.entity;
+package im.actor.core.modules.encryption.ratchet.entity;
 
 import java.io.IOException;
 import java.util.ArrayList;

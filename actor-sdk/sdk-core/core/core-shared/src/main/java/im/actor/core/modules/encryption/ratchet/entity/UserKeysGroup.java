@@ -1,4 +1,4 @@
-package im.actor.core.modules.encryption.entity;
+package im.actor.core.modules.encryption.ratchet.entity;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,12 +12,7 @@ import im.actor.runtime.function.Predicate;
 public class UserKeysGroup extends BserObject {
 
     public static Predicate<UserKeysGroup> BY_KEY_GROUP(final int keyGroupId) {
-        return new Predicate<UserKeysGroup>() {
-            @Override
-            public boolean apply(UserKeysGroup keysGroup) {
-                return keysGroup.getKeyGroupId() == keyGroupId;
-            }
-        };
+        return keysGroup -> keysGroup.getKeyGroupId() == keyGroupId;
     }
 
     private int keyGroupId;

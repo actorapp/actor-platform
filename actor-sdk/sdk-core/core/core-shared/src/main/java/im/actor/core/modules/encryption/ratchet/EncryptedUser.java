@@ -2,14 +2,17 @@ package im.actor.core.modules.encryption.ratchet;
 
 import org.jetbrains.annotations.NotNull;
 
-import im.actor.core.modules.encryption.entity.EncryptedBox;
-import im.actor.core.modules.encryption.entity.UserKeys;
+import java.util.List;
+
+import im.actor.core.api.ApiEncyptedBoxKey;
+import im.actor.core.modules.encryption.ratchet.entity.EncryptedUserKeys;
+import im.actor.core.modules.encryption.ratchet.entity.UserKeys;
 import im.actor.runtime.actors.ActorInterface;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.promise.Promise;
 
 /**
- * Encrypting data for private Secret Chats
+ * Encrypting shared key for private Secret Chats
  */
 public class EncryptedUser extends ActorInterface {
 
@@ -18,23 +21,24 @@ public class EncryptedUser extends ActorInterface {
     }
 
     /**
-     * Encrypting data
+     * Encrypting shared key
      *
-     * @param data data for encryption
-     * @return promise of encrypted box
+     * @param data shared key for encryption
+     * @return promise of list of encrypted shared key
      */
-    public Promise<EncryptedBox> encrypt(byte[] data) {
+    public Promise<EncryptedUserKeys> encrypt(byte[] data) {
         return ask(new EncryptedUserActor.EncryptBox(data));
     }
 
     /**
-     * Decrypting data
+     * Decrypting shared key
      *
-     * @param data data for decryption
-     * @return promise of decrypted box
+     * @param senderKeyGroupId sender's key group id
+     * @param keys             list of encrypted box keys
+     * @return promise of shared key
      */
-    public Promise<byte[]> decrypt(EncryptedBox data) {
-        return ask(new EncryptedUserActor.DecryptBox(data));
+    public Promise<byte[]> decrypt(int senderKeyGroupId, List<ApiEncyptedBoxKey> keys) {
+        return ask(new EncryptedUserActor.DecryptBox(senderKeyGroupId, keys));
     }
 
     /**

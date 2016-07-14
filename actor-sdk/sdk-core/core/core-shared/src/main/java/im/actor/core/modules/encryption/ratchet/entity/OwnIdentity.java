@@ -1,6 +1,5 @@
-package im.actor.core.modules.encryption.entity;
+package im.actor.core.modules.encryption.ratchet.entity;
 
-import im.actor.core.modules.encryption.entity.PrivateKey;
 import im.actor.runtime.actors.ask.AskResult;
 
 public class OwnIdentity extends AskResult {
