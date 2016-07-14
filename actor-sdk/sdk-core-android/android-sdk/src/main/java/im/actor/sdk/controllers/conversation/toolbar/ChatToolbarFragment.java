@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import im.actor.core.entity.GroupType;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.viewmodel.Command;
@@ -257,8 +258,15 @@ public class ChatToolbarFragment extends BaseFragment {
             if (peer.getPeerType() == PeerType.PRIVATE) {
                 callsEnabled = !users().get(peer.getPeerId()).isBot();
             } else if (peer.getPeerType() == PeerType.GROUP) {
-                callsEnabled = groups().get(peer.getPeerId()).getMembersCount().get() <= MAX_USERS_FOR_CALLS;
-                videoCallsEnabled = false;
+
+                GroupVM groupVM = groups().get(peer.getPeerId());
+                if (groupVM.getGroupType() == GroupType.GROUP) {
+                    callsEnabled = groupVM.getMembersCount().get() <= MAX_USERS_FOR_CALLS;
+                    videoCallsEnabled = false;
+                } else {
+                    callsEnabled = false;
+                    videoCallsEnabled = false;
+                }
             }
         }
         menu.findItem(R.id.call).setVisible(callsEnabled);
