@@ -93,7 +93,7 @@ object GroupRepo {
     )
   }
 
-  //???
+  @deprecated("Public groups are deprecated in Group V2 API", "2016-06-05")
   def findPublic =
     groups.filter(_.isPublic === true).map(_.asGroup).result
 
@@ -121,9 +121,6 @@ object GroupRepo {
   @deprecated("Duplication of event-sourced groups logic", "2016-06-05")
   def updateAbout(id: Int, about: Option[String]) =
     byIdC.applied(id).map(_.about).update(about)
-
-  //???
-  def makePublic(id: Int) = byIdC.applied(id).map(_.isPublic).update(true)
 
   @deprecated("Migrations only", "2016-06-05")
   def makeHidden(id: Int) = byIdC.applied(id).map(_.isHidden).update(true)
