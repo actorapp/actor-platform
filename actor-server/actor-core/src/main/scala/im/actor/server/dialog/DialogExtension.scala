@@ -152,8 +152,8 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
     } yield seqStateDate.copy(seq = seq, state = state)
   }
 
-  def ackSendMessage(peer: Peer, sm: SendMessage): Future[Unit] =
-    (processorRegion(peer) ? envelope(peer, DialogEnvelope().withSendMessage(sm))).mapTo[SendMessageAck] map (_ ⇒ ())
+  def ackSendMessage(peer: Peer, sm: SendMessage): Future[SendMessageAck] =
+    (processorRegion(peer) ? envelope(peer, DialogEnvelope().withSendMessage(sm))).mapTo[SendMessageAck]
 
   def writeMessage(
     peer:         ApiPeer,

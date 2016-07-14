@@ -30,6 +30,7 @@ final class MessagingServiceImpl(implicit protected val actorSystem: ActorSystem
 
   override def onFailure: PartialFunction[Throwable, RpcError] = {
     case GroupErrors.NotAMember     ⇒ CommonRpcErrors.forbidden("You are not a group member.")
+    case GroupErrors.NotAdmin       ⇒ CommonRpcErrors.forbidden("Only admin can perform this action.")
     case DialogErrors.MessageToSelf ⇒ CommonRpcErrors.forbidden("Sending messages to self is not allowed.")
     case InvalidAccessHash          ⇒ CommonRpcErrors.InvalidAccessHash
     case DialogErrors.DialogAlreadyArchived(peer) ⇒

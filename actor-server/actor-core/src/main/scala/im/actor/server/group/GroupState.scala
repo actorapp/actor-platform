@@ -58,7 +58,7 @@ private[group] final case class GroupState(
   about:           Option[String],
   avatar:          Option[Avatar],
   topic:           Option[String],
-  typ:             GroupType,
+  typ:             GroupType, // TODO: rename to groupType
   isHidden:        Boolean,
   isHistoryShared: Boolean,
 
@@ -86,17 +86,20 @@ private[group] final case class GroupState(
 
   def isAdmin(userId: Int): Boolean = members.get(userId) exists (_.isAdmin)
 
+  // owner will be super-admin in case of channels
   def isOwner(userId: Int): Boolean = userId == ownerUserId
 
   def isExUser(userId: Int): Boolean = exUserIds.contains(userId)
 
+  // in case of general/public can view members if user is member
+  // in case of channel can view members only if clientUserId is admin
   def canViewMembers(clientUserId: Int) =
-    (typ.isGeneral || typ.isPublic) && isMember(clientUserId)
+    ((typ.isGeneral || typ.isPublic) || isAdmin(clientUserId)) && isMember(clientUserId)
 
+  /**
+   * For now, all members can invite other users to group
+   */
   def canInvitePeople(clientUserId: Int) = isMember(clientUserId)
-
-  def canViewMembers(group: GroupState, userId: Int) =
-    (group.typ.isGeneral || group.typ.isPublic) && isMember(userId)
 
   def isNotCreated = createdAt.isEmpty //TODO: Maybe val. immutable anyway
 

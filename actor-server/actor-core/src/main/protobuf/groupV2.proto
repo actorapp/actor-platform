@@ -39,13 +39,14 @@ message GroupEnvelope {
         GroupQueries.GetAccessHash get_access_hash = 15;
         GroupQueries.GetTitle get_title = 16;
         GroupQueries.GetIntegrationToken get_integration_token = 17;
-        GroupQueries.GetMembers get_members = 18;
+        GroupQueries.GetMembers get_members = 18; // internalGetMembers
         GroupQueries.LoadMembers load_members = 19;
         GroupQueries.IsPublic is_public = 20;
         GroupQueries.IsHistoryShared is_history_shared = 21;
         GroupQueries.GetApiStruct get_api_struct = 22;
         GroupQueries.GetApiFullStruct get_api_full_struct = 23;
         GroupQueries.CheckAccessHash check_access_hash = 24;
+        GroupQueries.CanSendMessage can_send_message = 26;
     }
     DialogEnvelope dialog_envelope = 25;
 }
@@ -272,5 +273,18 @@ message GroupQueries {
     message LoadMembersResponse {
         repeated int32 user_ids = 1;
         google.protobuf.BytesValue offset = 2;// should it be Option[Array[Byte]]
+    }
+
+    message CanSendMessage {
+        option (scalapb.message).extends = "GroupQuery";
+
+        int32 client_user_id = 1;
+    }
+
+    message CanSendMessageResponse {
+        bool can_send = 1;
+        bool is_channel = 2;
+        repeated int32 member_ids = 3;
+        google.protobuf.Int32Value bot_id = 4;
     }
 }

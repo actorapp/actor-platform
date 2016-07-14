@@ -58,15 +58,19 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
             case false ⇒
               withNonBlockedPeer[SeqStateDate](userId, sm.getDest)(
                 default = for {
-                _ ← dialogExt.ackSendMessage(peer, sm.copy(date = Some(sendDate)))
-                _ ← db.run(writeHistoryMessage(selfPeer, peer, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray))
+                SendMessageAck(updatedSender) ← dialogExt.ackSendMessage(peer, sm.withDate(sendDate))
+                finalPeer = updatedSender getOrElse selfPeer
+                _ ← db.run(writeHistoryMessage(finalPeer, peer, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray))
                 //_ = dialogExt.updateCounters(peer, userId)
+                // not sure about sender user id. It could be wrong when we have updatedSender!
                 SeqState(seq, state) ← deliveryExt.senderDelivery(userId, optClientAuthId, peer, sm.randomId, sendDate, message, sm.isFat, sm.deliveryTag)
               } yield SeqStateDate(seq, state, sendDate),
                 failed = for {
                 _ ← db.run(writeHistoryMessageSelf(userId, peer, userId, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray))
                 SeqState(seq, state) ← deliveryExt.senderDelivery(userId, optClientAuthId, peer, sm.randomId, sendDate, message, sm.isFat, sm.deliveryTag)
-              } yield SeqStateDate(seq, state, sendDate)
+              } yield {
+                SeqStateDate(seq, state, sendDate)
+              }
               )
           }
         } yield seqStateDate
