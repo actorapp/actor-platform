@@ -123,8 +123,7 @@ public abstract class MessagesFragment extends DisplayListFragment<Message, Mess
         } else {
             background = getResources().getDrawable(backgrounds[0]);
         }
-        ImageView backgroundView = (ImageView) res.findViewById(R.id.chatBackgroundView);
-        backgroundView.setImageDrawable(background);
+        ((ImageView) res.findViewById(R.id.chatBackgroundView)).setImageDrawable(background);
 
 
         //

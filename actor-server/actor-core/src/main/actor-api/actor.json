@@ -7934,7 +7934,7 @@
                 "type": "reference",
                 "argument": "canSendMessage",
                 "category": "full",
-                "description": "  Can user send messages. Default is equals isMember for Group and false for channels."
+                "description": "  Can user send messages. Default is equals isMember for Group and false for others."
               },
               {
                 "type": "reference",
@@ -8164,7 +8164,7 @@
                 "type": "reference",
                 "argument": "isAsyncMembers",
                 "category": "full",
-                "description": "  Is Members need to be loaded asynchronous."
+                "description": "  Is Members need to be loaded asynchronous. Default is false."
               },
               {
                 "type": "reference",
@@ -8182,7 +8182,7 @@
                 "type": "reference",
                 "argument": "isSharedHistory",
                 "category": "full",
-                "description": "  Is history shared among all users."
+                "description": "  Is history shared among all users. Default is false."
               }
             ],
             "attributes": [
@@ -8993,13 +8993,21 @@
             "attributes": [
               {
                 "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": {
                   "type": "list",
                   "childType": {
                     "type": "alias",
                     "childType": "userId"
                   }
                 },
-                "id": 1,
+                "id": 2,
                 "name": "removedUsers"
               },
               {
@@ -9010,12 +9018,12 @@
                     "childType": "Member"
                   }
                 },
-                "id": 2,
+                "id": 3,
                 "name": "addedMembers"
               },
               {
                 "type": "int32",
-                "id": 3,
+                "id": 4,
                 "name": "membersCount"
               }
             ]
@@ -9152,6 +9160,12 @@
                   "argument": "userPeers",
                   "category": "full",
                   "description": "  Referenced users"
+                },
+                {
+                  "type": "reference",
+                  "argument": "date",
+                  "category": "full",
+                  "description": "  Group creation date"
                 }
               ],
               "attributes": [
@@ -9167,6 +9181,14 @@
                   },
                   "id": 2,
                   "name": "state"
+                },
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "date"
+                  },
+                  "id": 6,
+                  "name": "date"
                 },
                 {
                   "type": {
@@ -9989,8 +10011,8 @@
               },
               {
                 "type": {
-                  "type": "alias",
-                  "childType": "userId"
+                  "type": "struct",
+                  "childType": "UserOutPeer"
                 },
                 "id": 2,
                 "name": "newOwner"
