@@ -114,7 +114,7 @@ public class EncryptedMsgActor extends ModuleActor {
                     // Decryption of package
                     byte[] dataHeader = ByteStrings.merge(
                             new byte[]{VERSION},
-                            ByteStrings.intToBytes(myUid()),
+                            ByteStrings.intToBytes(uid),
                             ByteStrings.intToBytes(box.getSenderKeyGroupId()));
                     byte[] data;
                     try {
