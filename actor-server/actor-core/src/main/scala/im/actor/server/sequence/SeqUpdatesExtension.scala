@@ -63,6 +63,9 @@ final class SeqUpdatesExtension(_system: ActorSystem)
     optTs.getOrElse(throw new RuntimeException(s"No Migration timestamp found for ${MigrationNameList.MultiSequence}"))
   }
 
+  def msgDeliveryId(peer: Peer, randomId: Long) =
+    s"msg_${peer.`type`.value}_${peer.id}_${randomId}"
+
   def getSeqState(userId: Int, authId: Long): Future[SeqState] =
     (region.ref ? Envelope(userId).withGetSeqState(GetSeqState(authId))).mapTo[SeqState]
 

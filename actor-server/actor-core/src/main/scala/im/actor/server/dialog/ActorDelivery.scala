@@ -1,11 +1,9 @@
 package im.actor.server.dialog
 
 import akka.actor.ActorSystem
-import akka.http.scaladsl.util.FastFuture
 import im.actor.api.rpc.PeersImplicits
 import im.actor.api.rpc.counters.{ ApiAppCounters, UpdateCountersChanged }
 import im.actor.api.rpc.messaging._
-import im.actor.server.db.DbExtension
 import im.actor.server.messaging.PushText
 import im.actor.server.model.Peer
 import im.actor.server.sequence.{ PushData, PushRules, SeqState, SeqUpdatesExtension }
@@ -54,7 +52,7 @@ final class ActorDelivery()(implicit val system: ActorSystem)
             .withCensoredText(censoredPushText)
             .withPeer(peer)
         ),
-        deliveryId = deliveryId(peer, randomId),
+        deliveryId = seqUpdExt.msgDeliveryId(peer, randomId),
         deliveryTag = deliveryTag
       )
     } yield ()
@@ -100,7 +98,7 @@ final class ActorDelivery()(implicit val system: ActorSystem)
       default = Some(senderUpdate),
       custom = senderAuthId map (authId ⇒ Map(authId → senderClientUpdate)) getOrElse Map.empty,
       pushRules = PushRules(isFat = isFat, excludeAuthIds = senderAuthId.toSeq),
-      deliveryId = deliveryId(peer, randomId),
+      deliveryId = seqUpdExt.msgDeliveryId(peer, randomId),
       deliveryTag = deliveryTag
     )
   }
@@ -133,9 +131,6 @@ final class ActorDelivery()(implicit val system: ActorSystem)
         reduceKey = Some(reduceKey("read_by_me", peer))
       )
     } yield ()
-
-  private def deliveryId(peer: Peer, randomId: Long) =
-    s"msg_${peer.`type`.value}_${peer.id}_${randomId}"
 
   private def reduceKey(prefix: String, peer: Peer): String =
     s"${prefix}_${peer.`type`.value}_${peer.id}"
