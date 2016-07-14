@@ -130,7 +130,7 @@ public class EncryptedUserActor extends ModuleActor {
         }
         ApiEncyptedBoxKey key = null;
         for (ApiEncyptedBoxKey boxKey : keys) {
-            if (boxKey.getKeyGroupId() == ownKeyGroupId && boxKey.getUsersId() == uid) {
+            if (boxKey.getKeyGroupId() == ownKeyGroupId && boxKey.getUsersId() == myUid()) {
                 key = boxKey;
                 break;
             }
