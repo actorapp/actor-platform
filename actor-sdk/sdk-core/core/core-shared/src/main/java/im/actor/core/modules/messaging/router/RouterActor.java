@@ -497,7 +497,11 @@ public class RouterActor extends ModuleActor {
 
         Message head = conversation(peer).getHeadValue();
 
-        return getDialogsRouter().onMessageDeleted(peer, head.getMessageState() == MessageState.PENDING ? null : head);
+        if (head != null && head.getMessageState() == MessageState.PENDING) {
+            head = null;
+        }
+
+        return getDialogsRouter().onMessageDeleted(peer, head);
     }
 
     private Promise<Void> onChatClear(Peer peer) {
