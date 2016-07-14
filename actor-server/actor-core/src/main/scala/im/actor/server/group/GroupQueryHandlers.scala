@@ -122,7 +122,7 @@ trait GroupQueryHandlers {
           canViewMembers = Some(state.canViewMembers(clientUserId)),
           canInvitePeople = Some(state.canInvitePeople(clientUserId)),
           isSharedHistory = Some(state.isHistoryShared),
-          isAsyncMembers = Some(state.members.size > 100),
+          isAsyncMembers = Some(state.isAsyncMembers),
           members = membersAndCount(state, clientUserId)._1
         )
       )

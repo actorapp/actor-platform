@@ -116,6 +116,12 @@ private[group] final case class GroupState(
 
   def isCreated = createdAt.nonEmpty //TODO: Maybe val. immutable anyway
 
+  def isAsyncMembers =
+    typ match {
+      case General | Public ⇒ members.size > 100
+      case Channel          ⇒ true
+    }
+
   override def updated(e: Event): GroupState = e match {
     case evt: Created ⇒
       this.copy(

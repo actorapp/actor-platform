@@ -46,8 +46,7 @@ private[group] sealed trait Commands extends UserAcl {
   def joinGroup(groupId: Int, joiningUserId: Int, joiningUserAuthId: Long, invitingUserId: Option[Int]): Future[(SeqStateDate, Vector[Int], Long)] =
     (processorRegion.ref ?
       GroupEnvelope(groupId)
-      .withJoin(Join(joiningUserId, joiningUserAuthId, invitingUserId = None)) //None?
-      ).mapTo[(SeqStateDate, Vector[Int], Long)]
+      .withJoin(Join(joiningUserId, joiningUserAuthId, invitingUserId = invitingUserId))).mapTo[(SeqStateDate, Vector[Int], Long)]
 
   def inviteToGroup(groupId: Int, inviteeUserId: Int, randomId: Long)(implicit client: AuthorizedClientData): Future[SeqStateDate] =
     inviteToGroup(client.userId, client.authId, groupId, inviteeUserId, randomId)
