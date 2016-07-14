@@ -7,6 +7,7 @@ import im.actor.api.rpc.misc.ApiExtension
 import im.actor.server.cqrs.{ Event, ProcessorState }
 import im.actor.server.file.Avatar
 import im.actor.server.group.GroupEvents._
+import im.actor.server.group.GroupType.{ Channel, General, Public }
 
 private[group] final case class Member(
   userId:        Int,
@@ -102,6 +103,14 @@ private[group] final case class GroupState(
    * For now, all members can invite other users to group
    */
   def canInvitePeople(clientUserId: Int) = isMember(clientUserId)
+
+  def canSendMessage(clientUserId: Int) =
+    {
+      typ match {
+        case General | Public ⇒ isMember(clientUserId)
+        case Channel          ⇒ isAdmin(clientUserId)
+      }
+    } || bot.exists(_.userId == clientUserId)
 
   def isNotCreated = createdAt.isEmpty //TODO: Maybe val. immutable anyway
 

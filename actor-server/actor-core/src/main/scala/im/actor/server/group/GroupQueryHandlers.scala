@@ -102,7 +102,7 @@ trait GroupQueryHandlers {
             case GroupType.Channel ⇒ ApiGroupType.CHANNEL
             case GroupType.General | GroupType.Public | GroupType.Unrecognized(_) ⇒ ApiGroupType.GROUP
           }),
-          canSendMessage = None
+          canSendMessage = Some(state.canSendMessage(clientUserId))
         )
       )
     }
