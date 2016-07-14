@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import im.actor.core.entity.Contact;
 import im.actor.core.viewmodel.CommandCallback;
+import im.actor.runtime.function.Consumer;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
@@ -106,20 +107,13 @@ public class GroupUsersFragment extends BaseContactFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.done) {
             if (getSelectedCount() > 0) {
-                execute(messenger().createGroup(title, avatarPath, BoxUtil.unbox(getSelected())),
-                        R.string.progress_common, new CommandCallback<Integer>() {
-                            @Override
-                            public void onResult(Integer res) {
-                                getActivity().startActivity(Intents.openGroupDialog(res, true, getActivity()));
-                                getActivity().finish();
-                            }
-
-                            @Override
-                            public void onError(Exception e) {
-                                Toast.makeText(getActivity(), getString(R.string.toast_unable_create_group), Toast.LENGTH_LONG).show();
-
-                            }
-                        });
+                execute(messenger().createGroup(title, avatarPath, BoxUtil.unbox(getSelected())).then(gid -> {
+                    getActivity().startActivity(Intents.openGroupDialog(gid, true, getActivity()));
+                    getActivity().finish();
+                }).failure(e -> {
+                    Toast.makeText(getActivity(), getString(R.string.toast_unable_create_group),
+                            Toast.LENGTH_LONG).show();
+                }));
             }
             return true;
         }

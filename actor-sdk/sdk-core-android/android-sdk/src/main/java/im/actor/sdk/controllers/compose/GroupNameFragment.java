@@ -2,6 +2,7 @@ package im.actor.sdk.controllers.compose;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -14,17 +15,20 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.util.List;
+
+import im.actor.runtime.function.Consumer;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.BaseFragment;
+import im.actor.sdk.controllers.tools.MediaPickerCallback;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.avatar.AvatarView;
 import im.actor.sdk.util.KeyboardHelper;
 
-/**
- * Created by ex3ndr on 04.10.14.
- */
+import static im.actor.sdk.util.ActorSDKMessenger.messenger;
+
 public class GroupNameFragment extends BaseFragment {
 
     private static final int REQUEST_AVATAR = 1;
@@ -50,15 +54,12 @@ public class GroupNameFragment extends BaseFragment {
         res.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         ((TextView) res.findViewById(R.id.create_group_hint)).setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
         groupName = (EditText) res.findViewById(R.id.groupTitle);
-        groupName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_NEXT) {
-                    next();
-                    return true;
-                }
-                return false;
+        groupName.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                next();
+                return true;
             }
+            return false;
         });
         groupName.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
         groupName.setHintTextColor(ActorSDK.sharedActor().style.getTextHintColor());
@@ -69,11 +70,8 @@ public class GroupNameFragment extends BaseFragment {
         // avatarView.getHierarchy().setControllerOverlay(getResources().getDrawable(R.drawable.circle_selector));
         avatarView.setImageURI(null);
 
-        res.findViewById(R.id.pickAvatar).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivityForResult(Intents.pickAvatar(avatarPath != null, getActivity()), REQUEST_AVATAR);
-            }
+        res.findViewById(R.id.pickAvatar).setOnClickListener(view -> {
+            startActivityForResult(Intents.pickAvatar(avatarPath != null, getActivity()), REQUEST_AVATAR);
         });
 
         return res;
@@ -104,8 +102,11 @@ public class GroupNameFragment extends BaseFragment {
     private void next() {
         String title = groupName.getText().toString().trim();
         if (title.length() > 0) {
-            ((CreateGroupActivity) getActivity()).showNextFragment(
-                    GroupUsersFragment.create(groupName.getText().toString().trim(), avatarPath), false, true);
+//            ((CreateGroupActivity) getActivity()).showNextFragment(
+//                    GroupUsersFragment.create(groupName.getText().toString().trim(), avatarPath), false, true);
+            messenger().createChannel(groupName.getText().toString().trim(), avatarPath).then(gid -> {
+                getActivity().finish();
+            });
         }
     }
 

@@ -15,6 +15,7 @@ import java.util.HashSet;
 
 import im.actor.core.entity.Group;
 import im.actor.core.entity.GroupMember;
+import im.actor.core.entity.GroupType;
 import im.actor.core.viewmodel.generics.AvatarValueModel;
 import im.actor.core.viewmodel.generics.BooleanValueModel;
 import im.actor.core.viewmodel.generics.IntValueModel;
@@ -34,6 +35,9 @@ public class GroupVM extends BaseValueModel<Group> {
 
     @Property("nonatomic, readonly")
     private int groupId;
+    @NotNull
+    @Property("nonatomic, readonly")
+    private GroupType groupType;
     @NotNull
     @Property("nonatomic, readonly")
     private StringValueModel name;
@@ -78,6 +82,7 @@ public class GroupVM extends BaseValueModel<Group> {
     public GroupVM(@NotNull Group rawObj) {
         super(rawObj);
         this.groupId = rawObj.getGroupId();
+        this.groupType = rawObj.getGroupType();
         this.name = new StringValueModel("group." + groupId + ".title", rawObj.getTitle());
         this.avatar = new AvatarValueModel("group." + groupId + ".avatar", rawObj.getAvatar());
         this.isMember = new BooleanValueModel("group." + groupId + ".isMember", rawObj.isMember());
@@ -99,6 +104,17 @@ public class GroupVM extends BaseValueModel<Group> {
     @ObjectiveCName("getId")
     public int getId() {
         return groupId;
+    }
+
+    /**
+     * Get Group Type
+     *
+     * @return Group Type
+     */
+    @NotNull
+    @ObjectiveCName("getGroupType")
+    public GroupType getGroupType() {
+        return groupType;
     }
 
     /**
@@ -194,6 +210,7 @@ public class GroupVM extends BaseValueModel<Group> {
         isChanged |= avatar.change(rawObj.getAvatar());
         isChanged |= membersCount.change(rawObj.getMembersCount());
         isChanged |= isMember.change(rawObj.isMember());
+        isChanged |= isCanWriteMessage.change(rawObj.isCanWrite());
 
         isChanged |= theme.change(rawObj.getTopic());
         isChanged |= about.change(rawObj.getAbout());

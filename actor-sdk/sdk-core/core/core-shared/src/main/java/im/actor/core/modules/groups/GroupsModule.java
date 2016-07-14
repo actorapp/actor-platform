@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import im.actor.core.api.ApiGroupOutPeer;
+import im.actor.core.api.ApiGroupType;
 import im.actor.core.api.ApiOutPeer;
 import im.actor.core.api.ApiPeerType;
 import im.actor.core.api.ApiUserOutPeer;
@@ -109,7 +110,16 @@ public class GroupsModule extends AbsModule implements BusSubscriber {
     // Actions
     //
 
-    public Promise<Integer> createGroup(final String title, final String avatarDescriptor, final int[] uids) {
+    public Promise<Integer> createGroup(String title, String avatarDescriptor, int[] uids) {
+        return createGroup(title, avatarDescriptor, uids, ApiGroupType.GROUP);
+    }
+
+    public Promise<Integer> createChannel(String title, String avatarDescriptor) {
+        return createGroup(title, avatarDescriptor, new int[0], ApiGroupType.CHANNEL);
+    }
+
+    private Promise<Integer> createGroup(String title, String avatarDescriptor, int[] uids,
+                                         ApiGroupType groupType) {
         long rid = RandomUtils.nextRid();
         return Promise.success(uids)
                 .map((Function<int[], List<ApiUserOutPeer>>) ints -> {
@@ -124,7 +134,7 @@ public class GroupsModule extends AbsModule implements BusSubscriber {
                 })
                 .flatMap(apiUserOutPeers ->
                         api(new RequestCreateGroup(rid, title, apiUserOutPeers,
-                                null, ApiSupportConfiguration.OPTIMIZATIONS)))
+                                groupType, ApiSupportConfiguration.OPTIMIZATIONS)))
                 .chain(r -> updates().applyRelatedData(r.getUsers(), r.getGroup()))
                 .chain(r -> updates().waitForUpdate(r.getSeq()))
                 .map(r -> r.getGroup().getId())

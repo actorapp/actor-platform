@@ -1388,7 +1388,7 @@ public class Messenger {
      * @param title new group title
      * @return Command for execution
      */
-    @Nullable
+    @NotNull
     @ObjectiveCName("editGroupTitleCommandWithGid:withTitle:")
     public Command<Void> editGroupTitle(final int gid, final String title) {
         return callback -> modules.getGroupsModule().editTitle(gid, title)
@@ -1458,16 +1458,26 @@ public class Messenger {
      * @param title            group title
      * @param avatarDescriptor descriptor of group avatar (can be null if not set)
      * @param uids             member's ids
-     * @return Command for execution
+     * @return Promise of group id
      */
-    @Nullable
-    @ObjectiveCName("createGroupCommandWithTitle:withAvatar:withUids:")
-    public Command<Integer> createGroup(String title, String avatarDescriptor, int[] uids) {
-        return callback -> modules.getGroupsModule().createGroup(title, avatarDescriptor, uids)
-                .then(integer -> callback.onResult(integer))
-                .failure(e -> callback.onError(e));
+    @NotNull
+    @ObjectiveCName("createGroupWithTitle:withAvatar:withUids:")
+    public Promise<Integer> createGroup(String title, String avatarDescriptor, int[] uids) {
+        return modules.getGroupsModule().createGroup(title, avatarDescriptor, uids);
     }
 
+    /**
+     * Create channel
+     *
+     * @param title            channel title
+     * @param avatarDescriptor descriptor of channel avatar (can be null if not set)
+     * @return Promise of channel id
+     */
+    @NotNull
+    @ObjectiveCName("createChannelWithTitle:withAvatar:")
+    public Promise<Integer> createChannel(String title, String avatarDescriptor) {
+        return modules.getGroupsModule().createChannel(title, avatarDescriptor);
+    }
 
     /**
      * Leave group
@@ -1475,7 +1485,7 @@ public class Messenger {
      * @param gid group's id
      * @return Command for execution
      */
-    @Nullable
+    @NotNull
     @ObjectiveCName("leaveGroupCommandWithGid:")
     public Command<Void> leaveGroup(final int gid) {
         return callback -> modules.getGroupsModule().leaveGroup(gid)
@@ -1490,7 +1500,7 @@ public class Messenger {
      * @param uid user's id
      * @return Command for execution
      */
-    @Nullable
+    @NotNull
     @ObjectiveCName("inviteMemberCommandWithGid:withUid:")
     public Command<Void> inviteMember(int gid, int uid) {
         return callback -> modules.getGroupsModule().addMember(gid, uid)
@@ -1505,7 +1515,7 @@ public class Messenger {
      * @param uid user's id
      * @return Command for execution
      */
-    @Nullable
+    @NotNull
     @ObjectiveCName("kickMemberCommandWithGid:withUid:")
     public Command<Void> kickMember(int gid, int uid) {
         return callback -> modules.getGroupsModule().kickMember(gid, uid)
@@ -1520,7 +1530,7 @@ public class Messenger {
      * @param uid user's id
      * @return Command for execution
      */
-    @Nullable
+    @NotNull
     @ObjectiveCName("makeAdminCommandWithGid:withUid:")
     public Command<Void> makeAdmin(final int gid, final int uid) {
         return callback -> modules.getGroupsModule().makeAdmin(gid, uid)
@@ -1535,7 +1545,7 @@ public class Messenger {
      * @param uid user's id
      * @return Promise of void
      */
-    @Nullable
+    @NotNull
     @ObjectiveCName("transferOwnershipWithGid:withUid:")
     public Promise<Void> transferOwnership(int gid, int uid) {
         return modules.getGroupsModule().transferOwnership(gid, uid);
@@ -1547,7 +1557,7 @@ public class Messenger {
      * @param gid group's id
      * @return Command for execution
      */
-    @Nullable
+    @NotNull
     @ObjectiveCName("requestInviteLinkCommandWithGid:")
     public Command<String> requestInviteLink(int gid) {
         return callback -> modules.getGroupsModule().requestInviteLink(gid)
@@ -1561,7 +1571,7 @@ public class Messenger {
      * @param gid group's id
      * @return Command for execution
      */
-    @Nullable
+    @NotNull
     @ObjectiveCName("requestRevokeLinkCommandWithGid:")
     public Command<String> revokeInviteLink(int gid) {
         return callback -> modules.getGroupsModule().requestRevokeLink(gid)
@@ -1575,7 +1585,7 @@ public class Messenger {
      * @param token invite token
      * @return Command for execution
      */
-    @Nullable
+    @NotNull
     @ObjectiveCName("joinGroupViaLinkCommandWithToken:")
     public Command<Integer> joinGroupViaToken(String token) {
         return callback -> modules.getGroupsModule().joinGroupByToken(token)
@@ -1589,7 +1599,7 @@ public class Messenger {
      * @param gid group's id
      * @return Command for execution
      */
-    @Nullable
+    @NotNull
     @ObjectiveCName("requestIntegrationTokenCommandWithGid:")
     public Command<String> requestIntegrationToken(int gid) {
         return callback -> modules.getGroupsModule().requestIntegrationToken(gid)
