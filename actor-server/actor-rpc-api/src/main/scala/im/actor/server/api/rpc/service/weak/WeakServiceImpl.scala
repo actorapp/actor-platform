@@ -27,6 +27,12 @@ class WeakServiceImpl(implicit actorSystem: ActorSystem) extends WeakService {
   override def doHandleTyping(peer: ApiOutPeer, typingType: ApiTypingType.ApiTypingType, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     authorized(clientData) { client ⇒
       peer.`type` match {
+        case ApiPeerType.EncryptedPrivate ⇒
+
+          val update = UpdateTyping(ApiPeer(ApiPeerType.EncryptedPrivate, client.userId), client.userId, typingType)
+          val reduceKey = weakUpdatesExt.reduceKey(update.header, update.peer)
+
+          weakUpdatesExt.broadcastUserWeakUpdate(peer.id, update, reduceKey = Some(reduceKey))
         case ApiPeerType.Private ⇒
           val update = UpdateTyping(ApiPeer(ApiPeerType.Private, client.userId), client.userId, typingType)
           val reduceKey = weakUpdatesExt.reduceKey(update.header, update.peer)
