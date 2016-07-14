@@ -205,36 +205,62 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
         //TODO: remove deprecated
         db.run(GroupUserRepo.create(groupId, cmd.inviteeUserId, cmd.inviterUserId, evt.ts, None, isAdmin = false))
 
-        //        def inviteGROUPUpdates: Future[SeqState] =
-        //          for {
-        //            _ ← seqUpdExt.deliverUserUpdate(
-        //              userId = cmd.inviteeUserId,
-        //              membersUpdateNew,
-        //              pushRules = seqUpdExt.pushRules(isFat = !inviteeIsExUser, Some(PushTexts.Invited)),
-        //              deliveryId = s"invite_${groupId}_${cmd.randomId}"
-        //            )
-        //
-        //            // push all group updates to inviteeUserId
-        //            _ ← FutureExt.ftraverse(inviteeUpdatesNew) { update ⇒
-        //              seqUpdExt.deliverUserUpdate(userId = cmd.inviteeUserId, update)
-        //            }
-        //
-        //            // push updated members list to all group members except inviteeUserId
-        //            seqState ← seqUpdExt.broadcastClientUpdate(
-        //              userId = cmd.inviterUserId,
-        //              authId = cmd.inviterAuthId,
-        //              bcastUserIds = (memberIds - cmd.inviterUserId) - cmd.inviteeUserId,
-        //              update = membersUpdateNew,
-        //              deliveryId = s"useradded_${groupId}_${cmd.randomId}"
-        //            )
-        //          ///////////////////////////////////////////////
-        //          } yield seqState
+        def inviteGROUPUpdates: Future[SeqState] =
+          for {
+            // push updated members list to inviteeUserId,
+            _ ← seqUpdExt.deliverUserUpdate(
+              userId = cmd.inviteeUserId,
+              membersUpdateNew,
+              pushRules = seqUpdExt.pushRules(isFat = !inviteeIsExUser, Some(PushTexts.Invited)),
+              deliveryId = s"invite_${groupId}_${cmd.randomId}"
+            )
 
-        //        def inviteCHANNELUpdates: Future[SeqState] = if(newState.isAdmin())
-        //          for {
-        //
-        //
-        //          } yield ()
+            // push all "refresh group" updates to inviteeUserId
+            _ ← FutureExt.ftraverse(inviteeUpdatesNew) { update ⇒
+              seqUpdExt.deliverUserUpdate(userId = cmd.inviteeUserId, update)
+            }
+
+            // push updated members list to all group members except inviteeUserId
+            seqState ← seqUpdExt.broadcastClientUpdate(
+              userId = cmd.inviterUserId,
+              authId = cmd.inviterAuthId,
+              bcastUserIds = (memberIds - cmd.inviterUserId) - cmd.inviteeUserId,
+              update = membersUpdateNew,
+              deliveryId = s"useradded_${groupId}_${cmd.randomId}"
+            )
+            ///////////////////////////////////////////////
+          } yield seqState
+
+        def inviteCHANNELUpdates: Future[SeqState] =
+          for {
+            // push `UpdateGroupMembersUpdated` to invitee only if he is admin.
+            // invitee could be admin, if he created this group, and turning back
+            _ ← if (newState.isAdmin(cmd.inviteeUserId)) {
+              seqUpdExt.deliverUserUpdate(
+                userId = cmd.inviteeUserId,
+                membersUpdateNew,
+                pushRules = seqUpdExt.pushRules(isFat = !inviteeIsExUser, Some(PushTexts.Invited)),
+                deliveryId = s"invite_${groupId}_${cmd.randomId}"
+              )
+            } else {
+              FastFuture.successful(())
+            }
+
+            // push all "refresh group" updates to inviteeUserId
+            _ ← FutureExt.ftraverse(inviteeUpdatesNew) { update ⇒
+              seqUpdExt.deliverUserUpdate(userId = cmd.inviteeUserId, update)
+            }
+
+            // push updated members list to all ADMINS
+            _ ← seqUpdExt.broadcastPeopleUpdate(
+              userIds = newState.adminIds,
+              update = membersUpdateNew,
+              deliveryId = s"useradded_${groupId}_${cmd.randomId}"
+            )
+
+            // get current SeqState for inviter user
+            seqState ← seqUpdExt.getSeqState(cmd.inviterUserId, cmd.inviterAuthId)
+          } yield seqState
 
         val result: Future[SeqStateDate] = for {
           ///////////////////////////
@@ -270,29 +296,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
           // Groups V2 API updates //
           ///////////////////////////
 
-          //////////////////////////////////////////////////
-          // push updated members list to inviteeUserId,
-          _ ← seqUpdExt.deliverUserUpdate(
-            userId = cmd.inviteeUserId,
-            membersUpdateNew,
-            pushRules = seqUpdExt.pushRules(isFat = !inviteeIsExUser, Some(PushTexts.Invited)),
-            deliveryId = s"invite_${groupId}_${cmd.randomId}"
-          )
-
-          // push all group updates to inviteeUserId
-          _ ← FutureExt.ftraverse(inviteeUpdatesNew) { update ⇒
-            seqUpdExt.deliverUserUpdate(userId = cmd.inviteeUserId, update)
-          }
-
-          // push updated members list to all group members except inviteeUserId
-          SeqState(seq, state) ← seqUpdExt.broadcastClientUpdate(
-            userId = cmd.inviterUserId,
-            authId = cmd.inviterAuthId,
-            bcastUserIds = (memberIds - cmd.inviterUserId) - cmd.inviteeUserId,
-            update = membersUpdateNew,
-            deliveryId = s"useradded_${groupId}_${cmd.randomId}"
-          )
-          //////////////////////////////////////////////////
+          SeqState(seq, state) ← if (newState.typ.isChannel) inviteCHANNELUpdates else inviteGROUPUpdates
 
           // explicitly send service message
           SeqStateDate(_, _, date) ← dialogExt.sendServerMessage(
@@ -344,9 +348,6 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
         val joiningUserUpdatesNew: List[Update] =
           if (wasInvited) List.empty[Update] else refreshGroupUpdates(newState, cmd.joiningUserId)
 
-        // нужно отправить ему апдейт о членах в группе.
-        // всем нужно отправить апдейт о изменившихся членах в группе. можно в любом случае отправить
-
         // push to everyone, including joining user.
         // if joining user wasn't invited - send update as FatSeqUpdate
         // update date when member got into group
@@ -366,6 +367,62 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
           isAdmin = false
         ))
 
+        def joinGROUPUpdates: Future[SeqState] =
+          for {
+            // push all group updates to joiningUserId
+            _ ← FutureExt.ftraverse(joiningUserUpdatesNew) { update ⇒
+              seqUpdExt.deliverUserUpdate(userId = cmd.joiningUserId, update)
+            }
+
+            // push updated members list to joining user,
+            // TODO???: isFat = !wasInvited - is it correct?
+            seqState ← seqUpdExt.deliverClientUpdate(
+              userId = cmd.joiningUserId,
+              authId = cmd.joiningUserAuthId,
+              update = membersUpdateNew,
+              pushRules = seqUpdExt.pushRules(isFat = !wasInvited, None), //!wasInvited means that user came for first time here
+              deliveryId = s"join_${groupId}_${randomId}"
+
+            )
+
+            // push updated members list to all group members except joiningUserId
+            _ ← seqUpdExt.broadcastPeopleUpdate(
+              memberIds - cmd.joiningUserId,
+              membersUpdateNew,
+              deliveryId = s"userjoined_${groupId}_${randomId}"
+            )
+          } yield seqState
+
+        def joinCHANNELUpdates: Future[SeqState] =
+          for {
+            // push all group updates to joiningUserId
+            _ ← FutureExt.ftraverse(joiningUserUpdatesNew) { update ⇒
+              seqUpdExt.deliverUserUpdate(userId = cmd.joiningUserId, update)
+            }
+
+            // push `UpdateGroupMembersUpdated` to joining user only if he is admin.
+            // joining user can be admin, if he created this group, and turning back
+            // TODO???: isFat = !wasInvited - is it correct?
+            seqState ← if (newState.isAdmin(cmd.joiningUserId)) {
+              seqUpdExt.deliverClientUpdate(
+                userId = cmd.joiningUserId,
+                authId = cmd.joiningUserAuthId,
+                update = membersUpdateNew,
+                pushRules = seqUpdExt.pushRules(isFat = !wasInvited, None), //!wasInvited means that user came for first time here
+                deliveryId = s"join_${groupId}_${randomId}"
+              )
+            } else {
+              seqUpdExt.getSeqState(cmd.joiningUserId, cmd.joiningUserAuthId)
+            }
+
+            // push updated members list to all ADMINS
+            _ ← seqUpdExt.broadcastPeopleUpdate(
+              newState.adminIds - cmd.joiningUserId,
+              membersUpdateNew,
+              deliveryId = s"userjoined_${groupId}_${randomId}"
+            )
+          } yield seqState
+
         val result: Future[(SeqStateDate, Vector[Int], Long)] =
           for {
             ///////////////////////////
@@ -384,28 +441,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
             // Groups V2 API updates //
             ///////////////////////////
 
-            // push all group updates to joiningUserId
-            _ ← FutureExt.ftraverse(joiningUserUpdatesNew) { update ⇒
-              seqUpdExt.deliverUserUpdate(userId = cmd.joiningUserId, update)
-            }
-
-            // push updated members list to joining user,
-            // TODO???: isFat = !wasInvited - is it correct?
-            SeqState(seq, state) ← seqUpdExt.deliverClientUpdate(
-              userId = cmd.joiningUserId,
-              authId = cmd.joiningUserAuthId,
-              update = membersUpdateNew,
-              pushRules = seqUpdExt.pushRules(isFat = !wasInvited, None), //!wasInvited means that user came for first time here
-              deliveryId = s"join_${groupId}_${randomId}"
-
-            )
-
-            // push updated members list to all group members except joiningUserId
-            _ ← seqUpdExt.broadcastPeopleUpdate(
-              memberIds - cmd.joiningUserId,
-              membersUpdateNew,
-              deliveryId = s"userjoined_${groupId}_${randomId}"
-            )
+            SeqState(seq, state) ← if (newState.typ.isChannel) joinCHANNELUpdates else joinGROUPUpdates
 
             SeqStateDate(_, _, date) ← dialogExt.sendServerMessage(
               apiGroupPeer,
