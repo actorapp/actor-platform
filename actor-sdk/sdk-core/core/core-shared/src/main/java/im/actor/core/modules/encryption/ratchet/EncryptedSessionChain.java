@@ -1,12 +1,8 @@
-package im.actor.core.modules.encryption.session;
-
-import java.util.HashSet;
-import java.util.Random;
+package im.actor.core.modules.encryption.ratchet;
 
 import im.actor.core.entity.encryption.PeerSession;
 import im.actor.core.util.RandomUtils;
 import im.actor.runtime.Crypto;
-import im.actor.runtime.Log;
 import im.actor.runtime.crypto.Curve25519;
 import im.actor.runtime.crypto.IntegrityException;
 import im.actor.runtime.crypto.box.ActorBox;
@@ -22,7 +18,6 @@ public class EncryptedSessionChain {
     private PeerSession session;
     private byte[] ownPrivateKey;
     private byte[] theirPublicKey;
-    private HashSet<Integer> receivedCounters;
     private int sentCounter;
     private byte[] rootChainKey;
 
@@ -30,7 +25,6 @@ public class EncryptedSessionChain {
         this.session = session;
         this.ownPrivateKey = ownPrivateKey;
         this.theirPublicKey = theirPublicKey;
-        this.receivedCounters = new HashSet<>();
         this.sentCounter = 0;
         this.rootChainKey = RatchetRootChainKey.makeRootChainKey(
                 new RatchetPrivateKey(ownPrivateKey),
@@ -52,7 +46,7 @@ public class EncryptedSessionChain {
 
     public byte[] decrypt(byte[] data) throws IntegrityException {
 
-        if (data.length < 88) {
+        if (data.length < 80) {
             throw new IntegrityException("Data length is too small");
         }
 
@@ -60,12 +54,11 @@ public class EncryptedSessionChain {
         // Parsing message header
         //
 
-        final int senderKeyGroupId = ByteStrings.bytesToInt(data, 0);
-        final long senderEphermalKey0Id = ByteStrings.bytesToLong(data, 4);
-        final long receiverEphermalKey0Id = ByteStrings.bytesToLong(data, 12);
-        final byte[] senderEphemeralKey = ByteStrings.substring(data, 20, 32);
-        final byte[] receiverEphemeralKey = ByteStrings.substring(data, 52, 32);
-        final int messageIndex = ByteStrings.bytesToInt(data, 84);
+        final long senderEphermalKey0Id = ByteStrings.bytesToLong(data, 0);
+        final long receiverEphermalKey0Id = ByteStrings.bytesToLong(data, 8);
+        final byte[] senderEphemeralKey = ByteStrings.substring(data, 16, 32);
+        final byte[] receiverEphemeralKey = ByteStrings.substring(data, 48, 32);
+        final int messageIndex = ByteStrings.bytesToInt(data, 80);
 
         //
         // Validating header
@@ -92,8 +85,8 @@ public class EncryptedSessionChain {
         //
 
         ActorBoxKey ratchetMessageKey = RatchetMessageKey.buildKey(rootChainKey, messageIndex);
-        byte[] header = ByteStrings.substring(data, 0, 88);
-        byte[] message = ByteStrings.substring(data, 88, data.length - 88);
+        byte[] header = ByteStrings.substring(data, 0, 80);
+        byte[] message = ByteStrings.substring(data, 80, data.length - 80);
         return ActorBox.openBox(header, message, ratchetMessageKey);
     }
 
@@ -102,7 +95,6 @@ public class EncryptedSessionChain {
         ActorBoxKey ratchetMessageKey = RatchetMessageKey.buildKey(rootChainKey, messageIndex);
 
         byte[] header = ByteStrings.merge(
-                ByteStrings.intToBytes(session.getOwnKeyGroupId()),
                 ByteStrings.longToBytes(session.getOwnPreKeyId()), /*Alice Initial Ephermal*/
                 ByteStrings.longToBytes(session.getTheirPreKeyId()), /*Bob Initial Ephermal*/
                 Curve25519.keyGenPublic(ownPrivateKey),
@@ -125,7 +117,6 @@ public class EncryptedSessionChain {
         for (int i = 0; i < rootChainKey.length; i++) {
             rootChainKey[i] = (byte) RandomUtils.randomId(255);
         }
-        receivedCounters.clear();
         sentCounter = 0;
     }
 }

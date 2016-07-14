@@ -2,14 +2,13 @@ package im.actor.core.modules.encryption.ratchet;
 
 import java.util.ArrayList;
 
+import im.actor.core.api.ApiEncyptedBoxKey;
 import im.actor.core.entity.encryption.PeerSession;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.encryption.entity.PublicKey;
-import im.actor.core.modules.encryption.session.EncryptedSessionChain;
+import im.actor.core.modules.encryption.ratchet.entity.PublicKey;
 import im.actor.core.modules.ModuleActor;
 import im.actor.runtime.*;
 import im.actor.runtime.actors.ask.AskMessage;
-import im.actor.runtime.actors.ask.AskResult;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.crypto.Curve25519;
 import im.actor.runtime.crypto.IntegrityException;
@@ -29,7 +28,7 @@ import static im.actor.runtime.promise.Promise.success;
  * During actor starting it downloads all required key from Key Manager.
  * To encrypt/decrypt messages this actor spawns encryption chains.
  */
-public class EncryptedSessionActor extends ModuleActor {
+class EncryptedSessionActor extends ModuleActor {
 
     private final String TAG;
 
@@ -78,7 +77,7 @@ public class EncryptedSessionActor extends ModuleActor {
         keyManager = context().getEncryption().getKeyManager();
     }
 
-    private Promise<byte[]> onEncrypt(final byte[] data) {
+    private Promise<ApiEncyptedBoxKey> onEncrypt(final byte[] data) {
 
         //
         // Stage 1: Pick Their Ephemeral key. Use already received or pick random pre key.
@@ -96,10 +95,12 @@ public class EncryptedSessionActor extends ModuleActor {
 
         return ephemeralKey
                 .map(publicKey -> pickEncryptChain(publicKey))
-                .map(encryptedSessionChain -> encrypt(encryptedSessionChain, data));
+                .map(encryptedSessionChain -> encrypt(encryptedSessionChain, data))
+                .map(bytes -> new ApiEncyptedBoxKey(session.getUid(), session.getTheirKeyGroupId(),
+                        "curve25519", bytes));
     }
 
-    private Promise<byte[]> onDecrypt(final byte[] data) {
+    private Promise<byte[]> onDecrypt(ApiEncyptedBoxKey data) {
 
         //
         // Stage 1: Parsing message header
@@ -108,16 +109,17 @@ public class EncryptedSessionActor extends ModuleActor {
         // Stage 4: Saving their ephemeral key
         //
 
-        // final int ownKeyGroupId = ByteStrings.bytesToInt(data, 0);
-        // final long ownEphemeralKey0Id = ByteStrings.bytesToLong(data, 4);
-        // final long theirEphemeralKey0Id = ByteStrings.bytesToLong(data, 12);
-        final byte[] senderEphemeralKey = ByteStrings.substring(data, 20, 32);
-        final byte[] receiverEphemeralKey = ByteStrings.substring(data, 52, 32);
+        byte[] material = data.getEncryptedKey();
+
+        // final long ownEphemeralKey0Id = ByteStrings.bytesToLong(data, 0);
+        // final long theirEphemeralKey0Id = ByteStrings.bytesToLong(data, 8);
+        final byte[] senderEphemeralKey = ByteStrings.substring(material, 16, 32);
+        final byte[] receiverEphemeralKey = ByteStrings.substring(material, 48, 32);
         Log.d(TAG, "Sender Ephemeral " + Crypto.keyHash(senderEphemeralKey));
         Log.d(TAG, "Receiver Ephemeral " + Crypto.keyHash(receiverEphemeralKey));
 
         return pickDecryptChain(senderEphemeralKey, receiverEphemeralKey)
-                .map(encryptedSessionChain -> decrypt(encryptedSessionChain, data))
+                .map(encryptedSessionChain -> decrypt(encryptedSessionChain, material))
                 .then(decryptedPackage -> latestTheirEphemeralKey = senderEphemeralKey);
     }
 
@@ -209,7 +211,7 @@ public class EncryptedSessionActor extends ModuleActor {
         }
     }
 
-    public static class EncryptPackage implements AskMessage<byte[]> {
+    public static class EncryptPackage implements AskMessage<ApiEncyptedBoxKey> {
         private byte[] data;
 
         public EncryptPackage(byte[] data) {
@@ -223,13 +225,13 @@ public class EncryptedSessionActor extends ModuleActor {
 
     public static class DecryptPackage implements AskMessage<byte[]> {
 
-        private byte[] data;
+        private ApiEncyptedBoxKey data;
 
-        public DecryptPackage(byte[] data) {
+        public DecryptPackage(ApiEncyptedBoxKey data) {
             this.data = data;
         }
 
-        public byte[] getData() {
+        public ApiEncyptedBoxKey getData() {
             return data;
         }
     }

@@ -3,10 +3,12 @@ package im.actor.core.modules.encryption.ratchet;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import im.actor.core.api.ApiEncryptionKey;
 import im.actor.core.api.ApiEncryptionKeyGroup;
 import im.actor.core.api.ApiEncryptionKeySignature;
+import im.actor.core.api.ApiKeyGroupId;
 import im.actor.core.api.ApiUserOutPeer;
 import im.actor.core.api.rpc.RequestCreateNewKeyGroup;
 import im.actor.core.api.rpc.RequestLoadPrePublicKeys;
@@ -16,14 +18,13 @@ import im.actor.core.api.rpc.RequestUploadPreKey;
 import im.actor.core.entity.User;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.encryption.Configuration;
-import im.actor.core.modules.encryption.entity.OwnIdentity;
-import im.actor.core.modules.encryption.entity.PrivateKeyStorage;
-import im.actor.core.modules.encryption.entity.PrivateKey;
-import im.actor.core.modules.encryption.entity.UserKeys;
-import im.actor.core.modules.encryption.entity.UserKeysGroup;
-import im.actor.core.modules.encryption.entity.PublicKey;
+import im.actor.core.modules.encryption.ratchet.entity.OwnIdentity;
+import im.actor.core.modules.encryption.ratchet.entity.PrivateKeyStorage;
+import im.actor.core.modules.encryption.ratchet.entity.PrivateKey;
+import im.actor.core.modules.encryption.ratchet.entity.UserKeys;
+import im.actor.core.modules.encryption.ratchet.entity.UserKeysGroup;
+import im.actor.core.modules.encryption.ratchet.entity.PublicKey;
 import im.actor.core.modules.ModuleActor;
-import im.actor.core.modules.encryption.ratchet.EncryptedUserActor;
 import im.actor.core.util.RandomUtils;
 import im.actor.runtime.Crypto;
 import im.actor.runtime.Log;
@@ -442,6 +443,18 @@ public class KeyManagerActor extends ModuleActor {
         return Promise.success(null);
     }
 
+    private Promise<Void> onUserKeysChanged(List<ApiKeyGroupId> missed, List<ApiKeyGroupId> obsolete) {
+
+
+
+//        UserKeys userKeys = getCachedUserKeys(uid);
+//        if (userKeys == null) {
+//            return Promise.success(null);
+//        }
+
+        return Promise.success(null);
+    }
+
     //
     // Helper methods
     //
@@ -714,6 +727,29 @@ public class KeyManagerActor extends ModuleActor {
 
         public int getKeyGroupId() {
             return keyGroupId;
+        }
+    }
+
+    //
+    // Missed or wrong key groups
+    //
+
+    public static class KeyGroupsDiff implements AskMessage<Void> {
+
+        private List<ApiKeyGroupId> missed;
+        private List<ApiKeyGroupId> obsolete;
+
+        public KeyGroupsDiff(List<ApiKeyGroupId> missed, List<ApiKeyGroupId> obsolete) {
+            this.missed = missed;
+            this.obsolete = obsolete;
+        }
+
+        public List<ApiKeyGroupId> getMissed() {
+            return missed;
+        }
+
+        public List<ApiKeyGroupId> getObsolete() {
+            return obsolete;
         }
     }
 }

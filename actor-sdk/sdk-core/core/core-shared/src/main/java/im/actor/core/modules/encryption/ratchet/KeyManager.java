@@ -2,10 +2,10 @@ package im.actor.core.modules.encryption.ratchet;
 
 import im.actor.core.api.ApiEncryptionKeyGroup;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.encryption.entity.OwnIdentity;
-import im.actor.core.modules.encryption.entity.PrivateKey;
-import im.actor.core.modules.encryption.entity.PublicKey;
-import im.actor.core.modules.encryption.entity.UserKeys;
+import im.actor.core.modules.encryption.ratchet.entity.OwnIdentity;
+import im.actor.core.modules.encryption.ratchet.entity.PrivateKey;
+import im.actor.core.modules.encryption.ratchet.entity.PublicKey;
+import im.actor.core.modules.encryption.ratchet.entity.UserKeys;
 import im.actor.runtime.actors.ActorInterface;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.promise.Promise;

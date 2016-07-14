@@ -130,6 +130,11 @@ public class PromisesArray<T> {
         }));
     }
 
+    public PromisesArray<T> filterFailed() {
+        return ignoreFailed()
+                .filterNull();
+    }
+
     public PromisesArray<T> filterNull() {
         return filter(Predicates.NOT_NULL);
     }
@@ -363,5 +368,14 @@ public class PromisesArray<T> {
      */
     public Promise<List<T>> zip() {
         return zipPromise(t -> Promise.success(t));
+    }
+
+    /**
+     * Zipping array of promises to single promise of array
+     *
+     * @return promise
+     */
+    public <V> Promise<V> zip(Function<List<T>, V> mapfunc) {
+        return zip().map(mapfunc);
     }
 }

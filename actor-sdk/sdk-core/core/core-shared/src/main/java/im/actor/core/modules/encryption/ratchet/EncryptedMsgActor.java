@@ -2,19 +2,29 @@ package im.actor.core.modules.encryption.ratchet;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import im.actor.core.api.ApiEncryptedBox;
 import im.actor.core.api.ApiEncryptedContent;
-import im.actor.core.api.ApiEncryptedContentUnsupported;
 import im.actor.core.api.ApiEncryptedData;
 import im.actor.core.api.ApiEncyptedBoxKey;
+import im.actor.core.api.ApiKeyGroupId;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.encryption.entity.EncryptedBox;
-import im.actor.core.modules.encryption.entity.EncryptedBoxKey;
 import im.actor.core.modules.ModuleActor;
+import im.actor.core.modules.encryption.ratchet.entity.EncryptedMessage;
+import im.actor.core.modules.encryption.ratchet.entity.EncryptedUserKeys;
+import im.actor.core.modules.encryption.ratchet.entity.OwnIdentity;
+import im.actor.runtime.Crypto;
 import im.actor.runtime.actors.ask.AskMessage;
 import im.actor.runtime.bser.Bser;
+import im.actor.runtime.crypto.Cryptos;
+import im.actor.runtime.crypto.IntegrityException;
+import im.actor.runtime.crypto.box.ActorBox;
+import im.actor.runtime.crypto.box.ActorBoxKey;
+import im.actor.runtime.crypto.primitives.prf.PRF;
+import im.actor.runtime.crypto.primitives.util.ByteStrings;
 import im.actor.runtime.promise.Promise;
+import im.actor.runtime.promise.PromisesArray;
 
 public class EncryptedMsgActor extends ModuleActor {
 
@@ -22,65 +32,103 @@ public class EncryptedMsgActor extends ModuleActor {
 
     private static final String TAG = "MessageEncryptionActor";
 
+    private final PRF KEY_PRF = Cryptos.PRF_SHA_STREEBOG_256();
+
+    private boolean isFreezed = false;
+    private OwnIdentity ownIdentity;
+
     public EncryptedMsgActor(ModuleContext context) {
         super(context);
     }
 
-    private Promise<ApiEncryptedBox> doEncrypt(int uid, ApiEncryptedContent message) throws IOException {
+    @Override
+    public void preStart() {
+        super.preStart();
 
-        // Building Encrypted Data
-        ApiEncryptedData data = new ApiEncryptedData(VERSION, message.buildContainer());
-        byte[] encData = data.toByteArray();
+        context().getEncryption().getKeyManager().getOwnIdentity().then(id -> {
+            ownIdentity = id;
+            isFreezed = false;
+            unstashAll();
+        });
+    }
 
-        return context().getEncryption().getEncryptedUser(uid)
-                .encrypt(encData)
-                .map(encryptBoxResponse -> {
+    private Promise<EncryptedMessage> doEncrypt(ApiEncryptedContent message, List<Integer> uids) throws IOException {
+
+        // Generate Encryption Keys
+        byte[] encKey = Crypto.randomBytes(32);
+        byte[] encKeyExtended = KEY_PRF.calculate(encKey, "ActorPackage", 128);
+
+        // Encrypt Data
+        byte[] encryptedData;
+        byte[] dataToEncrypt = message.toByteArray();
+        byte[] dataHeader = ByteStrings.merge(new byte[]{VERSION},
+                ByteStrings.intToBytes(myUid()),
+                ByteStrings.intToBytes(ownIdentity.getKeyGroup()));
+        try {
+            encryptedData = ActorBox.closeBox(dataHeader, dataToEncrypt, Crypto.randomBytes(32),
+                    new ActorBoxKey(encKeyExtended));
+        } catch (IntegrityException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
+        // Put To Plain-Text versioned container
+        byte[] dataContainer = new ApiEncryptedData(VERSION, encryptedData).toByteArray();
+
+        // Encryption for all required users
+        return PromisesArray.of(uids)
+                .map((u) -> Promise.success(context().getEncryption().getEncryptedUser(u)))
+                .map((u) -> u.encrypt(encKeyExtended))
+                .zip((r) -> {
                     ArrayList<ApiEncyptedBoxKey> boxKeys = new ArrayList<>();
-                    for (EncryptedBoxKey b : encryptBoxResponse.getKeys()) {
-                        boxKeys.add(new ApiEncyptedBoxKey(b.getUid(), b.getKeyGroupId(),
-                                "curve25519", b.getEncryptedKey()));
+                    ArrayList<ApiKeyGroupId> ignored = new ArrayList<>();
+                    for (EncryptedUserKeys uk : r) {
+                        boxKeys.addAll(uk.getBoxKeys());
+                        for (Integer i : uk.getIgnoredKeys()) {
+                            ignored.add(new ApiKeyGroupId(uk.getUid(), i));
+                        }
                     }
-                    return new ApiEncryptedBox(0,
-                            boxKeys, "aes-kuznechik",
-                            encryptBoxResponse.getEncryptedPackage(),
-                            new ArrayList<>());
+
+                    return new EncryptedMessage(new ApiEncryptedBox(ownIdentity.getKeyGroup(),
+                            boxKeys, "aes-kuznechik", dataContainer, new ArrayList<>()), ignored);
                 });
     }
 
     public Promise<ApiEncryptedContent> doDecrypt(int uid, ApiEncryptedBox box) {
 
-        // Building Encrypted Box
-        ArrayList<EncryptedBoxKey> encryptedBoxKeys = new ArrayList<>();
-        for (ApiEncyptedBoxKey key : box.getKeys()) {
-            if (key.getUsersId() == myUid()) {
-                encryptedBoxKeys.add(new EncryptedBoxKey(key.getUsersId(), key.getKeyGroupId(),
-                        key.getAlgType(), key.getEncryptedKey()));
-            }
+        // Loading Package
+        ApiEncryptedData encData;
+        try {
+            encData = Bser.parse(new ApiEncryptedData(), box.getEncPackage());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        EncryptedBox encryptedBox = new EncryptedBox(
-                encryptedBoxKeys.toArray(new EncryptedBoxKey[encryptedBoxKeys.size()]),
-                box.getEncPackage());
+        if (encData.getVersion() != VERSION) {
+            throw new RuntimeException("Unsupported version " + encData.getVersion());
+        }
 
         return context().getEncryption()
                 .getEncryptedUser(uid)
-                .decrypt(encryptedBox).map(bytes -> {
-                    ApiEncryptedData encData;
+                .decrypt(box.getSenderKeyGroupId(), box.getKeys()).map(bytes -> {
+
+                    // Decryption of package
+                    byte[] dataHeader = ByteStrings.merge(
+                            new byte[]{VERSION},
+                            ByteStrings.intToBytes(myUid()),
+                            ByteStrings.intToBytes(box.getSenderKeyGroupId()));
+                    byte[] data;
                     try {
-                        encData = Bser.parse(new ApiEncryptedData(), bytes);
-                    } catch (IOException e) {
+                        data = ActorBox.openBox(dataHeader, encData.getData(), new ActorBoxKey(bytes));
+                    } catch (IntegrityException e) {
                         throw new RuntimeException(e);
                     }
-                    if (encData.getVersion() != VERSION) {
-                        throw new RuntimeException("Unsupported version " + encData.getVersion());
-                    }
+
+                    // Parsing content
                     ApiEncryptedContent content;
                     try {
-                        content = ApiEncryptedContent.fromBytes(encData.getData());
+                        content = ApiEncryptedContent.fromBytes(data);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
-                    }
-                    if (content instanceof ApiEncryptedContentUnsupported) {
-                        throw new RuntimeException("Unsupported content type #" + content.getHeader());
                     }
                     return content;
                 });
@@ -89,30 +137,38 @@ public class EncryptedMsgActor extends ModuleActor {
     @Override
     public Promise onAsk(Object message) throws Exception {
         if (message instanceof EncryptMessage) {
-            return doEncrypt(((EncryptMessage) message).getUid(), ((EncryptMessage) message).getMessage());
+            if (isFreezed) {
+                stash();
+                return null;
+            }
+            return doEncrypt(((EncryptMessage) message).getMessage(), ((EncryptMessage) message).getUids());
         } else if (message instanceof DecryptMessage) {
+            if (isFreezed) {
+                stash();
+                return null;
+            }
             return doDecrypt(((DecryptMessage) message).getUid(), ((DecryptMessage) message).getEncryptedBox());
         } else {
             return super.onAsk(message);
         }
     }
 
-    public static class EncryptMessage implements AskMessage<ApiEncryptedBox> {
+    public static class EncryptMessage implements AskMessage<EncryptedMessage> {
 
-        private int uid;
         private ApiEncryptedContent message;
+        private List<Integer> uids;
 
-        public EncryptMessage(int uid, ApiEncryptedContent message) {
-            this.uid = uid;
+        public EncryptMessage(ApiEncryptedContent message, List<Integer> uids) {
+            this.uids = uids;
             this.message = message;
-        }
-
-        public int getUid() {
-            return uid;
         }
 
         public ApiEncryptedContent getMessage() {
             return message;
+        }
+
+        public List<Integer> getUids() {
+            return uids;
         }
     }
 
