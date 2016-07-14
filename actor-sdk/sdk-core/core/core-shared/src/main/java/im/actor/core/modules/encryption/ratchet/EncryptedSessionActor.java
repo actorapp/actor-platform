@@ -88,9 +88,11 @@ class EncryptedSessionActor extends ModuleActor {
         Promise<byte[]> ephemeralKey;
         if (latestTheirEphemeralKey != null) {
             ephemeralKey = success(latestTheirEphemeralKey);
+            Log.d(TAG, "Picked cached");
         } else {
             ephemeralKey = keyManager.getUserRandomPreKey(uid, session.getTheirKeyGroupId())
                     .map(PublicKey::getPublicKey);
+            Log.d(TAG, "Picked from server #" + uid + " " + session.getTheirKeyGroupId());
         }
 
         return ephemeralKey
@@ -115,12 +117,12 @@ class EncryptedSessionActor extends ModuleActor {
         // final long theirEphemeralKey0Id = ByteStrings.bytesToLong(data, 8);
         final byte[] senderEphemeralKey = ByteStrings.substring(material, 16, 32);
         final byte[] receiverEphemeralKey = ByteStrings.substring(material, 48, 32);
-        Log.d(TAG, "Sender Ephemeral " + Crypto.keyHash(senderEphemeralKey));
-        Log.d(TAG, "Receiver Ephemeral " + Crypto.keyHash(receiverEphemeralKey));
+//        Log.d(TAG, "Sender Ephemeral " + Crypto.keyHash(senderEphemeralKey));
+//        Log.d(TAG, "Receiver Ephemeral " + Crypto.keyHash(receiverEphemeralKey));
 
         return pickDecryptChain(senderEphemeralKey, receiverEphemeralKey)
-                .map(encryptedSessionChain -> decrypt(encryptedSessionChain, material))
-                .then(decryptedPackage -> latestTheirEphemeralKey = senderEphemeralKey);
+                .map(encryptedSessionChain -> decrypt(encryptedSessionChain, material));
+        //.then(decryptedPackage -> latestTheirEphemeralKey = senderEphemeralKey);
     }
 
     private EncryptedSessionChain pickEncryptChain(byte[] ephemeralKey) {
@@ -151,8 +153,8 @@ class EncryptedSessionActor extends ModuleActor {
             throw new RuntimeException(e);
         }
 
-        Log.d(TAG, "!Sender Ephemeral " + Crypto.keyHash(Curve25519.keyGenPublic(chain.getOwnPrivateKey())));
-        Log.d(TAG, "!Receiver Ephemeral " + Crypto.keyHash(chain.getTheirPublicKey()));
+//        Log.d(TAG, "!Sender Ephemeral " + Crypto.keyHash(Curve25519.keyGenPublic(chain.getOwnPrivateKey())));
+//        Log.d(TAG, "!Receiver Ephemeral " + Crypto.keyHash(chain.getTheirPublicKey()));
 
         return encrypted;
     }
