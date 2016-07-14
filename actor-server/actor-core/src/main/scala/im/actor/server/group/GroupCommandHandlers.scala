@@ -8,7 +8,7 @@ import akka.pattern.pipe
 import im.actor.api.rpc.Update
 import im.actor.api.rpc.files.ApiAvatar
 import im.actor.api.rpc.groups._
-import im.actor.api.rpc.messaging.{ ApiMessage, UpdateMessage }
+import im.actor.api.rpc.messaging.{ ApiMessage, ApiServiceMessage, UpdateMessage }
 import im.actor.api.rpc.users.ApiSex
 import im.actor.concurrent.FutureExt
 import im.actor.server.CommonErrors
@@ -274,22 +274,17 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
               UpdateGroupMembersCountChanged(groupId, newState.membersCount)
             )
 
-            // push service message to invitee
-            _ ← pushUpdateMessage(
-              userId = cmd.inviteeUserId,
-              authId = 0L,
-              ts = dateMillis,
-              randomId = cmd.randomId,
-              serviceMessage
-            )
-
-            // push service message to inviter and return seqState
-            SeqState(seq, state) ← pushUpdateMessage(
+            // push service message to invitee and inviter
+            SeqState(seq, state) ← seqUpdExt.broadcastClientUpdate(
               userId = cmd.inviterUserId,
               authId = cmd.inviterAuthId,
-              ts = dateMillis,
-              randomId = cmd.randomId,
-              serviceMessage
+              Set(cmd.inviteeUserId),
+              update = serviceMessageUpdate(
+                cmd.inviterUserId,
+                dateMillis,
+                cmd.randomId,
+                serviceMessage
+              )
             )
           } yield SeqStateDate(seq, state, dateMillis)
 
@@ -349,6 +344,11 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
       // user was invited in group by other group user
       val wasInvited = state.isInvited(cmd.joiningUserId)
 
+      // trying to figure out who invited joining user.
+      // Descdending priority:
+      // • inviter defined in `Join` command (when invited via token)
+      // • inviter from members list (when invited by other user)
+      // • group creator (safe fallback)
       val optMember = state.members.get(cmd.joiningUserId)
       val inviterUserId = cmd.invitingUserId
         .orElse(optMember.map(_.inviterUserId))
@@ -459,13 +459,15 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
               UpdateGroupMembersCountChanged(groupId, newState.membersCount)
             )
 
-            // push service message to joining user and return seqState
-            _ ← pushUpdateMessage(
-              userId = cmd.joiningUserId,
-              authId = cmd.joiningUserAuthId,
-              ts = dateMillis,
-              randomId = randomId,
-              serviceMessage
+            // push service message only to inviter
+            _ ← seqUpdExt.deliverUserUpdate(
+              userId = inviterUserId,
+              update = serviceMessageUpdate(
+                cmd.joiningUserId,
+                dateMillis,
+                randomId,
+                serviceMessage
+              )
             )
           } yield SeqStateDate(seq, state, dateMillis)
 
@@ -581,14 +583,19 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
               UpdateGroupMembersCountChanged(groupId, state.membersCount - 1)
             )
 
-            // push service message to left user
-            _ ← pushUpdateMessage(
-              userId = cmd.userId,
-              authId = cmd.authId,
-              ts = dateMillis,
-              randomId = cmd.randomId,
-              message = serviceMessage
-            )
+            // push service message to user, who invited leaving user
+            optInviter = state.members.get(cmd.userId) map (_.inviterUserId)
+            _ ← optInviter map { inviter ⇒
+              seqUpdExt.deliverUserUpdate(
+                userId = cmd.userId,
+                update = serviceMessageUpdate(
+                  cmd.userId,
+                  dateMillis,
+                  cmd.randomId,
+                  serviceMessage
+                )
+              )
+            } getOrElse FastFuture.successful(())
 
             // push left user that he is no longer a member
             SeqState(seq, state) ← seqUpdExt.deliverClientUpdate(
@@ -713,22 +720,15 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
               UpdateGroupMembersCountChanged(groupId, newState.membersCount)
             )
 
-            // push service message to kicker user
-            _ ← pushUpdateMessage(
-              userId = cmd.kickerUserId,
-              authId = cmd.kickerAuthId, //??? what's a point?
-              ts = dateMillis,
-              randomId = cmd.randomId,
-              serviceMessage
-            )
-
-            // push service message to kicked user
-            _ ← pushUpdateMessage(
-              userId = cmd.kickedUserId,
-              authId = 0L,
-              ts = dateMillis,
-              randomId = cmd.randomId,
-              serviceMessage
+            // push service message to kicker and kicked users.
+            _ ← seqUpdExt.broadcastPeopleUpdate(
+              userIds = Set(cmd.kickedUserId, cmd.kickerUserId),
+              update = serviceMessageUpdate(
+                cmd.kickerUserId,
+                dateMillis,
+                cmd.randomId,
+                serviceMessage
+              )
             )
 
             // push kicked user updates
@@ -1147,25 +1147,16 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
     }
   }
 
-  // или все таки будет broadcast?
-  private def pushUpdateMessage(userId: Int, authId: Long, ts: Long, randomId: Long, message: ApiMessage): Future[SeqState] = {
-    val messUpdate = UpdateMessage(
+  private def serviceMessageUpdate(senderUserId: Int, date: Long, randomId: Long, message: ApiServiceMessage) =
+    UpdateMessage(
       peer = apiGroupPeer,
-      senderUserId = userId,
-      date = ts,
+      senderUserId = senderUserId,
+      date = date,
       randomId = randomId,
       message = message,
       attributes = None,
       quotedMessage = None
     )
-    seqUpdExt.deliverClientUpdate(
-      userId = userId,
-      authId = authId,
-      update = messUpdate,
-      deliveryId = seqUpdExt.msgDeliveryId(apiGroupPeer.asModel, randomId),
-      deliveryTag = Some(Optimization.GroupV2)
-    )
-  }
 
   private def trimToEmpty(s: Option[String]): Option[String] =
     s map (_.trim) filter (_.nonEmpty)
