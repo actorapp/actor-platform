@@ -74,6 +74,8 @@ private[group] final case class GroupState(
 
   def memberIds = members.keySet //TODO: Maybe lazy val. immutable anyway
 
+  def adminIds = (members filter (_._2.isAdmin == true)).keySet //TODO: Maybe lazy val. immutable anyway
+
   def membersCount = members.size //TODO: Maybe lazy val. immutable anyway
 
   def isMember(userId: Int): Boolean = members.contains(userId)

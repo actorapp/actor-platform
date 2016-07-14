@@ -9,7 +9,7 @@ import com.typesafe.sbt.SbtMultiJvm.MultiJvmKeys.MultiJvm
 import com.typesafe.sbt.packager.archetypes.JavaServerAppPackaging
 import com.typesafe.sbt.packager.debian.JDebPackaging
 
-object Build extends sbt.Build with Versioning with Releasing with Packaging {
+object Build extends sbt.Build with Versioning with Releasing with Packaging with StartHook {
   val ScalaVersion = "2.11.8"
   val BotKitVersion = getVersion
 
@@ -89,6 +89,7 @@ object Build extends sbt.Build with Versioning with Releasing with Packaging {
     "actor",
     file("."),
     settings =
+      startUpSettings ++
       packagingSettings ++
       defaultSettingsServer ++
       Revolver.settings ++
