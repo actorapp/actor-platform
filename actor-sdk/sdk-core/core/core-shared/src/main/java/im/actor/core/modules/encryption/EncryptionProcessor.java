@@ -13,6 +13,7 @@ import im.actor.core.entity.Peer;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.messaging.MessagesProcessorEncrypted;
 import im.actor.core.modules.sequence.processor.SequenceProcessor;
 import im.actor.core.network.parser.Update;
 import im.actor.runtime.actors.messages.Void;
@@ -21,8 +22,14 @@ import im.actor.runtime.promise.Promise;
 
 public class EncryptionProcessor extends AbsModule implements SequenceProcessor {
 
+    private EncryptedSequenceProcessor[] processors;
+
     public EncryptionProcessor(ModuleContext context) {
         super(context);
+
+        processors = new EncryptedSequenceProcessor[]{
+                new MessagesProcessorEncrypted(context)
+        };
     }
 
     @Override
@@ -49,27 +56,16 @@ public class EncryptionProcessor extends AbsModule implements SequenceProcessor 
     }
 
     public Promise<Void> process(int senderId, long date, ApiEncryptedContent update) {
-        if (update instanceof ApiEncryptedMessageContent) {
-            ApiEncryptedMessageContent content = (ApiEncryptedMessageContent) update;
-
-            Message msg = new Message(content.getRid(), date, date, senderId,
-                    MessageState.UNKNOWN, AbsContent.fromMessage(content.getMessage()));
-
-            int destId = senderId;
-            if (senderId == myUid()) {
-                destId = content.getReceiverId();
+        Promise<Void> res = null;
+        for (EncryptedSequenceProcessor s : processors) {
+            res = s.onUpdate(senderId, date, update);
+            if (res != null) {
+                break;
             }
-
-            return context().getMessagesModule().getRouter()
-                    .onNewMessage(Peer.secret(destId), msg);
-        } else if (update instanceof ApiEncryptedDeleteContent) {
-            // TODO: Implement
-            return Promise.success(null);
-        } else if (update instanceof ApiEncryptedEditContent) {
-            // TODO: Implement
-            return Promise.success(null);
-        } else {
-            return Promise.success(null);
         }
+        if (res == null) {
+            res = Promise.success(null);
+        }
+        return res;
     }
 }
