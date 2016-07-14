@@ -16508,6 +16508,73 @@
           <ref role="NX6Kv" node="47c0HGsFLa" resolve="rid" />
         </node>
       </node>
+      <node concept="2m5naR" id="48IQiQVi_qC" role="2m5mJr">
+        <property role="TrG5h" value="EncryptedReceived" />
+        <property role="tsOgz" value="false" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="47c0HGpc8A" resolve="EncryptedContent" />
+        <node concept="2m7Kf5" id="48IQiQVi_wt" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="receiverId" />
+          <node concept="wb0Ql" id="48IQiQVi_wx" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="48IQiQVi_w$" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="receiveDate" />
+          <node concept="2m5ndQ" id="48IQiQVi_wE" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="48IQiQVi_wr" role="3BtCOu">
+          <property role="Nu42W" value="04" />
+        </node>
+        <node concept="NXeRC" id="48IQiQVi_wH" role="NXodf">
+          <property role="NXePf" value="Encrypted message receive notification" />
+        </node>
+        <node concept="NX1gA" id="48IQiQViAO8" role="NXodf">
+          <property role="NX6R2" value="Receiver User Id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="48IQiQVi_wt" resolve="receiverId" />
+        </node>
+        <node concept="NX1gA" id="48IQiQViAOg" role="NXodf">
+          <property role="NX6R2" value="Receive message sort date" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="48IQiQVi_w$" resolve="receiveDate" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="48IQiQViCd$" role="2m5mJr">
+        <property role="TrG5h" value="EncryptedRead" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="47c0HGpc8A" resolve="EncryptedContent" />
+        <node concept="2m7Kf5" id="48IQiQViCjy" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="receiverId" />
+          <node concept="wb0Ql" id="48IQiQViCjA" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="48IQiQViCjD" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="readDate" />
+          <node concept="2m5ndQ" id="48IQiQViCjJ" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="48IQiQViCjw" role="3BtCOu">
+          <property role="Nu42W" value="05" />
+        </node>
+        <node concept="NXeRC" id="48IQiQViCjM" role="NXodf">
+          <property role="NXePf" value="Encrypted message read notification" />
+        </node>
+        <node concept="NX1gA" id="48IQiQViCjR" role="NXodf">
+          <property role="NX6R2" value="Receiver User Id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="48IQiQViCjy" resolve="receiverId" />
+        </node>
+        <node concept="NX1gA" id="48IQiQViCjZ" role="NXodf">
+          <property role="NX6R2" value="Read message sort date" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="48IQiQViCjD" resolve="readDate" />
+        </node>
+      </node>
       <node concept="1Dx9M1" id="7ZzLuuoIXYH" role="1Dx9rD">
         <property role="1Dx9K7" value="Package that include encryption support" />
       </node>

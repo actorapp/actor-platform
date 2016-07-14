@@ -7904,7 +7904,7 @@
                 "type": "reference",
                 "argument": "canSendMessage",
                 "category": "full",
-                "description": "  Can user send messages. Default is equals isMember for Group and false for others."
+                "description": "  Can user send messages. Default is equals isMember for Group and false for channels."
               },
               {
                 "type": "reference",
@@ -8134,7 +8134,7 @@
                 "type": "reference",
                 "argument": "isAsyncMembers",
                 "category": "full",
-                "description": "  Is Members need to be loaded asynchronous. Default is false."
+                "description": "  Is Members need to be loaded asynchronous."
               },
               {
                 "type": "reference",
@@ -8152,7 +8152,7 @@
                 "type": "reference",
                 "argument": "isSharedHistory",
                 "category": "full",
-                "description": "  Is history shared among all users. Default is false."
+                "description": "  Is history shared among all users."
               }
             ],
             "attributes": [
@@ -19510,6 +19510,86 @@
                 "type": "int64",
                 "id": 2,
                 "name": "rid"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "EncryptedReceived",
+            "doc": [
+              "Encrypted message receive notification",
+              {
+                "type": "reference",
+                "argument": "receiverId",
+                "category": "full",
+                "description": "  Receiver User Id"
+              },
+              {
+                "type": "reference",
+                "argument": "receiveDate",
+                "category": "full",
+                "description": "  Receive message sort date"
+              }
+            ],
+            "trait": {
+              "name": "EncryptedContent",
+              "key": 4
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "receiverId"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "receiveDate"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "EncryptedRead",
+            "doc": [
+              "Encrypted message read notification",
+              {
+                "type": "reference",
+                "argument": "receiverId",
+                "category": "full",
+                "description": "  Receiver User Id"
+              },
+              {
+                "type": "reference",
+                "argument": "readDate",
+                "category": "full",
+                "description": "  Read message sort date"
+              }
+            ],
+            "trait": {
+              "name": "EncryptedContent",
+              "key": 5
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "receiverId"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "readDate"
               }
             ]
           }

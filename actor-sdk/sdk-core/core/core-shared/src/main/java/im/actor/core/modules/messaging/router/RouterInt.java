@@ -3,6 +3,7 @@ package im.actor.core.modules.messaging.router;
 import java.util.ArrayList;
 import java.util.List;
 
+import im.actor.core.api.ApiEncryptedContent;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
@@ -23,6 +24,7 @@ import im.actor.core.modules.messaging.router.entity.RouterConversationVisible;
 import im.actor.core.modules.messaging.router.entity.RouterDeletedMessages;
 import im.actor.core.modules.messaging.router.entity.RouterDifferenceEnd;
 import im.actor.core.modules.messaging.router.entity.RouterDifferenceStart;
+import im.actor.core.modules.messaging.router.entity.RouterEncryptedUpdate;
 import im.actor.core.modules.messaging.router.entity.RouterMessageUpdate;
 import im.actor.core.modules.messaging.router.entity.RouterNewMessages;
 import im.actor.core.modules.messaging.router.entity.RouterOutgoingError;
@@ -62,6 +64,10 @@ public class RouterInt extends ActorInterface implements BusSubscriber {
 
     public Promise<Void> onUpdate(Update update) {
         return ask(new RouterMessageUpdate(update));
+    }
+
+    public Promise<Void> onEncryptedUpdate(int senderId, long date, ApiEncryptedContent update) {
+        return ask(new RouterEncryptedUpdate(senderId, date, update));
     }
 
     public Promise<Void> onDifferenceEnd() {

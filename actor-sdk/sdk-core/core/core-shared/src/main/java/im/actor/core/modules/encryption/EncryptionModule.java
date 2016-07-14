@@ -71,6 +71,15 @@ public class EncryptionModule extends AbsModule {
         return getEncryption().decrypt(uid, encryptedBox);
     }
 
+    public Promise<ResponseSendEncryptedPackage> doSend(long rid, ApiEncryptedContent content, int uid) {
+        ArrayList<Integer> receiver = new ArrayList<>();
+        receiver.add(uid);
+//        if (uid != myUid()) {
+//            receiver.add(myUid());
+//        }
+        return doSend(rid, content, receiver);
+    }
+
     public Promise<ResponseSendEncryptedPackage> doSend(long rid, ApiEncryptedContent content, List<Integer> uids) {
 
         ArrayList<ApiUserOutPeer> outPeers = new ArrayList<>();

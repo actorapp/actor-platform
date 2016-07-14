@@ -16,6 +16,7 @@ import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.messaging.MessagesProcessorEncrypted;
 import im.actor.core.modules.sequence.processor.SequenceProcessor;
 import im.actor.core.network.parser.Update;
+import im.actor.runtime.Log;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.function.Function;
 import im.actor.runtime.promise.Promise;
@@ -56,6 +57,9 @@ public class EncryptionProcessor extends AbsModule implements SequenceProcessor 
     }
 
     public Promise<Void> process(int senderId, long date, ApiEncryptedContent update) {
+
+        Log.d("EncryptedUpdates", "Handling update (from #" + senderId + "): " + update);
+
         Promise<Void> res = null;
         for (EncryptedSequenceProcessor s : processors) {
             res = s.onUpdate(senderId, date, update);
