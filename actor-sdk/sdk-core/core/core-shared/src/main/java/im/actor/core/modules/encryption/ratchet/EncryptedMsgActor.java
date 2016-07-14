@@ -60,7 +60,7 @@ public class EncryptedMsgActor extends ModuleActor {
 
         // Encrypt Data
         byte[] encryptedData;
-        byte[] dataToEncrypt = message.toByteArray();
+        byte[] dataToEncrypt = message.buildContainer();
         byte[] dataHeader = ByteStrings.merge(new byte[]{VERSION},
                 ByteStrings.intToBytes(myUid()),
                 ByteStrings.intToBytes(ownIdentity.getKeyGroup()));
