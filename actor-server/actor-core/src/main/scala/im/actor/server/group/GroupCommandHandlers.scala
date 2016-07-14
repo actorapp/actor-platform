@@ -741,9 +741,10 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
     }
   }
 
-  //TODO: channels, don't allow non-admin to change topic
   protected def updateAvatar(cmd: UpdateAvatar): Unit = {
-    if (state.nonMember(cmd.clientUserId)) {
+    if (state.typ.isChannel && !state.isAdmin(cmd.clientUserId)) {
+      sender() ! notAdmin
+    } else if (state.nonMember(cmd.clientUserId)) {
       sender() ! notMember
     } else {
       persist(AvatarUpdated(Instant.now, cmd.avatar)) { evt ⇒
@@ -790,10 +791,11 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
     }
   }
 
-  //TODO: channels, don't allow non-admin to change topic
   protected def updateTitle(cmd: UpdateTitle): Unit = {
     val title = cmd.title
-    if (state.nonMember(cmd.clientUserId)) {
+    if (state.typ.isChannel && !state.isAdmin(cmd.clientUserId)) {
+      sender() ! notAdmin
+    } else if (state.nonMember(cmd.clientUserId)) {
       sender() ! notMember
     } else if (!isValidTitle(title)) {
       sender() ! Status.Failure(InvalidTitle)
@@ -859,13 +861,14 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
     }
   }
 
-  //TODO: channels, don't allow non-admin to change topic
   protected def updateTopic(cmd: UpdateTopic): Unit = {
     def isValidTopic(topic: Option[String]) = topic.forall(_.length < 255)
 
     val topic = trimToEmpty(cmd.topic)
 
-    if (state.nonMember(cmd.clientUserId)) {
+    if (state.typ.isChannel && !state.isAdmin(cmd.clientUserId)) {
+      sender() ! notAdmin
+    } else if (state.nonMember(cmd.clientUserId)) {
       sender() ! notMember
     } else if (!isValidTopic(topic)) {
       sender() ! Status.Failure(TopicTooLong)
@@ -1041,6 +1044,36 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
         //TODO: remove deprecated
         db.run(GroupUserRepo.makeAdmin(groupId, cmd.candidateUserId))
 
+        val adminGROUPUpdates: Future[SeqStateDate] =
+          for {
+            _ ← seqUpdExt.broadcastPeopleUpdate(
+              userIds = memberIds + cmd.clientUserId,
+              updateAdmin
+            )
+            SeqState(seq, state) ← seqUpdExt.broadcastClientUpdate(
+              cmd.clientUserId,
+              cmd.clientAuthId,
+              memberIds - cmd.clientUserId,
+              updateMembers
+            )
+          } yield SeqStateDate(seq, state, dateMillis)
+
+        val adminCHANNELUpdates: Future[SeqStateDate] =
+          for {
+            // push admin changed to all
+            _ ← seqUpdExt.broadcastPeopleUpdate(
+              userIds = memberIds + cmd.clientUserId,
+              updateAdmin
+            )
+            // push changed members to admins and fresh admin
+            SeqState(seq, state) ← seqUpdExt.broadcastClientUpdate(
+              cmd.clientUserId,
+              cmd.clientAuthId,
+              (newState.adminIds - cmd.clientUserId) + cmd.candidateUserId,
+              updateMembers
+            )
+          } yield SeqStateDate(seq, state, dateMillis)
+
         val result: Future[(Vector[ApiMember], SeqStateDate)] = for {
 
           ///////////////////////////
@@ -1058,17 +1091,9 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
           // Groups V2 API updates //
           ///////////////////////////
 
-          _ ← seqUpdExt.broadcastPeopleUpdate(
-            userIds = memberIds + cmd.clientUserId,
-            updateAdmin
-          )
-          SeqState(seq, state) ← seqUpdExt.broadcastClientUpdate(
-            cmd.clientUserId,
-            cmd.clientAuthId,
-            memberIds - cmd.clientUserId,
-            updateMembers
-          )
-        } yield (members, SeqStateDate(seq, state, dateMillis))
+          seqStateDate ← if (state.typ.isChannel) adminCHANNELUpdates else adminGROUPUpdates
+
+        } yield (members, seqStateDate)
 
         result pipeTo sender()
       }
