@@ -4741,6 +4741,33 @@
         {
           "type": "struct",
           "content": {
+            "name": "ServiceTimerChanged",
+            "doc": [
+              "Service Message about timer changed",
+              {
+                "type": "reference",
+                "argument": "timerMs",
+                "category": "full",
+                "description": "  Timer in milliseconds"
+              }
+            ],
+            "trait": {
+              "name": "ServiceEx",
+              "key": 23
+            },
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "timerMs"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
             "name": "DocumentMessage",
             "doc": [
               "File message",
@@ -19507,7 +19534,10 @@
                 "name": "receiverId"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "list",
+                  "childType": "int64"
+                },
                 "id": 2,
                 "name": "rid"
               }
@@ -19590,6 +19620,35 @@
                 "type": "int64",
                 "id": 2,
                 "name": "readDate"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "EncryptedDeleteAll",
+            "doc": [
+              "Encrypted message about clearing chat",
+              {
+                "type": "reference",
+                "argument": "receiverId",
+                "category": "full",
+                "description": "  Receiver User Id"
+              }
+            ],
+            "trait": {
+              "name": "EncryptedContent",
+              "key": 6
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "receiverId"
               }
             ]
           }

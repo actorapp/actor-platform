@@ -42,11 +42,9 @@ import im.actor.runtime.promise.Promise;
 import static im.actor.runtime.actors.ActorSystem.system;
 
 public class RouterInt extends ActorInterface implements BusSubscriber {
-
-    private final ModuleContext context;
-
+    
     public RouterInt(final ModuleContext context) {
-        this.context = context;
+
         setDest(system().actorOf("actor/router", () -> new RouterActor(context)));
 
         context.getEvents().subscribe(this, PeerChatOpened.EVENT);

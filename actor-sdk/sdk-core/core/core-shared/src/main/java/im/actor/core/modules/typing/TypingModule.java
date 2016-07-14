@@ -19,8 +19,9 @@ public class TypingModule extends AbsModule {
 
     private ActorRef ownTypingActor;
     private ActorRef typingActor;
-    private HashMap<Integer, UserTypingVM> uids = new HashMap<>();
-    private HashMap<Integer, GroupTypingVM> groups = new HashMap<>();
+    private final HashMap<Integer, UserTypingVM> uids = new HashMap<>();
+    private final HashMap<Integer, UserTypingVM> sec_uids = new HashMap<>();
+    private final HashMap<Integer, GroupTypingVM> groups = new HashMap<>();
 
     public TypingModule(final ModuleContext context) {
         super(context);
@@ -44,6 +45,15 @@ public class TypingModule extends AbsModule {
                 uids.put(uid, new UserTypingVM(uid));
             }
             return uids.get(uid);
+        }
+    }
+
+    public UserTypingVM getSecretTyping(int uid) {
+        synchronized (sec_uids) {
+            if (!sec_uids.containsKey(uid)) {
+                sec_uids.put(uid, new UserTypingVM(uid));
+            }
+            return sec_uids.get(uid);
         }
     }
 

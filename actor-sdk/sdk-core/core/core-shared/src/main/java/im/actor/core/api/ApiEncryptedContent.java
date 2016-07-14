@@ -25,6 +25,7 @@ public abstract class ApiEncryptedContent extends BserObject {
             case 3: return Bser.parse(new ApiEncryptedDeleteContent(), content);
             case 4: return Bser.parse(new ApiEncryptedReceived(), content);
             case 5: return Bser.parse(new ApiEncryptedRead(), content);
+            case 6: return Bser.parse(new ApiEncryptedDeleteAll(), content);
             default: return new ApiEncryptedContentUnsupported(key, content);
         }
     }

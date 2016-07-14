@@ -4341,6 +4341,28 @@
           <property role="NXePf" value="Message about chat restored" />
         </node>
       </node>
+      <node concept="2m5naR" id="48IQiQViMdz" role="2m5mJr">
+        <property role="TrG5h" value="ServiceTimerChanged" />
+        <property role="tsOgz" value="true" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="55bmeIQ9med" resolve="ServiceEx" />
+        <node concept="2m7Kf5" id="48IQiQViMsf" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="timerMs" />
+          <node concept="2m5ndE" id="48IQiQViMsj" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="48IQiQViMsd" role="3BtCOu">
+          <property role="Nu42W" value="17" />
+        </node>
+        <node concept="NXeRC" id="48IQiQViMsm" role="NXodf">
+          <property role="NXePf" value="Service Message about timer changed" />
+        </node>
+        <node concept="NX1gA" id="48IQiQViNJY" role="NXodf">
+          <property role="NX6R2" value="Timer in milliseconds" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="48IQiQViMsf" resolve="timerMs" />
+        </node>
+      </node>
       <node concept="2m5naR" id="GBscvBBlnT" role="2m5mJr">
         <property role="TrG5h" value="DocumentMessage" />
         <property role="w4tQU" value="true" />
@@ -16996,7 +17018,9 @@
         <node concept="2m7Kf5" id="47c0HGsFLa" role="2m0hLx">
           <property role="2m7DUN" value="2" />
           <property role="TrG5h" value="rid" />
-          <node concept="2m5ndQ" id="47c0HGsFLe" role="2m7DVh" />
+          <node concept="2m5nlk" id="48IQiQViI4n" role="2m7DVh">
+            <node concept="2m5ndQ" id="48IQiQViI4t" role="3GJlyp" />
+          </node>
         </node>
         <node concept="Nu42z" id="47c0HGsFL8" role="3BtCOu">
           <property role="Nu42W" value="03" />
@@ -17080,6 +17104,29 @@
           <property role="NX6R2" value="Read message sort date" />
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="48IQiQViCjD" resolve="readDate" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="48IQiQViP9F" role="2m5mJr">
+        <property role="TrG5h" value="EncryptedDeleteAll" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="47c0HGpc8A" resolve="EncryptedContent" />
+        <node concept="2m7Kf5" id="48IQiQViQzp" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="receiverId" />
+          <node concept="wb0Ql" id="48IQiQViQzt" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="48IQiQViPfL" role="3BtCOu">
+          <property role="Nu42W" value="06" />
+        </node>
+        <node concept="NXeRC" id="48IQiQViRR8" role="NXodf">
+          <property role="NXePf" value="Encrypted message about clearing chat" />
+        </node>
+        <node concept="NX1gA" id="48IQiQViRRd" role="NXodf">
+          <property role="NX6R2" value="Receiver User Id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="48IQiQViQzp" resolve="receiverId" />
         </node>
       </node>
       <node concept="1Dx9M1" id="7ZzLuuoIXYH" role="1Dx9rD">

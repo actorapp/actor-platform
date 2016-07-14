@@ -26,8 +26,10 @@ public class TypingActor extends ModuleActor {
 
     private static final int TYPING_TEXT_TIMEOUT = 7000;
 
-    private HashMap<Integer, ActorCancellable> typingsCancellables = new HashMap<>();
     private HashSet<Integer> typings = new HashSet<>();
+    private HashMap<Integer, ActorCancellable> typingsCancellables = new HashMap<>();
+    private HashSet<Integer> secretTypings = new HashSet<>();
+    private HashMap<Integer, ActorCancellable> secretTypingsCancellables = new HashMap<>();
     private HashMap<Integer, HashSet<Integer>> groupTypings = new HashMap<>();
     private HashMap<Integer, HashMap<Integer, ActorCancellable>> groupCancellables = new HashMap<>();
 
@@ -68,6 +70,42 @@ public class TypingActor extends ModuleActor {
             }
 
             context().getTypingModule().getTyping(uid).getTyping().change(false);
+        }
+    }
+
+    @Verified
+    private void privateSecretTyping(int uid, ApiTypingType type) {
+        // Support only text typings
+        if (type != ApiTypingType.TEXT) {
+            return;
+        }
+
+        if (getUser(uid) == null) {
+            return;
+        }
+
+        if (!secretTypings.contains(uid)) {
+            secretTypings.add(uid);
+
+            context().getTypingModule().getSecretTyping(uid).getTyping().change(true);
+        }
+
+        if (secretTypingsCancellables.containsKey(uid)) {
+            secretTypingsCancellables.remove(uid).cancel();
+        }
+        secretTypingsCancellables.put(uid, schedule(new StopSecretTyping(uid), TYPING_TEXT_TIMEOUT));
+    }
+
+    @Verified
+    private void stopPrivateSecretTyping(int uid) {
+        if (secretTypings.contains(uid)) {
+            secretTypings.remove(uid);
+
+            if (secretTypingsCancellables.containsKey(uid)) {
+                secretTypingsCancellables.remove(uid).cancel();
+            }
+
+            context().getTypingModule().getSecretTyping(uid).getTyping().change(false);
         }
     }
 
@@ -151,12 +189,18 @@ public class TypingActor extends ModuleActor {
         if (message instanceof PrivateTyping) {
             PrivateTyping typing = (PrivateTyping) message;
             privateTyping(typing.getUid(), typing.getType());
+        } else if (message instanceof PrivateSecretTyping) {
+            PrivateSecretTyping typing = (PrivateSecretTyping) message;
+            privateSecretTyping(typing.getUid(), typing.getType());
         } else if (message instanceof GroupTyping) {
             GroupTyping typing = (GroupTyping) message;
             groupTyping(typing.getGid(), typing.getUid(), typing.getType());
         } else if (message instanceof StopTyping) {
             StopTyping typing = (StopTyping) message;
             stopPrivateTyping(typing.getUid());
+        } else if (message instanceof StopSecretTyping) {
+            StopSecretTyping secretTyping = (StopSecretTyping) message;
+            stopPrivateSecretTyping(secretTyping.getUid());
         } else if (message instanceof StopGroupTyping) {
             StopGroupTyping typing = (StopGroupTyping) message;
             stopGroupTyping(typing.getGid(), typing.getUid());
@@ -182,6 +226,36 @@ public class TypingActor extends ModuleActor {
             if (o == null || getClass() != o.getClass()) return false;
 
             StopTyping that = (StopTyping) o;
+
+            if (uid != that.uid) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            return uid;
+        }
+    }
+
+    public static class StopSecretTyping {
+
+        private int uid;
+
+        public StopSecretTyping(int uid) {
+            this.uid = uid;
+        }
+
+        public int getUid() {
+            return uid;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            StopSecretTyping that = (StopSecretTyping) o;
 
             if (uid != that.uid) return false;
 
@@ -233,10 +307,50 @@ public class TypingActor extends ModuleActor {
     }
 
     public static class PrivateTyping {
+
         private int uid;
         private ApiTypingType type;
 
         public PrivateTyping(int uid, ApiTypingType type) {
+            this.uid = uid;
+            this.type = type;
+        }
+
+        public int getUid() {
+            return uid;
+        }
+
+        public ApiTypingType getType() {
+            return type;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            PrivateTyping that = (PrivateTyping) o;
+
+            if (type != that.type) return false;
+            if (uid != that.uid) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = uid;
+            result = 31 * result + type.getValue();
+            return result;
+        }
+    }
+
+    public static class PrivateSecretTyping {
+
+        private int uid;
+        private ApiTypingType type;
+
+        public PrivateSecretTyping(int uid, ApiTypingType type) {
             this.uid = uid;
             this.type = type;
         }
