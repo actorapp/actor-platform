@@ -21,12 +21,13 @@ trait DeliveryOperations { this: SeqUpdatesExtension ⇒
    * Send update to all devices of user and return `SeqState` associated with `authId`
    */
   def deliverClientUpdate(
-    userId:     Int,
-    authId:     Long,
-    update:     Update,
-    pushRules:  PushRules      = PushRules(),
-    reduceKey:  Option[String] = None,
-    deliveryId: String         = ""
+    userId:      Int,
+    authId:      Long,
+    update:      Update,
+    pushRules:   PushRules      = PushRules(),
+    reduceKey:   Option[String] = None,
+    deliveryId:  String         = "",
+    deliveryTag: Option[String] = None
   ): Future[SeqState] =
     deliverUpdate(
       userId,
@@ -34,7 +35,8 @@ trait DeliveryOperations { this: SeqUpdatesExtension ⇒
       UpdateMapping(default = Some(serializedUpdate(update))),
       pushRules,
       reduceKey,
-      deliveryId
+      deliveryId,
+      deliveryTag
     )
 
   /**
