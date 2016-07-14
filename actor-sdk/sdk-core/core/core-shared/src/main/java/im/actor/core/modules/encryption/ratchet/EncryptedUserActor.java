@@ -73,8 +73,8 @@ public class EncryptedUserActor extends ModuleActor {
         return wrap(PromisesArray.of(theirKeys.getUserKeysGroups())
 
                 // Stage 1.1: Filtering invalid key groups and own key groups
-                .filter(keysGroup -> !ignoredKeyGroups.contains(keysGroup.getKeyGroupId()) &&
-                        (!(isOwnUser && keysGroup.getKeyGroupId() == ownKeyGroupId)))
+                .filter(keysGroup -> !ignoredKeyGroups.contains(keysGroup.getKeyGroupId())
+                        && (!(isOwnUser && keysGroup.getKeyGroupId() == ownKeyGroupId)))
 
                 // Stage 2: Pick sessions for encryption
                 .map(keysGroup -> {
@@ -96,31 +96,9 @@ public class EncryptedUserActor extends ModuleActor {
 
                 // Stage 4: Zip Everything together
                 .zip(src -> new EncryptedUserKeys(uid, src, new HashSet<>(ignoredKeyGroups))));
-
-
-//        final byte[] encKey = Crypto.randomBytes(32);
-//        final byte[] encKeyExtended = keyPrf.calculate(encKey, "ActorPackage", 128);
-
-        //                    byte[] encData;
-//                    try {
-//                        encData = ActorBox.closeBox(ByteStrings.intToBytes(ownKeyGroupId), data, Crypto.randomBytes(32), new ActorBoxKey(encKeyExtended));
-//                    } catch (IntegrityException e) {
-//                        e.printStackTrace();
-//                        throw new RuntimeException(e);
-//                    }
-
-//                    Log.d(TAG, "All Encrypted in " + (Runtime.getActorTime() - start) + " ms");
-
-//                    return new EncryptedUserKeys(
-//                            encryptedKeys.toArray(new EncryptedBoxKey[encryptedKeys.size()]),
-//                            ByteStrings.merge(ByteStrings.intToBytes(ownKeyGroupId), encData));
-
     }
 
     private Promise<byte[]> doDecrypt(int senderKeyGroupId, List<ApiEncyptedBoxKey> keys) {
-
-//        final int senderKeyGroup = ByteStrings.bytesToInt(ByteStrings.substring(data.getEncryptedPackage(), 0, 4));
-//        final byte[] encPackage = ByteStrings.substring(data.getEncryptedPackage(), 4, data.getEncryptedPackage().length - 4);
 
         //
         // Picking key
@@ -156,21 +134,6 @@ public class EncryptedUserActor extends ModuleActor {
         return wrap(getSessionManager()
                 .pickSession(uid, senderKeyGroupId, receiverPreKeyId, senderPreKeyId)
                 .flatMap(src -> spawnSession(src).decrypt(finalKey)));
-
-//                .map(decryptedPackage -> {
-//                    byte[] encData;
-//                    try {
-//                        byte[] encKeyExtended = decryptedPackage.length >= 128
-//                                ? decryptedPackage
-//                                : keyPrf.calculate(decryptedPackage, "ActorPackage", 128);
-//                        encData = ActorBox.openBox(ByteStrings.intToBytes(senderKeyGroupId), encPackage, new ActorBoxKey(encKeyExtended));
-//                        Log.d(TAG, "Box size: " + encData.length);
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                        throw new RuntimeException(e);
-//                    }
-//                    return encData;
-//                });
     }
 
     private void onKeysUpdated(UserKeys userKeys) {

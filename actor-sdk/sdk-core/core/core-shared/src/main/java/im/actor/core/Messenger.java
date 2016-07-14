@@ -64,6 +64,7 @@ import im.actor.core.viewmodel.StickersVM;
 import im.actor.core.viewmodel.UploadFileCallback;
 import im.actor.core.viewmodel.UploadFileVM;
 import im.actor.core.viewmodel.UploadFileVMCallback;
+import im.actor.core.viewmodel.UserTypingVM;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.messages.Void;
@@ -488,7 +489,7 @@ public class Messenger {
     }
 
     /**
-     * Get private chat ViewModel
+     * Get private chat typing ViewModel
      *
      * @param uid chat's User Id
      * @return ValueModel of Boolean for typing state
@@ -497,6 +498,18 @@ public class Messenger {
     @ObjectiveCName("getTypingWithUid:")
     public ValueModel<Boolean> getTyping(int uid) {
         return modules.getTypingModule().getTyping(uid).getTyping();
+    }
+
+    /**
+     * Get Secret chat typing View Model
+     *
+     * @param uid chat's User Id
+     * @return ValueModel of Boolean for typing state
+     */
+    @NotNull
+    @ObjectiveCName("getSecretTypingWithUid:")
+    public ValueModel<Boolean> getSecretTyping(int uid) {
+        return modules.getTypingModule().getSecretTyping(uid).getTyping();
     }
 
     /**
@@ -1596,17 +1609,6 @@ public class Messenger {
         return callback -> modules.getGroupsModule().revokeIntegrationToken(gid)
                 .then(v -> callback.onResult(v))
                 .failure(e -> callback.onError(e));
-    }
-
-    /**
-     * Check if chat with bot is started
-     *
-     * @param uid bot user id
-     * @return is chat with bot started
-     */
-    @ObjectiveCName("isStartedWithUid:")
-    public Promise<Boolean> isStarted(int uid) {
-        return modules.getMessagesModule().chatIsEmpty(Peer.user(uid));
     }
 
 

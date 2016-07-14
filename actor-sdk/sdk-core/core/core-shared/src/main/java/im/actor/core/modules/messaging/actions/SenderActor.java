@@ -497,10 +497,7 @@ public class SenderActor extends ModuleActor {
             ApiEncryptedContent content = new ApiEncryptedMessageContent(peer.getPeerId(),
                     rid, message);
 
-            ArrayList<Integer> receivers = new ArrayList<>();
-            // receivers.add(myUid());
-            receivers.add(peer.getPeerId());
-            context().getEncryption().doSend(rid, content, receivers).then(r -> {
+            context().getEncryption().doSend(rid, content, peer.getPeerId()).then(r -> {
 
                 self().send(new MessageSent(peer, rid));
 

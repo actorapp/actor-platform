@@ -14,50 +14,40 @@ import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 
-public class ApiEncryptedDeleteContent extends ApiEncryptedContent {
+public class ApiEncryptedDeleteAll extends ApiEncryptedContent {
 
     private int receiverId;
-    private List<Long> rid;
 
-    public ApiEncryptedDeleteContent(int receiverId, @NotNull List<Long> rid) {
+    public ApiEncryptedDeleteAll(int receiverId) {
         this.receiverId = receiverId;
-        this.rid = rid;
     }
 
-    public ApiEncryptedDeleteContent() {
+    public ApiEncryptedDeleteAll() {
 
     }
 
     public int getHeader() {
-        return 3;
+        return 6;
     }
 
     public int getReceiverId() {
         return this.receiverId;
     }
 
-    @NotNull
-    public List<Long> getRid() {
-        return this.rid;
-    }
-
     @Override
     public void parse(BserValues values) throws IOException {
         this.receiverId = values.getInt(1);
-        this.rid = values.getRepeatedLong(2);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeInt(1, this.receiverId);
-        writer.writeRepeatedLong(2, this.rid);
     }
 
     @Override
     public String toString() {
-        String res = "struct EncryptedDeleteContent{";
+        String res = "struct EncryptedDeleteAll{";
         res += "receiverId=" + this.receiverId;
-        res += ", rid=" + this.rid;
         res += "}";
         return res;
     }

@@ -1,6 +1,9 @@
 package im.actor.core.modules.messaging;
 
 import im.actor.core.api.ApiEncryptedContent;
+import im.actor.core.api.ApiEncryptedDeleteAll;
+import im.actor.core.api.ApiEncryptedDeleteContent;
+import im.actor.core.api.ApiEncryptedEditContent;
 import im.actor.core.api.ApiEncryptedMessageContent;
 import im.actor.core.api.ApiEncryptedRead;
 import im.actor.core.api.ApiEncryptedReceived;
@@ -21,7 +24,10 @@ public class MessagesProcessorEncrypted extends AbsModule implements EncryptedSe
 
         if (update instanceof ApiEncryptedMessageContent ||
                 update instanceof ApiEncryptedReceived ||
-                update instanceof ApiEncryptedRead) {
+                update instanceof ApiEncryptedRead ||
+                update instanceof ApiEncryptedDeleteContent ||
+                update instanceof ApiEncryptedEditContent ||
+                update instanceof ApiEncryptedDeleteAll) {
             return context().getMessagesModule().getRouter()
                     .onEncryptedUpdate(senderId, date, update);
         }

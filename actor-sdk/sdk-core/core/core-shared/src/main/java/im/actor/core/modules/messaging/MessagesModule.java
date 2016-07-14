@@ -10,6 +10,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import im.actor.core.api.ApiEncryptedDeleteAll;
+import im.actor.core.api.ApiEncryptedEditContent;
 import im.actor.core.api.ApiMessage;
 import im.actor.core.api.ApiOutPeer;
 import im.actor.core.api.ApiPeer;
@@ -27,6 +29,7 @@ import im.actor.core.api.rpc.RequestUpdateMessage;
 import im.actor.core.api.rpc.ResponseDialogsOrder;
 import im.actor.core.api.rpc.ResponseLoadArchived;
 import im.actor.core.api.rpc.ResponseReactionsResponse;
+import im.actor.core.api.rpc.ResponseSendEncryptedPackage;
 import im.actor.core.api.rpc.ResponseSeq;
 import im.actor.core.api.rpc.ResponseSeqDate;
 import im.actor.core.api.updates.UpdateChatClear;
@@ -64,6 +67,7 @@ import im.actor.core.modules.messaging.router.RouterInt;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.network.RpcInternalException;
+import im.actor.core.util.RandomUtils;
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.ConversationVM;
@@ -282,46 +286,51 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
 
     public Promise<Void> updateMessage(final Peer peer, final String message, final long rid) {
         context().getTypingModule().onMessageSent(peer);
-        ArrayList<Integer> mentions = new ArrayList<>();
-        TextContent content = TextContent.create(message, null, mentions);
-        if (peer.getPeerType() == PeerType.GROUP) {
-            Group group = groups().getValue(peer.getPeerId());
-            String lowText = message.toLowerCase();
-            for (GroupMember member : group.getMembers()) {
-                User user = users().getValue(member.getUid());
-                if (user.getNick() != null) {
-                    String nick = "@" + user.getNick().toLowerCase();
-                    // TODO: Better filtering
-                    if (lowText.contains(nick + ":")
-                            || lowText.contains(nick + " ")
-                            || lowText.contains(" " + nick)
-                            || lowText.endsWith(nick)
-                            || lowText.equals(nick)) {
-                        mentions.add(user.getUid());
+
+        if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
+            ApiEncryptedEditContent editContent = new ApiEncryptedEditContent(
+                    peer.getPeerId(), rid, new ApiTextMessage(message, new ArrayList<>(), null));
+
+            return context().getEncryption().doSend(RandomUtils.nextRid(), editContent, peer.getPeerId()).then(r -> {
+                context().getEncryption().onUpdate(myUid(), r.getDate(), editContent);
+            }).flatMap(r -> null);
+        } else {
+            ArrayList<Integer> mentions = new ArrayList<>();
+            TextContent content = TextContent.create(message, null, mentions);
+            if (peer.getPeerType() == PeerType.GROUP) {
+                Group group = groups().getValue(peer.getPeerId());
+                String lowText = message.toLowerCase();
+                for (GroupMember member : group.getMembers()) {
+                    User user = users().getValue(member.getUid());
+                    if (user.getNick() != null) {
+                        String nick = "@" + user.getNick().toLowerCase();
+                        // TODO: Better filtering
+                        if (lowText.contains(nick + ":")
+                                || lowText.contains(nick + " ")
+                                || lowText.contains(" " + nick)
+                                || lowText.endsWith(nick)
+                                || lowText.equals(nick)) {
+                            mentions.add(user.getUid());
+                        }
                     }
                 }
             }
+            ApiMessage editMessage = new ApiTextMessage(message, content.getMentions(), content.getTextMessageEx());
+
+            return buildOutPeer(peer)
+                    .flatMap(apiOutPeer ->
+                            api(new RequestUpdateMessage(apiOutPeer, rid, editMessage)))
+                    .flatMap(responseSeqDate ->
+                            updates().applyUpdate(
+                                    responseSeqDate.getSeq(),
+                                    responseSeqDate.getState(),
+                                    new UpdateMessageContentChanged(
+                                            new ApiPeer(peer.getPeerType().toApi(), peer.getPeerId()),
+                                            rid,
+                                            editMessage)
+                            ));
         }
-        ApiMessage editMessage = new ApiTextMessage(message, content.getMentions(), content.getTextMessageEx());
-
-        return buildOutPeer(peer)
-                .flatMap(apiOutPeer ->
-                        api(new RequestUpdateMessage(apiOutPeer, rid, editMessage)))
-                .flatMap(responseSeqDate ->
-                        updates().applyUpdate(
-                                responseSeqDate.getSeq(),
-                                responseSeqDate.getState(),
-                                new UpdateMessageContentChanged(
-                                        new ApiPeer(peer.getPeerType().toApi(), peer.getPeerId()),
-                                        rid,
-                                        editMessage)
-                        ));
     }
-
-    public Promise<Boolean> chatIsEmpty(Peer peer) {
-        return new Promise<>(resolver -> resolver.result(getConversationEngine(peer).getCount() == 0));
-    }
-
 
     public void forwardContent(Peer peer, AbsContent content) {
         sendMessageActor.send(new SenderActor.ForwardContent(peer, content));
@@ -332,22 +341,30 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
         sendMessageActor.send(new SenderActor.SendSticker(peer, sticker));
     }
 
-
     public void saveDraft(Peer peer, String draft) {
-        context().getSettingsModule().setStringValue("drafts_" + peer.getUnuqueId(), draft);
+        if (peer.getPeerType() == PeerType.PRIVATE || peer.getPeerType() == PeerType.GROUP) {
+            context().getSettingsModule().setStringValue("drafts_" + peer.getUnuqueId(), draft);
+        }
     }
 
     public String loadDraft(Peer peer) {
-        String res = context().getSettingsModule().getStringValue("drafts_" + peer.getUnuqueId(), null);
-        if (res == null) {
-            return "";
+        if (peer.getPeerType() == PeerType.PRIVATE || peer.getPeerType() == PeerType.GROUP) {
+            String res = context().getSettingsModule().getStringValue("drafts_" + peer.getUnuqueId(), null);
+            if (res == null) {
+                return "";
+            } else {
+                return res;
+            }
         } else {
-            return res;
+            return "";
         }
     }
 
 
     public Promise<Void> addReaction(final Peer peer, final long rid, final String reaction) {
+        if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
+            return Promise.failure(new RuntimeException("Unsupported in secret chats"));
+        }
         return buildOutPeer(peer)
                 .flatMap(apiOutPeer ->
                         api(new RequestMessageSetReaction(apiOutPeer, rid, reaction)))
@@ -361,6 +378,9 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
     }
 
     public Promise<Void> removeReaction(final Peer peer, final long rid, final String reaction) {
+        if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
+            return Promise.failure(new RuntimeException("Unsupported in secret chats"));
+        }
         return buildOutPeer(peer)
                 .flatMap(apiOutPeer ->
                         api(new RequestMessageRemoveReaction(apiOutPeer, rid, reaction)))
@@ -406,27 +426,38 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
 
 
     public Promise<Void> deleteChat(final Peer peer) {
-        return buildOutPeer(peer)
-                .flatMap(apiOutPeer ->
-                        api(new RequestDeleteChat(apiOutPeer)))
-                .flatMap(responseSeq ->
-                        updates().applyUpdate(
-                                responseSeq.getSeq(),
-                                responseSeq.getState(),
-                                new UpdateChatDelete(new ApiPeer(peer.getPeerType().toApi(), peer.getPeerId()))
-                        ));
+        if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
+            // FIXME: Not actually deletes chat from dialog list
+            return context().getEncryption().doSend(new ApiEncryptedDeleteAll(peer.getPeerId()),
+                    peer.getPeerId(), false).map(v -> (Void) null);
+        } else {
+            return buildOutPeer(peer)
+                    .flatMap(apiOutPeer ->
+                            api(new RequestDeleteChat(apiOutPeer)))
+                    .flatMap(responseSeq ->
+                            updates().applyUpdate(
+                                    responseSeq.getSeq(),
+                                    responseSeq.getState(),
+                                    new UpdateChatDelete(new ApiPeer(peer.getPeerType().toApi(), peer.getPeerId()))
+                            ));
+        }
     }
 
     public Promise<Void> clearChat(final Peer peer) {
-        return buildOutPeer(peer)
-                .flatMap(apiOutPeer ->
-                        api(new RequestClearChat(apiOutPeer)))
-                .flatMap(responseSeq ->
-                        updates().applyUpdate(
-                                responseSeq.getSeq(),
-                                responseSeq.getState(),
-                                new UpdateChatClear(new ApiPeer(peer.getPeerType().toApi(), peer.getPeerId())))
-                );
+        if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
+            return context().getEncryption().doSend(new ApiEncryptedDeleteAll(peer.getPeerId()),
+                    peer.getPeerId(), false).map(v -> (Void) null);
+        } else {
+            return buildOutPeer(peer)
+                    .flatMap(apiOutPeer ->
+                            api(new RequestClearChat(apiOutPeer)))
+                    .flatMap(responseSeq ->
+                            updates().applyUpdate(
+                                    responseSeq.getSeq(),
+                                    responseSeq.getState(),
+                                    new UpdateChatClear(new ApiPeer(peer.getPeerType().toApi(), peer.getPeerId())))
+                    );
+        }
     }
 
 
@@ -448,7 +479,9 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
     }
 
     public void loadMoreHistory(final Peer peer) {
-        im.actor.runtime.Runtime.dispatch(() -> getHistoryActor(peer).send(new ConversationHistoryActor.LoadMore()));
+        if (peer.getPeerType() != PeerType.PRIVATE_ENCRYPTED) {
+            im.actor.runtime.Runtime.dispatch(() -> getHistoryActor(peer).send(new ConversationHistoryActor.LoadMore()));
+        }
     }
 
     //

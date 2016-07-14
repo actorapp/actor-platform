@@ -15,6 +15,7 @@ import java.io.IOException;
 
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerType;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.entity.content.TextContent;
 import im.actor.core.entity.content.UnsupportedContent;
@@ -120,10 +121,18 @@ public class MessagesDefaultFragment extends MessagesFragment {
                         }
                     }
 
-                    menu.findItem(R.id.copy).setVisible(isAllText);
                     menu.findItem(R.id.quote).setVisible(isAllText);
-                    menu.findItem(R.id.forward).setVisible(selected.length == 1 || isAllText);
-                    menu.findItem(R.id.like).setVisible(selected.length == 1);
+
+                    if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
+                        menu.findItem(R.id.copy).setVisible(false);
+                        menu.findItem(R.id.forward).setVisible(false);
+                        menu.findItem(R.id.like).setVisible(false);
+                    } else {
+                        menu.findItem(R.id.copy).setVisible(isAllText);
+                        menu.findItem(R.id.forward).setVisible(selected.length == 1 || isAllText);
+                        menu.findItem(R.id.like).setVisible(selected.length == 1);
+                    }
+
                     return false;
                 }
 

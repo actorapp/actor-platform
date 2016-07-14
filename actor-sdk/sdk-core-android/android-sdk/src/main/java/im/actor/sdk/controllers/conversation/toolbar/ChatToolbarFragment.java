@@ -186,7 +186,7 @@ public class ChatToolbarFragment extends BaseFragment {
             if (peer.getPeerType() != PeerType.PRIVATE_ENCRYPTED) {
                 bindPrivateTyping(barTyping, barTypingContainer, barSubtitle, messenger().getTyping(user.getId()));
             } else {
-                // TODO: Implement
+                bindPrivateTyping(barTyping, barTypingContainer, barSubtitle, messenger().getSecretTyping(user.getId()));
             }
 
             // Refresh menu on contact state change

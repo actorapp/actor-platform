@@ -8,6 +8,9 @@ import java.util.List;
 import im.actor.core.api.ApiDialogGroup;
 import im.actor.core.api.ApiDialogShort;
 import im.actor.core.api.ApiEncryptedContent;
+import im.actor.core.api.ApiEncryptedDeleteAll;
+import im.actor.core.api.ApiEncryptedDeleteContent;
+import im.actor.core.api.ApiEncryptedEditContent;
 import im.actor.core.api.ApiEncryptedMessageContent;
 import im.actor.core.api.ApiEncryptedRead;
 import im.actor.core.api.ApiEncryptedReceived;
@@ -914,6 +917,28 @@ public class RouterActor extends ModuleActor {
             } else {
                 return onMessageRead(Peer.secret(senderId), encryptedRead.getReadDate());
             }
+        } else if (update instanceof ApiEncryptedDeleteContent) {
+            ApiEncryptedDeleteContent delete = (ApiEncryptedDeleteContent) update;
+            int destId = senderId;
+            if (senderId == myUid()) {
+                destId = delete.getReceiverId();
+            }
+            return onMessageDeleted(Peer.secret(destId), delete.getRid());
+        } else if (update instanceof ApiEncryptedEditContent) {
+            ApiEncryptedEditContent editContent = (ApiEncryptedEditContent) update;
+            int destId = senderId;
+            if (senderId == myUid()) {
+                destId = editContent.getReceiverId();
+            }
+            return onContentUpdate(Peer.secret(destId), editContent.getRid(),
+                    AbsContent.fromMessage(editContent.getMessage()));
+        } else if (update instanceof ApiEncryptedDeleteAll) {
+            ApiEncryptedDeleteAll deleteAll = (ApiEncryptedDeleteAll) update;
+            int destId = senderId;
+            if (senderId == myUid()) {
+                destId = deleteAll.getReceiverId();
+            }
+            return onChatClear(Peer.secret(destId));
         }
 
         return Promise.success(null);
