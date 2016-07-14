@@ -1,11 +1,10 @@
 package im.actor.server.group
 
-import akka.actor.Status
 import akka.http.scaladsl.util.FastFuture
 import akka.pattern.pipe
 import im.actor.api.rpc.PeersImplicits
 import im.actor.server.dialog.DialogCommands._
-import im.actor.server.group.GroupErrors.NotAMember
+import im.actor.server.group.GroupErrors.{ NotAMember, NotAdmin }
 import im.actor.server.model.Peer
 
 import scala.concurrent.Future
@@ -17,8 +16,18 @@ trait GroupPeerCommandHandlers extends PeersImplicits {
 
   protected def incomingMessage(state: GroupPeerState, sm: SendMessage): Unit = {
     val senderUserId = sm.getOrigin.id
-    (withMemberIds(groupId) { (memberIds, _, optBot) ⇒
-      if (canSend(memberIds, optBot, senderUserId)) {
+
+    val result: Future[SendMessageAck] = groupExt.canSendMessage(groupId, senderUserId) flatMap {
+      case CanSendMessageInfo(true, isChannel, memberIds, optBotId) ⇒
+        val (ack, smUpdated) = if (isChannel) {
+          optBotId map { botId ⇒
+            val botPeer = Peer.privat(botId)
+            SendMessageAck().withUpdatedSender(botPeer) → sm.withOrigin(botPeer)
+          } getOrElse (SendMessageAck() → sm)
+        } else {
+          SendMessageAck() → sm
+        }
+
         val receiverIds = sm.forUserId match {
           case Some(id) if memberIds.contains(id) ⇒ Seq(id)
           case _                                  ⇒ memberIds - senderUserId
@@ -26,18 +35,23 @@ trait GroupPeerCommandHandlers extends PeersImplicits {
 
         for {
           _ ← Future.traverse(receiverIds) { userId ⇒
-            dialogExt.ackSendMessage(Peer.privat(userId), sm)
+            dialogExt.ackSendMessage(Peer.privat(userId), smUpdated)
           }
         } yield {
           self ! LastSenderIdChanged(senderUserId)
-          SendMessageAck()
+          ack
         }
-      } else FastFuture.successful(Status.Failure(NotAMember))
-    } recover {
-      case e ⇒
-        log.error(e, "Failed to send message")
-        throw e
-    }) pipeTo sender()
+      case CanSendMessageInfo(false, true, _, _) ⇒
+        FastFuture.failed(NotAdmin)
+      case CanSendMessageInfo(false, _, _, _) ⇒
+        FastFuture.failed(NotAMember)
+    }
+
+    result onFailure {
+      case e: Exception ⇒ log.error(e, "Failed to send message")
+    }
+
+    result pipeTo sender()
   }
 
   protected def messageReceived(state: GroupPeerState, mr: MessageReceived) = {

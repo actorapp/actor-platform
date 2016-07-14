@@ -259,7 +259,9 @@ message DialogCommands {
         google.protobuf.StringValue delivery_tag = 13;
     }
 
-    message SendMessageAck {}
+    message SendMessageAck {
+        Peer updated_sender = 1;
+    }
 
     message MessageReceived {
         option (scalapb.message).extends = "im.actor.server.dialog.DirectDialogCommand";

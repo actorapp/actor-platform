@@ -150,11 +150,21 @@ private[group] sealed trait Queries {
       .withCheckAccessHash(CheckAccessHash(hash))).mapTo[CheckAccessHashResponse] map (_.isCorrect)
 
   //(memberIds, invitedUserIds, botId)
-  def getMemberIds(groupId: Int): Future[(Seq[Int], Seq[Int], Option[Int])] =
+  // TODO: should be signed as internal API, and become narrowly scoped
+  def getMemberIds(groupId: Int): Future[(Seq[Int], Seq[Int], Option[Int])] = //TODO: prepare for channel
     (viewRegion.ref ?
       GroupEnvelope(groupId)
       .withGetMembers(GetMembers())).mapTo[GetMembersResponse] map (r ⇒ (r.memberIds, r.invitedUserIds, r.botId))
 
+  def canSendMessage(groupId: Int, clientUserId: Int): Future[CanSendMessageInfo] =
+    (viewRegion.ref ?
+      GroupEnvelope(groupId)
+      .withCanSendMessage(CanSendMessage(clientUserId))).mapTo[CanSendMessageResponse] map {
+        case CanSendMessageResponse(canSend, isChannel, memberIds, botId) ⇒
+          CanSendMessageInfo(canSend, isChannel, memberIds.toSet, botId)
+      }
+
+  //TODO: move to separate Query.
   def isMember(groupId: Int, userId: Int): Future[Boolean] =
     getMemberIds(groupId) map (_._1.contains(userId))
 
@@ -173,3 +183,10 @@ private[group] sealed trait Queries {
       GroupEnvelope(groupId)
       .withLoadMembers(LoadMembers(clientUserId, limit, offset map ByteString.copyFrom))).mapTo[LoadMembersResponse] map (r ⇒ r.userIds → r.offset.map(_.toByteArray))
 }
+
+final case class CanSendMessageInfo(
+  canSend:   Boolean,
+  isChannel: Boolean,
+  memberIds: Set[Int],
+  botId:     Option[Int]
+)

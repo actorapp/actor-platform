@@ -45,6 +45,7 @@ object GroupProcessor {
       20017 → classOf[GroupCommands.MakeUserAdmin],
       20018 → classOf[GroupCommands.RevokeIntegrationToken],
       20020 → classOf[GroupCommands.RevokeIntegrationTokenAck],
+      20021 → classOf[GroupCommands.TransferOwnership],
 
       21001 → classOf[GroupQueries.GetIntegrationToken],
       21002 → classOf[GroupQueries.GetIntegrationTokenResponse],
@@ -60,6 +61,11 @@ object GroupProcessor {
       21013 → classOf[GroupQueries.GetAccessHashResponse],
       21014 → classOf[GroupQueries.IsHistoryShared],
       21015 → classOf[GroupQueries.IsHistorySharedResponse],
+      21016 → classOf[GroupQueries.GetTitle],
+      21017 → classOf[GroupQueries.LoadMembers],
+      21018 → classOf[GroupQueries.GetApiFullStruct],
+      21019 → classOf[GroupQueries.CanSendMessage],
+      21020 → classOf[GroupQueries.CanSendMessageResponse],
 
       22003 → classOf[GroupEvents.UserInvited],
       22004 → classOf[GroupEvents.UserJoined],
@@ -153,6 +159,7 @@ private[group] final class GroupProcessor
     case GetApiStruct(clientUserId)               ⇒ getApiStruct(clientUserId)
     case GetApiFullStruct(clientUserId)           ⇒ getApiFullStruct(clientUserId)
     case CheckAccessHash(accessHash)              ⇒ checkAccessHash(accessHash)
+    case CanSendMessage(clientUserId)             ⇒ canSendMessage(clientUserId)
   }
 
   def persistenceId: String = GroupProcessor.persistenceIdFor(groupId)
