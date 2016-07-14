@@ -119,8 +119,8 @@ trait GroupQueryHandlers {
           ownerUserId = state.creatorUserId,
           createDate = extractCreatedAtMillis(state),
           ext = None,
-          canViewMembers = Some(state.canViewMembers(clientUserId)), // TODO: revisit
-          canInvitePeople = Some(state.canInvitePeople(clientUserId)), // TODO: revisit
+          canViewMembers = Some(state.canViewMembers(clientUserId)),
+          canInvitePeople = Some(state.canInvitePeople(clientUserId)),
           isSharedHistory = Some(state.isHistoryShared),
           isAsyncMembers = Some(state.members.size > 100),
           members = membersAndCount(state, clientUserId)._1

@@ -268,6 +268,12 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
               deliveryId = s"useradded_${groupId}_${cmd.randomId}"
             )
 
+            // push UpdateGroupMembersCountChanged to all group members
+            _ ← seqUpdExt.broadcastPeopleUpdate(
+              newState.memberIds,
+              UpdateGroupMembersCountChanged(groupId, newState.membersCount)
+            )
+
             // push service message to invitee
             _ ← pushUpdateMessage(
               userId = cmd.inviteeUserId,
@@ -447,6 +453,12 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
               deliveryId = s"userjoined_${groupId}_${randomId}"
             )
 
+            // push UpdateGroupMembersCountChanged to all group members
+            _ ← seqUpdExt.broadcastPeopleUpdate(
+              newState.memberIds,
+              UpdateGroupMembersCountChanged(groupId, newState.membersCount)
+            )
+
             // push service message to joining user and return seqState
             _ ← pushUpdateMessage(
               userId = cmd.joiningUserId,
@@ -561,6 +573,12 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
             _ ← seqUpdExt.broadcastPeopleUpdate(
               state.adminIds - cmd.userId,
               membersUpdateNew
+            )
+
+            // push UpdateGroupMembersCountChanged to all group members
+            _ ← seqUpdExt.broadcastPeopleUpdate(
+              state.memberIds - cmd.userId,
+              UpdateGroupMembersCountChanged(groupId, state.membersCount - 1)
             )
 
             // push service message to left user
@@ -687,6 +705,12 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
               authId = cmd.kickerAuthId,
               bcastUserIds = newState.adminIds - cmd.kickerUserId,
               update = membersUpdateNew
+            )
+
+            // push UpdateGroupMembersCountChanged to all group members
+            _ ← seqUpdExt.broadcastPeopleUpdate(
+              newState.memberIds,
+              UpdateGroupMembersCountChanged(groupId, newState.membersCount)
             )
 
             // push service message to kicker user

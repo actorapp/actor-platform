@@ -96,7 +96,7 @@ private[group] final case class GroupState(
   // in case of general/public can view members if user is member
   // in case of channel can view members only if clientUserId is admin
   def canViewMembers(clientUserId: Int) =
-    ((typ.isGeneral || typ.isPublic) || isAdmin(clientUserId)) && isMember(clientUserId)
+    isMember(clientUserId) && ((typ.isGeneral || typ.isPublic) || (typ.isChannel && isAdmin(clientUserId)))
 
   /**
    * For now, all members can invite other users to group
