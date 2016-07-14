@@ -6574,32 +6574,6 @@
         {
           "type": "update",
           "content": {
-            "name": "ChatDropCache",
-            "header": 2690,
-            "doc": [
-              "Update about cache drop",
-              {
-                "type": "reference",
-                "argument": "peer",
-                "category": "full",
-                "description": "  Destination peer"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "Peer"
-                },
-                "id": 1,
-                "name": "peer"
-              }
-            ]
-          }
-        },
-        {
-          "type": "update",
-          "content": {
             "name": "ChatGroupsChanged",
             "header": 1,
             "doc": [
@@ -6607,7 +6581,7 @@
               {
                 "type": "reference",
                 "argument": "dialogs",
-                "category": "compact",
+                "category": "full",
                 "description": "  New dialgos list"
               }
             ],
@@ -7873,115 +7847,11 @@
           }
         },
         {
-          "type": "enum",
-          "content": {
-            "name": "GroupPermissions",
-            "values": [
-              {
-                "name": "SEND_MESSAGE",
-                "id": 1
-              },
-              {
-                "name": "CLEAR",
-                "id": 2
-              },
-              {
-                "name": "LEAVE",
-                "id": 3
-              },
-              {
-                "name": "DELETE",
-                "id": 4
-              },
-              {
-                "name": "JOIN",
-                "id": 5
-              },
-              {
-                "name": "VIEW_INFO",
-                "id": 6
-              }
-            ]
-          }
-        },
-        {
-          "type": "enum",
-          "content": {
-            "name": "GroupFullPermissions",
-            "values": [
-              {
-                "name": "EDIT_INFO",
-                "id": 1
-              },
-              {
-                "name": "VIEW_MEMBERS",
-                "id": 2
-              },
-              {
-                "name": "INVITE_MEMBERS",
-                "id": 3
-              },
-              {
-                "name": "INVITE_VIA_LINK",
-                "id": 4
-              },
-              {
-                "name": "CALL",
-                "id": 5
-              },
-              {
-                "name": "EDIT_ADMIN_SETTINGS",
-                "id": 6
-              },
-              {
-                "name": "VIEW_ADMINS",
-                "id": 7
-              },
-              {
-                "name": "EDIT_ADMINS",
-                "id": 8
-              },
-              {
-                "name": "KICK_INVITED",
-                "id": 9
-              },
-              {
-                "name": "KICK_ANYONE",
-                "id": 10
-              },
-              {
-                "name": "EDIT_FOREIGN",
-                "id": 11
-              },
-              {
-                "name": "DELETE_FOREIGN",
-                "id": 12
-              }
-            ]
-          }
-        },
-        {
           "type": "struct",
           "content": {
             "name": "Group",
             "doc": [
               "Group information",
-              "",
-              "Permissions.",
-              "Permissions of this structure is about group messages operation, such as",
-              "ability to send messages, clear chat, leave group and so on. This operations",
-              "Can be held outside of the Group Info page.",
-              "",
-              "Default value is ZERO, Opposide iz ONE. If Default is FALSE then ONE == TRUE.",
-              "If default is TRUE then ONE == FALSE.",
-              "Bits:",
-              "0 - canSendMessage. Default is FALSE.",
-              "1 - canClear. Default is FALSE.",
-              "2 - canLeave. Default is FALSE.",
-              "3 - canDelete. Default is FALSE.",
-              "4 - canJoin. Default is FALSE.",
-              "5 - canViewInfo. Default is FALSE.",
-              "",
               {
                 "type": "reference",
                 "argument": "id",
@@ -8032,15 +7902,9 @@
               },
               {
                 "type": "reference",
-                "argument": "permissions",
+                "argument": "canSendMessage",
                 "category": "full",
-                "description": "  Permissions of group object"
-              },
-              {
-                "type": "reference",
-                "argument": "isDeleted",
-                "category": "full",
-                "description": "  Is this group deleted"
+                "description": "  Can user send messages. Default is equals isMember for Group and false for channels."
               },
               {
                 "type": "reference",
@@ -8154,18 +8018,10 @@
               {
                 "type": {
                   "type": "opt",
-                  "childType": "int64"
-                },
-                "id": 26,
-                "name": "permissions"
-              },
-              {
-                "type": {
-                  "type": "opt",
                   "childType": "bool"
                 },
-                "id": 27,
-                "name": "isDeleted"
+                "id": 26,
+                "name": "canSendMessage"
               },
               {
                 "type": {
@@ -8184,8 +8040,7 @@
                   "childType": "bool"
                 },
                 "id": 16,
-                "name": "isAdmin",
-                "deprecated": "true"
+                "name": "isAdmin"
               },
               {
                 "type": {
@@ -8193,8 +8048,7 @@
                   "childType": "userId"
                 },
                 "id": 8,
-                "name": "creatorUid",
-                "deprecated": "true"
+                "name": "creatorUid"
               },
               {
                 "type": {
@@ -8205,8 +8059,7 @@
                   }
                 },
                 "id": 9,
-                "name": "members",
-                "deprecated": "true"
+                "name": "members"
               },
               {
                 "type": {
@@ -8214,8 +8067,7 @@
                   "childType": "date"
                 },
                 "id": 10,
-                "name": "createDate",
-                "deprecated": "true"
+                "name": "createDate"
               },
               {
                 "type": {
@@ -8223,8 +8075,7 @@
                   "childType": "string"
                 },
                 "id": 17,
-                "name": "theme",
-                "deprecated": "true"
+                "name": "theme"
               },
               {
                 "type": {
@@ -8232,8 +8083,7 @@
                   "childType": "string"
                 },
                 "id": 18,
-                "name": "about",
-                "deprecated": "true"
+                "name": "about"
               }
             ]
           }
@@ -8244,26 +8094,6 @@
             "name": "GroupFull",
             "doc": [
               "Goup Full information",
-              "Permissions.",
-              "Idea of Group Full mermissions is about Group Info pages. This permissions",
-              "are usefull only when trying to view and update group settings and not related",
-              "to chat messages itself.",
-              "Default value is ZERO, Opposide iz ONE. If Default is FALSE then ONE == TRUE.",
-              "If default is TRUE then ONE == FALSE.",
-              "Bits:",
-              "0 - canEditInfo. Default is FALSE.",
-              "1 - canViewMembers. Default is FALSE.",
-              "2 - canInviteMembers. Default is FALSE.",
-              "3 - canInviteViaLink. Default is FALSE.",
-              "4 - canCall. Default is FALSE.",
-              "5 - canEditAdminSettings. Default is FALSE.",
-              "6 - canViewAdmins. Default is FALSE.",
-              "7 - canEditAdmins. Default is FALSE.",
-              "8 - canKickInvited. Default is FALSE.",
-              "9 - canKickAnyone. Default is FALSE.",
-              "10 - canEditForeign. Default is FALSE.",
-              "11 - canDeleteForeign. Default is FALSE.",
-              "",
               {
                 "type": "reference",
                 "argument": "id",
@@ -8280,7 +8110,7 @@
                 "type": "reference",
                 "argument": "ownerUid",
                 "category": "full",
-                "description": "  Optional group owner"
+                "description": "  Group owner"
               },
               {
                 "type": "reference",
@@ -8304,28 +8134,27 @@
                 "type": "reference",
                 "argument": "isAsyncMembers",
                 "category": "full",
-                "description": "  Is Members need to be loaded asynchronous. Default is false."
+                "description": "  Is Members need to be loaded asynchronous."
+              },
+              {
+                "type": "reference",
+                "argument": "canViewMembers",
+                "category": "full",
+                "description": "  Can current user view members of the group. Default is true."
+              },
+              {
+                "type": "reference",
+                "argument": "canInvitePeople",
+                "category": "full",
+                "description": "  Can current user invite new people. Default is true."
               },
               {
                 "type": "reference",
                 "argument": "isSharedHistory",
                 "category": "full",
-                "description": "  Is history shared among all users. Default is false."
-              },
-              {
-                "type": "reference",
-                "argument": "shortName",
-                "category": "full",
-                "description": "  Group's short name"
-              },
-              {
-                "type": "reference",
-                "argument": "permissions",
-                "category": "full",
-                "description": "  Group Permissions"
+                "description": "  Is history shared among all users."
               }
             ],
-            "expandable": "true",
             "attributes": [
               {
                 "type": {
@@ -8345,11 +8174,8 @@
               },
               {
                 "type": {
-                  "type": "opt",
-                  "childType": {
-                    "type": "alias",
-                    "childType": "userId"
-                  }
+                  "type": "alias",
+                  "childType": "userId"
                 },
                 "id": 5,
                 "name": "ownerUid"
@@ -8405,24 +8231,24 @@
                   "type": "opt",
                   "childType": "bool"
                 },
+                "id": 8,
+                "name": "canViewMembers"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 9,
+                "name": "canInvitePeople"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
                 "id": 10,
                 "name": "isSharedHistory"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "string"
-                },
-                "id": 14,
-                "name": "shortName"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "int64"
-                },
-                "id": 27,
-                "name": "permissions"
               }
             ]
           }
@@ -8492,7 +8318,7 @@
               "doc": [
                 {
                   "type": "reference",
-                  "argument": "users",
+                  "argument": "members",
                   "category": "full",
                   "description": "  Group members"
                 },
@@ -8509,22 +8335,11 @@
                     "type": "list",
                     "childType": {
                       "type": "struct",
-                      "childType": "Member"
-                    }
-                  },
-                  "id": 3,
-                  "name": "members"
-                },
-                {
-                  "type": {
-                    "type": "list",
-                    "childType": {
-                      "type": "struct",
                       "childType": "UserOutPeer"
                     }
                   },
                   "id": 1,
-                  "name": "users"
+                  "name": "members"
                 },
                 {
                   "type": {
@@ -8835,46 +8650,6 @@
         {
           "type": "update",
           "content": {
-            "name": "GroupShortNameChanged",
-            "header": 2628,
-            "doc": [
-              "Group's short name changed",
-              {
-                "type": "reference",
-                "argument": "groupId",
-                "category": "full",
-                "description": "  Group Id"
-              },
-              {
-                "type": "reference",
-                "argument": "shortName",
-                "category": "full",
-                "description": "  Group short name"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "groupId"
-                },
-                "id": 1,
-                "name": "groupId"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "string"
-                },
-                "id": 2,
-                "name": "shortName"
-              }
-            ]
-          }
-        },
-        {
-          "type": "update",
-          "content": {
             "name": "GroupOwnerChanged",
             "header": 2619,
             "doc": [
@@ -8941,15 +8716,21 @@
         {
           "type": "update",
           "content": {
-            "name": "GroupDeleted",
-            "header": 2658,
+            "name": "GroupCanSendMessagesChanged",
+            "header": 2624,
             "doc": [
-              "Update about group deleted",
+              "Update about can send messages changed",
               {
                 "type": "reference",
                 "argument": "groupId",
                 "category": "full",
                 "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "canSendMessages",
+                "category": "full",
+                "description": "  Can send messages"
               }
             ],
             "attributes": [
@@ -8960,6 +8741,11 @@
                 },
                 "id": 1,
                 "name": "groupId"
+              },
+              {
+                "type": "bool",
+                "id": 2,
+                "name": "canSendMessages"
               }
             ]
           }
@@ -8967,10 +8753,10 @@
         {
           "type": "update",
           "content": {
-            "name": "GroupPermissionsChanged",
-            "header": 2663,
+            "name": "GroupCanViewMembersChanged",
+            "header": 2625,
             "doc": [
-              "Update about group permissions changed",
+              "Update about can view members changed",
               {
                 "type": "reference",
                 "argument": "groupId",
@@ -8979,9 +8765,9 @@
               },
               {
                 "type": "reference",
-                "argument": "permissions",
+                "argument": "canViewMembers",
                 "category": "full",
-                "description": "  New Permissions"
+                "description": "  Can view members"
               }
             ],
             "attributes": [
@@ -8994,9 +8780,9 @@
                 "name": "groupId"
               },
               {
-                "type": "int64",
+                "type": "bool",
                 "id": 2,
-                "name": "permissions"
+                "name": "canViewMembers"
               }
             ]
           }
@@ -9004,10 +8790,10 @@
         {
           "type": "update",
           "content": {
-            "name": "GroupFullPermissionsChanged",
-            "header": 2664,
+            "name": "GroupCanInviteMembersChanged",
+            "header": 2626,
             "doc": [
-              "Update about Full Group permissions changed",
+              "Update about can invite members changed",
               {
                 "type": "reference",
                 "argument": "groupId",
@@ -9016,9 +8802,9 @@
               },
               {
                 "type": "reference",
-                "argument": "permissions",
+                "argument": "canInviteMembers",
                 "category": "full",
-                "description": "  New Permissions"
+                "description": "  Can invite members"
               }
             ],
             "attributes": [
@@ -9031,9 +8817,9 @@
                 "name": "groupId"
               },
               {
-                "type": "int64",
+                "type": "bool",
                 "id": 2,
-                "name": "permissions"
+                "name": "canInviteMembers"
               }
             ]
           }
@@ -9758,50 +9544,6 @@
         {
           "type": "rpc",
           "content": {
-            "name": "EditGroupShortName",
-            "header": 2793,
-            "response": {
-              "type": "reference",
-              "name": "Seq"
-            },
-            "doc": [
-              "Edit Group Short Name",
-              {
-                "type": "reference",
-                "argument": "groupPeer",
-                "category": "full",
-                "description": "Group's peer"
-              },
-              {
-                "type": "reference",
-                "argument": "shortName",
-                "category": "full",
-                "description": "New group's short name"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "GroupOutPeer"
-                },
-                "id": 1,
-                "name": "groupPeer"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "string"
-                },
-                "id": 2,
-                "name": "shortName"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
             "name": "EditGroupTopic",
             "header": 211,
             "response": {
@@ -10088,36 +9830,6 @@
         {
           "type": "rpc",
           "content": {
-            "name": "LeaveAndDelete",
-            "header": 2721,
-            "response": {
-              "type": "reference",
-              "name": "Seq"
-            },
-            "doc": [
-              "Leave group and Delete Chat",
-              {
-                "type": "reference",
-                "argument": "groupPeer",
-                "category": "full",
-                "description": "Group peer"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "GroupOutPeer"
-                },
-                "id": 1,
-                "name": "groupPeer"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
             "name": "KickUser",
             "header": 71,
             "response": {
@@ -10193,40 +9905,6 @@
         {
           "type": "rpc",
           "content": {
-            "name": "JoinGroupByPeer",
-            "header": 2722,
-            "response": {
-              "type": "reference",
-              "name": "Seq"
-            },
-            "doc": [
-              "Join group by peer",
-              {
-                "type": "reference",
-                "argument": "groupPeer",
-                "category": "full",
-                "description": "Group's peer"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "GroupOutPeer"
-                },
-                "id": 1,
-                "name": "groupPeer"
-              }
-            ]
-          }
-        },
-        {
-          "type": "comment",
-          "content": "Administration"
-        },
-        {
-          "type": "rpc",
-          "content": {
             "name": "MakeUserAdmin",
             "header": 2784,
             "response": {
@@ -10235,50 +9913,6 @@
             },
             "doc": [
               "Make user admin",
-              {
-                "type": "reference",
-                "argument": "groupPeer",
-                "category": "full",
-                "description": "Group's peer"
-              },
-              {
-                "type": "reference",
-                "argument": "userPeer",
-                "category": "full",
-                "description": "User's peer"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "GroupOutPeer"
-                },
-                "id": 1,
-                "name": "groupPeer"
-              },
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "UserOutPeer"
-                },
-                "id": 2,
-                "name": "userPeer"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "DismissUserAdmin",
-            "header": 2791,
-            "response": {
-              "type": "reference",
-              "name": "Seq"
-            },
-            "doc": [
-              "Dismissing user admin",
               {
                 "type": "reference",
                 "argument": "groupPeer",
@@ -10352,226 +9986,6 @@
                 },
                 "id": 2,
                 "name": "newOwner"
-              }
-            ]
-          }
-        },
-        {
-          "type": "struct",
-          "content": {
-            "name": "AdminSettings",
-            "doc": [
-              "Admin Settings",
-              {
-                "type": "reference",
-                "argument": "showAdminsToMembers",
-                "category": "full",
-                "description": "  Show admins in member list"
-              },
-              {
-                "type": "reference",
-                "argument": "canMembersInvite",
-                "category": "full",
-                "description": "  Can members of a group invite people"
-              },
-              {
-                "type": "reference",
-                "argument": "canMembersEditGroupInfo",
-                "category": "full",
-                "description": "  Can members edit group info"
-              },
-              {
-                "type": "reference",
-                "argument": "canAdminsEditGroupInfo",
-                "category": "full",
-                "description": "  Can admins edit group info"
-              },
-              {
-                "type": "reference",
-                "argument": "showJoinLeaveMessages",
-                "category": "full",
-                "description": "  Should join and leave messages be visible to members"
-              }
-            ],
-            "expandable": "true",
-            "attributes": [
-              {
-                "type": "bool",
-                "id": 1,
-                "name": "showAdminsToMembers"
-              },
-              {
-                "type": "bool",
-                "id": 2,
-                "name": "canMembersInvite"
-              },
-              {
-                "type": "bool",
-                "id": 3,
-                "name": "canMembersEditGroupInfo"
-              },
-              {
-                "type": "bool",
-                "id": 4,
-                "name": "canAdminsEditGroupInfo"
-              },
-              {
-                "type": "bool",
-                "id": 5,
-                "name": "showJoinLeaveMessages"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "LoadAdminSettings",
-            "header": 2790,
-            "response": {
-              "type": "anonymous",
-              "header": 2794,
-              "doc": [
-                "Loaded settings",
-                {
-                  "type": "reference",
-                  "argument": "settings",
-                  "category": "full",
-                  "description": "  Current group admin settings"
-                }
-              ],
-              "attributes": [
-                {
-                  "type": {
-                    "type": "struct",
-                    "childType": "AdminSettings"
-                  },
-                  "id": 1,
-                  "name": "settings"
-                }
-              ]
-            },
-            "doc": [
-              "Loading administration settings",
-              {
-                "type": "reference",
-                "argument": "groupPeer",
-                "category": "full",
-                "description": "Group's peer"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "GroupOutPeer"
-                },
-                "id": 1,
-                "name": "groupPeer"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "SaveAdminSettings",
-            "header": 2792,
-            "response": {
-              "type": "reference",
-              "name": "Void"
-            },
-            "doc": [
-              "Save administartion settings",
-              {
-                "type": "reference",
-                "argument": "groupPeer",
-                "category": "full",
-                "description": "Group's Peer"
-              },
-              {
-                "type": "reference",
-                "argument": "settings",
-                "category": "full",
-                "description": "Group's settings"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "GroupOutPeer"
-                },
-                "id": 1,
-                "name": "groupPeer"
-              },
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "AdminSettings"
-                },
-                "id": 2,
-                "name": "settings"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "DeleteGroup",
-            "header": 2795,
-            "response": {
-              "type": "reference",
-              "name": "Seq"
-            },
-            "doc": [
-              "Delete Group",
-              {
-                "type": "reference",
-                "argument": "groupPeer",
-                "category": "full",
-                "description": "Group's peer"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "GroupOutPeer"
-                },
-                "id": 1,
-                "name": "groupPeer"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "ShareHistory",
-            "header": 2796,
-            "response": {
-              "type": "reference",
-              "name": "Seq"
-            },
-            "doc": [
-              "Share History",
-              {
-                "type": "reference",
-                "argument": "groupPeer",
-                "category": "full",
-                "description": "Group's peer"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "GroupOutPeer"
-                },
-                "id": 1,
-                "name": "groupPeer"
               }
             ]
           }
@@ -12482,9 +11896,39 @@
               },
               {
                 "type": "reference",
-                "argument": "optMatchString",
+                "argument": "title",
+                "category": "full",
+                "description": "  Peer title"
+              },
+              {
+                "type": "reference",
+                "argument": "description",
                 "category": "full",
                 "description": "  Description"
+              },
+              {
+                "type": "reference",
+                "argument": "membersCount",
+                "category": "full",
+                "description": "  Members count"
+              },
+              {
+                "type": "reference",
+                "argument": "dateCreated",
+                "category": "full",
+                "description": "  Group Creation Date"
+              },
+              {
+                "type": "reference",
+                "argument": "creator",
+                "category": "full",
+                "description": "  Group Creator uid"
+              },
+              {
+                "type": "reference",
+                "argument": "isPublic",
+                "category": "full",
+                "description": "  Is group public"
               }
             ],
             "attributes": [
@@ -12497,12 +11941,60 @@
                 "name": "peer"
               },
               {
+                "type": "string",
+                "id": 2,
+                "name": "title"
+              },
+              {
                 "type": {
                   "type": "opt",
                   "childType": "string"
                 },
                 "id": 3,
-                "name": "optMatchString"
+                "name": "description"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "int32"
+                },
+                "id": 4,
+                "name": "membersCount"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "alias",
+                    "childType": "date"
+                  }
+                },
+                "id": 5,
+                "name": "dateCreated"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "int32"
+                },
+                "id": 6,
+                "name": "creator"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 7,
+                "name": "isPublic"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 8,
+                "name": "isJoined"
               }
             ]
           }
@@ -19544,7 +19036,7 @@
               {
                 "type": "reference",
                 "argument": "keyGroupId",
-                "category": "full",
+                "category": "hidden",
                 "description": "  Key Group Id"
               }
             ],
@@ -19569,45 +19061,6 @@
           }
         },
         {
-          "type": "struct",
-          "content": {
-            "name": "KeyGroupHolder",
-            "doc": [
-              "Key Group Holder",
-              {
-                "type": "reference",
-                "argument": "uid",
-                "category": "full",
-                "description": "  User's id"
-              },
-              {
-                "type": "reference",
-                "argument": "keyGroup",
-                "category": "full",
-                "description": "  Key Group"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "userId"
-                },
-                "id": 1,
-                "name": "uid"
-              },
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "EncryptionKeyGroup"
-                },
-                "id": 2,
-                "name": "keyGroup"
-              }
-            ]
-          }
-        },
-        {
           "type": "rpc",
           "content": {
             "name": "SendEncryptedPackage",
@@ -19618,6 +19071,18 @@
               "doc": [
                 {
                   "type": "reference",
+                  "argument": "seq",
+                  "category": "full",
+                  "description": "  seq"
+                },
+                {
+                  "type": "reference",
+                  "argument": "state",
+                  "category": "full",
+                  "description": "  state"
+                },
+                {
+                  "type": "reference",
                   "argument": "date",
                   "category": "full",
                   "description": "  date"
@@ -19626,7 +19091,7 @@
                   "type": "reference",
                   "argument": "obsoleteKeyGroups",
                   "category": "full",
-                  "description": "  obsolete key group ids"
+                  "description": "  obsolete key groups"
                 },
                 {
                   "type": "reference",
@@ -19639,12 +19104,31 @@
                 {
                   "type": {
                     "type": "opt",
+                    "childType": "int32"
+                  },
+                  "id": 1,
+                  "name": "seq"
+                },
+                {
+                  "type": {
+                    "type": "opt",
+                    "childType": {
+                      "type": "alias",
+                      "childType": "seq_state"
+                    }
+                  },
+                  "id": 2,
+                  "name": "state"
+                },
+                {
+                  "type": {
+                    "type": "opt",
                     "childType": {
                       "type": "alias",
                       "childType": "date"
                     }
                   },
-                  "id": 1,
+                  "id": 3,
                   "name": "date"
                 },
                 {
@@ -19655,7 +19139,7 @@
                       "childType": "KeyGroupId"
                     }
                   },
-                  "id": 2,
+                  "id": 4,
                   "name": "obsoleteKeyGroups"
                 },
                 {
@@ -19663,10 +19147,10 @@
                     "type": "list",
                     "childType": {
                       "type": "struct",
-                      "childType": "KeyGroupHolder"
+                      "childType": "KeyGroupId"
                     }
                   },
-                  "id": 3,
+                  "id": 5,
                   "name": "missedKeyGroups"
                 }
               ]
@@ -20026,6 +19510,86 @@
                 "type": "int64",
                 "id": 2,
                 "name": "rid"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "EncryptedReceived",
+            "doc": [
+              "Encrypted message receive notification",
+              {
+                "type": "reference",
+                "argument": "receiverId",
+                "category": "full",
+                "description": "  Receiver User Id"
+              },
+              {
+                "type": "reference",
+                "argument": "receiveDate",
+                "category": "full",
+                "description": "  Receive message sort date"
+              }
+            ],
+            "trait": {
+              "name": "EncryptedContent",
+              "key": 4
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "receiverId"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "receiveDate"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "EncryptedRead",
+            "doc": [
+              "Encrypted message read notification",
+              {
+                "type": "reference",
+                "argument": "receiverId",
+                "category": "full",
+                "description": "  Receiver User Id"
+              },
+              {
+                "type": "reference",
+                "argument": "readDate",
+                "category": "full",
+                "description": "  Read message sort date"
+              }
+            ],
+            "trait": {
+              "name": "EncryptedContent",
+              "key": 5
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "receiverId"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "readDate"
               }
             ]
           }

@@ -4,13 +4,13 @@
 
 package im.actor.core.modules.messaging.actions;
 
+import im.actor.core.api.ApiEncryptedRead;
 import im.actor.core.api.ApiOutPeer;
 import im.actor.core.api.rpc.RequestMessageRead;
-import im.actor.core.api.rpc.ResponseVoid;
 import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerType;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.network.RpcCallback;
-import im.actor.core.network.RpcException;
+import im.actor.core.util.RandomUtils;
 
 public class CursorReaderActor extends CursorActor {
 
@@ -25,17 +25,20 @@ public class CursorReaderActor extends CursorActor {
             return;
         }
 
-        request(new RequestMessageRead(outPeer, date), new RpcCallback<ResponseVoid>() {
-            @Override
-            public void onResult(ResponseVoid response) {
+        if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
+            context().getEncryption().doSend(RandomUtils.nextRid(),
+                    new ApiEncryptedRead(peer.getPeerId(), date), peer.getPeerId()).then(r -> {
                 onCompleted(peer, date);
-            }
-
-            @Override
-            public void onError(RpcException e) {
-                CursorReaderActor.this.onError(peer, date);
-            }
-        });
+            }).failure(e -> {
+                onError(peer, date);
+            });
+        } else {
+            api(new RequestMessageRead(outPeer, date)).then(responseVoid -> {
+                onCompleted(peer, date);
+            }).failure(e -> {
+                onError(peer, date);
+            });
+        }
     }
 
     // Messages

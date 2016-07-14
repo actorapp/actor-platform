@@ -7,6 +7,10 @@ import java.util.List;
 
 import im.actor.core.api.ApiDialogGroup;
 import im.actor.core.api.ApiDialogShort;
+import im.actor.core.api.ApiEncryptedContent;
+import im.actor.core.api.ApiEncryptedMessageContent;
+import im.actor.core.api.ApiEncryptedRead;
+import im.actor.core.api.ApiEncryptedReceived;
 import im.actor.core.api.ApiMessageReaction;
 import im.actor.core.api.rpc.RequestLoadGroupedDialogs;
 import im.actor.core.api.updates.UpdateChatClear;
@@ -54,6 +58,7 @@ import im.actor.core.modules.messaging.router.entity.RouterConversationVisible;
 import im.actor.core.modules.messaging.router.entity.RouterDeletedMessages;
 import im.actor.core.modules.messaging.router.entity.RouterDifferenceEnd;
 import im.actor.core.modules.messaging.router.entity.RouterDifferenceStart;
+import im.actor.core.modules.messaging.router.entity.RouterEncryptedUpdate;
 import im.actor.core.modules.messaging.router.entity.RouterMessageOnlyActive;
 import im.actor.core.modules.messaging.router.entity.RouterMessageUpdate;
 import im.actor.core.modules.messaging.router.entity.RouterNewMessages;
@@ -910,6 +915,41 @@ public class RouterActor extends ModuleActor {
         return Promise.success(null);
     }
 
+    public Promise<Void> onEncryptedUpdate(int senderId, long date, ApiEncryptedContent update) {
+
+        if (update instanceof ApiEncryptedMessageContent) {
+            ApiEncryptedMessageContent content = (ApiEncryptedMessageContent) update;
+
+            Message msg = new Message(content.getRid(), date, date, senderId,
+                    MessageState.UNKNOWN, AbsContent.fromMessage(content.getMessage()));
+
+            int destId = senderId;
+            if (senderId == myUid()) {
+                destId = content.getReceiverId();
+            }
+            ArrayList<Message> messages = new ArrayList<>();
+            messages.add(msg);
+            return onNewMessages(Peer.secret(destId), messages);
+        } else if (update instanceof ApiEncryptedReceived) {
+            ApiEncryptedReceived encryptedReceived = (ApiEncryptedReceived) update;
+            int destId = senderId;
+            if (senderId == myUid()) {
+                destId = encryptedReceived.getReceiverId();
+            }
+            return onMessageReceived(Peer.secret(destId), encryptedReceived.getReceiveDate());
+        } else if (update instanceof ApiEncryptedRead) {
+            ApiEncryptedRead encryptedRead = (ApiEncryptedRead) update;
+            if (senderId == myUid()) {
+                // TODO: Fix Counter
+                return onMessageReadByMe(Peer.secret(encryptedRead.getReceiverId()), encryptedRead.getReadDate(), 0);
+            } else {
+                return onMessageRead(Peer.secret(senderId), encryptedRead.getReadDate());
+            }
+        }
+
+        return Promise.success(null);
+    }
+
     @Override
     public void onReceive(Object message) {
         if (!activeDialogStorage.isLoaded() && message instanceof RouterMessageOnlyActive) {
@@ -939,6 +979,10 @@ public class RouterActor extends ModuleActor {
         }
         if (message instanceof RouterMessageUpdate) {
             return onUpdate(((RouterMessageUpdate) message).getUpdate());
+        } else if (message instanceof RouterEncryptedUpdate) {
+            RouterEncryptedUpdate encryptedUpdate = (RouterEncryptedUpdate) message;
+            return onEncryptedUpdate(encryptedUpdate.getSenderId(), encryptedUpdate.getDate(),
+                    encryptedUpdate.getUpdate());
         } else if (message instanceof RouterDifferenceStart) {
             return onDifferenceStart();
         } else if (message instanceof RouterDifferenceEnd) {
