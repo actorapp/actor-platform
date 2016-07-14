@@ -358,6 +358,16 @@ public class ActorStyle {
         this.dialogsTitleColor = dialogsTitleColor;
     }
 
+    private int dialogsTitleSecureColor = 0xff559d44;
+
+    public int getDialogsTitleSecureColor() {
+        return getColorWithFallback(dialogsTitleSecureColor, getDialogsTitleColor());
+    }
+
+    public void setDialogsTitleSecureColor(int dialogsTitleSecureColor) {
+        this.dialogsTitleSecureColor = dialogsTitleSecureColor;
+    }
+
     private int dialogsTextColor = 0;
 
     public int getDialogsTextColor() {
