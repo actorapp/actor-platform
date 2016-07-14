@@ -72,11 +72,11 @@ final class GroupsServiceSpec
 
   it should "set 'about' to empty when None comes" in e20
 
-  it should "forbid to set invalid 'about' field (empty, or longer than 255 characters)" in e21
+  it should "forbid to set 'about' field longer than 255 characters" in e21
 
   "EditGroupTopic" should "allow any group member to change topic" in e22
 
-  it should "forbid to set invalid topic (empty, or longer than 255 characters)" in e23
+  it should "forbid to set topic longer than 255 characters" in e23
 
   it should "set topic to empty when None comes" in e24
 
@@ -794,11 +794,6 @@ final class GroupsServiceSpec
       resp shouldEqual Error(GroupRpcErrors.AboutTooLong)
     }
 
-    val emptyAbout = ""
-    whenReady(service.handleEditGroupAbout(groupOutPeer, 1L, Some(emptyAbout), Vector.empty)) { resp ⇒
-      resp shouldEqual Error(GroupRpcErrors.AboutTooLong)
-    }
-
     val groupAbout = groupExt.getApiFullStruct(groupOutPeer.groupId, user.id).futureValue.about
     groupAbout shouldEqual None
   }
@@ -842,11 +837,6 @@ final class GroupsServiceSpec
 
     val longTopic = 1 to 300 map (e ⇒ ".") mkString ""
     whenReady(service.handleEditGroupTopic(groupOutPeer, 1L, Some(longTopic), Vector.empty)) { resp ⇒
-      resp shouldEqual Error(GroupRpcErrors.TopicTooLong)
-    }
-
-    val emptyTopic = ""
-    whenReady(service.handleEditGroupTopic(groupOutPeer, 2L, Some(emptyTopic), Vector.empty)) { resp ⇒
       resp shouldEqual Error(GroupRpcErrors.TopicTooLong)
     }
 
