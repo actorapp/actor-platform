@@ -6,11 +6,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.MediaScannerConnection;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -30,6 +28,8 @@ import com.droidkit.progress.CircularView;
 import java.io.File;
 import java.io.IOException;
 
+import im.actor.core.entity.FileReference;
+import im.actor.core.viewmodel.UserVM;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
@@ -39,10 +39,8 @@ import im.actor.sdk.util.Randoms;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.util.images.common.ImageLoadException;
 import im.actor.sdk.util.images.ops.ImageLoading;
-import im.actor.sdk.view.avatar.AvatarView;
 import im.actor.sdk.view.MaterialInterpolator;
-import im.actor.core.entity.FileReference;
-import im.actor.core.viewmodel.UserVM;
+import im.actor.sdk.view.avatar.AvatarView;
 import uk.co.senab.photoview.DefaultOnDoubleTapListener;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
@@ -477,7 +475,7 @@ public class PictureActivity extends BaseActivity {
                 File externalFile = Environment.getExternalStorageDirectory();
                 if (externalFile == null) {
                     Toast.makeText(getActivity(), R.string.toast_no_sdcard, Toast.LENGTH_LONG).show();
-                }else{
+                } else {
                     boolean isGif = path.endsWith(".gif");
                     String externalPath = externalFile.getAbsolutePath();
                     String exportPathBase = externalPath + "/" + ActorSDK.sharedActor().getAppName() + "/" + ActorSDK.sharedActor().getAppName() + " images" + "/";
@@ -486,7 +484,7 @@ public class PictureActivity extends BaseActivity {
                         String exportPath = exportPathBase + (fileName != null ? fileName : "exported") + "_" + Randoms.randomId() + (isGif ? ".gif" : ".jpg");
                         Files.copy(new File(this.path), new File(exportPath));
                         MediaScannerConnection.scanFile(getActivity(), new String[]{exportPath}, new String[]{"image/" + (isGif ? "gif" : "jpeg")}, null);
-                        Toast.makeText(getActivity(), getString(R.string.file_saved)+ " " + exportPath, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), getString(R.string.file_saved) + " " + exportPath, Toast.LENGTH_LONG).show();
                         item.setEnabled(false);
                         item.setTitle(R.string.menu_saved);
                     } catch (IOException e) {
@@ -530,7 +528,6 @@ public class PictureActivity extends BaseActivity {
             toolbar.clearAnimation();
             ownerContainer.clearAnimation();
             if (uiIsHidden) {
-
 
                 toolbar.animate()
                         .setInterpolator(new MaterialInterpolator())
@@ -607,7 +604,6 @@ public class PictureActivity extends BaseActivity {
             fragment.setArguments(bundle);
             return fragment;
         }
-
 
         public static Fragment getInstance(FileReference ref, int senderId) {
             Bundle bundle = new Bundle();
