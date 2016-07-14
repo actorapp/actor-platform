@@ -17,6 +17,7 @@ public class EncryptedSessionChain {
 
     private PeerSession session;
     private byte[] ownPrivateKey;
+    private byte[] ownPublicKey;
     private byte[] theirPublicKey;
     private int sentCounter;
     private byte[] rootChainKey;
@@ -24,6 +25,7 @@ public class EncryptedSessionChain {
     public EncryptedSessionChain(PeerSession session, byte[] ownPrivateKey, byte[] theirPublicKey) {
         this.session = session;
         this.ownPrivateKey = ownPrivateKey;
+        this.ownPublicKey = Curve25519.keyGenPublic(ownPrivateKey);
         this.theirPublicKey = theirPublicKey;
         this.sentCounter = 0;
         this.rootChainKey = RatchetRootChainKey.makeRootChainKey(
@@ -64,29 +66,26 @@ public class EncryptedSessionChain {
         // Validating header
         //
 
-//        if (senderKeyGroupId != session.getPeerKeyGroupId()) {
-//            throw new IntegrityException("Incorrect sender key group id");
-//        }
-//        if (senderEphermalKey0Id != session.getTheirPreKey().getKeyId()) {
-//            throw new IntegrityException("Incorrect sender pre key id");
-//        }
-//        if (receiverEphermalKey0Id != session.getOwnPreKey().getKeyId()) {
-//            throw new IntegrityException("Incorrect receiver pre key id");
-//        }
-//        if (ByteStrings.isEquals(senderEphemeralKey, theirPublicKey)) {
-//            throw new IntegrityException("Incorrect sender ephemeral key");
-//        }
-//        if (ByteStrings.isEquals(receiverEphemeralKey, ownPrivateKey)) {
-//            throw new IntegrityException("Incorrect receiver ephemeral key");
-//        }
+        if (senderEphermalKey0Id != session.getTheirPreKeyId()) {
+            throw new IntegrityException("Incorrect sender pre key id");
+        }
+        if (receiverEphermalKey0Id != session.getOwnPreKeyId()) {
+            throw new IntegrityException("Incorrect receiver pre key id");
+        }
+        if (!ByteStrings.isEquals(senderEphemeralKey, theirPublicKey)) {
+            throw new IntegrityException("Incorrect sender ephemeral key");
+        }
+        if (!ByteStrings.isEquals(receiverEphemeralKey, ownPublicKey)) {
+            throw new IntegrityException("Incorrect receiver ephemeral key");
+        }
 
         //
         // Decryption
         //
 
         ActorBoxKey ratchetMessageKey = RatchetMessageKey.buildKey(rootChainKey, messageIndex);
-        byte[] header = ByteStrings.substring(data, 0, 80);
-        byte[] message = ByteStrings.substring(data, 80, data.length - 80);
+        byte[] header = ByteStrings.substring(data, 0, 84);
+        byte[] message = ByteStrings.substring(data, 84, data.length - 84);
         return ActorBox.openBox(header, message, ratchetMessageKey);
     }
 
@@ -97,7 +96,7 @@ public class EncryptedSessionChain {
         byte[] header = ByteStrings.merge(
                 ByteStrings.longToBytes(session.getOwnPreKeyId()), /*Alice Initial Ephermal*/
                 ByteStrings.longToBytes(session.getTheirPreKeyId()), /*Bob Initial Ephermal*/
-                Curve25519.keyGenPublic(ownPrivateKey),
+                ownPublicKey,
                 theirPublicKey,
                 ByteStrings.intToBytes(messageIndex)); /* Message Index */
 
