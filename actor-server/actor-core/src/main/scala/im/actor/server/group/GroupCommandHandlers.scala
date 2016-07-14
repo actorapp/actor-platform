@@ -62,16 +62,19 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
       integrationStorage = new IntegrationTokensKeyValueStorage
 
       // Group creation
+      val groupType = GroupType.fromValue(cmd.typ) //FIXME: make it normal enum
+      val isHistoryShared = groupType.isChannel
+
       persist(Created(
         ts = createdAt,
         groupId,
-        typ = Some(GroupType.fromValue(cmd.typ)), //FIXME: make it normal enum
+        typ = Some(groupType),
         creatorUserId = cmd.creatorUserId,
         accessHash = accessHash,
         title = cmd.title,
         userIds = Seq(cmd.creatorUserId), // only creator user becomes group member. all other users are invited via Invite message
         isHidden = Some(false),
-        isHistoryShared = Some(false),
+        isHistoryShared = Some(isHistoryShared),
         extensions = Seq.empty
       )) { evt ⇒
         val newState = commit(evt)
