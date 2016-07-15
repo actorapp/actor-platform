@@ -8,7 +8,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v13.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
@@ -49,6 +53,8 @@ public class MapPickerActivity extends AppCompatActivity
         AdapterView.OnItemClickListener,
         GoogleMap.OnMapLongClickListener,
         GoogleMap.OnMarkerClickListener, AbsListView.OnScrollListener {
+
+    private static final int PERMISSION_REQ_LOCATION = 0;
 
     private static final String LOG_TAG = "MapPickerActivity";
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
@@ -341,6 +347,14 @@ public class MapPickerActivity extends AppCompatActivity
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQ_LOCATION);
+                im.actor.runtime.Log.d("Permissions", "MapPickerActivity.setUpMap - no permission :c");
+                return;
+            }
+        }
+
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         for (String provider : locationManager.getAllProviders()) {
             currentLocation = locationManager.getLastKnownLocation(provider);
@@ -360,6 +374,20 @@ public class MapPickerActivity extends AppCompatActivity
         mMap.setMyLocationEnabled(true);
         mMap.setOnMapLongClickListener(this);
         mMap.setOnMarkerClickListener(this);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == PERMISSION_REQ_LOCATION) {
+            if (grantResults.length > 0) {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    setUpMap();
+                } else {
+                    //FIXME: if user checks "Don't ask again" button, in next open of activity, it will be finished without any notice about permissions. Need to show toast or alert dialog (with button which redirects to app info (for granting permission manually)).
+                    finish();
+                }
+            }
+        }
     }
 
     private void fetchPlaces(String query) {
@@ -418,10 +446,10 @@ public class MapPickerActivity extends AppCompatActivity
 
             markers.put(mapItem.id,
                     mMap.addMarker(new MarkerOptions()
-                                    .position(mapItem.getLatLng())
-                                            // .title(mapItem.name)
-                                    .draggable(false)
-                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.picker_map_marker))
+                            .position(mapItem.getLatLng())
+                            // .title(mapItem.name)
+                            .draggable(false)
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.picker_map_marker))
                     ));
         }
     }
@@ -436,7 +464,6 @@ public class MapPickerActivity extends AppCompatActivity
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 14));
         }
         this.currentLocation = location;
-        ;
         accuranceView.setText(getString(R.string.picker_map_pick_my_accuracy, (int) currentLocation.getAccuracy()));
         Log.d("Location changed", location.toString());
     }
@@ -444,7 +471,6 @@ public class MapPickerActivity extends AppCompatActivity
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
         MapItem mapItem = (MapItem) adapterView.getItemAtPosition(position);
-
 
         Intent returnIntent = new Intent();
         returnIntent.putExtra("latitude", mapItem.getLatLng().latitude);
@@ -481,8 +507,6 @@ public class MapPickerActivity extends AppCompatActivity
 
             //currentPick.setPosition(geoData);
         }
-
-
     }
 
     @Override
