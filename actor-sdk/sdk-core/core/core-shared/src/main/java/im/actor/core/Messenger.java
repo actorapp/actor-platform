@@ -21,6 +21,7 @@ import im.actor.core.entity.AuthRes;
 import im.actor.core.entity.AuthStartRes;
 import im.actor.core.entity.FileReference;
 import im.actor.core.entity.Group;
+import im.actor.core.entity.GroupMembersSlice;
 import im.actor.core.entity.MentionFilterResult;
 import im.actor.core.entity.MessageSearchEntity;
 import im.actor.core.entity.Peer;
@@ -1521,6 +1522,19 @@ public class Messenger {
         return callback -> modules.getGroupsModule().kickMember(gid, uid)
                 .then(v -> callback.onResult(v))
                 .failure(e -> callback.onError(e));
+    }
+
+    /**
+     * Load async members
+     *
+     * @param gid   group id
+     * @param limit limit of loading
+     * @param next  optional cursor of next
+     * @return promise of members slice
+     */
+    @ObjectiveCName("loadMembersWithGid:withLimit:withNext:")
+    public Promise<GroupMembersSlice> loadMembers(int gid, int limit, byte[] next) {
+        return modules.getGroupsModule().loadMembers(gid, limit, next);
     }
 
     /**

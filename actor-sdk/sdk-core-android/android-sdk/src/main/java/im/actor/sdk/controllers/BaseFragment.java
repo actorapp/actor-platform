@@ -14,10 +14,17 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.runtime.function.Consumer;
+import im.actor.runtime.function.Function;
 import im.actor.runtime.promise.Promise;
+import im.actor.runtime.promise.PromiseFunc;
+import im.actor.runtime.promise.PromiseResolver;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.R;
@@ -35,6 +42,8 @@ public class BaseFragment extends BinderCompatFragment {
     private boolean homeAsUp = false;
     private boolean showHome = false;
     private boolean showCustom = false;
+
+    private ArrayList<WrappedPromise> pending = new ArrayList<>();
 
     public boolean isRootFragment() {
         return isRootFragment;
@@ -402,5 +411,43 @@ public class BaseFragment extends BinderCompatFragment {
             return compatActivity.getSupportActionBar();
         }
         return null;
+    }
+
+    protected <T> Promise<T> wrap(Promise<T> p) {
+        WrappedPromise<T> res = new WrappedPromise<>((PromiseFunc<T>) resolver -> p.pipeTo(resolver));
+        pending.add(res);
+        return res;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        for (WrappedPromise w : pending) {
+            w.kill();
+        }
+        pending.clear();
+    }
+
+
+    private class WrappedPromise<T> extends Promise<T> {
+
+        private boolean isKilled;
+
+        public WrappedPromise(PromiseFunc<T> executor) {
+            super(executor);
+        }
+
+        public void kill() {
+            isKilled = true;
+        }
+
+        @Override
+        protected void invokeDeliver() {
+            if (isKilled) {
+                return;
+            }
+            super.invokeDeliver();
+        }
     }
 }

@@ -865,9 +865,7 @@ public class ActorSDK {
     public void startGroupInfoActivity(Context context, int gid) {
         Bundle b = new Bundle();
         b.putInt(Intents.EXTRA_GROUP_ID, gid);
-        if (!startDelegateActivity(context, delegate.getGroupInfoIntent(gid), b)) {
-            startActivity(context, b, GroupInfoActivity.class);
-        }
+        startActivity(context, b, GroupInfoActivity.class);
     }
 
     /**

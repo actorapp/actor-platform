@@ -32,19 +32,25 @@ public class MembersAdapter extends HolderAdapter<GroupMember> {
     }
 
     public void setMembers(Collection<GroupMember> members) {
+        setMembers(members, true);
+    }
+
+    public void setMembers(Collection<GroupMember> members, boolean sort) {
         this.members = members.toArray(new GroupMember[members.size()]);
-        Arrays.sort(this.members, (a, b) -> {
-            if (a.isAdministrator() && !b.isAdministrator()) {
-                return -1;
-            }
-            if (b.isAdministrator() && !a.isAdministrator()) {
-                return 1;
-            }
-            String an = users().get(a.getInviterUid()).getName().get();
-            String bn = users().get(b.getInviterUid()).getName().get();
-            return an.compareTo(bn);
-        });
-        notifyDataSetChanged();
+        if (sort) {
+            Arrays.sort(this.members, (a, b) -> {
+                if (a.isAdministrator() && !b.isAdministrator()) {
+                    return -1;
+                }
+                if (b.isAdministrator() && !a.isAdministrator()) {
+                    return 1;
+                }
+                String an = users().get(a.getInviterUid()).getName().get();
+                String bn = users().get(b.getInviterUid()).getName().get();
+                return an.compareTo(bn);
+            });
+        }
+        notifyDataSetInvalidated();
     }
 
     @Override

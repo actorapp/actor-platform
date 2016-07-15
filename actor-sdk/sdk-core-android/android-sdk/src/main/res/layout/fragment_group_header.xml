@@ -149,6 +149,24 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/membersCont"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/selector"
+        android:paddingRight="8dp">
+
+        <TextView
+            android:id="@+id/members_tite"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="72dp"
+            android:gravity="center_vertical"
+            android:text="@string/group_members_header"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/addMemberCont"
         android:layout_width="match_parent"
         android:layout_height="48dp"

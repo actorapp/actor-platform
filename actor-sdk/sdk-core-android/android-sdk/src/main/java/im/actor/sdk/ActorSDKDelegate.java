@@ -58,6 +58,13 @@ public interface ActorSDKDelegate {
     @Nullable
     Fragment fragmentForProfile(int uid);
 
+    /**
+     * If not null returned, overrides group info fragment
+     *
+     * @return Actor Intent
+     */
+    Fragment fragmentForGroupInfo(int gid);
+
 
     //
     // Chat
@@ -115,12 +122,6 @@ public interface ActorSDKDelegate {
      */
     ActorIntentFragmentActivity getSettingsIntent();
 
-    /**
-     * If not null returned, overrides group info activity intent
-     *
-     * @return Actor Intent
-     */
-    BaseGroupInfoActivity getGroupInfoIntent(int gid);
 
     /**
      * If not null returned, overrides settings activity intent

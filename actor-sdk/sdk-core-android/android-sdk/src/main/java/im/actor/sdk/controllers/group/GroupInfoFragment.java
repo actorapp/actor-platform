@@ -24,6 +24,7 @@ import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import im.actor.core.entity.GroupMember;
 import im.actor.core.entity.GroupType;
@@ -33,6 +34,8 @@ import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserPhone;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.mvvm.Value;
+import im.actor.runtime.mvvm.ValueDoubleChangedListener;
 import im.actor.runtime.mvvm.ValueListener;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorSDKLauncher;
@@ -115,6 +118,7 @@ public class GroupInfoFragment extends BaseFragment {
         TextView aboutTV = (TextView) header.findViewById(R.id.about);
         View aboutCont = header.findViewById(R.id.aboutContainer);
         View addMemberCont = header.findViewById(R.id.addMemberCont);
+        View membersCont = header.findViewById(R.id.membersCont);
         View leaveCont = header.findViewById(R.id.leaveChannelCont);
 
         TextView title = (TextView) header.findViewById(R.id.title);
@@ -141,6 +145,8 @@ public class GroupInfoFragment extends BaseFragment {
         ((TextView) header.findViewById(R.id.settings_notifications_title))
                 .setTextColor(style.getTextPrimaryColor());
         ((TextView) header.findViewById(R.id.add_member_title))
+                .setTextColor(style.getTextPrimaryColor());
+        ((TextView) header.findViewById(R.id.members_tite))
                 .setTextColor(style.getTextPrimaryColor());
         ((TextView) header.findViewById(R.id.leave_channel_title))
                 .setTextColor(style.getTextDangerColor());
@@ -242,18 +248,25 @@ public class GroupInfoFragment extends BaseFragment {
 
         // Members
 
-        bind(groupVM.getIsCanViewMembers(), canViewMembers -> {
+        bind(groupVM.getIsCanViewMembers(), groupVM.getIsAsyncMembers(), (canViewMembers, vm1, isAsync, vm2) -> {
             if (canViewMembers) {
-                header.findViewById(R.id.after_settings_divider).setVisibility(View.VISIBLE);
-                // header.findViewById(R.id.membersHeader).setVisibility(View.VISIBLE);
+                if (isAsync) {
+                    membersCont.setVisibility(View.VISIBLE);
+                    header.findViewById(R.id.after_settings_divider).setVisibility(View.GONE);
+                } else {
+                    membersCont.setVisibility(View.GONE);
+                    header.findViewById(R.id.after_settings_divider).setVisibility(View.VISIBLE);
+                }
             } else {
                 header.findViewById(R.id.after_settings_divider).setVisibility(View.GONE);
-                // header.findViewById(R.id.membersHeader).setVisibility(View.GONE);
             }
+        });
+        membersCont.setOnClickListener(view -> {
+            startActivity(new Intent(getContext(), MembersActivity.class)
+                    .putExtra(Intents.EXTRA_GROUP_ID, groupVM.getId()));
         });
 
         listView.addHeaderView(header, null, false);
-
 
         //
         // Footer
@@ -284,8 +297,12 @@ public class GroupInfoFragment extends BaseFragment {
         //
 
         groupUserAdapter = new MembersAdapter(getActivity());
-        bind(groupVM.getMembers(), members -> {
-            groupUserAdapter.setMembers(members);
+        bind(groupVM.getIsAsyncMembers(), groupVM.getMembers(), (isAsyncMembers, valueModel, members, valueModel2) -> {
+            if (isAsyncMembers) {
+                groupUserAdapter.setMembers(new ArrayList<>());
+            } else {
+                groupUserAdapter.setMembers(members);
+            }
         });
         listView.setAdapter(groupUserAdapter);
 

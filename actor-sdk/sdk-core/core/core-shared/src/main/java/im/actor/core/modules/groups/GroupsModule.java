@@ -23,6 +23,7 @@ import im.actor.core.api.rpc.RequestInviteUser;
 import im.actor.core.api.rpc.RequestJoinGroup;
 import im.actor.core.api.rpc.RequestKickUser;
 import im.actor.core.api.rpc.RequestLeaveGroup;
+import im.actor.core.api.rpc.RequestLoadMembers;
 import im.actor.core.api.rpc.RequestMakeUserAdminObsolete;
 import im.actor.core.api.rpc.RequestRevokeIntegrationToken;
 import im.actor.core.api.rpc.RequestRevokeInviteUrl;
@@ -30,6 +31,7 @@ import im.actor.core.api.rpc.RequestTransferOwnership;
 import im.actor.core.api.rpc.ResponseIntegrationToken;
 import im.actor.core.api.rpc.ResponseInviteUrl;
 import im.actor.core.entity.Group;
+import im.actor.core.entity.GroupMembersSlice;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.User;
@@ -226,6 +228,22 @@ public class GroupsModule extends AbsModule implements BusSubscriber {
                                 new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()),
                                 rid, about, ApiSupportConfiguration.OPTIMIZATIONS)))
                 .flatMap(r -> updates().waitForUpdate(r.getSeq()));
+    }
+
+    public Promise<GroupMembersSlice> loadMembers(int gid, int limit, byte[] next) {
+        return getGroups().getValueAsync(gid)
+                .flatMap(group ->
+                        api(new RequestLoadMembers(
+                                new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()),
+                                limit, next)))
+                .chain(r -> updates().loadRequiredPeers(r.getMembers(), new ArrayList<>()))
+                .map(r -> {
+                    ArrayList<Integer> members = new ArrayList<>();
+                    for (ApiUserOutPeer p : r.getMembers()) {
+                        members.add(p.getUid());
+                    }
+                    return new GroupMembersSlice(members, r.getNext());
+                });
     }
 
     public void changeAvatar(int gid, String descriptor) {
