@@ -59,23 +59,32 @@ public class GroupVM extends BaseValueModel<Group> {
     private ValueModel<HashSet<GroupMember>> members;
     @NotNull
     @Property("nonatomic, readonly")
+    private BooleanValueModel isAsyncMembers;
+    @NotNull
+    @Property("nonatomic, readonly")
     private BooleanValueModel isCanViewMembers;
     @NotNull
     @Property("nonatomic, readonly")
     private BooleanValueModel isCanInviteMembers;
-
-
-    @Property("nonatomic, readonly")
-    private IntValueModel ownerId;
     @NotNull
     @Property("nonatomic, readonly")
-    private ValueModel<Integer> presence;
+    private BooleanValueModel isCanEditInfo;
+
+
     @NotNull
     @Property("nonatomic, readonly")
     private StringValueModel theme;
     @NotNull
     @Property("nonatomic, readonly")
     private StringValueModel about;
+    @NotNull
+    @Property("nonatomic, readonly")
+    private StringValueModel shortName;
+    @Property("nonatomic, readonly")
+    private IntValueModel ownerId;
+    @NotNull
+    @Property("nonatomic, readonly")
+    private ValueModel<Integer> presence;
 
     @NotNull
     private ArrayList<ModelChangedListener<GroupVM>> listeners = new ArrayList<>();
@@ -98,11 +107,14 @@ public class GroupVM extends BaseValueModel<Group> {
 
         this.isCanViewMembers = new BooleanValueModel("group." + groupId + ".can_view_members", rawObj.isCanViewMembers());
         this.isCanInviteMembers = new BooleanValueModel("group." + groupId + ".can_invite_members", rawObj.isCanInviteMembers());
+        this.isCanEditInfo = new BooleanValueModel("group." + groupId + ".can_edit_info", rawObj.isCanEditInfo());
+        this.isAsyncMembers = new BooleanValueModel("group." + groupId + ".isAsyncMembers", rawObj.isAsyncMembers());
         this.ownerId = new IntValueModel("group." + groupId + ".membersCount", rawObj.getOwnerId());
         this.members = new ValueModel<>("group." + groupId + ".members", new HashSet<>(rawObj.getMembers()));
         this.presence = new ValueModel<>("group." + groupId + ".presence", 0);
         this.theme = new StringValueModel("group." + groupId + ".theme", rawObj.getTopic());
         this.about = new StringValueModel("group." + groupId + ".about", rawObj.getAbout());
+        this.shortName = new StringValueModel("group." + groupId + ".shortname", rawObj.getShortName());
     }
 
     /**
@@ -146,6 +158,28 @@ public class GroupVM extends BaseValueModel<Group> {
     @ObjectiveCName("getAvatarModel")
     public AvatarValueModel getAvatar() {
         return avatar;
+    }
+
+    /**
+     * Get About Value Model
+     *
+     * @return Value Model of String
+     */
+    @NotNull
+    @ObjectiveCName("getAboutModel")
+    public StringValueModel getAbout() {
+        return about;
+    }
+
+    /**
+     * Get Theme Value Model
+     *
+     * @return Value Model of String
+     */
+    @NotNull
+    @ObjectiveCName("getThemeModel")
+    public StringValueModel getTheme() {
+        return theme;
     }
 
     /**
@@ -193,6 +227,17 @@ public class GroupVM extends BaseValueModel<Group> {
     }
 
     /**
+     * Can current user edit group info
+     *
+     * @return can edit group info
+     */
+    @NotNull
+    @ObjectiveCName("isCanEditInfoModel")
+    public BooleanValueModel getIsCanEditInfo() {
+        return isCanEditInfo;
+    }
+
+    /**
      * Can current user invite members to a group
      *
      * @return can invite members model
@@ -201,6 +246,18 @@ public class GroupVM extends BaseValueModel<Group> {
     @ObjectiveCName("getIsCanInviteMembersModel")
     public BooleanValueModel getIsCanInviteMembers() {
         return isCanInviteMembers;
+    }
+
+
+    /**
+     * Is members should be fetched async
+     *
+     * @return is members async model
+     */
+    @NotNull
+    @ObjectiveCName("getIsAsyncMembersModel")
+    public BooleanValueModel getIsAsyncMembers() {
+        return isAsyncMembers;
     }
 
     /**
@@ -235,47 +292,6 @@ public class GroupVM extends BaseValueModel<Group> {
         return presence;
     }
 
-    @Override
-    protected void updateValues(@NotNull Group rawObj) {
-        boolean isChanged = name.change(rawObj.getTitle());
-
-        isChanged |= avatar.change(rawObj.getAvatar());
-        isChanged |= membersCount.change(rawObj.getMembersCount());
-        isChanged |= isMember.change(rawObj.isMember());
-        isChanged |= isCanWriteMessage.change(rawObj.isCanWrite());
-
-        isChanged |= theme.change(rawObj.getTopic());
-        isChanged |= about.change(rawObj.getAbout());
-        isChanged |= members.change(new HashSet<>(rawObj.getMembers()));
-        isChanged |= ownerId.change(rawObj.getOwnerId());
-        isChanged |= isCanViewMembers.change(rawObj.isCanViewMembers());
-
-        if (isChanged) {
-            notifyChange();
-        }
-    }
-
-    /**
-     * Get About Value Model
-     *
-     * @return Value Model of String
-     */
-    @NotNull
-    @ObjectiveCName("getAboutModel")
-    public StringValueModel getAbout() {
-        return about;
-    }
-
-    /**
-     * Get Theme Value Model
-     *
-     * @return Value Model of String
-     */
-    @NotNull
-    @ObjectiveCName("getThemeModel")
-    public StringValueModel getTheme() {
-        return theme;
-    }
 
     /**
      * Subscribe for GroupVM updates
@@ -284,8 +300,7 @@ public class GroupVM extends BaseValueModel<Group> {
      */
     @MainThread
     @ObjectiveCName("subscribeWithListener:")
-    public void subscribe(@NotNull ModelChangedListener<GroupVM> listener) {
-        // im.actor.runtime.Runtime.checkMainThread();
+    public synchronized void subscribe(@NotNull ModelChangedListener<GroupVM> listener) {
         if (listeners.contains(listener)) {
             return;
         }
@@ -300,8 +315,7 @@ public class GroupVM extends BaseValueModel<Group> {
      */
     @MainThread
     @ObjectiveCName("subscribeWithListener:withNotify:")
-    public void subscribe(@NotNull ModelChangedListener<GroupVM> listener, boolean notify) {
-        // im.actor.runtime.Runtime.checkMainThread();
+    public synchronized void subscribe(@NotNull ModelChangedListener<GroupVM> listener, boolean notify) {
         if (listeners.contains(listener)) {
             return;
         }
@@ -318,9 +332,41 @@ public class GroupVM extends BaseValueModel<Group> {
      */
     @MainThread
     @ObjectiveCName("unsubscribeWithListener:")
-    public void unsubscribe(@NotNull ModelChangedListener<GroupVM> listener) {
-        // im.actor.runtime.Runtime.checkMainThread();
+    public synchronized void unsubscribe(@NotNull ModelChangedListener<GroupVM> listener) {
         listeners.remove(listener);
+    }
+
+    //
+    // Update handling
+    //
+
+    @Override
+    protected void updateValues(@NotNull Group rawObj) {
+        boolean isChanged = name.change(rawObj.getTitle());
+
+        isChanged |= avatar.change(rawObj.getAvatar());
+        isChanged |= membersCount.change(rawObj.getMembersCount());
+        isChanged |= isMember.change(rawObj.isMember());
+        isChanged |= isCanWriteMessage.change(rawObj.isCanWrite());
+
+        isChanged |= theme.change(rawObj.getTopic());
+        isChanged |= about.change(rawObj.getAbout());
+        isChanged |= members.change(new HashSet<>(rawObj.getMembers()));
+        isChanged |= ownerId.change(rawObj.getOwnerId());
+        isChanged |= isCanViewMembers.change(rawObj.isCanViewMembers());
+        isChanged |= isCanEditInfo.change(rawObj.isCanEditInfo());
+        isChanged |= shortName.change(rawObj.getShortName());
+        isChanged |= isAsyncMembers.change(rawObj.isAsyncMembers());
+
+        if (isChanged) {
+            notifyIfNeeded();
+        }
+    }
+
+    private synchronized void notifyIfNeeded() {
+        if (listeners.size() > 0) {
+            notifyChange();
+        }
     }
 
     private void notifyChange() {
@@ -329,14 +375,5 @@ public class GroupVM extends BaseValueModel<Group> {
                 l.onChanged(GroupVM.this);
             }
         });
-    }
-
-    private boolean isHaveMember(int uid, Collection<GroupMember> members) {
-        for (GroupMember m : members) {
-            if (m.getUid() == uid) {
-                return true;
-            }
-        }
-        return false;
     }
 }

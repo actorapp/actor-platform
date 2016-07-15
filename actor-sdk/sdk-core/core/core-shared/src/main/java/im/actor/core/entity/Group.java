@@ -70,6 +70,9 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
     @Nullable
     @Property("readonly, nonatomic")
     private String about;
+    @Nullable
+    @Property("readonly, nonatomic")
+    private String shortName;
     @NotNull
     @Property("readonly, nonatomic")
     @SuppressWarnings("NullableProblems")
@@ -167,6 +170,11 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
     }
 
     @Nullable
+    public String getShortName() {
+        return shortName;
+    }
+
+    @Nullable
     public Integer getOwnerId() {
         return ownerId;
     }
@@ -181,6 +189,10 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
 
     public boolean isCanViewMembers() {
         return isCanViewMembers;
+    }
+
+    public boolean isCanEditInfo() {
+        return isCanEditInfo;
     }
 
     public boolean isSharedHistory() {
@@ -877,6 +889,7 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
             this.ownerId = ext.getOwnerUid();
             this.about = ext.getAbout();
             this.topic = ext.getTheme();
+            this.shortName = ext.getShortName();
             this.isAsyncMembers = ext.isAsyncMembers() != null ? ext.isAsyncMembers() : false;
             this.isCanViewMembers = ext.canViewMembers() != null ? ext.canViewMembers() : true;
             this.isCanInviteMembers = ext.canViewMembers() != null ? ext.canViewMembers() : true;
@@ -898,6 +911,7 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
             this.isSharedHistory = false;
             this.members = new ArrayList<>();
             this.isCanEditInfo = false;
+            this.shortName = null;
         }
     }
 
