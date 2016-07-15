@@ -70,14 +70,14 @@ private[group] final case class GroupState(
   //security and etc.
   accessHash: Long,
   bot:        Option[Bot],
-  extensions: Map[Int, Array[Byte]] //or should it be sequence???
+  extensions: Map[Int, Array[Byte]]
 ) extends ProcessorState[GroupState] {
 
-  def memberIds = members.keySet //TODO: Maybe lazy val. immutable anyway
+  lazy val memberIds = members.keySet
 
-  def adminIds = (members filter (_._2.isAdmin == true)).keySet //TODO: Maybe lazy val. immutable anyway
+  lazy val adminIds = (members filter (_._2.isAdmin == true)).keySet
 
-  def membersCount = members.size //TODO: Maybe lazy val. immutable anyway
+  lazy val membersCount = members.size
 
   def isMember(userId: Int): Boolean = members.contains(userId)
 
@@ -112,9 +112,9 @@ private[group] final case class GroupState(
       }
     } || bot.exists(_.userId == clientUserId)
 
-  def isNotCreated = createdAt.isEmpty //TODO: Maybe val. immutable anyway
+  val isNotCreated = createdAt.isEmpty
 
-  def isCreated = createdAt.nonEmpty //TODO: Maybe val. immutable anyway
+  val isCreated = createdAt.nonEmpty
 
   def isAsyncMembers =
     typ match {

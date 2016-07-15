@@ -62,7 +62,6 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
                 finalPeer = updatedSender getOrElse selfPeer
                 _ ← db.run(writeHistoryMessage(finalPeer, peer, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray))
                 //_ = dialogExt.updateCounters(peer, userId)
-                // not sure about sender user id. It could be wrong when we have updatedSender!
                 SeqState(seq, state) ← deliveryExt.senderDelivery(userId, optClientAuthId, peer, sm.randomId, sendDate, message, sm.isFat, sm.deliveryTag)
               } yield SeqStateDate(seq, state, sendDate),
                 failed = for {

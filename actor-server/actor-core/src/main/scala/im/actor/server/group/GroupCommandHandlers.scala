@@ -8,7 +8,7 @@ import akka.pattern.pipe
 import im.actor.api.rpc.Update
 import im.actor.api.rpc.files.ApiAvatar
 import im.actor.api.rpc.groups._
-import im.actor.api.rpc.messaging.{ ApiMessage, ApiServiceMessage, UpdateMessage }
+import im.actor.api.rpc.messaging.{ ApiServiceMessage, UpdateMessage }
 import im.actor.api.rpc.users.ApiSex
 import im.actor.concurrent.FutureExt
 import im.actor.server.CommonErrors
@@ -113,7 +113,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
 
         val result: Future[CreateAck] = for {
           ///////////////////////////
-          // old group api updates //
+          // Groups V1 API updates //
           ///////////////////////////
 
           _ ← seqUpdExt.deliverUserUpdate(
@@ -183,12 +183,13 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
         val apiMembers = newState.members.values.map(_.asStruct).toVector
 
         // if user ever been in this group - we should push these updates,
-        // but don't push them if user is first time in group. in this case we should push FatSeqUpdate
         val inviteeUpdatesNew: List[Update] = refreshGroupUpdates(newState, cmd.inviteeUserId)
 
-        // send everyone in group, including invitee.
-        // send `FatSeqUpdate` if this user invited to group for first time.
-        val membersUpdateNew = UpdateGroupMembersUpdated(groupId, apiMembers)
+        val membersUpdateNew: Update =
+          if (newState.typ.isChannel) // if history shared
+            UpdateGroupMembersCountChanged(groupId, newState.membersCount)
+          else
+            UpdateGroupMembersUpdated(groupId, apiMembers)
 
         val inviteeUpdateObsolete = UpdateGroupInviteObsolete(
           groupId,
@@ -212,6 +213,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
         def inviteGROUPUpdates: Future[SeqStateDate] =
           for {
             // push updated members list to inviteeUserId,
+            // make it `FatSeqUpdate` if this user invited to group for first time.
             _ ← seqUpdExt.deliverUserUpdate(
               userId = cmd.inviteeUserId,
               membersUpdateNew,
@@ -246,54 +248,44 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
 
         def inviteCHANNELUpdates: Future[SeqStateDate] =
           for {
-            // push `UpdateGroupMembersUpdated` to invitee only if he is admin.
-            // invitee could be admin, if he created this group, and turning back
-            _ ← if (newState.isAdmin(cmd.inviteeUserId)) {
-              seqUpdExt.deliverUserUpdate(
-                userId = cmd.inviteeUserId,
-                membersUpdateNew,
-                pushRules = seqUpdExt.pushRules(isFat = !inviteeIsExUser, Some(PushTexts.Invited)),
-                deliveryId = s"invite_${groupId}_${cmd.randomId}"
-              )
-            } else {
-              FastFuture.successful(())
-            }
+            // push updated members count to inviteeUserId
+            _ ← seqUpdExt.deliverUserUpdate(
+              userId = cmd.inviteeUserId,
+              membersUpdateNew,
+              pushRules = seqUpdExt.pushRules(isFat = false, Some(PushTexts.Invited)),
+              deliveryId = s"invite_${groupId}_${cmd.randomId}"
+            )
 
             // push all "refresh group" updates to inviteeUserId
             _ ← FutureExt.ftraverse(inviteeUpdatesNew) { update ⇒
               seqUpdExt.deliverUserUpdate(userId = cmd.inviteeUserId, update)
             }
 
-            // push updated members list to all ADMINS
-            _ ← seqUpdExt.broadcastPeopleUpdate(
-              userIds = newState.adminIds,
+            // push updated members count to all group members
+            SeqState(seq, state) ← seqUpdExt.broadcastClientUpdate(
+              userId = cmd.inviterUserId,
+              authId = cmd.inviterAuthId,
+              bcastUserIds = (memberIds - cmd.inviterUserId) - cmd.inviteeUserId,
               update = membersUpdateNew,
               deliveryId = s"useradded_${groupId}_${cmd.randomId}"
             )
 
-            // push UpdateGroupMembersCountChanged to all group members
-            _ ← seqUpdExt.broadcastPeopleUpdate(
-              newState.memberIds,
-              UpdateGroupMembersCountChanged(groupId, newState.membersCount)
-            )
-
             // push service message to invitee and inviter
-            SeqState(seq, state) ← seqUpdExt.broadcastClientUpdate(
-              userId = cmd.inviterUserId,
-              authId = cmd.inviterAuthId,
-              Set(cmd.inviteeUserId),
+            _ ← seqUpdExt.broadcastPeopleUpdate(
+              userIds = Set(cmd.inviterUserId, cmd.inviteeUserId),
               update = serviceMessageUpdate(
                 cmd.inviterUserId,
                 dateMillis,
                 cmd.randomId,
                 serviceMessage
-              )
+              ),
+              deliveryTag = Some(Optimization.GroupV2)
             )
           } yield SeqStateDate(seq, state, dateMillis)
 
         val result: Future[SeqStateDate] = for {
           ///////////////////////////
-          // old group api updates //
+          // Groups V1 API updates //
           ///////////////////////////
 
           // push "Invited" to invitee
@@ -363,7 +355,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
         val date = evt.ts
         val dateMillis = date.toEpochMilli
         val memberIds = newState.memberIds
-        val members = newState.members.values.map(_.asStruct).toVector
+        val apiMembers = newState.members.values.map(_.asStruct).toVector
         val randomId = ACLUtils.randomLong()
 
         // If user was never invited to group - he don't have group on devices,
@@ -374,12 +366,13 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
         val joiningUserUpdatesNew: List[Update] =
           if (wasInvited) List.empty[Update] else refreshGroupUpdates(newState, cmd.joiningUserId)
 
-        // push to everyone, including joining user.
-        // if joining user wasn't invited - send update as FatSeqUpdate
-        // update date when member got into group
-        val membersUpdateNew = UpdateGroupMembersUpdated(groupId, members)
+        val membersUpdateNew: Update =
+          if (newState.typ.isChannel) // if history is shared
+            UpdateGroupMembersCountChanged(groupId, newState.membersCount)
+          else
+            UpdateGroupMembersUpdated(groupId, apiMembers) // will update date when member got into group
 
-        val membersUpdateObsolete = UpdateGroupMembersUpdateObsolete(groupId, members)
+        val membersUpdateObsolete = UpdateGroupMembersUpdateObsolete(groupId, apiMembers)
 
         val serviceMessage = GroupServiceMessages.userJoined
 
@@ -401,6 +394,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
             }
 
             // push updated members list to joining user,
+            // make it `FatSeqUpdate` if this user invited to group for first time.
             // TODO???: isFat = !wasInvited - is it correct?
             SeqState(seq, state) ← seqUpdExt.deliverClientUpdate(
               userId = cmd.joiningUserId,
@@ -434,32 +428,19 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
               seqUpdExt.deliverUserUpdate(userId = cmd.joiningUserId, update)
             }
 
-            // push `UpdateGroupMembersUpdated` to joining user only if he is admin.
-            // joining user can be admin, if he created this group, and turning back
-            // TODO???: isFat = !wasInvited - is it correct?
-            SeqState(seq, state) ← if (newState.isAdmin(cmd.joiningUserId)) {
-              seqUpdExt.deliverClientUpdate(
-                userId = cmd.joiningUserId,
-                authId = cmd.joiningUserAuthId,
-                update = membersUpdateNew,
-                pushRules = seqUpdExt.pushRules(isFat = !wasInvited, None), //!wasInvited means that user came for first time here
-                deliveryId = s"join_${groupId}_${randomId}"
-              )
-            } else {
-              seqUpdExt.getSeqState(cmd.joiningUserId, cmd.joiningUserAuthId)
-            }
-
-            // push updated members list to all ADMINS
-            _ ← seqUpdExt.broadcastPeopleUpdate(
-              newState.adminIds - cmd.joiningUserId,
-              membersUpdateNew,
-              deliveryId = s"userjoined_${groupId}_${randomId}"
+            // push updated members count to joining user
+            SeqState(seq, state) ← seqUpdExt.deliverClientUpdate(
+              userId = cmd.joiningUserId,
+              authId = cmd.joiningUserAuthId,
+              update = membersUpdateNew,
+              deliveryId = s"join_${groupId}_${randomId}"
             )
 
-            // push UpdateGroupMembersCountChanged to all group members
+            // push updated members count to all group members except joining user
             _ ← seqUpdExt.broadcastPeopleUpdate(
-              newState.memberIds,
-              UpdateGroupMembersCountChanged(groupId, newState.membersCount)
+              memberIds - cmd.joiningUserId,
+              membersUpdateNew,
+              deliveryId = s"userjoined_${groupId}_${randomId}"
             )
 
             // push service message only to inviter
@@ -470,14 +451,15 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
                 dateMillis,
                 randomId,
                 serviceMessage
-              )
+              ),
+              deliveryTag = Some(Optimization.GroupV2)
             )
           } yield SeqStateDate(seq, state, dateMillis)
 
         val result: Future[(SeqStateDate, Vector[Int], Long)] =
           for {
             ///////////////////////////
-            // old group api updates //
+            // Groups V1 API updates //
             ///////////////////////////
 
             // push update about members to all users, except joining user
@@ -514,7 +496,6 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
         // no commit here. it will be after service message sent
 
         val dateMillis = evt.ts.toEpochMilli
-        val members = state.members.filterNot(_._1 == cmd.userId).values.map(_.asStruct).toVector
 
         val updateObsolete = UpdateGroupUserLeaveObsolete(groupId, cmd.userId, dateMillis, cmd.randomId)
 
@@ -528,7 +509,18 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
             UpdateGroupCanInviteMembersChanged(groupId, canInviteMembers = false)
           )
 
-        val membersUpdateNew = UpdateGroupMembersUpdated(groupId, members)
+        val membersUpdateNew =
+          if (state.typ.isChannel) { // if history is shared
+            UpdateGroupMembersCountChanged(
+              groupId,
+              membersCount = state.membersCount - 1
+            )
+          } else {
+            UpdateGroupMembersUpdated(
+              groupId,
+              members = state.members.filterNot(_._1 == cmd.userId).values.map(_.asStruct).toVector
+            )
+          }
 
         val serviceMessage = GroupServiceMessages.userLeft
 
@@ -548,6 +540,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
               membersUpdateNew
             )
 
+            // send service message
             SeqStateDate(_, _, date) ← dialogExt.sendServerMessage(
               apiGroupPeer,
               senderUserId = cmd.userId,
@@ -574,16 +567,10 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
 
         val leaveCHANNELUpdates: Future[SeqStateDate] =
           for {
-            // push updated members list to all ADMINS, except userId(if he was there)
-            _ ← seqUpdExt.broadcastPeopleUpdate(
-              state.adminIds - cmd.userId,
-              membersUpdateNew
-            )
-
-            // push UpdateGroupMembersCountChanged to all group members
+            // push updated members count to all group members
             _ ← seqUpdExt.broadcastPeopleUpdate(
               state.memberIds - cmd.userId,
-              UpdateGroupMembersCountChanged(groupId, state.membersCount - 1)
+              membersUpdateNew
             )
 
             // push service message to user, who invited leaving user
@@ -596,7 +583,8 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
                   dateMillis,
                   cmd.randomId,
                   serviceMessage
-                )
+                ),
+                deliveryTag = Some(Optimization.GroupV2)
               )
             } getOrElse FastFuture.successful(())
 
@@ -607,6 +595,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
               update = UpdateGroupMemberChanged(groupId, isMember = false)
             )
 
+            // push left user updates that he has no group rights
             _ ← FutureExt.ftraverse(leftUserUpdatesNew) { update ⇒
               seqUpdExt.deliverUserUpdate(userId = cmd.userId, update)
             }
@@ -617,7 +606,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
         val result: Future[SeqStateDate] = for {
 
           ///////////////////////////
-          // old group api updates //
+          // Groups V1 API updates //
           ///////////////////////////
 
           _ ← seqUpdExt.broadcastClientUpdate(
@@ -651,7 +640,6 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
         val newState = commit(evt)
 
         val dateMillis = evt.ts.toEpochMilli
-        val members = newState.members.values.map(_.asStruct).toVector
 
         val updateObsolete = UpdateGroupUserKickObsolete(groupId, cmd.kickedUserId, cmd.kickerUserId, dateMillis, cmd.randomId)
 
@@ -667,7 +655,18 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
             UpdateGroupMemberChanged(groupId, isMember = false)
           )
 
-        val membersUpdateNew = UpdateGroupMembersUpdated(groupId, members)
+        val membersUpdateNew: Update =
+          if (newState.typ.isChannel) { // if history is shared
+            UpdateGroupMembersCountChanged(
+              groupId,
+              membersCount = newState.membersCount
+            )
+          } else {
+            UpdateGroupMembersUpdated(
+              groupId,
+              members = newState.members.values.map(_.asStruct).toVector
+            )
+          }
 
         val serviceMessage = GroupServiceMessages.userKicked(cmd.kickedUserId)
 
@@ -709,18 +708,12 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
 
         val kickCHANNELUpdates: Future[SeqStateDate] =
           for {
-            // push updated members list to all ADMINS. Don't push to kicked user!
+            // push updated members count to all group members. Don't push to kicked user!
             SeqState(seq, state) ← seqUpdExt.broadcastClientUpdate(
               userId = cmd.kickerUserId,
               authId = cmd.kickerAuthId,
-              bcastUserIds = newState.adminIds - cmd.kickerUserId,
+              bcastUserIds = newState.memberIds - cmd.kickerUserId,
               update = membersUpdateNew
-            )
-
-            // push UpdateGroupMembersCountChanged to all group members
-            _ ← seqUpdExt.broadcastPeopleUpdate(
-              newState.memberIds,
-              UpdateGroupMembersCountChanged(groupId, newState.membersCount)
             )
 
             // push service message to kicker and kicked users.
@@ -731,10 +724,11 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
                 dateMillis,
                 cmd.randomId,
                 serviceMessage
-              )
+              ),
+              deliveryTag = Some(Optimization.GroupV2)
             )
 
-            // push kicked user updates
+            // push kicked user updates that he has no group rights
             _ ← FutureExt.ftraverse(kickedUserUpdatesNew) { update ⇒
               seqUpdExt.deliverUserUpdate(userId = cmd.kickedUserId, update)
             }
@@ -744,7 +738,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
         dialogExt.messageRead(apiGroupPeer, cmd.kickedUserId, 0L, dateMillis)
         val result: Future[SeqStateDate] = for {
           ///////////////////////////
-          // old group api updates //
+          // Groups V1 API updates //
           ///////////////////////////
 
           _ ← seqUpdExt.broadcastClientUpdate(
@@ -788,7 +782,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
         db.run(AvatarDataRepo.createOrUpdate(getAvatarData(cmd.avatar)))
         val result: Future[UpdateAvatarAck] = for {
           ///////////////////////////
-          // old group api updates //
+          // Groups V1 API updates //
           ///////////////////////////
 
           _ ← seqUpdExt.broadcastClientUpdate(cmd.clientUserId, cmd.clientAuthId, memberIds, updateObsolete)
@@ -850,7 +844,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
         val result: Future[SeqStateDate] = for {
 
           ///////////////////////////
-          // old group api updates //
+          // Groups V1 API updates //
           ///////////////////////////
 
           _ ← seqUpdExt.broadcastClientUpdate(
@@ -923,7 +917,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
         val result: Future[SeqStateDate] = for {
 
           ///////////////////////////
-          // old group api updates //
+          // Groups V1 API updates //
           ///////////////////////////
 
           _ ← seqUpdExt.broadcastClientUpdate(
@@ -987,7 +981,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
         val result: Future[SeqStateDate] = for {
 
           ///////////////////////////
-          // old group api updates //
+          // Groups V1 API updates //
           ///////////////////////////
 
           _ ← seqUpdExt.broadcastClientUpdate(
@@ -1009,15 +1003,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
             update = updateNew,
             pushRules = pushRules
           )
-          SeqStateDate(_, _, date) ← dialogExt.sendServerMessage(
-            apiGroupPeer,
-            senderUserId = cmd.clientUserId,
-            senderAuthId = cmd.clientAuthId,
-            randomId = cmd.randomId,
-            message = serviceMessage,
-            deliveryTag = Some(Optimization.GroupV2)
-          )
-        } yield SeqStateDate(seq, state, date)
+        } yield SeqStateDate(seq, state, evt.ts.toEpochMilli)
 
         result pipeTo sender()
       }
@@ -1104,7 +1090,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
         val result: Future[(Vector[ApiMember], SeqStateDate)] = for {
 
           ///////////////////////////
-          // old group api updates //
+          // Groups V1 API updates //
           ///////////////////////////
 
           _ ← seqUpdExt.broadcastClientUpdate(

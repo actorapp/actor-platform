@@ -65,6 +65,7 @@ trait ProcessorStateControl[S <: ProcessorState[S]] {
 
   protected def getInitialState: S
 
+  //TODO: rename to processorState
   final def state: S = _state
 
   def setState(state: S) = this._state = state

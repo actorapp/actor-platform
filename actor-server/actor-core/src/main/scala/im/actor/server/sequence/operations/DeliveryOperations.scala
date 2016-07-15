@@ -95,14 +95,15 @@ trait DeliveryOperations { this: SeqUpdatesExtension ⇒
    * Send update to all devices of users from `userIds` set and return `Unit`
    */
   def broadcastPeopleUpdate(
-    userIds:    Set[Int],
-    update:     Update,
-    pushRules:  PushRules      = PushRules(),
-    reduceKey:  Option[String] = None,
-    deliveryId: String         = ""
+    userIds:     Set[Int],
+    update:      Update,
+    pushRules:   PushRules      = PushRules(),
+    reduceKey:   Option[String] = None,
+    deliveryId:  String         = "",
+    deliveryTag: Option[String] = None
   ): Future[Unit] = {
     val mapping = UpdateMapping(default = Some(serializedUpdate(update)))
-    val deliver = buildDeliver(0L, mapping, pushRules, reduceKey, deliveryId, deliveryTag = None) // TODO: add deliveryTag when needed
+    val deliver = buildDeliver(0L, mapping, pushRules, reduceKey, deliveryId, deliveryTag)
     broadcastUpdate(userIds, deliver)
   }
 
