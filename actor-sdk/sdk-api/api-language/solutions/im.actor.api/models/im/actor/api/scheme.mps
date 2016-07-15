@@ -7130,6 +7130,7 @@
       </node>
       <node concept="2m5naR" id="2_$5TdnXqdt" role="2m5mJr">
         <property role="TrG5h" value="GroupFull" />
+        <property role="tsOgz" value="true" />
         <node concept="2m7Kf5" id="2_$5TdnXqlb" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="id" />
@@ -7147,8 +7148,10 @@
         <node concept="2m7Kf5" id="2_$5TdnXqli" role="2m0hLx">
           <property role="2m7DUN" value="5" />
           <property role="TrG5h" value="ownerUid" />
-          <node concept="wb0Ql" id="2_$5TdnXqlo" role="2m7DVh">
-            <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
+          <node concept="2m5nlT" id="3c_gimmPh8q" role="2m7DVh">
+            <node concept="wb0Ql" id="3c_gimmPh8w" role="3GH5xg">
+              <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
+            </node>
           </node>
         </node>
         <node concept="2m7Kf5" id="1kct6f0uG1w" role="2m0hLx">
@@ -7211,6 +7214,48 @@
             <node concept="2m5ndN" id="1kct6f0ul23" role="3GH5xg" />
           </node>
         </node>
+        <node concept="2m7Kf5" id="3c_gimmOHQb" role="2m0hLx">
+          <property role="2m7DUN" value="13" />
+          <property role="TrG5h" value="canEditGroupInfo" />
+          <node concept="2m5nlT" id="3c_gimmOJai" role="2m7DVh">
+            <node concept="2m5ndN" id="3c_gimmOJao" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="3c_gimmOKun" role="2m0hLx">
+          <property role="2m7DUN" value="14" />
+          <property role="TrG5h" value="shortName" />
+          <node concept="2m5nlT" id="3c_gimmOKuW" role="2m7DVh">
+            <node concept="2m5ndX" id="3c_gimmOKv2" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="3c_gimmOLM4" role="2m0hLx">
+          <property role="2m7DUN" value="15" />
+          <property role="TrG5h" value="canEditShortName" />
+          <node concept="2m5nlT" id="3c_gimmOLMG" role="2m7DVh">
+            <node concept="2m5ndN" id="3c_gimmOLMM" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="3c_gimmPaap" role="2m0hLx">
+          <property role="2m7DUN" value="16" />
+          <property role="TrG5h" value="canEditAdminList" />
+          <node concept="2m5nlT" id="3c_gimmPab4" role="2m7DVh">
+            <node concept="2m5ndN" id="3c_gimmPaba" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="3c_gimmPmNl" role="2m0hLx">
+          <property role="2m7DUN" value="17" />
+          <property role="TrG5h" value="canViewAdminList" />
+          <node concept="2m5nlT" id="3c_gimmPmO4" role="2m7DVh">
+            <node concept="2m5ndN" id="3c_gimmPmOa" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="3c_gimmPwRS" role="2m0hLx">
+          <property role="2m7DUN" value="18" />
+          <property role="TrG5h" value="canEditAdminSettings" />
+          <node concept="2m5nlT" id="3c_gimmPwSE" role="2m7DVh">
+            <node concept="2m5ndN" id="3c_gimmPwSK" role="3GH5xg" />
+          </node>
+        </node>
         <node concept="NXeRC" id="2_$5TdnXtYw" role="NXodf">
           <property role="NXePf" value="Goup Full information" />
         </node>
@@ -7225,7 +7270,7 @@
           <ref role="NX6Kv" node="2_$5TdnXqlG" resolve="createDate" />
         </node>
         <node concept="NX1gA" id="1kct6f0ul2B" role="NXodf">
-          <property role="NX6R2" value="Group owner" />
+          <property role="NX6R2" value="Optional group owner" />
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="2_$5TdnXqli" resolve="ownerUid" />
         </node>
@@ -7263,6 +7308,36 @@
           <property role="NX6R2" value="Is history shared among all users. Default is false." />
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="1kct6f0ul1$" resolve="isSharedHistory" />
+        </node>
+        <node concept="NX1gA" id="3c_gimmOJaC" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="If current user can edit group info. Default is true." />
+          <ref role="NX6Kv" node="3c_gimmOHQb" resolve="canEditGroupInfo" />
+        </node>
+        <node concept="NX1gA" id="3c_gimmOKvj" role="NXodf">
+          <property role="NX6R2" value="Group's short name" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="3c_gimmOKun" resolve="shortName" />
+        </node>
+        <node concept="NX1gA" id="3c_gimmOLN4" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="If not set only owner can edit group's short name" />
+          <ref role="NX6Kv" node="3c_gimmOLM4" resolve="canEditShortName" />
+        </node>
+        <node concept="NX1gA" id="3c_gimmPabt" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="If not set only owner can edit admin list" />
+          <ref role="NX6Kv" node="3c_gimmPaap" resolve="canEditAdminList" />
+        </node>
+        <node concept="NX1gA" id="3c_gimmPo88" role="NXodf">
+          <property role="NX6R2" value="If not set only owner and admins can view admin list" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="3c_gimmPmNl" resolve="canViewAdminList" />
+        </node>
+        <node concept="NX1gA" id="3c_gimmPzyp" role="NXodf">
+          <property role="NX6R2" value="If not set only owner can edit admin settings" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="3c_gimmPwRS" resolve="canEditAdminSettings" />
         </node>
       </node>
       <node concept="2m6fVq" id="1kct6f0uJN0" role="2m5mJr">
@@ -7586,6 +7661,39 @@
           <ref role="NX6Kv" node="1kct6f0vg$8" resolve="ext" />
         </node>
       </node>
+      <node concept="NpBTk" id="3c_gimmOO_y" role="2m5mJr">
+        <property role="TrG5h" value="GroupShortNameChanged" />
+        <node concept="2m7Kf5" id="3c_gimmOOMB" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupId" />
+          <node concept="wb0Ql" id="3c_gimmOOMF" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uO" resolve="groupId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="3c_gimmOOMI" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="shortName" />
+          <node concept="2m5nlT" id="3c_gimmOOMO" role="2m7DVh">
+            <node concept="2m5ndX" id="3c_gimmOOMU" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="3c_gimmOO_z" role="NuuwV">
+          <property role="Nu42W" value="A44" />
+        </node>
+        <node concept="NXeRC" id="3c_gimmOOMX" role="NXp_2">
+          <property role="NXePf" value="Group's short name changed" />
+        </node>
+        <node concept="NX1gA" id="3c_gimmOON2" role="NXp_2">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Group Id" />
+          <ref role="NX6Kv" node="3c_gimmOOMB" resolve="groupId" />
+        </node>
+        <node concept="NX1gA" id="3c_gimmOONa" role="NXp_2">
+          <property role="NX6R2" value="Group short name" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="3c_gimmOOMI" resolve="shortName" />
+        </node>
+      </node>
       <node concept="NpBTk" id="1kct6f0vhY6" role="2m5mJr">
         <property role="TrG5h" value="GroupOwnerChanged" />
         <node concept="2m7Kf5" id="1kct6f0vi8E" role="2m0hLx">
@@ -7731,6 +7839,159 @@
           <property role="1GSvIU" value="full" />
           <property role="NX6R2" value="Can invite members" />
           <ref role="NX6Kv" node="1kct6f0vAHD" resolve="canInviteMembers" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="3c_gimmP3Uu" role="2m5mJr">
+        <property role="TrG5h" value="GroupCanEditInfoChanged" />
+        <node concept="2m7Kf5" id="3c_gimmP47H" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupId" />
+          <node concept="wb0Ql" id="3c_gimmP47L" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uO" resolve="groupId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="3c_gimmP47O" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="canEditGroup" />
+          <node concept="2m5ndN" id="3c_gimmP47U" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="3c_gimmP3Uv" role="NuuwV">
+          <property role="Nu42W" value="A47" />
+        </node>
+        <node concept="NXeRC" id="3c_gimmP47X" role="NXp_2">
+          <property role="NXePf" value="Update about can edit changed" />
+        </node>
+        <node concept="NX1gA" id="3c_gimmP482" role="NXp_2">
+          <property role="NX6R2" value="Group Id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="3c_gimmP47H" resolve="groupId" />
+        </node>
+        <node concept="NX1gA" id="3c_gimmP48a" role="NXp_2">
+          <property role="NX6R2" value="Can edit group info" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="3c_gimmP47O" resolve="canEditGroup" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="3c_gimmP6Vm" role="2m5mJr">
+        <property role="TrG5h" value="GroupCanEditUsernameChanged" />
+        <node concept="2m7Kf5" id="3c_gimmP78I" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupId" />
+          <node concept="wb0Ql" id="3c_gimmP78M" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uO" resolve="groupId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="3c_gimmP78P" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="canEditUsername" />
+          <node concept="2m5ndN" id="3c_gimmP78V" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="3c_gimmP6Vn" role="NuuwV">
+          <property role="Nu42W" value="A48" />
+        </node>
+        <node concept="NXeRC" id="3c_gimmP78Y" role="NXp_2">
+          <property role="NXePf" value="Update about can edit username changed" />
+        </node>
+        <node concept="NX1gA" id="3c_gimmP8sc" role="NXp_2">
+          <property role="NX6R2" value="Group Id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="3c_gimmP78I" resolve="groupId" />
+        </node>
+        <node concept="NX1gA" id="3c_gimmP793" role="NXp_2">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Can edit username" />
+          <ref role="NX6Kv" node="3c_gimmP78P" resolve="canEditUsername" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="3c_gimmP9WL" role="2m5mJr">
+        <property role="TrG5h" value="GroupCanEditAdminsChanged" />
+        <node concept="2m7Kf5" id="3c_gimmPaai" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupId" />
+          <node concept="wb0Ql" id="3c_gimmPaam" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uO" resolve="groupId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="3c_gimmPfO$" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="canAssignAdmins" />
+          <node concept="2m5ndN" id="3c_gimmPfOE" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="3c_gimmP9WM" role="NuuwV">
+          <property role="Nu42W" value="A49" />
+        </node>
+        <node concept="NXeRC" id="3c_gimmPfOH" role="NXp_2">
+          <property role="NXePf" value="Update about can edit admins changed" />
+        </node>
+        <node concept="NX1gA" id="3c_gimmPfOM" role="NXp_2">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Group Id" />
+          <ref role="NX6Kv" node="3c_gimmPaai" resolve="groupId" />
+        </node>
+        <node concept="NX1gA" id="3c_gimmPfOU" role="NXp_2">
+          <property role="NX6R2" value="Can assign admins" />
+          <ref role="NX6Kv" node="3c_gimmPfO$" resolve="canAssignAdmins" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="3c_gimmPt_m" role="2m5mJr">
+        <property role="TrG5h" value="GroupCanViewAdminsChanged" />
+        <node concept="2m7Kf5" id="3c_gimmPtNw" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupId" />
+          <node concept="wb0Ql" id="3c_gimmPufM" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uO" resolve="groupId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="3c_gimmPufP" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="canViewAdmins" />
+          <node concept="2m5ndN" id="3c_gimmPufV" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="3c_gimmPt_n" role="NuuwV">
+          <property role="Nu42W" value="A50" />
+        </node>
+        <node concept="NXeRC" id="3c_gimmPufY" role="NXp_2">
+          <property role="NXePf" value="Update about view admings changed" />
+        </node>
+        <node concept="NX1gA" id="3c_gimmPug3" role="NXp_2">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Group Id" />
+          <ref role="NX6Kv" node="3c_gimmPtNw" resolve="groupId" />
+        </node>
+        <node concept="NX1gA" id="3c_gimmPBVs" role="NXp_2">
+          <property role="NX6R2" value="Can view admins" />
+          <ref role="NX6Kv" node="3c_gimmPufP" resolve="canViewAdmins" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="3c_gimmPAoK" role="2m5mJr">
+        <property role="TrG5h" value="GroupCanEditAdminSettingsChanged" />
+        <node concept="2m7Kf5" id="3c_gimmPBV1" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupId" />
+          <node concept="wb0Ql" id="3c_gimmPBV5" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uO" resolve="groupId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="3c_gimmPBV8" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="canEditAdminSettings" />
+          <node concept="2m5ndN" id="3c_gimmPBVe" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="3c_gimmPAoL" role="NuuwV">
+          <property role="Nu42W" value="A51" />
+        </node>
+        <node concept="NXeRC" id="3c_gimmPBVh" role="NXp_2">
+          <property role="NXePf" value="Update about edit admin settings changed" />
+        </node>
+        <node concept="NX1gA" id="3c_gimmPBVx" role="NXp_2">
+          <property role="NX6R2" value="Group Id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="3c_gimmPBV1" resolve="groupId" />
+        </node>
+        <node concept="NX1gA" id="3c_gimmPBVD" role="NXp_2">
+          <property role="NX6R2" value="Can edit admin settings" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="3c_gimmPBV8" resolve="canEditAdminSettings" />
         </node>
       </node>
       <node concept="NvWBy" id="1kct6f0vec8" role="2m5mJr">
@@ -8331,6 +8592,42 @@
           <ref role="NX6Kv" node="1kct6f0wmaZ" resolve="optimizations" />
         </node>
       </node>
+      <node concept="2m6fVq" id="3c_gimmPiDR" role="2m5mJr">
+        <property role="TrG5h" value="EditGroupShortName" />
+        <node concept="2m7Kf5" id="3c_gimmPiRP" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupPeer" />
+          <node concept="2m5mGg" id="3c_gimmPiRT" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6j2" resolve="GroupOutPeer" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="3c_gimmPiRW" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="shortName" />
+          <node concept="2m5nlT" id="3c_gimmPiS2" role="2m7DVh">
+            <node concept="2m5ndX" id="3c_gimmPiS8" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="3c_gimmPiDS" role="NuuwV">
+          <property role="Nu42W" value="AE9" />
+        </node>
+        <node concept="2m1Rp1" id="3c_gimmPiSb" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_W" resolve="Seq" />
+        </node>
+        <node concept="NXeRC" id="3c_gimmPiSe" role="1GBnQ6">
+          <property role="NXePf" value="Edit Group Short Name" />
+        </node>
+        <node concept="NX1gA" id="3c_gimmPiSj" role="1GBnQ6">
+          <property role="NX6R2" value="Group's peer" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="3c_gimmPiRP" resolve="groupPeer" />
+        </node>
+        <node concept="NX1gA" id="3c_gimmPiSr" role="1GBnQ6">
+          <property role="NX6R2" value="New group's short name" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="3c_gimmPiRW" resolve="shortName" />
+        </node>
+      </node>
       <node concept="2m6fVq" id="6WYZhOUZfvG" role="2m5mJr">
         <property role="TrG5h" value="EditGroupTopic" />
         <node concept="NXeRC" id="6WYZhOUZhVs" role="1GBnQ6">
@@ -8639,6 +8936,9 @@
           <ref role="NX6Kv" node="1kct6f0wv$x" resolve="optimizations" />
         </node>
       </node>
+      <node concept="NvWBy" id="3c_gimmPEMd" role="2m5mJr">
+        <property role="NvWrd" value="Administration" />
+      </node>
       <node concept="2m6fVq" id="1kct6f0wIRl" role="2m5mJr">
         <property role="TrG5h" value="MakeUserAdmin" />
         <node concept="2uC4CA" id="1kct6f0wIRm" role="2uC9gA">
@@ -8685,6 +8985,52 @@
           <ref role="2m1o9l" node="2vxDjotnSoJ" resolve="SeqDate" />
         </node>
       </node>
+      <node concept="2m6fVq" id="3c_gimmPbGu" role="2m5mJr">
+        <property role="TrG5h" value="DismissUserAdmin" />
+        <node concept="2m7Kf5" id="3c_gimmPewB" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupPeer" />
+          <node concept="2m5mGg" id="3c_gimmPewF" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6j2" resolve="GroupOutPeer" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="3c_gimmPewI" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="userPeer" />
+          <node concept="2m5mGg" id="3c_gimmPewO" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6ia" resolve="UserOutPeer" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="3c_gimmPbGv" role="NuuwV">
+          <property role="Nu42W" value="AE7" />
+        </node>
+        <node concept="2m1Rp1" id="3c_gimmPew$" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_W" resolve="Seq" />
+        </node>
+        <node concept="NXeRC" id="3c_gimmPewR" role="1GBnQ6">
+          <property role="NXePf" value="Dismissing user admin" />
+        </node>
+        <node concept="NX1gA" id="3c_gimmPewW" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Group's peer" />
+          <ref role="NX6Kv" node="3c_gimmPewB" resolve="groupPeer" />
+        </node>
+        <node concept="NX1gA" id="3c_gimmPex4" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="User's peer" />
+          <ref role="NX6Kv" node="3c_gimmPewI" resolve="userPeer" />
+        </node>
+        <node concept="2uC4CA" id="3c_gimmPex9" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="NOT_ADMIN" />
+          <property role="2uCiSL" value="Member is not an admin" />
+        </node>
+        <node concept="2uC4CA" id="3c_gimmPexb" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="ACCESS_DENIED" />
+          <property role="2uCiSL" value="User can't change group's admins" />
+        </node>
+      </node>
       <node concept="2m6fVq" id="1kct6f0wRfO" role="2m5mJr">
         <property role="TrG5h" value="TransferOwnership" />
         <node concept="2m7Kf5" id="1kct6f0wRsH" role="2m0hLx">
@@ -8719,6 +9065,130 @@
           <property role="1GSvIU" value="full" />
           <property role="NX6R2" value="New group's owner" />
           <ref role="NX6Kv" node="1kct6f0wRsO" resolve="newOwner" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="3c_gimmPILF" role="2m5mJr">
+        <property role="TrG5h" value="AdminSettings" />
+        <property role="tsOgz" value="true" />
+        <node concept="2m7Kf5" id="3c_gimmPKky" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="showAdminsToMembers" />
+          <node concept="2m5ndN" id="3c_gimmPKkC" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="3c_gimmPKkH" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="canMembersInvite" />
+          <node concept="2m5ndN" id="3c_gimmPKkN" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="3c_gimmPKl5" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="canMembersEditGroupInfo" />
+          <node concept="2m5ndN" id="3c_gimmPKld" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="3c_gimmPKlg" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="canAdminsEditGroupInfo" />
+          <node concept="2m5ndN" id="3c_gimmPKlq" role="2m7DVh" />
+        </node>
+        <node concept="NXeRC" id="3c_gimmPLDI" role="NXodf">
+          <property role="NXePf" value="Admin Settings" />
+        </node>
+        <node concept="NX1gA" id="3c_gimmPLDN" role="NXodf">
+          <property role="NX6R2" value="Show admins in member list" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="3c_gimmPKky" resolve="showAdminsToMembers" />
+        </node>
+        <node concept="NX1gA" id="3c_gimmPLDV" role="NXodf">
+          <property role="NX6R2" value="Can members of a group invite people" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="3c_gimmPKkH" resolve="canMembersInvite" />
+        </node>
+        <node concept="NX1gA" id="3c_gimmPLE5" role="NXodf">
+          <property role="NX6R2" value="Can members edit group info" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="3c_gimmPKl5" resolve="canMembersEditGroupInfo" />
+        </node>
+        <node concept="NX1gA" id="3c_gimmPLEh" role="NXodf">
+          <property role="NX6R2" value="Can admins edit group info" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="3c_gimmPKlg" resolve="canAdminsEditGroupInfo" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="3c_gimmPFf9" role="2m5mJr">
+        <property role="TrG5h" value="LoadAdminSettings" />
+        <node concept="2m7Kf5" id="3c_gimmPNUg" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupPeer" />
+          <node concept="2m5mGg" id="3c_gimmPNUk" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6j2" resolve="GroupOutPeer" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="3c_gimmPFfa" role="NuuwV">
+          <property role="Nu42W" value="AE6" />
+        </node>
+        <node concept="2m1R6W" id="3c_gimmPMYW" role="2m6efq">
+          <node concept="2m7Kf5" id="3c_gimmPNU7" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="settings" />
+            <node concept="2m5mGg" id="3c_gimmPNUb" role="2m7DVh">
+              <ref role="2m5mJy" node="3c_gimmPILF" resolve="AdminSettings" />
+            </node>
+          </node>
+          <node concept="Nu42z" id="3c_gimmPMYX" role="NuuwV">
+            <property role="Nu42W" value="AEA" />
+          </node>
+          <node concept="NXeRC" id="3c_gimmPNUA" role="1y2DgH">
+            <property role="NXePf" value="Loaded settings" />
+          </node>
+          <node concept="NX1gA" id="3c_gimmPNUF" role="1y2DgH">
+            <property role="NX6R2" value="Current group admin settings" />
+            <property role="1GSvIU" value="full" />
+            <ref role="NX6Kv" node="3c_gimmPNU7" resolve="settings" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="3c_gimmPNUn" role="1GBnQ6">
+          <property role="NXePf" value="Loading administration settings" />
+        </node>
+        <node concept="NX1gA" id="3c_gimmPNUs" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Group's peer" />
+          <ref role="NX6Kv" node="3c_gimmPNUg" resolve="groupPeer" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="3c_gimmPIkw" role="2m5mJr">
+        <property role="TrG5h" value="SaveAdminSettings" />
+        <node concept="2m7Kf5" id="3c_gimmPPfg" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupPeer" />
+          <node concept="2m5mGg" id="3c_gimmPPfk" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6j2" resolve="GroupOutPeer" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="3c_gimmPPfn" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="settings" />
+          <node concept="2m5mGg" id="3c_gimmPQ$1" role="2m7DVh">
+            <ref role="2m5mJy" node="3c_gimmPILF" resolve="AdminSettings" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="3c_gimmPIkx" role="NuuwV">
+          <property role="Nu42W" value="AE8" />
+        </node>
+        <node concept="2m1Rp1" id="3c_gimmPNU4" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
+        </node>
+        <node concept="NXeRC" id="3c_gimmPPfe" role="1GBnQ6">
+          <property role="NXePf" value="Save administartion settings" />
+        </node>
+        <node concept="NX1gA" id="3c_gimmPQ$7" role="1GBnQ6">
+          <property role="NX6R2" value="Group's Peer" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="3c_gimmPPfg" resolve="groupPeer" />
+        </node>
+        <node concept="NX1gA" id="3c_gimmPQ$f" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Group's settings" />
+          <ref role="NX6Kv" node="3c_gimmPPfn" resolve="settings" />
         </node>
       </node>
       <node concept="NvWBy" id="1kct6f0uX17" role="2m5mJr">
