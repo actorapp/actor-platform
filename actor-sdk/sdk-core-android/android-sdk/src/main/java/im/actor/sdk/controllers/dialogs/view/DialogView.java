@@ -62,6 +62,8 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
     private static int senderTextColor;
     private static Drawable groupIcon;
     private static Drawable secretIcon;
+    private static Drawable channelIcon;
+    private static Drawable botIcon;
     private static int[] placeholderColors;
     private static Paint avatarBorder;
     private static Paint fillPaint;
@@ -260,6 +262,10 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
             senderTextColor = style.getDialogsActiveTextColor();
             groupIcon = new TintDrawable(context.getResources().getDrawable(R.drawable.ic_group_black_18dp),
                     style.getDialogsTitleColor());
+            channelIcon = new TintDrawable(context.getResources().getDrawable(R.drawable.ic_megaphone_18dp_black),
+                    style.getDialogsTitleColor());
+            botIcon = new TintDrawable(context.getResources().getDrawable(R.drawable.ic_robot_black_18dp),
+                    style.getDialogsTitleColor());
             secretIcon = new TintDrawable(context.getResources().getDrawable(R.drawable.ic_lock_black_18dp),
                     style.getDialogsTitleSecureColor());
             counterTextPaint = createTextPaint(Fonts.medium(), 14, style.getDialogsCounterTextColor());
@@ -344,13 +350,24 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
         }
 
         if (arg.getPeer().getPeerType() == PeerType.GROUP) {
-            res.setTitleIcon(groupIcon);
-            res.setTitleIconTop(Screen.dp(33));
+            if (arg.isChannel()) {
+                res.setTitleIcon(channelIcon);
+                res.setTitleIconTop(Screen.dp(33));
+            } else {
+                res.setTitleIcon(groupIcon);
+                res.setTitleIconTop(Screen.dp(33));
+            }
             maxTitleWidth -= Screen.dp(16/*icon width*/ + 4/*padding*/);
         } else if (arg.getPeer().getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
             res.setTitleIcon(secretIcon);
             res.setTitleIconTop(Screen.dp(31));
             maxTitleWidth -= Screen.dp(16/*icon width*/ + 4/*padding*/);
+        } else if (arg.getPeer().getPeerType() == PeerType.PRIVATE) {
+            if (arg.isBot()) {
+                res.setTitleIcon(botIcon);
+                res.setTitleIconTop(Screen.dp(34));
+                maxTitleWidth -= Screen.dp(16/*icon width*/ + 4/*padding*/);
+            }
         }
 
         if (arg.getSenderId() == messenger().myUid()) {
