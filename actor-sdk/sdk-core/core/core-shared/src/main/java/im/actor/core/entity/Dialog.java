@@ -50,6 +50,13 @@ public class Dialog extends BserObject implements ListEngineItem {
     @SuppressWarnings("NullableProblems")
     @Property("readonly, nonatomic")
     private String dialogTitle;
+    @Nullable
+    @Property("readonly, nonatomic")
+    private Avatar dialogAvatar;
+    @Property("readonly, nonatomic")
+    private boolean isBot;
+    @Property("readonly, nonatomic")
+    private boolean isChannel;
     @Property("readonly, nonatomic")
     private int unreadCount;
 
@@ -82,14 +89,12 @@ public class Dialog extends BserObject implements ListEngineItem {
     private int relatedUid;
 
 
-    @Nullable
-    @Property("readonly, nonatomic")
-    private Avatar dialogAvatar;
-
     public Dialog(@NotNull Peer peer,
                   long sortKey,
                   @NotNull String dialogTitle,
                   @Nullable Avatar dialogAvatar,
+                  boolean isBot,
+                  boolean isChannel,
                   int unreadCount,
                   long rid,
                   @NotNull ContentType messageType,
@@ -104,6 +109,8 @@ public class Dialog extends BserObject implements ListEngineItem {
         this.peer = peer;
         this.dialogTitle = StringUtil.ellipsize(dialogTitle, MAX_LENGTH);
         this.dialogAvatar = dialogAvatar;
+        this.isBot = isBot;
+        this.isChannel = isChannel;
         this.unreadCount = unreadCount;
         this.rid = rid;
         this.sortDate = sortKey;
@@ -128,6 +135,19 @@ public class Dialog extends BserObject implements ListEngineItem {
     @NotNull
     public String getDialogTitle() {
         return dialogTitle;
+    }
+
+    @Nullable
+    public Avatar getDialogAvatar() {
+        return dialogAvatar;
+    }
+
+    public boolean isBot() {
+        return isBot;
+    }
+
+    public boolean isChannel() {
+        return isChannel;
     }
 
     public int getUnreadCount() {
@@ -164,10 +184,6 @@ public class Dialog extends BserObject implements ListEngineItem {
         return relatedUid;
     }
 
-    @Nullable
-    public Avatar getDialogAvatar() {
-        return dialogAvatar;
-    }
 
     @Nullable
     public Long getKnownReadDate() {
@@ -188,8 +204,9 @@ public class Dialog extends BserObject implements ListEngineItem {
     }
 
     public Dialog editPeerInfo(String title, Avatar dialogAvatar) {
-        return new Dialog(peer, sortDate, StringUtil.ellipsize(title, MAX_LENGTH), dialogAvatar, unreadCount, rid, messageType, text, senderId,
-                date, relatedUid, knownReadDate, knownReceiveDate);
+        return new Dialog(peer, sortDate, StringUtil.ellipsize(title, MAX_LENGTH), dialogAvatar,
+                isBot, isChannel, unreadCount, rid, messageType, text, senderId, date, relatedUid,
+                knownReadDate, knownReceiveDate);
     }
 
     @Override
@@ -201,6 +218,8 @@ public class Dialog extends BserObject implements ListEngineItem {
         if (av != null) {
             dialogAvatar = new Avatar(av);
         }
+        isBot = values.getBool(15, false);
+        isChannel = values.getBool(16, false);
 
         unreadCount = values.getInt(4);
         sortDate = values.getLong(5);
@@ -224,6 +243,8 @@ public class Dialog extends BserObject implements ListEngineItem {
         if (dialogAvatar != null) {
             writer.writeObject(3, dialogAvatar);
         }
+        writer.writeBool(15, isBot);
+        writer.writeBool(16, isChannel);
         writer.writeInt(4, unreadCount);
         writer.writeLong(5, sortDate);
         writer.writeLong(6, rid);
