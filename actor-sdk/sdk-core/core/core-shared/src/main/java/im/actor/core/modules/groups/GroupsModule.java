@@ -192,7 +192,7 @@ public class GroupsModule extends AbsModule implements BusSubscriber {
         return Promises.tuple(getGroups().getValueAsync(gid), users().getValueAsync(uid))
                 .flatMap(groupUserTuple2 -> api(new RequestTransferOwnership(
                         new ApiGroupOutPeer(gid, groupUserTuple2.getT1().getAccessHash()),
-                        uid)))
+                        new ApiUserOutPeer(uid, groupUserTuple2.getT2().getAccessHash()))))
                 .flatMap(r -> updates().waitForUpdate(r.getSeq()));
     }
 

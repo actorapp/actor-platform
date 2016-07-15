@@ -15,22 +15,22 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.core.api.*;
 
-public class RequestTransferOwnership extends Request<ResponseSeqDate> {
+public class RequestEditGroupShortName extends Request<ResponseSeq> {
 
-    public static final int HEADER = 0xae5;
-    public static RequestTransferOwnership fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new RequestTransferOwnership(), data);
+    public static final int HEADER = 0xae9;
+    public static RequestEditGroupShortName fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new RequestEditGroupShortName(), data);
     }
 
     private ApiGroupOutPeer groupPeer;
-    private ApiUserOutPeer newOwner;
+    private String shortName;
 
-    public RequestTransferOwnership(@NotNull ApiGroupOutPeer groupPeer, @NotNull ApiUserOutPeer newOwner) {
+    public RequestEditGroupShortName(@NotNull ApiGroupOutPeer groupPeer, @Nullable String shortName) {
         this.groupPeer = groupPeer;
-        this.newOwner = newOwner;
+        this.shortName = shortName;
     }
 
-    public RequestTransferOwnership() {
+    public RequestEditGroupShortName() {
 
     }
 
@@ -39,15 +39,15 @@ public class RequestTransferOwnership extends Request<ResponseSeqDate> {
         return this.groupPeer;
     }
 
-    @NotNull
-    public ApiUserOutPeer getNewOwner() {
-        return this.newOwner;
+    @Nullable
+    public String getShortName() {
+        return this.shortName;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         this.groupPeer = values.getObj(1, new ApiGroupOutPeer());
-        this.newOwner = values.getObj(2, new ApiUserOutPeer());
+        this.shortName = values.optString(2);
     }
 
     @Override
@@ -56,17 +56,16 @@ public class RequestTransferOwnership extends Request<ResponseSeqDate> {
             throw new IOException();
         }
         writer.writeObject(1, this.groupPeer);
-        if (this.newOwner == null) {
-            throw new IOException();
+        if (this.shortName != null) {
+            writer.writeString(2, this.shortName);
         }
-        writer.writeObject(2, this.newOwner);
     }
 
     @Override
     public String toString() {
-        String res = "rpc TransferOwnership{";
+        String res = "rpc EditGroupShortName{";
         res += "groupPeer=" + this.groupPeer;
-        res += ", newOwner=" + this.newOwner;
+        res += ", shortName=" + this.shortName;
         res += "}";
         return res;
     }

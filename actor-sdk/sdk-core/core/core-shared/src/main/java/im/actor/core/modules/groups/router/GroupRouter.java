@@ -14,8 +14,13 @@ import im.actor.core.api.ApiMember;
 import im.actor.core.api.rpc.RequestLoadFullGroups;
 import im.actor.core.api.updates.UpdateGroupAboutChanged;
 import im.actor.core.api.updates.UpdateGroupAvatarChanged;
+import im.actor.core.api.updates.UpdateGroupCanEditAdminSettingsChanged;
+import im.actor.core.api.updates.UpdateGroupCanEditAdminsChanged;
+import im.actor.core.api.updates.UpdateGroupCanEditInfoChanged;
+import im.actor.core.api.updates.UpdateGroupCanEditUsernameChanged;
 import im.actor.core.api.updates.UpdateGroupCanInviteMembersChanged;
 import im.actor.core.api.updates.UpdateGroupCanSendMessagesChanged;
+import im.actor.core.api.updates.UpdateGroupCanViewAdminsChanged;
 import im.actor.core.api.updates.UpdateGroupCanViewMembersChanged;
 import im.actor.core.api.updates.UpdateGroupExtChanged;
 import im.actor.core.api.updates.UpdateGroupFullExtChanged;
@@ -27,6 +32,7 @@ import im.actor.core.api.updates.UpdateGroupMembersBecameAsync;
 import im.actor.core.api.updates.UpdateGroupMembersCountChanged;
 import im.actor.core.api.updates.UpdateGroupMembersUpdated;
 import im.actor.core.api.updates.UpdateGroupOwnerChanged;
+import im.actor.core.api.updates.UpdateGroupShortNameChanged;
 import im.actor.core.api.updates.UpdateGroupTitleChanged;
 import im.actor.core.api.updates.UpdateGroupTopicChanged;
 import im.actor.core.entity.Group;
@@ -130,6 +136,11 @@ public class GroupRouter extends ModuleActor {
     }
 
     @Verified
+    public Promise<Void> onShortNameChanged(int groupId, String shortName) {
+        return editGroup(groupId, group -> group.editShortName(shortName));
+    }
+
+    @Verified
     public Promise<Void> onFullExtChanged(int groupId, ApiMapValue ext) {
         return editGroup(groupId, group -> group.editFullExt(ext));
     }
@@ -142,6 +153,31 @@ public class GroupRouter extends ModuleActor {
     @Verified
     public Promise<Void> onEditCanInviteMembers(int groupId, boolean canViewMembers) {
         return editGroup(groupId, group -> group.editCanInviteMembers(canViewMembers));
+    }
+
+    @Verified
+    public Promise<Void> onEditCanEditGroupInfo(int groupId, boolean canEditGroupInfo) {
+        return editGroup(groupId, group -> group.editCanEditGroupInfo(canEditGroupInfo));
+    }
+
+    @Verified
+    public Promise<Void> onEditCanEditShortName(int groupId, boolean canEditShortName) {
+        return editGroup(groupId, group -> group.editCanEditShortName(canEditShortName));
+    }
+
+    @Verified
+    public Promise<Void> onEditCanEditAdminList(int groupId, boolean canEditAminList) {
+        return editGroup(groupId, group -> group.editCanEditAdminList(canEditAminList));
+    }
+
+    @Verified
+    public Promise<Void> onEditCanViewAdminList(int groupId, boolean canViewAdminList) {
+        return editGroup(groupId, group -> group.editCanViewAdminList(canViewAdminList));
+    }
+
+    @Verified
+    public Promise<Void> onEditCanEditAdminSettings(int groupId, boolean canEditAdminSettings) {
+        return editGroup(groupId, group -> group.editCanEditAdminSettings(canEditAdminSettings));
     }
 
     @Verified
@@ -287,9 +323,6 @@ public class GroupRouter extends ModuleActor {
         } else if (update instanceof UpdateGroupAvatarChanged) {
             UpdateGroupAvatarChanged avatarChanged = (UpdateGroupAvatarChanged) update;
             return onAvatarChanged(avatarChanged.getGroupId(), avatarChanged.getAvatar());
-        } else if (update instanceof UpdateGroupCanSendMessagesChanged) {
-            UpdateGroupCanSendMessagesChanged messagesChanged = (UpdateGroupCanSendMessagesChanged) update;
-            return onCanWriteMessagesChanged(messagesChanged.getGroupId(), messagesChanged.canSendMessages());
         } else if (update instanceof UpdateGroupMemberChanged) {
             UpdateGroupMemberChanged memberChanged = (UpdateGroupMemberChanged) update;
             return onIsMemberChanged(memberChanged.getGroupId(), memberChanged.isMember());
@@ -337,15 +370,42 @@ public class GroupRouter extends ModuleActor {
         } else if (update instanceof UpdateGroupOwnerChanged) {
             UpdateGroupOwnerChanged ownerChanged = (UpdateGroupOwnerChanged) update;
             return onOwnerChanged(ownerChanged.getGroupId(), ownerChanged.getUserId());
+        } else if (update instanceof UpdateGroupFullExtChanged) {
+            UpdateGroupFullExtChanged extChanged = (UpdateGroupFullExtChanged) update;
+            return onFullExtChanged(extChanged.getGroupId(), extChanged.getExt());
+        } else if (update instanceof UpdateGroupShortNameChanged) {
+            UpdateGroupShortNameChanged shortNameChanged = (UpdateGroupShortNameChanged) update;
+            return onShortNameChanged(shortNameChanged.getGroupId(), shortNameChanged.getShortName());
+        }
+
+        //
+        // Actions
+        //
+
+        else if (update instanceof UpdateGroupCanSendMessagesChanged) {
+            UpdateGroupCanSendMessagesChanged messagesChanged = (UpdateGroupCanSendMessagesChanged) update;
+            return onCanWriteMessagesChanged(messagesChanged.getGroupId(), messagesChanged.canSendMessages());
         } else if (update instanceof UpdateGroupCanViewMembersChanged) {
             UpdateGroupCanViewMembersChanged membersChanged = (UpdateGroupCanViewMembersChanged) update;
             return onEditCanViewMembers(membersChanged.getGroupId(), membersChanged.canViewMembers());
         } else if (update instanceof UpdateGroupCanInviteMembersChanged) {
             UpdateGroupCanInviteMembersChanged changed = (UpdateGroupCanInviteMembersChanged) update;
             return onEditCanInviteMembers(changed.getGroupId(), changed.canInviteMembers());
-        } else if (update instanceof UpdateGroupFullExtChanged) {
-            UpdateGroupFullExtChanged extChanged = (UpdateGroupFullExtChanged) update;
-            return onFullExtChanged(extChanged.getGroupId(), extChanged.getExt());
+        } else if (update instanceof UpdateGroupCanEditInfoChanged) {
+            UpdateGroupCanEditInfoChanged editInfoChanged = (UpdateGroupCanEditInfoChanged) update;
+            return onEditCanEditGroupInfo(editInfoChanged.getGroupId(), editInfoChanged.canEditGroup());
+        } else if (update instanceof UpdateGroupCanEditUsernameChanged) {
+            UpdateGroupCanEditUsernameChanged shortName = (UpdateGroupCanEditUsernameChanged) update;
+            return onEditCanEditShortName(shortName.getGroupId(), shortName.canEditUsername());
+        } else if (update instanceof UpdateGroupCanViewAdminsChanged) {
+            UpdateGroupCanViewAdminsChanged changed = (UpdateGroupCanViewAdminsChanged) update;
+            return onEditCanViewAdminList(changed.getGroupId(), changed.canViewAdmins());
+        } else if (update instanceof UpdateGroupCanEditAdminsChanged) {
+            UpdateGroupCanEditAdminsChanged editAdmins = (UpdateGroupCanEditAdminsChanged) update;
+            return onEditCanEditAdminList(editAdmins.getGroupId(), editAdmins.canAssignAdmins());
+        } else if (update instanceof UpdateGroupCanEditAdminSettingsChanged) {
+            UpdateGroupCanEditAdminSettingsChanged settings = (UpdateGroupCanEditAdminSettingsChanged) update;
+            return onEditCanEditAdminSettings(settings.getGroupId(), settings.canEditAdminSettings());
         }
 
         return Promise.success(null);

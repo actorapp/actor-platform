@@ -15,22 +15,22 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.core.api.*;
 
-public class RequestTransferOwnership extends Request<ResponseSeqDate> {
+public class RequestDismissUserAdmin extends Request<ResponseSeq> {
 
-    public static final int HEADER = 0xae5;
-    public static RequestTransferOwnership fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new RequestTransferOwnership(), data);
+    public static final int HEADER = 0xae7;
+    public static RequestDismissUserAdmin fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new RequestDismissUserAdmin(), data);
     }
 
     private ApiGroupOutPeer groupPeer;
-    private ApiUserOutPeer newOwner;
+    private ApiUserOutPeer userPeer;
 
-    public RequestTransferOwnership(@NotNull ApiGroupOutPeer groupPeer, @NotNull ApiUserOutPeer newOwner) {
+    public RequestDismissUserAdmin(@NotNull ApiGroupOutPeer groupPeer, @NotNull ApiUserOutPeer userPeer) {
         this.groupPeer = groupPeer;
-        this.newOwner = newOwner;
+        this.userPeer = userPeer;
     }
 
-    public RequestTransferOwnership() {
+    public RequestDismissUserAdmin() {
 
     }
 
@@ -40,14 +40,14 @@ public class RequestTransferOwnership extends Request<ResponseSeqDate> {
     }
 
     @NotNull
-    public ApiUserOutPeer getNewOwner() {
-        return this.newOwner;
+    public ApiUserOutPeer getUserPeer() {
+        return this.userPeer;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         this.groupPeer = values.getObj(1, new ApiGroupOutPeer());
-        this.newOwner = values.getObj(2, new ApiUserOutPeer());
+        this.userPeer = values.getObj(2, new ApiUserOutPeer());
     }
 
     @Override
@@ -56,17 +56,17 @@ public class RequestTransferOwnership extends Request<ResponseSeqDate> {
             throw new IOException();
         }
         writer.writeObject(1, this.groupPeer);
-        if (this.newOwner == null) {
+        if (this.userPeer == null) {
             throw new IOException();
         }
-        writer.writeObject(2, this.newOwner);
+        writer.writeObject(2, this.userPeer);
     }
 
     @Override
     public String toString() {
-        String res = "rpc TransferOwnership{";
+        String res = "rpc DismissUserAdmin{";
         res += "groupPeer=" + this.groupPeer;
-        res += ", newOwner=" + this.newOwner;
+        res += ", userPeer=" + this.userPeer;
         res += "}";
         return res;
     }

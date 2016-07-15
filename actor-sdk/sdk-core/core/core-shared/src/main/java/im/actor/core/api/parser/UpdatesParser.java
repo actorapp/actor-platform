@@ -55,11 +55,17 @@ public class UpdatesParser extends BaseParser<Update> {
             case 2617: return UpdateGroupAboutChanged.fromBytes(payload);
             case 2613: return UpdateGroupExtChanged.fromBytes(payload);
             case 2618: return UpdateGroupFullExtChanged.fromBytes(payload);
+            case 2628: return UpdateGroupShortNameChanged.fromBytes(payload);
             case 2619: return UpdateGroupOwnerChanged.fromBytes(payload);
             case 2620: return UpdateGroupHistoryShared.fromBytes(payload);
             case 2624: return UpdateGroupCanSendMessagesChanged.fromBytes(payload);
             case 2625: return UpdateGroupCanViewMembersChanged.fromBytes(payload);
             case 2626: return UpdateGroupCanInviteMembersChanged.fromBytes(payload);
+            case 2631: return UpdateGroupCanEditInfoChanged.fromBytes(payload);
+            case 2632: return UpdateGroupCanEditUsernameChanged.fromBytes(payload);
+            case 2633: return UpdateGroupCanEditAdminsChanged.fromBytes(payload);
+            case 2640: return UpdateGroupCanViewAdminsChanged.fromBytes(payload);
+            case 2641: return UpdateGroupCanEditAdminSettingsChanged.fromBytes(payload);
             case 2612: return UpdateGroupMemberChanged.fromBytes(payload);
             case 2615: return UpdateGroupMembersBecameAsync.fromBytes(payload);
             case 2614: return UpdateGroupMembersUpdated.fromBytes(payload);

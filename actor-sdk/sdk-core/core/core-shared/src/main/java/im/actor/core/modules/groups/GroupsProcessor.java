@@ -6,8 +6,12 @@ package im.actor.core.modules.groups;
 
 import im.actor.core.api.updates.UpdateGroupAboutChanged;
 import im.actor.core.api.updates.UpdateGroupAvatarChanged;
+import im.actor.core.api.updates.UpdateGroupCanEditAdminsChanged;
+import im.actor.core.api.updates.UpdateGroupCanEditInfoChanged;
+import im.actor.core.api.updates.UpdateGroupCanEditUsernameChanged;
 import im.actor.core.api.updates.UpdateGroupCanInviteMembersChanged;
 import im.actor.core.api.updates.UpdateGroupCanSendMessagesChanged;
+import im.actor.core.api.updates.UpdateGroupCanViewAdminsChanged;
 import im.actor.core.api.updates.UpdateGroupCanViewMembersChanged;
 import im.actor.core.api.updates.UpdateGroupExtChanged;
 import im.actor.core.api.updates.UpdateGroupFullExtChanged;
@@ -19,6 +23,7 @@ import im.actor.core.api.updates.UpdateGroupMembersBecameAsync;
 import im.actor.core.api.updates.UpdateGroupMembersCountChanged;
 import im.actor.core.api.updates.UpdateGroupMembersUpdated;
 import im.actor.core.api.updates.UpdateGroupOwnerChanged;
+import im.actor.core.api.updates.UpdateGroupShortNameChanged;
 import im.actor.core.api.updates.UpdateGroupTitleChanged;
 import im.actor.core.api.updates.UpdateGroupTopicChanged;
 import im.actor.core.modules.AbsModule;
@@ -48,13 +53,19 @@ public class GroupsProcessor extends AbsModule implements SequenceProcessor {
                 update instanceof UpdateGroupMembersBecameAsync ||
                 update instanceof UpdateGroupMembersCountChanged ||
 
+                update instanceof UpdateGroupShortNameChanged ||
                 update instanceof UpdateGroupAboutChanged ||
                 update instanceof UpdateGroupTopicChanged ||
                 update instanceof UpdateGroupFullExtChanged ||
                 update instanceof UpdateGroupOwnerChanged ||
+                update instanceof UpdateGroupHistoryShared ||
+
                 update instanceof UpdateGroupCanViewMembersChanged ||
                 update instanceof UpdateGroupCanInviteMembersChanged ||
-                update instanceof UpdateGroupHistoryShared) {
+                update instanceof UpdateGroupCanEditInfoChanged ||
+                update instanceof UpdateGroupCanViewAdminsChanged ||
+                update instanceof UpdateGroupCanEditAdminsChanged ||
+                update instanceof UpdateGroupCanEditUsernameChanged) {
             return context().getGroupsModule().getRouter().onUpdate(update);
         }
         return null;

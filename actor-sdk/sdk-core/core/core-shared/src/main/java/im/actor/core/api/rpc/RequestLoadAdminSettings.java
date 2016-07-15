@@ -15,22 +15,20 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.core.api.*;
 
-public class RequestTransferOwnership extends Request<ResponseSeqDate> {
+public class RequestLoadAdminSettings extends Request<ResponseLoadAdminSettings> {
 
-    public static final int HEADER = 0xae5;
-    public static RequestTransferOwnership fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new RequestTransferOwnership(), data);
+    public static final int HEADER = 0xae6;
+    public static RequestLoadAdminSettings fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new RequestLoadAdminSettings(), data);
     }
 
     private ApiGroupOutPeer groupPeer;
-    private ApiUserOutPeer newOwner;
 
-    public RequestTransferOwnership(@NotNull ApiGroupOutPeer groupPeer, @NotNull ApiUserOutPeer newOwner) {
+    public RequestLoadAdminSettings(@NotNull ApiGroupOutPeer groupPeer) {
         this.groupPeer = groupPeer;
-        this.newOwner = newOwner;
     }
 
-    public RequestTransferOwnership() {
+    public RequestLoadAdminSettings() {
 
     }
 
@@ -39,15 +37,9 @@ public class RequestTransferOwnership extends Request<ResponseSeqDate> {
         return this.groupPeer;
     }
 
-    @NotNull
-    public ApiUserOutPeer getNewOwner() {
-        return this.newOwner;
-    }
-
     @Override
     public void parse(BserValues values) throws IOException {
         this.groupPeer = values.getObj(1, new ApiGroupOutPeer());
-        this.newOwner = values.getObj(2, new ApiUserOutPeer());
     }
 
     @Override
@@ -56,17 +48,12 @@ public class RequestTransferOwnership extends Request<ResponseSeqDate> {
             throw new IOException();
         }
         writer.writeObject(1, this.groupPeer);
-        if (this.newOwner == null) {
-            throw new IOException();
-        }
-        writer.writeObject(2, this.newOwner);
     }
 
     @Override
     public String toString() {
-        String res = "rpc TransferOwnership{";
+        String res = "rpc LoadAdminSettings{";
         res += "groupPeer=" + this.groupPeer;
-        res += ", newOwner=" + this.newOwner;
         res += "}";
         return res;
     }

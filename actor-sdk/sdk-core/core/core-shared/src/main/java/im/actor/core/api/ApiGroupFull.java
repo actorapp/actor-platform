@@ -18,7 +18,7 @@ public class ApiGroupFull extends BserObject {
 
     private int id;
     private long createDate;
-    private int ownerUid;
+    private Integer ownerUid;
     private List<ApiMember> members;
     private String theme;
     private String about;
@@ -27,8 +27,14 @@ public class ApiGroupFull extends BserObject {
     private Boolean canViewMembers;
     private Boolean canInvitePeople;
     private Boolean isSharedHistory;
+    private Boolean canEditGroupInfo;
+    private String shortName;
+    private Boolean canEditShortName;
+    private Boolean canEditAdminList;
+    private Boolean canViewAdminList;
+    private Boolean canEditAdminSettings;
 
-    public ApiGroupFull(int id, long createDate, int ownerUid, @NotNull List<ApiMember> members, @Nullable String theme, @Nullable String about, @Nullable ApiMapValue ext, @Nullable Boolean isAsyncMembers, @Nullable Boolean canViewMembers, @Nullable Boolean canInvitePeople, @Nullable Boolean isSharedHistory) {
+    public ApiGroupFull(int id, long createDate, @Nullable Integer ownerUid, @NotNull List<ApiMember> members, @Nullable String theme, @Nullable String about, @Nullable ApiMapValue ext, @Nullable Boolean isAsyncMembers, @Nullable Boolean canViewMembers, @Nullable Boolean canInvitePeople, @Nullable Boolean isSharedHistory, @Nullable Boolean canEditGroupInfo, @Nullable String shortName, @Nullable Boolean canEditShortName, @Nullable Boolean canEditAdminList, @Nullable Boolean canViewAdminList, @Nullable Boolean canEditAdminSettings) {
         this.id = id;
         this.createDate = createDate;
         this.ownerUid = ownerUid;
@@ -40,6 +46,12 @@ public class ApiGroupFull extends BserObject {
         this.canViewMembers = canViewMembers;
         this.canInvitePeople = canInvitePeople;
         this.isSharedHistory = isSharedHistory;
+        this.canEditGroupInfo = canEditGroupInfo;
+        this.shortName = shortName;
+        this.canEditShortName = canEditShortName;
+        this.canEditAdminList = canEditAdminList;
+        this.canViewAdminList = canViewAdminList;
+        this.canEditAdminSettings = canEditAdminSettings;
     }
 
     public ApiGroupFull() {
@@ -54,7 +66,8 @@ public class ApiGroupFull extends BserObject {
         return this.createDate;
     }
 
-    public int getOwnerUid() {
+    @Nullable
+    public Integer getOwnerUid() {
         return this.ownerUid;
     }
 
@@ -98,11 +111,41 @@ public class ApiGroupFull extends BserObject {
         return this.isSharedHistory;
     }
 
+    @Nullable
+    public Boolean canEditGroupInfo() {
+        return this.canEditGroupInfo;
+    }
+
+    @Nullable
+    public String getShortName() {
+        return this.shortName;
+    }
+
+    @Nullable
+    public Boolean canEditShortName() {
+        return this.canEditShortName;
+    }
+
+    @Nullable
+    public Boolean canEditAdminList() {
+        return this.canEditAdminList;
+    }
+
+    @Nullable
+    public Boolean canViewAdminList() {
+        return this.canViewAdminList;
+    }
+
+    @Nullable
+    public Boolean canEditAdminSettings() {
+        return this.canEditAdminSettings;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.id = values.getInt(1);
         this.createDate = values.getLong(6);
-        this.ownerUid = values.getInt(5);
+        this.ownerUid = values.optInt(5);
         List<ApiMember> _members = new ArrayList<ApiMember>();
         for (int i = 0; i < values.getRepeatedCount(12); i ++) {
             _members.add(new ApiMember());
@@ -115,13 +158,24 @@ public class ApiGroupFull extends BserObject {
         this.canViewMembers = values.optBool(8);
         this.canInvitePeople = values.optBool(9);
         this.isSharedHistory = values.optBool(10);
+        this.canEditGroupInfo = values.optBool(13);
+        this.shortName = values.optString(14);
+        this.canEditShortName = values.optBool(15);
+        this.canEditAdminList = values.optBool(16);
+        this.canViewAdminList = values.optBool(17);
+        this.canEditAdminSettings = values.optBool(18);
+        if (values.hasRemaining()) {
+            setUnmappedObjects(values.buildRemaining());
+        }
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeInt(1, this.id);
         writer.writeLong(6, this.createDate);
-        writer.writeInt(5, this.ownerUid);
+        if (this.ownerUid != null) {
+            writer.writeInt(5, this.ownerUid);
+        }
         writer.writeRepeatedObj(12, this.members);
         if (this.theme != null) {
             writer.writeString(2, this.theme);
@@ -144,6 +198,31 @@ public class ApiGroupFull extends BserObject {
         if (this.isSharedHistory != null) {
             writer.writeBool(10, this.isSharedHistory);
         }
+        if (this.canEditGroupInfo != null) {
+            writer.writeBool(13, this.canEditGroupInfo);
+        }
+        if (this.shortName != null) {
+            writer.writeString(14, this.shortName);
+        }
+        if (this.canEditShortName != null) {
+            writer.writeBool(15, this.canEditShortName);
+        }
+        if (this.canEditAdminList != null) {
+            writer.writeBool(16, this.canEditAdminList);
+        }
+        if (this.canViewAdminList != null) {
+            writer.writeBool(17, this.canViewAdminList);
+        }
+        if (this.canEditAdminSettings != null) {
+            writer.writeBool(18, this.canEditAdminSettings);
+        }
+        if (this.getUnmappedObjects() != null) {
+            SparseArray<Object> unmapped = this.getUnmappedObjects();
+            for (int i = 0; i < unmapped.size(); i++) {
+                int key = unmapped.keyAt(i);
+                writer.writeUnmapped(key, unmapped.get(key));
+            }
+        }
     }
 
     @Override
@@ -159,6 +238,12 @@ public class ApiGroupFull extends BserObject {
         res += ", canViewMembers=" + this.canViewMembers;
         res += ", canInvitePeople=" + this.canInvitePeople;
         res += ", isSharedHistory=" + this.isSharedHistory;
+        res += ", canEditGroupInfo=" + this.canEditGroupInfo;
+        res += ", shortName=" + this.shortName;
+        res += ", canEditShortName=" + this.canEditShortName;
+        res += ", canEditAdminList=" + this.canEditAdminList;
+        res += ", canViewAdminList=" + this.canViewAdminList;
+        res += ", canEditAdminSettings=" + this.canEditAdminSettings;
         res += "}";
         return res;
     }
