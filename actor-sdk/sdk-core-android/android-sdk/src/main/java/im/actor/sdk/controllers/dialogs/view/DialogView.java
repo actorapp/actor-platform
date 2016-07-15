@@ -365,7 +365,7 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
         } else if (arg.getPeer().getPeerType() == PeerType.PRIVATE) {
             if (arg.isBot()) {
                 res.setTitleIcon(botIcon);
-                res.setTitleIconTop(Screen.dp(34));
+                res.setTitleIconTop(Screen.dp(33));
                 maxTitleWidth -= Screen.dp(16/*icon width*/ + 4/*padding*/);
             }
         }
