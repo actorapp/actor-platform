@@ -399,8 +399,10 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
         }
 
         if (arg.getSenderId() > 0) {
+
             String contentText = messenger().getFormatter().formatContentText(arg.getSenderId(),
-                    arg.getMessageType(), arg.getText().replace("\n", " "), arg.getRelatedUid());
+                    arg.getMessageType(), arg.getText().replace("\n", " "), arg.getRelatedUid(),
+                    arg.isChannel());
 
             if (arg.getPeer().getPeerType() == PeerType.GROUP) {
                 if (messenger().getFormatter().isLargeDialogMessage(arg.getMessageType())) {

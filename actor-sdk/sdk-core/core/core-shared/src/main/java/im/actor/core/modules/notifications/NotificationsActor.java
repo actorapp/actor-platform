@@ -12,6 +12,7 @@ import java.util.List;
 
 import im.actor.core.PlatformType;
 import im.actor.core.entity.ContentDescription;
+import im.actor.core.entity.GroupType;
 import im.actor.core.entity.Notification;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
@@ -31,7 +32,7 @@ import static im.actor.core.util.JavaUtil.last;
 
 /**
  * Actor that controls all notifications in application
- * <p/>
+ * <p>
  * NotificationsActor keeps all unread messages for showing last unread messages in notifications
  * Actor also control sound effects playing logic
  */
@@ -407,7 +408,11 @@ public class NotificationsActor extends ModuleActor {
         // Converting to PendingNotifications
         List<Notification> res = new ArrayList<>();
         for (PendingNotification p : destNotifications) {
-            res.add(new Notification(p.getPeer(), p.getSender(), p.getContent()));
+            boolean isChannel = false;
+            if (p.getPeer().getPeerType() == PeerType.GROUP) {
+                isChannel = groups().getValue(p.getPeer().getPeerId()).getGroupType() == GroupType.CHANNEL;
+            }
+            res.add(new Notification(p.getPeer(), isChannel, p.getSender(), p.getContent()));
         }
 
         // Performing notifications

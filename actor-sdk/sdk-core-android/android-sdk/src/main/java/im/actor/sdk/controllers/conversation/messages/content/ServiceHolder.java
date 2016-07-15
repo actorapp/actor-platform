@@ -15,9 +15,12 @@ import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 public class ServiceHolder extends MessageHolder {
 
     private TextView messageText;
+    private boolean isChannel;
 
-    public ServiceHolder(MessagesAdapter fragment, View itemView) {
+    public ServiceHolder(MessagesAdapter fragment, boolean isChannel, View itemView) {
         super(fragment, itemView, true);
+
+        this.isChannel = isChannel;
 
         messageText = (TextView) itemView.findViewById(R.id.serviceMessage);
         messageText.setTextColor(ActorSDK.sharedActor().style.getConvDatetextColor());
@@ -27,6 +30,6 @@ public class ServiceHolder extends MessageHolder {
     @Override
     protected void bindData(Message message, long readDate, long receiveDate, boolean isUpdated, PreprocessedData preprocessedData) {
         messageText.setText(messenger().getFormatter().formatFullServiceMessage(message.getSenderId(),
-                (ServiceContent) message.getContent()));
+                (ServiceContent) message.getContent(), isChannel));
     }
 }
