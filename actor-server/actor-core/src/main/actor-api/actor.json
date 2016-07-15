@@ -8140,7 +8140,7 @@
                 "type": "reference",
                 "argument": "ownerUid",
                 "category": "full",
-                "description": "  Group owner"
+                "description": "  Optional group owner"
               },
               {
                 "type": "reference",
@@ -8183,8 +8183,45 @@
                 "argument": "isSharedHistory",
                 "category": "full",
                 "description": "  Is history shared among all users. Default is false."
+              },
+              {
+                "type": "reference",
+                "argument": "canEditGroupInfo",
+                "category": "full",
+                "description": "  If current user can edit group info. Default is true."
+              },
+              {
+                "type": "reference",
+                "argument": "shortName",
+                "category": "full",
+                "description": "  Group's short name"
+              },
+              {
+                "type": "reference",
+                "argument": "canEditShortName",
+                "category": "full",
+                "description": "  If not set only owner can edit group's short name"
+              },
+              {
+                "type": "reference",
+                "argument": "canEditAdminList",
+                "category": "full",
+                "description": "  If not set only owner can edit admin list"
+              },
+              {
+                "type": "reference",
+                "argument": "canViewAdminList",
+                "category": "full",
+                "description": "  If not set only owner and admins can view admin list"
+              },
+              {
+                "type": "reference",
+                "argument": "canEditAdminSettings",
+                "category": "full",
+                "description": "  If not set only owner can edit admin settings"
               }
             ],
+            "expandable": "true",
             "attributes": [
               {
                 "type": {
@@ -8204,8 +8241,11 @@
               },
               {
                 "type": {
-                  "type": "alias",
-                  "childType": "userId"
+                  "type": "opt",
+                  "childType": {
+                    "type": "alias",
+                    "childType": "userId"
+                  }
                 },
                 "id": 5,
                 "name": "ownerUid"
@@ -8279,6 +8319,54 @@
                 },
                 "id": 10,
                 "name": "isSharedHistory"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 13,
+                "name": "canEditGroupInfo"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 14,
+                "name": "shortName"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 15,
+                "name": "canEditShortName"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 16,
+                "name": "canEditAdminList"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 17,
+                "name": "canViewAdminList"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 18,
+                "name": "canEditAdminSettings"
               }
             ]
           }
@@ -8680,6 +8768,46 @@
         {
           "type": "update",
           "content": {
+            "name": "GroupShortNameChanged",
+            "header": 2628,
+            "doc": [
+              "Group's short name changed",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "shortName",
+                "category": "full",
+                "description": "  Group short name"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "shortName"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
             "name": "GroupOwnerChanged",
             "header": 2619,
             "doc": [
@@ -8850,6 +8978,191 @@
                 "type": "bool",
                 "id": 2,
                 "name": "canInviteMembers"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupCanEditInfoChanged",
+            "header": 2631,
+            "doc": [
+              "Update about can edit changed",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "canEditGroup",
+                "category": "full",
+                "description": "  Can edit group info"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": "bool",
+                "id": 2,
+                "name": "canEditGroup"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupCanEditUsernameChanged",
+            "header": 2632,
+            "doc": [
+              "Update about can edit username changed",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "canEditUsername",
+                "category": "full",
+                "description": "  Can edit username"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": "bool",
+                "id": 2,
+                "name": "canEditUsername"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupCanEditAdminsChanged",
+            "header": 2633,
+            "doc": [
+              "Update about can edit admins changed",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "canAssignAdmins",
+                "category": "hidden",
+                "description": "  Can assign admins"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": "bool",
+                "id": 2,
+                "name": "canAssignAdmins"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupCanViewAdminsChanged",
+            "header": 2640,
+            "doc": [
+              "Update about view admings changed",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "canViewAdmins",
+                "category": "hidden",
+                "description": "  Can view admins"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": "bool",
+                "id": 2,
+                "name": "canViewAdmins"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupCanEditAdminSettingsChanged",
+            "header": 2641,
+            "doc": [
+              "Update about edit admin settings changed",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "canEditAdminSettings",
+                "category": "full",
+                "description": "  Can edit admin settings"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": "bool",
+                "id": 2,
+                "name": "canEditAdminSettings"
               }
             ]
           }
@@ -9574,6 +9887,50 @@
         {
           "type": "rpc",
           "content": {
+            "name": "EditGroupShortName",
+            "header": 2793,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "doc": [
+              "Edit Group Short Name",
+              {
+                "type": "reference",
+                "argument": "groupPeer",
+                "category": "full",
+                "description": "Group's peer"
+              },
+              {
+                "type": "reference",
+                "argument": "shortName",
+                "category": "full",
+                "description": "New group's short name"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "groupPeer"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "shortName"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
             "name": "EditGroupTopic",
             "header": 211,
             "response": {
@@ -9933,6 +10290,10 @@
           }
         },
         {
+          "type": "comment",
+          "content": "Administration"
+        },
+        {
           "type": "rpc",
           "content": {
             "name": "MakeUserAdmin",
@@ -9943,6 +10304,50 @@
             },
             "doc": [
               "Make user admin",
+              {
+                "type": "reference",
+                "argument": "groupPeer",
+                "category": "full",
+                "description": "Group's peer"
+              },
+              {
+                "type": "reference",
+                "argument": "userPeer",
+                "category": "full",
+                "description": "User's peer"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "groupPeer"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "UserOutPeer"
+                },
+                "id": 2,
+                "name": "userPeer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "DismissUserAdmin",
+            "header": 2791,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "doc": [
+              "Dismissing user admin",
               {
                 "type": "reference",
                 "argument": "groupPeer",
@@ -10016,6 +10421,155 @@
                 },
                 "id": 2,
                 "name": "newOwner"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "AdminSettings",
+            "doc": [
+              "Admin Settings",
+              {
+                "type": "reference",
+                "argument": "showAdminsToMembers",
+                "category": "full",
+                "description": "  Show admins in member list"
+              },
+              {
+                "type": "reference",
+                "argument": "canMembersInvite",
+                "category": "full",
+                "description": "  Can members of a group invite people"
+              },
+              {
+                "type": "reference",
+                "argument": "canMembersEditGroupInfo",
+                "category": "full",
+                "description": "  Can members edit group info"
+              },
+              {
+                "type": "reference",
+                "argument": "canAdminsEditGroupInfo",
+                "category": "full",
+                "description": "  Can admins edit group info"
+              }
+            ],
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": "bool",
+                "id": 1,
+                "name": "showAdminsToMembers"
+              },
+              {
+                "type": "bool",
+                "id": 2,
+                "name": "canMembersInvite"
+              },
+              {
+                "type": "bool",
+                "id": 3,
+                "name": "canMembersEditGroupInfo"
+              },
+              {
+                "type": "bool",
+                "id": 4,
+                "name": "canAdminsEditGroupInfo"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "LoadAdminSettings",
+            "header": 2790,
+            "response": {
+              "type": "anonymous",
+              "header": 2794,
+              "doc": [
+                "Loaded settings",
+                {
+                  "type": "reference",
+                  "argument": "settings",
+                  "category": "full",
+                  "description": "  Current group admin settings"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "struct",
+                    "childType": "AdminSettings"
+                  },
+                  "id": 1,
+                  "name": "settings"
+                }
+              ]
+            },
+            "doc": [
+              "Loading administration settings",
+              {
+                "type": "reference",
+                "argument": "groupPeer",
+                "category": "full",
+                "description": "Group's peer"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "groupPeer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "SaveAdminSettings",
+            "header": 2792,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Save administartion settings",
+              {
+                "type": "reference",
+                "argument": "groupPeer",
+                "category": "full",
+                "description": "Group's Peer"
+              },
+              {
+                "type": "reference",
+                "argument": "settings",
+                "category": "full",
+                "description": "Group's settings"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "groupPeer"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "AdminSettings"
+                },
+                "id": 2,
+                "name": "settings"
               }
             ]
           }
