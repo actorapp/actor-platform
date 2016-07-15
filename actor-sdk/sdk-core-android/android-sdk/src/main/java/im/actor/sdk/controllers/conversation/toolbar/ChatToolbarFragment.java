@@ -204,7 +204,9 @@ public class ChatToolbarFragment extends BaseFragment {
             bind(barSubtitle, barSubtitleContainer, group);
 
             // Binding group typing
-            bindGroupTyping(barTyping, barTypingContainer, barSubtitle, messenger().getGroupTyping(group.getId()));
+            if (group.getGroupType() == GroupType.GROUP) {
+                bindGroupTyping(barTyping, barTypingContainer, barSubtitle, messenger().getGroupTyping(group.getId()));
+            }
         }
 
         // Show/Hide Avatar
@@ -239,12 +241,18 @@ public class ChatToolbarFragment extends BaseFragment {
 
         // Show menus for leave group and group info view
         if (peer.getPeerType() == PeerType.GROUP) {
-            if (groups().get(peer.getPeerId()).isMember().get()) {
+            GroupVM groupVM = groups().get(peer.getPeerId());
+            if (groupVM.isMember().get()) {
                 menu.findItem(R.id.leaveGroup).setVisible(true);
                 menu.findItem(R.id.groupInfo).setVisible(true);
             } else {
                 menu.findItem(R.id.leaveGroup).setVisible(false);
                 menu.findItem(R.id.groupInfo).setVisible(false);
+            }
+            if (groupVM.getGroupType() == GroupType.GROUP) {
+                menu.findItem(R.id.clear).setVisible(true);
+            } else {
+                menu.findItem(R.id.clear).setVisible(false);
             }
         } else {
             menu.findItem(R.id.groupInfo).setVisible(false);

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
   -->
 
@@ -269,6 +268,10 @@
 
     <string name="chat_not_member">You are not a member of this group</string>
 
+    <string name="chat_join">Join</string>
+    <string name="chat_mute">Mute</string>
+    <string name="chat_unmute">Unmute</string>
+
     <string name="chat_empty_bot">START</string>
     <string name="chat_empty_bot_about">No description for this bot yet</string>
 
@@ -344,8 +347,6 @@
     <string name="group_context_view">View {0}</string>
     <string name="group_context_remove">Remove {0} from group</string>
 
-    <string name="group_menu_add">Add a member</string>
-    <string name="group_menu_leave">Leave group</string>
     <string name="group_menu_change_theme">Change theme</string>
     <string name="group_menu_change_photo">Change photo</string>
     <string name="group_menu_integration_token">Integration token</string>
@@ -354,6 +355,8 @@
     <string name="group_shared_files">Documents</string>
 
     <string name="group_add_member">Add a member</string>
+    <string name="group_leave">Leave group</string>
+    <string name="group_leave_channel">Leave channel</string>
 
     <string name="group_not_member">You are not a member of this group</string>
 

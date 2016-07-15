@@ -57,6 +57,13 @@ public class GroupVM extends BaseValueModel<Group> {
     @NotNull
     @Property("nonatomic, readonly")
     private ValueModel<HashSet<GroupMember>> members;
+    @NotNull
+    @Property("nonatomic, readonly")
+    private BooleanValueModel isCanViewMembers;
+    @NotNull
+    @Property("nonatomic, readonly")
+    private BooleanValueModel isCanInviteMembers;
+
 
     @Property("nonatomic, readonly")
     private IntValueModel ownerId;
@@ -89,6 +96,8 @@ public class GroupVM extends BaseValueModel<Group> {
         this.membersCount = new IntValueModel("group." + groupId + ".membersCount", rawObj.getMembersCount());
         this.isCanWriteMessage = new BooleanValueModel("group." + groupId + ".can_write", rawObj.isCanWrite());
 
+        this.isCanViewMembers = new BooleanValueModel("group." + groupId + ".can_view_members", rawObj.isCanViewMembers());
+        this.isCanInviteMembers = new BooleanValueModel("group." + groupId + ".can_invite_members", rawObj.isCanInviteMembers());
         this.ownerId = new IntValueModel("group." + groupId + ".membersCount", rawObj.getOwnerId());
         this.members = new ValueModel<>("group." + groupId + ".members", new HashSet<>(rawObj.getMembers()));
         this.presence = new ValueModel<>("group." + groupId + ".presence", 0);
@@ -173,6 +182,28 @@ public class GroupVM extends BaseValueModel<Group> {
     }
 
     /**
+     * Can current user view members of a group
+     *
+     * @return can view members model
+     */
+    @NotNull
+    @ObjectiveCName("getIsCanViewMembersModel")
+    public BooleanValueModel getIsCanViewMembers() {
+        return isCanViewMembers;
+    }
+
+    /**
+     * Can current user invite members to a group
+     *
+     * @return can invite members model
+     */
+    @NotNull
+    @ObjectiveCName("getIsCanInviteMembersModel")
+    public BooleanValueModel getIsCanInviteMembers() {
+        return isCanInviteMembers;
+    }
+
+    /**
      * Get Group owner user id model
      *
      * @return creator owner id model
@@ -207,6 +238,7 @@ public class GroupVM extends BaseValueModel<Group> {
     @Override
     protected void updateValues(@NotNull Group rawObj) {
         boolean isChanged = name.change(rawObj.getTitle());
+
         isChanged |= avatar.change(rawObj.getAvatar());
         isChanged |= membersCount.change(rawObj.getMembersCount());
         isChanged |= isMember.change(rawObj.isMember());
@@ -216,6 +248,7 @@ public class GroupVM extends BaseValueModel<Group> {
         isChanged |= about.change(rawObj.getAbout());
         isChanged |= members.change(new HashSet<>(rawObj.getMembers()));
         isChanged |= ownerId.change(rawObj.getOwnerId());
+        isChanged |= isCanViewMembers.change(rawObj.isCanViewMembers());
 
         if (isChanged) {
             notifyChange();

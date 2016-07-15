@@ -510,6 +510,16 @@ public class ActorStyle {
         this.textSubheaderInvColor = textSubheaderInvColor;
     }
 
+    private int textDangerColor = 0xffe44b4b;
+
+    public int getTextDangerColor() {
+        return textDangerColor;
+    }
+
+    public void setTextDangerColor(int textDangerColor) {
+        this.textDangerColor = textDangerColor;
+    }
+
     //Settings
     private int settingsMainTitleColor = 0;
 

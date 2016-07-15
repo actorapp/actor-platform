@@ -334,8 +334,6 @@
     <string name="group_context_view">Инф. о {0}</string>
     <string name="group_context_remove">Исключить {0} из группы</string>
 
-    <string name="group_menu_add">Добавить пользователя</string>
-    <string name="group_menu_leave">Покинуть группу</string>
     <string name="group_menu_change_theme">Изменить название</string>
     <string name="group_menu_change_photo">Изменить фото</string>
     <string name="group_menu_integration_token">Токен интеграции</string>
@@ -344,6 +342,8 @@
     <string name="group_shared_files">Документы</string>
 
     <string name="group_add_member">Добавить в группу</string>
+    <string name="group_leave">Покинуть группу</string>
+    <string name="group_leave_channel">Покинуть канал</string>
 
     <string name="group_not_member">Вы не участник данной группы</string>
 

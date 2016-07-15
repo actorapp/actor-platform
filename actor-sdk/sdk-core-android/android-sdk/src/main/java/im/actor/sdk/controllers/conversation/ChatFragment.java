@@ -174,15 +174,21 @@ public class ChatFragment extends BaseFragment implements InputBarCallback, Mess
                     goneView(inputOverlayContainer, false);
                     showView(inputContainer, false);
                 } else if (isMember) {
-                    inputOverlayText.setText("Can't send message");
+                    if (messenger().isNotificationsEnabled(peer)) {
+                        inputOverlayText.setText(getString(R.string.chat_mute));
+                    } else {
+                        inputOverlayText.setText(getString(R.string.chat_unmute));
+                    }
                     inputOverlayText.setTextColor(style.getListActionColor());
-                    inputOverlayText.setClickable(false);
+                    inputOverlayText.setClickable(true);
+                    inputOverlayText.setEnabled(true);
                     showView(inputOverlayContainer, false);
                     goneView(inputContainer, false);
                 } else {
                     inputOverlayText.setText(R.string.chat_not_member);
                     inputOverlayText.setTextColor(style.getListActionColor());
                     inputOverlayText.setClickable(false);
+                    inputOverlayText.setEnabled(false);
                     showView(inputOverlayContainer, false);
                     goneView(inputContainer, false);
                 }
@@ -199,6 +205,19 @@ public class ChatFragment extends BaseFragment implements InputBarCallback, Mess
                 if (userVM.getIsBlocked().get()) {
                     execute(messenger().unblockUser(userVM.getId()));
                 }
+            }
+        } else if (peer.getPeerType() == PeerType.GROUP) {
+            GroupVM groupVM = groups().get(peer.getPeerId());
+            if (groupVM.isMember().get()) {
+                if (messenger().isNotificationsEnabled(peer)) {
+                    messenger().changeNotificationsEnabled(peer, false);
+                    inputOverlayText.setText(getString(R.string.chat_unmute));
+                } else {
+                    messenger().changeNotificationsEnabled(peer, true);
+                    inputOverlayText.setText(getString(R.string.chat_mute));
+                }
+            } else {
+                // TODO: Rejoin
             }
         }
     }

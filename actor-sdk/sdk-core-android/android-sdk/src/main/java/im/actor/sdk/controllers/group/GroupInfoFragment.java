@@ -26,12 +26,14 @@ import com.google.i18n.phonenumbers.Phonenumber;
 import java.util.ArrayList;
 
 import im.actor.core.entity.GroupMember;
+import im.actor.core.entity.GroupType;
 import im.actor.core.entity.Peer;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserPhone;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.mvvm.ValueListener;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorSDKLauncher;
 import im.actor.sdk.ActorStyle;
@@ -44,6 +46,7 @@ import im.actor.sdk.controllers.fragment.preview.ViewAvatarActivity;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.TintImageView;
 import im.actor.sdk.view.adapters.RecyclerListView;
+import im.actor.sdk.view.avatar.AvatarView;
 import im.actor.sdk.view.avatar.CoverAvatarView;
 import im.actor.sdk.util.Fonts;
 
@@ -68,7 +71,7 @@ public class GroupInfoFragment extends BaseFragment {
     private GroupVM groupVM;
 
     private RecyclerListView listView;
-    private CoverAvatarView avatarView;
+    private AvatarView avatarView;
     private MembersAdapter groupUserAdapter;
     private View notMemberView;
 
@@ -95,8 +98,8 @@ public class GroupInfoFragment extends BaseFragment {
         listView = (RecyclerListView) res.findViewById(R.id.groupList);
         notMemberView = res.findViewById(R.id.notMember);
 
-        res.setBackgroundColor(style.getBackyardBackgroundColor());
-        listView.setBackgroundColor(style.getMainBackgroundColor());
+        res.setBackgroundColor(style.getMainBackgroundColor());
+        // listView.setBackgroundColor(style.getMainBackgroundColor());
         notMemberView.setBackgroundColor(style.getMainBackgroundColor());
         ((TextView) notMemberView.findViewById(R.id.not_member_text)).setTextColor(style.getTextPrimaryColor());
 
@@ -106,36 +109,56 @@ public class GroupInfoFragment extends BaseFragment {
 
         // Views
         View header = inflater.inflate(R.layout.fragment_group_header, listView, false);
-        avatarView = (CoverAvatarView) header.findViewById(R.id.avatar);
+        avatarView = (AvatarView) header.findViewById(R.id.avatar);
+        avatarView.init(Screen.dp(48), 22);
+
         TextView aboutTV = (TextView) header.findViewById(R.id.about);
         View aboutCont = header.findViewById(R.id.aboutContainer);
+        View addMemberCont = header.findViewById(R.id.addMemberCont);
+        View leaveCont = header.findViewById(R.id.leaveChannelCont);
+
         TextView title = (TextView) header.findViewById(R.id.title);
-        TextView createdBy = (TextView) header.findViewById(R.id.createdBy);
         View descriptionContainer = header.findViewById(R.id.descriptionContainer);
         SwitchCompat isNotificationsEnabled = (SwitchCompat) header.findViewById(R.id.enableNotifications);
         TextView memberCount = (TextView) header.findViewById(R.id.membersCount);
-        TextView settingsHeaderText = (TextView) header.findViewById(R.id.settings_header_text);
-        TintImageView notificationSettingIcon = (TintImageView) header.findViewById(R.id.settings_notification_icon);
-        TextView membersHeaderText = (TextView) header.findViewById(R.id.membersTitle);
+        // TextView settingsHeaderText = (TextView) header.findViewById(R.id.settings_header_text);
+        //
+        // TextView membersHeaderText = (TextView) header.findViewById(R.id.membersTitle);
 
         // Styling
-        ((TextView) header.findViewById(R.id.about_hint)).setTextColor(style.getTextSecondaryColor());
+        // ((TextView) header.findViewById(R.id.about_hint)).setTextColor(style.getTextSecondaryColor());
         header.setBackgroundColor(style.getMainBackgroundColor());
+        header.findViewById(R.id.avatarContainer).setBackgroundColor(style.getToolBarColor());
         title.setTextColor(style.getProfileTitleColor());
-        createdBy.setTextColor(style.getProfileSubtitleColor());
         aboutTV.setTextColor(style.getTextPrimaryColor());
-        // themeHeader.setTextColor(style.getProfileSubtitleColor());
-        memberCount.setTextColor(style.getTextHintColor());
-        settingsHeaderText.setTextColor(style.getSettingsCategoryTextColor());
-        notificationSettingIcon.setTint(style.getSettingsIconColor());
-        membersHeaderText.setTextColor(style.getSettingsCategoryTextColor());
-        ((TextView) header.findViewById(R.id.settings_notifications_title)).setTextColor(style.getTextPrimaryColor());
-        header.findViewById(R.id.after_about_divider).setBackgroundColor(style.getBackyardBackgroundColor());
+        memberCount.setTextColor(style.getProfileSubtitleColor());
+        // settingsHeaderText.setTextColor(style.getSettingsCategoryTextColor());
+
+        ((TintImageView) header.findViewById(R.id.settings_notification_icon))
+                .setTint(style.getSettingsIconColor());
+        ((TintImageView) header.findViewById(R.id.settings_about_icon))
+                .setTint(style.getSettingsIconColor());
+        ((TextView) header.findViewById(R.id.settings_notifications_title))
+                .setTextColor(style.getTextPrimaryColor());
+        ((TextView) header.findViewById(R.id.add_member_title))
+                .setTextColor(style.getTextPrimaryColor());
+        ((TextView) header.findViewById(R.id.leave_channel_title))
+                .setTextColor(style.getTextDangerColor());
+
+        if (groupVM.getGroupType() == GroupType.CHANNEL) {
+            ((TextView) header.findViewById(R.id.leave_channel_title))
+                    .setText(R.string.group_leave_channel);
+        } else {
+            ((TextView) header.findViewById(R.id.leave_channel_title))
+                    .setText(R.string.group_leave);
+        }
+
+        // header.findViewById(R.id.after_about_divider).setBackgroundColor(style.getBackyardBackgroundColor());
         header.findViewById(R.id.after_settings_divider).setBackgroundColor(style.getBackyardBackgroundColor());
 
-
         // Avatar
-        bind(avatarView, groupVM.getAvatar());
+        // bind(avatarView, groupVM.getAvatar());
+        avatarView.bind(groupVM.getAvatar().get(), groupVM.getName().get(), groupVM.getId());
         avatarView.setOnClickListener(view -> {
             startActivity(ViewAvatarActivity.viewGroupAvatar(chatId, getActivity()));
         });
@@ -144,16 +167,11 @@ public class GroupInfoFragment extends BaseFragment {
         bind(title, groupVM.getName());
 
         // Owned by
-        bind(groupVM.getOwnerId(), ownerId -> {
-            if (ownerId != 0) {
-                if (ownerId == myUid()) {
-                    createdBy.setText(R.string.group_created_by_you);
-                } else {
-                    String ownerName = users().get(ownerId).getName().get();
-                    createdBy.setText(getString(R.string.group_created_by).replace("{0}", ownerName));
-                }
+        bind(groupVM.getMembersCount(), val -> {
+            if (val != null) {
+                memberCount.setText(messenger().getFormatter().formatGroupMembers(val));
             } else {
-                createdBy.setText("");
+                memberCount.setText("");
             }
         });
 
@@ -189,13 +207,48 @@ public class GroupInfoFragment extends BaseFragment {
             isNotificationsEnabled.setChecked(!isNotificationsEnabled.isChecked());
         });
 
+        // Add Member
+
+        addMemberCont.setOnClickListener(view -> {
+            startActivity(new Intent(getActivity(), AddMemberActivity.class)
+                    .putExtra("GROUP_ID", chatId));
+        });
+
+        bind(groupVM.getIsCanInviteMembers(), (canInvite) -> {
+            if (canInvite) {
+                addMemberCont.setVisibility(View.VISIBLE);
+            } else {
+                addMemberCont.setVisibility(View.GONE);
+            }
+        });
+
+        // Leave
+
+        leaveCont.setOnClickListener(view1 -> {
+            leaveGroup();
+        });
+        // Hide Leave button if we can view members
+        // In this case menu will have such button
+        bind(groupVM.getIsCanViewMembers(), (canView) -> {
+            if (canView) {
+                leaveCont.setVisibility(View.GONE);
+            } else {
+                leaveCont.setVisibility(View.VISIBLE);
+            }
+            // Invalidate options menu for menu recreation
+            getActivity().invalidateOptionsMenu();
+        });
+
+
         // Members
 
-        bind(groupVM.getMembersCount(), val -> {
-            if (val != null) {
-                memberCount.setText(val + "");
+        bind(groupVM.getIsCanViewMembers(), canViewMembers -> {
+            if (canViewMembers) {
+                header.findViewById(R.id.after_settings_divider).setVisibility(View.VISIBLE);
+                // header.findViewById(R.id.membersHeader).setVisibility(View.VISIBLE);
             } else {
-                memberCount.setText("");
+                header.findViewById(R.id.after_settings_divider).setVisibility(View.GONE);
+                // header.findViewById(R.id.membersHeader).setVisibility(View.GONE);
             }
         });
 
@@ -206,24 +259,24 @@ public class GroupInfoFragment extends BaseFragment {
         // Footer
         //
 
-        // View
-        View footer = inflater.inflate(R.layout.fragment_group_add, listView, false);
-        TextView name = (TextView) footer.findViewById(R.id.name);
-        TintImageView addIcon = (TintImageView) footer.findViewById(R.id.add_icon);
-
-        // Style
-        footer.findViewById(R.id.bottom_divider).setBackgroundColor(style.getBackyardBackgroundColor());
-        name.setTextColor(style.getActionAddContactColor());
-        name.setTypeface(Fonts.medium());
-        addIcon.setTint(style.getGroupActionAddIconColor());
-        addIcon.setTint(style.getActionAddContactColor());
-
-        footer.findViewById(R.id.addUser).setOnClickListener(v -> {
-            startActivity(new Intent(getActivity(), AddMemberActivity.class)
-                    .putExtra("GROUP_ID", chatId));
-        });
-
-        listView.addFooterView(footer, null, false);
+//        // View
+//        View footer = inflater.inflate(R.layout.fragment_group_add, listView, false);
+//        TextView name = (TextView) footer.findViewById(R.id.name);
+//        TintImageView addIcon = (TintImageView) footer.findViewById(R.id.add_icon);
+//
+//        // Style
+//        footer.findViewById(R.id.bottom_divider).setBackgroundColor(style.getBackyardBackgroundColor());
+//        name.setTextColor(style.getActionAddContactColor());
+//        name.setTypeface(Fonts.medium());
+//        addIcon.setTint(style.getGroupActionAddIconColor());
+//        addIcon.setTint(style.getActionAddContactColor());
+//
+//        footer.findViewById(R.id.addUser).setOnClickListener(v -> {
+//            startActivity(new Intent(getActivity(), AddMemberActivity.class)
+//                    .putExtra("GROUP_ID", chatId));
+//        });
+//
+//        listView.addFooterView(footer, null, false);
 
 
         //
@@ -364,7 +417,7 @@ public class GroupInfoFragment extends BaseFragment {
 
     public void updateBar(int offset) {
 
-        avatarView.setOffset(offset);
+        // avatarView.setOffset(offset);
 
         int baseColor = getResources().getColor(R.color.primary);
         ActorStyle style = ActorSDK.sharedActor().style;
@@ -393,31 +446,41 @@ public class GroupInfoFragment extends BaseFragment {
         super.onCreateOptionsMenu(menu, menuInflater);
         if (groupVM.isMember().get()) {
             menuInflater.inflate(R.menu.group_info, menu);
+            if (!groupVM.getIsCanViewMembers().get()) {
+                menu.findItem(R.id.leaveGroup).setVisible(false);
+            } else {
+                if (groupVM.getGroupType() == GroupType.CHANNEL) {
+                    menu.findItem(R.id.leaveGroup).setTitle(R.string.group_leave_channel);
+                } else {
+                    menu.findItem(R.id.leaveGroup).setTitle(R.string.group_leave);
+                }
+            }
         }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.leaveGroup) {
-            new AlertDialog.Builder(getActivity())
-                    .setMessage(getString(R.string.alert_leave_group_message).replace("%1$s",
-                            groupVM.getName().get()))
-                    .setPositiveButton(R.string.alert_leave_group_yes, (dialog2, which) -> {
-                        execute(messenger().leaveGroup(chatId));
-                    })
-                    .setNegativeButton(R.string.dialog_cancel, null)
-                    .show()
-                    .setCanceledOnTouchOutside(true);
+            leaveGroup();
             return true;
-        } else if (item.getItemId() == R.id.addMember) {
-            startActivity(new Intent(getActivity(), AddMemberActivity.class)
-                    .putExtra("GROUP_ID", chatId));
         } else if (item.getItemId() == R.id.editTitle) {
             startActivity(Intents.editGroupTitle(chatId, getActivity()));
         } else if (item.getItemId() == R.id.changePhoto) {
             startActivity(ViewAvatarActivity.viewGroupAvatar(chatId, getActivity()));
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void leaveGroup() {
+        new AlertDialog.Builder(getActivity())
+                .setMessage(getString(R.string.alert_leave_group_message).replace("%1$s",
+                        groupVM.getName().get()))
+                .setPositiveButton(R.string.alert_leave_group_yes, (dialog2, which) -> {
+                    execute(messenger().leaveGroup(chatId));
+                })
+                .setNegativeButton(R.string.dialog_cancel, null)
+                .show()
+                .setCanceledOnTouchOutside(true);
     }
 
     @Override

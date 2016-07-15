@@ -86,7 +86,7 @@ public class MembersAdapter extends HolderAdapter<GroupMember> {
             online = (TextView) res.findViewById(R.id.online);
             ((TextView) admin).setTextColor(ActorSDK.sharedActor().style.getGroupAdminColor());
             ((TextView) res.findViewById(R.id.name)).setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
-            res.findViewById(R.id.divider).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
+            // res.findViewById(R.id.divider).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
             return res;
         }
 
@@ -99,7 +99,6 @@ public class MembersAdapter extends HolderAdapter<GroupMember> {
             avatarView.bind(user);
 
             userName.setText(user.getName().get());
-
 
             if (data.isAdministrator()) {
                 admin.setVisibility(View.VISIBLE);
