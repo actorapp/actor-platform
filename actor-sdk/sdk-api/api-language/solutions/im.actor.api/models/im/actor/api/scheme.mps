@@ -16629,7 +16629,38 @@
         </node>
         <node concept="NX1gA" id="1HaN6CbG4IW" role="NXodf">
           <property role="NX6R2" value="Key Group Id" />
+          <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="1HaN6CbG4IA" resolve="keyGroupId" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="3c_gimmQ35u" role="2m5mJr">
+        <property role="TrG5h" value="KeyGroupHolder" />
+        <node concept="2m7Kf5" id="3c_gimmQ3ai" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="uid" />
+          <node concept="wb0Ql" id="3c_gimmQ3am" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="3c_gimmQ3ap" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="keyGroup" />
+          <node concept="2m5mGg" id="3c_gimmQ3av" role="2m7DVh">
+            <ref role="2m5mJy" node="5_CDdZ2jBjR" resolve="EncryptionKeyGroup" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="3c_gimmQ3ay" role="NXodf">
+          <property role="NXePf" value="Key Group Holder" />
+        </node>
+        <node concept="NX1gA" id="3c_gimmQ4vb" role="NXodf">
+          <property role="NX6R2" value="User's id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="3c_gimmQ3ai" resolve="uid" />
+        </node>
+        <node concept="NX1gA" id="3c_gimmQ4vj" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Key Group" />
+          <ref role="NX6Kv" node="3c_gimmQ3ap" resolve="keyGroup" />
         </node>
       </node>
       <node concept="2m6fVq" id="1HaN6CbG2pe" role="2m5mJr">
@@ -16677,24 +16708,8 @@
           <ref role="NX6Kv" node="1HaN6CbG2tq" resolve="randomId" />
         </node>
         <node concept="2m1R6W" id="1HaN6CbGoUb" role="2m6efq">
-          <node concept="2m7Kf5" id="1HaN6CbGoUg" role="2m0hLx">
-            <property role="2m7DUN" value="1" />
-            <property role="TrG5h" value="seq" />
-            <node concept="2m5nlT" id="1HaN6CbGoUk" role="2m7DVh">
-              <node concept="2m5ndE" id="1HaN6CbGoUq" role="3GH5xg" />
-            </node>
-          </node>
-          <node concept="2m7Kf5" id="1HaN6CbGoUt" role="2m0hLx">
-            <property role="2m7DUN" value="2" />
-            <property role="TrG5h" value="state" />
-            <node concept="2m5nlT" id="1HaN6CbGoU$" role="2m7DVh">
-              <node concept="wb0Ql" id="1HaN6CbGoUE" role="3GH5xg">
-                <ref role="wb18D" node="55bmeIQ7$gx" resolve="seq_state" />
-              </node>
-            </node>
-          </node>
           <node concept="2m7Kf5" id="1HaN6CbGoUH" role="2m0hLx">
-            <property role="2m7DUN" value="3" />
+            <property role="2m7DUN" value="1" />
             <property role="TrG5h" value="date" />
             <node concept="2m5nlT" id="1HaN6CbGoUR" role="2m7DVh">
               <node concept="wb0Ql" id="1HaN6CbGoUX" role="3GH5xg">
@@ -16703,7 +16718,7 @@
             </node>
           </node>
           <node concept="2m7Kf5" id="1HaN6CbGoV0" role="2m0hLx">
-            <property role="2m7DUN" value="4" />
+            <property role="2m7DUN" value="2" />
             <property role="TrG5h" value="obsoleteKeyGroups" />
             <node concept="2m5nlk" id="1HaN6CbGoVd" role="2m7DVh">
               <node concept="2m5mGg" id="1HaN6CbGoVj" role="3GJlyp">
@@ -16712,26 +16727,16 @@
             </node>
           </node>
           <node concept="2m7Kf5" id="1HaN6CbGpT1" role="2m0hLx">
-            <property role="2m7DUN" value="5" />
+            <property role="2m7DUN" value="3" />
             <property role="TrG5h" value="missedKeyGroups" />
             <node concept="2m5nlk" id="1HaN6CbGpTo" role="2m7DVh">
-              <node concept="2m5mGg" id="1HaN6CbGt1$" role="3GJlyp">
-                <ref role="2m5mJy" node="1HaN6CbG4qO" resolve="KeyGroupId" />
+              <node concept="2m5mGg" id="3c_gimmQ4vo" role="3GJlyp">
+                <ref role="2m5mJy" node="3c_gimmQ35u" resolve="KeyGroupHolder" />
               </node>
             </node>
           </node>
           <node concept="Nu42z" id="1HaN6CbGoUc" role="NuuwV">
             <property role="Nu42W" value="A68" />
-          </node>
-          <node concept="NX1gA" id="56qollHxuJm" role="1y2DgH">
-            <property role="1GSvIU" value="full" />
-            <property role="NX6R2" value="seq" />
-            <ref role="NX6Kv" node="1HaN6CbGoUg" resolve="seq" />
-          </node>
-          <node concept="NX1gA" id="56qollHxuNL" role="1y2DgH">
-            <property role="1GSvIU" value="full" />
-            <property role="NX6R2" value="state" />
-            <ref role="NX6Kv" node="1HaN6CbGoUt" resolve="state" />
           </node>
           <node concept="NX1gA" id="56qollHxuNT" role="1y2DgH">
             <property role="1GSvIU" value="full" />
@@ -16740,7 +16745,7 @@
           </node>
           <node concept="NX1gA" id="56qollHxuO3" role="1y2DgH">
             <property role="1GSvIU" value="full" />
-            <property role="NX6R2" value="obsolete key groups" />
+            <property role="NX6R2" value="obsolete key group ids" />
             <ref role="NX6Kv" node="1HaN6CbGoV0" resolve="obsoleteKeyGroups" />
           </node>
           <node concept="NX1gA" id="56qollHxuOf" role="1y2DgH">
