@@ -33,6 +33,8 @@ public class GroupNameFragment extends BaseFragment {
 
     private static final int REQUEST_AVATAR = 1;
 
+    private boolean isChannel;
+
     private EditText groupName;
     private AvatarView avatarView;
 
@@ -42,8 +44,26 @@ public class GroupNameFragment extends BaseFragment {
 
     public GroupNameFragment() {
         setRootFragment(true);
-        setTitle(R.string.create_group_title);
         setHomeAsUp(true);
+    }
+
+    public GroupNameFragment(boolean isChannel) {
+        this();
+        Bundle args = new Bundle();
+        args.putBoolean("isChannel", isChannel);
+        setArguments(args);
+    }
+
+    @Override
+    public void onCreate(Bundle saveInstance) {
+        super.onCreate(saveInstance);
+        this.isChannel = getArguments().getBoolean("isChannel");
+
+        if (isChannel) {
+            setTitle(R.string.create_channel_title);
+        } else {
+            setTitle(R.string.create_group_title);
+        }
     }
 
     @Override
@@ -52,7 +72,15 @@ public class GroupNameFragment extends BaseFragment {
 
         View res = inflater.inflate(R.layout.fragment_create_group_name, container, false);
         res.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
-        ((TextView) res.findViewById(R.id.create_group_hint)).setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
+
+        TextView hintTextView = (TextView) res.findViewById(R.id.create_group_hint);
+        hintTextView.setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
+        if (isChannel) {
+            hintTextView.setText(R.string.create_channel_hint);
+        } else {
+            hintTextView.setText(R.string.create_group_hint);
+        }
+
         groupName = (EditText) res.findViewById(R.id.groupTitle);
         groupName.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_NEXT) {
@@ -61,6 +89,11 @@ public class GroupNameFragment extends BaseFragment {
             }
             return false;
         });
+        if (isChannel) {
+            groupName.setHint(R.string.create_channel_name_hint);
+        } else {
+            groupName.setHint(R.string.create_group_name_hint);
+        }
         groupName.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
         groupName.setHintTextColor(ActorSDK.sharedActor().style.getTextHintColor());
 
@@ -102,11 +135,15 @@ public class GroupNameFragment extends BaseFragment {
     private void next() {
         String title = groupName.getText().toString().trim();
         if (title.length() > 0) {
-//            ((CreateGroupActivity) getActivity()).showNextFragment(
-//                    GroupUsersFragment.create(groupName.getText().toString().trim(), avatarPath), false, true);
-            messenger().createChannel(groupName.getText().toString().trim(), avatarPath).then(gid -> {
-                getActivity().finish();
-            });
+            if (isChannel) {
+                execute(messenger().createChannel(groupName.getText().toString().trim(), avatarPath).then(gid -> {
+                    startActivity(Intents.openGroupDialog(gid, false, getActivity()));
+                    getActivity().finish();
+                }));
+            } else {
+                ((CreateGroupActivity) getActivity()).showNextFragment(
+                        GroupUsersFragment.create(groupName.getText().toString().trim(), avatarPath), false, true);
+            }
         }
     }
 

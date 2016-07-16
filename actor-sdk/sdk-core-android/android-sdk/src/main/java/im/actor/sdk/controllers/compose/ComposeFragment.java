@@ -23,7 +23,15 @@ public class ComposeFragment extends BaseContactFragment {
 
         addFooterOrHeaderAction(ActorSDK.sharedActor().style.getActionShareColor(),
                 R.drawable.ic_group_white_24dp, R.string.main_fab_new_group, false, () -> {
-                    startActivity(new Intent(getActivity(), CreateGroupActivity.class));
+                    startActivity(new Intent(getActivity(), CreateGroupActivity.class)
+                            .putExtra(CreateGroupActivity.EXTRA_IS_CHANNEL, false));
+                    getActivity().finish();
+                }, true);
+
+        addFooterOrHeaderAction(ActorSDK.sharedActor().style.getActionShareColor(),
+                R.drawable.ic_megaphone_18dp_black, R.string.main_fab_new_channel, false, () -> {
+                    startActivity(new Intent(getActivity(), CreateGroupActivity.class)
+                            .putExtra(CreateGroupActivity.EXTRA_IS_CHANNEL, true));
                     getActivity().finish();
                 }, true);
     }

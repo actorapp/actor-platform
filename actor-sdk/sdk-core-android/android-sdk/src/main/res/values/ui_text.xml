@@ -158,6 +158,7 @@
 
     <string name="main_fab_compose">Compose</string>
     <string name="main_fab_new_group">Create group</string>
+    <string name="main_fab_new_channel">Create channel</string>
     <string name="main_fab_join_public_group">Join public group</string>
     <string name="main_fab_add_contact">Add contact</string>
 
@@ -390,6 +391,11 @@
     <string name="create_group_hint">Enter group theme and set optional group picture</string>
     <string name="create_group_search_hint">Search by name</string>
     <string name="create_group_done">Done</string>
+
+    <!-- Create Channel -->
+    <string name="create_channel_title">Create channel</string>
+    <string name="create_channel_name_hint">Name the channel</string>
+    <string name="create_channel_hint">Enter channel name and set optional channel picture</string>
 
     <!-- Group add -->
     <string name="group_add_title">Add member</string>

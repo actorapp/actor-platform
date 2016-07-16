@@ -7,12 +7,15 @@ import im.actor.sdk.controllers.activity.BaseFragmentActivity;
 
 public class CreateGroupActivity extends BaseFragmentActivity {
 
+    public static String EXTRA_IS_CHANNEL = "is_channel";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState == null) {
-            showFragment(new GroupNameFragment(), false, false);
+            showFragment(new GroupNameFragment(getIntent().getBooleanExtra(EXTRA_IS_CHANNEL, false)),
+                    false, false);
         }
     }
 }
