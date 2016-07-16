@@ -19626,7 +19626,7 @@
               {
                 "type": "reference",
                 "argument": "keyGroupId",
-                "category": "hidden",
+                "category": "full",
                 "description": "  Key Group Id"
               }
             ],
@@ -19651,6 +19651,45 @@
           }
         },
         {
+          "type": "struct",
+          "content": {
+            "name": "KeyGroupHolder",
+            "doc": [
+              "Key Group Holder",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  User's id"
+              },
+              {
+                "type": "reference",
+                "argument": "keyGroup",
+                "category": "full",
+                "description": "  Key Group"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "EncryptionKeyGroup"
+                },
+                "id": 2,
+                "name": "keyGroup"
+              }
+            ]
+          }
+        },
+        {
           "type": "rpc",
           "content": {
             "name": "SendEncryptedPackage",
@@ -19661,18 +19700,6 @@
               "doc": [
                 {
                   "type": "reference",
-                  "argument": "seq",
-                  "category": "full",
-                  "description": "  seq"
-                },
-                {
-                  "type": "reference",
-                  "argument": "state",
-                  "category": "full",
-                  "description": "  state"
-                },
-                {
-                  "type": "reference",
                   "argument": "date",
                   "category": "full",
                   "description": "  date"
@@ -19681,7 +19708,7 @@
                   "type": "reference",
                   "argument": "obsoleteKeyGroups",
                   "category": "full",
-                  "description": "  obsolete key groups"
+                  "description": "  obsolete key group ids"
                 },
                 {
                   "type": "reference",
@@ -19694,31 +19721,12 @@
                 {
                   "type": {
                     "type": "opt",
-                    "childType": "int32"
-                  },
-                  "id": 1,
-                  "name": "seq"
-                },
-                {
-                  "type": {
-                    "type": "opt",
-                    "childType": {
-                      "type": "alias",
-                      "childType": "seq_state"
-                    }
-                  },
-                  "id": 2,
-                  "name": "state"
-                },
-                {
-                  "type": {
-                    "type": "opt",
                     "childType": {
                       "type": "alias",
                       "childType": "date"
                     }
                   },
-                  "id": 3,
+                  "id": 1,
                   "name": "date"
                 },
                 {
@@ -19729,7 +19737,7 @@
                       "childType": "KeyGroupId"
                     }
                   },
-                  "id": 4,
+                  "id": 2,
                   "name": "obsoleteKeyGroups"
                 },
                 {
@@ -19737,10 +19745,10 @@
                     "type": "list",
                     "childType": {
                       "type": "struct",
-                      "childType": "KeyGroupId"
+                      "childType": "KeyGroupHolder"
                     }
                   },
-                  "id": 5,
+                  "id": 3,
                   "name": "missedKeyGroups"
                 }
               ]
