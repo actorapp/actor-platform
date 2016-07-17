@@ -26,6 +26,23 @@ public class ActorStyle {
         }
     }
 
+    private int[] defaultAvatarPlaceholders = new int[]{
+            0xff509dbb,
+            0xff52b3cd,
+            0xff7e6eeb,
+            0xffde5447,
+            0xffee7e37,
+            0xffed608b,
+            0xff6ac53c};
+
+    public int[] getDefaultAvatarPlaceholders() {
+        return defaultAvatarPlaceholders;
+    }
+
+    public void setDefaultAvatarPlaceholders(int[] defaultAvatarPlaceholders) {
+        this.defaultAvatarPlaceholders = defaultAvatarPlaceholders;
+    }
+
     //////////////////////////
     //        COLORS        //
     //////////////////////////
