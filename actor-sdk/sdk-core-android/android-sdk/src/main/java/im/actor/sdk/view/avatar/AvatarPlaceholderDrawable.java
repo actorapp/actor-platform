@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.text.TextPaint;
 import android.util.TypedValue;
 
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.util.Fonts;
 
@@ -19,7 +20,6 @@ public class AvatarPlaceholderDrawable extends Drawable {
     private static float TEXT_SIZE;
     private float selfTextSize;
     private static Paint CIRCLE_PAINT;
-    private static int[] COLORS;
     private Context ctx;
 
     private String title;
@@ -47,17 +47,7 @@ public class AvatarPlaceholderDrawable extends Drawable {
             }
         }
 
-        if (COLORS == null) {
-            COLORS = new int[]{
-                    context.getResources().getColor(R.color.placeholder_0),
-                    context.getResources().getColor(R.color.placeholder_1),
-                    context.getResources().getColor(R.color.placeholder_2),
-                    context.getResources().getColor(R.color.placeholder_3),
-                    context.getResources().getColor(R.color.placeholder_4),
-                    context.getResources().getColor(R.color.placeholder_5),
-                    context.getResources().getColor(R.color.placeholder_6),
-            };
-        }
+        int[] colors = ActorSDK.sharedActor().style.getDefaultAvatarPlaceholders();
 
         if (CIRCLE_PAINT == null) {
             CIRCLE_PAINT = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -74,7 +64,7 @@ public class AvatarPlaceholderDrawable extends Drawable {
         if (id == 0) {
             this.color = context.getResources().getColor(R.color.placeholder_empty);
         } else {
-            this.color = COLORS[Math.abs(id) % COLORS.length];
+            this.color = colors[Math.abs(id) % colors.length];
         }
 
         this.title = title;
