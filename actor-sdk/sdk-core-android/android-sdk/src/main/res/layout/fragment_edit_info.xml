@@ -45,6 +45,7 @@
                     android:layout_weight="1"
                     android:hint="@string/group_name_hint"
                     android:imeOptions="actionNext"
+                    android:inputType="textCapWords"
                     android:lines="1"
                     android:singleLine="true"
                     app:met_maxCharacters="50"
@@ -64,6 +65,7 @@
                 android:background="@android:color/transparent"
                 android:gravity="center_vertical"
                 android:hint="@string/group_description_hint"
+                android:inputType="textCapSentences"
                 android:minHeight="48dp"
                 android:paddingBottom="8dp"
                 android:paddingTop="8dp" />
