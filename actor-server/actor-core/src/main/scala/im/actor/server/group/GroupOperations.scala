@@ -87,6 +87,11 @@ private[group] sealed trait Commands extends UserAcl {
       GroupEnvelope(groupId)
       .withUpdateAbout(UpdateAbout(clientUserId, clientAuthId, about, randomId))).mapTo[SeqStateDate]
 
+  def updateShortName(groupId: Int, clientUserId: Int, clientAuthId: Long, shortName: Option[String]): Future[SeqState] =
+    (processorRegion.ref ?
+      GroupEnvelope(groupId)
+      .withUpdateShortName(UpdateShortName(clientUserId, clientAuthId, shortName))).mapTo[SeqState]
+
   def makeUserAdmin(groupId: Int, clientUserId: Int, clientAuthId: Long, candidateId: Int): Future[(Vector[ApiMember], SeqStateDate)] =
     (processorRegion.ref ?
       GroupEnvelope(groupId)
@@ -148,8 +153,9 @@ private[group] sealed trait Queries {
       GroupEnvelope(groupId)
       .withCheckAccessHash(CheckAccessHash(hash))).mapTo[CheckAccessHashResponse] map (_.isCorrect)
 
-  //(memberIds, invitedUserIds, botId)
   // TODO: should be signed as internal API, and become narrowly scoped
+  // never use it in for client queries
+  //(memberIds, invitedUserIds, botId)
   def getMemberIds(groupId: Int): Future[(Seq[Int], Seq[Int], Option[Int])] = //TODO: prepare for channel
     (viewRegion.ref ?
       GroupEnvelope(groupId)

@@ -14,6 +14,8 @@ object StringUtils {
 
   private val usernamePattern = Pattern.compile("""^[0-9a-zA-Z_]{5,32}""", Pattern.UNICODE_CHARACTER_CLASS)
 
+  private val sha256Pattern = Pattern.compile("^[A-Fa-f0-9]{64}$", Pattern.UNICODE_CHARACTER_CLASS)
+
   private val transliterator = Transliterator.getInstance("Latin; Latin-ASCII")
 
   def utfToHexString(s: String): String = { s.map(ch ⇒ f"${ch.toInt}%04X").mkString }
@@ -37,7 +39,9 @@ object StringUtils {
   def validName(n: String): NonEmptyList[String] Xor String =
     nonEmptyString(n).flatMap(printableString)
 
-  def validUsername(username: String): Boolean = usernamePattern.matcher(username.trim).matches
+  def validGlobalName(username: String): Boolean = usernamePattern.matcher(username.trim).matches
+
+  def validGroupInviteToken(token: String): Boolean = sha256Pattern.matcher(token.trim).matches
 
   def normalizeUsername(username: String): Option[String] = {
     val trimmed = username.trim

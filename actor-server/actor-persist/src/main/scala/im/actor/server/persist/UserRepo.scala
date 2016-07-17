@@ -40,11 +40,11 @@ object UserRepo {
   val byIdC = Compiled(byId _)
   val nameByIdC = Compiled(nameById _)
 
-  def byNickname(nickname: Rep[String]) = users filter (_.nickname.toLowerCase === nickname.toLowerCase)
-  def idsByNickname(nickname: Rep[String]) = byNickname(nickname).map(_.id)
+  private def byNickname(nickname: Rep[String]) = users filter (_.nickname.toLowerCase === nickname.toLowerCase)
+  private def idsByNickname(nickname: Rep[String]) = byNickname(nickname).map(_.id)
 
-  val byNicknameC = Compiled(byNickname _)
-  val idsByNicknameC = Compiled(idsByNickname _)
+  private val byNicknameC = Compiled(byNickname _)
+  private val idsByNicknameC = Compiled(idsByNickname _)
 
   def byPhone(phone: Rep[Long]) = (for {
     phones ← UserPhoneRepo.phones.filter(_.number === phone)
@@ -106,14 +106,12 @@ object UserRepo {
   def findSalts(ids: Set[Int]) =
     users.filter(_.id inSet ids).map(u ⇒ (u.id, u.accessSalt)).result
 
+  @deprecated("user GlobalNamesStorageKeyValueStorage instead", "2016-07-17")
   def findByNickname(query: String) = {
     val nickname =
       if (query.startsWith("@")) query.drop(1) else query
     byNicknameC(nickname).result.headOption
   }
-
-  def findIdsByNickname(nickname: String) =
-    idsByNicknameC(nickname).result.headOption
 
   def findIdsByEmail(email: String) =
     idsByEmailC(email).result.headOption
@@ -128,12 +126,14 @@ object UserRepo {
         .getOrElse(DBIO.successful(Nil))
     } yield e ++ n ++ p
 
+  @deprecated("user GlobalNamesStorageKeyValueStorage instead", "2016-07-17")
   def setNickname(userId: Int, nickname: Option[String]) =
     byId(userId).map(_.nickname).update(nickname)
 
   def setAbout(userId: Int, about: Option[String]) =
     byId(userId).map(_.about).update(about)
 
+  @deprecated("user GlobalNamesStorageKeyValueStorage instead", "2016-07-17")
   def nicknameExists(nickname: String) =
     users.filter(_.nickname.toLowerCase === nickname.toLowerCase).exists.result
 

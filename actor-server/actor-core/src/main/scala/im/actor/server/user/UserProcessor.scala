@@ -15,6 +15,7 @@ import im.actor.server.cqrs.TaggedEvent
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog._
 import im.actor.server.model.{ Peer, PeerType }
+import im.actor.server.names.GlobalNamesStorageKeyValueStorage
 import im.actor.server.office.{ PeerProcessor, StopOffice }
 import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
@@ -161,6 +162,7 @@ private[user] final class UserProcessor
   protected lazy val dialogExt = DialogExtension(system)
   protected val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(system)
   protected implicit val socialRegion: SocialManagerRegion = SocialExtension(system).region
+  protected val globalNamesStorage = new GlobalNamesStorageKeyValueStorage
 
   protected implicit val timeout: Timeout = Timeout(10.seconds)
 

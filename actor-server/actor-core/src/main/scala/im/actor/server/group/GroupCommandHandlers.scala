@@ -16,19 +16,20 @@ import im.actor.server.acl.ACLUtils
 import im.actor.server.dialog.UserAcl
 import im.actor.server.file.{ Avatar, ImageUtils }
 import im.actor.server.group.GroupErrors._
-import im.actor.server.group.GroupEvents.{ AboutUpdated, AvatarUpdated, BotAdded, Created, IntegrationTokenRevoked, OwnerChanged, TitleUpdated, TopicUpdated, UserBecameAdmin, UserInvited, UserJoined, UserKicked, UserLeft }
+import im.actor.server.group.GroupEvents._
 import im.actor.server.group.GroupCommands._
 import im.actor.server.model.{ AvatarData, Group }
-import im.actor.server.office.PushTexts
+import im.actor.server.names.{ GlobalNameOwner, OwnerType }
 import im.actor.server.persist.{ AvatarDataRepo, GroupBotRepo, GroupInviteTokenRepo, GroupRepo, GroupUserRepo }
 import im.actor.server.sequence.{ Optimization, SeqState, SeqStateDate }
 import im.actor.util.ThreadLocalSecureRandom
-import im.actor.util.misc.IdUtils
+import im.actor.util.misc.{ IdUtils, StringUtils }
 
 import scala.concurrent.Future
 
+//TODO: spit into MemberCommandHandlers - InfoCommandHandlers - ControlCommandHandlers
 private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
-  self: GroupProcessor ⇒
+  this: GroupProcessor ⇒
 
   import im.actor.server.ApiConversions._
 
@@ -1010,6 +1011,56 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
     }
   }
 
+  protected def updateShortName(cmd: UpdateShortName): Unit = {
+    def isValidShortName(shortName: Option[String]) = shortName forall StringUtils.validGlobalName
+
+    val oldShortName = state.shortName
+    val newShortName = trimToEmpty(cmd.shortName)
+
+    if (!state.isOwner(cmd.clientUserId)) {
+      sender() ! Status.Failure(NotOwner)
+    } else if (!isValidShortName(newShortName)) {
+      sender() ! Status.Failure(InvalidShortName)
+    } else if (oldShortName == newShortName) {
+      seqUpdExt.getSeqState(cmd.clientUserId, cmd.clientAuthId) pipeTo sender()
+    } else {
+      val replyTo = sender()
+
+      val existsFu = newShortName map { name ⇒
+        globalNamesStorage.exists(name)
+      } getOrElse FastFuture.successful(false)
+
+      //TODO: timeout for this
+      onSuccess(existsFu) { exists ⇒
+        if (exists) {
+          replyTo ! Status.Failure(ShortNameTaken)
+        } else {
+          persist(ShortNameUpdated(Instant.now, newShortName)) { evt ⇒
+            val newState = commit(evt)
+
+            val memberIds = newState.memberIds
+
+            val result: Future[SeqState] = for {
+              _ ← globalNamesStorage.updateOrRemove(
+                oldShortName,
+                newShortName,
+                GlobalNameOwner(OwnerType.Group, groupId)
+              )
+              seqState ← seqUpdExt.broadcastClientUpdate(
+                userId = cmd.clientUserId,
+                authId = cmd.clientAuthId,
+                bcastUserIds = memberIds - cmd.clientUserId,
+                update = UpdateGroupShortNameChanged(groupId, newShortName)
+              )
+            } yield seqState
+
+            result pipeTo replyTo
+          }
+        }
+      }
+    }
+  }
+
   protected def revokeIntegrationToken(cmd: RevokeIntegrationToken): Unit = {
     if (!state.isAdmin(cmd.clientUserId)) {
       sender() ! notAdmin
@@ -1159,7 +1210,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
 
   // Updates that will be sent to user, when he enters group.
   // Helps clients that have this group to refresh it's data.
-  // TODO: review when chanels will be added
+  // TODO: review when channels will be added
   private def refreshGroupUpdates(newState: GroupState, userId: Int): List[Update] = List(
     UpdateGroupMemberChanged(groupId, isMember = true),
     UpdateGroupAboutChanged(groupId, newState.about),

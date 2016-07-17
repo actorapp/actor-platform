@@ -4,11 +4,12 @@ import java.time.Instant
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.util.FastFuture
+import cats.data.Xor
 import im.actor.api.rpc.PeerHelpers._
 import im.actor.api.rpc._
 import im.actor.api.rpc.files.ApiFileLocation
 import im.actor.api.rpc.groups._
-import im.actor.api.rpc.misc.ResponseSeqDate
+import im.actor.api.rpc.misc.{ ResponseSeq, ResponseSeqDate, ResponseVoid }
 import im.actor.api.rpc.peers.{ ApiGroupOutPeer, ApiUserOutPeer }
 import im.actor.api.rpc.sequence.ApiUpdateOptimization
 import im.actor.api.rpc.users.ApiUser
@@ -18,12 +19,13 @@ import im.actor.server.db.DbExtension
 import im.actor.server.file.{ FileErrors, FileStorageAdapter, FileStorageExtension, ImageUtils }
 import im.actor.server.group._
 import im.actor.server.model.GroupInviteToken
+import im.actor.server.names.GlobalNamesStorageKeyValueStorage
 import im.actor.server.persist.{ GroupInviteTokenRepo, GroupUserRepo }
 import im.actor.server.presences.GroupPresenceExtension
 import im.actor.server.sequence.{ SeqState, SeqStateDate, SeqUpdatesExtension }
 import im.actor.server.user.UserExtension
 import im.actor.util.ThreadLocalSecureRandom
-import im.actor.util.misc.IdUtils
+import im.actor.util.misc.{ IdUtils, StringUtils }
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
 
@@ -44,6 +46,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
   private val seqUpdExt = SeqUpdatesExtension(actorSystem)
   private val userExt = UserExtension(actorSystem)
   private val groupPresenceExt = GroupPresenceExtension(actorSystem)
+  private val globalNamesStorage = new GlobalNamesStorageKeyValueStorage
 
   /**
    * Loading Full Groups
@@ -79,6 +82,15 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
       }
     }
   }
+
+  override def doHandleDismissUserAdmin(groupPeer: ApiGroupOutPeer, userPeer: ApiUserOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
+    FastFuture.failed(new RuntimeException("Not implemented"))
+
+  override def doHandleLoadAdminSettings(groupPeer: ApiGroupOutPeer, clientData: ClientData): Future[HandlerResult[ResponseLoadAdminSettings]] =
+    FastFuture.failed(new RuntimeException("Not implemented"))
+
+  override def doHandleSaveAdminSettings(groupPeer: ApiGroupOutPeer, settings: ApiAdminSettings, clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
+    FastFuture.failed(new RuntimeException("Not implemented"))
 
   /**
    * Loading group members
@@ -320,26 +332,36 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     }
 
   override def doHandleJoinGroup(
-    urlOrToken:    String,
-    optimizations: IndexedSeq[ApiUpdateOptimization.Value],
-    clientData:    ClientData
+    joinStringOrUrl: String,
+    optimizations:   IndexedSeq[ApiUpdateOptimization.Value],
+    clientData:      ClientData
   ): Future[HandlerResult[ResponseJoinGroup]] =
     authorized(clientData) { implicit client ⇒
       addOptimizations(optimizations)
-      val token = extractInviteToken(urlOrToken)
       val stripEntities = optimizations.contains(ApiUpdateOptimization.STRIP_ENTITIES)
 
       val action = for {
-        tokenInfo ← fromFutureOption(GroupRpcErrors.InvalidInviteToken)(db.run(GroupInviteTokenRepo.findByToken(token)))
+        joinSting ← fromOption(GroupRpcErrors.InvalidInviteUrl)(extractJoinString(joinStringOrUrl))
+        joinInfo ← joinSting match {
+          case Xor.Left(token) ⇒
+            for {
+              info ← fromFutureOption(GroupRpcErrors.InvalidInviteToken)(db.run(GroupInviteTokenRepo.findByToken(token)))
+            } yield info.groupId → Some(info.creatorId)
+          case Xor.Right(groupName) ⇒
+            for {
+              groupId ← fromFutureOption(GroupRpcErrors.InvalidInviteGroup)(globalNamesStorage.getGroupOwnerId(groupName))
+            } yield groupId → None
+        }
+        (groupId, optInviter) = joinInfo
         joinResp ← fromFuture(groupExt.joinGroup(
-          groupId = tokenInfo.groupId,
+          groupId = groupId,
           joiningUserId = client.userId,
           joiningUserAuthId = client.authId,
-          invitingUserId = Some(tokenInfo.creatorId)
+          invitingUserId = optInviter
         ))
         ((SeqStateDate(seq, state, date), userIds, randomId)) = joinResp
         usersPeers ← fromFuture(usersOrPeers(userIds, stripEntities))
-        groupStruct ← fromFuture(groupExt.getApiStruct(tokenInfo.groupId, client.userId))
+        groupStruct ← fromFuture(groupExt.getApiStruct(groupId, client.userId))
       } yield ResponseJoinGroup(
         groupStruct,
         seq,
@@ -408,6 +430,15 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     }
   }
 
+  override def doHandleEditGroupShortName(groupPeer: ApiGroupOutPeer, shortName: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
+    authorized(clientData) { client ⇒
+      withGroupOutPeer(groupPeer) {
+        for {
+          SeqState(seq, state) ← groupExt.updateShortName(groupPeer.groupId, client.userId, client.authId, shortName)
+        } yield Ok(ResponseSeq(seq, state.toByteArray))
+      }
+    }
+
   private def usersOrPeers(userIds: Vector[Int], stripEntities: Boolean)(implicit client: AuthorizedClientData): Future[(Vector[ApiUser], Vector[ApiUserOutPeer])] =
     if (stripEntities) {
       val users = Vector.empty[ApiUser]
@@ -427,11 +458,20 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
 
   private def genInviteUrl(token: String) = s"$inviteUriBase$token"
 
-  private def extractInviteToken(urlOrToken: String) =
-    if (urlOrToken.startsWith(groupInviteConfig.baseUrl))
-      urlOrToken.drop(inviteUriBase.length).takeWhile(c ⇒ c != '?' && c != '#')
+  private def extractJoinString(urlOrTokenOrGroupName: String): Option[String Xor String] = {
+    val extracted = if (urlOrTokenOrGroupName.startsWith(groupInviteConfig.baseUrl))
+      urlOrTokenOrGroupName.drop(inviteUriBase.length).takeWhile(c ⇒ c != '?' && c != '#')
     else
-      urlOrToken
+      urlOrTokenOrGroupName
+
+    if (StringUtils.validGroupInviteToken(extracted)) {
+      Some(Xor.left(extracted))
+    } else if (StringUtils.validGlobalName(extracted)) {
+      Some(Xor.right(extracted))
+    } else {
+      None
+    }
+  }
 
   private def addOptimizations(opts: IndexedSeq[ApiUpdateOptimization.Value])(implicit client: AuthorizedClientData): Unit =
     seqUpdExt.addOptimizations(client.userId, client.authId, opts map (_.id))
@@ -515,7 +555,8 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
 
   override def onFailure: PartialFunction[Throwable, RpcError] = recoverCommon orElse {
     case GroupErrors.NotAMember              ⇒ CommonRpcErrors.forbidden("Not a group member!")
-    case GroupErrors.NotAdmin                ⇒ CommonRpcErrors.forbidden("Only admin can perform this action.")
+    case GroupErrors.NotAdmin                ⇒ CommonRpcErrors.forbidden("Only group admin can perform this action.")
+    case GroupErrors.NotOwner                ⇒ CommonRpcErrors.forbidden("Only group owner can perform this action.")
     case GroupErrors.UserAlreadyAdmin        ⇒ GroupRpcErrors.UserAlreadyAdmin
     case GroupErrors.InvalidTitle            ⇒ GroupRpcErrors.InvalidTitle
     case GroupErrors.AboutTooLong            ⇒ GroupRpcErrors.AboutTooLong
@@ -525,6 +566,8 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     case GroupErrors.UserAlreadyInvited      ⇒ GroupRpcErrors.AlreadyInvited
     case GroupErrors.UserAlreadyJoined       ⇒ GroupRpcErrors.AlreadyJoined
     case GroupErrors.GroupIdAlreadyExists(_) ⇒ GroupRpcErrors.GroupIdAlreadyExists
+    case GroupErrors.InvalidShortName        ⇒ GroupRpcErrors.InvalidShortName
+    case GroupErrors.ShortNameTaken          ⇒ GroupRpcErrors.ShortNameTaken
   }
 
 }

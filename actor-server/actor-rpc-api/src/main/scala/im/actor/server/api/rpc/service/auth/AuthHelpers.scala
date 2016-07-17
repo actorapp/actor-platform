@@ -16,7 +16,6 @@ import im.actor.server.model._
 import im.actor.server.persist._
 import im.actor.server.persist.auth.AuthTransactionRepo
 import im.actor.server.session._
-import im.actor.util.misc.EmailUtils.isTestEmail
 import im.actor.util.misc.IdUtils._
 import im.actor.util.misc.PhoneNumberUtils._
 import im.actor.util.misc.StringUtils.validName
@@ -25,7 +24,6 @@ import org.joda.time.DateTime
 import slick.dbio._
 
 import scala.concurrent.Future
-import scala.util.Try
 
 trait AuthHelpers extends Helpers {
   self: AuthServiceImpl ⇒
@@ -69,10 +67,10 @@ trait AuthHelpers extends Helpers {
   protected def newUsernameSignUp(transaction: AuthUsernameTransaction, name: String, sex: Option[ApiSex]): Result[(Int, String) Xor User] = {
     val username = transaction.username
     for {
-      optUser ← fromDBIO(UserRepo.findByNickname(username))
-      result ← optUser match {
-        case Some(existingUser) ⇒ point(Xor.left((existingUser.id, "")))
-        case None               ⇒ newUser(name, "", sex, username = Some(username))
+      optUserId ← fromFuture(globalNamesStorage.getUserOwnerId(username))
+      result ← optUserId match {
+        case Some(id) ⇒ point(Xor.left((id, "")))
+        case None     ⇒ newUser(name, "", sex, username = Some(username))
       }
     } yield result
   }
@@ -170,8 +168,8 @@ trait AuthHelpers extends Helpers {
           } yield (emailModel.userId, "")
         case u: AuthUsernameTransaction ⇒
           for {
-            userModel ← fromDBIOOption(AuthErrors.UsernameUnoccupied)(UserRepo.findByNickname(u.username))
-          } yield (userModel.id, "")
+            userId ← fromFutureOption(AuthErrors.UsernameUnoccupied)(globalNamesStorage.getUserOwnerId(u.username))
+          } yield (userId, "")
         case _: AuthAnonymousTransaction ⇒
           fromEither(Xor.left(AuthErrors.NotValidated))
       }

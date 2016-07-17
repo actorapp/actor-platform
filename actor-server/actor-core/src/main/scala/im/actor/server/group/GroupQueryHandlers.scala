@@ -116,14 +116,20 @@ trait GroupQueryHandlers {
           groupId,
           theme = state.topic,
           about = state.about,
-          ownerUserId = state.creatorUserId,
+          ownerUserId = state.getShowableOwner(clientUserId),
           createDate = extractCreatedAtMillis(state),
           ext = None,
           canViewMembers = Some(state.canViewMembers(clientUserId)),
           canInvitePeople = Some(state.canInvitePeople(clientUserId)),
           isSharedHistory = Some(state.isHistoryShared),
           isAsyncMembers = Some(state.isAsyncMembers),
-          members = membersAndCount(state, clientUserId)._1
+          members = membersAndCount(state, clientUserId)._1,
+          shortName = state.shortName,
+          canEditGroupInfo = None,
+          canEditShortName = None,
+          canEditAdminList = None,
+          canViewAdminList = None,
+          canEditAdminSettings = None
         )
       )
     }
