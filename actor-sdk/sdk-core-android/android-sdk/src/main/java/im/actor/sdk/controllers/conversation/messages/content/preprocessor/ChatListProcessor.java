@@ -68,15 +68,7 @@ public class ChatListProcessor implements ListProcessor<Message> {
         if (isGroup) {
             group = groups().get(peer.getPeerId());
         }
-        colors = new int[]{
-                context.getResources().getColor(R.color.placeholder_0),
-                context.getResources().getColor(R.color.placeholder_1),
-                context.getResources().getColor(R.color.placeholder_2),
-                context.getResources().getColor(R.color.placeholder_3),
-                context.getResources().getColor(R.color.placeholder_4),
-                context.getResources().getColor(R.color.placeholder_5),
-                context.getResources().getColor(R.color.placeholder_6),
-        };
+        colors = ActorSDK.sharedActor().style.getDefaultAvatarPlaceholders();
     }
 
     @Nullable

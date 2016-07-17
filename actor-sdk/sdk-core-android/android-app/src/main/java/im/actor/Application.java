@@ -1,6 +1,8 @@
 package im.actor;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +22,7 @@ import im.actor.sdk.BaseActorSDKDelegate;
 import im.actor.sdk.controllers.conversation.attach.ShareMenuField;
 import im.actor.sdk.controllers.conversation.attach.AbsAttachFragment;
 import im.actor.sdk.controllers.conversation.attach.AttachFragment;
+import im.actor.sdk.controllers.root.RootFragment;
 import im.actor.sdk.controllers.settings.ActorSettingsCategories;
 import im.actor.sdk.controllers.settings.ActorSettingsCategory;
 import im.actor.sdk.controllers.settings.ActorSettingsField;
@@ -72,6 +75,19 @@ public class Application extends ActorSDKApplication {
     }
 
     private class ActorSDKDelegate extends BaseActorSDKDelegate {
+
+        @Nullable
+        @Override
+        public Fragment fragmentForRoot() {
+            return new RootFragment() {
+                @Override
+                public void onConfigureActionBar(ActionBar actionBar) {
+                    super.onConfigureActionBar(actionBar);
+                    actionBar.setDisplayShowHomeEnabled(true);
+                    actionBar.setIcon(R.drawable.ic_app_notify);
+                }
+            };
+        }
 
         @Nullable
         @Override
