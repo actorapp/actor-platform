@@ -33,6 +33,7 @@ private[group] object GroupState {
       about = None,
       avatar = None,
       topic = None,
+      shortName = None,
       typ = GroupType.General,
       isHidden = false,
       isHistoryShared = false,
@@ -59,6 +60,7 @@ private[group] final case class GroupState(
   about:           Option[String],
   avatar:          Option[Avatar],
   topic:           Option[String],
+  shortName:       Option[String],
   typ:             GroupType, // TODO: rename to groupType
   isHidden:        Boolean,
   isHistoryShared: Boolean,
@@ -120,6 +122,12 @@ private[group] final case class GroupState(
     typ match {
       case General | Public ⇒ members.size > 100
       case Channel          ⇒ true
+    }
+
+  def getShowableOwner(clientUserId: Int): Option[Int] =
+    typ match {
+      case General | Public ⇒ Some(creatorUserId)
+      case Channel          ⇒ if (isAdmin(clientUserId)) Some(creatorUserId) else None
     }
 
   override def updated(e: Event): GroupState = e match {
@@ -218,6 +226,8 @@ private[group] final case class GroupState(
       )
     case OwnerChanged(_, userId) ⇒
       this.copy(ownerUserId = userId)
+    case ShortNameUpdated(_, newShortName) ⇒
+      this.copy(shortName = newShortName)
   }
 
   // TODO: real snapshot

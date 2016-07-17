@@ -6,6 +6,7 @@ import akka.actor.{ ActorRef, ActorSystem, Props, ReceiveTimeout, Status }
 import akka.cluster.sharding.ShardRegion
 import akka.http.scaladsl.util.FastFuture
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
+import im.actor.concurrent.ActorFutures
 import im.actor.serialization.ActorSerializer
 import im.actor.server.cqrs.{ Processor, TaggedEvent }
 import im.actor.server.db.DbExtension
@@ -13,6 +14,7 @@ import im.actor.server.dialog.{ DialogEnvelope, DialogExtension }
 import im.actor.server.group.GroupErrors.{ GroupIdAlreadyExists, GroupNotFound }
 import im.actor.server.group.GroupCommands._
 import im.actor.server.group.GroupQueries._
+import im.actor.server.names.GlobalNamesStorageKeyValueStorage
 import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.user.UserExtension
 
@@ -37,8 +39,6 @@ object GroupProcessor {
       20005 → classOf[GroupCommands.Kick],
       20006 → classOf[GroupCommands.Leave],
       20010 → classOf[GroupCommands.UpdateAvatar],
-      //      20011 → classOf[GroupCommands.MakePublic],
-      //      20012 → classOf[GroupCommands.MakePublicAck],
       20013 → classOf[GroupCommands.UpdateTitle],
       20015 → classOf[GroupCommands.UpdateTopic],
       20016 → classOf[GroupCommands.UpdateAbout],
@@ -46,6 +46,7 @@ object GroupProcessor {
       20018 → classOf[GroupCommands.RevokeIntegrationToken],
       20020 → classOf[GroupCommands.RevokeIntegrationTokenAck],
       20021 → classOf[GroupCommands.TransferOwnership],
+      20022 → classOf[GroupCommands.UpdateShortName],
 
       21001 → classOf[GroupQueries.GetIntegrationToken],
       21002 → classOf[GroupQueries.GetIntegrationTokenResponse],
@@ -80,7 +81,8 @@ object GroupProcessor {
       22013 → classOf[GroupEvents.TopicUpdated],
       22015 → classOf[GroupEvents.UserBecameAdmin],
       22016 → classOf[GroupEvents.IntegrationTokenRevoked],
-      22017 → classOf[GroupEvents.OwnerChanged]
+      22017 → classOf[GroupEvents.OwnerChanged],
+      22017 → classOf[GroupEvents.ShortNameUpdated]
     )
 
   def persistenceIdFor(groupId: Int): String = s"Group-${groupId}"
@@ -91,6 +93,7 @@ object GroupProcessor {
 //FIXME: snapshots!!!
 private[group] final class GroupProcessor
   extends Processor[GroupState]
+  with ActorFutures
   with GroupCommandHandlers
   with GroupQueryHandlers {
 
@@ -102,6 +105,7 @@ private[group] final class GroupProcessor
   protected val userExt = UserExtension(system)
 
   protected var integrationStorage: IntegrationTokensWriteOps = _
+  protected val globalNamesStorage = new GlobalNamesStorageKeyValueStorage
 
   protected val groupId = self.path.name.toInt
   protected val apiGroupPeer = ApiPeer(ApiPeerType.Group, groupId)
@@ -125,6 +129,7 @@ private[group] final class GroupProcessor
     case u: UpdateTitle                        ⇒ updateTitle(u)
     case u: UpdateTopic                        ⇒ updateTopic(u)
     case u: UpdateAbout                        ⇒ updateAbout(u)
+    case u: UpdateShortName                    ⇒ updateShortName(u)
 
     // admin actions
     case r: RevokeIntegrationToken             ⇒ revokeIntegrationToken(r)

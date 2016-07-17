@@ -1,6 +1,6 @@
 package im.actor.util
 
-import im.actor.util.misc.StringUtils.{ transliterate, validUsername }
+import im.actor.util.misc.StringUtils.{ transliterate, validGlobalName }
 import org.scalatest.{ Matchers, FlatSpecLike }
 
 class StringUtilsSpec extends FlatSpecLike with Matchers {
@@ -10,19 +10,19 @@ class StringUtilsSpec extends FlatSpecLike with Matchers {
   "transliterate" should "transform string to lower-cased string with only latin chars" in translit
 
   def nicknames() = {
-    validUsername("rockjam") shouldEqual true
-    validUsername("abcde") shouldEqual true
-    validUsername("rock_jam") shouldEqual true
-    validUsername("r0ck_jaM___") shouldEqual true
+    validGlobalName("rockjam") shouldEqual true
+    validGlobalName("abcde") shouldEqual true
+    validGlobalName("rock_jam") shouldEqual true
+    validGlobalName("r0ck_jaM___") shouldEqual true
 
     //too long
     val tooLong = 0 to 35 map (e ⇒ ".") mkString ""
-    validUsername(tooLong) shouldEqual false
+    validGlobalName(tooLong) shouldEqual false
     //too short
-    validUsername("roc") shouldEqual false
+    validGlobalName("roc") shouldEqual false
     //wrong symbols
-    validUsername("rock-jam") shouldEqual false
-    validUsername("rock&^^jam") shouldEqual false
+    validGlobalName("rock-jam") shouldEqual false
+    validGlobalName("rock&^^jam") shouldEqual false
   }
 
   def translit() = {

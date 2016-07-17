@@ -19,9 +19,15 @@ object GroupErrors {
 
   case object NotAdmin extends Exception with NoStackTrace
 
+  case object NotOwner extends Exception with NoStackTrace
+
   case object InvalidTitle extends Exception with NoStackTrace
 
   case object AboutTooLong extends Exception with NoStackTrace
+
+  case object InvalidShortName extends Exception with NoStackTrace
+
+  case object ShortNameTaken extends Exception with NoStackTrace
 
   case object TopicTooLong extends Exception with NoStackTrace
 

@@ -30,6 +30,7 @@ message GroupEnvelope {
         GroupCommands.UpdateTitle  update_title  = 8;
         GroupCommands.UpdateTopic  update_topic  = 9;
         GroupCommands.UpdateAbout  update_about  = 10;
+        GroupCommands.UpdateShortName update_short_name  = 27;
 //        GroupCommands.MakePublic make_public = 11;
         GroupCommands.RevokeIntegrationToken revoke_token = 12;
         GroupCommands.MakeUserAdmin make_user_admin = 13;
@@ -150,6 +151,14 @@ message GroupCommands {
         int64 client_auth_id = 2;
         google.protobuf.StringValue about = 3;
         int64 random_id = 4;
+    }
+
+    message UpdateShortName {
+        option (scalapb.message).extends = "GroupCommand";
+
+        int32 client_user_id = 1;
+        int64 client_auth_id = 2;
+        google.protobuf.StringValue short_name = 3;
     }
 
     message MakeUserAdmin {

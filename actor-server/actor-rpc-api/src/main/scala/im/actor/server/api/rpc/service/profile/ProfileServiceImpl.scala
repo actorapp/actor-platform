@@ -7,17 +7,15 @@ import im.actor.api.rpc.files.ApiFileLocation
 import im.actor.api.rpc.misc.{ ResponseBool, ResponseSeq }
 import im.actor.api.rpc.profile.{ ProfileService, ResponseEditAvatar }
 import im.actor.server.db.DbExtension
-import im.actor.server.file.{ FileStorageExtension, FileErrors, FileStorageAdapter, ImageUtils }
-import im.actor.server.persist.UserRepo
-import im.actor.server.sequence.{ SequenceErrors, SeqState }
+import im.actor.server.file.{ FileErrors, FileStorageAdapter, FileStorageExtension, ImageUtils }
+import im.actor.server.names.GlobalNamesStorageKeyValueStorage
+import im.actor.server.sequence.{ SeqState, SequenceErrors }
 import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
 import im.actor.server.user._
-import im.actor.util.ThreadLocalSecureRandom
 import im.actor.util.misc.StringUtils
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.duration._
-import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
 
 object ProfileRpcErrors {
@@ -44,6 +42,7 @@ final class ProfileServiceImpl()(implicit system: ActorSystem) extends ProfileSe
   private val userExt = UserExtension(system)
   private implicit val socialRegion: SocialManagerRegion = SocialExtension(system).region
   private implicit val fsAdapter: FileStorageAdapter = FileStorageExtension(system).fsAdapter
+  private val globalNamesStorage = new GlobalNamesStorageKeyValueStorage
 
   // TODO: flatten
   override def doHandleEditAvatar(fileLocation: ApiFileLocation, clientData: ClientData): Future[HandlerResult[ResponseEditAvatar]] =
@@ -90,12 +89,12 @@ final class ProfileServiceImpl()(implicit system: ActorSystem) extends ProfileSe
   override def doHandleCheckNickName(nickname: String, clientData: ClientData): Future[HandlerResult[ResponseBool]] =
     authorized(clientData) { implicit client ⇒
       (for {
-        _ ← fromBoolean(ProfileRpcErrors.NicknameInvalid)(StringUtils.validUsername(nickname))
-        exists ← fromFuture(db.run(UserRepo.nicknameExists(nickname.trim)))
+        _ ← fromBoolean(ProfileRpcErrors.NicknameInvalid)(StringUtils.validGlobalName(nickname))
+        exists ← fromFuture(globalNamesStorage.exists(nickname.trim))
       } yield ResponseBool(!exists)).value
     }
 
-  //todo: move validation inside of UserOffice
+  //todo: move validation inside of UserProcessor
   override def doHandleEditAbout(about: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     authorized(clientData) { implicit client ⇒
       (for {

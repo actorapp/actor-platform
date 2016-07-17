@@ -98,6 +98,13 @@ message GroupEvents {
         optional string description = 1;
     }
 
+    message ShortNameUpdated {
+        option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
+
+        required int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];
+        optional string short_name = 2;
+    }
+
     message TopicUpdated {
         option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
 

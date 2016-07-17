@@ -19,6 +19,7 @@ import im.actor.server.bots.BotCommand
 import im.actor.server.file.{ Avatar, ImageUtils }
 import im.actor.server.model.{ AvatarData, Sex, User }
 import im.actor.server.model.contact.{ UserContact, UserEmailContact, UserPhoneContact }
+import im.actor.server.names.{ GlobalNameOwner, OwnerType }
 import im.actor.server.office.EntityNotFound
 import im.actor.server.persist.contact._
 import im.actor.server.persist._
@@ -217,12 +218,12 @@ private[user] trait UserCommandHandlers {
 
     onSuccess(checkNicknameExists(nicknameOpt)) { exists ⇒
       if (!exists) {
-        if (nicknameOpt forall StringUtils.validUsername) {
+        if (nicknameOpt forall StringUtils.validGlobalName) {
           persistReply(UserEvents.NicknameChanged(now(), nicknameOpt), user, replyTo) { _ ⇒
             val update = UpdateUserNickChanged(userId, nicknameOpt)
 
             for {
-              _ ← db.run(UserRepo.setNickname(userId, nicknameOpt))
+              _ ← globalNamesStorage.updateOrRemove(user.nickname, nicknameOpt, GlobalNameOwner(OwnerType.User, userId))
               relatedUserIds ← getRelations(userId)
               seqState ← seqUpdExt.broadcastClientUpdate(userId, authId, relatedUserIds, update)
             } yield seqState
@@ -429,7 +430,7 @@ private[user] trait UserCommandHandlers {
 
   private def checkNicknameExists(nicknameOpt: Option[String]): Future[Boolean] = {
     nicknameOpt match {
-      case Some(nickname) ⇒ db.run(UserRepo.nicknameExists(nickname))
+      case Some(nickname) ⇒ globalNamesStorage.exists(nickname)
       case None           ⇒ FastFuture.successful(false)
     }
   }

@@ -1,4 +1,4 @@
-package im.actor.server.office
+package im.actor.server.group
 
 //TODO: make up to date with channels
 object PushTexts {
