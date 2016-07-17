@@ -348,6 +348,7 @@
     <string name="group_context_view">View {0}</string>
     <string name="group_context_remove">Remove {0} from group</string>
 
+    <string name="group_menu_edit">Edit</string>
     <string name="group_menu_change_theme">Change theme</string>
     <string name="group_menu_change_photo">Change photo</string>
     <string name="group_menu_integration_token">Integration token</string>
@@ -373,7 +374,7 @@
     <string name="avatar_title_person">Photo</string>
     <string name="avatar_title_group">Group photo</string>
     <string name="avatar_no_photo">No photo</string>
-    <string name="avatar_menu_edit">Edit</string>
+    <string name="actor_menu_edit">Edit</string>
     <string name="avatar_menu_set_as">Set as…</string>
 
     <!-- Add Contact -->
@@ -396,6 +397,9 @@
     <string name="create_channel_title">Create channel</string>
     <string name="create_channel_name_hint">Name the channel</string>
     <string name="create_channel_hint">Enter channel name and set optional channel picture</string>
+
+    <string name="group_name_hint">Name</string>
+    <string name="group_description_hint">Description</string>
 
     <!-- Group add -->
     <string name="group_add_title">Add member</string>

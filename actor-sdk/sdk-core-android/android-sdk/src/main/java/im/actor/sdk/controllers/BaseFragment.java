@@ -1,7 +1,9 @@
 package im.actor.sdk.controllers;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
@@ -17,6 +19,7 @@ import android.widget.TextView;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
@@ -28,9 +31,10 @@ import im.actor.runtime.promise.PromiseResolver;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.R;
+import im.actor.sdk.controllers.tools.MediaPickerCallback;
 import im.actor.sdk.util.ViewUtils;
 
-public class BaseFragment extends BinderCompatFragment {
+public class BaseFragment extends BinderCompatFragment implements MediaPickerCallback {
 
     protected final ActorStyle style = ActorSDK.sharedActor().style;
 
@@ -288,25 +292,24 @@ public class BaseFragment extends BinderCompatFragment {
         });
     }
 
-    public <T> void execute(Promise<T> promise) {
-        execute(promise, R.string.progress_common);
+    public <T> Promise<T> execute(Promise<T> promise) {
+        return execute(promise, R.string.progress_common);
     }
 
-    public <T> void execute(Promise<T> promise, int title) {
+    public <T> Promise<T> execute(Promise<T> promise, int title) {
         final ProgressDialog dialog = ProgressDialog.show(getContext(), "", getString(title), true, false);
-        promise
-                .then(new Consumer<T>() {
-                    @Override
-                    public void apply(T t) {
-                        dismissDialog(dialog);
-                    }
-                })
-                .failure(new Consumer<Exception>() {
-                    @Override
-                    public void apply(Exception e) {
-                        dismissDialog(dialog);
-                    }
-                });
+        promise.then(new Consumer<T>() {
+            @Override
+            public void apply(T t) {
+                dismissDialog(dialog);
+            }
+        }).failure(new Consumer<Exception>() {
+            @Override
+            public void apply(Exception e) {
+                dismissDialog(dialog);
+            }
+        });
+        return promise;
     }
 
     public View buildRecord(String titleText, String valueText,
@@ -429,6 +432,47 @@ public class BaseFragment extends BinderCompatFragment {
         pending.clear();
     }
 
+    public void finishActivity() {
+        Activity a = getActivity();
+        if (a != null) {
+            a.finish();
+        }
+    }
+
+    @Override
+    public void onUriPicked(Uri uri) {
+
+    }
+
+    @Override
+    public void onFilesPicked(List<String> paths) {
+
+    }
+
+    @Override
+    public void onPhotoPicked(String path) {
+
+    }
+
+    @Override
+    public void onVideoPicked(String path) {
+
+    }
+
+    @Override
+    public void onPhotoCropped(String path) {
+
+    }
+
+    @Override
+    public void onContactPicked(String name, List<String> phones, List<String> emails, byte[] avatar) {
+
+    }
+
+    @Override
+    public void onLocationPicked(double latitude, double longitude, String street, String place) {
+
+    }
 
     private class WrappedPromise<T> extends Promise<T> {
 

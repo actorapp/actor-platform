@@ -152,7 +152,9 @@ public class GroupInfoFragment extends BaseFragment {
         //
         avatarView.bind(groupVM.getAvatar().get(), groupVM.getName().get(), groupVM.getId());
         avatarView.setOnClickListener(view -> {
-            startActivity(ViewAvatarActivity.viewGroupAvatar(chatId, getActivity()));
+            if (groupVM.getAvatar().get() != null) {
+                startActivity(ViewAvatarActivity.viewGroupAvatar(chatId, getActivity()));
+            }
         });
         bind(groupVM.getName(), name -> {
             title.setText(name);
@@ -163,16 +165,8 @@ public class GroupInfoFragment extends BaseFragment {
 
         // About
         bind(groupVM.getOwnerId(), groupVM.getAbout(), (ownerId, valueModel, about, valueModel2) -> {
-
+            aboutTV.setText(about);
             descriptionContainer.setVisibility(about != null ? View.VISIBLE : View.GONE);
-
-            if (ownerId == myUid()) {
-                aboutCont.setOnClickListener(view -> {
-                    startActivity(Intents.editGroupAbout(groupVM.getId(), getActivity()));
-                });
-            } else {
-                aboutCont.setOnClickListener(null);
-            }
         });
 
         // Notifications
@@ -375,20 +369,21 @@ public class GroupInfoFragment extends BaseFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
         super.onCreateOptionsMenu(menu, menuInflater);
         if (groupVM.isMember().get()) {
-            if (groupVM.getIsCanEditInfo().get()) {
-                menuInflater.inflate(R.menu.group_info, menu);
-            }
+            MenuItem menuItem = menu.add(Menu.NONE, R.id.edit, Menu.NONE, R.string.actor_menu_edit);
+            menuItem.setIcon(R.drawable.ic_edit_white_24dp);
+            menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.editTitle) {
-            startActivity(Intents.editGroupTitle(chatId, getActivity()));
-        } else if (item.getItemId() == R.id.changePhoto) {
-            startActivity(ViewAvatarActivity.viewGroupAvatar(chatId, getActivity()));
+        if (item.getItemId() == R.id.edit) {
+            startActivity(new Intent(getContext(), GroupEditActivity.class)
+                    .putExtra(Intents.EXTRA_GROUP_ID, groupVM.getId()));
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     public void updateBar(int offset) {

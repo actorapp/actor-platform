@@ -7,11 +7,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/editTitle"
-        android:title="@string/group_menu_change_theme" />
-
-    <item
-        android:id="@+id/changePhoto"
-        android:title="@string/group_menu_change_photo" />
+        android:id="@+id/edit"
+        android:icon="@drawable/ic_edit_white_36dp"
+        android:title="@string/actor_menu_edit" />
 
 </menu>

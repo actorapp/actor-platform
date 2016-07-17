@@ -5,6 +5,7 @@ import android.net.Uri;
 import java.util.List;
 
 public interface MediaPickerCallback {
+
     void onUriPicked(Uri uri);
 
     void onFilesPicked(List<String> paths);
@@ -12,6 +13,8 @@ public interface MediaPickerCallback {
     void onPhotoPicked(String path);
 
     void onVideoPicked(String path);
+
+    void onPhotoCropped(String path);
 
     void onContactPicked(String name, List<String> phones, List<String> emails, byte[] avatar);
 

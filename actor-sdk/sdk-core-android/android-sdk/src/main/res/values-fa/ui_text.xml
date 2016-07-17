@@ -345,7 +345,7 @@
     <string name="avatar_title_person">نگاره</string>
     <string name="avatar_title_group">نگاره گروه</string>
     <string name="avatar_no_photo">بدون نگاره</string>
-    <string name="avatar_menu_edit">ویرایش</string>
+    <string name="actor_menu_edit">ویرایش</string>
     <string name="avatar_menu_set_as">تنظیم به عنوان...</string>
 
     <!-- Add Contact -->

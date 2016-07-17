@@ -1387,14 +1387,12 @@ public class Messenger {
      *
      * @param gid   group's id
      * @param title new group title
-     * @return Command for execution
+     * @return Promise for void
      */
     @NotNull
-    @ObjectiveCName("editGroupTitleCommandWithGid:withTitle:")
-    public Command<Void> editGroupTitle(final int gid, final String title) {
-        return callback -> modules.getGroupsModule().editTitle(gid, title)
-                .then(v -> callback.onResult(v))
-                .failure(e -> callback.onError(e));
+    @ObjectiveCName("editGroupTitleWithGid:withTitle:")
+    public Promise<Void> editGroupTitle(final int gid, final String title) {
+        return modules.getGroupsModule().editTitle(gid, title);
     }
 
     /**
@@ -1417,14 +1415,12 @@ public class Messenger {
      *
      * @param gid   group's id
      * @param about new group about
-     * @return Command for execution
+     * @return Promise for void
      */
     @NotNull
-    @ObjectiveCName("editGroupAboutCommandWithGid:withAbout:")
-    public Command<Void> editGroupAbout(final int gid, final String about) {
-        return callback -> modules.getGroupsModule().editAbout(gid, about)
-                .then(v -> callback.onResult(v))
-                .failure(e -> callback.onError(e));
+    @ObjectiveCName("editGroupAboutWithGid:withAbout:")
+    public Promise<Void> editGroupAbout(final int gid, final String about) {
+        return modules.getGroupsModule().editAbout(gid, about);
     }
 
     /**

@@ -356,7 +356,7 @@
     <string name="avatar_title_person">Фото</string>
     <string name="avatar_title_group">Фото группы</string>
     <string name="avatar_no_photo">Нет фото</string>
-    <string name="avatar_menu_edit">Изменить</string>
+    <string name="actor_menu_edit">Изменить</string>
     <string name="avatar_menu_set_as">Установить как…</string>
 
     <!-- Add Contact -->

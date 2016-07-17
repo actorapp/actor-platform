@@ -252,9 +252,7 @@ public class ViewAvatarActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.avatar, menu);
 
-        if (peer.getPeerType() == PeerType.GROUP) {
-            menu.findItem(R.id.editAvatar).setVisible(true);
-        } else if (peer.getPeerType() == PeerType.PRIVATE && peer.getPeerId() == myUid()) {
+        if (peer.getPeerType() == PeerType.PRIVATE && peer.getPeerId() == myUid()) {
             menu.findItem(R.id.editAvatar).setVisible(true);
         } else {
             menu.findItem(R.id.editAvatar).setVisible(false);

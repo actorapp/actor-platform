@@ -268,7 +268,7 @@
     <string name="avatar_title_person">Foto</string>
     <string name="avatar_title_group">Foto do grupo</string>
     <string name="avatar_no_photo">Sem foto</string>
-    <string name="avatar_menu_edit">Editar</string>
+    <string name="actor_menu_edit">Editar</string>
     <string name="avatar_menu_set_as">Definir como…</string>
 
     <!-- Add Contact -->
