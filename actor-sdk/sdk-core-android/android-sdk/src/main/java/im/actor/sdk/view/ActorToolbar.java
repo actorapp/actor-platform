@@ -18,6 +18,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import im.actor.sdk.view.avatar.AvatarView;
+
 public class ActorToolbar extends Toolbar {
 
     public ActorToolbar(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -80,7 +82,7 @@ public class ActorToolbar extends Toolbar {
             ((ImageButton) v).getDrawable().setColorFilter(colorFilter);
         }
 
-        if (v instanceof ImageView) {
+        if (v instanceof ImageView && !(v instanceof AvatarView)) {
             ((ImageView) v).getDrawable().setAlpha(255);
             ((ImageView) v).getDrawable().setColorFilter(colorFilter);
         }
