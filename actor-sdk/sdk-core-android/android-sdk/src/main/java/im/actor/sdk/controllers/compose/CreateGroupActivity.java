@@ -15,7 +15,7 @@ public class CreateGroupActivity extends BaseFragmentActivity {
 
         if (savedInstanceState == null) {
             showFragment(new GroupNameFragment(getIntent().getBooleanExtra(EXTRA_IS_CHANNEL, false)),
-                    false, false);
+                    false);
         }
     }
 }

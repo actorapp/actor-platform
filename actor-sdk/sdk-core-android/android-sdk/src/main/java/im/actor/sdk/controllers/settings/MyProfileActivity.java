@@ -30,7 +30,7 @@ public class MyProfileActivity extends BaseFragmentActivity {
                 fragment = new ActorSettingsFragment();
             }
 
-            showFragment(fragment, false, false);
+            showFragment(fragment, false);
         }
     }
 }

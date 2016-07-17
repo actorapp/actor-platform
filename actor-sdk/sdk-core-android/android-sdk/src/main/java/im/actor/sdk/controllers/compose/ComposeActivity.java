@@ -11,7 +11,7 @@ public class ComposeActivity extends BaseFragmentActivity {
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState == null) {
-            showFragment(new ComposeFragment(), false, false);
+            showFragment(new ComposeFragment(), false);
         }
     }
 }

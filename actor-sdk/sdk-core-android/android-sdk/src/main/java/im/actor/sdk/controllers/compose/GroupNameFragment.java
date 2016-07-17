@@ -142,7 +142,7 @@ public class GroupNameFragment extends BaseFragment {
                 }));
             } else {
                 ((CreateGroupActivity) getActivity()).showNextFragment(
-                        GroupUsersFragment.create(groupName.getText().toString().trim(), avatarPath), false, true);
+                        GroupUsersFragment.create(groupName.getText().toString().trim(), avatarPath), false);
             }
         }
     }

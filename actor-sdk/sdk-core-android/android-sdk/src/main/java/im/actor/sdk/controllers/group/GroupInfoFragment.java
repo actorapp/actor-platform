@@ -14,8 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,7 +22,6 @@ import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 import im.actor.core.entity.GroupMember;
 import im.actor.core.entity.GroupType;
@@ -34,9 +31,6 @@ import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserPhone;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.actors.messages.Void;
-import im.actor.runtime.mvvm.Value;
-import im.actor.runtime.mvvm.ValueDoubleChangedListener;
-import im.actor.runtime.mvvm.ValueListener;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorSDKLauncher;
 import im.actor.sdk.ActorStyle;
@@ -50,8 +44,6 @@ import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.TintImageView;
 import im.actor.sdk.view.adapters.RecyclerListView;
 import im.actor.sdk.view.avatar.AvatarView;
-import im.actor.sdk.view.avatar.CoverAvatarView;
-import im.actor.sdk.util.Fonts;
 
 import static im.actor.sdk.util.ActorSDKMessenger.groups;
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
@@ -112,30 +104,28 @@ public class GroupInfoFragment extends BaseFragment {
 
         // Views
         View header = inflater.inflate(R.layout.fragment_group_header, listView, false);
+        TextView title = (TextView) header.findViewById(R.id.title);
+        TextView subtitle = (TextView) header.findViewById(R.id.subtitle);
         avatarView = (AvatarView) header.findViewById(R.id.avatar);
         avatarView.init(Screen.dp(48), 22);
 
         TextView aboutTV = (TextView) header.findViewById(R.id.about);
         View aboutCont = header.findViewById(R.id.aboutContainer);
-        View addMemberCont = header.findViewById(R.id.addMemberCont);
-        View membersCont = header.findViewById(R.id.membersCont);
-        View leaveCont = header.findViewById(R.id.leaveChannelCont);
+        TextView addMember = (TextView) header.findViewById(R.id.addMemberAction);
+        TextView members = (TextView) header.findViewById(R.id.viewMembersAction);
+        TextView leaveAction = (TextView) header.findViewById(R.id.leaveAction);
 
-        TextView title = (TextView) header.findViewById(R.id.title);
         View descriptionContainer = header.findViewById(R.id.descriptionContainer);
         SwitchCompat isNotificationsEnabled = (SwitchCompat) header.findViewById(R.id.enableNotifications);
-        TextView memberCount = (TextView) header.findViewById(R.id.membersCount);
-        // TextView settingsHeaderText = (TextView) header.findViewById(R.id.settings_header_text);
-        //
-        // TextView membersHeaderText = (TextView) header.findViewById(R.id.membersTitle);
 
         // Styling
         // ((TextView) header.findViewById(R.id.about_hint)).setTextColor(style.getTextSecondaryColor());
         header.setBackgroundColor(style.getMainBackgroundColor());
         header.findViewById(R.id.avatarContainer).setBackgroundColor(style.getToolBarColor());
         title.setTextColor(style.getProfileTitleColor());
+        subtitle.setTextColor(style.getProfileSubtitleColor());
+
         aboutTV.setTextColor(style.getTextPrimaryColor());
-        memberCount.setTextColor(style.getProfileSubtitleColor());
         // settingsHeaderText.setTextColor(style.getSettingsCategoryTextColor());
 
         ((TintImageView) header.findViewById(R.id.settings_notification_icon))
@@ -144,55 +134,37 @@ public class GroupInfoFragment extends BaseFragment {
                 .setTint(style.getSettingsIconColor());
         ((TextView) header.findViewById(R.id.settings_notifications_title))
                 .setTextColor(style.getTextPrimaryColor());
-        ((TextView) header.findViewById(R.id.add_member_title))
+        ((TextView) header.findViewById(R.id.addMemberAction))
                 .setTextColor(style.getTextPrimaryColor());
-        ((TextView) header.findViewById(R.id.members_tite))
-                .setTextColor(style.getTextPrimaryColor());
-        ((TextView) header.findViewById(R.id.leave_channel_title))
-                .setTextColor(style.getTextDangerColor());
+        members.setTextColor(style.getTextPrimaryColor());
+        leaveAction.setTextColor(style.getTextDangerColor());
 
         if (groupVM.getGroupType() == GroupType.CHANNEL) {
-            ((TextView) header.findViewById(R.id.leave_channel_title))
-                    .setText(R.string.group_leave_channel);
+            leaveAction.setText(R.string.group_leave_channel);
         } else {
-            ((TextView) header.findViewById(R.id.leave_channel_title))
-                    .setText(R.string.group_leave);
+            leaveAction.setText(R.string.group_leave);
         }
 
-        // header.findViewById(R.id.after_about_divider).setBackgroundColor(style.getBackyardBackgroundColor());
         header.findViewById(R.id.after_settings_divider).setBackgroundColor(style.getBackyardBackgroundColor());
 
-        // Avatar
-        // bind(avatarView, groupVM.getAvatar());
+        //
+        // Header
+        //
         avatarView.bind(groupVM.getAvatar().get(), groupVM.getName().get(), groupVM.getId());
         avatarView.setOnClickListener(view -> {
             startActivity(ViewAvatarActivity.viewGroupAvatar(chatId, getActivity()));
         });
-
-        // Title
-        bind(title, groupVM.getName());
-
-        // Owned by
+        bind(groupVM.getName(), name -> {
+            title.setText(name);
+        });
         bind(groupVM.getMembersCount(), val -> {
-            if (val != null) {
-                memberCount.setText(messenger().getFormatter().formatGroupMembers(val));
-            } else {
-                memberCount.setText("");
-            }
+            subtitle.setText(messenger().getFormatter().formatGroupMembers(val));
         });
 
         // About
+        bind(groupVM.getOwnerId(), groupVM.getAbout(), (ownerId, valueModel, about, valueModel2) -> {
 
-        bind(groupVM.getOwnerId(), groupVM.getAbout(), (ownerId, valueModel, theme, valueModel2) -> {
-            boolean isVisible;
-            if (theme != null) {
-                isVisible = true;
-                aboutTV.setText(theme);
-            } else {
-                aboutTV.setText(R.string.about_group_empty);
-                isVisible = ownerId == myUid();
-            }
-            descriptionContainer.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+            descriptionContainer.setVisibility(about != null ? View.VISIBLE : View.GONE);
 
             if (ownerId == myUid()) {
                 aboutCont.setOnClickListener(view -> {
@@ -204,7 +176,6 @@ public class GroupInfoFragment extends BaseFragment {
         });
 
         // Notifications
-
         isNotificationsEnabled.setChecked(messenger().isNotificationsEnabled(Peer.group(chatId)));
         isNotificationsEnabled.setOnCheckedChangeListener((buttonView, isChecked) -> {
             messenger().changeNotificationsEnabled(Peer.group(chatId), isChecked);
@@ -214,54 +185,47 @@ public class GroupInfoFragment extends BaseFragment {
         });
 
         // Add Member
-
-        addMemberCont.setOnClickListener(view -> {
+        bind(groupVM.getIsCanInviteMembers(), (canInvite) -> {
+            if (canInvite) {
+                addMember.setVisibility(View.VISIBLE);
+            } else {
+                addMember.setVisibility(View.GONE);
+            }
+        });
+        addMember.setOnClickListener(view -> {
             startActivity(new Intent(getActivity(), AddMemberActivity.class)
                     .putExtra("GROUP_ID", chatId));
         });
 
-        bind(groupVM.getIsCanInviteMembers(), (canInvite) -> {
-            if (canInvite) {
-                addMemberCont.setVisibility(View.VISIBLE);
-            } else {
-                addMemberCont.setVisibility(View.GONE);
-            }
-        });
-
         // Leave
-
-        leaveCont.setOnClickListener(view1 -> {
-            leaveGroup();
+        leaveAction.setOnClickListener(view1 -> {
+            new AlertDialog.Builder(getActivity())
+                    .setMessage(getString(R.string.alert_leave_group_message).replace("%1$s",
+                            groupVM.getName().get()))
+                    .setPositiveButton(R.string.alert_leave_group_yes, (dialog2, which) -> {
+                        execute(messenger().leaveGroup(chatId));
+                    })
+                    .setNegativeButton(R.string.dialog_cancel, null)
+                    .show()
+                    .setCanceledOnTouchOutside(true);
         });
-        // Hide Leave button if we can view members
-        // In this case menu will have such button
-        bind(groupVM.getIsCanViewMembers(), (canView) -> {
-            if (canView) {
-                leaveCont.setVisibility(View.GONE);
-            } else {
-                leaveCont.setVisibility(View.VISIBLE);
-            }
-            // Invalidate options menu for menu recreation
-            getActivity().invalidateOptionsMenu();
-        });
-
 
         // Members
-
+        // Showing member only when members available and async members is enabled
         bind(groupVM.getIsCanViewMembers(), groupVM.getIsAsyncMembers(), (canViewMembers, vm1, isAsync, vm2) -> {
             if (canViewMembers) {
                 if (isAsync) {
-                    membersCont.setVisibility(View.VISIBLE);
+                    members.setVisibility(View.VISIBLE);
                     header.findViewById(R.id.after_settings_divider).setVisibility(View.GONE);
                 } else {
-                    membersCont.setVisibility(View.GONE);
+                    members.setVisibility(View.GONE);
                     header.findViewById(R.id.after_settings_divider).setVisibility(View.VISIBLE);
                 }
             } else {
                 header.findViewById(R.id.after_settings_divider).setVisibility(View.GONE);
             }
         });
-        membersCont.setOnClickListener(view -> {
+        members.setOnClickListener(view -> {
             startActivity(new Intent(getContext(), MembersActivity.class)
                     .putExtra(Intents.EXTRA_GROUP_ID, groupVM.getId()));
         });
@@ -269,43 +233,18 @@ public class GroupInfoFragment extends BaseFragment {
         listView.addHeaderView(header, null, false);
 
         //
-        // Footer
-        //
-
-//        // View
-//        View footer = inflater.inflate(R.layout.fragment_group_add, listView, false);
-//        TextView name = (TextView) footer.findViewById(R.id.name);
-//        TintImageView addIcon = (TintImageView) footer.findViewById(R.id.add_icon);
-//
-//        // Style
-//        footer.findViewById(R.id.bottom_divider).setBackgroundColor(style.getBackyardBackgroundColor());
-//        name.setTextColor(style.getActionAddContactColor());
-//        name.setTypeface(Fonts.medium());
-//        addIcon.setTint(style.getGroupActionAddIconColor());
-//        addIcon.setTint(style.getActionAddContactColor());
-//
-//        footer.findViewById(R.id.addUser).setOnClickListener(v -> {
-//            startActivity(new Intent(getActivity(), AddMemberActivity.class)
-//                    .putExtra("GROUP_ID", chatId));
-//        });
-//
-//        listView.addFooterView(footer, null, false);
-
-
-        //
         // Members
         //
 
         groupUserAdapter = new MembersAdapter(getActivity());
-        bind(groupVM.getIsAsyncMembers(), groupVM.getMembers(), (isAsyncMembers, valueModel, members, valueModel2) -> {
+        bind(groupVM.getIsAsyncMembers(), groupVM.getMembers(), (isAsyncMembers, valueModel, memberList, valueModel2) -> {
             if (isAsyncMembers) {
                 groupUserAdapter.setMembers(new ArrayList<>());
             } else {
-                groupUserAdapter.setMembers(members);
+                groupUserAdapter.setMembers(memberList);
             }
         });
         listView.setAdapter(groupUserAdapter);
-
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Object item = parent.getItemAtPosition(position);
             if (item != null && item instanceof GroupMember) {
@@ -333,6 +272,10 @@ public class GroupInfoFragment extends BaseFragment {
             return false;
         });
 
+        //
+        // Scroll handling
+        //
+
         listView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -358,7 +301,6 @@ public class GroupInfoFragment extends BaseFragment {
         // Placeholder
         //
 
-
         bind(groupVM.isMember(), (isMember) -> {
             notMemberView.setVisibility(isMember ? View.GONE : View.VISIBLE);
             getActivity().invalidateOptionsMenu();
@@ -368,9 +310,6 @@ public class GroupInfoFragment extends BaseFragment {
     }
 
     public void onMemberClicked(UserVM userVM) {
-
-        boolean isOwned = groupVM.getOwnerId().get() == myUid();
-
         new AlertDialog.Builder(getActivity())
                 .setItems(new CharSequence[]{
                         getString(R.string.group_context_message).replace("{0}", userVM.getName().get()),
@@ -432,9 +371,27 @@ public class GroupInfoFragment extends BaseFragment {
                 .setCanceledOnTouchOutside(true);
     }
 
-    public void updateBar(int offset) {
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
+        super.onCreateOptionsMenu(menu, menuInflater);
+        if (groupVM.isMember().get()) {
+            if (groupVM.getIsCanEditInfo().get()) {
+                menuInflater.inflate(R.menu.group_info, menu);
+            }
+        }
+    }
 
-        // avatarView.setOffset(offset);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.editTitle) {
+            startActivity(Intents.editGroupTitle(chatId, getActivity()));
+        } else if (item.getItemId() == R.id.changePhoto) {
+            startActivity(ViewAvatarActivity.viewGroupAvatar(chatId, getActivity()));
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void updateBar(int offset) {
 
         int baseColor = getResources().getColor(R.color.primary);
         ActorStyle style = ActorSDK.sharedActor().style;
@@ -456,48 +413,6 @@ public class GroupInfoFragment extends BaseFragment {
             ((BaseActivity) getActivity()).getSupportActionBar().setBackgroundDrawable(
                     new ColorDrawable(color));
         }
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
-        super.onCreateOptionsMenu(menu, menuInflater);
-        if (groupVM.isMember().get()) {
-            menuInflater.inflate(R.menu.group_info, menu);
-            if (!groupVM.getIsCanViewMembers().get()) {
-                menu.findItem(R.id.leaveGroup).setVisible(false);
-            } else {
-                if (groupVM.getGroupType() == GroupType.CHANNEL) {
-                    menu.findItem(R.id.leaveGroup).setTitle(R.string.group_leave_channel);
-                } else {
-                    menu.findItem(R.id.leaveGroup).setTitle(R.string.group_leave);
-                }
-            }
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.leaveGroup) {
-            leaveGroup();
-            return true;
-        } else if (item.getItemId() == R.id.editTitle) {
-            startActivity(Intents.editGroupTitle(chatId, getActivity()));
-        } else if (item.getItemId() == R.id.changePhoto) {
-            startActivity(ViewAvatarActivity.viewGroupAvatar(chatId, getActivity()));
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void leaveGroup() {
-        new AlertDialog.Builder(getActivity())
-                .setMessage(getString(R.string.alert_leave_group_message).replace("%1$s",
-                        groupVM.getName().get()))
-                .setPositiveButton(R.string.alert_leave_group_yes, (dialog2, which) -> {
-                    execute(messenger().leaveGroup(chatId));
-                })
-                .setNegativeButton(R.string.dialog_cancel, null)
-                .show()
-                .setCanceledOnTouchOutside(true);
     }
 
     @Override

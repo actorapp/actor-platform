@@ -123,7 +123,7 @@ public class AuthActivity extends BaseFragmentActivity {
                 if (signType == SIGN_TYPE_UP) {
                     updateState(AuthState.SIGN_UP);
                 } else if (signType == SIGN_TYPE_IN) {
-                    showFragment(new SignInFragment(), false, false);
+                    showFragment(new SignInFragment(), false);
                 }
 
                 break;
@@ -131,18 +131,18 @@ public class AuthActivity extends BaseFragmentActivity {
                 if (currentName != null && !currentName.isEmpty()) {
                     startAuth(currentName);
                 } else {
-                    showFragment(new SignUpFragment(), false, false);
+                    showFragment(new SignUpFragment(), false);
                 }
                 break;
             case AUTH_PHONE:
                 currentAuthType = AUTH_TYPE_PHONE;
                 currentCode = "";
-                showFragment(ActorSDK.sharedActor().getDelegatedFragment(ActorSDK.sharedActor().getDelegate().getAuthStartIntent(), new SignPhoneFragment(), BaseAuthFragment.class), false, false);
+                showFragment(ActorSDK.sharedActor().getDelegatedFragment(ActorSDK.sharedActor().getDelegate().getAuthStartIntent(), new SignPhoneFragment(), BaseAuthFragment.class), false);
                 break;
             case AUTH_EMAIL:
                 currentCode = "";
                 currentAuthType = AUTH_TYPE_EMAIL;
-                showFragment(ActorSDK.sharedActor().getDelegatedFragment(ActorSDK.sharedActor().getDelegate().getAuthStartIntent(), new SignEmailFragment(), BaseAuthFragment.class), false, false);
+                showFragment(ActorSDK.sharedActor().getDelegatedFragment(ActorSDK.sharedActor().getDelegate().getAuthStartIntent(), new SignEmailFragment(), BaseAuthFragment.class), false);
                 break;
             case CODE_VALIDATION_PHONE:
             case CODE_VALIDATION_EMAIL:
@@ -153,7 +153,7 @@ public class AuthActivity extends BaseFragmentActivity {
                 args.putBoolean(ValidateCodeFragment.AUTH_TYPE_SIGN, signType == SIGN_TYPE_IN);
                 args.putString("authId", state == AuthState.CODE_VALIDATION_EMAIL ? currentEmail : Long.toString(currentPhone));
                 signInFragment.setArguments(args);
-                showFragment(signInFragment, false, false);
+                showFragment(signInFragment, false);
                 break;
             case LOGGED_IN:
                 finish();

@@ -19,7 +19,7 @@ public class GroupInfoActivity extends BaseFragmentActivity {
             if (profileIntent == null) {
                 profileIntent = GroupInfoFragment.create(groupId);
             }
-            showFragment(profileIntent, false, false);
+            showFragment(profileIntent, false);
         }
     }
 }

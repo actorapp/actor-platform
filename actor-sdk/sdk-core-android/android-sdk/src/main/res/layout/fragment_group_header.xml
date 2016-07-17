@@ -45,14 +45,13 @@
                 android:textSize="20sp" />
 
             <TextView
-                android:id="@+id/membersCount"
+                android:id="@+id/subtitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="-2dp"
                 android:gravity="left"
                 android:textSize="16sp" />
         </LinearLayout>
-
     </LinearLayout>
 
     <View
@@ -111,15 +110,6 @@
 
     </LinearLayout>
 
-    <!--<TextView-->
-    <!--android:id="@+id/settings_header_text"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="48dp"-->
-    <!--android:gravity="center_vertical|left"-->
-    <!--android:paddingLeft="72dp"-->
-    <!--android:text="@string/profile_settings_header"-->
-    <!--android:textSize="16sp" />-->
-
     <LinearLayout
         android:id="@+id/notificationsCont"
         android:layout_width="match_parent"
@@ -148,59 +138,38 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/membersCont"
+    <TextView
+        android:id="@+id/viewMembersAction"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:background="@drawable/selector"
-        android:paddingRight="8dp">
+        android:gravity="center_vertical"
+        android:paddingLeft="72dp"
+        android:paddingRight="8dp"
+        android:text="@string/group_members_header"
+        android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/members_tite"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="72dp"
-            android:gravity="center_vertical"
-            android:text="@string/group_members_header"
-            android:textSize="16sp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/addMemberCont"
+    <TextView
+        android:id="@+id/addMemberAction"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:background="@drawable/selector"
-        android:paddingRight="8dp">
+        android:gravity="center_vertical"
+        android:paddingLeft="72dp"
+        android:paddingRight="8dp"
+        android:text="@string/group_add_member"
+        android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/add_member_title"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="72dp"
-            android:gravity="center_vertical"
-            android:text="@string/group_add_member"
-            android:textSize="16sp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/leaveChannelCont"
+    <TextView
+        android:id="@+id/leaveAction"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:background="@drawable/selector"
-        android:paddingRight="8dp">
-
-        <TextView
-            android:id="@+id/leave_channel_title"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="72dp"
-            android:gravity="center_vertical"
-            android:text="@string/group_leave_channel"
-            android:textSize="16sp" />
-
-    </LinearLayout>
+        android:gravity="center_vertical"
+        android:paddingLeft="72dp"
+        android:paddingRight="8dp"
+        android:text="@string/group_leave_channel"
+        android:textSize="16sp" />
 
     <FrameLayout
         android:id="@+id/after_settings_divider"
@@ -220,22 +189,4 @@
             android:layout_gravity="bottom"
             android:background="@drawable/card_shadow_top" />
     </FrameLayout>
-
-    <!--<LinearLayout-->
-    <!--android:id="@+id/membersHeader"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content">-->
-
-    <!--<TextView-->
-    <!--android:id="@+id/membersTitle"-->
-    <!--android:layout_width="0dp"-->
-    <!--android:layout_height="48dp"-->
-    <!--android:layout_weight="1"-->
-    <!--android:gravity="center_vertical|left"-->
-    <!--android:paddingLeft="72dp"-->
-    <!--android:text="@string/group_members_header"-->
-    <!--android:textSize="16sp" />-->
-
-    <!--</LinearLayout>-->
-
 </LinearLayout>

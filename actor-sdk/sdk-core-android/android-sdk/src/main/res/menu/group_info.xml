@@ -14,7 +14,4 @@
         android:id="@+id/changePhoto"
         android:title="@string/group_menu_change_photo" />
 
-    <item
-        android:id="@+id/leaveGroup"
-        android:title="@string/group_leave" />
 </menu>

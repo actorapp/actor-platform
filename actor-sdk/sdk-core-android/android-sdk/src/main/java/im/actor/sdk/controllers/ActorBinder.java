@@ -14,6 +14,7 @@ import im.actor.core.entity.GroupMember;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserPresence;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.runtime.mvvm.ValueDoubleListener;
 import im.actor.runtime.mvvm.ValueListener;
 import im.actor.runtime.mvvm.ValueModel;
 import im.actor.sdk.ActorSDK;
@@ -233,6 +234,12 @@ public class ActorBinder {
     public <T> Binding bind(Value<T> value, ValueListener<T> listener) {
         return bind(value, (val, valueModel) -> {
             listener.onChanged(val);
+        });
+    }
+
+    public <T1, T2> void bind(Value<T1> value1, Value<T2> value2, ValueDoubleListener<T1, T2> listener) {
+        bind(value1, value2, (val, valueModel, val2, valueModel2) -> {
+            listener.onChanged(val, val2);
         });
     }
 

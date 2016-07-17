@@ -12,7 +12,7 @@ public class AddMemberActivity extends BaseFragmentActivity {
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState == null) {
-            showFragment(AddMemberFragment.create(getIntent().getIntExtra("GROUP_ID", 0)), false, false);
+            showFragment(AddMemberFragment.create(getIntent().getIntExtra("GROUP_ID", 0)), false);
         }
     }
 }

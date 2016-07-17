@@ -17,7 +17,7 @@ public class InviteActivity extends BaseFragmentActivity {
 
 
         if (savedInstanceState == null) {
-            showFragment(new InviteFragment(), false, false);
+            showFragment(new InviteFragment(), false);
         }
     }
 }

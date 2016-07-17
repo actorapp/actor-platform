@@ -12,7 +12,7 @@ public class MembersActivity extends BaseFragmentActivity {
 
         if (savedInstanceState == null) {
             int groupId = getIntent().getIntExtra(Intents.EXTRA_GROUP_ID, 0);
-            showFragment(MembersFragment.create(groupId), false, false);
+            showFragment(MembersFragment.create(groupId), false);
         }
     }
 }

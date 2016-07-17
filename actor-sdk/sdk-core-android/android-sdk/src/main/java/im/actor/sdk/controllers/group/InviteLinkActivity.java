@@ -17,7 +17,7 @@ public class InviteLinkActivity extends BaseFragmentActivity {
         int chatId = getIntent().getIntExtra(Intents.EXTRA_GROUP_ID, 0);
 
         if (savedInstanceState == null) {
-            showFragment(InviteLinkFragment.create(chatId), false, false);
+            showFragment(InviteLinkFragment.create(chatId), false);
         }
     }
 

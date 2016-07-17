@@ -7,6 +7,7 @@ package im.actor.runtime.mvvm;
 import com.google.j2objc.annotations.ObjectiveCName;
 
 public interface ValueListener<T> {
+
     @ObjectiveCName("onChanged:")
     void onChanged(T val);
 }
