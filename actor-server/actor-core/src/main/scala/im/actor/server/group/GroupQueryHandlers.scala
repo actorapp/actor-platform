@@ -5,7 +5,8 @@ import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Source
 import com.google.protobuf.ByteString
 import com.google.protobuf.wrappers.Int32Value
-import im.actor.api.rpc.groups.{ ApiGroup, ApiGroupFull, ApiGroupType, ApiMember }
+import im.actor.api.rpc.groups._
+import im.actor.server.group.GroupErrors.NotOwner
 import im.actor.server.group.GroupQueries._
 import im.actor.server.group.GroupType.{ Channel, General, Public }
 
@@ -102,7 +103,7 @@ trait GroupQueryHandlers {
             case GroupType.Channel ⇒ ApiGroupType.CHANNEL
             case GroupType.General | GroupType.Public | GroupType.Unrecognized(_) ⇒ ApiGroupType.GROUP
           }),
-          canSendMessage = Some(state.canSendMessage(clientUserId))
+          canSendMessage = Some(state.permissions.canSendMessage(clientUserId))
         )
       )
     }
@@ -119,17 +120,17 @@ trait GroupQueryHandlers {
           ownerUserId = state.getShowableOwner(clientUserId),
           createDate = extractCreatedAtMillis(state),
           ext = None,
-          canViewMembers = Some(state.canViewMembers(clientUserId)),
-          canInvitePeople = Some(state.canInvitePeople(clientUserId)),
+          canViewMembers = Some(state.permissions.canViewMembers(clientUserId)),
+          canInvitePeople = Some(state.permissions.canInvitePeople(clientUserId)),
           isSharedHistory = Some(state.isHistoryShared),
           isAsyncMembers = Some(state.isAsyncMembers),
           members = membersAndCount(state, clientUserId)._1,
           shortName = state.shortName,
-          canEditGroupInfo = None,
-          canEditShortName = None,
-          canEditAdminList = None,
-          canViewAdminList = None,
-          canEditAdminSettings = None
+          canEditGroupInfo = Some(state.permissions.canEditInfo(clientUserId)),
+          canEditShortName = Some(state.permissions.canEditShortName(clientUserId)),
+          canEditAdminList = Some(state.permissions.canEditAdmins(clientUserId)),
+          canViewAdminList = Some(state.permissions.canViewAdmins(clientUserId)),
+          canEditAdminSettings = Some(state.permissions.canEditAdminSettings(clientUserId))
         )
       )
     }
@@ -152,6 +153,23 @@ trait GroupQueryHandlers {
         botId = state.bot.map(_.userId)
       )
     }
+
+  protected def loadAdminSettings(clientUserId: Int): Future[LoadAdminSettingsResponse] = {
+    if (state.permissions.canEditAdminSettings(clientUserId)) {
+      FastFuture.successful {
+        LoadAdminSettingsResponse(
+          ApiAdminSettings(
+            showAdminsToMembers = state.adminSettings.showAdminsToMembers,
+            canMembersInvite = state.adminSettings.canMembersInvite,
+            canMembersEditGroupInfo = state.adminSettings.canMembersEditGroupInfo,
+            canAdminsEditGroupInfo = state.adminSettings.canAdminsEditGroupInfo
+          )
+        )
+      }
+    } else {
+      FastFuture.failed(NotOwner)
+    }
+  }
 
   private def extractCreatedAtMillis(group: GroupState): Long =
     group.createdAt.map(_.toEpochMilli).getOrElse(throw new RuntimeException("No date created provided for group!"))

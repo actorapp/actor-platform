@@ -72,4 +72,8 @@ object GroupUserRepo {
   def makeAdmin(groupId: Int, userId: Int) =
     byPKC.applied((groupId, userId)).map(_.isAdmin).update(true)
 
+  @deprecated("Duplication of event-sourced groups logic", "2016-06-05")
+  def dismissAdmin(groupId: Int, userId: Int) =
+    byPKC.applied((groupId, userId)).map(_.isAdmin).update(false)
+
 }

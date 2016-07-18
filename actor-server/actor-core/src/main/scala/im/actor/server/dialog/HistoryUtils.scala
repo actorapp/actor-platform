@@ -131,6 +131,6 @@ object HistoryUtils {
 
   private def requirePrivatePeer(peer: Peer) = {
     if (peer.typ != PeerType.Private)
-      throw new Exception("peer should be Private")
+      throw new RuntimeException("sender should be Private peer")
   }
 }

@@ -112,12 +112,21 @@ message GroupEvents {
         optional string topic = 1;
     }
 
+    // deprecated in favour of AdminStatusChanged
     message UserBecameAdmin {
         option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
 
         required int64 ts = 3 [(scalapb.field).type = "java.time.Instant"];
         required int32 user_id = 1;
         required int32 promoter_user_id = 2;
+    }
+
+    message AdminStatusChanged {
+        option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
+
+        required int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];
+        required int32 user_id = 2;
+        required bool is_admin = 3;
     }
 
     message IntegrationTokenRevoked {
@@ -132,5 +141,12 @@ message GroupEvents {
 
         required int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];
         required int32 user_id = 2;
+    }
+
+    message AdminSettingsUpdated {
+        option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
+
+        required int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];
+        required int32 settings_bit_mask = 2;
     }
 }

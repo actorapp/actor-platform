@@ -27,7 +27,7 @@ import im.actor.util.misc.{ IdUtils, StringUtils }
 
 import scala.concurrent.Future
 
-//TODO: spit into MemberCommandHandlers - InfoCommandHandlers - ControlCommandHandlers
+//TODO: spit into MemberCommandHandlers - InfoCommandHandlers - AdminCommandHandlers
 private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
   this: GroupProcessor ⇒
 
@@ -488,11 +488,23 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
 
         val updateObsolete = UpdateGroupUserLeaveObsolete(groupId, cmd.userId, dateMillis, cmd.randomId)
 
+        // TODO: merge, they are almost identical
         val leftUserUpdatesNew =
           if (state.typ.isChannel) List(
+            UpdateGroupCanViewMembersChanged(groupId, canViewMembers = false),
+            UpdateGroupCanEditInfoChanged(groupId, canEditGroup = false),
+            UpdateGroupCanEditUsernameChanged(groupId, canEditUsername = false),
+            UpdateGroupCanEditAdminsChanged(groupId, canAssignAdmins = false),
+            UpdateGroupCanViewAdminsChanged(groupId, canViewAdmins = false),
+            UpdateGroupCanEditAdminSettingsChanged(groupId, canEditAdminSettings = false),
             UpdateGroupCanInviteMembersChanged(groupId, canInviteMembers = false)
           )
           else List(
+            UpdateGroupCanEditInfoChanged(groupId, canEditGroup = false),
+            UpdateGroupCanEditUsernameChanged(groupId, canEditUsername = false),
+            UpdateGroupCanEditAdminsChanged(groupId, canAssignAdmins = false),
+            UpdateGroupCanViewAdminsChanged(groupId, canViewAdmins = false),
+            UpdateGroupCanEditAdminSettingsChanged(groupId, canEditAdminSettings = false),
             UpdateGroupCanViewMembersChanged(groupId, canViewMembers = false),
             UpdateGroupMembersUpdated(groupId, members = Vector.empty),
             UpdateGroupCanInviteMembersChanged(groupId, canInviteMembers = false)
@@ -617,15 +629,27 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
 
         val updateObsolete = UpdateGroupUserKickObsolete(groupId, cmd.kickedUserId, cmd.kickerUserId, dateMillis, cmd.randomId)
 
+        // TODO: merge, they are almost identical
         val kickedUserUpdatesNew: List[Update] =
           if (state.typ.isChannel) List(
+            UpdateGroupCanViewMembersChanged(groupId, canViewMembers = false),
+            UpdateGroupCanEditInfoChanged(groupId, canEditGroup = false),
+            UpdateGroupCanEditUsernameChanged(groupId, canEditUsername = false),
+            UpdateGroupCanEditAdminsChanged(groupId, canAssignAdmins = false),
+            UpdateGroupCanViewAdminsChanged(groupId, canViewAdmins = false),
+            UpdateGroupCanEditAdminSettingsChanged(groupId, canEditAdminSettings = false),
             UpdateGroupCanInviteMembersChanged(groupId, canInviteMembers = false),
             UpdateGroupMemberChanged(groupId, isMember = false)
           )
           else List(
             UpdateGroupCanViewMembersChanged(groupId, canViewMembers = false),
-            UpdateGroupMembersUpdated(groupId, members = Vector.empty),
+            UpdateGroupCanEditInfoChanged(groupId, canEditGroup = false),
+            UpdateGroupCanEditUsernameChanged(groupId, canEditUsername = false),
+            UpdateGroupCanEditAdminsChanged(groupId, canAssignAdmins = false),
+            UpdateGroupCanViewAdminsChanged(groupId, canViewAdmins = false),
+            UpdateGroupCanEditAdminSettingsChanged(groupId, canEditAdminSettings = false),
             UpdateGroupCanInviteMembersChanged(groupId, canInviteMembers = false),
+            UpdateGroupMembersUpdated(groupId, members = Vector.empty),
             UpdateGroupMemberChanged(groupId, isMember = false)
           )
 
@@ -1066,7 +1090,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
     } else if (state.isAdmin(cmd.candidateUserId)) {
       sender() ! Status.Failure(UserAlreadyAdmin)
     } else {
-      persist(UserBecameAdmin(Instant.now, cmd.candidateUserId, cmd.clientUserId)) { evt ⇒
+      persist(AdminStatusChanged(Instant.now, cmd.candidateUserId, isAdmin = true)) { evt ⇒
         val newState = commit(evt)
 
         val dateMillis = evt.ts.toEpochMilli
@@ -1075,6 +1099,8 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
 
         val updateAdmin = UpdateGroupMemberAdminChanged(groupId, cmd.candidateUserId, isAdmin = true)
         val updateMembers = UpdateGroupMembersUpdated(groupId, members)
+        // now this user is admin, change edit rules for admins
+        val updateCanEdit = UpdateGroupCanEditInfoChanged(groupId, canEditGroup = newState.adminSettings.canAdminsEditGroupInfo)
 
         val updateObsolete = UpdateGroupMembersUpdateObsolete(groupId, members)
 
@@ -1127,10 +1153,97 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
           ///////////////////////////
           // Groups V2 API updates //
           ///////////////////////////
-
+          _ ← seqUpdExt.deliverUserUpdate(
+            userId = cmd.candidateUserId,
+            update = updateCanEdit
+          )
           seqStateDate ← if (state.typ.isChannel) adminCHANNELUpdates else adminGROUPUpdates
 
         } yield (members, seqStateDate)
+
+        result pipeTo sender()
+      }
+    }
+  }
+
+  protected def dismissUserAdmin(cmd: DismissUserAdmin): Unit = {
+    if (!state.permissions.canEditAdmins(cmd.clientUserId)) {
+      sender() ! Status.Failure(NotAdmin) // Forbidden
+    } else if (!state.isAdmin(cmd.targetUserId)) {
+      sender() ! Status.Failure(UserAlreadyNotAdmin)
+    } else {
+      persist(AdminStatusChanged(Instant.now, cmd.targetUserId, isAdmin = false)) { evt ⇒
+        val newState = commit(evt)
+
+        val dateMillis = evt.ts.toEpochMilli
+        val memberIds = newState.memberIds
+        val members = newState.members.values.map(_.asStruct).toVector
+
+        val updateAdmin = UpdateGroupMemberAdminChanged(groupId, cmd.targetUserId, isAdmin = false)
+        val updateMembers = UpdateGroupMembersUpdated(groupId, members)
+        // now this user is not admin, change edit rules to plain members
+        val updateCanEdit = UpdateGroupCanEditInfoChanged(groupId, canEditGroup = newState.adminSettings.canMembersEditGroupInfo)
+
+        val updateObsolete = UpdateGroupMembersUpdateObsolete(groupId, members)
+
+        //TODO: remove deprecated
+        db.run(GroupUserRepo.dismissAdmin(groupId, cmd.targetUserId))
+
+        val adminGROUPUpdates: Future[SeqState] =
+          for {
+            // push admin changed to all
+            _ ← seqUpdExt.broadcastPeopleUpdate(
+              userIds = memberIds + cmd.clientUserId,
+              updateAdmin
+            )
+            // push changed members to all users
+            seqState ← seqUpdExt.broadcastClientUpdate(
+              cmd.clientUserId,
+              cmd.clientAuthId,
+              memberIds - cmd.clientUserId,
+              updateMembers
+            )
+          } yield seqState
+
+        val adminCHANNELUpdates: Future[SeqState] =
+          for {
+            // push admin changed to all
+            _ ← seqUpdExt.broadcastPeopleUpdate(
+              userIds = memberIds + cmd.clientUserId,
+              updateAdmin
+            )
+            // push changed members to admins and fresh admin
+            seqState ← seqUpdExt.broadcastClientUpdate(
+              cmd.clientUserId,
+              cmd.clientAuthId,
+              newState.adminIds - cmd.clientUserId,
+              updateMembers
+            )
+          } yield seqState
+
+        val result: Future[SeqState] = for {
+
+          ///////////////////////////
+          // Groups V1 API updates //
+          ///////////////////////////
+
+          _ ← seqUpdExt.broadcastClientUpdate(
+            cmd.clientUserId,
+            cmd.clientAuthId,
+            memberIds - cmd.clientUserId,
+            updateObsolete
+          )
+
+          ///////////////////////////
+          // Groups V2 API updates //
+          ///////////////////////////
+          _ ← seqUpdExt.deliverUserUpdate(
+            userId = cmd.targetUserId,
+            update = updateCanEdit
+          )
+          seqState ← if (state.typ.isChannel) adminCHANNELUpdates else adminGROUPUpdates
+
+        } yield seqState
 
         result pipeTo sender()
       }
@@ -1154,6 +1267,62 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
             pushRules = seqUpdExt.pushRules(isFat = false, None)
           )
         } yield seqState
+
+        result pipeTo sender()
+      }
+    }
+  }
+
+  protected def updateAdminSettings(cmd: UpdateAdminSettings): Unit = {
+    if (!state.permissions.canEditAdminSettings(cmd.clientUserId)) {
+      sender() ! Status.Failure(NotAdmin)
+    } else {
+      val settOld = state.adminSettings
+
+      persist(AdminSettingsUpdated(Instant.now, cmd.settingsBitMask)) { evt ⇒
+        val newState = commit(evt)
+        val settNew = newState.adminSettings
+
+        val (membersUpdates, adminsUpdates) = {
+          // push to all members except admins and owner
+          val showAdminToMembers = PartialFunction.condOpt(settOld.showAdminsToMembers != settNew.showAdminsToMembers) {
+            case true ⇒ UpdateGroupCanViewAdminsChanged(groupId, canViewAdmins = settNew.showAdminsToMembers)
+          }
+
+          // push to all members except admins and owner
+          val canMembersInvite = PartialFunction.condOpt(settOld.canMembersInvite != settNew.canMembersInvite) {
+            case true ⇒ UpdateGroupCanInviteMembersChanged(groupId, canInviteMembers = settNew.canMembersInvite)
+          }
+
+          // push to all members except admins and owner
+          val canMembersEditGroupInfo = PartialFunction.condOpt(settOld.canMembersEditGroupInfo != settNew.canMembersEditGroupInfo) {
+            case true ⇒ UpdateGroupCanEditInfoChanged(groupId, canEditGroup = settNew.canMembersEditGroupInfo)
+          }
+
+          // push to admins only
+          val canAdminsEditGroupInfo = PartialFunction.condOpt(settOld.canAdminsEditGroupInfo != settNew.canAdminsEditGroupInfo) {
+            case true ⇒ UpdateGroupCanEditInfoChanged(groupId, canEditGroup = settNew.canAdminsEditGroupInfo)
+          }
+
+          (
+            List(showAdminToMembers, canMembersInvite, canMembersEditGroupInfo).flatten[Update],
+            List(canAdminsEditGroupInfo).flatten[Update]
+          )
+        }
+
+        val plainMemberIds = (newState.memberIds - newState.ownerUserId) -- newState.adminIds
+        val adminsOnlyIds = newState.adminIds - newState.ownerUserId
+
+        val result: Future[UpdateAdminSettingsAck] = for {
+          // deliver updates about settings changed to plain group members
+          _ ← FutureExt.ftraverse(membersUpdates) { update ⇒
+            seqUpdExt.broadcastPeopleUpdate(userIds = plainMemberIds, update)
+          }
+          // deliver updates about settings changed to plain group members
+          _ ← FutureExt.ftraverse(membersUpdates) { update ⇒
+            seqUpdExt.broadcastPeopleUpdate(userIds = adminsOnlyIds, update)
+          }
+        } yield UpdateAdminSettingsAck()
 
         result pipeTo sender()
       }
@@ -1191,7 +1360,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
     UpdateGroupTopicChanged(groupId, newState.topic),
     UpdateGroupTitleChanged(groupId, newState.title),
     UpdateGroupOwnerChanged(groupId, newState.ownerUserId),
-    UpdateGroupCanViewMembersChanged(groupId, canViewMembers = newState.canViewMembers(userId)),
+    UpdateGroupCanViewMembersChanged(groupId, canViewMembers = newState.permissions.canViewMembers(userId)),
     UpdateGroupCanInviteMembersChanged(groupId, canInviteMembers = true) // TODO: figure out right value
   //    UpdateGroupExtChanged(groupId, newState.extension) //TODO: figure out and fix
   //          if(bigGroup) UpdateGroupMembersCountChanged(groupId, newState.extension)
