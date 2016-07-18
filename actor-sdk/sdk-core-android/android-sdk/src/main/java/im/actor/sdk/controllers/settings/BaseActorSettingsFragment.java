@@ -91,7 +91,9 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
     @Override
     public void onCreate(Bundle saveInstance) {
         super.onCreate(saveInstance);
-        animateToolbar = saveInstance.getBoolean("animateToolbar", true);
+        if (saveInstance != null) {
+            animateToolbar = saveInstance.getBoolean("animateToolbar", true);
+        }
     }
 
     @Override
