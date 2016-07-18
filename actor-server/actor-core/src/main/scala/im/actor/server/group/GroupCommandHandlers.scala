@@ -271,9 +271,9 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
               deliveryId = s"useradded_${groupId}_${cmd.randomId}"
             )
 
-            // push service message to invitee and inviter
-            _ ← seqUpdExt.broadcastPeopleUpdate(
-              userIds = Set(cmd.inviterUserId, cmd.inviteeUserId),
+            // push service message to invitee
+            _ ← seqUpdExt.deliverUserUpdate(
+              userId = cmd.inviteeUserId,
               update = serviceMessageUpdate(
                 cmd.inviterUserId,
                 dateMillis,
@@ -330,7 +330,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
   /**
    * User can join
    * • after invite(was invited by other user previously). In this case he already have group on devices
-   * • via invite ling. In this case he doesn't have group, and we need to deliver it.
+   * • via invite link. In this case he doesn't have group, and we need to deliver it.
    */
   protected def join(cmd: Join): Unit = {
     // user is already a member, and should not complete invitation process
@@ -442,18 +442,6 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
               memberIds - cmd.joiningUserId,
               membersUpdateNew,
               deliveryId = s"userjoined_${groupId}_${randomId}"
-            )
-
-            // push service message only to inviter
-            _ ← seqUpdExt.deliverUserUpdate(
-              userId = inviterUserId,
-              update = serviceMessageUpdate(
-                cmd.joiningUserId,
-                dateMillis,
-                randomId,
-                serviceMessage
-              ),
-              deliveryTag = Some(Optimization.GroupV2)
             )
           } yield SeqStateDate(seq, state, dateMillis)
 
@@ -573,21 +561,6 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
               state.memberIds - cmd.userId,
               membersUpdateNew
             )
-
-            // push service message to user, who invited leaving user
-            optInviter = state.members.get(cmd.userId) map (_.inviterUserId)
-            _ ← optInviter map { inviter ⇒
-              seqUpdExt.deliverUserUpdate(
-                userId = cmd.userId,
-                update = serviceMessageUpdate(
-                  cmd.userId,
-                  dateMillis,
-                  cmd.randomId,
-                  serviceMessage
-                ),
-                deliveryTag = Some(Optimization.GroupV2)
-              )
-            } getOrElse FastFuture.successful(())
 
             // push left user that he is no longer a member
             SeqState(seq, state) ← seqUpdExt.deliverClientUpdate(
