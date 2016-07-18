@@ -62,7 +62,7 @@ trait GroupQueryHandlers {
       )
     }
 
-    state.typ match {
+    state.groupType match {
       case General | Public ⇒ load
       case Channel ⇒
         if (state.isAdmin(clientUserId)) load
@@ -71,7 +71,7 @@ trait GroupQueryHandlers {
   }
 
   protected def isPublic =
-    FastFuture.successful(IsPublicResponse(isPublic = state.typ == GroupType.Public))
+    FastFuture.successful(IsPublicResponse(isPublic = state.groupType == GroupType.Public))
 
   protected def isHistoryShared =
     FastFuture.successful(IsHistorySharedResponse(state.isHistoryShared))
@@ -99,7 +99,7 @@ trait GroupQueryHandlers {
           isHidden = Some(state.isHidden),
           ext = None,
           membersCount = Some(count),
-          groupType = Some(state.typ match {
+          groupType = Some(state.groupType match {
             case GroupType.Channel ⇒ ApiGroupType.CHANNEL
             case GroupType.General | GroupType.Public | GroupType.Unrecognized(_) ⇒ ApiGroupType.GROUP
           }),
@@ -141,14 +141,14 @@ trait GroupQueryHandlers {
   protected def canSendMessage(clientUserId: Int): Future[CanSendMessageResponse] =
     FastFuture.successful {
       val canSend = state.bot.exists(_.userId == clientUserId) || {
-        state.typ match {
+        state.groupType match {
           case General | Public ⇒ state.isMember(clientUserId)
           case Channel          ⇒ state.isAdmin(clientUserId)
         }
       }
       CanSendMessageResponse(
         canSend = canSend,
-        isChannel = state.typ.isChannel,
+        isChannel = state.groupType.isChannel,
         memberIds = state.memberIds.toSeq,
         botId = state.bot.map(_.userId)
       )
@@ -187,7 +187,7 @@ trait GroupQueryHandlers {
     }
 
     if (state.isMember(clientUserId)) {
-      state.typ match {
+      state.groupType match {
         case General | Public ⇒
           apiMembers → group.membersCount
         case Channel ⇒

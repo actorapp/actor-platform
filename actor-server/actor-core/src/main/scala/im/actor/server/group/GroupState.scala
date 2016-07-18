@@ -73,7 +73,7 @@ private[group] object GroupState {
       avatar = None,
       topic = None,
       shortName = None,
-      typ = GroupType.General,
+      groupType = GroupType.General,
       isHidden = false,
       isHistoryShared = false,
       members = Map.empty,
@@ -101,7 +101,7 @@ private[group] final case class GroupState(
   avatar:          Option[Avatar],
   topic:           Option[String],
   shortName:       Option[String],
-  typ:             GroupType, // TODO: rename to groupType
+  groupType:       GroupType, // TODO: rename to groupType
   isHidden:        Boolean,
   isHistoryShared: Boolean,
 
@@ -142,13 +142,13 @@ private[group] final case class GroupState(
   val isCreated = createdAt.nonEmpty
 
   def isAsyncMembers =
-    typ match {
+    groupType match {
       case General | Public ⇒ members.size > 100
       case Channel          ⇒ true
     }
 
   def getShowableOwner(clientUserId: Int): Option[Int] =
-    typ match {
+    groupType match {
       case General | Public ⇒ Some(creatorUserId)
       case Channel          ⇒ if (isAdmin(clientUserId)) Some(creatorUserId) else None
     }
@@ -164,7 +164,7 @@ private[group] final case class GroupState(
         about = None,
         avatar = None,
         topic = None,
-        typ = evt.typ.getOrElse(GroupType.General),
+        groupType = evt.typ.getOrElse(GroupType.General),
         isHidden = evt.isHidden getOrElse false,
         isHistoryShared = evt.isHistoryShared getOrElse false,
         members = (
@@ -232,7 +232,7 @@ private[group] final case class GroupState(
       this.copy(title = newTitle)
     case BecamePublic(_) ⇒
       this.copy(
-        typ = GroupType.Public,
+        groupType = GroupType.Public,
         isHistoryShared = true
       )
     case AboutUpdated(_, newAbout) ⇒
@@ -273,7 +273,7 @@ private[group] final case class GroupState(
      */
     def canSendMessage(clientUserId: Int) =
       {
-        typ match {
+        groupType match {
           case General | Public ⇒ isMember(clientUserId)
           case Channel          ⇒ isAdmin(clientUserId) || isOwner(clientUserId)
         }
@@ -284,7 +284,7 @@ private[group] final case class GroupState(
      * in channels, owner and admins can view members
      */
     def canViewMembers(clientUserId: Int) =
-      typ match {
+      groupType match {
         case General | Public ⇒ isMember(clientUserId)
         case Channel          ⇒ isAdmin(clientUserId) || isOwner(clientUserId)
       }

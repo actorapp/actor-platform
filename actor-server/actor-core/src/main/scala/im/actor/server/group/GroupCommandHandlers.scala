@@ -65,7 +65,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
 
       // Group creation
       val groupType = GroupType.fromValue(cmd.typ) //FIXME: make it normal enum
-      val isHistoryShared = groupType.isChannel
+      val isHistoryShared = groupType.isChannel || groupType.isPublic
 
       persist(Created(
         ts = createdAt,
@@ -101,7 +101,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
                 creatorUserId = newState.creatorUserId,
                 accessHash = newState.accessHash,
                 title = newState.title,
-                isPublic = newState.typ == GroupType.Public,
+                isPublic = isHistoryShared,
                 createdAt = evt.ts,
                 about = None,
                 topic = None
@@ -190,7 +190,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
         val inviteeUpdatesNew: List[Update] = refreshGroupUpdates(newState, cmd.inviteeUserId)
 
         val membersUpdateNew: Update =
-          if (newState.typ.isChannel) // if history shared
+          if (newState.groupType.isChannel) // if channel, or group is big enough
             UpdateGroupMembersCountChanged(groupId, newState.membersCount)
           else
             UpdateGroupMembersUpdated(groupId, apiMembers)
@@ -321,7 +321,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
           // Groups V2 API updates //
           ///////////////////////////
 
-          seqStateDate ← if (newState.typ.isChannel) inviteCHANNELUpdates else inviteGROUPUpdates
+          seqStateDate ← if (newState.groupType.isChannel) inviteCHANNELUpdates else inviteGROUPUpdates
 
         } yield seqStateDate
 
@@ -371,7 +371,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
           if (wasInvited) List.empty[Update] else refreshGroupUpdates(newState, cmd.joiningUserId)
 
         val membersUpdateNew: Update =
-          if (newState.typ.isChannel) // if history is shared
+          if (newState.groupType.isChannel) // if channel, or group is big enough
             UpdateGroupMembersCountChanged(groupId, newState.membersCount)
           else
             UpdateGroupMembersUpdated(groupId, apiMembers) // will update date when member got into group
@@ -466,7 +466,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
             // Groups V2 API updates //
             ///////////////////////////
 
-            seqStateDate ← if (newState.typ.isChannel) joinCHANNELUpdates else joinGROUPUpdates
+            seqStateDate ← if (newState.groupType.isChannel) joinCHANNELUpdates else joinGROUPUpdates
 
           } yield (seqStateDate, memberIds.toVector :+ inviterUserId, randomId)
 
@@ -493,7 +493,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
 
         // TODO: merge, they are almost identical
         val leftUserUpdatesNew =
-          if (state.typ.isChannel) List(
+          if (state.groupType.isChannel) List(
             UpdateGroupCanViewMembersChanged(groupId, canViewMembers = false),
             UpdateGroupCanEditInfoChanged(groupId, canEditGroup = false),
             UpdateGroupCanEditUsernameChanged(groupId, canEditUsername = false),
@@ -514,7 +514,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
           )
 
         val membersUpdateNew =
-          if (state.typ.isChannel) { // if history is shared
+          if (state.groupType.isChannel) { // if channel, or group is big enough
             UpdateGroupMembersCountChanged(
               groupId,
               membersCount = state.membersCount - 1
@@ -610,7 +610,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
           // Groups V2 API updates //
           ///////////////////////////
 
-          seqStateDate ← if (state.typ.isChannel) leaveCHANNELUpdates else leaveGROUPUpdates
+          seqStateDate ← if (state.groupType.isChannel) leaveCHANNELUpdates else leaveGROUPUpdates
 
         } yield seqStateDate
 
@@ -634,7 +634,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
 
         // TODO: merge, they are almost identical
         val kickedUserUpdatesNew: List[Update] =
-          if (state.typ.isChannel) List(
+          if (state.groupType.isChannel) List(
             UpdateGroupCanViewMembersChanged(groupId, canViewMembers = false),
             UpdateGroupCanEditInfoChanged(groupId, canEditGroup = false),
             UpdateGroupCanEditUsernameChanged(groupId, canEditUsername = false),
@@ -657,7 +657,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
           )
 
         val membersUpdateNew: Update =
-          if (newState.typ.isChannel) { // if history is shared
+          if (newState.groupType.isChannel) { // if channel, or group is big enough
             UpdateGroupMembersCountChanged(
               groupId,
               membersCount = newState.membersCount
@@ -754,7 +754,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
           // Groups V2 API updates //
           ///////////////////////////
 
-          seqStateDate ← if (state.typ.isChannel) kickCHANNELUpdates else kickGROUPUpdates
+          seqStateDate ← if (state.groupType.isChannel) kickCHANNELUpdates else kickGROUPUpdates
 
         } yield seqStateDate
 
@@ -1156,7 +1156,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
             userId = cmd.candidateUserId,
             update = updateCanEdit
           )
-          seqStateDate ← if (state.typ.isChannel) adminCHANNELUpdates else adminGROUPUpdates
+          seqStateDate ← if (state.groupType.isChannel) adminCHANNELUpdates else adminGROUPUpdates
 
         } yield (members, seqStateDate)
 
@@ -1242,7 +1242,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
             userId = cmd.targetUserId,
             update = updateCanEdit
           )
-          seqState ← if (state.typ.isChannel) adminCHANNELUpdates else adminGROUPUpdates
+          seqState ← if (state.groupType.isChannel) adminCHANNELUpdates else adminGROUPUpdates
 
         } yield seqState
 
