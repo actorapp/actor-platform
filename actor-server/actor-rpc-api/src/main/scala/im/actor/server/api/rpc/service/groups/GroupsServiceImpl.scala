@@ -589,6 +589,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     case GroupErrors.GroupIdAlreadyExists(_) ⇒ GroupRpcErrors.GroupIdAlreadyExists
     case GroupErrors.InvalidShortName        ⇒ GroupRpcErrors.InvalidShortName
     case GroupErrors.ShortNameTaken          ⇒ GroupRpcErrors.ShortNameTaken
+    case GroupErrors.NoPermission            ⇒ GroupRpcErrors.NoPermission
   }
 
 }
