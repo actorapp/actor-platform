@@ -18,6 +18,7 @@ object GroupRpcErrors {
   val InvalidInviteToken    = RpcError(403, "INVALID_INVITE_TOKEN",   "Invalid invite token!",                                               false, None)
   val InvalidInviteGroup    = RpcError(403, "INVALID_INVITE_GROUP",   "Invalid group name provided!",                                        false, None)
   val GroupNotPublic        = RpcError(400, "GROUP_IS_NOT_PUBLIC",    "The group is not public.",                                            false, None)
+  val NoPermission          = RpcError(403, "NO_PERMISSION",          "You have no permission to execute this action",                       false, None)
   val InvalidShortName      = RpcError(400, "GROUP_SHORT_NAME_INVALID",
     "Invalid group short name. Valid short name should contain from 5 to 32 characters, and may consist of latin characters, numbers and underscores", false, None)
   val ShortNameTaken        = RpcError(400, "GROUP_SHORT_NAME_TAKEN", "This short name already belongs to other user or group, we are sorry!", false, None)

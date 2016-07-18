@@ -35,6 +35,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
 
   private val notMember = Status.Failure(NotAMember)
   private val notAdmin = Status.Failure(NotAdmin)
+  private val noPermission = Status.Failure(NoPermission)
 
   protected def create(cmd: Create): Unit = {
     if (!isValidTitle(cmd.title)) {
@@ -169,7 +170,9 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
   }
 
   protected def invite(cmd: Invite): Unit = {
-    if (state.isInvited(cmd.inviteeUserId)) {
+    if (!state.permissions.canInvitePeople(cmd.inviterUserId)) {
+      sender() ! noPermission
+    } else if (state.isInvited(cmd.inviteeUserId)) {
       sender() ! Status.Failure(GroupErrors.UserAlreadyInvited)
     } else if (state.isMember(cmd.inviteeUserId)) {
       sender() ! Status.Failure(GroupErrors.UserAlreadyJoined)
@@ -617,9 +620,9 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
   }
 
   protected def kick(cmd: Kick): Unit = {
-    if (state.typ.isChannel && !state.isAdmin(cmd.kickedUserId)) {
-      sender() ! notAdmin
-    } else if (state.nonMember(cmd.kickerUserId) || state.nonMember(cmd.kickedUserId)) {
+    if (!state.permissions.canKickMember(cmd.kickerUserId)) {
+      sender() ! noPermission
+    } else if (state.nonMember(cmd.kickedUserId)) {
       sender() ! notMember
     } else {
       persist(UserKicked(Instant.now, cmd.kickedUserId, cmd.kickerUserId)) { evt ⇒
@@ -761,10 +764,8 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
   }
 
   protected def updateAvatar(cmd: UpdateAvatar): Unit = {
-    if (state.typ.isChannel && !state.isAdmin(cmd.clientUserId)) {
-      sender() ! notAdmin
-    } else if (state.nonMember(cmd.clientUserId)) {
-      sender() ! notMember
+    if (!state.permissions.canEditInfo(cmd.clientUserId)) {
+      sender() ! noPermission
     } else {
       persist(AvatarUpdated(Instant.now, cmd.avatar)) { evt ⇒
         val newState = commit(evt)
@@ -812,10 +813,8 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
 
   protected def updateTitle(cmd: UpdateTitle): Unit = {
     val title = cmd.title
-    if (state.typ.isChannel && !state.isAdmin(cmd.clientUserId)) {
-      sender() ! notAdmin
-    } else if (state.nonMember(cmd.clientUserId)) {
-      sender() ! notMember
+    if (!state.permissions.canEditInfo(cmd.clientUserId)) {
+      sender() ! noPermission
     } else if (!isValidTitle(title)) {
       sender() ! Status.Failure(InvalidTitle)
     } else {
@@ -885,10 +884,8 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
 
     val topic = trimToEmpty(cmd.topic)
 
-    if (state.typ.isChannel && !state.isAdmin(cmd.clientUserId)) {
-      sender() ! notAdmin
-    } else if (state.nonMember(cmd.clientUserId)) {
-      sender() ! notMember
+    if (!state.permissions.canEditInfo(cmd.clientUserId)) {
+      sender() ! noPermission
     } else if (!isValidTopic(topic)) {
       sender() ! Status.Failure(TopicTooLong)
     } else {
@@ -957,8 +954,8 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
 
     val about = trimToEmpty(cmd.about)
 
-    if (!state.isAdmin(cmd.clientUserId)) {
-      sender() ! notAdmin
+    if (!state.permissions.canEditInfo(cmd.clientUserId)) {
+      sender() ! noPermission
     } else if (!isValidAbout(about)) {
       sender() ! Status.Failure(AboutTooLong)
     } else {
@@ -1014,7 +1011,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
     val oldShortName = state.shortName
     val newShortName = trimToEmpty(cmd.shortName)
 
-    if (!state.isOwner(cmd.clientUserId)) {
+    if (!state.permissions.canEditShortName(cmd.clientUserId)) {
       sender() ! Status.Failure(NotOwner)
     } else if (!isValidShortName(newShortName)) {
       sender() ! Status.Failure(InvalidShortName)
@@ -1059,7 +1056,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
   }
 
   protected def revokeIntegrationToken(cmd: RevokeIntegrationToken): Unit = {
-    if (!state.isAdmin(cmd.clientUserId)) {
+    if (!(state.isAdmin(cmd.clientUserId) || state.isOwner(cmd.clientUserId))) {
       sender() ! notAdmin
     } else {
       val oldToken = state.bot.map(_.token)
@@ -1085,8 +1082,10 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
   }
 
   protected def makeUserAdmin(cmd: MakeUserAdmin): Unit = {
-    if (!state.isAdmin(cmd.clientUserId) || state.nonMember(cmd.candidateUserId)) {
-      sender() ! Status.Failure(NotAdmin)
+    if (!state.permissions.canEditAdmins(cmd.clientUserId)) {
+      sender() ! noPermission
+    } else if (state.nonMember(cmd.candidateUserId)) {
+      sender() ! Status.Failure(NotAMember)
     } else if (state.isAdmin(cmd.candidateUserId)) {
       sender() ! Status.Failure(UserAlreadyAdmin)
     } else {
@@ -1168,7 +1167,9 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
 
   protected def dismissUserAdmin(cmd: DismissUserAdmin): Unit = {
     if (!state.permissions.canEditAdmins(cmd.clientUserId)) {
-      sender() ! Status.Failure(NotAdmin) // Forbidden
+      sender() ! noPermission
+    } else if (state.nonMember(cmd.targetUserId)) {
+      sender() ! Status.Failure(NotAMember)
     } else if (!state.isAdmin(cmd.targetUserId)) {
       sender() ! Status.Failure(UserAlreadyNotAdmin)
     } else {

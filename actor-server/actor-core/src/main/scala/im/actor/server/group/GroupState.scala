@@ -299,6 +299,12 @@ private[group] final case class GroupState(
         (isMember(clientUserId) && adminSettings.canMembersInvite)
 
     /**
+     * owner and admins can kick members
+     */
+    def canKickMember(clientUserId: Int) =
+      isOwner(clientUserId) || isAdmin(clientUserId)
+
+    /**
      * owner always can edit group info
      * admin can edit group info, if canAdminsEditGroupInfo is true in admin settings
      * any member can edit group info, if canMembersEditGroupInfo is true in admin settings
