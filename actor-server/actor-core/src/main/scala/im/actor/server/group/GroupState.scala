@@ -3,6 +3,7 @@ package im.actor.server.group
 import java.time.Instant
 
 import akka.persistence.SnapshotMetadata
+import im.actor.api.rpc.groups.ApiAdminSettings
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.server.cqrs.{ Event, ProcessorState }
 import im.actor.server.file.Avatar
@@ -13,12 +14,50 @@ private[group] final case class Member(
   userId:        Int,
   inviterUserId: Int,
   invitedAt:     Instant,
-  isAdmin:       Boolean
+  isAdmin:       Boolean // TODO: remove, use separate admins list instead
 )
 
 private[group] final case class Bot(
   userId: Int,
   token:  String
+)
+
+object AdminSettings {
+  val Default = AdminSettings(
+    showAdminsToMembers = true,
+    canMembersInvite = true,
+    canMembersEditGroupInfo = true,
+    canAdminsEditGroupInfo = false
+  )
+
+  // format: OFF
+  def apiToBitMask(settings: ApiAdminSettings): Int = {
+    def toInt(b: Boolean) = if(b) 1 else 0
+
+    List(
+      toInt(settings.showAdminsToMembers)     << 0,
+      toInt(settings.canMembersInvite)        << 1,
+      toInt(settings.canMembersEditGroupInfo) << 2,
+      toInt(settings.canAdminsEditGroupInfo)  << 3
+    ).sum
+  }
+
+  def fromBitMask(mask: Int): AdminSettings = {
+    AdminSettings(
+      showAdminsToMembers     = (mask & (1 << 0)) != 0,
+      canMembersInvite        = (mask & (1 << 1)) != 0,
+      canMembersEditGroupInfo = (mask & (1 << 2)) != 0,
+      canAdminsEditGroupInfo  = (mask & (1 << 3)) != 0
+    )
+  }
+  // format: ON
+}
+
+private[group] final case class AdminSettings(
+  showAdminsToMembers:     Boolean, // 1
+  canMembersInvite:        Boolean, // 2
+  canMembersEditGroupInfo: Boolean, // 4
+  canAdminsEditGroupInfo:  Boolean // 8
 )
 
 private[group] object GroupState {
@@ -40,6 +79,7 @@ private[group] object GroupState {
       members = Map.empty,
       invitedUserIds = Set.empty,
       accessHash = 0L,
+      adminSettings = AdminSettings.Default,
       bot = None,
 
       //???
@@ -70,9 +110,10 @@ private[group] final case class GroupState(
   invitedUserIds: Set[Int],
 
   //security and etc.
-  accessHash: Long,
-  bot:        Option[Bot],
-  extensions: Map[Int, Array[Byte]]
+  accessHash:    Long,
+  adminSettings: AdminSettings,
+  bot:           Option[Bot],
+  extensions:    Map[Int, Array[Byte]]
 ) extends ProcessorState[GroupState] {
 
   lazy val memberIds = members.keySet
@@ -95,24 +136,6 @@ private[group] final case class GroupState(
   def isOwner(userId: Int): Boolean = userId == ownerUserId
 
   def isExUser(userId: Int): Boolean = exUserIds.contains(userId)
-
-  // in case of general/public can view members if user is member
-  // in case of channel can view members only if clientUserId is admin
-  def canViewMembers(clientUserId: Int) =
-    isMember(clientUserId) && ((typ.isGeneral || typ.isPublic) || (typ.isChannel && isAdmin(clientUserId)))
-
-  /**
-   * For now, all members can invite other users to group
-   */
-  def canInvitePeople(clientUserId: Int) = isMember(clientUserId)
-
-  def canSendMessage(clientUserId: Int) =
-    {
-      typ match {
-        case General | Public ⇒ isMember(clientUserId)
-        case Channel          ⇒ isAdmin(clientUserId)
-      }
-    } || bot.exists(_.userId == clientUserId)
 
   val isNotCreated = createdAt.isEmpty
 
@@ -216,9 +239,9 @@ private[group] final case class GroupState(
       this.copy(about = newAbout)
     case TopicUpdated(_, newTopic) ⇒
       this.copy(topic = newTopic)
-    case UserBecameAdmin(_, userId, _) ⇒
+    case AdminStatusChanged(_, userId, isAdmin) ⇒
       this.copy(
-        members = members.updated(userId, members(userId).copy(isAdmin = true))
+        members = members.updated(userId, members(userId).copy(isAdmin = isAdmin))
       )
     case IntegrationTokenRevoked(_, newToken) ⇒
       this.copy(
@@ -228,8 +251,78 @@ private[group] final case class GroupState(
       this.copy(ownerUserId = userId)
     case ShortNameUpdated(_, newShortName) ⇒
       this.copy(shortName = newShortName)
+    case AdminSettingsUpdated(_, bitMask) ⇒
+      this.copy(adminSettings = AdminSettings.fromBitMask(bitMask))
+
+    // deprecated event
+    case UserBecameAdmin(_, userId, _) ⇒
+      this.copy(
+        members = members.updated(userId, members(userId).copy(isAdmin = true))
+      )
   }
 
   // TODO: real snapshot
   def withSnapshot(metadata: SnapshotMetadata, snapshot: Any): GroupState = this
+
+  object permissions {
+
+    /**
+     * bot can send messages in all groups
+     * in general/public group only members can send messages
+     * in channels only owner and admins can send messages
+     */
+    def canSendMessage(clientUserId: Int) =
+      {
+        typ match {
+          case General | Public ⇒ isMember(clientUserId)
+          case Channel          ⇒ isAdmin(clientUserId) || isOwner(clientUserId)
+        }
+      } || bot.exists(_.userId == clientUserId)
+
+    /**
+     * in general/public group, all members can view members
+     * in channels, owner and admins can view members
+     */
+    def canViewMembers(clientUserId: Int) =
+      typ match {
+        case General | Public ⇒ isMember(clientUserId)
+        case Channel          ⇒ isAdmin(clientUserId) || isOwner(clientUserId)
+      }
+
+    /**
+     * owner and admins always can invite new people
+     * members can invite new people if canMembersInvite is true
+     */
+    def canInvitePeople(clientUserId: Int) =
+      isOwner(clientUserId) ||
+        isAdmin(clientUserId) ||
+        (isMember(clientUserId) && adminSettings.canMembersInvite)
+
+    /**
+     * owner always can edit group info
+     * admin can edit group info, if canAdminsEditGroupInfo is true in admin settings
+     * any member can edit group info, if canMembersEditGroupInfo is true in admin settings
+     */
+    def canEditInfo(clientUserId: Int): Boolean =
+      isOwner(clientUserId) ||
+        (isAdmin(clientUserId) && adminSettings.canAdminsEditGroupInfo) ||
+        (isMember(clientUserId) && adminSettings.canMembersEditGroupInfo)
+
+    // only owner can change short name
+    def canEditShortName(clientUserId: Int): Boolean = isOwner(clientUserId)
+
+    // only owner and other admins can edit admins list
+    def canEditAdmins(clientUserId: Int): Boolean =
+      isOwner(clientUserId) || isAdmin(clientUserId)
+
+    /**
+     * admins list is always visible to owner and admins
+     * admins list is visible to any member if showAdminsToMembers = true
+     */
+    def canViewAdmins(clientUserId: Int): Boolean =
+      isOwner(clientUserId) || isAdmin(clientUserId) || adminSettings.showAdminsToMembers
+
+    // only owner can change admin settings
+    def canEditAdminSettings(clientUserId: Int): Boolean = isOwner(clientUserId)
+  }
 }

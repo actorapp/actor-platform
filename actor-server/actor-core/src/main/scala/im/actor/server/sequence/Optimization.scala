@@ -45,9 +45,8 @@ object Optimization extends MessageParsing {
         UpdateGroupMemberDiff.header,
         UpdateGroupMembersCountChanged.header,
         UpdateGroupMemberAdminChanged.header,
-        UpdateGroupCanEditInfoChanged.header,
-
         UpdateGroupShortNameChanged.header,
+        UpdateGroupCanEditInfoChanged.header,
         UpdateGroupCanEditUsernameChanged.header,
         UpdateGroupCanEditAdminsChanged.header,
         UpdateGroupCanViewAdminsChanged.header,

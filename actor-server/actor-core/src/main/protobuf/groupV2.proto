@@ -34,7 +34,9 @@ message GroupEnvelope {
 //        GroupCommands.MakePublic make_public = 11;
         GroupCommands.RevokeIntegrationToken revoke_token = 12;
         GroupCommands.MakeUserAdmin make_user_admin = 13;
+        GroupCommands.DismissUserAdmin dismiss_user_admin = 28;
         GroupCommands.TransferOwnership transfer_ownership = 14;
+        GroupCommands.UpdateAdminSettings update_admin_settings = 30;
     }
     oneof query {
         GroupQueries.GetAccessHash get_access_hash = 15;
@@ -48,6 +50,7 @@ message GroupEnvelope {
         GroupQueries.GetApiFullStruct get_api_full_struct = 23;
         GroupQueries.CheckAccessHash check_access_hash = 24;
         GroupQueries.CanSendMessage can_send_message = 26;
+        GroupQueries.LoadAdminSettings load_admin_settings = 29;
     }
     DialogEnvelope dialog_envelope = 25;
 }
@@ -125,16 +128,7 @@ message GroupCommands {
         string title = 3;
         int64 random_id = 4;
     }
-//
-//    message MakePublic {
-//        option (scalapb.message).extends = "im.actor.server.group.GroupCommand";
-//
-//        required int32 group_id = 1;
-//        optional string descrption = 2;
-//    }
-//
-//    message MakePublicAck {}
-//
+
     message UpdateTopic {
         option (scalapb.message).extends = "GroupCommand";
 
@@ -169,6 +163,14 @@ message GroupCommands {
         int32 candidate_user_id = 3;
     }
 
+    message DismissUserAdmin {
+        option (scalapb.message).extends = "GroupCommand";
+
+        int32 client_user_id = 1;
+        int64 client_auth_id = 2;
+        int32 target_user_id = 3;
+    }
+
     message RevokeIntegrationToken {
         option (scalapb.message).extends = "GroupCommand";
 
@@ -186,6 +188,15 @@ message GroupCommands {
         int64 client_auth_id = 3;
         int32 new_owner_id = 4;
     }
+
+    message UpdateAdminSettings {
+        option (scalapb.message).extends = "GroupCommand";
+
+        int32 client_user_id = 1;
+        int32 settings_bit_mask = 2;
+    }
+
+    message UpdateAdminSettingsAck {}
 }
 
 message GroupQueries {
@@ -295,5 +306,15 @@ message GroupQueries {
         bool is_channel = 2;
         repeated int32 member_ids = 3;
         google.protobuf.Int32Value bot_id = 4;
+    }
+
+    message LoadAdminSettings {
+        option (scalapb.message).extends = "GroupQuery";
+
+        int32 client_user_id = 1;
+    }
+
+    message LoadAdminSettingsResponse {
+        bytes settings = 1 [(scalapb.field).type = "im.actor.api.rpc.groups.ApiAdminSettings"];
     }
 }

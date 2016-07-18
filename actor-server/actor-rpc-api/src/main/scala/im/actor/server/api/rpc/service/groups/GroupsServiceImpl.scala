@@ -84,13 +84,33 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
   }
 
   override def doHandleDismissUserAdmin(groupPeer: ApiGroupOutPeer, userPeer: ApiUserOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
-    FastFuture.failed(new RuntimeException("Not implemented"))
+    authorized(clientData) { implicit client ⇒
+      withGroupOutPeer(groupPeer) {
+        withUserOutPeer(userPeer) {
+          for {
+            SeqState(seq, state) ← groupExt.dismissUserAdmin(groupPeer.groupId, client.userId, client.authId, userPeer.userId)
+          } yield Ok(ResponseSeq(seq, state.toByteArray))
+        }
+      }
+    }
 
   override def doHandleLoadAdminSettings(groupPeer: ApiGroupOutPeer, clientData: ClientData): Future[HandlerResult[ResponseLoadAdminSettings]] =
-    FastFuture.failed(new RuntimeException("Not implemented"))
+    authorized(clientData) { client ⇒
+      withGroupOutPeer(groupPeer) {
+        for {
+          settings ← groupExt.loadAdminSettings(groupPeer.groupId, client.userId)
+        } yield Ok(ResponseLoadAdminSettings(settings))
+      }
+    }
 
   override def doHandleSaveAdminSettings(groupPeer: ApiGroupOutPeer, settings: ApiAdminSettings, clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
-    FastFuture.failed(new RuntimeException("Not implemented"))
+    authorized(clientData) { client ⇒
+      withGroupOutPeer(groupPeer) {
+        for {
+          _ ← groupExt.updateAdminSettings(groupPeer.groupId, client.userId, settings)
+        } yield Ok(ResponseVoid)
+      }
+    }
 
   /**
    * Loading group members
@@ -558,6 +578,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     case GroupErrors.NotAdmin                ⇒ CommonRpcErrors.forbidden("Only group admin can perform this action.")
     case GroupErrors.NotOwner                ⇒ CommonRpcErrors.forbidden("Only group owner can perform this action.")
     case GroupErrors.UserAlreadyAdmin        ⇒ GroupRpcErrors.UserAlreadyAdmin
+    case GroupErrors.UserAlreadyNotAdmin     ⇒ GroupRpcErrors.UserAlreadyNotAdmin
     case GroupErrors.InvalidTitle            ⇒ GroupRpcErrors.InvalidTitle
     case GroupErrors.AboutTooLong            ⇒ GroupRpcErrors.AboutTooLong
     case GroupErrors.TopicTooLong            ⇒ GroupRpcErrors.TopicTooLong

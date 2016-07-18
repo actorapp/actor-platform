@@ -47,6 +47,8 @@ object GroupProcessor {
       20020 → classOf[GroupCommands.RevokeIntegrationTokenAck],
       20021 → classOf[GroupCommands.TransferOwnership],
       20022 → classOf[GroupCommands.UpdateShortName],
+      20023 → classOf[GroupCommands.DismissUserAdmin],
+      20024 → classOf[GroupCommands.UpdateAdminSettings],
 
       21001 → classOf[GroupQueries.GetIntegrationToken],
       21002 → classOf[GroupQueries.GetIntegrationTokenResponse],
@@ -67,6 +69,8 @@ object GroupProcessor {
       21018 → classOf[GroupQueries.GetApiFullStruct],
       21019 → classOf[GroupQueries.CanSendMessage],
       21020 → classOf[GroupQueries.CanSendMessageResponse],
+      21021 → classOf[GroupQueries.LoadAdminSettings],
+      21022 → classOf[GroupQueries.LoadAdminSettingsResponse],
 
       22003 → classOf[GroupEvents.UserInvited],
       22004 → classOf[GroupEvents.UserJoined],
@@ -82,7 +86,8 @@ object GroupProcessor {
       22015 → classOf[GroupEvents.UserBecameAdmin],
       22016 → classOf[GroupEvents.IntegrationTokenRevoked],
       22017 → classOf[GroupEvents.OwnerChanged],
-      22018 → classOf[GroupEvents.ShortNameUpdated]
+      22018 → classOf[GroupEvents.ShortNameUpdated],
+      22019 → classOf[GroupEvents.AdminSettingsUpdated]
     )
 
   def persistenceIdFor(groupId: Int): String = s"Group-${groupId}"
@@ -134,7 +139,9 @@ private[group] final class GroupProcessor
     // admin actions
     case r: RevokeIntegrationToken             ⇒ revokeIntegrationToken(r)
     case m: MakeUserAdmin                      ⇒ makeUserAdmin(m)
+    case d: DismissUserAdmin                   ⇒ dismissUserAdmin(d)
     case t: TransferOwnership                  ⇒ transferOwnership(t)
+    case s: UpdateAdminSettings                ⇒ updateAdminSettings(s)
 
     // termination actions
     case StopProcessor                         ⇒ context stop self
@@ -165,6 +172,7 @@ private[group] final class GroupProcessor
     case GetApiFullStruct(clientUserId)           ⇒ getApiFullStruct(clientUserId)
     case CheckAccessHash(accessHash)              ⇒ checkAccessHash(accessHash)
     case CanSendMessage(clientUserId)             ⇒ canSendMessage(clientUserId)
+    case LoadAdminSettings(clientUserId)          ⇒ loadAdminSettings(clientUserId)
   }
 
   def persistenceId: String = GroupProcessor.persistenceIdFor(groupId)

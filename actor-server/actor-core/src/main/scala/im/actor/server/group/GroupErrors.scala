@@ -17,6 +17,8 @@ object GroupErrors {
 
   case object UserAlreadyAdmin extends Exception with NoStackTrace
 
+  case object UserAlreadyNotAdmin extends Exception with NoStackTrace
+
   case object NotAdmin extends Exception with NoStackTrace
 
   case object NotOwner extends Exception with NoStackTrace

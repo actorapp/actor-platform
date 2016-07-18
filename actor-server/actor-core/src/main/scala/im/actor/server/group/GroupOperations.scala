@@ -5,7 +5,7 @@ import akka.pattern.ask
 import akka.util.Timeout
 import com.google.protobuf.ByteString
 import im.actor.api.rpc.AuthorizedClientData
-import im.actor.api.rpc.groups.{ ApiGroup, ApiGroupFull, ApiMember }
+import im.actor.api.rpc.groups.{ ApiAdminSettings, ApiGroup, ApiGroupFull, ApiMember }
 import im.actor.server.dialog.UserAcl
 import im.actor.server.file.Avatar
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
@@ -97,6 +97,11 @@ private[group] sealed trait Commands extends UserAcl {
       GroupEnvelope(groupId)
       .withMakeUserAdmin(MakeUserAdmin(clientUserId, clientAuthId, candidateId))).mapTo[(Vector[ApiMember], SeqStateDate)]
 
+  def dismissUserAdmin(groupId: Int, clientUserId: Int, clientAuthId: Long, targetUserId: Int): Future[SeqState] =
+    (processorRegion.ref ?
+      GroupEnvelope(groupId)
+      .withDismissUserAdmin(DismissUserAdmin(clientUserId, clientAuthId, targetUserId))).mapTo[SeqState]
+
   def revokeIntegrationToken(groupId: Int, clientUserId: Int): Future[String] =
     (processorRegion.ref ?
       GroupEnvelope(groupId)
@@ -106,6 +111,11 @@ private[group] sealed trait Commands extends UserAcl {
     (processorRegion.ref ?
       GroupEnvelope(groupId)
       .withTransferOwnership(TransferOwnership(clientUserId, clientAuthId, newOwnerId))).mapTo[SeqState]
+
+  def updateAdminSettings(groupId: Int, clientUserId: Int, settings: ApiAdminSettings): Future[Unit] =
+    (processorRegion.ref ?
+      GroupEnvelope(groupId)
+      .withUpdateAdminSettings(UpdateAdminSettings(clientUserId, AdminSettings.apiToBitMask(settings)))).mapTo[UpdateAdminSettingsAck] map (_ ⇒ ())
 
 }
 
@@ -187,6 +197,12 @@ private[group] sealed trait Queries {
     (viewRegion.ref ?
       GroupEnvelope(groupId)
       .withLoadMembers(LoadMembers(clientUserId, limit, offset map ByteString.copyFrom))).mapTo[LoadMembersResponse] map (r ⇒ r.userIds → r.offset.map(_.toByteArray))
+
+  def loadAdminSettings(groupId: Int, clientUserId: Int): Future[ApiAdminSettings] = {
+    (viewRegion.ref ?
+      GroupEnvelope(groupId)
+      .withLoadAdminSettings(LoadAdminSettings(clientUserId))).mapTo[LoadAdminSettingsResponse] map (_.settings)
+  }
 }
 
 final case class CanSendMessageInfo(
