@@ -10,9 +10,9 @@ import slick.dbio._
 import scala.concurrent.Future
 
 /**
- * Stores mapping "Global name" -> "Global name owner(group/user)"
- * global name: String
- * global name owner: GlobalNameOwner
+ * Stores mapping "Normalized global name" -> "Global name owner(group/user)"
+ * normalized global name: String
+ * global name owner: im.actor.server.names.GlobalNameOwner
  */
 private object GlobalNamesStorage extends SimpleStorage("global_names")
 
@@ -43,7 +43,7 @@ final class GlobalNamesStorageKeyValueStorage(implicit system: ActorSystem) {
    * Compatible with storing nicknames in `im.actor.server.persist.UserRepo`
    */
   def exists(name: String): Future[Boolean] = {
-    val existsInKV = conn.run(GlobalNamesStorage.get(name)) map (_.isDefined)
+    val existsInKV = conn.run(GlobalNamesStorage.get(normalized(name))) map (_.isDefined)
 
     existsInKV flatMap {
       case true  ⇒ FastFuture.successful(true)
@@ -70,10 +70,9 @@ final class GlobalNamesStorageKeyValueStorage(implicit system: ActorSystem) {
    */
   private def getOwner(name: String): Future[Option[GlobalNameOwner]] = {
     val optOwner = conn.run(
-      GlobalNamesStorage.get(name)
-    ) map { optBytes ⇒
-        optBytes map GlobalNameOwner.parseFrom
-      }
+      GlobalNamesStorage.get(normalized(name))
+    ) map { _ map GlobalNameOwner.parseFrom }
+
     optOwner flatMap {
       case o @ Some(_) ⇒ FastFuture.successful(o)
       case None        ⇒ db.run(UserRepo.findByNickname(name)) map (_.map(u ⇒ GlobalNameOwner(OwnerType.User, u.id)))
@@ -82,17 +81,17 @@ final class GlobalNamesStorageKeyValueStorage(implicit system: ActorSystem) {
 
   private def upsert(name: String, owner: GlobalNameOwner): Future[Unit] =
     conn.run(
-      GlobalNamesStorage.upsert(name, owner.toByteArray)
+      GlobalNamesStorage.upsert(normalized(name), owner.toByteArray)
     ) map (_ ⇒ ())
 
   /**
    * Compatible with storing nicknames in `im.actor.server.persist.UserRepo`
    */
   private def delete(name: String): Future[Unit] = {
-    val kvDelete = conn.run(GlobalNamesStorage.delete(name))
+    val kvDelete = conn.run(GlobalNamesStorage.delete(normalized(name)))
 
     kvDelete flatMap { count ⇒
-      if (count > 0) {
+      if (count == 0) {
         db.run {
           for {
             optUser ← UserRepo.findByNickname(name)
@@ -107,4 +106,7 @@ final class GlobalNamesStorageKeyValueStorage(implicit system: ActorSystem) {
       }
     }
   }
+
+  private def normalized(name: String) = name.toLowerCase
+
 }
