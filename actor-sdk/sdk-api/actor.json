@@ -8225,6 +8225,24 @@
                 "argument": "canEditAdminSettings",
                 "category": "full",
                 "description": "  If not set only owner can edit admin settings"
+              },
+              {
+                "type": "reference",
+                "argument": "canInviteViaLink",
+                "category": "full",
+                "description": "  If user can invite via link, default is false"
+              },
+              {
+                "type": "reference",
+                "argument": "canDelete",
+                "category": "full",
+                "description": "  If user can delete this group, default is false"
+              },
+              {
+                "type": "reference",
+                "argument": "canLeave",
+                "category": "hidden",
+                "description": "  If user can leave this group, default is true"
               }
             ],
             "expandable": "true",
@@ -8373,6 +8391,30 @@
                 },
                 "id": 18,
                 "name": "canEditAdminSettings"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 19,
+                "name": "canInviteViaLink"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 20,
+                "name": "canDelete"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 21,
+                "name": "canLeave"
               }
             ]
           }
@@ -9132,6 +9174,117 @@
                 "type": "bool",
                 "id": 2,
                 "name": "canViewAdmins"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupCanInviteViaLink",
+            "header": 2646,
+            "doc": [
+              "Update about can invite via link changed",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "canInviteViaLink",
+                "category": "full",
+                "description": "  Can Invite Via link"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": "bool",
+                "id": 2,
+                "name": "canInviteViaLink"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupCanLeaveChanged",
+            "header": 2647,
+            "doc": [
+              "Update about can leave changed",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "canLeaveChanged",
+                "category": "full",
+                "description": "  Can leave changed"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": "bool",
+                "id": 2,
+                "name": "canLeaveChanged"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupCanDeleteChanged",
+            "header": 2648,
+            "doc": [
+              "Update about can delete changed",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "canDeleteChanged",
+                "category": "full",
+                "description": "  Can delete changed"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": "bool",
+                "id": 2,
+                "name": "canDeleteChanged"
               }
             ]
           }
@@ -10576,6 +10729,36 @@
                 },
                 "id": 2,
                 "name": "settings"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "DeleteGroup",
+            "header": 2795,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "doc": [
+              "Delete Group",
+              {
+                "type": "reference",
+                "argument": "groupPeer",
+                "category": "full",
+                "description": "Group's peer"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "groupPeer"
               }
             ]
           }

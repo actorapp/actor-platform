@@ -7256,6 +7256,27 @@
             <node concept="2m5ndN" id="3c_gimmPwSK" role="3GH5xg" />
           </node>
         </node>
+        <node concept="2m7Kf5" id="5uOI4gqOzVF" role="2m0hLx">
+          <property role="2m7DUN" value="19" />
+          <property role="TrG5h" value="canInviteViaLink" />
+          <node concept="2m5nlT" id="5uOI4gqO_ih" role="2m7DVh">
+            <node concept="2m5ndN" id="5uOI4gqO_in" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="5uOI4gqOB6_" role="2m0hLx">
+          <property role="2m7DUN" value="20" />
+          <property role="TrG5h" value="canDelete" />
+          <node concept="2m5nlT" id="5uOI4gqOB7t" role="2m7DVh">
+            <node concept="2m5ndN" id="5uOI4gqOB7z" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="5uOI4gqOB7A" role="2m0hLx">
+          <property role="2m7DUN" value="21" />
+          <property role="TrG5h" value="canLeave" />
+          <node concept="2m5nlT" id="5uOI4gqOB8x" role="2m7DVh">
+            <node concept="2m5ndN" id="5uOI4gqOB8B" role="3GH5xg" />
+          </node>
+        </node>
         <node concept="NXeRC" id="2_$5TdnXtYw" role="NXodf">
           <property role="NXePf" value="Goup Full information" />
         </node>
@@ -7338,6 +7359,20 @@
           <property role="NX6R2" value="If not set only owner can edit admin settings" />
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="3c_gimmPwRS" resolve="canEditAdminSettings" />
+        </node>
+        <node concept="NX1gA" id="5uOI4gqO_iH" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="If user can invite via link, default is false" />
+          <ref role="NX6Kv" node="5uOI4gqOzVF" resolve="canInviteViaLink" />
+        </node>
+        <node concept="NX1gA" id="5uOI4gqOB8Y" role="NXodf">
+          <property role="NX6R2" value="If user can delete this group, default is false" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="5uOI4gqOB6_" resolve="canDelete" />
+        </node>
+        <node concept="NX1gA" id="5uOI4gqOB9C" role="NXodf">
+          <property role="NX6R2" value="If user can leave this group, default is true" />
+          <ref role="NX6Kv" node="5uOI4gqOB7A" resolve="canLeave" />
         </node>
       </node>
       <node concept="2m6fVq" id="1kct6f0uJN0" role="2m5mJr">
@@ -7961,6 +7996,99 @@
         <node concept="NX1gA" id="3c_gimmPBVs" role="NXp_2">
           <property role="NX6R2" value="Can view admins" />
           <ref role="NX6Kv" node="3c_gimmPufP" resolve="canViewAdmins" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="5uOI4gqO_y7" role="2m5mJr">
+        <property role="TrG5h" value="GroupCanInviteViaLink" />
+        <node concept="2m7Kf5" id="5uOI4gqO_Lg" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupId" />
+          <node concept="wb0Ql" id="5uOI4gqO_Lk" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uO" resolve="groupId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="5uOI4gqO_Ln" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="canInviteViaLink" />
+          <node concept="2m5ndN" id="5uOI4gqO_Lt" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="5uOI4gqO_y8" role="NuuwV">
+          <property role="Nu42W" value="A56" />
+        </node>
+        <node concept="NXeRC" id="5uOI4gqO_Lw" role="NXp_2">
+          <property role="NXePf" value="Update about can invite via link changed" />
+        </node>
+        <node concept="NX1gA" id="5uOI4gqO_L_" role="NXp_2">
+          <property role="NX6R2" value="Group Id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="5uOI4gqO_Lg" resolve="groupId" />
+        </node>
+        <node concept="NX1gA" id="5uOI4gqO_LH" role="NXp_2">
+          <property role="NX6R2" value="Can Invite Via link" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="5uOI4gqO_Ln" resolve="canInviteViaLink" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="5uOI4gqODcW" role="2m5mJr">
+        <property role="TrG5h" value="GroupCanLeaveChanged" />
+        <node concept="2m7Kf5" id="5uOI4gqODsm" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupId" />
+          <node concept="wb0Ql" id="5uOI4gqODsq" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uO" resolve="groupId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="5uOI4gqODst" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="canLeaveChanged" />
+          <node concept="2m5ndN" id="5uOI4gqODsz" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="5uOI4gqODcX" role="NuuwV">
+          <property role="Nu42W" value="A57" />
+        </node>
+        <node concept="NXeRC" id="5uOI4gqODsA" role="NXp_2">
+          <property role="NXePf" value="Update about can leave changed" />
+        </node>
+        <node concept="NX1gA" id="5uOI4gqODsF" role="NXp_2">
+          <property role="NX6R2" value="Group Id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="5uOI4gqODsm" resolve="groupId" />
+        </node>
+        <node concept="NX1gA" id="5uOI4gqODsN" role="NXp_2">
+          <property role="NX6R2" value="Can leave changed" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="5uOI4gqODst" resolve="canLeaveChanged" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="5uOI4gqOF$_" role="2m5mJr">
+        <property role="TrG5h" value="GroupCanDeleteChanged" />
+        <node concept="2m7Kf5" id="5uOI4gqOFO8" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupId" />
+          <node concept="wb0Ql" id="5uOI4gqOFOc" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uO" resolve="groupId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="5uOI4gqOFOf" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="canDeleteChanged" />
+          <node concept="2m5ndN" id="5uOI4gqOFOl" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="5uOI4gqOF$A" role="NuuwV">
+          <property role="Nu42W" value="A58" />
+        </node>
+        <node concept="NXeRC" id="5uOI4gqOFOo" role="NXp_2">
+          <property role="NXePf" value="Update about can delete changed" />
+        </node>
+        <node concept="NX1gA" id="5uOI4gqOFOt" role="NXp_2">
+          <property role="NX6R2" value="Group Id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="5uOI4gqOFO8" resolve="groupId" />
+        </node>
+        <node concept="NX1gA" id="5uOI4gqOFO_" role="NXp_2">
+          <property role="NX6R2" value="Can delete changed" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="5uOI4gqOFOf" resolve="canDeleteChanged" />
         </node>
       </node>
       <node concept="NpBTk" id="3c_gimmPAoK" role="2m5mJr">
@@ -9189,6 +9317,30 @@
           <property role="1GSvIU" value="full" />
           <property role="NX6R2" value="Group's settings" />
           <ref role="NX6Kv" node="3c_gimmPPfn" resolve="settings" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="5uOI4gqOIIH" role="2m5mJr">
+        <property role="TrG5h" value="DeleteGroup" />
+        <node concept="2m7Kf5" id="5uOI4gqOIYs" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupPeer" />
+          <node concept="2m5mGg" id="5uOI4gqOIYw" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6j2" resolve="GroupOutPeer" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="5uOI4gqOIII" role="NuuwV">
+          <property role="Nu42W" value="AEB" />
+        </node>
+        <node concept="2m1Rp1" id="5uOI4gqOIYA" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_W" resolve="Seq" />
+        </node>
+        <node concept="NXeRC" id="5uOI4gqOIYD" role="1GBnQ6">
+          <property role="NXePf" value="Delete Group" />
+        </node>
+        <node concept="NX1gA" id="5uOI4gqOIYI" role="1GBnQ6">
+          <property role="NX6R2" value="Group's peer" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="5uOI4gqOIYs" resolve="groupPeer" />
         </node>
       </node>
       <node concept="NvWBy" id="1kct6f0uX17" role="2m5mJr">
