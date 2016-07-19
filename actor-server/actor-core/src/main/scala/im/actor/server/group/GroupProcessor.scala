@@ -87,7 +87,8 @@ object GroupProcessor {
       22016 → classOf[GroupEvents.IntegrationTokenRevoked],
       22017 → classOf[GroupEvents.OwnerChanged],
       22018 → classOf[GroupEvents.ShortNameUpdated],
-      22019 → classOf[GroupEvents.AdminSettingsUpdated]
+      22019 → classOf[GroupEvents.AdminSettingsUpdated],
+      22020 → classOf[GroupEvents.AdminStatusChanged]
     )
 
   def persistenceIdFor(groupId: Int): String = s"Group-${groupId}"
