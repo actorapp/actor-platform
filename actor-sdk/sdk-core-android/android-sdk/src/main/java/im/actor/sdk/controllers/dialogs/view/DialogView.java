@@ -272,15 +272,7 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
             counterTextPaint.setTextAlign(Paint.Align.CENTER);
             counterBgPaint = createFilledPaint(style.getDialogsCounterBackgroundColor());
             fillPaint = createFilledPaint(Color.BLACK);
-            placeholderColors = new int[]{
-                    context.getResources().getColor(R.color.placeholder_0),
-                    context.getResources().getColor(R.color.placeholder_1),
-                    context.getResources().getColor(R.color.placeholder_2),
-                    context.getResources().getColor(R.color.placeholder_3),
-                    context.getResources().getColor(R.color.placeholder_4),
-                    context.getResources().getColor(R.color.placeholder_5),
-                    context.getResources().getColor(R.color.placeholder_6),
-            };
+            placeholderColors = ActorSDK.sharedActor().style.getDefaultAvatarPlaceholders();
             avatarBorder = new Paint();
             avatarBorder.setStyle(Paint.Style.STROKE);
             avatarBorder.setAntiAlias(true);

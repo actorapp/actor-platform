@@ -1,5 +1,6 @@
 package im.actor.sdk.controllers.settings;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -66,6 +67,7 @@ import static im.actor.sdk.util.ActorSDKMessenger.users;
 
 public abstract class BaseActorSettingsFragment extends BaseFragment implements IActorSettingsFragment {
 
+    private boolean animateToolbar = true;
     private int baseColor;
     private AvatarView avatarView;
     protected SharedPreferences shp;
@@ -74,10 +76,24 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
     private boolean noEmails = false;
     private HeaderViewRecyclerAdapter wallpaperAdapter;
 
+    public BaseActorSettingsFragment() {
+        setHasOptionsMenu(true);
+    }
+
+    public boolean isAnimateToolbar() {
+        return animateToolbar;
+    }
+
+    public void setAnimateToolbar(boolean animateToolbar) {
+        this.animateToolbar = animateToolbar;
+    }
+
     @Override
     public void onCreate(Bundle saveInstance) {
         super.onCreate(saveInstance);
-        setHasOptionsMenu(true);
+        if (saveInstance != null) {
+            animateToolbar = saveInstance.getBoolean("animateToolbar", true);
+        }
     }
 
     @Override
@@ -561,6 +577,7 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
         }
 
         view.findViewById(R.id.avatarContainer).setBackgroundColor(style.getToolBarColor());
+
         avatarView = (AvatarView) view.findViewById(R.id.avatar);
         avatarView.init(Screen.dp(96), 44);
         avatarView.bind(users().get(myUid()));
@@ -684,8 +701,17 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
     }
 
     private void updateActionBar(int offset) {
-
+        if (!animateToolbar) {
+            return;
+        }
+        Activity activity = getActivity();
+        if (!(activity instanceof BaseActivity)) {
+            return;
+        }
         ActionBar bar = ((BaseActivity) getActivity()).getSupportActionBar();
+        if (bar == null) {
+            return;
+        }
         int fullColor = baseColor;
         ActorStyle style = ActorSDK.sharedActor().style;
         if (style.getToolBarColor() != 0) {
@@ -745,6 +771,12 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("animateToolbar", animateToolbar);
     }
 
     @Override

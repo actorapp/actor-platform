@@ -1,5 +1,7 @@
 package im.actor.server.api.rpc.service.groups
 
+import java.time.Instant
+
 import akka.actor.ActorSystem
 import akka.http.scaladsl.util.FastFuture
 import im.actor.api.rpc.PeerHelpers._
@@ -69,9 +71,11 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
   override protected def doHandleMakeUserAdmin(groupPeer: ApiGroupOutPeer, userPeer: ApiUserOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     authorized(clientData) { implicit client ⇒
       withGroupOutPeer(groupPeer) {
-        for {
-          (_, SeqStateDate(seq, state, date)) ← groupExt.makeUserAdmin(groupPeer.groupId, client.userId, client.authId, userPeer.userId)
-        } yield Ok(ResponseSeqDate(seq, state.toByteArray, date))
+        withUserOutPeer(userPeer) {
+          for {
+            (_, SeqStateDate(seq, state, date)) ← groupExt.makeUserAdmin(groupPeer.groupId, client.userId, client.authId, userPeer.userId)
+          } yield Ok(ResponseSeqDate(seq, state.toByteArray, date))
+        }
       }
     }
   }
@@ -106,12 +110,14 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
    * @param newOwner  New group's owner
    */
   //TODO: figure out what date should be
-  override protected def doHandleTransferOwnership(groupPeer: ApiGroupOutPeer, newOwner: Int, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] =
+  override protected def doHandleTransferOwnership(groupPeer: ApiGroupOutPeer, newOwner: ApiUserOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] =
     authorized(clientData) { implicit client ⇒
       withGroupOutPeer(groupPeer) {
-        for {
-          SeqState(seq, state) ← groupExt.transferOwnership(groupPeer.groupId, client.userId, client.authId, newOwner)
-        } yield Ok(ResponseSeqDate(seq, state.toByteArray, 0))
+        withUserOutPeer(newOwner) {
+          for {
+            SeqState(seq, state) ← groupExt.transferOwnership(groupPeer.groupId, client.userId, client.authId, newOwner.userId)
+          } yield Ok(ResponseSeqDate(seq, state.toByteArray, Instant.now.toEpochMilli))
+        }
       }
     }
 
@@ -181,11 +187,13 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     authorized(clientData) { implicit client ⇒
       addOptimizations(optimizations)
       withGroupOutPeer(groupPeer) {
-        for {
-          SeqStateDate(seq, state, date) ← groupExt.kickUser(groupPeer.groupId, userOutPeer.userId, randomId)
-        } yield {
-          groupPresenceExt.notifyGroupUserRemoved(groupPeer.groupId, userOutPeer.userId)
-          Ok(ResponseSeqDate(seq, state.toByteArray, date))
+        withUserOutPeer(userOutPeer) {
+          for {
+            SeqStateDate(seq, state, date) ← groupExt.kickUser(groupPeer.groupId, userOutPeer.userId, randomId)
+          } yield {
+            groupPresenceExt.notifyGroupUserRemoved(groupPeer.groupId, userOutPeer.userId)
+            Ok(ResponseSeqDate(seq, state.toByteArray, date))
+          }
         }
       }
     }
@@ -236,7 +244,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
             userIds = users.map(_.userId).toSet,
             typ
           )
-          SeqStateDate(seq, state, _) = seqStateDate.getOrElse(throw NoSeqStateDate)
+          SeqStateDate(seq, state, date) = seqStateDate.getOrElse(throw NoSeqStateDate)
           group ← groupExt.getApiStruct(groupId, client.userId)
           memberIds = GroupUtils.getUserIds(group)
           (apiUsers, apiPeers) ← usersOrPeers(memberIds.toVector, stripEntities)
@@ -245,7 +253,8 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
           state = state.toByteArray,
           group = group,
           users = apiUsers,
-          userPeers = apiPeers
+          userPeers = apiPeers,
+          date = date
         ))
 
       }
@@ -495,9 +504,11 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
   ): Future[HandlerResult[ResponseMakeUserAdminObsolete]] = {
     authorized(clientData) { implicit client ⇒
       withGroupOutPeer(groupPeer) {
-        for {
-          (members, SeqStateDate(seq, state, _)) ← groupExt.makeUserAdmin(groupPeer.groupId, client.userId, client.authId, userPeer.userId)
-        } yield Ok(ResponseMakeUserAdminObsolete(members, seq, state.toByteArray))
+        withUserOutPeer(userPeer) {
+          for {
+            (members, SeqStateDate(seq, state, _)) ← groupExt.makeUserAdmin(groupPeer.groupId, client.userId, client.authId, userPeer.userId)
+          } yield Ok(ResponseMakeUserAdminObsolete(members, seq, state.toByteArray))
+        }
       }
     }
   }

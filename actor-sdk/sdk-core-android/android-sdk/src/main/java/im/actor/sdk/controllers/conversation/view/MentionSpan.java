@@ -21,15 +21,7 @@ public class MentionSpan extends BaseUrlSpan {
     public MentionSpan(String nick, int userId, boolean hideUrlStyle) {
         super(nick, hideUrlStyle);
         this.userId = userId;
-        colors = new int[]{
-                AndroidContext.getContext().getResources().getColor(R.color.placeholder_0),
-                AndroidContext.getContext().getResources().getColor(R.color.placeholder_1),
-                AndroidContext.getContext().getResources().getColor(R.color.placeholder_2),
-                AndroidContext.getContext().getResources().getColor(R.color.placeholder_3),
-                AndroidContext.getContext().getResources().getColor(R.color.placeholder_4),
-                AndroidContext.getContext().getResources().getColor(R.color.placeholder_5),
-                AndroidContext.getContext().getResources().getColor(R.color.placeholder_6),
-        };
+        colors = ActorSDK.sharedActor().style.getDefaultAvatarPlaceholders();
     }
 
     @Override
