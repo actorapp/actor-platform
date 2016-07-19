@@ -11,7 +11,7 @@ import im.actor.serialization.ActorSerializer
 import im.actor.server.cqrs.{ Processor, TaggedEvent }
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog.{ DialogEnvelope, DialogExtension }
-import im.actor.server.group.GroupErrors.{ GroupIdAlreadyExists, GroupNotFound }
+import im.actor.server.group.GroupErrors._
 import im.actor.server.group.GroupCommands._
 import im.actor.server.group.GroupQueries._
 import im.actor.server.names.GlobalNamesStorageKeyValueStorage
@@ -58,8 +58,6 @@ object GroupProcessor {
       21006 → classOf[GroupQueries.GetMembersResponse],
       21007 → classOf[GroupQueries.GetApiStruct],
       21008 → classOf[GroupQueries.GetApiStructResponse],
-      21009 → classOf[GroupQueries.IsPublic],
-      21010 → classOf[GroupQueries.IsPublicResponse],
       21012 → classOf[GroupQueries.GetAccessHash],
       21013 → classOf[GroupQueries.GetAccessHashResponse],
       21014 → classOf[GroupQueries.IsHistoryShared],
@@ -145,6 +143,7 @@ private[group] final class GroupProcessor
     case d: DismissUserAdmin                   ⇒ dismissUserAdmin(d)
     case t: TransferOwnership                  ⇒ transferOwnership(t)
     case s: UpdateAdminSettings                ⇒ updateAdminSettings(s)
+    case m: MakeHistoryShared                  ⇒ makeHistoryShared(m)
 
     // termination actions
     case StopProcessor                         ⇒ context stop self
@@ -169,7 +168,6 @@ private[group] final class GroupProcessor
     case GetIntegrationToken(optClient)           ⇒ getIntegrationToken(optClient)
     case GetMembers()                             ⇒ getMembers
     case LoadMembers(clientUserId, limit, offset) ⇒ loadMembers(clientUserId, limit, offset)
-    case IsPublic()                               ⇒ isPublic
     case IsChannel()                              ⇒ isChannel
     case IsHistoryShared()                        ⇒ isHistoryShared
     case GetApiStruct(clientUserId)               ⇒ getApiStruct(clientUserId)

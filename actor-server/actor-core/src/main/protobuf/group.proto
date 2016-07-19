@@ -12,7 +12,6 @@ import "file.proto";
 
 enum GroupType {
     General = 1;
-    Public = 2;
     Channel = 3;
 }
 
@@ -148,5 +147,12 @@ message GroupEvents {
 
         required int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];
         required int32 settings_bit_mask = 2;
+    }
+
+    message HistoryBecameShared {
+        option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
+
+        required int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];
+        required int32 executor_user_id = 2;
     }
 }

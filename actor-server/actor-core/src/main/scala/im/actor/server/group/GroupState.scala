@@ -8,7 +8,7 @@ import im.actor.api.rpc.misc.ApiExtension
 import im.actor.server.cqrs.{ Event, ProcessorState }
 import im.actor.server.file.Avatar
 import im.actor.server.group.GroupEvents._
-import im.actor.server.group.GroupType.{ Channel, General, Public }
+import im.actor.server.group.GroupType.{ Channel, General }
 
 private[group] final case class Member(
   userId:        Int,
@@ -23,9 +23,16 @@ private[group] final case class Bot(
 )
 
 object AdminSettings {
-  val Default = AdminSettings(
+  val PlainDefault = AdminSettings(
     showAdminsToMembers = true,
     canMembersInvite = true,
+    canMembersEditGroupInfo = true,
+    canAdminsEditGroupInfo = true
+  )
+
+  val ChannelsDefault = AdminSettings(
+    showAdminsToMembers = false,
+    canMembersInvite = false,
     canMembersEditGroupInfo = false,
     canAdminsEditGroupInfo = true
   )
@@ -79,7 +86,7 @@ private[group] object GroupState {
       members = Map.empty,
       invitedUserIds = Set.empty,
       accessHash = 0L,
-      adminSettings = AdminSettings.Default,
+      adminSettings = AdminSettings.PlainDefault,
       bot = None,
 
       //???
@@ -141,16 +148,17 @@ private[group] final case class GroupState(
 
   val isCreated = createdAt.nonEmpty
 
+  //TODO: add on commit(not during recovery!) hook to make group with async members, when more than 100
   def isAsyncMembers =
     groupType match {
-      case General | Public ⇒ members.size > 100
-      case Channel          ⇒ true
+      case General ⇒ members.size > 100
+      case Channel ⇒ true
     }
 
   def getShowableOwner(clientUserId: Int): Option[Int] =
     groupType match {
-      case General | Public ⇒ Some(creatorUserId)
-      case Channel          ⇒ if (isAdmin(clientUserId)) Some(creatorUserId) else None
+      case General ⇒ Some(creatorUserId)
+      case Channel ⇒ if (isAdmin(clientUserId)) Some(creatorUserId) else None
     }
 
   override def updated(e: Event): GroupState = e match {
@@ -164,6 +172,7 @@ private[group] final case class GroupState(
         about = None,
         avatar = None,
         topic = None,
+        shortName = None,
         groupType = evt.typ.getOrElse(GroupType.General),
         isHidden = evt.isHidden getOrElse false,
         isHistoryShared = evt.isHistoryShared getOrElse false,
@@ -180,6 +189,9 @@ private[group] final case class GroupState(
         ).toMap,
         invitedUserIds = evt.userIds.filterNot(_ == evt.creatorUserId).toSet,
         accessHash = evt.accessHash,
+        adminSettings =
+          if (groupType.isChannel) AdminSettings.ChannelsDefault
+          else AdminSettings.PlainDefault,
         bot = None,
         extensions = (evt.extensions map { //TODO: validate is it right?
           case ApiExtension(extId, data) ⇒
@@ -230,11 +242,6 @@ private[group] final case class GroupState(
       this.copy(avatar = newAvatar)
     case TitleUpdated(_, newTitle) ⇒
       this.copy(title = newTitle)
-    case BecamePublic(_) ⇒
-      this.copy(
-        groupType = GroupType.Public,
-        isHistoryShared = true
-      )
     case AboutUpdated(_, newAbout) ⇒
       this.copy(about = newAbout)
     case TopicUpdated(_, newTopic) ⇒
@@ -253,12 +260,16 @@ private[group] final case class GroupState(
       this.copy(shortName = newShortName)
     case AdminSettingsUpdated(_, bitMask) ⇒
       this.copy(adminSettings = AdminSettings.fromBitMask(bitMask))
+    case HistoryBecameShared(_, _) ⇒
+      this.copy(isHistoryShared = true)
 
-    // deprecated event
+    // deprecated events
     case UserBecameAdmin(_, userId, _) ⇒
       this.copy(
         members = members.updated(userId, members(userId).copy(isAdmin = true))
       )
+    case BecamePublic(_) ⇒
+      this.copy(isHistoryShared = true)
   }
 
   // TODO: real snapshot
@@ -274,8 +285,8 @@ private[group] final case class GroupState(
     def canSendMessage(clientUserId: Int) =
       {
         groupType match {
-          case General | Public ⇒ isMember(clientUserId)
-          case Channel          ⇒ isAdmin(clientUserId) || isOwner(clientUserId)
+          case General ⇒ isMember(clientUserId)
+          case Channel ⇒ isAdmin(clientUserId) || isOwner(clientUserId)
         }
       } || bot.exists(_.userId == clientUserId)
 
@@ -285,8 +296,8 @@ private[group] final case class GroupState(
      */
     def canViewMembers(clientUserId: Int) =
       groupType match {
-        case General | Public ⇒ isMember(clientUserId)
-        case Channel          ⇒ isAdmin(clientUserId) || isOwner(clientUserId)
+        case General ⇒ isMember(clientUserId)
+        case Channel ⇒ isAdmin(clientUserId) || isOwner(clientUserId)
       }
 
     /**
@@ -316,6 +327,9 @@ private[group] final case class GroupState(
 
     // only owner can change short name
     def canEditShortName(clientUserId: Int): Boolean = isOwner(clientUserId)
+
+    // only owner can make history shared
+    def canMakeHistoryShared(clientUserId: Int): Boolean = isOwner(clientUserId)
 
     // only owner and other admins can edit admins list
     def canEditAdmins(clientUserId: Int): Boolean =

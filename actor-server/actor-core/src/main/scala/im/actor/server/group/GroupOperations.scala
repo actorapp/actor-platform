@@ -117,6 +117,11 @@ private[group] sealed trait Commands extends UserAcl {
       GroupEnvelope(groupId)
       .withUpdateAdminSettings(UpdateAdminSettings(clientUserId, AdminSettings.apiToBitMask(settings)))).mapTo[UpdateAdminSettingsAck] map (_ ⇒ ())
 
+  def makeHistoryShared(groupId: Int, clientUserId: Int, clientAuthId: Long): Future[SeqState] =
+    (processorRegion.ref ?
+      GroupEnvelope(groupId)
+      .withMakeHistoryShared(MakeHistoryShared(clientUserId, clientAuthId))).mapTo[SeqState]
+
 }
 
 private[group] sealed trait Queries {
@@ -147,11 +152,6 @@ private[group] sealed trait Queries {
     (viewRegion.ref ?
       GroupEnvelope(groupId)
       .withGetApiFullStruct(GetApiFullStruct(clientUserId))).mapTo[GetApiFullStructResponse] map (_.struct)
-
-  def isPublic(groupId: Int): Future[Boolean] =
-    (viewRegion.ref ?
-      GroupEnvelope(groupId)
-      .withIsPublic(IsPublic())).mapTo[IsPublicResponse] map (_.isPublic)
 
   def isChannel(groupId: Int): Future[Boolean] =
     (viewRegion.ref ?

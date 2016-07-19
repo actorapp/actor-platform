@@ -527,8 +527,10 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     authorized(clientData) { implicit client ⇒
       withGroupOutPeer(groupPeer) {
         for {
-          isPublic ← groupExt.isPublic(groupPeer.groupId)
-          result ← if (isPublic) {
+          // TODO: what should it be? was
+          // isPublic ← groupExt.isPublic(groupPeer.groupId)
+          isHistoryShared ← groupExt.isHistoryShared(groupPeer.groupId)
+          result ← if (isHistoryShared) {
             db.run(
               for {
                 member ← GroupUserRepo.find(groupPeer.groupId, client.userId)
