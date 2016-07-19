@@ -22,7 +22,6 @@ import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsService
 import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
 import im.actor.server.api.rpc.service.privacy.PrivacyServiceImpl
 import im.actor.server.api.rpc.service.profile.ProfileServiceImpl
-import im.actor.server.api.rpc.service.pubgroups.PubgroupsServiceImpl
 import im.actor.server.api.rpc.service.push.PushServiceImpl
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import im.actor.server.api.rpc.service.stickers.StickersServiceImpl
@@ -195,9 +194,6 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
       system.log.debug("Starting GroupsService")
       val groupsService = new GroupsServiceImpl(groupInviteConfig)
 
-      system.log.debug("Starting PubgroupsService")
-      val pubgroupsService = new PubgroupsServiceImpl
-
       system.log.debug("Starting SequenceService")
       val sequenceService = new SequenceServiceImpl(sequenceConfig)
 
@@ -251,7 +247,6 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
         contactsService,
         messagingService,
         groupsService,
-        pubgroupsService,
         sequenceService,
         weakService,
         usersService,
