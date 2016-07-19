@@ -199,7 +199,7 @@ trait GroupQueryHandlers {
           if (state.isAdmin(clientUserId))
             apiMembers → group.membersCount
           else
-            Vector.empty[ApiMember] → group.membersCount
+            apiMembers.find(_.userId == clientUserId).toVector → group.membersCount
       }
     } else {
       Vector.empty[ApiMember] → 0
