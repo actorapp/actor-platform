@@ -158,15 +158,6 @@ object HistoryMessageRepo {
     findNewestFilter(userId, peer, filter)
   }
 
-  def findNewestSentBy(userId: Int, peer: Peer): SqlAction[Option[HistoryMessage], NoStream, Read] = {
-    val filter = { m: HistoryMessageTable ⇒
-      m.senderUserId === userId &&
-        m.peerType === peer.typ.value &&
-        m.peerId === peer.id
-    }
-    findNewestFilter(userId, peer, filter)
-  }
-
   private def findNewestFilter(userId: Int, peer: Peer, filterClause: HistoryMessageTable ⇒ Rep[Boolean]) = {
     notDeletedMessages
       .filter(filterClause)
