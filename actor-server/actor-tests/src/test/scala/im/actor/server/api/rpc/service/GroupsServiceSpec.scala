@@ -703,7 +703,7 @@ final class GroupsServiceSpec
     }
 
     whenReady(service.handleMakeUserAdmin(groupOutPeer, user3OutPeer)(clientData2)) { resp ⇒
-      resp shouldEqual Error(CommonRpcErrors.forbidden("Only admin can perform this action."))
+      resp shouldEqual Error(GroupRpcErrors.NoPermission)
     }
   }
 
@@ -761,7 +761,7 @@ final class GroupsServiceSpec
     }
 
     whenReady(service.handleEditGroupAbout(groupOutPeer, 1L, Some("It is group for fun"), Vector.empty)(clientData2)) { resp ⇒
-      resp shouldEqual Error(CommonRpcErrors.forbidden("Only admin can perform this action."))
+      resp shouldEqual Error(GroupRpcErrors.NoPermission)
     }
   }
 

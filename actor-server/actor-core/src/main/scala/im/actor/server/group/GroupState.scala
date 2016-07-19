@@ -26,8 +26,8 @@ object AdminSettings {
   val Default = AdminSettings(
     showAdminsToMembers = true,
     canMembersInvite = true,
-    canMembersEditGroupInfo = true,
-    canAdminsEditGroupInfo = false
+    canMembersEditGroupInfo = false,
+    canAdminsEditGroupInfo = true
   )
 
   // format: OFF

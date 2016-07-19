@@ -879,13 +879,16 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with UserAcl {
     }
   }
 
+  //TODO: who can update topic???
   protected def updateTopic(cmd: UpdateTopic): Unit = {
     def isValidTopic(topic: Option[String]) = topic.forall(_.length < 255)
 
     val topic = trimToEmpty(cmd.topic)
 
-    if (!state.permissions.canEditInfo(cmd.clientUserId)) {
-      sender() ! noPermission
+    if (state.groupType.isChannel && !state.isAdmin(cmd.clientUserId)) {
+      sender() ! notAdmin
+    } else if (state.nonMember(cmd.clientUserId)) {
+      sender() ! notMember
     } else if (!isValidTopic(topic)) {
       sender() ! Status.Failure(TopicTooLong)
     } else {
