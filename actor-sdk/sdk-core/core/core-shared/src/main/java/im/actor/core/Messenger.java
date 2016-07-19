@@ -22,6 +22,7 @@ import im.actor.core.entity.AuthStartRes;
 import im.actor.core.entity.FileReference;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.GroupMembersSlice;
+import im.actor.core.entity.GroupPermissions;
 import im.actor.core.entity.MentionFilterResult;
 import im.actor.core.entity.MessageSearchEntity;
 import im.actor.core.entity.Peer;
@@ -1434,6 +1435,31 @@ public class Messenger {
     @ObjectiveCName("editGroupShortNameWithGid:withAbout:")
     public Promise<Void> editGroupShortName(int gid, String shortName) {
         return modules.getGroupsModule().editShortName(gid, shortName);
+    }
+
+    /**
+     * Load Group's permissions
+     *
+     * @param gid group's id
+     * @return promise of permissions
+     */
+    @NotNull
+    @ObjectiveCName("loadGroupPermissionsWithGid:")
+    public Promise<GroupPermissions> loadGroupPermissions(int gid) {
+        return modules.getGroupsModule().loadAdminSettings(gid);
+    }
+
+    /**
+     * Save Group's permissions
+     *
+     * @param gid           group's id
+     * @param adminSettings settings
+     * @return promise of void
+     */
+    @NotNull
+    @ObjectiveCName("saveGroupPermissionsWithGid:withSettings:")
+    public Promise<Void> saveGroupPermissions(int gid, GroupPermissions adminSettings) {
+        return modules.getGroupsModule().saveAdminSettings(gid, adminSettings);
     }
 
     /**

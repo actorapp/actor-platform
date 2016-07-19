@@ -112,16 +112,15 @@ public class GroupAdminFragment extends BaseFragment {
         } else {
             permissionsHint.setText(R.string.group_permissions_hint);
         }
-//        if (groupVM.getIsCanEditAdministration().get()) {
-//            permissions.setOnClickListener(v -> {
-//
-//            });
-//        } else {
-//            permissions.setVisibility(View.GONE);
-//            permissionsDiv.setVisibility(View.GONE);
-//        }
-        permissions.setVisibility(View.GONE);
-        permissionsDiv.setVisibility(View.GONE);
+        if (groupVM.getIsCanEditAdministration().get() && groupVM.getGroupType() == GroupType.GROUP) {
+            permissions.setOnClickListener(v -> {
+                startActivity(new Intent(getContext(), GroupPermissionsActivity.class)
+                        .putExtra(Intents.EXTRA_GROUP_ID, groupVM.getId()));
+            });
+        } else {
+            permissions.setVisibility(View.GONE);
+            permissionsDiv.setVisibility(View.GONE);
+        }
 
         // Group Deletion
         TextView delete = (TextView) res.findViewById(R.id.delete);

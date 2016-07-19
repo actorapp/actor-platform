@@ -381,6 +381,9 @@
     <string name="group_share_history_enabled">Shared</string>
     <string name="group_share_history_hint">All members will see all messages</string>
 
+    <string name="group_can_edit_info_members">All members can edit group info</string>
+    <string name="channel_can_edit_info_members">All members can edit group info</string>
+
     <string name="group_public_group_title">Public Group</string>
     <string name="group_public_group_text">Public groups can be found in search, anyone can join them.</string>
     <string name="group_private_group_title">Private Group</string>

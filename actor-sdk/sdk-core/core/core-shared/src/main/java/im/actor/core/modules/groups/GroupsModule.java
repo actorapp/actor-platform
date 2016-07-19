@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import im.actor.core.api.ApiAdminSettings;
 import im.actor.core.api.ApiGroupOutPeer;
 import im.actor.core.api.ApiGroupType;
 import im.actor.core.api.ApiOutPeer;
@@ -24,15 +25,18 @@ import im.actor.core.api.rpc.RequestInviteUser;
 import im.actor.core.api.rpc.RequestJoinGroup;
 import im.actor.core.api.rpc.RequestKickUser;
 import im.actor.core.api.rpc.RequestLeaveGroup;
+import im.actor.core.api.rpc.RequestLoadAdminSettings;
 import im.actor.core.api.rpc.RequestLoadMembers;
 import im.actor.core.api.rpc.RequestMakeUserAdminObsolete;
 import im.actor.core.api.rpc.RequestRevokeIntegrationToken;
 import im.actor.core.api.rpc.RequestRevokeInviteUrl;
+import im.actor.core.api.rpc.RequestSaveAdminSettings;
 import im.actor.core.api.rpc.RequestTransferOwnership;
 import im.actor.core.api.rpc.ResponseIntegrationToken;
 import im.actor.core.api.rpc.ResponseInviteUrl;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.GroupMembersSlice;
+import im.actor.core.entity.GroupPermissions;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.User;
@@ -237,6 +241,20 @@ public class GroupsModule extends AbsModule implements BusSubscriber {
                         api(new RequestEditGroupShortName(new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()),
                                 shortName)))
                 .flatMap(r -> updates().waitForUpdate(r.getSeq()));
+    }
+
+    public Promise<GroupPermissions> loadAdminSettings(int gid) {
+        return getGroups().getValueAsync(gid)
+                .flatMap(group -> api(new RequestLoadAdminSettings(new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()))))
+                .map(r -> new GroupPermissions(r.getSettings()));
+    }
+
+    public Promise<Void> saveAdminSettings(int gid, GroupPermissions adminSettings) {
+        return getGroups().getValueAsync(gid)
+                .flatMap(group -> api(new RequestSaveAdminSettings(
+                        new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()),
+                        adminSettings.getApiSettings())))
+                .map(r -> null);
     }
 
     public Promise<GroupMembersSlice> loadMembers(int gid, int limit, byte[] next) {
