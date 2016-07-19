@@ -51,10 +51,17 @@ trait MessageUpdating extends PeersImplicits {
     } yield seqState
   }
 
-  private def updateContentGroup(userId: Int, clientAuthId: Long, peer: Peer, randomId: Long, updatedMessage: ApiMessage, date: Long)(implicit system: ActorSystem): Future[SeqState] = {
+  private def updateContentGroup(
+    userId:         Int,
+    clientAuthId:   Long,
+    groupPeer:      Peer,
+    randomId:       Long,
+    updatedMessage: ApiMessage,
+    date:           Long
+  )(implicit system: ActorSystem): Future[SeqState] = {
     import system.dispatcher
     val seqUpdExt = SeqUpdatesExtension(system)
-    val update = UpdateMessageContentChanged(peer.asStruct, randomId, updatedMessage)
+    val update = UpdateMessageContentChanged(groupPeer.asStruct, randomId, updatedMessage)
     for {
       // update for client user
       seqState ← seqUpdExt.deliverClientUpdate(
@@ -64,8 +71,8 @@ trait MessageUpdating extends PeersImplicits {
         pushRules = seqUpdExt.pushRules(isFat = false, None),
         deliveryId = s"msgcontent_${randomId}_${date}"
       )
-      (memberIds, _, _) ← GroupExtension(system).getMemberIds(peer.id)
-      membersSet = memberIds.toSet
+      (memberIds, _, optBotId) ← GroupExtension(system).getMemberIds(groupPeer.id)
+      membersSet = (memberIds ++ optBotId.toSeq).toSet
       // update for other group members
       _ ← seqUpdExt.broadcastPeopleUpdate(
         membersSet - userId,
@@ -77,7 +84,7 @@ trait MessageUpdating extends PeersImplicits {
         userIds = membersSet + userId,
         randomId = randomId,
         peerType = PeerType.Group,
-        peerIds = Set(peer.id),
+        peerIds = Set(groupPeer.id),
         messageContentHeader = updatedMessage.header,
         messageContentData = updatedMessage.toByteArray
       ))
