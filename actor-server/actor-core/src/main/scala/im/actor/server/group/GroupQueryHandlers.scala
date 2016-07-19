@@ -8,7 +8,7 @@ import com.google.protobuf.wrappers.Int32Value
 import im.actor.api.rpc.groups._
 import im.actor.server.group.GroupErrors.{ NoPermission, NotOwner }
 import im.actor.server.group.GroupQueries._
-import im.actor.server.group.GroupType.{ Channel, General, Public }
+import im.actor.server.group.GroupType.{ Channel, General, Unrecognized }
 
 import scala.concurrent.Future
 
@@ -68,15 +68,12 @@ trait GroupQueryHandlers {
     }
 
     state.groupType match {
-      case General | Public ⇒ load
+      case General ⇒ load
       case Channel ⇒
         if (state.isAdmin(clientUserId)) load
         else FastFuture.successful(LoadMembersResponse(Seq.empty, offsetBs))
     }
   }
-
-  protected def isPublic =
-    FastFuture.successful(IsPublicResponse(state.groupType.isPublic))
 
   protected def isChannel =
     FastFuture.successful(IsChannelResponse(state.groupType.isChannel))
@@ -108,8 +105,8 @@ trait GroupQueryHandlers {
           ext = None,
           membersCount = Some(count),
           groupType = Some(state.groupType match {
-            case GroupType.Channel ⇒ ApiGroupType.CHANNEL
-            case GroupType.General | GroupType.Public | GroupType.Unrecognized(_) ⇒ ApiGroupType.GROUP
+            case Channel                   ⇒ ApiGroupType.CHANNEL
+            case General | Unrecognized(_) ⇒ ApiGroupType.GROUP
           }),
           canSendMessage = Some(state.permissions.canSendMessage(clientUserId))
         )
@@ -150,8 +147,8 @@ trait GroupQueryHandlers {
     FastFuture.successful {
       val canSend = state.bot.exists(_.userId == clientUserId) || {
         state.groupType match {
-          case General | Public ⇒ state.isMember(clientUserId)
-          case Channel          ⇒ state.isAdmin(clientUserId)
+          case General ⇒ state.isMember(clientUserId)
+          case Channel ⇒ state.isAdmin(clientUserId)
         }
       }
       CanSendMessageResponse(
@@ -196,7 +193,7 @@ trait GroupQueryHandlers {
 
     if (state.isMember(clientUserId)) {
       state.groupType match {
-        case General | Public ⇒
+        case General ⇒
           apiMembers → group.membersCount
         case Channel ⇒
           if (state.isAdmin(clientUserId))

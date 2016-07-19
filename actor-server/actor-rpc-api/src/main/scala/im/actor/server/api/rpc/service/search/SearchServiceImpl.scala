@@ -149,18 +149,15 @@ class SearchServiceImpl(implicit system: ActorSystem) extends SearchService {
   private def searchGroups(text: Option[String])(implicit client: AuthorizedClientData): Future[IndexedSeq[ApiGroup]] = {
     for {
       ids ← DialogExtension(system).fetchGroupedDialogs(client.userId) map (_.filter(_.typ.isGroups).flatMap(_.dialogs.map(_.getPeer.id)))
-      groupOpts ← FutureExt.ftraverse(ids) { id ⇒
-        groupExt.isPublic(id) flatMap { isPublic ⇒
-          if (isPublic) FastFuture.successful(None)
-          else groupExt.getApiStruct(id, client.userId).map(Some(_))
-        }
+      groups ← FutureExt.ftraverse(ids) { id ⇒
+        groupExt.getApiStruct(id, client.userId)
       }
-    } yield filterGroups(groupOpts.flatten.toVector, text)
+    } yield filterGroups(groups.toVector, text)
   }
 
   private def searchPublic(text: Option[String])(implicit client: AuthorizedClientData): Future[IndexedSeq[ApiGroup]] = {
     for {
-      groups ← db.run(GroupRepo.findPublic)
+      groups ← db.run(GroupRepo.findPublic) // FIXME: isPublic flag is deprecated and will not appear for new groups
       groups ← FutureExt.ftraverse(groups)(g ⇒ groupExt.getApiStruct(g.id, client.userId))
     } yield filterGroups(groups.toVector, text)
   }
