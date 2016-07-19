@@ -98,23 +98,6 @@ object HistoryUtils {
     } yield ()
   }
 
-  // todo: remove this in favor of getHistoryOwner
-  def withHistoryOwner[A](peer: Peer, clientUserId: Int)(f: Int ⇒ DBIO[A])(implicit system: ActorSystem): DBIO[A] = {
-    import system.dispatcher
-    (peer.typ match {
-      case PeerType.Private ⇒ DBIO.successful(clientUserId)
-      case PeerType.Group ⇒
-        DBIO.from(GroupExtension(system).isHistoryShared(peer.id)) flatMap { isHistoryShared ⇒
-          if (isHistoryShared) {
-            DBIO.successful(SharedUserId)
-          } else {
-            DBIO.successful(clientUserId)
-          }
-        }
-      case _ ⇒ throw new RuntimeException(s"Unknown peer type ${peer.typ}")
-    }) flatMap f
-  }
-
   def getHistoryOwner(peer: Peer, clientUserId: Int)(implicit system: ActorSystem): Future[Int] = {
     import system.dispatcher
     peer.typ match {
