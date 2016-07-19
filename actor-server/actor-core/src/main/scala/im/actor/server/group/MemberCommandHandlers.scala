@@ -228,6 +228,7 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
           else
             UpdateGroupMembersUpdated(groupId, apiMembers) // will update date when member got into group
 
+        // TODO: not sure how it should be in old API
         val membersUpdateObsolete = UpdateGroupMembersUpdateObsolete(groupId, apiMembers)
 
         val serviceMessage = GroupServiceMessages.userJoined
