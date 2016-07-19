@@ -302,6 +302,7 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
     } else {
       persist(HistoryBecameShared(Instant.now, cmd.clientUserId)) { evt ⇒
         val newState = commit(evt)
+        log.debug("History of group {} became shared", groupId)
 
         val memberIds = newState.memberIds
 

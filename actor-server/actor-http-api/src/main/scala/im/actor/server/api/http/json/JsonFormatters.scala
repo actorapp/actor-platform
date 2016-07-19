@@ -11,8 +11,8 @@ object JsonFormatters {
       (JsPath \ "image_url").read[String].map[Content] { Image }
 
   implicit val avatarUrlsFormat: Format[AvatarUrls] = Json.format[AvatarUrls]
-  implicit val userFormat: Format[User] = Json.format[User]
-  implicit val groupFormat: Format[Group] = Json.format[Group]
+  implicit val userFormat: Format[InviterInfo] = Json.format[InviterInfo]
+  implicit val groupFormat: Format[GroupInfo] = Json.format[GroupInfo]
   implicit val groupInviteInfoFormat: Format[GroupInviteInfo] = Json.format[GroupInviteInfo]
   implicit val errorsFormat: Format[Errors] = Json.format[Errors]
 

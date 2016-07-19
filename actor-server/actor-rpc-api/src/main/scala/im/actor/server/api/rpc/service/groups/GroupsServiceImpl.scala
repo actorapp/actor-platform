@@ -369,7 +369,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
             } yield info.groupId → Some(info.creatorId)
           case Xor.Right(groupName) ⇒
             for {
-              groupId ← fromFutureOption(GroupRpcErrors.InvalidInviteGroup)(globalNamesStorage.getGroupOwnerId(groupName))
+              groupId ← fromFutureOption(GroupRpcErrors.InvalidInviteGroup)(globalNamesStorage.getGroupId(groupName))
             } yield groupId → None
         }
         (groupId, optInviter) = joinInfo
@@ -458,6 +458,8 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
         } yield Ok(ResponseSeq(seq, state.toByteArray))
       }
     }
+
+  protected def doHandleDeleteGroup(groupPeer: ApiGroupOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = ???
 
   private def usersOrPeers(userIds: Vector[Int], stripEntities: Boolean)(implicit client: AuthorizedClientData): Future[(Vector[ApiUser], Vector[ApiUserOutPeer])] =
     if (stripEntities) {

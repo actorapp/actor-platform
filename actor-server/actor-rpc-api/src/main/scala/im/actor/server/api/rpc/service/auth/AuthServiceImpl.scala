@@ -202,7 +202,7 @@ final class AuthServiceImpl(val oauth2Service: GoogleProvider)(
     val action =
       for {
         normUsername ← fromOption(ProfileRpcErrors.NicknameInvalid)(StringUtils.normalizeUsername(username))
-        optUserId ← fromFuture(globalNamesStorage.getUserOwnerId(username))
+        optUserId ← fromFuture(globalNamesStorage.getUserId(username))
         _ ← optUserId map (id ⇒ forbidDeletedUser(id)) getOrElse point(())
         optAuthTransaction ← fromDBIO(AuthUsernameTransactionRepo.find(username, deviceHash))
         transactionHash ← optAuthTransaction match {

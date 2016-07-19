@@ -108,7 +108,7 @@ private[group] final case class GroupState(
   avatar:          Option[Avatar],
   topic:           Option[String],
   shortName:       Option[String],
-  groupType:       GroupType, // TODO: rename to groupType
+  groupType:       GroupType,
   isHidden:        Boolean,
   isHistoryShared: Boolean,
 

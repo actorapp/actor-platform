@@ -29,12 +29,12 @@ final class GlobalNamesStorageKeyValueStorage(implicit system: ActorSystem) {
     (ext.db, ext.connector)
   }
 
-  def getUserOwnerId(name: String): Future[Option[Int]] =
+  def getUserId(name: String): Future[Option[Int]] =
     getOwner(name) map (_.collect {
       case GlobalNameOwner(OwnerType.User, userId) ⇒ userId
     })
 
-  def getGroupOwnerId(name: String): Future[Option[Int]] =
+  def getGroupId(name: String): Future[Option[Int]] =
     getOwner(name) map (_.collect {
       case GlobalNameOwner(OwnerType.Group, groupId) ⇒ groupId
     })

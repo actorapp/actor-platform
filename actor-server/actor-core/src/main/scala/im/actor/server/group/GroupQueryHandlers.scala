@@ -135,7 +135,10 @@ trait GroupQueryHandlers {
           canEditShortName = Some(state.permissions.canEditShortName(clientUserId)),
           canEditAdminList = Some(state.permissions.canEditAdmins(clientUserId)),
           canViewAdminList = Some(state.permissions.canViewAdmins(clientUserId)),
-          canEditAdminSettings = Some(state.permissions.canEditAdminSettings(clientUserId))
+          canEditAdminSettings = Some(state.permissions.canEditAdminSettings(clientUserId)),
+          canInviteViaLink = None,
+          canDelete = None,
+          canLeave = None
         )
       )
     }

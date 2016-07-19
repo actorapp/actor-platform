@@ -172,7 +172,7 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
 
   private def findByNickname(nickname: String, client: AuthorizedClientData): Result[Vector[ApiUser]] = {
     for {
-      optUserId ← fromFuture(globalNamesStorage.getUserOwnerId(nickname))
+      optUserId ← fromFuture(globalNamesStorage.getUserId(nickname))
       structs ← fromFuture(Future.sequence(optUserId.toSeq map (userId ⇒ userExt.getApiStruct(userId, client.userId, client.authId))))
     } yield structs.toVector
   }
