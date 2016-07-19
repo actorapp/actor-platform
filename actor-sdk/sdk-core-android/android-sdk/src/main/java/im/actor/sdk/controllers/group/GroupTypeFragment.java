@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import im.actor.core.viewmodel.GroupVM;
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.BaseFragment;
 import im.actor.sdk.util.Fonts;
@@ -51,7 +52,7 @@ public class GroupTypeFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View res = inflater.inflate(R.layout.fragment_administration, container, false);
+        View res = inflater.inflate(R.layout.fragment_edit_type, container, false);
         res.setBackgroundColor(style.getBackyardBackgroundColor());
         TextView publicTitle = (TextView) res.findViewById(R.id.publicTitle);
         publicTitle.setTextColor(style.getTextPrimaryColor());
@@ -63,9 +64,15 @@ public class GroupTypeFragment extends BaseFragment {
         privateDescription.setTextColor(style.getTextSecondaryColor());
         TextView publicLinkPrefix = (TextView) res.findViewById(R.id.publicLinkPrefix);
         publicLinkPrefix.setTextColor(style.getTextSecondaryColor());
-        publicLinkPrefix.setTypeface(Fonts.medium());
+        String prefix = ActorSDK.sharedActor().getGroupInvitePrefix();
+        if (prefix == null) {
+            prefix = "@";
+        }
+        publicLinkPrefix.setText(prefix);
         RadioButton publicRadio = (RadioButton) res.findViewById(R.id.publicRadio);
         RadioButton privateRadio = (RadioButton) res.findViewById(R.id.privateRadio);
+        View publicSelector = res.findViewById(R.id.publicSelector);
+        View privateSelector = res.findViewById(R.id.privateSelector);
         publicShortName = (EditText) res.findViewById(R.id.publicLink);
         View publicLinkContainer = res.findViewById(R.id.publicContainer);
         View publicShadowTop = res.findViewById(R.id.shadowTop);
@@ -111,7 +118,9 @@ public class GroupTypeFragment extends BaseFragment {
             }
         };
         publicRadio.setOnClickListener(publicClick);
+        publicSelector.setOnClickListener(publicClick);
         privateRadio.setOnClickListener(privateClick);
+        privateSelector.setOnClickListener(privateClick);
 
         return res;
     }

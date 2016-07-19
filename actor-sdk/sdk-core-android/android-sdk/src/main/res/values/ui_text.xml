@@ -361,20 +361,31 @@
     <string name="group_leave_channel">Leave channel</string>
     <string name="group_administration">Administration</string>
 
+    <string name="group_admin_title">Group Administration</string>
+    <string name="channel_admin_title">Channel Administration</string>
+
+    <string name="group_permissions">Permissions</string>
+    <string name="group_permissions_hint">Control what is possible in this group</string>
+    <string name="channel_permissions_hint">Control what is possible in this channel</string>
+
     <string name="group_type">Group Type</string>
     <string name="channel_type">Channel Type</string>
     <string name="group_type_pubic">Public</string>
     <string name="group_type_private">Private</string>
     <string name="group_delete">Delete Group</string>
+    <string name="group_delete_hint">You will lose all messages in this group.</string>
     <string name="channel_delete">Delete Channel</string>
+    <string name="channel_delete_hint">You will lose all messages in this channel.</string>
 
     <string name="group_share_history">Share History</string>
     <string name="group_share_history_enabled">Shared</string>
+    <string name="group_share_history_hint">All members will see all messages</string>
 
     <string name="group_public_group_title">Public Group</string>
     <string name="group_public_group_text">Public groups can be found in search, anyone can join them.</string>
     <string name="group_private_group_title">Private Group</string>
     <string name="group_private_group_text">Private Group can only be joined via personal invitation.</string>
+
 
     <string name="group_not_member">You are not a member of this group</string>
     <string name="about_group">About the group</string>

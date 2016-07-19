@@ -44,7 +44,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:background="@android:color/white"
                     android:gravity="center_vertical"
                     android:text="@string/group_public_group_title"
                     android:textSize="16sp" />
@@ -87,7 +86,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:background="@android:color/white"
                     android:gravity="center_vertical"
                     android:text="@string/group_private_group_title"
                     android:textSize="16sp" />
@@ -96,7 +94,6 @@
                     android:id="@+id/privateDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@android:color/white"
                     android:text="@string/group_private_group_text"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -129,7 +126,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
-            android:paddingLeft="48dp"
+            android:paddingLeft="16dp"
             android:paddingRight="1dp"
             android:text="\@"
             android:textSize="18sp" />

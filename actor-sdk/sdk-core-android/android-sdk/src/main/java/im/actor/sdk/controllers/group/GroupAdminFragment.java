@@ -13,7 +13,6 @@ import im.actor.core.viewmodel.GroupVM;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.BaseFragment;
 import im.actor.sdk.controllers.Intents;
-import im.actor.sdk.util.Fonts;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
@@ -38,8 +37,12 @@ public class GroupAdminFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle saveInstance) {
         super.onCreate(saveInstance);
-
         groupVM = messenger().getGroup(getArguments().getInt("groupId"));
+        if (groupVM.getGroupType() == GroupType.CHANNEL) {
+            setTitle(R.string.channel_admin_title);
+        } else {
+            setTitle(R.string.group_admin_title);
+        }
     }
 
     @Nullable
@@ -69,21 +72,22 @@ public class GroupAdminFragment extends BaseFragment {
                         .putExtra(Intents.EXTRA_GROUP_ID, groupVM.getId()));
             });
         }
-        // Group Admins
 
         // Share History
         View shareContainer = res.findViewById(R.id.shareHistoryContainer);
-        View shareHint = res.findViewById(R.id.shareHistoryHint);
+        TextView shareHint = (TextView) res.findViewById(R.id.shareHistoryHint);
+        shareHint.setTextColor(style.getTextSecondaryColor());
         TextView shareHistory = (TextView) res.findViewById(R.id.shareHistory);
         shareHistory.setTextColor(style.getTextPrimaryColor());
         TextView shareHistoryValue = (TextView) res.findViewById(R.id.shareHistoryValue);
         shareHistoryValue.setTextColor(style.getListActionColor());
-        shareHistoryValue.setTypeface(Fonts.medium());
-        if (groupVM.getGroupType() == GroupType.GROUP) {
+        if (groupVM.getGroupType() == GroupType.GROUP &&
+                groupVM.getIsCanEditAdministration().get()) {
             bind(groupVM.getIsHistoryShared(), isShared -> {
                 if (isShared) {
                     shareHistoryValue.setVisibility(View.VISIBLE);
                     shareHistory.setOnClickListener(null);
+                    shareHistory.setClickable(false);
                 } else {
                     shareHistoryValue.setVisibility(View.GONE);
                     shareHistory.setOnClickListener(v -> {
@@ -98,24 +102,38 @@ public class GroupAdminFragment extends BaseFragment {
         }
 
         // Permissions
-        View permissionsContainer = res.findViewById(R.id.permissionsContainer);
         TextView permissions = (TextView) res.findViewById(R.id.permissions);
         permissions.setTextColor(style.getTextPrimaryColor());
-        if (groupVM.getIsCanEditAdministration().get()) {
-            permissions.setOnClickListener(v -> {
-
-            });
+        TextView permissionsHint = (TextView) res.findViewById(R.id.permissionsHint);
+        permissionsHint.setTextColor(style.getTextSecondaryColor());
+        View permissionsDiv = res.findViewById(R.id.permissionsDiv);
+        if (groupVM.getGroupType() == GroupType.CHANNEL) {
+            permissionsHint.setText(R.string.channel_permissions_hint);
         } else {
-            permissionsContainer.setVisibility(View.GONE);
+            permissionsHint.setText(R.string.group_permissions_hint);
         }
+//        if (groupVM.getIsCanEditAdministration().get()) {
+//            permissions.setOnClickListener(v -> {
+//
+//            });
+//        } else {
+//            permissions.setVisibility(View.GONE);
+//            permissionsDiv.setVisibility(View.GONE);
+//        }
+        permissions.setVisibility(View.GONE);
+        permissionsDiv.setVisibility(View.GONE);
 
         // Group Deletion
         TextView delete = (TextView) res.findViewById(R.id.delete);
         delete.setTextColor(style.getTextDangerColor());
+        TextView deleteHint = (TextView) res.findViewById(R.id.deleteHint);
+        deleteHint.setTextColor(style.getTextSecondaryColor());
         if (groupVM.getGroupType() == GroupType.CHANNEL) {
             delete.setText(R.string.channel_delete);
+            deleteHint.setText(R.string.channel_delete_hint);
         } else {
             delete.setText(R.string.group_delete);
+            deleteHint.setText(R.string.group_delete_hint);
         }
         delete.setOnClickListener(v -> {
             // TODO: Delete

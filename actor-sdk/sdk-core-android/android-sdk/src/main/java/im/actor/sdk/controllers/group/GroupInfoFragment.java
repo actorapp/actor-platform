@@ -217,17 +217,15 @@ public class GroupInfoFragment extends BaseFragment {
         });
 
         // Administration
-        bind(groupVM.getIsCanEditAdministration(), groupVM.getIsCanEditShortName(), (canEditAdministration, valueModel, canEditShortName, valueModel2) -> {
-            if (canEditAdministration || canEditShortName) {
-                administrationAction.setVisibility(View.VISIBLE);
-            } else {
-                administrationAction.setVisibility(View.GONE);
-            }
-        });
-        administrationAction.setOnClickListener(view -> {
-            startActivity(new Intent(getActivity(), GroupAdminActivity.class)
-                    .putExtra(Intents.EXTRA_GROUP_ID, chatId));
-        });
+        if (groupVM.getIsCanEditAdministration().get() ||
+                groupVM.getIsCanEditShortName().get()) {
+            administrationAction.setOnClickListener(view -> {
+                startActivity(new Intent(getActivity(), GroupAdminActivity.class)
+                        .putExtra(Intents.EXTRA_GROUP_ID, chatId));
+            });
+        } else {
+            administrationAction.setVisibility(View.GONE);
+        }
 
         // Async Members
         // Showing member only when members available and async members is enabled

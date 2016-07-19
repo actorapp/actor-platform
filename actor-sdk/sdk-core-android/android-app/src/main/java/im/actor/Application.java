@@ -1,6 +1,7 @@
 package im.actor;
 
 import android.os.Bundle;
+import android.support.multidex.MultiDex;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
@@ -31,6 +32,12 @@ import im.actor.sdk.controllers.settings.BaseActorSettingsFragment;
 import im.actor.sdk.intents.ActorIntentFragmentActivity;
 
 public class Application extends ActorSDKApplication {
+
+    @Override
+    public void onCreate() {
+        MultiDex.install(this);
+        super.onCreate();
+    }
 
     @Override
     public void onConfigureActorSDK() {

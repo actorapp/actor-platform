@@ -15,6 +15,7 @@
             android:id="@+id/generalBlock"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:background="@drawable/card_shadow"
             android:orientation="vertical">
 
@@ -45,26 +46,30 @@
             </LinearLayout>
 
             <im.actor.sdk.view.DividerView
+                android:id="@+id/permissionsDiv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/permissions"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:background="@drawable/selector"
-                android:orientation="horizontal"
+                android:gravity="center_vertical"
                 android:paddingLeft="16dp"
-                android:paddingRight="16dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:text="Administrators"
-                    android:textSize="16sp" />
-
-            </LinearLayout>
+                android:paddingRight="16dp"
+                android:text="@string/group_permissions"
+                android:textSize="16sp" />
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/permissionsHint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:textSize="14sp" />
 
         <LinearLayout
             android:id="@+id/shareHistoryContainer"
@@ -101,27 +106,8 @@
             android:layout_marginBottom="8dp"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            android:text="All members will see all messages."
+            android:text="@string/group_share_history_hint"
             android:textSize="14sp" />
-
-        <LinearLayout
-            android:id="@+id/permissionsContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/card_shadow"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/permissions"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:background="@drawable/selector"
-                android:gravity="center_vertical"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:text="Permissions"
-                android:textSize="16sp" />
-        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/deleteContainer"
@@ -140,5 +126,14 @@
                 android:paddingRight="16dp"
                 android:textSize="16sp" />
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/deleteHint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:textSize="14sp" />
     </LinearLayout>
 </ScrollView>
