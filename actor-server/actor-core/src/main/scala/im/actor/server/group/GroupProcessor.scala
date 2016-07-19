@@ -71,6 +71,8 @@ object GroupProcessor {
       21020 → classOf[GroupQueries.CanSendMessageResponse],
       21021 → classOf[GroupQueries.LoadAdminSettings],
       21022 → classOf[GroupQueries.LoadAdminSettingsResponse],
+      21023 → classOf[GroupQueries.IsChannel],
+      21024 → classOf[GroupQueries.IsChannelResponse],
 
       22003 → classOf[GroupEvents.UserInvited],
       22004 → classOf[GroupEvents.UserJoined],
@@ -168,6 +170,7 @@ private[group] final class GroupProcessor
     case GetMembers()                             ⇒ getMembers
     case LoadMembers(clientUserId, limit, offset) ⇒ loadMembers(clientUserId, limit, offset)
     case IsPublic()                               ⇒ isPublic
+    case IsChannel()                              ⇒ isChannel
     case IsHistoryShared()                        ⇒ isHistoryShared
     case GetApiStruct(clientUserId)               ⇒ getApiStruct(clientUserId)
     case GetApiFullStruct(clientUserId)           ⇒ getApiFullStruct(clientUserId)

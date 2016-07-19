@@ -45,6 +45,7 @@ message GroupEnvelope {
         GroupQueries.GetMembers get_members = 18; // internalGetMembers
         GroupQueries.LoadMembers load_members = 19;
         GroupQueries.IsPublic is_public = 20;
+        GroupQueries.IsChannel is_channel = 31;
         GroupQueries.IsHistoryShared is_history_shared = 21;
         GroupQueries.GetApiStruct get_api_struct = 22;
         GroupQueries.GetApiFullStruct get_api_full_struct = 23;
@@ -256,6 +257,14 @@ message GroupQueries {
 
     message IsPublicResponse {
         bool is_public = 1;
+    }
+
+    message IsChannel {
+        option (scalapb.message).extends = "GroupQuery";
+    }
+
+    message IsChannelResponse {
+        bool is_channel = 1;
     }
 
     message IsHistoryShared {

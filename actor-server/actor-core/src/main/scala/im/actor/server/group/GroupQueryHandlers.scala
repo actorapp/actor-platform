@@ -6,7 +6,7 @@ import akka.stream.scaladsl.Source
 import com.google.protobuf.ByteString
 import com.google.protobuf.wrappers.Int32Value
 import im.actor.api.rpc.groups._
-import im.actor.server.group.GroupErrors.NotOwner
+import im.actor.server.group.GroupErrors.{ NoPermission, NotOwner }
 import im.actor.server.group.GroupQueries._
 import im.actor.server.group.GroupType.{ Channel, General, Public }
 
@@ -25,9 +25,14 @@ trait GroupQueryHandlers {
 
   protected def getIntegrationToken(optUserId: Option[Int]): Future[GetIntegrationTokenResponse] = {
     val canViewToken = optUserId.forall(state.isAdmin)
-    FastFuture.successful(GetIntegrationTokenResponse(
-      if (canViewToken) state.bot.map(_.token) else None
-    ))
+    val allowedToView = optUserId.forall(state.isMember)
+    if (allowedToView) {
+      FastFuture.successful(GetIntegrationTokenResponse(
+        if (canViewToken) state.bot.map(_.token) else None
+      ))
+    } else {
+      FastFuture.failed(NoPermission)
+    }
   }
 
   //TODO: do something with this method. Will this method used in "client" context.
@@ -72,6 +77,9 @@ trait GroupQueryHandlers {
 
   protected def isPublic =
     FastFuture.successful(IsPublicResponse(state.groupType.isPublic))
+
+  protected def isChannel =
+    FastFuture.successful(IsChannelResponse(state.groupType.isChannel))
 
   protected def isHistoryShared =
     FastFuture.successful(IsHistorySharedResponse(state.isHistoryShared))

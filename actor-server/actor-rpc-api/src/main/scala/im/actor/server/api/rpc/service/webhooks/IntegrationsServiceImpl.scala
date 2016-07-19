@@ -9,7 +9,7 @@ import im.actor.api.rpc.integrations.{ IntegrationsService, ResponseIntegrationT
 import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeerType }
 import im.actor.server.api.rpc.service.webhooks.IntegrationServiceHelpers._
 import im.actor.server.db.DbExtension
-import im.actor.server.group.GroupErrors.{ NotAMember, NotAdmin }
+import im.actor.server.group.GroupErrors.{ NoPermission, NotAMember, NotAdmin }
 import im.actor.server.group.GroupExtension
 import slick.driver.PostgresDriver.api._
 
@@ -55,8 +55,9 @@ class IntegrationsServiceImpl(baseUri: String)(implicit actorSystem: ActorSystem
     }
 
   override def onFailure: PartialFunction[Throwable, RpcError] = {
-    case NotAdmin   ⇒ CommonRpcErrors.forbidden("Only admin can perform this action.")
-    case NotAMember ⇒ CommonRpcErrors.forbidden("You are not a group member.")
+    case NotAdmin     ⇒ CommonRpcErrors.forbidden("Only admin can perform this action.")
+    case NotAMember   ⇒ CommonRpcErrors.forbidden("You are not a group member.")
+    case NoPermission ⇒ CommonRpcErrors.forbidden("You have no permission to execute this action")
   }
 
 }

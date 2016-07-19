@@ -14,6 +14,7 @@ import akka.http.scaladsl.util.FastFuture
 import im.actor.api.rpc._
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.peers.{ ApiGroupOutPeer, ApiUserOutPeer }
+import im.actor.concurrent.FutureExt
 import im.actor.server.db.DbExtension
 import im.actor.server.group.{ GroupExtension, GroupUtils }
 import im.actor.server.sequence.{ Difference, SeqState, SeqUpdatesExtension }
@@ -27,12 +28,14 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
   actorSystem:   ActorSystem
 ) extends SequenceService {
   import FutureResultRpc._
+  import PeerHelpers._
 
   protected override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
   private val log = Logging(actorSystem, getClass)
   private val db: Database = DbExtension(actorSystem).db
-  private implicit val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(actorSystem)
+  private val seqUpdExt = SeqUpdatesExtension(actorSystem)
+  private val groupExt = GroupExtension(actorSystem)
 
   private val maxDifferenceSize: Long = config.maxDifferenceSize
 
@@ -135,22 +138,34 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
     }
   }
 
-  override def doHandleSubscribeToGroupOnline(groups: IndexedSeq[ApiGroupOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
-    FastFuture.successful(Ok(ResponseVoid)) andThen {
-      case _ ⇒
-        // FIXME: #security check access hashes
-        sessionRegion.ref ! SessionEnvelope(clientData.authId, clientData.sessionId)
-          .withSubscribeToGroupOnline(SubscribeToGroupOnline(groups.map(_.groupId)))
+  override def doHandleSubscribeToGroupOnline(groups: IndexedSeq[ApiGroupOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
+    withGroupOutPeers(groups) {
+      FastFuture.successful(Ok(ResponseVoid)) andThen {
+        case _ ⇒
+          getNonChannelsIds(groups) foreach { groupIds ⇒
+            sessionRegion.ref ! SessionEnvelope(clientData.authId, clientData.sessionId)
+              .withSubscribeToGroupOnline(SubscribeToGroupOnline(groupIds))
+          }
+      }
     }
-  }
 
-  override def doHandleSubscribeFromGroupOnline(groups: IndexedSeq[ApiGroupOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
-    FastFuture.successful(Ok(ResponseVoid)) andThen {
-      case _ ⇒
-        // FIXME: #security check access hashes
-        sessionRegion.ref ! SessionEnvelope(clientData.authId, clientData.sessionId)
-          .withSubscribeFromGroupOnline(SubscribeFromGroupOnline(groups.map(_.groupId)))
+  override def doHandleSubscribeFromGroupOnline(groups: IndexedSeq[ApiGroupOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
+    withGroupOutPeers(groups) {
+      FastFuture.successful(Ok(ResponseVoid)) andThen {
+        case _ ⇒
+          getNonChannelsIds(groups) foreach { groupIds ⇒
+            sessionRegion.ref ! SessionEnvelope(clientData.authId, clientData.sessionId)
+              .withSubscribeFromGroupOnline(SubscribeFromGroupOnline(groupIds))
+          }
+
+      }
     }
+
+  private def getNonChannelsIds(groups: Seq[ApiGroupOutPeer]): Future[Seq[Int]] = {
+    FutureExt.ftraverse(groups) {
+      case ApiGroupOutPeer(groupId, _) ⇒
+        groupExt.isChannel(groupId) map (isChannel ⇒ if (isChannel) None else Some(groupId))
+    } map (_.flatten)
   }
 
   //TODO: remove
@@ -185,7 +200,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
       FastFuture.successful((Vector.empty, Vector.empty))
     else
       for {
-        groups ← Future.sequence(groupIds.toVector map (GroupExtension(actorSystem).getApiStruct(_, client.userId)))
+        groups ← Future.sequence(groupIds.toVector map (groupExt.getApiStruct(_, client.userId)))
         // TODO: #perf optimize collection operations
         allUserIds = userIds ++ groups.foldLeft(Vector.empty[Int]) { (ids, g) ⇒ ids ++ g.members.flatMap(m ⇒ Vector(m.userId, m.inviterUserId)) :+ g.creatorUserId }
         users ← Future.sequence(allUserIds.toVector map (UserUtils.safeGetUser(_, client.userId, client.authId))) map (_.flatten)
