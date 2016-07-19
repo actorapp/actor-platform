@@ -75,7 +75,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:background="@drawable/clickable_background"
             android:gravity="top"
             android:minHeight="48dp">
 
@@ -91,13 +90,40 @@
                 android:id="@+id/about"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:gravity="center_vertical"
+                android:minHeight="48dp"
                 android:paddingBottom="8dp"
                 android:paddingLeft="72dp"
                 android:paddingRight="8dp"
                 android:paddingTop="8dp"
                 android:textSize="16sp" />
+
+            <LinearLayout
+                android:id="@+id/shortNameContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/about"
+                android:orientation="vertical"
+                android:paddingBottom="8dp"
+                android:paddingLeft="72dp"
+                android:paddingRight="8dp"
+                android:paddingTop="8dp">
+
+                <TextView
+                    android:id="@+id/shortName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="\@vc_ru"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/shortNameLink"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="https://actor.im/join/\@vc_ru"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
 
         </RelativeLayout>
 

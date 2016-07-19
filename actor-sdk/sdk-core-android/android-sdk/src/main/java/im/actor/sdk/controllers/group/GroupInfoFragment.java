@@ -33,6 +33,7 @@ import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.mvvm.Value;
 import im.actor.runtime.mvvm.ValueDoubleChangedListener;
+import im.actor.runtime.mvvm.ValueDoubleListener;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorSDKLauncher;
 import im.actor.sdk.ActorStyle;
@@ -112,7 +113,9 @@ public class GroupInfoFragment extends BaseFragment {
         avatarView.init(Screen.dp(48), 22);
 
         TextView aboutTV = (TextView) header.findViewById(R.id.about);
-        View aboutCont = header.findViewById(R.id.aboutContainer);
+        View shortNameCont = header.findViewById(R.id.shortNameContainer);
+        TextView shortNameView = (TextView) header.findViewById(R.id.shortName);
+        TextView shortLinkView = (TextView) header.findViewById(R.id.shortNameLink);
 
         TextView addMember = (TextView) header.findViewById(R.id.addMemberAction);
         TextView members = (TextView) header.findViewById(R.id.viewMembersAction);
@@ -128,8 +131,9 @@ public class GroupInfoFragment extends BaseFragment {
         header.findViewById(R.id.avatarContainer).setBackgroundColor(style.getToolBarColor());
         title.setTextColor(style.getProfileTitleColor());
         subtitle.setTextColor(style.getProfileSubtitleColor());
-
         aboutTV.setTextColor(style.getTextPrimaryColor());
+        shortNameView.setTextColor(style.getTextPrimaryColor());
+        shortLinkView.setTextColor(style.getTextSecondaryColor());
         // settingsHeaderText.setTextColor(style.getSettingsCategoryTextColor());
 
         ((TintImageView) header.findViewById(R.id.settings_notification_icon))
@@ -170,9 +174,21 @@ public class GroupInfoFragment extends BaseFragment {
         });
 
         // About
-        bind(groupVM.getOwnerId(), groupVM.getAbout(), (ownerId, valueModel, about, valueModel2) -> {
+        bind(groupVM.getAbout(), (about) -> {
             aboutTV.setText(about);
-            descriptionContainer.setVisibility(about != null ? View.VISIBLE : View.GONE);
+            aboutTV.setVisibility(about != null ? View.VISIBLE : View.GONE);
+        });
+        bind(groupVM.getShortName(), shortName -> {
+            if (shortName != null) {
+                shortNameView.setText("@" + shortName);
+                shortLinkView.setText("actor.im/join/" + shortName);
+            }
+            shortNameCont.setVisibility(shortName != null ? View.VISIBLE : View.GONE);
+        });
+        bind(groupVM.getAbout(), groupVM.getShortName(), (about, shortName) -> {
+            descriptionContainer.setVisibility(about != null || shortName != null
+                    ? View.VISIBLE
+                    : View.GONE);
         });
 
         // Notifications
