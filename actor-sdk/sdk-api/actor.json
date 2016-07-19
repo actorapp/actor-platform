@@ -10764,6 +10764,36 @@
           }
         },
         {
+          "type": "rpc",
+          "content": {
+            "name": "ShareHistory",
+            "header": 2796,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "doc": [
+              "Share History",
+              {
+                "type": "reference",
+                "argument": "groupPeer",
+                "category": "full",
+                "description": "Group's peer"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "groupPeer"
+              }
+            ]
+          }
+        },
+        {
           "type": "comment",
           "content": "Invite"
         },

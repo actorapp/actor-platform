@@ -9343,6 +9343,30 @@
           <ref role="NX6Kv" node="5uOI4gqOIYs" resolve="groupPeer" />
         </node>
       </node>
+      <node concept="2m6fVq" id="5uOI4gqONL3" role="2m5mJr">
+        <property role="TrG5h" value="ShareHistory" />
+        <node concept="2m7Kf5" id="5uOI4gqOO0T" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupPeer" />
+          <node concept="2m5mGg" id="5uOI4gqOO0X" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6j2" resolve="GroupOutPeer" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="5uOI4gqONL4" role="NuuwV">
+          <property role="Nu42W" value="AEC" />
+        </node>
+        <node concept="2m1Rp1" id="5uOI4gqOO10" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_W" resolve="Seq" />
+        </node>
+        <node concept="NXeRC" id="5uOI4gqOO13" role="1GBnQ6">
+          <property role="NXePf" value="Share History" />
+        </node>
+        <node concept="NX1gA" id="5uOI4gqOO18" role="1GBnQ6">
+          <property role="NX6R2" value="Group's peer" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="5uOI4gqOO0T" resolve="groupPeer" />
+        </node>
+      </node>
       <node concept="NvWBy" id="1kct6f0uX17" role="2m5mJr">
         <property role="NvWrd" value="Invite" />
       </node>
