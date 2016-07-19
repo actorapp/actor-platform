@@ -71,7 +71,7 @@ trait GroupQueryHandlers {
   }
 
   protected def isPublic =
-    FastFuture.successful(IsPublicResponse(isPublic = state.groupType == GroupType.Public))
+    FastFuture.successful(IsPublicResponse(state.groupType.isPublic))
 
   protected def isHistoryShared =
     FastFuture.successful(IsHistorySharedResponse(state.isHistoryShared))

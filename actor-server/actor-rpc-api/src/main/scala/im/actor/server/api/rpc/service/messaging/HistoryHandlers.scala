@@ -2,7 +2,7 @@ package im.actor.server.api.rpc.service.messaging
 
 import java.time.Instant
 
-import com.google.protobuf.wrappers.Int32Value
+import akka.http.scaladsl.util.FastFuture
 import im.actor.api.rpc.PeerHelpers._
 import im.actor.api.rpc._
 import im.actor.api.rpc.messaging.{ ApiEmptyMessage, _ }
@@ -10,7 +10,8 @@ import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.peers.{ ApiGroupOutPeer, ApiOutPeer, ApiPeerType, ApiUserOutPeer }
 import im.actor.api.rpc.sequence.ApiUpdateOptimization
 import im.actor.server.dialog.HistoryUtils
-import im.actor.server.group.GroupUtils
+import im.actor.server.group.GroupQueries.CanSendMessageResponse
+import im.actor.server.group.{ CanSendMessageInfo, GroupUtils }
 import im.actor.server.model.{ DialogObsolete, HistoryMessage, Peer, PeerType }
 import im.actor.server.persist.contact.UserContactRepo
 import im.actor.server.persist.dialog.DialogRepo
@@ -30,6 +31,8 @@ trait HistoryHandlers {
   import DBIOResultRpc._
   import HistoryUtils._
   import Implicits._
+
+  private val CantDelete = Error(CommonRpcErrors.forbidden("You can't delete these messages"))
 
   override def doHandleMessageReceived(peer: ApiOutPeer, date: Long, clientData: im.actor.api.rpc.ClientData): Future[HandlerResult[ResponseVoid]] = {
     authorized(clientData) { client ⇒
@@ -238,42 +241,46 @@ trait HistoryHandlers {
 
   override def doHandleDeleteMessage(outPeer: ApiOutPeer, randomIds: IndexedSeq[Long], clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
     authorized(clientData) { implicit client ⇒
-      val action = withOutPeerDBIO(outPeer) {
+      withOutPeer(outPeer) {
         val peer = outPeer.asModel
-        withHistoryOwner(peer, client.userId) { historyOwner ⇒
+        getHistoryOwner(peer, client.userId) flatMap { historyOwner ⇒
           if (isSharedUser(historyOwner)) {
-            HistoryMessageRepo.find(historyOwner, peer, randomIds.toSet) flatMap { messages ⇒
-              if (messages.exists(_.senderUserId != client.userId)) {
-                DBIO.successful(Error(CommonRpcErrors.forbidden("You can only delete your own messages")))
-              } else {
-                for {
-                  _ ← HistoryMessageRepo.delete(historyOwner, peer, randomIds.toSet)
-                  groupUserIds ← GroupUserRepo.findUserIds(peer.id) map (_.toSet)
-                  SeqState(seq, state) ← DBIO.from(seqUpdExt.broadcastClientUpdate(
-                    client.userId,
-                    client.authId,
-                    bcastUserIds = groupUserIds,
-                    update = UpdateMessageDelete(outPeer.asPeer, randomIds),
-                    pushRules = seqUpdExt.pushRules(isFat = false, None, Seq(client.authId))
-                  ))
-                } yield Ok(ResponseSeq(seq, state.toByteArray))
-              }
-            }
-          } else {
             for {
-              _ ← HistoryMessageRepo.delete(client.userId, peer, randomIds.toSet)
-              SeqState(seq, state) ← DBIO.from(seqUpdExt.deliverClientUpdate(
-                client.userId,
-                client.authId,
-                update = UpdateMessageDelete(outPeer.asPeer, randomIds),
-                pushRules = seqUpdExt.pushRules(isFat = false, None)
-              ))
-            } yield Ok(ResponseSeq(seq, state.toByteArray))
+              CanSendMessageInfo(canSend, isChannel, memberIds, _) ← groupExt.canSendMessage(peer.id, client.userId)
+              result ← (isChannel, canSend) match {
+                case (true, true) ⇒ // channel, client user is one of those who can send messages, thus he can also delete them.
+                  deleteMessages(peer, historyOwner, randomIds, memberIds)
+                case (true, false) ⇒ // channel, client user can't send messages, thus he can't delete them.
+                  FastFuture.successful(CantDelete)
+                case (false, _) ⇒ // not a channel group. Must check if user deletes only messages he sent.
+                  for {
+                    messages ← db.run(HistoryMessageRepo.find(historyOwner, peer, randomIds.toSet)) // TODO: rewrite to ids check only
+                    res ← if (messages.forall(_.senderUserId == client.userId)) {
+                      deleteMessages(peer, historyOwner, randomIds, memberIds)
+                    } else {
+                      FastFuture.successful(CantDelete)
+                    }
+                  } yield res
+              }
+            } yield result
+          } else {
+            deleteMessages(peer, historyOwner, randomIds, otherUsersIds = Set.empty)
           }
         }
       }
-      db.run(action)
     }
+
+  private def deleteMessages(peer: Peer, historyOwner: Int, randomIds: IndexedSeq[Long], otherUsersIds: Set[Int])(implicit client: AuthorizedClientData) =
+    for {
+      _ ← db.run(HistoryMessageRepo.delete(historyOwner, peer, randomIds.toSet))
+      SeqState(seq, state) ← seqUpdExt.broadcastClientUpdate(
+        client.userId,
+        client.authId,
+        bcastUserIds = otherUsersIds,
+        update = UpdateMessageDelete(peer.asStruct, randomIds),
+        pushRules = seqUpdExt.pushRules(isFat = false, None, excludeAuthIds = Seq(client.authId))
+      )
+    } yield Ok(ResponseSeq(seq, state.toByteArray))
 
   private val MaxDateTime = new DateTime(294276, 1, 1, 0, 0)
   private val MaxDate = MaxDateTime.getMillis
