@@ -49,6 +49,7 @@ object GroupProcessor {
       20022 → classOf[GroupCommands.UpdateShortName],
       20023 → classOf[GroupCommands.DismissUserAdmin],
       20024 → classOf[GroupCommands.UpdateAdminSettings],
+      20025 → classOf[GroupCommands.MakeHistoryShared],
 
       21001 → classOf[GroupQueries.GetIntegrationToken],
       21002 → classOf[GroupQueries.GetIntegrationTokenResponse],
@@ -88,7 +89,8 @@ object GroupProcessor {
       22017 → classOf[GroupEvents.OwnerChanged],
       22018 → classOf[GroupEvents.ShortNameUpdated],
       22019 → classOf[GroupEvents.AdminSettingsUpdated],
-      22020 → classOf[GroupEvents.AdminStatusChanged]
+      22020 → classOf[GroupEvents.AdminStatusChanged],
+      22021 → classOf[GroupEvents.HistoryBecameShared]
     )
 
   def persistenceIdFor(groupId: Int): String = s"Group-${groupId}"
