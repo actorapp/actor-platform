@@ -121,8 +121,6 @@ final class EncryptionServiceImpl(implicit system: ActorSystem) extends Encrypti
         encExt.checkBox(encryptedBox, ignoredKeyGroups.groupBy(_.userId).mapValues(_.map(_.keyGroupId).toSet)) flatMap {
           case Left((missing, obs)) ⇒
             FastFuture.successful(Ok(ResponseSendEncryptedPackage(
-              seq = None,
-              state = None,
               date = None,
               obsoleteKeyGroups = obs,
               missedKeyGroups = missing
@@ -159,8 +157,6 @@ final class EncryptionServiceImpl(implicit system: ActorSystem) extends Encrypti
                 case None ⇒ updExt.deliverClientUpdate(client.userId, client.authId, UpdateEmptyUpdate)
               }
             } yield Ok(ResponseSendEncryptedPackage(
-              seq = Some(seqState.seq),
-              state = Some(seqState.state.toByteArray),
               date = Some(date),
               Vector.empty,
               Vector.empty
