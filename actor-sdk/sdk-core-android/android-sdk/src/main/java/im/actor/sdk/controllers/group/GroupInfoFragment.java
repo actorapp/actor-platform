@@ -225,7 +225,7 @@ public class GroupInfoFragment extends BaseFragment {
             }
         });
         administrationAction.setOnClickListener(view -> {
-            startActivity(new Intent(getActivity(), GroupTypeActivity.class)
+            startActivity(new Intent(getActivity(), GroupAdminActivity.class)
                     .putExtra(Intents.EXTRA_GROUP_ID, chatId));
         });
 
