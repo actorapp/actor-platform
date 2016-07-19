@@ -69,6 +69,21 @@ public class GroupVM extends BaseValueModel<Group> {
     @NotNull
     @Property("nonatomic, readonly")
     private BooleanValueModel isCanEditInfo;
+    @NotNull
+    @Property("nonatomic, readonly")
+    private BooleanValueModel isHistoryShared;
+    @NotNull
+    @Property("nonatomic, readonly")
+    private BooleanValueModel isCanEditAdministration;
+    @NotNull
+    @Property("nonatomic, readonly")
+    private BooleanValueModel isCanEditShortName;
+    @NotNull
+    @Property("nonatomic, readonly")
+    private BooleanValueModel isCanEditAdmins;
+    @NotNull
+    @Property("nonatomic, readonly")
+    private BooleanValueModel isCanViewAdmins;
 
 
     @NotNull
@@ -109,6 +124,12 @@ public class GroupVM extends BaseValueModel<Group> {
         this.isCanInviteMembers = new BooleanValueModel("group." + groupId + ".can_invite_members", rawObj.isCanInviteMembers());
         this.isCanEditInfo = new BooleanValueModel("group." + groupId + ".can_edit_info", rawObj.isCanEditInfo());
         this.isAsyncMembers = new BooleanValueModel("group." + groupId + ".isAsyncMembers", rawObj.isAsyncMembers());
+        this.isCanEditAdministration = new BooleanValueModel("group." + groupId + ".isCanEditAdministration", rawObj.isCanEditAdministration());
+        this.isCanEditShortName = new BooleanValueModel("group." + groupId + ".isCanEditShortName", rawObj.isCanEditShortName());
+        this.isHistoryShared = new BooleanValueModel("group." + groupId + ".isHistoryShared", rawObj.isSharedHistory());
+        this.isCanEditAdmins = new BooleanValueModel("group." + groupId + ".isCanEditAdmins", rawObj.isCanEditAdmins());
+        this.isCanViewAdmins = new BooleanValueModel("group." + groupId + ".isCanViewAdmins", rawObj.isCanViewAdmins());
+
         this.ownerId = new IntValueModel("group." + groupId + ".membersCount", rawObj.getOwnerId());
         this.members = new ValueModel<>("group." + groupId + ".members", new HashSet<>(rawObj.getMembers()));
         this.presence = new ValueModel<>("group." + groupId + ".presence", 0);
@@ -180,6 +201,17 @@ public class GroupVM extends BaseValueModel<Group> {
     @ObjectiveCName("getThemeModel")
     public StringValueModel getTheme() {
         return theme;
+    }
+
+    /**
+     * Get Short Name Model
+     *
+     * @return Value Model of String
+     */
+    @NotNull
+    @ObjectiveCName("getShortNameModel")
+    public StringValueModel getShortName() {
+        return shortName;
     }
 
     /**
@@ -258,6 +290,39 @@ public class GroupVM extends BaseValueModel<Group> {
     @ObjectiveCName("getIsAsyncMembersModel")
     public BooleanValueModel getIsAsyncMembers() {
         return isAsyncMembers;
+    }
+
+    /**
+     * Is history shared in this group
+     *
+     * @return is history shared model
+     */
+    @NotNull
+    @ObjectiveCName("getIsHistorySharedModel")
+    public BooleanValueModel getIsHistoryShared() {
+        return isHistoryShared;
+    }
+
+    /**
+     * Is current user can edit administration settings
+     *
+     * @return is can edit administration model
+     */
+    @NotNull
+    @ObjectiveCName("getIsCanEditAdministrationModel")
+    public BooleanValueModel getIsCanEditAdministration() {
+        return isCanEditAdministration;
+    }
+
+    /**
+     * Is current user can edit short name of a group
+     *
+     * @return is current user can edit short name
+     */
+    @NotNull
+    @ObjectiveCName("getIsCanEditShortNameModel")
+    public BooleanValueModel getIsCanEditShortName() {
+        return isCanEditShortName;
     }
 
     /**
@@ -358,6 +423,10 @@ public class GroupVM extends BaseValueModel<Group> {
         isChanged |= isCanEditInfo.change(rawObj.isCanEditInfo());
         isChanged |= shortName.change(rawObj.getShortName());
         isChanged |= isAsyncMembers.change(rawObj.isAsyncMembers());
+        isChanged |= isHistoryShared.change(rawObj.isSharedHistory());
+        isChanged |= isCanEditAdministration.change(rawObj.isCanEditAdministration());
+        isChanged |= isCanEditAdmins.change(rawObj.isCanEditAdmins());
+        isChanged |= isCanViewAdmins.change(rawObj.isCanViewAdmins());
 
         if (isChanged) {
             notifyIfNeeded();

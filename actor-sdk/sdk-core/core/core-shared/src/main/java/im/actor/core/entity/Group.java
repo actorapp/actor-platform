@@ -87,6 +87,14 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
     private boolean isSharedHistory;
     @Property("readonly, nonatomic")
     private boolean isCanEditInfo;
+    @Property("readonly, nonatomic")
+    private boolean isCanEditAdministration;
+    @Property("readonly, nonatomic")
+    private boolean isCanEditShortName;
+    @Property("readonly, nonatomic")
+    private boolean isCanViewAdmins;
+    @Property("readonly, nonatomic")
+    private boolean isCanEditAdmins;
 
     @Property("readonly, nonatomic")
     private boolean haveExtension;
@@ -201,6 +209,22 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
 
     public boolean isHaveExtension() {
         return haveExtension;
+    }
+
+    public boolean isCanEditShortName() {
+        return isCanEditShortName;
+    }
+
+    public boolean isCanEditAdministration() {
+        return isCanEditAdministration;
+    }
+
+    public boolean isCanViewAdmins() {
+        return isCanViewAdmins;
+    }
+
+    public boolean isCanEditAdmins() {
+        return isCanEditAdmins;
     }
 
     public Group updateExt(@Nullable ApiGroupFull ext) {
@@ -895,6 +919,11 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
             this.isCanInviteMembers = ext.canViewMembers() != null ? ext.canViewMembers() : true;
             this.isSharedHistory = ext.isSharedHistory() != null ? ext.isSharedHistory() : false;
             this.isCanEditInfo = ext.canEditGroupInfo() != null ? ext.canEditGroupInfo() : false;
+            this.isCanEditShortName = ext.canEditShortName() != null ? ext.canEditShortName() : false;
+            this.isCanEditAdministration = ext.canEditAdminSettings() != null ? ext.canEditAdminSettings() : false;
+            this.isCanViewAdmins = ext.canViewAdminList() != null ? ext.canViewAdminList() : false;
+            this.isCanEditAdmins = ext.canEditAdminList() != null ? ext.canEditAdminList() : false;
+
             this.members = new ArrayList<>();
             for (ApiMember m : ext.getMembers()) {
                 this.members.add(new GroupMember(m.getUid(), m.getInviterUid(), m.getDate(),
@@ -905,13 +934,17 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
             this.ownerId = 0;
             this.about = null;
             this.topic = null;
+            this.shortName = null;
+            this.members = new ArrayList<>();
             this.isAsyncMembers = false;
             this.isCanViewMembers = false;
             this.isCanInviteMembers = false;
             this.isSharedHistory = false;
-            this.members = new ArrayList<>();
             this.isCanEditInfo = false;
-            this.shortName = null;
+            this.isCanEditShortName = false;
+            this.isCanEditAdministration = false;
+            this.isCanViewAdmins = false;
+            this.isCanEditAdmins = false;
         }
     }
 

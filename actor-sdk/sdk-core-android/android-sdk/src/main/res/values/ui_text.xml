@@ -359,6 +359,12 @@
     <string name="group_add_member">Add a member</string>
     <string name="group_leave">Leave group</string>
     <string name="group_leave_channel">Leave channel</string>
+    <string name="group_administration">Administration</string>
+
+    <string name="group_public_group_title">Public Group</string>
+    <string name="group_public_group_text">Public groups can be found in search, anyone can join them.</string>
+    <string name="group_private_group_title">Private Group</string>
+    <string name="group_private_group_text">Private Group can only be joined via personal invitation.</string>
 
     <string name="group_not_member">You are not a member of this group</string>
 

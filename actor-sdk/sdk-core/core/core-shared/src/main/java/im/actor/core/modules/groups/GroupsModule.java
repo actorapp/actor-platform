@@ -15,6 +15,7 @@ import im.actor.core.api.ApiPeerType;
 import im.actor.core.api.ApiUserOutPeer;
 import im.actor.core.api.rpc.RequestCreateGroup;
 import im.actor.core.api.rpc.RequestEditGroupAbout;
+import im.actor.core.api.rpc.RequestEditGroupShortName;
 import im.actor.core.api.rpc.RequestEditGroupTitle;
 import im.actor.core.api.rpc.RequestEditGroupTopic;
 import im.actor.core.api.rpc.RequestGetGroupInviteUrl;
@@ -227,6 +228,14 @@ public class GroupsModule extends AbsModule implements BusSubscriber {
                         api(new RequestEditGroupAbout(
                                 new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()),
                                 rid, about, ApiSupportConfiguration.OPTIMIZATIONS)))
+                .flatMap(r -> updates().waitForUpdate(r.getSeq()));
+    }
+
+    public Promise<Void> editShortName(final int gid, final String shortName) {
+        return getGroups().getValueAsync(gid)
+                .flatMap(group ->
+                        api(new RequestEditGroupShortName(new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()),
+                                shortName)))
                 .flatMap(r -> updates().waitForUpdate(r.getSeq()));
     }
 

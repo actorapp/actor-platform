@@ -161,6 +161,17 @@
         android:textSize="16sp" />
 
     <TextView
+        android:id="@+id/administrationAction"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/selector"
+        android:gravity="center_vertical"
+        android:paddingLeft="72dp"
+        android:paddingRight="8dp"
+        android:text="@string/group_administration"
+        android:textSize="16sp" />
+
+    <TextView
         android:id="@+id/leaveAction"
         android:layout_width="match_parent"
         android:layout_height="48dp"

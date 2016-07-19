@@ -31,6 +31,8 @@ import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserPhone;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.mvvm.Value;
+import im.actor.runtime.mvvm.ValueDoubleChangedListener;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorSDKLauncher;
 import im.actor.sdk.ActorStyle;
@@ -111,9 +113,11 @@ public class GroupInfoFragment extends BaseFragment {
 
         TextView aboutTV = (TextView) header.findViewById(R.id.about);
         View aboutCont = header.findViewById(R.id.aboutContainer);
+
         TextView addMember = (TextView) header.findViewById(R.id.addMemberAction);
         TextView members = (TextView) header.findViewById(R.id.viewMembersAction);
         TextView leaveAction = (TextView) header.findViewById(R.id.leaveAction);
+        TextView administrationAction = (TextView) header.findViewById(R.id.administrationAction);
 
         View descriptionContainer = header.findViewById(R.id.descriptionContainer);
         SwitchCompat isNotificationsEnabled = (SwitchCompat) header.findViewById(R.id.enableNotifications);
@@ -137,7 +141,9 @@ public class GroupInfoFragment extends BaseFragment {
         ((TextView) header.findViewById(R.id.addMemberAction))
                 .setTextColor(style.getTextPrimaryColor());
         members.setTextColor(style.getTextPrimaryColor());
+        administrationAction.setTextColor(style.getTextPrimaryColor());
         leaveAction.setTextColor(style.getTextDangerColor());
+
 
         if (groupVM.getGroupType() == GroupType.CHANNEL) {
             leaveAction.setText(R.string.group_leave_channel);
@@ -188,23 +194,23 @@ public class GroupInfoFragment extends BaseFragment {
         });
         addMember.setOnClickListener(view -> {
             startActivity(new Intent(getActivity(), AddMemberActivity.class)
-                    .putExtra("GROUP_ID", chatId));
+                    .putExtra(Intents.EXTRA_GROUP_ID, chatId));
         });
 
-        // Leave
-        leaveAction.setOnClickListener(view1 -> {
-            new AlertDialog.Builder(getActivity())
-                    .setMessage(getString(R.string.alert_leave_group_message).replace("%1$s",
-                            groupVM.getName().get()))
-                    .setPositiveButton(R.string.alert_leave_group_yes, (dialog2, which) -> {
-                        execute(messenger().leaveGroup(chatId));
-                    })
-                    .setNegativeButton(R.string.dialog_cancel, null)
-                    .show()
-                    .setCanceledOnTouchOutside(true);
+        // Administration
+        bind(groupVM.getIsCanEditAdministration(), groupVM.getIsCanEditShortName(), (canEditAdministration, valueModel, canEditShortName, valueModel2) -> {
+            if (canEditAdministration || canEditShortName) {
+                administrationAction.setVisibility(View.VISIBLE);
+            } else {
+                administrationAction.setVisibility(View.GONE);
+            }
+        });
+        administrationAction.setOnClickListener(view -> {
+            startActivity(new Intent(getActivity(), GroupAdminActivity.class)
+                    .putExtra(Intents.EXTRA_GROUP_ID, chatId));
         });
 
-        // Members
+        // Async Members
         // Showing member only when members available and async members is enabled
         bind(groupVM.getIsCanViewMembers(), groupVM.getIsAsyncMembers(), (canViewMembers, vm1, isAsync, vm2) -> {
             if (canViewMembers) {
@@ -222,6 +228,19 @@ public class GroupInfoFragment extends BaseFragment {
         members.setOnClickListener(view -> {
             startActivity(new Intent(getContext(), MembersActivity.class)
                     .putExtra(Intents.EXTRA_GROUP_ID, groupVM.getId()));
+        });
+
+        // Leave
+        leaveAction.setOnClickListener(view1 -> {
+            new AlertDialog.Builder(getActivity())
+                    .setMessage(getString(R.string.alert_leave_group_message).replace("%1$s",
+                            groupVM.getName().get()))
+                    .setPositiveButton(R.string.alert_leave_group_yes, (dialog2, which) -> {
+                        execute(messenger().leaveGroup(chatId));
+                    })
+                    .setNegativeButton(R.string.dialog_cancel, null)
+                    .show()
+                    .setCanceledOnTouchOutside(true);
         });
 
         listView.addHeaderView(header, null, false);
@@ -300,6 +319,11 @@ public class GroupInfoFragment extends BaseFragment {
             getActivity().invalidateOptionsMenu();
         });
 
+        // Menu
+        bind(groupVM.getIsCanEditInfo(), canEditInfo -> {
+            getActivity().invalidateOptionsMenu();
+        });
+
         return res;
     }
 
@@ -368,7 +392,7 @@ public class GroupInfoFragment extends BaseFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
         super.onCreateOptionsMenu(menu, menuInflater);
-        if (groupVM.isMember().get()) {
+        if (groupVM.getIsCanEditInfo().get()) {
             MenuItem menuItem = menu.add(Menu.NONE, R.id.edit, Menu.NONE, R.string.actor_menu_edit);
             menuItem.setIcon(R.drawable.ic_edit_white_24dp);
             menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);

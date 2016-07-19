@@ -1419,8 +1419,21 @@ public class Messenger {
      */
     @NotNull
     @ObjectiveCName("editGroupAboutWithGid:withAbout:")
-    public Promise<Void> editGroupAbout(final int gid, final String about) {
+    public Promise<Void> editGroupAbout(int gid, String about) {
         return modules.getGroupsModule().editAbout(gid, about);
+    }
+
+    /**
+     * Edit group's short name
+     *
+     * @param gid       group's id
+     * @param shortName new group short name
+     * @return Promise for void
+     */
+    @NotNull
+    @ObjectiveCName("editGroupShortNameWithGid:withAbout:")
+    public Promise<Void> editGroupShortName(int gid, String shortName) {
+        return modules.getGroupsModule().editShortName(gid, shortName);
     }
 
     /**
