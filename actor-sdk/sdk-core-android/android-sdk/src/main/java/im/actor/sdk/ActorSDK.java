@@ -14,6 +14,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
 import java.util.TimeZone;
@@ -132,6 +133,11 @@ public class ActorSDK {
      * Invite url
      */
     private String inviteUrl = "https://actor.im/dl";
+    /**
+     * Invite url
+     */
+    @Nullable
+    private String groupInvitePrefix = "actor.im/join/";
     /**
      * Help phone
      */
@@ -517,6 +523,25 @@ public class ActorSDK {
      */
     public void setAppName(String appName) {
         this.appName = appName;
+    }
+
+    /**
+     * Getting Group Invite Prefix
+     *
+     * @return group invite prefix
+     */
+    @Nullable
+    public String getGroupInvitePrefix() {
+        return groupInvitePrefix;
+    }
+
+    /**
+     * Setting Group Invite Prefix
+     *
+     * @param groupInvitePrefix group invite prefix
+     */
+    public void setGroupInvitePrefix(@Nullable String groupInvitePrefix) {
+        this.groupInvitePrefix = groupInvitePrefix;
     }
 
     /**

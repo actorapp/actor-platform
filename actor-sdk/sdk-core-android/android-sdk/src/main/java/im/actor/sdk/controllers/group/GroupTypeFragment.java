@@ -20,12 +20,12 @@ import im.actor.sdk.util.Fonts;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
-public class GroupAdminFragment extends BaseFragment {
+public class GroupTypeFragment extends BaseFragment {
 
-    public static GroupAdminFragment create(int groupId) {
+    public static GroupTypeFragment create(int groupId) {
         Bundle bundle = new Bundle();
         bundle.putInt("groupId", groupId);
-        GroupAdminFragment editFragment = new GroupAdminFragment();
+        GroupTypeFragment editFragment = new GroupTypeFragment();
         editFragment.setArguments(bundle);
         return editFragment;
     }
@@ -34,7 +34,7 @@ public class GroupAdminFragment extends BaseFragment {
     private GroupVM groupVM;
     private boolean isPublic;
 
-    public GroupAdminFragment() {
+    public GroupTypeFragment() {
         setTitle(R.string.group_title);
         setRootFragment(true);
         setHomeAsUp(true);

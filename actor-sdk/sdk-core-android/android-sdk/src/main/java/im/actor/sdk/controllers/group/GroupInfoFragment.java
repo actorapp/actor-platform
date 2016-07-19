@@ -31,9 +31,6 @@ import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserPhone;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.actors.messages.Void;
-import im.actor.runtime.mvvm.Value;
-import im.actor.runtime.mvvm.ValueDoubleChangedListener;
-import im.actor.runtime.mvvm.ValueDoubleListener;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorSDKLauncher;
 import im.actor.sdk.ActorStyle;
@@ -148,7 +145,6 @@ public class GroupInfoFragment extends BaseFragment {
         administrationAction.setTextColor(style.getTextPrimaryColor());
         leaveAction.setTextColor(style.getTextDangerColor());
 
-
         if (groupVM.getGroupType() == GroupType.CHANNEL) {
             leaveAction.setText(R.string.group_leave_channel);
         } else {
@@ -181,7 +177,14 @@ public class GroupInfoFragment extends BaseFragment {
         bind(groupVM.getShortName(), shortName -> {
             if (shortName != null) {
                 shortNameView.setText("@" + shortName);
-                shortLinkView.setText("actor.im/join/" + shortName);
+
+                String prefix = ActorSDK.sharedActor().getGroupInvitePrefix();
+                if (prefix != null) {
+                    shortLinkView.setText(prefix + shortName);
+                    shortLinkView.setVisibility(View.VISIBLE);
+                } else {
+                    shortLinkView.setVisibility(View.GONE);
+                }
             }
             shortNameCont.setVisibility(shortName != null ? View.VISIBLE : View.GONE);
         });
@@ -222,7 +225,7 @@ public class GroupInfoFragment extends BaseFragment {
             }
         });
         administrationAction.setOnClickListener(view -> {
-            startActivity(new Intent(getActivity(), GroupAdminActivity.class)
+            startActivity(new Intent(getActivity(), GroupTypeActivity.class)
                     .putExtra(Intents.EXTRA_GROUP_ID, chatId));
         });
 

@@ -5,14 +5,14 @@ import android.os.Bundle;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.activity.BaseFragmentActivity;
 
-public class GroupAdminActivity extends BaseFragmentActivity {
+public class GroupTypeActivity extends BaseFragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState == null) {
-            showFragment(GroupAdminFragment.create(
+            showFragment(GroupTypeFragment.create(
                     getIntent().getIntExtra(Intents.EXTRA_GROUP_ID, 0)), false);
         }
     }
