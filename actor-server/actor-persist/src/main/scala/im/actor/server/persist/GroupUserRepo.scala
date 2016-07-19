@@ -52,6 +52,10 @@ object GroupUserRepo {
   def find(groupId: Int) =
     byGroupIdC(groupId).result
 
+  //TODO: revisit later
+  def findUserIds(groupId: Int) =
+    userIdByGroupIdC(groupId).result
+
   @deprecated("Compatibility with old group API, remove when possible", "2016-06-05")
   def find(groupId: Int, userId: Int) =
     byPKC((groupId, userId)).result.headOption
