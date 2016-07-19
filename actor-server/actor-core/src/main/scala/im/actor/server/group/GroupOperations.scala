@@ -171,6 +171,7 @@ private[group] sealed trait Queries {
       GroupEnvelope(groupId)
       .withGetMembers(GetMembers())).mapTo[GetMembersResponse] map (r ⇒ (r.memberIds, r.invitedUserIds, r.botId))
 
+  // TODO: should be signed as internal API
   // TODO: better name maybe
   def canSendMessage(groupId: Int, clientUserId: Int): Future[CanSendMessageInfo] =
     (viewRegion.ref ?

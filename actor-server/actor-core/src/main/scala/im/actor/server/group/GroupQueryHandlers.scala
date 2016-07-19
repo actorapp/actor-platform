@@ -35,7 +35,7 @@ trait GroupQueryHandlers {
   protected def getMembers: Future[GetMembersResponse] =
     FastFuture.successful {
       GetMembersResponse(
-        memberIds = state.members.keySet.toSeq,
+        memberIds = state.memberIds.toSeq,
         invitedUserIds = state.invitedUserIds.toSeq,
         botId = state.bot.map(_.userId)
       )
