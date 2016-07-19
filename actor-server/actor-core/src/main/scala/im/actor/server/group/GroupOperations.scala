@@ -153,6 +153,11 @@ private[group] sealed trait Queries {
       GroupEnvelope(groupId)
       .withIsPublic(IsPublic())).mapTo[IsPublicResponse] map (_.isPublic)
 
+  def isChannel(groupId: Int): Future[Boolean] =
+    (viewRegion.ref ?
+      GroupEnvelope(groupId)
+      .withIsChannel(IsChannel())).mapTo[IsChannelResponse] map (_.isChannel)
+
   def isHistoryShared(groupId: Int): Future[Boolean] =
     (viewRegion.ref ?
       GroupEnvelope(groupId)
