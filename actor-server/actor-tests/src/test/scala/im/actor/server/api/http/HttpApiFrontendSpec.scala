@@ -56,6 +56,8 @@ final class HttpApiFrontendSpec
 
   "Groups handler" should "respond with JSON message to group invite info with correct invite token" in t.groupInvitesOk()
 
+  it should "respond with JSON message without inviter, when we join via group short name" in t.groupInvitesShortName()
+
   it should "respond with JSON message with avatar full links to group invite info with correct invite token" in t.groupInvitesAvatars1()
 
   it should "respond with JSON message with avatar partial links to group invite info with correct invite token" in t.groupInvitesAvatars2()
@@ -313,6 +315,22 @@ final class HttpApiFrontendSpec
         val response = Json.parse(body)
         (response \ "group" \ "title").as[String] shouldEqual groupName
         (response \ "inviter" \ "name").as[String] shouldEqual user1.name
+      }
+    }
+
+    def groupInvitesShortName() = {
+      val shortName = "division"
+      whenReady(groupExt.updateShortName(groupOutPeer.groupId, user1.id, authId1, Some(shortName))) { _ ⇒
+        val request = HttpRequest(
+          method = GET,
+          uri = s"${config.baseUri}/v1/groups/invites/$shortName"
+        )
+        val resp = singleRequest(request).futureValue
+        resp.status shouldEqual OK
+        val body = resp.entity.asString
+        val response = Json.parse(body)
+        (response \ "group" \ "title").as[String] shouldEqual groupName
+        (response \ "inviter" \ "name").toOption shouldEqual None
       }
     }
 

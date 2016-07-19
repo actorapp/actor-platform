@@ -93,7 +93,6 @@ object GroupRepo {
     )
   }
 
-  @deprecated("Public groups are deprecated in Group V2 API", "2016-06-05")
   def findPublic =
     groups.filter(_.isPublic === true).map(_.asGroup).result
 

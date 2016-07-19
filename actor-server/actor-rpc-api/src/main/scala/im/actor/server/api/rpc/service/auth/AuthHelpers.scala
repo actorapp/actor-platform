@@ -67,7 +67,7 @@ trait AuthHelpers extends Helpers {
   protected def newUsernameSignUp(transaction: AuthUsernameTransaction, name: String, sex: Option[ApiSex]): Result[(Int, String) Xor User] = {
     val username = transaction.username
     for {
-      optUserId ← fromFuture(globalNamesStorage.getUserOwnerId(username))
+      optUserId ← fromFuture(globalNamesStorage.getUserId(username))
       result ← optUserId match {
         case Some(id) ⇒ point(Xor.left((id, "")))
         case None     ⇒ newUser(name, "", sex, username = Some(username))
@@ -168,7 +168,7 @@ trait AuthHelpers extends Helpers {
           } yield (emailModel.userId, "")
         case u: AuthUsernameTransaction ⇒
           for {
-            userId ← fromFutureOption(AuthErrors.UsernameUnoccupied)(globalNamesStorage.getUserOwnerId(u.username))
+            userId ← fromFutureOption(AuthErrors.UsernameUnoccupied)(globalNamesStorage.getUserId(u.username))
           } yield (userId, "")
         case _: AuthAnonymousTransaction ⇒
           fromEither(Xor.left(AuthErrors.NotValidated))
