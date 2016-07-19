@@ -56,14 +56,6 @@ object GroupUserRepo {
   def find(groupId: Int, userId: Int) =
     byPKC((groupId, userId)).result.headOption
 
-  //TODO: remove
-  def exists(groupId: Int, userId: Int) =
-    byPKC.applied((groupId, userId)).exists.result
-
-  //TODO: revisit later
-  def findUserIds(groupId: Int) =
-    userIdByGroupIdC(groupId).result
-
   @deprecated("Duplication of event-sourced groups logic", "2016-06-05")
   def delete(groupId: Int, userId: Int): FixedSqlAction[Int, NoStream, Write] =
     byPKC.applied((groupId, userId)).delete
