@@ -7938,6 +7938,12 @@
               },
               {
                 "type": "reference",
+                "argument": "isDeleted",
+                "category": "full",
+                "description": "  Is this group deleted"
+              },
+              {
+                "type": "reference",
                 "argument": "ext",
                 "category": "full",
                 "description": "  Group extension Data"
@@ -8052,6 +8058,14 @@
                 },
                 "id": 26,
                 "name": "canSendMessage"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 27,
+                "name": "isDeleted"
               },
               {
                 "type": {
@@ -9316,6 +9330,32 @@
                 "type": "bool",
                 "id": 2,
                 "name": "canEditAdminSettings"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupDeleted",
+            "header": 2658,
+            "doc": [
+              "Update about group deleted",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
               }
             ]
           }
@@ -12693,39 +12733,9 @@
               },
               {
                 "type": "reference",
-                "argument": "title",
-                "category": "full",
-                "description": "  Peer title"
-              },
-              {
-                "type": "reference",
-                "argument": "description",
+                "argument": "optMatchString",
                 "category": "full",
                 "description": "  Description"
-              },
-              {
-                "type": "reference",
-                "argument": "membersCount",
-                "category": "full",
-                "description": "  Members count"
-              },
-              {
-                "type": "reference",
-                "argument": "dateCreated",
-                "category": "full",
-                "description": "  Group Creation Date"
-              },
-              {
-                "type": "reference",
-                "argument": "creator",
-                "category": "full",
-                "description": "  Group Creator uid"
-              },
-              {
-                "type": "reference",
-                "argument": "isPublic",
-                "category": "full",
-                "description": "  Is group public"
               }
             ],
             "attributes": [
@@ -12738,60 +12748,12 @@
                 "name": "peer"
               },
               {
-                "type": "string",
-                "id": 2,
-                "name": "title"
-              },
-              {
                 "type": {
                   "type": "opt",
                   "childType": "string"
                 },
                 "id": 3,
-                "name": "description"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "int32"
-                },
-                "id": 4,
-                "name": "membersCount"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": {
-                    "type": "alias",
-                    "childType": "date"
-                  }
-                },
-                "id": 5,
-                "name": "dateCreated"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "int32"
-                },
-                "id": 6,
-                "name": "creator"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "bool"
-                },
-                "id": 7,
-                "name": "isPublic"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "bool"
-                },
-                "id": 8,
-                "name": "isJoined"
+                "name": "optMatchString"
               }
             ]
           }
