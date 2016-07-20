@@ -36,6 +36,7 @@ import im.actor.core.api.rpc.RequestShareHistory;
 import im.actor.core.api.rpc.RequestTransferOwnership;
 import im.actor.core.api.rpc.ResponseIntegrationToken;
 import im.actor.core.api.rpc.ResponseInviteUrl;
+import im.actor.core.api.rpc.ResponseVoid;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.GroupMembersSlice;
 import im.actor.core.entity.GroupPermissions;
@@ -66,6 +67,10 @@ import im.actor.runtime.storage.KeyValueEngine;
 import static im.actor.runtime.actors.ActorSystem.system;
 
 public class GroupsModule extends AbsModule implements BusSubscriber {
+
+    // Workaround for j2objc bug
+    private static final Void DUMB = null;
+    private static final ResponseVoid DUMB2 = null;
 
     private final KeyValueEngine<Group> groups;
     private final MVVMCollection<Group, GroupVM> collection;
