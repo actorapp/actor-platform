@@ -6,14 +6,15 @@ import akka.actor.ActorSystem
 import akka.event.Logging
 import akka.http.scaladsl.util.FastFuture
 import akka.stream.Materializer
-import akka.stream.scaladsl.{ FileIO, Source }
+import akka.stream.scaladsl.{FileIO, Source}
 import akka.util.ByteString
-import better.files.{ File, _ }
+import better.files.{File, _}
 import im.actor.server.db.DbExtension
+import im.actor.server.file.UnsafeFileName
 import im.actor.server.persist.files.FileRepo
 
-import scala.concurrent.{ ExecutionContext, Future, blocking }
-import scala.util.{ Failure, Success }
+import scala.concurrent.{ExecutionContext, Future, blocking}
+import scala.util.{Failure, Success}
 
 trait FileStorageOperations extends LocalUploadKeyImplicits {
 
@@ -116,7 +117,7 @@ trait FileStorageOperations extends LocalUploadKeyImplicits {
   protected def getFileData(file: File): Future[ByteString] =
     FileIO.fromPath(file.path).runFold(ByteString.empty)(_ ++ _)
 
-  protected def getFileName(name: String) = if (name.trim.isEmpty) "file" else name
+  protected def getFileName(name: String) = if (name.trim.isEmpty) "file" else UnsafeFileName(name).safe
 
   protected def fileDirectory(fileId: Long): File = file"$storageLocation/file_${fileId}"
 
