@@ -14,7 +14,7 @@ import im.actor.server.acl.ACLUtils
 import im.actor.server.group.GroupCommands.{ DeleteGroup, DismissUserAdmin, MakeHistoryShared, MakeUserAdmin, RevokeIntegrationToken, RevokeIntegrationTokenAck, TransferOwnership, UpdateAdminSettings, UpdateAdminSettingsAck }
 import im.actor.server.group.GroupErrors.{ NotAMember, NotAdmin, UserAlreadyAdmin, UserAlreadyNotAdmin }
 import im.actor.server.group.GroupEvents.{ AdminSettingsUpdated, AdminStatusChanged, GroupDeleted, HistoryBecameShared, IntegrationTokenRevoked, OwnerChanged }
-import im.actor.server.persist.{ GroupBotRepo, GroupUserRepo, HistoryMessageRepo }
+import im.actor.server.persist.{ GroupBotRepo, GroupInviteTokenRepo, GroupUserRepo, HistoryMessageRepo }
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 
 import scala.concurrent.Future
@@ -346,6 +346,10 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
       persist(GroupDeleted(Instant.now, cmd.clientUserId)) { evt ⇒
         val newState = commit(evt)
 
+        val dateMillis = evt.ts.toEpochMilli
+        val randomId = ACLUtils.randomLong()
+
+        // TODO: add UpdateIsDeleted
         val deleteGroupMembersUpdates: Vector[Update] = Vector(
           UpdateGroupCanSendMessagesChanged(groupId, canSendMessages = false),
           UpdateGroupCanViewMembersChanged(groupId, canViewMembers = false),
@@ -366,11 +370,34 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
             UpdateGroupMembersUpdated(groupId, members = Vector.empty)
         )
 
-        // TODO: add UpdateIsDeleted
-        // TODO: for old API updates as in leacve
+        //TODO: remove deprecated. GroupInviteTokenRepo don't have replacement yet.
+        newState.memberIds foreach { userId ⇒
+          db.run(
+            for {
+              _ ← GroupUserRepo.delete(groupId, userId)
+              _ ← GroupInviteTokenRepo.revoke(groupId, userId)
+            } yield ()
+          )
+        }
 
         val result: Future[SeqState] = for {
           _ ← db.run(HistoryMessageRepo.deleteAll(cmd.clientUserId, apiGroupPeer.asModel))
+
+          ///////////////////////////
+          // Groups V1 API updates //
+          ///////////////////////////
+
+          // push all members updates about other members left group
+          _ ← FutureExt.ftraverse(newState.memberIds.toSeq) { userId ⇒
+            seqUpdExt.broadcastPeopleUpdate(
+              userIds = newState.memberIds - userId,
+              update = UpdateGroupUserLeaveObsolete(groupId, userId, dateMillis, randomId)
+            )
+          }
+
+          ///////////////////////////
+          // Groups V2 API updates //
+          ///////////////////////////
           _ ← Future.traverse(deleteGroupMembersUpdates) { update ⇒
             seqUpdExt.broadcastPeopleUpdate(newState.memberIds, update)
           }

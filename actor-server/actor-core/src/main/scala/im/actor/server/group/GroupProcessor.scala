@@ -21,6 +21,7 @@ import im.actor.server.user.UserExtension
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
 
+//TODO: maybe add dateMillis
 trait GroupEvent extends TaggedEvent {
   val ts: Instant
 
