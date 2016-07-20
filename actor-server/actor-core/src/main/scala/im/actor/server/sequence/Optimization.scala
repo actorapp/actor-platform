@@ -50,7 +50,10 @@ object Optimization extends MessageParsing {
         UpdateGroupCanEditUsernameChanged.header,
         UpdateGroupCanEditAdminsChanged.header,
         UpdateGroupCanViewAdminsChanged.header,
-        UpdateGroupCanEditAdminSettingsChanged.header
+        UpdateGroupCanEditAdminSettingsChanged.header,
+        UpdateGroupCanInviteViaLink.header,
+        UpdateGroupCanLeaveChanged.header,
+        UpdateGroupCanDeleteChanged.header
       )
       if (deliveryTag == GroupV2)
         emptyUpdate

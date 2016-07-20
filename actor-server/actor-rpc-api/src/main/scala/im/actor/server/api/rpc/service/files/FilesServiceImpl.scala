@@ -6,7 +6,7 @@ import java.time.temporal.ChronoUnit
 import akka.actor._
 import akka.http.scaladsl.util.FastFuture
 import cats.data.Xor
-import im.actor.api.rpc.CommonRpcErrors.IntenalError
+import im.actor.api.rpc.CommonRpcErrors.InternalError
 import im.actor.api.rpc.FileRpcErrors.UnsupportedSignatureAlgorithm
 import im.actor.api.rpc._
 import im.actor.api.rpc.files._

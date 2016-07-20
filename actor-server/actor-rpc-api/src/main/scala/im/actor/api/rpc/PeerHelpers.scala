@@ -7,7 +7,7 @@ import im.actor.api.rpc.CommonRpcErrors.InvalidAccessHash
 import im.actor.api.rpc.peers._
 import im.actor.server.acl.ACLUtils._
 import im.actor.server.db.DbExtension
-import im.actor.server.group.GroupErrors.GroupNotFound
+import im.actor.server.group.GroupErrors.{ GroupAlreadyDeleted, GroupNotFound }
 import im.actor.server.user.UserErrors.UserNotFound
 import slick.dbio.DBIO
 
@@ -83,8 +83,9 @@ object PeerHelpers {
     }
 
   private def handleNotFound: PartialFunction[Throwable, RpcError] = {
-    case _: UserNotFound  ⇒ CommonRpcErrors.UserNotFound
-    case _: GroupNotFound ⇒ CommonRpcErrors.GroupNotFound
-    case e                ⇒ throw e
+    case _: UserNotFound        ⇒ CommonRpcErrors.UserNotFound
+    case _: GroupNotFound       ⇒ CommonRpcErrors.GroupNotFound
+    case _: GroupAlreadyDeleted ⇒ CommonRpcErrors.GroupDeleted
+    case e                      ⇒ throw e
   }
 }

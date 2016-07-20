@@ -10,6 +10,7 @@ import im.actor.api.rpc.messaging.{ ApiServiceMessage, UpdateMessage }
 import im.actor.concurrent.FutureExt
 import im.actor.server.acl.ACLUtils
 import im.actor.server.group.GroupCommands.{ Invite, Join, Kick, Leave }
+import im.actor.server.group.GroupErrors.CantLeaveGroup
 import im.actor.server.group.GroupEvents.{ UserInvited, UserJoined, UserKicked, UserLeft }
 import im.actor.server.persist.{ GroupInviteTokenRepo, GroupUserRepo }
 import im.actor.server.sequence.{ Optimization, SeqState, SeqStateDate }
@@ -336,6 +337,8 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
   protected def leave(cmd: Leave): Unit = {
     if (state.nonMember(cmd.userId)) {
       sender() ! notMember
+    } else if (!state.permissions.canLeave(cmd.userId)) {
+      sender() ! Status.Failure(CantLeaveGroup)
     } else {
       persist(UserLeft(Instant.now, cmd.userId)) { evt ⇒
         // no commit here. it will be after service message sent
@@ -344,27 +347,31 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
 
         val updateObsolete = UpdateGroupUserLeaveObsolete(groupId, cmd.userId, dateMillis, cmd.randomId)
 
-        // TODO: merge, they are almost identical
-        val leftUserUpdatesNew =
-          if (state.groupType.isChannel) List(
-            UpdateGroupCanViewMembersChanged(groupId, canViewMembers = false),
+        val leftUserUpdatesNew: Vector[Update] = {
+          val commonUpdates = Vector(
+            UpdateGroupCanSendMessagesChanged(groupId, canSendMessages = false),
             UpdateGroupCanEditInfoChanged(groupId, canEditGroup = false),
             UpdateGroupCanEditUsernameChanged(groupId, canEditUsername = false),
             UpdateGroupCanEditAdminsChanged(groupId, canAssignAdmins = false),
             UpdateGroupCanViewAdminsChanged(groupId, canViewAdmins = false),
             UpdateGroupCanEditAdminSettingsChanged(groupId, canEditAdminSettings = false),
-            UpdateGroupCanInviteMembersChanged(groupId, canInviteMembers = false)
+            UpdateGroupCanInviteViaLink(groupId, canInviteViaLink = false),
+            UpdateGroupCanLeaveChanged(groupId, canLeaveChanged = false),
+            UpdateGroupCanDeleteChanged(groupId, canDeleteChanged = false)
           )
-          else List(
-            UpdateGroupCanEditInfoChanged(groupId, canEditGroup = false),
-            UpdateGroupCanEditUsernameChanged(groupId, canEditUsername = false),
-            UpdateGroupCanEditAdminsChanged(groupId, canAssignAdmins = false),
-            UpdateGroupCanViewAdminsChanged(groupId, canViewAdmins = false),
-            UpdateGroupCanEditAdminSettingsChanged(groupId, canEditAdminSettings = false),
-            UpdateGroupCanViewMembersChanged(groupId, canViewMembers = false),
-            UpdateGroupMembersUpdated(groupId, members = Vector.empty),
-            UpdateGroupCanInviteMembersChanged(groupId, canInviteMembers = false)
-          )
+
+          if (state.groupType.isChannel) {
+            (UpdateGroupCanViewMembersChanged(groupId, canViewMembers = false) +:
+              commonUpdates) :+
+              UpdateGroupCanInviteMembersChanged(groupId, canInviteMembers = false)
+          } else {
+            commonUpdates ++ Vector(
+              UpdateGroupCanViewMembersChanged(groupId, canViewMembers = false),
+              UpdateGroupMembersUpdated(groupId, members = Vector.empty),
+              UpdateGroupCanInviteMembersChanged(groupId, canInviteMembers = false)
+            )
+          }
+        }
 
         val membersUpdateNew =
           if (state.groupType.isChannel) { // if channel, or group is big enough
@@ -485,29 +492,30 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
 
         val updateObsolete = UpdateGroupUserKickObsolete(groupId, cmd.kickedUserId, cmd.kickerUserId, dateMillis, cmd.randomId)
 
-        // TODO: merge, they are almost identical
-        val kickedUserUpdatesNew: List[Update] =
-          if (state.groupType.isChannel) List(
+        val kickedUserUpdatesNew: Vector[Update] = {
+          val commonUpdates = Vector(
             UpdateGroupCanViewMembersChanged(groupId, canViewMembers = false),
+            UpdateGroupCanSendMessagesChanged(groupId, canSendMessages = false),
             UpdateGroupCanEditInfoChanged(groupId, canEditGroup = false),
             UpdateGroupCanEditUsernameChanged(groupId, canEditUsername = false),
             UpdateGroupCanEditAdminsChanged(groupId, canAssignAdmins = false),
             UpdateGroupCanViewAdminsChanged(groupId, canViewAdmins = false),
             UpdateGroupCanEditAdminSettingsChanged(groupId, canEditAdminSettings = false),
             UpdateGroupCanInviteMembersChanged(groupId, canInviteMembers = false),
-            UpdateGroupMemberChanged(groupId, isMember = false)
+            UpdateGroupCanInviteViaLink(groupId, canInviteViaLink = false),
+            UpdateGroupCanLeaveChanged(groupId, canLeaveChanged = false),
+            UpdateGroupCanDeleteChanged(groupId, canDeleteChanged = false)
           )
-          else List(
-            UpdateGroupCanViewMembersChanged(groupId, canViewMembers = false),
-            UpdateGroupCanEditInfoChanged(groupId, canEditGroup = false),
-            UpdateGroupCanEditUsernameChanged(groupId, canEditUsername = false),
-            UpdateGroupCanEditAdminsChanged(groupId, canAssignAdmins = false),
-            UpdateGroupCanViewAdminsChanged(groupId, canViewAdmins = false),
-            UpdateGroupCanEditAdminSettingsChanged(groupId, canEditAdminSettings = false),
-            UpdateGroupCanInviteMembersChanged(groupId, canInviteMembers = false),
-            UpdateGroupMembersUpdated(groupId, members = Vector.empty),
-            UpdateGroupMemberChanged(groupId, isMember = false)
-          )
+
+          if (state.groupType.isChannel) {
+            commonUpdates :+ UpdateGroupMemberChanged(groupId, isMember = false)
+          } else {
+            commonUpdates ++ Vector(
+              UpdateGroupMembersUpdated(groupId, members = Vector.empty),
+              UpdateGroupMemberChanged(groupId, isMember = false)
+            )
+          }
+        }
 
         val membersUpdateNew: Update =
           if (newState.groupType.isChannel) { // if channel, or group is big enough
@@ -618,7 +626,6 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
 
   // Updates that will be sent to user, when he enters group.
   // Helps clients that have this group to refresh it's data.
-  // TODO: review when channels will be added
   private def refreshGroupUpdates(newState: GroupState, userId: Int): List[Update] = List(
     UpdateGroupMemberChanged(groupId, isMember = true),
     UpdateGroupAboutChanged(groupId, newState.about),
@@ -626,8 +633,17 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
     UpdateGroupTopicChanged(groupId, newState.topic),
     UpdateGroupTitleChanged(groupId, newState.title),
     UpdateGroupOwnerChanged(groupId, newState.ownerUserId),
-    UpdateGroupCanViewMembersChanged(groupId, canViewMembers = newState.permissions.canViewMembers(userId)),
-    UpdateGroupCanInviteMembersChanged(groupId, canInviteMembers = true) // TODO: figure out right value
+    UpdateGroupCanSendMessagesChanged(groupId, newState.permissions.canSendMessage(userId)),
+    UpdateGroupCanViewMembersChanged(groupId, newState.permissions.canViewMembers(userId)),
+    UpdateGroupCanInviteMembersChanged(groupId, newState.permissions.canInvitePeople(userId)),
+    UpdateGroupCanEditInfoChanged(groupId, newState.permissions.canEditInfo(userId)),
+    UpdateGroupCanEditUsernameChanged(groupId, newState.permissions.canEditShortName(userId)),
+    UpdateGroupCanEditAdminsChanged(groupId, newState.permissions.canEditAdmins(userId)),
+    UpdateGroupCanViewAdminsChanged(groupId, newState.permissions.canViewAdmins(userId)),
+    UpdateGroupCanInviteViaLink(groupId, newState.permissions.canInviteViaLink(userId)),
+    UpdateGroupCanLeaveChanged(groupId, newState.permissions.canLeave(userId)),
+    UpdateGroupCanDeleteChanged(groupId, newState.permissions.canDelete(userId)),
+    UpdateGroupCanEditAdminSettingsChanged(groupId, newState.permissions.canEditAdminSettings(userId))
   //    UpdateGroupExtChanged(groupId, newState.extension) //TODO: figure out and fix
   //          if(bigGroup) UpdateGroupMembersCountChanged(groupId, newState.extension)
   )

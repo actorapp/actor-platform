@@ -46,6 +46,7 @@ trait HistoryHandlers {
     }
   }
 
+  // FIXME: handle clear chat for groups with shared history
   override def doHandleClearChat(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
     authorized(clientData) { implicit client ⇒
       val update = UpdateChatClear(peer.asPeer)

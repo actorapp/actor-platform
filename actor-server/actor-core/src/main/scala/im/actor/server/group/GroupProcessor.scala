@@ -50,6 +50,7 @@ object GroupProcessor {
       20023 → classOf[GroupCommands.DismissUserAdmin],
       20024 → classOf[GroupCommands.UpdateAdminSettings],
       20025 → classOf[GroupCommands.MakeHistoryShared],
+      20026 → classOf[GroupCommands.DeleteGroup],
 
       21001 → classOf[GroupQueries.GetIntegrationToken],
       21002 → classOf[GroupQueries.GetIntegrationTokenResponse],
@@ -90,7 +91,8 @@ object GroupProcessor {
       22018 → classOf[GroupEvents.ShortNameUpdated],
       22019 → classOf[GroupEvents.AdminSettingsUpdated],
       22020 → classOf[GroupEvents.AdminStatusChanged],
-      22021 → classOf[GroupEvents.HistoryBecameShared]
+      22021 → classOf[GroupEvents.HistoryBecameShared],
+      22022 → classOf[GroupEvents.GroupDeleted]
     )
 
   def persistenceIdFor(groupId: Int): String = s"Group-${groupId}"
@@ -125,6 +127,7 @@ private[group] final class GroupProcessor
     case c: Create if state.isNotCreated       ⇒ create(c)
     case _: Create                             ⇒ sender() ! Status.Failure(GroupIdAlreadyExists(groupId))
     case _: GroupCommand if state.isNotCreated ⇒ sender() ! Status.Failure(GroupNotFound(groupId))
+    case _: GroupCommand if state.isDeleted    ⇒ sender() ! Status.Failure(GroupAlreadyDeleted(groupId))
 
     // members actions
     case i: Invite                             ⇒ invite(i)
@@ -146,15 +149,15 @@ private[group] final class GroupProcessor
     case t: TransferOwnership                  ⇒ transferOwnership(t)
     case s: UpdateAdminSettings                ⇒ updateAdminSettings(s)
     case m: MakeHistoryShared                  ⇒ makeHistoryShared(m)
-
-    // termination actions
-    case StopProcessor                         ⇒ context stop self
-    case ReceiveTimeout                        ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopProcessor)
+    case d: DeleteGroup                        ⇒ deleteGroup(d)
 
     // dialogs envelopes coming through group.
     case de: DialogEnvelope ⇒
       groupPeerActor forward de.getAllFields.values.head
 
+    // actor's lifecycle
+    case StopProcessor  ⇒ context stop self
+    case ReceiveTimeout ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopProcessor)
   }
 
   // TODO: add backoff
@@ -165,6 +168,7 @@ private[group] final class GroupProcessor
 
   protected def handleQuery: PartialFunction[Any, Future[Any]] = {
     case _: GroupQuery if state.isNotCreated      ⇒ FastFuture.failed(GroupNotFound(groupId))
+    case _: GroupQuery if state.isDeleted         ⇒ FastFuture.failed(GroupAlreadyDeleted(groupId))
     case GetAccessHash()                          ⇒ getAccessHash
     case GetTitle()                               ⇒ getTitle
     case GetIntegrationToken(optClient)           ⇒ getIntegrationToken(optClient)
