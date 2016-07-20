@@ -46,28 +46,30 @@ trait HistoryHandlers {
     }
   }
 
-  // FIXME: handle clear chat for groups with shared history
   override def doHandleClearChat(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
-    authorized(clientData) { implicit client ⇒
-      val update = UpdateChatClear(peer.asPeer)
+    authorized(clientData) { client ⇒
+      val canClearChat = peer.`type` match {
+        case ApiPeerType.Private | ApiPeerType.EncryptedPrivate ⇒
+          FastFuture.successful(true)
+        case ApiPeerType.Group ⇒
+          groupExt.isHistoryShared(peer.id) map (!_)
+      }
 
-      val action = (for {
-        _ ← fromDBIOBoolean(CommonRpcErrors.forbidden("Clearing of public chats is forbidden")) {
-          if (peer.`type` == ApiPeerType.Private) {
-            DBIO.successful(true)
-          } else {
-            DBIO.from(groupExt.isHistoryShared(peer.id)) flatMap (isHistoryShared ⇒ DBIO.successful(!isHistoryShared))
-          }
+      for {
+        canDelete ← canClearChat
+        SeqState(seq, state) ← if (canDelete) {
+          for {
+            _ ← db.run(HistoryMessageRepo.deleteAll(client.userId, peer.asModel))
+            seqState ← seqUpdExt.deliverClientUpdate(
+              client.userId,
+              client.authId,
+              update = UpdateChatClear(peer.asPeer)
+            )
+          } yield seqState
+        } else {
+          FastFuture.successful(Error(CommonRpcErrors.forbidden("Can't clear chat with shared history")))
         }
-        _ ← fromDBIO(HistoryMessageRepo.deleteAll(client.userId, peer.asModel))
-        seqState ← fromFuture(seqUpdExt.deliverClientUpdate(
-          client.userId,
-          client.authId,
-          update,
-          pushRules = seqUpdExt.pushRules(isFat = false, None)
-        ))
-      } yield ResponseSeq(seqState.seq, seqState.state.toByteArray)).value
-      db.run(action)
+      } yield Ok(ResponseSeq(seq, state.toByteArray))
     }
 
   override def doHandleDeleteChat(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
