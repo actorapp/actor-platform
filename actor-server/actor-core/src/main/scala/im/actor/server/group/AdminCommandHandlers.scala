@@ -367,7 +367,8 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
           if (newState.groupType.isChannel)
             UpdateGroupMembersCountChanged(groupId, membersCount = 0)
           else
-            UpdateGroupMembersUpdated(groupId, members = Vector.empty)
+            UpdateGroupMembersUpdated(groupId, members = Vector.empty),
+          UpdateGroupDeleted(groupId)
         )
 
         //TODO: remove deprecated. GroupInviteTokenRepo don't have replacement yet.

@@ -34,6 +34,41 @@ final class GlobalNamesStorageKeyValueStorage(implicit system: ActorSystem) {
       case GlobalNameOwner(OwnerType.User, userId) ⇒ userId
     })
 
+  /**
+   * Search groups(id -> global name) by global name prefix
+   * Looks only in GlobalNamesStorage
+   */
+  def groupIdsByPrefix(namePrefix: String): Future[IndexedSeq[(Int, String)]] = {
+    conn.run(GlobalNamesStorage.getByPrefix(namePrefix)) map { searchResults ⇒
+      searchResults flatMap {
+        case (fullName, bytes) ⇒
+          Some(GlobalNameOwner.parseFrom(bytes)) filter (_.ownerType.isGroup) map (o ⇒ o.ownerId → fullName)
+      }
+    }
+  }
+
+  /**
+   * Search users(id -> global name) by global name prefix
+   * Looks in both GlobalNamesStorage and UserRepo(compatibility mode)
+   */
+  def userIdsByPrefix(namePrefix: String): Future[IndexedSeq[(Int, String)]] = {
+    val kvSearch = conn.run(GlobalNamesStorage.getByPrefix(namePrefix)) map { searchResults ⇒
+      searchResults flatMap {
+        case (fullName, bytes) ⇒
+          Some(GlobalNameOwner.parseFrom(bytes)) filter (_.ownerType.isUser) map (o ⇒ o.ownerId → fullName)
+      }
+    }
+    val compatSearch = db.run(UserRepo.findByNicknamePrefix(namePrefix)) map { users ⇒
+      users flatMap { user ⇒
+        user.nickname map (user.id → _)
+      }
+    }
+    for {
+      kv ← kvSearch
+      compat ← compatSearch
+    } yield kv ++ compat
+  }
+
   def getGroupId(name: String): Future[Option[Int]] =
     getOwner(name) map (_.collect {
       case GlobalNameOwner(OwnerType.Group, groupId) ⇒ groupId

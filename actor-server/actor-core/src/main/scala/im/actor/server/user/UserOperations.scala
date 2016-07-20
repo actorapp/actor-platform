@@ -11,6 +11,7 @@ import im.actor.server.auth.DeviceInfo
 import im.actor.server.bots.BotCommand
 import im.actor.server.db.DbExtension
 import im.actor.server.file.Avatar
+import im.actor.server.names.GlobalNamesStorageKeyValueStorage
 import im.actor.server.persist.UserRepo
 import im.actor.server.pubsub.PubSubExtension
 import im.actor.server.sequence.{ SeqState, SeqUpdatesExtension }
@@ -144,6 +145,7 @@ private[user] sealed trait Queries {
   implicit val system: ActorSystem
   import system.dispatcher
   val log: LoggingAdapter
+  private lazy val globalNamesStorage = new GlobalNamesStorageKeyValueStorage
 
   implicit val timeout: Timeout
 
@@ -192,7 +194,11 @@ private[user] sealed trait Queries {
   def isAdmin(userId: Int): Future[Boolean] =
     (viewRegion.ref ? IsAdmin(userId)).mapTo[IsAdminResponse].map(_.isAdmin)
 
-  def findUserIds(query: String): Future[Seq[Int]] = DbExtension(system).db.run(UserRepo.findIds(query))
+  def findUserIds(query: String): Future[Seq[Int]] =
+    for {
+      byPhoneAndEmail ← DbExtension(system).db.run(UserRepo.findIds(query))
+      byNickname ← globalNamesStorage.getUserId(query)
+    } yield byPhoneAndEmail ++ byNickname
 }
 
 private[user] sealed trait AuthCommands {

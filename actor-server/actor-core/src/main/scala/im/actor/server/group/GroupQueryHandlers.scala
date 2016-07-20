@@ -108,7 +108,8 @@ trait GroupQueryHandlers {
             case Channel                   ⇒ ApiGroupType.CHANNEL
             case General | Unrecognized(_) ⇒ ApiGroupType.GROUP
           }),
-          canSendMessage = Some(state.permissions.canSendMessage(clientUserId))
+          canSendMessage = Some(state.permissions.canSendMessage(clientUserId)),
+          isDeleted = Some(state.isDeleted)
         )
       )
     }
