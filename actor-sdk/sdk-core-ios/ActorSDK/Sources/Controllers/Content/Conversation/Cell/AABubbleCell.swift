@@ -365,60 +365,60 @@ public class AABubbleCell: UICollectionViewCell {
         case BubbleType.TextIn:
             if (!isFullSize!) {
                 bubbleShadow.image = AABubbleCell.cachedInTextCompactBgShadow
-                bubbleShadow.highlightedImage = AABubbleCell.cachedInTextCompactBgShadow
+                // bubbleShadow.highlightedImage = AABubbleCell.cachedInTextCompactBgShadow
                 bubble.image = AABubbleCell.cachedInTextCompactBg
                 bubbleBorder.image = AABubbleCell.cachedInTextCompactBgBorder
-                bubble.highlightedImage = AABubbleCell.cachedInTextCompactSelectedBg
-                bubbleBorder.highlightedImage = AABubbleCell.cachedInTextCompactBgBorder
+                // bubble.highlightedImage = AABubbleCell.cachedInTextCompactSelectedBg
+                // bubbleBorder.highlightedImage = AABubbleCell.cachedInTextCompactBgBorder
             } else {
                 bubbleShadow.image = AABubbleCell.cachedInTextBgShadow
-                bubbleShadow.highlightedImage = AABubbleCell.cachedInTextBgShadow
+                // bubbleShadow.highlightedImage = AABubbleCell.cachedInTextBgShadow
                 bubble.image = AABubbleCell.cachedInTextBg
                 bubbleBorder.image = AABubbleCell.cachedInTextBgBorder
-                bubble.highlightedImage = AABubbleCell.cachedInTextBg
-                bubbleBorder.highlightedImage = AABubbleCell.cachedInTextBgBorder
+                // bubble.highlightedImage = AABubbleCell.cachedInTextBg
+                // bubbleBorder.highlightedImage = AABubbleCell.cachedInTextBgBorder
             }
             break
         case BubbleType.TextOut:
             if (!isFullSize!) {
                 bubbleShadow.image = AABubbleCell.cachedOutTextCompactBgShadow
-                bubbleShadow.highlightedImage = AABubbleCell.cachedOutTextCompactBgShadow
+                // bubbleShadow.highlightedImage = AABubbleCell.cachedOutTextCompactBgShadow
                 bubble.image =  AABubbleCell.cachedOutTextCompactBg
                 bubbleBorder.image =  AABubbleCell.cachedOutTextCompactBgBorder
-                bubble.highlightedImage =  AABubbleCell.cachedOutTextCompactSelectedBg
-                bubbleBorder.highlightedImage =  AABubbleCell.cachedOutTextCompactBgBorder
+                // bubble.highlightedImage =  AABubbleCell.cachedOutTextCompactSelectedBg
+                // bubbleBorder.highlightedImage =  AABubbleCell.cachedOutTextCompactBgBorder
             } else {
                 bubbleShadow.image = AABubbleCell.cachedOutTextBgShadow
-                bubbleShadow.highlightedImage = AABubbleCell.cachedOutTextBgShadow
+                // bubbleShadow.highlightedImage = AABubbleCell.cachedOutTextBgShadow
                 bubble.image =  AABubbleCell.cachedOutTextBg
                 bubbleBorder.image =  AABubbleCell.cachedOutTextBgBorder
-                bubble.highlightedImage =  AABubbleCell.cachedOutTextBg
-                bubbleBorder.highlightedImage =  AABubbleCell.cachedOutTextBgBorder
+                // bubble.highlightedImage =  AABubbleCell.cachedOutTextBg
+                // bubbleBorder.highlightedImage =  AABubbleCell.cachedOutTextBgBorder
             }
             break
         case BubbleType.MediaIn:
             bubble.image =  AABubbleCell.cachedMediaBg
             bubbleBorder.image =  AABubbleCell.cachedMediaBgBorder
-            bubble.highlightedImage =  AABubbleCell.cachedMediaBg
-            bubbleBorder.highlightedImage =  AABubbleCell.cachedMediaBgBorder
+            // bubble.highlightedImage =  AABubbleCell.cachedMediaBg
+            // bubbleBorder.highlightedImage =  AABubbleCell.cachedMediaBgBorder
             break
         case BubbleType.MediaOut:
             bubble.image =  AABubbleCell.cachedMediaBg
             bubbleBorder.image =  AABubbleCell.cachedMediaBgBorder
-            bubble.highlightedImage =  AABubbleCell.cachedMediaBg
-            bubbleBorder.highlightedImage =  AABubbleCell.cachedMediaBgBorder
+            // bubble.highlightedImage =  AABubbleCell.cachedMediaBg
+            // bubbleBorder.highlightedImage =  AABubbleCell.cachedMediaBgBorder
             break
         case BubbleType.Service:
             bubble.image = AABubbleCell.cachedServiceBg
             bubbleBorder.image = nil
-            bubble.highlightedImage = AABubbleCell.cachedServiceBg
-            bubbleBorder.highlightedImage = nil
+            // bubble.highlightedImage = AABubbleCell.cachedServiceBg
+            // bubbleBorder.highlightedImage = nil
             break
         case BubbleType.Sticker:
             bubble.image = nil;
             bubbleBorder.image = nil
-            bubble.highlightedImage = nil;
-            bubbleBorder.highlightedImage = nil
+            // bubble.highlightedImage = nil;
+            // bubbleBorder.highlightedImage = nil
             break
         }
     }

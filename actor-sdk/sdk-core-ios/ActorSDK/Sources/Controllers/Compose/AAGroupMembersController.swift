@@ -81,18 +81,18 @@ public class GroupMembersController: AAContactsListContentController, AAContacts
             res.replaceIntAtIndex(UInt(i), withInt: selected[i].contact.uid)
         }
         
-        executeSafeOnlySuccess(Actor.createGroupCommandWithTitle(groupTitle, withAvatar: nil, withUids: res)!) { (val) -> Void in
-            let gid = (val as! JavaLangInteger).intValue
-            if self.groupImage != nil {
-                Actor.changeGroupAvatar(gid, image: self.groupImage!)
-            }
-            if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(ACPeer.groupWithInt(gid)) {
-                self.navigateDetail(customController)
-            } else {
-                self.navigateDetail(ConversationViewController(peer: ACPeer.groupWithInt(gid)))
-            }
-            self.dismiss()
-        }
+//        executeSafeOnlySuccess(Actor.createGroupWithTitle(groupTitle, withAvatar: nil, withUids: res)) { (val) -> Void in
+//            let gid = (val as! JavaLangInteger).intValue
+//            if self.groupImage != nil {
+//                Actor.changeGroupAvatar(gid, image: self.groupImage!)
+//            }
+//            if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(ACPeer.groupWithInt(gid)) {
+//                self.navigateDetail(customController)
+//            } else {
+//                self.navigateDetail(ConversationViewController(peer: ACPeer.groupWithInt(gid)))
+//            }
+//            self.dismiss()
+//        }
     }
     
     // Handling token input updates

@@ -41,7 +41,8 @@ public class ConversationViewController:
     private let backgroundView = UIImageView()
     private var audioButton: UIButton = UIButton()
     private var voiceRecorderView : AAVoiceRecorderView!
-    
+    private let inputOverlay = UIView()
+    private let inputOverlayLabel = UILabel()
     
     //
     // Stickers
@@ -125,6 +126,17 @@ public class ConversationViewController:
         self.textView.placeholder = AALocalized("ChatPlaceholder")
         self.textView.keyboardAppearance = ActorSDK.sharedActor().style.isDarkApp ? .Dark : .Light
         
+        
+        //
+        // Overlay
+        //
+        self.inputOverlay.addSubview(inputOverlayLabel)
+        self.inputOverlayLabel.textAlignment = .Center
+        self.inputOverlayLabel.font = UIFont.systemFontOfSize(18)
+        self.inputOverlayLabel.textColor = ActorSDK.sharedActor().style.vcTintColor
+        self.inputOverlay.viewDidTap = {
+            self.onOverlayTap()
+        }
         
         //
         // Add stickers button
@@ -249,10 +261,14 @@ public class ConversationViewController:
     override public func viewDidLoad() {
         super.viewDidLoad()
         
-        self.voiceRecorderView = AAVoiceRecorderView(frame: CGRectMake(0,0,self.view.frame.size.width-30,44))
+        self.voiceRecorderView = AAVoiceRecorderView(frame: CGRectMake(0, 0, view.width - 30, 44))
         self.voiceRecorderView.hidden = true
         self.voiceRecorderView.binedController = self
         self.textInputbar.addSubview(self.voiceRecorderView)
+        
+        self.inputOverlay.backgroundColor = UIColor.whiteColor()
+        self.inputOverlay.hidden = false
+        self.textInputbar.addSubview(self.inputOverlay)
         
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
         
@@ -271,6 +287,9 @@ public class ConversationViewController:
         super.viewDidLayoutSubviews()
         
         self.stickersButton.frame = CGRectMake(self.view.frame.size.width-67, 12, 20, 20)
+        self.voiceRecorderView.frame = CGRectMake(0, 0, view.width - 30, 44)
+        self.inputOverlay.frame = CGRectMake(0, 0, view.width, 44)
+        self.inputOverlayLabel.frame = CGRectMake(0, 0, view.width, 44)
     }
     
     ////////////////////////////////////////////////////////////
@@ -327,14 +346,11 @@ public class ConversationViewController:
             binder.bind(group.getAvatarModel(), closure: { (value: ACAvatar?) -> () in
                 self.avatarView.bind(group.getNameModel().get(), id: Int(group.getId()), avatar: value)
             })
-            binder.bind(Actor.getGroupTypingWithGid(group.getId()), valueModel2: group.getMembersModel(), valueModel3: group.getPresenceModel(), closure: { (typingValue:IOSIntArray?, members:JavaUtilHashSet?, onlineCount:JavaLangInteger?) -> () in
+            binder.bind(Actor.getGroupTypingWithGid(group.getId()), valueModel2: group.membersCount, valueModel3: group.getPresenceModel(), closure: { (typingValue:IOSIntArray?, membersCount: JavaLangInteger?, onlineCount:JavaLangInteger?) -> () in
                 if (!group.isMemberModel().get().booleanValue()) {
                     self.subtitleView.text = AALocalized("ChatNoGroupAccess")
                     self.subtitleView.textColor = self.appStyle.navigationSubtitleColor
-                    self.setTextInputbarHidden(true, animated: true)
                     return
-                } else {
-                    self.setTextInputbarHidden(false, animated: false)
                 }
                 
                 if (typingValue != nil && typingValue!.length() > 0) {
@@ -347,7 +363,7 @@ public class ConversationViewController:
                         self.subtitleView.text = Actor.getFormatter().formatTypingWithCount(typingValue!.length());
                     }
                 } else {
-                    var membersString = Actor.getFormatter().formatGroupMembers(members!.size())
+                    var membersString = Actor.getFormatter().formatGroupMembers(membersCount!.intValue())
                     self.subtitleView.textColor = self.appStyle.navigationSubtitleColor
                     if (onlineCount == nil || onlineCount!.integerValue == 0) {
                         self.subtitleView.text = membersString;
@@ -360,6 +376,27 @@ public class ConversationViewController:
                     }
                 }
             })
+            
+            binder.bind(group.isMember, valueModel2: group.isCanWriteMessage) { (isMember: JavaLangBoolean!, canWriteMessage: JavaLangBoolean!) in
+                if canWriteMessage.booleanValue() {
+                    self.stickersButton.hidden = false
+                    self.inputOverlay.hidden = true
+                } else {
+                    if !isMember.booleanValue() {
+                        self.inputOverlayLabel.text = "Not a member"
+                    } else {
+                        if Actor.isNotificationsEnabledWithPeer(self.peer) {
+                            self.inputOverlayLabel.text = "Mute"
+                        } else {
+                            self.inputOverlayLabel.text = "Unmute"
+                        }
+                    }
+                    self.stickersButton.hidden = true
+                    self.stopAudioRecording()
+                    self.textInputbar.textView.text = ""
+                    self.inputOverlay.hidden = false
+                }
+            }
         }
         
         Actor.onConversationOpenWithPeer(peer)
@@ -372,6 +409,25 @@ public class ConversationViewController:
         
         textView.text = Actor.loadDraftWithPeer(peer)
         
+    }
+    
+    public func onOverlayTap() {
+        if peer.isGroup {
+            let group = Actor.getGroupWithGid(peer.peerId)
+            if !group.isMember.get().booleanValue() {
+                // DO NOTHING
+            } else if !group.isCanWriteMessage.get().booleanValue() {
+                if Actor.isNotificationsEnabledWithPeer(peer) {
+                    Actor.changeNotificationsEnabledWithPeer(peer, withValue: false)
+                    inputOverlayLabel.text = "Unmute"
+                } else {
+                    Actor.changeNotificationsEnabledWithPeer(peer, withValue: true)
+                    inputOverlayLabel.text = "Mute"
+                }
+            }
+        } else if peer.isPrivate {
+            
+        }
     }
     
     override public func viewWillLayoutSubviews() {

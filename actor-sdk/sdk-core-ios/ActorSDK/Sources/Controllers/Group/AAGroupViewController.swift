@@ -105,9 +105,9 @@ public class AAGroupViewController: AAContentTableController {
                                 return
                             }
                             
-                            c.executeSafeOnlySuccess(Actor.editGroupTitleCommandWithGid(jint(self.gid), withTitle: t)!, successBlock: { (val) -> Void in
-                                c.dismiss()
-                            })
+//                            c.executeSafeOnlySuccess(Actor.editGroupTitleCommandWithGid(jint(self.gid), withTitle: t)!, successBlock: { (val) -> Void in
+//                                c.dismiss()
+//                            })
                         }
                     }
                     
@@ -274,42 +274,42 @@ public class AAGroupViewController: AAContentTableController {
                             }
                         })
                         
-                        // Detect if we are admin
-                        let members: [ACGroupMember] = self.group.members.get().toArray().toSwiftArray()
-                        var isAdmin = self.group.creatorId == Actor.myUid()
-                        if !isAdmin {
-                            for m in members {
-                                if m.uid == Actor.myUid() {
-                                    isAdmin = m.isAdministrator
-                                }
-                            }
-                        }
-                        
-                        // Can mark as admin
-                        let canMarkAdmin = isAdmin && !d.isAdministrator
-                        
-                        if canMarkAdmin {
-                            a.action("GroupMemberMakeAdmin") { () -> () in
-                                
-                                self.confirmDestructive(AALocalized("GroupMemberMakeMessage").replace("{name}", dest: name), action: AALocalized("GroupMemberMakeAction")) {
-                                    
-                                    self.executeSafe(Actor.makeAdminCommandWithGid(jint(self.gid), withUid: jint(user.getId()))!)
-                                }
-                            }
-                        }
-                        
+//                        // Detect if we are admin
+//                        let members: [ACGroupMember] = self.group.members.get().toArray().toSwiftArray()
+//                        var isAdmin = self.group.creatorId == Actor.myUid()
+//                        if !isAdmin {
+//                            for m in members {
+//                                if m.uid == Actor.myUid() {
+//                                    isAdmin = m.isAdministrator
+//                                }
+//                            }
+//                        }
+//                        
+//                        // Can mark as admin
+//                        let canMarkAdmin = isAdmin && !d.isAdministrator
+//                        
+//                        if canMarkAdmin {
+//                            a.action("GroupMemberMakeAdmin") { () -> () in
+//                                
+//                                self.confirmDestructive(AALocalized("GroupMemberMakeMessage").replace("{name}", dest: name), action: AALocalized("GroupMemberMakeAction")) {
+//                                    
+//                                    self.executeSafe(Actor.makeAdminCommandWithGid(jint(self.gid), withUid: jint(user.getId()))!)
+//                                }
+//                            }
+//                        }
+                    
                         // Can kick user
-                        let canKick = isAdmin || d.inviterUid == Actor.myUid()
-                        
-                        if canKick {
-                            a.destructive("GroupMemberKick") { () -> () in
-                                self.confirmDestructive(AALocalized("GroupMemberKickMessage")
-                                    .replace("{name}", dest: name), action: AALocalized("GroupMemberKickAction")) {
-                                        
-                                        self.executeSafe(Actor.kickMemberCommandWithGid(jint(self.gid), withUid: user.getId())!)
-                                }
-                            }
-                        }
+//                        let canKick = isAdmin || d.inviterUid == Actor.myUid()
+//                        
+//                        if canKick {
+//                            a.destructive("GroupMemberKick") { () -> () in
+//                                self.confirmDestructive(AALocalized("GroupMemberKickMessage")
+//                                    .replace("{name}", dest: name), action: AALocalized("GroupMemberKickAction")) {
+//                                        
+//                                        self.executeSafe(Actor.kickMemberCommandWithGid(jint(self.gid), withUid: user.getId())!)
+//                                }
+//                            }
+//                        }
                     }
                     
                     return true
@@ -325,7 +325,7 @@ public class AAGroupViewController: AAContentTableController {
                 r.selectAction = { () -> Bool in
                     
                     self.confirmDestructive(AALocalized("GroupLeaveConfirm"), action: AALocalized("GroupLeaveConfirmAction"), yes: { () -> () in
-                        self.executeSafe(Actor.leaveGroupCommandWithGid(jint(self.gid))!)
+                        // self.executeSafe(Actor.leaveGroupCommandWithGid(jint(self.gid))!)
                     })
                     
                     return true
