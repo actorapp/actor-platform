@@ -233,6 +233,8 @@
 		069CF4D11BCB909A00C66E12 /* CLTokenInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = 069CF4C91BCB909A00C66E12 /* CLTokenInputView.m */; };
 		069CF4D21BCB909A00C66E12 /* CLTokenView.h in Headers */ = {isa = PBXBuildFile; fileRef = 069CF4CA1BCB909A00C66E12 /* CLTokenView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		069CF4D31BCB909A00C66E12 /* CLTokenView.m in Sources */ = {isa = PBXBuildFile; fileRef = 069CF4CB1BCB909A00C66E12 /* CLTokenView.m */; };
+		06ABFE331D3FAF800031A0D6 /* GCDAsyncSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 06ABFE2F1D3FAF800031A0D6 /* GCDAsyncSocket.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		06ABFE341D3FAF800031A0D6 /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ABFE301D3FAF800031A0D6 /* GCDAsyncSocket.m */; };
 		06B489ED1C9F6EBD0054245B /* AAStickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B489EC1C9F6EBC0054245B /* AAStickerView.swift */; };
 		06C1D0771C8BC9FC00B73632 /* AAAuthNameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C1D0761C8BC9FC00B73632 /* AAAuthNameViewController.swift */; };
 		06C1D07B1C8BFE5C00B73632 /* AAAuthPhoneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C1D07A1C8BFE5C00B73632 /* AAAuthPhoneViewController.swift */; };
@@ -605,6 +607,8 @@
 		069CF4C91BCB909A00C66E12 /* CLTokenInputView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLTokenInputView.m; sourceTree = "<group>"; };
 		069CF4CA1BCB909A00C66E12 /* CLTokenView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLTokenView.h; sourceTree = "<group>"; };
 		069CF4CB1BCB909A00C66E12 /* CLTokenView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLTokenView.m; sourceTree = "<group>"; };
+		06ABFE2F1D3FAF800031A0D6 /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncSocket.h; sourceTree = "<group>"; };
+		06ABFE301D3FAF800031A0D6 /* GCDAsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncSocket.m; sourceTree = "<group>"; };
 		06B489EC1C9F6EBC0054245B /* AAStickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAStickerView.swift; sourceTree = "<group>"; };
 		06C1D0761C8BC9FC00B73632 /* AAAuthNameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthNameViewController.swift; sourceTree = "<group>"; };
 		06C1D07A1C8BFE5C00B73632 /* AAAuthPhoneViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthPhoneViewController.swift; sourceTree = "<group>"; };
@@ -1416,6 +1420,15 @@
 			path = CLTokenInputView;
 			sourceTree = "<group>";
 		};
+		06ABFE261D3FAF1A0031A0D6 /* CocoaAsyncSocket */ = {
+			isa = PBXGroup;
+			children = (
+				06ABFE2F1D3FAF800031A0D6 /* GCDAsyncSocket.h */,
+				06ABFE301D3FAF800031A0D6 /* GCDAsyncSocket.m */,
+			);
+			name = CocoaAsyncSocket;
+			sourceTree = "<group>";
+		};
 		06C1D0751C8BC55100B73632 /* Welcome */ = {
 			isa = PBXGroup;
 			children = (
@@ -1436,6 +1449,7 @@
 		06E322CB1C69392F00D66F53 /* Libs */ = {
 			isa = PBXGroup;
 			children = (
+				06ABFE261D3FAF1A0031A0D6 /* CocoaAsyncSocket */,
 				06E164921C96FF15005AFB94 /* CommonCrypto */,
 				061850A31C95CBF000C522D5 /* YYKit */,
 				15D35F0A1C20182900E3717A /* AudioRecorder */,
@@ -1813,6 +1827,7 @@
 				152AA8AA1C2989270030DEEE /* SLKTextView.h in Headers */,
 				152AA8B01C2989270030DEEE /* SLKTypingIndicatorProtocol.h in Headers */,
 				152AA8AC1C2989270030DEEE /* SLKTextView+SLKAdditions.h in Headers */,
+				06ABFE331D3FAF800031A0D6 /* GCDAsyncSocket.h in Headers */,
 				152AA8AE1C2989270030DEEE /* SLKTextViewController.h in Headers */,
 				152AA8B31C2989270030DEEE /* SLKUIConstants.h in Headers */,
 				152AA8B61C2989270030DEEE /* UIScrollView+SLKAdditions.h in Headers */,
@@ -2114,6 +2129,7 @@
 				066A51241BC4B56D000E606E /* Colors.swift in Sources */,
 				066A53171BC533DD000E606E /* AABubbles.swift in Sources */,
 				153F6B8B1C2D7BA400C0B960 /* AATapLabel.swift in Sources */,
+				06ABFE341D3FAF800031A0D6 /* GCDAsyncSocket.m in Sources */,
 				061850E71C95CBF000C522D5 /* YYTextLine.m in Sources */,
 				066A52081BC4E962000E606E /* Makefile in Sources */,
 				066A53231BC533F5000E606E /* Caches.swift in Sources */,

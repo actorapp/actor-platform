@@ -12,7 +12,7 @@ target 'ActorApp' do
 
     # Core Tools
     pod 'RegexKitLite'
-    pod 'CocoaAsyncSocket'
+    # pod 'CocoaAsyncSocket'
     pod 'zipzap'
 
     # Main UI
@@ -45,7 +45,7 @@ target 'ActorSDK' do
 
     # Core Tools
     pod 'RegexKitLite'
-    pod 'CocoaAsyncSocket'
+    # pod 'CocoaAsyncSocket'
     pod 'zipzap'
 
     # Main UI

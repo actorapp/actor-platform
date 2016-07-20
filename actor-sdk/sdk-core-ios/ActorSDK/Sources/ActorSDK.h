@@ -30,13 +30,21 @@ FOUNDATION_EXPORT const unsigned char ActorSDKVersionString[];
 #import "FMDatabaseAdditions.h"
 #import "FMDatabaseQueue.h"
 
-#import "CLTokenInputView.h"
+// GCDAsyncSocket
 
-#import "CLTokenInputView.h"
+#import "GCDAsyncSocket.h"
 
 // Ogg record
 
+#import "AAAudioRecorder.h"
+#import "AAAudioPlayer.h"
+#import "AAModernConversationAudioPlayer.h"
+
+// SLKTextViewController
+
 #import "SLKTextViewController.h"
+
+// NYTPhotos
 
 #import "NYTPhotosViewController.h"
 #import "NYTPhoto.h"
@@ -44,13 +52,10 @@ FOUNDATION_EXPORT const unsigned char ActorSDKVersionString[];
 #import "NYTPhotosViewControllerDataSource.h"
 #import "NYTPhotoCaptionViewLayoutWidthHinting.h"
 
-#import "AAAudioRecorder.h"
-#import "AAAudioPlayer.h"
-#import "AAModernConversationAudioPlayer.h"
-
 // CLTokenView
 
 #import "CLTokenView.h"
+#import "CLTokenInputView.h"
 
 // YYKit
 
