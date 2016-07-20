@@ -366,6 +366,9 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
             UpdateGroupMembersUpdated(groupId, members = Vector.empty)
         )
 
+        // TODO: add UpdateIsDeleted
+        // TODO: for old API updates as in leacve
+
         val result: Future[SeqState] = for {
           _ ← db.run(HistoryMessageRepo.deleteAll(cmd.clientUserId, apiGroupPeer.asModel))
           _ ← Future.traverse(deleteGroupMembersUpdates) { update ⇒
