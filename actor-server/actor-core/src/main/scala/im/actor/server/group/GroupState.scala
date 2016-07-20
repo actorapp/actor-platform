@@ -167,6 +167,7 @@ private[group] final case class GroupState(
 
   override def updated(e: Event): GroupState = e match {
     case evt: Created ⇒
+      val typeOfGroup = evt.typ.getOrElse(GroupType.General)
       this.copy(
         id = evt.groupId,
         createdAt = Some(evt.ts),
@@ -177,7 +178,7 @@ private[group] final case class GroupState(
         avatar = None,
         topic = None,
         shortName = None,
-        groupType = evt.typ.getOrElse(GroupType.General),
+        groupType = typeOfGroup,
         isHidden = evt.isHidden getOrElse false,
         isHistoryShared = evt.isHistoryShared getOrElse false,
         members = (
@@ -194,7 +195,7 @@ private[group] final case class GroupState(
         invitedUserIds = evt.userIds.filterNot(_ == evt.creatorUserId).toSet,
         accessHash = evt.accessHash,
         adminSettings =
-          if (groupType.isChannel) AdminSettings.ChannelsDefault
+          if (typeOfGroup.isChannel) AdminSettings.ChannelsDefault
           else AdminSettings.PlainDefault,
         bot = None,
         extensions = (evt.extensions map { //TODO: validate is it right?
