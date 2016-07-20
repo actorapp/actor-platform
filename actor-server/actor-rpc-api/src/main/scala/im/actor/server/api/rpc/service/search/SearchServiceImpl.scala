@@ -26,7 +26,7 @@ class SearchServiceImpl(implicit system: ActorSystem) extends SearchService {
   private val groupExt = GroupExtension(system)
   private val globalNamesStorage = new GlobalNamesStorageKeyValueStorage
 
-  private val EmptySearch = ResponsePeerSearch(Vector.empty, Vector.empty, Vector.empty, Vector.empty, Vector.empty)
+  private val EmptyResult = ResponsePeerSearch(Vector.empty, Vector.empty, Vector.empty, Vector.empty, Vector.empty)
 
   override def doHandlePeerSearch(
     query:         IndexedSeq[ApiSearchCondition],
@@ -42,7 +42,7 @@ class SearchServiceImpl(implicit system: ActorSystem) extends SearchService {
 
       texts.toList match {
         case text :: Nil if text.length < 3 ⇒
-          FastFuture.successful(Ok(EmptySearch))
+          FastFuture.successful(Ok(EmptyResult))
         case text :: Nil ⇒
           val tps = if (peerTypes.isEmpty)
             Set(ApiSearchPeerType.Public, ApiSearchPeerType.Contacts, ApiSearchPeerType.Groups)
@@ -109,7 +109,6 @@ class SearchServiceImpl(implicit system: ActorSystem) extends SearchService {
         for {
           groups ← searchLocalGroups(text)
         } yield groups map result
-      // global search
       case ApiSearchPeerType.Public ⇒
         val usersFull = searchGlobalUsers(text)
         val usersPrefix = searchGlobalUsersPrefix(text)
@@ -122,28 +121,12 @@ class SearchServiceImpl(implicit system: ActorSystem) extends SearchService {
     }
   }
 
-  // from contacts
-  private def result(apiUser: ApiUser): ApiPeerSearchResult =
-    ApiPeerSearchResult(
-      peer = ApiPeer(ApiPeerType.Private, apiUser.id),
-      optMatchString = None
-    )
-
-  // from local groups
-  private def result(apiGroup: ApiGroup): ApiPeerSearchResult =
-    ApiPeerSearchResult(
-      peer = ApiPeer(ApiPeerType.Group, apiGroup.id),
-      optMatchString = None
-    )
-
-  // from global peer
   private def result(peer: ApiPeer): ApiPeerSearchResult =
     ApiPeerSearchResult(
       peer = peer,
       optMatchString = None
     )
 
-  // from global peer with nickname match
   private def result(peerAndMatch: PeerAndMatchString): ApiPeerSearchResult =
     ApiPeerSearchResult(
       peer = peerAndMatch._1,
@@ -186,26 +169,27 @@ class SearchServiceImpl(implicit system: ActorSystem) extends SearchService {
     } getOrElse FastFuture.successful(Vector.empty)
   }
 
-  private def searchContacts(text: Option[String])(implicit client: AuthorizedClientData): Future[IndexedSeq[ApiUser]] = {
+  private def searchContacts(text: Option[String])(implicit client: AuthorizedClientData): Future[IndexedSeq[ApiPeer]] = {
     for {
       userIds ← db.run(UserContactRepo.findContactIdsActive(client.userId))
       users ← FutureExt.ftraverse(userIds)(userExt.getApiStruct(_, client.userId, client.authId))
     } yield filterUsers(users.toVector, text)
   }
 
-  private def filterUsers(users: IndexedSeq[ApiUser], textOpt: Option[String]): IndexedSeq[ApiUser] =
+  private def filterUsers(users: IndexedSeq[ApiUser], textOpt: Option[String]): IndexedSeq[ApiPeer] =
     textOpt match {
       case Some(text) ⇒
         val lotext = text.toLowerCase
         users filter { user ⇒
           user.name.toLowerCase.contains(lotext) ||
             user.localName.exists(_.toLowerCase.contains(lotext))
+        } map { u ⇒
+          ApiPeer(ApiPeerType.Private, u.id)
         }
-      case None ⇒ users
+      case None ⇒ users map { u ⇒ ApiPeer(ApiPeerType.Private, u.id) }
     }
 
-  // TODO: rewrite it using async
-  private def searchLocalGroups(text: Option[String])(implicit client: AuthorizedClientData): Future[IndexedSeq[ApiGroup]] = {
+  private def searchLocalGroups(text: Option[String])(implicit client: AuthorizedClientData): Future[IndexedSeq[ApiPeer]] = {
     for {
       ids ← DialogExtension(system).fetchGroupedDialogs(client.userId) map (_.filter(_.typ.isGroups).flatMap(_.dialogs.map(_.getPeer.id)))
       groups ← FutureExt.ftraverse(ids) { id ⇒
@@ -214,16 +198,18 @@ class SearchServiceImpl(implicit system: ActorSystem) extends SearchService {
     } yield filterGroups(groups.toVector, text)
   }
 
-  private def filterGroups(groups: IndexedSeq[ApiGroup], textOpt: Option[String]): IndexedSeq[ApiGroup] = {
+  private def filterGroups(groups: IndexedSeq[ApiGroup], textOpt: Option[String]): IndexedSeq[ApiPeer] = {
     textOpt match {
       case Some(text) ⇒
-        groups.view.filter { group ⇒
+        groups filter { group ⇒
           val lotext = text.toLowerCase
           group.title.toLowerCase.contains(lotext) ||
             group.about.exists(_.toLowerCase.contains(lotext)) ||
             group.theme.exists(_.toLowerCase.contains(lotext))
-        }.force
-      case None ⇒ groups
+        } map { g ⇒
+          ApiPeer(ApiPeerType.Group, g.id)
+        }
+      case None ⇒ groups map { g ⇒ ApiPeer(ApiPeerType.Group, g.id) }
     }
   }
 }
