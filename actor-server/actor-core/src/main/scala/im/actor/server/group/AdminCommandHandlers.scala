@@ -7,13 +7,14 @@ import akka.pattern.pipe
 import akka.http.scaladsl.util.FastFuture
 import im.actor.api.rpc.{ PeersImplicits, Update }
 import im.actor.api.rpc.groups._
+import im.actor.api.rpc.messaging.UpdateChatClear
 import im.actor.concurrent.FutureExt
 import im.actor.server.CommonErrors
 import im.actor.server.acl.ACLUtils
-import im.actor.server.group.GroupCommands.{ DismissUserAdmin, MakeHistoryShared, MakeUserAdmin, RevokeIntegrationToken, RevokeIntegrationTokenAck, TransferOwnership, UpdateAdminSettings, UpdateAdminSettingsAck }
+import im.actor.server.group.GroupCommands.{ DeleteGroup, DismissUserAdmin, MakeHistoryShared, MakeUserAdmin, RevokeIntegrationToken, RevokeIntegrationTokenAck, TransferOwnership, UpdateAdminSettings, UpdateAdminSettingsAck }
 import im.actor.server.group.GroupErrors.{ NotAMember, NotAdmin, UserAlreadyAdmin, UserAlreadyNotAdmin }
-import im.actor.server.group.GroupEvents.{ AdminSettingsUpdated, AdminStatusChanged, HistoryBecameShared, IntegrationTokenRevoked, OwnerChanged }
-import im.actor.server.persist.{ GroupBotRepo, GroupUserRepo }
+import im.actor.server.group.GroupEvents.{ AdminSettingsUpdated, AdminStatusChanged, GroupDeleted, HistoryBecameShared, IntegrationTokenRevoked, OwnerChanged }
+import im.actor.server.persist.{ GroupBotRepo, GroupUserRepo, HistoryMessageRepo }
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 
 import scala.concurrent.Future
@@ -225,7 +226,25 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
         val newState = commit(evt)
         val memberIds = newState.memberIds
 
+        val prevOwnerUpdates = List(
+          UpdateGroupCanLeaveChanged(groupId, canLeaveChanged = true),
+          UpdateGroupCanDeleteChanged(groupId, canDeleteChanged = false)
+        )
+
+        val newOwnerUpdates = List(
+          UpdateGroupCanLeaveChanged(groupId, canLeaveChanged = false),
+          UpdateGroupCanDeleteChanged(groupId, canDeleteChanged = true)
+        )
+
         val result: Future[SeqState] = for {
+          // push updates to previous owner
+          _ ← FutureExt.ftraverse(prevOwnerUpdates) { update ⇒
+            seqUpdExt.deliverUserUpdate(cmd.clientUserId, update)
+          }
+          // push updates to new owner
+          _ ← FutureExt.ftraverse(newOwnerUpdates) { update ⇒
+            seqUpdExt.deliverUserUpdate(cmd.newOwnerId, update)
+          }
           seqState ← seqUpdExt.broadcastClientUpdate(
             userId = cmd.clientUserId,
             authId = cmd.clientAuthId,
@@ -312,6 +331,51 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
             authId = cmd.clientAuthId,
             bcastUserIds = memberIds - cmd.clientUserId,
             update = UpdateGroupHistoryShared(groupId)
+          )
+        } yield seqState
+
+        result pipeTo sender()
+      }
+    }
+  }
+
+  protected def deleteGroup(cmd: DeleteGroup): Unit = {
+    if (!state.permissions.canDelete(cmd.clientUserId)) {
+      sender() ! noPermission
+    } else {
+      persist(GroupDeleted(Instant.now, cmd.clientUserId)) { evt ⇒
+        val newState = commit(evt)
+
+        val deleteGroupMembersUpdates: Vector[Update] = Vector(
+          UpdateGroupCanSendMessagesChanged(groupId, canSendMessages = false),
+          UpdateGroupCanViewMembersChanged(groupId, canViewMembers = false),
+          UpdateGroupCanEditInfoChanged(groupId, canEditGroup = false),
+          UpdateGroupCanEditUsernameChanged(groupId, canEditUsername = false),
+          UpdateGroupCanEditAdminsChanged(groupId, canAssignAdmins = false),
+          UpdateGroupCanViewAdminsChanged(groupId, canViewAdmins = false),
+          UpdateGroupCanEditAdminSettingsChanged(groupId, canEditAdminSettings = false),
+          UpdateGroupCanInviteMembersChanged(groupId, canInviteMembers = false),
+          UpdateGroupCanInviteViaLink(groupId, canInviteViaLink = false),
+          UpdateGroupCanLeaveChanged(groupId, canLeaveChanged = false),
+          UpdateGroupCanDeleteChanged(groupId, canDeleteChanged = false),
+          UpdateGroupMemberChanged(groupId, isMember = false),
+          // if channel, or group is big enough
+          if (newState.groupType.isChannel)
+            UpdateGroupMembersCountChanged(groupId, membersCount = 0)
+          else
+            UpdateGroupMembersUpdated(groupId, members = Vector.empty)
+        )
+
+        val result: Future[SeqState] = for {
+          _ ← db.run(HistoryMessageRepo.deleteAll(cmd.clientUserId, apiGroupPeer.asModel))
+          _ ← Future.traverse(deleteGroupMembersUpdates) { update ⇒
+            seqUpdExt.broadcastPeopleUpdate(newState.memberIds, update)
+          }
+          seqState ← seqUpdExt.broadcastClientUpdate(
+            cmd.clientUserId,
+            cmd.clientAuthId,
+            bcastUserIds = state.memberIds - cmd.clientUserId,
+            update = UpdateChatClear(apiGroupPeer)
           )
         } yield seqState
 

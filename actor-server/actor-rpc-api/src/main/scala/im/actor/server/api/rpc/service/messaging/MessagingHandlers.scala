@@ -3,7 +3,7 @@ package im.actor.server.api.rpc.service.messaging
 import akka.http.scaladsl.util.FastFuture
 import akka.util.Timeout
 import cats.data.Xor
-import im.actor.api.rpc.CommonRpcErrors.IntenalError
+import im.actor.api.rpc.CommonRpcErrors.InternalError
 import im.actor.api.rpc.{ CommonRpcErrors, _ }
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc._
@@ -71,7 +71,7 @@ private[messaging] trait MessagingHandlers extends PeersImplicits
         (for {
           histMessage ← fromFutureOption(NotAllowedToEdit)(getEditableHistoryMessage(peer, randomId))
           _ ← fromBoolean(NotInTimeWindow)(inTimeWindow(histMessage.date.getMillis))
-          apiMessage ← fromXor((e: Any) ⇒ IntenalError)(Xor.fromEither(parseMessage(histMessage.messageContentData)))
+          apiMessage ← fromXor((e: Any) ⇒ InternalError)(Xor.fromEither(parseMessage(histMessage.messageContentData)))
           _ ← fromBoolean(NotTextMessage)(apiMessage match {
             case _: ApiTextMessage ⇒ true
             case _                 ⇒ false

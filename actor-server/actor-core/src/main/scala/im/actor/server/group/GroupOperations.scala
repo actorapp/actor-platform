@@ -122,6 +122,11 @@ private[group] sealed trait Commands extends UserAcl {
       GroupEnvelope(groupId)
       .withMakeHistoryShared(MakeHistoryShared(clientUserId, clientAuthId))).mapTo[SeqState]
 
+  def deleteGroup(groupId: Int, clientUserId: Int, clientAuthId: Long): Future[SeqState] =
+    (processorRegion.ref ?
+      GroupEnvelope(groupId)
+      .withDeleteGroup(DeleteGroup(clientUserId, clientAuthId))).mapTo[SeqState]
+
 }
 
 private[group] sealed trait Queries {

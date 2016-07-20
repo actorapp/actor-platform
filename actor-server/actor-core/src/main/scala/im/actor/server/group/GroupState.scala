@@ -88,6 +88,7 @@ private[group] object GroupState {
       accessHash = 0L,
       adminSettings = AdminSettings.PlainDefault,
       bot = None,
+      deletedAt = None,
 
       //???
       extensions = Map.empty
@@ -120,6 +121,7 @@ private[group] final case class GroupState(
   accessHash:    Long,
   adminSettings: AdminSettings,
   bot:           Option[Bot],
+  deletedAt:     Option[Instant],
   extensions:    Map[Int, Array[Byte]]
 ) extends ProcessorState[GroupState] {
 
@@ -147,6 +149,8 @@ private[group] final case class GroupState(
   val isNotCreated = createdAt.isEmpty
 
   val isCreated = createdAt.nonEmpty
+
+  val isDeleted = deletedAt.nonEmpty
 
   //TODO: add on commit(not during recovery!) hook to make group with async members, when more than 100
   def isAsyncMembers =
@@ -262,6 +266,8 @@ private[group] final case class GroupState(
       this.copy(adminSettings = AdminSettings.fromBitMask(bitMask))
     case HistoryBecameShared(_, _) ⇒
       this.copy(isHistoryShared = true)
+    case GroupDeleted(ts, _) ⇒
+      this.copy(deletedAt = Some(ts))
 
     // deprecated events
     case UserBecameAdmin(_, userId, _) ⇒
@@ -310,6 +316,12 @@ private[group] final case class GroupState(
         (isMember(clientUserId) && adminSettings.canMembersInvite)
 
     /**
+     * only owner and admins can invite via link
+     */
+    def canInviteViaLink(clientUserId: Int) =
+      isOwner(clientUserId) || isAdmin(clientUserId)
+
+    /**
      * owner and admins can kick members
      */
     def canKickMember(clientUserId: Int) =
@@ -344,5 +356,16 @@ private[group] final case class GroupState(
 
     // only owner can change admin settings
     def canEditAdminSettings(clientUserId: Int): Boolean = isOwner(clientUserId)
+
+    // only owner can delete group
+    def canDelete(clientUserId: Int): Boolean = isOwner(clientUserId)
+
+    /**
+     * for now, owner can't leave group.
+     * He can either transfer ownership and leave group
+     * or delete group completely.
+     */
+    def canLeave(clientUserId: Int): Boolean = !isOwner(clientUserId)
+
   }
 }

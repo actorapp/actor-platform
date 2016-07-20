@@ -16,7 +16,7 @@ import im.actor.api.rpc.users.ApiUser
 import im.actor.concurrent.FutureExt
 import im.actor.server.acl.ACLUtils
 import im.actor.server.db.DbExtension
-import im.actor.server.file.{ FileErrors, FileStorageAdapter, FileStorageExtension, ImageUtils }
+import im.actor.server.file.{ FileErrors, ImageUtils }
 import im.actor.server.group._
 import im.actor.server.model.GroupInviteToken
 import im.actor.server.names.GlobalNamesStorageKeyValueStorage
@@ -459,7 +459,23 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
       }
     }
 
-  protected def doHandleDeleteGroup(groupPeer: ApiGroupOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = ???
+  protected def doHandleDeleteGroup(groupPeer: ApiGroupOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
+    authorized(clientData) { client ⇒
+      withGroupOutPeer(groupPeer) {
+        for {
+          SeqState(seq, state) ← groupExt.deleteGroup(groupPeer.groupId, client.userId, client.authId)
+        } yield Ok(ResponseSeq(seq, state.toByteArray))
+      }
+    }
+
+  protected def doHandleShareHistory(groupPeer: ApiGroupOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
+    authorized(clientData) { client ⇒
+      withGroupOutPeer(groupPeer) {
+        for {
+          SeqState(seq, state) ← groupExt.makeHistoryShared(groupPeer.groupId, client.userId, client.authId)
+        } yield Ok(ResponseSeq(seq, state.toByteArray))
+      }
+    }
 
   private def usersOrPeers(userIds: Vector[Int], stripEntities: Boolean)(implicit client: AuthorizedClientData): Future[(Vector[ApiUser], Vector[ApiUserOutPeer])] =
     if (stripEntities) {
@@ -594,6 +610,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     case GroupErrors.InvalidShortName        ⇒ GroupRpcErrors.InvalidShortName
     case GroupErrors.ShortNameTaken          ⇒ GroupRpcErrors.ShortNameTaken
     case GroupErrors.NoPermission            ⇒ GroupRpcErrors.NoPermission
+    case GroupErrors.CantLeaveGroup          ⇒ GroupRpcErrors.CantLeaveGroup
   }
 
 }
