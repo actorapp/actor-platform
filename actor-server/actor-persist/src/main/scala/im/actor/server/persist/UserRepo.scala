@@ -40,11 +40,13 @@ object UserRepo {
   val byIdC = Compiled(byId _)
   val nameByIdC = Compiled(nameById _)
 
-  private def byNickname(nickname: Rep[String]) = users filter (_.nickname.toLowerCase === nickname.toLowerCase)
-  private def idsByNickname(nickname: Rep[String]) = byNickname(nickname).map(_.id)
+  private def byNickname(nickname: Rep[String]) =
+    users filter (_.nickname.toLowerCase === nickname.toLowerCase)
+  private def byNicknamePrefix(nickPrefix: Rep[String]) =
+    users filter (_.nickname.toLowerCase.like(nickPrefix.toLowerCase))
 
   private val byNicknameC = Compiled(byNickname _)
-  private val idsByNicknameC = Compiled(idsByNickname _)
+  private val byNicknamePrefixC = Compiled(byNicknamePrefix _)
 
   def byPhone(phone: Rep[Long]) = (for {
     phones ← UserPhoneRepo.phones.filter(_.number === phone)
@@ -107,10 +109,17 @@ object UserRepo {
     users.filter(_.id inSet ids).map(u ⇒ (u.id, u.accessSalt)).result
 
   @deprecated("user GlobalNamesStorageKeyValueStorage instead", "2016-07-17")
-  def findByNickname(query: String) = {
+  def findByNickname(query: String): DBIO[Option[User]] = {
     val nickname =
       if (query.startsWith("@")) query.drop(1) else query
     byNicknameC(nickname).result.headOption
+  }
+
+  @deprecated("user GlobalNamesStorageKeyValueStorage instead", "2016-07-17")
+  def findByNicknamePrefix(query: String): DBIO[Seq[User]] = {
+    val nickname: String =
+      if (query.startsWith("@")) query.drop(1) else query
+    byNicknamePrefixC(nickname).result
   }
 
   def findIdsByEmail(email: String) =
@@ -119,12 +128,11 @@ object UserRepo {
   def findIds(query: String)(implicit ec: ExecutionContext) =
     for {
       e ← idsByEmailC(query).result
-      n ← idsByNicknameC(query).result
       p ← PhoneNumberUtils.normalizeStr(query)
         .headOption
         .map(idByPhoneC(_).result)
         .getOrElse(DBIO.successful(Nil))
-    } yield e ++ n ++ p
+    } yield e ++ p
 
   @deprecated("user GlobalNamesStorageKeyValueStorage instead", "2016-07-17")
   def setNickname(userId: Int, nickname: Option[String]) =
