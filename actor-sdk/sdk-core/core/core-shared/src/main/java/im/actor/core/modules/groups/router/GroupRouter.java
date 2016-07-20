@@ -14,11 +14,14 @@ import im.actor.core.api.ApiMember;
 import im.actor.core.api.rpc.RequestLoadFullGroups;
 import im.actor.core.api.updates.UpdateGroupAboutChanged;
 import im.actor.core.api.updates.UpdateGroupAvatarChanged;
+import im.actor.core.api.updates.UpdateGroupCanDeleteChanged;
 import im.actor.core.api.updates.UpdateGroupCanEditAdminSettingsChanged;
 import im.actor.core.api.updates.UpdateGroupCanEditAdminsChanged;
 import im.actor.core.api.updates.UpdateGroupCanEditInfoChanged;
 import im.actor.core.api.updates.UpdateGroupCanEditUsernameChanged;
 import im.actor.core.api.updates.UpdateGroupCanInviteMembersChanged;
+import im.actor.core.api.updates.UpdateGroupCanInviteViaLink;
+import im.actor.core.api.updates.UpdateGroupCanLeaveChanged;
 import im.actor.core.api.updates.UpdateGroupCanSendMessagesChanged;
 import im.actor.core.api.updates.UpdateGroupCanViewAdminsChanged;
 import im.actor.core.api.updates.UpdateGroupCanViewMembersChanged;
@@ -178,6 +181,21 @@ public class GroupRouter extends ModuleActor {
     @Verified
     public Promise<Void> onEditCanEditAdminSettings(int groupId, boolean canEditAdminSettings) {
         return editGroup(groupId, group -> group.editCanEditAdminSettings(canEditAdminSettings));
+    }
+
+    @Verified
+    public Promise<Void> onEditCanLeaveChanged(int groupId, boolean canLeave) {
+        return editGroup(groupId, group -> group.editCanLeave(canLeave));
+    }
+
+    @Verified
+    public Promise<Void> onEditCanDeleteChanged(int groupId, boolean canDelete) {
+        return editGroup(groupId, group -> group.editCanLeave(canDelete));
+    }
+
+    @Verified
+    public Promise<Void> onEditCanInviteViaLinkChanged(int groupId, boolean canInvite) {
+        return editGroup(groupId, group -> group.editCanInviteViaLink(canInvite));
     }
 
     @Verified
@@ -406,6 +424,15 @@ public class GroupRouter extends ModuleActor {
         } else if (update instanceof UpdateGroupCanEditAdminSettingsChanged) {
             UpdateGroupCanEditAdminSettingsChanged settings = (UpdateGroupCanEditAdminSettingsChanged) update;
             return onEditCanEditAdminSettings(settings.getGroupId(), settings.canEditAdminSettings());
+        } else if (update instanceof UpdateGroupCanLeaveChanged) {
+            UpdateGroupCanLeaveChanged canLeaveChanged = (UpdateGroupCanLeaveChanged) update;
+            return onEditCanLeaveChanged(canLeaveChanged.getGroupId(), canLeaveChanged.canLeaveChanged());
+        } else if (update instanceof UpdateGroupCanDeleteChanged) {
+            UpdateGroupCanDeleteChanged canDeleteChanged = (UpdateGroupCanDeleteChanged) update;
+            return onEditCanDeleteChanged(canDeleteChanged.getGroupId(), canDeleteChanged.canDeleteChanged());
+        } else if (update instanceof UpdateGroupCanInviteViaLink) {
+            UpdateGroupCanInviteViaLink inviteViaLink = (UpdateGroupCanInviteViaLink) update;
+            return onEditCanInviteViaLinkChanged(inviteViaLink.getGroupId(), inviteViaLink.canInviteViaLink());
         }
 
         return Promise.success(null);

@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import im.actor.core.entity.GroupType;
 import im.actor.core.viewmodel.GroupVM;
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.BaseFragment;
 import im.actor.sdk.controllers.Intents;
@@ -91,7 +92,7 @@ public class GroupAdminFragment extends BaseFragment {
                 } else {
                     shareHistoryValue.setVisibility(View.GONE);
                     shareHistory.setOnClickListener(v -> {
-                        // TODO: Implement
+                        execute(messenger().shareHistory(groupVM.getId()));
                     });
                 }
             });
@@ -123,6 +124,7 @@ public class GroupAdminFragment extends BaseFragment {
         }
 
         // Group Deletion
+        View deleteContainer = res.findViewById(R.id.deleteContainer);
         TextView delete = (TextView) res.findViewById(R.id.delete);
         delete.setTextColor(style.getTextDangerColor());
         TextView deleteHint = (TextView) res.findViewById(R.id.deleteHint);
@@ -134,8 +136,21 @@ public class GroupAdminFragment extends BaseFragment {
             delete.setText(R.string.group_delete);
             deleteHint.setText(R.string.group_delete_hint);
         }
-        delete.setOnClickListener(v -> {
-            // TODO: Delete
+        bind(groupVM.getIsCanDelete(), canDelete -> {
+            if (canDelete) {
+                deleteContainer.setVisibility(View.VISIBLE);
+                delete.setOnClickListener(v -> {
+                    execute(messenger().deleteGroup(groupVM.getId())).then(r -> {
+                        ActorSDK.sharedActor().startMessagingApp(getActivity());
+                        finishActivity();
+                    });
+                });
+            } else {
+                deleteContainer.setVisibility(View.GONE);
+                delete.setOnClickListener(null);
+                delete.setClickable(false);
+            }
+
         });
 
         return res;

@@ -14,17 +14,17 @@ import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 
-public class ApiKeyGroupId extends BserObject {
+public class ApiKeyGroupHolder extends BserObject {
 
     private int uid;
-    private int keyGroupId;
+    private ApiEncryptionKeyGroup keyGroup;
 
-    public ApiKeyGroupId(int uid, int keyGroupId) {
+    public ApiKeyGroupHolder(int uid, @NotNull ApiEncryptionKeyGroup keyGroup) {
         this.uid = uid;
-        this.keyGroupId = keyGroupId;
+        this.keyGroup = keyGroup;
     }
 
-    public ApiKeyGroupId() {
+    public ApiKeyGroupHolder() {
 
     }
 
@@ -32,27 +32,31 @@ public class ApiKeyGroupId extends BserObject {
         return this.uid;
     }
 
-    public int getKeyGroupId() {
-        return this.keyGroupId;
+    @NotNull
+    public ApiEncryptionKeyGroup getKeyGroup() {
+        return this.keyGroup;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         this.uid = values.getInt(1);
-        this.keyGroupId = values.getInt(2);
+        this.keyGroup = values.getObj(2, new ApiEncryptionKeyGroup());
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeInt(1, this.uid);
-        writer.writeInt(2, this.keyGroupId);
+        if (this.keyGroup == null) {
+            throw new IOException();
+        }
+        writer.writeObject(2, this.keyGroup);
     }
 
     @Override
     public String toString() {
-        String res = "struct KeyGroupId{";
+        String res = "struct KeyGroupHolder{";
         res += "uid=" + this.uid;
-        res += ", keyGroupId=" + this.keyGroupId;
+        res += ", keyGroup=" + this.keyGroup;
         res += "}";
         return res;
     }

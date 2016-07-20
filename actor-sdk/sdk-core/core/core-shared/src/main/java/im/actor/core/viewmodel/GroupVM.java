@@ -84,7 +84,15 @@ public class GroupVM extends BaseValueModel<Group> {
     @NotNull
     @Property("nonatomic, readonly")
     private BooleanValueModel isCanViewAdmins;
-
+    @NotNull
+    @Property("nonatomic, readonly")
+    private BooleanValueModel isCanLeave;
+    @NotNull
+    @Property("nonatomic, readonly")
+    private BooleanValueModel isCanDelete;
+    @NotNull
+    @Property("nonatomic, readonly")
+    private BooleanValueModel isCanInviteViaLink;
 
     @NotNull
     @Property("nonatomic, readonly")
@@ -129,6 +137,9 @@ public class GroupVM extends BaseValueModel<Group> {
         this.isHistoryShared = new BooleanValueModel("group." + groupId + ".isHistoryShared", rawObj.isSharedHistory());
         this.isCanEditAdmins = new BooleanValueModel("group." + groupId + ".isCanEditAdmins", rawObj.isCanEditAdmins());
         this.isCanViewAdmins = new BooleanValueModel("group." + groupId + ".isCanViewAdmins", rawObj.isCanViewAdmins());
+        this.isCanLeave = new BooleanValueModel("group." + groupId + ".isCanLeave", rawObj.isCanLeave());
+        this.isCanDelete = new BooleanValueModel("group." + groupId + ".isCanDelete", rawObj.isCanDelete());
+        this.isCanInviteViaLink = new BooleanValueModel("group." + groupId + ".isCanInviteViaLink", rawObj.isCanInviteViaLink());
 
         this.ownerId = new IntValueModel("group." + groupId + ".membersCount", rawObj.getOwnerId());
         this.members = new ValueModel<>("group." + groupId + ".members", new HashSet<>(rawObj.getMembers()));
@@ -326,6 +337,39 @@ public class GroupVM extends BaseValueModel<Group> {
     }
 
     /**
+     * Is current user can leave group
+     *
+     * @return is current user can leave model
+     */
+    @NotNull
+    @ObjectiveCName("getIsCanLeaveModel")
+    public BooleanValueModel getIsCanLeave() {
+        return isCanLeave;
+    }
+
+    /**
+     * Is current user can delete group
+     *
+     * @return is current user can delete model
+     */
+    @NotNull
+    @ObjectiveCName("getIsCanDeleteModel")
+    public BooleanValueModel getIsCanDelete() {
+        return isCanDelete;
+    }
+
+    /**
+     * Is current user can invite via link
+     *
+     * @return is current user can invite via link model
+     */
+    @NotNull
+    @ObjectiveCName("getIsCanInviteViaLinkModel")
+    public BooleanValueModel getIsCanInviteViaLink() {
+        return isCanInviteViaLink;
+    }
+
+    /**
      * Get Group owner user id model
      *
      * @return creator owner id model
@@ -427,6 +471,9 @@ public class GroupVM extends BaseValueModel<Group> {
         isChanged |= isCanEditAdministration.change(rawObj.isCanEditAdministration());
         isChanged |= isCanEditAdmins.change(rawObj.isCanEditAdmins());
         isChanged |= isCanViewAdmins.change(rawObj.isCanViewAdmins());
+        isChanged |= isCanLeave.change(rawObj.isCanLeave());
+        isChanged |= isCanDelete.change(rawObj.isCanDelete());
+        isChanged |= isCanInviteViaLink.change(rawObj.isCanInviteViaLink());
 
         if (isChanged) {
             notifyIfNeeded();

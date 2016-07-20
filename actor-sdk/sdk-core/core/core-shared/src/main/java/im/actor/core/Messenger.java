@@ -1530,6 +1530,30 @@ public class Messenger {
     }
 
     /**
+     * Delete Group
+     *
+     * @param gid group's id
+     * @return Promise of void
+     */
+    @NotNull
+    @ObjectiveCName("deleteGroupWithGid:")
+    public Promise<Void> deleteGroup(int gid) {
+        return modules.getGroupsModule().deleteGroup(gid);
+    }
+
+    /**
+     * Share Group History
+     *
+     * @param gid group's id
+     * @return Promise of void
+     */
+    @NotNull
+    @ObjectiveCName("shareHistoryWithGid:")
+    public Promise<Void> shareHistory(int gid) {
+        return modules.getGroupsModule().shareHistory(gid);
+    }
+
+    /**
      * Adding member to group
      *
      * @param gid group's id

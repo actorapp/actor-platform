@@ -248,17 +248,25 @@ public class GroupInfoFragment extends BaseFragment {
         });
 
         // Leave
-        leaveAction.setOnClickListener(view1 -> {
-            new AlertDialog.Builder(getActivity())
-                    .setMessage(getString(R.string.alert_leave_group_message).replace("%1$s",
-                            groupVM.getName().get()))
-                    .setPositiveButton(R.string.alert_leave_group_yes, (dialog2, which) -> {
-                        execute(messenger().leaveGroup(chatId));
-                    })
-                    .setNegativeButton(R.string.dialog_cancel, null)
-                    .show()
-                    .setCanceledOnTouchOutside(true);
+        bind(groupVM.getIsCanLeave(), canLeave -> {
+            if (canLeave) {
+                leaveAction.setVisibility(View.VISIBLE);
+                leaveAction.setOnClickListener(view1 -> {
+                    new AlertDialog.Builder(getActivity())
+                            .setMessage(getString(R.string.alert_leave_group_message).replace("%1$s",
+                                    groupVM.getName().get()))
+                            .setPositiveButton(R.string.alert_leave_group_yes, (dialog2, which) -> {
+                                execute(messenger().leaveGroup(chatId));
+                            })
+                            .setNegativeButton(R.string.dialog_cancel, null)
+                            .show()
+                            .setCanceledOnTouchOutside(true);
+                });
+            } else {
+                leaveAction.setVisibility(View.GONE);
+            }
         });
+
 
         listView.addHeaderView(header, null, false);
 

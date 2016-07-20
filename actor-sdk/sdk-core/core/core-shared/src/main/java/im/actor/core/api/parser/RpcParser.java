@@ -93,6 +93,8 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 2789: return RequestTransferOwnership.fromBytes(payload);
             case 2790: return RequestLoadAdminSettings.fromBytes(payload);
             case 2792: return RequestSaveAdminSettings.fromBytes(payload);
+            case 2795: return RequestDeleteGroup.fromBytes(payload);
+            case 2796: return RequestShareHistory.fromBytes(payload);
             case 177: return RequestGetGroupInviteUrl.fromBytes(payload);
             case 179: return RequestRevokeInviteUrl.fromBytes(payload);
             case 180: return RequestJoinGroup.fromBytes(payload);

@@ -15,6 +15,7 @@ import im.actor.core.api.ApiOutPeer;
 import im.actor.core.api.ApiPeerType;
 import im.actor.core.api.ApiUserOutPeer;
 import im.actor.core.api.rpc.RequestCreateGroup;
+import im.actor.core.api.rpc.RequestDeleteGroup;
 import im.actor.core.api.rpc.RequestEditGroupAbout;
 import im.actor.core.api.rpc.RequestEditGroupShortName;
 import im.actor.core.api.rpc.RequestEditGroupTitle;
@@ -31,6 +32,7 @@ import im.actor.core.api.rpc.RequestMakeUserAdminObsolete;
 import im.actor.core.api.rpc.RequestRevokeIntegrationToken;
 import im.actor.core.api.rpc.RequestRevokeInviteUrl;
 import im.actor.core.api.rpc.RequestSaveAdminSettings;
+import im.actor.core.api.rpc.RequestShareHistory;
 import im.actor.core.api.rpc.RequestTransferOwnership;
 import im.actor.core.api.rpc.ResponseIntegrationToken;
 import im.actor.core.api.rpc.ResponseInviteUrl;
@@ -184,6 +186,20 @@ public class GroupsModule extends AbsModule implements BusSubscriber {
                                 new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()),
                                 rid,
                                 ApiSupportConfiguration.OPTIMIZATIONS)))
+                .flatMap(r -> updates().waitForUpdate(r.getSeq()));
+    }
+
+    public Promise<Void> deleteGroup(int gid) {
+        return getGroups().getValueAsync(gid)
+                .flatMap(group ->
+                        api(new RequestDeleteGroup(new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()))))
+                .flatMap(r -> updates().waitForUpdate(r.getSeq()));
+    }
+
+    public Promise<Void> shareHistory(int gid) {
+        return getGroups().getValueAsync(gid)
+                .flatMap(group ->
+                        api(new RequestShareHistory(new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()))))
                 .flatMap(r -> updates().waitForUpdate(r.getSeq()));
     }
 

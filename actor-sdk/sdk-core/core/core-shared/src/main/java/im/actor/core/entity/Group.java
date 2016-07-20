@@ -82,6 +82,8 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
     @Property("readonly, nonatomic")
     private boolean isCanInviteMembers;
     @Property("readonly, nonatomic")
+    private boolean isCanInviteViaLink;
+    @Property("readonly, nonatomic")
     private boolean isCanViewMembers;
     @Property("readonly, nonatomic")
     private boolean isSharedHistory;
@@ -95,6 +97,10 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
     private boolean isCanViewAdmins;
     @Property("readonly, nonatomic")
     private boolean isCanEditAdmins;
+    @Property("readonly, nonatomic")
+    private boolean isCanLeave;
+    @Property("readonly, nonatomic")
+    private boolean isCanDelete;
 
     @Property("readonly, nonatomic")
     private boolean haveExtension;
@@ -227,6 +233,18 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
         return isCanEditAdmins;
     }
 
+    public boolean isCanInviteViaLink() {
+        return isCanInviteViaLink;
+    }
+
+    public boolean isCanLeave() {
+        return isCanLeave;
+    }
+
+    public boolean isCanDelete() {
+        return isCanDelete;
+    }
+
     public Group updateExt(@Nullable ApiGroupFull ext) {
         return new Group(getWrapped(), ext);
     }
@@ -344,7 +362,10 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                     e.canEditShortName(),
                     e.canEditAdminList(),
                     e.canViewAdminList(),
-                    e.canEditAdminSettings());
+                    e.canEditAdminSettings(),
+                    e.canInviteViaLink(),
+                    e.canDelete(),
+                    e.canLeave());
             fullExt.setUnmappedObjects(e.getUnmappedObjects());
         }
 
@@ -408,7 +429,10 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                     e.canEditShortName(),
                     e.canEditAdminList(),
                     e.canViewAdminList(),
-                    e.canEditAdminSettings());
+                    e.canEditAdminSettings(),
+                    e.canInviteViaLink(),
+                    e.canDelete(),
+                    e.canLeave());
             fullExt.setUnmappedObjects(e.getUnmappedObjects());
         }
 
@@ -464,7 +488,10 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                     e.canEditShortName(),
                     e.canEditAdminList(),
                     e.canViewAdminList(),
-                    e.canEditAdminSettings());
+                    e.canEditAdminSettings(),
+                    e.canInviteViaLink(),
+                    e.canDelete(),
+                    e.canLeave());
             fullExt.setUnmappedObjects(e.getUnmappedObjects());
 
             return new Group(getWrapped(), fullExt);
@@ -504,7 +531,10 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                     e.canEditShortName(),
                     e.canEditAdminList(),
                     e.canViewAdminList(),
-                    e.canEditAdminSettings());
+                    e.canEditAdminSettings(),
+                    e.canInviteViaLink(),
+                    e.canDelete(),
+                    e.canLeave());
             fullExt.setUnmappedObjects(e.getUnmappedObjects());
 
             return new Group(getWrapped(), fullExt);
@@ -536,7 +566,10 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                     e.canEditShortName(),
                     e.canEditAdminList(),
                     e.canViewAdminList(),
-                    e.canEditAdminSettings());
+                    e.canEditAdminSettings(),
+                    e.canInviteViaLink(),
+                    e.canDelete(),
+                    e.canLeave());
             fullExt.setUnmappedObjects(e.getUnmappedObjects());
             return new Group(getWrapped(), fullExt);
         } else {
@@ -563,7 +596,10 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                     e.canEditShortName(),
                     e.canEditAdminList(),
                     e.canViewAdminList(),
-                    e.canEditAdminSettings());
+                    e.canEditAdminSettings(),
+                    e.canInviteViaLink(),
+                    e.canDelete(),
+                    e.canLeave());
             fullExt.setUnmappedObjects(e.getUnmappedObjects());
             return new Group(getWrapped(), fullExt);
         } else {
@@ -590,7 +626,10 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                     e.canEditShortName(),
                     e.canEditAdminList(),
                     e.canViewAdminList(),
-                    e.canEditAdminSettings());
+                    e.canEditAdminSettings(),
+                    e.canInviteViaLink(),
+                    e.canDelete(),
+                    e.canLeave());
             fullExt.setUnmappedObjects(e.getUnmappedObjects());
             return new Group(getWrapped(), fullExt);
         } else {
@@ -617,7 +656,10 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                     e.canEditShortName(),
                     e.canEditAdminList(),
                     e.canViewAdminList(),
-                    e.canEditAdminSettings());
+                    e.canEditAdminSettings(),
+                    e.canInviteViaLink(),
+                    e.canDelete(),
+                    e.canLeave());
             fullExt.setUnmappedObjects(e.getUnmappedObjects());
             return new Group(getWrapped(), fullExt);
         } else {
@@ -644,7 +686,100 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                     e.canEditShortName(),
                     e.canEditAdminList(),
                     e.canViewAdminList(),
-                    e.canEditAdminSettings());
+                    e.canEditAdminSettings(),
+                    e.canInviteViaLink(),
+                    e.canDelete(),
+                    e.canLeave());
+            fullExt.setUnmappedObjects(e.getUnmappedObjects());
+            return new Group(getWrapped(), fullExt);
+        } else {
+            return this;
+        }
+    }
+
+    public Group editCanInviteViaLink(boolean canInviteViaLink) {
+        if (getWrappedExt() != null) {
+            ApiGroupFull e = getWrappedExt();
+            ApiGroupFull fullExt = new ApiGroupFull(e.getId(),
+                    e.getCreateDate(),
+                    e.getOwnerUid(),
+                    e.getMembers(),
+                    e.getTheme(),
+                    e.getAbout(),
+                    e.getExt(),
+                    e.isAsyncMembers(),
+                    e.canViewMembers(),
+                    e.canInvitePeople(),
+                    e.isSharedHistory(),
+                    e.canEditGroupInfo(),
+                    e.getShortName(),
+                    e.canEditShortName(),
+                    e.canEditAdminList(),
+                    e.canViewAdminList(),
+                    e.canEditAdminSettings(),
+                    canInviteViaLink,
+                    e.canDelete(),
+                    e.canLeave());
+            fullExt.setUnmappedObjects(e.getUnmappedObjects());
+            return new Group(getWrapped(), fullExt);
+        } else {
+            return this;
+        }
+    }
+
+    public Group editCanDelete(boolean canDelete) {
+        if (getWrappedExt() != null) {
+            ApiGroupFull e = getWrappedExt();
+            ApiGroupFull fullExt = new ApiGroupFull(e.getId(),
+                    e.getCreateDate(),
+                    e.getOwnerUid(),
+                    e.getMembers(),
+                    e.getTheme(),
+                    e.getAbout(),
+                    e.getExt(),
+                    e.isAsyncMembers(),
+                    e.canViewMembers(),
+                    e.canInvitePeople(),
+                    e.isSharedHistory(),
+                    e.canEditGroupInfo(),
+                    e.getShortName(),
+                    e.canEditShortName(),
+                    e.canEditAdminList(),
+                    e.canViewAdminList(),
+                    e.canEditAdminSettings(),
+                    e.canInviteViaLink(),
+                    canDelete,
+                    e.canLeave());
+            fullExt.setUnmappedObjects(e.getUnmappedObjects());
+            return new Group(getWrapped(), fullExt);
+        } else {
+            return this;
+        }
+    }
+
+    public Group editCanLeave(boolean canLeave) {
+        if (getWrappedExt() != null) {
+            ApiGroupFull e = getWrappedExt();
+            ApiGroupFull fullExt = new ApiGroupFull(e.getId(),
+                    e.getCreateDate(),
+                    e.getOwnerUid(),
+                    e.getMembers(),
+                    e.getTheme(),
+                    e.getAbout(),
+                    e.getExt(),
+                    e.isAsyncMembers(),
+                    e.canViewMembers(),
+                    e.canInvitePeople(),
+                    e.isSharedHistory(),
+                    e.canEditGroupInfo(),
+                    e.getShortName(),
+                    e.canEditShortName(),
+                    e.canEditAdminList(),
+                    e.canViewAdminList(),
+                    e.canEditAdminSettings(),
+                    e.canInviteViaLink(),
+                    e.canDelete(),
+                    canLeave);
             fullExt.setUnmappedObjects(e.getUnmappedObjects());
             return new Group(getWrapped(), fullExt);
         } else {
@@ -671,7 +806,10 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                     e.canEditShortName(),
                     e.canEditAdminList(),
                     e.canViewAdminList(),
-                    e.canEditAdminSettings());
+                    e.canEditAdminSettings(),
+                    e.canInviteViaLink(),
+                    e.canDelete(),
+                    e.canLeave());
             fullExt.setUnmappedObjects(e.getUnmappedObjects());
             return new Group(getWrapped(), fullExt);
         } else {
@@ -698,7 +836,10 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                     canEditShortName,
                     e.canEditAdminList(),
                     e.canViewAdminList(),
-                    e.canEditAdminSettings());
+                    e.canEditAdminSettings(),
+                    e.canInviteViaLink(),
+                    e.canDelete(),
+                    e.canLeave());
             fullExt.setUnmappedObjects(e.getUnmappedObjects());
             return new Group(getWrapped(), fullExt);
         } else {
@@ -725,7 +866,10 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                     e.canEditShortName(),
                     canEditAdminList,
                     e.canViewAdminList(),
-                    e.canEditAdminSettings());
+                    e.canEditAdminSettings(),
+                    e.canInviteViaLink(),
+                    e.canDelete(),
+                    e.canLeave());
             fullExt.setUnmappedObjects(e.getUnmappedObjects());
             return new Group(getWrapped(), fullExt);
         } else {
@@ -752,7 +896,10 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                     e.canEditShortName(),
                     e.canEditAdminList(),
                     canViewAdminList,
-                    e.canEditAdminSettings());
+                    e.canEditAdminSettings(),
+                    e.canInviteViaLink(),
+                    e.canDelete(),
+                    e.canLeave());
             fullExt.setUnmappedObjects(e.getUnmappedObjects());
             return new Group(getWrapped(), fullExt);
         } else {
@@ -779,7 +926,10 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                     e.canEditShortName(),
                     e.canEditAdminList(),
                     e.canViewAdminList(),
-                    canEditAdminSettings);
+                    canEditAdminSettings,
+                    e.canInviteViaLink(),
+                    e.canDelete(),
+                    e.canLeave());
             fullExt.setUnmappedObjects(e.getUnmappedObjects());
             return new Group(getWrapped(), fullExt);
         } else {
@@ -806,7 +956,10 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                     e.canEditShortName(),
                     e.canEditAdminList(),
                     e.canViewAdminList(),
-                    e.canEditAdminSettings());
+                    e.canEditAdminSettings(),
+                    e.canInviteViaLink(),
+                    e.canDelete(),
+                    e.canLeave());
             fullExt.setUnmappedObjects(e.getUnmappedObjects());
             return new Group(getWrapped(), fullExt);
         } else {
@@ -833,7 +986,10 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                     e.canEditShortName(),
                     e.canEditAdminList(),
                     e.canViewAdminList(),
-                    e.canEditAdminSettings());
+                    e.canEditAdminSettings(),
+                    e.canInviteViaLink(),
+                    e.canDelete(),
+                    e.canLeave());
             fullExt.setUnmappedObjects(e.getUnmappedObjects());
             return new Group(getWrapped(), fullExt);
         } else {
@@ -860,7 +1016,10 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                     e.canEditShortName(),
                     e.canEditAdminList(),
                     e.canViewAdminList(),
-                    e.canEditAdminSettings());
+                    e.canEditAdminSettings(),
+                    e.canInviteViaLink(),
+                    e.canDelete(),
+                    e.canLeave());
             fullExt.setUnmappedObjects(e.getUnmappedObjects());
             return new Group(getWrapped(), fullExt);
         } else {
@@ -917,12 +1076,15 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
             this.isAsyncMembers = ext.isAsyncMembers() != null ? ext.isAsyncMembers() : false;
             this.isCanViewMembers = ext.canViewMembers() != null ? ext.canViewMembers() : true;
             this.isCanInviteMembers = ext.canViewMembers() != null ? ext.canViewMembers() : true;
+            this.isCanInviteViaLink = ext.canInviteViaLink() != null ? ext.canInviteViaLink() : false;
             this.isSharedHistory = ext.isSharedHistory() != null ? ext.isSharedHistory() : false;
             this.isCanEditInfo = ext.canEditGroupInfo() != null ? ext.canEditGroupInfo() : false;
             this.isCanEditShortName = ext.canEditShortName() != null ? ext.canEditShortName() : false;
             this.isCanEditAdministration = ext.canEditAdminSettings() != null ? ext.canEditAdminSettings() : false;
             this.isCanViewAdmins = ext.canViewAdminList() != null ? ext.canViewAdminList() : false;
             this.isCanEditAdmins = ext.canEditAdminList() != null ? ext.canEditAdminList() : false;
+            this.isCanLeave = ext.canLeave() != null ? ext.canLeave() : true;
+            this.isCanDelete = ext.canDelete() != null ? ext.canDelete() : false;
 
             this.members = new ArrayList<>();
             for (ApiMember m : ext.getMembers()) {
@@ -945,6 +1107,9 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
             this.isCanEditAdministration = false;
             this.isCanViewAdmins = false;
             this.isCanEditAdmins = false;
+            this.isCanDelete = false;
+            this.isCanLeave = false;
+            this.isCanInviteViaLink = false;
         }
     }
 

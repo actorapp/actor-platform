@@ -6,10 +6,13 @@ package im.actor.core.modules.groups;
 
 import im.actor.core.api.updates.UpdateGroupAboutChanged;
 import im.actor.core.api.updates.UpdateGroupAvatarChanged;
+import im.actor.core.api.updates.UpdateGroupCanDeleteChanged;
 import im.actor.core.api.updates.UpdateGroupCanEditAdminsChanged;
 import im.actor.core.api.updates.UpdateGroupCanEditInfoChanged;
 import im.actor.core.api.updates.UpdateGroupCanEditUsernameChanged;
 import im.actor.core.api.updates.UpdateGroupCanInviteMembersChanged;
+import im.actor.core.api.updates.UpdateGroupCanInviteViaLink;
+import im.actor.core.api.updates.UpdateGroupCanLeaveChanged;
 import im.actor.core.api.updates.UpdateGroupCanSendMessagesChanged;
 import im.actor.core.api.updates.UpdateGroupCanViewAdminsChanged;
 import im.actor.core.api.updates.UpdateGroupCanViewMembersChanged;
@@ -65,7 +68,10 @@ public class GroupsProcessor extends AbsModule implements SequenceProcessor {
                 update instanceof UpdateGroupCanEditInfoChanged ||
                 update instanceof UpdateGroupCanViewAdminsChanged ||
                 update instanceof UpdateGroupCanEditAdminsChanged ||
-                update instanceof UpdateGroupCanEditUsernameChanged) {
+                update instanceof UpdateGroupCanEditUsernameChanged ||
+                update instanceof UpdateGroupCanInviteViaLink ||
+                update instanceof UpdateGroupCanLeaveChanged ||
+                update instanceof UpdateGroupCanDeleteChanged) {
             return context().getGroupsModule().getRouter().onUpdate(update);
         }
         return null;

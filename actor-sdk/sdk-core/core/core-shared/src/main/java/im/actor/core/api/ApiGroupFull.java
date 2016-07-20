@@ -33,8 +33,11 @@ public class ApiGroupFull extends BserObject {
     private Boolean canEditAdminList;
     private Boolean canViewAdminList;
     private Boolean canEditAdminSettings;
+    private Boolean canInviteViaLink;
+    private Boolean canDelete;
+    private Boolean canLeave;
 
-    public ApiGroupFull(int id, long createDate, @Nullable Integer ownerUid, @NotNull List<ApiMember> members, @Nullable String theme, @Nullable String about, @Nullable ApiMapValue ext, @Nullable Boolean isAsyncMembers, @Nullable Boolean canViewMembers, @Nullable Boolean canInvitePeople, @Nullable Boolean isSharedHistory, @Nullable Boolean canEditGroupInfo, @Nullable String shortName, @Nullable Boolean canEditShortName, @Nullable Boolean canEditAdminList, @Nullable Boolean canViewAdminList, @Nullable Boolean canEditAdminSettings) {
+    public ApiGroupFull(int id, long createDate, @Nullable Integer ownerUid, @NotNull List<ApiMember> members, @Nullable String theme, @Nullable String about, @Nullable ApiMapValue ext, @Nullable Boolean isAsyncMembers, @Nullable Boolean canViewMembers, @Nullable Boolean canInvitePeople, @Nullable Boolean isSharedHistory, @Nullable Boolean canEditGroupInfo, @Nullable String shortName, @Nullable Boolean canEditShortName, @Nullable Boolean canEditAdminList, @Nullable Boolean canViewAdminList, @Nullable Boolean canEditAdminSettings, @Nullable Boolean canInviteViaLink, @Nullable Boolean canDelete, @Nullable Boolean canLeave) {
         this.id = id;
         this.createDate = createDate;
         this.ownerUid = ownerUid;
@@ -52,6 +55,9 @@ public class ApiGroupFull extends BserObject {
         this.canEditAdminList = canEditAdminList;
         this.canViewAdminList = canViewAdminList;
         this.canEditAdminSettings = canEditAdminSettings;
+        this.canInviteViaLink = canInviteViaLink;
+        this.canDelete = canDelete;
+        this.canLeave = canLeave;
     }
 
     public ApiGroupFull() {
@@ -141,6 +147,21 @@ public class ApiGroupFull extends BserObject {
         return this.canEditAdminSettings;
     }
 
+    @Nullable
+    public Boolean canInviteViaLink() {
+        return this.canInviteViaLink;
+    }
+
+    @Nullable
+    public Boolean canDelete() {
+        return this.canDelete;
+    }
+
+    @Nullable
+    public Boolean canLeave() {
+        return this.canLeave;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.id = values.getInt(1);
@@ -164,6 +185,9 @@ public class ApiGroupFull extends BserObject {
         this.canEditAdminList = values.optBool(16);
         this.canViewAdminList = values.optBool(17);
         this.canEditAdminSettings = values.optBool(18);
+        this.canInviteViaLink = values.optBool(19);
+        this.canDelete = values.optBool(20);
+        this.canLeave = values.optBool(21);
         if (values.hasRemaining()) {
             setUnmappedObjects(values.buildRemaining());
         }
@@ -216,6 +240,15 @@ public class ApiGroupFull extends BserObject {
         if (this.canEditAdminSettings != null) {
             writer.writeBool(18, this.canEditAdminSettings);
         }
+        if (this.canInviteViaLink != null) {
+            writer.writeBool(19, this.canInviteViaLink);
+        }
+        if (this.canDelete != null) {
+            writer.writeBool(20, this.canDelete);
+        }
+        if (this.canLeave != null) {
+            writer.writeBool(21, this.canLeave);
+        }
         if (this.getUnmappedObjects() != null) {
             SparseArray<Object> unmapped = this.getUnmappedObjects();
             for (int i = 0; i < unmapped.size(); i++) {
@@ -244,6 +277,8 @@ public class ApiGroupFull extends BserObject {
         res += ", canEditAdminList=" + this.canEditAdminList;
         res += ", canViewAdminList=" + this.canViewAdminList;
         res += ", canEditAdminSettings=" + this.canEditAdminSettings;
+        res += ", canInviteViaLink=" + this.canInviteViaLink;
+        res += ", canDelete=" + this.canDelete;
         res += "}";
         return res;
     }
