@@ -239,6 +239,7 @@ public class GroupInfoFragment extends BaseFragment {
                     header.findViewById(R.id.after_settings_divider).setVisibility(View.VISIBLE);
                 }
             } else {
+                members.setVisibility(View.GONE);
                 header.findViewById(R.id.after_settings_divider).setVisibility(View.GONE);
             }
         });

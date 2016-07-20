@@ -465,6 +465,7 @@ public class GroupVM extends BaseValueModel<Group> {
         isChanged |= isCanViewMembers.change(rawObj.isCanViewMembers());
         isChanged |= isCanInviteMembers.change(rawObj.isCanInviteMembers());
         isChanged |= isCanEditInfo.change(rawObj.isCanEditInfo());
+        isChanged |= isCanEditShortName.change(rawObj.isCanEditShortName());
         isChanged |= shortName.change(rawObj.getShortName());
         isChanged |= isAsyncMembers.change(rawObj.isAsyncMembers());
         isChanged |= isHistoryShared.change(rawObj.isSharedHistory());
