@@ -293,7 +293,7 @@ public class I18nEngine extends IntlEngine {
      * @param relatedUid  optional related uid
      * @return formatted content
      */
-    @ObjectiveCName("formatContentTextWithSenderId:withContentType:withText:withRelatedUid:withIsChannel")
+    @ObjectiveCName("formatContentTextWithSenderId:withContentType:withText:withRelatedUid:withIsChannel:")
     public String formatContentText(int senderId, ContentType contentType, String text, int relatedUid,
                                     boolean isChannel) {
 
@@ -369,7 +369,7 @@ public class I18nEngine extends IntlEngine {
      * @param content  content of a message
      * @return formatted message
      */
-    @ObjectiveCName("formatFullServiceMessageWithSenderId:withContent:")
+    @ObjectiveCName("formatFullServiceMessageWithSenderId:withContent:withIsChannel:")
     public String formatFullServiceMessage(int senderId, ServiceContent content, boolean isChannel) {
         String groupKey = isChannel ? "channels" : "groups";
         if (content instanceof ServiceUserRegistered) {

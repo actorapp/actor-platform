@@ -288,14 +288,18 @@ public class GroupRouter extends ModuleActor {
 
         freeze();
         groups().getValueAsync(gid)
-                .flatMap(group -> {
-                    if (!group.isHaveExtension()) {
-                        ArrayList<ApiGroupOutPeer> groups = new ArrayList<>();
-                        groups.add(new ApiGroupOutPeer(gid, group.getAccessHash()));
-                        return api(new RequestLoadFullGroups(groups))
-                                .map(r -> group.updateExt(r.getGroups().get(0)));
-                    } else {
-                        return Promise.failure(new RuntimeException("Already loaded"));
+                // Do not reduce to lambda due j2objc bug
+                .flatMap(new Function<Group, Promise<Group>>() {
+                    @Override
+                    public Promise<Group> apply(Group group) {
+                        if (!group.isHaveExtension()) {
+                            ArrayList<ApiGroupOutPeer> groups = new ArrayList<>();
+                            groups.add(new ApiGroupOutPeer(gid, group.getAccessHash()));
+                            return api(new RequestLoadFullGroups(groups))
+                                    .map(r -> group.updateExt(r.getGroups().get(0)));
+                        } else {
+                            return Promise.failure(new RuntimeException("Already loaded"));
+                        }
                     }
                 })
                 .then(r -> groups().addOrUpdateItem(r))
