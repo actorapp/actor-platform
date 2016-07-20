@@ -6972,6 +6972,11 @@
           <property role="NX6R2" value="Can user send messages. Default is equals isMember for Group and false for others." />
           <ref role="NX6Kv" node="1kct6f0ucAy" resolve="canSendMessage" />
         </node>
+        <node concept="NX1gA" id="5uOI4gqP9mK" role="NXodf">
+          <property role="NX6R2" value="Is this group deleted" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="5uOI4gqOWxX" resolve="isDeleted" />
+        </node>
         <node concept="NX1gA" id="5qm50Y0edzr" role="NXodf">
           <property role="NX6R2" value="Group extension Data" />
           <property role="1GSvIU" value="full" />
@@ -7066,6 +7071,13 @@
           <property role="TrG5h" value="canSendMessage" />
           <node concept="2m5nlT" id="1kct6f0ucBd" role="2m7DVh">
             <node concept="2m5ndN" id="1kct6f0ucBj" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="5uOI4gqOWxX" role="2m0hLx">
+          <property role="2m7DUN" value="27" />
+          <property role="TrG5h" value="isDeleted" />
+          <node concept="2m5nlT" id="5uOI4gqOWyG" role="2m7DVh">
+            <node concept="2m5ndN" id="5uOI4gqOWyM" role="3GH5xg" />
           </node>
         </node>
         <node concept="2m7Kf5" id="5qm50Y0edyd" role="2m0hLx">
@@ -8120,6 +8132,27 @@
           <property role="NX6R2" value="Can edit admin settings" />
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="3c_gimmPBV8" resolve="canEditAdminSettings" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="5uOI4gqOUWa" role="2m5mJr">
+        <property role="TrG5h" value="GroupDeleted" />
+        <node concept="2m7Kf5" id="5uOI4gqOVc9" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupId" />
+          <node concept="wb0Ql" id="5uOI4gqOVcd" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uO" resolve="groupId" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="5uOI4gqOUWb" role="NuuwV">
+          <property role="Nu42W" value="A62" />
+        </node>
+        <node concept="NXeRC" id="5uOI4gqOVc4" role="NXp_2">
+          <property role="NXePf" value="Update about group deleted" />
+        </node>
+        <node concept="NX1gA" id="5uOI4gqOVco" role="NXp_2">
+          <property role="NX6R2" value="Group Id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="5uOI4gqOVc9" resolve="groupId" />
         </node>
       </node>
       <node concept="NvWBy" id="1kct6f0vec8" role="2m5mJr">
@@ -10952,53 +10985,11 @@
             <ref role="2m5mJy" node="GBscvBB6fx" resolve="Peer" />
           </node>
         </node>
-        <node concept="2m7Kf5" id="4NJj1GT1Zz4" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="title" />
-          <node concept="2m5ndX" id="4NJj1GT1Zza" role="2m7DVh" />
-        </node>
         <node concept="2m7Kf5" id="4NJj1GT20aB" role="2m0hLx">
           <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="description" />
+          <property role="TrG5h" value="optMatchString" />
           <node concept="2m5nlT" id="4NJj1GT20aJ" role="2m7DVh">
             <node concept="2m5ndX" id="4NJj1GT20aP" role="3GH5xg" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="4NJj1GT20aS" role="2m0hLx">
-          <property role="2m7DUN" value="4" />
-          <property role="TrG5h" value="membersCount" />
-          <node concept="2m5nlT" id="4NJj1GT20b3" role="2m7DVh">
-            <node concept="2m5ndE" id="4NJj1GT20b9" role="3GH5xg" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="4NJj1GT20bc" role="2m0hLx">
-          <property role="2m7DUN" value="5" />
-          <property role="TrG5h" value="dateCreated" />
-          <node concept="2m5nlT" id="4NJj1GT20bq" role="2m7DVh">
-            <node concept="wb0Ql" id="4NJj1GT20bz" role="3GH5xg">
-              <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
-            </node>
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="4NJj1GT20bA" role="2m0hLx">
-          <property role="2m7DUN" value="6" />
-          <property role="TrG5h" value="creator" />
-          <node concept="2m5nlT" id="4NJj1GT20c4" role="2m7DVh">
-            <node concept="2m5ndE" id="4NJj1GT20ca" role="3GH5xg" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="4NJj1GT20NO" role="2m0hLx">
-          <property role="2m7DUN" value="7" />
-          <property role="TrG5h" value="isPublic" />
-          <node concept="2m5nlT" id="4NJj1GT20O8" role="2m7DVh">
-            <node concept="2m5ndN" id="4NJj1GT20Oe" role="3GH5xg" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="4NJj1GT2965" role="2m0hLx">
-          <property role="2m7DUN" value="8" />
-          <property role="TrG5h" value="isJoined" />
-          <node concept="2m5nlT" id="4NJj1GT29I0" role="2m7DVh">
-            <node concept="2m5ndN" id="4NJj1GT29I6" role="3GH5xg" />
           </node>
         </node>
         <node concept="NXeRC" id="4NJj1GT20Ny" role="NXodf">
@@ -11009,35 +11000,10 @@
           <property role="NX6R2" value="Peer information" />
           <ref role="NX6Kv" node="4NJj1GT1ZyX" resolve="peer" />
         </node>
-        <node concept="NX1gA" id="4NJj1GT20NJ" role="NXodf">
-          <property role="NX6R2" value="Peer title" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="4NJj1GT1Zz4" resolve="title" />
-        </node>
         <node concept="NX1gA" id="4NJj1GT20Om" role="NXodf">
           <property role="1GSvIU" value="full" />
           <property role="NX6R2" value="Description" />
-          <ref role="NX6Kv" node="4NJj1GT20aB" resolve="description" />
-        </node>
-        <node concept="NX1gA" id="4NJj1GT20Oy" role="NXodf">
-          <property role="1GSvIU" value="full" />
-          <property role="NX6R2" value="Members count" />
-          <ref role="NX6Kv" node="4NJj1GT20aS" resolve="membersCount" />
-        </node>
-        <node concept="NX1gA" id="4NJj1GT20OK" role="NXodf">
-          <property role="NX6R2" value="Group Creation Date" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="4NJj1GT20bc" resolve="dateCreated" />
-        </node>
-        <node concept="NX1gA" id="4NJj1GT20P0" role="NXodf">
-          <property role="NX6R2" value="Group Creator uid" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="4NJj1GT20bA" resolve="creator" />
-        </node>
-        <node concept="NX1gA" id="4NJj1GT20Pi" role="NXodf">
-          <property role="NX6R2" value="Is group public" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="4NJj1GT20NO" resolve="isPublic" />
+          <ref role="NX6Kv" node="4NJj1GT20aB" resolve="optMatchString" />
         </node>
       </node>
       <node concept="2m6fVq" id="4NJj1GT1Vft" role="2m5mJr">
