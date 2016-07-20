@@ -58,60 +58,63 @@ public class AAGroupViewController: AAContentTableController {
                 }
             }
             
-            // Header: Change photo
-            s.action("GroupSetPhoto") { (r) -> () in
-                r.selectAction = { () -> Bool in
-                    let hasCamera = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
-                    self.showActionSheet( hasCamera ? ["PhotoCamera", "PhotoLibrary"] : ["PhotoLibrary"],
-                        cancelButton: "AlertCancel",
-                        destructButton: self.group.getAvatarModel().get() != nil ? "PhotoRemove" : nil,
-                        sourceView: self.view,
-                        sourceRect: self.view.bounds,
-                        tapClosure: { (index) -> () in
-                            if (index == -2) {
-                                self.confirmAlertUser("PhotoRemoveGroupMessage",
-                                    action: "PhotoRemove",
-                                    tapYes: { () -> () in
-                                        Actor.removeGroupAvatarWithGid(jint(self.gid))
-                                    }, tapNo: nil)
-                            } else if (index >= 0) {
-                                let takePhoto: Bool = (index == 0) && hasCamera
-                                self.pickAvatar(takePhoto, closure: { (image) -> () in
-                                    Actor.changeGroupAvatar(jint(self.gid), image: image)
-                                })
-                            }
-                    })
-                    
-                    return true
-                }
-            }
-            
-            // Header: Change title
-            s.action("GroupSetTitle") { (r) -> () in
-                r.selectAction = { () -> Bool in
-                    self.startEditField { (c) -> () in
+            if self.group.isCanEditInfo.get().booleanValue() {
+                
+                // Header: Change photo
+                s.action("GroupSetPhoto") { (r) -> () in
+                    r.selectAction = { () -> Bool in
+                        let hasCamera = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
+                        self.showActionSheet( hasCamera ? ["PhotoCamera", "PhotoLibrary"] : ["PhotoLibrary"],
+                            cancelButton: "AlertCancel",
+                            destructButton: self.group.getAvatarModel().get() != nil ? "PhotoRemove" : nil,
+                            sourceView: self.view,
+                            sourceRect: self.view.bounds,
+                            tapClosure: { (index) -> () in
+                                if (index == -2) {
+                                    self.confirmAlertUser("PhotoRemoveGroupMessage",
+                                        action: "PhotoRemove",
+                                        tapYes: { () -> () in
+                                            Actor.removeGroupAvatarWithGid(jint(self.gid))
+                                        }, tapNo: nil)
+                                } else if (index >= 0) {
+                                    let takePhoto: Bool = (index == 0) && hasCamera
+                                    self.pickAvatar(takePhoto, closure: { (image) -> () in
+                                        Actor.changeGroupAvatar(jint(self.gid), image: image)
+                                    })
+                                }
+                        })
                         
-                        c.title = "GroupEditHeader"
-                        
-                        c.fieldHint = "GroupEditHint"
-                        
-                        c.actionTitle = "NavigationSave"
-                        
-                        c.initialText = self.group.getNameModel().get()
-                        
-                        c.didDoneTap = { (t, c) -> () in
-                            
-                            if t.length == 0 {
-                                return
-                            }
-                            
-//                            c.executeSafeOnlySuccess(Actor.editGroupTitleCommandWithGid(jint(self.gid), withTitle: t)!, successBlock: { (val) -> Void in
-//                                c.dismiss()
-//                            })
-                        }
+                        return true
                     }
-                    
-                    return true
+                }
+                
+                // Header: Change title
+                s.action("GroupSetTitle") { (r) -> () in
+                    r.selectAction = { () -> Bool in
+                        self.startEditField { (c) -> () in
+                            
+                            c.title = "GroupEditHeader"
+                            
+                            c.fieldHint = "GroupEditHint"
+                            
+                            c.actionTitle = "NavigationSave"
+                            
+                            c.initialText = self.group.getNameModel().get()
+                            
+                            c.didDoneTap = { (t, c) -> () in
+                                
+                                if t.length == 0 {
+                                    return
+                                }
+                                
+                                //                            c.executeSafeOnlySuccess(Actor.editGroupTitleCommandWithGid(jint(self.gid), withTitle: t)!, successBlock: { (val) -> Void in
+                                //                                c.dismiss()
+                                //                            })
+                            }
+                        }
+                        
+                        return true
+                    }
                 }
             }
             
@@ -121,11 +124,13 @@ public class AAGroupViewController: AAContentTableController {
         if (ActorSDK.sharedActor().enableCalls) {
             let members = (group.members.get() as! JavaUtilHashSet).size()
             if (members <= 20) { // Temporary limitation
-                section { (s) -> () in
-                    s.action("CallsStartGroupAudio") { (r) -> () in
-                        r.selectAction = { () -> Bool in
-                            self.execute(Actor.doCallWithGid(jint(self.gid)))
-                            return true
+                if group.groupType == ACGroupType.GROUP() {
+                    section { (s) -> () in
+                        s.action("CallsStartGroupAudio") { (r) -> () in
+                            r.selectAction = { () -> Bool in
+                                self.execute(Actor.doCallWithGid(jint(self.gid)))
+                                return true
+                            }
                         }
                     }
                 }
@@ -173,6 +178,24 @@ public class AAGroupViewController: AAContentTableController {
                         }
                     }
                 }
+            }
+        }
+        
+        if group.isCanLeave.get().booleanValue() {
+            // Leave group
+            section { (s) -> () in
+                s.common({ (r) -> () in
+                    r.content = AALocalized("GroupLeave")
+                    r.style = .Destructive
+                    r.selectAction = { () -> Bool in
+                        
+                        self.confirmDestructive(AALocalized("GroupLeaveConfirm"), action: AALocalized("GroupLeaveConfirmAction"), yes: { () -> () in
+                            // self.executeSafe(Actor.leaveGroupCommandWithGid(jint(self.gid))!)
+                        })
+                        
+                        return true
+                    }
+                })
             }
         }
         
@@ -315,22 +338,6 @@ public class AAGroupViewController: AAContentTableController {
                     return true
                 }
             }
-        }
-        
-        // Leave group
-        section { (s) -> () in
-            s.common({ (r) -> () in
-                r.content = AALocalized("GroupLeave")
-                r.style = .DestructiveCentered
-                r.selectAction = { () -> Bool in
-                    
-                    self.confirmDestructive(AALocalized("GroupLeaveConfirm"), action: AALocalized("GroupLeaveConfirmAction"), yes: { () -> () in
-                        // self.executeSafe(Actor.leaveGroupCommandWithGid(jint(self.gid))!)
-                    })
-                    
-                    return true
-                }
-            })
         }
     }
     

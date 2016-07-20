@@ -227,7 +227,7 @@ public class I18nEngine extends IntlEngine {
             String contentText = formatContentText(dialog.getSenderId(),
                     dialog.getMessageType(), dialog.getText(), dialog.getRelatedUid(),
                     dialog.isChannel());
-            if (dialog.getPeer().getPeerType() == PeerType.GROUP) {
+            if (dialog.getPeer().getPeerType() == PeerType.GROUP && !dialog.isChannel()) {
                 if (!isLargeDialogMessage(dialog.getMessageType())) {
                     return formatPerformerName(dialog.getSenderId()) + ": " + contentText;
                 } else {
