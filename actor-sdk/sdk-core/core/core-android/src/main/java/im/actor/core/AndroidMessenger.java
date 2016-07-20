@@ -324,9 +324,6 @@ public class AndroidMessenger extends im.actor.core.Messenger {
                 picturePath = cursor.getString(cursor.getColumnIndex(filePathColumn[0]));
                 mimeType = cursor.getString(cursor.getColumnIndex(filePathColumn[1]));
                 fileName = cursor.getString(cursor.getColumnIndex(filePathColumn[2]));
-                if (mimeType == null) {
-                    mimeType = "?/?";
-                }
                 cursor.close();
             } else {
                 picturePath = uri.getPath();
@@ -337,6 +334,10 @@ public class AndroidMessenger extends im.actor.core.Messenger {
                 } else {
                     mimeType = "?/?";
                 }
+            }
+
+            if (mimeType == null) {
+                mimeType = "?/?";
             }
 
             if (picturePath == null || !uri.getScheme().equals("file")) {
