@@ -82,18 +82,18 @@ trait DifferenceOperations { this: SeqUpdatesExtension ⇒
             case group if group.key == groupKey ⇒ group.dialogs
           }).flatten
 
-          val (groups, direct, favourites) = (originalUpdates foldLeft (
+          val (favourites, groups, direct) = (originalUpdates foldLeft (
+            singleGroup(DialogGroupKeys.Favourites),
             singleGroup(DialogGroupKeys.Groups),
-            singleGroup(DialogGroupKeys.Direct),
-            singleGroup(DialogGroupKeys.Favourites)
+            singleGroup(DialogGroupKeys.Direct)
           )) {
-              case (acc @ (gr, dir, fav), upd) ⇒
+              case (acc @ (fav, gr, dir), upd) ⇒
                 if (upd.header == UpdateMessageReadByMe.header) {
                   UpdateMessageReadByMe.parseFrom(upd.body).right.toOption map { upd ⇒
                     (
+                      rewriteDialogsCounter(fav, upd),
                       rewriteDialogsCounter(gr, upd),
-                      rewriteDialogsCounter(dir, upd),
-                      rewriteDialogsCounter(fav, upd)
+                      rewriteDialogsCounter(dir, upd)
                     )
                   } getOrElse acc
                 } else acc
@@ -103,6 +103,11 @@ trait DifferenceOperations { this: SeqUpdatesExtension ⇒
             chatsChanged.copy(
               Vector(
                 ApiDialogGroup(
+                  title = DialogGroupTitles.Favourites,
+                  key = DialogGroupKeys.Favourites,
+                  dialogs = favourites
+                ),
+                ApiDialogGroup(
                   title = DialogGroupTitles.Groups,
                   key = DialogGroupKeys.Groups,
                   dialogs = groups
@@ -111,11 +116,6 @@ trait DifferenceOperations { this: SeqUpdatesExtension ⇒
                   title = DialogGroupTitles.Direct,
                   key = DialogGroupKeys.Direct,
                   dialogs = direct
-                ),
-                ApiDialogGroup(
-                  title = DialogGroupTitles.Favourites,
-                  key = DialogGroupKeys.Favourites,
-                  dialogs = favourites
                 )
               )
             )

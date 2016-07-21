@@ -279,7 +279,7 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
         authId,
         update,
         pushRules,
-        deliveryId = s"dialogschanged_${userId}"
+        reduceKey = Some(s"dialogschanged_${userId}")
       )
     } yield seqState
   }
