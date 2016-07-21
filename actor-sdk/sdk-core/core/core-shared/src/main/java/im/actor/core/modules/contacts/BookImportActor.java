@@ -78,6 +78,8 @@ public class BookImportActor extends ModuleActor {
     private void performSync() {
         // Ignoring syncing if not enabled
         if (!config().isEnablePhoneBookImport()) {
+            // Marking as everything is imported
+            context().getAppStateModule().onBookImported();
             return;
         }
 
