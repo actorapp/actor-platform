@@ -41,8 +41,6 @@ public class AAGroupViewController: AAContentTableController {
         
         // Header
         section { (s) -> () in
-            
-            // Header: Avatar
             self.headerRow = s.avatar { (r) -> () in
                 
                 r.id = self.gid
@@ -65,69 +63,6 @@ public class AAGroupViewController: AAContentTableController {
                     }
                 }
             }
-            
-
-            
-//            if self.group.isCanEditInfo.get().booleanValue() {
-//                
-//                // Header: Change photo
-//                s.action("GroupSetPhoto") { (r) -> () in
-//                    r.selectAction = { () -> Bool in
-//                        let hasCamera = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
-//                        self.showActionSheet( hasCamera ? ["PhotoCamera", "PhotoLibrary"] : ["PhotoLibrary"],
-//                            cancelButton: "AlertCancel",
-//                            destructButton: self.group.getAvatarModel().get() != nil ? "PhotoRemove" : nil,
-//                            sourceView: self.view,
-//                            sourceRect: self.view.bounds,
-//                            tapClosure: { (index) -> () in
-//                                if (index == -2) {
-//                                    self.confirmAlertUser("PhotoRemoveGroupMessage",
-//                                        action: "PhotoRemove",
-//                                        tapYes: { () -> () in
-//                                            Actor.removeGroupAvatarWithGid(jint(self.gid))
-//                                        }, tapNo: nil)
-//                                } else if (index >= 0) {
-//                                    let takePhoto: Bool = (index == 0) && hasCamera
-//                                    self.pickAvatar(takePhoto, closure: { (image) -> () in
-//                                        Actor.changeGroupAvatar(jint(self.gid), image: image)
-//                                    })
-//                                }
-//                        })
-//                        
-//                        return true
-//                    }
-//                }
-//                
-//                // Header: Change title
-//                s.action("GroupSetTitle") { (r) -> () in
-//                    r.selectAction = { () -> Bool in
-//                        self.startEditField { (c) -> () in
-//                            
-//                            c.title = "GroupEditHeader"
-//                            
-//                            c.fieldHint = "GroupEditHint"
-//                            
-//                            c.actionTitle = "NavigationSave"
-//                            
-//                            c.initialText = self.group.getNameModel().get()
-//                            
-//                            c.didDoneTap = { (t, c) -> () in
-//                                
-//                                if t.length == 0 {
-//                                    return
-//                                }
-//                                
-//                                //                            c.executeSafeOnlySuccess(Actor.editGroupTitleCommandWithGid(jint(self.gid), withTitle: t)!, successBlock: { (val) -> Void in
-//                                //                                c.dismiss()
-//                                //                            })
-//                            }
-//                        }
-//                        
-//                        return true
-//                    }
-//                }
-//            }
-            
         }
         
         // About
@@ -139,6 +74,13 @@ public class AAGroupViewController: AAContentTableController {
                 s.header(AALocalized("GroupDescription").uppercaseString).height = 22
                 
                 s.text(nil, content: about)
+            }
+        }
+        
+        // Link
+        if let shortName = self.group.shortName.get(), let prefix = ActorSDK.sharedActor().invitePrefix {
+            section { (s) in
+                s.text(nil, content: prefix + shortName)
             }
         }
         
@@ -159,12 +101,13 @@ public class AAGroupViewController: AAContentTableController {
             }
         }
         
-        // Notifications
+        // Actions and Settings
         section { (s) -> () in
             
-            let groupPeer: ACPeer! = ACPeer.groupWithInt(jint(self.gid))
-            
+            // Notifications
             s.common { (r) -> () in
+                
+                let groupPeer: ACPeer! = ACPeer.groupWithInt(jint(self.gid))
                 
                 r.style = .Switch
                 r.content = AALocalized("GroupNotifications")
@@ -200,66 +143,44 @@ public class AAGroupViewController: AAContentTableController {
                 }
             }
             
-            // View Members
-            if self.group.isCanViewMembers.get().booleanValue() && self.group.isAsyncMembers.get().booleanValue() {
-                //section { (s) -> () in
-                    
-                    s.common({ (r) -> () in
-                        r.content = AALocalized("GroupViewMembers")
-                        r.style = .Normal
-                        r.selectAction = { () -> Bool in
-                            // TODO: Implement
-                            return false
-                        }
-                    })
-                    
-                    s.action("GroupAddParticipant") { (r) -> () in
-                        
-                        r.selectAction = { () -> Bool in
-                            let addParticipantController = AAAddParticipantViewController(gid: self.gid)
-                            let navigationController = AANavigationController(rootViewController: addParticipantController)
-                            if (AADevice.isiPad) {
-                                navigationController.modalInPopover = true
-                                navigationController.modalPresentationStyle = UIModalPresentationStyle.CurrentContext
-                            }
-                            self.presentViewController(navigationController, animated: true, completion: nil)
-                            return false
-                        }
-                    }
-                //}
-            }
-
-        }
-        
-        
-        // Leave group
-        if group.isCanLeave.get().booleanValue() {
-            section { (s) -> () in
-                s.common({ (r) -> () in
-                    
-                    if self.group.groupType == ACGroupType.CHANNEL() {
-                        r.content = AALocalized("GroupLeaveChannel")
-                    } else {
-                        r.content = AALocalized("GroupLeave")
-                    }
-                    
-                    r.style = .Destructive
+            // Admininstration
+            if group.isCanEditShortName.get().booleanValue() || group.isCanDelete.get().booleanValue() {
+                s.common({ (r) in
+                    r.content = AALocalized("GroupAdministration")
                     r.selectAction = { () -> Bool in
-                        
-                        let title: String
-                        if self.group.groupType == ACGroupType.CHANNEL() {
-                            title = AALocalized("GroupLeaveConfirmChannel")
-                        } else {
-                            title = AALocalized("GroupLeaveConfirm")
-                        }
-                        self.confirmDestructive(title, action: AALocalized("GroupLeaveConfirmAction"), yes: { () -> () in
-                            // self.executeSafe(Actor.leaveGroupCommandWithGid(jint(self.gid))!)
-                        })
-                        
-                        return true
+                        self.navigateNext(AAGroupTypeViewController(gid: self.gid))
+                        return false
                     }
                 })
             }
+            
+            // View Members
+            if self.group.isCanViewMembers.get().booleanValue() && self.group.isAsyncMembers.get().booleanValue() {
+                s.common({ (r) -> () in
+                    r.content = AALocalized("GroupViewMembers")
+                    r.style = .Normal
+                    r.selectAction = { () -> Bool in
+                        // TODO: Implement
+                        return false
+                    }
+                })
+                
+                s.action("GroupAddParticipant") { (r) -> () in
+                    
+                    r.selectAction = { () -> Bool in
+                        let addParticipantController = AAAddParticipantViewController(gid: self.gid)
+                        let navigationController = AANavigationController(rootViewController: addParticipantController)
+                        if (AADevice.isiPad) {
+                            navigationController.modalInPopover = true
+                            navigationController.modalPresentationStyle = UIModalPresentationStyle.CurrentContext
+                        }
+                        self.presentViewController(navigationController, animated: true, completion: nil)
+                        return false
+                        
+                    }
+                }
+            }
+
         }
         
         // Members
@@ -312,8 +233,6 @@ public class AAGroupViewController: AAContentTableController {
                             return true
                         }
                         
-                        let name = user.getNameModel().get()
-                        
                         self.alertSheet { (a: AAAlertSetting) -> () in
                             
                             a.cancel = "AlertCancel"
@@ -362,17 +281,18 @@ public class AAGroupViewController: AAContentTableController {
                                     })
                                 }
                             })
+
+                            // Detect if we are admin
+                            let members: [ACGroupMember] = self.group.members.get().toArray().toSwiftArray()
+                            var isAdmin = self.group.ownerId.get()?.intValue() == Actor.myUid()
+                            if !isAdmin {
+                                for m in members {
+                                    if m.uid == Actor.myUid() {
+                                        isAdmin = m.isAdministrator
+                                    }
+                                }
+                            }
                             
-                            //                        // Detect if we are admin
-                            //                        let members: [ACGroupMember] = self.group.members.get().toArray().toSwiftArray()
-                            //                        var isAdmin = self.group.creatorId == Actor.myUid()
-                            //                        if !isAdmin {
-                            //                            for m in members {
-                            //                                if m.uid == Actor.myUid() {
-                            //                                    isAdmin = m.isAdministrator
-                            //                                }
-                            //                            }
-                            //                        }
                             //
                             //                        // Can mark as admin
                             //                        let canMarkAdmin = isAdmin && !d.isAdministrator
@@ -388,22 +308,52 @@ public class AAGroupViewController: AAContentTableController {
                             //                        }
                             
                             // Can kick user
-                            //                        let canKick = isAdmin || d.inviterUid == Actor.myUid()
-                            //                        
-                            //                        if canKick {
-                            //                            a.destructive("GroupMemberKick") { () -> () in
-                            //                                self.confirmDestructive(AALocalized("GroupMemberKickMessage")
-                            //                                    .replace("{name}", dest: name), action: AALocalized("GroupMemberKickAction")) {
-                            //                                        
-                            //                                        self.executeSafe(Actor.kickMemberCommandWithGid(jint(self.gid), withUid: user.getId())!)
-                            //                                }
-                            //                            }
-                            //                        }
+                            let canKick = isAdmin || d.inviterUid == Actor.myUid()
+                            let name = Actor.getUserWithUid(d.uid).getNameModel().get()
+                            if canKick {
+                                a.destructive("GroupMemberKick") { () -> () in
+                                    self.confirmDestructive(AALocalized("GroupMemberKickMessage")
+                                        .replace("{name}", dest: name), action: AALocalized("GroupMemberKickAction")) {
+                                            
+//                                            self.executeSafe(Actor.kickMemberCommandWithGid(jint(self.gid), withUid: user.getId())!)
+                                    }
+                                }
+                            }
                         }
                         
                         return true
                     }
                 }
+            }
+        }
+        
+        // Leave group
+        if group.isCanLeave.get().booleanValue() {
+            section { (s) -> () in
+                s.common({ (r) -> () in
+                    
+                    if self.group.groupType == ACGroupType.CHANNEL() {
+                        r.content = AALocalized("GroupLeaveChannel")
+                    } else {
+                        r.content = AALocalized("GroupLeave")
+                    }
+                    
+                    r.style = .Destructive
+                    r.selectAction = { () -> Bool in
+                        
+                        let title: String
+                        if self.group.groupType == ACGroupType.CHANNEL() {
+                            title = AALocalized("GroupLeaveConfirmChannel")
+                        } else {
+                            title = AALocalized("GroupLeaveConfirm")
+                        }
+                        self.confirmDestructive(title, action: AALocalized("GroupLeaveConfirmAction"), yes: { () -> () in
+                            // self.executeSafe(Actor.leaveGroupCommandWithGid(jint(self.gid))!)
+                        })
+                        
+                        return true
+                    }
+                })
             }
         }
     }

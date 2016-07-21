@@ -294,6 +294,12 @@
 
 "GroupDescription" = "Description";
 
+"GroupAdministration" = "Administration";
+
+"GroupTypeTitle" = "Group Type";
+
+"GroupTypeTitleChannel" = "Channel Type";
+
 "GroupMemberAdmin" = "admin";
 
 "GroupMemberInfo" = "Profile";

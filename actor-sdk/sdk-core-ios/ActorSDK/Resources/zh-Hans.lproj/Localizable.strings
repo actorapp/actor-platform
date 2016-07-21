@@ -280,6 +280,12 @@
 
 "GroupDescription" = "Description";
 
+"GroupAdministration" = "Administration";
+
+"GroupTypeTitle" = "Group Type";
+
+"GroupTypeTitleChannel" = "Channel Type";
+
 "GroupMemberMakeAdmin" = "设为群组管理员";
 
 "GroupMemberMakeMessage" = "确定将 {name} 设为群组管理员吗?";

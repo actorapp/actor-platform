@@ -292,6 +292,12 @@
 
 "GroupDescription" = "Описание";
 
+"GroupAdministration" = "Администрирование";
+
+"GroupTypeTitle" = "Тип группы";
+
+"GroupTypeTitleChannel" = "Тип канала";
+
 "GroupViewMembers" = "Участники";
 
 "GroupMemberAdmin" = "админ.";

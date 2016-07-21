@@ -236,6 +236,7 @@
 		06ABFE331D3FAF800031A0D6 /* GCDAsyncSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 06ABFE2F1D3FAF800031A0D6 /* GCDAsyncSocket.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		06ABFE341D3FAF800031A0D6 /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ABFE301D3FAF800031A0D6 /* GCDAsyncSocket.m */; };
 		06ABFE381D3FCCE30031A0D6 /* AAGroupEditInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABFE371D3FCCE30031A0D6 /* AAGroupEditInfoViewController.swift */; };
+		06ABFE3A1D410D2D0031A0D6 /* AAGroupTypeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABFE391D410D2D0031A0D6 /* AAGroupTypeController.swift */; };
 		06B489ED1C9F6EBD0054245B /* AAStickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B489EC1C9F6EBC0054245B /* AAStickerView.swift */; };
 		06C1D0771C8BC9FC00B73632 /* AAAuthNameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C1D0761C8BC9FC00B73632 /* AAAuthNameViewController.swift */; };
 		06C1D07B1C8BFE5C00B73632 /* AAAuthPhoneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C1D07A1C8BFE5C00B73632 /* AAAuthPhoneViewController.swift */; };
@@ -611,6 +612,7 @@
 		06ABFE2F1D3FAF800031A0D6 /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncSocket.h; sourceTree = "<group>"; };
 		06ABFE301D3FAF800031A0D6 /* GCDAsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncSocket.m; sourceTree = "<group>"; };
 		06ABFE371D3FCCE30031A0D6 /* AAGroupEditInfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAGroupEditInfoViewController.swift; sourceTree = "<group>"; };
+		06ABFE391D410D2D0031A0D6 /* AAGroupTypeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAGroupTypeController.swift; sourceTree = "<group>"; };
 		06B489EC1C9F6EBC0054245B /* AAStickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAStickerView.swift; sourceTree = "<group>"; };
 		06C1D0761C8BC9FC00B73632 /* AAAuthNameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthNameViewController.swift; sourceTree = "<group>"; };
 		06C1D07A1C8BFE5C00B73632 /* AAAuthPhoneViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthPhoneViewController.swift; sourceTree = "<group>"; };
@@ -1234,9 +1236,10 @@
 			isa = PBXGroup;
 			children = (
 				066A52E81BC52A25000E606E /* Cells */,
-				066A52E31BC52A20000E606E /* AAAddParticipantViewController.swift */,
 				066A52E21BC52A20000E606E /* AAGroupViewController.swift */,
 				06ABFE371D3FCCE30031A0D6 /* AAGroupEditInfoViewController.swift */,
+				06ABFE391D410D2D0031A0D6 /* AAGroupTypeController.swift */,
+				066A52E31BC52A20000E606E /* AAAddParticipantViewController.swift */,
 				066A52E41BC52A20000E606E /* AAInviteLinkViewController.swift */,
 			);
 			path = Group;
@@ -2091,6 +2094,7 @@
 				061850E31C95CBF000C522D5 /* YYTextKeyboardManager.m in Sources */,
 				066A52571BC4EF61000E606E /* AACollectionViewController.swift in Sources */,
 				066A532F1BC53406000E606E /* AABubbleMediaCell.swift in Sources */,
+				06ABFE3A1D410D2D0031A0D6 /* AAGroupTypeController.swift in Sources */,
 				15D35F631C20187E00E3717A /* AAModernConversationAudioPlayer.m in Sources */,
 				066A527F1BC51ED0000E606E /* AARootSplitViewController.swift in Sources */,
 				066A52481BC4EED5000E606E /* AAProgressView.swift in Sources */,

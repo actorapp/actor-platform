@@ -33,7 +33,7 @@ public class AAContentTableController: AAManagedTableController, AAManagedTableC
     
     // DSL Implementation
     
-    public func section(@noescape closure: (s: AAManagedSection) -> ()) {
+    public func section(@noescape closure: (s: AAManagedSection) -> ()) -> AAManagedSection {
         if !isInLoad {
             fatalError("Unable to change sections not during tableDidLoad method call")
         }
@@ -48,6 +48,7 @@ public class AAContentTableController: AAManagedTableController, AAManagedTableC
             }
         }
         closure(s: s)
+        return s
     }
     
     public func search<C where C: AABindedSearchCell, C: UITableViewCell>(cell: C.Type, @noescape closure: (s: AAManagedSearchConfig<C>) -> ()) {

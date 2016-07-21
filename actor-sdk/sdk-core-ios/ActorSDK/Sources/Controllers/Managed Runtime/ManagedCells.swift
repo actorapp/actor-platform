@@ -354,6 +354,10 @@ public class AACommonRow: AAManagedRow {
             }
         }
     }
+    
+    public func rebind() {
+        bindAction?(r: self)
+    }
 }
 
 public extension AAManagedSection {
