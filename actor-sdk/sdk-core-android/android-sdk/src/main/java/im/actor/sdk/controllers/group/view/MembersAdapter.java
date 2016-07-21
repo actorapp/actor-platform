@@ -9,6 +9,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Optional;
 
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
@@ -31,6 +32,7 @@ public class MembersAdapter extends HolderAdapter<GroupMember> {
     private ActorBinder BINDER = new ActorBinder();
     private boolean loadInProgress = false;
     private boolean loaddedToEnd = false;
+    private LoadedCallback callback;
 
     public MembersAdapter(Context context, int groupId) {
         super(context);
@@ -76,17 +78,27 @@ public class MembersAdapter extends HolderAdapter<GroupMember> {
     private byte[] nextMembers;
     private ArrayList<Integer> rawMembers = new ArrayList<>();
 
-    public void initLoad() {
+    public void initLoad(LoadedCallback callback) {
+        this.callback = callback;
         if (!isInitiallyLoaded) {
             loadMore();
         }
+    }
+
+    public interface LoadedCallback {
+        void onLoaded();
     }
 
     private void loadMore() {
         if (!loadInProgress && !loaddedToEnd) {
             loadInProgress = true;
             messenger().loadMembers(groupId, LIMIT, nextMembers).then(groupMembersSlice -> {
-                isInitiallyLoaded = true;
+                if (!isInitiallyLoaded) {
+                    isInitiallyLoaded = true;
+                    if (callback != null) {
+                        callback.onLoaded();
+                    }
+                }
                 rawMembers.clear();
                 rawMembers.addAll(groupMembersSlice.getUids());
                 nextMembers = groupMembersSlice.getNext();
