@@ -64,7 +64,13 @@ public class AAGroupAdministrationViewController: AAContentTableController {
             section { (s) in
                 s.footerText = "You will lose all messages in this group"
                 s.danger("Delete Group", closure: { (r) in
-                    
+                    r.selectAction = { () -> Bool in
+                        self.executePromise(Actor.deleteGroupWithGid(jint(self.gid))).after {
+                            let first = self.navigationController!.viewControllers.first!
+                            self.navigationController!.setViewControllers([first], animated: true)
+                        }
+                        return true
+                    }
                 })
             }
         }

@@ -39,6 +39,11 @@ extension ARPromise {
         return self
     }
     
+    func after(closure: () -> ()) -> ARPromise {
+        then(PromiseConsumerEmpty(closure: closure))
+        return self
+    }
+    
     func failure(withClosure closure: (JavaLangException!) -> ()) -> ARPromise {
         failure(PromiseConsumer(closure: closure))
         return self
@@ -55,5 +60,18 @@ class PromiseConsumer<T>: NSObject, ARConsumer {
 
     func applyWithId(t: AnyObject!) {
         closure(t as? T)
+    }
+}
+
+class PromiseConsumerEmpty: NSObject, ARConsumer {
+    
+    let closure: () -> ()
+    
+    init(closure: () -> ()) {
+        self.closure = closure
+    }
+    
+    func applyWithId(t: AnyObject!) {
+        closure()
     }
 }
