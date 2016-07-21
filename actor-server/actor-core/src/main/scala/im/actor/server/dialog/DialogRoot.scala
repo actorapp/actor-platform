@@ -107,6 +107,7 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
   import context.dispatcher
 
   private val system = context.system
+  private val seqUpdExt = SeqUpdatesExtension(system)
   private val userExt = UserExtension(system)
   private val groupExt = GroupExtension(system)
   private val db = DbExtension(system).db
@@ -218,7 +219,7 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
       commit(e)
       (for {
         _ ← db.run(HistoryMessageRepo.deleteAll(userId, peer))
-        _ ← SeqUpdatesExtension(system).deliverUserUpdate(userId, UpdateChatDelete(peer.asStruct))
+        _ ← seqUpdExt.deliverUserUpdate(userId, UpdateChatDelete(peer.asStruct))
         seqState ← sendChatGroupsChanged(clientAuthId)
         //        _ = thatDialog ! PoisonPill // kill that dialog would be good
       } yield seqState) pipeTo sender()
@@ -273,8 +274,13 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
     for {
       groups ← DialogExtension(system).fetchApiGroupedDialogs(userId)
       update = UpdateChatGroupsChanged(groups)
-      seqState ← SeqUpdatesExtension(system)
-        .deliverClientUpdate(userId, authId, update, pushRules)
+      seqState ← seqUpdExt.deliverClientUpdate(
+        userId,
+        authId,
+        update,
+        pushRules,
+        deliveryId = s"dialogschanged_${userId}"
+      )
     } yield seqState
   }
 

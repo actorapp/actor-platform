@@ -161,6 +161,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
       }
     }
 
+  // TODO: add non deleted check too.
   private def getNonChannelsIds(groups: Seq[ApiGroupOutPeer]): Future[Seq[Int]] = {
     FutureExt.ftraverse(groups) {
       case ApiGroupOutPeer(groupId, _) ⇒
