@@ -5,6 +5,7 @@ import java.time.Instant
 import akka.actor.Status
 import akka.http.scaladsl.util.FastFuture
 import akka.pattern.pipe
+import im.actor.api.rpc.Update
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.users.ApiSex
 import im.actor.concurrent.FutureExt
@@ -162,6 +163,12 @@ private[group] trait GroupCommandHandlers
       }
     }
   }
+
+  protected def permissionsUpdates(userId: Int, currState: GroupState): Vector[Update] =
+    Vector(
+      UpdateGroupPermissionsChanged(groupId, currState.permissions.groupFor(userId)),
+      UpdateGroupFullPermissionsChanged(groupId, currState.permissions.fullFor(userId))
+    )
 
   protected def isValidTitle(title: String) = title.nonEmpty && title.length < 255
 

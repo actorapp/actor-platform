@@ -296,19 +296,92 @@ private[group] final case class GroupState(
   def withSnapshot(metadata: SnapshotMetadata, snapshot: Any): GroupState = this
 
   object permissions {
+    val GroupEmpty = 0L
+    val FullGroupEmpty = 0L
+
+    ///////////////////////////
+    //  General permissions  //
+    ///////////////////////////
+
+    /**
+     * @note check up to date doc in im.actor.api.rpc.groups.ApiGroup
+     *
+     * Group permissions bits:
+     * 0 - canSendMessage. Default is FALSE.
+     * 1 - canClear. Default is FALSE.
+     * 2 - canLeave. Default is FALSE.
+     * 3 - canDelete. Default is FALSE.
+     */
+    def groupFor(userId: Int): Long = {
+      ((toInt(canSendMessage(userId)) << 0) +
+        (toInt(canClear(userId)) << 1) +
+        (toInt(canLeave(userId)) << 2) +
+        (toInt(canDelete(userId)) << 3)).toLong
+    }
 
     /**
      * bot can send messages in all groups
      * in general/public group only members can send messages
      * in channels only owner and admins can send messages
      */
-    def canSendMessage(clientUserId: Int) =
+    private def canSendMessage(clientUserId: Int) =
       {
         groupType match {
           case General ⇒ isMember(clientUserId)
           case Channel ⇒ isAdmin(clientUserId) || isOwner(clientUserId)
         }
       } || bot.exists(_.userId == clientUserId)
+
+    // if  history shared, only owner can clear, everyone otherwise
+    private def canClear(clientUserId: Int): Boolean = !isHistoryShared || isOwner(clientUserId)
+
+    /**
+     * for now, owner can't leave group.
+     * He can either transfer ownership and leave group
+     * or delete group completely.
+     */
+    def canLeave(clientUserId: Int): Boolean = !isOwner(clientUserId)
+
+    // only owner can delete group
+    def canDelete(clientUserId: Int): Boolean = isOwner(clientUserId)
+
+    ////////////////////////////
+    // Full group permissions //
+    ////////////////////////////
+
+    /**
+     * @note check up to date doc at im.actor.api.rpc.groups.ApiGroupFull
+     *
+     * Full group permissions bits:
+     * 0 - canEditInfo. Default is FALSE.
+     * 1 - canViewMembers. Default is FALSE.
+     * 2 - canInviteMembers. Default is FALSE.
+     * 3 - canInviteViaLink. Default is FALSE.
+     * 4 - canCall. Default is FALSE.
+     * 5 - canEditAdminSettings. Default is FALSE.
+     * 6 - canViewAdmins. Default is FALSE.
+     * 7 - canEditAdmins. Default is FALSE.
+     */
+    def fullFor(userId: Int): Long = {
+      ((toInt(canEditInfo(userId)) << 0) +
+        (toInt(canViewMembers(userId)) << 1) +
+        (toInt(canInviteMembers(userId)) << 2) +
+        (toInt(canInviteViaLink(userId)) << 3) +
+        (toInt(canCall(userId)) << 4) +
+        (toInt(canEditAdminSettings(userId)) << 5) +
+        (toInt(canViewAdmins(userId)) << 6) +
+        (toInt(canEditAdmins(userId)) << 7)).toLong
+    }
+
+    /**
+     * owner always can edit group info
+     * admin can edit group info, if canAdminsEditGroupInfo is true in admin settings
+     * any member can edit group info, if canMembersEditGroupInfo is true in admin settings
+     */
+    def canEditInfo(clientUserId: Int): Boolean =
+      isOwner(clientUserId) ||
+        (isAdmin(clientUserId) && adminSettings.canAdminsEditGroupInfo) ||
+        (isMember(clientUserId) && adminSettings.canMembersEditGroupInfo)
 
     /**
      * in general/public group, all members can view members
@@ -321,10 +394,10 @@ private[group] final case class GroupState(
       }
 
     /**
-     * owner and admins always can invite new people
-     * members can invite new people if canMembersInvite is true
+     * owner and admins always can invite new members
+     * regular members can invite new members if adminSettings.canMembersInvite is true
      */
-    def canInvitePeople(clientUserId: Int) =
+    def canInviteMembers(clientUserId: Int) =
       isOwner(clientUserId) ||
         isAdmin(clientUserId) ||
         (isMember(clientUserId) && adminSettings.canMembersInvite)
@@ -332,8 +405,30 @@ private[group] final case class GroupState(
     /**
      * only owner and admins can invite via link
      */
-    def canInviteViaLink(clientUserId: Int) =
+    private def canInviteViaLink(clientUserId: Int) = isOwner(clientUserId) || isAdmin(clientUserId)
+
+    /**
+     * All members can call, if group has less than 25 members, and is not a channel
+     */
+    private def canCall(clientUserId: Int) = !groupType.isChannel && membersCount <= 25
+
+    // only owner can change admin settings
+    def canEditAdminSettings(clientUserId: Int): Boolean = isOwner(clientUserId)
+
+    /**
+     * admins list is always visible to owner and admins
+     * admins list is visible to any member if showAdminsToMembers = true
+     */
+    private def canViewAdmins(clientUserId: Int): Boolean =
+      isOwner(clientUserId) || isAdmin(clientUserId) || adminSettings.showAdminsToMembers
+
+    // only owner and other admins can edit admins list
+    def canEditAdmins(clientUserId: Int): Boolean =
       isOwner(clientUserId) || isAdmin(clientUserId)
+
+    ////////////////////////////
+    //  Internal permissions  //
+    ////////////////////////////
 
     /**
      * owner and admins can kick members
@@ -341,45 +436,12 @@ private[group] final case class GroupState(
     def canKickMember(clientUserId: Int) =
       isOwner(clientUserId) || isAdmin(clientUserId)
 
-    /**
-     * owner always can edit group info
-     * admin can edit group info, if canAdminsEditGroupInfo is true in admin settings
-     * any member can edit group info, if canMembersEditGroupInfo is true in admin settings
-     */
-    def canEditInfo(clientUserId: Int): Boolean =
-      isOwner(clientUserId) ||
-        (isAdmin(clientUserId) && adminSettings.canAdminsEditGroupInfo) ||
-        (isMember(clientUserId) && adminSettings.canMembersEditGroupInfo)
-
     // only owner can change short name
     def canEditShortName(clientUserId: Int): Boolean = isOwner(clientUserId)
 
     // only owner can make history shared
     def canMakeHistoryShared(clientUserId: Int): Boolean = isOwner(clientUserId)
 
-    // only owner and other admins can edit admins list
-    def canEditAdmins(clientUserId: Int): Boolean =
-      isOwner(clientUserId) || isAdmin(clientUserId)
-
-    /**
-     * admins list is always visible to owner and admins
-     * admins list is visible to any member if showAdminsToMembers = true
-     */
-    def canViewAdmins(clientUserId: Int): Boolean =
-      isOwner(clientUserId) || isAdmin(clientUserId) || adminSettings.showAdminsToMembers
-
-    // only owner can change admin settings
-    def canEditAdminSettings(clientUserId: Int): Boolean = isOwner(clientUserId)
-
-    // only owner can delete group
-    def canDelete(clientUserId: Int): Boolean = isOwner(clientUserId)
-
-    /**
-     * for now, owner can't leave group.
-     * He can either transfer ownership and leave group
-     * or delete group completely.
-     */
-    def canLeave(clientUserId: Int): Boolean = !isOwner(clientUserId)
-
+    private def toInt(b: Boolean) = if (b) 1 else 0
   }
 }

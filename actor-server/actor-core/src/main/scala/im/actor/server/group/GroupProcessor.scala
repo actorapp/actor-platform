@@ -8,7 +8,7 @@ import akka.http.scaladsl.util.FastFuture
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.concurrent.ActorFutures
 import im.actor.serialization.ActorSerializer
-import im.actor.server.cqrs.{ Processor, TaggedEvent }
+import im.actor.server.cqrs.{ Event, Processor, TaggedEvent }
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog.{ DialogEnvelope, DialogExtension }
 import im.actor.server.group.GroupErrors._
@@ -182,6 +182,23 @@ private[group] final class GroupProcessor
     case CheckAccessHash(accessHash)              ⇒ checkAccessHash(accessHash)
     case CanSendMessage(clientUserId)             ⇒ canSendMessage(clientUserId)
     case LoadAdminSettings(clientUserId)          ⇒ loadAdminSettings(clientUserId)
+  }
+
+  override def afterCommit(e: Event) = {
+    super.afterCommit(e)
+    if (state.membersCount > 25) {
+      updateCanCall(state)
+    }
+    // TODO: add async members
+    // if(state.membersCount > 50) { updateMembersAsync(state) }
+  }
+
+  private def updateCanCall(state: GroupState): Unit = {
+    state.memberIds foreach { userId ⇒
+      permissionsUpdates(userId, state) foreach { update ⇒
+        seqUpdExt.deliverUserUpdate(userId, update)
+      }
+    }
   }
 
   def persistenceId: String = GroupProcessor.persistenceIdFor(groupId)

@@ -23,7 +23,7 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
   import im.actor.server.ApiConversions._
 
   protected def invite(cmd: Invite): Unit = {
-    if (!state.permissions.canInvitePeople(cmd.inviterUserId)) {
+    if (!state.permissions.canInviteMembers(cmd.inviterUserId)) {
       sender() ! noPermission
     } else if (state.isInvited(cmd.inviteeUserId)) {
       sender() ! Status.Failure(GroupErrors.UserAlreadyInvited)
@@ -40,7 +40,7 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
         val apiMembers = newState.members.values.map(_.asStruct).toVector
 
         // if user ever been in this group - we should push these updates,
-        val inviteeUpdatesNew: List[Update] = refreshGroupUpdates(newState, cmd.inviteeUserId)
+        val inviteeUpdatesNew: Vector[Update] = refreshGroupUpdates(newState, cmd.inviteeUserId)
 
         val membersUpdateNew: Update =
           if (newState.groupType.isChannel) // if channel, or group is big enough
@@ -220,8 +220,8 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
         //
         // If user was invited to group by other member - we don't need to push group updates,
         // cause they we pushed already on invite step
-        val joiningUserUpdatesNew: List[Update] =
-          if (wasInvited) List.empty[Update] else refreshGroupUpdates(newState, cmd.joiningUserId)
+        val joiningUserUpdatesNew: Vector[Update] =
+          if (wasInvited) Vector.empty[Update] else refreshGroupUpdates(newState, cmd.joiningUserId)
 
         val membersUpdateNew: Update =
           if (newState.groupType.isChannel) // if channel, or group is big enough
@@ -340,38 +340,15 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
     } else if (!state.permissions.canLeave(cmd.userId)) {
       sender() ! Status.Failure(CantLeaveGroup)
     } else {
-      persist(UserLeft(Instant.now, cmd.userId)) { evt ⇒
+      val leftEvent = UserLeft(Instant.now, cmd.userId)
+      persist(leftEvent) { evt ⇒
         // no commit here. it will be after service message sent
 
         val dateMillis = evt.ts.toEpochMilli
 
         val updateObsolete = UpdateGroupUserLeaveObsolete(groupId, cmd.userId, dateMillis, cmd.randomId)
 
-        val leftUserUpdatesNew: Vector[Update] = {
-          val commonUpdates = Vector(
-            UpdateGroupCanSendMessagesChanged(groupId, canSendMessages = false),
-            UpdateGroupCanEditInfoChanged(groupId, canEditGroup = false),
-            UpdateGroupCanEditUsernameChanged(groupId, canEditUsername = false),
-            UpdateGroupCanEditAdminsChanged(groupId, canAssignAdmins = false),
-            UpdateGroupCanViewAdminsChanged(groupId, canViewAdmins = false),
-            UpdateGroupCanEditAdminSettingsChanged(groupId, canEditAdminSettings = false),
-            UpdateGroupCanInviteViaLink(groupId, canInviteViaLink = false),
-            UpdateGroupCanLeaveChanged(groupId, canLeaveChanged = false),
-            UpdateGroupCanDeleteChanged(groupId, canDeleteChanged = false)
-          )
-
-          if (state.groupType.isChannel) {
-            (UpdateGroupCanViewMembersChanged(groupId, canViewMembers = false) +:
-              commonUpdates) :+
-              UpdateGroupCanInviteMembersChanged(groupId, canInviteMembers = false)
-          } else {
-            commonUpdates ++ Vector(
-              UpdateGroupCanViewMembersChanged(groupId, canViewMembers = false),
-              UpdateGroupMembersUpdated(groupId, members = Vector.empty),
-              UpdateGroupCanInviteMembersChanged(groupId, canInviteMembers = false)
-            )
-          }
-        }
+        val updatePermissions = permissionsUpdates(cmd.userId, currState = state.updated(leftEvent))
 
         val membersUpdateNew =
           if (state.groupType.isChannel) { // if channel, or group is big enough
@@ -424,7 +401,8 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
             // push left user updates
             // • with empty group members
             // • that he can't view and invite members
-            _ ← FutureExt.ftraverse(leftUserUpdatesNew) { update ⇒
+            leftUpdates = updatePermissions :+ UpdateGroupMembersUpdated(groupId, members = Vector.empty)
+            _ ← FutureExt.ftraverse(leftUpdates) { update ⇒
               seqUpdExt.deliverUserUpdate(userId = cmd.userId, update)
             }
           } yield SeqStateDate(seq, state, date)
@@ -445,7 +423,8 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
             )
 
             // push left user updates that he has no group rights
-            _ ← FutureExt.ftraverse(leftUserUpdatesNew) { update ⇒
+            leftUpdates = updatePermissions :+ UpdateGroupMembersCountChanged(groupId, membersCount = 0)
+            _ ← FutureExt.ftraverse(leftUpdates) { update ⇒
               seqUpdExt.deliverUserUpdate(userId = cmd.userId, update)
             }
           } yield SeqStateDate(seq, state, dateMillis)
@@ -492,30 +471,7 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
 
         val updateObsolete = UpdateGroupUserKickObsolete(groupId, cmd.kickedUserId, cmd.kickerUserId, dateMillis, cmd.randomId)
 
-        val kickedUserUpdatesNew: Vector[Update] = {
-          val commonUpdates = Vector(
-            UpdateGroupCanViewMembersChanged(groupId, canViewMembers = false),
-            UpdateGroupCanSendMessagesChanged(groupId, canSendMessages = false),
-            UpdateGroupCanEditInfoChanged(groupId, canEditGroup = false),
-            UpdateGroupCanEditUsernameChanged(groupId, canEditUsername = false),
-            UpdateGroupCanEditAdminsChanged(groupId, canAssignAdmins = false),
-            UpdateGroupCanViewAdminsChanged(groupId, canViewAdmins = false),
-            UpdateGroupCanEditAdminSettingsChanged(groupId, canEditAdminSettings = false),
-            UpdateGroupCanInviteMembersChanged(groupId, canInviteMembers = false),
-            UpdateGroupCanInviteViaLink(groupId, canInviteViaLink = false),
-            UpdateGroupCanLeaveChanged(groupId, canLeaveChanged = false),
-            UpdateGroupCanDeleteChanged(groupId, canDeleteChanged = false)
-          )
-
-          if (state.groupType.isChannel) {
-            commonUpdates :+ UpdateGroupMemberChanged(groupId, isMember = false)
-          } else {
-            commonUpdates ++ Vector(
-              UpdateGroupMembersUpdated(groupId, members = Vector.empty),
-              UpdateGroupMemberChanged(groupId, isMember = false)
-            )
-          }
-        }
+        val updatePermissions = permissionsUpdates(cmd.kickedUserId, newState)
 
         val membersUpdateNew: Update =
           if (newState.groupType.isChannel) { // if channel, or group is big enough
@@ -563,7 +519,11 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
             // • with empty group members
             // • that he is no longer a member of group
             // • that he can't view and invite members
-            _ ← FutureExt.ftraverse(kickedUserUpdatesNew) { update ⇒
+            kickedUserUpdates = updatePermissions ++ Vector(
+              UpdateGroupMembersUpdated(groupId, members = Vector.empty),
+              UpdateGroupMemberChanged(groupId, isMember = false)
+            )
+            _ ← FutureExt.ftraverse(kickedUserUpdates) { update ⇒
               seqUpdExt.deliverUserUpdate(userId = cmd.kickedUserId, update)
             }
           } yield SeqStateDate(seq, state, date)
@@ -591,7 +551,8 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
             )
 
             // push kicked user updates that he has no group rights
-            _ ← FutureExt.ftraverse(kickedUserUpdatesNew) { update ⇒
+            kickedUserUpdates = updatePermissions :+ UpdateGroupMemberChanged(groupId, isMember = false)
+            _ ← FutureExt.ftraverse(kickedUserUpdates) { update ⇒
               seqUpdExt.deliverUserUpdate(userId = cmd.kickedUserId, update)
             }
           } yield SeqStateDate(seq, state, dateMillis)
@@ -626,27 +587,16 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
 
   // Updates that will be sent to user, when he enters group.
   // Helps clients that have this group to refresh it's data.
-  private def refreshGroupUpdates(newState: GroupState, userId: Int): List[Update] = List(
+  private def refreshGroupUpdates(newState: GroupState, userId: Int): Vector[Update] = Vector(
     UpdateGroupMemberChanged(groupId, isMember = true),
     UpdateGroupAboutChanged(groupId, newState.about),
     UpdateGroupAvatarChanged(groupId, newState.avatar),
     UpdateGroupTopicChanged(groupId, newState.topic),
     UpdateGroupTitleChanged(groupId, newState.title),
-    UpdateGroupOwnerChanged(groupId, newState.ownerUserId),
-    UpdateGroupCanSendMessagesChanged(groupId, newState.permissions.canSendMessage(userId)),
-    UpdateGroupCanViewMembersChanged(groupId, newState.permissions.canViewMembers(userId)),
-    UpdateGroupCanInviteMembersChanged(groupId, newState.permissions.canInvitePeople(userId)),
-    UpdateGroupCanEditInfoChanged(groupId, newState.permissions.canEditInfo(userId)),
-    UpdateGroupCanEditUsernameChanged(groupId, newState.permissions.canEditShortName(userId)),
-    UpdateGroupCanEditAdminsChanged(groupId, newState.permissions.canEditAdmins(userId)),
-    UpdateGroupCanViewAdminsChanged(groupId, newState.permissions.canViewAdmins(userId)),
-    UpdateGroupCanInviteViaLink(groupId, newState.permissions.canInviteViaLink(userId)),
-    UpdateGroupCanLeaveChanged(groupId, newState.permissions.canLeave(userId)),
-    UpdateGroupCanDeleteChanged(groupId, newState.permissions.canDelete(userId)),
-    UpdateGroupCanEditAdminSettingsChanged(groupId, newState.permissions.canEditAdminSettings(userId))
+    UpdateGroupOwnerChanged(groupId, newState.ownerUserId)
   //    UpdateGroupExtChanged(groupId, newState.extension) //TODO: figure out and fix
   //          if(bigGroup) UpdateGroupMembersCountChanged(groupId, newState.extension)
-  )
+  ) ++ permissionsUpdates(userId, newState)
 
   private def serviceMessageUpdate(senderUserId: Int, date: Long, randomId: Long, message: ApiServiceMessage) =
     UpdateMessage(
