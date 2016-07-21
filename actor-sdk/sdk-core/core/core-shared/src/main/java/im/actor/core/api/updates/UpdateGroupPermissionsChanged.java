@@ -15,22 +15,22 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.core.api.*;
 
-public class UpdateGroupCanEditUsernameChanged extends Update {
+public class UpdateGroupPermissionsChanged extends Update {
 
-    public static final int HEADER = 0xa48;
-    public static UpdateGroupCanEditUsernameChanged fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new UpdateGroupCanEditUsernameChanged(), data);
+    public static final int HEADER = 0xa67;
+    public static UpdateGroupPermissionsChanged fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new UpdateGroupPermissionsChanged(), data);
     }
 
     private int groupId;
-    private boolean canEditUsername;
+    private long permissions;
 
-    public UpdateGroupCanEditUsernameChanged(int groupId, boolean canEditUsername) {
+    public UpdateGroupPermissionsChanged(int groupId, long permissions) {
         this.groupId = groupId;
-        this.canEditUsername = canEditUsername;
+        this.permissions = permissions;
     }
 
-    public UpdateGroupCanEditUsernameChanged() {
+    public UpdateGroupPermissionsChanged() {
 
     }
 
@@ -38,27 +38,27 @@ public class UpdateGroupCanEditUsernameChanged extends Update {
         return this.groupId;
     }
 
-    public boolean canEditUsername() {
-        return this.canEditUsername;
+    public long getPermissions() {
+        return this.permissions;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         this.groupId = values.getInt(1);
-        this.canEditUsername = values.getBool(2);
+        this.permissions = values.getLong(2);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeInt(1, this.groupId);
-        writer.writeBool(2, this.canEditUsername);
+        writer.writeLong(2, this.permissions);
     }
 
     @Override
     public String toString() {
-        String res = "update GroupCanEditUsernameChanged{";
+        String res = "update GroupPermissionsChanged{";
         res += "groupId=" + this.groupId;
-        res += ", canEditUsername=" + this.canEditUsername;
+        res += ", permissions=" + this.permissions;
         res += "}";
         return res;
     }

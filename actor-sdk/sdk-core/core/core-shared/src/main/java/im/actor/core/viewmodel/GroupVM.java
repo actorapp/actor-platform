@@ -53,6 +53,9 @@ public class GroupVM extends BaseValueModel<Group> {
     @NotNull
     @Property("nonatomic, readonly")
     private BooleanValueModel isCanWriteMessage;
+    @NotNull
+    @Property("nonatomic, readonly")
+    private BooleanValueModel isCanCall;
 
     @NotNull
     @Property("nonatomic, readonly")
@@ -126,8 +129,8 @@ public class GroupVM extends BaseValueModel<Group> {
         this.avatar = new AvatarValueModel("group." + groupId + ".avatar", rawObj.getAvatar());
         this.isMember = new BooleanValueModel("group." + groupId + ".isMember", rawObj.isMember());
         this.membersCount = new IntValueModel("group." + groupId + ".membersCount", rawObj.getMembersCount());
-        this.isCanWriteMessage = new BooleanValueModel("group." + groupId + ".can_write", rawObj.isCanWrite());
-
+        this.isCanWriteMessage = new BooleanValueModel("group." + groupId + ".can_write", rawObj.isCanSendMessage());
+        this.isCanCall = new BooleanValueModel("group." + groupId + ".can_call", rawObj.isCanCall());
         this.isCanViewMembers = new BooleanValueModel("group." + groupId + ".can_view_members", rawObj.isCanViewMembers());
         this.isCanInviteMembers = new BooleanValueModel("group." + groupId + ".can_invite_members", rawObj.isCanInviteMembers());
         this.isCanEditInfo = new BooleanValueModel("group." + groupId + ".can_edit_info", rawObj.isCanEditInfo());
@@ -359,6 +362,17 @@ public class GroupVM extends BaseValueModel<Group> {
     }
 
     /**
+     * Is current user can call in this group
+     *
+     * @return is current user can call model
+     */
+    @NotNull
+    @ObjectiveCName("getIsCanCallModel")
+    public BooleanValueModel getIsCanCall() {
+        return isCanCall;
+    }
+
+    /**
      * Is current user can invite via link
      *
      * @return is current user can invite via link model
@@ -456,7 +470,7 @@ public class GroupVM extends BaseValueModel<Group> {
         isChanged |= avatar.change(rawObj.getAvatar());
         isChanged |= membersCount.change(rawObj.getMembersCount());
         isChanged |= isMember.change(rawObj.isMember());
-        isChanged |= isCanWriteMessage.change(rawObj.isCanWrite());
+        isChanged |= isCanWriteMessage.change(rawObj.isCanSendMessage());
 
         isChanged |= theme.change(rawObj.getTopic());
         isChanged |= about.change(rawObj.getAbout());

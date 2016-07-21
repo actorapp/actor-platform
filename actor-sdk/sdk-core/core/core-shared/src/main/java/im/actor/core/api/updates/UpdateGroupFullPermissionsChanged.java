@@ -15,22 +15,22 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.core.api.*;
 
-public class UpdateGroupCanEditAdminSettingsChanged extends Update {
+public class UpdateGroupFullPermissionsChanged extends Update {
 
-    public static final int HEADER = 0xa51;
-    public static UpdateGroupCanEditAdminSettingsChanged fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new UpdateGroupCanEditAdminSettingsChanged(), data);
+    public static final int HEADER = 0xa68;
+    public static UpdateGroupFullPermissionsChanged fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new UpdateGroupFullPermissionsChanged(), data);
     }
 
     private int groupId;
-    private boolean canEditAdminSettings;
+    private long permissions;
 
-    public UpdateGroupCanEditAdminSettingsChanged(int groupId, boolean canEditAdminSettings) {
+    public UpdateGroupFullPermissionsChanged(int groupId, long permissions) {
         this.groupId = groupId;
-        this.canEditAdminSettings = canEditAdminSettings;
+        this.permissions = permissions;
     }
 
-    public UpdateGroupCanEditAdminSettingsChanged() {
+    public UpdateGroupFullPermissionsChanged() {
 
     }
 
@@ -38,27 +38,27 @@ public class UpdateGroupCanEditAdminSettingsChanged extends Update {
         return this.groupId;
     }
 
-    public boolean canEditAdminSettings() {
-        return this.canEditAdminSettings;
+    public long getPermissions() {
+        return this.permissions;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         this.groupId = values.getInt(1);
-        this.canEditAdminSettings = values.getBool(2);
+        this.permissions = values.getLong(2);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeInt(1, this.groupId);
-        writer.writeBool(2, this.canEditAdminSettings);
+        writer.writeLong(2, this.permissions);
     }
 
     @Override
     public String toString() {
-        String res = "update GroupCanEditAdminSettingsChanged{";
+        String res = "update GroupFullPermissionsChanged{";
         res += "groupId=" + this.groupId;
-        res += ", canEditAdminSettings=" + this.canEditAdminSettings;
+        res += ", permissions=" + this.permissions;
         res += "}";
         return res;
     }

@@ -14,19 +14,9 @@ import im.actor.core.api.ApiMember;
 import im.actor.core.api.rpc.RequestLoadFullGroups;
 import im.actor.core.api.updates.UpdateGroupAboutChanged;
 import im.actor.core.api.updates.UpdateGroupAvatarChanged;
-import im.actor.core.api.updates.UpdateGroupCanDeleteChanged;
-import im.actor.core.api.updates.UpdateGroupCanEditAdminSettingsChanged;
-import im.actor.core.api.updates.UpdateGroupCanEditAdminsChanged;
-import im.actor.core.api.updates.UpdateGroupCanEditInfoChanged;
-import im.actor.core.api.updates.UpdateGroupCanEditUsernameChanged;
-import im.actor.core.api.updates.UpdateGroupCanInviteMembersChanged;
-import im.actor.core.api.updates.UpdateGroupCanInviteViaLink;
-import im.actor.core.api.updates.UpdateGroupCanLeaveChanged;
-import im.actor.core.api.updates.UpdateGroupCanSendMessagesChanged;
-import im.actor.core.api.updates.UpdateGroupCanViewAdminsChanged;
-import im.actor.core.api.updates.UpdateGroupCanViewMembersChanged;
 import im.actor.core.api.updates.UpdateGroupExtChanged;
 import im.actor.core.api.updates.UpdateGroupFullExtChanged;
+import im.actor.core.api.updates.UpdateGroupFullPermissionsChanged;
 import im.actor.core.api.updates.UpdateGroupHistoryShared;
 import im.actor.core.api.updates.UpdateGroupMemberAdminChanged;
 import im.actor.core.api.updates.UpdateGroupMemberChanged;
@@ -35,6 +25,7 @@ import im.actor.core.api.updates.UpdateGroupMembersBecameAsync;
 import im.actor.core.api.updates.UpdateGroupMembersCountChanged;
 import im.actor.core.api.updates.UpdateGroupMembersUpdated;
 import im.actor.core.api.updates.UpdateGroupOwnerChanged;
+import im.actor.core.api.updates.UpdateGroupPermissionsChanged;
 import im.actor.core.api.updates.UpdateGroupShortNameChanged;
 import im.actor.core.api.updates.UpdateGroupTitleChanged;
 import im.actor.core.api.updates.UpdateGroupTopicChanged;
@@ -81,13 +72,13 @@ public class GroupRouter extends ModuleActor {
     }
 
     @Verified
-    public Promise<Void> onCanWriteMessagesChanged(int groupId, boolean canWrite) {
-        return editGroup(groupId, group -> group.editCanWrite(canWrite));
+    public Promise<Void> onIsMemberChanged(int groupId, boolean isMember) {
+        return editGroup(groupId, group -> group.editIsMember(isMember));
     }
 
     @Verified
-    public Promise<Void> onIsMemberChanged(int groupId, boolean isMember) {
-        return editGroup(groupId, group -> group.editIsMember(isMember));
+    public Promise<Void> onPermissionsChanged(int groupId, long permissions) {
+        return editGroup(groupId, group -> group.editPermissions(permissions));
     }
 
     @Verified
@@ -143,60 +134,6 @@ public class GroupRouter extends ModuleActor {
         return editGroup(groupId, group -> group.editShortName(shortName));
     }
 
-    @Verified
-    public Promise<Void> onFullExtChanged(int groupId, ApiMapValue ext) {
-        return editGroup(groupId, group -> group.editFullExt(ext));
-    }
-
-    @Verified
-    public Promise<Void> onEditCanViewMembers(int groupId, boolean canViewMembers) {
-        return editGroup(groupId, group -> group.editCanViewMembers(canViewMembers));
-    }
-
-    @Verified
-    public Promise<Void> onEditCanInviteMembers(int groupId, boolean canViewMembers) {
-        return editGroup(groupId, group -> group.editCanInviteMembers(canViewMembers));
-    }
-
-    @Verified
-    public Promise<Void> onEditCanEditGroupInfo(int groupId, boolean canEditGroupInfo) {
-        return editGroup(groupId, group -> group.editCanEditGroupInfo(canEditGroupInfo));
-    }
-
-    @Verified
-    public Promise<Void> onEditCanEditShortName(int groupId, boolean canEditShortName) {
-        return editGroup(groupId, group -> group.editCanEditShortName(canEditShortName));
-    }
-
-    @Verified
-    public Promise<Void> onEditCanEditAdminList(int groupId, boolean canEditAminList) {
-        return editGroup(groupId, group -> group.editCanEditAdminList(canEditAminList));
-    }
-
-    @Verified
-    public Promise<Void> onEditCanViewAdminList(int groupId, boolean canViewAdminList) {
-        return editGroup(groupId, group -> group.editCanViewAdminList(canViewAdminList));
-    }
-
-    @Verified
-    public Promise<Void> onEditCanEditAdminSettings(int groupId, boolean canEditAdminSettings) {
-        return editGroup(groupId, group -> group.editCanEditAdminSettings(canEditAdminSettings));
-    }
-
-    @Verified
-    public Promise<Void> onEditCanLeaveChanged(int groupId, boolean canLeave) {
-        return editGroup(groupId, group -> group.editCanLeave(canLeave));
-    }
-
-    @Verified
-    public Promise<Void> onEditCanDeleteChanged(int groupId, boolean canDelete) {
-        return editGroup(groupId, group -> group.editCanLeave(canDelete));
-    }
-
-    @Verified
-    public Promise<Void> onEditCanInviteViaLinkChanged(int groupId, boolean canInvite) {
-        return editGroup(groupId, group -> group.editCanInviteViaLink(canInvite));
-    }
 
     @Verified
     public Promise<Void> onOwnerChanged(int groupId, int updatedOwner) {
@@ -206,6 +143,16 @@ public class GroupRouter extends ModuleActor {
     @Verified
     public Promise<Void> onHistoryShared(int groupId) {
         return editGroup(groupId, group -> group.editHistoryShared());
+    }
+
+    @Verified
+    public Promise<Void> onFullPermissionsChanged(int groupId, long permissions) {
+        return editGroup(groupId, group -> group.editExtPermissions(permissions));
+    }
+
+    @Verified
+    public Promise<Void> onFullExtChanged(int groupId, ApiMapValue ext) {
+        return editGroup(groupId, group -> group.editFullExt(ext));
     }
 
     //
@@ -348,6 +295,9 @@ public class GroupRouter extends ModuleActor {
         } else if (update instanceof UpdateGroupMemberChanged) {
             UpdateGroupMemberChanged memberChanged = (UpdateGroupMemberChanged) update;
             return onIsMemberChanged(memberChanged.getGroupId(), memberChanged.isMember());
+        } else if (update instanceof UpdateGroupPermissionsChanged) {
+            UpdateGroupPermissionsChanged permissionsChanged = (UpdateGroupPermissionsChanged) update;
+            return onPermissionsChanged(permissionsChanged.getGroupId(), permissionsChanged.getPermissions());
         } else if (update instanceof UpdateGroupExtChanged) {
             UpdateGroupExtChanged extChanged = (UpdateGroupExtChanged) update;
             return onExtChanged(extChanged.getGroupId(), extChanged.getExt());
@@ -392,51 +342,15 @@ public class GroupRouter extends ModuleActor {
         } else if (update instanceof UpdateGroupOwnerChanged) {
             UpdateGroupOwnerChanged ownerChanged = (UpdateGroupOwnerChanged) update;
             return onOwnerChanged(ownerChanged.getGroupId(), ownerChanged.getUserId());
-        } else if (update instanceof UpdateGroupFullExtChanged) {
-            UpdateGroupFullExtChanged extChanged = (UpdateGroupFullExtChanged) update;
-            return onFullExtChanged(extChanged.getGroupId(), extChanged.getExt());
         } else if (update instanceof UpdateGroupShortNameChanged) {
             UpdateGroupShortNameChanged shortNameChanged = (UpdateGroupShortNameChanged) update;
             return onShortNameChanged(shortNameChanged.getGroupId(), shortNameChanged.getShortName());
-        }
-
-        //
-        // Actions
-        //
-
-        else if (update instanceof UpdateGroupCanSendMessagesChanged) {
-            UpdateGroupCanSendMessagesChanged messagesChanged = (UpdateGroupCanSendMessagesChanged) update;
-            return onCanWriteMessagesChanged(messagesChanged.getGroupId(), messagesChanged.canSendMessages());
-        } else if (update instanceof UpdateGroupCanViewMembersChanged) {
-            UpdateGroupCanViewMembersChanged membersChanged = (UpdateGroupCanViewMembersChanged) update;
-            return onEditCanViewMembers(membersChanged.getGroupId(), membersChanged.canViewMembers());
-        } else if (update instanceof UpdateGroupCanInviteMembersChanged) {
-            UpdateGroupCanInviteMembersChanged changed = (UpdateGroupCanInviteMembersChanged) update;
-            return onEditCanInviteMembers(changed.getGroupId(), changed.canInviteMembers());
-        } else if (update instanceof UpdateGroupCanEditInfoChanged) {
-            UpdateGroupCanEditInfoChanged editInfoChanged = (UpdateGroupCanEditInfoChanged) update;
-            return onEditCanEditGroupInfo(editInfoChanged.getGroupId(), editInfoChanged.canEditGroup());
-        } else if (update instanceof UpdateGroupCanEditUsernameChanged) {
-            UpdateGroupCanEditUsernameChanged shortName = (UpdateGroupCanEditUsernameChanged) update;
-            return onEditCanEditShortName(shortName.getGroupId(), shortName.canEditUsername());
-        } else if (update instanceof UpdateGroupCanViewAdminsChanged) {
-            UpdateGroupCanViewAdminsChanged changed = (UpdateGroupCanViewAdminsChanged) update;
-            return onEditCanViewAdminList(changed.getGroupId(), changed.canViewAdmins());
-        } else if (update instanceof UpdateGroupCanEditAdminsChanged) {
-            UpdateGroupCanEditAdminsChanged editAdmins = (UpdateGroupCanEditAdminsChanged) update;
-            return onEditCanEditAdminList(editAdmins.getGroupId(), editAdmins.canAssignAdmins());
-        } else if (update instanceof UpdateGroupCanEditAdminSettingsChanged) {
-            UpdateGroupCanEditAdminSettingsChanged settings = (UpdateGroupCanEditAdminSettingsChanged) update;
-            return onEditCanEditAdminSettings(settings.getGroupId(), settings.canEditAdminSettings());
-        } else if (update instanceof UpdateGroupCanLeaveChanged) {
-            UpdateGroupCanLeaveChanged canLeaveChanged = (UpdateGroupCanLeaveChanged) update;
-            return onEditCanLeaveChanged(canLeaveChanged.getGroupId(), canLeaveChanged.canLeaveChanged());
-        } else if (update instanceof UpdateGroupCanDeleteChanged) {
-            UpdateGroupCanDeleteChanged canDeleteChanged = (UpdateGroupCanDeleteChanged) update;
-            return onEditCanDeleteChanged(canDeleteChanged.getGroupId(), canDeleteChanged.canDeleteChanged());
-        } else if (update instanceof UpdateGroupCanInviteViaLink) {
-            UpdateGroupCanInviteViaLink inviteViaLink = (UpdateGroupCanInviteViaLink) update;
-            return onEditCanInviteViaLinkChanged(inviteViaLink.getGroupId(), inviteViaLink.canInviteViaLink());
+        } else if (update instanceof UpdateGroupFullPermissionsChanged) {
+            UpdateGroupFullPermissionsChanged permissionsChanged = (UpdateGroupFullPermissionsChanged) update;
+            return onFullPermissionsChanged(permissionsChanged.getGroupId(), permissionsChanged.getPermissions());
+        } else if (update instanceof UpdateGroupFullExtChanged) {
+            UpdateGroupFullExtChanged extChanged = (UpdateGroupFullExtChanged) update;
+            return onFullExtChanged(extChanged.getGroupId(), extChanged.getExt());
         }
 
         return Promise.success(null);

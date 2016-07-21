@@ -24,11 +24,11 @@ public class ApiGroup extends BserObject {
     private Boolean isMember;
     private Boolean isHidden;
     private ApiGroupType groupType;
-    private Boolean canSendMessage;
+    private Long permissions;
     private Boolean isDeleted;
     private ApiMapValue ext;
 
-    public ApiGroup(int id, long accessHash, @NotNull String title, @Nullable ApiAvatar avatar, @Nullable Integer membersCount, @Nullable Boolean isMember, @Nullable Boolean isHidden, @Nullable ApiGroupType groupType, @Nullable Boolean canSendMessage, @Nullable Boolean isDeleted, @Nullable ApiMapValue ext) {
+    public ApiGroup(int id, long accessHash, @NotNull String title, @Nullable ApiAvatar avatar, @Nullable Integer membersCount, @Nullable Boolean isMember, @Nullable Boolean isHidden, @Nullable ApiGroupType groupType, @Nullable Long permissions, @Nullable Boolean isDeleted, @Nullable ApiMapValue ext) {
         this.id = id;
         this.accessHash = accessHash;
         this.title = title;
@@ -37,7 +37,7 @@ public class ApiGroup extends BserObject {
         this.isMember = isMember;
         this.isHidden = isHidden;
         this.groupType = groupType;
-        this.canSendMessage = canSendMessage;
+        this.permissions = permissions;
         this.isDeleted = isDeleted;
         this.ext = ext;
     }
@@ -85,8 +85,8 @@ public class ApiGroup extends BserObject {
     }
 
     @Nullable
-    public Boolean canSendMessage() {
-        return this.canSendMessage;
+    public Long getPermissions() {
+        return this.permissions;
     }
 
     @Nullable
@@ -112,7 +112,7 @@ public class ApiGroup extends BserObject {
         if (val_groupType != 0) {
             this.groupType = ApiGroupType.parse(val_groupType);
         }
-        this.canSendMessage = values.optBool(26);
+        this.permissions = values.optLong(26);
         this.isDeleted = values.optBool(27);
         this.ext = values.optObj(22, new ApiMapValue());
         if (values.hasRemaining()) {
@@ -143,8 +143,8 @@ public class ApiGroup extends BserObject {
         if (this.groupType != null) {
             writer.writeInt(25, this.groupType.getValue());
         }
-        if (this.canSendMessage != null) {
-            writer.writeBool(26, this.canSendMessage);
+        if (this.permissions != null) {
+            writer.writeLong(26, this.permissions);
         }
         if (this.isDeleted != null) {
             writer.writeBool(27, this.isDeleted);
@@ -171,7 +171,7 @@ public class ApiGroup extends BserObject {
         res += ", isMember=" + this.isMember;
         res += ", isHidden=" + this.isHidden;
         res += ", groupType=" + this.groupType;
-        res += ", canSendMessage=" + this.canSendMessage;
+        res += ", permissions=" + this.permissions;
         res += ", isDeleted=" + this.isDeleted;
         res += ", ext=" + this.ext;
         res += "}";

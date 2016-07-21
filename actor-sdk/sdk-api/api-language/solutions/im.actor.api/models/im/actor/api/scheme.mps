@@ -6921,6 +6921,60 @@
           <property role="2m7y0m" value="2" />
         </node>
       </node>
+      <node concept="2m488m" id="5uOI4gqPNGH" role="2m5mJr">
+        <property role="TrG5h" value="GroupPermissions" />
+        <node concept="2m7y0F" id="5uOI4gqPNGJ" role="2m7ymf">
+          <property role="TrG5h" value="SEND_MESSAGE" />
+          <property role="2m7y0m" value="1" />
+        </node>
+        <node concept="2m7y0F" id="5uOI4gqPNVr" role="2m7ymf">
+          <property role="TrG5h" value="CLEAR" />
+          <property role="2m7y0m" value="2" />
+        </node>
+        <node concept="2m7y0F" id="5uOI4gqPNVu" role="2m7ymf">
+          <property role="TrG5h" value="LEAVE" />
+          <property role="2m7y0m" value="3" />
+        </node>
+        <node concept="2m7y0F" id="5uOI4gqPNVy" role="2m7ymf">
+          <property role="TrG5h" value="DELETE" />
+          <property role="2m7y0m" value="4" />
+        </node>
+      </node>
+      <node concept="2m488m" id="5uOI4gqPPuj" role="2m5mJr">
+        <property role="TrG5h" value="GroupFullPermissions" />
+        <node concept="2m7y0F" id="5uOI4gqPPul" role="2m7ymf">
+          <property role="TrG5h" value="EDIT_INFO" />
+          <property role="2m7y0m" value="1" />
+        </node>
+        <node concept="2m7y0F" id="5uOI4gqPPH6" role="2m7ymf">
+          <property role="TrG5h" value="VIEW_MEMBERS" />
+          <property role="2m7y0m" value="2" />
+        </node>
+        <node concept="2m7y0F" id="5uOI4gqPPH9" role="2m7ymf">
+          <property role="TrG5h" value="INVITE_MEMBERS" />
+          <property role="2m7y0m" value="3" />
+        </node>
+        <node concept="2m7y0F" id="5uOI4gqPPHd" role="2m7ymf">
+          <property role="TrG5h" value="INVITE_VIA_LINK" />
+          <property role="2m7y0m" value="4" />
+        </node>
+        <node concept="2m7y0F" id="5uOI4gqPPHi" role="2m7ymf">
+          <property role="TrG5h" value="CALL" />
+          <property role="2m7y0m" value="5" />
+        </node>
+        <node concept="2m7y0F" id="5uOI4gqPPHo" role="2m7ymf">
+          <property role="TrG5h" value="EDIT_ADMIN_SETTINGS" />
+          <property role="2m7y0m" value="6" />
+        </node>
+        <node concept="2m7y0F" id="5uOI4gqPPHv" role="2m7ymf">
+          <property role="TrG5h" value="VIEW_ADMINS" />
+          <property role="2m7y0m" value="7" />
+        </node>
+        <node concept="2m7y0F" id="5uOI4gqPPHB" role="2m7ymf">
+          <property role="TrG5h" value="EDIT_ADMINS" />
+          <property role="2m7y0m" value="8" />
+        </node>
+      </node>
       <node concept="2m5naR" id="GBscvBB6pR" role="2m5mJr">
         <property role="TrG5h" value="Group" />
         <property role="tsOgz" value="true" />

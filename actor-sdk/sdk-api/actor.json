@@ -7877,6 +7877,70 @@
           }
         },
         {
+          "type": "enum",
+          "content": {
+            "name": "GroupPermissions",
+            "values": [
+              {
+                "name": "SEND_MESSAGE",
+                "id": 1
+              },
+              {
+                "name": "CLEAR",
+                "id": 2
+              },
+              {
+                "name": "LEAVE",
+                "id": 3
+              },
+              {
+                "name": "DELETE",
+                "id": 4
+              }
+            ]
+          }
+        },
+        {
+          "type": "enum",
+          "content": {
+            "name": "GroupFullPermissions",
+            "values": [
+              {
+                "name": "EDIT_INFO",
+                "id": 1
+              },
+              {
+                "name": "VIEW_MEMBERS",
+                "id": 2
+              },
+              {
+                "name": "INVITE_MEMBERS",
+                "id": 3
+              },
+              {
+                "name": "INVITE_VIA_LINK",
+                "id": 4
+              },
+              {
+                "name": "CALL",
+                "id": 5
+              },
+              {
+                "name": "EDIT_ADMIN_SETTINGS",
+                "id": 6
+              },
+              {
+                "name": "VIEW_ADMINS",
+                "id": 7
+              },
+              {
+                "name": "EDIT_ADMINS",
+                "id": 8
+              }
+            ]
+          }
+        },
+        {
           "type": "struct",
           "content": {
             "name": "Group",

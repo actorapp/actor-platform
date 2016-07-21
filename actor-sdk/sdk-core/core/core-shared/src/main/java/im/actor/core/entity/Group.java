@@ -17,8 +17,11 @@ import im.actor.core.api.ApiAvatar;
 import im.actor.core.api.ApiFullUser;
 import im.actor.core.api.ApiGroup;
 import im.actor.core.api.ApiGroupFull;
+import im.actor.core.api.ApiGroupFullPermissions;
+import im.actor.core.api.ApiGroupPermissions;
 import im.actor.core.api.ApiMapValue;
 import im.actor.core.api.ApiMember;
+import im.actor.core.util.BitMaskUtil;
 import im.actor.runtime.bser.BserCreator;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
@@ -52,7 +55,13 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
     @Property("readonly, nonatomic")
     private boolean isMember;
     @Property("readonly, nonatomic")
-    private boolean canWrite;
+    private boolean isCanSendMessage;
+    @Property("readonly, nonatomic")
+    private boolean isCanClear;
+    @Property("readonly, nonatomic")
+    private boolean isCanLeave;
+    @Property("readonly, nonatomic")
+    private boolean isCanDelete;
     @NotNull
     @Property("readonly, nonatomic")
     @SuppressWarnings("NullableProblems")
@@ -84,6 +93,8 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
     @Property("readonly, nonatomic")
     private boolean isCanInviteViaLink;
     @Property("readonly, nonatomic")
+    private boolean isCanCall;
+    @Property("readonly, nonatomic")
     private boolean isCanViewMembers;
     @Property("readonly, nonatomic")
     private boolean isSharedHistory;
@@ -97,10 +108,6 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
     private boolean isCanViewAdmins;
     @Property("readonly, nonatomic")
     private boolean isCanEditAdmins;
-    @Property("readonly, nonatomic")
-    private boolean isCanLeave;
-    @Property("readonly, nonatomic")
-    private boolean isCanDelete;
 
     @Property("readonly, nonatomic")
     private boolean haveExtension;
@@ -155,8 +162,24 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
         return isMember;
     }
 
-    public boolean isCanWrite() {
-        return canWrite;
+    public boolean isCanSendMessage() {
+        return isCanSendMessage;
+    }
+
+    public boolean isCanClear() {
+        return isCanClear;
+    }
+
+    public boolean isCanLeave() {
+        return isCanLeave;
+    }
+
+    public boolean isCanDelete() {
+        return isCanDelete;
+    }
+
+    public boolean isCanCall() {
+        return isCanCall;
     }
 
     @NotNull
@@ -237,14 +260,6 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
         return isCanInviteViaLink;
     }
 
-    public boolean isCanLeave() {
-        return isCanLeave;
-    }
-
-    public boolean isCanDelete() {
-        return isCanDelete;
-    }
-
     public Group updateExt(@Nullable ApiGroupFull ext) {
         return new Group(getWrapped(), ext);
     }
@@ -264,7 +279,7 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                 w.isMember(),
                 w.isHidden(),
                 w.getGroupType(),
-                w.canSendMessage(),
+                w.getPermissions(),
                 w.isDeleted(),
                 w.getExt());
         res.setUnmappedObjects(w.getUnmappedObjects());
@@ -282,7 +297,7 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                 w.isMember(),
                 w.isHidden(),
                 w.getGroupType(),
-                w.canSendMessage(),
+                w.getPermissions(),
                 w.isDeleted(),
                 w.getExt());
         res.setUnmappedObjects(w.getUnmappedObjects());
@@ -300,7 +315,43 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                 isMember,
                 w.isHidden(),
                 w.getGroupType(),
-                w.canSendMessage(),
+                w.getPermissions(),
+                w.isDeleted(),
+                w.getExt());
+        res.setUnmappedObjects(w.getUnmappedObjects());
+        return new Group(res, getWrappedExt());
+    }
+
+    public Group editIsDeleted(boolean isDeleted) {
+        ApiGroup w = getWrapped();
+        ApiGroup res = new ApiGroup(
+                w.getId(),
+                w.getAccessHash(),
+                w.getTitle(),
+                w.getAvatar(),
+                w.getMembersCount(),
+                w.isMember(),
+                w.isHidden(),
+                w.getGroupType(),
+                w.getPermissions(),
+                isDeleted,
+                w.getExt());
+        res.setUnmappedObjects(w.getUnmappedObjects());
+        return new Group(res, getWrappedExt());
+    }
+
+    public Group editPermissions(long permissions) {
+        ApiGroup w = getWrapped();
+        ApiGroup res = new ApiGroup(
+                w.getId(),
+                w.getAccessHash(),
+                w.getTitle(),
+                w.getAvatar(),
+                w.getMembersCount(),
+                w.isMember(),
+                w.isHidden(),
+                w.getGroupType(),
+                permissions,
                 w.isDeleted(),
                 w.getExt());
         res.setUnmappedObjects(w.getUnmappedObjects());
@@ -318,30 +369,13 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                 w.isMember(),
                 w.isHidden(),
                 w.getGroupType(),
-                w.canSendMessage(),
+                w.getPermissions(),
                 w.isDeleted(),
                 ext);
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res, getWrappedExt());
     }
 
-    public Group editCanWrite(boolean canWrite) {
-        ApiGroup w = getWrapped();
-        ApiGroup res = new ApiGroup(
-                w.getId(),
-                w.getAccessHash(),
-                w.getTitle(),
-                w.getAvatar(),
-                w.getMembersCount(),
-                w.isMember(),
-                w.isHidden(),
-                w.getGroupType(),
-                canWrite,
-                w.isDeleted(),
-                w.getExt());
-        res.setUnmappedObjects(w.getUnmappedObjects());
-        return new Group(res, getWrappedExt());
-    }
 
     //
     // Members
@@ -359,18 +393,9 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                     e.getAbout(),
                     e.getExt(),
                     e.isAsyncMembers(),
-                    e.canViewMembers(),
-                    e.canInvitePeople(),
                     e.isSharedHistory(),
-                    e.canEditGroupInfo(),
                     e.getShortName(),
-                    e.canEditShortName(),
-                    e.canEditAdminList(),
-                    e.canViewAdminList(),
-                    e.canEditAdminSettings(),
-                    e.canInviteViaLink(),
-                    e.canDelete(),
-                    e.canLeave());
+                    e.getPermissions());
             fullExt.setUnmappedObjects(e.getUnmappedObjects());
         }
 
@@ -384,7 +409,7 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                 w.isMember(),
                 w.isHidden(),
                 w.getGroupType(),
-                w.canSendMessage(),
+                w.getPermissions(),
                 w.isDeleted(),
                 w.getExt());
 
@@ -427,18 +452,9 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                     e.getAbout(),
                     e.getExt(),
                     e.isAsyncMembers(),
-                    e.canViewMembers(),
-                    e.canInvitePeople(),
                     e.isSharedHistory(),
-                    e.canEditGroupInfo(),
                     e.getShortName(),
-                    e.canEditShortName(),
-                    e.canEditAdminList(),
-                    e.canViewAdminList(),
-                    e.canEditAdminSettings(),
-                    e.canInviteViaLink(),
-                    e.canDelete(),
-                    e.canLeave());
+                    e.getPermissions());
             fullExt.setUnmappedObjects(e.getUnmappedObjects());
         }
 
@@ -452,7 +468,7 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                 w.isMember(),
                 w.isHidden(),
                 w.getGroupType(),
-                w.canSendMessage(),
+                w.getPermissions(),
                 w.isDeleted(),
                 w.getExt());
 
@@ -470,7 +486,7 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                 w.isMember(),
                 w.isHidden(),
                 w.getGroupType(),
-                w.canSendMessage(),
+                w.getPermissions(),
                 w.isDeleted(),
                 w.getExt());
         res.setUnmappedObjects(w.getUnmappedObjects());
@@ -488,18 +504,9 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                     e.getAbout(),
                     e.getExt(),
                     true,
-                    e.canViewMembers(),
-                    e.canInvitePeople(),
                     e.isSharedHistory(),
-                    e.canEditGroupInfo(),
                     e.getShortName(),
-                    e.canEditShortName(),
-                    e.canEditAdminList(),
-                    e.canViewAdminList(),
-                    e.canEditAdminSettings(),
-                    e.canInviteViaLink(),
-                    e.canDelete(),
-                    e.canLeave());
+                    e.getPermissions());
             fullExt.setUnmappedObjects(e.getUnmappedObjects());
 
             return new Group(getWrapped(), fullExt);
@@ -531,18 +538,9 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                     e.getAbout(),
                     e.getExt(),
                     e.isAsyncMembers(),
-                    e.canViewMembers(),
-                    e.canInvitePeople(),
                     e.isSharedHistory(),
-                    e.canEditGroupInfo(),
                     e.getShortName(),
-                    e.canEditShortName(),
-                    e.canEditAdminList(),
-                    e.canViewAdminList(),
-                    e.canEditAdminSettings(),
-                    e.canInviteViaLink(),
-                    e.canDelete(),
-                    e.canLeave());
+                    e.getPermissions());
             fullExt.setUnmappedObjects(e.getUnmappedObjects());
 
             return new Group(getWrapped(), fullExt);
@@ -566,18 +564,9 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                     e.getAbout(),
                     e.getExt(),
                     e.isAsyncMembers(),
-                    e.canViewMembers(),
-                    e.canInvitePeople(),
                     e.isSharedHistory(),
-                    e.canEditGroupInfo(),
                     e.getShortName(),
-                    e.canEditShortName(),
-                    e.canEditAdminList(),
-                    e.canViewAdminList(),
-                    e.canEditAdminSettings(),
-                    e.canInviteViaLink(),
-                    e.canDelete(),
-                    e.canLeave());
+                    e.getPermissions());
             fullExt.setUnmappedObjects(e.getUnmappedObjects());
             return new Group(getWrapped(), fullExt);
         } else {
@@ -596,18 +585,9 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                     about,
                     e.getExt(),
                     e.isAsyncMembers(),
-                    e.canViewMembers(),
-                    e.canInvitePeople(),
                     e.isSharedHistory(),
-                    e.canEditGroupInfo(),
                     e.getShortName(),
-                    e.canEditShortName(),
-                    e.canEditAdminList(),
-                    e.canViewAdminList(),
-                    e.canEditAdminSettings(),
-                    e.canInviteViaLink(),
-                    e.canDelete(),
-                    e.canLeave());
+                    e.getPermissions());
             fullExt.setUnmappedObjects(e.getUnmappedObjects());
             return new Group(getWrapped(), fullExt);
         } else {
@@ -626,18 +606,9 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                     e.getAbout(),
                     e.getExt(),
                     e.isAsyncMembers(),
-                    e.canViewMembers(),
-                    e.canInvitePeople(),
                     e.isSharedHistory(),
-                    e.canEditGroupInfo(),
                     shortName,
-                    e.canEditShortName(),
-                    e.canEditAdminList(),
-                    e.canViewAdminList(),
-                    e.canEditAdminSettings(),
-                    e.canInviteViaLink(),
-                    e.canDelete(),
-                    e.canLeave());
+                    e.getPermissions());
             fullExt.setUnmappedObjects(e.getUnmappedObjects());
             return new Group(getWrapped(), fullExt);
         } else {
@@ -656,318 +627,9 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                     e.getAbout(),
                     ext,
                     e.isAsyncMembers(),
-                    e.canViewMembers(),
-                    e.canInvitePeople(),
                     e.isSharedHistory(),
-                    e.canEditGroupInfo(),
                     e.getShortName(),
-                    e.canEditShortName(),
-                    e.canEditAdminList(),
-                    e.canViewAdminList(),
-                    e.canEditAdminSettings(),
-                    e.canInviteViaLink(),
-                    e.canDelete(),
-                    e.canLeave());
-            fullExt.setUnmappedObjects(e.getUnmappedObjects());
-            return new Group(getWrapped(), fullExt);
-        } else {
-            return this;
-        }
-    }
-
-    public Group editCanViewMembers(boolean canViewMembers) {
-        if (getWrappedExt() != null) {
-            ApiGroupFull e = getWrappedExt();
-            ApiGroupFull fullExt = new ApiGroupFull(e.getId(),
-                    e.getCreateDate(),
-                    e.getOwnerUid(),
-                    e.getMembers(),
-                    e.getTheme(),
-                    e.getAbout(),
-                    e.getExt(),
-                    e.isAsyncMembers(),
-                    canViewMembers,
-                    e.canInvitePeople(),
-                    e.isSharedHistory(),
-                    e.canEditGroupInfo(),
-                    e.getShortName(),
-                    e.canEditShortName(),
-                    e.canEditAdminList(),
-                    e.canViewAdminList(),
-                    e.canEditAdminSettings(),
-                    e.canInviteViaLink(),
-                    e.canDelete(),
-                    e.canLeave());
-            fullExt.setUnmappedObjects(e.getUnmappedObjects());
-            return new Group(getWrapped(), fullExt);
-        } else {
-            return this;
-        }
-    }
-
-    public Group editCanInviteViaLink(boolean canInviteViaLink) {
-        if (getWrappedExt() != null) {
-            ApiGroupFull e = getWrappedExt();
-            ApiGroupFull fullExt = new ApiGroupFull(e.getId(),
-                    e.getCreateDate(),
-                    e.getOwnerUid(),
-                    e.getMembers(),
-                    e.getTheme(),
-                    e.getAbout(),
-                    e.getExt(),
-                    e.isAsyncMembers(),
-                    e.canViewMembers(),
-                    e.canInvitePeople(),
-                    e.isSharedHistory(),
-                    e.canEditGroupInfo(),
-                    e.getShortName(),
-                    e.canEditShortName(),
-                    e.canEditAdminList(),
-                    e.canViewAdminList(),
-                    e.canEditAdminSettings(),
-                    canInviteViaLink,
-                    e.canDelete(),
-                    e.canLeave());
-            fullExt.setUnmappedObjects(e.getUnmappedObjects());
-            return new Group(getWrapped(), fullExt);
-        } else {
-            return this;
-        }
-    }
-
-    public Group editCanDelete(boolean canDelete) {
-        if (getWrappedExt() != null) {
-            ApiGroupFull e = getWrappedExt();
-            ApiGroupFull fullExt = new ApiGroupFull(e.getId(),
-                    e.getCreateDate(),
-                    e.getOwnerUid(),
-                    e.getMembers(),
-                    e.getTheme(),
-                    e.getAbout(),
-                    e.getExt(),
-                    e.isAsyncMembers(),
-                    e.canViewMembers(),
-                    e.canInvitePeople(),
-                    e.isSharedHistory(),
-                    e.canEditGroupInfo(),
-                    e.getShortName(),
-                    e.canEditShortName(),
-                    e.canEditAdminList(),
-                    e.canViewAdminList(),
-                    e.canEditAdminSettings(),
-                    e.canInviteViaLink(),
-                    canDelete,
-                    e.canLeave());
-            fullExt.setUnmappedObjects(e.getUnmappedObjects());
-            return new Group(getWrapped(), fullExt);
-        } else {
-            return this;
-        }
-    }
-
-    public Group editCanLeave(boolean canLeave) {
-        if (getWrappedExt() != null) {
-            ApiGroupFull e = getWrappedExt();
-            ApiGroupFull fullExt = new ApiGroupFull(e.getId(),
-                    e.getCreateDate(),
-                    e.getOwnerUid(),
-                    e.getMembers(),
-                    e.getTheme(),
-                    e.getAbout(),
-                    e.getExt(),
-                    e.isAsyncMembers(),
-                    e.canViewMembers(),
-                    e.canInvitePeople(),
-                    e.isSharedHistory(),
-                    e.canEditGroupInfo(),
-                    e.getShortName(),
-                    e.canEditShortName(),
-                    e.canEditAdminList(),
-                    e.canViewAdminList(),
-                    e.canEditAdminSettings(),
-                    e.canInviteViaLink(),
-                    e.canDelete(),
-                    canLeave);
-            fullExt.setUnmappedObjects(e.getUnmappedObjects());
-            return new Group(getWrapped(), fullExt);
-        } else {
-            return this;
-        }
-    }
-
-    public Group editCanEditGroupInfo(boolean canEditGroupInfo) {
-        if (getWrappedExt() != null) {
-            ApiGroupFull e = getWrappedExt();
-            ApiGroupFull fullExt = new ApiGroupFull(e.getId(),
-                    e.getCreateDate(),
-                    e.getOwnerUid(),
-                    e.getMembers(),
-                    e.getTheme(),
-                    e.getAbout(),
-                    e.getExt(),
-                    e.isAsyncMembers(),
-                    e.canViewMembers(),
-                    e.canInvitePeople(),
-                    e.isSharedHistory(),
-                    canEditGroupInfo,
-                    e.getShortName(),
-                    e.canEditShortName(),
-                    e.canEditAdminList(),
-                    e.canViewAdminList(),
-                    e.canEditAdminSettings(),
-                    e.canInviteViaLink(),
-                    e.canDelete(),
-                    e.canLeave());
-            fullExt.setUnmappedObjects(e.getUnmappedObjects());
-            return new Group(getWrapped(), fullExt);
-        } else {
-            return this;
-        }
-    }
-
-    public Group editCanEditShortName(boolean canEditShortName) {
-        if (getWrappedExt() != null) {
-            ApiGroupFull e = getWrappedExt();
-            ApiGroupFull fullExt = new ApiGroupFull(e.getId(),
-                    e.getCreateDate(),
-                    e.getOwnerUid(),
-                    e.getMembers(),
-                    e.getTheme(),
-                    e.getAbout(),
-                    e.getExt(),
-                    e.isAsyncMembers(),
-                    e.canViewMembers(),
-                    e.canInvitePeople(),
-                    e.isSharedHistory(),
-                    e.canEditGroupInfo(),
-                    e.getShortName(),
-                    canEditShortName,
-                    e.canEditAdminList(),
-                    e.canViewAdminList(),
-                    e.canEditAdminSettings(),
-                    e.canInviteViaLink(),
-                    e.canDelete(),
-                    e.canLeave());
-            fullExt.setUnmappedObjects(e.getUnmappedObjects());
-            return new Group(getWrapped(), fullExt);
-        } else {
-            return this;
-        }
-    }
-
-    public Group editCanEditAdminList(boolean canEditAdminList) {
-        if (getWrappedExt() != null) {
-            ApiGroupFull e = getWrappedExt();
-            ApiGroupFull fullExt = new ApiGroupFull(e.getId(),
-                    e.getCreateDate(),
-                    e.getOwnerUid(),
-                    e.getMembers(),
-                    e.getTheme(),
-                    e.getAbout(),
-                    e.getExt(),
-                    e.isAsyncMembers(),
-                    e.canViewMembers(),
-                    e.canInvitePeople(),
-                    e.isSharedHistory(),
-                    e.canEditGroupInfo(),
-                    e.getShortName(),
-                    e.canEditShortName(),
-                    canEditAdminList,
-                    e.canViewAdminList(),
-                    e.canEditAdminSettings(),
-                    e.canInviteViaLink(),
-                    e.canDelete(),
-                    e.canLeave());
-            fullExt.setUnmappedObjects(e.getUnmappedObjects());
-            return new Group(getWrapped(), fullExt);
-        } else {
-            return this;
-        }
-    }
-
-    public Group editCanViewAdminList(boolean canViewAdminList) {
-        if (getWrappedExt() != null) {
-            ApiGroupFull e = getWrappedExt();
-            ApiGroupFull fullExt = new ApiGroupFull(e.getId(),
-                    e.getCreateDate(),
-                    e.getOwnerUid(),
-                    e.getMembers(),
-                    e.getTheme(),
-                    e.getAbout(),
-                    e.getExt(),
-                    e.isAsyncMembers(),
-                    e.canViewMembers(),
-                    e.canInvitePeople(),
-                    e.isSharedHistory(),
-                    e.canEditGroupInfo(),
-                    e.getShortName(),
-                    e.canEditShortName(),
-                    e.canEditAdminList(),
-                    canViewAdminList,
-                    e.canEditAdminSettings(),
-                    e.canInviteViaLink(),
-                    e.canDelete(),
-                    e.canLeave());
-            fullExt.setUnmappedObjects(e.getUnmappedObjects());
-            return new Group(getWrapped(), fullExt);
-        } else {
-            return this;
-        }
-    }
-
-    public Group editCanEditAdminSettings(boolean canEditAdminSettings) {
-        if (getWrappedExt() != null) {
-            ApiGroupFull e = getWrappedExt();
-            ApiGroupFull fullExt = new ApiGroupFull(e.getId(),
-                    e.getCreateDate(),
-                    e.getOwnerUid(),
-                    e.getMembers(),
-                    e.getTheme(),
-                    e.getAbout(),
-                    e.getExt(),
-                    e.isAsyncMembers(),
-                    e.canViewMembers(),
-                    e.canInvitePeople(),
-                    e.isSharedHistory(),
-                    e.canEditGroupInfo(),
-                    e.getShortName(),
-                    e.canEditShortName(),
-                    e.canEditAdminList(),
-                    e.canViewAdminList(),
-                    canEditAdminSettings,
-                    e.canInviteViaLink(),
-                    e.canDelete(),
-                    e.canLeave());
-            fullExt.setUnmappedObjects(e.getUnmappedObjects());
-            return new Group(getWrapped(), fullExt);
-        } else {
-            return this;
-        }
-    }
-
-    public Group editCanInviteMembers(boolean canInviteMembers) {
-        if (getWrappedExt() != null) {
-            ApiGroupFull e = getWrappedExt();
-            ApiGroupFull fullExt = new ApiGroupFull(e.getId(),
-                    e.getCreateDate(),
-                    e.getOwnerUid(),
-                    e.getMembers(),
-                    e.getTheme(),
-                    e.getAbout(),
-                    e.getExt(),
-                    e.isAsyncMembers(),
-                    e.canViewMembers(),
-                    canInviteMembers,
-                    e.isSharedHistory(),
-                    e.canEditGroupInfo(),
-                    e.getShortName(),
-                    e.canEditShortName(),
-                    e.canEditAdminList(),
-                    e.canViewAdminList(),
-                    e.canEditAdminSettings(),
-                    e.canInviteViaLink(),
-                    e.canDelete(),
-                    e.canLeave());
+                    e.getPermissions());
             fullExt.setUnmappedObjects(e.getUnmappedObjects());
             return new Group(getWrapped(), fullExt);
         } else {
@@ -986,18 +648,9 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                     e.getAbout(),
                     e.getExt(),
                     e.isAsyncMembers(),
-                    e.canViewMembers(),
-                    e.canInvitePeople(),
                     e.isSharedHistory(),
-                    e.canEditGroupInfo(),
                     e.getShortName(),
-                    e.canEditShortName(),
-                    e.canEditAdminList(),
-                    e.canViewAdminList(),
-                    e.canEditAdminSettings(),
-                    e.canInviteViaLink(),
-                    e.canDelete(),
-                    e.canLeave());
+                    e.getPermissions());
             fullExt.setUnmappedObjects(e.getUnmappedObjects());
             return new Group(getWrapped(), fullExt);
         } else {
@@ -1016,18 +669,9 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                     e.getAbout(),
                     e.getExt(),
                     e.isAsyncMembers(),
-                    e.canViewMembers(),
-                    e.canInvitePeople(),
                     true,
-                    e.canEditGroupInfo(),
                     e.getShortName(),
-                    e.canEditShortName(),
-                    e.canEditAdminList(),
-                    e.canViewAdminList(),
-                    e.canEditAdminSettings(),
-                    e.canInviteViaLink(),
-                    e.canDelete(),
-                    e.canLeave());
+                    e.getPermissions());
             fullExt.setUnmappedObjects(e.getUnmappedObjects());
             return new Group(getWrapped(), fullExt);
         } else {
@@ -1035,6 +679,26 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
         }
     }
 
+    public Group editExtPermissions(long permissions) {
+        if (getWrappedExt() != null) {
+            ApiGroupFull e = getWrappedExt();
+            ApiGroupFull fullExt = new ApiGroupFull(e.getId(),
+                    e.getCreateDate(),
+                    e.getOwnerUid(),
+                    e.getMembers(),
+                    e.getTheme(),
+                    e.getAbout(),
+                    e.getExt(),
+                    e.isAsyncMembers(),
+                    e.isSharedHistory(),
+                    e.getShortName(),
+                    permissions);
+            fullExt.setUnmappedObjects(e.getUnmappedObjects());
+            return new Group(getWrapped(), fullExt);
+        } else {
+            return this;
+        }
+    }
 
     @Override
     protected void applyWrapped(@NotNull ApiGroup wrapped, @Nullable ApiGroupFull ext) {
@@ -1064,12 +728,20 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
             }
         }
 
-        if (wrapped.canSendMessage() != null) {
-            this.canWrite = wrapped.canSendMessage();
-        } else {
-            // True is default for groups and false otherwise
-            this.canWrite = this.groupType == GroupType.GROUP;
+        long permissions = 0;
+        if (wrapped.getPermissions() != null) {
+            permissions = wrapped.getPermissions();
         }
+        /*
+         # 0 - canSendMessage. Default is FALSE.
+         # 1 - canClear. Default is FALSE.
+         # 2 - canLeave. Default is FALSE.
+         # 3 - canDelete. Default is FALSE.
+         */
+        this.isCanSendMessage = BitMaskUtil.getBitValue(permissions, ApiGroupPermissions.SEND_MESSAGE);
+        this.isCanClear = BitMaskUtil.getBitValue(permissions, ApiGroupPermissions.CLEAR);
+        this.isCanLeave = BitMaskUtil.getBitValue(permissions, ApiGroupPermissions.LEAVE);
+        this.isCanDelete = BitMaskUtil.getBitValue(permissions, ApiGroupPermissions.DELETE);
 
         //
         // Ext
@@ -1082,17 +754,30 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
             this.topic = ext.getTheme();
             this.shortName = ext.getShortName();
             this.isAsyncMembers = ext.isAsyncMembers() != null ? ext.isAsyncMembers() : false;
-            this.isCanViewMembers = ext.canViewMembers() != null ? ext.canViewMembers() : true;
-            this.isCanInviteMembers = ext.canViewMembers() != null ? ext.canViewMembers() : true;
-            this.isCanInviteViaLink = ext.canInviteViaLink() != null ? ext.canInviteViaLink() : false;
             this.isSharedHistory = ext.isSharedHistory() != null ? ext.isSharedHistory() : false;
-            this.isCanEditInfo = ext.canEditGroupInfo() != null ? ext.canEditGroupInfo() : false;
-            this.isCanEditShortName = ext.canEditShortName() != null ? ext.canEditShortName() : false;
-            this.isCanEditAdministration = ext.canEditAdminSettings() != null ? ext.canEditAdminSettings() : false;
-            this.isCanViewAdmins = ext.canViewAdminList() != null ? ext.canViewAdminList() : false;
-            this.isCanEditAdmins = ext.canEditAdminList() != null ? ext.canEditAdminList() : false;
-            this.isCanLeave = ext.canLeave() != null ? ext.canLeave() : true;
-            this.isCanDelete = ext.canDelete() != null ? ext.canDelete() : false;
+
+            /*
+             # 0 - canEditInfo. Default is FALSE.
+             # 1 - canViewMembers. Default is FALSE.
+             # 2 - canInviteMembers. Default is FALSE.
+             # 3 - canInviteViaLink. Default is FALSE.
+             # 4 - canCall. Default is FALSE.
+             # 5 - canEditAdminSettings. Default is FALSE.
+             # 6 - canViewAdmins. Default is FALSE.
+             # 7 - canEditAdmins. Default is FALSE.
+             */
+            long fullPermissions = 0;
+            if (ext.getPermissions() != null) {
+                fullPermissions = ext.getPermissions();
+            }
+            this.isCanEditInfo = BitMaskUtil.getBitValue(fullPermissions, ApiGroupFullPermissions.EDIT_INFO);
+            this.isCanViewMembers = BitMaskUtil.getBitValue(fullPermissions, ApiGroupFullPermissions.VIEW_MEMBERS);
+            this.isCanInviteMembers = BitMaskUtil.getBitValue(fullPermissions, ApiGroupFullPermissions.INVITE_MEMBERS);
+            this.isCanInviteViaLink = BitMaskUtil.getBitValue(fullPermissions, ApiGroupFullPermissions.INVITE_VIA_LINK);
+            this.isCanCall = BitMaskUtil.getBitValue(fullPermissions, ApiGroupFullPermissions.CALL);
+            this.isCanEditAdministration = BitMaskUtil.getBitValue(fullPermissions, ApiGroupFullPermissions.EDIT_ADMIN_SETTINGS);
+            this.isCanViewAdmins = BitMaskUtil.getBitValue(fullPermissions, ApiGroupFullPermissions.VIEW_ADMINS);
+            this.isCanEditAdmins = BitMaskUtil.getBitValue(fullPermissions, ApiGroupFullPermissions.EDIT_ADMINS);
 
             this.members = new ArrayList<>();
             for (ApiMember m : ext.getMembers()) {
@@ -1115,8 +800,6 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
             this.isCanEditAdministration = false;
             this.isCanViewAdmins = false;
             this.isCanEditAdmins = false;
-            this.isCanDelete = false;
-            this.isCanLeave = false;
             this.isCanInviteViaLink = false;
         }
     }
