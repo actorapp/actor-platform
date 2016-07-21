@@ -21,7 +21,8 @@ import scala.concurrent.{ ExecutionContext, Future }
 class SearchServiceImpl(implicit system: ActorSystem) extends SearchService {
   override implicit protected val ec: ExecutionContext = system.dispatcher
 
-  private val db = DbExtension(system).db
+  protected val db = DbExtension(system).db
+
   private val userExt = UserExtension(system)
   private val groupExt = GroupExtension(system)
   private val globalNamesStorage = new GlobalNamesStorageKeyValueStorage
