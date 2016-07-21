@@ -18,9 +18,15 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.List;
+
+import im.actor.core.entity.Avatar;
 import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerSearchEntity;
+import im.actor.core.entity.PeerType;
 import im.actor.core.entity.SearchEntity;
 import im.actor.core.viewmodel.CommandCallback;
+import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.runtime.generic.mvvm.DisplayList;
@@ -32,7 +38,9 @@ import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.adapters.HeaderViewRecyclerAdapter;
 import im.actor.sdk.view.adapters.OnItemClickedListener;
 
+import static im.actor.sdk.util.ActorSDKMessenger.groups;
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
+import static im.actor.sdk.util.ActorSDKMessenger.users;
 
 public abstract class GlobalSearchBaseFragment extends BaseFragment {
 
@@ -152,24 +160,38 @@ public abstract class GlobalSearchBaseFragment extends BaseFragment {
                         String activeSearchQuery = searchQuery;
                         searchDisplay.initSearch(s.trim().toLowerCase(), false);
                         searchAdapter.setQuery(s.trim().toLowerCase());
-                        messenger().findUsers(s).start(new CommandCallback<UserVM[]>() {
+                        messenger().findPeers(s).start(new CommandCallback<List<PeerSearchEntity>>() {
                             @Override
-                            public void onResult(UserVM[] res) {
+                            public void onResult(List<PeerSearchEntity> res) {
                                 int footerVisability = footer.getVisibility();
                                 if (searchQuery.equals(activeSearchQuery)) {
                                     boolean showResult = false;
-                                    UserVM u = null;
-                                    if (res.length > 0) {
-                                        u = res[0];
+                                    Peer peer = null;
+                                    String name = null;
+                                    Avatar avatar = null;
+                                    if (res.size() > 0) {
+                                        peer = res.get(0).getPeer();
+
+                                        if (peer.getPeerType() == PeerType.PRIVATE) {
+                                            UserVM userVM = users().get(peer.getPeerId());
+                                            name = userVM.getName().getName();
+                                            avatar = userVM.getAvatar().get();
+                                        } else if (peer.getPeerType() == PeerType.GROUP) {
+                                            GroupVM groupVM = groups().get(peer.getPeerId());
+                                            name = groupVM.getName().getName();
+                                            avatar = groupVM.getAvatar().get();
+                                        } else {
+                                            return;
+                                        }
                                         showResult = true;
                                         for (int i = 0; i < searchDisplay.getSize(); i++) {
-                                            if (searchDisplay.getItem(i).getPeer().equals(Peer.user(u.getId())))
+                                            if (searchDisplay.getItem(i).getPeer().equals(peer))
                                                 showResult = false;
                                             break;
                                         }
                                     }
                                     if (showResult) {
-                                        footerSearchHolder.bind(new SearchEntity(Peer.user(u.getId()), 0, u.getAvatar().get(), u.getName().get()), activeSearchQuery, true);
+                                        footerSearchHolder.bind(new SearchEntity(peer, 0, avatar, name), activeSearchQuery, true);
                                         showView(footer);
                                     } else {
                                         goneView(footer);
@@ -185,6 +207,7 @@ public abstract class GlobalSearchBaseFragment extends BaseFragment {
 
                             }
                         });
+
                     } else {
                         searchDisplay.initEmpty();
                         goneView(footer);

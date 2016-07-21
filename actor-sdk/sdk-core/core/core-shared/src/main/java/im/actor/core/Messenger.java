@@ -1131,6 +1131,19 @@ public class Messenger {
     }
 
     /**
+     * Finding peers by text query
+     *
+     * @param query text query
+     * @return found peers
+     */
+    @ObjectiveCName("findPeersWithQuery:")
+    public Command<List<PeerSearchEntity>> findPeers(String query) {
+        return callback -> modules.getSearchModule().findPeers(query)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
+    }
+
+    /**
      * Finding text messages by query
      *
      * @param peer  peer for search

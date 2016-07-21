@@ -100,7 +100,7 @@ public class SearchModule extends AbsModule {
                                         AbsContent.fromMessage(itm.getResult().getContent()))));
     }
 
-    public Promise<List<PeerSearchEntity>> findPeers(final PeerSearchType type) {
+    public Promise<List<PeerSearchEntity>> findPeers(PeerSearchType type) {
         final ApiSearchPeerType apiType;
         if (type == PeerSearchType.GROUPS) {
             apiType = ApiSearchPeerType.GROUPS;
@@ -111,6 +111,16 @@ public class SearchModule extends AbsModule {
         }
         ArrayList<ApiSearchCondition> conditions = new ArrayList<>();
         conditions.add(new ApiSearchPeerTypeCondition(apiType));
+        return findPeers(conditions);
+    }
+
+    public Promise<List<PeerSearchEntity>> findPeers(String query) {
+        ArrayList<ApiSearchCondition> conditions = new ArrayList<>();
+        conditions.add(new ApiSearchPieceText(query));
+        return findPeers(conditions);
+    }
+
+    public Promise<List<PeerSearchEntity>> findPeers(ArrayList<ApiSearchCondition> conditions) {
 
         return api(new RequestPeerSearch(conditions, ApiSupportConfiguration.OPTIMIZATIONS))
                 .chain(responsePeerSearch ->
