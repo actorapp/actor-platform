@@ -140,6 +140,7 @@ trait HistoryHandlers {
               case ApiPeerType.Private ⇒ (uids :+ dialog.peer.id, gids)
             }
         }
+        //      TODO: make like here: im.actor.server.api.rpc.service.groups.GroupsServiceImpl.usersOrPeers
         (groups, users) ← GroupUtils.getGroupsUsers(groupIds, userIds, client.userId, client.authId)
         archivedExist ← dialogExt.fetchArchivedDialogs(client.userId, None, 1) map (_._1.nonEmpty)
         showInvite ← db.run(UserContactRepo.count(client.userId)) map (_ < 5)

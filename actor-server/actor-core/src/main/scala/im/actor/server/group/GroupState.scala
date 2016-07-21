@@ -268,8 +268,21 @@ private[group] final case class GroupState(
     case HistoryBecameShared(_, _) ⇒
       this.copy(isHistoryShared = true)
     case GroupDeleted(ts, _) ⇒
-      this.copy(deletedAt = Some(ts))
+      // FIXME: don't implement snapshots, before figure out deleted groups behavior
+      this.copy(
+        deletedAt = Some(ts),
 
+        members = Map.empty,
+        invitedUserIds = Set.empty,
+        exUserIds = Set.empty,
+        bot = None,
+        topic = None,
+        about = None,
+        avatar = None,
+        adminSettings =
+          if (groupType.isChannel) AdminSettings.ChannelsDefault
+          else AdminSettings.PlainDefault
+      )
     // deprecated events
     case UserBecameAdmin(_, userId, _) ⇒
       this.copy(
