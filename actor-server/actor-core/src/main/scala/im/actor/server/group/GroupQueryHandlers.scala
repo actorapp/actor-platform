@@ -35,8 +35,7 @@ trait GroupQueryHandlers {
     }
   }
 
-  //TODO: do something with this method. Will this method used in "client" context.
-  // If not - don't change it. Maybe rename to `getMembersInternal`
+  //TODO: This is internal server API. Properly name it, for example `getMembersInternal`
   protected def getMembers: Future[GetMembersResponse] =
     FastFuture.successful {
       GetMembersResponse(
@@ -108,7 +107,7 @@ trait GroupQueryHandlers {
             case Channel                   ⇒ ApiGroupType.CHANNEL
             case General | Unrecognized(_) ⇒ ApiGroupType.GROUP
           }),
-          canSendMessage = Some(state.permissions.canSendMessage(clientUserId)),
+          permissions = Some(state.permissions.groupFor(clientUserId)),
           isDeleted = Some(state.isDeleted)
         )
       )
@@ -126,20 +125,11 @@ trait GroupQueryHandlers {
           ownerUserId = state.getShowableOwner(clientUserId),
           createDate = extractCreatedAtMillis(state),
           ext = None,
-          canViewMembers = Some(state.permissions.canViewMembers(clientUserId)),
-          canInvitePeople = Some(state.permissions.canInvitePeople(clientUserId)),
           isSharedHistory = Some(state.isHistoryShared),
           isAsyncMembers = Some(state.isAsyncMembers),
           members = membersAndCount(state, clientUserId)._1,
           shortName = state.shortName,
-          canEditGroupInfo = Some(state.permissions.canEditInfo(clientUserId)),
-          canEditShortName = Some(state.permissions.canEditShortName(clientUserId)),
-          canEditAdminList = Some(state.permissions.canEditAdmins(clientUserId)),
-          canViewAdminList = Some(state.permissions.canViewAdmins(clientUserId)),
-          canEditAdminSettings = Some(state.permissions.canEditAdminSettings(clientUserId)),
-          canInviteViaLink = Some(state.permissions.canInviteViaLink(clientUserId)),
-          canDelete = Some(state.permissions.canDelete(clientUserId)),
-          canLeave = Some(state.permissions.canLeave(clientUserId))
+          permissions = Some(state.permissions.fullFor(clientUserId))
         )
       )
     }

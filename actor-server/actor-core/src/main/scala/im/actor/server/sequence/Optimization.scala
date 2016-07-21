@@ -36,9 +36,6 @@ object Optimization extends MessageParsing {
 
         UpdateGroupOwnerChanged.header,
         UpdateGroupHistoryShared.header,
-        UpdateGroupCanSendMessagesChanged.header,
-        UpdateGroupCanViewMembersChanged.header,
-        UpdateGroupCanInviteMembersChanged.header,
         UpdateGroupMemberChanged.header,
         UpdateGroupMembersBecameAsync.header,
         UpdateGroupMembersUpdated.header,
@@ -46,14 +43,8 @@ object Optimization extends MessageParsing {
         UpdateGroupMembersCountChanged.header,
         UpdateGroupMemberAdminChanged.header,
         UpdateGroupShortNameChanged.header,
-        UpdateGroupCanEditInfoChanged.header,
-        UpdateGroupCanEditUsernameChanged.header,
-        UpdateGroupCanEditAdminsChanged.header,
-        UpdateGroupCanViewAdminsChanged.header,
-        UpdateGroupCanEditAdminSettingsChanged.header,
-        UpdateGroupCanInviteViaLink.header,
-        UpdateGroupCanLeaveChanged.header,
-        UpdateGroupCanDeleteChanged.header
+        UpdateGroupFullPermissionsChanged.header,
+        UpdateGroupPermissionsChanged.header
       )
       if (deliveryTag == GroupV2)
         emptyUpdate

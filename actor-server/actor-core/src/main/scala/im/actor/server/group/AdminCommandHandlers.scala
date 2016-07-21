@@ -5,7 +5,7 @@ import java.time.Instant
 import akka.actor.Status
 import akka.pattern.pipe
 import akka.http.scaladsl.util.FastFuture
-import im.actor.api.rpc.{ PeersImplicits, Update }
+import im.actor.api.rpc.Update
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.messaging.UpdateChatClear
 import im.actor.concurrent.FutureExt
@@ -66,7 +66,9 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
         val updateAdmin = UpdateGroupMemberAdminChanged(groupId, cmd.candidateUserId, isAdmin = true)
         val updateMembers = UpdateGroupMembersUpdated(groupId, members)
         // now this user is admin, change edit rules for admins
-        val updateCanEdit = UpdateGroupCanEditInfoChanged(groupId, canEditGroup = newState.adminSettings.canAdminsEditGroupInfo)
+
+        val updatePermissions = permissionsUpdates(cmd.candidateUserId, newState)
+        //        val updateCanEdit = UpdateGroupCanEditInfoChanged(groupId, canEditGroup = newState.adminSettings.canAdminsEditGroupInfo)
 
         val updateObsolete = UpdateGroupMembersUpdateObsolete(groupId, members)
 
@@ -119,10 +121,9 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
           ///////////////////////////
           // Groups V2 API updates //
           ///////////////////////////
-          _ ← seqUpdExt.deliverUserUpdate(
-            userId = cmd.candidateUserId,
-            update = updateCanEdit
-          )
+          _ ← FutureExt.ftraverse(updatePermissions) { update ⇒
+            seqUpdExt.deliverUserUpdate(cmd.candidateUserId, update)
+          }
           seqStateDate ← if (state.groupType.isChannel) adminCHANNELUpdates else adminGROUPUpdates
 
         } yield (members, seqStateDate)
@@ -150,7 +151,9 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
         val updateAdmin = UpdateGroupMemberAdminChanged(groupId, cmd.targetUserId, isAdmin = false)
         val updateMembers = UpdateGroupMembersUpdated(groupId, members)
         // now this user is not admin, change edit rules to plain members
-        val updateCanEdit = UpdateGroupCanEditInfoChanged(groupId, canEditGroup = newState.adminSettings.canMembersEditGroupInfo)
+
+        val updatePermissions = permissionsUpdates(cmd.targetUserId, newState)
+        //        val updateCanEdit = UpdateGroupCanEditInfoChanged(groupId, canEditGroup = newState.adminSettings.canMembersEditGroupInfo)
 
         val updateObsolete = UpdateGroupMembersUpdateObsolete(groupId, members)
 
@@ -205,10 +208,9 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
           ///////////////////////////
           // Groups V2 API updates //
           ///////////////////////////
-          _ ← seqUpdExt.deliverUserUpdate(
-            userId = cmd.targetUserId,
-            update = updateCanEdit
-          )
+          _ ← FutureExt.ftraverse(updatePermissions) { update ⇒
+            seqUpdExt.deliverUserUpdate(cmd.targetUserId, update)
+          }
           seqState ← if (state.groupType.isChannel) adminCHANNELUpdates else adminGROUPUpdates
 
         } yield seqState
@@ -226,23 +228,16 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
         val newState = commit(evt)
         val memberIds = newState.memberIds
 
-        val prevOwnerUpdates = List(
-          UpdateGroupCanLeaveChanged(groupId, canLeaveChanged = true),
-          UpdateGroupCanDeleteChanged(groupId, canDeleteChanged = false)
-        )
-
-        val newOwnerUpdates = List(
-          UpdateGroupCanLeaveChanged(groupId, canLeaveChanged = false),
-          UpdateGroupCanDeleteChanged(groupId, canDeleteChanged = true)
-        )
+        val updatePermissionsPrevOwner = permissionsUpdates(cmd.clientUserId, newState)
+        val updatePermissionsNewOwner = permissionsUpdates(cmd.newOwnerId, newState)
 
         val result: Future[SeqState] = for {
-          // push updates to previous owner
-          _ ← FutureExt.ftraverse(prevOwnerUpdates) { update ⇒
+          // push permission updates to previous owner
+          _ ← FutureExt.ftraverse(updatePermissionsPrevOwner) { update ⇒
             seqUpdExt.deliverUserUpdate(cmd.clientUserId, update)
           }
-          // push updates to new owner
-          _ ← FutureExt.ftraverse(newOwnerUpdates) { update ⇒
+          // push permission updates to new owner
+          _ ← FutureExt.ftraverse(updatePermissionsNewOwner) { update ⇒
             seqUpdExt.deliverUserUpdate(cmd.newOwnerId, update)
           }
           seqState ← seqUpdExt.broadcastClientUpdate(
@@ -262,51 +257,21 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
   protected def updateAdminSettings(cmd: UpdateAdminSettings): Unit = {
     if (!state.permissions.canEditAdminSettings(cmd.clientUserId)) {
       sender() ! Status.Failure(NotAdmin)
+    } else if (AdminSettings.fromBitMask(cmd.settingsBitMask) == state.adminSettings) {
+      sender() ! UpdateAdminSettingsAck()
     } else {
-      val settOld = state.adminSettings
-
       persist(AdminSettingsUpdated(Instant.now, cmd.settingsBitMask)) { evt ⇒
         val newState = commit(evt)
-        val settNew = newState.adminSettings
 
-        val (membersUpdates, adminsUpdates) = {
-          // push to all members except admins and owner
-          val showAdminToMembers = PartialFunction.condOpt(settOld.showAdminsToMembers != settNew.showAdminsToMembers) {
-            case true ⇒ UpdateGroupCanViewAdminsChanged(groupId, canViewAdmins = settNew.showAdminsToMembers)
-          }
-
-          // push to all members except admins and owner
-          val canMembersInvite = PartialFunction.condOpt(settOld.canMembersInvite != settNew.canMembersInvite) {
-            case true ⇒ UpdateGroupCanInviteMembersChanged(groupId, canInviteMembers = settNew.canMembersInvite)
-          }
-
-          // push to all members except admins and owner
-          val canMembersEditGroupInfo = PartialFunction.condOpt(settOld.canMembersEditGroupInfo != settNew.canMembersEditGroupInfo) {
-            case true ⇒ UpdateGroupCanEditInfoChanged(groupId, canEditGroup = settNew.canMembersEditGroupInfo)
-          }
-
-          // push to admins only
-          val canAdminsEditGroupInfo = PartialFunction.condOpt(settOld.canAdminsEditGroupInfo != settNew.canAdminsEditGroupInfo) {
-            case true ⇒ UpdateGroupCanEditInfoChanged(groupId, canEditGroup = settNew.canAdminsEditGroupInfo)
-          }
-
-          (
-            List(showAdminToMembers, canMembersInvite, canMembersEditGroupInfo).flatten[Update],
-            List(canAdminsEditGroupInfo).flatten[Update]
-          )
-        }
-
-        val plainMemberIds = (newState.memberIds - newState.ownerUserId) -- newState.adminIds
-        val adminsOnlyIds = newState.adminIds - newState.ownerUserId
-
+        //TODO: check if settings actually changed
         val result: Future[UpdateAdminSettingsAck] = for {
-          // deliver updates about settings changed to plain group members
-          _ ← FutureExt.ftraverse(membersUpdates) { update ⇒
-            seqUpdExt.broadcastPeopleUpdate(userIds = plainMemberIds, update)
-          }
-          // deliver updates about settings changed to plain group members
-          _ ← FutureExt.ftraverse(membersUpdates) { update ⇒
-            seqUpdExt.broadcastPeopleUpdate(userIds = adminsOnlyIds, update)
+          // deliver permissions updates to all group members
+          // maybe there is no need to generate updates for each user
+          // three parts: members, admins, owner should be enough
+          _ ← FutureExt.ftraverse(newState.memberIds.toSeq) { userId ⇒
+            FutureExt.ftraverse(permissionsUpdates(userId, newState)) { update ⇒
+              seqUpdExt.deliverUserUpdate(userId, update)
+            }
           }
         } yield UpdateAdminSettingsAck()
 
@@ -349,27 +314,21 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
         val dateMillis = evt.ts.toEpochMilli
         val randomId = ACLUtils.randomLong()
 
-        // TODO: add UpdateIsDeleted
-        val deleteGroupMembersUpdates: Vector[Update] = Vector(
-          UpdateGroupCanSendMessagesChanged(groupId, canSendMessages = false),
-          UpdateGroupCanViewMembersChanged(groupId, canViewMembers = false),
-          UpdateGroupCanEditInfoChanged(groupId, canEditGroup = false),
-          UpdateGroupCanEditUsernameChanged(groupId, canEditUsername = false),
-          UpdateGroupCanEditAdminsChanged(groupId, canAssignAdmins = false),
-          UpdateGroupCanViewAdminsChanged(groupId, canViewAdmins = false),
-          UpdateGroupCanEditAdminSettingsChanged(groupId, canEditAdminSettings = false),
-          UpdateGroupCanInviteMembersChanged(groupId, canInviteMembers = false),
-          UpdateGroupCanInviteViaLink(groupId, canInviteViaLink = false),
-          UpdateGroupCanLeaveChanged(groupId, canLeaveChanged = false),
-          UpdateGroupCanDeleteChanged(groupId, canDeleteChanged = false),
-          UpdateGroupMemberChanged(groupId, isMember = false),
-          // if channel, or group is big enough
-          if (newState.groupType.isChannel)
-            UpdateGroupMembersCountChanged(groupId, membersCount = 0)
-          else
-            UpdateGroupMembersUpdated(groupId, members = Vector.empty),
-          UpdateGroupDeleted(groupId)
+        val emptyPermissions = Vector(
+          UpdateGroupPermissionsChanged(groupId, newState.permissions.GroupEmpty),
+          UpdateGroupFullPermissionsChanged(groupId, newState.permissions.FullGroupEmpty)
         )
+
+        val deleteGroupMembersUpdates: Vector[Update] = emptyPermissions ++
+          Vector(
+            UpdateGroupMemberChanged(groupId, isMember = false),
+            // if channel, or group is big enough
+            if (newState.groupType.isChannel)
+              UpdateGroupMembersCountChanged(groupId, membersCount = 0)
+            else
+              UpdateGroupMembersUpdated(groupId, members = Vector.empty),
+            UpdateGroupDeleted(groupId)
+          )
 
         //TODO: remove deprecated. GroupInviteTokenRepo don't have replacement yet.
         newState.memberIds foreach { userId ⇒
