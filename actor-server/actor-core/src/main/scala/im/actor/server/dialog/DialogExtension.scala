@@ -378,21 +378,22 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
       .map(_.info.get)
   }
 
+  private val EmptyTextMessage = ApiTextMessage(text = "", mentions = Vector.empty, ext = None)
+
   def getApiDialog(userId: Int, info: DialogInfo, sortDate: Instant): Future[ApiDialog] = {
-    val emptyMessageContent = ApiTextMessage(text = "", mentions = Vector.empty, ext = None)
-    val emptyMessage = HistoryMessage(userId, info.peer.get, new DateTime(0), 0, 0, emptyMessageContent.header, emptyMessageContent.toByteArray, None)
+    val emptyMessage = HistoryMessage(userId, info.peer.get, new DateTime(0), 0, 0, EmptyTextMessage.header, EmptyTextMessage.toByteArray, None)
     val peer = info.peer.get
 
     for {
       historyOwner ← getHistoryOwner(peer, userId)
-      messageOpt ← getLastMessage(userId, peer)
-      reactions ← messageOpt map (m ⇒ db.run(fetchReactions(peer, userId, m.randomId))) getOrElse FastFuture.successful(Vector.empty)
-      message ← getLastMessage(userId, peer) map (_ getOrElse emptyMessage) map (_.asStruct(
+      lastMessageOpt ← getLastMessage(historyOwner, peer)
+      reactions ← lastMessageOpt map (m ⇒ db.run(fetchReactions(peer, userId, m.randomId))) getOrElse FastFuture.successful(Vector.empty)
+      message = lastMessageOpt.getOrElse(emptyMessage).asStruct(
         lastReceivedAt = new DateTime(info.lastReceivedDate.toEpochMilli),
         lastReadAt = new DateTime(info.lastReadDate.toEpochMilli),
         reactions = reactions,
         attributes = None
-      )) map (_.getOrElse(throw new RuntimeException("Failed to get message struct")))
+      ) getOrElse (throw new RuntimeException("Failed to get message struct"))
       firstUnreadOpt ← db.run(HistoryMessageRepo.findAfter(historyOwner, peer, new DateTime(info.lastReadDate.toEpochMilli), 1) map (_.headOption map (_.ofUser(userId))))
     } yield ApiDialog(
       peer = peer.asStruct,
@@ -423,8 +424,8 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
         .withDialogEnvelope(DialogEnvelope().withSendMessage(sendMessage))).mapTo[SeqStateDate]
     }
 
-  private def getLastMessage(userId: Int, peer: Peer): Future[Option[HistoryMessage]] =
-    db.run(HistoryMessageRepo.findNewest(userId, peer))
+  private def getLastMessage(historyOwner: Int, peer: Peer): Future[Option[HistoryMessage]] =
+    db.run(HistoryMessageRepo.findNewest(historyOwner, peer))
 
   private def reactions(events: Seq[ReactionEvent]): Seq[MessageReaction] = {
     (events.view groupBy (_.code) mapValues (_ map (_.userId)) map {
