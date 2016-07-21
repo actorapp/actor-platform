@@ -290,6 +290,12 @@
 
 "GroupMembers" = "{0} УЧАСТНИКИ";
 
+"GroupAbout" = "О группе";
+
+"GroupAboutChannel" = "О канале";
+
+"GroupViewMembers" = "Участники";
+
 "GroupMemberAdmin" = "админ.";
 
 "GroupMemberInfo" = "Профиль";
@@ -319,6 +325,8 @@
 "GroupAddParticipantUrl" = "Пригласить по ссылке";
 
 "GroupLeave" = "Покинуть группу";
+
+"GroupLeaveChannel" = "Leave channel";
 
 "GroupLeaveConfirm" = "Вы уверены, что хотите покинуть группу?";
 

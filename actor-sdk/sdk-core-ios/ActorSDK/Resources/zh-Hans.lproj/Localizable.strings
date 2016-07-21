@@ -272,9 +272,15 @@
 
 "GroupMembers" = "{0}个成员";
 
+"GroupViewMembers" = "个成员";
+
 "GroupMemberAdmin" = "管理员";
 
 "GroupMemberInfo" = "成员信息";
+
+"GroupAbout" = "About";
+
+"GroupAboutChannel" = "About";
 
 "GroupMemberMakeAdmin" = "设为群组管理员";
 
@@ -301,6 +307,8 @@
 "GroupAddParticipantUrl" = "通过URL链接邀请加入群组";
 
 "GroupLeave" = "退出群组";
+
+"GroupLeaveChannel" = "Leave channel";
 
 "GroupLeaveConfirm" = "你确定要退出群组吗？";
 

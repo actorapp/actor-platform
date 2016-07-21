@@ -1236,8 +1236,8 @@
 				066A52E81BC52A25000E606E /* Cells */,
 				066A52E31BC52A20000E606E /* AAAddParticipantViewController.swift */,
 				066A52E21BC52A20000E606E /* AAGroupViewController.swift */,
-				066A52E41BC52A20000E606E /* AAInviteLinkViewController.swift */,
 				06ABFE371D3FCCE30031A0D6 /* AAGroupEditInfoViewController.swift */,
+				066A52E41BC52A20000E606E /* AAInviteLinkViewController.swift */,
 			);
 			path = Group;
 			sourceTree = "<group>";

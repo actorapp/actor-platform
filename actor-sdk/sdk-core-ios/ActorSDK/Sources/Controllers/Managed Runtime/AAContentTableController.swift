@@ -33,7 +33,7 @@ public class AAContentTableController: AAManagedTableController, AAManagedTableC
     
     // DSL Implementation
     
-    public func section(closure: (s: AAManagedSection) -> ()) {
+    public func section(@noescape closure: (s: AAManagedSection) -> ()) {
         if !isInLoad {
             fatalError("Unable to change sections not during tableDidLoad method call")
         }

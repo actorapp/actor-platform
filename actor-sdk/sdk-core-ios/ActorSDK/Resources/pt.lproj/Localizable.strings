@@ -278,6 +278,12 @@
 
 "GroupMembers" = "{0} MEMBROS";
 
+"GroupAbout" = "About";
+
+"GroupAboutChannel" = "About";
+
+"GroupViewMembers" = "Membros";
+
 "GroupMemberAdmin" = "admin";
 
 "GroupMemberInfo" = "Perfil";
@@ -308,7 +314,11 @@
 
 "GroupLeave" = "Sair do grupo";
 
+"GroupLeaveChannel" = "Leave channel";
+
 "GroupLeaveConfirm" = "Você tem certeza que quer sair do grupo?";
+
+"GroupLeaveConfirmChannel" = "Are you sure you want to leave channel?";
 
 "GroupLeaveConfirmAction" = "Sair";
 
