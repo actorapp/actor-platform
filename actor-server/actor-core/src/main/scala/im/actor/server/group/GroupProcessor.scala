@@ -186,11 +186,13 @@ private[group] final class GroupProcessor
 
   override def afterCommit(e: Event) = {
     super.afterCommit(e)
-    if (state.membersCount > 25) {
-      updateCanCall(state)
+    if (recoveryFinished) {
+      if (state.membersCount > 25) {
+        updateCanCall(state)
+      }
+      // TODO: add async members
+      // if(state.membersCount > 50) { updateMembersAsync(state) }
     }
-    // TODO: add async members
-    // if(state.membersCount > 50) { updateMembersAsync(state) }
   }
 
   private def updateCanCall(state: GroupState): Unit = {
